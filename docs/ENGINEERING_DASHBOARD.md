@@ -13,7 +13,7 @@
 - **Lifecycle:** [`Assignment`](assignments/candidate-bar-idle-dismiss-001.md) `Closed`
 - **Current phase:** Human Product Gate **Passed with accepted evidence conditions**；残差 `CBID-01`–`CBID-04`、`CBID-CORNER` `accept`
 - **Non-claims:** 不等于 Device-attested；不授权 commit / push / merge、TestFlight 或 Release
-- **Next:** 无（本 Assignment）。commit / push 另授权。`CBID-CORNER` 另开新工作项
+- **Next:** push / PR 进行中；merge 另授权。`CBID-CORNER` 另开新工作项
 - **Sources:** [PD](product-decisions/CANDIDATE-BAR-IDLE-DISMISS-001-authorization.md) · [Product Gate](product-decisions/CANDIDATE-BAR-IDLE-DISMISS-001-product-gate.md) · [Gate AUTH](authorizations/AUTH-CANDIDATE-BAR-IDLE-DISMISS-001-PRODUCT-GATE.md) · [Quality review](reviews/candidate-bar-idle-dismiss-001-quality-review.md)
 - **Worktree:** `/private/tmp/universe-keyboard-candidate-bar-idle-dismiss-001` · branch `grok/candidate-bar-idle-dismiss-001` · baseline `origin/main` `fbb4eb3bbbc2926ff6e248db9dcdfdf6a331f821`
 

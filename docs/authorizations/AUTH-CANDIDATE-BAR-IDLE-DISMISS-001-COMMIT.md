@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Status | active |
-| Consumption | unconsumed — 隔离分支有界 commit + SHA 回写；不授权 merge / TestFlight / Release |
+| Status | consumed |
+| Consumption | 已在隔离分支形成实现 commit `997c56ad114a3b5335e4e883b0dee78c7678043f`；本次记录回写 SHA；push / PR 见独立 AUTH |
 
 Human Product Owner, current session 2026-09-28 Asia/Shanghai: 「授权 commit，push，以及开 PR」
 
@@ -15,13 +15,14 @@ Human Product Owner, current session 2026-09-28 Asia/Shanghai: 「授权 commit�
   "record_id": "AUTH-CANDIDATE-BAR-IDLE-DISMISS-001-COMMIT",
   "record_type": "authorization",
   "title": "Scoped local commit of CANDIDATE-BAR-IDLE-DISMISS-001",
-  "status": "active",
-  "updated_at": "2026-09-28T22:13:39+08:00",
+  "status": "consumed",
+  "updated_at": "2026-09-28T22:14:30+08:00",
   "revalidation_triggers": ["scope_changed", "authority_revoked"],
   "authorization": {
     "action": "scoped_commit_candidate_bar_idle_dismiss",
     "target": "CANDIDATE-BAR-IDLE-DISMISS-001",
     "artifact_bindings": [
+      {"kind": "commit", "identity": "997c56ad114a3b5335e4e883b0dee78c7678043f"},
       {"kind": "file", "identity": "Keyboard/Views/CandidateBar/CandidateBarView.swift"},
       {"kind": "file", "identity": "docs/assignments/candidate-bar-idle-dismiss-001.md"}
     ],
@@ -32,7 +33,7 @@ Human Product Owner, current session 2026-09-28 Asia/Shanghai: 「授权 commit�
     "issued_at": "2026-09-28T22:13:39+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "unconsumed"
+    "consumption_state": "consumed"
   }
 }
 ```
