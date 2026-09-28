@@ -34,8 +34,8 @@
 |---|---|
 | Status | accepted |
 | Phase | Human Product Gate **Passed with accepted evidence conditions**；Assignment `Closed` |
-| Evidence | Dirty isolated worktree on `grok/app-action-button-hit-area-001`; `HEAD` `b92a59b91b15073f457cbb7cd856f015117f4ac7`; `AppActionButton.swift` SHA-256 `1da8b39cc8f5198f2cd73606e5683c674bed1f11fb86ec711682494159738485`; independent Quality App + Keyboard `UniverseKeyboardTests 407 / 10 skipped`, `KeyboardTests 15` |
-| Non-claims | Not Device-attested; not a Quality-reverified physical-device tap; not commit / push / PR / merge / TestFlight / App Store Connect / Release |
+| Evidence | PR [#186](https://github.com/shchnk1103/Universe-Keyboard/pull/186) squash `e3eb27b51caa289eae734d9194d3d5ba10f75bc6`; `AppActionButton.swift` SHA-256 `1da8b39cc8f5198f2cd73606e5683c674bed1f11fb86ec711682494159738485`; independent Quality App + Keyboard `UniverseKeyboardTests 407 / 10 skipped`, `KeyboardTests 15`; hosted same-head run [36416106485](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/36416106485) |
+| Non-claims | Not Device-attested; not a Quality-reverified physical-device tap; not TestFlight / App Store Connect / Release |
 | Next | None for this Assignment; any publication, commit or release gate requires separate authorization |
 
 ## Decision

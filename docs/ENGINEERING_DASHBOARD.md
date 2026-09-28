@@ -11,11 +11,11 @@
 ## APP-ACTION-BUTTON-HIT-AREA-001 — 主 App 操作按钮整块可点
 
 - **Lifecycle:** [`Assignment`](assignments/app-action-button-hit-area-001.md) `Closed`
-- **Current phase:** Human Product Gate **Passed with accepted evidence conditions**；残差 `AABH-01`–`AABH-05` `accept`
-- **Non-claims:** 不等于 Device-attested；不授权 merge、TestFlight 或 Release；合同只覆盖共享 `AppActionButton`
-- **Next:** Human 观察 [PR #186](https://github.com/shchnk1103/Universe-Keyboard/pull/186) hosted CI；merge 另授权
-- **Sources:** [PD](product-decisions/APP-ACTION-BUTTON-HIT-AREA-001-authorization.md) · [Product Gate](product-decisions/APP-ACTION-BUTTON-HIT-AREA-001-product-gate.md) · [PR #186](https://github.com/shchnk1103/Universe-Keyboard/pull/186) · [Quality review](reviews/app-action-button-hit-area-001-quality-review.md)
-- **Worktree:** `/private/tmp/universe-keyboard-app-action-button-hit-area-001` · branch `grok/app-action-button-hit-area-001` · baseline `origin/main` `b92a59b91b15073f457cbb7cd856f015117f4ac7`
+- **Current phase:** PR [#186](https://github.com/shchnk1103/Universe-Keyboard/pull/186) squash-merged `e3eb27b51caa289eae734d9194d3d5ba10f75bc6`；残差 `AABH-01`–`AABH-05` `accept`
+- **Non-claims:** 不等于 Device-attested；不授权 TestFlight 或 Release；合同只覆盖共享 `AppActionButton`
+- **Next:** 无（本 Assignment）。TestFlight / Release 另授权
+- **Sources:** [PD](product-decisions/APP-ACTION-BUTTON-HIT-AREA-001-authorization.md) · [Product Gate](product-decisions/APP-ACTION-BUTTON-HIT-AREA-001-product-gate.md) · [Merge AUTH](authorizations/AUTH-APP-ACTION-BUTTON-HIT-AREA-001-MERGE.md) · [PR #186](https://github.com/shchnk1103/Universe-Keyboard/pull/186) · [Quality review](reviews/app-action-button-hit-area-001-quality-review.md)
+- **Worktree:** 实现 worktree 与功能分支已删；本 M-02 分支 `grok/app-action-button-hit-area-001-m02`
 
 ## SCHEME-LICENSE-DOWNLOAD-CTA-001 — 第三方方案许可下载单按钮
 
