@@ -11,8 +11,8 @@
 |---|---|
 | **Lifecycle** | `Closed` |
 | **Phase** | Human Product Gate **Passed with accepted evidence conditions**；残差 `AABH-01`–`AABH-05` 均 `accept` |
-| **Non-claims** | 不等于无条件 Quality Pass 或 Device-attested；不授权 merge、TestFlight 或 Release |
-| **Next** | Human 观察 PR [#186](https://github.com/shchnk1103/Universe-Keyboard/pull/186) hosted CI；merge 另授权 |
+| **Non-claims** | 不等于无条件 Quality Pass 或 Device-attested；不授权 TestFlight 或 Release |
+| **Next** | 无（本 Assignment）。TestFlight / Release 仍需单独授权 |
 | **Residuals** | [`quality review`](../reviews/app-action-button-hit-area-001-quality-review.md) `AABH-01`–`AABH-05` `accept`；[`Product Gate`](../product-decisions/APP-ACTION-BUTTON-HIT-AREA-001-product-gate.md) 接受 |
 
 ---
@@ -29,6 +29,7 @@
 - **Product Gate:** [`PD-APP-ACTION-BUTTON-HIT-AREA-001-PRODUCT-GATE`](../product-decisions/APP-ACTION-BUTTON-HIT-AREA-001-product-gate.md) — **Accepted**
 - **Authorization (scoped local commit):** [`AUTH-APP-ACTION-BUTTON-HIT-AREA-001-COMMIT`](../authorizations/AUTH-APP-ACTION-BUTTON-HIT-AREA-001-COMMIT.md) — consumed; implementation `08f37e5e48630d68670335b888a87d1b2330cd52`
 - **Authorization (push / PR):** [`AUTH-APP-ACTION-BUTTON-HIT-AREA-001-PUSH-PR`](../authorizations/AUTH-APP-ACTION-BUTTON-HIT-AREA-001-PUSH-PR.md) — consumed；PR [#186](https://github.com/shchnk1103/Universe-Keyboard/pull/186)
+- **Authorization (merge):** [`AUTH-APP-ACTION-BUTTON-HIT-AREA-001-MERGE`](../authorizations/AUTH-APP-ACTION-BUTTON-HIT-AREA-001-MERGE.md) — consumed；squash `e3eb27b51caa289eae734d9194d3d5ba10f75bc6`
 
 ## KOS v0.8.0 optional-contract selection
 
@@ -50,7 +51,7 @@
 | Human Product Gate | Authorized | Main-App hit-area acceptance; Assignment Closed | Consumed [`AUTH-APP-ACTION-BUTTON-HIT-AREA-001-PRODUCT-GATE`](../authorizations/AUTH-APP-ACTION-BUTTON-HIT-AREA-001-PRODUCT-GATE.md) → [`PD-APP-ACTION-BUTTON-HIT-AREA-001-PRODUCT-GATE`](../product-decisions/APP-ACTION-BUTTON-HIT-AREA-001-product-gate.md) |
 | Scoped local commit | Authorized | Isolated-branch implementation `08f37e5e48630d68670335b888a87d1b2330cd52` | Consumed [`AUTH-APP-ACTION-BUTTON-HIT-AREA-001-COMMIT`](../authorizations/AUTH-APP-ACTION-BUTTON-HIT-AREA-001-COMMIT.md) |
 | Push / PR | Authorized | Push `grok/app-action-button-hit-area-001` and open PR [#186](https://github.com/shchnk1103/Universe-Keyboard/pull/186); Human observes CI | Consumed [`AUTH-APP-ACTION-BUTTON-HIT-AREA-001-PUSH-PR`](../authorizations/AUTH-APP-ACTION-BUTTON-HIT-AREA-001-PUSH-PR.md) |
-| Merge | Not authorized | Merge to default branch | New AUTH required |
+| Merge | Authorized | Squash-merge PR [#186](https://github.com/shchnk1103/Universe-Keyboard/pull/186) as `e3eb27b51caa289eae734d9194d3d5ba10f75bc6` | Consumed [`AUTH-APP-ACTION-BUTTON-HIT-AREA-001-MERGE`](../authorizations/AUTH-APP-ACTION-BUTTON-HIT-AREA-001-MERGE.md) |
 | Environment or external slice | Not applicable | 无 H-01 冻结载荷；实施后 Simulator 目视为可选 Human Dependency | 真机不是 `Ready` 前置 |
 
 This is a manual advisory opt-in for A-01/B-01 only. This Assignment, its Authorization and its Product Decision are **not** Profile-included; validator coverage does not apply. Changing `.kos/project.json` requires a separate onboarding Assignment.
@@ -155,8 +156,9 @@ Stop and escalate if:
   - Tests: `xcodebuild` scheme `Universe Keyboard` Debug test, destination `platform=iOS Simulator,id=8C2943AC-AC97-432F-ACEE-BE3DA2B9ACB2` — **TEST SUCCEEDED**（UniverseKeyboardTests 407 / 10 skipped；KeyboardTests 15）。Not run: KeyboardCore-only, RimeBridgeTests, Release `build`.
   - Docs: `UI_STYLE_GUIDE.md`, `CHANGELOG.md`, Assignment / PD / Dashboard mirrors
   - Independent Quality **Pass with conditions**（`AABH-01`–`AABH-05` `accept`）
-  - Product Gate 已接受；无实现 commit
-- **Handoff Target:** None for this Assignment; future commit or Release gates are separate
+  - Product Gate 已接受
+  - PR [#186](https://github.com/shchnk1103/Universe-Keyboard/pull/186) squash-merged `e3eb27b51caa289eae734d9194d3d5ba10f75bc6`
+- **Handoff Target:** None for this Assignment; TestFlight / Release remain separate
 - **Revalidation Trigger:** Human reverses the full-capsule hit rule; a new main-App action button surface is added outside `AppActionButton`; Keyboard Extension is pulled into scope; contrast tokens are rewritten in this slice
 
 ## History
@@ -167,3 +169,4 @@ Stop and escalate if:
 - `2026-09-28 Asia/Shanghai` — Human Product Owner 接受残差并授权 Product Gate（[`AUTH-APP-ACTION-BUTTON-HIT-AREA-001-PRODUCT-GATE`](../authorizations/AUTH-APP-ACTION-BUTTON-HIT-AREA-001-PRODUCT-GATE.md)）。Product Gate 接受既有 Quality 条件，Assignment `Reviewed → Closed`。无 Device-attested / commit / push / PR / merge / TestFlight / Release。
 - `2026-09-28 Asia/Shanghai` — Human 授权隔离分支有界 commit / push / PR。实现 commit `08f37e5e48630d68670335b888a87d1b2330cd52`；SHA 回写 `fee9dce66cd80e9dd3f2ff9f8ff2bb50cbefe7d3`。无 merge。
 - `2026-09-28 Asia/Shanghai` — 已推送隔离分支并开 PR [#186](https://github.com/shchnk1103/Universe-Keyboard/pull/186)。Executor 不 merge。Human 观察 hosted CI。无 TestFlight / Release。
+- `2026-09-28 Asia/Shanghai` — Human 授权 merge 与收尾。PR [#186](https://github.com/shchnk1103/Universe-Keyboard/pull/186) squash-merged `e3eb27b51caa289eae734d9194d3d5ba10f75bc6`（same-head CI run 36416106485）。远端功能分支已删。无 TestFlight / Release。

@@ -18,7 +18,7 @@
 | **Lifecycle** | Recorded — Product Gate Accepted |
 | **Phase** | 合同仍有效；Assignment `Closed`（Human Product Gate Passed with accepted evidence conditions） |
 | **Non-claims** | 不等于 Device-attested、commit / push / merge、TestFlight 或 Release |
-| **Next** | 本 Assignment 无下一步；commit 或发布另需授权 |
+| **Next** | 本 Assignment 无下一步；TestFlight 或 Release 另需授权 |
 | **Residuals** | `AABH-01`–`AABH-05` 已由 Product Gate 接受，边界保持不变 |
 
 ---
