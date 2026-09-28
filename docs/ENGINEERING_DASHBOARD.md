@@ -8,6 +8,15 @@
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
 
+## CANDIDATE-BAR-IDLE-DISMISS-001 — 空闲候选栏关闭键盘
+
+- **Lifecycle:** [`Assignment`](assignments/candidate-bar-idle-dismiss-001.md) `Closed`
+- **Current phase:** Human Product Gate **Passed with accepted evidence conditions**；残差 `CBID-01`–`CBID-04`、`CBID-CORNER` `accept`
+- **Non-claims:** 不等于 Device-attested；不授权 commit / push / merge、TestFlight 或 Release
+- **Next:** 无（本 Assignment）。commit / push 另授权。`CBID-CORNER` 另开新工作项
+- **Sources:** [PD](product-decisions/CANDIDATE-BAR-IDLE-DISMISS-001-authorization.md) · [Product Gate](product-decisions/CANDIDATE-BAR-IDLE-DISMISS-001-product-gate.md) · [Gate AUTH](authorizations/AUTH-CANDIDATE-BAR-IDLE-DISMISS-001-PRODUCT-GATE.md) · [Quality review](reviews/candidate-bar-idle-dismiss-001-quality-review.md)
+- **Worktree:** `/private/tmp/universe-keyboard-candidate-bar-idle-dismiss-001` · branch `grok/candidate-bar-idle-dismiss-001` · baseline `origin/main` `fbb4eb3bbbc2926ff6e248db9dcdfdf6a331f821`
+
 ## APP-ABOUT-001 — 主 App「关于」页
 
 - **Lifecycle:** [`Assignment`](assignments/app-about-001.md) `Closed`

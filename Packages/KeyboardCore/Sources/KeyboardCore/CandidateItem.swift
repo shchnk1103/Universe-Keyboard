@@ -63,6 +63,18 @@ public enum CandidateKind: Int, CaseIterable, Sendable {
 
     /// 待确认颜表情：点击后替换当前 pending，不走 RIME，也不追加插入。
     case kaomojiCandidate = 6
+
+    /// Trailing candidate-bar control expands the panel for these kinds
+    /// (`PD-CANDIDATE-BAR-IDLE-DISMISS-001`). Placeholder-only or empty bars dismiss.
+    public var expandsCandidateBarPanel: Bool {
+        switch self {
+        case .placeholder:
+            return false
+        case .candidate, .composition, .correctionCandidate, .continuationCandidate,
+            .punctuationCandidate, .kaomojiCandidate:
+            return true
+        }
+    }
 }
 
 /// RIME 候选在候选页中的稳定位置。

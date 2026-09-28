@@ -1,5 +1,13 @@
 # Active Work Summary
 
+Current update: `2026-09-28 Asia/Shanghai` — Human Product Gate **Pass** on [`CANDIDATE-BAR-IDLE-DISMISS-001`](assignments/candidate-bar-idle-dismiss-001.md)；Assignment **Closed**（[`Gate`](product-decisions/CANDIDATE-BAR-IDLE-DISMISS-001-product-gate.md)）。残差接受。`CBID-CORNER` 圆角透白另开。Commit 另授权。无 TestFlight / Release。
+
+Current update: `2026-09-28 Asia/Shanghai` — [`CANDIDATE-BAR-IDLE-DISMISS-001`](assignments/candidate-bar-idle-dismiss-001.md) 独立 Quality **Pass with conditions**（[`review`](reviews/candidate-bar-idle-dismiss-001-quality-review.md)；`CBID-01`–`CBID-04`、`CBID-CORNER` `accept`）。Assignment 当时 `Reviewed`。圆角透白 Close 之后另开。无 Product Gate / commit / push。
+
+Current update: `2026-09-28 Asia/Shanghai` — [`CANDIDATE-BAR-IDLE-DISMISS-001`](assignments/candidate-bar-idle-dismiss-001.md) 实施已交付，Assignment 当时 `Completed`。iPhone 17 App+Keyboard Debug **TEST SUCCEEDED**（410 / 10 skipped；KeyboardTests 16）。无 Quality / Gate / commit / push。
+
+Current update: `2026-09-28 Asia/Shanghai` — Human 授权记录 [`CANDIDATE-BAR-IDLE-DISMISS-001`](assignments/candidate-bar-idle-dismiss-001.md)（当时 `Ready`）：空闲候选栏右侧键关闭键盘；有候选/联想仍展开；全布局复用展开键。隔离 worktree `/private/tmp/universe-keyboard-candidate-bar-idle-dismiss-001`，基线 `origin/main` `fbb4eb3`。无 Swift / Quality / Gate / commit / push。
+
 Current update: `2026-09-28 Asia/Shanghai` — PR [#188](https://github.com/shchnk1103/Universe-Keyboard/pull/188) squash-merged `a46a6abe66be065039557897a1e3adef29cc7d32`（same-head CI run [36426040680](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/36426040680)）。[`APP-ABOUT-001`](assignments/app-about-001.md) 仍 **Closed**。远端功能分支已删。无 TestFlight / Release。
 
 Current update: `2026-09-28 Asia/Shanghai` — [`APP-ABOUT-001`](assignments/app-about-001.md) 已 push 并开 PR [#188](https://github.com/shchnk1103/Universe-Keyboard/pull/188)（实现 `28cd2ea`，回写 `cd18e3e`）。Assignment 仍 **Closed**。Human 观察 hosted CI；merge 当时另授权。无 TestFlight / Release。

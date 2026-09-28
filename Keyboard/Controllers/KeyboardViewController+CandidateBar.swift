@@ -34,7 +34,7 @@ extension KeyboardViewController {
             bottomHitExtension: candidateToKeySpacing,
             backgroundColor: .clear,
             interactionTarget: self,
-            expandAction: #selector(toggleCandidateExpand)
+            expandAction: #selector(handleCandidateBarTrailingButton)
         )
         let collectionView = view.collectionView
         collectionView.dataSource = self
@@ -48,6 +48,16 @@ extension KeyboardViewController {
             self?.commitCompactCandidate(at: indexPath)
         }
         return view
+    }
+
+    /// Idle trailing control dismisses the keyboard; expandable content still expands.
+    @objc func handleCandidateBarTrailingButton() {
+        let canExpand = presentedCandidates.contains { $0.kind.expandsCandidateBarPanel }
+        if canExpand {
+            toggleCandidateExpand()
+        } else {
+            dismissKeyboard()
+        }
     }
 
     /// 切换候选面板展开/收起。展开面板覆盖在现有键盘之上，
@@ -143,17 +153,17 @@ extension KeyboardViewController {
         #endif
         let items = presentedCandidates
 
-        // 普通 RIME 候选和九键待确认标点都复用同一套展开 / 下滑手势。
-        // 展开按钮隐藏时，下滑手势会直接 fail（见 CandidateBarView）。
-        let canExpand = items.contains {
-            $0.kind == .candidate || $0.kind == .punctuationCandidate || $0.kind == .kaomojiCandidate
+        // Dual-mode trailing control (`PD-CANDIDATE-BAR-IDLE-DISMISS-001`):
+        // expandable content keeps expand + swipe-down; idle shows dismiss.
+        let canExpand = items.contains { $0.kind.expandsCandidateBarPanel }
+        candidateExpandButton?.isHidden = false
+        if candidateExpandButtonWidthConstraint?.constant != 56 {
+            candidateExpandButtonWidthConstraint?.constant = 56
         }
-        candidateExpandButton?.isHidden = !canExpand
-
-        let targetWidth: CGFloat = canExpand ? 56 : 0
-        if candidateExpandButtonWidthConstraint?.constant != targetWidth {
-            candidateExpandButtonWidthConstraint?.constant = targetWidth
+        if let bar = candidateBar as? CandidateBarView {
+            bar.allowsSwipeToExpand = canExpand
         }
+        updateExpandButtonAppearance(canExpand: canExpand)
 
         let currentOffset = candidateScrollView.contentOffset.x
         collectionView.reloadData()

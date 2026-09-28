@@ -122,7 +122,7 @@ The candidate bar must prioritize readability and speed:
   - Background: high-contrast pill drawn by `CandidateCollectionCell`.
 - Composition/preedit fallback should use `.secondaryLabel`.
 - Placeholder items should not appear as selectable candidates.
-- The expand button should be quiet: SF Symbol, secondary color, fixed width only when candidates exist.
+- The trailing candidate-bar control is always present at the existing 56 pt slot (`PD-CANDIDATE-BAR-IDLE-DISMISS-001`). Expandable content uses quiet `chevron.down` to expand. Idle uses template `chevron.down.circle` to request `dismissKeyboard()`. Draw it with `UIButton(type: .custom)` and `.alwaysTemplate`, not `UIButton.Configuration`, so the circle does not punch a white plate through keyboard glass. Swipe-down expands only in expand mode. VoiceOver labels switch with the mode.
 - Normal horizontal candidates use a 17pt base font; composition fallback uses 15pt. Keep Dynamic Type capped at 28pt so candidate rows do not resize unpredictably.
 - Candidate cells should render text with `UILabel` and an explicit highlighted background view. Avoid `UIButton.Configuration` for candidate display; it can interact poorly with system material compositing.
 - Candidate `UICollectionView`s must use `CandidateScrollViewStyle.apply(to:)`. On iOS 26+, `UIScrollEdgeEffect` can create a rectangular fade/overlay over the first candidate row inside the system keyboard glass container.

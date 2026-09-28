@@ -88,6 +88,8 @@ final class CandidateBarView: UIView {
     let collectionView: CandidateCollectionView
     let expandButton: UIButton
     let expandButtonWidthConstraint: NSLayoutConstraint
+    /// Swipe-down expands only in expand mode (`PD-CANDIDATE-BAR-IDLE-DISMISS-001`).
+    var allowsSwipeToExpand = false
     private weak var expandActionTarget: NSObject?
     private let expandAction: Selector
     private let itemTapRecognizer = UITapGestureRecognizer()
@@ -516,7 +518,7 @@ final class CandidateBarView: UIView {
     }
 
     private func triggerExpandIfSwipeDownThresholdPassed(_ recognizer: UIPanGestureRecognizer) {
-        guard !hasTriggeredSwipeDownExpand, !expandButton.isHidden else { return }
+        guard !hasTriggeredSwipeDownExpand, allowsSwipeToExpand else { return }
         let translation = recognizer.translation(in: self)
         let velocity = recognizer.velocity(in: self)
         let isIntentionalDownSwipe =
@@ -558,7 +560,7 @@ final class CandidateBarView: UIView {
         guard let pan = gestureRecognizer as? UIPanGestureRecognizer else { return true }
         let velocity = pan.velocity(in: self)
         if pan === swipeDownRecognizer {
-            guard !expandButton.isHidden else { return false }
+            guard allowsSwipeToExpand else { return false }
             return velocity.y > 0 && abs(velocity.y) > abs(velocity.x) * 1.15
         }
         if pan === horizontalFallbackRecognizer {
@@ -608,18 +610,21 @@ final class CandidateBarView: UIView {
         )
     }
 
-    private static func makeExpandButton(target: Any?, action: Selector) -> UIButton {
-        var config = UIButton.Configuration.plain()
-        config.contentInsets = .zero
-        config.image = UIImage(
-            systemName: "chevron.down",
+    static func trailingChromeImage(expanding: Bool) -> UIImage? {
+        let name = expanding ? "chevron.down" : "chevron.down.circle"
+        return UIImage(
+            systemName: name,
             withConfiguration: UIImage.SymbolConfiguration(pointSize: 12, weight: .medium)
-        )
-        config.baseForegroundColor = .secondaryLabel
+        )?
+        .withRenderingMode(.alwaysTemplate)
+    }
 
-        let button = CandidateBarExpandButton(configuration: config, primaryAction: nil)
+    private static func makeExpandButton(target: Any?, action: Selector) -> UIButton {
+        let button = CandidateBarExpandButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = UIColor.systemGray.withAlphaComponent(0.001)
+        button.tintColor = .secondaryLabel
+        button.setImage(trailingChromeImage(expanding: true), for: .normal)
         button.addTarget(target, action: action, for: .touchUpInside)
         button.accessibilityLabel = "展开更多候选词"
         button.accessibilityHint = "双击以查看完整候选列表"

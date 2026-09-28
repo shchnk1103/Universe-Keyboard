@@ -79,7 +79,7 @@ Keyboard/
 │   ├── KeyboardAudioFeedbackInputView.swift  — UIKit 系统输入点击音承载视图
 │   ├── KeyPopupView.swift                    — 变体弹出面板
 │   └── CandidateBar/
-│       ├── CandidateBarView.swift             — 候选栏容器
+│       ├── CandidateBarView.swift             — 候选栏容器（空闲关闭 / 有内容展开）
 │       ├── CandidateCell.swift                — 候选单元格
 │       ├── CandidateScrollViewStyle.swift      — 候选滚动视图外观防护
 │       └── CandidateBarDataSource.swift       — 候选数据源（RIME 优先，回退 Fake）
