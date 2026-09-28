@@ -69,4 +69,11 @@ final class AppActionButtonChromeTests: XCTestCase {
     func testPrimaryGlassTintStaysNearlyOpaque() {
         XCTAssertEqual(AppActionButtonChrome.primaryGlassTintOpacity, 0.92)
     }
+
+    func testHitFillShapeMatchesTheVisibleCapsule() {
+        let shape = AppActionButtonChrome.hitFillShape
+        XCTAssertEqual(shape.cornerSize.width, AppActionButtonChrome.cornerRadius)
+        XCTAssertEqual(shape.cornerSize.height, AppActionButtonChrome.cornerRadius)
+        XCTAssertEqual(shape.style, .continuous)
+    }
 }

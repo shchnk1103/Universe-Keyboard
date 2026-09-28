@@ -18,6 +18,12 @@ enum AppActionButtonChrome: Sendable {
     nonisolated static let fallbackSecondaryBorderWidth: CGFloat = 0.5
     nonisolated static let cornerRadius: CGFloat = 16
 
+    /// Visible capsule is the hit target. `.plain` otherwise only hits Label glyphs
+    /// (`PD-APP-ACTION-BUTTON-HIT-AREA-001`).
+    nonisolated static var hitFillShape: RoundedRectangle {
+        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+    }
+
     /// iOS 26 Liquid Glass is used unless Reduce Transparency is on.
     nonisolated static func usesGlassMaterial(reduceTransparency: Bool) -> Bool {
         !reduceTransparency
@@ -124,12 +130,14 @@ struct AppActionButton: View {
                 }
                 .buttonStyle(.plain)
                 .modifier(AppActionButtonSurface(prominence: prominence))
+                .contentShape(AppActionButtonChrome.hitFillShape)
             case .shareText(let text):
                 ShareLink(item: text) {
                     label
                 }
                 .buttonStyle(.plain)
                 .modifier(AppActionButtonSurface(prominence: prominence))
+                .contentShape(AppActionButtonChrome.hitFillShape)
             }
         }
         .opacity(AppActionButtonChrome.controlOpacity(isEnabled: isEnabled))
@@ -142,6 +150,7 @@ struct AppActionButton: View {
             .minimumScaleFactor(0.85)
             .foregroundStyle(Color(uiColor: AppActionButtonChrome.labelColor(prominence: prominence)))
             .frame(maxWidth: .infinity, minHeight: minHeight)
+            .contentShape(Rectangle())
     }
 
     private enum Interaction {
@@ -161,6 +170,7 @@ private struct AppActionButtonSurface: ViewModifier {
             content
             .padding(.horizontal, 10)
             .padding(.vertical, 7)
+            .contentShape(AppActionButtonChrome.hitFillShape)
 
         if AppActionButtonChrome.usesGlassMaterial(reduceTransparency: reduceTransparency) {
             if #available(iOS 26.0, *) {

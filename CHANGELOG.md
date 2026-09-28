@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-09-28 — 主 App 操作按钮整块可点
+
+- 共享 `AppActionButton` 的命中区域改为整块可见胶囊（含玻璃空白与内边距），不再只响应标题字形。
+- 命中形状与现有 16 pt 连续圆角对齐；对比度、Liquid Glass 和按钮语义不变。
+
 ## 2026-09-25 — 环境采集中的设备发现诊断分层
 
 - Environment Capture Procedure 升至 `1.1.0`：分别记录 `devicectl`、`simctl`、Device Hub、Accessibility Inspector 与 XCTest/XCUITest 结果；目标模拟器操作使用当次发现的显式 UDID，并按具体失败操作记录状态和耗时。
