@@ -50,9 +50,7 @@ Human Product Owner locked:
    - 邮箱 `doubleshy0n@gmail.com`，用系统邮件；
    - 小红书 `https://xhslink.cn/o/7lEn4EM0BtP`（Human 接受短链）。
    无 Telegram、Discord、GitHub Issues、应用内工单。
-4. **Mail subject.** 打开邮件时预填主题  
-   `Universe Keyboard 反馈 · {version} (Build {build})`  
-   例如 `Universe Keyboard 反馈 · 1.0 (Build 55)`。正文留空。不自动附诊断日志、输入内容或截图。
+4. **Mail subject.** 打开邮件时预填主题 `Universe Keyboard 反馈 · {version} (Build {build})`，例如 `Universe Keyboard 反馈 · 1.0 (Build 55)`。正文留空。不自动附诊断日志、输入内容或截图。
 5. **Settings IA.** 「隐私与数据」和「开源软件与内容」从设置「App 设置」移除，改为关于页内的导航行，仍进入现有 [`PrivacyDataView`](../../Universe%20Keyboard/Views/Settings/PrivacyDataView.swift) 与 [`OpenSourceLicensesView`](../../Universe%20Keyboard/Views/License/LicenseView.swift)。不把这两页正文摊进关于页。设置「App 设置」只保留：外观、通知与提醒、关于。
 6. **Search.** 设置搜索可命中关于、版本、邮箱、小红书、隐私、开源。隐私与开源可直达原页。
 7. **Copy.** 联系区用「联系我们」，避免和「键盘反馈」撞名。
