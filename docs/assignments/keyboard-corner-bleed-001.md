@@ -12,7 +12,7 @@
 | **Lifecycle** | `Closed` |
 | **Phase** | Human 锁定保持透明；无实施 |
 | **Non-claims** | 不等于填灰、Quality Pass、commit / push / merge、TestFlight 或 Release |
-| **Next** | docs-only commit / push / PR 进行中；merge 另授权 |
+| **Next** | Human 观察 PR [#192](https://github.com/shchnk1103/Universe-Keyboard/pull/192) hosted CI；merge 另授权 |
 | **Residuals** | None |
 
 ---
@@ -25,7 +25,7 @@
 - **Authorization (record slice):** [`AUTH-KEYBOARD-CORNER-BLEED-001`](../authorizations/AUTH-KEYBOARD-CORNER-BLEED-001.md) — consumed
 - **Authorization (close):** [`AUTH-KEYBOARD-CORNER-BLEED-001-CLOSE`](../authorizations/AUTH-KEYBOARD-CORNER-BLEED-001-CLOSE.md) — consumed
 - **Authorization (scoped local commit):** [`AUTH-KEYBOARD-CORNER-BLEED-001-COMMIT`](../authorizations/AUTH-KEYBOARD-CORNER-BLEED-001-COMMIT.md) — consumed; `03cee43ffd638691c4fb5c3eb715519be1c01979`
-- **Authorization (push / PR):** [`AUTH-KEYBOARD-CORNER-BLEED-001-PUSH-PR`](../authorizations/AUTH-KEYBOARD-CORNER-BLEED-001-PUSH-PR.md) — active / unconsumed until delivery
+- **Authorization (push / PR):** [`AUTH-KEYBOARD-CORNER-BLEED-001-PUSH-PR`](../authorizations/AUTH-KEYBOARD-CORNER-BLEED-001-PUSH-PR.md) — consumed；PR [#192](https://github.com/shchnk1103/Universe-Keyboard/pull/192)
 - **Parent:** Closed [`CANDIDATE-BAR-IDLE-DISMISS-001`](candidate-bar-idle-dismiss-001.md) residual `CBID-CORNER`
 
 ## KOS v0.8.0 optional-contract selection
@@ -47,7 +47,7 @@
 | Independent Quality | Not authorized | Light-mode top corners vs dark regression | New AUTH required |
 | Human Product Gate | Not authorized | Corner-bleed acceptance | New AUTH required |
 | Scoped local commit | Authorized | Isolated-branch docs `03cee43ffd638691c4fb5c3eb715519be1c01979` | Consumed [`AUTH-KEYBOARD-CORNER-BLEED-001-COMMIT`](../authorizations/AUTH-KEYBOARD-CORNER-BLEED-001-COMMIT.md) |
-| Push / PR | In progress | Push isolated branch and open PR; Human observes CI | [`AUTH-KEYBOARD-CORNER-BLEED-001-PUSH-PR`](../authorizations/AUTH-KEYBOARD-CORNER-BLEED-001-PUSH-PR.md) |
+| Push / PR | Authorized | Push `grok/keyboard-corner-bleed-001` and open PR [#192](https://github.com/shchnk1103/Universe-Keyboard/pull/192); Human observes CI | Consumed [`AUTH-KEYBOARD-CORNER-BLEED-001-PUSH-PR`](../authorizations/AUTH-KEYBOARD-CORNER-BLEED-001-PUSH-PR.md) |
 | Merge | Not authorized | Merge to default branch | New AUTH required |
 | Environment or external slice | Not applicable | 记录切片无设备动作 | 真机不是 `Ready` 前置 |
 
@@ -147,4 +147,5 @@ Stop and escalate if:
 
 - `2026-09-28 Asia/Shanghai` — Human 授权开键盘顶圆角透白跟进（parent `CBID-CORNER`）。Assignment 进入 `Ready`。隔离 worktree，未改主工作区，无 Swift。
 - `2026-09-28 Asia/Shanghai` — Human 关闭切片：透明就是目标，不填灰。`Ready → Closed`。无实施 / commit。
-- `2026-09-28 Asia/Shanghai` — Human 授权 docs-only commit / push / PR。实现 commit `03cee43ffd638691c4fb5c3eb715519be1c01979`。无 merge。
+- `2026-09-28 Asia/Shanghai` — Human 授权 docs-only commit / push / PR。实现 commit `03cee43ffd638691c4fb5c3eb715519be1c01979`；SHA 回写 `6a126082f226cb9ad4a08d8ca69bd93dd747f70a`。无 merge。
+- `2026-09-28 Asia/Shanghai` — 已推送隔离分支并开 PR [#192](https://github.com/shchnk1103/Universe-Keyboard/pull/192)。Executor 不 merge。Human 观察 hosted CI。

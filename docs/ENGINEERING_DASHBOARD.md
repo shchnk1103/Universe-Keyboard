@@ -11,9 +11,9 @@
 ## KEYBOARD-CORNER-BLEED-001 — 键盘顶圆角透白
 
 - **Lifecycle:** [`Assignment`](assignments/keyboard-corner-bleed-001.md) `Closed`
-- **Current phase:** 保持透明；不填灰；无实施
+- **Current phase:** 保持透明；不填灰；无实施；PR [#192](https://github.com/shchnk1103/Universe-Keyboard/pull/192)
 - **Non-claims:** 不等于填灰、commit / push / merge、TestFlight 或 Release
-- **Next:** 无（本 Assignment）
+- **Next:** Human 观察 [PR #192](https://github.com/shchnk1103/Universe-Keyboard/pull/192) hosted CI；merge 另授权
 - **Sources:** [PD](product-decisions/KEYBOARD-CORNER-BLEED-001-authorization.md) · [Record AUTH](authorizations/AUTH-KEYBOARD-CORNER-BLEED-001.md) · parent [`CANDIDATE-BAR-IDLE-DISMISS-001`](assignments/candidate-bar-idle-dismiss-001.md) `CBID-CORNER`
 - **Worktree:** `/private/tmp/universe-keyboard-keyboard-corner-bleed-001` · branch `grok/keyboard-corner-bleed-001` · baseline `origin/main` `5710d340e9ec2df4acedc06eeb429e9fd5f97bff`
 
