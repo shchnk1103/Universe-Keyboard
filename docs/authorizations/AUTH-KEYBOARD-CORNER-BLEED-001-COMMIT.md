@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Status | active |
-| Consumption | unconsumed — docs-only commit of the Closed keep-transparent record |
+| Status | consumed |
+| Consumption | 已在隔离分支形成 docs commit `03cee43ffd638691c4fb5c3eb715519be1c01979`；本次记录回写 SHA |
 
 Human Product Owner, current session 2026-09-28 Asia/Shanghai: 「授权把关闭记录 commit、push 并开 PR。」
 
@@ -15,13 +15,14 @@ Human Product Owner, current session 2026-09-28 Asia/Shanghai: 「授权把关�
   "record_id": "AUTH-KEYBOARD-CORNER-BLEED-001-COMMIT",
   "record_type": "authorization",
   "title": "Scoped local commit of KEYBOARD-CORNER-BLEED-001 close records",
-  "status": "active",
-  "updated_at": "2026-09-28T22:48:18+08:00",
+  "status": "consumed",
+  "updated_at": "2026-09-28T22:49:00+08:00",
   "revalidation_triggers": ["scope_changed", "authority_revoked"],
   "authorization": {
     "action": "scoped_commit_keyboard_corner_bleed_close_docs",
     "target": "KEYBOARD-CORNER-BLEED-001",
     "artifact_bindings": [
+      {"kind": "commit", "identity": "03cee43ffd638691c4fb5c3eb715519be1c01979"},
       {"kind": "file", "identity": "docs/assignments/keyboard-corner-bleed-001.md"}
     ],
     "scope": "On isolated branch grok/keyboard-corner-bleed-001, commit only KEYBOARD-CORNER-BLEED-001 PD/Assignment/AUTH close records, parent CBID-CORNER pointer, and assignment-only Active Work/Dashboard hunks. Docs-only. No Swift. Include a SHA writeback commit. Push/PR is a separate Authorization. No merge.",
@@ -31,7 +32,7 @@ Human Product Owner, current session 2026-09-28 Asia/Shanghai: 「授权把关�
     "issued_at": "2026-09-28T22:48:18+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "unconsumed"
+    "consumption_state": "consumed"
   }
 }
 ```

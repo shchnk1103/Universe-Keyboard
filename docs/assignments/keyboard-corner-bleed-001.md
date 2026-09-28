@@ -24,7 +24,7 @@
 - **Product Approver:** Human Product Owner acting as Product Lead
 - **Authorization (record slice):** [`AUTH-KEYBOARD-CORNER-BLEED-001`](../authorizations/AUTH-KEYBOARD-CORNER-BLEED-001.md) — consumed
 - **Authorization (close):** [`AUTH-KEYBOARD-CORNER-BLEED-001-CLOSE`](../authorizations/AUTH-KEYBOARD-CORNER-BLEED-001-CLOSE.md) — consumed
-- **Authorization (scoped local commit):** [`AUTH-KEYBOARD-CORNER-BLEED-001-COMMIT`](../authorizations/AUTH-KEYBOARD-CORNER-BLEED-001-COMMIT.md) — active / unconsumed until delivery
+- **Authorization (scoped local commit):** [`AUTH-KEYBOARD-CORNER-BLEED-001-COMMIT`](../authorizations/AUTH-KEYBOARD-CORNER-BLEED-001-COMMIT.md) — consumed; `03cee43ffd638691c4fb5c3eb715519be1c01979`
 - **Authorization (push / PR):** [`AUTH-KEYBOARD-CORNER-BLEED-001-PUSH-PR`](../authorizations/AUTH-KEYBOARD-CORNER-BLEED-001-PUSH-PR.md) — active / unconsumed until delivery
 - **Parent:** Closed [`CANDIDATE-BAR-IDLE-DISMISS-001`](candidate-bar-idle-dismiss-001.md) residual `CBID-CORNER`
 
@@ -46,7 +46,7 @@
 | Keyboard UI implementation | Not authorized | Filling gray is rejected; keep transparent | Closed without implementation |
 | Independent Quality | Not authorized | Light-mode top corners vs dark regression | New AUTH required |
 | Human Product Gate | Not authorized | Corner-bleed acceptance | New AUTH required |
-| Scoped local commit | In progress | Isolated-branch docs commit + SHA writeback | [`AUTH-KEYBOARD-CORNER-BLEED-001-COMMIT`](../authorizations/AUTH-KEYBOARD-CORNER-BLEED-001-COMMIT.md) |
+| Scoped local commit | Authorized | Isolated-branch docs `03cee43ffd638691c4fb5c3eb715519be1c01979` | Consumed [`AUTH-KEYBOARD-CORNER-BLEED-001-COMMIT`](../authorizations/AUTH-KEYBOARD-CORNER-BLEED-001-COMMIT.md) |
 | Push / PR | In progress | Push isolated branch and open PR; Human observes CI | [`AUTH-KEYBOARD-CORNER-BLEED-001-PUSH-PR`](../authorizations/AUTH-KEYBOARD-CORNER-BLEED-001-PUSH-PR.md) |
 | Merge | Not authorized | Merge to default branch | New AUTH required |
 | Environment or external slice | Not applicable | 记录切片无设备动作 | 真机不是 `Ready` 前置 |
@@ -147,3 +147,4 @@ Stop and escalate if:
 
 - `2026-09-28 Asia/Shanghai` — Human 授权开键盘顶圆角透白跟进（parent `CBID-CORNER`）。Assignment 进入 `Ready`。隔离 worktree，未改主工作区，无 Swift。
 - `2026-09-28 Asia/Shanghai` — Human 关闭切片：透明就是目标，不填灰。`Ready → Closed`。无实施 / commit。
+- `2026-09-28 Asia/Shanghai` — Human 授权 docs-only commit / push / PR。实现 commit `03cee43ffd638691c4fb5c3eb715519be1c01979`。无 merge。
