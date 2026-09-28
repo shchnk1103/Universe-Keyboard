@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Status | active |
-| Consumption | unconsumed — 隔离分支有界 commit + SHA 回写；不授权 merge / TestFlight / Release |
+| Status | consumed |
+| Consumption | 已在隔离分支形成实现 commit `08f37e5e48630d68670335b888a87d1b2330cd52`；本次记录回写 SHA；push / PR 见独立 AUTH |
 
 Human Product Owner, current session 2026-09-28 Asia/Shanghai: 「授权 commit，push，以及开 PR」
 
@@ -15,13 +15,14 @@ Human Product Owner, current session 2026-09-28 Asia/Shanghai: 「授权 commit�
   "record_id": "AUTH-APP-ACTION-BUTTON-HIT-AREA-001-COMMIT",
   "record_type": "authorization",
   "title": "Scoped local commit of APP-ACTION-BUTTON-HIT-AREA-001",
-  "status": "active",
-  "updated_at": "2026-09-28T19:27:11+08:00",
+  "status": "consumed",
+  "updated_at": "2026-09-28T19:28:30+08:00",
   "revalidation_triggers": ["scope_changed", "authority_revoked"],
   "authorization": {
     "action": "scoped_commit_app_action_button_hit_area",
     "target": "APP-ACTION-BUTTON-HIT-AREA-001",
     "artifact_bindings": [
+      {"kind": "commit", "identity": "08f37e5e48630d68670335b888a87d1b2330cd52"},
       {"kind": "file", "identity": "Universe Keyboard/Views/Components/AppActionButton.swift"},
       {"kind": "file", "identity": "UniverseKeyboardTests/AppActionButtonChromeTests.swift"},
       {"kind": "file", "identity": "docs/assignments/app-action-button-hit-area-001.md"}
@@ -33,7 +34,7 @@ Human Product Owner, current session 2026-09-28 Asia/Shanghai: 「授权 commit�
     "issued_at": "2026-09-28T19:27:11+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "unconsumed"
+    "consumption_state": "consumed"
   }
 }
 ```
