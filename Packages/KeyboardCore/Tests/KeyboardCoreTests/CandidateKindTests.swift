@@ -38,6 +38,16 @@ final class CandidateKindTests: XCTestCase {
         XCTAssertNil(CandidateKind(rawValue: -1))
     }
 
+    func testExpandableKindsKeepTheTrailingButtonInExpandMode() {
+        XCTAssertTrue(CandidateKind.candidate.expandsCandidateBarPanel)
+        XCTAssertTrue(CandidateKind.composition.expandsCandidateBarPanel)
+        XCTAssertTrue(CandidateKind.correctionCandidate.expandsCandidateBarPanel)
+        XCTAssertTrue(CandidateKind.continuationCandidate.expandsCandidateBarPanel)
+        XCTAssertTrue(CandidateKind.punctuationCandidate.expandsCandidateBarPanel)
+        XCTAssertTrue(CandidateKind.kaomojiCandidate.expandsCandidateBarPanel)
+        XCTAssertFalse(CandidateKind.placeholder.expandsCandidateBarPanel)
+    }
+
     // MARK: - CandidateItem construction
 
     func testCandidateItemForCandidate() {

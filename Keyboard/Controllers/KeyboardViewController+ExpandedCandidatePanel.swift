@@ -217,12 +217,24 @@ final class ExpandedCandidatePanelContainerView: UIView {
 }
 
 extension KeyboardViewController {
-    func updateExpandButtonAppearance() {
+    func updateExpandButtonAppearance(canExpand: Bool? = nil) {
         guard let button = candidateExpandButton else { return }
-        let transform = isCandidateExpanded ? CGAffineTransform(rotationAngle: .pi) : .identity
-        var config = button.configuration
-        config?.baseForegroundColor = isCandidateExpanded ? .label : .secondaryLabel
-        button.configuration = config
+        let expands =
+            canExpand
+            ?? presentedCandidates.contains { $0.kind.expandsCandidateBarPanel }
+            || isCandidateExpanded
+        button.configuration = nil
+        button.backgroundColor = UIColor.systemGray.withAlphaComponent(0.001)
+        button.tintColor = isCandidateExpanded ? .label : .secondaryLabel
+        button.setImage(CandidateBarView.trailingChromeImage(expanding: expands), for: .normal)
+        if expands {
+            button.accessibilityLabel = isCandidateExpanded ? "收起候选词" : "展开更多候选词"
+            button.accessibilityHint = isCandidateExpanded ? "双击以收起完整候选列表" : "双击以查看完整候选列表"
+        } else {
+            button.accessibilityLabel = "关闭键盘"
+            button.accessibilityHint = "双击以收起键盘"
+        }
+        let transform = (expands && isCandidateExpanded) ? CGAffineTransform(rotationAngle: .pi) : .identity
         if UIAccessibility.isReduceMotionEnabled {
             button.imageView?.transform = transform
         } else {
