@@ -1,5 +1,9 @@
 # Active Work Summary
 
+Current update: `2026-09-28 Asia/Shanghai` — [`KEYBOARD-CORNER-BLEED-001`](assignments/keyboard-corner-bleed-001.md) **Closed**：保持透明，不填灰。无 Swift。不进入本表。
+
+Current update: `2026-09-28 Asia/Shanghai` — Human 授权开 [`KEYBOARD-CORNER-BLEED-001`](assignments/keyboard-corner-bleed-001.md)（当时 `Ready`）：键盘顶圆角透白跟进（parent `CBID-CORNER`）。隔离 worktree `/private/tmp/universe-keyboard-keyboard-corner-bleed-001`，基线 `origin/main` `5710d34`。无 Swift / 实施 AUTH。
+
 Current update: `2026-09-28 Asia/Shanghai` — PR [#190](https://github.com/shchnk1103/Universe-Keyboard/pull/190) squash-merged `944a76bd049d717dd1048a6b4eb5bc7fd9124347`（same-head CI run [36434767922](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/36434767922)）。[`CANDIDATE-BAR-IDLE-DISMISS-001`](assignments/candidate-bar-idle-dismiss-001.md) 仍 **Closed**。远端功能分支已删。`CBID-CORNER` 另开。无 TestFlight / Release。
 
 Current update: `2026-09-28 Asia/Shanghai` — [`CANDIDATE-BAR-IDLE-DISMISS-001`](assignments/candidate-bar-idle-dismiss-001.md) 已 push 并开 PR [#190](https://github.com/shchnk1103/Universe-Keyboard/pull/190)（实现 `997c56a`，回写 `fc53118`）。Assignment 仍 **Closed**。Human 观察 hosted CI；merge 当时另授权。`CBID-CORNER` 另开。无 TestFlight / Release。

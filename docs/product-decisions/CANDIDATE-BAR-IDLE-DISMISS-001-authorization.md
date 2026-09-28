@@ -65,7 +65,7 @@ Human Product Owner locked:
 
 ## Deferred follow-up (after this Assignment Closes)
 
-Human Product Owner, `2026-09-28 Asia/Shanghai`: 键盘顶左右圆角外侧透白保持现状。完成后另开工作项处理该表面，不并进关闭键切片。
+Human Product Owner, `2026-09-28 Asia/Shanghai`: 键盘顶左右圆角外侧透白保持现状。完成后另开工作项处理该表面，不并进关闭键切片。跟进 Assignment：[`KEYBOARD-CORNER-BLEED-001`](../assignments/keyboard-corner-bleed-001.md) 已 **Closed**（保持透明，不填灰）。
 
 ## Related Records
 
