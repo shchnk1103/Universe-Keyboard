@@ -17,7 +17,7 @@
 | **Lifecycle** | Recorded — Product Gate Accepted |
 | **Phase** | 合同仍有效；Assignment `Closed`（Human Product Gate Passed with accepted evidence conditions） |
 | **Non-claims** | 不等于 Device-attested、commit / push / merge、TestFlight 或 Release |
-| **Next** | 本 Assignment 无下一步；commit 另授权；`CBID-CORNER` 另开新工作项 |
+| **Next** | 本 Assignment 无下一步；`CBID-CORNER` 另开新工作项；TestFlight 或 Release 另需授权 |
 | **Residuals** | `CBID-01`–`CBID-04`、`CBID-CORNER` 已由 Product Gate 接受 |
 
 ---

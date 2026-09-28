@@ -11,11 +11,11 @@
 ## CANDIDATE-BAR-IDLE-DISMISS-001 — 空闲候选栏关闭键盘
 
 - **Lifecycle:** [`Assignment`](assignments/candidate-bar-idle-dismiss-001.md) `Closed`
-- **Current phase:** Human Product Gate **Passed with accepted evidence conditions**；残差 `CBID-01`–`CBID-04`、`CBID-CORNER` `accept`
-- **Non-claims:** 不等于 Device-attested；不授权 commit / push / merge、TestFlight 或 Release
-- **Next:** Human 观察 [PR #190](https://github.com/shchnk1103/Universe-Keyboard/pull/190) hosted CI；merge 另授权。`CBID-CORNER` 另开新工作项
-- **Sources:** [PD](product-decisions/CANDIDATE-BAR-IDLE-DISMISS-001-authorization.md) · [Product Gate](product-decisions/CANDIDATE-BAR-IDLE-DISMISS-001-product-gate.md) · [PR #190](https://github.com/shchnk1103/Universe-Keyboard/pull/190) · [Quality review](reviews/candidate-bar-idle-dismiss-001-quality-review.md)
-- **Worktree:** `/private/tmp/universe-keyboard-candidate-bar-idle-dismiss-001` · branch `grok/candidate-bar-idle-dismiss-001` · baseline `origin/main` `fbb4eb3bbbc2926ff6e248db9dcdfdf6a331f821`
+- **Current phase:** PR [#190](https://github.com/shchnk1103/Universe-Keyboard/pull/190) squash-merged `944a76bd049d717dd1048a6b4eb5bc7fd9124347`；残差 `CBID-01`–`CBID-04`、`CBID-CORNER` `accept`
+- **Non-claims:** 不等于 Device-attested；不授权 TestFlight 或 Release
+- **Next:** 无（本 Assignment）。`CBID-CORNER` 另开新工作项。TestFlight / Release 另授权
+- **Sources:** [PD](product-decisions/CANDIDATE-BAR-IDLE-DISMISS-001-authorization.md) · [Product Gate](product-decisions/CANDIDATE-BAR-IDLE-DISMISS-001-product-gate.md) · [Merge AUTH](authorizations/AUTH-CANDIDATE-BAR-IDLE-DISMISS-001-MERGE.md) · [PR #190](https://github.com/shchnk1103/Universe-Keyboard/pull/190) · [Quality review](reviews/candidate-bar-idle-dismiss-001-quality-review.md)
+- **Worktree:** 实现 worktree 与功能分支已删；本 M-02 分支 `grok/candidate-bar-idle-dismiss-001-m02`
 
 ## APP-ABOUT-001 — 主 App「关于」页
 
