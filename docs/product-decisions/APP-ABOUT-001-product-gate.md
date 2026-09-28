@@ -34,8 +34,8 @@
 |---|---|
 | Status | accepted |
 | Phase | Human Product Gate **Passed with accepted evidence conditions**；Assignment `Closed` |
-| Evidence | Dirty isolated worktree on `grok/app-about-001`; `HEAD` `a536dca74acc18deebe1de9b7a2c22421cba9f95`; `AboutSettingsView.swift` SHA-256 `08d6ff835b0429ba3a5734881730e9cebed4be49a65a00e5c4f315bc4695d2ec`; `AppAboutContact.swift` SHA-256 `ed68f7490e8405bcc32ff485f5c332bdfd21c16583ac0a179272d0c927ab4868`; independent Quality App + Keyboard on iPhone 17 `D3C353BE…` `UniverseKeyboardTests 410 / 10 skipped`, `KeyboardTests 15` |
-| Non-claims | Not Device-attested; not commit / push / PR / merge / TestFlight / App Store Connect / Release |
+| Evidence | PR [#188](https://github.com/shchnk1103/Universe-Keyboard/pull/188) squash `a46a6abe66be065039557897a1e3adef29cc7d32`; `AboutSettingsView.swift` SHA-256 `08d6ff835b0429ba3a5734881730e9cebed4be49a65a00e5c4f315bc4695d2ec`; independent Quality App + Keyboard `UniverseKeyboardTests 410 / 10 skipped`, `KeyboardTests 15`; hosted same-head run [36426040680](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/36426040680) |
+| Non-claims | Not Device-attested; not TestFlight / App Store Connect / Release |
 | Next | None for this Assignment; any publication, commit or release gate requires separate authorization |
 
 ## Decision

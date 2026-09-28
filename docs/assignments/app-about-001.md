@@ -11,8 +11,8 @@
 |---|---|
 | **Lifecycle** | `Closed` |
 | **Phase** | Human Product Gate **Passed with accepted evidence conditions**；残差 `ABOUT-01`–`ABOUT-05` 均 `accept` |
-| **Non-claims** | 不等于无条件 Quality Pass 或 Device-attested；不授权 commit / push / merge、TestFlight 或 Release |
-| **Next** | Human 观察 PR [#188](https://github.com/shchnk1103/Universe-Keyboard/pull/188) hosted CI；merge 另授权 |
+| **Non-claims** | 不等于无条件 Quality Pass 或 Device-attested；不授权 TestFlight 或 Release |
+| **Next** | 无（本 Assignment）。TestFlight / Release 仍需单独授权 |
 | **Residuals** | [`quality review`](../reviews/app-about-001-quality-review.md) `ABOUT-01`–`ABOUT-05` `accept`；[`Product Gate`](../product-decisions/APP-ABOUT-001-product-gate.md) 接受 |
 
 ---
@@ -29,6 +29,7 @@
 - **Product Gate:** [`PD-APP-ABOUT-001-PRODUCT-GATE`](../product-decisions/APP-ABOUT-001-product-gate.md) — **Accepted**
 - **Authorization (scoped local commit):** [`AUTH-APP-ABOUT-001-COMMIT`](../authorizations/AUTH-APP-ABOUT-001-COMMIT.md) — consumed; implementation `28cd2ea440d0054e566cb7e7222e318bc9d2338c`
 - **Authorization (push / PR):** [`AUTH-APP-ABOUT-001-PUSH-PR`](../authorizations/AUTH-APP-ABOUT-001-PUSH-PR.md) — consumed；PR [#188](https://github.com/shchnk1103/Universe-Keyboard/pull/188)
+- **Authorization (merge):** [`AUTH-APP-ABOUT-001-MERGE`](../authorizations/AUTH-APP-ABOUT-001-MERGE.md) — consumed；squash `a46a6abe66be065039557897a1e3adef29cc7d32`
 
 ## KOS v0.8.0 optional-contract selection
 
@@ -50,7 +51,7 @@
 | Human Product Gate | Authorized | Main-App About acceptance; Assignment Closed | Consumed [`AUTH-APP-ABOUT-001-PRODUCT-GATE`](../authorizations/AUTH-APP-ABOUT-001-PRODUCT-GATE.md) → [`PD-APP-ABOUT-001-PRODUCT-GATE`](../product-decisions/APP-ABOUT-001-product-gate.md) |
 | Scoped local commit | Authorized | Isolated-branch implementation `28cd2ea440d0054e566cb7e7222e318bc9d2338c` | Consumed [`AUTH-APP-ABOUT-001-COMMIT`](../authorizations/AUTH-APP-ABOUT-001-COMMIT.md) |
 | Push / PR | Authorized | Push `grok/app-about-001` and open PR [#188](https://github.com/shchnk1103/Universe-Keyboard/pull/188); Human observes CI | Consumed [`AUTH-APP-ABOUT-001-PUSH-PR`](../authorizations/AUTH-APP-ABOUT-001-PUSH-PR.md) |
-| Merge | Not authorized | Merge to default branch | New AUTH required |
+| Merge | Authorized | Squash-merge PR [#188](https://github.com/shchnk1103/Universe-Keyboard/pull/188) as `a46a6abe66be065039557897a1e3adef29cc7d32` | Consumed [`AUTH-APP-ABOUT-001-MERGE`](../authorizations/AUTH-APP-ABOUT-001-MERGE.md) |
 | Environment or external slice | Not applicable | 记录切片无设备动作 | 真机不是 `Ready` 前置 |
 
 This is a manual advisory opt-in for A-01/B-01 only. This Assignment, its Authorization and its Product Decision are **not** Profile-included; validator coverage does not apply. Changing `.kos/project.json` requires a separate onboarding Assignment.
@@ -161,3 +162,4 @@ Stop and escalate if:
 - `2026-09-28 Asia/Shanghai` — Human Product Owner 接受残差并授权 Product Gate。Assignment `Reviewed → Closed`。无 Device-attested / commit / push / PR / merge / TestFlight / Release。
 - `2026-09-28 Asia/Shanghai` — Human 授权隔离分支有界 commit / push / PR。实现 commit `28cd2ea440d0054e566cb7e7222e318bc9d2338c`；SHA 回写 `cd18e3e0a3a271bfa056eb715454eec42eef2b22`。无 merge。
 - `2026-09-28 Asia/Shanghai` — 已推送隔离分支并开 PR [#188](https://github.com/shchnk1103/Universe-Keyboard/pull/188)。Executor 不 merge。Human 观察 hosted CI。无 TestFlight / Release。
+- `2026-09-28 Asia/Shanghai` — Human 授权 merge 与收尾。PR [#188](https://github.com/shchnk1103/Universe-Keyboard/pull/188) squash-merged `a46a6abe66be065039557897a1e3adef29cc7d32`（same-head CI run 36426040680）。远端功能分支已删。无 TestFlight / Release。

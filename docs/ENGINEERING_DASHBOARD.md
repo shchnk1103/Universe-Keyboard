@@ -11,11 +11,11 @@
 ## APP-ABOUT-001 — 主 App「关于」页
 
 - **Lifecycle:** [`Assignment`](assignments/app-about-001.md) `Closed`
-- **Current phase:** Human Product Gate **Passed with accepted evidence conditions**；残差 `ABOUT-01`–`ABOUT-05` `accept`
-- **Non-claims:** 不等于 Device-attested；不授权 commit / push / merge、TestFlight 或 Release
-- **Next:** Human 观察 [PR #188](https://github.com/shchnk1103/Universe-Keyboard/pull/188) hosted CI；merge 另授权
-- **Sources:** [PD](product-decisions/APP-ABOUT-001-authorization.md) · [Product Gate](product-decisions/APP-ABOUT-001-product-gate.md) · [PR #188](https://github.com/shchnk1103/Universe-Keyboard/pull/188) · [Quality review](reviews/app-about-001-quality-review.md)
-- **Worktree:** `/private/tmp/universe-keyboard-app-about-001` · branch `grok/app-about-001` · baseline `origin/main` `a536dca74acc18deebe1de9b7a2c22421cba9f95`
+- **Current phase:** PR [#188](https://github.com/shchnk1103/Universe-Keyboard/pull/188) squash-merged `a46a6abe66be065039557897a1e3adef29cc7d32`；残差 `ABOUT-01`–`ABOUT-05` `accept`
+- **Non-claims:** 不等于 Device-attested；不授权 TestFlight 或 Release
+- **Next:** 无（本 Assignment）。TestFlight / Release 另授权
+- **Sources:** [PD](product-decisions/APP-ABOUT-001-authorization.md) · [Product Gate](product-decisions/APP-ABOUT-001-product-gate.md) · [Merge AUTH](authorizations/AUTH-APP-ABOUT-001-MERGE.md) · [PR #188](https://github.com/shchnk1103/Universe-Keyboard/pull/188) · [Quality review](reviews/app-about-001-quality-review.md)
+- **Worktree:** 实现 worktree 与功能分支已删；本 M-02 分支 `grok/app-about-001-m02`
 
 ## APP-ACTION-BUTTON-HIT-AREA-001 — 主 App 操作按钮整块可点
 

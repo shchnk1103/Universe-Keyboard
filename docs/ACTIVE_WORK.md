@@ -1,6 +1,8 @@
 # Active Work Summary
 
-Current update: `2026-09-28 Asia/Shanghai` — [`APP-ABOUT-001`](assignments/app-about-001.md) 已 push 并开 PR [#188](https://github.com/shchnk1103/Universe-Keyboard/pull/188)（实现 `28cd2ea`，回写 `cd18e3e`）。Assignment 仍 **Closed**。Human 观察 hosted CI；merge 另授权。无 TestFlight / Release。
+Current update: `2026-09-28 Asia/Shanghai` — PR [#188](https://github.com/shchnk1103/Universe-Keyboard/pull/188) squash-merged `a46a6abe66be065039557897a1e3adef29cc7d32`（same-head CI run [36426040680](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/36426040680)）。[`APP-ABOUT-001`](assignments/app-about-001.md) 仍 **Closed**。远端功能分支已删。无 TestFlight / Release。
+
+Current update: `2026-09-28 Asia/Shanghai` — [`APP-ABOUT-001`](assignments/app-about-001.md) 已 push 并开 PR [#188](https://github.com/shchnk1103/Universe-Keyboard/pull/188)（实现 `28cd2ea`，回写 `cd18e3e`）。Assignment 仍 **Closed**。Human 观察 hosted CI；merge 当时另授权。无 TestFlight / Release。
 
 Current update: `2026-09-28 Asia/Shanghai` — Human Product Gate **Pass** on [`APP-ABOUT-001`](assignments/app-about-001.md)；Assignment **Closed**（[`Gate`](product-decisions/APP-ABOUT-001-product-gate.md)）。残差 `ABOUT-01`–`ABOUT-05` 接受。不进入本表（Closed）。Commit 当时另授权。无 TestFlight / Release。
 
