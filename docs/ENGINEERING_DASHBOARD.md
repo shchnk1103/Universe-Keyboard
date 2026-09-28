@@ -8,12 +8,21 @@
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
 
+## KEYBOARD-CORNER-BLEED-001 — 键盘顶圆角透白
+
+- **Lifecycle:** [`Assignment`](assignments/keyboard-corner-bleed-001.md) `Closed`
+- **Current phase:** 保持透明；不填灰；无实施；PR [#192](https://github.com/shchnk1103/Universe-Keyboard/pull/192)
+- **Non-claims:** 不等于填灰、commit / push / merge、TestFlight 或 Release
+- **Next:** Human 观察 [PR #192](https://github.com/shchnk1103/Universe-Keyboard/pull/192) hosted CI；merge 另授权
+- **Sources:** [PD](product-decisions/KEYBOARD-CORNER-BLEED-001-authorization.md) · [Record AUTH](authorizations/AUTH-KEYBOARD-CORNER-BLEED-001.md) · parent [`CANDIDATE-BAR-IDLE-DISMISS-001`](assignments/candidate-bar-idle-dismiss-001.md) `CBID-CORNER`
+- **Worktree:** `/private/tmp/universe-keyboard-keyboard-corner-bleed-001` · branch `grok/keyboard-corner-bleed-001` · baseline `origin/main` `5710d340e9ec2df4acedc06eeb429e9fd5f97bff`
+
 ## CANDIDATE-BAR-IDLE-DISMISS-001 — 空闲候选栏关闭键盘
 
 - **Lifecycle:** [`Assignment`](assignments/candidate-bar-idle-dismiss-001.md) `Closed`
 - **Current phase:** PR [#190](https://github.com/shchnk1103/Universe-Keyboard/pull/190) squash-merged `944a76bd049d717dd1048a6b4eb5bc7fd9124347`；残差 `CBID-01`–`CBID-04`、`CBID-CORNER` `accept`
 - **Non-claims:** 不等于 Device-attested；不授权 TestFlight 或 Release
-- **Next:** 无（本 Assignment）。`CBID-CORNER` 另开新工作项。TestFlight / Release 另授权
+- **Next:** 无（本 Assignment）。跟进 [`KEYBOARD-CORNER-BLEED-001`](assignments/keyboard-corner-bleed-001.md) 已 `Ready`。TestFlight / Release 另授权
 - **Sources:** [PD](product-decisions/CANDIDATE-BAR-IDLE-DISMISS-001-authorization.md) · [Product Gate](product-decisions/CANDIDATE-BAR-IDLE-DISMISS-001-product-gate.md) · [Merge AUTH](authorizations/AUTH-CANDIDATE-BAR-IDLE-DISMISS-001-MERGE.md) · [PR #190](https://github.com/shchnk1103/Universe-Keyboard/pull/190) · [Quality review](reviews/candidate-bar-idle-dismiss-001-quality-review.md)
 - **Worktree:** 实现 worktree 与功能分支已删；本 M-02 分支 `grok/candidate-bar-idle-dismiss-001-m02`
 
