@@ -9,9 +9,9 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | **Lifecycle** | Completed |
-| **Phase** | Append-only notes written. Docs-only PR opened from `docs/archive-pointer-rime-sync-publish-preflight-001`. Merge is not authorized. |
-| **Non-claims** | This does not rewrite historical evidence or review content or any recorded SHA-256. It does not newly verify the host-local archive: those facts are as recorded by the 2026-09-29 host cleanup session. It is not Quality, Product Gate, merge, TestFlight or Release. |
-| **Next** | The Human Product Owner reviews the PR and decides whether to merge. If merged, record the M-02 closeout under this Assignment. |
+| **Phase** | Merged. PR [#194](https://github.com/shchnk1103/Universe-Keyboard/pull/194) was squash-merged to `main` as `bbaf4538affe84f89a5f86b9e0fd0644a36c155a` on `2026-09-29 22:35 Asia/Shanghai`, and its head branch was deleted. The M-02 closeout is recorded below. |
+| **Non-claims** | This does not rewrite historical evidence or review content or any recorded SHA-256. It does not newly verify the host-local archive: those facts are as recorded by the 2026-09-29 host cleanup session. The merge is not an Architecture review, Quality, Product Gate, TestFlight or Release. |
+| **Next** | None. Lifecycle stays `Completed`, as accepted by the Human Product Owner; no Architecture review has been performed, so `Reviewed` / `Closed` are not claimed. |
 | **Residuals** | None |
 
 ---
@@ -25,6 +25,8 @@ Policy version: 1.0.0
   - commit, push and opening a PR.
 
   It did not authorize a merge.
+
+  A later decision by the Human Product Owner (DoubleShy0N, Product Lead) on `2026-09-29 22:27 Asia/Shanghai` accepted this lightweight docs-only profile and the `Completed` status. It authorized squash-merging PR #194 after CI was green, and adding an M-02 closeout note after the merge without an `ACTIVE_WORK` update.
 - Product Approver: Human Product Owner acting as Product Lead
 - Record weight: this is the lightest compliant record under [`ASSIGNMENT_POLICY.md`](../ASSIGNMENT_POLICY.md) for a formal task that changes repository state. It does not opt into the optional A-01/B-01, P-01 or D-01 contracts. No separate Product Decision or Authorization record was created, and none is claimed.
 
@@ -77,3 +79,12 @@ Policy version: 1.0.0
 ## History
 
 - `2026-09-29 Asia/Shanghai`: The Human instructed the append-only pointer update. The executor branched from `origin/main` `84b9c19` and appended the three notes. The docs-only PR was opened without a merge. Lifecycle moved to `Completed`, which is not Quality or Product acceptance.
+- `2026-09-29 22:35 Asia/Shanghai`: After all PR #194 checks passed on head `f1703fb9a03f1ecb3963f52b03c450bd88775d76`, the executor squash-merged it as `bbaf4538affe84f89a5f86b9e0fd0644a36c155a` under the Human's 22:27 decision. The head branch was deleted. Lifecycle stays `Completed`.
+
+## M-02 closeout
+
+- Trigger identity: Work Item `ARCHIVE-POINTER-RIME-SYNC-PUBLISH-PREFLIGHT-001`; event: merge of tip PR [#194](https://github.com/shchnk1103/Universe-Keyboard/pull/194) (head `f1703fb9a03f1ecb3963f52b03c450bd88775d76`) into `main` as squash commit `bbaf4538affe84f89a5f86b9e0fd0644a36c155a` at `2026-09-29 22:35 Asia/Shanghai`; authority record: the Human Product Owner decision of `2026-09-29 22:27 Asia/Shanghai` recorded under *Authority* above.
+- PR #194 checks on the merged head: `classify-change`, `lightweight-checks`, `final-quality-gate` and GitGuardian passed. The Swift build and test jobs were skipped because the change classifier marked the change docs-only.
+- Synchronized: this Assignment's Current Status and History. Not applicable: no parent Assignment, no `docs/ENGINEERING_DASHBOARD.md` row, no status-bearing `docs/KNOWLEDGE_INDEX.md` entry and no Active plan exist for this Work Item. `docs/ACTIVE_WORK.md` is intentionally unchanged, per the Human decision.
+- Link check: rerun on this closeout branch; the base → HEAD pair is `bbaf4538affe84f89a5f86b9e0fd0644a36c155a` → the closeout PR head.
+- This closeout PR completes the same trigger. Its own merge does not start another M-02.
