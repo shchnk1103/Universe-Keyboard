@@ -11,11 +11,11 @@
 ## KEYBOARD-CORNER-BLEED-001 — 键盘顶圆角透白
 
 - **Lifecycle:** [`Assignment`](assignments/keyboard-corner-bleed-001.md) `Closed`
-- **Current phase:** 保持透明；不填灰；无实施；PR [#192](https://github.com/shchnk1103/Universe-Keyboard/pull/192)
-- **Non-claims:** 不等于填灰、commit / push / merge、TestFlight 或 Release
-- **Next:** Human 观察 [PR #192](https://github.com/shchnk1103/Universe-Keyboard/pull/192) hosted CI；merge 另授权
-- **Sources:** [PD](product-decisions/KEYBOARD-CORNER-BLEED-001-authorization.md) · [Record AUTH](authorizations/AUTH-KEYBOARD-CORNER-BLEED-001.md) · parent [`CANDIDATE-BAR-IDLE-DISMISS-001`](assignments/candidate-bar-idle-dismiss-001.md) `CBID-CORNER`
-- **Worktree:** `/private/tmp/universe-keyboard-keyboard-corner-bleed-001` · branch `grok/keyboard-corner-bleed-001` · baseline `origin/main` `5710d340e9ec2df4acedc06eeb429e9fd5f97bff`
+- **Current phase:** PR [#192](https://github.com/shchnk1103/Universe-Keyboard/pull/192) squash-merged `72dd21710f2a86c9f951d489f645bae89b053b58`；保持透明；无实施
+- **Non-claims:** 不等于填灰、TestFlight 或 Release
+- **Next:** 无（本 Assignment）
+- **Sources:** [PD](product-decisions/KEYBOARD-CORNER-BLEED-001-authorization.md) · [Merge AUTH](authorizations/AUTH-KEYBOARD-CORNER-BLEED-001-MERGE.md) · [PR #192](https://github.com/shchnk1103/Universe-Keyboard/pull/192)
+- **Worktree:** 实现 worktree 与功能分支已删；本 M-02 分支 `grok/keyboard-corner-bleed-001-m02`
 
 ## CANDIDATE-BAR-IDLE-DISMISS-001 — 空闲候选栏关闭键盘
 

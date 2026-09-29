@@ -15,7 +15,7 @@
 | **Lifecycle** | Recorded — Closed |
 | **Phase** | Human 锁定保持透明；Assignment `Closed`；无实施 |
 | **Non-claims** | 不等于填灰、commit / push / merge、TestFlight 或 Release |
-| **Next** | 无（本 Assignment） |
+| **Next** | 无（本 Assignment）。关闭记录已 squash-merge `72dd21710f2a86c9f951d489f645bae89b053b58` |
 | **Residuals** | None |
 
 ---
