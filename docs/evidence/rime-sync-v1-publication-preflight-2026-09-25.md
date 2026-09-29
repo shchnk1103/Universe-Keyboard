@@ -43,3 +43,22 @@ The final independent Quality round 4 returned **Pass with conditions** for Q1â€
 The receipt-inclusive 81-path staged tree has a fresh `run_lightweight_checks.sh` result covering 64 changed Markdown files, 12 CI helper unit tests, the final-gate matrix, KOS governance trigger paths and the pinned KOS structural validator. Its raw log is `/private/tmp/rime-sync-publish-preflight.mfN43t/Lightweight-final-publication-kos-2026-09-27.log`. The repository-wide validator also emits pre-existing advisory warnings; none names this RIME-SYNC candidate. Structural validation is not Product, Quality, Architecture, merge or Release approval.
 
 The fake-transport test does not prove a real WebDAV connection or provider propagation; WebDAV remains deferred. Open technical debts and accepted residuals remain as recorded in the Assignment close decision. Hosted PR checks will only exist after push. The Product authorization permits commit, push and PR creation only after local gates pass; no merge, TestFlight, App Store submission or Release has been performed or authorized.
+
+## Archive relocation â€” 2026-09-29
+
+> Append-only note. The sections above are the historical record. They are not edited, and every SHA-256 value recorded above is unchanged. The `/private/tmp/rime-sync-publish-preflight.mfN43t/` paths cited above are historical locations that no longer exist on the host.
+
+- **What changed:** the original raw artifacts under `/private/tmp/rime-sync-publish-preflight.mfN43t/` were archived on `2026-09-29 22:05:18 Asia/Shanghai`. The original directory was deleted only after the verification below passed.
+- **Archive location (host-local, not in Git):** `~/.kos-work/Universe-Keyboard/archive/rime-sync-publish-preflight-mfN43t/` on host `DoubleShy0Ns-MacBook-Pro-66.local`.
+- **Archive file:** `rime-sync-publish-preflight-mfN43t-evidence.tar.zst`, 1,489,515,375 bytes, SHA-256 `8fde4f4303ef2f3e7f26c5fc7c6566d684bc8f2f0f3b12fe77258d1c19790461`.
+- **Sidecar files:** `files.sha256` (per-file SHA-256 manifest), `manifest.json` and `SHA256SUMS`.
+- **Retained scope:** 23,440 evidence files were retained. The archive excludes 95,483 regenerable build files (about 6.9 GB) from `Build`, `ModuleCache.noindex`, `Index.noindex` and `SourcePackages`. That regenerable DerivedData content cannot be recovered from the archive.
+- **Verification before deletion:** the archive was fully extracted. All 17 docs-referenced paths (15 full-path and 2 basename references) were present. The SHA-256 values recorded in the docs matched the extracted files for all three:
+  - `SwiftFormat-whitespace-authorized-branch-final.log`: `4605112853b3583c63b9be402255b1e0479ff9f7f29873dc6b778ddc17fa1e71`
+  - `Release-current-main-final.log`: `9c1121ef6553ac2f6b78b29711411e02f73efea2e583ef423d718caa8d8a924f`
+  - `Lightweight-post-final-docs-2026-09-27.log`: `b7d6711d8a6e53374637c10083ca85096c710ef69f88e8040d7ed570006dee69`
+- **How to resolve a cited path:** look up the cited file name inside the archive, using its `manifest.json` / `files.sha256`. Do not look under `/private/tmp`.
+- **Evidence grade and provenance:** `Executor-recorded`. The 2026-09-29 host cleanup session recorded these archive and verification facts. The docs-only change that added this note ran on a separate machine without host access, so it did not extract or re-hash the archive.
+- **Scope of this pointer update:** on `origin/main` at `84b9c19227330b0fe6ff391be001ee398010fd6a`, three documents cite this path: this record, the [Quality review](../reviews/rime-sync-v1-publication-quality-review-2026-09-26.md) and the [review packet](../reviews/rime-sync-v1-publication-review-packet-2026-09-26.md). Four worktree-only documents that also cite it are not on `main` and were not changed.
+- **Revalidation:** if the archive is moved, re-verified, or deleted, add a new append-only note here. Do not rewrite this one.
+- **Non-claims:** this note does not re-run or extend any gate, test, review or publication result above. It is not Product, Quality, Architecture, merge or Release approval.
