@@ -23,6 +23,7 @@
 ## 领域权威
 
 - [键盘布局与九键](KEYBOARD_LAYOUT.md) · [方案管理](RIME_SCHEME_MANAGEMENT.md)
+- 删除键滑动擦除 / 回放 / 删除全部气泡（**Assignment Pending**；今天不实施）：[`DELETE-KEY-SCRUB-001`](assignments/delete-key-scrub-001.md) · [`PD`](product-decisions/DELETE-KEY-SCRUB-001-product-contract.md)
 - 方案下载来源状态 / 多方案资源归属（工程 Assignment **Closed**；ADR 0034 **Accepted (Conditional)**；Product/Release 仍分离）：[`SCHEME-DELIVERY-SOURCE-STATE-001`](assignments/scheme-delivery-source-state-001.md) · [`Close receipt`](evidence/scheme-delivery-source-state-001-close-2026-09-16.md) · [`plan`](plans/scheme-resource-ownership-and-coexistence-plan.md) · [`P0`](evidence/scheme-delivery-source-state-001-p0-2026-09-07.md) · [`P1`](evidence/scheme-delivery-source-state-001-p1-2026-09-07.md) · [`device`](evidence/scheme-delivery-source-state-001-p3-device-2026-09-07.md) · [`ADR 0034`](architecture/decisions/0034-multi-scheme-resource-ownership.md) · [`Accept`](evidence/adr-0034-accept-2026-09-12.md)
 - [模糊音](RIME_FUZZY_PINYIN.md) · [用户词典](RIME_USER_DICTIONARY.md) · [同步](RIME_SYNC.md)
 - [RIME-SYNC-001 bounded iOS V1 Assignment（Closed；残余债务仍开放）](assignments/rime-sync-001.md) · [生命周期决定](product-decisions/RIME-SYNC-001-ASSIGNMENT-CLOSE-2026-09-25.md)

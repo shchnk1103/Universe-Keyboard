@@ -2,11 +2,19 @@
 
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-09-28 Asia/Shanghai
+> **Updated:** 2026-10-01 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
+
+## DELETE-KEY-SCRUB-001 — 删除键滑动擦除（Queued）
+
+- **Lifecycle:** [`Assignment`](assignments/delete-key-scrub-001.md) `Assignment Pending`
+- **Current phase:** 产品合同已捕获；Queued，不占 Active 十项；PR [#196](https://github.com/shchnk1103/Universe-Keyboard/pull/196)；今天不实施
+- **Non-claims:** 不等于 Ready、实施 AUTH、Swift、merge、TestFlight 或 Release
+- **Next:** Human 观察 hosted CI 并拥有 merge；实施仍须另授 AUTH 并指定 Executor / Architecture / Quality
+- **Sources:** [PD](product-decisions/DELETE-KEY-SCRUB-001-product-contract.md)
 
 ## KEYBOARD-CORNER-BLEED-001 — 键盘顶圆角透白
 

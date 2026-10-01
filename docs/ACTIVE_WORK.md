@@ -1,5 +1,9 @@
 # Active Work Summary
 
+Current update: `2026-10-01 Asia/Shanghai` — [`DELETE-KEY-SCRUB-001`](assignments/delete-key-scrub-001.md) 文档已 push 并开 PR [#196](https://github.com/shchnk1103/Universe-Keyboard/pull/196)。Lifecycle 仍 **Assignment Pending**。**不进入**下方 Ready/Active 十项表；见 Queued。Human 观察 hosted CI。无 merge / 实施 / TestFlight。
+
+Current update: `2026-10-01 Asia/Shanghai` — Human 授权起草 [`DELETE-KEY-SCRUB-001`](assignments/delete-key-scrub-001.md)（删除键滑动擦除/回放/删除全部气泡）。Lifecycle **Assignment Pending**（Executor / 审查人 UNKNOWN）。**不进入**下方 Ready/Active 十项表；见 Queued。隔离 worktree `/private/tmp/universe-keyboard-delete-key-scrub-001`。今天不实施。
+
 Current update: `2026-09-28 Asia/Shanghai` — PR [#192](https://github.com/shchnk1103/Universe-Keyboard/pull/192) squash-merged `72dd21710f2a86c9f951d489f645bae89b053b58`（docs_only CI run [36439127888](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/36439127888)）。[`KEYBOARD-CORNER-BLEED-001`](assignments/keyboard-corner-bleed-001.md) 仍 **Closed**。远端功能分支已删。无 TestFlight / Release。
 
 Current update: `2026-09-28 Asia/Shanghai` — [`KEYBOARD-CORNER-BLEED-001`](assignments/keyboard-corner-bleed-001.md) **Closed** 已 push 并开 PR [#192](https://github.com/shchnk1103/Universe-Keyboard/pull/192)。保持透明，不填灰。Human 观察 hosted CI；merge 当时另授权。
@@ -317,8 +321,14 @@ Current update: `2026-09-22 Asia/Shanghai` — Current Codex task consumed [`blo
 
 Current update: `2026-09-22 Asia/Shanghai` — Current Codex task completed the three named blocker repairs in the isolated worktree. Final remediation delta `15b6c539…`; strict format/lint, KeyboardCore `1153/0`, RimeBridgeTests `82/0/20`, and App + Keyboard `379/0/9` passed. A separately authorized symlink to the pre-verified ignored Vendor directory was used only for local dependency resolution and was removed afterward. The first App compile attempt exposed and then closed a Swift 6 Sendable error in the yielded callback. No capture, Run ID, QA-001, INT-003, performance, commit, push, PR, merge, Gate or Close occurred; independent Architecture review is next.
 
+### Queued（非 Ready/Active，不计入 M-05 cap）
+
+| Work Item | Lifecycle | Phase / next | Assignment |
+|---|---|---|---|
+| DELETE-KEY-SCRUB-001 | Assignment Pending | 产品合同已记录；PR [#196](https://github.com/shchnk1103/Universe-Keyboard/pull/196)；今天不实施；指定 Executor 与实施 AUTH 之前不得进 Ready/Active 表 | [`assignment`](assignments/delete-key-scrub-001.md) · [`PD`](product-decisions/DELETE-KEY-SCRUB-001-product-contract.md) |
+
 历史工作从 [Assignment 目录](assignments/) 查找；债务从 [TECH_DEBT](TECH_DEBT.md) 查找。
-这里只保留 Ready / Active 工作，上限十项；Assignment 是生命周期事实来源，冲突时修正本镜像。
+这里只保留 Ready / Active 工作，上限十项；Assignment 是生命周期事实来源，冲突时修正本镜像。Queued 行不是 Active。
 
 Current update: `2026-09-22 Asia/Shanghai` — Product consumed [`blocker-remediation residual AUTH`](authorizations/AUTH-TYPO-CORRECTION-002-RUNTIME-INTEGRATION-HARDENING-BLOCKER-REMEDIATION-PRODUCT-RESIDUAL-001.md) and accepted the bounded [`residual decision`](product-decisions/TYPO-CORRECTION-002-RUNTIME-INTEGRATION-HARDENING-BLOCKER-REMEDIATION-RESIDUAL-001.md). The child is now `Reviewed`; detached / dual-gate / CandidateProvider and Executor-evidence-class residuals remain explicit. Parent `TYPO-CORRECTION-002` remains Active. No commit, push, PR, merge, capture, QA-001, INT-003, performance, Product Gate, Release or parent Close occurred.
 
