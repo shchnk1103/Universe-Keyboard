@@ -193,3 +193,4 @@ Policy version: 1.0.0
 
 - `2026-10-01 Asia/Shanghai`：Human 要求评估第三方「按住删除左右滑」；后续补单击松手、播放头、长按气泡、预编辑一次清光、看见才出气泡、离开键盘结束等合同。Human 授权起草 Assignment 并挂待办，今天不实施。Lifecycle → `Assignment Pending`。隔离 worktree `/private/tmp/universe-keyboard-delete-key-scrub-001`，分支 `grok/delete-key-scrub-001`。
 - `2026-10-01 Asia/Shanghai`：Human 授权本切片文档 commit、push，必要时开 PR。不授权 merge、实施或 TestFlight。
+- `2026-10-01 Asia/Shanghai`：隔离分支 docs commit `037e42ced1f208a08a0799382aebfebb78ae86dc`；[`AUTH-DELETE-KEY-SCRUB-001-COMMIT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-COMMIT.md) consumed。
