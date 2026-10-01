@@ -7,9 +7,9 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Assignment Pending` |
-| **Phase** | Product 合同已写入本记录；今天不实施 |
-| **Non-claims** | 无 Swift、无实施 AUTH、无 Ready/Active、无 Architecture/Quality、无 merge/TestFlight/Release。文档 commit/push/PR 由独立 AUTH 覆盖，不等于实施或可合并 |
-| **Next** | 文档框架按 AUTH 发布后，仍须 Human 指定 Executor / 审查人并另授实施 AUTH 才能进入 `Assigned` / `Ready` |
+| **Phase** | 产品合同已在 `main`（squash `8f0fa58` / PR #196）；今天不实施 |
+| **Non-claims** | 无 Swift、无实施 AUTH、无 Ready/Active、无 Architecture/Quality、无 TestFlight/Release。文档框架 merge 不等于实施或可合并到产品行为 |
+| **Next** | Human 指定 Executor / 审查人并另授实施 AUTH 后才能进入 `Assigned` / `Ready` |
 | **Residuals** | None |
 
 ---
@@ -186,7 +186,7 @@ Policy version: 1.0.0
 ## Handoff
 
 - Handoff Target: Human Product Owner（今日停在框架）；恢复时由 Product 指定 Executor 并开实施 AUTH，交 ⌨️ Keyboard Experience Maintainer
-- Required Handoff Content: 本 Assignment、PD 合同、隔离 worktree 路径与分支名、未做的实施/审查/发布
+- Required Handoff Content: 本 Assignment、PD 合同、`main` squash `8f0fa58c57f11891f4e8c6783e7f4bce6a788984`、未做的实施/审查/发布
 - Revalidation Trigger: 改 Delete 优先级、Partial Commit restore、ADR 0007、删除键布局、或 Human 改口播放头/气泡/空框反馈
 
 ## History
@@ -195,3 +195,4 @@ Policy version: 1.0.0
 - `2026-10-01 Asia/Shanghai`：Human 授权本切片文档 commit、push，必要时开 PR。不授权 merge、实施或 TestFlight。
 - `2026-10-01 Asia/Shanghai`：隔离分支 docs commit `037e42ced1f208a08a0799382aebfebb78ae86dc`；[`AUTH-DELETE-KEY-SCRUB-001-COMMIT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-COMMIT.md) consumed。
 - `2026-10-01 Asia/Shanghai`：已 push 并开 PR [#196](https://github.com/shchnk1103/Universe-Keyboard/pull/196)；[`AUTH-DELETE-KEY-SCRUB-001-PUSH-PR`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-PUSH-PR.md) consumed。Human 观察 hosted CI。不授权 merge。
+- `2026-10-01 Asia/Shanghai`：PR #196 squash-merge `8f0fa58c57f11891f4e8c6783e7f4bce6a788984`（same-head docs_only run [36823864783](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/36823864783)）。[`AUTH-DELETE-KEY-SCRUB-001-MERGE`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-MERGE.md) consumed。功能分支与隔离 worktree 已清理。Lifecycle 仍 `Assignment Pending`。无实施 / TestFlight / Release。

@@ -1,5 +1,7 @@
 # Active Work Summary
 
+Current update: `2026-10-01 Asia/Shanghai` — PR [#196](https://github.com/shchnk1103/Universe-Keyboard/pull/196) squash-merged `8f0fa58c57f11891f4e8c6783e7f4bce6a788984`（docs_only run [36823864783](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/36823864783)）。[`DELETE-KEY-SCRUB-001`](assignments/delete-key-scrub-001.md) 仍 **Assignment Pending**。**不进入**下方 Ready/Active 十项表；见 Queued。功能分支与隔离 worktree 已清理。无实施 / TestFlight / Release。
+
 Current update: `2026-10-01 Asia/Shanghai` — [`DELETE-KEY-SCRUB-001`](assignments/delete-key-scrub-001.md) 文档已 push 并开 PR [#196](https://github.com/shchnk1103/Universe-Keyboard/pull/196)。Lifecycle 仍 **Assignment Pending**。**不进入**下方 Ready/Active 十项表；见 Queued。Human 观察 hosted CI。无 merge / 实施 / TestFlight。
 
 Current update: `2026-10-01 Asia/Shanghai` — Human 授权起草 [`DELETE-KEY-SCRUB-001`](assignments/delete-key-scrub-001.md)（删除键滑动擦除/回放/删除全部气泡）。Lifecycle **Assignment Pending**（Executor / 审查人 UNKNOWN）。**不进入**下方 Ready/Active 十项表；见 Queued。隔离 worktree `/private/tmp/universe-keyboard-delete-key-scrub-001`。今天不实施。
@@ -325,7 +327,7 @@ Current update: `2026-09-22 Asia/Shanghai` — Current Codex task completed the 
 
 | Work Item | Lifecycle | Phase / next | Assignment |
 |---|---|---|---|
-| DELETE-KEY-SCRUB-001 | Assignment Pending | 产品合同已记录；PR [#196](https://github.com/shchnk1103/Universe-Keyboard/pull/196)；今天不实施；指定 Executor 与实施 AUTH 之前不得进 Ready/Active 表 | [`assignment`](assignments/delete-key-scrub-001.md) · [`PD`](product-decisions/DELETE-KEY-SCRUB-001-product-contract.md) |
+| DELETE-KEY-SCRUB-001 | Assignment Pending | 产品合同在 `main` `8f0fa58`；今天不实施；指定 Executor 与实施 AUTH 之前不得进 Ready/Active 表 | [`assignment`](assignments/delete-key-scrub-001.md) · [`PD`](product-decisions/DELETE-KEY-SCRUB-001-product-contract.md) · [`Merge AUTH`](authorizations/AUTH-DELETE-KEY-SCRUB-001-MERGE.md) |
 
 历史工作从 [Assignment 目录](assignments/) 查找；债务从 [TECH_DEBT](TECH_DEBT.md) 查找。
 这里只保留 Ready / Active 工作，上限十项；Assignment 是生命周期事实来源，冲突时修正本镜像。Queued 行不是 Active。
