@@ -11,9 +11,9 @@
 ## DELETE-KEY-SCRUB-001 — 删除键滑动擦除（Queued）
 
 - **Lifecycle:** [`Assignment`](assignments/delete-key-scrub-001.md) `Assignment Pending`
-- **Current phase:** 产品合同已捕获；Queued，不占 Active 十项；今天不实施
-- **Non-claims:** 不等于 Ready、实施 AUTH、Swift、commit/push/PR、TestFlight 或 Release
-- **Next:** Human 指定 Executor / 独立 Architecture / Quality 并另授实施 AUTH
+- **Current phase:** 产品合同已捕获；Queued，不占 Active 十项；PR [#196](https://github.com/shchnk1103/Universe-Keyboard/pull/196)；今天不实施
+- **Non-claims:** 不等于 Ready、实施 AUTH、Swift、merge、TestFlight 或 Release
+- **Next:** Human 观察 hosted CI 并拥有 merge；实施仍须另授 AUTH 并指定 Executor / Architecture / Quality
 - **Sources:** [PD](product-decisions/DELETE-KEY-SCRUB-001-product-contract.md)
 
 ## KEYBOARD-CORNER-BLEED-001 — 键盘顶圆角透白

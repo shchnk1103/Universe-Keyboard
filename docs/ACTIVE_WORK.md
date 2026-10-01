@@ -1,6 +1,8 @@
 # Active Work Summary
 
-Current update: `2026-10-01 Asia/Shanghai` — Human 授权起草 [`DELETE-KEY-SCRUB-001`](assignments/delete-key-scrub-001.md)（删除键滑动擦除/回放/删除全部气泡）。Lifecycle **Assignment Pending**（Executor / 审查人 UNKNOWN）。**不进入**下方 Ready/Active 十项表；见 Queued。无 Swift / AUTH / commit / push。隔离 worktree `/private/tmp/universe-keyboard-delete-key-scrub-001`。今天不实施。
+Current update: `2026-10-01 Asia/Shanghai` — [`DELETE-KEY-SCRUB-001`](assignments/delete-key-scrub-001.md) 文档已 push 并开 PR [#196](https://github.com/shchnk1103/Universe-Keyboard/pull/196)。Lifecycle 仍 **Assignment Pending**。**不进入**下方 Ready/Active 十项表；见 Queued。Human 观察 hosted CI。无 merge / 实施 / TestFlight。
+
+Current update: `2026-10-01 Asia/Shanghai` — Human 授权起草 [`DELETE-KEY-SCRUB-001`](assignments/delete-key-scrub-001.md)（删除键滑动擦除/回放/删除全部气泡）。Lifecycle **Assignment Pending**（Executor / 审查人 UNKNOWN）。**不进入**下方 Ready/Active 十项表；见 Queued。隔离 worktree `/private/tmp/universe-keyboard-delete-key-scrub-001`。今天不实施。
 
 Current update: `2026-09-28 Asia/Shanghai` — PR [#192](https://github.com/shchnk1103/Universe-Keyboard/pull/192) squash-merged `72dd21710f2a86c9f951d489f645bae89b053b58`（docs_only CI run [36439127888](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/36439127888)）。[`KEYBOARD-CORNER-BLEED-001`](assignments/keyboard-corner-bleed-001.md) 仍 **Closed**。远端功能分支已删。无 TestFlight / Release。
 
@@ -323,7 +325,7 @@ Current update: `2026-09-22 Asia/Shanghai` — Current Codex task completed the 
 
 | Work Item | Lifecycle | Phase / next | Assignment |
 |---|---|---|---|
-| DELETE-KEY-SCRUB-001 | Assignment Pending | 产品合同已记录；今天不实施；指定 Executor 与实施 AUTH 之前不得进 Ready/Active 表 | [`assignment`](assignments/delete-key-scrub-001.md) · [`PD`](product-decisions/DELETE-KEY-SCRUB-001-product-contract.md) |
+| DELETE-KEY-SCRUB-001 | Assignment Pending | 产品合同已记录；PR [#196](https://github.com/shchnk1103/Universe-Keyboard/pull/196)；今天不实施；指定 Executor 与实施 AUTH 之前不得进 Ready/Active 表 | [`assignment`](assignments/delete-key-scrub-001.md) · [`PD`](product-decisions/DELETE-KEY-SCRUB-001-product-contract.md) |
 
 历史工作从 [Assignment 目录](assignments/) 查找；债务从 [TECH_DEBT](TECH_DEBT.md) 查找。
 这里只保留 Ready / Active 工作，上限十项；Assignment 是生命周期事实来源，冲突时修正本镜像。Queued 行不是 Active。
