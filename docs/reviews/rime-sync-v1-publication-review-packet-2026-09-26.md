@@ -138,3 +138,9 @@ user-content exposure risk, attempted write, or exhausted budget. Report one
 precise locator and reason for any missing input. Only the **Product Lead**,
 the Assignment Authority named by `RIME-SYNC-001`, may authorize an exact scope
 or budget expansion; the Coordinator and reviewers cannot self-authorize it.
+
+## Archive relocation note — 2026-09-29
+
+> Append-only note. The frozen packet above is unchanged. Its `/private/tmp/rime-sync-publish-preflight.mfN43t/` paths are historical read locations.
+
+The raw directory named by this packet was archived on `2026-09-29 22:05:18 Asia/Shanghai`. The archive is host-local and not in Git: `~/.kos-work/Universe-Keyboard/archive/rime-sync-publish-preflight-mfN43t/rime-sync-publish-preflight-mfN43t-evidence.tar.zst` on `DoubleShy0Ns-MacBook-Pro-66.local`, SHA-256 `8fde4f4303ef2f3e7f26c5fc7c6566d684bc8f2f0f3b12fe77258d1c19790461`. The original directory was deleted after full-extraction verification. Every packet-named log and result bundle was among the 17 docs-referenced paths confirmed present after extraction. The recorded SHA-256 values for `SwiftFormat-whitespace-authorized-branch-final.log` and `Release-current-main-final.log` matched. Full archive facts, exclusions and provenance are in the [preflight record's Archive relocation section](../evidence/rime-sync-v1-publication-preflight-2026-09-25.md#archive-relocation--2026-09-29). This note does not reopen or extend the review lanes.

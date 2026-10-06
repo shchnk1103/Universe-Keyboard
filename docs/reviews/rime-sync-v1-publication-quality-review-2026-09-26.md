@@ -63,3 +63,9 @@ The Human Product Owner authorized 30 calls or 20 active minutes, whichever
 came first. Final usage was **30/30 calls and about 10/20 active minutes**;
 the call ceiling was reached. The fresh Q5 supplement completed the remaining
 coverage within that authorization.
+
+## Archive relocation note — 2026-09-29
+
+> Append-only note. The review above is unchanged, including the recorded SHA-256 value.
+
+The raw directory `/private/tmp/rime-sync-publish-preflight.mfN43t/`, which held the fresh Q5 log cited above, was archived on `2026-09-29 22:05:18 Asia/Shanghai`. The archive is host-local and not in Git: `~/.kos-work/Universe-Keyboard/archive/rime-sync-publish-preflight-mfN43t/rime-sync-publish-preflight-mfN43t-evidence.tar.zst` on `DoubleShy0Ns-MacBook-Pro-66.local`, SHA-256 `8fde4f4303ef2f3e7f26c5fc7c6566d684bc8f2f0f3b12fe77258d1c19790461`. The original directory was deleted after full-extraction verification. `Lightweight-post-final-docs-2026-09-27.log` was present in the archive, and its SHA-256 matched the `b7d6711d8a6e53374637c10083ca85096c710ef69f88e8040d7ed570006dee69` recorded above. Full archive facts, exclusions and provenance are in the [preflight record's Archive relocation section](../evidence/rime-sync-v1-publication-preflight-2026-09-25.md#archive-relocation--2026-09-29). This note is not a new review and does not change the conclusion above.
