@@ -16,7 +16,7 @@ Historical Active-entry record (retained): all role acknowledgments for this lif
 | Lifecycle | **Completed — bounded diagnostic delivery** |
 | Current phase | Completed — Human-approved parent-only bounded diagnostic: baseline schedule owner/receipt present; post-return failure schedule both absent after teardown. Exact-evidence handoff delivered; PEXIT-R1/R2/R3 accepted nonblocking/unverified, overall independent Partial unchanged. |
 | Material non-claims | Owner/receipt absence is proven only at this failed schedule boundary; precise missing-recovery cause, complete system/JSONL/recovery coverage and realized schema remain unknown. No behavioral fix, overall review Pass, Quality/Product/Release Gate, physical-device claim or Git publication. |
-| Next handoff | Keyboard Experience Maintainer primary / KeyboardCore Maintainer collaboration receive immutable evidence and regression requirements. Draft PR [#198](https://github.com/shchnk1103/Universe-Keyboard/pull/198); Human observes hosted CI. Any fix/new capture/merge requires separate authorization. Paired-rollout child separately **Completed — 诊断 producer 与父交接交付** on 2026-10-06; this parent contract is unchanged. |
+| Next handoff | Keyboard Experience Maintainer primary / KeyboardCore Maintainer collaboration receive immutable evidence and regression requirements. Draft PR [#198](https://github.com/shchnk1103/Universe-Keyboard/pull/198); `origin/main` merged as `bce3b6ca…`. Human observes hosted CI. Any fix/new capture/PR squash-merge requires separate authorization. Paired-rollout child separately **Completed — 诊断 producer 与父交接交付** on 2026-10-06; this parent contract is unchanged. |
 
 ## Problem and objective
 

@@ -9,7 +9,7 @@ Policy: 1.0.0 — [Assignment Policy](../ASSIGNMENT_POLICY.md)。未opt-in KOS2.
 | Lifecycle | Completed — 单轮模拟器恢复验证交付；2026-10-06 Human批准有界完成合同 |
 | Current phase | Completed — 代码/矩阵/独立静态/诊断pair/安装及单run Maps-owner恢复链交付完成，残项非阻塞未验证 |
 | Material non-claims | 单run owner/receipt整数恢复链独立覆盖；完整系统通知/controller组合、Maps返回后提交/长期稳定性未验证，整体Gate/Release及历史skip通过不声称 |
-| Next handoff | 有界交付已归档；草稿 PR [#198](https://github.com/shchnk1103/Universe-Keyboard/pull/198)；Human 观察 hosted CI。残项补证 / merge 均需另核范围授权，不自动执行 |
+| Next handoff | 有界交付已归档；草稿 PR [#198](https://github.com/shchnk1103/Universe-Keyboard/pull/198)；已 merge `origin/main` `bce3b6ca…`。Human 观察 hosted CI。残项补证 / PR squash-merge 均需另核范围授权，不自动执行 |
 | Residuals | [本修复有界完成Product决定](../product-decisions/KEYBOARD-WAKE-HOST-ACTIVATION-FIX-001-bounded-completion-product-decision-2026-10-06.md)：系统运行组合/返回后提交/长期等未验证，历史skip及流程原件保留 |
 
 ## 2026-10-06 有界完成合同 Addendum（Human已批准）

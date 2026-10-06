@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Status | active |
-| Consumption | unconsumed |
+| Status | consumed |
+| Consumption | 已 merge `origin/main` `d610ce8e…` 为 `bce3b6ca62fa2a5e4ec2e605493b46780547b957`；草稿 PR [#198](https://github.com/shchnk1103/Universe-Keyboard/pull/198) 保持 draft。不授权 squash-merge |
 | Issuer | Human Product Owner |
 | Decision source | 本线程 2026-10-06：「授权你先处理与 origin/main 的冲突」 |
 
@@ -19,8 +19,8 @@
   "record_id": "AUTH-KEYBOARD-WAKE-BOUNDED-PUBLICATION-001-RESOLVE-MAIN",
   "record_type": "authorization",
   "title": "Merge origin/main into keyboard-wake isolated branch to resolve conflicts",
-  "status": "active",
-  "updated_at": "2026-10-06T19:26:50+08:00",
+  "status": "consumed",
+  "updated_at": "2026-10-06T19:32:00+08:00",
   "revalidation_triggers": ["scope_changed", "authority_revoked", "head_changed"],
   "authorization": {
     "action": "merge_origin_main_into_keyboard_wake_branch",
@@ -30,7 +30,8 @@
       {"kind": "worktree", "identity": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard"},
       {"kind": "starting_git_head", "identity": "4ee2b317c8537e7309a32a07a533c7f387fff953"},
       {"kind": "origin_main", "identity": "d610ce8ebdaccb3df087aa299b68c166d7759b1b"},
-      {"kind": "pull_request", "identity": "https://github.com/shchnk1103/Universe-Keyboard/pull/198"}
+      {"kind": "pull_request", "identity": "https://github.com/shchnk1103/Universe-Keyboard/pull/198"},
+      {"kind": "commit", "identity": "bce3b6ca62fa2a5e4ec2e605493b46780547b957"}
     ],
     "scope": "On isolated branch codex/keyboard-wake-v3-compatibility-gate, merge origin/main, resolve shared navigation conflicts using origin/main IA plus keyboard-wake PR #198 pointers, commit the merge, and push the feature branch. Leave PR #198 as draft. Human Product Owner observes hosted CI and owns squash-merge.",
     "exclusions": ["pr_squash_merge", "undraft_merge", "mark_pr_ready", "rebase", "reset", "git_add_all", "default_branch_direct_commit", "branch_cleanup", "testflight_upload", "app_store_connect", "release_pass", "full_xcodebuild_matrix", "t9_pinyin_path_tests"],
@@ -39,7 +40,7 @@
     "issued_at": "2026-10-06T19:26:50+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "unconsumed"
+    "consumption_state": "consumed"
   }
 }
 ```
