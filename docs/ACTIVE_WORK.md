@@ -1,5 +1,7 @@
 # Active Work Summary
 
+2026-10-06 当前：[Git 发布 COMMIT](authorizations/AUTH-KEYBOARD-WAKE-BOUNDED-PUBLICATION-001-COMMIT.md)隔离分支 `codex/keyboard-wake-v3-compatibility-gate` 已形成 scoped commit `247c6aad3619d8e2f807a864ef3dbe0e9a60e185`（2200 files）。T9 与 64 个 `--check` 失败历史证据未纳入。PUSH-PR AUTH 未消费；无 merge。
+
 2026-10-06 当前：[E1 KEEP原件入库](evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals-ingest-2026-10-06.md)67文件已拷入docs/evidence，owner-buffer.bin SHA a8b3bde1…复核后删除tmp KEEP目录；ukey前缀/private/tmp已空。冻结packet不改写。无模拟器/Git。以下历史保留。
 
 2026-10-06 当前：[键盘唤醒tmp备份清理](evidence/keyboard-wake-backup-cleanup-2026-10-06.md)183条精确路径已删约11.8GiB；仅保留`/private/tmp/ukey-host-activation-fix-owner-export-20261006`（E1 Quality packet原件，含仓库无副本的owner-buffer.bin）。universe-keyboard-*未碰。无模拟器/Git。以下历史保留。

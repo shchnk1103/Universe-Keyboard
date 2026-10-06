@@ -9,7 +9,7 @@ Policy: 1.0.0 — [`ASSIGNMENT_POLICY.md`](../ASSIGNMENT_POLICY.md)
 | Lifecycle | **Completed — 诊断 producer 与父交接交付**；2026-10-06 Human 批准选项 A 有界完成合同 |
 | Current phase | Completed — 分阶段 producer/reader/安装/probe 与 M2R2 owner 对照及父交接已交付；全局 v6 emission / 已审查 v6 Maps / 严格 JSONL 未满足，按残项接受 |
 | Material non-claims | C6 failure variant is not uniquely bound to machine events; C7-A source/host tests are not runtime owner-absence evidence, a fix, paired promotion, overall Gate, Release, closure or Git publication. Historical skips remain unverified/not passed. KWOPROBE is not JSONL. HOST-ACTIVATION-FIX E1 owner chain is not this Assignment's Exit. Independent Partial is not Pass. |
-| Next handoff | 有界交付已归档。领域主接 Keyboard Experience Maintainer，KeyboardCore 协作仍接收既有交接；残项补证 / v6 promotion / 备份清理 / Git 发布均需另核范围授权，不自动执行。 |
+| Next handoff | 有界交付已归档。本地 scoped commit `247c6aad3619d8e2f807a864ef3dbe0e9a60e185` 已消费 AUTH-COMMIT；push / draft PR 走 AUTH-PUSH-PR。残项补证 / v6 promotion / merge 均需另核范围授权，不自动执行。 |
 | Residuals | [本有界完成 Product 决定](../product-decisions/KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001-bounded-completion-product-decision-2026-10-06.md) R-JSONL / R-V6 / R-COV / R-AUDIT / R-SKIP；M2R2 双 Partial 原件保留。 |
 
 ## 2026-10-06 有界完成合同 Addendum（Human 已批准）

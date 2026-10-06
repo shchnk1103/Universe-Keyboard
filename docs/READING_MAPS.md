@@ -1,5 +1,7 @@
 # Reading Maps
 
+2026-10-06 当前：[Git 发布 COMMIT](authorizations/AUTH-KEYBOARD-WAKE-BOUNDED-PUBLICATION-001-COMMIT.md)隔离分支 scoped commit `247c6aad3619d8e2f807a864ef3dbe0e9a60e185`。PUSH-PR 未消费；无 merge。
+
 2026-10-06 当前：[paired-rollout有界完成](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-bounded-completion-2026-10-06.md)Human批准选项A，Completed为诊断producer与父交接交付；R-JSONL/R-V6/R-COV/R-AUDIT/R-SKIP非阻塞未验证，独立Partial保留。键盘唤醒三件任务均有界Completed。
 
 2026-10-06 当前：[paired-rollout Exit对照准备稿](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-jsonl-parent-exit-map-2026-10-06.md)父JSONL映射已由父历史Exit图+PEXIT-R1完成；子诊断交接已交付。全局v6 emission/已审查v6 Maps未满足，E1不并入。Assignment仍Active，有界收尾待Product。
