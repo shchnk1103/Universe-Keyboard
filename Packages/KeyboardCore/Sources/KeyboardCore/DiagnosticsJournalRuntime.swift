@@ -21,6 +21,7 @@ public final class DiagnosticsJournalRuntime: Sendable {
     private let ingress: DiagnosticsJournalIngress
     private let origin: DiagnosticEvent.Origin
     private let processInstanceID: UUID
+    private let writerVersion: DiagnosticsJournalWriterVersion
     private let nextSequence: SequenceCounter
 
     public init(
@@ -29,16 +30,19 @@ public final class DiagnosticsJournalRuntime: Sendable {
         isMainAppWriter: Bool,
         rootURL: @escaping @Sendable () -> URL?,
         isCategoryEnabled: @escaping @Sendable (Logger.Category) -> Bool,
+        writerVersion: DiagnosticsJournalWriterVersion = .v5,
         flushDelay: TimeInterval = 0.25
     ) {
         self.origin = origin
         self.processInstanceID = processInstanceID
+        self.writerVersion = writerVersion
         let sequenceCounter = SequenceCounter()
         nextSequence = sequenceCounter
         ingress = DiagnosticsJournalIngress(
             origin: origin,
             processInstanceID: processInstanceID,
             isMainAppWriter: isMainAppWriter,
+            writerVersion: writerVersion,
             rootURL: rootURL,
             isCategoryEnabled: isCategoryEnabled,
             makeHealthEvent: { reason, droppedCount in
@@ -72,6 +76,7 @@ public final class DiagnosticsJournalRuntime: Sendable {
         actionSequence: UInt64? = nil,
         fields: [DiagnosticEvent.Field] = []
     ) {
+        guard !DiagnosticEvent.isWakeMarkerCode(code) else { return }
         let sequence = nextSequence.next()
         ingress.record(
             DiagnosticEvent(
@@ -88,6 +93,90 @@ public final class DiagnosticsJournalRuntime: Sendable {
                 fields: fields
             )
         )
+    }
+
+    /// Returns whether a marker submission was attempted. The bounded ingress may still drop it.
+    @discardableResult
+    public func recordKeyboardLifecycle(
+        _ phase: DiagnosticEvent.KeyboardLifecyclePhase,
+        appearanceID: UUID? = nil
+    ) -> Bool {
+        guard writerVersion == .v6, origin == .keyboardExtension else { return false }
+        let sequence = nextSequence.next()
+        guard
+            let event = DiagnosticEvent.makeV6KeyboardLifecycleEvent(
+                phase: phase,
+                utcTimestamp: Date(),
+                monotonicNanoseconds: DispatchTime.now().uptimeNanoseconds,
+                origin: origin,
+                processInstanceID: processInstanceID,
+                localSequence: sequence,
+                appearanceID: appearanceID
+            )
+        else { return false }
+        ingress.record(event)
+        return true
+    }
+
+    /// Failure presence must match `.failed`; the return value only reports an ingress attempt.
+    @discardableResult
+    public func recordRimeResume(
+        _ phase: DiagnosticEvent.RimeResumePhase,
+        failure: DiagnosticEvent.RimeResumeFailure? = nil,
+        sessionEpoch: UInt64? = nil,
+        revision: UInt64? = nil,
+        appearanceID: UUID? = nil
+    ) -> Bool {
+        guard
+            writerVersion == .v6,
+            origin == .keyboardExtension,
+            (phase == .failed) == (failure != nil)
+        else { return false }
+
+        let sequence = nextSequence.next()
+        guard
+            let event = DiagnosticEvent.makeV6RimeResumeEvent(
+                phase: phase,
+                failure: failure,
+                sessionEpoch: sessionEpoch,
+                revision: revision,
+                utcTimestamp: Date(),
+                monotonicNanoseconds: DispatchTime.now().uptimeNanoseconds,
+                origin: origin,
+                processInstanceID: processInstanceID,
+                localSequence: sequence,
+                appearanceID: appearanceID
+            )
+        else { return false }
+        ingress.record(event)
+        return true
+    }
+
+    /// Returns whether a marker submission was attempted. The bounded ingress may still drop it.
+    @discardableResult
+    public func recordTextProxyOperation(
+        operation: DiagnosticEvent.TextProxyOperation,
+        phase: DiagnosticEvent.TextProxyPhase,
+        appearanceID: UUID? = nil,
+        actionSequence: UInt64? = nil
+    ) -> Bool {
+        guard writerVersion == .v6, origin == .keyboardExtension else { return false }
+        let sequence = nextSequence.next()
+        guard
+            let event = DiagnosticEvent.makeV6TextProxyEvent(
+                operation: operation,
+                phase: phase,
+                actionSequence: actionSequence,
+                utcTimestamp: Date(),
+                monotonicNanoseconds: DispatchTime.now().uptimeNanoseconds,
+                origin: origin,
+                processInstanceID: processInstanceID,
+                localSequence: sequence,
+                appearanceID: appearanceID
+            )
+        else { return false }
+        ingress.record(event)
+        return true
     }
 
     /// Records one reviewed composite delivery payload. Journal availability,

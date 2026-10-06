@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift",
+  "origin_sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+  "expected_sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+  "line_start": 361,
+  "line_end": 420,
+  "lines": [
+    {
+      "line": 361,
+      "text": "            lastStructuredTouch = touch"
+    },
+    {
+      "line": 362,
+      "text": ""
+    },
+    {
+      "line": 363,
+      "text": "            let band = DiagnosticEvent.CandidateTouchBand.classify("
+    },
+    {
+      "line": 364,
+      "text": "                y: Double(point.y),"
+    },
+    {
+      "line": 365,
+      "text": "                height: Double(candidateBarHeight)"
+    },
+    {
+      "line": 366,
+      "text": "            )"
+    },
+    {
+      "line": 367,
+      "text": "            diagnosticSink?.recordCandidateTouchRouted("
+    },
+    {
+      "line": 368,
+      "text": "                band: band,"
+    },
+    {
+      "line": 369,
+      "text": "                didHitCell: Self.hasCandidateCellAncestor(hitView)"
+    },
+    {
+      "line": 370,
+      "text": "            )"
+    },
+    {
+      "line": 371,
+      "text": "        }"
+    },
+    {
+      "line": 372,
+      "text": ""
+    },
+    {
+      "line": 373,
+      "text": "        private static func hasCandidateCellAncestor(_ view: UIView?) -> Bool {"
+    },
+    {
+      "line": 374,
+      "text": "            var current = view"
+    },
+    {
+      "line": 375,
+      "text": "            while let candidate = current {"
+    },
+    {
+      "line": 376,
+      "text": "                if candidate is CandidateCollectionCell { return true }"
+    },
+    {
+      "line": 377,
+      "text": "                current = candidate.superview"
+    },
+    {
+      "line": 378,
+      "text": "            }"
+    },
+    {
+      "line": 379,
+      "text": "            return false"
+    },
+    {
+      "line": 380,
+      "text": "        }"
+    },
+    {
+      "line": 381,
+      "text": "    #endif"
+    },
+    {
+      "line": 382,
+      "text": ""
+    },
+    {
+      "line": 383,
+      "text": "    private var expandedButtonHitFrame: CGRect {"
+    },
+    {
+      "line": 384,
+      "text": "        guard let button = expandButton as? CandidateBarExpandButton else { return expandButton.frame }"
+    },
+    {
+      "line": 385,
+      "text": "        let outsets = button.hitOutsets"
+    },
+    {
+      "line": 386,
+      "text": "        return ChromeTouchHitGeometry.candidateExpandButtonHitFrame("
+    },
+    {
+      "line": 387,
+      "text": "            buttonFrame: button.frame,"
+    },
+    {
+      "line": 388,
+      "text": "            topOutset: outsets.top,"
+    },
+    {
+      "line": 389,
+      "text": "            leftOutset: outsets.left,"
+    },
+    {
+      "line": 390,
+      "text": "            bottomOutset: outsets.bottom,"
+    },
+    {
+      "line": 391,
+      "text": "            rightOutset: outsets.right,"
+    },
+    {
+      "line": 392,
+      "text": "            barBounds: bounds"
+    },
+    {
+      "line": 393,
+      "text": "        )"
+    },
+    {
+      "line": 394,
+      "text": "    }"
+    },
+    {
+      "line": 395,
+      "text": ""
+    },
+    {
+      "line": 396,
+      "text": "    private func logTouch("
+    },
+    {
+      "line": 397,
+      "text": "        _ name: String,"
+    },
+    {
+      "line": 398,
+      "text": "        point: CGPoint,"
+    },
+    {
+      "line": 399,
+      "text": "        lastLogTime: inout CFTimeInterval,"
+    },
+    {
+      "line": 400,
+      "text": "        extra: String"
+    },
+    {
+      "line": 401,
+      "text": "    ) {"
+    },
+    {
+      "line": 402,
+      "text": "        guard CandidateTouchDiagnostics.isEnabled else { return }"
+    },
+    {
+      "line": 403,
+      "text": "        let now = CACurrentMediaTime()"
+    },
+    {
+      "line": 404,
+      "text": "        guard now - lastLogTime >= CandidateTouchDiagnostics.minimumLogInterval else { return }"
+    },
+    {
+      "line": 405,
+      "text": "        lastLogTime = now"
+    },
+    {
+      "line": 406,
+      "text": "        Logger.shared.debug("
+    },
+    {
+      "line": 407,
+      "text": "            \"candidateTouch \\(name) point=\\(CandidateTouchDiagnostics.pointDescription(point)) \""
+    },
+    {
+      "line": 408,
+      "text": "                + \"bounds=\\(Int(bounds.width))x\\(Int(bounds.height)) \\(extra)\","
+    },
+    {
+      "line": 409,
+      "text": "            category: .display"
+    },
+    {
+      "line": 410,
+      "text": "        )"
+    },
+    {
+      "line": 411,
+      "text": "    }"
+    },
+    {
+      "line": 412,
+      "text": ""
+    },
+    {
+      "line": 413,
+      "text": "    private func rectDescription(_ rect: CGRect) -> String {"
+    },
+    {
+      "line": 414,
+      "text": "        \"(\\(Int(rect.minX)),\\(Int(rect.minY)),\\(Int(rect.width)),\\(Int(rect.height)))\""
+    },
+    {
+      "line": 415,
+      "text": "    }"
+    },
+    {
+      "line": 416,
+      "text": ""
+    },
+    {
+      "line": 417,
+      "text": "    #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+    },
+    {
+      "line": 418,
+      "text": "        func installWakeOwnerProbeButton(target: Any?, action: Selector) {"
+    },
+    {
+      "line": 419,
+      "text": "            guard wakeProbeButton == nil else { return }"
+    },
+    {
+      "line": 420,
+      "text": "            let button = UIButton(type: .custom)"
+    }
+  ]
+}

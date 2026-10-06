@@ -1,0 +1,270 @@
+{
+  "candidate_digest_sha256": "0095841393c45895ae5ee861878a03c0c9a8de3643759be47a9ac1cb5d8953f8",
+  "source_identity": "9730e254cb8afd48f857ad9bef1659017fe90d26700ea3c9b1809249e3c751c8",
+  "pairs": {
+    "Debug": [
+      {
+        "bundle_path": "/private/tmp/ukey-wake-c7b-20261002/DebugDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app",
+        "bundle_id": "com.DoubleShy0N.Universe-Keyboard",
+        "version": "1.0",
+        "build": "1",
+        "info_sha256": "78ab124236b7101b69301f4493fb185f08a1d0e612ab630909540278db15f680",
+        "executable_sha256": "91e93cb4b1a6bed5cf246032d8c2662515c7f811c0b79b551ef7a5174083a9dd",
+        "machos": [
+          {
+            "path": "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_-8730D61D9395D3A_PackageProduct",
+            "sha256": "4e58f49595223951e9196c4e0a2182cf03d3b027b1e0e5792aa291330d07bc81",
+            "bytes": 9317216,
+            "nm_exit": 0,
+            "probe_ui_symbols": []
+          },
+          {
+            "path": "Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/RimeBridge_57276DBF982DF6E4_PackageProduct",
+            "sha256": "b71da0b2f3f61ccc805a4d37c37df72acd7f33df9c3924088a29d22393c132a4",
+            "bytes": 6543000,
+            "nm_exit": 0,
+            "probe_ui_symbols": []
+          },
+          {
+            "path": "PlugIns/Keyboard.appex/Keyboard",
+            "sha256": "025eb765115b75874f3bbc7c4ce8890d4e500e3a5ddf26d38b5eca1fbafa917b",
+            "bytes": 37576,
+            "nm_exit": 0,
+            "probe_ui_symbols": []
+          },
+          {
+            "path": "PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+            "sha256": "e111e3201bbd57cdbe8c7a051f31703c93e6d21f04dacad1d48fcd923f730a48",
+            "bytes": 4984616,
+            "nm_exit": 0,
+            "probe_ui_symbols": [
+              "_$s8Keyboard16CandidateBarViewC27installWakeOwnerProbeButton6target6actionyypSg_10ObjectiveC8SelectorVtF",
+              "_$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF"
+            ]
+          },
+          {
+            "path": "PlugIns/Keyboard.appex/__preview.dylib",
+            "sha256": "21e296b2fb5315af2c167416cce508d358584e3003390e7e9df9e9dc5b6bc427",
+            "bytes": 16760,
+            "nm_exit": 0,
+            "probe_ui_symbols": []
+          },
+          {
+            "path": "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_-8730D61D9395D3A_PackageProduct",
+            "sha256": "4e58f49595223951e9196c4e0a2182cf03d3b027b1e0e5792aa291330d07bc81",
+            "bytes": 9317216,
+            "nm_exit": 0,
+            "probe_ui_symbols": []
+          },
+          {
+            "path": "PlugIns/UniverseKeyboardTests.xctest/Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/RimeBridge_57276DBF982DF6E4_PackageProduct",
+            "sha256": "b71da0b2f3f61ccc805a4d37c37df72acd7f33df9c3924088a29d22393c132a4",
+            "bytes": 6543000,
+            "nm_exit": 0,
+            "probe_ui_symbols": []
+          },
+          {
+            "path": "PlugIns/UniverseKeyboardTests.xctest/UniverseKeyboardTests",
+            "sha256": "0761f44d5566ec54dedbd08f45346105c2ac306b59ae33165e3b0a7144f95f1a",
+            "bytes": 9172408,
+            "nm_exit": 0,
+            "probe_ui_symbols": []
+          },
+          {
+            "path": "Universe Keyboard",
+            "sha256": "91e93cb4b1a6bed5cf246032d8c2662515c7f811c0b79b551ef7a5174083a9dd",
+            "bytes": 40224,
+            "nm_exit": 0,
+            "probe_ui_symbols": []
+          },
+          {
+            "path": "Universe Keyboard.debug.dylib",
+            "sha256": "4ad16d9b6a7cf051745c6358687eb38eb714252f43088bf68ce56ce82b2169e4",
+            "bytes": 17600512,
+            "nm_exit": 0,
+            "probe_ui_symbols": []
+          },
+          {
+            "path": "__preview.dylib",
+            "sha256": "d8d782b6f95675cb51daea9f924d8ee487e64ef6fd9cef34e210890f2260900a",
+            "bytes": 16768,
+            "nm_exit": 0,
+            "probe_ui_symbols": []
+          }
+        ]
+      },
+      {
+        "bundle_path": "/private/tmp/ukey-wake-c7b-20261002/DebugDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex",
+        "bundle_id": "com.DoubleShy0N.Universe-Keyboard.Keyboard",
+        "version": "1.0",
+        "build": "1",
+        "info_sha256": "81b5c6912d13ebe448910bab37349e1d5b427251ec24b51a7c9442bd0b4e8f9a",
+        "executable_sha256": "025eb765115b75874f3bbc7c4ce8890d4e500e3a5ddf26d38b5eca1fbafa917b",
+        "machos": [
+          {
+            "path": "Keyboard",
+            "sha256": "025eb765115b75874f3bbc7c4ce8890d4e500e3a5ddf26d38b5eca1fbafa917b",
+            "bytes": 37576,
+            "nm_exit": 0,
+            "probe_ui_symbols": []
+          },
+          {
+            "path": "Keyboard.debug.dylib",
+            "sha256": "e111e3201bbd57cdbe8c7a051f31703c93e6d21f04dacad1d48fcd923f730a48",
+            "bytes": 4984616,
+            "nm_exit": 0,
+            "probe_ui_symbols": [
+              "_$s8Keyboard16CandidateBarViewC27installWakeOwnerProbeButton6target6actionyypSg_10ObjectiveC8SelectorVtF",
+              "_$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF"
+            ]
+          },
+          {
+            "path": "__preview.dylib",
+            "sha256": "21e296b2fb5315af2c167416cce508d358584e3003390e7e9df9e9dc5b6bc427",
+            "bytes": 16760,
+            "nm_exit": 0,
+            "probe_ui_symbols": []
+          }
+        ]
+      }
+    ],
+    "Release": [
+      {
+        "bundle_path": "/private/tmp/ukey-wake-c7b-20261002/ReleaseDerivedData/Build/Products/Release-iphonesimulator/Universe Keyboard.app",
+        "bundle_id": "com.DoubleShy0N.Universe-Keyboard",
+        "version": "1.0",
+        "build": "1",
+        "info_sha256": "78ab124236b7101b69301f4493fb185f08a1d0e612ab630909540278db15f680",
+        "executable_sha256": "cd233a2e51223f1c3a4882bcc433e6c533312169b2bc04eb763f26642e310744",
+        "machos": [
+          {
+            "path": "PlugIns/Keyboard.appex/Keyboard",
+            "sha256": "be2a630f3a3b3993a4511bb686f2b1e7c843df7d02d2f6bd5dc70c7ead4ee395",
+            "bytes": 13772872,
+            "nm_exit": 0,
+            "probe_ui_symbols": []
+          },
+          {
+            "path": "Universe Keyboard",
+            "sha256": "cd233a2e51223f1c3a4882bcc433e6c533312169b2bc04eb763f26642e310744",
+            "bytes": 23484912,
+            "nm_exit": 0,
+            "probe_ui_symbols": []
+          }
+        ]
+      },
+      {
+        "bundle_path": "/private/tmp/ukey-wake-c7b-20261002/ReleaseDerivedData/Build/Products/Release-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex",
+        "bundle_id": "com.DoubleShy0N.Universe-Keyboard.Keyboard",
+        "version": "1.0",
+        "build": "1",
+        "info_sha256": "81b5c6912d13ebe448910bab37349e1d5b427251ec24b51a7c9442bd0b4e8f9a",
+        "executable_sha256": "be2a630f3a3b3993a4511bb686f2b1e7c843df7d02d2f6bd5dc70c7ead4ee395",
+        "machos": [
+          {
+            "path": "Keyboard",
+            "sha256": "be2a630f3a3b3993a4511bb686f2b1e7c843df7d02d2f6bd5dc70c7ead4ee395",
+            "bytes": 13772872,
+            "nm_exit": 0,
+            "probe_ui_symbols": []
+          }
+        ]
+      }
+    ],
+    "OrdinaryDebug": [
+      {
+        "bundle_path": "/private/tmp/ukey-wake-c7b-20261002/OrdinaryDebugDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app",
+        "bundle_id": "com.DoubleShy0N.Universe-Keyboard",
+        "version": "1.0",
+        "build": "1",
+        "info_sha256": "78ab124236b7101b69301f4493fb185f08a1d0e612ab630909540278db15f680",
+        "executable_sha256": "defdcacc84e2d9d3ba064f8882e52c210660865a62b204ad622f6efaf4ed5b59",
+        "machos": [
+          {
+            "path": "PlugIns/Keyboard.appex/Keyboard",
+            "sha256": "51343810b28a8aa70c72babe1472ea4d5a3e136801469e562bf39d2694b299f2",
+            "bytes": 37576,
+            "nm_exit": 0,
+            "probe_ui_symbols": []
+          },
+          {
+            "path": "PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+            "sha256": "a7490e1f79361ffe4649d0b4faaeb4649df868f8f387e0ffc744d2929d2ed4e2",
+            "bytes": 18278120,
+            "nm_exit": 0,
+            "probe_ui_symbols": []
+          },
+          {
+            "path": "PlugIns/Keyboard.appex/__preview.dylib",
+            "sha256": "21e296b2fb5315af2c167416cce508d358584e3003390e7e9df9e9dc5b6bc427",
+            "bytes": 16760,
+            "nm_exit": 0,
+            "probe_ui_symbols": []
+          },
+          {
+            "path": "Universe Keyboard",
+            "sha256": "defdcacc84e2d9d3ba064f8882e52c210660865a62b204ad622f6efaf4ed5b59",
+            "bytes": 40224,
+            "nm_exit": 0,
+            "probe_ui_symbols": []
+          },
+          {
+            "path": "Universe Keyboard.debug.dylib",
+            "sha256": "bffd409e90ff52ed9523d085f251d4b432f51ad7b1734a65b1174655de915429",
+            "bytes": 33046272,
+            "nm_exit": 0,
+            "probe_ui_symbols": []
+          },
+          {
+            "path": "__preview.dylib",
+            "sha256": "d8d782b6f95675cb51daea9f924d8ee487e64ef6fd9cef34e210890f2260900a",
+            "bytes": 16768,
+            "nm_exit": 0,
+            "probe_ui_symbols": []
+          }
+        ]
+      },
+      {
+        "bundle_path": "/private/tmp/ukey-wake-c7b-20261002/OrdinaryDebugDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex",
+        "bundle_id": "com.DoubleShy0N.Universe-Keyboard.Keyboard",
+        "version": "1.0",
+        "build": "1",
+        "info_sha256": "81b5c6912d13ebe448910bab37349e1d5b427251ec24b51a7c9442bd0b4e8f9a",
+        "executable_sha256": "51343810b28a8aa70c72babe1472ea4d5a3e136801469e562bf39d2694b299f2",
+        "machos": [
+          {
+            "path": "Keyboard",
+            "sha256": "51343810b28a8aa70c72babe1472ea4d5a3e136801469e562bf39d2694b299f2",
+            "bytes": 37576,
+            "nm_exit": 0,
+            "probe_ui_symbols": []
+          },
+          {
+            "path": "Keyboard.debug.dylib",
+            "sha256": "a7490e1f79361ffe4649d0b4faaeb4649df868f8f387e0ffc744d2929d2ed4e2",
+            "bytes": 18278120,
+            "nm_exit": 0,
+            "probe_ui_symbols": []
+          },
+          {
+            "path": "__preview.dylib",
+            "sha256": "21e296b2fb5315af2c167416cce508d358584e3003390e7e9df9e9dc5b6bc427",
+            "bytes": 16760,
+            "nm_exit": 0,
+            "probe_ui_symbols": []
+          }
+        ]
+      }
+    ]
+  },
+  "installed": false,
+  "tests_executed": false,
+  "signature": "CODE_SIGNING_ALLOWED=NO; compiler evidence only",
+  "debug_product_note": "Final Debug pair captured after build-for-testing; contains test-host products, not promoted installation candidate",
+  "unique_macho_count": {
+    "Debug": 11,
+    "Release": 2,
+    "OrdinaryDebug": 6
+  },
+  "ordinary_debug_note": "Normal Debug has DEBUG Core hooks but no dedicated UI/control/export function; probe stays disarmed by default."
+}

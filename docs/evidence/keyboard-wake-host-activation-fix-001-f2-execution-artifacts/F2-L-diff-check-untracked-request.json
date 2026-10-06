@@ -1,0 +1,7 @@
+{
+  "step": "F2-L-diff-check-untracked",
+  "utc": "2026-10-04T10:46:56.007150+00:00",
+  "command": "python3 - <<'PYCODE'\nfrom pathlib import Path\nimport subprocess\nimport sys\nfiles = [\n    'Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift',\n    'KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift',\n]\nfor file in files:\n    if not Path(file).is_file():\n        print(f'FAIL: required new file missing: {file}', file=sys.stderr)\n        raise SystemExit(1)\n    result = subprocess.run(\n        ['git', 'diff', '--check', '--no-index', '--', '/dev/null', file],\n        capture_output=True, text=True,\n    )\n    # --no-index may return 1 for a difference. Any diagnostic or other status fails.\n    if result.returncode not in (0, 1) or result.stdout.strip() or result.stderr.strip():\n        print(f'FAIL: {file}: git exit={result.returncode}', file=sys.stderr)\n        print(result.stdout, end='')\n        print(result.stderr, end='', file=sys.stderr)\n        raise SystemExit(1)\nprint('PASS: whitespace check includes both untracked Swift files')\nPYCODE",
+  "cwd": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "remaining_wall_seconds": 10383.993092
+}

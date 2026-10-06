@@ -1,0 +1,137 @@
+{
+  "utc": "2026-10-02T14:21:23.068832+00:00",
+  "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "installed_app_path": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/4EB4A3E6-58B0-44CB-BC45-B608BA1E6518/Universe Keyboard.app",
+  "candidate_payload_78_match": true,
+  "matching_processes": [
+    "24050 /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/4EB4A3E6-58B0-44CB-BC45-B608BA1E6518/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard"
+  ],
+  "expected_executable": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/4EB4A3E6-58B0-44CB-BC45-B608BA1E6518/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+  "paired_machos": [
+    {
+      "path": "PlugIns/Keyboard.appex/Keyboard",
+      "sha256": "e059dfbfef672553b51d9ce2a3097348f3c40129c8afaa27b58fd90918cbd692",
+      "bytes": 37872,
+      "uuid": {
+        "argv": [
+          "xcrun",
+          "dwarfdump",
+          "--uuid",
+          "/private/tmp/ukey-wake-c7b3-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard"
+        ],
+        "exit": 0,
+        "stdout": "UUID: 7E0813A6-2992-353B-9BA2-C9B1F8AB69E6 (arm64) /private/tmp/ukey-wake-c7b3-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard\n",
+        "stderr": ""
+      },
+      "probe_ui_symbols": [],
+      "nm_exit": 0
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+      "sha256": "3ed321b5982ab8c78d715c63bf5a03cdd77fd3b4acdeeb4cff25746614fdda6d",
+      "bytes": 18252560,
+      "uuid": {
+        "argv": [
+          "xcrun",
+          "dwarfdump",
+          "--uuid",
+          "/private/tmp/ukey-wake-c7b3-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard.debug.dylib"
+        ],
+        "exit": 0,
+        "stdout": "UUID: FE12AEDC-088B-3CBB-B00A-1ECD95323DA4 (arm64) /private/tmp/ukey-wake-c7b3-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard.debug.dylib\n",
+        "stderr": ""
+      },
+      "probe_ui_symbols": [
+        "0000000000182e40 T _$s8Keyboard16CandidateBarViewC27installWakeOwnerProbeButton6target6actionyypSg_10ObjectiveC8SelectorVtF",
+        "0000000000183a08 t _$s8Keyboard16CandidateBarViewC27installWakeOwnerProbeButton6target6actionyypSg_10ObjectiveC8SelectorVtFySO_SbtcfU_",
+        "00000000001894f0 t _$s8Keyboard16CandidateBarViewC27installWakeOwnerProbeButton6target6actionyypSg_10ObjectiveC8SelectorVtFySO_SbtcfU_TA",
+        "0000000000168714 T _$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF",
+        "00000000001689c4 t _$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitFyyXEfU0_",
+        "0000000000168910 t _$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitFyyXEfU_",
+        "00000000007a6a48 s ___profc_$s8Keyboard16CandidateBarViewC27installWakeOwnerProbeButton6target6actionyypSg_10ObjectiveC8SelectorVtF",
+        "00000000007a6460 s ___profc_$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF",
+        "00000000007a6470 s ___profc_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift:$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitFyyXEfU0_",
+        "00000000007a6468 s ___profc_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift:$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitFyyXEfU_",
+        "00000000007a6a58 s ___profc_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift:$s8Keyboard16CandidateBarViewC27installWakeOwnerProbeButton6target6actionyypSg_10ObjectiveC8SelectorVtFySO_SbtcfU_",
+        "00000000007c34c0 s ___profd_$s8Keyboard16CandidateBarViewC27installWakeOwnerProbeButton6target6actionyypSg_10ObjectiveC8SelectorVtF",
+        "00000000007c1900 s ___profd_$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF",
+        "00000000007c1980 s ___profd_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift:$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitFyyXEfU0_",
+        "00000000007c1940 s ___profd_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift:$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitFyyXEfU_",
+        "00000000007c3500 s ___profd_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift:$s8Keyboard16CandidateBarViewC27installWakeOwnerProbeButton6target6actionyypSg_10ObjectiveC8SelectorVtFySO_SbtcfU_"
+      ],
+      "nm_exit": 0
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/__preview.dylib",
+      "sha256": "eccef4a1b897ac811c714b630fbce2872a5e95af9e026818a5f6a38ef7a59f91",
+      "bytes": 16800,
+      "uuid": {
+        "argv": [
+          "xcrun",
+          "dwarfdump",
+          "--uuid",
+          "/private/tmp/ukey-wake-c7b3-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/__preview.dylib"
+        ],
+        "exit": 0,
+        "stdout": "UUID: 984A99F0-EDBC-3181-8D6A-151FC3FF26B3 (arm64) /private/tmp/ukey-wake-c7b3-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/__preview.dylib\n",
+        "stderr": ""
+      },
+      "probe_ui_symbols": [],
+      "nm_exit": 0
+    },
+    {
+      "path": "Universe Keyboard",
+      "sha256": "0af5b7f021a2eb82142521f8ba1db3f87fc6712f4f19c49d5cd229d2fb133fe8",
+      "bytes": 40512,
+      "uuid": {
+        "argv": [
+          "xcrun",
+          "dwarfdump",
+          "--uuid",
+          "/private/tmp/ukey-wake-c7b3-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard"
+        ],
+        "exit": 0,
+        "stdout": "UUID: 0A4CF9B7-671A-31CA-99DF-B7D9484B198F (arm64) /private/tmp/ukey-wake-c7b3-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard\n",
+        "stderr": ""
+      },
+      "probe_ui_symbols": [],
+      "nm_exit": 0
+    },
+    {
+      "path": "Universe Keyboard.debug.dylib",
+      "sha256": "52a5eaf17c0c68f7fe121bb014a9f282d23ac8af443156b5615724567f7924ab",
+      "bytes": 32853408,
+      "uuid": {
+        "argv": [
+          "xcrun",
+          "dwarfdump",
+          "--uuid",
+          "/private/tmp/ukey-wake-c7b3-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard.debug.dylib"
+        ],
+        "exit": 0,
+        "stdout": "UUID: A04CEB60-3103-32AA-AAB5-D33888D87D72 (arm64) /private/tmp/ukey-wake-c7b3-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard.debug.dylib\n",
+        "stderr": ""
+      },
+      "probe_ui_symbols": [],
+      "nm_exit": 0
+    },
+    {
+      "path": "__preview.dylib",
+      "sha256": "39c5084b204f9a2a3244e4b94d1d38fe74346d45c4fc0a6a7b1f3d38a9645a0a",
+      "bytes": 16800,
+      "uuid": {
+        "argv": [
+          "xcrun",
+          "dwarfdump",
+          "--uuid",
+          "/private/tmp/ukey-wake-c7b3-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/__preview.dylib"
+        ],
+        "exit": 0,
+        "stdout": "UUID: 3157B785-8C10-368F-A3C4-DB591625C61D (arm64) /private/tmp/ukey-wake-c7b3-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/__preview.dylib\n",
+        "stderr": ""
+      },
+      "probe_ui_symbols": [],
+      "nm_exit": 0
+    }
+  ]
+}

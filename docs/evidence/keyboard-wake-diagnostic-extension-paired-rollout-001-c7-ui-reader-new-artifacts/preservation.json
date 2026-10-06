@@ -1,0 +1,11 @@
+{
+  "before_files": 2926,
+  "before_dirty": 843,
+  "after_dirty_before_receipt": 854,
+  "staged": 0,
+  "outside_mirrors_changed": [],
+  "all_frozen_inputs_matched": true,
+  "markdown_links": "passed",
+  "diff_check": "passed",
+  "no_device_actions": true
+}

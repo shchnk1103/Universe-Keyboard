@@ -1,0 +1,26 @@
+{
+  "checked_utc": "2026-10-01T06:22:40.780910+00:00",
+  "baseline_files": 2584,
+  "other_existing_files_preserved": 2583,
+  "excepted_existing_path": "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md",
+  "finding_disposition": "HOST-Q-R-01 lifted for archived C5-R reader window only",
+  "coverage": {
+    "F1": "Covered",
+    "F2": "Covered"
+  },
+  "protocol": "not claimed fully compliant; documented ledger/soft target limits",
+  "reviewer_used_tools": 4,
+  "reviewer_elapsed_before_terminal_timer": 523.803,
+  "artifact_mtime_elapsed_seconds": {
+    "quality-review.md": 523.803234577179,
+    "quality-usage.json": 523.8033967018127,
+    "timer.json": 523.8035545349121
+  },
+  "dirty_before_receipt": 504,
+  "staged": 0,
+  "source_match": 568,
+  "built_match": 111,
+  "direct_inputs_before_owner_bookkeeping": 18,
+  "links_checked": 6,
+  "scope": "docs-only; xcodebuild skipped; no new environment operation"
+}

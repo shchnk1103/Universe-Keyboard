@@ -1,0 +1,69 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Presentation.swift",
+  "origin_sha256": "767c2817054484d4d4c328cb7a8deaf676509b76bbc3cb45868b6e3cf721319a",
+  "expected_sha256": "767c2817054484d4d4c328cb7a8deaf676509b76bbc3cb45868b6e3cf721319a",
+  "line_start": 301,
+  "line_end": 315,
+  "lines": [
+    {
+      "line": 301,
+      "text": "                }"
+    },
+    {
+      "line": 302,
+      "text": "            }"
+    },
+    {
+      "line": 303,
+      "text": "        } else if effects.contains(.t9PinyinPathsChanged) {"
+    },
+    {
+      "line": 304,
+      "text": "            if shouldPublishAtomicT9Presentation {"
+    },
+    {
+      "line": 305,
+      "text": "                refreshT9PresentationFromCoreSnapshot()"
+    },
+    {
+      "line": 306,
+      "text": "            } else {"
+    },
+    {
+      "line": 307,
+      "text": "                refreshT9PinyinPathBar()"
+    },
+    {
+      "line": 308,
+      "text": "            }"
+    },
+    {
+      "line": 309,
+      "text": "        }"
+    },
+    {
+      "line": 310,
+      "text": "        if effects.contains(.shiftStateChanged) {"
+    },
+    {
+      "line": 311,
+      "text": "            refreshLetterButtons()"
+    },
+    {
+      "line": 312,
+      "text": "            updateShiftButtonAppearance()"
+    },
+    {
+      "line": 313,
+      "text": "        }"
+    },
+    {
+      "line": 314,
+      "text": "    }"
+    },
+    {
+      "line": 315,
+      "text": "}"
+    }
+  ]
+}

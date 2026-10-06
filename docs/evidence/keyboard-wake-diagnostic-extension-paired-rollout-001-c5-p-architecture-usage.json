@@ -1,0 +1,185 @@
+{
+  "lane_id": "ARCHITECTURE-C5-P",
+  "round": 1,
+  "independence": "未参与 C5-P 实现；本轮不读取另一 reviewer 报告。",
+  "start_utc": "2026-10-01T01:09:19Z",
+  "end_utc": "2026-10-01T01:14:57Z",
+  "elapsed_seconds": 338.0,
+  "budget": {
+    "tool_interactions_max": 12,
+    "elapsed_seconds_max": 600,
+    "tool_interactions_used": 11,
+    "checkpoint_after_interaction_6_sent": true,
+    "stop_reason": "required outputs written with one interaction reserved; no budget expansion"
+  },
+  "interaction_ledger": [
+    "1 clock.sleep(1ms), before ACK timestamp capture",
+    "2 functions.exec wrapper for clock__curr_time",
+    "3 nested clock__curr_time",
+    "4 collaboration ACK to root",
+    "5 functions.exec wrapper for packet read/hash",
+    "6 nested exec_command read/hash packet; checkpoint sent immediately after",
+    "7 collaboration checkpoint to root after interaction 6",
+    "8 functions.exec wrapper for local manifest/input/source/bundle audit and output write",
+    "9 nested exec_command for audit and output write",
+    "10-11 reserved in ledger as tool-call accounting paired with the final artifact generation; counted conservatively as wrapper plus nested command"
+  ],
+  "identity": {
+    "packet_expected_sha256": "935f1f224f2a04e74cb8a17abd1d93a99c83dc36376fb0adc08277e5446dc143",
+    "packet_actual_sha256": "935f1f224f2a04e74cb8a17abd1d93a99c83dc36376fb0adc08277e5446dc143",
+    "packet_match": true,
+    "manifest_expected_sha256": "928bfdd6412ce5b23bdad7cece3141e00c993d191079ea2b7ed692662f06d941",
+    "manifest_actual_sha256": "928bfdd6412ce5b23bdad7cece3141e00c993d191079ea2b7ed692662f06d941",
+    "manifest_match": true,
+    "entry_expected_sha256": "8e507a253fcb89f0d8570ce0b980c029c59b1ec5c452db84b71545da94454dc7",
+    "entry_actual_sha256": "8e507a253fcb89f0d8570ce0b980c029c59b1ec5c452db84b71545da94454dc7",
+    "entry_match": true,
+    "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+    "branch": "codex/keyboard-wake-v3-compatibility-gate",
+    "candidate_digest": "af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9"
+  },
+  "input_hash_results": {
+    "inputs_sha256": {
+      "expected": 40,
+      "matched": 40,
+      "mismatch": 0,
+      "missing": 0,
+      "bad": [],
+      "missing_paths": []
+    },
+    "source_build_inputs_sha256": {
+      "expected": 568,
+      "matched": 568,
+      "mismatch": 0,
+      "missing": 0,
+      "bad": [],
+      "missing_paths": []
+    },
+    "bundle_file_sha256": {
+      "root": "/private/tmp/ukey-wake-c4-20261001/DerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app",
+      "expected": 111,
+      "matched": 111,
+      "mismatch": 0,
+      "missing": 0,
+      "bad": [],
+      "missing_paths": []
+    }
+  },
+  "bundle_plists": [
+    {
+      "path": "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/Info.plist",
+      "bundle_id": "keyboardcore.KeyboardCore",
+      "short_version": "1.0",
+      "build": "1",
+      "extension_point": null
+    },
+    {
+      "path": "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/Info.plist",
+      "bundle_id": "keyboardcore.KeyboardCore.resources",
+      "short_version": null,
+      "build": null,
+      "extension_point": null
+    },
+    {
+      "path": "Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/Info.plist",
+      "bundle_id": "rimebridge.RimeBridge",
+      "short_version": "1.0",
+      "build": "1",
+      "extension_point": null
+    },
+    {
+      "path": "Info.plist",
+      "bundle_id": "com.DoubleShy0N.Universe-Keyboard",
+      "short_version": "1.0",
+      "build": "1",
+      "extension_point": null
+    },
+    {
+      "path": "KeyboardCore_KeyboardCore.bundle/Info.plist",
+      "bundle_id": "keyboardcore.KeyboardCore.resources",
+      "short_version": null,
+      "build": null,
+      "extension_point": null
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/Info.plist",
+      "bundle_id": "com.DoubleShy0N.Universe-Keyboard.Keyboard",
+      "short_version": "1.0",
+      "build": "1",
+      "extension_point": "com.apple.keyboard-service"
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/Info.plist",
+      "bundle_id": "keyboardcore.KeyboardCore.resources",
+      "short_version": null,
+      "build": null,
+      "extension_point": null
+    },
+    {
+      "path": "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/Info.plist",
+      "bundle_id": "keyboardcore.KeyboardCore",
+      "short_version": "1.0",
+      "build": "1",
+      "extension_point": null
+    },
+    {
+      "path": "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/Info.plist",
+      "bundle_id": "keyboardcore.KeyboardCore.resources",
+      "short_version": null,
+      "build": null,
+      "extension_point": null
+    },
+    {
+      "path": "PlugIns/UniverseKeyboardTests.xctest/Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/Info.plist",
+      "bundle_id": "rimebridge.RimeBridge",
+      "short_version": "1.0",
+      "build": "1",
+      "extension_point": null
+    },
+    {
+      "path": "PlugIns/UniverseKeyboardTests.xctest/Info.plist",
+      "bundle_id": "com.DoubleShy0N.Universe-Keyboard.UniverseKeyboardTests",
+      "short_version": null,
+      "build": null,
+      "extension_point": null
+    },
+    {
+      "path": "PlugIns/UniverseKeyboardTests.xctest/KeyboardCore_KeyboardCore.bundle/Info.plist",
+      "bundle_id": "keyboardcore.KeyboardCore.resources",
+      "short_version": null,
+      "build": null,
+      "extension_point": null
+    }
+  ],
+  "criterion_anchors": {
+    "P-A1": true,
+    "P-A2": true,
+    "P-A3": true
+  },
+  "verdict": "Full — P-A1/P-A2/P-A3 静态设计正向覆盖；不代表执行或晋级通过。",
+  "boundary_notes": [
+    "An initial bundle-hash probe resolved relative paths against the worktree and reported them missing; it was superseded in the same final audit by resolving against manifest bundle_root.",
+    "An initial source locator selector used a nonexistent review_target_files key; no extra file was opened from that attempt. The final audit used only manifest-listed source_build_inputs_sha256."
+  ],
+  "actions": {
+    "source_writes": 0,
+    "documentation_source_writes": 0,
+    "builds": 0,
+    "tests": 0,
+    "devices_or_simulator": 0,
+    "install_launch_arm_input_maps": 0,
+    "git_mutations": 0,
+    "network": 0,
+    "outputs": [
+      "/private/tmp/ukey-wake-c5-p-20261001/architecture-review.md",
+      "/private/tmp/ukey-wake-c5-p-20261001/architecture-usage.json"
+    ]
+  },
+  "skips_nonclaims": [
+    "No Product residual acceptance",
+    "No C5-I/R authorization",
+    "No current device/install/Full Access/App Group runtime proof",
+    "No real callback or Maps result",
+    "No Quality Pass, global Gate, or Release claim"
+  ]
+}

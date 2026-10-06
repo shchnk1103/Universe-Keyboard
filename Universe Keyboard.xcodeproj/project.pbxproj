@@ -16,6 +16,8 @@
 		7A6100092FC0000000000001 /* RimeBridge in Frameworks */ = {isa = PBXBuildFile; productRef = 7A6000042FC0000000000001 /* RimeBridge */; };
 		7A6200012FC0000000000001 /* KeyboardCore in Frameworks */ = {isa = PBXBuildFile; productRef = 793AC8812FB0BE0600DAE8A0 /* KeyboardCore */; };
 		7A6200022FC0000000000001 /* KeyboardCore in Frameworks */ = {isa = PBXBuildFile; productRef = 793AC8812FB0BE0600DAE8A0 /* KeyboardCore */; };
+		C2E000000000000000000001 /* UITextDocumentProxyAdapter.swift in KeyboardTests */ = {isa = PBXBuildFile; fileRef = C2F000000000000000000001 /* UITextDocumentProxyAdapter.swift */; };
+		C2E000000000000000000002 /* KeyboardHostLifecycleRecoveryGate.swift in KeyboardTests */ = {isa = PBXBuildFile; fileRef = C2F000000000000000000002 /* KeyboardHostLifecycleRecoveryGate.swift */; };
 		7A64000C2FD0000000000001 /* Keyboard.appex in Frameworks */ = {isa = PBXBuildFile; fileRef = 793AC85C2FB0BE0600DAE835 /* Keyboard.appex */; };
 /* End PBXBuildFile section */
 
@@ -72,6 +74,8 @@
 		7A6200042FC0000000000001 /* KeyboardTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KeyboardTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A6300012FD0000000000001 /* UniverseKeyboardUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UniverseKeyboardUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A6400042FD0000000000001 /* KeyboardExtensionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KeyboardExtensionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2F000000000000000000001 /* UITextDocumentProxyAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Services/UITextDocumentProxyAdapter.swift"; sourceTree = "<group>"; };
+		C2F000000000000000000002 /* KeyboardHostLifecycleRecoveryGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -195,6 +199,8 @@
 				7A6100022FC0000000000001 /* Packages/RimeBridge/Tests/RimeBridgeTests */,
 				7A6200052FC0000000000001 /* UniverseKeyboardTests */,
 				7A6200062FC0000000000001 /* KeyboardTests */,
+				C2F000000000000000000001 /* UITextDocumentProxyAdapter.swift */,
+				C2F000000000000000000002 /* KeyboardHostLifecycleRecoveryGate.swift */,
 				7A6300022FD0000000000001 /* UniverseKeyboardUITests */,
 				7A6400052FD0000000000001 /* KeyboardExtensionTests */,
 				793AC84B2FB0BDB000DAE835 /* Products */,
@@ -533,6 +539,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C2E000000000000000000001 /* UITextDocumentProxyAdapter.swift in KeyboardTests */,
+				C2E000000000000000000002 /* KeyboardHostLifecycleRecoveryGate.swift in KeyboardTests */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

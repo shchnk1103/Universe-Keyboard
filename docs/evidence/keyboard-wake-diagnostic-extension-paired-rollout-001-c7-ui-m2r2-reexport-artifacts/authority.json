@@ -1,0 +1,5 @@
+{
+  "human": "授权，并确认模拟器仍独占",
+  "scope": "one retained M2R2 frozen reexport; no arm/input/switch/install/deploy",
+  "additional_human_actions_since_visual_exit": "not explicitly reaffirmed; ask before click if needed"
+}

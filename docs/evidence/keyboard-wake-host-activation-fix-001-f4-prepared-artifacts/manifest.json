@@ -1,0 +1,47 @@
+[
+  {
+    "path": "Keyboard.appex-entitlements.txt",
+    "bytes": 184,
+    "sha256": "00491886daae07a5296c8bad50f116bf006b0004d7bf7338ad46669fbd903a4a"
+  },
+  {
+    "path": "Universe Keyboard.app-entitlements.txt",
+    "bytes": 184,
+    "sha256": "00491886daae07a5296c8bad50f116bf006b0004d7bf7338ad46669fbd903a4a"
+  },
+  {
+    "path": "current-five-source-hashes.json",
+    "bytes": 899,
+    "sha256": "7ec3484757dfcf8977497ad928e93808ff75b718cfa847ea3380cf03af94a9fd"
+  },
+  {
+    "path": "debugger-tools-reference.json",
+    "bytes": 963,
+    "sha256": "8268907a0991eacbb29acfb1f44d686ccaabbde3fbb479638bbee20e1ba884d4"
+  },
+  {
+    "path": "dirty-entry.txt",
+    "bytes": 178372,
+    "sha256": "7a5b7c1c337823dac0f5a811c102ddd902ef66e0414981b9951fea6dbd8a1095"
+  },
+  {
+    "path": "existing-debug-pair-identity.json",
+    "bytes": 3928,
+    "sha256": "26aa881cbb9de77e5fc6f09b8d61977f5738ae3ee7a2dad054670e65a374da00"
+  },
+  {
+    "path": "existing-debug-payload-manifest.json",
+    "bytes": 22292,
+    "sha256": "ada374aa81545a32a43eeaabbfc1e6e8d48f0d5f30328a6171b01a4ab7af48ca"
+  },
+  {
+    "path": "proposed-build-command.json",
+    "bytes": 2602,
+    "sha256": "579bf05c7a56ea246929e4f686ab26ab35573100037fa12dda5ba45b70d380a4"
+  },
+  {
+    "path": "simulated-entitlements-check.json",
+    "bytes": 1096,
+    "sha256": "bcc5e1b35d68645e3266cd96672a0ab0d76d073abbdbc32f097419e68ca7c441"
+  }
+]

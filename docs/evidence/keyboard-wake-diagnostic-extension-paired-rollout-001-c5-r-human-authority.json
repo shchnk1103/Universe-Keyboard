@@ -1,0 +1,8 @@
+{
+  "authority": "Human授权并确认之前那台模拟器本轮仍独占，app没有重新构建；指引Human继续C5-R。",
+  "host_adoption": "独立搜索Tab，按已评审具体提案",
+  "capture_by_human": "Human已经开启记录诊断数据及首屏高保真；确认开启前两项均关闭。",
+  "restoration_baseline": "off/off（Human本轮观察）；logging/expiry原键存在性在Human开启前未由machine采到，UNKNOWN。旧C5-I keysabsent是历史观察，不推为当前original存在性。DISP/ENGINE目前keysabsent，默认enabled，不需切换。",
+  "pending": "Human一次输入尚未开始；root不并行UI操作。",
+  "recorded_utc": "2026-10-01T02:43:17.925480+00:00"
+}

@@ -1,0 +1,12 @@
+{
+  "step": "F2-L-diff-check",
+  "utc": "2026-10-04T10:46:52.086855+00:00",
+  "command": "git diff HEAD --check -- Keyboard/Controllers/KeyboardViewController.swift Keyboard/Controllers/KeyboardViewController+Bootstrap.swift \"Universe Keyboard.xcodeproj/project.pbxproj\" docs/evidence/keyboard-wake-host-activation-fix-001-f2-prepared-entry-2026-10-04.md docs/evidence/keyboard-wake-host-activation-fix-001-f2-artifacts/",
+  "cwd": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "remaining_wall_seconds": 10387.913323,
+  "ended": "2026-10-04T10:46:52.592292+00:00",
+  "elapsed_seconds": 0.505437,
+  "exit_code": 0,
+  "timeout": false,
+  "log": "/private/tmp/ukey-host-activation-fix-f2-run-20261004/logs/F2-L-diff-check.log"
+}

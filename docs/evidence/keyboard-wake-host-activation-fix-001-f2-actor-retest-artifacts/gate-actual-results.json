@@ -1,0 +1,155 @@
+[
+  {
+    "duration": "0.0055s",
+    "durationInSeconds": 0.0055190324783325195,
+    "name": "testAppearThenActiveAndActiveThenAppearConsumePendingOnce()",
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testAppearThenActiveAndActiveThenAppearConsumePendingOnce()",
+    "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests/testAppearThenActiveAndActiveThenAppearConsumePendingOnce",
+    "nodeType": "Test Case",
+    "result": "Passed"
+  },
+  {
+    "duration": "0.00087s",
+    "durationInSeconds": 0.0008749961853027344,
+    "name": "testCanaryPermissionTableDeniesOwnerStartingBeforeResume()",
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testCanaryPermissionTableDeniesOwnerStartingBeforeResume()",
+    "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests/testCanaryPermissionTableDeniesOwnerStartingBeforeResume",
+    "nodeType": "Test Case",
+    "result": "Passed"
+  },
+  {
+    "duration": "0.00085s",
+    "durationInSeconds": 0.0008509159088134766,
+    "name": "testCanaryStartingAllowsOriginalFirstFrameButNotHostActiveResume()",
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testCanaryStartingAllowsOriginalFirstFrameButNotHostActiveResume()",
+    "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests/testCanaryStartingAllowsOriginalFirstFrameButNotHostActiveResume",
+    "nodeType": "Test Case",
+    "result": "Passed"
+  },
+  {
+    "duration": "0.0049s",
+    "durationInSeconds": 0.004944920539855957,
+    "name": "testCancelledFirstFrameRearmsOnceWithoutImmediateOwner()",
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testCancelledFirstFrameRearmsOnceWithoutImmediateOwner()",
+    "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests/testCancelledFirstFrameRearmsOnceWithoutImmediateOwner",
+    "nodeType": "Test Case",
+    "result": "Passed"
+  },
+  {
+    "duration": "0.00086s",
+    "durationInSeconds": 0.0008649826049804688,
+    "name": "testDuplicateActiveAndResignAreIdempotent()",
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testDuplicateActiveAndResignAreIdempotent()",
+    "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests/testDuplicateActiveAndResignAreIdempotent",
+    "nodeType": "Test Case",
+    "result": "Passed"
+  },
+  {
+    "duration": "0.00098s",
+    "durationInSeconds": 0.0009819269180297852,
+    "name": "testDuplicateActiveDoesNotEmitResumeThatWouldClearNewComposition()",
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testDuplicateActiveDoesNotEmitResumeThatWouldClearNewComposition()",
+    "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests/testDuplicateActiveDoesNotEmitResumeThatWouldClearNewComposition",
+    "nodeType": "Test Case",
+    "result": "Passed"
+  },
+  {
+    "duration": "0.00071s",
+    "durationInSeconds": 0.0007109642028808594,
+    "name": "testFenceBlocksRearmAndFirstFrameCreation()",
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testFenceBlocksRearmAndFirstFrameCreation()",
+    "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests/testFenceBlocksRearmAndFirstFrameCreation",
+    "nodeType": "Test Case",
+    "result": "Passed"
+  },
+  {
+    "duration": "0.0007s",
+    "durationInSeconds": 0.0006979703903198242,
+    "name": "testFirstFrameElapsedConsumesPendingAndActivatesOnce()",
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testFirstFrameElapsedConsumesPendingAndActivatesOnce()",
+    "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests/testFirstFrameElapsedConsumesPendingAndActivatesOnce",
+    "nodeType": "Test Case",
+    "result": "Passed"
+  },
+  {
+    "duration": "0.00064s",
+    "durationInSeconds": 0.0006380081176757812,
+    "name": "testForeignAndMissingContextDoNotChangeState()",
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testForeignAndMissingContextDoNotChangeState()",
+    "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests/testForeignAndMissingContextDoNotChangeState",
+    "nodeType": "Test Case",
+    "result": "Passed"
+  },
+  {
+    "duration": "0.0008s",
+    "durationInSeconds": 0.0008039474487304688,
+    "name": "testHiddenAndNoWindowDoNotResume()",
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testHiddenAndNoWindowDoNotResume()",
+    "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests/testHiddenAndNoWindowDoNotResume",
+    "nodeType": "Test Case",
+    "result": "Passed"
+  },
+  {
+    "duration": "0.00081s",
+    "durationInSeconds": 0.0008139610290527344,
+    "name": "testHostActiveBeforeWindowIsTakenOverByDidAppear()",
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testHostActiveBeforeWindowIsTakenOverByDidAppear()",
+    "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests/testHostActiveBeforeWindowIsTakenOverByDidAppear",
+    "nodeType": "Test Case",
+    "result": "Passed"
+  },
+  {
+    "duration": "0.00071s",
+    "durationInSeconds": 0.0007059574127197266,
+    "name": "testLateFirstFrameTickAfterDisappearDoesNotActivate()",
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testLateFirstFrameTickAfterDisappearDoesNotActivate()",
+    "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests/testLateFirstFrameTickAfterDisappearDoesNotActivate",
+    "nodeType": "Test Case",
+    "result": "Passed"
+  },
+  {
+    "duration": "0.00076s",
+    "durationInSeconds": 0.000762939453125,
+    "name": "testOldPresentationPendingIsInvalidatedOnNewAppearance()",
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testOldPresentationPendingIsInvalidatedOnNewAppearance()",
+    "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests/testOldPresentationPendingIsInvalidatedOnNewAppearance",
+    "nodeType": "Test Case",
+    "result": "Passed"
+  },
+  {
+    "duration": "0.00072s",
+    "durationInSeconds": 0.0007189512252807617,
+    "name": "testPermissionOrderIsEvaluatedBeforeConsumingPending()",
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testPermissionOrderIsEvaluatedBeforeConsumingPending()",
+    "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests/testPermissionOrderIsEvaluatedBeforeConsumingPending",
+    "nodeType": "Test Case",
+    "result": "Passed"
+  },
+  {
+    "duration": "0.00072s",
+    "durationInSeconds": 0.0007189512252807617,
+    "name": "testPrecreatedHiddenInstanceDoesNotResumeOnHostActive()",
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testPrecreatedHiddenInstanceDoesNotResumeOnHostActive()",
+    "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests/testPrecreatedHiddenInstanceDoesNotResumeOnHostActive",
+    "nodeType": "Test Case",
+    "result": "Passed"
+  },
+  {
+    "duration": "0.00067s",
+    "durationInSeconds": 0.0006680488586425781,
+    "name": "testVisibilitySuspendedGrantedAllowsExactlyOneResume()",
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testVisibilitySuspendedGrantedAllowsExactlyOneResume()",
+    "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests/testVisibilitySuspendedGrantedAllowsExactlyOneResume",
+    "nodeType": "Test Case",
+    "result": "Passed"
+  },
+  {
+    "duration": "0.00079s",
+    "durationInSeconds": 0.0007880926132202148,
+    "name": "testVisibleResignThenActiveResumesExactlyOnce()",
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testVisibleResignThenActiveResumesExactlyOnce()",
+    "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests/testVisibleResignThenActiveResumesExactlyOnce",
+    "nodeType": "Test Case",
+    "result": "Passed"
+  }
+]

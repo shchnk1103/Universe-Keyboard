@@ -1,0 +1,17 @@
+[
+  {
+    "path": "dirty-before.txt",
+    "bytes": 175070,
+    "sha256": "5746208e6422fdb7ba44402f7334ff941b8d7d6afbc7f9dc79f5c99caeabb750"
+  },
+  {
+    "path": "input-check.json",
+    "bytes": 310,
+    "sha256": "8f0e5a8b537087576d522f41637277bc577f063f166eb62fd44fc05c7095437f"
+  },
+  {
+    "path": "runtime-log-inventory.json",
+    "bytes": 17397,
+    "sha256": "e1743a90a9c667ab609e5c9d49e28fe7ca75abc8bedaf1a012f9581344c25589"
+  }
+]

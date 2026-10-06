@@ -1,0 +1,62 @@
+{
+  "utc": "2026-10-05T01:38:43.073734+00:00",
+  "root_readonly_scope_reconciliation_not_independent_verdict_override": true,
+  "four_jobs": [
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-2-rimebridge.log",
+      "sha256": "a963ffc4baebb7e48483608f0da149586c319a5e1babd1011be43e8df534adb5",
+      "operation": "test",
+      "required_success_marker": "** TEST SUCCEEDED **",
+      "success_marker_present": true,
+      "marker_line_numbers": [
+        2195
+      ],
+      "all_warning_error_count": 1,
+      "appintents_metadata_warning_count": 1,
+      "non_appintents_warning_error_count": 0
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-3-app-keyboard.log",
+      "sha256": "6f64d5f7b4220abcb4b35515c6246fad0ceb847d6060c3ffd29ae163576e12e5",
+      "operation": "test",
+      "required_success_marker": "** TEST SUCCEEDED **",
+      "success_marker_present": true,
+      "marker_line_numbers": [
+        5921
+      ],
+      "all_warning_error_count": 4,
+      "appintents_metadata_warning_count": 4,
+      "non_appintents_warning_error_count": 0
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-4-release-build.log",
+      "sha256": "992a37077c4584351727ad67cb54e8e2f412d18470d82a33937641decd92b671",
+      "operation": "build",
+      "required_success_marker": "** BUILD SUCCEEDED **",
+      "success_marker_present": true,
+      "marker_line_numbers": [
+        1405
+      ],
+      "all_warning_error_count": 2,
+      "appintents_metadata_warning_count": 2,
+      "non_appintents_warning_error_count": 0
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-5-keychain.log",
+      "sha256": "1a9afc01554a2d3d3b6dd2eac918fab81e1d250af7a44877cfa515ea5ee7b898",
+      "operation": "test",
+      "required_success_marker": "** TEST SUCCEEDED **",
+      "success_marker_present": true,
+      "marker_line_numbers": [
+        1762
+      ],
+      "all_warning_error_count": 4,
+      "appintents_metadata_warning_count": 4,
+      "non_appintents_warning_error_count": 0
+    }
+  ],
+  "r3_parser_error": "RimeBridge/App/Keychain are test operations; checking only BUILD SUCCEEDED makes a false negative",
+  "scope_gap": "R3 introduced original-7 baseline identity as independent criterion; approved requirement was original warnings absent in current logs. Current complete warning/error set contains only11 AppIntents warnings, so zero Swift diagnostics includes original actor diagnostics. This is root evidence logic, not a rewritten reviewer conclusion.",
+  "original_r3_uncovered_preserved": true,
+  "no_test_build_or_simulator_operation": true
+}

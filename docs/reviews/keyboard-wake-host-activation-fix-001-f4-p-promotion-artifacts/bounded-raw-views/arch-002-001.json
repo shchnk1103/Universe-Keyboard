@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+KeyPressFeedback.swift",
+  "origin_sha256": "c1d361a34e5aa788a4a518f46cbb7370ff5903e05736a72281da04f859a0fe7a",
+  "expected_sha256": "c1d361a34e5aa788a4a518f46cbb7370ff5903e05736a72281da04f859a0fe7a",
+  "line_start": 1,
+  "line_end": 60,
+  "lines": [
+    {
+      "line": 1,
+      "text": "import KeyboardCore"
+    },
+    {
+      "line": 2,
+      "text": "import UIKit"
+    },
+    {
+      "line": 3,
+      "text": ""
+    },
+    {
+      "line": 4,
+      "text": "extension KeyboardViewController {"
+    },
+    {
+      "line": 5,
+      "text": "    #if DEBUG"
+    },
+    {
+      "line": 6,
+      "text": "        /// Correlates a UIKit pointer terminal with lifecycle/candidate state."
+    },
+    {
+      "line": 7,
+      "text": "        /// `role` is deliberately coarse so diagnostics never record a typed key."
+    },
+    {
+      "line": 8,
+      "text": "        func recordKeyboardTrackingDiagnostic("
+    },
+    {
+      "line": 9,
+      "text": "            button: KeyboardKeyButton,"
+    },
+    {
+      "line": 10,
+      "text": "            phase: KeyboardKeyTrackingPhase"
+    },
+    {
+      "line": 11,
+      "text": "        ) {"
+    },
+    {
+      "line": 12,
+      "text": "            #if KEYBOARD_WAKE_OWNER_PROBE"
+    },
+    {
+      "line": 13,
+      "text": "                wakeOwnerProbeTouch(ObjectIdentifier(button), began: phase == .began)"
+    },
+    {
+      "line": 14,
+      "text": "            #endif"
+    },
+    {
+      "line": 15,
+      "text": "            let role: String"
+    },
+    {
+      "line": 16,
+      "text": "            if button === shiftButton {"
+    },
+    {
+      "line": 17,
+      "text": "                role = \"shift\""
+    },
+    {
+      "line": 18,
+      "text": "            } else if button === returnButton {"
+    },
+    {
+      "line": 19,
+      "text": "                role = \"return\""
+    },
+    {
+      "line": 20,
+      "text": "            } else if button === nextKeyboardButton {"
+    },
+    {
+      "line": 21,
+      "text": "                role = \"nextKeyboard\""
+    },
+    {
+      "line": 22,
+      "text": "            } else if button === t9SpaceButton {"
+    },
+    {
+      "line": 23,
+      "text": "                role = \"space\""
+    },
+    {
+      "line": 24,
+      "text": "            } else {"
+    },
+    {
+      "line": 25,
+      "text": "                switch button.visualStyle {"
+    },
+    {
+      "line": 26,
+      "text": "                case .character:"
+    },
+    {
+      "line": 27,
+      "text": "                    role = \"character\""
+    },
+    {
+      "line": 28,
+      "text": "                case .function:"
+    },
+    {
+      "line": 29,
+      "text": "                    role = \"function\""
+    },
+    {
+      "line": 30,
+      "text": "                case .space:"
+    },
+    {
+      "line": 31,
+      "text": "                    role = \"space\""
+    },
+    {
+      "line": 32,
+      "text": "                case .returnKey:"
+    },
+    {
+      "line": 33,
+      "text": "                    role = \"return\""
+    },
+    {
+      "line": 34,
+      "text": "                case .active:"
+    },
+    {
+      "line": 35,
+      "text": "                    role = \"active\""
+    },
+    {
+      "line": 36,
+      "text": "                }"
+    },
+    {
+      "line": 37,
+      "text": "            }"
+    },
+    {
+      "line": 38,
+      "text": "            Logger.shared.info("
+    },
+    {
+      "line": 39,
+      "text": "                \"KBDVIS touch phase=\\(phase.rawValue) role=\\(role) \""
+    },
+    {
+      "line": 40,
+      "text": "                    + \"pressed=\\(keyPressFeedbackEmittedButtonIDs.count)\","
+    },
+    {
+      "line": 41,
+      "text": "                category: .display"
+    },
+    {
+      "line": 42,
+      "text": "            )"
+    },
+    {
+      "line": 43,
+      "text": "            guard isHighFidelityDiagnosticsActive else { return }"
+    },
+    {
+      "line": 44,
+      "text": "            diagnosticsJournal.record("
+    },
+    {
+      "line": 45,
+      "text": "                code: .touchTerminal,"
+    },
+    {
+      "line": 46,
+      "text": "                category: .display,"
+    },
+    {
+      "line": 47,
+      "text": "                appearanceID: diagnosticsAppearanceID,"
+    },
+    {
+      "line": 48,
+      "text": "                fields: ["
+    },
+    {
+      "line": 49,
+      "text": "                    .count(.highlightedKeyCount, keyPressFeedbackEmittedButtonIDs.count),"
+    },
+    {
+      "line": 50,
+      "text": "                    .flag(.isKeyHighlighted, phase == .began),"
+    },
+    {
+      "line": 51,
+      "text": "                ]"
+    },
+    {
+      "line": 52,
+      "text": "            )"
+    },
+    {
+      "line": 53,
+      "text": "        }"
+    },
+    {
+      "line": 54,
+      "text": ""
+    },
+    {
+      "line": 55,
+      "text": "        /// Snapshot only structural state needed to separate stale UIKit paint,"
+    },
+    {
+      "line": 56,
+      "text": "        /// real key tracking, Core composition and lifecycle cleanup. No key text,"
+    },
+    {
+      "line": 57,
+      "text": "        /// candidate text or host-document text is emitted."
+    },
+    {
+      "line": 58,
+      "text": "        func recordKeyboardVisualDiagnostic("
+    },
+    {
+      "line": 59,
+      "text": "            _ marker: String,"
+    },
+    {
+      "line": 60,
+      "text": "            effects: KeyboardEffect? = nil"
+    }
+  ]
+}

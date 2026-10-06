@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+  "origin_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "expected_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "line_start": 181,
+  "line_end": 240,
+  "lines": [
+    {
+      "line": 181,
+      "text": "        rimeEngine = CandidateProviderRimeAdapter(candidateProvider: candidateProvider)"
+    },
+    {
+      "line": 182,
+      "text": "        typoCorrectionCandidateQuery = CandidateProviderTypoCorrectionQuery("
+    },
+    {
+      "line": 183,
+      "text": "            candidateProvider: candidateProvider"
+    },
+    {
+      "line": 184,
+      "text": "        )"
+    },
+    {
+      "line": 185,
+      "text": "        rebuildResponsiveRimeCoordinatorIfNeeded()"
+    },
+    {
+      "line": 186,
+      "text": "    }"
+    },
+    {
+      "line": 187,
+      "text": ""
+    },
+    {
+      "line": 188,
+      "text": "    /// Install or clear the R2 / R4-Wire coordinator + engine bridge when gates"
+    },
+    {
+      "line": 189,
+      "text": "    /// or engine/bootstrap change. Safe to call repeatedly; default gates leave"
+    },
+    {
+      "line": 190,
+      "text": "    /// coordinators `nil`."
+    },
+    {
+      "line": 191,
+      "text": "    public func rebuildResponsiveRimeCoordinatorIfNeeded("
+    },
+    {
+      "line": 192,
+      "text": "        publishPolicy: ResponsiveRimePublishPolicy = .latestOnly,"
+    },
+    {
+      "line": 193,
+      "text": "        clock: ResponsiveRimeExecutionClock = NoopResponsiveRimeClock()"
+    },
+    {
+      "line": 194,
+      "text": "    ) {"
+    },
+    {
+      "line": 195,
+      "text": "        #if T9_RESPONSIVE_CANARY_INTERNAL"
+    },
+    {
+      "line": 196,
+      "text": "            // Once installed, only the unique canary lifecycle/kill paths may tear"
+    },
+    {
+      "line": 197,
+      "text": "            // down the owner. Legacy flag rebuilds must not create a second mode"
+    },
+    {
+      "line": 198,
+      "text": "            // evaluator or invoke abandonment-style shutdown during an active kill."
+    },
+    {
+      "line": 199,
+      "text": "            guard !isResponsiveCanaryOwnerInstalled else { return }"
+    },
+    {
+      "line": 200,
+      "text": "        #endif"
+    },
+    {
+      "line": 201,
+      "text": "        // Tear down prior thread-affine owner before switching modes."
+    },
+    {
+      "line": 202,
+      "text": "        if let threadAffine = threadAffineRimeCoordinator {"
+    },
+    {
+      "line": 203,
+      "text": "            threadAffine.shutdown()"
+    },
+    {
+      "line": 204,
+      "text": "            threadAffineRimeCoordinator = nil"
+    },
+    {
+      "line": 205,
+      "text": "        }"
+    },
+    {
+      "line": 206,
+      "text": ""
+    },
+    {
+      "line": 207,
+      "text": "        // Unwrap any previous bridge so we never nest bridges."
+    },
+    {
+      "line": 208,
+      "text": "        let underlying: RimeEngine? = {"
+    },
+    {
+      "line": 209,
+      "text": "            if let bridge = rimeEngine as? ResponsiveRimeEngineBridge {"
+    },
+    {
+      "line": 210,
+      "text": "                return bridge.underlyingEngine"
+    },
+    {
+      "line": 211,
+      "text": "            }"
+    },
+    {
+      "line": 212,
+      "text": "            if rimeEngine is ThreadAffineRimeEngineBridge {"
+    },
+    {
+      "line": 213,
+      "text": "                return nil"
+    },
+    {
+      "line": 214,
+      "text": "            }"
+    },
+    {
+      "line": 215,
+      "text": "            return rimeEngine"
+    },
+    {
+      "line": 216,
+      "text": "        }()"
+    },
+    {
+      "line": 217,
+      "text": ""
+    },
+    {
+      "line": 218,
+      "text": "        guard isResponsiveRimePipelineEnabled else {"
+    },
+    {
+      "line": 219,
+      "text": "            let wasBridge ="
+    },
+    {
+      "line": 220,
+      "text": "                rimeEngine is ResponsiveRimeEngineBridge"
+    },
+    {
+      "line": 221,
+      "text": "                || rimeEngine is ThreadAffineRimeEngineBridge"
+    },
+    {
+      "line": 222,
+      "text": "            if wasBridge {"
+    },
+    {
+      "line": 223,
+      "text": "                rimeEngine = underlying"
+    },
+    {
+      "line": 224,
+      "text": "            }"
+    },
+    {
+      "line": 225,
+      "text": "            responsiveRimeCoordinator = nil"
+    },
+    {
+      "line": 226,
+      "text": "            responsiveKeyApplyContexts.removeAll()"
+    },
+    {
+      "line": 227,
+      "text": "            return"
+    },
+    {
+      "line": 228,
+      "text": "        }"
+    },
+    {
+      "line": 229,
+      "text": ""
+    },
+    {
+      "line": 230,
+      "text": "        // R4-Wire dual gate: bootstrap-only off-main owner when requested."
+    },
+    {
+      "line": 231,
+      "text": "        if isThreadAffineRimeOwnerEnabled,"
+    },
+    {
+      "line": 232,
+      "text": "            let bootstrap = threadAffineEngineBootstrap"
+    },
+    {
+      "line": 233,
+      "text": "        {"
+    },
+    {
+      "line": 234,
+      "text": "            responsiveRimeCoordinator = nil"
+    },
+    {
+      "line": 235,
+      "text": "            let coordinator = ThreadAffineRimeSessionCoordinator("
+    },
+    {
+      "line": 236,
+      "text": "                bootstrap: bootstrap,"
+    },
+    {
+      "line": 237,
+      "text": "                fixtureID: \"T9RESP-R4W\""
+    },
+    {
+      "line": 238,
+      "text": "            )"
+    },
+    {
+      "line": 239,
+      "text": "            #if T9_RESPONSIVE_CANARY_INTERNAL"
+    },
+    {
+      "line": 240,
+      "text": "                coordinator.setCanaryPublishHandler { [weak self] publication in"
+    }
+  ]
+}

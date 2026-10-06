@@ -1,0 +1,3638 @@
+{
+  "RimeBridgeTests": [
+    {
+      "identifier": "RimeLuaSmokeTests/testCorrectionSidecarKeepsVisibleCompositionIntactWhenRuntimeFixtureIsProvided()",
+      "name": "testCorrectionSidecarKeepsVisibleCompositionIntactWhenRuntimeFixtureIsProvided()",
+      "testStatus": "Skipped",
+      "duration": "0.013553023338317871",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.013553023338317871"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "RimeLuaSmokeTests/testCorrectionSidecarKeepsVisibleCompositionIntactWhenRuntimeFixtureIsProvided()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/RimeBridgeTests/RimeLuaSmokeTests/testCorrectionSidecarKeepsVisibleCompositionIntactWhenRuntimeFixtureIsProvided"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testCorrectionSidecarKeepsVisibleCompositionIntactWhenRuntimeFixtureIsProvided()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeLuaSmokeTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "94"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - Set UK_RIME_LUA_SMOKE_SHARED_DIR and UK_RIME_LUA_SMOKE_USER_DIR to run the real Lua smoke test."
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:08:33.550+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    },
+    {
+      "identifier": "RimeLuaSmokeTests/testRimeIceLuaDynamicCandidatesWhenRuntimeFixtureIsProvided()",
+      "name": "testRimeIceLuaDynamicCandidatesWhenRuntimeFixtureIsProvided()",
+      "testStatus": "Skipped",
+      "duration": "0.0015920400619506836",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.0015920400619506836"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "RimeLuaSmokeTests/testRimeIceLuaDynamicCandidatesWhenRuntimeFixtureIsProvided()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/RimeBridgeTests/RimeLuaSmokeTests/testRimeIceLuaDynamicCandidatesWhenRuntimeFixtureIsProvided"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testRimeIceLuaDynamicCandidatesWhenRuntimeFixtureIsProvided()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeLuaSmokeTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "94"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - Set UK_RIME_LUA_SMOKE_SHARED_DIR and UK_RIME_LUA_SMOKE_USER_DIR to run the real Lua smoke test."
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:08:33.551+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    },
+    {
+      "identifier": "RimeT9AutoAnchorRetryMatrixTests/testCappedTwoSyllableControllerFrozenPairedMatrix()",
+      "name": "testCappedTwoSyllableControllerFrozenPairedMatrix()",
+      "testStatus": "Skipped",
+      "duration": "0.0019719600677490234",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.0019719600677490234"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "RimeT9AutoAnchorRetryMatrixTests/testCappedTwoSyllableControllerFrozenPairedMatrix()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests/testCappedTwoSyllableControllerFrozenPairedMatrix"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testCappedTwoSyllableControllerFrozenPairedMatrix()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "766"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - Set the immutable 40-character lowercase S4 commit to run the paired matrix."
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:08:33.616+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    },
+    {
+      "identifier": "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationKnownPositive()",
+      "name": "testIsolatedPersonalizationKnownPositive()",
+      "testStatus": "Skipped",
+      "duration": "0.0015159845352172852",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.0015159845352172852"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationKnownPositive()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationKnownPositive"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testIsolatedPersonalizationKnownPositive()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "2787"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:08:33.618+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    },
+    {
+      "identifier": "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationNaturalReminder()",
+      "name": "testIsolatedPersonalizationNaturalReminder()",
+      "testStatus": "Skipped",
+      "duration": "0.0014990568161010742",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.0014990568161010742"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationNaturalReminder()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationNaturalReminder"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testIsolatedPersonalizationNaturalReminder()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "2787"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:08:33.620+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    },
+    {
+      "identifier": "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationNaturalWeather()",
+      "name": "testIsolatedPersonalizationNaturalWeather()",
+      "testStatus": "Skipped",
+      "duration": "0.0014090538024902344",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.0014090538024902344"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationNaturalWeather()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationNaturalWeather"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testIsolatedPersonalizationNaturalWeather()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "2787"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:08:33.622+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    },
+    {
+      "identifier": "RimeT9AutoAnchorRetryMatrixTests/testPartialLongSelectionIsNotPersonalizationProof()",
+      "name": "testPartialLongSelectionIsNotPersonalizationProof()",
+      "testStatus": "Skipped",
+      "duration": "0.0013428926467895508",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.0013428926467895508"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "RimeT9AutoAnchorRetryMatrixTests/testPartialLongSelectionIsNotPersonalizationProof()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests/testPartialLongSelectionIsNotPersonalizationProof"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testPartialLongSelectionIsNotPersonalizationProof()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "2787"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:08:33.623+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    },
+    {
+      "identifier": "RimeT9AutoAnchorRetryMatrixTests/testRejectedCompositionLaterOpportunityTransactionMatrix()",
+      "name": "testRejectedCompositionLaterOpportunityTransactionMatrix()",
+      "testStatus": "Skipped",
+      "duration": "0.001376032829284668",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.001376032829284668"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "RimeT9AutoAnchorRetryMatrixTests/testRejectedCompositionLaterOpportunityTransactionMatrix()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests/testRejectedCompositionLaterOpportunityTransactionMatrix"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testRejectedCompositionLaterOpportunityTransactionMatrix()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "2787"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:08:33.634+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    },
+    {
+      "identifier": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerFrozenA0A1B2B3Matrix()",
+      "name": "testRollingControllerFrozenA0A1B2B3Matrix()",
+      "testStatus": "Skipped",
+      "duration": "0.001721024513244629",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.001721024513244629"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerFrozenA0A1B2B3Matrix()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests/testRollingControllerFrozenA0A1B2B3Matrix"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testRollingControllerFrozenA0A1B2B3Matrix()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "2787"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:08:33.636+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    },
+    {
+      "identifier": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerMissingLiveCompositionFailsClosedBeforeKey()",
+      "name": "testRollingControllerMissingLiveCompositionFailsClosedBeforeKey()",
+      "testStatus": "Skipped",
+      "duration": "0.0016039609909057617",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.0016039609909057617"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerMissingLiveCompositionFailsClosedBeforeKey()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests/testRollingControllerMissingLiveCompositionFailsClosedBeforeKey"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testRollingControllerMissingLiveCompositionFailsClosedBeforeKey()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "2787"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:08:33.638+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    },
+    {
+      "identifier": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerRealRimeDeletePathAndPartialOwnership()",
+      "name": "testRollingControllerRealRimeDeletePathAndPartialOwnership()",
+      "testStatus": "Skipped",
+      "duration": "0.0015549659729003906",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.0015549659729003906"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerRealRimeDeletePathAndPartialOwnership()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests/testRollingControllerRealRimeDeletePathAndPartialOwnership"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testRollingControllerRealRimeDeletePathAndPartialOwnership()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "2787"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:08:33.640+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    },
+    {
+      "identifier": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerRealRimeSecondRejectRestoreMatrix()",
+      "name": "testRollingControllerRealRimeSecondRejectRestoreMatrix()",
+      "testStatus": "Skipped",
+      "duration": "0.0010999441146850586",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.0010999441146850586"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerRealRimeSecondRejectRestoreMatrix()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests/testRollingControllerRealRimeSecondRejectRestoreMatrix"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testRollingControllerRealRimeSecondRejectRestoreMatrix()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "2787"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:08:33.641+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    },
+    {
+      "identifier": "RimeT9CompatibilitySpikeTests/testPinnedLibrimeCanSelectT9AndProcessDigitSequenceAfterRemovingUnsupportedProcessor()",
+      "name": "testPinnedLibrimeCanSelectT9AndProcessDigitSequenceAfterRemovingUnsupportedProcessor()",
+      "testStatus": "Skipped",
+      "duration": "0.0015859603881835938",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.0015859603881835938"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "RimeT9CompatibilitySpikeTests/testPinnedLibrimeCanSelectT9AndProcessDigitSequenceAfterRemovingUnsupportedProcessor()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/RimeBridgeTests/RimeT9CompatibilitySpikeTests/testPinnedLibrimeCanSelectT9AndProcessDigitSequenceAfterRemovingUnsupportedProcessor"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testPinnedLibrimeCanSelectT9AndProcessDigitSequenceAfterRemovingUnsupportedProcessor()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9CompatibilitySpikeTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "117"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 compatibility Spike."
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:08:33.644+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    },
+    {
+      "identifier": "RimeT9PinyinSelectionSpikeTests/test004CatalogExactRawAcceptanceOnPinnedLibrime()",
+      "name": "test004CatalogExactRawAcceptanceOnPinnedLibrime()",
+      "testStatus": "Skipped",
+      "duration": "0.0020220279693603516",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.0020220279693603516"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "RimeT9PinyinSelectionSpikeTests/test004CatalogExactRawAcceptanceOnPinnedLibrime()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/RimeBridgeTests/RimeT9PinyinSelectionSpikeTests/test004CatalogExactRawAcceptanceOnPinnedLibrime"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test004CatalogExactRawAcceptanceOnPinnedLibrime()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9PinyinSelectionSpikeTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "1407"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:08:33.647+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    },
+    {
+      "identifier": "RimeT9PinyinSelectionSpikeTests/testAtomicPathDiscoveryStageAOnPinnedLibrime()",
+      "name": "testAtomicPathDiscoveryStageAOnPinnedLibrime()",
+      "testStatus": "Skipped",
+      "duration": "0.0019339323043823242",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.0019339323043823242"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "RimeT9PinyinSelectionSpikeTests/testAtomicPathDiscoveryStageAOnPinnedLibrime()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/RimeBridgeTests/RimeT9PinyinSelectionSpikeTests/testAtomicPathDiscoveryStageAOnPinnedLibrime"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testAtomicPathDiscoveryStageAOnPinnedLibrime()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9PinyinSelectionSpikeTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "1407"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:08:33.649+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    },
+    {
+      "identifier": "RimeT9PinyinSelectionSpikeTests/testGate5Phase05CandidateCoverageSelRangeOnPinnedLibrime()",
+      "name": "testGate5Phase05CandidateCoverageSelRangeOnPinnedLibrime()",
+      "testStatus": "Skipped",
+      "duration": "0.0014920234680175781",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.0014920234680175781"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "RimeT9PinyinSelectionSpikeTests/testGate5Phase05CandidateCoverageSelRangeOnPinnedLibrime()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/RimeBridgeTests/RimeT9PinyinSelectionSpikeTests/testGate5Phase05CandidateCoverageSelRangeOnPinnedLibrime"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testGate5Phase05CandidateCoverageSelRangeOnPinnedLibrime()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9PinyinSelectionSpikeTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "1407"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:08:33.651+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    },
+    {
+      "identifier": "RimeT9PinyinSelectionSpikeTests/testGate5Phase06AlternativeCoverageSelectionDeltaOnPinnedLibrime()",
+      "name": "testGate5Phase06AlternativeCoverageSelectionDeltaOnPinnedLibrime()",
+      "testStatus": "Skipped",
+      "duration": "0.0014840364456176758",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.0014840364456176758"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "RimeT9PinyinSelectionSpikeTests/testGate5Phase06AlternativeCoverageSelectionDeltaOnPinnedLibrime()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/RimeBridgeTests/RimeT9PinyinSelectionSpikeTests/testGate5Phase06AlternativeCoverageSelectionDeltaOnPinnedLibrime"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testGate5Phase06AlternativeCoverageSelectionDeltaOnPinnedLibrime()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9PinyinSelectionSpikeTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "1407"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:08:33.654+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    },
+    {
+      "identifier": "RimeT9PinyinSelectionSpikeTests/testPrecisePinyinPathRefinementOnPinnedLibrime()",
+      "name": "testPrecisePinyinPathRefinementOnPinnedLibrime()",
+      "testStatus": "Skipped",
+      "duration": "0.0012420415878295898",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.0012420415878295898"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "RimeT9PinyinSelectionSpikeTests/testPrecisePinyinPathRefinementOnPinnedLibrime()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/RimeBridgeTests/RimeT9PinyinSelectionSpikeTests/testPrecisePinyinPathRefinementOnPinnedLibrime"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testPrecisePinyinPathRefinementOnPinnedLibrime()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9PinyinSelectionSpikeTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "1407"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:08:33.656+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    },
+    {
+      "identifier": "RimeT9PinyinSelectionSpikeTests/testReadOnlyWindowCoverageForYiZiSibling()",
+      "name": "testReadOnlyWindowCoverageForYiZiSibling()",
+      "testStatus": "Skipped",
+      "duration": "0.0015659332275390625",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.0015659332275390625"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "RimeT9PinyinSelectionSpikeTests/testReadOnlyWindowCoverageForYiZiSibling()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/RimeBridgeTests/RimeT9PinyinSelectionSpikeTests/testReadOnlyWindowCoverageForYiZiSibling"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testReadOnlyWindowCoverageForYiZiSibling()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9PinyinSelectionSpikeTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "1407"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:08:33.657+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    },
+    {
+      "identifier": "ThreadAffineRimeRealEngineTests/testRealEngineBootstrapCreatesAndCallsOffMainThroughOwner()",
+      "name": "testRealEngineBootstrapCreatesAndCallsOffMainThroughOwner()",
+      "testStatus": "Skipped",
+      "duration": "0.0014920234680175781",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.0014920234680175781"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "ThreadAffineRimeRealEngineTests/testRealEngineBootstrapCreatesAndCallsOffMainThroughOwner()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/RimeBridgeTests/ThreadAffineRimeRealEngineTests/testRealEngineBootstrapCreatesAndCallsOffMainThroughOwner"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testRealEngineBootstrapCreatesAndCallsOffMainThroughOwner()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/ThreadAffineRimeRealEngineTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "120"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR (or UK_RIME_R4B_*) to run R4-B real-engine proof."
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:08:33.667+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    }
+  ],
+  "AppKeyboardTests": [
+    {
+      "identifier": "RimeIcePinnedArtifactTests/testVerifiedOfficialAndMirrorArchivesConvergeAfterProductionProcessing()",
+      "name": "testVerifiedOfficialAndMirrorArchivesConvergeAfterProductionProcessing()",
+      "testStatus": "Skipped",
+      "duration": "0.007506012916564941",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.007506012916564941"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "RimeIcePinnedArtifactTests/testVerifiedOfficialAndMirrorArchivesConvergeAfterProductionProcessing()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/RimeIcePinnedArtifactTests/testVerifiedOfficialAndMirrorArchivesConvergeAfterProductionProcessing"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testVerifiedOfficialAndMirrorArchivesConvergeAfterProductionProcessing()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/RimeIcePinnedArtifactTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "26"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - Set TEST_RUNNER_SCHEME_PIN_ARCHIVE_ROOT to the independently downloaded source archives"
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:09:51.411+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    },
+    {
+      "identifier": "RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem()",
+      "name": "testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem()",
+      "testStatus": "Skipped",
+      "duration": "0.006052970886230469",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.006052970886230469"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/RimeSyncTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "91"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - Unsigned host lacks Keychain entitlement; signed Simulator lane covers integration."
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:09:51.606+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    },
+    {
+      "identifier": "SchemeResourcePreparationCoexistenceTests/testCS06_UninstallInactiveWanxiangRetainsIcePeerInventory()",
+      "name": "testCS06_UninstallInactiveWanxiangRetainsIcePeerInventory()",
+      "testStatus": "Skipped",
+      "duration": "0.17689108848571777",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.17689108848571777"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "SchemeResourcePreparationCoexistenceTests/testCS06_UninstallInactiveWanxiangRetainsIcePeerInventory()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests/testCS06_UninstallInactiveWanxiangRetainsIcePeerInventory"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testCS06_UninstallInactiveWanxiangRetainsIcePeerInventory()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "1568"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - CS09-10-01 requires the fixed Wanxiang extract tree"
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:09:53.767+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    },
+    {
+      "identifier": "SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerIceRemovalPreservesCompleteWanxiangInventory()",
+      "name": "testCS0910_RealInstallerIceRemovalPreservesCompleteWanxiangInventory()",
+      "testStatus": "Skipped",
+      "duration": "0.1762310266494751",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.1762310266494751"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerIceRemovalPreservesCompleteWanxiangInventory()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerIceRemovalPreservesCompleteWanxiangInventory"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testCS0910_RealInstallerIceRemovalPreservesCompleteWanxiangInventory()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "1568"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - CS09-10-01 requires the fixed Wanxiang extract tree"
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:09:53.939+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    },
+    {
+      "identifier": "SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerWanxiangRemovalPreservesCompleteIceInventory()",
+      "name": "testCS0910_RealInstallerWanxiangRemovalPreservesCompleteIceInventory()",
+      "testStatus": "Skipped",
+      "duration": "0.1783519983291626",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.1783519983291626"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerWanxiangRemovalPreservesCompleteIceInventory()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerWanxiangRemovalPreservesCompleteIceInventory"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testCS0910_RealInstallerWanxiangRemovalPreservesCompleteIceInventory()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "1553"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - CS09-10-01 requires the fixed Ice extract tree"
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:09:54.118+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    },
+    {
+      "identifier": "SchemeResourcePreparationCoexistenceTests/testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds()",
+      "name": "testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds()",
+      "testStatus": "Skipped",
+      "duration": "0.17671799659729004",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.17671799659729004"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "SchemeResourcePreparationCoexistenceTests/testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests/testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "357"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - Ice 2026.06.30 default.yaml fixture is required for P3 fingerprint recovery"
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:09:55.572+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    },
+    {
+      "identifier": "SchemeResourcePreparationCoexistenceTests/testProductionProcessedIceTreeKeepsOfficialDefaultYamlWhenFixturePresent()",
+      "name": "testProductionProcessedIceTreeKeepsOfficialDefaultYamlWhenFixturePresent()",
+      "testStatus": "Skipped",
+      "duration": "0.0010930299758911133",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.0010930299758911133"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "SchemeResourcePreparationCoexistenceTests/testProductionProcessedIceTreeKeepsOfficialDefaultYamlWhenFixturePresent()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests/testProductionProcessedIceTreeKeepsOfficialDefaultYamlWhenFixturePresent"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testProductionProcessedIceTreeKeepsOfficialDefaultYamlWhenFixturePresent()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "1763"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - Set TEST_RUNNER_SCHEME_PIN_ARCHIVE_ROOT to the independently downloaded Ice archives"
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:09:55.745+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    },
+    {
+      "identifier": "TD012LMDGDeviceStagingTests/testPinnedModelLoadsThroughWanxiangGrammarOnAuthorizedPhysicalDevice()",
+      "name": "testPinnedModelLoadsThroughWanxiangGrammarOnAuthorizedPhysicalDevice()",
+      "testStatus": "Skipped",
+      "duration": "0.0012069940567016602",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.0012069940567016602"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "TD012LMDGDeviceStagingTests/testPinnedModelLoadsThroughWanxiangGrammarOnAuthorizedPhysicalDevice()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/TD012LMDGDeviceStagingTests/testPinnedModelLoadsThroughWanxiangGrammarOnAuthorizedPhysicalDevice"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testPinnedModelLoadsThroughWanxiangGrammarOnAuthorizedPhysicalDevice()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/TD012LMDGDeviceStagingTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "95"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - TD-012 G2 model-load receipt is physical-device-only"
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:09:58.133+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    },
+    {
+      "identifier": "TD012LMDGDeviceStagingTests/testRemovePinnedModelAfterAuthorizedPhysicalDeviceSpike()",
+      "name": "testRemovePinnedModelAfterAuthorizedPhysicalDeviceSpike()",
+      "testStatus": "Skipped",
+      "duration": "0.0009599924087524414",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.0009599924087524414"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "TD012LMDGDeviceStagingTests/testRemovePinnedModelAfterAuthorizedPhysicalDeviceSpike()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/TD012LMDGDeviceStagingTests/testRemovePinnedModelAfterAuthorizedPhysicalDeviceSpike"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testRemovePinnedModelAfterAuthorizedPhysicalDeviceSpike()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/TD012LMDGDeviceStagingTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "76"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - TD-012 G2 cleanup is physical-device-only"
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:09:58.134+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    },
+    {
+      "identifier": "TD012LMDGDeviceStagingTests/testStagePinnedModelForAuthorizedPhysicalDeviceSpike()",
+      "name": "testStagePinnedModelForAuthorizedPhysicalDeviceSpike()",
+      "testStatus": "Skipped",
+      "duration": "0.0008699893951416016",
+      "skip_summary": {
+        "_type": {
+          "_name": "ActionTestSummary",
+          "_supertype": {
+            "_name": "ActionTestSummaryIdentifiableObject",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          }
+        },
+        "activitySummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "arguments": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "documentation": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "duration": {
+          "_type": {
+            "_name": "Double"
+          },
+          "_value": "0.0008699893951416016"
+        },
+        "expectedFailures": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "failureSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "identifier": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "TD012LMDGDeviceStagingTests/testStagePinnedModelForAuthorizedPhysicalDeviceSpike()"
+        },
+        "identifierURL": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/TD012LMDGDeviceStagingTests/testStagePinnedModelForAuthorizedPhysicalDeviceSpike"
+        },
+        "name": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "testStagePinnedModelForAuthorizedPhysicalDeviceSpike()"
+        },
+        "performanceMetrics": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "skipNoticeSummary": {
+          "_type": {
+            "_name": "ActionTestNoticeSummary"
+          },
+          "fileName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/TD012LMDGDeviceStagingTests.swift"
+          },
+          "lineNumber": {
+            "_type": {
+              "_name": "Int"
+            },
+            "_value": "49"
+          },
+          "message": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test skipped - TD-012 G2 staging is physical-device-only"
+          },
+          "timestamp": {
+            "_type": {
+              "_name": "Date"
+            },
+            "_value": "2026-10-01T08:09:58.137+0800"
+          }
+        },
+        "tags": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "testStatus": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Skipped"
+        },
+        "trackedIssues": {
+          "_type": {
+            "_name": "Array"
+          }
+        },
+        "warningSummaries": {
+          "_type": {
+            "_name": "Array"
+          }
+        }
+      }
+    }
+  ],
+  "SignedKeychain": [],
+  "ReleaseBuild": []
+}

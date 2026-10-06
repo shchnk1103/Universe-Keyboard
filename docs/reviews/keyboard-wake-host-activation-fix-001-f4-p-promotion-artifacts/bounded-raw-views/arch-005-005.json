@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+  "origin_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+  "expected_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+  "line_start": 241,
+  "line_end": 300,
+  "lines": [
+    {
+      "line": 241,
+      "text": "    var candidatePrefetchMode: CandidatePrefetchMode = .bar"
+    },
+    {
+      "line": 242,
+      "text": "    /// 用户正在拖动候选栏或展开面板时不做同步 RIME 预取，避免滑动中卡住。"
+    },
+    {
+      "line": 243,
+      "text": "    var isCandidateScrollInteracting = false"
+    },
+    {
+      "line": 244,
+      "text": "    /// 滑动期间被推迟的预取请求，手势结束后再执行。"
+    },
+    {
+      "line": 245,
+      "text": "    var deferredCandidatePrefetchMode: CandidatePrefetchMode?"
+    },
+    {
+      "line": 246,
+      "text": "    /// 预取请求序号。新的输入、展开/收起或新的预取安排会让旧延迟任务自然失效。"
+    },
+    {
+      "line": 247,
+      "text": "    var candidatePrefetchRequestSerial = 0"
+    },
+    {
+      "line": 248,
+      "text": "    /// 候选 cell 尺寸缓存。滚动布局会频繁查询 sizeForItemAt，缓存可避免重复文本测量。"
+    },
+    {
+      "line": 249,
+      "text": "    var candidateCellSizeCache: [CandidateCellSizeCacheKey: CGSize] = [:]"
+    },
+    {
+      "line": 250,
+      "text": "    /// 记录每个按钮的 touchDown 时间戳，用于性能日志"
+    },
+    {
+      "line": 251,
+      "text": "    var keyTouchDownTimes: [ObjectIdentifier: CFTimeInterval] = [:]"
+    },
+    {
+      "line": 252,
+      "text": "    /// 已在 touchDown 发出反馈的按钮，避免 touchUpInside 业务方法重复播放声音/触感。"
+    },
+    {
+      "line": 253,
+      "text": "    var keyPressFeedbackEmittedButtonIDs: Set<ObjectIdentifier> = []"
+    },
+    {
+      "line": 254,
+      "text": "    /// 输入事件编号，将按键、引擎和渲染日志关联到同一次操作"
+    },
+    {
+      "line": 255,
+      "text": "    var inputEventSequence = 0"
+    },
+    {
+      "line": 256,
+      "text": "    /// 前一个字母输入完成时间，用于观察快速输入中的事件排队现象"
+    },
+    {
+      "line": 257,
+      "text": "    #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+    },
+    {
+      "line": 258,
+      "text": "        var wakeProbeActiveTouches: Set<ObjectIdentifier> = []"
+    },
+    {
+      "line": 259,
+      "text": "        var wakeProbeLastActivity = DispatchTime.now().uptimeNanoseconds"
+    },
+    {
+      "line": 260,
+      "text": "        var wakeProbeIdleTask: Task<Void, Never>?"
+    },
+    {
+      "line": 261,
+      "text": "        var wakeProbeControlsAvailable = false"
+    },
+    {
+      "line": 262,
+      "text": "        var wakeProbeAppearanceOrdinal: UInt64 = 0"
+    },
+    {
+      "line": 263,
+      "text": "    #endif"
+    },
+    {
+      "line": 264,
+      "text": "    var lastInputCompletionTime: CFTimeInterval?"
+    },
+    {
+      "line": 265,
+      "text": "    /// Last T9 digit key completion time (continuous-typing bar-prefetch idle gating)."
+    },
+    {
+      "line": 266,
+      "text": "    var lastT9DigitKeyTime: CFTimeInterval?"
+    },
+    {
+      "line": 267,
+      "text": "    /// 多错误纠错只在用户短暂停顿后执行；新输入会取消旧任务，避免占用按键热路径。"
+    },
+    {
+      "line": 268,
+      "text": "    var contextualTypoCorrectionWorkItem: DispatchWorkItem?"
+    },
+    {
+      "line": 269,
+      "text": "    /// Controller-owned recall fence. Incremented before composition, page/mode,"
+    },
+    {
+      "line": 270,
+      "text": "    /// visibility, engine-rebind or correction-disable work."
+    },
+    {
+      "line": 271,
+      "text": "    var recallEpoch: UInt64 = 0"
+    },
+    {
+      "line": 272,
+      "text": "    var recallCompositionRevision: UInt64 = 0"
+    },
+    {
+      "line": 273,
+      "text": "    lazy var typoCorrectionRecallCoordinator = TypoCorrectionRecallCoordinator(host: self)"
+    },
+    {
+      "line": 274,
+      "text": ""
+    },
+    {
+      "line": 275,
+      "text": "    // MARK: - 光标移动状态"
+    },
+    {
+      "line": 276,
+      "text": ""
+    },
+    {
+      "line": 277,
+      "text": "    /// 是否处于光标移动模式（长按空格键触发，此模式下其他按键禁用）"
+    },
+    {
+      "line": 278,
+      "text": "    var isCursorMovementModeActive: Bool = false"
+    },
+    {
+      "line": 279,
+      "text": "    /// 光标移动模式下，上一次有效计算的 X 坐标"
+    },
+    {
+      "line": 280,
+      "text": "    var spaceCursorLastLocationX: CGFloat?"
+    },
+    {
+      "line": 281,
+      "text": "    // MARK: - 键盘生命周期与尺寸状态"
+    },
+    {
+      "line": 282,
+      "text": ""
+    },
+    {
+      "line": 283,
+      "text": "    /// viewDidAppear 是否已被调用过。"
+    },
+    {
+      "line": 284,
+      "text": "    var hasViewAppeared = false"
+    },
+    {
+      "line": 285,
+      "text": "    /// 按键内容仅在键盘即将呈现时安装，避免初始过渡容器绘制整份键盘。"
+    },
+    {
+      "line": 286,
+      "text": "    var isKeyboardUIInstalled = false"
+    },
+    {
+      "line": 287,
+      "text": "    /// 真正的 librime 只能在键盘已经呈现后启动。"
+    },
+    {
+      "line": 288,
+      "text": "    /// 系统有时会预创建控制器后直接挂起，若此时打开用户词典会触发 0xdead10cc。"
+    },
+    {
+      "line": 289,
+      "text": "    var hasActivatedVisibleRimeRuntime = false"
+    },
+    {
+      "line": 290,
+      "text": "    /// 在 viewDidLoad 仅解析只读路径；不在尚未可见的扩展中启动 librime。"
+    },
+    {
+      "line": 291,
+      "text": "    var pendingRimeRuntimeDirectories: (sharedDataDir: String, userDataDir: String)?"
+    },
+    {
+      "line": 292,
+      "text": "    /// 首帧门控将 RIME 的重 I/O 推迟到键盘已跨过两个显示节拍之后。"
+    },
+    {
+      "line": 293,
+      "text": "    /// 它只影响创建时机，不改变 session、候选或按键的语义。"
+    },
+    {
+      "line": 294,
+      "text": "    var rimeFirstFrameDisplayLink: CADisplayLink?"
+    },
+    {
+      "line": 295,
+      "text": "    var rimeFirstFrameDisplayLinkTarget: KeyboardFirstFrameDisplayLinkTarget?"
+    },
+    {
+      "line": 296,
+      "text": "    var rimeFirstFrameGateStartTime: CFTimeInterval = 0"
+    },
+    {
+      "line": 297,
+      "text": "    var rimeFirstFrameGateTickCount = 0"
+    },
+    {
+      "line": 298,
+      "text": "    /// Host-active / appearance pairing. Existing dirty lifecycle flags stay authoritative for UI."
+    },
+    {
+      "line": 299,
+      "text": "    let hostLifecycleRecoveryGate = KeyboardHostLifecycleRecoveryGate()"
+    },
+    {
+      "line": 300,
+      "text": ""
+    }
+  ]
+}

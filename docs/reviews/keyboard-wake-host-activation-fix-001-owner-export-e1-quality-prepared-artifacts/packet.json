@@ -1,0 +1,183 @@
+{
+  "status": "Prepared only, no reviewer dispatch authorized",
+  "lane": "OWN-EXPORT-E1-QUALITY-R1",
+  "scope": [
+    "Q1 exact run/frame/borrow/single bounded read",
+    "Q2 exact binary decode/completeness/attempt and lifecycle integer limits",
+    "Q3 human-source binding and cleanup including ambiguous machine field",
+    "Q4 reconnect/scope and budget overrun; final exact counts unknown not fabricate"
+  ],
+  "candidate_inputs": [
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-execution-2026-10-06.md",
+      "bytes": 3398,
+      "sha256": "c8024438022d2152b26183e64f178aab841f6d01b433bfa439dc18062dbcf0f3"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-root-receipt-2026-10-06.md",
+      "bytes": 3280,
+      "sha256": "10d86c1a0c9bacccfd4e55a1a31ed609ab0dc78513640821338e2354f2c5599a"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/owner_export_callback.py",
+      "bytes": 9632,
+      "sha256": "5fc756ed525ebb3c71b91a208615eb34249da535617461426399dc61d5cf52e8"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/decoder.py",
+      "bytes": 3780,
+      "sha256": "fc1817ab8843dab76acd9e8ae59277719c059742bb105eebecbc60a66f58775d"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/callback.json",
+      "bytes": 575,
+      "sha256": "aee4d328d135e62bf091f9504a6fa23948abb1cf7b15410b759547f1566c3dbd"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/callback-stage.json",
+      "bytes": 1879,
+      "sha256": "b0f2231ea4b7f39ac10137f243b36fa42eda041da8a15ce99441ab40acb7c226"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/live-binding.json",
+      "bytes": 403,
+      "sha256": "70d079f9ec60a2b9d6a745e4e9916ff8eae99f03928888df039b7ca766b52969"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-decoded.json",
+      "bytes": 5309,
+      "sha256": "8ae7092edf06a5fc7bcfe682ac037a2a814207c98156bc2e0755f46cf95cbaa7"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-machine-exit.json",
+      "bytes": 1880,
+      "sha256": "80b54c93b3bf52ec942d4345935dd902b4e1d0c2b2d83fc8c2c2422e2619ab5c"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-human-exit.json",
+      "bytes": 210,
+      "sha256": "3301bc13c688e1113a8b226d5ccdd8576c2952c9cf49a185cb302981ad9b9c0f"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-call-ledger.json",
+      "bytes": 14993,
+      "sha256": "80524fdeba6be72914de4fde1baf0457fa05b55e168cf8d9e0450abc93798d8b"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-stop-and-cleanup.json",
+      "bytes": 464,
+      "sha256": "d862438e9a1309778e03defc3ab3d4f44900d93a1e6b9afc9bf33a464a99b7ee"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-breakpoint-list.txt",
+      "bytes": 55,
+      "sha256": "c20d0baed6e3498fb611ced5467ced87a36e5ae9bc0660a6a0909aae8c1ed507"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-driver-exit.json",
+      "bytes": 73,
+      "sha256": "e12dc4215559b6debd19f1fc7aa2f5bfdfa6da683957494fb1f5436793a63074"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-author-readback.json",
+      "bytes": 748,
+      "sha256": "96855f8496af0666c22cbbdf2a1d7311f1b050c8e321c153098375739caac158"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-formatter-live-readback.txt",
+      "bytes": 655,
+      "sha256": "dd01fb6eeb6f8ad8da5a738716e34a79df0e4f8508e70fab6cf93e27dfc4171a"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-device-entry.json",
+      "bytes": 22381,
+      "sha256": "0163aa9e71a5b728c2b0a1789d971e1402b1fc60049fb5d4bf189a559aff3f9e"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-fresh-instance.json",
+      "bytes": 839,
+      "sha256": "44947bbb68e35b200377be9560783ac7c85a9c4d6d3c1a6b3a77c26a0c88df2c"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-old-appex-termination.json",
+      "bytes": 826,
+      "sha256": "b51a8e6fc4606de9ad3d6cb81ae74c2316d3bc02c565f048b05628f2ef067e7f"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-human-n.json",
+      "bytes": 594,
+      "sha256": "996540e0b2810b4e0c68cf51bd760ab5b2f2b70d9a9a455e1be72a5e3c561367"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-human-appswitcher.json",
+      "bytes": 450,
+      "sha256": "032f6bc5fc862313a090d3f003e0305dadf1f8a479734aaa2b9137e84edcfad6"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-human-h.json",
+      "bytes": 426,
+      "sha256": "7683b4fa61ccf93abe86e9f2b8fc61f9b6f41a4f61c6f660a01994dbeff6bd61"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-pre-arm-evaluation.json",
+      "bytes": 3214,
+      "sha256": "1a8e8908cf414b02abfb43ad1982b7d00aea3321702e27f0c7f307b6dda2f0d7"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-pre-freeze-evaluation.json",
+      "bytes": 3217,
+      "sha256": "d3ab5c4deb64ffb80f23b3d1d88bf30636b634304d6fd3ed7fcee95cdc0005b9"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-pty-transcript.txt",
+      "bytes": 5800,
+      "sha256": "3cb81aad0d6210095ae58977fcb57baaa130e605dbe59501166a18742bf7a1bb"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-ack.json",
+      "bytes": 5326,
+      "sha256": "d9c045cb4ce719269e358301081285104183a5919004e859b352e25b417dc725"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-failed-continue-20261006/041834-e1-configuration-receipt.json",
+      "bytes": 919,
+      "sha256": "fdaf8da02d759313dba825da2775582a77ece4ebb00ca3fab16774984439705c"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-failed-continue-20261006/041834-e1-pre-arm-status.json",
+      "bytes": 93,
+      "sha256": "f3882084404a5864138c3ec398994750a33ac8bba8da2ac242b466aa8bef0e61"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-failed-continue-20261006/041834-live-binding.json",
+      "bytes": 403,
+      "sha256": "70d079f9ec60a2b9d6a745e4e9916ff8eae99f03928888df039b7ca766b52969"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-prepared-artifacts/e1-grok-authorization.json",
+      "bytes": 2374,
+      "sha256": "c6cdfa40f69e3397bbe77b97f33581e714b90836003cbbd6861eee204c1a21a9"
+    }
+  ],
+  "binary": {
+    "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/owner-buffer.bin",
+    "bytes": 1496,
+    "sha256": "a8b3bde10c0c489e92b1e7f370e257d33c4156f805697af1597fe5d5fd35414d"
+  },
+  "reader_sha256": "870a31c9bbb84888058810ec36fbdaab54f35c3e33caab576761fb3caa010923",
+  "budget_proposed": {
+    "actual_calls": 20,
+    "wall_seconds": 900,
+    "delivery_reserved_calls": 6
+  },
+  "reuse_reviewer_proposed": "/root/f4p_quality_four_paths_fresh GPT6 Luna; new bounded lane, no old budget revived",
+  "required_delivery": [
+    "ack.json",
+    "review.md",
+    "usage.json",
+    "delivery-readback.json"
+  ],
+  "non_goals": "no simulator/live process queries/source edits/new capture/static gate re-review/Product acceptance/Git/Release",
+  "source_priority": "originals first; no arbitrary user content, no private owner-args pointer file in reader",
+  "utc": "2026-10-06T04:41:00.898693+00:00"
+}

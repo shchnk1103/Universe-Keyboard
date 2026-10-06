@@ -1,0 +1,46 @@
+{
+  "status": "PREPARED_NOT_EXECUTED",
+  "attach": {
+    "tool": "debug_attach_sim",
+    "args": {
+      "pid": "FRESH_VERIFIED_PID",
+      "continueOnAttach": false,
+      "makeCurrent": false
+    }
+  },
+  "session_policy": "Every subsequent tool call uses the returned explicit debugSessionId; do not use or change shared defaults.",
+  "pre_arm_lldb": [
+    "image list -u -f",
+    "image lookup -n $s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF",
+    "breakpoint set --name $s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF",
+    "breakpoint list OWN_BREAKPOINT_ID"
+  ],
+  "continue_before_human": "debug_continue(explicit session)",
+  "stop_point_lldb": [
+    "breakpoint list OWN_BREAKPOINT_ID",
+    "frame info",
+    "thread backtrace -c 8",
+    "frame variable --raw-output --dynamic-type no-dynamic-values --no-synthetic --depth 1 address byteCount"
+  ],
+  "read_template": "memory read --binary --size 1 --count VERIFIED_BYTECOUNT --outfile /private/tmp/ukey-wake-m-execution-RUN_ID/snapshot.bin VERIFIED_ADDRESS",
+  "bound": {
+    "min_bytes": 176,
+    "max_bytes": 11352,
+    "alignment": 8,
+    "read_count": 1,
+    "address_source": "Only the real stopped export frame static argument, never historical values or guessed ABI registers."
+  },
+  "cleanup": [
+    "breakpoint delete OWN_BREAKPOINT_ID",
+    "breakpoint list",
+    "debug_continue(explicit session)",
+    "debug_detach(explicit session)"
+  ],
+  "no_expression_register_or_memory_write": true,
+  "individual_tool_timeout_ms": 30000,
+  "paused_work_budget_seconds": 120,
+  "cleanup_policy": "delete only own LLDB breakpoint; verify own ID absent without removing other breakpoints",
+  "human_sequence": "arm once; n once; AppSwitcher direct return to Maps once; n once; freeze once",
+  "same_process_required": true,
+  "automatic_retry_count": 0
+}

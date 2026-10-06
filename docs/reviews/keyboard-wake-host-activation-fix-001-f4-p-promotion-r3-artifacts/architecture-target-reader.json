@@ -1,0 +1,3442 @@
+{
+  "kind": "Raw targeted source/flags/evidence view; no architecture verdict",
+  "original_raw_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-artifacts/architecture-raw-reader.json",
+  "original_raw_sha256": "c3e2e7646a7813657b2ce3bc3ca3f66c61c68fe61c3cc09ccd0f406542e91817",
+  "sources": [
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+CandidateBar.swift",
+      "bytes": 13901,
+      "sha256": "ae1b78d5a311f60054914093458b0c78fe3d35923d82b487fd7f30d886074c80",
+      "expected_sha256": "ae1b78d5a311f60054914093458b0c78fe3d35923d82b487fd7f30d886074c80",
+      "probe_flag_sites": [
+        {
+          "line": 39,
+          "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+        },
+        {
+          "line": 170,
+          "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+        }
+      ],
+      "probe_conditional_blocks": [
+        {
+          "line_start": 39,
+          "line_end": 41,
+          "lines": [
+            {
+              "line": 39,
+              "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+            },
+            {
+              "line": 40,
+              "text": "            installWakeOwnerProbeControls(on: view)"
+            },
+            {
+              "line": 41,
+              "text": "        #endif"
+            }
+          ]
+        },
+        {
+          "line_start": 170,
+          "line_end": 172,
+          "lines": [
+            {
+              "line": 170,
+              "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+            },
+            {
+              "line": 171,
+              "text": "            refreshWakeOwnerProbeControls()"
+            },
+            {
+              "line": 172,
+              "text": "        #endif"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+InputActions.swift",
+      "bytes": 9590,
+      "sha256": "16abce7d6e6752be641ea333cc60706217c9d84211f1007315850acbc62ee2ae",
+      "expected_sha256": "16abce7d6e6752be641ea333cc60706217c9d84211f1007315850acbc62ee2ae",
+      "probe_flag_sites": [
+        {
+          "line": 20,
+          "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+        }
+      ],
+      "probe_conditional_blocks": [
+        {
+          "line_start": 20,
+          "line_end": 27,
+          "lines": [
+            {
+              "line": 20,
+              "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+            },
+            {
+              "line": 21,
+              "text": "            let wakeAttempt = KeyboardWakeOwnerProbe.shared.beginAttempt(appearanceOrdinal: wakeProbeAppearanceOrdinal)"
+            },
+            {
+              "line": 22,
+              "text": "            recordWakeOwnerProbe(.insertBegin)"
+            },
+            {
+              "line": 23,
+              "text": "            defer {"
+            },
+            {
+              "line": 24,
+              "text": "                recordWakeOwnerProbe(.insertEnd)"
+            },
+            {
+              "line": 25,
+              "text": "                if let wakeAttempt { KeyboardWakeOwnerProbe.shared.endAttempt(wakeAttempt) }"
+            },
+            {
+              "line": 26,
+              "text": "            }"
+            },
+            {
+              "line": 27,
+              "text": "        #endif"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+KeyPressFeedback.swift",
+      "bytes": 7164,
+      "sha256": "c1d361a34e5aa788a4a518f46cbb7370ff5903e05736a72281da04f859a0fe7a",
+      "expected_sha256": "c1d361a34e5aa788a4a518f46cbb7370ff5903e05736a72281da04f859a0fe7a",
+      "probe_flag_sites": [
+        {
+          "line": 12,
+          "text": "            #if KEYBOARD_WAKE_OWNER_PROBE"
+        }
+      ],
+      "probe_conditional_blocks": [
+        {
+          "line_start": 12,
+          "line_end": 14,
+          "lines": [
+            {
+              "line": 12,
+              "text": "            #if KEYBOARD_WAKE_OWNER_PROBE"
+            },
+            {
+              "line": 13,
+              "text": "                wakeOwnerProbeTouch(ObjectIdentifier(button), began: phase == .began)"
+            },
+            {
+              "line": 14,
+              "text": "            #endif"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Presentation.swift",
+      "bytes": 14818,
+      "sha256": "767c2817054484d4d4c328cb7a8deaf676509b76bbc3cb45868b6e3cf721319a",
+      "expected_sha256": "767c2817054484d4d4c328cb7a8deaf676509b76bbc3cb45868b6e3cf721319a",
+      "probe_flag_sites": [
+        {
+          "line": 94,
+          "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+        },
+        {
+          "line": 139,
+          "text": "            #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+        },
+        {
+          "line": 155,
+          "text": "            #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+        }
+      ],
+      "probe_conditional_blocks": [
+        {
+          "line_start": 94,
+          "line_end": 97,
+          "lines": [
+            {
+              "line": 94,
+              "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+            },
+            {
+              "line": 95,
+              "text": "            // Construction refreshes the old bar; bind the new bar before updating its probe."
+            },
+            {
+              "line": 96,
+              "text": "            refreshWakeOwnerProbeControls()"
+            },
+            {
+              "line": 97,
+              "text": "        #endif"
+            }
+          ]
+        },
+        {
+          "line_start": 139,
+          "line_end": 142,
+          "lines": [
+            {
+              "line": 139,
+              "text": "            #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+            },
+            {
+              "line": 140,
+              "text": "                // Construction refreshes the old bar; bind the new bar before updating its probe."
+            },
+            {
+              "line": 141,
+              "text": "                refreshWakeOwnerProbeControls()"
+            },
+            {
+              "line": 142,
+              "text": "            #endif"
+            }
+          ]
+        },
+        {
+          "line_start": 155,
+          "line_end": 158,
+          "lines": [
+            {
+              "line": 155,
+              "text": "            #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+            },
+            {
+              "line": 156,
+              "text": "                // Construction refreshes the old bar; bind the new bar before updating its probe."
+            },
+            {
+              "line": 157,
+              "text": "                refreshWakeOwnerProbeControls()"
+            },
+            {
+              "line": 158,
+              "text": "            #endif"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift",
+      "bytes": 4352,
+      "sha256": "bca0391355d9a3a60880dfdc08260095d02d6618bf0a38d40bfcc61734a891e9",
+      "expected_sha256": "bca0391355d9a3a60880dfdc08260095d02d6618bf0a38d40bfcc61734a891e9",
+      "probe_flag_sites": [
+        {
+          "line": 4,
+          "text": "#if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+        }
+      ],
+      "probe_conditional_blocks": [
+        {
+          "line_start": 4,
+          "line_end": 100,
+          "lines": [
+            {
+              "line": 4,
+              "text": "#if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+            },
+            {
+              "line": 5,
+              "text": "    extension KeyboardViewController {"
+            },
+            {
+              "line": 6,
+              "text": "        private var wakeProbe: KeyboardWakeOwnerProbe { .shared }"
+            },
+            {
+              "line": 7,
+              "text": ""
+            },
+            {
+              "line": 8,
+              "text": "        func installWakeOwnerProbeControls(on bar: CandidateBarView) {"
+            },
+            {
+              "line": 9,
+              "text": "            bar.installWakeOwnerProbeButton(target: self, action: #selector(handleWakeOwnerProbeButton))"
+            },
+            {
+              "line": 10,
+              "text": "            bar.onWakeOwnerProbeTouch = { [weak self] touch, began in"
+            },
+            {
+              "line": 11,
+              "text": "                self?.wakeOwnerProbeTouch(touch, began: began)"
+            },
+            {
+              "line": 12,
+              "text": "            }"
+            },
+            {
+              "line": 13,
+              "text": "            refreshWakeOwnerProbeControls()"
+            },
+            {
+              "line": 14,
+              "text": "        }"
+            },
+            {
+              "line": 15,
+              "text": ""
+            },
+            {
+              "line": 16,
+              "text": "        func wakeOwnerProbeTouch(_ identifier: ObjectIdentifier, began: Bool) {"
+            },
+            {
+              "line": 17,
+              "text": "            if began {"
+            },
+            {
+              "line": 18,
+              "text": "                wakeProbeActiveTouches.insert(identifier)"
+            },
+            {
+              "line": 19,
+              "text": "            } else {"
+            },
+            {
+              "line": 20,
+              "text": "                wakeProbeActiveTouches.remove(identifier)"
+            },
+            {
+              "line": 21,
+              "text": "            }"
+            },
+            {
+              "line": 22,
+              "text": "            wakeProbeLastActivity = DispatchTime.now().uptimeNanoseconds"
+            },
+            {
+              "line": 23,
+              "text": "            refreshWakeOwnerProbeControls()"
+            },
+            {
+              "line": 24,
+              "text": "        }"
+            },
+            {
+              "line": 25,
+              "text": ""
+            },
+            {
+              "line": 26,
+              "text": "        func refreshWakeOwnerProbeControls() {"
+            },
+            {
+              "line": 27,
+              "text": "            wakeProbeIdleTask?.cancel()"
+            },
+            {
+              "line": 28,
+              "text": "            guard let bar = candidateBar as? CandidateBarView else { return }"
+            },
+            {
+              "line": 29,
+              "text": "            let now = DispatchTime.now().uptimeNanoseconds"
+            },
+            {
+              "line": 30,
+              "text": "            let deadline = wakeProbeLastActivity &+ 2_000_000_000"
+            },
+            {
+              "line": 31,
+              "text": "            let idle = wakeProbeActiveTouches.isEmpty && now >= deadline"
+            },
+            {
+              "line": 32,
+              "text": "            let observing = wakeProbe.isArmed || wakeProbe.isFrozen"
+            },
+            {
+              "line": 33,
+              "text": "            bar.setWakeOwnerProbeButton("
+            },
+            {
+              "line": 34,
+              "text": "                visible: wakeProbeControlsAvailable"
+            },
+            {
+              "line": 35,
+              "text": "                    && KeyboardWakeOwnerProbe.showsControl("
+            },
+            {
+              "line": 36,
+              "text": "                        isObserving: observing, hasCandidates: !presentedCandidates.isEmpty,"
+            },
+            {
+              "line": 37,
+              "text": "                        hasActiveTouches: !wakeProbeActiveTouches.isEmpty,"
+            },
+            {
+              "line": 38,
+              "text": "                        elapsedIdleNanoseconds: now >= wakeProbeLastActivity ? now - wakeProbeLastActivity : 0"
+            },
+            {
+              "line": 39,
+              "text": "                    ),"
+            },
+            {
+              "line": 40,
+              "text": "                title: observing ? \"取证\" : \"观测\""
+            },
+            {
+              "line": 41,
+              "text": "            )"
+            },
+            {
+              "line": 42,
+              "text": "            guard wakeProbeControlsAvailable, wakeProbeActiveTouches.isEmpty, !idle else { return }"
+            },
+            {
+              "line": 43,
+              "text": "            let remaining = deadline - now"
+            },
+            {
+              "line": 44,
+              "text": "            wakeProbeIdleTask = Task { @MainActor [weak self] in"
+            },
+            {
+              "line": 45,
+              "text": "                do { try await Task.sleep(nanoseconds: remaining) } catch { return }"
+            },
+            {
+              "line": 46,
+              "text": "                guard !Task.isCancelled else { return }"
+            },
+            {
+              "line": 47,
+              "text": "                self?.refreshWakeOwnerProbeControls()"
+            },
+            {
+              "line": 48,
+              "text": "            }"
+            },
+            {
+              "line": 49,
+              "text": "        }"
+            },
+            {
+              "line": 50,
+              "text": ""
+            },
+            {
+              "line": 51,
+              "text": "        func wakeOwnerProbeWillAppear() {"
+            },
+            {
+              "line": 52,
+              "text": "            wakeProbeControlsAvailable = true"
+            },
+            {
+              "line": 53,
+              "text": "            wakeProbeAppearanceOrdinal &+= 1"
+            },
+            {
+              "line": 54,
+              "text": "            recordWakeOwnerProbe(.appearance)"
+            },
+            {
+              "line": 55,
+              "text": "            refreshWakeOwnerProbeControls()"
+            },
+            {
+              "line": 56,
+              "text": "        }"
+            },
+            {
+              "line": 57,
+              "text": ""
+            },
+            {
+              "line": 58,
+              "text": "        func wakeOwnerProbeWillDisappear() {"
+            },
+            {
+              "line": 59,
+              "text": "            wakeProbeControlsAvailable = false"
+            },
+            {
+              "line": 60,
+              "text": "            wakeProbeIdleTask?.cancel()"
+            },
+            {
+              "line": 61,
+              "text": "            wakeProbeActiveTouches.removeAll()"
+            },
+            {
+              "line": 62,
+              "text": "            refreshWakeOwnerProbeControls()"
+            },
+            {
+              "line": 63,
+              "text": "        }"
+            },
+            {
+              "line": 64,
+              "text": ""
+            },
+            {
+              "line": 65,
+              "text": "        func recordWakeOwnerProbe(_ stage: KeyboardWakeOwnerProbe.Stage) {"
+            },
+            {
+              "line": 66,
+              "text": "            let coordinator = controller?.threadAffineRimeCoordinator"
+            },
+            {
+              "line": 67,
+              "text": "            wakeProbe.record("
+            },
+            {
+              "line": 68,
+              "text": "                stage: stage,"
+            },
+            {
+              "line": 69,
+              "text": "                coordinatorOrdinal: coordinator?.wakeProbeCoordinatorOrdinal ?? 0,"
+            },
+            {
+              "line": 70,
+              "text": "                appearanceOrdinal: wakeProbeAppearanceOrdinal,"
+            },
+            {
+              "line": 71,
+              "text": "                ownerPresent: coordinator?.wakeProbeOwnerPresent == true"
+            },
+            {
+              "line": 72,
+              "text": "            )"
+            },
+            {
+              "line": 73,
+              "text": "        }"
+            },
+            {
+              "line": 74,
+              "text": ""
+            },
+            {
+              "line": 75,
+              "text": "        @objc private func handleWakeOwnerProbeButton() {"
+            },
+            {
+              "line": 76,
+              "text": "            // Never route this control through Core, the proxy or keyboard dismissal."
+            },
+            {
+              "line": 77,
+              "text": "            if !wakeProbe.isArmed && !wakeProbe.isFrozen {"
+            },
+            {
+              "line": 78,
+              "text": "                _ = wakeProbe.arm()"
+            },
+            {
+              "line": 79,
+              "text": "                recordWakeOwnerProbe(.armed)"
+            },
+            {
+              "line": 80,
+              "text": "                refreshWakeOwnerProbeControls()"
+            },
+            {
+              "line": 81,
+              "text": "                return"
+            },
+            {
+              "line": 82,
+              "text": "            }"
+            },
+            {
+              "line": 83,
+              "text": "            guard let snapshot = wakeProbe.freeze() else { return }"
+            },
+            {
+              "line": 84,
+              "text": "            let words = snapshot.words"
+            },
+            {
+              "line": 85,
+              "text": "            // Freeze releases the Mutex before the debugger's read-only breakpoint."
+            },
+            {
+              "line": 86,
+              "text": "            words.withUnsafeBytes { bytes in"
+            },
+            {
+              "line": 87,
+              "text": "                guard let address = bytes.baseAddress else { return }"
+            },
+            {
+              "line": 88,
+              "text": "                wakeOwnerProbeExportReady(address, bytes.count)"
+            },
+            {
+              "line": 89,
+              "text": "            }"
+            },
+            {
+              "line": 90,
+              "text": "            refreshWakeOwnerProbeControls()"
+            },
+            {
+              "line": 91,
+              "text": "        }"
+            },
+            {
+              "line": 92,
+              "text": "    }"
+            },
+            {
+              "line": 93,
+              "text": ""
+            },
+            {
+              "line": 94,
+              "text": "    /// Exact Debug symbol used for fixed-size memory reads; the borrow must stay in the caller."
+            },
+            {
+              "line": 95,
+              "text": "    @inline(never)"
+            },
+            {
+              "line": 96,
+              "text": "    func wakeOwnerProbeExportReady(_ address: UnsafeRawPointer, _ byteCount: Int) {"
+            },
+            {
+              "line": 97,
+              "text": "        withExtendedLifetime(address) {}"
+            },
+            {
+              "line": 98,
+              "text": "        withExtendedLifetime(byteCount) {}"
+            },
+            {
+              "line": 99,
+              "text": "    }"
+            },
+            {
+              "line": 100,
+              "text": "#endif"
+            }
+          ]
+        }
+      ],
+      "full_numbered_source": [
+        {
+          "line": 1,
+          "text": "import KeyboardCore"
+        },
+        {
+          "line": 2,
+          "text": "import UIKit"
+        },
+        {
+          "line": 3,
+          "text": ""
+        },
+        {
+          "line": 4,
+          "text": "#if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+        },
+        {
+          "line": 5,
+          "text": "    extension KeyboardViewController {"
+        },
+        {
+          "line": 6,
+          "text": "        private var wakeProbe: KeyboardWakeOwnerProbe { .shared }"
+        },
+        {
+          "line": 7,
+          "text": ""
+        },
+        {
+          "line": 8,
+          "text": "        func installWakeOwnerProbeControls(on bar: CandidateBarView) {"
+        },
+        {
+          "line": 9,
+          "text": "            bar.installWakeOwnerProbeButton(target: self, action: #selector(handleWakeOwnerProbeButton))"
+        },
+        {
+          "line": 10,
+          "text": "            bar.onWakeOwnerProbeTouch = { [weak self] touch, began in"
+        },
+        {
+          "line": 11,
+          "text": "                self?.wakeOwnerProbeTouch(touch, began: began)"
+        },
+        {
+          "line": 12,
+          "text": "            }"
+        },
+        {
+          "line": 13,
+          "text": "            refreshWakeOwnerProbeControls()"
+        },
+        {
+          "line": 14,
+          "text": "        }"
+        },
+        {
+          "line": 15,
+          "text": ""
+        },
+        {
+          "line": 16,
+          "text": "        func wakeOwnerProbeTouch(_ identifier: ObjectIdentifier, began: Bool) {"
+        },
+        {
+          "line": 17,
+          "text": "            if began {"
+        },
+        {
+          "line": 18,
+          "text": "                wakeProbeActiveTouches.insert(identifier)"
+        },
+        {
+          "line": 19,
+          "text": "            } else {"
+        },
+        {
+          "line": 20,
+          "text": "                wakeProbeActiveTouches.remove(identifier)"
+        },
+        {
+          "line": 21,
+          "text": "            }"
+        },
+        {
+          "line": 22,
+          "text": "            wakeProbeLastActivity = DispatchTime.now().uptimeNanoseconds"
+        },
+        {
+          "line": 23,
+          "text": "            refreshWakeOwnerProbeControls()"
+        },
+        {
+          "line": 24,
+          "text": "        }"
+        },
+        {
+          "line": 25,
+          "text": ""
+        },
+        {
+          "line": 26,
+          "text": "        func refreshWakeOwnerProbeControls() {"
+        },
+        {
+          "line": 27,
+          "text": "            wakeProbeIdleTask?.cancel()"
+        },
+        {
+          "line": 28,
+          "text": "            guard let bar = candidateBar as? CandidateBarView else { return }"
+        },
+        {
+          "line": 29,
+          "text": "            let now = DispatchTime.now().uptimeNanoseconds"
+        },
+        {
+          "line": 30,
+          "text": "            let deadline = wakeProbeLastActivity &+ 2_000_000_000"
+        },
+        {
+          "line": 31,
+          "text": "            let idle = wakeProbeActiveTouches.isEmpty && now >= deadline"
+        },
+        {
+          "line": 32,
+          "text": "            let observing = wakeProbe.isArmed || wakeProbe.isFrozen"
+        },
+        {
+          "line": 33,
+          "text": "            bar.setWakeOwnerProbeButton("
+        },
+        {
+          "line": 34,
+          "text": "                visible: wakeProbeControlsAvailable"
+        },
+        {
+          "line": 35,
+          "text": "                    && KeyboardWakeOwnerProbe.showsControl("
+        },
+        {
+          "line": 36,
+          "text": "                        isObserving: observing, hasCandidates: !presentedCandidates.isEmpty,"
+        },
+        {
+          "line": 37,
+          "text": "                        hasActiveTouches: !wakeProbeActiveTouches.isEmpty,"
+        },
+        {
+          "line": 38,
+          "text": "                        elapsedIdleNanoseconds: now >= wakeProbeLastActivity ? now - wakeProbeLastActivity : 0"
+        },
+        {
+          "line": 39,
+          "text": "                    ),"
+        },
+        {
+          "line": 40,
+          "text": "                title: observing ? \"取证\" : \"观测\""
+        },
+        {
+          "line": 41,
+          "text": "            )"
+        },
+        {
+          "line": 42,
+          "text": "            guard wakeProbeControlsAvailable, wakeProbeActiveTouches.isEmpty, !idle else { return }"
+        },
+        {
+          "line": 43,
+          "text": "            let remaining = deadline - now"
+        },
+        {
+          "line": 44,
+          "text": "            wakeProbeIdleTask = Task { @MainActor [weak self] in"
+        },
+        {
+          "line": 45,
+          "text": "                do { try await Task.sleep(nanoseconds: remaining) } catch { return }"
+        },
+        {
+          "line": 46,
+          "text": "                guard !Task.isCancelled else { return }"
+        },
+        {
+          "line": 47,
+          "text": "                self?.refreshWakeOwnerProbeControls()"
+        },
+        {
+          "line": 48,
+          "text": "            }"
+        },
+        {
+          "line": 49,
+          "text": "        }"
+        },
+        {
+          "line": 50,
+          "text": ""
+        },
+        {
+          "line": 51,
+          "text": "        func wakeOwnerProbeWillAppear() {"
+        },
+        {
+          "line": 52,
+          "text": "            wakeProbeControlsAvailable = true"
+        },
+        {
+          "line": 53,
+          "text": "            wakeProbeAppearanceOrdinal &+= 1"
+        },
+        {
+          "line": 54,
+          "text": "            recordWakeOwnerProbe(.appearance)"
+        },
+        {
+          "line": 55,
+          "text": "            refreshWakeOwnerProbeControls()"
+        },
+        {
+          "line": 56,
+          "text": "        }"
+        },
+        {
+          "line": 57,
+          "text": ""
+        },
+        {
+          "line": 58,
+          "text": "        func wakeOwnerProbeWillDisappear() {"
+        },
+        {
+          "line": 59,
+          "text": "            wakeProbeControlsAvailable = false"
+        },
+        {
+          "line": 60,
+          "text": "            wakeProbeIdleTask?.cancel()"
+        },
+        {
+          "line": 61,
+          "text": "            wakeProbeActiveTouches.removeAll()"
+        },
+        {
+          "line": 62,
+          "text": "            refreshWakeOwnerProbeControls()"
+        },
+        {
+          "line": 63,
+          "text": "        }"
+        },
+        {
+          "line": 64,
+          "text": ""
+        },
+        {
+          "line": 65,
+          "text": "        func recordWakeOwnerProbe(_ stage: KeyboardWakeOwnerProbe.Stage) {"
+        },
+        {
+          "line": 66,
+          "text": "            let coordinator = controller?.threadAffineRimeCoordinator"
+        },
+        {
+          "line": 67,
+          "text": "            wakeProbe.record("
+        },
+        {
+          "line": 68,
+          "text": "                stage: stage,"
+        },
+        {
+          "line": 69,
+          "text": "                coordinatorOrdinal: coordinator?.wakeProbeCoordinatorOrdinal ?? 0,"
+        },
+        {
+          "line": 70,
+          "text": "                appearanceOrdinal: wakeProbeAppearanceOrdinal,"
+        },
+        {
+          "line": 71,
+          "text": "                ownerPresent: coordinator?.wakeProbeOwnerPresent == true"
+        },
+        {
+          "line": 72,
+          "text": "            )"
+        },
+        {
+          "line": 73,
+          "text": "        }"
+        },
+        {
+          "line": 74,
+          "text": ""
+        },
+        {
+          "line": 75,
+          "text": "        @objc private func handleWakeOwnerProbeButton() {"
+        },
+        {
+          "line": 76,
+          "text": "            // Never route this control through Core, the proxy or keyboard dismissal."
+        },
+        {
+          "line": 77,
+          "text": "            if !wakeProbe.isArmed && !wakeProbe.isFrozen {"
+        },
+        {
+          "line": 78,
+          "text": "                _ = wakeProbe.arm()"
+        },
+        {
+          "line": 79,
+          "text": "                recordWakeOwnerProbe(.armed)"
+        },
+        {
+          "line": 80,
+          "text": "                refreshWakeOwnerProbeControls()"
+        },
+        {
+          "line": 81,
+          "text": "                return"
+        },
+        {
+          "line": 82,
+          "text": "            }"
+        },
+        {
+          "line": 83,
+          "text": "            guard let snapshot = wakeProbe.freeze() else { return }"
+        },
+        {
+          "line": 84,
+          "text": "            let words = snapshot.words"
+        },
+        {
+          "line": 85,
+          "text": "            // Freeze releases the Mutex before the debugger's read-only breakpoint."
+        },
+        {
+          "line": 86,
+          "text": "            words.withUnsafeBytes { bytes in"
+        },
+        {
+          "line": 87,
+          "text": "                guard let address = bytes.baseAddress else { return }"
+        },
+        {
+          "line": 88,
+          "text": "                wakeOwnerProbeExportReady(address, bytes.count)"
+        },
+        {
+          "line": 89,
+          "text": "            }"
+        },
+        {
+          "line": 90,
+          "text": "            refreshWakeOwnerProbeControls()"
+        },
+        {
+          "line": 91,
+          "text": "        }"
+        },
+        {
+          "line": 92,
+          "text": "    }"
+        },
+        {
+          "line": 93,
+          "text": ""
+        },
+        {
+          "line": 94,
+          "text": "    /// Exact Debug symbol used for fixed-size memory reads; the borrow must stay in the caller."
+        },
+        {
+          "line": 95,
+          "text": "    @inline(never)"
+        },
+        {
+          "line": 96,
+          "text": "    func wakeOwnerProbeExportReady(_ address: UnsafeRawPointer, _ byteCount: Int) {"
+        },
+        {
+          "line": 97,
+          "text": "        withExtendedLifetime(address) {}"
+        },
+        {
+          "line": 98,
+          "text": "        withExtendedLifetime(byteCount) {}"
+        },
+        {
+          "line": 99,
+          "text": "    }"
+        },
+        {
+          "line": 100,
+          "text": "#endif"
+        }
+      ]
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+      "bytes": 39626,
+      "sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+      "expected_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+      "probe_flag_sites": [
+        {
+          "line": 257,
+          "text": "    #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+        },
+        {
+          "line": 393,
+          "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+        },
+        {
+          "line": 493,
+          "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+        },
+        {
+          "line": 534,
+          "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+        },
+        {
+          "line": 607,
+          "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+        },
+        {
+          "line": 663,
+          "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+        },
+        {
+          "line": 667,
+          "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+        }
+      ],
+      "probe_conditional_blocks": [
+        {
+          "line_start": 257,
+          "line_end": 263,
+          "lines": [
+            {
+              "line": 257,
+              "text": "    #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+            },
+            {
+              "line": 258,
+              "text": "        var wakeProbeActiveTouches: Set<ObjectIdentifier> = []"
+            },
+            {
+              "line": 259,
+              "text": "        var wakeProbeLastActivity = DispatchTime.now().uptimeNanoseconds"
+            },
+            {
+              "line": 260,
+              "text": "        var wakeProbeIdleTask: Task<Void, Never>?"
+            },
+            {
+              "line": 261,
+              "text": "        var wakeProbeControlsAvailable = false"
+            },
+            {
+              "line": 262,
+              "text": "        var wakeProbeAppearanceOrdinal: UInt64 = 0"
+            },
+            {
+              "line": 263,
+              "text": "    #endif"
+            }
+          ]
+        },
+        {
+          "line_start": 393,
+          "line_end": 395,
+          "lines": [
+            {
+              "line": 393,
+              "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+            },
+            {
+              "line": 394,
+              "text": "            wakeOwnerProbeWillAppear()"
+            },
+            {
+              "line": 395,
+              "text": "        #endif"
+            }
+          ]
+        },
+        {
+          "line_start": 493,
+          "line_end": 495,
+          "lines": [
+            {
+              "line": 493,
+              "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+            },
+            {
+              "line": 494,
+              "text": "            wakeOwnerProbeWillDisappear()"
+            },
+            {
+              "line": 495,
+              "text": "        #endif"
+            }
+          ]
+        },
+        {
+          "line_start": 534,
+          "line_end": 536,
+          "lines": [
+            {
+              "line": 534,
+              "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+            },
+            {
+              "line": 535,
+              "text": "            recordWakeOwnerProbe(.suspendBegin)"
+            },
+            {
+              "line": 536,
+              "text": "        #endif"
+            }
+          ]
+        },
+        {
+          "line_start": 607,
+          "line_end": 609,
+          "lines": [
+            {
+              "line": 607,
+              "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+            },
+            {
+              "line": 608,
+              "text": "            recordWakeOwnerProbe(.suspendEnd)"
+            },
+            {
+              "line": 609,
+              "text": "        #endif"
+            }
+          ]
+        },
+        {
+          "line_start": 663,
+          "line_end": 665,
+          "lines": [
+            {
+              "line": 663,
+              "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+            },
+            {
+              "line": 664,
+              "text": "            recordWakeOwnerProbe(.resumeBegin)"
+            },
+            {
+              "line": 665,
+              "text": "        #endif"
+            }
+          ]
+        },
+        {
+          "line_start": 667,
+          "line_end": 669,
+          "lines": [
+            {
+              "line": 667,
+              "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+            },
+            {
+              "line": 668,
+              "text": "            recordWakeOwnerProbe(.resumeEnd)"
+            },
+            {
+              "line": 669,
+              "text": "        #endif"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift",
+      "bytes": 12137,
+      "sha256": "c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047",
+      "expected_sha256": "c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047",
+      "probe_flag_sites": [],
+      "probe_conditional_blocks": []
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift",
+      "bytes": 32769,
+      "sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+      "expected_sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+      "probe_flag_sites": [
+        {
+          "line": 48,
+          "text": "    #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+        },
+        {
+          "line": 99,
+          "text": "    #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+        },
+        {
+          "line": 313,
+          "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+        },
+        {
+          "line": 417,
+          "text": "    #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+        },
+        {
+          "line": 703,
+          "text": "#if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+        }
+      ],
+      "probe_conditional_blocks": [
+        {
+          "line_start": 48,
+          "line_end": 54,
+          "lines": [
+            {
+              "line": 48,
+              "text": "    #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+            },
+            {
+              "line": 49,
+              "text": "        weak var wakeProbeButton: UIButton?"
+            },
+            {
+              "line": 50,
+              "text": "        func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {"
+            },
+            {
+              "line": 51,
+              "text": "            guard let button = wakeProbeButton, let touched = touch.view else { return true }"
+            },
+            {
+              "line": 52,
+              "text": "            return !touched.isDescendant(of: button)"
+            },
+            {
+              "line": 53,
+              "text": "        }"
+            },
+            {
+              "line": 54,
+              "text": "    #endif"
+            }
+          ]
+        },
+        {
+          "line_start": 99,
+          "line_end": 103,
+          "lines": [
+            {
+              "line": 99,
+              "text": "    #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+            },
+            {
+              "line": 100,
+              "text": "        private var wakeProbeButton: UIButton?"
+            },
+            {
+              "line": 101,
+              "text": "        private var wakeProbeTrailingConstraint: NSLayoutConstraint?"
+            },
+            {
+              "line": 102,
+              "text": "        var onWakeOwnerProbeTouch: ((ObjectIdentifier, Bool) -> Void)?"
+            },
+            {
+              "line": 103,
+              "text": "    #endif"
+            }
+          ]
+        },
+        {
+          "line_start": 313,
+          "line_end": 317,
+          "lines": [
+            {
+              "line": 313,
+              "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+            },
+            {
+              "line": 314,
+              "text": "            if let button = wakeProbeButton, !button.isHidden, button.frame.contains(point) {"
+            },
+            {
+              "line": 315,
+              "text": "                return button.hitTest(button.convert(point, from: self), with: event)"
+            },
+            {
+              "line": 316,
+              "text": "            }"
+            },
+            {
+              "line": 317,
+              "text": "        #endif"
+            }
+          ]
+        },
+        {
+          "line_start": 417,
+          "line_end": 463,
+          "lines": [
+            {
+              "line": 417,
+              "text": "    #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+            },
+            {
+              "line": 418,
+              "text": "        func installWakeOwnerProbeButton(target: Any?, action: Selector) {"
+            },
+            {
+              "line": 419,
+              "text": "            guard wakeProbeButton == nil else { return }"
+            },
+            {
+              "line": 420,
+              "text": "            let button = UIButton(type: .custom)"
+            },
+            {
+              "line": 421,
+              "text": "            button.translatesAutoresizingMaskIntoConstraints = false"
+            },
+            {
+              "line": 422,
+              "text": "            button.backgroundColor = UIColor.systemGray.withAlphaComponent(0.001)"
+            },
+            {
+              "line": 423,
+              "text": "            button.setTitleColor(.label, for: .normal)"
+            },
+            {
+              "line": 424,
+              "text": "            button.titleLabel?.font = .systemFont(ofSize: 12, weight: .medium)"
+            },
+            {
+              "line": 425,
+              "text": "            button.addTarget(target, action: action, for: .touchUpInside)"
+            },
+            {
+              "line": 426,
+              "text": "            button.isHidden = true"
+            },
+            {
+              "line": 427,
+              "text": "            addSubview(button)"
+            },
+            {
+              "line": 428,
+              "text": "            wakeProbeButton = button"
+            },
+            {
+              "line": 429,
+              "text": "            gestureBridge.wakeProbeButton = button"
+            },
+            {
+              "line": 430,
+              "text": "            NSLayoutConstraint.activate(["
+            },
+            {
+              "line": 431,
+              "text": "                button.trailingAnchor.constraint(equalTo: expandButton.leadingAnchor, constant: -2),"
+            },
+            {
+              "line": 432,
+              "text": "                button.topAnchor.constraint(equalTo: topAnchor),"
+            },
+            {
+              "line": 433,
+              "text": "                button.widthAnchor.constraint(equalToConstant: 44),"
+            },
+            {
+              "line": 434,
+              "text": "                button.heightAnchor.constraint(equalToConstant: min(candidateBarHeight, 44)),"
+            },
+            {
+              "line": 435,
+              "text": "            ])"
+            },
+            {
+              "line": 436,
+              "text": "            wakeProbeTrailingConstraint = collectionView.trailingAnchor.constraint("
+            },
+            {
+              "line": 437,
+              "text": "                equalTo: button.leadingAnchor, constant: -2)"
+            },
+            {
+              "line": 438,
+              "text": "            let observer = WakeOwnerProbeTouchObserver()"
+            },
+            {
+              "line": 439,
+              "text": "            observer.cancelsTouchesInView = false"
+            },
+            {
+              "line": 440,
+              "text": "            observer.delaysTouchesBegan = false"
+            },
+            {
+              "line": 441,
+              "text": "            observer.delaysTouchesEnded = false"
+            },
+            {
+              "line": 442,
+              "text": "            observer.delegate = gestureBridge"
+            },
+            {
+              "line": 443,
+              "text": "            observer.onTouch = { [weak self] identifier, began in"
+            },
+            {
+              "line": 444,
+              "text": "                self?.onWakeOwnerProbeTouch?(identifier, began)"
+            },
+            {
+              "line": 445,
+              "text": "            }"
+            },
+            {
+              "line": 446,
+              "text": "            addGestureRecognizer(observer)"
+            },
+            {
+              "line": 447,
+              "text": "        }"
+            },
+            {
+              "line": 448,
+              "text": ""
+            },
+            {
+              "line": 449,
+              "text": "        func setWakeOwnerProbeButton(visible: Bool, title: String) {"
+            },
+            {
+              "line": 450,
+              "text": "            guard let button = wakeProbeButton else { return }"
+            },
+            {
+              "line": 451,
+              "text": "            button.setTitle(title, for: .normal)"
+            },
+            {
+              "line": 452,
+              "text": "            button.accessibilityLabel = title == \"观测\" ? \"开始 owner 观测\" : \"冻结并导出 owner 观测\""
+            },
+            {
+              "line": 453,
+              "text": "            guard button.isHidden == visible else { return }"
+            },
+            {
+              "line": 454,
+              "text": "            if visible {"
+            },
+            {
+              "line": 455,
+              "text": "                candidateTrailingConstraint.isActive = false"
+            },
+            {
+              "line": 456,
+              "text": "                wakeProbeTrailingConstraint?.isActive = true"
+            },
+            {
+              "line": 457,
+              "text": "            } else {"
+            },
+            {
+              "line": 458,
+              "text": "                wakeProbeTrailingConstraint?.isActive = false"
+            },
+            {
+              "line": 459,
+              "text": "                candidateTrailingConstraint.isActive = true"
+            },
+            {
+              "line": 460,
+              "text": "            }"
+            },
+            {
+              "line": 461,
+              "text": "            button.isHidden = !visible"
+            },
+            {
+              "line": 462,
+              "text": "        }"
+            },
+            {
+              "line": 463,
+              "text": "    #endif"
+            }
+          ]
+        },
+        {
+          "line_start": 703,
+          "line_end": 734,
+          "lines": [
+            {
+              "line": 703,
+              "text": "#if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+            },
+            {
+              "line": 704,
+              "text": "    private final class WakeOwnerProbeTouchObserver: UIGestureRecognizer {"
+            },
+            {
+              "line": 705,
+              "text": "        var onTouch: ((ObjectIdentifier, Bool) -> Void)?"
+            },
+            {
+              "line": 706,
+              "text": "        private var active: Set<ObjectIdentifier> = []"
+            },
+            {
+              "line": 707,
+              "text": "        override func canPrevent(_ preventedGestureRecognizer: UIGestureRecognizer) -> Bool { false }"
+            },
+            {
+              "line": 708,
+              "text": "        override func canBePrevented(by preventingGestureRecognizer: UIGestureRecognizer) -> Bool { false }"
+            },
+            {
+              "line": 709,
+              "text": "        override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {"
+            },
+            {
+              "line": 710,
+              "text": "            for touch in touches {"
+            },
+            {
+              "line": 711,
+              "text": "                let identifier = ObjectIdentifier(touch)"
+            },
+            {
+              "line": 712,
+              "text": "                active.insert(identifier)"
+            },
+            {
+              "line": 713,
+              "text": "                onTouch?(identifier, true)"
+            },
+            {
+              "line": 714,
+              "text": "            }"
+            },
+            {
+              "line": 715,
+              "text": "            state = .began"
+            },
+            {
+              "line": 716,
+              "text": "        }"
+            },
+            {
+              "line": 717,
+              "text": "        override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) { state = .changed }"
+            },
+            {
+              "line": 718,
+              "text": "        override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) { finish(touches) }"
+            },
+            {
+              "line": 719,
+              "text": "        override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) { finish(touches) }"
+            },
+            {
+              "line": 720,
+              "text": "        private func finish(_ touches: Set<UITouch>) {"
+            },
+            {
+              "line": 721,
+              "text": "            for touch in touches {"
+            },
+            {
+              "line": 722,
+              "text": "                let identifier = ObjectIdentifier(touch)"
+            },
+            {
+              "line": 723,
+              "text": "                active.remove(identifier)"
+            },
+            {
+              "line": 724,
+              "text": "                onTouch?(identifier, false)"
+            },
+            {
+              "line": 725,
+              "text": "            }"
+            },
+            {
+              "line": 726,
+              "text": "            if active.isEmpty { state = .ended }"
+            },
+            {
+              "line": 727,
+              "text": "        }"
+            },
+            {
+              "line": 728,
+              "text": "        override func reset() {"
+            },
+            {
+              "line": 729,
+              "text": "            for identifier in active { onTouch?(identifier, false) }"
+            },
+            {
+              "line": 730,
+              "text": "            active.removeAll()"
+            },
+            {
+              "line": 731,
+              "text": "            super.reset()"
+            },
+            {
+              "line": 732,
+              "text": "        }"
+            },
+            {
+              "line": 733,
+              "text": "    }"
+            },
+            {
+              "line": 734,
+              "text": "#endif"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+      "bytes": 19887,
+      "sha256": "71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5",
+      "expected_sha256": "71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5",
+      "probe_flag_sites": [],
+      "probe_conditional_blocks": []
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+      "bytes": 62147,
+      "sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+      "expected_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+      "probe_flag_sites": [],
+      "probe_conditional_blocks": []
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardWakeOwnerProbe.swift",
+      "bytes": 15713,
+      "sha256": "679d55e8669d7c68db2fbe58fd1b436cbb19bc61e770f9a701751326fa669af6",
+      "expected_sha256": "679d55e8669d7c68db2fbe58fd1b436cbb19bc61e770f9a701751326fa669af6",
+      "probe_flag_sites": [],
+      "probe_conditional_blocks": [],
+      "full_numbered_source": [
+        {
+          "line": 1,
+          "text": "#if DEBUG"
+        },
+        {
+          "line": 2,
+          "text": "    import Foundation"
+        },
+        {
+          "line": 3,
+          "text": "    import Synchronization"
+        },
+        {
+          "line": 4,
+          "text": ""
+        },
+        {
+          "line": 5,
+          "text": "    /// A one-shot, content-free snapshot of observed keyboard-owner boundaries."
+        },
+        {
+          "line": 6,
+          "text": "    /// This probe is deliberately independent of the diagnostic journal and logger."
+        },
+        {
+          "line": 7,
+          "text": "    public final class KeyboardWakeOwnerProbe: Sendable {"
+        },
+        {
+          "line": 8,
+          "text": "        public enum Stage: UInt64, Sendable, CaseIterable {"
+        },
+        {
+          "line": 9,
+          "text": "            case appearance = 1"
+        },
+        {
+          "line": 10,
+          "text": "            case armed = 2"
+        },
+        {
+          "line": 11,
+          "text": "            case insertBegin = 3"
+        },
+        {
+          "line": 12,
+          "text": "            case insertEnd = 4"
+        },
+        {
+          "line": 13,
+          "text": "            case suspendBegin = 5"
+        },
+        {
+          "line": 14,
+          "text": "            case suspendEnd = 6"
+        },
+        {
+          "line": 15,
+          "text": "            case resumeBegin = 7"
+        },
+        {
+          "line": 16,
+          "text": "            case resumeEnd = 8"
+        },
+        {
+          "line": 17,
+          "text": "            case schedule = 9"
+        },
+        {
+          "line": 18,
+          "text": "            case teardown = 10"
+        },
+        {
+          "line": 19,
+          "text": "            case replacement = 11"
+        },
+        {
+          "line": 20,
+          "text": "        }"
+        },
+        {
+          "line": 21,
+          "text": ""
+        },
+        {
+          "line": 22,
+          "text": "        public enum TeardownResult: UInt64, Sendable {"
+        },
+        {
+          "line": 23,
+          "text": "            case notApplicable = 0"
+        },
+        {
+          "line": 24,
+          "text": "            case completed = 1"
+        },
+        {
+          "line": 25,
+          "text": "            case failed = 2"
+        },
+        {
+          "line": 26,
+          "text": "            case cancelled = 3"
+        },
+        {
+          "line": 27,
+          "text": "        }"
+        },
+        {
+          "line": 28,
+          "text": ""
+        },
+        {
+          "line": 29,
+          "text": "        public struct Snapshot: Sendable, Equatable {"
+        },
+        {
+          "line": 30,
+          "text": "            /// Header followed by fixed-width event records. No field contains text."
+        },
+        {
+          "line": 31,
+          "text": "            public let words: [UInt64]"
+        },
+        {
+          "line": 32,
+          "text": ""
+        },
+        {
+          "line": 33,
+          "text": "            public var isIncomplete: Bool {"
+        },
+        {
+          "line": 34,
+          "text": "                words.count > Self.completenessWordIndex"
+        },
+        {
+          "line": 35,
+          "text": "                    && words[Self.completenessWordIndex] == Self.incompleteValue"
+        },
+        {
+          "line": 36,
+          "text": "            }"
+        },
+        {
+          "line": 37,
+          "text": ""
+        },
+        {
+          "line": 38,
+          "text": "            /// The raw pointer is valid only for the duration of `body`."
+        },
+        {
+          "line": 39,
+          "text": "            /// The caller must copy bytes inside the closure if it needs to retain them."
+        },
+        {
+          "line": 40,
+          "text": "            public func withUnsafeBytes<Result>("
+        },
+        {
+          "line": 41,
+          "text": "                _ body: (UnsafeRawBufferPointer) throws -> Result"
+        },
+        {
+          "line": 42,
+          "text": "            ) rethrows -> Result {"
+        },
+        {
+          "line": 43,
+          "text": "                try words.withUnsafeBufferPointer { buffer in"
+        },
+        {
+          "line": 44,
+          "text": "                    let bytes = UnsafeRawBufferPointer("
+        },
+        {
+          "line": 45,
+          "text": "                        start: buffer.baseAddress,"
+        },
+        {
+          "line": 46,
+          "text": "                        count: buffer.count * MemoryLayout<UInt64>.size"
+        },
+        {
+          "line": 47,
+          "text": "                    )"
+        },
+        {
+          "line": 48,
+          "text": "                    return try body(bytes)"
+        },
+        {
+          "line": 49,
+          "text": "                }"
+        },
+        {
+          "line": 50,
+          "text": "            }"
+        },
+        {
+          "line": 51,
+          "text": ""
+        },
+        {
+          "line": 52,
+          "text": "            fileprivate static let completenessWordIndex = 2"
+        },
+        {
+          "line": 53,
+          "text": "            fileprivate static let incompleteValue: UInt64 = 1"
+        },
+        {
+          "line": 54,
+          "text": ""
+        },
+        {
+          "line": 55,
+          "text": "            fileprivate init(words: [UInt64]) {"
+        },
+        {
+          "line": 56,
+          "text": "                self.words = words"
+        },
+        {
+          "line": 57,
+          "text": "            }"
+        },
+        {
+          "line": 58,
+          "text": "        }"
+        },
+        {
+          "line": 59,
+          "text": ""
+        },
+        {
+          "line": 60,
+          "text": "        /// UI policy uses touch idleness, never composition or owner readiness."
+        },
+        {
+          "line": 61,
+          "text": "        public static func showsControl("
+        },
+        {
+          "line": 62,
+          "text": "            isObserving: Bool, hasCandidates: Bool, hasActiveTouches: Bool,"
+        },
+        {
+          "line": 63,
+          "text": "            elapsedIdleNanoseconds: UInt64"
+        },
+        {
+          "line": 64,
+          "text": "        ) -> Bool {"
+        },
+        {
+          "line": 65,
+          "text": "            !hasActiveTouches && elapsedIdleNanoseconds >= 2_000_000_000"
+        },
+        {
+          "line": 66,
+          "text": "                && (isObserving || !hasCandidates)"
+        },
+        {
+          "line": 67,
+          "text": "        }"
+        },
+        {
+          "line": 68,
+          "text": ""
+        },
+        {
+          "line": 69,
+          "text": "        public static let shared = KeyboardWakeOwnerProbe()"
+        },
+        {
+          "line": 70,
+          "text": "        public static let recordCapacity = 128"
+        },
+        {
+          "line": 71,
+          "text": "        public static let lifetimeNanoseconds: UInt64 = 600_000_000_000"
+        },
+        {
+          "line": 72,
+          "text": ""
+        },
+        {
+          "line": 73,
+          "text": "        private static let headerWordCount = 11"
+        },
+        {
+          "line": 74,
+          "text": "        private static let recordWordCount = 11"
+        },
+        {
+          "line": 75,
+          "text": "        private static let magicWord: UInt64 = 0x4B57_4F50_524F_4245  // KWOPROBE"
+        },
+        {
+          "line": 76,
+          "text": "        private static let formatVersion: UInt64 = 1"
+        },
+        {
+          "line": 77,
+          "text": ""
+        },
+        {
+          "line": 78,
+          "text": "        private let state: Mutex<State>"
+        },
+        {
+          "line": 79,
+          "text": "        private let processIdentifier: IdentifierWords"
+        },
+        {
+          "line": 80,
+          "text": "        private let clock: @Sendable () -> UInt64"
+        },
+        {
+          "line": 81,
+          "text": ""
+        },
+        {
+          "line": 82,
+          "text": "        /// `now` is injectable so TTL behavior can be checked without sleeping."
+        },
+        {
+          "line": 83,
+          "text": "        public init("
+        },
+        {
+          "line": 84,
+          "text": "            now: @escaping @Sendable () -> UInt64 = {"
+        },
+        {
+          "line": 85,
+          "text": "                DispatchTime.now().uptimeNanoseconds"
+        },
+        {
+          "line": 86,
+          "text": "            }"
+        },
+        {
+          "line": 87,
+          "text": "        ) {"
+        },
+        {
+          "line": 88,
+          "text": "            self.state = Mutex(State())"
+        },
+        {
+          "line": 89,
+          "text": "            self.processIdentifier = IdentifierWords(uuid: UUID())"
+        },
+        {
+          "line": 90,
+          "text": "            self.clock = now"
+        },
+        {
+          "line": 91,
+          "text": "        }"
+        },
+        {
+          "line": 92,
+          "text": ""
+        },
+        {
+          "line": 93,
+          "text": "        public var isArmed: Bool {"
+        },
+        {
+          "line": 94,
+          "text": "            let now = clock()"
+        },
+        {
+          "line": 95,
+          "text": "            return state.withLock { value in"
+        },
+        {
+          "line": 96,
+          "text": "                value.refreshExpiry(now: now)"
+        },
+        {
+          "line": 97,
+          "text": "                return value.lifecycle == .armed"
+        },
+        {
+          "line": 98,
+          "text": "            }"
+        },
+        {
+          "line": 99,
+          "text": "        }"
+        },
+        {
+          "line": 100,
+          "text": ""
+        },
+        {
+          "line": 101,
+          "text": "        /// Expiry is terminal too, so the UI can keep the export affordance visible."
+        },
+        {
+          "line": 102,
+          "text": "        public var isFrozen: Bool {"
+        },
+        {
+          "line": 103,
+          "text": "            let now = clock()"
+        },
+        {
+          "line": 104,
+          "text": "            return state.withLock { value in"
+        },
+        {
+          "line": 105,
+          "text": "                value.refreshExpiry(now: now)"
+        },
+        {
+          "line": 106,
+          "text": "                return value.lifecycle == .expired || value.lifecycle == .frozen"
+        },
+        {
+          "line": 107,
+          "text": "            }"
+        },
+        {
+          "line": 108,
+          "text": "        }"
+        },
+        {
+          "line": 109,
+          "text": ""
+        },
+        {
+          "line": 110,
+          "text": "        /// Arms this instance once. An expired or frozen instance cannot be re-armed."
+        },
+        {
+          "line": 111,
+          "text": "        @discardableResult"
+        },
+        {
+          "line": 112,
+          "text": "        public func arm() -> Bool {"
+        },
+        {
+          "line": 113,
+          "text": "            let now = clock()"
+        },
+        {
+          "line": 114,
+          "text": "            return state.withLock { value in"
+        },
+        {
+          "line": 115,
+          "text": "                guard value.lifecycle == .disarmed else { return false }"
+        },
+        {
+          "line": 116,
+          "text": ""
+        },
+        {
+          "line": 117,
+          "text": "                value.lifecycle = .armed"
+        },
+        {
+          "line": 118,
+          "text": "                value.runIdentifier = IdentifierWords(uuid: UUID())"
+        },
+        {
+          "line": 119,
+          "text": "                value.armedAt = now"
+        },
+        {
+          "line": 120,
+          "text": "                value.expiresAt = Self.saturatingAdd(now, Self.lifetimeNanoseconds)"
+        },
+        {
+          "line": 121,
+          "text": "                _ = Self.append("
+        },
+        {
+          "line": 122,
+          "text": "                    stage: .armed,"
+        },
+        {
+          "line": 123,
+          "text": "                    timestamp: now,"
+        },
+        {
+          "line": 124,
+          "text": "                    coordinatorOrdinal: 0,"
+        },
+        {
+          "line": 125,
+          "text": "                    appearanceOrdinal: 0,"
+        },
+        {
+          "line": 126,
+          "text": "                    attemptOrdinal: 0,"
+        },
+        {
+          "line": 127,
+          "text": "                    ownerPresent: false,"
+        },
+        {
+          "line": 128,
+          "text": "                    receiptPresent: false,"
+        },
+        {
+          "line": 129,
+          "text": "                    teardownResult: .notApplicable,"
+        },
+        {
+          "line": 130,
+          "text": "                    epoch: 0,"
+        },
+        {
+          "line": 131,
+          "text": "                    revision: 0,"
+        },
+        {
+          "line": 132,
+          "text": "                    to: &value"
+        },
+        {
+          "line": 133,
+          "text": "                )"
+        },
+        {
+          "line": 134,
+          "text": "                return true"
+        },
+        {
+          "line": 135,
+          "text": "            }"
+        },
+        {
+          "line": 136,
+          "text": "        }"
+        },
+        {
+          "line": 137,
+          "text": ""
+        },
+        {
+          "line": 138,
+          "text": "        /// Allocates a process-local ordinal without retaining the coordinator."
+        },
+        {
+          "line": 139,
+          "text": "        /// Zero means the UInt64 ordinal space has been exhausted."
+        },
+        {
+          "line": 140,
+          "text": "        public func nextCoordinatorOrdinal() -> UInt64 {"
+        },
+        {
+          "line": 141,
+          "text": "            state.withLock { value in"
+        },
+        {
+          "line": 142,
+          "text": "                let (next, overflow) = value.lastCoordinatorOrdinal.addingReportingOverflow(1)"
+        },
+        {
+          "line": 143,
+          "text": "                guard !overflow, next != 0 else { return 0 }"
+        },
+        {
+          "line": 144,
+          "text": "                value.lastCoordinatorOrdinal = next"
+        },
+        {
+          "line": 145,
+          "text": "                return next"
+        },
+        {
+          "line": 146,
+          "text": "            }"
+        },
+        {
+          "line": 147,
+          "text": "        }"
+        },
+        {
+          "line": 148,
+          "text": ""
+        },
+        {
+          "line": 149,
+          "text": "        /// Begins a synchronous insert-key observation window. Pair with `endAttempt`"
+        },
+        {
+          "line": 150,
+          "text": "        /// using `defer`; never carry its ordinal across an asynchronous boundary."
+        },
+        {
+          "line": 151,
+          "text": "        public func beginAttempt(appearanceOrdinal: UInt64) -> UInt64? {"
+        },
+        {
+          "line": 152,
+          "text": "            let now = clock()"
+        },
+        {
+          "line": 153,
+          "text": "            return state.withLock { value in"
+        },
+        {
+          "line": 154,
+          "text": "                value.refreshExpiry(now: now)"
+        },
+        {
+          "line": 155,
+          "text": "                guard value.lifecycle == .armed else { return nil }"
+        },
+        {
+          "line": 156,
+          "text": "                guard value.activeAttemptOrdinal == 0 else {"
+        },
+        {
+          "line": 157,
+          "text": "                    // Reentrant input cannot borrow the outer attempt's identity."
+        },
+        {
+          "line": 158,
+          "text": "                    value.invalidAttemptContext = true"
+        },
+        {
+          "line": 159,
+          "text": "                    value.activeAttemptOrdinal = 0"
+        },
+        {
+          "line": 160,
+          "text": "                    return nil"
+        },
+        {
+          "line": 161,
+          "text": "                }"
+        },
+        {
+          "line": 162,
+          "text": ""
+        },
+        {
+          "line": 163,
+          "text": "                let (next, overflow) = value.lastAttemptOrdinal.addingReportingOverflow(1)"
+        },
+        {
+          "line": 164,
+          "text": "                guard !overflow, next != 0 else { return nil }"
+        },
+        {
+          "line": 165,
+          "text": "                value.lastAttemptOrdinal = next"
+        },
+        {
+          "line": 166,
+          "text": "                value.activeAttemptOrdinal = next"
+        },
+        {
+          "line": 167,
+          "text": "                value.appearanceOrdinal = appearanceOrdinal"
+        },
+        {
+          "line": 168,
+          "text": "                return next"
+        },
+        {
+          "line": 169,
+          "text": "            }"
+        },
+        {
+          "line": 170,
+          "text": "        }"
+        },
+        {
+          "line": 171,
+          "text": ""
+        },
+        {
+          "line": 172,
+          "text": "        @discardableResult"
+        },
+        {
+          "line": 173,
+          "text": "        public func endAttempt(_ attemptOrdinal: UInt64) -> Bool {"
+        },
+        {
+          "line": 174,
+          "text": "            state.withLock { value in"
+        },
+        {
+          "line": 175,
+          "text": "                guard value.lifecycle == .armed,"
+        },
+        {
+          "line": 176,
+          "text": "                    attemptOrdinal != 0,"
+        },
+        {
+          "line": 177,
+          "text": "                    value.activeAttemptOrdinal == attemptOrdinal"
+        },
+        {
+          "line": 178,
+          "text": "                else {"
+        },
+        {
+          "line": 179,
+          "text": "                    return false"
+        },
+        {
+          "line": 180,
+          "text": "                }"
+        },
+        {
+          "line": 181,
+          "text": "                value.activeAttemptOrdinal = 0"
+        },
+        {
+          "line": 182,
+          "text": "                return true"
+        },
+        {
+          "line": 183,
+          "text": "            }"
+        },
+        {
+          "line": 184,
+          "text": "        }"
+        },
+        {
+          "line": 185,
+          "text": ""
+        },
+        {
+          "line": 186,
+          "text": "        /// Appends finite metadata only while the one-shot probe is armed."
+        },
+        {
+          "line": 187,
+          "text": "        @discardableResult"
+        },
+        {
+          "line": 188,
+          "text": "        public func record("
+        },
+        {
+          "line": 189,
+          "text": "            stage: Stage,"
+        },
+        {
+          "line": 190,
+          "text": "            coordinatorOrdinal: UInt64,"
+        },
+        {
+          "line": 191,
+          "text": "            appearanceOrdinal: UInt64? = nil,"
+        },
+        {
+          "line": 192,
+          "text": "            ownerPresent: Bool,"
+        },
+        {
+          "line": 193,
+          "text": "            receiptPresent: Bool = false,"
+        },
+        {
+          "line": 194,
+          "text": "            teardownResult: TeardownResult = .notApplicable,"
+        },
+        {
+          "line": 195,
+          "text": "            epoch: UInt64 = 0,"
+        },
+        {
+          "line": 196,
+          "text": "            revision: UInt64 = 0"
+        },
+        {
+          "line": 197,
+          "text": "        ) -> Bool {"
+        },
+        {
+          "line": 198,
+          "text": "            let now = clock()"
+        },
+        {
+          "line": 199,
+          "text": "            return state.withLock { value in"
+        },
+        {
+          "line": 200,
+          "text": "                value.refreshExpiry(now: now)"
+        },
+        {
+          "line": 201,
+          "text": "                guard value.lifecycle == .armed else { return false }"
+        },
+        {
+          "line": 202,
+          "text": ""
+        },
+        {
+          "line": 203,
+          "text": "                if let appearanceOrdinal {"
+        },
+        {
+          "line": 204,
+          "text": "                    value.appearanceOrdinal = appearanceOrdinal"
+        },
+        {
+          "line": 205,
+          "text": "                }"
+        },
+        {
+          "line": 206,
+          "text": "                return Self.append("
+        },
+        {
+          "line": 207,
+          "text": "                    stage: stage,"
+        },
+        {
+          "line": 208,
+          "text": "                    timestamp: now,"
+        },
+        {
+          "line": 209,
+          "text": "                    coordinatorOrdinal: coordinatorOrdinal,"
+        },
+        {
+          "line": 210,
+          "text": "                    appearanceOrdinal: value.appearanceOrdinal,"
+        },
+        {
+          "line": 211,
+          "text": "                    attemptOrdinal: value.activeAttemptOrdinal,"
+        },
+        {
+          "line": 212,
+          "text": "                    ownerPresent: ownerPresent,"
+        },
+        {
+          "line": 213,
+          "text": "                    receiptPresent: receiptPresent,"
+        },
+        {
+          "line": 214,
+          "text": "                    teardownResult: teardownResult,"
+        },
+        {
+          "line": 215,
+          "text": "                    epoch: epoch,"
+        },
+        {
+          "line": 216,
+          "text": "                    revision: revision,"
+        },
+        {
+          "line": 217,
+          "text": "                    to: &value"
+        },
+        {
+          "line": 218,
+          "text": "                )"
+        },
+        {
+          "line": 219,
+          "text": "            }"
+        },
+        {
+          "line": 220,
+          "text": "        }"
+        },
+        {
+          "line": 221,
+          "text": ""
+        },
+        {
+          "line": 222,
+          "text": "        /// Copies the bounded values under the mutex, then encodes after unlocking."
+        },
+        {
+          "line": 223,
+          "text": "        public func freeze() -> Snapshot? {"
+        },
+        {
+          "line": 224,
+          "text": "            let now = clock()"
+        },
+        {
+          "line": 225,
+          "text": "            let frozenValue = state.withLock { value -> FrozenValue? in"
+        },
+        {
+          "line": 226,
+          "text": "                value.refreshExpiry(now: now)"
+        },
+        {
+          "line": 227,
+          "text": "                guard let runIdentifier = value.runIdentifier else { return nil }"
+        },
+        {
+          "line": 228,
+          "text": "                if let existing = value.frozenValue { return existing }"
+        },
+        {
+          "line": 229,
+          "text": ""
+        },
+        {
+          "line": 230,
+          "text": "                let incomplete ="
+        },
+        {
+          "line": 231,
+          "text": "                    value.lifecycle == .expired || value.overflowCount != 0"
+        },
+        {
+          "line": 232,
+          "text": "                    || value.invalidAttemptContext || value.activeAttemptOrdinal != 0"
+        },
+        {
+          "line": 233,
+          "text": "                let records = (0..<value.recordCount).compactMap { value.records[$0] }"
+        },
+        {
+          "line": 234,
+          "text": "                let copy = FrozenValue("
+        },
+        {
+          "line": 235,
+          "text": "                    isIncomplete: incomplete,"
+        },
+        {
+          "line": 236,
+          "text": "                    runIdentifier: runIdentifier,"
+        },
+        {
+          "line": 237,
+          "text": "                    processIdentifier: processIdentifier,"
+        },
+        {
+          "line": 238,
+          "text": "                    armedAt: value.armedAt,"
+        },
+        {
+          "line": 239,
+          "text": "                    expiresAt: value.expiresAt,"
+        },
+        {
+          "line": 240,
+          "text": "                    overflowCount: value.overflowCount,"
+        },
+        {
+          "line": 241,
+          "text": "                    records: records"
+        },
+        {
+          "line": 242,
+          "text": "                )"
+        },
+        {
+          "line": 243,
+          "text": "                value.lifecycle = .frozen"
+        },
+        {
+          "line": 244,
+          "text": "                value.activeAttemptOrdinal = 0"
+        },
+        {
+          "line": 245,
+          "text": "                value.frozenValue = copy"
+        },
+        {
+          "line": 246,
+          "text": "                return copy"
+        },
+        {
+          "line": 247,
+          "text": "            }"
+        },
+        {
+          "line": 248,
+          "text": ""
+        },
+        {
+          "line": 249,
+          "text": "            guard let frozenValue else { return nil }"
+        },
+        {
+          "line": 250,
+          "text": "            return Snapshot(words: Self.encode(frozenValue))"
+        },
+        {
+          "line": 251,
+          "text": "        }"
+        },
+        {
+          "line": 252,
+          "text": ""
+        },
+        {
+          "line": 253,
+          "text": "        private static func append("
+        },
+        {
+          "line": 254,
+          "text": "            stage: Stage,"
+        },
+        {
+          "line": 255,
+          "text": "            timestamp: UInt64,"
+        },
+        {
+          "line": 256,
+          "text": "            coordinatorOrdinal: UInt64,"
+        },
+        {
+          "line": 257,
+          "text": "            appearanceOrdinal: UInt64,"
+        },
+        {
+          "line": 258,
+          "text": "            attemptOrdinal: UInt64,"
+        },
+        {
+          "line": 259,
+          "text": "            ownerPresent: Bool,"
+        },
+        {
+          "line": 260,
+          "text": "            receiptPresent: Bool,"
+        },
+        {
+          "line": 261,
+          "text": "            teardownResult: TeardownResult,"
+        },
+        {
+          "line": 262,
+          "text": "            epoch: UInt64,"
+        },
+        {
+          "line": 263,
+          "text": "            revision: UInt64,"
+        },
+        {
+          "line": 264,
+          "text": "            to state: inout State"
+        },
+        {
+          "line": 265,
+          "text": "        ) -> Bool {"
+        },
+        {
+          "line": 266,
+          "text": "            let (incremented, overflow) = state.lastSequence.addingReportingOverflow(1)"
+        },
+        {
+          "line": 267,
+          "text": "            let sequence = overflow ? UInt64.max : incremented"
+        },
+        {
+          "line": 268,
+          "text": "            state.lastSequence = sequence"
+        },
+        {
+          "line": 269,
+          "text": ""
+        },
+        {
+          "line": 270,
+          "text": "            guard state.recordCount < recordCapacity else {"
+        },
+        {
+          "line": 271,
+          "text": "                state.overflowCount = saturatingIncrement(state.overflowCount)"
+        },
+        {
+          "line": 272,
+          "text": "                return false"
+        },
+        {
+          "line": 273,
+          "text": "            }"
+        },
+        {
+          "line": 274,
+          "text": ""
+        },
+        {
+          "line": 275,
+          "text": "            state.records[state.recordCount] = StoredRecord("
+        },
+        {
+          "line": 276,
+          "text": "                sequence: sequence,"
+        },
+        {
+          "line": 277,
+          "text": "                timestamp: timestamp,"
+        },
+        {
+          "line": 278,
+          "text": "                stage: stage.rawValue,"
+        },
+        {
+          "line": 279,
+          "text": "                coordinatorOrdinal: coordinatorOrdinal,"
+        },
+        {
+          "line": 280,
+          "text": "                appearanceOrdinal: appearanceOrdinal,"
+        },
+        {
+          "line": 281,
+          "text": "                attemptOrdinal: attemptOrdinal,"
+        },
+        {
+          "line": 282,
+          "text": "                ownerPresent: ownerPresent,"
+        },
+        {
+          "line": 283,
+          "text": "                receiptPresent: receiptPresent,"
+        },
+        {
+          "line": 284,
+          "text": "                teardownResult: teardownResult.rawValue,"
+        },
+        {
+          "line": 285,
+          "text": "                epoch: epoch,"
+        },
+        {
+          "line": 286,
+          "text": "                revision: revision"
+        },
+        {
+          "line": 287,
+          "text": "            )"
+        },
+        {
+          "line": 288,
+          "text": "            state.recordCount += 1"
+        },
+        {
+          "line": 289,
+          "text": "            return true"
+        },
+        {
+          "line": 290,
+          "text": "        }"
+        },
+        {
+          "line": 291,
+          "text": ""
+        },
+        {
+          "line": 292,
+          "text": "        private static func encode(_ value: FrozenValue) -> [UInt64] {"
+        },
+        {
+          "line": 293,
+          "text": "            var words: [UInt64] = []"
+        },
+        {
+          "line": 294,
+          "text": "            words.reserveCapacity(headerWordCount + value.records.count * recordWordCount)"
+        },
+        {
+          "line": 295,
+          "text": "            words.append(magicWord)"
+        },
+        {
+          "line": 296,
+          "text": "            words.append(formatVersion)"
+        },
+        {
+          "line": 297,
+          "text": "            words.append(value.isIncomplete ? Snapshot.incompleteValue : 0)"
+        },
+        {
+          "line": 298,
+          "text": "            words.append(value.runIdentifier.high)"
+        },
+        {
+          "line": 299,
+          "text": "            words.append(value.runIdentifier.low)"
+        },
+        {
+          "line": 300,
+          "text": "            words.append(value.processIdentifier.high)"
+        },
+        {
+          "line": 301,
+          "text": "            words.append(value.processIdentifier.low)"
+        },
+        {
+          "line": 302,
+          "text": "            words.append(value.armedAt)"
+        },
+        {
+          "line": 303,
+          "text": "            words.append(value.expiresAt)"
+        },
+        {
+          "line": 304,
+          "text": "            words.append(UInt64(value.records.count))"
+        },
+        {
+          "line": 305,
+          "text": "            words.append(value.overflowCount)"
+        },
+        {
+          "line": 306,
+          "text": ""
+        },
+        {
+          "line": 307,
+          "text": "            for record in value.records {"
+        },
+        {
+          "line": 308,
+          "text": "                words.append(record.sequence)"
+        },
+        {
+          "line": 309,
+          "text": "                words.append(record.timestamp)"
+        },
+        {
+          "line": 310,
+          "text": "                words.append(record.stage)"
+        },
+        {
+          "line": 311,
+          "text": "                words.append(record.coordinatorOrdinal)"
+        },
+        {
+          "line": 312,
+          "text": "                words.append(record.appearanceOrdinal)"
+        },
+        {
+          "line": 313,
+          "text": "                words.append(record.attemptOrdinal)"
+        },
+        {
+          "line": 314,
+          "text": "                words.append(record.ownerPresent ? 1 : 0)"
+        },
+        {
+          "line": 315,
+          "text": "                words.append(record.receiptPresent ? 1 : 0)"
+        },
+        {
+          "line": 316,
+          "text": "                words.append(record.teardownResult)"
+        },
+        {
+          "line": 317,
+          "text": "                words.append(record.epoch)"
+        },
+        {
+          "line": 318,
+          "text": "                words.append(record.revision)"
+        },
+        {
+          "line": 319,
+          "text": "            }"
+        },
+        {
+          "line": 320,
+          "text": "            return words"
+        },
+        {
+          "line": 321,
+          "text": "        }"
+        },
+        {
+          "line": 322,
+          "text": ""
+        },
+        {
+          "line": 323,
+          "text": "        private static func saturatingIncrement(_ value: UInt64) -> UInt64 {"
+        },
+        {
+          "line": 324,
+          "text": "            value == UInt64.max ? UInt64.max : value + 1"
+        },
+        {
+          "line": 325,
+          "text": "        }"
+        },
+        {
+          "line": 326,
+          "text": ""
+        },
+        {
+          "line": 327,
+          "text": "        private static func saturatingAdd(_ lhs: UInt64, _ rhs: UInt64) -> UInt64 {"
+        },
+        {
+          "line": 328,
+          "text": "            let (sum, overflow) = lhs.addingReportingOverflow(rhs)"
+        },
+        {
+          "line": 329,
+          "text": "            return overflow ? UInt64.max : sum"
+        },
+        {
+          "line": 330,
+          "text": "        }"
+        },
+        {
+          "line": 331,
+          "text": ""
+        },
+        {
+          "line": 332,
+          "text": "        private enum Lifecycle: Equatable, Sendable {"
+        },
+        {
+          "line": 333,
+          "text": "            case disarmed"
+        },
+        {
+          "line": 334,
+          "text": "            case armed"
+        },
+        {
+          "line": 335,
+          "text": "            case expired"
+        },
+        {
+          "line": 336,
+          "text": "            case frozen"
+        },
+        {
+          "line": 337,
+          "text": "        }"
+        },
+        {
+          "line": 338,
+          "text": ""
+        },
+        {
+          "line": 339,
+          "text": "        private struct State: Sendable {"
+        },
+        {
+          "line": 340,
+          "text": "            var lifecycle: Lifecycle = .disarmed"
+        },
+        {
+          "line": 341,
+          "text": "            var records = Array<StoredRecord?>(repeating: nil, count: recordCapacity)"
+        },
+        {
+          "line": 342,
+          "text": "            var recordCount = 0"
+        },
+        {
+          "line": 343,
+          "text": "            var overflowCount: UInt64 = 0"
+        },
+        {
+          "line": 344,
+          "text": "            var lastSequence: UInt64 = 0"
+        },
+        {
+          "line": 345,
+          "text": "            var lastCoordinatorOrdinal: UInt64 = 0"
+        },
+        {
+          "line": 346,
+          "text": "            var lastAttemptOrdinal: UInt64 = 0"
+        },
+        {
+          "line": 347,
+          "text": "            var invalidAttemptContext = false"
+        },
+        {
+          "line": 348,
+          "text": "            var activeAttemptOrdinal: UInt64 = 0"
+        },
+        {
+          "line": 349,
+          "text": "            var appearanceOrdinal: UInt64 = 0"
+        },
+        {
+          "line": 350,
+          "text": "            var armedAt: UInt64 = 0"
+        },
+        {
+          "line": 351,
+          "text": "            var expiresAt: UInt64 = 0"
+        },
+        {
+          "line": 352,
+          "text": "            var runIdentifier: IdentifierWords?"
+        },
+        {
+          "line": 353,
+          "text": "            var frozenValue: FrozenValue?"
+        },
+        {
+          "line": 354,
+          "text": ""
+        },
+        {
+          "line": 355,
+          "text": "            mutating func refreshExpiry(now: UInt64) {"
+        },
+        {
+          "line": 356,
+          "text": "                guard lifecycle == .armed, now >= expiresAt else { return }"
+        },
+        {
+          "line": 357,
+          "text": "                lifecycle = .expired"
+        },
+        {
+          "line": 358,
+          "text": "                activeAttemptOrdinal = 0"
+        },
+        {
+          "line": 359,
+          "text": "            }"
+        },
+        {
+          "line": 360,
+          "text": "        }"
+        },
+        {
+          "line": 361,
+          "text": ""
+        },
+        {
+          "line": 362,
+          "text": "        private struct StoredRecord: Sendable {"
+        },
+        {
+          "line": 363,
+          "text": "            let sequence: UInt64"
+        },
+        {
+          "line": 364,
+          "text": "            let timestamp: UInt64"
+        },
+        {
+          "line": 365,
+          "text": "            let stage: UInt64"
+        },
+        {
+          "line": 366,
+          "text": "            let coordinatorOrdinal: UInt64"
+        },
+        {
+          "line": 367,
+          "text": "            let appearanceOrdinal: UInt64"
+        },
+        {
+          "line": 368,
+          "text": "            let attemptOrdinal: UInt64"
+        },
+        {
+          "line": 369,
+          "text": "            let ownerPresent: Bool"
+        },
+        {
+          "line": 370,
+          "text": "            let receiptPresent: Bool"
+        },
+        {
+          "line": 371,
+          "text": "            let teardownResult: UInt64"
+        },
+        {
+          "line": 372,
+          "text": "            let epoch: UInt64"
+        },
+        {
+          "line": 373,
+          "text": "            let revision: UInt64"
+        },
+        {
+          "line": 374,
+          "text": "        }"
+        },
+        {
+          "line": 375,
+          "text": ""
+        },
+        {
+          "line": 376,
+          "text": "        private struct FrozenValue: Sendable {"
+        },
+        {
+          "line": 377,
+          "text": "            let isIncomplete: Bool"
+        },
+        {
+          "line": 378,
+          "text": "            let runIdentifier: IdentifierWords"
+        },
+        {
+          "line": 379,
+          "text": "            let processIdentifier: IdentifierWords"
+        },
+        {
+          "line": 380,
+          "text": "            let armedAt: UInt64"
+        },
+        {
+          "line": 381,
+          "text": "            let expiresAt: UInt64"
+        },
+        {
+          "line": 382,
+          "text": "            let overflowCount: UInt64"
+        },
+        {
+          "line": 383,
+          "text": "            let records: [StoredRecord]"
+        },
+        {
+          "line": 384,
+          "text": "        }"
+        },
+        {
+          "line": 385,
+          "text": ""
+        },
+        {
+          "line": 386,
+          "text": "        private struct IdentifierWords: Sendable {"
+        },
+        {
+          "line": 387,
+          "text": "            let high: UInt64"
+        },
+        {
+          "line": 388,
+          "text": "            let low: UInt64"
+        },
+        {
+          "line": 389,
+          "text": ""
+        },
+        {
+          "line": 390,
+          "text": "            init(uuid: UUID) {"
+        },
+        {
+          "line": 391,
+          "text": "                let bytes = withUnsafeBytes(of: uuid.uuid) { Array($0) }"
+        },
+        {
+          "line": 392,
+          "text": "                high = Self.makeWord(bytes, startingAt: 0)"
+        },
+        {
+          "line": 393,
+          "text": "                low = Self.makeWord(bytes, startingAt: 8)"
+        },
+        {
+          "line": 394,
+          "text": "            }"
+        },
+        {
+          "line": 395,
+          "text": ""
+        },
+        {
+          "line": 396,
+          "text": "            private static func makeWord(_ bytes: [UInt8], startingAt start: Int) -> UInt64 {"
+        },
+        {
+          "line": 397,
+          "text": "                var word: UInt64 = 0"
+        },
+        {
+          "line": 398,
+          "text": "                for index in start..<(start + 8) {"
+        },
+        {
+          "line": 399,
+          "text": "                    word = (word << 8) | UInt64(bytes[index])"
+        },
+        {
+          "line": 400,
+          "text": "                }"
+        },
+        {
+          "line": 401,
+          "text": "                return word"
+        },
+        {
+          "line": 402,
+          "text": "            }"
+        },
+        {
+          "line": 403,
+          "text": "        }"
+        },
+        {
+          "line": 404,
+          "text": "    }"
+        },
+        {
+          "line": 405,
+          "text": "#endif"
+        }
+      ]
+    }
+  ],
+  "flags_request_receipts": [
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/build-request.json",
+      "bytes": 1306,
+      "sha256": "af100aa4c68fb99f27c5239440f93ef62396ece1f8980416f67a0fae92335d50",
+      "expected_sha256": "af100aa4c68fb99f27c5239440f93ef62396ece1f8980416f67a0fae92335d50",
+      "text": "{\n  \"started_utc\": \"2026-10-05T02:51:40.538896+00:00\",\n  \"argv\": [\n    \"xcodebuild\",\n    \"-project\",\n    \"Universe Keyboard.xcodeproj\",\n    \"-scheme\",\n    \"Universe Keyboard\",\n    \"-configuration\",\n    \"Debug\",\n    \"-sdk\",\n    \"iphonesimulator\",\n    \"-destination\",\n    \"generic/platform=iOS Simulator\",\n    \"-derivedDataPath\",\n    \"/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData\",\n    \"-clonedSourcePackagesDirPath\",\n    \"/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/SourcePackages\",\n    \"-resultBundlePath\",\n    \"/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateBuild.xcresult\",\n    \"-disableAutomaticPackageResolution\",\n    \"-onlyUsePackageVersionsFromResolvedFile\",\n    \"-skipPackageUpdates\",\n    \"CODE_SIGNING_ALLOWED=YES\",\n    \"SWIFT_VERSION=6.0\",\n    \"SWIFT_STRICT_CONCURRENCY=complete\",\n    \"SWIFT_SUPPRESS_WARNINGS=NO\",\n    \"SWIFT_TREAT_WARNINGS_AS_ERRORS=YES\",\n    \"ARCHS=arm64\",\n    \"ONLY_ACTIVE_ARCH=YES\",\n    \"SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) DEBUG KEYBOARD_WAKE_OWNER_PROBE\",\n    \"CODE_SIGN_IDENTITY=-\",\n    \"CODE_SIGNING_REQUIRED=NO\",\n    \"build\"\n  ],\n  \"cwd\": \"/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard\",\n  \"calls_at_dispatch\": 10,\n  \"wall_seconds_remaining\": 3441.215053\n}\n"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/build-receipt.json",
+      "bytes": 270,
+      "sha256": "bc9467a029d4ece78c861e7acd257976f8f09a33ce5cefd1e2523d3334c17add",
+      "expected_sha256": "bc9467a029d4ece78c861e7acd257976f8f09a33ce5cefd1e2523d3334c17add",
+      "text": "{\n  \"started_utc\": \"2026-10-05T02:51:40.538896+00:00\",\n  \"ended_utc\": \"2026-10-05T02:52:13.974565+00:00\",\n  \"elapsed_seconds\": 33.43521387502551,\n  \"exit_code\": 0,\n  \"timeout\": false,\n  \"test_run\": false,\n  \"device_instance_targeted\": false,\n  \"source_written\": false\n}\n"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/actual-compiler-flags.json",
+      "sha256": "ea5971c247a1390b0512f9105ff05beebd1c6789fd8aeb82bbbabc1d1a5beec8",
+      "actual_target_invocations": {
+        "Keyboard": [
+          {
+            "line": 1425,
+            "text": "    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Keyboard -Onone @/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Objects-normal/arm64/Keyboard.SwiftFileList -DDEBUG -DDEBUG -DKEYBOARD_WAKE_OWNER_PROBE -Xcc -fmodule-map-file\\=/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/RimeBridgeObjC.modulemap -default-isolation\\=MainActor -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios18.0-simulator -g -module-cache-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -application-extension -profile-coverage-mapping -profile-generate -enable-testing -warnings-as-errors -index-store-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator -F /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator -emit-localized-strings -emit-localized-strings-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Objects-normal/arm64 -c -j8 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/SDKStatCaches.noindex/iphonesimulator27.0-24A430-8dc58220667be655e1bcc261a7455254.sdkstatcache -output-file-map /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Objects-normal/arm64/Keyboard-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/ModuleCache.noindex -sdk-module-cache-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Objects-normal/arm64/Keyboard.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Objects-normal/arm64/Keyboard-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\\=86400 -Xcc -fmodules-prune-after\\=345600 -emit-const-values -const-gather-protocols-list /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Objects-normal/arm64/Keyboard_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Keyboard-generated-files.hmap -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Keyboard-own-target-headers.hmap -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Keyboard-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard-c7db5b74330b406efaaaa4547e6a5407-VFS-iphonesimulator/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Keyboard-project-headers.hmap -Xcc -I/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridgeObjC/include -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/include -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/DerivedSources-normal/arm64 -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/DerivedSources/arm64 -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/DerivedSources -Xcc -DDEBUG\\=1 -emit-objc-header -emit-objc-header-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Objects-normal/arm64/Keyboard-Swift.h -working-directory /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard -experimental-emit-module-separately -disable-cmo"
+          }
+        ],
+        "Universe_Keyboard": [
+          {
+            "line": 2210,
+            "text": "    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Universe_Keyboard -Onone @/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Objects-normal/arm64/Universe\\ Keyboard.SwiftFileList -DDEBUG -DDEBUG -DKEYBOARD_WAKE_OWNER_PROBE -Xcc -fmodule-map-file\\=/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/RimeBridgeObjC.modulemap -default-isolation\\=MainActor -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios18.0-simulator -g -module-cache-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -warnings-as-errors -index-store-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator -F /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator -emit-localized-strings -emit-localized-strings-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Objects-normal/arm64 -c -j8 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/SDKStatCaches.noindex/iphonesimulator27.0-24A430-8dc58220667be655e1bcc261a7455254.sdkstatcache -output-file-map /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Objects-normal/arm64/Universe\\ Keyboard-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/ModuleCache.noindex -sdk-module-cache-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Objects-normal/arm64/Universe_Keyboard.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Objects-normal/arm64/Universe_Keyboard-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\\=86400 -Xcc -fmodules-prune-after\\=345600 -emit-const-values -const-gather-protocols-list /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Objects-normal/arm64/Universe\\ Keyboard_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Universe\\ Keyboard-generated-files.hmap -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Universe\\ Keyboard-own-target-headers.hmap -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Universe\\ Keyboard-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard-c7db5b74330b406efaaaa4547e6a5407-VFS-iphonesimulator/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Universe\\ Keyboard-project-headers.hmap -Xcc -I/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridgeObjC/include -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/include -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/DerivedSources-normal/arm64 -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/DerivedSources/arm64 -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/DerivedSources -Xcc -DDEBUG\\=1 -emit-objc-header -emit-objc-header-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Objects-normal/arm64/Universe_Keyboard-Swift.h -working-directory /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard -experimental-emit-module-separately -disable-cmo"
+          }
+        ]
+      }
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/paired-products.json",
+      "bytes": 6532,
+      "sha256": "14b647b6eebde9ad3b5ce62948028fcee72b92192193fd40fa444619950836db",
+      "expected_sha256": "14b647b6eebde9ad3b5ce62948028fcee72b92192193fd40fa444619950836db",
+      "text": "[\n  {\n    \"bundle_identifier\": \"com.DoubleShy0N.Universe-Keyboard\",\n    \"version\": \"1.0\",\n    \"build\": \"1\",\n    \"relative_root\": \".\",\n    \"modules\": [\n      {\n        \"path\": \"Universe Keyboard\",\n        \"sha256\": \"38cbdd01d7b664db0c435452086dd209447135f886906bab8181610a6a7e6feb\",\n        \"uuid_output\": \"UUID: 664DE45A-5859-34F1-892C-3DD2D9DE7B98 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard\",\n        \"probe_export_symbols\": [],\n        \"host_active_symbols\": [],\n        \"host_resign_symbols\": []\n      },\n      {\n        \"path\": \"Universe Keyboard.debug.dylib\",\n        \"sha256\": \"c00095f4d2016cf31b876ed5f3f17f53c5ec97d64704829b629d23ab7a57e200\",\n        \"uuid_output\": \"UUID: C19CE509-A814-30AB-88F1-CE5416FDDC33 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard.debug.dylib\",\n        \"probe_export_symbols\": [],\n        \"host_active_symbols\": [],\n        \"host_resign_symbols\": []\n      }\n    ],\n    \"codesign_verify\": true\n  },\n  {\n    \"bundle_identifier\": \"com.DoubleShy0N.Universe-Keyboard.Keyboard\",\n    \"version\": \"1.0\",\n    \"build\": \"1\",\n    \"relative_root\": \"PlugIns/Keyboard.appex\",\n    \"modules\": [\n      {\n        \"path\": \"PlugIns/Keyboard.appex/Keyboard\",\n        \"sha256\": \"e681da52516441c044c98419a7c9750d7a90b282cb69bd27e220284376922860\",\n        \"uuid_output\": \"UUID: CD0C6F02-6094-3726-B598-F03F42ABB468 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard\",\n        \"probe_export_symbols\": [],\n        \"host_active_symbols\": [],\n        \"host_resign_symbols\": []\n      },\n      {\n        \"path\": \"PlugIns/Keyboard.appex/Keyboard.debug.dylib\",\n        \"sha256\": \"773c4eff9640b2623036e3f819301ead3914cb99b66c9c1496ece5986e762aab\",\n        \"uuid_output\": \"UUID: 4B207746-89A7-321F-83C4-91477259BB26 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard.debug.dylib\",\n        \"probe_export_symbols\": [\n          \"000000000016af64 T _$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF\",\n          \"000000000016b214 t _$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitFyyXEfU0_\",\n          \"000000000016b160 t _$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitFyyXEfU_\",\n          \"00000000007ae568 s ___profc_$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF\",\n          \"00000000007ae578 s ___profc_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift:$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitFyyXEfU0_\",\n          \"00000000007ae570 s ___profc_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift:$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitFyyXEfU_\",\n          \"00000000007c9c40 s ___profd_$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF\",\n          \"00000000007c9cc0 s ___profd_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift:$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitFyyXEfU0_\",\n          \"00000000007c9c80 s ___profd_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift:$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitFyyXEfU_\"\n        ],\n        \"host_active_symbols\": [\n          \"00000000001044fc t _$s8Keyboard0A14ViewControllerC28extensionHostDidBecomeActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVF\",\n          \"0000000000104b18 t _$s8Keyboard0A14ViewControllerC28extensionHostDidBecomeActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVFSbyXEfU_\",\n          \"0000000000104ba4 t _$s8Keyboard0A14ViewControllerC28extensionHostDidBecomeActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVFTo\",\n          \"00000000007acad8 s ___profc_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Bootstrap.swift:$s8Keyboard0A14ViewControllerC28extensionHostDidBecomeActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVF\",\n          \"00000000007acae8 s ___profc_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Bootstrap.swift:$s8Keyboard0A14ViewControllerC28extensionHostDidBecomeActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVFSbyXEfU_\",\n          \"00000000007c36c0 s ___profd_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Bootstrap.swift:$s8Keyboard0A14ViewControllerC28extensionHostDidBecomeActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVF\",\n          \"00000000007c3700 s ___profd_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Bootstrap.swift:$s8Keyboard0A14ViewControllerC28extensionHostDidBecomeActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVFSbyXEfU_\"\n        ],\n        \"host_resign_symbols\": [\n          \"0000000000104128 t _$s8Keyboard0A14ViewControllerC29extensionHostWillResignActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVF\",\n          \"00000000001043cc t _$s8Keyboard0A14ViewControllerC29extensionHostWillResignActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVFTo\",\n          \"00000000007acac8 s ___profc_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Bootstrap.swift:$s8Keyboard0A14ViewControllerC29extensionHostWillResignActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVF\",\n          \"00000000007c3680 s ___profd_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Bootstrap.swift:$s8Keyboard0A14ViewControllerC29extensionHostWillResignActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVF\"\n        ]\n      }\n    ],\n    \"codesign_verify\": true\n  }\n]\n"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/execution-entry.json",
+      "bytes": 2875,
+      "sha256": "fea8eca0728f068431f2124d95917e2f87272601a1095a03a752d69a384514b4",
+      "expected_sha256": "fea8eca0728f068431f2124d95917e2f87272601a1095a03a752d69a384514b4",
+      "text": "{\n  \"status\": \"F4-P explicitly authorized; Entry passed; build pending\",\n  \"cwd\": \"/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard\",\n  \"argv\": [\n    \"xcodebuild\",\n    \"-project\",\n    \"Universe Keyboard.xcodeproj\",\n    \"-scheme\",\n    \"Universe Keyboard\",\n    \"-configuration\",\n    \"Debug\",\n    \"-sdk\",\n    \"iphonesimulator\",\n    \"-destination\",\n    \"generic/platform=iOS Simulator\",\n    \"-derivedDataPath\",\n    \"/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData\",\n    \"-clonedSourcePackagesDirPath\",\n    \"/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/SourcePackages\",\n    \"-resultBundlePath\",\n    \"/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateBuild.xcresult\",\n    \"-disableAutomaticPackageResolution\",\n    \"-onlyUsePackageVersionsFromResolvedFile\",\n    \"-skipPackageUpdates\",\n    \"CODE_SIGNING_ALLOWED=YES\",\n    \"SWIFT_VERSION=6.0\",\n    \"SWIFT_STRICT_CONCURRENCY=complete\",\n    \"SWIFT_SUPPRESS_WARNINGS=NO\",\n    \"SWIFT_TREAT_WARNINGS_AS_ERRORS=YES\",\n    \"ARCHS=arm64\",\n    \"ONLY_ACTIVE_ARCH=YES\",\n    \"SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) DEBUG KEYBOARD_WAKE_OWNER_PROBE\",\n    \"CODE_SIGN_IDENTITY=-\",\n    \"CODE_SIGNING_REQUIRED=NO\",\n    \"build\"\n  ],\n  \"output_root\": \"/private/tmp/ukey-host-activation-fix-f4-p-build-20261005\",\n  \"generic_build_only\": true,\n  \"no_device_instance_or_test\": true,\n  \"cache_input\": \"only previously pinned local cache after hash/inventory verification; missing dependencies stop, no network fetch\",\n  \"source_bound_to\": [\n    {\n      \"path\": \"Keyboard/Controllers/KeyboardViewController.swift\",\n      \"bytes\": 39626,\n      \"sha256\": \"8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a\"\n    },\n    {\n      \"path\": \"Keyboard/Controllers/KeyboardViewController+Bootstrap.swift\",\n      \"bytes\": 52473,\n      \"sha256\": \"79d0123dabacd8e5875b66b7c8c897589adbeb8b49d1e22b263678dc1d56f6aa\"\n    },\n    {\n      \"path\": \"Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift\",\n      \"bytes\": 12137,\n      \"sha256\": \"c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047\"\n    },\n    {\n      \"path\": \"KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift\",\n      \"bytes\": 19887,\n      \"sha256\": \"71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5\"\n    },\n    {\n      \"path\": \"Universe Keyboard.xcodeproj/project.pbxproj\",\n      \"bytes\": 46990,\n      \"sha256\": \"49f0ebe89db1f30323d9bf6ceb297179ffed5fc9ef983fd3b947d11d5820586c\"\n    }\n  ],\n  \"budget_proposal\": {\n    \"wall_seconds\": 3600,\n    \"tool_calls\": 40,\n    \"first_failure_stop\": true\n  },\n  \"toolchain\": \"Xcode27.0/27A266a; Swift6.4 compiler, language pinned6.0\",\n  \"vendor_structural_verify\": true,\n  \"source_and_vendor_rows_match\": 1156,\n  \"pinned_match\": 13,\n  \"membership_match\": true,\n  \"fresh_output\": true,\n  \"calls_at_entry_completion\": 8\n}\n"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/five-source-hashes.json",
+      "bytes": 899,
+      "sha256": "7ec3484757dfcf8977497ad928e93808ff75b718cfa847ea3380cf03af94a9fd",
+      "expected_sha256": "7ec3484757dfcf8977497ad928e93808ff75b718cfa847ea3380cf03af94a9fd",
+      "text": "[\n  {\n    \"path\": \"Keyboard/Controllers/KeyboardViewController.swift\",\n    \"bytes\": 39626,\n    \"sha256\": \"8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a\"\n  },\n  {\n    \"path\": \"Keyboard/Controllers/KeyboardViewController+Bootstrap.swift\",\n    \"bytes\": 52473,\n    \"sha256\": \"79d0123dabacd8e5875b66b7c8c897589adbeb8b49d1e22b263678dc1d56f6aa\"\n  },\n  {\n    \"path\": \"Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift\",\n    \"bytes\": 12137,\n    \"sha256\": \"c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047\"\n  },\n  {\n    \"path\": \"KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift\",\n    \"bytes\": 19887,\n    \"sha256\": \"71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5\"\n  },\n  {\n    \"path\": \"Universe Keyboard.xcodeproj/project.pbxproj\",\n    \"bytes\": 46990,\n    \"sha256\": \"49f0ebe89db1f30323d9bf6ceb297179ffed5fc9ef983fd3b947d11d5820586c\"\n  }\n]\n"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/freeze-receipt.json",
+      "bytes": 1403,
+      "sha256": "530e962c122896b244a9c98b614f58b9846569f34c0989f74a0774b7dbc944f3",
+      "expected_sha256": "530e962c122896b244a9c98b614f58b9846569f34c0989f74a0774b7dbc944f3",
+      "text": "{\n  \"utc\": \"2026-10-05T02:53:32.394594+00:00\",\n  \"status\": \"F4-P build and byte freeze complete; not installation/runtime acceptance\",\n  \"app_path\": \"/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app\",\n  \"regular_files\": 78,\n  \"file_bytes\": 91448700,\n  \"payload_sha256\": \"d53523dba8c371c67424ff07c79163a66f41e3bc5bb402637cf9ee79ae7579cb\",\n  \"sha_algorithm\": \"raw bytes per-file; sorted path TAB bytes TAB sha LF listing SHA256\",\n  \"1156_inputs_and_membership_match\": true,\n  \"13_pinned_match\": true,\n  \"probe_export_present\": true,\n  \"real_host_symbols_present\": true,\n  \"standalone_no_xctest_or_injection\": true,\n  \"two_level_signature_and_embedded_group_pass\": true,\n  \"non_swift_warnings\": [\n    {\n      \"line\": 1951,\n      \"text\": \"2026-10-05 10:52:01.666 appintentsmetadataprocessor[13400:43029400] warning: Metadata extraction skipped, no AppIntents.framework dependency found\"\n    },\n    {\n      \"line\": 2889,\n      \"text\": \"2026-10-05 10:52:12.829 appintentsmetadataprocessor[13501:43030021] warning: Metadata extraction skipped, no AppIntents.framework dependency found\"\n    }\n  ],\n  \"test_run\": false,\n  \"device_instance_operated\": false,\n  \"install\": false,\n  \"source_written\": false,\n  \"next\": \"independent scoped product/flag applicability preflight and F4-I fresh backup, all separately authorized\"\n}\n"
+    }
+  ],
+  "evidence_documents": [
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-2026-10-05.md",
+      "bytes": 5934,
+      "sha256": "a98a434cfa0fb976c0a37f65c7b0648e36dfec928e19e552ec1409776cdcd7cb",
+      "expected_sha256": "a98a434cfa0fb976c0a37f65c7b0648e36dfec928e19e552ec1409776cdcd7cb",
+      "text": "# A2 新候选验证交付 — 2026-10-05\n\n当前候选的完整测试与构建矩阵及适用轻量检查完成；12 个冻结步骤均 exit 0。环境被测试改变，完整 before 与 after 已保全，恢复未执行。修复 Assignment 保持 Blocked；不能据此宣布 A2-F1 Covered、Maps 修复或晋级 F4。\n\n## AUTH、身份和预算\n\nHuman“可以按照这份 Entry 继续”批准执行与180分钟首失败停止；随后明确“独占；未打开／安装／部署；接受上述两项狭义处置”。仅本次接受冻结同一20＋10 skip为非阻塞未验证残项，以及新备份副本 com.apple.provenance 新增／改写。其余metadata差异、新skip及23项gate任一skip/fail仍停止。Grok保持唯一源码writer；root仅验证和治理交付。\n\n唯一工作树 `/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard`，branch `codex/keyboard-wake-v3-compatibility-gate`，HEAD `84b9c19227330b0fe6ff391be001ee398010fd6a`，staged0；1156清单行、成员集合及13pinned输入前后全符。原 iPhone18Pro/iOS27.0，UDID `405D994F-28CB-4F89-BB22-B64AD81C05A2`，xcresult确认OS build24A434。Xcode27.0/27A266a、Swift6.4，SWIFT_VERSION钉6.0；严格并发/警告参数、禁并行及签名边界见冻结命令。Vendor verify结构/receipt通过，630payload另外核字节，未fetch。\n\n预算从2026-10-04T16:08:13.950496Z起算，执行/备份/矩阵/Exit在180分钟内完成，实际账见[交付回执](keyboard-wake-host-activation-fix-001-a2-validation-execution-artifacts/delivery-receipt.json)。新run `/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005`、新before `/private/tmp/ukey-host-activation-fix-a2-validation-backup-20261005`，旧备份未覆盖/删除。\n\n## 实际验证结果\n\n| 项 | 实际结果 |\n|---|---|\n| 分类、tracked/untracked whitespace、.kos JSON、CI helper和链接 | 全通过；helper12项及两shell检查通过 |\n| 四Swift严格lint | 通过；未源码format或修改 |\n| KeyboardCore | 1194执行，0失败 |\n| RimeBridgeTests | 105=85通过＋20 skipped，0失败 |\n| App＋Keyboard完整套件 | 454=444通过＋10 skipped，0失败 |\n| RecoveryGate | 23/23实际Passed，0skip/0fail；包含原17及新增6 |\n| Release配置build | 通过；不是Release发布 |\n| 签名Keychain专项 | 1/1实际Passed，0skip/0fail |\n\n[23项实际结果](keyboard-wake-host-activation-fix-001-a2-validation-execution-artifacts/gate-23-actual-results.json)与方法清单集合相等，未补跑focused。30skip身份和原因逐项符合本轮批准清单，保持skipped不计通过，不外推真实引擎/Maps/Release。原7条actor诊断为0；[四文件实际编译](keyboard-wake-host-activation-fix-001-a2-validation-execution-artifacts/four-swift-actual-compile.json)已核，各iOS job无Swift warning/error；AppIntents metadata工具warning另列[诊断回执](keyboard-wake-host-activation-fix-001-a2-validation-execution-artifacts/final-input-diagnostics.json)，不声称全部日志zero-warning。\n\n第一次Bridge reader使用tests结构读取历史清单，因其实际为skips/class/method/reason而KeyError；原reader保留，适配后只重读同一xcresult并通过身份/原因比对，没有重跑测试。沙箱首次simctl/ps权限失败后改主机只读核验成功，无服务重启或环境修复。\n\n## 环境 Exit 与恢复提案\n\n静默before三次live读回稳定，App/appex均退出；新副本除批准provenance例外外字节/结构/模式/所有者/原xattrs一致，内部symlink及包签名通过。before provenance新增/改写：main865/3、Group29/41、App9/78。主数据827文件、Group53文件＋2内部symlink、安装包78文件；两诊断键ABSENT，rime_deployed=true、rime_needs_deploy=false。\n\n测试后两次完整库存稳定且目标进程为空；安装包变111文件，主数据872文件，Group剩4文件，rime_deployed ABSENT、rime_needs_deploy=true。两诊断键仍ABSENT。全部after复制到run/after-preservation并通过三次稳定读回/副本校验/签名；provenance新增/改写main912/2、Group11/0、App27/0。[after回执](keyboard-wake-host-activation-fix-001-a2-validation-execution-artifacts/environment-after-receipt.json)。\n\n**最小恢复 Prepared，未授权执行：** 重新安装本次before精确78文件旧C7包；主App恢复3文件并移除46个本轮测试新增节点；Group恢复8目录、51文件及2内部symlink。精确逐路径清单/hash绑定位于私有run/restore-plan-private.json与before库存，其SHA见[私有证据索引](keyboard-wake-host-activation-fix-001-a2-validation-execution-artifacts/private-artifact-index.json)。执行前须重核备份、live及静默/独占，无漂移才执行；保留安装后live容器UUID/根metadata及SplashBoard，不写入旧容器身份。不uninstall/erase、不部署/输入/Maps，不恢复整个Keychain或系统键盘设置。恢复期间provenance例外需明确接受并分类记录，不能冒称全部xattr精确一致。恢复后两次机器读回，再另做人工健康确认。\n\n## 后续依赖和非声明\n\n本交付仅当前候选测试证据，不代替A2独立review，旧Architecture Partial与Quality预算审计残项仍保持。建议先精确环境恢复，再冻结新候选的A2定点独立复审Entry；F4安装/真通知/Maps/owner-receipt仍需独立授权。父诊断Completed不重开。\n\n未写源码、stage/commit/push、部署、人工试打、Maps、LLDB或发布；测试runner安装/启动是已批准矩阵的环境副作用。CHANGELOG未授权未改。所有历史备份仍保留，当前before/after仍承担恢复依赖，暂不建议删除；不自动清理DerivedData/xcresult。\n\n[步骤原始回执](keyboard-wake-host-activation-fix-001-a2-validation-execution-artifacts/step-receipts.json)；[产物manifest](keyboard-wake-host-activation-fix-001-a2-validation-execution-artifacts/manifest.json)。\n"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f3-quality-uncovered-validation-2026-10-05.md",
+      "bytes": 3387,
+      "sha256": "6930d4e082e97bdc6084cc2086de1625499354ac54a8a770614d61948249dd3d",
+      "expected_sha256": "6930d4e082e97bdc6084cc2086de1625499354ac54a8a770614d61948249dd3d",
+      "text": "# F3 Quality未覆盖项收口 — 2026-10-05\n\nHuman授权“先修通 reader 和交付流程，再只补未覆盖项”后，root完成实际只读reader预检及假数据交付预检，复用原独立Quality reviewer执行同lane round2。结论**Pass with conditions，仅当前候选Quality阶段证据**。Q1/Q2/Q4/Q5完整覆盖，Q3保留round1 Covered，A2有界复审不重开。旧round1 Partial和未最终usage原件保持，不改成通过。\n\n[独立作者报告](../reviews/keyboard-wake-host-activation-fix-001-f3-quality-uncovered-artifacts/review.md)、[真实用量](../reviews/keyboard-wake-host-activation-fix-001-f3-quality-uncovered-artifacts/usage.json)、[ACK](../reviews/keyboard-wake-host-activation-fix-001-f3-quality-uncovered-artifacts/ack.json)及[作者读回](../reviews/keyboard-wake-host-activation-fix-001-f3-quality-uncovered-artifacts/delivery-readback.json)完整归档。13实际calls、451.874秒在16calls/900秒内，root复算起止一致，三文件hash全部匹配；2472精确输入接收时仍符合。报告/usage已由writer正确写出，不依赖替代收件。\n\n## 已核齐的事实\n\nstrict lint收据exit0；23个gate方法与required及原xcresult逐项一致，23Passed/0skip/0fail。Core1194/0failure，Bridge105=85Passed+20Skipped，App454=444Passed+10Skipped，签名Keychain1/1，Release日志BUILD SUCCEEDED。30个skip方法及消息逐项符合Human批准同一清单，不计通过、不用于Release。原四Swift实际编译/无Swift诊断沿A2-4独立结论保留，不重审源码。\n\nRIME3条：essay1＋负向malformed-schema2；IOHID loading8、factory伴随8。reader精确定位19行与相邻测试结果，独立判不阻塞本次有界诊断F4，但原因、无害性和真实产品影响仍未知，不能外推Maps恢复。Human已批准的同30skip仅当前F3及后续单轮F4未验证非阻塞限制继续适用，新增skip/fail停止；旧F3-Q-AUDIT历史流程残项接受不改史。\n\n## 流程修复与权限\n\n[reader/交付预检](keyboard-wake-host-activation-fix-001-f3-reader-flow-repair-2026-10-05.json)修复结构化inventory序列化与packet自路径校验错误，实际原xcresult只读预检和假数据写/读回均通过。作者为了hash-only源内容边界，执行reader时省略可选Swift fixture源码片段；作者报告明确该行为，reader-output不含该源码读取。归档的reader文件是冻结基础工具，不冒称未经修改执行了源码片段。工具辅助独立核验，不用root结果代作者结论。\n\n[只读输出](../reviews/keyboard-wake-host-activation-fix-001-f3-quality-uncovered-artifacts/reader-output.json)、[root接收](../reviews/keyboard-wake-host-activation-fix-001-f3-quality-uncovered-artifacts/root-receipt.json)、[manifest](../reviews/keyboard-wake-host-activation-fix-001-f3-quality-uncovered-artifacts/manifest.json)保存来源与hash。所有原报告/备份保持。\n\n本轮未源码/build/test/lint/simulator/LLDB/安装/Maps/Git或Release操作。下一建议准备F4精确配对产物、通知/owner取证方法、现场独占/静默备份与恢复、Human单轮步骤和Exit；目前F4仍非Ready且未获执行授权，不宣称整体修复完成。实际通知context/controller恢复及Maps行为必须由新候选运行证据验证。无新增ADR合同或CHANGELOG变更；后者在修复验证/交付阶段另授权。\n"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-validation-2026-10-05.md",
+      "bytes": 5158,
+      "sha256": "c15a598810ca194751c3fa273a7d5b4b0c436b0da51f0943553d59c759988331",
+      "expected_sha256": "c15a598810ca194751c3fa273a7d5b4b0c436b0da51f0943553d59c759988331",
+      "text": "# F4-P诊断配对构建与冻结 — 2026-10-05\n\n**F4-P已完成，未安装/运行。** Human仅授权从冻结源码build并冻结产物，预算40实际工具调用/60分钟、首失败停止。root Environment Executor，Grok源码writer保持；未源码/工程修改、测试、模拟器实例/容器/进程查询、安装、LLDB/Maps或Git/Release。\n\n## Entry、构建与范围\n\n原工作树、branch、HEAD84b9c19227330b0fe6ff391be001ee398010fd6a、staged0符合。1156source/Vendor成员及字节、13pinned、五源码hash前后匹配，dirty快照保留。Xcode27.0/27A266a、Swift6.4编译器，language钉6.0；Vendor结构verify12framework通过，630payload另外字节匹配。local SourcePackages仅1个workspace-state文件及空目录，由旧A2缓存精确复制，源不改、无fetch/update。\n\n[执行Entry/完整argv](keyboard-wake-host-activation-fix-001-f4-p-artifacts/execution-entry.json)与[构建请求](keyboard-wake-host-activation-fix-001-f4-p-artifacts/build-request.json)使用新独立 `/private/tmp/ukey-host-activation-fix-f4-p-build-20261005`，generic/platform=iOS Simulator、arm64 standalone Debug、DEBUG+KEYBOARD_WAKE_OWNER_PROBE、complete concurrency、warnings-as-errors、不抑制warning、adhoc签名。structured argv保持literal $(inherited)，不做shell展开。没有指定真实device实例或执行test。\n\n[实际构建](keyboard-wake-host-activation-fix-001-f4-p-artifacts/build-receipt.json)exit0/no timeout、33.435秒；日志BUILD SUCCEEDED。[实际compiler行](keyboard-wake-host-activation-fix-001-f4-p-artifacts/actual-compiler-flags.json)两个target均含DEBUG、KEYBOARD_WAKE_OWNER_PROBE、Swift6、warnings-as-errors，无内部canary或fake生命周期harness。[原log](keyboard-wake-host-activation-fix-001-f4-p-artifacts/build.log)Swift warning/error0，保留2条AppIntents metadata工具warning，不声称全日志zero-warning。\n\n## 新配对产物身份\n\n唯一路径：`/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app`。\n\n[完整payload](keyboard-wake-host-activation-fix-001-f4-p-artifacts/payload-manifest.json)：78常规文件、91448700bytes，路径/bytes/SHA升序行聚合 **d53523dba8c371c67424ff07c79163a66f41e3bc5bb402637cf9ee79ae7579cb**。这是新的诊断pair，不是旧C7或A2普通Debug111文件包；private产物及xcresult保留，不重复复制大包或纳入repo。\n\n| 模块 | UUID（arm64） |\n|---|---|\n| 主App executable | 664DE45A-5859-34F1-892C-3DD2D9DE7B98 |\n| 主App debug-dylib | C19CE509-A814-30AB-88F1-CE5416FDDC33 |\n| Keyboard executable | CD0C6F02-6094-3726-B598-F03F42ABB468 |\n| Keyboard debug-dylib | 4B207746-89A7-321F-83C4-91477259BB26 |\n\n[配对清单](keyboard-wake-host-activation-fix-001-f4-p-artifacts/paired-products.json)冻结所有模块SHA/UUID与bundle ID：com.DoubleShy0N.Universe-Keyboard及其.Keyboard，version1.0/build1仅本地Debug显示值。Keyboard debug-dylib实际出口符号`_$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF`及host-active/resign符号存在；不证明已加载、断点已解析或实际回调。\n\n主App与内嵌Keyboard codesign deep/strict均0；[实际Simulator embedded entitlements](keyboard-wake-host-activation-fix-001-f4-p-artifacts/simulated-entitlements.json)两者含正确Group及application identifier。standalone未包含xctest/XCTest注入测试host。签名存在不代表模拟器部署/完全访问/用户词典健康。\n\n[冻结回执](keyboard-wake-host-activation-fix-001-f4-p-artifacts/freeze-receipt.json)、[检查命令](keyboard-wake-host-activation-fix-001-f4-p-artifacts/inspection-commands.json)、[private原件索引](keyboard-wake-host-activation-fix-001-f4-p-artifacts/private-evidence-index.json)与[manifest](keyboard-wake-host-activation-fix-001-f4-p-artifacts/manifest.json)提供可复算来源。用量以收尾最后检查落盘的usage.json为准，包含wrapper+nested实际工具调用，不续预算。\n\n## 完成与下一合法动作\n\n仅F4-P构建和字节冻结完成；[F4 Entry](keyboard-wake-host-activation-fix-001-f4-prepared-entry-2026-10-05.md)的“缺probe产物”前置缺口解除，旧Entry快照身份不倒写。本轮只构建，无新增测试/skip。原普通flags完整矩阵与新diagnostic flags产物不是同一次同字节测试；五源码/依赖相同不能把23项测试写成新诊断pair实测。\n\n下一需独立最小产物/flags适用性晋级核验，核当前source→build→pair字节/模块/签名、诊断flag范围及证据复用，不重审已覆盖A2/Q3、不开源码修改或全矩阵。该新review范围/packet/预算另授权；root冻结自检不替独立结论。满足后F4-I还需Human新鲜原UDID独占、静默完整before保护和精确安装授权；F4-M单轮Maps/出口采集与恢复亦按阶段Entry执行，不由本次build授权自动启动。\n\n现有全部备份仍保留，原模拟器未操作。诊断/部署/用户配置没切换；不称修复运行通过、whole-F3/F4Ready或Release。无新ADR合同或CHANGELOG修改；修复验证/交付阶段再明确文档追加范围。\n"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-prepared-entry-2026-10-05.md",
+      "bytes": 13882,
+      "sha256": "980a84a4b4ffd329efdf75398ef338c46224a1d0ecac3aafad0213b49ea281bb",
+      "expected_sha256": "980a84a4b4ffd329efdf75398ef338c46224a1d0ecac3aafad0213b49ea281bb",
+      "text": "# F4 安装与单轮 Maps 回归 Entry — 2026-10-05\n\n**Prepared，未Ready；只准备，不执行。** Human明确授权准备精确产物、备份恢复及人工步骤。root Coordinator/Environment Executor与治理writer；Grok仍唯一源码writer；Human独占、前台操作及Product决定；原Architecture/Quality责任保留，不派新review或默认续budget。唯一工作树/branch/HEAD保持既定身份，staged0、dirty原样保全。\n\n## 已绑定的现有产物与缺口\n\n[当前五源码hash](keyboard-wake-host-activation-fix-001-f4-prepared-artifacts/current-five-source-hashes.json)绑定A2已验证候选；1156构建输入读回相符，原[完整矩阵](keyboard-wake-host-activation-fix-001-a2-validation-2026-10-05.md)、[A2有界收件](keyboard-wake-host-activation-fix-001-a2-quality-evidence-receipt-2026-10-05.md)和[Quality条件通过](keyboard-wake-host-activation-fix-001-f3-quality-uncovered-validation-2026-10-05.md)保持各自范围，不以此宣布整体修复运行通过。\n\n当前A2 Debug/test/signing输出已[精确绑定](keyboard-wake-host-activation-fix-001-f4-prepared-artifacts/existing-debug-pair-identity.json)：111常规文件、100621009 bytes，路径/字节/SHA升序拼接摘要`7c3131b1a449838310950412a9e61cca5c83ddebeab1b1f08b04166d6d3409f9`。[payload清单](keyboard-wake-host-activation-fix-001-f4-prepared-artifacts/existing-debug-payload-manifest.json)不复制100MB包，原产物保留。\n\n主App `com.DoubleShy0N.Universe-Keyboard`：executable UUID E8EA7696-2857-3B65-967A-A69258EDE7B4，debug-dylib UUID 3A2B17EE-09F2-33CA-9157-2402B2FB0A99。Keyboard `com.DoubleShy0N.Universe-Keyboard.Keyboard`：executable UUID 509D1743-D09A-3D17-A09E-3850C4E96A42，debug-dylib UUID 7108B4AF-DBB5-3638-AF47-DADE6AF9A69D。两者version1.0/build1，只为工具生成的本地Debug身份，不能用这些版本号代hash判断。\n\n两级codesign verify deep/strict通过。签名层entitlements为空，但Simulator的`__TEXT,__entitlements`在两个executable中均实际含正确App Group；[嵌入section核验](keyboard-wake-host-activation-fix-001-f4-prepared-artifacts/simulated-entitlements-check.json)另外冻结。不能把空signature entitlement推成Group缺失。初次section parser漏掉otool尾部单字节格式，修正后只读复核通过，未修改任何二进制。\n\n**现有包不作为F4取证安装候选**：矩阵普通Debug未启用KEYBOARD_WAKE_OWNER_PROBE，nm确认出口不存在；Keyboard host-active/resign符号存在。不能照搬旧C7、旧PID/UUID或断点。需要下述F4-P新诊断配对build；未来包hash/UUID尚不存在，Prepared如实保留缺口，不造Ready。\n\n## 分阶段执行提案（均未获本次执行授权）\n\n| 切片 | 内容 | 必需Entry / 输出 |\n|---|---|---|\n| F4-P | 当前冻结源码generic arm64 Simulator standalone Debug诊断配对build及字节绑定；不接触设备实例、不test/install | 新预算提案40calls/60分钟先到停止、首失败停止；工具链/Vendor/缓存及冻结输入先核。实际产物/flags/symbol/签名/模拟entitlements、source及完整payload/UUID、命令/日志/xcresult落盘；不fetch/改源码 |\n| F4-I | 新鲜原机静默完整before备份，精确新候选安装及普通输入健康 | F4-P候选及最小Architecture/Quality产物/flag适用性审查满足；Human本窗口独占与安装授权，静默、完整可恢复备份/原安装；不uninstall/部署或arm |\n| F4-M | 一轮Maps正常输入→AppSwitcher直接返回→再次输入；一次arm/freeze/有界导出 | F4-I健康、同一配对/PID/module/配置；Human单轮授权与窗口独占；稳定调试通道/出口断点初始0hit、回调配置、内容无关日志能力核好 |\n| F4-E | 调试清理、诊断原值/存在性恢复、after保全和独立运行证据验收 | 无自动健康加测/新一轮；若需安装/数据恢复，按实际差量再获精确授权；最终修复结论依运行证据，不代Release |\n\n本Entry只冻结顺序。F4-P命令见[结构化argv](keyboard-wake-host-activation-fix-001-f4-prepared-artifacts/proposed-build-command.json)，通过subprocess argv保持literal `$(inherited)`，不插进shell：generic/platform=iOS Simulator、arm64、Swift6.0/complete/不抑制warning/warnings-as-errors、DEBUG+KEYBOARD_WAKE_OWNER_PROBE、adhoc签名，新独立CandidateDerivedData/SourcePackages/xcresult。不开T9 harness/内部canary，不改defaults/feature mode，不resolve/update依赖。若缺已冻结本地缓存/依赖则停止。\n\n该flag只启用既有诊断UI接线；普通矩阵的Core DEBUG probe定义已存在。当前矩阵不是新flag产物的测试结果，不能换hash声称同产物全矩阵绿。F4-P至少证明两target实际编译flags、五源码/1156依赖无漂移、probe出口/真实host符号与Debug信息存在、standalone无xctest/注入测试host，并以独立最小产物/影响核验明确普通矩阵可复用范围。若flag影响生产恢复语义或必需技术覆盖不足，停止并申请具体补验证，不暗中重跑全套或强行安装。\n\n## 原模拟器及备份恢复绑定\n\n目标仅iPhone18Pro/iOS27.0，UDID405D994F-28CB-4F89-BB22-B64AD81C05A2。**本轮未查询设备、进程或容器，fresh独占/Booted/静默均待执行Entry实测**。不把上轮独占当新窗口事实。\n\n历史A2 before机器恢复已两读通过，旧C7安装仍是最近恢复点；不称现在live字节未变或人工健康新鲜。旧保护 `/private/tmp/ukey-host-activation-fix-a2-validation-backup-20261005` 及所有M0/F2/after副本保留，不覆盖/删除。\n\nF4-I授权后才创建新 `/private/tmp/ukey-host-activation-fix-f4-before-20261005`，before完整installed-app/main-data/App Group（根身份、常规文件字节/模式/owner/xattrs、内部symlink、目录与存在性），记录实际容器路径/UUID与系统metadata。要求主App/Keyboard扩展静默；先由Human关闭App回主屏，root只读核精确进程，若残留仅在另明确授权后对核实PID/start/path一次SIGTERM，不强杀或处理别的进程。\n\nditto副本后完整读回并再次比较live，记录不存在/原值。任何内容/模式/非provenance差异停止；新的provenance差异按实际数量提出狭义处置，不自动继承A2例外。完整backup及恢复清单通过前不安装。安装只精确pair路径、原UDID，不uninstall。postinstall核全payload/模块UUID/签名/Group与主数据映射、部署状态；容器UUID变化保留新系统根metadata/SplashBoard，不能写旧系统UUID。无法解释的丢失/改动停止，不启动或自动部署。\n\n恢复方案：保全after，再从新before独立暂存精确原app并核hash/signature；重装需授权，不卸载。重列安装后actual live差量，仅恢复被确认改变的应用数据/Group文件、目录、内部links；不覆盖系统metadata、Keychain/键盘注册/Maps。每项动作与before存在性、after保全、授权清单绑定，两次读回。恢复方案准备不等于授予执行恢复；不声称恢复系统键盘或输入健康。\n\n## 人工步骤（待F4-I/M授权后逐步下发，现在不要操作）\n\n1. F4-I机器安装读回通过后，Human开启主App，仅正常搜索页健康输入：完全访问仍开，诊断两项先关闭，候选/提交正常。不点击观测、不重新部署。若部署缺失停止，另提主App最小部署方案，Extension不部署。\n2. root先采诊断两个键及`log_category_display`的原值/原存在性；只有F4-M明确授权后Human打开日志诊断，确认显示类别启用；首屏高保真保持关闭（本轮不需要其额外流量）。若类别原来关闭，只在批准的具体设置范围内打开，结束恢复原值与存在性。不开输入内容记录，不清历史日志。内容无关Logger/JSONL取证只导出本run匹配标记、时间/identity/计数，不整段用户文本。\n3. 进入Maps空搜索框，叫出Universe Keyboard，确认“观测”可见；root核新的精确PID/start/path、已装payload及loaded UUID，并建立仅自身出口断点、resolved单位置/0hit，然后运行；调试器附加暂停期间不要操作。\n4. Human只按一次“观测”，停手。root确认未意外冻结/命中、进程运行，下一指令才继续。标题不证明armed，不能反复点击或用旧窗口拼接。arm后总窗口600秒，120秒内优先完成人工序列；工具问题/超时只记inconclusive，不自动重arm。\n5. Human按一次合成`n`，报告按键反馈/候选/输入框更新，“取证”可见但不点。此为本轮Maps基线。\n6. 只打开AppSwitcher，再直接点Maps回到同一搜索框，**不切系统设置/其它App**；报告键盘是否关闭重开、输入框/候选变化，不点候选、不删除、不清composition。\n7. 接指令后只按一次合成`h`，便于区别上一段`n`造成的旧候选；报告新候选/输入框是否变化、按键反馈与取证可见性。不可因怀疑卡住重复按键。输入内容仅为这两个预定合成字符，取证仍只读元数据。\n8. root确认原出口断点/进程仍稳定后，Human只按一次“取证”，其后不要再操作。命中时键盘短暂停顿是调试暂停，不能据此判软件卡死。root完成下述一次有界导出与清理后再做视觉Exit。\n9. 调试清理及视觉确认完成后，若两次输入与回调/owner证据满足，另下发本轮一次候选提交，报告宿主提交效果；不在导出前点击候选清空，不用提交动作掩盖失败。失败路径只记录，不追加盲试。\n10. 结束先保护运行证据，再按原值与原存在性恢复logging/high-fidelity/display类别（原来缺键需移除新键，不仅UI关闭）。无原值证据不继续启用。Human确认界面/诊断状态；不自动重部署或开启新轮。\n\n## 取证方法、完整性与停止\n\n[Debug工具参考](keyboard-wake-host-activation-fix-001-f4-prepared-artifacts/debugger-tools-reference.json)冻结既有静态frame callback及KWOPROBE decoder来源；**旧callback内PID55759/UUID等必须替换为F4实际绑定，不可直接import执行**。未来只写新run输出，并先做host语法/输出路径/decoder预检；实际附加能力与参数可读性仍待F4-M核，不承诺旧工具一定可用。\n\n用新native PTY、每request/response/raw SHA和UTC+monotonic账本，不沿旧session。出口用callback传入的actual hit-frame，不用CLI stale selected frame。必须验证精确PID/moduleUUID/symbol、frame0、最多8帧按钮同步borrow、静态`address`/`byteCount`；无dynamic/synthetic、无目标函数求值、无寄存器/ABI猜替。参数可用且pointer8对齐、长度176..11352、8倍数时，最多一次exact-size binary memory read。KWOPROBE v1：11word header+最多128×11word record、10分钟TTL；decoder拒绝不匹配长度/版本/run/process/sequence/TTL/overflow/completeness。dump不能拼接历史窗口或修补凑完整。\n\n调试停点工作预算120秒、单命令等待≤30秒；任何取证错误优先delete自身断点/list验证，仅停时continue、detach/quit，并核P_TRACED/debugserver退出。命中不一定等于Human点按钮，非预期hit>0停止本轮；无freeze/参数/完整transport则inconclusive，不用ownerReady替owner存在性。\n\n真实通知证据：HOST_ACTIVE_AFTER在`hostNotificationMatchesCurrentExtensionContext`对象身份guard之后，配合同run/context对应生命周期/ownerprobe resume/suspend及Human无重开返回可支持送达与当前context匹配；不读取Notification内容、宿主文本或对象描述。**hostDidBecomeActive的journal尝试发生在恢复journal前，suspended ingress会drop；Logger HOST_RESIGN_*及HOST_ACTIVE_BEFORE也可能因persistence suspend丢失**。因此不能把这些缺行当未送达。只用实际可得的post-guard HOST_ACTIVE_AFTER、同run probe阶段/appearance/coordinator/attempt与时间因果链，缺乏配对证据则inconclusive，不能强行宣布真实通知/恢复已证。必要时另提最小非内容观测，不在F4擅加源码。\n\nprobe记录ownerPresent/receiptPresent/epoch/revision/coordinatorOrdinal，必须绑定before-after同实例及同输入attempt。先确认本轮实际管线状态；不修改canary/引擎模式来凑owner。owner状态应按本轮基线与有效action解释，不把普通baseline owner=0强判bug；若probe不能证明适用管线的恢复，只判该项未验证。UI正常、candidate缓存可见或两字按键反馈均不能代真实session/owner/receipt。\n\n## Exit与权限边界\n\n最低可验：当前source→diagnostic pair→installed bytes→loaded modules链闭合；本轮synthetic基线正常；直接AppSwitcher返回无重新叫键盘，新的候选/host更新及提交正常；真实通知context配对/合法resume/owner-receipt、旧请求代际失效与不重投旧composition证据完整；buffer/run/attempt完整；debugger清理、诊断原值/存在性和环境after保护齐。没有复现触发或缺真实回调关联，仅正常路径/局部Passed或inconclusive，不称修复完成。\n\nF3/F4同30skip与runtime消息未知影响按已批及独立阶段判断保留，不计通过、不用于Release；新增fail/skip停止。异常无自动第二轮、不绕过contextguard、不恢复旧composition、不修改源码/部署边界。F4失败不清before，任何恢复另按实际清单授权。所有历史备份当前有保护用途，本轮不删；新候选验收/恢复完成后可另列去重及可清理候选，Human批准才删。\n\n此Entry不授Git/Release/真机/CHANGELOG权限、不改ADR。整个修复仍未Completed；最近一步建议仅授权F4-P构建诊断配对及冻结，不能直接开始Maps。本轮只读检查/治理准备，无新build/test/simulator/LLDB/import/安装/备份或恢复执行。\n"
+    }
+  ],
+  "ordinary_frozen_commands": {
+    "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-artifacts/frozen-commands.json",
+    "bytes": 11523,
+    "sha256": "f22f3199fb2977a018fd73ed06fd5745aacd19e6d3f481312be34d42a580972c",
+    "text": "{\n  \"stage\": \"A2 new candidate validation only; Prepared not Ready\",\n  \"execution_authorized\": false,\n  \"cwd\": \"/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard\",\n  \"destination\": \"platform=iOS Simulator,id=405D994F-28CB-4F89-BB22-B64AD81C05A2\",\n  \"command_order\": [\n    \"A2-V-C-classify-table\",\n    \"A2-V-L-diff-check\",\n    \"A2-V-L-diff-check-untracked\",\n    \"A2-V-L-kos-json\",\n    \"A2-V-L-ci-helper-tests\",\n    \"A2-V-L-md-links-working-tree\",\n    \"A2-V-0-format\",\n    \"A2-V-1-keyboardcore\",\n    \"A2-V-2-rimebridge\",\n    \"A2-V-3-app-keyboard\",\n    \"A2-V-4-release-build\",\n    \"A2-V-5-keychain\"\n  ],\n  \"commands\": [\n    {\n      \"id\": \"A2-V-C-classify-table\",\n      \"required\": true,\n      \"substitutes_matrix\": false,\n      \"note\": \"Applicable local classification of uncommitted F1/F2 paths against docs/CI_CHANGE_CLASSIFICATION.md. Hosted classify_changes.py SHA-to-SHA (origin/main..HEAD or HEAD..HEAD) does not see dirty F1 and must not be used as skip evidence. Combined dirty is full.\",\n      \"command\": \"python3 - <<'PY'\\nfrom pathlib import PurePosixPath\\n\\ndef is_lightweight(raw):\\n    path = PurePosixPath(raw)\\n    if path.is_absolute() or '..' in path.parts or not path.parts:\\n        return False\\n    if path.parts[0] in {'docs', '.kos'}:\\n        return True\\n    return len(path.parts) == 1 and path.suffix.lower() == '.md'\\n\\npaths = [\\n    'Keyboard/Controllers/KeyboardViewController.swift',\\n    'Keyboard/Controllers/KeyboardViewController+Bootstrap.swift',\\n    'Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift',\\n    'KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift',\\n    'Universe Keyboard.xcodeproj/project.pbxproj',\\n    'docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-prepared-entry-2026-10-05.md',\\n]\\nfull = [p for p in paths if not is_lightweight(p)]\\nprint('classification=full' if full else 'classification=docs_only')\\nprint('requires_full=' + ('true' if full else 'false'))\\nprint('full_required_paths=' + ','.join(full))\\nprint('reason=uncommitted_f1_source_is_full_by_frozen_table')\\nif not full:\\n    raise SystemExit(2)\\nPY\"\n    },\n    {\n      \"id\": \"A2-V-L-diff-check\",\n      \"required\": true,\n      \"substitutes_matrix\": false,\n      \"note\": \"Whitespace check for tracked F1 deltas and A2 evidence already in git. Untracked new gate/tests are NOT visible to git diff HEAD --check; see F2-L-diff-check-untracked.\",\n      \"command\": \"git diff HEAD --check -- Keyboard/Controllers/KeyboardViewController.swift Keyboard/Controllers/KeyboardViewController+Bootstrap.swift \\\"Universe Keyboard.xcodeproj/project.pbxproj\\\" docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-prepared-entry-2026-10-05.md docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-artifacts/\"\n    },\n    {\n      \"id\": \"A2-V-L-diff-check-untracked\",\n      \"required\": true,\n      \"substitutes_matrix\": false,\n      \"note\": \"Root final Entry correction: do not suppress git errors; required paths must exist, all diagnostics/unexpected exit fail. Only normal no-index difference exit 1 with no diagnostic is accepted. Prepared command, not executed.\",\n      \"command\": \"python3 - <<'PYCODE'\\nfrom pathlib import Path\\nimport subprocess\\nimport sys\\nfiles = [\\n    'Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift',\\n    'KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift',\\n]\\nfor file in files:\\n    if not Path(file).is_file():\\n        print(f'FAIL: required new file missing: {file}', file=sys.stderr)\\n        raise SystemExit(1)\\n    result = subprocess.run(\\n        ['git', 'diff', '--check', '--no-index', '--', '/dev/null', file],\\n        capture_output=True, text=True,\\n    )\\n    # --no-index may return 1 for a difference. Any diagnostic or other status fails.\\n    if result.returncode not in (0, 1) or result.stdout.strip() or result.stderr.strip():\\n        print(f'FAIL: {file}: git exit={result.returncode}', file=sys.stderr)\\n        print(result.stdout, end='')\\n        print(result.stderr, end='', file=sys.stderr)\\n        raise SystemExit(1)\\nprint('PASS: whitespace check includes both untracked Swift files')\\nPYCODE\"\n    },\n    {\n      \"id\": \"A2-V-L-kos-json\",\n      \"required\": true,\n      \"substitutes_matrix\": false,\n      \"command\": \"python3 -m json.tool .kos/project.json >/dev/null\"\n    },\n    {\n      \"id\": \"A2-V-L-ci-helper-tests\",\n      \"required\": true,\n      \"substitutes_matrix\": false,\n      \"note\": \"scripts/ci unchanged; still the applicable local subset of lightweight-checks.\",\n      \"command\": \"python3 -m unittest discover -s scripts/ci/tests -p 'test_*.py' && bash scripts/ci/tests/test_verify_final_gate.sh && bash scripts/ci/tests/test_kos_trigger_paths.sh\"\n    },\n    {\n      \"id\": \"A2-V-L-md-links-working-tree\",\n      \"required\": true,\n      \"substitutes_matrix\": false,\n      \"note\": \"check_markdown_links.py default is SHA-to-SHA; this applies the same missing_links helper to A2 evidence working-tree bytes.\",\n      \"command\": \"python3 - <<'PY'\\nfrom pathlib import Path\\nimport sys\\nsys.path.insert(0, 'scripts/ci')\\nimport check_markdown_links as m\\nroot = Path('.').resolve()\\nfiles = [\\n    Path('docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-prepared-entry-2026-10-05.md'),\\n    Path('docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-artifacts/environment-contract.md'),\\n]\\nfail = False\\nfor f in files:\\n    for line, target in m.missing_links(f, root):\\n        print(f'{f}:{line}: missing {target}')\\n        fail = True\\nif fail:\\n    raise SystemExit(1)\\nprint('PASS working-tree F2 evidence local links')\\nPY\"\n    },\n    {\n      \"id\": \"A2-V-0-format\",\n      \"required\": true,\n      \"substitutes_matrix\": false,\n      \"cwd\": \"/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard\",\n      \"command\": \"xcrun swift-format lint --strict --configuration .swift-format Keyboard/Controllers/KeyboardViewController.swift Keyboard/Controllers/KeyboardViewController+Bootstrap.swift Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift\"\n    },\n    {\n      \"id\": \"A2-V-1-keyboardcore\",\n      \"required\": true,\n      \"substitutes_matrix\": false,\n      \"cwd\": \"/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard\",\n      \"command\": \"swift test --package-path Packages/KeyboardCore --build-path /private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/keyboardcore-build\"\n    },\n    {\n      \"id\": \"A2-V-2-rimebridge\",\n      \"required\": true,\n      \"substitutes_matrix\": false,\n      \"cwd\": \"/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard\",\n      \"command\": \"xcodebuild -project \\\"Universe Keyboard.xcodeproj\\\" -scheme RimeBridgeTests -configuration Debug -destination 'platform=iOS Simulator,id=405D994F-28CB-4F89-BB22-B64AD81C05A2' -derivedDataPath /private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData -parallel-testing-enabled NO CODE_SIGNING_ALLOWED=NO SWIFT_VERSION=6.0 SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES -resultBundlePath /private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/xcresults/rimebridge.xcresult test\"\n    },\n    {\n      \"id\": \"A2-V-3-app-keyboard\",\n      \"required\": true,\n      \"substitutes_matrix\": false,\n      \"must_execute_class\": \"KeyboardTests/KeyboardHostLifecycleRecoveryGateTests\",\n      \"must_execute_method_count\": 23,\n      \"cwd\": \"/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard\",\n      \"command\": \"xcodebuild -project \\\"Universe Keyboard.xcodeproj\\\" -scheme \\\"Universe Keyboard\\\" -configuration Debug -destination 'platform=iOS Simulator,id=405D994F-28CB-4F89-BB22-B64AD81C05A2' -derivedDataPath /private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData -parallel-testing-enabled NO CODE_SIGNING_ALLOWED=NO SWIFT_VERSION=6.0 SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES -resultBundlePath /private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/xcresults/app-keyboard.xcresult test\",\n      \"required_methods_ref\": \"required-gate-methods.json\",\n      \"rule\": \"Full suite actual xcresult must show all 23 Passed, 0 skipped/failed. Coverage gap stops; no automatic focused repeat.\"\n    },\n    {\n      \"id\": \"A2-V-4-release-build\",\n      \"required\": true,\n      \"substitutes_matrix\": false,\n      \"note\": \"Release configuration build is not a Release publication\",\n      \"cwd\": \"/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard\",\n      \"command\": \"xcodebuild -project \\\"Universe Keyboard.xcodeproj\\\" -scheme \\\"Universe Keyboard\\\" -configuration Release -destination 'platform=iOS Simulator,id=405D994F-28CB-4F89-BB22-B64AD81C05A2' -derivedDataPath /private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData CODE_SIGNING_ALLOWED=NO SWIFT_VERSION=6.0 SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES -resultBundlePath /private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/xcresults/release-build.xcresult build\"\n    },\n    {\n      \"id\": \"A2-V-5-keychain\",\n      \"required\": true,\n      \"substitutes_matrix\": false,\n      \"note\": \"CI job test-rime-sync-keychain signing parameters retained; destination rebound to Assignment UDID. Assignment F2 body does not list this job; it remains part of the hosted heavy graph and of this 完整测试与构建矩阵.\",\n      \"cwd\": \"/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard\",\n      \"command\": \"xcodebuild -project \\\"Universe Keyboard.xcodeproj\\\" -scheme \\\"Universe Keyboard\\\" -configuration Debug -destination 'platform=iOS Simulator,id=405D994F-28CB-4F89-BB22-B64AD81C05A2' -derivedDataPath /private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData -parallel-testing-enabled NO CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- CODE_SIGNING_REQUIRED=NO SWIFT_VERSION=6.0 SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES -only-testing:UniverseKeyboardTests/RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem -resultBundlePath /private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/xcresults/keychain.xcresult test\"\n    }\n  ],\n  \"vendor_verify_before_matrix\": \"bash scripts/ensure_rime_vendor.sh verify (execution AUTH only); no fetch\",\n  \"toolchain_preflight_on_auth\": [\n    \"xcode-select -p\",\n    \"xcodebuild -version\",\n    \"xcrun swift --version\"\n  ],\n  \"run_root\": \"/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005\",\n  \"backup_root\": \"/private/tmp/ukey-host-activation-fix-a2-validation-backup-20261005\",\n  \"isolated_DerivedData\": \"/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData\",\n  \"isolated_KeyboardCore_build_path\": \"/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/keyboardcore-build\",\n  \"budget_proposal_wall_minutes\": 180,\n  \"budget_start\": \"execution AUTH checkpoint, including environment preflight, backup, matrix and Exit; no automatic renewal\",\n  \"focused_default\": \"not scheduled; 23/23 from full suite avoids redundant repeat\",\n  \"no_auto_retries\": true,\n  \"matrix_label\": \"完整测试与构建矩阵，外加适用本地分类与轻量检查；不是hosted完整CI等价\",\n  \"actual_counts\": \"xcresult actual counts only; no expected total forced\"\n}\n"
+  },
+  "dependency_manifest_identity": [
+    {
+      "manifest": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/source-tree-manifest.json",
+      "manifest_sha256": "61606efa4db41e88416d9b1763264fb96b2f50d5d927530424a7168aa8860827",
+      "file_count": 358,
+      "aggregate_sha256_actual": "a27296c557af763728365e197ce7c5ec541203f9b40445b1033509cbf8cc2fb4",
+      "aggregate_expected": "a27296c557af763728365e197ce7c5ec541203f9b40445b1033509cbf8cc2fb4"
+    },
+    {
+      "manifest": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/app-source-manifest.json",
+      "manifest_sha256": "df7f539eadb27a683efa81e477e0fb69a0e05e7a36fc8c737c5f9b7703e7b99e",
+      "file_count": 168,
+      "aggregate_sha256_actual": "b5fdda0ffd8c3f7563fe70a925b166817308267392edf72f4ffa00dda96068ca",
+      "aggregate_expected": "b5fdda0ffd8c3f7563fe70a925b166817308267392edf72f4ffa00dda96068ca"
+    },
+    {
+      "manifest": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/vendor-byte-manifest.json",
+      "manifest_sha256": "54c5d67d284c12ce630f3c17e42954f733bcb6e0117892a5b970b34d189437b5",
+      "file_count": 630,
+      "aggregate_sha256_actual": "f9b03dea3e5be3e8d903e1c02f16dc933d5048ca48e45bf652e15ec99bdc0a9a",
+      "aggregate_expected": "f9b03dea3e5be3e8d903e1c02f16dc933d5048ca48e45bf652e15ec99bdc0a9a"
+    }
+  ]
+}

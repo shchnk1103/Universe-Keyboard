@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+CandidateBar.swift",
+  "origin_sha256": "ae1b78d5a311f60054914093458b0c78fe3d35923d82b487fd7f30d886074c80",
+  "expected_sha256": "ae1b78d5a311f60054914093458b0c78fe3d35923d82b487fd7f30d886074c80",
+  "line_start": 181,
+  "line_end": 240,
+  "lines": [
+    {
+      "line": 181,
+      "text": "            candidateScrollView.setContentOffset(.zero, animated: false)"
+    },
+    {
+      "line": 182,
+      "text": "        }"
+    },
+    {
+      "line": 183,
+      "text": "        collectionView.alwaysBounceHorizontal = hasMoreCandidates && !items.isEmpty"
+    },
+    {
+      "line": 184,
+      "text": ""
+    },
+    {
+      "line": 185,
+      "text": "        #if DEBUG"
+    },
+    {
+      "line": 186,
+      "text": "            Logger.shared.debug("
+    },
+    {
+      "line": 187,
+      "text": "                \"fillCandidateBar collection: items=\\(items.count), \""
+    },
+    {
+      "line": 188,
+      "text": "                    + \"durationMs=\\(String(format: \"%.1f\", (CACurrentMediaTime() - renderStart) * 1000))\","
+    },
+    {
+      "line": 189,
+      "text": "                category: .display"
+    },
+    {
+      "line": 190,
+      "text": "            )"
+    },
+    {
+      "line": 191,
+      "text": "        #endif"
+    },
+    {
+      "line": 192,
+      "text": "    }"
+    },
+    {
+      "line": 193,
+      "text": ""
+    },
+    {
+      "line": 194,
+      "text": "    func appendToCandidateBar(insertedCount: Int? = nil) {"
+    },
+    {
+      "line": 195,
+      "text": "        guard let collectionView = candidateCollectionView,"
+    },
+    {
+      "line": 196,
+      "text": "            let insertedCount,"
+    },
+    {
+      "line": 197,
+      "text": "            insertedCount > 0"
+    },
+    {
+      "line": 198,
+      "text": "        else {"
+    },
+    {
+      "line": 199,
+      "text": "            fillCandidateBar(keepScrollPosition: true)"
+    },
+    {
+      "line": 200,
+      "text": "            return"
+    },
+    {
+      "line": 201,
+      "text": "        }"
+    },
+    {
+      "line": 202,
+      "text": ""
+    },
+    {
+      "line": 203,
+      "text": "        let currentCount = collectionView.numberOfItems(inSection: 0)"
+    },
+    {
+      "line": 204,
+      "text": "        let expectedOldCount = max(0, presentedCandidates.count - insertedCount)"
+    },
+    {
+      "line": 205,
+      "text": "        guard currentCount == expectedOldCount else {"
+    },
+    {
+      "line": 206,
+      "text": "            fillCandidateBar(keepScrollPosition: true)"
+    },
+    {
+      "line": 207,
+      "text": "            return"
+    },
+    {
+      "line": 208,
+      "text": "        }"
+    },
+    {
+      "line": 209,
+      "text": ""
+    },
+    {
+      "line": 210,
+      "text": "        let indexPaths = (expectedOldCount..<(expectedOldCount + insertedCount)).map {"
+    },
+    {
+      "line": 211,
+      "text": "            IndexPath(item: $0, section: 0)"
+    },
+    {
+      "line": 212,
+      "text": "        }"
+    },
+    {
+      "line": 213,
+      "text": "        let currentOffset = candidateScrollView.contentOffset"
+    },
+    {
+      "line": 214,
+      "text": "        let generation = candidateSnapshotGeneration"
+    },
+    {
+      "line": 215,
+      "text": "        UIView.performWithoutAnimation {"
+    },
+    {
+      "line": 216,
+      "text": "            collectionView.performBatchUpdates {"
+    },
+    {
+      "line": 217,
+      "text": "                collectionView.insertItems(at: indexPaths)"
+    },
+    {
+      "line": 218,
+      "text": "            } completion: { _ in"
+    },
+    {
+      "line": 219,
+      "text": "                guard self.candidateSnapshotGeneration == generation,"
+    },
+    {
+      "line": 220,
+      "text": "                    collectionView === self.candidateCollectionView"
+    },
+    {
+      "line": 221,
+      "text": "                else { return }"
+    },
+    {
+      "line": 222,
+      "text": "                let maxOffset = max("
+    },
+    {
+      "line": 223,
+      "text": "                    0, self.candidateScrollView.contentSize.width - self.candidateScrollView.bounds.width)"
+    },
+    {
+      "line": 224,
+      "text": "                self.candidateScrollView.contentOffset.x = min(currentOffset.x, maxOffset)"
+    },
+    {
+      "line": 225,
+      "text": "                collectionView.alwaysBounceHorizontal = self.hasMoreCandidates && !self.presentedCandidates.isEmpty"
+    },
+    {
+      "line": 226,
+      "text": "            }"
+    },
+    {
+      "line": 227,
+      "text": "        }"
+    },
+    {
+      "line": 228,
+      "text": "    }"
+    },
+    {
+      "line": 229,
+      "text": ""
+    },
+    {
+      "line": 230,
+      "text": "    // MARK: --- 候选数据 ---"
+    },
+    {
+      "line": 231,
+      "text": ""
+    },
+    {
+      "line": 232,
+      "text": "    /// 获取当前应显示的候选词列表。"
+    },
+    {
+      "line": 233,
+      "text": "    ///"
+    },
+    {
+      "line": 234,
+      "text": "    /// 无极滑动模式下优先返回累积列表（包含已加载的所有页的候选），"
+    },
+    {
+      "line": 235,
+      "text": "    /// 确保候选栏和展开面板始终显示相同的候选集合。"
+    },
+    {
+      "line": 236,
+      "text": "    func candidateItems() -> [CandidateItem] {"
+    },
+    {
+      "line": 237,
+      "text": "        if !accumulatedCandidates.isEmpty {"
+    },
+    {
+      "line": 238,
+      "text": "            return accumulatedCandidates"
+    },
+    {
+      "line": 239,
+      "text": "        }"
+    },
+    {
+      "line": 240,
+      "text": "        return CandidateBarDataSource.candidateItems(from: controller)"
+    }
+  ]
+}

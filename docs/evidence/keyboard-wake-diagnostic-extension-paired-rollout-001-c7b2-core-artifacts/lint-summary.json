@@ -1,0 +1,8 @@
+{
+  "after_exit": 1,
+  "before_diagnostic_lines": 57,
+  "after_diagnostic_lines": 57,
+  "note": "Pre-existing full-file format violations preserved; no format-in-place or commit/push. Compiler warnings-as-errors unchanged.",
+  "normalized_before_after_diagnostics_identical": true,
+  "before_exit": "not retained; 57 strict error diagnostics recorded"
+}

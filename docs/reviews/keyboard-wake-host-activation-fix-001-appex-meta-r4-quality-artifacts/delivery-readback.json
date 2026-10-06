@@ -1,0 +1,24 @@
+{
+  "lane": "AP-META-004-QUALITY-R1",
+  "packet_sha256": "fd5da48966c5fbb1e198f83ae6819514fc7109eb06929311e8899e6399353b55",
+  "readback_utc": "2026-10-06T03:24:14.833811+00:00",
+  "actual_tool_calls": 16,
+  "outputs": [
+    {
+      "name": "ack.json",
+      "bytes": 1189,
+      "sha256": "09afb4a9223a4bd4874df93f895db1d313381754d535dcf097b528337bcd3305"
+    },
+    {
+      "name": "review.md",
+      "bytes": 6243,
+      "sha256": "0176c9868e21fb41db84f63e44aca49b4e7dedbfd4eb55deecf159ae63416755"
+    },
+    {
+      "name": "usage.json",
+      "bytes": 15032,
+      "sha256": "b0adf4056f98284dd83fc4cecca4bde4e4a3c74004f13cb4f7f6c2f7b2eefca6"
+    }
+  ],
+  "verified": true
+}

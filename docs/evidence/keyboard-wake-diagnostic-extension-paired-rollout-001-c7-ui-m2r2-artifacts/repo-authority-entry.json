@@ -1,0 +1,14 @@
+{
+  "utc": "2026-10-04T04:41:56.162634+00:00",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "dirty_paths": 785,
+  "staged_paths": 0,
+  "dirty_sha256": "4a18a6bef485347d8c362e28aad294ccf2a868227118533769096f3cc4945b13",
+  "source_inputs_verified": 1279,
+  "human_authority": "可以，请你继续吧 — in response to new Maps paired capture recommendation using native LLDB",
+  "fresh_exclusive_closed_app_confirmation": "pending",
+  "native_stable_precheck": "one cross-Human-reply boundary with verified cleanup and visual Exit; not full-run stability guarantee",
+  "scope": "one fresh run; protection; precise old instance normal termination once; native LLDB; one arm/two n/one direct AppSwitcher return/freeze/one bounded read/cleanup",
+  "no_install_restore_source_build_test_git_or_automatic_retry": true
+}

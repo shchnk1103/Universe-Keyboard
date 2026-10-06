@@ -1,0 +1,7 @@
+{
+  "recorded_at": "2026-10-05T03:07:06.529765+00:00",
+  "observation": "list_agents omitted Architecture path, but spawn_agent returned path already exists; followup_task to original path succeeded",
+  "architecture_actual_route": "reuse /root/m2r2_arch_r1",
+  "quality_actual_route": "reuse /root/m2r2_quality_r1",
+  "correction": "Packet reviewer new-runtime wording and Assignment pre-dispatch wording are coordinator inference error, not actual replacement. Original packets retained unchanged; correction does not change scope/budget/input byte identity. Archive with final delivery."
+}

@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift",
+  "origin_sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+  "expected_sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+  "line_start": 601,
+  "line_end": 660,
+  "lines": [
+    {
+      "line": 601,
+      "text": "        expandActionTarget?.perform(expandAction)"
+    },
+    {
+      "line": 602,
+      "text": "    }"
+    },
+    {
+      "line": 603,
+      "text": ""
+    },
+    {
+      "line": 604,
+      "text": "    private func updateSwipePreviewHighlight(for recognizer: UIPanGestureRecognizer) {"
+    },
+    {
+      "line": 605,
+      "text": "        let point = recognizer.location(in: collectionView)"
+    },
+    {
+      "line": 606,
+      "text": "        setSwipePreviewIndexPath(collectionView.indexPathForItem(at: point))"
+    },
+    {
+      "line": 607,
+      "text": "    }"
+    },
+    {
+      "line": 608,
+      "text": ""
+    },
+    {
+      "line": 609,
+      "text": "    private func setSwipePreviewIndexPath(_ indexPath: IndexPath?) {"
+    },
+    {
+      "line": 610,
+      "text": "        guard swipePreviewIndexPath != indexPath else { return }"
+    },
+    {
+      "line": 611,
+      "text": "        clearSwipePreviewHighlight()"
+    },
+    {
+      "line": 612,
+      "text": "        swipePreviewIndexPath = indexPath"
+    },
+    {
+      "line": 613,
+      "text": "        guard let indexPath,"
+    },
+    {
+      "line": 614,
+      "text": "            let cell = collectionView.cellForItem(at: indexPath) as? CandidateCollectionCell"
+    },
+    {
+      "line": 615,
+      "text": "        else { return }"
+    },
+    {
+      "line": 616,
+      "text": "        cell.setSwipePreviewHighlighted(true)"
+    },
+    {
+      "line": 617,
+      "text": "    }"
+    },
+    {
+      "line": 618,
+      "text": ""
+    },
+    {
+      "line": 619,
+      "text": "    private func clearSwipePreviewHighlight() {"
+    },
+    {
+      "line": 620,
+      "text": "        guard let indexPath = swipePreviewIndexPath else { return }"
+    },
+    {
+      "line": 621,
+      "text": "        if let cell = collectionView.cellForItem(at: indexPath) as? CandidateCollectionCell {"
+    },
+    {
+      "line": 622,
+      "text": "            cell.setSwipePreviewHighlighted(false)"
+    },
+    {
+      "line": 623,
+      "text": "        }"
+    },
+    {
+      "line": 624,
+      "text": "        swipePreviewIndexPath = nil"
+    },
+    {
+      "line": 625,
+      "text": "    }"
+    },
+    {
+      "line": 626,
+      "text": ""
+    },
+    {
+      "line": 627,
+      "text": "    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {"
+    },
+    {
+      "line": 628,
+      "text": "        guard let pan = gestureRecognizer as? UIPanGestureRecognizer else { return true }"
+    },
+    {
+      "line": 629,
+      "text": "        let velocity = pan.velocity(in: self)"
+    },
+    {
+      "line": 630,
+      "text": "        if pan === swipeDownRecognizer {"
+    },
+    {
+      "line": 631,
+      "text": "            guard allowsSwipeToExpand else { return false }"
+    },
+    {
+      "line": 632,
+      "text": "            return velocity.y > 0 && abs(velocity.y) > abs(velocity.x) * 1.15"
+    },
+    {
+      "line": 633,
+      "text": "        }"
+    },
+    {
+      "line": 634,
+      "text": "        if pan === horizontalFallbackRecognizer {"
+    },
+    {
+      "line": 635,
+      "text": "            guard collectionView.contentSize.width > collectionView.bounds.width else {"
+    },
+    {
+      "line": 636,
+      "text": "                logHorizontalFallbackDecision(pan, allowed: false, reason: \"contentNotScrollable\")"
+    },
+    {
+      "line": 637,
+      "text": "                return false"
+    },
+    {
+      "line": 638,
+      "text": "            }"
+    },
+    {
+      "line": 639,
+      "text": "            guard abs(velocity.x) > abs(velocity.y) * 1.1 else {"
+    },
+    {
+      "line": 640,
+      "text": "                logHorizontalFallbackDecision(pan, allowed: false, reason: \"notHorizontal\")"
+    },
+    {
+      "line": 641,
+      "text": "                return false"
+    },
+    {
+      "line": 642,
+      "text": "            }"
+    },
+    {
+      "line": 643,
+      "text": "            let point = pan.location(in: self)"
+    },
+    {
+      "line": 644,
+      "text": "            guard !expandedButtonHitFrame.contains(point) else {"
+    },
+    {
+      "line": 645,
+      "text": "                logHorizontalFallbackDecision(pan, allowed: false, reason: \"expandButton\")"
+    },
+    {
+      "line": 646,
+      "text": "                return false"
+    },
+    {
+      "line": 647,
+      "text": "            }"
+    },
+    {
+      "line": 648,
+      "text": "            let allowed = shouldStartHorizontalFallback(at: point)"
+    },
+    {
+      "line": 649,
+      "text": "            logHorizontalFallbackDecision(pan, allowed: allowed, reason: allowed ? \"barBlank\" : \"cellOwnsPoint\")"
+    },
+    {
+      "line": 650,
+      "text": "            return allowed"
+    },
+    {
+      "line": 651,
+      "text": "        }"
+    },
+    {
+      "line": 652,
+      "text": "        return true"
+    },
+    {
+      "line": 653,
+      "text": "    }"
+    },
+    {
+      "line": 654,
+      "text": ""
+    },
+    {
+      "line": 655,
+      "text": "    private func shouldStartHorizontalFallback(at point: CGPoint) -> Bool {"
+    },
+    {
+      "line": 656,
+      "text": "        guard collectionView.frame.contains(point) else {"
+    },
+    {
+      "line": 657,
+      "text": "            return bounds.contains(point)"
+    },
+    {
+      "line": 658,
+      "text": "        }"
+    },
+    {
+      "line": 659,
+      "text": "        let collectionPoint = collectionView.convert(point, from: self)"
+    },
+    {
+      "line": 660,
+      "text": "        return collectionView.indexPathForItem(at: collectionPoint) == nil"
+    }
+  ]
+}

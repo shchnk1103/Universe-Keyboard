@@ -1,0 +1,13 @@
+{
+  "utc": "2026-10-05T12:45:06.179666+00:00",
+  "F4-I_actual_tool_calls": 43,
+  "budget_calls": 60,
+  "budget_wall_seconds": 5400,
+  "conservative_elapsed_seconds": 1445.06462,
+  "within_budget": true,
+  "accounting": "21functions.exec wrappers+21nested exec_command/write_stdin+1list_sims; includes final receipt read and this archive",
+  "status": "F4-I complete after machine installation and Human normal health",
+  "first_failure_and_resume_preserved": true,
+  "backup_exception": "Only this before883addedprovenance accepted; no other differences",
+  "F4-M_budget_inherited": false
+}

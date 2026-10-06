@@ -1,0 +1,113 @@
+{
+  "lane": "QUALITY-C7-B1",
+  "round": 4,
+  "packet_path": "/private/tmp/ukey-wake-promotion-preflight-20261002/quality-packet.json",
+  "packet_digest_sha256": "a621b310200706e97e5b0470362c7751471ef08051c2d646d9ac4ee35aa6f92d",
+  "packet_digest_verified": true,
+  "explicit_content_inputs_expected": 17,
+  "explicit_content_inputs_verified": 17,
+  "reviewer_independent_of_implementation": true,
+  "review_scope": [
+    "P1",
+    "P2",
+    "P3"
+  ],
+  "criteria": {
+    "P1": "Covered",
+    "P2": "Covered; 432-vs-431 discovery delta retained UNKNOWN, skips remain unaccepted",
+    "P3": "Covered as preparation protocol; installation remains Hold/no-go pending fresh Entry and current-state full backup"
+  },
+  "scoped_verdict": "Positive preparation opinion for P1-P3 only",
+  "overall_gate_or_product_acceptance": false,
+  "candidate_installed_or_runtime_verified": false,
+  "calls": {
+    "max": 12,
+    "used": 7,
+    "remaining": 5,
+    "soft_elapsed_seconds": 480,
+    "hard_elapsed_seconds": 600,
+    "checkpoint_after_calls": 3,
+    "counting": "Each underlying exec_command or collaboration call counts once; functions.exec wrapper is not double-counted."
+  },
+  "actual_review_start_utc": null,
+  "actual_review_start_unix": null,
+  "actual_total_elapsed_seconds": null,
+  "timing_limitation": "First invocation sampled time only in an ephemeral process and exited before emitting it; per packet, missing start remains null and is not inferred. Exact total elapsed/hard-time compliance cannot be independently certified.",
+  "observed_timestamps": {
+    "call2_start_utc": "2026-10-02T14:05:43.146745+00:00",
+    "call3_start_utc": "2026-10-02T14:06:02.172529+00:00",
+    "call3_end_utc": "2026-10-02T14:06:02.177469+00:00",
+    "call6_start_utc": "2026-10-02T14:07:17.307506+00:00",
+    "call6_end_utc": "2026-10-02T14:07:17.311439+00:00",
+    "call7_start_utc": "2026-10-02T14:11:52.689793+00:00",
+    "report_written_utc": "2026-10-02T14:11:52.690495+00:00",
+    "usage_prewrite_sample_utc": "2026-10-02T14:11:52.690525+00:00"
+  },
+  "call_ledger": [
+    {
+      "call": 1,
+      "tool": "exec_command",
+      "start_utc": null,
+      "end_utc": null,
+      "result": "读取packet的首次尝试；进程采集了时间但在识别错误的digest字段后退出，未打印样本。错误：packet digest field absent。计入预算。"
+    },
+    {
+      "call": 2,
+      "tool": "exec_command",
+      "start_utc": "2026-10-02T14:05:43.146745+00:00",
+      "end_utc": null,
+      "result": "读取packet浅层结构，定位正确字段packet_digest_sha256；输出调用起始时间，结束时间未采样。"
+    },
+    {
+      "call": 3,
+      "tool": "exec_command",
+      "start_utc": "2026-10-02T14:06:02.172529+00:00",
+      "end_utc": "2026-10-02T14:06:02.177469+00:00",
+      "result": "校验canonical packet digest及17/17明确输入哈希，读取P1-P3标准与预算。"
+    },
+    {
+      "call": 4,
+      "tool": "collaboration.send_message",
+      "start_utc": null,
+      "end_utc": null,
+      "result": "向root发送独立性/范围ACK、packet与输入匹配状态、计时缺口和预算checkpoint。"
+    },
+    {
+      "call": 5,
+      "tool": "exec_command",
+      "start_utc": null,
+      "end_utc": null,
+      "result": "批读允许的报告、候选/测试摘要、skip清单、安装计划；工具输出截断，随后call 6定点核对关键内容。"
+    },
+    {
+      "call": 6,
+      "tool": "exec_command",
+      "start_utc": "2026-10-02T14:07:17.307506+00:00",
+      "end_utc": "2026-10-02T14:07:17.311439+00:00",
+      "result": "定点核对candidate/manifest/paired-products、三xcresult摘要、30个skip ID/原因唯一性与P3计划、Architecture R4范围。"
+    },
+    {
+      "call": 7,
+      "tool": "exec_command",
+      "start_utc": "2026-10-02T14:11:52.689793+00:00",
+      "end_utc": null,
+      "result": "写入quality-review.md与quality-usage.json；报告写完样本=2026-10-02T14:11:52.690495+00:00；usage序列化前样本=2026-10-02T14:11:52.690525+00:00；最终usage写入尾段未单独采样。"
+    }
+  ],
+  "report_sha256": "0b6ae78ff5a5283c1513211e2dd37c52ba24286e9352bedc68e0b02dd9082c90",
+  "outputs": {
+    "report": "/private/tmp/ukey-wake-promotion-preflight-20261002/quality-review.md",
+    "usage": "/private/tmp/ukey-wake-promotion-preflight-20261002/quality-usage.json"
+  },
+  "actions_prohibited_and_not_taken": [
+    "device/Simulator/UI/container access",
+    "network",
+    "build/test/install",
+    "LLDB",
+    "source/Vendor reread or hash traversal",
+    "Git mutation",
+    "scope expansion",
+    "Product residual acceptance"
+  ],
+  "wrapper_errors_not_counted_as_bottom_level_calls": 1
+}

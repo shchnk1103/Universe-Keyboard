@@ -1,0 +1,50 @@
+{
+  "entry.json": {
+    "sha256": "1008acc24fd4e74be6b7b21c99442508383c283f38127d3775d822996cddc488",
+    "private_source": "/private/tmp/ukey-wake-stable-channel-20261004/entry.json"
+  },
+  "continuity-request.json": {
+    "sha256": "5fec620d22ec6a7f01d063acb8d427f605d2a61c02487e9743c317d334517720",
+    "private_source": "/private/tmp/ukey-wake-stable-channel-20261004/continuity-request.json"
+  },
+  "cleanup-request.json": {
+    "sha256": "954d11a114a2febea7c47bc49dc7e0113b4404fa167da56e57909d0aeb7a16de",
+    "private_source": "/private/tmp/ukey-wake-stable-channel-20261004/cleanup-request.json"
+  },
+  "pre-human-readiness.json": {
+    "sha256": "b588610fd2bea4d330326de0be492daa94b13bf2a5102c6a1c20aa6b919683d2",
+    "private_source": "/private/tmp/ukey-wake-stable-channel-20261004/pre-human-readiness.json"
+  },
+  "post-human-processes.json": {
+    "sha256": "3402c8d24a1904f07f61b52f614aaa52c0eb69ca75d8d674259d72074bffc79e",
+    "private_source": "/private/tmp/ukey-wake-stable-channel-20261004/post-human-processes.json"
+  },
+  "exit-result.json": {
+    "sha256": "a6aee4d0b31244550b7bd5a705634cbb4b14d52dad952ebd56f6ef82ba177f8d",
+    "private_source": "/private/tmp/ukey-wake-stable-channel-20261004/exit-result.json"
+  },
+  "continue-request.json": {
+    "sha256": "d988f9627d558110f4ec17f5604812b15e63f7730987c10624a691acb3336a26",
+    "private_source": "/private/tmp/ukey-wake-stable-channel-20261004/continue-request.json"
+  },
+  "start-response.json": {
+    "sha256": "0120e8c72cd723b53942339b6f875265b6325c35d6038ca89e7ecefaa907bfe1",
+    "private_source": "/private/tmp/ukey-wake-stable-channel-20261004/start-response.json"
+  },
+  "pty-transcript.txt": {
+    "sha256": "0cb43d315fa86c168dff27dd5d5565022f6c24cc34ca9e15514ea6dc71b4fc44",
+    "private_source": "/private/tmp/ukey-wake-stable-channel-20261004/pty-transcript.txt"
+  },
+  "start-request.json": {
+    "sha256": "024f986194544cef50f43f673e2337ea7fabfa2ff2d10cc28f61b919afd0c577",
+    "private_source": "/private/tmp/ukey-wake-stable-channel-20261004/start-request.json"
+  },
+  "readiness-request.json": {
+    "sha256": "4d303b2edf6c8fa88fd06b9a64e282a667b5562fd0a50f416c959fa4988dbfc0",
+    "private_source": "/private/tmp/ukey-wake-stable-channel-20261004/readiness-request.json"
+  },
+  "human-visual-exit.json": {
+    "sha256": "2d8dde50a93e6d3eed5ebd4f3758cc3b630be8efd348f1fa7e6b138150ee8f44",
+    "private_source": "/private/tmp/ukey-wake-stable-channel-20261004/human-visual-exit.json"
+  }
+}

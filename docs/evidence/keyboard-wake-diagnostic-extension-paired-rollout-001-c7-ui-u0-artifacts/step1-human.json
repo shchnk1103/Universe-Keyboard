@@ -1,0 +1,13 @@
+{
+  "stage": "U0 step1",
+  "source": "Human manual report",
+  "received_time_Asia_Shanghai": "2026-10-03T16:48:04.075512+08:00",
+  "candidate_binding": "I1 installed 43d85d...; exclusive manual window",
+  "full_access_reported_on": true,
+  "empty_candidate_probe_control": "initially visible",
+  "elapsed_seconds": "NOT MEASURED",
+  "human_quote": "完全访问开；按钮初始可见。",
+  "normal_input_commit": "Pending",
+  "no_arm_instruction": true,
+  "does_not_prove_general_latency_fixed": true
+}

@@ -1,0 +1,20 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "\n🐛 LLDB Command\n\n✅ Command executed\n\nOutput:\n  No breakpoints currently set.\n"
+    }
+  ],
+  "structuredContent": {
+    "schema": "xcodebuildmcp.output.debug-command-result",
+    "schemaVersion": "2",
+    "didError": false,
+    "error": null,
+    "data": {
+      "command": "breakpoint list",
+      "outputLines": [
+        "No breakpoints currently set."
+      ]
+    }
+  }
+}

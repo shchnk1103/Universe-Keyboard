@@ -1,0 +1,104 @@
+[
+  {
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testAppearThenActiveAndActiveThenAppearConsumePendingOnce()",
+    "name": "testAppearThenActiveAndActiveThenAppearConsumePendingOnce()",
+    "result": "Passed",
+    "nodeType": "Test Case"
+  },
+  {
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testCanaryPermissionTableDeniesOwnerStartingBeforeResume()",
+    "name": "testCanaryPermissionTableDeniesOwnerStartingBeforeResume()",
+    "result": "Passed",
+    "nodeType": "Test Case"
+  },
+  {
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testCanaryStartingAllowsOriginalFirstFrameButNotHostActiveResume()",
+    "name": "testCanaryStartingAllowsOriginalFirstFrameButNotHostActiveResume()",
+    "result": "Passed",
+    "nodeType": "Test Case"
+  },
+  {
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testCancelledFirstFrameRearmsOnceWithoutImmediateOwner()",
+    "name": "testCancelledFirstFrameRearmsOnceWithoutImmediateOwner()",
+    "result": "Passed",
+    "nodeType": "Test Case"
+  },
+  {
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testDuplicateActiveAndResignAreIdempotent()",
+    "name": "testDuplicateActiveAndResignAreIdempotent()",
+    "result": "Passed",
+    "nodeType": "Test Case"
+  },
+  {
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testDuplicateActiveDoesNotEmitResumeThatWouldClearNewComposition()",
+    "name": "testDuplicateActiveDoesNotEmitResumeThatWouldClearNewComposition()",
+    "result": "Passed",
+    "nodeType": "Test Case"
+  },
+  {
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testFenceBlocksRearmAndFirstFrameCreation()",
+    "name": "testFenceBlocksRearmAndFirstFrameCreation()",
+    "result": "Passed",
+    "nodeType": "Test Case"
+  },
+  {
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testFirstFrameElapsedConsumesPendingAndActivatesOnce()",
+    "name": "testFirstFrameElapsedConsumesPendingAndActivatesOnce()",
+    "result": "Passed",
+    "nodeType": "Test Case"
+  },
+  {
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testForeignAndMissingContextDoNotChangeState()",
+    "name": "testForeignAndMissingContextDoNotChangeState()",
+    "result": "Passed",
+    "nodeType": "Test Case"
+  },
+  {
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testHiddenAndNoWindowDoNotResume()",
+    "name": "testHiddenAndNoWindowDoNotResume()",
+    "result": "Passed",
+    "nodeType": "Test Case"
+  },
+  {
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testHostActiveBeforeWindowIsTakenOverByDidAppear()",
+    "name": "testHostActiveBeforeWindowIsTakenOverByDidAppear()",
+    "result": "Passed",
+    "nodeType": "Test Case"
+  },
+  {
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testLateFirstFrameTickAfterDisappearDoesNotActivate()",
+    "name": "testLateFirstFrameTickAfterDisappearDoesNotActivate()",
+    "result": "Passed",
+    "nodeType": "Test Case"
+  },
+  {
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testOldPresentationPendingIsInvalidatedOnNewAppearance()",
+    "name": "testOldPresentationPendingIsInvalidatedOnNewAppearance()",
+    "result": "Passed",
+    "nodeType": "Test Case"
+  },
+  {
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testPermissionOrderIsEvaluatedBeforeConsumingPending()",
+    "name": "testPermissionOrderIsEvaluatedBeforeConsumingPending()",
+    "result": "Passed",
+    "nodeType": "Test Case"
+  },
+  {
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testPrecreatedHiddenInstanceDoesNotResumeOnHostActive()",
+    "name": "testPrecreatedHiddenInstanceDoesNotResumeOnHostActive()",
+    "result": "Passed",
+    "nodeType": "Test Case"
+  },
+  {
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testVisibilitySuspendedGrantedAllowsExactlyOneResume()",
+    "name": "testVisibilitySuspendedGrantedAllowsExactlyOneResume()",
+    "result": "Passed",
+    "nodeType": "Test Case"
+  },
+  {
+    "nodeIdentifier": "KeyboardHostLifecycleRecoveryGateTests/testVisibleResignThenActiveResumesExactlyOnce()",
+    "name": "testVisibleResignThenActiveResumesExactlyOnce()",
+    "result": "Passed",
+    "nodeType": "Test Case"
+  }
+]

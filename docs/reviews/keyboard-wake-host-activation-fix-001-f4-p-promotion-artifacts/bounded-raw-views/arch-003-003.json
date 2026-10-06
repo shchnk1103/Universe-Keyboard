@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Presentation.swift",
+  "origin_sha256": "767c2817054484d4d4c328cb7a8deaf676509b76bbc3cb45868b6e3cf721319a",
+  "expected_sha256": "767c2817054484d4d4c328cb7a8deaf676509b76bbc3cb45868b6e3cf721319a",
+  "line_start": 121,
+  "line_end": 180,
+  "lines": [
+    {
+      "line": 121,
+      "text": "        }"
+    },
+    {
+      "line": 122,
+      "text": "        Logger.shared.debug(\"installKeyboardUI: systemBounds=\\(view.bounds)\", category: .display)"
+    },
+    {
+      "line": 123,
+      "text": "        Logger.shared.requestFlush()"
+    },
+    {
+      "line": 124,
+      "text": "    }"
+    },
+    {
+      "line": 125,
+      "text": ""
+    },
+    {
+      "line": 126,
+      "text": "    func reloadKeyboardContent(with precomputedCandidates: [CandidateItem]? = nil) {"
+    },
+    {
+      "line": 127,
+      "text": "        candidateCellSizeCache.removeAll(keepingCapacity: true)"
+    },
+    {
+      "line": 128,
+      "text": "        clearAllRows()"
+    },
+    {
+      "line": 129,
+      "text": "        if isCandidateExpanded {"
+    },
+    {
+      "line": 130,
+      "text": "            let panel = makeExpandedCandidatePanel(with: precomputedCandidates)"
+    },
+    {
+      "line": 131,
+      "text": "            rootStack.addArrangedSubview(panel)"
+    },
+    {
+      "line": 132,
+      "text": "            candidateExpandedPanel = panel"
+    },
+    {
+      "line": 133,
+      "text": "        } else if isPinyinPathExpanded {"
+    },
+    {
+      "line": 134,
+      "text": "            if shouldReserveT9PinyinPathBar {"
+    },
+    {
+      "line": 135,
+      "text": "                let pathBar = makeT9PinyinPathBar()"
+    },
+    {
+      "line": 136,
+      "text": "                rootStack.addArrangedSubview(pathBar)"
+    },
+    {
+      "line": 137,
+      "text": "            }"
+    },
+    {
+      "line": 138,
+      "text": "            candidateBar = makeCandidateBar()"
+    },
+    {
+      "line": 139,
+      "text": "            #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+    },
+    {
+      "line": 140,
+      "text": "                // Construction refreshes the old bar; bind the new bar before updating its probe."
+    },
+    {
+      "line": 141,
+      "text": "                refreshWakeOwnerProbeControls()"
+    },
+    {
+      "line": 142,
+      "text": "            #endif"
+    },
+    {
+      "line": 143,
+      "text": "            rootStack.addArrangedSubview(candidateBar)"
+    },
+    {
+      "line": 144,
+      "text": "            rootStack.setCustomSpacing(0, after: candidateBar)"
+    },
+    {
+      "line": 145,
+      "text": "            let panel = makePinyinPathExpandedPanel()"
+    },
+    {
+      "line": 146,
+      "text": "            rootStack.addArrangedSubview(panel)"
+    },
+    {
+      "line": 147,
+      "text": "            pinyinPathExpandedPanel = panel"
+    },
+    {
+      "line": 148,
+      "text": "        } else {"
+    },
+    {
+      "line": 149,
+      "text": "            if shouldReserveT9PinyinPathBar {"
+    },
+    {
+      "line": 150,
+      "text": "                let pathBar = makeT9PinyinPathBar()"
+    },
+    {
+      "line": 151,
+      "text": "                rootStack.addArrangedSubview(pathBar)"
+    },
+    {
+      "line": 152,
+      "text": "                rootStack.setCustomSpacing(0, after: pathBar)"
+    },
+    {
+      "line": 153,
+      "text": "            }"
+    },
+    {
+      "line": 154,
+      "text": "            candidateBar = makeCandidateBar()"
+    },
+    {
+      "line": 155,
+      "text": "            #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+    },
+    {
+      "line": 156,
+      "text": "                // Construction refreshes the old bar; bind the new bar before updating its probe."
+    },
+    {
+      "line": 157,
+      "text": "                refreshWakeOwnerProbeControls()"
+    },
+    {
+      "line": 158,
+      "text": "            #endif"
+    },
+    {
+      "line": 159,
+      "text": "            rootStack.addArrangedSubview(candidateBar)"
+    },
+    {
+      "line": 160,
+      "text": "            rootStack.setCustomSpacing(0, after: candidateBar)"
+    },
+    {
+      "line": 161,
+      "text": "            addKeyboardRows(for: controller.state)"
+    },
+    {
+      "line": 162,
+      "text": "        }"
+    },
+    {
+      "line": 163,
+      "text": "        updateSelectPinyinButtonAvailability()"
+    },
+    {
+      "line": 164,
+      "text": "        installPreferredKeyboardHeight()"
+    },
+    {
+      "line": 165,
+      "text": "    }"
+    },
+    {
+      "line": 166,
+      "text": ""
+    },
+    {
+      "line": 167,
+      "text": "    func addKeyboardRows(for state: KeyboardState) {"
+    },
+    {
+      "line": 168,
+      "text": "        letterButtons.removeAll()"
+    },
+    {
+      "line": 169,
+      "text": "        #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT"
+    },
+    {
+      "line": 170,
+      "text": "            devicePreflightT9LetterGroupButtons.removeAll()"
+    },
+    {
+      "line": 171,
+      "text": "            devicePreflightPreparedGeometryDigest = nil"
+    },
+    {
+      "line": 172,
+      "text": "            devicePreflightDidRecordExecutionGeometry = false"
+    },
+    {
+      "line": 173,
+      "text": "        #endif"
+    },
+    {
+      "line": 174,
+      "text": "        candidateExpandedPanel = nil"
+    },
+    {
+      "line": 175,
+      "text": "        expandedPanelScrollView = nil"
+    },
+    {
+      "line": 176,
+      "text": "        switch state.currentPage {"
+    },
+    {
+      "line": 177,
+      "text": "        case .letters:"
+    },
+    {
+      "line": 178,
+      "text": "            let usesT9Chrome ="
+    },
+    {
+      "line": 179,
+      "text": "                state.inputMode == .chinese"
+    },
+    {
+      "line": 180,
+      "text": "                && cachedLayoutStyle == .nineKey"
+    }
+  ]
+}

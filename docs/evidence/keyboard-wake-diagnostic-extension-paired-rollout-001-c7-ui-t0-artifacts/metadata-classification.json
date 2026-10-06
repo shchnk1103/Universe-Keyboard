@@ -1,0 +1,10 @@
+{
+  "first_copy_source_stable": true,
+  "first_copy_strict_xattr_check": "stopped: only private-copy added com.apple.provenance",
+  "copy_only_normalization_attempt": 921,
+  "readback": "same added attribute persisted; no repeated removal",
+  "classification": "all file bytes/structure/modes/owners/original xattrs preserved; exact all-xattrs equality false",
+  "device_source_mutated_by_copy": false,
+  "restore_executed": false,
+  "test_executed": false
+}

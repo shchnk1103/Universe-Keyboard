@@ -1,0 +1,17 @@
+{
+  "utc": "2026-10-04T04:32:52.281857+00:00",
+  "human_authority": "可以，请你只做稳定调试通道预检",
+  "scope": "one native PTY LLDB attach; module and own export breakpoint; one cross-Human-reply continuity check; own cleanup/detach/quit; no arm/input/Maps/freeze/memory-read/retry",
+  "pid": 41635,
+  "before_flags_hex": "4004",
+  "before_state": "Ss",
+  "executable": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+  "sha256": "237d9a890d96a18ebaa9427ac2836595d8e8fc7767be63712a6870a22643efe0",
+  "candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50",
+  "installed_files_verified": 78,
+  "source_inputs_verified": 1279,
+  "independent_review_lane": false,
+  "root_sole_executor": true,
+  "exclusive_window": "existing current original-device exclusive window reaffirmed by current authorization; no simulator change",
+  "pause_work_budget_seconds": 120
+}

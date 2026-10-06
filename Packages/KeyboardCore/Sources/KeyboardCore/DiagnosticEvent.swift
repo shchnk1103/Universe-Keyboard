@@ -7,6 +7,20 @@ import Foundation
 public struct DiagnosticEvent: Codable, Sendable, Equatable {
     public static let schemaVersion = 5
 
+    // Reader compatibility is independent of the production writer. Never admit future versions
+    // implicitly: each supported version must retain its own code/payload contract.
+    static func supportsReading(schemaVersion: Int) -> Bool {
+        [3, 4, 5, 6].contains(schemaVersion)
+    }
+
+    static func supportsWakeMarkers(schemaVersion: Int) -> Bool {
+        schemaVersion == 4 || schemaVersion == 6
+    }
+
+    static func supportsTypoRecall(schemaVersion: Int) -> Bool {
+        schemaVersion == 5 || schemaVersion == 6
+    }
+
     public enum Origin: String, Codable, CaseIterable, Sendable {
         case mainApp = "main_app"
         case keyboardExtension = "keyboard_extension"
@@ -50,6 +64,9 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         case typoRecallQueryOutcome = "typo_recall.query_outcome"
         /// INT-003 P1: one content-free terminal measurement per facade invocation.
         case typoRecallQueryMeasured = "typo_recall.query_measured"
+        case keyboardLifecyclePhaseChanged = "keyboard.lifecycle.phase_changed"
+        case rimeResumePhaseChanged = "rime.resume.phase_changed"
+        case textProxyOperationPhaseChanged = "text_proxy.operation_phase_changed"
     }
 
     public enum Reason: String, Codable, CaseIterable, Sendable {
@@ -125,6 +142,83 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         case measured
         case saturated
         case clockRegression = "clock_regression"
+    }
+
+    public enum KeyboardLifecyclePhase: String, Codable, CaseIterable, Sendable {
+        case viewWillAppear = "view_will_appear"
+        case viewDidAppear = "view_did_appear"
+        case viewWillDisappear = "view_will_disappear"
+        case hostWillResignActive = "host_will_resign_active"
+        case hostDidBecomeActive = "host_did_become_active"
+    }
+
+    public struct KeyboardLifecyclePayload: Codable, Sendable, Equatable {
+        public let phase: KeyboardLifecyclePhase
+
+        public init(phase: KeyboardLifecyclePhase) {
+            self.phase = phase
+        }
+    }
+
+    public enum RimeResumePhase: String, Codable, CaseIterable, Sendable {
+        case started
+        case sessionCreated = "session_created"
+        case schemaSelected = "schema_selected"
+        case ownerReady = "owner_ready"
+        case completed
+        case failed
+    }
+
+    public enum RimeResumeFailure: String, Codable, CaseIterable, Sendable {
+        case engineUnavailable = "engine_unavailable"
+        case sessionCreationFailed = "session_creation_failed"
+        case schemaSelectionFailed = "schema_selection_failed"
+        case ownerNotReady = "owner_not_ready"
+    }
+
+    public struct RimeResumePayload: Codable, Sendable, Equatable {
+        public let phase: RimeResumePhase
+        public let failure: RimeResumeFailure?
+        public let sessionEpoch: UInt64?
+        public let revision: UInt64?
+
+        public init(
+            phase: RimeResumePhase,
+            failure: RimeResumeFailure? = nil,
+            sessionEpoch: UInt64? = nil,
+            revision: UInt64? = nil
+        ) {
+            precondition((phase == .failed) == (failure != nil))
+            self.phase = phase
+            self.failure = failure
+            self.sessionEpoch = sessionEpoch
+            self.revision = revision
+        }
+
+        fileprivate var isValid: Bool {
+            (phase == .failed) == (failure != nil)
+        }
+    }
+
+    public enum TextProxyOperation: String, Codable, CaseIterable, Sendable {
+        case setMarkedText = "set_marked_text"
+        case insertText = "insert_text"
+        case unmarkText = "unmark_text"
+    }
+
+    public enum TextProxyPhase: String, Codable, CaseIterable, Sendable {
+        case entered
+        case returned
+    }
+
+    public struct TextProxyPayload: Codable, Sendable, Equatable {
+        public let operation: TextProxyOperation
+        public let phase: TextProxyPhase
+
+        public init(operation: TextProxyOperation, phase: TextProxyPhase) {
+            self.operation = operation
+            self.phase = phase
+        }
     }
 
     /// Closed query metadata. This intentionally has no field for input, candidates,
@@ -969,6 +1063,9 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
     public let schemeDeliveryPayload: SchemeDeliveryPayload?
     public let runtimeRoutePayload: RuntimeRoutePhaseEvent?
     public let rimeSyncPayload: RimeSyncPayload?
+    public let keyboardLifecyclePayload: KeyboardLifecyclePayload?
+    public let rimeResumePayload: RimeResumePayload?
+    public let textProxyPayload: TextProxyPayload?
 
     public init(
         utcTimestamp: Date,
@@ -1014,6 +1111,10 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
             "DiagnosticEvent cannot contain multiple composite payloads"
         )
         precondition(
+            !Self.v4OnlyCodes.contains(code),
+            "Wake diagnostic marker codes are reader-only in the v5 candidate"
+        )
+        precondition(
             Self.isValidTypoRecallQuery(code: code, schemaVersion: Self.schemaVersion, fields: fields),
             "Typo-recall query measurement requires one schema-v5 typed field"
         )
@@ -1032,6 +1133,9 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         self.schemeDeliveryPayload = schemeDeliveryPayload
         self.runtimeRoutePayload = runtimeRoutePayload
         self.rimeSyncPayload = rimeSyncPayload
+        keyboardLifecyclePayload = nil
+        rimeResumePayload = nil
+        textProxyPayload = nil
     }
 
     private static let schemeDeliveryCodes: Set<Code> = [
@@ -1048,6 +1152,279 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         .rimeSyncTerminal,
     ]
     private static let runtimeRouteCodes: Set<Code> = [.runtimeRoutePhaseChanged]
+    fileprivate static let v4OnlyCodes: Set<Code> = [
+        .keyboardLifecyclePhaseChanged,
+        .rimeResumePhaseChanged,
+        .textProxyOperationPhaseChanged,
+    ]
+
+    static func isWakeMarkerCode(_ code: Code) -> Bool {
+        v4OnlyCodes.contains(code)
+    }
+    fileprivate static let v5OnlyCodes: Set<Code> = [
+        .typoRecallDebounceScheduled,
+        .typoRecallDebounceCancelled,
+        .typoRecallEpochBumped,
+        .typoRecallFenceDiscarded,
+        .typoRecallQueryBegin,
+        .typoRecallQueryOutcome,
+        .typoRecallQueryMeasured,
+    ]
+    private static let v5OnlyReasons: Set<Reason> = [
+        .typoRecallQuerySucceeded,
+        .typoRecallQueryDiscarded,
+        .typoRecallQueryCancelled,
+    ]
+    private static let v5OnlyCountMetrics: Set<CountMetric> = [
+        .recallEpoch,
+        .compositionRevision,
+        .operationOrdinal,
+        .compositionLength,
+        .compositionFingerprint,
+    ]
+    var isWritableV5: Bool {
+        schemaVersion == Self.schemaVersion
+            && !Self.v4OnlyCodes.contains(code)
+            && keyboardLifecyclePayload == nil
+            && rimeResumePayload == nil
+            && textProxyPayload == nil
+    }
+
+    /// Normalizes only new records. Retained v3/v4 events stay readable but cannot be
+    /// relabeled by a writer; v5 ordinary events may be explicitly promoted to v6.
+    func normalizedForWriting(
+        as writerVersion: DiagnosticsJournalWriterVersion,
+        origin expectedOrigin: Origin,
+        processInstanceID expectedProcessInstanceID: UUID
+    ) -> DiagnosticEvent? {
+        guard origin == expectedOrigin else { return nil }
+
+        switch writerVersion {
+        case .v5:
+            guard isWritableV5 else { return nil }
+        case .v6:
+            guard schemaVersion == 5 || schemaVersion == 6 else { return nil }
+            if hasWakeMarkerData {
+                guard isValidV6WakeMarker else { return nil }
+            }
+        }
+
+        return DiagnosticEvent(
+            schemaVersion: writerVersion.rawValue,
+            copying: self,
+            origin: expectedOrigin,
+            processInstanceID: expectedProcessInstanceID
+        )
+    }
+
+    private var hasWakeMarkerData: Bool {
+        Self.isWakeMarkerCode(code)
+            || keyboardLifecyclePayload != nil
+            || rimeResumePayload != nil
+            || textProxyPayload != nil
+    }
+
+    private var isValidV6WakeMarker: Bool {
+        guard
+            schemaVersion == 6,
+            origin == .keyboardExtension,
+            level == .debug,
+            fields.isEmpty,
+            [
+                keyboardLifecyclePayload != nil,
+                rimeResumePayload != nil,
+                textProxyPayload != nil,
+            ].filter({ $0 }).count == 1,
+            schemeDeliveryPayload == nil,
+            runtimeRoutePayload == nil,
+            rimeSyncPayload == nil
+        else { return false }
+
+        if keyboardLifecyclePayload != nil {
+            return code == .keyboardLifecyclePhaseChanged && category == .display
+        }
+        if let rimeResumePayload {
+            return code == .rimeResumePhaseChanged
+                && category == .engine
+                && rimeResumePayload.isValid
+        }
+        if textProxyPayload != nil {
+            return code == .textProxyOperationPhaseChanged && category == .display
+        }
+        return false
+    }
+
+    static func makeV6KeyboardLifecycleEvent(
+        phase: KeyboardLifecyclePhase,
+        utcTimestamp: Date,
+        monotonicNanoseconds: UInt64,
+        origin: Origin,
+        processInstanceID: UUID,
+        localSequence: UInt64,
+        appearanceID: UUID?
+    ) -> DiagnosticEvent? {
+        guard origin == .keyboardExtension else { return nil }
+        return DiagnosticEvent(
+            schemaVersion: 6,
+            utcTimestamp: utcTimestamp,
+            monotonicNanoseconds: monotonicNanoseconds,
+            origin: origin,
+            processInstanceID: processInstanceID,
+            localSequence: localSequence,
+            appearanceID: appearanceID,
+            actionSequence: nil,
+            code: .keyboardLifecyclePhaseChanged,
+            level: .debug,
+            category: .display,
+            fields: [],
+            schemeDeliveryPayload: nil,
+            runtimeRoutePayload: nil,
+            rimeSyncPayload: nil,
+            keyboardLifecyclePayload: KeyboardLifecyclePayload(phase: phase),
+            rimeResumePayload: nil,
+            textProxyPayload: nil
+        )
+    }
+
+    static func makeV6RimeResumeEvent(
+        phase: RimeResumePhase,
+        failure: RimeResumeFailure?,
+        sessionEpoch: UInt64?,
+        revision: UInt64?,
+        utcTimestamp: Date,
+        monotonicNanoseconds: UInt64,
+        origin: Origin,
+        processInstanceID: UUID,
+        localSequence: UInt64,
+        appearanceID: UUID?
+    ) -> DiagnosticEvent? {
+        guard origin == .keyboardExtension, (phase == .failed) == (failure != nil) else { return nil }
+        return DiagnosticEvent(
+            schemaVersion: 6,
+            utcTimestamp: utcTimestamp,
+            monotonicNanoseconds: monotonicNanoseconds,
+            origin: origin,
+            processInstanceID: processInstanceID,
+            localSequence: localSequence,
+            appearanceID: appearanceID,
+            actionSequence: nil,
+            code: .rimeResumePhaseChanged,
+            level: .debug,
+            category: .engine,
+            fields: [],
+            schemeDeliveryPayload: nil,
+            runtimeRoutePayload: nil,
+            rimeSyncPayload: nil,
+            keyboardLifecyclePayload: nil,
+            rimeResumePayload: RimeResumePayload(
+                phase: phase,
+                failure: failure,
+                sessionEpoch: sessionEpoch,
+                revision: revision
+            ),
+            textProxyPayload: nil
+        )
+    }
+
+    static func makeV6TextProxyEvent(
+        operation: TextProxyOperation,
+        phase: TextProxyPhase,
+        actionSequence: UInt64?,
+        utcTimestamp: Date,
+        monotonicNanoseconds: UInt64,
+        origin: Origin,
+        processInstanceID: UUID,
+        localSequence: UInt64,
+        appearanceID: UUID?
+    ) -> DiagnosticEvent? {
+        guard origin == .keyboardExtension else { return nil }
+        return DiagnosticEvent(
+            schemaVersion: 6,
+            utcTimestamp: utcTimestamp,
+            monotonicNanoseconds: monotonicNanoseconds,
+            origin: origin,
+            processInstanceID: processInstanceID,
+            localSequence: localSequence,
+            appearanceID: appearanceID,
+            actionSequence: actionSequence,
+            code: .textProxyOperationPhaseChanged,
+            level: .debug,
+            category: .display,
+            fields: [],
+            schemeDeliveryPayload: nil,
+            runtimeRoutePayload: nil,
+            rimeSyncPayload: nil,
+            keyboardLifecyclePayload: nil,
+            rimeResumePayload: nil,
+            textProxyPayload: TextProxyPayload(operation: operation, phase: phase)
+        )
+    }
+
+    private init(
+        schemaVersion: Int,
+        copying event: DiagnosticEvent,
+        origin: Origin,
+        processInstanceID: UUID
+    ) {
+        self.schemaVersion = schemaVersion
+        utcTimestamp = event.utcTimestamp
+        monotonicNanoseconds = event.monotonicNanoseconds
+        self.origin = origin
+        self.processInstanceID = processInstanceID
+        localSequence = event.localSequence
+        appearanceID = event.appearanceID
+        actionSequence = event.actionSequence
+        code = event.code
+        level = event.level
+        category = event.category
+        fields = event.fields
+        schemeDeliveryPayload = event.schemeDeliveryPayload
+        runtimeRoutePayload = event.runtimeRoutePayload
+        rimeSyncPayload = event.rimeSyncPayload
+        keyboardLifecyclePayload = event.keyboardLifecyclePayload
+        rimeResumePayload = event.rimeResumePayload
+        textProxyPayload = event.textProxyPayload
+    }
+
+    private init(
+        schemaVersion: Int,
+        utcTimestamp: Date,
+        monotonicNanoseconds: UInt64,
+        origin: Origin,
+        processInstanceID: UUID,
+        localSequence: UInt64,
+        appearanceID: UUID?,
+        actionSequence: UInt64?,
+        code: Code,
+        level: Logger.Level,
+        category: Logger.Category,
+        fields: [Field],
+        schemeDeliveryPayload: SchemeDeliveryPayload?,
+        runtimeRoutePayload: RuntimeRoutePhaseEvent?,
+        rimeSyncPayload: RimeSyncPayload?,
+        keyboardLifecyclePayload: KeyboardLifecyclePayload?,
+        rimeResumePayload: RimeResumePayload?,
+        textProxyPayload: TextProxyPayload?
+    ) {
+        self.schemaVersion = schemaVersion
+        self.utcTimestamp = utcTimestamp
+        self.monotonicNanoseconds = monotonicNanoseconds
+        self.origin = origin
+        self.processInstanceID = processInstanceID
+        self.localSequence = localSequence
+        self.appearanceID = appearanceID
+        self.actionSequence = actionSequence
+        self.code = code
+        self.level = level
+        self.category = category
+        self.fields = fields
+        self.schemeDeliveryPayload = schemeDeliveryPayload
+        self.runtimeRoutePayload = runtimeRoutePayload
+        self.rimeSyncPayload = rimeSyncPayload
+        self.keyboardLifecyclePayload = keyboardLifecyclePayload
+        self.rimeResumePayload = rimeResumePayload
+        self.textProxyPayload = textProxyPayload
+    }
 
     private static func isValidTypoRecallQuery(
         code: Code,
@@ -1059,23 +1436,37 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
             return false
         }
         if code == .typoRecallQueryMeasured {
-            guard schemaVersion == Self.schemaVersion, fields.count == 1 else { return false }
+            guard Self.supportsTypoRecall(schemaVersion: schemaVersion), fields.count == 1 else { return false }
             if case .typoRecallQuery = fields[0] { return true }
             return false
         }
         return queryFields.isEmpty
     }
 
+    private static func isLegacyCompatibleField(_ field: Field) -> Bool {
+        switch field {
+        case .count(let name, _):
+            return !v5OnlyCountMetrics.contains(name)
+        case .reason(let reason):
+            return !v5OnlyReasons.contains(reason)
+        case .typoRecallQuery:
+            return false
+        case .duration, .flag:
+            return true
+        }
+    }
+
     private enum CodingKeys: String, CodingKey {
         case schemaVersion, utcTimestamp, monotonicNanoseconds, origin, processInstanceID
         case localSequence, appearanceID, actionSequence, code, level, category, fields
         case schemeDeliveryPayload, runtimeRoutePayload, rimeSyncPayload
+        case keyboardLifecyclePayload, rimeResumePayload, textProxyPayload
     }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         schemaVersion = try container.decode(Int.self, forKey: .schemaVersion)
-        guard schemaVersion == 4 || schemaVersion == Self.schemaVersion else {
+        guard Self.supportsReading(schemaVersion: schemaVersion) else {
             throw DecodingError.dataCorruptedError(
                 forKey: .schemaVersion,
                 in: container,
@@ -1105,6 +1496,129 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
             RimeSyncPayload.self,
             forKey: .rimeSyncPayload
         )
+        keyboardLifecyclePayload = try container.decodeIfPresent(
+            KeyboardLifecyclePayload.self,
+            forKey: .keyboardLifecyclePayload
+        )
+        rimeResumePayload = try container.decodeIfPresent(
+            RimeResumePayload.self,
+            forKey: .rimeResumePayload
+        )
+        textProxyPayload = try container.decodeIfPresent(
+            TextProxyPayload.self,
+            forKey: .textProxyPayload
+        )
+        let containsV4OnlyKey = [
+            CodingKeys.keyboardLifecyclePayload,
+            .rimeResumePayload,
+            .textProxyPayload,
+        ].contains(where: container.contains)
+        guard
+            Self.supportsWakeMarkers(schemaVersion: schemaVersion)
+                || (!Self.v4OnlyCodes.contains(code) && !containsV4OnlyKey)
+        else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .schemaVersion,
+                in: container,
+                debugDescription: "Wake marker data requires schema v4 or v6"
+            )
+        }
+        guard
+            Self.supportsTypoRecall(schemaVersion: schemaVersion)
+                || !Self.v5OnlyCodes.contains(code)
+        else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .schemaVersion,
+                in: container,
+                debugDescription: "v5-only diagnostic code cannot be labeled as an older schema"
+            )
+        }
+        guard
+            Self.supportsTypoRecall(schemaVersion: schemaVersion)
+                || fields.allSatisfy(Self.isLegacyCompatibleField)
+        else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .fields,
+                in: container,
+                debugDescription: "v5-only diagnostic field cannot be labeled as an older schema"
+            )
+        }
+        guard
+            keyboardLifecyclePayload != nil
+                ? (code == .keyboardLifecyclePhaseChanged && Self.supportsWakeMarkers(schemaVersion: schemaVersion))
+                : code != .keyboardLifecyclePhaseChanged
+        else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .keyboardLifecyclePayload,
+                in: container,
+                debugDescription: "Keyboard lifecycle code and payload do not match"
+            )
+        }
+        guard
+            rimeResumePayload != nil
+                ? (code == .rimeResumePhaseChanged && Self.supportsWakeMarkers(schemaVersion: schemaVersion))
+                : code != .rimeResumePhaseChanged
+        else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .rimeResumePayload,
+                in: container,
+                debugDescription: "RIME resume code and payload do not match"
+            )
+        }
+        guard
+            textProxyPayload != nil
+                ? (code == .textProxyOperationPhaseChanged && Self.supportsWakeMarkers(schemaVersion: schemaVersion))
+                : code != .textProxyOperationPhaseChanged
+        else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .textProxyPayload,
+                in: container,
+                debugDescription: "Text proxy code and payload do not match"
+            )
+        }
+        guard
+            [
+                keyboardLifecyclePayload != nil,
+                rimeResumePayload != nil,
+                textProxyPayload != nil,
+            ].filter({ $0 }).count <= 1,
+            keyboardLifecyclePayload == nil || fields.isEmpty,
+            rimeResumePayload.map({ fields.isEmpty && $0.isValid }) ?? true,
+            textProxyPayload == nil || fields.isEmpty
+        else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .keyboardLifecyclePayload,
+                in: container,
+                debugDescription: "Invalid wake marker payload pairing or generic fields"
+            )
+        }
+        if keyboardLifecyclePayload != nil {
+            guard origin == .keyboardExtension, level == .debug, category == .display else {
+                throw DecodingError.dataCorruptedError(
+                    forKey: .keyboardLifecyclePayload,
+                    in: container,
+                    debugDescription: "Invalid keyboard lifecycle event envelope"
+                )
+            }
+        }
+        if rimeResumePayload != nil {
+            guard origin == .keyboardExtension, level == .debug, category == .engine else {
+                throw DecodingError.dataCorruptedError(
+                    forKey: .rimeResumePayload,
+                    in: container,
+                    debugDescription: "Invalid RIME resume event envelope"
+                )
+            }
+        }
+        if textProxyPayload != nil {
+            guard origin == .keyboardExtension, level == .debug, category == .display else {
+                throw DecodingError.dataCorruptedError(
+                    forKey: .textProxyPayload,
+                    in: container,
+                    debugDescription: "Invalid text proxy event envelope"
+                )
+            }
+        }
         guard Self.isValidTypoRecallQuery(code: code, schemaVersion: schemaVersion, fields: fields)
         else {
             throw DecodingError.dataCorruptedError(
@@ -1187,5 +1701,8 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         try container.encodeIfPresent(schemeDeliveryPayload, forKey: .schemeDeliveryPayload)
         try container.encodeIfPresent(runtimeRoutePayload, forKey: .runtimeRoutePayload)
         try container.encodeIfPresent(rimeSyncPayload, forKey: .rimeSyncPayload)
+        try container.encodeIfPresent(keyboardLifecyclePayload, forKey: .keyboardLifecyclePayload)
+        try container.encodeIfPresent(rimeResumePayload, forKey: .rimeResumePayload)
+        try container.encodeIfPresent(textProxyPayload, forKey: .textProxyPayload)
     }
 }

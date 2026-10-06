@@ -1,0 +1,10 @@
+{
+  "received_utc": "2026-10-04T04:53:18.132446+00:00",
+  "received_monotonic_ns": 1243076988901958,
+  "human_reply": "按键反馈正常、候选栏有更新，输入框有变化，‘取证’可见",
+  "actual_input_time": null,
+  "target_ps": "55759 55991     4804 SXs  /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+  "same_pid_path_sha_and_debugserver": true,
+  "UI_action_count_not_machine_measured": true,
+  "content_not_read": true
+}

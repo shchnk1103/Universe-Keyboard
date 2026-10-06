@@ -1,0 +1,20 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "\n🐛 LLDB Command\n\n✅ Command executed\n\nOutput:\n  1 breakpoints deleted; 0 breakpoint locations disabled.\n"
+    }
+  ],
+  "structuredContent": {
+    "schema": "xcodebuildmcp.output.debug-command-result",
+    "schemaVersion": "2",
+    "didError": false,
+    "error": null,
+    "data": {
+      "command": "breakpoint delete 1",
+      "outputLines": [
+        "1 breakpoints deleted; 0 breakpoint locations disabled."
+      ]
+    }
+  }
+}

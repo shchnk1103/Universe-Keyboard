@@ -1,0 +1,58 @@
+{
+  "lane": "QUALITY-C5-R-ACCEPT round3",
+  "status": "F1_F2_COVERED_HOST_Q_R_01_CLOSED_FOR_ARCHIVED_WINDOW_ONLY",
+  "review_coverage": {
+    "F1": "Covered",
+    "F2": "Covered"
+  },
+  "disposition": "HOST-Q-R-01 closed for this archived reader window only; no overall Gate/Product/Release acceptance.",
+  "independent_finding": "Expected and observed display Counters are equal: 17 rows, 15 distinct, empty diff. The formatter has no fixed timezone. The bounded contract is this same-reader historical window, and the matching same-environment +08 capture is sufficient for that claim; no cross-timezone behavior is claimed.",
+  "old_rounds": "Round1 Hold and round2 Partial remain unchanged.",
+  "call_ledger": [
+    {
+      "call": 1,
+      "purpose": "Timer start; read and SHA-verify frozen packet/manifest/Entry; validate identity and inputs",
+      "start_utc": "2026-10-01T06:11:30.870797+00:00",
+      "end_utc": "2026-10-01T06:11:30.922716+00:00",
+      "status": "completed"
+    },
+    {
+      "call": 2,
+      "purpose": "Read allowed typed-window events, snapshots, formatter/reader evidence and independently compute display counters",
+      "start_utc": null,
+      "end_utc": null,
+      "status": "completed; per-call timestamps not sampled"
+    },
+    {
+      "call": 3,
+      "purpose": "Review allowed source/plan and produce initial bounded report/usage; initial status was internally inconsistent and corrected in call 4",
+      "start_utc": null,
+      "end_utc": null,
+      "status": "completed; prior report superseded by this round3 correction"
+    },
+    {
+      "call": 4,
+      "purpose": "Read prior report/usage and allowed original plan excerpt; resolve archived-window timezone contract and correct this round3 report/usage",
+      "start_utc": "2026-10-01T06:20:14.672937+00:00",
+      "end_utc": "2026-10-01T06:20:14.674063+00:00",
+      "status": "completed"
+    }
+  ],
+  "tool_budget": {
+    "underlying_calls_used": 4,
+    "underlying_calls_limit": 4,
+    "wall_seconds_limit": 600,
+    "elapsed_seconds_through_report_and_usage_write": 523.803,
+    "within_budget": true
+  },
+  "limitations": [
+    "No current device/Simulator/live UI access, no collection script execution, and no build/test/install/network/Git mutation.",
+    "UI cannot expose origin/process/appearance/localSequence for duplicate rows.",
+    "No whole-run, Gate, Product, install, or Release acceptance."
+  ],
+  "outputs": [
+    "/private/tmp/ukey-wake-c5-r-reader-focused-r3-20261001/quality-review.md",
+    "/private/tmp/ukey-wake-c5-r-reader-focused-r3-20261001/quality-usage.json",
+    "/private/tmp/ukey-wake-c5-r-reader-focused-r3-20261001/timer.json"
+  ]
+}

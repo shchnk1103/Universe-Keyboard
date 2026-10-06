@@ -1,0 +1,22 @@
+{
+  "utc": "2026-10-04T14:39:04.912975+00:00",
+  "human_disposition": "同意：仅本轮接受903 provenance新增及122改写，随后复核同一备份/live继续一次focused test",
+  "accepted_exception": {
+    "added": 903,
+    "rewritten": 122,
+    "missing": 0
+  },
+  "other_metadata_and_payload_equal": true,
+  "source_two_fresh_reads_equal_historical_before": true,
+  "backup_matches_saved_inventory": true,
+  "target_processes_absent": true,
+  "exact_device_booted": true,
+  "signatures": {
+    "main": 0,
+    "appex": 0
+  },
+  "inputs_1156_match": true,
+  "all_metadata_exact": false,
+  "backup_root": "/private/tmp/ukey-host-activation-fix-f2-actor-retest-20261004/before-backup",
+  "test_started": false
+}

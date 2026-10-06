@@ -1,0 +1,8 @@
+{
+  "utc": "2026-10-03T04:33:35.754477+00:00",
+  "fresh_backup_live_reverified": true,
+  "source571_vendor630_match": true,
+  "target_processes_absent": true,
+  "argv_exact_original_frozen": true,
+  "packet_digest": "be119a8ecde6029a5d4ca9444eb581b3c559814e200c7aedd0a9a0b4ccaef631"
+}

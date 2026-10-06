@@ -1,0 +1,67 @@
+{
+  "utc": "2026-10-06T02:15:04.996852+00:00",
+  "status": "PASS for this task-owned macOS C fixture wait→export identity chain only",
+  "actual_calls": 6,
+  "wall_seconds": 76.356793,
+  "tool_ledger": [
+    {
+      "calls": 2,
+      "operation": "freeze AUTH, bounded EINTR change, compile/sign, source identity"
+    },
+    {
+      "calls": 2,
+      "operation": "one own-fixture LLDB wait→hit and cleanup"
+    },
+    {
+      "calls": 2,
+      "operation": "read telemetry and offline identity recheck/archive"
+    }
+  ],
+  "runtime_attempts": 1,
+  "read_attempt_limit": 2,
+  "read_attempts": [
+    {
+      "attempt": 1,
+      "read_return": -1,
+      "errno": 4,
+      "error_symbol": "EINTR"
+    },
+    {
+      "attempt": 2,
+      "read_return": 1,
+      "errno": 0,
+      "error_symbol": null
+    }
+  ],
+  "callback_count": 1,
+  "breakpoint_hit_count": 1,
+  "initial_wait_verified": true,
+  "callback_cli_location_identity_match": true,
+  "fixture_pid": 93371,
+  "thread_id": 44492531,
+  "attach_stop_id": 1,
+  "hit_stop_id": 2,
+  "pc": "0x100a0c460",
+  "module_uuid": "3B1459FA-EF00-466F-A0DD-F2FD0AC6D0AE",
+  "cleanup": {
+    "breakpoint_deleted": true,
+    "detach_success": true,
+    "detach_error": "success",
+    "fixture_exit_code": 0,
+    "helper_exit_code": 0
+  },
+  "callback_to_cleanup_upper_seconds": 0.008228,
+  "LLDB_exit_code": 0,
+  "source5_hashes_match": true,
+  "staged_paths": 0,
+  "device_operations": 0,
+  "memory_reads": 0,
+  "target_expressions": 0,
+  "limits": [
+    "macOS C fixture, synchronous CLI continue; not Swift/Simulator appex",
+    "does not prove F4 callback cause or owner/receipt recovery",
+    "no additional error branches or repeated-interruption runtime tests performed",
+    "old H0/H0b/F4 Partial remain original records"
+  ],
+  "next": "Prepare exact appex metadata-only stop identity Entry if authorized; no automatic LLDB/Maps/probe action"
+}

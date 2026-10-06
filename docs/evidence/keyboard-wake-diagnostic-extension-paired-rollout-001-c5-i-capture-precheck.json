@@ -1,0 +1,30 @@
+{
+  "target": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "matching_group_containers": 1,
+  "capture_state_before_install": [
+    {
+      "group_path": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/B0D7CE38-2B36-4AF1-B585-63ED3DA340E0",
+      "preference_file_exists": true,
+      "selected_capture_keys": {
+        "logging_enabled": {
+          "present": false,
+          "value": null
+        },
+        "diagnostics_high_fidelity_expiration": {
+          "present": false,
+          "value": null
+        },
+        "log_category_disp": {
+          "present": false,
+          "value": null
+        },
+        "log_category_engine": {
+          "present": false,
+          "value": null
+        }
+      }
+    }
+  ],
+  "app_group_runtime_access_proven": false,
+  "system_keyboard_and_full_access": "not inspected yet"
+}

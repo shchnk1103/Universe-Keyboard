@@ -1,0 +1,62 @@
+{
+  "candidate": [
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController.swift",
+      "before_sha256": "9aeec10f633454b7b9a032d8140ac0d9912de98ea7049c83a2a886c5ca04ec66",
+      "after_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+      "delta_bytes": 389
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+Bootstrap.swift",
+      "before_sha256": "e992a9ddf431112d1a40bed80431392eb68c8ef7221b07ece47b87eefb945299",
+      "after_sha256": "79d0123dabacd8e5875b66b7c8c897589adbeb8b49d1e22b263678dc1d56f6aa",
+      "delta_bytes": 1677
+    },
+    {
+      "path": "Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift",
+      "before_sha256": "2e7dcf3e88022a677e6ca5bfc5efd6aeacb1814c6fb7de6ec0cdc7c52ec7c9fb",
+      "after_sha256": "c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047",
+      "delta_bytes": 2917
+    },
+    {
+      "path": "KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+      "before_sha256": "b4e8c6c1fdb79dc9f27ff3355e705a0dae0f45a07f9fb4610a51e43a7256b8bf",
+      "after_sha256": "71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5",
+      "delta_bytes": 5612
+    }
+  ],
+  "inputs_count": 1156,
+  "unchanged_input_count": 1152,
+  "old_methods_preserved": [
+    "testAppearThenActiveAndActiveThenAppearConsumePendingOnce",
+    "testCanaryPermissionTableDeniesOwnerStartingBeforeResume",
+    "testCanaryStartingAllowsOriginalFirstFrameButNotHostActiveResume",
+    "testCancelledFirstFrameRearmsOnceWithoutImmediateOwner",
+    "testDuplicateActiveAndResignAreIdempotent",
+    "testDuplicateActiveDoesNotEmitResumeThatWouldClearNewComposition",
+    "testFenceBlocksRearmAndFirstFrameCreation",
+    "testFirstFrameElapsedConsumesPendingAndActivatesOnce",
+    "testForeignAndMissingContextDoNotChangeState",
+    "testHiddenAndNoWindowDoNotResume",
+    "testHostActiveBeforeWindowIsTakenOverByDidAppear",
+    "testLateFirstFrameTickAfterDisappearDoesNotActivate",
+    "testOldPresentationPendingIsInvalidatedOnNewAppearance",
+    "testPermissionOrderIsEvaluatedBeforeConsumingPending",
+    "testPrecreatedHiddenInstanceDoesNotResumeOnHostActive",
+    "testVisibilitySuspendedGrantedAllowsExactlyOneResume",
+    "testVisibleResignThenActiveResumesExactlyOnce"
+  ],
+  "new_methods": [
+    "testCurrentArmTokenCompletesExactlyOnSecondTick",
+    "testDuplicateBeginFirstFrameArmIsIdempotentUntilGenuineRearm",
+    "testHiddenAndNoWindowDoNotBeginFirstFrameArm",
+    "testRejectedOrInvalidatedArmStopsTicksWithoutRetry",
+    "testResignInvalidatesArmedTicksBeforeHostActive",
+    "testStaleArmTokenTicksAfterRearmDoNotAdvanceCurrentArm"
+  ],
+  "test_count_authored_not_run": 23,
+  "pbx_sha256": "49f0ebe89db1f30323d9bf6ceb297179ffed5fc9ef983fd3b947d11d5820586c",
+  "root_test_build_or_lint_run": false,
+  "grok_format_and_budget_evidence": "Human-transferred author summary only, no original command receipts supplied in this message",
+  "A2_independent_covered_claim": false
+}

@@ -1,0 +1,51 @@
+{
+  "lane": "F3-architecture-implementation",
+  "round": 1,
+  "reviewer": "/root/m2r2_arch_r1; independent of Grok implementation",
+  "packet_sha256": "34a37a0b8f3dbeba81b015c78985adc295c69440f0f913bc5a18d2ad108cb281",
+  "baseline": {
+    "root": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+    "branch": "codex/keyboard-wake-v3-compatibility-gate",
+    "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+    "staged_paths": 0,
+    "basis": "packet F0 dirty baseline plus five packet-provided diffs"
+  },
+  "input_verification": {
+    "allowed_read_files": 122,
+    "packet_hashes_match": true,
+    "branch_match": true,
+    "HEAD_match": true,
+    "hash_only_manifest": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f2-actor-retest-artifacts/input-manifest.json",
+    "hash_only_manifest_sha256": "6141627822185f4fee8cbf1f332f32d1f9748bb47f59cde2176c908493ebbbf6",
+    "manifest_content_read": false
+  },
+  "coverage": {
+    "A1": "Covered",
+    "A2": "Uncovered",
+    "A3": "Covered-static"
+  },
+  "verdict": "Partial / incomplete; not ready for separately authorized F4",
+  "finding": "A2-F1: first-frame callbacks are not bound to the current display-link/presentation generation; viewDidAppear attempts to arm outside an explicit current-visible-window gate.",
+  "actual_tool_calls": 24,
+  "call_budget": 24,
+  "wall_budget_seconds": 1200,
+  "elapsed_seconds": 862,
+  "checkpoint_calls": [
+    8,
+    16,
+    21
+  ],
+  "call_accounting": "24 actual nested tool calls including 3 checkpoint messages; final calls 22=write review, 23=write usage, 24=readback and update final elapsed.",
+  "forbidden_operations_performed": [],
+  "repo_or_source_writes": false,
+  "tests_or_builds_run": false,
+  "runtime_or_notification_delivery_verified": false,
+  "ack_sha256": "b05838128e1f3b1cf5402a9d4ba2409bb3952815ad570772698a853ab0c904ae",
+  "review_sha256": "bd802f40a8e96f9df61bd8237c8d55f19dcab2e074582b76697b722921398730",
+  "outputs": {
+    "ack": "/private/tmp/ukey-host-activation-fix-f3-20261004/architecture/ack.json",
+    "review": "/private/tmp/ukey-host-activation-fix-f3-20261004/architecture/review.md",
+    "usage": "/private/tmp/ukey-host-activation-fix-f3-20261004/architecture/usage.json"
+  },
+  "stop_reason": "Required static evidence reviewed; A2 remains uncovered. Stop at the reserved final verification call without expanding scope."
+}

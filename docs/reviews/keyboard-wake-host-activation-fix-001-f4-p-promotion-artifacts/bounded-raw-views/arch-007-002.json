@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift",
+  "origin_sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+  "expected_sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+  "line_start": 61,
+  "line_end": 120,
+  "lines": [
+    {
+      "line": 61,
+      "text": "            return true"
+    },
+    {
+      "line": 62,
+      "text": "        }"
+    },
+    {
+      "line": 63,
+      "text": "        if gestureRecognizer === horizontalFallback || otherGestureRecognizer === horizontalFallback {"
+    },
+    {
+      "line": 64,
+      "text": "            return false"
+    },
+    {
+      "line": 65,
+      "text": "        }"
+    },
+    {
+      "line": 66,
+      "text": "        guard gestureRecognizer === swipeDown || otherGestureRecognizer === swipeDown else {"
+    },
+    {
+      "line": 67,
+      "text": "            return false"
+    },
+    {
+      "line": 68,
+      "text": "        }"
+    },
+    {
+      "line": 69,
+      "text": "        return gestureRecognizer === collectionPan || otherGestureRecognizer === collectionPan"
+    },
+    {
+      "line": 70,
+      "text": "    }"
+    },
+    {
+      "line": 71,
+      "text": ""
+    },
+    {
+      "line": 72,
+      "text": "    func gestureRecognizer("
+    },
+    {
+      "line": 73,
+      "text": "        _ gestureRecognizer: UIGestureRecognizer,"
+    },
+    {
+      "line": 74,
+      "text": "        shouldRequireFailureOf otherGestureRecognizer: UIGestureRecognizer"
+    },
+    {
+      "line": 75,
+      "text": "    ) -> Bool {"
+    },
+    {
+      "line": 76,
+      "text": "        if gestureRecognizer === itemTap,"
+    },
+    {
+      "line": 77,
+      "text": "            otherGestureRecognizer === swipeDown || otherGestureRecognizer === horizontalFallback"
+    },
+    {
+      "line": 78,
+      "text": "        {"
+    },
+    {
+      "line": 79,
+      "text": "            return false"
+    },
+    {
+      "line": 80,
+      "text": "        }"
+    },
+    {
+      "line": 81,
+      "text": "        return false"
+    },
+    {
+      "line": 82,
+      "text": "    }"
+    },
+    {
+      "line": 83,
+      "text": "}"
+    },
+    {
+      "line": 84,
+      "text": ""
+    },
+    {
+      "line": 85,
+      "text": "@MainActor"
+    },
+    {
+      "line": 86,
+      "text": "final class CandidateBarView: UIView {"
+    },
+    {
+      "line": 87,
+      "text": "    private enum Layout {"
+    },
+    {
+      "line": 88,
+      "text": "        /// Keeps candidate text visually settled in the thinner bar."
+    },
+    {
+      "line": 89,
+      "text": "        static let verticalTextInset: CGFloat = 0"
+    },
+    {
+      "line": 90,
+      "text": "        /// Hit area is intentionally larger than the visible chevron for reliable touch."
+    },
+    {
+      "line": 91,
+      "text": "        static let expandButtonTouchSize: CGFloat = 56"
+    },
+    {
+      "line": 92,
+      "text": "        static let expandButtonVerticalAlignmentOffset: CGFloat = 9"
+    },
+    {
+      "line": 93,
+      "text": "    }"
+    },
+    {
+      "line": 94,
+      "text": ""
+    },
+    {
+      "line": 95,
+      "text": "    let collectionView: CandidateCollectionView"
+    },
+    {
+      "line": 96,
+      "text": "    let expandButton: UIButton"
+    },
+    {
+      "line": 97,
+      "text": "    let expandButtonWidthConstraint: NSLayoutConstraint"
+    },
+    {
+      "line": 98,
+      "text": "    private var candidateTrailingConstraint: NSLayoutConstraint!"
+    },
+    {
+      "line": 99,
+      "text": "    #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+    },
+    {
+      "line": 100,
+      "text": "        private var wakeProbeButton: UIButton?"
+    },
+    {
+      "line": 101,
+      "text": "        private var wakeProbeTrailingConstraint: NSLayoutConstraint?"
+    },
+    {
+      "line": 102,
+      "text": "        var onWakeOwnerProbeTouch: ((ObjectIdentifier, Bool) -> Void)?"
+    },
+    {
+      "line": 103,
+      "text": "    #endif"
+    },
+    {
+      "line": 104,
+      "text": "    /// Swipe-down expands only in expand mode (`PD-CANDIDATE-BAR-IDLE-DISMISS-001`)."
+    },
+    {
+      "line": 105,
+      "text": "    var allowsSwipeToExpand = false"
+    },
+    {
+      "line": 106,
+      "text": "    private weak var expandActionTarget: NSObject?"
+    },
+    {
+      "line": 107,
+      "text": "    private let expandAction: Selector"
+    },
+    {
+      "line": 108,
+      "text": "    private let itemTapRecognizer = UITapGestureRecognizer()"
+    },
+    {
+      "line": 109,
+      "text": "    private let gestureBridge = CandidateBarGestureBridge()"
+    },
+    {
+      "line": 110,
+      "text": "    private let candidateBarHeight: CGFloat"
+    },
+    {
+      "line": 111,
+      "text": "    private let bottomHitExtension: CGFloat"
+    },
+    {
+      "line": 112,
+      "text": "    private var swipeDownRecognizer: UIPanGestureRecognizer?"
+    },
+    {
+      "line": 113,
+      "text": "    private var horizontalFallbackRecognizer: UIPanGestureRecognizer?"
+    },
+    {
+      "line": 114,
+      "text": "    private var hasTriggeredSwipeDownExpand = false"
+    },
+    {
+      "line": 115,
+      "text": "    private var isSwipeDownTracking = false"
+    },
+    {
+      "line": 116,
+      "text": "    private var swipePreviewIndexPath: IndexPath?"
+    },
+    {
+      "line": 117,
+      "text": "    private var horizontalFallbackStartOffsetX: CGFloat = 0"
+    },
+    {
+      "line": 118,
+      "text": "    private var lastPointInsideDiagnosticLogTime: CFTimeInterval = 0"
+    },
+    {
+      "line": 119,
+      "text": "    private var lastHitTestDiagnosticLogTime: CFTimeInterval = 0"
+    },
+    {
+      "line": 120,
+      "text": "    private var lastFallbackPanDiagnosticLogTime: CFTimeInterval = 0"
+    }
+  ]
+}

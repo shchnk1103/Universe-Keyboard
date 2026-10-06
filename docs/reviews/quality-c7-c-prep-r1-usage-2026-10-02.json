@@ -1,0 +1,142 @@
+{
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "budget": {
+    "calls_used": 13,
+    "checkpoint_after_call": 4,
+    "checkpoint_sent": true,
+    "hard_elapsed_seconds": 600,
+    "max_underlying_calls": 14,
+    "soft_elapsed_seconds": 420,
+    "within_hard_limit": true,
+    "within_soft_delivery": false
+  },
+  "call_ledger": [
+    {
+      "call": 1,
+      "end_utc": "2026-10-02T07:55:33.425174+00:00",
+      "kind": "exec_command",
+      "result": "记录 UTC/Unix start；读取 packet 并验证 digest。",
+      "start_utc": "2026-10-02T07:55:33.424631+00:00"
+    },
+    {
+      "call": 2,
+      "end_utc": null,
+      "kind": "collaboration.send_message",
+      "result": "scope/independence/budget/digest/start ACK；调用时间未采样。",
+      "start_utc": null
+    },
+    {
+      "call": 3,
+      "end_utc": "2026-10-02T07:56:06.846866+00:00",
+      "kind": "exec_command",
+      "result": "哈希核对 22 项；读取 packet acceptance、outputs、identity、stop/budget。",
+      "start_utc": "2026-10-02T07:56:06.843035+00:00"
+    },
+    {
+      "call": 4,
+      "end_utc": "2026-10-02T07:56:49.389569+00:00",
+      "kind": "exec_command",
+      "result": "读取证据链计划、离线 decoder 计划、paired products、例子结果、LLDB help。",
+      "start_utc": "2026-10-02T07:56:49.386565+00:00"
+    },
+    {
+      "call": 5,
+      "end_utc": null,
+      "kind": "collaboration.send_message",
+      "result": "第 4 底层调用后 checkpoint；调用时间未采样。",
+      "start_utc": null
+    },
+    {
+      "call": 6,
+      "end_utc": "2026-10-02T07:58:16.806762+00:00",
+      "kind": "exec_command",
+      "result": "定点读取 Core probe transport、ThreadAffine schedule/resume、decoder parser、LLDB 语法。",
+      "start_utc": "2026-10-02T07:58:16.802326+00:00"
+    },
+    {
+      "call": 7,
+      "end_utc": "2026-10-02T07:58:35.467582+00:00",
+      "kind": "exec_command",
+      "result": "复核 decoder 20–71、records 编码、schedule 与 resume 代码及 export bridge。",
+      "start_utc": "2026-10-02T07:58:35.466645+00:00"
+    },
+    {
+      "call": 8,
+      "end_utc": "2026-10-02T07:59:09.389861+00:00",
+      "kind": "exec_command",
+      "result": "复核 probe UI/insertKey/CandidateBar 控件、Entry/授权、旧 F2 与历史边界。",
+      "start_utc": "2026-10-02T07:59:09.384907+00:00"
+    },
+    {
+      "call": 9,
+      "end_utc": "2026-10-02T07:59:35.834389+00:00",
+      "kind": "exec_command",
+      "result": "复核完整 button action、CandidateBar visibility、schedule owner/receipt 及 validation 历史边界。",
+      "start_utc": "2026-10-02T07:59:35.831671+00:00"
+    },
+    {
+      "call": 10,
+      "end_utc": "2026-10-02T08:00:32.882639+00:00",
+      "kind": "exec_command",
+      "result": "复核 showsControl 的 idle/observing 门槛及 freeze 状态、parser/fixture 边界。",
+      "start_utc": "2026-10-02T08:00:32.879461+00:00"
+    },
+    {
+      "call": 11,
+      "end_utc": "2026-10-02T08:01:40.744835+00:00",
+      "kind": "exec_command",
+      "result": "核对计划与 decoder/fixture 精确行号用于报告。",
+      "start_utc": "2026-10-02T08:01:40.743825+00:00"
+    },
+    {
+      "call": 12,
+      "end_utc": "2026-10-02T08:03:21.774106+00:00",
+      "kind": "exec_command",
+      "result": "只读核验 branch/HEAD；写入 review.md 与 usage.json。",
+      "start_utc": "2026-10-02T08:03:21.747459+00:00"
+    },
+    {
+      "call": 13,
+      "end_utc": "2026-10-02T08:04:02.821838+00:00",
+      "kind": "exec_command",
+      "result": "交付完整性修正：明确 soft elapsed 超时，更新 report hash 和 usage。",
+      "start_utc": "2026-10-02T08:04:02.821171+00:00"
+    }
+  ],
+  "content_inputs_expected": 22,
+  "content_inputs_matched": 22,
+  "criteria_coverage": {
+    "P-Q1": "Covered",
+    "P-Q2": "Covered",
+    "P-Q3": "Covered"
+  },
+  "elapsed_seconds": 509.397207,
+  "elapsed_utc_delta_actual": true,
+  "end_utc": "2026-10-02T08:04:02.821838+00:00",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "independence": "未参与 C7 probe/修复/runbook 实现",
+  "input_mismatches": 0,
+  "input_missing": 0,
+  "lane": "QUALITY-C7-C-PREP",
+  "not_performed": [
+    "build",
+    "test",
+    "decoder execution",
+    "Simulator/device/container/LLDB attach",
+    "network",
+    "repository mutation",
+    "delegation"
+  ],
+  "packet_digest_sha256": "97838719a772dc3334175fb28082d6d1a659fc71aa56f941ac90d8ac0839e147",
+  "packet_digest_verified": true,
+  "packet_path": "/private/tmp/ukey-wake-c7c-prep-20261002/packet.json",
+  "review_path": "/private/tmp/ukey-wake-c7c-prep-20261002/review.md",
+  "review_sha256": "733f696d863b818c21e4a255f86ce4a0bfb9002a0eee6d3285c15d77ce00031f",
+  "round": 1,
+  "scope_limit": "仅未来准备协议的静态意见；不等于安装、runtime、Gate、Product 或 Release；C7-B1 overall Hold 与 F2 未关闭。",
+  "soft_overrun_seconds": 89.397207,
+  "start_unix": 1790927733.4249659,
+  "start_utc": "2026-10-02T07:55:33.424631+00:00",
+  "verdict": "Positive scoped preparation opinion",
+  "worktree_identity_match": true
+}

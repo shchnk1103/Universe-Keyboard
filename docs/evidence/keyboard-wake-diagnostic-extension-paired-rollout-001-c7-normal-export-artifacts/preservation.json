@@ -1,0 +1,15 @@
+{
+  "changed_existing": [
+    "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md",
+    "docs/assignments/keyboard-wake-lifecycle-diagnostics-001.md",
+    "docs/ACTIVE_WORK.md",
+    "docs/ENGINEERING_DASHBOARD.md",
+    "docs/KNOWLEDGE_INDEX.md"
+  ],
+  "outside_allowlist": [],
+  "staged": [],
+  "dirty_entries_at_checkpoint": 722,
+  "missing_links": [],
+  "diff_check": 0,
+  "diff_output": ""
+}

@@ -1,0 +1,73 @@
+{
+  "status": "Prepared only; not executed or authorized",
+  "cwd": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "argv": [
+    "xcodebuild",
+    "-project",
+    "Universe Keyboard.xcodeproj",
+    "-scheme",
+    "Universe Keyboard",
+    "-configuration",
+    "Debug",
+    "-sdk",
+    "iphonesimulator",
+    "-destination",
+    "generic/platform=iOS Simulator",
+    "-derivedDataPath",
+    "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData",
+    "-clonedSourcePackagesDirPath",
+    "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/SourcePackages",
+    "-resultBundlePath",
+    "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateBuild.xcresult",
+    "-disableAutomaticPackageResolution",
+    "-onlyUsePackageVersionsFromResolvedFile",
+    "-skipPackageUpdates",
+    "CODE_SIGNING_ALLOWED=YES",
+    "SWIFT_VERSION=6.0",
+    "SWIFT_STRICT_CONCURRENCY=complete",
+    "SWIFT_SUPPRESS_WARNINGS=NO",
+    "SWIFT_TREAT_WARNINGS_AS_ERRORS=YES",
+    "ARCHS=arm64",
+    "ONLY_ACTIVE_ARCH=YES",
+    "SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) DEBUG KEYBOARD_WAKE_OWNER_PROBE",
+    "CODE_SIGN_IDENTITY=-",
+    "CODE_SIGNING_REQUIRED=NO",
+    "build"
+  ],
+  "output_root": "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005",
+  "generic_build_only": true,
+  "no_device_instance_or_test": true,
+  "cache_input": "only previously pinned local cache after hash/inventory verification; missing dependencies stop, no network fetch",
+  "source_bound_to": [
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController.swift",
+      "bytes": 39626,
+      "sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+Bootstrap.swift",
+      "bytes": 52473,
+      "sha256": "79d0123dabacd8e5875b66b7c8c897589adbeb8b49d1e22b263678dc1d56f6aa"
+    },
+    {
+      "path": "Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift",
+      "bytes": 12137,
+      "sha256": "c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047"
+    },
+    {
+      "path": "KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+      "bytes": 19887,
+      "sha256": "71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5"
+    },
+    {
+      "path": "Universe Keyboard.xcodeproj/project.pbxproj",
+      "bytes": 46990,
+      "sha256": "49f0ebe89db1f30323d9bf6ceb297179ffed5fc9ef983fd3b947d11d5820586c"
+    }
+  ],
+  "budget_proposal": {
+    "wall_seconds": 3600,
+    "tool_calls": 40,
+    "first_failure_stop": true
+  }
+}

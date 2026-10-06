@@ -1,0 +1,49 @@
+{
+  "stage": "C5-I onepairedinstall/readiness",
+  "outcome": "installedpairingPass; originalhostreadinessHold; C5-Rnotauthorized",
+  "worktree": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "candidate_digest": "af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9",
+  "baseline_existing_files": 2528,
+  "existing_preserved_except_owning_assignment": 2527,
+  "existing_changes": [
+    "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md"
+  ],
+  "before_assignment_sha256": "d0c9653ffdfdc65ee223b6488f70ed9e68c3385fd32e36a64cad4d27fd127dcc",
+  "after_assignment_sha256": "3d9e97b783cd5f182093a556371a02ec787db65280d374b509aa02f3028edbf7",
+  "source_build_hashes_matched": 568,
+  "built_debug_file_hashes_matched": 111,
+  "installed_file_hashes_matched": 111,
+  "installed_mach_o_sha_size_uuid_matched": 11,
+  "install_attempts": 1,
+  "output_sha256": {
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-i-installed-payload-verification.json": "97b28185bfdd9997b8b402a8e70bf7d8fcb34219e95078bb83badd419f5337c6",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-i-tool-actions-receipt.json": "dc2acf9f22dcc236334e90e422ebf2e60f75306a6a97a9f3b78eeea74241ea76",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-i-machine-human-readiness.json": "08421c68709c81ca1ddbcc95c4f27f9bf5eb5894f209cd7cbe32d1a992ee58f5",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-i-validation-2026-10-01.md": "97aa3ce26442069d69cd9004e53c0056ca1578b75eacaa1cb90c3f86f89087c2"
+  },
+  "capture_keys_unchanged": true,
+  "human_full_access_observation": "ON",
+  "host_delta": "SearchTabvsplannedlocaldictionary; furtherapproval/reviewrebindpending",
+  "existing_mcp_profiles_unchanged": true,
+  "before_complete_status": "/private/tmp/ukey-wake-c5-i-20261001/before-status.txt",
+  "after_complete_status": "/private/tmp/ukey-wake-c5-i-20261001/after-status.txt",
+  "scope_not_executed": [
+    "rebuild",
+    "resign",
+    "separateappexinstall",
+    "source/test/build",
+    "keyboardactivation",
+    "diagnosticarming/input",
+    "Maps",
+    "Gitpublication",
+    "Release"
+  ],
+  "window_end_utc": "2026-10-01T02:14:18.085856+00:00",
+  "dirty_total": 446,
+  "tracked_modified": 19,
+  "untracked": 427,
+  "staged": 0,
+  "status_z_sha256": "23d74d51ed4da32024041fa2ba63b56deba1b65d9d5c69624ea7b59e5e62873a"
+}

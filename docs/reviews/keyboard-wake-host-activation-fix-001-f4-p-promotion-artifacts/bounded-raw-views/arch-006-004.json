@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift",
+  "origin_sha256": "c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047",
+  "expected_sha256": "c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047",
+  "line_start": 181,
+  "line_end": 240,
+  "lines": [
+    {
+      "line": 181,
+      "text": "        let action = decideHostDidBecomeActive(context: context, hasWindow: hasWindow)"
+    },
+    {
+      "line": 182,
+      "text": "        switch action {"
+    },
+    {
+      "line": 183,
+      "text": "        case .none:"
+    },
+    {
+      "line": 184,
+      "text": "            return .none"
+    },
+    {
+      "line": 185,
+      "text": "        case .performSharedResume:"
+    },
+    {
+      "line": 186,
+      "text": "            if !canary.permitsOwnerStarting(source: .hostActive) {"
+    },
+    {
+      "line": 187,
+      "text": "                blockPending()"
+    },
+    {
+      "line": 188,
+      "text": "                return .none"
+    },
+    {
+      "line": 189,
+      "text": "            }"
+    },
+    {
+      "line": 190,
+      "text": "            consumePendingAndRearm()"
+    },
+    {
+      "line": 191,
+      "text": "            return .performSharedResume"
+    },
+    {
+      "line": 192,
+      "text": "        case .rearmFirstFrameGate:"
+    },
+    {
+      "line": 193,
+      "text": "            if canary.blocksHostActiveRecovery {"
+    },
+    {
+      "line": 194,
+      "text": "                blockPending()"
+    },
+    {
+      "line": 195,
+      "text": "                return .none"
+    },
+    {
+      "line": 196,
+      "text": "            }"
+    },
+    {
+      "line": 197,
+      "text": "            invalidateFirstFrameArm()"
+    },
+    {
+      "line": 198,
+      "text": "            firstFrameArmSuppressed = false"
+    },
+    {
+      "line": 199,
+      "text": "            firstFrameRearmPending = true"
+    },
+    {
+      "line": 200,
+      "text": "            firstFrameConsumedForGeneration = false"
+    },
+    {
+      "line": 201,
+      "text": "            return .rearmFirstFrameGate"
+    },
+    {
+      "line": 202,
+      "text": "        case .suspendRuntime, .completeFirstFrameActivation:"
+    },
+    {
+      "line": 203,
+      "text": "            return .none"
+    },
+    {
+      "line": 204,
+      "text": "        }"
+    },
+    {
+      "line": 205,
+      "text": "    }"
+    },
+    {
+      "line": 206,
+      "text": ""
+    },
+    {
+      "line": 207,
+      "text": "    /// Issues or reuses the current first-frame arm. Hidden / no-window never mint a token."
+    },
+    {
+      "line": 208,
+      "text": "    @discardableResult"
+    },
+    {
+      "line": 209,
+      "text": "    func beginFirstFrameArm(hasWindow: Bool) -> UInt64? {"
+    },
+    {
+      "line": 210,
+      "text": "        guard phase == .visible, hasWindow else {"
+    },
+    {
+      "line": 211,
+      "text": "            if hasLiveFirstFrameArm {"
+    },
+    {
+      "line": 212,
+      "text": "                firstFrameArmSuppressed = true"
+    },
+    {
+      "line": 213,
+      "text": "                invalidateFirstFrameArm()"
+    },
+    {
+      "line": 214,
+      "text": "            }"
+    },
+    {
+      "line": 215,
+      "text": "            return nil"
+    },
+    {
+      "line": 216,
+      "text": "        }"
+    },
+    {
+      "line": 217,
+      "text": "        if hasLiveFirstFrameArm {"
+    },
+    {
+      "line": 218,
+      "text": "            return firstFrameArmToken"
+    },
+    {
+      "line": 219,
+      "text": "        }"
+    },
+    {
+      "line": 220,
+      "text": "        if firstFrameArmSuppressed { return nil }"
+    },
+    {
+      "line": 221,
+      "text": "        if firstFrameConsumedForGeneration, !firstFrameRearmPending { return nil }"
+    },
+    {
+      "line": 222,
+      "text": "        firstFrameArmToken &+= 1"
+    },
+    {
+      "line": 223,
+      "text": "        if firstFrameArmToken == 0 {"
+    },
+    {
+      "line": 224,
+      "text": "            firstFrameArmToken = 1"
+    },
+    {
+      "line": 225,
+      "text": "        }"
+    },
+    {
+      "line": 226,
+      "text": "        firstFrameArmGeneration = presentationGeneration"
+    },
+    {
+      "line": 227,
+      "text": "        firstFrameTickCount = 0"
+    },
+    {
+      "line": 228,
+      "text": "        hasLiveFirstFrameArm = true"
+    },
+    {
+      "line": 229,
+      "text": "        return firstFrameArmToken"
+    },
+    {
+      "line": 230,
+      "text": "    }"
+    },
+    {
+      "line": 231,
+      "text": ""
+    },
+    {
+      "line": 232,
+      "text": "    func invalidateFirstFrameArm() {"
+    },
+    {
+      "line": 233,
+      "text": "        hasLiveFirstFrameArm = false"
+    },
+    {
+      "line": 234,
+      "text": "        firstFrameTickCount = 0"
+    },
+    {
+      "line": 235,
+      "text": "    }"
+    },
+    {
+      "line": 236,
+      "text": ""
+    },
+    {
+      "line": 237,
+      "text": "    func previewFirstFrameTick("
+    },
+    {
+      "line": 238,
+      "text": "        token: UInt64,"
+    },
+    {
+      "line": 239,
+      "text": "        generation: UInt64,"
+    },
+    {
+      "line": 240,
+      "text": "        hasWindow: Bool"
+    }
+  ]
+}

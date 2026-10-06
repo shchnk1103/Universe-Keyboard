@@ -1,0 +1,12 @@
+{
+  "utc": "2026-10-04T05:09:52.028502+00:00",
+  "pid": 55759,
+  "ps": "55759     4004 Ss   Sun Oct  4 04:48:08 2026     /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+  "current_start_utc": "2026-10-04T04:48:08+00:00",
+  "initial_new_instance_discovery_utc": "2026-10-04T04:48:35.365440+00:00",
+  "current_start_not_after_discovery": true,
+  "current_not_P_TRACED": true,
+  "inference": "same continuously retained PID/path predates original discovery; runtime frozen snapshot not read",
+  "static_contract": "freeze returns retained frozenValue before constructing new value; refreshExpiry only armed; export hit in original run implies freeze returned a snapshot",
+  "execution_authority": "read-only analysis only; reexport not authorized"
+}

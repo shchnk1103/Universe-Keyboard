@@ -1,0 +1,25 @@
+{
+  "recorded_utc": "2026-10-06T03:46:52.071117+00:00",
+  "status": "E1 not Ready",
+  "kind": "coordinator readiness check, not independent review",
+  "source_root": "/private/tmp/ukey-host-activation-fix-owner-export-20261006",
+  "original_sha256": {
+    "e0-receipt.json": "bbe1075aa10aba8af0388971ca5886add10e34c00148786d8a7e49942c82d0a4",
+    "e0-preflight-results.json": "30895e2404588ddaac8238320c4672d74428c45005bf796a25dc48f918ef7711",
+    "identity-receipt.json": "6960ea73d625d48102d246781925f46ba6fa2a9a50b045b926bb617418879984",
+    "script-hashes.json": "275b8e8d000d8673181f11e3b9b8e0ae7642d45e2a24bb1f5d159652af45c5c5",
+    "owner_export_callback.py": "d1cc50df0e736f553555967d3d62f1d220295da8638a299782b0e7fd4cc1bfe5",
+    "host_preflight.py": "aa3bba9f934ece795b0946e5a98ddaf7bae3aae6064fdcc0864ea854d08ec93f",
+    "lldb-format-suppress.lldb": "ca06f497c0f2e1d4591e57e59d9d21e1830cf5cda8d359e333cd36645acdf6c9",
+    "callback.json": "50715b2209c5738bf53fbb591cc1f11d1be28b55db1162ac89d89ac1fd4cd9f6",
+    "callback-stage.json": "b70bab9f706595dc2b4d884ba2e9a760fa4787a5012904708f875483573fcaec",
+    "callback-private.json": "cb418649f854e094c9d876a2e3986d72ee26bff61d517a67646f5ee30706575e"
+  },
+  "findings": [
+    "configure time misused as stop deadline anchor",
+    "fake callback files in live output namespace",
+    "actual call ledger and first-tool wall anchor missing"
+  ],
+  "allowed_next": "Grok targeted E0 correction only within original remaining budget; no E1/device",
+  "budget_reset": false
+}

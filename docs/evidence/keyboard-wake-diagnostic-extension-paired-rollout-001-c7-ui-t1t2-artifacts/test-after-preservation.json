@@ -1,0 +1,20 @@
+{
+  "copies_only_private": true,
+  "path": "/private/tmp/ukey-wake-ui-t1-execution-20261003/test-after-preservation",
+  "counts": {
+    "main-data": {
+      "files": 872,
+      "directories_excluding_root": 42,
+      "symlinks": 0,
+      "file_bytes_and_structure_match_readback": true
+    },
+    "installed-app": {
+      "files": 84,
+      "directories_excluding_root": 14,
+      "symlinks": 0,
+      "file_bytes_and_structure_match_readback": true
+    }
+  },
+  "does_not_restore_group": true,
+  "metadata_exact_equality_not_claimed": true
+}

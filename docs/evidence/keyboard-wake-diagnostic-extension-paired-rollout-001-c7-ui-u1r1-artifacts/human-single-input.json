@@ -1,0 +1,12 @@
+{
+  "source": "Human manual report",
+  "root_received_utc": "2026-10-03T13:19:05.636338+00:00",
+  "human_quote": "候选已更新，按钮已显示取证",
+  "step": "single synthetic n input observation",
+  "candidate_update_reported": true,
+  "displayed_title": "取证",
+  "no_submit_or_delete_instructed": true,
+  "freeze_not_yet_instructed": true,
+  "actual_input_utc": null,
+  "actual_idle_seconds": null
+}

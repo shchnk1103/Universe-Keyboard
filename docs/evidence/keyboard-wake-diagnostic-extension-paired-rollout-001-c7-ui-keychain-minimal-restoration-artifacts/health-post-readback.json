@@ -1,0 +1,34 @@
+{
+  "utc": "2026-10-03T04:44:19.595653+00:00",
+  "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "containers_same_as_minimal_restoration": true,
+  "old_C7_payload78_match": true,
+  "dual_signature_valid": true,
+  "selected_preferences": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "rime_deployed": {
+      "exists": true,
+      "value": true
+    },
+    "rime_needs_deploy": {
+      "exists": true,
+      "value": false
+    },
+    "rime_deploying": {
+      "exists": true,
+      "value": false
+    }
+  },
+  "human_full_access_candidates_commit_normal": true,
+  "input_content_not_read": true,
+  "post_input_full_data_equality_not_claimed": true,
+  "no_launch_install_build_deploy_test_by_agent": true,
+  "new_candidate_not_installed": true
+}

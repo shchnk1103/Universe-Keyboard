@@ -15,6 +15,23 @@ LINK = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
 SCHEME = re.compile(r"^[a-z][a-z0-9+.-]*:", re.IGNORECASE)
 
 
+def is_frozen_snapshot(path: Path) -> bool:
+    """Skip Quality freeze copies whose in-place relative links are invalid from the artifact tree.
+
+    Freeze packets pin SHA-256 of the copied bytes. Rewriting those copies to satisfy
+    this checker would break the packet. Live Markdown is still checked.
+    """
+    name = path.name
+    lowered = name.lower()
+    if name == "active-work-recovery-candidate.md":
+        return True
+    if lowered.endswith("-original.md"):
+        return True
+    if "freeze" in lowered or "frozen" in lowered:
+        return True
+    return any(part.endswith("-artifacts") for part in path.parts)
+
+
 def changed_markdown(base: str, head: str) -> list[Path]:
     result = subprocess.run(
         [
@@ -86,7 +103,7 @@ def main() -> int:
         return 2
 
     for path in paths:
-        if not path.is_file():
+        if not path.is_file() or is_frozen_snapshot(path):
             continue
         for line_number, target in missing_links(path, root):
             failures.append(f"{path}:{line_number}: missing local link target: {target}")

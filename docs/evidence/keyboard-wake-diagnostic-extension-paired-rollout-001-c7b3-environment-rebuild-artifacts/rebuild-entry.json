@@ -1,0 +1,25 @@
+{
+  "utc": "2026-10-02T13:44:30.230629+00:00",
+  "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "authorization": "Human: \u6388\u6743\u6b64\u73af\u5883\u91cd\u5efa\u5207\u7247\uff0c\u5e76\u786e\u8ba4\u72ec\u5360",
+  "containers": {
+    "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/223097E4-C5DF-4E08-8F2A-50825F30172F/Universe Keyboard.app",
+    "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/A0C97751-269A-4A76-B5BA-1F4BC7CDB937",
+    "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/0296BFCE-F465-4F1A-9E9A-F2EDFDA41172"
+  },
+  "backups": {
+    "main-data": {
+      "source": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/A0C97751-269A-4A76-B5BA-1F4BC7CDB937",
+      "backup": "/private/tmp/ukey-wake-recovery-readonly-20261002/PreRebuildBackup/main-data",
+      "files": 827,
+      "byte_verified": true
+    },
+    "app-group": {
+      "source": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/0296BFCE-F465-4F1A-9E9A-F2EDFDA41172",
+      "backup": "/private/tmp/ukey-wake-recovery-readonly-20261002/PreRebuildBackup/app-group",
+      "files": 4,
+      "byte_verified": true
+    }
+  },
+  "installed_original_111_files_match": true
+}

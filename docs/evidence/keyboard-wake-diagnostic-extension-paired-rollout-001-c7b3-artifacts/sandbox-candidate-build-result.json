@@ -1,0 +1,8 @@
+{
+  "start_utc": "2026-10-02T08:28:30.151028+00:00",
+  "end_utc": "2026-10-02T08:28:33.941131+00:00",
+  "elapsed_seconds": 3.7900375828612596,
+  "exit_code": 74,
+  "command": "candidate-command.json",
+  "candidate": "ddd5579ee6dce39deea3c63487cfe6817c419628c4471c0b3e9298d9c47f3ca9"
+}

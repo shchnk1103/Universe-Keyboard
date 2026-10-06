@@ -1,0 +1,15 @@
+{
+  "quality": {
+    "report_present": false,
+    "usage_present": false,
+    "packet_sha256": "de1af85c61c25ec9f9852dc89ef893f46e1a4b082ac7f344bbb97d99e24d1bee",
+    "post_review_inputs_matched": true,
+    "formal_verdict": "Partial / incomplete"
+  },
+  "architecture": {
+    "report_sha256": "f4179e249d1bdee48a6dbd4a541ca02b5a2d035a25ff4ec04eba8a2bd8fff0c3",
+    "usage_sha256": "2f04ba5b15c97d8631d6c83f12e54d4e13c62e8b9d36158a9a3923a2349b5d45",
+    "packet_sha256": "1aa7200ae5f93243fe3619649c994fe395eae3c0985dba8db7ccd0a6a1cdc3f6",
+    "post_review_inputs_matched": true
+  }
+}

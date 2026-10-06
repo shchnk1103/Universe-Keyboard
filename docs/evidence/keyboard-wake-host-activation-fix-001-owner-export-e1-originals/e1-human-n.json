@@ -1,0 +1,17 @@
+{
+  "utc": "2026-10-06T04:32:44.763994+00:00",
+  "step": "n",
+  "Human": "\u5019\u9009\u680f\u51fa\u73b0\u2018\u4f60/\u90a3/\u5462/\u80fd/\u5e74/\u60a8\u2019\uff0c\u7136\u540e\u51fa\u73b0\u2018\u53d6\u8bc1\u2019\u6309\u94ae\uff0c\u8f93\u5165\u6846\u51fa\u73b0\u2018n\u2019\uff08\u4e0d\u8fc7\u8f93\u5165\u6846\u51fa\u73b0\u5f97\u7a0d\u5fae\u665a\u4e00\u70b9\uff09",
+  "candidates": [
+    "\u4f60",
+    "\u90a3",
+    "\u5462",
+    "\u80fd",
+    "\u5e74",
+    "\u60a8"
+  ],
+  "probe_button_after": "\u53d6\u8bc1",
+  "input_field": "n",
+  "input_field_lag_noted": true,
+  "no_second_round": true
+}

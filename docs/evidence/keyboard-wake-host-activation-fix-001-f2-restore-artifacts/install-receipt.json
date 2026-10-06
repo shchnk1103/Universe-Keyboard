@@ -1,0 +1,16 @@
+{
+  "utc": "2026-10-04T11:15:51.154366+00:00",
+  "argv": [
+    "xcrun",
+    "simctl",
+    "install",
+    "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "/private/tmp/ukey-host-activation-fix-f2-restore-20261004/Universe Keyboard.app"
+  ],
+  "exit": 0,
+  "stdout": "",
+  "stderr": "",
+  "do_not_uninstall": true,
+  "staged_app": "/private/tmp/ukey-host-activation-fix-f2-restore-20261004/Universe Keyboard.app",
+  "source_backup": "/private/tmp/ukey-host-activation-fix-f2-backup-20261004/installed-app"
+}

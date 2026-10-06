@@ -1,0 +1,32 @@
+{
+  "checked_utc": "2026-10-01T06:38:45.733891+00:00",
+  "run_id": "C6-MAPS-20261001-01",
+  "target": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "capture_state": {
+    "logging_enabled": {
+      "present": true,
+      "value": true
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "present": true,
+      "value": "2026-10-01T07:06:50.655903+00:00"
+    },
+    "log_category_disp": {
+      "present": false,
+      "value": null
+    },
+    "log_category_engine": {
+      "present": false,
+      "value": null
+    }
+  },
+  "high_fidelity_expiry_utc": "2026-10-01T07:06:50.655903+00:00",
+  "seconds_until_expiry": 1684.922012,
+  "gates_valid": true,
+  "source_match": 568,
+  "built_match": 111,
+  "installed_match": 111,
+  "authority": "Human reported 已开启 via response annotation; existing C6 execution/exclusive authorization",
+  "arming_by": "Human",
+  "input_started": false
+}

@@ -1,0 +1,6 @@
+settings set stop-disassembly-display never
+settings set stop-line-count-before 0
+settings set stop-line-count-after 0
+settings set frame-format "frame #${frame.index}: pc=${frame.pc}\n"
+settings set thread-format "tid=${thread.id} stop=${thread.stop-reason}\n"
+settings set auto-one-line-summaries false

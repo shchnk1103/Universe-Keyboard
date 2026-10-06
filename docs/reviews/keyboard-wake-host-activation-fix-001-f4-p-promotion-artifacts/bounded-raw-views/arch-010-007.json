@@ -1,0 +1,189 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardWakeOwnerProbe.swift",
+  "origin_sha256": "679d55e8669d7c68db2fbe58fd1b436cbb19bc61e770f9a701751326fa669af6",
+  "expected_sha256": "679d55e8669d7c68db2fbe58fd1b436cbb19bc61e770f9a701751326fa669af6",
+  "line_start": 361,
+  "line_end": 405,
+  "lines": [
+    {
+      "line": 361,
+      "text": ""
+    },
+    {
+      "line": 362,
+      "text": "        private struct StoredRecord: Sendable {"
+    },
+    {
+      "line": 363,
+      "text": "            let sequence: UInt64"
+    },
+    {
+      "line": 364,
+      "text": "            let timestamp: UInt64"
+    },
+    {
+      "line": 365,
+      "text": "            let stage: UInt64"
+    },
+    {
+      "line": 366,
+      "text": "            let coordinatorOrdinal: UInt64"
+    },
+    {
+      "line": 367,
+      "text": "            let appearanceOrdinal: UInt64"
+    },
+    {
+      "line": 368,
+      "text": "            let attemptOrdinal: UInt64"
+    },
+    {
+      "line": 369,
+      "text": "            let ownerPresent: Bool"
+    },
+    {
+      "line": 370,
+      "text": "            let receiptPresent: Bool"
+    },
+    {
+      "line": 371,
+      "text": "            let teardownResult: UInt64"
+    },
+    {
+      "line": 372,
+      "text": "            let epoch: UInt64"
+    },
+    {
+      "line": 373,
+      "text": "            let revision: UInt64"
+    },
+    {
+      "line": 374,
+      "text": "        }"
+    },
+    {
+      "line": 375,
+      "text": ""
+    },
+    {
+      "line": 376,
+      "text": "        private struct FrozenValue: Sendable {"
+    },
+    {
+      "line": 377,
+      "text": "            let isIncomplete: Bool"
+    },
+    {
+      "line": 378,
+      "text": "            let runIdentifier: IdentifierWords"
+    },
+    {
+      "line": 379,
+      "text": "            let processIdentifier: IdentifierWords"
+    },
+    {
+      "line": 380,
+      "text": "            let armedAt: UInt64"
+    },
+    {
+      "line": 381,
+      "text": "            let expiresAt: UInt64"
+    },
+    {
+      "line": 382,
+      "text": "            let overflowCount: UInt64"
+    },
+    {
+      "line": 383,
+      "text": "            let records: [StoredRecord]"
+    },
+    {
+      "line": 384,
+      "text": "        }"
+    },
+    {
+      "line": 385,
+      "text": ""
+    },
+    {
+      "line": 386,
+      "text": "        private struct IdentifierWords: Sendable {"
+    },
+    {
+      "line": 387,
+      "text": "            let high: UInt64"
+    },
+    {
+      "line": 388,
+      "text": "            let low: UInt64"
+    },
+    {
+      "line": 389,
+      "text": ""
+    },
+    {
+      "line": 390,
+      "text": "            init(uuid: UUID) {"
+    },
+    {
+      "line": 391,
+      "text": "                let bytes = withUnsafeBytes(of: uuid.uuid) { Array($0) }"
+    },
+    {
+      "line": 392,
+      "text": "                high = Self.makeWord(bytes, startingAt: 0)"
+    },
+    {
+      "line": 393,
+      "text": "                low = Self.makeWord(bytes, startingAt: 8)"
+    },
+    {
+      "line": 394,
+      "text": "            }"
+    },
+    {
+      "line": 395,
+      "text": ""
+    },
+    {
+      "line": 396,
+      "text": "            private static func makeWord(_ bytes: [UInt8], startingAt start: Int) -> UInt64 {"
+    },
+    {
+      "line": 397,
+      "text": "                var word: UInt64 = 0"
+    },
+    {
+      "line": 398,
+      "text": "                for index in start..<(start + 8) {"
+    },
+    {
+      "line": 399,
+      "text": "                    word = (word << 8) | UInt64(bytes[index])"
+    },
+    {
+      "line": 400,
+      "text": "                }"
+    },
+    {
+      "line": 401,
+      "text": "                return word"
+    },
+    {
+      "line": 402,
+      "text": "            }"
+    },
+    {
+      "line": 403,
+      "text": "        }"
+    },
+    {
+      "line": 404,
+      "text": "    }"
+    },
+    {
+      "line": 405,
+      "text": "#endif"
+    }
+  ]
+}

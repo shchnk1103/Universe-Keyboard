@@ -1,0 +1,52 @@
+{
+  "session": "3c463407-c051-4fb7-aad3-b78f29f3893e",
+  "pid": 24050,
+  "images": {
+    "content": [
+      {
+        "type": "text",
+        "text": "\n🐛 LLDB Command\n\n✅ Command executed\n\nOutput:\n  [  0] 7E0813A6-2992-353B-9BA2-C9B1F8AB69E6 /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/4EB4A3E6-58B0-44CB-BC45-B608BA1E6518/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard\n  [  1] FE12AEDC-088B-3CBB-B00A-1ECD95323DA4 /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/4EB4A3E6-58B0-44CB-BC45-B608BA1E6518/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard.debug.dylib\n"
+      }
+    ],
+    "structuredContent": {
+      "schema": "xcodebuildmcp.output.debug-command-result",
+      "schemaVersion": "2",
+      "didError": false,
+      "error": null,
+      "data": {
+        "command": "image list -u -f Keyboard Keyboard.debug.dylib",
+        "outputLines": [
+          "[  0] 7E0813A6-2992-353B-9BA2-C9B1F8AB69E6 /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/4EB4A3E6-58B0-44CB-BC45-B608BA1E6518/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+          "[  1] FE12AEDC-088B-3CBB-B00A-1ECD95323DA4 /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/4EB4A3E6-58B0-44CB-BC45-B608BA1E6518/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard.debug.dylib"
+        ]
+      }
+    }
+  },
+  "breakpoint": {
+    "content": [
+      {
+        "type": "text",
+        "text": "\n🐛 LLDB Command\n\n✅ Command executed\n\nOutput:\n  Current breakpoints:\n  1: name = '$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF', locations = 1, resolved = 1, hit count = 0\n    Names:\n      dap\n\n    1.1: where = Keyboard.debug.dylib`wakeOwnerProbeExportReady(_:_:) + 60 at KeyboardViewController+WakeOwnerProbe.swift:96:83, address = 0x00000001057d4750, resolved, hit count = 0\n"
+      }
+    ],
+    "structuredContent": {
+      "schema": "xcodebuildmcp.output.debug-command-result",
+      "schemaVersion": "2",
+      "didError": false,
+      "error": null,
+      "data": {
+        "command": "breakpoint list",
+        "outputLines": [
+          "Current breakpoints:",
+          "1: name = '$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF', locations = 1, resolved = 1, hit count = 0",
+          "  Names:",
+          "    dap",
+          "",
+          "  1.1: where = Keyboard.debug.dylib`wakeOwnerProbeExportReady(_:_:) + 60 at KeyboardViewController+WakeOwnerProbe.swift:96:83, address = 0x00000001057d4750, resolved, hit count = 0"
+        ]
+      }
+    }
+  },
+  "state": "running; awaiting one human arm/input/freeze",
+  "humanButtonUpdate": "按钮随后可见；Human要求先继续，延迟待查，时长未实测"
+}

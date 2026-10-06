@@ -1,0 +1,22 @@
+{
+  "observed_utc": "2026-10-01T02:34:02.660213+00:00",
+  "elapsed_from_reviewer_start": 192.925384,
+  "outputs": {
+    "quality-review.md": {
+      "mtime_utc": "2026-10-01T02:33:16.459373+00:00",
+      "mtime_elapsed_from_start": 146.724544,
+      "size": 1620
+    },
+    "quality-usage.json": {
+      "mtime_utc": "2026-10-01T02:33:16.459573+00:00",
+      "mtime_elapsed_from_start": 146.724744,
+      "size": 2103
+    },
+    "timer.json": {
+      "mtime_utc": "2026-10-01T02:33:16.459887+00:00",
+      "mtime_elapsed_from_start": 146.725058,
+      "size": 561
+    }
+  },
+  "note": "Coordinator filesystem delivery observations only; not an added reviewer call. Reviewer timing excludes final timer filesystem write latency; original artifacts retained."
+}

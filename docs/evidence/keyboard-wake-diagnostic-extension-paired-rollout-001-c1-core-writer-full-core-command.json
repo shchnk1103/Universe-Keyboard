@@ -1,0 +1,34 @@
+{
+  "argv": [
+    "swift",
+    "test",
+    "--package-path",
+    "/private/tmp/ukey-wake-c1-20260930/KeyboardCore",
+    "--scratch-path",
+    "/private/tmp/ukey-wake-c1-20260930/full-build",
+    "--cache-path",
+    "/private/tmp/ukey-wake-c1-20260930/full-cache",
+    "--config-path",
+    "/private/tmp/ukey-wake-c1-20260930/full-config",
+    "--security-path",
+    "/private/tmp/ukey-wake-c1-20260930/full-security",
+    "--disable-sandbox",
+    "--jobs",
+    "4"
+  ],
+  "environment_overrides": {
+    "CLANG_MODULE_CACHE_PATH": "/private/tmp/ukey-wake-c1-20260930/full-module-cache",
+    "SWIFTPM_MODULECACHE_OVERRIDE": "/private/tmp/ukey-wake-c1-20260930/full-module-cache"
+  },
+  "started_at": "2026-09-30T15:43:14.075184+00:00",
+  "file_sha256": {
+    "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticEvent.swift": "e6aa39532653eb62af41ff62d2caca8af2984a79f841a849aeb36249ce33c235",
+    "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournal.swift": "ba85bd454b3fa5b9765513cb3b3c4d54dbfc2f23f60dc456d4795cfae6e894ac",
+    "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournalIngress.swift": "097f888e7d3ca91b98fcb943d9ce007cb3caee47ec452c3dacec5b1b7bc9040c",
+    "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournalRuntime.swift": "d694e226522930e585553818a58591a8a3733818ccdda7545bf1a62bcec73329",
+    "Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticsJournalV6WriterTests.swift": "6a57819ac4a5de73c23e1d29f8488c0129f40d35014ed3509e46047b55c18af2"
+  },
+  "exit_code": 0,
+  "ended_at": "2026-09-30T15:44:01.539017+00:00",
+  "log_sha256": "1b2d7c08d5c1c109d01e598ef288c4aaf708f7e40cdda7ffc1847d7c5621c6c7"
+}

@@ -1,0 +1,7 @@
+{
+  "first_script_sha256": "3e6759343d5fa66975a45dee4d133c20cda8edca523a44b8422121f4aefd75ce",
+  "first_result": "AssertionError in load-command bounds before output generation",
+  "cause": "local verification script used filetype as ncmds; corrected ncmds/sizeofcmds offsets16/20",
+  "source_or_candidate_changed": false,
+  "rebuild": false
+}

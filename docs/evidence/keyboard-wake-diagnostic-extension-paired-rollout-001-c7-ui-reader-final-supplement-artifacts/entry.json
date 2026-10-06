@@ -1,0 +1,16 @@
+{
+  "authorization": "Human额度已恢复，请继续吧; continuation of presented smallest supplement only",
+  "baseline": {
+    "worktree": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+    "branch": "codex/keyboard-wake-v3-compatibility-gate",
+    "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+    "candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50"
+  },
+  "before_files": 2940,
+  "before_dirty": 857,
+  "staged": 0,
+  "all_prepared_inputs_matched": true,
+  "reviewer": "reuse independent /root/arch_reader_candidate",
+  "root_only_repo_writer": true,
+  "scope": "C1 raw12added-line diff/currentPresentation; C2 report coherence and explicitR0/A1 samecandidate evidence reuse; no reader/binary/build/device"
+}

@@ -1,0 +1,9 @@
+{
+  "root_received_utc": "2026-10-03T13:07:37.663869+00:00",
+  "human_quote": "授权",
+  "scope": "新扩展实例正常退出及新一轮U1，沿fresh-instance Prepared；如原精确进程仍存在，只发送一次SIGTERM。无重装/部署/强杀/自动重复。",
+  "fresh_exclusive_confirmation": "Pending",
+  "human_app_closed_confirmation": "Pending",
+  "signal_sent": false,
+  "new_probe_arm": false
+}

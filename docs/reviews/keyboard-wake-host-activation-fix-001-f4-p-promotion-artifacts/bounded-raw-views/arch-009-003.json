@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+  "origin_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "expected_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "line_start": 121,
+  "line_end": 180,
+  "lines": [
+    {
+      "line": 121,
+      "text": "    public var provisionalVisualPaintDelayNanoseconds: UInt64 ="
+    },
+    {
+      "line": 122,
+      "text": "        ResponsiveProvisionalComposition.defaultVisualPaintDelayNanoseconds"
+    },
+    {
+      "line": 123,
+      "text": "    private let feltMetrics = ResponsiveRimeFeltMetricsTracker.shared"
+    },
+    {
+      "line": 124,
+      "text": ""
+    },
+    {
+      "line": 125,
+      "text": "    /// Rem-3: true while L1 progressive length is ahead of settled engine paint."
+    },
+    {
+      "line": 126,
+      "text": "    public var isResponsiveProvisionalAhead: Bool {"
+    },
+    {
+      "line": 127,
+      "text": "        provisionalCompositionMirror.isProvisionalAhead"
+    },
+    {
+      "line": 128,
+      "text": "    }"
+    },
+    {
+      "line": 129,
+      "text": ""
+    },
+    {
+      "line": 130,
+      "text": "    /// Rem-3 test/debug: current L1 watermark (0 when inactive)."
+    },
+    {
+      "line": 131,
+      "text": "    public var responsiveProvisionalWatermark: UInt64 {"
+    },
+    {
+      "line": 132,
+      "text": "        provisionalCompositionMirror.watermark"
+    },
+    {
+      "line": 133,
+      "text": "    }"
+    },
+    {
+      "line": 134,
+      "text": ""
+    },
+    {
+      "line": 135,
+      "text": "    /// Rem-3 test/debug: current L1 slot count."
+    },
+    {
+      "line": 136,
+      "text": "    public var responsiveProvisionalSlotCount: Int {"
+    },
+    {
+      "line": 137,
+      "text": "        provisionalCompositionMirror.slotCount"
+    },
+    {
+      "line": 138,
+      "text": "    }"
+    },
+    {
+      "line": 139,
+      "text": ""
+    },
+    {
+      "line": 140,
+      "text": "    /// Context captured when a responsive processKey is accepted (before drain)."
+    },
+    {
+      "line": 141,
+      "text": "    struct ResponsiveKeyApplyContext {"
+    },
+    {
+      "line": 142,
+      "text": "        let rimeKey: String"
+    },
+    {
+      "line": 143,
+      "text": "        let previousT9PathState: T9PinyinPathState"
+    },
+    {
+      "line": 144,
+      "text": "        let previousRawForTrace: String?"
+    },
+    {
+      "line": 145,
+      "text": "        /// Pipeline epoch at accept time; dropped if epoch advances without apply."
+    },
+    {
+      "line": 146,
+      "text": "        let sessionEpoch: UInt64"
+    },
+    {
+      "line": 147,
+      "text": "    }"
+    },
+    {
+      "line": 148,
+      "text": ""
+    },
+    {
+      "line": 149,
+      "text": "    /// Underlying engine when a responsive bridge is installed (R3 chrome)."
+    },
+    {
+      "line": 150,
+      "text": "    /// Thread-affine mode has no MainActor-held live session; returns nil there."
+    },
+    {
+      "line": 151,
+      "text": "    public var underlyingRimeEngine: RimeEngine? {"
+    },
+    {
+      "line": 152,
+      "text": "        if let bridge = rimeEngine as? ResponsiveRimeEngineBridge {"
+    },
+    {
+      "line": 153,
+      "text": "            return bridge.underlyingEngine"
+    },
+    {
+      "line": 154,
+      "text": "        }"
+    },
+    {
+      "line": 155,
+      "text": "        if rimeEngine is ThreadAffineRimeEngineBridge {"
+    },
+    {
+      "line": 156,
+      "text": "            return nil"
+    },
+    {
+      "line": 157,
+      "text": "        }"
+    },
+    {
+      "line": 158,
+      "text": "        return rimeEngine"
+    },
+    {
+      "line": 159,
+      "text": "    }"
+    },
+    {
+      "line": 160,
+      "text": ""
+    },
+    {
+      "line": 161,
+      "text": "    // MARK: - Init"
+    },
+    {
+      "line": 162,
+      "text": ""
+    },
+    {
+      "line": 163,
+      "text": "    public init("
+    },
+    {
+      "line": 164,
+      "text": "        state: KeyboardState = KeyboardState(),"
+    },
+    {
+      "line": 165,
+      "text": "        candidateProvider: CandidateProvider = FakeCandidateProvider(),"
+    },
+    {
+      "line": 166,
+      "text": "        continuationSuggestionProvider: any ContinuationSuggestionProviding = BundledContinuationSuggestionProvider"
+    },
+    {
+      "line": 167,
+      "text": "            .shared"
+    },
+    {
+      "line": 168,
+      "text": "    ) {"
+    },
+    {
+      "line": 169,
+      "text": "        self.state = state"
+    },
+    {
+      "line": 170,
+      "text": "        self.candidateProvider = candidateProvider"
+    },
+    {
+      "line": 171,
+      "text": "        self.continuationSuggestionProvider = continuationSuggestionProvider"
+    },
+    {
+      "line": 172,
+      "text": "        self.typoCorrectionCandidateQuery = CandidateProviderTypoCorrectionQuery("
+    },
+    {
+      "line": 173,
+      "text": "            candidateProvider: candidateProvider"
+    },
+    {
+      "line": 174,
+      "text": "        )"
+    },
+    {
+      "line": 175,
+      "text": "    }"
+    },
+    {
+      "line": 176,
+      "text": ""
+    },
+    {
+      "line": 177,
+      "text": "    /// 启用基于 CandidateProvider 的 RIME 适配器引擎。"
+    },
+    {
+      "line": 178,
+      "text": "    /// 在真正的 librime 就绪之前，此方法将现有的 FakeCandidateProvider 包装为 RimeEngine，"
+    },
+    {
+      "line": 179,
+      "text": "    /// 使键盘通过新架构运行，但行为与当前完全一致。"
+    },
+    {
+      "line": 180,
+      "text": "    public func enableDefaultRimeEngine() {"
+    }
+  ]
+}

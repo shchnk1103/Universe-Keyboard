@@ -1,0 +1,77 @@
+{
+  "work_item": "KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001",
+  "lane": "UK-WAKE-V6-B-QUALITY",
+  "round": 2,
+  "packet_sha256": "a1cf0362a878ea3020a50db2592a32df57c761309a311112ed2c3f9b3423f103",
+  "started_at_utc": "2026-09-30T14:22:24Z",
+  "start_capture_note": "首个底层调用误为1ms clock.sleep；UTC在第二个底层调用 clock__curr_time 读取。",
+  "ended_at_utc": "2026-09-30T14:33:22Z",
+  "elapsed_seconds": 658,
+  "budget": {
+    "max_bottom_level_tool_invocations": 10,
+    "max_elapsed_minutes": 8,
+    "bottom_level_tool_invocations": 10,
+    "functions_exec_orchestration_calls_separately_recorded": 7,
+    "bottom_level_breakdown": {
+      "clock_sleep": 1,
+      "clock_curr_time": 1,
+      "exec_command": 6,
+      "collaboration_messages": 2
+    },
+    "checkpoints": [
+      {
+        "boundary": 4,
+        "status_message_sent_after_bottom_level_invocation": 4,
+        "note": "首次 checkpoint；消息中的先前口头计数多报一次，按本记录更正。"
+      },
+      {
+        "boundary": 8,
+        "status_message_sent_after_bottom_level_invocation": 9,
+        "completed_count_before_message": 8
+      }
+    ],
+    "final_stop_after_bottom_level_invocation": 10,
+    "stop_reason": "达到10/10底层tool ceiling；无续预算。"
+  },
+  "input_integrity": {
+    "allowlisted_inputs": 29,
+    "missing": 0,
+    "sha256_mismatches": 0
+  },
+  "qt1": {
+    "direct_legacy_root_and_action_metrics_parsed": true,
+    "direct_ActionTestMetadata_tree_nodes_parsed": {
+      "RimeBridgeTests": 105,
+      "AppV6Focused-r2": 1,
+      "AppKeyboardTests-r2": 429,
+      "SignedKeychain-r2": 1
+    },
+    "metrics_status_skip_id_checks_pass": true,
+    "raw_skip_reason_rows": {
+      "RimeBridgeTests": 20,
+      "AppKeyboardTests-r2": 10
+    },
+    "raw_reason_mismatches": 0,
+    "total_current_skips": 30,
+    "new_v6_focused_and_full_success": true,
+    "signed_keychain_success_unsigned_skip_preserved": true
+  },
+  "qt2": {
+    "iphone17pro_available_human_selected_exact_iphone18pro": true,
+    "release_build_configuration": "Release",
+    "cs0910_mapping": {
+      "ice_removal": "cs09-10-01 requires the fixed wanxiang extract tree",
+      "wanxiang_removal": "cs09-10-01 requires the fixed ice extract tree"
+    }
+  },
+  "qt3": {
+    "current_stage_b_m03_verified": false,
+    "historical_v5_raw428_recorded_in_assignment": false,
+    "old_q3_row_corrected_additively": true
+  },
+  "verdict": "Partial / incomplete",
+  "only_written_files": [
+    "/private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254/quality-review-r2.md",
+    "/private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254/quality-usage-r2.json"
+  ]
+}

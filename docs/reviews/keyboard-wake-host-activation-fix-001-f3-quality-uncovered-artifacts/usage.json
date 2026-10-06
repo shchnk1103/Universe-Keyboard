@@ -1,0 +1,22 @@
+{
+  "reviewer": "/root/m2r2_quality_r1",
+  "packet_sha256": "0847ea019ee4f35cbd4e265bd925243714a9be849241972d64b672fa8d36dad4",
+  "start_utc": "2026-10-05T02:24:02.950304+00:00",
+  "end_utc": "2026-10-05T02:31:34.824634+00:00",
+  "elapsed_seconds": 451.87433,
+  "actual_tool_calls": 13,
+  "budget_calls": 16,
+  "budget_wall_seconds": 900,
+  "within_call_budget": true,
+  "within_wall_budget": true,
+  "status": "Pass with conditions",
+  "covered": [
+    "Q1",
+    "Q2",
+    "Q4",
+    "Q5",
+    "Q3 retained as prior Covered; A2 separately accepted and not reopened"
+  ],
+  "uncovered": [],
+  "stop_reason": "all authorized incremental criteria covered; stop evidence gathering and deliver within round-2 budget"
+}

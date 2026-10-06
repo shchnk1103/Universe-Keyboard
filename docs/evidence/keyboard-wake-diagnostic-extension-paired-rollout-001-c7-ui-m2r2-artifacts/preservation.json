@@ -1,0 +1,122 @@
+{
+  "repo-authority-entry.json": {
+    "sha256": "ec2712ce8d1438f507f1645e013933d0b939548a74c88f4be42087a1a604712c",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/repo-authority-entry.json"
+  },
+  "commands.json": {
+    "sha256": "37ee8d4003dd7006b490e002b2bdf7ee26a6ba6dc5cf5ab596878d13af1bc842",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/commands.json"
+  },
+  "identity-preflight.json": {
+    "sha256": "911ac3c5dd1629d22804c1850135e35658ead13adddcfa76d14574017bb85af5",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/identity-preflight.json"
+  },
+  "human-confirmation-pending.json": {
+    "sha256": "feecee87e47146ad2d9a80bab8c43921311bb351e962880a75c9f3c3284b542a",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/human-confirmation-pending.json"
+  },
+  "human-confirmation.json": {
+    "sha256": "237b9f43fc64db5b7601c7dfa2fae8b87601a23d4c2ed3e61560381c2dc7bd09",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/human-confirmation.json"
+  },
+  "sigterm-receipt.json": {
+    "sha256": "3fe1a3ad83b178eed65c256b4bde75d996071b1f108ac393c3ff0fb756fd975c",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/sigterm-receipt.json"
+  },
+  "backup-receipt.json": {
+    "sha256": "9e02c1959302674a6ca6bae707ebebd5ad941e77e50a0b21f697a6e1f698482f",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/backup-receipt.json"
+  },
+  "machine-entry.json": {
+    "sha256": "97ec63c4dafaee1545e9a94a938680bd7ba096ecec212a44a463be3abbecd94e",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/machine-entry.json"
+  },
+  "native-session.json": {
+    "sha256": "557f6539d4c856b1221fba0f73b083e7b0456ac74f682b4addbdc388d934d94d",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/native-session.json"
+  },
+  "pre-arm-readiness.json": {
+    "sha256": "45d220ff1afe6df84329c551e01464492e2ea4d90929f1b927eb21991a74049a",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/pre-arm-readiness.json"
+  },
+  "human-arm.json": {
+    "sha256": "f5dff2acc4b5393c215ef71b3bfdbf579186e0de6e536a6a951370856246aa59",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/human-arm.json"
+  },
+  "human-baseline.json": {
+    "sha256": "0f5684c448bc6bb716698f6770b93d55c5864bef00397ff3d8d6a77efb93df8f",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/human-baseline.json"
+  },
+  "human-switch-return.json": {
+    "sha256": "e46ae4fd8cc6ab3ee53a69976b9356fb675694729f450e5ce931f2b940ab49fc",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/human-switch-return.json"
+  },
+  "human-post-return-input.json": {
+    "sha256": "57557ea43e228001c392f8fae257a016b17023d1ebe880cefcfec87a97245e3f",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/human-post-return-input.json"
+  },
+  "freeze-stop.json": {
+    "sha256": "0ab91632211c71cadf0a898c0a57c7764db2b2106ebf3b3d441bdd630c65d4e7",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/freeze-stop.json"
+  },
+  "cleanup-exit.json": {
+    "sha256": "f24c509b96ee2b29952544c834fe40960413a63119832ad105577d60bdea1d6a",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/cleanup-exit.json"
+  },
+  "machine-exit.json": {
+    "sha256": "0370134ef03974c1702226975c75889eca1d690011088cc0bc819cd8408dec84",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/machine-exit.json"
+  },
+  "native-command-ledger.jsonl": {
+    "sha256": "279825bc28f4049bba58898fdcd227e751cebc1f19e227e8157d7190101d490c",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/native-command-ledger.jsonl"
+  },
+  "pty-transcript.txt": {
+    "sha256": "927784a38cda860bb636d0c6de8d092867b20c008cd1b3a48300a271262bc634",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/pty-transcript.txt"
+  },
+  "native-step-06-raw.json": {
+    "sha256": "1e5bb91926d326a77d9e7ed7bf4cfb2a2cdf8c96742e55455c8666a55fd8f4a8",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/native-step-06-raw.json"
+  },
+  "native-step-07-raw.json": {
+    "sha256": "9da4bd7930c471b74cd0a3f01de7fe968163daa2148384385394a7ebc5485a66",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/native-step-07-raw.json"
+  },
+  "native-step-10-raw.json": {
+    "sha256": "a5f7c9f4d69eda5cf0fd2d83507b94ce86f4c9bc219c707c0620d98c84576ed4",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/native-step-10-raw.json"
+  },
+  "native-step-01-raw.json": {
+    "sha256": "b77b22c0cef52004dce7180a3a11ce0f27acfbc491c1eb3af1f0b15538821a1b",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/native-step-01-raw.json"
+  },
+  "native-step-05-raw.json": {
+    "sha256": "5bca37267c5a2bcd0eb21bc613bea383cfd3d55ec96f637609debb8bb0cfc20c",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/native-step-05-raw.json"
+  },
+  "native-step-04-raw.json": {
+    "sha256": "b7eceaaae73238cc8fd58b364cad974a6250a8745189c567924deb0a3e8c92b3",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/native-step-04-raw.json"
+  },
+  "native-step-02-raw.json": {
+    "sha256": "ae38321827cb71fb26356f890b5d74e09cae588a07cf66cd5d22cf44ad74024c",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/native-step-02-raw.json"
+  },
+  "native-step-03-raw.json": {
+    "sha256": "1f6ba82e00849b247a549dd7eb9ce911d0a221094d6320fe21dfa1b60b05840a",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/native-step-03-raw.json"
+  },
+  "native-step-08-raw.json": {
+    "sha256": "4458b4cf94ad00b573a449c1d3cb86a500e1299113b3ee2876b52e30472e0a18",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/native-step-08-raw.json"
+  },
+  "native-step-09-raw.json": {
+    "sha256": "219d16e6eeea1ea884b1f54b719ae32cb0dd25950ac2560e4debcad7784e2e89",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/native-step-09-raw.json"
+  },
+  "human-visual-exit.json": {
+    "sha256": "ed563bb769c728e973f19f7d7d8309dbfbf4c376e45b21b1b987e7e65fb378f8",
+    "private_source": "/private/tmp/ukey-wake-m2r2-20261004/human-visual-exit.json"
+  }
+}

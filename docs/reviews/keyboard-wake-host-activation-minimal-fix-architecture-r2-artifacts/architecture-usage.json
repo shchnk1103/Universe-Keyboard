@@ -1,0 +1,24 @@
+{
+  "lane_id": "HOST-ACTIVATION-FIX-DESIGN-ARCHITECTURE",
+  "round": 2,
+  "packet_sha256": "1cc40e09defa9aad3f6a2df0141ccdbc3d3cd9c87775dcabcf04bf5b0069e0178",
+  "worktree_branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "worktree_head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "allowed_targets_expected": 15,
+  "allowed_targets_checked": 15,
+  "allowed_target_hash_mismatches": 0,
+  "elapsed_seconds": 544,
+  "actual_tool_calls": 8,
+  "covered": [
+    "S1: explicit MainActor context/generation phase table, idempotent pending, first-frame/rearm split, ordered-event limits and ADR 0002 clean composition.",
+    "S2: canary state conditions map to ResponsiveRimeCanaryMode transitions; positive visibility teardown and beginVisibilityResume are the only host-active canary owner-start permission; readiness remains later.",
+    "S3: unchanged five-file scope and honest KeyboardTests state/action coverage with explicit cross-target source membership."
+  ],
+  "uncovered": [],
+  "conditions": [
+    "Do not implement before a separate formal Assignment and Human implementation authority.",
+    "Runtime notification identity/delivery and Maps/owner result remain unverified and require separately authorized validation."
+  ],
+  "stop_reason": "completed within configured 8-tool-call / 600-second budget",
+  "verdict": "Pass with conditions; proposed-design review only, not implementation/runtime approval. R1 Partial remains unchanged."
+}

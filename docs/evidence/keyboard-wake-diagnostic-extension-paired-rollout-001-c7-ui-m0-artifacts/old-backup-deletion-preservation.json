@@ -1,0 +1,27 @@
+{
+  "receipt_sha256": "6d8deeca8d41f54140e74621ad9197c6bed1fa739c3f2ba28f65b0099b7dc619",
+  "collector_sha256": "16fab5da3e03e5ef78a58f44474ef8e75f17f1aee087b4663dcb5a70d49e34c0",
+  "retained": [
+    {
+      "root": "/private/tmp/ukey-wake-m0-20261003/backup",
+      "allocated_KiB": 130696
+    },
+    {
+      "root": "/private/tmp/ukey-wake-ui-i0-20261003/backup",
+      "allocated_KiB": 130660
+    },
+    {
+      "root": "/private/tmp/ukey-wake-ui-i1-20261003/after-preservation",
+      "allocated_KiB": 130664
+    }
+  ],
+  "remaining_allocated_MiB": 382.83203125,
+  "deletion_authorized": true,
+  "historical_full_snapshot_bytes_no_longer_available": [
+    "/private/tmp/ukey-wake-ui-keychain-continuation-20261003/backup",
+    "/private/tmp/ukey-wake-ui-keychain-continuation-20261003/test-after-preservation",
+    "/private/tmp/ukey-wake-ui-t0-20261003/backup",
+    "/private/tmp/ukey-wake-ui-t1-execution-20261003/test-after-preservation"
+  ],
+  "historical_receipts_inventories_reports_retained": true
+}

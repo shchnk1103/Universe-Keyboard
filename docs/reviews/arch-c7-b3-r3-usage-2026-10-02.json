@@ -1,0 +1,93 @@
+{
+  "lane_id": "ARCH-C7-B1-R3",
+  "packet_path": "/private/tmp/ukey-wake-c7b3-20261002/current-round/arch-r3-approved-packet.json",
+  "packet_expected_digest": "4e9b7ea1d3ca82bce65438c52756562da1094687d2219c86324c4819f0b06058",
+  "packet_digest_verified": true,
+  "digest_canonicalization": "Exclude packet_digest_sha256; json.dumps(sort_keys=True,separators=(\",\",\":\"),ensure_ascii=False).encode(\"utf-8\") SHA-256.",
+  "scope_acknowledged": true,
+  "reviewer_independent": true,
+  "start_utc": "2026-10-02T09:01:44.980641+00:00",
+  "start_unix": 1790931704.980639,
+  "end_utc": "2026-10-02T09:05:26.646955+00:00",
+  "end_unix": 1790931926.646955,
+  "elapsed_seconds": 221.666,
+  "elapsed_basis": "Real start immediately before packet read; end sampled after report verification and immediately before usage serialization.",
+  "underlying_tool_calls": 8,
+  "max_underlying_tool_calls": 8,
+  "soft_seconds": 300,
+  "hard_seconds": 360,
+  "call_6_stop_applied": true,
+  "status": "Partial / incomplete",
+  "criterion": "R2 H2 embedded-section raw bytes vs exact packet-listed xcent comparison remains uncovered. No Mach-O or xcent bytes were read.",
+  "out_of_scope_reads": 0,
+  "repo_writes": 0,
+  "report_path": "/private/tmp/ukey-wake-c7b3-20261002/arch-r3-review.md",
+  "report_sha256": "c75732af1c553adce709b1c939bd59aa60457340bf438294acfd43d4186d96fb",
+  "ledger": [
+    {
+      "call": 1,
+      "tool": "clock__curr_time",
+      "started_utc": "2026-10-02 09:01:44 UTC",
+      "ended_utc": null,
+      "elapsed_seconds": null,
+      "result": "Captured real UTC start before packet access; exact subsecond timestamp unavailable from clock tool."
+    },
+    {
+      "call": 2,
+      "tool": "exec_command",
+      "started_utc": "2026-10-02T09:01:44.980641+00:00",
+      "ended_utc": null,
+      "elapsed_seconds": 0.2,
+      "result": "Read packet; initial digest attempt used ensure_ascii=true and mismatched. Corrected canonicalization later; no scope ACK until match."
+    },
+    {
+      "call": 3,
+      "tool": "collaboration.send_message",
+      "started_utc": null,
+      "ended_utc": null,
+      "elapsed_seconds": null,
+      "result": "Call-2 checkpoint to root: reported provisional digest mismatch and paused before candidate input reads."
+    },
+    {
+      "call": 4,
+      "tool": "exec_command",
+      "started_utc": null,
+      "ended_utc": null,
+      "elapsed_seconds": 0.2,
+      "result": "Inspected packet top-level digest field; tested canonicalization; ensure_ascii=false matched frozen digest."
+    },
+    {
+      "call": 5,
+      "tool": "collaboration.send_message",
+      "started_utc": null,
+      "ended_utc": null,
+      "elapsed_seconds": null,
+      "result": "Sent scope ACK after matching packet digest; confirmed independence and H2-only limits."
+    },
+    {
+      "call": 6,
+      "tool": "exec_command",
+      "started_utc": "2026-10-02T09:03:28.679855+00:00",
+      "ended_utc": null,
+      "elapsed_seconds": 0.2,
+      "result": "Verified paired-products.json and simulator-entitlements.json content hashes. Stopped at xcent locator mapping ValueError before reading any Mach-O or xcent bytes."
+    },
+    {
+      "call": 7,
+      "tool": "exec_command",
+      "started_utc": null,
+      "ended_utc": null,
+      "elapsed_seconds": 0.2,
+      "result": "Wrote arch-r3-review.md; SHA-256 c75732af1c553adce709b1c939bd59aa60457340bf438294acfd43d4186d96fb."
+    },
+    {
+      "call": 8,
+      "tool": "exec_command",
+      "started_utc": "2026-10-02T09:05:26.646955+00:00",
+      "ended_utc": "2026-10-02T09:05:26.646955+00:00",
+      "elapsed_seconds": null,
+      "result": "Wrote and read back this usage ledger; timestamp is the real sample immediately before final usage serialization."
+    }
+  ],
+  "timing_note": "Timestamps or durations not exposed for collaboration calls and some nested commands are null/rounded as recorded; no values inferred."
+}

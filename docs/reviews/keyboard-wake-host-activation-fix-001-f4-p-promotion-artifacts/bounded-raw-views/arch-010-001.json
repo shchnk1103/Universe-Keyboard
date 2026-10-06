@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardWakeOwnerProbe.swift",
+  "origin_sha256": "679d55e8669d7c68db2fbe58fd1b436cbb19bc61e770f9a701751326fa669af6",
+  "expected_sha256": "679d55e8669d7c68db2fbe58fd1b436cbb19bc61e770f9a701751326fa669af6",
+  "line_start": 1,
+  "line_end": 60,
+  "lines": [
+    {
+      "line": 1,
+      "text": "#if DEBUG"
+    },
+    {
+      "line": 2,
+      "text": "    import Foundation"
+    },
+    {
+      "line": 3,
+      "text": "    import Synchronization"
+    },
+    {
+      "line": 4,
+      "text": ""
+    },
+    {
+      "line": 5,
+      "text": "    /// A one-shot, content-free snapshot of observed keyboard-owner boundaries."
+    },
+    {
+      "line": 6,
+      "text": "    /// This probe is deliberately independent of the diagnostic journal and logger."
+    },
+    {
+      "line": 7,
+      "text": "    public final class KeyboardWakeOwnerProbe: Sendable {"
+    },
+    {
+      "line": 8,
+      "text": "        public enum Stage: UInt64, Sendable, CaseIterable {"
+    },
+    {
+      "line": 9,
+      "text": "            case appearance = 1"
+    },
+    {
+      "line": 10,
+      "text": "            case armed = 2"
+    },
+    {
+      "line": 11,
+      "text": "            case insertBegin = 3"
+    },
+    {
+      "line": 12,
+      "text": "            case insertEnd = 4"
+    },
+    {
+      "line": 13,
+      "text": "            case suspendBegin = 5"
+    },
+    {
+      "line": 14,
+      "text": "            case suspendEnd = 6"
+    },
+    {
+      "line": 15,
+      "text": "            case resumeBegin = 7"
+    },
+    {
+      "line": 16,
+      "text": "            case resumeEnd = 8"
+    },
+    {
+      "line": 17,
+      "text": "            case schedule = 9"
+    },
+    {
+      "line": 18,
+      "text": "            case teardown = 10"
+    },
+    {
+      "line": 19,
+      "text": "            case replacement = 11"
+    },
+    {
+      "line": 20,
+      "text": "        }"
+    },
+    {
+      "line": 21,
+      "text": ""
+    },
+    {
+      "line": 22,
+      "text": "        public enum TeardownResult: UInt64, Sendable {"
+    },
+    {
+      "line": 23,
+      "text": "            case notApplicable = 0"
+    },
+    {
+      "line": 24,
+      "text": "            case completed = 1"
+    },
+    {
+      "line": 25,
+      "text": "            case failed = 2"
+    },
+    {
+      "line": 26,
+      "text": "            case cancelled = 3"
+    },
+    {
+      "line": 27,
+      "text": "        }"
+    },
+    {
+      "line": 28,
+      "text": ""
+    },
+    {
+      "line": 29,
+      "text": "        public struct Snapshot: Sendable, Equatable {"
+    },
+    {
+      "line": 30,
+      "text": "            /// Header followed by fixed-width event records. No field contains text."
+    },
+    {
+      "line": 31,
+      "text": "            public let words: [UInt64]"
+    },
+    {
+      "line": 32,
+      "text": ""
+    },
+    {
+      "line": 33,
+      "text": "            public var isIncomplete: Bool {"
+    },
+    {
+      "line": 34,
+      "text": "                words.count > Self.completenessWordIndex"
+    },
+    {
+      "line": 35,
+      "text": "                    && words[Self.completenessWordIndex] == Self.incompleteValue"
+    },
+    {
+      "line": 36,
+      "text": "            }"
+    },
+    {
+      "line": 37,
+      "text": ""
+    },
+    {
+      "line": 38,
+      "text": "            /// The raw pointer is valid only for the duration of `body`."
+    },
+    {
+      "line": 39,
+      "text": "            /// The caller must copy bytes inside the closure if it needs to retain them."
+    },
+    {
+      "line": 40,
+      "text": "            public func withUnsafeBytes<Result>("
+    },
+    {
+      "line": 41,
+      "text": "                _ body: (UnsafeRawBufferPointer) throws -> Result"
+    },
+    {
+      "line": 42,
+      "text": "            ) rethrows -> Result {"
+    },
+    {
+      "line": 43,
+      "text": "                try words.withUnsafeBufferPointer { buffer in"
+    },
+    {
+      "line": 44,
+      "text": "                    let bytes = UnsafeRawBufferPointer("
+    },
+    {
+      "line": 45,
+      "text": "                        start: buffer.baseAddress,"
+    },
+    {
+      "line": 46,
+      "text": "                        count: buffer.count * MemoryLayout<UInt64>.size"
+    },
+    {
+      "line": 47,
+      "text": "                    )"
+    },
+    {
+      "line": 48,
+      "text": "                    return try body(bytes)"
+    },
+    {
+      "line": 49,
+      "text": "                }"
+    },
+    {
+      "line": 50,
+      "text": "            }"
+    },
+    {
+      "line": 51,
+      "text": ""
+    },
+    {
+      "line": 52,
+      "text": "            fileprivate static let completenessWordIndex = 2"
+    },
+    {
+      "line": 53,
+      "text": "            fileprivate static let incompleteValue: UInt64 = 1"
+    },
+    {
+      "line": 54,
+      "text": ""
+    },
+    {
+      "line": 55,
+      "text": "            fileprivate init(words: [UInt64]) {"
+    },
+    {
+      "line": 56,
+      "text": "                self.words = words"
+    },
+    {
+      "line": 57,
+      "text": "            }"
+    },
+    {
+      "line": 58,
+      "text": "        }"
+    },
+    {
+      "line": 59,
+      "text": ""
+    },
+    {
+      "line": 60,
+      "text": "        /// UI policy uses touch idleness, never composition or owner readiness."
+    }
+  ]
+}

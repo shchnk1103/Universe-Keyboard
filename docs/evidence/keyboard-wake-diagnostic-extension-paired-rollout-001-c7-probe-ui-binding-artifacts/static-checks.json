@@ -1,0 +1,46 @@
+[
+  {
+    "status": "fulfilled",
+    "value": {
+      "name": "dedicated-debug",
+      "chunk_id": "0c0378",
+      "wall_time_seconds": 0.445130875,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    }
+  },
+  {
+    "status": "fulfilled",
+    "value": {
+      "name": "ordinary-debug",
+      "chunk_id": "17cff1",
+      "wall_time_seconds": 0.440007792,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    }
+  },
+  {
+    "status": "fulfilled",
+    "value": {
+      "name": "ordinary-release",
+      "chunk_id": "964083",
+      "wall_time_seconds": 0.447621333,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    }
+  },
+  {
+    "status": "fulfilled",
+    "value": {
+      "name": "format-lint",
+      "chunk_id": "523a6e",
+      "wall_time_seconds": 0.000009667,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    }
+  }
+]

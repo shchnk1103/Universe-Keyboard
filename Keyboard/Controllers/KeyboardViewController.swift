@@ -33,9 +33,13 @@ import UIKit
 @MainActor
 final class KeyboardFirstFrameDisplayLinkTarget: NSObject {
     weak var controller: KeyboardViewController?
+    let armToken: UInt64
+    let generation: UInt64
 
-    init(controller: KeyboardViewController) {
+    init(controller: KeyboardViewController, armToken: UInt64, generation: UInt64) {
         self.controller = controller
+        self.armToken = armToken
+        self.generation = generation
     }
 
     @objc func displayLinkDidFire(_ displayLink: CADisplayLink) {
@@ -43,7 +47,11 @@ final class KeyboardFirstFrameDisplayLinkTarget: NSObject {
             displayLink.invalidate()
             return
         }
-        controller.handleRimeFirstFrameDisplayLinkTick()
+        controller.handleRimeFirstFrameDisplayLinkTick(
+            displayLink: displayLink,
+            generation: generation,
+            armToken: armToken
+        )
     }
 }
 
@@ -62,11 +70,24 @@ class KeyboardViewController: UIInputViewController {
                 )?
                 .appendingPathComponent("Diagnostics/v1", isDirectory: true)
         },
-        isCategoryEnabled: { Logger.isLiveCategoryEnabled($0) }
+        isCategoryEnabled: { Logger.isLiveCategoryEnabled($0) },
+        writerVersion: .v6
     )
     var diagnosticsAppearanceID: UUID?
+    var wakeDiagnosticContext: KeyboardWakeDiagnosticContext {
+        #if DEBUG
+            return KeyboardWakeDiagnosticContext(
+                appearanceID: diagnosticsAppearanceID,
+                isHighFidelityActive: isHighFidelityDiagnosticsActive,
+                expiration: highFidelityDiagnosticsExpiration
+            )
+        #else
+            return .disabled
+        #endif
+    }
     #if DEBUG
         var isHighFidelityDiagnosticsActive = false
+        var highFidelityDiagnosticsExpiration: Date?
         private var highFidelityExpirationTask: Task<Void, Never>?
         var candidateTouchDiagnosticSequence: UInt64 = 0
         var activeCandidateTouchDiagnosticSequence: UInt64?
@@ -233,6 +254,13 @@ class KeyboardViewController: UIInputViewController {
     /// 输入事件编号，将按键、引擎和渲染日志关联到同一次操作
     var inputEventSequence = 0
     /// 前一个字母输入完成时间，用于观察快速输入中的事件排队现象
+    #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
+        var wakeProbeActiveTouches: Set<ObjectIdentifier> = []
+        var wakeProbeLastActivity = DispatchTime.now().uptimeNanoseconds
+        var wakeProbeIdleTask: Task<Void, Never>?
+        var wakeProbeControlsAvailable = false
+        var wakeProbeAppearanceOrdinal: UInt64 = 0
+    #endif
     var lastInputCompletionTime: CFTimeInterval?
     /// Last T9 digit key completion time (continuous-typing bar-prefetch idle gating).
     var lastT9DigitKeyTime: CFTimeInterval?
@@ -267,6 +295,8 @@ class KeyboardViewController: UIInputViewController {
     var rimeFirstFrameDisplayLinkTarget: KeyboardFirstFrameDisplayLinkTarget?
     var rimeFirstFrameGateStartTime: CFTimeInterval = 0
     var rimeFirstFrameGateTickCount = 0
+    /// Host-active / appearance pairing. Existing dirty lifecycle flags stay authoritative for UI.
+    let hostLifecycleRecoveryGate = KeyboardHostLifecycleRecoveryGate()
 
     // MARK: - 缓存的设置值
 
@@ -360,6 +390,9 @@ class KeyboardViewController: UIInputViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
+            wakeOwnerProbeWillAppear()
+        #endif
         Logger.shared.resumePersistenceForExtensionLifecycle()
         diagnosticsJournal.resumeForExtensionLifecycle()
         #if DEBUG
@@ -367,6 +400,11 @@ class KeyboardViewController: UIInputViewController {
             resetCandidateTouchDiagnosticCorrelation()
         #endif
         diagnosticsAppearanceID = UUID()
+        KeyboardWakeDiagnosticProducer.recordKeyboardLifecycle(
+            .viewWillAppear,
+            journal: diagnosticsJournal,
+            context: wakeDiagnosticContext
+        )
         diagnosticsJournal.record(
             code: .presentationAppeared,
             category: .display,
@@ -381,34 +419,22 @@ class KeyboardViewController: UIInputViewController {
             // of requiring a new viewDidLoad or process.
             _ = consumeFreshPreparedDevicePreflightRunIfAvailable()
         #endif
-        #if T9_RESPONSIVE_CANARY_INTERNAL
-            let canaryResumeRequested = responsiveCanaryModeCoordinator.beginVisibilityResume()
-        #endif
-        controller.resumeRimeAfterVisibilityChange()
-        #if T9_RESPONSIVE_CANARY_INTERNAL
-            if canaryResumeRequested {
-                if controller.threadAffineRimeCoordinator?.isOwnerReady == true,
-                    let sessionInstance = responsiveCanaryModeCoordinator.markCanaryReady()
-                {
-                    controller.activateResponsiveCanarySessionInstance(
-                        runID: responsiveCanaryRunID,
-                        modeGeneration: responsiveCanaryModeCoordinator.modeGeneration,
-                        sessionInstance: sessionInstance
-                    )
-                    controller.resumeResponsiveCanaryPresentationAfterOwnerReady()
-                    startResponsiveCanaryConfigurationMonitor()
-                } else {
-                    responsiveCanaryModeCoordinator.failClosed("visibilityResumeNotReady")
-                }
+        hostLifecycleRecoveryGate.noteViewWillAppear(context: currentHostExtensionContextID())
+        let appearanceCanary = resolveHostRecoveryCanaryPermission(grantVisibilityResume: true)
+        let canaryResumeRequested: Bool = {
+            if case .visibilitySuspended(let granted) = appearanceCanary {
+                return granted
             }
-            applyResponsiveCanaryKillSwitchIfNeeded()
-        #endif
-        // Resume may fail-close T9 → 26-key; apply before chrome is built/shown.
-        // Unwrap responsive bridge so chrome still sees RimeEngineImpl (R3).
-        if let engine = controller.underlyingRimeEngine as? RimeEngineImpl {
-            applyRealizedRuntimeSelection(from: engine)
+            return false
+        }()
+        if appearanceCanary.permitsOwnerStarting(source: .appearance) {
+            performHostSharedResumeAfterLicense(canaryResumeRequested: canaryResumeRequested)
+        } else {
+            #if T9_RESPONSIVE_CANARY_INTERNAL
+                applyResponsiveCanaryKillSwitchIfNeeded()
+            #endif
+            startRimeSyncActivityHeartbeat()
         }
-        startRimeSyncActivityHeartbeat()
         installKeyboardUIIfNeeded()
         #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
             p3d1RecordLifecycleMarker("APPEAR", reason: "viewWillAppear")
@@ -420,10 +446,39 @@ class KeyboardViewController: UIInputViewController {
     /// session 已失效时，控制器才会触发真正的 runtime 恢复。
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        KeyboardWakeDiagnosticProducer.recordKeyboardLifecycle(
+            .viewDidAppear,
+            journal: diagnosticsJournal,
+            context: wakeDiagnosticContext
+        )
         #if DEBUG
             recordKeyboardVisualDiagnostic("DID_APPEAR_BEFORE")
         #endif
-        activateRimeRuntimeAfterKeyboardPresentation()
+        let hasWindow = view.window != nil
+        hostLifecycleRecoveryGate.noteViewDidAppear(hasWindow: hasWindow)
+        let pendingPreview = hostLifecycleRecoveryGate.previewHostDidBecomeActive(
+            context: currentHostExtensionContextID(),
+            hasWindow: hasWindow
+        )
+        let pendingCanary = resolveHostRecoveryCanaryPermission(
+            grantVisibilityResume: pendingPreview == .performSharedResume
+        )
+        let pendingResumeRequested: Bool = {
+            if case .visibilitySuspended(let granted) = pendingCanary {
+                return granted
+            }
+            return false
+        }()
+        let pendingAction = hostLifecycleRecoveryGate.handleVisibleWindowEstablished(
+            hasWindow: hasWindow,
+            canary: pendingCanary
+        )
+        executeHostRecoveryAction(pendingAction, canaryResumeRequested: pendingResumeRequested)
+        if pendingAction != .performSharedResume, pendingAction != .rearmFirstFrameGate,
+            hostLifecycleRecoveryGate.phase == .visible, hasWindow
+        {
+            activateRimeRuntimeAfterKeyboardPresentation()
+        }
         handleKeyboardDidAppear()
         #if DEBUG
             recordKeyboardVisualDiagnostic("DID_APPEAR_AFTER")
@@ -435,6 +490,14 @@ class KeyboardViewController: UIInputViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
+            wakeOwnerProbeWillDisappear()
+        #endif
+        KeyboardWakeDiagnosticProducer.recordKeyboardLifecycle(
+            .viewWillDisappear,
+            journal: diagnosticsJournal,
+            context: wakeDiagnosticContext
+        )
         typoCorrectionRecallCoordinator.invalidateTypoCorrectionRecall()
         diagnosticsJournal.record(
             code: .presentationFrame,
@@ -454,6 +517,7 @@ class KeyboardViewController: UIInputViewController {
         #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
             p3d1RecordLifecycleMarker("DISAPPEAR_BEGIN", reason: "viewWillDisappear")
         #endif
+        hostLifecycleRecoveryGate.noteViewWillDisappear()
         suspendKeyboardRuntime(reason: "viewWillDisappear", updateUI: true)
         #if DEBUG
             recordKeyboardVisualDiagnostic("WILL_DISAPPEAR_AFTER")
@@ -467,6 +531,9 @@ class KeyboardViewController: UIInputViewController {
     /// RIME is finalized first because its database locks are the critical resource;
     /// diagnostic persistence is disabled last so no delayed App Group write survives.
     func suspendKeyboardRuntime(reason: String, updateUI: Bool) {
+        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
+            recordWakeOwnerProbe(.suspendBegin)
+        #endif
         #if DEBUG
             cancelCandidateVisibilityDiagnostic()
             recordKeyboardVisualDiagnostic("SUSPEND_BEGIN_\(reason)")
@@ -537,9 +604,93 @@ class KeyboardViewController: UIInputViewController {
         #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
             p3d1RecordLifecycleMarker("SUSPEND_RELEASE", reason: reason, cleared: true)
         #endif
+        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
+            recordWakeOwnerProbe(.suspendEnd)
+        #endif
         Logger.shared.suspendPersistenceForExtensionLifecycle()
         diagnosticsJournal.suspendForExtensionLifecycle()
         diagnosticsAppearanceID = nil
+    }
+
+    func currentHostExtensionContextID() -> KeyboardHostExtensionContextID? {
+        guard let extensionContext else { return nil }
+        return KeyboardHostExtensionContextID(extensionContext)
+    }
+
+    func hostNotificationMatchesCurrentExtensionContext(_ notification: Notification) -> Bool {
+        guard let current = extensionContext else { return false }
+        guard let object = notification.object as AnyObject? else { return false }
+        return object === current
+    }
+
+    func resolveHostRecoveryCanaryPermission(
+        grantVisibilityResume: Bool
+    ) -> KeyboardHostRecoveryCanaryPermission {
+        #if T9_RESPONSIVE_CANARY_INTERNAL
+            switch responsiveCanaryModeCoordinator.state {
+            case .baselineActive:
+                return .baselineActive
+            case .canaryStarting:
+                return .canaryStarting
+            case .canaryActive:
+                return .canaryActive
+            case .visibilityEnding:
+                return .visibilityEnding
+            case .visibilitySuspended:
+                if grantVisibilityResume {
+                    return .visibilitySuspended(
+                        resumeGranted: responsiveCanaryModeCoordinator.beginVisibilityResume()
+                    )
+                }
+                return .visibilitySuspended(resumeGranted: false)
+            case .fenceIssued:
+                return .fenceIssued
+            case .baselineRecoveryPermitted:
+                return .baselineRecoveryPermitted
+            case .fencedUnavailable:
+                return .fencedUnavailable
+            }
+        #else
+            return .nonCanaryBuild
+        #endif
+    }
+
+    func performHostSharedResumeAfterLicense(canaryResumeRequested: Bool) {
+        KeyboardWakeDiagnosticProducer.recordRimeResumeStarted(
+            journal: diagnosticsJournal,
+            context: wakeDiagnosticContext
+        )
+        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
+            recordWakeOwnerProbe(.resumeBegin)
+        #endif
+        controller.resumeRimeAfterVisibilityChange()
+        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
+            recordWakeOwnerProbe(.resumeEnd)
+        #endif
+        #if T9_RESPONSIVE_CANARY_INTERNAL
+            if canaryResumeRequested {
+                if controller.threadAffineRimeCoordinator?.isOwnerReady == true,
+                    let sessionInstance = responsiveCanaryModeCoordinator.markCanaryReady()
+                {
+                    controller.activateResponsiveCanarySessionInstance(
+                        runID: responsiveCanaryRunID,
+                        modeGeneration: responsiveCanaryModeCoordinator.modeGeneration,
+                        sessionInstance: sessionInstance
+                    )
+                    controller.resumeResponsiveCanaryPresentationAfterOwnerReady()
+                    startResponsiveCanaryConfigurationMonitor()
+                } else {
+                    responsiveCanaryModeCoordinator.failClosed("visibilityResumeNotReady")
+                }
+            }
+            applyResponsiveCanaryKillSwitchIfNeeded()
+        #endif
+        // Resume may fail-close T9 → 26-key; apply before chrome is built/shown.
+        // Unwrap responsive bridge so chrome still sees RimeEngineImpl (R3).
+        if let engine = controller.underlyingRimeEngine as? RimeEngineImpl {
+            applyRealizedRuntimeSelection(from: engine)
+        }
+        startRimeSyncActivityHeartbeat()
     }
 
     private func startRimeSyncActivityHeartbeat() {
@@ -565,10 +716,9 @@ class KeyboardViewController: UIInputViewController {
             isHighFidelityDiagnosticsActive = DiagnosticsHighFidelityConfiguration.isEnabled(
                 in: sharedDefaults
             )
-            guard isHighFidelityDiagnosticsActive,
-                let expiration = sharedDefaults?.object(
-                    forKey: DiagnosticsHighFidelityConfiguration.expirationKey
-                ) as? Date
+            let expiration = DiagnosticsHighFidelityConfiguration.expiration(in: sharedDefaults)
+            highFidelityDiagnosticsExpiration = isHighFidelityDiagnosticsActive ? expiration : nil
+            guard isHighFidelityDiagnosticsActive, let expiration = highFidelityDiagnosticsExpiration
             else {
                 cancelCandidateVisibilityDiagnostic()
                 resetCandidateTouchDiagnosticCorrelation()
@@ -579,6 +729,7 @@ class KeyboardViewController: UIInputViewController {
                 try? await Task.sleep(for: .seconds(remaining))
                 guard !Task.isCancelled else { return }
                 self?.isHighFidelityDiagnosticsActive = false
+                self?.highFidelityDiagnosticsExpiration = nil
                 self?.cancelCandidateVisibilityDiagnostic()
                 self?.resetCandidateTouchDiagnosticCorrelation()
             }

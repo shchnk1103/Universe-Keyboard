@@ -1,0 +1,11 @@
+{
+  "actual_tool_calls": 6,
+  "completed_utc": "2026-10-05T03:24:33.448454+00:00",
+  "elapsed_seconds": 57.155922,
+  "fake_data": true,
+  "kind": "F4-P-r2-quality-preflight-readback",
+  "smoke_bytes": 1609,
+  "smoke_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r2-artifacts/preflight-quality/smoke.json",
+  "smoke_sha256": "f0910b836755188fe1392ebcb587fe9054cf0303d1ad772056bece6b8a5f49b0",
+  "started_utc": "2026-10-05T03:23:36.292532+00:00"
+}

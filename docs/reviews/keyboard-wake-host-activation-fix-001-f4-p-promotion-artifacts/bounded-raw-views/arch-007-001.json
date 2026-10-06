@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift",
+  "origin_sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+  "expected_sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+  "line_start": 1,
+  "line_end": 60,
+  "lines": [
+    {
+      "line": 1,
+      "text": "import KeyboardCore"
+    },
+    {
+      "line": 2,
+      "text": "import UIKit"
+    },
+    {
+      "line": 3,
+      "text": ""
+    },
+    {
+      "line": 4,
+      "text": "/// 展开按钮视觉上只显示 chevron，但真实命中范围略大。"
+    },
+    {
+      "line": 5,
+      "text": "/// iOS Keyboard Extension 中完全透明的区域可能不稳定，保留不可见 backing 来承接点击和下滑。"
+    },
+    {
+      "line": 6,
+      "text": "private final class CandidateBarExpandButton: UIButton {"
+    },
+    {
+      "line": 7,
+      "text": "    var hitOutsets = UIEdgeInsets(top: 10, left: 16, bottom: 12, right: 12)"
+    },
+    {
+      "line": 8,
+      "text": ""
+    },
+    {
+      "line": 9,
+      "text": "    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {"
+    },
+    {
+      "line": 10,
+      "text": "        guard isUserInteractionEnabled, !isHidden, alpha > 0.01 else { return false }"
+    },
+    {
+      "line": 11,
+      "text": "        return expandedHitBounds.contains(point)"
+    },
+    {
+      "line": 12,
+      "text": "    }"
+    },
+    {
+      "line": 13,
+      "text": ""
+    },
+    {
+      "line": 14,
+      "text": "    var expandedHitBounds: CGRect {"
+    },
+    {
+      "line": 15,
+      "text": "        bounds.inset("
+    },
+    {
+      "line": 16,
+      "text": "            by: UIEdgeInsets("
+    },
+    {
+      "line": 17,
+      "text": "                top: -hitOutsets.top,"
+    },
+    {
+      "line": 18,
+      "text": "                left: -hitOutsets.left,"
+    },
+    {
+      "line": 19,
+      "text": "                bottom: -hitOutsets.bottom,"
+    },
+    {
+      "line": 20,
+      "text": "                right: -hitOutsets.right"
+    },
+    {
+      "line": 21,
+      "text": "            )"
+    },
+    {
+      "line": 22,
+      "text": "        )"
+    },
+    {
+      "line": 23,
+      "text": "    }"
+    },
+    {
+      "line": 24,
+      "text": "}"
+    },
+    {
+      "line": 25,
+      "text": ""
+    },
+    {
+      "line": 26,
+      "text": "#if DEBUG"
+    },
+    {
+      "line": 27,
+      "text": "    @MainActor"
+    },
+    {
+      "line": 28,
+      "text": "    protocol CandidateTouchDiagnosticSink: AnyObject {"
+    },
+    {
+      "line": 29,
+      "text": "        func recordCandidateTouchRouted("
+    },
+    {
+      "line": 30,
+      "text": "            band: DiagnosticEvent.CandidateTouchBand,"
+    },
+    {
+      "line": 31,
+      "text": "            didHitCell: Bool"
+    },
+    {
+      "line": 32,
+      "text": "        )"
+    },
+    {
+      "line": 33,
+      "text": "        func recordCandidateGestureTerminal(didBegin: Bool, wasCancelled: Bool)"
+    },
+    {
+      "line": 34,
+      "text": "    }"
+    },
+    {
+      "line": 35,
+      "text": "#endif"
+    },
+    {
+      "line": 36,
+      "text": ""
+    },
+    {
+      "line": 37,
+      "text": "/// The horizontal candidate bar container."
+    },
+    {
+      "line": 38,
+      "text": "///"
+    },
+    {
+      "line": 39,
+      "text": "/// The fixed height and expand-button width are part of the keyboard presentation"
+    },
+    {
+      "line": 40,
+      "text": "/// baseline: changing them can reintroduce keyboard resize/flicker regressions."
+    },
+    {
+      "line": 41,
+      "text": "/// Isolated from `CandidateBarView`'s `@MainActor` so optional delegate"
+    },
+    {
+      "line": 42,
+      "text": "/// methods actually bind. Putting them on the bar only \"nearly matches\"."
+    },
+    {
+      "line": 43,
+      "text": "private final class CandidateBarGestureBridge: NSObject, UIGestureRecognizerDelegate {"
+    },
+    {
+      "line": 44,
+      "text": "    weak var itemTap: UIGestureRecognizer?"
+    },
+    {
+      "line": 45,
+      "text": "    weak var swipeDown: UIGestureRecognizer?"
+    },
+    {
+      "line": 46,
+      "text": "    weak var horizontalFallback: UIGestureRecognizer?"
+    },
+    {
+      "line": 47,
+      "text": "    weak var collectionPan: UIGestureRecognizer?"
+    },
+    {
+      "line": 48,
+      "text": "    #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+    },
+    {
+      "line": 49,
+      "text": "        weak var wakeProbeButton: UIButton?"
+    },
+    {
+      "line": 50,
+      "text": "        func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {"
+    },
+    {
+      "line": 51,
+      "text": "            guard let button = wakeProbeButton, let touched = touch.view else { return true }"
+    },
+    {
+      "line": 52,
+      "text": "            return !touched.isDescendant(of: button)"
+    },
+    {
+      "line": 53,
+      "text": "        }"
+    },
+    {
+      "line": 54,
+      "text": "    #endif"
+    },
+    {
+      "line": 55,
+      "text": ""
+    },
+    {
+      "line": 56,
+      "text": "    func gestureRecognizer("
+    },
+    {
+      "line": 57,
+      "text": "        _ gestureRecognizer: UIGestureRecognizer,"
+    },
+    {
+      "line": 58,
+      "text": "        shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer"
+    },
+    {
+      "line": 59,
+      "text": "    ) -> Bool {"
+    },
+    {
+      "line": 60,
+      "text": "        if gestureRecognizer === itemTap || otherGestureRecognizer === itemTap {"
+    }
+  ]
+}

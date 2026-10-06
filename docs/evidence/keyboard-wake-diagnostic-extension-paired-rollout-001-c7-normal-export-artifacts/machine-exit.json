@@ -1,0 +1,30 @@
+{
+  "utc": "2026-10-02T14:37:55.782434+00:00",
+  "preferences": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "rime_deployed": {
+      "exists": true,
+      "value": "True"
+    },
+    "rime_needs_deploy": {
+      "exists": true,
+      "value": "False"
+    },
+    "rime_deploying": {
+      "exists": true,
+      "value": "False"
+    }
+  },
+  "preferences_equal_entry": true,
+  "process": "24050 Ss   /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/4EB4A3E6-58B0-44CB-BC45-B608BA1E6518/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+  "changed_existing_before_archive": [],
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a"
+}

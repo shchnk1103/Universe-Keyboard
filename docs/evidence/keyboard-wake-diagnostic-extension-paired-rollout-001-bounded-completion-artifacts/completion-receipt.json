@@ -1,0 +1,34 @@
+{
+  "recorded_at": "2026-10-06T18:46:46+08:00",
+  "status": "Completed — 诊断 producer 与父交接交付",
+  "decision_source": "Human accepted Option A in this thread",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "staged": 0,
+  "accepted_proposal_sha256": "352711edc69583e6579aa666dfe9e5811fdb8dba9189d6e799a3565849718e80",
+  "five_source_sha256": {
+    "Keyboard/Controllers/KeyboardViewController.swift": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+    "Keyboard/Controllers/KeyboardViewController+Bootstrap.swift": "79d0123dabacd8e5875b66b7c8c897589adbeb8b49d1e22b263678dc1d56f6aa",
+    "Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift": "c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047",
+    "KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift": "71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5",
+    "Universe Keyboard.xcodeproj/project.pbxproj": "49f0ebe89db1f30323d9bf6ceb297179ffed5fc9ef983fd3b947d11d5820586c"
+  },
+  "residuals": "R-JSONL/R-V6/R-COV/R-AUDIT/R-SKIP nonblocking unverified; independent Partial remains",
+  "other_task_states": {
+    "original_diagnostic_parent": "Completed unchanged",
+    "host_activation_fix": "Completed unchanged"
+  },
+  "completion_actions": "docs only; no source/build/test/simulator/Git/Release/backup deletion",
+  "written_docs_sha256": {
+    "docs/product-decisions/KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001-bounded-completion-product-decision-2026-10-06.md": "ab8eba113543ca3195c98d4700dc624c2079efe9a3d2bfcf12e4e8c1afdabfe8",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-bounded-completion-2026-10-06.md": "ac24b15f0e8fdfa504440366552affc8c3372f14bf055ddfbf401c5ab75fc2bc",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-jsonl-parent-exit-map-2026-10-06.md": "1f05284198a9cce2cdd44d6e0610db4fb6cb3b1d61453495232bb1120d49d90d",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-bounded-completion-artifacts/accepted-exit-map-original.md": "352711edc69583e6579aa666dfe9e5811fdb8dba9189d6e799a3565849718e80",
+    "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md": "fd67ad7e3f28c46a198b1cc1f0c49258764184dc0ba623e9e2e45caa17fac335",
+    "docs/assignments/keyboard-wake-lifecycle-diagnostics-001.md": "9b00dc0d819cfbcb5d2089b47200a38fa3746bf0c47625decb787ee3b75a7933",
+    "docs/ACTIVE_WORK.md": "c876425a01500ac42ea51b7936f2ae6336f488f14b054b30acdcb085e7336a88",
+    "docs/KNOWLEDGE_INDEX.md": "b319d16fb682859d5a295fceed517a397effa11ff63683e2d3115436c86a1201",
+    "docs/ENGINEERING_DASHBOARD.md": "aba61cdf0ef0c249b3ba245109bb2d5b8ae09a25b436a1dd5c68fb9e22ca43aa",
+    "docs/READING_MAPS.md": "4b3652da51828d22d06a80a9a974d984c3e061e51343a9ad346c3c0eed71914d"
+  }
+}

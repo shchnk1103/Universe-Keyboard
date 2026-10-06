@@ -1,0 +1,12 @@
+{
+  "source": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData/SourcePackages",
+  "source_unchanged": true,
+  "copy_match": true,
+  "rows": [
+    {
+      "path": "workspace-state.json",
+      "bytes": 8372,
+      "sha256": "124763117eff052e2565b5b8136e881c75c8e5fdd9e1f35dec16b160917a83bd"
+    }
+  ]
+}

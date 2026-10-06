@@ -1,0 +1,18 @@
+{
+  "utc": "2026-10-04T15:23:14.946291+00:00",
+  "packet_sha256": "34a37a0b8f3dbeba81b015c78985adc295c69440f0f913bc5a18d2ad108cb281",
+  "frozen_inputs_122_match_at_receive": true,
+  "architecture": "Partial/incomplete; A2-F1 blocks F4",
+  "quality_content_verdict": "Pass with conditions preserved, not overall Gate acceptance",
+  "quality_usage_recorded_seconds": 1258.326,
+  "quality_elapsed_from_timestamps_seconds": 1258.326444,
+  "quality_wall_limit_seconds": 1200,
+  "quality_overrun_seconds": 58.32644400000004,
+  "quality_stop_reason_conflict": "completed_within_frozen_budget_after_final_readback contradicts recorded actual elapsed; original retained, no author edits or automatic budget extension",
+  "quality_usage_written_utc_note": "usage_written_utc predates finished_utc; final mtime aligns finished_utc, not initial usage write",
+  "independent_quality_final_acknowledged_overrun": true,
+  "all_required_artifact_files_written": true,
+  "F4_ready": false,
+  "source_or_device_changed": false,
+  "runtime_reuse_correction": "Both reviewers reused original paths. Assignment predispatch same-name new Architecture runtime phrase was a Coordinator mistake; no new runtime created."
+}

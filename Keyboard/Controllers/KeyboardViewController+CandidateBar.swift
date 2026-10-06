@@ -36,6 +36,9 @@ extension KeyboardViewController {
             interactionTarget: self,
             expandAction: #selector(handleCandidateBarTrailingButton)
         )
+        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
+            installWakeOwnerProbeControls(on: view)
+        #endif
         let collectionView = view.collectionView
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -164,6 +167,9 @@ extension KeyboardViewController {
             bar.allowsSwipeToExpand = canExpand
         }
         updateExpandButtonAppearance(canExpand: canExpand)
+        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
+            refreshWakeOwnerProbeControls()
+        #endif
 
         let currentOffset = candidateScrollView.contentOffset.x
         collectionView.reloadData()

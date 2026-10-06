@@ -1,0 +1,52 @@
+{
+  "assignment": "KEYBOARD-WAKE-DIAGNOSTIC-V3-COMPATIBILITY-GATE-001",
+  "manifest_revision": 2,
+  "supersedes_manifest_sha256": "32d8a402f9a683348b6ef3395156112491d10aeead74ad61fb89e41d0d7edb7c",
+  "base_commit": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "candidate_branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "candidate_state": "local uncommitted candidate; pure Sendable completeness merge marked nonisolated after Stage B Swift 6 compile failure; source and test files frozen for final matrix and independent review",
+  "change_summary": "V1DiagnosticsLogSource.merging combines Sendable completeness values without actor state and is now explicitly nonisolated.",
+  "schema_contract": {
+    "reader_versions": [3, 4, 5],
+    "writer_version": 5,
+    "v4_wake_marker_production_emission": false,
+    "v4_wake_marker_test_fixture_storage": "isolated temporary or in-memory only"
+  },
+  "source_files": [
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticEvent.swift",
+      "sha256": "346efd59225cdf71fc61917fcb26bc72f3b1cf84aea19d873b3f238e791b492b"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournal.swift",
+      "sha256": "49077a7a6ade1b41724fda92314cb4a41071163dc9f6c5e2a8666ee38273dbc9"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticEventWireValidator.swift",
+      "sha256": "965667328c2db1cba4c4f99e21a82ee13ae3890ff18bf510b9967c5396273534"
+    },
+    {
+      "path": "Universe Keyboard/Views/Diagnostics/DiagnosticsLogSource.swift",
+      "sha256": "bc874c7f019645e18c04b8b2c3a9d21c8247afc75b44cc8951a857078d558a70"
+    }
+  ],
+  "test_files": [
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticEventTests.swift",
+      "sha256": "7da854233e4454ccd44c587acca5cf8b4d4b89b15c726277748fa172da1e7c53"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticsJournalTests.swift",
+      "sha256": "8760b930ff9f1045f8689f73c2dddb33bf199b86d7246cc6dd6e50feb2af1ba5"
+    },
+    {
+      "path": "UniverseKeyboardTests/DiagnosticsLogSourceTests.swift",
+      "sha256": "ad24cef7d5512b621a53724b3b1043b29a5b1863ef163aa8de0e25b6e2fa855c"
+    }
+  ],
+  "explicit_non_changes": [
+    "No production Keyboard Extension wake-marker call site was added.",
+    "No Simulator was booted, queried for runtime behavior, or modified in Stage A; Stage B is limited to the authorized validation matrix.",
+    "No Main App was manually installed or launched for runtime reproduction."
+  ]
+}

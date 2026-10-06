@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+  "origin_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "expected_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "line_start": 901,
+  "line_end": 960,
+  "lines": [
+    {
+      "line": 901,
+      "text": "                paint: paint"
+    },
+    {
+      "line": 902,
+      "text": "            )"
+    },
+    {
+      "line": 903,
+      "text": "        }"
+    },
+    {
+      "line": 904,
+      "text": ""
+    },
+    {
+      "line": 905,
+      "text": "        private func emitResponsiveCanaryTerminal("
+    },
+    {
+      "line": 906,
+      "text": "            sessionEpoch: UInt64,"
+    },
+    {
+      "line": 907,
+      "text": "            revision: UInt64,"
+    },
+    {
+      "line": 908,
+      "text": "            canarySessionInstance: UInt64? = nil,"
+    },
+    {
+      "line": 909,
+      "text": "            completion: ResponsiveRimeCanaryPublishCompletion,"
+    },
+    {
+      "line": 910,
+      "text": "            visibility: ResponsiveRimeCanaryVisibilityDisposition,"
+    },
+    {
+      "line": 911,
+      "text": "            paint: ResponsiveRimeCanaryPaintTerminal"
+    },
+    {
+      "line": 912,
+      "text": "        ) {"
+    },
+    {
+      "line": 913,
+      "text": "            let resolvedSessionInstance ="
+    },
+    {
+      "line": 914,
+      "text": "                canarySessionInstance"
+    },
+    {
+      "line": 915,
+      "text": "                ?? currentResponsiveCanarySessionInstance"
+    },
+    {
+      "line": 916,
+      "text": "            let sessionIdentity = responsiveCanarySessionIdentities[resolvedSessionInstance]"
+    },
+    {
+      "line": 917,
+      "text": "            onResponsiveCanaryPresentationTerminal?("
+    },
+    {
+      "line": 918,
+      "text": "                ResponsiveRimeCanaryPresentationTerminal("
+    },
+    {
+      "line": 919,
+      "text": "                    runID: sessionIdentity?.runID ?? \"\","
+    },
+    {
+      "line": 920,
+      "text": "                    modeGeneration: sessionIdentity?.modeGeneration ?? 0,"
+    },
+    {
+      "line": 921,
+      "text": "                    canarySessionInstance: resolvedSessionInstance,"
+    },
+    {
+      "line": 922,
+      "text": "                    sessionEpoch: sessionEpoch,"
+    },
+    {
+      "line": 923,
+      "text": "                    revision: revision,"
+    },
+    {
+      "line": 924,
+      "text": "                    completion: completion,"
+    },
+    {
+      "line": 925,
+      "text": "                    visibility: visibility,"
+    },
+    {
+      "line": 926,
+      "text": "                    paint: paint"
+    },
+    {
+      "line": 927,
+      "text": "                )"
+    },
+    {
+      "line": 928,
+      "text": "            )"
+    },
+    {
+      "line": 929,
+      "text": "            threadAffineRimeCoordinator?.acknowledgePresentationTerminal("
+    },
+    {
+      "line": 930,
+      "text": "                canarySessionInstance: resolvedSessionInstance,"
+    },
+    {
+      "line": 931,
+      "text": "                sessionEpoch: sessionEpoch,"
+    },
+    {
+      "line": 932,
+      "text": "                revision: revision"
+    },
+    {
+      "line": 933,
+      "text": "            )"
+    },
+    {
+      "line": 934,
+      "text": "        }"
+    },
+    {
+      "line": 935,
+      "text": "    #endif"
+    },
+    {
+      "line": 936,
+      "text": ""
+    },
+    {
+      "line": 937,
+      "text": "    /// Keep the latest safe host marked text as the L1 visual-shadow prefix."
+    },
+    {
+      "line": 938,
+      "text": "    ///"
+    },
+    {
+      "line": 939,
+      "text": "    /// The helper is intentionally MainActor-owned and only observes the host"
+    },
+    {
+      "line": 940,
+      "text": "    /// projection. Engine-output completion, marked-text updates and ordered"
+    },
+    {
+      "line": 941,
+      "text": "    /// actions all use this same boundary so no Delete/restore sub-path can"
+    },
+    {
+      "line": 942,
+      "text": "    /// leave an older prefix behind for the next provisional key."
+    },
+    {
+      "line": 943,
+      "text": "    func captureResponsiveStablePreeditIfReady() {"
+    },
+    {
+      "line": 944,
+      "text": "        guard isResponsiveRimePipelineEnabled,"
+    },
+    {
+      "line": 945,
+      "text": "            isThreadAffineRimeOwnerEnabled,"
+    },
+    {
+      "line": 946,
+      "text": "            !provisionalCompositionMirror.isProvisionalAhead"
+    },
+    {
+      "line": 947,
+      "text": "        else {"
+    },
+    {
+      "line": 948,
+      "text": "            return"
+    },
+    {
+      "line": 949,
+      "text": "        }"
+    },
+    {
+      "line": 950,
+      "text": "        provisionalCompositionMirror.setStablePreedit(state.insertedPreeditText)"
+    },
+    {
+      "line": 951,
+      "text": "    }"
+    },
+    {
+      "line": 952,
+      "text": ""
+    },
+    {
+      "line": 953,
+      "text": "    func clearResponsiveKeyApplyContexts() {"
+    },
+    {
+      "line": 954,
+      "text": "        responsiveKeyApplyContexts.removeAll(keepingCapacity: true)"
+    },
+    {
+      "line": 955,
+      "text": "        dualGatePendingPresentationSnapshot = nil"
+    },
+    {
+      "line": 956,
+      "text": "        dualGatePendingPresentationHasKnownSuccessor = false"
+    },
+    {
+      "line": 957,
+      "text": "        dualGatePresentationCoalesceScheduled = false"
+    },
+    {
+      "line": 958,
+      "text": "        // Invalidate in-flight dual-gate coalesce Tasks and stale presentation."
+    },
+    {
+      "line": 959,
+      "text": "        responsivePresentationGeneration &+= 1"
+    },
+    {
+      "line": 960,
+      "text": "        lastPresentedSessionEpoch = 0"
+    }
+  ]
+}

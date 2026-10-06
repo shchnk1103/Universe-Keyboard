@@ -1,0 +1,7 @@
+{
+  "start_utc": "2026-10-02T16:11:12.423596+00:00",
+  "start_unix": 1790957472.423594,
+  "start_monotonic": 1140323.147232958,
+  "packet_path": "/private/tmp/ukey-wake-probe-ui-arch-r3-20261003/packet.json",
+  "packet_digest_sha256": "42a3057e170a8aacefee964bfe2c3f55bed786ffb838d2c446888b82bc11a488"
+}

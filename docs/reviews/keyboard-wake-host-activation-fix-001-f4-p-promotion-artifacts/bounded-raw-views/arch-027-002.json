@@ -1,0 +1,89 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/execution-entry.json",
+  "origin_sha256": "fea8eca0728f068431f2124d95917e2f87272601a1095a03a752d69a384514b4",
+  "expected_sha256": "fea8eca0728f068431f2124d95917e2f87272601a1095a03a752d69a384514b4",
+  "line_start": 61,
+  "line_end": 80,
+  "lines": [
+    {
+      "line": 61,
+      "text": "    },"
+    },
+    {
+      "line": 62,
+      "text": "    {"
+    },
+    {
+      "line": 63,
+      "text": "      \"path\": \"Universe Keyboard.xcodeproj/project.pbxproj\","
+    },
+    {
+      "line": 64,
+      "text": "      \"bytes\": 46990,"
+    },
+    {
+      "line": 65,
+      "text": "      \"sha256\": \"49f0ebe89db1f30323d9bf6ceb297179ffed5fc9ef983fd3b947d11d5820586c\""
+    },
+    {
+      "line": 66,
+      "text": "    }"
+    },
+    {
+      "line": 67,
+      "text": "  ],"
+    },
+    {
+      "line": 68,
+      "text": "  \"budget_proposal\": {"
+    },
+    {
+      "line": 69,
+      "text": "    \"wall_seconds\": 3600,"
+    },
+    {
+      "line": 70,
+      "text": "    \"tool_calls\": 40,"
+    },
+    {
+      "line": 71,
+      "text": "    \"first_failure_stop\": true"
+    },
+    {
+      "line": 72,
+      "text": "  },"
+    },
+    {
+      "line": 73,
+      "text": "  \"toolchain\": \"Xcode27.0/27A266a; Swift6.4 compiler, language pinned6.0\","
+    },
+    {
+      "line": 74,
+      "text": "  \"vendor_structural_verify\": true,"
+    },
+    {
+      "line": 75,
+      "text": "  \"source_and_vendor_rows_match\": 1156,"
+    },
+    {
+      "line": 76,
+      "text": "  \"pinned_match\": 13,"
+    },
+    {
+      "line": 77,
+      "text": "  \"membership_match\": true,"
+    },
+    {
+      "line": 78,
+      "text": "  \"fresh_output\": true,"
+    },
+    {
+      "line": 79,
+      "text": "  \"calls_at_entry_completion\": 8"
+    },
+    {
+      "line": 80,
+      "text": "}"
+    }
+  ]
+}

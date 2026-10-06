@@ -1,0 +1,75 @@
+{
+  "work_item": "KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001",
+  "lane": "UK-WAKE-V6-B-QUALITY",
+  "round": 1,
+  "packet_sha256": "07a9be61cf49eddfb4b623d34ff7a49caee71aa5294289a6e73873150a6a0557",
+  "started_at_utc": null,
+  "start_time_note": "首个 reviewer 交互未读取系统时钟；不回填猜测时间。",
+  "ended_at_utc": "2026-09-30T14:08:21Z",
+  "elapsed_seconds": null,
+  "elapsed_note": "缺少首个交互时间戳，无法诚实计算实际经过时长；结束时间按冻结输出时读取。",
+  "budget": {
+    "max_tool_interactions": 24,
+    "max_elapsed_minutes": 20,
+    "budgeted_review_interactions": 24,
+    "interaction_basis": "按本轮只读 exec_command 调用计数；本次最终写入是第 24 次。",
+    "coordination_messages_separately_recorded": 2,
+    "checkpoints": [
+      8,
+      16
+    ],
+    "stop_reason": "达到 24/24 review interaction ceiling；无续预算。"
+  },
+  "integrity": {
+    "quality_input_entries": 63,
+    "input_missing": 0,
+    "input_sha_mismatches": 0,
+    "candidate_source_files": 5,
+    "candidate_source_hash_matches": 5,
+    "readonly_dependencies": 7,
+    "readonly_dependency_hash_matches": 7,
+    "result_bundles": {
+      "AppKeyboardTests-r2.xcresult": {
+        "files": 907,
+        "missing": 0,
+        "mismatch": 0
+      },
+      "AppKeyboardTests.xcresult": {
+        "files": 1373,
+        "missing": 0,
+        "mismatch": 0
+      },
+      "AppV6Focused-r2.xcresult": {
+        "files": 41,
+        "missing": 0,
+        "mismatch": 0
+      },
+      "ReleaseBuild-r2.xcresult": {
+        "files": 7,
+        "missing": 0,
+        "mismatch": 0
+      },
+      "RimeBridgeTests.xcresult": {
+        "files": 239,
+        "missing": 0,
+        "mismatch": 0
+      },
+      "SignedKeychain-r2.xcresult": {
+        "files": 41,
+        "missing": 0,
+        "mismatch": 0
+      }
+    },
+    "paired_binary_files": 4,
+    "paired_binary_hash_matches": 4,
+    "vendor_files": 630,
+    "vendor_missing": 0,
+    "vendor_mismatch": 0
+  },
+  "review_verdict": "Partial / incomplete",
+  "q1_to_q7_inspected": true,
+  "only_written_files": [
+    "/private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254/quality-review.md",
+    "/private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254/quality-usage.json"
+  ]
+}

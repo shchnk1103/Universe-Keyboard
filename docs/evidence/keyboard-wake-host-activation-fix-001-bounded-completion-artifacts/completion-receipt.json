@@ -1,0 +1,36 @@
+{
+  "recorded_at": "2026-10-06T18:17:25.805893+08:00",
+  "status": "Completed — 单轮模拟器恢复验证交付",
+  "decision_source": "Human accepted explicit bounded completion contract in this thread",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "staged": 0,
+  "accepted_proposal_sha256": "fb577f184efe9ff51a80e76949a8f0cda9772ad8988821cfee69fbfb5b891c55",
+  "five_source_sha256": {
+    "Keyboard/Controllers/KeyboardViewController.swift": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+    "Keyboard/Controllers/KeyboardViewController+Bootstrap.swift": "79d0123dabacd8e5875b66b7c8c897589adbeb8b49d1e22b263678dc1d56f6aa",
+    "Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift": "c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047",
+    "KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift": "71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5",
+    "Universe Keyboard.xcodeproj/project.pbxproj": "49f0ebe89db1f30323d9bf6ceb297179ffed5fc9ef983fd3b947d11d5820586c"
+  },
+  "independent_author_file_sha256": {
+    "ack.json": "fb367b53276525f48fac66e9639542dea79ceb5d434276c13e3b4e71907fab71",
+    "review.md": "b2a6bcd83e8ea43e3a2f8b6d7d4fc4c1458063520cd2a22e902f50ced4b22f37",
+    "usage.json": "cbd7f7f0ea44d9b40f79b06986537c1c54515451c742d0c0591b2d85c83a27c7",
+    "delivery-readback.json": "345aa4e237d55f151a4701bbe27e5b9eb4539136b5462e0ef45933e5c9984df3"
+  },
+  "residuals": "nonblocking unverified as specified in Product decision; independent Partial remains",
+  "other_task_states": {
+    "original_diagnostic_parent": "Completed unchanged",
+    "paired_rollout": "Active unchanged"
+  },
+  "completion_actions": "docs only; no source/build/test/simulator/Git/Release/backup deletion",
+  "dirty_snapshot_sha256": "7583e603ae70df69981b2f665be9ab0984cb8794c813f0ba28d64e7a73820d2e",
+  "dirty_full_rows": 2181,
+  "written_docs_sha256": {
+    "docs/product-decisions/KEYBOARD-WAKE-HOST-ACTIVATION-FIX-001-bounded-completion-product-decision-2026-10-06.md": "23326568e70326565501bf649a827f75cb8ac80e10a0ec7ed319ffde74e683f2",
+    "docs/evidence/keyboard-wake-host-activation-fix-001-bounded-completion-2026-10-06.md": "45297e4c247d14b9203925446279ee6959499fa271c86693953699267597021d",
+    "docs/assignments/keyboard-wake-host-activation-fix-001.md": "92c07693191515735e063453cc84daeb183f4f7e87583f7709a2aed4f873997f",
+    "docs/evidence/keyboard-wake-host-activation-fix-001-final-exit-map-2026-10-06.md": "20aa75a09a323ce8b9227799ec8abd8f4f28e1c18ea22e339ed2e202278c3952"
+  }
+}

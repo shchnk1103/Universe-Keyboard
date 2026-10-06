@@ -1,0 +1,24 @@
+{
+  "budget": {
+    "actual_tool_calls": 6,
+    "checkpoints": [
+      2,
+      4
+    ],
+    "counting": "Count every tools call, including functions.exec wrapper and nested exec_command; coordination tool calls count; preflight within this budget. Start actual UTC before first reading batch, no old-clock reuse.",
+    "reserve_last_calls": 4,
+    "wall_clock_seconds": 600
+  },
+  "lane_id": "F4-P-QUALITY-PROMOTION",
+  "output_dir": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r3-artifacts/quality",
+  "packet_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r3-artifacts/quality-packet.json",
+  "packet_sha256": "c934f37577935e53837fa4391cc9d5865370498c3f193c2422db6e8e993c4dde",
+  "reviewer": "Reuse /root/m2r2_quality_r1",
+  "round": 3,
+  "scope": {
+    "Q-P1-remaining": "Pair all four module paths+candidate SHA with original dwarfdump UUID and paired record, especially main App two modules; examine standalone payload paths and original module load commands for XCTest/test-host injection. Carry only unchanged prior Q-P1 already-covered payload/count/symbol subfacts; do not repeat complete suite",
+    "Q-P2-remaining": "Independently bind single standalone original build request and matching start/receipt exit0 to both actual module-name target compile lines (same DerivedData/debug simulator). This is one build invocation containing two targets; require no invented separate per-target build receipt",
+    "Q-P3-remaining": "Independently reconstruct each arm64 raw otool hex-word output to bytes/plist, verify section SHA matches prior raw record and actual Group/application identifier; do not treat expected plist as raw proof. Carry prior input/codesign subfacts unchanged"
+  },
+  "start_utc": "2026-10-05T04:33:49.642502+00:00"
+}

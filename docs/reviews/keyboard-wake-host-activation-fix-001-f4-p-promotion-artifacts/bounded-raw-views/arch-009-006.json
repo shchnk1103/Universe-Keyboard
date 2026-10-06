@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+  "origin_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "expected_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "line_start": 301,
+  "line_end": 360,
+  "lines": [
+    {
+      "line": 301,
+      "text": "        )"
+    },
+    {
+      "line": 302,
+      "text": "    }"
+    },
+    {
+      "line": 303,
+      "text": ""
+    },
+    {
+      "line": 304,
+      "text": "    #if T9_RESPONSIVE_CANARY_INTERNAL"
+    },
+    {
+      "line": 305,
+      "text": "        /// Removes only an already positively terminated canary owner. This method"
+    },
+    {
+      "line": 306,
+      "text": "        /// never creates the baseline; the unique mode coordinator must grant that"
+    },
+    {
+      "line": 307,
+      "text": "        /// permit first and the Extension bootstrap performs the later creation."
+    },
+    {
+      "line": 308,
+      "text": "        public func clearResponsiveCanaryAfterPositiveShutdown() {"
+    },
+    {
+      "line": 309,
+      "text": "            precondition("
+    },
+    {
+      "line": 310,
+      "text": "                threadAffineRimeCoordinator?.isOwnerReady != true,"
+    },
+    {
+      "line": 311,
+      "text": "                \"live canary owner cannot be cleared without positive shutdown\""
+    },
+    {
+      "line": 312,
+      "text": "            )"
+    },
+    {
+      "line": 313,
+      "text": "            threadAffineRimeCoordinator = nil"
+    },
+    {
+      "line": 314,
+      "text": "            responsiveRimeCoordinator = nil"
+    },
+    {
+      "line": 315,
+      "text": "            if rimeEngine is ThreadAffineRimeEngineBridge {"
+    },
+    {
+      "line": 316,
+      "text": "                rimeEngine = nil"
+    },
+    {
+      "line": 317,
+      "text": "            }"
+    },
+    {
+      "line": 318,
+      "text": "            isThreadAffineRimeOwnerEnabled = false"
+    },
+    {
+      "line": 319,
+      "text": "            isResponsiveRimePipelineEnabled = false"
+    },
+    {
+      "line": 320,
+      "text": "            threadAffineEngineBootstrap = nil"
+    },
+    {
+      "line": 321,
+      "text": "            responsiveKeyApplyContexts.removeAll()"
+    },
+    {
+      "line": 322,
+      "text": "            dualGatePendingPresentationSnapshot = nil"
+    },
+    {
+      "line": 323,
+      "text": "            dualGatePendingPresentationHasKnownSuccessor = false"
+    },
+    {
+      "line": 324,
+      "text": "            dualGatePresentationCoalesceScheduled = false"
+    },
+    {
+      "line": 325,
+      "text": "            responsivePresentationGeneration &+= 1"
+    },
+    {
+      "line": 326,
+      "text": "            responsiveCanaryPresentationFenced = true"
+    },
+    {
+      "line": 327,
+      "text": "            responsiveCanaryPreterminatedPresentations.removeAll(keepingCapacity: true)"
+    },
+    {
+      "line": 328,
+      "text": "            pendingResponsiveCanaryVisibleSnapshot = nil"
+    },
+    {
+      "line": 329,
+      "text": "            currentResponsiveCanarySessionInstance = 0"
+    },
+    {
+      "line": 330,
+      "text": "            responsiveCanarySessionIdentities.removeAll(keepingCapacity: true)"
+    },
+    {
+      "line": 331,
+      "text": "            isResponsiveCanaryOwnerInstalled = false"
+    },
+    {
+      "line": 332,
+      "text": "        }"
+    },
+    {
+      "line": 333,
+      "text": ""
+    },
+    {
+      "line": 334,
+      "text": "        public func markResponsiveCanaryOwnerInstalled("
+    },
+    {
+      "line": 335,
+      "text": "            runID: String,"
+    },
+    {
+      "line": 336,
+      "text": "            modeGeneration: UInt64,"
+    },
+    {
+      "line": 337,
+      "text": "            sessionInstance: UInt64"
+    },
+    {
+      "line": 338,
+      "text": "        ) {"
+    },
+    {
+      "line": 339,
+      "text": "            precondition(threadAffineRimeCoordinator?.isOwnerReady == true)"
+    },
+    {
+      "line": 340,
+      "text": "            threadAffineRimeCoordinator?.setCanarySessionInstance(sessionInstance)"
+    },
+    {
+      "line": 341,
+      "text": "            currentResponsiveCanarySessionInstance = sessionInstance"
+    },
+    {
+      "line": 342,
+      "text": "            responsiveCanarySessionIdentities[sessionInstance] = (runID, modeGeneration)"
+    },
+    {
+      "line": 343,
+      "text": "            isResponsiveCanaryOwnerInstalled = true"
+    },
+    {
+      "line": 344,
+      "text": "        }"
+    },
+    {
+      "line": 345,
+      "text": ""
+    },
+    {
+      "line": 346,
+      "text": "        public func activateResponsiveCanarySessionInstance("
+    },
+    {
+      "line": 347,
+      "text": "            runID: String,"
+    },
+    {
+      "line": 348,
+      "text": "            modeGeneration: UInt64,"
+    },
+    {
+      "line": 349,
+      "text": "            sessionInstance: UInt64"
+    },
+    {
+      "line": 350,
+      "text": "        ) {"
+    },
+    {
+      "line": 351,
+      "text": "            precondition(threadAffineRimeCoordinator?.isOwnerReady == true)"
+    },
+    {
+      "line": 352,
+      "text": "            threadAffineRimeCoordinator?.setCanarySessionInstance(sessionInstance)"
+    },
+    {
+      "line": 353,
+      "text": "            currentResponsiveCanarySessionInstance = sessionInstance"
+    },
+    {
+      "line": 354,
+      "text": "            responsiveCanarySessionIdentities[sessionInstance] = (runID, modeGeneration)"
+    },
+    {
+      "line": 355,
+      "text": "        }"
+    },
+    {
+      "line": 356,
+      "text": ""
+    },
+    {
+      "line": 357,
+      "text": "        /// Fences presentation before the owner drain begins. Owner completions may"
+    },
+    {
+      "line": 358,
+      "text": "        /// still arrive, but they receive stale/fenced terminals and cannot mutate"
+    },
+    {
+      "line": 359,
+      "text": "        /// UI or host text."
+    },
+    {
+      "line": 360,
+      "text": "        public func beginResponsiveCanaryPresentationFence() {"
+    }
+  ]
+}

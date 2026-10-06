@@ -1,0 +1,7 @@
+{
+  "old_candidate": "0095841393c45895ae5ee861878a03c0c9a8de3643759be47a9ac1cb5d8953f8",
+  "changed": [
+    "Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift"
+  ],
+  "missing": []
+}

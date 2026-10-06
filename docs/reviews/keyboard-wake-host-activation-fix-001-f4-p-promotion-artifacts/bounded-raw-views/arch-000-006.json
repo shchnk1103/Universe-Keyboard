@@ -1,0 +1,77 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+CandidateBar.swift",
+  "origin_sha256": "ae1b78d5a311f60054914093458b0c78fe3d35923d82b487fd7f30d886074c80",
+  "expected_sha256": "ae1b78d5a311f60054914093458b0c78fe3d35923d82b487fd7f30d886074c80",
+  "line_start": 301,
+  "line_end": 317,
+  "lines": [
+    {
+      "line": 301,
+      "text": "        }"
+    },
+    {
+      "line": 302,
+      "text": "        accumulatedCandidates = items.filter { $0.kind != .placeholder }"
+    },
+    {
+      "line": 303,
+      "text": "        candidateSnapshotGeneration += 1"
+    },
+    {
+      "line": 304,
+      "text": "        candidateSnapshotCompositionRevision = snapshot.revision"
+    },
+    {
+      "line": 305,
+      "text": "        candidateSnapshotRawInput ="
+    },
+    {
+      "line": 306,
+      "text": "            snapshot.rimeRawInput"
+    },
+    {
+      "line": 307,
+      "text": "            ?? controller.state.currentComposition"
+    },
+    {
+      "line": 308,
+      "text": "        nextCandidateGlobalIndex = nextGlobalIndexAfterCurrentItems()"
+    },
+    {
+      "line": 309,
+      "text": "        hasMoreCandidates = snapshot.hasMorePages"
+    },
+    {
+      "line": 310,
+      "text": "        isLoadingMoreCandidates = false"
+    },
+    {
+      "line": 311,
+      "text": "        deferredCandidatePrefetchMode = nil"
+    },
+    {
+      "line": 312,
+      "text": "        candidatePrefetchRequestSerial += 1"
+    },
+    {
+      "line": 313,
+      "text": "        candidateCellSizeCache.removeAll(keepingCapacity: true)"
+    },
+    {
+      "line": 314,
+      "text": "        candidatePageDepth = 0"
+    },
+    {
+      "line": 315,
+      "text": "        candidatePrefetchMode = isCandidateExpanded ? .expanded : .bar"
+    },
+    {
+      "line": 316,
+      "text": "    }"
+    },
+    {
+      "line": 317,
+      "text": "}"
+    }
+  ]
+}

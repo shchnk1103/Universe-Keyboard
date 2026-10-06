@@ -1,0 +1,47 @@
+{
+  "actual_tool_calls": 6,
+  "created_utc": "2026-10-05T03:24:33.447461+00:00",
+  "fake_data": true,
+  "inputs": [
+    {
+      "bytes": 713673,
+      "json_parsed": true,
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-artifacts/quality-raw-reader.json",
+      "sha256": "409e7364779a9bfe69715973994ae000ae137c1955854205cd75f1927cff5e73",
+      "top_level_keys": [
+        "build_log",
+        "candidate_aggregate_sha256",
+        "candidate_file_count",
+        "candidate_files",
+        "candidate_total_bytes",
+        "dependency_readback",
+        "frozen_payload_manifest",
+        "generated_at",
+        "git_readback",
+        "inputs",
+        "method",
+        "packet_sha256",
+        "tools"
+      ],
+      "top_level_type": "dict"
+    },
+    {
+      "bytes": 5859,
+      "json_parsed": true,
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-artifacts/bounded-raw-views/arch-000-001.json",
+      "sha256": "9938cc809ad64c0db2cd53a3d9f22819886951d18e99034f4dc8c9a8b94998a2",
+      "top_level_keys": [
+        "expected_sha256",
+        "line_end",
+        "line_start",
+        "lines",
+        "origin_path",
+        "origin_sha256"
+      ],
+      "top_level_type": "dict"
+    }
+  ],
+  "kind": "F4-P-r2-quality-preflight-smoke",
+  "packet_sha256": "c5813c1de2c2651500fbded3743bd0d8421bb6ae90cdb468f7ff9f74fadcc0f5",
+  "started_utc": "2026-10-05T03:23:36.292532+00:00"
+}

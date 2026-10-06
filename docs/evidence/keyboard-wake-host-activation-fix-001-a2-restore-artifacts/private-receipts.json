@@ -1,0 +1,50 @@
+[
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-a2-restore-20261005/actions.json",
+    "sha256": "8d528f169da40eebfb70c1f84a6d888c02ff1e52650260714bc2595aabb0085f"
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-a2-restore-20261005/auth.json",
+    "sha256": "32d4af1c44be8976d8289622f93f11a93c40867d37a27139e8e41fbf63793816"
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-a2-restore-20261005/commands.jsonl",
+    "sha256": "616b79ddd27cf15458b47be502df4b6131d0be7b3caae901ae2a4a18ad8027ae"
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-a2-restore-20261005/common.py",
+    "sha256": "a3fe8f94d9610a51fa30dcb9d45ef6700bc22d4e619706dfcdbf4232c8e5a6f0"
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-a2-restore-20261005/install-receipt.json",
+    "sha256": "231e71e66ea81d76a71397d773256d4bbe3757dc406df0f9f8932b65a787effa"
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-a2-restore-20261005/postinstall-containers.json",
+    "sha256": "b17e67a9e7a35e633768488c573a8799d6f4552cb5066d8e05bf4a4e05eeb1ab"
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-a2-restore-20261005/postinstall-inventories.json",
+    "sha256": "5402f6c80c088706404a4b80dcf0f2419c461bb506bce33de42ca40f5bdf5329"
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-a2-restore-20261005/preflight-inventories.json",
+    "sha256": "f44f6ead53d214d48c13469ea75e86583f976f90883249169bae30515d7c87a3"
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-a2-restore-20261005/preflight.json",
+    "sha256": "2a2062af1b89f7a91908c8a48188b63d53b4ca8272a2a7ab6a9185968751619d"
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-a2-restore-20261005/restore-receipt.json",
+    "sha256": "d3233b89ad3396694ceeab808284c16ccd8ee133daa14ce77bacef4fc7e5f5a9"
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-a2-restore-20261005/restore.py",
+    "sha256": "360ccc1285546cfbac3fab596a7336c23265aa6a40d629f994f1fbda11b3af2c"
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-a2-restore-20261005/restored-inventories.json",
+    "sha256": "67034cd686477b88d413a2f0766c7acd0ca1d8f617e0858d0c93c2a1a987cd77"
+  }
+]

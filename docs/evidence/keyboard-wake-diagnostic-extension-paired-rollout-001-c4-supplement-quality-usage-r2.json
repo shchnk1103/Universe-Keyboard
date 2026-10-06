@@ -1,0 +1,60 @@
+{
+  "lane": "Q-C4 independent Quality round 2",
+  "packet": "/private/tmp/ukey-wake-c4-supplement-20261001/packet.md",
+  "packet_sha256": "9b7dee4af17e01a4fce231087f208af00a9ac911201aa4768dc045588eec7e2c",
+  "input_manifest": "/private/tmp/ukey-wake-c4-supplement-20261001/input-manifest.json",
+  "input_manifest_sha256": "4665065e6f1bb3a018722cc038861208cf81b46635de396ff50f46b967c72ea4",
+  "candidate_sha256": "af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9",
+  "repo_root": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "budget": {
+    "max_underlying_tool_interactions": 8,
+    "max_elapsed_seconds": 480
+  },
+  "underlying_tool_interactions": 8,
+  "functions_exec_wrappers_separately_recorded": 8,
+  "interaction_breakdown": {
+    "exec_command": 8,
+    "other_underlying_tools": 0
+  },
+  "failed_interaction_counted": 1,
+  "start_utc": "2026-10-01T00:49:18.558492+00:00",
+  "end_utc": "2026-10-01T00:52:43.855228+00:00",
+  "elapsed_seconds": 205.297,
+  "within_480_second_ceiling": true,
+  "checkpoint_policy": "Checkpoint due after 4 underlying interactions; actual progress checkpoint was sent after interaction 5, one interaction late. Remaining calls were used to complete report and usage within limits.",
+  "coverage": {
+    "D1": "Covered",
+    "D2": "Covered",
+    "D3": "Covered"
+  },
+  "verification": {
+    "explicit_input_files_hash_matches": "7/7",
+    "source_build_inputs_hash_matches": "568/568",
+    "prior_receipt_artifact_hash_matches": "38/38",
+    "skip_inventory_hash_matches": true,
+    "skip_entry_count": 30,
+    "skip_statuses": {
+      "Skipped": 30
+    },
+    "candidate_manifest_hash_matches": true
+  },
+  "scoped_disposition": "C4-Q-01 accepted as nonblocking, unverified residual for this C4 record only; skipped entries are not passed.",
+  "prior_round1_report": "Retained unchanged; its original Blocker conclusion is not rewritten.",
+  "prohibited_actions_performed": {
+    "source_or_result_mutation": false,
+    "git_mutation": false,
+    "build_or_test": false,
+    "simulator_or_install_or_maps": false,
+    "network": false
+  },
+  "outputs": [
+    "quality-review-r2.md",
+    "quality-usage-r2.json"
+  ],
+  "notes": [
+    "The first structure-aware hash pass had a script error because candidate source inputs are a path-to-hash object; it was corrected within the allowed scope. No files were changed by that read-only attempt.",
+    "Root preflight confirmed current status/source/artifacts unchanged except supplemental documentation bookkeeping; this review independently rehashed all 568 source/build inputs and all 38 listed artifacts."
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "utc": "2026-10-04T08:33:35Z",
+  "worktree": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "xcode_select": "/Applications/Xcode.app/Contents/Developer",
+  "xcode_version": "27.0",
+  "xcode_build": "27A266a",
+  "swift_driver": "1.168.6",
+  "apple_swift": "6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)",
+  "swift_format": "main",
+  "pinned_SWIFT_VERSION": "6.0",
+  "vendor_verify": "PASS",
+  "vendor_command": "bash scripts/ensure_rime_vendor.sh verify",
+  "vendor_fetch_run": false,
+  "vendor_dir": "Packages/RimeBridge/Vendor",
+  "vendor_xcframework_count": 12,
+  "receipt": {
+    "version": "rime-vendor-ios-1.16.1-lua.1-octagram.1",
+    "sha256": "d17aab9a8b08b5901ab583c143b0a8a03994e36fe092309fd14c5bee31399dd9"
+  },
+  "manifest_pin": {
+    "version": "rime-vendor-ios-1.16.1-lua.1-octagram.1",
+    "sha256": "d17aab9a8b08b5901ab583c143b0a8a03994e36fe092309fd14c5bee31399dd9"
+  }
+}

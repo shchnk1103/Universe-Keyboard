@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/execution-entry.json",
+  "origin_sha256": "fea8eca0728f068431f2124d95917e2f87272601a1095a03a752d69a384514b4",
+  "expected_sha256": "fea8eca0728f068431f2124d95917e2f87272601a1095a03a752d69a384514b4",
+  "line_start": 1,
+  "line_end": 60,
+  "lines": [
+    {
+      "line": 1,
+      "text": "{"
+    },
+    {
+      "line": 2,
+      "text": "  \"status\": \"F4-P explicitly authorized; Entry passed; build pending\","
+    },
+    {
+      "line": 3,
+      "text": "  \"cwd\": \"/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard\","
+    },
+    {
+      "line": 4,
+      "text": "  \"argv\": ["
+    },
+    {
+      "line": 5,
+      "text": "    \"xcodebuild\","
+    },
+    {
+      "line": 6,
+      "text": "    \"-project\","
+    },
+    {
+      "line": 7,
+      "text": "    \"Universe Keyboard.xcodeproj\","
+    },
+    {
+      "line": 8,
+      "text": "    \"-scheme\","
+    },
+    {
+      "line": 9,
+      "text": "    \"Universe Keyboard\","
+    },
+    {
+      "line": 10,
+      "text": "    \"-configuration\","
+    },
+    {
+      "line": 11,
+      "text": "    \"Debug\","
+    },
+    {
+      "line": 12,
+      "text": "    \"-sdk\","
+    },
+    {
+      "line": 13,
+      "text": "    \"iphonesimulator\","
+    },
+    {
+      "line": 14,
+      "text": "    \"-destination\","
+    },
+    {
+      "line": 15,
+      "text": "    \"generic/platform=iOS Simulator\","
+    },
+    {
+      "line": 16,
+      "text": "    \"-derivedDataPath\","
+    },
+    {
+      "line": 17,
+      "text": "    \"/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData\","
+    },
+    {
+      "line": 18,
+      "text": "    \"-clonedSourcePackagesDirPath\","
+    },
+    {
+      "line": 19,
+      "text": "    \"/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/SourcePackages\","
+    },
+    {
+      "line": 20,
+      "text": "    \"-resultBundlePath\","
+    },
+    {
+      "line": 21,
+      "text": "    \"/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateBuild.xcresult\","
+    },
+    {
+      "line": 22,
+      "text": "    \"-disableAutomaticPackageResolution\","
+    },
+    {
+      "line": 23,
+      "text": "    \"-onlyUsePackageVersionsFromResolvedFile\","
+    },
+    {
+      "line": 24,
+      "text": "    \"-skipPackageUpdates\","
+    },
+    {
+      "line": 25,
+      "text": "    \"CODE_SIGNING_ALLOWED=YES\","
+    },
+    {
+      "line": 26,
+      "text": "    \"SWIFT_VERSION=6.0\","
+    },
+    {
+      "line": 27,
+      "text": "    \"SWIFT_STRICT_CONCURRENCY=complete\","
+    },
+    {
+      "line": 28,
+      "text": "    \"SWIFT_SUPPRESS_WARNINGS=NO\","
+    },
+    {
+      "line": 29,
+      "text": "    \"SWIFT_TREAT_WARNINGS_AS_ERRORS=YES\","
+    },
+    {
+      "line": 30,
+      "text": "    \"ARCHS=arm64\","
+    },
+    {
+      "line": 31,
+      "text": "    \"ONLY_ACTIVE_ARCH=YES\","
+    },
+    {
+      "line": 32,
+      "text": "    \"SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) DEBUG KEYBOARD_WAKE_OWNER_PROBE\","
+    },
+    {
+      "line": 33,
+      "text": "    \"CODE_SIGN_IDENTITY=-\","
+    },
+    {
+      "line": 34,
+      "text": "    \"CODE_SIGNING_REQUIRED=NO\","
+    },
+    {
+      "line": 35,
+      "text": "    \"build\""
+    },
+    {
+      "line": 36,
+      "text": "  ],"
+    },
+    {
+      "line": 37,
+      "text": "  \"output_root\": \"/private/tmp/ukey-host-activation-fix-f4-p-build-20261005\","
+    },
+    {
+      "line": 38,
+      "text": "  \"generic_build_only\": true,"
+    },
+    {
+      "line": 39,
+      "text": "  \"no_device_instance_or_test\": true,"
+    },
+    {
+      "line": 40,
+      "text": "  \"cache_input\": \"only previously pinned local cache after hash/inventory verification; missing dependencies stop, no network fetch\","
+    },
+    {
+      "line": 41,
+      "text": "  \"source_bound_to\": ["
+    },
+    {
+      "line": 42,
+      "text": "    {"
+    },
+    {
+      "line": 43,
+      "text": "      \"path\": \"Keyboard/Controllers/KeyboardViewController.swift\","
+    },
+    {
+      "line": 44,
+      "text": "      \"bytes\": 39626,"
+    },
+    {
+      "line": 45,
+      "text": "      \"sha256\": \"8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a\""
+    },
+    {
+      "line": 46,
+      "text": "    },"
+    },
+    {
+      "line": 47,
+      "text": "    {"
+    },
+    {
+      "line": 48,
+      "text": "      \"path\": \"Keyboard/Controllers/KeyboardViewController+Bootstrap.swift\","
+    },
+    {
+      "line": 49,
+      "text": "      \"bytes\": 52473,"
+    },
+    {
+      "line": 50,
+      "text": "      \"sha256\": \"79d0123dabacd8e5875b66b7c8c897589adbeb8b49d1e22b263678dc1d56f6aa\""
+    },
+    {
+      "line": 51,
+      "text": "    },"
+    },
+    {
+      "line": 52,
+      "text": "    {"
+    },
+    {
+      "line": 53,
+      "text": "      \"path\": \"Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift\","
+    },
+    {
+      "line": 54,
+      "text": "      \"bytes\": 12137,"
+    },
+    {
+      "line": 55,
+      "text": "      \"sha256\": \"c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047\""
+    },
+    {
+      "line": 56,
+      "text": "    },"
+    },
+    {
+      "line": 57,
+      "text": "    {"
+    },
+    {
+      "line": 58,
+      "text": "      \"path\": \"KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift\","
+    },
+    {
+      "line": 59,
+      "text": "      \"bytes\": 19887,"
+    },
+    {
+      "line": 60,
+      "text": "      \"sha256\": \"71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5\""
+    }
+  ]
+}

@@ -1,0 +1,1830 @@
+{
+  "generated_at": "2026-10-05T03:11:38.637598+00:00",
+  "method": "Root host raw read-only proxy requested by independent reviewers; no verdict",
+  "packet_sha256": "f5c6f4c2c68657f3714342c001fe787fffb1052d837eb4dbcba96c0684f98f49",
+  "candidate_files": [
+    {
+      "path": "AppIcon60x60@2x.png",
+      "bytes": 13269,
+      "sha256": "ce5a5af134206119a84915679a3c2002cee278969bb245c1b82aef1104117abb"
+    },
+    {
+      "path": "AppIcon76x76@2x~ipad.png",
+      "bytes": 20614,
+      "sha256": "2a3000961915cd21a57fa854fb2eecc90240d808c18ef1b4a9aeeb8f01b7f647"
+    },
+    {
+      "path": "Assets.car",
+      "bytes": 5778808,
+      "sha256": "eb46a581c30600b71649fb12356d9731e876c55d10fdb73303991cf572007985"
+    },
+    {
+      "path": "BOOST-BSL-1.0.txt",
+      "bytes": 1338,
+      "sha256": "c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566"
+    },
+    {
+      "path": "GOOGLE-GLOG-BSD-3-Clause.txt",
+      "bytes": 1476,
+      "sha256": "3d8faa7c7349b19275982aec674fe746b274e97c3e3b781afc1e2a769ba038f0"
+    },
+    {
+      "path": "HKVariants.ocd2",
+      "bytes": 4893,
+      "sha256": "62750cb79eef18a407030b05bd4abe0e102bec2254d04b2d2310792f44519321"
+    },
+    {
+      "path": "Info.plist",
+      "bytes": 1540,
+      "sha256": "78ab124236b7101b69301f4493fb185f08a1d0e612ab630909540278db15f680"
+    },
+    {
+      "path": "KeyboardCore_KeyboardCore.bundle/Info.plist",
+      "bytes": 677,
+      "sha256": "5af2d53aaf0f23e4205c49e6fe51e5cce996e5ae3728298030da856dde75e1cd"
+    },
+    {
+      "path": "KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeDirectory",
+      "bytes": 212,
+      "sha256": "81beacde89c003ccf47636e123d2da0a69460e5089b78a36dc55cf14242bcbfb"
+    },
+    {
+      "path": "KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeRequirements",
+      "bytes": 12,
+      "sha256": "987920904eab650e75788c054aa0b0524e6a80bfc71aa32df8d237a61743f986"
+    },
+    {
+      "path": "KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeResources",
+      "bytes": 1988,
+      "sha256": "36942c5fe4c20ffaf48d528e2c19071940e28c2d56995c113b3586509f5e2a9d"
+    },
+    {
+      "path": "KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeSignature",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "KeyboardCore_KeyboardCore.bundle/post_commit_continuations_v1_3.json",
+      "bytes": 22728,
+      "sha256": "20266049927492e18b9673b550745ab53e188daaac0ea8cb9acc94de3077a6e4"
+    },
+    {
+      "path": "LEVELDB-BSD-3-Clause.txt",
+      "bytes": 1484,
+      "sha256": "ccc19f1da0798ed666609b65a5b44dd8b3abe6fc08b9c0592eb76e82e174db19"
+    },
+    {
+      "path": "LUA-5.4.8-MIT.txt",
+      "bytes": 1076,
+      "sha256": "7002f3e4a34547bfc65fe998fe8af7885987fcc964a0a9c3c9640bf8f4ab018c"
+    },
+    {
+      "path": "MARISA-COPYING.txt",
+      "bytes": 2275,
+      "sha256": "edf58dab34c3dc239ba4ba2d5d3d844d8c5b442aa4dd1149fac81b2d8c6cb8d1"
+    },
+    {
+      "path": "OPENCC-AUTHORS.txt",
+      "bytes": 277,
+      "sha256": "cb34e252fa994679bcbfc8355581e821ceda44bd857875e2cfe15b7ec4eec006"
+    },
+    {
+      "path": "OPENCC-Apache-2.0.txt",
+      "bytes": 9165,
+      "sha256": "b534e465949558eec2597b04f5092b5e161236a68dfbfd04d547592ac3964308"
+    },
+    {
+      "path": "PkgInfo",
+      "bytes": 8,
+      "sha256": "82502191c9484b04d685374f9879a0066069c49b8acae7a04b01d38d07e8eca0"
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/Info.plist",
+      "bytes": 1095,
+      "sha256": "81b5c6912d13ebe448910bab37349e1d5b427251ec24b51a7c9442bd0b4e8f9a"
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/Keyboard",
+      "bytes": 37872,
+      "sha256": "e681da52516441c044c98419a7c9750d7a90b282cb69bd27e220284376922860"
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+      "bytes": 18357328,
+      "sha256": "773c4eff9640b2623036e3f819301ead3914cb99b66c9c1496ece5986e762aab"
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/Info.plist",
+      "bytes": 677,
+      "sha256": "5af2d53aaf0f23e4205c49e6fe51e5cce996e5ae3728298030da856dde75e1cd"
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeDirectory",
+      "bytes": 212,
+      "sha256": "81beacde89c003ccf47636e123d2da0a69460e5089b78a36dc55cf14242bcbfb"
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeRequirements",
+      "bytes": 12,
+      "sha256": "987920904eab650e75788c054aa0b0524e6a80bfc71aa32df8d237a61743f986"
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeResources",
+      "bytes": 1988,
+      "sha256": "36942c5fe4c20ffaf48d528e2c19071940e28c2d56995c113b3586509f5e2a9d"
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeSignature",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/post_commit_continuations_v1_3.json",
+      "bytes": 22728,
+      "sha256": "20266049927492e18b9673b550745ab53e188daaac0ea8cb9acc94de3077a6e4"
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/PrivacyInfo.xcprivacy",
+      "bytes": 815,
+      "sha256": "1b857c60b79d63a424a44bbc6401f080d05863a5e669372609dd353ed2de14e7"
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/_CodeSignature/CodeResources",
+      "bytes": 4308,
+      "sha256": "237d557eb0aa9484265068656e7c868a452c1c9d350c242c770b2082ac257233"
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/__preview.dylib",
+      "bytes": 16800,
+      "sha256": "eccef4a1b897ac811c714b630fbce2872a5e95af9e026818a5f6a38ef7a59f91"
+    },
+    {
+      "path": "PrivacyInfo.xcprivacy",
+      "bytes": 1056,
+      "sha256": "f95ecfc75a54a82034d09db5abfb136198b22ae50aa1440c77b3191ce8c00851"
+    },
+    {
+      "path": "RIME-ESSAY-AUTHORS.txt",
+      "bytes": 393,
+      "sha256": "4ab2f81451ff4819f2b0e346583b49cee37aec72a01f8ecd96be1711c4204b75"
+    },
+    {
+      "path": "RIME-ESSAY-LGPL-3.0.txt",
+      "bytes": 7651,
+      "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768"
+    },
+    {
+      "path": "RIME-ICE-GPL-3.0-only.txt",
+      "bytes": 35149,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    },
+    {
+      "path": "RIME-LIBRIME-BSD-3-Clause.txt",
+      "bytes": 1513,
+      "sha256": "f67d27a6d2d586fcfed4b4c886a83747095396a39b6641e18e855086be2ec400"
+    },
+    {
+      "path": "RIME-LUA-PLUGIN-BSD-3-Clause.txt",
+      "bytes": 1520,
+      "sha256": "c6bd4f58b13ae9d45c5e53adddeea5049114a25862797c6c6f64920431eea249"
+    },
+    {
+      "path": "RIME-LUNA-PINYIN-AUTHORS.txt",
+      "bytes": 273,
+      "sha256": "dbf21183999dcd06d4b0f0fe08f7396fcb47cc6f734fd97c3dd851777f1b28f8"
+    },
+    {
+      "path": "RIME-LUNA-PINYIN-LGPL-3.0.txt",
+      "bytes": 7651,
+      "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768"
+    },
+    {
+      "path": "RIME-LUNA-PINYIN-SOURCE-ATTRIBUTIONS.txt",
+      "bytes": 735,
+      "sha256": "7bc2625f22ae4f9b3062b99195162a521b3c3bab149b59b29228095e83c40e7b"
+    },
+    {
+      "path": "RIME-OCTAGRAM-BSD-3-Clause.txt",
+      "bytes": 1513,
+      "sha256": "f67d27a6d2d586fcfed4b4c886a83747095396a39b6641e18e855086be2ec400"
+    },
+    {
+      "path": "RIME-OCTAGRAM-PROVENANCE.txt",
+      "bytes": 547,
+      "sha256": "4e70ceafc631201750b130768a5c77f0ce9d06e9f6b522ce16955919cf5e1e20"
+    },
+    {
+      "path": "RIME-PRELUDE-AUTHORS.txt",
+      "bytes": 142,
+      "sha256": "9296a3509f1bcaee9e316ff70fccf76bf3a1f19c089b795710808ea5b6a0e6e7"
+    },
+    {
+      "path": "RIME-PRELUDE-LGPL-3.0.txt",
+      "bytes": 7651,
+      "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768"
+    },
+    {
+      "path": "RIME-STROKE-AUTHORS.txt",
+      "bytes": 273,
+      "sha256": "f0cbba217e049471ccb40751b7d2e1c98144bb2ad4ec15b9f5af057121ec99d6"
+    },
+    {
+      "path": "RIME-STROKE-LGPL-3.0.txt",
+      "bytes": 7651,
+      "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768"
+    },
+    {
+      "path": "RIME-WANXIANG-CC-BY-4.0.txt",
+      "bytes": 18656,
+      "sha256": "9e5f1b3c610b9c2da5c313bf81d577a7d1acec686bdb0384edefa6df0f90cd94"
+    },
+    {
+      "path": "RimeBuiltin.manifest.json",
+      "bytes": 13582,
+      "sha256": "6aa2d28918b9146cdf417ddb369ba57907e5bbcc3e2ce2c9bc1280f1a6e7b233"
+    },
+    {
+      "path": "STCharacters.ocd2",
+      "bytes": 45310,
+      "sha256": "1ec2298310ca5a9151a554ea57bd86a6296ce917e4cdd1dd0884f789c477641b"
+    },
+    {
+      "path": "STPhrases.ocd2",
+      "bytes": 928154,
+      "sha256": "16fd5f086b2a3be7aa9679deb7f728cf447f5d5419f65b2766a2d8671e84e77d"
+    },
+    {
+      "path": "TSCharacters.ocd2",
+      "bytes": 46126,
+      "sha256": "85291e0173e972bbca58c848fb90b3bb41c79674cb61a75645e01bd884ad5927"
+    },
+    {
+      "path": "TSPhrases.ocd2",
+      "bytes": 9777,
+      "sha256": "83696b4a2074f2f5c1786949444281ae191ccb0b75d98cd9ac51bcb35f890cb3"
+    },
+    {
+      "path": "TWVariants.ocd2",
+      "bytes": 4595,
+      "sha256": "390f07a1867ad56aa60a7af23b6e4b3acc96ea48d893c06ede3dffb1c576c2bc"
+    },
+    {
+      "path": "Universe Keyboard",
+      "bytes": 40512,
+      "sha256": "38cbdd01d7b664db0c435452086dd209447135f886906bab8181610a6a7e6feb"
+    },
+    {
+      "path": "Universe Keyboard.debug.dylib",
+      "bytes": 32859232,
+      "sha256": "c00095f4d2016cf31b876ed5f3f17f53c5ec97d64704829b629d23ab7a57e200"
+    },
+    {
+      "path": "YAML-CPP-MIT.txt",
+      "bytes": 1061,
+      "sha256": "aa6fcc27be034e41e21dd832f9175bfe694a48491d9e14ff0fa278e19ad14f1b"
+    },
+    {
+      "path": "_CodeSignature/CodeResources",
+      "bytes": 20043,
+      "sha256": "9d952e78567ea0ac22869ab4e2f806de503af89f1c73ce71e68f3c4d0e9790fb"
+    },
+    {
+      "path": "__preview.dylib",
+      "bytes": 16800,
+      "sha256": "39c5084b204f9a2a3244e4b94d1d38fe74346d45c4fc0a6a7b1f3d38a9645a0a"
+    },
+    {
+      "path": "default.yaml",
+      "bytes": 1593,
+      "sha256": "0628ada16651d56c4cdfcb8e45ddba23d4d585cc8be0580a62c4e077c0bcc141"
+    },
+    {
+      "path": "essay.txt",
+      "bytes": 5887417,
+      "sha256": "a6f8409c261e5d21bd78e6cbcde8f8e1ef7f68c07ff1c2692c07dd4ff4151cea"
+    },
+    {
+      "path": "key_bindings.yaml",
+      "bytes": 3117,
+      "sha256": "ee2476598b4cae89068b823868196eb07b5f72007a600814fe5804b39008b3ed"
+    },
+    {
+      "path": "luna_pinyin.dict.yaml",
+      "bytes": 889896,
+      "sha256": "75bcf6eb3ff62b129882ed89cc22b2d80a5347aa72bcfa2ccc839bac298e7314"
+    },
+    {
+      "path": "luna_pinyin.prism.bin",
+      "bytes": 31728,
+      "sha256": "012d8360150c3e2f55330d21f9aa16281660e25c15db8c983090f14293da878f"
+    },
+    {
+      "path": "luna_pinyin.reverse.bin",
+      "bytes": 252760,
+      "sha256": "bd314158c00bf36c9ba8f7321d7e6ab6dfbdaa283b11c4856adfd2f58a781179"
+    },
+    {
+      "path": "luna_pinyin.schema.yaml",
+      "bytes": 2809,
+      "sha256": "668b4d4957e4cc8f9cea32ed3f08f0ecf4a7be8cdba058700507487bd96dd5c7"
+    },
+    {
+      "path": "luna_pinyin.table.bin",
+      "bytes": 13011464,
+      "sha256": "55a54e8e55deaade0e4d7646a7ad2b8602901f4007b60c637d993468eff64e03"
+    },
+    {
+      "path": "pinyin.yaml",
+      "bytes": 4895,
+      "sha256": "caa220b05172bf35775db07fed6ead7719c742e6139232d9797040dbe65f746c"
+    },
+    {
+      "path": "punctuation.yaml",
+      "bytes": 2107,
+      "sha256": "d6f89592149098f0a2d0ed3e5c83f49adb6226cdf1d967b0bc0d293f4e5c496a"
+    },
+    {
+      "path": "s2t.json",
+      "bytes": 424,
+      "sha256": "0b86f3aa92c72ac5fcb11bc9df21914ed42f6847416a1d4d7f52f8b5eb861e74"
+    },
+    {
+      "path": "stroke.dict.yaml",
+      "bytes": 3396330,
+      "sha256": "b3e93dce89c185f45c3d6e189b86b3a8626913352cc85e1094c786579a665791"
+    },
+    {
+      "path": "stroke.prism.bin",
+      "bytes": 3501372,
+      "sha256": "5acfdf5842006fb7eacf9e2c9920e917a18356b78cd55b4023ecd836665ff383"
+    },
+    {
+      "path": "stroke.reverse.bin",
+      "bytes": 1498508,
+      "sha256": "0618448a659ec3e316ef230dce808a40388a57c664cf257eab1e9b64d86909cb"
+    },
+    {
+      "path": "stroke.schema.yaml",
+      "bytes": 3056,
+      "sha256": "06f680cf7c9d9a69948681ee25e9f6aeccfde4d8d590f93e179d4c4b3caee879"
+    },
+    {
+      "path": "stroke.table.bin",
+      "bytes": 4548444,
+      "sha256": "de1a978a7d97e7ccef5f85eaaa4cc76dcbd4d75cdf750926edfc2ea3e65603d5"
+    },
+    {
+      "path": "symbols.yaml",
+      "bytes": 28473,
+      "sha256": "6d08969525bd66c67abf1791c99928079356bd0e673386c49c1959d2a52fdbba"
+    },
+    {
+      "path": "t2hk.json",
+      "bytes": 322,
+      "sha256": "3d5c1c7540992e821fef56858a001d8ea2720a394975b915fb5944fe42efc0fd"
+    },
+    {
+      "path": "t2s.json",
+      "bytes": 424,
+      "sha256": "18d64a23de26c39d0e247d36e12d585653f44f2e231c3397050456565581a819"
+    },
+    {
+      "path": "t2tw.json",
+      "bytes": 320,
+      "sha256": "7b2eb8aa8b76c1e2b1a41e8ce38a327d0aac5e49cfcefe763744b17fdeefb7b5"
+    }
+  ],
+  "candidate_file_count": 78,
+  "candidate_total_bytes": 91448700,
+  "candidate_aggregate_sha256": "d53523dba8c371c67424ff07c79163a66f41e3bc5bb402637cf9ee79ae7579cb",
+  "build_log": {
+    "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/build.log",
+    "bytes": 548418,
+    "sha256": "18fe20fc1ded0462750c2ac57b79c3950ec9804febde2e4e1d435d9ad65b907b",
+    "expected_sha256": "18fe20fc1ded0462750c2ac57b79c3950ec9804febde2e4e1d435d9ad65b907b",
+    "matching_lines": [
+      {
+        "line": 518,
+        "text": "    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -parse-as-library -module-name KeyboardCore -Onone @/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/KeyboardCore.build/Debug-iphonesimulator/KeyboardCore-t.build/Objects-normal/arm64/KeyboardCore.SwiftFileList -DSWIFT_PACKAGE -DDEBUG -DSWIFT_MODULE_RESOURCE_BUNDLE_AVAILABLE -DDEBUG -DKEYBOARD_WAKE_OWNER_PROBE -DXcode -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios18.0-simulator -g -module-cache-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -warnings-as-errors -index-store-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks -c -j8 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/SDKStatCaches.noindex/iphonesimulator27.0-24A430-8dc58220667be655e1bcc261a7455254.sdkstatcache -output-file-map /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/KeyboardCore.build/Debug-iphonesimulator/KeyboardCore-t.build/Objects-normal/arm64/KeyboardCore-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/ModuleCache.noindex -sdk-module-cache-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/KeyboardCore.build/Debug-iphonesimulator/KeyboardCore-t.build/Objects-normal/arm64/KeyboardCore.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/KeyboardCore.build/Debug-iphonesimulator/KeyboardCore-t.build/Objects-normal/arm64/KeyboardCore-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\\=86400 -Xcc -fmodules-prune-after\\=345600 -package-name keyboardcore -emit-const-values -const-gather-protocols-list /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/KeyboardCore.build/Debug-iphonesimulator/KeyboardCore-t.build/Objects-normal/arm64/KeyboardCore_const_extract_protocols.json -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/include -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/KeyboardCore.build/Debug-iphonesimulator/KeyboardCore-t.build/DerivedSources-normal/arm64 -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/KeyboardCore.build/Debug-iphonesimulator/KeyboardCore-t.build/DerivedSources/arm64 -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/KeyboardCore.build/Debug-iphonesimulator/KeyboardCore-t.build/DerivedSources -Xcc -DSWIFT_PACKAGE -Xcc -DDEBUG\\=1 -emit-objc-header -emit-objc-header-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/KeyboardCore.build/Debug-iphonesimulator/KeyboardCore-t.build/Objects-normal/arm64/KeyboardCore-Swift.h -working-directory /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard.xcodeproj -experimental-emit-module-separately -disable-cmo"
+      },
+      {
+        "line": 711,
+        "text": "SwiftCompile normal arm64 (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 715,
+        "text": "SwiftCompile normal arm64 Compiling\\ T9PinyinSyllableCatalog.generated.swift,\\ T9PreeditResolver.swift,\\ T9ResponsiveEvidenceValidator.swift,\\ T9ReversibleAutoAnchor.swift,\\ T9SchemaCompatibility.swift,\\ T9SchemaForceGCDiagnostic.swift,\\ T9ShadowAnchorAnalyzer.swift,\\ TextInputClient.swift,\\ ThreadAffineRimeSession.swift,\\ ThreadAffineRimeSpike.swift,\\ TypingIntelligence.swift,\\ TypingStatisticsStore.swift,\\ TypoCorrection.swift,\\ TypoCorrectionBenchmark.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9PinyinSyllableCatalog.generated.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9PreeditResolver.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9ResponsiveEvidenceValidator.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9ReversibleAutoAnchor.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9SchemaCompatibility.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9SchemaForceGCDiagnostic.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9ShadowAnchorAnalyzer.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/TextInputClient.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ThreadAffineRimeSession.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ThreadAffineRimeSpike.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/TypingIntelligence.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/TypingStatisticsStore.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrection.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionBenchmark.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 717,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9PinyinSyllableCatalog.generated.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 721,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9PreeditResolver.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 725,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9ResponsiveEvidenceValidator.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 729,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9ReversibleAutoAnchor.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 733,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9SchemaCompatibility.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 737,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9SchemaForceGCDiagnostic.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 741,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9ShadowAnchorAnalyzer.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 745,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/TextInputClient.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 749,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ThreadAffineRimeSession.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 753,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ThreadAffineRimeSpike.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 757,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/TypingIntelligence.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 761,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/TypingStatisticsStore.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 765,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrection.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 769,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionBenchmark.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 773,
+        "text": "SwiftCompile normal arm64 Compiling\\ TypoCorrectionCandidateQuery.swift,\\ TypoCorrectionDecisionTrace.swift,\\ TypoCorrectionExperimentalSettings.swift,\\ TypoCorrectionLearning.swift,\\ TypoCorrectionRecallDiagnosticMarkers.swift,\\ TypoCorrectionRecallMaterial.swift,\\ TypoCorrectionRecallPreflight.swift,\\ TypoCorrectionSidecarOwner.swift,\\ Unzip.swift,\\ ZLib.swift,\\ ZipArchiveReader.swift,\\ ZipBinaryReader.swift,\\ ZipInflater.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionCandidateQuery.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionDecisionTrace.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionExperimentalSettings.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionLearning.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionRecallDiagnosticMarkers.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionRecallMaterial.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionRecallPreflight.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionSidecarOwner.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/Unzip.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ZLib.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ZipArchiveReader.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ZipBinaryReader.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ZipInflater.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 775,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionCandidateQuery.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 779,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionDecisionTrace.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 783,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionExperimentalSettings.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 787,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionLearning.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 791,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionRecallDiagnosticMarkers.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 795,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionRecallMaterial.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 799,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionRecallPreflight.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 803,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionSidecarOwner.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 807,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/Unzip.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 811,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ZLib.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 815,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ZipArchiveReader.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 819,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ZipBinaryReader.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 823,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ZipInflater.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 827,
+        "text": "SwiftCompile normal arm64 Compiling\\ PendingKaomoji.swift,\\ PendingPunctuation.swift,\\ PostCommitContinuation.swift,\\ ResourceOwnership.swift,\\ ResponsiveProvisionalComposition.swift,\\ ResponsiveRimeCanaryMode.swift,\\ ResponsiveRimeFeltMetrics.swift,\\ ResponsiveRimePipeline.swift,\\ ResponsiveRimePreflight.swift,\\ RimeAdvancedInputPostProcessor.swift,\\ RimeAdvancedInputSettings.swift,\\ RimeBaseSchemaTemplates.swift,\\ RimeCandidate.swift,\\ RimeComposition.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/PendingKaomoji.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/PendingPunctuation.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/PostCommitContinuation.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ResourceOwnership.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ResponsiveProvisionalComposition.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ResponsiveRimeCanaryMode.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ResponsiveRimeFeltMetrics.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ResponsiveRimePipeline.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ResponsiveRimePreflight.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeAdvancedInputPostProcessor.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeAdvancedInputSettings.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeBaseSchemaTemplates.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeCandidate.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeComposition.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 829,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/PendingKaomoji.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 833,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/PendingPunctuation.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 837,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/PostCommitContinuation.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 841,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ResourceOwnership.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 845,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ResponsiveProvisionalComposition.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 849,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ResponsiveRimeCanaryMode.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 853,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ResponsiveRimeFeltMetrics.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 857,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ResponsiveRimePipeline.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 861,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ResponsiveRimePreflight.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 865,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeAdvancedInputPostProcessor.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 869,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeAdvancedInputSettings.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 873,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeBaseSchemaTemplates.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 877,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeCandidate.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 881,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeComposition.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 885,
+        "text": "SwiftCompile normal arm64 Compiling\\ RimeUserDictionarySettings.swift,\\ RimeWanxiangSharedDefaultAdapter.swift,\\ SchemeAdapter.swift,\\ SchemePostExtractHooks.swift,\\ SchemeUninstallHooks.swift,\\ SerialRimeSession.swift,\\ T9AutoAnchorRetryShadowAnalyzer.swift,\\ T9CompositionIdentity.swift,\\ T9DevicePreflightEvidenceLineFilter.swift,\\ T9DevicePreflightRun.swift,\\ T9Gate5CompositionTrace.swift,\\ T9IdlePathHintPolicy.swift,\\ T9PinyinLocalPathCatalog.swift,\\ T9PinyinPath.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeUserDictionarySettings.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeWanxiangSharedDefaultAdapter.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/SchemeAdapter.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/SchemePostExtractHooks.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/SchemeUninstallHooks.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/SerialRimeSession.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9AutoAnchorRetryShadowAnalyzer.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9CompositionIdentity.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9DevicePreflightEvidenceLineFilter.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9DevicePreflightRun.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9Gate5CompositionTrace.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9IdlePathHintPolicy.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9PinyinLocalPathCatalog.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9PinyinPath.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 887,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeUserDictionarySettings.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 891,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeWanxiangSharedDefaultAdapter.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 895,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/SchemeAdapter.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 899,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/SchemePostExtractHooks.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 903,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/SchemeUninstallHooks.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 907,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/SerialRimeSession.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 911,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9AutoAnchorRetryShadowAnalyzer.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 915,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9CompositionIdentity.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 919,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9DevicePreflightEvidenceLineFilter.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 923,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9DevicePreflightRun.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 927,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9Gate5CompositionTrace.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 931,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9IdlePathHintPolicy.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 935,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9PinyinLocalPathCatalog.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 939,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/T9PinyinPath.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 943,
+        "text": "SwiftCompile normal arm64 Compiling\\ RimeConfigPostProcessor.swift,\\ RimeConfigTemplateGenerator.swift,\\ RimeEngine.swift,\\ RimeFallbackDictionaryTemplate.swift,\\ RimeFuzzyPinyinPostProcessor.swift,\\ RimeFuzzyPinyinSettings.swift,\\ RimeIceSharedDefaultAdapter.swift,\\ RimeOpenCCConversionTemplates.swift,\\ RimeOutput.swift,\\ RimeRuntimeRouteReconciliation.swift,\\ RimeRuntimeSelection.swift,\\ RimeSchemeCapabilityMatrix.swift,\\ RimeSchemeNativeUsageGuide.swift,\\ RimeT9Readiness.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeConfigPostProcessor.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeConfigTemplateGenerator.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeEngine.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeFallbackDictionaryTemplate.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeFuzzyPinyinPostProcessor.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeFuzzyPinyinSettings.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeIceSharedDefaultAdapter.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeOpenCCConversionTemplates.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeOutput.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeRuntimeRouteReconciliation.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeRuntimeSelection.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeSchemeCapabilityMatrix.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeSchemeNativeUsageGuide.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeT9Readiness.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 945,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeConfigPostProcessor.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 949,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeConfigTemplateGenerator.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 953,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeEngine.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 957,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeFallbackDictionaryTemplate.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 961,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeFuzzyPinyinPostProcessor.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 965,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeFuzzyPinyinSettings.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 969,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeIceSharedDefaultAdapter.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 973,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeOpenCCConversionTemplates.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 977,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeOutput.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 981,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeRuntimeRouteReconciliation.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 985,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeRuntimeSelection.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 989,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeSchemeCapabilityMatrix.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 993,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeSchemeNativeUsageGuide.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 997,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/RimeT9Readiness.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1001,
+        "text": "SwiftCompile normal arm64 Compiling\\ resource_bundle_accessor.swift,\\ AutoCapitalizationRules.swift,\\ CandidateItem.swift,\\ CandidateProvider.swift,\\ CandidateProviderRimeAdapter.swift,\\ ChromeTouchHitGeometry.swift,\\ ContextualTypoCorrection.swift,\\ DebugKeyHitboxConfiguration.swift,\\ DiagnosticEvent.swift,\\ DiagnosticEventWireValidator.swift,\\ DiagnosticsHighFidelityConfiguration.swift,\\ DiagnosticsJournal.swift,\\ DiagnosticsJournalIngress.swift,\\ DiagnosticsJournalRuntime.swift /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/KeyboardCore.build/Debug-iphonesimulator/KeyboardCore-t.build/DerivedSources/resource_bundle_accessor.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/AutoCapitalizationRules.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/CandidateItem.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/CandidateProvider.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/CandidateProviderRimeAdapter.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ChromeTouchHitGeometry.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ContextualTypoCorrection.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/DebugKeyHitboxConfiguration.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticEvent.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticEventWireValidator.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsHighFidelityConfiguration.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournal.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournalIngress.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournalRuntime.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1003,
+        "text": "SwiftCompile normal arm64 /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/KeyboardCore.build/Debug-iphonesimulator/KeyboardCore-t.build/DerivedSources/resource_bundle_accessor.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1007,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/AutoCapitalizationRules.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1011,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/CandidateItem.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1015,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/CandidateProvider.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1019,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/CandidateProviderRimeAdapter.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1023,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ChromeTouchHitGeometry.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1027,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ContextualTypoCorrection.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1031,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/DebugKeyHitboxConfiguration.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1035,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticEvent.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1039,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticEventWireValidator.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1043,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsHighFidelityConfiguration.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1047,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournal.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1051,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournalIngress.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1055,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournalRuntime.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1059,
+        "text": "SwiftCompile normal arm64 Compiling\\ KeyboardController+T9ReversibleAutoAnchor.swift,\\ KeyboardController+TextEditing.swift,\\ KeyboardController+TypoCorrection.swift,\\ KeyboardController.swift,\\ KeyboardEffect.swift,\\ KeyboardFeedbackSettings.swift,\\ KeyboardInputSettings.swift,\\ KeyboardLayoutStyle.swift,\\ KeyboardState.swift,\\ KeyboardWakeOwnerProbe.swift,\\ Logger.swift,\\ LoggerWriter.swift,\\ P3D1LifecycleEvidenceValidator.swift,\\ PartialCommitState.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+T9ReversibleAutoAnchor.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+TextEditing.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+TypoCorrection.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardEffect.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardFeedbackSettings.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardInputSettings.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardLayoutStyle.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardState.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardWakeOwnerProbe.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/Logger.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/LoggerWriter.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/P3D1LifecycleEvidenceValidator.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/PartialCommitState.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1061,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+T9ReversibleAutoAnchor.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1065,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+TextEditing.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1069,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+TypoCorrection.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1073,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1077,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardEffect.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1081,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardFeedbackSettings.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1085,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardInputSettings.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1089,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardLayoutStyle.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1093,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardState.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1097,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardWakeOwnerProbe.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1101,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/Logger.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1105,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/LoggerWriter.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1109,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/P3D1LifecycleEvidenceValidator.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1113,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/PartialCommitState.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1117,
+        "text": "SwiftCompile normal arm64 Compiling\\ FakeCandidateProvider.swift,\\ FakeTextInputClient.swift,\\ HotPathSegmentTiming.swift,\\ KeyTouchCellLayout.swift,\\ KeyboardAction.swift,\\ KeyboardAppearanceSettings.swift,\\ KeyboardController+Candidates.swift,\\ KeyboardController+Continuation.swift,\\ KeyboardController+ModeAndShift.swift,\\ KeyboardController+PartialCommit.swift,\\ KeyboardController+PendingKaomoji.swift,\\ KeyboardController+PendingPunctuation.swift,\\ KeyboardController+RimeRecovery.swift,\\ KeyboardController+T9PinyinPath.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/FakeCandidateProvider.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/FakeTextInputClient.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/HotPathSegmentTiming.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyTouchCellLayout.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardAction.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardAppearanceSettings.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+Candidates.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+Continuation.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+ModeAndShift.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+PartialCommit.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+PendingKaomoji.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+PendingPunctuation.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+RimeRecovery.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+T9PinyinPath.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1119,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/FakeCandidateProvider.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1123,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/FakeTextInputClient.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1127,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/HotPathSegmentTiming.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1131,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyTouchCellLayout.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1135,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardAction.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1139,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardAppearanceSettings.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1143,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+Candidates.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1147,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+Continuation.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1151,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+ModeAndShift.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1155,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+PartialCommit.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1159,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+PendingKaomoji.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1163,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+PendingPunctuation.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1167,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+RimeRecovery.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1171,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+T9PinyinPath.swift (in target 'KeyboardCore' from project 'KeyboardCore')"
+      },
+      {
+        "line": 1229,
+        "text": "SwiftCompile normal arm64 (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1233,
+        "text": "SwiftCompile normal arm64 Compiling\\ RimeProcessKeyBridgeTiming.swift,\\ RimeRuntimeLogSnapshot.swift,\\ RimeRuntimeSelectionBridge.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeProcessKeyBridgeTiming.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeRuntimeLogSnapshot.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeRuntimeSelectionBridge.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1235,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeProcessKeyBridgeTiming.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1239,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeRuntimeLogSnapshot.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1243,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeRuntimeSelectionBridge.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1247,
+        "text": "SwiftCompile normal arm64 Compiling\\ RimeConfigManager+Preferences.swift,\\ RimeConfigManager+RuntimeDirectories.swift,\\ RimeConfigManager.swift,\\ RimeDeploymentService.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeConfigManager+Preferences.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeConfigManager+RuntimeDirectories.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeConfigManager.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeDeploymentService.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1249,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeConfigManager+Preferences.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1253,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeConfigManager+RuntimeDirectories.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1257,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeConfigManager.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1261,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeDeploymentService.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1265,
+        "text": "SwiftCompile normal arm64 Compiling\\ RimeSchemaRuntimeSmokeProbe.swift,\\ RimeStandardSyncService.swift,\\ RimeSyncKeyboardActivity.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeSchemaRuntimeSmokeProbe.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeStandardSyncService.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeSyncKeyboardActivity.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1267,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeSchemaRuntimeSmokeProbe.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1271,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeStandardSyncService.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1275,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeSyncKeyboardActivity.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1279,
+        "text": "SwiftCompile normal arm64 Compiling\\ RimeBridgeCapabilities.swift,\\ RimeBuiltinResourceInstaller.swift,\\ RimeConfigManager+CustomYaml.swift,\\ RimeConfigManager+DeploymentResources.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeBridgeCapabilities.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeBuiltinResourceInstaller.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeConfigManager+CustomYaml.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeConfigManager+DeploymentResources.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1281,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeBridgeCapabilities.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1285,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeBuiltinResourceInstaller.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1289,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeConfigManager+CustomYaml.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1293,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeConfigManager+DeploymentResources.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1297,
+        "text": "SwiftCompile normal arm64 Compiling\\ RimeEngineImpl.swift,\\ RimeFirstKeyBridgeTiming.swift,\\ RimeLuaRuntimeSmokeProbe.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeFirstKeyBridgeTiming.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeLuaRuntimeSmokeProbe.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1299,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1303,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeFirstKeyBridgeTiming.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1307,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeLuaRuntimeSmokeProbe.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1319,
+        "text": "SwiftCompile normal arm64 Compiling\\ RimeEngineImpl+Output.swift,\\ RimeEngineImpl+SchemaValidation.swift,\\ RimeEngineImpl+SessionRecovery.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+Output.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+SchemaValidation.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+SessionRecovery.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1321,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+Output.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1325,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+SchemaValidation.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1329,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+SessionRecovery.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1333,
+        "text": "SwiftCompile normal arm64 Compiling\\ RimeT9SmokeProbe.swift,\\ ThreadAffineRimeEngineImplBootstrap.swift,\\ TypoCorrectionSidecarOwnerAdapters.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeT9SmokeProbe.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/ThreadAffineRimeEngineImplBootstrap.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/TypoCorrectionSidecarOwnerAdapters.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1335,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeT9SmokeProbe.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1339,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/ThreadAffineRimeEngineImplBootstrap.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1343,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/TypoCorrectionSidecarOwnerAdapters.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1371,
+        "text": "SwiftCompile normal arm64 Compiling\\ RimeEngineImpl+Candidates.swift,\\ RimeEngineImpl+CorrectionQuery.swift,\\ RimeEngineImpl+Input.swift,\\ RimeEngineImpl+Keycodes.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+Candidates.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+CorrectionQuery.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+Input.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+Keycodes.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1373,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+Candidates.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1377,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+CorrectionQuery.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1381,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+Input.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1385,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+Keycodes.swift (in target 'RimeBridge' from project 'RimeBridge')"
+      },
+      {
+        "line": 1425,
+        "text": "    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Keyboard -Onone @/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Objects-normal/arm64/Keyboard.SwiftFileList -DDEBUG -DDEBUG -DKEYBOARD_WAKE_OWNER_PROBE -Xcc -fmodule-map-file\\=/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/RimeBridgeObjC.modulemap -default-isolation\\=MainActor -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios18.0-simulator -g -module-cache-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -application-extension -profile-coverage-mapping -profile-generate -enable-testing -warnings-as-errors -index-store-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator -F /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator -emit-localized-strings -emit-localized-strings-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Objects-normal/arm64 -c -j8 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/SDKStatCaches.noindex/iphonesimulator27.0-24A430-8dc58220667be655e1bcc261a7455254.sdkstatcache -output-file-map /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Objects-normal/arm64/Keyboard-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/ModuleCache.noindex -sdk-module-cache-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Objects-normal/arm64/Keyboard.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Objects-normal/arm64/Keyboard-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\\=86400 -Xcc -fmodules-prune-after\\=345600 -emit-const-values -const-gather-protocols-list /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Objects-normal/arm64/Keyboard_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Keyboard-generated-files.hmap -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Keyboard-own-target-headers.hmap -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Keyboard-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard-c7db5b74330b406efaaaa4547e6a5407-VFS-iphonesimulator/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Keyboard-project-headers.hmap -Xcc -I/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridgeObjC/include -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/include -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/DerivedSources-normal/arm64 -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/DerivedSources/arm64 -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/DerivedSources -Xcc -DDEBUG\\=1 -emit-objc-header -emit-objc-header-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Objects-normal/arm64/Keyboard-Swift.h -working-directory /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard -experimental-emit-module-separately -disable-cmo"
+      },
+      {
+        "line": 1621,
+        "text": "SwiftCompile normal arm64 (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1625,
+        "text": "SwiftCompile normal arm64 Compiling\\ KeyboardViewController+TypoCorrection.swift,\\ KeyboardViewController+WakeOwnerProbe.swift,\\ KeyVisualStyle.swift,\\ TypoCorrectionRecallCoordinator.swift,\\ KeyboardHostLifecycleRecoveryGate.swift,\\ UITextDocumentProxyAdapter.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+TypoCorrection.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyVisualStyle.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/TypoCorrectionRecallCoordinator.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Services/UITextDocumentProxyAdapter.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1627,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+TypoCorrection.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1631,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1635,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyVisualStyle.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1639,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/TypoCorrectionRecallCoordinator.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1643,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1647,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Services/UITextDocumentProxyAdapter.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1651,
+        "text": "SwiftCompile normal arm64 Compiling\\ KeyboardViewController+BottomRow.swift,\\ KeyboardViewController+CandidateBar.swift,\\ KeyboardViewController+CandidateDataSource.swift,\\ KeyboardViewController+CandidatePaging.swift,\\ KeyboardViewController+CandidateTouchDiagnostics.swift,\\ KeyboardViewController+DeleteActions.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+BottomRow.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+CandidateBar.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+CandidatePaging.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+CandidateTouchDiagnostics.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+DeleteActions.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1653,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+BottomRow.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1657,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+CandidateBar.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1661,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1665,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+CandidatePaging.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1669,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+CandidateTouchDiagnostics.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1673,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+DeleteActions.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1677,
+        "text": "SwiftCompile normal arm64 Compiling\\ KeyboardType+UIKit.swift,\\ DeleteRepeatController.swift,\\ KeyboardInputHitAreaStackView.swift,\\ KeyboardKeyButton.swift,\\ KeyboardViewController.swift,\\ KeyboardViewController+Bootstrap.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Bridge/KeyboardType+UIKit.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/DeleteRepeatController.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardInputHitAreaStackView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardKeyButton.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+Bootstrap.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1679,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Bridge/KeyboardType+UIKit.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1683,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/DeleteRepeatController.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1687,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardInputHitAreaStackView.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1691,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardKeyButton.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1695,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1699,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+Bootstrap.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1703,
+        "text": "SwiftCompile normal arm64 Compiling\\ DebugKeyTouchRangeOverlayView.swift,\\ EmojiDataSource.swift,\\ KeyboardAudioFeedbackInputView.swift,\\ KeyPopupView.swift,\\ T9PinyinPathBarView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Views/DebugKeyTouchRangeOverlayView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Views/EmojiDataSource.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Views/KeyboardAudioFeedbackInputView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Views/KeyPopupView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Views/T9PinyinPathBarView.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1705,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Views/DebugKeyTouchRangeOverlayView.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1709,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Views/EmojiDataSource.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1713,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Views/KeyboardAudioFeedbackInputView.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1717,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Views/KeyPopupView.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1721,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Views/T9PinyinPathBarView.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1725,
+        "text": "SwiftCompile normal arm64 Compiling\\ KeyboardViewController+Layout.swift,\\ KeyboardViewController+ModeActions.swift,\\ KeyboardViewController+Presentation.swift,\\ KeyboardViewController+Rows.swift,\\ KeyboardViewController+SpaceCursor.swift,\\ KeyboardViewController+T9PinyinPath.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+Layout.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+ModeActions.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+Presentation.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+Rows.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+SpaceCursor.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+T9PinyinPath.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1727,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+Layout.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1731,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+ModeActions.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1735,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+Presentation.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1739,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+Rows.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1743,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+SpaceCursor.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1747,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+T9PinyinPath.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1751,
+        "text": "SwiftCompile normal arm64 Compiling\\ CandidateBarDataSource.swift,\\ CandidateBarView.swift,\\ CandidateButtonFactory.swift,\\ CandidateCell.swift,\\ CandidateCollectionView.swift,\\ CandidateScrollViewStyle.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Views/CandidateBar/CandidateBarDataSource.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Views/CandidateBar/CandidateButtonFactory.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Views/CandidateBar/CandidateCell.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Views/CandidateBar/CandidateCollectionView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Views/CandidateBar/CandidateScrollViewStyle.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1753,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Views/CandidateBar/CandidateBarDataSource.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1757,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1761,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Views/CandidateBar/CandidateButtonFactory.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1765,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Views/CandidateBar/CandidateCell.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1769,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Views/CandidateBar/CandidateCollectionView.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1773,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Views/CandidateBar/CandidateScrollViewStyle.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1777,
+        "text": "SwiftCompile normal arm64 Compiling\\ KeyboardViewController+Gestures.swift,\\ KeyboardViewController+InputActions.swift,\\ KeyboardViewController+KeyAccessibility.swift,\\ KeyboardViewController+KeyFactory.swift,\\ KeyboardViewController+KeyPressFeedback.swift,\\ KeyboardViewController+KeyStyle.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+Gestures.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+InputActions.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+KeyAccessibility.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+KeyFactory.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+KeyPressFeedback.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+KeyStyle.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1779,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+Gestures.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1783,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+InputActions.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1787,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+KeyAccessibility.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1791,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+KeyFactory.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1795,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+KeyPressFeedback.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1799,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+KeyStyle.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1803,
+        "text": "SwiftCompile normal arm64 Compiling\\ KeyboardViewController+DevicePreflight.swift,\\ KeyboardViewController+Display.swift,\\ KeyboardViewController+DocumentChanges.swift,\\ KeyboardViewController+EmojiLayout.swift,\\ KeyboardViewController+ExpandedCandidatePanel.swift,\\ KeyboardViewController+Feedback.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+DevicePreflight.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+Display.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+DocumentChanges.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+EmojiLayout.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+ExpandedCandidatePanel.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+Feedback.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1805,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+DevicePreflight.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1809,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+Display.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1813,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+DocumentChanges.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1817,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+EmojiLayout.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1821,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+ExpandedCandidatePanel.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1825,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Keyboard/Controllers/KeyboardViewController+Feedback.swift (in target 'Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 1951,
+        "text": "2026-10-05 10:52:01.666 appintentsmetadataprocessor[13400:43029400] warning: Metadata extraction skipped, no AppIntents.framework dependency found"
+      },
+      {
+        "line": 2210,
+        "text": "    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Universe_Keyboard -Onone @/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Objects-normal/arm64/Universe\\ Keyboard.SwiftFileList -DDEBUG -DDEBUG -DKEYBOARD_WAKE_OWNER_PROBE -Xcc -fmodule-map-file\\=/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/RimeBridgeObjC.modulemap -default-isolation\\=MainActor -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios18.0-simulator -g -module-cache-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -warnings-as-errors -index-store-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator -F /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator -emit-localized-strings -emit-localized-strings-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Objects-normal/arm64 -c -j8 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/SDKStatCaches.noindex/iphonesimulator27.0-24A430-8dc58220667be655e1bcc261a7455254.sdkstatcache -output-file-map /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Objects-normal/arm64/Universe\\ Keyboard-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/ModuleCache.noindex -sdk-module-cache-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Objects-normal/arm64/Universe_Keyboard.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Objects-normal/arm64/Universe_Keyboard-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\\=86400 -Xcc -fmodules-prune-after\\=345600 -emit-const-values -const-gather-protocols-list /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Objects-normal/arm64/Universe\\ Keyboard_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Universe\\ Keyboard-generated-files.hmap -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Universe\\ Keyboard-own-target-headers.hmap -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Universe\\ Keyboard-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard-c7db5b74330b406efaaaa4547e6a5407-VFS-iphonesimulator/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Universe\\ Keyboard-project-headers.hmap -Xcc -I/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridgeObjC/include -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/include -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/DerivedSources-normal/arm64 -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/DerivedSources/arm64 -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/DerivedSources -Xcc -DDEBUG\\=1 -emit-objc-header -emit-objc-header-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Objects-normal/arm64/Universe_Keyboard-Swift.h -working-directory /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard -experimental-emit-module-separately -disable-cmo"
+      },
+      {
+        "line": 2344,
+        "text": "SwiftCompile normal arm64 Compiling\\ DiagnosticsLogContentView.swift,\\ DiagnosticsLogSource.swift,\\ DiagnosticsStore.swift,\\ DiagnosticsSummaryBar.swift,\\ DiagnosticsToolbar.swift,\\ DiagnosticsView.swift,\\ ReleaseEvidenceView.swift,\\ T9DevicePreflightEvidenceView.swift,\\ DictionaryBrowserTypes.swift,\\ DictionaryBrowserView.swift,\\ DictionaryEmptyStateView.swift,\\ DictionaryEntriesView.swift,\\ DictionaryEntryRowView.swift,\\ DictionaryFilePreviewView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Diagnostics/DiagnosticsLogContentView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Diagnostics/DiagnosticsLogSource.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Diagnostics/DiagnosticsStore.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Diagnostics/DiagnosticsSummaryBar.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Diagnostics/DiagnosticsToolbar.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Diagnostics/DiagnosticsView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Diagnostics/ReleaseEvidenceView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Diagnostics/T9DevicePreflightEvidenceView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Dictionary/DictionaryBrowserTypes.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Dictionary/DictionaryBrowserView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Dictionary/DictionaryEmptyStateView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Dictionary/DictionaryEntriesView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Dictionary/DictionaryEntryRowView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Dictionary/DictionaryFilePreviewView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2346,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Diagnostics/DiagnosticsLogContentView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2350,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Diagnostics/DiagnosticsLogSource.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2354,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Diagnostics/DiagnosticsStore.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2358,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Diagnostics/DiagnosticsSummaryBar.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2362,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Diagnostics/DiagnosticsToolbar.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2366,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Diagnostics/DiagnosticsView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2370,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Diagnostics/ReleaseEvidenceView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2374,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Diagnostics/T9DevicePreflightEvidenceView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2378,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Dictionary/DictionaryBrowserTypes.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2382,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Dictionary/DictionaryBrowserView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2386,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Dictionary/DictionaryEmptyStateView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2390,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Dictionary/DictionaryEntriesView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2394,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Dictionary/DictionaryEntryRowView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2398,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Dictionary/DictionaryFilePreviewView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2404,
+        "text": "SwiftCompile normal arm64 (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2408,
+        "text": "SwiftCompile normal arm64 Compiling\\ AppMotion.swift,\\ AppSwitch.swift,\\ AppTokens.swift,\\ BulletRow.swift,\\ CapsuleBadge.swift,\\ EmptyStateView.swift,\\ InfoSection.swift,\\ KeyValueRow.swift,\\ LoadingStateView.swift,\\ MetricCell.swift,\\ SettingsNavigationLink.swift,\\ ToggleRow.swift,\\ DiagnosticsDayPicker.swift,\\ DiagnosticsFilterBar.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/AppMotion.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/AppSwitch.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/AppTokens.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/BulletRow.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/CapsuleBadge.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/EmptyStateView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/InfoSection.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/KeyValueRow.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/LoadingStateView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/MetricCell.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/SettingsNavigationLink.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/ToggleRow.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Diagnostics/DiagnosticsDayPicker.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Diagnostics/DiagnosticsFilterBar.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2410,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/AppMotion.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2414,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/AppSwitch.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2418,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/AppTokens.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2422,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/BulletRow.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2426,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/CapsuleBadge.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2430,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/EmptyStateView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2434,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/InfoSection.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2438,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/KeyValueRow.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2442,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/LoadingStateView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2446,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/MetricCell.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2450,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/SettingsNavigationLink.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2454,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/ToggleRow.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2458,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Diagnostics/DiagnosticsDayPicker.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2462,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Diagnostics/DiagnosticsFilterBar.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2466,
+        "text": "SwiftCompile normal arm64 Compiling\\ RimeSettingsStore+Sync.swift,\\ RimeSettingsView.swift,\\ RimeSyncSettingsView.swift,\\ RimeUserDictionarySettingsView.swift,\\ SchemaDownloadContentViews.swift,\\ SchemaDownloadSection.swift,\\ SchemaPickerRow.swift,\\ SchemaSelectionSection.swift,\\ SchemeProvenanceSheet.swift,\\ SettingsTab.swift,\\ TypingIntelligenceView.swift,\\ TypoCorrectionBenchmarkModel.swift,\\ TypoCorrectionBenchmarkView.swift,\\ GeneratedAssetSymbols.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/RimeSettingsStore+Sync.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/RimeSettingsView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/RimeSyncSettingsView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/RimeUserDictionarySettingsView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/SchemaDownloadContentViews.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/SchemaDownloadSection.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/SchemaPickerRow.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/SchemaSelectionSection.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/SchemeProvenanceSheet.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/SettingsTab.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/TypingIntelligenceView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/TypoCorrectionBenchmarkModel.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/TypoCorrectionBenchmarkView.swift /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/DerivedSources/GeneratedAssetSymbols.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2468,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/RimeSettingsStore+Sync.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2472,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/RimeSettingsView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2476,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/RimeSyncSettingsView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2480,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/RimeUserDictionarySettingsView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2484,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/SchemaDownloadContentViews.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2488,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/SchemaDownloadSection.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2492,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/SchemaPickerRow.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2496,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/SchemaSelectionSection.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2500,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/SchemeProvenanceSheet.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2504,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/SettingsTab.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2508,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/TypingIntelligenceView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2512,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/TypoCorrectionBenchmarkModel.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2516,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/TypoCorrectionBenchmarkView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2520,
+        "text": "SwiftCompile normal arm64 /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/DerivedSources/GeneratedAssetSymbols.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2524,
+        "text": "SwiftCompile normal arm64 Compiling\\ SchemaManager.swift,\\ SchemaManager+Deployment.swift,\\ SchemaManager+Download.swift,\\ SchemaManager+Installation.swift,\\ SchemaManager+LuaDiagnostics.swift,\\ SchemaManager+T9Layout.swift,\\ SchemaManagerDependencies.swift,\\ SchemaManagerTypes.swift,\\ SchemaTemporaryArtifactCleaner.swift,\\ T9DeploymentSupport.swift,\\ T9SchemaForceGCDiagnosticsRunner.swift,\\ AppActionButton.swift,\\ AppCard.swift,\\ AppIconTile.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/SchemaManager.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/SchemaManager+Deployment.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/SchemaManager+Download.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/SchemaManager+Installation.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/SchemaManager+LuaDiagnostics.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/SchemaManager+T9Layout.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/SchemaManagerDependencies.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/SchemaManagerTypes.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/SchemaTemporaryArtifactCleaner.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/T9DeploymentSupport.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/T9SchemaForceGCDiagnosticsRunner.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/AppActionButton.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/AppCard.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/AppIconTile.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2526,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/SchemaManager.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2530,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/SchemaManager+Deployment.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2534,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/SchemaManager+Download.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2538,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/SchemaManager+Installation.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2542,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/SchemaManager+LuaDiagnostics.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2546,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/SchemaManager+T9Layout.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2550,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/SchemaManagerDependencies.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2554,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/SchemaManagerTypes.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2558,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/SchemaTemporaryArtifactCleaner.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2562,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/T9DeploymentSupport.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2566,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/T9SchemaForceGCDiagnosticsRunner.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2570,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/AppActionButton.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2574,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/AppCard.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2578,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Components/AppIconTile.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2582,
+        "text": "SwiftCompile normal arm64 Compiling\\ DictionaryFilesView.swift,\\ DictionaryIndexService.swift,\\ DictionaryMetricView.swift,\\ DictionaryOverviewView.swift,\\ DictionaryScanner.swift,\\ LocalDictionaryModel.swift,\\ ActivationGuideSheet.swift,\\ ActivationResourcePreparePanel.swift,\\ ActivationWelcomeView.swift,\\ GuideTab.swift,\\ HomeTab.swift,\\ LicenseView.swift,\\ SearchTab.swift,\\ AboutSettingsView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Dictionary/DictionaryFilesView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Dictionary/DictionaryIndexService.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Dictionary/DictionaryMetricView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Dictionary/DictionaryOverviewView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Dictionary/DictionaryScanner.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Dictionary/LocalDictionaryModel.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Guide/ActivationGuideSheet.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Guide/ActivationResourcePreparePanel.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Guide/ActivationWelcomeView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Guide/GuideTab.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Home/HomeTab.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/License/LicenseView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Search/SearchTab.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/AboutSettingsView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2584,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Dictionary/DictionaryFilesView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2588,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Dictionary/DictionaryIndexService.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2592,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Dictionary/DictionaryMetricView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2596,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Dictionary/DictionaryOverviewView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2600,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Dictionary/DictionaryScanner.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2604,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Dictionary/LocalDictionaryModel.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2608,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Guide/ActivationGuideSheet.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2612,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Guide/ActivationResourcePreparePanel.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2616,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Guide/ActivationWelcomeView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2620,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Guide/GuideTab.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2624,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Home/HomeTab.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2628,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/License/LicenseView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2632,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Search/SearchTab.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2636,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/AboutSettingsView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2640,
+        "text": "SwiftCompile normal arm64 Compiling\\ ContentView.swift,\\ Universe_KeyboardApp.swift,\\ ActivationChecklistState.swift,\\ ActivationTips.swift,\\ AppAboutContact.swift,\\ AppAppearance.swift,\\ RimeSyncUITestFixture.swift,\\ RimeSyncViewModel.swift,\\ SchemeLicenseDownloadCopy.swift,\\ SchemeProvenancePresentation.swift,\\ SettingsSearchCatalog.swift,\\ ThirdPartyLicenseDescriptor.swift,\\ TypingIntelligencePreviewFixture.swift,\\ TypingIntelligenceViewModel.swift,\\ AppNotificationSettings.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/App/ContentView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/App/Universe_KeyboardApp.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Models/ActivationChecklistState.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Models/ActivationTips.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Models/AppAboutContact.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Models/AppAppearance.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Models/RimeSyncUITestFixture.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Models/RimeSyncViewModel.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Models/SchemeLicenseDownloadCopy.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Models/SchemeProvenancePresentation.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Models/SettingsSearchCatalog.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Models/ThirdPartyLicenseDescriptor.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Models/TypingIntelligencePreviewFixture.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Models/TypingIntelligenceViewModel.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/AppNotificationSettings.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2642,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/App/ContentView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2646,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/App/Universe_KeyboardApp.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2650,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Models/ActivationChecklistState.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2654,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Models/ActivationTips.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2658,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Models/AppAboutContact.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2662,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Models/AppAppearance.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2666,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Models/RimeSyncUITestFixture.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2670,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Models/RimeSyncViewModel.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2674,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Models/SchemeLicenseDownloadCopy.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2678,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Models/SchemeProvenancePresentation.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2682,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Models/SettingsSearchCatalog.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2686,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Models/ThirdPartyLicenseDescriptor.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2690,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Models/TypingIntelligencePreviewFixture.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2694,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Models/TypingIntelligenceViewModel.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2698,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/AppNotificationSettings.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2702,
+        "text": "SwiftCompile normal arm64 Compiling\\ DiagnosticsJournalRetentionCoordinator.swift,\\ DiagnosticsJournalRetentionScheduler.swift,\\ NineKeyEnableOrchestrator.swift,\\ ReleaseEvidenceStore.swift,\\ RimeAutomaticSyncScheduler.swift,\\ RimeSyncCoordinator.swift,\\ RimeSyncCrypto.swift,\\ RimeSyncDiagnostics.swift,\\ RimeSyncModels.swift,\\ RimeSyncTransport.swift,\\ RimeUserDictionaryBackupService.swift,\\ SchemaArchiveInstaller.swift,\\ SchemaArtifactSecurity.swift,\\ SchemaDeliveryDiagnostics.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/DiagnosticsJournalRetentionCoordinator.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/DiagnosticsJournalRetentionScheduler.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/NineKeyEnableOrchestrator.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/ReleaseEvidenceStore.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/RimeAutomaticSyncScheduler.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/RimeSyncCoordinator.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/RimeSyncCrypto.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/RimeSyncDiagnostics.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/RimeSyncModels.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/RimeSyncTransport.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/RimeUserDictionaryBackupService.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/SchemaArchiveInstaller.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/SchemaArtifactSecurity.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/SchemaDeliveryDiagnostics.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2704,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/DiagnosticsJournalRetentionCoordinator.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2708,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/DiagnosticsJournalRetentionScheduler.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2712,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/NineKeyEnableOrchestrator.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2716,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/ReleaseEvidenceStore.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2720,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/RimeAutomaticSyncScheduler.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2724,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/RimeSyncCoordinator.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2728,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/RimeSyncCrypto.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2732,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/RimeSyncDiagnostics.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2736,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/RimeSyncModels.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2740,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/RimeSyncTransport.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2744,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/RimeUserDictionaryBackupService.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2748,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/SchemaArchiveInstaller.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2752,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/SchemaArtifactSecurity.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2756,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Services/SchemaDeliveryDiagnostics.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2760,
+        "text": "SwiftCompile normal arm64 Compiling\\ AppearanceSettingsView.swift,\\ DiagnosticsSettingsView.swift,\\ FeedbackLevelSelectionView.swift,\\ FeedbackPreviewCoordinator.swift,\\ FeedbackSettingsView.swift,\\ KeyboardLayoutSettingsView.swift,\\ NotificationSettingsView.swift,\\ PrivacyDataView.swift,\\ RimeAdvancedInputSettingsView.swift,\\ RimeDeploymentContent.swift,\\ RimeDeploymentStatusSection.swift,\\ RimeDeploymentToast.swift,\\ RimeFuzzyPinyinSettingsView.swift,\\ RimeSettingsStore.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/AppearanceSettingsView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/DiagnosticsSettingsView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/FeedbackLevelSelectionView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/FeedbackPreviewCoordinator.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/FeedbackSettingsView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/KeyboardLayoutSettingsView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/NotificationSettingsView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/PrivacyDataView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/RimeAdvancedInputSettingsView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/RimeDeploymentContent.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/RimeDeploymentStatusSection.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/RimeDeploymentToast.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/RimeFuzzyPinyinSettingsView.swift /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/RimeSettingsStore.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2762,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/AppearanceSettingsView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2766,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/DiagnosticsSettingsView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2770,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/FeedbackLevelSelectionView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2774,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/FeedbackPreviewCoordinator.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2778,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/FeedbackSettingsView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2782,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/KeyboardLayoutSettingsView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2786,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/NotificationSettingsView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2790,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/PrivacyDataView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2794,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/RimeAdvancedInputSettingsView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2798,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/RimeDeploymentContent.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2802,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/RimeDeploymentStatusSection.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2806,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/RimeDeploymentToast.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2810,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/RimeFuzzyPinyinSettingsView.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2814,
+        "text": "SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Universe\\ Keyboard/Views/Settings/RimeSettingsStore.swift (in target 'Universe Keyboard' from project 'Universe Keyboard')"
+      },
+      {
+        "line": 2889,
+        "text": "2026-10-05 10:52:12.829 appintentsmetadataprocessor[13501:43030021] warning: Metadata extraction skipped, no AppIntents.framework dependency found"
+      },
+      {
+        "line": 2949,
+        "text": "** BUILD SUCCEEDED **"
+      }
+    ]
+  },
+  "git_readback": [
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+        "branch",
+        "--show-current"
+      ],
+      "exit_code": 0,
+      "stdout": "codex/keyboard-wake-v3-compatibility-gate\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+        "rev-parse",
+        "HEAD"
+      ],
+      "exit_code": 0,
+      "stdout": "84b9c19227330b0fe6ff391be001ee398010fd6a\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+        "diff",
+        "--cached",
+        "--name-only"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "dependency_manifest_identity": [
+    {
+      "manifest": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/source-tree-manifest.json",
+      "manifest_sha256": "61606efa4db41e88416d9b1763264fb96b2f50d5d927530424a7168aa8860827",
+      "file_count": 358,
+      "aggregate_sha256_actual": "a27296c557af763728365e197ce7c5ec541203f9b40445b1033509cbf8cc2fb4",
+      "aggregate_expected": "a27296c557af763728365e197ce7c5ec541203f9b40445b1033509cbf8cc2fb4"
+    },
+    {
+      "manifest": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/app-source-manifest.json",
+      "manifest_sha256": "df7f539eadb27a683efa81e477e0fb69a0e05e7a36fc8c737c5f9b7703e7b99e",
+      "file_count": 168,
+      "aggregate_sha256_actual": "b5fdda0ffd8c3f7563fe70a925b166817308267392edf72f4ffa00dda96068ca",
+      "aggregate_expected": "b5fdda0ffd8c3f7563fe70a925b166817308267392edf72f4ffa00dda96068ca"
+    },
+    {
+      "manifest": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/vendor-byte-manifest.json",
+      "manifest_sha256": "54c5d67d284c12ce630f3c17e42954f733bcb6e0117892a5b970b34d189437b5",
+      "file_count": 630,
+      "aggregate_sha256_actual": "f9b03dea3e5be3e8d903e1c02f16dc933d5048ca48e45bf652e15ec99bdc0a9a",
+      "aggregate_expected": "f9b03dea3e5be3e8d903e1c02f16dc933d5048ca48e45bf652e15ec99bdc0a9a"
+    }
+  ]
+}

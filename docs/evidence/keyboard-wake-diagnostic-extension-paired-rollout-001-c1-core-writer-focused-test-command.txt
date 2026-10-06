@@ -1,0 +1,1 @@
+swift test --package-path /private/tmp/ukey-wake-c1-20260930/KeyboardCore --scratch-path /private/tmp/ukey-wake-c1-20260930/.build-focused --disable-sandbox --filter DiagnosticsJournalV6WriterTests

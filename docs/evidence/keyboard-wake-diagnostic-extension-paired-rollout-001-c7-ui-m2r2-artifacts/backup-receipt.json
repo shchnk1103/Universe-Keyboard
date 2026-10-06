@@ -1,0 +1,77 @@
+{
+  "utc": "2026-10-04T04:46:28.253694+00:00",
+  "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "scope": "M2R2 fresh complete protection",
+  "backup_roots": {
+    "main-data": "/private/tmp/ukey-wake-m0-20261003/backup/main-data",
+    "app-group": "/private/tmp/ukey-wake-m2r2-20261004/backup/app-group",
+    "installed-app": "/private/tmp/ukey-wake-m0-20261003/backup/installed-app"
+  },
+  "reused_exact_roots": [
+    "main-data",
+    "installed-app"
+  ],
+  "source_three_reads_equal": true,
+  "copy_bytes_structure_modes_owners_original_xattrs_equal": true,
+  "copy_added_provenance_classification": {
+    "main-data": 865,
+    "app-group": 9,
+    "installed-app": 9
+  },
+  "new_copies_empty_directories_added": {
+    "app-group": 0
+  },
+  "old_backups_not_modified_or_deleted": true,
+  "backup_strict_signatures": {
+    "main": {
+      "exit": 0
+    },
+    "keyboard": {
+      "exit": 0
+    }
+  },
+  "selected_preferences": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "rime_deployed": {
+      "exists": true,
+      "value": true
+    },
+    "rime_needs_deploy": {
+      "exists": true,
+      "value": false
+    },
+    "rime_is_deploying": {
+      "exists": false,
+      "value": null
+    }
+  },
+  "all_metadata_exact_claim": false,
+  "counts": {
+    "main-data": {
+      "files": 827,
+      "directories": 42,
+      "symlinks": 0,
+      "file_bytes": 1101984
+    },
+    "app-group": {
+      "files": 51,
+      "directories": 15,
+      "symlinks": 2,
+      "file_bytes": 37749283
+    },
+    "installed-app": {
+      "files": 78,
+      "directories": 9,
+      "symlinks": 0,
+      "file_bytes": 91344780
+    }
+  },
+  "no_install_launch_restore_test_or_source_change": true
+}

@@ -1,0 +1,27 @@
+{
+  "utc": "2026-10-05T02:17:27.956174+00:00",
+  "packet_sha256": "00bf35de8a0e8bf38f92ea58b9953a68ed4ed48c32ec06c3726fd48fc728deed",
+  "exact_input_rows_match": 2466,
+  "author_originals_preserved": true,
+  "author_usage_preserved_unfinalized": {
+    "reviewer": "/root/m2r2_quality_r1",
+    "packet_sha256": "00bf35de8a0e8bf38f92ea58b9953a68ed4ed48c32ec06c3726fd48fc728deed",
+    "start_utc": "2026-10-05T02:07:46.900226+00:00",
+    "ack_utc": "2026-10-05T02:08:34.595923+00:00",
+    "actual_tool_calls": 2,
+    "budget_calls": 16,
+    "budget_wall_seconds": 900,
+    "deadline_utc": "2026-10-05T02:22:46.900226+00:00",
+    "status": "in_progress",
+    "covered": [],
+    "uncovered": [],
+    "stop_reason": "review in progress"
+  },
+  "reviewer_reported_final_calls": 16,
+  "reviewer_reported_technical_stop_calls": 12,
+  "required_delivery_complete": false,
+  "usage_finalization_failed": true,
+  "author_hash_readback_incomplete": true,
+  "root_not_author_of_review": true,
+  "no_test_or_simulator_action": true
+}

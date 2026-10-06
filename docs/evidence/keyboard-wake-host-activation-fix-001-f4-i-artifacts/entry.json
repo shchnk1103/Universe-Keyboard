@@ -1,0 +1,58 @@
+{
+  "utc": "2026-10-05T12:24:00.650394+00:00",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "staged": 0,
+  "device": {
+    "dataPath": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data",
+    "dataPathSize": 4782936064,
+    "logPath": "/Users/doubleshy0n/Library/Logs/CoreSimulator/405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "lastUsedAt": "2026-10-02T09:04:39Z",
+    "isAvailable": true,
+    "logPathSize": 630784,
+    "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro",
+    "state": "Booted",
+    "name": "iPhone 18 Pro"
+  },
+  "runtime": "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
+  "containers": {
+    "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/66F04FA2-BC18-442C-97FE-2846CD55FBE1/Universe Keyboard.app",
+    "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/9100282B-92E4-4ED0-87C6-3A79BB6F24C1",
+    "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/161B78EE-E85A-47EA-8986-BA1D5AA70E39"
+  },
+  "roots": {
+    "installed-app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/66F04FA2-BC18-442C-97FE-2846CD55FBE1/Universe Keyboard.app",
+    "main-data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/9100282B-92E4-4ED0-87C6-3A79BB6F24C1",
+    "app-group": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/161B78EE-E85A-47EA-8986-BA1D5AA70E39"
+  },
+  "target_processes": [],
+  "selected_preferences": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "log_category_display": {
+      "exists": false,
+      "value": null
+    },
+    "rime_deployed": {
+      "exists": true,
+      "value": true
+    },
+    "rime_needs_deploy": {
+      "exists": true,
+      "value": false
+    },
+    "rime_deploying": {
+      "exists": true,
+      "value": false
+    }
+  },
+  "status": "Ready for full backup",
+  "candidate_digest": "d53523dba8c371c67424ff07c79163a66f41e3bc5bb402637cf9ee79ae7579cb"
+}

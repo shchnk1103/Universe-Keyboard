@@ -1,0 +1,14 @@
+{
+  "utc": "2026-10-03T03:58:49.868056+00:00",
+  "argv": [
+    "xcrun",
+    "simctl",
+    "install",
+    "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "/private/tmp/ukey-wake-ui-t2-restore-20261003/Universe Keyboard.app"
+  ],
+  "exit": 0,
+  "stdout": "",
+  "stderr": "",
+  "old_C7_only": true
+}

@@ -1,0 +1,38 @@
+{
+  "utc": "2026-10-04T10:39:39.884424+00:00",
+  "status": "Prepared / execution authorization and fresh exclusive simulator window pending",
+  "reviewer": "root coordinator verification, not independent Architecture/Quality",
+  "input_checks": [
+    {
+      "file": "source-tree-manifest.json",
+      "files": 358,
+      "digest": "099aec228a338ed2e42ca0d44d28e30802d78f1f4bbc92c7c4bd17f21d57dfe3",
+      "all_bytes_match": true
+    },
+    {
+      "file": "app-source-manifest.json",
+      "files": 168,
+      "digest": "b5fdda0ffd8c3f7563fe70a925b166817308267392edf72f4ffa00dda96068ca",
+      "all_bytes_match": true
+    },
+    {
+      "file": "vendor-byte-manifest.json",
+      "files": 630,
+      "digest": "f9b03dea3e5be3e8d903e1c02f16dc933d5048ca48e45bf652e15ec99bdc0a9a",
+      "all_bytes_match": true
+    }
+  ],
+  "frozen_commands_before_sha256": "14da361f14c98e688fb78838787bd4cdbd7352abe05c3169abff50bea2a5634a",
+  "frozen_commands_after_sha256": "6e862b72d7b13c525f5be439661d1d96c81297cc5243541cb04581a27436a06c",
+  "correction_id": "F2-L-diff-check-untracked",
+  "old_command_preserved": "fail=0; for f in Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift; do out=$(git diff --check --no-index -- /dev/null \"$f\" 2>&1 || true); if printf '%s\\n' \"$out\" | grep -E 'trailing whitespace|space before tab|leftover conflict marker'; then fail=1; fi; done; if [ \"$fail\" -ne 0 ]; then exit 1; fi; echo PASS untracked git-diff-check equivalent",
+  "reason": "old || true + grep filtered diagnostics could falsely PASS git failure/missing file",
+  "tests_checks_simulator_executed": false,
+  "budget_minutes_proposed": 180,
+  "destination_udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "remaining_dependencies": [
+    "Human F2 execution authorization naming root, test-runner install/launch and backup scope",
+    "Human fresh exclusive exact UDID confirmation",
+    "root immediate environment identity/quiescent backup and input revalidation before Ready"
+  ]
+}

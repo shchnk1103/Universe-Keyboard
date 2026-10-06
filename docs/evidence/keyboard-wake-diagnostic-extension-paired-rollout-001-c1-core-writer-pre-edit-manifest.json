@@ -1,0 +1,11 @@
+{
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "allowed_inputs": {
+    "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticEvent.swift": "7e8a7c68eaa8593c4f14d5c796312d119137d8b925a91ba686ecfd4ba72ea794",
+    "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournal.swift": "49077a7a6ade1b41724fda92314cb4a41071163dc9f6c5e2a8666ee38273dbc9",
+    "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournalIngress.swift": "22df98f25a44704763e4669d60787c2157477a97587645645e5b10af3437a696",
+    "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournalRuntime.swift": "9720d22bb3ec5668b7a9f466ac84c34d77c7a7ed2969da01b5c6f2568c41b406",
+    "Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticsJournalV6WriterTests.swift": null
+  }
+}

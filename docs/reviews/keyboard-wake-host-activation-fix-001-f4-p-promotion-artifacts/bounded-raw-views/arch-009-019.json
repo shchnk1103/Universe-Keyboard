@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+  "origin_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "expected_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "line_start": 1081,
+  "line_end": 1140,
+  "lines": [
+    {
+      "line": 1081,
+      "text": "            guard self.provisionalCompositionMirror.sessionEpoch == presentation.sessionEpoch,"
+    },
+    {
+      "line": 1082,
+      "text": "                self.provisionalCompositionMirror.watermark >= presentation.watermark"
+    },
+    {
+      "line": 1083,
+      "text": "            else {"
+    },
+    {
+      "line": 1084,
+      "text": "                return"
+    },
+    {
+      "line": 1085,
+      "text": "            }"
+    },
+    {
+      "line": 1086,
+      "text": "            // Re-read current presentation (more accepts may have extended ·×N)."
+    },
+    {
+      "line": 1087,
+      "text": "            guard let live = self.provisionalCompositionMirror.makePresentation() else {"
+    },
+    {
+      "line": 1088,
+      "text": "                return"
+    },
+    {
+      "line": 1089,
+      "text": "            }"
+    },
+    {
+      "line": 1090,
+      "text": "            self.applyProvisionalL1Visual(live)"
+    },
+    {
+      "line": 1091,
+      "text": "        }"
+    },
+    {
+      "line": 1092,
+      "text": "    }"
+    },
+    {
+      "line": 1093,
+      "text": ""
+    },
+    {
+      "line": 1094,
+      "text": "    /// Apply the visual shadow preedit only — never touch candidate/Path chrome."
+    },
+    {
+      "line": 1095,
+      "text": "    ///"
+    },
+    {
+      "line": 1096,
+      "text": "    /// Rem-3-Polish-2 (device feedback): do **not** call"
+    },
+    {
+      "line": 1097,
+      "text": "    /// `onResponsivePresentationNeeded` here — Extension `syncUI` would"
+    },
+    {
+      "line": 1098,
+      "text": "    /// `refreshCandidateBar` / Path on every L1 tick (empty or re-layout flash)."
+    },
+    {
+      "line": 1099,
+      "text": "    /// Host marked text is updated directly; last L2 candidate/Path stay until"
+    },
+    {
+      "line": 1100,
+      "text": "    /// engine L2 paint. Selection remains fail-closed while ahead."
+    },
+    {
+      "line": 1101,
+      "text": "    private func applyProvisionalL1Visual(_ presentation: ResponsiveProvisionalPresentation) {"
+    },
+    {
+      "line": 1102,
+      "text": "        // `currentComposition` remains the engine/raw recovery state under T9;"
+    },
+    {
+      "line": 1103,
+      "text": "        // the visual shadow belongs to `insertedPreeditText`/host marked text."
+    },
+    {
+      "line": 1104,
+      "text": "        updateInlinePreedit(presentation.preedit, source: .compositionProjection)"
+    },
+    {
+      "line": 1105,
+      "text": ""
+    },
+    {
+      "line": 1106,
+      "text": "        if let visible = feltMetrics.recordVisible("
+    },
+    {
+      "line": 1107,
+      "text": "            revision: presentation.watermark,"
+    },
+    {
+      "line": 1108,
+      "text": "            source: .provisional"
+    },
+    {
+      "line": 1109,
+      "text": "        ) {"
+    },
+    {
+      "line": 1110,
+      "text": "            recordResponsiveFeltMarker(visible)"
+    },
+    {
+      "line": 1111,
+      "text": "        }"
+    },
+    {
+      "line": 1112,
+      "text": "    }"
+    },
+    {
+      "line": 1113,
+      "text": ""
+    },
+    {
+      "line": 1114,
+      "text": "    private func logL1Skip(_ reason: ResponsiveProvisionalL1SkipReason) {"
+    },
+    {
+      "line": 1115,
+      "text": "        // Avoid spam on non-dual / non-T9 paths: only log when dual-gate is live."
+    },
+    {
+      "line": 1116,
+      "text": "        guard isResponsiveRimePipelineEnabled, isThreadAffineRimeOwnerEnabled else {"
+    },
+    {
+      "line": 1117,
+      "text": "            return"
+    },
+    {
+      "line": 1118,
+      "text": "        }"
+    },
+    {
+      "line": 1119,
+      "text": "        if reason == .nonT9, !usesT9InputSemantics {"
+    },
+    {
+      "line": 1120,
+      "text": "            return"
+    },
+    {
+      "line": 1121,
+      "text": "        }"
+    },
+    {
+      "line": 1122,
+      "text": "        Logger.shared.performance(ResponsiveRimeFeltMetrics.l1SkipMarkerLine(reason: reason))"
+    },
+    {
+      "line": 1123,
+      "text": "    }"
+    },
+    {
+      "line": 1124,
+      "text": ""
+    },
+    {
+      "line": 1125,
+      "text": "    func enqueueResponsiveKeyApplyContext("
+    },
+    {
+      "line": 1126,
+      "text": "        rimeKey: String,"
+    },
+    {
+      "line": 1127,
+      "text": "        previousT9PathState: T9PinyinPathState,"
+    },
+    {
+      "line": 1128,
+      "text": "        previousRawForTrace: String?"
+    },
+    {
+      "line": 1129,
+      "text": "    ) {"
+    },
+    {
+      "line": 1130,
+      "text": "        let epoch: UInt64"
+    },
+    {
+      "line": 1131,
+      "text": "        if let main = responsiveRimeCoordinator {"
+    },
+    {
+      "line": 1132,
+      "text": "            epoch = main.diagnostics.sessionEpoch"
+    },
+    {
+      "line": 1133,
+      "text": "        } else if let published = threadAffineRimeCoordinator?.lastPublished {"
+    },
+    {
+      "line": 1134,
+      "text": "            epoch = published.sessionEpoch"
+    },
+    {
+      "line": 1135,
+      "text": "        } else if let receipt = threadAffineRimeCoordinator?.lastAcceptReceipt {"
+    },
+    {
+      "line": 1136,
+      "text": "            epoch = receipt.sessionEpoch"
+    },
+    {
+      "line": 1137,
+      "text": "        } else {"
+    },
+    {
+      "line": 1138,
+      "text": "            epoch = 1"
+    },
+    {
+      "line": 1139,
+      "text": "        }"
+    },
+    {
+      "line": 1140,
+      "text": "        responsiveKeyApplyContexts.append("
+    }
+  ]
+}

@@ -1,0 +1,159 @@
+OWN_EXPORT_HOST_WRITE_FAILED: OSError
+{
+  "utc": "2026-10-06T03:44:49.280266+00:00",
+  "fake_api_cases": [
+    {
+      "case": "identity_mismatch_pid",
+      "read_calls": 0,
+      "total_read_calls": 0,
+      "status": "unavailable",
+      "reason": "hit_frame_identity_mismatch",
+      "read_attempted": 0,
+      "bytes": null,
+      "pass": true
+    },
+    {
+      "case": "multiple_hits",
+      "read_calls": 0,
+      "total_read_calls": 0,
+      "status": "unavailable",
+      "reason": "multiple_hits",
+      "read_attempted": 0,
+      "bytes": null,
+      "pass": true
+    },
+    {
+      "case": "args_unavailable",
+      "read_calls": 0,
+      "total_read_calls": 0,
+      "status": "unavailable",
+      "reason": "static_argument_unavailable",
+      "read_attempted": 0,
+      "bytes": null,
+      "pass": true
+    },
+    {
+      "case": "pointer_zero",
+      "read_calls": 0,
+      "total_read_calls": 0,
+      "status": "unavailable",
+      "reason": "invalid_pointer_or_size",
+      "read_attempted": 0,
+      "bytes": null,
+      "pass": true
+    },
+    {
+      "case": "length_oob_low",
+      "read_calls": 0,
+      "total_read_calls": 0,
+      "status": "unavailable",
+      "reason": "invalid_pointer_or_size",
+      "read_attempted": 0,
+      "bytes": null,
+      "pass": true
+    },
+    {
+      "case": "length_oob_high",
+      "read_calls": 0,
+      "total_read_calls": 0,
+      "status": "unavailable",
+      "reason": "invalid_pointer_or_size",
+      "read_attempted": 0,
+      "bytes": null,
+      "pass": true
+    },
+    {
+      "case": "exact_size_success",
+      "read_calls": 1,
+      "total_read_calls": 1,
+      "status": "owner_buffer_copied",
+      "reason": null,
+      "read_attempted": 1,
+      "bytes": 176,
+      "pass": true
+    },
+    {
+      "case": "short_read_no_retry",
+      "read_calls": 1,
+      "total_read_calls": 1,
+      "status": "unavailable",
+      "reason": "read_memory_unavailable",
+      "read_attempted": 1,
+      "bytes": null,
+      "pass": true
+    },
+    {
+      "case": "sberror_no_retry",
+      "read_calls": 1,
+      "total_read_calls": 1,
+      "status": "unavailable",
+      "reason": "read_memory_unavailable",
+      "read_attempted": 1,
+      "bytes": null,
+      "pass": true
+    },
+    {
+      "case": "output_fail_no_reread",
+      "read_calls": 1,
+      "pass": true
+    },
+    {
+      "case": "stop_deadline",
+      "read_calls": 0,
+      "reason": "stop_deadline_exceeded",
+      "pass": true
+    }
+  ],
+  "decoder_cases": [
+    {
+      "case": "valid_176",
+      "pass": true,
+      "error": null,
+      "bytes": 176,
+      "sha256": "4a8a51c0fdc6d52e97c199f9e4eb6fc69cbe17c34bd278bf0d62cc6421bf76d7"
+    },
+    {
+      "case": "trailing_bytes",
+      "pass": true,
+      "error": "invalid_header"
+    },
+    {
+      "case": "bad_magic",
+      "pass": true,
+      "error": "unsupported_header"
+    },
+    {
+      "case": "oob_size",
+      "pass": true,
+      "error": "invalid_size"
+    },
+    {
+      "case": "count_mismatch",
+      "pass": true,
+      "error": "invalid_header"
+    },
+    {
+      "case": "overflow_without_incomplete",
+      "pass": true,
+      "error": "contradictory_completeness"
+    },
+    {
+      "case": "bad_ttl",
+      "pass": true,
+      "error": "invalid_ttl"
+    }
+  ],
+  "formatter": {
+    "lldb_exit": 0,
+    "banned_after": false,
+    "has_pc": true,
+    "has_reason": true,
+    "pass": true,
+    "stdout_sha256": "d7747cd5bb2b18a4fcc57783e9c0406ead151f0254a77660bbef403f295c7433",
+    "bytes": 1700
+  },
+  "fake_api_pass": true,
+  "decoder_pass": true,
+  "formatter_pass": true,
+  "all_pass": true
+}

@@ -1,0 +1,117 @@
+{
+  "run_id": "C6-MAPS-20261001-01",
+  "snapshots": [
+    {
+      "seq": 34,
+      "screenHash": "113rf27",
+      "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "targets": [
+        "e16|tap|button|诊断||BackButton",
+        "e20|tap|button|刷新日志||arrow.clockwise"
+      ],
+      "scroll": [
+        "e35|swipe|scroll-view|||",
+        "e49|swipe|scroll-view|||",
+        "e58|swipe|scroll-view|||"
+      ],
+      "text": [
+        "e65|text|text|全部日志 · 最新记录优先||",
+        "e66|text|text|172/172 条||",
+        "e73|text|text|[14:46:05.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e74|text|text|[14:46:05.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||"
+      ],
+      "observed_utc": "2026-10-01T06:54:41.375Z"
+    },
+    {
+      "seq": 35,
+      "screenHash": "0pnpp65",
+      "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "targets": [],
+      "scroll": [
+        "e27|swipe|scroll-view|||",
+        "e41|swipe|scroll-view|||",
+        "e50|swipe|scroll-view|||"
+      ],
+      "text": [
+        "e57|text|text|全部日志 · 最新记录优先||",
+        "e58|text|text|50/172 条||",
+        "e59|text|text|[14:46:05.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e60|text|text|[14:46:05.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||",
+        "e61|text|text|[14:46:04.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e62|text|text|[14:46:04.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||",
+        "e63|text|text|[14:46:02.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_did_appear||",
+        "e64|text|text|[14:46:01.000] [DEBUG] [ENGINE] rime.resume.phase_changed phase=started||",
+        "e65|text|text|[14:46:01.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_will_appear||",
+        "e66|text|text|[14:40:00.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e67|text|text|[14:40:00.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||",
+        "e68|text|text|[14:40:00.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e69|text|text|[14:40:00.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||"
+      ],
+      "observed_utc": "2026-10-01T06:57:24.169Z"
+    },
+    {
+      "seq": 36,
+      "screenHash": "1rbm7q8",
+      "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "targets": [],
+      "scroll": [
+        "e27|swipe|scroll-view|||",
+        "e41|swipe|scroll-view|||",
+        "e50|swipe|scroll-view|||"
+      ],
+      "text": [
+        "e56|text|text|[14:46:05.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||",
+        "e57|text|text|[14:46:04.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e58|text|text|[14:46:04.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||",
+        "e59|text|text|[14:46:02.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_did_appear||",
+        "e60|text|text|[14:46:01.000] [DEBUG] [ENGINE] rime.resume.phase_changed phase=started||",
+        "e61|text|text|[14:46:01.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_will_appear||",
+        "e62|text|text|[14:40:00.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e63|text|text|[14:40:00.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||",
+        "e64|text|text|[14:40:00.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e65|text|text|[14:40:00.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||",
+        "e66|text|text|[14:40:00.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e67|text|text|[14:40:00.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||",
+        "e68|text|text|[14:40:00.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e69|text|text|[14:40:00.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||",
+        "e70|text|text|[14:39:59.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e71|text|text|[14:39:59.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||",
+        "e72|text|text|[14:39:33.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e73|text|text|[14:39:33.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||"
+      ],
+      "observed_utc": "2026-10-01T06:58:38.388Z"
+    },
+    {
+      "seq": 37,
+      "screenHash": "1bnn46x",
+      "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "targets": [],
+      "scroll": [
+        "e27|swipe|scroll-view|||",
+        "e41|swipe|scroll-view|||",
+        "e50|swipe|scroll-view|||"
+      ],
+      "text": [
+        "e56|text|text|[14:40:00.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e57|text|text|[14:40:00.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||",
+        "e58|text|text|[14:39:59.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e59|text|text|[14:39:59.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||",
+        "e60|text|text|[14:39:33.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e61|text|text|[14:39:33.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||",
+        "e62|text|text|[14:39:33.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e63|text|text|[14:39:33.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||",
+        "e64|text|text|[14:39:32.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e65|text|text|[14:39:32.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||",
+        "e66|text|text|[14:39:31.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e67|text|text|[14:39:31.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||",
+        "e68|text|text|[14:39:30.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e69|text|text|[14:39:30.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||",
+        "e70|text|text|[14:39:22.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_did_appear||",
+        "e71|text|text|[14:39:22.000] [DEBUG] [ENGINE] rime.resume.phase_changed phase=started||",
+        "e72|text|text|[14:39:22.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_will_appear||"
+      ],
+      "observed_utc": "2026-10-01T07:00:18.998Z"
+    }
+  ],
+  "scope": "C6 finite marker rows/counts/notices only; no raw UI"
+}

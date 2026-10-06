@@ -1,0 +1,2637 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "\n🧪 Test\n\nDiscovered 432 test(s):\n   KeyboardTests/CandidateAccessibilityContractTests/testCandidateCellDeclaresActionableVoiceOverSemantics\n   KeyboardTests/CandidateBarIdleDismissContractTests/testTrailingButtonWiresDismissAndKeepsExpand\n   KeyboardTests/CandidateModelContractTests/testCandidateItemPreservesDisplayTextAndBehaviorKind\n   KeyboardTests/CandidateModelContractTests/testCandidateKindsRemainCompatibleWithButtonTagMapping\n   KeyboardTests/CandidatePagingContractTests/testBrowsingLaterPageDoesNotReplaceFirstPageSelectionState\n   KeyboardTests/CandidatePagingContractTests/testSelectingCachedLaterPageCandidateWithGlobalIndexKeepsRemainingComposition\n   (...and 426 more)\n\n✅ 421 tests passed, 0 failed, 10 skipped (⏱️ 53.9s)\n  └ Files:\n     ├── /private/tmp/ukey-wake-c7b3-20261002/IOSAppTests.xcresult — Result Bundle\n     └── ~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/\n         ├── logs/test_sim_2026-10-02T09-05-42-742Z_pid55720_bff78034.log — Build Logs\n         └── test-products/test_sim_2026-10-02T09-05-42-742Z_pid55720_aa2ddb6a.xctestproducts — Test Products\n"
+    }
+  ],
+  "structuredContent": {
+    "schema": "xcodebuildmcp.output.test-result",
+    "schemaVersion": "3",
+    "didError": false,
+    "error": null,
+    "data": {
+      "summary": {
+        "status": "SUCCEEDED",
+        "durationMs": 53898,
+        "counts": {
+          "passed": 421,
+          "failed": 0,
+          "skipped": 10
+        },
+        "target": "simulator"
+      },
+      "artifacts": {
+        "buildLogPath": "~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/test_sim_2026-10-02T09-05-42-742Z_pid55720_bff78034.log",
+        "xcresultPath": "/private/tmp/ukey-wake-c7b3-20261002/IOSAppTests.xcresult",
+        "testProductsPath": "~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/test-products/test_sim_2026-10-02T09-05-42-742Z_pid55720_aa2ddb6a.xctestproducts"
+      },
+      "tests": {
+        "discovered": {
+          "total": 432,
+          "items": [
+            "KeyboardTests/CandidateAccessibilityContractTests/testCandidateCellDeclaresActionableVoiceOverSemantics",
+            "KeyboardTests/CandidateBarIdleDismissContractTests/testTrailingButtonWiresDismissAndKeepsExpand",
+            "KeyboardTests/CandidateModelContractTests/testCandidateItemPreservesDisplayTextAndBehaviorKind",
+            "KeyboardTests/CandidateModelContractTests/testCandidateKindsRemainCompatibleWithButtonTagMapping",
+            "KeyboardTests/CandidatePagingContractTests/testBrowsingLaterPageDoesNotReplaceFirstPageSelectionState",
+            "KeyboardTests/CandidatePagingContractTests/testSelectingCachedLaterPageCandidateWithGlobalIndexKeepsRemainingComposition"
+          ]
+        }
+      },
+      "diagnostics": {
+        "warnings": [],
+        "errors": [],
+        "testFailures": []
+      },
+      "testCases": [
+        {
+          "suite": "ActivationChecklistStateTests",
+          "test": "testCanonicalCopyBoundariesRemainNonEmpty",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "ActivationChecklistStateTests",
+          "test": "testDeferredFullAccessYieldsToResourcesAndFirstInputThenReturns",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "ActivationChecklistStateTests",
+          "test": "testDeploymentInProgressIsNotReady",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "ActivationChecklistStateTests",
+          "test": "testFirstInputCopyAllowsAnyContentInSheet",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "ActivationChecklistStateTests",
+          "test": "testHelpMarkerHiddenWhenFullyActivatedAndHealthy",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "ActivationChecklistStateTests",
+          "test": "testHelpMarkerReturnsWhenDeploymentFailed",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "ActivationChecklistStateTests",
+          "test": "testHelpMarkerReturnsWhenSharedDataUnavailable",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "ActivationChecklistStateTests",
+          "test": "testHelpMarkerVisibleWhileActivationIncomplete",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "ActivationChecklistStateTests",
+          "test": "testHelpSettingsEntryCopyDoesNotImplyProgressReset",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "ActivationChecklistStateTests",
+          "test": "testJ3CopyPointsToInlinePrepareNotOnlySettings",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "ActivationChecklistStateTests",
+          "test": "testNextStepStartsAtAddKeyboard",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "ActivationChecklistStateTests",
+          "test": "testProgressesThroughFullAccessAndResources",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "ActivationChecklistStateTests",
+          "test": "testResourcesRequireInstalledActiveSchemaAndDeploy",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "ActivationChecklistStateTests",
+          "test": "testSettingsSearchCatalogMatchesKeywords",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "ActivationChecklistStateTests",
+          "test": "testSharedDataFailureOverridesFullAccessDeferral",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "ActivationChecklistStateTests",
+          "test": "testSharedDataUnavailableBlocksFullAccessProgress",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "ActivationChecklistStateTests",
+          "test": "testTipCopyDoesNotEmbedFullPrivacyPolicyOrFAHardRequirement",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "ActivationChecklistStateTests",
+          "test": "testTipInvalidationFlagsTrackChecklistSteps",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "ActivationChecklistStateTests",
+          "test": "testUserAffirmedFullAccessIsWeakButProgressable",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "ActivationChecklistStateTests",
+          "test": "testWelcomePresentationKeysAndCopyAreBound",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "AppAboutContactTests",
+          "test": "testFeedbackMailSubjectIncludesVersionAndBuild",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "AppAboutContactTests",
+          "test": "testFeedbackMailtoUsesLockedAddressAndPrefillsSubject",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "AppAboutContactTests",
+          "test": "testXiaohongshuURLMatchesTheLockedShortLink",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "AppActionButtonChromeTests",
+          "test": "testDestructiveGlassTintIsStrongerInDarkMode",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "AppActionButtonChromeTests",
+          "test": "testDestructiveStaysRed",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "AppActionButtonChromeTests",
+          "test": "testDisabledKeepsTheSamePairAndFadesTheControl",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "AppActionButtonChromeTests",
+          "test": "testGlassIsUsedUnlessReduceTransparencyIsOn",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "AppActionButtonChromeTests",
+          "test": "testHitFillShapeMatchesTheVisibleCapsule",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "AppActionButtonChromeTests",
+          "test": "testPrimaryGlassTintStaysNearlyOpaque",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "AppActionButtonChromeTests",
+          "test": "testPrimaryLabelIsSystemBackgroundInBothAppearances",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "AppActionButtonChromeTests",
+          "test": "testPrimarySolidFillFollowsLabel",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "AppActionButtonChromeTests",
+          "test": "testSecondaryUsesLabelTextAndGroupedFill",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "AppNotificationSettingsTests",
+          "test": "testClosingLastCategoryAlsoClosesMasterAndBothEntrypointsShareState",
+          "status": "passed",
+          "durationMs": 8
+        },
+        {
+          "suite": "AppNotificationSettingsTests",
+          "test": "testDeniedPermissionTurnsMasterOffButPreservesCategorySelection",
+          "status": "passed",
+          "durationMs": 18
+        },
+        {
+          "suite": "AppNotificationSettingsTests",
+          "test": "testDiagnosticsExpiryReminderIsDefaultOffAndUsesOnePendingRequest",
+          "status": "passed",
+          "durationMs": 33
+        },
+        {
+          "suite": "AppNotificationSettingsTests",
+          "test": "testDisablingDiagnosticsExpiryReminderCancelsPendingRequest",
+          "status": "passed",
+          "durationMs": 8
+        },
+        {
+          "suite": "AppNotificationSettingsTests",
+          "test": "testEnablingMasterRequestsPermissionAndSelectsDefaultCategory",
+          "status": "passed",
+          "durationMs": 4
+        },
+        {
+          "suite": "AppNotificationSettingsTests",
+          "test": "testForegroundToastPrioritySuppressesBannerAndSoundOnlyForKnownEvents",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "AppNotificationSettingsTests",
+          "test": "testLegacyRimeSelectionMigratesMasterOnlyWhenSystemCanDeliver",
+          "status": "passed",
+          "durationMs": 10
+        },
+        {
+          "suite": "AppNotificationSettingsTests",
+          "test": "testMasterOffPreservesCategoryAndReauthorizationDoesNotEnableItAgain",
+          "status": "passed",
+          "durationMs": 4
+        },
+        {
+          "suite": "AppNotificationSettingsTests",
+          "test": "testNewUserDefaultsToNotificationsOffAndOperationToastsOn",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "AppNotificationSettingsTests",
+          "test": "testNotificationServiceGatesDeliveryAndUsesToastPreferenceAsMetadata",
+          "status": "passed",
+          "durationMs": 15
+        },
+        {
+          "suite": "AppNotificationSettingsTests",
+          "test": "testNotificationServiceSkipsUnselectedRimeScope",
+          "status": "passed",
+          "durationMs": 5
+        },
+        {
+          "suite": "AppNotificationSettingsTests",
+          "test": "testProvisionalAndEphemeralAuthorizationCanDeliver",
+          "status": "passed",
+          "durationMs": 8
+        },
+        {
+          "suite": "AppNotificationSettingsTests",
+          "test": "testRimeNotificationScopesAreIndependentAndLastScopeClosesParent",
+          "status": "passed",
+          "durationMs": 9
+        },
+        {
+          "suite": "AppNotificationSettingsTests",
+          "test": "testToastTogglePersistsWithoutReplayingAnyPreviousState",
+          "status": "passed",
+          "durationMs": 4
+        },
+        {
+          "suite": "AppSwitchChromeTests",
+          "test": "testDarkModeOffThumbStaysWhite",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "AppSwitchChromeTests",
+          "test": "testDarkModeOnThumbIsBlack",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "AppSwitchChromeTests",
+          "test": "testLightModeThumbStaysWhiteWhetherOnOrOff",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "AppSwitchChromeTests",
+          "test": "testOnTintFollowsLabelInBothAppearances",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "DiagnosticsJournalRetentionCoordinatorTests",
+          "test": "testExpiredLeaseIsTombstonedSealedAndRevoked",
+          "status": "passed",
+          "durationMs": 20
+        },
+        {
+          "suite": "DiagnosticsJournalRetentionCoordinatorTests",
+          "test": "testRetentionCapacityDoesNotDeleteActiveOpenSegment",
+          "status": "passed",
+          "durationMs": 5
+        },
+        {
+          "suite": "DiagnosticsJournalRetentionCoordinatorTests",
+          "test": "testRetentionDeletesOnlySealedSegmentsOlderThanPolicy",
+          "status": "passed",
+          "durationMs": 7
+        },
+        {
+          "suite": "DiagnosticsJournalRetentionCoordinatorTests",
+          "test": "testRetentionSkipsExpiredLeaseWhenWriterLockIsBusy",
+          "status": "passed",
+          "durationMs": 6
+        },
+        {
+          "suite": "DiagnosticsJournalRetentionSchedulerTests",
+          "test": "testSchedulerCoalescesRequestsInsideMinimumInterval",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "DiagnosticsJournalRetentionSchedulerTests",
+          "test": "testSchedulerReturnsBeforeRunningReclaimAndCoalescesConcurrentRequests",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "DiagnosticsLogSourceTests",
+          "test": "testCandidateTouchEventsDisplayCoarseBandAndCorrelationSequence",
+          "status": "passed",
+          "durationMs": 24
+        },
+        {
+          "suite": "DiagnosticsLogSourceTests",
+          "test": "testClearAdvancesGenerationAndReportsSuccess",
+          "status": "passed",
+          "durationMs": 4
+        },
+        {
+          "suite": "DiagnosticsLogSourceTests",
+          "test": "testClearReportsFailureWhenJournalRootIsUnavailable",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "DiagnosticsLogSourceTests",
+          "test": "testCompleteEmptyV1AllowsLegacyFallback",
+          "status": "passed",
+          "durationMs": 5
+        },
+        {
+          "suite": "DiagnosticsLogSourceTests",
+          "test": "testIncompleteEmptyV1SuppressesLegacyFallback",
+          "status": "passed",
+          "durationMs": 10
+        },
+        {
+          "suite": "DiagnosticsLogSourceTests",
+          "test": "testMissingV1RootStaysInV1WithControlledUnavailableNotice",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "DiagnosticsLogSourceTests",
+          "test": "testOversizedJournalReturnsBoundedRecentPreviewInsteadOfBlankScreen",
+          "status": "passed",
+          "durationMs": 1079
+        },
+        {
+          "suite": "DiagnosticsLogSourceTests",
+          "test": "testRimeSyncEventsDisplayFiniteCorrelatedContext",
+          "status": "passed",
+          "durationMs": 12
+        },
+        {
+          "suite": "DiagnosticsLogSourceTests",
+          "test": "testV1ReadFailureStaysInV1WithControlledUnavailableNotice",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "DiagnosticsLogSourceTests",
+          "test": "testV6HistoriesPropagateCompletenessThroughCompositeQuery",
+          "status": "passed",
+          "durationMs": 35
+        },
+        {
+          "suite": "DiagnosticsRuntimeRouteDisplayTests",
+          "test": "testRuntimeRouteLineExposesFiniteFieldsWithoutUserContent",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "DiagnosticsRuntimeRouteDisplayTests",
+          "test": "testTypoRecallQueryLineDisplaysFinitePayloadWithoutUserContent",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "DiagnosticsStoreTests",
+          "test": "testClearInvalidatesAnOlderLoadThatFinishesLater",
+          "status": "passed",
+          "durationMs": 304
+        },
+        {
+          "suite": "DiagnosticsStoreTests",
+          "test": "testClosingSearchRejectsAStalePageThatFinishesLater",
+          "status": "passed",
+          "durationMs": 4
+        },
+        {
+          "suite": "DiagnosticsStoreTests",
+          "test": "testColorForLineMapsSeverityAndCategoryMarkers",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "DiagnosticsStoreTests",
+          "test": "testDateBrowserDefaultsToNewestDayAndReloadsSelectedDay",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "DiagnosticsStoreTests",
+          "test": "testExportRequiresNarrowerFilterWhenResultExceedsRecordLimit",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "DiagnosticsStoreTests",
+          "test": "testFailedClearKeepsRecoveryActionAndReportsFailure",
+          "status": "passed",
+          "durationMs": 301
+        },
+        {
+          "suite": "DiagnosticsStoreTests",
+          "test": "testLiveRefreshFollowsNewestDayWhenFirstEventArrivesAfterMidnight",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "DiagnosticsStoreTests",
+          "test": "testLiveRefreshReloadsWhenIdentityAdvancesDuringLoad",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "DiagnosticsStoreTests",
+          "test": "testLiveRefreshReloadsWhenIdentityChanges",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "DiagnosticsStoreTests",
+          "test": "testLiveRefreshSkipsRootLoadWhenIdentityIsUnchanged",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "DiagnosticsStoreTests",
+          "test": "testLiveRefreshSkipsWhenIdentityPeekFailsAfterASuccessfulBind",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "DiagnosticsStoreTests",
+          "test": "testLiveRootRefreshPreventsOlderPageFromStartingWhileCatalogIsInFlight",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "DiagnosticsStoreTests",
+          "test": "testLoadLogSkipsWhenCachedIdentityIsUnchanged",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "DiagnosticsStoreTests",
+          "test": "testOversizedSnapshotNoticeKeepsClearActionAvailable",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "DiagnosticsStoreTests",
+          "test": "testPartialWindowCanBeEmptyWithoutLookingLikeNoLogsExist",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "DiagnosticsStoreTests",
+          "test": "testRootLoadMarksRefreshingBeforeSourceReturns",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "DiagnosticsStoreTests",
+          "test": "testSearchDoesNotSkipAnOversizedRecordAndContinueToAnOlderPage",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "DiagnosticsStoreTests",
+          "test": "testSearchFiltersAndExportUseTheSameVisibleResult",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "DiagnosticsStoreTests",
+          "test": "testSearchPresentationExpandsFrozenPagesAndPausesLiveRefresh",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "DiagnosticsStoreTests",
+          "test": "testSearchStopsAtTheRecordBudget",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "DiagnosticsStoreTests",
+          "test": "testSearchStopsBeforeAppendingARecordBeyondTheByteBudget",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "DiagnosticsStoreTests",
+          "test": "testSearchWaitsForManualPaginationBeforeOwningTheCursor",
+          "status": "passed",
+          "durationMs": 22
+        },
+        {
+          "suite": "DiagnosticsStoreTests",
+          "test": "testSelectingAnotherDayInvalidatesAnInFlightOlderPage",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "DiagnosticsStoreTests",
+          "test": "testSelectingAnotherDayWaitsForInFlightSearchAndRejectsItsStalePage",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "DiagnosticsStoreTests",
+          "test": "testSuccessfulClearResetsVisibleState",
+          "status": "passed",
+          "durationMs": 301
+        },
+        {
+          "suite": "DiagnosticsStoreTests",
+          "test": "testSummaryAndCategoryFiltersDeriveExpectedLines",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "DiagnosticsStoreTests",
+          "test": "testUnavailableDayCatalogPreservesVisibleStateAndDoesNotIssueUnboundedLoad",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "DictionaryIndexServiceTests",
+          "test": "testPreviewRejectsPathTraversalOutsideDictionaryRoot",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "DictionaryIndexServiceTests",
+          "test": "testScanReadsDictionaryFilesAndFiltersByCode",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "LocalDictionaryModelTests",
+          "test": "testEntriesFooterUsesDefaultCopyWhenNotSearching",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "LocalDictionaryModelTests",
+          "test": "testEntriesFooterUsesSearchCopyForTruncatedResults",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "LocalDictionaryModelTests",
+          "test": "testPreviewModelUsesInjectedServiceAndPreservesResultLimitCopy",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "LocalDictionaryModelTests",
+          "test": "testRefreshUsesInjectedIndexServiceSnapshot",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "NineKeyEnableTransactionTests",
+          "test": "testBeginTransactionForcesTwentySixKeyAndInvalidatesReadiness",
+          "status": "passed",
+          "durationMs": 5
+        },
+        {
+          "suite": "NineKeyEnableTransactionTests",
+          "test": "testCancellingDownloadWaitingForNineKeyLeaseCannotCommitAfterRelease",
+          "status": "passed",
+          "durationMs": 6
+        },
+        {
+          "suite": "NineKeyEnableTransactionTests",
+          "test": "testOrchestratorDeployFailureLeavesTwentySixKeyAndUnmatchedReadiness",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "NineKeyEnableTransactionTests",
+          "test": "testOrchestratorFingerprintFailureLeavesTwentySixKeyAndUnmatchedReadiness",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "NineKeyEnableTransactionTests",
+          "test": "testOrchestratorIceAndDirectoryPreconditionsSkipTransaction",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "NineKeyEnableTransactionTests",
+          "test": "testOrchestratorPrepareFailureLeavesTwentySixKeyAndUnmatchedReadiness",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "NineKeyEnableTransactionTests",
+          "test": "testOrchestratorSmokeFailureLeavesTwentySixKeyAndUnmatchedReadiness",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "NineKeyEnableTransactionTests",
+          "test": "testOrchestratorSuccessWritesReadinessBeforeNineKey",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "NineKeyEnableTransactionTests",
+          "test": "testProductionEntryWaitsForCommitLeaseBeforePrepareAndDeploysOnce",
+          "status": "passed",
+          "durationMs": 4
+        },
+        {
+          "suite": "ReleaseEvidenceStoreTests",
+          "test": "testCorruptArchiveIsQuarantinedBeforeSavingNewRun",
+          "status": "passed",
+          "durationMs": 5
+        },
+        {
+          "suite": "ReleaseEvidenceStoreTests",
+          "test": "testDiagnosticsClearDoesNotDeleteReleaseEvidence",
+          "status": "passed",
+          "durationMs": 4
+        },
+        {
+          "suite": "ReleaseEvidenceStoreTests",
+          "test": "testEmptyRunDoesNotReportPass",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "ReleaseEvidenceStoreTests",
+          "test": "testEvidenceReuseIsOnlyRequiredForExternalCandidates",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "ReleaseEvidenceStoreTests",
+          "test": "testLegacyArchiveDecodingBoundsNoteAndMarksMissingBehaviorContractUnknown",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "ReleaseEvidenceStoreTests",
+          "test": "testPendingExternalRunCannotReportPassEvenIfEveryStepIsMarkedPass",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "ReleaseEvidenceStoreTests",
+          "test": "testPromotionKeepsExternalReadinessSeparateFromBetaEvidence",
+          "status": "passed",
+          "durationMs": 4
+        },
+        {
+          "suite": "ReleaseEvidenceStoreTests",
+          "test": "testRunOutcomeFailsClosedForIncompleteSteps",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "ReleaseEvidenceStoreTests",
+          "test": "testSessionRequiresAStableCandidateIdentifier",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "ReleaseEvidenceStoreTests",
+          "test": "testStepNotesAreBoundedWhenCreated",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "ReleaseEvidenceStoreTests",
+          "test": "testStoreKeepsOnlyTheNewestFiftyRuns",
+          "status": "passed",
+          "durationMs": 67
+        },
+        {
+          "suite": "ReleaseEvidenceStoreTests",
+          "test": "testStoreRoundTripsAReleaseEvidenceRun",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeAutomaticSyncPolicyTests",
+          "test": "testBackgroundOwnerSuppressesConcurrentBackgroundAutomaticEntry",
+          "status": "passed",
+          "durationMs": 63
+        },
+        {
+          "suite": "RimeAutomaticSyncPolicyTests",
+          "test": "testConcurrentExpirationAndOperationReturnHaveExactlyOneTerminalOwner",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeAutomaticSyncPolicyTests",
+          "test": "testDailyCadenceIsDueAfterOneDay",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "RimeAutomaticSyncPolicyTests",
+          "test": "testExpirationSeamCompletesImmediatelyAndSuppressesLateSuccess",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeAutomaticSyncPolicyTests",
+          "test": "testFailedOperationSeamCompletesAsFailureWithoutNotification",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeAutomaticSyncPolicyTests",
+          "test": "testFirstAutomaticSyncHasNoCooldown",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "RimeAutomaticSyncPolicyTests",
+          "test": "testKeyboardActiveRetryDefersAnOtherwisePastEligibleDate",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeAutomaticSyncPolicyTests",
+          "test": "testLaunchHandlerQueueMatchesMainActorIsolation",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "RimeAutomaticSyncPolicyTests",
+          "test": "testLifecycleCompletesOnlyOnceAfterSuccessfulOperation",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "RimeAutomaticSyncPolicyTests",
+          "test": "testLifecycleReportsExpirationAsFailureAndCompletesOnlyOnce",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeAutomaticSyncPolicyTests",
+          "test": "testMissingAttemptAndRetryFloorDoesNotSchedule",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "RimeAutomaticSyncPolicyTests",
+          "test": "testNextEligibleDateUsesChosenCadence",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeAutomaticSyncPolicyTests",
+          "test": "testOccupiedProcessGateDefersBackgroundSyncWithoutPublishingNotifications",
+          "status": "passed",
+          "durationMs": 6
+        },
+        {
+          "suite": "RimeAutomaticSyncPolicyTests",
+          "test": "testOccupiedProcessGateSuppressesForegroundAndManualSyncNotifications",
+          "status": "passed",
+          "durationMs": 4
+        },
+        {
+          "suite": "RimeAutomaticSyncPolicyTests",
+          "test": "testProcessBusySkipCompletesAndReschedulesExactlyOnceWithoutNotification",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeAutomaticSyncPolicyTests",
+          "test": "testProcessGateGrantsExactlyOneConcurrentLease",
+          "status": "passed",
+          "durationMs": 6
+        },
+        {
+          "suite": "RimeAutomaticSyncPolicyTests",
+          "test": "testProcessGateRejectsAStaleLeaseRelease",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeAutomaticSyncPolicyTests",
+          "test": "testRetryFloorSchedulesWhenLastAutomaticAttemptIsMissing",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeAutomaticSyncPolicyTests",
+          "test": "testSuccessfulOperationSeamCompletesAndNotifiesOnlyOnce",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeAutomaticSyncPolicyTests",
+          "test": "testSuccessfulSkipCompletesTaskWithoutCompletionNotification",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeAutomaticSyncPolicyTests",
+          "test": "testWeeklyCadenceIsDueAfterSevenDays",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeBuiltinRuntimeClosureTests",
+          "test": "testBundledOfficialLunaClosureDeploysWithFuzzyPinyinOffAndOn",
+          "status": "passed",
+          "durationMs": 2660
+        },
+        {
+          "suite": "RimeIcePinnedArtifactTests",
+          "test": "testCatalogUsesDatedReleaseWithBoundDiagnostics",
+          "status": "passed",
+          "durationMs": 7
+        },
+        {
+          "suite": "RimeIcePinnedArtifactTests",
+          "test": "testVerifiedOfficialAndMirrorArchivesConvergeAfterProductionProcessing",
+          "status": "skipped",
+          "durationMs": 6
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testAdvancedInputStatusExplainsRuntimeLuaModuleMissing",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testAdvancedInputStatusOffersApplyWhenDeploymentIsPending",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testAdvancedInputStatusOffersRedownloadForStrippedOrMissingLuaFiles",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testAdvancedInputStatusOffersSchemaSwitchForInactiveRimeIce",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testAdvancedInputStatusRejectsSmokePassFromStaleDeployment",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testAdvancedInputStatusUsesReadyTextForAvailableDiagnostic",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testAdvancedInputSupportedSchemeReportsAvailablePreferences",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testAdvancedInputUnsupportedSchemeKeepsSettingsButDisablesCapability",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testAutoBackupIsOffByDefaultAndDoesNotBackup",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testAutoBackupRunsForChangedLearningDataWhenEnabled",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testAutoBackupSkipsWhenLatestBackupMatchesCurrentLearningData",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testBackupUserDictionaryShowsPlainUserMessage",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testCancelFailedDeploymentStillResetsToIdle",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testCancelLiveDeploymentReleasesRetryWithoutWaitingForCompletion",
+          "status": "passed",
+          "durationMs": 13
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testCheckForUpdateReportsAlreadyCurrentWithoutStartingDownload",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testDefaultAppGroupSettingsStoreDeinitDoesNotAbort",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testDefaultSchemaManagerDeinitDoesNotAbort",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testDownloadFailureStaysWithItsSchemeAcrossNavigationAndReplacement",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testFailedAutomaticDeploymentRemainsSuppressedAfterLoadAndRelaunch",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testLoadDoesNotSeedDeployIntentWhenAlreadyDeployed",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testLoadDoesNotSeedDeployIntentWhenAutomaticRetryIsSuppressed",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testLoadReadsPreferencesThroughInjectedPersistence",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testLoadReadsStoredAdvancedInputPreferences",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testLoadReadsStoredFuzzyPinyinPreferences",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testLoadReadsStoredUserDictionaryPreferences",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testLoadSeedsBuiltinDeployIntentOnFreshAppGroup",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testLoadTreatsOrphanedDeployingFlagAsFailedWithoutAutoRetry",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testManualDeploymentCanRetryAfterAutomaticFailure",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testNewGenericIntentAllowsOneAutomaticAttemptAfterPriorFailure",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testNineKeyLayoutUsesFogCapabilityWhileTwentySixKeyIsWanxiang",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testResetUserDictionaryDoesNotDeployWhenSafetyPreparationFails",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testRestoreUserDictionaryDoesNotDeployWhenNoBackupExists",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testRestoreUserDictionaryMarksPendingDeploymentWhenSuccessful",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testSaveAdvancedInputSettingsPersistsAndMarksDeploymentNeeded",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testSaveAdvancedInputSettingsSkipsDeployWhenSignatureAlreadyMatches",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testSaveFuzzyPinyinSettingsPersistsAndMarksDeploymentNeeded",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testSaveFuzzyPinyinSettingsSkipsDeployWhenSignatureAlreadyMatches",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testSaveUserDictionarySettingsPersistsAndMarksDeploymentNeeded",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testSaveUserDictionarySettingsSkipsDeployWhenSignatureAlreadyMatches",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testTriggerDeploymentCompletesInsideMainAppBeforeKeyboardUse",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testTriggerFuzzyDeploymentIfNeededOnlyRunsWhenPending",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testTriggerPendingDeploymentIfNeededDoesNotLoopAfterFailure",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testTriggerPendingDeploymentIfNeededRunsAfterFreshLoadSeed",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testTriggerPendingDeploymentIfNeededRunsForGenericNeedsDeployIntent",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testTriggerPendingDeploymentIfNeededRunsForUserDictionaryIntent",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testUserDictionaryBackupStatusDisablesBackupWhenUpToDate",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testUserDictionaryBackupStatusExplainsLearningAndBackupState",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testUserDictionaryStatusUsesPlainTextForInstalledSchema",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSettingsStoreTests",
+          "test": "testWanxiangLayoutBindingGatesFuzzyAndAdvancedWithoutClearingPreferences",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSyncCryptoTests",
+          "test": "testCoordinatorRejectsTamperedRemoteBeforePublishingMergedSettings",
+          "status": "passed",
+          "durationMs": 9
+        },
+        {
+          "suite": "RimeSyncCryptoTests",
+          "test": "testEncryptionRoundTripAndRecoveryCodeRoundTrip",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "RimeSyncCryptoTests",
+          "test": "testTamperedCiphertextFailsClosedAndContainsNoManagedValue",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSyncCryptoTests",
+          "test": "testWrongKeyFailsClosed",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSyncDiagnosticsTests",
+          "test": "testBackgroundSuccessRecordsOneCoherentPhaseSequence",
+          "status": "passed",
+          "durationMs": 5
+        },
+        {
+          "suite": "RimeSyncDiagnosticsTests",
+          "test": "testFailureMapperNeverPersistsRawErrorText",
+          "status": "passed",
+          "durationMs": 4
+        },
+        {
+          "suite": "RimeSyncDiagnosticsTests",
+          "test": "testProcessBusyRecordsSkipWithoutPhaseStart",
+          "status": "passed",
+          "durationMs": 5
+        },
+        {
+          "suite": "RimeSyncDiagnosticsTests",
+          "test": "testSchedulerCompletionCommitsProposedTerminalAfterLifecycleClaim",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSyncDiagnosticsTests",
+          "test": "testSchedulerExpirationRecordsBeforeLateCancellation",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSyncDiagnosticsTests",
+          "test": "testSessionRejectsUnrequestedAndOutOfOrderPhases",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSyncModelTests",
+          "test": "testAutomaticCancellationNotificationRequiresAnUnfinishedScope",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSyncModelTests",
+          "test": "testAutomaticSyncRequiresUserOptInAndTurnsOffWithLastScope",
+          "status": "passed",
+          "durationMs": 7
+        },
+        {
+          "suite": "RimeSyncModelTests",
+          "test": "testAutomaticSyncSuboptionsDefaultOnAndPreserveExplicitChoice",
+          "status": "passed",
+          "durationMs": 3
+        },
+        {
+          "suite": "RimeSyncModelTests",
+          "test": "testCancellablePhaseRejectsLateSuccessAfterCancellation",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSyncModelTests",
+          "test": "testCancellablePhaseReturnsSuccessfulValueWhenStillActive",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSyncModelTests",
+          "test": "testConfigurationAndManualSyncAreRejectedWhileAnotherProcessOwnsGate",
+          "status": "passed",
+          "durationMs": 5
+        },
+        {
+          "suite": "RimeSyncModelTests",
+          "test": "testDisconnectDoesNotMutateStateWhileAnotherProcessSyncOwnsGate",
+          "status": "passed",
+          "durationMs": 4
+        },
+        {
+          "suite": "RimeSyncModelTests",
+          "test": "testKeychainAccessDeniedGuidanceDoesNotReferToSyncFolder",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSyncModelTests",
+          "test": "testLocalFolderDeletionFailurePreservesPackageConfigurationAndSecrets",
+          "status": "passed",
+          "durationMs": 10
+        },
+        {
+          "suite": "RimeSyncModelTests",
+          "test": "testProfileMergeKeepsIndependentChangesAndDeterministicallyResolvesSameField",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSyncModelTests",
+          "test": "testProfileUpdatesOnlyChangedFieldsAndPreservesUnknownFields",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSyncModelTests",
+          "test": "testRemoteDeletionDisconnectRemovesSecretsAndSyncConfiguration",
+          "status": "passed",
+          "durationMs": 6
+        },
+        {
+          "suite": "RimeSyncModelTests",
+          "test": "testRemoteDeletionReportsPartialKeychainCleanupAndCanBeRetried",
+          "status": "passed",
+          "durationMs": 5
+        },
+        {
+          "suite": "RimeSyncModelTests",
+          "test": "testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem",
+          "status": "skipped",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSyncModelTests",
+          "test": "testScalarUsesPlainJSONValues",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSyncModelTests",
+          "test": "testSyncNotificationCopyFiltersAndCombinesSelectedScopes",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSyncModelTests",
+          "test": "testSyncPhasesDescribeTheSingleVisibleSyncFlow",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "RimeSyncModelTests",
+          "test": "testUITestFixtureDisablesProductionBackgroundScheduling",
+          "status": "passed",
+          "durationMs": 3
+        },
+        {
+          "suite": "RimeSyncModelTests",
+          "test": "testUnknownPackageRootTypePreservesConfigurationAndSecrets",
+          "status": "passed",
+          "durationMs": 6
+        },
+        {
+          "suite": "RimeSyncTransportTests",
+          "test": "testCoordinatorRejectsOversizedRemotePackageBeforeDecryption",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSyncTransportTests",
+          "test": "testCoordinatorRetriesOneConcurrentWrite",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "RimeSyncTransportTests",
+          "test": "testDiagnosticErrorCodesAreStableAndExcludeUnderlyingDetails",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSyncTransportTests",
+          "test": "testFolderPreflightDiagnosticIncludesTheFailingStage",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSyncTransportTests",
+          "test": "testLocalFolderDeletionDoesNotRemoveNonDirectoryAtPackageRoot",
+          "status": "passed",
+          "durationMs": 3
+        },
+        {
+          "suite": "RimeSyncTransportTests",
+          "test": "testLocalFolderDeletionRemovesPrivatePackageOnly",
+          "status": "passed",
+          "durationMs": 4
+        },
+        {
+          "suite": "RimeSyncTransportTests",
+          "test": "testLocalFolderDeletionSucceedsWhenPrivatePackageIsConfirmedMissing",
+          "status": "passed",
+          "durationMs": 3
+        },
+        {
+          "suite": "RimeSyncTransportTests",
+          "test": "testLocalFolderPreflightVerifiesAccessWithoutLeavingFiles",
+          "status": "passed",
+          "durationMs": 3
+        },
+        {
+          "suite": "RimeSyncTransportTests",
+          "test": "testLocalFolderPublishesContractLayoutAndRejectsStaleETag",
+          "status": "passed",
+          "durationMs": 8
+        },
+        {
+          "suite": "RimeSyncTransportTests",
+          "test": "testLocalFolderPublishFailsClosedWhenExistingSettingsCannotBeRead",
+          "status": "passed",
+          "durationMs": 11
+        },
+        {
+          "suite": "RimeSyncTransportTests",
+          "test": "testWebDAVDeletionIsScopedToThePrivatePackageRoot",
+          "status": "passed",
+          "durationMs": 4
+        },
+        {
+          "suite": "RimeSyncTransportTests",
+          "test": "testWebDAVUsesConditionalWriteAndExpectedPackagePaths",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeUserDictionaryBackupServiceTests",
+          "test": "testBackupAndRestoreLatestUserDictionaryFiles",
+          "status": "passed",
+          "durationMs": 10
+        },
+        {
+          "suite": "RimeUserDictionaryBackupServiceTests",
+          "test": "testBackupDetectsNewLearningDataAfterManifestChanges",
+          "status": "passed",
+          "durationMs": 7
+        },
+        {
+          "suite": "RimeUserDictionaryBackupServiceTests",
+          "test": "testBackupReportsNoLearningDataWhenUserDBIsMissing",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeUserDictionaryBackupServiceTests",
+          "test": "testResetCreatesRecoveryBackupBeforeDeletingLearningData",
+          "status": "passed",
+          "durationMs": 6
+        },
+        {
+          "suite": "RimeUserDictionaryBackupServiceTests",
+          "test": "testRestoreCreatesRecoveryBackupBeforeReplacingNewerLearningData",
+          "status": "passed",
+          "durationMs": 14
+        },
+        {
+          "suite": "SchemaArtifactSecurityTests",
+          "test": "testArchiveVerificationBindsExactSizeAndSHA256",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "SchemaArtifactSecurityTests",
+          "test": "testCleanupAcceptsRegisteredAlreadyAbsentArtifact",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "SchemaArtifactSecurityTests",
+          "test": "testCleanupFailsClosedWhenDeletionFails",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "SchemaArtifactSecurityTests",
+          "test": "testCleanupFailsClosedWhenExistenceCheckFails",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "SchemaArtifactSecurityTests",
+          "test": "testCleanupReceiptBindsExactRegisteredArtifactAndVerifiesAbsence",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "SchemaArtifactSecurityTests",
+          "test": "testCleanupRejectsUnregisteredAlreadyAbsentArtifact",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaArtifactSecurityTests",
+          "test": "testDownloaderRemovesUnregisteredFileOnDisallowedHostAndZeroLength",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "SchemaArtifactSecurityTests",
+          "test": "testDownloaderRemovesUnregisteredFileOnNonHTTPResponse",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaArtifactSecurityTests",
+          "test": "testLocalizedIntegrityErrorsDoNotExposeRawDigests",
+          "status": "passed",
+          "durationMs": 5
+        },
+        {
+          "suite": "SchemaArtifactSecurityTests",
+          "test": "testLocalizedNetworkErrorsDoNotExposeRawSystemText",
+          "status": "passed",
+          "durationMs": 3
+        },
+        {
+          "suite": "SchemaArtifactSecurityTests",
+          "test": "testManifestRejectsMalformedDigestAndStaleImplementationRevision",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaArtifactSecurityTests",
+          "test": "testManifestRejectsUnresolvedStagedIdentity",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaArtifactSecurityTests",
+          "test": "testManifestResolvesAllSourcesToOneExplicitStagedIdentity",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaArtifactSecurityTests",
+          "test": "testSchemeDeliveryFormatterUsesReviewedEnumsWithoutPaths",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaArtifactSecurityTests",
+          "test": "testSchemeDeliveryPhaseLinesAreSearchableWithoutChineseFreeText",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaArtifactSecurityTests",
+          "test": "testSourceSelectionHedgesAndCancelsSlowerPreferredProbe",
+          "status": "passed",
+          "durationMs": 9
+        },
+        {
+          "suite": "SchemaArtifactSecurityTests",
+          "test": "testSourceSelectionNeverProbesMoreThanTwoVariants",
+          "status": "passed",
+          "durationMs": 9
+        },
+        {
+          "suite": "SchemaArtifactSecurityTests",
+          "test": "testStagedDigestIgnoresUnadmittedPurePayloadButBindsInstalledFiles",
+          "status": "passed",
+          "durationMs": 8
+        },
+        {
+          "suite": "SchemaArtifactSecurityTests",
+          "test": "testStagedDigestSeparatesLuaAndNonLuaInstallProfiles",
+          "status": "passed",
+          "durationMs": 4
+        },
+        {
+          "suite": "SchemaArtifactSecurityTests",
+          "test": "testStagedMismatchNeverPermitsSourceFallback",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaArtifactSecurityTests",
+          "test": "testStaleCleanupReceiptDoesNotProveALaterAttempt",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testActiveUninstallAwaitsLunaDeployBeforeCommittingFiles",
+          "status": "passed",
+          "durationMs": 5
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testActiveUninstallKeepsFilesAndRestoresSchemaWhenLunaDeployFails",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testActiveUninstallRestoresSchemaWhenStagingFailsAfterLunaDeploy",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testActiveWanxiangUninstallRestoresCompleteRouteStateWhenLunaDeployFails",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testActiveWanxiangUninstallRestoresCompleteRouteStateWhenStagingFails",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testActiveWanxiangUninstallUsesFailClosedTwentySixKeyRoute",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testAllArchiveIntegrityFailuresStopAfterCleaningEachRegisteredArtifact",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testArchiveDigestMismatchCleansExactArtifactBeforePinnedFallback",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testArchiveSizeMismatchCleansExactRegisteredArtifactBeforePinnedFallback",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testCancellationAfterCleanupDoesNotRequestFallbackSource",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testCancellationCannotInterruptOwnedCommitLease",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testCancelledCommitLeaseAttemptDoesNotRegisterAvailabilityWaiter",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testCheckForUpdateReportsCurrentPinnedVersion",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testCheckForUpdateUsesPinnedManifestVersion",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testCheckForUpdateUsesWanxiangPinnedVersion",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testCleanupFailureStopsIntegrityFallback",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testCommitLeaseCoalescesConcurrentDeploymentWaiters",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testCommitLeaseCoalescesMutationsAndAppliesThemAfterRelease",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testCommitLeaseKeepsOnlyLatestDeferredDownloadIntent",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testCS05_UninstallInactiveIceKeepsWanxiangSelectionWithoutLunaDeploy",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testCS06_UninstallInactiveWanxiangKeepsIceSelectionWithoutLunaDeploy",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testCS07_ActiveIceUninstallWithWanxiangPeerDeploysLunaBeforeRemovingIce",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testCS08_ActiveWanxiangUninstallWithIcePeerDeploysLunaBeforeRemovingWanxiang",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testCS09_UninstallLastActiveIceDeploysLunaAndClearsIceReceipt",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testCS09_UninstallLastActiveWanxiangDeploysLunaAndClearsWanxiangReceipt",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testCS10_RetainedIceDeploysAfterActiveWanxiangUninstall",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testCS10_RetainedWanxiangDeploysAfterActiveIceUninstall",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testCSF1_IceDeployFailureWithWanxiangPeerKeepsPeerAndSkipsIceReceipt",
+          "status": "passed",
+          "durationMs": 12
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testCSF1_WanxiangDeployFailureWithIcePeerKeepsPeerAndSkipsWanxiangReceipt",
+          "status": "passed",
+          "durationMs": 6
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testCSF2_ActiveIceUninstallWithWanxiangPeerRestoresIceWhenLunaDeployFails",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testCSF2_ActiveWanxiangUninstallWithIcePeerRestoresWanxiangWhenLunaDeployFails",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testCSF3_ManagerIceStagingFailureRestoresSelectionAndWanxiangPeerFiles",
+          "status": "passed",
+          "durationMs": 6
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testCSF3_ManagerWanxiangStagingFailureRestoresSelectionAndIcePeerFiles",
+          "status": "passed",
+          "durationMs": 6
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testDeploymentAppliesAdvancedInputFeatureSwitchesToRimeIce",
+          "status": "passed",
+          "durationMs": 5
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testDeploymentAppliesFuzzyPinyinToDownloadableSchemaAndPreservesOfficialLuna",
+          "status": "passed",
+          "durationMs": 4
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testDeploymentDoesNotMutateOfficialLunaWhenFuzzyPinyinIsDisabled",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testDeploymentForwardsOnlyActiveWanxiangSchemaToSmoke",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testDisabledDiagnosticsDoNotChangeArchiveFallback",
+          "status": "passed",
+          "durationMs": 3
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testDownloadableSchemesUseTheirOwnLicenseDescriptors",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testDownloadFailureBindsSchemaIDFromDownloadOperation",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testDownloadIsBlockedUntilCurrentLicenseRevisionIsAccepted",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testDownloadSchemeDisplayNameUsesCatalogName",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testDownloadToastMessagesUseSchemeNameAndIndeterminateProgress",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testEveryThirdPartyCatalogEntryHasBundledOfflineDocuments",
+          "status": "passed",
+          "durationMs": 4
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testExplicitLuaSmokeFailureCannotBeMaskedByDeployedFlag",
+          "status": "passed",
+          "durationMs": 7
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testFailedDeploymentPreservesRecoveryIntent",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testFetchAndDownloadSkipsIdenticalIceReceiptBeforeLiveMutation",
+          "status": "passed",
+          "durationMs": 7
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testForceRedownloadPreservesLastVerifiedReceiptUntilReplacementSucceeds",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testGenerationInvalidationAfterLeaseWaitRollsBackLease",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testInactiveIceUninstallForcesTwentySixKeyAndInvalidatesT9Readiness",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testIncompleteRollbackStopsWithoutRedeployingOriginalSchema",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testInstallationPassesSharedLuaCapabilityToInstaller",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testInvalidDeferredDownloadDoesNotStrandDeploymentWaiter",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testLayoutReadPathsNeverPrepareDeploymentResources",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testLegacyNightlyInstallationOffersPinnedReleaseUpdate",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testLegacyRimeIceAcceptanceMigratesToCurrentRevision",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testLegacyWanxiangAcceptanceDoesNotMigrateFromIncorrectSharedDialog",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testLicenseAcceptanceIsIsolatedPerScheme",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testLuaDiagnosticDetectsMissingLuaEntryScript",
+          "status": "passed",
+          "durationMs": 3
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testLuaDiagnosticDetectsMissingLuaFiles",
+          "status": "passed",
+          "durationMs": 3
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testLuaDiagnosticDetectsStrippedSchemaBeforeLuaFileChecks",
+          "status": "passed",
+          "durationMs": 4
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testLuaDiagnosticDoesNotRequireEntryScriptForAutoloadLuaComponents",
+          "status": "passed",
+          "durationMs": 3
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testLuaDiagnosticPassesWhenAllSchemaReferencedLuaComponentsExist",
+          "status": "passed",
+          "durationMs": 4
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testLuaDiagnosticReportsAvailableWhenEngineSchemaFilesAndDeploymentAreReady",
+          "status": "passed",
+          "durationMs": 3
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testLuaDiagnosticReportsMissingLuaRequireDependencies",
+          "status": "passed",
+          "durationMs": 4
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testLuaDiagnosticReportsNeedsDeployAfterCompleteInstallButBeforeDeployment",
+          "status": "passed",
+          "durationMs": 3
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testLuaDiagnosticReportsSchemaReferencedMissingLuaComponents",
+          "status": "passed",
+          "durationMs": 3
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testMalformedInactiveBindingStopsBeforeStagingWithReconciliationDiagnostic",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testMixedArchiveIntegrityFailuresUseAggregateClassification",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testNonActiveUninstallKeepsFilesWhenStagingFails",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testNonActiveUninstallStillRemovesFilesWithoutLunaFallback",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testOpenCCCatalogRequiresLicenseAndPinnedAuthorsDocument",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testPinnedSourceVariantsDoNotShareArchiveReceipt",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testRefreshSchemaListUsesInjectedInstallationState",
+          "status": "passed",
+          "durationMs": 9
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testReleaseVersionIdentifierFallsBackToFilenameForNonReleaseURLs",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testSchemaSwitchAndLicenseAcceptancePersistIntentFlags",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testShouldSkipIdenticalReinstallRequiresInstalledSchemaPresence",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testShouldSkipIdenticalReinstallWhenReceiptMatchesStagedContent",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testStaleCleanupReceiptStopsFallbackWithoutRequestingNextSource",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testStaleLicenseRevisionRequiresNewAcceptance",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testStartDownloadAllowsCompletedStateForInstalledSchemaUpdates",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testSuccessfulDeploymentUsesFullCheckAndUpdatesSharedFlags",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testTransportFailureRecordsFallbackToNextPinnedSource",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testWanxiangCatalogEntryIsDownloadableFullPinyin",
+          "status": "passed",
+          "durationMs": 15
+        },
+        {
+          "suite": "SchemaManagerTests",
+          "test": "testWanxiangUpgradeRestoresPriorSelectionAndSkipsReceiptWhenDeployFails",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaSourceProbeTests",
+          "test": "testChangedAndUnreachableSourcesDoNotBecomeNetworkOnlyError",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaSourceProbeTests",
+          "test": "testProbeDistinguishesChangedArtifactFromUnavailableSource",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemaSourceProbeTests",
+          "test": "testProbeFailureDiagnosticsRemainTypedAndSearchable",
+          "status": "passed",
+          "durationMs": 4
+        },
+        {
+          "suite": "SchemaSourceProbeTests",
+          "test": "testSizeRejectionDoesNotHideValidAlternativeAndRecordsSource",
+          "status": "passed",
+          "durationMs": 3
+        },
+        {
+          "suite": "SchemaSourceProbeTests",
+          "test": "testTransportAndCancellationRemainDistinct",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemeLicenseDownloadCopyTests",
+          "test": "testActivationAliasesUseTheSharedOwner",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "SchemeLicenseDownloadCopyTests",
+          "test": "testDismissOnlyDismissesTheLicenseSheet",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "SchemeLicenseDownloadCopyTests",
+          "test": "testFirstDownloadCopyIsTheLockedPair",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemeLicenseDownloadCopyTests",
+          "test": "testFirstDownloadRequestOnlyPresentsLicenseForEveryEntryPoint",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "SchemeLicenseDownloadCopyTests",
+          "test": "testLicenseAcceptancePrecedesDownloadForEveryEntryPoint",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "SchemeLicenseDownloadCopyTests",
+          "test": "testNineKeyMissingResourcesStillRequiresLicenseAfterPriorAcceptance",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "SchemeLicenseDownloadCopyTests",
+          "test": "testNineKeyRoutePreservesReadyAndInstalledResourcePaths",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "SchemeProvenancePresentationTests",
+          "test": "testBuiltinAndDistributionShareTheSameRowTitles",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemeProvenancePresentationTests",
+          "test": "testBuiltinFillsHonestPlaceholdersAndIgnoresDistributionInputs",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemeProvenancePresentationTests",
+          "test": "testBuiltinUsesInstalledVersionWhenPresent",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "SchemeProvenancePresentationTests",
+          "test": "testDistributionUnresolvedPlaceholdersDoNotDependOnSchemaID",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemeProvenancePresentationTests",
+          "test": "testDistributionVerifiedReceiptUsesSourceFields",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "SchemeProvenancePresentationTests",
+          "test": "testFutureCatalogSchemeInheritsDistributionFillWithoutSchemaIDBranch",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testBuiltinOnlyRepeatedDeployRemainsIdempotent",
+          "status": "passed",
+          "durationMs": 321
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testCS01_IceThenWanxiang_BothInstalledPeerRetainedAndJustInstalledActivated",
+          "status": "passed",
+          "durationMs": 173
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testCS02_WanxiangThenIce_BothInstalledPeerRetainedAndJustInstalledActivated",
+          "status": "passed",
+          "durationMs": 173
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testCS03_RepeatIceSameIdentity_NoOpKeepsWanxiangPeerAndSelection",
+          "status": "passed",
+          "durationMs": 171
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testCS04_RepeatWanxiangSameIdentity_NoOpKeepsIcePeerAndSelection",
+          "status": "passed",
+          "durationMs": 171
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testCS04_WanxiangIdentityChange_UpgradeRollbackPreservesIcePeer",
+          "status": "passed",
+          "durationMs": 192
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testCS05_UninstallInactiveIceRetainsWanxiangPeerInventory",
+          "status": "passed",
+          "durationMs": 178
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testCS06_UninstallInactiveWanxiangRetainsIcePeerInventory",
+          "status": "skipped",
+          "durationMs": 168
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testCS0910_RealInstallerIceRemovalPreservesCompleteWanxiangInventory",
+          "status": "skipped",
+          "durationMs": 166
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testCS0910_RealInstallerWanxiangRemovalPreservesCompleteIceInventory",
+          "status": "skipped",
+          "durationMs": 176
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testCSF3_IceUninstallStagingFailureRetainsWanxiangPeerAndTargetFiles",
+          "status": "passed",
+          "durationMs": 180
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testIcePlanSkipsDefaultYamlAndInstallsPrivatePreset",
+          "status": "passed",
+          "durationMs": 327
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testIceUninstallDoesNotStageWanxiangExactHashLuaPaths",
+          "status": "passed",
+          "durationMs": 176
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testIceUninstallRemovesPresetAndLeavesOfficialDefaultYaml",
+          "status": "passed",
+          "durationMs": 185
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testIceUninstallStagingMidMoveFailureRestoresOwnedFiles",
+          "status": "passed",
+          "durationMs": 179
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testIceUninstallStagingRollbackRestoresOwnedFiles",
+          "status": "passed",
+          "durationMs": 174
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds",
+          "status": "skipped",
+          "durationMs": 171
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testMissingStagedFileWithoutRestoreEvidenceRetainsCheckpoint",
+          "status": "passed",
+          "durationMs": 170
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testProductionProcessedIceTreeKeepsOfficialDefaultYamlWhenFixturePresent",
+          "status": "skipped",
+          "durationMs": 1
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testRollbackContinuesAfterMiddleFailureAndRetriesOriginalCheckpoint",
+          "status": "passed",
+          "durationMs": 173
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testUninstallDoubleFailurePreservesCheckpointAndAllowsRecoveryRetry",
+          "status": "passed",
+          "durationMs": 170
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testWanxiangExactHashLuaMatchIsStagedOnUninstall",
+          "status": "passed",
+          "durationMs": 171
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testWanxiangFirstInstallCreatesNoUpgradeCheckpoint",
+          "status": "passed",
+          "durationMs": 172
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testWanxiangModifiedLuaBytesAreNotStaged",
+          "status": "passed",
+          "durationMs": 173
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testWanxiangPlanSkipsDefaultYamlAndInstallsPrivatePreset",
+          "status": "passed",
+          "durationMs": 340
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testWanxiangSymlinkAtMappedLuaPathIsNotStaged",
+          "status": "passed",
+          "durationMs": 181
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testWanxiangUninstallRemovesPresetAndLeavesOfficialDefaultYaml",
+          "status": "passed",
+          "durationMs": 184
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testWanxiangUnknownLuaPathIsLeftInPlaceOnUninstallCommit",
+          "status": "passed",
+          "durationMs": 182
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testWanxiangUpgradeFailurePreservesUnknownUserPath",
+          "status": "passed",
+          "durationMs": 174
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testWanxiangUpgradeMidCopyFailureRestoresPriorGeneration",
+          "status": "passed",
+          "durationMs": 168
+        },
+        {
+          "suite": "SchemeResourcePreparationCoexistenceTests",
+          "test": "testWanxiangUpgradeRestoreFailureRetainsCheckpoint",
+          "status": "passed",
+          "durationMs": 173
+        },
+        {
+          "suite": "TD012LMDGDeviceStagingTests",
+          "test": "testCleanupRejectsHashMismatchWithoutDeletingModelOrRequest",
+          "status": "passed",
+          "durationMs": 3
+        },
+        {
+          "suite": "TD012LMDGDeviceStagingTests",
+          "test": "testPinnedModelLoadsThroughWanxiangGrammarOnAuthorizedPhysicalDevice",
+          "status": "skipped",
+          "durationMs": 1
+        },
+        {
+          "suite": "TD012LMDGDeviceStagingTests",
+          "test": "testRemovePinnedModelAfterAuthorizedPhysicalDeviceSpike",
+          "status": "skipped",
+          "durationMs": 1
+        },
+        {
+          "suite": "TD012LMDGDeviceStagingTests",
+          "test": "testStageAndCleanupSucceedForExactlyPinnedModel",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "TD012LMDGDeviceStagingTests",
+          "test": "testStagePinnedModelForAuthorizedPhysicalDeviceSpike",
+          "status": "skipped",
+          "durationMs": 1
+        },
+        {
+          "suite": "TD012LMDGDeviceStagingTests",
+          "test": "testStageRejectsByteCountMismatchWithoutMovingSource",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "TD012LMDGDeviceStagingTests",
+          "test": "testStageRejectsDirectoryWithoutMovingIt",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "TD012LMDGDeviceStagingTests",
+          "test": "testStageRejectsExistingDestinationWithoutMovingSource",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "TD012LMDGDeviceStagingTests",
+          "test": "testStageRejectsExistingPartialWithoutMovingSource",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "TD012LMDGDeviceStagingTests",
+          "test": "testStageRejectsHashMismatchWithoutMovingSource",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "TypingIntelligenceViewModelTests",
+          "test": "testClearAdvancesEpochAndRemovesVisibleStatistics",
+          "status": "passed",
+          "durationMs": 5
+        },
+        {
+          "suite": "TypingIntelligenceViewModelTests",
+          "test": "testHomeStreakKeepsYesterdayRunWhenTodayHasNoInput",
+          "status": "passed",
+          "durationMs": 4
+        },
+        {
+          "suite": "TypingIntelligenceViewModelTests",
+          "test": "testPeriodSummaryChartAndStreakUsePersistedDailyAggregates",
+          "status": "passed",
+          "durationMs": 4
+        },
+        {
+          "suite": "TypoCorrectionBenchmarkModelTests",
+          "test": "testModelGroupsBenchmarkResultsForDisplay",
+          "status": "passed",
+          "durationMs": 3
+        },
+        {
+          "suite": "TypoCorrectionBenchmarkModelTests",
+          "test": "testModelSummarizesExperimentalAuditReadiness",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "TypoCorrectionBenchmarkModelTests",
+          "test": "testModelSummarizesLocalBenchmarkResults",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "TypoCorrectionBenchmarkModelTests",
+          "test": "testResultDisplayTextUsesExpectedAndActualValues",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "CandidateAccessibilityContractTests",
+          "test": "testCandidateCellDeclaresActionableVoiceOverSemantics",
+          "status": "passed",
+          "durationMs": 3
+        },
+        {
+          "suite": "CandidateBarIdleDismissContractTests",
+          "test": "testTrailingButtonWiresDismissAndKeepsExpand",
+          "status": "passed",
+          "durationMs": 7
+        },
+        {
+          "suite": "CandidateModelContractTests",
+          "test": "testCandidateItemPreservesDisplayTextAndBehaviorKind",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "CandidateModelContractTests",
+          "test": "testCandidateKindsRemainCompatibleWithButtonTagMapping",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "CandidatePagingContractTests",
+          "test": "testBrowsingLaterPageDoesNotReplaceFirstPageSelectionState",
+          "status": "passed",
+          "durationMs": 8
+        },
+        {
+          "suite": "CandidatePagingContractTests",
+          "test": "testSelectingCachedLaterPageCandidateWithGlobalIndexKeepsRemainingComposition",
+          "status": "passed",
+          "durationMs": 5
+        },
+        {
+          "suite": "CandidatePagingContractTests",
+          "test": "testSpaceAfterBrowsingLaterPageCommitsFirstPagePreferredCandidate",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "CandidatePagingContractTests",
+          "test": "testStaleLaterPageCandidateWithoutReferenceKeepsCurrentComposition",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "KeyAccessibilityContractTests",
+          "test": "testKeyActionPathStaysOnUIKitTargets",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "KeyAccessibilityContractTests",
+          "test": "testKeyButtonsRemainIndependentAccessibilityElements",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "KeyAccessibilityContractTests",
+          "test": "testTouchRoutingOverlayDoesNotOccupyAccessibilitySpace",
+          "status": "passed",
+          "durationMs": 3
+        },
+        {
+          "suite": "KeyboardWakeDiagnosticProducerTests",
+          "test": "testClosedExpiredAndV5GatesDoNotChangeProxyBehavior",
+          "status": "passed",
+          "durationMs": 69
+        },
+        {
+          "suite": "KeyboardWakeDiagnosticProducerTests",
+          "test": "testV6ProducerAndAdapterWriteFiniteMarkersAroundProxyCalls",
+          "status": "passed",
+          "durationMs": 35
+        },
+        {
+          "suite": "T9KaomojiChromeContractTests",
+          "test": "testKaomojiChromeTitleIsFrozen",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "T9KaomojiChromeContractTests",
+          "test": "testNineKeyAndSymbolsKaomojiShareCoreAction",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "T9PunctuationChromeContractTests",
+          "test": "testNineKeyPunctuationChromeTitleIsFrozen",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "T9PunctuationChromeContractTests",
+          "test": "testNineKeyPunctuationSourceWiresTitleAndCoreAction",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "TypoCorrectionRecallRuntimeTests",
+          "test": "testRuntimeBudgetPinsAreTheAuthorizedProductionValues",
+          "status": "passed",
+          "durationMs": 1
+        }
+      ]
+    }
+  }
+}

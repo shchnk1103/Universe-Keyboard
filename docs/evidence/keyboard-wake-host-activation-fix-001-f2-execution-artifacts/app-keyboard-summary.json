@@ -1,0 +1,49 @@
+{
+  "devicesAndConfigurations" : [
+    {
+      "device" : {
+        "architecture" : "arm64",
+        "deviceId" : "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+        "deviceName" : "iPhone 18 Pro",
+        "modelName" : "iPhone 18 Pro",
+        "osBuildNumber" : "24A434",
+        "osVersion" : "27.0",
+        "platform" : "iOS Simulator"
+      },
+      "expectedFailures" : 0,
+      "failedTests" : 0,
+      "passedTests" : 438,
+      "skippedTests" : 10,
+      "testPlanConfiguration" : {
+        "configurationId" : "1",
+        "configurationName" : "Test Scheme Action"
+      }
+    }
+  ],
+  "environmentDescription" : "Universe Keyboard · Built with macOS 27.0",
+  "expectedFailures" : 0,
+  "failedTests" : 0,
+  "finishTime" : 1791111087.591,
+  "passedTests" : 438,
+  "result" : "Passed",
+  "runtimeWarnings" : [
+
+  ],
+  "skippedTests" : 10,
+  "startTime" : 1791111022.443,
+  "statistics" : [
+
+  ],
+  "testFailures" : [
+
+  ],
+  "title" : "Test - Universe Keyboard",
+  "topInsights" : [
+    {
+      "category" : "Longest Test Runs",
+      "impact" : "33% of duration",
+      "text" : "2 longest test runs with outlier durations exceeding 0.54s (three standard deviations)"
+    }
+  ],
+  "totalTestCount" : 448
+}

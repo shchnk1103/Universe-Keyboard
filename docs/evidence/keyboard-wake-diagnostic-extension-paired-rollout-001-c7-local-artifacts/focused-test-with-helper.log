@@ -1,0 +1,99 @@
+warning: /Users/doubleshy0n/Library/org.swift.swiftpm/configuration is not accessible or not writable, disabling user-level cache features.
+warning: /Users/doubleshy0n/Library/org.swift.swiftpm/security is not accessible or not writable, disabling user-level cache features.
+Building for debugging...
+[Pre-planning 1 / 124]
+[Planning deferred tasks]
+[8 / 19] KeyboardCoreTests-product
+[14 / 25] KeyboardCoreTests-product
+[19 / 25] KeyboardCoreTests-product
+[21 / 25] KeyboardCoreTests-product
+Build complete! (2.06秒)
+Test Suite 'All tests' started at 2026-10-02 14:24:35.290.
+Test Suite 'KeyboardCoreTests.xctest' started at 2026-10-02 14:24:35.292.
+Test Suite 'KeyboardWakeOwnerProbeTests' started at 2026-10-02 14:24:35.292.
+Test Case '-[KeyboardCoreTests.KeyboardWakeOwnerProbeTests testControlStaysAvailableForArmedFaultWithStaleCandidates]' started.
+Test Case '-[KeyboardCoreTests.KeyboardWakeOwnerProbeTests testControlStaysAvailableForArmedFaultWithStaleCandidates]' passed (0.002 seconds).
+Test Case '-[KeyboardCoreTests.KeyboardWakeOwnerProbeTests testCoordinatorAndAttemptOrdinalsBindOnlyWithinSynchronousWindow]' started.
+Test Case '-[KeyboardCoreTests.KeyboardWakeOwnerProbeTests testCoordinatorAndAttemptOrdinalsBindOnlyWithinSynchronousWindow]' passed (0.000 seconds).
+Test Case '-[KeyboardCoreTests.KeyboardWakeOwnerProbeTests testExpiryClosesCaptureAndProducesIncompleteSnapshotWithoutWaiting]' started.
+Test Case '-[KeyboardCoreTests.KeyboardWakeOwnerProbeTests testExpiryClosesCaptureAndProducesIncompleteSnapshotWithoutWaiting]' passed (0.000 seconds).
+Test Case '-[KeyboardCoreTests.KeyboardWakeOwnerProbeTests testFreezeIsImmutableAndExposesOnlyFiniteBorrowedTransport]' started.
+Test Case '-[KeyboardCoreTests.KeyboardWakeOwnerProbeTests testFreezeIsImmutableAndExposesOnlyFiniteBorrowedTransport]' passed (0.000 seconds).
+Test Case '-[KeyboardCoreTests.KeyboardWakeOwnerProbeTests testOverflowPreservesFirst128RecordsAndMarksSnapshotIncomplete]' started.
+Test Case '-[KeyboardCoreTests.KeyboardWakeOwnerProbeTests testOverflowPreservesFirst128RecordsAndMarksSnapshotIncomplete]' passed (0.000 seconds).
+Test Case '-[KeyboardCoreTests.KeyboardWakeOwnerProbeTests testOwnerAbsentAndOwnerPresentWithoutReceiptRemainDistinct]' started.
+Test Case '-[KeyboardCoreTests.KeyboardWakeOwnerProbeTests testOwnerAbsentAndOwnerPresentWithoutReceiptRemainDistinct]' passed (0.000 seconds).
+Test Case '-[KeyboardCoreTests.KeyboardWakeOwnerProbeTests testReentrantAttemptCannotBeMisattributedToOuterInput]' started.
+Test Case '-[KeyboardCoreTests.KeyboardWakeOwnerProbeTests testReentrantAttemptCannotBeMisattributedToOuterInput]' passed (0.000 seconds).
+Test Case '-[KeyboardCoreTests.KeyboardWakeOwnerProbeTests testStageCodesAreClosedAndStable]' started.
+Test Case '-[KeyboardCoreTests.KeyboardWakeOwnerProbeTests testStageCodesAreClosedAndStable]' passed (0.000 seconds).
+Test Case '-[KeyboardCoreTests.KeyboardWakeOwnerProbeTests testStartsDisabledAndRequiresOneExplicitArm]' started.
+Test Case '-[KeyboardCoreTests.KeyboardWakeOwnerProbeTests testStartsDisabledAndRequiresOneExplicitArm]' passed (0.000 seconds).
+Test Suite 'KeyboardWakeOwnerProbeTests' passed at 2026-10-02 14:24:35.296.
+	 Executed 9 tests, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+Test Suite 'ThreadAffineRimeSpikeTests' started at 2026-10-02 14:24:35.296.
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeSpikeTests testApplyGateRejectsOlderRevisionDeliveredAfterNewerRevision]' started.
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeSpikeTests testApplyGateRejectsOlderRevisionDeliveredAfterNewerRevision]' passed (0.000 seconds).
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeSpikeTests testControlPriorityStopIsNotBuriedBehindWorkBacklog]' started.
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeSpikeTests testControlPriorityStopIsNotBuriedBehindWorkBacklog]' passed (0.001 seconds).
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeSpikeTests testDedicatedOwnerPreservesOrderWithoutDropOrDuplicate]' started.
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeSpikeTests testDedicatedOwnerPreservesOrderWithoutDropOrDuplicate]' passed (0.001 seconds).
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeSpikeTests testExplicitShutdownDestroysEngineOnItsOwnerThread]' started.
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeSpikeTests testExplicitShutdownDestroysEngineOnItsOwnerThread]' passed (0.000 seconds).
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeSpikeTests testMainActorAcceptsWhileOwnerEngineCallIsBlocked]' started.
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeSpikeTests testMainActorAcceptsWhileOwnerEngineCallIsBlocked]' passed (0.189 seconds).
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeSpikeTests testOldEpochResultIsRejectedAndNewEpochRunsAfterResetBarrier]' started.
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeSpikeTests testOldEpochResultIsRejectedAndNewEpochRunsAfterResetBarrier]' passed (0.001 seconds).
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeSpikeTests testOrderedDeliveryAndTerminalBarrierAfterStop]' started.
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeSpikeTests testOrderedDeliveryAndTerminalBarrierAfterStop]' passed (0.001 seconds).
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeSpikeTests testOwnerDeinitStopsThreadAndDestroysEngineWhenShutdownIsOmitted]' started.
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeSpikeTests testOwnerDeinitStopsThreadAndDestroysEngineWhenShutdownIsOmitted]' passed (0.001 seconds).
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeSpikeTests testRefuseAtBoundDoesNotDropAcceptedWork]' started.
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeSpikeTests testRefuseAtBoundDoesNotDropAcceptedWork]' passed (0.001 seconds).
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeSpikeTests testSpikeIsNotWiredAndGateOffRemainsSynchronous]' started.
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeSpikeTests testSpikeIsNotWiredAndGateOffRemainsSynchronous]' passed (0.009 seconds).
+Test Suite 'ThreadAffineRimeSpikeTests' passed at 2026-10-02 14:24:35.503.
+	 Executed 10 tests, with 0 failures (0 unexpected) in 0.205 (0.206) seconds
+Test Suite 'ThreadAffineRimeWireTests' started at 2026-10-02 14:24:35.503.
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testActiveKillDoesNotReuseSettledWatermarkAcrossEpochs]' started.
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testActiveKillDoesNotReuseSettledWatermarkAcrossEpochs]' passed (0.012 seconds).
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testActiveKillFenceRejectsNewAcceptanceAndDrainsAcceptedBacklog]' started.
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testActiveKillFenceRejectsNewAcceptanceAndDrainsAcceptedBacklog]' passed (0.001 seconds).
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testActiveKillTimeoutRetainsFencedOwnerUntilPositiveShutdown]' started.
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testActiveKillTimeoutRetainsFencedOwnerUntilPositiveShutdown]' passed (0.007 seconds).
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testDualGateAbandonDropsDeferredCoalescedPresentation]' started.
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testDualGateAbandonDropsDeferredCoalescedPresentation]' passed (0.208 seconds).
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testDualGateCoalescesPresentationUnderOwnerBacklog]' started.
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testDualGateCoalescesPresentationUnderOwnerBacklog]' passed (0.156 seconds).
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testDualGatesDefaultOff]' started.
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testDualGatesDefaultOff]' passed (0.001 seconds).
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testGateOffStillSynchronousWhenThreadAffineFlagAloneIsTrue]' started.
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testGateOffStillSynchronousWhenThreadAffineFlagAloneIsTrue]' passed (0.001 seconds).
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testPublicationKeepsOwnerCompletionBacklogDepth]' started.
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testPublicationKeepsOwnerCompletionBacklogDepth]' passed (0.001 seconds).
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testResponsiveOnlyWithoutThreadAffineKeepsMainActorBridge]' started.
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testResponsiveOnlyWithoutThreadAffineKeepsMainActorBridge]' passed (0.001 seconds).
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testThreadAffineBridgeIsInstalledForDualGate]' started.
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testThreadAffineBridgeIsInstalledForDualGate]' passed (0.001 seconds).
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testThreadAffineBridgePublishesOwnerNativeSessionSnapshot]' started.
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testThreadAffineBridgePublishesOwnerNativeSessionSnapshot]' passed (0.004 seconds).
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testThreadAffineOwnerIsNotReadyUntilDelayedStartupCompletes]' started.
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testThreadAffineOwnerIsNotReadyUntilDelayedStartupCompletes]' passed (0.262 seconds).
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testThreadAffineWireAcceptsWithoutWaitingForBlockedEngine]' started.
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testThreadAffineWireAcceptsWithoutWaitingForBlockedEngine]' passed (0.002 seconds).
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testThreadAffineWireDoesNotWaitForStartupBeforeAcceptingFirstKey]' started.
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testThreadAffineWireDoesNotWaitForStartupBeforeAcceptingFirstKey]' passed (0.263 seconds).
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testVisibilityOwnerRestartPreservesEpochAndRejectsStaleSnapshot]' started.
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testVisibilityOwnerRestartPreservesEpochAndRejectsStaleSnapshot]' passed (0.211 seconds).
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testVisibilityTeardownReceiptsCoverEveryAcceptedUnexecutedRevision]' started.
+Test Case '-[KeyboardCoreTests.ThreadAffineRimeWireTests testVisibilityTeardownReceiptsCoverEveryAcceptedUnexecutedRevision]' passed (0.009 seconds).
+Test Suite 'ThreadAffineRimeWireTests' passed at 2026-10-02 14:24:36.648.
+	 Executed 16 tests, with 0 failures (0 unexpected) in 1.140 (1.145) seconds
+Test Suite 'KeyboardCoreTests.xctest' passed at 2026-10-02 14:24:36.648.
+	 Executed 35 tests, with 0 failures (0 unexpected) in 1.348 (1.356) seconds
+Test Suite 'All tests' passed at 2026-10-02 14:24:36.648.
+	 Executed 35 tests, with 0 failures (0 unexpected) in 1.348 (1.358) seconds
+􀟈  Test run started.
+􀄵  Testing Library Version: 2084
+􀄵  Target Platform: arm64e-apple-macos14.0
+􁁛  Test run with 0 tests in 0 suites passed after 0.001 seconds.

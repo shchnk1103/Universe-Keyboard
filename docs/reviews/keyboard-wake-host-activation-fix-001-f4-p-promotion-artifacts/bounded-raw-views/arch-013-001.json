@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-artifacts/historical-rimebridge-skip-list.json",
+  "origin_sha256": "23e2ad749bb992da2f7c0d50397e2505278c9ffc810f711279b9ab49af35180d",
+  "expected_sha256": "23e2ad749bb992da2f7c0d50397e2505278c9ffc810f711279b9ab49af35180d",
+  "line_start": 1,
+  "line_end": 60,
+  "lines": [
+    {
+      "line": 1,
+      "text": "{"
+    },
+    {
+      "line": 2,
+      "text": "  \"count\": 20,"
+    },
+    {
+      "line": 3,
+      "text": "  \"skips\": ["
+    },
+    {
+      "line": 4,
+      "text": "    {"
+    },
+    {
+      "line": 5,
+      "text": "      \"class\": \"RimeLuaSmokeTests\","
+    },
+    {
+      "line": 6,
+      "text": "      \"method\": \"testCorrectionSidecarKeepsVisibleCompositionIntactWhenRuntimeFixtureIsProvided\","
+    },
+    {
+      "line": 7,
+      "text": "      \"reason\": \"Set UK_RIME_LUA_SMOKE_SHARED_DIR and UK_RIME_LUA_SMOKE_USER_DIR to run the real Lua smoke test.\""
+    },
+    {
+      "line": 8,
+      "text": "    },"
+    },
+    {
+      "line": 9,
+      "text": "    {"
+    },
+    {
+      "line": 10,
+      "text": "      \"class\": \"RimeLuaSmokeTests\","
+    },
+    {
+      "line": 11,
+      "text": "      \"method\": \"testRimeIceLuaDynamicCandidatesWhenRuntimeFixtureIsProvided\","
+    },
+    {
+      "line": 12,
+      "text": "      \"reason\": \"Set UK_RIME_LUA_SMOKE_SHARED_DIR and UK_RIME_LUA_SMOKE_USER_DIR to run the real Lua smoke test.\""
+    },
+    {
+      "line": 13,
+      "text": "    },"
+    },
+    {
+      "line": 14,
+      "text": "    {"
+    },
+    {
+      "line": 15,
+      "text": "      \"class\": \"RimeT9AutoAnchorRetryMatrixTests\","
+    },
+    {
+      "line": 16,
+      "text": "      \"method\": \"testCappedTwoSyllableControllerFrozenPairedMatrix\","
+    },
+    {
+      "line": 17,
+      "text": "      \"reason\": \"Set the immutable 40-character lowercase S4 commit to run the paired matrix.\""
+    },
+    {
+      "line": 18,
+      "text": "    },"
+    },
+    {
+      "line": 19,
+      "text": "    {"
+    },
+    {
+      "line": 20,
+      "text": "      \"class\": \"RimeT9AutoAnchorRetryMatrixTests\","
+    },
+    {
+      "line": 21,
+      "text": "      \"method\": \"testIsolatedPersonalizationKnownPositive\","
+    },
+    {
+      "line": 22,
+      "text": "      \"reason\": \"Set isolated T9 Spike runtime directories to run this matrix.\""
+    },
+    {
+      "line": 23,
+      "text": "    },"
+    },
+    {
+      "line": 24,
+      "text": "    {"
+    },
+    {
+      "line": 25,
+      "text": "      \"class\": \"RimeT9AutoAnchorRetryMatrixTests\","
+    },
+    {
+      "line": 26,
+      "text": "      \"method\": \"testIsolatedPersonalizationNaturalReminder\","
+    },
+    {
+      "line": 27,
+      "text": "      \"reason\": \"Set isolated T9 Spike runtime directories to run this matrix.\""
+    },
+    {
+      "line": 28,
+      "text": "    },"
+    },
+    {
+      "line": 29,
+      "text": "    {"
+    },
+    {
+      "line": 30,
+      "text": "      \"class\": \"RimeT9AutoAnchorRetryMatrixTests\","
+    },
+    {
+      "line": 31,
+      "text": "      \"method\": \"testIsolatedPersonalizationNaturalWeather\","
+    },
+    {
+      "line": 32,
+      "text": "      \"reason\": \"Set isolated T9 Spike runtime directories to run this matrix.\""
+    },
+    {
+      "line": 33,
+      "text": "    },"
+    },
+    {
+      "line": 34,
+      "text": "    {"
+    },
+    {
+      "line": 35,
+      "text": "      \"class\": \"RimeT9AutoAnchorRetryMatrixTests\","
+    },
+    {
+      "line": 36,
+      "text": "      \"method\": \"testPartialLongSelectionIsNotPersonalizationProof\","
+    },
+    {
+      "line": 37,
+      "text": "      \"reason\": \"Set isolated T9 Spike runtime directories to run this matrix.\""
+    },
+    {
+      "line": 38,
+      "text": "    },"
+    },
+    {
+      "line": 39,
+      "text": "    {"
+    },
+    {
+      "line": 40,
+      "text": "      \"class\": \"RimeT9AutoAnchorRetryMatrixTests\","
+    },
+    {
+      "line": 41,
+      "text": "      \"method\": \"testRejectedCompositionLaterOpportunityTransactionMatrix\","
+    },
+    {
+      "line": 42,
+      "text": "      \"reason\": \"Set isolated T9 Spike runtime directories to run this matrix.\""
+    },
+    {
+      "line": 43,
+      "text": "    },"
+    },
+    {
+      "line": 44,
+      "text": "    {"
+    },
+    {
+      "line": 45,
+      "text": "      \"class\": \"RimeT9AutoAnchorRetryMatrixTests\","
+    },
+    {
+      "line": 46,
+      "text": "      \"method\": \"testRollingControllerFrozenA0A1B2B3Matrix\","
+    },
+    {
+      "line": 47,
+      "text": "      \"reason\": \"Set isolated T9 Spike runtime directories to run this matrix.\""
+    },
+    {
+      "line": 48,
+      "text": "    },"
+    },
+    {
+      "line": 49,
+      "text": "    {"
+    },
+    {
+      "line": 50,
+      "text": "      \"class\": \"RimeT9AutoAnchorRetryMatrixTests\","
+    },
+    {
+      "line": 51,
+      "text": "      \"method\": \"testRollingControllerMissingLiveCompositionFailsClosedBeforeKey\","
+    },
+    {
+      "line": 52,
+      "text": "      \"reason\": \"Set isolated T9 Spike runtime directories to run this matrix.\""
+    },
+    {
+      "line": 53,
+      "text": "    },"
+    },
+    {
+      "line": 54,
+      "text": "    {"
+    },
+    {
+      "line": 55,
+      "text": "      \"class\": \"RimeT9AutoAnchorRetryMatrixTests\","
+    },
+    {
+      "line": 56,
+      "text": "      \"method\": \"testRollingControllerRealRimeDeletePathAndPartialOwnership\","
+    },
+    {
+      "line": 57,
+      "text": "      \"reason\": \"Set isolated T9 Spike runtime directories to run this matrix.\""
+    },
+    {
+      "line": 58,
+      "text": "    },"
+    },
+    {
+      "line": 59,
+      "text": "    {"
+    },
+    {
+      "line": 60,
+      "text": "      \"class\": \"RimeT9AutoAnchorRetryMatrixTests\","
+    }
+  ]
+}

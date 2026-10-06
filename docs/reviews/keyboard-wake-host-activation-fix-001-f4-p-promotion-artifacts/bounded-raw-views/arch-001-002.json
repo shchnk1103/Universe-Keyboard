@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+InputActions.swift",
+  "origin_sha256": "16abce7d6e6752be641ea333cc60706217c9d84211f1007315850acbc62ee2ae",
+  "expected_sha256": "16abce7d6e6752be641ea333cc60706217c9d84211f1007315850acbc62ee2ae",
+  "line_start": 61,
+  "line_end": 120,
+  "lines": [
+    {
+      "line": 61,
+      "text": "            if let touchDownTime = keyTouchDownTimes.removeValue(forKey: identifier) {"
+    },
+    {
+      "line": 62,
+      "text": "                let delay = (startTime - touchDownTime) * 1000"
+    },
+    {
+      "line": 63,
+      "text": "                Logger.shared.performance("
+    },
+    {
+      "line": 64,
+      "text": "                    \"insertKey enter after keyDown (\\(String(format: \"%.1f\", delay))ms)\""
+    },
+    {
+      "line": 65,
+      "text": "                )"
+    },
+    {
+      "line": 66,
+      "text": "            } else {"
+    },
+    {
+      "line": 67,
+      "text": "                Logger.shared.performance(\"insertKey enter without keyDown timestamp\")"
+    },
+    {
+      "line": 68,
+      "text": "            }"
+    },
+    {
+      "line": 69,
+      "text": "        #endif"
+    },
+    {
+      "line": 70,
+      "text": ""
+    },
+    {
+      "line": 71,
+      "text": "        emitKeyPressFeedbackIfNeeded(for: sender)"
+    },
+    {
+      "line": 72,
+      "text": ""
+    },
+    {
+      "line": 73,
+      "text": "        let handleStartTime = CACurrentMediaTime()"
+    },
+    {
+      "line": 74,
+      "text": "        let effects = controller.handle(.insertKey(key))"
+    },
+    {
+      "line": 75,
+      "text": "        let handleMs = (CACurrentMediaTime() - handleStartTime) * 1000"
+    },
+    {
+      "line": 76,
+      "text": "        #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT"
+    },
+    {
+      "line": 77,
+      "text": "            if shouldSampleT9Segments {"
+    },
+    {
+      "line": 78,
+      "text": "                HotPathSegmentTiming.noteResult("
+    },
+    {
+      "line": 79,
+      "text": "                    rawLength: controller.state.lastRimeOutput?.rawInput?.count"
+    },
+    {
+      "line": 80,
+      "text": "                        ?? controller.state.currentComposition.count,"
+    },
+    {
+      "line": 81,
+      "text": "                    pathCount: controller.state.t9PinyinPathState.compactPaths.count,"
+    },
+    {
+      "line": 82,
+      "text": "                    candidateCount: controller.state.lastRimeOutput?.candidates.count ?? 0,"
+    },
+    {
+      "line": 83,
+      "text": "                    didCommit: controller.state.lastRimeOutput?.committedText != nil,"
+    },
+    {
+      "line": 84,
+      "text": "                    session: controller.rimeEngine?.diagnosticSessionSnapshot"
+    },
+    {
+      "line": 85,
+      "text": "                )"
+    },
+    {
+      "line": 86,
+      "text": "                #if DEBUG"
+    },
+    {
+      "line": 87,
+      "text": "                    let shadow = controller.t9ShadowAnchorObservation()"
+    },
+    {
+      "line": 88,
+      "text": "                    Logger.shared.debug("
+    },
+    {
+      "line": 89,
+      "text": "                        \"T9SHADOW #\\(eventID) status=\\(shadow.status.rawValue) \""
+    },
+    {
+      "line": 90,
+      "text": "                            + \"generation=\\(shadow.rawInputGeneration) \""
+    },
+    {
+      "line": 91,
+      "text": "                            + \"provenance=\\(shadow.provenanceRevision) \""
+    },
+    {
+      "line": 92,
+      "text": "                            + \"candidates=\\(shadow.candidateCount) \""
+    },
+    {
+      "line": 93,
+      "text": "                            + \"compatible=\\(shadow.compatibleCandidateCount) \""
+    },
+    {
+      "line": 94,
+      "text": "                            + \"uniquePaths=\\(shadow.uniqueCompatiblePathCount) \""
+    },
+    {
+      "line": 95,
+      "text": "                            + \"rejected=\\(shadow.rejectedCandidateCount) \""
+    },
+    {
+      "line": 96,
+      "text": "                            + \"commonSyllables=\\(shadow.observedCommonSyllableCount) \""
+    },
+    {
+      "line": 97,
+      "text": "                            + \"closedSyllables=\\(shadow.closedCommonSyllableCount) \""
+    },
+    {
+      "line": 98,
+      "text": "                            + \"anchorSlots=\\(shadow.anchorSlotCount) \""
+    },
+    {
+      "line": 99,
+      "text": "                            + \"unresolvedSlots=\\(shadow.unresolvedSlotCount) \""
+    },
+    {
+      "line": 100,
+      "text": "                            + \"complete=\\(shadow.evidenceComplete)\","
+    },
+    {
+      "line": 101,
+      "text": "                        category: .performance"
+    },
+    {
+      "line": 102,
+      "text": "                    )"
+    },
+    {
+      "line": 103,
+      "text": "                    if let retryShadow = controller.t9AutoAnchorRetryShadowObservation() {"
+    },
+    {
+      "line": 104,
+      "text": "                        Logger.shared.debug("
+    },
+    {
+      "line": 105,
+      "text": "                            \"T9RETRYSHADOW #\\(eventID) \""
+    },
+    {
+      "line": 106,
+      "text": "                                + \"status=\\(retryShadow.status.rawValue) \""
+    },
+    {
+      "line": 107,
+      "text": "                                + \"sourceSlots=\\(retryShadow.sourceDigitCount) \""
+    },
+    {
+      "line": 108,
+      "text": "                                + \"rejectedAt=\\(retryShadow.rejectedAtSourceDigitCount) \""
+    },
+    {
+      "line": 109,
+      "text": "                                + \"candidates=\\(retryShadow.candidateCount) \""
+    },
+    {
+      "line": 110,
+      "text": "                                + \"anchorSlots=\\(retryShadow.anchoredSlotCount) \""
+    },
+    {
+      "line": 111,
+      "text": "                                + \"unresolvedSlots=\\(retryShadow.unresolvedSlotCount)\","
+    },
+    {
+      "line": 112,
+      "text": "                            category: .performance"
+    },
+    {
+      "line": 113,
+      "text": "                        )"
+    },
+    {
+      "line": 114,
+      "text": "                    }"
+    },
+    {
+      "line": 115,
+      "text": "                #endif"
+    },
+    {
+      "line": 116,
+      "text": "            }"
+    },
+    {
+      "line": 117,
+      "text": "            #if DEBUG"
+    },
+    {
+      "line": 118,
+      "text": "                Logger.shared.debug("
+    },
+    {
+      "line": 119,
+      "text": "                    \"KEY ENGINE END #\\(eventID) durationMs=\\(String(format: \"%.1f\", handleMs)) \""
+    },
+    {
+      "line": 120,
+      "text": "                        + \"candidates=\\(controller.state.lastRimeOutput?.candidates.count ?? 0)\","
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+{
+  "utc": "2026-10-02T14:13:45.714406+00:00",
+  "containers": {
+    "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/4EB4A3E6-58B0-44CB-BC45-B608BA1E6518/Universe Keyboard.app",
+    "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/FB810DCE-C65C-4D74-B79C-048FFBE01AB6",
+    "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/0296BFCE-F465-4F1A-9E9A-F2EDFDA41172"
+  },
+  "data_comparison": {
+    "main-data": {
+      "path_unchanged": false,
+      "before_count": 827,
+      "after_count": 827,
+      "removed": [
+        "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/47FC8C06-6C94-4DFB-B762-D471B84CB05A@3x.ktx",
+        "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/48CBBB25-B410-4773-88E0-E14B7F60F9C7@3x.ktx",
+        "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/4ACE728E-1D3A-4E10-91B3-7E9820715A6B@3x.ktx",
+        "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/DD1A1E32-1890-4A07-8C32-AA55CAAB6BDF@3x.ktx"
+      ],
+      "added": [
+        "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/262D6B86-4C3C-4ADB-8370-282650F52D0D@3x.ktx",
+        "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/8237B2E4-A555-4309-9ED8-1A5B63E61E60@3x.ktx",
+        "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/8DC382D7-4BFE-48EB-AE60-9588BE89DEC9@3x.ktx",
+        "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/9572FBC9-350D-43AA-A0E2-0FB85510FE3F@3x.ktx"
+      ],
+      "changed": []
+    },
+    "app-group": {
+      "path_unchanged": true,
+      "before_count": 53,
+      "after_count": 53,
+      "removed": [],
+      "added": [],
+      "changed": []
+    }
+  },
+  "installed_candidate_payload_equal": true,
+  "installed_files": 78,
+  "preferences": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "rime_deployed": {
+      "exists": true,
+      "value": "True"
+    },
+    "rime_needs_deploy": {
+      "exists": true,
+      "value": "False"
+    },
+    "rime_deploying": {
+      "exists": true,
+      "value": "False"
+    }
+  },
+  "preferences_equal": true,
+  "can_launch": false
+}

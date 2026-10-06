@@ -1,0 +1,27 @@
+[
+  {
+    "path": "Keyboard/Controllers/KeyboardViewController.swift",
+    "bytes": 39626,
+    "sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a"
+  },
+  {
+    "path": "Keyboard/Controllers/KeyboardViewController+Bootstrap.swift",
+    "bytes": 52473,
+    "sha256": "79d0123dabacd8e5875b66b7c8c897589adbeb8b49d1e22b263678dc1d56f6aa"
+  },
+  {
+    "path": "Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift",
+    "bytes": 12137,
+    "sha256": "c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047"
+  },
+  {
+    "path": "KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+    "bytes": 19887,
+    "sha256": "71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5"
+  },
+  {
+    "path": "Universe Keyboard.xcodeproj/project.pbxproj",
+    "bytes": 46990,
+    "sha256": "49f0ebe89db1f30323d9bf6ceb297179ffed5fc9ef983fd3b947d11d5820586c"
+  }
+]

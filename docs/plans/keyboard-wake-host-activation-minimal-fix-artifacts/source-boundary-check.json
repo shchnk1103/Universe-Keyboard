@@ -1,0 +1,31 @@
+{
+  "utc": "2026-10-04T07:10:35.340336+00:00",
+  "authority": "只读源码分析与最小修复方案准备；不是源码实施/测试/模拟器授权",
+  "files_sha256": {
+    "Keyboard/Controllers/KeyboardViewController.swift": "27e00c5e07d0bc1e07e045a78c9b49df1ba660beec762227434b3550630caf4c",
+    "Keyboard/Controllers/KeyboardViewController+Bootstrap.swift": "f7c024f60af52f57a04edadb5a15373c6c6f681fc63e908fc37e34d5e1e963a3",
+    "Keyboard/Controllers/KeyboardViewController+Presentation.swift": "767c2817054484d4d4c328cb7a8deaf676509b76bbc3cb45868b6e3cf721319a",
+    "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+    "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+RimeRecovery.swift": "f3cb33290ddd8fe2ac69b52775067aaa675eecd0049600641ad9d9316c0b6ab5",
+    "Packages/KeyboardCore/Sources/KeyboardCore/ThreadAffineRimeSession.swift": "b7050645be501a7f41a6732efda40b07fb82c4c930862c0f1d13d167af426a76",
+    "Packages/KeyboardCore/Sources/KeyboardCore/ResponsiveRimeCanaryMode.swift": "2bcb4684cbb0b3afee5616a3d73045f7f4f4233834f2539c9b9e6b594f22e235",
+    "docs/architecture/decisions/0002-visibility-change-abandons-composition.md": "07ec465e33ee6d191c34da2067e8dd134120540f27de6f1bafbfda00600d798e",
+    "Universe Keyboard.xcodeproj/project.pbxproj": "ab7560e3de73c31d286fe874c0237b64dd2183aab692d4ee4a3de08abfb21187",
+    "KeyboardExtensionTests/CandidatePrefetchUIContractTests.swift": "7bf9aab583fed3828fe9567c85c4b2955b3b982d8511474d15b605cc37fdce02"
+  },
+  "proposed_five_file_slice": [
+    "Keyboard/Controllers/KeyboardViewController.swift",
+    "Keyboard/Controllers/KeyboardViewController+Bootstrap.swift",
+    "Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift",
+    "KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+    "Universe Keyboard.xcodeproj/project.pbxproj"
+  ],
+  "proposed_new_paths_absent": [
+    "Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift",
+    "KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift"
+  ],
+  "sdk_header": "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSExtensionContext.h",
+  "apple_primary_documentation": "https://developer.apple.com/documentation/foundation/nsnotification/name-swift.struct/nsextensionhostdidbecomeactive",
+  "facts": "resign notification suspends; only viewWillAppear production resume; owner nil survives schedule optionalaccept; no .NSExtensionHostDidBecomeActive observed in registered lifecycle route",
+  "runtime_notification_delivery_for_failure": "not verified"
+}

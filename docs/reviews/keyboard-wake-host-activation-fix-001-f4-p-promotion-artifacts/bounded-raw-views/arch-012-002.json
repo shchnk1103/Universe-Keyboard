@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-artifacts/historical-app-keyboard-skip-list.json",
+  "origin_sha256": "ae5c4ed1ddbfd2fa738fc47fb055fa70a0e079db57c425882a8a6355c03be31f",
+  "expected_sha256": "ae5c4ed1ddbfd2fa738fc47fb055fa70a0e079db57c425882a8a6355c03be31f",
+  "line_start": 61,
+  "line_end": 120,
+  "lines": [
+    {
+      "line": 61,
+      "text": "      \"nodeType\": \"Test Case\","
+    },
+    {
+      "line": 62,
+      "text": "      \"result\": \"Skipped\""
+    },
+    {
+      "line": 63,
+      "text": "    },"
+    },
+    {
+      "line": 64,
+      "text": "    {"
+    },
+    {
+      "line": 65,
+      "text": "      \"children\": ["
+    },
+    {
+      "line": 66,
+      "text": "        {"
+    },
+    {
+      "line": 67,
+      "text": "          \"name\": \"Test skipped - CS09-10-01 requires the fixed Ice extract tree\","
+    },
+    {
+      "line": 68,
+      "text": "          \"nodeType\": \"Skip Message\""
+    },
+    {
+      "line": 69,
+      "text": "        }"
+    },
+    {
+      "line": 70,
+      "text": "      ],"
+    },
+    {
+      "line": 71,
+      "text": "      \"duration\": \"0.18s\","
+    },
+    {
+      "line": 72,
+      "text": "      \"durationInSeconds\": 0.17638099193572998,"
+    },
+    {
+      "line": 73,
+      "text": "      \"name\": \"testCS0910_RealInstallerWanxiangRemovalPreservesCompleteIceInventory()\","
+    },
+    {
+      "line": 74,
+      "text": "      \"nodeIdentifier\": \"SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerWanxiangRemovalPreservesCompleteIceInventory()\","
+    },
+    {
+      "line": 75,
+      "text": "      \"nodeIdentifierURL\": \"test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerWanxiangRemovalPreservesCompleteIceInventory\","
+    },
+    {
+      "line": 76,
+      "text": "      \"nodeType\": \"Test Case\","
+    },
+    {
+      "line": 77,
+      "text": "      \"result\": \"Skipped\""
+    },
+    {
+      "line": 78,
+      "text": "    },"
+    },
+    {
+      "line": 79,
+      "text": "    {"
+    },
+    {
+      "line": 80,
+      "text": "      \"children\": ["
+    },
+    {
+      "line": 81,
+      "text": "        {"
+    },
+    {
+      "line": 82,
+      "text": "          \"name\": \"Test skipped - Ice 2026.06.30 default.yaml fixture is required for P3 fingerprint recovery\","
+    },
+    {
+      "line": 83,
+      "text": "          \"nodeType\": \"Skip Message\""
+    },
+    {
+      "line": 84,
+      "text": "        }"
+    },
+    {
+      "line": 85,
+      "text": "      ],"
+    },
+    {
+      "line": 86,
+      "text": "      \"duration\": \"0.17s\","
+    },
+    {
+      "line": 87,
+      "text": "      \"durationInSeconds\": 0.17452597618103027,"
+    },
+    {
+      "line": 88,
+      "text": "      \"name\": \"testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds()\","
+    },
+    {
+      "line": 89,
+      "text": "      \"nodeIdentifier\": \"SchemeResourcePreparationCoexistenceTests/testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds()\","
+    },
+    {
+      "line": 90,
+      "text": "      \"nodeIdentifierURL\": \"test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests/testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds\","
+    },
+    {
+      "line": 91,
+      "text": "      \"nodeType\": \"Test Case\","
+    },
+    {
+      "line": 92,
+      "text": "      \"result\": \"Skipped\""
+    },
+    {
+      "line": 93,
+      "text": "    },"
+    },
+    {
+      "line": 94,
+      "text": "    {"
+    },
+    {
+      "line": 95,
+      "text": "      \"children\": ["
+    },
+    {
+      "line": 96,
+      "text": "        {"
+    },
+    {
+      "line": 97,
+      "text": "          \"name\": \"Test skipped - Set TEST_RUNNER_SCHEME_PIN_ARCHIVE_ROOT to the independently downloaded Ice archives\","
+    },
+    {
+      "line": 98,
+      "text": "          \"nodeType\": \"Skip Message\""
+    },
+    {
+      "line": 99,
+      "text": "        }"
+    },
+    {
+      "line": 100,
+      "text": "      ],"
+    },
+    {
+      "line": 101,
+      "text": "      \"duration\": \"0.001s\","
+    },
+    {
+      "line": 102,
+      "text": "      \"durationInSeconds\": 0.0010249614715576172,"
+    },
+    {
+      "line": 103,
+      "text": "      \"name\": \"testProductionProcessedIceTreeKeepsOfficialDefaultYamlWhenFixturePresent()\","
+    },
+    {
+      "line": 104,
+      "text": "      \"nodeIdentifier\": \"SchemeResourcePreparationCoexistenceTests/testProductionProcessedIceTreeKeepsOfficialDefaultYamlWhenFixturePresent()\","
+    },
+    {
+      "line": 105,
+      "text": "      \"nodeIdentifierURL\": \"test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests/testProductionProcessedIceTreeKeepsOfficialDefaultYamlWhenFixturePresent\","
+    },
+    {
+      "line": 106,
+      "text": "      \"nodeType\": \"Test Case\","
+    },
+    {
+      "line": 107,
+      "text": "      \"result\": \"Skipped\""
+    },
+    {
+      "line": 108,
+      "text": "    },"
+    },
+    {
+      "line": 109,
+      "text": "    {"
+    },
+    {
+      "line": 110,
+      "text": "      \"children\": ["
+    },
+    {
+      "line": 111,
+      "text": "        {"
+    },
+    {
+      "line": 112,
+      "text": "          \"name\": \"Test skipped - TD-012 G2 model-load receipt is physical-device-only\","
+    },
+    {
+      "line": 113,
+      "text": "          \"nodeType\": \"Skip Message\""
+    },
+    {
+      "line": 114,
+      "text": "        }"
+    },
+    {
+      "line": 115,
+      "text": "      ],"
+    },
+    {
+      "line": 116,
+      "text": "      \"duration\": \"0.001s\","
+    },
+    {
+      "line": 117,
+      "text": "      \"durationInSeconds\": 0.0010091066360473633,"
+    },
+    {
+      "line": 118,
+      "text": "      \"name\": \"testPinnedModelLoadsThroughWanxiangGrammarOnAuthorizedPhysicalDevice()\","
+    },
+    {
+      "line": 119,
+      "text": "      \"nodeIdentifier\": \"TD012LMDGDeviceStagingTests/testPinnedModelLoadsThroughWanxiangGrammarOnAuthorizedPhysicalDevice()\","
+    },
+    {
+      "line": 120,
+      "text": "      \"nodeIdentifierURL\": \"test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/TD012LMDGDeviceStagingTests/testPinnedModelLoadsThroughWanxiangGrammarOnAuthorizedPhysicalDevice\","
+    }
+  ]
+}

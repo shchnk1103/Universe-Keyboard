@@ -1,0 +1,361 @@
+{
+  "verified_utc": "2026-10-01T02:00:32.582249+00:00",
+  "target": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "installed_app_path": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/1C8EAA6A-D18A-4684-B4E4-95252930B447/Universe Keyboard.app",
+  "built_app_path": "/private/tmp/ukey-wake-c4-20261001/DerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app",
+  "candidate_digest": "af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9",
+  "bundle_file_count": 111,
+  "built_bundle_file_count": 111,
+  "bundle_tree_sha256": {
+    "AppIcon60x60@2x.png": "ce5a5af134206119a84915679a3c2002cee278969bb245c1b82aef1104117abb",
+    "AppIcon76x76@2x~ipad.png": "2a3000961915cd21a57fa854fb2eecc90240d808c18ef1b4a9aeeb8f01b7f647",
+    "Assets.car": "750d1040cd9a4704c96be97c5cbd37bb0f18d5052745c37710b327a6b49a00f4",
+    "BOOST-BSL-1.0.txt": "c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566",
+    "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/Info.plist": "b2e02d41dee0bbeb0c64db2db50e5e1b112f0d23dc29096a4ec2a17f6e534fdc",
+    "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_-8730D61D9395D3A_PackageProduct": "d93ff7ffe50f05ac458ef448e8ac61f4014b9c90862bf7515b9c57056009bb0c",
+    "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/Info.plist": "5af2d53aaf0f23e4205c49e6fe51e5cce996e5ae3728298030da856dde75e1cd",
+    "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeDirectory": "81beacde89c003ccf47636e123d2da0a69460e5089b78a36dc55cf14242bcbfb",
+    "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeRequirements": "987920904eab650e75788c054aa0b0524e6a80bfc71aa32df8d237a61743f986",
+    "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeResources": "36942c5fe4c20ffaf48d528e2c19071940e28c2d56995c113b3586509f5e2a9d",
+    "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeSignature": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/post_commit_continuations_v1_3.json": "20266049927492e18b9673b550745ab53e188daaac0ea8cb9acc94de3077a6e4",
+    "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/_CodeSignature/CodeResources": "2d716f3b4e86c63ae755af653efc45af802e525982390d0fcc7b4cf75fb94ff7",
+    "Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/Info.plist": "16cab48dd70f20ee66c3a615ccc01163520574daad1f0175ef67baeaa45a4278",
+    "Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/RimeBridge_57276DBF982DF6E4_PackageProduct": "52ca55381df3cf609f6df128b21ce88dfc71d2329c1cadc57a3511465a33abec",
+    "Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/_CodeSignature/CodeResources": "a7b6cbe2892f5cfa2c4e6c78bfab78038d56dcf2b7403ca1890781f80937cd50",
+    "GOOGLE-GLOG-BSD-3-Clause.txt": "3d8faa7c7349b19275982aec674fe746b274e97c3e3b781afc1e2a769ba038f0",
+    "HKVariants.ocd2": "62750cb79eef18a407030b05bd4abe0e102bec2254d04b2d2310792f44519321",
+    "Info.plist": "78ab124236b7101b69301f4493fb185f08a1d0e612ab630909540278db15f680",
+    "KeyboardCore_KeyboardCore.bundle/Info.plist": "5af2d53aaf0f23e4205c49e6fe51e5cce996e5ae3728298030da856dde75e1cd",
+    "KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeDirectory": "81beacde89c003ccf47636e123d2da0a69460e5089b78a36dc55cf14242bcbfb",
+    "KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeRequirements": "987920904eab650e75788c054aa0b0524e6a80bfc71aa32df8d237a61743f986",
+    "KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeResources": "36942c5fe4c20ffaf48d528e2c19071940e28c2d56995c113b3586509f5e2a9d",
+    "KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeSignature": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "KeyboardCore_KeyboardCore.bundle/post_commit_continuations_v1_3.json": "20266049927492e18b9673b550745ab53e188daaac0ea8cb9acc94de3077a6e4",
+    "LEVELDB-BSD-3-Clause.txt": "ccc19f1da0798ed666609b65a5b44dd8b3abe6fc08b9c0592eb76e82e174db19",
+    "LUA-5.4.8-MIT.txt": "7002f3e4a34547bfc65fe998fe8af7885987fcc964a0a9c3c9640bf8f4ab018c",
+    "MARISA-COPYING.txt": "edf58dab34c3dc239ba4ba2d5d3d844d8c5b442aa4dd1149fac81b2d8c6cb8d1",
+    "OPENCC-AUTHORS.txt": "cb34e252fa994679bcbfc8355581e821ceda44bd857875e2cfe15b7ec4eec006",
+    "OPENCC-Apache-2.0.txt": "b534e465949558eec2597b04f5092b5e161236a68dfbfd04d547592ac3964308",
+    "PkgInfo": "82502191c9484b04d685374f9879a0066069c49b8acae7a04b01d38d07e8eca0",
+    "PlugIns/Keyboard.appex/Info.plist": "81b5c6912d13ebe448910bab37349e1d5b427251ec24b51a7c9442bd0b4e8f9a",
+    "PlugIns/Keyboard.appex/Keyboard": "3a1c3ff7454be12c45c58866bb801917644c68af1f986cd7918663e3022f4cc7",
+    "PlugIns/Keyboard.appex/Keyboard.debug.dylib": "efe14b5b4e0e21b8584658489402c6fdb7cbcee19359122b23a5558e9d595b4a",
+    "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/Info.plist": "5af2d53aaf0f23e4205c49e6fe51e5cce996e5ae3728298030da856dde75e1cd",
+    "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeDirectory": "81beacde89c003ccf47636e123d2da0a69460e5089b78a36dc55cf14242bcbfb",
+    "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeRequirements": "987920904eab650e75788c054aa0b0524e6a80bfc71aa32df8d237a61743f986",
+    "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeResources": "36942c5fe4c20ffaf48d528e2c19071940e28c2d56995c113b3586509f5e2a9d",
+    "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeSignature": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/post_commit_continuations_v1_3.json": "20266049927492e18b9673b550745ab53e188daaac0ea8cb9acc94de3077a6e4",
+    "PlugIns/Keyboard.appex/PrivacyInfo.xcprivacy": "1b857c60b79d63a424a44bbc6401f080d05863a5e669372609dd353ed2de14e7",
+    "PlugIns/Keyboard.appex/_CodeSignature/CodeResources": "444c40b6197609439238b8efd45ffc92b49431e1b006c779798a5ffb47bc1b30",
+    "PlugIns/Keyboard.appex/__preview.dylib": "eccef4a1b897ac811c714b630fbce2872a5e95af9e026818a5f6a38ef7a59f91",
+    "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/Info.plist": "b2e02d41dee0bbeb0c64db2db50e5e1b112f0d23dc29096a4ec2a17f6e534fdc",
+    "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_-8730D61D9395D3A_PackageProduct": "d93ff7ffe50f05ac458ef448e8ac61f4014b9c90862bf7515b9c57056009bb0c",
+    "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/Info.plist": "5af2d53aaf0f23e4205c49e6fe51e5cce996e5ae3728298030da856dde75e1cd",
+    "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeDirectory": "81beacde89c003ccf47636e123d2da0a69460e5089b78a36dc55cf14242bcbfb",
+    "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeRequirements": "987920904eab650e75788c054aa0b0524e6a80bfc71aa32df8d237a61743f986",
+    "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeResources": "36942c5fe4c20ffaf48d528e2c19071940e28c2d56995c113b3586509f5e2a9d",
+    "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeSignature": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/post_commit_continuations_v1_3.json": "20266049927492e18b9673b550745ab53e188daaac0ea8cb9acc94de3077a6e4",
+    "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/_CodeSignature/CodeResources": "2d716f3b4e86c63ae755af653efc45af802e525982390d0fcc7b4cf75fb94ff7",
+    "PlugIns/UniverseKeyboardTests.xctest/Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/Info.plist": "16cab48dd70f20ee66c3a615ccc01163520574daad1f0175ef67baeaa45a4278",
+    "PlugIns/UniverseKeyboardTests.xctest/Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/RimeBridge_57276DBF982DF6E4_PackageProduct": "52ca55381df3cf609f6df128b21ce88dfc71d2329c1cadc57a3511465a33abec",
+    "PlugIns/UniverseKeyboardTests.xctest/Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/_CodeSignature/CodeResources": "a7b6cbe2892f5cfa2c4e6c78bfab78038d56dcf2b7403ca1890781f80937cd50",
+    "PlugIns/UniverseKeyboardTests.xctest/Info.plist": "b06559d30ee7cde3a69ec83864d5f9581dfa4e78a93d2db757e7966284c0b0c4",
+    "PlugIns/UniverseKeyboardTests.xctest/KeyboardCore_KeyboardCore.bundle/Info.plist": "5af2d53aaf0f23e4205c49e6fe51e5cce996e5ae3728298030da856dde75e1cd",
+    "PlugIns/UniverseKeyboardTests.xctest/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeDirectory": "81beacde89c003ccf47636e123d2da0a69460e5089b78a36dc55cf14242bcbfb",
+    "PlugIns/UniverseKeyboardTests.xctest/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeRequirements": "987920904eab650e75788c054aa0b0524e6a80bfc71aa32df8d237a61743f986",
+    "PlugIns/UniverseKeyboardTests.xctest/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeResources": "36942c5fe4c20ffaf48d528e2c19071940e28c2d56995c113b3586509f5e2a9d",
+    "PlugIns/UniverseKeyboardTests.xctest/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeSignature": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "PlugIns/UniverseKeyboardTests.xctest/KeyboardCore_KeyboardCore.bundle/post_commit_continuations_v1_3.json": "20266049927492e18b9673b550745ab53e188daaac0ea8cb9acc94de3077a6e4",
+    "PlugIns/UniverseKeyboardTests.xctest/UniverseKeyboardTests": "97c82582192e5accbf4d3cb118acbb1c07751444a1d991cdf303f159a5926f6c",
+    "PlugIns/UniverseKeyboardTests.xctest/_CodeSignature/CodeResources": "f39ad70ee294c56730dfbe6b844229f5a000edfe457d561faae056cb676a5b8d",
+    "PrivacyInfo.xcprivacy": "f95ecfc75a54a82034d09db5abfb136198b22ae50aa1440c77b3191ce8c00851",
+    "RIME-ESSAY-AUTHORS.txt": "4ab2f81451ff4819f2b0e346583b49cee37aec72a01f8ecd96be1711c4204b75",
+    "RIME-ESSAY-LGPL-3.0.txt": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768",
+    "RIME-ICE-GPL-3.0-only.txt": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+    "RIME-LIBRIME-BSD-3-Clause.txt": "f67d27a6d2d586fcfed4b4c886a83747095396a39b6641e18e855086be2ec400",
+    "RIME-LUA-PLUGIN-BSD-3-Clause.txt": "c6bd4f58b13ae9d45c5e53adddeea5049114a25862797c6c6f64920431eea249",
+    "RIME-LUNA-PINYIN-AUTHORS.txt": "dbf21183999dcd06d4b0f0fe08f7396fcb47cc6f734fd97c3dd851777f1b28f8",
+    "RIME-LUNA-PINYIN-LGPL-3.0.txt": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768",
+    "RIME-LUNA-PINYIN-SOURCE-ATTRIBUTIONS.txt": "7bc2625f22ae4f9b3062b99195162a521b3c3bab149b59b29228095e83c40e7b",
+    "RIME-OCTAGRAM-BSD-3-Clause.txt": "f67d27a6d2d586fcfed4b4c886a83747095396a39b6641e18e855086be2ec400",
+    "RIME-OCTAGRAM-PROVENANCE.txt": "4e70ceafc631201750b130768a5c77f0ce9d06e9f6b522ce16955919cf5e1e20",
+    "RIME-PRELUDE-AUTHORS.txt": "9296a3509f1bcaee9e316ff70fccf76bf3a1f19c089b795710808ea5b6a0e6e7",
+    "RIME-PRELUDE-LGPL-3.0.txt": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768",
+    "RIME-STROKE-AUTHORS.txt": "f0cbba217e049471ccb40751b7d2e1c98144bb2ad4ec15b9f5af057121ec99d6",
+    "RIME-STROKE-LGPL-3.0.txt": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768",
+    "RIME-WANXIANG-CC-BY-4.0.txt": "9e5f1b3c610b9c2da5c313bf81d577a7d1acec686bdb0384edefa6df0f90cd94",
+    "RimeBuiltin.manifest.json": "6aa2d28918b9146cdf417ddb369ba57907e5bbcc3e2ce2c9bc1280f1a6e7b233",
+    "STCharacters.ocd2": "1ec2298310ca5a9151a554ea57bd86a6296ce917e4cdd1dd0884f789c477641b",
+    "STPhrases.ocd2": "16fd5f086b2a3be7aa9679deb7f728cf447f5d5419f65b2766a2d8671e84e77d",
+    "TSCharacters.ocd2": "85291e0173e972bbca58c848fb90b3bb41c79674cb61a75645e01bd884ad5927",
+    "TSPhrases.ocd2": "83696b4a2074f2f5c1786949444281ae191ccb0b75d98cd9ac51bcb35f890cb3",
+    "TWVariants.ocd2": "390f07a1867ad56aa60a7af23b6e4b3acc96ea48d893c06ede3dffb1c576c2bc",
+    "Universe Keyboard": "a9d2535534d92f804b9a3630a5c978ec24c65119afe4778d7db61812c1a2c6d2",
+    "Universe Keyboard.debug.dylib": "69fc28f3ef5acb268e309a459aa0eae4ca8b9fe02c88f359580ba512af2cd505",
+    "YAML-CPP-MIT.txt": "aa6fcc27be034e41e21dd832f9175bfe694a48491d9e14ff0fa278e19ad14f1b",
+    "_CodeSignature/CodeResources": "5c2682b059a086c0e89229a7e33aeb7b2554af0b432999a4699bf22accdb324b",
+    "__preview.dylib": "39c5084b204f9a2a3244e4b94d1d38fe74346d45c4fc0a6a7b1f3d38a9645a0a",
+    "default.yaml": "0628ada16651d56c4cdfcb8e45ddba23d4d585cc8be0580a62c4e077c0bcc141",
+    "essay.txt": "a6f8409c261e5d21bd78e6cbcde8f8e1ef7f68c07ff1c2692c07dd4ff4151cea",
+    "key_bindings.yaml": "ee2476598b4cae89068b823868196eb07b5f72007a600814fe5804b39008b3ed",
+    "luna_pinyin.dict.yaml": "75bcf6eb3ff62b129882ed89cc22b2d80a5347aa72bcfa2ccc839bac298e7314",
+    "luna_pinyin.prism.bin": "012d8360150c3e2f55330d21f9aa16281660e25c15db8c983090f14293da878f",
+    "luna_pinyin.reverse.bin": "bd314158c00bf36c9ba8f7321d7e6ab6dfbdaa283b11c4856adfd2f58a781179",
+    "luna_pinyin.schema.yaml": "668b4d4957e4cc8f9cea32ed3f08f0ecf4a7be8cdba058700507487bd96dd5c7",
+    "luna_pinyin.table.bin": "55a54e8e55deaade0e4d7646a7ad2b8602901f4007b60c637d993468eff64e03",
+    "pinyin.yaml": "caa220b05172bf35775db07fed6ead7719c742e6139232d9797040dbe65f746c",
+    "punctuation.yaml": "d6f89592149098f0a2d0ed3e5c83f49adb6226cdf1d967b0bc0d293f4e5c496a",
+    "s2t.json": "0b86f3aa92c72ac5fcb11bc9df21914ed42f6847416a1d4d7f52f8b5eb861e74",
+    "stroke.dict.yaml": "b3e93dce89c185f45c3d6e189b86b3a8626913352cc85e1094c786579a665791",
+    "stroke.prism.bin": "5acfdf5842006fb7eacf9e2c9920e917a18356b78cd55b4023ecd836665ff383",
+    "stroke.reverse.bin": "0618448a659ec3e316ef230dce808a40388a57c664cf257eab1e9b64d86909cb",
+    "stroke.schema.yaml": "06f680cf7c9d9a69948681ee25e9f6aeccfde4d8d590f93e179d4c4b3caee879",
+    "stroke.table.bin": "de1a978a7d97e7ccef5f85eaaa4cc76dcbd4d75cdf750926edfc2ea3e65603d5",
+    "symbols.yaml": "6d08969525bd66c67abf1791c99928079356bd0e673386c49c1959d2a52fdbba",
+    "t2hk.json": "3d5c1c7540992e821fef56858a001d8ea2720a394975b915fb5944fe42efc0fd",
+    "t2s.json": "18d64a23de26c39d0e247d36e12d585653f44f2e231c3397050456565581a819",
+    "t2tw.json": "7b2eb8aa8b76c1e2b1a41e8ce38a327d0aac5e49cfcefe763744b17fdeefb7b5"
+  },
+  "tree_difference": {
+    "missing": [],
+    "added": [],
+    "changed": []
+  },
+  "mach_o_payloads": [
+    {
+      "path": "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_-8730D61D9395D3A_PackageProduct",
+      "exists": true,
+      "sha256": "d93ff7ffe50f05ac458ef448e8ac61f4014b9c90862bf7515b9c57056009bb0c",
+      "size": 9134112,
+      "uuid_output": "UUID: D4E6B3DC-F9F5-329F-8058-6693A6637E0B (arm64) /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/1C8EAA6A-D18A-4684-B4E4-95252930B447/Universe Keyboard.app/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_-8730D61D9395D3A_PackageProduct",
+      "uuid_exit_code": 0,
+      "expected_sha256": "d93ff7ffe50f05ac458ef448e8ac61f4014b9c90862bf7515b9c57056009bb0c",
+      "expected_size": 9134112,
+      "expected_uuid": [
+        [
+          "D4E6B3DC-F9F5-329F-8058-6693A6637E0B",
+          "arm64"
+        ]
+      ],
+      "sha_match": true,
+      "size_match": true,
+      "uuid_match": true
+    },
+    {
+      "path": "Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/RimeBridge_57276DBF982DF6E4_PackageProduct",
+      "exists": true,
+      "sha256": "52ca55381df3cf609f6df128b21ce88dfc71d2329c1cadc57a3511465a33abec",
+      "size": 6504912,
+      "uuid_output": "UUID: 4F3DA6EA-7C6B-370A-A2CB-4B7179B9B0B5 (arm64) /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/1C8EAA6A-D18A-4684-B4E4-95252930B447/Universe Keyboard.app/Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/RimeBridge_57276DBF982DF6E4_PackageProduct",
+      "uuid_exit_code": 0,
+      "expected_sha256": "52ca55381df3cf609f6df128b21ce88dfc71d2329c1cadc57a3511465a33abec",
+      "expected_size": 6504912,
+      "expected_uuid": [
+        [
+          "4F3DA6EA-7C6B-370A-A2CB-4B7179B9B0B5",
+          "arm64"
+        ]
+      ],
+      "sha_match": true,
+      "size_match": true,
+      "uuid_match": true
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/Keyboard",
+      "exists": true,
+      "sha256": "3a1c3ff7454be12c45c58866bb801917644c68af1f986cd7918663e3022f4cc7",
+      "size": 37872,
+      "uuid_output": "UUID: AC319AF9-EB52-3C98-9AEE-66200C42AAB2 (arm64) /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/1C8EAA6A-D18A-4684-B4E4-95252930B447/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+      "uuid_exit_code": 0,
+      "expected_sha256": "3a1c3ff7454be12c45c58866bb801917644c68af1f986cd7918663e3022f4cc7",
+      "expected_size": 37872,
+      "expected_uuid": [
+        [
+          "AC319AF9-EB52-3C98-9AEE-66200C42AAB2",
+          "arm64"
+        ]
+      ],
+      "sha_match": true,
+      "size_match": true,
+      "uuid_match": true
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+      "exists": true,
+      "sha256": "efe14b5b4e0e21b8584658489402c6fdb7cbcee19359122b23a5558e9d595b4a",
+      "size": 4870784,
+      "uuid_output": "UUID: BFD00CD5-CD37-32C4-B1E4-F73432658B7F (arm64) /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/1C8EAA6A-D18A-4684-B4E4-95252930B447/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+      "uuid_exit_code": 0,
+      "expected_sha256": "efe14b5b4e0e21b8584658489402c6fdb7cbcee19359122b23a5558e9d595b4a",
+      "expected_size": 4870784,
+      "expected_uuid": [
+        [
+          "BFD00CD5-CD37-32C4-B1E4-F73432658B7F",
+          "arm64"
+        ]
+      ],
+      "sha_match": true,
+      "size_match": true,
+      "uuid_match": true
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/__preview.dylib",
+      "exists": true,
+      "sha256": "eccef4a1b897ac811c714b630fbce2872a5e95af9e026818a5f6a38ef7a59f91",
+      "size": 16800,
+      "uuid_output": "UUID: 984A99F0-EDBC-3181-8D6A-151FC3FF26B3 (arm64) /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/1C8EAA6A-D18A-4684-B4E4-95252930B447/Universe Keyboard.app/PlugIns/Keyboard.appex/__preview.dylib",
+      "uuid_exit_code": 0,
+      "expected_sha256": "eccef4a1b897ac811c714b630fbce2872a5e95af9e026818a5f6a38ef7a59f91",
+      "expected_size": 16800,
+      "expected_uuid": [
+        [
+          "984A99F0-EDBC-3181-8D6A-151FC3FF26B3",
+          "arm64"
+        ]
+      ],
+      "sha_match": true,
+      "size_match": true,
+      "uuid_match": true
+    },
+    {
+      "path": "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_-8730D61D9395D3A_PackageProduct",
+      "exists": true,
+      "sha256": "d93ff7ffe50f05ac458ef448e8ac61f4014b9c90862bf7515b9c57056009bb0c",
+      "size": 9134112,
+      "uuid_output": "UUID: D4E6B3DC-F9F5-329F-8058-6693A6637E0B (arm64) /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/1C8EAA6A-D18A-4684-B4E4-95252930B447/Universe Keyboard.app/PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_-8730D61D9395D3A_PackageProduct",
+      "uuid_exit_code": 0,
+      "expected_sha256": "d93ff7ffe50f05ac458ef448e8ac61f4014b9c90862bf7515b9c57056009bb0c",
+      "expected_size": 9134112,
+      "expected_uuid": [
+        [
+          "D4E6B3DC-F9F5-329F-8058-6693A6637E0B",
+          "arm64"
+        ]
+      ],
+      "sha_match": true,
+      "size_match": true,
+      "uuid_match": true
+    },
+    {
+      "path": "PlugIns/UniverseKeyboardTests.xctest/Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/RimeBridge_57276DBF982DF6E4_PackageProduct",
+      "exists": true,
+      "sha256": "52ca55381df3cf609f6df128b21ce88dfc71d2329c1cadc57a3511465a33abec",
+      "size": 6504912,
+      "uuid_output": "UUID: 4F3DA6EA-7C6B-370A-A2CB-4B7179B9B0B5 (arm64) /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/1C8EAA6A-D18A-4684-B4E4-95252930B447/Universe Keyboard.app/PlugIns/UniverseKeyboardTests.xctest/Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/RimeBridge_57276DBF982DF6E4_PackageProduct",
+      "uuid_exit_code": 0,
+      "expected_sha256": "52ca55381df3cf609f6df128b21ce88dfc71d2329c1cadc57a3511465a33abec",
+      "expected_size": 6504912,
+      "expected_uuid": [
+        [
+          "4F3DA6EA-7C6B-370A-A2CB-4B7179B9B0B5",
+          "arm64"
+        ]
+      ],
+      "sha_match": true,
+      "size_match": true,
+      "uuid_match": true
+    },
+    {
+      "path": "PlugIns/UniverseKeyboardTests.xctest/UniverseKeyboardTests",
+      "exists": true,
+      "sha256": "97c82582192e5accbf4d3cb118acbb1c07751444a1d991cdf303f159a5926f6c",
+      "size": 9119088,
+      "uuid_output": "UUID: 5E28F831-9972-37CB-81E7-F37A3A65F9DA (arm64) /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/1C8EAA6A-D18A-4684-B4E4-95252930B447/Universe Keyboard.app/PlugIns/UniverseKeyboardTests.xctest/UniverseKeyboardTests",
+      "uuid_exit_code": 0,
+      "expected_sha256": "97c82582192e5accbf4d3cb118acbb1c07751444a1d991cdf303f159a5926f6c",
+      "expected_size": 9119088,
+      "expected_uuid": [
+        [
+          "5E28F831-9972-37CB-81E7-F37A3A65F9DA",
+          "arm64"
+        ]
+      ],
+      "sha_match": true,
+      "size_match": true,
+      "uuid_match": true
+    },
+    {
+      "path": "Universe Keyboard",
+      "exists": true,
+      "sha256": "a9d2535534d92f804b9a3630a5c978ec24c65119afe4778d7db61812c1a2c6d2",
+      "size": 40512,
+      "uuid_output": "UUID: 3841C318-24FB-3458-B189-8B0C8F823D50 (arm64) /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/1C8EAA6A-D18A-4684-B4E4-95252930B447/Universe Keyboard.app/Universe Keyboard",
+      "uuid_exit_code": 0,
+      "expected_sha256": "a9d2535534d92f804b9a3630a5c978ec24c65119afe4778d7db61812c1a2c6d2",
+      "expected_size": 40512,
+      "expected_uuid": [
+        [
+          "3841C318-24FB-3458-B189-8B0C8F823D50",
+          "arm64"
+        ]
+      ],
+      "sha_match": true,
+      "size_match": true,
+      "uuid_match": true
+    },
+    {
+      "path": "Universe Keyboard.debug.dylib",
+      "exists": true,
+      "sha256": "69fc28f3ef5acb268e309a459aa0eae4ca8b9fe02c88f359580ba512af2cd505",
+      "size": 17497520,
+      "uuid_output": "UUID: 3F14858F-82CE-30F1-BFC3-09201BF7FE20 (arm64) /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/1C8EAA6A-D18A-4684-B4E4-95252930B447/Universe Keyboard.app/Universe Keyboard.debug.dylib",
+      "uuid_exit_code": 0,
+      "expected_sha256": "69fc28f3ef5acb268e309a459aa0eae4ca8b9fe02c88f359580ba512af2cd505",
+      "expected_size": 17497520,
+      "expected_uuid": [
+        [
+          "3F14858F-82CE-30F1-BFC3-09201BF7FE20",
+          "arm64"
+        ]
+      ],
+      "sha_match": true,
+      "size_match": true,
+      "uuid_match": true
+    },
+    {
+      "path": "__preview.dylib",
+      "exists": true,
+      "sha256": "39c5084b204f9a2a3244e4b94d1d38fe74346d45c4fc0a6a7b1f3d38a9645a0a",
+      "size": 16800,
+      "uuid_output": "UUID: 3157B785-8C10-368F-A3C4-DB591625C61D (arm64) /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/1C8EAA6A-D18A-4684-B4E4-95252930B447/Universe Keyboard.app/__preview.dylib",
+      "uuid_exit_code": 0,
+      "expected_sha256": "39c5084b204f9a2a3244e4b94d1d38fe74346d45c4fc0a6a7b1f3d38a9645a0a",
+      "expected_size": 16800,
+      "expected_uuid": [
+        [
+          "3157B785-8C10-368F-A3C4-DB591625C61D",
+          "arm64"
+        ]
+      ],
+      "sha_match": true,
+      "size_match": true,
+      "uuid_match": true
+    }
+  ],
+  "payloads_all_match": true,
+  "bundle_identities": [
+    {
+      "path": "Info.plist",
+      "bundle_id": "com.DoubleShy0N.Universe-Keyboard",
+      "version": "1.0",
+      "build": "1",
+      "executable": "Universe Keyboard",
+      "extension_point": null,
+      "identity_match": true
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/Info.plist",
+      "bundle_id": "com.DoubleShy0N.Universe-Keyboard.Keyboard",
+      "version": "1.0",
+      "build": "1",
+      "executable": "Keyboard",
+      "extension_point": "com.apple.keyboard-service",
+      "identity_match": true
+    }
+  ],
+  "identities_all_match": true,
+  "runtime_loaded_appex_or_callback_proven": false
+}

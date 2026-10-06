@@ -1,0 +1,66 @@
+{
+  "utc": "2026-10-02T15:27:52.898512+00:00",
+  "authorization": "执行H1吧",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "source571_verified": true,
+  "vendor630_verified": true,
+  "mismatches": [],
+  "before_file_count": 2837,
+  "dirty_entry_count": 754,
+  "staged": 0,
+  "fresh_output_paths": true,
+  "build_input_digest_sha256": "c8e7a59197568ff3dede14e68a9b674439bd6e8458cf7d5ef8cb696da8700f8e",
+  "toolchain": {
+    "xcode": {
+      "argv": [
+        "xcodebuild",
+        "-version"
+      ],
+      "exit": 0,
+      "stdout": "Xcode 27.0\nBuild version 27A266a\n",
+      "stderr": ""
+    },
+    "developer": {
+      "argv": [
+        "xcode-select",
+        "-p"
+      ],
+      "exit": 0,
+      "stdout": "/Applications/Xcode.app/Contents/Developer\n",
+      "stderr": ""
+    },
+    "sdk_version": {
+      "argv": [
+        "xcrun",
+        "--sdk",
+        "iphonesimulator",
+        "--show-sdk-version"
+      ],
+      "exit": 0,
+      "stdout": "27.0\n",
+      "stderr": ""
+    },
+    "sdk_path": {
+      "argv": [
+        "xcrun",
+        "--sdk",
+        "iphonesimulator",
+        "--show-sdk-path"
+      ],
+      "exit": 0,
+      "stdout": "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk\n",
+      "stderr": ""
+    },
+    "swift": {
+      "argv": [
+        "xcrun",
+        "swiftc",
+        "--version"
+      ],
+      "exit": 0,
+      "stdout": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0\n",
+      "stderr": "swift-driver version: 1.168.6 "
+    }
+  }
+}

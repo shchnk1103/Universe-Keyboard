@@ -1,0 +1,12 @@
+{
+  "step": "F2-C-classify-table",
+  "utc": "2026-10-04T10:46:48.286002+00:00",
+  "command": "python3 - <<'PY'\nfrom pathlib import PurePosixPath\n\ndef is_lightweight(raw):\n    path = PurePosixPath(raw)\n    if path.is_absolute() or '..' in path.parts or not path.parts:\n        return False\n    if path.parts[0] in {'docs', '.kos'}:\n        return True\n    return len(path.parts) == 1 and path.suffix.lower() == '.md'\n\npaths = [\n    'Keyboard/Controllers/KeyboardViewController.swift',\n    'Keyboard/Controllers/KeyboardViewController+Bootstrap.swift',\n    'Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift',\n    'KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift',\n    'Universe Keyboard.xcodeproj/project.pbxproj',\n    'docs/evidence/keyboard-wake-host-activation-fix-001-f2-prepared-entry-2026-10-04.md',\n]\nfull = [p for p in paths if not is_lightweight(p)]\nprint('classification=full' if full else 'classification=docs_only')\nprint('requires_full=' + ('true' if full else 'false'))\nprint('full_required_paths=' + ','.join(full))\nprint('reason=uncommitted_f1_source_is_full_by_frozen_table')\nif not full:\n    raise SystemExit(2)\nPY",
+  "cwd": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "remaining_wall_seconds": 10391.714173,
+  "ended": "2026-10-04T10:46:48.789693+00:00",
+  "elapsed_seconds": 0.503691,
+  "exit_code": 0,
+  "timeout": false,
+  "log": "/private/tmp/ukey-host-activation-fix-f2-run-20261004/logs/F2-C-classify-table.log"
+}

@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "xcrun",
+    "xcresulttool",
+    "get",
+    "test-results",
+    "summary",
+    "--path",
+    "/private/tmp/ukey-wake-c2-20261001/focused-01.xcresult",
+    "--format",
+    "json"
+  ],
+  "exit_code": 0,
+  "stderr": ""
+}

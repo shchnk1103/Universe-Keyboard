@@ -1,5 +1,9 @@
 # Active Work Summary
 
+Current update: `2026-10-06 Asia/Shanghai` — 草稿 PR [#198](https://github.com/shchnk1103/Universe-Keyboard/pull/198) 修复 hosted lightweight Markdown 断链（冻结快照跳过检查；活文档绝对路径改为仓库相对 `#Lnn`）。[`AUTH-FIX-CI`](authorizations/AUTH-KEYBOARD-WAKE-BOUNDED-PUBLICATION-001-FIX-CI.md)。无 PR merge / TestFlight / Release。
+
+Current update: `2026-10-06 Asia/Shanghai` — 草稿 PR [#198](https://github.com/shchnk1103/Universe-Keyboard/pull/198) 已把 `origin/main`（含 DELETE-KEY-SCRUB #196/#197）合并进 `codex/keyboard-wake-v3-compatibility-gate`。三件 keyboard-wake Assignment 有界 Completed。Human 观察 hosted CI。无 PR merge / TestFlight / Release。
+
 Current update: `2026-10-01 Asia/Shanghai` — PR [#196](https://github.com/shchnk1103/Universe-Keyboard/pull/196) squash-merged `8f0fa58c57f11891f4e8c6783e7f4bce6a788984`（docs_only run [36823864783](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/36823864783)）。[`DELETE-KEY-SCRUB-001`](assignments/delete-key-scrub-001.md) 仍 **Assignment Pending**。**不进入**下方 Ready/Active 十项表；见 Queued。功能分支与隔离 worktree 已清理。无实施 / TestFlight / Release。
 
 Current update: `2026-10-01 Asia/Shanghai` — [`DELETE-KEY-SCRUB-001`](assignments/delete-key-scrub-001.md) 文档已 push 并开 PR [#196](https://github.com/shchnk1103/Universe-Keyboard/pull/196)。Lifecycle 仍 **Assignment Pending**。**不进入**下方 Ready/Active 十项表；见 Queued。Human 观察 hosted CI。无 merge / 实施 / TestFlight。

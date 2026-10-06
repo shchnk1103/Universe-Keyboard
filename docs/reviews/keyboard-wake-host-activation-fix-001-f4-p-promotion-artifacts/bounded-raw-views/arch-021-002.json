@@ -1,0 +1,61 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-prepared-entry-2026-10-05.md",
+  "origin_sha256": "980a84a4b4ffd329efdf75398ef338c46224a1d0ecac3aafad0213b49ea281bb",
+  "expected_sha256": "980a84a4b4ffd329efdf75398ef338c46224a1d0ecac3aafad0213b49ea281bb",
+  "line_start": 61,
+  "line_end": 73,
+  "lines": [
+    {
+      "line": 61,
+      "text": "调试停点工作预算120秒、单命令等待≤30秒；任何取证错误优先delete自身断点/list验证，仅停时continue、detach/quit，并核P_TRACED/debugserver退出。命中不一定等于Human点按钮，非预期hit>0停止本轮；无freeze/参数/完整transport则inconclusive，不用ownerReady替owner存在性。"
+    },
+    {
+      "line": 62,
+      "text": ""
+    },
+    {
+      "line": 63,
+      "text": "真实通知证据：HOST_ACTIVE_AFTER在`hostNotificationMatchesCurrentExtensionContext`对象身份guard之后，配合同run/context对应生命周期/ownerprobe resume/suspend及Human无重开返回可支持送达与当前context匹配；不读取Notification内容、宿主文本或对象描述。**hostDidBecomeActive的journal尝试发生在恢复journal前，suspended ingress会drop；Logger HOST_RESIGN_*及HOST_ACTIVE_BEFORE也可能因persistence suspend丢失**。因此不能把这些缺行当未送达。只用实际可得的post-guard HOST_ACTIVE_AFTER、同run probe阶段/appearance/coordinator/attempt与时间因果链，缺乏配对证据则inconclusive，不能强行宣布真实通知/恢复已证。必要时另提最小非内容观测，不在F4擅加源码。"
+    },
+    {
+      "line": 64,
+      "text": ""
+    },
+    {
+      "line": 65,
+      "text": "probe记录ownerPresent/receiptPresent/epoch/revision/coordinatorOrdinal，必须绑定before-after同实例及同输入attempt。先确认本轮实际管线状态；不修改canary/引擎模式来凑owner。owner状态应按本轮基线与有效action解释，不把普通baseline owner=0强判bug；若probe不能证明适用管线的恢复，只判该项未验证。UI正常、candidate缓存可见或两字按键反馈均不能代真实session/owner/receipt。"
+    },
+    {
+      "line": 66,
+      "text": ""
+    },
+    {
+      "line": 67,
+      "text": "## Exit与权限边界"
+    },
+    {
+      "line": 68,
+      "text": ""
+    },
+    {
+      "line": 69,
+      "text": "最低可验：当前source→diagnostic pair→installed bytes→loaded modules链闭合；本轮synthetic基线正常；直接AppSwitcher返回无重新叫键盘，新的候选/host更新及提交正常；真实通知context配对/合法resume/owner-receipt、旧请求代际失效与不重投旧composition证据完整；buffer/run/attempt完整；debugger清理、诊断原值/存在性和环境after保护齐。没有复现触发或缺真实回调关联，仅正常路径/局部Passed或inconclusive，不称修复完成。"
+    },
+    {
+      "line": 70,
+      "text": ""
+    },
+    {
+      "line": 71,
+      "text": "F3/F4同30skip与runtime消息未知影响按已批及独立阶段判断保留，不计通过、不用于Release；新增fail/skip停止。异常无自动第二轮、不绕过contextguard、不恢复旧composition、不修改源码/部署边界。F4失败不清before，任何恢复另按实际清单授权。所有历史备份当前有保护用途，本轮不删；新候选验收/恢复完成后可另列去重及可清理候选，Human批准才删。"
+    },
+    {
+      "line": 72,
+      "text": ""
+    },
+    {
+      "line": 73,
+      "text": "此Entry不授Git/Release/真机/CHANGELOG权限、不改ADR。整个修复仍未Completed；最近一步建议仅授权F4-P构建诊断配对及冻结，不能直接开始Maps。本轮只读检查/治理准备，无新build/test/simulator/LLDB/import/安装/备份或恢复执行。"
+    }
+  ]
+}

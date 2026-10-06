@@ -1,0 +1,43 @@
+{
+  "lane": "UK-WAKE-V6-B-ARCH",
+  "round": "R2",
+  "packet_sha256": "7ec8cfdbe82ec22434bb79bfcff624744ae0d11b3cc5dbb527e78c54e2835e4b",
+  "candidate_root": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "started_at": "R2 began after the R1 record ended at 2026-09-30 13:41:06 UTC; exact start timestamp not captured.",
+  "ended_at_utc": "2026-09-30 13:45:35 UTC",
+  "elapsed": "R1+R2 stopped under the 12-minute ceiling; exact elapsed unavailable because the lane start timestamp was not captured.",
+  "tool_interactions_r2": 3,
+  "tool_interactions_r1": 11,
+  "tool_interactions_cumulative": 14,
+  "checkpoints": {
+    "r1_4": "Missed; first root update followed interaction 6 and was sent at interaction 7.",
+    "r1_10": "Status was recorded at interaction 10 and sent to root at interaction 11.",
+    "r2_4": "Not reached before the original cumulative budget was exhausted.",
+    "r2_8": "Not reached; original cumulative budget exhausted at 14."
+  },
+  "entry_integrity": {
+    "packet_digest_match": true,
+    "input_count": 28,
+    "input_hash_mismatches_at_entry": 0,
+    "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+    "head_match": true
+  },
+  "post_snapshot_update": "Root Coordinator reported that UniverseKeyboardTests/DiagnosticsLogSourceTests.swift changed after the verified snapshot to fix fixture directory creation. The updated file was not read; final-candidate AS4 remains uncovered.",
+  "covered": [
+    "AS1"
+  ],
+  "uncovered": [
+    "AS2",
+    "AS3",
+    "AS4",
+    "AS5",
+    "AS6"
+  ],
+  "stop_reason": "Original cumulative 14-interaction budget exhausted; diff output was truncated and the App test input changed after the verified snapshot. No budget renewal or expansion.",
+  "source_reads": "Allowlisted source diff only; no source files were edited or tests/builds/simulators run.",
+  "git_mutation_network_or_source_write": false,
+  "outputs": [
+    "architecture-review-r2.md",
+    "architecture-usage-r2.json"
+  ]
+}

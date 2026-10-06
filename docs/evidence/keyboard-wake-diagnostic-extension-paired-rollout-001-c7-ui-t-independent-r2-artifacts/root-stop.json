@@ -1,0 +1,18 @@
+{
+  "utc": "2026-10-03T05:17:16.607447+00:00",
+  "lane": "QUALITY-C7-UI-T-INDEPENDENT",
+  "round": 2,
+  "packet_digest": "79e2a24f6d998d5381401390aa04d3a15107f6ce08b6646723844cb568ee41c5",
+  "budget_start_epoch": 1791003552.66787,
+  "deadline_epoch": 1791004452.66787,
+  "parent_observation_elapsed_seconds": 1083.9395771026611,
+  "parent_interrupt_result": "previous_status running; interrupted after deadline reached",
+  "review_exists": false,
+  "usage_exists": false,
+  "last_delivered_checkpoint_leaf_calls": 7,
+  "actual_total_leaf_calls": "UNKNOWN final usage absent",
+  "last_checkpoint_reported_elapsed": 659.9,
+  "formal_coverage": "Partial/incomplete; checkpoints do not replace final report",
+  "stop": "900s hard ceiling reached; no automatic renewal",
+  "new_scope_executed": false
+}

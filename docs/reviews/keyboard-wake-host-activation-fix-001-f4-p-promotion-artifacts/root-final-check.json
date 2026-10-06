@@ -1,0 +1,12 @@
+{
+  "recorded_at": "2026-10-05T03:17:53.360703+00:00",
+  "frozen_source_vendor_rows": 1156,
+  "source_byte_drift": false,
+  "staged": 0,
+  "reviewer_coverage": "Incomplete",
+  "author_elapsed_compliance": "UNKNOWN",
+  "bounded_view_pages": 235,
+  "largest_view_bytes": 7912,
+  "bounded_views_are_prepared_not_author_reader_writer_preflight": true,
+  "no_build_test_device_install": true
+}

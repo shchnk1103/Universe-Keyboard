@@ -1,0 +1,193 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-artifacts/historical-rimebridge-skip-list.json",
+  "origin_sha256": "23e2ad749bb992da2f7c0d50397e2505278c9ffc810f711279b9ab49af35180d",
+  "expected_sha256": "23e2ad749bb992da2f7c0d50397e2505278c9ffc810f711279b9ab49af35180d",
+  "line_start": 61,
+  "line_end": 106,
+  "lines": [
+    {
+      "line": 61,
+      "text": "      \"method\": \"testRollingControllerRealRimeSecondRejectRestoreMatrix\","
+    },
+    {
+      "line": 62,
+      "text": "      \"reason\": \"Set isolated T9 Spike runtime directories to run this matrix.\""
+    },
+    {
+      "line": 63,
+      "text": "    },"
+    },
+    {
+      "line": 64,
+      "text": "    {"
+    },
+    {
+      "line": 65,
+      "text": "      \"class\": \"RimeT9CompatibilitySpikeTests\","
+    },
+    {
+      "line": 66,
+      "text": "      \"method\": \"testPinnedLibrimeCanSelectT9AndProcessDigitSequenceAfterRemovingUnsupportedProcessor\","
+    },
+    {
+      "line": 67,
+      "text": "      \"reason\": \"Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 compatibility Spike.\""
+    },
+    {
+      "line": 68,
+      "text": "    },"
+    },
+    {
+      "line": 69,
+      "text": "    {"
+    },
+    {
+      "line": 70,
+      "text": "      \"class\": \"RimeT9PinyinSelectionSpikeTests\","
+    },
+    {
+      "line": 71,
+      "text": "      \"method\": \"test004CatalogExactRawAcceptanceOnPinnedLibrime\","
+    },
+    {
+      "line": 72,
+      "text": "      \"reason\": \"Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike.\""
+    },
+    {
+      "line": 73,
+      "text": "    },"
+    },
+    {
+      "line": 74,
+      "text": "    {"
+    },
+    {
+      "line": 75,
+      "text": "      \"class\": \"RimeT9PinyinSelectionSpikeTests\","
+    },
+    {
+      "line": 76,
+      "text": "      \"method\": \"testAtomicPathDiscoveryStageAOnPinnedLibrime\","
+    },
+    {
+      "line": 77,
+      "text": "      \"reason\": \"Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike.\""
+    },
+    {
+      "line": 78,
+      "text": "    },"
+    },
+    {
+      "line": 79,
+      "text": "    {"
+    },
+    {
+      "line": 80,
+      "text": "      \"class\": \"RimeT9PinyinSelectionSpikeTests\","
+    },
+    {
+      "line": 81,
+      "text": "      \"method\": \"testGate5Phase05CandidateCoverageSelRangeOnPinnedLibrime\","
+    },
+    {
+      "line": 82,
+      "text": "      \"reason\": \"Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike.\""
+    },
+    {
+      "line": 83,
+      "text": "    },"
+    },
+    {
+      "line": 84,
+      "text": "    {"
+    },
+    {
+      "line": 85,
+      "text": "      \"class\": \"RimeT9PinyinSelectionSpikeTests\","
+    },
+    {
+      "line": 86,
+      "text": "      \"method\": \"testGate5Phase06AlternativeCoverageSelectionDeltaOnPinnedLibrime\","
+    },
+    {
+      "line": 87,
+      "text": "      \"reason\": \"Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike.\""
+    },
+    {
+      "line": 88,
+      "text": "    },"
+    },
+    {
+      "line": 89,
+      "text": "    {"
+    },
+    {
+      "line": 90,
+      "text": "      \"class\": \"RimeT9PinyinSelectionSpikeTests\","
+    },
+    {
+      "line": 91,
+      "text": "      \"method\": \"testPrecisePinyinPathRefinementOnPinnedLibrime\","
+    },
+    {
+      "line": 92,
+      "text": "      \"reason\": \"Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike.\""
+    },
+    {
+      "line": 93,
+      "text": "    },"
+    },
+    {
+      "line": 94,
+      "text": "    {"
+    },
+    {
+      "line": 95,
+      "text": "      \"class\": \"RimeT9PinyinSelectionSpikeTests\","
+    },
+    {
+      "line": 96,
+      "text": "      \"method\": \"testReadOnlyWindowCoverageForYiZiSibling\","
+    },
+    {
+      "line": 97,
+      "text": "      \"reason\": \"Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike.\""
+    },
+    {
+      "line": 98,
+      "text": "    },"
+    },
+    {
+      "line": 99,
+      "text": "    {"
+    },
+    {
+      "line": 100,
+      "text": "      \"class\": \"ThreadAffineRimeRealEngineTests\","
+    },
+    {
+      "line": 101,
+      "text": "      \"method\": \"testRealEngineBootstrapCreatesAndCallsOffMainThroughOwner\","
+    },
+    {
+      "line": 102,
+      "text": "      \"reason\": \"Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR (or UK_RIME_R4B_*) to run R4-B real-engine proof.\""
+    },
+    {
+      "line": 103,
+      "text": "    }"
+    },
+    {
+      "line": 104,
+      "text": "  ],"
+    },
+    {
+      "line": 105,
+      "text": "  \"disposition\": \"Human accept current F2 only; unverified; not passed\""
+    },
+    {
+      "line": 106,
+      "text": "}"
+    }
+  ]
+}

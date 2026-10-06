@@ -1,0 +1,184 @@
+{
+  "packet_digest": "bf7704109af968f0ab9ee1958df2d593cc112be1a068f90e9c4003a31116a9f3",
+  "candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50",
+  "binding": {
+    "build_input_manifest_sha256": "0c2ab27db638647735202b526e06614fa78aa209cf6340b26ff8293cd8e47d61",
+    "candidate_command_sha256": "6e7dd9ccb0d95844d4dead12b29e3f12ca478624dac28c65397a04be907cddca",
+    "payload_digest_sha256": "784c05694e420d3cab5187160c463066070fbdbd72b1c053cd39f3e6fe422aca",
+    "entitlement_rows_sha256": "920e7844ea829d7cfa31b8db9a6f298e3cddc3d1dcdfbbe025b85eaa34e15ea1"
+  },
+  "payload_count": 78,
+  "entitlements": [
+    {
+      "executable": "/private/tmp/ukey-wake-probe-ui-candidate-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard",
+      "sha256": "7ecd73750fa88485447ec25aaae5887e6da6d91cf35a430305c620cf85b1259e",
+      "uuid": "8DD28672-CD37-3408-93FB-C3CA3F4465E9",
+      "section_offset": 13432,
+      "section_bytes": 414,
+      "section_sha256": "6610a8c02dfe5b877f5be595941b807a687c7838e2f4b54a80b4c6726b821a6c",
+      "both_xcent_exact": true,
+      "entitlements": {
+        "application-identifier": "C33N6HTS9N.com.DoubleShy0N.Universe-Keyboard",
+        "com.apple.security.application-groups": [
+          "group.com.DoubleShy0N.Universe-Keyboard"
+        ]
+      }
+    },
+    {
+      "executable": "/private/tmp/ukey-wake-probe-ui-candidate-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+      "sha256": "237d9a890d96a18ebaa9427ac2836595d8e8fc7767be63712a6870a22643efe0",
+      "uuid": "C3FC7115-4215-3801-ABBB-C8A648ED0C32",
+      "section_offset": 10282,
+      "section_bytes": 423,
+      "section_sha256": "1b5eca79f033b12423739696ae50c8dfcd679ed6484803e2e340787aee149b7b",
+      "both_xcent_exact": true,
+      "entitlements": {
+        "application-identifier": "C33N6HTS9N.com.DoubleShy0N.Universe-Keyboard.Keyboard",
+        "com.apple.security.application-groups": [
+          "group.com.DoubleShy0N.Universe-Keyboard"
+        ]
+      }
+    }
+  ],
+  "bundles": [
+    {
+      "id": "com.DoubleShy0N.Universe-Keyboard",
+      "version": "1.0",
+      "build": "1",
+      "signature": {
+        "argv": [
+          "codesign",
+          "--verify",
+          "--deep",
+          "--strict",
+          "/private/tmp/ukey-wake-probe-ui-candidate-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app"
+        ],
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    },
+    {
+      "id": "com.DoubleShy0N.Universe-Keyboard.Keyboard",
+      "version": "1.0",
+      "build": "1",
+      "signature": {
+        "argv": [
+          "codesign",
+          "--verify",
+          "--deep",
+          "--strict",
+          "/private/tmp/ukey-wake-probe-ui-candidate-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex"
+        ],
+        "exit": 0,
+        "stdout": "",
+        "stderr": ""
+      }
+    }
+  ],
+  "machos": [
+    {
+      "path": "PlugIns/Keyboard.appex/Keyboard",
+      "sha256": "237d9a890d96a18ebaa9427ac2836595d8e8fc7767be63712a6870a22643efe0",
+      "uuid": "C3FC7115-4215-3801-ABBB-C8A648ED0C32",
+      "dwarfdump": {
+        "argv": [
+          "xcrun",
+          "dwarfdump",
+          "--uuid",
+          "/private/tmp/ukey-wake-probe-ui-candidate-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard"
+        ],
+        "exit": 0,
+        "stdout": "UUID: C3FC7115-4215-3801-ABBB-C8A648ED0C32 (arm64) /private/tmp/ukey-wake-probe-ui-candidate-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard\n",
+        "stderr": ""
+      }
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+      "sha256": "67f32fe96277c03f793d327fbab4bf8599b777cce3dadb5ff954552c5bfa8c12",
+      "uuid": "77BD18E2-E090-37D7-865F-84D762E69F70",
+      "dwarfdump": {
+        "argv": [
+          "xcrun",
+          "dwarfdump",
+          "--uuid",
+          "/private/tmp/ukey-wake-probe-ui-candidate-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard.debug.dylib"
+        ],
+        "exit": 0,
+        "stdout": "UUID: 77BD18E2-E090-37D7-865F-84D762E69F70 (arm64) /private/tmp/ukey-wake-probe-ui-candidate-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard.debug.dylib\n",
+        "stderr": ""
+      }
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/__preview.dylib",
+      "sha256": "eccef4a1b897ac811c714b630fbce2872a5e95af9e026818a5f6a38ef7a59f91",
+      "uuid": "984A99F0-EDBC-3181-8D6A-151FC3FF26B3",
+      "dwarfdump": {
+        "argv": [
+          "xcrun",
+          "dwarfdump",
+          "--uuid",
+          "/private/tmp/ukey-wake-probe-ui-candidate-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/__preview.dylib"
+        ],
+        "exit": 0,
+        "stdout": "UUID: 984A99F0-EDBC-3181-8D6A-151FC3FF26B3 (arm64) /private/tmp/ukey-wake-probe-ui-candidate-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/__preview.dylib\n",
+        "stderr": ""
+      }
+    },
+    {
+      "path": "Universe Keyboard",
+      "sha256": "7ecd73750fa88485447ec25aaae5887e6da6d91cf35a430305c620cf85b1259e",
+      "uuid": "8DD28672-CD37-3408-93FB-C3CA3F4465E9",
+      "dwarfdump": {
+        "argv": [
+          "xcrun",
+          "dwarfdump",
+          "--uuid",
+          "/private/tmp/ukey-wake-probe-ui-candidate-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard"
+        ],
+        "exit": 0,
+        "stdout": "UUID: 8DD28672-CD37-3408-93FB-C3CA3F4465E9 (arm64) /private/tmp/ukey-wake-probe-ui-candidate-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard\n",
+        "stderr": ""
+      }
+    },
+    {
+      "path": "Universe Keyboard.debug.dylib",
+      "sha256": "a1a1f6154a744579c26bf2aa1738d57b2420ea157274e55a41f5a636b98bc8cf",
+      "uuid": "742720C7-983C-38A6-BE2E-76AD327EEA30",
+      "dwarfdump": {
+        "argv": [
+          "xcrun",
+          "dwarfdump",
+          "--uuid",
+          "/private/tmp/ukey-wake-probe-ui-candidate-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard.debug.dylib"
+        ],
+        "exit": 0,
+        "stdout": "UUID: 742720C7-983C-38A6-BE2E-76AD327EEA30 (arm64) /private/tmp/ukey-wake-probe-ui-candidate-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard.debug.dylib\n",
+        "stderr": ""
+      }
+    },
+    {
+      "path": "__preview.dylib",
+      "sha256": "39c5084b204f9a2a3244e4b94d1d38fe74346d45c4fc0a6a7b1f3d38a9645a0a",
+      "uuid": "3157B785-8C10-368F-A3C4-DB591625C61D",
+      "dwarfdump": {
+        "argv": [
+          "xcrun",
+          "dwarfdump",
+          "--uuid",
+          "/private/tmp/ukey-wake-probe-ui-candidate-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/__preview.dylib"
+        ],
+        "exit": 0,
+        "stdout": "UUID: 3157B785-8C10-368F-A3C4-DB591625C61D (arm64) /private/tmp/ukey-wake-probe-ui-candidate-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/__preview.dylib\n",
+        "stderr": ""
+      }
+    }
+  ],
+  "input_counts": {
+    "allowed_content_inputs": 27,
+    "allowed_binary_inputs": 78,
+    "allowed_generated_xcent_inputs": 2,
+    "allowed_hash_only_repo_inputs": 1201
+  },
+  "note": "Source impact is an independent reviewer criterion; this reader does not infer source semantics."
+}

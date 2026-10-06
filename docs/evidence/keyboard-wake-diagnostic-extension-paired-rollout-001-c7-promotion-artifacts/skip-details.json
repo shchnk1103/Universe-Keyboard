@@ -1,0 +1,212 @@
+[
+  {
+    "lane": "app",
+    "test_id": "RimeIcePinnedArtifactTests/testVerifiedOfficialAndMirrorArchivesConvergeAfterProductionProcessing()",
+    "reason": [
+      "Test skipped - Set TEST_RUNNER_SCHEME_PIN_ARCHIVE_ROOT to the independently downloaded source archives"
+    ]
+  },
+  {
+    "lane": "app",
+    "test_id": "RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem()",
+    "reason": [
+      "Test skipped - Unsigned host lacks Keychain entitlement; signed Simulator lane covers integration."
+    ]
+  },
+  {
+    "lane": "app",
+    "test_id": "SchemeResourcePreparationCoexistenceTests/testCS06_UninstallInactiveWanxiangRetainsIcePeerInventory()",
+    "reason": [
+      "Test skipped - CS09-10-01 requires the fixed Wanxiang extract tree"
+    ]
+  },
+  {
+    "lane": "app",
+    "test_id": "SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerIceRemovalPreservesCompleteWanxiangInventory()",
+    "reason": [
+      "Test skipped - CS09-10-01 requires the fixed Wanxiang extract tree"
+    ]
+  },
+  {
+    "lane": "app",
+    "test_id": "SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerWanxiangRemovalPreservesCompleteIceInventory()",
+    "reason": [
+      "Test skipped - CS09-10-01 requires the fixed Ice extract tree"
+    ]
+  },
+  {
+    "lane": "app",
+    "test_id": "SchemeResourcePreparationCoexistenceTests/testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds()",
+    "reason": [
+      "Test skipped - Ice 2026.06.30 default.yaml fixture is required for P3 fingerprint recovery"
+    ]
+  },
+  {
+    "lane": "app",
+    "test_id": "SchemeResourcePreparationCoexistenceTests/testProductionProcessedIceTreeKeepsOfficialDefaultYamlWhenFixturePresent()",
+    "reason": [
+      "Test skipped - Set TEST_RUNNER_SCHEME_PIN_ARCHIVE_ROOT to the independently downloaded Ice archives"
+    ]
+  },
+  {
+    "lane": "app",
+    "test_id": "TD012LMDGDeviceStagingTests/testPinnedModelLoadsThroughWanxiangGrammarOnAuthorizedPhysicalDevice()",
+    "reason": [
+      "Test skipped - TD-012 G2 model-load receipt is physical-device-only"
+    ]
+  },
+  {
+    "lane": "app",
+    "test_id": "TD012LMDGDeviceStagingTests/testRemovePinnedModelAfterAuthorizedPhysicalDeviceSpike()",
+    "reason": [
+      "Test skipped - TD-012 G2 cleanup is physical-device-only"
+    ]
+  },
+  {
+    "lane": "app",
+    "test_id": "TD012LMDGDeviceStagingTests/testStagePinnedModelForAuthorizedPhysicalDeviceSpike()",
+    "reason": [
+      "Test skipped - TD-012 G2 staging is physical-device-only"
+    ]
+  },
+  {
+    "lane": "rime",
+    "test_id": "RimeLuaSmokeTests/testCorrectionSidecarKeepsVisibleCompositionIntactWhenRuntimeFixtureIsProvided()",
+    "reason": [
+      "Test skipped - Set UK_RIME_LUA_SMOKE_SHARED_DIR and UK_RIME_LUA_SMOKE_USER_DIR to run the real Lua smoke test."
+    ]
+  },
+  {
+    "lane": "rime",
+    "test_id": "RimeLuaSmokeTests/testRimeIceLuaDynamicCandidatesWhenRuntimeFixtureIsProvided()",
+    "reason": [
+      "Test skipped - Set UK_RIME_LUA_SMOKE_SHARED_DIR and UK_RIME_LUA_SMOKE_USER_DIR to run the real Lua smoke test."
+    ]
+  },
+  {
+    "lane": "rime",
+    "test_id": "RimeT9AutoAnchorRetryMatrixTests/testCappedTwoSyllableControllerFrozenPairedMatrix()",
+    "reason": [
+      "Test skipped - Set the immutable 40-character lowercase S4 commit to run the paired matrix."
+    ]
+  },
+  {
+    "lane": "rime",
+    "test_id": "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationKnownPositive()",
+    "reason": [
+      "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+    ]
+  },
+  {
+    "lane": "rime",
+    "test_id": "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationNaturalReminder()",
+    "reason": [
+      "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+    ]
+  },
+  {
+    "lane": "rime",
+    "test_id": "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationNaturalWeather()",
+    "reason": [
+      "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+    ]
+  },
+  {
+    "lane": "rime",
+    "test_id": "RimeT9AutoAnchorRetryMatrixTests/testPartialLongSelectionIsNotPersonalizationProof()",
+    "reason": [
+      "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+    ]
+  },
+  {
+    "lane": "rime",
+    "test_id": "RimeT9AutoAnchorRetryMatrixTests/testRejectedCompositionLaterOpportunityTransactionMatrix()",
+    "reason": [
+      "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+    ]
+  },
+  {
+    "lane": "rime",
+    "test_id": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerFrozenA0A1B2B3Matrix()",
+    "reason": [
+      "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+    ]
+  },
+  {
+    "lane": "rime",
+    "test_id": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerMissingLiveCompositionFailsClosedBeforeKey()",
+    "reason": [
+      "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+    ]
+  },
+  {
+    "lane": "rime",
+    "test_id": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerRealRimeDeletePathAndPartialOwnership()",
+    "reason": [
+      "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+    ]
+  },
+  {
+    "lane": "rime",
+    "test_id": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerRealRimeSecondRejectRestoreMatrix()",
+    "reason": [
+      "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+    ]
+  },
+  {
+    "lane": "rime",
+    "test_id": "RimeT9CompatibilitySpikeTests/testPinnedLibrimeCanSelectT9AndProcessDigitSequenceAfterRemovingUnsupportedProcessor()",
+    "reason": [
+      "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 compatibility Spike."
+    ]
+  },
+  {
+    "lane": "rime",
+    "test_id": "RimeT9PinyinSelectionSpikeTests/test004CatalogExactRawAcceptanceOnPinnedLibrime()",
+    "reason": [
+      "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+    ]
+  },
+  {
+    "lane": "rime",
+    "test_id": "RimeT9PinyinSelectionSpikeTests/testAtomicPathDiscoveryStageAOnPinnedLibrime()",
+    "reason": [
+      "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+    ]
+  },
+  {
+    "lane": "rime",
+    "test_id": "RimeT9PinyinSelectionSpikeTests/testGate5Phase05CandidateCoverageSelRangeOnPinnedLibrime()",
+    "reason": [
+      "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+    ]
+  },
+  {
+    "lane": "rime",
+    "test_id": "RimeT9PinyinSelectionSpikeTests/testGate5Phase06AlternativeCoverageSelectionDeltaOnPinnedLibrime()",
+    "reason": [
+      "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+    ]
+  },
+  {
+    "lane": "rime",
+    "test_id": "RimeT9PinyinSelectionSpikeTests/testPrecisePinyinPathRefinementOnPinnedLibrime()",
+    "reason": [
+      "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+    ]
+  },
+  {
+    "lane": "rime",
+    "test_id": "RimeT9PinyinSelectionSpikeTests/testReadOnlyWindowCoverageForYiZiSibling()",
+    "reason": [
+      "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+    ]
+  },
+  {
+    "lane": "rime",
+    "test_id": "ThreadAffineRimeRealEngineTests/testRealEngineBootstrapCreatesAndCallsOffMainThroughOwner()",
+    "reason": [
+      "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR (or UK_RIME_R4B_*) to run R4-B real-engine proof."
+    ]
+  }
+]

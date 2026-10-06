@@ -1,0 +1,44 @@
+{
+  "utc": "2026-10-04T15:59:42.139761+00:00",
+  "status": "Prepared, not Ready",
+  "authority": "Human授权你来准备新候选验证 Entry; preparation docs/read-only only",
+  "identity": {
+    "root": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+    "branch": "codex/keyboard-wake-v3-compatibility-gate",
+    "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+    "staged": 0
+  },
+  "candidate_hashes": {
+    "Keyboard/Controllers/KeyboardViewController.swift": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+    "Keyboard/Controllers/KeyboardViewController+Bootstrap.swift": "79d0123dabacd8e5875b66b7c8c897589adbeb8b49d1e22b263678dc1d56f6aa",
+    "Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift": "c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047",
+    "KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift": "71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5",
+    "Universe Keyboard.xcodeproj/project.pbxproj": "49f0ebe89db1f30323d9bf6ceb297179ffed5fc9ef983fd3b947d11d5820586c"
+  },
+  "input_manifests": {
+    "source-tree-manifest.json": {
+      "files": 358,
+      "aggregate_sha256": "a27296c557af763728365e197ce7c5ec541203f9b40445b1033509cbf8cc2fb4"
+    },
+    "app-source-manifest.json": {
+      "files": 168,
+      "aggregate_sha256": "b5fdda0ffd8c3f7563fe70a925b166817308267392edf72f4ffa00dda96068ca"
+    },
+    "vendor-byte-manifest.json": {
+      "files": 630,
+      "aggregate_sha256": "f9b03dea3e5be3e8d903e1c02f16dc933d5048ca48e45bf652e15ec99bdc0a9a"
+    }
+  },
+  "input_rows_total": 1156,
+  "pinned_inputs_13_match": true,
+  "gate_authored_count": 23,
+  "dirty_full_entries": 1553,
+  "device_fresh_exclusivity": "UNKNOWN; must reconfirm at execution Entry",
+  "device_booted_or_processes": "UNKNOWN; not inspected in preparation",
+  "toolchain_live": "UNKNOWN; original F2 toolchain historical only, recheck on AUTH",
+  "backup_live": "not executed",
+  "source_compiler_test_or_simulator_operations": false,
+  "run_or_backup_dirs_created": false,
+  "documentation_delivery_date": "2026-10-05 Asia/Shanghai",
+  "future_output_path_status_ref": "path-status.json"
+}

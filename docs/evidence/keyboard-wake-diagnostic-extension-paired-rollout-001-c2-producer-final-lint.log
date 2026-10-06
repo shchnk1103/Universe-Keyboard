@@ -1,0 +1,11 @@
+["xcrun", "swift-format", "lint", "--strict", "--configuration", "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format", "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift"]
+EXIT=0
+["xcrun", "swift-format", "lint", "--strict", "--configuration", "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format", "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Bootstrap.swift"]
+EXIT=0
+["xcrun", "swift-format", "lint", "--strict", "--configuration", "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format", "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Services/UITextDocumentProxyAdapter.swift"]
+EXIT=0
+["xcrun", "swift-format", "lint", "--strict", "--configuration", "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format", "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/KeyboardTests/KeyboardWakeDiagnosticProducerTests.swift"]
+EXIT=0
+["plutil", "-lint", "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Universe Keyboard.xcodeproj/project.pbxproj"]
+/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Universe Keyboard.xcodeproj/project.pbxproj: OK
+EXIT=0

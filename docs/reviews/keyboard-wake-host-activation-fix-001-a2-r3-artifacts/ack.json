@@ -1,0 +1,94 @@
+{
+  "reviewer": "independent Architecture reviewer",
+  "round": "A2-4 incremental round 3",
+  "scope": "Only A2-4 compile/log evidence; no source review or re-review of A2-1/2/3 or 23 tests.",
+  "packet": "/private/tmp/ukey-host-activation-fix-a2-4-review-20261005/packet.json",
+  "packet_sha256_expected": "aeb308daec65f3525172aa020f2436a3d7ead5f2439f6cbfa4f899c7f1544822",
+  "packet_sha256_actual": "aeb308daec65f3525172aa020f2436a3d7ead5f2439f6cbfa4f899c7f1544822",
+  "budget_start_utc": "2026-10-05T01:29:28.656142Z",
+  "ack_utc": "2026-10-05T01:30:51.190677Z",
+  "deadline_utc": "2026-10-05T01:39:28.656142+00:00",
+  "budget": {
+    "max_tool_calls": 8,
+    "max_elapsed_seconds": 600
+  },
+  "read_boundary": "Only 11 exact packet inputs; no source files opened.",
+  "prohibitions_acknowledged": [
+    "source/docs edits",
+    "build/test/simulator/LLDB",
+    "expand read list",
+    "reopen old source findings",
+    "dispose old Quality audit",
+    "auto budget renewal"
+  ],
+  "input_count": 11,
+  "input_hash_check": [
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-a2-r2-artifacts/review.md",
+      "expected_sha256": "4b1b51a30561d326912ac741cb61f4a44f8dad71ee59cce43758732526e2051f",
+      "actual_sha256": "4b1b51a30561d326912ac741cb61f4a44f8dad71ee59cce43758732526e2051f",
+      "status": "match"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-a2-r2-artifacts/ack.json",
+      "expected_sha256": "91f32e5f78d35c497f5128683658a1a55aeaef00e6866487878156ffec0d5a06",
+      "actual_sha256": "91f32e5f78d35c497f5128683658a1a55aeaef00e6866487878156ffec0d5a06",
+      "status": "match"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-a2-r2-artifacts/usage.json",
+      "expected_sha256": "9be508ab49eb4203e5b2a3d841480a9ae06eb7c67e28aef46766558821dd1bab",
+      "actual_sha256": "9be508ab49eb4203e5b2a3d841480a9ae06eb7c67e28aef46766558821dd1bab",
+      "status": "match"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-a2-r2-artifacts/root-time-audit.json",
+      "expected_sha256": "82d883ab08fe6bf5e3bf7263157a2a4719597357bb8852a9f87125ac31c452e8",
+      "actual_sha256": "82d883ab08fe6bf5e3bf7263157a2a4719597357bb8852a9f87125ac31c452e8",
+      "status": "match"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/ASSIGNMENT_POLICY.md",
+      "expected_sha256": "e90dd8f06371e9367652d4e7cc63dee31ee7b1ac855e7802d6d2e9b8e1e90680",
+      "actual_sha256": "e90dd8f06371e9367652d4e7cc63dee31ee7b1ac855e7802d6d2e9b8e1e90680",
+      "status": "match"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-execution-artifacts/four-swift-actual-compile.json",
+      "expected_sha256": "7a5b59b14dba745b9ed2d0346f4ea894ffc49fb8feb1f61384abd4b4202d8863",
+      "actual_sha256": "7a5b59b14dba745b9ed2d0346f4ea894ffc49fb8feb1f61384abd4b4202d8863",
+      "status": "match"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-execution-artifacts/final-input-diagnostics.json",
+      "expected_sha256": "e396fbf308cb4f227c42f400619de59de44337d260db92a11861c8a846d301ee",
+      "actual_sha256": "e396fbf308cb4f227c42f400619de59de44337d260db92a11861c8a846d301ee",
+      "status": "match"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-2-rimebridge.log",
+      "expected_sha256": "a963ffc4baebb7e48483608f0da149586c319a5e1babd1011be43e8df534adb5",
+      "actual_sha256": "a963ffc4baebb7e48483608f0da149586c319a5e1babd1011be43e8df534adb5",
+      "status": "match"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-3-app-keyboard.log",
+      "expected_sha256": "6f64d5f7b4220abcb4b35515c6246fad0ceb847d6060c3ffd29ae163576e12e5",
+      "actual_sha256": "6f64d5f7b4220abcb4b35515c6246fad0ceb847d6060c3ffd29ae163576e12e5",
+      "status": "match"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-4-release-build.log",
+      "expected_sha256": "992a37077c4584351727ad67cb54e8e2f412d18470d82a33937641decd92b671",
+      "actual_sha256": "992a37077c4584351727ad67cb54e8e2f412d18470d82a33937641decd92b671",
+      "status": "match"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-5-keychain.log",
+      "expected_sha256": "1a9afc01554a2d3d3b6dd2eac918fab81e1d250af7a44877cfa515ea5ee7b898",
+      "actual_sha256": "1a9afc01554a2d3d3b6dd2eac918fab81e1d250af7a44877cfa515ea5ee7b898",
+      "status": "match"
+    }
+  ],
+  "entry_status": "accepted"
+}

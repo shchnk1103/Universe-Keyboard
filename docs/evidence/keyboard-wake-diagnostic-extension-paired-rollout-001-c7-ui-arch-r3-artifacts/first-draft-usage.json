@@ -1,0 +1,174 @@
+{
+  "allowed_binary_count": 78,
+  "boundary": "Static artifact evidence only. No device, Simulator, build, test, LLDB, source/repository mutation, install/runtime, Product Gate, or old R1/R2 closure claim.",
+  "budget": {
+    "hard_seconds": 900,
+    "soft_seconds": 600,
+    "underlying_calls_limit": 6,
+    "underlying_calls_used": 2,
+    "within_hard": true,
+    "within_soft": true
+  },
+  "calls": [
+    {
+      "call": 1,
+      "duration_seconds": null,
+      "note": "packet digest + scope summary; start timer saved",
+      "tool": "exec_command"
+    },
+    {
+      "call": 2,
+      "duration_seconds": 0.0032777918968349695,
+      "note": "independent allowlist hashing, raw Mach-O section parsing/comparison, report and usage write",
+      "tool": "exec_command"
+    }
+  ],
+  "criteria": {
+    "A1": {
+      "gaps": [
+        "未能构成恰好两个 App/appex 最终可执行文件的 Mach-O 与 xcent 配对",
+        "允许输入缺失或不可读",
+        "paired candidate binding 未能独立重算"
+      ],
+      "machos": [],
+      "parse_errors": [],
+      "status": "Partial / incomplete"
+    },
+    "A2": {
+      "binding": {},
+      "gaps": [
+        "限定 source-impact inputs 未全覆盖"
+      ],
+      "source_checks": [],
+      "status": "Partial / incomplete"
+    }
+  },
+  "identity": {
+    "lane": "ARCH-C7-UI-CANDIDATE-BINDING",
+    "round": 3
+  },
+  "input_counts": {
+    "binary": 0,
+    "content": 0,
+    "generated": 0,
+    "hash_only": 0
+  },
+  "input_mismatches": [],
+  "missing_inputs": [
+    [
+      "content",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/AGENTS.md",
+      "[Errno 2] No such file or directory: '/private/tmp/ukey-wake-probe-ui-arch-r3-20261003/947743e29a5987f9b1abb9c220a28ebcb92bd766928e22c1dd67c046bbe62152'"
+    ],
+    [
+      "content",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/ASSIGNMENT_POLICY.md",
+      "[Errno 2] No such file or directory: '/private/tmp/ukey-wake-probe-ui-arch-r3-20261003/e90dd8f06371e9367652d4e7cc63dee31ee7b1ac855e7802d6d2e9b8e1e90680'"
+    ],
+    [
+      "content",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/AI_WORKFLOW.md",
+      "[Errno 2] No such file or directory: '/private/tmp/ukey-wake-probe-ui-arch-r3-20261003/fd3ff24fc0d38ed134cace8ffd5479f76e6261b009d6f661d218e4e260b07413'"
+    ],
+    [
+      "content",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/plans/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-candidate-validation-plan-2026-10-02.md",
+      "[Errno 2] No such file or directory: '/private/tmp/ukey-wake-probe-ui-arch-r3-20261003/2b3f47f3ed20b700bf2f12ad332e4e85381e0dc2bf8aec39dd3138094f8f3858'"
+    ],
+    [
+      "content",
+      "/private/tmp/ukey-wake-probe-ui-q-20261002/entry.json",
+      "[Errno 2] No such file or directory: '/private/tmp/ukey-wake-probe-ui-arch-r3-20261003/12253177c63f7fafa04741c07abca44506347b79c6d51e870f4146cad3bca2b6'"
+    ],
+    [
+      "content",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-h1-artifacts/build-input-manifest.json",
+      "[Errno 2] No such file or directory: '/private/tmp/ukey-wake-probe-ui-arch-r3-20261003/0c2ab27db638647735202b526e06614fa78aa209cf6340b26ff8293cd8e47d61'"
+    ],
+    [
+      "content",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-h1-artifacts/candidate-command.json",
+      "[Errno 2] No such file or directory: '/private/tmp/ukey-wake-probe-ui-arch-r3-20261003/6e7dd9ccb0d95844d4dead12b29e3f12ca478624dac28c65397a04be907cddca'"
+    ],
+    [
+      "content",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-h1-artifacts/paired-products.json",
+      "[Errno 2] No such file or directory: '/private/tmp/ukey-wake-probe-ui-arch-r3-20261003/8a51964bff1aecd8eaed4ceea072ac2cc20c38dc2c9b57126c54c39780aa0b99'"
+    ],
+    [
+      "content",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-h1-artifacts/simulator-entitlements.json",
+      "[Errno 2] No such file or directory: '/private/tmp/ukey-wake-probe-ui-arch-r3-20261003/0ac6dadf42867cb7630eb9213079da6f72a015d5b82e8cc13d83528067ed168a'"
+    ],
+    [
+      "content",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-probe-ui-binding-artifacts/patch.diff",
+      "[Errno 2] No such file or directory: '/private/tmp/ukey-wake-probe-ui-arch-r3-20261003/708bdd9d4a14e0f67b014670b7033a3ce0827224b79ff860fab7a06ff94259c5'"
+    ],
+    [
+      "content",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Presentation.swift",
+      "[Errno 2] No such file or directory: '/private/tmp/ukey-wake-probe-ui-arch-r3-20261003/767c2817054484d4d4c328cb7a8deaf676509b76bbc3cb45868b6e3cf721319a'"
+    ],
+    [
+      "content",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift",
+      "[Errno 2] No such file or directory: '/private/tmp/ukey-wake-probe-ui-arch-r3-20261003/bca0391355d9a3a60880dfdc08260095d02d6618bf0a38d40bfcc61734a891e9'"
+    ],
+    [
+      "content",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift",
+      "[Errno 2] No such file or directory: '/private/tmp/ukey-wake-probe-ui-arch-r3-20261003/5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8'"
+    ],
+    [
+      "content",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-h1-artifacts/app-Simulated.xcent",
+      "[Errno 2] No such file or directory: '/private/tmp/ukey-wake-probe-ui-arch-r3-20261003/6610a8c02dfe5b877f5be595941b807a687c7838e2f4b54a80b4c6726b821a6c'"
+    ],
+    [
+      "content",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-h1-artifacts/keyboard-Simulated.xcent",
+      "[Errno 2] No such file or directory: '/private/tmp/ukey-wake-probe-ui-arch-r3-20261003/1b5eca79f033b12423739696ae50c8dfcd679ed6484803e2e340787aee149b7b'"
+    ],
+    [
+      "content",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-h1-artifacts/app-embedded-entitlements.plist",
+      "[Errno 2] No such file or directory: '/private/tmp/ukey-wake-probe-ui-arch-r3-20261003/6610a8c02dfe5b877f5be595941b807a687c7838e2f4b54a80b4c6726b821a6c'"
+    ],
+    [
+      "content",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-h1-artifacts/keyboard-embedded-entitlements.plist",
+      "[Errno 2] No such file or directory: '/private/tmp/ukey-wake-probe-ui-arch-r3-20261003/1b5eca79f033b12423739696ae50c8dfcd679ed6484803e2e340787aee149b7b'"
+    ],
+    [
+      "content",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-h1-artifacts/app-codesign-display.txt",
+      "[Errno 2] No such file or directory: '/private/tmp/ukey-wake-probe-ui-arch-r3-20261003/00491886daae07a5296c8bad50f116bf006b0004d7bf7338ad46669fbd903a4a'"
+    ],
+    [
+      "content",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-h1-artifacts/keyboard-codesign-display.txt",
+      "[Errno 2] No such file or directory: '/private/tmp/ukey-wake-probe-ui-arch-r3-20261003/00491886daae07a5296c8bad50f116bf006b0004d7bf7338ad46669fbd903a4a'"
+    ],
+    [
+      "content",
+      "/private/tmp/ukey-wake-probe-ui-arch-r3-20261003/entry.json",
+      "[Errno 2] No such file or directory: '/private/tmp/ukey-wake-probe-ui-arch-r3-20261003/807d42f73cc756be0838bd361bc1af03499699694ba9391a0d297efd6c3d4ef7'"
+    ]
+  ],
+  "packet_path": "/private/tmp/ukey-wake-probe-ui-arch-r3-20261003/packet.json",
+  "packet_sha256": "42a3057e170a8aacefee964bfe2c3f55bed786ffb838d2c446888b82bc11a488",
+  "report_chars": 580,
+  "report_path": "/private/tmp/ukey-wake-probe-ui-arch-r3-20261003/review.md",
+  "report_sha256": "4b424c4793ff74e35383b26317c1979afa87c99df40855a83715af1ded59bf41",
+  "status": "Partial / incomplete",
+  "timing": {
+    "elapsed_seconds": 0.0032777918968349695,
+    "end_monotonic": 1140464.218948583,
+    "end_unix": 1790957613.4956641,
+    "end_utc": "2026-10-02T16:13:33.495661+00:00",
+    "start_monotonic": 1140464.215670791,
+    "start_unix": 1790957613.492385,
+    "start_utc": "2026-10-02T16:13:33.492301+00:00"
+  }
+}

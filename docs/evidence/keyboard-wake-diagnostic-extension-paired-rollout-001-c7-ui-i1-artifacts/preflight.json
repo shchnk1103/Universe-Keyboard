@@ -1,0 +1,19 @@
+{
+  "utc": "2026-10-03T08:37:17.111300+00:00",
+  "all_required_checks_passed": true,
+  "current_origins_equal_I0": true,
+  "backup_unchanged": true,
+  "processes_absent": true,
+  "source_payload_hash_only_count": 1279,
+  "source_payload_hash_only_mismatches": [],
+  "candidate_signatures": {
+    "main": {
+      "exit": 0
+    },
+    "keyboard": {
+      "exit": 0
+    }
+  },
+  "exclusive_authority": "Human explicit 授权 to I1+exclusive question",
+  "tool_fallback": "MCP defaults are another task; frozen explicit UDID argv, no defaults changed"
+}

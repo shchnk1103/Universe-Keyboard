@@ -1,0 +1,8 @@
+{
+  "accepted_utc": "2026-10-01T02:45:13.845149+00:00",
+  "scope": "current C5-R only",
+  "authority": "Human接受该恢复限制，继续单轮采集",
+  "disposition": "accept nonblocking unverified original logging/expiry key values/existence residual",
+  "restore_contract": "logging OFF and high-fidelity OFF at end; DISP/ENGINE original absence preserved; original logging/expiry values/existence not claimed restored",
+  "not_passed": "original key values/existence remain unverified; no expanded test/runtime/Release acceptance"
+}

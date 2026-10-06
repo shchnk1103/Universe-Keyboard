@@ -1,0 +1,11 @@
+--- a/Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift
++++ b/Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift
+@@ -1425,7 +1425,7 @@
+         // Drop prior issued provenance, then simulate first page of 16 empty comments.
+         // Engine dictionary still has 18 candidates for candidateWindow discovery.
+         controller.state.t9PinyinPathState = .empty
+-        let pageOnly = (0..<16).map { index in
++        let pageOnly = (0..<16).map { (index: Int) in
+             RimeCandidate(text: "x\(index)", comment: "", globalIndex: index)
+         }
+         controller.state.lastRimeOutput = RimeOutput(

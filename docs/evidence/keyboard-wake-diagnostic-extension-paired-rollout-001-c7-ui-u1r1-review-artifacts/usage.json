@@ -1,0 +1,43 @@
+{
+  "lane": "QUALITY-C7-UI-U1R1-RUNTIME",
+  "round": 1,
+  "packet_file_sha256": "e3faf25fbd3d1b0b854ea475aa17b35ee77c04d85561be2a8274179c0c1b8c74",
+  "packet_digest_sha256": "a447488e9e2568f78638ce4b41d4bd776507aa2a78f804c4acdd905a8558c2a5",
+  "model": "GPT-6 Luna",
+  "effort": "low",
+  "leaf_tool_calls": 6,
+  "start_epoch": 1791034357.147073,
+  "start_utc": "2026-10-03T13:32:37.147073+00:00",
+  "elapsed_seconds": 259.904644,
+  "end_epoch": 1791034617.051717,
+  "end_utc": "2026-10-03T13:36:57.051717+00:00",
+  "time_source": "Python time.time(); start captured at first lane tool call before packet read; end captured after report and independent-analysis writes in final leaf call; does not use root observed-work duration",
+  "checkpoints": [
+    "after call2: packet identity and complete 65+1279 hash inventories confirmed; formal Partial skeleton created"
+  ],
+  "report_path": "/private/tmp/ukey-wake-ui-u1r1-quality-r1-20261003/review.md",
+  "report_sha256": "9e739c6f3ec8f575369a4b5a830ef759d4bdc6e9243b9f1b18fe5c774674b5f8",
+  "coverage": "Complete: P1 Covered, P2 Covered, P3 Covered",
+  "budget_status": "6/6 leaf calls, within 450-second soft and 600-second hard limits",
+  "packet_sha_matches": true,
+  "self_sha_matches": true,
+  "external_identity_matches": false,
+  "content_allowlist_count": 65,
+  "content_mismatches": [],
+  "hash_only_source_count": 1279,
+  "hash_only_mismatches": 0,
+  "checkpoint": "call2: packet identity and 65+1279 inventories clean; review skeleton created",
+  "status": "formal partial issued by call4; raw/P3 independent details in progress",
+  "independent_analysis_path": "/private/tmp/ukey-wake-ui-u1r1-quality-r1-20261003/independent-analysis.json",
+  "scoped_opinion": "Positive scoped runtime-chain acceptance for the single frozen-candidate U1 normal-path capture chain",
+  "residuals": [
+    "actual Human freeze-click UTC unknown",
+    "actual target pause start UTC unknown",
+    "borrow creation UTC unknown",
+    "visual Exit is not an interaction responsiveness test"
+  ],
+  "content_hash_mismatches": 0,
+  "hash_only_source_vendor_count": 1279,
+  "final_readback_pending": false,
+  "final_readback_ok": true
+}

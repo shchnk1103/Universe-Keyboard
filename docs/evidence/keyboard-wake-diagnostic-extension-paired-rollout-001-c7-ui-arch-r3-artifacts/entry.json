@@ -1,0 +1,17 @@
+{
+  "authorization": "可以，只补这一项吧（Architecture A1/A2正式完整交付）",
+  "user_date": "2026-10-03 Asia/Shanghai",
+  "baseline": {
+    "worktree": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+    "branch": "codex/keyboard-wake-v3-compatibility-gate",
+    "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+    "candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50"
+  },
+  "before_files": 2914,
+  "before_dirty": 831,
+  "staged": 0,
+  "all_old_arch_allowed_inputs_matched": true,
+  "scope": "Fresh A1/A2 independent artifact delivery on same candidate; no build/test/device/runtime",
+  "reviewer": "reuse /root/c7b_architecture",
+  "root_only_repo_writer": true
+}

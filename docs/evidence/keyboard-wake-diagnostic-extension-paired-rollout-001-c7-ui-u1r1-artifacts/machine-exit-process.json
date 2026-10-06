@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-03T13:22:21.540449+00:00",
+  "pid": 88188,
+  "stat": "Ss",
+  "same_executable_path": true,
+  "not_in_stopped_state": true,
+  "source_input_count": 1279,
+  "source_drift": [],
+  "UI_exit_confirmation_separate": true
+}

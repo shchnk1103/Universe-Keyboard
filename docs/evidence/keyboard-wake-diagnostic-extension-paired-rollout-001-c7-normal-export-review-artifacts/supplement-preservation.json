@@ -1,0 +1,19 @@
+{
+  "changed_existing": [
+    "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md",
+    "docs/assignments/keyboard-wake-lifecycle-diagnostics-001.md",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-normal-export-review-validation-2026-10-02.md",
+    "docs/ACTIVE_WORK.md",
+    "docs/ENGINEERING_DASHBOARD.md",
+    "docs/KNOWLEDGE_INDEX.md"
+  ],
+  "outside_allowlist": [],
+  "frozen_input_drift": [],
+  "staged": [],
+  "dirty_entries_at_checkpoint": 734,
+  "missing_links": [],
+  "diff_check_exit": 0,
+  "report_sha256": "19c3e11ce508f7ac01a905617d9191a480f84f36cdc15e252de22514e153007d",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a"
+}

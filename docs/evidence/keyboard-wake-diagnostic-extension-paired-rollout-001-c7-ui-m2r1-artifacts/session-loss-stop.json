@@ -1,0 +1,14 @@
+{
+  "received_utc": "2026-10-04T04:22:09.342757+00:00",
+  "human_reply": "有按键反馈，候选栏更新，输入框有变化，‘取证’可见且尚未点击",
+  "actual_input_time": null,
+  "pid_state": "41635 52681 Ss   /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+  "ps_exit": 0,
+  "debug_process_metadata": [
+    "3591 91436 Ss   /Applications/Xcode.app/Contents/SharedFrameworks/LLDBRPC.framework/Resources/lldb-rpc-server"
+  ],
+  "tool_session_unavailable": true,
+  "same_executable_sha256": true,
+  "scope_stop": "before AppSwitcher; no freeze/read; no reattach",
+  "attachment_exit_proven": false
+}

@@ -1,0 +1,62 @@
+[
+  {
+    "name": "testVerifiedOfficialAndMirrorArchivesConvergeAfterProductionProcessing()",
+    "nodeIdentifier": "RimeIcePinnedArtifactTests/testVerifiedOfficialAndMirrorArchivesConvergeAfterProductionProcessing()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  },
+  {
+    "name": "testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem()",
+    "nodeIdentifier": "RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  },
+  {
+    "name": "testCS06_UninstallInactiveWanxiangRetainsIcePeerInventory()",
+    "nodeIdentifier": "SchemeResourcePreparationCoexistenceTests/testCS06_UninstallInactiveWanxiangRetainsIcePeerInventory()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  },
+  {
+    "name": "testCS0910_RealInstallerIceRemovalPreservesCompleteWanxiangInventory()",
+    "nodeIdentifier": "SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerIceRemovalPreservesCompleteWanxiangInventory()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  },
+  {
+    "name": "testCS0910_RealInstallerWanxiangRemovalPreservesCompleteIceInventory()",
+    "nodeIdentifier": "SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerWanxiangRemovalPreservesCompleteIceInventory()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  },
+  {
+    "name": "testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds()",
+    "nodeIdentifier": "SchemeResourcePreparationCoexistenceTests/testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  },
+  {
+    "name": "testProductionProcessedIceTreeKeepsOfficialDefaultYamlWhenFixturePresent()",
+    "nodeIdentifier": "SchemeResourcePreparationCoexistenceTests/testProductionProcessedIceTreeKeepsOfficialDefaultYamlWhenFixturePresent()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  },
+  {
+    "name": "testPinnedModelLoadsThroughWanxiangGrammarOnAuthorizedPhysicalDevice()",
+    "nodeIdentifier": "TD012LMDGDeviceStagingTests/testPinnedModelLoadsThroughWanxiangGrammarOnAuthorizedPhysicalDevice()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  },
+  {
+    "name": "testRemovePinnedModelAfterAuthorizedPhysicalDeviceSpike()",
+    "nodeIdentifier": "TD012LMDGDeviceStagingTests/testRemovePinnedModelAfterAuthorizedPhysicalDeviceSpike()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  },
+  {
+    "name": "testStagePinnedModelForAuthorizedPhysicalDeviceSpike()",
+    "nodeIdentifier": "TD012LMDGDeviceStagingTests/testStagePinnedModelForAuthorizedPhysicalDeviceSpike()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  }
+]

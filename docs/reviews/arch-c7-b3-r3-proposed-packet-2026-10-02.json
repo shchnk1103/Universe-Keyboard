@@ -1,0 +1,56 @@
+{
+  "work_item": "KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001",
+  "lane_id": "ARCH-C7-B1",
+  "round": 3,
+  "status": "Draft - awaiting Human authorization, NOT dispatchable",
+  "scope_authority_pending": true,
+  "expansion_authority": "Human Product Owner only",
+  "baseline": "same C7-B3 candidate ddd5579ee6dce39deea3c63487cfe6817c419628c4471c0b3e9298d9c47f3ca9; close round2 H2 byte comparison only",
+  "allowed_content_inputs": {
+    "docs/ASSIGNMENT_POLICY.md": "e90dd8f06371e9367652d4e7cc63dee31ee7b1ac855e7802d6d2e9b8e1e90680",
+    "docs/reviews/arch-c7-b3-review-2026-10-02.md": "a7d6f1baf8d0294b1f11e6e324ee880073da5c4511cbf44c6b71c03dc8ab5794",
+    "docs/reviews/arch-c7-b3-usage-2026-10-02.json": "d68a48be40f6bace6958031434dad68e5ea4cde7c46058898c2ab2250a56f514",
+    "docs/reviews/quality-c7-b3-review-2026-10-02.md": "40412d1189712df323067ad8b8cc3793ab8e037a6ea28ceaed811f9cb5fe551d",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b3-host-candidate-2026-10-02.md": "d3facd032888f27c86c408b71346b9ede716482699acfce67ba08cb9312ee256",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b3-artifacts/paired-products.json": "7a15b7f7e4cd64d6cdf607d472fbe14125b46b640e306132bdaa6cfbca7b1ab9",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b3-artifacts/simulator-entitlements.json": "49c59039c35a989aafa480a13c44d8fea7647ba611556b2950f9e908ff301ba5",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b3-artifacts/app-Simulated.xcent": "6610a8c02dfe5b877f5be595941b807a687c7838e2f4b54a80b4c6726b821a6c",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b3-artifacts/keyboard-Simulated.xcent": "1b5eca79f033b12423739696ae50c8dfcd679ed6484803e2e340787aee149b7b"
+  },
+  "allowed_binary_inputs": {
+    "/private/tmp/ukey-wake-c7b3-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard": "0af5b7f021a2eb82142521f8ba1db3f87fc6712f4f19c49d5cd229d2fb133fe8",
+    "/private/tmp/ukey-wake-c7b3-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard": "e059dfbfef672553b51d9ce2a3097348f3c40129c8afaa27b58fd90918cbd692"
+  },
+  "criterion": "Independently parse final thin arm64 Mach-O __TEXT,__entitlements by load-command file offset/size, copy exact section bytes without decimal/hex otool text ambiguity, compare raw bytes/SHA and decoded AppGroup/application-identifier with each generated Simulated.xcent; deliver report and complete real-start/end/call usage for THIS round only.",
+  "acceptance": "Both exact executable hashes and both xcent hashes match; both embedded bytes equal xcent and finite dictionary values correspond to App/appex. Any required uncovered=>Partial; mismatch=>Hold. Only round2 H2 byte-comparison finding disposition, not repair historical missing usage or overall Gate.",
+  "exclusions": [
+    "No build/test/rerun/signing mutation",
+    "No source bodies or entire source/Vendor re-review",
+    "No other H1/H3 re-review",
+    "No device/Simulator/container/UI/LLDB/network",
+    "No reconstruction of old lane end time/ledger",
+    "No installation/runtime/Gate approval",
+    "No delegation or repo/Git mutation"
+  ],
+  "outputs": {
+    "report": "/private/tmp/ukey-wake-c7b3-20261002/arch-r3-review.md",
+    "usage": "/private/tmp/ukey-wake-c7b3-20261002/arch-r3-usage.json"
+  },
+  "budget": {
+    "max_total_underlying_tool_calls": 8,
+    "max_elapsed_seconds": 360,
+    "soft_delivery_seconds": 300,
+    "checkpoint_after_total_calls": 2,
+    "first_call": "real UTC/unix start before packet read/hash; ACK scope/independence; missing timestamps null",
+    "counting": "exec_command/clock/collaboration/output calls all count, wrapper not double counted",
+    "delivery_reserve": "Reserve final 2 calls for report+usage write/check. At call6 or soft ceiling stop investigation and deliver coverage; max8/360hard no renewal."
+  },
+  "stop_conditions": [
+    "pending authority => do not start",
+    "input mismatch",
+    "outside scope required locator => dependent uncovered",
+    "budget ceiling"
+  ],
+  "current_authorization": "none for additional round; draft prepared for concrete Human approval",
+  "packet_digest_sha256": "3c29da6aa94ef9d134f0a59613c97dc2866b192b5a8d257b3f8009e324c0e02f"
+}

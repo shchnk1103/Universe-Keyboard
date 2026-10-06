@@ -1,0 +1,34 @@
+{
+  "checked_utc": "2026-10-01T03:12:18.135402+00:00",
+  "target": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "installed_app_path": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/1C8EAA6A-D18A-4684-B4E4-95252930B447/Universe Keyboard.app",
+  "installed_tree_match": 111,
+  "capture_state": {
+    "logging_enabled": {
+      "present": true,
+      "value": false
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "present": false,
+      "value": null
+    },
+    "log_category_disp": {
+      "present": false,
+      "value": null
+    },
+    "log_category_engine": {
+      "present": false,
+      "value": null
+    }
+  },
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "candidate_digest": "af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9",
+  "existing_files": 2570,
+  "source_build_match": 568,
+  "built_match": 111,
+  "dirty_before": 480,
+  "staged_before": 0,
+  "authorization": "Human only same historical window reader counts/correspondence/completeness; fresh exact target readonly exclusive confirmed",
+  "runtime_access": "read installed identity/capture keys; UI reader only; no raw journal read, no arming/input/build/install"
+}

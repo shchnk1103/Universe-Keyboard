@@ -1,0 +1,21 @@
+{
+  "checked_utc": "2026-10-01T05:47:44.417357+00:00",
+  "baseline_files": 2570,
+  "other_existing_files_preserved": 2569,
+  "excepted_existing_path": "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md",
+  "dirty_before_final_receipt": 487,
+  "staged_count": 0,
+  "comparison": "17/17 exact rendered multiset",
+  "independent_acceptance": "HOST-Q-R-01 Hold remains; no new review authorized",
+  "mcp_original_profile_restored": true,
+  "new_phase_artifacts": [
+    "preflight.json",
+    "entry-2026-10-01.md",
+    "ui-snapshots.json",
+    "expected-rendering.json",
+    "comparison.json",
+    "final-check.json",
+    "validation-2026-10-01.md",
+    "final-receipt.json"
+  ]
+}

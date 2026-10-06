@@ -1,0 +1,31 @@
+{
+  "utc": "2026-10-02T14:29:32.536003+00:00",
+  "human": "授权一次正常路径的观测→冻结→有界导出",
+  "exclusive": "pending fresh confirmation",
+  "scope": [
+    "attach exact appex",
+    "unique export breakpoint",
+    "single arm",
+    "one synthetic n insert in current main App Search field",
+    "single freeze",
+    "static read address and byteCount at actual export frame",
+    "copy exactly validated byteCount <=11352 within borrow",
+    "remove breakpoint continue detach",
+    "offline decode"
+  ],
+  "excluded": [
+    "Maps",
+    "AppSwitcher",
+    "rearm",
+    "retry",
+    "user content",
+    "expressions",
+    "register writes",
+    "memory writes",
+    "build",
+    "test",
+    "install",
+    "deploy",
+    "Git publication"
+  ]
+}

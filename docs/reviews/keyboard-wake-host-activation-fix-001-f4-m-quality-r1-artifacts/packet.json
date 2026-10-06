@@ -1,0 +1,122 @@
+{
+  "work_item": "keyboard-wake-host-activation-fix-001",
+  "lane": "F4-M-RUNTIME-QUALITY",
+  "round": 1,
+  "authority": "Human: 可以，请你开始只读验收吧",
+  "reviewer": "/root/f4p_quality_four_paths_fresh GPT6 Luna; same runtime reused, new scoped lane",
+  "coordinator": "root (not independent reviewer)",
+  "baseline": {
+    "branch": "codex/keyboard-wake-v3-compatibility-gate",
+    "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+    "pair_digest": "d53523dba8c371c67424ff07c79163a66f41e3bc5bb402637cf9ee79ae7579cb",
+    "run": "/private/tmp/ukey-host-activation-fix-f4-m-20261006"
+  },
+  "criteria": {
+    "M-Q1": "Human证据只支持单轮 n基线/AppSwitcher直接返回/h输入正常，不声称机械观测、长期修复、通知或owner通过",
+    "M-Q2": "PTY原件/callback身份异常、buffer读取0及停止符合fail-closed；无替代地址猜读、二次运行；判断缺口是否如实呈现",
+    "M-Q3": "删除断点/detach/退出与诊断原存在性恢复证据；暂停精确时长UNKNOWN及视觉Exit缺口如实呈现，区分记录支持与现场证明",
+    "M-Q4": "账本/预算/精确候选/结论及Assignment一致；不存在完成/Release/skip转通过夸大；无法独立复算处明确标未验证"
+  },
+  "allowed_input_files": [
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-m-quality-r1-artifacts/inputs/entry.json",
+      "sha256": "f9b0512482c7aa7464765677df4dc42d0333647059652760c7c3c526a65d2971",
+      "bytes": 2916
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-m-quality-r1-artifacts/inputs/pre-attach.json",
+      "sha256": "daa589c5804ad2adf2dfec75e8cf6eea24421a6081167b32f2c80510806be3b8",
+      "bytes": 1175
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-m-quality-r1-artifacts/inputs/logging-ready.json",
+      "sha256": "9985da499fbeb1bfcd85e541574fc1ec46634ccbdd4330d02570afd32d20c864",
+      "bytes": 336
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-m-quality-r1-artifacts/inputs/authorization.json",
+      "sha256": "a6ea980b9101fd7e817bb812aadbc3534432001a1c6de06c458fa9f6a384b75f",
+      "bytes": 410
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-m-quality-r1-artifacts/inputs/arm-human-receipt.json",
+      "sha256": "11ab0aedaae188a0d11e231ae182753544e88043ccac2951b5c1bab068eca4b5",
+      "bytes": 227
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-m-quality-r1-artifacts/inputs/export-frame.json",
+      "sha256": "b15594b0323dae8aa7bb6564e7caa253bac9350510a7dd5a4f3690ac3fdc4394",
+      "bytes": 256
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-m-quality-r1-artifacts/inputs/settings-restore.json",
+      "sha256": "a63079b1943d521c736c2749c0ca9d367fd87737c62c6bc91a56aa955d4f15ca",
+      "bytes": 1639
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-m-quality-r1-artifacts/inputs/receipt.json",
+      "sha256": "fcb67f4afd8ac0ada594d679de253f6d2f3a76f9c093e7198965471acc45706e",
+      "bytes": 3786
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-m-quality-r1-artifacts/inputs/display-category-key-correction.json",
+      "sha256": "302a1599421d9187a31004c42c8c2cb2ec6cacf35c9e5a490af8d127d02d6b28",
+      "bytes": 825
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-m-quality-r1-artifacts/inputs/export_frame_callback.py",
+      "sha256": "007465da72774d7d70bd12ca71d06d5c4df131ed5cde687ba17e6460c24d9989",
+      "bytes": 3146
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-m-quality-r1-artifacts/inputs/pty-transcript.txt",
+      "sha256": "bb1dd9c59ce38bb4b18eff258f49e18e6700b11f31b7b14f3674e584093a1a5f",
+      "bytes": 6113
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-m-quality-r1-artifacts/inputs/f4-prepared-entry.md",
+      "sha256": "980a84a4b4ffd329efdf75398ef338c46224a1d0ecac3aafad0213b49ea281bb",
+      "bytes": 13882
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-m-quality-r1-artifacts/inputs/f4-m-validation.md",
+      "sha256": "5d9a571d8396526b2e10f174ee5c1e9fed32eafb5cc5e748884b40606e33482d",
+      "bytes": 1653
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-m-quality-r1-artifacts/inputs/assignment.md",
+      "sha256": "5919238e9448ef5f2d474070d38959846648efe14a3b61a68e807316a8f4659d",
+      "bytes": 36701
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-m-quality-r1-artifacts/inputs/human-messages.json",
+      "sha256": "908bb0b87d4e1643ffe6ace36dc45737cdc047f370d02940fa4be30055a82a33",
+      "bytes": 672
+    }
+  ],
+  "allowed_governance": [
+    "AGENTS.md",
+    "docs/ASSIGNMENT_POLICY.md#Independent Reviewer Lane Packet",
+    "docs/playbooks/test-release.md"
+  ],
+  "outputs": {
+    "directory": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-m-quality-r1-artifacts",
+    "required": [
+      "ack.json",
+      "review.md",
+      "usage.json",
+      "delivery-readback.json"
+    ]
+  },
+  "access": "Only read frozen inputs plus named governance; write own four delivery files. Shell local filesystem only; use require_escalated for own output directory outside writable roots. No simulator/container/live queries, no LLDB/build/test/source/Git mutations/network/adjacent investigation. Frozen copy provenance explicitly stated; cannot pretend current device verification.",
+  "budget": {
+    "actual_tool_calls": 16,
+    "wall_seconds": 900,
+    "accounting": "functions.exec wrapper and each nested tool count separately; collaboration messages count; start first reviewer tool, capture UTC; reserve final6 for writer/readback; checkpoints8,10",
+    "exhaustion": "stop, deliver Partial and gaps; no automatic retry/new budget"
+  },
+  "stop": "missing/hash drift/access failure => stop dependent coverage, one locator/reason, do not invent repair; no scope expansion unless Human Product explicitly authorizes",
+  "acceptance": "All four criteria assessed with explicit evidence paths/locators. Any required evidence/coverage missing => Partial/incomplete, never Pass with conditions. Review the honest Partial record without elevating F4 runtime to pass; owner/callback/full release remain unverified.",
+  "residual_authority": "Human Product only; reviewer does not accept runtime residuals",
+  "native_delivery_fallback": "If own writer fails, preserve failure and stop. May supply native full text+actual ledger for root mechanical archive, with failure provenance; never claim own writer/readback succeeded."
+}

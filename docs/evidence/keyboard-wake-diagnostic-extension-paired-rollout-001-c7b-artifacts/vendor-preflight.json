@@ -1,0 +1,203 @@
+[
+  {
+    "framework": "boost_atomic.xcframework",
+    "plist_sha256": "c32822ec7019f0ec14bdef1cd0886669e6159aff9b1b760ecfcab227b328dfc1",
+    "simulator_libraries": [
+      {
+        "identifier": "ios-arm64-simulator",
+        "archs": [
+          "arm64"
+        ],
+        "binary": "Packages/RimeBridge/Vendor/boost_atomic.xcframework/ios-arm64-simulator/libboost_atomic.a",
+        "exists": true,
+        "bytes": 118240,
+        "sha256": "8e314674df6284bfda0be5c02838e6ce3179572c59dbebce3aa84f86a6f6e6b1"
+      }
+    ]
+  },
+  {
+    "framework": "boost_filesystem.xcframework",
+    "plist_sha256": "32b5007c82ebda037e43d93f511dc9f3bf29874cd15a36891ad1c20795ebc978",
+    "simulator_libraries": [
+      {
+        "identifier": "ios-arm64-simulator",
+        "archs": [
+          "arm64"
+        ],
+        "binary": "Packages/RimeBridge/Vendor/boost_filesystem.xcframework/ios-arm64-simulator/libboost_filesystem.a",
+        "exists": true,
+        "bytes": 2743176,
+        "sha256": "41e6400a974c1580dc1c31fab71090e75bdc2c36be99d74ad4cc9d129b457a28"
+      }
+    ]
+  },
+  {
+    "framework": "boost_regex.xcframework",
+    "plist_sha256": "3f4d8f54c8199f47d817843a162529bc411b212188827b45520f862f1834824e",
+    "simulator_libraries": [
+      {
+        "identifier": "ios-arm64-simulator",
+        "archs": [
+          "arm64"
+        ],
+        "binary": "Packages/RimeBridge/Vendor/boost_regex.xcframework/ios-arm64-simulator/libboost_regex.a",
+        "exists": true,
+        "bytes": 3497208,
+        "sha256": "74b026275a7d295fb4ac57e3672a7319be12cc3c1538f542e487aeb97b90f9cf"
+      }
+    ]
+  },
+  {
+    "framework": "libglog.xcframework",
+    "plist_sha256": "4027ca0d665e2c80caf05b7885d751b052629b6443caef0c40db134cab7a2ecd",
+    "simulator_libraries": [
+      {
+        "identifier": "ios-arm64_x86_64-simulator",
+        "archs": [
+          "arm64",
+          "x86_64"
+        ],
+        "binary": "Packages/RimeBridge/Vendor/libglog.xcframework/ios-arm64_x86_64-simulator/libglog.a",
+        "exists": true,
+        "bytes": 761408,
+        "sha256": "9e86d7686260df55d0f2381a0c9dd8db4592c28b5980c3c7ed5adde0089e9358"
+      }
+    ]
+  },
+  {
+    "framework": "libleveldb.xcframework",
+    "plist_sha256": "143d80d8184324e79bdf7a0328746f475df06358d429017716c2a0849f5ea2a5",
+    "simulator_libraries": [
+      {
+        "identifier": "ios-arm64_x86_64-simulator",
+        "archs": [
+          "arm64",
+          "x86_64"
+        ],
+        "binary": "Packages/RimeBridge/Vendor/libleveldb.xcframework/ios-arm64_x86_64-simulator/libleveldb.a",
+        "exists": true,
+        "bytes": 870464,
+        "sha256": "5f385961466386ab3f102cc0569f0aa0b9f5ae497c0fc6aba8fba3e02e63648a"
+      }
+    ]
+  },
+  {
+    "framework": "liblua.xcframework",
+    "plist_sha256": "e3e40ef64732ea63f14a1dc9b6050594925c631b8c05fef2d5e6eab01c7d94d4",
+    "simulator_libraries": [
+      {
+        "identifier": "ios-arm64_x86_64-simulator",
+        "archs": [
+          "arm64",
+          "x86_64"
+        ],
+        "binary": "Packages/RimeBridge/Vendor/liblua.xcframework/ios-arm64_x86_64-simulator/liblua.a",
+        "exists": true,
+        "bytes": 765992,
+        "sha256": "aa9cfa72467502fb7cbc843d3a8bbdc7d6b257d043a97812fa9834dd008abfc9"
+      }
+    ]
+  },
+  {
+    "framework": "libmarisa.xcframework",
+    "plist_sha256": "074efb881c9b032447c805ea06635178381a5d47b5e9c8269dbd644bb964372c",
+    "simulator_libraries": [
+      {
+        "identifier": "ios-arm64_x86_64-simulator",
+        "archs": [
+          "arm64",
+          "x86_64"
+        ],
+        "binary": "Packages/RimeBridge/Vendor/libmarisa.xcframework/ios-arm64_x86_64-simulator/libmarisa.a",
+        "exists": true,
+        "bytes": 440320,
+        "sha256": "b4aa4b4d8486e5e07a1aee0194955891c1f3c05fd5535817cdc1923e0cedeffa"
+      }
+    ]
+  },
+  {
+    "framework": "libopencc.xcframework",
+    "plist_sha256": "2e42ae66b76ba45cfa86afb0d7e7b945fe1932c9f521d643eabb54b53ee7e50d",
+    "simulator_libraries": [
+      {
+        "identifier": "ios-arm64_x86_64-simulator",
+        "archs": [
+          "arm64",
+          "x86_64"
+        ],
+        "binary": "Packages/RimeBridge/Vendor/libopencc.xcframework/ios-arm64_x86_64-simulator/libopencc.a",
+        "exists": true,
+        "bytes": 1674264,
+        "sha256": "24822b5dab0f909ede0609009c91a8eebcd48d6fa91b3698065c906d55d60cb5"
+      }
+    ]
+  },
+  {
+    "framework": "librime-lua.xcframework",
+    "plist_sha256": "273d2a6107197b0905cc9eb36b5a1ae364fc8a2aff2b5f3ebf338101f20745e5",
+    "simulator_libraries": [
+      {
+        "identifier": "ios-arm64_x86_64-simulator",
+        "archs": [
+          "arm64",
+          "x86_64"
+        ],
+        "binary": "Packages/RimeBridge/Vendor/librime-lua.xcframework/ios-arm64_x86_64-simulator/librime-lua.a",
+        "exists": true,
+        "bytes": 5971944,
+        "sha256": "fb442b7da6f6997085a3abc21b378ea79bf984a007fd2d98bf7e8890ef50c710"
+      }
+    ]
+  },
+  {
+    "framework": "librime-octagram.xcframework",
+    "plist_sha256": "36a2f8c444fd5d0e74d6a780bc891abc1a6c9f2effd364339d0e6364d72eb1b4",
+    "simulator_libraries": [
+      {
+        "identifier": "ios-arm64_x86_64-simulator",
+        "archs": [
+          "arm64",
+          "x86_64"
+        ],
+        "binary": "Packages/RimeBridge/Vendor/librime-octagram.xcframework/ios-arm64_x86_64-simulator/librime-octagram.a",
+        "exists": true,
+        "bytes": 208952,
+        "sha256": "92db06b5aa418a609ac2471b0a84c3353f80075b661daa5ff7a57aa8ab84c383"
+      }
+    ]
+  },
+  {
+    "framework": "librime.xcframework",
+    "plist_sha256": "f7da58ad090b997e0ff94c477b794443bd67003b1f66aa8d363ccd1d5a3d95f8",
+    "simulator_libraries": [
+      {
+        "identifier": "ios-arm64_x86_64-simulator",
+        "archs": [
+          "arm64",
+          "x86_64"
+        ],
+        "binary": "Packages/RimeBridge/Vendor/librime.xcframework/ios-arm64_x86_64-simulator/librime.a",
+        "exists": true,
+        "bytes": 15103248,
+        "sha256": "f0c2db38064c8c706f16ceed0dc27e9ee6280d3f0f775884a50bd7bf1f318bba"
+      }
+    ]
+  },
+  {
+    "framework": "libyaml-cpp.xcframework",
+    "plist_sha256": "b195bdffc880d4af53ef6afdda6a4f50b7037c10cdee0cb4930b7045742fb803",
+    "simulator_libraries": [
+      {
+        "identifier": "ios-arm64_x86_64-simulator",
+        "archs": [
+          "arm64",
+          "x86_64"
+        ],
+        "binary": "Packages/RimeBridge/Vendor/libyaml-cpp.xcframework/ios-arm64_x86_64-simulator/libyaml-cpp.a",
+        "exists": true,
+        "bytes": 1540080,
+        "sha256": "3807f2dd0ae40002ae347b8813ab6be41ad4577cc5c54693c00ee56d57b818be"
+      }
+    ]
+  }
+]

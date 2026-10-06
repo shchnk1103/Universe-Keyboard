@@ -1,0 +1,39 @@
+{
+  "baseline_nonignored_files": 2680,
+  "current_nonignored_files_before_receipts": 2688,
+  "changed_existing": [
+    "docs/ACTIVE_WORK.md",
+    "docs/ENGINEERING_DASHBOARD.md",
+    "docs/KNOWLEDGE_INDEX.md",
+    "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md",
+    "docs/assignments/keyboard-wake-lifecycle-diagnostics-001.md"
+  ],
+  "new_files_before_receipts": [
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b2-quality-r2-artifacts/before-files.json",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b2-quality-r2-artifacts/before-status.z",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b2-quality-r2-entry-2026-10-02.md",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b2-quality-r2-validation-2026-10-02.md",
+    "docs/product-decisions/KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001-c7b2-quality-r2-authorization-2026-10-02.md",
+    "docs/reviews/quality-c7-b1-r2-packet-2026-10-02.json",
+    "docs/reviews/quality-c7-b1-r2-review-2026-10-02.md",
+    "docs/reviews/quality-c7-b1-r2-usage-2026-10-02.json"
+  ],
+  "deleted": [],
+  "out_of_scope_changes": [],
+  "staged_count": 0,
+  "dirty_entries_before_receipts": 604,
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "frozen_inputs_mismatched": [],
+  "source_changes": [],
+  "old_r1_report_and_usage_preserved": true,
+  "review_sha256": "0ff8a9ea125bd795f4525eb9816821bb4a28da9e3c128ddad4ee75bc289b92db",
+  "final_nonignored_files": 2691,
+  "final_dirty_entries": 607,
+  "receipt_paths": [
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b2-quality-r2-artifacts/preservation.json",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b2-quality-r2-artifacts/checks.json",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b2-quality-r2-artifacts/final-status.z"
+  ],
+  "self_hash_excluded": true
+}

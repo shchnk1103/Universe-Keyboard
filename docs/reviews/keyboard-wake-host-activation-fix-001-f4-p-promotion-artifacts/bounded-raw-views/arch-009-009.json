@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+  "origin_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "expected_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "line_start": 481,
+  "line_end": 540,
+  "lines": [
+    {
+      "line": 481,
+      "text": "                                absorbedRevisionRange: absorbed.revision...absorbed.revision,"
+    },
+    {
+      "line": 482,
+      "text": "                                replacementRevision: snapshot.revision"
+    },
+    {
+      "line": 483,
+      "text": "                            )"
+    },
+    {
+      "line": 484,
+      "text": "                        )"
+    },
+    {
+      "line": 485,
+      "text": "                    }"
+    },
+    {
+      "line": 486,
+      "text": "                #endif"
+    },
+    {
+      "line": 487,
+      "text": "                dualGatePendingPresentationSnapshot = snapshot"
+    },
+    {
+      "line": 488,
+      "text": "                dualGatePendingPresentationHasKnownSuccessor = pendingDepth > 0"
+    },
+    {
+      "line": 489,
+      "text": "                #if T9_RESPONSIVE_CANARY_INTERNAL"
+    },
+    {
+      "line": 490,
+      "text": "                    dualGatePendingCanarySessionInstance = canarySessionInstance"
+    },
+    {
+      "line": 491,
+      "text": "                #endif"
+    },
+    {
+      "line": 492,
+      "text": "                scheduleDualGateCoalescedPresentation()"
+    },
+    {
+      "line": 493,
+      "text": "                return"
+    },
+    {
+      "line": 494,
+      "text": "            }"
+    },
+    {
+      "line": 495,
+      "text": "        }"
+    },
+    {
+      "line": 496,
+      "text": ""
+    },
+    {
+      "line": 497,
+      "text": "        performResponsivePresentationApply("
+    },
+    {
+      "line": 498,
+      "text": "            snapshot,"
+    },
+    {
+      "line": 499,
+      "text": "            coalesced: coalesced,"
+    },
+    {
+      "line": 500,
+      "text": "            canarySessionInstance: canarySessionInstance"
+    },
+    {
+      "line": 501,
+      "text": "        )"
+    },
+    {
+      "line": 502,
+      "text": "    }"
+    },
+    {
+      "line": 503,
+      "text": ""
+    },
+    {
+      "line": 504,
+      "text": "    /// Flush latest dual-gate snapshot after backlog drains (MainActor)."
+    },
+    {
+      "line": 505,
+      "text": "    private func scheduleDualGateCoalescedPresentation() {"
+    },
+    {
+      "line": 506,
+      "text": "        guard !dualGatePresentationCoalesceScheduled else { return }"
+    },
+    {
+      "line": 507,
+      "text": "        dualGatePresentationCoalesceScheduled = true"
+    },
+    {
+      "line": 508,
+      "text": "        let generationAtSchedule = responsivePresentationGeneration"
+    },
+    {
+      "line": 509,
+      "text": "        Task { @MainActor [weak self] in"
+    },
+    {
+      "line": 510,
+      "text": "            guard let self else { return }"
+    },
+    {
+      "line": 511,
+      "text": "            // Yield so a burst of deliveries can collapse to one latest snapshot."
+    },
+    {
+      "line": 512,
+      "text": "            var spins = 0"
+    },
+    {
+      "line": 513,
+      "text": "            while spins < 64 {"
+    },
+    {
+      "line": 514,
+      "text": "                await Task.yield()"
+    },
+    {
+      "line": 515,
+      "text": "                spins += 1"
+    },
+    {
+      "line": 516,
+      "text": "                // Abandon / rebuild invalidated this presentation generation."
+    },
+    {
+      "line": 517,
+      "text": "                if self.responsivePresentationGeneration != generationAtSchedule {"
+    },
+    {
+      "line": 518,
+      "text": "                    self.dualGatePresentationCoalesceScheduled = false"
+    },
+    {
+      "line": 519,
+      "text": "                    return"
+    },
+    {
+      "line": 520,
+      "text": "                }"
+    },
+    {
+      "line": 521,
+      "text": "                let depth = self.threadAffineRimeCoordinator?.diagnostics.pendingWorkDepth ?? 0"
+    },
+    {
+      "line": 522,
+      "text": "                if depth == 0 { break }"
+    },
+    {
+      "line": 523,
+      "text": "            }"
+    },
+    {
+      "line": 524,
+      "text": "            self.dualGatePresentationCoalesceScheduled = false"
+    },
+    {
+      "line": 525,
+      "text": "            guard self.responsivePresentationGeneration == generationAtSchedule else { return }"
+    },
+    {
+      "line": 526,
+      "text": "            guard let latest = self.dualGatePendingPresentationSnapshot else { return }"
+    },
+    {
+      "line": 527,
+      "text": "            #if T9_RESPONSIVE_CANARY_INTERNAL"
+    },
+    {
+      "line": 528,
+      "text": "                let latestCanarySessionInstance = self.dualGatePendingCanarySessionInstance"
+    },
+    {
+      "line": 529,
+      "text": "            #endif"
+    },
+    {
+      "line": 530,
+      "text": "            let hasKnownSuccessor ="
+    },
+    {
+      "line": 531,
+      "text": "                self.dualGatePendingPresentationHasKnownSuccessor"
+    },
+    {
+      "line": 532,
+      "text": "            self.dualGatePendingPresentationSnapshot = nil"
+    },
+    {
+      "line": 533,
+      "text": "            self.dualGatePendingPresentationHasKnownSuccessor = false"
+    },
+    {
+      "line": 534,
+      "text": "            // A successor publication owns the replacement decision. Waiting"
+    },
+    {
+      "line": 535,
+      "text": "            // is state-driven; no timer or MainActor/owner backpressure is"
+    },
+    {
+      "line": 536,
+      "text": "            // required, and lifecycle generation changes still clear the buffer."
+    },
+    {
+      "line": 537,
+      "text": "            if hasKnownSuccessor {"
+    },
+    {
+      "line": 538,
+      "text": "                self.dualGatePendingPresentationSnapshot = latest"
+    },
+    {
+      "line": 539,
+      "text": "                self.dualGatePendingPresentationHasKnownSuccessor = true"
+    },
+    {
+      "line": 540,
+      "text": "                #if T9_RESPONSIVE_CANARY_INTERNAL"
+    }
+  ]
+}

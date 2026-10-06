@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+  "origin_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+  "expected_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+  "line_start": 421,
+  "line_end": 480,
+  "lines": [
+    {
+      "line": 421,
+      "text": "        #endif"
+    },
+    {
+      "line": 422,
+      "text": "        hostLifecycleRecoveryGate.noteViewWillAppear(context: currentHostExtensionContextID())"
+    },
+    {
+      "line": 423,
+      "text": "        let appearanceCanary = resolveHostRecoveryCanaryPermission(grantVisibilityResume: true)"
+    },
+    {
+      "line": 424,
+      "text": "        let canaryResumeRequested: Bool = {"
+    },
+    {
+      "line": 425,
+      "text": "            if case .visibilitySuspended(let granted) = appearanceCanary {"
+    },
+    {
+      "line": 426,
+      "text": "                return granted"
+    },
+    {
+      "line": 427,
+      "text": "            }"
+    },
+    {
+      "line": 428,
+      "text": "            return false"
+    },
+    {
+      "line": 429,
+      "text": "        }()"
+    },
+    {
+      "line": 430,
+      "text": "        if appearanceCanary.permitsOwnerStarting(source: .appearance) {"
+    },
+    {
+      "line": 431,
+      "text": "            performHostSharedResumeAfterLicense(canaryResumeRequested: canaryResumeRequested)"
+    },
+    {
+      "line": 432,
+      "text": "        } else {"
+    },
+    {
+      "line": 433,
+      "text": "            #if T9_RESPONSIVE_CANARY_INTERNAL"
+    },
+    {
+      "line": 434,
+      "text": "                applyResponsiveCanaryKillSwitchIfNeeded()"
+    },
+    {
+      "line": 435,
+      "text": "            #endif"
+    },
+    {
+      "line": 436,
+      "text": "            startRimeSyncActivityHeartbeat()"
+    },
+    {
+      "line": 437,
+      "text": "        }"
+    },
+    {
+      "line": 438,
+      "text": "        installKeyboardUIIfNeeded()"
+    },
+    {
+      "line": 439,
+      "text": "        #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS"
+    },
+    {
+      "line": 440,
+      "text": "            p3d1RecordLifecycleMarker(\"APPEAR\", reason: \"viewWillAppear\")"
+    },
+    {
+      "line": 441,
+      "text": "        #endif"
+    },
+    {
+      "line": 442,
+      "text": "    }"
+    },
+    {
+      "line": 443,
+      "text": ""
+    },
+    {
+      "line": 444,
+      "text": "    /// viewDidAppear 在键盘视图对用户可见时调用。"
+    },
+    {
+      "line": 445,
+      "text": "    /// 清理返回前未完成的 RIME 组合状态；仅在后续输入确认"
+    },
+    {
+      "line": 446,
+      "text": "    /// session 已失效时，控制器才会触发真正的 runtime 恢复。"
+    },
+    {
+      "line": 447,
+      "text": "    override func viewDidAppear(_ animated: Bool) {"
+    },
+    {
+      "line": 448,
+      "text": "        super.viewDidAppear(animated)"
+    },
+    {
+      "line": 449,
+      "text": "        KeyboardWakeDiagnosticProducer.recordKeyboardLifecycle("
+    },
+    {
+      "line": 450,
+      "text": "            .viewDidAppear,"
+    },
+    {
+      "line": 451,
+      "text": "            journal: diagnosticsJournal,"
+    },
+    {
+      "line": 452,
+      "text": "            context: wakeDiagnosticContext"
+    },
+    {
+      "line": 453,
+      "text": "        )"
+    },
+    {
+      "line": 454,
+      "text": "        #if DEBUG"
+    },
+    {
+      "line": 455,
+      "text": "            recordKeyboardVisualDiagnostic(\"DID_APPEAR_BEFORE\")"
+    },
+    {
+      "line": 456,
+      "text": "        #endif"
+    },
+    {
+      "line": 457,
+      "text": "        let hasWindow = view.window != nil"
+    },
+    {
+      "line": 458,
+      "text": "        hostLifecycleRecoveryGate.noteViewDidAppear(hasWindow: hasWindow)"
+    },
+    {
+      "line": 459,
+      "text": "        let pendingPreview = hostLifecycleRecoveryGate.previewHostDidBecomeActive("
+    },
+    {
+      "line": 460,
+      "text": "            context: currentHostExtensionContextID(),"
+    },
+    {
+      "line": 461,
+      "text": "            hasWindow: hasWindow"
+    },
+    {
+      "line": 462,
+      "text": "        )"
+    },
+    {
+      "line": 463,
+      "text": "        let pendingCanary = resolveHostRecoveryCanaryPermission("
+    },
+    {
+      "line": 464,
+      "text": "            grantVisibilityResume: pendingPreview == .performSharedResume"
+    },
+    {
+      "line": 465,
+      "text": "        )"
+    },
+    {
+      "line": 466,
+      "text": "        let pendingResumeRequested: Bool = {"
+    },
+    {
+      "line": 467,
+      "text": "            if case .visibilitySuspended(let granted) = pendingCanary {"
+    },
+    {
+      "line": 468,
+      "text": "                return granted"
+    },
+    {
+      "line": 469,
+      "text": "            }"
+    },
+    {
+      "line": 470,
+      "text": "            return false"
+    },
+    {
+      "line": 471,
+      "text": "        }()"
+    },
+    {
+      "line": 472,
+      "text": "        let pendingAction = hostLifecycleRecoveryGate.handleVisibleWindowEstablished("
+    },
+    {
+      "line": 473,
+      "text": "            hasWindow: hasWindow,"
+    },
+    {
+      "line": 474,
+      "text": "            canary: pendingCanary"
+    },
+    {
+      "line": 475,
+      "text": "        )"
+    },
+    {
+      "line": 476,
+      "text": "        executeHostRecoveryAction(pendingAction, canaryResumeRequested: pendingResumeRequested)"
+    },
+    {
+      "line": 477,
+      "text": "        if pendingAction != .performSharedResume, pendingAction != .rearmFirstFrameGate,"
+    },
+    {
+      "line": 478,
+      "text": "            hostLifecycleRecoveryGate.phase == .visible, hasWindow"
+    },
+    {
+      "line": 479,
+      "text": "        {"
+    },
+    {
+      "line": 480,
+      "text": "            activateRimeRuntimeAfterKeyboardPresentation()"
+    }
+  ]
+}

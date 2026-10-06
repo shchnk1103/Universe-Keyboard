@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+  "origin_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+  "expected_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+  "line_start": 541,
+  "line_end": 600,
+  "lines": [
+    {
+      "line": 541,
+      "text": "        cancelRimeFirstFrameGate()"
+    },
+    {
+      "line": 542,
+      "text": "        stopRimeSyncActivityHeartbeat()"
+    },
+    {
+      "line": 543,
+      "text": "        #if T9_RESPONSIVE_CANARY_INTERNAL"
+    },
+    {
+      "line": 544,
+      "text": "            responsiveCanaryConfigurationMonitor?.invalidate()"
+    },
+    {
+      "line": 545,
+      "text": "            responsiveCanaryConfigurationMonitor = nil"
+    },
+    {
+      "line": 546,
+      "text": "            let canaryVisibilityExit = responsiveCanaryModeCoordinator.beginVisibilityExit()"
+    },
+    {
+      "line": 547,
+      "text": "            if canaryVisibilityExit {"
+    },
+    {
+      "line": 548,
+      "text": "                responsiveCanaryVisibilityContractFailure = false"
+    },
+    {
+      "line": 549,
+      "text": "                controller.beginResponsiveCanaryPresentationFence()"
+    },
+    {
+      "line": 550,
+      "text": "            }"
+    },
+    {
+      "line": 551,
+      "text": "            let mustKeepFencedOwner = {"
+    },
+    {
+      "line": 552,
+      "text": "                switch responsiveCanaryModeCoordinator.state {"
+    },
+    {
+      "line": 553,
+      "text": "                case .fenceIssued:"
+    },
+    {
+      "line": 554,
+      "text": "                    return controller.threadAffineRimeCoordinator != nil"
+    },
+    {
+      "line": 555,
+      "text": "                default:"
+    },
+    {
+      "line": 556,
+      "text": "                    return false"
+    },
+    {
+      "line": 557,
+      "text": "                }"
+    },
+    {
+      "line": 558,
+      "text": "            }()"
+    },
+    {
+      "line": 559,
+      "text": "        #endif"
+    },
+    {
+      "line": 560,
+      "text": "        #if T9_RESPONSIVE_CANARY_INTERNAL"
+    },
+    {
+      "line": 561,
+      "text": "            if !mustKeepFencedOwner {"
+    },
+    {
+      "line": 562,
+      "text": "                controller.suspendRimeForVisibilityChange()"
+    },
+    {
+      "line": 563,
+      "text": "                if canaryVisibilityExit {"
+    },
+    {
+      "line": 564,
+      "text": "                    controller.finalizeResponsiveCanaryFencedPresentations()"
+    },
+    {
+      "line": 565,
+      "text": "                }"
+    },
+    {
+      "line": 566,
+      "text": "            }"
+    },
+    {
+      "line": 567,
+      "text": "        #else"
+    },
+    {
+      "line": 568,
+      "text": "            controller.suspendRimeForVisibilityChange()"
+    },
+    {
+      "line": 569,
+      "text": "        #endif"
+    },
+    {
+      "line": 570,
+      "text": "        #if T9_RESPONSIVE_CANARY_INTERNAL"
+    },
+    {
+      "line": 571,
+      "text": "            if canaryVisibilityExit {"
+    },
+    {
+      "line": 572,
+      "text": "                let teardown = controller.lastResponsiveCanaryVisibilityTeardown"
+    },
+    {
+      "line": 573,
+      "text": "                let receiptsValid ="
+    },
+    {
+      "line": 574,
+      "text": "                    teardown.map {"
+    },
+    {
+      "line": 575,
+      "text": "                        responsiveCanaryModeCoordinator.recordVisibilityAbandonments("
+    },
+    {
+      "line": 576,
+      "text": "                            $0.abandonedReceipts"
+    },
+    {
+      "line": 577,
+      "text": "                        )"
+    },
+    {
+      "line": 578,
+      "text": "                    } ?? false"
+    },
+    {
+      "line": 579,
+      "text": "                responsiveCanaryModeCoordinator.completeVisibilityExit("
+    },
+    {
+      "line": 580,
+      "text": "                    teardownPositive: receiptsValid && teardown?.isPositive == true"
+    },
+    {
+      "line": 581,
+      "text": "                )"
+    },
+    {
+      "line": 582,
+      "text": "                if responsiveCanaryVisibilityContractFailure {"
+    },
+    {
+      "line": 583,
+      "text": "                    responsiveCanaryModeCoordinator.failClosed("
+    },
+    {
+      "line": 584,
+      "text": "                        \"visibilityPresentationContractFailure\""
+    },
+    {
+      "line": 585,
+      "text": "                    )"
+    },
+    {
+      "line": 586,
+      "text": "                }"
+    },
+    {
+      "line": 587,
+      "text": "            }"
+    },
+    {
+      "line": 588,
+      "text": "        #endif"
+    },
+    {
+      "line": 589,
+      "text": ""
+    },
+    {
+      "line": 590,
+      "text": "        let effects = cleanupTransientKeyboardState("
+    },
+    {
+      "line": 591,
+      "text": "            reason: reason,"
+    },
+    {
+      "line": 592,
+      "text": "            abandonsComposition: true"
+    },
+    {
+      "line": 593,
+      "text": "        )"
+    },
+    {
+      "line": 594,
+      "text": "        if updateUI, !effects.isEmpty, isKeyboardUIInstalled {"
+    },
+    {
+      "line": 595,
+      "text": "            syncUI(with: effects)"
+    },
+    {
+      "line": 596,
+      "text": "        }"
+    },
+    {
+      "line": 597,
+      "text": "        #if DEBUG"
+    },
+    {
+      "line": 598,
+      "text": "            recordKeyboardVisualDiagnostic(\"SUSPEND_END_\\(reason)\", effects: effects)"
+    },
+    {
+      "line": 599,
+      "text": "        #endif"
+    },
+    {
+      "line": 600,
+      "text": "        Logger.shared.debug("
+    }
+  ]
+}

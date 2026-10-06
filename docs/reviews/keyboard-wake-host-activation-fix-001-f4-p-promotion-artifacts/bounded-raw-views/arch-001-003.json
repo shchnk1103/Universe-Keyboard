@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+InputActions.swift",
+  "origin_sha256": "16abce7d6e6752be641ea333cc60706217c9d84211f1007315850acbc62ee2ae",
+  "expected_sha256": "16abce7d6e6752be641ea333cc60706217c9d84211f1007315850acbc62ee2ae",
+  "line_start": 121,
+  "line_end": 180,
+  "lines": [
+    {
+      "line": 121,
+      "text": "                    category: .performance"
+    },
+    {
+      "line": 122,
+      "text": "                )"
+    },
+    {
+      "line": 123,
+      "text": "            #endif"
+    },
+    {
+      "line": 124,
+      "text": "        #endif"
+    },
+    {
+      "line": 125,
+      "text": ""
+    },
+    {
+      "line": 126,
+      "text": "        let uiStartTime = CACurrentMediaTime()"
+    },
+    {
+      "line": 127,
+      "text": "        syncUI(with: effects)"
+    },
+    {
+      "line": 128,
+      "text": "        let endTime = CACurrentMediaTime()"
+    },
+    {
+      "line": 129,
+      "text": "        let uiMs = (endTime - uiStartTime) * 1000"
+    },
+    {
+      "line": 130,
+      "text": "        let totalMs = (endTime - startTime) * 1000"
+    },
+    {
+      "line": 131,
+      "text": "        #if DEBUG"
+    },
+    {
+      "line": 132,
+      "text": "            lastInputCompletionTime = endTime"
+    },
+    {
+      "line": 133,
+      "text": "            Logger.shared.performance("
+    },
+    {
+      "line": 134,
+      "text": "                \"KEY END #\\(eventID) keyLength=\\(key.count) total=\\(String(format: \"%.1f\", totalMs))ms \""
+    },
+    {
+      "line": 135,
+      "text": "                    + \"engine=\\(String(format: \"%.1f\", handleMs))ms ui=\\(String(format: \"%.1f\", uiMs))ms\""
+    },
+    {
+      "line": 136,
+      "text": "            )"
+    },
+    {
+      "line": 137,
+      "text": "        #endif"
+    },
+    {
+      "line": 138,
+      "text": "        #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT"
+    },
+    {
+      "line": 139,
+      "text": "            if shouldSampleT9Segments {"
+    },
+    {
+      "line": 140,
+      "text": "                HotPathSegmentTiming.endKey("
+    },
+    {
+      "line": 141,
+      "text": "                    totalMs: totalMs,"
+    },
+    {
+      "line": 142,
+      "text": "                    engineMs: handleMs,"
+    },
+    {
+      "line": 143,
+      "text": "                    uiMs: uiMs"
+    },
+    {
+      "line": 144,
+      "text": "                )"
+    },
+    {
+      "line": 145,
+      "text": "            }"
+    },
+    {
+      "line": 146,
+      "text": "        #endif"
+    },
+    {
+      "line": 147,
+      "text": "        // Track T9 digit cadence for bar-prefetch idle gating (release + debug)."
+    },
+    {
+      "line": 148,
+      "text": "        if controller.usesT9InputSemantics,"
+    },
+    {
+      "line": 149,
+      "text": "            key.count == 1,"
+    },
+    {
+      "line": 150,
+      "text": "            key.first?.isNumber == true"
+    },
+    {
+      "line": 151,
+      "text": "        {"
+    },
+    {
+      "line": 152,
+      "text": "            lastT9DigitKeyTime = endTime"
+    },
+    {
+      "line": 153,
+      "text": "        }"
+    },
+    {
+      "line": 154,
+      "text": "        if totalMs >= 50 {"
+    },
+    {
+      "line": 155,
+      "text": "            Logger.shared.warning("
+    },
+    {
+      "line": 156,
+      "text": "                \"SLOW KEY #\\(eventID) keyLength=\\(key.count) total=\\(String(format: \"%.1f\", totalMs))ms \""
+    },
+    {
+      "line": 157,
+      "text": "                    + \"engine=\\(String(format: \"%.1f\", handleMs))ms ui=\\(String(format: \"%.1f\", uiMs))ms\","
+    },
+    {
+      "line": 158,
+      "text": "                category: .performance"
+    },
+    {
+      "line": 159,
+      "text": "            )"
+    },
+    {
+      "line": 160,
+      "text": "        }"
+    },
+    {
+      "line": 161,
+      "text": "    }"
+    },
+    {
+      "line": 162,
+      "text": ""
+    },
+    {
+      "line": 163,
+      "text": "    @objc func insertCandidate(_ sender: UIButton) {"
+    },
+    {
+      "line": 164,
+      "text": "        guard"
+    },
+    {
+      "line": 165,
+      "text": "            let candidate = sender.configuration?.title,"
+    },
+    {
+      "line": 166,
+      "text": "            let kind = CandidateKind(rawValue: sender.tag)"
+    },
+    {
+      "line": 167,
+      "text": "        else { return }"
+    },
+    {
+      "line": 168,
+      "text": "        emitKeyPressFeedbackIfNeeded(for: sender)"
+    },
+    {
+      "line": 169,
+      "text": "        let effects = controller.handle(.insertCandidate(candidate, kind: kind))"
+    },
+    {
+      "line": 170,
+      "text": "        syncUI(with: effects)"
+    },
+    {
+      "line": 171,
+      "text": "    }"
+    },
+    {
+      "line": 172,
+      "text": ""
+    },
+    {
+      "line": 173,
+      "text": "    @objc func insertDirectText(_ sender: UIButton) {"
+    },
+    {
+      "line": 174,
+      "text": "        guard let text = sender.title(for: .normal) else { return }"
+    },
+    {
+      "line": 175,
+      "text": "        emitKeyPressFeedbackIfNeeded(for: sender)"
+    },
+    {
+      "line": 176,
+      "text": "        let effects = controller.handle(.insertDirectText(text))"
+    },
+    {
+      "line": 177,
+      "text": "        syncUI(with: effects)"
+    },
+    {
+      "line": 178,
+      "text": "    }"
+    },
+    {
+      "line": 179,
+      "text": ""
+    },
+    {
+      "line": 180,
+      "text": "    @objc func insertSmartDoubleQuote(_ sender: UIButton) {"
+    }
+  ]
+}

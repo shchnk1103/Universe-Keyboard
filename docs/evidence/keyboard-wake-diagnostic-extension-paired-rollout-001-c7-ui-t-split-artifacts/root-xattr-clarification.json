@@ -1,0 +1,27 @@
+{
+  "role": "Coordinator clarification; not independent acceptance",
+  "comparison": "fresh before vs backup inventory",
+  "results": {
+    "main-data": {
+      "copy_added_attrs": {
+        "com.apple.provenance": 865
+      },
+      "existing_attr_changed": 0,
+      "attrs_removed": 0
+    },
+    "app-group": {
+      "copy_added_attrs": {
+        "com.apple.provenance": 8
+      },
+      "existing_attr_changed": 0,
+      "attrs_removed": 0
+    },
+    "installed-app": {
+      "copy_added_attrs": {
+        "com.apple.provenance": 9
+      },
+      "existing_attr_changed": 0,
+      "attrs_removed": 0
+    }
+  }
+}

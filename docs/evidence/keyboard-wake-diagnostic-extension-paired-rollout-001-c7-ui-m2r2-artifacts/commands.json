@@ -1,0 +1,47 @@
+{
+  "status": "AUTHORIZED_PENDING_FRESH_ENTRY",
+  "attach": {
+    "tool": "exec_command native PTY",
+    "args": {
+      "target_pid": "fresh verified only",
+      "no_lldbinit": true,
+      "transcript": "/private/tmp/ukey-wake-m2r2-20261004/pty-transcript.txt"
+    }
+  },
+  "session_policy": "persistent native PTY ID plus actual LLDB PID/start time and explicit target; recovery from private files; do not switch MCP manager or reattach stopped run",
+  "pre_arm_lldb": [
+    "image list -u -f",
+    "image lookup -n $s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF",
+    "breakpoint set --name $s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF",
+    "breakpoint list OWN_BREAKPOINT_ID"
+  ],
+  "continue_before_human": "debug_continue(explicit session)",
+  "stop_point_lldb": [
+    "breakpoint list OWN_BREAKPOINT_ID",
+    "frame info",
+    "thread backtrace -c 8",
+    "frame variable --raw-output --dynamic-type no-dynamic-values --no-synthetic --depth 1 address byteCount"
+  ],
+  "read_template": "memory read --binary --size 1 --count VERIFIED_BYTECOUNT --outfile /private/tmp/ukey-wake-m2r2-20261004/snapshot.bin VERIFIED_ADDRESS",
+  "bound": {
+    "min_bytes": 176,
+    "max_bytes": 11352,
+    "alignment": 8,
+    "read_count": 1,
+    "address_source": "Only the real stopped export frame static argument, never historical values or guessed ABI registers."
+  },
+  "cleanup": [
+    "breakpoint delete OWN_BREAKPOINT_ID",
+    "breakpoint list",
+    "continue only if stopped",
+    "process detach",
+    "quit"
+  ],
+  "no_expression_register_or_memory_write": true,
+  "individual_tool_timeout_ms": 30000,
+  "paused_work_budget_seconds": 120,
+  "cleanup_policy": "delete only own LLDB breakpoint; verify own ID absent without removing other breakpoints",
+  "human_sequence": "arm once; n once; AppSwitcher direct return to Maps once; n once; freeze once",
+  "same_process_required": true,
+  "automatic_retry_count": 0
+}

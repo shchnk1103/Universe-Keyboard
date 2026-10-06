@@ -1,0 +1,79 @@
+{
+  "lane": "UK-WAKE-V6-B-ARCH / A-C4 round 1",
+  "verdict": "Full — static Architecture criteria A1-A6 covered; no Architecture blocker found",
+  "packet": {
+    "path": "/private/tmp/ukey-wake-c4-20261001/architecture-packet.md",
+    "sha256": "18473e76335c59bc3c0109e3dd1deada015148a433dc6d76aa0a897cecd17"
+  },
+  "candidate_manifest": {
+    "path": "/private/tmp/ukey-wake-c4-20261001/candidate-manifest.json",
+    "sha256": "af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9"
+  },
+  "source_identity": {
+    "root": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+    "branch": "codex/keyboard-wake-v3-compatibility-gate",
+    "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+    "review_target_files": 34,
+    "review_target_hashes_match": 34,
+    "source_and_build_inputs": 568,
+    "source_and_build_input_hashes_match": 568,
+    "installed_proof": false
+  },
+  "assignment_stage_revision": {
+    "path": "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md",
+    "sha256": "b597181c203d99eb9a59fcb8a498ddec45a948538af31459d088b0e2b9ae31c8",
+    "recorded_phase": "C3 five-file local paired writer binding delivered; candidate not built/installed; no runtime emission or global Gate"
+  },
+  "document_sha256": {
+    "AGENTS.md": "947743e29a5987f9b1abb9c220a28ebcb92bd766928e22c1dd67c046bbe62152",
+    "docs/ASSIGNMENT_POLICY.md": "e90dd8f06371e9367652d4e7cc63dee31ee7b1ac855e7802d6d2e9b8e1e90680",
+    "docs/AI_WORKFLOW.md": "fd3ff24fc0d38ed134cace8ffd5479f76e6261b009d6f661d218e4e260b07413",
+    "docs/playbooks/keyboard-ui.md": "e54a0ee6c25b07209181b239d360647d19cfd739e5f5d60ddcd4f2e34c8b13df",
+    "docs/playbooks/keyboard-core.md": "86b7a48d3040b719b3fc8f38bca5bcf6e4592037631c13da747d6efb996d5068",
+    "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md": "b597181c203d99eb9a59fcb8a498ddec45a948538af31459d088b0e2b9ae31c8",
+    "docs/architecture/decisions/0036-diagnostic-event-wire-v4-writer-compatibility.md": "f950e4ee62c643efb21308cd7d633844379cb373fcde2e3e5604e5988fe5959c",
+    "docs/architecture/decisions/0036-keyboard-wake-wire-v6-addendum.md": "4b6141cee61d7d0fb6e90b8898de2a427f342c74501cd7f489d21832879c11dc",
+    "docs/plans/keyboard-wake-diagnostic-event-schema-proposal-001.md": "e501a4075c24a79de560e7381ae361708c1a085250470e69840e23c930b53c06",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c1-core-writer-validation-2026-09-30.md": "3fdf04a18f4b6628770a6951bcfac9947d6bf29a2aebc20612a47c61d0c98678",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c2-producer-validation-2026-10-01.md": "630826cad8e442fcf6756fc50475261165c1c7a80e4e9e7faa217c0c7fb11897",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c3-paired-version-entry-2026-10-01.md": "924c84c436196efc12657fb3f6e13e3f8e8d49b754bd220db1b768c209d17191",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-v6-reader-stage-b-validation-2026-09-30.md": "5138b29186f04f16ffffb8b8ab6fea731f159017abef4f7276002b0860256d56"
+  },
+  "budget": {
+    "max_tool_interactions": 40,
+    "max_elapsed_seconds": 1800,
+    "actual_tool_interactions": 40,
+    "started_utc": "2026-10-01T00:05:13Z",
+    "ended_utc": "2026-10-01T00:18:23Z",
+    "elapsed_seconds": 790.0,
+    "stop_reason": "40-interaction ceiling reached after writing the two required scratch outputs"
+  },
+  "checkpoints": {
+    "10_interactions_reported_at": 12,
+    "20_interactions_reported_at": 21,
+    "30_interactions_reported_at": 31,
+    "covered": "identity/hash verification, then A1/A3/A5 initial static coverage",
+    "remaining_at_last_checkpoint": "A2 App fallback, A4 privacy/ownership, A6 Entry and skip boundary; all subsequently covered"
+  },
+  "boundary_notes": [
+    "An initial read attempted guessed docs/decisions paths outside the packet document allowlist; both were absent, no file contents were read, and the packet was immediately consulted for the exact allowed paths.",
+    "One collaboration progress call used an invalid recipient and failed; it consumed an interaction and produced no external message."
+  ],
+  "actions": {
+    "source_writes": 0,
+    "builds": 0,
+    "tests": 0,
+    "simulator_operations": 0,
+    "git_writes": 0,
+    "written_outputs": [
+      "/private/tmp/ukey-wake-c4-20261001/architecture-review.md",
+      "/private/tmp/ukey-wake-c4-20261001/architecture-usage.json"
+    ]
+  },
+  "nonclaims": [
+    "No installed App/appex pairing proof",
+    "No runtime emission or Maps reproduction",
+    "No Quality/full-CI verdict",
+    "No Gate, Release, root-cause, or Assignment/parent closure claim"
+  ]
+}

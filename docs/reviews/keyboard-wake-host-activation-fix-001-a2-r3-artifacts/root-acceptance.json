@@ -1,0 +1,16 @@
+{
+  "utc": "2026-10-05T01:40:21.402385+00:00",
+  "three_original_hashes_match": {
+    "ack.json": "df7a9fe09de94a03c23f50d624a12be8828476429721390f1eccd4f6ddde3c2a",
+    "review.md": "8632793b5eb84a989fe49198db256890f4a6637133d25f92b868c0784d0cb779",
+    "usage.json": "6b85d846e5d5834a2f0ef066b7b33ae392b683108151ca771d6a6a64f8d81dca"
+  },
+  "11_inputs_match": true,
+  "1156_source_inputs_match": true,
+  "actual_elapsed_seconds_recomputed": 254.118798,
+  "budget_8_calls_600_seconds_satisfied": true,
+  "verdict_preserved": "Uncovered",
+  "root_evidence_audit": "All four raw logs show correct successful test/build markers; all11 warning/error lines are AppIntents metadata warnings. Report success parser and extra baseline criterion disputed; no independent label overridden.",
+  "source_written": false,
+  "staged": 0
+}

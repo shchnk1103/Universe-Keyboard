@@ -85,9 +85,15 @@ actor CompositeDiagnosticsLogSource: DiagnosticsDatedLogSource, DiagnosticsLiveR
     private var activeSource: ActiveSource?
     private var queryRevision: UInt64 = 0
 
-    init(appGroupID: String) {
+    init(
+        appGroupID: String,
+        rootURLProvider: (@Sendable () -> URL?)? = nil
+    ) {
         self.appGroupID = appGroupID
-        v1Source = V1DiagnosticsLogSource(appGroupID: appGroupID)
+        v1Source = V1DiagnosticsLogSource(
+            appGroupID: appGroupID,
+            rootURLProvider: rootURLProvider
+        )
     }
 
     func loadLogText() async -> String? {
@@ -167,6 +173,8 @@ actor V1DiagnosticsLogSource: DiagnosticsDatedLogSource, DiagnosticsLiveRefreshI
     private var readerRootURL: URL?
     private var nextCursor: DiagnosticsJournalPageCursor?
     private var lastPageStatus: DiagnosticsJournalPageStatus = .completed
+    /// Record rejections describe the whole query and survive page continuation.
+    private var queryCompleteness: DiagnosticsJournalCompleteness = .complete
     private var usedV1Result = false
     private var selectedLogDay: DiagnosticsLogDay?
     private var queryRevision: UInt64 = 0
@@ -190,6 +198,7 @@ actor V1DiagnosticsLogSource: DiagnosticsDatedLogSource, DiagnosticsLiveRefreshI
     func loadLogText() async -> String? {
         let revision = advanceQueryRevision()
         let requestedDay = selectedLogDay
+        queryCompleteness = .complete
         usedV1Result = false
         guard let rootURL = journalRootURL() else {
             reader = nil
@@ -206,14 +215,20 @@ actor V1DiagnosticsLogSource: DiagnosticsDatedLogSource, DiagnosticsLiveRefreshI
         // 偶发降级为 journalUnavailable。
         let reader = retainedReader(rootURL: rootURL)
         let page: DiagnosticsJournalPage
+        var observedCompleteness = DiagnosticsJournalCompleteness.complete
         do {
             let strictPage = try await reader.beginPage(in: requestedDay?.range)
             guard revision == queryRevision, requestedDay == selectedLogDay else { return nil }
+            observedCompleteness = strictPage.completeness
             switch strictPage.status {
             case .snapshotExceedsReadBudget, .snapshotExceedsEventBudget:
                 if let requestedDay {
                     page = try await reader.recentPreview(in: requestedDay.range)
                     guard revision == queryRevision, requestedDay == self.selectedLogDay else { return nil }
+                    observedCompleteness = Self.merging(
+                        observedCompleteness,
+                        page.completeness
+                    )
                 } else {
                     page = strictPage
                 }
@@ -226,14 +241,17 @@ actor V1DiagnosticsLogSource: DiagnosticsDatedLogSource, DiagnosticsLiveRefreshI
             readerRootURL = nil
             nextCursor = nil
             lastPageStatus = .journalUnavailable
+            queryCompleteness = observedCompleteness
             usedV1Result = true
             return nil
         }
+        queryCompleteness = Self.merging(observedCompleteness, page.completeness)
         lastPageStatus = page.status
-        // 空的正常 v1 journal 仍应允许 legacy 只读回退；只有 v1 实际有事件，
-        // 或它明确报告受控 failure/invalidation 时，才由 v1 占据诊断视图。
+        // 只有完整且成功的空 journal 才可回退到 legacy；拒绝记录也使结果不完整。
         guard revision == queryRevision, requestedDay == selectedLogDay else { return nil }
-        usedV1Result = requestedDay != nil || !page.events.isEmpty || page.status != .completed
+        usedV1Result =
+            requestedDay != nil || !page.events.isEmpty
+            || page.status != .completed || !queryCompleteness.isComplete
         guard !page.events.isEmpty else {
             nextCursor = nil
             return nil
@@ -259,8 +277,12 @@ actor V1DiagnosticsLogSource: DiagnosticsDatedLogSource, DiagnosticsLiveRefreshI
             return nil
         }
         guard revision == queryRevision else { return nil }
+        queryCompleteness = Self.merging(queryCompleteness, page.completeness)
         lastPageStatus = page.status
         self.nextCursor = page.nextCursor
+        if !queryCompleteness.isComplete {
+            usedV1Result = true
+        }
         guard !page.events.isEmpty else { return nil }
         return formattedText(for: page.events)
     }
@@ -300,29 +322,35 @@ actor V1DiagnosticsLogSource: DiagnosticsDatedLogSource, DiagnosticsLiveRefreshI
         selectedLogDay = day
         nextCursor = nil
         lastPageStatus = .completed
+        queryCompleteness = .complete
     }
 
     func pagingNotice() -> String? {
-        switch lastPageStatus {
-        case .hasMore, .completed:
-            nil
-        case .invalidatedByGeneration:
-            "日志已清空，请刷新后查看当前记录。"
-        case .invalidatedByReclaim:
-            "日志已被自动回收，请刷新后继续查看。"
-        case .cursorUnavailable:
-            "日志分页已失效，请刷新后继续查看。"
-        case .snapshotExceedsReadBudget:
-            "当前日志快照过大，无法在安全读取上限内严格排序；请使用右上角垃圾桶清空后重新记录。"
-        case .snapshotExceedsEventBudget:
-            "当前日志快照超过安全事件上限；请使用右上角垃圾桶清空后重新记录。"
-        case .partialRecentWindow:
-            "当前日期的完整日志超过安全读取上限，下面仅展示有界最近窗口；较早记录仍保留在设备上。"
-        case .snapshotUnavailable:
-            "日志正在轮转或回收，请刷新后查看当前记录。"
-        case .journalUnavailable:
-            "诊断日志暂时不可用；旧日志不会在此状态下自动混入当前视图。"
-        }
+        let statusNotice: String? =
+            switch lastPageStatus {
+            case .hasMore, .completed:
+                nil
+            case .invalidatedByGeneration:
+                "日志已清空，请刷新后查看当前记录。"
+            case .invalidatedByReclaim:
+                "日志已被自动回收，请刷新后继续查看。"
+            case .cursorUnavailable:
+                "日志分页已失效，请刷新后继续查看。"
+            case .snapshotExceedsReadBudget:
+                "当前日志快照过大，无法在安全读取上限内严格排序；请使用右上角垃圾桶清空后重新记录。"
+            case .snapshotExceedsEventBudget:
+                "当前日志快照超过安全事件上限；请使用右上角垃圾桶清空后重新记录。"
+            case .partialRecentWindow:
+                "当前日期的完整日志超过安全读取上限，下面仅展示有界最近窗口；较早记录仍保留在设备上。"
+            case .snapshotUnavailable:
+                "日志正在轮转或回收，请刷新后查看当前记录。"
+            case .journalUnavailable:
+                "诊断日志暂时不可用；旧日志不会在此状态下自动混入当前视图。"
+            }
+        guard !queryCompleteness.isComplete else { return statusNotice }
+        let incompleteNotice = "部分诊断记录无法读取；当前显示可能不完整。"
+        guard let statusNotice else { return incompleteNotice }
+        return "\(incompleteNotice) \(statusNotice)"
     }
 
     func isPartialLogWindow() -> Bool {
@@ -339,7 +367,8 @@ actor V1DiagnosticsLogSource: DiagnosticsDatedLogSource, DiagnosticsLiveRefreshI
         let writer = DiagnosticsJournalWriter(
             rootURL: rootURL,
             origin: .mainApp,
-            isMainAppWriter: true
+            isMainAppWriter: true,
+            writerVersion: .v6
         )
         do {
             try await writer.prepareRootIfOwnedByMainApp()
@@ -352,6 +381,7 @@ actor V1DiagnosticsLogSource: DiagnosticsDatedLogSource, DiagnosticsLiveRefreshI
         readerRootURL = nil
         nextCursor = nil
         lastPageStatus = .completed
+        queryCompleteness = .complete
         usedV1Result = false
         selectedLogDay = nil
         return .cleared
@@ -380,6 +410,15 @@ actor V1DiagnosticsLogSource: DiagnosticsDatedLogSource, DiagnosticsLiveRefreshI
     private func formattedText(for events: [DiagnosticEvent]) -> String {
         events.map(DiagnosticsEventDisplayFormatter.line).joined(separator: "\n")
     }
+
+    /// Completeness is a Sendable value; combining it does not access actor state.
+    private nonisolated static func merging(
+        _ lhs: DiagnosticsJournalCompleteness,
+        _ rhs: DiagnosticsJournalCompleteness
+    ) -> DiagnosticsJournalCompleteness {
+        let reasons = lhs.rejectionReasons.union(rhs.rejectionReasons)
+        return reasons.isEmpty ? .complete : .incomplete(reasons: reasons)
+    }
 }
 
 enum DiagnosticsEventDisplayFormatter {
@@ -392,8 +431,12 @@ enum DiagnosticsEventDisplayFormatter {
         let delivery = event.schemeDeliveryPayload.map(schemeDeliveryDescription)
         let rimeSync = event.rimeSyncPayload.map(rimeSyncDescription)
         let runtimeRoute = event.runtimeRoutePayload.map(runtimeRouteDescription)
+        let keyboardLifecycle = event.keyboardLifecyclePayload.map(keyboardLifecycleDescription)
+        let rimeResume = event.rimeResumePayload.map(rimeResumeDescription)
+        let textProxy = event.textProxyPayload.map(textProxyDescription)
         let details =
-            ([action, delivery, rimeSync, runtimeRoute].compactMap { $0 }
+            ([action, delivery, rimeSync, runtimeRoute, keyboardLifecycle, rimeResume, textProxy]
+            .compactMap { $0 }
             + (fields.isEmpty ? [] : [fields]))
             .joined(separator: " ")
         let suffix = details.isEmpty ? "" : " \(details)"
@@ -525,6 +568,27 @@ enum DiagnosticsEventDisplayFormatter {
         _ context: DiagnosticEvent.RimeSyncContext
     ) -> String {
         "operation=\(context.operationID.uuidString.lowercased()) source=\(context.source.rawValue)"
+    }
+
+    private nonisolated static func keyboardLifecycleDescription(
+        _ payload: DiagnosticEvent.KeyboardLifecyclePayload
+    ) -> String {
+        "phase=\(payload.phase.rawValue)"
+    }
+
+    private nonisolated static func rimeResumeDescription(
+        _ payload: DiagnosticEvent.RimeResumePayload
+    ) -> String {
+        let failure = payload.failure.map { " failure=\($0.rawValue)" } ?? ""
+        let sessionEpoch = payload.sessionEpoch.map { " session_epoch=\($0)" } ?? ""
+        let revision = payload.revision.map { " revision=\($0)" } ?? ""
+        return "phase=\(payload.phase.rawValue)\(failure)\(sessionEpoch)\(revision)"
+    }
+
+    private nonisolated static func textProxyDescription(
+        _ payload: DiagnosticEvent.TextProxyPayload
+    ) -> String {
+        "operation=\(payload.operation.rawValue) phase=\(payload.phase.rawValue)"
     }
 
     private nonisolated static func deliveryPrefix(

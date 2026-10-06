@@ -1,0 +1,14 @@
+{
+  "utc": "2026-10-03T03:09:33.884408+00:00",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "source_inputs_matched": 571,
+  "vendor_inputs_matched": 630,
+  "source_build_inputs_sha256": "5f16aa1031b1ee4a90d72e4d15693e3656b0c746bcd71a10874e90655a0269c9",
+  "candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50",
+  "exclusive": "Human attested current original Simulator exclusive on 2026-10-03 Asia/Shanghai",
+  "device_access": false,
+  "backup": "UNKNOWN/not performed",
+  "execution_authority": "Entry preparation only",
+  "ready": false
+}

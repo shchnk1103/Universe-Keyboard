@@ -1,0 +1,65 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift",
+  "origin_sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+  "expected_sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+  "line_start": 721,
+  "line_end": 734,
+  "lines": [
+    {
+      "line": 721,
+      "text": "            for touch in touches {"
+    },
+    {
+      "line": 722,
+      "text": "                let identifier = ObjectIdentifier(touch)"
+    },
+    {
+      "line": 723,
+      "text": "                active.remove(identifier)"
+    },
+    {
+      "line": 724,
+      "text": "                onTouch?(identifier, false)"
+    },
+    {
+      "line": 725,
+      "text": "            }"
+    },
+    {
+      "line": 726,
+      "text": "            if active.isEmpty { state = .ended }"
+    },
+    {
+      "line": 727,
+      "text": "        }"
+    },
+    {
+      "line": 728,
+      "text": "        override func reset() {"
+    },
+    {
+      "line": 729,
+      "text": "            for identifier in active { onTouch?(identifier, false) }"
+    },
+    {
+      "line": 730,
+      "text": "            active.removeAll()"
+    },
+    {
+      "line": 731,
+      "text": "            super.reset()"
+    },
+    {
+      "line": 732,
+      "text": "        }"
+    },
+    {
+      "line": 733,
+      "text": "    }"
+    },
+    {
+      "line": 734,
+      "text": "#endif"
+    }
+  ]
+}

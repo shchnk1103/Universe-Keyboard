@@ -1,0 +1,2237 @@
+[
+  {
+    "path": "bounded-raw-views/arch-000-001.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+CandidateBar.swift",
+    "lines": [
+      1,
+      60
+    ],
+    "bytes": 5859,
+    "sha256": "9938cc809ad64c0db2cd53a3d9f22819886951d18e99034f4dc8c9a8b94998a2"
+  },
+  {
+    "path": "bounded-raw-views/arch-000-002.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+CandidateBar.swift",
+    "lines": [
+      61,
+      120
+    ],
+    "bytes": 5565,
+    "sha256": "9a4830c88e44d4e1ec5daedf688af5738f4000535f89e884855011171ca0fb88"
+  },
+  {
+    "path": "bounded-raw-views/arch-000-003.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+CandidateBar.swift",
+    "lines": [
+      121,
+      180
+    ],
+    "bytes": 5818,
+    "sha256": "d4c8bc99d504293341be036b73aaa7b71c4eaadb51201cd41e3dc0492e666885"
+  },
+  {
+    "path": "bounded-raw-views/arch-000-004.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+CandidateBar.swift",
+    "lines": [
+      181,
+      240
+    ],
+    "bytes": 5794,
+    "sha256": "d0a019ce27f9c4a469ebc4ffb3735ddc4107b175e1fb20349c93d18aa1539ec1"
+  },
+  {
+    "path": "bounded-raw-views/arch-000-005.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+CandidateBar.swift",
+    "lines": [
+      241,
+      300
+    ],
+    "bytes": 6446,
+    "sha256": "aa24b4a8a631fe1e57619056d5999d77f58d90f6e9bdf92dc8fa1aa4790b4196"
+  },
+  {
+    "path": "bounded-raw-views/arch-000-006.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+CandidateBar.swift",
+    "lines": [
+      301,
+      317
+    ],
+    "bytes": 1946,
+    "sha256": "6c589f0ba5aa0e0f92494b181546da05801ad49a659acd0859a67640a6a47bf2"
+  },
+  {
+    "path": "bounded-raw-views/arch-001-001.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+InputActions.swift",
+    "lines": [
+      1,
+      60
+    ],
+    "bytes": 5813,
+    "sha256": "95b2c9c817db987d97961250882166ab1d6128932fe15e2937beebabcebf1000"
+  },
+  {
+    "path": "bounded-raw-views/arch-001-002.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+InputActions.swift",
+    "lines": [
+      61,
+      120
+    ],
+    "bytes": 6839,
+    "sha256": "b1327b44af76b82e470f487d45889e4732ef7aaf1116d03494c86953dc109217"
+  },
+  {
+    "path": "bounded-raw-views/arch-001-003.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+InputActions.swift",
+    "lines": [
+      121,
+      180
+    ],
+    "bytes": 5571,
+    "sha256": "d535b27f0a206fb606bb433a8b2f61ffcc72661f643175c0f36fa4035a21d788"
+  },
+  {
+    "path": "bounded-raw-views/arch-001-004.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+InputActions.swift",
+    "lines": [
+      181,
+      206
+    ],
+    "bytes": 2865,
+    "sha256": "4c8b5a4eeae5a0ea8e3c02a9e4760509ac9030a7a3f3e1ff746e14e05324c65c"
+  },
+  {
+    "path": "bounded-raw-views/arch-002-001.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+KeyPressFeedback.swift",
+    "lines": [
+      1,
+      60
+    ],
+    "bytes": 5585,
+    "sha256": "f0e02c46b01e3692840a9309487a88ace680c542aa7e0f68633391b0de97d40f"
+  },
+  {
+    "path": "bounded-raw-views/arch-002-002.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+KeyPressFeedback.swift",
+    "lines": [
+      61,
+      120
+    ],
+    "bytes": 6380,
+    "sha256": "9c815d993bfe37f509425133a8693f9e54f20ddd2c89d7912c6cb764ac007294"
+  },
+  {
+    "path": "bounded-raw-views/arch-002-003.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+KeyPressFeedback.swift",
+    "lines": [
+      121,
+      179
+    ],
+    "bytes": 4955,
+    "sha256": "3fc3e5c161fbd41eab68518ab6186706d635269831b217aeca1057aa3dfa688e"
+  },
+  {
+    "path": "bounded-raw-views/arch-003-001.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Presentation.swift",
+    "lines": [
+      1,
+      60
+    ],
+    "bytes": 6739,
+    "sha256": "ab59e98afedb5c517146911c773d8c863b5685622cc1dd4c1df3369807fade66"
+  },
+  {
+    "path": "bounded-raw-views/arch-003-002.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Presentation.swift",
+    "lines": [
+      61,
+      120
+    ],
+    "bytes": 5582,
+    "sha256": "912caedae801bf68ce4a08740faa06a57cb0a771f3c98ad9780862afc27bb700"
+  },
+  {
+    "path": "bounded-raw-views/arch-003-003.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Presentation.swift",
+    "lines": [
+      121,
+      180
+    ],
+    "bytes": 5906,
+    "sha256": "bb7fc38e5cd5d8f48abc3cc0eb3d2fa6e1336ca90e1c886d61d6b8a1aa9095b5"
+  },
+  {
+    "path": "bounded-raw-views/arch-003-004.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Presentation.swift",
+    "lines": [
+      181,
+      240
+    ],
+    "bytes": 7032,
+    "sha256": "76c913269df6cfc13409d8ac0b0ec568b246dc319f1e8814d643425bf5799ea4"
+  },
+  {
+    "path": "bounded-raw-views/arch-003-005.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Presentation.swift",
+    "lines": [
+      241,
+      300
+    ],
+    "bytes": 5619,
+    "sha256": "f9e4ddee829d40e650c381c5ddba8f752524b69b99e05cb9c5a9db0a1970ecf7"
+  },
+  {
+    "path": "bounded-raw-views/arch-003-006.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Presentation.swift",
+    "lines": [
+      301,
+      315
+    ],
+    "bytes": 1548,
+    "sha256": "9fea28f350ce0b2bcedcb4f9caf850180cb3eccb9b6b939a0c50e8bdb976d024"
+  },
+  {
+    "path": "bounded-raw-views/arch-004-001.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift",
+    "lines": [
+      1,
+      60
+    ],
+    "bytes": 5900,
+    "sha256": "f521949ddb238c68573347af89d95cd1f7afacb0c6a12a4deda96d9fa00a3415"
+  },
+  {
+    "path": "bounded-raw-views/arch-004-002.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift",
+    "lines": [
+      61,
+      100
+    ],
+    "bytes": 3944,
+    "sha256": "7541e22ade12bc029b05741651bec72d1c265146583817ea3718404ccbe4dc8b"
+  },
+  {
+    "path": "bounded-raw-views/arch-005-001.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+    "lines": [
+      1,
+      60
+    ],
+    "bytes": 5492,
+    "sha256": "c6938f672e9263ab9d36b91aa3e1333f637f9dd0b3aca8c87290a397f57dcd43"
+  },
+  {
+    "path": "bounded-raw-views/arch-005-002.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+    "lines": [
+      61,
+      120
+    ],
+    "bytes": 6083,
+    "sha256": "9019e86bd641478dd68ae538c08ff150543e92fa1331600da5905ddb65834d6f"
+  },
+  {
+    "path": "bounded-raw-views/arch-005-003.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+    "lines": [
+      121,
+      180
+    ],
+    "bytes": 6176,
+    "sha256": "0cd319483e107844713e1ee78b3406b3cc77b9c1d7d43881f3bc16b9cc64a616"
+  },
+  {
+    "path": "bounded-raw-views/arch-005-004.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+    "lines": [
+      181,
+      240
+    ],
+    "bytes": 6338,
+    "sha256": "b7a915874eba4993c2dee559a69990ec38281f74f666ccf3e786c517c2630298"
+  },
+  {
+    "path": "bounded-raw-views/arch-005-005.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+    "lines": [
+      241,
+      300
+    ],
+    "bytes": 7040,
+    "sha256": "f642ecef66b711540735dfb47648a477b74e75f60ba0ed2fd8e785e761aed471"
+  },
+  {
+    "path": "bounded-raw-views/arch-005-006.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+    "lines": [
+      301,
+      360
+    ],
+    "bytes": 7095,
+    "sha256": "02fe6854f39d2686258e39c869a5b42090678e06a0d348b1fbee8e57ee80b029"
+  },
+  {
+    "path": "bounded-raw-views/arch-005-007.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+    "lines": [
+      361,
+      420
+    ],
+    "bytes": 6041,
+    "sha256": "94a4225bd8079eb569202f83c90f50da5a25a25faa595965a9e01f02e2db30c6"
+  },
+  {
+    "path": "bounded-raw-views/arch-005-008.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+    "lines": [
+      421,
+      480
+    ],
+    "bytes": 5948,
+    "sha256": "209a5dfdb9ea7156f1d7bf2ba7bb05d3f649ae8d743dbb437c781cb7576c34e2"
+  },
+  {
+    "path": "bounded-raw-views/arch-005-009.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+    "lines": [
+      481,
+      540
+    ],
+    "bytes": 5732,
+    "sha256": "b33557483251b92f54cebd97ed14c0ed24b21329a2967853fcf3c918269926a6"
+  },
+  {
+    "path": "bounded-raw-views/arch-005-010.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+    "lines": [
+      541,
+      600
+    ],
+    "bytes": 5721,
+    "sha256": "8bbb34bbc86cbd35343b640fba66b2c2080d0cc2365fd909c2687dc9ad86f844"
+  },
+  {
+    "path": "bounded-raw-views/arch-005-011.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+    "lines": [
+      601,
+      660
+    ],
+    "bytes": 5685,
+    "sha256": "1a66cbf5cd3a3429c5e73c47d2a3a5928b95461d064479b5d5fcb6d1f1cb2dea"
+  },
+  {
+    "path": "bounded-raw-views/arch-005-012.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+    "lines": [
+      661,
+      720
+    ],
+    "bytes": 6135,
+    "sha256": "355d1c052781d80d29b9f9b12cdfae73a61f16d5ab61d437cc198c48aadb6fb7"
+  },
+  {
+    "path": "bounded-raw-views/arch-005-013.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+    "lines": [
+      721,
+      780
+    ],
+    "bytes": 6224,
+    "sha256": "1ade5d0e514b3974dd07cf4dc958305620290d796c73bc88efad066dc08f73ad"
+  },
+  {
+    "path": "bounded-raw-views/arch-005-014.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+    "lines": [
+      781,
+      835
+    ],
+    "bytes": 5346,
+    "sha256": "b5dd56ba7bb8c0adb5a0dea90fdcab184b43b9a87b0526b2e5edfe6691af881f"
+  },
+  {
+    "path": "bounded-raw-views/arch-006-001.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift",
+    "lines": [
+      1,
+      60
+    ],
+    "bytes": 5124,
+    "sha256": "567438aecbd03f22bf486a886b173a43293094b2392b76b156b57d3452c903e1"
+  },
+  {
+    "path": "bounded-raw-views/arch-006-002.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift",
+    "lines": [
+      61,
+      120
+    ],
+    "bytes": 5525,
+    "sha256": "92b1293a459081525b04d58c2b9a7c8abbf11afd03036d068e2734e251780c8a"
+  },
+  {
+    "path": "bounded-raw-views/arch-006-003.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift",
+    "lines": [
+      121,
+      180
+    ],
+    "bytes": 5333,
+    "sha256": "5084a889a2b55e699714280ff9734ddc6633e1f84405459c0eb29f3eb244394c"
+  },
+  {
+    "path": "bounded-raw-views/arch-006-004.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift",
+    "lines": [
+      181,
+      240
+    ],
+    "bytes": 5273,
+    "sha256": "0dc26386ca0f063a7e4cc26b2d63496c46b7f9e09e805e67318da8bb68dc9ea1"
+  },
+  {
+    "path": "bounded-raw-views/arch-006-005.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift",
+    "lines": [
+      241,
+      300
+    ],
+    "bytes": 5462,
+    "sha256": "4a0805f3c927bbf9d324f178a1f2169b14287ca24d9ba1fcbf82f0141009f852"
+  },
+  {
+    "path": "bounded-raw-views/arch-006-006.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift",
+    "lines": [
+      301,
+      352
+    ],
+    "bytes": 4562,
+    "sha256": "6969b5665fc8056224dd0ba96e1ef0891e862770ebcebfb744115e8ef8d624a8"
+  },
+  {
+    "path": "bounded-raw-views/arch-007-001.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift",
+    "lines": [
+      1,
+      60
+    ],
+    "bytes": 5641,
+    "sha256": "7ee73202c6c264656e92b0fcd91cc883c51cf1ae5dcf44b52a25ba428e90af43"
+  },
+  {
+    "path": "bounded-raw-views/arch-007-002.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift",
+    "lines": [
+      61,
+      120
+    ],
+    "bytes": 5830,
+    "sha256": "a14db531e6b3ed1637b9d89ea2a3a60a9a7a82a9a0ee1c96453361985d091dcb"
+  },
+  {
+    "path": "bounded-raw-views/arch-007-003.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift",
+    "lines": [
+      121,
+      180
+    ],
+    "bytes": 5886,
+    "sha256": "c6d5ad90f2a885077b50e378c3b8a9dbf17d70a89b174b56ab30d5525660c9ab"
+  },
+  {
+    "path": "bounded-raw-views/arch-007-004.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift",
+    "lines": [
+      181,
+      240
+    ],
+    "bytes": 5714,
+    "sha256": "5785ecd701b257ddf24832e9df9246de4c1e720dcfbe9756de279d4e3776cccc"
+  },
+  {
+    "path": "bounded-raw-views/arch-007-005.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift",
+    "lines": [
+      241,
+      300
+    ],
+    "bytes": 6111,
+    "sha256": "d85e8754a68c51f23cf429d1bdf43f33426ff99d29fa5e701bcab3d756061084"
+  },
+  {
+    "path": "bounded-raw-views/arch-007-006.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift",
+    "lines": [
+      301,
+      360
+    ],
+    "bytes": 6084,
+    "sha256": "69d00f9e9fe38f337ae3a02a828a1a318fc82ed749d88f4d48f3bdfb4f9f7069"
+  },
+  {
+    "path": "bounded-raw-views/arch-007-007.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift",
+    "lines": [
+      361,
+      420
+    ],
+    "bytes": 5513,
+    "sha256": "68a641ca9118ead095aa1f120102ab66fff83aeb789c55d78f23ee22a60a2930"
+  },
+  {
+    "path": "bounded-raw-views/arch-007-008.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift",
+    "lines": [
+      421,
+      480
+    ],
+    "bytes": 6347,
+    "sha256": "45b1974375ed14327bbf6c5b399be0019e3e0530a6c6111622f60464fe1df0fb"
+  },
+  {
+    "path": "bounded-raw-views/arch-007-009.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift",
+    "lines": [
+      481,
+      540
+    ],
+    "bytes": 6073,
+    "sha256": "8ac1c446c102e7cb71d21008570daf7018bcd77e4f1c5582012246cb3ecc88c7"
+  },
+  {
+    "path": "bounded-raw-views/arch-007-010.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift",
+    "lines": [
+      541,
+      600
+    ],
+    "bytes": 6081,
+    "sha256": "95512b6991a7b420d63f45009385b8a7a6a67afcaae1c4f0c56e87bb66200215"
+  },
+  {
+    "path": "bounded-raw-views/arch-007-011.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift",
+    "lines": [
+      601,
+      660
+    ],
+    "bytes": 6017,
+    "sha256": "bfd0e44a3ebab2b4f16e86dc41c95c3313a1a88426a38ddb09e0e205381ff649"
+  },
+  {
+    "path": "bounded-raw-views/arch-007-012.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift",
+    "lines": [
+      661,
+      720
+    ],
+    "bytes": 6236,
+    "sha256": "42087649a991c01214829736e604f5430d880c9d00066ba0830adc1de37df26a"
+  },
+  {
+    "path": "bounded-raw-views/arch-007-013.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift",
+    "lines": [
+      721,
+      734
+    ],
+    "bytes": 1490,
+    "sha256": "e0c7adf8e3bdc30c0fd4d3e9880fb888b063c9046bc8a643eb9aa4c77bd62a57"
+  },
+  {
+    "path": "bounded-raw-views/arch-008-001.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+    "lines": [
+      1,
+      60
+    ],
+    "bytes": 5277,
+    "sha256": "cb4a6f061d676ebf2c5c7b83a19047367bf70125f2921f067de6b541069f8f08"
+  },
+  {
+    "path": "bounded-raw-views/arch-008-002.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+    "lines": [
+      61,
+      120
+    ],
+    "bytes": 5094,
+    "sha256": "900c300817bd4aee167c7d58aacfe41b86a9db6f85018791e91a0de676d21cbe"
+  },
+  {
+    "path": "bounded-raw-views/arch-008-003.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+    "lines": [
+      121,
+      180
+    ],
+    "bytes": 5221,
+    "sha256": "9f7971ac215913f786690450d617b881c2cf745be1fc0894b9a1e9415ff718da"
+  },
+  {
+    "path": "bounded-raw-views/arch-008-004.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+    "lines": [
+      181,
+      240
+    ],
+    "bytes": 5241,
+    "sha256": "aaafabd6de388073eee45761658f3b41295735081bb8c8a56fe485592c9cc6a8"
+  },
+  {
+    "path": "bounded-raw-views/arch-008-005.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+    "lines": [
+      241,
+      300
+    ],
+    "bytes": 5471,
+    "sha256": "5a4efc149540ae8795ca6dc5d9a928a1a7796306b32138de5d75739601c3e94c"
+  },
+  {
+    "path": "bounded-raw-views/arch-008-006.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+    "lines": [
+      301,
+      360
+    ],
+    "bytes": 5233,
+    "sha256": "2785b3fabc6dc183aba8ce6235d49aabb9ae9b415af62be488456dad59e607aa"
+  },
+  {
+    "path": "bounded-raw-views/arch-008-007.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+    "lines": [
+      361,
+      420
+    ],
+    "bytes": 5467,
+    "sha256": "cc02a841b2db37a74b761e4755e983ceaf48e703fca266ca3b3626f92db4f766"
+  },
+  {
+    "path": "bounded-raw-views/arch-008-008.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+    "lines": [
+      421,
+      480
+    ],
+    "bytes": 5376,
+    "sha256": "05e9f101238a0dca3ad437d83748657a23744d49c11afcc8505c03a2a72656b3"
+  },
+  {
+    "path": "bounded-raw-views/arch-008-009.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+    "lines": [
+      481,
+      540
+    ],
+    "bytes": 5548,
+    "sha256": "d5f75a1194505ebc37e8e0d0473ccb866f1e756b0243dcaf3ff33779ae0e439d"
+  },
+  {
+    "path": "bounded-raw-views/arch-008-010.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+    "lines": [
+      541,
+      587
+    ],
+    "bytes": 3968,
+    "sha256": "522b93c7f6d59700dd1163c5d9d9b18bdcd69ef7e9865418593183e5519f44a7"
+  },
+  {
+    "path": "bounded-raw-views/arch-009-001.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+    "lines": [
+      1,
+      60
+    ],
+    "bytes": 6828,
+    "sha256": "38b521d7ca22bc01bc56ac80e9c9cd2f7d8bc36d44fe915236318cd393fbc1dd"
+  },
+  {
+    "path": "bounded-raw-views/arch-009-002.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+    "lines": [
+      61,
+      120
+    ],
+    "bytes": 7249,
+    "sha256": "641179e9aaef0ba9be8b755850d64fda510a2e273826480d80c599464655a111"
+  },
+  {
+    "path": "bounded-raw-views/arch-009-003.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+    "lines": [
+      121,
+      180
+    ],
+    "bytes": 5744,
+    "sha256": "3136185230bc4d5584e8e6e8543d89d7533c20ea2751e3898abb67df039f5fbe"
+  },
+  {
+    "path": "bounded-raw-views/arch-009-004.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+    "lines": [
+      181,
+      240
+    ],
+    "bytes": 5862,
+    "sha256": "f5c372e87d0a135667848c14f4367749b1a099d63ffd7e121cb0b0798f1003d6"
+  },
+  {
+    "path": "bounded-raw-views/arch-009-005.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+    "lines": [
+      241,
+      300
+    ],
+    "bytes": 6092,
+    "sha256": "d01af936326a3d237629241ac04ab87aaee71207093c5013149cbbdeb23fdba9"
+  },
+  {
+    "path": "bounded-raw-views/arch-009-006.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+    "lines": [
+      301,
+      360
+    ],
+    "bytes": 6174,
+    "sha256": "d0f6aa37ce871287f68b652e4c74da289d101b6f67f79a3d5d6bd73db3f2833e"
+  },
+  {
+    "path": "bounded-raw-views/arch-009-007.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+    "lines": [
+      361,
+      420
+    ],
+    "bytes": 6185,
+    "sha256": "666bd8aadc5360801395d7cdf5d4008a27531f6c7924eef7a8dd1a8c1900d9f5"
+  },
+  {
+    "path": "bounded-raw-views/arch-009-008.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+    "lines": [
+      421,
+      480
+    ],
+    "bytes": 6024,
+    "sha256": "ffb60e1ca1e66232e4a1329139e404fec7f43e8b9e45cbcba2ba7cfc74df3417"
+  },
+  {
+    "path": "bounded-raw-views/arch-009-009.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+    "lines": [
+      481,
+      540
+    ],
+    "bytes": 6256,
+    "sha256": "9b671b60fc50f14ecb3e9800aee26c31d3ce6f569654da71d1aca3a2a158b8d0"
+  },
+  {
+    "path": "bounded-raw-views/arch-009-010.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+    "lines": [
+      541,
+      600
+    ],
+    "bytes": 5889,
+    "sha256": "e88fd2d4d27522f515732dd38f2805ac6ada2591e02441b66fd9acab56d113b5"
+  },
+  {
+    "path": "bounded-raw-views/arch-009-011.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+    "lines": [
+      601,
+      660
+    ],
+    "bytes": 5882,
+    "sha256": "318a38b744c9ec25eb7b05fa59ae21591a2e39a1e47742ac3b2696dce59ce5dc"
+  },
+  {
+    "path": "bounded-raw-views/arch-009-012.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+    "lines": [
+      661,
+      720
+    ],
+    "bytes": 5656,
+    "sha256": "62b28d5aac8812ea0135488c9a4396696892f44693fc5f39fa8905ece7464b80"
+  },
+  {
+    "path": "bounded-raw-views/arch-009-013.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+    "lines": [
+      721,
+      780
+    ],
+    "bytes": 5872,
+    "sha256": "1c19402d15a65094bf35f93d13a358067544d91c050a6e0138d6cc7fdf9f5f61"
+  },
+  {
+    "path": "bounded-raw-views/arch-009-014.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+    "lines": [
+      781,
+      840
+    ],
+    "bytes": 5723,
+    "sha256": "eb3d76e102bc89e8ef1b9c7d15db293f1370350a89522f6e2d439ee1888aec1d"
+  },
+  {
+    "path": "bounded-raw-views/arch-009-015.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+    "lines": [
+      841,
+      900
+    ],
+    "bytes": 5971,
+    "sha256": "c92d2fb18a7422e1ee890d32db0d1b6edfce92ef6d9dbeadd891b731cc91e324"
+  },
+  {
+    "path": "bounded-raw-views/arch-009-016.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+    "lines": [
+      901,
+      960
+    ],
+    "bytes": 5900,
+    "sha256": "a655e1a9e71d648dfeef3aea4b1db011ca2e21b0787396075622b85c8e4e1c17"
+  },
+  {
+    "path": "bounded-raw-views/arch-009-017.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+    "lines": [
+      961,
+      1020
+    ],
+    "bytes": 5779,
+    "sha256": "99c880f665d80fe4d79375c1a60624056ef383a85acda787836a9acf8637ebc9"
+  },
+  {
+    "path": "bounded-raw-views/arch-009-018.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+    "lines": [
+      1021,
+      1080
+    ],
+    "bytes": 5919,
+    "sha256": "5f448b50a7bd417418c75985aa1327f8db6d09660c149b16b1548894f822db8e"
+  },
+  {
+    "path": "bounded-raw-views/arch-009-019.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+    "lines": [
+      1081,
+      1140
+    ],
+    "bytes": 5935,
+    "sha256": "5427f1024c4b98fff413dbe337377f41a878044a351053219d7a544d2f3234c1"
+  },
+  {
+    "path": "bounded-raw-views/arch-009-020.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+    "lines": [
+      1141,
+      1200
+    ],
+    "bytes": 6026,
+    "sha256": "fad9fd56e91a6c807ce85c0c821aa5a9e611bafbcf67d1175a6cb85e3ba24492"
+  },
+  {
+    "path": "bounded-raw-views/arch-009-021.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+    "lines": [
+      1201,
+      1260
+    ],
+    "bytes": 6038,
+    "sha256": "bcad77aa4b948cbc51d707d8cdfdaf16149d229c93b17418efbe802a7ffdeb55"
+  },
+  {
+    "path": "bounded-raw-views/arch-009-022.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+    "lines": [
+      1261,
+      1320
+    ],
+    "bytes": 5954,
+    "sha256": "ff05f2a94693b79cdfcfc4dd13cced9f38f26d6d13cad350c9281fbb1160927d"
+  },
+  {
+    "path": "bounded-raw-views/arch-009-023.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+    "lines": [
+      1321,
+      1361
+    ],
+    "bytes": 4089,
+    "sha256": "1bf9c68979ba5120994c9c2260307874e225d0d4d99b784bf666c763ee5cb47f"
+  },
+  {
+    "path": "bounded-raw-views/arch-010-001.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardWakeOwnerProbe.swift",
+    "lines": [
+      1,
+      60
+    ],
+    "bytes": 5453,
+    "sha256": "4b50d0982f2ff9b234fa5fa68fa55b6079e071b53e1738181547eb3c6e7e6c77"
+  },
+  {
+    "path": "bounded-raw-views/arch-010-002.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardWakeOwnerProbe.swift",
+    "lines": [
+      61,
+      120
+    ],
+    "bytes": 5609,
+    "sha256": "bb4fb0acd3168adfe8692cf286aca17948b18918895d89bf4b672aabf6114f94"
+  },
+  {
+    "path": "bounded-raw-views/arch-010-003.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardWakeOwnerProbe.swift",
+    "lines": [
+      121,
+      180
+    ],
+    "bytes": 5780,
+    "sha256": "0ab005ceef84003f424f0b9940593552e72eac9cd5d7df0fc1bbdfb4908b1c47"
+  },
+  {
+    "path": "bounded-raw-views/arch-010-004.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardWakeOwnerProbe.swift",
+    "lines": [
+      181,
+      240
+    ],
+    "bytes": 5816,
+    "sha256": "fd5b75318887a8f1c8755658195d7d78653ecb54969156e01579c69a1564f213"
+  },
+  {
+    "path": "bounded-raw-views/arch-010-005.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardWakeOwnerProbe.swift",
+    "lines": [
+      241,
+      300
+    ],
+    "bytes": 5584,
+    "sha256": "50a4c7f29031f1577ddb8e23c98fe1d747155cacee27b8435483a146b32c5da6"
+  },
+  {
+    "path": "bounded-raw-views/arch-010-006.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardWakeOwnerProbe.swift",
+    "lines": [
+      301,
+      360
+    ],
+    "bytes": 5619,
+    "sha256": "1515bc711981faec6a76ec9fada4987fe533714f86c811aa079e09632583c324"
+  },
+  {
+    "path": "bounded-raw-views/arch-010-007.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardWakeOwnerProbe.swift",
+    "lines": [
+      361,
+      405
+    ],
+    "bytes": 4029,
+    "sha256": "e42e87f60569c00e852dc04b9feaa6596b02e50a8cc0a344d0250951d1441252"
+  },
+  {
+    "path": "bounded-raw-views/arch-011-001-chunk-000.json",
+    "bytes": 4307,
+    "sha256": "e310d9030aaf7fec8dd45c2d5306c875ee5a85fd3d327cef6c43b279c9ac403c",
+    "origin_view": "bounded-raw-views/arch-011-001.json",
+    "character_range": [
+      0,
+      3000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/arch-011-001-chunk-001.json",
+    "bytes": 4826,
+    "sha256": "05af65801281cfda0b7a6a41332752a8dd99cd6df1b57c58377fca1f303a1827",
+    "origin_view": "bounded-raw-views/arch-011-001.json",
+    "character_range": [
+      3000,
+      6000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/arch-011-001-chunk-002.json",
+    "bytes": 528,
+    "sha256": "f2b3c083cfa1cd9c005b3b6ec388bd3d2f926f1b6875aeee52039aaf764749cf",
+    "origin_view": "bounded-raw-views/arch-011-001.json",
+    "character_range": [
+      6000,
+      6235
+    ]
+  },
+  {
+    "path": "bounded-raw-views/arch-012-001.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-artifacts/historical-app-keyboard-skip-list.json",
+    "lines": [
+      1,
+      60
+    ],
+    "bytes": 6344,
+    "sha256": "68192851f144a8e1ad9160f29862a7533524585b4bc0cd4c8d52ba2673ae21cb"
+  },
+  {
+    "path": "bounded-raw-views/arch-012-002.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-artifacts/historical-app-keyboard-skip-list.json",
+    "lines": [
+      61,
+      120
+    ],
+    "bytes": 6495,
+    "sha256": "e64c812c0d6d0fd8404b476a949233eabd63b0e9ca1966d55f89693edffadfff"
+  },
+  {
+    "path": "bounded-raw-views/arch-012-003.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-artifacts/historical-app-keyboard-skip-list.json",
+    "lines": [
+      121,
+      156
+    ],
+    "bytes": 3784,
+    "sha256": "e0d6425f9d4ff9e6340c990c620f281bc6a2866be575a3bfd516fdd8e1fe48fc"
+  },
+  {
+    "path": "bounded-raw-views/arch-013-001.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-artifacts/historical-rimebridge-skip-list.json",
+    "lines": [
+      1,
+      60
+    ],
+    "bytes": 5916,
+    "sha256": "2be166dc555144b5fe96f44a6cbfabb48eaa18e6d206f9315664aa414f5249aa"
+  },
+  {
+    "path": "bounded-raw-views/arch-013-002.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-artifacts/historical-rimebridge-skip-list.json",
+    "lines": [
+      61,
+      106
+    ],
+    "bytes": 5016,
+    "sha256": "3235d51bc5ff568d71b116dd6d7e1fafecafd50808b4523209546d81c72a4415"
+  },
+  {
+    "path": "bounded-raw-views/arch-014-001.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-artifacts/manifest.json",
+    "lines": [
+      1,
+      14
+    ],
+    "bytes": 2296,
+    "sha256": "615c711600a99f2259c12aad2e6a52b711bd081c2c1962864dbae6e701169a7e"
+  },
+  {
+    "path": "bounded-raw-views/arch-015-001.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-artifacts/path-status.json",
+    "lines": [
+      1,
+      34
+    ],
+    "bytes": 3337,
+    "sha256": "bd4143cb7c135b51958218b646f09e7b13ba738333d994ce7e5c47fe8b287992"
+  },
+  {
+    "path": "bounded-raw-views/arch-016-001.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-artifacts/required-gate-methods.json",
+    "lines": [
+      1,
+      31
+    ],
+    "bytes": 3476,
+    "sha256": "3ffaeed7b45273f6689f36b42efed9ca10d63262c59ac35f321f0ff85962dd83"
+  },
+  {
+    "path": "bounded-raw-views/arch-017-001.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f3-quality-uncovered-validation-2026-10-05.md",
+    "lines": [
+      1,
+      19
+    ],
+    "bytes": 4701,
+    "sha256": "df599ef15ea21727eba428598af1a9d9c9dc4dbd62d27e99e8ddee70e6c39799"
+  },
+  {
+    "path": "bounded-raw-views/arch-018-001.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/manifest.json",
+    "lines": [
+      1,
+      60
+    ],
+    "bytes": 5068,
+    "sha256": "9b2bcb648d8e442fdfa708f599a20de41faf81664c92f157006516e0894e7bf9"
+  },
+  {
+    "path": "bounded-raw-views/arch-018-002.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/manifest.json",
+    "lines": [
+      61,
+      112
+    ],
+    "bytes": 4452,
+    "sha256": "5939113edfbcd1dba2deeb157bf36190fdf8cf6fcbfe5f2cb2d80087bb50ea12"
+  },
+  {
+    "path": "bounded-raw-views/arch-019-001.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/private-evidence-index.json",
+    "lines": [
+      1,
+      47
+    ],
+    "bytes": 5172,
+    "sha256": "6b7d048584de8717f5ae3b85e4726c0ec75d2646979ebd5e1d98779f37caccb0"
+  },
+  {
+    "path": "bounded-raw-views/arch-020-001.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-validation-2026-10-05.md",
+    "lines": [
+      1,
+      38
+    ],
+    "bytes": 7349,
+    "sha256": "437cf129a588e90e55cbf4329be6ca8b6bc5a630c7ed3c07b9b0b8d0f31bd7c2"
+  },
+  {
+    "path": "bounded-raw-views/arch-021-001-chunk-000.json",
+    "bytes": 4177,
+    "sha256": "3ef1a0d03e4df9b587814c5110b1bf6627464bdbb8e24d5ad833092418b7605c",
+    "origin_view": "bounded-raw-views/arch-021-001.json",
+    "character_range": [
+      0,
+      3000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/arch-021-001-chunk-001.json",
+    "bytes": 4999,
+    "sha256": "4b8f951ccdc99231dbe07b89d1128a89013fadc0f0fbebbd0049d9ff12f0d1b7",
+    "origin_view": "bounded-raw-views/arch-021-001.json",
+    "character_range": [
+      3000,
+      6000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/arch-021-001-chunk-002.json",
+    "bytes": 5827,
+    "sha256": "c2f16ecca3de2573b0272d68f406de729e9d41ad461752c3cd6ee31de03dc14b",
+    "origin_view": "bounded-raw-views/arch-021-001.json",
+    "character_range": [
+      6000,
+      9000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/arch-021-001-chunk-003.json",
+    "bytes": 901,
+    "sha256": "fdff0f30cc53e02ed6b70a0786ccdf7b4effa3336759871c399bc076fbfae324",
+    "origin_view": "bounded-raw-views/arch-021-001.json",
+    "character_range": [
+      9000,
+      9431
+    ]
+  },
+  {
+    "path": "bounded-raw-views/arch-021-002.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-prepared-entry-2026-10-05.md",
+    "lines": [
+      61,
+      73
+    ],
+    "bytes": 3913,
+    "sha256": "79d6bbd6bc606c87b8b678d7634e43b7b06f1864f2133e49c4148438de5bfff0"
+  },
+  {
+    "path": "bounded-raw-views/arch-022-001.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f3-quality-uncovered-artifacts/manifest.json",
+    "lines": [
+      1,
+      47
+    ],
+    "bytes": 4004,
+    "sha256": "8f8f0943f1bca5cd7fca90e5a8db5eb91f29ee1f92e4c0291ef84a3b1213a4fd"
+  },
+  {
+    "path": "bounded-raw-views/arch-023-001.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/build-request.json",
+    "lines": [
+      1,
+      39
+    ],
+    "bytes": 3624,
+    "sha256": "ddf872dc849528f2f2c2deb7ebf6f3f04697b7f39fa7ea3b87d0f891e10728a1"
+  },
+  {
+    "path": "bounded-raw-views/arch-024-001.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/build-receipt.json",
+    "lines": [
+      1,
+      10
+    ],
+    "bytes": 1169,
+    "sha256": "aaf33caf35d1f70ffc09a34b0429ba2fbd2e1fe4ed77863676080c23d8ffcec8"
+  },
+  {
+    "path": "bounded-raw-views/arch-025-001-chunk-000.json",
+    "bytes": 3367,
+    "sha256": "b757288b5d5fcce17b1408fef5b0ffaa5cdb60b20daad28539c01b57eb4d3f94",
+    "origin_view": "bounded-raw-views/arch-025-001.json",
+    "character_range": [
+      0,
+      3000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/arch-025-001-chunk-001.json",
+    "bytes": 3316,
+    "sha256": "c81f2b7eeaef5d331cc1bdaf3a7896baa38994b51dedd668fcf6305e5ad2d43e",
+    "origin_view": "bounded-raw-views/arch-025-001.json",
+    "character_range": [
+      3000,
+      6000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/arch-025-001-chunk-002.json",
+    "bytes": 3356,
+    "sha256": "6890263f29c8e04a2dc7a77d76436a0c4046074c26b578debc6936e6b0972d29",
+    "origin_view": "bounded-raw-views/arch-025-001.json",
+    "character_range": [
+      6000,
+      9000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/arch-025-001-chunk-003.json",
+    "bytes": 3305,
+    "sha256": "aeb45db9854e14d99161a6bf269a2adc49e472165be1121aa5e0b54863edd2c9",
+    "origin_view": "bounded-raw-views/arch-025-001.json",
+    "character_range": [
+      9000,
+      12000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/arch-025-001-chunk-004.json",
+    "bytes": 3370,
+    "sha256": "092c480d7fd9847fb32528182cd8445ed4c88f80eb1b87dd51308d31ef829e5c",
+    "origin_view": "bounded-raw-views/arch-025-001.json",
+    "character_range": [
+      12000,
+      15000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/arch-025-001-chunk-005.json",
+    "bytes": 3298,
+    "sha256": "dd48de8f8d8f710ad29aadd7672baa128573584ca438abddefbabc2a2396f44f",
+    "origin_view": "bounded-raw-views/arch-025-001.json",
+    "character_range": [
+      15000,
+      18000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/arch-025-001-chunk-006.json",
+    "bytes": 3398,
+    "sha256": "6be195450c5512911477391d508c5351c35d91303fb01050ddb6906ecbbd5f56",
+    "origin_view": "bounded-raw-views/arch-025-001.json",
+    "character_range": [
+      18000,
+      21000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/arch-025-001-chunk-007.json",
+    "bytes": 3314,
+    "sha256": "111b9ff253602884d8c274f3cb4d56ef88fb5d632f42a6a39033869bd3f2989d",
+    "origin_view": "bounded-raw-views/arch-025-001.json",
+    "character_range": [
+      21000,
+      24000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/arch-025-001-chunk-008.json",
+    "bytes": 3382,
+    "sha256": "1c62a2d19090d94648698d60f496b7d3ede62624b14635a8b3c681f53ad51e82",
+    "origin_view": "bounded-raw-views/arch-025-001.json",
+    "character_range": [
+      24000,
+      27000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/arch-025-001-chunk-009.json",
+    "bytes": 3362,
+    "sha256": "c9fd56c2c3b6e2869ba8cef69e8374dcfc44234c95fe0744caa7222a5fa8b613",
+    "origin_view": "bounded-raw-views/arch-025-001.json",
+    "character_range": [
+      27000,
+      30000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/arch-025-001-chunk-010.json",
+    "bytes": 3370,
+    "sha256": "b9c64b165071b1415de2d184d96c4fe02166a8d1142a719f8d6493332f951e7c",
+    "origin_view": "bounded-raw-views/arch-025-001.json",
+    "character_range": [
+      30000,
+      33000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/arch-025-001-chunk-011.json",
+    "bytes": 3386,
+    "sha256": "0803ba837c496e25fbe17741fe2f031177796ff882d4db70554c648a5ecc3331",
+    "origin_view": "bounded-raw-views/arch-025-001.json",
+    "character_range": [
+      33000,
+      36000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/arch-025-001-chunk-012.json",
+    "bytes": 3335,
+    "sha256": "2ec2c01786184cc3e7cb219a90beb0923c69b23590d647c9f873474a75f75db0",
+    "origin_view": "bounded-raw-views/arch-025-001.json",
+    "character_range": [
+      36000,
+      39000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/arch-025-001-chunk-013.json",
+    "bytes": 2743,
+    "sha256": "62c1d2a54a9bc7fabda31b138412c0b606ca2ebbb225ee730dfea52e149763bb",
+    "origin_view": "bounded-raw-views/arch-025-001.json",
+    "character_range": [
+      39000,
+      41353
+    ]
+  },
+  {
+    "path": "bounded-raw-views/arch-026-001.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/paired-products.json",
+    "lines": [
+      1,
+      60
+    ],
+    "bytes": 7912,
+    "sha256": "79043075a3fa26589178d06a827052ded5db32de3263bb7a8e8d3806e1138afd"
+  },
+  {
+    "path": "bounded-raw-views/arch-026-002.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/paired-products.json",
+    "lines": [
+      61,
+      75
+    ],
+    "bytes": 3129,
+    "sha256": "68fa3c4470a019c5701f7751b870aae5e9054306c02b89c748bb2c21e2061df7"
+  },
+  {
+    "path": "bounded-raw-views/arch-027-001.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/execution-entry.json",
+    "lines": [
+      1,
+      60
+    ],
+    "bytes": 5675,
+    "sha256": "1aa657deb7f3c3e191cbd8709489b0449658afde814424ec2f6dd0a265267b89"
+  },
+  {
+    "path": "bounded-raw-views/arch-027-002.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/execution-entry.json",
+    "lines": [
+      61,
+      80
+    ],
+    "bytes": 1952,
+    "sha256": "bbda7b048937a23625f8496054647473487291ec618ef4ac6a1765b77418d089"
+  },
+  {
+    "path": "bounded-raw-views/arch-028-001.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/five-source-hashes.json",
+    "lines": [
+      1,
+      27
+    ],
+    "bytes": 2632,
+    "sha256": "15542c6c64d09e0385b530d509f39ea8d3ddf9ca7b0e2552094ee8364740846c"
+  },
+  {
+    "path": "bounded-raw-views/arch-029-001.json",
+    "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/freeze-receipt.json",
+    "lines": [
+      1,
+      30
+    ],
+    "bytes": 3285,
+    "sha256": "f8be4d922039e2aac29dfd2a344838675d7257d9344d03d1654f5668a0dc863e"
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-000.json",
+    "bytes": 3534,
+    "sha256": "4b6cbdcd5c2f2e5c0936287b73a0f4c964d6eeae6d926f9b8e0f718e5183f770",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      0,
+      3000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-001.json",
+    "bytes": 3518,
+    "sha256": "93538c98c97962ad5ceeaf65b201113cf008ba150ffca52993bcbaea40928cef",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      3000,
+      6000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-002.json",
+    "bytes": 3550,
+    "sha256": "028ac56a9050fd880730603da8dee649b2f8be60538fd9e97b6736d120908450",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      6000,
+      9000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-003.json",
+    "bytes": 3565,
+    "sha256": "4c239aa57d2e75208e6c3c6baa2d2b91dc1d6c0cd7627df4ba5250cae5b53847",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      9000,
+      12000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-004.json",
+    "bytes": 3427,
+    "sha256": "215531af5068c891f69402916de34dd41afb0d7d5490494eaed2e798aa38b6ca",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      12000,
+      15000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-005.json",
+    "bytes": 3278,
+    "sha256": "4e3aeaf896f606daa481209cfd3a7115ceb681985558f209a4ee5fb9850da1b7",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      15000,
+      18000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-006.json",
+    "bytes": 3350,
+    "sha256": "849013b0155dc44d273f9ee61be8fe056fdeac3e6e112facb973019d6dce2c7b",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      18000,
+      21000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-007.json",
+    "bytes": 3386,
+    "sha256": "da7bd986e2313e11cc31f1243675ba97c5b0425d514ddc215f201cfdff2f1293",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      21000,
+      24000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-008.json",
+    "bytes": 3384,
+    "sha256": "9ee2ab64f20afa882dd5a07b97a71fb0e8239d93a423f5b7a3e5e3286ada4e74",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      24000,
+      27000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-009.json",
+    "bytes": 3370,
+    "sha256": "dead1cd43b144cb3959ebc89a7adb158da762e9f0a82b23fc157d78460e92faa",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      27000,
+      30000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-010.json",
+    "bytes": 3394,
+    "sha256": "9c0f71af736e96c1792d859a8b6ef33cd74c19a96ba97e4ab15c328ab465e86f",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      30000,
+      33000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-011.json",
+    "bytes": 3354,
+    "sha256": "ec33a6bd9c6e038a5c9cad806f94488963b04d6163fe7f2e739703afe2eca421",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      33000,
+      36000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-012.json",
+    "bytes": 3406,
+    "sha256": "ca61dedb206adf451ee7d386773fa6f37fac539363ddbd435e2f20d689a10c32",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      36000,
+      39000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-013.json",
+    "bytes": 3340,
+    "sha256": "40a231d43f737cfca7e0244daefcf32bf15011a01e667c4a23fc06b1f89f7a67",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      39000,
+      42000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-014.json",
+    "bytes": 3403,
+    "sha256": "d678f42e332ad05202eb405d8114250342d16cabcc9814e86464ab91b555e29d",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      42000,
+      45000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-015.json",
+    "bytes": 3353,
+    "sha256": "d64c3d06b796c7b8345d9416a996d0023772b01e290acb8652030aaecfb27b2b",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      45000,
+      48000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-016.json",
+    "bytes": 3394,
+    "sha256": "2e94d1188fb8bcee276629ee1a956f9fc6f0a0b44d688f8ea797037083d5d0fd",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      48000,
+      51000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-017.json",
+    "bytes": 3374,
+    "sha256": "1f82680a356f7a078bac61a4055341071df462e6e59ac4dd37f76883916905d1",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      51000,
+      54000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-018.json",
+    "bytes": 3362,
+    "sha256": "2367ac36842ab632093c06496ae6900250d1c429feb06c0e16027871069e59e0",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      54000,
+      57000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-019.json",
+    "bytes": 3406,
+    "sha256": "dc0b77eec47fe6bd0495cd2de73dfe856e087cd09dc48041aea9ad5b0b432d8b",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      57000,
+      60000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-020.json",
+    "bytes": 3342,
+    "sha256": "6c2d6e706b0a2ff8cc14faaa35bd31f03ce29d8936aad1bbde55453018eaef0a",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      60000,
+      63000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-021.json",
+    "bytes": 3400,
+    "sha256": "ee98333c190f567d7e3ec703e2b70a96af527a51398a3f020f2067c0d8070699",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      63000,
+      66000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-022.json",
+    "bytes": 3343,
+    "sha256": "369a4d7e24f9236e7887ee38720c4787c09ee03f3603469a36438bd27e644a0e",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      66000,
+      69000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-023.json",
+    "bytes": 3401,
+    "sha256": "e15f51199ebbccd4149ec43b7f206b61b83255996778b11a3346beca868bb84f",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      69000,
+      72000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-024.json",
+    "bytes": 3396,
+    "sha256": "f479a3ceb7f4799685aa2d7dfb5fedab001473c259e89c4a5a9536902d124666",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      72000,
+      75000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-025.json",
+    "bytes": 3376,
+    "sha256": "0b78b700180bf03aff6b3c9739885a3924198d1b8740fe105577e076f8474fcd",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      75000,
+      78000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-026.json",
+    "bytes": 3382,
+    "sha256": "9060c2b3fb5e90fc92c82c1bbf7960958bd2629e38a46e6bba6d6f62589d78b6",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      78000,
+      81000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-027.json",
+    "bytes": 3388,
+    "sha256": "16dc86e8d41088f3bd0546a1d51762b20d1eae65d032633c44ae9d2d572a0c3d",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      81000,
+      84000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-028.json",
+    "bytes": 3385,
+    "sha256": "718a656160b9e8dd13537b699f587c797d4e5b597e02f285a17f3efdd067c184",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      84000,
+      87000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-029.json",
+    "bytes": 3299,
+    "sha256": "b58bad4a500600f4ce069af86265aca6bf9dac50b1f5669f9d2d8346e7cbc754",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      87000,
+      90000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-030.json",
+    "bytes": 3302,
+    "sha256": "3341910d35a11f5a3754791568c985b93f58d12c354c2b420d30470738f4246c",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      90000,
+      93000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-031.json",
+    "bytes": 3374,
+    "sha256": "21c68ad7fb23410b6c73d0767e45198288c0a018bf4e2feaee4ccdf4d672b65d",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      93000,
+      96000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-032.json",
+    "bytes": 3380,
+    "sha256": "e70bff3c6cea57ea7068697a7b994375d9dce08837781c57d86fcf678cba6c2f",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      96000,
+      99000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-033.json",
+    "bytes": 3391,
+    "sha256": "5cd4a6722b9b8b2b564841ab3dff4f9bb030d9db3db3b402e933acf7158d4f28",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      99000,
+      102000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-034.json",
+    "bytes": 3402,
+    "sha256": "14c43f970263def4916f8f8510286b3c9e949a4798a28a9b7631b4720f6bec18",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      102000,
+      105000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-035.json",
+    "bytes": 3384,
+    "sha256": "1779933d75f1650af79e071dafae8f7afa76f358339656293bcf81286b4482b2",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      105000,
+      108000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-036.json",
+    "bytes": 3384,
+    "sha256": "0157a903d103c4ccec199e935e86484c17589d82e5914837a2494087624ca30b",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      108000,
+      111000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-037.json",
+    "bytes": 3382,
+    "sha256": "8a1482e36baa084f239f6bc6593907781b3518181e8802ca1bdb7ba0b2dcc2ee",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      111000,
+      114000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-038.json",
+    "bytes": 3382,
+    "sha256": "18c601614f1f4813d9dacfb869151b7537660473ad66f7cba432502739508a2f",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      114000,
+      117000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-039.json",
+    "bytes": 3296,
+    "sha256": "3bec1be9f544483b4b1c85c373f42a65e9bca9fd5f8abdae7e65b7767db532e0",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      117000,
+      120000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-040.json",
+    "bytes": 3338,
+    "sha256": "693650cb01170979e4f1a6da6dc1d5b82f4756caddfc6db334170bc3eb6bd740",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      120000,
+      123000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-041.json",
+    "bytes": 3384,
+    "sha256": "cba48755f718b22e23e69062666d7d0161027bc4e0c53e7093498eb83d7d8980",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      123000,
+      126000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-042.json",
+    "bytes": 3418,
+    "sha256": "8fe8127db8818b9af502837630f71a0247fefe9009ddf941e99aba5407986c66",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      126000,
+      129000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-043.json",
+    "bytes": 3410,
+    "sha256": "7295e8cf38bebcbc1db1787e8b899b78c130f19d11d7795d592a57e73043863e",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      129000,
+      132000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-044.json",
+    "bytes": 3414,
+    "sha256": "83ec1f3aed195a03398937c7cd0beeaf55d56296755b8c948212e952adbf43c5",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      132000,
+      135000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-045.json",
+    "bytes": 3408,
+    "sha256": "854e56a1219323114f8d1aa30a0b6c0e40c9bfc6e28f5167ca30775654e3ba9e",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      135000,
+      138000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-046.json",
+    "bytes": 3395,
+    "sha256": "1c82ba47c774cd66c01354301c372d0c5ffdab5d0394d5e49d228c0ea54ef636",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      138000,
+      141000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-047.json",
+    "bytes": 3425,
+    "sha256": "7fa169f03289249ba5bf2d373e64462b3455e147c8507e26ed36ac871cfe2e34",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      141000,
+      144000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-048.json",
+    "bytes": 3386,
+    "sha256": "b393dff598f5584c5b91132b16de3a64a2774cc41e1454ce38f298be899490d7",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      144000,
+      147000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-049.json",
+    "bytes": 3422,
+    "sha256": "5bbda3038ad09ff00e063e41cbeb41a94a2b8a7c5da8e5cd15a86ea8945e68a5",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      147000,
+      150000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-050.json",
+    "bytes": 3392,
+    "sha256": "a597a1b78789cd2fe102b9328fafdc47628103e826f7f2852c155599d3fc95e3",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      150000,
+      153000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-051.json",
+    "bytes": 3426,
+    "sha256": "989c91ab90b4ac84156cfba692aa58a89485de3bbcb2fd3a93522ce3d03afcce",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      153000,
+      156000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-052.json",
+    "bytes": 3390,
+    "sha256": "d6da2bfdf143a497ba7a2d1eec4cd53b7d29974f6dda47d13dde83ae0c5314e3",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      156000,
+      159000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-053.json",
+    "bytes": 3426,
+    "sha256": "5faea8001c3c6031e3ec3c8dc73261914df68a35c456a473677e9867a94b7091",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      159000,
+      162000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-054.json",
+    "bytes": 3406,
+    "sha256": "37b6bb9dbf356b7397cf7da0bbe55dca510b414f4bf82e9335c3a0f3c0d949c9",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      162000,
+      165000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-055.json",
+    "bytes": 3402,
+    "sha256": "7ceddd816c391c02d83142b23ad451ad02481f90416ead536c8dd8b3590a2ab8",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      165000,
+      168000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-056.json",
+    "bytes": 3424,
+    "sha256": "6f580e4a4b006d9038e121e5cbb0592262ddceb54c46c1adcbf80c0313eb119a",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      168000,
+      171000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-057.json",
+    "bytes": 3386,
+    "sha256": "39b837cc167590bf5989f1e977d155bab23e300e26050732dc669379f329241f",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      171000,
+      174000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-058.json",
+    "bytes": 3416,
+    "sha256": "d0eadb2fd7e4846024a0362dbadfdc0462c23f78f0d393c5b52a9fce66d7d4c0",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      174000,
+      177000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-identity-000-chunk-059.json",
+    "bytes": 3107,
+    "sha256": "125d9a6b677945f81c83e99e438a5a7ae0f57fd0230ba1c700f0a218fce30a81",
+    "origin_view": "bounded-raw-views/quality-identity-000.json",
+    "character_range": [
+      177000,
+      179625
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-tools-000.json",
+    "bytes": 484,
+    "sha256": "5c90fa9cd69d6d4c6b13042cd50e2cd12b7f2b716b0dac427caa4f49539a219b"
+  },
+  {
+    "path": "bounded-raw-views/quality-tools-001.json",
+    "bytes": 332,
+    "sha256": "d9160c0f1476c804a86e8d364eb880575054b426a590474e156babc51f286085"
+  },
+  {
+    "path": "bounded-raw-views/quality-tools-002.json",
+    "bytes": 508,
+    "sha256": "866fc5de3d5cdf9641501da0a9817d3fdb8859a789ace14f73bca59886c6a4fb"
+  },
+  {
+    "path": "bounded-raw-views/quality-tools-003.json",
+    "bytes": 344,
+    "sha256": "df065519e3d6d33f1e8e41a99caf143df8fa9eb14fa0138136fca94833a02242"
+  },
+  {
+    "path": "bounded-raw-views/quality-tools-004.json",
+    "bytes": 512,
+    "sha256": "0dc1205abbd71d55e344d6c354a4514e2636c7a7254e5ae58e7fb27d3d1d7d7a"
+  },
+  {
+    "path": "bounded-raw-views/quality-tools-005.json",
+    "bytes": 346,
+    "sha256": "d374daaf54a6eea2b5a5087ee76168de91c647db96f1bef9a632ad0fe3dfe169"
+  },
+  {
+    "path": "bounded-raw-views/quality-tools-006.json",
+    "bytes": 536,
+    "sha256": "06c3ea03bee1b701560b6a665e76934b09315d8dc272a10572d240c12aefb127"
+  },
+  {
+    "path": "bounded-raw-views/quality-tools-007.json",
+    "bytes": 4199,
+    "sha256": "6115ddff7e2d19821dafd8ab89d0edcd2b5e9326e7e9fbecca57bb83aa545edf"
+  },
+  {
+    "path": "bounded-raw-views/quality-tools-008.json",
+    "bytes": 276,
+    "sha256": "e5626df939a206e6d9d4bf84d76ca13c7558cd4806adbf5d6bad44eb5cfa113a"
+  },
+  {
+    "path": "bounded-raw-views/quality-tools-009.json",
+    "bytes": 1960,
+    "sha256": "f24af3e1cd296aa9d2cea6f8675bee6ae6d0cc0afa26f4c072c6613d5be30f23"
+  },
+  {
+    "path": "bounded-raw-views/quality-tools-010.json",
+    "bytes": 299,
+    "sha256": "f66086382f3df787e756d8c88bc8dbb5254662dfdabd9416d116c5362c95145f"
+  },
+  {
+    "path": "bounded-raw-views/quality-tools-011.json",
+    "bytes": 2029,
+    "sha256": "0de06f51a97436533542705364696deb383cd277cd317150882a97a29866110e"
+  },
+  {
+    "path": "bounded-raw-views/quality-inputs-000.json",
+    "bytes": 334,
+    "sha256": "7118a7cee753a6c959b4349de711c60c5cfc8233a3dd463b060800a22d3c4843"
+  },
+  {
+    "path": "bounded-raw-views/quality-inputs-001.json",
+    "bytes": 357,
+    "sha256": "27618cae80c8bd2e32d33df65a28bc38b94d0f29f7114ae230de0ad50d79bead"
+  },
+  {
+    "path": "bounded-raw-views/quality-inputs-002.json",
+    "bytes": 1802,
+    "sha256": "218183bc8e50168a04b4d26597734de141faeb5710f216b763416b014945a208"
+  },
+  {
+    "path": "bounded-raw-views/quality-inputs-003.json",
+    "bytes": 680,
+    "sha256": "c1d4c45995a079d44dcf8f6d160a2bac0a8418e6374522d713f8757be0d93e44"
+  },
+  {
+    "path": "bounded-raw-views/quality-inputs-004-chunk-000.json",
+    "bytes": 3331,
+    "sha256": "7070cbe1a6131df779f850603a50b215ec5f816a5d72ee43d87b5e717b71533b",
+    "origin_view": "bounded-raw-views/quality-inputs-004.json",
+    "character_range": [
+      0,
+      3000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-inputs-004-chunk-001.json",
+    "bytes": 3322,
+    "sha256": "2b2d8b70f008b9471be409890e1dbe9a72155cb3fca8dc8907b8fcbeb960da8a",
+    "origin_view": "bounded-raw-views/quality-inputs-004.json",
+    "character_range": [
+      3000,
+      6000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-inputs-004-chunk-002.json",
+    "bytes": 3326,
+    "sha256": "e77d607dd3e158c6a4e5ad112c94ca8ce178474847b428f848f8cab7dccd94a7",
+    "origin_view": "bounded-raw-views/quality-inputs-004.json",
+    "character_range": [
+      6000,
+      9000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-inputs-004-chunk-003.json",
+    "bytes": 3319,
+    "sha256": "050caec7056ac1e48844cc60e1dd236a7e1d96f08383e62bd9fe537316461ba1",
+    "origin_view": "bounded-raw-views/quality-inputs-004.json",
+    "character_range": [
+      9000,
+      12000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-inputs-004-chunk-004.json",
+    "bytes": 3332,
+    "sha256": "7fa5b337efc2b7fa4f8282d8b9e059d0513414db97a4dd6e1082c66953013b75",
+    "origin_view": "bounded-raw-views/quality-inputs-004.json",
+    "character_range": [
+      12000,
+      15000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-inputs-004-chunk-005.json",
+    "bytes": 3312,
+    "sha256": "62ef8e8432e84c70dc35bebb1a79a9c5b4838131939721ca7596afcab96c11ea",
+    "origin_view": "bounded-raw-views/quality-inputs-004.json",
+    "character_range": [
+      15000,
+      18000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-inputs-004-chunk-006.json",
+    "bytes": 3354,
+    "sha256": "2bd864f237482a578013689e3e1ec9384d6ab3c9a169c97d21cc467c522536ab",
+    "origin_view": "bounded-raw-views/quality-inputs-004.json",
+    "character_range": [
+      18000,
+      21000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-inputs-004-chunk-007.json",
+    "bytes": 3332,
+    "sha256": "d5abdbe940db8584d11840a71d137ade967c006edad521ecfa5ca6078aab63d4",
+    "origin_view": "bounded-raw-views/quality-inputs-004.json",
+    "character_range": [
+      21000,
+      24000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-inputs-004-chunk-008.json",
+    "bytes": 3400,
+    "sha256": "86859a0bce21cb5995b74d40b71253e43377fdf8e726e49331cebaa02c0db94e",
+    "origin_view": "bounded-raw-views/quality-inputs-004.json",
+    "character_range": [
+      24000,
+      27000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-inputs-004-chunk-009.json",
+    "bytes": 3316,
+    "sha256": "e89c6488ed9b81050980edc53d47731d9f1d3ebf24a90ab6576e69a60662cf4b",
+    "origin_view": "bounded-raw-views/quality-inputs-004.json",
+    "character_range": [
+      27000,
+      30000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-inputs-004-chunk-010.json",
+    "bytes": 3392,
+    "sha256": "f3de7f6064af30255eb5f433a064070c7867693690e876383d0e2f0db33590ac",
+    "origin_view": "bounded-raw-views/quality-inputs-004.json",
+    "character_range": [
+      30000,
+      33000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-inputs-004-chunk-011.json",
+    "bytes": 3336,
+    "sha256": "bec515587d964aad65bb39920259776a807b5257923d8cd86c63337f8b2a7365",
+    "origin_view": "bounded-raw-views/quality-inputs-004.json",
+    "character_range": [
+      33000,
+      36000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-inputs-004-chunk-012.json",
+    "bytes": 3372,
+    "sha256": "62b5c1e2757fecb9a496a39817c88c10acbb037c6c4e3f4b096a10e29616fd2b",
+    "origin_view": "bounded-raw-views/quality-inputs-004.json",
+    "character_range": [
+      36000,
+      39000
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-inputs-004-chunk-013.json",
+    "bytes": 1263,
+    "sha256": "3451681f0db0401775e179309147737c535b18a772b13e5c9d0c6ab1f0ae7ed0",
+    "origin_view": "bounded-raw-views/quality-inputs-004.json",
+    "character_range": [
+      39000,
+      39946
+    ]
+  },
+  {
+    "path": "bounded-raw-views/quality-inputs-005.json",
+    "bytes": 7142,
+    "sha256": "aff945380dc62d8d01838114c4eea7a67154b6806072438ff445827f8aaedbdb"
+  },
+  {
+    "path": "bounded-raw-views/quality-inputs-006.json",
+    "bytes": 1247,
+    "sha256": "b6ae2089e77887aeb61b88d2e826503ddc1f964208edeb088b3f3c5636fc6754"
+  },
+  {
+    "path": "bounded-raw-views/quality-inputs-007.json",
+    "bytes": 3498,
+    "sha256": "1d098ba5dbff80a0657335f878006728b8aa6b8ceedb7f3cb92904aefd9b587e"
+  },
+  {
+    "path": "bounded-raw-views/quality-inputs-008.json",
+    "bytes": 1361,
+    "sha256": "98105b3369a0a16f7e8f54bead53303caa45928817b98beffc64c8e29096bf7b"
+  },
+  {
+    "path": "bounded-raw-views/quality-inputs-009.json",
+    "bytes": 1877,
+    "sha256": "b976d80af65a9f2146a4a3056adafbf9d2f761134a49450a7cc09294f1f7eedc"
+  },
+  {
+    "path": "bounded-raw-views/quality-inputs-010.json",
+    "bytes": 3273,
+    "sha256": "5534206551fd2273b1da976eae6a4b322aa97dbfd4d2e9fb058d20c80ee1e6c2"
+  },
+  {
+    "path": "bounded-raw-views/quality-inputs-011.json",
+    "bytes": 3912,
+    "sha256": "c7dc832e141b128bf523a14ad4b94d181a8e4ffc9523a69b3b9711a2c17d3b33"
+  }
+]

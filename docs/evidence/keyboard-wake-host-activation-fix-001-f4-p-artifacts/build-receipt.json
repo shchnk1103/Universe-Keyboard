@@ -1,0 +1,10 @@
+{
+  "started_utc": "2026-10-05T02:51:40.538896+00:00",
+  "ended_utc": "2026-10-05T02:52:13.974565+00:00",
+  "elapsed_seconds": 33.43521387502551,
+  "exit_code": 0,
+  "timeout": false,
+  "test_run": false,
+  "device_instance_targeted": false,
+  "source_written": false
+}

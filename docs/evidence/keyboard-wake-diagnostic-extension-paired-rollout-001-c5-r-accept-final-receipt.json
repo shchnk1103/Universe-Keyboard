@@ -1,0 +1,40 @@
+{
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "candidate_digest": "af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9",
+  "run_id": "C5-R-20261001-01",
+  "lane": "QUALITY-C5-R-ACCEPT",
+  "round": 1,
+  "outcome": {
+    "review_coverage": "Complete",
+    "runtime_acceptance": "Hold",
+    "finding": "HOST-Q-R-01",
+    "tool_calls": 6,
+    "elapsed_seconds_before_final_timer_write": 461.006,
+    "soft_write_target_360_exceeded": true,
+    "per_call_start_end_times": "not supplied; original ledger contains actual tools/purposes and global timer only",
+    "final_timer_filesystem_latency": "excluded from reviewer sample; file mtime remains below480seconds",
+    "strict_all_protocol_compliance_claim": false
+  },
+  "source_build_match": 568,
+  "built_bundle_match": 111,
+  "repo_inputs_match_before_owner_append": 30,
+  "scratch_script_match": 3,
+  "preserved_existing_other_files": 2561,
+  "sole_existing_modified_path": "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md",
+  "after_assignment_sha256": "09adb6ab45fb8d5d8f111108f47c562c9dcc1a650e7f831ed17beb010e493dd5",
+  "output_sha256": {
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-accept-input-manifest.json": "91c0f006b6376cb6944590a51486a90145d91453806da96bcebf58d38f2ab8ca",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-accept-entry.md": "44ab7e3a025bba8ca5fe4c21969ea59667a11a79bec002f7f9fc4e29a07647be",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-accept-quality-packet.md": "3e2f15cc08a8fce89f36ff822630f64d41f3164bfe7aaeb81b9b1d76c259ff07",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-accept-quality-review.md": "17810e2302d7c76207244050564426cc920705e0f21f9949805ede96808459c0",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-accept-quality-usage.json": "651707ef48e04146cd01a28775a97656ab2848a91be5ffac489afa71f76fe0b8",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-accept-timer.json": "2c3e89e206843c58aea73493a643f1790adeaa6c0b0e5e2693900caa7bb9900d",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-accept-validation-2026-10-01.md": "eb4c7df901eead52dc320d2501d06522d12eb7c2ab3978a56dcd50151b48e878"
+  },
+  "no_device_or_current_runtime_access": true,
+  "status_z_sha256": "b9b237cc4cf60ebb9bdcccf84f3a5f268e5dff319fd7f2da972b746a033965ac",
+  "full_dirty_status_path": "/private/tmp/ukey-wake-c5-r-accept-20261001/after-status.txt",
+  "dirty_entry_count": 480,
+  "staged_count": 0
+}

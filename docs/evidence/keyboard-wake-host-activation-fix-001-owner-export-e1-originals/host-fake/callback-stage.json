@@ -1,0 +1,51 @@
+{
+  "utc": "2026-10-06T03:55:38.187066+00:00",
+  "monotonic_ns": 1393245394902375,
+  "stop_utc": "2026-10-06T03:55:38.187066+00:00",
+  "stop_monotonic_ns": 1393245394902375,
+  "status": "unavailable",
+  "memory_snapshot_reads": 0,
+  "read_attempted": 1,
+  "target_expressions": 0,
+  "argument_reads": 1,
+  "deadline_exceeded": false,
+  "pid": 4242,
+  "thread_id": 7,
+  "frame_id": 0,
+  "stop_id": 2,
+  "process_state": 5,
+  "stop_reason": 3,
+  "stop_reason_data": [
+    1,
+    1
+  ],
+  "stop_reason_data_count": 2,
+  "frame_pc": 4096,
+  "frame_uuid": "4B207746-89A7-321F-83C4-91477259BB26",
+  "symbol_mangled": "$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF",
+  "function_mangled": "$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF",
+  "breakpoint_id": 1,
+  "location_id": 1,
+  "breakpoint_pc": 4096,
+  "breakpoint_uuid": "4B207746-89A7-321F-83C4-91477259BB26",
+  "caller_function_names": [
+    "$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF",
+    "handleWakeOwnerProbeButton",
+    "Array.withUnsafeBytes"
+  ],
+  "identity_checks": {
+    "pid": true,
+    "frame0": true,
+    "pc": true,
+    "module": true,
+    "mangled": true,
+    "breakpoint": true,
+    "reason": true,
+    "new_stop": true,
+    "thread": true
+  },
+  "identity_match": true,
+  "button_caller": true,
+  "synchronous_borrow_caller": true,
+  "phase": "read_attempted_before_memory"
+}

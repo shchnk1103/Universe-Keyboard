@@ -1,0 +1,25 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "\n🐛 LLDB Command\n\n✅ Command executed\n\nOutput:\n  (Swift.UnsafeRawPointer) address = {\n    _rawValue = 0x000000011e62ad20 {...}\n  }\n  (Swift.Int) byteCount = 528 {\n    _value = 528\n  }\n"
+    }
+  ],
+  "structuredContent": {
+    "schema": "xcodebuildmcp.output.debug-command-result",
+    "schemaVersion": "2",
+    "didError": false,
+    "error": null,
+    "data": {
+      "command": "frame variable --raw-output --dynamic-type no-dynamic-values --no-synthetic --depth 1 address byteCount",
+      "outputLines": [
+        "(Swift.UnsafeRawPointer) address = {",
+        "  _rawValue = 0x000000011e62ad20 {...}",
+        "}",
+        "(Swift.Int) byteCount = 528 {",
+        "  _value = 528",
+        "}"
+      ]
+    }
+  }
+}

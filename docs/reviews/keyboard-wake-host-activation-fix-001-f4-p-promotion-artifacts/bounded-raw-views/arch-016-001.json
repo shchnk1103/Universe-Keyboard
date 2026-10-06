@@ -1,0 +1,133 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-artifacts/required-gate-methods.json",
+  "origin_sha256": "c9a016cd4258722c34d33bf0b2e645660d9d61d4adf4223186e77d06792f0f19",
+  "expected_sha256": "c9a016cd4258722c34d33bf0b2e645660d9d61d4adf4223186e77d06792f0f19",
+  "line_start": 1,
+  "line_end": 31,
+  "lines": [
+    {
+      "line": 1,
+      "text": "{"
+    },
+    {
+      "line": 2,
+      "text": "  \"count\": 23,"
+    },
+    {
+      "line": 3,
+      "text": "  \"class\": \"KeyboardTests/KeyboardHostLifecycleRecoveryGateTests\","
+    },
+    {
+      "line": 4,
+      "text": "  \"methods\": ["
+    },
+    {
+      "line": 5,
+      "text": "    \"testVisibleResignThenActiveResumesExactlyOnce\","
+    },
+    {
+      "line": 6,
+      "text": "    \"testDuplicateActiveAndResignAreIdempotent\","
+    },
+    {
+      "line": 7,
+      "text": "    \"testAppearThenActiveAndActiveThenAppearConsumePendingOnce\","
+    },
+    {
+      "line": 8,
+      "text": "    \"testForeignAndMissingContextDoNotChangeState\","
+    },
+    {
+      "line": 9,
+      "text": "    \"testHiddenAndNoWindowDoNotResume\","
+    },
+    {
+      "line": 10,
+      "text": "    \"testPrecreatedHiddenInstanceDoesNotResumeOnHostActive\","
+    },
+    {
+      "line": 11,
+      "text": "    \"testCancelledFirstFrameRearmsOnceWithoutImmediateOwner\","
+    },
+    {
+      "line": 12,
+      "text": "    \"testLateFirstFrameTickAfterDisappearDoesNotActivate\","
+    },
+    {
+      "line": 13,
+      "text": "    \"testFirstFrameElapsedConsumesPendingAndActivatesOnce\","
+    },
+    {
+      "line": 14,
+      "text": "    \"testCanaryPermissionTableDeniesOwnerStartingBeforeResume\","
+    },
+    {
+      "line": 15,
+      "text": "    \"testVisibilitySuspendedGrantedAllowsExactlyOneResume\","
+    },
+    {
+      "line": 16,
+      "text": "    \"testFenceBlocksRearmAndFirstFrameCreation\","
+    },
+    {
+      "line": 17,
+      "text": "    \"testCanaryStartingAllowsOriginalFirstFrameButNotHostActiveResume\","
+    },
+    {
+      "line": 18,
+      "text": "    \"testOldPresentationPendingIsInvalidatedOnNewAppearance\","
+    },
+    {
+      "line": 19,
+      "text": "    \"testHostActiveBeforeWindowIsTakenOverByDidAppear\","
+    },
+    {
+      "line": 20,
+      "text": "    \"testPermissionOrderIsEvaluatedBeforeConsumingPending\","
+    },
+    {
+      "line": 21,
+      "text": "    \"testDuplicateActiveDoesNotEmitResumeThatWouldClearNewComposition\","
+    },
+    {
+      "line": 22,
+      "text": "    \"testResignInvalidatesArmedTicksBeforeHostActive\","
+    },
+    {
+      "line": 23,
+      "text": "    \"testStaleArmTokenTicksAfterRearmDoNotAdvanceCurrentArm\","
+    },
+    {
+      "line": 24,
+      "text": "    \"testHiddenAndNoWindowDoNotBeginFirstFrameArm\","
+    },
+    {
+      "line": 25,
+      "text": "    \"testCurrentArmTokenCompletesExactlyOnSecondTick\","
+    },
+    {
+      "line": 26,
+      "text": "    \"testRejectedOrInvalidatedArmStopsTicksWithoutRetry\","
+    },
+    {
+      "line": 27,
+      "text": "    \"testDuplicateBeginFirstFrameArmIsIdempotentUntilGenuineRearm\""
+    },
+    {
+      "line": 28,
+      "text": "  ],"
+    },
+    {
+      "line": 29,
+      "text": "  \"all_actual_pass_required\": true,"
+    },
+    {
+      "line": 30,
+      "text": "  \"expected_total_suite_count_not_pinned\": true"
+    },
+    {
+      "line": 31,
+      "text": "}"
+    }
+  ]
+}

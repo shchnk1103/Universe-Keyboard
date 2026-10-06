@@ -1,0 +1,16 @@
+{
+  "run_id": "C6-MAPS-20261001-01",
+  "start_utc": "2026-10-01T06:38:45.734675+00:00",
+  "end_utc": "2026-10-01T06:50:12.335401+00:00",
+  "target": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "host": "com.apple.Maps",
+  "candidate_digest": "af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9",
+  "trial_limit": 1,
+  "automatic_retries": 0,
+  "human_action_phase": "Human reported two transition variants; ended before recovery or Main App reader",
+  "gates_expire_utc": "2026-10-01T07:06:50.655903+00:00",
+  "historical_C5_window_unchanged": true,
+  "human_transition_variants_observed": 2,
+  "planned_transition_variants": 1,
+  "protocol_deviation": "Human additionally opened AppSwitcher and returned directly to Maps; not two separately timestamped controlled runs"
+}

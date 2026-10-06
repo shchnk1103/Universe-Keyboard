@@ -1,0 +1,10 @@
+{
+  "role": "Coordinator rehearsal only",
+  "independent_leaf_calls": "not applicable",
+  "start_epoch": 1791014151.3007302,
+  "report_sha256": "4a5d34e0629ce6e72df72f8241458dbb469948cd04675c4f57036795aa3fc46c",
+  "reader_result_sha256": "def7156cb0801362af264d5ce859b582d8e6ee92e1c1ada1498a0f482b26a341",
+  "coverage": "Not an independent assessment",
+  "end_epoch_before_usage_write": 1791014151.3733928,
+  "elapsed_before_usage_write_seconds": 0.0726625919342041
+}

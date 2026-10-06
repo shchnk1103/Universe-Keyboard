@@ -1,0 +1,274 @@
+--- F0/Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift
++++ F3/Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift
+@@ -0,0 +1,271 @@
++//
++//  KeyboardHostLifecycleRecoveryGate.swift
++//  Keyboard
++//
++//  MainActor 内存状态机：宿主失活/重新激活与展示世代的恢复决策。
++//  无 UIKit / KeyboardCore / I/O 依赖；不持有引擎或 composition。
++//  许可判定由调用方在任何可能创建 owner 的动作之前传入。
++//
++
++/// Opaque identity for the current `NSExtensionContext` without importing UIKit.
++struct KeyboardHostExtensionContextID: Hashable, Sendable {
++    private let objectID: ObjectIdentifier
++
++    init(_ object: AnyObject) {
++        objectID = ObjectIdentifier(object)
++    }
++}
++
++enum KeyboardHostRecoveryPhase: Equatable, Sendable {
++    case hidden
++    case appearing
++    case visible
++}
++
++enum KeyboardHostRecoveryAction: Equatable, Sendable {
++    case none
++    case suspendRuntime
++    case performSharedResume
++    case rearmFirstFrameGate
++    case completeFirstFrameActivation
++}
++
++enum KeyboardHostRecoverySource: Equatable, Sendable {
++    case appearance
++    case hostActive
++    case firstFrame
++}
++
++/// One-shot UI classification of Core canary state. The gate does not store or mutate Core.
++enum KeyboardHostRecoveryCanaryPermission: Equatable, Sendable {
++    case nonCanaryBuild
++    case baselineActive
++    case visibilitySuspended(resumeGranted: Bool)
++    case canaryStarting
++    case canaryActive
++    case visibilityEnding
++    case fenceIssued
++    case baselineRecoveryPermitted
++    case fencedUnavailable
++
++    func permitsOwnerStarting(source: KeyboardHostRecoverySource) -> Bool {
++        switch self {
++        case .nonCanaryBuild, .baselineActive:
++            return true
++        case .visibilitySuspended(let granted):
++            return granted
++        case .canaryStarting:
++            // Original first-frame startup owns canaryStarting; host-active must not start a second owner.
++            return source == .firstFrame
++        case .canaryActive, .visibilityEnding, .fenceIssued, .fencedUnavailable,
++            .baselineRecoveryPermitted:
++            return false
++        }
++    }
++
++    /// Host-active must not rearm or resume when first-frame creation or generic resume is forbidden.
++    var blocksHostActiveRecovery: Bool {
++        switch self {
++        case .fenceIssued, .visibilityEnding, .fencedUnavailable, .baselineRecoveryPermitted,
++            .canaryActive:
++            return true
++        case .visibilitySuspended(let granted):
++            return !granted
++        case .canaryStarting, .nonCanaryBuild, .baselineActive:
++            return false
++        }
++    }
++}
++
++/// Pending host-suspend request, consumed at most once per generation/context pair.
++struct KeyboardHostPendingSuspend: Equatable, Sendable {
++    var generation: UInt64
++    var context: KeyboardHostExtensionContextID
++    var activatedAtSuspend: Bool
++    var blocked: Bool
++}
++
++@MainActor
++final class KeyboardHostLifecycleRecoveryGate {
++    private(set) var presentationGeneration: UInt64 = 0
++    private(set) var phase: KeyboardHostRecoveryPhase = .hidden
++    private(set) var currentContext: KeyboardHostExtensionContextID?
++    private(set) var pending: KeyboardHostPendingSuspend?
++    private(set) var firstFrameRearmPending = false
++    private(set) var didSuspendCurrentGeneration = false
++    private(set) var firstFrameConsumedForGeneration = false
++
++    var hasVisibleResumePending: Bool {
++        guard let pending, !pending.blocked else { return false }
++        return pending.generation == presentationGeneration && pending.context == currentContext
++    }
++
++    func noteViewWillAppear(context: KeyboardHostExtensionContextID?) {
++        presentationGeneration &+= 1
++        phase = .appearing
++        currentContext = context
++        pending = nil
++        firstFrameRearmPending = false
++        didSuspendCurrentGeneration = false
++        firstFrameConsumedForGeneration = false
++    }
++
++    func noteViewDidAppear(hasWindow: Bool) {
++        guard phase == .appearing else { return }
++        if hasWindow {
++            phase = .visible
++        }
++        didSuspendCurrentGeneration = false
++    }
++
++    func noteViewWillDisappear() {
++        phase = .hidden
++        presentationGeneration &+= 1
++        pending = nil
++        firstFrameRearmPending = false
++        didSuspendCurrentGeneration = false
++        firstFrameConsumedForGeneration = false
++    }
++
++    @discardableResult
++    func handleHostWillResignActive(
++        context: KeyboardHostExtensionContextID?,
++        activatedAtSuspend: Bool
++    ) -> KeyboardHostRecoveryAction {
++        guard let context, context == currentContext else { return .none }
++        let hadRearm = firstFrameRearmPending
++        firstFrameRearmPending = false
++        if didSuspendCurrentGeneration {
++            // Duplicate resign must still cancel an armed first-frame wait.
++            return hadRearm ? .suspendRuntime : .none
++        }
++        didSuspendCurrentGeneration = true
++        if phase == .visible, let currentContext {
++            pending = KeyboardHostPendingSuspend(
++                generation: presentationGeneration,
++                context: currentContext,
++                activatedAtSuspend: activatedAtSuspend,
++                blocked: false
++            )
++        } else {
++            // Appearing/hidden resign must not create a visible resume pending.
++            pending = nil
++        }
++        return .suspendRuntime
++    }
++
++    func previewHostDidBecomeActive(
++        context: KeyboardHostExtensionContextID?,
++        hasWindow: Bool
++    ) -> KeyboardHostRecoveryAction {
++        decideHostDidBecomeActive(context: context, hasWindow: hasWindow)
++    }
++
++    @discardableResult
++    func handleHostDidBecomeActive(
++        context: KeyboardHostExtensionContextID?,
++        hasWindow: Bool,
++        canary: KeyboardHostRecoveryCanaryPermission
++    ) -> KeyboardHostRecoveryAction {
++        let action = decideHostDidBecomeActive(context: context, hasWindow: hasWindow)
++        switch action {
++        case .none:
++            return .none
++        case .performSharedResume:
++            if !canary.permitsOwnerStarting(source: .hostActive) {
++                blockPending()
++                return .none
++            }
++            consumePendingAndRearm()
++            return .performSharedResume
++        case .rearmFirstFrameGate:
++            if canary.blocksHostActiveRecovery {
++                blockPending()
++                return .none
++            }
++            firstFrameRearmPending = true
++            firstFrameConsumedForGeneration = false
++            return .rearmFirstFrameGate
++        case .suspendRuntime, .completeFirstFrameActivation:
++            return .none
++        }
++    }
++
++    func previewFirstFrameElapsed(hasWindow: Bool) -> KeyboardHostRecoveryAction {
++        decideFirstFrameElapsed(hasWindow: hasWindow)
++    }
++
++    @discardableResult
++    func handleFirstFrameElapsed(
++        hasWindow: Bool,
++        canary: KeyboardHostRecoveryCanaryPermission
++    ) -> KeyboardHostRecoveryAction {
++        let action = decideFirstFrameElapsed(hasWindow: hasWindow)
++        guard action == .completeFirstFrameActivation else { return .none }
++        if !canary.permitsOwnerStarting(source: .firstFrame) {
++            blockPending()
++            return .none
++        }
++        consumePendingAndRearm()
++        firstFrameConsumedForGeneration = true
++        return .completeFirstFrameActivation
++    }
++
++    /// Same recovery branch as host-active, used when active arrived before the window existed.
++    @discardableResult
++    func handleVisibleWindowEstablished(
++        hasWindow: Bool,
++        canary: KeyboardHostRecoveryCanaryPermission
++    ) -> KeyboardHostRecoveryAction {
++        handleHostDidBecomeActive(
++            context: currentContext,
++            hasWindow: hasWindow,
++            canary: canary
++        )
++    }
++
++    private func decideHostDidBecomeActive(
++        context: KeyboardHostExtensionContextID?,
++        hasWindow: Bool
++    ) -> KeyboardHostRecoveryAction {
++        guard let context, context == currentContext else { return .none }
++        guard phase == .visible, hasWindow else { return .none }
++        guard let pending, !pending.blocked else { return .none }
++        guard pending.generation == presentationGeneration, pending.context == context else {
++            return .none
++        }
++        if firstFrameRearmPending {
++            return .none
++        }
++        if pending.activatedAtSuspend {
++            return .performSharedResume
++        }
++        return .rearmFirstFrameGate
++    }
++
++    private func decideFirstFrameElapsed(hasWindow: Bool) -> KeyboardHostRecoveryAction {
++        guard phase == .visible, hasWindow else { return .none }
++        if firstFrameConsumedForGeneration, !firstFrameRearmPending {
++            return .none
++        }
++        if let pending {
++            guard !pending.blocked else { return .none }
++            guard pending.generation == presentationGeneration, pending.context == currentContext
++            else {
++                return .none
++            }
++        }
++        return .completeFirstFrameActivation
++    }
++
++    private func blockPending() {
++        pending?.blocked = true
++        firstFrameRearmPending = false
++    }
++
++    private func consumePendingAndRearm() {
++        pending = nil
++        firstFrameRearmPending = false
++        didSuspendCurrentGeneration = false
++    }
++}

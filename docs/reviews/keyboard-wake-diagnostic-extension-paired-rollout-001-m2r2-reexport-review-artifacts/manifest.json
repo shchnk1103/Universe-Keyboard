@@ -1,0 +1,11 @@
+{
+  "architecture-packet.json": "6537044efc63bade3810617689b702431a506642f48c045e56f926976638f749",
+  "architecture-packet.sha256": "ca872f19be2af7b0729ef0e1f61d1aae237a150e534296898c19e1dd24d614b6",
+  "architecture-review.md": "542af67c8bc137a8621d693ec9d89170d0e269c2a631f4140846e9c00bbd3108",
+  "architecture-usage.json": "87a41f3b008d5a2029f7be0dc1ffc9041a71f260e2c859ece6c34b7047681cae",
+  "quality-final-message-usage.json": "7463f8c5848804c18577978c098919bd1911e9d952d2e32558a9b24ad9c95e54",
+  "quality-final-message.md": "c6048d2ceab564e5b959b8fbe0c65d86011baaf293d7179ec0bc58e5cc8adffc",
+  "quality-packet.json": "6569b3aaa25126d50f64e0aad40095e30b1e97108a39140573a1868e4916a170",
+  "quality-packet.sha256": "33510819260e7ed180ec4f0d42411dcd284ccdc56a3bcd6894f441d6b1b21483",
+  "quality-transcription-receipt.json": "ec43483ffa442f6a53a1144b878cfcd2a0a4d1573d3d3d303a4ad3df574d009f"
+}

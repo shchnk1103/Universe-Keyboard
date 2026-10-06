@@ -1,0 +1,7 @@
+{
+  "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/simulated-entitlements.json",
+  "bytes": 790,
+  "sha256": "668ee04882290df8cfcec3aff1213bb49bc69f29303016f59f927301cc6e6cd9",
+  "expected_sha256": "668ee04882290df8cfcec3aff1213bb49bc69f29303016f59f927301cc6e6cd9",
+  "text": "[\n  {\n    \"module\": \"Universe Keyboard\",\n    \"section\": \"__TEXT,__entitlements\",\n    \"plist\": {\n      \"application-identifier\": \"C33N6HTS9N.com.DoubleShy0N.Universe-Keyboard\",\n      \"com.apple.security.application-groups\": [\n        \"group.com.DoubleShy0N.Universe-Keyboard\"\n      ]\n    },\n    \"section_sha256\": \"6610a8c02dfe5b877f5be595941b807a687c7838e2f4b54a80b4c6726b821a6c\"\n  },\n  {\n    \"module\": \"PlugIns/Keyboard.appex/Keyboard\",\n    \"section\": \"__TEXT,__entitlements\",\n    \"plist\": {\n      \"application-identifier\": \"C33N6HTS9N.com.DoubleShy0N.Universe-Keyboard.Keyboard\",\n      \"com.apple.security.application-groups\": [\n        \"group.com.DoubleShy0N.Universe-Keyboard\"\n      ]\n    },\n    \"section_sha256\": \"1b5eca79f033b12423739696ae50c8dfcd679ed6484803e2e340787aee149b7b\"\n  }\n]\n"
+}

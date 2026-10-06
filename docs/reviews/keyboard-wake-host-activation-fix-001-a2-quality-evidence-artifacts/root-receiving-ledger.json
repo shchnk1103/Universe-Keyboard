@@ -1,0 +1,22 @@
+{
+  "creator": "root receiving/archiving only, not reviewer-authored usage",
+  "reviewer": "/root/m2r2_quality_r1",
+  "source_type": "native collaboration FINAL_ANSWER received in this task; body archived verbatim",
+  "body_sha256": "a574de7ad772d243f6f06f09b462cc141b6a73fb098efae7b3c6e82f73e75e74",
+  "packet_sha256": "e09765b79a817d96c469645756e5e88f8500951c4904b5943642f82fcf583eaf",
+  "ack_sha256": "bdd3f41b729422d0b9da44b8f8a7603f77eb0fc749ced08e1055d241329c6d70",
+  "budget_start_utc": "2026-10-05T01:43:13.246380+00:00",
+  "ack_utc": "2026-10-05T01:44:29.856038+00:00",
+  "root_observation_of_complete_final_reply_and_missing_files_utc": "2026-10-05T01:48:51.224139+00:00",
+  "conservative_elapsed_upper_bound_seconds": 337.977759,
+  "wall_budget_seconds": 600,
+  "conservative_within_wall_budget": true,
+  "reviewer_reported_actual_calls": 8,
+  "reviewer_reported_counting": "4 functions.exec +4 nested tools",
+  "exact_reviewer_end_utc": "not recorded; not fabricated",
+  "reviewer_review_file_present": false,
+  "reviewer_usage_file_present": false,
+  "content_conclusion": "Pass only objective A2-4 compile evidence",
+  "formal_receipt_status": "Awaiting Product decision on this alternative original-message plus root-ledger receipt",
+  "no_author_file_write_claim": true
+}

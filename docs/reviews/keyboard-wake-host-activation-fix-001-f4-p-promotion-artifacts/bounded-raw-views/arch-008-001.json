@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+  "origin_sha256": "71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5",
+  "expected_sha256": "71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5",
+  "line_start": 1,
+  "line_end": 60,
+  "lines": [
+    {
+      "line": 1,
+      "text": "import XCTest"
+    },
+    {
+      "line": 2,
+      "text": ""
+    },
+    {
+      "line": 3,
+      "text": "/// Gate unit tests cover real state/action sequences and call counts only."
+    },
+    {
+      "line": 4,
+      "text": "/// They do not prove NSExtensionHost notification delivery, appex controller wiring, or runtime recovery."
+    },
+    {
+      "line": 5,
+      "text": "@MainActor"
+    },
+    {
+      "line": 6,
+      "text": "final class KeyboardHostLifecycleRecoveryGateTests: XCTestCase {"
+    },
+    {
+      "line": 7,
+      "text": "    private final class FakeHostContext {}"
+    },
+    {
+      "line": 8,
+      "text": ""
+    },
+    {
+      "line": 9,
+      "text": "    private var gate: KeyboardHostLifecycleRecoveryGate!"
+    },
+    {
+      "line": 10,
+      "text": "    private var current: FakeHostContext!"
+    },
+    {
+      "line": 11,
+      "text": "    private var foreign: FakeHostContext!"
+    },
+    {
+      "line": 12,
+      "text": "    private var resumeCount = 0"
+    },
+    {
+      "line": 13,
+      "text": "    private var rearmCount = 0"
+    },
+    {
+      "line": 14,
+      "text": "    private var firstFrameCount = 0"
+    },
+    {
+      "line": 15,
+      "text": "    private var suspendCount = 0"
+    },
+    {
+      "line": 16,
+      "text": ""
+    },
+    {
+      "line": 17,
+      "text": "    override func setUp() async throws {"
+    },
+    {
+      "line": 18,
+      "text": "        try await super.setUp()"
+    },
+    {
+      "line": 19,
+      "text": "        gate = KeyboardHostLifecycleRecoveryGate()"
+    },
+    {
+      "line": 20,
+      "text": "        current = FakeHostContext()"
+    },
+    {
+      "line": 21,
+      "text": "        foreign = FakeHostContext()"
+    },
+    {
+      "line": 22,
+      "text": "        resumeCount = 0"
+    },
+    {
+      "line": 23,
+      "text": "        rearmCount = 0"
+    },
+    {
+      "line": 24,
+      "text": "        firstFrameCount = 0"
+    },
+    {
+      "line": 25,
+      "text": "        suspendCount = 0"
+    },
+    {
+      "line": 26,
+      "text": "    }"
+    },
+    {
+      "line": 27,
+      "text": ""
+    },
+    {
+      "line": 28,
+      "text": "    func testVisibleResignThenActiveResumesExactlyOnce() {"
+    },
+    {
+      "line": 29,
+      "text": "        enterVisible()"
+    },
+    {
+      "line": 30,
+      "text": "        execute(gate.handleHostWillResignActive(context: id(current), activatedAtSuspend: true))"
+    },
+    {
+      "line": 31,
+      "text": "        execute("
+    },
+    {
+      "line": 32,
+      "text": "            gate.handleHostDidBecomeActive("
+    },
+    {
+      "line": 33,
+      "text": "                context: id(current),"
+    },
+    {
+      "line": 34,
+      "text": "                hasWindow: true,"
+    },
+    {
+      "line": 35,
+      "text": "                canary: .nonCanaryBuild"
+    },
+    {
+      "line": 36,
+      "text": "            )"
+    },
+    {
+      "line": 37,
+      "text": "        )"
+    },
+    {
+      "line": 38,
+      "text": ""
+    },
+    {
+      "line": 39,
+      "text": "        XCTAssertEqual(suspendCount, 1)"
+    },
+    {
+      "line": 40,
+      "text": "        XCTAssertEqual(resumeCount, 1)"
+    },
+    {
+      "line": 41,
+      "text": "        XCTAssertEqual(rearmCount, 0)"
+    },
+    {
+      "line": 42,
+      "text": "        XCTAssertNil(gate.pending)"
+    },
+    {
+      "line": 43,
+      "text": "        XCTAssertEqual(gate.phase, .visible)"
+    },
+    {
+      "line": 44,
+      "text": "    }"
+    },
+    {
+      "line": 45,
+      "text": ""
+    },
+    {
+      "line": 46,
+      "text": "    func testDuplicateActiveAndResignAreIdempotent() {"
+    },
+    {
+      "line": 47,
+      "text": "        enterVisible()"
+    },
+    {
+      "line": 48,
+      "text": "        execute(gate.handleHostWillResignActive(context: id(current), activatedAtSuspend: true))"
+    },
+    {
+      "line": 49,
+      "text": "        execute(gate.handleHostWillResignActive(context: id(current), activatedAtSuspend: true))"
+    },
+    {
+      "line": 50,
+      "text": "        execute("
+    },
+    {
+      "line": 51,
+      "text": "            gate.handleHostDidBecomeActive("
+    },
+    {
+      "line": 52,
+      "text": "                context: id(current),"
+    },
+    {
+      "line": 53,
+      "text": "                hasWindow: true,"
+    },
+    {
+      "line": 54,
+      "text": "                canary: .baselineActive"
+    },
+    {
+      "line": 55,
+      "text": "            )"
+    },
+    {
+      "line": 56,
+      "text": "        )"
+    },
+    {
+      "line": 57,
+      "text": "        execute("
+    },
+    {
+      "line": 58,
+      "text": "            gate.handleHostDidBecomeActive("
+    },
+    {
+      "line": 59,
+      "text": "                context: id(current),"
+    },
+    {
+      "line": 60,
+      "text": "                hasWindow: true,"
+    }
+  ]
+}

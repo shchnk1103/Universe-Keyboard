@@ -1,0 +1,101 @@
+{
+  "budget": {
+    "elapsed_seconds": 258.7881600856781,
+    "hard_elapsed_seconds": 240,
+    "hard_limit_exceeded": true,
+    "max_calls": 4,
+    "remaining": 1,
+    "soft_elapsed_seconds": 150,
+    "soft_limit_exceeded": true,
+    "underlying_calls_used": 3
+  },
+  "call_ledger": [
+    {
+      "call": 1,
+      "end_utc": "2026-10-02T15:06:23.644002+00:00",
+      "result": "Packet digest matched; 7/7 hashes matched; read plan, diff/static receipts and exact allowlisted source ranges.",
+      "start_utc": "2026-10-02T15:06:23.642013+00:00",
+      "tool": "exec_command"
+    },
+    {
+      "call": 2,
+      "end_utc": "2026-10-02T15:09:42.346983+00:00",
+      "result": "Read all exact source ranges and wrote initial report/usage; an overly strict diff-header parser falsely classified P2 Partial.",
+      "start_utc": "2026-10-02T15:09:42.344274+00:00",
+      "tool": "exec_command"
+    },
+    {
+      "call": 3,
+      "end_utc": "2026-10-02T15:10:42.430508+00:00",
+      "result": "Re-read only allowlisted patch diff; parsed diff --git file identity, corrected P2 and rewrote report+usage together.",
+      "start_utc": "2026-10-02T15:10:42.428517+00:00",
+      "tool": "exec_command"
+    }
+  ],
+  "checks": {
+    "added_refresh_calls": 3,
+    "deletions": 0,
+    "patch_paths": [],
+    "static_checks": [
+      [
+        "dedicated-debug",
+        0,
+        "fulfilled"
+      ],
+      [
+        "ordinary-debug",
+        0,
+        "fulfilled"
+      ],
+      [
+        "ordinary-release",
+        0,
+        "fulfilled"
+      ],
+      [
+        "format-lint",
+        0,
+        "fulfilled"
+      ]
+    ]
+  },
+  "criteria": {
+    "P1": "Covered",
+    "P2": "Partial",
+    "P3": "Partial"
+  },
+  "input_hashes_verified": 7,
+  "inputs_expected": 7,
+  "lane": "QUALITY-C7-PROBE-UI-BINDING",
+  "orchestration_error_not_counted": "One functions.exec wrapper parse error ran no underlying tool.",
+  "outputs": {
+    "report": "/private/tmp/ukey-wake-probe-ui-binding-20261002/quality-ui-review.md",
+    "usage": "/private/tmp/ukey-wake-probe-ui-binding-20261002/quality-ui-usage.json"
+  },
+  "packet_digest_sha256": "d76b28381d5789ed0a013e08cee163027fe85f82e990a192e4b55348248c4ff1",
+  "packet_digest_verified": true,
+  "packet_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/quality-c7-probe-ui-binding-r1-packet-2026-10-02.json",
+  "report_sha256": "46142620cd2cbbda0a153fe2c7d6cd18ccd3cdaff04055d9a556f963e0d2d4e5",
+  "report_written_utc": "2026-10-02T15:10:42.430432+00:00",
+  "review_start_unix": 1790953583.642352,
+  "review_start_utc": "2026-10-02T15:06:23.642013+00:00",
+  "round": 1,
+  "runtime_or_gate_claim": false,
+  "scope": "仅新bar赋值后三处Debug刷新绑定静态审查；非旧运行验收续轮",
+  "source_line_ranges_read": {
+    "KeyboardViewController+CandidateBar.swift": [
+      29,
+      54
+    ],
+    "KeyboardViewController+Presentation.swift": [
+      70,
+      170
+    ],
+    "KeyboardViewController+WakeOwnerProbe.swift": [
+      1,
+      98
+    ]
+  },
+  "terminal_sample_utc": "2026-10-02T15:10:42.430508+00:00",
+  "verdict": "Partial / incomplete"
+}

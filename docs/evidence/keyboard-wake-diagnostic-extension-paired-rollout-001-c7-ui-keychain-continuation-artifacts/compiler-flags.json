@@ -1,0 +1,9 @@
+{
+  "swift6_all": true,
+  "probe_all": true,
+  "warnings_as_errors_all": true,
+  "commands": 18,
+  "explicit_strict_flag_count": 0,
+  "requested_complete_build_setting": true,
+  "complete_literal_flag_not_claimed": true
+}

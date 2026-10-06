@@ -1,0 +1,9 @@
+{
+  "utc": "2026-10-04T04:36:29.943372+00:00",
+  "monotonic_ns": 1242068797621583,
+  "exec_session_id": 63415,
+  "commands": [
+    "process status",
+    "breakpoint list 1"
+  ]
+}

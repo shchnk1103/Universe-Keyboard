@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "xcrun",
+    "dwarfdump",
+    "--uuid",
+    "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard"
+  ],
+  "exit_code": 0,
+  "stdout": "UUID: 664DE45A-5859-34F1-892C-3DD2D9DE7B98 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard\n",
+  "stderr": ""
+}

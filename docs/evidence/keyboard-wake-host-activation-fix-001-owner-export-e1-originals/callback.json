@@ -1,0 +1,19 @@
+{
+  "utc": "2026-10-06T04:35:03.350336+00:00",
+  "monotonic_ns": 984186733291,
+  "stop_utc": "2026-10-06T04:35:03.350336+00:00",
+  "stop_monotonic_ns": 984186733291,
+  "status": "owner_buffer_copied",
+  "reason": null,
+  "callback_count": 1,
+  "identity_match": true,
+  "button_caller": true,
+  "synchronous_borrow_caller": true,
+  "memory_snapshot_reads": 1,
+  "read_attempted": 1,
+  "bytes": 1496,
+  "sha256": "a8b3bde10c0c489e92b1e7f370e257d33c4156f805697af1597fe5d5fd35414d",
+  "target_expressions": 0,
+  "unexpected_multiple_hits": false,
+  "deadline_exceeded": false
+}

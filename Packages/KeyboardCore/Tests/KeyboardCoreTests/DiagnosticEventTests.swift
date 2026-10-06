@@ -31,6 +31,7 @@ final class DiagnosticEventTests: XCTestCase {
 
         XCTAssertEqual(decoded, event)
         XCTAssertEqual(decoded.appearanceID, appearanceID)
+        try assertV6ReaderPreserves(event)
     }
 
     func testFieldEncodingDoesNotProvideFreeTextPayload() throws {
@@ -88,6 +89,7 @@ final class DiagnosticEventTests: XCTestCase {
         for forbiddenKey in ["message", "text", "path", "bookmark", "domain", "filename"] {
             XCTAssertFalse(text.contains("\"\(forbiddenKey)\""))
         }
+        try assertV6ReaderPreserves(event)
     }
 
     func testRimeSyncKeychainFailureHasDistinctPersistedCode() throws {
@@ -189,6 +191,7 @@ final class DiagnosticEventTests: XCTestCase {
             try JSONDecoder().decode(DiagnosticEvent.self, from: JSONEncoder().encode(event)),
             event
         )
+        try assertV6ReaderPreserves(event)
     }
 
     func testRuntimeRoutePayloadRoundTripsWithOnlyFiniteFields() throws {
@@ -217,6 +220,7 @@ final class DiagnosticEventTests: XCTestCase {
             try JSONDecoder().decode(DiagnosticEvent.self, from: JSONEncoder().encode(event)),
             event
         )
+        try assertV6ReaderPreserves(event)
     }
 
     func testSourceProbeFailureRoundTripsAndRejectsWrongPhase() throws {
@@ -499,6 +503,7 @@ final class DiagnosticEventTests: XCTestCase {
         for forbidden in ["message", "preedit", "composition_text", "correctedInput"] {
             XCTAssertFalse(text.contains("\"\(forbidden)\""))
         }
+        try assertV6ReaderPreserves(event)
     }
 
     func testTypoRecallQueryOutcomeCarriesFiniteReason() throws {
@@ -529,6 +534,7 @@ final class DiagnosticEventTests: XCTestCase {
             DiagnosticEvent.Reason.typoRecallQuerySucceeded.rawValue,
             "typo_recall_query_succeeded"
         )
+        try assertV6ReaderPreserves(event)
     }
 
     func testTypoRecallQueryMeasuredRoundTripsOneFiniteContentFreeField() throws {
@@ -553,6 +559,7 @@ final class DiagnosticEventTests: XCTestCase {
         XCTAssertTrue(text.contains("stage_one"))
         XCTAssertTrue(text.contains("one_to_three"))
         XCTAssertTrue(text.contains("facadeElapsedMicroseconds"))
+        try assertV6ReaderPreserves(event)
     }
 
     func testTypoRecallQueryMeasuredRejectsInvalidSchemaCodeAndFieldCardinality() throws {
@@ -582,7 +589,7 @@ final class DiagnosticEventTests: XCTestCase {
         invalid.append(schemaFour)
 
         var unknownSchema = object
-        unknownSchema["schemaVersion"] = 6
+        unknownSchema["schemaVersion"] = 7
         invalid.append(unknownSchema)
 
         var unknownCode = object
@@ -601,6 +608,13 @@ final class DiagnosticEventTests: XCTestCase {
 
         for candidate in invalid {
             XCTAssertThrowsError(try JSONDecoder().decode(DiagnosticEvent.self, from: jsonData(candidate)))
+            if candidate["schemaVersion"] as? Int == 5 {
+                var v6Candidate = candidate
+                v6Candidate["schemaVersion"] = 6
+                XCTAssertThrowsError(
+                    try JSONDecoder().decode(DiagnosticEvent.self, from: jsonData(v6Candidate))
+                )
+            }
         }
     }
 
@@ -643,6 +657,387 @@ final class DiagnosticEventTests: XCTestCase {
             let roundTripped = try eventObject(decoded)
             XCTAssertEqual(roundTripped["schemaVersion"] as? Int, 4)
         }
+    }
+
+    func testV6ReaderAcceptsThreeMarkersAndExistingEventFamilies() throws {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let processID = "00000000-0000-0000-0000-000000000001"
+        let base: [String: Any] = [
+            "schemaVersion": 6,
+            "utcTimestamp": "2024-08-08T12:24:16Z",
+            "monotonicNanoseconds": 1,
+            "origin": DiagnosticEvent.Origin.keyboardExtension.rawValue,
+            "processInstanceID": processID,
+            "localSequence": 1,
+            "level": Logger.Level.debug.rawValue,
+            "category": Logger.Category.display.rawValue,
+            "fields": [],
+        ]
+
+        var lifecycle = base
+        lifecycle["code"] = DiagnosticEvent.Code.keyboardLifecyclePhaseChanged.rawValue
+        lifecycle["keyboardLifecyclePayload"] = ["phase": "view_did_appear"]
+
+        var resume = base
+        resume["code"] = DiagnosticEvent.Code.rimeResumePhaseChanged.rawValue
+        resume["category"] = Logger.Category.engine.rawValue
+        resume["rimeResumePayload"] = [
+            "phase": "completed",
+            "sessionEpoch": 7,
+            "revision": 11,
+        ]
+
+        var textProxy = base
+        textProxy["code"] = DiagnosticEvent.Code.textProxyOperationPhaseChanged.rawValue
+        textProxy["textProxyPayload"] = ["operation": "insert_text", "phase": "entered"]
+
+        var ordinaryEvent = base
+        ordinaryEvent["origin"] = DiagnosticEvent.Origin.mainApp.rawValue
+        ordinaryEvent["level"] = Logger.Level.info.rawValue
+        ordinaryEvent["category"] = Logger.Category.general.rawValue
+        ordinaryEvent["code"] = DiagnosticEvent.Code.journalStarted.rawValue
+
+        var typoRecall = try eventObject(measuredQueryEvent())
+        typoRecall["schemaVersion"] = 6
+        typoRecall["utcTimestamp"] = "2024-08-08T12:24:16Z"
+
+        let fixtures = [lifecycle, resume, textProxy, ordinaryEvent, typoRecall]
+        let events = try fixtures.map { fixture -> DiagnosticEvent in
+            let data = try jsonData(fixture)
+            XCTAssertNil(DiagnosticEventWireValidator.rejectionReason(for: data))
+            let decoded = try decoder.decode(DiagnosticEvent.self, from: data)
+            XCTAssertFalse(decoded.isWritableV5, "No v6 record may enter the production v5 writer")
+            XCTAssertEqual(try eventObject(decoded)["schemaVersion"] as? Int, 6)
+            return decoded
+        }
+
+        XCTAssertEqual(events.map(\.schemaVersion), Array(repeating: 6, count: fixtures.count))
+        XCTAssertEqual(
+            events.first { $0.code == .keyboardLifecyclePhaseChanged }?.keyboardLifecyclePayload?.phase,
+            .viewDidAppear
+        )
+        XCTAssertEqual(
+            events.first { $0.code == .rimeResumePhaseChanged }?.rimeResumePayload?.phase,
+            .completed
+        )
+        XCTAssertEqual(
+            events.first { $0.code == .textProxyOperationPhaseChanged }?.textProxyPayload?.operation,
+            .insertText
+        )
+        XCTAssertTrue(events.contains { $0.code == .typoRecallQueryMeasured })
+        XCTAssertEqual(DiagnosticEvent.schemaVersion, 5, "Reader support must not change the production writer version")
+    }
+
+    func testV6WireValidatorRejectsUnknownMalformedAndMismatchedMarkers() throws {
+        let valid: [String: Any] = [
+            "schemaVersion": 6,
+            "utcTimestamp": "2024-08-08T12:24:16Z",
+            "monotonicNanoseconds": 1,
+            "origin": DiagnosticEvent.Origin.keyboardExtension.rawValue,
+            "processInstanceID": "00000000-0000-0000-0000-000000000001",
+            "localSequence": 1,
+            "code": DiagnosticEvent.Code.keyboardLifecyclePhaseChanged.rawValue,
+            "level": Logger.Level.debug.rawValue,
+            "category": Logger.Category.display.rawValue,
+            "fields": [],
+            "keyboardLifecyclePayload": ["phase": "view_did_appear"],
+        ]
+        XCTAssertNil(DiagnosticEventWireValidator.rejectionReason(for: try jsonData(valid)))
+
+        var v4Marker = valid
+        v4Marker["schemaVersion"] = 4
+        XCTAssertNil(DiagnosticEventWireValidator.rejectionReason(for: try jsonData(v4Marker)))
+
+        var v5Marker = valid
+        v5Marker["schemaVersion"] = 5
+        XCTAssertEqual(
+            DiagnosticEventWireValidator.rejectionReason(for: try jsonData(v5Marker)),
+            .invalidPayloadPairing,
+            "The v5 writer's historical marker prohibition remains intact"
+        )
+
+        var unknownPayloadKey = valid
+        unknownPayloadKey["keyboardLifecyclePayload"] = ["phase": "view_did_appear", "private": "fixture"]
+        XCTAssertEqual(
+            DiagnosticEventWireValidator.rejectionReason(for: try jsonData(unknownPayloadKey)),
+            .unknownKey
+        )
+
+        var unknownPayloadValue = valid
+        unknownPayloadValue["keyboardLifecyclePayload"] = ["phase": "host_became_active"]
+        XCTAssertEqual(
+            DiagnosticEventWireValidator.rejectionReason(for: try jsonData(unknownPayloadValue)),
+            .unknownValue
+        )
+
+        var mismatchedCode = valid
+        mismatchedCode["code"] = DiagnosticEvent.Code.textProxyOperationPhaseChanged.rawValue
+        XCTAssertEqual(
+            DiagnosticEventWireValidator.rejectionReason(for: try jsonData(mismatchedCode)),
+            .invalidPayloadPairing
+        )
+
+        var malformedPayload = valid
+        malformedPayload["keyboardLifecyclePayload"] = [:]
+        XCTAssertEqual(
+            DiagnosticEventWireValidator.rejectionReason(for: try jsonData(malformedPayload)),
+            .malformedPayload
+        )
+
+        var unknownCode = valid
+        unknownCode["code"] = "unrecognized.event.code"
+        XCTAssertEqual(
+            DiagnosticEventWireValidator.rejectionReason(for: try jsonData(unknownCode)),
+            .unsupportedCode
+        )
+
+        var unsupportedVersion = valid
+        unsupportedVersion["schemaVersion"] = 7
+        XCTAssertEqual(
+            DiagnosticEventWireValidator.rejectionReason(for: try jsonData(unsupportedVersion)),
+            .unsupportedSchemaVersion
+        )
+
+        var nonIntegerVersion = valid
+        nonIntegerVersion["schemaVersion"] = 6.5
+        XCTAssertEqual(
+            DiagnosticEventWireValidator.rejectionReason(for: try jsonData(nonIntegerVersion)),
+            .unsupportedSchemaVersion
+        )
+    }
+
+    func testReaderDecodesV3V4AndV5WithoutRelabelingLegacyRecords() throws {
+        let encoder = JSONEncoder()
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let processID = "00000000-0000-0000-0000-000000000001"
+
+        let v3 = try JSONSerialization.data(withJSONObject: [
+            "schemaVersion": 3,
+            "utcTimestamp": "2024-08-08T12:24:16Z",
+            "monotonicNanoseconds": 1,
+            "origin": DiagnosticEvent.Origin.mainApp.rawValue,
+            "processInstanceID": processID,
+            "localSequence": 1,
+            "code": DiagnosticEvent.Code.journalStarted.rawValue,
+            "level": Logger.Level.info.rawValue,
+            "category": Logger.Category.general.rawValue,
+            "fields": [],
+        ])
+        let v3Event = try decoder.decode(DiagnosticEvent.self, from: v3)
+        XCTAssertEqual(v3Event.schemaVersion, 3)
+        let reencodedV3 = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: encoder.encode(v3Event)) as? [String: Any]
+        )
+        XCTAssertEqual(reencodedV3["schemaVersion"] as? Int, 3)
+
+        let v4 = try JSONSerialization.data(withJSONObject: [
+            "schemaVersion": 4,
+            "utcTimestamp": "2024-08-08T12:24:16Z",
+            "monotonicNanoseconds": 2,
+            "origin": DiagnosticEvent.Origin.keyboardExtension.rawValue,
+            "processInstanceID": processID,
+            "localSequence": 2,
+            "code": DiagnosticEvent.Code.keyboardLifecyclePhaseChanged.rawValue,
+            "level": Logger.Level.debug.rawValue,
+            "category": Logger.Category.display.rawValue,
+            "fields": [],
+            "keyboardLifecyclePayload": ["phase": "view_did_appear"],
+        ])
+        let v4Event = try decoder.decode(DiagnosticEvent.self, from: v4)
+        XCTAssertEqual(v4Event.schemaVersion, 4)
+        XCTAssertEqual(v4Event.keyboardLifecyclePayload?.phase, .viewDidAppear)
+        let reencodedV4 = try XCTUnwrap(
+            JSONSerialization.jsonObject(with: encoder.encode(v4Event)) as? [String: Any]
+        )
+        XCTAssertEqual(reencodedV4["schemaVersion"] as? Int, 4)
+
+        let v5Event = measuredQueryEvent()
+        let v5Data = try encoder.encode(v5Event)
+        XCTAssertEqual(try JSONDecoder().decode(DiagnosticEvent.self, from: v5Data), v5Event)
+        XCTAssertEqual(v5Event.schemaVersion, 5)
+        XCTAssertEqual(DiagnosticEvent.schemaVersion, 5)
+    }
+
+    func testWireValidatorRejectsUnknownRawKeysAcrossSupportedVersions() throws {
+        for version in [3, 4, 5, 6] {
+            var event: [String: Any] = [
+                "schemaVersion": version,
+                "utcTimestamp": "2024-08-08T12:24:16Z",
+                "monotonicNanoseconds": 1,
+                "origin": DiagnosticEvent.Origin.mainApp.rawValue,
+                "processInstanceID": "00000000-0000-0000-0000-000000000001",
+                "localSequence": 1,
+                "code": DiagnosticEvent.Code.journalStarted.rawValue,
+                "level": Logger.Level.info.rawValue,
+                "category": Logger.Category.general.rawValue,
+                "fields": [],
+            ]
+            event["unrecognizedKey"] = true
+            let data = try JSONSerialization.data(withJSONObject: event)
+            XCTAssertEqual(
+                DiagnosticEventWireValidator.rejectionReason(for: data),
+                .unknownKey,
+                "schema v\(version) top-level key"
+            )
+        }
+
+        let fieldEvent: [String: Any] = [
+            "schemaVersion": 3,
+            "utcTimestamp": "2024-08-08T12:24:16Z",
+            "monotonicNanoseconds": 1,
+            "origin": DiagnosticEvent.Origin.mainApp.rawValue,
+            "processInstanceID": "00000000-0000-0000-0000-000000000001",
+            "localSequence": 1,
+            "code": DiagnosticEvent.Code.journalStarted.rawValue,
+            "level": Logger.Level.info.rawValue,
+            "category": Logger.Category.general.rawValue,
+            "fields": [["type": "reason", "reason": "queue_full", "private": "fixture"]],
+        ]
+        let fieldData = try JSONSerialization.data(withJSONObject: fieldEvent)
+        XCTAssertEqual(
+            DiagnosticEventWireValidator.rejectionReason(for: fieldData),
+            .unknownKey
+        )
+
+        var queryObject = try eventObject(measuredQueryEvent())
+        var fields = try XCTUnwrap(queryObject["fields"] as? [[String: Any]])
+        var queryField = try XCTUnwrap(fields.first)
+        var payload = try XCTUnwrap(queryField["typoRecallQuery"] as? [String: Any])
+        payload["private"] = "fixture"
+        queryField["typoRecallQuery"] = payload
+        fields[0] = queryField
+        queryObject["fields"] = fields
+        XCTAssertEqual(
+            DiagnosticEventWireValidator.rejectionReason(for: try jsonData(queryObject)),
+            .unknownKey
+        )
+    }
+
+    func testWireValidatorRejectsUnknownMarkerKeysAndEnumValues() throws {
+        var marker: [String: Any] = [
+            "schemaVersion": 4,
+            "utcTimestamp": "2024-08-08T12:24:16Z",
+            "monotonicNanoseconds": 1,
+            "origin": DiagnosticEvent.Origin.keyboardExtension.rawValue,
+            "processInstanceID": "00000000-0000-0000-0000-000000000001",
+            "localSequence": 1,
+            "code": DiagnosticEvent.Code.keyboardLifecyclePhaseChanged.rawValue,
+            "level": Logger.Level.debug.rawValue,
+            "category": Logger.Category.display.rawValue,
+            "fields": [],
+            "keyboardLifecyclePayload": ["phase": "view_did_appear", "private": "fixture"],
+        ]
+        XCTAssertEqual(
+            DiagnosticEventWireValidator.rejectionReason(for: try jsonData(marker)),
+            .unknownKey
+        )
+
+        marker["keyboardLifecyclePayload"] = ["phase": "host_became_active"]
+        XCTAssertEqual(
+            DiagnosticEventWireValidator.rejectionReason(for: try jsonData(marker)),
+            .unknownValue
+        )
+
+        marker["schemaVersion"] = 4
+        marker["code"] = DiagnosticEvent.Code.typoRecallDebounceScheduled.rawValue
+        marker.removeValue(forKey: "keyboardLifecyclePayload")
+        XCTAssertEqual(
+            DiagnosticEventWireValidator.rejectionReason(for: try jsonData(marker)),
+            .unsupportedCode
+        )
+    }
+
+    func testWireValidatorRejectsSchemaVersionMismatchesAndMalformedPayloads() throws {
+        let base: [String: Any] = [
+            "schemaVersion": 4,
+            "utcTimestamp": "2024-08-08T12:24:16Z",
+            "monotonicNanoseconds": 1,
+            "origin": DiagnosticEvent.Origin.keyboardExtension.rawValue,
+            "processInstanceID": "00000000-0000-0000-0000-000000000001",
+            "localSequence": 1,
+            "code": DiagnosticEvent.Code.keyboardLifecyclePhaseChanged.rawValue,
+            "level": Logger.Level.debug.rawValue,
+            "category": Logger.Category.display.rawValue,
+            "fields": [],
+            "keyboardLifecyclePayload": ["phase": "view_did_appear"],
+        ]
+
+        var v4CodeAsV3 = base
+        v4CodeAsV3["schemaVersion"] = 3
+        XCTAssertEqual(
+            DiagnosticEventWireValidator.rejectionReason(
+                for: try JSONSerialization.data(withJSONObject: v4CodeAsV3)
+            ),
+            .invalidPayloadPairing
+        )
+
+        var v4PayloadAsV5 = base
+        v4PayloadAsV5["schemaVersion"] = 5
+        XCTAssertEqual(
+            DiagnosticEventWireValidator.rejectionReason(
+                for: try JSONSerialization.data(withJSONObject: v4PayloadAsV5)
+            ),
+            .invalidPayloadPairing
+        )
+
+        var malformedPayload = base
+        malformedPayload["keyboardLifecyclePayload"] = [:]
+        XCTAssertEqual(
+            DiagnosticEventWireValidator.rejectionReason(
+                for: try JSONSerialization.data(withJSONObject: malformedPayload)
+            ),
+            .malformedPayload
+        )
+
+        var mismatchedPayload = base
+        mismatchedPayload["code"] = DiagnosticEvent.Code.textProxyOperationPhaseChanged.rawValue
+        XCTAssertEqual(
+            DiagnosticEventWireValidator.rejectionReason(
+                for: try JSONSerialization.data(withJSONObject: mismatchedPayload)
+            ),
+            .invalidPayloadPairing
+        )
+
+        var unsupportedVersion = base
+        unsupportedVersion["schemaVersion"] = 7
+        XCTAssertEqual(
+            DiagnosticEventWireValidator.rejectionReason(
+                for: try JSONSerialization.data(withJSONObject: unsupportedVersion)
+            ),
+            .unsupportedSchemaVersion
+        )
+
+        var nonIntegerVersion = base
+        nonIntegerVersion["schemaVersion"] = 4.5
+        XCTAssertEqual(
+            DiagnosticEventWireValidator.rejectionReason(
+                for: try JSONSerialization.data(withJSONObject: nonIntegerVersion)
+            ),
+            .unsupportedSchemaVersion
+        )
+    }
+
+    private func assertV6ReaderPreserves(
+        _ event: DiagnosticEvent,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) throws {
+        var fixture = try eventObject(event)
+        fixture["schemaVersion"] = 6
+        let data = try jsonData(fixture)
+        XCTAssertNil(DiagnosticEventWireValidator.rejectionReason(for: data), file: file, line: line)
+        let decoded = try JSONDecoder().decode(DiagnosticEvent.self, from: data)
+        XCTAssertEqual(decoded.schemaVersion, 6, file: file, line: line)
+        XCTAssertFalse(decoded.isWritableV5, file: file, line: line)
+        // Aside from its original wire version, every content-free value must be retained.
+        var roundTrip = try eventObject(decoded)
+        roundTrip["schemaVersion"] = event.schemaVersion
+        XCTAssertEqual(
+            try JSONDecoder().decode(DiagnosticEvent.self, from: jsonData(roundTrip)),
+            event, file: file, line: line
+        )
     }
 
     private func measuredQueryEvent() -> DiagnosticEvent {

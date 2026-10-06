@@ -1,0 +1,8 @@
+=== lint new gate ===
+PASS
+=== lint new tests ===
+PASS
+=== lint KeyboardViewController.swift ===
+PASS
+=== lint Bootstrap ===
+PASS

@@ -1,0 +1,67 @@
+{
+  "utc": "2026-10-04T10:56:26.464898+00:00",
+  "containers": {
+    "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/37ACBFEE-EABE-4987-AD1C-8D8050A9A593/Universe Keyboard.app",
+    "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/B43FA7F3-3BC2-4437-A51E-67C1351531BC",
+    "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/05FFE2DA-4326-45EB-8291-F816EBAE5FC3"
+  },
+  "target_processes": [],
+  "two_after_reads_equal": true,
+  "installed_identity": {
+    "main": {
+      "bundle_id": "com.DoubleShy0N.Universe-Keyboard",
+      "version": "1.0",
+      "build": "1",
+      "executable_sha256": "9d56eaedb7e71c504e6de3c5f6e4fd3a180e74129e8ff8a69bf238eb67a02463",
+      "uuid": "UUID: 38DA7472-D854-3103-B78C-9A8B05A97928 (arm64) /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/37ACBFEE-EABE-4987-AD1C-8D8050A9A593/Universe Keyboard.app/Universe Keyboard",
+      "signature_verify_exit": 0
+    },
+    "keyboard": {
+      "bundle_id": "com.DoubleShy0N.Universe-Keyboard.Keyboard",
+      "version": "1.0",
+      "build": "1",
+      "executable_sha256": "dcde2afc3c3d8751d47112a37dbdfb56014d53ed6ee380ceb91cfb589153885e",
+      "uuid": "UUID: D6871065-0EB8-3B3E-B033-E114E99FBB85 (arm64) /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/37ACBFEE-EABE-4987-AD1C-8D8050A9A593/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+      "signature_verify_exit": 0
+    }
+  },
+  "selected_preferences": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "rime_deployed": {
+      "exists": false,
+      "value": null
+    },
+    "rime_needs_deploy": {
+      "exists": true,
+      "value": true
+    },
+    "rime_is_deploying": {
+      "exists": false,
+      "value": null
+    }
+  },
+  "counts": {
+    "main-data": {
+      "files": 872,
+      "bytes": 1190149
+    },
+    "app-group": {
+      "files": 4,
+      "bytes": 724
+    },
+    "installed-app": {
+      "files": 111,
+      "bytes": 100583905
+    }
+  },
+  "restored": false,
+  "no_launch_or_input_health_check": true,
+  "user_content_not_exported": true
+}

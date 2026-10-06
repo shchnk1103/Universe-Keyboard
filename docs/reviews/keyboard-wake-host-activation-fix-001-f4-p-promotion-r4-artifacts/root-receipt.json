@@ -1,0 +1,12 @@
+{
+  "utc": "2026-10-05T05:09:57.119451+00:00",
+  "Architecture_R3": "Product accepted this one-time native report+ACK+root provenance/timebound; A-P1..3 Covered; defects preserved",
+  "Quality_R4": "Incomplete; author-reported4/4calls; no ACK/report/usage/readback",
+  "author_start_end_elapsed": null,
+  "time_compliance": "UNKNOWN",
+  "failure": "Wrong reader schema searched; excluded standalone field requested; no candidate failure established",
+  "root_facts": "All four full paths/UUID/SHA match; does not replace independent Quality",
+  "new_review_dispatched": false,
+  "next_prepared": "Replace failed Quality execution instance, only four flat original records and R3 consistency; proposed fresh4calls/300sec requires Human authorization",
+  "F4-I": "Blocked; not authorized"
+}

@@ -1,0 +1,12 @@
+{
+  "step": "F2-1-keyboardcore",
+  "utc": "2026-10-04T10:47:34.735881+00:00",
+  "command": "swift test --package-path Packages/KeyboardCore --build-path /private/tmp/ukey-host-activation-fix-f2-run-20261004/keyboardcore-build",
+  "cwd": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "remaining_wall_seconds": 10345.264277,
+  "ended": "2026-10-04T10:48:18.567851+00:00",
+  "elapsed_seconds": 43.83197,
+  "exit_code": 0,
+  "timeout": false,
+  "log": "/private/tmp/ukey-host-activation-fix-f2-run-20261004/logs/F2-1-keyboardcore.log"
+}

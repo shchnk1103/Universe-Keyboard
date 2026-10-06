@@ -1,0 +1,58 @@
+{
+  "utc": "2026-10-03T04:41:10.169162+00:00",
+  "oldC7_payload78_match": true,
+  "dual_signature_valid": true,
+  "main_application_matches_fresh_post_health_backup": true,
+  "AppGroup_unchanged_and_matches_fresh_backup": true,
+  "TipKit_restored_files": 3,
+  "AppGroup_restoration_actions": 0,
+  "delete_actions": 0,
+  "system_identity_matches_postinstall": true,
+  "snapshot_content_multiset_equal": true,
+  "two_reads_stable": true,
+  "target_processes_absent": true,
+  "selected_preferences": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "rime_deployed": {
+      "exists": true,
+      "value": true
+    },
+    "rime_needs_deploy": {
+      "exists": true,
+      "value": false
+    },
+    "rime_deploying": {
+      "exists": true,
+      "value": false
+    }
+  },
+  "known_added_provenance": 0,
+  "all_metadata_exact_equal_not_claimed": true,
+  "runtime_health_not_retested": true,
+  "new_candidate_not_installed": true,
+  "no_launch_build_deploy_test": true,
+  "counts": {
+    "main-data": {
+      "files": 827,
+      "directories": 42,
+      "links": 0
+    },
+    "app-group": {
+      "files": 52,
+      "directories": 15,
+      "links": 2
+    },
+    "installed-app": {
+      "files": 78,
+      "directories": 9,
+      "links": 0
+    }
+  }
+}

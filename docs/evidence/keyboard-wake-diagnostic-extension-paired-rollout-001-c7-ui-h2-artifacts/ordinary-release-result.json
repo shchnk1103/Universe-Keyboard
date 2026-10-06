@@ -1,0 +1,7 @@
+{
+  "start_utc": "2026-10-02T15:40:34.902887+00:00",
+  "end_utc": "2026-10-02T15:41:57.928778+00:00",
+  "elapsed_seconds": 83.02583945798688,
+  "exit_code": 0,
+  "command": "ordinary-release-command.json"
+}

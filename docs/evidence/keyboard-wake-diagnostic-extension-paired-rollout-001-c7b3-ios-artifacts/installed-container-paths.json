@@ -1,0 +1,17 @@
+{
+  "app": {
+    "exit": 0,
+    "path": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/1C8EAA6A-D18A-4684-B4E4-95252930B447/Universe Keyboard.app",
+    "stderr": ""
+  },
+  "data": {
+    "exit": 0,
+    "path": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/EA2EEB3C-B72B-4EE7-94A7-8A8C7F3DBAB7",
+    "stderr": ""
+  },
+  "group.com.DoubleShy0N.Universe-Keyboard": {
+    "exit": 117,
+    "path": "",
+    "stderr": "Print the path of the installed app's container\nUsage: simctl get_app_container <device> <app bundle identifier> [<container>]\n\ncontainer   Optionally specify the container. Defaults to app.\n  app                 The .app bundle\n  data                The application's data container\n  groups              The App Group containers\n  <group identifier>  A specific App Group container"
+  }
+}

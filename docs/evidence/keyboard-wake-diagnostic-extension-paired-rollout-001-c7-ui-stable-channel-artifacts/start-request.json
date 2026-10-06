@@ -1,0 +1,7 @@
+{
+  "utc": "2026-10-04T04:33:26.094417+00:00",
+  "monotonic_ns": 1241884948981833,
+  "command": "script -q transcript xcrun lldb --no-lldbinit --no-use-colors --attach-pid 41635",
+  "tty": true,
+  "scope": "native stable channel only"
+}

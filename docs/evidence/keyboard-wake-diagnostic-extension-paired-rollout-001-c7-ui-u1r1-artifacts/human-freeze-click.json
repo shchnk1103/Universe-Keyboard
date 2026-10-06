@@ -1,0 +1,8 @@
+{
+  "source": "Human manual report",
+  "root_archived_utc": "2026-10-03T13:21:38.829628+00:00",
+  "human_quote": "已点击取证",
+  "step": "single freeze click",
+  "actual_click_utc": null,
+  "expected_stop_then_no_further_actions_instructed": true
+}

@@ -1,0 +1,15 @@
+{
+  "artifacts": {
+    "delivery-supplement.md": "b1907cd2cb8389a713e5a106e6782ef5d6b40317a6f9e5b54cecc83ec3061f72",
+    "usage-supplement.json": "8bc6c55ce4f08225b006db2728a420606485ceecb17f4ed65d5877a74bc971fc",
+    "timing.json": "1f2af9ff191dcae9c911aaf339a2628f7bfeea8a60dcec1c5ce53f673c5e8557",
+    "external-identity.json": "f3c2672d8272b7cadf4cbed044b8d2e59e8cd40aad902f3d037119f006d77d07",
+    "root-receipt.json": "1040b47595ad7b1fc94e44922d7784cd286800d4e8d8462f86cf9c9bf88dd9a1",
+    "frozen-packet.json": "8f8227f289b0b3c5453fe2035d4d3d1069f20dcfe64949c477bfba73e451254c"
+  },
+  "original_reviewer_artifacts_preserved": {
+    "/private/tmp/ukey-wake-ui-u1r1-quality-r1-20261003/review.md": "9e739c6f3ec8f575369a4b5a830ef759d4bdc6e9243b9f1b18fe5c774674b5f8",
+    "/private/tmp/ukey-wake-ui-u1r1-quality-r1-20261003/usage.json": "1a927231bfdb14366c167a875f518312f5d6cbe2dff4b995f5bfcbef64835cba",
+    "/private/tmp/ukey-wake-ui-u1r1-quality-r1-20261003/independent-analysis.json": "a2debead61a6817a193cf79118924983ed442ee58fb8b51ee26c0fd9bdda126a"
+  }
+}

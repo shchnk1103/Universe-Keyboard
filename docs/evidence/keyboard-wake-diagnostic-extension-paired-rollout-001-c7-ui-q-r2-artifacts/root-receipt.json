@@ -1,0 +1,18 @@
+{
+  "quality": {
+    "packet_digest_sha256": "e68f6f79d79293994b6bd79d51e58401ccd3ac1f8d6d684caab0b8ec4b7226ee",
+    "report_sha256": "9fe0cda7b509e110b6bd950fc846ee0366ffffcc0f0e87e5e60514eb5defe079",
+    "usage_sha256": "9acdfa7c2df6d1edf7042015851404c388a1193086b1672f0d7b1278d6ad3686",
+    "all_allowed_inputs_still_matched": true,
+    "report_mtime_utc": "2026-10-02T16:07:57.475520+00:00",
+    "usage_mtime_utc": "2026-10-02T16:07:57.475794+00:00"
+  },
+  "architecture": {
+    "packet_digest_sha256": "8dbd34558300d7e822bb4eafd74531bb0c72e48d3c53a2b086918f3f00002b6f",
+    "report_sha256": "c5166a1ad79ca42b46b2a463db45d4b3fd65a85a669d854c2e4ba9854ed26a26",
+    "usage_sha256": "849487b8e72823b9417af753ab12a2ae1953069d173b5ba433aa5749b7663378",
+    "all_allowed_inputs_still_matched": true,
+    "report_mtime_utc": "2026-10-02T16:04:25.640542+00:00",
+    "usage_mtime_utc": "2026-10-02T16:04:25.640841+00:00"
+  }
+}

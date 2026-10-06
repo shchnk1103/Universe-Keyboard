@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardWakeOwnerProbe.swift",
+  "origin_sha256": "679d55e8669d7c68db2fbe58fd1b436cbb19bc61e770f9a701751326fa669af6",
+  "expected_sha256": "679d55e8669d7c68db2fbe58fd1b436cbb19bc61e770f9a701751326fa669af6",
+  "line_start": 61,
+  "line_end": 120,
+  "lines": [
+    {
+      "line": 61,
+      "text": "        public static func showsControl("
+    },
+    {
+      "line": 62,
+      "text": "            isObserving: Bool, hasCandidates: Bool, hasActiveTouches: Bool,"
+    },
+    {
+      "line": 63,
+      "text": "            elapsedIdleNanoseconds: UInt64"
+    },
+    {
+      "line": 64,
+      "text": "        ) -> Bool {"
+    },
+    {
+      "line": 65,
+      "text": "            !hasActiveTouches && elapsedIdleNanoseconds >= 2_000_000_000"
+    },
+    {
+      "line": 66,
+      "text": "                && (isObserving || !hasCandidates)"
+    },
+    {
+      "line": 67,
+      "text": "        }"
+    },
+    {
+      "line": 68,
+      "text": ""
+    },
+    {
+      "line": 69,
+      "text": "        public static let shared = KeyboardWakeOwnerProbe()"
+    },
+    {
+      "line": 70,
+      "text": "        public static let recordCapacity = 128"
+    },
+    {
+      "line": 71,
+      "text": "        public static let lifetimeNanoseconds: UInt64 = 600_000_000_000"
+    },
+    {
+      "line": 72,
+      "text": ""
+    },
+    {
+      "line": 73,
+      "text": "        private static let headerWordCount = 11"
+    },
+    {
+      "line": 74,
+      "text": "        private static let recordWordCount = 11"
+    },
+    {
+      "line": 75,
+      "text": "        private static let magicWord: UInt64 = 0x4B57_4F50_524F_4245  // KWOPROBE"
+    },
+    {
+      "line": 76,
+      "text": "        private static let formatVersion: UInt64 = 1"
+    },
+    {
+      "line": 77,
+      "text": ""
+    },
+    {
+      "line": 78,
+      "text": "        private let state: Mutex<State>"
+    },
+    {
+      "line": 79,
+      "text": "        private let processIdentifier: IdentifierWords"
+    },
+    {
+      "line": 80,
+      "text": "        private let clock: @Sendable () -> UInt64"
+    },
+    {
+      "line": 81,
+      "text": ""
+    },
+    {
+      "line": 82,
+      "text": "        /// `now` is injectable so TTL behavior can be checked without sleeping."
+    },
+    {
+      "line": 83,
+      "text": "        public init("
+    },
+    {
+      "line": 84,
+      "text": "            now: @escaping @Sendable () -> UInt64 = {"
+    },
+    {
+      "line": 85,
+      "text": "                DispatchTime.now().uptimeNanoseconds"
+    },
+    {
+      "line": 86,
+      "text": "            }"
+    },
+    {
+      "line": 87,
+      "text": "        ) {"
+    },
+    {
+      "line": 88,
+      "text": "            self.state = Mutex(State())"
+    },
+    {
+      "line": 89,
+      "text": "            self.processIdentifier = IdentifierWords(uuid: UUID())"
+    },
+    {
+      "line": 90,
+      "text": "            self.clock = now"
+    },
+    {
+      "line": 91,
+      "text": "        }"
+    },
+    {
+      "line": 92,
+      "text": ""
+    },
+    {
+      "line": 93,
+      "text": "        public var isArmed: Bool {"
+    },
+    {
+      "line": 94,
+      "text": "            let now = clock()"
+    },
+    {
+      "line": 95,
+      "text": "            return state.withLock { value in"
+    },
+    {
+      "line": 96,
+      "text": "                value.refreshExpiry(now: now)"
+    },
+    {
+      "line": 97,
+      "text": "                return value.lifecycle == .armed"
+    },
+    {
+      "line": 98,
+      "text": "            }"
+    },
+    {
+      "line": 99,
+      "text": "        }"
+    },
+    {
+      "line": 100,
+      "text": ""
+    },
+    {
+      "line": 101,
+      "text": "        /// Expiry is terminal too, so the UI can keep the export affordance visible."
+    },
+    {
+      "line": 102,
+      "text": "        public var isFrozen: Bool {"
+    },
+    {
+      "line": 103,
+      "text": "            let now = clock()"
+    },
+    {
+      "line": 104,
+      "text": "            return state.withLock { value in"
+    },
+    {
+      "line": 105,
+      "text": "                value.refreshExpiry(now: now)"
+    },
+    {
+      "line": 106,
+      "text": "                return value.lifecycle == .expired || value.lifecycle == .frozen"
+    },
+    {
+      "line": 107,
+      "text": "            }"
+    },
+    {
+      "line": 108,
+      "text": "        }"
+    },
+    {
+      "line": 109,
+      "text": ""
+    },
+    {
+      "line": 110,
+      "text": "        /// Arms this instance once. An expired or frozen instance cannot be re-armed."
+    },
+    {
+      "line": 111,
+      "text": "        @discardableResult"
+    },
+    {
+      "line": 112,
+      "text": "        public func arm() -> Bool {"
+    },
+    {
+      "line": 113,
+      "text": "            let now = clock()"
+    },
+    {
+      "line": 114,
+      "text": "            return state.withLock { value in"
+    },
+    {
+      "line": 115,
+      "text": "                guard value.lifecycle == .disarmed else { return false }"
+    },
+    {
+      "line": 116,
+      "text": ""
+    },
+    {
+      "line": 117,
+      "text": "                value.lifecycle = .armed"
+    },
+    {
+      "line": 118,
+      "text": "                value.runIdentifier = IdentifierWords(uuid: UUID())"
+    },
+    {
+      "line": 119,
+      "text": "                value.armedAt = now"
+    },
+    {
+      "line": 120,
+      "text": "                value.expiresAt = Self.saturatingAdd(now, Self.lifetimeNanoseconds)"
+    }
+  ]
+}

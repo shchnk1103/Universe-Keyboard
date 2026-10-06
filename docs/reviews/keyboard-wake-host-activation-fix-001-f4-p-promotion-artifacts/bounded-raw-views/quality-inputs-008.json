@@ -1,0 +1,7 @@
+{
+  "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/five-source-hashes.json",
+  "bytes": 899,
+  "sha256": "7ec3484757dfcf8977497ad928e93808ff75b718cfa847ea3380cf03af94a9fd",
+  "expected_sha256": "7ec3484757dfcf8977497ad928e93808ff75b718cfa847ea3380cf03af94a9fd",
+  "text": "[\n  {\n    \"path\": \"Keyboard/Controllers/KeyboardViewController.swift\",\n    \"bytes\": 39626,\n    \"sha256\": \"8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a\"\n  },\n  {\n    \"path\": \"Keyboard/Controllers/KeyboardViewController+Bootstrap.swift\",\n    \"bytes\": 52473,\n    \"sha256\": \"79d0123dabacd8e5875b66b7c8c897589adbeb8b49d1e22b263678dc1d56f6aa\"\n  },\n  {\n    \"path\": \"Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift\",\n    \"bytes\": 12137,\n    \"sha256\": \"c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047\"\n  },\n  {\n    \"path\": \"KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift\",\n    \"bytes\": 19887,\n    \"sha256\": \"71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5\"\n  },\n  {\n    \"path\": \"Universe Keyboard.xcodeproj/project.pbxproj\",\n    \"bytes\": 46990,\n    \"sha256\": \"49f0ebe89db1f30323d9bf6ceb297179ffed5fc9ef983fd3b947d11d5820586c\"\n  }\n]\n"
+}

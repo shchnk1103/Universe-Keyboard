@@ -1,0 +1,668 @@
+[
+  {
+    "path": "AppIcon60x60@2x.png",
+    "bytes": 13269,
+    "sha256": "ce5a5af134206119a84915679a3c2002cee278969bb245c1b82aef1104117abb",
+    "mode": "0o644"
+  },
+  {
+    "path": "AppIcon76x76@2x~ipad.png",
+    "bytes": 20614,
+    "sha256": "2a3000961915cd21a57fa854fb2eecc90240d808c18ef1b4a9aeeb8f01b7f647",
+    "mode": "0o644"
+  },
+  {
+    "path": "Assets.car",
+    "bytes": 2898376,
+    "sha256": "04d63f57ccc2130ca6a22812ebc58052bea3ad0815fb08f3450de51ce7e7c173",
+    "mode": "0o644"
+  },
+  {
+    "path": "BOOST-BSL-1.0.txt",
+    "bytes": 1338,
+    "sha256": "c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566",
+    "mode": "0o644"
+  },
+  {
+    "path": "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/Info.plist",
+    "bytes": 776,
+    "sha256": "b2e02d41dee0bbeb0c64db2db50e5e1b112f0d23dc29096a4ec2a17f6e534fdc",
+    "mode": "0o644"
+  },
+  {
+    "path": "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_-8730D61D9395D3A_PackageProduct",
+    "bytes": 9266000,
+    "sha256": "080548154e7e0a52d8f85ccce29bb11f561d0e441a68eb414ed0999c568d5d09",
+    "mode": "0o755"
+  },
+  {
+    "path": "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/Info.plist",
+    "bytes": 677,
+    "sha256": "5af2d53aaf0f23e4205c49e6fe51e5cce996e5ae3728298030da856dde75e1cd",
+    "mode": "0o644"
+  },
+  {
+    "path": "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeDirectory",
+    "bytes": 212,
+    "sha256": "81beacde89c003ccf47636e123d2da0a69460e5089b78a36dc55cf14242bcbfb",
+    "mode": "0o644"
+  },
+  {
+    "path": "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeRequirements",
+    "bytes": 12,
+    "sha256": "987920904eab650e75788c054aa0b0524e6a80bfc71aa32df8d237a61743f986",
+    "mode": "0o644"
+  },
+  {
+    "path": "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeResources",
+    "bytes": 1988,
+    "sha256": "36942c5fe4c20ffaf48d528e2c19071940e28c2d56995c113b3586509f5e2a9d",
+    "mode": "0o644"
+  },
+  {
+    "path": "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeSignature",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "mode": "0o644"
+  },
+  {
+    "path": "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/post_commit_continuations_v1_3.json",
+    "bytes": 22728,
+    "sha256": "20266049927492e18b9673b550745ab53e188daaac0ea8cb9acc94de3077a6e4",
+    "mode": "0o644"
+  },
+  {
+    "path": "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/_CodeSignature/CodeResources",
+    "bytes": 3638,
+    "sha256": "2d716f3b4e86c63ae755af653efc45af802e525982390d0fcc7b4cf75fb94ff7",
+    "mode": "0o644"
+  },
+  {
+    "path": "Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/Info.plist",
+    "bytes": 770,
+    "sha256": "16cab48dd70f20ee66c3a615ccc01163520574daad1f0175ef67baeaa45a4278",
+    "mode": "0o644"
+  },
+  {
+    "path": "Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/RimeBridge_57276DBF982DF6E4_PackageProduct",
+    "bytes": 6505904,
+    "sha256": "dfec90f00935deccc96cc16fb48dc1014b61c9f95c819b32882f28161757e65f",
+    "mode": "0o755"
+  },
+  {
+    "path": "Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/_CodeSignature/CodeResources",
+    "bytes": 1798,
+    "sha256": "a7b6cbe2892f5cfa2c4e6c78bfab78038d56dcf2b7403ca1890781f80937cd50",
+    "mode": "0o644"
+  },
+  {
+    "path": "GOOGLE-GLOG-BSD-3-Clause.txt",
+    "bytes": 1476,
+    "sha256": "3d8faa7c7349b19275982aec674fe746b274e97c3e3b781afc1e2a769ba038f0",
+    "mode": "0o644"
+  },
+  {
+    "path": "HKVariants.ocd2",
+    "bytes": 4893,
+    "sha256": "62750cb79eef18a407030b05bd4abe0e102bec2254d04b2d2310792f44519321",
+    "mode": "0o644"
+  },
+  {
+    "path": "Info.plist",
+    "bytes": 1540,
+    "sha256": "78ab124236b7101b69301f4493fb185f08a1d0e612ab630909540278db15f680",
+    "mode": "0o644"
+  },
+  {
+    "path": "KeyboardCore_KeyboardCore.bundle/Info.plist",
+    "bytes": 677,
+    "sha256": "5af2d53aaf0f23e4205c49e6fe51e5cce996e5ae3728298030da856dde75e1cd",
+    "mode": "0o644"
+  },
+  {
+    "path": "KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeDirectory",
+    "bytes": 212,
+    "sha256": "81beacde89c003ccf47636e123d2da0a69460e5089b78a36dc55cf14242bcbfb",
+    "mode": "0o644"
+  },
+  {
+    "path": "KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeRequirements",
+    "bytes": 12,
+    "sha256": "987920904eab650e75788c054aa0b0524e6a80bfc71aa32df8d237a61743f986",
+    "mode": "0o644"
+  },
+  {
+    "path": "KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeResources",
+    "bytes": 1988,
+    "sha256": "36942c5fe4c20ffaf48d528e2c19071940e28c2d56995c113b3586509f5e2a9d",
+    "mode": "0o644"
+  },
+  {
+    "path": "KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeSignature",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "mode": "0o644"
+  },
+  {
+    "path": "KeyboardCore_KeyboardCore.bundle/post_commit_continuations_v1_3.json",
+    "bytes": 22728,
+    "sha256": "20266049927492e18b9673b550745ab53e188daaac0ea8cb9acc94de3077a6e4",
+    "mode": "0o644"
+  },
+  {
+    "path": "LEVELDB-BSD-3-Clause.txt",
+    "bytes": 1484,
+    "sha256": "ccc19f1da0798ed666609b65a5b44dd8b3abe6fc08b9c0592eb76e82e174db19",
+    "mode": "0o644"
+  },
+  {
+    "path": "LUA-5.4.8-MIT.txt",
+    "bytes": 1076,
+    "sha256": "7002f3e4a34547bfc65fe998fe8af7885987fcc964a0a9c3c9640bf8f4ab018c",
+    "mode": "0o644"
+  },
+  {
+    "path": "MARISA-COPYING.txt",
+    "bytes": 2275,
+    "sha256": "edf58dab34c3dc239ba4ba2d5d3d844d8c5b442aa4dd1149fac81b2d8c6cb8d1",
+    "mode": "0o644"
+  },
+  {
+    "path": "OPENCC-AUTHORS.txt",
+    "bytes": 277,
+    "sha256": "cb34e252fa994679bcbfc8355581e821ceda44bd857875e2cfe15b7ec4eec006",
+    "mode": "0o644"
+  },
+  {
+    "path": "OPENCC-Apache-2.0.txt",
+    "bytes": 9165,
+    "sha256": "b534e465949558eec2597b04f5092b5e161236a68dfbfd04d547592ac3964308",
+    "mode": "0o644"
+  },
+  {
+    "path": "PkgInfo",
+    "bytes": 8,
+    "sha256": "82502191c9484b04d685374f9879a0066069c49b8acae7a04b01d38d07e8eca0",
+    "mode": "0o644"
+  },
+  {
+    "path": "PlugIns/Keyboard.appex/Info.plist",
+    "bytes": 1095,
+    "sha256": "81b5c6912d13ebe448910bab37349e1d5b427251ec24b51a7c9442bd0b4e8f9a",
+    "mode": "0o644"
+  },
+  {
+    "path": "PlugIns/Keyboard.appex/Keyboard",
+    "bytes": 37872,
+    "sha256": "361f88e4c4406f5cd19d05ede346b5e95aac891467669fa1c1133b42a2977ac2",
+    "mode": "0o755"
+  },
+  {
+    "path": "PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+    "bytes": 4990416,
+    "sha256": "afb5881765ddf027ccf247713d2959b39aef46aab7af71857698af3fc8fdd7ea",
+    "mode": "0o755"
+  },
+  {
+    "path": "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/Info.plist",
+    "bytes": 677,
+    "sha256": "5af2d53aaf0f23e4205c49e6fe51e5cce996e5ae3728298030da856dde75e1cd",
+    "mode": "0o644"
+  },
+  {
+    "path": "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeDirectory",
+    "bytes": 212,
+    "sha256": "81beacde89c003ccf47636e123d2da0a69460e5089b78a36dc55cf14242bcbfb",
+    "mode": "0o644"
+  },
+  {
+    "path": "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeRequirements",
+    "bytes": 12,
+    "sha256": "987920904eab650e75788c054aa0b0524e6a80bfc71aa32df8d237a61743f986",
+    "mode": "0o644"
+  },
+  {
+    "path": "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeResources",
+    "bytes": 1988,
+    "sha256": "36942c5fe4c20ffaf48d528e2c19071940e28c2d56995c113b3586509f5e2a9d",
+    "mode": "0o644"
+  },
+  {
+    "path": "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeSignature",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "mode": "0o644"
+  },
+  {
+    "path": "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/post_commit_continuations_v1_3.json",
+    "bytes": 22728,
+    "sha256": "20266049927492e18b9673b550745ab53e188daaac0ea8cb9acc94de3077a6e4",
+    "mode": "0o644"
+  },
+  {
+    "path": "PlugIns/Keyboard.appex/PrivacyInfo.xcprivacy",
+    "bytes": 815,
+    "sha256": "1b857c60b79d63a424a44bbc6401f080d05863a5e669372609dd353ed2de14e7",
+    "mode": "0o644"
+  },
+  {
+    "path": "PlugIns/Keyboard.appex/_CodeSignature/CodeResources",
+    "bytes": 4308,
+    "sha256": "a400d6f8317121ac3a7b4a29c551ac82e9a4ff90e188f59a5b40ff58c8f49f19",
+    "mode": "0o644"
+  },
+  {
+    "path": "PlugIns/Keyboard.appex/__preview.dylib",
+    "bytes": 16800,
+    "sha256": "eccef4a1b897ac811c714b630fbce2872a5e95af9e026818a5f6a38ef7a59f91",
+    "mode": "0o755"
+  },
+  {
+    "path": "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/Info.plist",
+    "bytes": 776,
+    "sha256": "b2e02d41dee0bbeb0c64db2db50e5e1b112f0d23dc29096a4ec2a17f6e534fdc",
+    "mode": "0o644"
+  },
+  {
+    "path": "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_-8730D61D9395D3A_PackageProduct",
+    "bytes": 9266000,
+    "sha256": "080548154e7e0a52d8f85ccce29bb11f561d0e441a68eb414ed0999c568d5d09",
+    "mode": "0o755"
+  },
+  {
+    "path": "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/Info.plist",
+    "bytes": 677,
+    "sha256": "5af2d53aaf0f23e4205c49e6fe51e5cce996e5ae3728298030da856dde75e1cd",
+    "mode": "0o644"
+  },
+  {
+    "path": "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeDirectory",
+    "bytes": 212,
+    "sha256": "81beacde89c003ccf47636e123d2da0a69460e5089b78a36dc55cf14242bcbfb",
+    "mode": "0o644"
+  },
+  {
+    "path": "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeRequirements",
+    "bytes": 12,
+    "sha256": "987920904eab650e75788c054aa0b0524e6a80bfc71aa32df8d237a61743f986",
+    "mode": "0o644"
+  },
+  {
+    "path": "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeResources",
+    "bytes": 1988,
+    "sha256": "36942c5fe4c20ffaf48d528e2c19071940e28c2d56995c113b3586509f5e2a9d",
+    "mode": "0o644"
+  },
+  {
+    "path": "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeSignature",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "mode": "0o644"
+  },
+  {
+    "path": "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/post_commit_continuations_v1_3.json",
+    "bytes": 22728,
+    "sha256": "20266049927492e18b9673b550745ab53e188daaac0ea8cb9acc94de3077a6e4",
+    "mode": "0o644"
+  },
+  {
+    "path": "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/_CodeSignature/CodeResources",
+    "bytes": 3638,
+    "sha256": "2d716f3b4e86c63ae755af653efc45af802e525982390d0fcc7b4cf75fb94ff7",
+    "mode": "0o644"
+  },
+  {
+    "path": "PlugIns/UniverseKeyboardTests.xctest/Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/Info.plist",
+    "bytes": 770,
+    "sha256": "16cab48dd70f20ee66c3a615ccc01163520574daad1f0175ef67baeaa45a4278",
+    "mode": "0o644"
+  },
+  {
+    "path": "PlugIns/UniverseKeyboardTests.xctest/Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/RimeBridge_57276DBF982DF6E4_PackageProduct",
+    "bytes": 6505904,
+    "sha256": "dfec90f00935deccc96cc16fb48dc1014b61c9f95c819b32882f28161757e65f",
+    "mode": "0o755"
+  },
+  {
+    "path": "PlugIns/UniverseKeyboardTests.xctest/Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/_CodeSignature/CodeResources",
+    "bytes": 1798,
+    "sha256": "a7b6cbe2892f5cfa2c4e6c78bfab78038d56dcf2b7403ca1890781f80937cd50",
+    "mode": "0o644"
+  },
+  {
+    "path": "PlugIns/UniverseKeyboardTests.xctest/Info.plist",
+    "bytes": 718,
+    "sha256": "b06559d30ee7cde3a69ec83864d5f9581dfa4e78a93d2db757e7966284c0b0c4",
+    "mode": "0o644"
+  },
+  {
+    "path": "PlugIns/UniverseKeyboardTests.xctest/KeyboardCore_KeyboardCore.bundle/Info.plist",
+    "bytes": 677,
+    "sha256": "5af2d53aaf0f23e4205c49e6fe51e5cce996e5ae3728298030da856dde75e1cd",
+    "mode": "0o644"
+  },
+  {
+    "path": "PlugIns/UniverseKeyboardTests.xctest/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeDirectory",
+    "bytes": 212,
+    "sha256": "81beacde89c003ccf47636e123d2da0a69460e5089b78a36dc55cf14242bcbfb",
+    "mode": "0o644"
+  },
+  {
+    "path": "PlugIns/UniverseKeyboardTests.xctest/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeRequirements",
+    "bytes": 12,
+    "sha256": "987920904eab650e75788c054aa0b0524e6a80bfc71aa32df8d237a61743f986",
+    "mode": "0o644"
+  },
+  {
+    "path": "PlugIns/UniverseKeyboardTests.xctest/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeResources",
+    "bytes": 1988,
+    "sha256": "36942c5fe4c20ffaf48d528e2c19071940e28c2d56995c113b3586509f5e2a9d",
+    "mode": "0o644"
+  },
+  {
+    "path": "PlugIns/UniverseKeyboardTests.xctest/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeSignature",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "mode": "0o644"
+  },
+  {
+    "path": "PlugIns/UniverseKeyboardTests.xctest/KeyboardCore_KeyboardCore.bundle/post_commit_continuations_v1_3.json",
+    "bytes": 22728,
+    "sha256": "20266049927492e18b9673b550745ab53e188daaac0ea8cb9acc94de3077a6e4",
+    "mode": "0o644"
+  },
+  {
+    "path": "PlugIns/UniverseKeyboardTests.xctest/UniverseKeyboardTests",
+    "bytes": 9119968,
+    "sha256": "abb3490727a51afec482a0d060a46cc4c17108ef2f322faa32f475a5501e3d4b",
+    "mode": "0o755"
+  },
+  {
+    "path": "PlugIns/UniverseKeyboardTests.xctest/_CodeSignature/CodeResources",
+    "bytes": 8482,
+    "sha256": "a21933fa8095d054c8252fd6624a99cb6e9b25e66a2b526feba4aef2ace47a54",
+    "mode": "0o644"
+  },
+  {
+    "path": "PrivacyInfo.xcprivacy",
+    "bytes": 1056,
+    "sha256": "f95ecfc75a54a82034d09db5abfb136198b22ae50aa1440c77b3191ce8c00851",
+    "mode": "0o644"
+  },
+  {
+    "path": "RIME-ESSAY-AUTHORS.txt",
+    "bytes": 393,
+    "sha256": "4ab2f81451ff4819f2b0e346583b49cee37aec72a01f8ecd96be1711c4204b75",
+    "mode": "0o644"
+  },
+  {
+    "path": "RIME-ESSAY-LGPL-3.0.txt",
+    "bytes": 7651,
+    "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768",
+    "mode": "0o644"
+  },
+  {
+    "path": "RIME-ICE-GPL-3.0-only.txt",
+    "bytes": 35149,
+    "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+    "mode": "0o644"
+  },
+  {
+    "path": "RIME-LIBRIME-BSD-3-Clause.txt",
+    "bytes": 1513,
+    "sha256": "f67d27a6d2d586fcfed4b4c886a83747095396a39b6641e18e855086be2ec400",
+    "mode": "0o644"
+  },
+  {
+    "path": "RIME-LUA-PLUGIN-BSD-3-Clause.txt",
+    "bytes": 1520,
+    "sha256": "c6bd4f58b13ae9d45c5e53adddeea5049114a25862797c6c6f64920431eea249",
+    "mode": "0o644"
+  },
+  {
+    "path": "RIME-LUNA-PINYIN-AUTHORS.txt",
+    "bytes": 273,
+    "sha256": "dbf21183999dcd06d4b0f0fe08f7396fcb47cc6f734fd97c3dd851777f1b28f8",
+    "mode": "0o644"
+  },
+  {
+    "path": "RIME-LUNA-PINYIN-LGPL-3.0.txt",
+    "bytes": 7651,
+    "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768",
+    "mode": "0o644"
+  },
+  {
+    "path": "RIME-LUNA-PINYIN-SOURCE-ATTRIBUTIONS.txt",
+    "bytes": 735,
+    "sha256": "7bc2625f22ae4f9b3062b99195162a521b3c3bab149b59b29228095e83c40e7b",
+    "mode": "0o644"
+  },
+  {
+    "path": "RIME-OCTAGRAM-BSD-3-Clause.txt",
+    "bytes": 1513,
+    "sha256": "f67d27a6d2d586fcfed4b4c886a83747095396a39b6641e18e855086be2ec400",
+    "mode": "0o644"
+  },
+  {
+    "path": "RIME-OCTAGRAM-PROVENANCE.txt",
+    "bytes": 547,
+    "sha256": "4e70ceafc631201750b130768a5c77f0ce9d06e9f6b522ce16955919cf5e1e20",
+    "mode": "0o644"
+  },
+  {
+    "path": "RIME-PRELUDE-AUTHORS.txt",
+    "bytes": 142,
+    "sha256": "9296a3509f1bcaee9e316ff70fccf76bf3a1f19c089b795710808ea5b6a0e6e7",
+    "mode": "0o644"
+  },
+  {
+    "path": "RIME-PRELUDE-LGPL-3.0.txt",
+    "bytes": 7651,
+    "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768",
+    "mode": "0o644"
+  },
+  {
+    "path": "RIME-STROKE-AUTHORS.txt",
+    "bytes": 273,
+    "sha256": "f0cbba217e049471ccb40751b7d2e1c98144bb2ad4ec15b9f5af057121ec99d6",
+    "mode": "0o644"
+  },
+  {
+    "path": "RIME-STROKE-LGPL-3.0.txt",
+    "bytes": 7651,
+    "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768",
+    "mode": "0o644"
+  },
+  {
+    "path": "RIME-WANXIANG-CC-BY-4.0.txt",
+    "bytes": 18656,
+    "sha256": "9e5f1b3c610b9c2da5c313bf81d577a7d1acec686bdb0384edefa6df0f90cd94",
+    "mode": "0o644"
+  },
+  {
+    "path": "RimeBuiltin.manifest.json",
+    "bytes": 13582,
+    "sha256": "6aa2d28918b9146cdf417ddb369ba57907e5bbcc3e2ce2c9bc1280f1a6e7b233",
+    "mode": "0o644"
+  },
+  {
+    "path": "STCharacters.ocd2",
+    "bytes": 45310,
+    "sha256": "1ec2298310ca5a9151a554ea57bd86a6296ce917e4cdd1dd0884f789c477641b",
+    "mode": "0o644"
+  },
+  {
+    "path": "STPhrases.ocd2",
+    "bytes": 928154,
+    "sha256": "16fd5f086b2a3be7aa9679deb7f728cf447f5d5419f65b2766a2d8671e84e77d",
+    "mode": "0o644"
+  },
+  {
+    "path": "TSCharacters.ocd2",
+    "bytes": 46126,
+    "sha256": "85291e0173e972bbca58c848fb90b3bb41c79674cb61a75645e01bd884ad5927",
+    "mode": "0o644"
+  },
+  {
+    "path": "TSPhrases.ocd2",
+    "bytes": 9777,
+    "sha256": "83696b4a2074f2f5c1786949444281ae191ccb0b75d98cd9ac51bcb35f890cb3",
+    "mode": "0o644"
+  },
+  {
+    "path": "TWVariants.ocd2",
+    "bytes": 4595,
+    "sha256": "390f07a1867ad56aa60a7af23b6e4b3acc96ea48d893c06ede3dffb1c576c2bc",
+    "mode": "0o644"
+  },
+  {
+    "path": "Universe Keyboard",
+    "bytes": 40512,
+    "sha256": "9a167030894b0c0c3328689644dd7667fe73bb3569e6bd6e02a17a4b1d425f81",
+    "mode": "0o755"
+  },
+  {
+    "path": "Universe Keyboard.debug.dylib",
+    "bytes": 17501344,
+    "sha256": "2f570519424d95909b33c760d7ebf389ccf2821b2ab660438c0ba6605781859d",
+    "mode": "0o755"
+  },
+  {
+    "path": "YAML-CPP-MIT.txt",
+    "bytes": 1061,
+    "sha256": "aa6fcc27be034e41e21dd832f9175bfe694a48491d9e14ff0fa278e19ad14f1b",
+    "mode": "0o644"
+  },
+  {
+    "path": "_CodeSignature/CodeResources",
+    "bytes": 33793,
+    "sha256": "a2ab20ec2becea44f2b6d174afab280993c56d92d40f60d516243a9290073b02",
+    "mode": "0o644"
+  },
+  {
+    "path": "__preview.dylib",
+    "bytes": 16800,
+    "sha256": "39c5084b204f9a2a3244e4b94d1d38fe74346d45c4fc0a6a7b1f3d38a9645a0a",
+    "mode": "0o755"
+  },
+  {
+    "path": "default.yaml",
+    "bytes": 1593,
+    "sha256": "0628ada16651d56c4cdfcb8e45ddba23d4d585cc8be0580a62c4e077c0bcc141",
+    "mode": "0o644"
+  },
+  {
+    "path": "essay.txt",
+    "bytes": 5887417,
+    "sha256": "a6f8409c261e5d21bd78e6cbcde8f8e1ef7f68c07ff1c2692c07dd4ff4151cea",
+    "mode": "0o644"
+  },
+  {
+    "path": "key_bindings.yaml",
+    "bytes": 3117,
+    "sha256": "ee2476598b4cae89068b823868196eb07b5f72007a600814fe5804b39008b3ed",
+    "mode": "0o644"
+  },
+  {
+    "path": "luna_pinyin.dict.yaml",
+    "bytes": 889896,
+    "sha256": "75bcf6eb3ff62b129882ed89cc22b2d80a5347aa72bcfa2ccc839bac298e7314",
+    "mode": "0o644"
+  },
+  {
+    "path": "luna_pinyin.prism.bin",
+    "bytes": 31728,
+    "sha256": "012d8360150c3e2f55330d21f9aa16281660e25c15db8c983090f14293da878f",
+    "mode": "0o644"
+  },
+  {
+    "path": "luna_pinyin.reverse.bin",
+    "bytes": 252760,
+    "sha256": "bd314158c00bf36c9ba8f7321d7e6ab6dfbdaa283b11c4856adfd2f58a781179",
+    "mode": "0o644"
+  },
+  {
+    "path": "luna_pinyin.schema.yaml",
+    "bytes": 2809,
+    "sha256": "668b4d4957e4cc8f9cea32ed3f08f0ecf4a7be8cdba058700507487bd96dd5c7",
+    "mode": "0o644"
+  },
+  {
+    "path": "luna_pinyin.table.bin",
+    "bytes": 13011464,
+    "sha256": "55a54e8e55deaade0e4d7646a7ad2b8602901f4007b60c637d993468eff64e03",
+    "mode": "0o644"
+  },
+  {
+    "path": "pinyin.yaml",
+    "bytes": 4895,
+    "sha256": "caa220b05172bf35775db07fed6ead7719c742e6139232d9797040dbe65f746c",
+    "mode": "0o644"
+  },
+  {
+    "path": "punctuation.yaml",
+    "bytes": 2107,
+    "sha256": "d6f89592149098f0a2d0ed3e5c83f49adb6226cdf1d967b0bc0d293f4e5c496a",
+    "mode": "0o644"
+  },
+  {
+    "path": "s2t.json",
+    "bytes": 424,
+    "sha256": "0b86f3aa92c72ac5fcb11bc9df21914ed42f6847416a1d4d7f52f8b5eb861e74",
+    "mode": "0o644"
+  },
+  {
+    "path": "stroke.dict.yaml",
+    "bytes": 3396330,
+    "sha256": "b3e93dce89c185f45c3d6e189b86b3a8626913352cc85e1094c786579a665791",
+    "mode": "0o644"
+  },
+  {
+    "path": "stroke.prism.bin",
+    "bytes": 3501372,
+    "sha256": "5acfdf5842006fb7eacf9e2c9920e917a18356b78cd55b4023ecd836665ff383",
+    "mode": "0o644"
+  },
+  {
+    "path": "stroke.reverse.bin",
+    "bytes": 1498508,
+    "sha256": "0618448a659ec3e316ef230dce808a40388a57c664cf257eab1e9b64d86909cb",
+    "mode": "0o644"
+  },
+  {
+    "path": "stroke.schema.yaml",
+    "bytes": 3056,
+    "sha256": "06f680cf7c9d9a69948681ee25e9f6aeccfde4d8d590f93e179d4c4b3caee879",
+    "mode": "0o644"
+  },
+  {
+    "path": "stroke.table.bin",
+    "bytes": 4548444,
+    "sha256": "de1a978a7d97e7ccef5f85eaaa4cc76dcbd4d75cdf750926edfc2ea3e65603d5",
+    "mode": "0o644"
+  },
+  {
+    "path": "symbols.yaml",
+    "bytes": 28473,
+    "sha256": "6d08969525bd66c67abf1791c99928079356bd0e673386c49c1959d2a52fdbba",
+    "mode": "0o644"
+  },
+  {
+    "path": "t2hk.json",
+    "bytes": 322,
+    "sha256": "3d5c1c7540992e821fef56858a001d8ea2720a394975b915fb5944fe42efc0fd",
+    "mode": "0o644"
+  },
+  {
+    "path": "t2s.json",
+    "bytes": 424,
+    "sha256": "18d64a23de26c39d0e247d36e12d585653f44f2e231c3397050456565581a819",
+    "mode": "0o644"
+  },
+  {
+    "path": "t2tw.json",
+    "bytes": 320,
+    "sha256": "7b2eb8aa8b76c1e2b1a41e8ce38a327d0aac5e49cfcefe763744b17fdeefb7b5",
+    "mode": "0o644"
+  }
+]

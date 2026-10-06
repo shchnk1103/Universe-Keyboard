@@ -1,0 +1,75 @@
+{
+  "work_item": "KEYBOARD-WAKE-HOST-ACTIVATION-FIX-001",
+  "round": 3,
+  "authority": "Human Product Lead current 可以按照你的建议继续 approves exact prior proposal: Architecture replacement20calls/900sec + Quality remaining3checks6calls/600sec",
+  "worktree": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "candidate_digest": "d53523dba8c371c67424ff07c79163a66f41e3bc5bb402637cf9ee79ae7579cb",
+  "read_interface": "Read repo target-reader JSON with Python and print selected fields/blocks; do not dump whole raw. Each text has original path/hash and source line numbers. Proxied host facts, not direct live access. Root reader supplies no verdict. Original raw mirrors available only as exact fallback.",
+  "read_allowed_files": [
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-artifacts/architecture-raw-reader.json",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-artifacts/quality-raw-reader.json",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r3-artifacts/architecture-target-reader.json",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r3-artifacts/quality-target-reader.json",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/assignments/keyboard-wake-host-activation-fix-001.md",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/AGENTS.md",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/KNOWLEDGE_INDEX.md",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/READING_MAPS.md",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/ASSIGNMENT_POLICY.md",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/AI_WORKFLOW.md",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/playbooks/keyboard-ui.md",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/playbooks/test-release.md",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-promotion-r2-validation-2026-10-05.md",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r2-artifacts/quality/review.md",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r2-artifacts/quality/usage.json",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r3-artifacts/architecture-input-manifest.json",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r3-artifacts/quality-input-manifest.json"
+  ],
+  "allowed_operations": [
+    "Read exact repo packet/target reader/source data text and hash; Python independent parsing and recomputation",
+    "Write only specified output_dir ack.json/review.md/usage.json/delivery-readback.json and optional own reader-results.json",
+    "exec_command require_escalated for authorized repo report writes; same proven writer channel",
+    "No private namespace lookup or metadata enumeration; no retry guessing"
+  ],
+  "exclusions": [
+    "No source/Git mutations, build/test/lint/device/simctl/process/LLDB/Maps/install/backup cleanup",
+    "No A2 implementation or Q3/Q-P4 rereview; no new adjacent question",
+    "No claim loaded runtime/FullAccess/actual recovery/wholeF3/Release. Keep30skip accepted unverified, not passes, not Release."
+  ],
+  "acceptance": "Each named criterion explicitly Covered with independent reasoning and origin path/hash/line/JSONPath; every required criterion covered for Pass or Pass with conditions. Any missing => Partial. Full author files + accurate count/time and verified readback required.",
+  "outputs": [
+    "ack.json start UTC packet SHA scope budget and immediate writer self-readback",
+    "review.md per claim and explicit limited eligibility verdict",
+    "usage.json actual UTC start/end elapsed count ceiling stop reason and covered/uncovered",
+    "delivery-readback.json actual SHA+bytes of ACK/report/usage verified by author"
+  ],
+  "stop": [
+    "Missing required input/reader or writer rejection => stop that part immediately with locator",
+    "Scope/budget exhausted => persist files and Partial if any required criterion missing",
+    "Only Human Product Lead may approve exact expansion; no auto renew"
+  ],
+  "non_claims": "Ordinary A2 matrix remains ordinary flags/source/gate evidence only; new diagnostic artifact has build evidence only. RuntimeF4-I/M and Release remain separate authority.",
+  "lane_id": "F4-P-QUALITY-PROMOTION",
+  "output_dir": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r3-artifacts/quality",
+  "preferred_reader": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r3-artifacts/quality-target-reader.json",
+  "preferred_reader_sha256": "1e5500ca7deb9b56b97272e94bc35997eccba9111f226340bccd550514eeaa56",
+  "reviewer": "Reuse /root/m2r2_quality_r1",
+  "budget": {
+    "actual_tool_calls": 6,
+    "wall_clock_seconds": 600,
+    "checkpoints": [
+      2,
+      4
+    ],
+    "reserve_last_calls": 4,
+    "counting": "Count every tools call, including functions.exec wrapper and nested exec_command; coordination tool calls count; preflight within this budget. Start actual UTC before first reading batch, no old-clock reuse."
+  },
+  "claims": {
+    "Q-P1-remaining": "Pair all four module paths+candidate SHA with original dwarfdump UUID and paired record, especially main App two modules; examine standalone payload paths and original module load commands for XCTest/test-host injection. Carry only unchanged prior Q-P1 already-covered payload/count/symbol subfacts; do not repeat complete suite",
+    "Q-P2-remaining": "Independently bind single standalone original build request and matching start/receipt exit0 to both actual module-name target compile lines (same DerivedData/debug simulator). This is one build invocation containing two targets; require no invented separate per-target build receipt",
+    "Q-P3-remaining": "Independently reconstruct each arm64 raw otool hex-word output to bytes/plist, verify section SHA matches prior raw record and actual Group/application identifier; do not treat expected plist as raw proof. Carry prior input/codesign subfacts unchanged"
+  },
+  "input_manifest": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r3-artifacts/quality-input-manifest.json",
+  "input_manifest_sha256": "27e07c5f6bd80c41aef29b300650dd0ba8d6879bcaa45d1896ee8dfcf1b8c179"
+}

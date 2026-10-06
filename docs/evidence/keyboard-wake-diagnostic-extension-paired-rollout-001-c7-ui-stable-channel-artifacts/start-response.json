@@ -1,0 +1,7 @@
+{
+  "chunk_id": "67f44b",
+  "wall_time_seconds": 1.002231334,
+  "session_id": 63415,
+  "original_token_count": 9,
+  "output": "(lldb) process attach --pid 41635\r\n"
+}

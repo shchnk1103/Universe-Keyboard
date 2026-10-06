@@ -1,0 +1,65 @@
+{
+  "utc": "2026-10-04T09:15:00Z",
+  "stage": "F2 Prepared Entry revision",
+  "destination_udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "budget": {
+    "inherits_f1_60_toolcalls": false,
+    "status": "prepared_proposal_must_be_pinned_in_F2_AUTH",
+    "wall_clock_minutes": 180,
+    "first_failure_or_timeout_stops": true,
+    "serial_jobs": true,
+    "automatic_renewal": false
+  },
+  "stop_conditions": [
+    "five_file_hash_drift_vs_f1",
+    "build_input_inventory_drift",
+    "vendor_verify_fail",
+    "destination_udid_missing_or_substituted",
+    "occupancy_unconfirmed_or_paired_rollout_conflict",
+    "backup_would_overwrite_historical_or_planned_path_collision",
+    "required_job_nonzero",
+    "new_skip_without_product",
+    "sixth_source_file_or_concurrent_writer",
+    "format_lint_fail",
+    "sha_to_sha_classify_used_to_skip_heavy",
+    "budget_exhausted"
+  ],
+  "exit_success": [
+    "stop_further_xcodebuild_and_simctl_side_effects",
+    "do_not_uninstall_erase_or_overwrite_before_backup",
+    "record_after_inventory_skip_identity_actual_counts",
+    "keep_occupancy_until_human_confirms_release",
+    "deliver_isolated_xcresult_logs_hashes",
+    "do_not_claim_f3_gate_or_release"
+  ],
+  "exit_failure": [
+    "stop_remaining_commands_immediately",
+    "preserve_after_inventory_and_failed_artifacts",
+    "do_not_auto_restore_or_overwrite_before",
+    "report_failed_step_id_exit_code_udid_and_hash_match",
+    "wait_for_human_restore_hold_or_budget"
+  ],
+  "restore_authority": "separate AUTH; F2 backup for pre-F2 field, M0 only for 43d85d diagnostic field",
+  "retention": {
+    "keep_until_f3_or_human_delete_auth": [
+      "/private/tmp/ukey-host-activation-fix-f2-run-20261004",
+      "/private/tmp/ukey-host-activation-fix-f2-backup-20261004"
+    ],
+    "never_delete_this_entry": [
+      "/private/tmp/ukey-wake-m0-20261003/backup",
+      "/private/tmp/ukey-wake-m2r1-20261004/backup",
+      "/private/tmp/ukey-wake-m2r2-20261004/backup",
+      "/private/tmp/ukey-wake-ui-i0-20261003/backup",
+      "/private/tmp/ukey-host-activation-fix-entry-20261004",
+      "/private/tmp/ukey-host-activation-fix-grok-f1-20261004"
+    ],
+    "do_not_git_add": [
+      "xcresult",
+      "DerivedData",
+      "Vendor payload",
+      "simulator containers",
+      "user lexicon"
+    ]
+  },
+  "backup_path_status_ref": "backup-path-status.json"
+}

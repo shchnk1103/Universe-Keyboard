@@ -1,0 +1,16 @@
+{
+  "stage": "baseline_input",
+  "verbatim": "不好意思，我第一次按以为模拟器卡住了，我又按了几次，但是候选栏跟输入框都没有更新，按钮仍显示为‘取证’",
+  "root_recorded_utc": "2026-10-03T14:55:38.640543+00:00",
+  "actual_click_times": null,
+  "actual_input_count": null,
+  "input_count_reported": "multiple; exact count not provided",
+  "candidate_updated_reported": false,
+  "host_field_updated_reported": false,
+  "title_reported": "取证",
+  "feedback_observation": "not separately reported",
+  "protocol_deviation": "multiple baseline presses instead of one",
+  "target_AppSwitcher_transition": "not instructed/not executed under this run",
+  "decision": "stop baseline-failed/protocol-incomplete; cleanup only, no freeze/read/retry",
+  "owner_state": "unverified"
+}

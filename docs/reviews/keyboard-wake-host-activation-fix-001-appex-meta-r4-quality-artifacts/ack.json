@@ -1,0 +1,32 @@
+{
+  "lane": "AP-META-004-QUALITY-R1",
+  "round": 1,
+  "acknowledged": true,
+  "first_successful_read_utc": "2026-10-06T03:14:57.254279+00:00",
+  "packet_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-appex-meta-r4-quality-artifacts/packet.json",
+  "packet_bytes": 2541,
+  "packet_sha256": "fd5da48966c5fbb1e198f83ae6819514fc7109eb06929311e8899e6399353b55",
+  "reader_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-appex-meta-r4-quality-artifacts/reader.json",
+  "reader_bytes": 74975,
+  "reader_sha256": "a5cb4b5623852ee0bf6825fe707cb12e954bdd15884409b5e7fb678d46d369be",
+  "reader_top_level_keys": [
+    "kind",
+    "created_utc",
+    "files"
+  ],
+  "reader_files_count": 23,
+  "preflight_path_errors": [
+    {
+      "attempt": 1,
+      "reason": "packet path omitted fix segment",
+      "calls_counted": 2,
+      "writer_touched": false
+    },
+    {
+      "attempt": 2,
+      "reason": "read outputs instead of packet output_directory",
+      "calls_counted": 2,
+      "writer_touched": false
+    }
+  ]
+}
