@@ -6,11 +6,15 @@ Policy: 1.0.0 — [Assignment Policy](../ASSIGNMENT_POLICY.md)。未opt-in KOS2.
 
 | Field | Value |
 |---|---|
-| Lifecycle | Completed — 单轮模拟器恢复验证交付；2026-10-06 Human批准有界完成合同 |
-| Current phase | Completed — 代码/矩阵/独立静态/诊断pair/安装及单run Maps-owner恢复链交付完成，残项非阻塞未验证 |
-| Material non-claims | 单run owner/receipt整数恢复链独立覆盖；完整系统通知/controller组合、Maps返回后提交/长期稳定性未验证，整体Gate/Release及历史skip通过不声称 |
-| Next handoff | 有界交付已归档。PR [#198](https://github.com/shchnk1103/Universe-Keyboard/pull/198) squash-merged `4b102a9f33e1535da6be23280e912a84d2766c3c`。[M-02](../evidence/keyboard-wake-bounded-publication-001-post-merge-state-sync-2026-10-06.md)。残项补证 / TestFlight / Release 均需另核范围授权，不自动执行 |
-| Residuals | [本修复有界完成Product决定](../product-decisions/KEYBOARD-WAKE-HOST-ACTIVATION-FIX-001-bounded-completion-product-decision-2026-10-06.md)：系统运行组合/返回后提交/长期等未验证，历史skip及流程原件保留 |
+| Lifecycle | **Closed** — 单轮模拟器恢复验证交付；2026-10-06 Human Close |
+| Current phase | Closed — 有界完成合同与 PR [#198](https://github.com/shchnk1103/Universe-Keyboard/pull/198) 交接已关闭 |
+| Material non-claims | 单run owner/receipt整数恢复链独立覆盖；完整系统通知/controller组合、Maps返回后提交/长期稳定性未验证，整体Gate/Release及历史skip通过不声称。Closed 不把整体 Partial 抬成 Pass |
+| Next handoff | **none** for this Assignment。残项补证 / TestFlight / Release 另开任务 |
+| Residuals | [有界完成](../product-decisions/KEYBOARD-WAKE-HOST-ACTIVATION-FIX-001-bounded-completion-product-decision-2026-10-06.md) 残项在 Close 时仍列出；[Close](../product-decisions/KEYBOARD-WAKE-BOUNDED-CLOSE-001-product-decision-2026-10-06.md) |
+
+## 2026-10-06 Assignment Close
+
+Human 授权 Closed。收口见 [Close 决定](../product-decisions/KEYBOARD-WAKE-BOUNDED-CLOSE-001-product-decision-2026-10-06.md) 与 [Close 记录](../evidence/keyboard-wake-bounded-close-001-2026-10-06.md)。隔离 worktree KEEP，不删除。
 
 ## 2026-10-06 有界完成合同 Addendum（Human已批准）
 

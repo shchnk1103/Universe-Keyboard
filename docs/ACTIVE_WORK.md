@@ -1,5 +1,7 @@
 # Active Work Summary
 
+Current update: `2026-10-06 Asia/Shanghai` — 三件 keyboard-wake Assignment **Closed**（[`Close`](product-decisions/KEYBOARD-WAKE-BOUNDED-CLOSE-001-product-decision-2026-10-06.md)）。隔离 worktree `paired-rollout-preflight` **KEEP**，不删除。不进入下方 Ready/Active 十项表。无 TestFlight / Release。
+
 Current update: `2026-10-06 Asia/Shanghai` — PR [#198](https://github.com/shchnk1103/Universe-Keyboard/pull/198) squash-merged `4b102a9f33e1535da6be23280e912a84d2766c3c`（full-path run [37458694591](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/37458694591)）。三件 keyboard-wake Assignment 仍 **Completed**。远端功能分支已删。无 TestFlight / Release。
 
 Current update: `2026-10-06 Asia/Shanghai` — 草稿 PR [#198](https://github.com/shchnk1103/Universe-Keyboard/pull/198) 修复 hosted lightweight Markdown 断链（冻结快照跳过检查；活文档绝对路径改为仓库相对 `#Lnn`）。[`AUTH-FIX-CI`](authorizations/AUTH-KEYBOARD-WAKE-BOUNDED-PUBLICATION-001-FIX-CI.md)。无 PR merge / TestFlight / Release。

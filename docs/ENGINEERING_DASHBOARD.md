@@ -10,27 +10,27 @@
 
 ## KEYBOARD-WAKE-LIFECYCLE-DIAGNOSTICS-001 — App Switch 后键盘输入失活诊断
 
-- **Lifecycle:** [`Assignment`](assignments/keyboard-wake-lifecycle-diagnostics-001.md) `Completed` — bounded diagnostic delivery
-- **Current phase:** PR [#198](https://github.com/shchnk1103/Universe-Keyboard/pull/198) squash-merged `4b102a9`
+- **Lifecycle:** [`Assignment`](assignments/keyboard-wake-lifecycle-diagnostics-001.md) `Closed` — bounded diagnostic delivery
+- **Current phase:** Closed；PR [#198](https://github.com/shchnk1103/Universe-Keyboard/pull/198) squash `4b102a9`
 - **Non-claims:** 不等于根因结论、Gate、TestFlight 或 Release
-- **Next:** 无 Git 发布；TestFlight / Release 另授权
-- **Sources:** [有界完成](evidence/keyboard-wake-lifecycle-diagnostics-001-bounded-completion-2026-10-04.md) · [M-02](evidence/keyboard-wake-bounded-publication-001-post-merge-state-sync-2026-10-06.md) · [AUTH-MERGE](authorizations/AUTH-KEYBOARD-WAKE-BOUNDED-PUBLICATION-001-MERGE.md)
+- **Next:** none for this Assignment
+- **Sources:** [Close](product-decisions/KEYBOARD-WAKE-BOUNDED-CLOSE-001-product-decision-2026-10-06.md) · [Close 记录](evidence/keyboard-wake-bounded-close-001-2026-10-06.md) · [有界完成](evidence/keyboard-wake-lifecycle-diagnostics-001-bounded-completion-2026-10-04.md)
 
 ## KEYBOARD-WAKE-HOST-ACTIVATION-FIX-001 — 宿主激活恢复 gate
 
-- **Lifecycle:** [`Assignment`](assignments/keyboard-wake-host-activation-fix-001.md) `Completed` — 单轮模拟器恢复验证
-- **Current phase:** PR [#198](https://github.com/shchnk1103/Universe-Keyboard/pull/198) squash-merged `4b102a9`
+- **Lifecycle:** [`Assignment`](assignments/keyboard-wake-host-activation-fix-001.md) `Closed` — 单轮模拟器恢复验证
+- **Current phase:** Closed；PR [#198](https://github.com/shchnk1103/Universe-Keyboard/pull/198) squash `4b102a9`
 - **Non-claims:** 不等于系统运行组合全覆盖、Gate、TestFlight 或 Release
-- **Next:** 无 Git 发布；TestFlight / Release 另授权
-- **Sources:** [有界完成](evidence/keyboard-wake-host-activation-fix-001-bounded-completion-2026-10-06.md) · [M-02](evidence/keyboard-wake-bounded-publication-001-post-merge-state-sync-2026-10-06.md) · [AUTH-MERGE](authorizations/AUTH-KEYBOARD-WAKE-BOUNDED-PUBLICATION-001-MERGE.md)
+- **Next:** none for this Assignment
+- **Sources:** [Close](product-decisions/KEYBOARD-WAKE-BOUNDED-CLOSE-001-product-decision-2026-10-06.md) · [Close 记录](evidence/keyboard-wake-bounded-close-001-2026-10-06.md) · [有界完成](evidence/keyboard-wake-host-activation-fix-001-bounded-completion-2026-10-06.md)
 
 ## KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001 — 诊断 producer 有界完成
 
-- **Lifecycle:** [`Assignment`](assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md) `Completed` — 诊断 producer 与父交接交付
-- **Current phase:** PR [#198](https://github.com/shchnk1103/Universe-Keyboard/pull/198) squash-merged `4b102a9`
+- **Lifecycle:** [`Assignment`](assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md) `Closed` — 诊断 producer 与父交接交付
+- **Current phase:** Closed；PR [#198](https://github.com/shchnk1103/Universe-Keyboard/pull/198) squash `4b102a9`
 - **Non-claims:** 不等于全局 v6 emission、已审查 v6 Maps、Gate、TestFlight 或 Release
-- **Next:** 无 Git 发布；TestFlight / Release 另授权
-- **Sources:** [有界完成](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-bounded-completion-2026-10-06.md) · [M-02](evidence/keyboard-wake-bounded-publication-001-post-merge-state-sync-2026-10-06.md) · [AUTH-MERGE](authorizations/AUTH-KEYBOARD-WAKE-BOUNDED-PUBLICATION-001-MERGE.md)
+- **Next:** none for this Assignment
+- **Sources:** [Close](product-decisions/KEYBOARD-WAKE-BOUNDED-CLOSE-001-product-decision-2026-10-06.md) · [Close 记录](evidence/keyboard-wake-bounded-close-001-2026-10-06.md) · [有界完成](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-bounded-completion-2026-10-06.md)
 
 
 ## DELETE-KEY-SCRUB-001 — 删除键滑动擦除（Queued）
