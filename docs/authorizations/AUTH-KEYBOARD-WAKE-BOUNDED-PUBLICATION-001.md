@@ -5,7 +5,7 @@
 | Field | Value |
 |---|---|
 | Status | consumed |
-| Consumption | COMMIT `247c6aad…` / writeback `8f1d4a3e…`；草稿 PR [#198](https://github.com/shchnk1103/Universe-Keyboard/pull/198)。不授权 merge |
+| Consumption | COMMIT `247c6aad…` / 草稿 PR [#198](https://github.com/shchnk1103/Universe-Keyboard/pull/198) squash-merge `4b102a9f33e1535da6be23280e912a84d2766c3c`。不授权 TestFlight / Release |
 | Issuer | Human Product Owner |
 | Decision source | 本线程 2026-10-06：「授权 Git 发布 AUTH」 |
 
@@ -15,6 +15,7 @@
 - Push / PR：[`AUTH-KEYBOARD-WAKE-BOUNDED-PUBLICATION-001-PUSH-PR`](AUTH-KEYBOARD-WAKE-BOUNDED-PUBLICATION-001-PUSH-PR.md)
 - Resolve main：[`AUTH-KEYBOARD-WAKE-BOUNDED-PUBLICATION-001-RESOLVE-MAIN`](AUTH-KEYBOARD-WAKE-BOUNDED-PUBLICATION-001-RESOLVE-MAIN.md)
 - Fix CI：[`AUTH-KEYBOARD-WAKE-BOUNDED-PUBLICATION-001-FIX-CI`](AUTH-KEYBOARD-WAKE-BOUNDED-PUBLICATION-001-FIX-CI.md)
+- Merge：[`AUTH-KEYBOARD-WAKE-BOUNDED-PUBLICATION-001-MERGE`](AUTH-KEYBOARD-WAKE-BOUNDED-PUBLICATION-001-MERGE.md)
 
 ```kos-record
 {
