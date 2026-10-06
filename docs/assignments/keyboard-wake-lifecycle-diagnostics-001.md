@@ -5,7 +5,7 @@
 
 ## Lifecycle
 
-**Completed — bounded diagnostic delivery, 2026-10-04.** Human Product Owner approved the exact parent-only completion-scope amendment and PEXIT-R1/R2/R3 accepted-unverified residuals in [Product Decision](../product-decisions/KEYBOARD-WAKE-LIFECYCLE-DIAGNOSTICS-001-bounded-completion-product-decision-2026-10-04.md). Proven schedule-owner boundary and named domain handoff are delivered. Architecture/Quality overall Partial remains; this is not Reviewed/Closed, a Quality Gate, fix or Release. The paired-rollout child separately reached **Completed — 诊断 producer 与父交接交付** on 2026-10-06 under its own Product decision; this parent addendum is unchanged.
+**Closed — bounded diagnostic delivery, 2026-10-06.** Human Product Owner closed the bounded diagnostic contract. The 2026-10-04 completion-scope amendment and PEXIT-R1/R2/R3 accepted-unverified residuals remain in [Product Decision](../product-decisions/KEYBOARD-WAKE-LIFECYCLE-DIAGNOSTICS-001-bounded-completion-product-decision-2026-10-04.md). Architecture/Quality overall Partial remains; Close is not a Quality Gate, fix, Pass, or Release. Paired-rollout and host-activation are Closed under the same [Close decision](../product-decisions/KEYBOARD-WAKE-BOUNDED-CLOSE-001-product-decision-2026-10-06.md).
 
 Historical Active-entry record (retained): all role acknowledgments for this lifecycle-diagnostic scope are recorded. Product revalidated iPhone 18 Pro / iOS 27.0 (`405D994F-28CB-4F89-BB22-B64AD81C05A2`) on 2026-09-27; explicit-UDID read-only checks confirmed it Booted. The Human Product Owner attested keyboard and Full Access setup and enabled logging/high-fidelity sampling; shared preferences and active content-free Extension journal segments independently confirm diagnostic arming. One working baseline, one App Switcher failure report and one keyboard-switch recovery are recorded in [the evidence report](../evidence/keyboard-wake-lifecycle-diagnostics-2026-09-27.md). Root cause remains unresolved; no fix or Gate conclusion.
 
@@ -13,10 +13,14 @@ Historical Active-entry record (retained): all role acknowledgments for this lif
 
 | Field | Status |
 |---|---|
-| Lifecycle | **Completed — bounded diagnostic delivery** |
-| Current phase | Completed — Human-approved parent-only bounded diagnostic: baseline schedule owner/receipt present; post-return failure schedule both absent after teardown. Exact-evidence handoff delivered; PEXIT-R1/R2/R3 accepted nonblocking/unverified, overall independent Partial unchanged. |
-| Material non-claims | Owner/receipt absence is proven only at this failed schedule boundary; precise missing-recovery cause, complete system/JSONL/recovery coverage and realized schema remain unknown. No behavioral fix, overall review Pass, Quality/Product/Release Gate, physical-device claim or Git publication. |
-| Next handoff | Keyboard Experience Maintainer primary / KeyboardCore Maintainer collaboration receive immutable evidence and regression requirements. PR [#198](https://github.com/shchnk1103/Universe-Keyboard/pull/198) squash-merged `4b102a9f33e1535da6be23280e912a84d2766c3c`. [M-02](../evidence/keyboard-wake-bounded-publication-001-post-merge-state-sync-2026-10-06.md). Any fix/new capture/TestFlight/Release requires separate authorization. Paired-rollout child separately **Completed — 诊断 producer 与父交接交付** on 2026-10-06; this parent contract is unchanged. |
+| Lifecycle | **Closed — bounded diagnostic delivery** |
+| Current phase | Closed — 有界诊断合同与 PR [#198](https://github.com/shchnk1103/Universe-Keyboard/pull/198) 交接已关闭 |
+| Material non-claims | Owner/receipt absence is proven only at this failed schedule boundary; precise missing-recovery cause, complete system/JSONL/recovery coverage and realized schema remain unknown. No behavioral fix, overall review Pass, Quality/Product/Release Gate or physical-device claim. Closed does not lift Partial. |
+| Next handoff | **none** for this Assignment。领域交接证据仍由 Keyboard Experience Maintainer primary / KeyboardCore Maintainer collaboration 持有。fix / new capture / TestFlight / Release 另开任务。 |
+
+## 2026-10-06 Assignment Close
+
+Human 授权 Closed。收口见 [Close 决定](../product-decisions/KEYBOARD-WAKE-BOUNDED-CLOSE-001-product-decision-2026-10-06.md) 与 [Close 记录](../evidence/keyboard-wake-bounded-close-001-2026-10-06.md)。隔离 worktree KEEP，不删除。
 
 ## Problem and objective
 

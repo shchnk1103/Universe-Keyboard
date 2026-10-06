@@ -1,5 +1,7 @@
 # Reading Maps
 
+2026-10-06 当前：三件 keyboard-wake Assignment **Closed**。[Close](product-decisions/KEYBOARD-WAKE-BOUNDED-CLOSE-001-product-decision-2026-10-06.md) · [记录](evidence/keyboard-wake-bounded-close-001-2026-10-06.md)。隔离 worktree KEEP。无 TestFlight / Release。
+
 2026-10-06 当前：PR [#198](https://github.com/shchnk1103/Universe-Keyboard/pull/198) 已 squash-merge `4b102a9f33e1535da6be23280e912a84d2766c3c`。[M-02](evidence/keyboard-wake-bounded-publication-001-post-merge-state-sync-2026-10-06.md)。无 TestFlight / Release。
 
 2026-10-06 当前：[Git 发布草稿 PR #198](https://github.com/shchnk1103/Universe-Keyboard/pull/198)隔离分支已 push；Human 观察 CI；无 merge。
