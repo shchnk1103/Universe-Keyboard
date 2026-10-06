@@ -1,0 +1,22 @@
+[
+  {
+    "module": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard",
+    "section": "__TEXT,__entitlements",
+    "application_identifier": "C33N6HTS9N.com.DoubleShy0N.Universe-Keyboard",
+    "group": [
+      "group.com.DoubleShy0N.Universe-Keyboard"
+    ],
+    "bytes_sha256": "6610a8c02dfe5b877f5be595941b807a687c7838e2f4b54a80b4c6726b821a6c",
+    "signature_entitlements_empty_does_not_imply_simulated_group_absent": true
+  },
+  {
+    "module": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+    "section": "__TEXT,__entitlements",
+    "application_identifier": "C33N6HTS9N.com.DoubleShy0N.Universe-Keyboard.Keyboard",
+    "group": [
+      "group.com.DoubleShy0N.Universe-Keyboard"
+    ],
+    "bytes_sha256": "1b5eca79f033b12423739696ae50c8dfcd679ed6484803e2e340787aee149b7b",
+    "signature_entitlements_empty_does_not_imply_simulated_group_absent": true
+  }
+]

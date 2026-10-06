@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+KeyPressFeedback.swift",
+  "origin_sha256": "c1d361a34e5aa788a4a518f46cbb7370ff5903e05736a72281da04f859a0fe7a",
+  "expected_sha256": "c1d361a34e5aa788a4a518f46cbb7370ff5903e05736a72281da04f859a0fe7a",
+  "line_start": 61,
+  "line_end": 120,
+  "lines": [
+    {
+      "line": 61,
+      "text": "        ) {"
+    },
+    {
+      "line": 62,
+      "text": "            guard controller != nil else { return }"
+    },
+    {
+      "line": 63,
+      "text": "            let output = controller.state.lastRimeOutput"
+    },
+    {
+      "line": 64,
+      "text": "            let collectionItems = candidateCollectionView?.numberOfItems(inSection: 0) ?? 0"
+    },
+    {
+      "line": 65,
+      "text": "            let visibleCells = candidateCollectionView?.visibleCells.count ?? 0"
+    },
+    {
+      "line": 66,
+      "text": "            let ownerEpoch = controller.threadAffineRimeCoordinator?.diagnostics.sessionEpoch ?? 0"
+    },
+    {
+      "line": 67,
+      "text": "            let effectsRawValue = effects.map { String($0.rawValue) } ?? \"none\""
+    },
+    {
+      "line": 68,
+      "text": "            Logger.shared.info("
+    },
+    {
+      "line": 69,
+      "text": "                \"KBDVIS marker=\\(marker) effects=\\(effectsRawValue) \""
+    },
+    {
+      "line": 70,
+      "text": "                    + \"appeared=\\(hasViewAppeared ? 1 : 0) \""
+    },
+    {
+      "line": 71,
+      "text": "                    + \"ui=\\(isKeyboardUIInstalled ? 1 : 0) \""
+    },
+    {
+      "line": 72,
+      "text": "                    + \"ownerReady=\\(controller.threadAffineRimeCoordinator?.isOwnerReady == true ? 1 : 0) \""
+    },
+    {
+      "line": 73,
+      "text": "                    + \"epoch=\\(ownerEpoch) \""
+    },
+    {
+      "line": 74,
+      "text": "                    + \"pressed=\\(keyPressFeedbackEmittedButtonIDs.count) \""
+    },
+    {
+      "line": 75,
+      "text": "                    + \"compositionLength=\\(controller.state.currentComposition.count) \""
+    },
+    {
+      "line": 76,
+      "text": "                    + \"rawLength=\\(output?.rawInput?.count ?? 0) \""
+    },
+    {
+      "line": 77,
+      "text": "                    + \"coreCandidates=\\(output?.candidates.count ?? 0) \""
+    },
+    {
+      "line": 78,
+      "text": "                    + \"cachedCandidates=\\(accumulatedCandidates.count) \""
+    },
+    {
+      "line": 79,
+      "text": "                    + \"collectionItems=\\(collectionItems) visibleCells=\\(visibleCells) \""
+    },
+    {
+      "line": 80,
+      "text": "                    + \"generation=\\(candidateSnapshotGeneration) \""
+    },
+    {
+      "line": 81,
+      "text": "                    + \"revision=\\(controller.state.compositionRevision)\","
+    },
+    {
+      "line": 82,
+      "text": "                category: .display"
+    },
+    {
+      "line": 83,
+      "text": "            )"
+    },
+    {
+      "line": 84,
+      "text": "            guard isHighFidelityDiagnosticsActive else { return }"
+    },
+    {
+      "line": 85,
+      "text": "            diagnosticsJournal.record("
+    },
+    {
+      "line": 86,
+      "text": "                code: .candidateVisibilityChanged,"
+    },
+    {
+      "line": 87,
+      "text": "                category: .display,"
+    },
+    {
+      "line": 88,
+      "text": "                appearanceID: diagnosticsAppearanceID,"
+    },
+    {
+      "line": 89,
+      "text": "                fields: ["
+    },
+    {
+      "line": 90,
+      "text": "                    .count(.candidateCount, output?.candidates.count ?? 0),"
+    },
+    {
+      "line": 91,
+      "text": "                    .count(.visibleCandidateCellCount, visibleCells),"
+    },
+    {
+      "line": 92,
+      "text": "                    .count(.highlightedKeyCount, keyPressFeedbackEmittedButtonIDs.count),"
+    },
+    {
+      "line": 93,
+      "text": "                    .count(.revision, Int(clamping: controller.state.compositionRevision)),"
+    },
+    {
+      "line": 94,
+      "text": "                    .count(.sessionEpoch, Int(clamping: ownerEpoch)),"
+    },
+    {
+      "line": 95,
+      "text": "                    .flag(.isCandidateBarVisible, collectionItems > 0),"
+    },
+    {
+      "line": 96,
+      "text": "                    .flag(.isHighFidelityEnabled, true),"
+    },
+    {
+      "line": 97,
+      "text": "                ]"
+    },
+    {
+      "line": 98,
+      "text": "            )"
+    },
+    {
+      "line": 99,
+      "text": "        }"
+    },
+    {
+      "line": 100,
+      "text": "    #endif"
+    },
+    {
+      "line": 101,
+      "text": ""
+    },
+    {
+      "line": 102,
+      "text": "    /// Records touch timing and responds synchronously so rapid typing receives immediate feedback."
+    },
+    {
+      "line": 103,
+      "text": "    @objc func keyTouchDown(_ sender: UIButton) {"
+    },
+    {
+      "line": 104,
+      "text": "        let identifier = ObjectIdentifier(sender)"
+    },
+    {
+      "line": 105,
+      "text": "        #if DEBUG"
+    },
+    {
+      "line": 106,
+      "text": "            keyTouchDownTimes[identifier] = CACurrentMediaTime()"
+    },
+    {
+      "line": 107,
+      "text": "        #endif"
+    },
+    {
+      "line": 108,
+      "text": "        keyPressFeedbackEmittedButtonIDs.insert(identifier)"
+    },
+    {
+      "line": 109,
+      "text": ""
+    },
+    {
+      "line": 110,
+      "text": "        #if DEBUG"
+    },
+    {
+      "line": 111,
+      "text": "            Logger.shared.performance(\"keyDown registered\")"
+    },
+    {
+      "line": 112,
+      "text": "        #endif"
+    },
+    {
+      "line": 113,
+      "text": ""
+    },
+    {
+      "line": 114,
+      "text": "        sender.backgroundColor = highlightedKeyColor"
+    },
+    {
+      "line": 115,
+      "text": "        sender.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)"
+    },
+    {
+      "line": 116,
+      "text": "        emitKeyPressFeedback()"
+    },
+    {
+      "line": 117,
+      "text": "    }"
+    },
+    {
+      "line": 118,
+      "text": ""
+    },
+    {
+      "line": 119,
+      "text": "    @objc func keyTouchUp(_ sender: UIButton) {"
+    },
+    {
+      "line": 120,
+      "text": "        keyPressFeedbackEmittedButtonIDs.remove(ObjectIdentifier(sender))"
+    }
+  ]
+}

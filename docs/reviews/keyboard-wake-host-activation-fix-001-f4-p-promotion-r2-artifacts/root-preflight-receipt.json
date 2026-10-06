@@ -1,0 +1,25 @@
+{
+  "recorded_at": "2026-10-05T03:26:14.836001+00:00",
+  "lanes": {
+    "architecture": {
+      "root_readback": "PASS",
+      "smoke_sha256": "b2ccf3ee902d781d74dce542e5ed7821e31da3f3e26126b91b45eff62d51b9f6",
+      "readback_sha256": "e05e5c7b051a5b2e04df2bdf8fd7aa5131f4e85663a012ae8b0a8509cd2bb0d3",
+      "actual_tool_calls": 6,
+      "ceiling_calls": 6,
+      "budget_seconds": 300,
+      "author_exact_elapsed": "UNKNOWN",
+      "conservative_seconds_upper_bound": 102.604647
+    },
+    "quality": {
+      "root_readback": "PASS",
+      "smoke_sha256": "f0910b836755188fe1392ebcb587fe9054cf0303d1ad772056bece6b8a5f49b0",
+      "readback_sha256": "14297b7261dec2dee500e0985e64720cc6d5440bdc60c1dfb678aac6fcfeafd9",
+      "actual_tool_calls": 6,
+      "ceiling_calls": 6,
+      "budget_seconds": 300,
+      "author_elapsed_seconds": 57.155922
+    }
+  },
+  "formal_review_dispatched_after_actual_reader_writer_pass": true
+}

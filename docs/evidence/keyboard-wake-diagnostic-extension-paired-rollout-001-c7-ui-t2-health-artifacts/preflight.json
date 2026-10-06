@@ -1,0 +1,61 @@
+{
+  "utc": "2026-10-03T04:23:18.440458+00:00",
+  "containers": {
+    "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/40263610-A635-40FA-AF79-538449A5DCD9/Universe Keyboard.app",
+    "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/35F8C43B-31FF-47B4-854F-B2A6A45E6593",
+    "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/53661EB9-A6C9-4323-A997-346A2C10FE68"
+  },
+  "old_C7_app_payload78_match": true,
+  "dual_signature_valid": true,
+  "main_application_baseline_match": true,
+  "group_application_baseline_match": true,
+  "group_initial_system_empty_directories_retained": [],
+  "system_metadata_and_root_identity_same_as_postinstall": true,
+  "snapshot_content_multiset_equal_original": true,
+  "two_reads_stable": true,
+  "target_processes_absent": true,
+  "selected_preferences": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "rime_deployed": {
+      "exists": true,
+      "value": true
+    },
+    "rime_needs_deploy": {
+      "exists": true,
+      "value": false
+    },
+    "rime_deploying": {
+      "exists": true,
+      "value": false
+    }
+  },
+  "counts": {
+    "main-data": {
+      "files": 827,
+      "directories": 42,
+      "links": 0
+    },
+    "app-group": {
+      "files": 52,
+      "directories": 15,
+      "links": 2
+    },
+    "installed-app": {
+      "files": 78,
+      "directories": 9,
+      "links": 0
+    }
+  },
+  "known_added_provenance_entries": 45,
+  "all_metadata_exact_equal_not_claimed": true,
+  "runtime_health_not_tested": true,
+  "Keychain_not_run": true,
+  "new_candidate_not_installed": true
+}

@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+  "origin_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+  "expected_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+  "line_start": 481,
+  "line_end": 540,
+  "lines": [
+    {
+      "line": 481,
+      "text": "        }"
+    },
+    {
+      "line": 482,
+      "text": "        handleKeyboardDidAppear()"
+    },
+    {
+      "line": 483,
+      "text": "        #if DEBUG"
+    },
+    {
+      "line": 484,
+      "text": "            recordKeyboardVisualDiagnostic(\"DID_APPEAR_AFTER\")"
+    },
+    {
+      "line": 485,
+      "text": "        #endif"
+    },
+    {
+      "line": 486,
+      "text": "        #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS"
+    },
+    {
+      "line": 487,
+      "text": "            p3d1RecordLifecycleMarker(\"APPEAR_VISIBLE\", reason: \"viewDidAppear\")"
+    },
+    {
+      "line": 488,
+      "text": "        #endif"
+    },
+    {
+      "line": 489,
+      "text": "    }"
+    },
+    {
+      "line": 490,
+      "text": ""
+    },
+    {
+      "line": 491,
+      "text": "    override func viewWillDisappear(_ animated: Bool) {"
+    },
+    {
+      "line": 492,
+      "text": "        super.viewWillDisappear(animated)"
+    },
+    {
+      "line": 493,
+      "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+    },
+    {
+      "line": 494,
+      "text": "            wakeOwnerProbeWillDisappear()"
+    },
+    {
+      "line": 495,
+      "text": "        #endif"
+    },
+    {
+      "line": 496,
+      "text": "        KeyboardWakeDiagnosticProducer.recordKeyboardLifecycle("
+    },
+    {
+      "line": 497,
+      "text": "            .viewWillDisappear,"
+    },
+    {
+      "line": 498,
+      "text": "            journal: diagnosticsJournal,"
+    },
+    {
+      "line": 499,
+      "text": "            context: wakeDiagnosticContext"
+    },
+    {
+      "line": 500,
+      "text": "        )"
+    },
+    {
+      "line": 501,
+      "text": "        typoCorrectionRecallCoordinator.invalidateTypoCorrectionRecall()"
+    },
+    {
+      "line": 502,
+      "text": "        diagnosticsJournal.record("
+    },
+    {
+      "line": 503,
+      "text": "            code: .presentationFrame,"
+    },
+    {
+      "line": 504,
+      "text": "            category: .display,"
+    },
+    {
+      "line": 505,
+      "text": "            appearanceID: diagnosticsAppearanceID,"
+    },
+    {
+      "line": 506,
+      "text": "            fields: ["
+    },
+    {
+      "line": 507,
+      "text": "                .flag("
+    },
+    {
+      "line": 508,
+      "text": "                    .isCandidateBarVisible,"
+    },
+    {
+      "line": 509,
+      "text": "                    candidateCollectionView?.numberOfItems(inSection: 0) != 0"
+    },
+    {
+      "line": 510,
+      "text": "                ),"
+    },
+    {
+      "line": 511,
+      "text": "                .count(.highlightedKeyCount, keyPressFeedbackEmittedButtonIDs.count),"
+    },
+    {
+      "line": 512,
+      "text": "            ]"
+    },
+    {
+      "line": 513,
+      "text": "        )"
+    },
+    {
+      "line": 514,
+      "text": "        #if DEBUG"
+    },
+    {
+      "line": 515,
+      "text": "            recordKeyboardVisualDiagnostic(\"WILL_DISAPPEAR_BEFORE\")"
+    },
+    {
+      "line": 516,
+      "text": "        #endif"
+    },
+    {
+      "line": 517,
+      "text": "        #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS"
+    },
+    {
+      "line": 518,
+      "text": "            p3d1RecordLifecycleMarker(\"DISAPPEAR_BEGIN\", reason: \"viewWillDisappear\")"
+    },
+    {
+      "line": 519,
+      "text": "        #endif"
+    },
+    {
+      "line": 520,
+      "text": "        hostLifecycleRecoveryGate.noteViewWillDisappear()"
+    },
+    {
+      "line": 521,
+      "text": "        suspendKeyboardRuntime(reason: \"viewWillDisappear\", updateUI: true)"
+    },
+    {
+      "line": 522,
+      "text": "        #if DEBUG"
+    },
+    {
+      "line": 523,
+      "text": "            recordKeyboardVisualDiagnostic(\"WILL_DISAPPEAR_AFTER\")"
+    },
+    {
+      "line": 524,
+      "text": "        #endif"
+    },
+    {
+      "line": 525,
+      "text": "        #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS"
+    },
+    {
+      "line": 526,
+      "text": "            p3d1RecordLifecycleMarker(\"DISAPPEAR\", reason: \"viewWillDisappear\", cleared: true)"
+    },
+    {
+      "line": 527,
+      "text": "        #endif"
+    },
+    {
+      "line": 528,
+      "text": "    }"
+    },
+    {
+      "line": 529,
+      "text": ""
+    },
+    {
+      "line": 530,
+      "text": "    /// Releases every resource that could cross the extension suspension boundary."
+    },
+    {
+      "line": 531,
+      "text": "    /// RIME is finalized first because its database locks are the critical resource;"
+    },
+    {
+      "line": 532,
+      "text": "    /// diagnostic persistence is disabled last so no delayed App Group write survives."
+    },
+    {
+      "line": 533,
+      "text": "    func suspendKeyboardRuntime(reason: String, updateUI: Bool) {"
+    },
+    {
+      "line": 534,
+      "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+    },
+    {
+      "line": 535,
+      "text": "            recordWakeOwnerProbe(.suspendBegin)"
+    },
+    {
+      "line": 536,
+      "text": "        #endif"
+    },
+    {
+      "line": 537,
+      "text": "        #if DEBUG"
+    },
+    {
+      "line": 538,
+      "text": "            cancelCandidateVisibilityDiagnostic()"
+    },
+    {
+      "line": 539,
+      "text": "            recordKeyboardVisualDiagnostic(\"SUSPEND_BEGIN_\\(reason)\")"
+    },
+    {
+      "line": 540,
+      "text": "        #endif"
+    }
+  ]
+}

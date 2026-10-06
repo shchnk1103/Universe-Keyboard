@@ -1,0 +1,22 @@
+{
+  "lane": "QUALITY-C7-UI-T-PROTECTION-RESIDUALS",
+  "round": 2,
+  "packet_file_sha256": "05e7e01adbe05562c03b01bc5a2a8c0055b14937314641a9203f0ca4bb177ee7",
+  "packet_digest_sha256": "721ede340b788a5a04d04beba8f722e8a5e1ad1d96e0e90cf81bd74048c0ef85",
+  "reviewer": "independent GPT6 Luna low",
+  "leaf_tool_calls": 6,
+  "elapsed_seconds": 201.675066,
+  "start_utc": "2026-10-03T08:00:56.491883+00:00",
+  "end_utc": "2026-10-03T08:04:18.166949+00:00",
+  "checkpoints": [
+    "call 3: packet/helper/inventory comparison status sent to coordinator"
+  ],
+  "report_path": "/private/tmp/ukey-wake-ui-t-split-r2-20261003/P/review.md",
+  "report_sha256": "41a5c42812e32846afe0d17b1440602ff2bd9bff4e1b5df8ef0b5ab8181cdc55",
+  "coverage": "Complete for assigned P criteria T4-T6; each Covered",
+  "scoped_opinion": "P scope covered",
+  "overall_T_acceptance": "Hold; current Product disposition for 29 unverified skips remains open",
+  "stop_reason": null,
+  "budget_status": "within 6 leaf calls and 900-second frozen deadline",
+  "elapsed_basis": "current epoch minus frozen packet clock; includes analysis and this final report-writing leaf call"
+}

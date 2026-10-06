@@ -1,0 +1,62 @@
+{
+  "lane": "QUALITY-C7-UI-U1R1-DELIVERY-CONSISTENCY",
+  "round": 1,
+  "packet_whole_sha256": "8f8227f289b0b3c5453fe2035d4d3d1069f20dcfe64949c477bfba73e451254c",
+  "packet_canonical_self_sha256": "116f55a2d99d40c59c88738bb05e088fae51668e0a3e5977a6645a2b31035fa5",
+  "external_identity_comparison": {
+    "whole_file_sha256_matches": true,
+    "canonical_self_digest_matches": true,
+    "external_fields_used": [
+      "whole_file_sha256",
+      "canonical_self_digest"
+    ]
+  },
+  "packet_digest_matches_claim": true,
+  "allowlist_content_key": "allowed_content_inputs",
+  "content_count": 13,
+  "hash_only_key": "allowed_hash_only_inputs",
+  "hash_only_count": 1,
+  "input_hash_mismatch_count": 0,
+  "leaf_tool_calls": 2,
+  "call_1": {
+    "type": "exec_command",
+    "result": "failed before writing outputs: packet allowlist key lookup raised KeyError",
+    "wall_start_utc": null,
+    "wall_end_utc": null,
+    "monotonic_start_ns": null,
+    "monotonic_end_ns": null
+  },
+  "call_2": {
+    "type": "exec_command",
+    "result": "wrote supplement, verified packet/input identities and original artifact hashes",
+    "wall_start_utc": "2026-10-03T13:50:29.536277+00:00",
+    "wall_end_utc": "2026-10-03T13:50:29.540708+00:00",
+    "monotonic_start_ns": 1201306492694541,
+    "monotonic_end_ns": 1201306497125291,
+    "elapsed_seconds": 0.00443075
+  },
+  "whole_lane_elapsed_seconds": null,
+  "elapsed_limitation": "call 1 timer did not persist after exception; no aggregate inferred",
+  "budget_status": "2/2 calls; recovery call duration recorded; exact combined wall duration unavailable",
+  "original_usage_fields": {
+    "self_sha_matches": true,
+    "external_identity_matches": false,
+    "coverage": "Complete: P1 Covered, P2 Covered, P3 Covered",
+    "status": "formal partial issued by call4; raw/P3 independent details in progress",
+    "leaf_tool_calls": 6,
+    "elapsed_seconds": 259.904644
+  },
+  "original_artifacts_sha256": {
+    "/private/tmp/ukey-wake-ui-u1r1-quality-r1-20261003/review.md": "9e739c6f3ec8f575369a4b5a830ef759d4bdc6e9243b9f1b18fe5c774674b5f8",
+    "/private/tmp/ukey-wake-ui-u1r1-quality-r1-20261003/usage.json": "1a927231bfdb14366c167a875f518312f5d6cbe2dff4b995f5bfcbef64835cba",
+    "/private/tmp/ukey-wake-ui-u1r1-quality-r1-20261003/independent-analysis.json": "a2debead61a6817a193cf79118924983ed442ee58fb8b51ee26c0fd9bdda126a"
+  },
+  "original_artifacts_unchanged": true,
+  "report_path": "/private/tmp/ukey-wake-ui-u1r1-delivery-correction-20261003/delivery-supplement.md",
+  "report_sha256": "b1907cd2cb8389a713e5a106e6782ef5d6b40317a6f9e5b54cecc83ec3061f72",
+  "supplement_usage_path": "/private/tmp/ukey-wake-ui-u1r1-delivery-correction-20261003/usage-supplement.json",
+  "timing_path": "/private/tmp/ukey-wake-ui-u1r1-delivery-correction-20261003/timing.json",
+  "coverage": "D001-D004 covered; D004 timing limitation disclosed",
+  "stop_reason": "delivery supplement complete; no further call authorized",
+  "hash_mismatches": []
+}

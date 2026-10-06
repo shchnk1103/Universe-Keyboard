@@ -1,0 +1,8 @@
+{
+  "verbatim": "授权，并确认原模拟器仍独占",
+  "scope": "one M2 arm/n/direct AppSwitcher return/n/freeze/bounded read/cleanup",
+  "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "prior_visual_confirmation": "26-key empty candidates observing title, no clicks/input",
+  "root_recorded_utc": "2026-10-03T14:47:41.838137+00:00",
+  "actual_human_action_utc": null
+}

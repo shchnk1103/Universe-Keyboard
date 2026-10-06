@@ -1,0 +1,41 @@
+{
+  "utc": "2026-10-04T16:21:43.210240+00:00",
+  "input_rows_match": 1156,
+  "pinned_inputs_match": 13,
+  "membership_match": true,
+  "identity_match": true,
+  "staged": 0,
+  "logs": {
+    "A2-V-5-keychain.log": {
+      "swift_diagnostics": [],
+      "other_diagnostics": [
+        "2026-10-05 00:21:02.287 appintentsmetadataprocessor[64516:42371193] warning: Metadata extraction skipped, no AppIntents.framework dependency found",
+        "2026-10-05 00:21:06.556 appintentsmetadataprocessor[64593:42371496] warning: Metadata extraction skipped, no AppIntents.framework dependency found",
+        "2026-10-05 00:21:09.895 appintentsmetadataprocessor[64617:42371724] warning: Metadata extraction skipped, no AppIntents.framework dependency found",
+        "2026-10-05 00:21:10.199 appintentsmetadataprocessor[64622:42371747] warning: Metadata extraction skipped, no AppIntents.framework dependency found"
+      ]
+    },
+    "A2-V-3-app-keyboard.log": {
+      "swift_diagnostics": [],
+      "other_diagnostics": [
+        "2026-10-05 00:17:51.488 appintentsmetadataprocessor[63760:42362963] warning: Metadata extraction skipped, no AppIntents.framework dependency found",
+        "2026-10-05 00:17:58.755 appintentsmetadataprocessor[63871:42363857] warning: Metadata extraction skipped, no AppIntents.framework dependency found",
+        "2026-10-05 00:18:02.667 appintentsmetadataprocessor[63890:42364149] warning: Metadata extraction skipped, no AppIntents.framework dependency found",
+        "2026-10-05 00:18:03.344 appintentsmetadataprocessor[63897:42364182] warning: Metadata extraction skipped, no AppIntents.framework dependency found"
+      ]
+    },
+    "A2-V-2-rimebridge.log": {
+      "swift_diagnostics": [],
+      "other_diagnostics": [
+        "2026-10-05 00:16:01.867 appintentsmetadataprocessor[63326:42357018] warning: Metadata extraction skipped, no AppIntents.framework dependency found"
+      ]
+    },
+    "A2-V-4-release-build.log": {
+      "swift_diagnostics": [],
+      "other_diagnostics": [
+        "2026-10-05 00:20:10.319 appintentsmetadataprocessor[64291:42369112] warning: Metadata extraction skipped, no AppIntents.framework dependency found",
+        "2026-10-05 00:20:38.488 appintentsmetadataprocessor[64389:42369920] warning: Metadata extraction skipped, no AppIntents.framework dependency found"
+      ]
+    }
+  }
+}

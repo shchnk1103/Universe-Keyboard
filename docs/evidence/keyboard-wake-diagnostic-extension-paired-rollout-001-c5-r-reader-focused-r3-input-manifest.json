@@ -1,0 +1,41 @@
+{
+  "work_item": "KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001",
+  "lane_id": "QUALITY-C5-R-ACCEPT",
+  "round": 3,
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "candidate_digest": "af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9",
+  "run_id": "C5-R-20261001-01",
+  "worktree": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "inputs_sha256": {
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-typed-window.json": "ae8348a3de33d39821d5846802f08291308f3fc4adfd318ac2e2b3faf763686a",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-accept-quality-review.md": "17810e2302d7c76207244050564426cc920705e0f21f9949805ede96808459c0",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-reader-ui-snapshots.json": "54d19794c89d50489a77006fafb8d775d12dcbf30e4319dad91cf1ea76a58883",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-reader-expected-rendering.json": "52177d1dc11fa59a61a5d10886bd98f3451f5dd23b49e7c575538997e48db1d8",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-reader-comparison.json": "4de5059b6bef946222f65179050772c6243dee5b078738054db1be1954ef7de3",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-reader-validation-2026-10-01.md": "b9dbf84ecd6f8a1151e8b9e57d46d6518bbec05c95c3d0f279b1ee086c47c7e7",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-reader-preflight.json": "5033baab195abd594e54eaf963d1882154ea681ed7109be5861075b1b2874840",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-reader-final-check.json": "270643ed163f41a60d34d3c2614a6430aa104c176646a39d9c84ec5a6f767ddb",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-reader-entry-2026-10-01.md": "0b1427487409872de7aa86b4a3a6e3156ead46e54ed7e77668f5b5f8ff0d301c",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-reader-review-root-stop-2026-10-01.md": "aed025b75d06c544e9eb3731a34b1eb3f6a739bbe50fb4e040bba43dea9e824f",
+    "Universe Keyboard/Views/Diagnostics/DiagnosticsLogSource.swift": "deb3b7fdd68f55f5243d9ff279108e2c3459ae540569939f3ac53710d6f5cd6f",
+    "Universe Keyboard/Views/Diagnostics/DiagnosticsStore.swift": "5036ce52647b5d5383450b8b7e99e9b09d43c3cb308075aee967843c5073aed4",
+    "Universe Keyboard/Views/Diagnostics/DiagnosticsView.swift": "492b5ab87da0b561a76e727cc30069a5931fd495dc1d7f44a91a0d89ac9ffd9e",
+    "Universe Keyboard/Views/Diagnostics/DiagnosticsLogContentView.swift": "0cac3632266f9934391510c0fc4e97aa96eb69bf3da1aab1f046c164c72b04b1",
+    "docs/plans/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-real-appex-promotion-install-slice.md": "beb4fd3860eb7cb8b51b430e036ebaef3c837e1861432bcd95e16a366babd550",
+    "docs/ASSIGNMENT_POLICY.md": "e90dd8f06371e9367652d4e7cc63dee31ee7b1ac855e7802d6d2e9b8e1e90680",
+    "docs/playbooks/test-release.md": "b7eb8cc76094f72699b6de77de6afa2608e6483a1c8da53dcf86a51ea6c35a58",
+    "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md": "b0b914152bf41c1edd8df01d88aca57da7c708a703a48fbf4637f106ef062f3d"
+  },
+  "coordinator_preflight": {
+    "source_match": 568,
+    "built_match": 111,
+    "checked_utc": "2026-10-01T06:10:39.169310+00:00"
+  },
+  "budget": {
+    "underlying_tools": 4,
+    "elapsed_seconds": 600,
+    "checkpoint_after_call": 2
+  },
+  "authority": "Human授权只定点核查17条显示对应关系及reader完整性"
+}

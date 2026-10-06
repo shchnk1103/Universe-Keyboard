@@ -1,0 +1,21 @@
+{
+  "utc": "2026-10-02T14:18:47.114714+00:00",
+  "human_feedback": "空栏开始不可见、有候选也不可见；随后第二张看到观测，候选和提交正常，未点击",
+  "empty_bar_button_visible": true,
+  "with_candidates_hidden": "Human reported; screenshots show empty bar only",
+  "normal_candidates_and_commit": "Human confirmed",
+  "probe_clicked": false,
+  "observed_elapsed_idle_seconds": null,
+  "source_idle_threshold_seconds": 2,
+  "scope": "UI visibility/basic input only; not arming/export or latency measurement",
+  "screenshots": [
+    {
+      "path": "/var/folders/3f/jpb7r3xs2ys2c0bxlr107sbr0000gn/T/TemporaryItems/NSIRD_screencaptureui_VcL0Dv/截屏2026-10-02 22.16.23.png",
+      "sha256": "2326e661c4a85aebeccdb2d90415da8c7f651d6429136878476e694263495d4f"
+    },
+    {
+      "path": "/var/folders/3f/jpb7r3xs2ys2c0bxlr107sbr0000gn/T/TemporaryItems/NSIRD_screencaptureui_6PoVxx/截屏2026-10-02 22.17.17.png",
+      "sha256": "08560882b24f5d172155e84423f852c6f4d4225fc06701b8d027de5524791dd8"
+    }
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "utc": "2026-10-03T04:35:36.009784+00:00",
+  "containers": {
+    "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/7A498B58-8018-45FE-9F82-F034D425CC34/Universe Keyboard.app",
+    "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/143DF90C-8BB4-4D0D-BFB6-2593BF958398",
+    "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/53661EB9-A6C9-4323-A997-346A2C10FE68"
+  },
+  "target_processes": [],
+  "stable_two_reads": true,
+  "full_accessible_test_after_preserved": true,
+  "differences": {
+    "main-data": {
+      "added": [
+        "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/1A4FFD9D-ABAD-44FE-A75E-7037B666278C@3x.ktx",
+        "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/9B8078BD-115A-43AE-A878-82CBF554E595@3x.ktx",
+        "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/E3443184-71E4-4EB2-80B6-08681CA6437A@3x.ktx",
+        "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/E61587A1-859B-490B-8B76-E886C675EA56@3x.ktx"
+      ],
+      "missing": [
+        "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/02A854C1-2491-4DA7-9999-5FC364D96D69@3x.ktx",
+        "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/42DDF8B7-411C-4705-BF27-04CE0D023DCE@3x.ktx",
+        "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/8832E155-F6B5-4FFA-BE4A-A2757261CB38@3x.ktx",
+        "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/B7404BB7-3DF9-402B-9815-E65F963AEA50@3x.ktx"
+      ],
+      "changed": [
+        "Library/Application Support/.tipkit/tips-store.db",
+        "Library/Application Support/.tipkit/tips-store.db-shm",
+        "Library/Application Support/.tipkit/tips-store.db-wal"
+      ],
+      "added_provenance_classified": true
+    },
+    "app-group": {
+      "added": [],
+      "missing": [],
+      "changed": [],
+      "added_provenance_classified": true
+    },
+    "installed-app": {
+      "added": [
+        "Frameworks",
+        "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework",
+        "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/Info.plist",
+        "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_-8730D61D9395D3A_PackageProduct",
+        "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle",
+        "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/Info.plist",
+        "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/_CodeSignature",
+        "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeDirectory",
+        "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeRequirements",
+        "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeResources",
+        "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeSignature",
+        "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/post_commit_continuations_v1_3.json",
+        "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/_CodeSignature",
+        "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/_CodeSignature/CodeResources",
+        "Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework",
+        "Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/Info.plist",
+        "Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/RimeBridge_57276DBF982DF6E4_PackageProduct",
+        "Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/_CodeSignature",
+        "Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/_CodeSignature/CodeResources",
+        "PlugIns/UniverseKeyboardTests.xctest",
+        "PlugIns/UniverseKeyboardTests.xctest/Frameworks",
+        "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework",
+        "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/Info.plist",
+        "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_-8730D61D9395D3A_PackageProduct",
+        "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle",
+        "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/Info.plist",
+        "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/_CodeSignature",
+        "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeDirectory",
+        "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeRequirements",
+        "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeResources",
+        "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeSignature",
+        "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_KeyboardCore.bundle/post_commit_continuations_v1_3.json",
+        "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/_CodeSignature",
+        "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/_CodeSignature/CodeResources",
+        "PlugIns/UniverseKeyboardTests.xctest/Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework",
+        "PlugIns/UniverseKeyboardTests.xctest/Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/Info.plist",
+        "PlugIns/UniverseKeyboardTests.xctest/Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/RimeBridge_57276DBF982DF6E4_PackageProduct",
+        "PlugIns/UniverseKeyboardTests.xctest/Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/_CodeSignature",
+        "PlugIns/UniverseKeyboardTests.xctest/Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/_CodeSignature/CodeResources",
+        "PlugIns/UniverseKeyboardTests.xctest/Info.plist",
+        "PlugIns/UniverseKeyboardTests.xctest/KeyboardCore_KeyboardCore.bundle",
+        "PlugIns/UniverseKeyboardTests.xctest/KeyboardCore_KeyboardCore.bundle/Info.plist",
+        "PlugIns/UniverseKeyboardTests.xctest/KeyboardCore_KeyboardCore.bundle/_CodeSignature",
+        "PlugIns/UniverseKeyboardTests.xctest/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeDirectory",
+        "PlugIns/UniverseKeyboardTests.xctest/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeRequirements",
+        "PlugIns/UniverseKeyboardTests.xctest/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeResources",
+        "PlugIns/UniverseKeyboardTests.xctest/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeSignature",
+        "PlugIns/UniverseKeyboardTests.xctest/KeyboardCore_KeyboardCore.bundle/post_commit_continuations_v1_3.json",
+        "PlugIns/UniverseKeyboardTests.xctest/UniverseKeyboardTests",
+        "PlugIns/UniverseKeyboardTests.xctest/_CodeSignature",
+        "PlugIns/UniverseKeyboardTests.xctest/_CodeSignature/CodeResources"
+      ],
+      "missing": [],
+      "changed": [
+        "Assets.car",
+        "PlugIns/Keyboard.appex/Keyboard",
+        "PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+        "PlugIns/Keyboard.appex/_CodeSignature/CodeResources",
+        "Universe Keyboard",
+        "Universe Keyboard.debug.dylib",
+        "_CodeSignature/CodeResources"
+      ],
+      "added_provenance_classified": true
+    }
+  },
+  "counts": {
+    "main-data": {
+      "files": 827,
+      "directories": 42,
+      "links": 0
+    },
+    "installed-app": {
+      "files": 111,
+      "directories": 27,
+      "links": 0
+    },
+    "app-group": {
+      "files": 52,
+      "directories": 15,
+      "links": 2
+    }
+  },
+  "restoration_performed": false,
+  "next_test_not_run": true
+}

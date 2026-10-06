@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+  "origin_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "expected_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "line_start": 1201,
+  "line_end": 1260,
+  "lines": [
+    {
+      "line": 1201,
+      "text": "            _ = coordinator.performOrderedNow(.resetSession)"
+    },
+    {
+      "line": 1202,
+      "text": "            clearResponsiveKeyApplyContexts()"
+    },
+    {
+      "line": 1203,
+      "text": "        } else {"
+    },
+    {
+      "line": 1204,
+      "text": "            rimeEngine?.resetSession()"
+    },
+    {
+      "line": 1205,
+      "text": "        }"
+    },
+    {
+      "line": 1206,
+      "text": "        shouldRestoreRimeComposition = !state.currentComposition.isEmpty"
+    },
+    {
+      "line": 1207,
+      "text": "        shouldRebuildSessionDuringRestore = false"
+    },
+    {
+      "line": 1208,
+      "text": "    }"
+    },
+    {
+      "line": 1209,
+      "text": ""
+    },
+    {
+      "line": 1210,
+      "text": "    /// Drops unfinished input when the keyboard is hidden or shown again."
+    },
+    {
+      "line": 1211,
+      "text": "    ///"
+    },
+    {
+      "line": 1212,
+      "text": "    /// Visibility changes are different from a transient RIME session loss:"
+    },
+    {
+      "line": 1213,
+      "text": "    /// the user sees a newly presented keyboard, so stale composition and"
+    },
+    {
+      "line": 1214,
+      "text": "    /// candidates must not remain visible from the previous host interaction."
+    },
+    {
+      "line": 1215,
+      "text": "    @discardableResult"
+    },
+    {
+      "line": 1216,
+      "text": "    public func abandonCompositionForVisibilityChange() -> KeyboardEffect {"
+    },
+    {
+      "line": 1217,
+      "text": "        let hadVisibleComposition ="
+    },
+    {
+      "line": 1218,
+      "text": "            !state.currentComposition.isEmpty"
+    },
+    {
+      "line": 1219,
+      "text": "            || state.lastRimeOutput != nil"
+    },
+    {
+      "line": 1220,
+      "text": "            || state.partialCommit != nil"
+    },
+    {
+      "line": 1221,
+      "text": "            || state.typoCorrection != nil"
+    },
+    {
+      "line": 1222,
+      "text": "            || !state.continuation.isEmpty"
+    },
+    {
+      "line": 1223,
+      "text": "            || state.pendingPunctuation != nil"
+    },
+    {
+      "line": 1224,
+      "text": "            || state.pendingKaomoji != nil"
+    },
+    {
+      "line": 1225,
+      "text": "            || state.insertedPreeditCount > 0"
+    },
+    {
+      "line": 1226,
+      "text": "            || !state.insertedPreeditText.isEmpty"
+    },
+    {
+      "line": 1227,
+      "text": ""
+    },
+    {
+      "line": 1228,
+      "text": "        if isResponsiveRimePipelineEnabled, let affine = threadAffineRimeCoordinator {"
+    },
+    {
+      "line": 1229,
+      "text": "            affine.bumpSessionEpoch(resetEngineSession: true)"
+    },
+    {
+      "line": 1230,
+      "text": "            clearResponsiveKeyApplyContexts()"
+    },
+    {
+      "line": 1231,
+      "text": "        } else if isResponsiveRimePipelineEnabled, let coordinator = responsiveRimeCoordinator {"
+    },
+    {
+      "line": 1232,
+      "text": "            coordinator.bumpSessionEpoch(resetEngineSession: true)"
+    },
+    {
+      "line": 1233,
+      "text": "            // Arch R3 P1-1: epoch barrier must invalidate deferred apply contexts."
+    },
+    {
+      "line": 1234,
+      "text": "            clearResponsiveKeyApplyContexts()"
+    },
+    {
+      "line": 1235,
+      "text": "        } else {"
+    },
+    {
+      "line": 1236,
+      "text": "            rimeEngine?.resetSession()"
+    },
+    {
+      "line": 1237,
+      "text": "        }"
+    },
+    {
+      "line": 1238,
+      "text": "        shouldRestoreRimeComposition = false"
+    },
+    {
+      "line": 1239,
+      "text": "        shouldRebuildSessionDuringRestore = false"
+    },
+    {
+      "line": 1240,
+      "text": "        deleteInlinePreedit()"
+    },
+    {
+      "line": 1241,
+      "text": "        state.currentComposition = \"\""
+    },
+    {
+      "line": 1242,
+      "text": "        state.lastRimeOutput = nil"
+    },
+    {
+      "line": 1243,
+      "text": "        state.partialCommit = nil"
+    },
+    {
+      "line": 1244,
+      "text": "        state.typoCorrection = nil"
+    },
+    {
+      "line": 1245,
+      "text": "        state.continuation = ContinuationState()"
+    },
+    {
+      "line": 1246,
+      "text": "        // 已上屏的 pending 标点 / 颜表情留在 host 上，只放弃可替换身份。"
+    },
+    {
+      "line": 1247,
+      "text": "        state.pendingPunctuation = nil"
+    },
+    {
+      "line": 1248,
+      "text": "        state.pendingKaomoji = nil"
+    },
+    {
+      "line": 1249,
+      "text": "        state.insertedPreeditText = \"\""
+    },
+    {
+      "line": 1250,
+      "text": "        state.insertedPreeditCount = 0"
+    },
+    {
+      "line": 1251,
+      "text": "        let hadPinyinPaths ="
+    },
+    {
+      "line": 1252,
+      "text": "            !state.t9PinyinPathState.compactPaths.isEmpty"
+    },
+    {
+      "line": 1253,
+      "text": "            || state.t9PinyinPathState.selectedPath != nil"
+    },
+    {
+      "line": 1254,
+      "text": "        clearT9PinyinPathState()"
+    },
+    {
+      "line": 1255,
+      "text": ""
+    },
+    {
+      "line": 1256,
+      "text": "        var effects: KeyboardEffect = []"
+    },
+    {
+      "line": 1257,
+      "text": "        if hadVisibleComposition {"
+    },
+    {
+      "line": 1258,
+      "text": "            effects.formUnion(["
+    },
+    {
+      "line": 1259,
+      "text": "                .compositionChanged, .continuationChanged, .pendingPunctuationChanged, .pendingKaomojiChanged,"
+    },
+    {
+      "line": 1260,
+      "text": "            ])"
+    }
+  ]
+}

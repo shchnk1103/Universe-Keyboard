@@ -1,0 +1,26 @@
+{
+  "status": "Prepared_Not_Runtime_Ready",
+  "source_inputs_verified": 1279,
+  "frozen_preparation_inputs_verified": 9,
+  "dirty_before_paths": 1177,
+  "unrelated_existing_dirty_changes": [],
+  "missing_local_links": [],
+  "diff_check": "pass",
+  "index": "empty",
+  "simulator_access": false,
+  "build_test": "not run: docs-only",
+  "artifacts": {
+    "docs/plans/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m-prepared-2026-10-03.md": "5c07782f785f0a63802b8408fa7bb591c8661538ca165af49fdfdaf9c692f086",
+    "docs/plans/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m-operation-cards-2026-10-03.md": "777c7121cb44ccb18f4741663d56a0e13751e083c4b738f5540c37c3f98c9062",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m-entry-prepared-2026-10-03.md": "5a09322fbe930272ae1b820399ddf98843e7adba8ad887b9a58ce0e79768d047",
+    "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md": "574944b3aad1cf6ea72f2b8f8d781550c4f2b56d1bb5bad0bc08e7fc5129d2fa",
+    "docs/ACTIVE_WORK.md": "972a4d67c1fac346bec2d3aae2675b77098a271f8a0d3a7f8f8c219942a5dcbe",
+    "docs/KNOWLEDGE_INDEX.md": "9eec1959ab217d2c6b2b892cf76cd5168cbaaf3807ce87b214b722882a15ac0c",
+    "docs/READING_MAPS.md": "2fc255df0329ac1bee5351a24065f5a5a1a04dda230869a2b47374228d333bf1",
+    "docs/plans/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m-prepared-artifacts/decoder.py": "fc1817ab8843dab76acd9e8ae59277719c059742bb105eebecbc60a66f58775d",
+    "docs/plans/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m-prepared-artifacts/commands.json": "1bad3487e16cf3484614bf6747238194550225ccd853596b5fe6cc60488016a6",
+    "docs/plans/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m-prepared-artifacts/ledger-template.json": "68a070d3fcdd1965a75a419371035b8ed88e6ef9332ec39566fb188a28715b13",
+    "docs/plans/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m-prepared-artifacts/freeze-inputs.json": "a49092e957bcdca8bf50be480554660df968f172374d7bd13afebfed6e093ba1"
+  },
+  "historical_reference_hashes_verified": 10
+}

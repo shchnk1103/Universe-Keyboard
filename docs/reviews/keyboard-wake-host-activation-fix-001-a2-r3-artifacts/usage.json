@@ -1,0 +1,22 @@
+{
+  "round": "A2-4 incremental round 3",
+  "budget_start_utc": "2026-10-05T01:29:28.656142Z",
+  "ack_utc": "2026-10-05T01:30:51.190677Z",
+  "end_utc": "2026-10-05T01:33:42.774940Z",
+  "elapsed_seconds": 254.119,
+  "deadline_utc": "2026-10-05T01:39:28.656142+00:00",
+  "actual_tool_calls": 8,
+  "tool_call_counting": "每次 functions.exec 外层调用计 1；其内部每次 exec_command 等实际嵌套工具调用另计 1；包含失败的两次 packet-schema 探测，本轮共 4 个 functions.exec + 4 个 exec_command = 8。",
+  "stop_reason": "达到 8 次硬调用预算后停止；未追加查证或扩展范围。",
+  "packet_sha256": "aeb308daec65f3525172aa020f2436a3d7ead5f2439f6cbfa4f899c7f1544822",
+  "input_count": 11,
+  "all_11_input_hashes_match": true,
+  "review_verdict": "Uncovered",
+  "coverage": {
+    "four_swift_compile_records": "Covered",
+    "three_build_jobs": "Uncovered",
+    "original_7_actor_baseline": "Uncovered",
+    "new_swift_warning_error_and_appintents_classification": "Covered"
+  },
+  "review_sha256": "8632793b5eb84a989fe49198db256890f4a6637133d25f92b868c0784d0cb779"
+}

@@ -1,0 +1,24 @@
+[
+  {
+    "utc": "2026-10-06T02:03:16.848560+00:00",
+    "pid": 92050,
+    "thread_id": 44472156,
+    "frame_id": 0,
+    "stop_id": 13,
+    "process_state": 5,
+    "stop_reason": 3,
+    "stop_reason_data": [
+      1,
+      1
+    ],
+    "frame_pc": 4329784336,
+    "function": "h0_export_ready",
+    "module_uuid": "F8346C9C-B8C0-4301-80AB-FE93EE8F62AC",
+    "breakpoint_id": 1,
+    "location_id": 1,
+    "breakpoint_pc": 4329784336,
+    "breakpoint_module_uuid": "F8346C9C-B8C0-4301-80AB-FE93EE8F62AC",
+    "expected_pid": 92050,
+    "memory_reads": 0
+  }
+]

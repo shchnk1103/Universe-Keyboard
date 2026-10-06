@@ -1,0 +1,18 @@
+{
+  "exit": 0,
+  "elapsed_seconds": 38.099689245224,
+  "actual_test_total": 1194,
+  "failures": 0,
+  "skip_records": [],
+  "compiler_warning_records": [],
+  "compiler_error_records": [],
+  "terminal_log_evidence": [
+    "Test Suite 'KeyboardCoreTests.xctest' passed at 2026-10-02 15:12:43.765.",
+    "\t Executed 1194 tests, with 0 failures (0 unexpected) in 19.151 (19.275) seconds",
+    "\t Executed 1194 tests, with 0 failures (0 unexpected) in 19.151 (19.278) seconds"
+  ],
+  "package_input_sha256": "8da9ec62d8bc10c5c62b6e2a74d1d54627a4c50223ca6d0689b9b189067c0eeb",
+  "log_sha256": "048f53d7f2c49d7eb4ad433f00f97f608a72d0eead6c0b37715c3c3e2cad6cd6",
+  "scope": "Full host macOS KeyboardCore XCTest suite; no iOS target execution/Simulator/RimeBridge claim",
+  "classification_note": "Matches XCTest skip terminals/compiler location diagnostics. Test names or intentionally generated fixture diagnostics containing skipped/error are not classified as suite skips/compiler errors."
+}

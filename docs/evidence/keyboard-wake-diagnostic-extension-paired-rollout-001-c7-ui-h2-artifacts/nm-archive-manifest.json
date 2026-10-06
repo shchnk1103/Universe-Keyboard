@@ -1,0 +1,58 @@
+[
+  {
+    "scratch": "/private/tmp/ukey-wake-probe-ui-h2-20261002/ordinary-release-Universe Keyboard-nm.txt",
+    "raw_sha256": "494e0e728bd956cfdea9ff0ffb74e80f8c9a638f5586bc1ff04793959343f81b",
+    "raw_bytes": 12427717,
+    "archive": "ordinary-release-Universe Keyboard-nm.txt.gz",
+    "archive_sha256": "14642236ccda9452ee301d9342367e9d874bb370f73ad5d604c104c8bcbcd91b"
+  },
+  {
+    "scratch": "/private/tmp/ukey-wake-probe-ui-h2-20261002/ordinary-debug-Universe Keyboard-nm.txt",
+    "raw_sha256": "5fb3000153b70ccd5ba61be60e03c0cd43dbe404da39f4a74a1fcdac0be98225",
+    "raw_bytes": 5250,
+    "archive": "ordinary-debug-Universe Keyboard-nm.txt.gz",
+    "archive_sha256": "e51dc0140fa89f50f92f07cda7fa0896b7d081ef14b65c6f1894099ae0e0cf68"
+  },
+  {
+    "scratch": "/private/tmp/ukey-wake-probe-ui-h2-20261002/ordinary-release-PlugIns_Keyboard.appex_Keyboard-nm.txt",
+    "raw_sha256": "c1f9f6bb6dbd5d657eb85b368b1a0a58d01798b9652570c221d5d9feed682f16",
+    "raw_bytes": 6334375,
+    "archive": "ordinary-release-PlugIns_Keyboard.appex_Keyboard-nm.txt.gz",
+    "archive_sha256": "b4b2d352f4244b6a04ccf6da45cd618116e29ca60d6240fc2d374f312214ac18"
+  },
+  {
+    "scratch": "/private/tmp/ukey-wake-probe-ui-h2-20261002/ordinary-debug-PlugIns_Keyboard.appex_Keyboard.debug.dylib-nm.txt",
+    "raw_sha256": "625ef817441b7a73bdfc3e14426132060fbef472b254e205a0d50d9a01f19c08",
+    "raw_bytes": 7366431,
+    "archive": "ordinary-debug-PlugIns_Keyboard.appex_Keyboard.debug.dylib-nm.txt.gz",
+    "archive_sha256": "b2ae365b34c80117afa2064a4e3837ce666a52bb51bf03fbb1b661c5f315faf7"
+  },
+  {
+    "scratch": "/private/tmp/ukey-wake-probe-ui-h2-20261002/ordinary-debug-PlugIns_Keyboard.appex_Keyboard-nm.txt",
+    "raw_sha256": "bc575778fa4ce377aeee803b46fd3d9f71d73c882fb7a3d45b99ecf405725e8b",
+    "raw_bytes": 3271,
+    "archive": "ordinary-debug-PlugIns_Keyboard.appex_Keyboard-nm.txt.gz",
+    "archive_sha256": "ae0e7540cea6fd4b5a5b080369c655ab00e52dbd1040dfcd59b9336638138bcd"
+  },
+  {
+    "scratch": "/private/tmp/ukey-wake-probe-ui-h2-20261002/ordinary-debug-PlugIns_Keyboard.appex___preview.dylib-nm.txt",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "archive": "ordinary-debug-PlugIns_Keyboard.appex___preview.dylib-nm.txt.gz",
+    "archive_sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837"
+  },
+  {
+    "scratch": "/private/tmp/ukey-wake-probe-ui-h2-20261002/ordinary-debug-Universe Keyboard.debug.dylib-nm.txt",
+    "raw_sha256": "f8c8d16f73a4f983704b39b2fcd225fbd881e187d9ebaf3d043f673d2607a434",
+    "raw_bytes": 15404354,
+    "archive": "ordinary-debug-Universe Keyboard.debug.dylib-nm.txt.gz",
+    "archive_sha256": "de128349c0acff0199f0b73ebb8ebb6f397133a9e6e76a3e2c43ca35943ebe25"
+  },
+  {
+    "scratch": "/private/tmp/ukey-wake-probe-ui-h2-20261002/ordinary-debug-__preview.dylib-nm.txt",
+    "raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "raw_bytes": 0,
+    "archive": "ordinary-debug-__preview.dylib-nm.txt.gz",
+    "archive_sha256": "f1b651238a58fe290baec6c5e32f3bdb1943dd2bd582f02569231f7a757c7837"
+  }
+]

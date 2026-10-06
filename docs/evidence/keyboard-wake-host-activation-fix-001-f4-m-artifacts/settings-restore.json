@@ -1,0 +1,80 @@
+{
+  "utc": "2026-10-06T01:36:21.756012+00:00",
+  "Human": "两项关闭，App 已关闭",
+  "original": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "log_category_disp": {
+      "exists": false,
+      "value": null
+    },
+    "log_category_display": {
+      "exists": false,
+      "value": null
+    }
+  },
+  "before_restore": {
+    "logging_enabled": {
+      "exists": true,
+      "value": false
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "log_category_disp": {
+      "exists": false,
+      "value": null
+    },
+    "log_category_display": {
+      "exists": false,
+      "value": null
+    }
+  },
+  "readbacks": [
+    {
+      "logging_enabled": {
+        "exists": false,
+        "value": null
+      },
+      "diagnostics_high_fidelity_expiration": {
+        "exists": false,
+        "value": null
+      },
+      "log_category_disp": {
+        "exists": false,
+        "value": null
+      },
+      "log_category_display": {
+        "exists": false,
+        "value": null
+      }
+    },
+    {
+      "logging_enabled": {
+        "exists": false,
+        "value": null
+      },
+      "diagnostics_high_fidelity_expiration": {
+        "exists": false,
+        "value": null
+      },
+      "log_category_disp": {
+        "exists": false,
+        "value": null
+      },
+      "log_category_display": {
+        "exists": false,
+        "value": null
+      }
+    }
+  ],
+  "other_preferences_preserved": true,
+  "root_did_not_terminate_process": true
+}

@@ -1,0 +1,9 @@
+{
+  "received_utc": "2026-10-04T04:26:10.571550+00:00",
+  "human_reply": "界面仍然正常，按钮仍显示‘取证’，候选栏和输入框中的仍没有删除。",
+  "actual_observation_time": null,
+  "visual_exit_confirmed": true,
+  "content_not_transcribed": true,
+  "typing_health_not_retested": true,
+  "debugger_cleanup_proven": false
+}

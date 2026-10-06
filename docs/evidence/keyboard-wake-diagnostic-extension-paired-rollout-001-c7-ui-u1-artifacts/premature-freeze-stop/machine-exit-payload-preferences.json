@@ -1,0 +1,23 @@
+{
+  "utc": "2026-10-03T12:59:35.989972+00:00",
+  "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50",
+  "installed_files": 78,
+  "installed_payload_matches_H1": true,
+  "selected_diagnostic_preferences": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    }
+  },
+  "diagnostic_original_presence_and_values_unchanged_from_I1": true,
+  "only_installed_binary_hashes_and_selected_preferences_read": true,
+  "no_user_content_read": true,
+  "no_full_data_equality_claim": true,
+  "no_install_launch_input_arm_maps": true,
+  "debugger_attached_then_continued_and_detached": true
+}

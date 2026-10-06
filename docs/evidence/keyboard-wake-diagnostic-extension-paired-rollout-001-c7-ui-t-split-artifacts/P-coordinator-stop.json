@@ -1,0 +1,18 @@
+{
+  "delivered_via": "collaboration final message; not formal files",
+  "reviewer_reported_leaf_calls": 6,
+  "criteria_reported": {
+    "T4": "Partial",
+    "T5": "review findings only",
+    "T6": "review findings only"
+  },
+  "stop_reason": "all six leaf calls consumed before report/usage write",
+  "formal_report_exists": false,
+  "formal_usage_exists": false,
+  "reviewer_actual_elapsed_seconds": "UNKNOWN",
+  "reported_metadata_gap": "backup-vs-final xattrs unclassified; root clarification separately, not independent closure",
+  "root_observation_epoch": 1791013796.061772,
+  "root_observed_elapsed_upper_bound_seconds": 495.5615451335907,
+  "coverage": "Partial / incomplete",
+  "input_hash_mismatches": []
+}

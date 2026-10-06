@@ -1,0 +1,92 @@
+{
+  "checked_utc": "2026-10-01T02:53:30.906571+00:00",
+  "run_id": "C5-R-20261001-01",
+  "target": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "installed_tree_matches_at_closeout": 111,
+  "source_build_matches": 568,
+  "built_bundle_matches": 111,
+  "preserved_existing_other_files": 2552,
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "capture_after": {
+    "logging_enabled": {
+      "present": true,
+      "value": false
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "present": false,
+      "value": null
+    },
+    "log_category_disp": {
+      "present": false,
+      "value": null
+    },
+    "log_category_engine": {
+      "present": false,
+      "value": null
+    }
+  },
+  "logging_off": true,
+  "high_fidelity_inactive": true,
+  "disp_engine_original_absence_preserved": true,
+  "original_logging_expiry_values_existence": "unverified; Human accepted current-run nonblocking residual; off/off restoration only",
+  "human_reader_observation": {
+    "three_families_visible": true,
+    "no_incomplete_unsupported_warning_observed": true,
+    "source": "Human current reply; same installed Main App; no machine proof of every event consumed or internal completeness counters"
+  },
+  "human_input_observation": {
+    "completed": true,
+    "keyboard_normal": true,
+    "commit_response_observed": true,
+    "input_rounds": 1
+  },
+  "typed_events": 17,
+  "one_process_appearance": true,
+  "utc_event_range": [
+    "2026-10-01T02:46:26Z",
+    "2026-10-01T02:46:34Z"
+  ],
+  "proxy_pairs": [
+    {
+      "operation": "set_marked_text",
+      "entered_seq": 13,
+      "returned_seq": 14
+    },
+    {
+      "operation": "set_marked_text",
+      "entered_seq": 20,
+      "returned_seq": 21
+    },
+    {
+      "operation": "set_marked_text",
+      "entered_seq": 28,
+      "returned_seq": 29
+    },
+    {
+      "operation": "set_marked_text",
+      "entered_seq": 36,
+      "returned_seq": 37
+    },
+    {
+      "operation": "set_marked_text",
+      "entered_seq": 44,
+      "returned_seq": 45
+    },
+    {
+      "operation": "set_marked_text",
+      "entered_seq": 50,
+      "returned_seq": 51
+    },
+    {
+      "operation": "unmark_text",
+      "entered_seq": 52,
+      "returned_seq": 53
+    }
+  ],
+  "insert_text": "not observed, not passed",
+  "tail_disappearance": "not observed, supplemental only",
+  "reader_limit": "Human-visible family rendering/no notice verified; every-event/internal counter claims unverified",
+  "overall": "bounded C5-R positive evidence; no rootcause/Maps/Gate/Release/parent closure",
+  "device_window_end_utc": "2026-10-01T02:53:30.907201+00:00"
+}

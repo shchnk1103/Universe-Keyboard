@@ -1,0 +1,26 @@
+{
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "candidate_digest": "af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9",
+  "status": "Partial / C5-R Hold",
+  "source_build_match": 568,
+  "built_bundle_match": 111,
+  "frozen_inputs_match_before_owner_append": 22,
+  "preserved_other_existing_files": 2535,
+  "sole_existing_modified_path": "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md",
+  "after_assignment_sha256": "29c98a7ad46df2eb657fb4a516f91aee0631ae8e843a390060020f6b57acdfc3",
+  "status_z_sha256": "1f8d0189dcedbe05fd8c2601f061d8df785bf7d3a674e8fb49353cbd6ee0dcdb",
+  "full_dirty_status_path": "/private/tmp/ukey-wake-c5-host-delta-20261001/after-status.txt",
+  "dirty_entry_count_before_final_receipt": 453,
+  "staged_count": 0,
+  "output_sha256": {
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-host-delta-input-manifest.json": "69b8179e3549d0f487253b23a98f03c8ea4f6fcb2c4c0010301b01db2434c48b",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-host-delta-entry.md": "5c2432915d2dfa75d964c1dcd5eb7dd22824b73466e06847943e46d5617a8012",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-host-delta-quality-packet.md": "3469778494804a0b6c4682923c44baf809b7671535d3bc0ab45f042a08a78afd",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-host-delta-quality-review.md": "05d436366012ccdf77433affd8392a65902156097995598c9e1eefb8859b0f7a",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-host-delta-timer.json": "3828742dc0d47e3d4ec72bf886c421f72f96151823cd6c7a201e1e3c66c5fc3b",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-host-delta-procedural-status.json": "00993080b31d7f9472997f50b7a6b023fc1a6803ad8e6d351bf4b5f6d4647c1a",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-host-delta-validation-2026-10-01.md": "22a69b8009b7eddd96934a34140bb42b50573364731225c95689e2ed67048b2a"
+  },
+  "dirty_entry_count": 454
+}

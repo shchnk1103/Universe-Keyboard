@@ -25,6 +25,75 @@
 import KeyboardCore
 import UIKit
 
+/// A content-free snapshot of the gate state supplied by the owning view controller.
+struct KeyboardWakeDiagnosticContext: Sendable {
+    let appearanceID: UUID?
+    let isHighFidelityActive: Bool
+    let expiration: Date?
+
+    static let disabled = KeyboardWakeDiagnosticContext(
+        appearanceID: nil,
+        isHighFidelityActive: false,
+        expiration: nil
+    )
+
+    func allowsRecording(at now: Date) -> Bool {
+        isHighFidelityActive && (expiration.map { $0 > now } ?? false)
+    }
+}
+
+@MainActor
+enum KeyboardWakeDiagnosticProducer {
+    /// Marker submission is best-effort; this gate reads only the in-memory snapshot.
+    @discardableResult
+    static func recordKeyboardLifecycle(
+        _ phase: DiagnosticEvent.KeyboardLifecyclePhase,
+        journal: DiagnosticsJournalRuntime?,
+        context: KeyboardWakeDiagnosticContext,
+        now: Date = Date()
+    ) -> Bool {
+        let isInScope =
+            phase == .viewWillAppear
+            || phase == .viewDidAppear
+            || phase == .viewWillDisappear
+            || phase == .hostWillResignActive
+        guard isInScope, context.allowsRecording(at: now), let journal else { return false }
+        return journal.recordKeyboardLifecycle(
+            phase,
+            appearanceID: context.appearanceID
+        )
+    }
+
+    @discardableResult
+    static func recordRimeResumeStarted(
+        journal: DiagnosticsJournalRuntime?,
+        context: KeyboardWakeDiagnosticContext,
+        now: Date = Date()
+    ) -> Bool {
+        guard context.allowsRecording(at: now), let journal else { return false }
+        return journal.recordRimeResume(
+            .started,
+            appearanceID: context.appearanceID
+        )
+    }
+
+    @discardableResult
+    static func recordTextProxyOperation(
+        _ operation: DiagnosticEvent.TextProxyOperation,
+        phase: DiagnosticEvent.TextProxyPhase,
+        journal: DiagnosticsJournalRuntime?,
+        context: KeyboardWakeDiagnosticContext,
+        now: Date = Date()
+    ) -> Bool {
+        guard context.allowsRecording(at: now), let journal else { return false }
+        return journal.recordTextProxyOperation(
+            operation: operation,
+            phase: phase,
+            appearanceID: context.appearanceID
+        )
+    }
+}
+
 @MainActor
 final class UITextDocumentProxyAdapter: TextInputClient {
 
@@ -32,19 +101,51 @@ final class UITextDocumentProxyAdapter: TextInputClient {
     /// unowned 使用：proxy 由 UIInputViewController 持有，
     /// VC 存在期间 proxy 一定存在，所以不会造成悬空引用。
     private unowned let proxy: UITextDocumentProxy
+    private let diagnosticsJournal: DiagnosticsJournalRuntime?
+    private let diagnosticContext: @MainActor () -> KeyboardWakeDiagnosticContext
+    /// Test seam for call ordering; accepted submissions may still be dropped by ingress.
+    private let diagnosticMarkerObserver:
+        (@MainActor (DiagnosticEvent.TextProxyOperation, DiagnosticEvent.TextProxyPhase) -> Void)?
 
     var hasTextBeforeInput: Bool {
         proxy.hasText
     }
 
-    init(proxy: UITextDocumentProxy) {
+    init(
+        proxy: UITextDocumentProxy,
+        diagnosticsJournal: DiagnosticsJournalRuntime? = nil,
+        diagnosticContext: @escaping @MainActor () -> KeyboardWakeDiagnosticContext = { .disabled },
+        diagnosticMarkerObserver: (
+            @MainActor (DiagnosticEvent.TextProxyOperation, DiagnosticEvent.TextProxyPhase) -> Void
+        )? = nil
+    ) {
         self.proxy = proxy
+        self.diagnosticsJournal = diagnosticsJournal
+        self.diagnosticContext = diagnosticContext
+        self.diagnosticMarkerObserver = diagnosticMarkerObserver
+    }
+
+    private func recordDiagnosticMarker(
+        _ operation: DiagnosticEvent.TextProxyOperation,
+        phase: DiagnosticEvent.TextProxyPhase
+    ) {
+        let submitted = KeyboardWakeDiagnosticProducer.recordTextProxyOperation(
+            operation,
+            phase: phase,
+            journal: diagnosticsJournal,
+            context: diagnosticContext()
+        )
+        if submitted {
+            diagnosticMarkerObserver?(operation, phase)
+        }
     }
 
     /// 委托给 UITextDocumentProxy.insertText(_:)。
     /// Apple 文档：在插入点位置插入文本字符串。
     func insertText(_ text: String) {
+        recordDiagnosticMarker(.insertText, phase: .entered)
         proxy.insertText(text)
+        recordDiagnosticMarker(.insertText, phase: .returned)
     }
 
     /// 委托给 UITextDocumentProxy.deleteBackward()。
@@ -64,15 +165,19 @@ final class UITextDocumentProxyAdapter: TextInputClient {
     /// 如果没有，则在当前插入点插入一段 marked text。
     func setMarkedText(_ text: String, selectedRange: Range<Int>) {
         let selectedRange = nsRange(for: selectedRange, in: text)
+        recordDiagnosticMarker(.setMarkedText, phase: .entered)
         proxy.setMarkedText(
             text,
             selectedRange: selectedRange
         )
+        recordDiagnosticMarker(.setMarkedText, phase: .returned)
     }
 
     /// 委托给 UITextDocumentProxy.unmarkText()，用于确认当前 marked text。
     func unmarkText() {
+        recordDiagnosticMarker(.unmarkText, phase: .entered)
         proxy.unmarkText()
+        recordDiagnosticMarker(.unmarkText, phase: .returned)
     }
 
     private func nsRange(for range: Range<Int>, in text: String) -> NSRange {

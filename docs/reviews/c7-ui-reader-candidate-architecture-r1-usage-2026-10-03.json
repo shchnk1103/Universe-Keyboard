@@ -1,0 +1,47 @@
+{
+  "work_item": "KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001",
+  "lane": "ARCH-C7-UI-READER-AND-CANDIDATE",
+  "round": 1,
+  "packet_digest_sha256": "bf7704109af968f0ab9ee1958df2d593cc112be1a068f90e9c4003a31116a9f3",
+  "reviewer": "new independent Architecture reviewer",
+  "report": "/private/tmp/ukey-wake-reader-new-20261003/review.md",
+  "report_sha256": "2c7d13fb369f359f233267e55649f6e83799b15a51887aa01c0cbbc99338cf0f",
+  "reader_checks": "/private/tmp/ukey-wake-reader-new-20261003/reader-checks.json",
+  "reader_execution": "/private/tmp/ukey-wake-reader-new-20261003/architecture-reviewer-round1/reader-execution.json",
+  "start": {
+    "utc": "2026-10-02T16:27:35.159948+00:00",
+    "unix_ns": 1790958455160033000,
+    "monotonic_ns": 1141305878501541
+  },
+  "end": {
+    "utc": "2026-10-02T16:35:59.950213+00:00",
+    "unix_ns": 1790958959950487000,
+    "monotonic_ns": 1141810665627416
+  },
+  "elapsed_seconds": 504.787,
+  "tool_calls_used": 8,
+  "tool_calls_max": 8,
+  "soft_elapsed_seconds": 780,
+  "hard_elapsed_seconds": 1200,
+  "budget_status": "within call and elapsed ceilings",
+  "criteria": {
+    "R0": "Covered",
+    "A1": "Covered",
+    "A2": "Partial"
+  },
+  "evidence": {
+    "reader_self_test": "pass; positive exact-section/plist case and six negative cases",
+    "reader_verify": "exit 0; 78 payload files, 2 entitlement rows, 6 Mach-O files, 2 codesign verify calls",
+    "independent_h1_candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50",
+    "patch_sha_verified": true,
+    "patch_changed_files": [],
+    "patch_added_refresh_calls": 0,
+    "patch_safe_diff_check": false,
+    "patch_unexpected_changed_lines": [],
+    "source_guarded_refresh_calls": 3
+  },
+  "limitations": [
+    "No runtime/device/install/Product Gate evidence",
+    "Prior R1/R2/R3 dispositions were not changed"
+  ]
+}

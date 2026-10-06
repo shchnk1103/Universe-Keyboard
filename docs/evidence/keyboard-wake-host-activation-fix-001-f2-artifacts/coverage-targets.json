@@ -1,0 +1,53 @@
+{
+  "scheme": "Universe Keyboard",
+  "no_KeyboardTests_scheme": true,
+  "destination_udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "required_class": "KeyboardTests/KeyboardHostLifecycleRecoveryGateTests",
+  "authored_methods": [
+    "testVisibleResignThenActiveResumesExactlyOnce",
+    "testDuplicateActiveAndResignAreIdempotent",
+    "testAppearThenActiveAndActiveThenAppearConsumePendingOnce",
+    "testForeignAndMissingContextDoNotChangeState",
+    "testHiddenAndNoWindowDoNotResume",
+    "testPrecreatedHiddenInstanceDoesNotResumeOnHostActive",
+    "testCancelledFirstFrameRearmsOnceWithoutImmediateOwner",
+    "testLateFirstFrameTickAfterDisappearDoesNotActivate",
+    "testFirstFrameElapsedConsumesPendingAndActivatesOnce",
+    "testCanaryPermissionTableDeniesOwnerStartingBeforeResume",
+    "testVisibilitySuspendedGrantedAllowsExactlyOneResume",
+    "testFenceBlocksRearmAndFirstFrameCreation",
+    "testCanaryStartingAllowsOriginalFirstFrameButNotHostActiveResume",
+    "testOldPresentationPendingIsInvalidatedOnNewAppearance",
+    "testHostActiveBeforeWindowIsTakenOverByDidAppear",
+    "testPermissionOrderIsEvaluatedBeforeConsumingPending",
+    "testDuplicateActiveDoesNotEmitResumeThatWouldClearNewComposition"
+  ],
+  "method_count": 17,
+  "primary_evidence": "F2-3 Universe Keyboard Debug test xcresult must list all 17 methods as actually executed",
+  "f2_3b_gate_focused": {
+    "required": false,
+    "cannot_substitute_F2_3": true,
+    "run_when": "F2-3 xcresult coverage gap: any of the 17 methods unlisted, skipped, or count mismatch",
+    "skip_when": "F2-3 xcresult already proves all 17 methods executed"
+  },
+  "claims_forbidden": [
+    "NSExtensionHost notification delivery",
+    "appex KeyboardViewController runtime",
+    "owner/receipt after AppSwitcher",
+    "Maps recovery",
+    "完整 CI 等价"
+  ],
+  "claim_label": "完整测试与构建矩阵，外加适用本地分类与轻量检查",
+  "full_matrix_must_also_run": [
+    "applicable local classify table (uncommitted F1 is full)",
+    "applicable local lightweight: git diff HEAD --check on tracked F1/F2 paths, git diff --check --no-index for untracked gate+tests, .kos JSON, CI helper tests, working-tree F2 markdown links",
+    "four-file swift-format lint --strict",
+    "Packages/KeyboardCore swift test (isolated --build-path)",
+    "RimeBridgeTests Debug test (UDID destination, isolated DerivedData)",
+    "Universe Keyboard Debug test (entire scheme, not only-testing substitute)",
+    "Universe Keyboard Release build",
+    "Keychain focused job with CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- CODE_SIGNING_REQUIRED=NO"
+  ],
+  "skip_policy": "Historical 29/30 skip dispositions are not inherited. New skips need a Product decision. Do not rerun to manufacture counts.",
+  "actual_execution": "not run in this preparation"
+}

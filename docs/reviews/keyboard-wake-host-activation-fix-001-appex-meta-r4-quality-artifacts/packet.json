@@ -1,0 +1,33 @@
+{
+  "lane": "AP-META-004-QUALITY-R1",
+  "Human": "可以，请做这份证据的独立只读验收吧",
+  "reviewer": "/root/f4p_quality_four_paths_fresh (existing GPT6 Luna)",
+  "scope": "only this r4 run; no earlier rerun/review, runtime, source change or Product exception acceptance",
+  "worktree": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "reader_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-appex-meta-r4-quality-artifacts/reader.json",
+  "reader_sha256": "a5cb4b5623852ee0bf6825fe707cb12e954bdd15884409b5e7fb678d46d369be",
+  "output_directory": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-appex-meta-r4-quality-artifacts",
+  "criteria": {
+    "Q-META-1": "callback/bp_loc/loaded binding and same-stop CLI identity match; exact symbol/module/PC/thread/StopID and button/borrow callers",
+    "Q-META-2": "one arm/freeze single expected hit; independent pre-click snapshots and chronology; distinguish quoted Human root records from independently machine observed facts",
+    "Q-META-3": "delete/list0/detach/quit/process and original diagnoses presence; Human visual exit quoted; pause bounded timestamp derivation not exact detach claim",
+    "Q-META-4": "scope honesty including incidental default LLDB argument display; script no explicit buffer read; actual35call ledger and wall audit reproducibility limits, no owner/Maps/Release extrapolation"
+  },
+  "budget_actual_calls": 16,
+  "budget_wall_seconds": 900,
+  "checkpoints": [
+    8,
+    12
+  ],
+  "reserved_delivery_calls": 4,
+  "stop": "same frozen evidence only; UNKNOWN stays uncovered; budget exhaustion stop; no speculative runtime or automatic review rerun",
+  "required_delivery": [
+    "ack.json",
+    "review.md",
+    "usage.json",
+    "delivery-readback.json"
+  ],
+  "access": "Prefer native files using available host exec_command via functions.exec; exact text reader is optional proxy, cite proxy use. Writes only your four review delivery files. Preflight reader keys files + writer before analysis. If native writer inaccessible, return complete raw author judgement and final ledger/time without silently stopping or altering root/source; root may mechanically archive original labelled writer-failed, not substitute review."
+}

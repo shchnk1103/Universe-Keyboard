@@ -1,0 +1,13 @@
+{
+  "lane": "QUALITY-C7-UI-U1R1-RUNTIME",
+  "round": 1,
+  "reviewer": "/root/t_split_p",
+  "root_dispatch_utc": "2026-10-03T13:31:34.509Z",
+  "root_dispatch_clock_basis": "UTC wall clock; independent reviewer budget begins at first actual reviewer tool request",
+  "budget": {
+    "leaf_calls": 6,
+    "hard_seconds": 600,
+    "soft_seconds": 450
+  },
+  "packet_whole_sha256": "e3faf25fbd3d1b0b854ea475aa17b35ee77c04d85561be2a8274179c0c1b8c74"
+}

@@ -1,0 +1,27 @@
+{
+  "lane": "F4-M-RUNTIME-QUALITY",
+  "round": 1,
+  "readback_utc": "2026-10-06T01:45:53.821418+00:00",
+  "actual_tool_calls_at_readback": 16,
+  "author_utc_start": "2026-10-06T01:39:42.321705+00:00",
+  "author_utc_end": "2026-10-06T01:45:53.821418+00:00",
+  "elapsed_seconds_total": 371.499713,
+  "outputs": [
+    {
+      "name": "ack.json",
+      "bytes": 888,
+      "sha256": "499e8b7cfe2844e7fc54cec0342ddefb5feeff152813c777bc54bd904a791123"
+    },
+    {
+      "name": "review.md",
+      "bytes": 5414,
+      "sha256": "e2c18e3bb7f313625c171696fe17880d3070579f498be5dcba05d6b48907f395"
+    },
+    {
+      "name": "usage.json",
+      "bytes": 7196,
+      "sha256": "2096b0fc7b779df2bdce1cfe68ba8f8f9a30c57f8bb1f5346902b6ed1aabea41"
+    }
+  ],
+  "verified": true
+}

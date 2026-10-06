@@ -1,0 +1,26 @@
+{
+  "root_record_utc": "2026-10-02T16:21:14.633389+00:00",
+  "packet_digest": "42a3057e170a8aacefee964bfe2c3f55bed786ffb838d2c446888b82bc11a488",
+  "report_sha256": "4b424c4793ff74e35383b26317c1979afa87c99df40855a83715af1ded59bf41",
+  "usage_sha256": "fbb977601d154afddd5f7f7615da94de71f9d627ecadc9496f9525f20627e117",
+  "formal_verdict": "Partial / incomplete",
+  "A1_A2": "No valid final complete independent delivery",
+  "reviewer_final_reported_calls_used": 6,
+  "call_limit": 6,
+  "actual_complete_call_ledger_delivered": false,
+  "actual_final_elapsed_seconds": null,
+  "actual_final_tool_end_utc": null,
+  "start_timer": {
+    "start_utc": "2026-10-02T16:11:12.423596+00:00",
+    "start_unix": 1790957472.423594,
+    "start_monotonic": 1140323.147232958,
+    "packet_path": "/private/tmp/ukey-wake-probe-ui-arch-r3-20261003/packet.json",
+    "packet_digest_sha256": "42a3057e170a8aacefee964bfe2c3f55bed786ffb838d2c446888b82bc11a488"
+  },
+  "draft_only_seconds_not_whole_round": 0.0032777918968349695,
+  "draft_reported_calls2_not_final6": true,
+  "false_missing104_due_to_hash_values_used_as_paths": true,
+  "final_exception_reported": "plistlib.loads was passed section list instead of section bytes; call6 failed before final report/usage write",
+  "all_frozen_inputs_still_matched": true,
+  "no_budget_renewal": true
+}

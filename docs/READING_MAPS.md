@@ -1,5 +1,33 @@
 # Reading Maps
 
+2026-10-06 当前：[paired-rollout有界完成](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-bounded-completion-2026-10-06.md)Human批准选项A，Completed为诊断producer与父交接交付；R-JSONL/R-V6/R-COV/R-AUDIT/R-SKIP非阻塞未验证，独立Partial保留。键盘唤醒三件任务均有界Completed。
+
+2026-10-06 当前：[paired-rollout Exit对照准备稿](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-jsonl-parent-exit-map-2026-10-06.md)父JSONL映射已由父历史Exit图+PEXIT-R1完成；子诊断交接已交付。全局v6 emission/已审查v6 Maps未满足，E1不并入。Assignment仍Active，有界收尾待Product。
+
+2026-10-03 当前：[M2停止Incomplete](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m2-baseline-stop-validation-2026-10-03.md)：基线多次按键未更新，freeze卡前出口hit1，触发未知；0read，11calls账本、cleanup与视觉Exit齐。未执行目标AppSwitcher配对，不判owner为空；下一建议只读核提前出口绑定，未授权新实例/重试。
+
+
+2026-10-03 当前：[M1限定核验完成](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m1-validation-2026-10-03.md)：Human补确认26键/空候选/观测/未点击未输入，机器新3626身份与保护齐。M2单轮取证待明确授权及fresh Entry，尚无LLDB或输入，父子Active。
+
+
+2026-10-03 当前：[M1只读核验](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m1-validation-2026-10-03.md)：新PID3626与原设备／安装43d85d身份一致，源1279及M0备份956文件通过；人工布局/空候选/未arm补确认待回。M2未授权，loaded identity与调试器步骤另核。
+
+
+2026-10-03 当前：[已授权T旧快照清理](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m0-old-backup-cleanup-validation-2026-10-03.md)完成：精确4目录原分配499.83MiB已移除，凭据／测试／审查证据保留；I0/I1/M0约382.83MiB仍在。M0完成，M1/M2未授权，无设备操作。
+
+
+2026-10-03 当前：[M0保护交付](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m0-validation-2026-10-03.md)完成：精确旧扩展一次SIGTERM退出，当前43d85d完整备份127.63MiB通过，恢复方案Prepared；4组T旧快照约499.83MiB可申请精确删除，尚未删除。M1/M2未授权，父子Active、根因开放。
+
+
+2026-10-03 当前：[M阶段准备包](plans/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m-prepared-2026-10-03.md)已准备：同一新实例内两次合成输入，中间只AppSwitcher直接回Maps；Entry/备份恢复/取证判读及停止条件已冻结。M0保护与后续M1/M2执行未授权，现场条件UNKNOWN，不Ready。U1R1窄接受及阶段残项处置保留，父子Active。
+
+
+2026-10-03 当前：[U1R1 Product阶段处置](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-u1r1-delivery-correction-validation-2026-10-03.md)：Human仅当前阶段接受计时／预算合规未知及usage模型字段限制为非阻塞、未验证残项；独立Partial原记录与运行链窄接受保持，停止重复补审。父子Active，Maps／根因开放，无新增设备操作授权。
+
+
+2026-10-03 当前：[U1R1作者补正接收](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-u1r1-delivery-correction-validation-2026-10-03.md)：D001–D004已补正，原窄运行意见不变；2/2调用耗尽，补正整轮计时/180秒合规未知，usage模型字段未重复，正式交付仍Partial，停止追加。无模拟器操作，Product阶段处置待决定。
+
+
 ## How To Use
 
 Read `AGENTS.md` and `KNOWLEDGE_INDEX.md` first. Select one map below and stop when its required sources answer the task. Historical plans and changelog entries are optional evidence, never the starting authority.

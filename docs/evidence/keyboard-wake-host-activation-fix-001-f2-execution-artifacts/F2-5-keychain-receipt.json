@@ -1,0 +1,12 @@
+{
+  "step": "F2-5-keychain",
+  "utc": "2026-10-04T10:54:50.086801+00:00",
+  "command": "xcodebuild -project \"Universe Keyboard.xcodeproj\" -scheme \"Universe Keyboard\" -configuration Debug -destination 'platform=iOS Simulator,id=405D994F-28CB-4F89-BB22-B64AD81C05A2' -derivedDataPath /private/tmp/ukey-host-activation-fix-f2-run-20261004/DerivedData -parallel-testing-enabled NO CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- CODE_SIGNING_REQUIRED=NO SWIFT_VERSION=6.0 SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES -only-testing:UniverseKeyboardTests/RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem -resultBundlePath /private/tmp/ukey-host-activation-fix-f2-run-20261004/xcresults/keychain.xcresult test",
+  "cwd": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "remaining_wall_seconds": 9909.913602,
+  "ended": "2026-10-04T10:55:23.358645+00:00",
+  "elapsed_seconds": 33.271844,
+  "exit_code": 0,
+  "timeout": false,
+  "log": "/private/tmp/ukey-host-activation-fix-f2-run-20261004/logs/F2-5-keychain.log"
+}

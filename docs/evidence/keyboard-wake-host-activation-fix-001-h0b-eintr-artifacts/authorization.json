@@ -1,0 +1,22 @@
+{
+  "started_utc": "2026-10-06T02:13:48.640059+00:00",
+  "Human": "仅给夹具增加有界 EINTR 处理，再验证一次",
+  "scope": "task-owned macOS fixture only; at most two read attempts, retry only EINTR; one LLDB run and cleanup; no production/Simulator/target content/expression",
+  "root": "/private/tmp/ukey-host-activation-fix-h0b-eintr-20261006",
+  "actual_calls": 2,
+  "source5": {
+    "Keyboard/Controllers/KeyboardViewController.swift": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+    "Keyboard/Controllers/KeyboardViewController+Bootstrap.swift": "79d0123dabacd8e5875b66b7c8c897589adbeb8b49d1e22b263678dc1d56f6aa",
+    "Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift": "c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047",
+    "KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift": "71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5",
+    "Universe Keyboard.xcodeproj/project.pbxproj": "49f0ebe89db1f30323d9bf6ceb297179ffed5fc9ef983fd3b947d11d5820586c"
+  },
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "baseline": {
+    "fixture.c": "679a56400543955d93dfd73102d2a328564d00a9b858e207b5e954779c1abfa9",
+    "host_probe.py": "25cb5abaedfad9de14e258fcc94e43ab4e75e2ce881ec62103fb08574b52da1d"
+  },
+  "read_attempt_limit": 2,
+  "runtime_attempt_limit": 1
+}

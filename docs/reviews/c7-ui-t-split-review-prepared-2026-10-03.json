@@ -1,0 +1,63 @@
+{
+  "status": "Prepared; not authorized/dispatched",
+  "candidate": {
+    "worktree": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+    "branch": "codex/keyboard-wake-v3-compatibility-gate",
+    "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+    "candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50",
+    "installed_restore_baseline": "old C7 ddd557...; not new candidate runtime"
+  },
+  "previous_round2": "stopped after900s; no final report/usage",
+  "proposed_model": "GPT6 Luna",
+  "proposed_reasoning_effort": "low; Human approval required",
+  "common_protocol_inputs": [
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/AGENTS.md",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/ASSIGNMENT_POLICY.md",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/AI_WORKFLOW.md",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/playbooks/test-release.md",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/RELEASE_CHECKLIST.md",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/READING_MAPS.md",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/PERFORMANCE_BASELINE.md",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/DOCUMENTATION_GOVERNANCE.md",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md"
+  ],
+  "lanes": {
+    "S": {
+      "identity": "QUALITY-C7-UI-T-SUITES-CORE",
+      "round": 1,
+      "criteria": [
+        "T1",
+        "T2",
+        "T3"
+      ],
+      "questions": [
+        "Verify exact candidate final source571/Vendor630,branch/HEAD,argv/target/compiler flags/toolchain + actual simulator ID; no test-host/old installed App equals new candidate runtime claim.",
+        "Verify actual three suites summary, skip Test Case identities/reasons, raw result/log corroboration:85/0/20 +421/0/10 +1/0/0 (537total/507passed/30skipped), no discovery/count-only rerun or skipped=passed.",
+        "Assess full Core1194/0/0 reuse via package204 exact final content,file set,environment/baseline/coverage; host-only limits; no rerun required when valid."
+      ],
+      "content_selection": "Exact original frozen T1/T2 argv, summaries/testcase skips/rawlogs/xcresults, H1source manifest/hash-only571+630, Core204 manifest/command/full1194 log/result/sdk reuse; exclude all restore inventories/other historical lane reports",
+      "budget_calls": 6,
+      "budget_seconds": 900
+    },
+    "P": {
+      "identity": "QUALITY-C7-UI-T-PROTECTION-RESIDUALS",
+      "round": 1,
+      "criteria": [
+        "T4",
+        "T5",
+        "T6"
+      ],
+      "questions": [
+        "Independently compare allowed inventory hashes/structure and action receipts across initial test Hold/restore and fresh post-health Keychain backup/test-after/minimal restore; metadata/root/snapshot/provenance exceptions explicit, protected after-state and diagnostic original absence; human health appropriately separated from machine proof.",
+        "List current30skip as unverified residuals with stage-specific Product disposition absent; distinguish exact-scope coverage opinion from blocked overall T acceptance; no old v5/B/C7 acceptance carryover.",
+        "Assess delivery/source-of-truth coherence and scope/nonclaims, immutable historical Hold, no unrelated Gate/Release/Maps/new candidate/runtime assumptions; final report+usage internally consistent."
+      ],
+      "content_selection": "Initial before/postinstall/restored inventory; fresh post-health before/backup/testafter/copy/postinstall/restored inventory and actual action/signature/preference receipts; latest Human health;30skip identities + signed-only identity evidence; exclude full Core/raw compiler logs",
+      "budget_calls": 6,
+      "budget_seconds": 900
+    }
+  },
+  "parallel_reviewers": "reuse current reviewer for S and a new independent Luna for P; root only coordination/archive",
+  "output_contract": "Each writes Complete/Partial criterion matrix, exact proofs/findings, report and actual usage before deadline; aggregate only if both complete; Product residual decision separate",
+  "boundaries": "no repo source changes/device/test/build/install/restore/LLDB/user raw content/Release; no automatic budget renewal"
+}

@@ -1,0 +1,28 @@
+{
+  "callback_template": {
+    "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m2r2-reexport-artifacts/export_frame_callback.py",
+    "sha256": "95b0ccf3bdffb8e93ffc0f5ffcbc032e2b61598938f50cae375af3840004f32b",
+    "historical_PID_UUID_not_reusable": true
+  },
+  "decoder": {
+    "path": "/private/tmp/ukey-wake-m2r2-20261004/decoder.py",
+    "sha256": "fc1817ab8843dab76acd9e8ae59277719c059742bb105eebecbc60a66f58775d"
+  },
+  "future_bindings": [
+    "fresh exact PID/start/path",
+    "installed appex module UUID",
+    "fresh output root",
+    "symbol and single resolved own breakpoint"
+  ],
+  "transport": {
+    "format": "KWOPROBE v1",
+    "header_words": 11,
+    "record_words": 11,
+    "capacity": 128,
+    "lifetime_seconds": 600,
+    "min_bytes": 176,
+    "max_bytes": 11352,
+    "read_count_limit": 1
+  },
+  "not_imported_or_run": true
+}

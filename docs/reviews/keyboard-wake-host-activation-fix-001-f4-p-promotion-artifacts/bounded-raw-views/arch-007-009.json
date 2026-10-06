@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift",
+  "origin_sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+  "expected_sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+  "line_start": 481,
+  "line_end": 540,
+  "lines": [
+    {
+      "line": 481,
+      "text": "    }"
+    },
+    {
+      "line": 482,
+      "text": ""
+    },
+    {
+      "line": 483,
+      "text": "    @objc private func handleCandidatePan(_ recognizer: UIPanGestureRecognizer) {"
+    },
+    {
+      "line": 484,
+      "text": "        guard recognizer.state == .began, collectionView.isDecelerating else { return }"
+    },
+    {
+      "line": 485,
+      "text": "        collectionView.setContentOffset(collectionView.contentOffset, animated: false)"
+    },
+    {
+      "line": 486,
+      "text": "    }"
+    },
+    {
+      "line": 487,
+      "text": ""
+    },
+    {
+      "line": 488,
+      "text": "    private func installItemTapGesture() {"
+    },
+    {
+      "line": 489,
+      "text": "        itemTapRecognizer.addTarget(self, action: #selector(handleItemTap(_:)))"
+    },
+    {
+      "line": 490,
+      "text": "        itemTapRecognizer.cancelsTouchesInView = false"
+    },
+    {
+      "line": 491,
+      "text": "        itemTapRecognizer.delegate = gestureBridge"
+    },
+    {
+      "line": 492,
+      "text": "        gestureBridge.itemTap = itemTapRecognizer"
+    },
+    {
+      "line": 493,
+      "text": "        collectionView.addGestureRecognizer(itemTapRecognizer)"
+    },
+    {
+      "line": 494,
+      "text": "    }"
+    },
+    {
+      "line": 495,
+      "text": ""
+    },
+    {
+      "line": 496,
+      "text": "    @objc private func handleItemTap(_ recognizer: UITapGestureRecognizer) {"
+    },
+    {
+      "line": 497,
+      "text": "        guard recognizer.state == .ended, !shouldSuppressCandidateSelection else { return }"
+    },
+    {
+      "line": 498,
+      "text": "        let point = recognizer.location(in: collectionView)"
+    },
+    {
+      "line": 499,
+      "text": "        guard let indexPath = collectionView.indexPathForItem(at: point) else { return }"
+    },
+    {
+      "line": 500,
+      "text": "        onItemTap?(indexPath)"
+    },
+    {
+      "line": 501,
+      "text": "    }"
+    },
+    {
+      "line": 502,
+      "text": ""
+    },
+    {
+      "line": 503,
+      "text": "    private func installHorizontalFallbackGesture() {"
+    },
+    {
+      "line": 504,
+      "text": "        let recognizer = UIPanGestureRecognizer(target: self, action: #selector(handleHorizontalFallbackPan(_:)))"
+    },
+    {
+      "line": 505,
+      "text": "        recognizer.cancelsTouchesInView = true"
+    },
+    {
+      "line": 506,
+      "text": "        recognizer.delegate = gestureBridge"
+    },
+    {
+      "line": 507,
+      "text": "        horizontalFallbackRecognizer = recognizer"
+    },
+    {
+      "line": 508,
+      "text": "        gestureBridge.horizontalFallback = recognizer"
+    },
+    {
+      "line": 509,
+      "text": "        addGestureRecognizer(recognizer)"
+    },
+    {
+      "line": 510,
+      "text": "    }"
+    },
+    {
+      "line": 511,
+      "text": ""
+    },
+    {
+      "line": 512,
+      "text": "    @objc private func handleHorizontalFallbackPan(_ recognizer: UIPanGestureRecognizer) {"
+    },
+    {
+      "line": 513,
+      "text": "        switch recognizer.state {"
+    },
+    {
+      "line": 514,
+      "text": "        case .began:"
+    },
+    {
+      "line": 515,
+      "text": "            if collectionView.isDecelerating {"
+    },
+    {
+      "line": 516,
+      "text": "                collectionView.setContentOffset(collectionView.contentOffset, animated: false)"
+    },
+    {
+      "line": 517,
+      "text": "            }"
+    },
+    {
+      "line": 518,
+      "text": "            horizontalFallbackStartOffsetX = collectionView.contentOffset.x"
+    },
+    {
+      "line": 519,
+      "text": "            logHorizontalFallbackPan(recognizer, phase: \"began\")"
+    },
+    {
+      "line": 520,
+      "text": "        case .changed:"
+    },
+    {
+      "line": 521,
+      "text": "            let translation = recognizer.translation(in: self)"
+    },
+    {
+      "line": 522,
+      "text": "            let proposedX = horizontalFallbackStartOffsetX - translation.x"
+    },
+    {
+      "line": 523,
+      "text": "            collectionView.contentOffset.x = clampedHorizontalOffset(proposedX)"
+    },
+    {
+      "line": 524,
+      "text": "            logHorizontalFallbackPan(recognizer, phase: \"changed\")"
+    },
+    {
+      "line": 525,
+      "text": "        case .ended, .cancelled, .failed:"
+    },
+    {
+      "line": 526,
+      "text": "            logHorizontalFallbackPan(recognizer, phase: \"ended\")"
+    },
+    {
+      "line": 527,
+      "text": "            horizontalFallbackStartOffsetX = collectionView.contentOffset.x"
+    },
+    {
+      "line": 528,
+      "text": "        default:"
+    },
+    {
+      "line": 529,
+      "text": "            break"
+    },
+    {
+      "line": 530,
+      "text": "        }"
+    },
+    {
+      "line": 531,
+      "text": "    }"
+    },
+    {
+      "line": 532,
+      "text": ""
+    },
+    {
+      "line": 533,
+      "text": "    private func clampedHorizontalOffset(_ proposedX: CGFloat) -> CGFloat {"
+    },
+    {
+      "line": 534,
+      "text": "        let maxOffset = max(0, collectionView.contentSize.width - collectionView.bounds.width)"
+    },
+    {
+      "line": 535,
+      "text": "        return min(max(0, proposedX), maxOffset)"
+    },
+    {
+      "line": 536,
+      "text": "    }"
+    },
+    {
+      "line": 537,
+      "text": ""
+    },
+    {
+      "line": 538,
+      "text": "    private func logHorizontalFallbackPan(_ recognizer: UIPanGestureRecognizer, phase: String) {"
+    },
+    {
+      "line": 539,
+      "text": "        guard CandidateTouchDiagnostics.isEnabled else { return }"
+    },
+    {
+      "line": 540,
+      "text": "        let now = CACurrentMediaTime()"
+    }
+  ]
+}

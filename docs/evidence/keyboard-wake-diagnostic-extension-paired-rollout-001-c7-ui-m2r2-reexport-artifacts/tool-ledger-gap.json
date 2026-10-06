@@ -1,0 +1,17 @@
+{
+  "scope": "native attach/callback/read/cleanup",
+  "native_sequences_recorded": [
+    1,
+    2,
+    3,
+    4,
+    6
+  ],
+  "missing_sequence": 5,
+  "reason": "hit-output polling tool was issued without before/after disk ledger helper; not retroactively fabricated",
+  "actual_tool": "write_stdin session96777 empty chars yield1000",
+  "actual_result_chunk": "dd9631",
+  "evidence_available": "full PTY transcript and callback receipt; native step06 read+cleanup raw",
+  "tool_poll_output": "actual export frame0 pointer0x119b80a20 byteCount1056 stop breakpoint1.1",
+  "effect": "separate audit residual; cannot claim all request/response pairs persisted"
+}

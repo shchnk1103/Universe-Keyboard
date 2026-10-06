@@ -1,0 +1,12 @@
+{
+  "source": "Human manual report",
+  "root_received_utc": "2026-10-03T13:17:31.986636+00:00",
+  "human_quote": "已显示取证",
+  "step": "arm title confirmation",
+  "displayed_title": "取证",
+  "single_arm_click_instructed": true,
+  "actual_click_utc": null,
+  "actual_idle_seconds": null,
+  "normal_input_not_yet_instructed": true,
+  "freeze_not_yet_instructed": true
+}

@@ -1,0 +1,70 @@
+{
+  "utc": "2026-10-04T11:10:00.492297+00:00",
+  "path": "/private/tmp/ukey-host-activation-fix-f2-after-preservation-20261004",
+  "mode": "0o700",
+  "containers_at_preserve": {
+    "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/37ACBFEE-EABE-4987-AD1C-8D8050A9A593/Universe Keyboard.app",
+    "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/B43FA7F3-3BC2-4437-A51E-67C1351531BC",
+    "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/05FFE2DA-4326-45EB-8291-F816EBAE5FC3"
+  },
+  "containers_now": {
+    "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/37ACBFEE-EABE-4987-AD1C-8D8050A9A593/Universe Keyboard.app",
+    "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/B43FA7F3-3BC2-4437-A51E-67C1351531BC",
+    "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/05FFE2DA-4326-45EB-8291-F816EBAE5FC3"
+  },
+  "copy_provenance_rewrite_or_add": {
+    "added_provenance": 950,
+    "rewritten_provenance": 114
+  },
+  "copy_payload_matches_live_at_preserve": true,
+  "current_live_payload_mismatch_vs_copy_count": 0,
+  "counts_copy": {
+    "main-data": {
+      "files": 872,
+      "directories": 43,
+      "symlinks": 0,
+      "file_bytes": 1190149,
+      "inventory_sha256": "7c7ab3bfca05df7b279583b55a611df0c036ad0b2a736974f3d621d4019218f4"
+    },
+    "app-group": {
+      "files": 4,
+      "directories": 7,
+      "symlinks": 0,
+      "file_bytes": 724,
+      "inventory_sha256": "350e5c46de26d21fea937ceb360799da6e7d24995ded1ccdbdac0440a9c07ff2"
+    },
+    "installed-app": {
+      "files": 111,
+      "directories": 27,
+      "symlinks": 0,
+      "file_bytes": 100583905,
+      "inventory_sha256": "bb99fce90142b280372c5af77540bcba8be984c6a8b92f39a6d5bfbe1fc2ad85"
+    }
+  },
+  "counts_live_now": {
+    "main-data": {
+      "files": 872,
+      "directories": 43,
+      "symlinks": 0,
+      "file_bytes": 1190149,
+      "inventory_sha256": "c7d9960de703f9ecda7f1474db3d5c923088d9a75eb573d750360458f907e090"
+    },
+    "app-group": {
+      "files": 4,
+      "directories": 7,
+      "symlinks": 0,
+      "file_bytes": 724,
+      "inventory_sha256": "ed93a8692bff5333f041be6a4b60277922fbff9a21a4a9efede25f6c2ff870e3"
+    },
+    "installed-app": {
+      "files": 111,
+      "directories": 27,
+      "symlinks": 0,
+      "file_bytes": 100583905,
+      "inventory_sha256": "b60e7f90983bddcd7ad8b86b43ee671bcac678a403f09413e4ec818d89159f1e"
+    }
+  },
+  "did_not_overwrite_before_or_history": true,
+  "note": "ditto may rewrite com.apple.provenance even when the source already had it; payload sha256/mode/size matched live-at-preserve",
+  "current_live_payload_mismatch_sample": []
+}

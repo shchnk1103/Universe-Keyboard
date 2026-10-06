@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+  "origin_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "expected_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "line_start": 1,
+  "line_end": 60,
+  "lines": [
+    {
+      "line": 1,
+      "text": "import Foundation"
+    },
+    {
+      "line": 2,
+      "text": ""
+    },
+    {
+      "line": 3,
+      "text": "@MainActor"
+    },
+    {
+      "line": 4,
+      "text": "public final class KeyboardController {"
+    },
+    {
+      "line": 5,
+      "text": ""
+    },
+    {
+      "line": 6,
+      "text": "    // MARK: - Public properties"
+    },
+    {
+      "line": 7,
+      "text": ""
+    },
+    {
+      "line": 8,
+      "text": "    public internal(set) var state: KeyboardState"
+    },
+    {
+      "line": 9,
+      "text": "    public var textClient: TextInputClient?"
+    },
+    {
+      "line": 10,
+      "text": "    public let candidateProvider: CandidateProvider"
+    },
+    {
+      "line": 11,
+      "text": "    public let continuationSuggestionProvider: any ContinuationSuggestionProviding"
+    },
+    {
+      "line": 12,
+      "text": "    public var typoCorrectionCandidateQuery: TypoCorrectionCandidateQuerying"
+    },
+    {
+      "line": 13,
+      "text": "    public var rimeEngine: RimeEngine?"
+    },
+    {
+      "line": 14,
+      "text": ""
+    },
+    {
+      "line": 15,
+      "text": "    public var currentDate: () -> Date = { Date() }"
+    },
+    {
+      "line": 16,
+      "text": "    /// 本状态机正在写 host 时为 true。UI 的 textDidChange 必须忽略这段，避免刚插入就失权。"
+    },
+    {
+      "line": 17,
+      "text": "    public var isPerformingOwnedHostMutation: Bool { ownedHostMutationDepth > 0 }"
+    },
+    {
+      "line": 18,
+      "text": "    public internal(set) var ownedHostMutationGeneration: UInt64 = 0"
+    },
+    {
+      "line": 19,
+      "text": "    var ownedHostMutationDepth = 0"
+    },
+    {
+      "line": 20,
+      "text": ""
+    },
+    {
+      "line": 21,
+      "text": "    /// 测试钩子：把 L1 mirror 置为 ahead，供标点键 / 标点候选 fail-closed 用例使用。"
+    },
+    {
+      "line": 22,
+      "text": "    func testingForceProvisionalAhead() {"
+    },
+    {
+      "line": 23,
+      "text": "        _ = provisionalCompositionMirror.appendT9DigitAccept(revision: 1, epoch: 1)"
+    },
+    {
+      "line": 24,
+      "text": "    }"
+    },
+    {
+      "line": 25,
+      "text": "    public var isTypoCorrectionPartialCommitEnabled = false"
+    },
+    {
+      "line": 26,
+      "text": "    public var typoCorrectionExperimentalEdits: TypoCorrectionExperimentalEdits = []"
+    },
+    {
+      "line": 27,
+      "text": "    public var typoCorrectionLearningSnapshot: TypoCorrectionLearningSnapshot = .empty"
+    },
+    {
+      "line": 28,
+      "text": "    public var onTypoCorrectionSelected: ((TypoCorrectionCommit) -> Void)?"
+    },
+    {
+      "line": 29,
+      "text": "    /// Called synchronously with ephemeral final text. Consumers must convert"
+    },
+    {
+      "line": 30,
+      "text": "    /// it to content-free aggregates before returning and must not persist it."
+    },
+    {
+      "line": 31,
+      "text": "    public var onCommittedText: ((CommittedTextEvent) -> Void)?"
+    },
+    {
+      "line": 32,
+      "text": "    public var isPairedSymbolCompletionEnabled = true"
+    },
+    {
+      "line": 33,
+      "text": "    public internal(set) var isPostCommitContinuationEnabled = true"
+    },
+    {
+      "line": 34,
+      "text": "    /// Derived from the same `RimeRuntimeSelection` used for schema + layout."
+    },
+    {
+      "line": 35,
+      "text": "    /// Digit shape alone never enables T9 policies."
+    },
+    {
+      "line": 36,
+      "text": "    public var usesT9InputSemantics = false"
+    },
+    {
+      "line": 37,
+      "text": "    /// Stage 2 prototype gate. Production callers must opt in explicitly."
+    },
+    {
+      "line": 38,
+      "text": "    public var isReversibleT9AutoAnchorEnabled = false"
+    },
+    {
+      "line": 39,
+      "text": "    /// S2.1 cumulative-extension gate. Keeping this separate preserves the"
+    },
+    {
+      "line": 40,
+      "text": "    /// existing one-anchor A1 arm when the base prototype is enabled."
+    },
+    {
+      "line": 41,
+      "text": "    public var isRollingT9AutoAnchorEnabled = false"
+    },
+    {
+      "line": 42,
+      "text": "    /// S2.2 third cumulative-extension gate. Requires rolling; keeps B2 as the"
+    },
+    {
+      "line": 43,
+      "text": "    /// two-attempt comparator when this flag stays off."
+    },
+    {
+      "line": 44,
+      "text": "    public var isTripleRollingT9AutoAnchorEnabled = false"
+    },
+    {
+      "line": 45,
+      "text": "    /// S2.3 earlier first-anchor gate. Orthogonal to rolling/triple; only lowers"
+    },
+    {
+      "line": 46,
+      "text": "    /// the attempt-1 source-digit floor (18 → 12) while retaining two syllables."
+    },
+    {
+      "line": 47,
+      "text": "    public var isEarlierFirstT9AutoAnchorEnabled = false"
+    },
+    {
+      "line": 48,
+      "text": "    /// Responsive serial RIME pipeline gate (ADR 0025 L0). Core property defaults"
+    },
+    {
+      "line": 49,
+      "text": "    /// to `false` until Extension bootstrap arms dual-gate. After Product Gate"
+    },
+    {
+      "line": 50,
+      "text": "    /// `PD-RESPONSIVE-DEFAULT-ON-001`, ordinary presentation installs dual-gate"
+    },
+    {
+      "line": 51,
+      "text": "    /// (sets this true) with fail-closed fallback to ADR 0004 sync."
+    },
+    {
+      "line": 52,
+      "text": "    /// Layout-universal for Chinese RIME (26-key and T9): when enabled, printable"
+    },
+    {
+      "line": 53,
+      "text": "    /// Chinese composition keys are accepted without waiting for librime; results"
+    },
+    {
+      "line": 54,
+      "text": "    /// publish asynchronously via serial session owner + dual revision watermarks."
+    },
+    {
+      "line": 55,
+      "text": "    /// T9-only L1 provisional presentation remains behind dual-gate +"
+    },
+    {
+      "line": 56,
+      "text": "    /// `usesT9InputSemantics`. All other session APIs enter the same pipeline"
+    },
+    {
+      "line": 57,
+      "text": "    /// through `ResponsiveRimeEngineBridge` (no dual-entry)."
+    },
+    {
+      "line": 58,
+      "text": "    public var isResponsiveRimePipelineEnabled = false"
+    },
+    {
+      "line": 59,
+      "text": "    /// R4-Wire: when true **with** responsive gate and a bootstrap, session work"
+    },
+    {
+      "line": 60,
+      "text": "    /// runs on the thread-affine owner. Ordinary Product Gate installs set this"
+    }
+  ]
+}

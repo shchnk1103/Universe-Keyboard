@@ -1,0 +1,14 @@
+{
+  "decision_date": "2026-10-04",
+  "human_authority": "可以，我授权你继续，并且我确认独占",
+  "human_closed_confirmation": "已关闭，上轮结束后没有重新安装或部署过App",
+  "scope": "one fresh Maps paired run: readiness/protection; precise old8491 normal SIGTERM once; new instance; exact debug attach/modules/export breakpoint; one arm/two synthetic n/one AppSwitcher direct Maps return/one freeze/one bounded read; cleanup and Exit",
+  "no_auto_retry": true,
+  "no_install_restore_build_source_git_publication": true,
+  "exclusive_udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "roles": "root Coordinator/Executor/Environment Executor; Human Product Authority/Manual Operator; Domain Owner unchanged Keyboard Experience Maintainer; no new independent review lane",
+  "max_read_bytes": 11352,
+  "max_reads": 1,
+  "paused_work_budget_s": 120,
+  "individual_tool_timeout_ms": 30000
+}

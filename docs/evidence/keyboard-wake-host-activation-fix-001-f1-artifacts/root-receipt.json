@@ -1,0 +1,35 @@
+{
+  "final_hashes_matched": 5,
+  "baseline_hashes_matched": 3,
+  "patch_reconstruction_matches_current_files": [
+    "KeyboardViewController.swift",
+    "KeyboardViewController+Bootstrap.swift",
+    "project.pbxproj"
+  ],
+  "new_file_copies_exact": 2,
+  "unchanged_dependencies": 13,
+  "dirty_full_f0": 1408,
+  "dirty_full_now": 1418,
+  "missing_or_changed_old_status_entries": [],
+  "added_full_status_entries": [
+    "?? Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift",
+    "?? KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+    "?? docs/assignments/keyboard-wake-host-activation-fix-001.md",
+    "?? docs/evidence/keyboard-wake-host-activation-fix-001-f0-artifacts/check-receipt.json",
+    "?? docs/evidence/keyboard-wake-host-activation-fix-001-f0-artifacts/dirty-status-before.txt",
+    "?? docs/evidence/keyboard-wake-host-activation-fix-001-f0-artifacts/entry-manifest.json",
+    "?? docs/evidence/keyboard-wake-host-activation-fix-001-f0-artifacts/grok-assignment-receipt.json",
+    "?? docs/evidence/keyboard-wake-host-activation-fix-001-f0-prepared-entry-2026-10-04.md",
+    "?? docs/plans/keyboard-wake-host-activation-fix-001-grok-f1-handoff-2026-10-04.md",
+    "?? docs/product-decisions/KEYBOARD-WAKE-HOST-ACTIVATION-FIX-001-f1-grok-authorization-2026-10-04.md"
+  ],
+  "dirty_default_now": 817,
+  "limits": [
+    "status preservation does not prove all out-of-scope bytes; F0 only hashes scoped dependencies",
+    "format PASS summary lacks command/exit transcript",
+    "tool ledger grouped approximate count, no per-call machine audit",
+    "compiler/build/tests/runtime not run by root"
+  ],
+  "result": "source identity and baseline-relative delivery verified; not independent implementation/Quality acceptance",
+  "root_patch_check": "Python diff representation initially differed from native diff; exact in-memory patch reconstruction then verified, no files patched"
+}

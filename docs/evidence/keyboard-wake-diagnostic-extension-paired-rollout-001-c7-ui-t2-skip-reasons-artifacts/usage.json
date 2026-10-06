@@ -1,0 +1,31 @@
+{
+  "lane": "QUALITY-C7-UI-T2-SKIP-REASONS",
+  "round": 1,
+  "packet_whole_file_sha256": "8b3e01f005f69a01bd74463c9aa34dc4d72532fe7088b87c5784c834cec2f72e",
+  "packet_canonical_self_digest": "fdb84ba3bf412f3d64b1fb11df8b45c4f49204469891bebfc6a165df99d335ea",
+  "leaf_tool_calls": 2,
+  "leaf_tool_call_limit": 2,
+  "clock_start_epoch": 1791014984.535895,
+  "clock_start_utc": "2026-10-03T08:09:44.535895+00:00",
+  "clock_end_epoch": 1791015147.599393,
+  "clock_end_utc": "2026-10-03T08:12:27.599393+00:00",
+  "elapsed_seconds": 163.063,
+  "elapsed_limit_seconds": 300,
+  "report_sha256": "bf149db95a7e06c5629126d5362125cf8c2a5e5e85c8f8ee551f3254248954f3",
+  "coverage": "Covered",
+  "complete": true,
+  "criteria": {
+    "T2_skip_reason_gap": "Covered"
+  },
+  "skip_cases_expected": 30,
+  "skip_cases_with_reason_detail": 30,
+  "skip_identities_matched": 30,
+  "skip_reason_source": "allowlisted index JSON Test Case Run nodes; indexed file SHA values matched allowlist",
+  "allowlisted_input_count": 43,
+  "allowlist_mismatches": 0,
+  "baseline_identity_matches": true,
+  "self_digest_matches": true,
+  "stop_reason": null,
+  "overall_T": "Hold",
+  "product_residual": "29 skips remain pending Product disposition; raw skipped states remain skipped"
+}

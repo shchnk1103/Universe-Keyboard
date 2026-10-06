@@ -1,0 +1,10 @@
+COMMAND: xcrun swift-format lint --strict --configuration /private/tmp/ukey-wake-c1-20260930/.swift-format /private/tmp/ukey-wake-c1-20260930/KeyboardCore/Sources/KeyboardCore/DiagnosticEvent.swift
+EXIT: 0
+COMMAND: xcrun swift-format lint --strict --configuration /private/tmp/ukey-wake-c1-20260930/.swift-format /private/tmp/ukey-wake-c1-20260930/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournal.swift
+EXIT: 0
+COMMAND: xcrun swift-format lint --strict --configuration /private/tmp/ukey-wake-c1-20260930/.swift-format /private/tmp/ukey-wake-c1-20260930/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournalIngress.swift
+EXIT: 0
+COMMAND: xcrun swift-format lint --strict --configuration /private/tmp/ukey-wake-c1-20260930/.swift-format /private/tmp/ukey-wake-c1-20260930/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournalRuntime.swift
+EXIT: 0
+COMMAND: xcrun swift-format lint --strict --configuration /private/tmp/ukey-wake-c1-20260930/.swift-format /private/tmp/ukey-wake-c1-20260930/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticsJournalV6WriterTests.swift
+EXIT: 0

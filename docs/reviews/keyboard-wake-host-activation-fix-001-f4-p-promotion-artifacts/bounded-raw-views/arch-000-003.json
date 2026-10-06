@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+CandidateBar.swift",
+  "origin_sha256": "ae1b78d5a311f60054914093458b0c78fe3d35923d82b487fd7f30d886074c80",
+  "expected_sha256": "ae1b78d5a311f60054914093458b0c78fe3d35923d82b487fd7f30d886074c80",
+  "line_start": 121,
+  "line_end": 180,
+  "lines": [
+    {
+      "line": 121,
+      "text": "        #if DEBUG"
+    },
+    {
+      "line": 122,
+      "text": "            Logger.shared.performance("
+    },
+    {
+      "line": 123,
+      "text": "                \"CANDIDATES refresh total=\\(String(format: \"%.1f\", refreshMs))ms items=\\(accumulatedCandidates.count)\""
+    },
+    {
+      "line": 124,
+      "text": "            )"
+    },
+    {
+      "line": 125,
+      "text": "        #endif"
+    },
+    {
+      "line": 126,
+      "text": "        if refreshMs >= 30 {"
+    },
+    {
+      "line": 127,
+      "text": "            Logger.shared.warning("
+    },
+    {
+      "line": 128,
+      "text": "                \"SLOW CANDIDATES refresh duration=\\(String(format: \"%.1f\", refreshMs))ms \""
+    },
+    {
+      "line": 129,
+      "text": "                    + \"items=\\(accumulatedCandidates.count) depth=\\(candidatePageDepth)\","
+    },
+    {
+      "line": 130,
+      "text": "                category: .performance"
+    },
+    {
+      "line": 131,
+      "text": "            )"
+    },
+    {
+      "line": 132,
+      "text": "        }"
+    },
+    {
+      "line": 133,
+      "text": ""
+    },
+    {
+      "line": 134,
+      "text": "        // 滚动回最左侧"
+    },
+    {
+      "line": 135,
+      "text": "        if candidateScrollView.contentOffset.x != 0 {"
+    },
+    {
+      "line": 136,
+      "text": "            candidateScrollView.setContentOffset(.zero, animated: false)"
+    },
+    {
+      "line": 137,
+      "text": "        }"
+    },
+    {
+      "line": 138,
+      "text": ""
+    },
+    {
+      "line": 139,
+      "text": "        if isCandidateExpanded {"
+    },
+    {
+      "line": 140,
+      "text": "            refreshExpandedPanel()"
+    },
+    {
+      "line": 141,
+      "text": "        }"
+    },
+    {
+      "line": 142,
+      "text": "        if hasMoreCandidates {"
+    },
+    {
+      "line": 143,
+      "text": "            scheduleCandidatePrefetch(mode: candidatePrefetchMode)"
+    },
+    {
+      "line": 144,
+      "text": "        }"
+    },
+    {
+      "line": 145,
+      "text": "    }"
+    },
+    {
+      "line": 146,
+      "text": ""
+    },
+    {
+      "line": 147,
+      "text": "    /// 刷新横向候选列表的数据呈现。`UICollectionView` 自行复用可见 cell，"
+    },
+    {
+      "line": 148,
+      "text": "    /// 不需要为每个已加载候选创建常驻 UIButton。"
+    },
+    {
+      "line": 149,
+      "text": "    func fillCandidateBar(keepScrollPosition: Bool = false) {"
+    },
+    {
+      "line": 150,
+      "text": "        guard let collectionView = candidateCollectionView else {"
+    },
+    {
+      "line": 151,
+      "text": "            Logger.shared.warning(\"fillCandidateBar: candidateCollectionView is nil\", category: .general)"
+    },
+    {
+      "line": 152,
+      "text": "            return"
+    },
+    {
+      "line": 153,
+      "text": "        }"
+    },
+    {
+      "line": 154,
+      "text": "        #if DEBUG"
+    },
+    {
+      "line": 155,
+      "text": "            let renderStart = CACurrentMediaTime()"
+    },
+    {
+      "line": 156,
+      "text": "        #endif"
+    },
+    {
+      "line": 157,
+      "text": "        let items = presentedCandidates"
+    },
+    {
+      "line": 158,
+      "text": ""
+    },
+    {
+      "line": 159,
+      "text": "        // Dual-mode trailing control (`PD-CANDIDATE-BAR-IDLE-DISMISS-001`):"
+    },
+    {
+      "line": 160,
+      "text": "        // expandable content keeps expand + swipe-down; idle shows dismiss."
+    },
+    {
+      "line": 161,
+      "text": "        let canExpand = items.contains { $0.kind.expandsCandidateBarPanel }"
+    },
+    {
+      "line": 162,
+      "text": "        candidateExpandButton?.isHidden = false"
+    },
+    {
+      "line": 163,
+      "text": "        if candidateExpandButtonWidthConstraint?.constant != 56 {"
+    },
+    {
+      "line": 164,
+      "text": "            candidateExpandButtonWidthConstraint?.constant = 56"
+    },
+    {
+      "line": 165,
+      "text": "        }"
+    },
+    {
+      "line": 166,
+      "text": "        if let bar = candidateBar as? CandidateBarView {"
+    },
+    {
+      "line": 167,
+      "text": "            bar.allowsSwipeToExpand = canExpand"
+    },
+    {
+      "line": 168,
+      "text": "        }"
+    },
+    {
+      "line": 169,
+      "text": "        updateExpandButtonAppearance(canExpand: canExpand)"
+    },
+    {
+      "line": 170,
+      "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+    },
+    {
+      "line": 171,
+      "text": "            refreshWakeOwnerProbeControls()"
+    },
+    {
+      "line": 172,
+      "text": "        #endif"
+    },
+    {
+      "line": 173,
+      "text": ""
+    },
+    {
+      "line": 174,
+      "text": "        let currentOffset = candidateScrollView.contentOffset.x"
+    },
+    {
+      "line": 175,
+      "text": "        collectionView.reloadData()"
+    },
+    {
+      "line": 176,
+      "text": "        if keepScrollPosition {"
+    },
+    {
+      "line": 177,
+      "text": "            collectionView.layoutIfNeeded()"
+    },
+    {
+      "line": 178,
+      "text": "            let maxOffset = max(0, candidateScrollView.contentSize.width - candidateScrollView.bounds.width)"
+    },
+    {
+      "line": 179,
+      "text": "            candidateScrollView.contentOffset.x = min(currentOffset, maxOffset)"
+    },
+    {
+      "line": 180,
+      "text": "        } else if items.isEmpty {"
+    }
+  ]
+}

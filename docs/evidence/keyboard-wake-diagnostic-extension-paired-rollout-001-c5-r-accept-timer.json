@@ -1,0 +1,14 @@
+{
+  "lane": "QUALITY-C5-R-ACCEPT",
+  "round": 1,
+  "started_utc": "2026-10-01T02:59:49.054797+00:00",
+  "monotonic_start": 1006440.008911375,
+  "end_utc_before_final_timer_write": "2026-10-01T03:07:30.063870+00:00",
+  "elapsed_seconds_before_final_timer_write": 461.006,
+  "underlying_tools_used": 6,
+  "underlying_tool_budget": 6,
+  "elapsed_budget_seconds": 480,
+  "all_other_outputs_written": true,
+  "final_timer_write_is_last_artifact": true,
+  "measurement_note": "elapsed is sampled immediately before the final timer write; its filesystem write latency is not included."
+}

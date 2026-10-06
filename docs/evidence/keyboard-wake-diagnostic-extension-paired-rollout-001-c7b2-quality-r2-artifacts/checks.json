@@ -1,0 +1,17 @@
+{
+  "markdown_paths": [
+    "docs/ACTIVE_WORK.md",
+    "docs/ENGINEERING_DASHBOARD.md",
+    "docs/KNOWLEDGE_INDEX.md",
+    "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md",
+    "docs/assignments/keyboard-wake-lifecycle-diagnostics-001.md",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b2-quality-r2-entry-2026-10-02.md",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b2-quality-r2-validation-2026-10-02.md",
+    "docs/product-decisions/KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001-c7b2-quality-r2-authorization-2026-10-02.md",
+    "docs/reviews/quality-c7-b1-r2-review-2026-10-02.md"
+  ],
+  "missing_links": {},
+  "scoped_diff_check_exit": 0,
+  "test_or_build_rerun": false,
+  "coverage": "actual changed and new own-scope Markdown paths using repository missing_links function; CLI commit diff does not cover untracked"
+}

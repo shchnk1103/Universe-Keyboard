@@ -1,0 +1,7 @@
+{
+  "chunk_id": "2e4ac2",
+  "wall_time_seconds": 0.23483025,
+  "exit_code": 0,
+  "original_token_count": 59,
+  "output": "breakpoint delete 1\r\n1 breakpoints deleted; 0 breakpoint locations disabled.\r\n(lldb) breakpoint list\r\nNo breakpoints currently set.\r\n(lldb) continue\r\nProcess 55759 resuming\r\n(lldb) process detach\r\nProcess 55759 detached\r\n(lldb) quit\r\n"
+}

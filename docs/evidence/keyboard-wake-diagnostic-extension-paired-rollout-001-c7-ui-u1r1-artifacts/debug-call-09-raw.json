@@ -1,0 +1,27 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "\n🐛 LLDB Command\n\n✅ Command executed\n\nOutput:\n  * thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1\n     * frame #0: 0x00000001063b4778 Keyboard.debug.dylib`Keyboard.wakeOwnerProbeExportReady(address=0x11e62ad20, byteCount=528) -> () at KeyboardViewController+WakeOwnerProbe.swift:96:83\n       frame #1: 0x00000001063b471c Keyboard.debug.dylib`closure #1 in KeyboardViewController.handleWakeOwnerProbeButton(bytes=528 values (0x11e62ad20)) at KeyboardViewController+WakeOwnerProbe.swift:88:17\n       frame #2: 0x00000001c16b8c58 libswiftCore.dylib`Array.withUnsafeBytes(_:) + 232\n    ﹍ frame #3: 0x00000001063b45b4 Keyboard.debug.dylib`KeyboardViewController.handleWakeOwnerProbeButton() at KeyboardViewController+WakeOwnerProbe.swift:86:19\n    ﹉ frame #5: 0x00000001c48e8720 UIKitCore`-[UIApplication sendAction:to:from:forEvent:] + 236\n       frame #6: 0x00000001c4115bb8 UIKitCore`-[UIControl sendAction:to:forEvent:] + 108\n       frame #7: 0x00000001c4115f14 UIKitCore`-[UIControl _sendActionsForEvents:withEvent:] + 324\n"
+    }
+  ],
+  "structuredContent": {
+    "schema": "xcodebuildmcp.output.debug-command-result",
+    "schemaVersion": "2",
+    "didError": false,
+    "error": null,
+    "data": {
+      "command": "thread backtrace -c 8",
+      "outputLines": [
+        "* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1",
+        "   * frame #0: 0x00000001063b4778 Keyboard.debug.dylib`Keyboard.wakeOwnerProbeExportReady(address=0x11e62ad20, byteCount=528) -> () at KeyboardViewController+WakeOwnerProbe.swift:96:83",
+        "     frame #1: 0x00000001063b471c Keyboard.debug.dylib`closure #1 in KeyboardViewController.handleWakeOwnerProbeButton(bytes=528 values (0x11e62ad20)) at KeyboardViewController+WakeOwnerProbe.swift:88:17",
+        "     frame #2: 0x00000001c16b8c58 libswiftCore.dylib`Array.withUnsafeBytes(_:) + 232",
+        "  ﹍ frame #3: 0x00000001063b45b4 Keyboard.debug.dylib`KeyboardViewController.handleWakeOwnerProbeButton() at KeyboardViewController+WakeOwnerProbe.swift:86:19",
+        "  ﹉ frame #5: 0x00000001c48e8720 UIKitCore`-[UIApplication sendAction:to:from:forEvent:] + 236",
+        "     frame #6: 0x00000001c4115bb8 UIKitCore`-[UIControl sendAction:to:forEvent:] + 108",
+        "     frame #7: 0x00000001c4115f14 UIKitCore`-[UIControl _sendActionsForEvents:withEvent:] + 324"
+      ]
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "xcrun",
+    "nm",
+    "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard.debug.dylib"
+  ],
+  "exit_code": 0,
+  "stdout": "",
+  "stderr": "",
+  "filter": "Only exact probe and host-active/resign symbol matching lines"
+}

@@ -1,0 +1,30 @@
+{
+  "kind": "synthetic_e0_leftover",
+  "not_runtime_receipt": true,
+  "moved_utc": "2026-10-06T03:55:38.133747+00:00",
+  "checkpoint_sha256": {
+    "callback.json": "50715b2209c5738bf53fbb591cc1f11d1be28b55db1162ac89d89ac1fd4cd9f6",
+    "callback-stage.json": "b70bab9f706595dc2b4d884ba2e9a760fa4787a5012904708f875483573fcaec",
+    "callback-private.json": "cb418649f854e094c9d876a2e3986d72ee26bff61d517a67646f5ee30706575e"
+  },
+  "files": {
+    "callback.json": {
+      "action": "moved",
+      "sha256_before_move": "50715b2209c5738bf53fbb591cc1f11d1be28b55db1162ac89d89ac1fd4cd9f6",
+      "sha256_after_move": "50715b2209c5738bf53fbb591cc1f11d1be28b55db1162ac89d89ac1fd4cd9f6",
+      "matches_checkpoint": true
+    },
+    "callback-stage.json": {
+      "action": "moved",
+      "sha256_before_move": "b70bab9f706595dc2b4d884ba2e9a760fa4787a5012904708f875483573fcaec",
+      "sha256_after_move": "b70bab9f706595dc2b4d884ba2e9a760fa4787a5012904708f875483573fcaec",
+      "matches_checkpoint": true
+    },
+    "callback-private.json": {
+      "action": "moved",
+      "sha256_before_move": "cb418649f854e094c9d876a2e3986d72ee26bff61d517a67646f5ee30706575e",
+      "sha256_after_move": "cb418649f854e094c9d876a2e3986d72ee26bff61d517a67646f5ee30706575e",
+      "matches_checkpoint": true
+    }
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "recorded_at": "2026-10-05T03:44:22.287961+00:00",
+  "lane": "F4-P-ARCH-PROMOTION",
+  "round": 2,
+  "root_observed_cutoff_utc": "2026-10-05T03:42:03.712954+00:00",
+  "ack_budget_start_utc": "2026-10-05T03:26:56.830800Z",
+  "deadline_utc": "2026-10-05T03:41:56.830800+00:00",
+  "root_interrupt_agent_after_cutoff": true,
+  "observed_files_at_cutoff": [
+    "ack.json"
+  ],
+  "author_report_usage_readback_missing": true,
+  "author_actual_call_count": "UNKNOWN",
+  "author_verdict": "NOT_DELIVERED",
+  "claims_uncovered": [
+    "A-P1",
+    "A-P2",
+    "A-P3"
+  ],
+  "not_author_usage_or_review": true,
+  "no_auto_budget_renewal": true
+}

@@ -1,0 +1,17 @@
+{
+  "utc": "2026-10-03T03:59:42.526220+00:00",
+  "installed_payload_equal_old78": true,
+  "main_application_unchanged_from_test_after": true,
+  "snapshot_content_equal": true,
+  "group_registered": true,
+  "group_initial_files": [
+    ".com.apple.mobile_container_manager.metadata.plist"
+  ],
+  "group_initial_directories": [
+    ".",
+    "Library",
+    "Library/Caches",
+    "Library/Preferences"
+  ],
+  "no_target_process": true
+}

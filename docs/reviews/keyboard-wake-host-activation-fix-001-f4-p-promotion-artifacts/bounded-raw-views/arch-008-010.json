@@ -1,0 +1,197 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+  "origin_sha256": "71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5",
+  "expected_sha256": "71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5",
+  "line_start": 541,
+  "line_end": 587,
+  "lines": [
+    {
+      "line": 541,
+      "text": "    private func resetCounts() {"
+    },
+    {
+      "line": 542,
+      "text": "        resumeCount = 0"
+    },
+    {
+      "line": 543,
+      "text": "        rearmCount = 0"
+    },
+    {
+      "line": 544,
+      "text": "        firstFrameCount = 0"
+    },
+    {
+      "line": 545,
+      "text": "        suspendCount = 0"
+    },
+    {
+      "line": 546,
+      "text": "    }"
+    },
+    {
+      "line": 547,
+      "text": ""
+    },
+    {
+      "line": 548,
+      "text": "    private func execute(_ action: KeyboardHostRecoveryAction) {"
+    },
+    {
+      "line": 549,
+      "text": "        switch action {"
+    },
+    {
+      "line": 550,
+      "text": "        case .none:"
+    },
+    {
+      "line": 551,
+      "text": "            break"
+    },
+    {
+      "line": 552,
+      "text": "        case .suspendRuntime:"
+    },
+    {
+      "line": 553,
+      "text": "            suspendCount += 1"
+    },
+    {
+      "line": 554,
+      "text": "        case .performSharedResume:"
+    },
+    {
+      "line": 555,
+      "text": "            resumeCount += 1"
+    },
+    {
+      "line": 556,
+      "text": "        case .rearmFirstFrameGate:"
+    },
+    {
+      "line": 557,
+      "text": "            rearmCount += 1"
+    },
+    {
+      "line": 558,
+      "text": "        case .completeFirstFrameActivation:"
+    },
+    {
+      "line": 559,
+      "text": "            firstFrameCount += 1"
+    },
+    {
+      "line": 560,
+      "text": "        }"
+    },
+    {
+      "line": 561,
+      "text": "    }"
+    },
+    {
+      "line": 562,
+      "text": ""
+    },
+    {
+      "line": 563,
+      "text": "    private struct ArmedFirstFrame {"
+    },
+    {
+      "line": 564,
+      "text": "        let token: UInt64"
+    },
+    {
+      "line": 565,
+      "text": "        let generation: UInt64"
+    },
+    {
+      "line": 566,
+      "text": "    }"
+    },
+    {
+      "line": 567,
+      "text": ""
+    },
+    {
+      "line": 568,
+      "text": "    private func requireArm(hasWindow: Bool = true) -> ArmedFirstFrame {"
+    },
+    {
+      "line": 569,
+      "text": "        let token = gate.beginFirstFrameArm(hasWindow: hasWindow)"
+    },
+    {
+      "line": 570,
+      "text": "        XCTAssertNotNil(token)"
+    },
+    {
+      "line": 571,
+      "text": "        return ArmedFirstFrame(token: token ?? 0, generation: gate.presentationGeneration)"
+    },
+    {
+      "line": 572,
+      "text": "    }"
+    },
+    {
+      "line": 573,
+      "text": ""
+    },
+    {
+      "line": 574,
+      "text": "    @discardableResult"
+    },
+    {
+      "line": 575,
+      "text": "    private func tick("
+    },
+    {
+      "line": 576,
+      "text": "        _ arm: ArmedFirstFrame,"
+    },
+    {
+      "line": 577,
+      "text": "        hasWindow: Bool = true,"
+    },
+    {
+      "line": 578,
+      "text": "        canary: KeyboardHostRecoveryCanaryPermission = .nonCanaryBuild"
+    },
+    {
+      "line": 579,
+      "text": "    ) -> KeyboardHostRecoveryAction {"
+    },
+    {
+      "line": 580,
+      "text": "        gate.noteFirstFrameTick("
+    },
+    {
+      "line": 581,
+      "text": "            token: arm.token,"
+    },
+    {
+      "line": 582,
+      "text": "            generation: arm.generation,"
+    },
+    {
+      "line": 583,
+      "text": "            hasWindow: hasWindow,"
+    },
+    {
+      "line": 584,
+      "text": "            canary: canary"
+    },
+    {
+      "line": 585,
+      "text": "        )"
+    },
+    {
+      "line": 586,
+      "text": "    }"
+    },
+    {
+      "line": 587,
+      "text": "}"
+    }
+  ]
+}

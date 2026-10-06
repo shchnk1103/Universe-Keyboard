@@ -1,0 +1,16 @@
+["xcrun", "swift-format", "format", "--in-place", "--configuration", "/private/tmp/ukey-wake-c2-20261001/.swift-format", "/private/tmp/ukey-wake-c2-20261001/draft/Keyboard/Controllers/KeyboardViewController.swift"]
+EXIT=0
+["xcrun", "swift-format", "lint", "--strict", "--configuration", "/private/tmp/ukey-wake-c2-20261001/.swift-format", "/private/tmp/ukey-wake-c2-20261001/draft/Keyboard/Controllers/KeyboardViewController.swift"]
+EXIT=0
+["xcrun", "swift-format", "format", "--in-place", "--configuration", "/private/tmp/ukey-wake-c2-20261001/.swift-format", "/private/tmp/ukey-wake-c2-20261001/draft/Keyboard/Controllers/KeyboardViewController+Bootstrap.swift"]
+EXIT=0
+["xcrun", "swift-format", "lint", "--strict", "--configuration", "/private/tmp/ukey-wake-c2-20261001/.swift-format", "/private/tmp/ukey-wake-c2-20261001/draft/Keyboard/Controllers/KeyboardViewController+Bootstrap.swift"]
+EXIT=0
+["xcrun", "swift-format", "format", "--in-place", "--configuration", "/private/tmp/ukey-wake-c2-20261001/.swift-format", "/private/tmp/ukey-wake-c2-20261001/draft/Keyboard/Services/UITextDocumentProxyAdapter.swift"]
+EXIT=0
+["xcrun", "swift-format", "lint", "--strict", "--configuration", "/private/tmp/ukey-wake-c2-20261001/.swift-format", "/private/tmp/ukey-wake-c2-20261001/draft/Keyboard/Services/UITextDocumentProxyAdapter.swift"]
+EXIT=0
+["xcrun", "swift-format", "format", "--in-place", "--configuration", "/private/tmp/ukey-wake-c2-20261001/.swift-format", "/private/tmp/ukey-wake-c2-20261001/draft/KeyboardTests/KeyboardWakeDiagnosticProducerTests.swift"]
+EXIT=0
+["xcrun", "swift-format", "lint", "--strict", "--configuration", "/private/tmp/ukey-wake-c2-20261001/.swift-format", "/private/tmp/ukey-wake-c2-20261001/draft/KeyboardTests/KeyboardWakeDiagnosticProducerTests.swift"]
+EXIT=0

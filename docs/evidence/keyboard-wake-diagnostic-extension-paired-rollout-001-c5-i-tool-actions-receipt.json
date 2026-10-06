@@ -1,0 +1,155 @@
+{
+  "install": {
+    "started_utc": "2026-10-01T01:59:04.209Z",
+    "ended_utc": "2026-10-01T01:59:19.638Z",
+    "tool": "mcp__xcodebuildmcp__install_app_sim",
+    "target": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "install_attempt": 1,
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "\n📦 Install App\n\n✅ App installed successfully\n\nNext steps:\n1. Open the Simulator app: open_sim()\n2. Launch the app: launch_app_sim({ simulatorId: \"405D994F-28CB-4F89-BB22-B64AD81C05A2\", bundleId: \"com.DoubleShy0N.Universe-Keyboard\" })\n"
+        }
+      ],
+      "structuredContent": {
+        "schema": "xcodebuildmcp.output.install-result",
+        "schemaVersion": "2",
+        "didError": false,
+        "error": null,
+        "data": {
+          "summary": {
+            "status": "SUCCEEDED"
+          },
+          "artifacts": {
+            "simulatorId": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+            "appPath": "/private/tmp/ukey-wake-c4-20261001/DerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app"
+          },
+          "diagnostics": {
+            "warnings": [],
+            "errors": []
+          }
+        },
+        "nextSteps": [
+          "Open the Simulator app: open_sim()",
+          "Launch the app: launch_app_sim({ simulatorId: \"405D994F-28CB-4F89-BB22-B64AD81C05A2\", bundleId: \"com.DoubleShy0N.Universe-Keyboard\" })"
+        ]
+      }
+    }
+  },
+  "main_app_launch": {
+    "started_utc": "2026-10-01T02:00:59.404Z",
+    "ended_utc": "2026-10-01T02:01:08.462Z",
+    "tool": "mcp__xcodebuildmcp__launch_app_sim",
+    "target": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "\n🚀 Launch App\n\n✅ App launched successfully\n  ├ Process ID: 79420\n  └ Files:\n     └── ~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/\n         ├── com.DoubleShy0N.Universe-Keyboard_2026-10-01T02-01-00-312Z_helperpid79365_ownerpid55720_e83eb3ef.log — Runtime Logs\n         └── com.DoubleShy0N.Universe-Keyboard_oslog_2026-10-01T02-01-08-279Z_helperpid79535_ownerpid55720_bacf15fe.log — OSLog\n\nNext steps:\n1. Open Simulator app to see it: open_sim()\n2. Stop app in simulator: stop_app_sim({ simulatorId: \"405D994F-28CB-4F89-BB22-B64AD81C05A2\", bundleId: \"com.DoubleShy0N.Universe-Keyboard\" })\n"
+        }
+      ],
+      "structuredContent": {
+        "schema": "xcodebuildmcp.output.launch-result",
+        "schemaVersion": "2",
+        "didError": false,
+        "error": null,
+        "data": {
+          "summary": {
+            "status": "SUCCEEDED"
+          },
+          "artifacts": {
+            "simulatorId": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+            "bundleId": "com.DoubleShy0N.Universe-Keyboard",
+            "processId": 79420,
+            "runtimeLogPath": "/Users/doubleshy0n/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/com.DoubleShy0N.Universe-Keyboard_2026-10-01T02-01-00-312Z_helperpid79365_ownerpid55720_e83eb3ef.log",
+            "osLogPath": "/Users/doubleshy0n/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/com.DoubleShy0N.Universe-Keyboard_oslog_2026-10-01T02-01-08-279Z_helperpid79535_ownerpid55720_bacf15fe.log"
+          },
+          "diagnostics": {
+            "warnings": [],
+            "errors": []
+          }
+        },
+        "nextSteps": [
+          "Open Simulator app to see it: open_sim()",
+          "Stop app in simulator: stop_app_sim({ simulatorId: \"405D994F-28CB-4F89-BB22-B64AD81C05A2\", bundleId: \"com.DoubleShy0N.Universe-Keyboard\" })"
+        ]
+      }
+    }
+  },
+  "system_settings_launch": {
+    "content": [
+      {
+        "type": "text",
+        "text": "\n🚀 Launch App\n\n✅ App launched successfully\n  ├ Process ID: 83178\n  └ Files:\n     └── ~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/\n         ├── com.apple.Preferences_2026-10-01T02-06-27-324Z_helperpid83094_ownerpid55720_2547c120.log — Runtime Logs\n         └── com.apple.Preferences_oslog_2026-10-01T02-06-39-075Z_helperpid83339_ownerpid55720_8de39415.log — OSLog\n\nNext steps:\n1. Open Simulator app to see it: open_sim()\n2. Stop app in simulator: stop_app_sim({ simulatorId: \"405D994F-28CB-4F89-BB22-B64AD81C05A2\", bundleId: \"com.apple.Preferences\" })\n"
+      }
+    ],
+    "structuredContent": {
+      "schema": "xcodebuildmcp.output.launch-result",
+      "schemaVersion": "2",
+      "didError": false,
+      "error": null,
+      "data": {
+        "summary": {
+          "status": "SUCCEEDED"
+        },
+        "artifacts": {
+          "simulatorId": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+          "bundleId": "com.apple.Preferences",
+          "processId": 83178,
+          "runtimeLogPath": "/Users/doubleshy0n/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/com.apple.Preferences_2026-10-01T02-06-27-324Z_helperpid83094_ownerpid55720_2547c120.log",
+          "osLogPath": "/Users/doubleshy0n/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/com.apple.Preferences_oslog_2026-10-01T02-06-39-075Z_helperpid83339_ownerpid55720_8de39415.log"
+        },
+        "diagnostics": {
+          "warnings": [],
+          "errors": []
+        }
+      },
+      "nextSteps": [
+        "Open Simulator app to see it: open_sim()",
+        "Stop app in simulator: stop_app_sim({ simulatorId: \"405D994F-28CB-4F89-BB22-B64AD81C05A2\", bundleId: \"com.apple.Preferences\" })"
+      ]
+    }
+  },
+  "defaults": {
+    "restored_current_profile": "typo-correction-002-recall-publication-preflight-002-release",
+    "expected": "typo-correction-002-recall-publication-preflight-002-release",
+    "existing_profiles_changed": [],
+    "ephemeral_new_profile": "keyboard-wake-c5-i-20261001",
+    "persist": false
+  },
+  "host_semantic_observation": {
+    "target": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "seq": 14,
+    "screenHash": "1gmmd67",
+    "search_targets": [
+      "e146|tap|tab|搜索|0|magnifyingglass"
+    ],
+    "navigation_targets": [
+      "e16|tap|button|设置||BackButton",
+      "e144|tap|tab|设置|1|gearshape"
+    ],
+    "public_page_labels": [],
+    "scroll": [
+      "e1|swipe|application|Universe Keyboard||"
+    ]
+  },
+  "operator_handoff": "Manual read-only Full Access / host search-bar confirmation requested; no automated UI while Human operates.",
+  "installed_path_query": {
+    "command": [
+      "xcrun",
+      "simctl",
+      "get_app_container",
+      "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "com.DoubleShy0N.Universe-Keyboard",
+      "app"
+    ],
+    "exit_code": 0,
+    "stdout": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/1C8EAA6A-D18A-4684-B4E4-95252930B447/Universe Keyboard.app",
+    "stderr": "",
+    "scope": "read-only installed bundle lookup; host context after sandbox CoreSimulator connection failure"
+  },
+  "operator_result": "Human confirmedFullAccessON andSearchTabhost; no automated UI afterhandoff",
+  "protocol_note": "one wrapper attempted storingundefinedcapture aftertap; nextfreshsnapshotconfirmednavigation, no repeated action duewrappererror",
+  "startup_side_effects": "existing normalMainApp lifecycle; MCP auto runtime/OSLog paths recorded only, no log content read/copied"
+}

@@ -1,0 +1,538 @@
+{
+  "xcresult": {
+    "rimebridge": {
+      "command": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "tests",
+        "--path",
+        "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/xcresults/rimebridge.xcresult",
+        "--format",
+        "json"
+      ],
+      "total": 105,
+      "counts": {
+        "Passed": 85,
+        "Skipped": 20
+      },
+      "actual_skips": [
+        {
+          "method": "RimeLuaSmokeTests/testCorrectionSidecarKeepsVisibleCompositionIntactWhenRuntimeFixtureIsProvided()",
+          "messages": [
+            "Test skipped - Set UK_RIME_LUA_SMOKE_SHARED_DIR and UK_RIME_LUA_SMOKE_USER_DIR to run the real Lua smoke test."
+          ]
+        },
+        {
+          "method": "RimeLuaSmokeTests/testRimeIceLuaDynamicCandidatesWhenRuntimeFixtureIsProvided()",
+          "messages": [
+            "Test skipped - Set UK_RIME_LUA_SMOKE_SHARED_DIR and UK_RIME_LUA_SMOKE_USER_DIR to run the real Lua smoke test."
+          ]
+        },
+        {
+          "method": "RimeT9AutoAnchorRetryMatrixTests/testCappedTwoSyllableControllerFrozenPairedMatrix()",
+          "messages": [
+            "Test skipped - Set the immutable 40-character lowercase S4 commit to run the paired matrix."
+          ]
+        },
+        {
+          "method": "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationKnownPositive()",
+          "messages": [
+            "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+          ]
+        },
+        {
+          "method": "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationNaturalReminder()",
+          "messages": [
+            "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+          ]
+        },
+        {
+          "method": "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationNaturalWeather()",
+          "messages": [
+            "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+          ]
+        },
+        {
+          "method": "RimeT9AutoAnchorRetryMatrixTests/testPartialLongSelectionIsNotPersonalizationProof()",
+          "messages": [
+            "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+          ]
+        },
+        {
+          "method": "RimeT9AutoAnchorRetryMatrixTests/testRejectedCompositionLaterOpportunityTransactionMatrix()",
+          "messages": [
+            "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+          ]
+        },
+        {
+          "method": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerFrozenA0A1B2B3Matrix()",
+          "messages": [
+            "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+          ]
+        },
+        {
+          "method": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerMissingLiveCompositionFailsClosedBeforeKey()",
+          "messages": [
+            "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+          ]
+        },
+        {
+          "method": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerRealRimeDeletePathAndPartialOwnership()",
+          "messages": [
+            "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+          ]
+        },
+        {
+          "method": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerRealRimeSecondRejectRestoreMatrix()",
+          "messages": [
+            "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+          ]
+        },
+        {
+          "method": "RimeT9CompatibilitySpikeTests/testPinnedLibrimeCanSelectT9AndProcessDigitSequenceAfterRemovingUnsupportedProcessor()",
+          "messages": [
+            "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 compatibility Spike."
+          ]
+        },
+        {
+          "method": "RimeT9PinyinSelectionSpikeTests/test004CatalogExactRawAcceptanceOnPinnedLibrime()",
+          "messages": [
+            "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+          ]
+        },
+        {
+          "method": "RimeT9PinyinSelectionSpikeTests/testAtomicPathDiscoveryStageAOnPinnedLibrime()",
+          "messages": [
+            "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+          ]
+        },
+        {
+          "method": "RimeT9PinyinSelectionSpikeTests/testGate5Phase05CandidateCoverageSelRangeOnPinnedLibrime()",
+          "messages": [
+            "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+          ]
+        },
+        {
+          "method": "RimeT9PinyinSelectionSpikeTests/testGate5Phase06AlternativeCoverageSelectionDeltaOnPinnedLibrime()",
+          "messages": [
+            "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+          ]
+        },
+        {
+          "method": "RimeT9PinyinSelectionSpikeTests/testPrecisePinyinPathRefinementOnPinnedLibrime()",
+          "messages": [
+            "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+          ]
+        },
+        {
+          "method": "RimeT9PinyinSelectionSpikeTests/testReadOnlyWindowCoverageForYiZiSibling()",
+          "messages": [
+            "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+          ]
+        },
+        {
+          "method": "ThreadAffineRimeRealEngineTests/testRealEngineBootstrapCreatesAndCallsOffMainThroughOwner()",
+          "messages": [
+            "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR (or UK_RIME_R4B_*) to run R4-B real-engine proof."
+          ]
+        }
+      ],
+      "historical_identity_reason_match": true
+    },
+    "app-keyboard": {
+      "command": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "tests",
+        "--path",
+        "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/xcresults/app-keyboard.xcresult",
+        "--format",
+        "json"
+      ],
+      "total": 454,
+      "counts": {
+        "Passed": 444,
+        "Skipped": 10
+      },
+      "actual_skips": [
+        {
+          "method": "RimeIcePinnedArtifactTests/testVerifiedOfficialAndMirrorArchivesConvergeAfterProductionProcessing()",
+          "messages": [
+            "Test skipped - Set TEST_RUNNER_SCHEME_PIN_ARCHIVE_ROOT to the independently downloaded source archives"
+          ]
+        },
+        {
+          "method": "RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem()",
+          "messages": [
+            "Test skipped - Unsigned host lacks Keychain entitlement; signed Simulator lane covers integration."
+          ]
+        },
+        {
+          "method": "SchemeResourcePreparationCoexistenceTests/testCS06_UninstallInactiveWanxiangRetainsIcePeerInventory()",
+          "messages": [
+            "Test skipped - CS09-10-01 requires the fixed Wanxiang extract tree"
+          ]
+        },
+        {
+          "method": "SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerIceRemovalPreservesCompleteWanxiangInventory()",
+          "messages": [
+            "Test skipped - CS09-10-01 requires the fixed Wanxiang extract tree"
+          ]
+        },
+        {
+          "method": "SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerWanxiangRemovalPreservesCompleteIceInventory()",
+          "messages": [
+            "Test skipped - CS09-10-01 requires the fixed Ice extract tree"
+          ]
+        },
+        {
+          "method": "SchemeResourcePreparationCoexistenceTests/testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds()",
+          "messages": [
+            "Test skipped - Ice 2026.06.30 default.yaml fixture is required for P3 fingerprint recovery"
+          ]
+        },
+        {
+          "method": "SchemeResourcePreparationCoexistenceTests/testProductionProcessedIceTreeKeepsOfficialDefaultYamlWhenFixturePresent()",
+          "messages": [
+            "Test skipped - Set TEST_RUNNER_SCHEME_PIN_ARCHIVE_ROOT to the independently downloaded Ice archives"
+          ]
+        },
+        {
+          "method": "TD012LMDGDeviceStagingTests/testPinnedModelLoadsThroughWanxiangGrammarOnAuthorizedPhysicalDevice()",
+          "messages": [
+            "Test skipped - TD-012 G2 model-load receipt is physical-device-only"
+          ]
+        },
+        {
+          "method": "TD012LMDGDeviceStagingTests/testRemovePinnedModelAfterAuthorizedPhysicalDeviceSpike()",
+          "messages": [
+            "Test skipped - TD-012 G2 cleanup is physical-device-only"
+          ]
+        },
+        {
+          "method": "TD012LMDGDeviceStagingTests/testStagePinnedModelForAuthorizedPhysicalDeviceSpike()",
+          "messages": [
+            "Test skipped - TD-012 G2 staging is physical-device-only"
+          ]
+        }
+      ],
+      "historical_identity_reason_match": true
+    },
+    "keychain": {
+      "command": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "tests",
+        "--path",
+        "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/xcresults/keychain.xcresult",
+        "--format",
+        "json"
+      ],
+      "total": 1,
+      "counts": {
+        "Passed": 1
+      },
+      "actual_skips": []
+    }
+  },
+  "gate": {
+    "23_methods_match": true,
+    "all_passed": true,
+    "cases": [
+      {
+        "method": "KeyboardHostLifecycleRecoveryGateTests/testAppearThenActiveAndActiveThenAppearConsumePendingOnce()",
+        "result": "Passed"
+      },
+      {
+        "method": "KeyboardHostLifecycleRecoveryGateTests/testCanaryPermissionTableDeniesOwnerStartingBeforeResume()",
+        "result": "Passed"
+      },
+      {
+        "method": "KeyboardHostLifecycleRecoveryGateTests/testCanaryStartingAllowsOriginalFirstFrameButNotHostActiveResume()",
+        "result": "Passed"
+      },
+      {
+        "method": "KeyboardHostLifecycleRecoveryGateTests/testCancelledFirstFrameRearmsOnceWithoutImmediateOwner()",
+        "result": "Passed"
+      },
+      {
+        "method": "KeyboardHostLifecycleRecoveryGateTests/testCurrentArmTokenCompletesExactlyOnSecondTick()",
+        "result": "Passed"
+      },
+      {
+        "method": "KeyboardHostLifecycleRecoveryGateTests/testDuplicateActiveAndResignAreIdempotent()",
+        "result": "Passed"
+      },
+      {
+        "method": "KeyboardHostLifecycleRecoveryGateTests/testDuplicateActiveDoesNotEmitResumeThatWouldClearNewComposition()",
+        "result": "Passed"
+      },
+      {
+        "method": "KeyboardHostLifecycleRecoveryGateTests/testDuplicateBeginFirstFrameArmIsIdempotentUntilGenuineRearm()",
+        "result": "Passed"
+      },
+      {
+        "method": "KeyboardHostLifecycleRecoveryGateTests/testFenceBlocksRearmAndFirstFrameCreation()",
+        "result": "Passed"
+      },
+      {
+        "method": "KeyboardHostLifecycleRecoveryGateTests/testFirstFrameElapsedConsumesPendingAndActivatesOnce()",
+        "result": "Passed"
+      },
+      {
+        "method": "KeyboardHostLifecycleRecoveryGateTests/testForeignAndMissingContextDoNotChangeState()",
+        "result": "Passed"
+      },
+      {
+        "method": "KeyboardHostLifecycleRecoveryGateTests/testHiddenAndNoWindowDoNotBeginFirstFrameArm()",
+        "result": "Passed"
+      },
+      {
+        "method": "KeyboardHostLifecycleRecoveryGateTests/testHiddenAndNoWindowDoNotResume()",
+        "result": "Passed"
+      },
+      {
+        "method": "KeyboardHostLifecycleRecoveryGateTests/testHostActiveBeforeWindowIsTakenOverByDidAppear()",
+        "result": "Passed"
+      },
+      {
+        "method": "KeyboardHostLifecycleRecoveryGateTests/testLateFirstFrameTickAfterDisappearDoesNotActivate()",
+        "result": "Passed"
+      },
+      {
+        "method": "KeyboardHostLifecycleRecoveryGateTests/testOldPresentationPendingIsInvalidatedOnNewAppearance()",
+        "result": "Passed"
+      },
+      {
+        "method": "KeyboardHostLifecycleRecoveryGateTests/testPermissionOrderIsEvaluatedBeforeConsumingPending()",
+        "result": "Passed"
+      },
+      {
+        "method": "KeyboardHostLifecycleRecoveryGateTests/testPrecreatedHiddenInstanceDoesNotResumeOnHostActive()",
+        "result": "Passed"
+      },
+      {
+        "method": "KeyboardHostLifecycleRecoveryGateTests/testRejectedOrInvalidatedArmStopsTicksWithoutRetry()",
+        "result": "Passed"
+      },
+      {
+        "method": "KeyboardHostLifecycleRecoveryGateTests/testResignInvalidatesArmedTicksBeforeHostActive()",
+        "result": "Passed"
+      },
+      {
+        "method": "KeyboardHostLifecycleRecoveryGateTests/testStaleArmTokenTicksAfterRearmDoNotAdvanceCurrentArm()",
+        "result": "Passed"
+      },
+      {
+        "method": "KeyboardHostLifecycleRecoveryGateTests/testVisibilitySuspendedGrantedAllowsExactlyOneResume()",
+        "result": "Passed"
+      },
+      {
+        "method": "KeyboardHostLifecycleRecoveryGateTests/testVisibleResignThenActiveResumesExactlyOnce()",
+        "result": "Passed"
+      }
+    ]
+  },
+  "runtime": {
+    "counts": {
+      "iohid_loader_error": 8,
+      "iohid_factory_companion": 8,
+      "rime_error": 3
+    },
+    "rows": [
+      {
+        "log": "A2-V-5-keychain.log",
+        "line": 1723,
+        "kind": "iohid_loader_error",
+        "text": "2026-10-05 00:21:20.132399+0800 Universe Keyboard[64634:42372057] [loading] Error loading /System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib (100):  dlopen(/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib, 0x0106): tried: '/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData/Build/Products/Debug-iphonesimulator/IOHIDLib' (no such file), '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/IOHIDLib' (no such file), '/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.pL3kPh/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (no such file), '/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (fat file, but missing compatible architecture (have 'x86_64,arm64e,arm64e.x1', need 'arm64, arm64'))",
+        "last_started_test": null,
+        "next_test_result": "Test Case '-[UniverseKeyboardTests.RimeSyncModelTests testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem]' passed (0.038 seconds)."
+      },
+      {
+        "log": "A2-V-5-keychain.log",
+        "line": 1724,
+        "kind": "iohid_factory_companion",
+        "text": "2026-10-05 00:21:20.132882+0800 Universe Keyboard[64634:42372057] [plugin] Cannot find function pointer IOHIDLibFactory for factory <CFUUID 0x106b56320> 13AA9C44-6F1B-11D4-907C-0005028F18D5 in CFBundle/CFPlugIn 0x10687ae60 </System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin> (bundle, not loaded)",
+        "last_started_test": null,
+        "next_test_result": "Test Case '-[UniverseKeyboardTests.RimeSyncModelTests testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem]' passed (0.038 seconds)."
+      },
+      {
+        "log": "A2-V-5-keychain.log",
+        "line": 1727,
+        "kind": "iohid_loader_error",
+        "text": "2026-10-05 00:21:20.136758+0800 Universe Keyboard[64634:42372057] [loading] Error loading /System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib (100):  dlopen(/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib, 0x0106): tried: '/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData/Build/Products/Debug-iphonesimulator/IOHIDLib' (no such file), '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/IOHIDLib' (no such file), '/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.pL3kPh/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (no such file), '/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (fat file, but missing compatible architecture (have 'x86_64,arm64e,arm64e.x1', need 'arm64, arm64'))",
+        "last_started_test": null,
+        "next_test_result": "Test Case '-[UniverseKeyboardTests.RimeSyncModelTests testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem]' passed (0.038 seconds)."
+      },
+      {
+        "log": "A2-V-5-keychain.log",
+        "line": 1728,
+        "kind": "iohid_factory_companion",
+        "text": "2026-10-05 00:21:20.137061+0800 Universe Keyboard[64634:42372057] [plugin] Cannot find function pointer IOHIDLibFactory for factory <CFUUID 0x106b56320> 13AA9C44-6F1B-11D4-907C-0005028F18D5 in CFBundle/CFPlugIn 0x10687ae60 </System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin> (bundle, not loaded)",
+        "last_started_test": null,
+        "next_test_result": "Test Case '-[UniverseKeyboardTests.RimeSyncModelTests testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem]' passed (0.038 seconds)."
+      },
+      {
+        "log": "A2-V-5-keychain.log",
+        "line": 1740,
+        "kind": "iohid_loader_error",
+        "text": "2026-10-05 00:21:22.033163+0800 Universe Keyboard[64634:42372057] [loading] Error loading /System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib (100):  dlopen(/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib, 0x0106): tried: '/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData/Build/Products/Debug-iphonesimulator/IOHIDLib' (no such file), '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/IOHIDLib' (no such file), '/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.pL3kPh/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (no such file), '/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (fat file, but missing compatible architecture (have 'x86_64,arm64e,arm64e.x1', need 'arm64, arm64'))",
+        "last_started_test": "Test Case '-[UniverseKeyboardTests.RimeSyncModelTests testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem]' started.",
+        "next_test_result": "Test Case '-[UniverseKeyboardTests.RimeSyncModelTests testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem]' passed (0.038 seconds)."
+      },
+      {
+        "log": "A2-V-5-keychain.log",
+        "line": 1741,
+        "kind": "iohid_factory_companion",
+        "text": "2026-10-05 00:21:22.033496+0800 Universe Keyboard[64634:42372057] [plugin] Cannot find function pointer IOHIDLibFactory for factory <CFUUID 0x106b56320> 13AA9C44-6F1B-11D4-907C-0005028F18D5 in CFBundle/CFPlugIn 0x10687ae60 </System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin> (bundle, not loaded)",
+        "last_started_test": "Test Case '-[UniverseKeyboardTests.RimeSyncModelTests testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem]' started.",
+        "next_test_result": "Test Case '-[UniverseKeyboardTests.RimeSyncModelTests testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem]' passed (0.038 seconds)."
+      },
+      {
+        "log": "A2-V-5-keychain.log",
+        "line": 1744,
+        "kind": "iohid_loader_error",
+        "text": "2026-10-05 00:21:22.038961+0800 Universe Keyboard[64634:42372057] [loading] Error loading /System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib (100):  dlopen(/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib, 0x0106): tried: '/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData/Build/Products/Debug-iphonesimulator/IOHIDLib' (no such file), '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/IOHIDLib' (no such file), '/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.pL3kPh/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (no such file), '/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (fat file, but missing compatible architecture (have 'x86_64,arm64e,arm64e.x1', need 'arm64, arm64'))",
+        "last_started_test": "Test Case '-[UniverseKeyboardTests.RimeSyncModelTests testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem]' started.",
+        "next_test_result": "Test Case '-[UniverseKeyboardTests.RimeSyncModelTests testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem]' passed (0.038 seconds)."
+      },
+      {
+        "log": "A2-V-5-keychain.log",
+        "line": 1745,
+        "kind": "iohid_factory_companion",
+        "text": "2026-10-05 00:21:22.039247+0800 Universe Keyboard[64634:42372057] [plugin] Cannot find function pointer IOHIDLibFactory for factory <CFUUID 0x106b56320> 13AA9C44-6F1B-11D4-907C-0005028F18D5 in CFBundle/CFPlugIn 0x10687ae60 </System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin> (bundle, not loaded)",
+        "last_started_test": "Test Case '-[UniverseKeyboardTests.RimeSyncModelTests testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem]' started.",
+        "next_test_result": "Test Case '-[UniverseKeyboardTests.RimeSyncModelTests testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem]' passed (0.038 seconds)."
+      },
+      {
+        "log": "A2-V-3-app-keyboard.log",
+        "line": 2950,
+        "kind": "iohid_loader_error",
+        "text": "2026-10-05 00:18:22.831697+0800 Universe Keyboard[63935:42364845] [loading] Error loading /System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib (100):  dlopen(/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib, 0x0106): tried: '/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData/Build/Products/Debug-iphonesimulator/IOHIDLib' (no such file), '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/IOHIDLib' (no such file), '/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.pL3kPh/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (no such file), '/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (fat file, but missing compatible architecture (have 'x86_64,arm64e,arm64e.x1', need 'arm64, arm64'))",
+        "last_started_test": null,
+        "next_test_result": "Test Case '-[UniverseKeyboardTests.ActivationChecklistStateTests testCanonicalCopyBoundariesRemainNonEmpty]' passed (0.002 seconds)."
+      },
+      {
+        "log": "A2-V-3-app-keyboard.log",
+        "line": 2951,
+        "kind": "iohid_factory_companion",
+        "text": "2026-10-05 00:18:22.832152+0800 Universe Keyboard[63935:42364845] [plugin] Cannot find function pointer IOHIDLibFactory for factory <CFUUID 0x1098027e0> 13AA9C44-6F1B-11D4-907C-0005028F18D5 in CFBundle/CFPlugIn 0x108ef01c0 </System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin> (bundle, not loaded)",
+        "last_started_test": null,
+        "next_test_result": "Test Case '-[UniverseKeyboardTests.ActivationChecklistStateTests testCanonicalCopyBoundariesRemainNonEmpty]' passed (0.002 seconds)."
+      },
+      {
+        "log": "A2-V-3-app-keyboard.log",
+        "line": 2954,
+        "kind": "iohid_loader_error",
+        "text": "2026-10-05 00:18:22.835589+0800 Universe Keyboard[63935:42364845] [loading] Error loading /System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib (100):  dlopen(/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib, 0x0106): tried: '/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData/Build/Products/Debug-iphonesimulator/IOHIDLib' (no such file), '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/IOHIDLib' (no such file), '/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.pL3kPh/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (no such file), '/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (fat file, but missing compatible architecture (have 'x86_64,arm64e,arm64e.x1', need 'arm64, arm64'))",
+        "last_started_test": null,
+        "next_test_result": "Test Case '-[UniverseKeyboardTests.ActivationChecklistStateTests testCanonicalCopyBoundariesRemainNonEmpty]' passed (0.002 seconds)."
+      },
+      {
+        "log": "A2-V-3-app-keyboard.log",
+        "line": 2955,
+        "kind": "iohid_factory_companion",
+        "text": "2026-10-05 00:18:22.835845+0800 Universe Keyboard[63935:42364845] [plugin] Cannot find function pointer IOHIDLibFactory for factory <CFUUID 0x1098027e0> 13AA9C44-6F1B-11D4-907C-0005028F18D5 in CFBundle/CFPlugIn 0x108ef01c0 </System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin> (bundle, not loaded)",
+        "last_started_test": null,
+        "next_test_result": "Test Case '-[UniverseKeyboardTests.ActivationChecklistStateTests testCanonicalCopyBoundariesRemainNonEmpty]' passed (0.002 seconds)."
+      },
+      {
+        "log": "A2-V-3-app-keyboard.log",
+        "line": 2960,
+        "kind": "iohid_loader_error",
+        "text": "2026-10-05 00:18:24.537696+0800 Universe Keyboard[63935:42364845] [loading] Error loading /System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib (100):  dlopen(/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib, 0x0106): tried: '/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData/Build/Products/Debug-iphonesimulator/IOHIDLib' (no such file), '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/IOHIDLib' (no such file), '/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.pL3kPh/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (no such file), '/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (fat file, but missing compatible architecture (have 'x86_64,arm64e,arm64e.x1', need 'arm64, arm64'))",
+        "last_started_test": null,
+        "next_test_result": "Test Case '-[UniverseKeyboardTests.ActivationChecklistStateTests testCanonicalCopyBoundariesRemainNonEmpty]' passed (0.002 seconds)."
+      },
+      {
+        "log": "A2-V-3-app-keyboard.log",
+        "line": 2961,
+        "kind": "iohid_factory_companion",
+        "text": "2026-10-05 00:18:24.538130+0800 Universe Keyboard[63935:42364845] [plugin] Cannot find function pointer IOHIDLibFactory for factory <CFUUID 0x1098027e0> 13AA9C44-6F1B-11D4-907C-0005028F18D5 in CFBundle/CFPlugIn 0x108ef01c0 </System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin> (bundle, not loaded)",
+        "last_started_test": null,
+        "next_test_result": "Test Case '-[UniverseKeyboardTests.ActivationChecklistStateTests testCanonicalCopyBoundariesRemainNonEmpty]' passed (0.002 seconds)."
+      },
+      {
+        "log": "A2-V-3-app-keyboard.log",
+        "line": 2964,
+        "kind": "iohid_loader_error",
+        "text": "2026-10-05 00:18:24.542412+0800 Universe Keyboard[63935:42364845] [loading] Error loading /System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib (100):  dlopen(/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib, 0x0106): tried: '/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData/Build/Products/Debug-iphonesimulator/IOHIDLib' (no such file), '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/IOHIDLib' (no such file), '/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.pL3kPh/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (no such file), '/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (fat file, but missing compatible architecture (have 'x86_64,arm64e,arm64e.x1', need 'arm64, arm64'))",
+        "last_started_test": null,
+        "next_test_result": "Test Case '-[UniverseKeyboardTests.ActivationChecklistStateTests testCanonicalCopyBoundariesRemainNonEmpty]' passed (0.002 seconds)."
+      },
+      {
+        "log": "A2-V-3-app-keyboard.log",
+        "line": 2965,
+        "kind": "iohid_factory_companion",
+        "text": "2026-10-05 00:18:24.542852+0800 Universe Keyboard[63935:42364845] [plugin] Cannot find function pointer IOHIDLibFactory for factory <CFUUID 0x1098027e0> 13AA9C44-6F1B-11D4-907C-0005028F18D5 in CFBundle/CFPlugIn 0x108ef01c0 </System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin> (bundle, not loaded)",
+        "last_started_test": null,
+        "next_test_result": "Test Case '-[UniverseKeyboardTests.ActivationChecklistStateTests testCanonicalCopyBoundariesRemainNonEmpty]' passed (0.002 seconds)."
+      },
+      {
+        "log": "A2-V-2-rimebridge.log",
+        "line": 1697,
+        "kind": "rime_error",
+        "text": "E20261005 00:16:08.392160 0x16bcb3000 text_db.cc:132] Error opening db 'essay' read-only.",
+        "last_started_test": "Test Case '-[RimeBridgeTests.RimeEngineContractTests testDeploymentServiceObservesRealTerminalSuccessAndFunctionalSchema]' started.",
+        "next_test_result": "Test Case '-[RimeBridgeTests.RimeEngineContractTests testDeploymentServiceObservesRealTerminalSuccessAndFunctionalSchema]' passed (0.079 seconds)."
+      },
+      {
+        "log": "A2-V-2-rimebridge.log",
+        "line": 1910,
+        "kind": "rime_error",
+        "text": "E20261005 00:16:08.487387 0x16bcb3000 config_data.cc:78] Error parsing YAML \"/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/tmp/rime-deployment-input-7F57F23F-05F7-43B6-B1FA-70FBF8B058C1/shared/contract_fixture.schema.yaml\" : yaml-cpp: error at line 2, column 1: end of sequence flow not found",
+        "last_started_test": "Test Case '-[RimeBridgeTests.RimeEngineContractTests testRealDeployerFailsClosedForMalformedSchema]' started.",
+        "next_test_result": "Test Case '-[RimeBridgeTests.RimeEngineContractTests testRealDeployerFailsClosedForMalformedSchema]' passed (0.014 seconds)."
+      },
+      {
+        "log": "A2-V-2-rimebridge.log",
+        "line": 1911,
+        "kind": "rime_error",
+        "text": "E20261005 00:16:08.488729 0x16bcb3000 deployment_tasks.cc:338] invalid schema definition in '/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/tmp/rime-deployment-input-7F57F23F-05F7-43B6-B1FA-70FBF8B058C1/shared/contract_fixture.schema.yaml'.",
+        "last_started_test": "Test Case '-[RimeBridgeTests.RimeEngineContractTests testRealDeployerFailsClosedForMalformedSchema]' started.",
+        "next_test_result": "Test Case '-[RimeBridgeTests.RimeEngineContractTests testRealDeployerFailsClosedForMalformedSchema]' passed (0.014 seconds)."
+      }
+    ],
+    "source_content_omitted_by_hash_only_scope": true,
+    "impact_not_automatically_accepted": true
+  },
+  "strict_lint": {
+    "receipt": {
+      "step": "A2-V-0-format",
+      "utc": "2026-10-04T16:14:27.692158+00:00",
+      "command": "xcrun swift-format lint --strict --configuration .swift-format Keyboard/Controllers/KeyboardViewController.swift Keyboard/Controllers/KeyboardViewController+Bootstrap.swift Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+      "cwd": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+      "remaining_wall_seconds": 10426.258528,
+      "ended": "2026-10-04T16:14:28.200594+00:00",
+      "elapsed_seconds": 0.508436,
+      "exit_code": 0,
+      "timeout": false,
+      "log": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-0-format.log"
+    },
+    "empty_log": true
+  },
+  "core": {
+    "1194_zero_failures": [
+      {
+        "line": 2715,
+        "text": "\t Executed 1194 tests, with 0 failures (0 unexpected) in 19.178 (19.306) seconds"
+      },
+      {
+        "line": 2717,
+        "text": "\t Executed 1194 tests, with 0 failures (0 unexpected) in 19.178 (19.308) seconds"
+      }
+    ]
+  },
+  "release": {
+    "build_succeeded_lines": [
+      1405
+    ],
+    "release_publication": false
+  }
+}

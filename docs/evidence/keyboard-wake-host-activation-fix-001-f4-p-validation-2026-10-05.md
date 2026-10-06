@@ -1,0 +1,38 @@
+# F4-P诊断配对构建与冻结 — 2026-10-05
+
+**F4-P已完成，未安装/运行。** Human仅授权从冻结源码build并冻结产物，预算40实际工具调用/60分钟、首失败停止。root Environment Executor，Grok源码writer保持；未源码/工程修改、测试、模拟器实例/容器/进程查询、安装、LLDB/Maps或Git/Release。
+
+## Entry、构建与范围
+
+原工作树、branch、HEAD84b9c19227330b0fe6ff391be001ee398010fd6a、staged0符合。1156source/Vendor成员及字节、13pinned、五源码hash前后匹配，dirty快照保留。Xcode27.0/27A266a、Swift6.4编译器，language钉6.0；Vendor结构verify12framework通过，630payload另外字节匹配。local SourcePackages仅1个workspace-state文件及空目录，由旧A2缓存精确复制，源不改、无fetch/update。
+
+[执行Entry/完整argv](keyboard-wake-host-activation-fix-001-f4-p-artifacts/execution-entry.json)与[构建请求](keyboard-wake-host-activation-fix-001-f4-p-artifacts/build-request.json)使用新独立 `/private/tmp/ukey-host-activation-fix-f4-p-build-20261005`，generic/platform=iOS Simulator、arm64 standalone Debug、DEBUG+KEYBOARD_WAKE_OWNER_PROBE、complete concurrency、warnings-as-errors、不抑制warning、adhoc签名。structured argv保持literal $(inherited)，不做shell展开。没有指定真实device实例或执行test。
+
+[实际构建](keyboard-wake-host-activation-fix-001-f4-p-artifacts/build-receipt.json)exit0/no timeout、33.435秒；日志BUILD SUCCEEDED。[实际compiler行](keyboard-wake-host-activation-fix-001-f4-p-artifacts/actual-compiler-flags.json)两个target均含DEBUG、KEYBOARD_WAKE_OWNER_PROBE、Swift6、warnings-as-errors，无内部canary或fake生命周期harness。[原log](keyboard-wake-host-activation-fix-001-f4-p-artifacts/build.log)Swift warning/error0，保留2条AppIntents metadata工具warning，不声称全日志zero-warning。
+
+## 新配对产物身份
+
+唯一路径：`/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app`。
+
+[完整payload](keyboard-wake-host-activation-fix-001-f4-p-artifacts/payload-manifest.json)：78常规文件、91448700bytes，路径/bytes/SHA升序行聚合 **d53523dba8c371c67424ff07c79163a66f41e3bc5bb402637cf9ee79ae7579cb**。这是新的诊断pair，不是旧C7或A2普通Debug111文件包；private产物及xcresult保留，不重复复制大包或纳入repo。
+
+| 模块 | UUID（arm64） |
+|---|---|
+| 主App executable | 664DE45A-5859-34F1-892C-3DD2D9DE7B98 |
+| 主App debug-dylib | C19CE509-A814-30AB-88F1-CE5416FDDC33 |
+| Keyboard executable | CD0C6F02-6094-3726-B598-F03F42ABB468 |
+| Keyboard debug-dylib | 4B207746-89A7-321F-83C4-91477259BB26 |
+
+[配对清单](keyboard-wake-host-activation-fix-001-f4-p-artifacts/paired-products.json)冻结所有模块SHA/UUID与bundle ID：com.DoubleShy0N.Universe-Keyboard及其.Keyboard，version1.0/build1仅本地Debug显示值。Keyboard debug-dylib实际出口符号`_$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF`及host-active/resign符号存在；不证明已加载、断点已解析或实际回调。
+
+主App与内嵌Keyboard codesign deep/strict均0；[实际Simulator embedded entitlements](keyboard-wake-host-activation-fix-001-f4-p-artifacts/simulated-entitlements.json)两者含正确Group及application identifier。standalone未包含xctest/XCTest注入测试host。签名存在不代表模拟器部署/完全访问/用户词典健康。
+
+[冻结回执](keyboard-wake-host-activation-fix-001-f4-p-artifacts/freeze-receipt.json)、[检查命令](keyboard-wake-host-activation-fix-001-f4-p-artifacts/inspection-commands.json)、[private原件索引](keyboard-wake-host-activation-fix-001-f4-p-artifacts/private-evidence-index.json)与[manifest](keyboard-wake-host-activation-fix-001-f4-p-artifacts/manifest.json)提供可复算来源。用量以收尾最后检查落盘的usage.json为准，包含wrapper+nested实际工具调用，不续预算。
+
+## 完成与下一合法动作
+
+仅F4-P构建和字节冻结完成；[F4 Entry](keyboard-wake-host-activation-fix-001-f4-prepared-entry-2026-10-05.md)的“缺probe产物”前置缺口解除，旧Entry快照身份不倒写。本轮只构建，无新增测试/skip。原普通flags完整矩阵与新diagnostic flags产物不是同一次同字节测试；五源码/依赖相同不能把23项测试写成新诊断pair实测。
+
+下一需独立最小产物/flags适用性晋级核验，核当前source→build→pair字节/模块/签名、诊断flag范围及证据复用，不重审已覆盖A2/Q3、不开源码修改或全矩阵。该新review范围/packet/预算另授权；root冻结自检不替独立结论。满足后F4-I还需Human新鲜原UDID独占、静默完整before保护和精确安装授权；F4-M单轮Maps/出口采集与恢复亦按阶段Entry执行，不由本次build授权自动启动。
+
+现有全部备份仍保留，原模拟器未操作。诊断/部署/用户配置没切换；不称修复运行通过、whole-F3/F4Ready或Release。无新ADR合同或CHANGELOG修改；修复验证/交付阶段再明确文档追加范围。

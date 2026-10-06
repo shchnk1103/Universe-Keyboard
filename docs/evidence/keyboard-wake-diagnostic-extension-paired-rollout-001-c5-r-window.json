@@ -1,0 +1,18 @@
+{
+  "run_id": "C5-R-20261001-01",
+  "start_utc": "2026-10-01T02:45:13.845149+00:00",
+  "end_utc": "2026-10-01T02:47:55.900354+00:00",
+  "target": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "max_manual_input_rounds": 1,
+  "automatic_retries": 0,
+  "human_input_pending": false,
+  "export_only": "content-free typed v6 events; no host/query/candidate text, rawprefs, screenshots or fulljournal",
+  "preparatory_start_utc": "2026-10-01T02:43:17.925480+00:00",
+  "entry_hold_resolved_by": "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-capture-restoration-disposition.json",
+  "human_result": {
+    "completed": true,
+    "keyboard_normal": true,
+    "commit_response_observed": true,
+    "input_rounds": 1
+  }
+}

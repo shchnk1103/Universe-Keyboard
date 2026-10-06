@@ -1,0 +1,34 @@
+{
+  "started_utc": "2026-10-06T02:11:13.319681+00:00",
+  "Human": "授权一次主机夹具采样",
+  "scope": "compile frozen read telemetry fixture; one task-owned host run, error sampling and cleanup; no correction/retry/Simulator/production writes",
+  "root": "/private/tmp/ukey-host-activation-fix-h0b-read-sample-20261006",
+  "actual_calls": 2,
+  "source5": {
+    "Keyboard/Controllers/KeyboardViewController.swift": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+    "Keyboard/Controllers/KeyboardViewController+Bootstrap.swift": "79d0123dabacd8e5875b66b7c8c897589adbeb8b49d1e22b263678dc1d56f6aa",
+    "Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift": "c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047",
+    "KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift": "71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5",
+    "Universe Keyboard.xcodeproj/project.pbxproj": "49f0ebe89db1f30323d9bf6ceb297179ffed5fc9ef983fd3b947d11d5820586c"
+  },
+  "source_inputs": {
+    "fixture.c": {
+      "bytes": 706,
+      "sha256": "679a56400543955d93dfd73102d2a328564d00a9b858e207b5e954779c1abfa9"
+    },
+    "host_probe.py": {
+      "bytes": 8743,
+      "sha256": "4b112279b4ebdadb132a980fa08d09a7a6fe736636bce401618138bdcc6ed185"
+    },
+    "entitlements.plist": {
+      "bytes": 243,
+      "sha256": "87a3e7fcd67af748b28d049449185056b8b076b8bd65c82720f48c99883022be"
+    },
+    "change.patch": {
+      "bytes": 1849,
+      "sha256": "ab01652bd73a66ec93aeaee17fb1d396a476a026c8e44a66832892582abc5444"
+    }
+  },
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a"
+}

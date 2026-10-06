@@ -1,0 +1,346 @@
+{
+  "lane": "AP-META-004-QUALITY-R1",
+  "round": 1,
+  "packet_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-appex-meta-r4-quality-artifacts/packet.json",
+  "packet_sha256": "fd5da48966c5fbb1e198f83ae6819514fc7109eb06929311e8899e6399353b55",
+  "reader_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-appex-meta-r4-quality-artifacts/reader.json",
+  "reader_bytes": 74975,
+  "reader_sha256": "a5cb4b5623852ee0bf6825fe707cb12e954bdd15884409b5e7fb678d46d369be",
+  "reader_file_count": 23,
+  "author_utc_start": null,
+  "start_time_status": "UNKNOWN: first shell call captured a timestamp in buffered output but failed before flush; do not infer exact lane start",
+  "first_successful_read_utc": "2026-10-06T03:14:57.254279+00:00",
+  "first_write_utc": "2026-10-06T03:24:12.234605+00:00",
+  "wall_seconds_from_first_successful_read_to_first_write": 554.980326,
+  "failed_preflight_tool_wall_seconds": {
+    "call_2_reported": 5.7,
+    "call_4_reported": 2.9
+  },
+  "unobserved_intercall_gap_seconds": "UNKNOWN",
+  "full_lane_wall_seconds": "UNKNOWN; exact first call start unavailable",
+  "actual_tool_calls": 16,
+  "budget_actual_calls": 16,
+  "functions_exec_wrappers": 6,
+  "nested_exec_commands": 6,
+  "collaboration_messages_counted": 4,
+  "budget_wall_seconds": 900,
+  "wall_budget_compliance": "UNKNOWN because exact first tool UTC and inter-call gap were not preserved; observed interval from first successful read is recorded exactly",
+  "end_utc": "2026-10-06T03:24:14.833811+00:00",
+  "elapsed_seconds_from_first_successful_read": 557.579532,
+  "preflight_errors": [
+    {
+      "actual_call_numbers": [
+        1,
+        2
+      ],
+      "error": "initial packet path omitted fix segment; FileNotFoundError before reader/writer",
+      "writer_touched": false
+    },
+    {
+      "actual_call_numbers": [
+        3,
+        4
+      ],
+      "error": "packet/reader verified, but command used nonexistent outputs key instead of output_directory and stopped before ACK write",
+      "writer_touched": false
+    }
+  ],
+  "call_ledger": [
+    {
+      "calls": [
+        1,
+        2
+      ],
+      "action": "functions.exec wrapper + nested exec_command; malformed packet path; failed before read"
+    },
+    {
+      "calls": [
+        3,
+        4
+      ],
+      "action": "functions.exec wrapper + nested exec_command; exact packet/reader hash and structure read; wrong packet output key caused pre-writer failure"
+    },
+    {
+      "call": 5,
+      "kind": "coordination message",
+      "action": "root flags native run-summary 33 calls versus report 35 calls"
+    },
+    {
+      "calls": [
+        6,
+        7
+      ],
+      "action": "functions.exec wrapper + nested exec_command; ACK written and read back using output_directory"
+    },
+    {
+      "call": 8,
+      "kind": "coordination message",
+      "action": "root supplies mechanically preserved erratum and misfiled final summary copies"
+    },
+    {
+      "calls": [
+        9,
+        10
+      ],
+      "action": "functions.exec wrapper + nested exec_command; compare reader entries against native originals and read selected evidence and root supplements"
+    },
+    {
+      "calls": [
+        11,
+        12
+      ],
+      "action": "functions.exec wrapper + nested exec_command; read callback, raw PTY, cleanup, machine-exit, run-summary and scripts"
+    },
+    {
+      "call": 13,
+      "kind": "coordination message",
+      "action": "root reminds reserve last four calls and requests current usage status"
+    },
+    {
+      "call": 14,
+      "kind": "coordination message",
+      "action": "root reports ACTIVE_WORK restoration; not inspected or used as evidence"
+    },
+    {
+      "calls": [
+        15,
+        16
+      ],
+      "action": "single final functions.exec wrapper with two sequential nested exec_commands; write review/usage then delivery-readback and native readback"
+    }
+  ],
+  "input_verification": [
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-appex-meta-r4-20261006/authorization.json",
+      "bytes": 326,
+      "sha256": "a55ffb7375a75641a7c28db82cce97683d43932ec19b4086a08e3cac12e76f7e",
+      "native_status": "native_match",
+      "native_bytes": 326,
+      "native_sha256": "a55ffb7375a75641a7c28db82cce97683d43932ec19b4086a08e3cac12e76f7e",
+      "reader_text_characters": 298
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-appex-meta-r4-20261006/device-entry.json",
+      "bytes": 3364,
+      "sha256": "8347be8f199b063849073a021cc69fa4bc6888e430a40ea2098f1a138296f656",
+      "native_status": "native_match",
+      "native_bytes": 3364,
+      "native_sha256": "8347be8f199b063849073a021cc69fa4bc6888e430a40ea2098f1a138296f656",
+      "reader_text_characters": 3364
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-appex-meta-r4-20261006/old-appex-termination.json",
+      "bytes": 450,
+      "sha256": "b1aac34b85fb4915e5316c4b9a0b5964e6e79fc1b2412315ee6c5c5c70fdb2c2",
+      "native_status": "native_match",
+      "native_bytes": 450,
+      "native_sha256": "b1aac34b85fb4915e5316c4b9a0b5964e6e79fc1b2412315ee6c5c5c70fdb2c2",
+      "reader_text_characters": 436
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-appex-meta-r4-20261006/fresh-instance.json",
+      "bytes": 738,
+      "sha256": "4b72b99e6d5e1532456667a4e240946f39007509bf1c9a80dccf92e7e3ba5544",
+      "native_status": "native_match",
+      "native_bytes": 738,
+      "native_sha256": "4b72b99e6d5e1532456667a4e240946f39007509bf1c9a80dccf92e7e3ba5544",
+      "reader_text_characters": 708
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-appex-meta-r4-20261006/configuration-receipt.json",
+      "bytes": 433,
+      "sha256": "d7c2cbc4be92936fa71e7a1dbc751ae1f99e87d683d261aeaa80766e00be0bbf",
+      "native_status": "native_match",
+      "native_bytes": 433,
+      "native_sha256": "d7c2cbc4be92936fa71e7a1dbc751ae1f99e87d683d261aeaa80766e00be0bbf",
+      "reader_text_characters": 433
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-appex-meta-r4-20261006/live-binding.json",
+      "bytes": 233,
+      "sha256": "2a1373230159051156bdd5c8fd6d92109d07730bae82e4fd5a8914a824495f3e",
+      "native_status": "native_match",
+      "native_bytes": 233,
+      "native_sha256": "2a1373230159051156bdd5c8fd6d92109d07730bae82e4fd5a8914a824495f3e",
+      "reader_text_characters": 233
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-appex-meta-r4-20261006/pre-arm-debugger-state.json",
+      "bytes": 274,
+      "sha256": "6af972754d02876262910bb035ab710aa6547082bd001b4e9fa0eeab72376379",
+      "native_status": "native_match",
+      "native_bytes": 274,
+      "native_sha256": "6af972754d02876262910bb035ab710aa6547082bd001b4e9fa0eeab72376379",
+      "reader_text_characters": 274
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-appex-meta-r4-20261006/pre-arm-evaluation.json",
+      "bytes": 2611,
+      "sha256": "aa1c08b70bec9bf3806aa790402376f849ae75e9dae5e137c96398815eedb57d",
+      "native_status": "native_match",
+      "native_bytes": 2611,
+      "native_sha256": "aa1c08b70bec9bf3806aa790402376f849ae75e9dae5e137c96398815eedb57d",
+      "reader_text_characters": 2611
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-appex-meta-r4-20261006/human-arm.json",
+      "bytes": 157,
+      "sha256": "4c19d9887f62725f06a6b849b3ab463fd4615f287ebfffa2e36ec7b1e53bdd72",
+      "native_status": "native_match",
+      "native_bytes": 157,
+      "native_sha256": "4c19d9887f62725f06a6b849b3ab463fd4615f287ebfffa2e36ec7b1e53bdd72",
+      "reader_text_characters": 145
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-appex-meta-r4-20261006/pre-freeze-debugger-state.json",
+      "bytes": 277,
+      "sha256": "4eae545f53ce902992f01523e6c3170abb2c5946d199448b94bf32f21be576e4",
+      "native_status": "native_match",
+      "native_bytes": 277,
+      "native_sha256": "4eae545f53ce902992f01523e6c3170abb2c5946d199448b94bf32f21be576e4",
+      "reader_text_characters": 277
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-appex-meta-r4-20261006/pre-freeze-evaluation.json",
+      "bytes": 2614,
+      "sha256": "ade24bd23abc9056282355dc0fd809634c81c8322c2cc9f2f38ed5b4414cd841",
+      "native_status": "native_match",
+      "native_bytes": 2614,
+      "native_sha256": "ade24bd23abc9056282355dc0fd809634c81c8322c2cc9f2f38ed5b4414cd841",
+      "reader_text_characters": 2614
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-appex-meta-r4-20261006/human-freeze.json",
+      "bytes": 111,
+      "sha256": "84f87810b8d011428fd737dfbe52610a91411d75c676003044d9acff107b72dc",
+      "native_status": "native_match",
+      "native_bytes": 111,
+      "native_sha256": "84f87810b8d011428fd737dfbe52610a91411d75c676003044d9acff107b72dc",
+      "reader_text_characters": 101
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-appex-meta-r4-20261006/callback.json",
+      "bytes": 2432,
+      "sha256": "094a650733607eb34e758a9b9822c491e4cce4ffb29dd724b15e93160fa7526a",
+      "native_status": "native_match",
+      "native_bytes": 2432,
+      "native_sha256": "094a650733607eb34e758a9b9822c491e4cce4ffb29dd724b15e93160fa7526a",
+      "reader_text_characters": 2432
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-appex-meta-r4-20261006/pty-transcript.txt",
+      "bytes": 4156,
+      "sha256": "804f82468706419ae457f7f45fa6252ab3fd265f9ceca29e8141ea15336e8d2a",
+      "native_status": "native_match",
+      "native_bytes": 4156,
+      "native_sha256": "804f82468706419ae457f7f45fa6252ab3fd265f9ceca29e8141ea15336e8d2a",
+      "reader_text_characters": 4156
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-appex-meta-r4-20261006/stop-and-cleanup.json",
+      "bytes": 408,
+      "sha256": "9aaa4fabb453749ad8d36601f9874c89b608f25ca8fe6c2234de90e7449a5a6a",
+      "native_status": "native_match",
+      "native_bytes": 408,
+      "native_sha256": "9aaa4fabb453749ad8d36601f9874c89b608f25ca8fe6c2234de90e7449a5a6a",
+      "reader_text_characters": 408
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-appex-meta-r4-20261006/machine-exit.json",
+      "bytes": 1625,
+      "sha256": "508e67b02105b15b7aea339171eaf6327f1b15cf44d97239c5ec8d20472af4ab",
+      "native_status": "native_match",
+      "native_bytes": 1625,
+      "native_sha256": "508e67b02105b15b7aea339171eaf6327f1b15cf44d97239c5ec8d20472af4ab",
+      "reader_text_characters": 1625
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-appex-meta-r4-20261006/run-summary.json",
+      "bytes": 3112,
+      "sha256": "19e94407dc3dfca19624fc868358ace702c0738994e1db31bba23d06e88b3496",
+      "native_status": "native_match",
+      "native_bytes": 3112,
+      "native_sha256": "19e94407dc3dfca19624fc868358ace702c0738994e1db31bba23d06e88b3496",
+      "reader_text_characters": 3112
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-appex-meta-r4-20261006/appex_meta_callback.py",
+      "bytes": 4414,
+      "sha256": "dbacda157a79aa52f6dd523c2de998d5b311f4342d0928761d4edf2f4b9dfae1",
+      "native_status": "native_match",
+      "native_bytes": 4414,
+      "native_sha256": "dbacda157a79aa52f6dd523c2de998d5b311f4342d0928761d4edf2f4b9dfae1",
+      "reader_text_characters": 4414
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-appex-meta-r4-20261006/appex_meta_setup.py",
+      "bytes": 3689,
+      "sha256": "c80d732bdacd08eae97abd482d368de7438bb6f8102ca50690c68944f9290b01",
+      "native_status": "native_match",
+      "native_bytes": 3689,
+      "native_sha256": "c80d732bdacd08eae97abd482d368de7438bb6f8102ca50690c68944f9290b01",
+      "reader_text_characters": 3689
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-appex-meta-r4-20261006/preclick_checkpoint.py",
+      "bytes": 3933,
+      "sha256": "c9def035110aafe3b133c13ec05b149ee5e616d01983f502fd36fdbca85844cb",
+      "native_status": "native_match",
+      "native_bytes": 3933,
+      "native_sha256": "c9def035110aafe3b133c13ec05b149ee5e616d01983f502fd36fdbca85844cb",
+      "reader_text_characters": 3933
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-appex-meta-r4-execution-2026-10-06.md",
+      "bytes": 3104,
+      "sha256": "75e8d301a42e22b7add254e8fb1a9f5c3f79bfee76db71771bd3ad06ae0dcc71",
+      "native_status": "native_match",
+      "native_bytes": 3104,
+      "native_sha256": "75e8d301a42e22b7add254e8fb1a9f5c3f79bfee76db71771bd3ad06ae0dcc71",
+      "reader_text_characters": 1754
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/playbooks/test-release.md",
+      "bytes": 3084,
+      "sha256": "b7eb8cc76094f72699b6de77de6afa2608e6483a1c8da53dcf86a51ea6c35a58",
+      "native_status": "native_match",
+      "native_bytes": 3084,
+      "native_sha256": "b7eb8cc76094f72699b6de77de6afa2608e6483a1c8da53dcf86a51ea6c35a58",
+      "reader_text_characters": 3072
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/ASSIGNMENT_POLICY.md",
+      "bytes": 25019,
+      "sha256": "e90dd8f06371e9367652d4e7cc63dee31ee7b1ac855e7802d6d2e9b8e1e90680",
+      "native_status": "native_match",
+      "native_bytes": 25019,
+      "native_sha256": "e90dd8f06371e9367652d4e7cc63dee31ee7b1ac855e7802d6d2e9b8e1e90680",
+      "reader_text_characters": 24995
+    }
+  ],
+  "coordinator_supplements": [
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-appex-meta-r4-quality-artifacts/root-erratum.json",
+      "bytes": 3702,
+      "sha256": "15da27ca06c642fb79fbf69f466b9715b13e59df4275c01c35406eabefda04cd",
+      "classification": "coordinator-generated erratum outside frozen reader"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-appex-meta-r4-quality-artifacts/root-misfiled-final-summary-original.json",
+      "bytes": 5895,
+      "sha256": "99c39f6c8988a9c9116e59f460fe6fbdbd2391c3866ef33f4b2a24773b7b262b",
+      "classification": "root mechanically preserved original final summary, originally misfiled in docs/ACTIVE_WORK.md"
+    }
+  ],
+  "call_ledger_audit": {
+    "run_summary_actual_calls": 33,
+    "misfiled_final_actual_calls": 35,
+    "misfiled_ledger_contiguous_1_through_35": true,
+    "run_summary_wall_seconds": 291.543386,
+    "recomputed_start_to_archive_seconds": 291.543386,
+    "final_summary_wall_seconds": 323.988017,
+    "recomputed_start_to_close_seconds": 323.988017,
+    "archive_to_close_seconds": 32.444631
+  },
+  "final_writer_readback_utc": "2026-10-06T03:24:14.833811+00:00"
+}

@@ -1,150 +1,261 @@
 # Engineering Dashboard
 
+2026-10-06 当前：[paired-rollout有界完成](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-bounded-completion-2026-10-06.md)Human批准选项A，Completed为诊断producer与父交接交付；五项残项非阻塞未验证，独立Partial保留。键盘唤醒三件任务均有界Completed。无新采集。
+
+2026-10-06 当前：[paired-rollout Exit对照准备稿](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-jsonl-parent-exit-map-2026-10-06.md)父JSONL映射已完成；子诊断交接已交付。全局v6 emission未满足，E1不并入。Assignment仍Active，有界收尾待Product。无新采集。
+
+2026-10-05 当前：[A2新候选验证Entry](evidence/keyboard-wake-host-activation-fix-001-a2-validation-prepared-entry-2026-10-05.md)Prepared未Ready：1156行/13pinned/23方法与完整矩阵冻结；12计划步骤未执行。执行、180分钟、新鲜独占、阶段skip/备份例外待授权；未编译/测试/模拟器，修复Blocked、F4未授权。
+
+2026-10-04 当前：[A2-F1四文件修正接收](evidence/keyboard-wake-host-activation-fix-001-a2-f1-received-2026-10-04.md)：四hash/原F3差量符合，pbx及其余1152构建输入不变；23项仅authored。新候选编译/测试和A2独立复审待授权，修复Blocked，未安装/Maps/F4。
+
+2026-10-04 当前：[F3独立审查交付](evidence/keyboard-wake-host-activation-fix-001-f3-independent-validation-2026-10-04.md)：Architecture Partial/incomplete，首帧旧回调generation/arm身份缺口阻塞；Quality内容条件通过、超预算约58秒审计矛盾保留。修复Blocked；只建议准备定点修正Entry，未安装/Maps/F4/Release。
+
+2026-10-04 当前：[F2 actor定点复验完成](evidence/keyboard-wake-host-activation-fix-001-f2-actor-retest-validation-2026-10-04.md)：新测试17/17通过/0skip/0fail，原7actor诊断消失；三组before/after全等无需恢复。修复Active，下一F3独立实现/Quality另授权；非完整CI重跑，F4/Maps未验证。旧Hold历史保持，由本条及Assignment Current Status覆盖。
+
+2026-10-04 当前：[F2-before恢复已接收核验](evidence/keyboard-wake-host-activation-fix-001-f2-restore-received-2026-10-04.md)：live956文件、安装78payload、应用内容及五源码hash符合，旧版本RIME数据恢复；输入健康未测。修复仍Blocked：Grok单test文件7actor诊断待修，F3/F4未授权；父Completed保持。
+
+2026-10-04 当前：[F2矩阵交付](evidence/keyboard-wake-host-activation-fix-001-f2-validation-2026-10-04.md)：Core1194、Bridge85pass/20skip、App438pass/10skip、gate17/17、Release build及signedKeychain1/1；30skip仅F2接受。修复Blocked：新增test7actor警告待Grok修，afterGroup待部署，精确before恢复待授权；父Completed保持。
+
+2026-10-04 当前：[Grok F1交付已接收](evidence/keyboard-wake-host-activation-fix-001-f1-received-2026-10-04.md)：5hash/3基线/patch重建/13依赖一致，候选冻结；format及约30调用仅作者摘要，测试未运行。修复Assignment Active，F2 Entry/授权Pending，不先Maps，父Completed不变。
+
+2026-10-04 当前：[宿主激活修复F1](assignments/keyboard-wake-host-activation-fix-001.md)Human已批准，Executor指定Grok；生命周期Assigned，Grok ACK/即时Entry待完成。[实施交接包](plans/keyboard-wake-host-activation-fix-001-grok-f1-handoff-2026-10-04.md)就绪，root不并写源码，F2/F3/F4另授权。
+
+2026-10-04 当前：[宿主激活修复Assignment草案](assignments/keyboard-wake-host-activation-fix-001.md)Assignment Pending：[F0/F1 Prepared Entry](evidence/keyboard-wake-host-activation-fix-001-f0-prepared-entry-2026-10-04.md)冻结五路径（3existing/2absent），R2仅设计条件通过。待Human批准责任绑定及F1源码实施；测试/安装/Maps另授权，父Completed保持。
+
+2026-10-04 当前：[补充稿Architecture R2](evidence/keyboard-wake-host-activation-minimal-fix-architecture-r2-validation-2026-10-04.md)Pass with conditions（仅设计）：状态交错与resume前canary许可已覆盖，实施须保持合同与测试边界。独立packet哈希抄录差异另附root字节核验，原件不改；未授权实施/模拟器，R1 Partial及父Completed保持。
+
+2026-10-04 当前：[五文件修复设计Architecture R1](evidence/keyboard-wake-host-activation-minimal-fix-architecture-r1-validation-2026-10-04.md)Partial：需可执行状态合同和resume前canary许可。作者补充稿Prepared，原独立结论不改；下一仅精确设计复审待授权，未实施/模拟器，父Completed保留。
+
+2026-10-04 当前：[宿主重新激活最小修复方案](plans/keyboard-wake-host-activation-minimal-fix-proposal-2026-10-04.md)只读Prepared：失活通知挂起与viewWillAppear恢复不对称；建议五文件UI生命周期配对、可见性/幂等gate及测试接线。未实施/未新独立review/未设备验证；父Completed保留，rollout子仍Active。
+
+2026-10-04 当前：[父有界诊断Completed](evidence/keyboard-wake-lifecycle-diagnostics-001-bounded-completion-2026-10-04.md)：Human批准owner缺失边界与领域交接完成范围及PEXIT-R1/R2/R3未验证残项。双Partial/原严格证据缺口保持；paired-rollout子任务仍Active，不自动修复、再采集或Release。
+
+2026-10-04 当前：[父历史Exit对照](evidence/keyboard-wake-lifecycle-diagnostics-001-historical-exit-map-2026-10-04.md)完成：旧JSONL与恢复只作历史背景，不能跨候选补当前严格Exit；父有界owner诊断交接收尾提案Prepared待Product决定，父子仍Active、旧Partial保留，无新增模拟器/修复/Release动作。
+
+2026-10-04 当前：[M2R2双独立验收／领域交接](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-m2r2-reexport-review-validation-2026-10-04.md)：Architecture/Quality均Partial，局部正常/失败schedule owner/receipt对照covered；父JSONL/恢复映射仍未满足，工具poll及Quality文件写出残项保留。父子Active，不再自动模拟器复现或猜修。
+
+2026-10-04 当前：[M2R2历史补导出](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m2r2-reexport-validation-2026-10-04.md)成功：一次1056字节/11条完整本地记录；正常owner/receipt存在，返回后schedule owner/receipt缺失。自身cleanup/machine及视觉Exit齐，候选/输入框现为空、恢复未测，独立验收待补；原Incomplete保留，无猜修/父Close。
+
+2026-10-04 当前：[M2R2只读帧核查／历史补导出Prepared](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m2r2-reexport-prepared-2026-10-04.md)：原PID55759保留，优先补同一冻结窗口，不新输入／重跑Maps；callback仅静态准备，附加／点击／有界读取待授权。原Incomplete/0read保留，父子Active。
+
+2026-10-04 当前：[M2R2停止交付](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m2r2-frame-stop-validation-2026-10-04.md)machine及视觉Exit齐，返回后界面/取证保留，未测输入恢复。本轮症状复现但frame参数失败，0read/no snapshot/owner未覆盖，仍Incomplete；下一只读停点帧调查另授权。
+
+2026-10-04 当前：[M2R2帧参数停止](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m2r2-frame-stop-validation-2026-10-04.md)：Human同实例Maps失败复现，预期freeze hit1但frame0/byteCount不可读，0read/无snapshot/owner未覆盖。原生通道保持，cleanup/machine Exit齐，视觉Exit待回；不retry，后续只读帧问题调查另授权。
+
+2026-10-04 当前：[M2R2静止保护Entry](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m2r2-entry-2026-10-04.md)完成：fresh独占/关闭/未重装部署，旧41635正常退出，完整956文件保护（main/App复用、Group新增约36.1MiB）。新实例/loaded/人工条件待核；尚未arm输入、原旧轮不续接。
+
+2026-10-04 当前：[稳定通道预检](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-stable-channel-validation-2026-10-04.md)交付完成，跨一次Human回复/自身cleanup/machine与视觉Exit齐；本轮无输入复现。原M2R1Incomplete保留，下一新鲜Maps配对窗口另授权，父子Active。
+
+2026-10-04 当前：[native稳定通道预检](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-stable-channel-validation-2026-10-04.md)跨一次Human回复covered，同进程/断点0hit，cleanup/detach/quit及machine Exit齐，视觉Exit待回。未arm输入/Maps复现；原M2R1Incomplete保留，新鲜配对窗口另授权。
+
+2026-10-04 当前：[工具生命周期只读核查](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m2r1-tool-continuity-audit-2026-10-04.md)完成：进程内session与新MCP进程时间支持生命周期/路由更替解释，原因未确证；原目标Ss/P_TRACED clear，自身断点删除/detach回执仍UNKNOWN。下一持续通道跨人工回复预检仅Prepared，不续M2R1。
+
+2026-10-04 当前：M2R1人工视觉Exit确认正常、取证与候选/输入框保留；原session断点cleanup/detach仍UNKNOWN，本轮Incomplete、不续接。见[停止交付](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m2r1-session-loss-stop-2026-10-04.md)。
+
+2026-10-04 当前：[M2R1会话停止](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m2r1-session-loss-stop-2026-10-04.md)：Human基线正常，MCP原session不可用；未AppSwitcher/freeze/read、配对Incomplete，断点清除/detach未证，目标Ss。沙箱shell权限对照已核，MCP原因未定，不重新附加补本轮。
+
+2026-10-04 当前：[M2R1 Entry](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m2r1-entry-2026-10-04.md)：单轮完整Maps配对获授权及独占；旧8491正常退出、静止恢复保护齐，复用M0 main/App且补齐17空目录，Group新增约36.1MiB，失败原件保留。新实例/loaded身份仍待核，未arm输入。旧提前hit1继续仅记录，零自动retry。
+
+2026-10-03 当前：[U1R1独立交付](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-u1r1-review-validation-2026-10-03.md)：P1–P3Covered、窄运行链接受；6calls预算用尽，正式交付D001–D004一致性Partial，最小作者补正Prepared待授权。非Maps/根因/Release结论。
+
+2026-10-03 当前：[U1R1采集交付](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-u1r1-validation-2026-10-03.md)及Human视觉Exit已齐；528bytes/5行/唯一attempt、真实borrow、delete/list/continue/detach完成。未追加交互验证或独立验收；Maps与根因开放。
+
+2026-10-03 当前：[U1R1运行交付](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-u1r1-validation-2026-10-03.md)：单read528bytes/5行/正常attempt配对、真实borrow caller及断点清理/退出机器验证完成；Human UI Exit待确认，独立验收未执行，Maps与根因开放。
+
+2026-10-03 当前：[U1提前freeze Incomplete](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-u1-premature-freeze-validation-2026-10-03.md)：已确认实际模块身份和取证标题，输入卡前再次点击出口hit1；0read，continue/detach成功，Human UI Exit待确认。新实例单轮Prepared待授权。
+
+2026-10-03 当前：[U1 pre-arm Hold](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-u1-hold-validation-2026-10-03.md)：attach回执UDID冲突已continue/detach，未arm/导出，原PID与诊断保持。实际模块身份绑定补正Prepared待决定。
+
+2026-10-03 当前：[U1准备交付](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-u1-preparation-validation-2026-10-03.md)已完成；单轮观测→冻结→有界导出命令/账本/停止与恢复Prepared，未访问设备/LLDB，执行及fresh独占待授权。
+
+2026-10-03 当前：[U0正常路径交付](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-u0-validation-2026-10-03.md)完成：候选/提交与按钮显隐正常，78SHA匹配，两诊断关闭。仅本轮，U1/M待阶段Entry授权；父子Active。
+
+2026-10-03 当前：[U0人工正常路径](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-u0-entry-2026-10-03.md)已授权并确认独占；空栏按钮计时/健康结果待Human，未arm。
+
+2026-10-03 当前：[I1单次新候选安装](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-i1-validation-2026-10-03.md)机器identity/数据保护完成；43d85d…已安装但未启动。U0正常输入/未arm按钮可见性计时Prepared，未执行。
+
+2026-10-03 当前：[I0新鲜备份](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-i0-validation-2026-10-03.md)与恢复准备完成；旧PID45871已获授权正常退出，旧快照保留。I1单次新候选安装Prepared，未执行。
+
+2026-10-03 当前：[I0安装前核验](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-i0-entry-2026-10-03.md)已核新旧候选，原模拟器fresh独占；旧appex PID45871仍运行，备份待进程正常退出。未安装新候选。
+
+2026-10-03 当前：[T阶段收尾](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-t-product-residual-validation-2026-10-03.md)已完成；Human仅当前T接受29项非阻塞、未验证残项，30raw skip保留。配对任务仍Active，候选runtime与根因验证待后续Entry/授权。
+
+2026-10-03 当前：[T2原因补审](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-t2-skip-reasons-validation-2026-10-03.md)已闭合；T1–T6独立覆盖增量已齐，整体T Hold，仅当前29未验证残项Product处置待决定。30raw skip保留，未验证新候选runtime。
+
+2026-10-03 当前：[T split R2正式交付](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-t-split-r2-validation-2026-10-03.md)：T1/T3/T4/T5/T6已覆盖，T2 Partial；30skip逐项原因已补、待定点独立验收。29未验证处置开放，T Hold。
+
+2026-10-03 当前：[T reader与交付预检](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-t-reader-preflight-validation-2026-10-03.md)已跑通；独立T仍Partial/Hold，尚未启动补审，30raw skip/29未验证处置开放。
+
+2026-10-03 当前：两条 T split 独立审查均耗尽6次调用且缺正式交付，Partial/incomplete、T Hold；[停止记录](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-t-split-validation-2026-10-03.md)。30raw skip/29未验证处置仍开放。
+
+本轮 wake：[独立T R2预算停止](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-t-independent-r2-validation-2026-10-03.md)摘要已一致，但900s内正式交付缺失；Core/保护链及正式T未完成，拆小两lane Prepared需Human授权。
+
+本轮 wake 静态补审：P1 Covered/P2-P3 Partial，报告/ledger一致性缺口保留，预算后已停止；本地接线修复不因Partial被宣称runtime失败，不晋级安装。
+
+本轮 wake：探针新候选栏绑定单文件三处接线修复交付，syntax3/format通过；未build/install/runtime验证，不声称UI现场根因已解决。下一步新范围定点静态补审。[交付](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-probe-ui-binding-validation-2026-10-02.md)。
+
+本轮 wake 仅历史账本补证完成：9calls，report451.1s，abort489.9s/超hard9.9s；原正式Partial及实质P1-P3 Covered保留，非新review/Maps/Gate。[补证](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-normal-export-ledger-supplement-2026-10-02.md)。
+
+本轮 wake 独立验收：报告P1-P3 Covered，但hard停止时必需usage未交付，正式交付Partial；原有限实质意见保留，不自动续审或Maps。[记录](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-normal-export-review-validation-2026-10-02.md)。
+
+本轮 wake 正常路径：单轮528字节/5记录有界导出成功，paired attempt schedule owner1/receipt1；已移除断点、continue/detach。按钮延迟/文字报告待查，独立验收尚未授权，非Maps或Gate。[证据](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-normal-export-validation-2026-10-02.md)。
+
+本轮 wake 更新：调试器就绪核验完成，UUID/唯一出口断点匹配；断点移除、恢复运行并detach，未arm/export/Maps。父子仍Active，历史各项结论不变。[证据](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-debugger-readiness-validation-2026-10-02.md)。
+
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-09-28 Asia/Shanghai
+> **Updated:** 2026-09-30 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
 
+## KEYBOARD-WAKE-LIFECYCLE-DIAGNOSTICS-001 — App Switch 后键盘输入失活诊断
+
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
+- **Current phase:** [Independent T R2 stop](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-t-independent-r2-validation-2026-10-03.md) Partial/budget reached/no report+usage; validated checkpoints retained, no formal T acceptance.
+- **Historical v5 phase:** Human Product Owner accepted the v6 wire contract. ADR 0036 Addendum 002 is Accepted; v6 implementation remains separately gated. The v5 candidate stays writer-v5 with production wake-marker emission off. Its CI-equivalent validation matrix completed on the exact reserved Simulator; Quality R1 is Pass with conditions. Architecture R1/R2/R3 remain Partial / incomplete historical verdicts; Architecture R4 completed the remaining source-evidence coverage, and Quality R2 completed its residual review. `ARV5-R1-COV-02` and `ARV5-R1-EVID-04` are recorded as fixed. Product accepted `V5-Q-001`: 428 is the actual result count; the historical MCP 429 discovery message remains unexplained and will not trigger another count-only rerun. `V5-Q-002/003` are accepted only as non-blocking, unverified environment residuals for v5; the 30 skipped tests are not passed coverage.
+- **Next:** Human Prepared split-lane decision (Luna low proposed,6calls900s each); no renewal;29unverified/30raw skip disposition open.
+- **Non-claims:** Root cause unresolved; no behavioral fix, overall Gate, Release or parent closure. This C7-B1 round did no Simulator boot/install/launch/input; SDK/test-target compilation is not runtime proof. C6 historical Maps observation limitations remain in child evidence.
+- **Sources:** [Product Decision](product-decisions/KEYBOARD-WAKE-DIAGNOSTIC-WIRE-VERSION-RECONCILIATION-001-product-decision.md) · [ADR 0036 Addendum 002](architecture/decisions/0036-keyboard-wake-wire-v6-addendum.md) · [Reconciliation Assignment](assignments/keyboard-wake-diagnostic-wire-version-reconciliation-001.md) · [Paired-rollout Assignment](assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md) · [v5 validation record](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-v5-stage-validation-2026-09-30.md) · [Architecture R4 review](reviews/keyboard-wake-diagnostic-extension-paired-rollout-001-v5-validation-architecture-r4-review.md) · [Quality R1](reviews/keyboard-wake-diagnostic-extension-paired-rollout-001-v5-validation-quality-r1-review.md) · [Quality R2 packet](reviews/keyboard-wake-diagnostic-extension-paired-rollout-001-v5-validation-quality-r2-packet.md) · [Quality R2 review](reviews/keyboard-wake-diagnostic-extension-paired-rollout-001-v5-validation-quality-r2-review.md) · [Quality R2 usage](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-v5-validation-quality-r2-usage-2026-09-30.md) · [M-02 state-sync receipt](evidence/keyboard-wake-diagnostic-wire-version-reconciliation-001-adr-0036-addendum-002-state-sync-2026-09-30.md) · [C7-B1 delivery](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b-validation-2026-10-02.md) · [C7-B2 delivery](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b2-core-validation-2026-10-02.md) · [Focused Quality supplement](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b2-quality-r2-validation-2026-10-02.md) · [C7-C-P preparation](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-prep-validation-2026-10-02.md) · [C7-B3 delivery](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b3-validation-2026-10-02.md)
+
 ## KEYBOARD-CORNER-BLEED-001 — 键盘顶圆角透白
 
-- **Lifecycle:** [`Assignment`](assignments/keyboard-corner-bleed-001.md) `Closed`
-- **Current phase:** PR [#192](https://github.com/shchnk1103/Universe-Keyboard/pull/192) squash-merged `72dd21710f2a86c9f951d489f645bae89b053b58`；保持透明；无实施
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
+- **Current phase:** C7 frozen candidate installed/78 payload matched; complete fresh backups, AppGroup53 preserved; main data migration classified as byte-preserving system path/cache rename. App launched, Human keyboard/button check complete; unarmed. [Checkpoint](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-promotion-validation-2026-10-02.md). Quality preflight P1-P3 Covered, first-clock/precise elapsed unknown; stage residuals accepted by Human only, no Gate.
 - **Non-claims:** 不等于填灰、TestFlight 或 Release
-- **Next:** 无（本 Assignment）
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 - **Sources:** [PD](product-decisions/KEYBOARD-CORNER-BLEED-001-authorization.md) · [Merge AUTH](authorizations/AUTH-KEYBOARD-CORNER-BLEED-001-MERGE.md) · [PR #192](https://github.com/shchnk1103/Universe-Keyboard/pull/192)
 - **Worktree:** 实现 worktree 与功能分支已删；本 M-02 分支 `grok/keyboard-corner-bleed-001-m02`
 
 ## CANDIDATE-BAR-IDLE-DISMISS-001 — 空闲候选栏关闭键盘
 
-- **Lifecycle:** [`Assignment`](assignments/candidate-bar-idle-dismiss-001.md) `Closed`
-- **Current phase:** PR [#190](https://github.com/shchnk1103/Universe-Keyboard/pull/190) squash-merged `944a76bd049d717dd1048a6b4eb5bc7fd9124347`；残差 `CBID-01`–`CBID-04`、`CBID-CORNER` `accept`
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
+- **Current phase:** C7 frozen candidate installed/78 payload matched; complete fresh backups, AppGroup53 preserved; main data migration classified as byte-preserving system path/cache rename. App launched, Human keyboard/button check complete; unarmed. [Checkpoint](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-promotion-validation-2026-10-02.md). Quality preflight P1-P3 Covered, first-clock/precise elapsed unknown; stage residuals accepted by Human only, no Gate.
 - **Non-claims:** 不等于 Device-attested；不授权 TestFlight 或 Release
-- **Next:** 无（本 Assignment）。跟进 [`KEYBOARD-CORNER-BLEED-001`](assignments/keyboard-corner-bleed-001.md) 已 `Ready`。TestFlight / Release 另授权
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 - **Sources:** [PD](product-decisions/CANDIDATE-BAR-IDLE-DISMISS-001-authorization.md) · [Product Gate](product-decisions/CANDIDATE-BAR-IDLE-DISMISS-001-product-gate.md) · [Merge AUTH](authorizations/AUTH-CANDIDATE-BAR-IDLE-DISMISS-001-MERGE.md) · [PR #190](https://github.com/shchnk1103/Universe-Keyboard/pull/190) · [Quality review](reviews/candidate-bar-idle-dismiss-001-quality-review.md)
 - **Worktree:** 实现 worktree 与功能分支已删；本 M-02 分支 `grok/candidate-bar-idle-dismiss-001-m02`
 
 ## APP-ABOUT-001 — 主 App「关于」页
 
-- **Lifecycle:** [`Assignment`](assignments/app-about-001.md) `Closed`
-- **Current phase:** PR [#188](https://github.com/shchnk1103/Universe-Keyboard/pull/188) squash-merged `a46a6abe66be065039557897a1e3adef29cc7d32`；残差 `ABOUT-01`–`ABOUT-05` `accept`
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
+- **Current phase:** C7 frozen candidate installed/78 payload matched; complete fresh backups, AppGroup53 preserved; main data migration classified as byte-preserving system path/cache rename. App launched, Human keyboard/button check complete; unarmed. [Checkpoint](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-promotion-validation-2026-10-02.md). Quality preflight P1-P3 Covered, first-clock/precise elapsed unknown; stage residuals accepted by Human only, no Gate.
 - **Non-claims:** 不等于 Device-attested；不授权 TestFlight 或 Release
-- **Next:** 无（本 Assignment）。TestFlight / Release 另授权
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 - **Sources:** [PD](product-decisions/APP-ABOUT-001-authorization.md) · [Product Gate](product-decisions/APP-ABOUT-001-product-gate.md) · [Merge AUTH](authorizations/AUTH-APP-ABOUT-001-MERGE.md) · [PR #188](https://github.com/shchnk1103/Universe-Keyboard/pull/188) · [Quality review](reviews/app-about-001-quality-review.md)
 - **Worktree:** 实现 worktree 与功能分支已删；本 M-02 分支 `grok/app-about-001-m02`
 
 ## APP-ACTION-BUTTON-HIT-AREA-001 — 主 App 操作按钮整块可点
 
-- **Lifecycle:** [`Assignment`](assignments/app-action-button-hit-area-001.md) `Closed`
-- **Current phase:** PR [#186](https://github.com/shchnk1103/Universe-Keyboard/pull/186) squash-merged `e3eb27b51caa289eae734d9194d3d5ba10f75bc6`；残差 `AABH-01`–`AABH-05` `accept`
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
+- **Current phase:** C7 frozen candidate installed/78 payload matched; complete fresh backups, AppGroup53 preserved; main data migration classified as byte-preserving system path/cache rename. App launched, Human keyboard/button check complete; unarmed. [Checkpoint](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-promotion-validation-2026-10-02.md). Quality preflight P1-P3 Covered, first-clock/precise elapsed unknown; stage residuals accepted by Human only, no Gate.
 - **Non-claims:** 不等于 Device-attested；不授权 TestFlight 或 Release；合同只覆盖共享 `AppActionButton`
-- **Next:** 无（本 Assignment）。TestFlight / Release 另授权
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 - **Sources:** [PD](product-decisions/APP-ACTION-BUTTON-HIT-AREA-001-authorization.md) · [Product Gate](product-decisions/APP-ACTION-BUTTON-HIT-AREA-001-product-gate.md) · [Merge AUTH](authorizations/AUTH-APP-ACTION-BUTTON-HIT-AREA-001-MERGE.md) · [PR #186](https://github.com/shchnk1103/Universe-Keyboard/pull/186) · [Quality review](reviews/app-action-button-hit-area-001-quality-review.md)
 - **Worktree:** 实现 worktree 与功能分支已删；本 M-02 分支 `grok/app-action-button-hit-area-001-m02`
 
 ## SCHEME-LICENSE-DOWNLOAD-CTA-001 — 第三方方案许可下载单按钮
 
-- **Lifecycle:** [`Assignment`](assignments/scheme-license-download-cta-001.md) `Closed`
-- **Current phase:** PR [#164](https://github.com/shchnk1103/Universe-Keyboard/pull/164) 于 `2026-09-24T02:16:12Z` squash merge 为 [`204d0c2b`](https://github.com/shchnk1103/Universe-Keyboard/commit/204d0c2b3c3ec5253f31fad8e15cfa0501c83416)；Hosted Swift 6 Quality 同头全绿；publication Assignment 已完成
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
+- **Current phase:** C7 frozen candidate installed/78 payload matched; complete fresh backups, AppGroup53 preserved; main data migration classified as byte-preserving system path/cache rename. App launched, Human keyboard/button check complete; unarmed. [Checkpoint](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-promotion-validation-2026-10-02.md). Quality preflight P1-P3 Covered, first-clock/precise elapsed unknown; stage residuals accepted by Human only, no Gate.
 - **Non-claims:** 不声称真实网络下载/RIME 部署成功；Simulator observation 仍是 Human-attested，非 Device-attested；Quality 绑定 22-file package digest `6146c454…`；merge 不等于 TestFlight / Release
-- **Next:** PR [#166](https://github.com/shchnk1103/Universe-Keyboard/pull/166) 已合并；最新 M-02 状态同步已在 docs-only Draft PR [#167](https://github.com/shchnk1103/Universe-Keyboard/pull/167) 发布，保持 Draft，未获 ready/merge 授权
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 - **Sources:** [PD](product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-authorization.md) · [Implementation AUTH](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-001.md) · [Quality revalidation 002](reviews/scheme-license-download-cta-quality-revalidation-002.md) · [Human-attested Simulator observation](evidence/scheme-license-download-cta-simulator-observation-2026-09-23.md) · [Product Gate packet 002](evidence/scheme-license-download-cta-product-gate-packet-2026-09-24.md) · [Product Gate decision 002](product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-product-gate-revalidation-002.md) · [Gate Assignment 002](assignments/scheme-license-download-cta-product-gate-002.md) · [Gate AUTH 002](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-PRODUCT-GATE-002.md)
 - **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001/.status-sync-repo` · branch `codex/scheme-license-download-cta-status-sync-merge-002`
 
 ## SCHEME-LICENSE-DOWNLOAD-CTA-PUBLICATION-001 — 有界 commit、push 与 draft PR
 
-- **Lifecycle:** [`Assignment`](assignments/scheme-license-download-cta-publication-001.md) `Completed`
-- **Current phase:** PR [#164](https://github.com/shchnk1103/Universe-Keyboard/pull/164) 已 squash merge 为 `204d0c2b`; 原功能分支已删除
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
+- **Current phase:** C7 frozen candidate installed/78 payload matched; complete fresh backups, AppGroup53 preserved; main data migration classified as byte-preserving system path/cache rename. App launched, Human keyboard/button check complete; unarmed. [Checkpoint](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-promotion-validation-2026-10-02.md). Quality preflight P1-P3 Covered, first-clock/precise elapsed unknown; stage residuals accepted by Human only, no Gate.
 - **Non-claims:** 不声称真实网络下载/RIME 部署成功或 Device-attested；不含 TestFlight / Release
-- **Next:** None for the publication Assignment；merge 后 M-02 镜像见下方收尾 Assignment
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 - **Sources:** [Publication Assignment](assignments/scheme-license-download-cta-publication-001.md) · [Publication AUTH 002](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-PUBLICATION-002.md) · [Product Gate 002](product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-product-gate-revalidation-002.md) · [Quality revalidation 002](reviews/scheme-license-download-cta-quality-revalidation-002.md)
 - **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001/.status-sync-repo` · isolated status-sync branch `codex/scheme-license-download-cta-status-sync-merge`; publication branch `grok/scheme-license-download-cta-001` deleted after merge
 
 ## SCHEME-LICENSE-DOWNLOAD-CTA-MERGE-001 — PR #164 合并与 M-02 收尾
 
-- **Lifecycle:** [`Assignment`](assignments/scheme-license-download-cta-merge-001.md) `Completed`
-- **Current phase:** PR #165 于 `2026-09-24T02:49:14Z` squash merge 为 `99a7ef88`，已验证到达 `origin/main`；PR #166 随后独立授权并合入 `29241ea1`。对应旧本地/远端状态分支已安全删除；最新 M-02 镜像见 docs-only Draft PR [#167](https://github.com/shchnk1103/Universe-Keyboard/pull/167)
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
+- **Current phase:** C7 frozen candidate installed/78 payload matched; complete fresh backups, AppGroup53 preserved; main data migration classified as byte-preserving system path/cache rename. App launched, Human keyboard/button check complete; unarmed. [Checkpoint](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-promotion-validation-2026-10-02.md). Quality preflight P1-P3 Covered, first-clock/precise elapsed unknown; stage residuals accepted by Human only, no Gate.
 - **Non-claims:** PR #167 未获 ready/merge 授权；无 TestFlight / Release
-- **Next:** Human review PR #167；其 Ready/merge 需另行授权
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 - **Sources:** [Merge AUTH](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-MERGE-001.md) · [Publication Assignment](assignments/scheme-license-download-cta-publication-001.md)
 - **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001/.status-sync-repo` · branch `codex/scheme-license-download-cta-status-sync-merge-002`
 
 ## SCHEME-LICENSE-DOWNLOAD-CTA-STATUS-SYNC-MERGE-002 — PR #166 合并与 M-02 收尾
 
-- **Lifecycle:** [`Assignment`](assignments/scheme-license-download-cta-status-sync-merge-002.md) `Completed`
-- **Current phase:** PR #166 于 `2026-09-24T04:02:35Z` squash merge 为 `29241ea1`，已验证到达 `origin/main`；旧本地与远端分支均在 tree 等价核验后安全删除；完成状态镜像见 docs-only Draft PR [#167](https://github.com/shchnk1103/Universe-Keyboard/pull/167)
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
+- **Current phase:** C7 frozen candidate installed/78 payload matched; complete fresh backups, AppGroup53 preserved; main data migration classified as byte-preserving system path/cache rename. App launched, Human keyboard/button check complete; unarmed. [Checkpoint](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-promotion-validation-2026-10-02.md). Quality preflight P1-P3 Covered, first-clock/precise elapsed unknown; stage residuals accepted by Human only, no Gate.
 - **Non-claims:** PR #167 未获 ready/merge 授权；无 TestFlight / Release
-- **Next:** Human review PR #167；ready/merge 需另行授权
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 - **Sources:** [Merge Assignment](assignments/scheme-license-download-cta-status-sync-merge-002.md) · [Merge AUTH](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-STATUS-SYNC-MERGE-002.md) · [Parent Assignment](assignments/scheme-license-download-cta-status-sync-merge-001.md)
 - **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001/.status-sync-repo` · branch `codex/scheme-license-download-cta-status-sync-merge-002`
 
 ## SCHEME-LICENSE-DOWNLOAD-CTA-REGRESSION-001 — 许可下载流程回归覆盖
 
-- **Lifecycle:** [`Assignment`](assignments/scheme-license-download-cta-regression-tests-001.md) `Completed`
-- **Current phase:** 五条许可流程回归通过；strict format 通过；App + Keyboard Debug：UniverseKeyboardTests 379 passed / 9 skipped，KeyboardTests 15 passed
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
+- **Current phase:** C7 frozen candidate installed/78 payload matched; complete fresh backups, AppGroup53 preserved; main data migration classified as byte-preserving system path/cache rename. App launched, Human keyboard/button check complete; unarmed. [Checkpoint](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-promotion-validation-2026-10-02.md). Quality preflight P1-P3 Covered, first-clock/precise elapsed unknown; stage residuals accepted by Human only, no Gate.
 - **Non-claims:** 不等于独立 Quality、Product Gate、XCUITest/人工验收、commit / push / merge 或 Release
-- **Next:** XCUITest/人工交互/真实下载未覆盖；最终树独立 Quality 已由 [`revalidation receipt`](reviews/scheme-license-download-cta-quality-revalidation-001.md) 复核
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 - **Sources:** [Parent Assignment](assignments/scheme-license-download-cta-001.md) · [P2 Quality finding](reviews/scheme-license-download-cta-quality-review-001.md) · [AUTH](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-REGRESSION-001.md)
 - **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001` · original branch `grok/scheme-license-download-cta-001` (deleted after PR #164 merge)
 
 ## SCHEME-LICENSE-DOWNLOAD-CTA-QUALITY-REVALIDATION-001 — 最终树独立 Quality revalidation
 
-- **Lifecycle:** [`Assignment`](assignments/scheme-license-download-cta-quality-revalidation-001.md) `Reviewed`
-- **Current phase:** fixed 22-file package 的独立 GPT-6 Luna Quality **Pass with conditions**；strict lint 9 files passed；App + Keyboard Debug 为 UniverseKeyboardTests 379 passed / 9 skipped、KeyboardTests 15 passed
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
+- **Current phase:** C7 frozen candidate installed/78 payload matched; complete fresh backups, AppGroup53 preserved; main data migration classified as byte-preserving system path/cache rename. App launched, Human keyboard/button check complete; unarmed. [Checkpoint](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-promotion-validation-2026-10-02.md). Quality preflight P1-P3 Covered, first-clock/precise elapsed unknown; stage residuals accepted by Human only, no Gate.
 - **Non-claims:** 不等于 Product Gate、人工/真机验收、commit / push / merge 或 Release
-- **Next:** Product Gate 已完成；Quality child 保持 `Reviewed`，其 receipt 仍绑定状态写回前的精确 22-file package，不覆盖写回后的文档树
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 - **Sources:** [Parent Assignment](assignments/scheme-license-download-cta-001.md) · [Prior Quality receipt](reviews/scheme-license-download-cta-quality-review-001.md) · [Revalidation receipt](reviews/scheme-license-download-cta-quality-revalidation-001.md) · [AUTH](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-QUALITY-REVALIDATION-001.md)
 - **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001` · original branch `grok/scheme-license-download-cta-001` (deleted after PR #164 merge)
 
 ## APP-ACTION-BUTTON-CONTRAST-001 — 主 App 操作按钮深浅色对比度
 
-- **Lifecycle:** [`Assignment`](assignments/app-action-button-contrast-001.md) `Closed`
-- **Current phase:** PR [#154](https://github.com/shchnk1103/Universe-Keyboard/pull/154) squash-merged `4d90b1c`；功能分支已删
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
+- **Current phase:** C7 frozen candidate installed/78 payload matched; complete fresh backups, AppGroup53 preserved; main data migration classified as byte-preserving system path/cache rename. App launched, Human keyboard/button check complete; unarmed. [Checkpoint](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-promotion-validation-2026-10-02.md). Quality preflight P1-P3 Covered, first-clock/precise elapsed unknown; stage residuals accepted by Human only, no Gate.
 - **Non-claims:** 不等于 Device-attested、TestFlight 或 Release
-- **Next:** none for this Assignment
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 - **Sources:** [PD](product-decisions/APP-ACTION-BUTTON-CONTRAST-001-authorization.md) · [Product Gate](product-decisions/APP-ACTION-BUTTON-CONTRAST-001-product-gate.md) · [Quality](reviews/app-action-button-contrast-001-quality-review.md) · [AUTH merge](authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-MERGE.md) · [Human observation](evidence/app-action-button-contrast-001-human-attested-observation-2026-09-23.md)
 
 ## CI-HEAVY-JOB-SPLIT-001 — 拆分 full 路径 heavy job
 
-- **Lifecycle:** [Assignment](assignments/ci-heavy-job-split-001.md) Closed
-- **Current phase:** PR [#130](https://github.com/shchnk1103/Universe-Keyboard/pull/130) merged `52a400e`；实现分支已删；fixture 分支保留
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
+- **Current phase:** C7 frozen candidate installed/78 payload matched; complete fresh backups, AppGroup53 preserved; main data migration classified as byte-preserving system path/cache rename. App launched, Human keyboard/button check complete; unarmed. [Checkpoint](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-promotion-validation-2026-10-02.md). Quality preflight P1-P3 Covered, first-clock/precise elapsed unknown; stage residuals accepted by Human only, no Gate.
 - **Non-claims:** 不等于 Product Gate、Release 或 required-check 迁移
-- **Next:** none for this Assignment
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 - **Reviews:** [Architecture](reviews/ci-heavy-job-split-001-architecture-review.md) · [Quality](reviews/ci-heavy-job-split-001-quality-review.md)
 - **Local evidence:** [gate scripts](evidence/ci-heavy-job-split-001-local-gate-2026-09-15.md)
 
 ## APP-SWITCH-CONTRAST-001 — 主 App 系统开关深浅色对比度
 
-- **Lifecycle:** [`Assignment`](assignments/app-switch-contrast-001.md) `Closed`
-- **Current phase:** Human Product Gate **Passed with accepted evidence conditions**；实现 SHA `5d3880b`、Simulator 证据与 iPhone 13 Pro / iOS 27 Human-attested 观察均已记录
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
+- **Current phase:** C7 frozen candidate installed/78 payload matched; complete fresh backups, AppGroup53 preserved; main data migration classified as byte-preserving system path/cache rename. App launched, Human keyboard/button check complete; unarmed. [Checkpoint](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-promotion-validation-2026-10-02.md). Quality preflight P1-P3 Covered, first-clock/precise elapsed unknown; stage residuals accepted by Human only, no Gate.
 - **Non-claims:** 不等于 Device-attested、push / PR / merge、TestFlight 或 Release
-- **Next:** none for this Assignment；任何发布或 Release gate 另授权
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 - **Sources:** [PD](product-decisions/APP-SWITCH-CONTRAST-001-authorization.md) · [Product Gate](product-decisions/APP-SWITCH-CONTRAST-001-product-gate.md) · [Quality](reviews/app-switch-contrast-001-quality-review.md) · [Human observation](evidence/app-switch-contrast-001-human-attested-observation-2026-09-15.md)
 
 ## HELP-GUIDE-SHEET-001 — 引导 sheet 与设置「？」
 
-- **Lifecycle:** [`Assignment`](assignments/help-guide-sheet-001.md) `Closed`
-- **Current phase:** Human Product Gate Passed（[`Gate`](product-decisions/HELP-GUIDE-SHEET-001-product-gate.md)）
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
+- **Current phase:** C7 frozen candidate installed/78 payload matched; complete fresh backups, AppGroup53 preserved; main data migration classified as byte-preserving system path/cache rename. App launched, Human keyboard/button check complete; unarmed. [Checkpoint](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-promotion-validation-2026-10-02.md). Quality preflight P1-P3 Covered, first-clock/precise elapsed unknown; stage residuals accepted by Human only, no Gate.
 - **Non-claims:** not push, TestFlight, Release, or F1/F2 device proof
-- **Next:** none for this Assignment; scoped commit of this slice is separately authorized
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 - **Sources:** [Quality review](reviews/help-guide-sheet-001-quality-review.md) · [Product Gate](product-decisions/HELP-GUIDE-SHEET-001-product-gate.md)
 
 ## RELEASE-EVIDENCE-PROMOTION-001 — 发布证据增量与候选晋级
 
-- **Lifecycle:** [`Assignment`](assignments/release-evidence-promotion-001.md) `Reviewed`；`REP-Q-01` `Closed`；PR [#128](https://github.com/shchnk1103/Universe-Keyboard/pull/128) merged `1a405143`
-- **Current phase:** Human Product Owner 已正式采纳 ADR 0035（Accepted，Conditional Accept package）；candidate source `ad39f443...` 的 hosted Swift 6 Quality run `34865917284` same-head green；PR #128 的 hosted Swift 6 Quality run `34920137639` 全部通过并已合并至 `main`
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
+- **Current phase:** C7 frozen candidate installed/78 payload matched; complete fresh backups, AppGroup53 preserved; main data migration classified as byte-preserving system path/cache rename. App launched, Human keyboard/button check complete; unarmed. [Checkpoint](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-promotion-validation-2026-10-02.md). Quality preflight P1-P3 Covered, first-clock/precise elapsed unknown; stage residuals accepted by Human only, no Gate.
 - **Evidence:** [ADR 0035 acceptance](product-decisions/ADR-0035-ACCEPT-authorization.md) · [acceptance evidence](evidence/adr-0035-accept-2026-09-15.md) · [REP-Q-01 provenance receipt](evidence/release-evidence-promotion-001-rep-q-01-provenance-2026-09-15.md) · [P1-A / ADR 0035 status reconciliation](evidence/release-evidence-promotion-001-p1-a-adr-0035-status-reconciliation-2026-09-15.md)
 - **Non-claims:** 不等于 Quality Pass、Product Gate、Release Pass、真机验收、签名、TestFlight 或 App Store Connect
-- **Next:** 无本 Assignment 的 Executor 动作；engineering/docs publication 已完成状态同步；未来外部 archive/export、设备和正式发布仍需单独证据与授权；P1-B 仍需新的 Product Decision、Assignment、Authorization 和 ADR-0027 review
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## RIME-SCHEME-DETAIL-PROVENANCE-SHEET-001 — 方案信息入口收纳来源明细
 
-- **Lifecycle:** [`Assignment`](assignments/rime-scheme-detail-provenance-sheet-001.md) `Closed` — PR [#122](https://github.com/shchnk1103/Universe-Keyboard/pull/122) merged `2203c9d`; engineering `19de5e4`; hosted CI same-head green on `d75a1ce`; remote feature branch deleted
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Domain:** Main App UI (`RimeSchemaDetailView`)
 - **Non-claims:** not Product Gate / TestFlight / Release
-- **Next:** none for this Assignment
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## KOS-ASTRA-UPGRADE-001 — v0.7.0 adoption (historical)
 
@@ -154,186 +265,186 @@
 
 ## KOS-UPGRADE-UK-006 — KOS Kit v0.9.0 prospective adoption
 
-- **Lifecycle:** Product Decision adopted; local adoption Assignment Completed; review Assignment remains Reviewed (not Closed). Docs-only PR [#170](https://github.com/shchnk1103/Universe-Keyboard/pull/170) merged at 2026-09-25T05:56:07Z as 1c14ab66d628f1a291b5484da0255c40492a80be; merge-trigger closeout is recorded in the [M-02 receipt](evidence/kos-upgrade-uk-006-v0.9.0-post-merge-state-sync-2026-09-25.md).
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Pin:** KOS Kit v0.9.0 at c98b2813240e22b2ac7fec44b2445321b03f73e0, advisory mode.
 - **Non-claims:** no required mode, migration/backfill, schema/validator change, Simulator/CoreDevice repair, App Product/Release Gate, TestFlight or App Store release.
 
 ## KOS-UPGRADE-UK-003 — Adopt kos-agent-kit v0.6.0 advisory (historical)
 
-- **Lifecycle:** `Closed` — PR #96 merged `41c0dc5`
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`Assignment`](assignments/kos-upgrade-uk-003.md) · [`PD`](product-decisions/KOS-UPGRADE-UK-003-authorization.md) · [`Gate`](product-decisions/KOS-UPGRADE-UK-003-product-gate.md)
 - **Pin:** `v0.6.0` (`a16c932`); mode remains `advisory`
 - **Non-claims:** not `required`; not orchestration plan instantiation; not Release
-- **Next:** none for this pin
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## KOS advisory pin — current
 
-- **Lifecycle:** [`KOS-UPGRADE-UK-004`](assignments/kos-upgrade-uk-004-v0.8.0.md) is Closed after Human Product Owner adopted `v0.8.0` advisory; published by PR [#104](https://github.com/shchnk1103/Universe-Keyboard/pull/104) merged `77e5658`. E-01, A-01/B-01, P-01 and D-01 apply only through explicit opt-in on new records. [UPGRADE_STATUS](kos/UPGRADE_STATUS.md) remains the current source. UK-003 / PR #96 remains historical.
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **P2 residual:** AUTH `consumption_state` → [`TD-014`](TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生)
 
 ## KOS-UPGRADE-UK-005 — prospective `kos.release-evidence` adoption
 
-- **Lifecycle:** review Assignment [`KOS-UPGRADE-UK-005`](assignments/kos-upgrade-uk-005-release-evidence-v1.md) `Closed`; implementation parent and P1-A child are now `Closed`; the fact-only P-01/D-01 child is `Closed`. `REP-Q-01` and candidate-bound hosted provenance are `Closed` by the [P1-A provenance receipt](evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md), and the engineering Close is recorded in the [UK-005 Close receipt](evidence/kos-release-evidence-implementation-001-close-2026-09-16.md).
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** project adoption [`Product Decision`](product-decisions/KOS-UPGRADE-UK-005-release-evidence-adoption.md) · P1-B Option A [`Product Decision`](product-decisions/KOS-UPGRADE-UK-005-P1-B-scope.md) · P1-A [`Assignment`](assignments/kos-release-evidence-implementation-001-p1.md) · [P-01/D-01 Assignment](assignments/kos-release-evidence-implementation-001-p01-d01.md)
-- **Current phase:** UK-005 engineering/KOS scope is now Closed: P1-A implementation/reviews/provenance, F-001 engineering merge and P-01/D-01 facts for candidate `07b4a434…` are recorded with same-head Hosted CI Run [#490](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/35099850845). Duplicate P1-B Main-App UI/storage is `Not applicable`; historical migration/backfill is `Deferred`; background sync/network is `Deferred` and unauthorized.
+- **Current phase:** C7 frozen candidate installed/78 payload matched; complete fresh backups, AppGroup53 preserved; main data migration classified as byte-preserving system path/cache rename. App launched, Human keyboard/button check complete; unarmed. [Checkpoint](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-promotion-validation-2026-10-02.md). Quality preflight P1-P3 Covered, first-clock/precise elapsed unknown; stage residuals accepted by Human only, no Gate.
 - **Non-claims:** no current-proof, Product/Quality/Release Gate, TestFlight, App Store Connect, upload, external-publication or Release conclusion; no new P1-B implementation is authorized.
-- **Next:** none for this UK-005 engineering scope. Any Product/Release/publication action remains separately owned and requires a new bounded Assignment and Authorization.
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P1-F001 — source identity fail-closed remediation
 
-- **Lifecycle:** [`Assignment`](assignments/kos-release-evidence-implementation-001-p1-f001.md) `Closed` after the narrow Human Product Gate; PR #136 is later recorded as an engineering merge at `d5c53f2c`; original, Coverage-R1 and Quality-R1 Authorizations remain recorded as `active / consumed`. Baseline remains exact `5692cf6`; adapter logic and fixture runner are unchanged.
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** existing UK-005 P1-A scope decision · F-001 Assignment/Authorizations · accepted [`F-001 Coverage-R1 Product Decision`](product-decisions/KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P1-F001-product-gate.md); previous P1 Authorization is not reused.
-- **Current phase:** Coverage-R1 accepted and Assignment transitioned `Reviewed → Closed`: `26/26` focused tests, `20/20` F-001 subTests and `76/76` pinned fixtures passed; Architecture status-only revalidation and fresh independent Quality-R1 review **approved** the exact handoff package with no blocking finding. PR #136 was subsequently merged as an engineering action; it did not widen the Product Gate.
+- **Current phase:** C7 frozen candidate installed/78 payload matched; complete fresh backups, AppGroup53 preserved; main data migration classified as byte-preserving system path/cache rename. App launched, Human keyboard/button check complete; unarmed. [Checkpoint](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-promotion-validation-2026-10-02.md). Quality preflight P1-P3 Covered, first-clock/precise elapsed unknown; stage residuals accepted by Human only, no Gate.
 - **Non-claims:** no current-proof authority, overall UK-005/P1 Product or Release Gate, TestFlight, App Store Connect, upload or Release; F-002–F-004, Quality P1-01/P1-02, P1-B and Build 55 TD-003/004/005 remain outside this slice and Build 55 items remain `open`.
-- **Next:** No further action for this narrow F-001 Assignment. P-01/D-01 is tracked by the separate fact-only child below; any Product/Release/publication action requires separate authority. See the [Product Decision](product-decisions/KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P1-F001-product-gate.md), [Quality-R1 review](reviews/KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-p1-f001-quality-review-r1-2026-09-16.md) and [Architecture status revalidation](reviews/KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-p1-f001-architecture-status-revalidation-2026-09-16.md).
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P01-D01 — UK-005 fact-only handoff
 
-- **Lifecycle:** [`Assignment`](assignments/kos-release-evidence-implementation-001-p01-d01.md) `Closed`; matching [`Authorization`](authorizations/AUTH-KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001-P01-D01.md) `consumed`
-- **Current phase:** P-01/D-01 facts are recorded for frozen candidate `07b4a434…`; candidate/published/Hosted CI heads are same-head, Run [#490](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/35099850845) succeeded, and D-01 documentation validation is `Pass` for this handoff only.
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
+- **Current phase:** C7 frozen candidate installed/78 payload matched; complete fresh backups, AppGroup53 preserved; main data migration classified as byte-preserving system path/cache rename. App launched, Human keyboard/button check complete; unarmed. [Checkpoint](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-promotion-validation-2026-10-02.md). Quality preflight P1-P3 Covered, first-clock/precise elapsed unknown; stage residuals accepted by Human only, no Gate.
 - **Non-claims:** no code/UI change, device, archive/export, signing, PR, merge, upload, TestFlight, App Store Connect, Product/Quality/Release Gate, current-proof or Release conclusion
-- **Next:** none for this fact-only slice. A later Product/Release/publication process requires a new bounded Assignment and matching human Authorization.
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## KOS improvement suggestions — disposition recorded
 
-- **Lifecycle:** [`KOS-IMPROVEMENT-SUGGESTIONS-001`](assignments/kos-improvement-suggestions-001.md) `Closed` — eight directions Adopted and `KOS-SUG-04` Deferred by Human Product Owner; details and implementation boundaries are in the [ledger](kos/kos-improvement-suggestions-scheme-delivery-2026-09-09-disposition-ledger.md).
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Non-claims:** no suggestion implementation, KOS rule/CI/privacy/diagnostics/device change, `required`, migration, or publication authorization.
 
 ## KOS-SUG-EVIDENCE-AUTH-001 — first bounded implementation
 
-- **Lifecycle:** [`Assignment`](assignments/kos-sug-evidence-auth-001.md) `Closed` — the docs-only SUG-01/SUG-02 slice added optional E-01 claim outcomes for new evidence and optional A-01/B-01 authorization-frontier guidance for new formal Assignments. Both final independent reviews passed.
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`Product Decision`](product-decisions/KOS-SUG-EVIDENCE-AUTH-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-EVIDENCE-AUTH-001.md) (consumed) · [`Architecture review`](reviews/KOS-SUG-EVIDENCE-AUTH-001-architecture-review.md) · [`Quality review`](reviews/KOS-SUG-EVIDENCE-AUTH-001-quality-review.md)
 - **Non-claims:** no SUG-03–SUG-09 implementation, KOS 2.0/2.1 change, `required`, historical backfill, CI, product code, device, or publication action.
 
 ## KOS-SUG-PROPOSAL-HANDOFF-001 — Proposed-plan pilot
 
-- **Lifecycle:** [`Assignment`](assignments/kos-sug-proposal-handoff-001.md) `Closed` — the docs-only SUG-05 slice added a non-authorizing `Proposed` plan lifecycle and work-package handoff header, plus one bounded pilot. Both final independent reviews passed.
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`Product Decision`](product-decisions/KOS-SUG-PROPOSAL-HANDOFF-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-PROPOSAL-HANDOFF-001.md) (consumed) · [`Architecture review`](reviews/KOS-SUG-PROPOSAL-HANDOFF-001-architecture-review.md) · [`Quality review`](reviews/KOS-SUG-PROPOSAL-HANDOFF-001-quality-review.md)
 - **Non-claims:** no plan implementation, SUG-01–04/SUG-06–09 implementation, KOS 2.0/2.1 change, `required`, historical migration, CI, product code, device, or publication action.
 
 ## KOS-SUG-PUB-HANDOFF-001 — SUG-03 / SUG-09 publication and final-docs receipt
 
-- **Lifecycle:** [`Assignment`](assignments/kos-sug-pub-handoff-001.md) `Closed` — PR [#105](https://github.com/shchnk1103/Universe-Keyboard/pull/105) merged `ebd5e54` (head `40c4b6b`). Optional P-01/D-01 conventions and M-02 post-#104 sync are on `main`. Remote feature branch deleted.
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`Product Decision`](product-decisions/KOS-SUG-PUB-HANDOFF-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-PUB-HANDOFF-001.md) (consumed)
 - **Non-claims:** no SUG-04/07/08 implementation, no SUG-06 CI automation, no KOS 2.0/2.1 frozen-principle change, `required`, historical backfill, product code, device, or Release.
-- **Next:** none for this slice
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## KOS-SUG-OBS-GLANCE-001 — SUG-07 on-device glance
 
-- **Lifecycle:** [`Assignment`](assignments/kos-sug-obs-glance-001.md) `Closed` — PR [#112](https://github.com/shchnk1103/Universe-Keyboard/pull/112) merged `7caec79` (head `58179da`). Human reported seven allowlisted keys and tap sheet on Debug `36b63c7`. AUTHs consumed.
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`Product Decision`](product-decisions/KOS-SUG-OBS-GLANCE-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-OBS-GLANCE-001.md) (consumed) · [`Debug-install AUTH`](authorizations/AUTH-KOS-SUG-OBS-GLANCE-001-DEBUG-INSTALL.md) (consumed)
 - **Non-claims:** no SUG-08, no Product Gate, no `RTRD-02` numbers, no 2026-09-09 record rewrite.
-- **Next:** none for this slice
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## RIME-DEPLOY-INTERRUPT-RECOVER-001 — 部署中断恢复
 
-- **Lifecycle:** [`Assignment`](assignments/rime-deploy-interrupt-recover-001.md) `Closed` — engineering Close after PR [#115](https://github.com/shchnk1103/Universe-Keyboard/pull/115) merged `5bd7499` and Independent Quality Pass with conditions.
-- **Current phase:** Closed. Residuals `RDIR-01` accept, `RDIR-02` tech_debt:TD-018, `RDIR-03` accept.
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
+- **Current phase:** C7 frozen candidate installed/78 payload matched; complete fresh backups, AppGroup53 preserved; main data migration classified as byte-preserving system path/cache rename. App launched, Human keyboard/button check complete; unarmed. [Checkpoint](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-promotion-validation-2026-10-02.md). Quality preflight P1-P3 Covered, first-clock/precise elapsed unknown; stage residuals accepted by Human only, no Gate.
 - **Non-claims:** not Product Gate / TestFlight; not Device-attested; not TD-018 implementation.
-- **Next:** none for this Assignment. TD-018 remains a later slice.
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## SCHEME-DELIVERY-SOURCE-STATE-001 — 方案来源与多方案资源归属
 
-- **Lifecycle:** [`Assignment`](assignments/scheme-delivery-source-state-001.md) `Closed` — engineering/source-state scope closed 2026-09-16; PR #100 `814abfd`, Platform, Wanxiang P4 and ADR 0034 records retained.
-- **Current phase:** source-state / cross-scheme matrix implementation and its bounded device follow-ups are recorded; residuals are listed in the [Close receipt](evidence/scheme-delivery-source-state-001-close-2026-09-16.md).
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
+- **Current phase:** C7 frozen candidate installed/78 payload matched; complete fresh backups, AppGroup53 preserved; main data migration classified as byte-preserving system path/cache rename. App launched, Human keyboard/button check complete; unarmed. [Checkpoint](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-promotion-validation-2026-10-02.md). Quality preflight P1-P3 Covered, first-clock/precise elapsed unknown; stage residuals accepted by Human only, no Gate.
 - **Non-claims:** not full Product Gate, whole-Assignment Device-attested, failure-rollback device proof, TestFlight, App Store Connect or Release.
-- **Next:** none for this Assignment; new residual work requires a new bounded Assignment / Authorization.
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## SCHEME-DELIVERY-RUNTIME-ROUTE-INTEGRATION-001 — 主 App 活动卸载运行路由接线
 
-- **Lifecycle:** [`Assignment`](assignments/scheme-delivery-runtime-route-integration-001.md) `Closed` — P1 final review and the recorded implementation scope closed 2026-09-16.
-- **Current phase:** DEVICE-001, RTRD-01 and RTRD-02 are separate closed slices; `RTRI-01…04` remain explicit accepted boundaries in the [Close receipt](evidence/scheme-delivery-runtime-route-integration-001-close-2026-09-16.md).
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
+- **Current phase:** C7 frozen candidate installed/78 payload matched; complete fresh backups, AppGroup53 preserved; main data migration classified as byte-preserving system path/cache rename. App launched, Human keyboard/button check complete; unarmed. [Checkpoint](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-promotion-validation-2026-10-02.md). Quality preflight P1-P3 Covered, first-clock/precise elapsed unknown; stage residuals accepted by Human only, no Gate.
 - **Non-claims:** not general App Group atomicity, complete Extension/runtime proof, ordinary-Luna performance comparison, Product Gate, TestFlight or Release.
-- **Next:** none for this Assignment; changes to the accepted boundaries require a new bounded Assignment / Authorization.
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## SCHEME-DELIVERY-RUNTIME-ROUTE-DEVICE-001 — CS09-10-02 device
 
-- **Lifecycle:** [`Assignment`](assignments/scheme-delivery-runtime-route-device-001.md) `Closed` — engineering Close after functional Pass with conditions, RTRD-01 glance, RTRD-02 accept.
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`Close AUTH`](authorizations/AUTH-SCHEME-DELIVERY-RUNTIME-ROUTE-DEVICE-001-CLOSE.md) (consumed)
 - **Non-claims:** not Product Gate, TestFlight, Release, or ADR Accept.
-- **Next:** none for this Assignment
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## GIT-BRANCH-ARCHIVE-HYGIENE-001 — Group A parked-branch archive
 
-- **Lifecycle:** [`Assignment`](assignments/git-branch-archive-hygiene-001.md) `Closed` — PR [#118](https://github.com/shchnk1103/Universe-Keyboard/pull/118) merged `bb15b27` (head `fc7d8b1`).
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`Product Decision`](product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-001-authorization.md) · [`Authorization`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-001.md) (consumed) · [`Merge AUTH`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-001-MERGE.md) (consumed)
 - **Non-claims:** unique leftover commits are not on `main`; not Product Gate / Release.
-- **Next:** none for this Assignment. Group B tags are [`002`](assignments/git-branch-archive-hygiene-002.md).
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## GIT-BRANCH-ARCHIVE-HYGIENE-002 — Group B parked-branch tags
 
-- **Lifecycle:** [`Assignment`](assignments/git-branch-archive-hygiene-002.md) `Closed` — PR [#119](https://github.com/shchnk1103/Universe-Keyboard/pull/119) merged `bf0e6ec` (head `e372268`).
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`Product Decision`](product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-002-authorization.md) · [`Authorization`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-002.md) (consumed) · [`Merge AUTH`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-002-MERGE.md) (consumed)
 - **Non-claims:** unique leftover commits are not on `main`; not Product Gate / Release.
-- **Next:** none for this Assignment. Keep disposition Closed as [`003`](assignments/git-branch-archive-hygiene-003.md).
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## GIT-BRANCH-ARCHIVE-HYGIENE-003 — Group B keep
 
-- **Lifecycle:** [`Assignment`](assignments/git-branch-archive-hygiene-003.md) `Closed` — PR [#120](https://github.com/shchnk1103/Universe-Keyboard/pull/120) merged `04e2240`; plan Archived. Close reviews: [`Architecture`](reviews/GIT-BRANCH-ARCHIVE-HYGIENE-003-close-architecture-review.md) · [`Quality`](reviews/GIT-BRANCH-ARCHIVE-HYGIENE-003-close-quality-review.md).
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`Product Decision`](product-decisions/GIT-BRANCH-ARCHIVE-HYGIENE-003-authorization.md) · [`Authorization`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-003.md) (consumed) · [`Merge AUTH`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-003-MERGE.md) (consumed) · [`Close AUTH`](authorizations/AUTH-GIT-BRANCH-ARCHIVE-HYGIENE-003-CLOSE.md) (consumed)
 - **Non-claims:** no Group B delete; unique commits not on `main`; not Product Gate / Release.
-- **Next:** none for this Assignment.
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001 — RTRD-02
 
-- **Lifecycle:** [`Assignment`](assignments/scheme-delivery-runtime-route-elapsed-001.md) `Closed` — Human accepted the same-field comparison gap. AUTH consumed.
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`Product Decision`](product-decisions/SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001-authorization.md) · [`Authorization`](authorizations/AUTH-SCHEME-DELIVERY-RUNTIME-ROUTE-ELAPSED-001.md) (consumed)
 - **Non-claims:** no performance conclusion, no Swift, no SUG-08, no Product Gate.
-- **Next:** none for this slice
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## SCHEME-DELIVERY-RUNTIME-ROUTE-DIAGNOSTICS-UI-001 — RTRD-01
 
-- **Lifecycle:** [`Assignment`](assignments/scheme-delivery-runtime-route-diagnostics-ui-001.md) `Closed` — PR [#110](https://github.com/shchnk1103/Universe-Keyboard/pull/110) merged `4e4164f` (head `8a3f05c`). Finite runtime-route fields are on `main` in diagnostics list/copy and a bottom sheet. Remote feature branch deleted.
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Non-claims:** no uninstall round, no SUG-08, no journal schema change, no Release, no `RTRD-02` close.
-- **Next:** none for this slice
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## KOS-SUG-OBS-DEVICE-001 — SUG-07 preflight execution
 
-- **Lifecycle:** [`Assignment`](assignments/kos-sug-obs-device-001.md) `Closed` — PR [#109](https://github.com/shchnk1103/Universe-Keyboard/pull/109) merged `0fd3518` (head `b481d70`). Preflight recorded trace UUID/phase/elapsed as `unreadable` in the then-current UI; **no uninstall round**. Remote feature branch deleted.
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`Product Decision`](product-decisions/KOS-SUG-OBS-DEVICE-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-OBS-DEVICE-001.md) (consumed)
 - **Non-claims:** no SUG-08, no Product Gate, no Release.
-- **Next:** none for this slice
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## KOS-SUG-OBS-PREFLIGHT-001 — SUG-07 docs-only observability preflight
 
-- **Lifecycle:** [`Assignment`](assignments/kos-sug-obs-preflight-001.md) `Closed` — PR [#107](https://github.com/shchnk1103/Universe-Keyboard/pull/107) merged `5ebf25f` (head `daafe0b`). Opt-in SUG-07 preflight is on `main`. Remote feature branch deleted.
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`Product Decision`](product-decisions/KOS-SUG-OBS-PREFLIGHT-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-OBS-PREFLIGHT-001.md) (consumed)
 - **Non-claims:** no SUG-04/08, no SUG-06 CI, no privacy/diagnostics/UI/log change, no `required`, no device run, no Release.
-- **Next:** none for this slice
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## KOS-SUG-PIN-AUDIT-001 — manual pin consistency audit
 
-- **Lifecycle:** [`Assignment`](assignments/kos-sug-pin-audit-001.md) `Closed` — the docs-only SUG-06 audit confirmed all five named current mirrors match the canonical `v0.8.0` advisory pin and opt-in boundary. Both final independent reviews passed.
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`Product Decision`](product-decisions/KOS-SUG-PIN-AUDIT-001-authorization.md) · [`Authorization`](authorizations/AUTH-KOS-SUG-PIN-AUDIT-001.md) (consumed) · [`Audit`](evidence/kos-sug-06-manual-pin-audit-2026-09-10.md) · [`Architecture review`](reviews/KOS-SUG-PIN-AUDIT-001-architecture-review.md) · [`Quality review`](reviews/KOS-SUG-PIN-AUDIT-001-quality-review.md)
 - **Non-claims:** no upstream-latest assertion, CI/script automation, KOS 2.0/2.1 change, `required`, migration, product code, device, or publication action.
 
 ## KOS-UPGRADE-UK-002 — Record Deferred kos-agent-kit v0.6.0 (historical)
 
-- **Lifecycle:** `Closed` — PR #92 merged `cb49e62`
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`Assignment`](assignments/kos-upgrade-uk-002.md) · [`Gate`](product-decisions/KOS-UPGRADE-UK-002-product-gate.md) · [`record`](kos/upgrade-records/KOS-UPGRADE-UK-002-v0.6.0.md)
 - **Current evidence:** Architecture / Quality `Pass`; Human Product Gate Passed; docs-only CI green
 - **Non-claims:** not Adopt `v0.6.0`; not `required`; not orchestration enablement; not Release
-- **Next:** 历史记录。Adopted pin 见 UK-003
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## RIME-BUILTIN-LUNA-QUALITY-001 — F-02 内置朙月候选质量（PR #93）
 
-- **Lifecycle:** `Closed` — engineering Assignment Close recorded 2026-09-16 after Human Product Gate acceptance for the merge slice
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`Assignment`](assignments/rime-builtin-luna-quality-001.md) · [`Gate-98`](product-decisions/RIME-BUILTIN-LUNA-QUALITY-001-product-gate-98.md) · [`AUTH-98`](authorizations/AUTH-RIME-BUILTIN-LUNA-QUALITY-001-MERGE-98.md) · ADR [`0033`](architecture/decisions/0033-main-app-owned-offline-rime-resource-closure.md) `Accepted`
 - **Current evidence:** #93 `ecd3446` Arch/Quality `Pass with conditions`；#98 `eedc4a7` Arch/Quality `Pass with conditions`；Human 删装确认自动部署与 fuzzy 默认关
 - **Blocker:** none for this merge slice
 - **Non-claims:** 不等于完整 Product/Quality Gate、TestFlight、Release 或法律充分性；`TD-001` 与接受的 F-02 范围限制仍保留
 - **Merged:** [#93](https://github.com/shchnk1103/Universe-Keyboard/pull/93) `ec6c277`；[#98](https://github.com/shchnk1103/Universe-Keyboard/pull/98) `f352f50`
-- **Next:** none for this Assignment；详见 [Close receipt](evidence/rime-builtin-luna-quality-001-close-2026-09-16.md)。任何 residual 偿还或发布动作需另行授权
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## KOS 2.2 advisory pin — 2026-08-27
 
-- **Lifecycle:** `KOS-UPGRADE-UK-001` `Reviewed` — Product Gate accepted；PR #84 merged `e7da77e`
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`PD`](product-decisions/KOS-UPGRADE-UK-001-authorization.md) · [`Gate`](product-decisions/KOS-UPGRADE-UK-001-product-gate.md) · [`Assignment`](assignments/kos-upgrade-uk-001.md)
 - **Pin:** historical `v0.5.0`; current adoption is recorded in [UPGRADE_STATUS](kos/UPGRADE_STATUS.md)
 - **P2 residual:** AUTH `consumption_state` → [`TD-014`](TECH_DEBT.md#td-014-kos-22-auth-consumption_state-卫生)
 - **Non-claims:** not `required`; not diagnostics implementation; not TestFlight upload
 - **First workflow:** `DIAGNOSTICS-VIEWER-LOAD-001` `Closed` — Human Product Gate Passed；PR #85 merged `420322b`。Human 的 `<100 MB` 是本次真机观察，不是新内存合同；不开 `required`
-- **Next:** PR #83 merged `e9aea57`。新 TestFlight 构建需要单独 Human 上传授权。TD-014 仍待 KOS-UPGRADE AUTH 卫生
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 - **CI tiering:** [`TD-016-CI-TIERING-001`](assignments/td-016-ci-tiering-001.md) `Closed` — Human Product Gate Passed；PR [#86](https://github.com/shchnk1103/Universe-Keyboard/pull/86) merged `78ed5b5`；PR [#87](https://github.com/shchnk1103/Universe-Keyboard/pull/87) merged `11fa096`。A-P2-02 required-check trust root 仍由 [`TD-016`](TECH_DEBT.md#td-016-ci-变更分级与文档提交快速门禁) 追踪；不改 branch protection/required checks
 - **Documentation alignment:** `KOS-2-2-DOC-ALIGN-001` `Closed` — Human Product Review accepted；核心治理/启动/协作/健康来源已说明 advisory Envelope 与渐进纳管边界；不启用 `required`
 - **GitHub auth diagnosis:** `CODEX-GITHUB-AUTH-DIAG-001` `Closed` — 手册随 PR #86 发布；沙箱内部机制仍不确定；不授权 Release
@@ -363,26 +474,26 @@
 - **Latest UI regression (2026-09-25):** 完整 `UniverseKeyboardUITests` 在 iPhone 18 Pro Max / iOS 27.0 Simulator 为 36 tests、29 passed / 7 skipped / 0 failed；修复后的取消与生产路径首次同步用例均通过。执行者证据见 [full UI regression receipt](evidence/rime-sync-v1-local-folder-full-ui-regression-2026-09-25.md)。该 UI-only 收据与 App + Keyboard delta reviews 是不同范围；后续 Product 生命周期决定已关闭有界工程 Assignment，provider 相关证据限制和 `TD-002` 仍按技术债/非声明保留。
 - **Historical checkpoint (2026-09-24):** P1/P2 deletion-boundary 修订已完成，iPhone 18 Pro / iOS 27.0 Simulator 五条定向用例通过（5/5，0 skipped）。Fresh Architecture 在精确 44-path snapshot `2c09ee2f…75a4d2a` 上为 `Accept with conditions`：P1/P2 代码 finding 已解决；真实 provider 元数据与删除传播仍是开放证据条件；`TD-002` 仍开放。Human Product Owner 将当前 closure scope 缩至 local-folder，live WebDAV 验证转入 [`TD-019`](TECH_DEBT.md#td-019-live-webdav-provider-validation)，并授权 iPhone 18 Pro / iOS 27.0 Simulator 创建隔离目标执行 local-folder 验证。该时点父 Assignment 为 `Active`；后续状态见当前生命周期行。见 [scope decision](product-decisions/RIME-SYNC-001-LOCAL-FOLDER-CLOSURE-WEBDAV-DEFERRED-2026-09-24.md)、[Architecture re-review](reviews/rime-sync-v1-final-architecture-rereview-2026-09-24.md) 与 [P2 evidence](evidence/rime-sync-v1-p2-deletion-boundary-remediation-2026-09-24.md)。
 - **Historical local-folder checkpoint (2026-09-24):** 独立 iPhone 18 Pro Max / iOS 27.0 Simulator 上，生产 ViewModel/Keychain/local-folder transport 的首次手动同步 UI 用例 1/1 通过；实际输出检查确认 RIME 标准资料与加密 Universe 设置包均落盘，密文未读取。还未测试 provider 删除传播。见 [first-sync receipt](evidence/rime-sync-v1-local-folder-simulator-first-sync-2026-09-24.md)。当时旧 Architecture/Quality receipt 仍绑定旧 manifest；后续配对复审已记录在当前生命周期决定及链接收据中。
-- **Lifecycle:** `Closed` — bounded iOS V1 Assignment; see [Product lifecycle decision](product-decisions/RIME-SYNC-001-ASSIGNMENT-CLOSE-2026-09-25.md)
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`Assignment`](assignments/rime-sync-001.md) · [`Contract`](RIME_SYNC.md)
 - **Background/device evidence:** 2026-09-22 与 2026-09-23 两次真机自然后台 operation 均完成 `standard_rime_data` 与 `private_settings` 两阶段并发布成功通知；2026-09-23 的前台竞争被 `process_busy` 正确跳过。记录见 [`2026-09-22`](evidence/rime-background-sync-natural-device-success-2026-09-22.md) 与 [`2026-09-23`](evidence/rime-background-sync-natural-device-success-2026-09-23.md)。上一轮 App + Keyboard Simulator suite 为 398 discovered、387 passed、10 skipped、0 failed（397 executed），是该次运行的历史结果；见 [`reconciliation`](evidence/rime-sync-v1-xcodebuildmcp-count-reconciliation-2026-09-24.md)。当前 2026-09-25 suite 为 401 total / 391 passed / 10 skipped / 0 failed；401 个原生枚举 ID 与 `.xcresult` 一致，402 MCP discovery 的本次报告残余已由 Product 窄接受，根因仍未知。见 [current full-suite receipt](evidence/rime-sync-v1-current-app-keyboard-full-suite-2026-09-25.md) 与 [Product Decision](product-decisions/RIME-SYNC-001-QR-CURRENT-01-PRODUCT-RESIDUAL-2026-09-24.md)。signed Keychain CRUD + RIME transport 聚焦 suite 11/11 是独立历史证据，非当前广套件重跑。UI-01 五例同一 run 5/5，fresh Quality 为 `Pass with conditions`；P2 稳定错误码获 fresh Architecture `Accept`。Human Product Owner 报告 iPhone 13 Pro / iOS 27.0 上安装的 1.0 (Build 1) 完成 VoiceOver 和大字检查、未触发同步/断开/删除；Source/payload provenance 仍未知。Simulator 证据不代表实体设备 Keychain 验证，也没有 hosted CI 运行。正式 Run 02 仍保留 `INVALID`
 - **Scope disposition:** Product Owner 已将当前关闭目标限定为 iOS V1；CloudKit 延后，完整跨平台兼容 / custom YAML 导入明确留存于 [`TD-008`](TECH_DEBT.md#td-008-complete-portable-rime-data-compatibility)。这不是跨平台兼容或 CloudKit 可用性声明
 - **Residual:** `TD-002`、[`TD-008`](TECH_DEBT.md#td-008-complete-portable-rime-data-compatibility)、[`TD-013`](TECH_DEBT.md#td-013-diagnostics-v1-p1-查询生命周期与迁移硬化)、[`TD-017`](TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure) remain open; live WebDAV is deferred under [`TD-019`](TECH_DEBT.md#td-019-live-webdav-provider-validation), and CloudKit is deferred. `QR-CURRENT-01` acceptance is limited to this exact-run reporting mismatch; its cause remains unknown. Run 02 stays `INVALID` with historical `HOLD` unchanged. Provider-deletion XCTest remains failed; manual evidence supports only the reviewed single iOS Simulator Files local-storage observation, not binary/source binding, XCTest success, physical-device deletion, propagation, or Files UI refresh.
 - **Non-claims:** 已合并 PR #182 仅代表该有界工程快照进入 main；不代表 Product Gate、TestFlight 或 Release 已授权或通过。
 - **Review:** Final synchronized 68-path parent snapshot received independent Quality `Pass with conditions` and Architecture `Accept with conditions`; exact receipts are [Quality](reviews/rime-sync-v1-parent-final-quality-sync-rereview-2026-09-25.md) and [Architecture](reviews/rime-sync-v1-parent-final-architecture-sync-rereview-2026-09-25.md). Earlier 38/44/66-path findings remain tied to their historical snapshots. Run 02's Quality/Architecture `HOLD` is unchanged.
-- **Next:** None under this Closed Assignment. Any work on retained technical debt, live WebDAV, CloudKit, cross-platform compatibility, physical-device deletion, or propagation requires its own bounded authorization/evidence path. PR #182 merge does not imply Product Gate, TestFlight, or Release.
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## PATH-BAR-TOUCH-001 — 九键 Path Bar 上半区点击投递
 
-- **Lifecycle:** `Completed`（Human 复验通过）
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`Assignment`](assignments/path-bar-touch-001.md)
 - **Frozen contract:** overlay 与 item 共用 `pathBarExpandedHitBounds`；直接 tap，不等 `didSelect` 先等 pan
 - **Non-claims:** 不改 Path 语义；不新增 DiagnosticEvent；未跑与 CI 等价全套 xcodebuild
-- **Next:** 开 PR；Closed 等合并
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## KEYBOARD-LAYOUT-9KEY-PUNCT-001 — 九键常用标点待确认与同键轮换
 
-- **Lifecycle:** `Closed`（PR #75 merged · `a69d993`）
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`PD`](product-decisions/KEYBOARD-LAYOUT-9KEY-PUNCT-001-authorization.md) · [`Assignment`](assignments/keyboard-layout-9key-punct-001.md)
 - **Frozen contract:** 键面 `，。？！`；单击待确认 `，`；候选栏替换；1.0s 同键轮换 `，。？！`；候选点选后再点该键 = 新开逗号
 - **Roles:** Domain Owner = Input Intelligence；Executor / Environment Executor = 当前 Codex 会话；Architecture / Quality = 独立 subagent；Human Dependency + Product Gate = Human Product Owner
@@ -390,38 +501,38 @@
 - **ADR:** [`0029`](architecture/decisions/0029-t9-pending-punctuation-palette.md) `Accepted`（#75 已交付）
 - **R1 / R2:** [`R1`](assignments/keyboard-layout-9key-punct-001-architecture-review.md) `Pass with conditions` · [`R2`](assignments/keyboard-layout-9key-punct-001-architecture-rereview.md) `Pass`
 - **Quality:** Q2 [`Pass with conditions`](assignments/keyboard-layout-9key-punct-001-quality-rereview.md)
-- **Next:** 无
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## KEY-TOUCH-FILL-001 — 各键盘触摸盒铺满且 overlay 不得改命中
 
-- **Lifecycle:** `Completed`（Human 真机 Product Gate Passed）
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`PD`](product-decisions/KEY-TOUCH-FILL-001-authorization.md) · [`Assignment`](assignments/key-touch-fill-001.md)
 - **Root cause:** 普通嵌套行的父栈 inset 看不到完整邻接；九键又在过早的根布局回调里靠约束与高度阈值反推深层行，最终拒绝并清空快照
 - **Non-claims:** 不改键面尺寸；九键列合同不变
 - **Evidence:** 聚焦几何 `21/0`；KeyboardCore `1006/0`；App + Keyboard `195/0`；RimeBridgeTests `68/0`；Release build 通过（Executor-recorded）
 - **Human Evidence:** 26 键与九键 overlay 关/开同点、普通键面及原生长按/切换路径全部通过
-- **Next:** 实现任务无剩余；诊断加载/搜索残余继续由 `TD-013` 独立追踪
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## RESPONSIVE-CANDIDATE-ANOMALY-001 — dual-gate 候选双写 / 分页卡死
 
-- **Lifecycle:** `Completed` — A1 select publish ownership + B owner-thread `candidateWindow`
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`Assignment`](assignments/responsive-candidate-anomaly-001.md) (Human Product Lead in-session under KOS 2.1)
 - **Parent:** T9-RESPONSIVE-PIPELINE-001 / RESPONSIVE-DEFAULT-ON-001
 - **Evidence:** `ResponsiveCandidateAnomalyTests` **4/0** (Executor-recorded); related filtered suite **38/0**
 - **Explicit non-claims:** not Quality-reverified; not device Product Gate
 - **Residual:** R-01 optional Human device smoke — disposition `accept`
-- **Next:** none required for automated Close path
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## T9-SINGLE-KEY-MIXED-CANDIDATES-001 — 单键混合中文候选（苹果式首键）
 
-- **Lifecycle:** `Closed — Won’t do` (2026-08-07)
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`PD`](product-decisions/T9-SINGLE-KEY-MIXED-CANDIDATES-001-authorization.md) · [`Assignment`](assignments/t9-single-key-mixed-candidates-001.md)
 - **Disposition:** Accept rime-ice `t9` sparse raw-digit menus as scheme default; do not implement Apple-like first-key union
-- **Next:** None — product investment pivots to multi-scheme support
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## RIME-SCHEME-WANXIANG-001 — 万象拼音 + 布局绑定方案
 
-- **Lifecycle:** `Completed` — V1 catalog/layout path delivered; independent governance review/close handoff remains
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`PD`](product-decisions/RIME-SCHEME-WANXIANG-001-authorization.md) · [`Assignment`](assignments/rime-scheme-wanxiang-001.md) · [`ADR-0026-ACCEPT`](assignments/adr-0026-accept-001.md)
 - **Pin:** `amzxyz/rime-wanxiang` · asset `rime-wanxiang-base.zip` · schema `wanxiang` · CC BY 4.0
 - **Evidence:** layout-bound + catalog unit tests; Human smoke 2026-08-07 (install/use/layout/sync/isolation); polish PRs #51–#54
@@ -433,71 +544,71 @@
 
 ## TD-012-OCTAGRAM-VENDOR-G1 — 可复现 iOS octagram Vendor 能力
 
-- **Lifecycle:** `Closed` — Arch + Quality **Conditional Accept** (2026-08-10)
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`PD`](product-decisions/TD-012-OCTAGRAM-VENDOR-G1-authorization.md) · [`Assignment`](assignments/td-012-octagram-vendor-g1.md)
 - **Delivered:** pin `rime-vendor-ios-1.16.1-lua.1-octagram.1`; Bridge shim/traits/force-load; no `.gram`
 - **Reviews:** [`Architecture`](assignments/td-012-octagram-vendor-g1-architecture-review.md) · [`Quality`](assignments/td-012-octagram-vendor-g1-quality-review.md) · [`handoff`](assignments/td-012-octagram-vendor-g1-review-handoff.md)
 - **Evidence:** [`G1 build`](evidence/td-012-g1-octagram-vendor-build-2026-08-10.md); Quality-reverified suite on `main`
 - **Non-claims:** no model quality, Jetsam budget, schema/UI, App Store
-- **Next:** none for G1; TD-012 model G2+ requires new Product Decision + memory measurement
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## TD-012-LMDG-MODEL-G2 — 万象 LMDG 模型资产固定与真机可行性门
 
-- **Lifecycle:** `Closed` — Product Hold；G2-A **Pass**；G2-B invalidated；no G3
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`PD`](product-decisions/TD-012-LMDG-MODEL-G2-authorization.md) · [`Assignment`](assignments/td-012-lmdg-model-g2.md) · [`plan`](plans/td-012-lmdg-model-g2-plan.md)
 - **Scope:** 隔离下载并固定简体 `.gram` 字节；通过后才进入人工真机 A/B 内存/Jetsam 门
 - **Non-claims:** no product installer/App Group persistence/schema/UI/default-on/other schemes
 - **Evidence:** [`G2-A asset pin`](evidence/td-012-lmdg-model-g2-asset-pin-2026-08-11.md) · [`latest invalidated A/B`](evidence/td-012-lmdg-model-g2-device-ab-2026-08-12.md) (`Executor-recorded` + `Device-attested`)
 - **Result:** 未观察到 Keyboard crash/Jetsam 或基础输入回归，但 baseline/model Debug dylib 不同，内存差值不可归因，G2-B 未通过
-- **Next:** none；未来重启须新 Product Decision；禁止进入 G3+
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## KOS-2.1-OPS — Knowledge OS 2.1 Operational Maturity（ops under 2.0）
 
-- **Lifecycle:** `Published — Must + S-02/S-03 live; design Closed; IMPL Completed; 2.0 frozen constitution unchanged`
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Ops package:** [`kos/kos-2.1-operational-maturity.md`](kos/kos-2.1-operational-maturity.md)
 - **Active Work:** [`ACTIVE_WORK.md`](ACTIVE_WORK.md) (≤10; Assignment remains SoT)
 - **Authority:** [`IMPL Assignment`](assignments/kos-2.1-ops-impl-001.md) + [`PD-IMPL`](product-decisions/KOS-2.1-OPS-IMPL-001-authorization.md) + [`design disposition`](product-decisions/KOS-2.1-OPS-001-design-disposition.md)
 - **Explicit non-claims:** not frozen 2.1 replacement of 2.0; not Migration; not S-01; no runtime
-- **Next:** Optional Product formal close stamps; use State sync checklist on future Gates
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## RESPONSIVE-DEFAULT-ON-001 — Product Gate / dual-gate Release default-on
 
-- **Lifecycle:** `Reviewed — Product Gate dual-gate Release default-on; Arch/Quality Pass with conditions; fail-closed teardown remediated; residuals visible`
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`Assignment`](assignments/responsive-default-on-001.md) + [`PD-RESPONSIVE-DEFAULT-ON-001`](product-decisions/RESPONSIVE-DEFAULT-ON-001-authorization.md)
 - **Change:** `productGateReleaseDefaultOn = true`; fail-closed install + owner teardown before sync fallback; ADR 0025 §8 updated
 - **Evidence:** [`evidence`](evidence/responsive-default-on-001-2026-08-06.md) · [`Architecture`](assignments/responsive-default-on-001-architecture-review.md) · [`Quality`](assignments/responsive-default-on-001-quality-review.md)
 - **Validation:** KeyboardCore **915/0** (Executor-recorded)
 - **Explicit non-claims:** no SLO; no App Store submission by this Gate alone
-- **Next:** optional Product close of Assignment; App Store still separate RELEASE work
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## RESPONSIVE-ALL-LAYOUTS-001 — 全中文布局响应式 L0
 
-- **Lifecycle:** `Completed — L0 layout-universal (26-key + T9); L1 provisional T9-only; superseded for defaults by RESPONSIVE-DEFAULT-ON-001`
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`Assignment`](assignments/responsive-all-layouts-001.md) + [`PD-RESPONSIVE-ALL-LAYOUTS-001`](product-decisions/RESPONSIVE-ALL-LAYOUTS-001-authorization.md)
 - **Evidence:** [`evidence`](evidence/responsive-all-layouts-001-2026-08-06.md)
 - **ADR:** §0 layout-universal amendment on [`0025`](architecture/decisions/0025-responsive-rime-serial-input-pipeline.md)
-- **Next:** Defaults superseded by RESPONSIVE-DEFAULT-ON-001; optional 26-key device directional matrix later
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## POST-ACCEPT-001 — ADR 0025 绑定文档 hygiene + R3 残差盘点
 
-- **Lifecycle:** `Completed — Follow-up #9/#10 done; R3 Core inventory recorded; superseded for defaults by RESPONSIVE-DEFAULT-ON-001`
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`Assignment`](assignments/t9-responsive-pipeline-001-post-accept-001.md) + [`PD-…-POST-ACCEPT-001`](product-decisions/T9-RESPONSIVE-PIPELINE-001-POST-ACCEPT-001-authorization.md)
 - **Evidence:** [`R3 residual inventory`](evidence/t9-responsive-pipeline-post-accept-001-r3-residual-inventory-2026-08-06.md)
 - **Docs:** `swift6-migration.md` dual-path ownership; `input-pipeline-and-marked-text.md` dual pipeline diagrams
-- **Next:** None for this slice; defaults handled by RESPONSIVE-DEFAULT-ON-001
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## ADR-0025-ACCEPT-001 — ADR 0025 正式接受评审
 
-- **Lifecycle:** `Reviewed / effectively closed by follow-on Gates — ADR 0025 Accepted; Product Gate later via RESPONSIVE-DEFAULT-ON-001`
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`Assignment`](assignments/adr-0025-accept-001.md) + [`PD-…-ADR-0025-ACCEPT`](product-decisions/T9-RESPONSIVE-PIPELINE-001-ADR-0025-ACCEPT-authorization.md)
 - **Reviews:** [`Architecture`](assignments/adr-0025-accept-001-architecture-review.md) · [`Quality`](assignments/adr-0025-accept-001-quality-review.md) · [`dossier`](assignments/adr-0025-accept-001-readiness-dossier.md)
 - **ADR:** [`0025 Accepted`](architecture/decisions/0025-responsive-rime-serial-input-pipeline.md) — binding design SoT; ordinary Release **requests dual-gate** after Product Gate (fail-closed → 0004)
 - **Explicit non-claims (Accept slice):** Accept alone did not flip defaults (historical); no SLO
-- **Next:** None for Accept slice
+- **Next:** Exact debugger readiness and limited field scope next. No automatic Maps/arm/LLDB/Release.
 
 ## T9-RESPONSIVE-PIPELINE-001 — 九宫格 / 全中文响应式 RIME 输入管线
 
-- **Lifecycle:** `Reviewed — ADR 0025 Accepted; ALL-LAYOUTS L0 universal; RESPONSIVE-DEFAULT-ON-001 Product Gate dual-gate Release request default-on delivered; parent removed from Active Work 2026-08-14; CANARY Stop/Retain history; Formal R5 FAIL historical; no SLO`
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`Assignment`](assignments/t9-responsive-rime-pipeline-001.md) + [`PD-T9-RESPONSIVE-PIPELINE-001`](product-decisions/T9-RESPONSIVE-PIPELINE-001-authorization.md) + [`ADR 0025 Accepted`](architecture/decisions/0025-responsive-rime-serial-input-pipeline.md) + [`CANARY-001`](assignments/t9-responsive-pipeline-001-production-shaped-canary-001.md) + [`ADR-0025-ACCEPT-001`](assignments/adr-0025-accept-001.md) + [`RESPONSIVE-DEFAULT-ON-001`](assignments/responsive-default-on-001.md)
 - **Publication tip:** stack on PR #42 / branch `codex/responsive-default-on-001`
 - **Delivered:** R1–R5 lineage; P1-D2; P2 matrix/PERF; CANARY A/B/K/O Stop/Retain; ADR Accept; ALL-LAYOUTS; Product Gate dual-gate **request** default-on (fail-closed sync)
@@ -510,7 +621,7 @@
 
 ## RELEASE-2026-0801 — 外部 TestFlight 候选 → App Store（现行目标 2026-08-26）
 
-- **Lifecycle:** `Active — external TestFlight candidate coordination`
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`Release umbrella Assignment`](assignments/release-2026-08-01.md) + [`PD-RELEASE-2026-0801-TARGET-REDATE`](product-decisions/RELEASE-2026-0801-target-redate.md) + [`PD-…-EXTERNAL-TESTFLIGHT-CANDIDATE`](product-decisions/RELEASE-2026-0801-external-testflight-candidate.md)
 - **Evidence source:** [`Release evidence and acceptance record`](evidence/release-2026-08-01-acceptance.md) + [`Build 7 artifact ledger`](evidence/release-2026-08-01-01-frozen-rc-build7-artifact-ledger-2026-08-24.md) + [`Task11 feedback`](evidence/release-2026-08-01-11-internal-testflight-feedback-2026-08-25.md) + [`04 P4 device run`](evidence/release-2026-08-01-04-build7-device-run-p4-2026-08-24.md) + [`Build 55 Xcode 27 RC diagnostic receipt`](evidence/release-2026-09-12-build55-td003-xcode27rc-diagnostic.md) + [`Build 55 TD-003 follow-up`](evidence/release-2026-09-13-build55-td003-cold-warm-diagnostic.md) + [`Build 55 TD-004 matrix`](evidence/release-2026-09-13-build55-td004-full-access-matrix.md) + [`Build 55 TD-005 query`](evidence/release-2026-09-13-build55-td005-system-crash-query.md) + [`Build 55 TD-005 classification follow-up`](evidence/release-2026-09-13-build55-td005-classification-follow-up.md) + [`Build 55 Archive ↔ export reconciliation`](evidence/release-2026-09-13-build55-archive-export-reconciliation.md) + [`Build 55 fresh-install boundary`](evidence/release-2026-09-13-build55-fresh-install-boundary.md) + [`Build 55 雾凇九宫格 gate`](evidence/release-2026-09-13-build55-rime-ice-nine-key-gate.md) + [`Build 55 public-beta readiness handoff`](evidence/release-2026-09-13-build55-public-beta-readiness-handoff.md) + [`Build 55 Quality/Release review`](reviews/release-2026-09-13-build55-quality-release-review.md) + [`Build 55 Quality/Release re-review`](reviews/release-2026-09-13-build55-quality-release-re-review.md)
 - **Current state:** Target date is `2026-08-26 Asia/Shanghai` (historical `2026-08-01`). Exact RC `testflight-v1.0-rc1-build7` is frozen at `244b32d`, artifacts are independently Quality Reviewed, and the Store IPA is processed in TestFlight. Human has now created internal group `Build 7 Internal Smoke`, attached one build and invited two internal testers; at least one invitation delivery is confirmed. Three initial findings are captured under Pending Task11: first-run RIME/scheme/deploy confusion, unexplained builtin multi-character input failure, and scheme-download failure without VPN. F-03 is Product-prioritized urgent before broader external testing.
@@ -523,7 +634,7 @@
 
 ## RELEASE-2026-0801-03 — 新用户启用与 Full Access 降级
 
-- **Lifecycle:** `Closed — Conditional Product Gate accepted by Human Product Owner`
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`Assignment`](assignments/release-2026-08-01-03-onboarding-full-access.md) + [`PD-RELEASE-2026-0801-03`](product-decisions/RELEASE-2026-0801-03-activation-authorization.md) + [`Product Gate`](assignments/release-2026-08-01-03-product-gate.md)
 - **Product source:** [`ONBOARDING_ACTIVATION.md`](ONBOARDING_ACTIVATION.md) (matrix updated with device observation)
 - **Device evidence:** iPhone 13 Pro / iOS 27 beta 3 — FA off still matches `nihao` candidates; haptics are the clear FA-linked gap; no degradation banner ([matrix](evidence/release-2026-08-01-03-physical-device-fa-matrix.md))
@@ -533,9 +644,9 @@
 
 ## KEYBOARD-LAYOUT-9KEY-PINYIN-002 — 确定性选项与选拼音循环
 
-- **Lifecycle:** `Active — Amendment D local implementation and review addenda validated; clean-commit evidence/Product Gate pending`
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** [`PD-KEYBOARD-LAYOUT-9KEY-PINYIN-002`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-002-authorization.md) + [`Assignment`](assignments/keyboard-layout-9key-pinyin-002.md)
-- **Current phase:** Amendment D remaining-provenance/digit-display/Delete fixes implemented; automated validation and Architecture/Quality addenda complete. Clean-commit Spike and physical-device Product Gate remain (covers A+B+C+D)
+- **Current phase:** C7 frozen candidate installed/78 payload matched; complete fresh backups, AppGroup53 preserved; main data migration classified as byte-preserving system path/cache rename. App launched, Human keyboard/button check complete; unarmed. [Checkpoint](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-promotion-validation-2026-10-02.md). Quality preflight P1-P3 Covered, first-clock/precise elapsed unknown; stage residuals accepted by Human only, no Gate.
 - **Completed gates:** [ADR 0021](architecture/decisions/0021-t9-deterministic-single-key-choices-and-cycle-selection.md) Accepted (+ Amendments A/B/C/D); pinned librime `1.16.1` Spike PASS for `m/n/o` (`9/9/4` candidates, no committed text); Core focused/full tests, RimeBridgeTests, main scheme tests and strict builds pass after Amendment D
 - **Delivered locally:** canonical single-key choices (`6 → m/n/o`), retained selection snapshot, direct/cycle shared transaction, first/next/wrap **选拼音**, selected accessibility state
 - **Latest acceptance fix:** visible inverse-color selected-path highlight and exact `m/n/o` marked-text display implemented; focused/full Core tests, main scheme Simulator tests, and Debug/Release strict builds were refreshed and passed
@@ -566,7 +677,7 @@
 - **Status owner/source:** Product Lead; [`Assignment`](assignments/keyboard-layout-9key-ui-001.md)
 - **Product / domain sources:** [`KEYBOARD_LAYOUT.md`](KEYBOARD_LAYOUT.md) (Nine-key Chrome), [`UI_STYLE_GUIDE.md`](UI_STYLE_GUIDE.md)
 - **Architecture source:** [ADR 0018](architecture/decisions/0018-keyboard-layout-nine-key-and-t9-runtime.md) (unchanged T9 digit semantics)
-- **Current phase:** Closed after human visual acceptance (`2026-07-17`); publication via feature branch / PR merge
+- **Current phase:** C7 frozen candidate installed/78 payload matched; complete fresh backups, AppGroup53 preserved; main data migration classified as byte-preserving system path/cache rename. App launched, Human keyboard/button check complete; unarmed. [Checkpoint](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-promotion-validation-2026-10-02.md). Quality preflight P1-P3 Covered, first-clock/precise elapsed unknown; stage residuals accepted by Human only, no Gate.
 - **Delivered chrome:** Left 4-column letter-group pad; right delete / 颜表情 `^_^` / double-height return glyph; bottom emoji + 选拼音 placeholder + wide 拼音 (1+1+2); type scale 22/16/15/14; digit payload via accessibility identity
 - **Residual product work:** full 选拼音 delivered under [`KEYBOARD-LAYOUT-9KEY-PINYIN-001`](assignments/keyboard-layout-9key-pinyin-001.md) (`Accepted / Closed`); full 颜表情 candidate content still requires a **separate** future Assignment
 - **Stop conditions (historical):** Raw-digit host commit, Extension deploy, live hot-switch redesign, English nine-key
@@ -577,7 +688,7 @@
 - **Status owner/source:** Product Lead; [`Assignment`](assignments/post-commit-continuation-001.md)
 - **Product source:** [`Post-Commit Continuation Product Contract`](POST_COMMIT_CONTINUATION.md)
 - **Architecture source:** [ADR 0017](architecture/decisions/0017-ephemeral-post-commit-continuation.md)
-- **Current phase:** Product Gate closed; PR #14 publication and safe branch cleanup authorized.
+- **Current phase:** C7 frozen candidate installed/78 payload matched; complete fresh backups, AppGroup53 preserved; main data migration classified as byte-preserving system path/cache rename. App launched, Human keyboard/button check complete; unarmed. [Checkpoint](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-promotion-validation-2026-10-02.md). Quality preflight P1-P3 Covered, first-clock/precise elapsed unknown; stage residuals accepted by Human only, no Gate.
 - **Current implementation:** Bounded bundled provider, transient KeyboardCore state, distinct candidate semantics, candidate-bar integration, default-on setting, strict resource validation, a 60-case/15-category synthetic Top-3 benchmark and a 250-context curated pack are present.
 - **Current evidence:** The human owner accepted physical-device candidate behavior. A paired Release snapshot on iPhone 13 Pro/iOS 27.0 beta 3 covers enabled/disabled cold process, repeated final commit, candidate refresh, CPU, physical footprint and 250-ms hang rows without an unexplained feature regression. See the [physical-device acceptance record](evidence/post-commit-continuation-v1.3-physical-device-2026-07-16.md).
 - **Closure evidence:** The [independent review record](evidence/post-commit-continuation-v1.3-independent-review-2026-07-16.md) records passing Quality and Architecture conclusions. The human Product Lead explicitly closed V1.3 on `2026-07-16`; publication remains complete only after PR #14 merges and the feature commit is reachable from `origin/main`.
@@ -589,7 +700,7 @@
 - **Status owner/source:** Product Lead; [`Assignment`](assignments/typing-intelligence-001.md)
 - **Product source:** [`Typing Intelligence Product Contract`](TYPING_INTELLIGENCE.md)
 - **Architecture source:** [ADR 0011](architecture/decisions/0011-local-typing-intelligence-data-boundary.md)
-- **Current phase:** Automated implementation validation complete; physical-device and complete accessibility/appearance release gates remain open
+- **Current phase:** C7 frozen candidate installed/78 payload matched; complete fresh backups, AppGroup53 preserved; main data migration classified as byte-preserving system path/cache rename. App launched, Human keyboard/button check complete; unarmed. [Checkpoint](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-promotion-validation-2026-10-02.md). Quality preflight P1-P3 Covered, first-clock/precise elapsed unknown; stage residuals accepted by Human only, no Gate.
 - **Domain Owner / Executor:** Input Intelligence Maintainer
 - **Supporting owners:** Keyboard Experience, App & Data Operations, Architecture, Quality
 - **Dependencies:** Pre-feature baseline and privacy API inventory are Gate 0 work; physical-device Full Access evidence is required before final acceptance.
@@ -613,7 +724,7 @@
 - **Status owner/source:** Product Lead; [`Assignment`](assignments/typo-correction-002.md)
 - **Product source:** [`Contextual Typo Correction Product Contract`](TYPO_CORRECTION.md)
 - **Architecture source:** [ADR 0015](architecture/decisions/0015-contextual-multi-error-typo-correction.md) and [ADR 0016](architecture/decisions/0016-progressive-contextual-recall-preflight.md)
-- **Current phase:** Core/bridge, bounded progressive-recall preflight and iOS UI baseline evidence captured; semantic scoring, contextual UI and designated-simulator acceptance pending
+- **Current phase:** C7 frozen candidate installed/78 payload matched; complete fresh backups, AppGroup53 preserved; main data migration classified as byte-preserving system path/cache rename. App launched, Human keyboard/button check complete; unarmed. [Checkpoint](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-promotion-validation-2026-10-02.md). Quality preflight P1-P3 Covered, first-clock/precise elapsed unknown; stage residuals accepted by Human only, no Gate.
 - **Domain Owner / Executor:** Input Intelligence Maintainer
 - **Supporting owners:** RIME Platform, Keyboard Experience, Architecture and Quality
 - **Device constraint:** environment-specific evidence may use only the designated Device Hub iOS 27 iPhone 17 Pro Max simulator.
@@ -780,7 +891,7 @@ Update this Dashboard only after the responsible owner confirms a state, depende
 
 ## KEYBOARD-LAYOUT-9KEY-PINYIN-004 — Gate 5 snapshot
 
-- **Lifecycle:** **`Accepted / Closed`** (`2026-07-23`) — [`PD-…-004-ASSIGNMENT-CLOSE`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-assignment-close.md)
+- **Lifecycle:** Parent and child Active; Architecture R4 byte-binding Covered/H2 comparison gap resolved; historical Partial and old restoration incident retained.
 - **Authority:** Assignment [`keyboard-layout-9key-pinyin-004.md`](assignments/keyboard-layout-9key-pinyin-004.md); PD-004; ADR 0023; Gate5 residual PDs.
 - **Landed:** PR [#27](https://github.com/shchnk1103/Universe-Keyboard/pull/27) catalog/H5 · [#28](https://github.com/shchnk1103/Universe-Keyboard/pull/28) residual-B · [#29](https://github.com/shchnk1103/Universe-Keyboard/pull/29) provisional-C.
 - **Human residual track:** H5-A/B/C **Pass** + residual-B **Pass** (device) — composite Product Gate for Gate 5 residual (close PD).

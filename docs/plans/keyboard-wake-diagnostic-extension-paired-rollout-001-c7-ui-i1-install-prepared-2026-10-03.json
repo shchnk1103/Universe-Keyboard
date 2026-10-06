@@ -1,0 +1,51 @@
+{
+  "status": "Prepared; exact I1 installation and exclusive window approval pending",
+  "scope": "One exact new standalone paired App installation and read-only identity/data/deployment comparison only",
+  "candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50",
+  "candidate_path": "/private/tmp/ukey-wake-probe-ui-candidate-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app",
+  "expected_payload_files": 78,
+  "paired_products_sha256": "8a51964bff1aecd8eaed4ceea072ac2cc20c38dc2c9b57126c54c39780aa0b99",
+  "install_argv": [
+    "xcrun",
+    "simctl",
+    "install",
+    "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "/private/tmp/ukey-wake-probe-ui-candidate-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app"
+  ],
+  "fresh_backup_receipt_sha256": "1696c0e6a5c30a5c73cb87a47eed8279ae1fd2c4a116d27d25241d679458cbb7",
+  "backup_root": "/private/tmp/ukey-wake-ui-i0-20261003/backup",
+  "recovery_plan_sha256": "f32c5c81586cca375982d5fc0d1061d5900bf9f93d401a252ba3edef83c69c47",
+  "preinstall_checks": [
+    "fresh exclusive for install window",
+    "exact device/branch/HEAD",
+    "same H1 source571 Vendor630 and payload78/Info/MachO UUID/signatures",
+    "current origins equal I0 backup baseline with provenance copy classification",
+    "no Main App or appex process"
+  ],
+  "postinstall_checks": [
+    "rediscover app/data/Group",
+    "full expected78file hashes / paired Info and six MachO identities",
+    "strict App/appex codesign",
+    "read-only compare protected data including diagnostic key original absence/deployment",
+    "preserve accessible after state and stop on mismatch"
+  ],
+  "stop_conditions": [
+    "no repeated install/rebuild",
+    "missing Group/data or content difference",
+    "process return",
+    "identity/signature/source mismatch"
+  ],
+  "non_goals": [
+    "launch/input/arm/freeze/export",
+    "Maps",
+    "LLDB",
+    "RIME deploy",
+    "data restoration",
+    "diagnostic switches",
+    "Release",
+    "Git publishing"
+  ],
+  "historical_residuals": "T29 unverified accepted currentT only; original30 skip preserved; no blanket future-stage acceptance",
+  "executed": false,
+  "packet_digest_sha256": "3c0e1233d72c14e9b47f09e47fb3e1bb6218659c3fc71a4ee49c64369f9cde64"
+}

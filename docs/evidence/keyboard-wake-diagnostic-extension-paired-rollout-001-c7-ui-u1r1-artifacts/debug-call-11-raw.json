@@ -1,0 +1,20 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "\n🐛 LLDB Command\n\n✅ Command executed\n\nOutput:\n  528 bytes written to '/private/tmp/ukey-wake-ui-u1r1-execution-20261003/snapshot.bin'\n"
+    }
+  ],
+  "structuredContent": {
+    "schema": "xcodebuildmcp.output.debug-command-result",
+    "schemaVersion": "2",
+    "didError": false,
+    "error": null,
+    "data": {
+      "command": "memory read --binary --size 1 --count 528 --outfile /private/tmp/ukey-wake-ui-u1r1-execution-20261003/snapshot.bin 0x000000011e62ad20",
+      "outputLines": [
+        "528 bytes written to '/private/tmp/ukey-wake-ui-u1r1-execution-20261003/snapshot.bin'"
+      ]
+    }
+  }
+}

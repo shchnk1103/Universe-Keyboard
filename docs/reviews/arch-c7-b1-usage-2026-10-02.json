@@ -1,0 +1,139 @@
+{
+  "lane_id": "ARCH-C7-B1",
+  "round": 1,
+  "packet_path": "/private/tmp/ukey-wake-c7b-20261002/ARCH-C7-B1-packet.json",
+  "packet_digest_sha256": "00dff6cef7b14473d5fd0e9898b44a4241ccabf88ca98360736a145e13308aaf",
+  "packet_digest_verified": true,
+  "source_identity": "9730e254cb8afd48f857ad9bef1659017fe90d26700ea3c9b1809249e3c751c8",
+  "source_identity_manifest_field": "9730e254cb8afd48f857ad9bef1659017fe90d26700ea3c9b1809249e3c751c8",
+  "source_identity_computed": "9730e254cb8afd48f857ad9bef1659017fe90d26700ea3c9b1809249e3c751c8",
+  "source_identity_verified": true,
+  "allowlisted_inputs": {
+    "count": 52,
+    "hashes_verified": 52,
+    "missing": [],
+    "mismatches": []
+  },
+  "reviewer_independence": "reviewer did not participate in C7 implementation",
+  "tool_budget": {
+    "max_tool_calls": 18,
+    "tool_calls_used": 18,
+    "checkpoint_after_calls": 6,
+    "checkpoint_recorded": true,
+    "checkpoint_utc": "2026-10-02T06:41:17.429975+00:00",
+    "delivery_marker_utc": "2026-10-02T06:51:39.741330+00:00",
+    "seconds_from_checkpoint_to_delivery_marker": 622.311,
+    "max_elapsed_seconds": 900,
+    "soft_delivery_seconds": 600,
+    "precheckpoint_reported_exec_walltime_seconds": 1.0,
+    "total_elapsed_seconds_from_first_call": null,
+    "elapsed_note": "No clock sample was captured before call 1; the complete first-call-to-delivery interval cannot be reconstructed exactly. Checkpoint-to-delivery interval and reported command wall times are recorded separately. Two collaboration calls did not expose wall time.",
+    "soft_deadline_status": "within 600 seconds by observed checkpoint/delivery interval and short pre-checkpoint command sequence; exact full interval unavailable"
+  },
+  "call_log": [
+    {
+      "call": 1,
+      "operation": "packet digest initial calculation",
+      "exec_wall_seconds": 0.2
+    },
+    {
+      "call": 2,
+      "operation": "digest exclusion variants",
+      "exec_wall_seconds": 0.2
+    },
+    {
+      "call": 3,
+      "operation": "canonical digest variant verification",
+      "exec_wall_seconds": 0.2
+    },
+    {
+      "call": 4,
+      "operation": "scope ACK to parent",
+      "exec_wall_seconds": null
+    },
+    {
+      "call": 5,
+      "operation": "verify 52 allowlisted SHA-256 inputs",
+      "exec_wall_seconds": 0.2
+    },
+    {
+      "call": 6,
+      "operation": "read governance/entry and checkpoint",
+      "exec_wall_seconds": 0.2
+    },
+    {
+      "call": 7,
+      "operation": "checkpoint to parent",
+      "exec_wall_seconds": null
+    },
+    {
+      "call": 8,
+      "operation": "read allowlisted Core/source/tests",
+      "exec_wall_seconds": 0.2
+    },
+    {
+      "call": 9,
+      "operation": "search probe integration symbols",
+      "exec_wall_seconds": 0.1
+    },
+    {
+      "call": 10,
+      "operation": "read probe UI and insertKey wrapper",
+      "exec_wall_seconds": 0.1
+    },
+    {
+      "call": 11,
+      "operation": "read CandidateBar constraints and gestures",
+      "exec_wall_seconds": 0.1
+    },
+    {
+      "call": 12,
+      "operation": "search lifecycle and candidate refresh hooks",
+      "exec_wall_seconds": 0.1
+    },
+    {
+      "call": 13,
+      "operation": "verify refresh call sites",
+      "exec_wall_seconds": 0.1
+    },
+    {
+      "call": 14,
+      "operation": "read candidate refresh and lifecycle code",
+      "exec_wall_seconds": 0.1
+    },
+    {
+      "call": 15,
+      "operation": "search Core owner/receipt instrumentation",
+      "exec_wall_seconds": 0.1
+    },
+    {
+      "call": 16,
+      "operation": "read build flags and validation dependencies",
+      "exec_wall_seconds": 0.2
+    },
+    {
+      "call": 17,
+      "operation": "read probe tests and owner metadata",
+      "exec_wall_seconds": 0.2
+    },
+    {
+      "call": 18,
+      "operation": "write review.md and usage.json",
+      "exec_wall_seconds": null
+    }
+  ],
+  "criterion_coverage": {
+    "A1": "complete_static_coverage",
+    "A2": "complete_static_coverage_with_probe_button_self-touch_exception",
+    "A3": "complete_static_coverage_as_metadata_only"
+  },
+  "static_architecture_disposition": "complete static review; no material source blocker established; no runtime, root-cause, Product Gate, merge, install, or Release authority",
+  "dynamic_evidence_required": [
+    "C7-B real UIKit/Extension target and paired build/tests under the dedicated Debug flag",
+    "C7-C fresh exclusive device Entry, single AppSwitcher-to-Maps reproduction, freeze and bounded packet read/decode"
+  ],
+  "stop_reason": null,
+  "output_path": "/private/tmp/ukey-wake-c7b-20261002/ARCH-C7-B1-review.md",
+  "usage_path": "/private/tmp/ukey-wake-c7b-20261002/ARCH-C7-B1-usage.json",
+  "excluded_actions_performed": []
+}

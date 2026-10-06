@@ -1,0 +1,46 @@
+{
+  "reviewer": "/root/m2r2_arch_r1",
+  "round": 2,
+  "task": "KEYBOARD-WAKE-HOST-ACTIVATION-FIX-001",
+  "lane": "Architecture A2 targeted independent review",
+  "packet": "/private/tmp/ukey-host-activation-fix-a2-review-20261005/packet.json",
+  "packet_sha256": "d3eac7837fe86fd7623c9e1f62cc2a42c4184adc111bc604a6dedf0664c6d965",
+  "independence": "Same independent reviewer reused; not Grok/root implementation; fresh explicitly authorized round and budget",
+  "scope": "Only criteria A2-1 through A2-4 from this packet.",
+  "read_boundary": "Exact 38 packet-listed inputs only; 1156 build-input rows are hash-only and will not be opened as source content.",
+  "entry_verification": {
+    "allowed_input_count": 38,
+    "all_input_hashes_match": true,
+    "branch": "codex/keyboard-wake-v3-compatibility-gate",
+    "expected_branch": "codex/keyboard-wake-v3-compatibility-gate",
+    "branch_match": true,
+    "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+    "expected_HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+    "HEAD_match": true,
+    "staged_paths": 0
+  },
+  "prohibitions": [
+    "production/docs edits",
+    "source implementation",
+    "build/test",
+    "simulator/container/LLDB",
+    "fetch/network",
+    "read unlisted input content",
+    "renew budget",
+    "dispose old Quality budget audit",
+    "claim notification/Maps/runtime repair"
+  ],
+  "budget": {
+    "wall_minutes": 20,
+    "tool_calls": 24,
+    "checkpoints_calls": [
+      8,
+      16,
+      21
+    ],
+    "reserve_final_output_calls": 3,
+    "start": "fresh followup dispatch, includes all Entry and reading; no renewal"
+  },
+  "output_directory": "/private/tmp/ukey-host-activation-fix-a2-review-20261005/architecture",
+  "ack_write_preflight": "Created this ACK in the exact allowed directory and immediately read it back."
+}

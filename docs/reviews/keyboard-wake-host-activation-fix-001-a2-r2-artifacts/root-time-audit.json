@@ -1,0 +1,13 @@
+{
+  "packet_creation_before_followup_utc": "2026-10-04T16:36:40.993682+00:00",
+  "root_clock_observation_of_complete_matching_outputs_utc": "2026-10-04T16:54:03.623557+00:00",
+  "conservative_elapsed_upper_bound_seconds": 1042.629875,
+  "wall_budget_seconds": 1200,
+  "conservative_window_within_budget": true,
+  "author_elapsed_0_invalid": true,
+  "author_ack_timestamp_is_not_a_valid_start_marker": true,
+  "original_usage_unmodified": true,
+  "call_count_24_is_author_record_with_explicit_counting_not_full_root_replay": true,
+  "defect_id": "A2-R2-USAGE-001",
+  "disposition": "root supplements wall-time proof and preserves original defect; no rewrite of author record"
+}

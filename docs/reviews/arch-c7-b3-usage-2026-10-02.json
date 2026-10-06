@@ -1,0 +1,26 @@
+{
+  "record_kind": "Coordinator stop receipt from visible independent final/ACK, NOT reviewer complete usage ledger",
+  "lane": "ARCH-C7-B1",
+  "round": 2,
+  "packet_digest_sha256": "1a31dc9eca187e38db664e15498531b15ec5491bc8a02aed27213b2dbd4d6a96",
+  "reported_calls_used": 12,
+  "call_budget": 12,
+  "start_utc_from_actual_ACK": "2026-10-02T08:37:48.807526+00:00",
+  "end_utc": null,
+  "elapsed_seconds": null,
+  "call_ledger": null,
+  "missing": [
+    "reviewer scratch report",
+    "reviewer usage ledger",
+    "reviewer actual end clock"
+  ],
+  "coverage_from_final": {
+    "H1": "Covered",
+    "H2": "Partial - section bytes/xcent comparison uncovered",
+    "H3": "Covered"
+  },
+  "verdict": "Partial / incomplete",
+  "coordinator_archived_utc": "2026-10-02T08:49:33.431898+00:00",
+  "archive_sha256": "a7d6f1baf8d0294b1f11e6e324ee880073da5c4511cbf44c6b71c03dc8ab5794",
+  "no_automatic_renewal": true
+}

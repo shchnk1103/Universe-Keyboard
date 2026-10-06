@@ -802,6 +802,305 @@ final class DiagnosticsJournalTests: XCTestCase {
         }
     }
 
+    func testReaderAcceptsMixedV3V4V5HistoryWithoutRewritingOldRecords() async throws {
+        let rootURL = makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let processID = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
+        let extensionID = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
+        let timestamp = Date(timeIntervalSince1970: 1_723_123_456)
+        let writer = DiagnosticsJournalWriter(
+            rootURL: rootURL,
+            origin: .mainApp,
+            processInstanceID: processID,
+            isMainAppWriter: true
+        )
+        try await writer.prepareRootIfOwnedByMainApp()
+        let measuredEvent = DiagnosticEvent(
+            utcTimestamp: timestamp,
+            monotonicNanoseconds: 2,
+            origin: .mainApp,
+            processInstanceID: processID,
+            localSequence: 2,
+            code: .typoRecallQueryMeasured,
+            level: .info,
+            category: .performance,
+            fields: [
+                .typoRecallQuery(
+                    .init(
+                        operationOrdinal: 2,
+                        stage: .stageOne,
+                        readiness: .ready,
+                        resultState: .candidatesReturned,
+                        returnedCandidateBucket: .oneToThree,
+                        disposition: .applied,
+                        facadeElapsedMicroseconds: 42,
+                        durationState: .measured
+                    )
+                )
+            ]
+        )
+        try await writer.append([
+            makeEvent(sequence: 1, processInstanceID: processID, timestamp: timestamp),
+            measuredEvent,
+        ])
+
+        var v3Record = rawEventObject(
+            version: 3,
+            origin: .mainApp,
+            processID: processID,
+            sequence: 3
+        )
+        v3Record["utcTimestamp"] = "2024-08-08T12:24:16Z"
+        let mainSegment = try XCTUnwrap(
+            FileManager.default.contentsOfDirectory(
+                at: rootURL.appendingPathComponent("g1/open"),
+                includingPropertiesForKeys: nil
+            ).first { $0.pathExtension == "jsonl" }
+        )
+        try appendRawRecord(v3Record, to: mainSegment)
+
+        var v4Record = rawEventObject(
+            version: 4,
+            origin: .keyboardExtension,
+            processID: extensionID,
+            sequence: 4
+        )
+        v4Record["utcTimestamp"] = "2024-08-08T12:24:16Z"
+        v4Record["code"] = DiagnosticEvent.Code.keyboardLifecyclePhaseChanged.rawValue
+        v4Record["level"] = Logger.Level.debug.rawValue
+        v4Record["category"] = Logger.Category.display.rawValue
+        v4Record["keyboardLifecyclePayload"] = ["phase": "view_did_appear"]
+        let extensionSegment =
+            rootURL
+            .appendingPathComponent("g1/open", isDirectory: true)
+            .appendingPathComponent("keyboard_extension-\(extensionID.uuidString)-20240808T12-0.jsonl")
+        try appendRawRecord(v4Record, to: extensionSegment)
+        var v6Record = v4Record
+        v6Record["schemaVersion"] = 6
+        v6Record["localSequence"] = 5
+        v6Record["monotonicNanoseconds"] = 5
+        try appendRawRecord(v6Record, to: extensionSegment)
+        let originalBytes = try Data(contentsOf: extensionSegment)
+
+        let reader = DiagnosticsJournalReader(rootURL: rootURL)
+        let latest = try await reader.latest()
+        XCTAssertTrue(latest.completeness.isComplete)
+        XCTAssertEqual(latest.events.count, 5)
+        XCTAssertEqual(Set(latest.events.map(\.schemaVersion)), Set([3, 4, 5, 6]))
+        XCTAssertTrue(latest.events.contains { $0.code == .typoRecallQueryMeasured })
+        XCTAssertTrue(latest.events.contains { $0.keyboardLifecyclePayload?.phase == .viewDidAppear })
+
+        let firstPage = try await reader.beginPage(maximumEventCount: 1)
+        XCTAssertTrue(firstPage.completeness.isComplete)
+        var pagedEvents = firstPage.events
+        var cursor = firstPage.nextCursor
+        while let currentCursor = cursor {
+            let page = try await reader.nextPage(after: currentCursor, maximumEventCount: 1)
+            XCTAssertTrue(page.completeness.isComplete)
+            pagedEvents.append(contentsOf: page.events)
+            cursor = page.nextCursor
+        }
+        XCTAssertEqual(pagedEvents.count, 5)
+        XCTAssertEqual(Set(pagedEvents.map(\.schemaVersion)), Set([3, 4, 5, 6]))
+
+        let catalog = try await reader.availableDateCatalog(timeZone: TimeZone(secondsFromGMT: 0)!)
+        let dateRange = try XCTUnwrap(catalog.ranges.first)
+        let preview = try await reader.recentPreview(in: dateRange)
+        XCTAssertTrue(preview.completeness.isComplete)
+        XCTAssertEqual(preview.events.count, 5)
+
+        XCTAssertEqual(try Data(contentsOf: extensionSegment), originalBytes)
+
+        let decodedV3 = try XCTUnwrap(latest.events.first { $0.schemaVersion == 3 })
+        do {
+            try await writer.append([decodedV3])
+            XCTFail("The v5 writer must not rewrite a retained v3 record")
+        } catch let error as DiagnosticsJournalError {
+            XCTAssertEqual(error, .writeFailed)
+        }
+    }
+
+    func testRejectedRecordsRemainIncompleteAcrossPagesAndReaderPaths() async throws {
+        let rootURL = makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let processID = UUID()
+        let timestamp = Date(timeIntervalSince1970: 1_723_123_456)
+        let writer = DiagnosticsJournalWriter(
+            rootURL: rootURL,
+            origin: .mainApp,
+            processInstanceID: processID,
+            isMainAppWriter: true
+        )
+        try await writer.prepareRootIfOwnedByMainApp()
+        try await writer.append([
+            makeEvent(sequence: 1, processInstanceID: processID, timestamp: timestamp),
+            makeEvent(sequence: 2, processInstanceID: processID, timestamp: timestamp),
+        ])
+        let segment = try XCTUnwrap(
+            FileManager.default.contentsOfDirectory(
+                at: rootURL.appendingPathComponent("g1/open"),
+                includingPropertiesForKeys: nil
+            ).first { $0.pathExtension == "jsonl" }
+        )
+
+        var unknownCode = rawEventObject(
+            version: 6,
+            origin: .mainApp,
+            processID: processID,
+            sequence: 3
+        )
+        unknownCode["code"] = "unrecognized.event.code"
+        try appendRawRecord(unknownCode, to: segment)
+
+        var malformedPayload = rawEventObject(
+            version: 6,
+            origin: .keyboardExtension,
+            processID: UUID(),
+            sequence: 4
+        )
+        malformedPayload["code"] = DiagnosticEvent.Code.keyboardLifecyclePhaseChanged.rawValue
+        malformedPayload["level"] = Logger.Level.debug.rawValue
+        malformedPayload["category"] = Logger.Category.display.rawValue
+        malformedPayload["keyboardLifecyclePayload"] = [:]
+        let extensionSegment =
+            rootURL
+            .appendingPathComponent("g1/open", isDirectory: true)
+            .appendingPathComponent("keyboard_extension-00000000-0000-0000-0000-000000000004-20240808T12-0.jsonl")
+        try appendRawRecord(malformedPayload, to: extensionSegment)
+
+        let expectedReasons: Set<DiagnosticsJournalRejectionReason> = [
+            .unsupportedCode,
+            .malformedPayload,
+        ]
+        let reader = DiagnosticsJournalReader(rootURL: rootURL)
+
+        let latest = try await reader.latest()
+        XCTAssertEqual(latest.completeness.rejectionReasons, expectedReasons)
+        XCTAssertEqual(latest.events.count, 2)
+
+        let firstPage = try await reader.beginPage(maximumEventCount: 1)
+        XCTAssertEqual(firstPage.completeness.rejectionReasons, expectedReasons)
+        XCTAssertEqual(firstPage.events.count, 1)
+        let cursor = try XCTUnwrap(firstPage.nextCursor)
+        let nextPage = try await reader.nextPage(after: cursor, maximumEventCount: 1)
+        XCTAssertEqual(nextPage.completeness.rejectionReasons, expectedReasons)
+        XCTAssertEqual(nextPage.events.count, 1)
+        XCTAssertNil(nextPage.nextCursor)
+
+        let catalog = try await reader.availableDateCatalog(timeZone: TimeZone(secondsFromGMT: 0)!)
+        let dateRange = try XCTUnwrap(catalog.ranges.first)
+        let preview = try await reader.recentPreview(in: dateRange)
+        XCTAssertEqual(preview.completeness.rejectionReasons, expectedReasons)
+        XCTAssertEqual(preview.events.count, 2)
+    }
+
+    func testV5WriterRejectsDecodedV6Marker() async throws {
+        let rootURL = makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let processID = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
+        var rawMarker = rawEventObject(
+            version: 6,
+            origin: .keyboardExtension,
+            processID: processID,
+            sequence: 1
+        )
+        rawMarker["code"] = DiagnosticEvent.Code.keyboardLifecyclePhaseChanged.rawValue
+        rawMarker["level"] = Logger.Level.debug.rawValue
+        rawMarker["category"] = Logger.Category.display.rawValue
+        rawMarker["keyboardLifecyclePayload"] = ["phase": "view_did_appear"]
+
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        let markerData = try JSONSerialization.data(withJSONObject: rawMarker)
+        let marker = try decoder.decode(DiagnosticEvent.self, from: markerData)
+        XCTAssertEqual(marker.schemaVersion, 6)
+
+        let writer = DiagnosticsJournalWriter(
+            rootURL: rootURL,
+            origin: .keyboardExtension,
+            processInstanceID: processID,
+            isMainAppWriter: false
+        )
+        do {
+            try await writer.append([marker])
+            XCTFail("Production v5 writer must reject a decoded v6 marker")
+        } catch let error as DiagnosticsJournalError {
+            XCTAssertEqual(error, .writeFailed)
+        }
+    }
+
+    func testRejectedOnlyV6HistoryRemainsIncomplete() async throws {
+        let rootURL = makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let processID = UUID(uuidString: "00000000-0000-0000-0000-000000000004")!
+        let writer = DiagnosticsJournalWriter(
+            rootURL: rootURL,
+            origin: .mainApp,
+            processInstanceID: processID,
+            isMainAppWriter: true
+        )
+        try await writer.prepareRootIfOwnedByMainApp()
+
+        let extensionID = UUID(uuidString: "00000000-0000-0000-0000-000000000005")!
+        var invalidMarker = rawEventObject(
+            version: 6,
+            origin: .keyboardExtension,
+            processID: extensionID,
+            sequence: 1
+        )
+        invalidMarker["code"] = DiagnosticEvent.Code.keyboardLifecyclePhaseChanged.rawValue
+        invalidMarker["level"] = Logger.Level.debug.rawValue
+        invalidMarker["category"] = Logger.Category.display.rawValue
+        invalidMarker["keyboardLifecyclePayload"] = ["phase": "unrecognized_phase"]
+        let segment =
+            rootURL
+            .appendingPathComponent("g1/open", isDirectory: true)
+            .appendingPathComponent("keyboard_extension-\(extensionID.uuidString)-20240808T12-0.jsonl")
+        try appendRawRecord(invalidMarker, to: segment)
+
+        let result = try await DiagnosticsJournalReader(rootURL: rootURL).latest()
+        let expectedReasons: Set<DiagnosticsJournalRejectionReason> = [.unknownValue]
+        XCTAssertTrue(result.events.isEmpty)
+        XCTAssertFalse(result.completeness.isComplete)
+        XCTAssertEqual(result.completeness.rejectionReasons, expectedReasons)
+    }
+
+    private func rawEventObject(
+        version: Int,
+        origin: DiagnosticEvent.Origin,
+        processID: UUID,
+        sequence: UInt64
+    ) -> [String: Any] {
+        [
+            "schemaVersion": version,
+            "utcTimestamp": "2024-08-08T12:24:16Z",
+            "monotonicNanoseconds": sequence,
+            "origin": origin.rawValue,
+            "processInstanceID": processID.uuidString,
+            "localSequence": sequence,
+            "code": DiagnosticEvent.Code.journalStarted.rawValue,
+            "level": Logger.Level.info.rawValue,
+            "category": Logger.Category.general.rawValue,
+            "fields": [],
+        ]
+    }
+
+    private func appendRawRecord(_ object: [String: Any], to segmentURL: URL) throws {
+        let data = try JSONSerialization.data(withJSONObject: object, options: [.sortedKeys])
+        if !FileManager.default.fileExists(atPath: segmentURL.path) {
+            try FileManager.default.createDirectory(
+                at: segmentURL.deletingLastPathComponent(),
+                withIntermediateDirectories: true
+            )
+            FileManager.default.createFile(atPath: segmentURL.path, contents: nil)
+        }
+        let handle = try FileHandle(forWritingTo: segmentURL)
+        defer { try? handle.close() }
+        try handle.seekToEnd()
+        try handle.write(contentsOf: data)
+        try handle.write(contentsOf: Data([0x0A]))
+    }
+
     private func makeEvent(
         sequence: UInt64,
         processInstanceID: UUID,

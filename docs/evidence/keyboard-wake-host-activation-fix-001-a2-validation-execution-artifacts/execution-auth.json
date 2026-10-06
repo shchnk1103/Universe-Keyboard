@@ -1,0 +1,10 @@
+{
+  "budget_start_utc": "2026-10-04T16:08:13.950496+00:00",
+  "wall_minutes": 180,
+  "human_execution_approved": true,
+  "fresh_exclusive": true,
+  "no_open_install_deploy": true,
+  "stage_only_historical_20_10_skips_accepted": true,
+  "copy_only_provenance_added_rewritten_accepted": true,
+  "no_source_writer_authority": true
+}

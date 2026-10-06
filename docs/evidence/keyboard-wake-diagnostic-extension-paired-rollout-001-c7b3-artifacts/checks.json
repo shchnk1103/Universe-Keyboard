@@ -1,0 +1,79 @@
+{
+  "markdown_paths": [
+    "docs/ACTIVE_WORK.md",
+    "docs/ENGINEERING_DASHBOARD.md",
+    "docs/KNOWLEDGE_INDEX.md",
+    "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md",
+    "docs/assignments/keyboard-wake-lifecycle-diagnostics-001.md",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b3-entry-2026-10-02.md",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b3-host-candidate-2026-10-02.md",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b3-validation-2026-10-02.md",
+    "docs/product-decisions/KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001-c7b3-authorization-2026-10-02.md",
+    "docs/reviews/arch-c7-b3-review-2026-10-02.md",
+    "docs/reviews/quality-c7-b3-review-2026-10-02.md"
+  ],
+  "repository_checker_raw_findings": {
+    "docs/ACTIVE_WORK.md": [],
+    "docs/ENGINEERING_DASHBOARD.md": [],
+    "docs/KNOWLEDGE_INDEX.md": [],
+    "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md": [],
+    "docs/assignments/keyboard-wake-lifecycle-diagnostics-001.md": [],
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b3-entry-2026-10-02.md": [],
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b3-host-candidate-2026-10-02.md": [],
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b3-validation-2026-10-02.md": [],
+    "docs/product-decisions/KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001-c7b3-authorization-2026-10-02.md": [],
+    "docs/reviews/arch-c7-b3-review-2026-10-02.md": [
+      [
+        11,
+        "</Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b3-entry-2026-10-02.md:3>"
+      ],
+      [
+        11,
+        "</Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b3-host-candidate-2026-10-02.md:3>"
+      ],
+      [
+        11,
+        "</Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/quality-c7-b1-r2-review-2026-10-02.md:19>"
+      ],
+      [
+        11,
+        "</Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b-validation-2026-10-02.md:32>"
+      ]
+    ],
+    "docs/reviews/quality-c7-b3-review-2026-10-02.md": []
+  },
+  "native_absolute_links_checked": [
+    {
+      "path": "docs/reviews/arch-c7-b3-review-2026-10-02.md",
+      "line": 11,
+      "target": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b3-entry-2026-10-02.md:3",
+      "verified": true
+    },
+    {
+      "path": "docs/reviews/arch-c7-b3-review-2026-10-02.md",
+      "line": 11,
+      "target": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b3-host-candidate-2026-10-02.md:3",
+      "verified": true
+    },
+    {
+      "path": "docs/reviews/arch-c7-b3-review-2026-10-02.md",
+      "line": 11,
+      "target": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/quality-c7-b1-r2-review-2026-10-02.md:19",
+      "verified": true
+    },
+    {
+      "path": "docs/reviews/arch-c7-b3-review-2026-10-02.md",
+      "line": 11,
+      "target": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b-validation-2026-10-02.md:32",
+      "verified": true
+    }
+  ],
+  "effective_missing_links": [],
+  "checker_limitation": "repository checker does not handle Codex native absolute paths and line suffixes; originals preserved, native target checks separately recorded",
+  "diff_check_exit": 0,
+  "actual_ios_tests": "not-run pending fresh exclusive/restoration Entry",
+  "simulator_or_container_operations": false,
+  "generic_host_build_exit": 0,
+  "sandbox_generic_attempt_exit": 74,
+  "project_source_edits": false
+}

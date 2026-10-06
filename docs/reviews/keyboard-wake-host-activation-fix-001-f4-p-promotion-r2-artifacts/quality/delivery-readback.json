@@ -1,0 +1,24 @@
+{
+  "files": {
+    "ack.json": {
+      "bytes": 1040,
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r2-artifacts/quality/ack.json",
+      "sha256": "f21024d3b77ff75c736eb2a6e9558cb6e1cabbc3bbefe282ad68d115cef3e587"
+    },
+    "review.md": {
+      "bytes": 4939,
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r2-artifacts/quality/review.md",
+      "sha256": "bfb3f4982aaf6e04ff50a5a13ab9098ed11ff7d5089a4609a99398356b859d04"
+    },
+    "usage.json": {
+      "bytes": 868,
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r2-artifacts/quality/usage.json",
+      "sha256": "5d385cf19543454996b6221657911ff65d539fa0da7c4e865cb9782b30a098d1"
+    }
+  },
+  "lane_id": "F4-P-QUALITY-PROMOTION",
+  "packet_sha256": "49b9ddcef36ae3e3cb4174c0a61e0fa4e3373ebcc54980f49b31427e4e63805e",
+  "readback_utc": "2026-10-05T03:36:03.611544+00:00",
+  "round": 2,
+  "verified": true
+}

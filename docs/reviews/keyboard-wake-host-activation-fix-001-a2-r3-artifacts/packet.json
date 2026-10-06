@@ -1,0 +1,98 @@
+{
+  "status": "Authorized fresh addendum, not renewal of R2",
+  "scope": "Only remaining A2-4 raw compile/diagnostic evidence; no source re-review or rerun",
+  "reviewer": "/root/m2r2_arch_r1",
+  "new_budget_proposal": {
+    "actual_tool_calls": 8,
+    "wall_minutes": 10,
+    "reserve_final_output_calls": 3,
+    "first_limit_stop": true
+  },
+  "allowed_inputs": [
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-a2-r2-artifacts/review.md",
+      "bytes": 2457,
+      "sha256": "4b1b51a30561d326912ac741cb61f4a44f8dad71ee59cce43758732526e2051f"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-a2-r2-artifacts/ack.json",
+      "bytes": 1822,
+      "sha256": "91f32e5f78d35c497f5128683658a1a55aeaef00e6866487878156ffec0d5a06"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-a2-r2-artifacts/usage.json",
+      "bytes": 2209,
+      "sha256": "9be508ab49eb4203e5b2a3d841480a9ae06eb7c67e28aef46766558821dd1bab"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-a2-r2-artifacts/root-time-audit.json",
+      "bytes": 676,
+      "sha256": "82d883ab08fe6bf5e3bf7263157a2a4719597357bb8852a9f87125ac31c452e8"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/ASSIGNMENT_POLICY.md",
+      "bytes": 25019,
+      "sha256": "e90dd8f06371e9367652d4e7cc63dee31ee7b1ac855e7802d6d2e9b8e1e90680"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-execution-artifacts/four-swift-actual-compile.json",
+      "bytes": 5438,
+      "sha256": "7a5b59b14dba745b9ed2d0346f4ea894ffc49fb8feb1f61384abd4b4202d8863"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-execution-artifacts/final-input-diagnostics.json",
+      "bytes": 2350,
+      "sha256": "e396fbf308cb4f227c42f400619de59de44337d260db92a11861c8a846d301ee"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-2-rimebridge.log",
+      "bytes": 389012,
+      "sha256": "a963ffc4baebb7e48483608f0da149586c319a5e1babd1011be43e8df534adb5"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-3-app-keyboard.log",
+      "bytes": 1020885,
+      "sha256": "6f64d5f7b4220abcb4b35515c6246fad0ceb847d6060c3ffd29ae163576e12e5"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-4-release-build.log",
+      "bytes": 442425,
+      "sha256": "992a37077c4584351727ad67cb54e8e2f412d18470d82a33937641decd92b671"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-5-keychain.log",
+      "bytes": 412035,
+      "sha256": "1a9afc01554a2d3d3b6dd2eac918fab81e1d250af7a44877cfa515ea5ee7b898"
+    }
+  ],
+  "required_check": "Independently parse four frozen raw logs without exporting user content; find actual SwiftCompile entries for four modified Swift files; zero original seven actor and new Swift warning/error; separate AppIntents tool warnings. Compare with frozen bounded artifacts and cite lines/hash. Previous 23-method actual Passed identity already covered; do not rerun/re-review it.",
+  "required_outputs": [
+    "ack.json with real start_utc immediately on dispatch",
+    "review.md focused addendum referencing R2 three Covered items",
+    "usage.json real start/end and honest actual calls, written/read within limit"
+  ],
+  "forbidden": [
+    "source/docs edits",
+    "build/test/simulator/LLDB",
+    "expand read list",
+    "reopen old source findings",
+    "dispose old Quality audit",
+    "auto budget renewal"
+  ],
+  "positive_rule": "If actual evidence mismatch or any necessary input uncovered => Partial, preserve original R2. New round only after Human exact scope/budget approval.",
+  "task": "KEYBOARD-WAKE-HOST-ACTIVATION-FIX-001",
+  "round": 3,
+  "authority": "Human 批准 in reply to root exact remaining A2-4, 8 actual tool calls / 10 minutes request",
+  "root": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "staged": 0,
+  "root_preflight_1156_source_rows_match": true,
+  "root_output_write_read": true,
+  "write_only_output_dir": "/private/tmp/ukey-host-activation-fix-a2-4-review-20261005/architecture",
+  "budget_start_utc": "2026-10-05T01:29:28.656142+00:00",
+  "deadline_utc": "2026-10-05T01:39:28.656142+00:00",
+  "budget_start_rule": "conservative root dispatch preparation clock before followup; ACK must retain this real start plus own ack_utc, never invent elapsed=0",
+  "counting": "Every functions.exec plus each nested tool invocation count separately; failed calls and collaboration messages count; budget8 first limit stop; no renewal",
+  "execution_hint": "Batch packet/hash/ACK in one exec; bounded raw log parse in one exec; write and reread all outputs in one exec; do not spend calls on progress chatter. Reporting a discovered issue does not require opening new input."
+}

@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+  "origin_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+  "expected_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+  "line_start": 181,
+  "line_end": 240,
+  "lines": [
+    {
+      "line": 181,
+      "text": "        var p3d1LifecycleLastReturnClean = false"
+    },
+    {
+      "line": 182,
+      "text": "        var p3d1LifecycleAppliedCount = 0"
+    },
+    {
+      "line": 183,
+      "text": "        var p3d1LifecycleDiagnosticElement: UIView?"
+    },
+    {
+      "line": 184,
+      "text": "    #endif"
+    },
+    {
+      "line": 185,
+      "text": ""
+    },
+    {
+      "line": 186,
+      "text": "    // MARK: - 删除自动重复"
+    },
+    {
+      "line": 187,
+      "text": ""
+    },
+    {
+      "line": 188,
+      "text": "    /// 长按删除的计时器生命周期由专用协调器单独持有。"
+    },
+    {
+      "line": 189,
+      "text": "    let deleteRepeatController = DeleteRepeatController()"
+    },
+    {
+      "line": 190,
+      "text": ""
+    },
+    {
+      "line": 191,
+      "text": "    // MARK: - 长按变体字符（UI 层状态）"
+    },
+    {
+      "line": 192,
+      "text": ""
+    },
+    {
+      "line": 193,
+      "text": "    /// 当前显示的变体字符弹出面板"
+    },
+    {
+      "line": 194,
+      "text": "    var variantPopupView: KeyPopupView?"
+    },
+    {
+      "line": 195,
+      "text": "    /// 正在长按的按钮引用"
+    },
+    {
+      "line": 196,
+      "text": "    var longPressedButton: UIButton?"
+    },
+    {
+      "line": 197,
+      "text": "    /// 展开的候选面板（流式布局）"
+    },
+    {
+      "line": 198,
+      "text": "    var candidateExpandedPanel: UIView?"
+    },
+    {
+      "line": 199,
+      "text": "    /// 展开面板内部的纵向滚动视图（用于无限滚动检测）"
+    },
+    {
+      "line": 200,
+      "text": "    var expandedPanelScrollView: UIScrollView?"
+    },
+    {
+      "line": 201,
+      "text": "    /// 展开态使用的流式候选列表，支持增量插入而无需重建整个面板"
+    },
+    {
+      "line": 202,
+      "text": "    var expandedCandidateCollectionView: UICollectionView?"
+    },
+    {
+      "line": 203,
+      "text": "    /// 展开/收起候选面板的 SF Symbol 按钮"
+    },
+    {
+      "line": 204,
+      "text": "    var candidateExpandButton: UIButton?"
+    },
+    {
+      "line": 205,
+      "text": "    /// 展开按钮宽度约束（无候选时设为 0 隐藏）"
+    },
+    {
+      "line": 206,
+      "text": "    var candidateExpandButtonWidthConstraint: NSLayoutConstraint?"
+    },
+    {
+      "line": 207,
+      "text": "    /// 候选面板是否处于展开状态"
+    },
+    {
+      "line": 208,
+      "text": "    var isCandidateExpanded = false"
+    },
+    {
+      "line": 209,
+      "text": "    /// Precise pinyin path expansion (mutually exclusive with candidate expansion)."
+    },
+    {
+      "line": 210,
+      "text": "    var isPinyinPathExpanded = false"
+    },
+    {
+      "line": 211,
+      "text": "    weak var t9PinyinPathBarView: T9PinyinPathBarView?"
+    },
+    {
+      "line": 212,
+      "text": "    weak var t9SelectPinyinButton: UIButton?"
+    },
+    {
+      "line": 213,
+      "text": "    weak var t9SpaceButton: UIButton?"
+    },
+    {
+      "line": 214,
+      "text": "    var pinyinPathExpandedPanel: UIView?"
+    },
+    {
+      "line": 215,
+      "text": "    var pinyinPathCollectionView: UICollectionView?"
+    },
+    {
+      "line": 216,
+      "text": "    var accumulatedPinyinPaths: [T9PinyinPath] = []"
+    },
+    {
+      "line": 217,
+      "text": "    var pinyinPathNextGlobalIndex: Int = 0"
+    },
+    {
+      "line": 218,
+      "text": "    var pinyinPathHasMore = false"
+    },
+    {
+      "line": 219,
+      "text": "    var pinyinPathPanelGeneration: UInt64 = 0"
+    },
+    {
+      "line": 220,
+      "text": "    var pinyinPathPanelProvenanceRevision: UInt64 = 0"
+    },
+    {
+      "line": 221,
+      "text": "    /// 上次滑动翻页的时间戳（用于防抖，避免连续触发）"
+    },
+    {
+      "line": 222,
+      "text": "    var lastPageSwipeTime: CFTimeInterval = 0"
+    },
+    {
+      "line": 223,
+      "text": "    /// 累积候选词列表（无极滑动：随着用户滚动持续追加后续页的候选）"
+    },
+    {
+      "line": 224,
+      "text": "    var accumulatedCandidates: [CandidateItem] = []"
+    },
+    {
+      "line": 225,
+      "text": "    /// RIME 是否还有更多页的候选"
+    },
+    {
+      "line": 226,
+      "text": "    var hasMoreCandidates: Bool = false"
+    },
+    {
+      "line": 227,
+      "text": "    /// 是否正在加载更多候选（防止重复触发）"
+    },
+    {
+      "line": 228,
+      "text": "    var isLoadingMoreCandidates: Bool = false"
+    },
+    {
+      "line": 229,
+      "text": "    /// 候选栏已加载的页数深度。旧分页诊断字段保留，当前全局索引预取路径不再依赖它。"
+    },
+    {
+      "line": 230,
+      "text": "    var candidatePageDepth: Int = 0"
+    },
+    {
+      "line": 231,
+      "text": "    /// 下一次从 RIME 全局候选列表读取的起始索引。"
+    },
+    {
+      "line": 232,
+      "text": "    var nextCandidateGlobalIndex: Int = 0"
+    },
+    {
+      "line": 233,
+      "text": "    /// 当前候选快照对应的 raw input，用于丢弃旧输入的延迟预取结果。"
+    },
+    {
+      "line": 234,
+      "text": "    var candidateSnapshotRawInput: String?"
+    },
+    {
+      "line": 235,
+      "text": "    /// Core composition revision bound to the published T9/candidate snapshot."
+    },
+    {
+      "line": 236,
+      "text": "    /// Delayed candidateWindow results must match this revision."
+    },
+    {
+      "line": 237,
+      "text": "    var candidateSnapshotCompositionRevision: UInt64 = 0"
+    },
+    {
+      "line": 238,
+      "text": "    /// 候选快照代数；每次 composition 变化递增。"
+    },
+    {
+      "line": 239,
+      "text": "    var candidateSnapshotGeneration: Int = 0"
+    },
+    {
+      "line": 240,
+      "text": "    /// 当前预取目标。展开态会加载更多候选，横向栏保持小批量。"
+    }
+  ]
+}

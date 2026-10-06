@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-02T16:15:11.286153+00:00",
+  "diagnosis": "draft uses64hex values as paths instead of absolute dict keys; false missing, not candidate defect",
+  "initial_draft": {
+    "review.md": {
+      "sha256": "4b424c4793ff74e35383b26317c1979afa87c99df40855a83715af1ded59bf41",
+      "snapshot": "first-draft-review.md"
+    },
+    "usage.json": {
+      "sha256": "fbb977601d154afddd5f7f7615da94de71f9d627ecadc9496f9525f20627e117",
+      "snapshot": "first-draft-usage.json"
+    }
+  },
+  "scope": "same packet/no renewal; tool repair only requested"
+}

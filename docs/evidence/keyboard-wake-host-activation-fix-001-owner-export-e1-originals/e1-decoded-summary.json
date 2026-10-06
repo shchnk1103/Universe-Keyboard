@@ -1,0 +1,88 @@
+{
+  "bytes": 1496,
+  "sha256": "a8b3bde10c0c489e92b1e7f370e257d33c4156f805697af1597fe5d5fd35414d",
+  "record_count": 16,
+  "buffer_complete": true,
+  "attempts": [
+    {
+      "ordinal": 1,
+      "paired": true,
+      "schedule_count": 1,
+      "schedule_owner_receipt": [
+        [
+          1,
+          1,
+          4
+        ]
+      ],
+      "owner_absent_sequences": []
+    },
+    {
+      "ordinal": 2,
+      "paired": true,
+      "schedule_count": 1,
+      "schedule_owner_receipt": [
+        [
+          1,
+          1,
+          15
+        ]
+      ],
+      "owner_absent_sequences": []
+    }
+  ],
+  "event_stages": [
+    2,
+    2,
+    3,
+    9,
+    4,
+    5,
+    10,
+    6,
+    7,
+    7,
+    11,
+    8,
+    8,
+    3,
+    9,
+    4
+  ],
+  "event_owners": [
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+  ],
+  "event_receipts": [
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0
+  ]
+}

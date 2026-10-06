@@ -1,0 +1,16 @@
+{
+  "utc": "2026-10-04T16:58:06.730468+00:00",
+  "packet_sha256": "d3eac7837fe86fd7623c9e1f62cc2a42c4184adc111bc604a6dedf0664c6d965",
+  "three_original_output_hashes": {
+    "ack.json": "91f32e5f78d35c497f5128683658a1a55aeaef00e6866487878156ffec0d5a06",
+    "review.md": "4b1b51a30561d326912ac741cb61f4a44f8dad71ee59cce43758732526e2051f",
+    "usage.json": "9be508ab49eb4203e5b2a3d841480a9ae06eb7c67e28aef46766558821dd1bab"
+  },
+  "38_inputs_match_before_governance_closeout": true,
+  "1156_source_inputs_match": true,
+  "staged": 0,
+  "content_verdict": "Partial / incomplete",
+  "A2_F1": "Covered",
+  "remaining": "A2-4 independent compile/diagnostics evidence",
+  "root_does_not_replace_independent_conclusion": true
+}

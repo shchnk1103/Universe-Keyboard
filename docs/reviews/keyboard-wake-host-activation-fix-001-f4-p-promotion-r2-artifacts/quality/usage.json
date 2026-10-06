@@ -1,0 +1,20 @@
+{
+  "actual_tool_calls": 18,
+  "budget_actual_tool_calls": 20,
+  "budget_wall_clock_seconds": 900,
+  "coverage": {
+    "Q-P1": "Uncovered",
+    "Q-P2": "Uncovered",
+    "Q-P3": "Uncovered",
+    "Q-P4": "Covered"
+  },
+  "elapsed_seconds": 616.795676,
+  "ended_utc": "2026-10-05T03:36:03.611127+00:00",
+  "lane_id": "F4-P-QUALITY-PROMOTION",
+  "packet_sha256": "49b9ddcef36ae3e3cb4174c0a61e0fa4e3373ebcc54980f49b31427e4e63805e",
+  "round": 2,
+  "started_utc": "2026-10-05T03:25:46.815451+00:00",
+  "stop_reason": "Partial: Q-P1 module SHA/UUID pairing, Q-P2 per-target raw request/receipt binding, and Q-P3 decoded entitlement comparison remain uncovered; stop per frozen required-coverage condition",
+  "tool_call_accounting": "8 functions.exec wrappers + 8 nested exec_command invocations + 2 coordination messages; preflight round excluded",
+  "verdict": "Partial"
+}

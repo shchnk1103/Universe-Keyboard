@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift",
+  "origin_sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+  "expected_sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+  "line_start": 241,
+  "line_end": 300,
+  "lines": [
+    {
+      "line": 241,
+      "text": "                    in: self"
+    },
+    {
+      "line": 242,
+      "text": "                )"
+    },
+    {
+      "line": 243,
+      "text": "                bringSubviewToFront(overlay)"
+    },
+    {
+      "line": 244,
+      "text": "            } else {"
+    },
+    {
+      "line": 245,
+      "text": "                expandHitboxOverlay?.isHidden = true"
+    },
+    {
+      "line": 246,
+      "text": "            }"
+    },
+    {
+      "line": 247,
+      "text": "            DebugHitboxOverlayPresentation.refreshProbeLabel = { [weak self] in"
+    },
+    {
+      "line": 248,
+      "text": "                self?.refreshHitProbeLabel(text: DebugHitboxOverlayPresentation.probeLine)"
+    },
+    {
+      "line": 249,
+      "text": "            }"
+    },
+    {
+      "line": 250,
+      "text": "            refreshHitProbeLabel(text: DebugHitboxOverlayPresentation.probeLine)"
+    },
+    {
+      "line": 251,
+      "text": "        }"
+    },
+    {
+      "line": 252,
+      "text": ""
+    },
+    {
+      "line": 253,
+      "text": "        private func recordHitProbe(point: CGPoint, hitView: UIView?) {"
+    },
+    {
+      "line": 254,
+      "text": "            guard DebugHitboxOverlayPresentation.isShowing else { return }"
+    },
+    {
+      "line": 255,
+      "text": "            let collectionPoint = collectionView.convert(point, from: self)"
+    },
+    {
+      "line": 256,
+      "text": "            let index = collectionView.indexPathForItem(at: collectionPoint)"
+    },
+    {
+      "line": 257,
+      "text": "            let cell = index.flatMap { collectionView.cellForItem(at: $0) as? CandidateCollectionCell }"
+    },
+    {
+      "line": 258,
+      "text": "            let contentHeight = cell.map { Int($0.contentView.bounds.height) } ?? -1"
+    },
+    {
+      "line": 259,
+      "text": "            let cellHeight = cell.map { Int($0.bounds.height) } ?? -1"
+    },
+    {
+      "line": 260,
+      "text": "            let hitName = CandidateTouchDiagnostics.viewPath(hitView)"
+    },
+    {
+      "line": 261,
+      "text": "            let indexText = index.map { String($0.item) } ?? \"nil\""
+    },
+    {
+      "line": 262,
+      "text": "            let inCell: String"
+    },
+    {
+      "line": 263,
+      "text": "            if let cell, let hitView {"
+    },
+    {
+      "line": 264,
+      "text": "                inCell = (hitView === cell || hitView.isDescendant(of: cell)) ? \"inCell\" : \"chrome\""
+    },
+    {
+      "line": 265,
+      "text": "            } else {"
+    },
+    {
+      "line": 266,
+      "text": "                inCell = \"noCell\""
+    },
+    {
+      "line": 267,
+      "text": "            }"
+    },
+    {
+      "line": 268,
+      "text": "            refreshHitProbeLabel("
+    },
+    {
+      "line": 269,
+      "text": "                text:"
+    },
+    {
+      "line": 270,
+      "text": "                    \"\\(hitName) idx=\\(indexText) \\(inCell) cellH=\\(cellHeight) contentH=\\(contentHeight) y=\\(Int(point.y))\""
+    },
+    {
+      "line": 271,
+      "text": "            )"
+    },
+    {
+      "line": 272,
+      "text": "        }"
+    },
+    {
+      "line": 273,
+      "text": ""
+    },
+    {
+      "line": 274,
+      "text": "        private func refreshHitProbeLabel(text: String?) {"
+    },
+    {
+      "line": 275,
+      "text": "            guard DebugHitboxOverlayPresentation.isShowing else {"
+    },
+    {
+      "line": 276,
+      "text": "                hitProbeLabel?.isHidden = true"
+    },
+    {
+      "line": 277,
+      "text": "                return"
+    },
+    {
+      "line": 278,
+      "text": "            }"
+    },
+    {
+      "line": 279,
+      "text": "            let label = hitProbeLabel ?? UILabel()"
+    },
+    {
+      "line": 280,
+      "text": "            if hitProbeLabel == nil {"
+    },
+    {
+      "line": 281,
+      "text": "                label.font = .monospacedDigitSystemFont(ofSize: 8, weight: .medium)"
+    },
+    {
+      "line": 282,
+      "text": "                label.textColor = .systemYellow"
+    },
+    {
+      "line": 283,
+      "text": "                label.backgroundColor = UIColor.black.withAlphaComponent(0.72)"
+    },
+    {
+      "line": 284,
+      "text": "                label.numberOfLines = 2"
+    },
+    {
+      "line": 285,
+      "text": "                label.adjustsFontSizeToFitWidth = true"
+    },
+    {
+      "line": 286,
+      "text": "                label.minimumScaleFactor = 0.5"
+    },
+    {
+      "line": 287,
+      "text": "                label.isUserInteractionEnabled = false"
+    },
+    {
+      "line": 288,
+      "text": "                addSubview(label)"
+    },
+    {
+      "line": 289,
+      "text": "                hitProbeLabel = label"
+    },
+    {
+      "line": 290,
+      "text": "            }"
+    },
+    {
+      "line": 291,
+      "text": "            label.isHidden = false"
+    },
+    {
+      "line": 292,
+      "text": "            label.text = text ?? DebugHitboxOverlayPresentation.probeLine"
+    },
+    {
+      "line": 293,
+      "text": "            let width = min(bounds.width - 8, max(160, bounds.width - 8))"
+    },
+    {
+      "line": 294,
+      "text": "            label.frame = CGRect(x: 4, y: max(2, bounds.height - 30), width: width, height: 28)"
+    },
+    {
+      "line": 295,
+      "text": "            bringSubviewToFront(label)"
+    },
+    {
+      "line": 296,
+      "text": "        }"
+    },
+    {
+      "line": 297,
+      "text": "    #endif"
+    },
+    {
+      "line": 298,
+      "text": ""
+    },
+    {
+      "line": 299,
+      "text": "    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {"
+    },
+    {
+      "line": 300,
+      "text": "        let result ="
+    }
+  ]
+}

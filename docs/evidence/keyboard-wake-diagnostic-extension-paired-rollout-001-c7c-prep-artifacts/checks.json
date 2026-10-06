@@ -1,0 +1,138 @@
+{
+  "markdown_paths": [
+    "docs/ACTIVE_WORK.md",
+    "docs/ENGINEERING_DASHBOARD.md",
+    "docs/KNOWLEDGE_INDEX.md",
+    "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md",
+    "docs/assignments/keyboard-wake-lifecycle-diagnostics-001.md",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-prep-entry-2026-10-02.md",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-prep-validation-2026-10-02.md",
+    "docs/plans/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-evidence-chain-plan-2026-10-02.md",
+    "docs/plans/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-offline-decoder-2026-10-02.md",
+    "docs/product-decisions/KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001-c7c-prep-authorization-2026-10-02.md",
+    "docs/reviews/quality-c7-c-prep-r1-review-2026-10-02.md"
+  ],
+  "repository_checker_raw_findings": {
+    "docs/ACTIVE_WORK.md": [],
+    "docs/ENGINEERING_DASHBOARD.md": [],
+    "docs/KNOWLEDGE_INDEX.md": [],
+    "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md": [],
+    "docs/assignments/keyboard-wake-lifecycle-diagnostics-001.md": [],
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-prep-entry-2026-10-02.md": [],
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-prep-validation-2026-10-02.md": [],
+    "docs/plans/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-evidence-chain-plan-2026-10-02.md": [],
+    "docs/plans/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-offline-decoder-2026-10-02.md": [],
+    "docs/product-decisions/KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001-c7c-prep-authorization-2026-10-02.md": [],
+    "docs/reviews/quality-c7-c-prep-r1-review-2026-10-02.md": [
+      [
+        17,
+        "</Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/plans/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-evidence-chain-plan-2026-10-02.md:21>"
+      ],
+      [
+        17,
+        "</Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift:26>"
+      ],
+      [
+        17,
+        "</Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift:418>"
+      ],
+      [
+        17,
+        "</Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+InputActions.swift:19>"
+      ],
+      [
+        21,
+        "</Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardWakeOwnerProbe.swift:69>"
+      ],
+      [
+        21,
+        "</Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift:83>"
+      ],
+      [
+        23,
+        "</Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/plans/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-offline-decoder-2026-10-02.md:12>"
+      ],
+      [
+        23,
+        "</Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-prep-artifacts/offline-example-results.json:1>"
+      ],
+      [
+        27,
+        "</Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ThreadAffineRimeSession.swift:405>"
+      ],
+      [
+        27,
+        "</Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift:381>"
+      ],
+      [
+        27,
+        "</Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/quality-c7-b1-review-2026-10-02.md:19>"
+      ]
+    ]
+  },
+  "native_absolute_line_links_verified": [
+    {
+      "report_line": 17,
+      "target": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/plans/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-evidence-chain-plan-2026-10-02.md:21",
+      "exists_and_line_valid": true
+    },
+    {
+      "report_line": 17,
+      "target": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift:26",
+      "exists_and_line_valid": true
+    },
+    {
+      "report_line": 17,
+      "target": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift:418",
+      "exists_and_line_valid": true
+    },
+    {
+      "report_line": 17,
+      "target": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+InputActions.swift:19",
+      "exists_and_line_valid": true
+    },
+    {
+      "report_line": 21,
+      "target": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardWakeOwnerProbe.swift:69",
+      "exists_and_line_valid": true
+    },
+    {
+      "report_line": 21,
+      "target": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift:83",
+      "exists_and_line_valid": true
+    },
+    {
+      "report_line": 23,
+      "target": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/plans/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-offline-decoder-2026-10-02.md:12",
+      "exists_and_line_valid": true
+    },
+    {
+      "report_line": 23,
+      "target": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-prep-artifacts/offline-example-results.json:1",
+      "exists_and_line_valid": true
+    },
+    {
+      "report_line": 27,
+      "target": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/ThreadAffineRimeSession.swift:405",
+      "exists_and_line_valid": true
+    },
+    {
+      "report_line": 27,
+      "target": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift:381",
+      "exists_and_line_valid": true
+    },
+    {
+      "report_line": 27,
+      "target": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/quality-c7-b1-review-2026-10-02.md:19",
+      "exists_and_line_valid": true
+    }
+  ],
+  "effective_missing_links": [],
+  "checker_limit": "repository checker treats leading slash as repository relative and colon line suffix as filename; independent report native Codex links checked separately without rewriting report bytes",
+  "diff_check_exit": 0,
+  "project_build_or_test": false,
+  "simulator_or_container_operations": false,
+  "offline_cases": 18,
+  "lldb_help_only_no_target": true,
+  "coverage": "actual own changed and new Markdown including untracked via repository missing_links function"
+}

@@ -1,0 +1,17 @@
+{
+  "main-data": {
+    "added": 50,
+    "removed": 4,
+    "changed": 3
+  },
+  "app-group": {
+    "added": 0,
+    "removed": 59,
+    "changed": 4
+  },
+  "installed-app": {
+    "added": 51,
+    "removed": 0,
+    "changed": 78
+  }
+}

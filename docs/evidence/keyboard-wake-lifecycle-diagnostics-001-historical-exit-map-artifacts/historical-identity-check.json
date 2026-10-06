@@ -1,0 +1,36 @@
+{
+  "historical_report_sha_matches_20260927_review_reference": true,
+  "c5_reader_final_report_and_usage_match_terminal_timer": true,
+  "file_inputs_sha256": {
+    "docs/evidence/keyboard-wake-lifecycle-diagnostics-2026-09-27.md": "d9c416b24380ac56d6bc17c7d0660aefe852ac1e376c46f979c9bb2d83c86f0f",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-validation-2026-10-01.md": "3e5b796bcdb04442c11eb3baa0380c877d56dedfbcd521f9861cd28c0a2063c8",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-window.json": "27712d4498d2177bb16a605ff59cd962ba79529dd9ef6e7a4819d099cea09b5a",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-typed-window.json": "ae8348a3de33d39821d5846802f08291308f3fc4adfd318ac2e2b3faf763686a",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-preflight.json": "1d26c06e17cbe780182a344cbe79d57f769c1396303d965c5faaee04d29c404a",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-final-check.json": "9f300007094b24aa3f7da22ff1d9178b7e05e8761e9e5ba698a3047570bc6889",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-final-receipt.json": "d0eb72412f757e4e6f384a67f6908ab48dd6352bdb57ca1b4822eeb90a730af8",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-reader-focused-r3-validation-2026-10-01.md": "c6dbc6a423c69f4133e5db788e11c69ea15cac49c7603edb45b3547bcb47e619",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-reader-focused-r3-quality-review.md": "2a732d5c91bdfacd5f8f027070974c19901dbf9ab133ff08003b24a7ffbe9b40",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-reader-focused-r3-quality-usage.json": "b53593d465ba60146295ea905e65ffae9dc02e4803c30271fcd94a1368a81853",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-reader-focused-r3-timer.json": "e51480048d68eb63208bb02fb910e401e6395f8844c63c2450a90e677199b267",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c6-maps-validation-2026-10-01.md": "45b9dc63eda247e38c02fb7470c0ad62e02a8a3a34d676632cf6b7de382a721f",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c6-maps-window.json": "3bd8a1a39510857f10eaee13d9153b40c5f0b3b43ef04850ae63c59cbac229a0",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c6-maps-typed-window.json": "cf39b358876d5d3adf5ef44fc214c4d017f06cd4efc90e71ec9de836ec68c5a5",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c6-maps-preflight.json": "392f53b5f61ea88c45eb03c46de58927967941bf2824e4154ff17c79aae03fdd",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c6-maps-final-check.json": "1a701d78ceef40e57e4e3950fe88d9a70a4852ceb3f36d78031b25aa56d35b15",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m2r2-reexport-validation-2026-10-04.md": "f1faf9fc3b451892712506b2b9a62ab9685c39ccb0b0b4adf57238443bf78760",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-m2r2-reexport-review-validation-2026-10-04.md": "b885895322f913ba06c20e7a10f6848c8e9d4b85bb6334c24a38d0f84141ad96",
+    "docs/reviews/keyboard-wake-diagnostic-extension-paired-rollout-001-m2r2-reexport-review-artifacts/architecture-review.md": "542af67c8bc137a8621d693ec9d89170d0e269c2a631f4140846e9c00bbd3108",
+    "docs/reviews/keyboard-wake-diagnostic-extension-paired-rollout-001-m2r2-reexport-review-artifacts/quality-final-message.md": "c6048d2ceab564e5b959b8fbe0c65d86011baaf293d7179ec0bc58e5cc8adffc"
+  },
+  "historical_candidates": {
+    "20260927": "source9eb83158 pluspatch; installed build/source receipt not retained",
+    "C5_C6": "af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9",
+    "M2R2": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50"
+  },
+  "no_cross_run_merge": true,
+  "old_review_receipts_20260927": "Assignment summary only; standalone reviewer files not located in scoped repo dirs",
+  "old_raw_segments_20260927": "report explicitly says not archived; capture-time SHA only",
+  "c5_c6_segment_sha": "not present in retained typed-window segment metadata; report/typed projection hashes are not raw JSONL hashes",
+  "current_simulator_access": false
+}

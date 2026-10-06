@@ -1,0 +1,22 @@
+{
+  "authority": "Human批准 exact proposed parent-only completion",
+  "parent": "Completed — bounded diagnostic delivery",
+  "child": "Active",
+  "review_verdicts_preserved": [
+    "Architecture Partial",
+    "Quality Partial"
+  ],
+  "residuals": "PEXIT-R1/R2/R3 accept only current parent nonblocking/unverified",
+  "proposal_sha256": "5d81efbea1fb03c43cf21ec688449c6645cce5a9ad8b00e1c4ee9562c23b9ef2",
+  "outputs_sha256": {
+    "docs/product-decisions/KEYBOARD-WAKE-LIFECYCLE-DIAGNOSTICS-001-bounded-completion-product-decision-2026-10-04.md": "997cc82c2adbd5d214ccf767a534618d38445c880f16c90c2ab427e259a15961",
+    "docs/evidence/keyboard-wake-lifecycle-diagnostics-001-bounded-completion-2026-10-04.md": "efb68b21bec71e2e6f542416109b56b67b7deeee40117c2efece59e447d8b664",
+    "docs/assignments/keyboard-wake-lifecycle-diagnostics-001.md": "7d75ae71c209c118ebc37a412d5f07c386911ee60861eb767a8ee46ba9b75ca7",
+    "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md": "528c06cdef45356690d3d6ab99f2f2072bcfe7f35bb53efc29e4adb795f5280e",
+    "docs/ACTIVE_WORK.md": "10bcd639d6cf2f4d749cc85f42124def403350c4bc34bdff7be5b9311c7c5ae0",
+    "docs/KNOWLEDGE_INDEX.md": "35c1518d834ca81e262a4c38ac1e25ea1ed303cb01150be4ace434a559c62a5f",
+    "docs/ENGINEERING_DASHBOARD.md": "a26b6b8bcfb63cbf0639244c48df5e9673f8190ee492f5e218eed816cd74971a"
+  },
+  "actions_excluded": "source/build/test/simulator/install/restore/deploy/backup deletion/Git/Release",
+  "active_summary_table": "completed parent row replaced by still-Active paired-rollout child; other rows preserved"
+}

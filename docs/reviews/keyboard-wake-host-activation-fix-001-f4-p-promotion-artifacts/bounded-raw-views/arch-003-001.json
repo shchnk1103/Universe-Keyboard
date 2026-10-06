@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Presentation.swift",
+  "origin_sha256": "767c2817054484d4d4c328cb7a8deaf676509b76bbc3cb45868b6e3cf721319a",
+  "expected_sha256": "767c2817054484d4d4c328cb7a8deaf676509b76bbc3cb45868b6e3cf721319a",
+  "line_start": 1,
+  "line_end": 60,
+  "lines": [
+    {
+      "line": 1,
+      "text": "import KeyboardCore"
+    },
+    {
+      "line": 2,
+      "text": "import UIKit"
+    },
+    {
+      "line": 3,
+      "text": ""
+    },
+    {
+      "line": 4,
+      "text": "extension KeyboardViewController {"
+    },
+    {
+      "line": 5,
+      "text": "    /// Installs content inside the system-provided input region without requesting a custom height."
+    },
+    {
+      "line": 6,
+      "text": "    func setupRootStack() {"
+    },
+    {
+      "line": 7,
+      "text": "        keyboardSurfaceView = UIView()"
+    },
+    {
+      "line": 8,
+      "text": "        keyboardSurfaceView.translatesAutoresizingMaskIntoConstraints = false"
+    },
+    {
+      "line": 9,
+      "text": ""
+    },
+    {
+      "line": 10,
+      "text": "        keyboardSurfaceMaterialView = UIVisualEffectView(effect: nil)"
+    },
+    {
+      "line": 11,
+      "text": "        keyboardSurfaceMaterialView.translatesAutoresizingMaskIntoConstraints = false"
+    },
+    {
+      "line": 12,
+      "text": ""
+    },
+    {
+      "line": 13,
+      "text": "        keyboardSurfaceFillView = UIView()"
+    },
+    {
+      "line": 14,
+      "text": "        keyboardSurfaceFillView.translatesAutoresizingMaskIntoConstraints = false"
+    },
+    {
+      "line": 15,
+      "text": ""
+    },
+    {
+      "line": 16,
+      "text": "        keyboardSurfaceHighlightView = UIView()"
+    },
+    {
+      "line": 17,
+      "text": "        keyboardSurfaceHighlightView.translatesAutoresizingMaskIntoConstraints = false"
+    },
+    {
+      "line": 18,
+      "text": ""
+    },
+    {
+      "line": 19,
+      "text": "        rootStack = KeyboardInputHitAreaStackView()"
+    },
+    {
+      "line": 20,
+      "text": "        rootStack.axis = .vertical"
+    },
+    {
+      "line": 21,
+      "text": "        rootStack.spacing = keySpacing"
+    },
+    {
+      "line": 22,
+      "text": "        rootStack.distribution = .fill"
+    },
+    {
+      "line": 23,
+      "text": "        rootStack.translatesAutoresizingMaskIntoConstraints = false"
+    },
+    {
+      "line": 24,
+      "text": ""
+    },
+    {
+      "line": 25,
+      "text": "        view.clipsToBounds = true"
+    },
+    {
+      "line": 26,
+      "text": "        applyKeyboardSurfaceStyle()"
+    },
+    {
+      "line": 27,
+      "text": ""
+    },
+    {
+      "line": 28,
+      "text": "        view.addSubview(keyboardSurfaceView)"
+    },
+    {
+      "line": 29,
+      "text": "        keyboardSurfaceView.addSubview(keyboardSurfaceMaterialView)"
+    },
+    {
+      "line": 30,
+      "text": "        keyboardSurfaceView.addSubview(keyboardSurfaceFillView)"
+    },
+    {
+      "line": 31,
+      "text": "        keyboardSurfaceView.addSubview(keyboardSurfaceHighlightView)"
+    },
+    {
+      "line": 32,
+      "text": "        keyboardSurfaceView.addSubview(rootStack)"
+    },
+    {
+      "line": 33,
+      "text": "        NSLayoutConstraint.activate(["
+    },
+    {
+      "line": 34,
+      "text": "            keyboardSurfaceView.leadingAnchor.constraint(equalTo: view.leadingAnchor),"
+    },
+    {
+      "line": 35,
+      "text": "            keyboardSurfaceView.trailingAnchor.constraint(equalTo: view.trailingAnchor),"
+    },
+    {
+      "line": 36,
+      "text": "            keyboardSurfaceView.topAnchor.constraint(equalTo: view.topAnchor),"
+    },
+    {
+      "line": 37,
+      "text": "            keyboardSurfaceView.bottomAnchor.constraint(equalTo: view.bottomAnchor),"
+    },
+    {
+      "line": 38,
+      "text": ""
+    },
+    {
+      "line": 39,
+      "text": "            keyboardSurfaceMaterialView.leadingAnchor.constraint(equalTo: keyboardSurfaceView.leadingAnchor),"
+    },
+    {
+      "line": 40,
+      "text": "            keyboardSurfaceMaterialView.trailingAnchor.constraint(equalTo: keyboardSurfaceView.trailingAnchor),"
+    },
+    {
+      "line": 41,
+      "text": "            keyboardSurfaceMaterialView.topAnchor.constraint(equalTo: keyboardSurfaceView.topAnchor),"
+    },
+    {
+      "line": 42,
+      "text": "            keyboardSurfaceMaterialView.bottomAnchor.constraint(equalTo: keyboardSurfaceView.bottomAnchor),"
+    },
+    {
+      "line": 43,
+      "text": ""
+    },
+    {
+      "line": 44,
+      "text": "            keyboardSurfaceFillView.leadingAnchor.constraint(equalTo: keyboardSurfaceView.leadingAnchor),"
+    },
+    {
+      "line": 45,
+      "text": "            keyboardSurfaceFillView.trailingAnchor.constraint(equalTo: keyboardSurfaceView.trailingAnchor),"
+    },
+    {
+      "line": 46,
+      "text": "            keyboardSurfaceFillView.topAnchor.constraint(equalTo: keyboardSurfaceView.topAnchor),"
+    },
+    {
+      "line": 47,
+      "text": "            keyboardSurfaceFillView.bottomAnchor.constraint(equalTo: keyboardSurfaceView.bottomAnchor),"
+    },
+    {
+      "line": 48,
+      "text": ""
+    },
+    {
+      "line": 49,
+      "text": "            keyboardSurfaceHighlightView.leadingAnchor.constraint("
+    },
+    {
+      "line": 50,
+      "text": "                equalTo: keyboardSurfaceView.leadingAnchor, constant: 18),"
+    },
+    {
+      "line": 51,
+      "text": "            keyboardSurfaceHighlightView.trailingAnchor.constraint("
+    },
+    {
+      "line": 52,
+      "text": "                equalTo: keyboardSurfaceView.trailingAnchor, constant: -18),"
+    },
+    {
+      "line": 53,
+      "text": "            keyboardSurfaceHighlightView.topAnchor.constraint(equalTo: keyboardSurfaceView.topAnchor, constant: 1),"
+    },
+    {
+      "line": 54,
+      "text": "            keyboardSurfaceHighlightView.heightAnchor.constraint(equalToConstant: 1),"
+    },
+    {
+      "line": 55,
+      "text": ""
+    },
+    {
+      "line": 56,
+      "text": "            rootStack.leadingAnchor.constraint(equalTo: keyboardSurfaceView.leadingAnchor, constant: 7),"
+    },
+    {
+      "line": 57,
+      "text": "            rootStack.trailingAnchor.constraint(equalTo: keyboardSurfaceView.trailingAnchor, constant: -7),"
+    },
+    {
+      "line": 58,
+      "text": "            rootStack.topAnchor.constraint(equalTo: keyboardSurfaceView.topAnchor, constant: keyboardContentTopInset),"
+    },
+    {
+      "line": 59,
+      "text": "            rootStack.bottomAnchor.constraint("
+    },
+    {
+      "line": 60,
+      "text": "                equalTo: keyboardSurfaceView.bottomAnchor, constant: -keyboardContentBottomInset),"
+    }
+  ]
+}

@@ -1,0 +1,128 @@
+{
+  "checked_utc": "2026-10-01T07:03:12.273963+00:00",
+  "run_id": "C6-MAPS-20261001-01",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "source_match": 568,
+  "built_match": 111,
+  "installed_match": 111,
+  "capture_state": {
+    "logging_enabled": {
+      "present": true,
+      "value": false
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "present": false,
+      "value": null
+    },
+    "log_category_disp": {
+      "present": false,
+      "value": null
+    },
+    "log_category_engine": {
+      "present": false,
+      "value": null
+    }
+  },
+  "exact_original_value_and_presence_restored": true,
+  "display_multiset": {
+    "expected": 30,
+    "observed": 30,
+    "missing": 0,
+    "extra": 0
+  },
+  "producer_groups": {
+    "processes": 2,
+    "appearances": 2
+  },
+  "proxy_pairs": [
+    {
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "operation": "set_marked_text",
+      "entered_localSequence": 13,
+      "returned_localSequence": 14
+    },
+    {
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "operation": "set_marked_text",
+      "entered_localSequence": 21,
+      "returned_localSequence": 22
+    },
+    {
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "operation": "set_marked_text",
+      "entered_localSequence": 29,
+      "returned_localSequence": 30
+    },
+    {
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "operation": "set_marked_text",
+      "entered_localSequence": 37,
+      "returned_localSequence": 38
+    },
+    {
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "operation": "set_marked_text",
+      "entered_localSequence": 45,
+      "returned_localSequence": 46
+    },
+    {
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "operation": "set_marked_text",
+      "entered_localSequence": 52,
+      "returned_localSequence": 53
+    },
+    {
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "operation": "set_marked_text",
+      "entered_localSequence": 58,
+      "returned_localSequence": 59
+    },
+    {
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "operation": "set_marked_text",
+      "entered_localSequence": 63,
+      "returned_localSequence": 64
+    },
+    {
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "operation": "set_marked_text",
+      "entered_localSequence": 68,
+      "returned_localSequence": 69
+    },
+    {
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "operation": "set_marked_text",
+      "entered_localSequence": 73,
+      "returned_localSequence": 74
+    },
+    {
+      "processInstanceID": "3F66BF6F-B473-44A7-98D0-06DFC60A7C45",
+      "appearanceID": "99A7FD8B-E3DC-407A-9905-DE432C52D8C2",
+      "operation": "set_marked_text",
+      "entered_localSequence": 13,
+      "returned_localSequence": 14
+    },
+    {
+      "processInstanceID": "3F66BF6F-B473-44A7-98D0-06DFC60A7C45",
+      "appearanceID": "99A7FD8B-E3DC-407A-9905-DE432C52D8C2",
+      "operation": "set_marked_text",
+      "entered_localSequence": 20,
+      "returned_localSequence": 21
+    }
+  ],
+  "mcp_original_profile_restored": "typo-correction-002-recall-publication-preflight-002-release",
+  "no_automatic_retry": true,
+  "failure_variant_unique_machine_binding": "unavailable",
+  "exclusive_execution_window_end_utc": "2026-10-01T07:03:12.274378+00:00"
+}

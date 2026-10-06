@@ -1,0 +1,104 @@
+{
+  "sha256": "40ff2daf44c1a6495ea9188b4a10a7aa9160f3d38b35a4c8a99c1d9e41d8e467",
+  "bytes": 528,
+  "record_count": 5,
+  "run_words": [
+    6578050160392685374,
+    11520363697312423309
+  ],
+  "process_words": [
+    6026453833389130349,
+    10082247498961874576
+  ],
+  "buffer_complete": true,
+  "events": [
+    {
+      "sequence": 1,
+      "timestamp": 1199295890000500,
+      "stage": 2,
+      "coordinator": 0,
+      "appearance": 0,
+      "attempt": 0,
+      "owner": 0,
+      "receipt": 0,
+      "teardown": 0,
+      "epoch": 0,
+      "revision": 0
+    },
+    {
+      "sequence": 2,
+      "timestamp": 1199295893440000,
+      "stage": 2,
+      "coordinator": 1,
+      "appearance": 1,
+      "attempt": 0,
+      "owner": 1,
+      "receipt": 0,
+      "teardown": 0,
+      "epoch": 0,
+      "revision": 0
+    },
+    {
+      "sequence": 3,
+      "timestamp": 1199342336571375,
+      "stage": 3,
+      "coordinator": 1,
+      "appearance": 1,
+      "attempt": 1,
+      "owner": 1,
+      "receipt": 0,
+      "teardown": 0,
+      "epoch": 0,
+      "revision": 0
+    },
+    {
+      "sequence": 4,
+      "timestamp": 1199342337374458,
+      "stage": 9,
+      "coordinator": 1,
+      "appearance": 1,
+      "attempt": 1,
+      "owner": 1,
+      "receipt": 1,
+      "teardown": 0,
+      "epoch": 1,
+      "revision": 1
+    },
+    {
+      "sequence": 5,
+      "timestamp": 1199342359568916,
+      "stage": 4,
+      "coordinator": 1,
+      "appearance": 1,
+      "attempt": 1,
+      "owner": 1,
+      "receipt": 0,
+      "teardown": 0,
+      "epoch": 0,
+      "revision": 0
+    }
+  ],
+  "attempts": [
+    {
+      "ordinal": 1,
+      "paired": true,
+      "schedules": [
+        {
+          "sequence": 4,
+          "timestamp": 1199342337374458,
+          "stage": 9,
+          "coordinator": 1,
+          "appearance": 1,
+          "attempt": 1,
+          "owner": 1,
+          "receipt": 1,
+          "teardown": 0,
+          "epoch": 1,
+          "revision": 1
+        }
+      ],
+      "owner_absent_sequences": []
+    }
+  ],
+  "verdict": "requires_manual_run_binding_and_independent_review"
+}

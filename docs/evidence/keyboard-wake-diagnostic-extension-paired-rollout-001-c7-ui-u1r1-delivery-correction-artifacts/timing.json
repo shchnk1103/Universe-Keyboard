@@ -1,0 +1,11 @@
+{
+  "recovery_call_start_wall_epoch": 1791035429.536277,
+  "recovery_call_start_utc": "2026-10-03T13:50:29.536277+00:00",
+  "recovery_call_start_monotonic_ns": 1201306492694541,
+  "recovery_call_end_wall_epoch": 1791035429.540708,
+  "recovery_call_end_utc": "2026-10-03T13:50:29.540708+00:00",
+  "recovery_call_end_monotonic_ns": 1201306497125291,
+  "recovery_call_elapsed_seconds": 0.00443075,
+  "first_call_timer_persisted": false,
+  "whole_supplement_lane_elapsed_seconds": null
+}

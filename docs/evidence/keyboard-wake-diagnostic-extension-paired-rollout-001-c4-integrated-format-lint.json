@@ -1,0 +1,478 @@
+[
+  {
+    "path": "Keyboard/Controllers/KeyboardViewController+Bootstrap.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "format",
+      "--in-place",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/private/tmp/ukey-wake-c4-20261001/format-scratch/Keyboard/Controllers/KeyboardViewController+Bootstrap.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Keyboard/Controllers/KeyboardViewController+Bootstrap.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "lint",
+      "--strict",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Bootstrap.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Keyboard/Controllers/KeyboardViewController.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "format",
+      "--in-place",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/private/tmp/ukey-wake-c4-20261001/format-scratch/Keyboard/Controllers/KeyboardViewController.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Keyboard/Controllers/KeyboardViewController.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "lint",
+      "--strict",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Keyboard/Services/UITextDocumentProxyAdapter.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "format",
+      "--in-place",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/private/tmp/ukey-wake-c4-20261001/format-scratch/Keyboard/Services/UITextDocumentProxyAdapter.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Keyboard/Services/UITextDocumentProxyAdapter.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "lint",
+      "--strict",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Services/UITextDocumentProxyAdapter.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "KeyboardTests/KeyboardWakeDiagnosticProducerTests.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "format",
+      "--in-place",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/private/tmp/ukey-wake-c4-20261001/format-scratch/KeyboardTests/KeyboardWakeDiagnosticProducerTests.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "KeyboardTests/KeyboardWakeDiagnosticProducerTests.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "lint",
+      "--strict",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/KeyboardTests/KeyboardWakeDiagnosticProducerTests.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticEvent.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "format",
+      "--in-place",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/private/tmp/ukey-wake-c4-20261001/format-scratch/Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticEvent.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticEvent.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "lint",
+      "--strict",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticEvent.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticEventWireValidator.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "format",
+      "--in-place",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/private/tmp/ukey-wake-c4-20261001/format-scratch/Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticEventWireValidator.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticEventWireValidator.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "lint",
+      "--strict",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticEventWireValidator.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournal.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "format",
+      "--in-place",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/private/tmp/ukey-wake-c4-20261001/format-scratch/Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournal.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournal.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "lint",
+      "--strict",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournal.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournalIngress.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "format",
+      "--in-place",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/private/tmp/ukey-wake-c4-20261001/format-scratch/Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournalIngress.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournalIngress.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "lint",
+      "--strict",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournalIngress.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournalRuntime.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "format",
+      "--in-place",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/private/tmp/ukey-wake-c4-20261001/format-scratch/Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournalRuntime.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournalRuntime.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "lint",
+      "--strict",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournalRuntime.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticEventTests.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "format",
+      "--in-place",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/private/tmp/ukey-wake-c4-20261001/format-scratch/Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticEventTests.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticEventTests.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "lint",
+      "--strict",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticEventTests.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticsJournalTests.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "format",
+      "--in-place",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/private/tmp/ukey-wake-c4-20261001/format-scratch/Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticsJournalTests.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticsJournalTests.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "lint",
+      "--strict",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticsJournalTests.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticsJournalV6WriterTests.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "format",
+      "--in-place",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/private/tmp/ukey-wake-c4-20261001/format-scratch/Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticsJournalV6WriterTests.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticsJournalV6WriterTests.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "lint",
+      "--strict",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticsJournalV6WriterTests.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Universe Keyboard/App/Universe_KeyboardApp.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "format",
+      "--in-place",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/private/tmp/ukey-wake-c4-20261001/format-scratch/Universe Keyboard/App/Universe_KeyboardApp.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Universe Keyboard/App/Universe_KeyboardApp.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "lint",
+      "--strict",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Universe Keyboard/App/Universe_KeyboardApp.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Universe Keyboard/Services/RimeSyncDiagnostics.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "format",
+      "--in-place",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/private/tmp/ukey-wake-c4-20261001/format-scratch/Universe Keyboard/Services/RimeSyncDiagnostics.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Universe Keyboard/Services/RimeSyncDiagnostics.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "lint",
+      "--strict",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Universe Keyboard/Services/RimeSyncDiagnostics.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Universe Keyboard/Services/SchemaDeliveryDiagnostics.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "format",
+      "--in-place",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/private/tmp/ukey-wake-c4-20261001/format-scratch/Universe Keyboard/Services/SchemaDeliveryDiagnostics.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Universe Keyboard/Services/SchemaDeliveryDiagnostics.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "lint",
+      "--strict",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Universe Keyboard/Services/SchemaDeliveryDiagnostics.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Universe Keyboard/Views/Diagnostics/DiagnosticsLogSource.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "format",
+      "--in-place",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/private/tmp/ukey-wake-c4-20261001/format-scratch/Universe Keyboard/Views/Diagnostics/DiagnosticsLogSource.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "Universe Keyboard/Views/Diagnostics/DiagnosticsLogSource.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "lint",
+      "--strict",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Universe Keyboard/Views/Diagnostics/DiagnosticsLogSource.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "UniverseKeyboardTests/DiagnosticsLogSourceTests.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "format",
+      "--in-place",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/private/tmp/ukey-wake-c4-20261001/format-scratch/UniverseKeyboardTests/DiagnosticsLogSourceTests.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "path": "UniverseKeyboardTests/DiagnosticsLogSourceTests.swift",
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "lint",
+      "--strict",
+      "--configuration",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format",
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/DiagnosticsLogSourceTests.swift"
+    ],
+    "exit": 0,
+    "stderr": ""
+  }
+]

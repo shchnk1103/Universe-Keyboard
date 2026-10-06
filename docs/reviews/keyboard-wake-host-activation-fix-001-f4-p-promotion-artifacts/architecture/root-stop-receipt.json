@@ -1,0 +1,23 @@
+{
+  "recorded_at": "2026-10-05T03:16:50.581600+00:00",
+  "lane": "F4-P-ARCH-PROMOTION",
+  "round": 1,
+  "author_reported_conclusion": "Partial / incomplete",
+  "actual_calls_author_reported": 16,
+  "claims_uncovered": [
+    "A-P1",
+    "A-P2",
+    "A-P3"
+  ],
+  "author_first_read_at": "2026-10-05T03:07:13.569925+00:00",
+  "author_end_elapsed": "UNKNOWN",
+  "author_files_missing": [
+    "ack.json",
+    "review.md",
+    "usage.json",
+    "delivery-readback.json"
+  ],
+  "not_author_report": true,
+  "stop_reason": "private reader namespace unavailable; proxy output truncated; budget exhausted",
+  "no_auto_renewal": true
+}

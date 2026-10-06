@@ -1,0 +1,14 @@
+{
+  "candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50",
+  "payload_files": 78,
+  "payload_hash_mismatches": [],
+  "strict_codesign": {
+    "app": {
+      "exit": 0
+    },
+    "appex": {
+      "exit": 0
+    }
+  },
+  "not_installed_by_this_stage": true
+}

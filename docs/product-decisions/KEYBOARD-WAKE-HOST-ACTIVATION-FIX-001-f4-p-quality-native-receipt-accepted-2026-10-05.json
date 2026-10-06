@@ -1,0 +1,24 @@
+{
+  "utc": "2026-10-05T12:21:01.115046+00:00",
+  "assignment_authority": "Human Product Lead",
+  "human_message": "接受",
+  "accepted_only_this_round": "Quality R5 independent native four-path judgment + author reported2call ledger + root forwarded-source/hash readback replace missing direct author ACK/report/usage/readback and precise end; wall-time300sec compliance remains UNKNOWN and accepted as a procedural residual.",
+  "reviewer": "/root/f4p_quality_four_paths_fresh GPT6 Luna",
+  "native_report_sha256": "93a35db8cc198dd9c6b35620ee288dcd501760f3d4185ffdfbcf4f446f8e294c",
+  "native_usage_sha256": "a41b3031a0af971d10fd9a5a1d0648b9cbcd9283ac4eb4864fc664e93e0f84be",
+  "root_receipt_sha256": "2df96c923f9c59f733cb800252d209bc13facb84c9c8280fd6fe9db01d65e12c",
+  "technical_coverage": "Q-P1 path/UUID/SHA and R3 consistency Covered; prior Q-P2/Q-P3/Q-P4 carried within original scope; Architecture R3 bounded receipt already accepted",
+  "formal_status": "Bounded F4-P static promotion receipt closed by Product exception; original author delivery remains Partial in historical record",
+  "not_inherited": [
+    "next stage reviewer delivery exceptions",
+    "new review budget",
+    "runtime claims",
+    "30skip as passes",
+    "Release approval"
+  ],
+  "environment_authority": "No F4-I backup/install/process/device/M/LLDB/Maps authorized by this decision",
+  "frozen_rows": 1156,
+  "pinned_rows": 13,
+  "payload_rows": 78,
+  "candidate_digest": "d53523dba8c371c67424ff07c79163a66f41e3bc5bb402637cf9ee79ae7579cb"
+}

@@ -34,6 +34,7 @@ public final class DiagnosticsJournalIngress: Sendable {
     private let origin: DiagnosticEvent.Origin
     private let processInstanceID: UUID
     private let isMainAppWriter: Bool
+    private let writerVersion: DiagnosticsJournalWriterVersion
     private let flushDelay: TimeInterval
     private let makeHealthEvent: (@Sendable (DiagnosticEvent.Reason, Int) -> DiagnosticEvent)?
 
@@ -41,6 +42,7 @@ public final class DiagnosticsJournalIngress: Sendable {
         origin: DiagnosticEvent.Origin,
         processInstanceID: UUID,
         isMainAppWriter: Bool,
+        writerVersion: DiagnosticsJournalWriterVersion = .v5,
         rootURL: @escaping @Sendable () -> URL?,
         isCategoryEnabled: @escaping @Sendable (Logger.Category) -> Bool,
         makeHealthEvent: (@Sendable (DiagnosticEvent.Reason, Int) -> DiagnosticEvent)? = nil,
@@ -50,6 +52,7 @@ public final class DiagnosticsJournalIngress: Sendable {
         self.origin = origin
         self.processInstanceID = processInstanceID
         self.isMainAppWriter = isMainAppWriter
+        self.writerVersion = writerVersion
         self.rootURL = rootURL
         self.isCategoryEnabled = isCategoryEnabled
         self.makeHealthEvent = makeHealthEvent
@@ -161,7 +164,8 @@ public final class DiagnosticsJournalIngress: Sendable {
                 rootURL: rootURL,
                 origin: origin,
                 processInstanceID: processInstanceID,
-                isMainAppWriter: isMainAppWriter
+                isMainAppWriter: isMainAppWriter,
+                writerVersion: writerVersion
             )
             state.writer = writer
             return writer

@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Presentation.swift",
+  "origin_sha256": "767c2817054484d4d4c328cb7a8deaf676509b76bbc3cb45868b6e3cf721319a",
+  "expected_sha256": "767c2817054484d4d4c328cb7a8deaf676509b76bbc3cb45868b6e3cf721319a",
+  "line_start": 181,
+  "line_end": 240,
+  "lines": [
+    {
+      "line": 181,
+      "text": "                && cachedT9ReadinessMatched"
+    },
+    {
+      "line": 182,
+      "text": "            if usesT9Chrome {"
+    },
+    {
+      "line": 183,
+      "text": "                // Single host: left 4-col pad + right delete/reinput/tall return."
+    },
+    {
+      "line": 184,
+      "text": "                for view in makeT9NineKeyChrome() {"
+    },
+    {
+      "line": 185,
+      "text": "                    rootStack.addArrangedSubview(view)"
+    },
+    {
+      "line": 186,
+      "text": "                }"
+    },
+    {
+      "line": 187,
+      "text": "            } else {"
+    },
+    {
+      "line": 188,
+      "text": "                rootStack.addArrangedSubview(makeLetterRow([\"q\", \"w\", \"e\", \"r\", \"t\", \"y\", \"u\", \"i\", \"o\", \"p\"]))"
+    },
+    {
+      "line": 189,
+      "text": "                rootStack.addArrangedSubview("
+    },
+    {
+      "line": 190,
+      "text": "                    makeLetterRow([\"a\", \"s\", \"d\", \"f\", \"g\", \"h\", \"j\", \"k\", \"l\"], horizontalInset: 18)"
+    },
+    {
+      "line": 191,
+      "text": "                )"
+    },
+    {
+      "line": 192,
+      "text": "                let thirdRow = makeLetterThirdRow()"
+    },
+    {
+      "line": 193,
+      "text": "                rootStack.addArrangedSubview(thirdRow)"
+    },
+    {
+      "line": 194,
+      "text": "                rootStack.setCustomSpacing(keyboardGroupSpacing, after: thirdRow)"
+    },
+    {
+      "line": 195,
+      "text": "                rootStack.addArrangedSubview(makeBottomRow(pageSwitchTitle: pageSwitchTitle, includeDelete: false))"
+    },
+    {
+      "line": 196,
+      "text": "            }"
+    },
+    {
+      "line": 197,
+      "text": "        case .numbers:"
+    },
+    {
+      "line": 198,
+      "text": "            rootStack.addArrangedSubview(makeTextRow([\"1\", \"2\", \"3\", \"4\", \"5\", \"6\", \"7\", \"8\", \"9\", \"0\"]))"
+    },
+    {
+      "line": 199,
+      "text": "            if state.inputMode == .chinese {"
+    },
+    {
+      "line": 200,
+      "text": "                rootStack.addArrangedSubview(makeTextRow([\"-\", \"/\", \"：\", \"；\", \"（\", \"）\", \"¥\", \"@\", \"“\", \"”\"]))"
+    },
+    {
+      "line": 201,
+      "text": "                let thirdRow = makeChineseNumbersThirdRow()"
+    },
+    {
+      "line": 202,
+      "text": "                rootStack.addArrangedSubview(thirdRow)"
+    },
+    {
+      "line": 203,
+      "text": "                rootStack.setCustomSpacing(keyboardGroupSpacing, after: thirdRow)"
+    },
+    {
+      "line": 204,
+      "text": "                rootStack.addArrangedSubview(makeSymbolicBottomRow(languageTitle: \"拼音\"))"
+    },
+    {
+      "line": 205,
+      "text": "            } else {"
+    },
+    {
+      "line": 206,
+      "text": "                rootStack.addArrangedSubview("
+    },
+    {
+      "line": 207,
+      "text": "                    makeTextRow("
+    },
+    {
+      "line": 208,
+      "text": "                        [\"-\", \"/\", \":\", \";\", \"(\", \")\", \"$\", \"&\", \"@\", \"”\"],"
+    },
+    {
+      "line": 209,
+      "text": "                        actionOverrides: ["
+    },
+    {
+      "line": 210,
+      "text": "                            \"”\": #selector(insertSmartDoubleQuote(_:))"
+    },
+    {
+      "line": 211,
+      "text": "                        ]))"
+    },
+    {
+      "line": 212,
+      "text": "                let thirdRow = makeEnglishNumbersThirdRow()"
+    },
+    {
+      "line": 213,
+      "text": "                rootStack.addArrangedSubview(thirdRow)"
+    },
+    {
+      "line": 214,
+      "text": "                rootStack.setCustomSpacing(keyboardGroupSpacing, after: thirdRow)"
+    },
+    {
+      "line": 215,
+      "text": "                rootStack.addArrangedSubview(makeSymbolicBottomRow(languageTitle: \"English\"))"
+    },
+    {
+      "line": 216,
+      "text": "            }"
+    },
+    {
+      "line": 217,
+      "text": "        case .symbols:"
+    },
+    {
+      "line": 218,
+      "text": "            if state.inputMode == .chinese {"
+    },
+    {
+      "line": 219,
+      "text": "                rootStack.addArrangedSubview(makeTextRow([\"【\", \"】\", \"｛\", \"｝\", \"#\", \"%\", \"^\", \"*\", \"+\", \"=\"]))"
+    },
+    {
+      "line": 220,
+      "text": "                rootStack.addArrangedSubview(makeTextRow([\"_\", \"—\", \"\\\\\", \"｜\", \"～\", \"《\", \"》\", \"$\", \"&\", \"·\"]))"
+    },
+    {
+      "line": 221,
+      "text": "                let thirdRow = makeChineseSymbolsThirdRow()"
+    },
+    {
+      "line": 222,
+      "text": "                rootStack.addArrangedSubview(thirdRow)"
+    },
+    {
+      "line": 223,
+      "text": "                rootStack.setCustomSpacing(keyboardGroupSpacing, after: thirdRow)"
+    },
+    {
+      "line": 224,
+      "text": "                rootStack.addArrangedSubview(makeSymbolicBottomRow(languageTitle: \"拼音\"))"
+    },
+    {
+      "line": 225,
+      "text": "            } else {"
+    },
+    {
+      "line": 226,
+      "text": "                rootStack.addArrangedSubview(makeTextRow([\"[\", \"]\", \"{\", \"}\", \"#\", \"%\", \"^\", \"*\", \"+\", \"=\"]))"
+    },
+    {
+      "line": 227,
+      "text": "                rootStack.addArrangedSubview(makeTextRow([\"_\", \"\\\\\", \"|\", \"~\", \"<\", \">\", \"€\", \"£\", \"¥\", \"•\"]))"
+    },
+    {
+      "line": 228,
+      "text": "                let thirdRow = makeEnglishSymbolsThirdRow()"
+    },
+    {
+      "line": 229,
+      "text": "                rootStack.addArrangedSubview(thirdRow)"
+    },
+    {
+      "line": 230,
+      "text": "                rootStack.setCustomSpacing(keyboardGroupSpacing, after: thirdRow)"
+    },
+    {
+      "line": 231,
+      "text": "                rootStack.addArrangedSubview(makeSymbolicBottomRow(languageTitle: \"English\"))"
+    },
+    {
+      "line": 232,
+      "text": "            }"
+    },
+    {
+      "line": 233,
+      "text": "        case .emoji:"
+    },
+    {
+      "line": 234,
+      "text": "            rootStack.addArrangedSubview(makeEmojiPage())"
+    },
+    {
+      "line": 235,
+      "text": "            rootStack.addArrangedSubview(makeBottomRow(pageSwitchTitle: pageSwitchTitle, includeDelete: true))"
+    },
+    {
+      "line": 236,
+      "text": "        }"
+    },
+    {
+      "line": 237,
+      "text": "    }"
+    },
+    {
+      "line": 238,
+      "text": ""
+    },
+    {
+      "line": 239,
+      "text": "    func clearAllRows() {"
+    },
+    {
+      "line": 240,
+      "text": "        candidateCellSizeCache.removeAll(keepingCapacity: true)"
+    }
+  ]
+}

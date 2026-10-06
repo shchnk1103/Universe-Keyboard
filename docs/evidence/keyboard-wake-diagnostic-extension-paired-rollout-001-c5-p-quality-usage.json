@@ -1,0 +1,87 @@
+{
+  "lane_id": "QUALITY-C5-P",
+  "round": 1,
+  "packet_sha256": "81dfc80d0197ebd2cc34653e851a94bbd24a144e95aee03f88e02548a78035a5",
+  "expected_packet_sha256": "81dfc80d0197ebd2cc34653e851a94bbd24a144e95aee03f88e02548a78035a5",
+  "manifest_sha256": "928bfdd6412ce5b23bdad7cece3141e00c993d191079ea2b7ed692662f06d941",
+  "expected_manifest_sha256": "928bfdd6412ce5b23bdad7cece3141e00c993d191079ea2b7ed692662f06d941",
+  "entry_sha256": "8e507a253fcb89f0d8570ce0b980c029c59b1ec5c452db84b71545da94454dc7",
+  "expected_entry_sha256": "8e507a253fcb89f0d8570ce0b980c029c59b1ec5c452db84b71545da94454dc7",
+  "identity": {
+    "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+    "branch": "codex/keyboard-wake-v3-compatibility-gate",
+    "root": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard"
+  },
+  "expected_identity": {
+    "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+    "branch": "codex/keyboard-wake-v3-compatibility-gate",
+    "root": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard"
+  },
+  "identity_matches": true,
+  "candidate_digest": "af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9",
+  "hash_checks": {
+    "manifest_documents": "40/40",
+    "source_build_inputs": "568/568",
+    "debug_bundle_files": "111/111",
+    "mach_o_payloads": "11/11 UUID outputs present"
+  },
+  "budget": {
+    "underlying_tool_calls": 12,
+    "elapsed_seconds_limit": 600,
+    "actual_underlying_tool_calls": 12,
+    "remaining_tool_calls": 0
+  },
+  "tool_call_ledger": [
+    "1 packet read and SHA-256",
+    "2 input manifest and Entry read/SHA-256",
+    "3 hash 40 inputs, 568 source/build files, 111 bundle files; identity fields",
+    "4 read C5 proposal and preparation payload/entitlement/signing receipts",
+    "5 read allowed C4 quality reports, disposition, summary and skip inventory",
+    "6 parse bundle Info.plists and bounded source search; one guessed DiagnosticsSettings path returned not found",
+    "7 inspect lifecycle/proxy producer and diagnostics reader source locations",
+    "8 inspect Mach-O manifest and bounded rg; two guessed reader paths returned not found",
+    "9 resolve allowed manifest reader paths and inspect Mach-O UUID field shape",
+    "10 bounded rg on DiagnosticsJournal, DiagnosticsLogSource, settings and dictionary host source",
+    "11 inspect bounded reader/source ranges and UUID metadata presence",
+    "12 write this report and usage; read-only git rev-parse/branch/top-level identity"
+  ],
+  "functions_exec_wrapper_calls": 13,
+  "non_file_collaboration_messages": 3,
+  "timer": {
+    "ack_started": true,
+    "ack_call_exact_utc_unavailable": true,
+    "first_auditable_utc": "2026-10-01T01:09:40.606649+00:00",
+    "start_basis": "first packet read/hash immediately after ACK; actual ACK preceded this by an unmeasured short interval",
+    "end_utc": "2026-10-01T01:19:50.693766+00:00",
+    "elapsed_seconds_from_first_auditable_tool": 610.087,
+    "within_600_seconds": false
+  },
+  "checkpoint": {
+    "required_after_underlying_call": 6,
+    "submitted_after_call": 6,
+    "before_call": 7,
+    "exact_utc_not_exposed_in_collaboration_tool_result": true,
+    "timing_note": "sent immediately after call 6; root received progress at checkpoint"
+  },
+  "coverage": {
+    "P-Q1": "Covered",
+    "P-Q2": "Covered",
+    "P-Q3": "Covered"
+  },
+  "verdict": "P-Q1/P-Q2/P-Q3 review coverage complete; no design-level Quality blocker to completing C5-P review; Product C5 residual disposition and future C5-I/R Entry remain pending",
+  "prohibited_actions": {
+    "source_or_doc_mutation": false,
+    "build_or_test": false,
+    "simulator_or_device": false,
+    "install_or_launch": false,
+    "input_or_capture_or_maps": false,
+    "git_mutation": false,
+    "network": false,
+    "other_reviewer_report_read": false
+  },
+  "outputs": [
+    "/private/tmp/ukey-wake-c5-p-20261001/quality-review.md",
+    "/private/tmp/ukey-wake-c5-p-20261001/quality-usage.json"
+  ],
+  "wrapper_error_note": "One additional functions.exec wrapper attempt failed at JavaScript variable interpolation before an exec_command call; it added no underlying interaction or file write."
+}

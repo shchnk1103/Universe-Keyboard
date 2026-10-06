@@ -1,0 +1,23 @@
+{
+  "utc": "2026-10-03T15:23:00.225812+00:00",
+  "human_arm_reply": "按钮显示‘取证’",
+  "after_arm_export_hit_count": 0,
+  "breakpoint_deleted": true,
+  "breakpoint_list_empty": true,
+  "detach_confirmed": true,
+  "continue_cleanup_result": "didError: threads failed: notStopped; no retry; final ps Ss",
+  "memory_reads": 0,
+  "debug_calls": 11,
+  "ledger_rows": 22,
+  "input_switch_freeze_authorized": false,
+  "visual_exit": "pending Human observation only",
+  "conclusion": "no export breakpoint hit through immediate post-arm check; prior M2 early hit cause unresolved",
+  "timing_limitations": "actual target pause start UNKNOWN; no export stop occurred",
+  "entry_correction": "entry old_consumed_pid field 88188 inherited from older template; actual terminated predecessor 3626, preserved original entry",
+  "product_disposition": {
+    "date": "2026-10-03",
+    "decision": "仅记录上一轮提前出口 hit1，暂停专项追查；若后续再现再讨论",
+    "root_cause": "unresolved",
+    "further_device_operations_authorized": false
+  }
+}

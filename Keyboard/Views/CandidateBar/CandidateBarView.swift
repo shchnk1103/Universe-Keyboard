@@ -45,6 +45,13 @@ private final class CandidateBarGestureBridge: NSObject, UIGestureRecognizerDele
     weak var swipeDown: UIGestureRecognizer?
     weak var horizontalFallback: UIGestureRecognizer?
     weak var collectionPan: UIGestureRecognizer?
+    #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
+        weak var wakeProbeButton: UIButton?
+        func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+            guard let button = wakeProbeButton, let touched = touch.view else { return true }
+            return !touched.isDescendant(of: button)
+        }
+    #endif
 
     func gestureRecognizer(
         _ gestureRecognizer: UIGestureRecognizer,
@@ -88,6 +95,12 @@ final class CandidateBarView: UIView {
     let collectionView: CandidateCollectionView
     let expandButton: UIButton
     let expandButtonWidthConstraint: NSLayoutConstraint
+    private var candidateTrailingConstraint: NSLayoutConstraint!
+    #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
+        private var wakeProbeButton: UIButton?
+        private var wakeProbeTrailingConstraint: NSLayoutConstraint?
+        var onWakeOwnerProbeTouch: ((ObjectIdentifier, Bool) -> Void)?
+    #endif
     /// Swipe-down expands only in expand mode (`PD-CANDIDATE-BAR-IDLE-DISMISS-001`).
     var allowsSwipeToExpand = false
     private weak var expandActionTarget: NSObject?
@@ -163,6 +176,8 @@ final class CandidateBarView: UIView {
         installHorizontalFallbackGesture()
         installSwipeDownExpandGesture()
 
+        candidateTrailingConstraint = collectionView.trailingAnchor.constraint(
+            equalTo: expandButton.leadingAnchor, constant: -2)
         NSLayoutConstraint.activate([
             expandButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -3),
             expandButton.centerYAnchor.constraint(
@@ -173,7 +188,7 @@ final class CandidateBarView: UIView {
             expandButton.heightAnchor.constraint(equalToConstant: Layout.expandButtonTouchSize),
 
             collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 2),
-            collectionView.trailingAnchor.constraint(equalTo: expandButton.leadingAnchor, constant: -2),
+            candidateTrailingConstraint,
             collectionView.topAnchor.constraint(equalTo: topAnchor),
             collectionView.bottomAnchor.constraint(equalTo: bottomAnchor),
 
@@ -295,6 +310,11 @@ final class CandidateBarView: UIView {
     }
 
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
+            if let button = wakeProbeButton, !button.isHidden, button.frame.contains(point) {
+                return button.hitTest(button.convert(point, from: self), with: event)
+            }
+        #endif
         let superHit = super.hitTest(point, with: event)
         let result: UIView?
         let collectionPoint = collectionView.convert(point, from: self)
@@ -393,6 +413,54 @@ final class CandidateBarView: UIView {
     private func rectDescription(_ rect: CGRect) -> String {
         "(\(Int(rect.minX)),\(Int(rect.minY)),\(Int(rect.width)),\(Int(rect.height)))"
     }
+
+    #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
+        func installWakeOwnerProbeButton(target: Any?, action: Selector) {
+            guard wakeProbeButton == nil else { return }
+            let button = UIButton(type: .custom)
+            button.translatesAutoresizingMaskIntoConstraints = false
+            button.backgroundColor = UIColor.systemGray.withAlphaComponent(0.001)
+            button.setTitleColor(.label, for: .normal)
+            button.titleLabel?.font = .systemFont(ofSize: 12, weight: .medium)
+            button.addTarget(target, action: action, for: .touchUpInside)
+            button.isHidden = true
+            addSubview(button)
+            wakeProbeButton = button
+            gestureBridge.wakeProbeButton = button
+            NSLayoutConstraint.activate([
+                button.trailingAnchor.constraint(equalTo: expandButton.leadingAnchor, constant: -2),
+                button.topAnchor.constraint(equalTo: topAnchor),
+                button.widthAnchor.constraint(equalToConstant: 44),
+                button.heightAnchor.constraint(equalToConstant: min(candidateBarHeight, 44)),
+            ])
+            wakeProbeTrailingConstraint = collectionView.trailingAnchor.constraint(
+                equalTo: button.leadingAnchor, constant: -2)
+            let observer = WakeOwnerProbeTouchObserver()
+            observer.cancelsTouchesInView = false
+            observer.delaysTouchesBegan = false
+            observer.delaysTouchesEnded = false
+            observer.delegate = gestureBridge
+            observer.onTouch = { [weak self] identifier, began in
+                self?.onWakeOwnerProbeTouch?(identifier, began)
+            }
+            addGestureRecognizer(observer)
+        }
+
+        func setWakeOwnerProbeButton(visible: Bool, title: String) {
+            guard let button = wakeProbeButton else { return }
+            button.setTitle(title, for: .normal)
+            button.accessibilityLabel = title == "观测" ? "开始 owner 观测" : "冻结并导出 owner 观测"
+            guard button.isHidden == visible else { return }
+            if visible {
+                candidateTrailingConstraint.isActive = false
+                wakeProbeTrailingConstraint?.isActive = true
+            } else {
+                wakeProbeTrailingConstraint?.isActive = false
+                candidateTrailingConstraint.isActive = true
+            }
+            button.isHidden = !visible
+        }
+    #endif
 
     private func configureCollectionView() {
         CandidateScrollViewStyle.apply(to: collectionView)
@@ -631,3 +699,36 @@ final class CandidateBarView: UIView {
         return button
     }
 }
+
+#if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
+    private final class WakeOwnerProbeTouchObserver: UIGestureRecognizer {
+        var onTouch: ((ObjectIdentifier, Bool) -> Void)?
+        private var active: Set<ObjectIdentifier> = []
+        override func canPrevent(_ preventedGestureRecognizer: UIGestureRecognizer) -> Bool { false }
+        override func canBePrevented(by preventingGestureRecognizer: UIGestureRecognizer) -> Bool { false }
+        override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
+            for touch in touches {
+                let identifier = ObjectIdentifier(touch)
+                active.insert(identifier)
+                onTouch?(identifier, true)
+            }
+            state = .began
+        }
+        override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) { state = .changed }
+        override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) { finish(touches) }
+        override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) { finish(touches) }
+        private func finish(_ touches: Set<UITouch>) {
+            for touch in touches {
+                let identifier = ObjectIdentifier(touch)
+                active.remove(identifier)
+                onTouch?(identifier, false)
+            }
+            if active.isEmpty { state = .ended }
+        }
+        override func reset() {
+            for identifier in active { onTouch?(identifier, false) }
+            active.removeAll()
+            super.reset()
+        }
+    }
+#endif

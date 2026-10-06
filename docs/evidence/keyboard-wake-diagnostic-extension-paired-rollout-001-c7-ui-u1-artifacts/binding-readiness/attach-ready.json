@@ -1,0 +1,19 @@
+{
+  "utc": "2026-10-03T12:56:04.192791+00:00",
+  "status": "pre-arm ready only; actual borrow not yet validated",
+  "candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50",
+  "actual_udid_from_loaded_path": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "pid": 80843,
+  "debug_session_id": "c4c1730c-3b73-4b30-aa81-414eb902c141",
+  "own_breakpoint_id": 1,
+  "resolved_locations": 1,
+  "hit_count": 0,
+  "execution_state_after_continue": "running",
+  "expected_uuids": [
+    "C3FC7115-4215-3801-ABBB-C8A648ED0C32",
+    "77BD18E2-E090-37D7-865F-84D762E69F70"
+  ],
+  "both_loaded_paths_and_UUIDs_match_frozen_candidate": true,
+  "tool_simulator_label_conflict_retained": "884CAC1A-516A-421F-ACF5-035A36F7088A",
+  "arm_freeze_export_not_yet_done": true
+}

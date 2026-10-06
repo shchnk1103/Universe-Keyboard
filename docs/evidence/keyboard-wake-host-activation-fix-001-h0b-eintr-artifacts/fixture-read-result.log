@@ -1,0 +1,2 @@
+read_attempt=1 read_return=-1 errno=4
+read_attempt=2 read_return=1 errno=0

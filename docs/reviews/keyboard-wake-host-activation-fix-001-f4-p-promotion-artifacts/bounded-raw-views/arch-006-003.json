@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift",
+  "origin_sha256": "c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047",
+  "expected_sha256": "c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047",
+  "line_start": 121,
+  "line_end": 180,
+  "lines": [
+    {
+      "line": 121,
+      "text": "    func noteViewDidAppear(hasWindow: Bool) {"
+    },
+    {
+      "line": 122,
+      "text": "        guard phase == .appearing else { return }"
+    },
+    {
+      "line": 123,
+      "text": "        if hasWindow {"
+    },
+    {
+      "line": 124,
+      "text": "            phase = .visible"
+    },
+    {
+      "line": 125,
+      "text": "        }"
+    },
+    {
+      "line": 126,
+      "text": "        didSuspendCurrentGeneration = false"
+    },
+    {
+      "line": 127,
+      "text": "    }"
+    },
+    {
+      "line": 128,
+      "text": ""
+    },
+    {
+      "line": 129,
+      "text": "    func noteViewWillDisappear() {"
+    },
+    {
+      "line": 130,
+      "text": "        phase = .hidden"
+    },
+    {
+      "line": 131,
+      "text": "        presentationGeneration &+= 1"
+    },
+    {
+      "line": 132,
+      "text": "        pending = nil"
+    },
+    {
+      "line": 133,
+      "text": "        firstFrameRearmPending = false"
+    },
+    {
+      "line": 134,
+      "text": "        didSuspendCurrentGeneration = false"
+    },
+    {
+      "line": 135,
+      "text": "        firstFrameConsumedForGeneration = false"
+    },
+    {
+      "line": 136,
+      "text": "        firstFrameArmSuppressed = true"
+    },
+    {
+      "line": 137,
+      "text": "        invalidateFirstFrameArm()"
+    },
+    {
+      "line": 138,
+      "text": "    }"
+    },
+    {
+      "line": 139,
+      "text": ""
+    },
+    {
+      "line": 140,
+      "text": "    @discardableResult"
+    },
+    {
+      "line": 141,
+      "text": "    func handleHostWillResignActive("
+    },
+    {
+      "line": 142,
+      "text": "        context: KeyboardHostExtensionContextID?,"
+    },
+    {
+      "line": 143,
+      "text": "        activatedAtSuspend: Bool"
+    },
+    {
+      "line": 144,
+      "text": "    ) -> KeyboardHostRecoveryAction {"
+    },
+    {
+      "line": 145,
+      "text": "        guard let context, context == currentContext else { return .none }"
+    },
+    {
+      "line": 146,
+      "text": "        let hadRearm = firstFrameRearmPending"
+    },
+    {
+      "line": 147,
+      "text": "        firstFrameRearmPending = false"
+    },
+    {
+      "line": 148,
+      "text": "        invalidateFirstFrameArm()"
+    },
+    {
+      "line": 149,
+      "text": "        if didSuspendCurrentGeneration {"
+    },
+    {
+      "line": 150,
+      "text": "            // Duplicate resign must still cancel an armed first-frame wait."
+    },
+    {
+      "line": 151,
+      "text": "            return hadRearm ? .suspendRuntime : .none"
+    },
+    {
+      "line": 152,
+      "text": "        }"
+    },
+    {
+      "line": 153,
+      "text": "        didSuspendCurrentGeneration = true"
+    },
+    {
+      "line": 154,
+      "text": "        if phase == .visible, let currentContext {"
+    },
+    {
+      "line": 155,
+      "text": "            pending = KeyboardHostPendingSuspend("
+    },
+    {
+      "line": 156,
+      "text": "                generation: presentationGeneration,"
+    },
+    {
+      "line": 157,
+      "text": "                context: currentContext,"
+    },
+    {
+      "line": 158,
+      "text": "                activatedAtSuspend: activatedAtSuspend,"
+    },
+    {
+      "line": 159,
+      "text": "                blocked: false"
+    },
+    {
+      "line": 160,
+      "text": "            )"
+    },
+    {
+      "line": 161,
+      "text": "        } else {"
+    },
+    {
+      "line": 162,
+      "text": "            // Appearing/hidden resign must not create a visible resume pending."
+    },
+    {
+      "line": 163,
+      "text": "            pending = nil"
+    },
+    {
+      "line": 164,
+      "text": "        }"
+    },
+    {
+      "line": 165,
+      "text": "        return .suspendRuntime"
+    },
+    {
+      "line": 166,
+      "text": "    }"
+    },
+    {
+      "line": 167,
+      "text": ""
+    },
+    {
+      "line": 168,
+      "text": "    func previewHostDidBecomeActive("
+    },
+    {
+      "line": 169,
+      "text": "        context: KeyboardHostExtensionContextID?,"
+    },
+    {
+      "line": 170,
+      "text": "        hasWindow: Bool"
+    },
+    {
+      "line": 171,
+      "text": "    ) -> KeyboardHostRecoveryAction {"
+    },
+    {
+      "line": 172,
+      "text": "        decideHostDidBecomeActive(context: context, hasWindow: hasWindow)"
+    },
+    {
+      "line": 173,
+      "text": "    }"
+    },
+    {
+      "line": 174,
+      "text": ""
+    },
+    {
+      "line": 175,
+      "text": "    @discardableResult"
+    },
+    {
+      "line": 176,
+      "text": "    func handleHostDidBecomeActive("
+    },
+    {
+      "line": 177,
+      "text": "        context: KeyboardHostExtensionContextID?,"
+    },
+    {
+      "line": 178,
+      "text": "        hasWindow: Bool,"
+    },
+    {
+      "line": 179,
+      "text": "        canary: KeyboardHostRecoveryCanaryPermission"
+    },
+    {
+      "line": 180,
+      "text": "    ) -> KeyboardHostRecoveryAction {"
+    }
+  ]
+}

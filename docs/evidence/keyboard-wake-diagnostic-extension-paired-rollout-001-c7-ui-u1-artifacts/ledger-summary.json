@@ -1,0 +1,43 @@
+{
+  "status": "Stopped before pre-arm readiness",
+  "debug_tool_calls": [
+    {
+      "sequence": 1,
+      "tool": "mcp__xcodebuildmcp__debug_attach_sim",
+      "request_utc": "2026-10-03T09:08:10.872Z",
+      "response_utc": "2026-10-03T09:08:16.901Z",
+      "writer_monotonic_start_ns": 1197214588693666,
+      "writer_monotonic_end_ns": 1197220633894583,
+      "writer_bounded_elapsed_seconds": 6.045200917,
+      "raw_receipt_sha256": "b8417a04662f0e1c11596c66b0c335a575b4c41e05e0d19d87bceeb803e5bb11"
+    },
+    {
+      "sequence": 2,
+      "tool": "mcp__xcodebuildmcp__debug_continue",
+      "request_utc": "2026-10-03T09:08:27.859Z",
+      "response_utc": "2026-10-03T09:08:28.065Z",
+      "writer_monotonic_start_ns": 1197231573265333,
+      "writer_monotonic_end_ns": 1197231780643916,
+      "writer_bounded_elapsed_seconds": 0.207378583,
+      "raw_receipt_sha256": "2858914a0fdf9636203d899397079e8c3802fd11592210bbef633dfbc408d814"
+    },
+    {
+      "sequence": 3,
+      "tool": "mcp__xcodebuildmcp__debug_detach",
+      "request_utc": "2026-10-03T09:08:28.264Z",
+      "response_utc": "2026-10-03T09:08:28.594Z",
+      "writer_monotonic_start_ns": 1197231976874250,
+      "writer_monotonic_end_ns": 1197232310709916,
+      "writer_bounded_elapsed_seconds": 0.333835666,
+      "raw_receipt_sha256": "8fce2d1c7ac066788640c8ec60835c3aca8e6d99649ccf0c6450883dfe3c86a7"
+    }
+  ],
+  "debug_tool_call_count": 3,
+  "arm_count": 0,
+  "freeze_count": 0,
+  "memory_read_count": 0,
+  "own_breakpoint_count": 0,
+  "session": "363a2807-2679-4b8d-9bd7-35bea250e1a2",
+  "continue_and_detach_success": true,
+  "time_source": "Root request/response UTC plus Python writer monotonic bounds; not actual target pause/borrow timestamps."
+}

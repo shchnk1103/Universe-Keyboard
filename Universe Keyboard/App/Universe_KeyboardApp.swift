@@ -48,7 +48,8 @@ struct Universe_KeyboardApp: App {
             let writer = DiagnosticsJournalWriter(
                 rootURL: rootURL,
                 origin: .mainApp,
-                isMainAppWriter: true
+                isMainAppWriter: true,
+                writerVersion: .v6
             )
             guard (try? await writer.prepareRootIfOwnedByMainApp()) != nil else {
                 return

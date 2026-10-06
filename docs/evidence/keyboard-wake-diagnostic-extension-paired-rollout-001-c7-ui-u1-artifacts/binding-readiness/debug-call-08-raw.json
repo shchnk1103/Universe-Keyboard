@@ -1,0 +1,21 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "\n🐛 LLDB Command\n\n✅ Command executed\n\nOutput:\n  1: name = '$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF', locations = 1, resolved = 1, hit count = 0\n    1.1: where = Keyboard.debug.dylib`wakeOwnerProbeExportReady(_:_:) + 60 at KeyboardViewController+WakeOwnerProbe.swift:96:83, address = 0x0000000102468778, resolved, hit count = 0\n"
+    }
+  ],
+  "structuredContent": {
+    "schema": "xcodebuildmcp.output.debug-command-result",
+    "schemaVersion": "2",
+    "didError": false,
+    "error": null,
+    "data": {
+      "command": "breakpoint list 1",
+      "outputLines": [
+        "1: name = '$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF', locations = 1, resolved = 1, hit count = 0",
+        "  1.1: where = Keyboard.debug.dylib`wakeOwnerProbeExportReady(_:_:) + 60 at KeyboardViewController+WakeOwnerProbe.swift:96:83, address = 0x0000000102468778, resolved, hit count = 0"
+      ]
+    }
+  }
+}

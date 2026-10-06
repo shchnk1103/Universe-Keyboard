@@ -1,0 +1,14 @@
+{
+  "source": "Human manual report",
+  "root_received_utc": "2026-10-03T13:04:19.786645+00:00",
+  "human_quote": "键盘界面已恢复正常，按钮显示取证，但是不小心点击了一下n还是什么然后又立马删掉了",
+  "UI_recovered_reported": true,
+  "actual_title": "取证",
+  "accidental_input_after_cleanup_reported": true,
+  "input_identity": "Human uncertain: n or another key; not independently inspected",
+  "immediate_delete_reported": true,
+  "actual_action_utc": null,
+  "not_authorized_protocol_normal_input_attempt": true,
+  "frozen_instance_not_rearmed": true,
+  "no_new_capture_claim": true
+}

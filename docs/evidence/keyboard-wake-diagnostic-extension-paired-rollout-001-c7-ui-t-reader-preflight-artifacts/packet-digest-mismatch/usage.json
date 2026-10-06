@@ -1,0 +1,9 @@
+{
+  "role": "Coordinator failure rehearsal",
+  "coverage": "Partial",
+  "error_type": "AssertionError",
+  "error": "whole packet mismatch",
+  "report_sha256": "82218b6a9df56b235c26fd504c03aeb1fce65a89d9ec3bced37345643589b310",
+  "failure_observed_epoch": 1791014151.652436,
+  "elapsed_before_failure_usage_write_seconds": 0.0038900375366210938
+}

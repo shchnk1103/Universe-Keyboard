@@ -1,0 +1,108 @@
+{
+  "lane": "ARCH-C7-UI-CANDIDATE-BINDING",
+  "round": 2,
+  "supplement": "report consistency only",
+  "packet_path": "/private/tmp/ukey-wake-probe-ui-q-r2-20261003/architecture-packet.json",
+  "packet_digest_sha256": "8dbd34558300d7e822bb4eafd74531bb0c72e48d3c53a2b086918f3f00002b6f",
+  "canonicalization": "SHA256 sorted compact JSON ensure_ascii=False without packet_digest_sha256",
+  "status": "Complete consistency supplement only",
+  "criteria": {
+    "C1": "Covered",
+    "C2": "Covered"
+  },
+  "R1_artifact_verdict": "Partial / incomplete",
+  "R1_A1_A2": "historical substantive Covered reported only; not accepted as Complete / Positive",
+  "R1_elapsed_seconds": 402.631986,
+  "R1_hard_seconds": 360,
+  "R1_over_hard_seconds": 42.631986,
+  "R1_hard_deadline_utc": "2026-10-02T15:53:44.763710+00:00",
+  "R1_call5_start_utc": "2026-10-02T15:54:27.395877+00:00",
+  "R1_call5_after_hard_seconds": 42.632167,
+  "R1_report_sha256": "f4179e249d1bdee48a6dbd4a541ca02b5a2d035a25ff4ec04eba8a2bd8fff0c3",
+  "R1_usage_sha256": "2f04ba5b15c97d8631d6c83f12e54d4e13c62e8b9d36158a9a3923a2349b5d45",
+  "root_formal_architecture_verdict": "Partial / incomplete",
+  "root_stop_utc": "2026-10-02T15:56:40.261829+00:00",
+  "seven_inputs": [
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/AGENTS.md",
+      "expected_sha256": "947743e29a5987f9b1abb9c220a28ebcb92bd766928e22c1dd67c046bbe62152",
+      "actual_sha256": "947743e29a5987f9b1abb9c220a28ebcb92bd766928e22c1dd67c046bbe62152",
+      "matches": true
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/ASSIGNMENT_POLICY.md",
+      "expected_sha256": "e90dd8f06371e9367652d4e7cc63dee31ee7b1ac855e7802d6d2e9b8e1e90680",
+      "actual_sha256": "e90dd8f06371e9367652d4e7cc63dee31ee7b1ac855e7802d6d2e9b8e1e90680",
+      "matches": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-probe-ui-q-20261002/architecture-packet.json",
+      "expected_sha256": "119b08225d2674b76b2649657006dcf6e957e4447f0590f66d769b4bdd3441a8",
+      "actual_sha256": "119b08225d2674b76b2649657006dcf6e957e4447f0590f66d769b4bdd3441a8",
+      "matches": true
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/c7-ui-candidate-binding-architecture-r1-review-2026-10-02.md",
+      "expected_sha256": "f4179e249d1bdee48a6dbd4a541ca02b5a2d035a25ff4ec04eba8a2bd8fff0c3",
+      "actual_sha256": "f4179e249d1bdee48a6dbd4a541ca02b5a2d035a25ff4ec04eba8a2bd8fff0c3",
+      "matches": true
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/c7-ui-candidate-binding-architecture-r1-usage-2026-10-02.json",
+      "expected_sha256": "2f04ba5b15c97d8631d6c83f12e54d4e13c62e8b9d36158a9a3923a2349b5d45",
+      "actual_sha256": "2f04ba5b15c97d8631d6c83f12e54d4e13c62e8b9d36158a9a3923a2349b5d45",
+      "matches": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-probe-ui-q-20261002/root-stop-and-adjudication.json",
+      "expected_sha256": "0c4e1961784acf350a242f3166172183c13e9990fe781451fd3d1d0e3f124b50",
+      "actual_sha256": "0c4e1961784acf350a242f3166172183c13e9990fe781451fd3d1d0e3f124b50",
+      "matches": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-probe-ui-q-r2-20261003/entry.json",
+      "expected_sha256": "1349628d00c3a57917f650f51d79a11ae8411fc9caa008ecb7416f17b2acfe6c",
+      "actual_sha256": "1349628d00c3a57917f650f51d79a11ae8411fc9caa008ecb7416f17b2acfe6c",
+      "matches": true
+    }
+  ],
+  "start_utc": "2026-10-02T16:03:12.579681+00:00",
+  "start_unix": 1790956992.579679,
+  "start_monotonic": 1139843.304470416,
+  "end_utc": "2026-10-02T16:04:25.640585+00:00",
+  "end_unix": 1790957065.640585,
+  "end_monotonic": 1139916.365192625,
+  "elapsed_seconds": 73.060722,
+  "calls_used": 2,
+  "max_calls": 4,
+  "soft_seconds": 360,
+  "hard_seconds": 600,
+  "report_path": "/private/tmp/ukey-wake-probe-ui-q-r2-20261003/architecture/review.md",
+  "report_sha256": "c5166a1ad79ca42b46b2a463db45d4b3fd65a85a669d854c2e4ba9854ed26a26",
+  "usage_path": "/private/tmp/ukey-wake-probe-ui-q-r2-20261003/architecture/usage.json",
+  "call_ledger": [
+    {
+      "call": 1,
+      "tool": "exec_command",
+      "start_utc": "2026-10-02T16:03:12.579681+00:00",
+      "start_unix": 1790956992.579679,
+      "start_monotonic": 1139843.304470416,
+      "end_utc": null,
+      "elapsed_seconds": 0.2,
+      "result": "Read full packet, verified digest, read and hashed seven allowed inputs; all matched."
+    },
+    {
+      "call": 2,
+      "tool": "exec_command",
+      "start_utc": "2026-10-02T16:04:25.637950+00:00",
+      "start_unix": 1790957065.6379478,
+      "start_monotonic": 1139916.362556166,
+      "end_utc": "2026-10-02T16:04:25.640585+00:00",
+      "end_unix": 1790957065.640585,
+      "end_monotonic": 1139916.365192625,
+      "elapsed_seconds": 0.002636,
+      "result": "Revalidated the seven frozen input hashes, wrote R2 report and usage together, and checked report/usage consistency."
+    }
+  ],
+  "boundaries": "R1 originals and root adjudication unchanged; no source/binary reads, no R1 A1/A2 re-review, no runtime/install/Gate conclusion."
+}

@@ -1,0 +1,21 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "\n🐛 Detach\n\n✅ Detached debugger session 1aa93c8c-de39-4b22-946f-6e823c2127b6\n"
+    }
+  ],
+  "structuredContent": {
+    "schema": "xcodebuildmcp.output.debug-session-action",
+    "schemaVersion": "2",
+    "didError": false,
+    "error": null,
+    "data": {
+      "action": "detach",
+      "session": {
+        "debugSessionId": "1aa93c8c-de39-4b22-946f-6e823c2127b6",
+        "connectionState": "detached"
+      }
+    }
+  }
+}

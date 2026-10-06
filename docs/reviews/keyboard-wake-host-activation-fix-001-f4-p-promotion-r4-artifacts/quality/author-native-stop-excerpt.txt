@@ -1,0 +1,1 @@
+本轮停止，实际调用4/4已耗尽。两批都在定位输入中的reader对象时失败：第一次找不到预期键名，第二次找不到含modules和standalone_payload_paths的对象。没有取得可用于完整路径/UUID比对的独立结果，也没有写出或读回ACK、review、usage、delivery-readback。此前Q-P1矛盾仍未解决，不能更新Covered；未改R3原件，未继续调用。

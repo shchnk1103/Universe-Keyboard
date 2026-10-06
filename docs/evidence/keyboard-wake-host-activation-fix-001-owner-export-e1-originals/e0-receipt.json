@@ -1,0 +1,41 @@
+{
+  "phase": "E0",
+  "status": "E0_PREFLIGHT_COMPLETE_PENDING_ROOT_READY",
+  "preflight_exit": 0,
+  "utc_start": "2026-10-06T03:43:41.932416+00:00",
+  "utc_end": "2026-10-06T03:44:49.422508+00:00",
+  "monotonic_ns_start": 1392529141372000,
+  "monotonic_ns_end": 1392596631043583,
+  "wall_seconds": 67.489671583,
+  "run_root": "/private/tmp/ukey-host-activation-fix-owner-export-20261006",
+  "script_sha256": {
+    "decoder.py": "fc1817ab8843dab76acd9e8ae59277719c059742bb105eebecbc60a66f58775d",
+    "owner_export_callback.py": "d1cc50df0e736f553555967d3d62f1d220295da8638a299782b0e7fd4cc1bfe5",
+    "host_preflight.py": "aa3bba9f934ece795b0946e5a98ddaf7bae3aae6064fdcc0864ea854d08ec93f",
+    "lldb-format-suppress.lldb": "ca06f497c0f2e1d4591e57e59d9d21e1830cf5cda8d359e333cd36645acdf6c9"
+  },
+  "identity": {
+    "branch": "codex/keyboard-wake-v3-compatibility-gate",
+    "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+    "staged": 0,
+    "entry_sha256": "d3673a274ee76fb35cd6bae04723d3ea6a3e1deba6a55da540be4b1b71adf7e0",
+    "binding_sha256": "2f2f90d94dc9116b30aabed7f8a14b7cdc6670b18d0cfc30d8145c127554a1b3",
+    "source_rows": 1156,
+    "candidate_payload": 78,
+    "dirty_default_sha256": "270f6125c8bcad1c7cb76c533dfeb97d22a5d8e87bbc4a75983e301f22f0cd7b",
+    "dirty_untracked_all_sha256": "f3bafad240ad3cbe923af7fefc9e6e8812d3aa3b0fb23cda776da352751d107d",
+    "dirty_default_lines": 916,
+    "dirty_untracked_all_lines": 2154
+  },
+  "device_contact": 0,
+  "production_edits": 0,
+  "build_install": 0,
+  "backup_deletes": 0,
+  "preflight_stdout_tail": "OWN_EXPORT_HOST_WRITE_FAILED: OSError\n{\n  \"utc\": \"2026-10-06T03:43:42.755412+00:00\",\n  \"fake_api_cases\": [\n    {\n      \"case\": \"identity_mismatch_pid\",\n      \"read_calls\": 0,\n      \"total_read_calls\": 0,\n      \"status\": \"unavailable\",\n      \"reason\": \"hit_frame_identity_mismatch\",\n      \"read_attempted\": 0,\n      \"bytes\": null,\n      \"pass\": true\n    },\n    {\n      \"case\": \"multiple_hits\",\n      \"read_calls\": 0,\n      \"total_read_calls\": 0,\n      \"status\": \"unavailable\",\n      \"reason\": \"multiple_hits\",\n      \"read_attempted\": 0,\n      \"bytes\": null,\n      \"pass\": true\n    },\n    {\n      \"case\": \"args_unavailable\",\n      \"read_calls\": 0,\n      \"total_read_calls\": 0,\n      \"status\": \"unavailable\",\n      \"reason\": \"static_argument_unavailable\",\n      \"read_attempted\": 0,\n      \"bytes\": null,\n      \"pass\": true\n    },\n    {\n      \"case\": \"pointer_zero\",\n      \"read_calls\": 0,\n      \"total_read_calls\": 0,\n      \"status\": \"unavailable\",\n      \"reason\": \"invalid_pointer_or_size\",\n      \"read_attempted\": 0,\n      \"bytes\": null,\n      \"pass\": true\n    },\n    {\n      \"case\": \"length_oob_low\",\n      \"read_calls\": 0,\n      \"total_read_calls\": 0,\n      \"status\": \"unavailable\",\n      \"reason\": \"invalid_pointer_or_size\",\n      \"read_attempted\": 0,\n      \"bytes\": null,\n      \"pass\": true\n    },\n    {\n      \"case\": \"length_oob_high\",\n      \"read_calls\": 0,\n      \"total_read_calls\": 0,\n      \"status\": \"unavailable\",\n      \"reason\": \"invalid_pointer_or_size\",\n      \"read_attempted\": 0,\n      \"bytes\": null,\n      \"pass\": true\n    },\n    {\n      \"case\": \"exact_size_success\",\n      \"read_calls\": 1,\n      \"total_read_calls\": 1,\n      \"status\": \"owner_buffer_copied\",\n      \"reason\": null,\n      \"read_attempted\": 1,\n      \"bytes\": 176,\n      \"pass\": true\n    },\n    {\n      \"case\": \"short_read_no_retry\",\n      \"read_calls\": 1,\n      \"total_read_calls\": 1,\n      \"status\": \"unavailable\",\n      \"reason\": \"read_memory_unavailable\",\n      \"read_attempted\": 1,\n      \"bytes\": null,\n      \"pass\": true\n    },\n    {\n      \"case\": \"sberror_no_retry\",\n      \"read_calls\": 1,\n      \"total_read_calls\": 1,\n      \"status\": \"unavailable\",\n      \"reason\": \"read_memory_unavailable\",\n      \"read_attempted\": 1,\n      \"bytes\": null,\n      \"pass\": true\n    },\n    {\n      \"case\": \"output_fail_no_reread\",\n      \"read_calls\": 1,\n      \"pass\": true\n    },\n    {\n      \"case\": \"stop_deadline\",\n      \"read_calls\": 0,\n      \"reason\": \"stop_deadline_exceeded\",\n      \"pass\": true\n    }\n  ],\n  \"decoder_cases\": [\n    {\n      \"case\": \"valid_176\",\n      \"pass\": true,\n      \"error\": null,\n      \"bytes\": 176,\n      \"sha256\": \"4a8a51c0fdc6d52e97c199f9e4eb6fc69cbe17c34bd278bf0d62cc6421bf76d7\"\n    },\n    {\n      \"case\": \"trailing_bytes\",\n      \"pass\": false,\n      \"error\": \"invalid_header\"\n    },\n    {\n      \"case\": \"bad_magic\",\n      \"pass\": true,\n      \"error\": \"unsupported_header\"\n    },\n    {\n      \"case\": \"oob_size\",\n      \"pass\": true,\n      \"error\": \"invalid_size\"\n    },\n    {\n      \"case\": \"count_mismatch\",\n      \"pass\": true,\n      \"error\": \"invalid_header\"\n    },\n    {\n      \"case\": \"overflow_without_incomplete\",\n      \"pass\": true,\n      \"error\": \"contradictory_completeness\"\n    },\n    {\n      \"case\": \"bad_ttl\",\n      \"pass\": true,\n      \"error\": \"invalid_ttl\"\n    }\n  ],\n  \"formatter\": {\n    \"lldb_exit\": 0,\n    \"banned_after\": false,\n    \"has_pc\": true,\n    \"has_reason\": true,\n    \"pass\": true,\n    \"stdout_sha256\": \"d7747cd5bb2b18a4fcc57783e9c0406ead151f0254a77660bbef403f295c7433\",\n    \"bytes\": 1700\n  },\n  \"fake_api_pass\": true,\n  \"decoder_pass\": false,\n  \"formatter_pass\": true,\n  \"all_pass\": false\n}\n",
+  "preflight_stderr_tail": "",
+  "fake_api_pass": true,
+  "decoder_pass": true,
+  "formatter_pass": true,
+  "all_pass": true,
+  "trailing_bytes_note": "frozen decoder rejects extra words inside max size as invalid_header; decoder bytes unchanged"
+}

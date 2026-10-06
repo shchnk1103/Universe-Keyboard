@@ -1,0 +1,238 @@
+[
+  {
+    "label": "device",
+    "argv": [
+      "xcrun",
+      "simctl",
+      "list",
+      "devices",
+      "--json"
+    ],
+    "request_utc": "2026-10-03T14:40:19.584517+00:00",
+    "response_utc": "2026-10-03T14:40:20.168979+00:00",
+    "elapsed_seconds": 0.584331792,
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "label": "container-app",
+    "argv": [
+      "xcrun",
+      "simctl",
+      "get_app_container",
+      "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "com.DoubleShy0N.Universe-Keyboard",
+      "app"
+    ],
+    "request_utc": "2026-10-03T14:40:20.169566+00:00",
+    "response_utc": "2026-10-03T14:40:20.334167+00:00",
+    "elapsed_seconds": 0.164616334,
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "label": "container-data",
+    "argv": [
+      "xcrun",
+      "simctl",
+      "get_app_container",
+      "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "com.DoubleShy0N.Universe-Keyboard",
+      "data"
+    ],
+    "request_utc": "2026-10-03T14:40:20.334602+00:00",
+    "response_utc": "2026-10-03T14:40:20.500855+00:00",
+    "elapsed_seconds": 0.1662715,
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "label": "container-groups",
+    "argv": [
+      "xcrun",
+      "simctl",
+      "get_app_container",
+      "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "com.DoubleShy0N.Universe-Keyboard",
+      "groups"
+    ],
+    "request_utc": "2026-10-03T14:40:20.501225+00:00",
+    "response_utc": "2026-10-03T14:40:20.665937+00:00",
+    "elapsed_seconds": 0.164739083,
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "label": "processes",
+    "argv": [
+      "ps",
+      "-axo",
+      "pid=,comm="
+    ],
+    "request_utc": "2026-10-03T14:40:20.743914+00:00",
+    "response_utc": "2026-10-03T14:40:20.795222+00:00",
+    "elapsed_seconds": 0.051329958,
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "label": "pid-state",
+    "argv": [
+      "ps",
+      "-p",
+      "3626",
+      "-o",
+      "pid=,stat=,comm="
+    ],
+    "request_utc": "2026-10-03T14:40:20.796019+00:00",
+    "response_utc": "2026-10-03T14:40:20.800921+00:00",
+    "elapsed_seconds": 0.004922375,
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "label": "maps-container",
+    "argv": [
+      "xcrun",
+      "simctl",
+      "get_app_container",
+      "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "com.apple.Maps",
+      "app"
+    ],
+    "request_utc": "2026-10-03T14:40:20.801932+00:00",
+    "response_utc": "2026-10-03T14:40:20.970904+00:00",
+    "elapsed_seconds": 0.16899675,
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "label": "signature-main",
+    "argv": [
+      "codesign",
+      "--verify",
+      "--deep",
+      "--strict",
+      "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app"
+    ],
+    "request_utc": "2026-10-03T14:40:21.152045+00:00",
+    "response_utc": "2026-10-03T14:40:21.195879+00:00",
+    "elapsed_seconds": 0.043849334,
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "label": "signature-keyboard",
+    "argv": [
+      "codesign",
+      "--verify",
+      "--deep",
+      "--strict",
+      "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex"
+    ],
+    "request_utc": "2026-10-03T14:40:21.196336+00:00",
+    "response_utc": "2026-10-03T14:40:21.219066+00:00",
+    "elapsed_seconds": 0.022750042,
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "label": "uuid-PlugIns_Keyboard.appex_Keyboard",
+    "argv": [
+      "xcrun",
+      "dwarfdump",
+      "--uuid",
+      "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard"
+    ],
+    "request_utc": "2026-10-03T14:40:21.597627+00:00",
+    "response_utc": "2026-10-03T14:40:21.629193+00:00",
+    "elapsed_seconds": 0.03158325,
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "label": "uuid-PlugIns_Keyboard.appex_Keyboard.debug.dylib",
+    "argv": [
+      "xcrun",
+      "dwarfdump",
+      "--uuid",
+      "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard.debug.dylib"
+    ],
+    "request_utc": "2026-10-03T14:40:21.629864+00:00",
+    "response_utc": "2026-10-03T14:40:21.643033+00:00",
+    "elapsed_seconds": 0.013191791,
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "label": "uuid-PlugIns_Keyboard.appex___preview.dylib",
+    "argv": [
+      "xcrun",
+      "dwarfdump",
+      "--uuid",
+      "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/__preview.dylib"
+    ],
+    "request_utc": "2026-10-03T14:40:21.663656+00:00",
+    "response_utc": "2026-10-03T14:40:21.675331+00:00",
+    "elapsed_seconds": 0.01168975,
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "label": "uuid-Universe Keyboard",
+    "argv": [
+      "xcrun",
+      "dwarfdump",
+      "--uuid",
+      "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/Universe Keyboard"
+    ],
+    "request_utc": "2026-10-03T14:40:21.675934+00:00",
+    "response_utc": "2026-10-03T14:40:21.686733+00:00",
+    "elapsed_seconds": 0.010821125,
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "label": "uuid-Universe Keyboard.debug.dylib",
+    "argv": [
+      "xcrun",
+      "dwarfdump",
+      "--uuid",
+      "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/Universe Keyboard.debug.dylib"
+    ],
+    "request_utc": "2026-10-03T14:40:21.687370+00:00",
+    "response_utc": "2026-10-03T14:40:21.698164+00:00",
+    "elapsed_seconds": 0.010816375,
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "label": "uuid-__preview.dylib",
+    "argv": [
+      "xcrun",
+      "dwarfdump",
+      "--uuid",
+      "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/__preview.dylib"
+    ],
+    "request_utc": "2026-10-03T14:40:21.735547+00:00",
+    "response_utc": "2026-10-03T14:40:21.748011+00:00",
+    "elapsed_seconds": 0.01248,
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "label": "pid-end",
+    "argv": [
+      "ps",
+      "-p",
+      "3626",
+      "-o",
+      "pid=,stat=,comm="
+    ],
+    "request_utc": "2026-10-03T14:40:22.042246+00:00",
+    "response_utc": "2026-10-03T14:40:22.047713+00:00",
+    "elapsed_seconds": 0.005475375,
+    "exit": 0,
+    "stderr": ""
+  }
+]

@@ -1,0 +1,11 @@
+{
+  "reviewer": "/root/m2r2_quality_r1",
+  "packet_sha256": "00bf35de8a0e8bf38f92ea58b9953a68ed4ed48c32ec06c3726fd48fc728deed",
+  "packet_sha256_matches_expected": true,
+  "start_utc": "2026-10-05T02:07:46.900226+00:00",
+  "ack_utc": "2026-10-05T02:08:34.595923+00:00",
+  "actual_tool_calls_at_ack": 2,
+  "status": "partial at 12-call technical checkpoint; required delivery in progress",
+  "actual_tool_calls_at_checkpoint": 12,
+  "technical_coverage_complete_at_checkpoint": false
+}

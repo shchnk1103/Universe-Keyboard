@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+  "origin_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "expected_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "line_start": 61,
+  "line_end": 120,
+  "lines": [
+    {
+      "line": 61,
+      "text": "    /// true with the responsive gate; Core default remains false until arm."
+    },
+    {
+      "line": 62,
+      "text": "    public var isThreadAffineRimeOwnerEnabled = false"
+    },
+    {
+      "line": 63,
+      "text": "    /// Sendable config-only bootstrap for thread-affine mode (required when"
+    },
+    {
+      "line": 64,
+      "text": "    /// `isThreadAffineRimeOwnerEnabled` is true for off-main ownership)."
+    },
+    {
+      "line": 65,
+      "text": "    public var threadAffineEngineBootstrap: AnyThreadAffineRimeEngineBootstrap?"
+    },
+    {
+      "line": 66,
+      "text": "    /// Active only while `isResponsiveRimePipelineEnabled` is true (MainActor R2 path)."
+    },
+    {
+      "line": 67,
+      "text": "    public internal(set) var responsiveRimeCoordinator: ResponsiveRimeSessionCoordinator?"
+    },
+    {
+      "line": 68,
+      "text": "    /// Active when dual-gate thread-affine mode is installed."
+    },
+    {
+      "line": 69,
+      "text": "    public internal(set) var threadAffineRimeCoordinator: ThreadAffineRimeSessionCoordinator?"
+    },
+    {
+      "line": 70,
+      "text": "    /// Invoked on MainActor after a deferred responsive snapshot is applied so"
+    },
+    {
+      "line": 71,
+      "text": "    /// Extension UI can `syncUI` (Arch/Quality P1 — publish→presentation bridge)."
+    },
+    {
+      "line": 72,
+      "text": "    public var onResponsivePresentationNeeded: ((KeyboardEffect) -> Void)?"
+    },
+    {
+      "line": 73,
+      "text": "    #if T9_RESPONSIVE_CANARY_INTERNAL"
+    },
+    {
+      "line": 74,
+      "text": "        /// Content-free terminal stream for the internal canary validator."
+    },
+    {
+      "line": 75,
+      "text": "        public var onResponsiveCanaryPresentationTerminal: ((ResponsiveRimeCanaryPresentationTerminal) -> Void)?"
+    },
+    {
+      "line": 76,
+      "text": "        public var onResponsiveCanaryRuntimeSelection: ((RimeRuntimeSelection) -> Void)?"
+    },
+    {
+      "line": 77,
+      "text": "        /// Synchronous UI acknowledgement used only by the internal canary. `true`"
+    },
+    {
+      "line": 78,
+      "text": "        /// means the Extension completed `syncUI` before the closure returned."
+    },
+    {
+      "line": 79,
+      "text": "        public var onResponsiveCanaryPresentationNeeded: ((KeyboardEffect) -> Bool)?"
+    },
+    {
+      "line": 80,
+      "text": "        private var responsiveCanaryPresentationFenced = false"
+    },
+    {
+      "line": 81,
+      "text": "        private var pendingResponsiveCanaryVisibleSnapshot:"
+    },
+    {
+      "line": 82,
+      "text": "            ("
+    },
+    {
+      "line": 83,
+      "text": "                snapshot: ResponsiveRimeSnapshot,"
+    },
+    {
+      "line": 84,
+      "text": "                canarySessionInstance: UInt64"
+    },
+    {
+      "line": 85,
+      "text": "            )?"
+    },
+    {
+      "line": 86,
+      "text": "        public private(set) var lastResponsiveCanaryVisibilityTeardown: ThreadAffineRimeVisibilityTeardownResult?"
+    },
+    {
+      "line": 87,
+      "text": "        private var isResponsiveCanaryOwnerInstalled = false"
+    },
+    {
+      "line": 88,
+      "text": "        private var currentResponsiveCanarySessionInstance: UInt64 = 0"
+    },
+    {
+      "line": 89,
+      "text": "        private var responsiveCanarySessionIdentities: [UInt64: (runID: String, modeGeneration: UInt64)] = [:]"
+    },
+    {
+      "line": 90,
+      "text": "        private var responsiveCanaryPreterminatedPresentations: Set<String> = []"
+    },
+    {
+      "line": 91,
+      "text": "    #endif"
+    },
+    {
+      "line": 92,
+      "text": "    #if DEBUG"
+    },
+    {
+      "line": 93,
+      "text": "        /// Content-free hook for controlled preflight evidence. Release builds do"
+    },
+    {
+      "line": 94,
+      "text": "        /// not expose or execute this diagnostic callback."
+    },
+    {
+      "line": 95,
+      "text": "        public var onReversibleT9AutoAnchorOutcome: ((T9ReversibleAutoAnchorOutcome) -> Void)?"
+    },
+    {
+      "line": 96,
+      "text": "    #endif"
+    },
+    {
+      "line": 97,
+      "text": "    var shouldRestoreRimeComposition = false"
+    },
+    {
+      "line": 98,
+      "text": "    var shouldRebuildSessionDuringRestore = false"
+    },
+    {
+      "line": 99,
+      "text": "    /// FIFO contexts for deferred processKey post-processing (R3 parity)."
+    },
+    {
+      "line": 100,
+      "text": "    var responsiveKeyApplyContexts: [ResponsiveKeyApplyContext] = []"
+    },
+    {
+      "line": 101,
+      "text": "    /// R5-Rem-2: dual-gate latest-only presentation buffer."
+    },
+    {
+      "line": 102,
+      "text": "    private var dualGatePendingPresentationSnapshot: ResponsiveRimeSnapshot?"
+    },
+    {
+      "line": 103,
+      "text": "    /// True when the buffered revision completed with accepted work behind it."
+    },
+    {
+      "line": 104,
+      "text": "    /// Such a revision must wait for its successor publication rather than"
+    },
+    {
+      "line": 105,
+      "text": "    /// becoming visible merely because the mailbox is now empty."
+    },
+    {
+      "line": 106,
+      "text": "    private var dualGatePendingPresentationHasKnownSuccessor = false"
+    },
+    {
+      "line": 107,
+      "text": "    #if T9_RESPONSIVE_CANARY_INTERNAL"
+    },
+    {
+      "line": 108,
+      "text": "        private var dualGatePendingCanarySessionInstance: UInt64 = 0"
+    },
+    {
+      "line": 109,
+      "text": "    #endif"
+    },
+    {
+      "line": 110,
+      "text": "    private var dualGatePresentationCoalesceScheduled = false"
+    },
+    {
+      "line": 111,
+      "text": "    /// R5-Rem Arch P1-1: bumped on abandon/reset/rebuild so deferred coalesce"
+    },
+    {
+      "line": 112,
+      "text": "    /// Tasks fail closed and cannot paint after presentation authority dies."
+    },
+    {
+      "line": 113,
+      "text": "    private var responsivePresentationGeneration: UInt64 = 0"
+    },
+    {
+      "line": 114,
+      "text": "    private var lastPresentedSessionEpoch: UInt64 = 0"
+    },
+    {
+      "line": 115,
+      "text": "    private var lastPresentedRevision: UInt64 = 0"
+    },
+    {
+      "line": 116,
+      "text": "    /// Rem-3: dual-gate visual-shadow L1 ledger (MainActor)."
+    },
+    {
+      "line": 117,
+      "text": "    private var provisionalCompositionMirror = ResponsiveProvisionalCompositionMirror()"
+    },
+    {
+      "line": 118,
+      "text": "    /// Rem-3-Polish: cancels deferred L1 visual paints when L2/abandon wins first."
+    },
+    {
+      "line": 119,
+      "text": "    private var provisionalVisualPaintGeneration: UInt64 = 0"
+    },
+    {
+      "line": 120,
+      "text": "    /// Rem-3-Polish: MainActor-owned delay; tests may lower. Default 48ms."
+    }
+  ]
+}

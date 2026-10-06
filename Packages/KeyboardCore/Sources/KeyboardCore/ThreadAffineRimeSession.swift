@@ -64,8 +64,8 @@ private final class ThreadAffineDeliverySink: Sendable {
         /// Revisions that have been delivered (exact-match wait).
         var deliveredRevisions: Set<UInt64> = []
         #if T9_RESPONSIVE_CANARY_INTERNAL
-        var canarySessionInstance: UInt64 = 0
-        var pendingPresentation: Set<PresentationIdentity> = []
+            var canarySessionInstance: UInt64 = 0
+            var pendingPresentation: Set<PresentationIdentity> = []
         #endif
     }
 
@@ -79,41 +79,41 @@ private final class ThreadAffineDeliverySink: Sendable {
             state.deliveredRevisions.insert(snapshot.revision)
             let suppressed = state.publishSuppressed
             #if T9_RESPONSIVE_CANARY_INTERNAL
-            if !suppressed {
-                state.pendingPresentation.insert(
-                    PresentationIdentity(
-                        canarySessionInstance: state.canarySessionInstance,
-                        sessionEpoch: snapshot.sessionEpoch,
-                        revision: snapshot.revision
+                if !suppressed {
+                    state.pendingPresentation.insert(
+                        PresentationIdentity(
+                            canarySessionInstance: state.canarySessionInstance,
+                            sessionEpoch: snapshot.sessionEpoch,
+                            revision: snapshot.revision
+                        )
                     )
-                )
-            }
-            return (suppressed, state.canarySessionInstance)
+                }
+                return (suppressed, state.canarySessionInstance)
             #else
-            return (suppressed, 0)
+                return (suppressed, 0)
             #endif
         }
         if !delivery.suppressed {
             #if T9_RESPONSIVE_CANARY_INTERNAL
-            NotificationCenter.default.post(
-                name: .threadAffineRimeSnapshotPublished,
-                object: ThreadAffineRimePublishedSnapshot(
-                    snapshot: snapshot,
-                    canarySessionInstance: delivery.sessionInstance,
-                    pendingWorkDepthAfterCompletion:
-                        result.pendingWorkDepthAfterCompletion
+                NotificationCenter.default.post(
+                    name: .threadAffineRimeSnapshotPublished,
+                    object: ThreadAffineRimePublishedSnapshot(
+                        snapshot: snapshot,
+                        canarySessionInstance: delivery.sessionInstance,
+                        pendingWorkDepthAfterCompletion:
+                            result.pendingWorkDepthAfterCompletion
+                    )
                 )
-            )
             #else
-            NotificationCenter.default.post(
-                name: .threadAffineRimeSnapshotPublished,
-                object: ThreadAffineRimePublishedSnapshot(
-                    snapshot: snapshot,
-                    canarySessionInstance: 0,
-                    pendingWorkDepthAfterCompletion:
-                        result.pendingWorkDepthAfterCompletion
+                NotificationCenter.default.post(
+                    name: .threadAffineRimeSnapshotPublished,
+                    object: ThreadAffineRimePublishedSnapshot(
+                        snapshot: snapshot,
+                        canarySessionInstance: 0,
+                        pendingWorkDepthAfterCompletion:
+                            result.pendingWorkDepthAfterCompletion
+                    )
                 )
-            )
             #endif
         }
     }
@@ -138,29 +138,29 @@ private final class ThreadAffineDeliverySink: Sendable {
     }
 
     #if T9_RESPONSIVE_CANARY_INTERNAL
-    func setCanarySessionInstance(_ value: UInt64) {
-        state.withLock { $0.canarySessionInstance = value }
-    }
-
-    func pendingPresentationIdentities() -> [PresentationIdentity] {
-        state.withLock { Array($0.pendingPresentation) }
-    }
-
-    func acknowledgePresentation(
-        canarySessionInstance: UInt64,
-        sessionEpoch: UInt64,
-        revision: UInt64
-    ) {
-        _ = state.withLock {
-            $0.pendingPresentation.remove(
-                PresentationIdentity(
-                    canarySessionInstance: canarySessionInstance,
-                    sessionEpoch: sessionEpoch,
-                    revision: revision
-                )
-            )
+        func setCanarySessionInstance(_ value: UInt64) {
+            state.withLock { $0.canarySessionInstance = value }
         }
-    }
+
+        func pendingPresentationIdentities() -> [PresentationIdentity] {
+            state.withLock { Array($0.pendingPresentation) }
+        }
+
+        func acknowledgePresentation(
+            canarySessionInstance: UInt64,
+            sessionEpoch: UInt64,
+            revision: UInt64
+        ) {
+            _ = state.withLock {
+                $0.pendingPresentation.remove(
+                    PresentationIdentity(
+                        canarySessionInstance: canarySessionInstance,
+                        sessionEpoch: sessionEpoch,
+                        revision: revision
+                    )
+                )
+            }
+        }
     #endif
 
     func waitForRevision(_ revision: UInt64, timeout: DispatchTime) -> ResponsiveRimeSnapshot? {
@@ -188,8 +188,7 @@ private final class ThreadAffineDeliverySink: Sendable {
 /// closures (Swift 6 / CI `warnings-as-errors`).
 @MainActor
 private enum ThreadAffinePublishRouter {
-    private static var handlers:
-        [ObjectIdentifier: (ThreadAffineRimePublishedSnapshot) -> Void] = [:]
+    private static var handlers: [ObjectIdentifier: (ThreadAffineRimePublishedSnapshot) -> Void] = [:]
 
     static func setHandler(
         _ id: ObjectIdentifier,
@@ -217,13 +216,19 @@ public final class ThreadAffineRimeSessionCoordinator {
     public typealias PublishHandler = (ResponsiveRimeSnapshot?) -> Void
     public typealias PublicationHandler = (ThreadAffineRimePublishedSnapshot) -> Void
     #if T9_RESPONSIVE_CANARY_INTERNAL
-    public typealias CanaryPublishHandler = (ThreadAffineRimePublishedSnapshot) -> Void
+        public typealias CanaryPublishHandler = (ThreadAffineRimePublishedSnapshot) -> Void
     #endif
 
     private let bootstrap: AnyThreadAffineRimeEngineBootstrap
     private let configuration: ThreadAffineRimeOwnerConfiguration
     private let sink = ThreadAffineDeliverySink()
     private var owner: ThreadAffineRimeSpikeOwner?
+    #if DEBUG
+        public let wakeProbeCoordinatorOrdinal = KeyboardWakeOwnerProbe.shared.nextCoordinatorOrdinal()
+        /// Presence is read only on the same MainActor call path as scheduling.
+        /// Readiness and epoch defaults do not distinguish an absent owner.
+        public var wakeProbeOwnerPresent: Bool { owner != nil }
+    #endif
     private var actionSequence: UInt64 = 0
     private var publishHandler: PublishHandler?
     private var publicationHandler: PublicationHandler?
@@ -331,35 +336,37 @@ public final class ThreadAffineRimeSessionCoordinator {
     }
 
     #if T9_RESPONSIVE_CANARY_INTERNAL
-    public var pendingPresentationIdentities: [(
-        canarySessionInstance: UInt64,
-        sessionEpoch: UInt64,
-        revision: UInt64
-    )] {
-        sink.pendingPresentationIdentities().map {
-            (
-                canarySessionInstance: $0.canarySessionInstance,
-                sessionEpoch: $0.sessionEpoch,
-                revision: $0.revision
+        public var pendingPresentationIdentities:
+            [(
+                canarySessionInstance: UInt64,
+                sessionEpoch: UInt64,
+                revision: UInt64
+            )]
+        {
+            sink.pendingPresentationIdentities().map {
+                (
+                    canarySessionInstance: $0.canarySessionInstance,
+                    sessionEpoch: $0.sessionEpoch,
+                    revision: $0.revision
+                )
+            }
+        }
+
+        public func setCanarySessionInstance(_ value: UInt64) {
+            sink.setCanarySessionInstance(value)
+        }
+
+        public func acknowledgePresentationTerminal(
+            canarySessionInstance: UInt64,
+            sessionEpoch: UInt64,
+            revision: UInt64
+        ) {
+            sink.acknowledgePresentation(
+                canarySessionInstance: canarySessionInstance,
+                sessionEpoch: sessionEpoch,
+                revision: revision
             )
         }
-    }
-
-    public func setCanarySessionInstance(_ value: UInt64) {
-        sink.setCanarySessionInstance(value)
-    }
-
-    public func acknowledgePresentationTerminal(
-        canarySessionInstance: UInt64,
-        sessionEpoch: UInt64,
-        revision: UInt64
-    ) {
-        sink.acknowledgePresentation(
-            canarySessionInstance: canarySessionInstance,
-            sessionEpoch: sessionEpoch,
-            revision: revision
-        )
-    }
     #endif
 
     /// Install UI publish sink. Call from the keyboard MainActor only
@@ -387,19 +394,32 @@ public final class ThreadAffineRimeSessionCoordinator {
     }
 
     #if T9_RESPONSIVE_CANARY_INTERNAL
-    /// Canary-only handler preserves the complete delivery identity.
-    @MainActor
-    public func setCanaryPublishHandler(_ handler: CanaryPublishHandler?) {
-        let routeID = ObjectIdentifier(routerToken)
-        ThreadAffinePublishRouter.setHandler(routeID, handler)
-    }
+        /// Canary-only handler preserves the complete delivery identity.
+        @MainActor
+        public func setCanaryPublishHandler(_ handler: CanaryPublishHandler?) {
+            let routeID = ObjectIdentifier(routerToken)
+            ThreadAffinePublishRouter.setHandler(routeID, handler)
+        }
     #endif
 
     public func scheduleProcessKey(_ key: String) {
         actionSequence &+= 1
         let actionID = "pk-\(actionSequence)"
         lastScheduledActionID = actionID
+        #if DEBUG
+            let wakeOwnerPresent = owner != nil
+        #endif
         lastAcceptReceipt = owner?.accept(.processKey(key), actionID: actionID)
+        #if DEBUG
+            KeyboardWakeOwnerProbe.shared.record(
+                stage: .schedule,
+                coordinatorOrdinal: wakeProbeCoordinatorOrdinal,
+                ownerPresent: wakeOwnerPresent,
+                receiptPresent: lastAcceptReceipt != nil,
+                epoch: lastAcceptReceipt?.sessionEpoch ?? lifecycleEpoch,
+                revision: lastAcceptReceipt?.revision ?? 0
+            )
+        #endif
     }
 
     /// Starts an explicit active-canary kill. The returned fence rejects all
@@ -515,19 +535,48 @@ public final class ThreadAffineRimeSessionCoordinator {
     ) -> ThreadAffineRimeVisibilityTeardownResult? {
         // Visibility keeps its existing ADR 0002 abandonment semantics. It is
         // intentionally distinct from explicit kill's FIFO drain API above.
-        guard let owner else { return nil }
+        guard let owner else {
+            #if DEBUG
+                KeyboardWakeOwnerProbe.shared.record(
+                    stage: .teardown, coordinatorOrdinal: wakeProbeCoordinatorOrdinal, ownerPresent: false,
+                    epoch: lifecycleEpoch)
+            #endif
+            return nil
+        }
         let result = owner.abandonForVisibilityAndShutdown(timeout: timeout)
-        guard result.isPositive else { return result }
+        guard result.isPositive else {
+            #if DEBUG
+                KeyboardWakeOwnerProbe.shared.record(
+                    stage: .teardown, coordinatorOrdinal: wakeProbeCoordinatorOrdinal, ownerPresent: true,
+                    teardownResult: .failed, epoch: lifecycleEpoch)
+            #endif
+            return result
+        }
 
         self.owner = nil
         activeKillFence = nil
+        #if DEBUG
+            KeyboardWakeOwnerProbe.shared.record(
+                stage: .teardown, coordinatorOrdinal: wakeProbeCoordinatorOrdinal, ownerPresent: false,
+                teardownResult: .completed, epoch: lifecycleEpoch)
+        #endif
         return result
     }
 
     public func resumeAfterVisibilityChange() {
+        #if DEBUG
+            KeyboardWakeOwnerProbe.shared.record(
+                stage: .resumeBegin, coordinatorOrdinal: wakeProbeCoordinatorOrdinal, ownerPresent: owner != nil,
+                epoch: lifecycleEpoch)
+        #endif
         if owner == nil {
             startOwner()
         }
+        #if DEBUG
+            KeyboardWakeOwnerProbe.shared.record(
+                stage: .resumeEnd, coordinatorOrdinal: wakeProbeCoordinatorOrdinal, ownerPresent: owner != nil,
+                epoch: lifecycleEpoch)
+        #endif
     }
 
     public func shutdown() {
@@ -557,6 +606,11 @@ public final class ThreadAffineRimeSessionCoordinator {
             }
         }
         owner = newOwner
+        #if DEBUG
+            KeyboardWakeOwnerProbe.shared.record(
+                stage: .replacement, coordinatorOrdinal: wakeProbeCoordinatorOrdinal, ownerPresent: true,
+                epoch: lifecycleEpoch)
+        #endif
     }
 }
 
@@ -568,24 +622,24 @@ public final class ThreadAffineRimeSessionCoordinator {
 public final class ThreadAffineRimeEngineBridge: RimeEngine {
     private let coordinator: ThreadAffineRimeSessionCoordinator
     #if T9_RESPONSIVE_CANARY_INTERNAL
-    private let chromeEngineHint: RimeEngine?
+        private let chromeEngineHint: RimeEngine?
     #else
-    public let chromeEngineHint: RimeEngine?
+        public let chromeEngineHint: RimeEngine?
     #endif
 
     #if T9_RESPONSIVE_CANARY_INTERNAL
-    public init(coordinator: ThreadAffineRimeSessionCoordinator) {
-        self.coordinator = coordinator
-        self.chromeEngineHint = nil
-    }
+        public init(coordinator: ThreadAffineRimeSessionCoordinator) {
+            self.coordinator = coordinator
+            self.chromeEngineHint = nil
+        }
     #else
-    public init(
-        coordinator: ThreadAffineRimeSessionCoordinator,
-        chromeEngineHint: RimeEngine? = nil
-    ) {
-        self.coordinator = coordinator
-        self.chromeEngineHint = chromeEngineHint
-    }
+        public init(
+            coordinator: ThreadAffineRimeSessionCoordinator,
+            chromeEngineHint: RimeEngine? = nil
+        ) {
+            self.coordinator = coordinator
+            self.chromeEngineHint = chromeEngineHint
+        }
     #endif
 
     public var runtimeSelection: RimeRuntimeSelection? {
@@ -594,9 +648,9 @@ public final class ThreadAffineRimeEngineBridge: RimeEngine {
 
     public var diagnosticSessionSnapshot: RimeSessionDiagnosticSnapshot? {
         #if T9_RESPONSIVE_CANARY_INTERNAL
-        return coordinator.diagnosticSessionSnapshot
+            return coordinator.diagnosticSessionSnapshot
         #else
-        return coordinator.diagnosticSessionSnapshot ?? chromeEngineHint?.diagnosticSessionSnapshot
+            return coordinator.diagnosticSessionSnapshot ?? chromeEngineHint?.diagnosticSessionSnapshot
         #endif
     }
 
@@ -604,15 +658,15 @@ public final class ThreadAffineRimeEngineBridge: RimeEngine {
     public var isOwnerReady: Bool { coordinator.isOwnerReady }
 
     #if T9_RESPONSIVE_CANARY_INTERNAL
-    public var onRuntimeSelectionChanged: ((RimeRuntimeSelection) -> Void)? {
-        get { nil }
-        set { _ = newValue }
-    }
+        public var onRuntimeSelectionChanged: ((RimeRuntimeSelection) -> Void)? {
+            get { nil }
+            set { _ = newValue }
+        }
     #else
-    public var onRuntimeSelectionChanged: ((RimeRuntimeSelection) -> Void)? {
-        get { chromeEngineHint?.onRuntimeSelectionChanged }
-        set { chromeEngineHint?.onRuntimeSelectionChanged = newValue }
-    }
+        public var onRuntimeSelectionChanged: ((RimeRuntimeSelection) -> Void)? {
+            get { chromeEngineHint?.onRuntimeSelectionChanged }
+            set { chromeEngineHint?.onRuntimeSelectionChanged = newValue }
+        }
     #endif
 
     public func processKey(_ key: String) -> RimeOutput {

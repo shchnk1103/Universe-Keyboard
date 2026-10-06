@@ -1,0 +1,7 @@
+{
+  "step": "F2-L-ci-helper-tests",
+  "utc": "2026-10-04T10:47:03.194998+00:00",
+  "command": "python3 -m unittest discover -s scripts/ci/tests -p 'test_*.py' && bash scripts/ci/tests/test_verify_final_gate.sh && bash scripts/ci/tests/test_kos_trigger_paths.sh",
+  "cwd": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "remaining_wall_seconds": 10376.805158
+}

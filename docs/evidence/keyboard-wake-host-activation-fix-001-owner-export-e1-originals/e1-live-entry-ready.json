@@ -1,0 +1,20 @@
+{
+  "utc": "2026-10-06T04:12:32.650780+00:00",
+  "status": "LIVE_ENTRY_READY",
+  "human_reinstall": "\u672a\u91cd\u88c5\u672a\u90e8\u7f72",
+  "human_closed": true,
+  "diagnostics_off_keys_absent": true,
+  "device_booted": true,
+  "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "installed78_exact": true,
+  "modules_all_match": true,
+  "main_app_alive": false,
+  "old_appex_sigterm": {
+    "pid": 778,
+    "signal_count": 1,
+    "exited": true
+  },
+  "appex_now_empty": true,
+  "attach": false,
+  "next": "Human Maps empty search invoke Universe Keyboard; no tap/type"
+}

@@ -1,0 +1,13 @@
+{
+  "utc": "2026-10-05T12:27:47.875373+00:00",
+  "actual_tool_calls": 15,
+  "counting": "7functions.exec wrappers+7exec_command nested+1list_sims; includes skills/helper preparation and this archive call",
+  "budget_calls": 60,
+  "budget_wall_seconds": 5400,
+  "conservative_wall_anchor": "2026-10-05T12:21:01.115046+00:00",
+  "conservative_elapsed_seconds": 406.760327,
+  "within_wall_budget": true,
+  "first_failure_at_actual_calls": 11,
+  "environment_retry": false,
+  "host_only_repair_and_fixture": "PASS; actual simulator backup/installation stopped"
+}

@@ -1,0 +1,47 @@
+[
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateBuild.xcresult/Data/data.0~5ja3OOuEJ2MGbpsgplDRHJXuvr03jlebpGn6LU573a1PWrglva2eyDZehKGX0FTWkhC5ohWMel1rBUxVbOqGyA==",
+    "bytes": 1532,
+    "sha256": "4981b8f6f90a25d304d4ce6a7719f73802bc0b1c9e1a974fe0472dd04cf6419a"
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateBuild.xcresult/Data/data.0~NfJTMeP6kG82V5JsWfRm0GpbgMphKg8xP68RZD2CzG1o5BTfmY_qgq9CMTUySsd_507iWQr2g2VGFwTppYxtYg==",
+    "bytes": 72578,
+    "sha256": "8ba193fece695dbe140ff5146f3d3a19d060162a03d184926fd1ba4cce9f6492"
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateBuild.xcresult/Data/data.0~dOd0HWtXSm-fWw6B-515ZyteM1MdTVTSUYfq_emphBNA0afPR6c33LMjqHWds6xH0m9miuSQq59vKaKD-lcyqA==",
+    "bytes": 318,
+    "sha256": "366f7ffbda94766577418aac84f771f0781ef6e99c4e78e977f5d5aacfd699a0"
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateBuild.xcresult/Data/refs.0~5ja3OOuEJ2MGbpsgplDRHJXuvr03jlebpGn6LU573a1PWrglva2eyDZehKGX0FTWkhC5ohWMel1rBUxVbOqGyA==",
+    "bytes": 133,
+    "sha256": "3473d0c22aca7d8f36d36936f54d0eee1bf24590e94beda5e5baad0a975016fa"
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateBuild.xcresult/Data/refs.0~NfJTMeP6kG82V5JsWfRm0GpbgMphKg8xP68RZD2CzG1o5BTfmY_qgq9CMTUySsd_507iWQr2g2VGFwTppYxtYg==",
+    "bytes": 1,
+    "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d"
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateBuild.xcresult/Data/refs.0~dOd0HWtXSm-fWw6B-515ZyteM1MdTVTSUYfq_emphBNA0afPR6c33LMjqHWds6xH0m9miuSQq59vKaKD-lcyqA==",
+    "bytes": 1,
+    "sha256": "6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d"
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateBuild.xcresult/Info.plist",
+    "bytes": 776,
+    "sha256": "b5c7078f6791874bb5164b864c40d4d1d68013f1127adcea0f477c1d6ac159a6"
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/freeze-receipt.json",
+    "bytes": 1403,
+    "sha256": "530e962c122896b244a9c98b614f58b9846569f34c0989f74a0774b7dbc944f3"
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/logs/build.log",
+    "bytes": 548418,
+    "sha256": "18fe20fc1ded0462750c2ac57b79c3950ec9804febde2e4e1d435d9ad65b907b"
+  }
+]

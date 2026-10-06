@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardWakeOwnerProbe.swift",
+  "origin_sha256": "679d55e8669d7c68db2fbe58fd1b436cbb19bc61e770f9a701751326fa669af6",
+  "expected_sha256": "679d55e8669d7c68db2fbe58fd1b436cbb19bc61e770f9a701751326fa669af6",
+  "line_start": 241,
+  "line_end": 300,
+  "lines": [
+    {
+      "line": 241,
+      "text": "                    records: records"
+    },
+    {
+      "line": 242,
+      "text": "                )"
+    },
+    {
+      "line": 243,
+      "text": "                value.lifecycle = .frozen"
+    },
+    {
+      "line": 244,
+      "text": "                value.activeAttemptOrdinal = 0"
+    },
+    {
+      "line": 245,
+      "text": "                value.frozenValue = copy"
+    },
+    {
+      "line": 246,
+      "text": "                return copy"
+    },
+    {
+      "line": 247,
+      "text": "            }"
+    },
+    {
+      "line": 248,
+      "text": ""
+    },
+    {
+      "line": 249,
+      "text": "            guard let frozenValue else { return nil }"
+    },
+    {
+      "line": 250,
+      "text": "            return Snapshot(words: Self.encode(frozenValue))"
+    },
+    {
+      "line": 251,
+      "text": "        }"
+    },
+    {
+      "line": 252,
+      "text": ""
+    },
+    {
+      "line": 253,
+      "text": "        private static func append("
+    },
+    {
+      "line": 254,
+      "text": "            stage: Stage,"
+    },
+    {
+      "line": 255,
+      "text": "            timestamp: UInt64,"
+    },
+    {
+      "line": 256,
+      "text": "            coordinatorOrdinal: UInt64,"
+    },
+    {
+      "line": 257,
+      "text": "            appearanceOrdinal: UInt64,"
+    },
+    {
+      "line": 258,
+      "text": "            attemptOrdinal: UInt64,"
+    },
+    {
+      "line": 259,
+      "text": "            ownerPresent: Bool,"
+    },
+    {
+      "line": 260,
+      "text": "            receiptPresent: Bool,"
+    },
+    {
+      "line": 261,
+      "text": "            teardownResult: TeardownResult,"
+    },
+    {
+      "line": 262,
+      "text": "            epoch: UInt64,"
+    },
+    {
+      "line": 263,
+      "text": "            revision: UInt64,"
+    },
+    {
+      "line": 264,
+      "text": "            to state: inout State"
+    },
+    {
+      "line": 265,
+      "text": "        ) -> Bool {"
+    },
+    {
+      "line": 266,
+      "text": "            let (incremented, overflow) = state.lastSequence.addingReportingOverflow(1)"
+    },
+    {
+      "line": 267,
+      "text": "            let sequence = overflow ? UInt64.max : incremented"
+    },
+    {
+      "line": 268,
+      "text": "            state.lastSequence = sequence"
+    },
+    {
+      "line": 269,
+      "text": ""
+    },
+    {
+      "line": 270,
+      "text": "            guard state.recordCount < recordCapacity else {"
+    },
+    {
+      "line": 271,
+      "text": "                state.overflowCount = saturatingIncrement(state.overflowCount)"
+    },
+    {
+      "line": 272,
+      "text": "                return false"
+    },
+    {
+      "line": 273,
+      "text": "            }"
+    },
+    {
+      "line": 274,
+      "text": ""
+    },
+    {
+      "line": 275,
+      "text": "            state.records[state.recordCount] = StoredRecord("
+    },
+    {
+      "line": 276,
+      "text": "                sequence: sequence,"
+    },
+    {
+      "line": 277,
+      "text": "                timestamp: timestamp,"
+    },
+    {
+      "line": 278,
+      "text": "                stage: stage.rawValue,"
+    },
+    {
+      "line": 279,
+      "text": "                coordinatorOrdinal: coordinatorOrdinal,"
+    },
+    {
+      "line": 280,
+      "text": "                appearanceOrdinal: appearanceOrdinal,"
+    },
+    {
+      "line": 281,
+      "text": "                attemptOrdinal: attemptOrdinal,"
+    },
+    {
+      "line": 282,
+      "text": "                ownerPresent: ownerPresent,"
+    },
+    {
+      "line": 283,
+      "text": "                receiptPresent: receiptPresent,"
+    },
+    {
+      "line": 284,
+      "text": "                teardownResult: teardownResult.rawValue,"
+    },
+    {
+      "line": 285,
+      "text": "                epoch: epoch,"
+    },
+    {
+      "line": 286,
+      "text": "                revision: revision"
+    },
+    {
+      "line": 287,
+      "text": "            )"
+    },
+    {
+      "line": 288,
+      "text": "            state.recordCount += 1"
+    },
+    {
+      "line": 289,
+      "text": "            return true"
+    },
+    {
+      "line": 290,
+      "text": "        }"
+    },
+    {
+      "line": 291,
+      "text": ""
+    },
+    {
+      "line": 292,
+      "text": "        private static func encode(_ value: FrozenValue) -> [UInt64] {"
+    },
+    {
+      "line": 293,
+      "text": "            var words: [UInt64] = []"
+    },
+    {
+      "line": 294,
+      "text": "            words.reserveCapacity(headerWordCount + value.records.count * recordWordCount)"
+    },
+    {
+      "line": 295,
+      "text": "            words.append(magicWord)"
+    },
+    {
+      "line": 296,
+      "text": "            words.append(formatVersion)"
+    },
+    {
+      "line": 297,
+      "text": "            words.append(value.isIncomplete ? Snapshot.incompleteValue : 0)"
+    },
+    {
+      "line": 298,
+      "text": "            words.append(value.runIdentifier.high)"
+    },
+    {
+      "line": 299,
+      "text": "            words.append(value.runIdentifier.low)"
+    },
+    {
+      "line": 300,
+      "text": "            words.append(value.processIdentifier.high)"
+    }
+  ]
+}

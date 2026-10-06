@@ -1,0 +1,9 @@
+{
+  "role": "Coordinator failure rehearsal",
+  "coverage": "Partial",
+  "error_type": "AssertionError",
+  "error": "allowlisted content hash mismatch: /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md",
+  "report_sha256": "95f0fe03f2ec58ad70909611fd3c696e1f41efa730fbdd2e35fdc85ab9d27cea",
+  "failure_observed_epoch": 1791014151.602596,
+  "elapsed_before_failure_usage_write_seconds": 0.18398332595825195
+}

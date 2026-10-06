@@ -1,0 +1,27 @@
+{
+  "cwd": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "argv": [
+    "xcrun",
+    "swift",
+    "test",
+    "--package-path",
+    "/private/tmp/ukey-wake-c7b2-core-20261002/KeyboardCore",
+    "--scratch-path",
+    "/private/tmp/ukey-wake-c7b2-core-20261002/CoreBuild",
+    "--cache-path",
+    "/private/tmp/ukey-wake-c7b2-core-20261002/Cache",
+    "--manifest-cache",
+    "local",
+    "--disable-sandbox",
+    "-Xswiftc",
+    "-module-cache-path",
+    "-Xswiftc",
+    "/private/tmp/ukey-wake-c7b2-core-20261002/ModuleCache",
+    "-Xcc",
+    "-fmodules-cache-path=/private/tmp/ukey-wake-c7b2-core-20261002/ModuleCache",
+    "-Xswiftc",
+    "-strict-concurrency=complete",
+    "-Xswiftc",
+    "-warnings-as-errors"
+  ]
+}

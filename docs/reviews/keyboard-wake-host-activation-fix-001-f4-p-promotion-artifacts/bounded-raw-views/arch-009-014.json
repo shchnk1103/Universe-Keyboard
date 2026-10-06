@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+  "origin_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "expected_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "line_start": 781,
+  "line_end": 840,
+  "lines": [
+    {
+      "line": 781,
+      "text": "                    return"
+    },
+    {
+      "line": 782,
+      "text": "                }"
+    },
+    {
+      "line": 783,
+      "text": "                shouldRestoreRimeComposition = true"
+    },
+    {
+      "line": 784,
+      "text": "                shouldRebuildSessionDuringRestore = true"
+    },
+    {
+      "line": 785,
+      "text": "                state.lastRimeOutput = nil"
+    },
+    {
+      "line": 786,
+      "text": "                notifyResponsivePresentation(pathChanged: true)"
+    },
+    {
+      "line": 787,
+      "text": "                return"
+    },
+    {
+      "line": 788,
+      "text": "            }"
+    },
+    {
+      "line": 789,
+      "text": ""
+    },
+    {
+      "line": 790,
+      "text": "            applyRimeOutput(output)"
+    },
+    {
+      "line": 791,
+      "text": "            var pathChanged = usesT9InputSemantics"
+    },
+    {
+      "line": 792,
+      "text": "            if let ctx {"
+    },
+    {
+      "line": 793,
+      "text": "                var retainedFocusedSegment = false"
+    },
+    {
+      "line": 794,
+      "text": "                if output.committedText == nil,"
+    },
+    {
+      "line": 795,
+      "text": "                    ctx.rimeKey.count == 1,"
+    },
+    {
+      "line": 796,
+      "text": "                    let digit = ctx.rimeKey.first"
+    },
+    {
+      "line": 797,
+      "text": "                {"
+    },
+    {
+      "line": 798,
+      "text": "                    retainedFocusedSegment = retainFocusedT9SegmentAfterAppendingDigit("
+    },
+    {
+      "line": 799,
+      "text": "                        previous: ctx.previousT9PathState,"
+    },
+    {
+      "line": 800,
+      "text": "                        digit: digit"
+    },
+    {
+      "line": 801,
+      "text": "                    )"
+    },
+    {
+      "line": 802,
+      "text": "                }"
+    },
+    {
+      "line": 803,
+      "text": "                advanceAcceptedT9AutoAnchorDigit("
+    },
+    {
+      "line": 804,
+      "text": "                    ctx.rimeKey,"
+    },
+    {
+      "line": 805,
+      "text": "                    previousLiveRawInput: ctx.previousRawForTrace,"
+    },
+    {
+      "line": 806,
+      "text": "                    output: output"
+    },
+    {
+      "line": 807,
+      "text": "                )"
+    },
+    {
+      "line": 808,
+      "text": "                let autoAnchorOutcome = attemptReversibleT9AutoAnchorIfNeeded("
+    },
+    {
+      "line": 809,
+      "text": "                    using: engineForPostProcess"
+    },
+    {
+      "line": 810,
+      "text": "                )"
+    },
+    {
+      "line": 811,
+      "text": "                if retainedFocusedSegment || autoAnchorOutcome.status != .notEligible {"
+    },
+    {
+      "line": 812,
+      "text": "                    pathChanged = true"
+    },
+    {
+      "line": 813,
+      "text": "                } else if usesT9InputSemantics {"
+    },
+    {
+      "line": 814,
+      "text": "                    _ = refreshT9PinyinPathState(forceNewProvenance: false)"
+    },
+    {
+      "line": 815,
+      "text": "                    pathChanged = true"
+    },
+    {
+      "line": 816,
+      "text": "                }"
+    },
+    {
+      "line": 817,
+      "text": "            } else if usesT9InputSemantics {"
+    },
+    {
+      "line": 818,
+      "text": "                _ = refreshT9PinyinPathState(forceNewProvenance: false)"
+    },
+    {
+      "line": 819,
+      "text": "            }"
+    },
+    {
+      "line": 820,
+      "text": "            notifyResponsivePresentation(pathChanged: pathChanged)"
+    },
+    {
+      "line": 821,
+      "text": "        }"
+    },
+    {
+      "line": 822,
+      "text": ""
+    },
+    {
+      "line": 823,
+      "text": "        if let coordinator = responsiveRimeCoordinator {"
+    },
+    {
+      "line": 824,
+      "text": "            coordinator.withPublishHandlerSuppressed(runPostProcess)"
+    },
+    {
+      "line": 825,
+      "text": "        } else {"
+    },
+    {
+      "line": 826,
+      "text": "            runPostProcess()"
+    },
+    {
+      "line": 827,
+      "text": "        }"
+    },
+    {
+      "line": 828,
+      "text": "    }"
+    },
+    {
+      "line": 829,
+      "text": ""
+    },
+    {
+      "line": 830,
+      "text": "    /// Drops host commit from select-owned pipeline snapshots."
+    },
+    {
+      "line": 831,
+      "text": "    ///"
+    },
+    {
+      "line": 832,
+      "text": "    /// `sel-*` actions return into Core select handling which already calls"
+    },
+    {
+      "line": 833,
+      "text": "    /// `commitInlinePreedit`. Re-applying `committedText` here doubles the last"
+    },
+    {
+      "line": 834,
+      "text": "    /// segment on multi-step partial commits (and any single select under race)."
+    },
+    {
+      "line": 835,
+      "text": "    private func presentationOutputStrippingSelectOwnedCommit("
+    },
+    {
+      "line": 836,
+      "text": "        from output: RimeOutput,"
+    },
+    {
+      "line": 837,
+      "text": "        actionID: String"
+    },
+    {
+      "line": 838,
+      "text": "    ) -> RimeOutput {"
+    },
+    {
+      "line": 839,
+      "text": "        guard actionID.hasPrefix(\"sel-\"),"
+    },
+    {
+      "line": 840,
+      "text": "            output.committedText != nil"
+    }
+  ]
+}

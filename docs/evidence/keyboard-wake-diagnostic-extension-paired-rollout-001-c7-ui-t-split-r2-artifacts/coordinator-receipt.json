@@ -1,0 +1,24 @@
+{
+  "S": {
+    "report_sha256": "adb1b8ad7aca52139e595aeea33977f95bdd4909dcaf0e5d20ef881cc7f69d72",
+    "usage_sha256": "375156d27152b33ee6327f9e4b4309c8248d13c963d14f2d7faee8e7bb8ec74f",
+    "leaf_tool_calls": 6,
+    "elapsed_seconds": 199.935,
+    "frozen_input_mismatch": [],
+    "coverage": "Partial"
+  },
+  "P": {
+    "report_sha256": "41a5c42812e32846afe0d17b1440602ff2bd9bff4e1b5df8ef0b5ab8181cdc55",
+    "usage_sha256": "b1f990fc4e8f1643b97e4d6b8f02fb3d30b6ea7f3625448792c0398d4785432d",
+    "leaf_tool_calls": 6,
+    "elapsed_seconds": 201.675066,
+    "frozen_input_mismatch": [],
+    "coverage": "Complete T4-T6"
+  },
+  "S_usage_adjudication": {
+    "author_text_clarification": "leaf_tool_calls=6 是准确实际总数，包含骨架/正式写入/最后回读；independent_leaf_calls=5 是误留错误字段",
+    "raw_usage_unchanged": true,
+    "author_message_only_no_tools": true,
+    "overall_T": "Hold"
+  }
+}

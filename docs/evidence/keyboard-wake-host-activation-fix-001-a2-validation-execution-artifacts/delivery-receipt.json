@@ -1,0 +1,19 @@
+{
+  "completed_utc": "2026-10-04T16:25:47.632693+00:00",
+  "elapsed_wall_seconds": 1053.682197,
+  "budget_wall_seconds": 10800,
+  "within_budget": true,
+  "source_written": false,
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "staged": 0,
+  "12_steps_exit0": true,
+  "restored": false,
+  "environment_health_not_verified": true,
+  "blocked_dependencies": [
+    "precise before restoration authorization",
+    "new candidate Architecture A2 independent review",
+    "F3 Quality audit budget disposition",
+    "F4 authorization and runtime evidence"
+  ]
+}

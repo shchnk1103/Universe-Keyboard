@@ -1,0 +1,93 @@
+{
+  "lane": "QUALITY-C5-R-ACCEPT",
+  "round": 3,
+  "coverage": "Partial",
+  "bounded_acceptance": "Hold",
+  "finding": "HOST-Q-R-01",
+  "finding_disposition": "remains Hold",
+  "identity": {
+    "packet_sha256": "75a2d66ccfbc182811d7774b95636929a45b5d06af2f5c33ac2a0179d013354e",
+    "manifest_sha256": "9cfc3b14aff6846f323320f9169208f042f5c43016cf5f5b7a663b10475a9360",
+    "entry_sha256": "6257ddff79369b3229de74ad9bffbcd89402c3a862bc382a5cd7a6e057302f19",
+    "all_match": true,
+    "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+    "branch": "codex/keyboard-wake-v3-compatibility-gate",
+    "candidate": "af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9",
+    "run_id": "C5-R-20261001-01"
+  },
+  "hash_counts": {
+    "direct_inputs": {
+      "matched": 18,
+      "total": 18
+    }
+  },
+  "independent_multiset": {
+    "expected_rows": 17,
+    "expected_distinct": 15,
+    "observed_rows": 17,
+    "observed_distinct": 15,
+    "exact_match": true,
+    "difference_count": 0,
+    "per_snapshot_max_not_summed": true,
+    "duplicate_10_46_30_entered_returned_each": 2,
+    "seq30_filtered_total": [
+      14,
+      67
+    ],
+    "seq33_filtered_total": [
+      10,
+      67
+    ],
+    "seq33_target_rows": 3,
+    "seq33_non_target_matches": 7,
+    "reader_total_67_is_not_target_count": true,
+    "visible_notice_rows": 0,
+    "formatter_source_verified": false
+  },
+  "F1": "Partial",
+  "F2": "Partial",
+  "tool_budget": {
+    "underlying_tools": 4,
+    "elapsed_seconds": 600,
+    "used": 3
+  },
+  "started_utc": "2026-10-01T06:11:30.870797+00:00",
+  "checkpoint_after_call_2": true,
+  "previous_partial_rounds_preserved": true,
+  "limitations": [
+    "UI不显示process/appearance/localSequence；只作显示多重集对应",
+    "Human query为既有reader补证观察，不是新输入轮；不声称零keyboard lifecycle",
+    "未读当前设备/安装目录/AppGroup/prefs/journal/UI",
+    "不改变30 skip、原恢复残项、insert_text/tail或其他Gate状态"
+  ],
+  "tool_ledger": [
+    {
+      "call": 1,
+      "tool": "exec_command",
+      "started_utc": "2026-10-01T06:11:30.870797+00:00",
+      "purpose": "start timer; read/hash packet, manifest, Entry; hash 18 inputs; check HEAD/branch",
+      "ended_utc": "2026-10-01T06:11:30.922716+00:00",
+      "elapsed_seconds": 0.052
+    },
+    {
+      "call": 2,
+      "tool": "exec_command",
+      "started_utc": null,
+      "ended_utc": null,
+      "elapsed_seconds": null,
+      "timing_note": "per-call wall timestamps were not sampled; order and purpose are known",
+      "purpose": "hash 18 direct inputs; check HEAD/branch; list frozen inputs"
+    },
+    {
+      "call": 3,
+      "tool": "exec_command",
+      "started_utc": "2026-10-01T06:14:42.906885+00:00",
+      "purpose": "independent typed-window/snapshot multiset recomputation; reader source/plan review; write final artifacts",
+      "ended_utc": "2026-10-01T06:14:42.914567+00:00",
+      "elapsed_seconds": 0.006
+    }
+  ],
+  "ended_utc_before_final_timer_write": "2026-10-01T06:14:42.914567+00:00",
+  "elapsed_seconds_before_final_timer_write": 192.042,
+  "within_600_seconds": true
+}

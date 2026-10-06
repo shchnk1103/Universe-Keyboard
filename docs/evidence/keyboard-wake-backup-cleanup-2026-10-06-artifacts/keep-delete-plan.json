@@ -1,0 +1,1111 @@
+{
+  "keep": [
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006",
+      "kib": 708,
+      "is_dir": true
+    }
+  ],
+  "delete": [
+    {
+      "path": "/private/tmp/archive-ukey-a2-4-quality-20261005.py",
+      "kib": 12,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/archive-ukey-a2-4-review-20261005.py",
+      "kib": 12,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/archive-ukey-a2-review-20261005.py",
+      "kib": 12,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/archive-ukey-a2-validation-20261005.py",
+      "kib": 12,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/archive-ukey-f3-20261004.py",
+      "kib": 12,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/prepare-ukey-a2-review-20261005.py",
+      "kib": 12,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/prepare-ukey-a2-validation-20261004.py",
+      "kib": 12,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/prepare-ukey-f3-20261004.py",
+      "kib": 12,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/uk-wake-diagnostic-reader-module-cache",
+      "kib": 0,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/uk-wake-diagnostic-reader-scratch",
+      "kib": 0,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-a2-accept-receipt-20261005.py",
+      "kib": 8,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-a2-validation-preparation-20261004",
+      "kib": 476,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-a2f1-diffcheck.txt",
+      "kib": 0,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-appex-meta-callback-api-preflight-20261006",
+      "kib": 256,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-appex-meta-command-preflight-20261006",
+      "kib": 252,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-appex-meta-preclick-preflight-20261006",
+      "kib": 344,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-c7-t9-before-lint.log",
+      "kib": 8,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-delivery-flow-preflight-20261005",
+      "kib": 24,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f2-candidate-recheck.json",
+      "kib": 4,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f2-entry-finalize-20261004.py",
+      "kib": 8,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f2-restore-receive-20261004.py",
+      "kib": 8,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f2-restore-root-receipt-20261004.json",
+      "kib": 4,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f3-f4-prepare.py",
+      "kib": 4,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f3-f4-write.py",
+      "kib": 12,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f4-artifact-preflight.py",
+      "kib": 4,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f4-entry-write.py",
+      "kib": 20,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f4-i-backup-hold.py",
+      "kib": 8,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f4-i-entry.py",
+      "kib": 8,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f4-i-health-close.py",
+      "kib": 12,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f4-i-installed-delivery.py",
+      "kib": 12,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f4-i-stop-delivery.py",
+      "kib": 8,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f4-p-deliver.py",
+      "kib": 12,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f4-p-entry.py",
+      "kib": 8,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f4-p-freeze.py",
+      "kib": 8,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f4-p-promotion-close.py",
+      "kib": 12,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f4-p-quality-missing-reader.py",
+      "kib": 4,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f4-p-r2-close.py",
+      "kib": 12,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f4-p-r2-prepare.py",
+      "kib": 8,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f4-p-r3-close.py",
+      "kib": 24,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f4-p-r3-prepare.py",
+      "kib": 12,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f4-p-r4-close.py",
+      "kib": 4,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f4-p-r4-prepare.py",
+      "kib": 8,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f4-p-r4-stop.py",
+      "kib": 12,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f4-p-r5-close.py",
+      "kib": 16,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f4-p-r5-prepare.py",
+      "kib": 8,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f4-p-receipt-accept.py",
+      "kib": 12,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f4-p-review-prepare.py",
+      "kib": 12,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-f4-p-review-proxy.py",
+      "kib": 8,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-grok-f1-receive-20261004.py",
+      "kib": 8,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-grok-f1-root-receipt-20261004.json",
+      "kib": 4,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-h2-prepare.py",
+      "kib": 4,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-a2-4-quality-20261005",
+      "kib": 28,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-a2-4-review-20261005",
+      "kib": 40,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-a2-received-20261004",
+      "kib": 276,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-a2-restore-20261005",
+      "kib": 90372,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-a2-review-20261005",
+      "kib": 52,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-a2-validation-backup-20261005",
+      "kib": 130744,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005",
+      "kib": 1352580,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-appex-meta-20261006",
+      "kib": 60,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-appex-meta-r2-20261006",
+      "kib": 64,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-appex-meta-r3-20261006",
+      "kib": 60,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-appex-meta-r4-20261006",
+      "kib": 104,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-entry-20261004",
+      "kib": 316,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-f2-actor-retest-20261004",
+      "kib": 698280,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-f2-after-preservation-20261004",
+      "kib": 103088,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-f2-backup-20261004",
+      "kib": 130696,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-f2-restore-20261004",
+      "kib": 90472,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-f2-run-20261004",
+      "kib": 1244512,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-f3-20261004",
+      "kib": 132,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-f3-f4-prepared-20261005",
+      "kib": 196,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-f3-quality-incremental-20261005",
+      "kib": 776,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-f3-quality-uncovered-20261005",
+      "kib": 828,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-f4-before-20261005",
+      "kib": 130744,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-f4-i-20261005",
+      "kib": 2964,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-f4-m-20261006",
+      "kib": 72,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-f4-p-authority-20261005.json",
+      "kib": 4,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005",
+      "kib": 469180,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-f4-p-review-20261005",
+      "kib": 1816,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-f4-prepared-20261005",
+      "kib": 40,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-grok-f1-20261004",
+      "kib": 260,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-h0-20261006",
+      "kib": 100,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-h0b-20261006",
+      "kib": 100,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-h0b-eintr-20261006",
+      "kib": 112,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-h0b-read-record-20261006",
+      "kib": 28,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-h0b-read-sample-20261006",
+      "kib": 104,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-owner-probe-c7-core-20261002",
+      "kib": 24,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-owner-probe-fixture-20261001",
+      "kib": 31596,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-q-prepare.py",
+      "kib": 12,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-q-r2-prepare.py",
+      "kib": 8,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-quality-delivery-repaired.py",
+      "kib": 4,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-quality-incremental-close.py",
+      "kib": 8,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-quality-incremental-dispatch.py",
+      "kib": 8,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-quality-incremental-receive.py",
+      "kib": 4,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-quality-reader-preflight-20261005.json",
+      "kib": 36,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-quality-reader-repaired.py",
+      "kib": 8,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-quality-uncovered-close.py",
+      "kib": 8,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-quality-uncovered-dispatch.py",
+      "kib": 8,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-quality-uncovered-receive.py",
+      "kib": 4,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-rimebridge-tests-reader-preflight.json",
+      "kib": 76,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-u1r1-receive-correction.py",
+      "kib": 8,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-arch-r4-20261002",
+      "kib": 560,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-c1-20260930",
+      "kib": 16996,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-c2-20261001",
+      "kib": 120,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-c2-preflight-20260930",
+      "kib": 0,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-c3-20261001",
+      "kib": 152,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-c4-20261001",
+      "kib": 19556,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-c4-supplement-20261001",
+      "kib": 132,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-c5-disposition-20261001",
+      "kib": 544,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-c5-host-delta-20261001",
+      "kib": 192,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-c5-host-delta-r2-20261001",
+      "kib": 192,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-c5-i-20261001",
+      "kib": 188,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-c5-p-20261001",
+      "kib": 176,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-c5-p-r2-20261001",
+      "kib": 188,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-c5-preparation-20261001",
+      "kib": 132,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-c5-r-20261001",
+      "kib": 192,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-c5-r-accept-20261001",
+      "kib": 192,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-c5-r-reader-20261001",
+      "kib": 100,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-c5-r-reader-focused-r3-20261001",
+      "kib": 64,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-c5-r-reader-review-20261001",
+      "kib": 52,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-c6-maps-20261001",
+      "kib": 52,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-c7-implementation-20261002",
+      "kib": 371204,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-c7-readonly-20261001",
+      "kib": 28,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-c7b-20261002",
+      "kib": 1452692,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-c7b2-core-20261002",
+      "kib": 223244,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-c7b2-quality-r2-20261002",
+      "kib": 592,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-c7b3-20261002",
+      "kib": 1919608,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-c7c-prep-20261002",
+      "kib": 664,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-debugger-readiness-20261002",
+      "kib": 780,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-m-preparation-20261003",
+      "kib": 364,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-m0-20261003",
+      "kib": 132364,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-m1-20261003",
+      "kib": 48,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-m2-arm-check-20261003",
+      "kib": 896,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-m2-early-export-readonly-20261003",
+      "kib": 8,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-m2-execution-20261003",
+      "kib": 880,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-m2r1-20261004",
+      "kib": 39724,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-m2r2-20261004",
+      "kib": 38608,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-m2r2-reexport-20261004",
+      "kib": 140,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-m2r2-reexport-review-20261004",
+      "kib": 72,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-minimal-fix-architecture-r1-20261004",
+      "kib": 32,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-minimal-fix-architecture-r2-20261004",
+      "kib": 28,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-minimal-fix-plan-20261004",
+      "kib": 16,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-normal-export-20261002",
+      "kib": 632,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-normal-export-review-20261002",
+      "kib": 1244,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-parent-completion-20261004",
+      "kib": 16,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-parent-exit-map-20261004",
+      "kib": 20,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-probe-ui-arch-r3-20261003",
+      "kib": 976,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-probe-ui-binding-20261002",
+      "kib": 620,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-probe-ui-candidate-20261002",
+      "kib": 468224,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-probe-ui-candidate-prep-20261002",
+      "kib": 4,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-probe-ui-consistency-20261002",
+      "kib": 588,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-probe-ui-h2-20261002",
+      "kib": 922436,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-probe-ui-q-20261002",
+      "kib": 1276,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-probe-ui-q-r2-20261003",
+      "kib": 1012,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-promotion-preflight-20261002",
+      "kib": 144432,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-reader-final-supplement-20261003",
+      "kib": 744,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-reader-new-20261003",
+      "kib": 1004,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-recovery-readonly-20261002",
+      "kib": 8776,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-stable-channel-20261004",
+      "kib": 48,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-stage-c-source-audit-20260930",
+      "kib": 36,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-t-entry-prep-20261003.py",
+      "kib": 4,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-t12-freeze-20261003.py",
+      "kib": 8,
+      "is_dir": false,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-ui-i0-20261003",
+      "kib": 132000,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-ui-i1-20261003",
+      "kib": 131708,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-ui-keychain-continuation-20261003",
+      "kib": 92156,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-ui-t-entry-20261003",
+      "kib": 1368,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-ui-t-independent-review-20261003",
+      "kib": 956,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-ui-t-reader-preflight-20261003",
+      "kib": 760,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-ui-t-split-r2-20261003",
+      "kib": 176,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-ui-t-split-review-20261003",
+      "kib": 12,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-ui-t0-20261003",
+      "kib": 3884,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-ui-t1-execution-20261003",
+      "kib": 1372200,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-ui-t12-freeze-20261003",
+      "kib": 1368,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-ui-t2-restore-20261003",
+      "kib": 92440,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-ui-t2-skip-reasons-review-20261003",
+      "kib": 16,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-ui-u0-20261003",
+      "kib": 24,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-ui-u1-execution-20261003",
+      "kib": 1660,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-ui-u1-prepared-20261003",
+      "kib": 36,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-ui-u1r1-delivery-correction-20261003",
+      "kib": 28,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-ui-u1r1-execution-20261003",
+      "kib": 1712,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-ui-u1r1-quality-r1-20261003",
+      "kib": 68,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-v5-20260930.nBWReN",
+      "kib": 400,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-v6-decision-20260930-01a0f254",
+      "kib": 16180,
+      "is_dir": true,
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254",
+      "kib": 488,
+      "is_dir": true,
+      "exists": true
+    }
+  ],
+  "delete_count": 183,
+  "delete_kib": 12106296
+}

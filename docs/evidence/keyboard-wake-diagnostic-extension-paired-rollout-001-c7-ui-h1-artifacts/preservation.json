@@ -1,0 +1,27 @@
+{
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "before_file_count": 2837,
+  "before_dirty_count": 754,
+  "after_dirty_count": 776,
+  "staged": 0,
+  "changed_existing_paths": [
+    "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md",
+    "docs/assignments/keyboard-wake-lifecycle-diagnostics-001.md",
+    "docs/ACTIVE_WORK.md",
+    "docs/ENGINEERING_DASHBOARD.md",
+    "docs/KNOWLEDGE_INDEX.md"
+  ],
+  "outside_mirrors_changed": [],
+  "source_and_vendor": {
+    "source_and_build_inputs": {
+      "count": 571,
+      "mismatches": []
+    },
+    "vendor_files": {
+      "count": 630,
+      "mismatches": []
+    }
+  },
+  "no_device_actions": true
+}

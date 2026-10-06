@@ -1,0 +1,16 @@
+{
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "files": {
+    "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardWakeOwnerProbe.swift": "679d55e8669d7c68db2fbe58fd1b436cbb19bc61e770f9a701751326fa669af6",
+    "Packages/KeyboardCore/Sources/KeyboardCore/ThreadAffineRimeSession.swift": "b7050645be501a7f41a6732efda40b07fb82c4c930862c0f1d13d167af426a76",
+    "Packages/KeyboardCore/Tests/KeyboardCoreTests/KeyboardWakeOwnerProbeTests.swift": "c5819c3695926cfb94ce64c69636ec4b10f1696f7ac76263a4aaf96326a49f47",
+    "Keyboard/Controllers/KeyboardViewController.swift": "27e00c5e07d0bc1e07e045a78c9b49df1ba660beec762227434b3550630caf4c",
+    "Keyboard/Controllers/KeyboardViewController+InputActions.swift": "16abce7d6e6752be641ea333cc60706217c9d84211f1007315850acbc62ee2ae",
+    "Keyboard/Controllers/KeyboardViewController+KeyPressFeedback.swift": "c1d361a34e5aa788a4a518f46cbb7370ff5903e05736a72281da04f859a0fe7a",
+    "Keyboard/Controllers/KeyboardViewController+CandidateBar.swift": "ae1b78d5a311f60054914093458b0c78fe3d35923d82b487fd7f30d886074c80",
+    "Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift": "bca0391355d9a3a60880dfdc08260095d02d6618bf0a38d40bfcc61734a891e9",
+    "Keyboard/Views/CandidateBar/CandidateBarView.swift": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8"
+  },
+  "identity_sha256": "9730e254cb8afd48f857ad9bef1659017fe90d26700ea3c9b1809249e3c751c8"
+}

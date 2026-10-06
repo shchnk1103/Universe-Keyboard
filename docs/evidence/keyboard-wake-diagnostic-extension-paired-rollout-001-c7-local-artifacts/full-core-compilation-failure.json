@@ -1,0 +1,7 @@
+[
+  {
+    "file": "T9PinyinPathTests.swift",
+    "line": 1429,
+    "message": "string interpolation produces a debug description for an optional value; did you mean to make this explicit?"
+  }
+]

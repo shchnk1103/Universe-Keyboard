@@ -135,7 +135,13 @@ extension KeyboardViewController {
                 )
             }
         #endif
-        controller.textClient = UITextDocumentProxyAdapter(proxy: textDocumentProxy)
+        controller.textClient = UITextDocumentProxyAdapter(
+            proxy: textDocumentProxy,
+            diagnosticsJournal: diagnosticsJournal,
+            diagnosticContext: { [weak self] in
+                self?.wakeDiagnosticContext ?? .disabled
+            }
+        )
         controller.onTypoCorrectionSelected = { [weak self] correction in
             guard let self else { return }
             self.controller.typoCorrectionLearningSnapshot = self.typoCorrectionLearningStore.recordSelection(
@@ -296,14 +302,31 @@ extension KeyboardViewController {
     /// 只有键盘已经跨过首帧提交后，才允许 librime 打开用户词典和创建 session。
     /// 若系统在预创建后直接挂起，前面的回退引擎不持有文件锁，因此可安全终止。
     func activateRimeRuntimeAfterKeyboardPresentation() {
-        guard !hasActivatedVisibleRimeRuntime,
-            pendingRimeRuntimeDirectories != nil,
-            rimeFirstFrameDisplayLink == nil
-        else { return }
+        guard !hasActivatedVisibleRimeRuntime, pendingRimeRuntimeDirectories != nil else { return }
 
+        let hasWindow = view.window != nil
+        let generation = hostLifecycleRecoveryGate.presentationGeneration
+        guard let token = hostLifecycleRecoveryGate.beginFirstFrameArm(hasWindow: hasWindow) else {
+            // Leftover link only. Do not invalidate a token the gate just issued.
+            cancelRimeFirstFrameGate()
+            return
+        }
+        if let currentTarget = rimeFirstFrameDisplayLinkTarget,
+            currentTarget.armToken == token,
+            currentTarget.generation == generation,
+            rimeFirstFrameDisplayLink != nil
+        {
+            return
+        }
+
+        cancelRimeFirstFrameGate()
         rimeFirstFrameGateTickCount = 0
         rimeFirstFrameGateStartTime = CACurrentMediaTime()
-        let target = KeyboardFirstFrameDisplayLinkTarget(controller: self)
+        let target = KeyboardFirstFrameDisplayLinkTarget(
+            controller: self,
+            armToken: token,
+            generation: generation
+        )
         let displayLink = CADisplayLink(
             target: target,
             selector: #selector(KeyboardFirstFrameDisplayLinkTarget.displayLinkDidFire(_:))
@@ -314,30 +337,68 @@ extension KeyboardViewController {
         rimeFirstFrameDisplayLinkTarget = target
         rimeFirstFrameDisplayLink = displayLink
         Logger.shared.info(
-            "RIME first-frame gate armed displayTicks=2",
+            "RIME first-frame gate armed displayTicks=2 token=\(token)",
             category: .performance
         )
     }
 
     /// 由弱代理持有的 display link 在 MainActor 回调。
     /// 第二个节拍才允许创建 owner，避免 librime 首次打开词典与键盘首帧竞争资源。
-    func handleRimeFirstFrameDisplayLinkTick() {
-        guard rimeFirstFrameDisplayLink != nil else { return }
-        rimeFirstFrameGateTickCount += 1
-        guard rimeFirstFrameGateTickCount >= 2 else { return }
+    func handleRimeFirstFrameDisplayLinkTick(
+        displayLink: CADisplayLink,
+        generation: UInt64,
+        armToken: UInt64
+    ) {
+        let isCurrentLink = rimeFirstFrameDisplayLink === displayLink
+        let isCurrentArm =
+            rimeFirstFrameDisplayLinkTarget?.armToken == armToken
+            && rimeFirstFrameDisplayLinkTarget?.generation == generation
+        if !isCurrentLink || !isCurrentArm {
+            displayLink.invalidate()
+            return
+        }
 
-        let elapsedMilliseconds = (CACurrentMediaTime() - rimeFirstFrameGateStartTime) * 1_000
-        cancelRimeFirstFrameGate()
-        Logger.shared.info(
-            "RIME first-frame gate passed displayTicks=2 elapsedMs="
-                + String(format: "%.1f", elapsedMilliseconds),
-            category: .performance
+        let hasWindow = view.window != nil
+        let preview = hostLifecycleRecoveryGate.previewFirstFrameTick(
+            token: armToken,
+            generation: generation,
+            hasWindow: hasWindow
         )
-        startRimeRuntimeAfterFirstFrame()
+        let permission = resolveHostRecoveryCanaryPermission(
+            grantVisibilityResume: preview == .completeFirstFrameActivation
+        )
+        let action = hostLifecycleRecoveryGate.noteFirstFrameTick(
+            token: armToken,
+            generation: generation,
+            hasWindow: hasWindow,
+            canary: permission
+        )
+        switch action {
+        case .completeFirstFrameActivation:
+            let elapsedMilliseconds = (CACurrentMediaTime() - rimeFirstFrameGateStartTime) * 1_000
+            cancelRimeFirstFrameGate()
+            Logger.shared.info(
+                "RIME first-frame gate passed displayTicks=2 elapsedMs="
+                    + String(format: "%.1f", elapsedMilliseconds),
+                category: .performance
+            )
+            startRimeRuntimeAfterFirstFrame()
+        case .none:
+            let tokenStillLive =
+                hostLifecycleRecoveryGate.hasLiveFirstFrameArm
+                && hostLifecycleRecoveryGate.firstFrameArmToken == armToken
+            if !tokenStillLive {
+                cancelRimeFirstFrameGate()
+            }
+        case .suspendRuntime, .performSharedResume, .rearmFirstFrameGate:
+            break
+        }
     }
 
     /// A visibility exit can precede the next display tick. Cancelling here is
     /// required so a hidden/precreated extension never opens the user database.
+    /// This must not call `invalidateFirstFrameArm()`: a newly issued token can
+    /// outlive the previous CADisplayLink while the replacement is installed.
     func cancelRimeFirstFrameGate() {
         rimeFirstFrameDisplayLink?.invalidate()
         rimeFirstFrameDisplayLink = nil
@@ -808,22 +869,93 @@ extension KeyboardViewController {
     func observeExtensionHostLifecycle() {
         NotificationCenter.default.addObserver(
             self,
-            selector: #selector(extensionHostWillResignActive),
+            selector: #selector(extensionHostWillResignActive(_:)),
             name: .NSExtensionHostWillResignActive,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(extensionHostDidBecomeActive(_:)),
+            name: .NSExtensionHostDidBecomeActive,
             object: nil
         )
     }
 
-    @objc private func extensionHostWillResignActive() {
+    func executeHostRecoveryAction(
+        _ action: KeyboardHostRecoveryAction,
+        canaryResumeRequested: Bool
+    ) {
+        switch action {
+        case .none:
+            break
+        case .suspendRuntime:
+            suspendKeyboardRuntime(reason: "extensionHostWillResignActive", updateUI: false)
+        case .performSharedResume:
+            Logger.shared.resumePersistenceForExtensionLifecycle()
+            diagnosticsJournal.resumeForExtensionLifecycle()
+            performHostSharedResumeAfterLicense(canaryResumeRequested: canaryResumeRequested)
+        case .rearmFirstFrameGate:
+            activateRimeRuntimeAfterKeyboardPresentation()
+        case .completeFirstFrameActivation:
+            startRimeRuntimeAfterFirstFrame()
+        }
+    }
+
+    @objc private func extensionHostWillResignActive(_ notification: Notification) {
+        guard hostNotificationMatchesCurrentExtensionContext(notification) else { return }
         #if DEBUG
             recordKeyboardVisualDiagnostic("HOST_RESIGN_BEFORE")
         #endif
         #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
             p3d1RecordLifecycleMarker("HOST_RESIGN_BEGIN", reason: "extensionHost")
         #endif
-        suspendKeyboardRuntime(reason: "extensionHostWillResignActive", updateUI: false)
+        KeyboardWakeDiagnosticProducer.recordKeyboardLifecycle(
+            .hostWillResignActive,
+            journal: diagnosticsJournal,
+            context: wakeDiagnosticContext
+        )
+        let action = hostLifecycleRecoveryGate.handleHostWillResignActive(
+            context: currentHostExtensionContextID(),
+            activatedAtSuspend: hasActivatedVisibleRimeRuntime
+        )
+        executeHostRecoveryAction(action, canaryResumeRequested: false)
         #if DEBUG
             recordKeyboardVisualDiagnostic("HOST_RESIGN_AFTER")
+        #endif
+    }
+
+    @objc private func extensionHostDidBecomeActive(_ notification: Notification) {
+        guard hostNotificationMatchesCurrentExtensionContext(notification) else { return }
+        #if DEBUG
+            recordKeyboardVisualDiagnostic("HOST_ACTIVE_BEFORE")
+        #endif
+        KeyboardWakeDiagnosticProducer.recordKeyboardLifecycle(
+            .hostDidBecomeActive,
+            journal: diagnosticsJournal,
+            context: wakeDiagnosticContext
+        )
+        let hasWindow = view.window != nil
+        let preview = hostLifecycleRecoveryGate.previewHostDidBecomeActive(
+            context: currentHostExtensionContextID(),
+            hasWindow: hasWindow
+        )
+        let permission = resolveHostRecoveryCanaryPermission(
+            grantVisibilityResume: preview == .performSharedResume
+        )
+        let canaryResumeRequested: Bool = {
+            if case .visibilitySuspended(let granted) = permission {
+                return granted
+            }
+            return false
+        }()
+        let action = hostLifecycleRecoveryGate.handleHostDidBecomeActive(
+            context: currentHostExtensionContextID(),
+            hasWindow: hasWindow,
+            canary: permission
+        )
+        executeHostRecoveryAction(action, canaryResumeRequested: canaryResumeRequested)
+        #if DEBUG
+            recordKeyboardVisualDiagnostic("HOST_ACTIVE_AFTER")
         #endif
     }
 

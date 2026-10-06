@@ -1,0 +1,10 @@
+{
+  "source": "independent agent /root/m2r2_quality_r1 FINAL_ANSWER delivered this turn",
+  "writer": "root deterministic transcription; not reviewer file write",
+  "reviewer_original_required_files_written": false,
+  "new_review_or_budget_extension": false,
+  "verdict": "Partial immutable",
+  "usage": "quality-final-message-usage.json",
+  "body": "quality-final-message.md",
+  "usage_elapsed_limit": "agent-declared elapsed covers packet creation to last observed tool; total reviewer wall time is not independently recorded; do not call289.137 total lane duration"
+}

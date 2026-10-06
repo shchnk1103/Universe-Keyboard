@@ -1,0 +1,31 @@
+{
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "candidate_digest": "af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9",
+  "run_id": "C5-R-20261001-01",
+  "status": "authorized single run collection/Human-reader/off-off restoration complete; independent runtime acceptance not performed",
+  "preserved_existing_other_files": 2552,
+  "sole_existing_modified_path": "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md",
+  "after_assignment_sha256": "5bc7f965d1238adcf964ef1fa15ae3351249fdb9cde29f90352bc1a416797c0c",
+  "source_build_match": 568,
+  "built_bundle_match": 111,
+  "installed_bundle_match": 111,
+  "manual_input_rounds": 1,
+  "automatic_retries": 0,
+  "original_logging_expiry_values_existence": "Human accepted nonblocking unverified residual; not passed",
+  "output_sha256": {
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-preflight.json": "1d26c06e17cbe780182a344cbe79d57f769c1396303d965c5faaee04d29c404a",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-human-authority.json": "64179abf037177d4ba7810607504c3b1b069cfd8827f216e8765049b921fdc31",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-window.json": "27712d4498d2177bb16a605ff59cd962ba79529dd9ef6e7a4819d099cea09b5a",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-entry-2026-10-01.md": "c512b9c48f3ece7cae3aec61c8aa6d879457443d04acff3ad2d5d04ffc53ce75",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-capture-restoration-disposition.json": "9ce516c6ec6bee584dff5bc7229a8cf7de8e2ea1695b4f1751ff32f3dcdc553c",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-typed-window.json": "ae8348a3de33d39821d5846802f08291308f3fc4adfd318ac2e2b3faf763686a",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-final-check.json": "9f300007094b24aa3f7da22ff1d9178b7e05e8761e9e5ba698a3047570bc6889",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-r-validation-2026-10-01.md": "3e5b796bcdb04442c11eb3baa0380c877d56dedfbcd521f9861cd28c0a2063c8"
+  },
+  "device_window_end_utc": "2026-10-01T02:53:30.907201+00:00",
+  "status_z_sha256": "4511472d8fed91c9391d3aa2691948a14a26d6fab9a51819d72cf4822922dfe2",
+  "full_dirty_status_path": "/private/tmp/ukey-wake-c5-r-20261001/after-status.txt",
+  "dirty_entry_count": 472,
+  "staged_count": 0
+}

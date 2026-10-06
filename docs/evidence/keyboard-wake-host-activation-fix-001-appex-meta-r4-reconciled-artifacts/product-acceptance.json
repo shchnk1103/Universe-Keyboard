@@ -1,0 +1,16 @@
+{
+  "recorded_utc": "2026-10-06T03:32:08.196485+00:00",
+  "decision_source": "Human 本线程：接受",
+  "scope": "AP-META-004 only",
+  "residual_disposition": "accepted nonblocking unverified",
+  "stage_receipt_dependency": "closed",
+  "independent_verdict": "Partial unchanged",
+  "overall_assignment": "Active",
+  "new_runtime_authority": false,
+  "preserved_review_sha256": {
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-appex-meta-r4-quality-artifacts/reader.json": "a5cb4b5623852ee0bf6825fe707cb12e954bdd15884409b5e7fb678d46d369be",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-appex-meta-r4-quality-artifacts/review.md": "0176c9868e21fb41db84f63e44aca49b4e7dedbfd4eb55deecf159ae63416755",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-appex-meta-r4-quality-artifacts/usage.json": "b0adf4056f98284dd83fc4cecca4bde4e4a3c74004f13cb4f7f6c2f7b2eefca6",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-appex-meta-r4-quality-artifacts/root-receipt.json": "e4cd43c0852e708bf3d157d3f588216fc6111b5008b57233908f7ca32ab7171a"
+  }
+}

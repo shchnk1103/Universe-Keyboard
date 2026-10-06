@@ -1,0 +1,55 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "\n🧪 Test\n\nDiscovered 1 test(s):\n   UniverseKeyboardTests/RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem\n\n✅ 1 test passed, 0 failed, 0 skipped (⏱️ 28.5s)\n  └ Files:\n     ├── /private/tmp/ukey-wake-c7b3-20261002/IOSKeychainTests.xcresult — Result Bundle\n     └── ~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/\n         ├── logs/test_sim_2026-10-02T09-07-09-301Z_pid55720_542fe712.log — Build Logs\n         └── test-products/test_sim_2026-10-02T09-07-09-301Z_pid55720_de7b9b6d.xctestproducts — Test Products\n"
+    }
+  ],
+  "structuredContent": {
+    "schema": "xcodebuildmcp.output.test-result",
+    "schemaVersion": "3",
+    "didError": false,
+    "error": null,
+    "data": {
+      "summary": {
+        "status": "SUCCEEDED",
+        "durationMs": 28504,
+        "counts": {
+          "passed": 1,
+          "failed": 0,
+          "skipped": 0
+        },
+        "target": "simulator"
+      },
+      "artifacts": {
+        "buildLogPath": "~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/test_sim_2026-10-02T09-07-09-301Z_pid55720_542fe712.log",
+        "xcresultPath": "/private/tmp/ukey-wake-c7b3-20261002/IOSKeychainTests.xcresult",
+        "testProductsPath": "~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/test-products/test_sim_2026-10-02T09-07-09-301Z_pid55720_de7b9b6d.xctestproducts"
+      },
+      "tests": {
+        "selected": [
+          "UniverseKeyboardTests/RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem"
+        ],
+        "discovered": {
+          "total": 1,
+          "items": [
+            "UniverseKeyboardTests/RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem"
+          ]
+        }
+      },
+      "diagnostics": {
+        "warnings": [],
+        "errors": [],
+        "testFailures": []
+      },
+      "testCases": [
+        {
+          "suite": "RimeSyncModelTests",
+          "test": "testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem",
+          "status": "passed",
+          "durationMs": 40
+        }
+      ]
+    }
+  }
+}

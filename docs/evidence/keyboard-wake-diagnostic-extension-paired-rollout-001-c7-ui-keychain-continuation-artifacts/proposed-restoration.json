@@ -1,0 +1,31 @@
+{
+  "status": "Prepared; execution NOT authorized",
+  "baseline": "fresh post-health backup; original T0 not substituted",
+  "backup_root": "/private/tmp/ukey-wake-ui-keychain-continuation-20261003/backup",
+  "old_C7_candidate": "ddd5579ee6dce39deea3c63487cfe6817c419628c4471c0b3e9298d9c47f3ca9",
+  "install": "once install exact old-C7 backup78, dual signature verify before/after, rediscover paths; no uninstall/build/redeploy",
+  "main_overwrite": [
+    {
+      "path": "Library/Application Support/.tipkit/tips-store.db",
+      "source_sha256": "6b585c1d488166845c9bd907064845b5db5b367fa09cfe054199cdf7b0137317",
+      "test_after_sha256": "bcb557b946ea264d8e8c9d454bfbe859f31604e8c7481049d6ed10d44b925171"
+    },
+    {
+      "path": "Library/Application Support/.tipkit/tips-store.db-shm",
+      "source_sha256": "553de5704b13c49a3f9f85a67f438f720dff31c12400cb78dfada0d935bee623",
+      "test_after_sha256": "a7e6d753bda38b22455f36fbd383d4643a137924f6dc777635bbba44e9c2f458"
+    },
+    {
+      "path": "Library/Application Support/.tipkit/tips-store.db-wal",
+      "source_sha256": "d221b08bf2556fbb67cd931d18eac0cb14753d406ae66e68243a09cf4730e58c",
+      "test_after_sha256": "4e9fc0070e60a9738d172a77f66e2bb4c2d54a0e98c552a877c200b6bb4b2c99"
+    }
+  ],
+  "main_delete": [],
+  "AppGroup": "unchanged; verify only, no application restoration planned",
+  "system_snapshots": "4 path renames; content SHA multiset equal; retain current system paths",
+  "metadata": "preserve current/new container root UUID/system metadata; classify added provenance, no all-metadata equality claim",
+  "preservation": "/private/tmp/ukey-wake-ui-keychain-continuation-20261003/test-after-preservation",
+  "stop": "new unlisted install/data differences, running target processes, source/backup drift or restoration readback mismatch; no force/cleanup/redeploy",
+  "exit": "old78 byte/signature match; main except system snapshot rename/root metadata matches fresh backup; AppGroup remains matching; diagnostic keys original absent and deployment original booleans; runtime health separate"
+}

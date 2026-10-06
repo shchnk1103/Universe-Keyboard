@@ -1,0 +1,39 @@
+{
+  "utc": "2026-10-03T14:17:53.628877+00:00",
+  "scope": "task-prefixed direct backup/preservation roots only, not all scratch/DerivedData/xcresult",
+  "snapshots": [
+    {
+      "root": "/private/tmp/ukey-wake-ui-i0-20261003/backup",
+      "allocated_KiB": 130660,
+      "deleted_or_moved": false
+    },
+    {
+      "root": "/private/tmp/ukey-wake-ui-i1-20261003/after-preservation",
+      "allocated_KiB": 130664,
+      "deleted_or_moved": false
+    },
+    {
+      "root": "/private/tmp/ukey-wake-ui-keychain-continuation-20261003/backup",
+      "allocated_KiB": 134628,
+      "deleted_or_moved": false
+    },
+    {
+      "root": "/private/tmp/ukey-wake-ui-keychain-continuation-20261003/test-after-preservation",
+      "allocated_KiB": 139772,
+      "deleted_or_moved": false
+    },
+    {
+      "root": "/private/tmp/ukey-wake-ui-t0-20261003/backup",
+      "allocated_KiB": 134420,
+      "deleted_or_moved": false
+    },
+    {
+      "root": "/private/tmp/ukey-wake-ui-t1-execution-20261003/test-after-preservation",
+      "allocated_KiB": 103008,
+      "deleted_or_moved": false
+    }
+  ],
+  "total_allocated_MiB": 755.03,
+  "retention_decisions": "pending dependency assessment and current M0 success",
+  "no_deletion": true
+}

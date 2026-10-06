@@ -1,0 +1,62 @@
+{
+  "R1_files_modified": false,
+  "R1_record": {
+    "actual_archived_report_sha256": "46142620cd2cbbda0a153fe2c7d6cd18ccd3cdaff04055d9a556f963e0d2d4e5",
+    "actual_archived_usage_sha256": "4ba51289bf4a6641fddffc4387ecef30d7364c11fe2cd22e4f7ff1a1f46eb979",
+    "budget_violation_preserved": true,
+    "call3_end_utc": "2026-10-02T15:10:42.430508+00:00",
+    "call3_start_utc": "2026-10-02T15:10:42.428517+00:00",
+    "hard_deadline_utc": "2026-10-02T15:10:23.642013+00:00",
+    "historical_report_sha_claim": "393ba44def7f311e413ebf668ab0437b1957f03a0c99a66ee397e37980781c5d",
+    "post_deadline_seconds": 18.788495
+  },
+  "budget": {
+    "actual_elapsed_seconds_at_terminal_sample": 92.6786561012268,
+    "hard_elapsed_seconds": 360,
+    "hard_limit_exceeded": false,
+    "max_calls": 4,
+    "remaining": 2,
+    "soft_elapsed_seconds": 240,
+    "soft_limit_exceeded": false,
+    "underlying_calls_used": 2
+  },
+  "call_ledger": [
+    {
+      "call": 1,
+      "end_utc": "2026-10-02T15:16:10.349372+00:00",
+      "result": "记录首call时间；packet digest与8/8输入hash通过；只读R1产物、patch、source identity、preservation、provenance及policy。",
+      "start_utc": "2026-10-02T15:16:10.344814+00:00",
+      "tool": "exec_command"
+    },
+    {
+      "call": 2,
+      "end_utc": "2026-10-02T15:17:43.023566+00:00",
+      "result": "在同一调用内写入本轮report与usage；末端时间取usage序列化前、两项输出已准备完成的实测样本。",
+      "start_utc": "2026-10-02T15:17:43.023140+00:00",
+      "tool": "exec_command"
+    }
+  ],
+  "criteria": {
+    "C1": "Covered",
+    "C2": "Covered",
+    "C3": "Covered"
+  },
+  "input_hashes_verified": 8,
+  "inputs_expected": 8,
+  "lane": "QUALITY-C7-PROBE-UI-BINDING",
+  "outputs": {
+    "report": "/private/tmp/ukey-wake-probe-ui-consistency-20261002/review.md",
+    "usage": "/private/tmp/ukey-wake-probe-ui-consistency-20261002/usage.json"
+  },
+  "packet_digest_sha256": "034a371f8ae933ebafcca795a2d5caf63f3eb90b3e0956748f33e4f1ad11f013",
+  "packet_digest_verified": true,
+  "packet_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/quality-c7-probe-ui-binding-r2-consistency-packet-2026-10-02.json",
+  "report_sha256": "9545ed8631121321dc7b263ae5473ba936f200b114fee0dc611a1f88d65e2a58",
+  "report_written_utc": "2026-10-02T15:17:43.023561+00:00",
+  "review_start_unix": 1790954170.3449118,
+  "review_start_utc": "2026-10-02T15:16:10.344814+00:00",
+  "round": 2,
+  "runtime_or_install_acceptance": false,
+  "terminal_sample_utc": "2026-10-02T15:17:43.023566+00:00",
+  "verdict": "Complete consistency supplement; Positive scoped static interpretation only"
+}

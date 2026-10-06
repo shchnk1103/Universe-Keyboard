@@ -1,0 +1,14 @@
+{
+  "utc": "2026-10-05T12:24:00.650394+00:00",
+  "Human": "同意，并确认原模拟器仍独占，上轮后没有打开、安装或部署过App",
+  "scope": "F4-I fresh full before+exact diagnostic pair install+normal candidate/commit health only",
+  "budget_calls": 60,
+  "budget_wall_seconds": 5400,
+  "calls_so_far_including_this_wrapper_and_exec": 9,
+  "wall_conservative_anchor": "2026-10-05T12:21:01.115046+00:00",
+  "wall_anchor_reason": "Known prior-turn accepted receipt precedes this AUTH and first tool; conservative time bound, not invented first-call timestamp",
+  "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "process_termination_authorized": false,
+  "provenance_exception_authorized": false,
+  "F4-M_authorized": false
+}

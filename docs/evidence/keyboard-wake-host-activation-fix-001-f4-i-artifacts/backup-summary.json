@@ -1,0 +1,41 @@
+{
+  "started_utc": "2026-10-05T12:30:05.028627+00:00",
+  "ended_utc": "2026-10-05T12:30:51.016792+00:00",
+  "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "backup_root": "/private/tmp/ukey-host-activation-fix-f4-before-20261005",
+  "paths": {
+    "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/66F04FA2-BC18-442C-97FE-2846CD55FBE1/Universe Keyboard.app",
+    "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/9100282B-92E4-4ED0-87C6-3A79BB6F24C1",
+    "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/161B78EE-E85A-47EA-8986-BA1D5AA70E39"
+  },
+  "live_three_reads_equal": true,
+  "backup_two_reads_equal": true,
+  "processes_absent": true,
+  "signatures_valid": true,
+  "counts": {
+    "installed-app": {
+      "files": 78,
+      "directories": 9,
+      "symlinks": 0,
+      "bytes": 91344780
+    },
+    "main-data": {
+      "files": 827,
+      "directories": 42,
+      "symlinks": 0,
+      "bytes": 1142571
+    },
+    "app-group": {
+      "files": 53,
+      "directories": 15,
+      "symlinks": 2,
+      "bytes": 37750594
+    }
+  },
+  "provenance_added_or_rewritten": 883,
+  "non_provenance_differences": 0,
+  "full_metadata_exact_equal": false,
+  "install_allowed_by_backup": false,
+  "status": "STOP: narrow provenance exception requires Product decision",
+  "call_count_including_this_wrapper_and_exec": 11
+}

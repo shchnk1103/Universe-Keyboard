@@ -1,0 +1,74 @@
+warning: /Users/doubleshy0n/Library/org.swift.swiftpm/configuration is not accessible or not writable, disabling user-level cache features.
+warning: /Users/doubleshy0n/Library/org.swift.swiftpm/security is not accessible or not writable, disabling user-level cache features.
+warning: /Users/doubleshy0n/Library/Caches/org.swift.swiftpm is not accessible or not writable, disabling user-level cache features.
+warning: 'keyboardcore': failed storing manifest for 'keyboardcore' in cache: attempt to write a readonly database
+Building for debugging...
+[Pre-planning 1 / 124]
+[Planning deferred tasks]
+[36 / 67]
+[42 / 67]
+[43 / 68] KeyboardCore
+[52 / 115]
+[55 / 115]
+[58 / 115]
+[61 / 115]
+[63 / 115]
+[67 / 115]
+[69 / 115]
+[72 / 115]
+[76 / 115]
+[79 / 115]
+[80 / 115]
+[90 / 115] KeyboardCore
+[91 / 115] KeyboardCore
+[92 / 115] KeyboardCore
+[98 / 115] KeyboardCore
+[100 / 115] KeyboardCore
+[105 / 116] KeyboardCoreTests-product
+[114 / 155]
+[116 / 155]
+[120 / 155]
+[122 / 155]
+[124 / 155]
+[125 / 155]
+[126 / 155]
+[128 / 155]
+[130 / 155]
+[131 / 155]
+[134 / 155]
+[135 / 155]
+[144 / 155] KeyboardCoreTests-product
+[145 / 155] KeyboardCoreTests-product
+[146 / 155] KeyboardCoreTests-product
+[149 / 155] KeyboardCoreTests-product
+/private/tmp/ukey-wake-c1-20260930/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:1429:37: warning: string interpolation produces a debug description for an optional value; did you mean to make this explicit?
+1427 |         controller.state.t9PinyinPathState = .empty
+1428 |         let pageOnly = (0..<16).map { index in
+1429 |             RimeCandidate(text: "x\(index)", comment: "", globalIndex: index)
+     |                                     |- warning: string interpolation produces a debug description for an optional value; did you mean to make this explicit?
+     |                                     |- note: use a default value parameter to avoid this warning
+     |                                     |- note: provide a default value to avoid this warning
+     |                                     `- note: use 'String(describing:)' to silence this warning
+1430 |         }
+1431 |         controller.state.lastRimeOutput = RimeOutput(
+[151 / 155] KeyboardCoreTests-product
+[153 / 155] KeyboardCoreTests-product
+Build complete! (27.00秒)
+Test Suite 'Selected tests' started at 2026-09-30 23:27:13.024.
+Test Suite 'KeyboardCoreTests.xctest' started at 2026-09-30 23:27:13.027.
+Test Suite 'DiagnosticsJournalV6WriterTests' started at 2026-09-30 23:27:13.027.
+Test Case '-[KeyboardCoreTests.DiagnosticsJournalV6WriterTests testDefaultRuntimeKeepsV5AndRejectsWakeMarkers]' started.
+Test Case '-[KeyboardCoreTests.DiagnosticsJournalV6WriterTests testDefaultRuntimeKeepsV5AndRejectsWakeMarkers]' passed (0.041 seconds).
+Test Case '-[KeyboardCoreTests.DiagnosticsJournalV6WriterTests testV6RuntimeWritesMarkersAndPromotesExistingFamiliesWithoutTouchingHistory]' started.
+Test Case '-[KeyboardCoreTests.DiagnosticsJournalV6WriterTests testV6RuntimeWritesMarkersAndPromotesExistingFamiliesWithoutTouchingHistory]' passed (0.045 seconds).
+Test Case '-[KeyboardCoreTests.DiagnosticsJournalV6WriterTests testV6WriterRechecksDecodedPayloadBeforeWriting]' started.
+/private/tmp/ukey-wake-c1-20260930/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticsJournalV6WriterTests.swift:370: error: -[KeyboardCoreTests.DiagnosticsJournalV6WriterTests testV6WriterRechecksDecodedPayloadBeforeWriting] : XCTAssertTrue failed: threw error "Error Domain=NSCocoaErrorDomain Code=260 "未能打开文件“open”，因为它不存在。" UserInfo={NSURL=file:///var/folders/3f/jpb7r3xs2ys2c0bxlr107sbr0000gn/T/DiagnosticsJournalV6WriterTests-D0979378-FB34-4E0A-8D1C-8722B485BAEA/g1/open, NSFilePath=/var/folders/3f/jpb7r3xs2ys2c0bxlr107sbr0000gn/T/DiagnosticsJournalV6WriterTests-D0979378-FB34-4E0A-8D1C-8722B485BAEA/g1/open, NSUnderlyingError=0x7b2c82c5d0 {Error Domain=NSPOSIXErrorDomain Code=2 "No such file or directory"}}"
+Test Case '-[KeyboardCoreTests.DiagnosticsJournalV6WriterTests testV6WriterRechecksDecodedPayloadBeforeWriting]' failed (0.295 seconds).
+Test Suite 'DiagnosticsJournalV6WriterTests' failed at 2026-09-30 23:27:13.409.
+	 Executed 3 tests, with 1 failure (1 unexpected) in 0.381 (0.381) seconds
+Test Suite 'KeyboardCoreTests.xctest' failed at 2026-09-30 23:27:13.409.
+	 Executed 3 tests, with 1 failure (1 unexpected) in 0.381 (0.381) seconds
+Test Suite 'Selected tests' failed at 2026-09-30 23:27:13.409.
+	 Executed 3 tests, with 1 failure (1 unexpected) in 0.381 (0.384) seconds
+Note: Some test targets reported failures:
+  - KeyboardCoreTests (XCTest)

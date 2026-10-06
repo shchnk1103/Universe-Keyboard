@@ -1,0 +1,26 @@
+{
+  "stop_utc": "2026-10-02T15:56:40.261829+00:00",
+  "quality": {
+    "root_action": "interrupt_agent; previous_status running",
+    "reason": "No required report/usage delivered at coordinator stop; earlier hard-budget stop messages sent; no budget renewal",
+    "report_present": false,
+    "usage_present": false,
+    "reviewer_first_call_utc": null,
+    "actual_reviewer_call_count": null,
+    "actual_reviewer_elapsed_seconds": null,
+    "formal_verdict": "Partial / incomplete",
+    "covered_criteria": "UNKNOWN; no delivered reviewer evidence"
+  },
+  "architecture": {
+    "formal_verdict": "Partial / incomplete",
+    "substantive_criteria": {
+      "A1": "Covered reported",
+      "A2": "Covered reported"
+    },
+    "elapsed_seconds": 402.631986,
+    "hard_seconds": 360,
+    "over_seconds": 42.631986,
+    "original_report_status": "Complete / Positive, inconsistent with hard-budget facts; immutable",
+    "root_does_not_accept_complete": true
+  }
+}

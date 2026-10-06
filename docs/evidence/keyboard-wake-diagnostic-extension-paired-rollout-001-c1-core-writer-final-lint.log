@@ -1,0 +1,10 @@
+["xcrun", "swift-format", "lint", "--strict", "--configuration", "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format", "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticEvent.swift"]
+EXIT=0
+["xcrun", "swift-format", "lint", "--strict", "--configuration", "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format", "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournal.swift"]
+EXIT=0
+["xcrun", "swift-format", "lint", "--strict", "--configuration", "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format", "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournalIngress.swift"]
+EXIT=0
+["xcrun", "swift-format", "lint", "--strict", "--configuration", "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format", "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournalRuntime.swift"]
+EXIT=0
+["xcrun", "swift-format", "lint", "--strict", "--configuration", "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/.swift-format", "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticsJournalV6WriterTests.swift"]
+EXIT=0

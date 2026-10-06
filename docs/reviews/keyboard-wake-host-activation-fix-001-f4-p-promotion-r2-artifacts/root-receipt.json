@@ -1,0 +1,17 @@
+{
+  "recorded_at": "2026-10-05T03:44:22.287961+00:00",
+  "quality_author_delivery_readback": "PASS",
+  "quality_calls": 18,
+  "quality_elapsed_seconds": 616.795676,
+  "quality_verdict": "Partial",
+  "quality_covered": [
+    "Q-P4"
+  ],
+  "quality_uncovered_subitems": {
+    "Q-P1": "Main App two modules SHA/UUID and standalone proof",
+    "Q-P2": "Original build request/receipt binding to actual two-target compilation",
+    "Q-P3": "Decode raw otool entitlements and compare actual plist"
+  },
+  "architecture": "ACK only, root budget stop; no author conclusion",
+  "source_build_test_device_operations": false
+}

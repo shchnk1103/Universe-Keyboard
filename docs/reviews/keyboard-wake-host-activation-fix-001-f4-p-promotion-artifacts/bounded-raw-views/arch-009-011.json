@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+  "origin_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "expected_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "line_start": 601,
+  "line_end": 660,
+  "lines": [
+    {
+      "line": 601,
+      "text": "            snapshot.sessionEpoch == provisionalCompositionMirror.sessionEpoch"
+    },
+    {
+      "line": 602,
+      "text": "        {"
+    },
+    {
+      "line": 603,
+      "text": "            let floor = max(lastPresentedRevision, provisionalCompositionMirror.watermark)"
+    },
+    {
+      "line": 604,
+      "text": "            return snapshot.revision >= floor"
+    },
+    {
+      "line": 605,
+      "text": "        }"
+    },
+    {
+      "line": 606,
+      "text": "        // Never paint an older-or-equal revision over a newer one in the same epoch."
+    },
+    {
+      "line": 607,
+      "text": "        if snapshot.sessionEpoch == lastPresentedSessionEpoch,"
+    },
+    {
+      "line": 608,
+      "text": "            snapshot.revision <= lastPresentedRevision"
+    },
+    {
+      "line": 609,
+      "text": "        {"
+    },
+    {
+      "line": 610,
+      "text": "            return false"
+    },
+    {
+      "line": 611,
+      "text": "        }"
+    },
+    {
+      "line": 612,
+      "text": "        return true"
+    },
+    {
+      "line": 613,
+      "text": "    }"
+    },
+    {
+      "line": 614,
+      "text": ""
+    },
+    {
+      "line": 615,
+      "text": "    private func performResponsivePresentationApply("
+    },
+    {
+      "line": 616,
+      "text": "        _ snapshot: ResponsiveRimeSnapshot,"
+    },
+    {
+      "line": 617,
+      "text": "        coalesced: Bool,"
+    },
+    {
+      "line": 618,
+      "text": "        expectedGeneration: UInt64? = nil,"
+    },
+    {
+      "line": 619,
+      "text": "        canarySessionInstance: UInt64 = 0"
+    },
+    {
+      "line": 620,
+      "text": "    ) {"
+    },
+    {
+      "line": 621,
+      "text": "        // Arch P1-1: fail closed if abandon/reset superseded this paint."
+    },
+    {
+      "line": 622,
+      "text": "        guard isLivePresentationSnapshot(snapshot, expectedGeneration: expectedGeneration) else {"
+    },
+    {
+      "line": 623,
+      "text": "            #if T9_RESPONSIVE_CANARY_INTERNAL"
+    },
+    {
+      "line": 624,
+      "text": "                if responsiveCanaryPresentationFenced {"
+    },
+    {
+      "line": 625,
+      "text": "                    emitResponsiveCanaryTerminal("
+    },
+    {
+      "line": 626,
+      "text": "                        for: snapshot,"
+    },
+    {
+      "line": 627,
+      "text": "                        canarySessionInstance: canarySessionInstance,"
+    },
+    {
+      "line": 628,
+      "text": "                        completion: .staleAfterFence,"
+    },
+    {
+      "line": 629,
+      "text": "                        visibility: .notVisibleFencedBeforeVisible,"
+    },
+    {
+      "line": 630,
+      "text": "                        paint: .failedFencedBeforeVisible"
+    },
+    {
+      "line": 631,
+      "text": "                    )"
+    },
+    {
+      "line": 632,
+      "text": "                } else {"
+    },
+    {
+      "line": 633,
+      "text": "                    let replacement = max(lastPresentedRevision, snapshot.revision)"
+    },
+    {
+      "line": 634,
+      "text": "                    emitResponsiveCanaryTerminal("
+    },
+    {
+      "line": 635,
+      "text": "                        for: snapshot,"
+    },
+    {
+      "line": 636,
+      "text": "                        canarySessionInstance: canarySessionInstance,"
+    },
+    {
+      "line": 637,
+      "text": "                        completion: .published,"
+    },
+    {
+      "line": 638,
+      "text": "                        visibility: .notVisibleCoalesced("
+    },
+    {
+      "line": 639,
+      "text": "                            absorbedRevisionRange: snapshot.revision...snapshot.revision,"
+    },
+    {
+      "line": 640,
+      "text": "                            replacementRevision: replacement"
+    },
+    {
+      "line": 641,
+      "text": "                        ),"
+    },
+    {
+      "line": 642,
+      "text": "                        paint: .coalesced("
+    },
+    {
+      "line": 643,
+      "text": "                            absorbedRevisionRange: snapshot.revision...snapshot.revision,"
+    },
+    {
+      "line": 644,
+      "text": "                            replacementRevision: replacement"
+    },
+    {
+      "line": 645,
+      "text": "                        )"
+    },
+    {
+      "line": 646,
+      "text": "                    )"
+    },
+    {
+      "line": 647,
+      "text": "                }"
+    },
+    {
+      "line": 648,
+      "text": "            #endif"
+    },
+    {
+      "line": 649,
+      "text": "            return"
+    },
+    {
+      "line": 650,
+      "text": "        }"
+    },
+    {
+      "line": 651,
+      "text": ""
+    },
+    {
+      "line": 652,
+      "text": "        let pendingAfter: Int"
+    },
+    {
+      "line": 653,
+      "text": "        if isThreadAffineRimeOwnerEnabled {"
+    },
+    {
+      "line": 654,
+      "text": "            pendingAfter = threadAffineRimeCoordinator?.diagnostics.pendingWorkDepth ?? 0"
+    },
+    {
+      "line": 655,
+      "text": "        } else {"
+    },
+    {
+      "line": 656,
+      "text": "            pendingAfter = responsiveRimeCoordinator?.diagnostics.pendingDepth ?? 0"
+    },
+    {
+      "line": 657,
+      "text": "        }"
+    },
+    {
+      "line": 658,
+      "text": ""
+    },
+    {
+      "line": 659,
+      "text": "        // Content-free felt metrics (Rem-1)."
+    },
+    {
+      "line": 660,
+      "text": "        let metrics = feltMetrics.recordPresentation("
+    }
+  ]
+}

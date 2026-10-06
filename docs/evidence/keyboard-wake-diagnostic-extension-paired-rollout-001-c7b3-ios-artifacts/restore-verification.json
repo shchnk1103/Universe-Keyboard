@@ -1,0 +1,145 @@
+{
+  "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/223097E4-C5DF-4E08-8F2A-50825F30172F/Universe Keyboard.app",
+  "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/A0C97751-269A-4A76-B5BA-1F4BC7CDB937",
+  "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/0296BFCE-F465-4F1A-9E9A-F2EDFDA41172",
+  "installed_bundle_byte_equal": true,
+  "installed_bundle_file_count": 111,
+  "group_files": {
+    "before_count": 72,
+    "after_count": 4,
+    "missing": [
+      "Diagnostics/v1/g1/leases/main_app-B4998116-AE88-4492-864A-F793A4710F7E.json",
+      "Diagnostics/v1/g1/open/main_app-B4998116-AE88-4492-864A-F793A4710F7E-20261001T06-0.jsonl",
+      "Diagnostics/v1/g1/reclaimed/keyboard_extension-1D80C9D6-6024-424F-8B9F-B9E7331810C7.json",
+      "Diagnostics/v1/g1/reclaimed/keyboard_extension-3F66BF6F-B473-44A7-98D0-06DFC60A7C45.json",
+      "Diagnostics/v1/g1/reclaimed/keyboard_extension-81EFDEEA-B811-4079-8173-8180BA0A3085.json",
+      "Diagnostics/v1/g1/reclaimed/keyboard_extension-9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9.json",
+      "Diagnostics/v1/g1/reclaimed/main_app-853BBC29-A476-4C05-A4DD-C2121A8BE16D.json",
+      "Diagnostics/v1/g1/sealed/recovered-keyboard_extension-1D80C9D6-6024-424F-8B9F-B9E7331810C7-20261001T06-0.jsonl",
+      "Diagnostics/v1/g1/sealed/recovered-keyboard_extension-3F66BF6F-B473-44A7-98D0-06DFC60A7C45-20261001T06-0.jsonl",
+      "Diagnostics/v1/g1/sealed/recovered-keyboard_extension-81EFDEEA-B811-4079-8173-8180BA0A3085-20261001T02-0.jsonl",
+      "Diagnostics/v1/g1/sealed/recovered-keyboard_extension-9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9-20261001T02-0.jsonl",
+      "Diagnostics/v1/g1/sealed/recovered-main_app-853BBC29-A476-4C05-A4DD-C2121A8BE16D-20261001T02-0.jsonl",
+      "Diagnostics/v1/locks/keyboard_extension-1D80C9D6-6024-424F-8B9F-B9E7331810C7.lock",
+      "Diagnostics/v1/locks/keyboard_extension-3F66BF6F-B473-44A7-98D0-06DFC60A7C45.lock",
+      "Diagnostics/v1/locks/keyboard_extension-81EFDEEA-B811-4079-8173-8180BA0A3085.lock",
+      "Diagnostics/v1/locks/keyboard_extension-9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9.lock",
+      "Diagnostics/v1/locks/main_app-853BBC29-A476-4C05-A4DD-C2121A8BE16D.lock",
+      "Diagnostics/v1/locks/main_app-B4998116-AE88-4492-864A-F793A4710F7E.lock",
+      "Rime/builtin-overlay-receipt.json",
+      "Rime/builtin-resource-receipt.json",
+      "Rime/shared/build/luna_pinyin.prism.bin",
+      "Rime/shared/build/luna_pinyin.reverse.bin",
+      "Rime/shared/build/luna_pinyin.table.bin",
+      "Rime/shared/build/stroke.prism.bin",
+      "Rime/shared/build/stroke.reverse.bin",
+      "Rime/shared/build/stroke.table.bin",
+      "Rime/shared/default.yaml",
+      "Rime/shared/essay.txt",
+      "Rime/shared/key_bindings.yaml",
+      "Rime/shared/luna_pinyin.dict.yaml",
+      "Rime/shared/luna_pinyin.schema.yaml",
+      "Rime/shared/opencc/HKVariants.ocd2",
+      "Rime/shared/opencc/STCharacters.ocd2",
+      "Rime/shared/opencc/STPhrases.ocd2",
+      "Rime/shared/opencc/TSCharacters.ocd2",
+      "Rime/shared/opencc/TSPhrases.ocd2",
+      "Rime/shared/opencc/TWVariants.ocd2",
+      "Rime/shared/opencc/s2t.json",
+      "Rime/shared/opencc/t2hk.json",
+      "Rime/shared/opencc/t2s.json",
+      "Rime/shared/opencc/t2tw.json",
+      "Rime/shared/pinyin.yaml",
+      "Rime/shared/punctuation.yaml",
+      "Rime/shared/stroke.dict.yaml",
+      "Rime/shared/stroke.schema.yaml",
+      "Rime/shared/symbols.yaml",
+      "Rime/user/build/default.yaml",
+      "Rime/user/build/luna_pinyin.prism.bin",
+      "Rime/user/build/luna_pinyin.schema.yaml",
+      "Rime/user/build/stroke.prism.bin",
+      "Rime/user/build/stroke.schema.yaml",
+      "Rime/user/default.custom.yaml",
+      "Rime/user/installation.yaml",
+      "Rime/user/logs/rime.UniverseKeyboard.DoubleShy0Ns-MacBook-Pro-66.local.uid501.log.INFO.20261001-100109.79420.log",
+      "Rime/user/logs/rime.UniverseKeyboard.DoubleShy0Ns-MacBook-Pro-66.local.uid501.log.WARNING.20261001-100109.79420.log",
+      "Rime/user/logs/rime.UniverseKeyboard.INFO",
+      "Rime/user/logs/rime.UniverseKeyboard.WARNING",
+      "Rime/user/luna_pinyin.custom.yaml",
+      "Rime/user/luna_pinyin.userdb/000005.ldb",
+      "Rime/user/luna_pinyin.userdb/000012.ldb",
+      "Rime/user/luna_pinyin.userdb/000035.log",
+      "Rime/user/luna_pinyin.userdb/CURRENT",
+      "Rime/user/luna_pinyin.userdb/LOCK",
+      "Rime/user/luna_pinyin.userdb/LOG",
+      "Rime/user/luna_pinyin.userdb/LOG.old",
+      "Rime/user/luna_pinyin.userdb/MANIFEST-000034",
+      "Rime/user/rime_ice.custom.yaml",
+      "Rime/user/user.yaml"
+    ],
+    "added": [],
+    "changed": [
+      ".com.apple.mobile_container_manager.metadata.plist",
+      "Library/Preferences/group.com.DoubleShy0N.Universe-Keyboard.plist"
+    ]
+  },
+  "bounded_preferences": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "rime_deployed": {
+      "exists": false,
+      "value": null
+    },
+    "rime_needs_deploy": {
+      "exists": true,
+      "value": "True"
+    },
+    "rime_deploy_in_progress": {
+      "exists": false,
+      "value": null
+    },
+    "rime_deploying": {
+      "exists": false,
+      "value": null
+    },
+    "rime_deploy_auto_retry_suppressed": {
+      "exists": false,
+      "value": null
+    },
+    "log_category_gen": {
+      "exists": false,
+      "value": null
+    },
+    "log_category_engine": {
+      "exists": false,
+      "value": null
+    },
+    "log_category_config": {
+      "exists": false,
+      "value": null
+    },
+    "log_category_deploy": {
+      "exists": false,
+      "value": null
+    },
+    "log_category_perf": {
+      "exists": false,
+      "value": null
+    },
+    "log_category_disp": {
+      "exists": false,
+      "value": null
+    }
+  },
+  "compiled_paths": {
+    "Rime/shared": false,
+    "Rime/user": false,
+    "Rime/user/build": false
+  }
+}

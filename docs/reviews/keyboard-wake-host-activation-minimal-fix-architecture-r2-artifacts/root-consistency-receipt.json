@@ -1,0 +1,9 @@
+{
+  "actual_packet_sha256": "1cc40e09defa9aad3f6a2df0141ccdbc3dcd9c87775dcabcf04bf5b0069e0178",
+  "packet_sha_file_matches": true,
+  "reviewer_recorded_packet_sha256": "1cc40e09defa9aad3f6a2df0141ccdbc3d3cd9c87775dcabcf04bf5b0069e0178",
+  "reviewer_packet_field_matches": false,
+  "all_15_inputs_reverified_by_root": true,
+  "independent_original_bytes_preserved": true,
+  "disposition": "Reviewer packet hash transcription error disclosed; root receipt corrects identity only, not independent claims or verdict. No reviewer budget renewal."
+}

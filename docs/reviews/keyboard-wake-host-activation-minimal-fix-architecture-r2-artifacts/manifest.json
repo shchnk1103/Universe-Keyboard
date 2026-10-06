@@ -1,0 +1,12 @@
+{
+  "round": 2,
+  "files": {
+    "packet.json": "1cc40e09defa9aad3f6a2df0141ccdbc3dcd9c87775dcabcf04bf5b0069e0178",
+    "packet.sha256": "bb372b35ef30550e80013296d8e7c48d2ee4453f39810f37af5a977dc37dc28f",
+    "architecture-review.md": "a7a8f7d4acd5e2251106d4a7eca63007981bb23c1d01e5321ff5baf4aa208885",
+    "architecture-usage.json": "bb397eb782445b0f45c872adbe05a21b7ec338ae62b8affcb8195c195e425608"
+  },
+  "frozen_targets_verified": 15,
+  "review_verdict": "Pass with conditions; proposed-design review only, not implementation/runtime approval. R1 Partial remains unchanged.",
+  "source_or_project_mutations": 0
+}

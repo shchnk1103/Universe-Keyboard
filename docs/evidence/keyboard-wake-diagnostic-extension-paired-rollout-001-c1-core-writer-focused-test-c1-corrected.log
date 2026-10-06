@@ -1,0 +1,30 @@
+warning: /Users/doubleshy0n/Library/org.swift.swiftpm/configuration is not accessible or not writable, disabling user-level cache features.
+warning: /Users/doubleshy0n/Library/org.swift.swiftpm/security is not accessible or not writable, disabling user-level cache features.
+warning: /Users/doubleshy0n/Library/Caches/org.swift.swiftpm is not accessible or not writable, disabling user-level cache features.
+warning: 'keyboardcore': failed storing manifest for 'keyboardcore' in cache: attempt to write a readonly database
+Building for debugging...
+[2 / 6] KeyboardCore
+[3 / 7] KeyboardCore
+[8 / 12] KeyboardCore
+[14 / 18] KeyboardCore
+[16 / 19] KeyboardCore
+[17 / 21] KeyboardCoreTests-product
+[25 / 29] KeyboardCoreTests-product
+[30 / 32] KeyboardCoreTests-product
+[32 / 32] KeyboardCoreTests-product
+Build complete! (7.45秒)
+Test Suite 'Selected tests' started at 2026-09-30 23:41:18.274.
+Test Suite 'KeyboardCoreTests.xctest' started at 2026-09-30 23:41:18.278.
+Test Suite 'DiagnosticsJournalV6WriterTests' started at 2026-09-30 23:41:18.278.
+Test Case '-[KeyboardCoreTests.DiagnosticsJournalV6WriterTests testDefaultRuntimeKeepsV5AndRejectsWakeMarkers]' started.
+Test Case '-[KeyboardCoreTests.DiagnosticsJournalV6WriterTests testDefaultRuntimeKeepsV5AndRejectsWakeMarkers]' passed (0.035 seconds).
+Test Case '-[KeyboardCoreTests.DiagnosticsJournalV6WriterTests testV6RuntimeWritesMarkersAndPromotesExistingFamiliesWithoutTouchingHistory]' started.
+Test Case '-[KeyboardCoreTests.DiagnosticsJournalV6WriterTests testV6RuntimeWritesMarkersAndPromotesExistingFamiliesWithoutTouchingHistory]' passed (0.042 seconds).
+Test Case '-[KeyboardCoreTests.DiagnosticsJournalV6WriterTests testV6WriterRechecksDecodedPayloadBeforeWriting]' started.
+Test Case '-[KeyboardCoreTests.DiagnosticsJournalV6WriterTests testV6WriterRechecksDecodedPayloadBeforeWriting]' passed (0.002 seconds).
+Test Suite 'DiagnosticsJournalV6WriterTests' passed at 2026-09-30 23:41:18.358.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.079 (0.080) seconds
+Test Suite 'KeyboardCoreTests.xctest' passed at 2026-09-30 23:41:18.358.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.079 (0.080) seconds
+Test Suite 'Selected tests' passed at 2026-09-30 23:41:18.358.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.079 (0.084) seconds

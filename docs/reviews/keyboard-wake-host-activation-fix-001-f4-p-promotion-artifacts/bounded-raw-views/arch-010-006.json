@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardWakeOwnerProbe.swift",
+  "origin_sha256": "679d55e8669d7c68db2fbe58fd1b436cbb19bc61e770f9a701751326fa669af6",
+  "expected_sha256": "679d55e8669d7c68db2fbe58fd1b436cbb19bc61e770f9a701751326fa669af6",
+  "line_start": 301,
+  "line_end": 360,
+  "lines": [
+    {
+      "line": 301,
+      "text": "            words.append(value.processIdentifier.low)"
+    },
+    {
+      "line": 302,
+      "text": "            words.append(value.armedAt)"
+    },
+    {
+      "line": 303,
+      "text": "            words.append(value.expiresAt)"
+    },
+    {
+      "line": 304,
+      "text": "            words.append(UInt64(value.records.count))"
+    },
+    {
+      "line": 305,
+      "text": "            words.append(value.overflowCount)"
+    },
+    {
+      "line": 306,
+      "text": ""
+    },
+    {
+      "line": 307,
+      "text": "            for record in value.records {"
+    },
+    {
+      "line": 308,
+      "text": "                words.append(record.sequence)"
+    },
+    {
+      "line": 309,
+      "text": "                words.append(record.timestamp)"
+    },
+    {
+      "line": 310,
+      "text": "                words.append(record.stage)"
+    },
+    {
+      "line": 311,
+      "text": "                words.append(record.coordinatorOrdinal)"
+    },
+    {
+      "line": 312,
+      "text": "                words.append(record.appearanceOrdinal)"
+    },
+    {
+      "line": 313,
+      "text": "                words.append(record.attemptOrdinal)"
+    },
+    {
+      "line": 314,
+      "text": "                words.append(record.ownerPresent ? 1 : 0)"
+    },
+    {
+      "line": 315,
+      "text": "                words.append(record.receiptPresent ? 1 : 0)"
+    },
+    {
+      "line": 316,
+      "text": "                words.append(record.teardownResult)"
+    },
+    {
+      "line": 317,
+      "text": "                words.append(record.epoch)"
+    },
+    {
+      "line": 318,
+      "text": "                words.append(record.revision)"
+    },
+    {
+      "line": 319,
+      "text": "            }"
+    },
+    {
+      "line": 320,
+      "text": "            return words"
+    },
+    {
+      "line": 321,
+      "text": "        }"
+    },
+    {
+      "line": 322,
+      "text": ""
+    },
+    {
+      "line": 323,
+      "text": "        private static func saturatingIncrement(_ value: UInt64) -> UInt64 {"
+    },
+    {
+      "line": 324,
+      "text": "            value == UInt64.max ? UInt64.max : value + 1"
+    },
+    {
+      "line": 325,
+      "text": "        }"
+    },
+    {
+      "line": 326,
+      "text": ""
+    },
+    {
+      "line": 327,
+      "text": "        private static func saturatingAdd(_ lhs: UInt64, _ rhs: UInt64) -> UInt64 {"
+    },
+    {
+      "line": 328,
+      "text": "            let (sum, overflow) = lhs.addingReportingOverflow(rhs)"
+    },
+    {
+      "line": 329,
+      "text": "            return overflow ? UInt64.max : sum"
+    },
+    {
+      "line": 330,
+      "text": "        }"
+    },
+    {
+      "line": 331,
+      "text": ""
+    },
+    {
+      "line": 332,
+      "text": "        private enum Lifecycle: Equatable, Sendable {"
+    },
+    {
+      "line": 333,
+      "text": "            case disarmed"
+    },
+    {
+      "line": 334,
+      "text": "            case armed"
+    },
+    {
+      "line": 335,
+      "text": "            case expired"
+    },
+    {
+      "line": 336,
+      "text": "            case frozen"
+    },
+    {
+      "line": 337,
+      "text": "        }"
+    },
+    {
+      "line": 338,
+      "text": ""
+    },
+    {
+      "line": 339,
+      "text": "        private struct State: Sendable {"
+    },
+    {
+      "line": 340,
+      "text": "            var lifecycle: Lifecycle = .disarmed"
+    },
+    {
+      "line": 341,
+      "text": "            var records = Array<StoredRecord?>(repeating: nil, count: recordCapacity)"
+    },
+    {
+      "line": 342,
+      "text": "            var recordCount = 0"
+    },
+    {
+      "line": 343,
+      "text": "            var overflowCount: UInt64 = 0"
+    },
+    {
+      "line": 344,
+      "text": "            var lastSequence: UInt64 = 0"
+    },
+    {
+      "line": 345,
+      "text": "            var lastCoordinatorOrdinal: UInt64 = 0"
+    },
+    {
+      "line": 346,
+      "text": "            var lastAttemptOrdinal: UInt64 = 0"
+    },
+    {
+      "line": 347,
+      "text": "            var invalidAttemptContext = false"
+    },
+    {
+      "line": 348,
+      "text": "            var activeAttemptOrdinal: UInt64 = 0"
+    },
+    {
+      "line": 349,
+      "text": "            var appearanceOrdinal: UInt64 = 0"
+    },
+    {
+      "line": 350,
+      "text": "            var armedAt: UInt64 = 0"
+    },
+    {
+      "line": 351,
+      "text": "            var expiresAt: UInt64 = 0"
+    },
+    {
+      "line": 352,
+      "text": "            var runIdentifier: IdentifierWords?"
+    },
+    {
+      "line": 353,
+      "text": "            var frozenValue: FrozenValue?"
+    },
+    {
+      "line": 354,
+      "text": ""
+    },
+    {
+      "line": 355,
+      "text": "            mutating func refreshExpiry(now: UInt64) {"
+    },
+    {
+      "line": 356,
+      "text": "                guard lifecycle == .armed, now >= expiresAt else { return }"
+    },
+    {
+      "line": 357,
+      "text": "                lifecycle = .expired"
+    },
+    {
+      "line": 358,
+      "text": "                activeAttemptOrdinal = 0"
+    },
+    {
+      "line": 359,
+      "text": "            }"
+    },
+    {
+      "line": 360,
+      "text": "        }"
+    }
+  ]
+}

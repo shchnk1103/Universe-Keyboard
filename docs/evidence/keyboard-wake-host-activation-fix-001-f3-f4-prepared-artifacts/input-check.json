@@ -1,0 +1,13 @@
+{
+  "source_rows_match": 1156,
+  "pinned_match": 13,
+  "raw_log_match": 4,
+  "staged_count": 0,
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "counts": {
+    "rime_error": 3,
+    "iohid_loader_error": 8,
+    "iohid_factory_companion": 8
+  }
+}

@@ -1,0 +1,668 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "\n🧪 Test\n\n✅ 85 tests passed, 0 failed, 20 skipped (⏱️ 25.4s)\n  └ Files:\n     ├── /private/tmp/ukey-wake-c7b3-20261002/IOSRimeTests.xcresult — Result Bundle\n     └── ~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/\n         ├── logs/test_sim_2026-10-02T09-04-38-058Z_pid55720_837e0073.log — Build Logs\n         └── test-products/test_sim_2026-10-02T09-04-38-058Z_pid55720_60ccbb04.xctestproducts — Test Products\n"
+    }
+  ],
+  "structuredContent": {
+    "schema": "xcodebuildmcp.output.test-result",
+    "schemaVersion": "3",
+    "didError": false,
+    "error": null,
+    "data": {
+      "summary": {
+        "status": "SUCCEEDED",
+        "durationMs": 25359,
+        "counts": {
+          "passed": 85,
+          "failed": 0,
+          "skipped": 20
+        },
+        "target": "simulator"
+      },
+      "artifacts": {
+        "buildLogPath": "~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/test_sim_2026-10-02T09-04-38-058Z_pid55720_837e0073.log",
+        "xcresultPath": "/private/tmp/ukey-wake-c7b3-20261002/IOSRimeTests.xcresult",
+        "testProductsPath": "~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/test-products/test_sim_2026-10-02T09-04-38-058Z_pid55720_60ccbb04.xctestproducts"
+      },
+      "diagnostics": {
+        "warnings": [],
+        "errors": [],
+        "testFailures": []
+      },
+      "testCases": [
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testCorruptedBundledResourceFailsBeforeLastGoodRuntimeChanges",
+          "status": "passed",
+          "durationMs": 36
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testCorruptPriorReceiptFailsBeforeRuntimeMutation",
+          "status": "passed",
+          "durationMs": 18
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testEmptyGeneratorCommandArgumentsAreRejected",
+          "status": "passed",
+          "durationMs": 10
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testEveryFileSwitchFailureRestoresLastGoodRuntime",
+          "status": "passed",
+          "durationMs": 1162
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testExplicitTraditionalPreferenceSyncWritesTraditionalLunaResetAndReceipt",
+          "status": "passed",
+          "durationMs": 67
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testFlattenedBundleRejectsNestedRimeResource",
+          "status": "passed",
+          "durationMs": 63
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testFlattenedBundleRejectsUnmanifestedLowercaseTextResource",
+          "status": "passed",
+          "durationMs": 20
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testFlattenedBundleRejectsUnmanifestedRimeResource",
+          "status": "passed",
+          "durationMs": 23
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testFlattenedMainAppBundleIsReconstructedBeforeValidation",
+          "status": "passed",
+          "durationMs": 37
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testGeneratorCommandTemplateTamperingIsRejected",
+          "status": "passed",
+          "durationMs": 11
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testHiddenUnmanifestedResourceIsRejected",
+          "status": "passed",
+          "durationMs": 11
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testIncompleteToolchainReceiptIsRejected",
+          "status": "passed",
+          "durationMs": 10
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testInstalledResourceTamperInvalidatesReceipt",
+          "status": "passed",
+          "durationMs": 45
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testKnownIceDefaultYamlPollutionIsRestoredFromOfficialSource",
+          "status": "passed",
+          "durationMs": 85
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testKnownPollutionRecoveryRollsBackWhenLaterInstallationFails",
+          "status": "passed",
+          "durationMs": 70
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testManifestCannotOmitARequiredRuntimeResource",
+          "status": "passed",
+          "durationMs": 10
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testMissingProvenanceIsRejected",
+          "status": "passed",
+          "durationMs": 10
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testMissingSimplificationPreferenceSyncWritesSimplifiedLunaResetAndReceipt",
+          "status": "passed",
+          "durationMs": 56
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testMissingSourceInputReceiptIsRejected",
+          "status": "passed",
+          "durationMs": 10
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testOverlayFailureAfterKnownPollutionRecoveryRestoresEntirePriorState",
+          "status": "passed",
+          "durationMs": 109
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testOverlayReceiptBindsRequiredRuntimeFiles",
+          "status": "passed",
+          "durationMs": 60
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testOverlayWriteFailureRestoresPreviousFilesAndReceipt",
+          "status": "passed",
+          "durationMs": 57
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testPackagedSourceHashMustMatchInputReceipt",
+          "status": "passed",
+          "durationMs": 10
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testRedeployFailsClosedWhenSharedDefaultYamlNoLongerMatchesReceipt",
+          "status": "passed",
+          "durationMs": 52
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testRedeployRestoresDefaultYamlWhenNoPriorReceiptExists",
+          "status": "passed",
+          "durationMs": 80
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testReproducibilityDigestScopeMustNamePayloadBoundary",
+          "status": "passed",
+          "durationMs": 11
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testSameLengthCorruptionIsRejectedByChecksum",
+          "status": "passed",
+          "durationMs": 12
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testUnknownDefaultYamlPollutionStaysFailClosed",
+          "status": "passed",
+          "durationMs": 49
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testUnmanifestedResourceIsRejected",
+          "status": "passed",
+          "durationMs": 12
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testUnreadableReceiptObjectFailsBeforeUnknownRuntimeMutation",
+          "status": "passed",
+          "durationMs": 52
+        },
+        {
+          "suite": "RimeBuiltinResourceInstallerTests",
+          "test": "testValidClosureInstallsEveryRequiredFileAndKeepsThirdPartyFiles",
+          "status": "passed",
+          "durationMs": 43
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testCandidateWindowParserPreservesGlobalIndexes",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testControlKeycodesMatchRimeKeysyms",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testDeploymentInputValidatorRejectsMissingEmptyAndDirectoryInputs",
+          "status": "passed",
+          "durationMs": 20
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testDeploymentInputValidatorRejectsUnsafeIDAndUnrelatedSchemaList",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testDeploymentModulesIncludeLuaWhenBridgeIsLuaCapable",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testDeploymentRequestCarriesFullCheckBoundary",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testDeploymentServiceAcceptsTerminalDeployAndWorkingActiveSchema",
+          "status": "passed",
+          "durationMs": 3
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testDeploymentServiceFailsClosedWhenActiveSchemaSmokeFails",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testDeploymentServiceFailsClosedWhenMaintenanceHasNoSuccessReceipt",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testDeploymentServiceObservesRealTerminalSuccessAndFunctionalSchema",
+          "status": "passed",
+          "durationMs": 96
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testDeploymentServiceRejectsMissingActiveSchemaInCustomYamlBeforeMaintenance",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testDeploymentServiceRejectsRuntimeRecoveryWithoutDeploymentDirectories",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testEmptyAndMultiscalarInputDoNotEmitAKeycode",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testFirstKeyBridgeTimingRequiresAllContentFreeTimingFields",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testHealthyStartupSchemaSelectionDoesNotEnumerateSchemas",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testOutputParserAcceptsObjectiveCCollections",
+          "status": "passed",
+          "durationMs": 4
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testOutputParserPassesThroughEngineNativeSelectionRange",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testOutputParserPassesThroughPhase06EngineNativeObservationFields",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testOutputParserSeparatesRawInputFromDisplayPreedit",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testOutputParserUsesPhaseOneDefaultsWhenMetadataIsMissing",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testPrintableKeycodesUseASCIIValues",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testRealDeployerFailsClosedForMalformedSchema",
+          "status": "passed",
+          "durationMs": 13
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testRuntimeRecoveryRequestPreservesSessionOwnedBoundary",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testSchemaSmokeRejectsEchoCandidateWrongRawInputAndEarlierCommit",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testSessionDiagnosticFailsClosedBeforeSessionCreation",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testSpaceActionAliasMatchesLiteralSpace",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testStandardSyncInstallationKeepsUnrelatedConfiguration",
+          "status": "passed",
+          "durationMs": 2
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testStandardSyncInstallationRejectsComplexManagedField",
+          "status": "passed",
+          "durationMs": 3
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testStandardSyncServiceCreatesOfficialDeviceDirectory",
+          "status": "passed",
+          "durationMs": 53
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testStartupSchemaSelectionEnumeratesOnlyAfterRequestedAndFallbackFail",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "RimeEngineContractTests",
+          "test": "testStartupSchemaSelectionUsesConfiguredFallbackBeforeEnumeration",
+          "status": "passed",
+          "durationMs": 0
+        },
+        {
+          "suite": "RimeLuaSmokeTests",
+          "test": "testCorrectionSidecarKeepsVisibleCompositionIntactWhenRuntimeFixtureIsProvided",
+          "status": "skipped",
+          "durationMs": 6
+        },
+        {
+          "suite": "RimeLuaSmokeTests",
+          "test": "testRimeIceLuaDynamicCandidatesWhenRuntimeFixtureIsProvided",
+          "status": "skipped",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeOctagramCapabilityTests",
+          "test": "testConfiguredModulesIncludeOctagramAlongsideBaseAndLua",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeOctagramCapabilityTests",
+          "test": "testGrammarComponentIsDiscoverableWithoutModelFile",
+          "status": "passed",
+          "durationMs": 5
+        },
+        {
+          "suite": "RimeOctagramCapabilityTests",
+          "test": "testGrammarLoadReceiptAcceptsOnlyExactTargetSequence",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeOctagramCapabilityTests",
+          "test": "testGrammarLoadReceiptRejectsUnrelatedAndMalformedMessages",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeOctagramCapabilityTests",
+          "test": "testOctagramIsCompiledIntoBridge",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeRuntimeSelectionBridgeTests",
+          "test": "testOfficialLunaOverlayCarriesFuzzyRulesWithoutReplacingUpstreamAlgebra",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeRuntimeSelectionBridgeTests",
+          "test": "testOfficialLunaOverlayOmitsFuzzyAppendWhenDisabled",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeRuntimeSelectionBridgeTests",
+          "test": "testProductionCustomYamlPlanIncludesT9OnlyWhenIceInstalled",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeRuntimeSelectionBridgeTests",
+          "test": "testProductionCustomYamlSyncWritesT9FileWhenIceInstalled",
+          "status": "passed",
+          "durationMs": 3
+        },
+        {
+          "suite": "RimeRuntimeSelectionBridgeTests",
+          "test": "testResolveWithMatchingFingerprintSelectsT9",
+          "status": "passed",
+          "durationMs": 6
+        },
+        {
+          "suite": "RimeRuntimeSelectionBridgeTests",
+          "test": "testResolveWithoutSharedDataDirCannotMatchReadiness",
+          "status": "passed",
+          "durationMs": 4
+        },
+        {
+          "suite": "RimeRuntimeSelectionBridgeTests",
+          "test": "testT9CustomYamlUsesIceUserDictionaryPreference",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeSyncKeyboardActivityTests",
+          "test": "testClearingHeartbeatMarksKeyboardAsInactive",
+          "status": "passed",
+          "durationMs": 4
+        },
+        {
+          "suite": "RimeSyncKeyboardActivityTests",
+          "test": "testExpiredHeartbeatDoesNotBlockSync",
+          "status": "passed",
+          "durationMs": 4
+        },
+        {
+          "suite": "RimeSyncKeyboardActivityTests",
+          "test": "testFreshHeartbeatMarksKeyboardAsActive",
+          "status": "passed",
+          "durationMs": 3
+        },
+        {
+          "suite": "RimeSyncKeyboardActivityTests",
+          "test": "testFutureHeartbeatRemainsConservativelyActive",
+          "status": "passed",
+          "durationMs": 3
+        },
+        {
+          "suite": "RimeT9AutoAnchorRetryMatrixTests",
+          "test": "testCappedTwoSyllableControllerFrozenPairedMatrix",
+          "status": "skipped",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeT9AutoAnchorRetryMatrixTests",
+          "test": "testIsolatedPersonalizationKnownPositive",
+          "status": "skipped",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeT9AutoAnchorRetryMatrixTests",
+          "test": "testIsolatedPersonalizationNaturalReminder",
+          "status": "skipped",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeT9AutoAnchorRetryMatrixTests",
+          "test": "testIsolatedPersonalizationNaturalWeather",
+          "status": "skipped",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeT9AutoAnchorRetryMatrixTests",
+          "test": "testPartialLongSelectionIsNotPersonalizationProof",
+          "status": "skipped",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeT9AutoAnchorRetryMatrixTests",
+          "test": "testPersonalizationFixtureUserRootSafetyPolicy",
+          "status": "passed",
+          "durationMs": 16
+        },
+        {
+          "suite": "RimeT9AutoAnchorRetryMatrixTests",
+          "test": "testRejectedCompositionLaterOpportunityTransactionMatrix",
+          "status": "skipped",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeT9AutoAnchorRetryMatrixTests",
+          "test": "testRollingControllerFrozenA0A1B2B3Matrix",
+          "status": "skipped",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeT9AutoAnchorRetryMatrixTests",
+          "test": "testRollingControllerMissingLiveCompositionFailsClosedBeforeKey",
+          "status": "skipped",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeT9AutoAnchorRetryMatrixTests",
+          "test": "testRollingControllerRealRimeDeletePathAndPartialOwnership",
+          "status": "skipped",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeT9AutoAnchorRetryMatrixTests",
+          "test": "testRollingControllerRealRimeSecondRejectRestoreMatrix",
+          "status": "skipped",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeT9CompatibilitySpikeTests",
+          "test": "testPinnedLibrimeCanSelectT9AndProcessDigitSequenceAfterRemovingUnsupportedProcessor",
+          "status": "skipped",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeT9PinyinSelectionSpikeTests",
+          "test": "test004CatalogExactRawAcceptanceOnPinnedLibrime",
+          "status": "skipped",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeT9PinyinSelectionSpikeTests",
+          "test": "testAtomicPathDiscoveryStageAOnPinnedLibrime",
+          "status": "skipped",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeT9PinyinSelectionSpikeTests",
+          "test": "testGate5Phase05CandidateCoverageSelRangeOnPinnedLibrime",
+          "status": "skipped",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeT9PinyinSelectionSpikeTests",
+          "test": "testGate5Phase05SelectionRangeFailClosedParserContract",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeT9PinyinSelectionSpikeTests",
+          "test": "testGate5Phase06AlternativeCoverageSelectionDeltaOnPinnedLibrime",
+          "status": "skipped",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeT9PinyinSelectionSpikeTests",
+          "test": "testPrecisePinyinPathRefinementOnPinnedLibrime",
+          "status": "skipped",
+          "durationMs": 1
+        },
+        {
+          "suite": "RimeT9PinyinSelectionSpikeTests",
+          "test": "testReadOnlyWindowCoverageForYiZiSibling",
+          "status": "skipped",
+          "durationMs": 1
+        },
+        {
+          "suite": "ThreadAffineRimeRealEngineTests",
+          "test": "testGateOffDefaultUnchangedByR4BBootstrapPresence",
+          "status": "passed",
+          "durationMs": 5
+        },
+        {
+          "suite": "ThreadAffineRimeRealEngineTests",
+          "test": "testRealEngineBootstrapCreatesAndCallsOffMainThroughOwner",
+          "status": "skipped",
+          "durationMs": 1
+        },
+        {
+          "suite": "TypoCorrectionSidecarOwnerAdapterTests",
+          "test": "testCandidateParserDropsEmptyTextBeforeBucketClassification",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "TypoCorrectionSidecarOwnerAdapterTests",
+          "test": "testObjCFacadeSeparatesValidationAndSidecarReadinessWithoutEngineSetup",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "TypoCorrectionSidecarOwnerAdapterTests",
+          "test": "testRouteAdaptersWrapOnlyTheirInstalledFacadeWithNoNativeEpoch",
+          "status": "passed",
+          "durationMs": 1
+        },
+        {
+          "suite": "TypoCorrectionSidecarOwnerAdapterTests",
+          "test": "testSwiftFacadeParserPreservesSameCallReadinessAndResultStates",
+          "status": "passed",
+          "durationMs": 1
+        }
+      ]
+    }
+  }
+}

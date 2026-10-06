@@ -1,0 +1,63 @@
+{
+  "request_utc": "2026-10-03T14:38:05.426078+00:00",
+  "response_utc": "2026-10-03T14:38:06.247173+00:00",
+  "containers": {
+    "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app",
+    "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/351890B0-93B6-4875-ACB2-1B6A678678A7",
+    "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/53661EB9-A6C9-4323-A997-346A2C10FE68"
+  },
+  "related_process_paths_only": [
+    "3610 /var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.pL3kPh/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/Applications/Maps.app/Maps",
+    "3626 /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+    "92775 /private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.pL3kPh/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/Applications/Maps.app/PlugIns/GeneralMapsWidget.appex/GeneralMapsWidget"
+  ],
+  "calls": [
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "get_app_container",
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+        "com.DoubleShy0N.Universe-Keyboard",
+        "app"
+      ],
+      "exit": 0,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "get_app_container",
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+        "com.DoubleShy0N.Universe-Keyboard",
+        "data"
+      ],
+      "exit": 0,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "xcrun",
+        "simctl",
+        "get_app_container",
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+        "com.DoubleShy0N.Universe-Keyboard",
+        "groups"
+      ],
+      "exit": 0,
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "ps",
+        "-axo",
+        "pid=,comm="
+      ],
+      "exit": 0,
+      "stderr": ""
+    }
+  ],
+  "prior_preflight": "stopped on AssertionError [] at expected installed-path process match; no outputs written before assertion",
+  "no_signal_launch_attach_arm_input": true
+}

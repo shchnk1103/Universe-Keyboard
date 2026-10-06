@@ -1,0 +1,10 @@
+{
+  "observed_reply_utc": "2026-10-01T06:40:12.109974+00:00",
+  "phase": "before_app_switch_baseline",
+  "source": "Human reply 基线正常",
+  "key_feedback": "responsive",
+  "candidate_updates": "responsive",
+  "host_input_updates": "responsive",
+  "composition": "left uncommitted per instruction",
+  "event_timestamp_claim": false
+}

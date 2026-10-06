@@ -1,0 +1,11 @@
+{
+  "request_utc": "2026-10-04T04:10:38.685482+00:00",
+  "response_utc": "2026-10-04T04:10:38.955389+00:00",
+  "pid": 8491,
+  "signal": "SIGTERM",
+  "signal_count": 1,
+  "exit_confirmed": true,
+  "no_target_respawn": true,
+  "exe_sha256": "237d9a890d96a18ebaa9427ac2836595d8e8fc7767be63712a6870a22643efe0",
+  "no_force_kill": true
+}

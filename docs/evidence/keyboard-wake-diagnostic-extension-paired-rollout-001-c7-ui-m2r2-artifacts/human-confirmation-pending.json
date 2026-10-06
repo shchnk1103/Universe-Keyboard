@@ -1,0 +1,8 @@
+{
+  "utc": "2026-10-04T04:44:44.943354+00:00",
+  "reply": "已关闭，本轮仍独占",
+  "closed": true,
+  "exclusive": true,
+  "no_reinstall_redeploy": "PENDING",
+  "identity_preflight_human_closed_no_reinstall_true": "inherited template value; no_reinstall not yet confirmed, not used to release dependent actions"
+}

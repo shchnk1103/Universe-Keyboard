@@ -1,0 +1,7 @@
+{
+  "chunk_id": "583a03",
+  "wall_time_seconds": 0.228765834,
+  "exit_code": 0,
+  "original_token_count": 113,
+  "output": "memory read --binary --outfile /private/tmp/ukey-wake-m2r2-reexport-20261004/snapshot.bin --size 1 --count 1056 0x119b80a20\r\n1056 bytes written to '/private/tmp/ukey-wake-m2r2-reexport-20261004/snapshot.bin'\r\n(lldb) breakpoint delete 1\r\n1 breakpoints deleted; 0 breakpoint locations disabled.\r\n(lldb) breakpoint list\r\nNo breakpoints currently set.\r\n(lldb) continue\r\nProcess 55759 resuming\r\n(lldb) process detach\r\nProcess 55759 detached\r\n(lldb) quit\r\n"
+}

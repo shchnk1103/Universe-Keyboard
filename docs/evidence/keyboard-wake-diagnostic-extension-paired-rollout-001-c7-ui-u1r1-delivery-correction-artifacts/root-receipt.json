@@ -1,0 +1,19 @@
+{
+  "received_utc": "2026-10-03T13:56:34.609471+00:00",
+  "packet_whole_sha256": "8f8227f289b0b3c5453fe2035d4d3d1069f20dcfe64949c477bfba73e451254c",
+  "packet_self_sha256": "116f55a2d99d40c59c88738bb05e088fae51668e0a3e5977a6645a2b31035fa5",
+  "content_inputs_verified": 13,
+  "hash_only_inputs_verified": 1,
+  "input_mismatches": 0,
+  "original_artifacts_unchanged": true,
+  "D001_D004": "author corrections delivered; historic timing explicitly unavailable",
+  "reviewer_calls_reported": 2,
+  "reviewer_whole_elapsed_seconds": null,
+  "hard_180_seconds_compliance": "UNKNOWN: first actual tool request time not preserved",
+  "root_freeze_to_final_receipt_seconds": 236.324,
+  "root_interval_interpretation": "coordinator outer interval only; cannot establish reviewer budget compliance or definite overrun",
+  "usage_model_effort": "not explicitly repeated in author usage; frozen packet identifies GPT6 Luna low",
+  "formal_delivery_status": "Partial: current-lane timing/budget compliance unavailable; required model/effort usage field omitted",
+  "runtime_opinion": "original P1-P3 scoped positive acceptance unchanged",
+  "stop": "2/2 calls exhausted; no renewal, no simulator operation"
+}

@@ -1,0 +1,40 @@
+{
+  "utc": "2026-10-05T12:17:58.101951+00:00",
+  "kind": "root mechanical native judgment archive and source/readback receipt, not author readback",
+  "author_authorized_root_archive": true,
+  "native_review_sha256": "93a35db8cc198dd9c6b35620ee288dcd501760f3d4185ffdfbcf4f446f8e294c",
+  "native_usage_sha256": "a41b3031a0af971d10fd9a5a1d0648b9cbcd9283ac4eb4864fc664e93e0f84be",
+  "original_flat_reader_sha256": "3b4d849c172d5dfc3325c2bb789dd567a3e854de67963557b3f31875e2a9de69",
+  "forwarded_fields_match": [
+    {
+      "module": "Universe Keyboard",
+      "forwarded_full_path_uuid_sha_match_frozen_original": true
+    },
+    {
+      "module": "Universe Keyboard.debug.dylib",
+      "forwarded_full_path_uuid_sha_match_frozen_original": true
+    },
+    {
+      "module": "PlugIns/Keyboard.appex/Keyboard",
+      "forwarded_full_path_uuid_sha_match_frozen_original": true
+    },
+    {
+      "module": "PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+      "forwarded_full_path_uuid_sha_match_frozen_original": true
+    }
+  ],
+  "formal_author_files_absent": [
+    "ack.json",
+    "review.md",
+    "usage.json",
+    "delivery-readback.json"
+  ],
+  "formal_status": "Partial; one-time Product replacement receipt decision Pending",
+  "time_compliance": "UNKNOWN; author end/elapsed not captured, cannot prove300sec. Root observed current clock12:14:50.367501Z after prepared05:11:51.088532Z; do not describe entire intervening period as active review or invent bounded author end. Later no-tools judgment belongs same four original records and Human继续 steering; receipt exception must explicitly include unknown wall time.",
+  "content_status": "All named technical promotion criteria covered from ArchitectureR3 (accepted) + QualityR2Q-P4/R3Q-P2,3/R5Q-P1. Only Quality native replacement receipt acceptance remains.",
+  "verified_input_rows": 1156,
+  "verified_pins": 13,
+  "verified_payload_rows": 78,
+  "source_or_device_operations": false,
+  "next": "Product one-time accept this Quality native judgment + actual2call ledger + root forwarded-source/hash provenance/readback, retaining author file and time gaps. No additional review proposed; installation not authorized."
+}

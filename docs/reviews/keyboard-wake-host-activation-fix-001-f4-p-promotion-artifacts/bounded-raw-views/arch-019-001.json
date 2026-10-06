@@ -1,0 +1,197 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/private-evidence-index.json",
+  "origin_sha256": "6f66a2aa6df21c387059bd5c936d1d7acb85fcc8f554cf1fb4493b39642dc213",
+  "expected_sha256": "6f66a2aa6df21c387059bd5c936d1d7acb85fcc8f554cf1fb4493b39642dc213",
+  "line_start": 1,
+  "line_end": 47,
+  "lines": [
+    {
+      "line": 1,
+      "text": "["
+    },
+    {
+      "line": 2,
+      "text": "  {"
+    },
+    {
+      "line": 3,
+      "text": "    \"path\": \"/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateBuild.xcresult/Data/data.0~5ja3OOuEJ2MGbpsgplDRHJXuvr03jlebpGn6LU573a1PWrglva2eyDZehKGX0FTWkhC5ohWMel1rBUxVbOqGyA==\","
+    },
+    {
+      "line": 4,
+      "text": "    \"bytes\": 1532,"
+    },
+    {
+      "line": 5,
+      "text": "    \"sha256\": \"4981b8f6f90a25d304d4ce6a7719f73802bc0b1c9e1a974fe0472dd04cf6419a\""
+    },
+    {
+      "line": 6,
+      "text": "  },"
+    },
+    {
+      "line": 7,
+      "text": "  {"
+    },
+    {
+      "line": 8,
+      "text": "    \"path\": \"/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateBuild.xcresult/Data/data.0~NfJTMeP6kG82V5JsWfRm0GpbgMphKg8xP68RZD2CzG1o5BTfmY_qgq9CMTUySsd_507iWQr2g2VGFwTppYxtYg==\","
+    },
+    {
+      "line": 9,
+      "text": "    \"bytes\": 72578,"
+    },
+    {
+      "line": 10,
+      "text": "    \"sha256\": \"8ba193fece695dbe140ff5146f3d3a19d060162a03d184926fd1ba4cce9f6492\""
+    },
+    {
+      "line": 11,
+      "text": "  },"
+    },
+    {
+      "line": 12,
+      "text": "  {"
+    },
+    {
+      "line": 13,
+      "text": "    \"path\": \"/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateBuild.xcresult/Data/data.0~dOd0HWtXSm-fWw6B-515ZyteM1MdTVTSUYfq_emphBNA0afPR6c33LMjqHWds6xH0m9miuSQq59vKaKD-lcyqA==\","
+    },
+    {
+      "line": 14,
+      "text": "    \"bytes\": 318,"
+    },
+    {
+      "line": 15,
+      "text": "    \"sha256\": \"366f7ffbda94766577418aac84f771f0781ef6e99c4e78e977f5d5aacfd699a0\""
+    },
+    {
+      "line": 16,
+      "text": "  },"
+    },
+    {
+      "line": 17,
+      "text": "  {"
+    },
+    {
+      "line": 18,
+      "text": "    \"path\": \"/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateBuild.xcresult/Data/refs.0~5ja3OOuEJ2MGbpsgplDRHJXuvr03jlebpGn6LU573a1PWrglva2eyDZehKGX0FTWkhC5ohWMel1rBUxVbOqGyA==\","
+    },
+    {
+      "line": 19,
+      "text": "    \"bytes\": 133,"
+    },
+    {
+      "line": 20,
+      "text": "    \"sha256\": \"3473d0c22aca7d8f36d36936f54d0eee1bf24590e94beda5e5baad0a975016fa\""
+    },
+    {
+      "line": 21,
+      "text": "  },"
+    },
+    {
+      "line": 22,
+      "text": "  {"
+    },
+    {
+      "line": 23,
+      "text": "    \"path\": \"/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateBuild.xcresult/Data/refs.0~NfJTMeP6kG82V5JsWfRm0GpbgMphKg8xP68RZD2CzG1o5BTfmY_qgq9CMTUySsd_507iWQr2g2VGFwTppYxtYg==\","
+    },
+    {
+      "line": 24,
+      "text": "    \"bytes\": 1,"
+    },
+    {
+      "line": 25,
+      "text": "    \"sha256\": \"6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d\""
+    },
+    {
+      "line": 26,
+      "text": "  },"
+    },
+    {
+      "line": 27,
+      "text": "  {"
+    },
+    {
+      "line": 28,
+      "text": "    \"path\": \"/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateBuild.xcresult/Data/refs.0~dOd0HWtXSm-fWw6B-515ZyteM1MdTVTSUYfq_emphBNA0afPR6c33LMjqHWds6xH0m9miuSQq59vKaKD-lcyqA==\","
+    },
+    {
+      "line": 29,
+      "text": "    \"bytes\": 1,"
+    },
+    {
+      "line": 30,
+      "text": "    \"sha256\": \"6e340b9cffb37a989ca544e6bb780a2c78901d3fb33738768511a30617afa01d\""
+    },
+    {
+      "line": 31,
+      "text": "  },"
+    },
+    {
+      "line": 32,
+      "text": "  {"
+    },
+    {
+      "line": 33,
+      "text": "    \"path\": \"/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateBuild.xcresult/Info.plist\","
+    },
+    {
+      "line": 34,
+      "text": "    \"bytes\": 776,"
+    },
+    {
+      "line": 35,
+      "text": "    \"sha256\": \"b5c7078f6791874bb5164b864c40d4d1d68013f1127adcea0f477c1d6ac159a6\""
+    },
+    {
+      "line": 36,
+      "text": "  },"
+    },
+    {
+      "line": 37,
+      "text": "  {"
+    },
+    {
+      "line": 38,
+      "text": "    \"path\": \"/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/freeze-receipt.json\","
+    },
+    {
+      "line": 39,
+      "text": "    \"bytes\": 1403,"
+    },
+    {
+      "line": 40,
+      "text": "    \"sha256\": \"530e962c122896b244a9c98b614f58b9846569f34c0989f74a0774b7dbc944f3\""
+    },
+    {
+      "line": 41,
+      "text": "  },"
+    },
+    {
+      "line": 42,
+      "text": "  {"
+    },
+    {
+      "line": 43,
+      "text": "    \"path\": \"/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/logs/build.log\","
+    },
+    {
+      "line": 44,
+      "text": "    \"bytes\": 548418,"
+    },
+    {
+      "line": 45,
+      "text": "    \"sha256\": \"18fe20fc1ded0462750c2ac57b79c3950ec9804febde2e4e1d435d9ad65b907b\""
+    },
+    {
+      "line": 46,
+      "text": "  }"
+    },
+    {
+      "line": 47,
+      "text": "]"
+    }
+  ]
+}

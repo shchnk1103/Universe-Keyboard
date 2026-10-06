@@ -1,0 +1,3 @@
+COMMAND=bash scripts/ensure_rime_vendor.sh verify
+Verified structural inventory of 12 RIME framework artifacts in /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Vendor
+EXIT_CODE=0

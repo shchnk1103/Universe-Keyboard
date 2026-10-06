@@ -1,0 +1,21 @@
+{
+  "recorded_utc": "2026-10-06T03:38:39.865713+00:00",
+  "decision_source": "Human本线程：授权本Entry，并确认模拟器仍独占，希望Grok执行、Codex充当大脑",
+  "scope": "OWN-EXPORT-001 E0+E1 only",
+  "environment_executor": "Grok, sole execution writer for private scripts and sole simulator/debugger operator in this slice",
+  "coordinator_and_domain_owner": "Codex root, scope/checkpoints/final receipt; no concurrent simulator or private-script writing",
+  "production_writer": "Grok historical binding remains; no production modifications authorized in this Entry",
+  "device": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "human_exclusive_confirmation": "confirmed in same authorization message; executor must establish fresh factual Entry, recheck if delayed or changed",
+  "entry_sha256": "d3673a274ee76fb35cd6bae04723d3ea6a3e1deba6a55da540be4b1b71adf7e0",
+  "binding_sha256": "2f2f90d94dc9116b30aabed7f8a14b7cdc6670b18d0cfc30d8145c127554a1b3",
+  "budget_actual_calls": 60,
+  "budget_wall_seconds": 3600,
+  "runtime_attempts_max": 1,
+  "read_memory_max": 1,
+  "read_bytes_max": 11352,
+  "reserve_cleanup_calls": 12,
+  "budget_anchor": "first Grok execution tool call, include unsuccessful calls/wrappers/nested/human requests; no automatic reset or extension",
+  "residual_appex_sigterm": "not explicitly granted by this message; if present, ask exact single normal SIGTERM approval after PID/start/path checks",
+  "status": "Authorized; Grok ACK and E0 preflight pending; E1 not Ready"
+}

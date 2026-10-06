@@ -1,0 +1,759 @@
+{
+  "role": "Coordinator same historical xcresult read; not independent acceptance",
+  "records": [
+    {
+      "suite": "Rime",
+      "testIdentifier": "RimeLuaSmokeTests/testCorrectionSidecarKeepsVisibleCompositionIntactWhenRuntimeFixtureIsProvided()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - Set UK_RIME_LUA_SMOKE_SHARED_DIR and UK_RIME_LUA_SMOKE_USER_DIR to run the real Lua smoke test."
+      ],
+      "detail_file": "Rime-967c91bf68efaed5.json",
+      "detail_sha256": "8655e2f79ceb5f23f84a694255ff9c0b190bf130bdf1a48bcd865c8f482f56ca",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/Rime.xcresult",
+        "--compact",
+        "--test-id",
+        "RimeLuaSmokeTests/testCorrectionSidecarKeepsVisibleCompositionIntactWhenRuntimeFixtureIsProvided()"
+      ]
+    },
+    {
+      "suite": "Rime",
+      "testIdentifier": "RimeLuaSmokeTests/testRimeIceLuaDynamicCandidatesWhenRuntimeFixtureIsProvided()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - Set UK_RIME_LUA_SMOKE_SHARED_DIR and UK_RIME_LUA_SMOKE_USER_DIR to run the real Lua smoke test."
+      ],
+      "detail_file": "Rime-371b95ca919c8def.json",
+      "detail_sha256": "161b654f84dce48deff79b1f0142d53b09415239b822ce7727129df27cb447fd",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/Rime.xcresult",
+        "--compact",
+        "--test-id",
+        "RimeLuaSmokeTests/testRimeIceLuaDynamicCandidatesWhenRuntimeFixtureIsProvided()"
+      ]
+    },
+    {
+      "suite": "Rime",
+      "testIdentifier": "RimeT9AutoAnchorRetryMatrixTests/testCappedTwoSyllableControllerFrozenPairedMatrix()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - Set the immutable 40-character lowercase S4 commit to run the paired matrix."
+      ],
+      "detail_file": "Rime-b73c1cd2dad07151.json",
+      "detail_sha256": "21c6de2d9d313c43d1f0bbb4571a85de5750679137c181224f6107d0baa2c6b9",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/Rime.xcresult",
+        "--compact",
+        "--test-id",
+        "RimeT9AutoAnchorRetryMatrixTests/testCappedTwoSyllableControllerFrozenPairedMatrix()"
+      ]
+    },
+    {
+      "suite": "Rime",
+      "testIdentifier": "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationKnownPositive()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+      ],
+      "detail_file": "Rime-b6f73a5bef26d382.json",
+      "detail_sha256": "170fcd86718824b52ef5139eeedbbafae142a86081af855f393fe9bb31905618",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/Rime.xcresult",
+        "--compact",
+        "--test-id",
+        "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationKnownPositive()"
+      ]
+    },
+    {
+      "suite": "Rime",
+      "testIdentifier": "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationNaturalReminder()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+      ],
+      "detail_file": "Rime-1486019404fdbb48.json",
+      "detail_sha256": "f3df0b35b240fa6f707e7aff41447bbcde066c11a052bb1d6bb2619d3e1d1fbd",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/Rime.xcresult",
+        "--compact",
+        "--test-id",
+        "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationNaturalReminder()"
+      ]
+    },
+    {
+      "suite": "Rime",
+      "testIdentifier": "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationNaturalWeather()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+      ],
+      "detail_file": "Rime-4838ed1ee2171974.json",
+      "detail_sha256": "bdd9121954caab2ec37dcf0bc46d99df78d3210a889fa885613676bda73901cf",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/Rime.xcresult",
+        "--compact",
+        "--test-id",
+        "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationNaturalWeather()"
+      ]
+    },
+    {
+      "suite": "Rime",
+      "testIdentifier": "RimeT9AutoAnchorRetryMatrixTests/testPartialLongSelectionIsNotPersonalizationProof()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+      ],
+      "detail_file": "Rime-7f4f523378eeda14.json",
+      "detail_sha256": "29934f92c4921209eea80f03ef2e99ce1c6b07804a9251f0ebfff217989cba56",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/Rime.xcresult",
+        "--compact",
+        "--test-id",
+        "RimeT9AutoAnchorRetryMatrixTests/testPartialLongSelectionIsNotPersonalizationProof()"
+      ]
+    },
+    {
+      "suite": "Rime",
+      "testIdentifier": "RimeT9AutoAnchorRetryMatrixTests/testRejectedCompositionLaterOpportunityTransactionMatrix()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+      ],
+      "detail_file": "Rime-a2ce149367777eec.json",
+      "detail_sha256": "5211025b8a90b483c129be924279fbf3571f59911d8b4429f12745f090f8f2ee",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/Rime.xcresult",
+        "--compact",
+        "--test-id",
+        "RimeT9AutoAnchorRetryMatrixTests/testRejectedCompositionLaterOpportunityTransactionMatrix()"
+      ]
+    },
+    {
+      "suite": "Rime",
+      "testIdentifier": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerFrozenA0A1B2B3Matrix()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+      ],
+      "detail_file": "Rime-c9c1d794c56064bf.json",
+      "detail_sha256": "b992cd67b9a46987858f74dad0ff48d9996104f0851c5d508a87dcf8469fc11d",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/Rime.xcresult",
+        "--compact",
+        "--test-id",
+        "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerFrozenA0A1B2B3Matrix()"
+      ]
+    },
+    {
+      "suite": "Rime",
+      "testIdentifier": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerMissingLiveCompositionFailsClosedBeforeKey()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+      ],
+      "detail_file": "Rime-9a1f2a49fd4c02af.json",
+      "detail_sha256": "69bb53de22aca49570e5f4c51fa3fb89270fd60729491c27b5a93856c1142822",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/Rime.xcresult",
+        "--compact",
+        "--test-id",
+        "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerMissingLiveCompositionFailsClosedBeforeKey()"
+      ]
+    },
+    {
+      "suite": "Rime",
+      "testIdentifier": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerRealRimeDeletePathAndPartialOwnership()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+      ],
+      "detail_file": "Rime-5924ec3f526f5e61.json",
+      "detail_sha256": "e761c77c737d01c33c4d290dcb8d89ec92193cc205fee565e066ff1047661b84",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/Rime.xcresult",
+        "--compact",
+        "--test-id",
+        "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerRealRimeDeletePathAndPartialOwnership()"
+      ]
+    },
+    {
+      "suite": "Rime",
+      "testIdentifier": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerRealRimeSecondRejectRestoreMatrix()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+      ],
+      "detail_file": "Rime-6cb7135c181d5f39.json",
+      "detail_sha256": "2581e811f1f1b50b0241b0c6c427ae98753b4a1140f9f84b09970b8df2eac44e",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/Rime.xcresult",
+        "--compact",
+        "--test-id",
+        "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerRealRimeSecondRejectRestoreMatrix()"
+      ]
+    },
+    {
+      "suite": "Rime",
+      "testIdentifier": "RimeT9CompatibilitySpikeTests/testPinnedLibrimeCanSelectT9AndProcessDigitSequenceAfterRemovingUnsupportedProcessor()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 compatibility Spike."
+      ],
+      "detail_file": "Rime-b43defb182096ef7.json",
+      "detail_sha256": "6551a86d055476ffce7f3ce3bb183efd70a8e867b478bc386ba6b17315ca267b",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/Rime.xcresult",
+        "--compact",
+        "--test-id",
+        "RimeT9CompatibilitySpikeTests/testPinnedLibrimeCanSelectT9AndProcessDigitSequenceAfterRemovingUnsupportedProcessor()"
+      ]
+    },
+    {
+      "suite": "Rime",
+      "testIdentifier": "RimeT9PinyinSelectionSpikeTests/test004CatalogExactRawAcceptanceOnPinnedLibrime()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+      ],
+      "detail_file": "Rime-24e901a3509489ca.json",
+      "detail_sha256": "4cc41a3386982ed69831b939583a5e89d44adbdc611fcd36805c6f35ed3771e8",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/Rime.xcresult",
+        "--compact",
+        "--test-id",
+        "RimeT9PinyinSelectionSpikeTests/test004CatalogExactRawAcceptanceOnPinnedLibrime()"
+      ]
+    },
+    {
+      "suite": "Rime",
+      "testIdentifier": "RimeT9PinyinSelectionSpikeTests/testAtomicPathDiscoveryStageAOnPinnedLibrime()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+      ],
+      "detail_file": "Rime-1f9b6446ee72cdf3.json",
+      "detail_sha256": "b96a7dbbd9ba38ab5289a71840ecc15b8717878af49dfb1dcb61aa18e4ed4506",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/Rime.xcresult",
+        "--compact",
+        "--test-id",
+        "RimeT9PinyinSelectionSpikeTests/testAtomicPathDiscoveryStageAOnPinnedLibrime()"
+      ]
+    },
+    {
+      "suite": "Rime",
+      "testIdentifier": "RimeT9PinyinSelectionSpikeTests/testGate5Phase05CandidateCoverageSelRangeOnPinnedLibrime()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+      ],
+      "detail_file": "Rime-2f76fad856d96299.json",
+      "detail_sha256": "e31852d3089088cc804b715f1921aeaeb419ed7b026586605e16de58f4c3b1c4",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/Rime.xcresult",
+        "--compact",
+        "--test-id",
+        "RimeT9PinyinSelectionSpikeTests/testGate5Phase05CandidateCoverageSelRangeOnPinnedLibrime()"
+      ]
+    },
+    {
+      "suite": "Rime",
+      "testIdentifier": "RimeT9PinyinSelectionSpikeTests/testGate5Phase06AlternativeCoverageSelectionDeltaOnPinnedLibrime()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+      ],
+      "detail_file": "Rime-9a369d02e2ff785d.json",
+      "detail_sha256": "4e3d8c1cb8a66833ed8aa3d4eb84fcbf5ecb604a9ba944e4fab8f0e33bc38724",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/Rime.xcresult",
+        "--compact",
+        "--test-id",
+        "RimeT9PinyinSelectionSpikeTests/testGate5Phase06AlternativeCoverageSelectionDeltaOnPinnedLibrime()"
+      ]
+    },
+    {
+      "suite": "Rime",
+      "testIdentifier": "RimeT9PinyinSelectionSpikeTests/testPrecisePinyinPathRefinementOnPinnedLibrime()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+      ],
+      "detail_file": "Rime-75a2f7b6f8012ed5.json",
+      "detail_sha256": "7071eeec42a912e9e30446a7132aa32d3bf5be026246b649db4363aafec9891d",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/Rime.xcresult",
+        "--compact",
+        "--test-id",
+        "RimeT9PinyinSelectionSpikeTests/testPrecisePinyinPathRefinementOnPinnedLibrime()"
+      ]
+    },
+    {
+      "suite": "Rime",
+      "testIdentifier": "RimeT9PinyinSelectionSpikeTests/testReadOnlyWindowCoverageForYiZiSibling()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+      ],
+      "detail_file": "Rime-4d13bc82b079d75d.json",
+      "detail_sha256": "e7542946b45da5198451c9cc1e061afedb3245aecf2200806ef70fe410fbb4f1",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/Rime.xcresult",
+        "--compact",
+        "--test-id",
+        "RimeT9PinyinSelectionSpikeTests/testReadOnlyWindowCoverageForYiZiSibling()"
+      ]
+    },
+    {
+      "suite": "Rime",
+      "testIdentifier": "ThreadAffineRimeRealEngineTests/testRealEngineBootstrapCreatesAndCallsOffMainThroughOwner()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR (or UK_RIME_R4B_*) to run R4-B real-engine proof."
+      ],
+      "detail_file": "Rime-7bc9fb5734150f44.json",
+      "detail_sha256": "d9f2a9a55ad38efa8b6637eb7b2bc0f4df74d385ae500a1290388c2b217ed973",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/Rime.xcresult",
+        "--compact",
+        "--test-id",
+        "ThreadAffineRimeRealEngineTests/testRealEngineBootstrapCreatesAndCallsOffMainThroughOwner()"
+      ]
+    },
+    {
+      "suite": "AppKeyboard",
+      "testIdentifier": "RimeIcePinnedArtifactTests/testVerifiedOfficialAndMirrorArchivesConvergeAfterProductionProcessing()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - Set TEST_RUNNER_SCHEME_PIN_ARCHIVE_ROOT to the independently downloaded source archives"
+      ],
+      "detail_file": "AppKeyboard-943035445a10ecee.json",
+      "detail_sha256": "aba09fc728fdb3764d660e4db225bf58b03425f5b6112efb78d276d626876cbc",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/AppKeyboard.xcresult",
+        "--compact",
+        "--test-id",
+        "RimeIcePinnedArtifactTests/testVerifiedOfficialAndMirrorArchivesConvergeAfterProductionProcessing()"
+      ]
+    },
+    {
+      "suite": "AppKeyboard",
+      "testIdentifier": "RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - Unsigned host lacks Keychain entitlement; signed Simulator lane covers integration."
+      ],
+      "detail_file": "AppKeyboard-0de0da0f21b8fb82.json",
+      "detail_sha256": "e756dde917cdcb5227c3a8e56e82388866576357727e0513cfdbef1cbc8e4958",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/AppKeyboard.xcresult",
+        "--compact",
+        "--test-id",
+        "RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem()"
+      ]
+    },
+    {
+      "suite": "AppKeyboard",
+      "testIdentifier": "SchemeResourcePreparationCoexistenceTests/testCS06_UninstallInactiveWanxiangRetainsIcePeerInventory()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - CS09-10-01 requires the fixed Wanxiang extract tree"
+      ],
+      "detail_file": "AppKeyboard-421a6c26b48046a1.json",
+      "detail_sha256": "907da1d85c5493e687eff0891fb99546495c50a164e7126e92deb8c1671a9d21",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/AppKeyboard.xcresult",
+        "--compact",
+        "--test-id",
+        "SchemeResourcePreparationCoexistenceTests/testCS06_UninstallInactiveWanxiangRetainsIcePeerInventory()"
+      ]
+    },
+    {
+      "suite": "AppKeyboard",
+      "testIdentifier": "SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerIceRemovalPreservesCompleteWanxiangInventory()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - CS09-10-01 requires the fixed Wanxiang extract tree"
+      ],
+      "detail_file": "AppKeyboard-f26a949dfd152ebe.json",
+      "detail_sha256": "ccdec2c415764fa601dba8c64566c2c48fa570547b7fb53290b104b66cfa38e3",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/AppKeyboard.xcresult",
+        "--compact",
+        "--test-id",
+        "SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerIceRemovalPreservesCompleteWanxiangInventory()"
+      ]
+    },
+    {
+      "suite": "AppKeyboard",
+      "testIdentifier": "SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerWanxiangRemovalPreservesCompleteIceInventory()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - CS09-10-01 requires the fixed Ice extract tree"
+      ],
+      "detail_file": "AppKeyboard-b252be64f884ca6c.json",
+      "detail_sha256": "9edbd5214f923bf62b9ad041000a1097a590b835c1fa8b9701d21278644cc31a",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/AppKeyboard.xcresult",
+        "--compact",
+        "--test-id",
+        "SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerWanxiangRemovalPreservesCompleteIceInventory()"
+      ]
+    },
+    {
+      "suite": "AppKeyboard",
+      "testIdentifier": "SchemeResourcePreparationCoexistenceTests/testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - Ice 2026.06.30 default.yaml fixture is required for P3 fingerprint recovery"
+      ],
+      "detail_file": "AppKeyboard-ae65643df52a5a30.json",
+      "detail_sha256": "ff1409c6fe299be7fbb2193cea889ece0a2259aa0d324af188ddbdd7158c584b",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/AppKeyboard.xcresult",
+        "--compact",
+        "--test-id",
+        "SchemeResourcePreparationCoexistenceTests/testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds()"
+      ]
+    },
+    {
+      "suite": "AppKeyboard",
+      "testIdentifier": "SchemeResourcePreparationCoexistenceTests/testProductionProcessedIceTreeKeepsOfficialDefaultYamlWhenFixturePresent()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - Set TEST_RUNNER_SCHEME_PIN_ARCHIVE_ROOT to the independently downloaded Ice archives"
+      ],
+      "detail_file": "AppKeyboard-a5dd875793e60275.json",
+      "detail_sha256": "afa82b2cf3876b84ea6ac9d53993a7eab072a2ee21f0d083392265b7e12dfc4f",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/AppKeyboard.xcresult",
+        "--compact",
+        "--test-id",
+        "SchemeResourcePreparationCoexistenceTests/testProductionProcessedIceTreeKeepsOfficialDefaultYamlWhenFixturePresent()"
+      ]
+    },
+    {
+      "suite": "AppKeyboard",
+      "testIdentifier": "TD012LMDGDeviceStagingTests/testPinnedModelLoadsThroughWanxiangGrammarOnAuthorizedPhysicalDevice()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - TD-012 G2 model-load receipt is physical-device-only"
+      ],
+      "detail_file": "AppKeyboard-7629bc812ea00008.json",
+      "detail_sha256": "3f2dadf4cee8e65a9c9faa60ce9b49cb9b05fba2c011d5adb43a6d50740e56ac",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/AppKeyboard.xcresult",
+        "--compact",
+        "--test-id",
+        "TD012LMDGDeviceStagingTests/testPinnedModelLoadsThroughWanxiangGrammarOnAuthorizedPhysicalDevice()"
+      ]
+    },
+    {
+      "suite": "AppKeyboard",
+      "testIdentifier": "TD012LMDGDeviceStagingTests/testRemovePinnedModelAfterAuthorizedPhysicalDeviceSpike()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - TD-012 G2 cleanup is physical-device-only"
+      ],
+      "detail_file": "AppKeyboard-d57ad2f9e1bb3f5d.json",
+      "detail_sha256": "8f69beee05938db1003e8f7e9f6075c22b8fca9de0b7498e1f91709875af7ed6",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/AppKeyboard.xcresult",
+        "--compact",
+        "--test-id",
+        "TD012LMDGDeviceStagingTests/testRemovePinnedModelAfterAuthorizedPhysicalDeviceSpike()"
+      ]
+    },
+    {
+      "suite": "AppKeyboard",
+      "testIdentifier": "TD012LMDGDeviceStagingTests/testStagePinnedModelForAuthorizedPhysicalDeviceSpike()",
+      "result": "Skipped",
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ],
+      "reasons": [
+        "Test skipped - TD-012 G2 staging is physical-device-only"
+      ],
+      "detail_file": "AppKeyboard-9761a713e6721e05.json",
+      "detail_sha256": "6a6ac4eeade9917040dd898edf3d48ba8e29be87de03060c271a33064a462dec",
+      "read_argv": [
+        "xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "test-details",
+        "--path",
+        "/private/tmp/ukey-wake-ui-t1-execution-20261003/AppKeyboard.xcresult",
+        "--compact",
+        "--test-id",
+        "TD012LMDGDeviceStagingTests/testStagePinnedModelForAuthorizedPhysicalDeviceSpike()"
+      ]
+    }
+  ],
+  "record_count": 30,
+  "all_have_explicit_reason": true,
+  "no_test_rerun": true,
+  "elapsed_seconds": 0.4448370933532715
+}

@@ -1,0 +1,14 @@
+{
+  "checkpoint_utc": "2026-10-02T15:47:47.695536+00:00",
+  "lanes": {
+    "quality": {
+      "digest": "de1af85c61c25ec9f9852dc89ef893f46e1a4b082ac7f344bbb97d99e24d1bee",
+      "frozen_repo_copy_equal": true
+    },
+    "architecture": {
+      "digest": "1aa7200ae5f93243fe3619649c994fe395eae3c0985dba8db7ccd0a6a1cdc3f6",
+      "frozen_repo_copy_equal": true
+    }
+  },
+  "entry_links": "passed"
+}

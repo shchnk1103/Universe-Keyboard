@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+  "origin_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "expected_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "line_start": 541,
+  "line_end": 600,
+  "lines": [
+    {
+      "line": 541,
+      "text": "                    self.dualGatePendingCanarySessionInstance = latestCanarySessionInstance"
+    },
+    {
+      "line": 542,
+      "text": "                #endif"
+    },
+    {
+      "line": 543,
+      "text": "                return"
+    },
+    {
+      "line": 544,
+      "text": "            }"
+    },
+    {
+      "line": 545,
+      "text": "            // If more work arrived, re-buffer and reschedule."
+    },
+    {
+      "line": 546,
+      "text": "            let depth = self.threadAffineRimeCoordinator?.diagnostics.pendingWorkDepth ?? 0"
+    },
+    {
+      "line": 547,
+      "text": "            if depth >= ResponsiveRimeFeltMetrics.presentationCoalescePendingThreshold {"
+    },
+    {
+      "line": 548,
+      "text": "                guard self.responsivePresentationGeneration == generationAtSchedule else { return }"
+    },
+    {
+      "line": 549,
+      "text": "                self.dualGatePendingPresentationSnapshot = latest"
+    },
+    {
+      "line": 550,
+      "text": "                self.dualGatePendingPresentationHasKnownSuccessor = true"
+    },
+    {
+      "line": 551,
+      "text": "                #if T9_RESPONSIVE_CANARY_INTERNAL"
+    },
+    {
+      "line": 552,
+      "text": "                    self.dualGatePendingCanarySessionInstance = latestCanarySessionInstance"
+    },
+    {
+      "line": 553,
+      "text": "                #endif"
+    },
+    {
+      "line": 554,
+      "text": "                self.scheduleDualGateCoalescedPresentation()"
+    },
+    {
+      "line": 555,
+      "text": "                return"
+    },
+    {
+      "line": 556,
+      "text": "            }"
+    },
+    {
+      "line": 557,
+      "text": "            #if T9_RESPONSIVE_CANARY_INTERNAL"
+    },
+    {
+      "line": 558,
+      "text": "                self.performResponsivePresentationApply("
+    },
+    {
+      "line": 559,
+      "text": "                    latest,"
+    },
+    {
+      "line": 560,
+      "text": "                    coalesced: true,"
+    },
+    {
+      "line": 561,
+      "text": "                    expectedGeneration: generationAtSchedule,"
+    },
+    {
+      "line": 562,
+      "text": "                    canarySessionInstance: latestCanarySessionInstance"
+    },
+    {
+      "line": 563,
+      "text": "                )"
+    },
+    {
+      "line": 564,
+      "text": "            #else"
+    },
+    {
+      "line": 565,
+      "text": "                self.performResponsivePresentationApply("
+    },
+    {
+      "line": 566,
+      "text": "                    latest,"
+    },
+    {
+      "line": 567,
+      "text": "                    coalesced: true,"
+    },
+    {
+      "line": 568,
+      "text": "                    expectedGeneration: generationAtSchedule"
+    },
+    {
+      "line": 569,
+      "text": "                )"
+    },
+    {
+      "line": 570,
+      "text": "            #endif"
+    },
+    {
+      "line": 571,
+      "text": "        }"
+    },
+    {
+      "line": 572,
+      "text": "    }"
+    },
+    {
+      "line": 573,
+      "text": ""
+    },
+    {
+      "line": 574,
+      "text": "    /// Live session epoch for responsive presentation gating (nil if gate-off)."
+    },
+    {
+      "line": 575,
+      "text": "    private func liveResponsiveSessionEpoch() -> UInt64? {"
+    },
+    {
+      "line": 576,
+      "text": "        if isThreadAffineRimeOwnerEnabled, let affine = threadAffineRimeCoordinator {"
+    },
+    {
+      "line": 577,
+      "text": "            return affine.diagnostics.sessionEpoch"
+    },
+    {
+      "line": 578,
+      "text": "        }"
+    },
+    {
+      "line": 579,
+      "text": "        if let main = responsiveRimeCoordinator {"
+    },
+    {
+      "line": 580,
+      "text": "            return main.diagnostics.sessionEpoch"
+    },
+    {
+      "line": 581,
+      "text": "        }"
+    },
+    {
+      "line": 582,
+      "text": "        return nil"
+    },
+    {
+      "line": 583,
+      "text": "    }"
+    },
+    {
+      "line": 584,
+      "text": ""
+    },
+    {
+      "line": 585,
+      "text": "    /// True when this snapshot may still update visible composition authority."
+    },
+    {
+      "line": 586,
+      "text": "    private func isLivePresentationSnapshot("
+    },
+    {
+      "line": 587,
+      "text": "        _ snapshot: ResponsiveRimeSnapshot,"
+    },
+    {
+      "line": 588,
+      "text": "        expectedGeneration: UInt64?"
+    },
+    {
+      "line": 589,
+      "text": "    ) -> Bool {"
+    },
+    {
+      "line": 590,
+      "text": "        if let expectedGeneration, expectedGeneration != responsivePresentationGeneration {"
+    },
+    {
+      "line": 591,
+      "text": "            return false"
+    },
+    {
+      "line": 592,
+      "text": "        }"
+    },
+    {
+      "line": 593,
+      "text": "        if let liveEpoch = liveResponsiveSessionEpoch(),"
+    },
+    {
+      "line": 594,
+      "text": "            snapshot.sessionEpoch != liveEpoch"
+    },
+    {
+      "line": 595,
+      "text": "        {"
+    },
+    {
+      "line": 596,
+      "text": "            return false"
+    },
+    {
+      "line": 597,
+      "text": "        }"
+    },
+    {
+      "line": 598,
+      "text": "        // Rem-3: while L1 is ahead, allow L2 with revision >= watermark floor"
+    },
+    {
+      "line": 599,
+      "text": "        // (equal OK so engine replaces structure-only L1 at the same rev)."
+    },
+    {
+      "line": 600,
+      "text": "        if provisionalCompositionMirror.isProvisionalAhead,"
+    }
+  ]
+}

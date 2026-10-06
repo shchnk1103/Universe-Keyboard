@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+  "origin_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "expected_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "line_start": 841,
+  "line_end": 900,
+  "lines": [
+    {
+      "line": 841,
+      "text": "        else {"
+    },
+    {
+      "line": 842,
+      "text": "            return output"
+    },
+    {
+      "line": 843,
+      "text": "        }"
+    },
+    {
+      "line": 844,
+      "text": "        return RimeOutput("
+    },
+    {
+      "line": 845,
+      "text": "            rawInput: output.rawInput,"
+    },
+    {
+      "line": 846,
+      "text": "            composition: output.composition,"
+    },
+    {
+      "line": 847,
+      "text": "            candidates: output.candidates,"
+    },
+    {
+      "line": 848,
+      "text": "            committedText: nil,"
+    },
+    {
+      "line": 849,
+      "text": "            hasMorePages: output.hasMorePages,"
+    },
+    {
+      "line": 850,
+      "text": "            highlightedIndex: output.highlightedIndex,"
+    },
+    {
+      "line": 851,
+      "text": "            candidatePageNumber: output.candidatePageNumber,"
+    },
+    {
+      "line": 852,
+      "text": "            caretPositionInRaw: output.caretPositionInRaw,"
+    },
+    {
+      "line": 853,
+      "text": "            commitPreviewLength: output.commitPreviewLength"
+    },
+    {
+      "line": 854,
+      "text": "        )"
+    },
+    {
+      "line": 855,
+      "text": "    }"
+    },
+    {
+      "line": 856,
+      "text": ""
+    },
+    {
+      "line": 857,
+      "text": "    private func notifyResponsivePresentation(pathChanged: Bool) {"
+    },
+    {
+      "line": 858,
+      "text": "        // Amendment B: retain only the latest host-visible L2 marked text as a"
+    },
+    {
+      "line": 859,
+      "text": "        // visual shadow prefix. L1 itself never calls this bridge, so stale"
+    },
+    {
+      "line": 860,
+      "text": "        // Candidate/Path chrome remains stable while Core guards interactions."
+    },
+    {
+      "line": 861,
+      "text": "        captureResponsiveStablePreeditIfReady()"
+    },
+    {
+      "line": 862,
+      "text": "        var effects: KeyboardEffect = [.compositionChanged]"
+    },
+    {
+      "line": 863,
+      "text": "        if pathChanged {"
+    },
+    {
+      "line": 864,
+      "text": "            effects.insert(.t9PinyinPathsChanged)"
+    },
+    {
+      "line": 865,
+      "text": "        }"
+    },
+    {
+      "line": 866,
+      "text": "        #if T9_RESPONSIVE_CANARY_INTERNAL"
+    },
+    {
+      "line": 867,
+      "text": "            // The callback's synchronous Bool is the bounded completion point. It"
+    },
+    {
+      "line": 868,
+      "text": "            // may return true only after the Extension completes syncUI."
+    },
+    {
+      "line": 869,
+      "text": "            let paintCompleted = onResponsiveCanaryPresentationNeeded?(effects) == true"
+    },
+    {
+      "line": 870,
+      "text": "            if let pending = pendingResponsiveCanaryVisibleSnapshot {"
+    },
+    {
+      "line": 871,
+      "text": "                pendingResponsiveCanaryVisibleSnapshot = nil"
+    },
+    {
+      "line": 872,
+      "text": "                emitResponsiveCanaryTerminal("
+    },
+    {
+      "line": 873,
+      "text": "                    for: pending.snapshot,"
+    },
+    {
+      "line": 874,
+      "text": "                    canarySessionInstance: pending.canarySessionInstance,"
+    },
+    {
+      "line": 875,
+      "text": "                    completion: .published,"
+    },
+    {
+      "line": 876,
+      "text": "                    visibility: .visible(presentationRevision: pending.snapshot.revision),"
+    },
+    {
+      "line": 877,
+      "text": "                    paint: paintCompleted"
+    },
+    {
+      "line": 878,
+      "text": "                        ? .painted"
+    },
+    {
+      "line": 879,
+      "text": "                        : .failedVisible(reason: .uiSynchronizationFailed)"
+    },
+    {
+      "line": 880,
+      "text": "                )"
+    },
+    {
+      "line": 881,
+      "text": "            }"
+    },
+    {
+      "line": 882,
+      "text": "        #else"
+    },
+    {
+      "line": 883,
+      "text": "            onResponsivePresentationNeeded?(effects)"
+    },
+    {
+      "line": 884,
+      "text": "        #endif"
+    },
+    {
+      "line": 885,
+      "text": "    }"
+    },
+    {
+      "line": 886,
+      "text": ""
+    },
+    {
+      "line": 887,
+      "text": "    #if T9_RESPONSIVE_CANARY_INTERNAL"
+    },
+    {
+      "line": 888,
+      "text": "        private func emitResponsiveCanaryTerminal("
+    },
+    {
+      "line": 889,
+      "text": "            for snapshot: ResponsiveRimeSnapshot,"
+    },
+    {
+      "line": 890,
+      "text": "            canarySessionInstance: UInt64? = nil,"
+    },
+    {
+      "line": 891,
+      "text": "            completion: ResponsiveRimeCanaryPublishCompletion,"
+    },
+    {
+      "line": 892,
+      "text": "            visibility: ResponsiveRimeCanaryVisibilityDisposition,"
+    },
+    {
+      "line": 893,
+      "text": "            paint: ResponsiveRimeCanaryPaintTerminal"
+    },
+    {
+      "line": 894,
+      "text": "        ) {"
+    },
+    {
+      "line": 895,
+      "text": "            emitResponsiveCanaryTerminal("
+    },
+    {
+      "line": 896,
+      "text": "                sessionEpoch: snapshot.sessionEpoch,"
+    },
+    {
+      "line": 897,
+      "text": "                revision: snapshot.revision,"
+    },
+    {
+      "line": 898,
+      "text": "                canarySessionInstance: canarySessionInstance,"
+    },
+    {
+      "line": 899,
+      "text": "                completion: completion,"
+    },
+    {
+      "line": 900,
+      "text": "                visibility: visibility,"
+    }
+  ]
+}

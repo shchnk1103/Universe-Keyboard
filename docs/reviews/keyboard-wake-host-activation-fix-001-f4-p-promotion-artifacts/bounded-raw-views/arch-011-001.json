@@ -1,0 +1,185 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-2026-10-05.md",
+  "origin_sha256": "a98a434cfa0fb976c0a37f65c7b0648e36dfec928e19e552ec1409776cdcd7cb",
+  "expected_sha256": "a98a434cfa0fb976c0a37f65c7b0648e36dfec928e19e552ec1409776cdcd7cb",
+  "line_start": 1,
+  "line_end": 44,
+  "lines": [
+    {
+      "line": 1,
+      "text": "# A2 新候选验证交付 — 2026-10-05"
+    },
+    {
+      "line": 2,
+      "text": ""
+    },
+    {
+      "line": 3,
+      "text": "当前候选的完整测试与构建矩阵及适用轻量检查完成；12 个冻结步骤均 exit 0。环境被测试改变，完整 before 与 after 已保全，恢复未执行。修复 Assignment 保持 Blocked；不能据此宣布 A2-F1 Covered、Maps 修复或晋级 F4。"
+    },
+    {
+      "line": 4,
+      "text": ""
+    },
+    {
+      "line": 5,
+      "text": "## AUTH、身份和预算"
+    },
+    {
+      "line": 6,
+      "text": ""
+    },
+    {
+      "line": 7,
+      "text": "Human“可以按照这份 Entry 继续”批准执行与180分钟首失败停止；随后明确“独占；未打开／安装／部署；接受上述两项狭义处置”。仅本次接受冻结同一20＋10 skip为非阻塞未验证残项，以及新备份副本 com.apple.provenance 新增／改写。其余metadata差异、新skip及23项gate任一skip/fail仍停止。Grok保持唯一源码writer；root仅验证和治理交付。"
+    },
+    {
+      "line": 8,
+      "text": ""
+    },
+    {
+      "line": 9,
+      "text": "唯一工作树 `/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard`，branch `codex/keyboard-wake-v3-compatibility-gate`，HEAD `84b9c19227330b0fe6ff391be001ee398010fd6a`，staged0；1156清单行、成员集合及13pinned输入前后全符。原 iPhone18Pro/iOS27.0，UDID `405D994F-28CB-4F89-BB22-B64AD81C05A2`，xcresult确认OS build24A434。Xcode27.0/27A266a、Swift6.4，SWIFT_VERSION钉6.0；严格并发/警告参数、禁并行及签名边界见冻结命令。Vendor verify结构/receipt通过，630payload另外核字节，未fetch。"
+    },
+    {
+      "line": 10,
+      "text": ""
+    },
+    {
+      "line": 11,
+      "text": "预算从2026-10-04T16:08:13.950496Z起算，执行/备份/矩阵/Exit在180分钟内完成，实际账见[交付回执](keyboard-wake-host-activation-fix-001-a2-validation-execution-artifacts/delivery-receipt.json)。新run `/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005`、新before `/private/tmp/ukey-host-activation-fix-a2-validation-backup-20261005`，旧备份未覆盖/删除。"
+    },
+    {
+      "line": 12,
+      "text": ""
+    },
+    {
+      "line": 13,
+      "text": "## 实际验证结果"
+    },
+    {
+      "line": 14,
+      "text": ""
+    },
+    {
+      "line": 15,
+      "text": "| 项 | 实际结果 |"
+    },
+    {
+      "line": 16,
+      "text": "|---|---|"
+    },
+    {
+      "line": 17,
+      "text": "| 分类、tracked/untracked whitespace、.kos JSON、CI helper和链接 | 全通过；helper12项及两shell检查通过 |"
+    },
+    {
+      "line": 18,
+      "text": "| 四Swift严格lint | 通过；未源码format或修改 |"
+    },
+    {
+      "line": 19,
+      "text": "| KeyboardCore | 1194执行，0失败 |"
+    },
+    {
+      "line": 20,
+      "text": "| RimeBridgeTests | 105=85通过＋20 skipped，0失败 |"
+    },
+    {
+      "line": 21,
+      "text": "| App＋Keyboard完整套件 | 454=444通过＋10 skipped，0失败 |"
+    },
+    {
+      "line": 22,
+      "text": "| RecoveryGate | 23/23实际Passed，0skip/0fail；包含原17及新增6 |"
+    },
+    {
+      "line": 23,
+      "text": "| Release配置build | 通过；不是Release发布 |"
+    },
+    {
+      "line": 24,
+      "text": "| 签名Keychain专项 | 1/1实际Passed，0skip/0fail |"
+    },
+    {
+      "line": 25,
+      "text": ""
+    },
+    {
+      "line": 26,
+      "text": "[23项实际结果](keyboard-wake-host-activation-fix-001-a2-validation-execution-artifacts/gate-23-actual-results.json)与方法清单集合相等，未补跑focused。30skip身份和原因逐项符合本轮批准清单，保持skipped不计通过，不外推真实引擎/Maps/Release。原7条actor诊断为0；[四文件实际编译](keyboard-wake-host-activation-fix-001-a2-validation-execution-artifacts/four-swift-actual-compile.json)已核，各iOS job无Swift warning/error；AppIntents metadata工具warning另列[诊断回执](keyboard-wake-host-activation-fix-001-a2-validation-execution-artifacts/final-input-diagnostics.json)，不声称全部日志zero-warning。"
+    },
+    {
+      "line": 27,
+      "text": ""
+    },
+    {
+      "line": 28,
+      "text": "第一次Bridge reader使用tests结构读取历史清单，因其实际为skips/class/method/reason而KeyError；原reader保留，适配后只重读同一xcresult并通过身份/原因比对，没有重跑测试。沙箱首次simctl/ps权限失败后改主机只读核验成功，无服务重启或环境修复。"
+    },
+    {
+      "line": 29,
+      "text": ""
+    },
+    {
+      "line": 30,
+      "text": "## 环境 Exit 与恢复提案"
+    },
+    {
+      "line": 31,
+      "text": ""
+    },
+    {
+      "line": 32,
+      "text": "静默before三次live读回稳定，App/appex均退出；新副本除批准provenance例外外字节/结构/模式/所有者/原xattrs一致，内部symlink及包签名通过。before provenance新增/改写：main865/3、Group29/41、App9/78。主数据827文件、Group53文件＋2内部symlink、安装包78文件；两诊断键ABSENT，rime_deployed=true、rime_needs_deploy=false。"
+    },
+    {
+      "line": 33,
+      "text": ""
+    },
+    {
+      "line": 34,
+      "text": "测试后两次完整库存稳定且目标进程为空；安装包变111文件，主数据872文件，Group剩4文件，rime_deployed ABSENT、rime_needs_deploy=true。两诊断键仍ABSENT。全部after复制到run/after-preservation并通过三次稳定读回/副本校验/签名；provenance新增/改写main912/2、Group11/0、App27/0。[after回执](keyboard-wake-host-activation-fix-001-a2-validation-execution-artifacts/environment-after-receipt.json)。"
+    },
+    {
+      "line": 35,
+      "text": ""
+    },
+    {
+      "line": 36,
+      "text": "**最小恢复 Prepared，未授权执行：** 重新安装本次before精确78文件旧C7包；主App恢复3文件并移除46个本轮测试新增节点；Group恢复8目录、51文件及2内部symlink。精确逐路径清单/hash绑定位于私有run/restore-plan-private.json与before库存，其SHA见[私有证据索引](keyboard-wake-host-activation-fix-001-a2-validation-execution-artifacts/private-artifact-index.json)。执行前须重核备份、live及静默/独占，无漂移才执行；保留安装后live容器UUID/根metadata及SplashBoard，不写入旧容器身份。不uninstall/erase、不部署/输入/Maps，不恢复整个Keychain或系统键盘设置。恢复期间provenance例外需明确接受并分类记录，不能冒称全部xattr精确一致。恢复后两次机器读回，再另做人工健康确认。"
+    },
+    {
+      "line": 37,
+      "text": ""
+    },
+    {
+      "line": 38,
+      "text": "## 后续依赖和非声明"
+    },
+    {
+      "line": 39,
+      "text": ""
+    },
+    {
+      "line": 40,
+      "text": "本交付仅当前候选测试证据，不代替A2独立review，旧Architecture Partial与Quality预算审计残项仍保持。建议先精确环境恢复，再冻结新候选的A2定点独立复审Entry；F4安装/真通知/Maps/owner-receipt仍需独立授权。父诊断Completed不重开。"
+    },
+    {
+      "line": 41,
+      "text": ""
+    },
+    {
+      "line": 42,
+      "text": "未写源码、stage/commit/push、部署、人工试打、Maps、LLDB或发布；测试runner安装/启动是已批准矩阵的环境副作用。CHANGELOG未授权未改。所有历史备份仍保留，当前before/after仍承担恢复依赖，暂不建议删除；不自动清理DerivedData/xcresult。"
+    },
+    {
+      "line": 43,
+      "text": ""
+    },
+    {
+      "line": 44,
+      "text": "[步骤原始回执](keyboard-wake-host-activation-fix-001-a2-validation-execution-artifacts/step-receipts.json)；[产物manifest](keyboard-wake-host-activation-fix-001-a2-validation-execution-artifacts/manifest.json)。"
+    }
+  ]
+}

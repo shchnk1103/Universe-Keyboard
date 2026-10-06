@@ -1,0 +1,25 @@
+{
+  "recorded_utc": "2026-10-06T04:55:55.912415+00:00",
+  "verdict": "Partial",
+  "criteria": {
+    "Q1": "Pass, single bounded read evidence only",
+    "Q2": "Pass, frozen buffer and observed integer chain only",
+    "Q3": "Pass, limited to stated sources and cleanup snapshots",
+    "Q4": "Partial, overrun and same-PID reconnect unaccepted"
+  },
+  "author_file_sha256": {
+    "ack.json": "fb367b53276525f48fac66e9639542dea79ceb5d434276c13e3b4e71907fab71",
+    "review.md": "b2a6bcd83e8ea43e3a2f8b6d7d4fc4c1458063520cd2a22e902f50ced4b22f37",
+    "usage.json": "cbd7f7f0ea44d9b40f79b06986537c1c54515451c742d0c0591b2d85c83a27c7",
+    "delivery-readback.json": "345aa4e237d55f151a4701bbe27e5b9eb4539136b5462e0ef45933e5c9984df3"
+  },
+  "author_reported_actual_calls": 17,
+  "author_elapsed_from_nested_command_boundary_seconds": 586.753801375,
+  "author_exact_full_wall": "unknown outer wrapper start; preserve author boundary statement",
+  "root_conservative_wall_upper_bound_seconds": 737.233717,
+  "root_bound_basis": "authorization recorded before dispatch to complete four-file root native readback; no exact start/end fabricated",
+  "frozen_originals_verified": 30,
+  "product_acceptance": "Pending for this E1 overrun/reconnect; prior accepts not inherited",
+  "report_scope_note": "report Q4 says extra attach and Human capture window; originals establish reattach before the one successful Human capture, no evidence of additional n/h or freeze; do not infer a second Human capture window",
+  "device_actions": 0
+}

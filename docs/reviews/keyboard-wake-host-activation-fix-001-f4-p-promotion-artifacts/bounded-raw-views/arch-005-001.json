@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+  "origin_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+  "expected_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+  "line_start": 1,
+  "line_end": 60,
+  "lines": [
+    {
+      "line": 1,
+      "text": "//"
+    },
+    {
+      "line": 2,
+      "text": "//  KeyboardViewController.swift"
+    },
+    {
+      "line": 3,
+      "text": "//  Keyboard"
+    },
+    {
+      "line": 4,
+      "text": "//"
+    },
+    {
+      "line": 5,
+      "text": "//  Created by DoubleShy0N on 5/10/26."
+    },
+    {
+      "line": 6,
+      "text": "//"
+    },
+    {
+      "line": 7,
+      "text": "//  UIInputViewController 主控制器 — 管理键盘生命周期、根布局和 UI 刷新。"
+    },
+    {
+      "line": 8,
+      "text": "//  所有状态逻辑委托给 KeyboardCore.KeyboardController。"
+    },
+    {
+      "line": 9,
+      "text": "//"
+    },
+    {
+      "line": 10,
+      "text": "//  根据 Apple 官方文档《Creating a Custom Keyboard》的要求："
+    },
+    {
+      "line": 11,
+      "text": "//  1. 必须继承 UIInputViewController（✅ 已满足）"
+    },
+    {
+      "line": 12,
+      "text": "//  2. 通过 inputView 属性提供键盘 UI（✅ 系统自动管理，我们添加子视图即可）"
+    },
+    {
+      "line": 13,
+      "text": "//  3. 使用 textDocumentProxy 进行所有文本操作（✅ 通过 UITextDocumentProxyAdapter 封装）"
+    },
+    {
+      "line": 14,
+      "text": "//  4. 在 viewWillLayoutSubviews 中更新 needsInputModeSwitchKey（✅ 控制地球键显示）"
+    },
+    {
+      "line": 15,
+      "text": "//  5. 响应 textDidChange 以适应不同的键盘类型（✅ 同步 UIKeyboardType 变化）"
+    },
+    {
+      "line": 16,
+      "text": "//"
+    },
+    {
+      "line": 17,
+      "text": "//  输入动作 → KeyboardViewController+InputActions.swift"
+    },
+    {
+      "line": 18,
+      "text": "//  模式动作 → KeyboardViewController+ModeActions.swift"
+    },
+    {
+      "line": 19,
+      "text": "//  删除连发 → KeyboardViewController+DeleteActions.swift"
+    },
+    {
+      "line": 20,
+      "text": "//  UI 工厂方法 → KeyboardViewController+Layout.swift"
+    },
+    {
+      "line": 21,
+      "text": "//  手势处理 → KeyboardViewController+Gestures.swift"
+    },
+    {
+      "line": 22,
+      "text": "//  候选栏 → KeyboardViewController+CandidateBar.swift"
+    },
+    {
+      "line": 23,
+      "text": "//  按钮样式 → KeyboardViewController+KeyFactory.swift"
+    },
+    {
+      "line": 24,
+      "text": "//  状态刷新 → KeyboardViewController+Display.swift"
+    },
+    {
+      "line": 25,
+      "text": "//"
+    },
+    {
+      "line": 26,
+      "text": ""
+    },
+    {
+      "line": 27,
+      "text": "import KeyboardCore"
+    },
+    {
+      "line": 28,
+      "text": "import RimeBridge"
+    },
+    {
+      "line": 29,
+      "text": "import UIKit"
+    },
+    {
+      "line": 30,
+      "text": ""
+    },
+    {
+      "line": 31,
+      "text": "/// `CADisplayLink` 会强引用 target；用弱代理避免系统跳过可见性回调时，"
+    },
+    {
+      "line": 32,
+      "text": "/// 尚未触发的首帧门控反过来保活整个键盘控制器。"
+    },
+    {
+      "line": 33,
+      "text": "@MainActor"
+    },
+    {
+      "line": 34,
+      "text": "final class KeyboardFirstFrameDisplayLinkTarget: NSObject {"
+    },
+    {
+      "line": 35,
+      "text": "    weak var controller: KeyboardViewController?"
+    },
+    {
+      "line": 36,
+      "text": "    let armToken: UInt64"
+    },
+    {
+      "line": 37,
+      "text": "    let generation: UInt64"
+    },
+    {
+      "line": 38,
+      "text": ""
+    },
+    {
+      "line": 39,
+      "text": "    init(controller: KeyboardViewController, armToken: UInt64, generation: UInt64) {"
+    },
+    {
+      "line": 40,
+      "text": "        self.controller = controller"
+    },
+    {
+      "line": 41,
+      "text": "        self.armToken = armToken"
+    },
+    {
+      "line": 42,
+      "text": "        self.generation = generation"
+    },
+    {
+      "line": 43,
+      "text": "    }"
+    },
+    {
+      "line": 44,
+      "text": ""
+    },
+    {
+      "line": 45,
+      "text": "    @objc func displayLinkDidFire(_ displayLink: CADisplayLink) {"
+    },
+    {
+      "line": 46,
+      "text": "        guard let controller else {"
+    },
+    {
+      "line": 47,
+      "text": "            displayLink.invalidate()"
+    },
+    {
+      "line": 48,
+      "text": "            return"
+    },
+    {
+      "line": 49,
+      "text": "        }"
+    },
+    {
+      "line": 50,
+      "text": "        controller.handleRimeFirstFrameDisplayLinkTick("
+    },
+    {
+      "line": 51,
+      "text": "            displayLink: displayLink,"
+    },
+    {
+      "line": 52,
+      "text": "            generation: generation,"
+    },
+    {
+      "line": 53,
+      "text": "            armToken: armToken"
+    },
+    {
+      "line": 54,
+      "text": "        )"
+    },
+    {
+      "line": 55,
+      "text": "    }"
+    },
+    {
+      "line": 56,
+      "text": "}"
+    },
+    {
+      "line": 57,
+      "text": ""
+    },
+    {
+      "line": 58,
+      "text": "@MainActor"
+    },
+    {
+      "line": 59,
+      "text": "class KeyboardViewController: UIInputViewController {"
+    },
+    {
+      "line": 60,
+      "text": ""
+    }
+  ]
+}

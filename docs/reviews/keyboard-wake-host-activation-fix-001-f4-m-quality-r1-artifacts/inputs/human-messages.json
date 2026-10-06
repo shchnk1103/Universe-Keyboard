@@ -1,0 +1,12 @@
+{
+  "provenance": "Human messages in current root thread, mechanically copied by root; not independent device screenshot",
+  "messages": [
+    "Maps 空框，观测已出现",
+    "按钮显示‘取证’",
+    "有按键反馈，候选栏、输入框有变化，‘取证’仍然可见。",
+    "键盘保持开启，候选栏还是之前按了‘n’之后的候选栏没有变化，输入框被清空了，‘取证’仍可见",
+    "有按键反馈，候选栏和输入框正常更新，‘取证’可见",
+    "已点击取证，但是键盘界面没有什么变化，可能就是你说的短暂停顿了，你看看吧",
+    "两项关闭，App 已关闭"
+  ]
+}

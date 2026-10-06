@@ -1,0 +1,108 @@
+{
+  "scope": "synthetic fixed transport examples only, not project or runtime tests",
+  "cases": [
+    {
+      "case": "paired_baseline_then_absent",
+      "result": "expected_decode",
+      "records": 8,
+      "absent_sequences": [
+        7
+      ]
+    },
+    {
+      "case": "synthetic_arm_only_no_absence",
+      "result": "expected_decode",
+      "records": 1,
+      "absent_sequences": []
+    },
+    {
+      "case": "coordinator_zero_no_absence",
+      "result": "expected_decode",
+      "records": 4,
+      "absent_sequences": []
+    },
+    {
+      "case": "orphan_schedule_no_absence",
+      "result": "expected_decode",
+      "records": 2,
+      "absent_sequences": []
+    },
+    {
+      "case": "unclosed_attempt_no_absence",
+      "result": "expected_decode",
+      "records": 3,
+      "absent_sequences": []
+    },
+    {
+      "case": "expiry_or_reentrant_no_absence",
+      "result": "expected_decode",
+      "records": 8,
+      "absent_sequences": []
+    },
+    {
+      "case": "overflow_no_absence",
+      "result": "expected_decode",
+      "records": 8,
+      "absent_sequences": []
+    },
+    {
+      "case": "no_receipt_owner_present_not_absence",
+      "result": "expected_decode",
+      "records": 4,
+      "absent_sequences": []
+    },
+    {
+      "case": "duplicated_resume_retained",
+      "result": "expected_decode",
+      "records": 9,
+      "absent_sequences": []
+    },
+    {
+      "case": "truncated",
+      "result": "expected_rejection",
+      "reason": "invalid_size"
+    },
+    {
+      "case": "trailing_bytes",
+      "result": "expected_rejection",
+      "reason": "invalid_header"
+    },
+    {
+      "case": "count_mismatch",
+      "result": "expected_rejection",
+      "reason": "invalid_header"
+    },
+    {
+      "case": "future_version",
+      "result": "expected_rejection",
+      "reason": "unsupported_header"
+    },
+    {
+      "case": "absent_with_receipt",
+      "result": "expected_rejection",
+      "reason": "contradictory_schedule"
+    },
+    {
+      "case": "duplicate_sequence",
+      "result": "expected_rejection",
+      "reason": "invalid_sequence_or_time"
+    },
+    {
+      "case": "contradictory_overflow",
+      "result": "expected_rejection",
+      "reason": "contradictory_completeness"
+    },
+    {
+      "case": "unknown_stage",
+      "result": "expected_rejection",
+      "reason": "invalid_enum"
+    },
+    {
+      "case": "capacity_128_exact_11352_bytes",
+      "result": "expected_decode",
+      "records": 128,
+      "absent_sequences": []
+    }
+  ],
+  "all_expected": true
+}

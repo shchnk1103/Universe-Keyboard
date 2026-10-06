@@ -1,0 +1,11 @@
+{
+  "source": "Human manual visual report",
+  "root_received_utc": "2026-10-03T13:26:27.260685+00:00",
+  "human_quote": "界面还是之前点按了n之后的样子，按钮现在显示取证",
+  "visual_candidate_state_retained_after_freeze": true,
+  "displayed_title": "取证",
+  "visual_state_consistent_with_freeze_not_reset": true,
+  "additional_typing_or_click_response_test": "NOT PERFORMED",
+  "interaction_responsiveness_not_independently_proven_by_visual_report": true,
+  "actual_action_utc": null
+}

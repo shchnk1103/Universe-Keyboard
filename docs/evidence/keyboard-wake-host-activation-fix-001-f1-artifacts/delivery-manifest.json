@@ -1,0 +1,75 @@
+{
+  "grok_private_directory": "/private/tmp/ukey-host-activation-fix-grok-f1-20261004",
+  "original_artifacts_sha256": {
+    "f1-end-utc.txt": "5224a910cbc0131a8b560893a06ba96ab389ddfc8833224a0681e31bbbd5b6aa",
+    "SUMMARY.md": "d3b0f46ea9b2c547cbc8c692edd833ec10f05af5c38f86a67fddfc49dbec0224",
+    "tests-authored-not-run.md": "edf52690ff44f320517be2317a4991c296cfc2f738a98d199954734404bb13d7",
+    "final-five-hashes.json": "97d0a79b1292491ad728c2ee9755f23ac36d12cfa6ceb0650ce2f93959eceff0",
+    "tool-ledger.md": "61ded29f1ec0f50b9b6753e444fb973635c5d807a93255eeacb190f3e2ac6c7b",
+    "r2-condition-mapping.md": "46192aa4532e6264b73aa8eac220f942e99b7d3b9eb0646b3ffc79499b429a21",
+    "f1-start-utc.txt": "294b684dcb27a8c05a0fe29ff6da0e78f99552920e1068795e581c8a6a41a7f5",
+    "format-lint.txt": "1a81cf9ed9733c76ca14dbcb322cc2170570cccaa89421611c7a0209dc2e003d",
+    "identity-at-ack.txt": "f2407081202d044c3ea70f327682f9a9b39921b959df3269b625875bfeb08c4d",
+    "ACK.md": "87690af590a12f5be60abe30c210bc39de030a957ab9ecb5c872bf565d3e428c",
+    "affected-paths.txt": "81daca937c1efe69d26ff294a008eeaeb877b77ab764c90c1a5e84f6527655fb",
+    "baseline-hashes.json": "a97dd994353e654cb6735fb56b711e3d8f1957d2fe22cc37c66bdabaec532e9d",
+    "patches/KeyboardViewController.swift.patch": "4d7b38003304242846f10501d6473ef676dec5ca45f24049f5846d532e23319a",
+    "patches/KeyboardHostLifecycleRecoveryGateTests.swift": "e9ef614702dff163ea1f1723e577f2f5af97394c919fb7d03544e15356d3c1a3",
+    "patches/KeyboardHostLifecycleRecoveryGate.swift": "2e7dcf3e88022a677e6ca5bfc5efd6aeacb1814c6fb7de6ec0cdc7c52ec7c9fb",
+    "patches/project.pbxproj.patch": "2f3cfc7c49908fe3bd40eb95c6ba267e6aeb23f6d001961534ef3fbbb931d02a",
+    "patches/KeyboardViewController+Bootstrap.swift.patch": "6a09150f2df591b964112bd9d7450dddab22049e6707ee061897a3aeb7309ddb",
+    "new-files/KeyboardHostLifecycleRecoveryGateTests.swift": "e9ef614702dff163ea1f1723e577f2f5af97394c919fb7d03544e15356d3c1a3",
+    "new-files/KeyboardHostLifecycleRecoveryGate.swift": "2e7dcf3e88022a677e6ca5bfc5efd6aeacb1814c6fb7de6ec0cdc7c52ec7c9fb",
+    "baselines/project.pbxproj": "ab7560e3de73c31d286fe874c0237b64dd2183aab692d4ee4a3de08abfb21187",
+    "baselines/KeyboardViewController+Bootstrap.swift": "f7c024f60af52f57a04edadb5a15373c6c6f681fc63e908fc37e34d5e1e963a3",
+    "baselines/KeyboardViewController.swift": "27e00c5e07d0bc1e07e045a78c9b49df1ba660beec762227434b3550630caf4c"
+  },
+  "final_candidate": {
+    "files": [
+      {
+        "path": "Keyboard/Controllers/KeyboardViewController.swift",
+        "exists": true,
+        "bytes": 39237,
+        "sha256": "9aeec10f633454b7b9a032d8140ac0d9912de98ea7049c83a2a886c5ca04ec66"
+      },
+      {
+        "path": "Keyboard/Controllers/KeyboardViewController+Bootstrap.swift",
+        "exists": true,
+        "bytes": 50796,
+        "sha256": "e992a9ddf431112d1a40bed80431392eb68c8ef7221b07ece47b87eefb945299"
+      },
+      {
+        "path": "Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift",
+        "exists": true,
+        "bytes": 9220,
+        "sha256": "2e7dcf3e88022a677e6ca5bfc5efd6aeacb1814c6fb7de6ec0cdc7c52ec7c9fb"
+      },
+      {
+        "path": "KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+        "exists": true,
+        "bytes": 14252,
+        "sha256": "e9ef614702dff163ea1f1723e577f2f5af97394c919fb7d03544e15356d3c1a3"
+      },
+      {
+        "path": "Universe Keyboard.xcodeproj/project.pbxproj",
+        "exists": true,
+        "bytes": 46990,
+        "sha256": "49f0ebe89db1f30323d9bf6ceb297179ffed5fc9ef983fd3b947d11d5820586c"
+      }
+    ],
+    "baseline_copies_unmutated": true,
+    "identity": {
+      "worktree": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+      "branch": "codex/keyboard-wake-v3-compatibility-gate",
+      "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+      "staged": 0,
+      "dirty_entries": 817
+    }
+  },
+  "limits": [
+    "status preservation does not prove all out-of-scope bytes; F0 only hashes scoped dependencies",
+    "format PASS summary lacks command/exit transcript",
+    "tool ledger grouped approximate count, no per-call machine audit",
+    "compiler/build/tests/runtime not run by root"
+  ]
+}

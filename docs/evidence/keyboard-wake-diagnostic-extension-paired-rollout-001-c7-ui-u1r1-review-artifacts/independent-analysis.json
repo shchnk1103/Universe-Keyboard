@@ -1,0 +1,553 @@
+{
+  "raw": {
+    "sha256": "40ff2daf44c1a6495ea9188b4a10a7aa9160f3d38b35a4c8a99c1d9e41d8e467",
+    "bytes": 528,
+    "header": {
+      "magic_hex": "0x4b574f50524f4245",
+      "version": 1,
+      "incomplete": 0,
+      "run_words": [
+        6578050160392685374,
+        11520363697312423309
+      ],
+      "process_words": [
+        6026453833389130349,
+        10082247498961874576
+      ],
+      "armed": 1199295890000500,
+      "expiry": 1199895890000500,
+      "count": 5,
+      "overflow": 0
+    },
+    "checks": {
+      "len528": true,
+      "multiple8": true,
+      "magic": true,
+      "version1": true,
+      "incomplete_enum": true,
+      "count5": true,
+      "word_count": true,
+      "nonzero_run": true,
+      "nonzero_process": true,
+      "ttl_exact": true,
+      "overflow_complete_consistent": true,
+      "seq": true,
+      "timestamps_monotonic_in_window": true,
+      "enums": true,
+      "synthetic_arm": true,
+      "unique_attempt": true,
+      "complete": true,
+      "receipt_sha_and_count_match": true
+    },
+    "rows": [
+      {
+        "sequence": 1,
+        "timestamp": 1199295890000500,
+        "stage": 2,
+        "coordinator": 0,
+        "appearance": 0,
+        "attempt": 0,
+        "owner": 0,
+        "receipt": 0,
+        "teardown": 0,
+        "epoch": 0,
+        "revision": 0,
+        "stage_name": "armed"
+      },
+      {
+        "sequence": 2,
+        "timestamp": 1199295893440000,
+        "stage": 2,
+        "coordinator": 1,
+        "appearance": 1,
+        "attempt": 0,
+        "owner": 1,
+        "receipt": 0,
+        "teardown": 0,
+        "epoch": 0,
+        "revision": 0,
+        "stage_name": "armed"
+      },
+      {
+        "sequence": 3,
+        "timestamp": 1199342336571375,
+        "stage": 3,
+        "coordinator": 1,
+        "appearance": 1,
+        "attempt": 1,
+        "owner": 1,
+        "receipt": 0,
+        "teardown": 0,
+        "epoch": 0,
+        "revision": 0,
+        "stage_name": "insertBegin"
+      },
+      {
+        "sequence": 4,
+        "timestamp": 1199342337374458,
+        "stage": 9,
+        "coordinator": 1,
+        "appearance": 1,
+        "attempt": 1,
+        "owner": 1,
+        "receipt": 1,
+        "teardown": 0,
+        "epoch": 1,
+        "revision": 1,
+        "stage_name": "schedule"
+      },
+      {
+        "sequence": 5,
+        "timestamp": 1199342359568916,
+        "stage": 4,
+        "coordinator": 1,
+        "appearance": 1,
+        "attempt": 1,
+        "owner": 1,
+        "receipt": 0,
+        "teardown": 0,
+        "epoch": 0,
+        "revision": 0,
+        "stage_name": "insertEnd"
+      }
+    ],
+    "attempts": [
+      {
+        "ordinal": 1,
+        "sequences": [
+          3,
+          4,
+          5
+        ],
+        "paired": true,
+        "coordinator": 1,
+        "appearance": 1,
+        "schedules": [
+          {
+            "sequence": 4,
+            "timestamp": 1199342337374458,
+            "stage": 9,
+            "coordinator": 1,
+            "appearance": 1,
+            "attempt": 1,
+            "owner": 1,
+            "receipt": 1,
+            "teardown": 0,
+            "epoch": 1,
+            "revision": 1,
+            "stage_name": "schedule"
+          }
+        ]
+      }
+    ],
+    "schedule_semantics": "owner/receipt retained exactly; no engine/host/Maps inference",
+    "comparison_to_frozen_decoded_all_fields": {
+      "sha256": true,
+      "bytes": true,
+      "record_count": true,
+      "run_words": true,
+      "process_words": true,
+      "buffer_complete": true,
+      "every_event_field": true,
+      "attempts": true,
+      "verdict": true
+    },
+    "all_decoded_fields_match_independent_parse": true
+  },
+  "ledger": {
+    "line_count": 30,
+    "request_sequences": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "response_sequences": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15
+    ],
+    "pairing_complete": true,
+    "raw_checks": [
+      {
+        "n": 1,
+        "file_sha": "e11d26691e0ad56200729997fe73451d52fa935d0dc2e7a0fcd636914147875b",
+        "ledger_sha": "e11d26691e0ad56200729997fe73451d52fa935d0dc2e7a0fcd636914147875b",
+        "match": true
+      },
+      {
+        "n": 2,
+        "file_sha": "355bc744a72c981bf5b3adcf24c9e41ae3309c9dbe5e64046f81ae060871dadd",
+        "ledger_sha": "355bc744a72c981bf5b3adcf24c9e41ae3309c9dbe5e64046f81ae060871dadd",
+        "match": true
+      },
+      {
+        "n": 3,
+        "file_sha": "71c0e83db02d413eaec685f49de7f5ee75fda40235a6168d76bec5bff21ed483",
+        "ledger_sha": "71c0e83db02d413eaec685f49de7f5ee75fda40235a6168d76bec5bff21ed483",
+        "match": true
+      },
+      {
+        "n": 4,
+        "file_sha": "552cf14a7ce1091d0f30a02e23c3af4db1c19905d3f82df63a8e3f60c7d337ae",
+        "ledger_sha": "552cf14a7ce1091d0f30a02e23c3af4db1c19905d3f82df63a8e3f60c7d337ae",
+        "match": true
+      },
+      {
+        "n": 5,
+        "file_sha": "856a5a150fc0a940cbb8ac94674de3d12c9512aa869f882b3ea2e6aca9674d63",
+        "ledger_sha": "856a5a150fc0a940cbb8ac94674de3d12c9512aa869f882b3ea2e6aca9674d63",
+        "match": true
+      },
+      {
+        "n": 6,
+        "file_sha": "854c5115641ef87d4bcc3b54400fc8433be404d64517e02b6053185d64f0fe6f",
+        "ledger_sha": "854c5115641ef87d4bcc3b54400fc8433be404d64517e02b6053185d64f0fe6f",
+        "match": true
+      },
+      {
+        "n": 7,
+        "file_sha": "2bf721903d1f9de5da87d7e7bd61fdbccacf5c973e28f9871a04003237938007",
+        "ledger_sha": "2bf721903d1f9de5da87d7e7bd61fdbccacf5c973e28f9871a04003237938007",
+        "match": true
+      },
+      {
+        "n": 8,
+        "file_sha": "b49161cfba78a4a5c981cdb2bfa8c9c7acb678ca67e2e46934170992b6570a80",
+        "ledger_sha": "b49161cfba78a4a5c981cdb2bfa8c9c7acb678ca67e2e46934170992b6570a80",
+        "match": true
+      },
+      {
+        "n": 9,
+        "file_sha": "ef025a8805ad542425f4d00bdbbca14b89a166a28c74b2f2ee639ea05c508658",
+        "ledger_sha": "ef025a8805ad542425f4d00bdbbca14b89a166a28c74b2f2ee639ea05c508658",
+        "match": true
+      },
+      {
+        "n": 10,
+        "file_sha": "1edb9a5e727919eb9c0498f3478afd75602aa0bbfd9a480c2871024696d215a9",
+        "ledger_sha": "1edb9a5e727919eb9c0498f3478afd75602aa0bbfd9a480c2871024696d215a9",
+        "match": true
+      },
+      {
+        "n": 11,
+        "file_sha": "7026f156e7f01dc9b78f87026f5200d462d72c14d35d6b304650143917dabdb4",
+        "ledger_sha": "7026f156e7f01dc9b78f87026f5200d462d72c14d35d6b304650143917dabdb4",
+        "match": true
+      },
+      {
+        "n": 12,
+        "file_sha": "f377da0c6d02a940228aa62ca943614dcae810d70dd80a6aa540a6f1ad8e76e7",
+        "ledger_sha": "f377da0c6d02a940228aa62ca943614dcae810d70dd80a6aa540a6f1ad8e76e7",
+        "match": true
+      },
+      {
+        "n": 13,
+        "file_sha": "c70976948f202823617feb49f8b948dc8454a27d5d6a6aa5c2bf243b66167b16",
+        "ledger_sha": "c70976948f202823617feb49f8b948dc8454a27d5d6a6aa5c2bf243b66167b16",
+        "match": true
+      },
+      {
+        "n": 14,
+        "file_sha": "854c5115641ef87d4bcc3b54400fc8433be404d64517e02b6053185d64f0fe6f",
+        "ledger_sha": "854c5115641ef87d4bcc3b54400fc8433be404d64517e02b6053185d64f0fe6f",
+        "match": true
+      },
+      {
+        "n": 15,
+        "file_sha": "70634ae91b64420f1d843b8841188b96b4370af263366d8ede0577577d8bebb9",
+        "ledger_sha": "70634ae91b64420f1d843b8841188b96b4370af263366d8ede0577577d8bebb9",
+        "match": true
+      }
+    ],
+    "all_raw_hashes_match": true,
+    "calls": [
+      {
+        "n": 1,
+        "tool": "mcp__xcodebuildmcp__debug_attach_sim",
+        "command": "attach",
+        "output_excerpt": ""
+      },
+      {
+        "n": 2,
+        "tool": "mcp__xcodebuildmcp__debug_lldb_command",
+        "command": "image list -u -f",
+        "output_excerpt": "[  0] C3FC7115-4215-3801-ABBB-C8A648ED0C32 /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyb"
+      },
+      {
+        "n": 3,
+        "tool": "mcp__xcodebuildmcp__debug_lldb_command",
+        "command": "image lookup -n $s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF",
+        "output_excerpt": "1 match found in /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard.debug.dylib:\n        "
+      },
+      {
+        "n": 4,
+        "tool": "mcp__xcodebuildmcp__debug_lldb_command",
+        "command": "breakpoint set --name $s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF",
+        "output_excerpt": "Breakpoint 1: where = Keyboard.debug.dylib`wakeOwnerProbeExportReady(_:_:) + 60 at KeyboardViewController+WakeOwnerProbe.swift:96:83, address = 0x00000001063b4778"
+      },
+      {
+        "n": 5,
+        "tool": "mcp__xcodebuildmcp__debug_lldb_command",
+        "command": "breakpoint list 1",
+        "output_excerpt": "1: name = '$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF', locations = 1, resolved = 1, hit count = 0\n  1.1: where = Keyboard.debug.dylib`wakeOwnerProbeExportReady(_:_:) + 60 at KeyboardViewController+WakeOwnerProbe.swift:96:83, address = 0x00000001063b4778,"
+      },
+      {
+        "n": 6,
+        "tool": "mcp__xcodebuildmcp__debug_continue",
+        "command": "continue",
+        "output_excerpt": ""
+      },
+      {
+        "n": 7,
+        "tool": "mcp__xcodebuildmcp__debug_lldb_command",
+        "command": "breakpoint list 1",
+        "output_excerpt": "1: name = '$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF', locations = 1, resolved = 1, hit count = 1\n  1.1: where = Keyboard.debug.dylib`wakeOwnerProbeExportReady(_:_:) + 60 at KeyboardViewController+WakeOwnerProbe.swift:96:83, address = 0x00000001063b4778,"
+      },
+      {
+        "n": 8,
+        "tool": "mcp__xcodebuildmcp__debug_lldb_command",
+        "command": "frame info",
+        "output_excerpt": "frame #0: 0x00000001063b4778 Keyboard.debug.dylib`Keyboard.wakeOwnerProbeExportReady(address=0x11e62ad20, byteCount=528) -> () at KeyboardViewController+WakeOwnerProbe.swift:96:83"
+      },
+      {
+        "n": 9,
+        "tool": "mcp__xcodebuildmcp__debug_lldb_command",
+        "command": "thread backtrace -c 8",
+        "output_excerpt": "* thread #1, queue = 'com.apple.main-thread', stop reason = breakpoint 1.1\n   * frame #0: 0x00000001063b4778 Keyboard.debug.dylib`Keyboard.wakeOwnerProbeExportReady(address=0x11e62ad20, byteCount=528) -> () at KeyboardViewController+WakeOwnerProbe.swift:96:83\n"
+      },
+      {
+        "n": 10,
+        "tool": "mcp__xcodebuildmcp__debug_lldb_command",
+        "command": "frame variable --raw-output --dynamic-type no-dynamic-values --no-synthetic --depth 1 address byteCount",
+        "output_excerpt": "(Swift.UnsafeRawPointer) address = {\n  _rawValue = 0x000000011e62ad20 {...}\n}\n(Swift.Int) byteCount = 528 {\n  _value = 528\n}"
+      },
+      {
+        "n": 11,
+        "tool": "mcp__xcodebuildmcp__debug_lldb_command",
+        "command": "memory read --binary --size 1 --count 528 --outfile /private/tmp/ukey-wake-ui-u1r1-execution-20261003/snapshot.bin 0x000000011e62ad20",
+        "output_excerpt": "528 bytes written to '/private/tmp/ukey-wake-ui-u1r1-execution-20261003/snapshot.bin'"
+      },
+      {
+        "n": 12,
+        "tool": "mcp__xcodebuildmcp__debug_lldb_command",
+        "command": "breakpoint delete 1",
+        "output_excerpt": "1 breakpoints deleted; 0 breakpoint locations disabled."
+      },
+      {
+        "n": 13,
+        "tool": "mcp__xcodebuildmcp__debug_lldb_command",
+        "command": "breakpoint list 1",
+        "output_excerpt": "No breakpoints currently set."
+      },
+      {
+        "n": 14,
+        "tool": "mcp__xcodebuildmcp__debug_continue",
+        "command": "continue",
+        "output_excerpt": ""
+      },
+      {
+        "n": 15,
+        "tool": "mcp__xcodebuildmcp__debug_detach",
+        "command": "detach",
+        "output_excerpt": ""
+      }
+    ]
+  },
+  "identity_and_boundary": {
+    "new-instance/attach-ready.json": {
+      "utc": "2026-10-03T13:15:53.188291+00:00",
+      "status": "pre-arm ready; no actual borrow proof yet",
+      "old_pid": 80843,
+      "new_pid": 88188,
+      "new_process_instance_confirmed": true,
+      "candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50",
+      "actual_loaded_udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "actual_loaded_app_container": "46C50C49-FA7B-4F79-BF42-0A24BF231715",
+      "Keyboard_UUID": "C3FC7115-4215-3801-ABBB-C8A648ED0C32",
+      "Keyboard_debug_UUID": "77BD18E2-E090-37D7-865F-84D762E69F70",
+      "debug_session_id": "4895a8c9-7131-4453-9336-4fcbf742717a",
+      "own_breakpoint_id": 1,
+      "resolved_locations": 1,
+      "hit_count": 0,
+      "execution_state": "running",
+      "diagnostics_original_absent_off": true,
+      "tool_defaults_label_conflict_preserved": "884CAC1A-516A-421F-ACF5-035A36F7088A",
+      "no_arm_input_freeze_export_yet": true
+    },
+    "new-instance/human-empty-control.json": {
+      "source": "Human manual report",
+      "root_received_utc": "2026-10-03T13:14:02.331731+00:00",
+      "human_quote": "观测已出现",
+      "control_visible": true,
+      "actual_elapsed_seconds": "NOT MEASURED",
+      "no_arm_or_input_instructed": true
+    },
+    "new-instance/preflight.py": {
+      "source": "from pathlib import Path\nimport json,subprocess,hashlib,plistlib,datetime,time\nr=Path('/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard');b=Path('/private/tmp/ukey-wake-ui-u1r1-execution-20261003/new-instance');u='405D994F-28CB-4F89-BB22-B64AD81C05A2';bid='com.DoubleShy0N.Universe-Keyboard';gid='group.com.DoubleShy0N.Universe-Keyboard'\ndef run(argv):\n start=time.monotonic_ns();request=datetime.datetime.now(datetime.timezone.utc).isoformat();p=subprocess.run(argv,capture_output=True,text=True,timeout=30);response=datetime.datetime.now(datetime.timezone.utc).isoformat();end=time.monotonic_ns()\n with (b/'preflight-command-ledger.jsonl').open('a') as f:f.write(json.dumps({'argv':argv,'request_utc':request,'response_utc':response,'monotonic_start_ns':start,'monotonic_end_ns':end,'exit':p.returncode})+'\\n')\n assert p.returncode==0,p.stderr;return p.stdout.strip()\ndef sha(p):return hashlib.sha256(Path(p).read_bytes()).hexdigest()\nassert run(['git','-C',str(r),'branch','--show-current'])=='codex/keyboard-wake-v3-compatibility-gate';assert run(['git','-C',str(r),'rev-parse','HEAD'])=='84b9c19227330b0fe6ff391be001ee398010fd6a'\n(b/'before-dirty.txt').write_text(run(['git','-C',str(r),'status','--short'])+'\\n')\ntracked=run(['git','-C',str(r),'ls-files','--cached','--others','--exclude-standard','-z']).split('\\0');before={p:sha(r/p) for p in tracked if p and (r/p).is_file()};(b/'before-files.json').write_text(json.dumps(before,ensure_ascii=False,indent=2)+'\\n')\nf=json.loads((r/'docs/plans/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-u1-prepared-artifacts/freeze-inputs.json').read_text());assert all(sha(p)==v for p,v in f['hash_only_source_vendor_inputs'].items());assert all(sha(r/p)==v for m in ['reference_sha256','prepared_output_sha256'] for p,v in f[m].items())\ndevices=json.loads(run(['xcrun','simctl','list','devices','--json']));matches=[(runtime,x) for runtime,rows in devices['devices'].items() for x in rows if x['udid']==u];assert len(matches)==1;runtime,device=matches[0];assert device['name']=='iPhone 18 Pro' and device['state']=='Booted' and runtime.endswith('iOS-27-0')\napp=Path(run(['xcrun','simctl','get_app_container',u,bid,'app']));groups=run(['xcrun','simctl','get_app_container',u,bid,'groups']);group=Path(dict(x.split('\\t',1) for x in groups.splitlines())[gid]);paired=json.loads((r/'docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-h1-artifacts/paired-products.json').read_text());actual={str(p.relative_to(app)):sha(p) for p in app.rglob('*') if p.is_file()};assert actual==paired['file_hashes']\npref=group/'Library/Preferences'/f'{gid}.plist';d=plistlib.loads(pref.read_bytes()) if pref.exists() else {};selected={k:{'exists':k in d,'value':d.get(k)} for k in ['logging_enabled','diagnostics_high_fidelity_expiration']};assert all(not x['exists'] for x in selected.values())\nexe=app/'PlugIns/Keyboard.appex/Keyboard';rows=[]\nfor line in run(['ps','-axo','pid=,comm=']).splitlines():\n parts=line.strip().split(None,1)\n if len(parts)==2 and parts[1]==str(exe):rows.append({'pid':int(parts[0]),'executable':parts[1]})\nassert len(rows)==1,'exact current Keyboard appex PID unavailable or ambiguous';assert sha(exe)==paired['file_hashes']['PlugIns/Keyboard.appex/Keyboard']\nbackups={str(root):{'exists':root.is_dir(),'components_present':all((root/name).is_dir() for name in ['main-data','app-group','installed-app'])} for root in [Path('/private/tmp/ukey-wake-ui-i0-20261003/backup'),Path('/private/tmp/ukey-wake-ui-i1-20261003/after-preservation')]};assert all(x['exists'] and x['components_present'] for x in backups.values())\nreceipt={'utc':datetime.datetime.now(datetime.timezone.utc).isoformat(),'device':device,'runtime':runtime,'candidate':paired['candidate'],'source_input_count':len(f['hash_only_source_vendor_inputs']),'source_drift':[],'installed_files':len(actual),'payload_matches_H1':True,'process':rows[0],'selected_diagnostic_preferences':selected,'historical_backup_presence':backups,'backup_content_reverification_this_run':False,'not_latest_post_U0_data_recovery_proof':True,'before_files_count':len(before),'no_launch_install_deploy_arm_lldb_input':True}\n(b/'machine-entry.json').write_text(json.dumps(receipt,ensure_ascii=False,indent=2)+'\\n');print(json.dumps(receipt,ensure_ascii=False))\n"
+    },
+    "sigterm-receipt.json": {
+      "request_utc": "2026-10-03T13:09:34.485926+00:00",
+      "human_app_closed_and_exclusive_confirmed": true,
+      "expected_pid": 80843,
+      "executable": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+      "sha256": "237d9a890d96a18ebaa9427ac2836595d8e8fc7767be63712a6870a22643efe0",
+      "exact_pids_before": [
+        80843
+      ],
+      "signal": "SIGTERM",
+      "attempts": 1,
+      "normal_exit_only": true,
+      "no_force_retry_or_other_process_signal": true,
+      "monotonic_start_ns": 1198851439719750,
+      "monotonic_end_ns": 1198851489021041,
+      "exact_pids_after": [],
+      "original_extension_exited": true,
+      "response_utc": "2026-10-03T13:09:34.585066+00:00"
+    },
+    "machine-exit-process.json": {
+      "utc": "2026-10-03T13:22:21.540449+00:00",
+      "pid": 88188,
+      "stat": "Ss",
+      "same_executable_path": true,
+      "not_in_stopped_state": true,
+      "source_input_count": 1279,
+      "source_drift": [],
+      "UI_exit_confirmation_separate": true
+    },
+    "machine-exit-payload-preferences.json": {
+      "utc": "2026-10-03T13:22:21.033635+00:00",
+      "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50",
+      "installed_files": 78,
+      "installed_payload_matches_H1": true,
+      "selected_diagnostic_preferences": {
+        "logging_enabled": {
+          "exists": false,
+          "value": null
+        },
+        "diagnostics_high_fidelity_expiration": {
+          "exists": false,
+          "value": null
+        }
+      },
+      "diagnostic_original_presence_and_values_unchanged_from_I1": true,
+      "only_installed_binary_hashes_and_selected_preferences_read": true,
+      "no_user_content_read": true,
+      "no_full_data_equality_claim": true,
+      "no_install_launch_input_arm_maps": true,
+      "debugger_attached_then_continued_and_detached": true
+    },
+    "human-exit-visual.json": {
+      "source": "Human manual visual report",
+      "root_received_utc": "2026-10-03T13:26:27.260685+00:00",
+      "human_quote": "界面还是之前点按了n之后的样子，按钮现在显示取证",
+      "visual_candidate_state_retained_after_freeze": true,
+      "displayed_title": "取证",
+      "visual_state_consistent_with_freeze_not_reset": true,
+      "additional_typing_or_click_response_test": "NOT PERFORMED",
+      "interaction_responsiveness_not_independently_proven_by_visual_report": true,
+      "actual_action_utc": null
+    },
+    "collection-human-exit-supplement.json": {
+      "utc": "2026-10-03T13:26:31.135321+00:00",
+      "previous_collection_freeze_sha256": "4c63fe128b2e6ac8f05d550a14b37622dc31a536277894faa81ffd7756ebe6cb",
+      "supplement_sha256": {
+        "human-exit-visual.json": "cd186b6b62662b634a485701ce58788cae86443a4edb4433638cc9d674d5ee1d"
+      },
+      "previous_frozen_artifacts_not_modified": true,
+      "Human_visual_exit_delivered": true,
+      "additional_UI_interaction_response_test": "NOT PERFORMED",
+      "no_independent_review_or_Maps_verdict": true
+    },
+    "human-freeze-click.json": {
+      "source": "Human manual report",
+      "root_archived_utc": "2026-10-03T13:21:38.829628+00:00",
+      "human_quote": "已点击取证",
+      "step": "single freeze click",
+      "actual_click_utc": null,
+      "expected_stop_then_no_further_actions_instructed": true
+    },
+    "human-single-input.json": {
+      "source": "Human manual report",
+      "root_received_utc": "2026-10-03T13:19:05.636338+00:00",
+      "human_quote": "候选已更新，按钮已显示取证",
+      "step": "single synthetic n input observation",
+      "candidate_update_reported": true,
+      "displayed_title": "取证",
+      "no_submit_or_delete_instructed": true,
+      "freeze_not_yet_instructed": true,
+      "actual_input_utc": null,
+      "actual_idle_seconds": null
+    },
+    "human-arm-title.json": {
+      "source": "Human manual report",
+      "root_received_utc": "2026-10-03T13:17:31.986636+00:00",
+      "human_quote": "已显示取证",
+      "step": "arm title confirmation",
+      "displayed_title": "取证",
+      "single_arm_click_instructed": true,
+      "actual_click_utc": null,
+      "actual_idle_seconds": null,
+      "normal_input_not_yet_instructed": true,
+      "freeze_not_yet_instructed": true
+    },
+    "approved_binding_amendment": {
+      "root_received_utc": "2026-10-03T12:53:06.209476+00:00",
+      "human_quote": "OK，请你继续吧",
+      "authorized_amendment": "仅当前U1，实际目标由fresh精确PID/安装路径SHA及同session loaded模块路径+UUID绑定；保留原工具UDID标签冲突，所有命令显式session，不改共享defaults。",
+      "original_U1_exclusive_authority_still_applies_until_end": true,
+      "no_actual_click_time_claim": true
+    },
+    "tool_routing_conflict": {
+      "utc": "2026-10-03T09:13:40.398216+00:00",
+      "expected_udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "receipt_udid": "884CAC1A-516A-421F-ACF5-035A36F7088A",
+      "receipt_pid": 80843,
+      "current_defaults_observed_udid": "884CAC1A-516A-421F-ACF5-035A36F7088A",
+      "defaults_changed": false,
+      "cached_source_sha256": {
+        "/Users/doubleshy0n/.npm/_npx/99336612077b7094/node_modules/xcodebuildmcp/build/mcp/tools/debugging/debug_attach_sim.js": "a5aa5f3ed1f96e2790c9a2edbdeec73c3cc1532351abd2a60bfc81285aa7be10",
+        "/Users/doubleshy0n/.npm/_npx/99336612077b7094/node_modules/xcodebuildmcp/build/utils/debugger/debugger-manager.js": "bfc434322f331c188a585d31f7b7f98ecabceaf1904039c6bc068e3b92017e7e",
+        "/Users/doubleshy0n/.npm/_npx/99336612077b7094/node_modules/xcodebuildmcp/build/utils/debugger/backends/dap-backend.js": "b33d88b1d752ea06af31262758bff923f6ef3fa00869e0e7c2e87bedc19855a4"
+      },
+      "cached_source_findings": [
+        "public schema omits simulatorId and simulatorName",
+        "determineSimulatorUuid receives session defaults",
+        "explicit params.pid is passed to createSession without simulator membership validation",
+        "DAP attach ignores opts.simulatorId and sends opts.pid",
+        "makeCurrent false should avoid setCurrentSession; human renderer current-session wording is not authoritative"
+      ],
+      "interpretation": "Cached source supports metadata-label/defaults mismatch; not a new actual loaded-module identity proof.",
+      "running_server_exact_cache_provenance_verified": false
+    }
+  },
+  "independent_conclusions": {
+    "P1": "Covered: human-approved amendment binds actual target by PID, installed path/hash, same-session loaded paths and UUID while preserving conflicting tool UDID label; no defaults mutation.",
+    "P2": "Covered: independent little-endian uint64 parse, 528 bytes/5 rows, all header/row fields match preserved decode, complete unique attempt 1; schedule row owner=1 receipt=1 (owner present only).",
+    "P3": "Covered: caller borrow backtrace, aligned 528-byte static args, exactly one bounded memory read, explicit breakpoint delete/list-empty/continue/detach, 15 request-response ledger entries and matching raw hashes, machine exit readback."
+  }
+}

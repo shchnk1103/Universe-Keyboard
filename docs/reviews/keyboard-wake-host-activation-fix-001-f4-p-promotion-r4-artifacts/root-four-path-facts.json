@@ -1,0 +1,38 @@
+{
+  "kind": "root factual reparse only; not independent Quality conclusion",
+  "original_reader_sha256": "2f7dab91ffcf91d02458d1935e0b79373e80a647acd3383263b8e4d54f3e102f",
+  "rows": [
+    {
+      "module_relative_path": "Universe Keyboard",
+      "uuid": "664DE45A-5859-34F1-892C-3DD2D9DE7B98",
+      "full_original_path": "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard",
+      "candidate_sha256": "38cbdd01d7b664db0c435452086dd209447135f886906bab8181610a6a7e6feb",
+      "paired_sha256": "38cbdd01d7b664db0c435452086dd209447135f886906bab8181610a6a7e6feb",
+      "root_match": true
+    },
+    {
+      "module_relative_path": "Universe Keyboard.debug.dylib",
+      "uuid": "C19CE509-A814-30AB-88F1-CE5416FDDC33",
+      "full_original_path": "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard.debug.dylib",
+      "candidate_sha256": "c00095f4d2016cf31b876ed5f3f17f53c5ec97d64704829b629d23ab7a57e200",
+      "paired_sha256": "c00095f4d2016cf31b876ed5f3f17f53c5ec97d64704829b629d23ab7a57e200",
+      "root_match": true
+    },
+    {
+      "module_relative_path": "PlugIns/Keyboard.appex/Keyboard",
+      "uuid": "CD0C6F02-6094-3726-B598-F03F42ABB468",
+      "full_original_path": "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+      "candidate_sha256": "e681da52516441c044c98419a7c9750d7a90b282cb69bd27e220284376922860",
+      "paired_sha256": "e681da52516441c044c98419a7c9750d7a90b282cb69bd27e220284376922860",
+      "root_match": true
+    },
+    {
+      "module_relative_path": "PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+      "uuid": "4B207746-89A7-321F-83C4-91477259BB26",
+      "full_original_path": "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+      "candidate_sha256": "773c4eff9640b2623036e3f819301ead3914cb99b66c9c1496ece5986e762aab",
+      "paired_sha256": "773c4eff9640b2623036e3f819301ead3914cb99b66c9c1496ece5986e762aab",
+      "root_match": true
+    }
+  ]
+}

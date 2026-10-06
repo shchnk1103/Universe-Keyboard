@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+  "origin_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+  "expected_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+  "line_start": 361,
+  "line_end": 420,
+  "lines": [
+    {
+      "line": 361,
+      "text": "    /// 功能键文字标题字号（中/英、123、选拼音、#+= 等），小于符号键。"
+    },
+    {
+      "line": 362,
+      "text": "    let functionKeyTitlePointSize: CGFloat = 15"
+    },
+    {
+      "line": 363,
+      "text": "    /// 空格键文字字号（含「拼音」）。"
+    },
+    {
+      "line": 364,
+      "text": "    let spaceKeyTitlePointSize: CGFloat = 14"
+    },
+    {
+      "line": 365,
+      "text": "    /// 按键圆角半径（点），使用 .continuous 曲线获得 iOS 原生外观"
+    },
+    {
+      "line": 366,
+      "text": "    let keyCornerRadius: CGFloat = 9"
+    },
+    {
+      "line": 367,
+      "text": "    // MARK: === 生命周期 ==="
+    },
+    {
+      "line": 368,
+      "text": ""
+    },
+    {
+      "line": 369,
+      "text": "    override func viewDidLoad() {"
+    },
+    {
+      "line": 370,
+      "text": "        super.viewDidLoad()"
+    },
+    {
+      "line": 371,
+      "text": "        bootstrapKeyboard()"
+    },
+    {
+      "line": 372,
+      "text": "    }"
+    },
+    {
+      "line": 373,
+      "text": ""
+    },
+    {
+      "line": 374,
+      "text": "    /// deinit 是键盘扩展被销毁前的最后一个清理机会。"
+    },
+    {
+      "line": 375,
+      "text": "    /// Apple 文档指出：系统可能在键盘关闭后保留扩展进程一段时间，"
+    },
+    {
+      "line": 376,
+      "text": "    /// 所以不要假设 deinit 会在键盘关闭时立即调用。"
+    },
+    {
+      "line": 377,
+      "text": "    /// 但一旦调用，应该释放所有资源。"
+    },
+    {
+      "line": 378,
+      "text": "    deinit {"
+    },
+    {
+      "line": 379,
+      "text": "        #if DEBUG"
+    },
+    {
+      "line": 380,
+      "text": "            highFidelityExpirationTask?.cancel()"
+    },
+    {
+      "line": 381,
+      "text": "            candidateVisibilityDiagnosticsTask?.cancel()"
+    },
+    {
+      "line": 382,
+      "text": "        #endif"
+    },
+    {
+      "line": 383,
+      "text": "        // Swift 6 的 deinit 不保证运行在 MainActor；可见性结束时已清理心跳。"
+    },
+    {
+      "line": 384,
+      "text": "        // 若系统直接销毁扩展，最后一条心跳会在 75 秒后自然失效，宁可多跳过一次同步。"
+    },
+    {
+      "line": 385,
+      "text": "        // 连删协调器在 viewWillDisappear 中停止；闭包仅弱引用本控制器，"
+    },
+    {
+      "line": 386,
+      "text": "        // 析构路径无需跨 actor 访问 UIKit/Timer 状态。"
+    },
+    {
+      "line": 387,
+      "text": "        // 移除所有通知观察者，防止野指针"
+    },
+    {
+      "line": 388,
+      "text": "        NotificationCenter.default.removeObserver(self)"
+    },
+    {
+      "line": 389,
+      "text": "    }"
+    },
+    {
+      "line": 390,
+      "text": ""
+    },
+    {
+      "line": 391,
+      "text": "    override func viewWillAppear(_ animated: Bool) {"
+    },
+    {
+      "line": 392,
+      "text": "        super.viewWillAppear(animated)"
+    },
+    {
+      "line": 393,
+      "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+    },
+    {
+      "line": 394,
+      "text": "            wakeOwnerProbeWillAppear()"
+    },
+    {
+      "line": 395,
+      "text": "        #endif"
+    },
+    {
+      "line": 396,
+      "text": "        Logger.shared.resumePersistenceForExtensionLifecycle()"
+    },
+    {
+      "line": 397,
+      "text": "        diagnosticsJournal.resumeForExtensionLifecycle()"
+    },
+    {
+      "line": 398,
+      "text": "        #if DEBUG"
+    },
+    {
+      "line": 399,
+      "text": "            refreshHighFidelityDiagnosticsMode()"
+    },
+    {
+      "line": 400,
+      "text": "            resetCandidateTouchDiagnosticCorrelation()"
+    },
+    {
+      "line": 401,
+      "text": "        #endif"
+    },
+    {
+      "line": 402,
+      "text": "        diagnosticsAppearanceID = UUID()"
+    },
+    {
+      "line": 403,
+      "text": "        KeyboardWakeDiagnosticProducer.recordKeyboardLifecycle("
+    },
+    {
+      "line": 404,
+      "text": "            .viewWillAppear,"
+    },
+    {
+      "line": 405,
+      "text": "            journal: diagnosticsJournal,"
+    },
+    {
+      "line": 406,
+      "text": "            context: wakeDiagnosticContext"
+    },
+    {
+      "line": 407,
+      "text": "        )"
+    },
+    {
+      "line": 408,
+      "text": "        diagnosticsJournal.record("
+    },
+    {
+      "line": 409,
+      "text": "            code: .presentationAppeared,"
+    },
+    {
+      "line": 410,
+      "text": "            category: .display,"
+    },
+    {
+      "line": 411,
+      "text": "            appearanceID: diagnosticsAppearanceID"
+    },
+    {
+      "line": 412,
+      "text": "        )"
+    },
+    {
+      "line": 413,
+      "text": "        #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS"
+    },
+    {
+      "line": 414,
+      "text": "            p3d1RecordLifecycleMarker(\"APPEAR_BEGIN\", reason: \"viewWillAppear\")"
+    },
+    {
+      "line": 415,
+      "text": "        #endif"
+    },
+    {
+      "line": 416,
+      "text": "        #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT"
+    },
+    {
+      "line": 417,
+      "text": "            // iOS may reuse an Extension selected before the main App prepared the"
+    },
+    {
+      "line": 418,
+      "text": "            // arm. Consume a different fresh token when visibility returns instead"
+    },
+    {
+      "line": 419,
+      "text": "            // of requiring a new viewDidLoad or process."
+    },
+    {
+      "line": 420,
+      "text": "            _ = consumeFreshPreparedDevicePreflightRunIfAvailable()"
+    }
+  ]
+}

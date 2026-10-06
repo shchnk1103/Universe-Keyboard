@@ -1,0 +1,19 @@
+{
+  "actual_tool_calls": 6,
+  "budget_actual_tool_calls": 6,
+  "budget_wall_clock_seconds": 600,
+  "coverage": {
+    "Q-P1-remaining": "Uncovered",
+    "Q-P2-remaining": "Covered",
+    "Q-P3-remaining": "Covered"
+  },
+  "elapsed_seconds": 239.242402,
+  "ended_utc": "2026-10-05T04:37:48.884904+00:00",
+  "lane_id": "F4-P-QUALITY-PROMOTION",
+  "packet_sha256": "c934f37577935e53837fa4391cc9d5865370498c3f193c2422db6e8e993c4dde",
+  "round": 3,
+  "started_utc": "2026-10-05T04:33:49.642502+00:00",
+  "stop_reason": "Completed the three frozen comparisons within scope; carried prior closed Q-P4/A2/Q3 statuses forward and stopped without expansion",
+  "tool_call_accounting": "3 functions.exec wrappers + 3 nested exec_command invocations; no coordination calls",
+  "verdict": "Partial"
+}

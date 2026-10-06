@@ -1,0 +1,22 @@
+{
+  "main-data": {
+    "restore_file": 3,
+    "restore_dir": 0,
+    "restore_symlink": 0,
+    "remove": 46,
+    "keep_system": 14,
+    "unclassified_extra": 0
+  },
+  "app-group": {
+    "restore_file": 48,
+    "restore_dir": 8,
+    "restore_symlink": 2,
+    "remove": 0,
+    "keep_system": 2,
+    "unclassified_extra": 0
+  },
+  "installed-app": {
+    "method": "simctl install of before installed-app staged as Universe Keyboard.app",
+    "do_not_uninstall": true
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-04T05:00:47.537325+00:00",
+  "target_ps": "55759     4004 Ss   /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+  "P_TRACED_clear": true,
+  "native_debug_processes_gone": {
+    "55990": true,
+    "55991": true
+  },
+  "own_breakpoint_delete_and_list_confirmed": true,
+  "continue_detach_quit_receipts_confirmed": true,
+  "pty_exit_code": 0,
+  "snapshot_exists": false,
+  "memory_reads": 0,
+  "human_visual_exit": "confirmed: retained post-switch interface/button取证; input recovery not tested"
+}

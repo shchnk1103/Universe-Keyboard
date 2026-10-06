@@ -1,0 +1,7 @@
+{
+  "original_view_path": "bounded-raw-views/arch-021-001.json",
+  "original_view_sha256": "ffc04f7cd0f665876907b54ac3e4cdeec1b96cfcd00ca66d5698a9d2eaa82e9c",
+  "raw_json_character_start": 9000,
+  "raw_json_character_end_exclusive": 9431,
+  "raw_json_slice": "back传入的actual hit-frame，不用CLI stale selected frame。必须验证精确PID/moduleUUID/symbol、frame0、最多8帧按钮同步borrow、静态`address`/`byteCount`；无dynamic/synthetic、无目标函数求值、无寄存器/ABI猜替。参数可用且pointer8对齐、长度176..11352、8倍数时，最多一次exact-size binary memory read。KWOPROBE v1：11word header+最多128×11word record、10分钟TTL；decoder拒绝不匹配长度/版本/run/process/sequence/TTL/overflow/completeness。dump不能拼接历史窗口或修补凑完整。\"\n    },\n    {\n      \"line\": 60,\n      \"text\": \"\"\n    }\n  ]\n}\n"
+}

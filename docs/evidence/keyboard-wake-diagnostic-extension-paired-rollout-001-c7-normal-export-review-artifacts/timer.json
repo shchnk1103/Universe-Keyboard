@@ -1,0 +1,12 @@
+{
+  "monotonic_origin_seconds": 1135054.045711166,
+  "packet_read_call_elapsed_seconds": 0.004886999959126115,
+  "packet_read_call_end_unix": 1790952203.3050828,
+  "packet_read_call_end_utc": "2026-10-02T14:43:23.305073+00:00",
+  "report_sha256": "19c3e11ce508f7ac01a905617d9191a480f84f36cdc15e252de22514e153007d",
+  "report_write_call_elapsed_seconds": 0.00048108305782079697,
+  "report_write_call_start_utc": "2026-10-02T14:50:54.415832+00:00",
+  "report_written_utc": "2026-10-02T14:50:54.416480+00:00",
+  "review_start_unix": 1790952203.300204,
+  "review_start_utc": "2026-10-02T14:43:23.299964+00:00"
+}

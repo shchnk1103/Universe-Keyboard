@@ -1,0 +1,118 @@
+{
+  "utc": "2026-10-03T15:13:22.053259+00:00",
+  "candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50",
+  "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "name": "iPhone 18 Pro",
+  "runtime": "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
+  "device_state": "Booted",
+  "containers": {
+    "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app",
+    "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/351890B0-93B6-4875-ACB2-1B6A678678A7",
+    "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/53661EB9-A6C9-4323-A997-346A2C10FE68"
+  },
+  "container_identity_matches_M0": true,
+  "installed_files_verified": 78,
+  "strict_signatures": {
+    "main": {
+      "exit": 0
+    },
+    "keyboard": {
+      "exit": 0
+    }
+  },
+  "pid": 8491,
+  "pid_state": "8491 Ss   /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+  "pid_end": "8491 Ss   /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+  "executable": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+  "executable_sha256": "237d9a890d96a18ebaa9427ac2836595d8e8fc7767be63712a6870a22643efe0",
+  "old_consumed_pid": 88188,
+  "new_instance": true,
+  "main_app_process_absent": true,
+  "maps": {
+    "bundle_id": "com.apple.Maps",
+    "version": "1.0",
+    "build": "2972.30.6.12.58",
+    "process": "8484 /var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.pL3kPh/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/Applications/Maps.app/Maps",
+    "path_alias_normalized": true,
+    "pid_udid_not_proved_from_system_executable_path_alone": true
+  },
+  "configured_preferences_only": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "rime_deployed": {
+      "exists": true,
+      "value": true
+    },
+    "rime_needs_deploy": {
+      "exists": true,
+      "value": false
+    },
+    "rime_is_deploying": {
+      "exists": false,
+      "value": null
+    },
+    "rime_active_schema": {
+      "exists": false,
+      "value": null
+    },
+    "keyboard_layout_style": {
+      "exists": false,
+      "value": null
+    },
+    "keyboard_layout_scheme_26": {
+      "exists": true,
+      "value": "luna_pinyin"
+    }
+  },
+  "realized_engine_schema_not_read": true,
+  "machos": [
+    {
+      "path": "PlugIns/Keyboard.appex/Keyboard",
+      "sha256": "237d9a890d96a18ebaa9427ac2836595d8e8fc7767be63712a6870a22643efe0",
+      "uuid_output": "UUID: C3FC7115-4215-3801-ABBB-C8A648ED0C32 (arm64) /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+      "uuid_matches": true
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+      "sha256": "67f32fe96277c03f793d327fbab4bf8599b777cce3dadb5ff954552c5bfa8c12",
+      "uuid_output": "UUID: 77BD18E2-E090-37D7-865F-84D762E69F70 (arm64) /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+      "uuid_matches": true
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/__preview.dylib",
+      "sha256": "eccef4a1b897ac811c714b630fbce2872a5e95af9e026818a5f6a38ef7a59f91",
+      "uuid_output": "UUID: 984A99F0-EDBC-3181-8D6A-151FC3FF26B3 (arm64) /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/__preview.dylib",
+      "uuid_matches": true
+    },
+    {
+      "path": "Universe Keyboard",
+      "sha256": "7ecd73750fa88485447ec25aaae5887e6da6d91cf35a430305c620cf85b1259e",
+      "uuid_output": "UUID: 8DD28672-CD37-3408-93FB-C3CA3F4465E9 (arm64) /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/Universe Keyboard",
+      "uuid_matches": true
+    },
+    {
+      "path": "Universe Keyboard.debug.dylib",
+      "sha256": "a1a1f6154a744579c26bf2aa1738d57b2420ea157274e55a41f5a636b98bc8cf",
+      "uuid_output": "UUID: 742720C7-983C-38A6-BE2E-76AD327EEA30 (arm64) /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/Universe Keyboard.debug.dylib",
+      "uuid_matches": true
+    },
+    {
+      "path": "__preview.dylib",
+      "sha256": "39c5084b204f9a2a3244e4b94d1d38fe74346d45c4fc0a6a7b1f3d38a9645a0a",
+      "uuid_output": "UUID: 3157B785-8C10-368F-A3C4-DB591625C61D (arm64) /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/__preview.dylib",
+      "uuid_matches": true
+    }
+  ],
+  "source_inputs_verified": 1279,
+  "loaded_module_identity": "not read: deferred to M2 debugger authority",
+  "backup_M0_files_verified": 956,
+  "debugger_attached": false,
+  "signal_launch_or_install": false,
+  "arm_or_input": false
+}

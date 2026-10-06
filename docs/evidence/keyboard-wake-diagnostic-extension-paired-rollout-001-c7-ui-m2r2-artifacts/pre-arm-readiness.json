@@ -1,0 +1,20 @@
+{
+  "utc": "2026-10-04T04:49:49.925091+00:00",
+  "exec_session_id": 47167,
+  "pid": 55759,
+  "lldb_pid": 55990,
+  "debugserver_pid": 55991,
+  "process_metadata": [
+    "55991 55990 Sun Oct  4 12:48:58 2026     S    /Applications/Xcode.app/Contents/SharedFrameworks/LLDB.framework/Resources/debugserver",
+    "55990 55989 Sun Oct  4 12:48:58 2026     Ss+  /Applications/Xcode.app/Contents/Developer/usr/bin/lldb"
+  ],
+  "target_ps": "55759 55991     4804 SXs  /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+  "loaded_uuid_match": true,
+  "breakpoint": 1,
+  "resolved": 1,
+  "hit_count": 0,
+  "running": true,
+  "memory_reads": 0,
+  "human_initial_reply": "观测已出现",
+  "actual_arm_time": null
+}

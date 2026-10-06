@@ -1,0 +1,25 @@
+KOS changed-Markdown link validation
+Assignment: KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001 establishment
+Baseline commit: 9eb83158e49218c1e8f75dbe7dd9e0390db81409
+Candidate Markdown tree: 6e4d5954d44c0d84787260ebcb34061a6ca9508a
+Comparison pair: baseline 9eb83158e49218c1e8f75dbe7dd9e0390db81409 -> candidate tree 6e4d5954d44c0d84787260ebcb34061a6ca9508a
+Command: python3 scripts/ci/check_markdown_links.py --base 9eb83158e49218c1e8f75dbe7dd9e0390db81409 --head 6e4d5954d44c0d84787260ebcb34061a6ca9508a
+Result: PASS changed Markdown links (5 files)
+Whitespace check: git diff --check baseline candidate -> PASS
+Scope: paired-rollout Assignment, establishment authorization, Runtime API Assignment, Extension producer predecessor, parent lifecycle Assignment, and ACTIVE_WORK.md.
+Isolation: temporary Git index and object directory under /private/tmp; the shared index, object database, refs, source files and tests were not modified by validation.
+Tests: not run; this slice is documentation-only and does not alter code or tests.
+
+KOS lifecycle / identity-rebind validation
+Assignment SHA-256: fa269513e709f4aaeabf85ec434f7240a5ab80e6bb960c54332532f8681eca71
+Assignment-establishment authorization SHA-256: 36c6d6bb28b58d7f7caf6a161a0df357632a42b1da756116ebab44e0f02df0c6
+Baseline commit: 9eb83158e49218c1e8f75dbe7dd9e0390db81409
+Candidate Markdown tree: f9091b6cc905e1cf7f88c7e8b4a084342a3784ee
+Comparison pair: baseline 9eb83158e49218c1e8f75dbe7dd9e0390db81409 -> candidate tree f9091b6cc905e1cf7f88c7e8b4a084342a3784ee
+Command: python3 scripts/ci/check_markdown_links.py --base 9eb83158e49218c1e8f75dbe7dd9e0390db81409 --head f9091b6cc905e1cf7f88c7e8b4a084342a3784ee
+Result: PASS changed Markdown links (10 files)
+Whitespace check: git diff --check baseline candidate -> PASS
+Scope: ACTIVE_WORK, paired-rollout Assignment, Runtime API Assignment, Extension producer predecessor, parent lifecycle Assignment, establishment authorization, and four exact-role ACK/review receipts.
+Identity review: Domain Owner, Architecture and Quality receipts all bind the Assignment and authorization SHA-256 values above; Quality PASS and Architecture ACKNOWLEDGED — Pass with conditions. Domain Owner ACKNOWLEDGED. Executor, Environment Executor and Human Dependency ACKNOWLEDGED; no current Simulator reservation is implied.
+Isolation: temporary Git index and object directory under /private/tmp/uk-paired-rollout-doccheck.Lrcg27; the shared index, object database, refs, source files and tests were not modified by validation.
+Tests: not run; this slice is documentation-only and does not alter code or tests.

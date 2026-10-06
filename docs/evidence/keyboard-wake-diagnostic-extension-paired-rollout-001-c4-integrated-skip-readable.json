@@ -1,0 +1,242 @@
+[
+  {
+    "suite": "RimeBridgeTests",
+    "identifier": "RimeLuaSmokeTests/testCorrectionSidecarKeepsVisibleCompositionIntactWhenRuntimeFixtureIsProvided()",
+    "status": "Skipped",
+    "reason": "Test skipped - Set UK_RIME_LUA_SMOKE_SHARED_DIR and UK_RIME_LUA_SMOKE_USER_DIR to run the real Lua smoke test.",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeLuaSmokeTests.swift",
+    "line": "94"
+  },
+  {
+    "suite": "RimeBridgeTests",
+    "identifier": "RimeLuaSmokeTests/testRimeIceLuaDynamicCandidatesWhenRuntimeFixtureIsProvided()",
+    "status": "Skipped",
+    "reason": "Test skipped - Set UK_RIME_LUA_SMOKE_SHARED_DIR and UK_RIME_LUA_SMOKE_USER_DIR to run the real Lua smoke test.",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeLuaSmokeTests.swift",
+    "line": "94"
+  },
+  {
+    "suite": "RimeBridgeTests",
+    "identifier": "RimeT9AutoAnchorRetryMatrixTests/testCappedTwoSyllableControllerFrozenPairedMatrix()",
+    "status": "Skipped",
+    "reason": "Test skipped - Set the immutable 40-character lowercase S4 commit to run the paired matrix.",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift",
+    "line": "766"
+  },
+  {
+    "suite": "RimeBridgeTests",
+    "identifier": "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationKnownPositive()",
+    "status": "Skipped",
+    "reason": "Test skipped - Set isolated T9 Spike runtime directories to run this matrix.",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift",
+    "line": "2787"
+  },
+  {
+    "suite": "RimeBridgeTests",
+    "identifier": "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationNaturalReminder()",
+    "status": "Skipped",
+    "reason": "Test skipped - Set isolated T9 Spike runtime directories to run this matrix.",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift",
+    "line": "2787"
+  },
+  {
+    "suite": "RimeBridgeTests",
+    "identifier": "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationNaturalWeather()",
+    "status": "Skipped",
+    "reason": "Test skipped - Set isolated T9 Spike runtime directories to run this matrix.",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift",
+    "line": "2787"
+  },
+  {
+    "suite": "RimeBridgeTests",
+    "identifier": "RimeT9AutoAnchorRetryMatrixTests/testPartialLongSelectionIsNotPersonalizationProof()",
+    "status": "Skipped",
+    "reason": "Test skipped - Set isolated T9 Spike runtime directories to run this matrix.",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift",
+    "line": "2787"
+  },
+  {
+    "suite": "RimeBridgeTests",
+    "identifier": "RimeT9AutoAnchorRetryMatrixTests/testRejectedCompositionLaterOpportunityTransactionMatrix()",
+    "status": "Skipped",
+    "reason": "Test skipped - Set isolated T9 Spike runtime directories to run this matrix.",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift",
+    "line": "2787"
+  },
+  {
+    "suite": "RimeBridgeTests",
+    "identifier": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerFrozenA0A1B2B3Matrix()",
+    "status": "Skipped",
+    "reason": "Test skipped - Set isolated T9 Spike runtime directories to run this matrix.",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift",
+    "line": "2787"
+  },
+  {
+    "suite": "RimeBridgeTests",
+    "identifier": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerMissingLiveCompositionFailsClosedBeforeKey()",
+    "status": "Skipped",
+    "reason": "Test skipped - Set isolated T9 Spike runtime directories to run this matrix.",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift",
+    "line": "2787"
+  },
+  {
+    "suite": "RimeBridgeTests",
+    "identifier": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerRealRimeDeletePathAndPartialOwnership()",
+    "status": "Skipped",
+    "reason": "Test skipped - Set isolated T9 Spike runtime directories to run this matrix.",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift",
+    "line": "2787"
+  },
+  {
+    "suite": "RimeBridgeTests",
+    "identifier": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerRealRimeSecondRejectRestoreMatrix()",
+    "status": "Skipped",
+    "reason": "Test skipped - Set isolated T9 Spike runtime directories to run this matrix.",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift",
+    "line": "2787"
+  },
+  {
+    "suite": "RimeBridgeTests",
+    "identifier": "RimeT9CompatibilitySpikeTests/testPinnedLibrimeCanSelectT9AndProcessDigitSequenceAfterRemovingUnsupportedProcessor()",
+    "status": "Skipped",
+    "reason": "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 compatibility Spike.",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9CompatibilitySpikeTests.swift",
+    "line": "117"
+  },
+  {
+    "suite": "RimeBridgeTests",
+    "identifier": "RimeT9PinyinSelectionSpikeTests/test004CatalogExactRawAcceptanceOnPinnedLibrime()",
+    "status": "Skipped",
+    "reason": "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike.",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9PinyinSelectionSpikeTests.swift",
+    "line": "1407"
+  },
+  {
+    "suite": "RimeBridgeTests",
+    "identifier": "RimeT9PinyinSelectionSpikeTests/testAtomicPathDiscoveryStageAOnPinnedLibrime()",
+    "status": "Skipped",
+    "reason": "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike.",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9PinyinSelectionSpikeTests.swift",
+    "line": "1407"
+  },
+  {
+    "suite": "RimeBridgeTests",
+    "identifier": "RimeT9PinyinSelectionSpikeTests/testGate5Phase05CandidateCoverageSelRangeOnPinnedLibrime()",
+    "status": "Skipped",
+    "reason": "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike.",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9PinyinSelectionSpikeTests.swift",
+    "line": "1407"
+  },
+  {
+    "suite": "RimeBridgeTests",
+    "identifier": "RimeT9PinyinSelectionSpikeTests/testGate5Phase06AlternativeCoverageSelectionDeltaOnPinnedLibrime()",
+    "status": "Skipped",
+    "reason": "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike.",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9PinyinSelectionSpikeTests.swift",
+    "line": "1407"
+  },
+  {
+    "suite": "RimeBridgeTests",
+    "identifier": "RimeT9PinyinSelectionSpikeTests/testPrecisePinyinPathRefinementOnPinnedLibrime()",
+    "status": "Skipped",
+    "reason": "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike.",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9PinyinSelectionSpikeTests.swift",
+    "line": "1407"
+  },
+  {
+    "suite": "RimeBridgeTests",
+    "identifier": "RimeT9PinyinSelectionSpikeTests/testReadOnlyWindowCoverageForYiZiSibling()",
+    "status": "Skipped",
+    "reason": "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike.",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9PinyinSelectionSpikeTests.swift",
+    "line": "1407"
+  },
+  {
+    "suite": "RimeBridgeTests",
+    "identifier": "ThreadAffineRimeRealEngineTests/testRealEngineBootstrapCreatesAndCallsOffMainThroughOwner()",
+    "status": "Skipped",
+    "reason": "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR (or UK_RIME_R4B_*) to run R4-B real-engine proof.",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/ThreadAffineRimeRealEngineTests.swift",
+    "line": "120"
+  },
+  {
+    "suite": "AppKeyboardTests",
+    "identifier": "RimeIcePinnedArtifactTests/testVerifiedOfficialAndMirrorArchivesConvergeAfterProductionProcessing()",
+    "status": "Skipped",
+    "reason": "Test skipped - Set TEST_RUNNER_SCHEME_PIN_ARCHIVE_ROOT to the independently downloaded source archives",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/RimeIcePinnedArtifactTests.swift",
+    "line": "26"
+  },
+  {
+    "suite": "AppKeyboardTests",
+    "identifier": "RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem()",
+    "status": "Skipped",
+    "reason": "Test skipped - Unsigned host lacks Keychain entitlement; signed Simulator lane covers integration.",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/RimeSyncTests.swift",
+    "line": "91"
+  },
+  {
+    "suite": "AppKeyboardTests",
+    "identifier": "SchemeResourcePreparationCoexistenceTests/testCS06_UninstallInactiveWanxiangRetainsIcePeerInventory()",
+    "status": "Skipped",
+    "reason": "Test skipped - CS09-10-01 requires the fixed Wanxiang extract tree",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests.swift",
+    "line": "1568"
+  },
+  {
+    "suite": "AppKeyboardTests",
+    "identifier": "SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerIceRemovalPreservesCompleteWanxiangInventory()",
+    "status": "Skipped",
+    "reason": "Test skipped - CS09-10-01 requires the fixed Wanxiang extract tree",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests.swift",
+    "line": "1568"
+  },
+  {
+    "suite": "AppKeyboardTests",
+    "identifier": "SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerWanxiangRemovalPreservesCompleteIceInventory()",
+    "status": "Skipped",
+    "reason": "Test skipped - CS09-10-01 requires the fixed Ice extract tree",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests.swift",
+    "line": "1553"
+  },
+  {
+    "suite": "AppKeyboardTests",
+    "identifier": "SchemeResourcePreparationCoexistenceTests/testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds()",
+    "status": "Skipped",
+    "reason": "Test skipped - Ice 2026.06.30 default.yaml fixture is required for P3 fingerprint recovery",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests.swift",
+    "line": "357"
+  },
+  {
+    "suite": "AppKeyboardTests",
+    "identifier": "SchemeResourcePreparationCoexistenceTests/testProductionProcessedIceTreeKeepsOfficialDefaultYamlWhenFixturePresent()",
+    "status": "Skipped",
+    "reason": "Test skipped - Set TEST_RUNNER_SCHEME_PIN_ARCHIVE_ROOT to the independently downloaded Ice archives",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests.swift",
+    "line": "1763"
+  },
+  {
+    "suite": "AppKeyboardTests",
+    "identifier": "TD012LMDGDeviceStagingTests/testPinnedModelLoadsThroughWanxiangGrammarOnAuthorizedPhysicalDevice()",
+    "status": "Skipped",
+    "reason": "Test skipped - TD-012 G2 model-load receipt is physical-device-only",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/TD012LMDGDeviceStagingTests.swift",
+    "line": "95"
+  },
+  {
+    "suite": "AppKeyboardTests",
+    "identifier": "TD012LMDGDeviceStagingTests/testRemovePinnedModelAfterAuthorizedPhysicalDeviceSpike()",
+    "status": "Skipped",
+    "reason": "Test skipped - TD-012 G2 cleanup is physical-device-only",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/TD012LMDGDeviceStagingTests.swift",
+    "line": "76"
+  },
+  {
+    "suite": "AppKeyboardTests",
+    "identifier": "TD012LMDGDeviceStagingTests/testStagePinnedModelForAuthorizedPhysicalDeviceSpike()",
+    "status": "Skipped",
+    "reason": "Test skipped - TD-012 G2 staging is physical-device-only",
+    "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/TD012LMDGDeviceStagingTests.swift",
+    "line": "49"
+  }
+]

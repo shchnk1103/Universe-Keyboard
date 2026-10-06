@@ -1,0 +1,45 @@
+{
+  "bundles": [
+    {
+      "bundle_id": "com.DoubleShy0N.Universe-Keyboard",
+      "mach_o_relative": "Universe Keyboard",
+      "macho_sha256": "7ecd73750fa88485447ec25aaae5887e6da6d91cf35a430305c620cf85b1259e",
+      "macho_uuid": "8DD28672-CD37-3408-93FB-C3CA3F4465E9",
+      "xcent_locator": "/private/tmp/ukey-wake-probe-ui-candidate-20261002/CandidateDerivedData/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Universe Keyboard.build/Universe Keyboard.app-Simulated.xcent",
+      "xcent_copy": "app-Simulated.xcent",
+      "xcent_sha256": "6610a8c02dfe5b877f5be595941b807a687c7838e2f4b54a80b4c6726b821a6c",
+      "embedded_section_offset": 13432,
+      "embedded_section_bytes": 414,
+      "embedded_section_sha256": "6610a8c02dfe5b877f5be595941b807a687c7838e2f4b54a80b4c6726b821a6c",
+      "exact_byte_equal": true,
+      "entitlements": {
+        "application-identifier": "C33N6HTS9N.com.DoubleShy0N.Universe-Keyboard",
+        "com.apple.security.application-groups": [
+          "group.com.DoubleShy0N.Universe-Keyboard"
+        ]
+      },
+      "runtime_verified": false
+    },
+    {
+      "bundle_id": "com.DoubleShy0N.Universe-Keyboard.Keyboard",
+      "mach_o_relative": "PlugIns/Keyboard.appex/Keyboard",
+      "macho_sha256": "237d9a890d96a18ebaa9427ac2836595d8e8fc7767be63712a6870a22643efe0",
+      "macho_uuid": "C3FC7115-4215-3801-ABBB-C8A648ED0C32",
+      "xcent_locator": "/private/tmp/ukey-wake-probe-ui-candidate-20261002/CandidateDerivedData/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Keyboard.build/Keyboard.appex-Simulated.xcent",
+      "xcent_copy": "keyboard-Simulated.xcent",
+      "xcent_sha256": "1b5eca79f033b12423739696ae50c8dfcd679ed6484803e2e340787aee149b7b",
+      "embedded_section_offset": 10282,
+      "embedded_section_bytes": 423,
+      "embedded_section_sha256": "1b5eca79f033b12423739696ae50c8dfcd679ed6484803e2e340787aee149b7b",
+      "exact_byte_equal": true,
+      "entitlements": {
+        "application-identifier": "C33N6HTS9N.com.DoubleShy0N.Universe-Keyboard.Keyboard",
+        "com.apple.security.application-groups": [
+          "group.com.DoubleShy0N.Universe-Keyboard"
+        ]
+      },
+      "runtime_verified": false
+    }
+  ],
+  "runtime_verified": false
+}

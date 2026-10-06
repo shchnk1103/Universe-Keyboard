@@ -1,0 +1,15 @@
+{
+  "recorded_utc": "2026-10-06T04:42:39.227575+00:00",
+  "decision_source": "Human：授权，这工作也可以交给grok吗？ root解释作者不能独立自验，复用原独立Luna",
+  "lane": "OWN-EXPORT-E1-QUALITY-R1",
+  "reviewer": "/root/f4p_quality_four_paths_fresh GPT6 Luna",
+  "scope": "only frozen E1 four criteria Q1..Q4; no new technical/runtime",
+  "packet_sha256": "9fcb7abeccbe3dd3d7c42d85c44bf0a4355cf6dd854f6cb5a7c19b847d54434c",
+  "reader_sha256": "870a31c9bbb84888058810ec36fbdaab54f35c3e33caab576761fb3caa010923",
+  "actual_calls_max": 20,
+  "wall_seconds_max": 900,
+  "reserve_delivery_calls": 6,
+  "independence": "not Grok author; root only coordinator",
+  "stop": "at budget/missing required evidence Partial; no auto continuation/new reviewers/recapture",
+  "write_scope": "ack.json review.md usage.json delivery-readback.json only in this directory"
+}

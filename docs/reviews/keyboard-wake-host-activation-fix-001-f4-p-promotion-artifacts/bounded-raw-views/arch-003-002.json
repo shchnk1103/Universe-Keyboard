@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Presentation.swift",
+  "origin_sha256": "767c2817054484d4d4c328cb7a8deaf676509b76bbc3cb45868b6e3cf721319a",
+  "expected_sha256": "767c2817054484d4d4c328cb7a8deaf676509b76bbc3cb45868b6e3cf721319a",
+  "line_start": 61,
+  "line_end": 120,
+  "lines": [
+    {
+      "line": 61,
+      "text": "        ])"
+    },
+    {
+      "line": 62,
+      "text": "        #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS"
+    },
+    {
+      "line": 63,
+      "text": "            p3d1InstallLifecycleAccessibilityElementIfNeeded()"
+    },
+    {
+      "line": 64,
+      "text": "        #endif"
+    },
+    {
+      "line": 65,
+      "text": "        Logger.shared.debug("
+    },
+    {
+      "line": 66,
+      "text": "            \"setupRootStack: transparent surface, content top+\\(keyboardContentTopInset), \""
+    },
+    {
+      "line": 67,
+      "text": "                + \"bottom-\\(keyboardContentBottomInset), hMargin=7\","
+    },
+    {
+      "line": 68,
+      "text": "            category: .display"
+    },
+    {
+      "line": 69,
+      "text": "        )"
+    },
+    {
+      "line": 70,
+      "text": "    }"
+    },
+    {
+      "line": 71,
+      "text": ""
+    },
+    {
+      "line": 72,
+      "text": "    func reloadKeyboard() {"
+    },
+    {
+      "line": 73,
+      "text": "        isCandidateExpanded = false"
+    },
+    {
+      "line": 74,
+      "text": "        isPinyinPathExpanded = false"
+    },
+    {
+      "line": 75,
+      "text": "        candidateExpandedPanel?.removeFromSuperview()"
+    },
+    {
+      "line": 76,
+      "text": "        candidateExpandedPanel = nil"
+    },
+    {
+      "line": 77,
+      "text": "        pinyinPathExpandedPanel?.removeFromSuperview()"
+    },
+    {
+      "line": 78,
+      "text": "        pinyinPathExpandedPanel = nil"
+    },
+    {
+      "line": 79,
+      "text": "        pinyinPathCollectionView = nil"
+    },
+    {
+      "line": 80,
+      "text": "        t9PinyinPathBarView = nil"
+    },
+    {
+      "line": 81,
+      "text": "        candidateCollectionView = nil"
+    },
+    {
+      "line": 82,
+      "text": "        expandedPanelScrollView = nil"
+    },
+    {
+      "line": 83,
+      "text": "        expandedCandidateCollectionView = nil"
+    },
+    {
+      "line": 84,
+      "text": "        candidateCellSizeCache.removeAll(keepingCapacity: true)"
+    },
+    {
+      "line": 85,
+      "text": "        rootStack.alpha = 1"
+    },
+    {
+      "line": 86,
+      "text": "        rootStack.isUserInteractionEnabled = true"
+    },
+    {
+      "line": 87,
+      "text": "        clearAllRows()"
+    },
+    {
+      "line": 88,
+      "text": "        if shouldReserveT9PinyinPathBar {"
+    },
+    {
+      "line": 89,
+      "text": "            let pathBar = makeT9PinyinPathBar()"
+    },
+    {
+      "line": 90,
+      "text": "            rootStack.addArrangedSubview(pathBar)"
+    },
+    {
+      "line": 91,
+      "text": "            rootStack.setCustomSpacing(0, after: pathBar)"
+    },
+    {
+      "line": 92,
+      "text": "        }"
+    },
+    {
+      "line": 93,
+      "text": "        candidateBar = makeCandidateBar()"
+    },
+    {
+      "line": 94,
+      "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+    },
+    {
+      "line": 95,
+      "text": "            // Construction refreshes the old bar; bind the new bar before updating its probe."
+    },
+    {
+      "line": 96,
+      "text": "            refreshWakeOwnerProbeControls()"
+    },
+    {
+      "line": 97,
+      "text": "        #endif"
+    },
+    {
+      "line": 98,
+      "text": "        rootStack.addArrangedSubview(candidateBar)"
+    },
+    {
+      "line": 99,
+      "text": "        rootStack.setCustomSpacing(0, after: candidateBar)"
+    },
+    {
+      "line": 100,
+      "text": "        addKeyboardRows(for: controller.state)"
+    },
+    {
+      "line": 101,
+      "text": "        updateReturnKeyAppearance()"
+    },
+    {
+      "line": 102,
+      "text": "        updateSelectPinyinButtonAvailability()"
+    },
+    {
+      "line": 103,
+      "text": "        installPreferredKeyboardHeight()"
+    },
+    {
+      "line": 104,
+      "text": "        Logger.shared.debug("
+    },
+    {
+      "line": 105,
+      "text": "            \"reloadKeyboard: candidateBar=\\(candidateBar != nil ? \"OK\" : \"nil\"), rows=\\(rootStack.arrangedSubviews.count)\","
+    },
+    {
+      "line": 106,
+      "text": "            category: .display"
+    },
+    {
+      "line": 107,
+      "text": "        )"
+    },
+    {
+      "line": 108,
+      "text": "        #if DEBUG"
+    },
+    {
+      "line": 109,
+      "text": "            applyDebugKeyHitboxOverlaySetting()"
+    },
+    {
+      "line": 110,
+      "text": "        #endif"
+    },
+    {
+      "line": 111,
+      "text": "    }"
+    },
+    {
+      "line": 112,
+      "text": ""
+    },
+    {
+      "line": 113,
+      "text": "    func installKeyboardUIIfNeeded() {"
+    },
+    {
+      "line": 114,
+      "text": "        guard !isKeyboardUIInstalled else { return }"
+    },
+    {
+      "line": 115,
+      "text": "        isKeyboardUIInstalled = true"
+    },
+    {
+      "line": 116,
+      "text": "        view.backgroundColor = .clear"
+    },
+    {
+      "line": 117,
+      "text": "        setupRootStack()"
+    },
+    {
+      "line": 118,
+      "text": "        UIView.performWithoutAnimation {"
+    },
+    {
+      "line": 119,
+      "text": "            reloadKeyboard()"
+    },
+    {
+      "line": 120,
+      "text": "            view.layoutIfNeeded()"
+    }
+  ]
+}

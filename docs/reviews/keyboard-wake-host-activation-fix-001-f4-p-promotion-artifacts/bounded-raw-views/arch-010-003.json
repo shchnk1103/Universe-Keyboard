@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardWakeOwnerProbe.swift",
+  "origin_sha256": "679d55e8669d7c68db2fbe58fd1b436cbb19bc61e770f9a701751326fa669af6",
+  "expected_sha256": "679d55e8669d7c68db2fbe58fd1b436cbb19bc61e770f9a701751326fa669af6",
+  "line_start": 121,
+  "line_end": 180,
+  "lines": [
+    {
+      "line": 121,
+      "text": "                _ = Self.append("
+    },
+    {
+      "line": 122,
+      "text": "                    stage: .armed,"
+    },
+    {
+      "line": 123,
+      "text": "                    timestamp: now,"
+    },
+    {
+      "line": 124,
+      "text": "                    coordinatorOrdinal: 0,"
+    },
+    {
+      "line": 125,
+      "text": "                    appearanceOrdinal: 0,"
+    },
+    {
+      "line": 126,
+      "text": "                    attemptOrdinal: 0,"
+    },
+    {
+      "line": 127,
+      "text": "                    ownerPresent: false,"
+    },
+    {
+      "line": 128,
+      "text": "                    receiptPresent: false,"
+    },
+    {
+      "line": 129,
+      "text": "                    teardownResult: .notApplicable,"
+    },
+    {
+      "line": 130,
+      "text": "                    epoch: 0,"
+    },
+    {
+      "line": 131,
+      "text": "                    revision: 0,"
+    },
+    {
+      "line": 132,
+      "text": "                    to: &value"
+    },
+    {
+      "line": 133,
+      "text": "                )"
+    },
+    {
+      "line": 134,
+      "text": "                return true"
+    },
+    {
+      "line": 135,
+      "text": "            }"
+    },
+    {
+      "line": 136,
+      "text": "        }"
+    },
+    {
+      "line": 137,
+      "text": ""
+    },
+    {
+      "line": 138,
+      "text": "        /// Allocates a process-local ordinal without retaining the coordinator."
+    },
+    {
+      "line": 139,
+      "text": "        /// Zero means the UInt64 ordinal space has been exhausted."
+    },
+    {
+      "line": 140,
+      "text": "        public func nextCoordinatorOrdinal() -> UInt64 {"
+    },
+    {
+      "line": 141,
+      "text": "            state.withLock { value in"
+    },
+    {
+      "line": 142,
+      "text": "                let (next, overflow) = value.lastCoordinatorOrdinal.addingReportingOverflow(1)"
+    },
+    {
+      "line": 143,
+      "text": "                guard !overflow, next != 0 else { return 0 }"
+    },
+    {
+      "line": 144,
+      "text": "                value.lastCoordinatorOrdinal = next"
+    },
+    {
+      "line": 145,
+      "text": "                return next"
+    },
+    {
+      "line": 146,
+      "text": "            }"
+    },
+    {
+      "line": 147,
+      "text": "        }"
+    },
+    {
+      "line": 148,
+      "text": ""
+    },
+    {
+      "line": 149,
+      "text": "        /// Begins a synchronous insert-key observation window. Pair with `endAttempt`"
+    },
+    {
+      "line": 150,
+      "text": "        /// using `defer`; never carry its ordinal across an asynchronous boundary."
+    },
+    {
+      "line": 151,
+      "text": "        public func beginAttempt(appearanceOrdinal: UInt64) -> UInt64? {"
+    },
+    {
+      "line": 152,
+      "text": "            let now = clock()"
+    },
+    {
+      "line": 153,
+      "text": "            return state.withLock { value in"
+    },
+    {
+      "line": 154,
+      "text": "                value.refreshExpiry(now: now)"
+    },
+    {
+      "line": 155,
+      "text": "                guard value.lifecycle == .armed else { return nil }"
+    },
+    {
+      "line": 156,
+      "text": "                guard value.activeAttemptOrdinal == 0 else {"
+    },
+    {
+      "line": 157,
+      "text": "                    // Reentrant input cannot borrow the outer attempt's identity."
+    },
+    {
+      "line": 158,
+      "text": "                    value.invalidAttemptContext = true"
+    },
+    {
+      "line": 159,
+      "text": "                    value.activeAttemptOrdinal = 0"
+    },
+    {
+      "line": 160,
+      "text": "                    return nil"
+    },
+    {
+      "line": 161,
+      "text": "                }"
+    },
+    {
+      "line": 162,
+      "text": ""
+    },
+    {
+      "line": 163,
+      "text": "                let (next, overflow) = value.lastAttemptOrdinal.addingReportingOverflow(1)"
+    },
+    {
+      "line": 164,
+      "text": "                guard !overflow, next != 0 else { return nil }"
+    },
+    {
+      "line": 165,
+      "text": "                value.lastAttemptOrdinal = next"
+    },
+    {
+      "line": 166,
+      "text": "                value.activeAttemptOrdinal = next"
+    },
+    {
+      "line": 167,
+      "text": "                value.appearanceOrdinal = appearanceOrdinal"
+    },
+    {
+      "line": 168,
+      "text": "                return next"
+    },
+    {
+      "line": 169,
+      "text": "            }"
+    },
+    {
+      "line": 170,
+      "text": "        }"
+    },
+    {
+      "line": 171,
+      "text": ""
+    },
+    {
+      "line": 172,
+      "text": "        @discardableResult"
+    },
+    {
+      "line": 173,
+      "text": "        public func endAttempt(_ attemptOrdinal: UInt64) -> Bool {"
+    },
+    {
+      "line": 174,
+      "text": "            state.withLock { value in"
+    },
+    {
+      "line": 175,
+      "text": "                guard value.lifecycle == .armed,"
+    },
+    {
+      "line": 176,
+      "text": "                    attemptOrdinal != 0,"
+    },
+    {
+      "line": 177,
+      "text": "                    value.activeAttemptOrdinal == attemptOrdinal"
+    },
+    {
+      "line": 178,
+      "text": "                else {"
+    },
+    {
+      "line": 179,
+      "text": "                    return false"
+    },
+    {
+      "line": 180,
+      "text": "                }"
+    }
+  ]
+}

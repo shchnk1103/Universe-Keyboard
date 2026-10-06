@@ -1,0 +1,113 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+InputActions.swift",
+  "origin_sha256": "16abce7d6e6752be641ea333cc60706217c9d84211f1007315850acbc62ee2ae",
+  "expected_sha256": "16abce7d6e6752be641ea333cc60706217c9d84211f1007315850acbc62ee2ae",
+  "line_start": 181,
+  "line_end": 206,
+  "lines": [
+    {
+      "line": 181,
+      "text": "        emitKeyPressFeedbackIfNeeded(for: sender)"
+    },
+    {
+      "line": 182,
+      "text": "        let quote = nextSmartDoubleQuote(contextBeforeInput: textDocumentProxy.documentContextBeforeInput)"
+    },
+    {
+      "line": 183,
+      "text": "        let effects = controller.handle(.insertDirectText(quote))"
+    },
+    {
+      "line": 184,
+      "text": "        syncUI(with: effects)"
+    },
+    {
+      "line": 185,
+      "text": "    }"
+    },
+    {
+      "line": 186,
+      "text": ""
+    },
+    {
+      "line": 187,
+      "text": "    private func nextSmartDoubleQuote(contextBeforeInput: String?) -> String {"
+    },
+    {
+      "line": 188,
+      "text": "        guard let contextBeforeInput, !contextBeforeInput.isEmpty else { return \"“\" }"
+    },
+    {
+      "line": 189,
+      "text": ""
+    },
+    {
+      "line": 190,
+      "text": "        let openingCount = contextBeforeInput.filter { $0 == \"“\" }.count"
+    },
+    {
+      "line": 191,
+      "text": "        let closingCount = contextBeforeInput.filter { $0 == \"”\" }.count"
+    },
+    {
+      "line": 192,
+      "text": ""
+    },
+    {
+      "line": 193,
+      "text": "        // 第一次输入左引号；如果已有未闭合的左引号，下一次输入右引号。"
+    },
+    {
+      "line": 194,
+      "text": "        // 一旦左右引号都被删除，光标前不再包含它们，下一次又会回到左引号。"
+    },
+    {
+      "line": 195,
+      "text": "        if openingCount == 0 && closingCount == 0 { return \"“\" }"
+    },
+    {
+      "line": 196,
+      "text": "        if openingCount > closingCount { return \"”\" }"
+    },
+    {
+      "line": 197,
+      "text": "        return \"”\""
+    },
+    {
+      "line": 198,
+      "text": "    }"
+    },
+    {
+      "line": 199,
+      "text": ""
+    },
+    {
+      "line": 200,
+      "text": "    @objc func insertEmoji(_ sender: UIButton) {"
+    },
+    {
+      "line": 201,
+      "text": "        guard let emoji = sender.title(for: .normal) else { return }"
+    },
+    {
+      "line": 202,
+      "text": "        emitKeyPressFeedbackIfNeeded(for: sender)"
+    },
+    {
+      "line": 203,
+      "text": "        let effects = controller.handle(.insertEmoji(emoji))"
+    },
+    {
+      "line": 204,
+      "text": "        syncUI(with: effects)"
+    },
+    {
+      "line": 205,
+      "text": "    }"
+    },
+    {
+      "line": 206,
+      "text": "}"
+    }
+  ]
+}

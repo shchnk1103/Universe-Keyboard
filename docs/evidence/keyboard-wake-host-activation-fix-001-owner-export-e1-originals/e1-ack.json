@@ -1,0 +1,146 @@
+{
+  "phase": "E1_ACK",
+  "status": "E1_ACK_HOST_PASS",
+  "utc": "2026-10-06T04:04:50.830967+00:00",
+  "monotonic_ns": 1393798037029583,
+  "first_e1_tool_started": {
+    "ts": "2026-10-06T04:02:52.798Z",
+    "type": "tool_started",
+    "tool_name": "read_file"
+  },
+  "calls_completed_before_this_shell": 12,
+  "calls_including_this_shell": 13,
+  "budget_calls": 48,
+  "cleanup_reserved": 12,
+  "non_cleanup_stop_before_call": 36,
+  "worktree": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "staged": 0,
+  "hashes": {
+    "entry": "d3673a274ee76fb35cd6bae04723d3ea6a3e1deba6a55da540be4b1b71adf7e0",
+    "binding": "2f2f90d94dc9116b30aabed7f8a14b7cdc6670b18d0cfc30d8145c127554a1b3",
+    "auth": "c6cdfa40f69e3397bbe77b97f33581e714b90836003cbbd6861eee204c1a21a9",
+    "handoff": "98936d2a2f56e2c7745ab273b7564e312a39c0081cf420a2300775fe29c79c66",
+    "owner_export_callback.py": "5fc756ed525ebb3c71b91a208615eb34249da535617461426399dc61d5cf52e8",
+    "host_preflight.py": "146766c07c6b372b3a4edacb367f02cd0058ead0688a1d80cf6fa0bc537468eb",
+    "decoder.py": "fc1817ab8843dab76acd9e8ae59277719c059742bb105eebecbc60a66f58775d",
+    "lldb-format-suppress.lldb": "ca06f497c0f2e1d4591e57e59d9d21e1830cf5cda8d359e333cd36645acdf6c9",
+    "e0-correction-preflight-results.json": "57c0738349ec0b4c5d05b90b478120ddd5662a8509f52cf8c7ff169efed238b5",
+    "e0-call-ledger.json": "3d9daaf97e60f81f10a9f29beb2abeb4f96dd7c77234931c7a2989785a308695"
+  },
+  "auth_sha256": "c6cdfa40f69e3397bbe77b97f33581e714b90836003cbbd6861eee204c1a21a9",
+  "dirty_default_lines": 920,
+  "dirty_untracked_all_lines": 2161,
+  "dirty_default_sha256": "062d067b7a7ea3c7f6f17f2e559831c17f21f3147ce789bd0d43db267cb1eab0",
+  "dirty_untracked_all_sha256": "b724fcadab981aed874a8d020555dbf8447c9dd5c458374df78b017f7c4a2282",
+  "source_counts": {
+    "source_tree": 358,
+    "app": 168,
+    "vendor": 630,
+    "sum": 1156
+  },
+  "source_bad": {
+    "source_tree": [],
+    "app": [],
+    "vendor": []
+  },
+  "candidate_payload_ok": 78,
+  "candidate_payload_bad": [],
+  "manifest_meta": {
+    "source-tree-manifest.json": {
+      "sha256": "61606efa4db41e88416d9b1763264fb96b2f50d5d927530424a7168aa8860827",
+      "bytes": 73805,
+      "entry_count": 358,
+      "top_keys": [
+        "stage",
+        "algorithm",
+        "file_count",
+        "aggregate_digest_sha256",
+        "roots_or_vendor",
+        "exclusions",
+        "membership_recomputed",
+        "files"
+      ]
+    },
+    "app-source-manifest.json": {
+      "sha256": "df7f539eadb27a683efa81e477e0fb69a0e05e7a36fc8c737c5f9b7703e7b99e",
+      "bytes": 32601,
+      "entry_count": 168,
+      "top_keys": [
+        "stage",
+        "algorithm",
+        "file_count",
+        "aggregate_digest_sha256",
+        "roots_or_vendor",
+        "exclusions",
+        "membership_recomputed",
+        "files"
+      ]
+    },
+    "vendor-byte-manifest.json": {
+      "sha256": "54c5d67d284c12ce630f3c17e42954f733bcb6e0117892a5b970b34d189437b5",
+      "bytes": 144326,
+      "entry_count": 630,
+      "top_keys": [
+        "stage",
+        "algorithm",
+        "file_count",
+        "aggregate_digest_sha256",
+        "roots_or_vendor",
+        "exclusions",
+        "membership_recomputed",
+        "files"
+      ]
+    },
+    "payload-manifest.json": {
+      "sha256": "dbc6cfd07c713219c2cec09fdd3d87ab688485dce3d685ee3a915e74ea35786b",
+      "bytes": 13677,
+      "entry_count": 78,
+      "top_keys": "list"
+    },
+    "paired-products.json": {
+      "sha256": "14b647b6eebde9ad3b5ce62948028fcee72b92192193fd40fa444619950836db",
+      "bytes": 6532,
+      "entry_count": 4,
+      "top_keys": "list"
+    }
+  },
+  "live_present": {
+    "callback.json": false,
+    "callback-stage.json": false,
+    "callback-private.json": false,
+    "owner-args.json": false,
+    "owner-buffer.bin": false
+  },
+  "synthetic": {
+    "dir": true,
+    "callback.json": true,
+    "marker": true
+  },
+  "mismatches": [],
+  "device_queries": 0,
+  "production_edits": 0,
+  "e0_preflight_rerun": false,
+  "dirty_delta": {
+    "kind": "authorized_e0_e1_evidence_and_auth_additions_only",
+    "source_paths_changed": [],
+    "added_default": [
+      "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e0-correction-2026-10-06.md",
+      "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e0-received-e1-budget-2026-10-06.md",
+      "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e0-root-checkpoint-2026-10-06.md",
+      "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-grok-handoff-2026-10-06.md"
+    ],
+    "added_untracked_all_extra": [
+      "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-prepared-artifacts/e0-correction-root-receipt.json",
+      "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-prepared-artifacts/e0-root-checkpoint.json",
+      "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-prepared-artifacts/e1-grok-authorization.json"
+    ],
+    "e0_dirty_preserved": true,
+    "not_source_drift": true
+  },
+  "host_ready": true,
+  "live_entry_ready": false,
+  "human_gate": "await_reinstall_and_close_apps",
+  "utc_host_pass": "2026-10-06T04:06:31.102417+00:00"
+}

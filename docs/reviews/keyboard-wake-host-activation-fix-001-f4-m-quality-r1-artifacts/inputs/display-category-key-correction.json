@@ -1,0 +1,29 @@
+{
+  "utc": "2026-10-06T01:21:50.404742+00:00",
+  "actual_display_category_key": "log_category_disp",
+  "source": "Logger.categoryToggleKey(raw DISP.lowercased) and DiagnosticsSettingsView logging toggle changes only logging key",
+  "display_original_value": {
+    "exists": false,
+    "value": null
+  },
+  "historical_prepared_wrong_display_key": "log_category_display kept as separate original field; not actual Logger display key",
+  "states_now": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "log_category_disp": {
+      "exists": false,
+      "value": null
+    },
+    "log_category_display": {
+      "exists": false,
+      "value": null
+    }
+  },
+  "category_not_toggled_by_root": true
+}

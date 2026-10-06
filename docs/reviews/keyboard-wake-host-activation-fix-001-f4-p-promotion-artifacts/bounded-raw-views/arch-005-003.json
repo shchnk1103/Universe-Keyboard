@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+  "origin_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+  "expected_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+  "line_start": 121,
+  "line_end": 180,
+  "lines": [
+    {
+      "line": 121,
+      "text": "    var keyboardHeightConstraint: NSLayoutConstraint?"
+    },
+    {
+      "line": 122,
+      "text": "    /// 根布局容器，垂直排列候选栏 + 4 行按键"
+    },
+    {
+      "line": 123,
+      "text": "    var rootStack: UIStackView!"
+    },
+    {
+      "line": 124,
+      "text": "    /// 候选栏的容器视图（包含 scrollView + 展开按钮）"
+    },
+    {
+      "line": 125,
+      "text": "    var candidateBar: UIView!"
+    },
+    {
+      "line": 126,
+      "text": "    /// 候选词横向滚动区域"
+    },
+    {
+      "line": 127,
+      "text": "    var candidateScrollView: UIScrollView!"
+    },
+    {
+      "line": 128,
+      "text": "    /// 横向候选集合视图，按需复用可见 cell"
+    },
+    {
+      "line": 129,
+      "text": "    var candidateCollectionView: UICollectionView?"
+    },
+    {
+      "line": 130,
+      "text": "    var lastCompactCandidateCommitTime: CFTimeInterval = 0"
+    },
+    {
+      "line": 131,
+      "text": "    /// 地球键（输入法切换），iOS 要求所有第三方键盘必须提供"
+    },
+    {
+      "line": 132,
+      "text": "    var nextKeyboardButton: UIButton!"
+    },
+    {
+      "line": 133,
+      "text": "    /// Shift 键，位于第 3 行左侧"
+    },
+    {
+      "line": 134,
+      "text": "    var shiftButton: UIButton!"
+    },
+    {
+      "line": 135,
+      "text": "    /// 回车键，位于最后一行最右侧"
+    },
+    {
+      "line": 136,
+      "text": "    var returnButton: UIButton!"
+    },
+    {
+      "line": 137,
+      "text": "    /// 所有字母键按钮的引用，用于 Shift 状态下批量刷新标题"
+    },
+    {
+      "line": 138,
+      "text": "    var letterButtons: [UIButton] = []"
+    },
+    {
+      "line": 139,
+      "text": "    #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT"
+    },
+    {
+      "line": 140,
+      "text": "        /// S6-A only: visible letter-group buttons in canonical slot order."
+    },
+    {
+      "line": 141,
+      "text": "        var devicePreflightT9LetterGroupButtons: [UIButton] = []"
+    },
+    {
+      "line": 142,
+      "text": "        var devicePreflightRunToken: String?"
+    },
+    {
+      "line": 143,
+      "text": "        var devicePreflightPreparedGeometryDigest: String?"
+    },
+    {
+      "line": 144,
+      "text": "        var devicePreflightDidRecordExecutionGeometry = false"
+    },
+    {
+      "line": 145,
+      "text": "    #endif"
+    },
+    {
+      "line": 146,
+      "text": ""
+    },
+    {
+      "line": 147,
+      "text": "    // MARK: - 业务逻辑控制器"
+    },
+    {
+      "line": 148,
+      "text": ""
+    },
+    {
+      "line": 149,
+      "text": "    /// 状态机核心，处理所有按键逻辑（纯逻辑，无 UI 依赖）"
+    },
+    {
+      "line": 150,
+      "text": "    var controller: KeyboardController!"
+    },
+    {
+      "line": 151,
+      "text": ""
+    },
+    {
+      "line": 152,
+      "text": "    #if T9_RESPONSIVE_CANARY_INTERNAL"
+    },
+    {
+      "line": 153,
+      "text": "        /// Unique MainActor mode authority for the internal CANARY-001 artifact."
+    },
+    {
+      "line": 154,
+      "text": "        /// Ordinary Release does not compile this storage or its call sites."
+    },
+    {
+      "line": 155,
+      "text": "        let responsiveCanaryModeCoordinator = ResponsiveRimeCanaryModeCoordinator()"
+    },
+    {
+      "line": 156,
+      "text": "        var responsiveCanaryRunID = \"\""
+    },
+    {
+      "line": 157,
+      "text": "        var responsiveCanaryExpiryTimer: Timer?"
+    },
+    {
+      "line": 158,
+      "text": "        var responsiveCanaryConfigurationMonitor: Timer?"
+    },
+    {
+      "line": 159,
+      "text": "        /// Defers fail-closed state mutation until visibility teardown has had an"
+    },
+    {
+      "line": 160,
+      "text": "        /// unconditional chance to destroy the live owner."
+    },
+    {
+      "line": 161,
+      "text": "        var responsiveCanaryVisibilityContractFailure = false"
+    },
+    {
+      "line": 162,
+      "text": "    #endif"
+    },
+    {
+      "line": 163,
+      "text": ""
+    },
+    {
+      "line": 164,
+      "text": "    #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS"
+    },
+    {
+      "line": 165,
+      "text": "        /// Host-driven P3-D1 evidence identity. The runner may provide a short"
+    },
+    {
+      "line": 166,
+      "text": "        /// token; otherwise each controller process receives a unique fallback."
+    },
+    {
+      "line": 167,
+      "text": "        /// It is diagnostic metadata only and never contains document content."
+    },
+    {
+      "line": 168,
+      "text": "        var p3d1LifecycleRunID: String = {"
+    },
+    {
+      "line": 169,
+      "text": "            let raw ="
+    },
+    {
+      "line": 170,
+      "text": "                ProcessInfo.processInfo.environment[\"P3_D1_T02_T03_RUN_ID\"]"
+    },
+    {
+      "line": 171,
+      "text": "                ?? \"P3D1-T02-T03-\\(UUID().uuidString)\""
+    },
+    {
+      "line": 172,
+      "text": "            let sanitized = raw.unicodeScalars.filter {"
+    },
+    {
+      "line": 173,
+      "text": "                CharacterSet.alphanumerics.contains($0)"
+    },
+    {
+      "line": 174,
+      "text": "                    || $0 == \"-\""
+    },
+    {
+      "line": 175,
+      "text": "                    || $0 == \"_\""
+    },
+    {
+      "line": 176,
+      "text": "            }"
+    },
+    {
+      "line": 177,
+      "text": "            let value = String(String.UnicodeScalarView(sanitized))"
+    },
+    {
+      "line": 178,
+      "text": "            return String(value.prefix(96))"
+    },
+    {
+      "line": 179,
+      "text": "        }()"
+    },
+    {
+      "line": 180,
+      "text": "        var p3d1LifecycleLastCleared = false"
+    }
+  ]
+}

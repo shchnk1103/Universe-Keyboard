@@ -1,0 +1,7 @@
+{
+  "original_view_path": "bounded-raw-views/arch-011-001.json",
+  "original_view_sha256": "4451280e4b61d4e3dd75e69884214a74200b7a2c8d1acbb5a9127f0d644a3317",
+  "raw_json_character_start": 6000,
+  "raw_json_character_end_exclusive": 6235,
+  "raw_json_slice": " 44,\n      \"text\": \"[步骤原始回执](keyboard-wake-host-activation-fix-001-a2-validation-execution-artifacts/step-receipts.json)；[产物manifest](keyboard-wake-host-activation-fix-001-a2-validation-execution-artifacts/manifest.json)。\"\n    }\n  ]\n}\n"
+}

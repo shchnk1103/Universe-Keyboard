@@ -1,0 +1,153 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-artifacts/historical-app-keyboard-skip-list.json",
+  "origin_sha256": "ae5c4ed1ddbfd2fa738fc47fb055fa70a0e079db57c425882a8a6355c03be31f",
+  "expected_sha256": "ae5c4ed1ddbfd2fa738fc47fb055fa70a0e079db57c425882a8a6355c03be31f",
+  "line_start": 121,
+  "line_end": 156,
+  "lines": [
+    {
+      "line": 121,
+      "text": "      \"nodeType\": \"Test Case\","
+    },
+    {
+      "line": 122,
+      "text": "      \"result\": \"Skipped\""
+    },
+    {
+      "line": 123,
+      "text": "    },"
+    },
+    {
+      "line": 124,
+      "text": "    {"
+    },
+    {
+      "line": 125,
+      "text": "      \"children\": ["
+    },
+    {
+      "line": 126,
+      "text": "        {"
+    },
+    {
+      "line": 127,
+      "text": "          \"name\": \"Test skipped - TD-012 G2 cleanup is physical-device-only\","
+    },
+    {
+      "line": 128,
+      "text": "          \"nodeType\": \"Skip Message\""
+    },
+    {
+      "line": 129,
+      "text": "        }"
+    },
+    {
+      "line": 130,
+      "text": "      ],"
+    },
+    {
+      "line": 131,
+      "text": "      \"duration\": \"0.00081s\","
+    },
+    {
+      "line": 132,
+      "text": "      \"durationInSeconds\": 0.0008099079132080078,"
+    },
+    {
+      "line": 133,
+      "text": "      \"name\": \"testRemovePinnedModelAfterAuthorizedPhysicalDeviceSpike()\","
+    },
+    {
+      "line": 134,
+      "text": "      \"nodeIdentifier\": \"TD012LMDGDeviceStagingTests/testRemovePinnedModelAfterAuthorizedPhysicalDeviceSpike()\","
+    },
+    {
+      "line": 135,
+      "text": "      \"nodeIdentifierURL\": \"test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/TD012LMDGDeviceStagingTests/testRemovePinnedModelAfterAuthorizedPhysicalDeviceSpike\","
+    },
+    {
+      "line": 136,
+      "text": "      \"nodeType\": \"Test Case\","
+    },
+    {
+      "line": 137,
+      "text": "      \"result\": \"Skipped\""
+    },
+    {
+      "line": 138,
+      "text": "    },"
+    },
+    {
+      "line": 139,
+      "text": "    {"
+    },
+    {
+      "line": 140,
+      "text": "      \"children\": ["
+    },
+    {
+      "line": 141,
+      "text": "        {"
+    },
+    {
+      "line": 142,
+      "text": "          \"name\": \"Test skipped - TD-012 G2 staging is physical-device-only\","
+    },
+    {
+      "line": 143,
+      "text": "          \"nodeType\": \"Skip Message\""
+    },
+    {
+      "line": 144,
+      "text": "        }"
+    },
+    {
+      "line": 145,
+      "text": "      ],"
+    },
+    {
+      "line": 146,
+      "text": "      \"duration\": \"0.0011s\","
+    },
+    {
+      "line": 147,
+      "text": "      \"durationInSeconds\": 0.0011199712753295898,"
+    },
+    {
+      "line": 148,
+      "text": "      \"name\": \"testStagePinnedModelForAuthorizedPhysicalDeviceSpike()\","
+    },
+    {
+      "line": 149,
+      "text": "      \"nodeIdentifier\": \"TD012LMDGDeviceStagingTests/testStagePinnedModelForAuthorizedPhysicalDeviceSpike()\","
+    },
+    {
+      "line": 150,
+      "text": "      \"nodeIdentifierURL\": \"test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/TD012LMDGDeviceStagingTests/testStagePinnedModelForAuthorizedPhysicalDeviceSpike\","
+    },
+    {
+      "line": 151,
+      "text": "      \"nodeType\": \"Test Case\","
+    },
+    {
+      "line": 152,
+      "text": "      \"result\": \"Skipped\""
+    },
+    {
+      "line": 153,
+      "text": "    }"
+    },
+    {
+      "line": 154,
+      "text": "  ],"
+    },
+    {
+      "line": 155,
+      "text": "  \"disposition\": \"Human accept current F2 only; skipped not passed; actor diagnostics not accepted\""
+    },
+    {
+      "line": 156,
+      "text": "}"
+    }
+  ]
+}

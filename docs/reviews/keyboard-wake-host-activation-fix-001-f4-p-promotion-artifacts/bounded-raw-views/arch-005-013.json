@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+  "origin_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+  "expected_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+  "line_start": 721,
+  "line_end": 780,
+  "lines": [
+    {
+      "line": 721,
+      "text": "            guard isHighFidelityDiagnosticsActive, let expiration = highFidelityDiagnosticsExpiration"
+    },
+    {
+      "line": 722,
+      "text": "            else {"
+    },
+    {
+      "line": 723,
+      "text": "                cancelCandidateVisibilityDiagnostic()"
+    },
+    {
+      "line": 724,
+      "text": "                resetCandidateTouchDiagnosticCorrelation()"
+    },
+    {
+      "line": 725,
+      "text": "                return"
+    },
+    {
+      "line": 726,
+      "text": "            }"
+    },
+    {
+      "line": 727,
+      "text": "            let remaining = max(0, expiration.timeIntervalSinceNow)"
+    },
+    {
+      "line": 728,
+      "text": "            highFidelityExpirationTask = Task { [weak self] in"
+    },
+    {
+      "line": 729,
+      "text": "                try? await Task.sleep(for: .seconds(remaining))"
+    },
+    {
+      "line": 730,
+      "text": "                guard !Task.isCancelled else { return }"
+    },
+    {
+      "line": 731,
+      "text": "                self?.isHighFidelityDiagnosticsActive = false"
+    },
+    {
+      "line": 732,
+      "text": "                self?.highFidelityDiagnosticsExpiration = nil"
+    },
+    {
+      "line": 733,
+      "text": "                self?.cancelCandidateVisibilityDiagnostic()"
+    },
+    {
+      "line": 734,
+      "text": "                self?.resetCandidateTouchDiagnosticCorrelation()"
+    },
+    {
+      "line": 735,
+      "text": "            }"
+    },
+    {
+      "line": 736,
+      "text": "        }"
+    },
+    {
+      "line": 737,
+      "text": "    #endif"
+    },
+    {
+      "line": 738,
+      "text": ""
+    },
+    {
+      "line": 739,
+      "text": "    private func stopRimeSyncActivityHeartbeat() {"
+    },
+    {
+      "line": 740,
+      "text": "        rimeSyncActivityHeartbeatTimer?.invalidate()"
+    },
+    {
+      "line": 741,
+      "text": "        rimeSyncActivityHeartbeatTimer = nil"
+    },
+    {
+      "line": 742,
+      "text": "        // Do not write UserDefaults while the extension is crossing into suspension."
+    },
+    {
+      "line": 743,
+      "text": "        // The heartbeat has a short expiry, so the main App conservatively delays sync"
+    },
+    {
+      "line": 744,
+      "text": "        // instead of risking another App Group file lock at this boundary."
+    },
+    {
+      "line": 745,
+      "text": "    }"
+    },
+    {
+      "line": 746,
+      "text": ""
+    },
+    {
+      "line": 747,
+      "text": "    /// viewWillLayoutSubviews 在子视图布局之前调用。"
+    },
+    {
+      "line": 748,
+      "text": "    /// Apple 文档要求：在此更新 needsInputModeSwitchKey 的可见性。"
+    },
+    {
+      "line": 749,
+      "text": "    /// 该属性告知系统是否需要显示\"地球键\"让用户在多个键盘间切换。"
+    },
+    {
+      "line": 750,
+      "text": "    /// 如果返回 true 但不显示地球键，用户将无法切换到其他键盘（违反 App Store 审核要求）。"
+    },
+    {
+      "line": 751,
+      "text": "    override func viewWillLayoutSubviews() {"
+    },
+    {
+      "line": 752,
+      "text": "        // Apple 文档明确要求：在此生命周期方法中更新地球键可见性"
+    },
+    {
+      "line": 753,
+      "text": "        // 这是因为 needsInputModeSwitchKey 的值可能在键盘生命周期中改变"
+    },
+    {
+      "line": 754,
+      "text": "        // （例如用户启用了新键盘），必须实时响应"
+    },
+    {
+      "line": 755,
+      "text": "        nextKeyboardButton?.isHidden = !needsInputModeSwitchKey"
+    },
+    {
+      "line": 756,
+      "text": "        if keyboardSurfaceView != nil {"
+    },
+    {
+      "line": 757,
+      "text": "            applyKeyboardSurfaceStyle()"
+    },
+    {
+      "line": 758,
+      "text": "        }"
+    },
+    {
+      "line": 759,
+      "text": "        super.viewWillLayoutSubviews()"
+    },
+    {
+      "line": 760,
+      "text": "    }"
+    },
+    {
+      "line": 761,
+      "text": ""
+    },
+    {
+      "line": 762,
+      "text": "    /// viewDidLayoutSubviews 记录系统实际采用的输入视图尺寸。"
+    },
+    {
+      "line": 763,
+      "text": "    /// 若仍出现临时高度，此日志可区分系统容器行为与已安装内容布局。"
+    },
+    {
+      "line": 764,
+      "text": "    private var lastLoggedBounds: CGRect = .zero"
+    },
+    {
+      "line": 765,
+      "text": ""
+    },
+    {
+      "line": 766,
+      "text": "    override func viewDidLayoutSubviews() {"
+    },
+    {
+      "line": 767,
+      "text": "        super.viewDidLayoutSubviews()"
+    },
+    {
+      "line": 768,
+      "text": ""
+    },
+    {
+      "line": 769,
+      "text": "        // Nested nine-key stacks finish layout after the root stack. Build the"
+    },
+    {
+      "line": 770,
+      "text": "        // shared hit-test/overlay snapshot only at this stable UIKit boundary."
+    },
+    {
+      "line": 771,
+      "text": "        (rootStack as? KeyboardInputHitAreaStackView)?.refreshKeyTouchGeometry()"
+    },
+    {
+      "line": 772,
+      "text": ""
+    },
+    {
+      "line": 773,
+      "text": "        // 仅在 bounds 变化时记录（避免 layout 循环时刷屏日志）"
+    },
+    {
+      "line": 774,
+      "text": "        if view.bounds != lastLoggedBounds {"
+    },
+    {
+      "line": 775,
+      "text": "            lastLoggedBounds = view.bounds"
+    },
+    {
+      "line": 776,
+      "text": "            Logger.shared.debug("
+    },
+    {
+      "line": 777,
+      "text": "                \"viewDidLayoutSubviews: bounds=\\(view.bounds)\","
+    },
+    {
+      "line": 778,
+      "text": "                category: .display"
+    },
+    {
+      "line": 779,
+      "text": "            )"
+    },
+    {
+      "line": 780,
+      "text": "        }"
+    }
+  ]
+}

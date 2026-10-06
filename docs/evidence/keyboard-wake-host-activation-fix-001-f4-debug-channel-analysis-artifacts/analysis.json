@@ -1,0 +1,138 @@
+{
+  "utc": "2026-10-06T01:58:21.328372+00:00",
+  "scope": "Host-only read-only analysis; no LLDB launch/attach, fixture code, build, tests or device queries",
+  "input_identities": {
+    "export_frame_callback.py": "007465da72774d7d70bd12ca71d06d5c4df131ed5cde687ba17e6460c24d9989",
+    "pty-transcript.txt": "bb1dd9c59ce38bb4b18eff258f49e18e6700b11f31b7b14f3674e584093a1a5f",
+    "export-frame.json": "b15594b0323dae8aa7bb6564e7caa253bac9350510a7dd5a4f3690ac3fdc4394",
+    "pre-attach.json": "daa589c5804ad2adf2dfec75e8cf6eea24421a6081167b32f2c80510806be3b8"
+  },
+  "local_api": {
+    "path": "/Applications/Xcode.app/Contents/SharedFrameworks/LLDB.framework/Resources/Python/lldb/__init__.py",
+    "sha256": "05ffe26562e7efd331fd775eaf78c85c5327925ce7015a698c3c22c5723e4109",
+    "extracts": [
+      {
+        "class": "SBBreakpoint",
+        "method": "SetScriptCallbackFunction",
+        "line": 3154,
+        "end_line": 3163,
+        "source": "def SetScriptCallbackFunction(self, *args):\n        r\"\"\"\n        SetScriptCallbackFunction(SBBreakpoint self, char const * callback_function_name)\n        SetScriptCallbackFunction(SBBreakpoint self, char const * callback_function_name, SBStructuredData extra_args) -> SBError\n\n            Set the name of the script function to be called when the breakpoint is hit.\n            To use this variant, the function should take (frame, bp_loc, extra_args, internal_dict) and\n            when the breakpoint is hit the extra_args will be passed to the callback function.\n        \"\"\"\n        return _lldb.SBBreakpoint_SetScriptCallbackFunction(self, *args)"
+      },
+      {
+        "class": "SBBreakpoint",
+        "method": "SetScriptCallbackBody",
+        "line": 3173,
+        "end_line": 3186,
+        "source": "def SetScriptCallbackBody(self, script_body_text):\n        r\"\"\"\n        SetScriptCallbackBody(SBBreakpoint self, char const * script_body_text) -> SBError\n\n            Provide the body for the script function to be called when the breakpoint is hit.\n            The body will be wrapped in a function, which be passed two arguments:\n            'frame' - which holds the bottom-most SBFrame of the thread that hit the breakpoint\n            'bpno'  - which is the SBBreakpointLocation to which the callback was attached.\n\n            The error parameter is currently ignored, but will at some point hold the Python\n            compilation diagnostics.\n            Returns true if the body compiles successfully, false if not.\n        \"\"\"\n        return _lldb.SBBreakpoint_SetScriptCallbackBody(self, script_body_text)"
+      },
+      {
+        "class": "SBBreakpointLocation",
+        "method": "GetID",
+        "line": 3429,
+        "end_line": 3431,
+        "source": "def GetID(self):\n        r\"\"\"GetID(SBBreakpointLocation self) -> lldb::break_id_t\"\"\"\n        return _lldb.SBBreakpointLocation_GetID(self)"
+      },
+      {
+        "class": "SBBreakpointLocation",
+        "method": "GetAddress",
+        "line": 3443,
+        "end_line": 3445,
+        "source": "def GetAddress(self):\n        r\"\"\"GetAddress(SBBreakpointLocation self) -> SBAddress\"\"\"\n        return _lldb.SBBreakpointLocation_GetAddress(self)"
+      },
+      {
+        "class": "SBBreakpointLocation",
+        "method": "GetBreakpoint",
+        "line": 3570,
+        "end_line": 3572,
+        "source": "def GetBreakpoint(self):\n        r\"\"\"GetBreakpoint(SBBreakpointLocation self) -> SBBreakpoint\"\"\"\n        return _lldb.SBBreakpointLocation_GetBreakpoint(self)"
+      },
+      {
+        "class": "SBFrame",
+        "method": "GetFrameID",
+        "line": 7355,
+        "end_line": 7357,
+        "source": "def GetFrameID(self):\n        r\"\"\"GetFrameID(SBFrame self) -> uint32_t\"\"\"\n        return _lldb.SBFrame_GetFrameID(self)"
+      },
+      {
+        "class": "SBFrame",
+        "method": "GetPC",
+        "line": 7371,
+        "end_line": 7373,
+        "source": "def GetPC(self):\n        r\"\"\"GetPC(SBFrame self) -> lldb::addr_t\"\"\"\n        return _lldb.SBFrame_GetPC(self)"
+      },
+      {
+        "class": "SBFrame",
+        "method": "GetPCAddress",
+        "line": 7387,
+        "end_line": 7389,
+        "source": "def GetPCAddress(self):\n        r\"\"\"GetPCAddress(SBFrame self) -> SBAddress\"\"\"\n        return _lldb.SBFrame_GetPCAddress(self)"
+      },
+      {
+        "class": "SBFrame",
+        "method": "GetThread",
+        "line": 7536,
+        "end_line": 7538,
+        "source": "def GetThread(self):\n        r\"\"\"GetThread(SBFrame self) -> SBThread\"\"\"\n        return _lldb.SBFrame_GetThread(self)"
+      },
+      {
+        "class": "SBProcess",
+        "method": "GetState",
+        "line": 10865,
+        "end_line": 10867,
+        "source": "def GetState(self):\n        r\"\"\"GetState(SBProcess self) -> lldb::StateType\"\"\"\n        return _lldb.SBProcess_GetState(self)"
+      },
+      {
+        "class": "SBProcess",
+        "method": "GetStopID",
+        "line": 10947,
+        "end_line": 10957,
+        "source": "def GetStopID(self, include_expression_stops=False):\n        r\"\"\"\n        GetStopID(SBProcess self, bool include_expression_stops=False) -> uint32_t\n\n            Returns a stop id that will increase every time the process executes.  If\n            include_expression_stops is true, then stops caused by expression evaluation\n            will cause the returned value to increase, otherwise the counter returned will\n            only increase when execution is continued explicitly by the user.  Note, the value\n            will always increase, but may increase by more than one per stop.\n        \"\"\"\n        return _lldb.SBProcess_GetStopID(self, include_expression_stops)"
+      },
+      {
+        "class": "SBThread",
+        "method": "GetStopReasonDataCount",
+        "line": 14710,
+        "end_line": 14717,
+        "source": "def GetStopReasonDataCount(self):\n        r\"\"\"\n        GetStopReasonDataCount(SBThread self) -> size_t\n\n            Get the number of words associated with the stop reason.\n            See also GetStopReasonDataAtIndex().\n        \"\"\"\n        return _lldb.SBThread_GetStopReasonDataCount(self)"
+      },
+      {
+        "class": "SBThread",
+        "method": "GetStopReasonDataAtIndex",
+        "line": 14719,
+        "end_line": 14743,
+        "source": "def GetStopReasonDataAtIndex(self, idx):\n        r\"\"\"\n        GetStopReasonDataAtIndex(SBThread self, uint32_t idx) -> uint64_t\n\n            Get information associated with a stop reason.\n\n            Breakpoint stop reasons will have data that consists of pairs of\n            breakpoint IDs followed by the breakpoint location IDs (they always come\n            in pairs).\n\n            Stop Reason              Count Data Type\n            ======================== ===== =========================================\n            eStopReasonNone          0\n            eStopReasonTrace         0\n            eStopReasonBreakpoint    N     duple: {breakpoint id, location id}\n            eStopReasonWatchpoint    1     watchpoint id\n            eStopReasonSignal        1     unix signal number\n            eStopReasonException     N     exception data\n            eStopReasonExec          0\n            eStopReasonFork          1     pid of the child process\n            eStopReasonVFork         1     pid of the child process\n            eStopReasonVForkDone     0\n            eStopReasonPlanComplete  0\n        \"\"\"\n        return _lldb.SBThread_GetStopReasonDataAtIndex(self, idx)"
+      },
+      {
+        "class": "SBThread",
+        "method": "GetFrameAtIndex",
+        "line": 14980,
+        "end_line": 14982,
+        "source": "def GetFrameAtIndex(self, idx):\n        r\"\"\"GetFrameAtIndex(SBThread self, uint32_t idx) -> SBFrame\"\"\"\n        return _lldb.SBThread_GetFrameAtIndex(self, idx)"
+      }
+    ]
+  },
+  "official_reference": "https://lldb.llvm.org/use/tutorials/breakpoint-triggered-scripts.html",
+  "facts": {
+    "callback_signature": "export_hit(frame,bp_loc,internal_dict)",
+    "uses_callback_argument_not_global_lldb_frame": true,
+    "resolved_location": "0x0000000105f7efa0, Keyboard.debug.dylib, wakeOwnerProbeExportReady + 60",
+    "cli_initial_attach_frame0": "0x0000000104b18b5c libsystem_kernel.dylib mach_msg2_trap + 8",
+    "cli_breakpoint_stop_frame0": "0x0000000104b18b5c libsystem_kernel.dylib mach_msg2_trap + 8",
+    "callback_frame_pc_recorded": false,
+    "callback_breakpoint_location_recorded": false,
+    "callback_thread_id_or_stop_id_recorded": false,
+    "memory_snapshot_reads": 0
+  },
+  "inferences": [
+    "CLI stop frame looks unchanged from initial attach; stale frame cache or stop/transport synchronization is a candidate explanation, not demonstrated root cause.",
+    "Changing callback to use its frame argument is not a new remedy: it already does so.",
+    "Changing expected UUID to observed system-module UUID would weaken identity gate and is forbidden.",
+    "Cannot recover missing callback frame identity/arguments from saved metadata, breakpoint address or selected-frame replacement."
+  ],
+  "unresolved": [
+    "actual frame PC vs bp location at same stop",
+    "same-stop thread and breakpoint IDs",
+    "whether discrepancy reproduces without simulator in isolated host fixture",
+    "whether host-only tool success transfers to Simulator appex (not assumed)"
+  ]
+}

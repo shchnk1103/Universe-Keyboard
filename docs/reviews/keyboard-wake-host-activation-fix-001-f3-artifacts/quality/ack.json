@@ -1,0 +1,35 @@
+{
+  "reviewer": "/root/m2r2_quality_r1",
+  "lane_id": "F3-quality-implementation",
+  "round": 1,
+  "packet_sha256": "34a37a0b8f3dbeba81b015c78985adc295c69440f0f913bc5a18d2ad108cb281",
+  "packet_digest_verified": true,
+  "independence": {
+    "not_root": true,
+    "not_repository_writer": true,
+    "basis": "本reviewer仅承担冻结包指定的独立Quality lane；未实施本候选。"
+  },
+  "responsibility": "仅执行lanes.quality，独立判断F3候选能否进入另行授权的F4；不判Maps或Release。",
+  "scope_acknowledged": {
+    "allowed_read_files_only": true,
+    "1156_build_inputs_hash_only": true,
+    "xcresulttool_read_only_on_enumerated_bundles_only": true,
+    "forbidden_actions": "源码/仓库写、build/test/lint重跑、Simulator/LLDB/Git/network、用户容器数据、执行作者helpers"
+  },
+  "budget_acknowledged": {
+    "tool_calls": 24,
+    "wall_minutes": 20,
+    "checkpoints": [
+      8,
+      16,
+      21
+    ],
+    "reserve_final_output_calls": 3
+  },
+  "readable_outputs_acknowledged": [
+    "/private/tmp/ukey-host-activation-fix-f3-20261004/quality/ack.json",
+    "/private/tmp/ukey-host-activation-fix-f3-20261004/quality/review.md",
+    "/private/tmp/ukey-host-activation-fix-f3-20261004/quality/usage.json"
+  ],
+  "ack_utc": "2026-10-04T14:59:43.350494+00:00"
+}

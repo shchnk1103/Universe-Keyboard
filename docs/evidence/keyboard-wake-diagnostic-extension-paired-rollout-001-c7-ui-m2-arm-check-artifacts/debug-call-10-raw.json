@@ -1,0 +1,26 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "\n🐛 Continue\n\nErrors (1):\n\n  ✗ threads failed: notStopped\n\n❌ Failed to resume debugger.\n"
+    }
+  ],
+  "structuredContent": {
+    "schema": "xcodebuildmcp.output.debug-session-action",
+    "schemaVersion": "2",
+    "didError": true,
+    "error": "Failed to resume debugger.",
+    "data": {
+      "diagnostics": {
+        "warnings": [],
+        "errors": [
+          {
+            "message": "threads failed: notStopped"
+          }
+        ]
+      },
+      "action": "continue"
+    }
+  },
+  "isError": true
+}
