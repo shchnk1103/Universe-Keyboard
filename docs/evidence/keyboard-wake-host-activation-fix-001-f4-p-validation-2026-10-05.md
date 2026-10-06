@@ -8,7 +8,7 @@
 
 [执行Entry/完整argv](keyboard-wake-host-activation-fix-001-f4-p-artifacts/execution-entry.json)与[构建请求](keyboard-wake-host-activation-fix-001-f4-p-artifacts/build-request.json)使用新独立 `/private/tmp/ukey-host-activation-fix-f4-p-build-20261005`，generic/platform=iOS Simulator、arm64 standalone Debug、DEBUG+KEYBOARD_WAKE_OWNER_PROBE、complete concurrency、warnings-as-errors、不抑制warning、adhoc签名。structured argv保持literal $(inherited)，不做shell展开。没有指定真实device实例或执行test。
 
-[实际构建](keyboard-wake-host-activation-fix-001-f4-p-artifacts/build-receipt.json)exit0/no timeout、33.435秒；日志BUILD SUCCEEDED。[实际compiler行](keyboard-wake-host-activation-fix-001-f4-p-artifacts/actual-compiler-flags.json)两个target均含DEBUG、KEYBOARD_WAKE_OWNER_PROBE、Swift6、warnings-as-errors，无内部canary或fake生命周期harness。[原log](keyboard-wake-host-activation-fix-001-f4-p-artifacts/build.log)Swift warning/error0，保留2条AppIntents metadata工具warning，不声称全日志zero-warning。
+[实际构建](keyboard-wake-host-activation-fix-001-f4-p-artifacts/build-receipt.json)exit0/no timeout、33.435秒；日志BUILD SUCCEEDED。[实际compiler行](keyboard-wake-host-activation-fix-001-f4-p-artifacts/actual-compiler-flags.json)两个target均含DEBUG、KEYBOARD_WAKE_OWNER_PROBE、Swift6、warnings-as-errors，无内部canary或fake生命周期harness。原log (`keyboard-wake-host-activation-fix-001-f4-p-artifacts/build.log`)Swift warning/error0，保留2条AppIntents metadata工具warning，不声称全日志zero-warning。
 
 ## 新配对产物身份
 

@@ -98,7 +98,7 @@ F2需AGENTS完整矩阵：KeyboardCore swift test；iOS RimeBridgeTests Debug te
 
 ## F2 actor-test-fix Prepared Entry — 2026-10-04
 
-[单文件修正Entry](../evidence/keyboard-wake-host-activation-fix-001-f2-actor-test-fix-prepared-entry-2026-10-04.md)仅覆盖`KeyboardHostLifecycleRecoveryGateTests.swift`的同步`setUp`七条MainActor警告。状态Prepared、未执行、未改源码。旧版本健康确认不得作新候选证据。交Codex核验后再申请实施与测试环境授权。
+单文件修正Entry (`../evidence/keyboard-wake-host-activation-fix-001-f2-actor-test-fix-prepared-entry-2026-10-04.md`)仅覆盖`KeyboardHostLifecycleRecoveryGateTests.swift`的同步`setUp`七条MainActor警告。状态Prepared、未执行、未改源码。旧版本健康确认不得作新候选证据。交Codex核验后再申请实施与测试环境授权。
 
 ## F2 actor修正接收与定点复验Hold — 2026-10-04
 
@@ -118,7 +118,7 @@ Human“可以按照你的建议继续”授权root此前建议的F3独立实现
 
 ## A2-F1 first-frame guard Prepared Entry — 2026-10-04
 
-[首帧防护Entry](../evidence/keyboard-wake-host-activation-fix-001-a2-f1-first-frame-guard-prepared-entry-2026-10-04.md)拟改Controller、Bootstrap、RecoveryGate、GateTests四文件；pbx保持。generation+arm token传入回调，失活/重arm后旧tick为no-op，仅当前可见窗口可arm。状态Prepared、未执行、未改源码。Q2-R1与Quality超时不在范围。交Codex核验后再申请实施与测试授权。
+首帧防护Entry (`../evidence/keyboard-wake-host-activation-fix-001-a2-f1-first-frame-guard-prepared-entry-2026-10-04.md`)拟改Controller、Bootstrap、RecoveryGate、GateTests四文件；pbx保持。generation+arm token传入回调，失活/重arm后旧tick为no-op，仅当前可见窗口可arm。状态Prepared、未执行、未改源码。Q2-R1与Quality超时不在范围。交Codex核验后再申请实施与测试授权。
 
 ## A2-F1四文件修正接收 — 2026-10-04
 

@@ -25,7 +25,7 @@ WorkItem `KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001`，lane `UK-WAKE
 - `DiagnosticsLogSourceTests/testV6HistoriesPropagateCompletenessThroughCompositeQuery()` 在 focused 与 full App 的 `ActionTestMetadata` 均为 Success；新用例包含在 full App 429 中。
 - Keychain 用例在 unsigned App full tree 中是 Skipped，但在 signed lane 的唯一 bottom node 中为 Success。unsigned skip 仍保留为 skip；这是独立 1/1 证据。
 - full App 429 与历史 v5 raw 428 对得上新增的一个 v6 测试；Assignment 的历史记录明确写明 v5 raw xcodebuild 与 xcresult 为 428 actual cases。此次不做 count-only rerun。
-- 当前完整 skip ID 与原因清单仍见不可变的 [round 1 Q5 表](quality-review.md#skipped-with-reason)。本轮验证了 20+10 个底层 skip identities 与摘要 / raw log 的映射；两条 CS09-10-01 的逐项原因以本轮核对为准：
+- 当前完整 skip ID 与原因清单仍见不可变的 round 1 Q5 表 (`quality-review.md#skipped-with-reason`)。本轮验证了 20+10 个底层 skip identities 与摘要 / raw log 的映射；两条 CS09-10-01 的逐项原因以本轮核对为准：
   - `SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerIceRemovalPreservesCompleteWanxiangInventory()` → `CS09-10-01 requires the fixed Wanxiang extract tree`。
   - `SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerWanxiangRemovalPreservesCompleteIceInventory()` → `CS09-10-01 requires the fixed Ice extract tree`。
 

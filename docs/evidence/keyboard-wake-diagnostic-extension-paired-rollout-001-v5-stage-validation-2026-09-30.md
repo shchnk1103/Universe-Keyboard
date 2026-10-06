@@ -3,8 +3,8 @@
 ## Identity
 
 - Assignment: [KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001](../assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md)
-- Stage authorization: [v5 compatibility candidate validation](../product-decisions/KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001-v5-stage-authorization-2026-09-30.md), SHA-256 `7204731eb1af58ab428b56235e0602aeff86373f395fbf9e7681bb5cf0576375`
-- Entry receipt: [v5 stage Entry](keyboard-wake-diagnostic-extension-paired-rollout-001-v5-stage-entry-2026-09-30.md), SHA-256 `d0f5092e458778ec0e1eac387edcdf3dd9f8e9bc7dc6d9983e9fce9228727842`
+- Stage authorization: v5 compatibility candidate validation (`../product-decisions/KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001-v5-stage-authorization-2026-09-30.md`), SHA-256 `7204731eb1af58ab428b56235e0602aeff86373f395fbf9e7681bb5cf0576375`
+- Entry receipt: v5 stage Entry (`keyboard-wake-diagnostic-extension-paired-rollout-001-v5-stage-entry-2026-09-30.md`), SHA-256 `d0f5092e458778ec0e1eac387edcdf3dd9f8e9bc7dc6d9983e9fce9228727842`
 - Worktree / branch: `/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard` / `codex/keyboard-wake-v3-compatibility-gate`
 - Base commit: `84b9c19227330b0fe6ff391be001ee398010fd6a`
 - Candidate source/test manifest r2: [manifest](keyboard-wake-diagnostic-v3-compatibility-gate-001-source-test-manifest-2026-09-29-r2.json), SHA-256 `c75a75bd8ed180149a7bc8cb6c26a5fa5e4f5cbec122eede980f73a4d8cef835`

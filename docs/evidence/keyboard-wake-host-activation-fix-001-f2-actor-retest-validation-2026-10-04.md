@@ -27,7 +27,7 @@ Human回复“同意”，仅本轮接受上述provenance例外。原停止回�
 - root严格lint exit0；untracked no-index白空格exit1无diagnostics，符合差异语义；未in-place format或改源码。
 - [xcresult summary](keyboard-wake-host-activation-fix-001-f2-actor-retest-artifacts/gate-summary.json)及[17项实际列表](keyboard-wake-host-activation-fix-001-f2-actor-retest-artifacts/gate-actual-results.json)均为17 Passed / 0 Failed / 0 Skipped，方法与当前17 authored方法精确匹配。
 - [编译诊断及覆盖核验](keyboard-wake-host-activation-fix-001-f2-actor-retest-artifacts/diagnostic-and-gate-verification.json)证明新测试文件实际SwiftCompile；gate/current/foreign/resumeCount/rearmCount/firstFrameCount/suspendCount七条原诊断逐项为0，当前测试文件warning/error为0，日志actor相关诊断为0。
-- [完整编译日志](keyboard-wake-host-activation-fix-001-f2-actor-retest-artifacts/focused.log)仍有4条AppIntents metadata extraction skipped工具警告，与原七条actor诊断不同。不声称全日志zero-warning。
+- 完整编译日志 (`keyboard-wake-host-activation-fix-001-f2-actor-retest-artifacts/focused.log`)仍有4条AppIntents metadata extraction skipped工具警告，与原七条actor诊断不同。不声称全日志zero-warning。
 - 1156输入执行后hash不变；其余四实施文件保留，唯一测试文件为`b4e8c6c1fdb79dc9f27ff3355e705a0dae0f45a07f9fb4610a51e43a7256b8bf`。
 
 ### 环境Exit

@@ -12,7 +12,7 @@ Human“授权继续做H0”授20actualcalls/20分钟。状态：**Partial：基
 
 断点删除、detach成功、夹具/helper退出码均0，LLDB命令exit0；无强制终止。callback时间至清理结束上界由UTC可复算，详completion。五生产源码hash/branch/HEAD/staged0保持。不操作模拟器/已安装App/容器偏好，不建大备份、不清旧备份。
 
-本轮12/20actualcalls，详细六批wrapper+nested账本及墙钟见[completion.json](keyboard-wake-host-activation-fix-001-h0-artifacts/completion.json)。[原始PTY](keyboard-wake-host-activation-fix-001-h0-artifacts/lldb-transcript.txt)、作者脚本/夹具/收据/hash清单齐。private binary与原件保留于`/private/tmp/ukey-host-activation-fix-h0-20261006`。
+本轮12/20actualcalls，详细六批wrapper+nested账本及墙钟见[completion.json](keyboard-wake-host-activation-fix-001-h0-artifacts/completion.json)。原始PTY (`keyboard-wake-host-activation-fix-001-h0-artifacts/lldb-transcript.txt`)、作者脚本/夹具/收据/hash清单齐。private binary与原件保留于`/private/tmp/ukey-host-activation-fix-h0-20261006`。
 
 ## 最小补齐提案：H0b（Prepared，未执行）
 

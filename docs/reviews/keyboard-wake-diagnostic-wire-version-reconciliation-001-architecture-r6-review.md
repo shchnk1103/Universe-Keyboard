@@ -3,7 +3,7 @@
 - Work item: \`KEYBOARD-WAKE-DIAGNOSTIC-WIRE-VERSION-RECONCILIATION-001\`
 - Lane: Architecture & Knowledge Steward
 - Reviewer runtime: \`/root/wire_arch_v6_r6\` (GPT-6 Luna)
-- Packet: [Architecture R6 packet](keyboard-wake-diagnostic-wire-version-reconciliation-001-architecture-r6-packet.md)
+- Packet: Architecture R6 packet (`keyboard-wake-diagnostic-wire-version-reconciliation-001-architecture-r6-packet.md`)
 - Packet SHA-256: \`b5042e18752e6d920c9cf0be09d7f601416e66f827d91b137adaa9dc9953e778\`
 - Assignment reviewed-scope SHA-256: \`edf450b3dbfbe621849d0fbf6bc641518cbc22e992fde6239034d05d2e7729c6\`
 - Assignment current full-file SHA-256: \`6e94b19c21157a6b444158728d5cc294debb20b710b8498348eed3ef7bfb7585\`

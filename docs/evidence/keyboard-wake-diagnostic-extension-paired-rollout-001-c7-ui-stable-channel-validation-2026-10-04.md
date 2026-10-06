@@ -12,7 +12,7 @@ Human“未操作”后，三个PID及启动时间匹配；同PTY process status
 
 ## 证据与限制
 
-[PTY原文](keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-stable-channel-artifacts/pty-transcript.txt)、[Exit](keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-stable-channel-artifacts/exit-result.json)、[保全清单](keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-stable-channel-artifacts/preservation.json)。request时间和进程metadata另存；PTY原文逐行时间未嵌入，实际目标pause起点UNKNOWN，不能补造。该原生预检不套用MCP calls计数，也不是独立Quality/Architecture/Gate。
+PTY原文 (`keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-stable-channel-artifacts/pty-transcript.txt`)、[Exit](keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-stable-channel-artifacts/exit-result.json)、[保全清单](keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-stable-channel-artifacts/preservation.json)。request时间和进程metadata另存；PTY原文逐行时间未嵌入，实际目标pause起点UNKNOWN，不能补造。该原生预检不套用MCP calls计数，也不是独立Quality/Architecture/Gate。
 
 原M2R1因工具session失效仍Incomplete，旧断点delete/detach缺失原回执保留；本轮新native session不冒充其延续。后续新的Maps完整配对窗口应重新核独占、未重装/部署、静止保护和新实例，再分别冻操作/读取预算；不得沿现已消费/过期probe直接续采。此预检授权不含新复现、进程退出、安装或恢复。
 

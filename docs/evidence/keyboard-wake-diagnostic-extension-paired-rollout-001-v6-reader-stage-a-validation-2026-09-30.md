@@ -26,6 +26,6 @@ App新增一项表驱动直接Composite query测试：v6-only、mixed-complete�
 
 Stage B需要另行授权新鲜指定Simulator独占窗口及完整CI矩阵，运行真实App target并完成exact-candidate独立评审。Stage C需要旧API/parent patch可审核字节、writer/producer source ownership与另行实施授权。paired二进制身份/promotion/install/Maps依赖仍未满足。
 
-V5-Q-001继续428接受不重跑；V5-Q-002/003继续v5-only未验证环境残项，20+10 skips不是通过。之前Release bundle原七文件hash匹配，新增database.sqlite3时间及invocation identity与后续xcresulttool query相符，保留executor-recorded高置信归因与无syscall证明限制；[差异核验](/private/tmp/ukey-wake-v6-decision-20260930-01a0f254/release-evidence-reconciliation.md)。不改旧manifest/删除database/宣称新Quality关闭。
+V5-Q-001继续428接受不重跑；V5-Q-002/003继续v5-only未验证环境残项，20+10 skips不是通过。之前Release bundle原七文件hash匹配，新增database.sqlite3时间及invocation identity与后续xcresulttool query相符，保留executor-recorded高置信归因与无syscall证明限制；差异核验 (`/private/tmp/ukey-wake-v6-decision-20260930-01a0f254/release-evidence-reconciliation.md`)。不改旧manifest/删除database/宣称新Quality关闭。
 
 duplicate JSON member detection仍未实现。没有根因、行为修复、生产marker发射、模拟器/安装/Maps、完整CI、可合并、Product/Quality Gate、Release或closure。Accepted ADR合同无需本阶段改写；CHANGELOG留待正式集成/发布阶段决定，本切片不扩围编辑。

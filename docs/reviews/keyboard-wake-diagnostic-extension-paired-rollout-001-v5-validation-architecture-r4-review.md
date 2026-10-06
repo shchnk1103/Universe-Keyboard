@@ -62,4 +62,4 @@ No v6 implementation or promotion, production marker emission, Maps reproduction
 
 ## Review usage
 
-See the [R4 usage record](../evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-v5-validation-architecture-r4-usage-2026-09-30.md).
+See the R4 usage record (`../evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-v5-validation-architecture-r4-usage-2026-09-30.md`).

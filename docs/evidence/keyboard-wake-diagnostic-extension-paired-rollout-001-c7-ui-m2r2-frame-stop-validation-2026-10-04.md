@@ -18,7 +18,7 @@ native step09查询断点/帧/8帧栈/static address-byteCount：断点1 resolve
 
 native step10：delete自身断点1、list无断点、continue resuming、process detach明确55759 detached、quit code0。最终55759 Ss/flags0x4004/P_TRACED clear，55990/55991退出；安装/source/保护/诊断与部署只读再核一致。无恢复/安装/重新部署/新源码构建测试/Git动作。人工视觉Exit已确认状态保留，只观察未追加试打。
 
-10native工具步骤/20request-response账本顺序与全部raw SHA核验，PTY原文与Human原话保全。[保全清单](keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m2r2-artifacts/preservation.json)、[PTY](keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m2r2-artifacts/pty-transcript.txt)、[停止记录](keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m2r2-artifacts/freeze-stop.json)、[cleanup](keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m2r2-artifacts/cleanup-exit.json)。实际target pause开始UNKNOWN；收到Human回复的精准客户端时刻未独立采，用工具首次followup UTC和记录时刻分开，不补造。10steps包含启动/轮询和多命令批次，不冒充10个LLDB命令。
+10native工具步骤/20request-response账本顺序与全部raw SHA核验，PTY原文与Human原话保全。[保全清单](keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m2r2-artifacts/preservation.json)、PTY (`keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m2r2-artifacts/pty-transcript.txt`)、[停止记录](keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m2r2-artifacts/freeze-stop.json)、[cleanup](keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m2r2-artifacts/cleanup-exit.json)。实际target pause开始UNKNOWN；收到Human回复的精准客户端时刻未独立采，用工具首次followup UTC和记录时刻分开，不补造。10steps包含启动/轮询和多命令批次，不冒充10个LLDB命令。
 
 ## 后续边界
 

@@ -1,6 +1,6 @@
 # A2-F1 四文件实施交付接收 — 2026-10-04
 
-Human转交Grok已按当前Prepared Entry实施的结果，root只读接收，不并写源码。既定worktree、branch、HEAD `84b9c19227330b0fe6ff391be001ee398010fd6a`与staged0符合；[Entry](keyboard-wake-host-activation-fix-001-a2-f1-first-frame-guard-prepared-entry-2026-10-04.md)不改。Grok作者报告已停止写入，未编译/测试/操作模拟器/Maps/Git；format/lint exit0及约20调用、低于20分钟仍只按转交摘要记录，没有原命令/逐调用账本原件，不冒称root复跑或预算机器核验。
+Human转交Grok已按当前Prepared Entry实施的结果，root只读接收，不并写源码。既定worktree、branch、HEAD `84b9c19227330b0fe6ff391be001ee398010fd6a`与staged0符合；Entry (`keyboard-wake-host-activation-fix-001-a2-f1-first-frame-guard-prepared-entry-2026-10-04.md`)不改。Grok作者报告已停止写入，未编译/测试/操作模拟器/Maps/Git；format/lint exit0及约20调用、低于20分钟仍只按转交摘要记录，没有原命令/逐调用账本原件，不冒称root复跑或预算机器核验。
 
 ## 字节与差量核验
 

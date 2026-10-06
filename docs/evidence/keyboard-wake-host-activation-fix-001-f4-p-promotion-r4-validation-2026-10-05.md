@@ -8,6 +8,6 @@ Quality原runtime round4耗尽4/4actualcalls，两批按错误schema寻找reader
 
 root用保留空格的完整正则复算原stdout、paired stdout、argv最后参数、module相对路径及两SHA，四项全部对应；[事实回执](../reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r4-artifacts/root-four-path-facts.json)列出完整值，**不是独立Quality结论，不将Q-P1改Covered**。这是审查流程失败，不是已证明的候选失败；旧Q-P2/3/4覆盖保持。
 
-不再沿失败实例续审。已准备[四条纯文本原记录](../reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r4-artifacts/four-path-flat-reader-prepared.txt)，明确不需要standalone字段；下一最小提案是更换独立GPT6 Luna执行实例，只核四条与R3文字/标签一致性，新4calls/300秒待Human决定。未创建或派发。F4-I仍Blocked且未授权；全部旧报告/备份保持。
+不再沿失败实例续审。已准备四条纯文本原记录 (`../reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r4-artifacts/four-path-flat-reader-prepared.txt`)，明确不需要standalone字段；下一最小提案是更换独立GPT6 Luna执行实例，只核四条与R3文字/标签一致性，新4calls/300秒待Human决定。未创建或派发。F4-I仍Blocked且未授权；全部旧报告/备份保持。
 
 本轮root只读复算1156冻结源码/App/Vendor、13pinned及78payload/配对摘要d53523db…符合；branch/HEAD符合，staged0。未改源码、编译、测试、Git发布、诊断配置、模拟器、安装、LLDB或Maps。无CHANGELOG/ADR修改。

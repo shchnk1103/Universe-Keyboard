@@ -1,6 +1,6 @@
 # Stage A Evidence Addendum — V3 Compatibility Gate 001
 
-This addendum supplements, and does not rewrite, the frozen [Stage A host-validation record](keyboard-wake-diagnostic-v3-compatibility-gate-001-stage-a-host-validation-2026-09-29.md).
+This addendum supplements, and does not rewrite, the frozen Stage A host-validation record (`keyboard-wake-diagnostic-v3-compatibility-gate-001-stage-a-host-validation-2026-09-29.md`).
 
 ## Identity
 

@@ -43,7 +43,7 @@ Human 2026-10-02：“那请你先把取证链准备完整吧”。本轮 C7-C-P
 
 ## Export / LLDB有限读取卡
 
-本机无target的`xcrun lldb --batch ... help`已核验命令选项，[帮助回执](../evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-prep-artifacts/lldb-help.txt)不是attach/ABI可用性证明。未来先核验实际symbol与image；可使用：
+本机无target的`xcrun lldb --batch ... help`已核验命令选项，帮助回执 (`../evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-prep-artifacts/lldb-help.txt`)不是attach/ABI可用性证明。未来先核验实际symbol与image；可使用：
 
 ```text
 breakpoint set --func-regex 'wakeOwnerProbeExportReady' --shlib Keyboard.debug.dylib
