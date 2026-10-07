@@ -28,8 +28,8 @@ extension KeyboardController {
             return []
         }
         if let partialCommit = state.partialCommit,
-           partialCommit.source == .numberSuffix,
-           let firstCandidate = state.lastRimeOutput?.candidates.first?.text
+            partialCommit.source == .numberSuffix,
+            let firstCandidate = state.lastRimeOutput?.candidates.first?.text
         {
             commitInlinePreedit(as: firstCandidate, source: .space)
             state.currentComposition = ""
@@ -188,9 +188,9 @@ extension KeyboardController {
     func handleDeleteBackward() -> KeyboardEffect {
         // Rem-3: Delete while L1-only (no L2 yet) — drop one provisional slot.
         if isResponsiveProvisionalAhead,
-           isResponsiveRimePipelineEnabled,
-           isThreadAffineRimeOwnerEnabled,
-           (rimeEngine?.isComposing() != true || state.lastRimeOutput == nil)
+            isResponsiveRimePipelineEnabled,
+            isThreadAffineRimeOwnerEnabled,
+            (rimeEngine?.isComposing() != true || state.lastRimeOutput == nil)
         {
             // Still enqueue engine delete for FIFO; clear local L1 length immediately
             // after ordered apply via align helper below.
@@ -243,10 +243,10 @@ extension KeyboardController {
             // Confirmed Path identity: force RIME back onto Core (anti fan-fan).
             // restoreFocused already resyncs when confirmed non-empty.
             if restoredFocus,
-               state.t9PinyinPathState.confirmedSegmentValues.isEmpty == false,
-               state.lastRimeOutput?.composition?.preeditText
-                   .replacingOccurrences(of: " ", with: "")
-                   .contains("fanfan") == true
+                state.t9PinyinPathState.confirmedSegmentValues.isEmpty == false,
+                state.lastRimeOutput?.composition?.preeditText
+                    .replacingOccurrences(of: " ", with: "")
+                    .contains("fanfan") == true
             {
                 _ = resyncRimeCompositionFromT9Identity()
             }
@@ -255,9 +255,9 @@ extension KeyboardController {
             // digit input mode so retyping rediscovers Path like first entry.
             // Do not override short letter peels (`to`→`t`) owned by visible delete.
             if state.t9PinyinPathState.confirmedSegmentValues.isEmpty,
-               let digits = state.t9PinyinPathState.segmentSourceDigits,
-               digits.count > 3,
-               digits.allSatisfy(\.isNumber)
+                let digits = state.t9PinyinPathState.segmentSourceDigits,
+                digits.count > 3,
+                digits.allSatisfy(\.isNumber)
             {
                 var pathState = state.t9PinyinPathState
                 pathState.selectedPath = nil
@@ -275,11 +275,11 @@ extension KeyboardController {
                 state.t9PinyinPathState = pathState
             }
             #if DEBUG
-            gate5TraceComposition(
-                event: .deleteBackward,
-                previousRaw: previousRawForTrace,
-                note: "restoredFocus=\(restoredFocus)"
-            )
+                gate5TraceComposition(
+                    event: .deleteBackward,
+                    previousRaw: previousRawForTrace,
+                    note: "restoredFocus=\(restoredFocus)"
+                )
             #endif
             return restoredFocus
                 ? .compositionChanged.union(.t9PinyinPathsChanged)
@@ -291,20 +291,22 @@ extension KeyboardController {
             if T9CompositionCommitPolicy.isActiveT9Composition(
                 usesT9InputSemantics: usesT9InputSemantics,
                 rawInput: state.currentComposition
-            ) || T9CompositionCommitPolicy.isActiveT9Composition(
-                usesT9InputSemantics: usesT9InputSemantics,
-                rawInput: state.lastRimeOutput?.rawInput
-            ) {
+            )
+                || T9CompositionCommitPolicy.isActiveT9Composition(
+                    usesT9InputSemantics: usesT9InputSemantics,
+                    rawInput: state.lastRimeOutput?.rawInput
+                )
+            {
                 if state.currentComposition.isEmpty {
                     clearInlinePreedit()
                     state.lastRimeOutput = nil
                     _ = clearT9PinyinPathStateReturningEffect()
                 } else if let engine = rimeEngine,
-                          restoreRimeComposition(
-                            state.currentComposition,
-                            using: engine,
-                            rebuildSession: true
-                          )
+                    restoreRimeComposition(
+                        state.currentComposition,
+                        using: engine,
+                        rebuildSession: true
+                    )
                 {
                     return .compositionChanged
                 } else {
@@ -325,6 +327,24 @@ extension KeyboardController {
         return clearContinuation()
     }
 
+    /// Scrub and clear-all delete exactly one grapheme before the cursor.
+    ///
+    /// Pending punctuation or kaomoji ownership is dropped first. The closer
+    /// after the cursor stays put; this path does not call `removeOwnedHostSpan`.
+    public func deleteOneGraphemeBeforeCursor() -> KeyboardEffect {
+        var effects = KeyboardEffect()
+        if state.pendingPunctuation != nil {
+            state.pendingPunctuation = nil
+            effects.insert(.pendingPunctuationChanged)
+        }
+        if state.pendingKaomoji != nil {
+            state.pendingKaomoji = nil
+            effects.insert(.pendingKaomojiChanged)
+        }
+        effects.formUnion(handleDeleteBackward())
+        return effects
+    }
+
     /// After a nested candidate undo, an apostrophe-anchored raw keeps the
     /// confirmed Path Bar prefix on the left and the unresolved tail on the
     /// right (`qiu'53` / visible `qiule`). Delete follows last-entered input:
@@ -334,26 +354,29 @@ extension KeyboardController {
         using engine: RimeEngine
     ) -> KeyboardEffect? {
         guard let partialCommit = state.partialCommit,
-              partialCommit.checkpoint == nil,
-              partialCommit.source != .numberSuffix,
-              let rawInput = state.lastRimeOutput?.rawInput,
-              T9CompositionCommitPolicy.isActiveT9Composition(
+            partialCommit.checkpoint == nil,
+            partialCommit.source != .numberSuffix,
+            let rawInput = state.lastRimeOutput?.rawInput,
+            T9CompositionCommitPolicy.isActiveT9Composition(
                 usesT9InputSemantics: usesT9InputSemantics,
                 rawInput: rawInput
-              ),
-              let boundary = rawInput.lastIndex(of: "'"),
-              rawInput.index(after: boundary) < rawInput.endIndex
+            ),
+            let boundary = rawInput.lastIndex(of: "'"),
+            rawInput.index(after: boundary) < rawInput.endIndex
         else { return nil }
 
         let confirmedRaw = String(rawInput[..<boundary])
-        guard confirmedRaw.unicodeScalars.contains(
-            where: T9PinyinPathExtractor.isASCIILetter
-        ) else { return nil }
+        guard
+            confirmedRaw.unicodeScalars.contains(
+                where: T9PinyinPathExtractor.isASCIILetter
+            )
+        else { return nil }
 
         let unresolvedRaw = String(rawInput[rawInput.index(after: boundary)...])
         guard !unresolvedRaw.isEmpty else { return nil }
         let shortenedUnresolvedRaw = String(unresolvedRaw.dropLast())
-        let shortenedRaw = shortenedUnresolvedRaw.isEmpty
+        let shortenedRaw =
+            shortenedUnresolvedRaw.isEmpty
             ? confirmedRaw
             : confirmedRaw + "'" + shortenedUnresolvedRaw
 
@@ -370,8 +393,8 @@ extension KeyboardController {
         let previousRaw = rawInput
         let output = engine.replaceInput(shortenedRaw)
         guard output.committedText == nil,
-              output.composition?.preeditText.isEmpty == false,
-              T9PinyinPathExtractor.normalizeRawIdentity(output.rawInput)
+            output.composition?.preeditText.isEmpty == false,
+            T9PinyinPathExtractor.normalizeRawIdentity(output.rawInput)
                 == T9PinyinPathExtractor.normalizeRawIdentity(shortenedRaw)
         else {
             // Preserve the coherent pre-delete state when RIME rejects the
@@ -400,11 +423,11 @@ extension KeyboardController {
         updateInlinePreedit(displayText, source: .compositionProjection)
         clearTypoCorrectionSuggestions()
         #if DEBUG
-        gate5TraceComposition(
-            event: .deleteBackward,
-            previousRaw: previousRaw,
-            note: "branch=confirmedFocus success=true"
-        )
+            gate5TraceComposition(
+                event: .deleteBackward,
+                previousRaw: previousRaw,
+                note: "branch=confirmedFocus success=true"
+            )
         #endif
         return .compositionChanged.union(.t9PinyinPathsChanged)
     }
@@ -415,13 +438,13 @@ extension KeyboardController {
     /// their existing state-machine paths before reaching this helper.
     private func handleVisibleT9PinyinDeleteIfNeeded(using engine: RimeEngine) -> KeyboardEffect? {
         guard state.partialCommit == nil,
-              state.t9PinyinPathState.selectedPath == nil,
-              state.t9PinyinPathState.confirmedSegmentValues.isEmpty,
-              T9CompositionCommitPolicy.isActiveT9Composition(
+            state.t9PinyinPathState.selectedPath == nil,
+            state.t9PinyinPathState.confirmedSegmentValues.isEmpty,
+            T9CompositionCommitPolicy.isActiveT9Composition(
                 usesT9InputSemantics: usesT9InputSemantics,
                 rawInput: state.lastRimeOutput?.rawInput
-              ),
-              let shortened = deletingLastVisibleT9Letter(from: state.insertedPreeditText)
+            ),
+            let shortened = deletingLastVisibleT9Letter(from: state.insertedPreeditText)
         else { return nil }
 
         let previousRaw = state.lastRimeOutput?.rawInput ?? state.currentComposition
@@ -433,26 +456,26 @@ extension KeyboardController {
             updateInlinePreedit("", source: .compositionProjection)
             clearTypoCorrectionSuggestions()
             #if DEBUG
-            gate5TraceComposition(
-                event: .deleteBackward,
-                previousRaw: previousRaw,
-                note: "branch=visibleSpelling emptied=true"
-            )
+                gate5TraceComposition(
+                    event: .deleteBackward,
+                    previousRaw: previousRaw,
+                    note: "branch=visibleSpelling emptied=true"
+                )
             #endif
             return .compositionChanged.union(clearT9PinyinPathStateReturningEffect())
         }
 
         let output = engine.replaceInput(shortened)
         guard output.committedText == nil,
-              output.composition?.preeditText.isEmpty == false,
-              T9PinyinPathExtractor.normalizeRawIdentity(output.rawInput)
+            output.composition?.preeditText.isEmpty == false,
+            T9PinyinPathExtractor.normalizeRawIdentity(output.rawInput)
                 == T9PinyinPathExtractor.normalizeRawIdentity(shortened)
         else {
             // Let the existing engine Delete/rollback path handle rejection.
             let restored = engine.replaceInput(previousRaw)
             if restored.composition?.preeditText.isEmpty == false,
-               T9PinyinPathExtractor.normalizeRawIdentity(restored.rawInput)
-                == T9PinyinPathExtractor.normalizeRawIdentity(previousRaw)
+                T9PinyinPathExtractor.normalizeRawIdentity(restored.rawInput)
+                    == T9PinyinPathExtractor.normalizeRawIdentity(previousRaw)
             {
                 return nil
             }
@@ -466,11 +489,11 @@ extension KeyboardController {
             updateInlinePreedit("", source: .compositionProjection)
             clearTypoCorrectionSuggestions()
             #if DEBUG
-            gate5TraceComposition(
-                event: .deleteBackward,
-                previousRaw: previousRaw,
-                note: "branch=visibleSpelling rejected=true cleared=true"
-            )
+                gate5TraceComposition(
+                    event: .deleteBackward,
+                    previousRaw: previousRaw,
+                    note: "branch=visibleSpelling rejected=true cleared=true"
+                )
             #endif
             return .compositionChanged.union(clearT9PinyinPathStateReturningEffect())
         }
@@ -487,11 +510,11 @@ extension KeyboardController {
         // exact shortened spelling until the next explicit input/refinement.
         updateInlinePreedit(shortened, source: .compositionProjection)
         #if DEBUG
-        gate5TraceComposition(
-            event: .deleteBackward,
-            previousRaw: previousRaw,
-            note: "branch=visibleSpelling success=true"
-        )
+            gate5TraceComposition(
+                event: .deleteBackward,
+                previousRaw: previousRaw,
+                note: "branch=visibleSpelling success=true"
+            )
         #endif
         return .compositionChanged.union(.t9PinyinPathsChanged)
     }
@@ -499,10 +522,12 @@ extension KeyboardController {
     private func deletingLastVisibleT9Letter(from text: String) -> String? {
         guard !text.isEmpty else { return nil }
         var scalars = Array(text.unicodeScalars)
-        guard scalars.allSatisfy({
-            T9PinyinPathExtractor.isASCIILetter($0)
-                || T9PinyinPathExtractor.isASCIISeparator($0)
-        }) else { return nil }
+        guard
+            scalars.allSatisfy({
+                T9PinyinPathExtractor.isASCIILetter($0)
+                    || T9PinyinPathExtractor.isASCIISeparator($0)
+            })
+        else { return nil }
 
         while scalars.last.map(T9PinyinPathExtractor.isASCIISeparator) == true {
             scalars.removeLast()
@@ -517,7 +542,7 @@ extension KeyboardController {
 
     func handleNumberSuffixDeleteIfNeeded() -> KeyboardEffect? {
         guard let partialCommit = state.partialCommit,
-              partialCommit.source == .numberSuffix
+            partialCommit.source == .numberSuffix
         else {
             return nil
         }
@@ -537,7 +562,7 @@ extension KeyboardController {
             state.currentComposition = ""
             state.lastRimeOutput = nil
             if let engine = rimeEngine,
-               restoreRimeComposition(rawInput, using: engine, rebuildSession: true)
+                restoreRimeComposition(rawInput, using: engine, rebuildSession: true)
             {
                 return .compositionChanged
             }
@@ -591,13 +616,14 @@ extension KeyboardController {
         // 26-key letter+digit compositions (e.g. `n20260619` on the numbers page)
         // are legitimate host preedit and must not be rejected.
         if source == .compositionProjection,
-           usesT9InputSemantics,
-           compositionProjectionContainsInternalDigit(text)
+            usesT9InputSemantics,
+            compositionProjectionContainsInternalDigit(text)
         {
             // This is the final host boundary. Preserve the prior safe spelling
             // (or clear) instead of allowing even a transient `qiu5` / raw digit
             // write that a later update might hide from final-state assertions.
-            safeText = compositionProjectionContainsInternalDigit(previous)
+            safeText =
+                compositionProjectionContainsInternalDigit(previous)
                 ? ""
                 : previous
             Logger.shared.warning(
@@ -629,8 +655,8 @@ extension KeyboardController {
     func compositionProjectionContainsInternalDigit(_ text: String) -> Bool {
         let editableText: Substring
         if let confirmed = state.partialCommit?.confirmedText,
-           !confirmed.isEmpty,
-           text.hasPrefix(confirmed)
+            !confirmed.isEmpty,
+            text.hasPrefix(confirmed)
         {
             editableText = text.dropFirst(confirmed.count)
         } else {

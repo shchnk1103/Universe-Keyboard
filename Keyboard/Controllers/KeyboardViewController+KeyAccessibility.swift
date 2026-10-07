@@ -13,10 +13,10 @@ extension KeyboardViewController {
         button.accessibilityValue = nil
 
         switch action {
-        case #selector(deleteKeyTouchUpInside(_:)):
+        case #selector(deleteKeyTouchUpInside(_:forEvent:)):
             button.accessibilityIdentifier = "delete"
             button.accessibilityLabel = "删除"
-            button.accessibilityHint = "删除光标前的字符。按住可连续删除。"
+            button.accessibilityHint = "删除光标前的字符。轻点删除一个；按住可连续删除。"
 
         case #selector(toggleShift(_:)):
             button.accessibilityLabel = "大写"

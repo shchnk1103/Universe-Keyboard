@@ -6,55 +6,67 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Assignment Pending` |
-| **Phase** | 产品合同已在 `main`（squash `8f0fa58` / PR #196）；今天不实施 |
-| **Non-claims** | 无 Swift、无实施 AUTH、无 Ready/Active、无 Architecture/Quality、无 TestFlight/Release。文档框架 merge 不等于实施或可合并到产品行为 |
-| **Next** | Human 指定 Executor / 审查人并另授实施 AUTH 后才能进入 `Assigned` / `Ready` |
-| **Residuals** | None |
+| **Lifecycle** | `Active` |
+| **Phase** | 实施切片已授权；隔离 worktree `/private/tmp/universe-keyboard-delete-key-scrub-001`，分支 `grok/delete-key-scrub-001`，基线 `origin/main` `781ca45d` |
+| **Non-claims** | 不等于独立 Architecture/Quality 结论、Product Gate、commit、push、merge、TestFlight 或 Release。文档框架 squash `8f0fa58` 仍只是合同捕获 |
+| **Next** | 本地 commit 已授权。push 仍需另授 AUTH |
+| **Residuals** | DKS-CLOSE-01 单击/长按仍可能删成对两侧；DKS-CLOSE-02 预编辑左滑重置 session 并清 T9 Path。均已接受，留在本切片 |
 
 ---
 
 - **Task ID:** `DELETE-KEY-SCRUB-001`
-- **Date / timezone:** `2026-10-01 Asia/Shanghai`
-- **Repository Change Type:** `Feature`（本切片仅为文档框架）
+- **Date / timezone:** `2026-10-01 Asia/Shanghai`（合同捕获）；实施 Assignment Decision `2026-10-07 Asia/Shanghai`
+- **Repository Change Type:** `Feature` + `Implementation`
 - **Product Decision source:** [`PD-DELETE-KEY-SCRUB-001-PRODUCT-CONTRACT`](../product-decisions/DELETE-KEY-SCRUB-001-product-contract.md)
 
 ## Authority
 
 - Assignment Authority: Product Lead
-- Decision Source / Date: Human Product Owner 当前会话，`2026-10-01 Asia/Shanghai`；公测用户反馈要求第三方键盘式「按住删除左右滑」
+- Decision Source / Date: Human Product Owner 当前会话，`2026-10-07 Asia/Shanghai`；公测用户反馈要求第三方键盘式「按住删除左右滑」；合同捕获见 `2026-10-01`
 - Product Approver: Human Product Owner / 当前 Product 线程
+- Authorization (role fill / Ready): [`AUTH-DELETE-KEY-SCRUB-001-ASSIGN-READY`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-ASSIGN-READY.md) — consumed
+- Authorization (implementation): [`AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT.md) — active / unconsumed until delivery
+- Historical docs publication: [`AUTH-DELETE-KEY-SCRUB-001-COMMIT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-COMMIT.md)、[`AUTH-DELETE-KEY-SCRUB-001-PUSH-PR`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-PUSH-PR.md)、[`AUTH-DELETE-KEY-SCRUB-001-MERGE`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-MERGE.md) — consumed；不可复用于实施
 
-## KOS v0.8.0 optional-contract selection
+## KOS v0.9.0 optional-contract selection
 
-本 Assignment **未** opt-in E-01 / A-01/B-01 / P-01 / D-01。省略的合同保持在本记录之外。
+项目 pin 为 [`PD-KOS-UPGRADE-UK-006`](../product-decisions/KOS-UPGRADE-UK-006-v0.9.0-adoption.md) advisory。本 Assignment **未** Profile-include；E-01 / P-01 / D-01 不 opt-in。A-01/B-01 为手工 advisory。新指定的独立审查车道适用 v0.9.0 reviewer scope/budget/stop。
 
 | Contract | Selection | Boundary and owner source |
 |---|---|---|
-| E-01 claim-bound observation | Not applicable | 无实施、无观测包 |
-| A-01 / B-01 authorization chain and briefing | Not applicable | 尚无实施或审查 AUTH |
+| E-01 claim-bound observation | Not applicable | 实施交付用既有 KeyboardTests / App+Keyboard；不新开 E-01 观测包 |
+| A-01 / B-01 authorization chain and briefing | Adopted (advisory, not Profile-included) | 本 Assignment、ASSIGN-READY、IMPLEMENT 与产品合同构成本切片权威链 |
 | P-01 publication facts | Not applicable | 未授权 commit/push/PR |
 | D-01 final-documentation receipt | Not applicable | 本切片不宣称 D-01 |
+
+### Authorization frontier (A-01 / B-01)
+
+| Slice | Status | Action / target / boundary | Authority source |
+|---|---|---|---|
+| Role fill / Ready / slot 6 | Authorized | `assign_roles_and_enter_ready_delete_key_scrub` | Consumed [`AUTH-DELETE-KEY-SCRUB-001-ASSIGN-READY`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-ASSIGN-READY.md) |
+| Keyboard UI implementation | Authorized / live | `implement_delete_key_scrub_v1` | Active [`AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT.md) |
+| Independent Architecture | Concluded | Pass with conditions。[`architecture-close`](../reviews/delete-key-scrub-001-architecture-close.md)。该 AUTH 不授权 commit | Consumed [`AUTH-DELETE-KEY-SCRUB-001-ARCHITECTURE-CLOSE`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-ARCHITECTURE-CLOSE.md) |
+| Independent Quality | Concluded | Pass with conditions。[`quality-review`](../reviews/delete-key-scrub-001-quality-review.md)。该 AUTH 不授权 commit | Consumed [`AUTH-DELETE-KEY-SCRUB-001-QUALITY`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-QUALITY.md) |
+| Local implementation commit | Authorized | `scoped_commit_delete_key_scrub_implementation`；含 SHA 回写。不授权 push | [`AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-COMMIT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-COMMIT.md) |
+| Product Gate / push / merge | Unauthorized | 各需新 AUTH | Product Lead |
 
 ## Boundary
 
 ### Scope
 
-1. 捕获删除键手势 V1 产品合同（见下方 Product Contract），作为后续实施的 Source of Truth。
-2. 在 Active Work **Queued** 区、Knowledge Index、Engineering Dashboard 挂待办指针。不进入 Ready/Active 十项 cap。
-3. 文档只写在隔离 worktree / 功能分支，不改主 checkout、不改 Swift。
-
-后续实施（需新 AUTH，不在今天范围内）预期落在 Keyboard UI：删除键 `touchDown` 会话、`DeleteRepeatController`、类 `KeyPopupView` 的垃圾桶 overlay、已上屏擦除账本；清拼音走现有 abandon / reset session；删除全部用 host `deleteBackward` 循环，只清光标前。
+1. 已捕获的 V1 产品合同仍是行为 Source of Truth（见下方 Product Contract）。
+2. 本切片实施该合同：删除键 `touchDown` 会话、松手单击、已上屏播放头擦除/回放、预编辑左滑一次 abandon、长按重复 + 垃圾桶 overlay、离开键盘 bounds 结束会话。
+3. 占用 Active Work 第 6 号空位。工作只写在隔离 worktree / 功能分支，不改主 checkout 脏树。
+4. Keyboard UI 为主；有界、无内容的播放头数学可放 KeyboardCore。清拼音走现有 abandon / reset session；删除全部用 host `deleteBackward` 循环，只清光标前。
 
 ### Non-goals
 
-- 今天不写 Swift、不改 RIME 部署边界、不新开第二条 host 写入路径
+- 不改 RIME 部署边界、不新开第二条 host 写入路径
 - 不做词级/按词跳删、不做跨会话撤销、不落盘删除账本、不上传上下文
 - 不保证清空整篇长文或光标后文字
 - 不把字母 `KeyPopupView` 抽成可复用组件（V1 删除键专用 overlay；后续另议）
 - 不改空格光标、候选栏下滑收起、KEY-TOUCH-FILL 填缝合同
-- 不进入 Ready/Active，不占用 M-05 十项名额
-- 不授权 merge / TestFlight / Release / 实施；文档 commit/push/PR 见 [`AUTH-DELETE-KEY-SCRUB-001-COMMIT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-COMMIT.md) 与 [`AUTH-DELETE-KEY-SCRUB-001-PUSH-PR`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-PUSH-PR.md)
+- 不授权独立 Architecture/Quality 结论、Product Gate、commit、push、merge、TestFlight 或 Release
 
 ### Required Inputs
 
@@ -69,14 +81,20 @@ Policy version: 1.0.0
 ## Assignment
 
 - Domain Owner: ⌨️ Keyboard Experience Maintainer
-- Executor: UNKNOWN — 实施尚未指定；本切片文档由当前 Grok 会话按 Human「起草 Assignment」写入隔离 worktree
-- Environment Executor: UNKNOWN — 真机/模拟器验收尚未到阶段
-- Human Dependency: Human Product Owner — 今天只搭框架、不继续实施；日后真机 glance 与 Product Gate
-- Architecture Reviewer: UNKNOWN — 实施进入 Ready 前必须指定独立 Architecture（禁止用 git `/review` 替代）
-- Quality Reviewer: UNKNOWN — 实施进入 Ready 前必须指定独立 Quality
+- Executor: Current Grok session acting as Keyboard Experience Maintainer / Keyboard UI
+- Environment Executor: Current Grok session — App+Keyboard Debug on the already-booted iPhone 18 Pro `405D994F-28CB-4F89-BB22-B64AD81C05A2`（Human 指定，2026-10-07）。CI 文档里的默认机型仍是 `iPhone 17 Pro`；本切片模拟器证据以这台已启动的 iPhone 18 Pro 为准。
+- Human Dependency: Human Product Owner — 真机 glance（Notes / 微信 / Safari / 密码框）与 Product Gate；不替代 Simulator 测试绿
+- Architecture Reviewer: 🏛️ Architecture & Knowledge Steward — 独立 subagent；交付后另授 AUTH；禁止 git `/review` 替代。Budget：一次独立审查；Stop：Core 语义越界、ADR 0007 上传、新 host 写入路径、`selectAll`
+- Quality Reviewer: 🧪 Quality, Performance & Release Maintainer — 独立 subagent；Architecture 结论之后另授 AUTH。Budget：一次独立审查 + 复现 Executor 的 KeyboardTests / App+Keyboard 命令
 - Product Approver: Human Product Owner / 当前 Product 线程
+- Supporting Domain: [`playbooks/keyboard-ui.md`](../playbooks/keyboard-ui.md)
 
-`UNKNOWN` 为诚实披露，故本 Assignment **不能**进入 `Ready` 或 `Active`。
+## Acknowledgement And Activation
+
+- **Product Assignment Decision:** `2026-10-07 Asia/Shanghai` — Human 指定上述责任人，授权填第 6 号空位，并确认实施 AUTH 生效。
+- **Executor acknowledgement:** `2026-10-07 Asia/Shanghai` — Scope、Non-goals、Stop Conditions 已接受。工作在隔离 worktree `/private/tmp/universe-keyboard-delete-key-scrub-001`，基线 `origin/main` `781ca45dfe53cd8d90f49f60370a2efae9d3e749`，不触碰主工作区脏树。
+- **Entry Criteria status:** **Met** for `Active` implementation slice（审查结论仍是后续 Gate，不是 Ready 前置）。
+- **Product lifecycle decision:** `Assignment Pending → Assigned / Ready → Active` on the in-session answers “按建议填责任人” and “记录 Ready + 隔离 worktree + 实施 AUTH 生效”.
 
 ## Product Contract (V1)
 
@@ -154,24 +172,23 @@ Policy version: 1.0.0
 
 ### Entry Criteria
 
-- [x] Product 授权本切片：起草 Assignment + 挂待办
-- [x] 隔离 worktree，不改脏主 checkout
-- [ ] Executor / Architecture Reviewer / Quality Reviewer / Environment Executor 已指定（现为 UNKNOWN）
-- [ ] 实施 AUTH
-- [ ] 独立 Architecture 对实施切片 Pass（或 Pass with conditions 且残差有 disposition）
-- [ ] Active Work Ready/Active cap 有空位（若实施时要进表）
+- [x] Product 授权本切片：起草 Assignment + 挂待办（`2026-10-01`）
+- [x] 隔离 worktree，不改脏主 checkout（`2026-10-07` 重建于 `781ca45d`）
+- [x] Executor / Architecture Reviewer / Quality Reviewer / Environment Executor 已指定
+- [x] 实施 AUTH 生效
+- [x] Active Work Ready/Active cap 第 6 号空位
+- [x] 独立 Architecture 对实施切片 Pass with conditions，残差已 disposition — [`architecture-close`](../reviews/delete-key-scrub-001-architecture-close.md)
+- [x] 独立 Quality 结论 Pass with conditions — [`quality-review`](../reviews/delete-key-scrub-001-quality-review.md)
 
-未勾选的条目挡住 `Ready`。
-
-### Exit Criteria（整项功能，非本切片）
+### Exit Criteria（整项功能）
 
 - 合同行为在 26 键与九键、中英/数字/符号页可演示
 - KeyboardTests / 相关 KeyboardCore 覆盖单击、擦除播放头、预编辑一次清光、气泡松手清空光标前、离开 bounds 结束
-- 真机：Notes、微信、Safari、密码框、光标在中间、空框
+- 真机：Notes、微信、Safari、密码框、光标在中间、空框（Human glance）
 - 浅色/深色；热路径不把输入内容写入日志或磁盘
 - 独立 Architecture / Quality / Product Gate 各有结论
 
-本切片 Exit：Assignment 记录存在且 Queued 指针可发现。
+本实施切片 Executor Exit：V1 行为在隔离 worktree 落地且约定测试已跑；不等于 Reviewed / Closed。
 
 ### Stop Conditions
 
@@ -180,13 +197,13 @@ Policy version: 1.0.0
 - 预编辑左滑上屏了剩余拼音
 - 账本持久化或离开设备
 - 在主 checkout / 脏树上改 Swift
-- 把本 Pending 项写入 Active 十项表
-- 未授 AUTH 就实施或发布
+- 未授 AUTH 就 commit / push / merge / TestFlight / Release
+- 用 git `/review` 替代独立 Architecture / Quality
 
 ## Handoff
 
-- Handoff Target: Human Product Owner（今日停在框架）；恢复时由 Product 指定 Executor 并开实施 AUTH，交 ⌨️ Keyboard Experience Maintainer
-- Required Handoff Content: 本 Assignment、PD 合同、`main` squash `8f0fa58c57f11891f4e8c6783e7f4bce6a788984`、未做的实施/审查/发布
+- Handoff Target: 独立 Architecture Reviewer（交付后）；随后 Quality；Product Gate 仍归 Human
+- Required Handoff Content: 本 Assignment、PD 合同、实施 AUTH、隔离 worktree 路径、测试命令与结果、未做的审查/发布
 - Revalidation Trigger: 改 Delete 优先级、Partial Commit restore、ADR 0007、删除键布局、或 Human 改口播放头/气泡/空框反馈
 
 ## History
@@ -196,3 +213,6 @@ Policy version: 1.0.0
 - `2026-10-01 Asia/Shanghai`：隔离分支 docs commit `037e42ced1f208a08a0799382aebfebb78ae86dc`；[`AUTH-DELETE-KEY-SCRUB-001-COMMIT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-COMMIT.md) consumed。
 - `2026-10-01 Asia/Shanghai`：已 push 并开 PR [#196](https://github.com/shchnk1103/Universe-Keyboard/pull/196)；[`AUTH-DELETE-KEY-SCRUB-001-PUSH-PR`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-PUSH-PR.md) consumed。Human 观察 hosted CI。不授权 merge。
 - `2026-10-01 Asia/Shanghai`：PR #196 squash-merge `8f0fa58c57f11891f4e8c6783e7f4bce6a788984`（same-head docs_only run [36823864783](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/36823864783)）。[`AUTH-DELETE-KEY-SCRUB-001-MERGE`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-MERGE.md) consumed。功能分支与隔离 worktree 已清理。Lifecycle 仍 `Assignment Pending`。无实施 / TestFlight / Release。
+- `2026-10-07 Asia/Shanghai`：Human 指定 Executor = 当前 Grok，独立 Architecture / Quality，Environment = Grok Simulator，Human = 真机 glance / Gate；授权填第 6 号空位并让实施 AUTH 生效。隔离 worktree 重建于 `origin/main` `781ca45d`，分支 `grok/delete-key-scrub-001`。Lifecycle → `Active`。无 commit / push / Quality / Gate / TestFlight / Release。
+- `2026-10-07 Asia/Shanghai`：同一 Architecture 车道只做一页收口，不重审整项。当前结论是 Architecture Pass with conditions（[`architecture-close`](../reviews/delete-key-scrub-001-architecture-close.md)）。Round 1 原文仍是 Reject。不授权 Quality、commit、push、merge。
+- `2026-10-07 Asia/Shanghai`：独立 Quality Pass with conditions（[`quality-review`](../reviews/delete-key-scrub-001-quality-review.md)）。KeyboardCore 1201 与 App+Keyboard Debug test 在 iPhone 18 Pro `405D994F-28CB-4F89-BB22-B64AD81C05A2` 上通过。未真实点按删除键。不授权 commit、push、merge。

@@ -232,7 +232,7 @@ extension KeyboardViewController {
         #if DEBUG
             recordKeyboardVisualDiagnostic("CLEANUP_BEGIN_\(reason)")
         #endif
-        deleteRepeatController.stop()
+        endDeleteGestureSession(restoreAppearance: false, reason: .disappeared)
         dismissVariantPopup(animated: false)
         if isCandidateExpanded {
             isCandidateExpanded = false

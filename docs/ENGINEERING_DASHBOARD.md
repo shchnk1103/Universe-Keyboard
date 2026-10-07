@@ -33,13 +33,14 @@
 - **Sources:** [Close](product-decisions/KEYBOARD-WAKE-BOUNDED-CLOSE-001-product-decision-2026-10-06.md) · [Close 记录](evidence/keyboard-wake-bounded-close-001-2026-10-06.md) · [有界完成](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-bounded-completion-2026-10-06.md)
 
 
-## DELETE-KEY-SCRUB-001 — 删除键滑动擦除（Queued）
+## DELETE-KEY-SCRUB-001 — 删除键滑动擦除（Active，slot 6）
 
-- **Lifecycle:** [`Assignment`](assignments/delete-key-scrub-001.md) `Assignment Pending`
-- **Current phase:** 产品合同已在 `main` squash `8f0fa58` / PR [#196](https://github.com/shchnk1103/Universe-Keyboard/pull/196)；Queued，不占 Active 十项；今天不实施
-- **Non-claims:** 不等于 Ready、实施 AUTH、Swift、TestFlight 或 Release
-- **Next:** Human 指定 Executor / 独立 Architecture / Quality 并另授实施 AUTH
-- **Sources:** [PD](product-decisions/DELETE-KEY-SCRUB-001-product-contract.md) · [Merge AUTH](authorizations/AUTH-DELETE-KEY-SCRUB-001-MERGE.md)
+- **Lifecycle:** [`Assignment`](assignments/delete-key-scrub-001.md) `Active`
+- **Current phase:** Architecture 与 Quality 均为 Pass with conditions；本地 commit 已授权，SHA 见回写
+- **Non-claims:** 不等于 Product Gate、push、merge、TestFlight 或 Release
+- **Next:** push 另授 AUTH
+- **Sources:** [PD](product-decisions/DELETE-KEY-SCRUB-001-product-contract.md) · [Architecture](reviews/delete-key-scrub-001-architecture-close.md) · [Quality](reviews/delete-key-scrub-001-quality-review.md) · [IMPLEMENT-COMMIT](authorizations/AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-COMMIT.md)
+- **Worktree:** `/private/tmp/universe-keyboard-delete-key-scrub-001` on `grok/delete-key-scrub-001`
 
 ## KEYBOARD-CORNER-BLEED-001 — 键盘顶圆角透白
 
