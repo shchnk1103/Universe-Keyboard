@@ -9,7 +9,7 @@ Policy version: 1.0.0
 | **Lifecycle** | `Active` |
 | **Phase** | 实施切片已授权；隔离 worktree `/private/tmp/universe-keyboard-delete-key-scrub-001`，分支 `grok/delete-key-scrub-001`，基线 `origin/main` `781ca45d` |
 | **Non-claims** | 不等于独立 Architecture/Quality 结论、Product Gate、commit、push、merge、TestFlight 或 Release。文档框架 squash `8f0fa58` 仍只是合同捕获 |
-| **Next** | 已推送 `origin/grok/delete-key-scrub-001` `6cae5b2`。PR 仍需另授 AUTH |
+| **Next** | PR [#202](https://github.com/shchnk1103/Universe-Keyboard/pull/202) 已开，head `6cae5b2`。merge 仍需另授 AUTH |
 | **Residuals** | DKS-CLOSE-01 单击/长按仍可能删成对两侧；DKS-CLOSE-02 预编辑左滑重置 session 并清 T9 Path。均已接受，留在本切片 |
 
 ---
@@ -49,7 +49,8 @@ Policy version: 1.0.0
 | Independent Quality | Concluded | Pass with conditions。[`quality-review`](../reviews/delete-key-scrub-001-quality-review.md)。该 AUTH 不授权 commit | Consumed [`AUTH-DELETE-KEY-SCRUB-001-QUALITY`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-QUALITY.md) |
 | Local implementation commit | Consumed | 实现 `ff149ac7fe8386399f39568f88f722c768153330`。不授权 push | Consumed [`AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-COMMIT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-COMMIT.md) |
 | Implementation push | Consumed | `origin/grok/delete-key-scrub-001` `6cae5b261d65cb1b47f3966db78f02df1fa79dd7`。未开 PR | Consumed [`AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-PUSH`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-PUSH.md) |
-| Product Gate / PR / merge | Unauthorized | 各需新 AUTH | Product Lead |
+| Implementation PR | Consumed | PR [#202](https://github.com/shchnk1103/Universe-Keyboard/pull/202)，head `6cae5b2`。未 merge | Consumed [`AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-PR`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-PR.md) |
+| Product Gate / merge | Unauthorized | 各需新 AUTH | Product Lead |
 
 ## Boundary
 
@@ -219,3 +220,4 @@ Policy version: 1.0.0
 - `2026-10-07 Asia/Shanghai`：独立 Quality Pass with conditions（[`quality-review`](../reviews/delete-key-scrub-001-quality-review.md)）。KeyboardCore 1201 与 App+Keyboard Debug test 在 iPhone 18 Pro `405D994F-28CB-4F89-BB22-B64AD81C05A2` 上通过。未真实点按删除键。不授权 commit、push、merge。
 - `2026-10-07 Asia/Shanghai`：本地实现 commit `ff149ac7fe8386399f39568f88f722c768153330`（[`IMPLEMENT-COMMIT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-COMMIT.md)）。未 push。无 Product Gate / merge / TestFlight / Release。
 - `2026-10-07 Asia/Shanghai`：已推送 `origin/grok/delete-key-scrub-001` `6cae5b261d65cb1b47f3966db78f02df1fa79dd7`（[`IMPLEMENT-PUSH`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-PUSH.md)）。未开 PR。无 merge / TestFlight / Release。
+- `2026-10-07 Asia/Shanghai`：已开 PR [#202](https://github.com/shchnk1103/Universe-Keyboard/pull/202)，head `6cae5b2`（[`IMPLEMENT-PR`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-PR.md)）。未 merge。无 TestFlight / Release。
