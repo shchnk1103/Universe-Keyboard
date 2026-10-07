@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Status | `active` |
-| Consumption | 未消费。推送成功后由本地回写改为 consumed，该回写不再次 push。不授权 merge、Close、TestFlight 或 Release |
+| Status | `consumed` |
+| Consumption | 已推送 `d263eeaf5d843028c4a5d5f7762abcda36394fc8`，PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204) head 已前进。未 merge。本回写留在本地 |
 
 Human Product Owner, current session `2026-10-07 Asia/Shanghai`：授权改气泡时间并推到 PR，先不要 merge。
 
@@ -17,8 +17,8 @@ Human Product Owner, current session `2026-10-07 Asia/Shanghai`：授权改气�
   "record_id": "AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-TIMING-PUSH",
   "record_type": "authorization",
   "title": "Correct the delete-bubble timing sentence and push it to PR 204",
-  "status": "active",
-  "updated_at": "2026-10-07T13:39:30+08:00",
+  "status": "consumed",
+  "updated_at": "2026-10-07T13:41:00+08:00",
   "revalidation_triggers": ["scope_changed", "authority_revoked", "head_changed"],
   "authorization": {
     "action": "push_delete_key_scrub_product_gate_timing_wording",
@@ -26,6 +26,7 @@ Human Product Owner, current session `2026-10-07 Asia/Shanghai`：授权改气�
     "artifact_bindings": [
       {"kind": "pull_request", "identity": "https://github.com/shchnk1103/Universe-Keyboard/pull/204"},
       {"kind": "branch", "identity": "grok/delete-key-scrub-001-product-gate"},
+      {"kind": "commit", "identity": "d263eeaf5d843028c4a5d5f7762abcda36394fc8"},
       {"kind": "file", "identity": "docs/product-decisions/DELETE-KEY-SCRUB-001-product-gate.md"}
     ],
     "scope": "On grok/delete-key-scrub-001-product-gate, change the Product Gate sentence so the trash bubble appears about 0.15s after repeat starts, about 0.65s after press. Push so PR 204 advances. Do not change Swift timing. No merge, Close, TestFlight, or Release.",
@@ -35,7 +36,7 @@ Human Product Owner, current session `2026-10-07 Asia/Shanghai`：授权改气�
     "issued_at": "2026-10-07T13:39:30+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "unconsumed"
+    "consumption_state": "consumed"
   }
 }
 ```
