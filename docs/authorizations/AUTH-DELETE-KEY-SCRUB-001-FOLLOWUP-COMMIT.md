@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Status | `active` |
-| Consumption | 未消费。内容 commit 之后由同一分支的 SHA 回写改为 consumed。不授权 push、PR、merge、TestFlight 或 Release |
+| Status | `consumed` |
+| Consumption | 内容 commit `252d72666070372b7d92b473d75aea3a156071ee`。本回写只记录 SHA。不授权 push、PR、merge、TestFlight 或 Release |
 
 Human Product Owner, current session `2026-10-07 Asia/Shanghai`：授权这次有界 commit，先不要 push。
 
@@ -17,13 +17,14 @@ Human Product Owner, current session `2026-10-07 Asia/Shanghai`：授权这次�
   "record_id": "AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-COMMIT",
   "record_type": "authorization",
   "title": "Scoped local commit of delete-bubble timer, glass, and sound",
-  "status": "active",
-  "updated_at": "2026-10-07T12:35:36+08:00",
+  "status": "consumed",
+  "updated_at": "2026-10-07T12:40:00+08:00",
   "revalidation_triggers": ["scope_changed", "authority_revoked"],
   "authorization": {
     "action": "scoped_commit_delete_key_scrub_followup",
     "target": "DELETE-KEY-SCRUB-001",
     "artifact_bindings": [
+      {"kind": "commit", "identity": "252d72666070372b7d92b473d75aea3a156071ee"},
       {"kind": "worktree", "identity": "/private/tmp/universe-keyboard-delete-key-scrub-001"},
       {"kind": "branch", "identity": "grok/delete-bubble-001"}
     ],
@@ -34,7 +35,7 @@ Human Product Owner, current session `2026-10-07 Asia/Shanghai`：授权这次�
     "issued_at": "2026-10-07T12:35:36+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "unconsumed"
+    "consumption_state": "consumed"
   }
 }
 ```
