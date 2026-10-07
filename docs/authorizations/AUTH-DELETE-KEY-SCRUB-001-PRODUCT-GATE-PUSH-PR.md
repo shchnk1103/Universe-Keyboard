@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Status | `active` |
-| Consumption | 未消费。推送并开 PR 后由本地回写改为 consumed，该回写不再次 push。不授权 merge、Close、TestFlight 或 Release |
+| Status | `consumed` |
+| Consumption | 已推送 `origin/grok/delete-key-scrub-001-product-gate` `559eeff3c160fd7a6d63d045c9547e8006f398eb`，并开 PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204)。未 merge。本回写留在本地，没有再次 push |
 
 Human Product Owner, current session `2026-10-07 Asia/Shanghai`：授权这次文档 push，并开 PR。
 
@@ -17,8 +17,8 @@ Human Product Owner, current session `2026-10-07 Asia/Shanghai`：授权这次�
   "record_id": "AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-PUSH-PR",
   "record_type": "authorization",
   "title": "Push and open a docs pull request for the delete-key Product Gate",
-  "status": "active",
-  "updated_at": "2026-10-07T13:32:30+08:00",
+  "status": "consumed",
+  "updated_at": "2026-10-07T13:35:00+08:00",
   "revalidation_triggers": ["scope_changed", "authority_revoked", "head_changed"],
   "authorization": {
     "action": "push_and_open_pr_delete_key_scrub_product_gate_docs",
@@ -26,6 +26,8 @@ Human Product Owner, current session `2026-10-07 Asia/Shanghai`：授权这次�
     "artifact_bindings": [
       {"kind": "commit", "identity": "cee4f914be03d45c6d8deae8af5427ff1587d5c1"},
       {"kind": "branch", "identity": "grok/delete-key-scrub-001-product-gate"},
+      {"kind": "commit", "identity": "559eeff3c160fd7a6d63d045c9547e8006f398eb"},
+      {"kind": "pull_request", "identity": "https://github.com/shchnk1103/Universe-Keyboard/pull/204"},
       {"kind": "worktree", "identity": "/private/tmp/universe-keyboard-delete-key-scrub-001"}
     ],
     "scope": "From origin/main cee4f914be03d45c6d8deae8af5427ff1587d5c1, publish the Product Gate docs on branch grok/delete-key-scrub-001-product-gate and open one pull request into main. The diff must stay docs-only. Do not push grok/delete-bubble-001, do not push main directly, and do not merge, Close, TestFlight, or Release.",
@@ -35,7 +37,7 @@ Human Product Owner, current session `2026-10-07 Asia/Shanghai`：授权这次�
     "issued_at": "2026-10-07T13:32:30+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "unconsumed"
+    "consumption_state": "consumed"
   }
 }
 ```
