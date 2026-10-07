@@ -12,6 +12,90 @@ final class DeleteTests: XCTestCase {
         return controller
     }()
 
+    func testDropRemainingPreeditKeepsConfirmedPrefixAndCheckpoint() {
+        controller.state.partialCommit = PartialCommitState(
+            confirmedText: "你",
+            remainingRawInput: "hao",
+            remainingPreeditText: "hao",
+            displayText: "你好",
+            checkpoint: PartialCommitCheckpoint(
+                previousRawInput: "nihao",
+                previousPreeditText: "nihao",
+                previousDisplayText: "nihao"
+            )
+        )
+        controller.state.currentComposition = "hao"
+        controller.state.continuation = ContinuationState(context: "前文", suggestions: ["啊"])
+        client.setMarkedText("你好", selectedRange: 2..<2)
+
+        _ = controller.dropRemainingPreeditKeepingConfirmedPrefix()
+
+        XCTAssertEqual(controller.state.partialCommit?.confirmedText, "你")
+        XCTAssertEqual(controller.state.partialCommit?.remainingRawInput, "")
+        XCTAssertEqual(controller.state.partialCommit?.checkpoint?.previousRawInput, "nihao")
+        XCTAssertEqual(controller.state.currentComposition, "")
+        XCTAssertNil(controller.state.lastRimeOutput)
+        XCTAssertEqual(controller.state.continuation.context, "前文")
+        XCTAssertEqual(client.markedText, "你")
+        XCTAssertFalse(client.text.contains("hao"))
+    }
+
+    func testDeleteOneGraphemeLeavesCloserAfterCursor() {
+        client.text = "ab（）"
+        client.adjustTextPosition(byCharacterOffset: -1)
+        controller.state.pendingPunctuation = PendingPunctuationState(
+            text: "（）",
+            beforeCursor: "（",
+            afterCursor: "）",
+            ownsHostSpan: true,
+            lastSameKeyTap: Date(),
+            cycleArmed: false
+        )
+
+        _ = controller.deleteOneGraphemeBeforeCursor()
+
+        XCTAssertNil(controller.state.pendingPunctuation)
+        XCTAssertEqual(client.text, "ab）")
+        XCTAssertEqual(client.cursorOffset, 2)
+        XCTAssertEqual(client.deletedCount, 1)
+    }
+
+    func testDeleteOneGraphemeDoesNotSwallowWholeOwnedSpan() {
+        client.text = "ab……"
+        controller.state.pendingPunctuation = PendingPunctuationState(
+            text: "……",
+            beforeCursor: "……",
+            afterCursor: "",
+            ownsHostSpan: true,
+            lastSameKeyTap: Date(),
+            cycleArmed: false
+        )
+
+        _ = controller.deleteOneGraphemeBeforeCursor()
+
+        XCTAssertNil(controller.state.pendingPunctuation)
+        XCTAssertEqual(client.text, "ab…")
+        XCTAssertEqual(client.deletedCount, 1)
+    }
+
+    func testOwnedPairDeleteStillRemovesBothSides() {
+        client.text = "ab（）"
+        client.adjustTextPosition(byCharacterOffset: -1)
+        controller.state.pendingPunctuation = PendingPunctuationState(
+            text: "（）",
+            beforeCursor: "（",
+            afterCursor: "）",
+            ownsHostSpan: true,
+            lastSameKeyTap: Date(),
+            cycleArmed: false
+        )
+
+        _ = controller.handle(.deleteBackward)
+
+        XCTAssertNil(controller.state.pendingPunctuation)
+        XCTAssertEqual(client.text, "ab")
+    }
+
     func testDeleteFromCompositionFirst() {
         controller.state.currentComposition = "nihao"
         _ = controller.handle(.deleteBackward)

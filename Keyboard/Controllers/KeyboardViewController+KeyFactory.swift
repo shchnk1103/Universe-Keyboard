@@ -116,25 +116,19 @@ extension KeyboardViewController {
         )
     }
 
-    /// 创建删除键按钮（特殊处理：长按自动重复）。
+    /// 创建删除键按钮（按住会话：单击松手、水平擦除、长按重复）。
     ///
     /// 与普通按键的区别：
-    ///   - touchDown 绑定 deleteKeyTouchDown（含立即删除 + 计时器逻辑）
-    ///   - touchUpInside 绑定 deleteKeyTouchUpInside（停止计时器）
-    ///   - touchUpOutside/touchDragExit 绑定 deleteKeyTouchUpOutside（停止计时器）
+    ///   - touchDown 只建立会话和按下反馈，不删字
+    ///   - 拖动（含 touchDragExit）更新会话，不结束按住
+    ///   - touchUpInside / touchUpOutside 才结束会话
     ///   - 不绑定标准 keyTouchDown/keyTouchUp（避免冲突）
-    ///
-    /// 需要先移除 makeKeyButton 添加的默认事件绑定，再重新绑定删除专用事件。
     func makeDeleteButton() -> UIButton {
-        let button = makeKeyButton(
-            title: "",
-            action: #selector(deleteKeyTouchUpInside(_:))
-        )
+        let lift = #selector(deleteKeyTouchUpInside(_:forEvent:))
+        let button = makeKeyButton(title: "", action: lift)
         applyFunctionKeySymbol("delete.left", to: button)
 
-        // ── 替换事件绑定 ─────────────────────────────────────────
-        // 移除 makeKeyButton 添加的默认绑定
-        button.removeTarget(self, action: #selector(deleteKeyTouchUpInside(_:)), for: .touchUpInside)
+        button.removeTarget(self, action: lift, for: .touchUpInside)
         button.removeTarget(self, action: #selector(keyTouchDown(_:)), for: .touchDown)
         button.removeTarget(
             self,
@@ -142,14 +136,19 @@ extension KeyboardViewController {
             for: [.touchUpInside, .touchUpOutside, .touchDragExit, .touchCancel]
         )
 
-        // 添加删除专用事件绑定
-        button.addTarget(self, action: #selector(deleteKeyTouchDown(_:)), for: .touchDown)
-        button.addTarget(self, action: #selector(deleteKeyTouchUpInside(_:)), for: .touchUpInside)
+        button.addTarget(self, action: #selector(deleteKeyTouchDown(_:forEvent:)), for: .touchDown)
+        button.addTarget(self, action: lift, for: .touchUpInside)
         button.addTarget(
             self,
-            action: #selector(deleteKeyTouchUpOutside(_:)),
-            for: [.touchUpOutside, .touchDragExit]
+            action: #selector(deleteKeyTouchUpOutside(_:forEvent:)),
+            for: .touchUpOutside
         )
+        button.addTarget(
+            self,
+            action: #selector(deleteKeyTouchDrag(_:forEvent:)),
+            for: [.touchDragInside, .touchDragOutside, .touchDragExit]
+        )
+        button.addTarget(self, action: #selector(deleteKeyTouchCancel(_:)), for: .touchCancel)
 
         // 删除键使用功能键样式（灰色背景）
         applyKeyStyle(.function, to: button)

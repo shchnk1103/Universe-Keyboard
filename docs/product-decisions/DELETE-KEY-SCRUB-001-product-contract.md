@@ -23,4 +23,4 @@
 9. 离开键盘 bounds 结束本次；已删保持。
 10. 所有带删除键的页面同一套逻辑。
 
-恢复工作时需要新的 Assignment 责任人填写与实施 AUTH。
+`2026-10-07 Asia/Shanghai`：责任人已填写，实施 AUTH 生效。见 [`DELETE-KEY-SCRUB-001`](../assignments/delete-key-scrub-001.md) 与 [`AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT.md)。本文件仍只冻结产品合同，不是 Architecture/Quality/Product Gate，也不授权 commit、push、merge、TestFlight 或 Release。

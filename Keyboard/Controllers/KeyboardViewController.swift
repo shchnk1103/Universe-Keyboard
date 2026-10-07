@@ -325,6 +325,10 @@ class KeyboardViewController: UIInputViewController {
     var cachedHapticIntensity: CGFloat = 0.5
     var cachedLiquidGlassMaterialEnabled = false
     var deleteRepeatEffectiveFeedbackCount = 0
+    /// Live delete-key hold. Nil when no finger is down on Delete.
+    var deleteGestureSession: DeleteKeyGestureSession?
+    var deleteTrashBubbleView: DeleteTrashBubbleView?
+    var deleteBubbleTimer: Timer?
     /// 不在按键路径写入：仅在键盘可见期间维持同步安全检查所需的心跳。
     var rimeSyncActivityHeartbeatTimer: Timer?
 
