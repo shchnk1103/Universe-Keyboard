@@ -5,7 +5,7 @@
 | Field | Value |
 |---|---|
 | Status | `consumed` |
-| Consumption | 已开 PR [#205](https://github.com/shchnk1103/Universe-Keyboard/pull/205)，head `474a09ad16d7f02bc16f5067664365c518772718`。未 merge。不授权 TestFlight 或 Release |
+| Consumption | 已开 PR [#205](https://github.com/shchnk1103/Universe-Keyboard/pull/205)。内容提交 `474a09ad16d7f02bc16f5067664365c518772718`。未 merge。不授权 TestFlight 或 Release |
 
 Human Product Owner, current session `2026-10-07 Asia/Shanghai`：授权 docs-only PR，改 Close 状态并补合并收据。
 
@@ -16,7 +16,7 @@ Human Product Owner, current session `2026-10-07 Asia/Shanghai`：授权 docs-on
   "record_type": "authorization",
   "title": "Publish the DELETE-KEY-SCRUB-001 Close merge state",
   "status": "consumed",
-  "updated_at": "2026-10-07T14:06:00+08:00",
+  "updated_at": "2026-10-07T14:04:40+08:00",
   "revalidation_triggers": ["scope_changed", "authority_revoked", "head_changed"],
   "authorization": {
     "action": "publish_delete_key_scrub_post_merge_docs",
