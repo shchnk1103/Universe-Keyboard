@@ -9,7 +9,7 @@ Policy version: 1.0.0
 | **Lifecycle** | `Active` |
 | **Phase** | 第一段已在 `origin/main` `1560488664f6e51450a441f14e465760c0635820`（PR [#202](https://github.com/shchnk1103/Universe-Keyboard/pull/202)）。跟进在隔离分支 `grok/delete-bubble-001`：气泡只武装一次、iOS 26 Liquid Glass、删除键发声表 |
 | **Non-claims** | 跟进 Quality 是 Pass，不等于 Product Gate、push、PR、merge、TestFlight 或 Release。第一段 Architecture / Quality 仍钉 merge 前的树 |
-| **Next** | `origin/grok/delete-bubble-001` 已在 `b9a9038e6e6206a316fb33705d071c080a8de811`。不开 PR |
+| **Next** | PR [#203](https://github.com/shchnk1103/Universe-Keyboard/pull/203) 已开，head `b9a9038`。未 merge |
 | **Residuals** | DKS-CLOSE-01 单击/长按仍可能删成对两侧；DKS-CLOSE-02 预编辑左滑重置 session 并清 T9 Path。均已接受，留在本切片 |
 
 ---
@@ -55,7 +55,8 @@ Policy version: 1.0.0
 | Follow-up Quality | Concluded | Pass。只覆盖 `1560488..f94a8a7`。[`followup-quality-review`](../reviews/delete-key-scrub-001-followup-quality-review.md)。不授权 push | Consumed [`AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-QUALITY`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-QUALITY.md) |
 | Follow-up Quality docs commit | Consumed | 文档 `39badbc612b91b74fd2180f5de41457eace421b1`。不授权 push | Consumed [`AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-QUALITY-COMMIT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-QUALITY-COMMIT.md) |
 | Follow-up push | Consumed | `origin/grok/delete-bubble-001` `b9a9038e6e6206a316fb33705d071c080a8de811`。未开 PR。消费回写未再 push | Consumed [`AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PUSH`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PUSH.md) |
-| Product Gate / PR | Unauthorized | 各需新 AUTH | Product Lead |
+| Follow-up PR | Consumed | PR [#203](https://github.com/shchnk1103/Universe-Keyboard/pull/203)，head `b9a9038`。未 merge。开 PR 回写未 push | Consumed [`AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PR`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PR.md) |
+| Product Gate / merge | Unauthorized | 各需新 AUTH | Product Lead |
 
 ## Boundary
 
@@ -234,3 +235,4 @@ Policy version: 1.0.0
 - `2026-10-07 Asia/Shanghai`：跟进差值独立 Quality **Pass**（[`followup-quality-review`](../reviews/delete-key-scrub-001-followup-quality-review.md)）。`DeleteKeyScrubContractTests` 3/3 与三文件 `swift-format lint --strict` 由审查者复现。未重跑全套，未真实点按。DKS-CLOSE-01/02 仍在。[`FOLLOWUP-QUALITY`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-QUALITY.md) consumed。无 push / Product Gate。
 - `2026-10-07 Asia/Shanghai`：有界文档 commit `39badbc612b91b74fd2180f5de41457eace421b1`（[`FOLLOWUP-QUALITY-COMMIT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-QUALITY-COMMIT.md) consumed）。只含审查页、Quality 授权和账本。不授权 push。无 Swift。
 - `2026-10-07 Asia/Shanghai`：已推送 `origin/grok/delete-bubble-001` `b9a9038e6e6206a316fb33705d071c080a8de811`（[`FOLLOWUP-PUSH`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PUSH.md) consumed）。未开 PR。消费回写留在本地。无 merge / Product Gate。
+- `2026-10-07 Asia/Shanghai`：已开 PR [#203](https://github.com/shchnk1103/Universe-Keyboard/pull/203)，head `b9a9038`（[`FOLLOWUP-PR`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PR.md) consumed）。未 merge。开 PR 回写留在本地。无 Product Gate。
