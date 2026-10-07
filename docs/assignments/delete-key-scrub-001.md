@@ -6,10 +6,10 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` |
-| **Phase** | 第一段已在 `origin/main` `1560488664f6e51450a441f14e465760c0635820`（PR [#202](https://github.com/shchnk1103/Universe-Keyboard/pull/202)）。跟进在隔离分支 `grok/delete-bubble-001`：气泡只武装一次、iOS 26 Liquid Glass、删除键发声表 |
-| **Non-claims** | 跟进 Quality 是 Pass，不等于 Product Gate、push、PR、merge、TestFlight 或 Release。第一段 Architecture / Quality 仍钉 merge 前的树 |
-| **Next** | 气泡 iOS 26 以下模糊改为自适应材质并推到 PR [#203](https://github.com/shchnk1103/Universe-Keyboard/pull/203)。未 merge |
+| **Lifecycle** | `Closed` |
+| **Phase** | Product Gate 已接受。交接见 [`close`](../evidence/delete-key-scrub-001-close-2026-10-07.md)。第 6 号空位释放 |
+| **Non-claims** | 不等于 push、merge、TestFlight 或 Release。微信 / Safari / 密码框未声称已测 |
+| **Next** | Close 随本次 push 进入 PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204)。未 merge |
 | **Residuals** | DKS-CLOSE-01 单击/长按仍可能删成对两侧；DKS-CLOSE-02 预编辑左滑重置 session 并清 T9 Path。均已接受，留在本切片 |
 
 ---
@@ -56,8 +56,13 @@ Policy version: 1.0.0
 | Follow-up Quality docs commit | Consumed | 文档 `39badbc612b91b74fd2180f5de41457eace421b1`。不授权 push | Consumed [`AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-QUALITY-COMMIT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-QUALITY-COMMIT.md) |
 | Follow-up push | Consumed | `origin/grok/delete-bubble-001` `b9a9038e6e6206a316fb33705d071c080a8de811`。未开 PR。消费回写未再 push | Consumed [`AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PUSH`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PUSH.md) |
 | Follow-up PR | Consumed | PR [#203](https://github.com/shchnk1103/Universe-Keyboard/pull/203)，head `b9a9038`。未 merge。开 PR 回写未 push | Consumed [`AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PR`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PR.md) |
-| Follow-up blur push | Authorized | iOS 26 以下气泡改用 `systemUltraThinMaterial`，推到 PR #203。不 merge | [`AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-BLUR-PUSH`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-BLUR-PUSH.md) |
-| Product Gate / merge | Unauthorized | 各需新 AUTH | Product Lead |
+| Follow-up blur push | Consumed | `7c804a08b1e7161b69dbef07a7abfc7aa1534a3e` 已在 PR #203。未 merge。消费回写未再 push | Consumed [`AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-BLUR-PUSH`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-BLUR-PUSH.md) |
+| Follow-up squash merge | Consumed off this head | `origin/main` `cee4f914be03d45c6d8deae8af5427ff1587d5c1`；树与 `7c804a0` 相同。收据留在本地，未推送 | Consumed [`AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-MERGE`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-MERGE.md) |
+| Product Gate | Concluded | Passed with accepted conditions。`Reviewed`，未 Close。[`product-gate`](../product-decisions/DELETE-KEY-SCRUB-001-product-gate.md) | Consumed [`AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE.md) |
+| Product Gate docs commit | Consumed | 写作提交 `45c84a773c0c8c6da6679e12667aa52ae1f367ff`。发布另走文档分支 | Consumed [`AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-COMMIT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-COMMIT.md) |
+| Product Gate push / PR | Consumed | PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204)，head `559eeff3c160fd7a6d63d045c9547e8006f398eb`。未 merge。消费回写未再 push | Consumed [`AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-PUSH-PR`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-PUSH-PR.md) |
+| Assignment Close | Concluded | [`close`](../evidence/delete-key-scrub-001-close-2026-10-07.md)，本地 `47f0e79`。本次推到 PR #204。未 merge | Consumed [`AUTH-DELETE-KEY-SCRUB-001-CLOSE`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-CLOSE.md) |
+| Close push | Authorized | 只推 `grok/delete-key-scrub-001-product-gate`。不 merge | [`AUTH-DELETE-KEY-SCRUB-001-CLOSE-PUSH`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-CLOSE-PUSH.md) |
 
 ## Boundary
 
@@ -211,8 +216,8 @@ Policy version: 1.0.0
 
 ## Handoff
 
-- Handoff Target: 独立 Architecture Reviewer（交付后）；随后 Quality；Product Gate 仍归 Human
-- Required Handoff Content: 本 Assignment、PD 合同、实施 AUTH、隔离 worktree 路径、测试命令与结果、未做的审查/发布
+- Handoff Target: 无。本 Assignment 已关闭。TestFlight、Release、CHANGELOG 与未测宿主都要新任务
+- Required Handoff Content: 已交给 [`close`](../evidence/delete-key-scrub-001-close-2026-10-07.md)。产品树 `cee4f91`。残差 DKS-CLOSE-01 / 02 与未测宿主留在产品里，不另开 Assignment
 - Revalidation Trigger: 改 Delete 优先级、Partial Commit restore、ADR 0007、删除键布局、或 Human 改口播放头/气泡/空框反馈
 
 ## History
@@ -237,4 +242,12 @@ Policy version: 1.0.0
 - `2026-10-07 Asia/Shanghai`：有界文档 commit `39badbc612b91b74fd2180f5de41457eace421b1`（[`FOLLOWUP-QUALITY-COMMIT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-QUALITY-COMMIT.md) consumed）。只含审查页、Quality 授权和账本。不授权 push。无 Swift。
 - `2026-10-07 Asia/Shanghai`：已推送 `origin/grok/delete-bubble-001` `b9a9038e6e6206a316fb33705d071c080a8de811`（[`FOLLOWUP-PUSH`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PUSH.md) consumed）。未开 PR。消费回写留在本地。无 merge / Product Gate。
 - `2026-10-07 Asia/Shanghai`：已开 PR [#203](https://github.com/shchnk1103/Universe-Keyboard/pull/203)，head `b9a9038`（[`FOLLOWUP-PR`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PR.md) consumed）。未 merge。开 PR 回写留在本地。无 Product Gate。
-- `2026-10-07 Asia/Shanghai`：接受 Codex 对气泡模糊的一条建议。iOS 26 以下改为自适应 `systemUltraThinMaterial`（[`FOLLOWUP-BLUR-PUSH`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-BLUR-PUSH.md)）。不改其他键。未 merge。
+- `2026-10-07 Asia/Shanghai`：接受 Codex 对气泡模糊的一条建议。iOS 26 以下改为自适应 `systemUltraThinMaterial`，已推送 `7c804a08b1e7161b69dbef07a7abfc7aa1534a3e`（[`FOLLOWUP-BLUR-PUSH`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-BLUR-PUSH.md) consumed）。PR #203 head 已前进。未 merge。消费回写留在本地。
+- `2026-10-07 Asia/Shanghai`：PR [#203](https://github.com/shchnk1103/Universe-Keyboard/pull/203) squash-merged `cee4f914be03d45c6d8deae8af5427ff1587d5c1`。树与 `7c804a0` 相同。hosted run [37574313596](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/37574313596) 在 merge 前全绿。Lifecycle 仍 `Active`。无 Product Gate / TestFlight / Release。功能分支保留。
+- `2026-10-07 Asia/Shanghai`：Human Product Gate **Passed with accepted conditions**（[`product-gate`](../product-decisions/DELETE-KEY-SCRUB-001-product-gate.md)，[`PRODUCT-GATE`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE.md) consumed）。接受发声表、玻璃变红、自适应模糊，以及 DKS-CLOSE-01 / DKS-CLOSE-02。微信、Safari、密码框未声称已测。Lifecycle → `Reviewed`。未 Close。本页未 commit / push。无 TestFlight / Release。
+- `2026-10-07 Asia/Shanghai`：有界文档 commit `45c84a773c0c8c6da6679e12667aa52ae1f367ff`（[`PRODUCT-GATE-COMMIT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-COMMIT.md) consumed）。只含 Gate 页、授权和账本。不授权 push。无 Swift。无 Close。
+- `2026-10-07 Asia/Shanghai`：已推送 `grok/delete-key-scrub-001-product-gate` `559eeff3c160fd7a6d63d045c9547e8006f398eb`，并开 PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204)（[`PRODUCT-GATE-PUSH-PR`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-PUSH-PR.md) consumed）。相对 `main` 只有文档。未 merge。消费回写留在本地。无 Close。
+- `2026-10-07 Asia/Shanghai`：补入 [`IMPLEMENT-MERGE`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-MERGE.md)，修好 PR #204 的文档断链（[`PRODUCT-GATE-LINK-PUSH`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-LINK-PUSH.md)）。不 merge。不 Close。
+- `2026-10-07 Asia/Shanghai`：Product Gate 气泡时间改为重复开始后再约 0.15 秒（按下后约 0.65 秒）。不改实现（[`PRODUCT-GATE-TIMING-PUSH`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-TIMING-PUSH.md)）。不 merge。不 Close。
+- `2026-10-07 Asia/Shanghai`：Assignment **Closed**（[`close`](../evidence/delete-key-scrub-001-close-2026-10-07.md)，[`CLOSE`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-CLOSE.md)）。第 6 号空位释放。未 push。未 merge。无 TestFlight / Release。
+- `2026-10-07 Asia/Shanghai`：授权把 Close 推到 PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204)（[`CLOSE-PUSH`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-CLOSE-PUSH.md)）。不 merge。无 TestFlight / Release。

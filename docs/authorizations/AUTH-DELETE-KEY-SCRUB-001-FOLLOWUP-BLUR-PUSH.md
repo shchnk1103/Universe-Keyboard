@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Status | `active` |
-| Consumption | 未消费。推送成功后由本地回写改为 consumed，该回写不再次 push。不授权 merge、TestFlight 或 Release |
+| Status | `consumed` |
+| Consumption | 已推送 `origin/grok/delete-bubble-001` 至 `7c804a08b1e7161b69dbef07a7abfc7aa1534a3e`，PR [#203](https://github.com/shchnk1103/Universe-Keyboard/pull/203) head 已前进。未 merge。本回写留在本地，没有再次 push |
 
 Human Product Owner, current session `2026-10-07 Asia/Shanghai`：授权这次小改动并推到 PR，先不要 merge。
 
@@ -17,8 +17,8 @@ Human Product Owner, current session `2026-10-07 Asia/Shanghai`：授权这次�
   "record_id": "AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-BLUR-PUSH",
   "record_type": "authorization",
   "title": "Push the adaptive delete-bubble blur onto PR 203",
-  "status": "active",
-  "updated_at": "2026-10-07T13:00:33+08:00",
+  "status": "consumed",
+  "updated_at": "2026-10-07T13:03:00+08:00",
   "revalidation_triggers": ["scope_changed", "authority_revoked", "head_changed"],
   "authorization": {
     "action": "push_delete_bubble_adaptive_blur",
@@ -26,6 +26,7 @@ Human Product Owner, current session `2026-10-07 Asia/Shanghai`：授权这次�
     "artifact_bindings": [
       {"kind": "pull_request", "identity": "https://github.com/shchnk1103/Universe-Keyboard/pull/203"},
       {"kind": "branch", "identity": "grok/delete-bubble-001"},
+      {"kind": "commit", "identity": "7c804a08b1e7161b69dbef07a7abfc7aa1534a3e"},
       {"kind": "worktree", "identity": "/private/tmp/universe-keyboard-delete-key-scrub-001"}
     ],
     "scope": "On grok/delete-bubble-001, replace the delete bubble's fixed Light/Dark blur with adaptable systemUltraThinMaterial, update the contract assertion and UI Style Guide sentence, and push the branch to origin so PR 203 advances. The push may include the already-local receipts c1f29b1 and 4bb2f08. Do not merge, force-push, or change other keys.",
@@ -35,7 +36,7 @@ Human Product Owner, current session `2026-10-07 Asia/Shanghai`：授权这次�
     "issued_at": "2026-10-07T13:00:33+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "unconsumed"
+    "consumption_state": "consumed"
   }
 }
 ```

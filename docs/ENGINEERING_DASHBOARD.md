@@ -33,13 +33,13 @@
 - **Sources:** [Close](product-decisions/KEYBOARD-WAKE-BOUNDED-CLOSE-001-product-decision-2026-10-06.md) · [Close 记录](evidence/keyboard-wake-bounded-close-001-2026-10-06.md) · [有界完成](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-bounded-completion-2026-10-06.md)
 
 
-## DELETE-KEY-SCRUB-001 — 删除键滑动擦除（Active，slot 6）
+## DELETE-KEY-SCRUB-001 — 删除键滑动擦除（Closed）
 
-- **Lifecycle:** [`Assignment`](assignments/delete-key-scrub-001.md) `Active`
-- **Current phase:** PR [#202](https://github.com/shchnk1103/Universe-Keyboard/pull/202) squash `1560488664f6e51450a441f14e465760c0635820`。跟进 commit `252d72666070372b7d92b473d75aea3a156071ee`。跟进 Quality **Pass**；文档 commit `39badbc612b91b74fd2180f5de41457eace421b1`
-- **Non-claims:** 不等于 push、PR、merge、Product Gate、TestFlight 或 Release
-- **Next:** PR [#203](https://github.com/shchnk1103/Universe-Keyboard/pull/203) 已开，head `b9a9038`。未 merge
-- **Sources:** [PD](product-decisions/DELETE-KEY-SCRUB-001-product-contract.md) · [Architecture](reviews/delete-key-scrub-001-architecture-close.md) · [Quality](reviews/delete-key-scrub-001-quality-review.md) · [Follow-up Quality](reviews/delete-key-scrub-001-followup-quality-review.md) · [FOLLOWUP-COMMIT](authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-COMMIT.md) · [FOLLOWUP-QUALITY-COMMIT](authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-QUALITY-COMMIT.md) · [FOLLOWUP-PUSH](authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PUSH.md) · [FOLLOWUP-PR](authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PR.md) · [PR #203](https://github.com/shchnk1103/Universe-Keyboard/pull/203)
+- **Lifecycle:** [`Assignment`](assignments/delete-key-scrub-001.md) `Closed`
+- **Current phase:** 交接见 [`close`](evidence/delete-key-scrub-001-close-2026-10-07.md)。第 6 号空位已释放
+- **Non-claims:** 不等于 merge、TestFlight 或 Release
+- **Next:** Close 进入 PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204)。未 merge。无本 Assignment 的下一产品动作
+- **Sources:** [PD](product-decisions/DELETE-KEY-SCRUB-001-product-contract.md) · [Architecture](reviews/delete-key-scrub-001-architecture-close.md) · [Quality](reviews/delete-key-scrub-001-quality-review.md) · [Follow-up Quality](reviews/delete-key-scrub-001-followup-quality-review.md) · [FOLLOWUP-COMMIT](authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-COMMIT.md) · [FOLLOWUP-QUALITY-COMMIT](authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-QUALITY-COMMIT.md) · [FOLLOWUP-PUSH](authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PUSH.md) · [FOLLOWUP-PR](authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PR.md) · [PR #203](https://github.com/shchnk1103/Universe-Keyboard/pull/203) · [Product Gate](product-decisions/DELETE-KEY-SCRUB-001-product-gate.md) · [PRODUCT-GATE-COMMIT](authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-COMMIT.md) · [PRODUCT-GATE-PUSH-PR](authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-PUSH-PR.md)
 - **Worktree:** `/private/tmp/universe-keyboard-delete-key-scrub-001` on `grok/delete-bubble-001`
 
 ## KEYBOARD-CORNER-BLEED-001 — 键盘顶圆角透白
