@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Status | `active` |
-| Consumption | 未消费。内容 commit 之后由同一分支的 SHA 回写改为 consumed。不授权 push、PR、merge、TestFlight 或 Release |
+| Status | `consumed` |
+| Consumption | 文档 commit `39badbc612b91b74fd2180f5de41457eace421b1`。本回写只记录 SHA。不授权 push、PR、merge、TestFlight 或 Release |
 
 Human Product Owner, current session `2026-10-07 Asia/Shanghai`：授权这次只含文档的 commit，先不要 push。
 
@@ -17,13 +17,14 @@ Human Product Owner, current session `2026-10-07 Asia/Shanghai`：授权这次�
   "record_id": "AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-QUALITY-COMMIT",
   "record_type": "authorization",
   "title": "Scoped local docs commit of the delete-key follow-up Quality review",
-  "status": "active",
-  "updated_at": "2026-10-07T12:46:41+08:00",
+  "status": "consumed",
+  "updated_at": "2026-10-07T12:48:00+08:00",
   "revalidation_triggers": ["scope_changed", "authority_revoked"],
   "authorization": {
     "action": "scoped_commit_delete_key_scrub_followup_quality_docs",
     "target": "DELETE-KEY-SCRUB-001",
     "artifact_bindings": [
+      {"kind": "commit", "identity": "39badbc612b91b74fd2180f5de41457eace421b1"},
       {"kind": "worktree", "identity": "/private/tmp/universe-keyboard-delete-key-scrub-001"},
       {"kind": "branch", "identity": "grok/delete-bubble-001"}
     ],
@@ -34,7 +35,7 @@ Human Product Owner, current session `2026-10-07 Asia/Shanghai`：授权这次�
     "issued_at": "2026-10-07T12:46:41+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "unconsumed"
+    "consumption_state": "consumed"
   }
 }
 ```
