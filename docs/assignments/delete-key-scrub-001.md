@@ -64,7 +64,7 @@ Policy version: 1.0.0
 | Assignment Close | Concluded | [`close`](../evidence/delete-key-scrub-001-close-2026-10-07.md) 已在 `origin/main` `4c2760d` | Consumed [`AUTH-DELETE-KEY-SCRUB-001-CLOSE`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-CLOSE.md) |
 | Close push | Consumed | 推到 PR #204 head `de7b425`。随后 squash `4c2760d` | Consumed [`AUTH-DELETE-KEY-SCRUB-001-CLOSE-PUSH`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-CLOSE-PUSH.md) |
 | PR #204 squash merge | Consumed | `origin/main` `4c2760de56fed9261a034413f39385b60ea8f91d`。树与 `de7b425` 相同。分支与 worktree 已删 | Consumed [`AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-MERGE`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-MERGE.md) |
-| Post-merge docs | Authorized | 只改 Close 发布状态并补合并收据。不 merge 本 PR | [`AUTH-DELETE-KEY-SCRUB-001-POST-MERGE-DOCS`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-POST-MERGE-DOCS.md) |
+| Post-merge docs | Consumed | PR [#205](https://github.com/shchnk1103/Universe-Keyboard/pull/205)，head `474a09a`。未 merge | Consumed [`AUTH-DELETE-KEY-SCRUB-001-POST-MERGE-DOCS`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-POST-MERGE-DOCS.md) |
 
 ## Boundary
 
