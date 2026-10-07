@@ -1,6 +1,6 @@
 # Active Work Summary
 
-Current update: `2026-10-07 Asia/Shanghai` — [`DELETE-KEY-SCRUB-001`](assignments/delete-key-scrub-001.md) **Closed**（[`close`](evidence/delete-key-scrub-001-close-2026-10-07.md)）。第 6 号空位释放，不进入下方表。PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204) 未 merge。Close 页尚未 push。无 TestFlight / Release。
+Current update: `2026-10-07 Asia/Shanghai` — [`DELETE-KEY-SCRUB-001`](assignments/delete-key-scrub-001.md) **Closed**（[`close`](evidence/delete-key-scrub-001-close-2026-10-07.md)）。第 6 号空位释放，不进入下方表。PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204) 未 merge。Close 随本次 push 进入该 PR。无 TestFlight / Release。
 
 Current update: `2026-10-07 Asia/Shanghai` — [`DELETE-KEY-SCRUB-001`](assignments/delete-key-scrub-001.md) 仍占第 6 号空位，Lifecycle **Reviewed**。Product Gate **Passed with accepted conditions**（[`product-gate`](product-decisions/DELETE-KEY-SCRUB-001-product-gate.md)）。未 Close。PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204) head `559eeff`。未 merge。无 TestFlight / Release。
 

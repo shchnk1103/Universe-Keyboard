@@ -8,7 +8,7 @@
 
 **Product Gate：** [`DELETE-KEY-SCRUB-001-product-gate`](../product-decisions/DELETE-KEY-SCRUB-001-product-gate.md)，Passed with accepted conditions，钉 `origin/main` `cee4f914be03d45c6d8deae8af5427ff1587d5c1`。
 
-**发布：** Gate 与本 Close 都在未合并的 PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204)。本页写下时尚未 push。
+**发布：** Gate 与本 Close 进入未合并的 PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204)。Close 正文是本地 `47f0e79`。
 
 ## Close basis
 

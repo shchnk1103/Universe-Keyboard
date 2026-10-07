@@ -37,8 +37,8 @@
 
 - **Lifecycle:** [`Assignment`](assignments/delete-key-scrub-001.md) `Closed`
 - **Current phase:** 交接见 [`close`](evidence/delete-key-scrub-001-close-2026-10-07.md)。第 6 号空位已释放
-- **Non-claims:** 不等于 push、merge、TestFlight 或 Release。Close 页尚未 push
-- **Next:** 无本 Assignment 的下一动作。PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204) 未 merge
+- **Non-claims:** 不等于 merge、TestFlight 或 Release
+- **Next:** Close 进入 PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204)。未 merge。无本 Assignment 的下一产品动作
 - **Sources:** [PD](product-decisions/DELETE-KEY-SCRUB-001-product-contract.md) · [Architecture](reviews/delete-key-scrub-001-architecture-close.md) · [Quality](reviews/delete-key-scrub-001-quality-review.md) · [Follow-up Quality](reviews/delete-key-scrub-001-followup-quality-review.md) · [FOLLOWUP-COMMIT](authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-COMMIT.md) · [FOLLOWUP-QUALITY-COMMIT](authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-QUALITY-COMMIT.md) · [FOLLOWUP-PUSH](authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PUSH.md) · [FOLLOWUP-PR](authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PR.md) · [PR #203](https://github.com/shchnk1103/Universe-Keyboard/pull/203) · [Product Gate](product-decisions/DELETE-KEY-SCRUB-001-product-gate.md) · [PRODUCT-GATE-COMMIT](authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-COMMIT.md) · [PRODUCT-GATE-PUSH-PR](authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-PUSH-PR.md)
 - **Worktree:** `/private/tmp/universe-keyboard-delete-key-scrub-001` on `grok/delete-bubble-001`
 
