@@ -33,12 +33,12 @@
 - **Sources:** [Close](product-decisions/KEYBOARD-WAKE-BOUNDED-CLOSE-001-product-decision-2026-10-06.md) · [Close 记录](evidence/keyboard-wake-bounded-close-001-2026-10-06.md) · [有界完成](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-bounded-completion-2026-10-06.md)
 
 
-## DELETE-KEY-SCRUB-001 — 删除键滑动擦除（Reviewed，slot 6）
+## DELETE-KEY-SCRUB-001 — 删除键滑动擦除（Closed）
 
-- **Lifecycle:** [`Assignment`](assignments/delete-key-scrub-001.md) `Reviewed`
-- **Current phase:** Product Gate **Passed with accepted conditions**，钉 `cee4f914be03d45c6d8deae8af5427ff1587d5c1`。未 Close
-- **Non-claims:** 不等于 Close、push、TestFlight 或 Release
-- **Next:** PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204) head `559eeff`。未 merge。Close 另授权
+- **Lifecycle:** [`Assignment`](assignments/delete-key-scrub-001.md) `Closed`
+- **Current phase:** 交接见 [`close`](evidence/delete-key-scrub-001-close-2026-10-07.md)。第 6 号空位已释放
+- **Non-claims:** 不等于 push、merge、TestFlight 或 Release。Close 页尚未 push
+- **Next:** 无本 Assignment 的下一动作。PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204) 未 merge
 - **Sources:** [PD](product-decisions/DELETE-KEY-SCRUB-001-product-contract.md) · [Architecture](reviews/delete-key-scrub-001-architecture-close.md) · [Quality](reviews/delete-key-scrub-001-quality-review.md) · [Follow-up Quality](reviews/delete-key-scrub-001-followup-quality-review.md) · [FOLLOWUP-COMMIT](authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-COMMIT.md) · [FOLLOWUP-QUALITY-COMMIT](authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-QUALITY-COMMIT.md) · [FOLLOWUP-PUSH](authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PUSH.md) · [FOLLOWUP-PR](authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PR.md) · [PR #203](https://github.com/shchnk1103/Universe-Keyboard/pull/203) · [Product Gate](product-decisions/DELETE-KEY-SCRUB-001-product-gate.md) · [PRODUCT-GATE-COMMIT](authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-COMMIT.md) · [PRODUCT-GATE-PUSH-PR](authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-PUSH-PR.md)
 - **Worktree:** `/private/tmp/universe-keyboard-delete-key-scrub-001` on `grok/delete-bubble-001`
 
