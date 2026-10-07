@@ -25,6 +25,11 @@ final class DeleteKeyScrubContractTests: XCTestCase {
         XCTAssertTrue(actions.contains("keyFrame.contains(location)"))
         XCTAssertTrue(actions.contains("performDeleteBackward()"))
         XCTAssertTrue(actions.contains("deleteBubbleTimer == nil"))
+        XCTAssertTrue(actions.contains("DeleteKeyHoldFlags.load"))
+        XCTAssertTrue(actions.contains("DeleteKeyHoldPolicy.outsideKeyIntent"))
+        XCTAssertTrue(actions.contains("leftKeyPending"))
+        XCTAssertTrue(actions.contains(".scrubEnabled"))
+        XCTAssertTrue(actions.contains("returnedToDeleteKey"))
         XCTAssertTrue(actions.contains("performDeleteBackward(shouldEmitFeedback: false)"))
         XCTAssertTrue(actions.contains("playDeleteBubbleArmedFeedback()"))
 

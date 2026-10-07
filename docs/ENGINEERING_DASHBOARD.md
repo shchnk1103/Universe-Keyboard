@@ -42,6 +42,15 @@
 - **Sources:** [PD](product-decisions/DELETE-KEY-SCRUB-001-product-contract.md) · [Architecture](reviews/delete-key-scrub-001-architecture-close.md) · [Quality](reviews/delete-key-scrub-001-quality-review.md) · [Follow-up Quality](reviews/delete-key-scrub-001-followup-quality-review.md) · [Product Gate](product-decisions/DELETE-KEY-SCRUB-001-product-gate.md) · [Close](evidence/delete-key-scrub-001-close-2026-10-07.md) · [PR #204 merge](authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-MERGE.md)
 - **Worktree:** 已删除。功能分支 `grok/delete-key-scrub-001`、`grok/delete-bubble-001`、`grok/delete-key-scrub-001-product-gate` 已删除
 
+## DELETE-KEY-SETTINGS-001 — 删除键设置页
+
+- **Lifecycle:** [`Assignment`](assignments/delete-key-settings-001.md) `Reviewed`
+- **Current phase:** 第二次独立 Product Gate Pass。digest `bb87845b`。第一次 Gate 仍是 Partial / incomplete。本地 commit 已授权，SHA 回写随后记录
+- **Non-claims:** 不重开 `DELETE-KEY-SCRUB-001`。Reviewed 不等于 Close、TestFlight 或 Release。本地 commit 不等于 push
+- **Next:** push、PR、merge 未授权
+- **Sources:** [PD](product-decisions/DELETE-KEY-SETTINGS-001-product-contract.md) · [Architecture](reviews/delete-key-settings-001-architecture-review.md) · [Quality](reviews/delete-key-settings-001-quality-review.md) · [Product Gate](reviews/delete-key-settings-001-product-gate.md) · [Product Gate 002](reviews/delete-key-settings-001-product-gate-002.md) · [Product Gate AUTH](authorizations/AUTH-DELETE-KEY-SETTINGS-001-PRODUCT-GATE-002.md) · [Commit AUTH](authorizations/AUTH-DELETE-KEY-SETTINGS-001-COMMIT.md)
+- **Worktree:** `/private/tmp/universe-keyboard-delete-key-settings-001`，分支 `grok/delete-key-settings-001`，基线 `141bc8e`
+
 ## KEYBOARD-CORNER-BLEED-001 — 键盘顶圆角透白
 
 - **Lifecycle:** [`Assignment`](assignments/keyboard-corner-bleed-001.md) `Closed`

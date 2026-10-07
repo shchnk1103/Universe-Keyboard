@@ -158,6 +158,8 @@ struct SearchTab: View {
             KeyboardLayoutSettingsView(rimeStore: rimeStore)
         case .feedback:
             FeedbackSettingsView()
+        case .deleteKey:
+            DeleteKeySettingsView()
         case .typoCorrection:
             TypoCorrectionBenchmarkView()
         case .typingIntelligence:

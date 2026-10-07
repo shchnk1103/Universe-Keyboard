@@ -7,6 +7,7 @@ nonisolated struct SettingsSearchItem: Identifiable, Equatable, Sendable {
     enum Destination: String, Equatable, Sendable {
         case keyboardLayout
         case feedback
+        case deleteKey
         case typoCorrection
         case typingIntelligence
         case rimeSchemes
@@ -62,6 +63,14 @@ nonisolated enum SettingsSearchCatalog {
             systemImage: "waveform",
             keywords: ["震动", "音效", "反馈", "haptic", "声音"],
             destination: .feedback
+        ),
+        SettingsSearchItem(
+            id: "deleteKey",
+            title: "删除键",
+            subtitle: "垃圾桶、滑动擦除、组字左滑",
+            systemImage: "delete.left",
+            keywords: ["删除", "垃圾桶", "滑动", "擦除", "回删", "组字", "拼音", "delete"],
+            destination: .deleteKey
         ),
         SettingsSearchItem(
             id: "typoCorrection",
