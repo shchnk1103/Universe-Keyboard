@@ -6,10 +6,10 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Reviewed` |
-| **Phase** | 第二次独立 Product Gate 为 Pass。digest `bb87845b`。第一次 Gate 仍是 Partial / incomplete。本地内容 commit `2603b0075e568c161b314ba47b8c23fb46444847`。未 push |
-| **Non-claims** | Reviewed 不等于 Close、TestFlight 或 Release。本地 commit 不等于 push。不重开已 Closed 的 `DELETE-KEY-SCRUB-001` |
-| **Next** | push、PR、merge 仍未授权 |
+| **Lifecycle** | `Closed` |
+| **Phase** | Close 已写入本提交，随 PR [#206](https://github.com/shchnk1103/Universe-Keyboard/pull/206) 发布。内容提交 `2603b00`。第二次 Product Gate Pass，digest `bb87845b`。第一次 Gate 仍是 Partial / incomplete |
+| **Non-claims** | Closed 不等于 TestFlight 或 Release。不重开已 Closed 的 `DELETE-KEY-SCRUB-001`。squash SHA 不另开 PR 回写 |
+| **Next** | 无。本 Assignment 没有下一执行项 |
 | **Residuals** | 第二次 Gate 无新开放残留。第一次 Partial 不升成 Pass，其审查页保持原样。Quality 未留开放残留。`R-DELETE-KEY-SETTINGS-001-ARCH-1` 的修补已含在本次 Gate 字节里。DKS-CLOSE-01 / DKS-CLOSE-02 在对应开关为开时保持原行为 |
 
 ---
@@ -30,6 +30,7 @@ Policy version: 1.0.0
 - Authorization (quality): [`AUTH-DELETE-KEY-SETTINGS-001-QUALITY`](../authorizations/AUTH-DELETE-KEY-SETTINGS-001-QUALITY.md) — consumed
 - Authorization (product gate): [`AUTH-DELETE-KEY-SETTINGS-001-PRODUCT-GATE`](../authorizations/AUTH-DELETE-KEY-SETTINGS-001-PRODUCT-GATE.md) — consumed，Partial / incomplete
 - Authorization (product gate 002): [`AUTH-DELETE-KEY-SETTINGS-001-PRODUCT-GATE-002`](../authorizations/AUTH-DELETE-KEY-SETTINGS-001-PRODUCT-GATE-002.md) — consumed，Pass
+- Authorization (close and merge): Human Product Owner `2026-10-07 Asia/Shanghai`，「OK，授权 Close 补进 PR #206，CI 全绿后 merge。」收据留在本地，不进入本 PR
 
 ## KOS v0.9.0 optional-contract selection
 
@@ -50,9 +51,10 @@ Policy version: 1.0.0
 | Independent Architecture | Concluded | Conditional Accept。[`architecture-review`](../reviews/delete-key-settings-001-architecture-review.md)。digest `517c13eb`。该 AUTH 不覆盖审查后的滑回修补 | Consumed [`AUTH-DELETE-KEY-SETTINGS-001-ARCHITECTURE`](../authorizations/AUTH-DELETE-KEY-SETTINGS-001-ARCHITECTURE.md) |
 | Independent Quality | Concluded | Pass。[`quality-review`](../reviews/delete-key-settings-001-quality-review.md)。digest `69b35d41`。该 AUTH 不授权 Product Gate 或 commit | Consumed [`AUTH-DELETE-KEY-SETTINGS-001-QUALITY`](../authorizations/AUTH-DELETE-KEY-SETTINGS-001-QUALITY.md) |
 | Independent Product Gate | Concluded incomplete | Partial / incomplete。[`product-gate`](../reviews/delete-key-settings-001-product-gate.md)。digest `f1458883`。超过 30 次工具调用，不升成 Pass | Consumed [`AUTH-DELETE-KEY-SETTINGS-001-PRODUCT-GATE`](../authorizations/AUTH-DELETE-KEY-SETTINGS-001-PRODUCT-GATE.md) |
-| Independent Product Gate 002 | Concluded | Pass。[`product-gate-002`](../reviews/delete-key-settings-001-product-gate-002.md)。digest `bb87845b`。十四条符合。无新开放残留。不授权 Close 或 commit | Consumed [`AUTH-DELETE-KEY-SETTINGS-001-PRODUCT-GATE-002`](../authorizations/AUTH-DELETE-KEY-SETTINGS-001-PRODUCT-GATE-002.md) |
-| Local commit | Consumed | 内容 `2603b0075e568c161b314ba47b8c23fb46444847`。回写只记录 SHA。不含 push | Consumed [`AUTH-DELETE-KEY-SETTINGS-001-COMMIT`](../authorizations/AUTH-DELETE-KEY-SETTINGS-001-COMMIT.md) |
-| Push / PR / merge | Not authorized | 无 | 无 |
+| Independent Product Gate 002 | Concluded | Pass。[`product-gate-002`](../reviews/delete-key-settings-001-product-gate-002.md)。digest `bb87845b`。十四条符合。无新开放残留 | Consumed [`AUTH-DELETE-KEY-SETTINGS-001-PRODUCT-GATE-002`](../authorizations/AUTH-DELETE-KEY-SETTINGS-001-PRODUCT-GATE-002.md) |
+| Local commit | Consumed | 内容 `2603b0075e568c161b314ba47b8c23fb46444847` | Consumed [`AUTH-DELETE-KEY-SETTINGS-001-COMMIT`](../authorizations/AUTH-DELETE-KEY-SETTINGS-001-COMMIT.md) |
+| Push / PR | Consumed | `origin/grok/delete-key-settings-001` 至 `155bc51`，PR [#206](https://github.com/shchnk1103/Universe-Keyboard/pull/206) | Human Product Owner `2026-10-07` |
+| Close and merge | Authorized | Close 文档进入 PR #206。同一 head CI 全绿后 squash-merge。不另开 PR | Human Product Owner `2026-10-07`：「OK，授权 Close 补进 PR #206，CI 全绿后 merge。」 |
 
 ## Boundary
 

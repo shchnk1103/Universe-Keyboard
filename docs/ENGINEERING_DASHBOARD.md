@@ -44,11 +44,11 @@
 
 ## DELETE-KEY-SETTINGS-001 — 删除键设置页
 
-- **Lifecycle:** [`Assignment`](assignments/delete-key-settings-001.md) `Reviewed`
-- **Current phase:** 第二次独立 Product Gate Pass。digest `bb87845b`。第一次 Gate 仍是 Partial / incomplete。本地内容 commit `2603b0075e568c161b314ba47b8c23fb46444847`
-- **Non-claims:** 不重开 `DELETE-KEY-SCRUB-001`。Reviewed 不等于 Close、TestFlight 或 Release。本地 commit 不等于 push
-- **Next:** push、PR、merge 未授权
-- **Sources:** [PD](product-decisions/DELETE-KEY-SETTINGS-001-product-contract.md) · [Architecture](reviews/delete-key-settings-001-architecture-review.md) · [Quality](reviews/delete-key-settings-001-quality-review.md) · [Product Gate](reviews/delete-key-settings-001-product-gate.md) · [Product Gate 002](reviews/delete-key-settings-001-product-gate-002.md) · [Product Gate AUTH](authorizations/AUTH-DELETE-KEY-SETTINGS-001-PRODUCT-GATE-002.md) · [Commit AUTH](authorizations/AUTH-DELETE-KEY-SETTINGS-001-COMMIT.md)
+- **Lifecycle:** [`Assignment`](assignments/delete-key-settings-001.md) `Closed`
+- **Current phase:** 交接见 [`close`](evidence/delete-key-settings-001-close-2026-10-07.md)。第 6 行已移出 Active Work 表。PR [#206](https://github.com/shchnk1103/Universe-Keyboard/pull/206)
+- **Non-claims:** 不重开 `DELETE-KEY-SCRUB-001`。Closed 不等于 TestFlight 或 Release
+- **Next:** 无
+- **Sources:** [PD](product-decisions/DELETE-KEY-SETTINGS-001-product-contract.md) · [Architecture](reviews/delete-key-settings-001-architecture-review.md) · [Quality](reviews/delete-key-settings-001-quality-review.md) · [Product Gate](reviews/delete-key-settings-001-product-gate.md) · [Product Gate 002](reviews/delete-key-settings-001-product-gate-002.md) · [Close](evidence/delete-key-settings-001-close-2026-10-07.md)
 - **Worktree:** `/private/tmp/universe-keyboard-delete-key-settings-001`，分支 `grok/delete-key-settings-001`，基线 `141bc8e`
 
 ## KEYBOARD-CORNER-BLEED-001 — 键盘顶圆角透白
