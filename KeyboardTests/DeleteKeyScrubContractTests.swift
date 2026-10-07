@@ -24,6 +24,14 @@ final class DeleteKeyScrubContractTests: XCTestCase {
         XCTAssertTrue(actions.contains("oneGraphemeBeforeCursor: true"))
         XCTAssertTrue(actions.contains("keyFrame.contains(location)"))
         XCTAssertTrue(actions.contains("performDeleteBackward()"))
+        XCTAssertTrue(actions.contains("deleteBubbleTimer == nil"))
+        XCTAssertTrue(actions.contains("performDeleteBackward(shouldEmitFeedback: false)"))
+        XCTAssertTrue(actions.contains("playDeleteBubbleArmedFeedback()"))
+
+        let feedback = try sourceFile("Keyboard/Controllers/KeyboardViewController+Feedback.swift")
+        XCTAssertTrue(feedback.contains("func playRepeatFeedback"))
+        XCTAssertTrue(feedback.contains("func playDeleteBubbleArmedFeedback"))
+        XCTAssertFalse(feedback.contains("effectiveDeleteCount == 1"))
 
         let repeatController = try sourceFile("Keyboard/Controllers/DeleteRepeatController.swift")
         XCTAssertTrue(repeatController.contains("repeatGeneration"))
@@ -40,6 +48,12 @@ final class DeleteKeyScrubContractTests: XCTestCase {
         XCTAssertTrue(bubble.contains("systemName: \"trash\""))
         XCTAssertTrue(bubble.contains(".alwaysTemplate"))
         XCTAssertTrue(bubble.contains("accessibilityLabel = \"删除光标前文字\""))
+        XCTAssertTrue(bubble.contains("UIGlassEffect"))
+        XCTAssertTrue(bubble.contains("systemUltraThinMaterial"))
+        XCTAssertFalse(bubble.contains("systemUltraThinMaterialLight"))
+        XCTAssertFalse(bubble.contains("systemUltraThinMaterialDark"))
+        XCTAssertTrue(bubble.contains("setFingerInside"))
+        XCTAssertTrue(bubble.contains("松手清空光标前文字"))
         XCTAssertFalse(bubble.contains("UIButton.Configuration"))
         XCTAssertFalse(bubble.contains("documentContext"))
     }

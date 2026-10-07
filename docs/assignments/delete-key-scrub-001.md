@@ -7,9 +7,9 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |
-| **Phase** | 实施切片已授权；隔离 worktree `/private/tmp/universe-keyboard-delete-key-scrub-001`，分支 `grok/delete-key-scrub-001`，基线 `origin/main` `781ca45d` |
-| **Non-claims** | 不等于独立 Architecture/Quality 结论、Product Gate、commit、push、merge、TestFlight 或 Release。文档框架 squash `8f0fa58` 仍只是合同捕获 |
-| **Next** | PR [#202](https://github.com/shchnk1103/Universe-Keyboard/pull/202) 已开，head `6cae5b2`。merge 仍需另授 AUTH |
+| **Phase** | 第一段已在 `origin/main` `1560488664f6e51450a441f14e465760c0635820`（PR [#202](https://github.com/shchnk1103/Universe-Keyboard/pull/202)）。跟进在隔离分支 `grok/delete-bubble-001`：气泡只武装一次、iOS 26 Liquid Glass、删除键发声表 |
+| **Non-claims** | 跟进 Quality 是 Pass，不等于 Product Gate、push、PR、merge、TestFlight 或 Release。第一段 Architecture / Quality 仍钉 merge 前的树 |
+| **Next** | 气泡 iOS 26 以下模糊改为自适应材质并推到 PR [#203](https://github.com/shchnk1103/Universe-Keyboard/pull/203)。未 merge |
 | **Residuals** | DKS-CLOSE-01 单击/长按仍可能删成对两侧；DKS-CLOSE-02 预编辑左滑重置 session 并清 T9 Path。均已接受，留在本切片 |
 
 ---
@@ -50,6 +50,13 @@ Policy version: 1.0.0
 | Local implementation commit | Consumed | 实现 `ff149ac7fe8386399f39568f88f722c768153330`。不授权 push | Consumed [`AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-COMMIT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-COMMIT.md) |
 | Implementation push | Consumed | `origin/grok/delete-key-scrub-001` `6cae5b261d65cb1b47f3966db78f02df1fa79dd7`。未开 PR | Consumed [`AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-PUSH`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-PUSH.md) |
 | Implementation PR | Consumed | PR [#202](https://github.com/shchnk1103/Universe-Keyboard/pull/202)，head `6cae5b2`。未 merge | Consumed [`AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-PR`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-PR.md) |
+| PR #202 squash merge | Consumed off this head | `origin/main` `1560488664f6e51450a441f14e465760c0635820`；树与 `95fd0dc` 相同；hosted run [37567879900](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/37567879900)。收据不进入功能分支 | In-session merge AUTH，文件留在工作区未提交 |
+| Follow-up commit | Consumed | 内容 `252d72666070372b7d92b473d75aea3a156071ee`。不授权 push | Consumed [`AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-COMMIT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-COMMIT.md) |
+| Follow-up Quality | Concluded | Pass。只覆盖 `1560488..f94a8a7`。[`followup-quality-review`](../reviews/delete-key-scrub-001-followup-quality-review.md)。不授权 push | Consumed [`AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-QUALITY`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-QUALITY.md) |
+| Follow-up Quality docs commit | Consumed | 文档 `39badbc612b91b74fd2180f5de41457eace421b1`。不授权 push | Consumed [`AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-QUALITY-COMMIT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-QUALITY-COMMIT.md) |
+| Follow-up push | Consumed | `origin/grok/delete-bubble-001` `b9a9038e6e6206a316fb33705d071c080a8de811`。未开 PR。消费回写未再 push | Consumed [`AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PUSH`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PUSH.md) |
+| Follow-up PR | Consumed | PR [#203](https://github.com/shchnk1103/Universe-Keyboard/pull/203)，head `b9a9038`。未 merge。开 PR 回写未 push | Consumed [`AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PR`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PR.md) |
+| Follow-up blur push | Authorized | iOS 26 以下气泡改用 `systemUltraThinMaterial`，推到 PR #203。不 merge | [`AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-BLUR-PUSH`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-BLUR-PUSH.md) |
 | Product Gate / merge | Unauthorized | 各需新 AUTH | Product Lead |
 
 ## Boundary
@@ -221,3 +228,13 @@ Policy version: 1.0.0
 - `2026-10-07 Asia/Shanghai`：本地实现 commit `ff149ac7fe8386399f39568f88f722c768153330`（[`IMPLEMENT-COMMIT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-COMMIT.md)）。未 push。无 Product Gate / merge / TestFlight / Release。
 - `2026-10-07 Asia/Shanghai`：已推送 `origin/grok/delete-key-scrub-001` `6cae5b261d65cb1b47f3966db78f02df1fa79dd7`（[`IMPLEMENT-PUSH`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-PUSH.md)）。未开 PR。无 merge / TestFlight / Release。
 - `2026-10-07 Asia/Shanghai`：已开 PR [#202](https://github.com/shchnk1103/Universe-Keyboard/pull/202)，head `6cae5b2`（[`IMPLEMENT-PR`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-PR.md)）。未 merge。无 TestFlight / Release。
+- `2026-10-07 Asia/Shanghai`：PR [#202](https://github.com/shchnk1103/Universe-Keyboard/pull/202) squash-merged `1560488664f6e51450a441f14e465760c0635820`。树与 PR head `95fd0dc07b191d8dee3c43bd58904e31d84cf781` 相同。hosted Swift 6 Quality run [37567879900](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/37567879900) 全绿。merge 收据留在工作区，不进入本分支。Lifecycle 仍 `Active`。无 Product Gate / TestFlight / Release。
+- `2026-10-07 Asia/Shanghai`：真机 iPhone 13 Pro `00008110-000A08440198801E` 上，长按期间 0.08s 重复不断重置 0.15s 气泡计时器，气泡不出现。改为只武装一次，并挂到 `RunLoop` `.common`。Human 确认气泡出现且清空正确。
+- `2026-10-07 Asia/Shanghai`：气泡改为 iOS 26 regular Liquid Glass；手指在内时玻璃和符号带轻微 `systemRed`。Human 接受。
+- `2026-10-07 Asia/Shanghai`：删除键发声按约定表调整。按下一次；单击松手不加第二声；连删和擦除每个实际删除的字素一声；进入气泡一次稍重确认；清空循环、回放、滑出键盘和取消不出声。Human 真机详测接受。`DeleteKeyScrubContractTests` 3/3 在 iPhone 18 Pro `405D994F-28CB-4F89-BB22-B64AD81C05A2` 通过。产品合同未改写。无 Product Gate。
+- `2026-10-07 Asia/Shanghai`：有界跟进 commit `252d72666070372b7d92b473d75aea3a156071ee`（[`FOLLOWUP-COMMIT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-COMMIT.md) consumed）。不授权 push。
+- `2026-10-07 Asia/Shanghai`：跟进差值独立 Quality **Pass**（[`followup-quality-review`](../reviews/delete-key-scrub-001-followup-quality-review.md)）。`DeleteKeyScrubContractTests` 3/3 与三文件 `swift-format lint --strict` 由审查者复现。未重跑全套，未真实点按。DKS-CLOSE-01/02 仍在。[`FOLLOWUP-QUALITY`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-QUALITY.md) consumed。无 push / Product Gate。
+- `2026-10-07 Asia/Shanghai`：有界文档 commit `39badbc612b91b74fd2180f5de41457eace421b1`（[`FOLLOWUP-QUALITY-COMMIT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-QUALITY-COMMIT.md) consumed）。只含审查页、Quality 授权和账本。不授权 push。无 Swift。
+- `2026-10-07 Asia/Shanghai`：已推送 `origin/grok/delete-bubble-001` `b9a9038e6e6206a316fb33705d071c080a8de811`（[`FOLLOWUP-PUSH`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PUSH.md) consumed）。未开 PR。消费回写留在本地。无 merge / Product Gate。
+- `2026-10-07 Asia/Shanghai`：已开 PR [#203](https://github.com/shchnk1103/Universe-Keyboard/pull/203)，head `b9a9038`（[`FOLLOWUP-PR`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PR.md) consumed）。未 merge。开 PR 回写留在本地。无 Product Gate。
+- `2026-10-07 Asia/Shanghai`：接受 Codex 对气泡模糊的一条建议。iOS 26 以下改为自适应 `systemUltraThinMaterial`（[`FOLLOWUP-BLUR-PUSH`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-BLUR-PUSH.md)）。不改其他键。未 merge。
