@@ -37,8 +37,8 @@
 
 - **Lifecycle:** [`Assignment`](assignments/delete-key-scrub-001.md) `Reviewed`
 - **Current phase:** Product Gate **Passed with accepted conditions**，钉 `cee4f914be03d45c6d8deae8af5427ff1587d5c1`。未 Close
-- **Non-claims:** 不等于 Close、push、TestFlight 或 Release。Gate 文档 commit 尚未回写 SHA
-- **Next:** SHA 回写后，push 另授 AUTH。Close 另授权
+- **Non-claims:** 不等于 Close、push、TestFlight 或 Release
+- **Next:** Gate 文档 commit `45c84a773c0c8c6da6679e12667aa52ae1f367ff`。push 另授 AUTH。Close 另授权
 - **Sources:** [PD](product-decisions/DELETE-KEY-SCRUB-001-product-contract.md) · [Architecture](reviews/delete-key-scrub-001-architecture-close.md) · [Quality](reviews/delete-key-scrub-001-quality-review.md) · [Follow-up Quality](reviews/delete-key-scrub-001-followup-quality-review.md) · [FOLLOWUP-COMMIT](authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-COMMIT.md) · [FOLLOWUP-QUALITY-COMMIT](authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-QUALITY-COMMIT.md) · [FOLLOWUP-PUSH](authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PUSH.md) · [FOLLOWUP-PR](authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PR.md) · [PR #203](https://github.com/shchnk1103/Universe-Keyboard/pull/203) · [Product Gate](product-decisions/DELETE-KEY-SCRUB-001-product-gate.md) · [PRODUCT-GATE-COMMIT](authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-COMMIT.md)
 - **Worktree:** `/private/tmp/universe-keyboard-delete-key-scrub-001` on `grok/delete-bubble-001`
 

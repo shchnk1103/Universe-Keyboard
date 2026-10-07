@@ -8,8 +8,8 @@ Policy version: 1.0.0
 |---|---|
 | **Lifecycle** | `Reviewed` |
 | **Phase** | Product Gate **Passed with accepted conditions**，钉 `origin/main` `cee4f914be03d45c6d8deae8af5427ff1587d5c1`。[`product-gate`](../product-decisions/DELETE-KEY-SCRUB-001-product-gate.md) |
-| **Non-claims** | 不等于 Close、TestFlight 或 Release。微信 / Safari / 密码框未声称已测。Gate 文档 commit 尚未回写 SHA |
-| **Next** | Gate 文档 commit 的 SHA 回写之后，push 仍需新 AUTH。Close 另授权 |
+| **Non-claims** | 不等于 Close、push、TestFlight 或 Release。微信 / Safari / 密码框未声称已测 |
+| **Next** | Gate 文档 commit `45c84a773c0c8c6da6679e12667aa52ae1f367ff`。push 仍需新 AUTH。Close 另授权 |
 | **Residuals** | DKS-CLOSE-01 单击/长按仍可能删成对两侧；DKS-CLOSE-02 预编辑左滑重置 session 并清 T9 Path。均已接受，留在本切片 |
 
 ---
@@ -59,7 +59,7 @@ Policy version: 1.0.0
 | Follow-up blur push | Consumed | `7c804a08b1e7161b69dbef07a7abfc7aa1534a3e` 已在 PR #203。未 merge。消费回写未再 push | Consumed [`AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-BLUR-PUSH`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-BLUR-PUSH.md) |
 | Follow-up squash merge | Consumed off this head | `origin/main` `cee4f914be03d45c6d8deae8af5427ff1587d5c1`；树与 `7c804a0` 相同。收据留在本地，未推送 | Consumed [`AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-MERGE`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-MERGE.md) |
 | Product Gate | Concluded | Passed with accepted conditions。`Reviewed`，未 Close。[`product-gate`](../product-decisions/DELETE-KEY-SCRUB-001-product-gate.md) | Consumed [`AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE.md) |
-| Product Gate docs commit | Authorized | Gate 页、授权与账本。同一分支再做 SHA 回写。不授权 push | [`AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-COMMIT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-COMMIT.md) |
+| Product Gate docs commit | Consumed | 文档 `45c84a773c0c8c6da6679e12667aa52ae1f367ff`。不授权 push | Consumed [`AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-COMMIT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-COMMIT.md) |
 | Assignment Close | Unauthorized | 另需 AUTH | Product Lead |
 
 ## Boundary
@@ -243,4 +243,4 @@ Policy version: 1.0.0
 - `2026-10-07 Asia/Shanghai`：接受 Codex 对气泡模糊的一条建议。iOS 26 以下改为自适应 `systemUltraThinMaterial`，已推送 `7c804a08b1e7161b69dbef07a7abfc7aa1534a3e`（[`FOLLOWUP-BLUR-PUSH`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-BLUR-PUSH.md) consumed）。PR #203 head 已前进。未 merge。消费回写留在本地。
 - `2026-10-07 Asia/Shanghai`：PR [#203](https://github.com/shchnk1103/Universe-Keyboard/pull/203) squash-merged `cee4f914be03d45c6d8deae8af5427ff1587d5c1`。树与 `7c804a0` 相同。hosted run [37574313596](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/37574313596) 在 merge 前全绿。Lifecycle 仍 `Active`。无 Product Gate / TestFlight / Release。功能分支保留。
 - `2026-10-07 Asia/Shanghai`：Human Product Gate **Passed with accepted conditions**（[`product-gate`](../product-decisions/DELETE-KEY-SCRUB-001-product-gate.md)，[`PRODUCT-GATE`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE.md) consumed）。接受发声表、玻璃变红、自适应模糊，以及 DKS-CLOSE-01 / DKS-CLOSE-02。微信、Safari、密码框未声称已测。Lifecycle → `Reviewed`。未 Close。本页未 commit / push。无 TestFlight / Release。
-- `2026-10-07 Asia/Shanghai`：有界文档 commit 授权生效（[`PRODUCT-GATE-COMMIT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-COMMIT.md)）。只含 Gate 页、授权和账本。`main` run [37575560853](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/37575560853) 在决定之后全绿，补记为非 Gate 输入。SHA 由下一笔回写填入。不授权 push。无 Swift。无 Close。
+- `2026-10-07 Asia/Shanghai`：有界文档 commit `45c84a773c0c8c6da6679e12667aa52ae1f367ff`（[`PRODUCT-GATE-COMMIT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-COMMIT.md) consumed）。只含 Gate 页、授权和账本。不授权 push。无 Swift。无 Close。

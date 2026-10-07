@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Status | `active` |
-| Consumption | 未消费。内容 commit 之后由同一分支的 SHA 回写改为 consumed。不授权 push、PR、merge、TestFlight、Release 或 Close |
+| Status | `consumed` |
+| Consumption | 文档 commit `45c84a773c0c8c6da6679e12667aa52ae1f367ff`。本回写只记录 SHA。不授权 push、PR、merge、TestFlight、Release 或 Close |
 
 Human Product Owner, current session `2026-10-07 Asia/Shanghai`：授权 Product Gate 文档提交，先不要 push。
 
@@ -17,13 +17,14 @@ Human Product Owner, current session `2026-10-07 Asia/Shanghai`：授权 Product
   "record_id": "AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-COMMIT",
   "record_type": "authorization",
   "title": "Scoped local commit of the delete-key Product Gate",
-  "status": "active",
-  "updated_at": "2026-10-07T13:26:58+08:00",
+  "status": "consumed",
+  "updated_at": "2026-10-07T13:28:00+08:00",
   "revalidation_triggers": ["scope_changed", "authority_revoked"],
   "authorization": {
     "action": "scoped_commit_delete_key_scrub_product_gate_docs",
     "target": "DELETE-KEY-SCRUB-001",
     "artifact_bindings": [
+      {"kind": "commit", "identity": "45c84a773c0c8c6da6679e12667aa52ae1f367ff"},
       {"kind": "worktree", "identity": "/private/tmp/universe-keyboard-delete-key-scrub-001"},
       {"kind": "branch", "identity": "grok/delete-bubble-001"}
     ],
@@ -34,7 +35,7 @@ Human Product Owner, current session `2026-10-07 Asia/Shanghai`：授权 Product
     "issued_at": "2026-10-07T13:26:58+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "unconsumed"
+    "consumption_state": "consumed"
   }
 }
 ```

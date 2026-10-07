@@ -37,7 +37,7 @@
 | Phase | Human Product Gate **Passed with accepted conditions**。Assignment `Reviewed`，未 `Closed` |
 | Evidence | `origin/main` `cee4f914be03d45c6d8deae8af5427ff1587d5c1`，树与 PR [#203](https://github.com/shchnk1103/Universe-Keyboard/pull/203) head `7c804a08b1e7161b69dbef07a7abfc7aa1534a3e` 相同。merge 前 hosted run [37574313596](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/37574313596) 全绿 |
 | Non-claims | 不是 Close、TestFlight、Release 或 CHANGELOG。不是微信 / Safari / 密码框已测。不是 Quality 车道的真机日志。`main` run [37575560853](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/37575560853) 在决定之后全绿，不是本 Gate 的输入 |
-| Next | Close 另授权。文档 commit 的 SHA 由回写填入。不授权 push |
+| Next | 文档 commit `45c84a773c0c8c6da6679e12667aa52ae1f367ff`。不授权 push。Close 另授权 |
 
 ## Decision
 
