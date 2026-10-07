@@ -82,7 +82,7 @@ extension KeyboardViewController {
         if liftClearsBeforeCursor {
             performDeleteAllBeforeCursor()
         } else if session.phase == .pressed {
-            _ = performDeleteBackward()
+            _ = performDeleteBackward(shouldEmitFeedback: false)
         }
         endDeleteGestureSession(restoreAppearance: true, reason: .lifted)
     }
@@ -143,19 +143,22 @@ extension KeyboardViewController {
     }
 
     func scheduleDeleteTrashBubble(session: DeleteKeyGestureSession) {
-        deleteBubbleTimer?.invalidate()
+        // Repeat ticks arrive every 0.08s. Replacing this 0.15s timer on each
+        // tick keeps the bubble from ever appearing while deletion is working.
+        guard deleteBubbleTimer == nil, !session.bubbleVisible else { return }
         guard canShowDeleteTrashBubble else { return }
-        deleteBubbleTimer = Timer.scheduledTimer(
-            withTimeInterval: DeleteRepeatController.bubbleDelayAfterRepeatStart,
+        let timer = Timer(
+            timeInterval: DeleteRepeatController.bubbleDelayAfterRepeatStart,
             repeats: false
         ) { [weak self] _ in
             Task { @MainActor [weak self] in
-                self?.showDeleteTrashBubbleIfNeeded()
+                guard let self else { return }
+                self.deleteBubbleTimer = nil
+                self.showDeleteTrashBubbleIfNeeded()
             }
         }
-        if let timer = deleteBubbleTimer {
-            RunLoop.main.add(timer, forMode: .common)
-        }
+        deleteBubbleTimer = timer
+        RunLoop.main.add(timer, forMode: .common)
     }
 
     func showDeleteTrashBubbleIfNeeded() {
@@ -192,9 +195,12 @@ extension KeyboardViewController {
         if inside, !session.fingerInBubble {
             session.fingerInBubble = true
             session.didVisitBubble = true
+            deleteTrashBubbleView?.setFingerInside(true)
+            playDeleteBubbleArmedFeedback()
             deleteRepeatController.stop()
         } else if !inside, session.fingerInBubble {
             session.fingerInBubble = false
+            deleteTrashBubbleView?.setFingerInside(false)
             if session.phase == .repeating {
                 deleteRepeatController.resumeRepeating { [weak self] in
                     self?.handleDeleteRepeatTick()
@@ -292,7 +298,7 @@ extension KeyboardViewController {
             return .recorded(token)
         }
         guard hadText else { return .stopped }
-        _ = performDeleteBackward(shouldEmitFeedback: false, oneGraphemeBeforeCursor: true)
+        _ = performDeleteBackward(shouldEmitFeedback: true, oneGraphemeBeforeCursor: true)
         let after = textDocumentProxy.documentContextBeforeInput ?? ""
         if !after.isEmpty { return .stopped }
         if !textDocumentProxy.hasText {
@@ -317,16 +323,14 @@ extension KeyboardViewController {
             abandonActivePreedit()
         }
         var remaining = DeleteScrubPlayhead.clearAllCap
-        var feedbackArmed = true
         while remaining > 0 {
             let before = textDocumentProxy.documentContextBeforeInput ?? ""
             let hadText = textDocumentProxy.hasText
             if before.isEmpty, !hadText { break }
             let observed = performDeleteBackward(
-                shouldEmitFeedback: feedbackArmed,
+                shouldEmitFeedback: false,
                 oneGraphemeBeforeCursor: true
             )
-            feedbackArmed = false
             let after = textDocumentProxy.documentContextBeforeInput ?? ""
             let hasText = textDocumentProxy.hasText
             if !observed, after == before, hasText == hadText { break }
