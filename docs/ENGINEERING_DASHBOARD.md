@@ -36,10 +36,10 @@
 ## DELETE-KEY-SCRUB-001 — 删除键滑动擦除（Active，slot 6）
 
 - **Lifecycle:** [`Assignment`](assignments/delete-key-scrub-001.md) `Active`
-- **Current phase:** PR [#202](https://github.com/shchnk1103/Universe-Keyboard/pull/202) squash `1560488664f6e51450a441f14e465760c0635820`。跟进 commit `252d72666070372b7d92b473d75aea3a156071ee`：气泡只武装一次、Liquid Glass、删除键发声表
-- **Non-claims:** 不等于本跟进的独立 Quality、push、PR、merge、Product Gate、TestFlight 或 Release
-- **Next:** push 另授 AUTH
-- **Sources:** [PD](product-decisions/DELETE-KEY-SCRUB-001-product-contract.md) · [Architecture](reviews/delete-key-scrub-001-architecture-close.md) · [Quality](reviews/delete-key-scrub-001-quality-review.md) · [FOLLOWUP-COMMIT](authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-COMMIT.md)
+- **Current phase:** PR [#202](https://github.com/shchnk1103/Universe-Keyboard/pull/202) squash `1560488664f6e51450a441f14e465760c0635820`。跟进 commit `252d72666070372b7d92b473d75aea3a156071ee`。跟进 Quality **Pass**；审查页的文档 commit 尚未回写 SHA
+- **Non-claims:** 不等于 push、PR、merge、Product Gate、TestFlight 或 Release
+- **Next:** SHA 回写后，push 另授 AUTH
+- **Sources:** [PD](product-decisions/DELETE-KEY-SCRUB-001-product-contract.md) · [Architecture](reviews/delete-key-scrub-001-architecture-close.md) · [Quality](reviews/delete-key-scrub-001-quality-review.md) · [Follow-up Quality](reviews/delete-key-scrub-001-followup-quality-review.md) · [FOLLOWUP-COMMIT](authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-COMMIT.md) · [FOLLOWUP-QUALITY-COMMIT](authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-QUALITY-COMMIT.md)
 - **Worktree:** `/private/tmp/universe-keyboard-delete-key-scrub-001` on `grok/delete-bubble-001`
 
 ## KEYBOARD-CORNER-BLEED-001 — 键盘顶圆角透白
