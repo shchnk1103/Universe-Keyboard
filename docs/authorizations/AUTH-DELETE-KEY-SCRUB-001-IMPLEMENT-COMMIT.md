@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Status | `active` |
-| Consumption | 未消费。只授权在隔离分支 `grok/delete-key-scrub-001` 提交本切片实现、测试、审查与导航镜像，并跟一条 SHA 回写 commit。不授权 push、PR、merge、TestFlight 或 Release |
+| Status | `consumed` |
+| Consumption | 实现 commit `ff149ac7fe8386399f39568f88f722c768153330`。本回写只记录 SHA。不授权 push、PR、merge、TestFlight 或 Release |
 
 Human Product Owner, current session `2026-10-07 Asia/Shanghai`：可以，单独授权 commit，先不要 push。
 
@@ -17,13 +17,14 @@ Human Product Owner, current session `2026-10-07 Asia/Shanghai`：可以，单�
   "record_id": "AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-COMMIT",
   "record_type": "authorization",
   "title": "Scoped local commit of DELETE-KEY-SCRUB-001 implementation",
-  "status": "active",
-  "updated_at": "2026-10-07T11:22:38+08:00",
+  "status": "consumed",
+  "updated_at": "2026-10-07T11:24:00+08:00",
   "revalidation_triggers": ["scope_changed", "authority_revoked"],
   "authorization": {
     "action": "scoped_commit_delete_key_scrub_implementation",
     "target": "DELETE-KEY-SCRUB-001",
     "artifact_bindings": [
+      {"kind": "commit", "identity": "ff149ac7fe8386399f39568f88f722c768153330"},
       {"kind": "worktree", "identity": "/private/tmp/universe-keyboard-delete-key-scrub-001"},
       {"kind": "branch", "identity": "grok/delete-key-scrub-001"}
     ],
@@ -34,7 +35,7 @@ Human Product Owner, current session `2026-10-07 Asia/Shanghai`：可以，单�
     "issued_at": "2026-10-07T11:22:38+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "unconsumed"
+    "consumption_state": "consumed"
   }
 }
 ```

@@ -36,7 +36,7 @@
 ## DELETE-KEY-SCRUB-001 — 删除键滑动擦除（Active，slot 6）
 
 - **Lifecycle:** [`Assignment`](assignments/delete-key-scrub-001.md) `Active`
-- **Current phase:** Architecture 与 Quality 均为 Pass with conditions；本地 commit 已授权，SHA 见回写
+- **Current phase:** Architecture 与 Quality 均为 Pass with conditions；本地实现 commit `ff149ac7fe8386399f39568f88f722c768153330`
 - **Non-claims:** 不等于 Product Gate、push、merge、TestFlight 或 Release
 - **Next:** push 另授 AUTH
 - **Sources:** [PD](product-decisions/DELETE-KEY-SCRUB-001-product-contract.md) · [Architecture](reviews/delete-key-scrub-001-architecture-close.md) · [Quality](reviews/delete-key-scrub-001-quality-review.md) · [IMPLEMENT-COMMIT](authorizations/AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-COMMIT.md)

@@ -47,7 +47,7 @@ Policy version: 1.0.0
 | Keyboard UI implementation | Authorized / live | `implement_delete_key_scrub_v1` | Active [`AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT.md) |
 | Independent Architecture | Concluded | Pass with conditions。[`architecture-close`](../reviews/delete-key-scrub-001-architecture-close.md)。该 AUTH 不授权 commit | Consumed [`AUTH-DELETE-KEY-SCRUB-001-ARCHITECTURE-CLOSE`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-ARCHITECTURE-CLOSE.md) |
 | Independent Quality | Concluded | Pass with conditions。[`quality-review`](../reviews/delete-key-scrub-001-quality-review.md)。该 AUTH 不授权 commit | Consumed [`AUTH-DELETE-KEY-SCRUB-001-QUALITY`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-QUALITY.md) |
-| Local implementation commit | Authorized | `scoped_commit_delete_key_scrub_implementation`；含 SHA 回写。不授权 push | [`AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-COMMIT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-COMMIT.md) |
+| Local implementation commit | Consumed | 实现 `ff149ac7fe8386399f39568f88f722c768153330`。不授权 push | Consumed [`AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-COMMIT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-COMMIT.md) |
 | Product Gate / push / merge | Unauthorized | 各需新 AUTH | Product Lead |
 
 ## Boundary
@@ -216,3 +216,4 @@ Policy version: 1.0.0
 - `2026-10-07 Asia/Shanghai`：Human 指定 Executor = 当前 Grok，独立 Architecture / Quality，Environment = Grok Simulator，Human = 真机 glance / Gate；授权填第 6 号空位并让实施 AUTH 生效。隔离 worktree 重建于 `origin/main` `781ca45d`，分支 `grok/delete-key-scrub-001`。Lifecycle → `Active`。无 commit / push / Quality / Gate / TestFlight / Release。
 - `2026-10-07 Asia/Shanghai`：同一 Architecture 车道只做一页收口，不重审整项。当前结论是 Architecture Pass with conditions（[`architecture-close`](../reviews/delete-key-scrub-001-architecture-close.md)）。Round 1 原文仍是 Reject。不授权 Quality、commit、push、merge。
 - `2026-10-07 Asia/Shanghai`：独立 Quality Pass with conditions（[`quality-review`](../reviews/delete-key-scrub-001-quality-review.md)）。KeyboardCore 1201 与 App+Keyboard Debug test 在 iPhone 18 Pro `405D994F-28CB-4F89-BB22-B64AD81C05A2` 上通过。未真实点按删除键。不授权 commit、push、merge。
+- `2026-10-07 Asia/Shanghai`：本地实现 commit `ff149ac7fe8386399f39568f88f722c768153330`（[`IMPLEMENT-COMMIT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-IMPLEMENT-COMMIT.md)）。未 push。无 Product Gate / merge / TestFlight / Release。
