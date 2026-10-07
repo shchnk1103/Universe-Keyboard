@@ -38,7 +38,7 @@
 - **Lifecycle:** [`Assignment`](assignments/delete-key-scrub-001.md) `Active`
 - **Current phase:** PR [#202](https://github.com/shchnk1103/Universe-Keyboard/pull/202) squash `1560488664f6e51450a441f14e465760c0635820`。跟进 commit `252d72666070372b7d92b473d75aea3a156071ee`。跟进 Quality **Pass**；文档 commit `39badbc612b91b74fd2180f5de41457eace421b1`
 - **Non-claims:** 不等于 push、PR、merge、Product Gate、TestFlight 或 Release
-- **Next:** 只推 `grok/delete-bubble-001`。不开 PR
+- **Next:** `origin/grok/delete-bubble-001` 已在 `b9a9038`。不开 PR
 - **Sources:** [PD](product-decisions/DELETE-KEY-SCRUB-001-product-contract.md) · [Architecture](reviews/delete-key-scrub-001-architecture-close.md) · [Quality](reviews/delete-key-scrub-001-quality-review.md) · [Follow-up Quality](reviews/delete-key-scrub-001-followup-quality-review.md) · [FOLLOWUP-COMMIT](authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-COMMIT.md) · [FOLLOWUP-QUALITY-COMMIT](authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-QUALITY-COMMIT.md) · [FOLLOWUP-PUSH](authorizations/AUTH-DELETE-KEY-SCRUB-001-FOLLOWUP-PUSH.md)
 - **Worktree:** `/private/tmp/universe-keyboard-delete-key-scrub-001` on `grok/delete-bubble-001`
 
