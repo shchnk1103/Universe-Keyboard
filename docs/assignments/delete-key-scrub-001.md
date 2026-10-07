@@ -9,7 +9,7 @@ Policy version: 1.0.0
 | **Lifecycle** | `Active` |
 | **Phase** | 实施切片已授权；隔离 worktree `/private/tmp/universe-keyboard-delete-key-scrub-001`，分支 `grok/delete-key-scrub-001`，基线 `origin/main` `781ca45d` |
 | **Non-claims** | 不等于独立 Architecture/Quality 结论、Product Gate、commit、push、merge、TestFlight 或 Release。文档框架 squash `8f0fa58` 仍只是合同捕获 |
-| **Next** | 本地 commit 已授权。push 仍需另授 AUTH |
+| **Next** | push 已授权，尚未推送。PR 仍需另授 AUTH |
 | **Residuals** | DKS-CLOSE-01 单击/长按仍可能删成对两侧；DKS-CLOSE-02 预编辑左滑重置 session 并清 T9 Path。均已接受，留在本切片 |
 
 ---
