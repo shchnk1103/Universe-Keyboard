@@ -10,6 +10,7 @@ Status: **docs-only mirror sync** of Ready/Active table rows #3, #9, and #10. Li
 | Decision source | Human 2026-10-07：「授权 docs-only 同步 ACTIVE_WORK 过旧镜像。」 |
 | Base | `origin/main` `e748b26a8886455eb6ecdea37896b174bc91b418` |
 | Worktree | `/private/tmp/uk-active-work-mirror-sync` on `grok/active-work-mirror-sync-001` |
+| Content commit | `fe3dbffe5d6dbd58063008dcb028acbef608c6d1` |
 
 ## Facts used
 
