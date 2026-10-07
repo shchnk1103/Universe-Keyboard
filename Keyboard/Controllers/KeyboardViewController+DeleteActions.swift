@@ -10,7 +10,13 @@ extension KeyboardViewController {
         keyTouchDown(sender)
 
         let origin = deleteTouchLocation(sender, event: event) ?? sender.center
-        deleteGestureSession = DeleteKeyGestureSession(button: sender, originX: origin.x)
+        // One read per press. A change in the main app applies on the next touchDown.
+        let holdFlags = DeleteKeyHoldFlags.load(from: sharedDefaults)
+        deleteGestureSession = DeleteKeyGestureSession(
+            button: sender,
+            originX: origin.x,
+            holdFlags: holdFlags
+        )
         deleteRepeatController.begin { [weak self] in
             self?.handleDeleteRepeatTick()
         } onRepeatStarted: { [weak self] in
@@ -45,14 +51,26 @@ extension KeyboardViewController {
             return
         }
 
+        if session.phase == .pressed,
+            session.holdFlags.composingAbandonEnabled,
+            hasActivePreedit,
+            session.playhead.isLeftwardLocked(at: Double(location.x))
+        {
+            deleteRepeatController.stop()
+            abandonActivePreedit()
+            session.phase = .composingCleared
+            return
+        }
+
+        if !session.holdFlags.scrubEnabled {
+            handleScrubDisabledFingerMove(at: location, session: session)
+            return
+        }
+
         switch session.phase {
         case .pressed:
             if hasActivePreedit {
-                if session.playhead.isLeftwardLocked(at: Double(location.x)) {
-                    deleteRepeatController.stop()
-                    abandonActivePreedit()
-                    session.phase = .composingCleared
-                } else if session.playhead.isHorizontallyLocked(at: Double(location.x)) {
+                if session.playhead.isHorizontallyLocked(at: Double(location.x)) {
                     deleteRepeatController.stop()
                     session.phase = .lockedWithoutDelete
                 }
@@ -65,9 +83,80 @@ extension KeyboardViewController {
             applyCommittedScrub(at: location.x, session: session)
         case .repeating:
             updateDeleteBubbleHover(at: location, session: session)
-        case .composingCleared, .lockedWithoutDelete, .exhausted:
+        case .composingCleared, .lockedWithoutDelete, .leftKeyPending, .exhausted:
             break
         }
+    }
+
+    /// Scrub off: motion that stays on the key does not stop long-press.
+    /// Leaving the key stops this press, except the seam into a visible trash bubble.
+    func handleScrubDisabledFingerMove(at location: CGPoint, session: DeleteKeyGestureSession) {
+        switch session.phase {
+        case .composingCleared, .lockedWithoutDelete, .scrubCommitted, .exhausted:
+            return
+        case .pressed, .repeating, .leftKeyPending:
+            break
+        }
+
+        let keyFrame = session.button.convert(session.button.bounds, to: view)
+        if keyFrame.contains(location) {
+            if session.phase == .leftKeyPending {
+                session.returnedToDeleteKey = true
+                deleteRepeatController.stop()
+                hideDeleteTrashBubble()
+                return
+            }
+            if session.phase == .repeating {
+                updateDeleteBubbleHover(at: location, session: session)
+            }
+            return
+        }
+
+        let intent = DeleteKeyHoldPolicy.outsideKeyIntent(
+            trashBubbleEnabled: session.holdFlags.trashBubbleEnabled,
+            bubbleVisible: session.bubbleVisible,
+            zone: deleteOffKeyZone(at: location, keyFrame: keyFrame),
+            returnedToKey: session.returnedToDeleteKey
+        )
+        switch intent {
+        case .seekBubble(let inBubble):
+            deleteRepeatController.stop()
+            session.phase = .leftKeyPending
+            if inBubble, !session.fingerInBubble {
+                session.fingerInBubble = true
+                session.didVisitBubble = true
+                deleteTrashBubbleView?.setFingerInside(true)
+                playDeleteBubbleArmedFeedback()
+            } else if !inBubble, session.fingerInBubble {
+                session.fingerInBubble = false
+                deleteTrashBubbleView?.setFingerInside(false)
+            }
+        case .stopWithoutResume:
+            deleteRepeatController.stop()
+            hideDeleteTrashBubble()
+            session.phase = .leftKeyPending
+        }
+    }
+
+    func deleteOffKeyZone(at location: CGPoint, keyFrame: CGRect) -> DeleteKeyOffKeyZone {
+        guard let bubble = deleteTrashBubbleView, deleteGestureSession?.bubbleVisible == true else {
+            return .elsewhere
+        }
+        if bubble.frame.contains(location) {
+            return .inBubble
+        }
+        let minX = min(keyFrame.minX, bubble.frame.minX)
+        let maxX = max(keyFrame.maxX, bubble.frame.maxX)
+        let gap = CGRect(
+            x: minX,
+            y: bubble.frame.maxY,
+            width: maxX - minX,
+            height: max(0, keyFrame.minY - bubble.frame.maxY)
+        )
+        if gap.width > 0, gap.height > 0, gap.contains(location) {
+            return .crossingGap
+        }
+        return .elsewhere
     }
 
     func finishDeleteGesture(_ sender: UIButton, event: UIEvent) {
@@ -77,7 +166,9 @@ extension KeyboardViewController {
         }
         let location = deleteTouchLocation(sender, event: event) ?? sender.center
         let liftClearsBeforeCursor =
-            session.phase == .repeating && session.bubbleVisible
+            session.holdFlags.trashBubbleEnabled
+            && (session.phase == .repeating || session.phase == .leftKeyPending)
+            && session.bubbleVisible
             && (session.fingerInBubble || deleteBubbleContains(location))
         if liftClearsBeforeCursor {
             performDeleteAllBeforeCursor()
@@ -145,6 +236,7 @@ extension KeyboardViewController {
     func scheduleDeleteTrashBubble(session: DeleteKeyGestureSession) {
         // Repeat ticks arrive every 0.08s. Replacing this 0.15s timer on each
         // tick keeps the bubble from ever appearing while deletion is working.
+        guard session.holdFlags.trashBubbleEnabled else { return }
         guard deleteBubbleTimer == nil, !session.bubbleVisible else { return }
         guard canShowDeleteTrashBubble else { return }
         let timer = Timer(
@@ -163,6 +255,7 @@ extension KeyboardViewController {
 
     func showDeleteTrashBubbleIfNeeded() {
         guard let session = deleteGestureSession, session.phase == .repeating else { return }
+        guard session.holdFlags.trashBubbleEnabled else { return }
         guard canShowDeleteTrashBubble else { return }
         let keyFrame = session.button.convert(session.button.bounds, to: view)
         let available = keyFrame.minY - DeleteTrashBubbleView.gapAboveKey - DeleteTrashBubbleView.topInset
@@ -201,7 +294,7 @@ extension KeyboardViewController {
         } else if !inside, session.fingerInBubble {
             session.fingerInBubble = false
             deleteTrashBubbleView?.setFingerInside(false)
-            if session.phase == .repeating {
+            if session.phase == .repeating, session.holdFlags.scrubEnabled {
                 deleteRepeatController.resumeRepeating { [weak self] in
                     self?.handleDeleteRepeatTick()
                 }

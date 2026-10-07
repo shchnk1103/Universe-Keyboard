@@ -8,6 +8,8 @@ enum DeleteKeyGesturePhase: Equatable {
     /// Horizontal lock that must not delete on lift. Used for a composing right swipe.
     case lockedWithoutDelete
     case repeating
+    /// Scrub is off and this press has already stopped. Lift does not tap-delete.
+    case leftKeyPending
     case exhausted
 }
 
@@ -29,11 +31,21 @@ final class DeleteKeyGestureSession {
     var fingerInBubble = false
     var bubbleVisible = false
     var didVisitBubble = false
+    /// Captured at touchDown. Later settings edits apply to the next press.
+    let holdFlags: DeleteKeyHoldFlags
+    /// Scrub is off and the finger came back onto the delete key. This press
+    /// cannot arm the trash bubble again.
+    var returnedToDeleteKey = false
 
-    init(button: UIButton, originX: CGFloat) {
+    init(
+        button: UIButton,
+        originX: CGFloat,
+        holdFlags: DeleteKeyHoldFlags = .allEnabled
+    ) {
         self.button = button
         self.phase = .pressed
         self.playhead = DeleteScrubPlayhead(originX: Double(originX))
+        self.holdFlags = holdFlags
     }
 
     func discardLedger() {

@@ -1,5 +1,7 @@
 # Active Work Summary
 
+Current update: `2026-10-07 Asia/Shanghai` — [`DELETE-KEY-SETTINGS-001`](assignments/delete-key-settings-001.md) **Closed**（[`close`](evidence/delete-key-settings-001-close-2026-10-07.md)）。第 6 行移出下方表。PR [#206](https://github.com/shchnk1103/Universe-Keyboard/pull/206) 承载本 Close，merge 前等待该 head 的 CI。无 TestFlight / Release。
+
 Current update: `2026-10-07 Asia/Shanghai` — [`DELETE-KEY-SCRUB-001`](assignments/delete-key-scrub-001.md) **Closed**（[`close`](evidence/delete-key-scrub-001-close-2026-10-07.md)）。第 6 号空位释放，不进入下方表。PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204) 已 squash `4c2760de56fed9261a034413f39385b60ea8f91d`。无 TestFlight / Release。
 
 Current update: `2026-10-07 Asia/Shanghai` — [`DELETE-KEY-SCRUB-001`](assignments/delete-key-scrub-001.md) 仍占第 6 号空位，Lifecycle **Reviewed**。Product Gate **Passed with accepted conditions**（[`product-gate`](product-decisions/DELETE-KEY-SCRUB-001-product-gate.md)）。未 Close。PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204) head `559eeff`。未 merge。无 TestFlight / Release。
@@ -347,7 +349,7 @@ Current update: `2026-09-22 Asia/Shanghai` — Current Codex task completed the 
 
 | Work Item | Lifecycle | Phase / next | Assignment |
 |---|---|---|---|
-| — | — | 当前无 Queued 项。`DELETE-KEY-SCRUB-001` 已进入上方第 6 行 | — |
+| — | — | 当前无 Queued 项。第 6 行空出 | — |
 
 历史工作从 [Assignment 目录](assignments/) 查找；债务从 [TECH_DEBT](TECH_DEBT.md) 查找。
 这里只保留 Ready / Active 工作，上限十项；Assignment 是生命周期事实来源，冲突时修正本镜像。Queued 行不是 Active。

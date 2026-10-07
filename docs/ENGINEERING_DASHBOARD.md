@@ -42,6 +42,15 @@
 - **Sources:** [PD](product-decisions/DELETE-KEY-SCRUB-001-product-contract.md) · [Architecture](reviews/delete-key-scrub-001-architecture-close.md) · [Quality](reviews/delete-key-scrub-001-quality-review.md) · [Follow-up Quality](reviews/delete-key-scrub-001-followup-quality-review.md) · [Product Gate](product-decisions/DELETE-KEY-SCRUB-001-product-gate.md) · [Close](evidence/delete-key-scrub-001-close-2026-10-07.md) · [PR #204 merge](authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-MERGE.md)
 - **Worktree:** 已删除。功能分支 `grok/delete-key-scrub-001`、`grok/delete-bubble-001`、`grok/delete-key-scrub-001-product-gate` 已删除
 
+## DELETE-KEY-SETTINGS-001 — 删除键设置页
+
+- **Lifecycle:** [`Assignment`](assignments/delete-key-settings-001.md) `Closed`
+- **Current phase:** 交接见 [`close`](evidence/delete-key-settings-001-close-2026-10-07.md)。第 6 行已移出 Active Work 表。PR [#206](https://github.com/shchnk1103/Universe-Keyboard/pull/206)
+- **Non-claims:** 不重开 `DELETE-KEY-SCRUB-001`。Closed 不等于 TestFlight 或 Release
+- **Next:** 无
+- **Sources:** [PD](product-decisions/DELETE-KEY-SETTINGS-001-product-contract.md) · [Architecture](reviews/delete-key-settings-001-architecture-review.md) · [Quality](reviews/delete-key-settings-001-quality-review.md) · [Product Gate](reviews/delete-key-settings-001-product-gate.md) · [Product Gate 002](reviews/delete-key-settings-001-product-gate-002.md) · [Close](evidence/delete-key-settings-001-close-2026-10-07.md)
+- **Worktree:** `/private/tmp/universe-keyboard-delete-key-settings-001`，分支 `grok/delete-key-settings-001`，基线 `141bc8e`
+
 ## KEYBOARD-CORNER-BLEED-001 — 键盘顶圆角透白
 
 - **Lifecycle:** [`Assignment`](assignments/keyboard-corner-bleed-001.md) `Closed`
