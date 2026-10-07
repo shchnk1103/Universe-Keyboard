@@ -8,7 +8,7 @@
 
 **Product Gate：** [`DELETE-KEY-SCRUB-001-product-gate`](../product-decisions/DELETE-KEY-SCRUB-001-product-gate.md)，Passed with accepted conditions，钉 `origin/main` `cee4f914be03d45c6d8deae8af5427ff1587d5c1`。
 
-**发布：** Gate 与本 Close 进入未合并的 PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204)。Close 正文是本地 `47f0e79`。
+**发布：** Gate 与本 Close 已随 PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204) squash 进入 `origin/main` `4c2760de56fed9261a034413f39385b60ea8f91d`。树与 PR head `de7b425bdb4d8a040f922db6f460531b2f81f507` 相同。合并收据见 [`PRODUCT-GATE-MERGE`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-MERGE.md)。
 
 ## Close basis
 
@@ -33,11 +33,11 @@
 
 - Assignment Lifecycle：**Closed**。
 - Active Work 第 6 号空位释放。
-- 隔离 worktree `/private/tmp/universe-keyboard-delete-key-scrub-001` 与功能分支保留，本 Close 不删除。
+- 隔离 worktree `/private/tmp/universe-keyboard-delete-key-scrub-001` 与 `grok/delete-key-scrub-001`、`grok/delete-bubble-001`、`grok/delete-key-scrub-001-product-gate` 已在上述 squash 之后删除。主 checkout 的 Vendor 保留。
 - `CHANGELOG.md` 未更新。要写用户可见说明，另开任务。
 
 ## Explicit non-claims
 
 - **Closed ≠** 新的 Product Gate、TestFlight、App Store Connect 或 Release。
 - 不声明微信、Safari、密码框已经通过。
-- 本 Close 只有文档。没有改 Swift，也没有 merge。
+- 本 Close 只有文档。没有改 Swift。发布本身是 PR #204 的 squash，不是 TestFlight 或 Release。

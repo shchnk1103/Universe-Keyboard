@@ -164,7 +164,7 @@ Required review: new/superseding ADR, first appearance, disappearance, return, p
 
 ## Modify Marked Text, Commit, Delete, Space Or Return
 
-Current delete-key V1 gestures: [`DELETE-KEY-SCRUB-001`](assignments/delete-key-scrub-001.md) (**Closed**；产品树 `origin/main` `cee4f91`；Close 进入未合并的 PR #204） · [`PD`](product-decisions/DELETE-KEY-SCRUB-001-product-contract.md) · [`Gate`](product-decisions/DELETE-KEY-SCRUB-001-product-gate.md) · [`Close`](evidence/delete-key-scrub-001-close-2026-10-07.md). Primary playbook [`Keyboard UI`](playbooks/keyboard-ui.md).
+Current delete-key V1 gestures: [`DELETE-KEY-SCRUB-001`](assignments/delete-key-scrub-001.md) (**Closed**；产品树 `origin/main` `cee4f91`；Close 与 Gate 在 PR #204 squash `4c2760d`） · [`PD`](product-decisions/DELETE-KEY-SCRUB-001-product-contract.md) · [`Gate`](product-decisions/DELETE-KEY-SCRUB-001-product-gate.md) · [`Close`](evidence/delete-key-scrub-001-close-2026-10-07.md). Primary playbook [`Keyboard UI`](playbooks/keyboard-ui.md).
 
 1. `architecture/input-pipeline-and-marked-text.md`.
 2. `architecture/partial-commit.md` when checkpoint behavior is involved.

@@ -8,8 +8,8 @@ Policy version: 1.0.0
 |---|---|
 | **Lifecycle** | `Closed` |
 | **Phase** | Product Gate 已接受。交接见 [`close`](../evidence/delete-key-scrub-001-close-2026-10-07.md)。第 6 号空位释放 |
-| **Non-claims** | 不等于 push、merge、TestFlight 或 Release。微信 / Safari / 密码框未声称已测 |
-| **Next** | Close 随本次 push 进入 PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204)。未 merge |
+| **Non-claims** | 不等于 TestFlight 或 Release。微信 / Safari / 密码框未声称已测 |
+| **Next** | 无下一产品动作。PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204) 已 squash `4c2760d` |
 | **Residuals** | DKS-CLOSE-01 单击/长按仍可能删成对两侧；DKS-CLOSE-02 预编辑左滑重置 session 并清 T9 Path。均已接受，留在本切片 |
 
 ---
@@ -61,8 +61,10 @@ Policy version: 1.0.0
 | Product Gate | Concluded | Passed with accepted conditions。`Reviewed`，未 Close。[`product-gate`](../product-decisions/DELETE-KEY-SCRUB-001-product-gate.md) | Consumed [`AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE.md) |
 | Product Gate docs commit | Consumed | 写作提交 `45c84a773c0c8c6da6679e12667aa52ae1f367ff`。发布另走文档分支 | Consumed [`AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-COMMIT`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-COMMIT.md) |
 | Product Gate push / PR | Consumed | PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204)，head `559eeff3c160fd7a6d63d045c9547e8006f398eb`。未 merge。消费回写未再 push | Consumed [`AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-PUSH-PR`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-PUSH-PR.md) |
-| Assignment Close | Concluded | [`close`](../evidence/delete-key-scrub-001-close-2026-10-07.md)，本地 `47f0e79`。本次推到 PR #204。未 merge | Consumed [`AUTH-DELETE-KEY-SCRUB-001-CLOSE`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-CLOSE.md) |
-| Close push | Authorized | 只推 `grok/delete-key-scrub-001-product-gate`。不 merge | [`AUTH-DELETE-KEY-SCRUB-001-CLOSE-PUSH`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-CLOSE-PUSH.md) |
+| Assignment Close | Concluded | [`close`](../evidence/delete-key-scrub-001-close-2026-10-07.md) 已在 `origin/main` `4c2760d` | Consumed [`AUTH-DELETE-KEY-SCRUB-001-CLOSE`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-CLOSE.md) |
+| Close push | Consumed | 推到 PR #204 head `de7b425`。随后 squash `4c2760d` | Consumed [`AUTH-DELETE-KEY-SCRUB-001-CLOSE-PUSH`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-CLOSE-PUSH.md) |
+| PR #204 squash merge | Consumed | `origin/main` `4c2760de56fed9261a034413f39385b60ea8f91d`。树与 `de7b425` 相同。分支与 worktree 已删 | Consumed [`AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-MERGE`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-MERGE.md) |
+| Post-merge docs | Consumed | PR [#205](https://github.com/shchnk1103/Universe-Keyboard/pull/205)，内容 `474a09a`。未 merge | Consumed [`AUTH-DELETE-KEY-SCRUB-001-POST-MERGE-DOCS`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-POST-MERGE-DOCS.md) |
 
 ## Boundary
 
@@ -251,3 +253,5 @@ Policy version: 1.0.0
 - `2026-10-07 Asia/Shanghai`：Product Gate 气泡时间改为重复开始后再约 0.15 秒（按下后约 0.65 秒）。不改实现（[`PRODUCT-GATE-TIMING-PUSH`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-TIMING-PUSH.md)）。不 merge。不 Close。
 - `2026-10-07 Asia/Shanghai`：Assignment **Closed**（[`close`](../evidence/delete-key-scrub-001-close-2026-10-07.md)，[`CLOSE`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-CLOSE.md)）。第 6 号空位释放。未 push。未 merge。无 TestFlight / Release。
 - `2026-10-07 Asia/Shanghai`：授权把 Close 推到 PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204)（[`CLOSE-PUSH`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-CLOSE-PUSH.md)）。不 merge。无 TestFlight / Release。
+- `2026-10-07 Asia/Shanghai`：PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204) squash `4c2760de56fed9261a034413f39385b60ea8f91d`（[`PRODUCT-GATE-MERGE`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-MERGE.md)）。树与 `de7b425` 相同。功能分支与 worktree 已删。无 TestFlight / Release。
+- `2026-10-07 Asia/Shanghai`：docs-only 同步把 Close 记为已合并，并补入合并收据（[`POST-MERGE-DOCS`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-POST-MERGE-DOCS.md)）。不 merge 本 PR。无 TestFlight / Release。
