@@ -23,7 +23,7 @@
 - **Decision ID:** `PD-DELETE-KEY-SCRUB-001-PRODUCT-GATE`
 - **Lifecycle status:** `Accepted`
 - **Date / timezone:** `2026-10-07 Asia/Shanghai`
-- **Assignment:** [`DELETE-KEY-SCRUB-001`](../assignments/delete-key-scrub-001.md) — **Reviewed**，未 Close
+- **Assignment:** [`DELETE-KEY-SCRUB-001`](../assignments/delete-key-scrub-001.md) — 本 Gate 写下时为 **Reviewed**。随后的 Close 已在 `origin/main` `4c2760d`
 - **Authorization:** [`AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE`](../authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE.md)
 - **Contract source:** [`PD-DELETE-KEY-SCRUB-001-PRODUCT-CONTRACT`](DELETE-KEY-SCRUB-001-product-contract.md)
 - **Architecture:** [`delete-key-scrub-001-architecture-close.md`](../reviews/delete-key-scrub-001-architecture-close.md) — Pass with conditions
@@ -34,10 +34,10 @@
 | Field | Value |
 |---|---|
 | Status | accepted |
-| Phase | Human Product Gate **Passed with accepted conditions**。Assignment `Reviewed`，未 `Closed` |
+| Phase | Human Product Gate **Passed with accepted conditions**。本决定当时 Assignment 为 `Reviewed`。Close 随后已发布在 `4c2760d` |
 | Evidence | `origin/main` `cee4f914be03d45c6d8deae8af5427ff1587d5c1`，树与 PR [#203](https://github.com/shchnk1103/Universe-Keyboard/pull/203) head `7c804a08b1e7161b69dbef07a7abfc7aa1534a3e` 相同。merge 前 hosted run [37574313596](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/37574313596) 全绿 |
 | Non-claims | 不是 Close、TestFlight、Release 或 CHANGELOG。不是微信 / Safari / 密码框已测。不是 Quality 车道的真机日志。`main` run [37575560853](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/37575560853) 在决定之后全绿，不是本 Gate 的输入 |
-| Next | 文档 commit `45c84a773c0c8c6da6679e12667aa52ae1f367ff`。不授权 push。Close 另授权 |
+| Next | Close 已另授权，并随 PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204) squash `4c2760de56fed9261a034413f39385b60ea8f91d` 发布 |
 
 ## Decision
 
