@@ -88,11 +88,9 @@ final class DeleteTrashBubbleView: UIView {
             materialView.layer.borderWidth = 1 / UIScreen.main.scale
             materialView.layer.borderColor = UIColor.separator.cgColor
         } else {
-            let style: UIBlurEffect.Style =
-                traitCollection.userInterfaceStyle == .dark
-                ? .systemUltraThinMaterialDark
-                : .systemUltraThinMaterialLight
-            materialView.effect = UIBlurEffect(style: style)
+            // init runs before the bubble joins the keyboard, so a fixed
+            // Light or Dark blur would stay light on a dark keyboard.
+            materialView.effect = UIBlurEffect(style: .systemUltraThinMaterial)
             materialView.backgroundColor =
                 armed ? UIColor.systemRed.withAlphaComponent(0.22) : .clear
             materialView.layer.borderWidth = 1 / UIScreen.main.scale
