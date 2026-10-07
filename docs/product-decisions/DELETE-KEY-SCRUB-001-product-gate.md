@@ -49,7 +49,7 @@ Human Product Owner 接受 `cee4f914be03d45c6d8deae8af5427ff1587d5c1` 上的删�
 - 长按 0.5 秒后每删一个字一声。左擦每多删一个字一声。右擦回放无声。
 - 手指进入垃圾桶一声稍重确认。清空过程不再逐字响。滑出键盘和取消保持安静。
 - 现有按键音和震动开关仍然有效。
-- 长按约 0.15 秒后出现垃圾桶。松手在气泡内清空光标前已上屏文字。iOS 26 上底板是 regular Liquid Glass，手指在内时轻微变红。iOS 26 以下使用自适应 `systemUltraThinMaterial`。
+- 长按先等 0.5 秒进入重复，重复开始后再约 0.15 秒出现垃圾桶（按下后约 0.65 秒）。松手在气泡内清空光标前已上屏文字。iOS 26 上底板是 regular Liquid Glass，手指在内时轻微变红。iOS 26 以下使用自适应 `systemUltraThinMaterial`。
 - 26 键和 9 键共用这套删除键。
 
 ## Accepted evidence
