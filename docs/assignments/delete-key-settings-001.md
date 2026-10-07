@@ -7,7 +7,7 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Reviewed` |
-| **Phase** | 第二次独立 Product Gate 为 Pass。digest `bb87845b`。第一次 Gate 仍是 Partial / incomplete。本地 commit 已授权，SHA 由随后回写记录 |
+| **Phase** | 第二次独立 Product Gate 为 Pass。digest `bb87845b`。第一次 Gate 仍是 Partial / incomplete。本地内容 commit `2603b0075e568c161b314ba47b8c23fb46444847`。未 push |
 | **Non-claims** | Reviewed 不等于 Close、TestFlight 或 Release。本地 commit 不等于 push。不重开已 Closed 的 `DELETE-KEY-SCRUB-001` |
 | **Next** | push、PR、merge 仍未授权 |
 | **Residuals** | 第二次 Gate 无新开放残留。第一次 Partial 不升成 Pass，其审查页保持原样。Quality 未留开放残留。`R-DELETE-KEY-SETTINGS-001-ARCH-1` 的修补已含在本次 Gate 字节里。DKS-CLOSE-01 / DKS-CLOSE-02 在对应开关为开时保持原行为 |
@@ -24,8 +24,8 @@ Policy version: 1.0.0
 - Assignment Authority: Product Lead
 - Decision Source / Date: Human Product Owner 当前会话，`2026-10-07 Asia/Shanghai`，「授权你按照远程main分支最新的KOS设定，开始这项工作吧」
 - Product Approver: Human Product Owner / 当前 Product 线程
-- Authorization (implementation): [`AUTH-DELETE-KEY-SETTINGS-001-IMPLEMENT`](../authorizations/AUTH-DELETE-KEY-SETTINGS-001-IMPLEMENT.md) — active，直到本 commit 回写绑定 SHA
-- Authorization (commit): [`AUTH-DELETE-KEY-SETTINGS-001-COMMIT`](../authorizations/AUTH-DELETE-KEY-SETTINGS-001-COMMIT.md) — active / unconsumed
+- Authorization (implementation): [`AUTH-DELETE-KEY-SETTINGS-001-IMPLEMENT`](../authorizations/AUTH-DELETE-KEY-SETTINGS-001-IMPLEMENT.md) — consumed，绑定 `2603b00`
+- Authorization (commit): [`AUTH-DELETE-KEY-SETTINGS-001-COMMIT`](../authorizations/AUTH-DELETE-KEY-SETTINGS-001-COMMIT.md) — consumed，内容 `2603b00`
 - Authorization (architecture): [`AUTH-DELETE-KEY-SETTINGS-001-ARCHITECTURE`](../authorizations/AUTH-DELETE-KEY-SETTINGS-001-ARCHITECTURE.md) — consumed
 - Authorization (quality): [`AUTH-DELETE-KEY-SETTINGS-001-QUALITY`](../authorizations/AUTH-DELETE-KEY-SETTINGS-001-QUALITY.md) — consumed
 - Authorization (product gate): [`AUTH-DELETE-KEY-SETTINGS-001-PRODUCT-GATE`](../authorizations/AUTH-DELETE-KEY-SETTINGS-001-PRODUCT-GATE.md) — consumed，Partial / incomplete
@@ -46,12 +46,12 @@ Policy version: 1.0.0
 
 | Slice | Status | Action / target / boundary | Authority source |
 |---|---|---|---|
-| Settings implementation | Authorized / live | `implement_delete_key_settings` | Active [`AUTH-DELETE-KEY-SETTINGS-001-IMPLEMENT`](../authorizations/AUTH-DELETE-KEY-SETTINGS-001-IMPLEMENT.md) |
+| Settings implementation | Committed | `implement_delete_key_settings` 绑定 `2603b00` | Consumed [`AUTH-DELETE-KEY-SETTINGS-001-IMPLEMENT`](../authorizations/AUTH-DELETE-KEY-SETTINGS-001-IMPLEMENT.md) |
 | Independent Architecture | Concluded | Conditional Accept。[`architecture-review`](../reviews/delete-key-settings-001-architecture-review.md)。digest `517c13eb`。该 AUTH 不覆盖审查后的滑回修补 | Consumed [`AUTH-DELETE-KEY-SETTINGS-001-ARCHITECTURE`](../authorizations/AUTH-DELETE-KEY-SETTINGS-001-ARCHITECTURE.md) |
 | Independent Quality | Concluded | Pass。[`quality-review`](../reviews/delete-key-settings-001-quality-review.md)。digest `69b35d41`。该 AUTH 不授权 Product Gate 或 commit | Consumed [`AUTH-DELETE-KEY-SETTINGS-001-QUALITY`](../authorizations/AUTH-DELETE-KEY-SETTINGS-001-QUALITY.md) |
 | Independent Product Gate | Concluded incomplete | Partial / incomplete。[`product-gate`](../reviews/delete-key-settings-001-product-gate.md)。digest `f1458883`。超过 30 次工具调用，不升成 Pass | Consumed [`AUTH-DELETE-KEY-SETTINGS-001-PRODUCT-GATE`](../authorizations/AUTH-DELETE-KEY-SETTINGS-001-PRODUCT-GATE.md) |
 | Independent Product Gate 002 | Concluded | Pass。[`product-gate-002`](../reviews/delete-key-settings-001-product-gate-002.md)。digest `bb87845b`。十四条符合。无新开放残留。不授权 Close 或 commit | Consumed [`AUTH-DELETE-KEY-SETTINGS-001-PRODUCT-GATE-002`](../authorizations/AUTH-DELETE-KEY-SETTINGS-001-PRODUCT-GATE-002.md) |
-| Local commit | Authorized | 隔离分支上的内容 commit 加 SHA 回写。不含 push | Active [`AUTH-DELETE-KEY-SETTINGS-001-COMMIT`](../authorizations/AUTH-DELETE-KEY-SETTINGS-001-COMMIT.md) |
+| Local commit | Consumed | 内容 `2603b0075e568c161b314ba47b8c23fb46444847`。回写只记录 SHA。不含 push | Consumed [`AUTH-DELETE-KEY-SETTINGS-001-COMMIT`](../authorizations/AUTH-DELETE-KEY-SETTINGS-001-COMMIT.md) |
 | Push / PR / merge | Not authorized | 无 | 无 |
 
 ## Boundary

@@ -45,7 +45,7 @@
 ## DELETE-KEY-SETTINGS-001 — 删除键设置页
 
 - **Lifecycle:** [`Assignment`](assignments/delete-key-settings-001.md) `Reviewed`
-- **Current phase:** 第二次独立 Product Gate Pass。digest `bb87845b`。第一次 Gate 仍是 Partial / incomplete。本地 commit 已授权，SHA 回写随后记录
+- **Current phase:** 第二次独立 Product Gate Pass。digest `bb87845b`。第一次 Gate 仍是 Partial / incomplete。本地内容 commit `2603b0075e568c161b314ba47b8c23fb46444847`
 - **Non-claims:** 不重开 `DELETE-KEY-SCRUB-001`。Reviewed 不等于 Close、TestFlight 或 Release。本地 commit 不等于 push
 - **Next:** push、PR、merge 未授权
 - **Sources:** [PD](product-decisions/DELETE-KEY-SETTINGS-001-product-contract.md) · [Architecture](reviews/delete-key-settings-001-architecture-review.md) · [Quality](reviews/delete-key-settings-001-quality-review.md) · [Product Gate](reviews/delete-key-settings-001-product-gate.md) · [Product Gate 002](reviews/delete-key-settings-001-product-gate-002.md) · [Product Gate AUTH](authorizations/AUTH-DELETE-KEY-SETTINGS-001-PRODUCT-GATE-002.md) · [Commit AUTH](authorizations/AUTH-DELETE-KEY-SETTINGS-001-COMMIT.md)

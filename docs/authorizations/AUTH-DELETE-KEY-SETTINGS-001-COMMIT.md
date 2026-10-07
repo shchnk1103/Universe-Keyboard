@@ -4,8 +4,8 @@
 
 | Field | Value |
 |---|---|
-| Status | `active` |
-| Consumption | `unconsumed`。内容 commit 之后由同分支回写记录 SHA。不授权 push、PR、merge、TestFlight 或 Release |
+| Status | `consumed` |
+| Consumption | 内容 commit `2603b0075e568c161b314ba47b8c23fb46444847`。本回写只记录 SHA。不授权 push、PR、merge、TestFlight 或 Release |
 
 Human Product Owner, current session `2026-10-07 Asia/Shanghai`：OK，授权 commit。
 
@@ -15,13 +15,14 @@ Human Product Owner, current session `2026-10-07 Asia/Shanghai`：OK，授权 co
   "record_id": "AUTH-DELETE-KEY-SETTINGS-001-COMMIT",
   "record_type": "authorization",
   "title": "Scoped local commit of DELETE-KEY-SETTINGS-001",
-  "status": "active",
-  "updated_at": "2026-10-07T16:06:54+08:00",
+  "status": "consumed",
+  "updated_at": "2026-10-07T16:08:30+08:00",
   "revalidation_triggers": ["scope_changed", "authority_revoked"],
   "authorization": {
     "action": "scoped_commit_delete_key_settings",
     "target": "DELETE-KEY-SETTINGS-001",
     "artifact_bindings": [
+      {"kind": "commit", "identity": "2603b0075e568c161b314ba47b8c23fb46444847"},
       {"kind": "worktree", "identity": "/private/tmp/universe-keyboard-delete-key-settings-001"},
       {"kind": "branch", "identity": "grok/delete-key-settings-001"}
     ],
@@ -32,7 +33,7 @@ Human Product Owner, current session `2026-10-07 Asia/Shanghai`：OK，授权 co
     "issued_at": "2026-10-07T16:06:54+08:00",
     "expires_at": null,
     "supersedes_ref": null,
-    "consumption_state": "unconsumed"
+    "consumption_state": "consumed"
   }
 }
 ```
