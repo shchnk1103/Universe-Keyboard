@@ -128,6 +128,9 @@ jobs:
       - name: Prepare pinned RIME artifacts
         run: bash scripts/ensure_rime_vendor.sh fetch
 
+      - name: Ensure iPhone 17 Pro simulator
+        run: bash scripts/ci/ensure_iphone_17_pro_simulator.sh
+
       # The checked-in package binaries intentionally target iOS; test them on
       # the same simulator platform used by the host app.
       - name: Test RimeBridge on iOS Simulator
@@ -158,6 +161,9 @@ jobs:
       - name: Prepare pinned RIME artifacts
         run: bash scripts/ensure_rime_vendor.sh fetch
 
+      - name: Ensure iPhone 17 Pro simulator
+        run: bash scripts/ci/ensure_iphone_17_pro_simulator.sh
+
       - name: Test app and keyboard contracts on iOS Simulator
         run: |
           xcodebuild \
@@ -185,6 +191,9 @@ jobs:
 
       - name: Prepare pinned RIME artifacts
         run: bash scripts/ensure_rime_vendor.sh fetch
+
+      - name: Ensure iPhone 17 Pro simulator
+        run: bash scripts/ci/ensure_iphone_17_pro_simulator.sh
 
       # This focused integration test needs a signed Simulator host to access
       # Keychain. An ad-hoc identity avoids requiring a team signing secret.
@@ -218,6 +227,9 @@ jobs:
 
       - name: Prepare pinned RIME artifacts
         run: bash scripts/ensure_rime_vendor.sh fetch
+
+      - name: Ensure iPhone 17 Pro simulator
+        run: bash scripts/ci/ensure_iphone_17_pro_simulator.sh
 
       - name: Build Swift 6 app and keyboard extension for release
         run: |
