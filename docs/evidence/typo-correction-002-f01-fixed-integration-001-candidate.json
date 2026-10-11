@@ -1,0 +1,27 @@
+{
+  "base": "a44f850d638204aa5c992ac13fb71f5f5424734c",
+  "old_head": "e20e7c8a3a48822e2e712d36453e2cf574088e87",
+  "paths": [
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeDeploymentService.swift",
+      "sha256": "3b69b474f749c2c28cf0c91c11de668f36f632f2d8644368b5f12b76d9d4efd8"
+    },
+    {
+      "path": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeEngineContractTests.swift",
+      "sha256": "bb5a641db8dae7bc19546e7bab63a8bb832c0b97e28480bd36bb741f78b1b395"
+    },
+    {
+      "path": "Universe Keyboard/Services/SchemaManager+Deployment.swift",
+      "sha256": "59556bc04be0c3ecad4b05e6cd359a374efd34f7b4139841586d5c22032d8e71"
+    },
+    {
+      "path": "UniverseKeyboardTests/RimeSettingsStoreTests.swift",
+      "sha256": "266efc0b95ae755a17d6690ae8f720b1031c7569d46ed0d13555330bfe85c97a"
+    },
+    {
+      "path": "UniverseKeyboardTests/SchemaManagerTests.swift",
+      "sha256": "803125825b24a8a8fa3f90aedb3b7f0da44144c324d7e9285fb339a363dca7f5"
+    }
+  ],
+  "conflict_resolution": "RimeSettingsStoreTests fixture preserves main runtimeSmokePassed and adds PR139 librimeVersion; all other source hunks applied mechanically"
+}

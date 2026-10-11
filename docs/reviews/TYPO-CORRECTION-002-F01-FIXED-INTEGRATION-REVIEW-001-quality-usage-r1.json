@@ -1,0 +1,52 @@
+{
+  "lane_id": "F01_FIXED_A44_QUALITY_R1",
+  "round": 1,
+  "packet_path": "/private/tmp/uk-f01-review1/packet.json",
+  "packet_sha256_expected": "4c46f4f1ae270f37b6a609aba741391c32ac75a080b27395451bd1e77b10e654",
+  "packet_sha256_verified": "4c46f4f1ae270f37b6a609aba741391c32ac75a080b27395451bd1e77b10e654",
+  "start_utc": "2026-10-11T03:04:31.900253+00:00",
+  "end_utc": "2026-10-11T03:08:02.203236+00:00",
+  "elapsed_seconds_utc": 210.302983,
+  "start_monotonic_seconds": 1767683.128048791,
+  "end_monotonic_seconds": 1767893.430339958,
+  "elapsed_seconds_monotonic": 210.30229116696864,
+  "tool_call_count": 12,
+  "tool_call_count_basis": "12 exec_command invocations, each invoked through one functions.exec wrapper; includes initial path-resolution attempts and the final two-output write. No network, test, build, device, Git mutation, or subagent calls.",
+  "tool_call_budget": 16,
+  "tool_budget_remaining": 4,
+  "input_token_budget": 30000,
+  "output_token_budget": 15000,
+  "input_tokens_actual": null,
+  "output_tokens_actual": null,
+  "token_usage_note": "Actual token counts are not exposed by available tools; not estimated.",
+  "input_hashes": {
+    "packet": "match",
+    "packet_listed_inputs": {
+      "expected": 23,
+      "matched": 23
+    },
+    "original_source_paths": {
+      "expected": 5,
+      "matched": 5
+    }
+  },
+  "coverage": {
+    "C1": "covered",
+    "C2": "covered",
+    "C3": "covered_with_executor_evidence_limits",
+    "C4": "covered_with_disclosed_AUTH_order_boundary"
+  },
+  "conclusion": "Scoped Pass with conditions; limited to frozen F-01 integration candidate and executor-recorded CI evidence.",
+  "stop_reason": "Completed report and usage outputs within budget; no stop condition triggered.",
+  "nonfatal_attempt_notes": [
+    "First packet-relative hash attempt used process cwd and could not resolve listed paths.",
+    "Second attempt guessed an inputs/ prefix and could not resolve listed paths.",
+    "The candidate files were then resolved at packet parent and all 23 hashes matched.",
+    "An interim status comparison differed only because Git quoted the path containing a space; normalized comparison matched all five candidate paths."
+  ],
+  "independent_rerun": false,
+  "outputs": [
+    "/private/tmp/uk-f01-review1/quality-review.md",
+    "/private/tmp/uk-f01-review1/quality-usage.json"
+  ]
+}

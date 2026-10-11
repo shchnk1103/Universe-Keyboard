@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## 2026-10-11 — F-01 部署身份守卫固定基线整合（待合并）
+
+- 主 App 部署成功要求可用librime身份；nil、空白与`(no api)`/`(unknown)`保持待部署，正常版本与已有runtime smoke继续保留。
+- 保留旧PR139祖先关系整合固定main；五源完整本地CI与一次独立增量复核通过。当前仅候选发布，不表示PR139已合并或Release。
+- INT003工具已由PR207合并`8f306c6`；下方待发布条目保留其当时的历史状态。父任务仍Active。
+
 ## 2026-10-11 — INT003 查询成本 DEBUG 工具与验证收敛（待发布候选）
 
 - 加入默认关闭的有限成本探针、真实route scope、序列边界、freeze快照及时间锚点；不增加Release持久化日志或Extension部署。

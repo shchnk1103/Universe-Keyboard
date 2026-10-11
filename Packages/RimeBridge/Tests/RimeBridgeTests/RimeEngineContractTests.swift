@@ -264,6 +264,29 @@ final class RimeEngineContractTests: XCTestCase {
         XCTAssertTrue(RimeBridgeCapabilities.deploymentModules.contains("lua"))
     }
 
+    func testDeploymentIdentityRejectsUnavailableBridgeSentinels() {
+        let unavailableVersions: [String?] = [
+            nil,
+            "",
+            " \n\t",
+            "(no api)",
+            "  (NO API) ",
+            "(unknown)",
+            " \t(UNKNOWN)\n",
+        ]
+
+        for version in unavailableVersions {
+            XCTAssertNil(
+                RimeDeploymentIdentity.normalizedVersion(from: version),
+                "Unavailable identity must fail closed: \(version ?? "nil")"
+            )
+        }
+        XCTAssertEqual(
+            RimeDeploymentIdentity.normalizedVersion(from: "  1.8.1  "),
+            "1.8.1"
+        )
+    }
+
     func testRuntimeRecoveryRequestPreservesSessionOwnedBoundary() {
         let request = RimeDeploymentRequest(
             mode: .runtimeRecovery,
@@ -354,6 +377,45 @@ final class RimeEngineContractTests: XCTestCase {
 
         XCTAssertFalse(result.succeeded)
         XCTAssertNil(result.runtimeSmokePassed)
+    }
+
+    func testDeploymentServiceFailsClosedWhenMaintenanceForwardsUnavailableIdentity() async throws {
+        let fixture = try makeDeploymentInputFixture(schemaID: "wanxiang")
+        defer { try? FileManager.default.removeItem(at: fixture.rootURL) }
+
+        for unavailableIdentity in ["(no api)", "(unknown)"] {
+            let service = RimeDeploymentService(
+                deployOperation: { _, _ in
+                    RimeDeploymentService.MaintenanceResult(
+                        succeeded: true,
+                        librimeVersion: unavailableIdentity
+                    )
+                },
+                schemaSmokeOperation: { _, _, _ in
+                    RimeSchemaRuntimeSmokeProbe.Result(
+                        selectedRequestedSchema: true,
+                        compositionPresent: true,
+                        rawInputMatched: true,
+                        candidateCount: 3,
+                        hasHanCandidate: true,
+                        unexpectedCommit: false
+                    )
+                },
+                luaSmokeOperation: { _, _, _ in Self.passingLuaSmokeResult }
+            )
+
+            let result = try await service.deploy(
+                RimeDeploymentRequest(
+                    mode: .fullCheck,
+                    sharedDataURL: fixture.sharedURL,
+                    userDataURL: fixture.userURL,
+                    runtimeSmokeSchemaID: "wanxiang"
+                )
+            )
+
+            XCTAssertFalse(result.succeeded, unavailableIdentity)
+            XCTAssertNil(result.librimeVersion, unavailableIdentity)
+        }
     }
 
     func testDeploymentServiceAcceptsTerminalDeployAndWorkingActiveSchema() async throws {

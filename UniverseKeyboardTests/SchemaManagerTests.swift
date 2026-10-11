@@ -1879,8 +1879,9 @@ final class SchemaManagerTests: XCTestCase {
             deploymentService: deploymentService
         )
 
-        await manager.deployRimeConfig()
+        let succeeded = await manager.deployRimeConfig()
 
+        XCTAssertTrue(succeeded)
         let requests = await deploymentService.requests
         XCTAssertEqual(requests.count, 1)
         guard let request = requests.first else { return }
@@ -1909,6 +1910,70 @@ final class SchemaManagerTests: XCTestCase {
             settings.string(forKey: RimeAdvancedInputSettings.deployedSignatureKey),
             RimeAdvancedInputSettings().deploymentSignature(activeSchemaID: "luna_pinyin", supportedFeatures: [])
         )
+    }
+
+    func testSuccessfulDeploymentWithoutLibrimeIdentityRemainsPending() async {
+        let settings = StubSharedSettingsStore(values: ["rime_needs_deploy": true])
+        let deploymentService = StubDeploymentService(succeeded: true, librimeVersion: nil)
+        let manager = makeManager(
+            settings: settings,
+            deploymentService: deploymentService
+        )
+
+        let succeeded = await manager.deployRimeConfig()
+
+        XCTAssertFalse(succeeded)
+        XCTAssertFalse(settings.bool(forKey: "rime_deployed"))
+        XCTAssertTrue(settings.bool(forKey: "rime_needs_deploy"))
+        XCTAssertFalse(settings.bool(forKey: "rime_deploying"))
+    }
+
+    func testSuccessfulDeploymentWithEmptyLibrimeIdentityRemainsPending() async {
+        let settings = StubSharedSettingsStore(values: ["rime_needs_deploy": true])
+        let deploymentService = StubDeploymentService(succeeded: true, librimeVersion: "")
+        let manager = makeManager(
+            settings: settings,
+            deploymentService: deploymentService
+        )
+
+        let succeeded = await manager.deployRimeConfig()
+
+        XCTAssertFalse(succeeded)
+        XCTAssertFalse(settings.bool(forKey: "rime_deployed"))
+        XCTAssertTrue(settings.bool(forKey: "rime_needs_deploy"))
+        XCTAssertFalse(settings.bool(forKey: "rime_deploying"))
+    }
+
+    func testSuccessfulDeploymentWithNoAPILibrimeIdentityRemainsPending() async {
+        let settings = StubSharedSettingsStore(values: ["rime_needs_deploy": true])
+        let deploymentService = StubDeploymentService(succeeded: true, librimeVersion: "(no api)")
+        let manager = makeManager(
+            settings: settings,
+            deploymentService: deploymentService
+        )
+
+        let succeeded = await manager.deployRimeConfig()
+
+        XCTAssertFalse(succeeded)
+        XCTAssertFalse(settings.bool(forKey: "rime_deployed"))
+        XCTAssertTrue(settings.bool(forKey: "rime_needs_deploy"))
+        XCTAssertFalse(settings.bool(forKey: "rime_deploying"))
+    }
+
+    func testSuccessfulDeploymentWithUnknownLibrimeIdentityRemainsPending() async {
+        let settings = StubSharedSettingsStore(values: ["rime_needs_deploy": true])
+        let deploymentService = StubDeploymentService(succeeded: true, librimeVersion: "(unknown)")
+        let manager = makeManager(
+            settings: settings,
+            deploymentService: deploymentService
+        )
+
+        let succeeded = await manager.deployRimeConfig()
+
+        XCTAssertFalse(succeeded)
+        XCTAssertFalse(settings.bool(forKey: "rime_deployed"))
+        XCTAssertTrue(settings.bool(forKey: "rime_needs_deploy"))
+        XCTAssertFalse(settings.bool(forKey: "rime_deploying"))
     }
 
     func testDeploymentForwardsOnlyActiveWanxiangSchemaToSmoke() async {
@@ -3370,13 +3435,25 @@ private actor StubDeploymentService: RimeDeploymentServicing {
     private var leaseOwnerReader: (@MainActor @Sendable () -> UUID?)?
     private(set) var observedLeaseOwners: [UUID?] = []
 
-    init(succeeded: Bool) {
-        results = [RimeDeploymentResult(succeeded: succeeded, diagnosticMessage: "test")]
+    init(succeeded: Bool, librimeVersion: String? = "test-librime") {
+        results = [
+            RimeDeploymentResult(
+                succeeded: succeeded,
+                diagnosticMessage: "test",
+                librimeVersion: librimeVersion
+            )
+        ]
     }
 
     init(results: [Bool]) {
         precondition(!results.isEmpty)
-        self.results = results.map { RimeDeploymentResult(succeeded: $0, diagnosticMessage: "test") }
+        self.results = results.map {
+            RimeDeploymentResult(
+                succeeded: $0,
+                diagnosticMessage: "test",
+                librimeVersion: $0 ? "test-librime" : nil
+            )
+        }
     }
 
     func setLeaseOwnerReader(_ reader: @escaping @MainActor @Sendable () -> UUID?) {

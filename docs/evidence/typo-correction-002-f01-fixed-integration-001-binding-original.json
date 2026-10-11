@@ -1,0 +1,271 @@
+{
+  "status": "Human-authorized once fixed F01; standalone AUTH consumed",
+  "source_head": "a44f850d638204aa5c992ac13fb71f5f5424734c",
+  "source_tree": "0bc4bb5dc7cd830c25a8bdb9b5dfbbd476b969f3",
+  "source_writer": "/Users/doubleshy0n/.codex/worktrees/typo-f01-fixed-integration/Universe Keyboard",
+  "delivery_manifest": "/private/tmp/uk-f01ci-a44-001/candidate.json",
+  "delivery_manifest_sha256": "44fbd8924502c48f36f1f58bcf8446f83801119b78dbf666d124ae45b2b47be1",
+  "source_path_count": 5,
+  "swift_path_count": 5,
+  "device": {
+    "name": "iPhone 18 Pro",
+    "OS": "iOS27.0",
+    "UDID": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "reservation": "Human current receipt: exclusive, may use for this CI"
+  },
+  "Xcode": "/Applications/Xcode.app/Contents/Developer",
+  "output_root": "/private/tmp/uk-f01ci-a44-001",
+  "command_order": [
+    "entry",
+    "lightweight",
+    "vendor",
+    "lint5",
+    "keyboardcore",
+    "rimebridge",
+    "app_keyboard",
+    "keychain",
+    "release",
+    "readout_and_source_closeout"
+  ],
+  "commands": [
+    {
+      "stage": "strict_format",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Packages/RimeBridge/Sources/RimeBridge/RimeDeploymentService.swift"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "strict_format",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Packages/RimeBridge/Tests/RimeBridgeTests/RimeEngineContractTests.swift"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "strict_format",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Universe Keyboard/Services/SchemaManager+Deployment.swift"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "strict_format",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "UniverseKeyboardTests/RimeSettingsStoreTests.swift"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "strict_format",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "UniverseKeyboardTests/SchemaManagerTests.swift"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "keyboardcore",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift",
+        "test",
+        "--package-path",
+        "Packages/KeyboardCore",
+        "--scratch-path",
+        "/private/tmp/uk-f01ci-a44-001/CoreBuild"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "rimebridge",
+      "argv": [
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild",
+        "-project",
+        "Universe Keyboard.xcodeproj",
+        "-destination",
+        "platform=iOS Simulator,id=405D994F-28CB-4F89-BB22-B64AD81C05A2",
+        "-parallel-testing-enabled",
+        "NO",
+        "-maximum-concurrent-test-simulator-destinations",
+        "1",
+        "SWIFT_VERSION=6.0",
+        "SWIFT_STRICT_CONCURRENCY=complete",
+        "SWIFT_SUPPRESS_WARNINGS=NO",
+        "SWIFT_TREAT_WARNINGS_AS_ERRORS=YES",
+        "-scheme",
+        "RimeBridgeTests",
+        "-configuration",
+        "Debug",
+        "-derivedDataPath",
+        "/private/tmp/uk-f01ci-a44-001/rimebridge-DD",
+        "-clonedSourcePackagesDirPath",
+        "/private/tmp/uk-armimpl1/SourcePackages",
+        "-disableAutomaticPackageResolution",
+        "-skipPackageUpdates",
+        "CODE_SIGNING_ALLOWED=NO",
+        "-resultBundlePath",
+        "/private/tmp/uk-f01ci-a44-001/Results/rimebridge.xcresult",
+        "test"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "app_keyboard",
+      "argv": [
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild",
+        "-project",
+        "Universe Keyboard.xcodeproj",
+        "-destination",
+        "platform=iOS Simulator,id=405D994F-28CB-4F89-BB22-B64AD81C05A2",
+        "-parallel-testing-enabled",
+        "NO",
+        "-maximum-concurrent-test-simulator-destinations",
+        "1",
+        "SWIFT_VERSION=6.0",
+        "SWIFT_STRICT_CONCURRENCY=complete",
+        "SWIFT_SUPPRESS_WARNINGS=NO",
+        "SWIFT_TREAT_WARNINGS_AS_ERRORS=YES",
+        "-scheme",
+        "Universe Keyboard",
+        "-configuration",
+        "Debug",
+        "-derivedDataPath",
+        "/private/tmp/uk-f01ci-a44-001/app_keyboard-DD",
+        "-clonedSourcePackagesDirPath",
+        "/private/tmp/uk-armimpl1/SourcePackages",
+        "-disableAutomaticPackageResolution",
+        "-skipPackageUpdates",
+        "CODE_SIGNING_ALLOWED=NO",
+        "-resultBundlePath",
+        "/private/tmp/uk-f01ci-a44-001/Results/app_keyboard.xcresult",
+        "test"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "keychain",
+      "argv": [
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild",
+        "-project",
+        "Universe Keyboard.xcodeproj",
+        "-destination",
+        "platform=iOS Simulator,id=405D994F-28CB-4F89-BB22-B64AD81C05A2",
+        "-parallel-testing-enabled",
+        "NO",
+        "-maximum-concurrent-test-simulator-destinations",
+        "1",
+        "SWIFT_VERSION=6.0",
+        "SWIFT_STRICT_CONCURRENCY=complete",
+        "SWIFT_SUPPRESS_WARNINGS=NO",
+        "SWIFT_TREAT_WARNINGS_AS_ERRORS=YES",
+        "-scheme",
+        "Universe Keyboard",
+        "-configuration",
+        "Debug",
+        "-derivedDataPath",
+        "/private/tmp/uk-f01ci-a44-001/keychain-DD",
+        "-clonedSourcePackagesDirPath",
+        "/private/tmp/uk-armimpl1/SourcePackages",
+        "-disableAutomaticPackageResolution",
+        "-skipPackageUpdates",
+        "CODE_SIGNING_ALLOWED=YES",
+        "CODE_SIGN_IDENTITY=-",
+        "CODE_SIGNING_REQUIRED=NO",
+        "-only-testing:UniverseKeyboardTests/RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem",
+        "-resultBundlePath",
+        "/private/tmp/uk-f01ci-a44-001/Results/keychain.xcresult",
+        "test"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "release",
+      "argv": [
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild",
+        "-project",
+        "Universe Keyboard.xcodeproj",
+        "-destination",
+        "platform=iOS Simulator,id=405D994F-28CB-4F89-BB22-B64AD81C05A2",
+        "-parallel-testing-enabled",
+        "NO",
+        "-maximum-concurrent-test-simulator-destinations",
+        "1",
+        "SWIFT_VERSION=6.0",
+        "SWIFT_STRICT_CONCURRENCY=complete",
+        "SWIFT_SUPPRESS_WARNINGS=NO",
+        "SWIFT_TREAT_WARNINGS_AS_ERRORS=YES",
+        "-scheme",
+        "Universe Keyboard",
+        "-configuration",
+        "Release",
+        "-derivedDataPath",
+        "/private/tmp/uk-f01ci-a44-001/release-DD",
+        "-clonedSourcePackagesDirPath",
+        "/private/tmp/uk-armimpl1/SourcePackages",
+        "-disableAutomaticPackageResolution",
+        "-skipPackageUpdates",
+        "CODE_SIGNING_ALLOWED=NO",
+        "-resultBundlePath",
+        "/private/tmp/uk-f01ci-a44-001/Results/release.xcresult",
+        "build"
+      ],
+      "limit": 1
+    }
+  ],
+  "source_mutation": false,
+  "automatic_cache_exceptions": [
+    "Normal Xcode/SwiftPM/Clang same-account cache/tmp atomic create/write/rename/unlink; no outer sandbox-exec",
+    "Bounded xcodebuild/xcresulttool diagnostic and report cache writes",
+    "RimeBridge test-created private synthetic fixture directories and selected unique signed Keychain test item"
+  ],
+  "stop_policy": "once each; first failure stop;45min; min free8GiB; no retry/fix/main chase",
+  "reuse": [
+    "P2 Run and scoped reviews retained; no recapture; opt-in52 rerun only on this new dependency combination"
+  ],
+  "main_updates": "No fetch/rebase/rebind/retry because main moves; related content change requires separate impact decision",
+  "publication": "No commit/push/PR/merge/Gate/Close/Release",
+  "expected_probe": {
+    "core": 19,
+    "extension": 33
+  },
+  "disk_min_free_bytes": 8589934592,
+  "wall_budget_seconds": 2700,
+  "budget": {
+    "per_stage_attempts": 1,
+    "total_s": 2700,
+    "per_stage_s": 1800,
+    "minimum_free_bytes": 8589934592
+  },
+  "authority": "AUTH-TYPO-CORRECTION-002-F01-FIXED-INTEGRATION-001",
+  "run_id": "TC2-CI-20261011-F01-FIXEDA44-001"
+}

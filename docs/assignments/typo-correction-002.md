@@ -1,5 +1,7 @@
 # Assignment: TYPO-CORRECTION-002 — Contextual Multi-Error Pinyin Recovery
 
+2026-10-11：[F01整合复核与发布准备](../evidence/typo-correction-002-f01-fixed-integration-review-001.md)：F01 PR139固定a44五源完整本地CI通过，独立增量复核Scoped Pass with conditions；Human已接受行政残项并授权本轮正常commit/push/更新139。发布候选保持draft，merge及父Gate/Close另授；父Active。
+
 2026-10-11：[PR207 单次合并状态同步](../evidence/typo-correction-002-final-delivery-merge-001.md)：PR207 已合并 `8f306c6`，local/hosted CI 全绿，merge tree 与已验证候选一致。父 Active；本轮仅发布一次 M-02 docs-only 同步，无 Gate/Close。F-01 PR139 仍为 draft、有冲突，核心修复未进入 main，整合及验证须另授权。
 
 **Policy version:** `1.0.0`
@@ -11,7 +13,7 @@
 | Field | Value |
 |---|---|
 | Lifecycle | **Active** — INT-003 query-cost P1 instrumentation is on main; this does not close the parent |
-| Current phase | PR207 已合并 `8f306c6`，local/hosted CI 全绿，merge tree 与已验证候选一致。父 Active；本轮仅发布一次 M-02 docs-only 同步，无 Gate/Close。F-01 PR139 仍为 draft、有冲突，核心修复未进入 main，整合及验证须另授权。 |
+| Current phase | F01 PR139固定a44五源完整本地CI通过，独立增量复核Scoped Pass with conditions；Human已接受行政残项并授权本轮正常commit/push/更新139。发布候选保持draft，merge及父Gate/Close另授；父Active。 |
 | Non-claims | Whole CPU/UI/memory/native nonempty-query cost and current v2 overall observer unverified; no Gate/Close/Release/ADR Accept/provenance restoration |
 | Next | Publish the frozen delivery package only with specific commit/push/PR authority; hosted CI and merge, then Gate/Close each separately authorized. Do not recapture P2 or chase main. |
 

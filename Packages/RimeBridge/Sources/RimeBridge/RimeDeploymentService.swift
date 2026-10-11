@@ -30,9 +30,33 @@ public struct RimeDeploymentRequest: Sendable {
     }
 }
 
+public enum RimeDeploymentIdentity {
+    /// Converts the bridge's version observation into a usable deployment identity.
+    ///
+    /// The Objective-C bridge uses human-readable sentinel strings when librime
+    /// is unavailable. They are diagnostic observations, not binary identities,
+    /// so every caller must treat them as unavailable.
+    public static func normalizedVersion(from rawVersion: String?) -> String? {
+        guard let rawVersion else { return nil }
+
+        let version = rawVersion.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !version.isEmpty else { return nil }
+
+        switch version.lowercased() {
+        case "(no api)", "(unknown)":
+            return nil
+        default:
+            return version
+        }
+    }
+}
+
 public struct RimeDeploymentResult: Sendable {
     public let succeeded: Bool
     public let diagnosticMessage: String
+    /// Exact librime binary identity observed by the Main-App deployer.
+    /// `nil` remains possible for injected services, so callers must fail closed.
+    public let librimeVersion: String?
     /// Generic active-schema smoke. `nil` means the caller did not request one.
     public let runtimeSmokePassed: Bool?
     /// Fog-specific Lua capability smoke, kept separate from basic typing readiness.
@@ -41,11 +65,13 @@ public struct RimeDeploymentResult: Sendable {
     public init(
         succeeded: Bool,
         diagnosticMessage: String,
+        librimeVersion: String? = nil,
         runtimeSmokePassed: Bool? = nil,
         luaRuntimeSmokePassed: Bool? = nil
     ) {
         self.succeeded = succeeded
         self.diagnosticMessage = diagnosticMessage
+        self.librimeVersion = librimeVersion
         self.runtimeSmokePassed = runtimeSmokePassed
         self.luaRuntimeSmokePassed = luaRuntimeSmokePassed
     }
@@ -62,7 +88,7 @@ public protocol RimeDeploymentServicing: Sendable {
 public actor RimeDeploymentService: RimeDeploymentServicing {
     struct MaintenanceResult: Sendable {
         let succeeded: Bool
-        let librimeVersion: String
+        let librimeVersion: String?
     }
 
     typealias DeployOperation = @Sendable (String, String) -> MaintenanceResult
@@ -76,7 +102,9 @@ public actor RimeDeploymentService: RimeDeploymentServicing {
     public init() {
         deployOperation = { sharedDataDir, userDataDir in
             let deployer = RimeDeployer()
-            let version = deployer.librimeVersion()
+            let version = RimeDeploymentIdentity.normalizedVersion(
+                from: deployer.librimeVersion()
+            )
             let succeeded = deployer.deploy(
                 withSharedDataDir: sharedDataDir,
                 userDataDir: userDataDir
@@ -121,9 +149,13 @@ public actor RimeDeploymentService: RimeDeploymentServicing {
         #if DEBUG
             case .testFixtureMaintenanceOnly:
                 let result = deployOperation(request.sharedDataURL.path, request.userDataURL.path)
+                let librimeVersion = RimeDeploymentIdentity.normalizedVersion(
+                    from: result.librimeVersion
+                )
                 return RimeDeploymentResult(
                     succeeded: result.succeeded,
-                    diagnosticMessage: "librime \(result.librimeVersion), isolated test fixture"
+                    diagnosticMessage: "librime \(librimeVersion ?? "unavailable"), isolated test fixture",
+                    librimeVersion: librimeVersion
                 )
         #endif
         }
@@ -152,6 +184,9 @@ public actor RimeDeploymentService: RimeDeploymentServicing {
             request.userDataURL.path
         )
         let deploymentSucceeded = maintenanceResult.succeeded
+        let librimeVersion = RimeDeploymentIdentity.normalizedVersion(
+            from: maintenanceResult.librimeVersion
+        )
         let luaRegisteredAfterDeploy = RimeBridgeCapabilities.luaModuleRegistered
         Logger.shared.info(
             "deployRimeConfig: lua runtime after deploy registered=\(luaRegisteredAfterDeploy) "
@@ -195,11 +230,12 @@ public actor RimeDeploymentService: RimeDeploymentServicing {
                 category: .deployment
             )
         }
-        let succeeded = deploymentSucceeded && runtimeSmokePassed == true
+        let succeeded = deploymentSucceeded && librimeVersion != nil && runtimeSmokePassed == true
         return RimeDeploymentResult(
             succeeded: succeeded,
-            diagnosticMessage: "librime \(maintenanceResult.librimeVersion), "
+            diagnosticMessage: "librime \(librimeVersion ?? "unavailable"), "
                 + "luaRuntimeRegistered=\(luaRegisteredAfterDeploy)",
+            librimeVersion: librimeVersion,
             runtimeSmokePassed: runtimeSmokePassed,
             luaRuntimeSmokePassed: luaRuntimeSmokePassed
         )

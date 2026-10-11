@@ -1,0 +1,34 @@
+{
+  "items": [
+    {
+      "path": "docs/evidence/typo-correction-002-f01-fixed-integration-001-execution-receipt.json",
+      "bytes": 22638,
+      "sha256": "41133216e67c974156d0f40849464d4a75df8e3ca6bc5c03ed272d4d6c026077"
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-f01-fixed-integration-001-rimebridge-summary.json",
+      "bytes": 1166,
+      "sha256": "5f46684b15a682b28814804186cff5af488ee9b4dd99899566d130334deb3e79"
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-f01-fixed-integration-001-app_keyboard-summary.json",
+      "bytes": 1173,
+      "sha256": "377d62e5da6af5d32a41250d9dca319600a9a22bd9715f3b14e4369fe2bf2389"
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-f01-fixed-integration-001-keychain-summary.json",
+      "bytes": 973,
+      "sha256": "0f43cb5769a2f7e74369406ab20f6542e0cf9c0a77bdcf4450ee42f169aab8f9"
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-f01-fixed-integration-001-focused-pass-lines.txt",
+      "bytes": 861,
+      "sha256": "083c7ade3802e90c140ed072a5dcf7d76816f094967fb36bd5c7c6169f708bca"
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-f01-fixed-integration-001-result-accounting.json",
+      "bytes": 1879,
+      "sha256": "8c5e9fe75ee06cca583d78089ef551a4d2b81e1ef3bb343f4313df11efb06c58"
+    }
+  ]
+}
