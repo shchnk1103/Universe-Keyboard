@@ -21,9 +21,12 @@ Policy version 1.0.0
     "live_at": "2026-10-11T03:10:52.711018+00:00",
     "consumed_at": "2026-10-11T03:10:52.711018+00:00",
     "consumption_state": "consumed",
-    "execution_state": "active",
+    "execution_state": "exhausted_success",
     "budget": "one clean integration commit/push/update139; no retry/rebase/full tests",
-    "publication": "normal push existing139 branch/update draft139 only; no merge/force/new PR"
+    "publication": "normal push existing139 branch/update draft139 only; no merge/force/new PR",
+    "completed_at": "2026-10-11T04:11:02.138469+00:00",
+    "result_commit": "d70a302e95d5e57f557369bcd1b83a03e1ba19e2",
+    "result_pr": "https://github.com/shchnk1103/Universe-Keyboard/pull/139"
   }
 }
 ```

@@ -13,8 +13,8 @@ Policy version 1.0.0
   "record_type": "assignment",
   "title": "PR139 fixed-candidate normal merge commit/push/update",
   "decision_source": "Human accepts disclosed administrative residual and says continue preceding precise commit/push/update139 recommendation",
-  "lifecycle": "active",
-  "current_phase": "publishing authority consumed; prepare clean old-head writer",
+  "lifecycle": "completed",
+  "current_phase": "normal push and existing draft139 update verified; hosted CI pending",
   "parent_refs": [
     "TYPO-CORRECTION-002"
   ],
@@ -72,7 +72,8 @@ Policy version 1.0.0
   "handoff_target": "Human: hosted CI then separate139 ready/merge; parent Gate separate",
   "budget": "one clean integration commit/push/update139; no retry/rebase/full tests",
   "evidence_refs": [
-    "docs/evidence/typo-correction-002-f01-fixed-integration-review-001.md"
+    "docs/evidence/typo-correction-002-f01-pr139-publication-001.md",
+    "docs/evidence/typo-correction-002-f01-pr139-publication-001-receipt.json"
   ],
   "fixed_identity": {
     "old_head": "e20e7c8a3a48822e2e712d36453e2cf574088e87",

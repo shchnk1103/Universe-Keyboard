@@ -1,6 +1,6 @@
 # PR139 固定候选发布方案
 
-Status: Human-authorized execution。独立复核已完成；Human“接受，并继续吧”授权本轮commit/push/更新现有draft139，由独立发布AUTH执行；不授merge。
+Status: Completed — PR139已于2026-10-11正常更新并另授squash-merge `9355200`；[合并回执](../evidence/typo-correction-002-f01-pr139-merge-001.md)。原步骤保留为历史授权边界；父Active。
 
 ## 目标与范围
 

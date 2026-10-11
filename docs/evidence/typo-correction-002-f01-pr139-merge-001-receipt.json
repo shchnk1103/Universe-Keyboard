@@ -1,0 +1,31 @@
+{
+  "recorded_at": "2026-10-11T04:22:30.167077+00:00",
+  "pr": {
+    "headRefOid": "d70a302e95d5e57f557369bcd1b83a03e1ba19e2",
+    "isDraft": false,
+    "mergeCommit": {
+      "oid": "935520020ff66206d527dd8cdd051ff7b5ee2719"
+    },
+    "mergedAt": "2026-10-11T04:21:50Z",
+    "state": "MERGED",
+    "url": "https://github.com/shchnk1103/Universe-Keyboard/pull/139"
+  },
+  "merge_tree": "4a11acb1f21f96e159681e2fabda19f4ba8004dd",
+  "merge_parents": [
+    "a44f850d638204aa5c992ac13fb71f5f5424734c"
+  ],
+  "current_remote_main": "935520020ff66206d527dd8cdd051ff7b5ee2719",
+  "merge_reachable_from_remote_main": true,
+  "validated_published_tree_equal": true,
+  "local_ci": "TC2-CI-20261011-F01-FIXEDA44-001",
+  "hosted_run": 38110712011,
+  "parent_status": "Active",
+  "gate_close_release": false,
+  "m02_trigger": {
+    "kind": "pull_request_merge",
+    "repository": "shchnk1103/Universe-Keyboard",
+    "pull_request": 139,
+    "merge_commit": "935520020ff66206d527dd8cdd051ff7b5ee2719",
+    "state": "local_receipt_recorded; remote docs sync publication not authorized"
+  }
+}

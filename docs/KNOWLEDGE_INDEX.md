@@ -1,5 +1,8 @@
 # Universe Keyboard Knowledge Index
 
+2026-10-11 当前：[PR139 合并回执](evidence/typo-correction-002-f01-pr139-merge-001.md)：PR207与F01 PR139均已合并；139 squash `9355200`，精确head完整本地/hosted CI通过，merge tree与已验证候选一致；本次仅一次M-02状态同步，父Active。 下一步核对父任务收尾条件；Gate/Close须另授权。
+
+> 以下已有2026-10-11阶段快照仅为历史；其中draft/未合并/待发布描述已由本次回执取代。
 2026-10-11：[F01整合复核与发布准备](evidence/typo-correction-002-f01-fixed-integration-review-001.md)：F01 PR139固定a44五源完整本地CI通过，独立增量复核Scoped Pass with conditions；Human已接受行政残项并授权本轮正常commit/push/更新139。发布候选保持draft，merge及父Gate/Close另授；父Active。
 
 2026-10-11：[PR207 单次合并状态同步](evidence/typo-correction-002-final-delivery-merge-001.md)：PR207 已合并 `8f306c6`，local/hosted CI 全绿，merge tree 与已验证候选一致。父 Active；本轮仅发布一次 M-02 docs-only 同步，无 Gate/Close。F-01 PR139 仍为 draft、有冲突，核心修复未进入 main，整合及验证须另授权。

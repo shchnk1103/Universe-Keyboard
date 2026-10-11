@@ -1,5 +1,8 @@
 # Engineering Dashboard
 
+2026-10-11 当前：[PR139 合并回执](evidence/typo-correction-002-f01-pr139-merge-001.md)：PR207与F01 PR139均已合并；139 squash `9355200`，精确head完整本地/hosted CI通过，merge tree与已验证候选一致；本次仅一次M-02状态同步，父Active。 下一步核对父任务收尾条件；Gate/Close须另授权。
+
+> 以下已有2026-10-11阶段快照仅为历史；其中draft/未合并/待发布描述已由本次回执取代。
 2026-10-11：[F01整合复核与发布准备](evidence/typo-correction-002-f01-fixed-integration-review-001.md)：F01 PR139固定a44五源完整本地CI通过，独立增量复核Scoped Pass with conditions；Human已接受行政残项并授权本轮正常commit/push/更新139。发布候选保持draft，merge及父Gate/Close另授；父Active。
 
 2026-10-11：[PR207 单次合并状态同步](evidence/typo-correction-002-final-delivery-merge-001.md)：PR207 已合并 `8f306c6`，local/hosted CI 全绿，merge tree 与已验证候选一致。父 Active；本轮仅发布一次 M-02 docs-only 同步，无 Gate/Close。F-01 PR139 仍为 draft、有冲突，核心修复未进入 main，整合及验证须另授权。
@@ -655,6 +658,9 @@
 - 状态冲突时，以对应 owner 的当前仓库记录为准，并在 Dashboard 中标记待同步。
 
 ## TYPO-CORRECTION-002 — Contextual Multi-Error Pinyin Recovery
+
+- **Current phase (2026-10-11):** PR207与F01 PR139均已合并；139 squash `9355200`，精确head完整本地/hosted CI通过，merge tree与已验证候选一致；本次仅一次M-02状态同步，父Active。
+- **Next:** 父收尾条件核对与Human独立Gate/Close决定；以下阶段记录为历史，不复用已耗尽AUTH。
 
 - **Confirmed status:** `Active`
 - **INT-003 query-density children:** Docs-only [PR #175](https://github.com/shchnk1103/Universe-Keyboard/pull/175) squash merged as `10faa51c`; its [single M-02 receipt](evidence/typo-correction-002-int003-query-density-post-merge-state-sync-2026-09-26.md) was published by [PR #176](https://github.com/shchnk1103/Universe-Keyboard/pull/176), merged `9f6f83e`. The [follow-up diagnostic criterion decision](product-decisions/TYPO-CORRECTION-002-INT003-QUERY-DENSITY-DIAGNOSTIC-CRITERION-001.md) removes the 180 ms hard pass condition for that diagnosis only. The distinct [query-cost assessment](evidence/typo-correction-002-int003-query-cost-assessment-2026-09-26.md) is Completed with a Consumed AUTH and published by [PR #177](https://github.com/shchnk1103/Universe-Keyboard/pull/177), merged `501299dd`; its [M-02 receipt](evidence/typo-correction-002-int003-query-cost-post-merge-state-sync-2026-09-26.md) was published by [PR #178](https://github.com/shchnk1103/Universe-Keyboard/pull/178), merged `7b0025a`. It records 359 real facade calls across 12 operations, 26–32 per operation, with Debug elapsed intervals only. The prepared second rapid Run had no input. Original rapid-window attribution, Product cost acceptability and the wider residual remain open. No Swift / Gate / Release; parent Assignment remains Active.
