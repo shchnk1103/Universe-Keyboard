@@ -6,10 +6,10 @@ Policy version 1.0.0
 
 | Field | Value |
 |---|---|
-| Lifecycle | Active |
-| Current phase | 固定交付包commit/push/draft PR执行中 |
+| Lifecycle | Completed |
+| Current phase | 25fa3d3/PR207发布完成，独立授权合并为8f306c6 |
 | Non-claims | 无merge/Gate/Close/Release；源码和原CI绑定不变 |
-| Next | 发布后记录PR/head/hosted状态，另待merge授权 |
+| Next | 本次M-02行政同步；父Gate/Close另决，PR139另处理 |
 
 
 ```kos-record
@@ -23,8 +23,8 @@ Policy version 1.0.0
   "record_type": "assignment",
   "title": "固定最终交付包commit/push/draft PR",
   "decision_source": "Human明确：授权 commit、push 和 draft PR",
-  "lifecycle": "active",
-  "current_phase": "固定交付包commit/push/draft PR执行中",
+  "lifecycle": "completed",
+  "current_phase": "Completed：25fa3d3已发布PR207，由独立merge AUTH合并为8f306c6",
   "parent_refs": [
     "TYPO-CORRECTION-002"
   ],

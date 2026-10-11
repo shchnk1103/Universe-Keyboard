@@ -1,0 +1,110 @@
+{
+  "baseRefOid": "59272331b3627856c1c4480b0b5d7ad0ddade0ad",
+  "headRefOid": "25fa3d3861c8189f7b256f8c05a403de48592abe",
+  "isDraft": true,
+  "mergeStateStatus": "CLEAN",
+  "state": "OPEN",
+  "statusCheckRollup": [
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-11T00:25:27Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/shchnk1103/Universe-Keyboard/actions/runs/38098365888/job/114348927365",
+      "name": "classify-change",
+      "startedAt": "2026-10-11T00:25:21Z",
+      "status": "COMPLETED",
+      "workflowName": "Swift 6 Quality"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-11T00:25:35Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/shchnk1103/Universe-Keyboard/actions/runs/38098365888/job/114348950575",
+      "name": "lightweight-checks",
+      "startedAt": "2026-10-11T00:25:29Z",
+      "status": "COMPLETED",
+      "workflowName": "Swift 6 Quality"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-11T00:25:58Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/shchnk1103/Universe-Keyboard/actions/runs/38098365888/job/114348973493",
+      "name": "format-swift",
+      "startedAt": "2026-10-11T00:25:44Z",
+      "status": "COMPLETED",
+      "workflowName": "Swift 6 Quality"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-11T00:27:31Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/shchnk1103/Universe-Keyboard/actions/runs/38098365888/job/114348973536",
+      "name": "test-keyboardcore",
+      "startedAt": "2026-10-11T00:25:44Z",
+      "status": "COMPLETED",
+      "workflowName": "Swift 6 Quality"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-11T00:30:25Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/shchnk1103/Universe-Keyboard/actions/runs/38098365888/job/114348973552",
+      "name": "test-rimebridge",
+      "startedAt": "2026-10-11T00:26:05Z",
+      "status": "COMPLETED",
+      "workflowName": "Swift 6 Quality"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-11T00:30:43Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/shchnk1103/Universe-Keyboard/actions/runs/38098365888/job/114348973498",
+      "name": "test-app-keyboard",
+      "startedAt": "2026-10-11T00:25:42Z",
+      "status": "COMPLETED",
+      "workflowName": "Swift 6 Quality"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-11T00:30:37Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/shchnk1103/Universe-Keyboard/actions/runs/38098365888/job/114348973487",
+      "name": "test-rime-sync-keychain",
+      "startedAt": "2026-10-11T00:25:42Z",
+      "status": "COMPLETED",
+      "workflowName": "Swift 6 Quality"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-11T00:29:39Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/shchnk1103/Universe-Keyboard/actions/runs/38098365888/job/114348973539",
+      "name": "build-release",
+      "startedAt": "2026-10-11T00:25:43Z",
+      "status": "COMPLETED",
+      "workflowName": "Swift 6 Quality"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-11T00:30:52Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://github.com/shchnk1103/Universe-Keyboard/actions/runs/38098365888/job/114349838498",
+      "name": "final-quality-gate",
+      "startedAt": "2026-10-11T00:30:45Z",
+      "status": "COMPLETED",
+      "workflowName": "Swift 6 Quality"
+    },
+    {
+      "__typename": "CheckRun",
+      "completedAt": "2026-10-11T00:25:20Z",
+      "conclusion": "SUCCESS",
+      "detailsUrl": "https://dashboard.gitguardian.com",
+      "name": "GitGuardian Security Checks",
+      "startedAt": "2026-10-11T00:25:18Z",
+      "status": "COMPLETED",
+      "workflowName": ""
+    }
+  ],
+  "url": "https://github.com/shchnk1103/Universe-Keyboard/pull/207"
+}
