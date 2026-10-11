@@ -1,0 +1,200 @@
+{
+  "lane": "TC2_PARENT_FINAL_EVIDENCE_R1",
+  "round": 1,
+  "assignment_authority": "Human Product Lead",
+  "decision_source": "Human: 继续吧，如果复核没问题就直接 close; one independent final review, conditional bounded parent Gate and Close when no unresolved mandatory blocker",
+  "target": "determine eligibility for conditional bounded parent Gate/Close, not execute decision",
+  "frozen_delivery": "89bbce7087d0dd59a6429694ccd70f6d78ad1eb4",
+  "inputs": [
+    {
+      "number": 1,
+      "path": "/private/tmp/uk-parent-finalreview1/inputs/01.txt",
+      "source_path": "/Users/doubleshy0n/.codex/worktrees/int003-merge207-sync/Universe Keyboard/docs/assignments/typo-correction-002.md",
+      "bytes": 26417,
+      "sha256": "ff4cb6577acd963cd31994967104f9b5a29fcb1b7f4c3799ce80b33919d28622"
+    },
+    {
+      "number": 2,
+      "path": "/private/tmp/uk-parent-finalreview1/inputs/02.txt",
+      "source_path": "/Users/doubleshy0n/.codex/worktrees/int003-merge207-sync/Universe Keyboard/docs/TYPO_BENCHMARK_REGISTRY_V2.md",
+      "bytes": 7602,
+      "sha256": "e4597f18187eaad83d8733e2df9802830ce069fce77656c6f5b312297b1ad22e"
+    },
+    {
+      "number": 3,
+      "path": "/private/tmp/uk-parent-finalreview1/inputs/03.txt",
+      "source_path": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/typo-correction-002-sim-run-2026-09-19-sidecar-reval-01-quality-review.md",
+      "bytes": 5920,
+      "sha256": "16eeca3023567ce2bc607a6759b7ddea83eb13cde1eeb246e30721970b35d741"
+    },
+    {
+      "number": 4,
+      "path": "/private/tmp/uk-parent-finalreview1/inputs/04.txt",
+      "source_path": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/typo-correction-002-sim-run-2026-09-22-qa001-reval-08-quality-review.md",
+      "bytes": 6464,
+      "sha256": "85506fec76dae45611d6d6a551b3a720a080e3931770e7af9125db1be105e3ff"
+    },
+    {
+      "number": 5,
+      "path": "/private/tmp/uk-parent-finalreview1/inputs/05.txt",
+      "source_path": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/assignments/typo-correction-002-qa001-revalidation-08-fresh-package-001.md",
+      "bytes": 6722,
+      "sha256": "7e31e499e85e5c72d8a51370d41d30a6afbc407c1ff6ad2eee7b4aa096398af8"
+    },
+    {
+      "number": 6,
+      "path": "/private/tmp/uk-parent-finalreview1/inputs/06.txt",
+      "source_path": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/authorizations/AUTH-TYPO-CORRECTION-002-QA001-REVALIDATION-08-CLOSE-001.md",
+      "bytes": 3906,
+      "sha256": "c8d4dd5e04df1e297e7416ce7b5738d016aa47f6f828afb97f420b282b78f6b2"
+    },
+    {
+      "number": 7,
+      "path": "/private/tmp/uk-parent-finalreview1/inputs/07.txt",
+      "source_path": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/product-decisions/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-LOCAL-EVIDENCE-REQUIREMENTS-001.md",
+      "bytes": 8681,
+      "sha256": "5525d039cbeacfdf10fa178bf5276e7d6be9c9c494cf3287bcca44affaf980ea"
+    },
+    {
+      "number": 8,
+      "path": "/private/tmp/uk-parent-finalreview1/inputs/08.txt",
+      "source_path": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-REVIEW-DELIVERY-001-closeout-r2.md",
+      "bytes": 4112,
+      "sha256": "d76d33b90a46d01216a4f42de5db24cb9f47868bf1424b1192482fa8a5c092c4"
+    },
+    {
+      "number": 9,
+      "path": "/private/tmp/uk-parent-finalreview1/inputs/09.txt",
+      "source_path": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-fixed-candidate-delivery-audit-001-p1-convergence-original.txt",
+      "bytes": 5592,
+      "sha256": "b196ec55519e3d8bf33d0185d0eca71a6b53258fa1a05f5eb0c036f3d0241e79"
+    },
+    {
+      "number": 10,
+      "path": "/private/tmp/uk-parent-finalreview1/inputs/10.txt",
+      "source_path": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-fixed-candidate-delivery-audit-001.md",
+      "bytes": 9632,
+      "sha256": "aed2ab95fabab3b9ec967d402b4c50347f730fd137548367e11281c3ed43710a"
+    },
+    {
+      "number": 11,
+      "path": "/private/tmp/uk-parent-finalreview1/inputs/11.txt",
+      "source_path": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-fixed-main-validation-001.md",
+      "bytes": 3209,
+      "sha256": "db1fbc5279ccfa977e534a40cd2bbbeecb3340fea7fde78dee2e1622f8c4f632"
+    },
+    {
+      "number": 12,
+      "path": "/private/tmp/uk-parent-finalreview1/inputs/12.txt",
+      "source_path": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-f01-fixed-integration-001.md",
+      "bytes": 4114,
+      "sha256": "8507d0e097dd36013a3188b3767e6b31ebe8d53f85dff74f25cfc68326573735"
+    },
+    {
+      "number": 13,
+      "path": "/private/tmp/uk-parent-finalreview1/inputs/13.txt",
+      "source_path": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-f01-fixed-integration-review-001.md",
+      "bytes": 3034,
+      "sha256": "8bc400b21e310397c094603a8c86a939e6459856f8dcd4eb60253925bc46bffa"
+    },
+    {
+      "number": 14,
+      "path": "/private/tmp/uk-parent-finalreview1/inputs/14.txt",
+      "source_path": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-final-delivery-merge-001.md",
+      "bytes": 2338,
+      "sha256": "8a8f6b35c9ddf5964706932eb9acd3ba5e2736c4bd184df6585ca096c8f7f854"
+    },
+    {
+      "number": 15,
+      "path": "/private/tmp/uk-parent-finalreview1/inputs/15.txt",
+      "source_path": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-f01-pr139-merge-001.md",
+      "bytes": 2022,
+      "sha256": "78178a714af15994ddeaa4d2b229792c2214bbc606c05cf36c546ad63a83306d"
+    },
+    {
+      "number": 16,
+      "path": "/private/tmp/uk-parent-finalreview1/inputs/16.txt",
+      "source_path": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-f01-pr139-state-sync-merge-001.md",
+      "bytes": 1127,
+      "sha256": "daf4458926e6ffe7e2bb7c54479f93fba97274ac8ad3ec0086a98f754283f613"
+    },
+    {
+      "number": 17,
+      "path": "/private/tmp/uk-parent-finalreview1/inputs/17.txt",
+      "source_path": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/product-decisions/TYPO-CORRECTION-002-PARENT-PERFORMANCE-SCOPE-PROPOSAL-001.md",
+      "bytes": 2543,
+      "sha256": "5b12365c31f2b2a5aadeb7b4ed967bd585d4d6c39e8287b9d67a9fe294ce91eb"
+    },
+    {
+      "number": 18,
+      "path": "/private/tmp/uk-parent-finalreview1/inputs/18.txt",
+      "source_path": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-parent-final-exit-map-2026-10-11.md",
+      "bytes": 3120,
+      "sha256": "f673d798a72fe35c853b983571e93a1bf5ffca7936e3b88f07e3ebf74c4da6c6"
+    },
+    {
+      "number": 19,
+      "path": "/private/tmp/uk-parent-finalreview1/inputs/19.txt",
+      "source_path": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-parent-gate-preparation-001.md",
+      "bytes": 5724,
+      "sha256": "b03e913f26b250dde8d0ff629e1f78755b22486d8f3a7bd378bafd3f27ed2ca0"
+    },
+    {
+      "number": 20,
+      "path": "/private/tmp/uk-parent-finalreview1/inputs/20.txt",
+      "source_path": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/product-decisions/TYPO-CORRECTION-002-PARENT-FINAL-GATE-PROPOSAL-001.md",
+      "bytes": 1949,
+      "sha256": "bd669d81383a9c6a78bacf9b1d78f3374637aaa7be72ad3d1562f3b4ef3b5109"
+    },
+    {
+      "number": 21,
+      "path": "/private/tmp/uk-parent-finalreview1/inputs/21.txt",
+      "source_path": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/TECH_DEBT.md",
+      "bytes": 48212,
+      "sha256": "77dac6772736721818876ad0e9d2838d44b4f3c830bc55e0e894a8044fc59b3e"
+    },
+    {
+      "number": 22,
+      "path": "/private/tmp/uk-parent-finalreview1/inputs/22.txt",
+      "source_path": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/authorizations/AUTH-TYPO-CORRECTION-002-PARENT-FINAL-GATE-CLOSE-001.md",
+      "bytes": 1253,
+      "sha256": "fc88194daf84922425dd17413f0a9e10d55965aae471762fe6d32dcef8e86ec8"
+    }
+  ],
+  "claims": {
+    "C1": "7 parent exits mapped to named evidence, no fake or skip upgraded to semantics",
+    "C2": "historical QA Human-attested original package and multi-role/noJSONL/no actualselection boundaries preserved; decide if existing functional regression evidence plus QA observation suffices original interaction exit WITHOUT inventing waiver. Explain adequacy or precise must-have gap",
+    "C3": "fixed592/DEBUG52 and F01a44 defaultfullCI applicability compositional and actualmergedtree identity correctly separated from latest runtime claims",
+    "C4": "Human performance/P2 scope decisions valid, extraF01 retained, counts/providerelapsed not nativeCPU/UI; no new paired requirement",
+    "C5": "M03 residual IDs/owner/disposition, existingP1 debt canonicalentries; no unaccepted blockingresidual disguised accepted",
+    "C6": "no new architecture/source/Gateauthority fabricated; latestHuman conditionalGateClose requires fullycovered and no must-haveblocker",
+    "C7": "suitable final verdict+explicit close_eligible boolean with rationale and any blockers; report all retainedlimitations, do notrequire stronger evidence solely because historicalscopebounded"
+  },
+  "boundaries": {
+    "read": "packet plus22listedshortpathcopies only; no followlinks/outside/raw/Git/network/device/source",
+    "write": [
+      "/private/tmp/uk-parent-finalreview1/final-review.md",
+      "/private/tmp/uk-parent-finalreview1/usage.json"
+    ],
+    "tools": "exec read/hash of listed files and writing own2 outputs only",
+    "data": "no rawcontent/input-history or secrets; docs only"
+  },
+  "acceptance": "Pass/Passwithconditions only if C1-C7 fullycovered, every condition disposition sourced; Partial if uncovered; a must-havegap means close_eligible false; reviewer does notaccept newrisk or performGate",
+  "budget": {
+    "toolcalls": 16,
+    "elapsed_seconds": 720,
+    "checkpoints": [
+      "start record clock and callcounter",
+      "after inputhashvalidation",
+      "after C1-C7 assessment",
+      "reserve last2calls/time for report+usage"
+    ],
+    "exhaustion": "stop and outputPartial+covered/uncovered+actualusage; never auto renew",
+    "tokens": "actual only if available; else null"
+  },
+  "stop": "hash mismatch or outsideinputneeded markdependentclaimuncovered with one concise locator; no broadsearch or repeatedattempt; Human alone may expandscope",
+  "required_outputs": {
+    "report": "C1-C7 perclaim covered/evidence/verdict, eligibility true/false, residualtable ID/owner/disposition/source, no Gate/Close execution",
+    "usage": "start/endUTC elapsed actual, toolcallcount inclfailure, unknown actualtokensnull, stopreason, fullcoverage"
+  }
+}

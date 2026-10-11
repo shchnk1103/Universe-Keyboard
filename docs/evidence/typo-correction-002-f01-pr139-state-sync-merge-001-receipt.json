@@ -1,0 +1,23 @@
+{
+  "recorded_at": "2026-10-11T04:46:26.474815+00:00",
+  "pr": {
+    "headRefOid": "660b693ef1a4e3d69be22ab60cf9a3c37a7a68bc",
+    "isDraft": false,
+    "mergeCommit": {
+      "oid": "89bbce7087d0dd59a6429694ccd70f6d78ad1eb4"
+    },
+    "mergedAt": "2026-10-11T04:45:24Z",
+    "state": "MERGED",
+    "url": "https://github.com/shchnk1103/Universe-Keyboard/pull/209"
+  },
+  "tree": "426cb30679b49a37e876321be873a1e11d175b58",
+  "tree_equals_published_docs_candidate": true,
+  "merge_reachable_from_main": true,
+  "remote_main": "89bbce7087d0dd59a6429694ccd70f6d78ad1eb4",
+  "hosted_run": 38111550638,
+  "docs_only_heavy_skips_expected": true,
+  "m02_original_trigger": "PR139/935520020ff66206d527dd8cdd051ff7b5ee2719",
+  "same_transaction_closed": true,
+  "new_sync_pr_required": false,
+  "parent_active": true
+}

@@ -1,5 +1,7 @@
 # Assignment: TYPO-CORRECTION-002 — Contextual Multi-Error Pinyin Recovery
 
+2026-10-11 当前：父 **TYPO-CORRECTION-002 Closed**；独立最终复核C1–C7完整Pass with conditions，无必需blocker；Human条件授权执行有界Gate/Close。保留性能未知、QA证据边界及P1技术债。[Close回执](../evidence/typo-correction-002-parent-close-2026-10-11.md)。本地Close已生效；本次docs-only发布已授权，main同步待PR合并；下方Active等阶段快照为历史。
+
 2026-10-11 当前：[PR139 合并回执](../evidence/typo-correction-002-f01-pr139-merge-001.md)：PR207与F01 PR139均已合并；139 squash `9355200`，精确head完整本地/hosted CI通过，merge tree与已验证候选一致；本次仅一次M-02状态同步，父Active。 下一步核对父任务收尾条件；Gate/Close须另授权。
 
 > 以下已有2026-10-11阶段快照仅为历史；其中draft/未合并/待发布描述已由本次回执取代。
@@ -9,18 +11,22 @@
 
 **Policy version:** `1.0.0`
 
-**Lifecycle status:** `Active`
+**Lifecycle status:** `Closed`
 
 ## Current Status
 
 | Field | Value |
 |---|---|
-| Lifecycle | **Active** — INT-003 query-cost P1 instrumentation is on main; this does not close the parent |
-| Current phase | PR207与F01 PR139均已合并；139 squash `9355200`，精确head完整本地/hosted CI通过，merge tree与已验证候选一致；本次仅一次M-02状态同步，父Active。 |
-| Non-claims | Whole CPU/UI/memory/native nonempty-query cost and current v2 overall observer unverified; no Gate/Close/Release/ADR Accept/provenance restoration |
-| Next | 完成本次docs-only同步后交Human核对父Gate/Close条件；不得新增采集、追main重测或直接关闭父任务。 |
+| Lifecycle | **Closed** — Human conditional authorization executed after complete independent final review |
+| Current phase | Bounded Product Gate passed with retained conditions; parentClosed; finite docs-only publication authorized; main synchronization pending PR merge |
+| Non-claims | Bounded Gate/Closed does not prove whole CPU/UI/memory/native nonempty-query/observer cost or actual QA postselection; no Release/TestFlight/ADR Accept/provenance restoration |
+| Next | Final docs-only publication authorized; main synchronization pending PR merge; no new implementation/recapture/Release |
 
 **Repository change types:** `Contract`, `Implementation`, `Evidence`, `State`
+
+## History — 以下原阶段、Contract与Run均保留各自边界
+
+原文Active/未Gate等属于当时阶段，当前父状态以本页Current Status与最新Close为准；其他child生命周期不自动改变。
 
 ## Authority
 

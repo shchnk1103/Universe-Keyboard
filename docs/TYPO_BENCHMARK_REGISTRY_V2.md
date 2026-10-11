@@ -1,6 +1,8 @@
 # Typo Correction Benchmark v2.0 Incremental Registry
 
-> **Status:** Active — bounded observations and accepted P1/P2 evidence recorded; parent Gate/Close pending.
+2026-10-11 当前：父 **TYPO-CORRECTION-002 Closed**；独立最终复核C1–C7完整Pass with conditions，无必需blocker；Human条件授权执行有界Gate/Close。保留性能未知、QA证据边界及P1技术债。[Close回执](evidence/typo-correction-002-parent-close-2026-10-11.md)。本地状态已生效，Git发布待另授权；下方Active等阶段快照为历史。
+
+> **Status:** Active — bounded observations and accepted P1/P2 evidence recorded; parent bounded Gate/Close recorded locally; publication pending.
 >
 > **Registry version:** `2.2.0`
 >
@@ -65,3 +67,7 @@ This incremental Registry adds V2 identities without modifying the frozen v1.0 R
 | Parent performance | [Human-approved scope amendment](product-decisions/TYPO-CORRECTION-002-PARENT-PERFORMANCE-SCOPE-PROPOSAL-001.md) | No further paired capture required; unknown whole-app performance remains explicit |
 
 No frozen case/contract was changed. The 180 ms **scheduler pause** remains; a Human typing cadence below 180 ms is not a mandatory pass condition. No restored RimeRuntimeProvenance, Gate, Release or parent Close. Existing evidence is not a certification of a future integration candidate.
+
+## 2026-10-11 最终父收尾
+
+父有界Gate与Closed见[Close](evidence/typo-correction-002-parent-close-2026-10-11.md)。本地决定未发布；原case/Run/skip不重写为新运行，QA仍Human-attested，实际selection/postselection没有新增验证，整体性能未知保持。
