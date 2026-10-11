@@ -1,0 +1,224 @@
+{
+  "record_id": "TYPO-CORRECTION-002-FIXED-MAIN-INTEGRATION-001",
+  "frozen_at_utc": "2026-10-11T00:08:22.657922+00:00",
+  "writer": "/Users/doubleshy0n/.codex/worktrees/int003-final-integration-592/Universe Keyboard",
+  "base": "59272331b3627856c1c4480b0b5d7ad0ddade0ad",
+  "source_base": "72dd21710f2a86c9f951d489f645bae89b053b58",
+  "original_manifest_sha256": "91d2ea55b94bc72ed7907a3acbe4c999a0750517a22d50f49aa6c97cdc7ab448",
+  "paths": [
+    {
+      "path": ".github/workflows/swift6-quality.yml",
+      "sha256": "c1b06313840b6f283a629c10548695f495e20603771e65c0ee385bdaef58f40a",
+      "bytes": 9636,
+      "origin_sha256": "a1ce0a87f4cdcc51c4b3270fd0e9ecdf58f315104daa643598443c1a1d6a7844",
+      "same_as_frozen_source": false
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+Layout.swift",
+      "sha256": "fceb438279a43f6df89e7b0c7928ba943b4b6614372aa67026fd7c17b93f2553",
+      "bytes": 4372,
+      "origin_sha256": "fceb438279a43f6df89e7b0c7928ba943b4b6614372aa67026fd7c17b93f2553",
+      "same_as_frozen_source": true
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+TypoCorrection.swift",
+      "sha256": "0c34a4c68230d5ef5b793338926c1a282cb798dbe1a1a52f0e90d19316a62587",
+      "bytes": 6119,
+      "origin_sha256": "0c34a4c68230d5ef5b793338926c1a282cb798dbe1a1a52f0e90d19316a62587",
+      "same_as_frozen_source": true
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController.swift",
+      "sha256": "deb103c29ab520ac432e9d7b262e4802de45efef5fdbe537da4e0bd883eb9f02",
+      "bytes": 40439,
+      "origin_sha256": "a44a10ffda0f14db5201344339e3acdeadf0d45a414119a82040be6b1f45a007",
+      "same_as_frozen_source": false
+    },
+    {
+      "path": "Keyboard/Controllers/TypoCorrectionRecallCoordinator.swift",
+      "sha256": "d10ea4e89e128eb1f0c161d654071338a3b951e027c4136a7a85174704b36860",
+      "bytes": 22539,
+      "origin_sha256": "d10ea4e89e128eb1f0c161d654071338a3b951e027c4136a7a85174704b36860",
+      "same_as_frozen_source": true
+    },
+    {
+      "path": "KeyboardExtensionTests/CandidatePrefetchUIContractTests.swift",
+      "sha256": "be962355b166cd2ebde2215e6a4cd6d4ebf55b6a9f4b1d3a32982792e471414a",
+      "bytes": 434,
+      "origin_sha256": "be962355b166cd2ebde2215e6a4cd6d4ebf55b6a9f4b1d3a32982792e471414a",
+      "same_as_frozen_source": true
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionSidecarOwner.swift",
+      "sha256": "5f0878ca242ac53831d5f8333d7e60775bd77da8078e24b2f0c095f494d69f86",
+      "bytes": 4109,
+      "origin_sha256": "5f0878ca242ac53831d5f8333d7e60775bd77da8078e24b2f0c095f494d69f86",
+      "same_as_frozen_source": true
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift",
+      "sha256": "6d5670d14266b6446763801919dc1020304dc5046f45c7763c5f97c8c452748e",
+      "bytes": 122473,
+      "origin_sha256": "6d5670d14266b6446763801919dc1020304dc5046f45c7763c5f97c8c452748e",
+      "same_as_frozen_source": true
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+CorrectionQuery.swift",
+      "sha256": "c99002fc4a8ef435bdcb4f2455a802bd48a256f5a583c7e97b8af1bec6647e0f",
+      "bytes": 2228,
+      "origin_sha256": "c99002fc4a8ef435bdcb4f2455a802bd48a256f5a583c7e97b8af1bec6647e0f",
+      "same_as_frozen_source": true
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridgeObjC/RimeSessionManager.m",
+      "sha256": "79ae6d943879891aaf1a0799b9d9d3acbaa58669727d3f3adc5260d7f516367c",
+      "bytes": 26831,
+      "origin_sha256": "79ae6d943879891aaf1a0799b9d9d3acbaa58669727d3f3adc5260d7f516367c",
+      "same_as_frozen_source": true
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridgeObjC/include/RimeSessionManager.h",
+      "sha256": "6e746cf149b8b8a4727398fcca5d46b32eca761464bcb32adee372d47ad8bba3",
+      "bytes": 7781,
+      "origin_sha256": "6e746cf149b8b8a4727398fcca5d46b32eca761464bcb32adee372d47ad8bba3",
+      "same_as_frozen_source": true
+    },
+    {
+      "path": "Universe Keyboard.xcodeproj/project.pbxproj",
+      "sha256": "fc399db4ae635e2b660c0fb59523139dccd315ebf5360b7944ac551d7d93f69d",
+      "bytes": 49771,
+      "origin_sha256": "ba1a9558fdf398c11d3a7db107f07f26e04ed2d378d9a79651e43ca5dcee7027",
+      "same_as_frozen_source": false
+    },
+    {
+      "path": "Universe Keyboard.xcodeproj/xcshareddata/xcschemes/Universe Keyboard.xcscheme",
+      "sha256": "6f50a3cb7fb788e598ef0270fed92d68a3eaa71530d51f8677bb6ae931b9a786",
+      "bytes": 6828,
+      "origin_sha256": "6f50a3cb7fb788e598ef0270fed92d68a3eaa71530d51f8677bb6ae931b9a786",
+      "same_as_frozen_source": true
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+QueryCostProbe.swift",
+      "sha256": "cf9e79e4eca75263af62ae262fc034f374cc142e48e12e8c64ae8e8a4c2b97fd",
+      "bytes": 8892,
+      "origin_sha256": "cf9e79e4eca75263af62ae262fc034f374cc142e48e12e8c64ae8e8a4c2b97fd",
+      "same_as_frozen_source": true
+    },
+    {
+      "path": "Keyboard/Controllers/QueryCostArmDiagnostic.swift",
+      "sha256": "659533bc91e6069f268501a15682f4f7857bed035d3ecb720b734c91de7fd4d7",
+      "bytes": 4303,
+      "origin_sha256": "659533bc91e6069f268501a15682f4f7857bed035d3ecb720b734c91de7fd4d7",
+      "same_as_frozen_source": true
+    },
+    {
+      "path": "Keyboard/Controllers/QueryCostClockAnchor.swift",
+      "sha256": "e8bbb21826fdb899711c0e861d976884b5e21d04f17865fd44a793722ab47635",
+      "bytes": 6138,
+      "origin_sha256": "e8bbb21826fdb899711c0e861d976884b5e21d04f17865fd44a793722ab47635",
+      "same_as_frozen_source": true
+    },
+    {
+      "path": "Keyboard/Controllers/TypoCorrectionCallbackLedger.swift",
+      "sha256": "8093a248b15948da416245886c56f1d1ef8fb1cc89b583795eae290f6f7fd0d6",
+      "bytes": 5448,
+      "origin_sha256": "8093a248b15948da416245886c56f1d1ef8fb1cc89b583795eae290f6f7fd0d6",
+      "same_as_frozen_source": true
+    },
+    {
+      "path": "KeyboardExtensionTests/QueryCostArmDiagnosticTests.swift",
+      "sha256": "89d759467373b1a4a419652a6ffc906c99028eefade36277597723fb8bf604bd",
+      "bytes": 8116,
+      "origin_sha256": "89d759467373b1a4a419652a6ffc906c99028eefade36277597723fb8bf604bd",
+      "same_as_frozen_source": true
+    },
+    {
+      "path": "KeyboardExtensionTests/TypoCorrectionCallbackLedgerTests.swift",
+      "sha256": "a505f2b2c3a617bd07d4da441ebf03b4282df46147f1acbb30e84afd249098f4",
+      "bytes": 4562,
+      "origin_sha256": "a505f2b2c3a617bd07d4da441ebf03b4282df46147f1acbb30e84afd249098f4",
+      "same_as_frozen_source": true
+    },
+    {
+      "path": "KeyboardExtensionTests/TypoCorrectionQueryCostProbeIntegrationTests.swift",
+      "sha256": "0b414efb6d8f324693746fe2f914fbc1bac9d438008fcad052dfe9cd321c2af7",
+      "bytes": 13445,
+      "origin_sha256": "0b414efb6d8f324693746fe2f914fbc1bac9d438008fcad052dfe9cd321c2af7",
+      "same_as_frozen_source": true
+    },
+    {
+      "path": "KeyboardExtensionTests/TypoCorrectionRecallCoordinatorIntegrationTests.swift",
+      "sha256": "d12854dca3748dd61cf7eada1c0c1ba45707ee5d9051155ff866a5209d59cc97",
+      "bytes": 23087,
+      "origin_sha256": "d12854dca3748dd61cf7eada1c0c1ba45707ee5d9051155ff866a5209d59cc97",
+      "same_as_frozen_source": true
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/QueryCostMemoryProbe.swift",
+      "sha256": "dfbc619e75982cf94e654627d56b1ffe46d25ed56a12d78cc8dc019c769742f7",
+      "bytes": 31210,
+      "origin_sha256": "dfbc619e75982cf94e654627d56b1ffe46d25ed56a12d78cc8dc019c769742f7",
+      "same_as_frozen_source": true
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/QueryCostTouchLedger.swift",
+      "sha256": "b7ee5dca0beff2864c121a77c0a588594ce7c0a1c3895f86d83258b6b700a262",
+      "bytes": 1850,
+      "origin_sha256": "b7ee5dca0beff2864c121a77c0a588594ce7c0a1c3895f86d83258b6b700a262",
+      "same_as_frozen_source": true
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionQueryDebugScope.swift",
+      "sha256": "78ea222205b86d29736da5d9256571f750a4ad9b51550615ee2c2b3140a0dd80",
+      "bytes": 659,
+      "origin_sha256": "78ea222205b86d29736da5d9256571f750a4ad9b51550615ee2c2b3140a0dd80",
+      "same_as_frozen_source": true
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostMemoryProbePerformanceTests.swift",
+      "sha256": "04b856eafd33318ed2bcd82a2bb173ccdde68b966d885faa8206e6316c1bf014",
+      "bytes": 18045,
+      "origin_sha256": "04b856eafd33318ed2bcd82a2bb173ccdde68b966d885faa8206e6316c1bf014",
+      "same_as_frozen_source": true
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostMemoryProbeTests.swift",
+      "sha256": "9f08de6864ebe5d0d3acab01d03fd460468623819d8c393677e52179cec3ee7f",
+      "bytes": 22144,
+      "origin_sha256": "9f08de6864ebe5d0d3acab01d03fd460468623819d8c393677e52179cec3ee7f",
+      "same_as_frozen_source": true
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostTouchLedgerTests.swift",
+      "sha256": "93478b1f68250f755db76242c31c3a7366416f8e9a71f9682e7990c215873c5e",
+      "bytes": 4331,
+      "origin_sha256": "93478b1f68250f755db76242c31c3a7366416f8e9a71f9682e7990c215873c5e",
+      "same_as_frozen_source": true
+    },
+    {
+      "path": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeCorrectionQueryIntegrationTests.swift",
+      "sha256": "bb0e6d57d198be2493152db78ca3a2019a519f9f82b28ce05ec7cb05301961d9",
+      "bytes": 8993,
+      "origin_sha256": "bb0e6d57d198be2493152db78ca3a2019a519f9f82b28ce05ec7cb05301961d9",
+      "same_as_frozen_source": true
+    }
+  ],
+  "original_paths_unchanged": 25,
+  "integrated_paths": 3,
+  "original_source_hashes_matched": 28,
+  "index_empty": true,
+  "only_28_paths_dirty": true,
+  "conflicts_resolved": {
+    "Keyboard/Controllers/KeyboardViewController.swift": 1,
+    "Universe Keyboard.xcodeproj/project.pbxproj": 2
+  },
+  "static_checks": {
+    "swift_format_23": "pass",
+    "swift_lint_strict_23": "pass",
+    "plutil_project": "pass",
+    "scheme_xml": "pass",
+    "diff_check": "pass",
+    "main_lifecycle_and_project_additions": "preserved"
+  },
+  "build_test_device_publication": "not_executed"
+}

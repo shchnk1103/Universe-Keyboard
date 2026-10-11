@@ -1,0 +1,146 @@
+{
+  "work_item": "TYPO-CORRECTION-002-INT003-QUERY-COST-P2-QUALITY-REMAINDER-001",
+  "lane_id": "TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001:quality",
+  "round": 3,
+  "runtime": "/root/arm_refusal_quality_r1",
+  "root": "/private/tmp/uk-routeq3",
+  "candidate_sha256": "d45bdc9be791aa1654dfde1699a261c34434cd05f68de9456d8102beebd1c2c2",
+  "authority": "Human Product Lead当前继续吧；new AUTH consumed，旧R2耗尽不复用",
+  "playbook": "governance/docs/playbooks/test-release.md",
+  "criteria": {
+    "Q-R3-1": "逐项核对original/receipts.json（它是stage记录的数组）中core/extension各argv，分别与原binding core_argv/extension_argv及更正binding一致，attempt1/exit0/stop_reason为空；仅静态读取不执行任何命令",
+    "Q-R3-2": "原original/archive-manifest.json中9个name→sha256逐项与original下实际字节匹配；correction引用原binding hash、corrected binding hash及test_evidence_reused摘要相符；不改原件，不重复核对52名称或v2/source设计"
+  },
+  "complete_coverage": "两criterion完整且无差异才本剩余项Pass，可与R2已完成scope合并关闭F1；未覆盖Partial，有actual discrepancy Changes requested；不改R1原文结论/不Product Gate",
+  "budget": {
+    "max_calls": 12,
+    "max_seconds": 240,
+    "checkpoint": "first tool unique round3 UTC+monotonic;6calls或120s checkpoint保存usage并通知root",
+    "output_reserve": "达到10calls停止新检查，剩2calls必须最终review+usage；任何脚本错误仍记录实际observed值，不丢已覆盖信息",
+    "outputs": "quality-review.md + quality-usage.json；实际calls/elapsed/两criteria coverage/stop/finding closure判定；最终短回复同步"
+  },
+  "access": "only frozen inputs; write only own quality-review/usage; governance导航不扩源码；不要运行decoder/test/build/设备/网络/Git或修改任何JSON",
+  "stop": "缺输入/身份漂移/上限先到即停，不自行扩大或续期；root自检不是独立证据",
+  "inputs": [
+    {
+      "path": "candidate.json",
+      "sha256": "d45bdc9be791aa1654dfde1699a261c34434cd05f68de9456d8102beebd1c2c2"
+    },
+    {
+      "path": "corrected/typo-correction-002-int003-query-cost-p2-evidence-reconciliation-001-correction.json",
+      "sha256": "87c63ad0dd61e4741673f56f8f97c9d3cdbe587f0284c9204bdf5fc68c57a461"
+    },
+    {
+      "path": "corrected/typo-correction-002-int003-query-cost-p2-evidence-reconciliation-001-execution-binding-corrected.json",
+      "sha256": "d76ca5e6d133541dbcb5af97f6451ee1f9841e0b66ebed96d510540fd42fa03b"
+    },
+    {
+      "path": "corrected/typo-correction-002-int003-query-cost-p2-evidence-reconciliation-001.md",
+      "sha256": "a887e3b9e253512665bc564f9102dadce75e1031779092ec1ed7dd9bd547201c"
+    },
+    {
+      "path": "governance/AGENTS.md",
+      "sha256": "947743e29a5987f9b1abb9c220a28ebcb92bd766928e22c1dd67c046bbe62152"
+    },
+    {
+      "path": "governance/docs/ACTIVE_WORK.md",
+      "sha256": "669adcc8099c3055600522341f64d173e64fe9eada25784a29c1b79ad98b165a"
+    },
+    {
+      "path": "governance/docs/AI_WORKFLOW.md",
+      "sha256": "fd3ff24fc0d38ed134cace8ffd5479f76e6261b009d6f661d218e4e260b07413"
+    },
+    {
+      "path": "governance/docs/ASSIGNMENT_POLICY.md",
+      "sha256": "e90dd8f06371e9367652d4e7cc63dee31ee7b1ac855e7802d6d2e9b8e1e90680"
+    },
+    {
+      "path": "governance/docs/DOCUMENTATION_GOVERNANCE.md",
+      "sha256": "d13c15217037571c8df9a43257ecae6e5d8c90556e4512116cae8568999651af"
+    },
+    {
+      "path": "governance/docs/KNOWLEDGE_INDEX.md",
+      "sha256": "0c0240f10814fc4ebfc15960963646b24543b6e2bc2989132caaee1614d21b00"
+    },
+    {
+      "path": "governance/docs/PERFORMANCE_BASELINE.md",
+      "sha256": "e0bfd08cb77d63567dbdfe258d3e1ac99996466a216a929380607eccf75f109c"
+    },
+    {
+      "path": "governance/docs/READING_MAPS.md",
+      "sha256": "cdcf2a2f3168e8efd48405793d24ec968f59555f619fcf92eadacdc4bd0196d4"
+    },
+    {
+      "path": "governance/docs/RELEASE_CHECKLIST.md",
+      "sha256": "952369f9fde66b3213e73a31fb3f8c0698fa8f86b6c723f731b3f9a49751f428"
+    },
+    {
+      "path": "governance/docs/assignments/typo-correction-002-int003-query-cost-p2-quality-remainder-001.md",
+      "sha256": "aaafbe0096ffb975f46b3e600c2ef7ffdccc46f593334bebfecb4ec58c3653be"
+    },
+    {
+      "path": "governance/docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-QUALITY-REMAINDER-001.md",
+      "sha256": "7af000f0263adf18d93ef20c484105dae41c80dd1a5f499ef21f1c114468b747"
+    },
+    {
+      "path": "governance/docs/playbooks/test-release.md",
+      "sha256": "b7eb8cc76094f72699b6de77de6afa2608e6483a1c8da53dcf86a51ea6c35a58"
+    },
+    {
+      "path": "original/archive-manifest.json",
+      "sha256": "c39fca60aa920686c216a2e48bbb9e67c2845f9e643349e7c4323bcb0a4d06ac"
+    },
+    {
+      "path": "original/core.stderr",
+      "sha256": "bfdfc01882ab65ecbe1259ec6edb32ff8cdc15638a898b510aa94c6389f99722"
+    },
+    {
+      "path": "original/core.stdout",
+      "sha256": "15354f234069a3d09d433bbfe559de02256c1eff178f6942ae7024678f7e9fba"
+    },
+    {
+      "path": "original/coverage.json",
+      "sha256": "93565a70359e29da82ab72228d720147f3bd9f5dcbf32a47aaa6d4416127d912"
+    },
+    {
+      "path": "original/execution-binding.json",
+      "sha256": "eb3b865468b9d3945b1b4d5037d6b2a22e241ba96018dbb35f6c217e5c426fdf"
+    },
+    {
+      "path": "original/extension-summary.json",
+      "sha256": "13e70f82925469ba960e2620205f701f8ca897f500928f42061617e31121c41c"
+    },
+    {
+      "path": "original/extension.stderr",
+      "sha256": "799f9afedad92c641ac4918e340aefeaf9667b3455ca1601c60e51e664be7733"
+    },
+    {
+      "path": "original/extension.stdout",
+      "sha256": "270c35eb38388b6f9f1b1bd3c493f661590976390a8647885d5092ee9b1ce6fd"
+    },
+    {
+      "path": "original/final-identity.json",
+      "sha256": "f4fea0b0d8e0828197a4149f2625645bf23a272459c25a34e69b91af93bc72be"
+    },
+    {
+      "path": "original/receipts.json",
+      "sha256": "d6d9d16fe44c0f6888e4f73310a708f322f912d47968736fa03bba17dde72edd"
+    },
+    {
+      "path": "prior/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-architecture-review-r2.md",
+      "sha256": "a24e2e48de1dfc6d33d5130df9e7cd47b1a5e49c060796da0a5999dac3ba5dfc"
+    },
+    {
+      "path": "prior/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-closeout-r2.md",
+      "sha256": "ee458c3116a1c47b21453e844e37c868411a4ba45ac844d05425522c3ad749e9"
+    },
+    {
+      "path": "prior/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-quality-checkpoint-usage-r2.json",
+      "sha256": "4bfb61004c73842a03076d66efeebf7fb338229544ec150418d531ea13f21f81"
+    },
+    {
+      "path": "prior/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-quality-final-message-r2.md",
+      "sha256": "87b121e621bc5d4f17ef71976632c0150ca2fe695078722fdaa72364f5bebd58"
+    }
+  ]
+}

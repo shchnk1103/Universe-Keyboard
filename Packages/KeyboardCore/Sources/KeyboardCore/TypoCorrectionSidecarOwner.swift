@@ -33,6 +33,22 @@ public final class InstalledTypoCorrectionSidecarOwner: TypoCorrectionSidecarOwn
     private let routeLocalOwnerEpochProvider: @MainActor () -> UInt64?
 
     public let route: TypoCorrectionSidecarRoute
+    #if DEBUG && KEYBOARD_QUERY_COST_PROBE
+        @MainActor private static var nextQueryCostFacadeOrdinal: UInt64 = 0
+        @MainActor private var storedQueryCostFacadeOrdinal: UInt64 = 0
+
+        /// Assigned once per installed adapter, outside query invocation. Exhaustion stays unavailable.
+        @MainActor public var queryCostFacadeOrdinal: UInt64 {
+            if storedQueryCostFacadeOrdinal != 0 { return storedQueryCostFacadeOrdinal }
+            guard Self.nextQueryCostFacadeOrdinal != UInt64.max else { return 0 }
+            Self.nextQueryCostFacadeOrdinal += 1
+            storedQueryCostFacadeOrdinal = Self.nextQueryCostFacadeOrdinal
+            return storedQueryCostFacadeOrdinal
+        }
+        @MainActor public var queryCostUsesCandidateProvider: Bool {
+            query is CandidateProviderTypoCorrectionQuery
+        }
+    #endif
 
     public var recallInvalidation: TypoCorrectionRecallInvalidating?
     /// The MainActor coordinator owns this lifecycle. The Core hot path reads it
@@ -70,3 +86,15 @@ public final class InstalledTypoCorrectionSidecarOwner: TypoCorrectionSidecarOwn
         isTypoCorrectionRecallActive = false
     }
 }
+
+#if DEBUG
+    extension InstalledTypoCorrectionSidecarOwner: TypoCorrectionQueryDebugScoping {
+        @MainActor
+        public func existingCorrectionQueryDebugScope() -> TypoCorrectionQueryDebugScope? {
+            guard route == .defaultMainActor,
+                let observer = query as? any TypoCorrectionQueryDebugScoping
+            else { return nil }
+            return observer.existingCorrectionQueryDebugScope()
+        }
+    }
+#endif

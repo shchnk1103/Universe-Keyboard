@@ -1,0 +1,1148 @@
+{
+  "at": "2026-10-09T05:02:43.318675+00:00",
+  "grade": "Executor-recorded",
+  "status": "partial_readout_no_retry",
+  "checks": {
+    "actual_debug_optin_without_testing": true
+  },
+  "commands": [
+    {
+      "argv": [
+        "/usr/bin/file",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard"
+      ],
+      "exit_code": 0,
+      "stdout": "macho-0-file.stdout",
+      "stderr": "macho-0-file.stderr"
+    },
+    {
+      "argv": [
+        "/usr/bin/lipo",
+        "-archs",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard"
+      ],
+      "exit_code": 0,
+      "stdout": "macho-0-arch.stdout",
+      "stderr": "macho-0-arch.stderr"
+    },
+    {
+      "argv": [
+        "/usr/bin/otool",
+        "-l",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard"
+      ],
+      "exit_code": 0,
+      "stdout": "macho-0-load.stdout",
+      "stderr": "macho-0-load.stderr"
+    },
+    {
+      "argv": [
+        "/usr/bin/nm",
+        "-a",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard"
+      ],
+      "exit_code": 0,
+      "stdout": "macho-0-nm.stdout",
+      "stderr": "macho-0-nm.stderr"
+    },
+    {
+      "argv": [
+        "/usr/bin/file",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard"
+      ],
+      "exit_code": 0,
+      "stdout": "macho-1-file.stdout",
+      "stderr": "macho-1-file.stderr"
+    },
+    {
+      "argv": [
+        "/usr/bin/lipo",
+        "-archs",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard"
+      ],
+      "exit_code": 0,
+      "stdout": "macho-1-arch.stdout",
+      "stderr": "macho-1-arch.stderr"
+    },
+    {
+      "argv": [
+        "/usr/bin/otool",
+        "-l",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard"
+      ],
+      "exit_code": 0,
+      "stdout": "macho-1-load.stdout",
+      "stderr": "macho-1-load.stderr"
+    },
+    {
+      "argv": [
+        "/usr/bin/nm",
+        "-a",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard"
+      ],
+      "exit_code": 0,
+      "stdout": "macho-1-nm.stdout",
+      "stderr": "macho-1-nm.stderr"
+    },
+    {
+      "argv": [
+        "/usr/bin/codesign",
+        "--verify",
+        "--strict",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator/Universe Keyboard.app"
+      ],
+      "exit_code": 0,
+      "stdout": "app-signature-verify.stdout",
+      "stderr": "app-signature-verify.stderr"
+    },
+    {
+      "argv": [
+        "/usr/bin/codesign",
+        "--display",
+        "--entitlements",
+        ":-",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator/Universe Keyboard.app"
+      ],
+      "exit_code": 0,
+      "stdout": "app-signature-entitlements.stdout",
+      "stderr": "app-signature-entitlements.stderr"
+    }
+  ],
+  "payload_files": [
+    {
+      "path": "AppIcon60x60@2x.png",
+      "type": "file",
+      "bytes": 13269,
+      "sha256": "ce5a5af134206119a84915679a3c2002cee278969bb245c1b82aef1104117abb"
+    },
+    {
+      "path": "AppIcon76x76@2x~ipad.png",
+      "type": "file",
+      "bytes": 20614,
+      "sha256": "2a3000961915cd21a57fa854fb2eecc90240d808c18ef1b4a9aeeb8f01b7f647"
+    },
+    {
+      "path": "Assets.car",
+      "type": "file",
+      "bytes": 5778808,
+      "sha256": "84742e992f27f0492272178630e64c33e3ba9e2d36ab1c2a138fd065205beadf"
+    },
+    {
+      "path": "BOOST-BSL-1.0.txt",
+      "type": "file",
+      "bytes": 1338,
+      "sha256": "c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566"
+    },
+    {
+      "path": "GOOGLE-GLOG-BSD-3-Clause.txt",
+      "type": "file",
+      "bytes": 1476,
+      "sha256": "3d8faa7c7349b19275982aec674fe746b274e97c3e3b781afc1e2a769ba038f0"
+    },
+    {
+      "path": "HKVariants.ocd2",
+      "type": "file",
+      "bytes": 4893,
+      "sha256": "62750cb79eef18a407030b05bd4abe0e102bec2254d04b2d2310792f44519321"
+    },
+    {
+      "path": "Info.plist",
+      "type": "file",
+      "bytes": 1540,
+      "sha256": "78ab124236b7101b69301f4493fb185f08a1d0e612ab630909540278db15f680"
+    },
+    {
+      "path": "KeyboardCore_KeyboardCore.bundle/Info.plist",
+      "type": "file",
+      "bytes": 677,
+      "sha256": "5af2d53aaf0f23e4205c49e6fe51e5cce996e5ae3728298030da856dde75e1cd"
+    },
+    {
+      "path": "KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeDirectory",
+      "type": "file",
+      "bytes": 212,
+      "sha256": "81beacde89c003ccf47636e123d2da0a69460e5089b78a36dc55cf14242bcbfb"
+    },
+    {
+      "path": "KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeRequirements",
+      "type": "file",
+      "bytes": 12,
+      "sha256": "987920904eab650e75788c054aa0b0524e6a80bfc71aa32df8d237a61743f986"
+    },
+    {
+      "path": "KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeResources",
+      "type": "file",
+      "bytes": 1988,
+      "sha256": "36942c5fe4c20ffaf48d528e2c19071940e28c2d56995c113b3586509f5e2a9d"
+    },
+    {
+      "path": "KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeSignature",
+      "type": "file",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "KeyboardCore_KeyboardCore.bundle/post_commit_continuations_v1_3.json",
+      "type": "file",
+      "bytes": 22728,
+      "sha256": "20266049927492e18b9673b550745ab53e188daaac0ea8cb9acc94de3077a6e4"
+    },
+    {
+      "path": "LEVELDB-BSD-3-Clause.txt",
+      "type": "file",
+      "bytes": 1484,
+      "sha256": "ccc19f1da0798ed666609b65a5b44dd8b3abe6fc08b9c0592eb76e82e174db19"
+    },
+    {
+      "path": "LUA-5.4.8-MIT.txt",
+      "type": "file",
+      "bytes": 1076,
+      "sha256": "7002f3e4a34547bfc65fe998fe8af7885987fcc964a0a9c3c9640bf8f4ab018c"
+    },
+    {
+      "path": "MARISA-COPYING.txt",
+      "type": "file",
+      "bytes": 2275,
+      "sha256": "edf58dab34c3dc239ba4ba2d5d3d844d8c5b442aa4dd1149fac81b2d8c6cb8d1"
+    },
+    {
+      "path": "OPENCC-AUTHORS.txt",
+      "type": "file",
+      "bytes": 277,
+      "sha256": "cb34e252fa994679bcbfc8355581e821ceda44bd857875e2cfe15b7ec4eec006"
+    },
+    {
+      "path": "OPENCC-Apache-2.0.txt",
+      "type": "file",
+      "bytes": 9165,
+      "sha256": "b534e465949558eec2597b04f5092b5e161236a68dfbfd04d547592ac3964308"
+    },
+    {
+      "path": "PkgInfo",
+      "type": "file",
+      "bytes": 8,
+      "sha256": "82502191c9484b04d685374f9879a0066069c49b8acae7a04b01d38d07e8eca0"
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/Info.plist",
+      "type": "file",
+      "bytes": 1095,
+      "sha256": "81b5c6912d13ebe448910bab37349e1d5b427251ec24b51a7c9442bd0b4e8f9a"
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/Keyboard",
+      "type": "file",
+      "bytes": 14717056,
+      "sha256": "0497aee1cce3bff7d3c68ae882f58ae2b0927e4eb0985d655dcc039b958cfd3b"
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/Info.plist",
+      "type": "file",
+      "bytes": 677,
+      "sha256": "5af2d53aaf0f23e4205c49e6fe51e5cce996e5ae3728298030da856dde75e1cd"
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeDirectory",
+      "type": "file",
+      "bytes": 212,
+      "sha256": "81beacde89c003ccf47636e123d2da0a69460e5089b78a36dc55cf14242bcbfb"
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeRequirements",
+      "type": "file",
+      "bytes": 12,
+      "sha256": "987920904eab650e75788c054aa0b0524e6a80bfc71aa32df8d237a61743f986"
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeResources",
+      "type": "file",
+      "bytes": 1988,
+      "sha256": "36942c5fe4c20ffaf48d528e2c19071940e28c2d56995c113b3586509f5e2a9d"
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeSignature",
+      "type": "file",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/post_commit_continuations_v1_3.json",
+      "type": "file",
+      "bytes": 22728,
+      "sha256": "20266049927492e18b9673b550745ab53e188daaac0ea8cb9acc94de3077a6e4"
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/PrivacyInfo.xcprivacy",
+      "type": "file",
+      "bytes": 815,
+      "sha256": "1b857c60b79d63a424a44bbc6401f080d05863a5e669372609dd353ed2de14e7"
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/_CodeSignature/CodeResources",
+      "type": "file",
+      "bytes": 3866,
+      "sha256": "bf02164b7e9a331738f45aa5ceebbe4644710a86ab72f31f157dec54fb40bf94"
+    },
+    {
+      "path": "PrivacyInfo.xcprivacy",
+      "type": "file",
+      "bytes": 1056,
+      "sha256": "f95ecfc75a54a82034d09db5abfb136198b22ae50aa1440c77b3191ce8c00851"
+    },
+    {
+      "path": "RIME-ESSAY-AUTHORS.txt",
+      "type": "file",
+      "bytes": 393,
+      "sha256": "4ab2f81451ff4819f2b0e346583b49cee37aec72a01f8ecd96be1711c4204b75"
+    },
+    {
+      "path": "RIME-ESSAY-LGPL-3.0.txt",
+      "type": "file",
+      "bytes": 7651,
+      "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768"
+    },
+    {
+      "path": "RIME-ICE-GPL-3.0-only.txt",
+      "type": "file",
+      "bytes": 35149,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    },
+    {
+      "path": "RIME-LIBRIME-BSD-3-Clause.txt",
+      "type": "file",
+      "bytes": 1513,
+      "sha256": "f67d27a6d2d586fcfed4b4c886a83747095396a39b6641e18e855086be2ec400"
+    },
+    {
+      "path": "RIME-LUA-PLUGIN-BSD-3-Clause.txt",
+      "type": "file",
+      "bytes": 1520,
+      "sha256": "c6bd4f58b13ae9d45c5e53adddeea5049114a25862797c6c6f64920431eea249"
+    },
+    {
+      "path": "RIME-LUNA-PINYIN-AUTHORS.txt",
+      "type": "file",
+      "bytes": 273,
+      "sha256": "dbf21183999dcd06d4b0f0fe08f7396fcb47cc6f734fd97c3dd851777f1b28f8"
+    },
+    {
+      "path": "RIME-LUNA-PINYIN-LGPL-3.0.txt",
+      "type": "file",
+      "bytes": 7651,
+      "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768"
+    },
+    {
+      "path": "RIME-LUNA-PINYIN-SOURCE-ATTRIBUTIONS.txt",
+      "type": "file",
+      "bytes": 735,
+      "sha256": "7bc2625f22ae4f9b3062b99195162a521b3c3bab149b59b29228095e83c40e7b"
+    },
+    {
+      "path": "RIME-OCTAGRAM-BSD-3-Clause.txt",
+      "type": "file",
+      "bytes": 1513,
+      "sha256": "f67d27a6d2d586fcfed4b4c886a83747095396a39b6641e18e855086be2ec400"
+    },
+    {
+      "path": "RIME-OCTAGRAM-PROVENANCE.txt",
+      "type": "file",
+      "bytes": 547,
+      "sha256": "4e70ceafc631201750b130768a5c77f0ce9d06e9f6b522ce16955919cf5e1e20"
+    },
+    {
+      "path": "RIME-PRELUDE-AUTHORS.txt",
+      "type": "file",
+      "bytes": 142,
+      "sha256": "9296a3509f1bcaee9e316ff70fccf76bf3a1f19c089b795710808ea5b6a0e6e7"
+    },
+    {
+      "path": "RIME-PRELUDE-LGPL-3.0.txt",
+      "type": "file",
+      "bytes": 7651,
+      "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768"
+    },
+    {
+      "path": "RIME-STROKE-AUTHORS.txt",
+      "type": "file",
+      "bytes": 273,
+      "sha256": "f0cbba217e049471ccb40751b7d2e1c98144bb2ad4ec15b9f5af057121ec99d6"
+    },
+    {
+      "path": "RIME-STROKE-LGPL-3.0.txt",
+      "type": "file",
+      "bytes": 7651,
+      "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768"
+    },
+    {
+      "path": "RIME-WANXIANG-CC-BY-4.0.txt",
+      "type": "file",
+      "bytes": 18656,
+      "sha256": "9e5f1b3c610b9c2da5c313bf81d577a7d1acec686bdb0384edefa6df0f90cd94"
+    },
+    {
+      "path": "RimeBuiltin.manifest.json",
+      "type": "file",
+      "bytes": 13582,
+      "sha256": "6aa2d28918b9146cdf417ddb369ba57907e5bbcc3e2ce2c9bc1280f1a6e7b233"
+    },
+    {
+      "path": "STCharacters.ocd2",
+      "type": "file",
+      "bytes": 45310,
+      "sha256": "1ec2298310ca5a9151a554ea57bd86a6296ce917e4cdd1dd0884f789c477641b"
+    },
+    {
+      "path": "STPhrases.ocd2",
+      "type": "file",
+      "bytes": 928154,
+      "sha256": "16fd5f086b2a3be7aa9679deb7f728cf447f5d5419f65b2766a2d8671e84e77d"
+    },
+    {
+      "path": "TSCharacters.ocd2",
+      "type": "file",
+      "bytes": 46126,
+      "sha256": "85291e0173e972bbca58c848fb90b3bb41c79674cb61a75645e01bd884ad5927"
+    },
+    {
+      "path": "TSPhrases.ocd2",
+      "type": "file",
+      "bytes": 9777,
+      "sha256": "83696b4a2074f2f5c1786949444281ae191ccb0b75d98cd9ac51bcb35f890cb3"
+    },
+    {
+      "path": "TWVariants.ocd2",
+      "type": "file",
+      "bytes": 4595,
+      "sha256": "390f07a1867ad56aa60a7af23b6e4b3acc96ea48d893c06ede3dffb1c576c2bc"
+    },
+    {
+      "path": "Universe Keyboard",
+      "type": "file",
+      "bytes": 27030832,
+      "sha256": "165de2d7a1421da37a24a6e13d1fd6f34883b841a4d8a8142b9b0b40c5e01da9"
+    },
+    {
+      "path": "YAML-CPP-MIT.txt",
+      "type": "file",
+      "bytes": 1061,
+      "sha256": "aa6fcc27be034e41e21dd832f9175bfe694a48491d9e14ff0fa278e19ad14f1b"
+    },
+    {
+      "path": "_CodeSignature/CodeResources",
+      "type": "file",
+      "bytes": 19049,
+      "sha256": "90d139169873f304d228b5cd0c40ae7628e3949def350174d77897028e9c1690"
+    },
+    {
+      "path": "default.yaml",
+      "type": "file",
+      "bytes": 1593,
+      "sha256": "0628ada16651d56c4cdfcb8e45ddba23d4d585cc8be0580a62c4e077c0bcc141"
+    },
+    {
+      "path": "essay.txt",
+      "type": "file",
+      "bytes": 5887417,
+      "sha256": "a6f8409c261e5d21bd78e6cbcde8f8e1ef7f68c07ff1c2692c07dd4ff4151cea"
+    },
+    {
+      "path": "key_bindings.yaml",
+      "type": "file",
+      "bytes": 3117,
+      "sha256": "ee2476598b4cae89068b823868196eb07b5f72007a600814fe5804b39008b3ed"
+    },
+    {
+      "path": "luna_pinyin.dict.yaml",
+      "type": "file",
+      "bytes": 889896,
+      "sha256": "75bcf6eb3ff62b129882ed89cc22b2d80a5347aa72bcfa2ccc839bac298e7314"
+    },
+    {
+      "path": "luna_pinyin.prism.bin",
+      "type": "file",
+      "bytes": 31728,
+      "sha256": "012d8360150c3e2f55330d21f9aa16281660e25c15db8c983090f14293da878f"
+    },
+    {
+      "path": "luna_pinyin.reverse.bin",
+      "type": "file",
+      "bytes": 252760,
+      "sha256": "bd314158c00bf36c9ba8f7321d7e6ab6dfbdaa283b11c4856adfd2f58a781179"
+    },
+    {
+      "path": "luna_pinyin.schema.yaml",
+      "type": "file",
+      "bytes": 2809,
+      "sha256": "668b4d4957e4cc8f9cea32ed3f08f0ecf4a7be8cdba058700507487bd96dd5c7"
+    },
+    {
+      "path": "luna_pinyin.table.bin",
+      "type": "file",
+      "bytes": 13011464,
+      "sha256": "55a54e8e55deaade0e4d7646a7ad2b8602901f4007b60c637d993468eff64e03"
+    },
+    {
+      "path": "pinyin.yaml",
+      "type": "file",
+      "bytes": 4895,
+      "sha256": "caa220b05172bf35775db07fed6ead7719c742e6139232d9797040dbe65f746c"
+    },
+    {
+      "path": "punctuation.yaml",
+      "type": "file",
+      "bytes": 2107,
+      "sha256": "d6f89592149098f0a2d0ed3e5c83f49adb6226cdf1d967b0bc0d293f4e5c496a"
+    },
+    {
+      "path": "s2t.json",
+      "type": "file",
+      "bytes": 424,
+      "sha256": "0b86f3aa92c72ac5fcb11bc9df21914ed42f6847416a1d4d7f52f8b5eb861e74"
+    },
+    {
+      "path": "stroke.dict.yaml",
+      "type": "file",
+      "bytes": 3396330,
+      "sha256": "b3e93dce89c185f45c3d6e189b86b3a8626913352cc85e1094c786579a665791"
+    },
+    {
+      "path": "stroke.prism.bin",
+      "type": "file",
+      "bytes": 3501372,
+      "sha256": "5acfdf5842006fb7eacf9e2c9920e917a18356b78cd55b4023ecd836665ff383"
+    },
+    {
+      "path": "stroke.reverse.bin",
+      "type": "file",
+      "bytes": 1498508,
+      "sha256": "0618448a659ec3e316ef230dce808a40388a57c664cf257eab1e9b64d86909cb"
+    },
+    {
+      "path": "stroke.schema.yaml",
+      "type": "file",
+      "bytes": 3056,
+      "sha256": "06f680cf7c9d9a69948681ee25e9f6aeccfde4d8d590f93e179d4c4b3caee879"
+    },
+    {
+      "path": "stroke.table.bin",
+      "type": "file",
+      "bytes": 4548444,
+      "sha256": "de1a978a7d97e7ccef5f85eaaa4cc76dcbd4d75cdf750926edfc2ea3e65603d5"
+    },
+    {
+      "path": "symbols.yaml",
+      "type": "file",
+      "bytes": 28473,
+      "sha256": "6d08969525bd66c67abf1791c99928079356bd0e673386c49c1959d2a52fdbba"
+    },
+    {
+      "path": "t2hk.json",
+      "type": "file",
+      "bytes": 322,
+      "sha256": "3d5c1c7540992e821fef56858a001d8ea2720a394975b915fb5944fe42efc0fd"
+    },
+    {
+      "path": "t2s.json",
+      "type": "file",
+      "bytes": 424,
+      "sha256": "18d64a23de26c39d0e247d36e12d585653f44f2e231c3397050456565581a819"
+    },
+    {
+      "path": "t2tw.json",
+      "type": "file",
+      "bytes": 320,
+      "sha256": "7b2eb8aa8b76c1e2b1a41e8ce38a327d0aac5e49cfcefe763744b17fdeefb7b5"
+    }
+  ],
+  "macho": [
+    {
+      "path": "PlugIns/Keyboard.appex/Keyboard",
+      "bytes": 14717056,
+      "sha256": "0497aee1cce3bff7d3c68ae882f58ae2b0927e4eb0985d655dcc039b958cfd3b",
+      "arch": "arm64",
+      "uuids": [
+        "DD9B5A52-5676-39C6-BA3D-4E8FE8F505BA"
+      ],
+      "exportReady": true,
+      "symbol_log": "macho-0-nm.stdout",
+      "has_simulator_entitlement_section": true
+    },
+    {
+      "path": "Universe Keyboard",
+      "bytes": 27030832,
+      "sha256": "165de2d7a1421da37a24a6e13d1fd6f34883b841a4d8a8142b9b0b40c5e01da9",
+      "arch": "arm64",
+      "uuids": [
+        "0CDB8763-EC4B-394A-BE0C-CC6BD44C723C"
+      ],
+      "exportReady": false,
+      "symbol_log": "macho-1-nm.stdout",
+      "has_simulator_entitlement_section": true
+    }
+  ],
+  "swift_driver_evidence": [
+    {
+      "module": "KeyboardCore",
+      "log_line": 485,
+      "definitions": [
+        "SWIFT_PACKAGE",
+        "DEBUG",
+        "SWIFT_MODULE_RESOURCE_BUNDLE_AVAILABLE",
+        "Xcode",
+        "KEYBOARD_QUERY_COST_PROBE",
+        "_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_DEBUG",
+        "SWIFT_PACKAGE",
+        "DEBUG=1"
+      ],
+      "argv": [
+        "builtin-SwiftDriver",
+        "--",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+        "-parse-as-library",
+        "-module-name",
+        "KeyboardCore",
+        "-Onone",
+        "@/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/KeyboardCore.build/Debug-iphonesimulator/KeyboardCore-t.build/Objects-normal/arm64/KeyboardCore.SwiftFileList",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_AVAILABLE",
+        "-DXcode",
+        "-DKEYBOARD_QUERY_COST_PROBE",
+        "-plugin-path",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+        "-enable-experimental-feature",
+        "DebugDescriptionMacro",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk",
+        "-target",
+        "arm64-apple-ios18.0-simulator",
+        "-g",
+        "-module-cache-path",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Caches/ClangModuleCache.noindex",
+        "-Xfrontend",
+        "-serialize-debugging-options",
+        "-enable-testing",
+        "-warnings-as-errors",
+        "-index-store-path",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Index.noindex/DataStore",
+        "-Xcc",
+        "-D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_DEBUG",
+        "-swift-version",
+        "6",
+        "-I",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator",
+        "-Isystem",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib",
+        "-F",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks",
+        "-c",
+        "-j8",
+        "-enable-batch-mode",
+        "-incremental",
+        "-Xcc",
+        "-ivfsstatcache",
+        "-Xcc",
+        "/var/folders/3f/jpb7r3xs2ys2c0bxlr107sbr0000gn/C/com.apple.DeveloperTools/27.0-27A266a/Xcode/SDKStatCaches.noindex/iphonesimulator27.0-24A430-8dc58220667be655e1bcc261a7455254.sdkstatcache",
+        "-output-file-map",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/KeyboardCore.build/Debug-iphonesimulator/KeyboardCore-t.build/Objects-normal/arm64/KeyboardCore-OutputFileMap.json",
+        "-save-temps",
+        "-no-color-diagnostics",
+        "-explicit-module-build",
+        "-module-cache-path",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules",
+        "-emit-dependencies",
+        "-emit-module",
+        "-emit-module-path",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/KeyboardCore.build/Debug-iphonesimulator/KeyboardCore-t.build/Objects-normal/arm64/KeyboardCore.swiftmodule",
+        "-serialize-diagnostics",
+        "-dependency-scan-serialize-diagnostics-path",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/KeyboardCore.build/Debug-iphonesimulator/KeyboardCore-t.build/Objects-normal/arm64/KeyboardCore-dependency-scan.dia",
+        "-validate-clang-modules-once",
+        "-clang-build-session-file",
+        "/var/folders/3f/jpb7r3xs2ys2c0bxlr107sbr0000gn/C/org.llvm.clang/ModuleCache.noindex/Session.modulevalidation",
+        "-Xcc",
+        "-fmodules-prune-interval=86400",
+        "-Xcc",
+        "-fmodules-prune-after=345600",
+        "-package-name",
+        "keyboardcore",
+        "-emit-const-values",
+        "-const-gather-protocols-list",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/KeyboardCore.build/Debug-iphonesimulator/KeyboardCore-t.build/Objects-normal/arm64/KeyboardCore_const_extract_protocols.json",
+        "-Xcc",
+        "-I/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator/include",
+        "-Xcc",
+        "-I/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/KeyboardCore.build/Debug-iphonesimulator/KeyboardCore-t.build/DerivedSources-normal/arm64",
+        "-Xcc",
+        "-I/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/KeyboardCore.build/Debug-iphonesimulator/KeyboardCore-t.build/DerivedSources/arm64",
+        "-Xcc",
+        "-I/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/KeyboardCore.build/Debug-iphonesimulator/KeyboardCore-t.build/DerivedSources",
+        "-Xcc",
+        "-DSWIFT_PACKAGE",
+        "-Xcc",
+        "-DDEBUG=1",
+        "-emit-objc-header",
+        "-emit-objc-header-path",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/KeyboardCore.build/Debug-iphonesimulator/KeyboardCore-t.build/Objects-normal/arm64/KeyboardCore-Swift.h",
+        "-working-directory",
+        "/Users/doubleshy0n/.codex/worktrees/int003-query-cost-memory-impl-001/Universe Keyboard/Universe Keyboard.xcodeproj",
+        "-experimental-emit-module-separately",
+        "-disable-cmo"
+      ]
+    },
+    {
+      "module": "RimeBridge",
+      "log_line": 1196,
+      "definitions": [
+        "SWIFT_PACKAGE",
+        "DEBUG",
+        "SWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "Xcode",
+        "KEYBOARD_QUERY_COST_PROBE",
+        "_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_DEBUG",
+        "SWIFT_PACKAGE",
+        "DEBUG=1"
+      ],
+      "argv": [
+        "builtin-SwiftDriver",
+        "--",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+        "-parse-as-library",
+        "-module-name",
+        "RimeBridge",
+        "-Onone",
+        "@/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/RimeBridge.build/Debug-iphonesimulator/RimeBridge-t.build/Objects-normal/arm64/RimeBridge.SwiftFileList",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-Xcc",
+        "-fmodule-map-file=/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/RimeBridgeObjC.modulemap",
+        "-DXcode",
+        "-DKEYBOARD_QUERY_COST_PROBE",
+        "-plugin-path",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+        "-enable-experimental-feature",
+        "DebugDescriptionMacro",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk",
+        "-target",
+        "arm64-apple-ios18.0-simulator",
+        "-g",
+        "-module-cache-path",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Caches/ClangModuleCache.noindex",
+        "-Xfrontend",
+        "-serialize-debugging-options",
+        "-enable-testing",
+        "-warnings-as-errors",
+        "-index-store-path",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Index.noindex/DataStore",
+        "-Xcc",
+        "-D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_DEBUG",
+        "-swift-version",
+        "6",
+        "-I",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator",
+        "-Isystem",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib",
+        "-F",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator/PackageFrameworks",
+        "-F",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks",
+        "-c",
+        "-j8",
+        "-enable-batch-mode",
+        "-incremental",
+        "-Xcc",
+        "-ivfsstatcache",
+        "-Xcc",
+        "/var/folders/3f/jpb7r3xs2ys2c0bxlr107sbr0000gn/C/com.apple.DeveloperTools/27.0-27A266a/Xcode/SDKStatCaches.noindex/iphonesimulator27.0-24A430-8dc58220667be655e1bcc261a7455254.sdkstatcache",
+        "-output-file-map",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/RimeBridge.build/Debug-iphonesimulator/RimeBridge-t.build/Objects-normal/arm64/RimeBridge-OutputFileMap.json",
+        "-save-temps",
+        "-no-color-diagnostics",
+        "-explicit-module-build",
+        "-module-cache-path",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules",
+        "-emit-dependencies",
+        "-emit-module",
+        "-emit-module-path",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/RimeBridge.build/Debug-iphonesimulator/RimeBridge-t.build/Objects-normal/arm64/RimeBridge.swiftmodule",
+        "-serialize-diagnostics",
+        "-dependency-scan-serialize-diagnostics-path",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/RimeBridge.build/Debug-iphonesimulator/RimeBridge-t.build/Objects-normal/arm64/RimeBridge-dependency-scan.dia",
+        "-validate-clang-modules-once",
+        "-clang-build-session-file",
+        "/var/folders/3f/jpb7r3xs2ys2c0bxlr107sbr0000gn/C/org.llvm.clang/ModuleCache.noindex/Session.modulevalidation",
+        "-Xcc",
+        "-fmodules-prune-interval=86400",
+        "-Xcc",
+        "-fmodules-prune-after=345600",
+        "-package-name",
+        "rimebridge",
+        "-emit-const-values",
+        "-const-gather-protocols-list",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/RimeBridge.build/Debug-iphonesimulator/RimeBridge-t.build/Objects-normal/arm64/RimeBridge_const_extract_protocols.json",
+        "-Xcc",
+        "-I/Users/doubleshy0n/.codex/worktrees/int003-query-cost-memory-impl-001/Universe Keyboard/Packages/RimeBridge/Sources/RimeBridgeObjC/include",
+        "-Xcc",
+        "-I/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator/include",
+        "-Xcc",
+        "-I/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/RimeBridge.build/Debug-iphonesimulator/RimeBridge-t.build/DerivedSources-normal/arm64",
+        "-Xcc",
+        "-I/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/RimeBridge.build/Debug-iphonesimulator/RimeBridge-t.build/DerivedSources/arm64",
+        "-Xcc",
+        "-I/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/RimeBridge.build/Debug-iphonesimulator/RimeBridge-t.build/DerivedSources",
+        "-Xcc",
+        "-DSWIFT_PACKAGE",
+        "-Xcc",
+        "-DDEBUG=1",
+        "-emit-objc-header",
+        "-emit-objc-header-path",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/RimeBridge.build/Debug-iphonesimulator/RimeBridge-t.build/Objects-normal/arm64/RimeBridge-Swift.h",
+        "-working-directory",
+        "/Users/doubleshy0n/.codex/worktrees/int003-query-cost-memory-impl-001/Universe Keyboard/Universe Keyboard.xcodeproj",
+        "-experimental-emit-module-separately",
+        "-disable-cmo"
+      ]
+    },
+    {
+      "module": "Keyboard",
+      "log_line": 1433,
+      "definitions": [
+        "DEBUG",
+        "KEYBOARD_QUERY_COST_PROBE",
+        "KEYBOARD_QUERY_COST_PROBE",
+        "_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_DEBUG",
+        "DEBUG=1"
+      ],
+      "argv": [
+        "builtin-SwiftDriver",
+        "--",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+        "-module-name",
+        "Keyboard",
+        "-Onone",
+        "@/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Keyboard.build/Objects-normal/arm64/Keyboard.SwiftFileList",
+        "-DDEBUG",
+        "-DKEYBOARD_QUERY_COST_PROBE",
+        "-Xcc",
+        "-fmodule-map-file=/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/RimeBridgeObjC.modulemap",
+        "-DKEYBOARD_QUERY_COST_PROBE",
+        "-default-isolation=MainActor",
+        "-enable-upcoming-feature",
+        "MemberImportVisibility",
+        "-enable-upcoming-feature",
+        "InferIsolatedConformances",
+        "-enable-upcoming-feature",
+        "NonisolatedNonsendingByDefault",
+        "-enable-experimental-feature",
+        "DebugDescriptionMacro",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk",
+        "-target",
+        "arm64-apple-ios18.0-simulator",
+        "-g",
+        "-module-cache-path",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Caches/ClangModuleCache.noindex",
+        "-Xfrontend",
+        "-serialize-debugging-options",
+        "-application-extension",
+        "-enable-testing",
+        "-warnings-as-errors",
+        "-Xcc",
+        "-D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_DEBUG",
+        "-swift-version",
+        "6",
+        "-I",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator",
+        "-F",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator/PackageFrameworks",
+        "-F",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator",
+        "-emit-localized-strings",
+        "-emit-localized-strings-path",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Keyboard.build/Objects-normal/arm64",
+        "-c",
+        "-j8",
+        "-enable-batch-mode",
+        "-incremental",
+        "-Xcc",
+        "-ivfsstatcache",
+        "-Xcc",
+        "/var/folders/3f/jpb7r3xs2ys2c0bxlr107sbr0000gn/C/com.apple.DeveloperTools/27.0-27A266a/Xcode/SDKStatCaches.noindex/iphonesimulator27.0-24A430-8dc58220667be655e1bcc261a7455254.sdkstatcache",
+        "-output-file-map",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Keyboard.build/Objects-normal/arm64/Keyboard-OutputFileMap.json",
+        "-save-temps",
+        "-no-color-diagnostics",
+        "-explicit-module-build",
+        "-module-cache-path",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules",
+        "-emit-dependencies",
+        "-emit-module",
+        "-emit-module-path",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Keyboard.build/Objects-normal/arm64/Keyboard.swiftmodule",
+        "-serialize-diagnostics",
+        "-dependency-scan-serialize-diagnostics-path",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Keyboard.build/Objects-normal/arm64/Keyboard-dependency-scan.dia",
+        "-validate-clang-modules-once",
+        "-clang-build-session-file",
+        "/var/folders/3f/jpb7r3xs2ys2c0bxlr107sbr0000gn/C/org.llvm.clang/ModuleCache.noindex/Session.modulevalidation",
+        "-Xcc",
+        "-fmodules-prune-interval=86400",
+        "-Xcc",
+        "-fmodules-prune-after=345600",
+        "-emit-const-values",
+        "-const-gather-protocols-list",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Keyboard.build/Objects-normal/arm64/Keyboard_const_extract_protocols.json",
+        "-Xcc",
+        "-iquote",
+        "-Xcc",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Keyboard.build/Keyboard-generated-files.hmap",
+        "-Xcc",
+        "-I/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Keyboard.build/Keyboard-own-target-headers.hmap",
+        "-Xcc",
+        "-I/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Keyboard.build/Keyboard-all-non-framework-target-headers.hmap",
+        "-Xcc",
+        "-ivfsoverlay",
+        "-Xcc",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Universe Keyboard-c7db5b74330b406efaaaa4547e6a5407-VFS-iphonesimulator/all-product-headers.yaml",
+        "-Xcc",
+        "-iquote",
+        "-Xcc",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Keyboard.build/Keyboard-project-headers.hmap",
+        "-Xcc",
+        "-I/Users/doubleshy0n/.codex/worktrees/int003-query-cost-memory-impl-001/Universe Keyboard/Packages/RimeBridge/Sources/RimeBridgeObjC/include",
+        "-Xcc",
+        "-I/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator/include",
+        "-Xcc",
+        "-I/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Keyboard.build/DerivedSources-normal/arm64",
+        "-Xcc",
+        "-I/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Keyboard.build/DerivedSources/arm64",
+        "-Xcc",
+        "-I/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Keyboard.build/DerivedSources",
+        "-Xcc",
+        "-DDEBUG=1",
+        "-emit-objc-header",
+        "-emit-objc-header-path",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Keyboard.build/Objects-normal/arm64/Keyboard-Swift.h",
+        "-working-directory",
+        "/Users/doubleshy0n/.codex/worktrees/int003-query-cost-memory-impl-001/Universe Keyboard",
+        "-experimental-emit-module-separately",
+        "-disable-cmo"
+      ]
+    },
+    {
+      "module": "Universe_Keyboard",
+      "log_line": 1905,
+      "definitions": [
+        "DEBUG",
+        "KEYBOARD_QUERY_COST_PROBE",
+        "KEYBOARD_QUERY_COST_PROBE",
+        "_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_DEBUG",
+        "DEBUG=1"
+      ],
+      "argv": [
+        "builtin-SwiftDriver",
+        "--",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+        "-module-name",
+        "Universe_Keyboard",
+        "-Onone",
+        "@/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Universe Keyboard.build/Objects-normal/arm64/Universe Keyboard.SwiftFileList",
+        "-DDEBUG",
+        "-DKEYBOARD_QUERY_COST_PROBE",
+        "-Xcc",
+        "-fmodule-map-file=/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/RimeBridgeObjC.modulemap",
+        "-DKEYBOARD_QUERY_COST_PROBE",
+        "-default-isolation=MainActor",
+        "-enable-upcoming-feature",
+        "MemberImportVisibility",
+        "-enable-upcoming-feature",
+        "InferIsolatedConformances",
+        "-enable-upcoming-feature",
+        "NonisolatedNonsendingByDefault",
+        "-enable-experimental-feature",
+        "DebugDescriptionMacro",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk",
+        "-target",
+        "arm64-apple-ios18.0-simulator",
+        "-g",
+        "-module-cache-path",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Caches/ClangModuleCache.noindex",
+        "-Xfrontend",
+        "-serialize-debugging-options",
+        "-enable-testing",
+        "-warnings-as-errors",
+        "-Xcc",
+        "-D_LIBCPP_HARDENING_MODE=_LIBCPP_HARDENING_MODE_DEBUG",
+        "-swift-version",
+        "6",
+        "-I",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator",
+        "-F",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator/PackageFrameworks",
+        "-F",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator",
+        "-emit-localized-strings",
+        "-emit-localized-strings-path",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Universe Keyboard.build/Objects-normal/arm64",
+        "-c",
+        "-j8",
+        "-enable-batch-mode",
+        "-incremental",
+        "-Xcc",
+        "-ivfsstatcache",
+        "-Xcc",
+        "/var/folders/3f/jpb7r3xs2ys2c0bxlr107sbr0000gn/C/com.apple.DeveloperTools/27.0-27A266a/Xcode/SDKStatCaches.noindex/iphonesimulator27.0-24A430-8dc58220667be655e1bcc261a7455254.sdkstatcache",
+        "-output-file-map",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Universe Keyboard.build/Objects-normal/arm64/Universe Keyboard-OutputFileMap.json",
+        "-save-temps",
+        "-no-color-diagnostics",
+        "-explicit-module-build",
+        "-module-cache-path",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules",
+        "-emit-dependencies",
+        "-emit-module",
+        "-emit-module-path",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Universe Keyboard.build/Objects-normal/arm64/Universe_Keyboard.swiftmodule",
+        "-serialize-diagnostics",
+        "-dependency-scan-serialize-diagnostics-path",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Universe Keyboard.build/Objects-normal/arm64/Universe_Keyboard-dependency-scan.dia",
+        "-validate-clang-modules-once",
+        "-clang-build-session-file",
+        "/var/folders/3f/jpb7r3xs2ys2c0bxlr107sbr0000gn/C/org.llvm.clang/ModuleCache.noindex/Session.modulevalidation",
+        "-Xcc",
+        "-fmodules-prune-interval=86400",
+        "-Xcc",
+        "-fmodules-prune-after=345600",
+        "-emit-const-values",
+        "-const-gather-protocols-list",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Universe Keyboard.build/Objects-normal/arm64/Universe Keyboard_const_extract_protocols.json",
+        "-Xcc",
+        "-iquote",
+        "-Xcc",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Universe Keyboard.build/Universe Keyboard-generated-files.hmap",
+        "-Xcc",
+        "-I/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Universe Keyboard.build/Universe Keyboard-own-target-headers.hmap",
+        "-Xcc",
+        "-I/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Universe Keyboard.build/Universe Keyboard-all-non-framework-target-headers.hmap",
+        "-Xcc",
+        "-ivfsoverlay",
+        "-Xcc",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Universe Keyboard-c7db5b74330b406efaaaa4547e6a5407-VFS-iphonesimulator/all-product-headers.yaml",
+        "-Xcc",
+        "-iquote",
+        "-Xcc",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Universe Keyboard.build/Universe Keyboard-project-headers.hmap",
+        "-Xcc",
+        "-I/Users/doubleshy0n/.codex/worktrees/int003-query-cost-memory-impl-001/Universe Keyboard/Packages/RimeBridge/Sources/RimeBridgeObjC/include",
+        "-Xcc",
+        "-I/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator/include",
+        "-Xcc",
+        "-I/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Universe Keyboard.build/DerivedSources-normal/arm64",
+        "-Xcc",
+        "-I/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Universe Keyboard.build/DerivedSources/arm64",
+        "-Xcc",
+        "-I/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Universe Keyboard.build/DerivedSources",
+        "-Xcc",
+        "-DDEBUG=1",
+        "-emit-objc-header",
+        "-emit-objc-header-path",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Universe Keyboard.build/Objects-normal/arm64/Universe_Keyboard-Swift.h",
+        "-working-directory",
+        "/Users/doubleshy0n/.codex/worktrees/int003-query-cost-memory-impl-001/Universe Keyboard",
+        "-experimental-emit-module-separately",
+        "-disable-cmo"
+      ]
+    }
+  ],
+  "ObjC_response_evidence": [
+    {
+      "log_line": 499,
+      "path": "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/RimeBridge.build/Debug-iphonesimulator/RimeBridgeObjC-t.build/Objects-normal/arm64/e6072d4f65d7061329687fe24e3d63a7-common-args.resp",
+      "sha256": "89f1bc6956f4ef315d65f001099fee3d65fef9d55bbc816a126cfb1bdcd97d23",
+      "tokens": [
+        "-fobjc-arc",
+        "-fmodules",
+        "-gmodules",
+        "-fmodules-cache-path=/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Caches/ClangModuleCache.noindex",
+        "-fmodule-name=RimeBridgeObjC",
+        "-fpascal-strings",
+        "-O0",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG=1",
+        "-DRIME_HAS_LUA",
+        "-DRIME_HAS_OCTAGRAM",
+        "-DRIME_DIAGNOSTICS",
+        "-DOBJC_OLD_DISPATCH_PROTOTYPES=1",
+        "-g",
+        "-fobjc-abi-version=2",
+        "-fobjc-legacy-dispatch",
+        "-I/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator/include",
+        "-I/Users/doubleshy0n/.codex/worktrees/int003-query-cost-memory-impl-001/Universe Keyboard/Packages/RimeBridge/Sources/RimeBridgeObjC/include",
+        "-I/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/RimeBridge.build/Debug-iphonesimulator/RimeBridgeObjC-t.build/DerivedSources-normal/arm64",
+        "-I/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/RimeBridge.build/Debug-iphonesimulator/RimeBridgeObjC-t.build/DerivedSources/arm64",
+        "-I/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/RimeBridge.build/Debug-iphonesimulator/RimeBridgeObjC-t.build/DerivedSources",
+        "-F/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator",
+        "-iframework",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks",
+        "-iframework",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks",
+        "-DXcode",
+        "-DDEBUG=1"
+      ]
+    },
+    {
+      "log_line": 638,
+      "path": "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/RimeBridge.build/Debug-iphonesimulator/RimeBridgeObjC-t.build/Objects-normal/arm64/e6072d4f65d7061329687fe24e3d63a7-common-args.resp",
+      "sha256": "89f1bc6956f4ef315d65f001099fee3d65fef9d55bbc816a126cfb1bdcd97d23",
+      "tokens": [
+        "-fobjc-arc",
+        "-fmodules",
+        "-gmodules",
+        "-fmodules-cache-path=/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Caches/ClangModuleCache.noindex",
+        "-fmodule-name=RimeBridgeObjC",
+        "-fpascal-strings",
+        "-O0",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG=1",
+        "-DRIME_HAS_LUA",
+        "-DRIME_HAS_OCTAGRAM",
+        "-DRIME_DIAGNOSTICS",
+        "-DOBJC_OLD_DISPATCH_PROTOTYPES=1",
+        "-g",
+        "-fobjc-abi-version=2",
+        "-fobjc-legacy-dispatch",
+        "-I/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator/include",
+        "-I/Users/doubleshy0n/.codex/worktrees/int003-query-cost-memory-impl-001/Universe Keyboard/Packages/RimeBridge/Sources/RimeBridgeObjC/include",
+        "-I/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/RimeBridge.build/Debug-iphonesimulator/RimeBridgeObjC-t.build/DerivedSources-normal/arm64",
+        "-I/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/RimeBridge.build/Debug-iphonesimulator/RimeBridgeObjC-t.build/DerivedSources/arm64",
+        "-I/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Intermediates.noindex/RimeBridge.build/Debug-iphonesimulator/RimeBridgeObjC-t.build/DerivedSources",
+        "-F/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator",
+        "-iframework",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks",
+        "-iframework",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk/Developer/Library/Frameworks",
+        "-DXcode",
+        "-DDEBUG=1"
+      ]
+    }
+  ],
+  "app": {
+    "bundle": "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator/Universe Keyboard.app",
+    "CFBundleIdentifier": "com.DoubleShy0N.Universe-Keyboard",
+    "CFBundleExecutable": "Universe Keyboard",
+    "Info_sha256": "78ab124236b7101b69301f4493fb185f08a1d0e612ab630909540278db15f680",
+    "codesign_entitlement_XML_present": true
+  },
+  "failure": "TypeError(\"a bytes-like object is required, not 'str'\")"
+}

@@ -36,3 +36,18 @@ extension RimeEngineImpl: TypoCorrectionCandidateQuerying {
         )
     }
 }
+
+#if DEBUG
+    extension RimeEngineImpl: TypoCorrectionQueryDebugScoping {
+        @MainActor
+        public func existingCorrectionQueryDebugScope() -> TypoCorrectionQueryDebugScope? {
+            let raw = bridge.existingCorrectionQueryDebugScope()
+            guard let ordinal = raw["sessionOrdinal"],
+                let schema = raw["schemaCode"],
+                ordinal.uint64Value != 0,
+                let code = TypoCorrectionQueryDebugScope.Schema(rawValue: schema.uint64Value)
+            else { return nil }
+            return TypoCorrectionQueryDebugScope(sessionOrdinal: ordinal.uint64Value, schema: code)
+        }
+    }
+#endif

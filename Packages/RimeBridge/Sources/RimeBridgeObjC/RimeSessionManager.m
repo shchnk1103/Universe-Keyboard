@@ -11,6 +11,12 @@
 #define RIME_DIAGNOSTIC_LOG(...) do { } while (0)
 #endif
 
+#if DEBUG
+// Process-wide identities survive manager replacement. This lock protects only the
+// finite DEBUG ordinal, never librime access or the existing engine owner route.
+static uint64_t CorrectionSessionDebugNextOrdinal = 0;
+#endif
+
 // MARK: - Dictionary keys
 
 NSString * const RimeKeyPreedit          = @"preedit";
@@ -46,10 +52,17 @@ NSString * const RimeKeyProcessKeyCollectDurationMs = @"processKeyCollectDuratio
 @property (nonatomic, assign) RimeSessionId sessionId;
 /// 旁路纠错查询与可见输入共享 librime runtime，但绝不共享 composition。
 @property (nonatomic, assign) RimeSessionId correctionSessionId;
+#if DEBUG
+@property (nonatomic, assign) uint64_t correctionSessionDebugOrdinal;
+#endif
 @property (nonatomic, assign) BOOL setupDone;
 @property (nonatomic, assign) BOOL initialized;
 /// 每个新 session 仅细分首个真实 processKey，避免把常规按键路径的观测成本放大。
 @property (nonatomic, assign) BOOL shouldMeasureFirstProcessKey;
+#if DEBUG
+/// Nil preserves the real librime call; tests may cover the otherwise hard-to-induce false branch.
+@property (nonatomic, strong, nullable) NSNumber *correctionQueryContextAvailabilityOverrideForTesting;
+#endif
 - (void)claimRuntimeOwnership;
 - (void)relinquishRuntimeOwnership;
 - (BOOL)ensureCorrectionSession;
@@ -391,7 +404,17 @@ static __weak RimeSessionManager *RimeActiveRuntimeOwner = nil;
 
     NSMutableArray *candidates = [NSMutableArray arrayWithCapacity:safeLimit];
     RIME_STRUCT(RimeContext, context);
-    BOOL contextAvailable = _api->get_context(_correctionSessionId, &context);
+    BOOL contextAvailable;
+#if DEBUG
+    NSNumber *contextOverride = self.correctionQueryContextAvailabilityOverrideForTesting;
+    if (contextOverride != nil) {
+        contextAvailable = contextOverride.boolValue;
+    } else {
+        contextAvailable = _api->get_context(_correctionSessionId, &context);
+    }
+#else
+    contextAvailable = _api->get_context(_correctionSessionId, &context);
+#endif
     if (contextAvailable) {
         int count = MIN(context.menu.num_candidates, safeLimit);
         for (int index = 0; index < count; index++) {
@@ -418,6 +441,12 @@ static __weak RimeSessionManager *RimeActiveRuntimeOwner = nil;
             : @"context_unavailable",
     };
 }
+
+#if DEBUG
+- (void)setCorrectionQueryContextAvailabilityForTesting:(NSNumber *)available {
+    self.correctionQueryContextAvailabilityOverrideForTesting = available;
+}
+#endif
 
 - (NSDictionary *)commitComposition {
     if (_sessionId == 0) return [self emptyOutput];
@@ -556,6 +585,20 @@ static __weak RimeSessionManager *RimeActiveRuntimeOwner = nil;
     return selected;
 }
 
+#if DEBUG
+- (NSDictionary<NSString *, NSNumber *> *)existingCorrectionQueryDebugScope {
+    if (_api == NULL || _api->get_current_schema == NULL || _correctionSessionId == 0
+        || _correctionSessionDebugOrdinal == 0) {
+        return @{ @"sessionOrdinal": @0, @"schemaCode": @0 };
+    }
+    char schema[256] = {0};
+    BOOL observed = _api->get_current_schema(_correctionSessionId, schema, sizeof(schema));
+    // Do not return schema text or the raw librime session handle.
+    uint64_t code = observed && memcmp(schema, "luna_pinyin", sizeof("luna_pinyin")) == 0 ? 1 : 0;
+    return @{ @"sessionOrdinal": @(_correctionSessionDebugOrdinal), @"schemaCode": @(code) };
+}
+#endif
+
 - (NSString *)currentSchemaID {
     if (_sessionId == 0) return nil;
     char buffer[256] = {0};
@@ -591,6 +634,15 @@ static __weak RimeSessionManager *RimeActiveRuntimeOwner = nil;
     if (_correctionSessionId != 0) return YES;
 
     _correctionSessionId = _api->create_session();
+#if DEBUG
+    if (_correctionSessionId != 0) {
+        @synchronized ([RimeSessionManager class]) {
+            // Exhaustion remains unavailable; never wrap or reuse an identity.
+            _correctionSessionDebugOrdinal = CorrectionSessionDebugNextOrdinal == UINT64_MAX
+                ? 0 : ++CorrectionSessionDebugNextOrdinal;
+        }
+    }
+#endif
     if (_correctionSessionId == 0) return NO;
 
     NSString *schema = [self currentSchemaID];

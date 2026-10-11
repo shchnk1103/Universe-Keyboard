@@ -1,5 +1,10 @@
 # Assignment: TYPO-CORRECTION-002-INT003-QUERY-COST-MEASUREMENT-001
 
+## 2026-10-11 current convergence
+
+P1 bounded convergence and Human-accepted P2 are complete as evidence stages; this child remains Active pending separately authorized lifecycle disposition. See [P1 audit](../evidence/typo-correction-002-fixed-candidate-delivery-audit-001.md), [accepted P2](../product-decisions/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-LOCAL-EVIDENCE-REQUIREMENTS-001.md), and [fixed final CI](../evidence/typo-correction-002-fixed-main-validation-001.md). Historical P1/P2-pending statements below are superseded only by these named outcomes; no Gate/Close.
+
+
 Policy version: 1.0.0
 
 ```kos-record

@@ -1,0 +1,60 @@
+# INT-003 P1 evidence-convergence coordinator receipt 002 — 2026-09-29
+
+## Outcome
+
+P1 evidence convergence is **complete as bounded Quality evidence coverage with conditions** on fixed baseline `72dd21710f2a86c9f951d489f645bae89b053b58` / tree `8ce8e8c0d9b821ca4d24aff4faf46a3e49bf87ff`.
+
+Within its valid budget, independent Quality R2 covered Claims 1, 3, 4, and 5. Fresh independent Quality R4 covered all six required criteria for run-004 Claim 2. This resolves `Q-R2-01`; the exact R2 and R4 reports remain unchanged. R3's over-budget claim conclusions are excluded. The aggregate result is bounded and conditional; it does not establish Product query-cost acceptance or a Gate.
+
+## Bound identities
+
+| Item | Identity |
+|---|---|
+| Fixed baseline / tree | `72dd21710f2a86c9f951d489f645bae89b053b58` / `8ce8e8c0d9b821ca4d24aff4faf46a3e49bf87ff` |
+| R2 report / usage | `6bb500ac5bef6ef377fb9ea9d4cce9e66975732093ecffa3d614b9eece9afbcf` / `7fdc845619f073873409a73e3216c55595523a6a48185e5efe8527ae75a09070` |
+| R4 packet | `ab97ce3096a624bcf0202de7e0f2ab801af8155511ea7cafa3a035504d87ca47` |
+| R4 Assignment SHA before execution | `36e0995ee471491dc576574fd88f51dd68deb9a7e0788e96bf7bfc44ef04030b` |
+| R4 Consumed AUTH | `a7ab8fd4e4301b3074144ef692e8e6cbf669b718a35ad34fc35f87674927d554` |
+| R4 review / usage | `9775ae837cdeea554b42b99b73f569b0f8fe3a8d4a4e27979017a1d9461b49c8` / `1459d9a69570a9bdefbe380116f7ce06e8ebb1ef7d633ced940a8ae534c4b5a3` |
+| R4 reviewer window | `2026-09-29T10:11:40Z`–`2026-09-29T10:15:37Z`; 24/24 top-level calls, 6/6 allowed `xcresulttool` calls, 00:03:57 active elapsed |
+| Updated R4 Assignment SHA | `6104fa2d8035e83c8f0de561c986ea4a6f747ea58f70cef6b3b2e5a445a701b6` |
+
+R4's Consumed AUTH bound the one-time read-only review. It was not reused or expanded. The dedicated scratch root was `/private/tmp/universe-keyboard-int003-p1-claim2-quality-review-004-tmp`; it contains the six listed extraction JSONs and an additional `xcrun_db` file (1,106 bytes, mode `0600`). That file's contents were not inspected or altered; the scratch root was retained.
+
+## Claim 2 reconciliation
+
+R4 independently read each bundle's unique test-summary reference using the packet-allowed legacy object reader and reconciled it with the bound logs and run-004 receipt:
+
+- RimeBridge: 108 metadata, 88 Success, 20 Skipped, 0 failures; all three correction-query integration tests passed.
+- App + Keyboard targets remain separate: `UniverseKeyboardTests` 410 total (400 Success, 10 Skipped, 0 failures), `KeyboardTests` 16/0/0, and `KeyboardExtensionTests` 5/5 Success / 0 skipped / 0 failures.
+- Signed Keychain selected integration test: 1/1 Success.
+- Bound Release log contains `BUILD SUCCEEDED`.
+
+The 20 RimeBridge and 10 App skips retain their individual test identities and bound environmental reasons in the R4 report. They are not counted as passing tests. The 433 discovered / 432 result-node discrepancy remains unresolved under `Q-R2-02`.
+
+## Conditions carried forward
+
+| ID | Remaining condition | Owner | Disposition |
+|---|---|---|---|
+| Q-R2-02 | XcodeBuildMCP discovered 433 tests while the result bundle has 432 nodes; the difference is unexplained. | Test / Release reviewer | `accept` as an explicit evidence limitation; do not infer a missing or passing test. |
+| Q-R2-03 | The ready-empty expected stage trace shares the `TypoCorrectionRecallDriver`; an independent hard-coded stage oracle is absent. | Input Intelligence Maintainer | `tech_debt:INT003-COORDINATOR-INDEPENDENT-ORACLE`. |
+| Q-R2-04 | Real Rime setup/schema-selection/get-context failure behavior is not demonstrated by the integration evidence. | RimeBridge owner | `tech_debt:INT003-RIME-FAILURE-BOUNDARY`. |
+| Q-R2-05 | The final ten-file candidate was covered compositionally, not by one full matrix run. | Test / Release reviewer | `accept` as a compositional-coverage limitation; no new matrix is authorized here. |
+
+`Q-R2-01` is resolved by R4's complete Claim 2 coverage. The detailed reports preserve the evidence and exact locators; this receipt does not change their verdicts.
+
+## Lifecycle and scope
+
+- The R4 reviewer Assignment is **Completed** with its two authorized outputs; it is not marked Reviewed or Closed.
+- The query-cost measurement Assignment remains **Active** because P2 and Product disposition are separate stages. Parent `TYPO-CORRECTION-002` remains **Active**.
+- P2 AUTH remains Active/unconsumed. No installed-payload or Run-manifest binding was added here and no P2 capture was performed.
+- No Product cost acceptance/budget, QA-001/Product Gate, parent Close, hosted CI, test/build, Simulator, network/GitHub action, commit/push/PR/merge, TestFlight/Release, ADR Accept, or `RimeRuntimeProvenance` restoration is claimed.
+- This is a current evidence and status reconciliation within the authorized P1 slice; it is not an M-02 trigger from Assignment Close or a lifecycle-changing merge.
+
+## Files
+
+- R4 Assignment: [review-004 Assignment](../assignments/typo-correction-002-int003-query-cost-p1-evidence-convergence-quality-review-004.md)
+- R4 packet: [packet R4](../reviews/typo-correction-002-int003-query-cost-p1-evidence-convergence-quality-review-packet-r4.md)
+- Independent report: [Quality review 004](../reviews/typo-correction-002-int003-query-cost-p1-evidence-convergence-quality-review-004.md)
+- Usage: [Quality review 004 usage](typo-correction-002-int003-query-cost-p1-evidence-convergence-quality-review-004-usage.md)
+- Prior coordinator checkpoint: [receipt 001](typo-correction-002-int003-query-cost-p1-evidence-convergence-001.md)

@@ -1,0 +1,6 @@
+{
+  "decision_source": "Human：模拟器仍独占，请你继续吧",
+  "scope": "release/consume proposed fixed-main validation once, necessary caches/fixtures/keychain as listed;405D exclusive",
+  "recorded_at": "2026-10-11T00:10:50.686623+00:00",
+  "binding_sha256": "8f9320a53c4f1bedb490f2cfce807d837b4b406d6ebe249f9ce10ca87b8957f6"
+}

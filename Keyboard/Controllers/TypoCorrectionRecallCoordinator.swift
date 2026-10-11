@@ -1,10 +1,77 @@
-import KeyboardCore
-import UIKit
+import Foundation
+
+#if DEBUG && KEYBOARD_QUERY_COST_PROBE && KEYBOARD_QUERY_COST_PROBE_TESTING
+    @testable import KeyboardCore
+#else
+    import KeyboardCore
+#endif
+
+/// The coordinator needs KeyboardCore state plus a small UI/diagnostics boundary.
+/// Keeping that boundary typed lets the extension and the hostless XCTest bundle
+/// compile the same coordinator source without linking the `.appex` product.
+@MainActor
+protocol TypoCorrectionRecallCoordinatorHost: AnyObject {
+    var controller: KeyboardController! { get }
+    var contextualTypoCorrectionWorkItem: DispatchWorkItem? { get set }
+    var recallEpoch: UInt64 { get set }
+    var recallCompositionRevision: UInt64 { get set }
+    #if DEBUG
+        var isHighFidelityDiagnosticsActive: Bool { get }
+    #endif
+    var diagnosticsAppearanceID: UUID? { get }
+
+    func recordTypoRecallQueryMeasured(_ payload: DiagnosticEvent.TypoRecallQueryPayload)
+    func recordTypoRecallMarker(
+        code: DiagnosticEvent.Code,
+        recallEpoch: UInt64,
+        compositionRevision: UInt64,
+        operationOrdinal: UInt64,
+        normalizedComposition: String
+    )
+    func refreshCandidateBar()
+    #if DEBUG && KEYBOARD_QUERY_COST_PROBE
+        var queryCostDebugFullAccess: Bool { get }
+        func queryCostDebugFacadeScope() -> QueryCostMemoryProbe.FacadeScope?
+    #endif
+}
+
+#if DEBUG && KEYBOARD_QUERY_COST_PROBE
+    extension TypoCorrectionRecallCoordinatorHost {
+        var queryCostDebugFullAccess: Bool { false }
+        func queryCostDebugFacadeScope() -> QueryCostMemoryProbe.FacadeScope? { nil }
+    }
+#endif
 
 /// MainActor owner of one contextual-recall operation: debounce, epoch,
 /// yielded one-query turns, fences and the final candidate-bar refresh.
 @MainActor
 final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
+    #if DEBUG
+        /// Keeps tests on the production coordinator while controlling only its
+        /// yielded turns and observations; nil hooks preserve runtime behavior.
+        struct TestingHooks {
+            var beforeQueryFenceCheck: (@MainActor () -> Void)?
+            var recordQueryMeasured: (@MainActor (DiagnosticEvent.TypoRecallQueryPayload) -> Void)?
+            var recordMarker: (@MainActor (DiagnosticEvent.Code) -> Void)?
+            var scheduleYieldedTurn: (@MainActor (@escaping @MainActor () -> Void) -> Void)?
+            var refreshCandidateBar: (@MainActor () -> Void)?
+        }
+
+        private var testingHooks: TestingHooks?
+
+        var testingHooksAreInstalled: Bool {
+            testingHooks != nil
+        }
+
+        func installTestingHooks(_ hooks: TestingHooks) {
+            testingHooks = hooks
+        }
+
+        func startOperationForTesting(expectedComposition: String) {
+            startOperation(expectedComposition: expectedComposition)
+        }
+    #endif
+
     private struct YieldedTurnToken: Equatable, Sendable {
         let recallEpoch: UInt64
         let compositionRevision: UInt64
@@ -23,13 +90,42 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
         }
     }
 
-    private unowned let host: KeyboardViewController
+    private unowned let host: any TypoCorrectionRecallCoordinatorHost
     private var debounceWorkItem: DispatchWorkItem?
     private var driver: TypoCorrectionRecallDriver?
     private var operationOrdinal: UInt64 = 0
+    #if DEBUG && KEYBOARD_QUERY_COST_PROBE
+        private static var nextProbeCoordinatorOrdinal: UInt64 = 0
+        private(set) var probeCoordinatorOrdinal: UInt64 = 0
+        let callbackLedger = TypoCorrectionCallbackLedger()
+        private var probeTerminalOverride: QueryCostMemoryProbe.Terminal?
+        // Runtime ownership cannot be replaced from a UI action or ordinary caller.
+        private(set) var queryCostProbe = QueryCostMemoryProbe.shared
+        #if KEYBOARD_QUERY_COST_PROBE_TESTING
+            // This source is separately compiled into the hostless test target.
+            // The flag is target-local; the real Extension never contains this seam.
+            @discardableResult
+            func installSyntheticQueryCostProbeForTesting(_ probe: QueryCostMemoryProbe) -> Bool {
+                guard probe.isSyntheticForTesting, queryCostCallbacksQuiescent else { return false }
+                queryCostProbe = probe
+                return true
+            }
+        #endif
+        var queryCostCallbacksQuiescent: Bool {
+            driver == nil
+                && callbackLedger.quiescent(
+                    aliases: [debounceWorkItem, host.contextualTypoCorrectionWorkItem])
+        }
+    #endif
 
-    init(host: KeyboardViewController) {
+    init(host: any TypoCorrectionRecallCoordinatorHost) {
         self.host = host
+        #if DEBUG && KEYBOARD_QUERY_COST_PROBE
+            if Self.nextProbeCoordinatorOrdinal != .max {
+                Self.nextProbeCoordinatorOrdinal += 1
+                probeCoordinatorOrdinal = Self.nextProbeCoordinatorOrdinal
+            }
+        #endif
     }
 
     func invalidateTypoCorrectionRecall() {
@@ -37,9 +133,18 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
         host.recallEpoch &+= 1
         host.recallCompositionRevision &+= 1
         debounceWorkItem?.cancel()
+        #if DEBUG && KEYBOARD_QUERY_COST_PROBE
+            callbackLedger.cancelObserved(debounceWorkItem)
+        #endif
         debounceWorkItem = nil
+        #if DEBUG && KEYBOARD_QUERY_COST_PROBE
+            probeTerminalOverride = .cancelled
+        #endif
         finishRecallOperation()
         host.contextualTypoCorrectionWorkItem?.cancel()
+        #if DEBUG && KEYBOARD_QUERY_COST_PROBE
+            callbackLedger.cancelObserved(host.contextualTypoCorrectionWorkItem)
+        #endif
         host.contextualTypoCorrectionWorkItem = nil
         recordTypoRecallMarker(
             code: .typoRecallEpochBumped,
@@ -56,7 +161,13 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
     func scheduleAfterCompositionSettled() {
         let hadPendingDebounce = debounceWorkItem != nil || host.contextualTypoCorrectionWorkItem != nil
         debounceWorkItem?.cancel()
+        #if DEBUG && KEYBOARD_QUERY_COST_PROBE
+            callbackLedger.cancelObserved(debounceWorkItem)
+        #endif
         host.contextualTypoCorrectionWorkItem?.cancel()
+        #if DEBUG && KEYBOARD_QUERY_COST_PROBE
+            callbackLedger.cancelObserved(host.contextualTypoCorrectionWorkItem)
+        #endif
 
         let expectedComposition = host.controller.state.currentComposition
         if hadPendingDebounce {
@@ -68,9 +179,19 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
 
         guard isEligible(for: expectedComposition) else { return }
 
+        #if DEBUG && KEYBOARD_QUERY_COST_PROBE
+            let callbackToken = callbackLedger.schedule()
+        #endif
         let workItem = DispatchWorkItem { [weak self] in
+            #if DEBUG && KEYBOARD_QUERY_COST_PROBE
+                self?.callbackLedger.enter(callbackToken)
+                defer { self?.callbackLedger.complete(callbackToken) }
+            #endif
             self?.startOperation(expectedComposition: expectedComposition)
         }
+        #if DEBUG && KEYBOARD_QUERY_COST_PROBE
+            callbackLedger.bind(workItem, to: callbackToken)
+        #endif
         debounceWorkItem = workItem
         host.contextualTypoCorrectionWorkItem = workItem
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.18, execute: workItem)
@@ -95,6 +216,9 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
             includingContextual: true
         )
         driver = TypoCorrectionRecallDriver(token: token, stageOneHypotheses: hypotheses)
+        #if DEBUG && KEYBOARD_QUERY_COST_PROBE
+            queryCostProbe.beginOperation(token.operationOrdinal)
+        #endif
         owner.beginTypoCorrectionRecall()
         continueOperation()
     }
@@ -153,6 +277,9 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
 
     private func performQuery(_ query: TypoCorrectionRecallQuery) {
         guard var currentDriver = driver else { return }
+        #if DEBUG
+            testingHooks?.beforeQueryFenceCheck?()
+        #endif
         let pre = liveFence(matching: currentDriver.token)
         guard pre == currentDriver.token else {
             recordFenceDiscarded(token: currentDriver.token)
@@ -161,6 +288,16 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
         }
 
         let owner = host.controller.typoCorrectionCandidateQuery
+        #if DEBUG && KEYBOARD_QUERY_COST_PROBE
+            if queryCostProbe.status == .armed {
+                queryCostProbe.verifyScope(
+                    facade: host.queryCostDebugFacadeScope(),
+                    fullAccess: host.queryCostDebugFullAccess, coordinatorOrdinal: probeCoordinatorOrdinal)
+            }
+            let reservation = queryCostProbe.beginInvocation(
+                operation: currentDriver.token.operationOrdinal, stage: query.stage,
+                epoch: currentDriver.token.recallEpoch, revision: currentDriver.token.compositionRevision)
+        #endif
         let startTick = DispatchTime.now().uptimeNanoseconds
         let result = owner.correctionQueryResult(
             for: query.suggestion.correctedInput,
@@ -192,6 +329,14 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
             facadeElapsedMicroseconds: duration.microseconds,
             durationState: duration.state
         )
+        #if DEBUG && KEYBOARD_QUERY_COST_PROBE
+            queryCostProbe.finishInvocation(reservation, payload: payload)
+            if queryCostProbe.status == .armed {
+                queryCostProbe.verifyScope(
+                    facade: host.queryCostDebugFacadeScope(),
+                    fullAccess: host.queryCostDebugFullAccess, coordinatorOrdinal: probeCoordinatorOrdinal)
+            }
+        #endif
         recordQueryMeasured(payload)
 
         if case .discarded = event {
@@ -202,8 +347,34 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
     }
 
     private func scheduleYieldedTurn(for expectedToken: YieldedTurnToken) {
+        #if DEBUG
+            if let scheduleYieldedTurn = testingHooks?.scheduleYieldedTurn {
+                #if DEBUG && KEYBOARD_QUERY_COST_PROBE
+                    let callbackToken = callbackLedger.schedule()
+                #endif
+                scheduleYieldedTurn { [weak self] in
+                    #if DEBUG && KEYBOARD_QUERY_COST_PROBE
+                        self?.callbackLedger.enter(callbackToken)
+                        defer { self?.callbackLedger.complete(callbackToken) }
+                    #endif
+                    self?.performYieldedTurn(for: expectedToken)
+                }
+                return
+            }
+        #endif
+        #if DEBUG && KEYBOARD_QUERY_COST_PROBE
+            let callbackToken = callbackLedger.schedule(.runLoopPending)
+        #endif
         RunLoop.main.perform(inModes: [.default]) { [weak self] in
+            #if DEBUG && KEYBOARD_QUERY_COST_PROBE
+                callbackToken?.observeRunLoopHandoff()
+            #endif
             Task { @MainActor [weak self] in
+                #if DEBUG && KEYBOARD_QUERY_COST_PROBE
+                    self?.callbackLedger.handoff(callbackToken)
+                    self?.callbackLedger.enter(callbackToken)
+                    defer { self?.callbackLedger.complete(callbackToken) }
+                #endif
                 self?.performYieldedTurn(for: expectedToken)
             }
         }
@@ -236,6 +407,12 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
         let refreshFence = liveFence(matching: material.token)
         finishRecallOperation()
         guard didApply, refreshFence == material.token else { return }
+        #if DEBUG
+            if let refreshCandidateBar = testingHooks?.refreshCandidateBar {
+                refreshCandidateBar()
+                return
+            }
+        #endif
         host.refreshCandidateBar()
     }
 
@@ -283,6 +460,18 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
     }
 
     private func finishRecallOperation() {
+        #if DEBUG && KEYBOARD_QUERY_COST_PROBE
+            // A reentrant invalidation may finish this driver during its synchronous facade call.
+            // Its later post-fence cleanup is the same terminal, not a second operation.
+            // The probe retains terminal identity in its bounded wire records,
+            // including nonadjacent A/B/A reentry; no coordinator-local last-ID heuristic.
+            if let token = driver?.token {
+                let terminal: QueryCostMemoryProbe.Terminal =
+                    probeTerminalOverride ?? (liveFence(matching: token) == token ? .completed : .fenced)
+                queryCostProbe.endOperation(token.operationOrdinal, terminal: terminal)
+            }
+            probeTerminalOverride = nil
+        #endif
         driver = nil
         sidecarOwner?.endTypoCorrectionRecall()
     }
@@ -298,12 +487,11 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
     ) {
         #if DEBUG
             guard host.isHighFidelityDiagnosticsActive else { return }
-            host.diagnosticsJournal.record(
-                code: .typoRecallQueryMeasured,
-                category: .performance,
-                appearanceID: host.diagnosticsAppearanceID,
-                fields: [.typoRecallQuery(payload)]
-            )
+            if let recordQueryMeasured = testingHooks?.recordQueryMeasured {
+                recordQueryMeasured(payload)
+                return
+            }
+            host.recordTypoRecallQueryMeasured(payload)
         #endif
     }
 
@@ -343,16 +531,16 @@ final class TypoCorrectionRecallCoordinator: TypoCorrectionRecallInvalidating {
     ) {
         #if DEBUG
             guard host.isHighFidelityDiagnosticsActive else { return }
-            host.diagnosticsJournal.record(
+            if let recordMarker = testingHooks?.recordMarker {
+                recordMarker(code)
+                return
+            }
+            host.recordTypoRecallMarker(
                 code: code,
-                category: .performance,
-                appearanceID: host.diagnosticsAppearanceID,
-                fields: TypoCorrectionRecallDiagnosticMarkers.fenceFields(
-                    recallEpoch: recallEpoch,
-                    compositionRevision: compositionRevision,
-                    operationOrdinal: operationOrdinal,
-                    normalizedComposition: normalizedComposition
-                )
+                recallEpoch: recallEpoch,
+                compositionRevision: compositionRevision,
+                operationOrdinal: operationOrdinal,
+                normalizedComposition: normalizedComposition
             )
         #endif
     }

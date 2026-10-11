@@ -1,0 +1,11 @@
+{
+  "source": "Coordinator usage interpretation; original reviewer JSON unchanged",
+  "reported_round2_calls": 4,
+  "reported_failure_calls": 1,
+  "successful_UTC_span_seconds": 86.389743,
+  "full_round2_elapsed_seconds": "UNKNOWN: failed bootstrap start not retained",
+  "monotonic_delta_admission": "not admitted: stamps came from separate exec/Python processes, no proven shared clock origin",
+  "budget": "4tools/180s; tool cap reached, no further reviewer calls",
+  "review_conclusion": "Scoped Pass with conditions unchanged; timing artifact limitation is operational, no newdata tests",
+  "prior_round1_start_elapsed": "UNKNOWN preserved"
+}

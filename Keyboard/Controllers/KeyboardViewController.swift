@@ -265,6 +265,13 @@ class KeyboardViewController: UIInputViewController {
     /// Last T9 digit key completion time (continuous-typing bar-prefetch idle gating).
     var lastT9DigitKeyTime: CFTimeInterval?
     /// 多错误纠错只在用户短暂停顿后执行；新输入会取消旧任务，避免占用按键热路径。
+    #if DEBUG && KEYBOARD_QUERY_COST_PROBE
+        var queryCostControls: UIStackView?
+        var queryCostTouchObserver: QueryCostTouchObserver?
+        var queryCostSequenceOrdinal: UInt64 = 1
+        var queryCostSequenceOpen = false
+        let queryCostClockAnchor = QueryCostClockAnchor()
+    #endif
     var contextualTypoCorrectionWorkItem: DispatchWorkItem?
     /// Controller-owned recall fence. Incremented before composition, page/mode,
     /// visibility, engine-rebind or correction-disable work.
@@ -502,6 +509,10 @@ class KeyboardViewController: UIInputViewController {
             journal: diagnosticsJournal,
             context: wakeDiagnosticContext
         )
+        #if DEBUG && KEYBOARD_QUERY_COST_PROBE
+            typoCorrectionRecallCoordinator.queryCostProbe.invalidate(.lifecycle)
+            queryCostClockAnchor.invalidate()
+        #endif
         typoCorrectionRecallCoordinator.invalidateTypoCorrectionRecall()
         diagnosticsJournal.record(
             code: .presentationFrame,
@@ -769,6 +780,9 @@ class KeyboardViewController: UIInputViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        #if DEBUG && KEYBOARD_QUERY_COST_PROBE
+            layoutQueryCostProbeControls()
+        #endif
 
         // Nested nine-key stacks finish layout after the root stack. Build the
         // shared hit-test/overlay snapshot only at this stable UIKit boundary.

@@ -63,6 +63,20 @@
                ReferencedContainer = "container:Universe Keyboard.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "7A6400062FD0000000000001"
+               BuildableName = "KeyboardExtensionTests.xctest"
+               BlueprintName = "KeyboardExtensionTests"
+               ReferencedContainer = "container:Universe Keyboard.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -89,6 +103,16 @@
                BlueprintIdentifier = "7A62000A2FC0000000000001"
                BuildableName = "KeyboardTests.xctest"
                BlueprintName = "KeyboardTests"
+               ReferencedContainer = "container:Universe Keyboard.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "7A6400062FD0000000000001"
+               BuildableName = "KeyboardExtensionTests.xctest"
+               BlueprintName = "KeyboardExtensionTests"
                ReferencedContainer = "container:Universe Keyboard.xcodeproj">
             </BuildableReference>
          </TestableReference>

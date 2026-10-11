@@ -75,6 +75,12 @@ NS_ASSUME_NONNULL_BEGIN
 /// 返回 candidates 与本次调用的有限 readiness/result 元数据，供有界纠错查询使用。
 - (NSDictionary *)correctionCandidatesForInput:(NSString *)input limit:(int)limit;
 
+#if DEBUG
+/// Overrides only the correction query's get_context return branch in Debug tests.
+/// Passing nil restores the real librime call; Release builds expose no seam.
+- (void)setCorrectionQueryContextAvailabilityForTesting:(nullable NSNumber *)available;
+#endif
+
 /// 提交当前 composition（不选候选，直接上屏拼音）
 - (NSDictionary *)commitComposition;
 
@@ -106,6 +112,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 关闭引擎（释放所有资源）
 - (void)finalize;
+
+#if DEBUG
+/// Readonly existing correction-session metadata. Never creates or selects a session.
+- (NSDictionary<NSString *, NSNumber *> *)existingCorrectionQueryDebugScope;
+#endif
 
 @end
 

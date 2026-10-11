@@ -1,0 +1,17 @@
+{
+  "argv": [
+    "/bin/ps",
+    "-p",
+    "46758",
+    "-o",
+    "pid=,stat=,comm="
+  ],
+  "exit": 0,
+  "fields": [
+    "46758",
+    "Ss",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/89DBF2C8-CE4A-4811-9046-79B27B1D2CB1/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard"
+  ],
+  "utc": "2026-10-10T18:06:46.475483+00:00",
+  "conditional_cont_used": false
+}

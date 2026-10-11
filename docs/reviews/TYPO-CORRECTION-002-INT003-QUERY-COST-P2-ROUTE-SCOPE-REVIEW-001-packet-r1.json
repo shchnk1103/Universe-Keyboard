@@ -1,0 +1,447 @@
+{
+  "work_item": "TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001",
+  "round": 1,
+  "root": "/private/tmp/uk-routerev1",
+  "baseline_head": "72dd21710f2a86c9f951d489f645bae89b053b58",
+  "candidate_sha256": "d45bdc9be791aa1654dfde1699a261c34434cd05f68de9456d8102beebd1c2c2",
+  "targets": [
+    "Keyboard/Controllers/KeyboardViewController+QueryCostProbe.swift",
+    "Keyboard/Controllers/KeyboardViewController+TypoCorrection.swift",
+    "Keyboard/Controllers/QueryCostArmDiagnostic.swift",
+    "Keyboard/Controllers/TypoCorrectionRecallCoordinator.swift",
+    "KeyboardExtensionTests/QueryCostArmDiagnosticTests.swift",
+    "KeyboardExtensionTests/TypoCorrectionQueryCostProbeIntegrationTests.swift",
+    "KeyboardExtensionTests/TypoCorrectionRecallCoordinatorIntegrationTests.swift",
+    "Packages/KeyboardCore/Sources/KeyboardCore/QueryCostMemoryProbe.swift",
+    "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionSidecarOwner.swift",
+    "Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostMemoryProbeTests.swift",
+    "decode-v2.py"
+  ],
+  "supporting_read_only": [
+    "Packages/KeyboardCore/Sources/KeyboardCore/ThreadAffineRimeSession.swift",
+    "Packages/KeyboardCore/Sources/KeyboardCore/ThreadAffineRimeSpike.swift",
+    "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionCandidateQuery.swift",
+    "Packages/KeyboardCore/Sources/KeyboardCore/RimeEngine.swift",
+    "Packages/KeyboardCore/Sources/KeyboardCore/ResponsiveRimePipeline.swift",
+    "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+    "Packages/KeyboardCore/Package.swift",
+    "Universe Keyboard.xcodeproj/xcshareddata/xcschemes/KeyboardExtensionTests.xcscheme"
+  ],
+  "exclusions": "不全量重审旧实现/修改源码/运行tests/build/LLDB/模拟器/正常App安装/网络/发布/main追逐/Gate/Close",
+  "access": "只能只读本packet inputs；每lane仅写自身<lane>-review.md/usage.json；禁止运行测试/build/decoder/设备/Git/网络。治理文档导航不递归扩大源码范围。若必需技术输入缺失，定位一处停止该criterion，不私自获取。",
+  "authority": "Human Product Lead；仅Human可扩大范围/预算",
+  "lanes": {
+    "architecture": {
+      "lane_id": "TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001:architecture",
+      "runtime": "/root/arm_refusal_arch_r1",
+      "playbook": "governance/docs/playbooks/coordinator.md",
+      "criteria": [
+        "A1：native-session与provider-facade来源及身份生命周期诚实，provider前后epoch/native/session/schema/ready校验fail closed，无创建session或干预production路由",
+        "A2：v2两个codec及private decoder字段/尺寸/版本/隐私一致，不把owner epoch当native correction session；buffer/borrowed pointer既有边界不被增量破坏",
+        "A3：DEBUG/probe隔离及原query/调度/fence副作用保持；pre/post scope验证不会更改生产facade执行或返回值",
+        "A4：10路径增量与批准产品scope/设计相符；未知scope/不支持responsive边界与后续runtime证据非声明准确"
+      ]
+    },
+    "quality": {
+      "lane_id": "TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001:quality",
+      "runtime": "/root/arm_refusal_quality_r1",
+      "playbook": "governance/docs/playbooks/test-release.md",
+      "criteria": [
+        "Q1：逐套19/8/15/10实际passed清单与源码/原始日志/receipt/summary/命令/固定candidate对应，宏和hostless membership确实覆盖相关增量",
+        "Q2：两scope/身份变化/失效/unsupported和v2严格codec正反例覆盖本增量关键契约，检查缺口是否影响当前安全正确性",
+        "Q3：测试与真实controller/helper调用链的差异被诚实限定；有当前增量缺陷记finding，未实际runtime不自行当代码失败",
+        "Q4：格式/源码hash/证据来源与Executor声明匹配，未把52测试等同default Release/完整CI/runtime arm/P2完成/Gate"
+      ]
+    }
+  },
+  "budget": {
+    "each_lane_max_tool_calls": 24,
+    "each_lane_seconds": 900,
+    "checkpoints": "第一工具调用记录UTC/monotonic；12calls或450s先到保存usage并通知root；24calls或900s先到停止，记录实际elapsed含推理/等待，不自动续期",
+    "outputs": "<lane>-review.md + <lane>-usage.json；usage包括lane/round/tool_calls/elapsed/criteria_covered/stop_reason"
+  },
+  "stop": [
+    "最多24tools/900s每lane，12tools或450s先到checkpoint；不得自动续期",
+    "缺输入/身份漂移/工具权限缺口则停止依赖criterion定位一处；不自扩围",
+    "不追main、不修改、不重新test"
+  ],
+  "acceptance": "四criteria逐项定位结论；全覆盖无阻塞finding才Pass，有实际缺陷Changes requested/Fail；必需输入或coverage不足Partial/incomplete。仅限定独立review，不产品/Release决定",
+  "inputs": [
+    {
+      "path": "before/Keyboard/Controllers/KeyboardViewController+QueryCostProbe.swift",
+      "sha256": "9c18b1de6fc7181732b8f79edee632d8951b01b0803749a434c5a81406e3769f"
+    },
+    {
+      "path": "before/Keyboard/Controllers/KeyboardViewController+TypoCorrection.swift",
+      "sha256": "871b66164907ecfa4c05e4ffee5be9c87fdae37dca5f2dac86ccc2be81164e7c"
+    },
+    {
+      "path": "before/Keyboard/Controllers/QueryCostArmDiagnostic.swift",
+      "sha256": "c9355c0ef8fa0f80dec33db8df4813716980fb8d3989c289aeecb27fa76e4b0b"
+    },
+    {
+      "path": "before/Keyboard/Controllers/TypoCorrectionRecallCoordinator.swift",
+      "sha256": "b791a42fb73282101d09275cb7213af4217faccc52d1df8d8a79b245518168ae"
+    },
+    {
+      "path": "before/KeyboardExtensionTests/QueryCostArmDiagnosticTests.swift",
+      "sha256": "63fb28623acdd015641b252e04837fb9cfe4425224b512113bbe4a967dd1537e"
+    },
+    {
+      "path": "before/KeyboardExtensionTests/TypoCorrectionQueryCostProbeIntegrationTests.swift",
+      "sha256": "9699a90f69620c8063abbbbe17d726a83f90732a224c6310c6de6baf0e79348a"
+    },
+    {
+      "path": "before/KeyboardExtensionTests/TypoCorrectionRecallCoordinatorIntegrationTests.swift",
+      "sha256": "e6029b34fedbe1186b136a187958db67b73b087c79e1f112e9f3d6a299e9759b"
+    },
+    {
+      "path": "before/Packages/KeyboardCore/Sources/KeyboardCore/QueryCostMemoryProbe.swift",
+      "sha256": "2bf061f6d7e0486748b99e17b268b5dc06c03c6148ee1b105f6919e633140550"
+    },
+    {
+      "path": "before/Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionSidecarOwner.swift",
+      "sha256": "64b1869f7a52da2c8d61a0555c7f0e9d2623cdb74d24ae52a2ef08a45f523e67"
+    },
+    {
+      "path": "before/Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostMemoryProbeTests.swift",
+      "sha256": "3aa481682405bf79eb82f9890cbdb4d9f1ce47f413e2454ed9da7a9af301f58a"
+    },
+    {
+      "path": "candidate.json",
+      "sha256": "d45bdc9be791aa1654dfde1699a261c34434cd05f68de9456d8102beebd1c2c2"
+    },
+    {
+      "path": "conditional-projection.json",
+      "sha256": "2255a90ee6b276dc56cd74b576194bf9579869e5ed5fad695089053b5210aa82"
+    },
+    {
+      "path": "decode-v2.py",
+      "sha256": "567455d13e2fad193288c22938b22bc42d024108bf60b3778c938b1083e71d32"
+    },
+    {
+      "path": "delta/Keyboard/Controllers/KeyboardViewController+QueryCostProbe.swift.diff",
+      "sha256": "c83caf8dac8d82e6514358b7a0f4c6d518e25086e34ea4b0546bf5bcdd075039"
+    },
+    {
+      "path": "delta/Keyboard/Controllers/KeyboardViewController+TypoCorrection.swift.diff",
+      "sha256": "0564256af0f30bf29480316f92263290ab7dab786c87c1ae1a964ed64e831190"
+    },
+    {
+      "path": "delta/Keyboard/Controllers/QueryCostArmDiagnostic.swift.diff",
+      "sha256": "3d49e1a95f1f0a6ab9d7e85758b69fdbba40eb2773a2a004b227a3dfe6daf7ad"
+    },
+    {
+      "path": "delta/Keyboard/Controllers/TypoCorrectionRecallCoordinator.swift.diff",
+      "sha256": "376f5488d423528c24754bd1816af1d55b046fae7f797f07b845cd941284e9de"
+    },
+    {
+      "path": "delta/KeyboardExtensionTests/QueryCostArmDiagnosticTests.swift.diff",
+      "sha256": "5b54b52eda9623d535732572e7353bfa7a4dec8e1b3130004318c8cb5446072e"
+    },
+    {
+      "path": "delta/KeyboardExtensionTests/TypoCorrectionQueryCostProbeIntegrationTests.swift.diff",
+      "sha256": "5a775028ce7fa77164136f4b1d9457dbb70d077ff3e09a3cb9d33c9455eb465d"
+    },
+    {
+      "path": "delta/KeyboardExtensionTests/TypoCorrectionRecallCoordinatorIntegrationTests.swift.diff",
+      "sha256": "5c11e47aef53820a97f340e78edc10986a2614f07257cd1fbaeda4ad368c1331"
+    },
+    {
+      "path": "delta/Packages/KeyboardCore/Sources/KeyboardCore/QueryCostMemoryProbe.swift.diff",
+      "sha256": "082fa270e6ba11b6b2a5b326d1971f38c8f0d7c06457d3e918a8224c3f339479"
+    },
+    {
+      "path": "delta/Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionSidecarOwner.swift.diff",
+      "sha256": "cd59575d295d6bfed1b029bce5a8bb2cfe215ef5087144b89c40c239e0e0a898"
+    },
+    {
+      "path": "delta/Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostMemoryProbeTests.swift.diff",
+      "sha256": "67ee46e89624c44a21d0bbe5606f90cbe76984d58b6faae5ea182f72fc04ee74"
+    },
+    {
+      "path": "delta-manifest.json",
+      "sha256": "7a5efae2bf9abe615f9786561edd3d59641e03784d6d067e7b07a12434a30226"
+    },
+    {
+      "path": "format-receipts.json",
+      "sha256": "44449aceb41986907357d52a9bfa743616510a2683fcae372f361ae80b225361"
+    },
+    {
+      "path": "format.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "format.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "governance/AGENTS.md",
+      "sha256": "947743e29a5987f9b1abb9c220a28ebcb92bd766928e22c1dd67c046bbe62152"
+    },
+    {
+      "path": "governance/docs/ACTIVE_WORK.md",
+      "sha256": "0c6f170fc1806e58c48f477a8998e92bc6e6b8b57cd9aea8de306a5ca57d4b07"
+    },
+    {
+      "path": "governance/docs/AI_WORKFLOW.md",
+      "sha256": "fd3ff24fc0d38ed134cace8ffd5479f76e6261b009d6f661d218e4e260b07413"
+    },
+    {
+      "path": "governance/docs/ASSIGNMENT_POLICY.md",
+      "sha256": "e90dd8f06371e9367652d4e7cc63dee31ee7b1ac855e7802d6d2e9b8e1e90680"
+    },
+    {
+      "path": "governance/docs/DOCUMENTATION_GOVERNANCE.md",
+      "sha256": "d13c15217037571c8df9a43257ecae6e5d8c90556e4512116cae8568999651af"
+    },
+    {
+      "path": "governance/docs/KNOWLEDGE_INDEX.md",
+      "sha256": "0c2a4ba82703cea6b8585fb5e131d917e768b1e4d23bd70632726250e120578c"
+    },
+    {
+      "path": "governance/docs/PERFORMANCE_BASELINE.md",
+      "sha256": "e0bfd08cb77d63567dbdfe258d3e1ac99996466a216a929380607eccf75f109c"
+    },
+    {
+      "path": "governance/docs/PROJECT_CONTEXT.md",
+      "sha256": "c435ddf7fba05769ec976b703ad8b510e43eeb45e4092bca006872ec4968a263"
+    },
+    {
+      "path": "governance/docs/READING_MAPS.md",
+      "sha256": "cdcf2a2f3168e8efd48405793d24ec968f59555f619fcf92eadacdc4bd0196d4"
+    },
+    {
+      "path": "governance/docs/RELEASE_CHECKLIST.md",
+      "sha256": "952369f9fde66b3213e73a31fb3f8c0698fa8f86b6c723f731b3f9a49751f428"
+    },
+    {
+      "path": "governance/docs/assignments/typo-correction-002-int003-query-cost-p2-route-scope-review-001.md",
+      "sha256": "988db2d4d7e710c76b4d16d5e48686fd6e7741e9fdd0aabceb1a5f3c66768da6"
+    },
+    {
+      "path": "governance/docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001.md",
+      "sha256": "586430c080ad0bce71339072d90ac60e7ba15c5997091eaf6719b7c948762209"
+    },
+    {
+      "path": "governance/docs/evidence/typo-correction-002-int003-query-cost-p2-route-scope-implementation-001.md",
+      "sha256": "93aa3f4ffd9ed926187b896210554a9a6a117cd36f4458c2dc1812c30eddee7e"
+    },
+    {
+      "path": "governance/docs/evidence/typo-correction-002-int003-query-cost-p2-route-scope-validation-001.md",
+      "sha256": "28017e0250a2519eb3d8fdf46f37ab822251fd9da3d9c66edf0fa99b07f25732"
+    },
+    {
+      "path": "governance/docs/plans/typo-correction-002-int003-query-cost-p2-route-compatibility-design-001.md",
+      "sha256": "94b83db50552b0aed2d581a49fb34b9b2f9cf5873f1dabf21378f6077b29b634"
+    },
+    {
+      "path": "governance/docs/playbooks/coordinator.md",
+      "sha256": "137b83f9f8f9824de23078e82fa4ceeadabe23723e054ce6347dc37561df1e30"
+    },
+    {
+      "path": "governance/docs/playbooks/test-release.md",
+      "sha256": "b7eb8cc76094f72699b6de77de6afa2608e6483a1c8da53dcf86a51ea6c35a58"
+    },
+    {
+      "path": "governance/docs/product-decisions/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-LOCAL-EVIDENCE-REQUIREMENTS-001.md",
+      "sha256": "fd5a97e5bf7a5ed119a1495d6f23f35d8b8cd7ec11ddb7eeb3980c22b1034e8c"
+    },
+    {
+      "path": "lint.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "lint.stdout",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "source/Keyboard/Controllers/KeyboardViewController+Layout.swift",
+      "sha256": "fceb438279a43f6df89e7b0c7928ba943b4b6614372aa67026fd7c17b93f2553"
+    },
+    {
+      "path": "source/Keyboard/Controllers/KeyboardViewController+QueryCostProbe.swift",
+      "sha256": "cf9e79e4eca75263af62ae262fc034f374cc142e48e12e8c64ae8e8a4c2b97fd"
+    },
+    {
+      "path": "source/Keyboard/Controllers/KeyboardViewController+TypoCorrection.swift",
+      "sha256": "0c34a4c68230d5ef5b793338926c1a282cb798dbe1a1a52f0e90d19316a62587"
+    },
+    {
+      "path": "source/Keyboard/Controllers/KeyboardViewController.swift",
+      "sha256": "a44a10ffda0f14db5201344339e3acdeadf0d45a414119a82040be6b1f45a007"
+    },
+    {
+      "path": "source/Keyboard/Controllers/QueryCostArmDiagnostic.swift",
+      "sha256": "659533bc91e6069f268501a15682f4f7857bed035d3ecb720b734c91de7fd4d7"
+    },
+    {
+      "path": "source/Keyboard/Controllers/QueryCostClockAnchor.swift",
+      "sha256": "e8bbb21826fdb899711c0e861d976884b5e21d04f17865fd44a793722ab47635"
+    },
+    {
+      "path": "source/Keyboard/Controllers/TypoCorrectionCallbackLedger.swift",
+      "sha256": "8093a248b15948da416245886c56f1d1ef8fb1cc89b583795eae290f6f7fd0d6"
+    },
+    {
+      "path": "source/Keyboard/Controllers/TypoCorrectionRecallCoordinator.swift",
+      "sha256": "d10ea4e89e128eb1f0c161d654071338a3b951e027c4136a7a85174704b36860"
+    },
+    {
+      "path": "source/KeyboardExtensionTests/QueryCostArmDiagnosticTests.swift",
+      "sha256": "89d759467373b1a4a419652a6ffc906c99028eefade36277597723fb8bf604bd"
+    },
+    {
+      "path": "source/KeyboardExtensionTests/TypoCorrectionCallbackLedgerTests.swift",
+      "sha256": "a505f2b2c3a617bd07d4da441ebf03b4282df46147f1acbb30e84afd249098f4"
+    },
+    {
+      "path": "source/KeyboardExtensionTests/TypoCorrectionQueryCostProbeIntegrationTests.swift",
+      "sha256": "0b414efb6d8f324693746fe2f914fbc1bac9d438008fcad052dfe9cd321c2af7"
+    },
+    {
+      "path": "source/KeyboardExtensionTests/TypoCorrectionRecallCoordinatorIntegrationTests.swift",
+      "sha256": "d12854dca3748dd61cf7eada1c0c1ba45707ee5d9051155ff866a5209d59cc97"
+    },
+    {
+      "path": "source/Packages/KeyboardCore/Sources/KeyboardCore/QueryCostMemoryProbe.swift",
+      "sha256": "dfbc619e75982cf94e654627d56b1ffe46d25ed56a12d78cc8dc019c769742f7"
+    },
+    {
+      "path": "source/Packages/KeyboardCore/Sources/KeyboardCore/QueryCostTouchLedger.swift",
+      "sha256": "b7ee5dca0beff2864c121a77c0a588594ce7c0a1c3895f86d83258b6b700a262"
+    },
+    {
+      "path": "source/Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionQueryDebugScope.swift",
+      "sha256": "78ea222205b86d29736da5d9256571f750a4ad9b51550615ee2c2b3140a0dd80"
+    },
+    {
+      "path": "source/Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionSidecarOwner.swift",
+      "sha256": "5f0878ca242ac53831d5f8333d7e60775bd77da8078e24b2f0c095f494d69f86"
+    },
+    {
+      "path": "source/Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostMemoryProbePerformanceTests.swift",
+      "sha256": "04b856eafd33318ed2bcd82a2bb173ccdde68b966d885faa8206e6316c1bf014"
+    },
+    {
+      "path": "source/Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostMemoryProbeTests.swift",
+      "sha256": "9f08de6864ebe5d0d3acab01d03fd460468623819d8c393677e52179cec3ee7f"
+    },
+    {
+      "path": "source/Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostTouchLedgerTests.swift",
+      "sha256": "93478b1f68250f755db76242c31c3a7366416f8e9a71f9682e7990c215873c5e"
+    },
+    {
+      "path": "source/Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift",
+      "sha256": "6d5670d14266b6446763801919dc1020304dc5046f45c7763c5f97c8c452748e"
+    },
+    {
+      "path": "source/Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+CorrectionQuery.swift",
+      "sha256": "c99002fc4a8ef435bdcb4f2455a802bd48a256f5a583c7e97b8af1bec6647e0f"
+    },
+    {
+      "path": "source/Packages/RimeBridge/Sources/RimeBridgeObjC/RimeSessionManager.m",
+      "sha256": "79ae6d943879891aaf1a0799b9d9d3acbaa58669727d3f3adc5260d7f516367c"
+    },
+    {
+      "path": "source/Packages/RimeBridge/Sources/RimeBridgeObjC/include/RimeSessionManager.h",
+      "sha256": "6e746cf149b8b8a4727398fcca5d46b32eca761464bcb32adee372d47ad8bba3"
+    },
+    {
+      "path": "source/Packages/RimeBridge/Tests/RimeBridgeTests/RimeCorrectionQueryIntegrationTests.swift",
+      "sha256": "bb0e6d57d198be2493152db78ca3a2019a519f9f82b28ce05ec7cb05301961d9"
+    },
+    {
+      "path": "source/Universe Keyboard.xcodeproj/project.pbxproj",
+      "sha256": "ba1a9558fdf398c11d3a7db107f07f26e04ed2d378d9a79651e43ca5dcee7027"
+    },
+    {
+      "path": "source-closeout.json",
+      "sha256": "a1fc6c4f2bfe075adaf7b2e45d7e51731a182a7c93908d29a89b9dd834a20427"
+    },
+    {
+      "path": "support/Packages/KeyboardCore/Package.swift",
+      "sha256": "9ebf33313b560b83634a074dd675211aee9cec13b1d879e9cd4f35fbb94aa764"
+    },
+    {
+      "path": "support/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+      "sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd"
+    },
+    {
+      "path": "support/Packages/KeyboardCore/Sources/KeyboardCore/ResponsiveRimePipeline.swift",
+      "sha256": "adb6a0c435deb847c6b89fc02d58dfad5e07b71edb2394f6d4e559eaa7517a3d"
+    },
+    {
+      "path": "support/Packages/KeyboardCore/Sources/KeyboardCore/RimeEngine.swift",
+      "sha256": "07cb164f6655cde5c72266ffbb8533b83694ba6edc8c542797c0df35b26dd1e4"
+    },
+    {
+      "path": "support/Packages/KeyboardCore/Sources/KeyboardCore/ThreadAffineRimeSession.swift",
+      "sha256": "6ee42f25f26a2b7609084f0a930954023c3ce2bb1e6eee7890d2c7fbcd83d1d3"
+    },
+    {
+      "path": "support/Packages/KeyboardCore/Sources/KeyboardCore/ThreadAffineRimeSpike.swift",
+      "sha256": "1a5e2d15d540c47c3c763ce94e22c467cb6a2a7c9bd08d789aa072d963296243"
+    },
+    {
+      "path": "support/Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionCandidateQuery.swift",
+      "sha256": "b86b8ccc2cff106203ca63a4f6d1e5e70b66b1a81cfcdaad1d3943a2f0a42b78"
+    },
+    {
+      "path": "support/Universe Keyboard.xcodeproj/xcshareddata/xcschemes/KeyboardExtensionTests.xcscheme",
+      "sha256": "c57eae6288cf4d8bae5e8db1038f03085fa167a31fd0b9d9fc37f7024f9d40f7"
+    },
+    {
+      "path": "validation/archive-manifest.json",
+      "sha256": "c39fca60aa920686c216a2e48bbb9e67c2845f9e643349e7c4323bcb0a4d06ac"
+    },
+    {
+      "path": "validation/core.stderr",
+      "sha256": "bfdfc01882ab65ecbe1259ec6edb32ff8cdc15638a898b510aa94c6389f99722"
+    },
+    {
+      "path": "validation/core.stdout",
+      "sha256": "15354f234069a3d09d433bbfe559de02256c1eff178f6942ae7024678f7e9fba"
+    },
+    {
+      "path": "validation/coverage.json",
+      "sha256": "93565a70359e29da82ab72228d720147f3bd9f5dcbf32a47aaa6d4416127d912"
+    },
+    {
+      "path": "validation/device-entry.json",
+      "sha256": "7d3cbd76a0a944c674907d7e151c0d0714fa67a1f962a55f7aca40f605b1a848"
+    },
+    {
+      "path": "validation/documentation-check.json",
+      "sha256": "0afdfe0b8b26f1ec6a2d02440b63505d9b12cf29808b0559edec22cdb7226852"
+    },
+    {
+      "path": "validation/entry.json",
+      "sha256": "dd090a60549579f7cfebca8760e0472a89e55e8cdca458eecfacbac1aaf5af5f"
+    },
+    {
+      "path": "validation/execution-binding.json",
+      "sha256": "eb3b865468b9d3945b1b4d5037d6b2a22e241ba96018dbb35f6c217e5c426fdf"
+    },
+    {
+      "path": "validation/extension-summary.json",
+      "sha256": "13e70f82925469ba960e2620205f701f8ca897f500928f42061617e31121c41c"
+    },
+    {
+      "path": "validation/extension.stderr",
+      "sha256": "799f9afedad92c641ac4918e340aefeaf9667b3455ca1601c60e51e664be7733"
+    },
+    {
+      "path": "validation/extension.stdout",
+      "sha256": "270c35eb38388b6f9f1b1bd3c493f661590976390a8647885d5092ee9b1ce6fd"
+    },
+    {
+      "path": "validation/final-identity.json",
+      "sha256": "f4fea0b0d8e0828197a4149f2625645bf23a272459c25a34e69b91af93bc72be"
+    },
+    {
+      "path": "validation/receipts.json",
+      "sha256": "d6d9d16fe44c0f6888e4f73310a708f322f912d47968736fa03bba17dde72edd"
+    }
+  ]
+}

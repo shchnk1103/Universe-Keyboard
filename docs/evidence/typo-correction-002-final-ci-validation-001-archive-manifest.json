@@ -1,0 +1,296 @@
+{
+  "run_id": "TC2-CI-20261011-INT003-FINAL-001",
+  "archives": [
+    {
+      "source": "/private/tmp/uk-finalci1/execution-receipt.json",
+      "target": "docs/evidence/typo-correction-002-final-ci-validation-001-execution-receipt.json",
+      "sha256": "a12b261fd486476ef14554f7506365fc4bd1d158a5464b48893294f028e07ca9",
+      "bytes": 41785
+    },
+    {
+      "source": "/private/tmp/uk-finalci1/result-accounting.json",
+      "target": "docs/evidence/typo-correction-002-final-ci-validation-001-result-accounting.json",
+      "sha256": "e10b86e832b6cc93abd297d1c43b06fd0683a0d14d7d369fadfe90a7cb322e9a",
+      "bytes": 8960
+    },
+    {
+      "source": "/private/tmp/uk-finalci1/human-authorization.json",
+      "target": "docs/evidence/typo-correction-002-final-ci-validation-001-human-authorization.json",
+      "sha256": "62e257513f0a5d365f5a64e4b062bfd661d2ba510c2d7a985aaf40b5d64af699",
+      "bytes": 465
+    },
+    {
+      "source": "/private/tmp/uk-finalci1/binding-original.json",
+      "target": "docs/evidence/typo-correction-002-final-ci-validation-001-binding-original.json",
+      "sha256": "a507dcc71d8fd12422210d05505240e85314f7d3eb00bbb187d0cab99a0f8146",
+      "bytes": 14057
+    },
+    {
+      "source": "/private/tmp/uk-finalci1/run.py",
+      "target": "docs/evidence/typo-correction-002-final-ci-validation-001-run.py",
+      "sha256": "bb175651a4235d044fa6630ea43c2e068fe06f8b3967db02b1a10673b4c24d52",
+      "bytes": 5866
+    },
+    {
+      "source": "/private/tmp/uk-finalci1/Logs/37-readout_rimebridge.log",
+      "target": "docs/evidence/typo-correction-002-final-ci-validation-001-rimebridge-summary.json",
+      "sha256": "0dd3a141184f4b16ca0c9231d419e9c7fe31f39c485a97d4c2b8ffc55abbb1e7",
+      "bytes": 1207
+    },
+    {
+      "source": "/private/tmp/uk-finalci1/Logs/38-readout_app_keyboard.log",
+      "target": "docs/evidence/typo-correction-002-final-ci-validation-001-app_keyboard-summary.json",
+      "sha256": "2844daa7f9cd6b8a6c285b0add24cef8a214b6253e6c14046da99935ffff88d0",
+      "bytes": 1214
+    },
+    {
+      "source": "/private/tmp/uk-finalci1/Logs/39-readout_keychain.log",
+      "target": "docs/evidence/typo-correction-002-final-ci-validation-001-keychain-summary.json",
+      "sha256": "08a6979629fc2d479756464d7d9c1bc37d8d8d2f15423c80fe5e2fc11aeec27a",
+      "bytes": 1015
+    }
+  ],
+  "private_raw_logs": [
+    {
+      "stage": "xcode_identity",
+      "source": "/private/tmp/uk-finalci1/Logs/01-xcode_identity.log",
+      "bytes": 33,
+      "sha256": "694b44731d0b415c5b11d844151e466d7f5e200a95627efda377f232f1a6ab77"
+    },
+    {
+      "stage": "sdk_identity",
+      "source": "/private/tmp/uk-finalci1/Logs/02-sdk_identity.log",
+      "bytes": 5,
+      "sha256": "7b01c549928398a045692f24bcac7803b348524cdd76f21265b02984b2ba556a"
+    },
+    {
+      "stage": "simulator_entry",
+      "source": "/private/tmp/uk-finalci1/Logs/03-simulator_entry.log",
+      "bytes": 19667,
+      "sha256": "476e9fcc2070caf18426fb14ab12db51e9d575167aa524b97c1c1953873e825a"
+    },
+    {
+      "stage": "whitespace",
+      "source": "/private/tmp/uk-finalci1/Logs/04-whitespace.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "lightweight_python",
+      "source": "/private/tmp/uk-finalci1/Logs/05-lightweight_python.log",
+      "bytes": 111,
+      "sha256": "031ec3ba6ac5d51a985080b0a80f8154d61eadd533b043312813eeed3eff2c7d"
+    },
+    {
+      "stage": "lightweight_final_gate",
+      "source": "/private/tmp/uk-finalci1/Logs/06-lightweight_final_gate.log",
+      "bytes": 30,
+      "sha256": "5a536f744243d87124c72cb813fe45267540fb3592a704fb5546e47c1e036e3b"
+    },
+    {
+      "stage": "lightweight_kos_trigger",
+      "source": "/private/tmp/uk-finalci1/Logs/07-lightweight_kos_trigger.log",
+      "bytes": 34,
+      "sha256": "bed0c15a3b92486d63a55ca78e568ccef3427050c262aa5b22f4267d6e58eec9"
+    },
+    {
+      "stage": "vendor_pinned",
+      "source": "/private/tmp/uk-finalci1/Logs/08-vendor_pinned.log",
+      "bytes": 179,
+      "sha256": "cd7fe77d9cd2b4e7a2d8233f435569b3b27f34ed8e2b7bc3e342490fe169abcf"
+    },
+    {
+      "stage": "strict_format:Keyboard/Controllers/KeyboardViewController+Layout.swift",
+      "source": "/private/tmp/uk-finalci1/Logs/09-strict_format_Keyboard_Controllers_KeyboardViewController_Layout_swift.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Keyboard/Controllers/KeyboardViewController+TypoCorrection.swift",
+      "source": "/private/tmp/uk-finalci1/Logs/10-strict_format_Keyboard_Controllers_KeyboardViewController_TypoCorrection_swift.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Keyboard/Controllers/KeyboardViewController.swift",
+      "source": "/private/tmp/uk-finalci1/Logs/11-strict_format_Keyboard_Controllers_KeyboardViewController_swift.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Keyboard/Controllers/TypoCorrectionRecallCoordinator.swift",
+      "source": "/private/tmp/uk-finalci1/Logs/12-strict_format_Keyboard_Controllers_TypoCorrectionRecallCoordinator_swift.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:KeyboardExtensionTests/CandidatePrefetchUIContractTests.swift",
+      "source": "/private/tmp/uk-finalci1/Logs/13-strict_format_KeyboardExtensionTests_CandidatePrefetchUIContractTests_swift.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionSidecarOwner.swift",
+      "source": "/private/tmp/uk-finalci1/Logs/14-strict_format_Packages_KeyboardCore_Sources_KeyboardCore_TypoCorrectionSidecarOwner_swift.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift",
+      "source": "/private/tmp/uk-finalci1/Logs/15-strict_format_Packages_KeyboardCore_Tests_KeyboardCoreTests_T9PinyinPathTests_swift.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+CorrectionQuery.swift",
+      "source": "/private/tmp/uk-finalci1/Logs/16-strict_format_Packages_RimeBridge_Sources_RimeBridge_RimeEngineImpl_CorrectionQuery_swift.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Keyboard/Controllers/KeyboardViewController+QueryCostProbe.swift",
+      "source": "/private/tmp/uk-finalci1/Logs/17-strict_format_Keyboard_Controllers_KeyboardViewController_QueryCostProbe_swift.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Keyboard/Controllers/QueryCostArmDiagnostic.swift",
+      "source": "/private/tmp/uk-finalci1/Logs/18-strict_format_Keyboard_Controllers_QueryCostArmDiagnostic_swift.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Keyboard/Controllers/QueryCostClockAnchor.swift",
+      "source": "/private/tmp/uk-finalci1/Logs/19-strict_format_Keyboard_Controllers_QueryCostClockAnchor_swift.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Keyboard/Controllers/TypoCorrectionCallbackLedger.swift",
+      "source": "/private/tmp/uk-finalci1/Logs/20-strict_format_Keyboard_Controllers_TypoCorrectionCallbackLedger_swift.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:KeyboardExtensionTests/QueryCostArmDiagnosticTests.swift",
+      "source": "/private/tmp/uk-finalci1/Logs/21-strict_format_KeyboardExtensionTests_QueryCostArmDiagnosticTests_swift.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:KeyboardExtensionTests/TypoCorrectionCallbackLedgerTests.swift",
+      "source": "/private/tmp/uk-finalci1/Logs/22-strict_format_KeyboardExtensionTests_TypoCorrectionCallbackLedgerTests_swift.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:KeyboardExtensionTests/TypoCorrectionQueryCostProbeIntegrationTests.swift",
+      "source": "/private/tmp/uk-finalci1/Logs/23-strict_format_KeyboardExtensionTests_TypoCorrectionQueryCostProbeIntegrationTests_swift.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:KeyboardExtensionTests/TypoCorrectionRecallCoordinatorIntegrationTests.swift",
+      "source": "/private/tmp/uk-finalci1/Logs/24-strict_format_KeyboardExtensionTests_TypoCorrectionRecallCoordinatorIntegrationTests_swift.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Packages/KeyboardCore/Sources/KeyboardCore/QueryCostMemoryProbe.swift",
+      "source": "/private/tmp/uk-finalci1/Logs/25-strict_format_Packages_KeyboardCore_Sources_KeyboardCore_QueryCostMemoryProbe_swift.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Packages/KeyboardCore/Sources/KeyboardCore/QueryCostTouchLedger.swift",
+      "source": "/private/tmp/uk-finalci1/Logs/26-strict_format_Packages_KeyboardCore_Sources_KeyboardCore_QueryCostTouchLedger_swift.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionQueryDebugScope.swift",
+      "source": "/private/tmp/uk-finalci1/Logs/27-strict_format_Packages_KeyboardCore_Sources_KeyboardCore_TypoCorrectionQueryDebugScope_swift.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostMemoryProbePerformanceTests.swift",
+      "source": "/private/tmp/uk-finalci1/Logs/28-strict_format_Packages_KeyboardCore_Tests_KeyboardCoreTests_QueryCostMemoryProbePerformanceTests_swift.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostMemoryProbeTests.swift",
+      "source": "/private/tmp/uk-finalci1/Logs/29-strict_format_Packages_KeyboardCore_Tests_KeyboardCoreTests_QueryCostMemoryProbeTests_swift.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostTouchLedgerTests.swift",
+      "source": "/private/tmp/uk-finalci1/Logs/30-strict_format_Packages_KeyboardCore_Tests_KeyboardCoreTests_QueryCostTouchLedgerTests_swift.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Packages/RimeBridge/Tests/RimeBridgeTests/RimeCorrectionQueryIntegrationTests.swift",
+      "source": "/private/tmp/uk-finalci1/Logs/31-strict_format_Packages_RimeBridge_Tests_RimeBridgeTests_RimeCorrectionQueryIntegrationTests_swift.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "keyboardcore",
+      "source": "/private/tmp/uk-finalci1/Logs/32-keyboardcore.log",
+      "bytes": 312407,
+      "sha256": "7c1d137034a8c22c2c1e60d85f250e91819abf177f874b16735e5785b41a7449"
+    },
+    {
+      "stage": "rimebridge",
+      "source": "/private/tmp/uk-finalci1/Logs/33-rimebridge.log",
+      "bytes": 548735,
+      "sha256": "b9ab83c949e82bda9e0383469b350cb5fc3c9aff84886c6d919bf99071ca7fd9"
+    },
+    {
+      "stage": "app_keyboard",
+      "source": "/private/tmp/uk-finalci1/Logs/34-app_keyboard.log",
+      "bytes": 1086967,
+      "sha256": "9b8ffc011955fe372bf759524f1450edfb9ea48d80e8557efca14f5cea4db4a0"
+    },
+    {
+      "stage": "keychain",
+      "source": "/private/tmp/uk-finalci1/Logs/35-keychain.log",
+      "bytes": 725051,
+      "sha256": "ea07b394ebe8841d07cf9169ed7d1f7fb44c1bfeceba4334e76f8fd77fea2d16"
+    },
+    {
+      "stage": "release",
+      "source": "/private/tmp/uk-finalci1/Logs/36-release.log",
+      "bytes": 398648,
+      "sha256": "f819fd0e5f481dd92bccbf199233d0a2191c0ff1d40cd700ae91ee12ab1b6c58"
+    },
+    {
+      "stage": "readout_rimebridge",
+      "source": "/private/tmp/uk-finalci1/Logs/37-readout_rimebridge.log",
+      "bytes": 1207,
+      "sha256": "0dd3a141184f4b16ca0c9231d419e9c7fe31f39c485a97d4c2b8ffc55abbb1e7"
+    },
+    {
+      "stage": "readout_app_keyboard",
+      "source": "/private/tmp/uk-finalci1/Logs/38-readout_app_keyboard.log",
+      "bytes": 1214,
+      "sha256": "2844daa7f9cd6b8a6c285b0add24cef8a214b6253e6c14046da99935ffff88d0"
+    },
+    {
+      "stage": "readout_keychain",
+      "source": "/private/tmp/uk-finalci1/Logs/39-readout_keychain.log",
+      "bytes": 1015,
+      "sha256": "08a6979629fc2d479756464d7d9c1bc37d8d8d2f15423c80fe5e2fc11aeec27a"
+    }
+  ],
+  "result_bundles": [
+    "/private/tmp/uk-finalci1/Results/rimebridge.xcresult",
+    "/private/tmp/uk-finalci1/Results/app_keyboard.xcresult",
+    "/private/tmp/uk-finalci1/Results/keychain.xcresult",
+    "/private/tmp/uk-finalci1/Results/release.xcresult"
+  ],
+  "retention": "Keep this unique bounded CI evidence until publication/remaining evidence use confirmed; no deletion in this stage"
+}

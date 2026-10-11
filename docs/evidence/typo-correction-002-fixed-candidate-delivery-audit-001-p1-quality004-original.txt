@@ -1,0 +1,146 @@
+# INT-003 P1 证据收敛独立 Quality Review 004
+
+## Verdict
+
+- Claim 2：**Covered**。三个 run-004 result bundle 的 test action、唯一 test-summary reference、summary totals/status、required integration test、skip identity/reason，以及 signed Keychain 1/1 均由 packet 允许的 legacy xcresult object 读取和 bound log/receipt 交叉核对。
+- Aggregate P1：**Complete bounded Quality evidence coverage with conditions**。R2 在其有效预算内已覆盖 Claims 1、3、4、5；本轮覆盖了 R2 唯一未覆盖的 Claim 2。该结论是有界 Quality evidence reconciliation，不是 Product acceptance、Quality Gate、QA-001 Gate、merge 或 Release 结论。
+- Q-R2-01 已因本轮完整覆盖 Claim 2 的六项 required criterion 而解除；Q-R2-02 至 Q-R2-05 仍原样保留。
+
+## Review identity and authority
+
+| 项目 | 绑定值 |
+|---|---|
+| Work Item | TYPO-CORRECTION-002-INT003-QUERY-COST-MEASUREMENT-001 |
+| Assignment | TYPO-CORRECTION-002-INT003-QUERY-COST-P1-EVIDENCE-CONVERGENCE-QUALITY-REVIEW-004 |
+| Reviewer runtime | /root/int003_p1_quality_claim2_r4；fresh independent Test / Release reviewer |
+| Worktree | /Users/doubleshy0n/.codex/worktrees/int003-ci-72dd-once/Universe Keyboard |
+| Fixed baseline | 72dd21710f2a86c9f951d489f645bae89b053b58；tree 8ce8e8c0d9b821ca4d24aff4faf46a3e49bf87ff |
+| Packet R4 SHA-256 | ab97ce3096a624bcf0202de7e0f2ab801af8155511ea7cafa3a035504d87ca47 |
+| Assignment SHA-256 | 36e0995ee471491dc576574fd88f51dd68deb9a7e0788e96bf7bfc44ef04030b |
+| Consumed AUTH SHA-256 | a7ab8fd4e4301b3074144ef692e8e6cbf669b718a35ad34fc35f87674927d554 |
+| AUTH state | consumed；consumed_at 2026-09-29T18:08:25+08:00；本轮没有复用 R2/R3 AUTH |
+| Reviewer window | UTC 2026-09-29T10:11:40Z 至 2026-09-29T10:15:37Z；active elapsed 00:03:57；无主动等待 |
+| Usage ceiling | 24 个 reviewer top-level tool calls 或 25 active minutes；本轮 24/24 calls，未扩展预算 |
+
+本轮没有读取 broad dirty diff，没有修改 source/status 文件，没有写入任何 result bundle。精确 scratch root 为 /private/tmp/universe-keyboard-int003-p1-claim2-quality-review-004-tmp；六个 extraction JSON 均写在该 root 内。
+
+## Exact preflight
+
+固定 HEAD/tree 和 packet、Assignment、Consumed AUTH 身份均匹配。以下 packet-listed 输入的实际 SHA-256 均与 R4 记录一致：
+
+| 输入 | SHA-256 |
+|---|---|
+| AGENTS.md | 947743e29a5987f9b1abb9c220a28ebcb92bd766928e22c1dd67c046bbe62152 |
+| docs/KNOWLEDGE_INDEX.md | 002e7a4d87139ff0b2345c0e0d36f193c7f97dccb98d9ea02fe4b4eed4767457 |
+| docs/ACTIVE_WORK.md | 1888bdf95c0e7a130d3006c71957a6633c917294378e0151db517af85e107142 |
+| docs/READING_MAPS.md | cdcf2a2f3168e8efd48405793d24ec968f59555f619fcf92eadacdc4bd0196d4 |
+| docs/ASSIGNMENT_POLICY.md | e90dd8f06371e9367652d4e7cc63dee31ee7b1ac855e7802d6d2e9b8e1e90680 |
+| docs/AI_WORKFLOW.md | fd3ff24fc0d38ed134cace8ffd5479f76e6261b009d6f661d218e4e260b07413 |
+| docs/playbooks/test-release.md | b7eb8cc76094f72699b6de77de6afa2608e6483a1c8da53dcf86a51ea6c35a58 |
+| docs/assignments/typo-correction-002.md | 0b1b0f8857b18dc685f898593023a7a55edea7f13725e461bdd6c24269e1bf54 |
+| docs/assignments/typo-correction-002-int003-query-cost-measurement-001.md | 6ab7c3daf8505dbdbded64b2e3201676741a6aba2451fe57c88bb7ec9d8426b7 |
+| docs/plans/typo-correction-002-int003-query-cost-measurement-001.md | 6d936f11d1f682962ba5a5e71570f7503b09d29888abd669bd3ac948cd3f8c65 |
+| docs/evidence/typo-correction-002-int003-query-cost-p1-evidence-convergence-001.md | 37eab07d584834c89a63d6b73cf1aaeef5edbf1d7156284cf2dd72e24ddc7ced |
+| R2 packet | 34a3762f223712ff9c0193c789e0f0cb3bc0df58dca717cf0d8eaf737d0798fa |
+| R2 review | 6bb500ac5bef6ef377fb9ea9d4cce9e66975732093ecffa3d614b9eece9afbcf |
+| R2 usage | 7fdc845619f073873409a73e3216c55595523a6a48185e5efe8527ae75a09070 |
+| run-004 receipt | 9f34cc5a63f50ff69e91ee5e4b992be701375bc871deb7f3b55645af0ed11004 |
+| packet R4 | ab97ce3096a624bcf0202de7e0f2ab801af8155511ea7cafa3a035504d87ca47 |
+| Assignment R4 | 36e0995ee471491dc576574fd88f51dd68deb9a7e0788e96bf7bfc44ef04030b |
+| Consumed AUTH R4 | a7ab8fd4e4301b3074144ef692e8e6cbf669b718a35ad34fc35f87674927d554 |
+
+三份 result bundle 的 Info.plist 和四份 bound log 也全部匹配：
+
+| Artifact | SHA-256 |
+|---|---|
+| RimeBridgeTests Info.plist | 213fe72fdf7c09704d6df29f7901da96b43059f931bcc71c56ca3fd700ef7a4d |
+| App + Keyboard Info.plist | bc17571b936613e361f45bba5a17eb849e29c595cf1ebdf4c5295aeec1a647ca |
+| Signed Keychain Info.plist | e87c8cea07cda31020ac80943eeac292abfb213c641a026068efb5b3de9dc48b |
+| rimebridge-tests.log | fbc2c6e51a753b3b2cf162b9444f3fd9bc5f4da35d428c1c8a8c15778475d38e |
+| app-keyboard-tests.log | 04c1221221318fd461d0cf0c0d44a2fce21970b8a2b3a2ff14a3af98fff16663 |
+| keychain-test.log | 32e1c10f5c52f2bd1458e462a32c03f08e3121f59438ea93f9d86d2b5fec1d61 |
+| release-build.log | 2dba3d0569f0044256a1b4ca36cc9c48079f69c0cc61e818643f65f10b34af82 |
+
+R4 review output、usage output 和 exact scratch root 在 preflight 时均不存在。结果 bundle 只读访问成功，未执行 build/test、Simulator、网络、GitHub 或重试。
+
+## Allowed extraction and unique references
+
+对三个 bound test bundle 各执行一次以下唯一允许的 root 读取，stdout 只重定向到 scratch：
+
+    TMPDIR=/private/tmp/universe-keyboard-int003-p1-claim2-quality-review-004-tmp xcrun xcresulttool get object --legacy --path "<bundle>" --format json
+
+每个 root 的 actionResult.testsRef 均唯一，且类型为 ActionTestPlanRunSummaries。随后每个 bundle 只执行一次同一命令的精确 summary reference 读取；总计 6 次 xcresulttool calls，未超过 packet 的上限：
+
+| Bundle | Action title | 唯一 testsRef id | Extracted files |
+|---|---|---|---|
+| RimeBridgeTests | Testing project Universe Keyboard with scheme RimeBridgeTests | 0~G4bThByfV3ylWqFYpXp3OgbZyR091Ck__s4uBeZENJDs0Mm9HdUoDWyssIX5NfEDoXjiWBYt01YjBcQqN0mzlQ== | rime-root.json；rime-summary.json |
+| App + Keyboard | Testing project Universe Keyboard with scheme Universe Keyboard | 0~MmFC9Py4S1PCBoJScLn9NZtc7BSt8SA4nQCXlEbFecH8hUALishmczOqtzlW0RSHehwwXhlsxzTkcmiTEHWKqQ== | app-root.json；app-summary.json |
+| Signed Keychain | Testing project Universe Keyboard with scheme Universe Keyboard | 0~QljcxmszEgCZ9tXI5jjSSIueV_Kvx-bdwyV549fLQceVu0l8l1zSsLk86aYD-3yzGlAzM8N8J557oJuz3XxJKw== | keychain-root.json；keychain-summary.json |
+
+六份 JSON 均可被标准库 JSON parser 读取。summary 定位统一为 summaries[0] → testableSummaries → tests；没有向 bundle 内写入 UUID、TestReport 或任何修复文件。
+
+## Claim 2 evidence matrix
+
+| Criterion | Result | Evidence and reconciliation |
+|---|---|---|
+| 1. 三个 bundle 的 test action/result/summary 可独立读取 | Covered | 三个 root 均有且仅有一个 actionResult.testsRef；三个 exact summary object 读取成功。summary action 为 Test Scheme Action，且每个 target 的 tests group 可解析。 |
+| 2. RimeBridge 108、0 failure、20 optional skips、三项 correction-query integration tests passed | Covered | rime-summary.json 的 RimeBridgeTests metadata 为 108，status 为 88 Success + 20 Skipped，failure-count nodes 为 0。三个 integration test 均为 Success：testGetContextFalseIsCoveredOnlyBySimulatedDebugSeam、testPrivateSyntheticSchemaReturnsRealReadyCandidates、testPrivateSyntheticSchemaReturnsRealReadyEmptyContext。rimebridge-tests.log:1667-2228 逐项通过，:2899-2902 为 108/20/0 总结。 |
+| 3. App + Keyboard 各 target totals、0 failure、10 environment-gated skips | Covered | app-summary.json 保持 target 分离：UniverseKeyboardTests 410（400 Success、10 Skipped、0 failure）；KeyboardTests 16（16 Success、0 Skipped、0 failure）；KeyboardExtensionTests 5（5 Success、0 Skipped、0 failure）。没有把三个 target 合并成不存在的单一 target。receipt:19-33 与 app-keyboard-tests.log:6437-6524 一致。 |
+| 4. Signed Keychain selected integration test 1/1 | Covered | keychain-summary.json 为 UniverseKeyboardTests / Selected tests，唯一 metadata 为 RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem()，status Success；keychain-test.log:3831-3849 记录 1/1 passed。 |
+| 5. 每个 skip 只报告 bound summary/log 实际显示的 identity/reason | Covered | 见下方 skip ledger。summary 提供每项 identity/status，bound logs 提供每项 skip reason；没有补写缺失 reason。 |
+| 6. Release log 支持 BUILD SUCCEEDED | Covered | release-build.log:1424-1435 的 bound window 含 BUILD SUCCEEDED；receipt 也记录 Release build PASS。该事实不扩展为 hosted CI 或 Release approval。 |
+
+### Skip ledger
+
+RimeBridge summary 的 20 个 skipped metadata 与 bound log 的 20 条 reason 行一致：
+
+- RimeLuaSmokeTests：testCorrectionSidecarKeepsVisibleCompositionIntactWhenRuntimeFixtureIsProvided、testRimeIceLuaDynamicCandidatesWhenRuntimeFixtureIsProvided；reason 为未设置 UK_RIME_LUA_SMOKE_SHARED_DIR / UK_RIME_LUA_SMOKE_USER_DIR。
+- RimeT9AutoAnchorRetryMatrixTests：testCappedTwoSyllableControllerFrozenPairedMatrix；reason 为未设置 immutable 40-character lowercase S4 commit。testIsolatedPersonalizationKnownPositive、testIsolatedPersonalizationNaturalReminder、testIsolatedPersonalizationNaturalWeather、testPartialLongSelectionIsNotPersonalizationProof、testRejectedCompositionLaterOpportunityTransactionMatrix、testRollingControllerFrozenA0A1B2B3Matrix、testRollingControllerMissingLiveCompositionFailsClosedBeforeKey、testRollingControllerRealRimeDeletePathAndPartialOwnership、testRollingControllerRealRimeSecondRejectRestoreMatrix；reason 为未设置 isolated T9 Spike runtime directories。
+- RimeT9CompatibilitySpikeTests：testPinnedLibrimeCanSelectT9AndProcessDigitSequenceAfterRemovingUnsupportedProcessor；reason 为未设置 UK_RIME_T9_SPIKE_SHARED_DIR / UK_RIME_T9_SPIKE_USER_DIR。
+- RimeT9PinyinSelectionSpikeTests：test004CatalogExactRawAcceptanceOnPinnedLibrime、testAtomicPathDiscoveryStageAOnPinnedLibrime、testGate5Phase05CandidateCoverageSelRangeOnPinnedLibrime、testGate5Phase06AlternativeCoverageSelectionDeltaOnPinnedLibrime、testPrecisePinyinPathRefinementOnPinnedLibrime、testReadOnlyWindowCoverageForYiZiSibling；reason 为未设置 UK_RIME_T9_SPIKE_SHARED_DIR / UK_RIME_T9_SPIKE_USER_DIR。
+- ThreadAffineRimeRealEngineTests：testRealEngineBootstrapCreatesAndCallsOffMainThroughOwner；reason 为未设置 UK_RIME_T9_SPIKE_SHARED_DIR / UK_RIME_R4B_*。
+
+App + Keyboard 的 UniverseKeyboardTests summary 的 10 个 skipped metadata 与 bound log reason 行对应：
+
+- RimeIcePinnedArtifactTests/testVerifiedOfficialAndMirrorArchivesConvergeAfterProductionProcessing；reason 为未设置 TEST_RUNNER_SCHEME_PIN_ARCHIVE_ROOT。
+- RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem；reason 为 unsigned host 缺少 Keychain entitlement，signed Simulator lane 覆盖 integration。
+- SchemeResourcePreparationCoexistenceTests/testCS06_UninstallInactiveWanxiangRetainsIcePeerInventory、testCS0910_RealInstallerIceRemovalPreservesCompleteWanxiangInventory；reason 为 fixed Wanxiang extract tree。
+- SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerWanxiangRemovalPreservesCompleteIceInventory；reason 为 fixed Ice extract tree。
+- SchemeResourcePreparationCoexistenceTests/testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds；reason 为 Ice 2026.06.30 default.yaml fixture。
+- SchemeResourcePreparationCoexistenceTests/testProductionProcessedIceTreeKeepsOfficialDefaultYamlWhenFixturePresent；reason 为未设置 TEST_RUNNER_SCHEME_PIN_ARCHIVE_ROOT。
+- TD012LMDGDeviceStagingTests/testPinnedModelLoadsThroughWanxiangGrammarOnAuthorizedPhysicalDevice、testRemovePinnedModelAfterAuthorizedPhysicalDeviceSpike、testStagePinnedModelForAuthorizedPhysicalDeviceSpike；reason 为 physical-device-only。
+
+Skip identity/status 以 summary object 为独立读取结果；reason 以 bound log 为准。R2 receipt 的聚合 skip 描述与上述逐项 bounded log 解释一致。没有将 optional skip 写成 passed test，也没有推导 hosted CI 结果。
+
+## Summary versus receipt reconciliation
+
+- RimeBridge summary：108 metadata、88 success、20 skipped、0 failure；receipt 的 108 tests / 20 optional skips / 0 failures 和三项 correction-query integration tests passed 均一致。
+- App + Keyboard summary：UniverseKeyboardTests 410/10/0、KeyboardTests 16/0/0、KeyboardExtensionTests 5/0/0；receipt 的 target-by-target totals、10 environment-gated skips 和四项 coordinator integration tests passed 均一致。
+- Signed Keychain summary：Selected tests 1/1 success；keychain-test.log:3831-3849 同样为 selected integration test 1/1。
+- Release log：bound window 支持 BUILD SUCCEEDED；这是 local executor evidence，不是 hosted CI evidence。
+
+## Aggregate reconciliation against R2
+
+R2 review 的精确 SHA 为 6bb500ac5bef6ef377fb9ea9d4cce9e66975732093ecffa3d614b9eece9afbcf，R2 usage 的精确 SHA 为 7fdc845619f073873409a73e3216c55595523a6a48185e5efe8527ae75a09070。R2 usage 记录其自身 24/24 calls，未超过 R2 packet 的预算；R2 report 明确：
+
+- Claim 1：covered；
+- Claim 3：covered，保留 433 discovered / 432 result nodes discrepancy；
+- Claim 4：covered，保留同一 driver 生成 expected stage trace 的 oracle limitation；
+- Claim 5：covered，保留真实 setup/schema/get_context failure path 未展示的条件；
+- Claim 2：唯一未覆盖的 required result criterion，原因是旧 summary command 的 TestReport UUID 写权限错误。
+
+本轮 R4 已独立覆盖 Claim 2，因此六项 P1 review claim 的 bounded evidence coverage 可完成 reconciliation。R3 的 41/32 over-budget 结果和 conclusions 不作为输入。
+
+### Residuals carried forward exactly from R2
+
+| ID | 条件 | Owner | 推荐 disposition |
+|---|---|---|---|
+| Q-R2-01 | **Resolved by R4**：三个 run-004 xcresult summary 已通过 packet 允许的 legacy object reader 独立读取，required Claim 2 criteria 全部覆盖。 | Test / Release reviewer | resolved：保留本 R4 exact reference、summary totals、skip ledger 与 receipt/log reconciliation。 |
+| Q-R2-02 | XcodeBuildMCP 433 discovered 与 xcresult 432 nodes 的差异未解释。 | Test / Release reviewer | accept：作为 child-003 明示的 evidence limitation；不得用推断改写计数。 |
+| Q-R2-03 | ready-empty stage expected trace 使用同一 TypoCorrectionRecallDriver 生成，缺少独立 hard-coded stage oracle。 | Input Intelligence Maintainer | tech_debt:INT003-COORDINATOR-INDEPENDENT-ORACLE。 |
+| Q-R2-04 | 真实 Rime setup/schema/get_context failure path 没有被这组 integration tests 展示。 | RimeBridge owner | tech_debt:INT003-RIME-FAILURE-BOUNDARY。 |
+| Q-R2-05 | 没有单次 full matrix 以最终十文件字节运行。 | Test / Release reviewer | accept：保留 compositional coverage 限制；若产品要求单一矩阵，另行授权并冻结新 packet。 |
+
+## Explicit non-claims
+
+本 review 不声明 Product query-cost acceptance 或 budget；不声明 QA-001 Gate、Product Gate、parent Close、merge readiness、hosted CI success、P2 capture、raw JSONL/user input/candidate content、TestFlight、Release approval、ADR Accept 或 RimeRuntimeProvenance restoration；不授权新的测试、构建、Simulator、网络、GitHub、source/status edit、publication 或 AUTH 扩展。Parent TYPO-CORRECTION-002 仍为 Active。

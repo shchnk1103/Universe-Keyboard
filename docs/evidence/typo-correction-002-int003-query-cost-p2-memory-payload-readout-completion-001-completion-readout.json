@@ -1,0 +1,139 @@
+{
+  "started_at": "2026-10-09T06:25:27.417767+00:00",
+  "status": "complete_bounded_payload_readout",
+  "attempted_calls": 2,
+  "commands": [
+    {
+      "argv": [
+        "/usr/bin/codesign",
+        "--verify",
+        "--strict",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex"
+      ],
+      "exit_code": 0,
+      "stdout": "embedded-keyboard-verify.stdout",
+      "stderr": "embedded-keyboard-verify.stderr",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/usr/bin/codesign",
+        "--display",
+        "--entitlements",
+        ":-",
+        "/private/tmp/universe-keyboard-int003-p2-memory-debug-payload-build-001/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex"
+      ],
+      "exit_code": 0,
+      "stdout": "embedded-keyboard-display.stdout",
+      "stderr": "embedded-keyboard-display.stderr",
+      "stdout_sha256": "00491886daae07a5296c8bad50f116bf006b0004d7bf7338ad46669fbd903a4a",
+      "stderr_sha256": "1946d16bcc0ba97f7d9b9f12e2e3e55dea11e7137516038adc2706d8d9770f46"
+    }
+  ],
+  "build_attempts": 0,
+  "grade": "Executor-recorded",
+  "embedded_keyboard_codesign_XML": {},
+  "payload74_unchanged": true,
+  "embedded_keyboard_Info": {
+    "BuildMachineOSBuild": "26A428",
+    "CFBundleDevelopmentRegion": "en",
+    "CFBundleDisplayName": "Universe Keyboard",
+    "CFBundleExecutable": "Keyboard",
+    "CFBundleIdentifier": "com.DoubleShy0N.Universe-Keyboard.Keyboard",
+    "CFBundleInfoDictionaryVersion": "6.0",
+    "CFBundleName": "Keyboard",
+    "CFBundlePackageType": "XPC!",
+    "CFBundleShortVersionString": "1.0",
+    "CFBundleSupportedPlatforms": [
+      "iPhoneSimulator"
+    ],
+    "CFBundleVersion": "1",
+    "DTCompiler": "com.apple.compilers.llvm.clang.1_0",
+    "DTPlatformBuild": "24A430",
+    "DTPlatformName": "iphonesimulator",
+    "DTPlatformVersion": "27.0",
+    "DTSDKBuild": "24A430",
+    "DTSDKName": "iphonesimulator27.0",
+    "DTXcode": "2700",
+    "DTXcodeBuild": "27A266a",
+    "MinimumOSVersion": "18.0",
+    "NSExtension": {
+      "NSExtensionAttributes": {
+        "IsASCIICapable": true,
+        "PrefersRightToLeft": false,
+        "PrimaryLanguage": "zh-Hans",
+        "RequestsOpenAccess": true
+      },
+      "NSExtensionPointIdentifier": "com.apple.keyboard-service",
+      "NSExtensionPrincipalClass": "Keyboard.KeyboardViewController"
+    },
+    "UIDeviceFamily": [
+      1,
+      2
+    ]
+  },
+  "simulator_sections": {
+    "Keyboard": {
+      "offset": 7343794,
+      "bytes": 423,
+      "section_sha256": "1b5eca79f033b12423739696ae50c8dfcd679ed6484803e2e340787aee149b7b",
+      "entitlements": {
+        "application-identifier": "C33N6HTS9N.com.DoubleShy0N.Universe-Keyboard.Keyboard",
+        "com.apple.security.application-groups": [
+          "group.com.DoubleShy0N.Universe-Keyboard"
+        ]
+      }
+    },
+    "App": {
+      "offset": 11839092,
+      "bytes": 414,
+      "section_sha256": "6610a8c02dfe5b877f5be595941b807a687c7838e2f4b54a80b4c6726b821a6c",
+      "entitlements": {
+        "application-identifier": "C33N6HTS9N.com.DoubleShy0N.Universe-Keyboard",
+        "com.apple.security.application-groups": [
+          "group.com.DoubleShy0N.Universe-Keyboard"
+        ]
+      }
+    }
+  },
+  "app_codesign_XML_reused": {},
+  "original_macho": [
+    {
+      "path": "PlugIns/Keyboard.appex/Keyboard",
+      "bytes": 14717056,
+      "sha256": "0497aee1cce3bff7d3c68ae882f58ae2b0927e4eb0985d655dcc039b958cfd3b",
+      "arch": "arm64",
+      "uuids": [
+        "DD9B5A52-5676-39C6-BA3D-4E8FE8F505BA"
+      ],
+      "exportReady": true,
+      "symbol_log": "macho-0-nm.stdout",
+      "has_simulator_entitlement_section": true
+    },
+    {
+      "path": "Universe Keyboard",
+      "bytes": 27030832,
+      "sha256": "165de2d7a1421da37a24a6e13d1fd6f34883b841a4d8a8142b9b0b40c5e01da9",
+      "arch": "arm64",
+      "uuids": [
+        "0CDB8763-EC4B-394A-BE0C-CC6BD44C723C"
+      ],
+      "exportReady": false,
+      "symbol_log": "macho-1-nm.stdout",
+      "has_simulator_entitlement_section": true
+    }
+  ],
+  "original_build_receipt_sha256": "f460a89cd84fea4bb87fb7fd5b63ae44eec8e3cc3912c51959d0ca4792c547cf",
+  "original_readout_sha256": "b3152b40c979438e5ded6b2afc09af3b3954cdf062c6206cb98171c489252453",
+  "nonclaims": [
+    "installed",
+    "runtime",
+    "observer",
+    "Capture",
+    "Gate",
+    "Release",
+    "new CI pass"
+  ],
+  "ended_at": "2026-10-09T06:25:27.622031+00:00"
+}

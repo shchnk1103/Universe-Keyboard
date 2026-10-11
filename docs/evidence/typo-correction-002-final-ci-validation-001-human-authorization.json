@@ -1,0 +1,11 @@
+{
+  "date": "2026-10-11 Asia/Shanghai",
+  "parent_performance_scope": "批准收窄，不再新增配对采集",
+  "execution": "授权一次完整CI及必要自动写入",
+  "device": "仍独占，可用于本轮CI",
+  "UDID": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "binding_sha256": "a507dcc71d8fd12422210d05505240e85314f7d3eb00bbb187d0cab99a0f8146",
+  "source_mutation_authorized": false,
+  "publication_authorized": false,
+  "Gate_Close_authorized": false
+}

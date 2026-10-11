@@ -1,0 +1,48 @@
+# Receipt: INT-003 P1 fixed-baseline local CI revalidation 004 — completed
+
+## Run identity
+
+- Run ID: TC2-CI-20260929-105904-INT003-P1-CI-REVALIDATION-004.
+- Execution window: AUTH consumed at 2026-09-29T10:59:04+08:00; the CI matrix completed at approximately 2026-09-29T11:10:14+08:00.
+- Assignment: [TYPO-CORRECTION-002-INT003-QUERY-COST-P1-CI-REVALIDATION-004](../assignments/typo-correction-002-int003-query-cost-p1-ci-revalidation-004.md) — Completed.
+- Authorization: [AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P1-CI-REVALIDATION-004](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P1-CI-REVALIDATION-004.md) — Consumed before run-004 preflight; not reusable.
+- Worktree: /Users/doubleshy0n/.codex/worktrees/int003-ci-72dd-once/Universe Keyboard. The shared checkout was not used.
+- Baseline commit/tree: 72dd21710f2a86c9f951d489f645bae89b053b58 / 8ce8e8c0d9b821ca4d24aff4faf46a3e49bf87ff.
+- Candidate: the exact ten paths and hashes in [source freeze 002](typo-correction-002-int003-query-cost-p1-ci-revalidation-source-freeze-002.json); candidate digest 6e2c4a9e2f719e5484f013a5ea81b2af6a5df3310a14bb1dab1a14d2c0c7dec3; manifest digest 14440fa650cf22d0ec3c8323cb7db4db9acbfd118648be5b37f29f047ac60f4b. All ten identities matched before execution; the candidate files stayed unchanged.
+- Host: macOS 27.0 (26A428); Xcode 27.0 (27A266a).
+- Simulator: iPhone 17 / iOS 26.0 / D3C353BE-3AA6-499B-8F87-349073D65BE4. Only this bound Simulator was used. No Simulator was booted, erased, or reconfigured.
+- CI logs and result bundles are under /private/tmp/universe-keyboard-int003-p1-ci-revalidation-004.
+- Evidence grade: executor-recorded local engineering checks only; no independent Quality verdict.
+
+## Results
+
+| Check | Result |
+|---|---|
+| Fixed baseline, source manifest, ten candidate hashes/bytes/Git blobs | PASS — exact commit/tree, manifest digests, and all ten frozen file identities matched. |
+| Bound Simulator and host write preflight | PASS — the exact UDID remained Booted; one temporary probe was written, read, and removed in each bound cache location. |
+| Frozen-path CI classifier | PASS — full path required for all ten frozen paths. |
+| Whitespace and changed-Markdown links | PASS — tracked diff check, untracked-file scan, and local-link check across 15 changed Markdown files had no diagnostics. |
+| CI lightweight checks | PASS — .kos/project.json parse; 12 Python unit tests; final-gate fixture; KOS-trigger fixture. |
+| Pinned KOS validator | PASS — validator at c98b2813240e22b2ac7fec44b2445321b03f73e0 returned exit 0 and “PASS structural KOS checks completed.” It also emitted repository warnings; this result is structural only, not a Product, Architecture, Quality, or Release conclusion. |
+| Strict Swift-format lint | PASS — all five changed Swift files passed with the repository configuration. No formatter writes occurred. |
+| KeyboardCore | PASS — 1,171 tests, zero failures. One non-fatal optional-value interpolation compiler warning appeared in an existing test. |
+| Pinned RIME Vendor | PASS — Vendor was absent; the pinned fetch script ran once. Manifest SHA-256 a67cf99046a180c9e648755c793182529f2937f3d0469e3b59d6f63638802804 and script SHA-256 30dac2bd1166b119430da6860133cf010647f708bca87dc861ddb2349301461a matched; the downloaded archive SHA-256 was d17aab9a8b08b5901ab583c143b0a8a03994e36fe092309fd14c5bee31399dd9. Twelve framework artifacts passed structural inventory and the receipt matched the pinned version/hash. |
+| RimeBridgeTests | PASS — 108 tests, zero failures; 20 optional T9/R4B Spike tests skipped because their isolated runtime directories were not supplied. The three RimeCorrectionQueryIntegrationTests all passed. |
+| App + Keyboard tests | PASS — UniverseKeyboardTests: 410 tests, zero failures, 10 environment-gated skips; KeyboardTests: 16 tests, zero failures; KeyboardExtensionTests: 5 tests, zero failures. The four TypoCorrectionRecallCoordinatorIntegrationTests passed. |
+| Signed Keychain integration | PASS — the selected persistence/update/delete test passed 1/1. The ordinary unsigned suite's Keychain skip is covered by this signed lane. |
+| Release build | PASS — xcodebuild returned BUILD SUCCEEDED. |
+
+## Skips and limitations
+
+- UniverseKeyboardTests skipped ten tests that require external pinned archive trees, fixed Rime/Ice fixture trees, or a physical device. The unsigned lane also skipped its Keychain test because the host lacks the required entitlement; the dedicated signed test passed.
+- RimeBridgeTests skipped the optional T9/R4B Spike tests requiring isolated runtime directories. Their absence is not reported as a pass for those Spike-only claims.
+- The pinned validator printed warnings in addition to its structural PASS. No exhaustive warning-by-warning disposition is claimed.
+- No hosted GitHub run was executed. This receipt is bound only to the frozen local candidate, not to current main.
+
+## Stop and non-claims
+
+- The single authorized local matrix completed without a failed or incomplete required check. Revalidation 003 remains Blocked under its separate Consumed AUTH; run 004 does not resume or alter it.
+- This is local engineering evidence for the fixed candidate. It does not establish independent Architecture/Quality acceptance, Product query-cost acceptance, a budget, Gate pass, merge readiness, P2 capture, parent closure, TestFlight, Release, or ADR Accept.
+- No source candidate file was edited or formatted; no main requery, rebase, commit, push, PR, merge, diagnostics arm, or RimeRuntimeProvenance restoration occurred.
+- Parent TYPO-CORRECTION-002 remains Active. P1 evidence still needs its separate review disposition; P2 and the Product residual remain open.
+- No CHANGELOG.md or architecture document update was needed: this Assignment recorded validation only and changed no product behavior or architecture contract.

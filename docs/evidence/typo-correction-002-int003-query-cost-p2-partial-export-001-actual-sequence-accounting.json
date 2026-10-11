@@ -1,0 +1,90 @@
+{
+  "stimulus_contract_complete": false,
+  "mapping_limits": "encoded fixture/arm is automaticordinal; actualHuman fixture differs fromseq2 onward; not firstObserved/warm comparison",
+  "sequences": [
+    {
+      "ordinal": 1,
+      "actual_Human_fixture": "F01",
+      "encoded_fixture": 1,
+      "encoded_arm_group": 1,
+      "query_calls": 0,
+      "operation_begins": 0,
+      "sequence_begin": 1,
+      "sequence_end": 1,
+      "stage1": 0,
+      "stage2": 0
+    },
+    {
+      "ordinal": 2,
+      "actual_Human_fixture": "F01 repeated",
+      "encoded_fixture": 2,
+      "encoded_arm_group": 1,
+      "query_calls": 0,
+      "operation_begins": 0,
+      "sequence_begin": 1,
+      "sequence_end": 1,
+      "stage1": 0,
+      "stage2": 0
+    },
+    {
+      "ordinal": 3,
+      "actual_Human_fixture": "F02",
+      "encoded_fixture": 3,
+      "encoded_arm_group": 1,
+      "query_calls": 0,
+      "operation_begins": 0,
+      "sequence_begin": 1,
+      "sequence_end": 1,
+      "stage1": 0,
+      "stage2": 0
+    },
+    {
+      "ordinal": 4,
+      "actual_Human_fixture": "F03",
+      "encoded_fixture": 4,
+      "encoded_arm_group": 1,
+      "query_calls": 30,
+      "operation_begins": 1,
+      "sequence_begin": 1,
+      "sequence_end": 1,
+      "stage1": 24,
+      "stage2": 6
+    },
+    {
+      "ordinal": 5,
+      "actual_Human_fixture": "F04",
+      "encoded_fixture": 5,
+      "encoded_arm_group": 1,
+      "query_calls": 31,
+      "operation_begins": 1,
+      "sequence_begin": 1,
+      "sequence_end": 1,
+      "stage1": 24,
+      "stage2": 7
+    },
+    {
+      "ordinal": 6,
+      "actual_Human_fixture": "F05",
+      "encoded_fixture": 6,
+      "encoded_arm_group": 1,
+      "query_calls": 0,
+      "operation_begins": 0,
+      "sequence_begin": 1,
+      "sequence_end": 1,
+      "stage1": 0,
+      "stage2": 0
+    },
+    {
+      "ordinal": 7,
+      "actual_Human_fixture": "F06",
+      "encoded_fixture": 1,
+      "encoded_arm_group": 2,
+      "query_calls": 0,
+      "operation_begins": 0,
+      "sequence_begin": 1,
+      "sequence_end": 1,
+      "stage1": 0,
+      "stage2": 0
+    }
+  ]
+}

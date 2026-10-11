@@ -1,0 +1,98 @@
+{
+  "lane": "TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001:architecture round1",
+  "start_utc": "2026-10-10T15:07:29.536027+00:00",
+  "start_monotonic_seconds": 1731733.309952083,
+  "tool_calls": 23,
+  "packet_path": "/private/tmp/uk-routerev1/packet.json",
+  "expected_packet_sha256": "a40aff12b6e47a40cf3b3039faf781272db31286a931b2220b3730d973ad7f0c",
+  "packet_sha256": "a40aff12b6e47a40cf3b3039faf781272db31286a931b2220b3730d973ad7f0c",
+  "inputs_verified": 94,
+  "input_count_expected": 94,
+  "coverage": {
+    "A1": "Covered; native correction-session provenance and thread-affine provider facade identity/lifecycle reviewed; no creation or production route changes in increment",
+    "A2": "Covered; v2 cost and private arm codec fields/version/size/privacy/borrow semantics reviewed",
+    "A3": "Covered; DEBUG+probe guards, original short-circuit, same query/fence/scheduling/result path reviewed",
+    "A4": "Covered; all 10 changed paths and 15 unchanged paths checked against approved route design; unsupported/unknown and runtime nonclaims checked; evidence metadata discrepancy recorded"
+  },
+  "elapsed_seconds": 370.40827920800075,
+  "stop": null,
+  "input_count_actual": 94,
+  "input_hash_mismatches": [],
+  "checkpoint": {
+    "at_tool_calls": 12,
+    "elapsed_seconds": 104.66629475005902,
+    "criteria_covered": 0,
+    "criteria_in_progress": [
+      "A1",
+      "A2",
+      "A3",
+      "A4"
+    ],
+    "note": "身份/协议/副作用/隐私初审进行中；证据文件绑定核验已开始"
+  },
+  "coordination_tool_calls": 1,
+  "consistency_checks": {
+    "candidate_source_hashes": "25/25",
+    "delta_changed_paths": 10,
+    "old_non_scope_unchanged": 15,
+    "extension_expected_count_discrepancy": {
+      "binding": 34,
+      "suite_total": 33
+    }
+  },
+  "test_log_name_comparison": [
+    {
+      "suite": "QueryCostMemoryProbeTests",
+      "source_test_methods": 19,
+      "passed_log_methods": 19,
+      "exact_match": true,
+      "missing_in_log": [],
+      "extra_in_log": []
+    },
+    {
+      "suite": "QueryCostArmDiagnosticTests",
+      "source_test_methods": 8,
+      "passed_log_methods": 8,
+      "exact_match": true,
+      "missing_in_log": [],
+      "extra_in_log": []
+    },
+    {
+      "suite": "TypoCorrectionQueryCostProbeIntegrationTests",
+      "source_test_methods": 15,
+      "passed_log_methods": 15,
+      "exact_match": true,
+      "missing_in_log": [],
+      "extra_in_log": []
+    },
+    {
+      "suite": "TypoCorrectionRecallCoordinatorIntegrationTests",
+      "source_test_methods": 10,
+      "passed_log_methods": 10,
+      "exact_match": true,
+      "missing_in_log": [],
+      "extra_in_log": []
+    }
+  ],
+  "review_exec_calls": 22,
+  "criteria_covered": 4,
+  "stop_reason": "Review completed within lane budget; no out-of-scope input was required. One in-scope evidence-binding count inconsistency is recorded as AR-01.",
+  "execution_by_reviewer": {
+    "tests": false,
+    "build": false,
+    "decoder": false,
+    "device": false,
+    "network": false,
+    "source_edits": false
+  },
+  "candidate_source_hashes_matched": 25,
+  "delta_paths_changed": 10,
+  "non_scope_paths_unchanged": 15,
+  "test_evidence_read_only_crosscheck": {
+    "Core": 19,
+    "Extension": 33,
+    "total": 52,
+    "suite_names_match_raw_pass_logs": true,
+    "binding_expected_extension_tests": 34
+  }
+}
