@@ -1,0 +1,70 @@
+{
+  "lane": "QUALITY-C7-UI-T-INDEPENDENT",
+  "round": 1,
+  "reviewer": "independent GPT6 Luna",
+  "packet_path": "/private/tmp/ukey-wake-ui-t-independent-review-20261003/packet.json",
+  "packet_digest_expected": "e4ea33e9e183fe5c1264b16a68580ec8fd607984406e9f611e1f30b7e0a29fa8",
+  "packet_digest_actual": "9e93749875e1669016adb60c1e669550268cfcc2652e3e4deb35d4c68449467a",
+  "leaf_tool_calls": 4,
+  "leaf_calls_by_tool": {
+    "exec_command": 2,
+    "clock.sleep": 1,
+    "clock__curr_time": 1
+  },
+  "orchestration_wrappers_not_counted_as_leaf": 3,
+  "leaf_call_log": [
+    {
+      "n": 1,
+      "tool": "exec_command",
+      "purpose": "read and parse packet; compute SHA-256",
+      "reported_wall_seconds": 0.2
+    },
+    {
+      "n": 2,
+      "tool": "clock.sleep",
+      "purpose": "1 ms pause",
+      "reported_wall_seconds": 0.004
+    },
+    {
+      "n": 3,
+      "tool": "clock__curr_time",
+      "purpose": "capture UTC checkpoint",
+      "captured_utc": "2026-10-03 04:50:43 UTC",
+      "reported_wall_seconds": 0.0
+    },
+    {
+      "n": 4,
+      "tool": "exec_command",
+      "purpose": "write review.md and usage.json; included in leaf count",
+      "reported_wall_seconds": null
+    }
+  ],
+  "start_time_utc": null,
+  "end_time_utc": "2026-10-03T04:53:07Z",
+  "elapsed_seconds": null,
+  "elapsed_note": "Start timestamp was not captured before leaf call 1; elapsed cannot be reconstructed accurately without fabrication. The 1200-second ceiling status is therefore unverified. Only the reported per-call runtimes are retained.",
+  "budget": {
+    "leaf_calls_used": 4,
+    "leaf_calls_max": 14,
+    "leaf_call_budget_status": "within_limit",
+    "elapsed_seconds_max": 1200,
+    "elapsed_budget_status": "unverified",
+    "checkpoint_at_6_reached": false,
+    "checkpoint_at_10_reached": false
+  },
+  "report_path": "/private/tmp/ukey-wake-ui-t-independent-review-20261003/review.md",
+  "report_sha256": "24ad26b96a85481e8bc989de2795bad943449103791846141b8a26b15e5b2951",
+  "coverage": {
+    "T1": "Partial",
+    "T2": "Partial",
+    "T3": "Partial",
+    "T4": "Partial",
+    "T5": "Partial",
+    "T6": "Partial",
+    "overall": "Partial"
+  },
+  "scoped_opinion": "Unavailable; packet digest mismatch triggered stop condition before dependent evidence checks.",
+  "overall_t_acceptance": "Hold",
+  "stop_reason": "allowed input hash mismatch: packet actual SHA-256 differs from authorized/self-declared digest",
+  "next_step": "Stop; a fresh matching frozen packet and Product Owner authorization are required for a new review. No automatic budget renewal."
+}

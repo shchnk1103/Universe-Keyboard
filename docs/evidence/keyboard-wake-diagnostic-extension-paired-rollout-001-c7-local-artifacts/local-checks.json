@@ -1,0 +1,69 @@
+[
+  {
+    "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardWakeOwnerProbe.swift",
+    "exit": 0,
+    "output": ""
+  },
+  {
+    "path": "Packages/KeyboardCore/Sources/KeyboardCore/ThreadAffineRimeSession.swift",
+    "exit": 0,
+    "output": ""
+  },
+  {
+    "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/KeyboardWakeOwnerProbeTests.swift",
+    "exit": 0,
+    "output": ""
+  },
+  {
+    "path": "Keyboard/Controllers/KeyboardViewController.swift",
+    "exit": 0,
+    "output": ""
+  },
+  {
+    "path": "Keyboard/Controllers/KeyboardViewController+InputActions.swift",
+    "exit": 0,
+    "output": ""
+  },
+  {
+    "path": "Keyboard/Controllers/KeyboardViewController+KeyPressFeedback.swift",
+    "exit": 0,
+    "output": ""
+  },
+  {
+    "path": "Keyboard/Controllers/KeyboardViewController+CandidateBar.swift",
+    "exit": 0,
+    "output": ""
+  },
+  {
+    "path": "Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift",
+    "exit": 0,
+    "output": ""
+  },
+  {
+    "path": "Keyboard/Views/CandidateBar/CandidateBarView.swift",
+    "exit": 0,
+    "output": ""
+  },
+  {
+    "operation": "UI syntax only",
+    "flags": [
+      "-D",
+      "DEBUG",
+      "-D",
+      "KEYBOARD_WAKE_OWNER_PROBE"
+    ],
+    "exit": 0,
+    "output": ""
+  },
+  {
+    "operation": "UI syntax only",
+    "flags": [],
+    "exit": 0,
+    "output": ""
+  },
+  {
+    "operation": "allowlist diff check",
+    "exit": 0,
+    "output": ""
+  }
+]

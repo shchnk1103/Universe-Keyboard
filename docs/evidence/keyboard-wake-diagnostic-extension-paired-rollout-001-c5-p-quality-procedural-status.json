@@ -1,0 +1,28 @@
+{
+  "scope": "procedural status reconciliation; preserve original report/usage byte-identical",
+  "lane_id": "QUALITY-C5-P",
+  "round": 1,
+  "original_report_sha256": "e646bf55a3bbff690fdf4951abd40e84e283e2e70e3916fdcfdc4eec83cded4d",
+  "original_usage_sha256": "842848bc2319704c854556c963ac5ac738e4651c2d3cdc6ec508ed5151acbe27",
+  "coverage_reported": {
+    "P-Q1": "Covered",
+    "P-Q2": "Covered",
+    "P-Q3": "Covered"
+  },
+  "raw_report_claim": "Coverage complete; no design-level Quality blocker",
+  "budget_limit_seconds": 600,
+  "reported_elapsed_seconds_from_first_auditable_tool": 610.087,
+  "actual_elapsed_from_ACK": "at least610.087seconds; ACK slightly earlier, unmeasured",
+  "reported_underlying_calls": 12,
+  "budget_limit_underlying_calls": 12,
+  "reviewer_final_message_acknowledgment": "Reviewer confirmed610.087seconds exceeds frozen600seconds; procedural conclusion must bePartial under packet stop rule. No new tool call requested or executed after stop.",
+  "procedural_status": "Partial / incomplete; C5-P Exit not met",
+  "authority": "Frozen QUALITY-C5-P packet: uncovered claim or exhausted budget Partial/incomplete, neverPass; root cannot expand budget.",
+  "effect": "Retain findings/positive coverage as evidence, not a valid completed promotion-readiness verdict. No C5-I/R advance. A new narrowly authorized supplement round with fresh packet/input binding and budget is required before completion.",
+  "nonclaims": [
+    "No Product skip acceptance",
+    "No original report verdict rewrite",
+    "No automatic rerun or budget extension",
+    "No runtime/installation/device/Gate proof"
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "\n🐛 Remove Breakpoint\n\nErrors (1):\n\n  ✗ Breakpoint not found: 1\n\n❌ Failed to remove breakpoint.\n"
+    }
+  ],
+  "structuredContent": {
+    "schema": "xcodebuildmcp.output.debug-breakpoint-result",
+    "schemaVersion": "2",
+    "didError": true,
+    "error": "Failed to remove breakpoint.",
+    "data": {
+      "diagnostics": {
+        "warnings": [],
+        "errors": [
+          {
+            "message": "Breakpoint not found: 1"
+          }
+        ]
+      },
+      "action": "remove",
+      "breakpoint": {
+        "breakpointId": 1
+      }
+    }
+  },
+  "isError": true
+}

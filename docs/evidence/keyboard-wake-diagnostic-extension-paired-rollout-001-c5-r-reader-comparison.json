@@ -1,0 +1,378 @@
+{
+  "run_id": "C5-R-20261001-01",
+  "checked_utc": "2026-10-01T05:47:43.663452+00:00",
+  "comparison": "exact display-line multiset; maximum per-snapshot multiplicity, never sum repeated snapshots",
+  "expected_count": 17,
+  "observed_count": 17,
+  "distinct_display_lines": 15,
+  "exact_multiset_match": true,
+  "reader_total_count": 67,
+  "filters": [
+    {
+      "query": "text",
+      "authority": "Human explicitly searched and requested inspection",
+      "snapshot_seq": 30,
+      "filtered_count": 14,
+      "total_count": 67
+    },
+    {
+      "query": "10:46:26",
+      "authority": "Human accepted diagnostic reader filter guidance and scrolled to bottom",
+      "snapshot_seq": 33,
+      "filtered_count": 10,
+      "total_count": 67
+    }
+  ],
+  "target_breakdown": {
+    "lifecycle": 2,
+    "resume_started": 1,
+    "proxy": 14
+  },
+  "rows": [
+    {
+      "display_line": "[10:46:26.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_will_appear",
+      "expected_multiplicity": 1,
+      "observed_multiplicity": 1,
+      "expected_local_sequences": [
+        1
+      ],
+      "ui_observations": [
+        {
+          "snapshot_seq": 33,
+          "count": 1,
+          "screen_hash": "08vtx4x"
+        }
+      ]
+    },
+    {
+      "display_line": "[10:46:26.000] [DEBUG] [ENGINE] rime.resume.phase_changed phase=started",
+      "expected_multiplicity": 1,
+      "observed_multiplicity": 1,
+      "expected_local_sequences": [
+        3
+      ],
+      "ui_observations": [
+        {
+          "snapshot_seq": 33,
+          "count": 1,
+          "screen_hash": "08vtx4x"
+        }
+      ]
+    },
+    {
+      "display_line": "[10:46:26.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_did_appear",
+      "expected_multiplicity": 1,
+      "observed_multiplicity": 1,
+      "expected_local_sequences": [
+        4
+      ],
+      "ui_observations": [
+        {
+          "snapshot_seq": 33,
+          "count": 1,
+          "screen_hash": "08vtx4x"
+        }
+      ]
+    },
+    {
+      "display_line": "[10:46:29.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered",
+      "expected_multiplicity": 1,
+      "observed_multiplicity": 1,
+      "expected_local_sequences": [
+        13
+      ],
+      "ui_observations": [
+        {
+          "snapshot_seq": 30,
+          "count": 1,
+          "screen_hash": "0g1g59k"
+        }
+      ]
+    },
+    {
+      "display_line": "[10:46:29.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned",
+      "expected_multiplicity": 1,
+      "observed_multiplicity": 1,
+      "expected_local_sequences": [
+        14
+      ],
+      "ui_observations": [
+        {
+          "snapshot_seq": 30,
+          "count": 1,
+          "screen_hash": "0g1g59k"
+        }
+      ]
+    },
+    {
+      "display_line": "[10:46:30.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered",
+      "expected_multiplicity": 2,
+      "observed_multiplicity": 2,
+      "expected_local_sequences": [
+        20,
+        28
+      ],
+      "ui_observations": [
+        {
+          "snapshot_seq": 28,
+          "count": 1,
+          "screen_hash": "0s7tw9o"
+        },
+        {
+          "snapshot_seq": 29,
+          "count": 1,
+          "screen_hash": "0s7tw9o"
+        },
+        {
+          "snapshot_seq": 30,
+          "count": 2,
+          "screen_hash": "0g1g59k"
+        }
+      ]
+    },
+    {
+      "display_line": "[10:46:30.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned",
+      "expected_multiplicity": 2,
+      "observed_multiplicity": 2,
+      "expected_local_sequences": [
+        21,
+        29
+      ],
+      "ui_observations": [
+        {
+          "snapshot_seq": 28,
+          "count": 1,
+          "screen_hash": "0s7tw9o"
+        },
+        {
+          "snapshot_seq": 29,
+          "count": 1,
+          "screen_hash": "0s7tw9o"
+        },
+        {
+          "snapshot_seq": 30,
+          "count": 2,
+          "screen_hash": "0g1g59k"
+        }
+      ]
+    },
+    {
+      "display_line": "[10:46:31.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered",
+      "expected_multiplicity": 1,
+      "observed_multiplicity": 1,
+      "expected_local_sequences": [
+        36
+      ],
+      "ui_observations": [
+        {
+          "snapshot_seq": 28,
+          "count": 1,
+          "screen_hash": "0s7tw9o"
+        },
+        {
+          "snapshot_seq": 29,
+          "count": 1,
+          "screen_hash": "0s7tw9o"
+        },
+        {
+          "snapshot_seq": 30,
+          "count": 1,
+          "screen_hash": "0g1g59k"
+        }
+      ]
+    },
+    {
+      "display_line": "[10:46:31.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned",
+      "expected_multiplicity": 1,
+      "observed_multiplicity": 1,
+      "expected_local_sequences": [
+        37
+      ],
+      "ui_observations": [
+        {
+          "snapshot_seq": 28,
+          "count": 1,
+          "screen_hash": "0s7tw9o"
+        },
+        {
+          "snapshot_seq": 29,
+          "count": 1,
+          "screen_hash": "0s7tw9o"
+        },
+        {
+          "snapshot_seq": 30,
+          "count": 1,
+          "screen_hash": "0g1g59k"
+        }
+      ]
+    },
+    {
+      "display_line": "[10:46:32.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered",
+      "expected_multiplicity": 1,
+      "observed_multiplicity": 1,
+      "expected_local_sequences": [
+        44
+      ],
+      "ui_observations": [
+        {
+          "snapshot_seq": 27,
+          "count": 1,
+          "screen_hash": "1v4i7dg"
+        },
+        {
+          "snapshot_seq": 30,
+          "count": 1,
+          "screen_hash": "0g1g59k"
+        }
+      ]
+    },
+    {
+      "display_line": "[10:46:32.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned",
+      "expected_multiplicity": 1,
+      "observed_multiplicity": 1,
+      "expected_local_sequences": [
+        45
+      ],
+      "ui_observations": [
+        {
+          "snapshot_seq": 27,
+          "count": 1,
+          "screen_hash": "1v4i7dg"
+        },
+        {
+          "snapshot_seq": 30,
+          "count": 1,
+          "screen_hash": "0g1g59k"
+        }
+      ]
+    },
+    {
+      "display_line": "[10:46:34.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered",
+      "expected_multiplicity": 1,
+      "observed_multiplicity": 1,
+      "expected_local_sequences": [
+        50
+      ],
+      "ui_observations": [
+        {
+          "snapshot_seq": 25,
+          "count": 1,
+          "screen_hash": "1ppybl6"
+        },
+        {
+          "snapshot_seq": 26,
+          "count": 1,
+          "screen_hash": "1ppybl6"
+        },
+        {
+          "snapshot_seq": 27,
+          "count": 1,
+          "screen_hash": "1v4i7dg"
+        },
+        {
+          "snapshot_seq": 30,
+          "count": 1,
+          "screen_hash": "0g1g59k"
+        }
+      ]
+    },
+    {
+      "display_line": "[10:46:34.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned",
+      "expected_multiplicity": 1,
+      "observed_multiplicity": 1,
+      "expected_local_sequences": [
+        51
+      ],
+      "ui_observations": [
+        {
+          "snapshot_seq": 25,
+          "count": 1,
+          "screen_hash": "1ppybl6"
+        },
+        {
+          "snapshot_seq": 26,
+          "count": 1,
+          "screen_hash": "1ppybl6"
+        },
+        {
+          "snapshot_seq": 27,
+          "count": 1,
+          "screen_hash": "1v4i7dg"
+        },
+        {
+          "snapshot_seq": 30,
+          "count": 1,
+          "screen_hash": "0g1g59k"
+        }
+      ]
+    },
+    {
+      "display_line": "[10:46:34.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=unmark_text phase=entered",
+      "expected_multiplicity": 1,
+      "observed_multiplicity": 1,
+      "expected_local_sequences": [
+        52
+      ],
+      "ui_observations": [
+        {
+          "snapshot_seq": 25,
+          "count": 1,
+          "screen_hash": "1ppybl6"
+        },
+        {
+          "snapshot_seq": 26,
+          "count": 1,
+          "screen_hash": "1ppybl6"
+        },
+        {
+          "snapshot_seq": 27,
+          "count": 1,
+          "screen_hash": "1v4i7dg"
+        },
+        {
+          "snapshot_seq": 30,
+          "count": 1,
+          "screen_hash": "0g1g59k"
+        }
+      ]
+    },
+    {
+      "display_line": "[10:46:34.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=unmark_text phase=returned",
+      "expected_multiplicity": 1,
+      "observed_multiplicity": 1,
+      "expected_local_sequences": [
+        53
+      ],
+      "ui_observations": [
+        {
+          "snapshot_seq": 25,
+          "count": 1,
+          "screen_hash": "1ppybl6"
+        },
+        {
+          "snapshot_seq": 26,
+          "count": 1,
+          "screen_hash": "1ppybl6"
+        },
+        {
+          "snapshot_seq": 27,
+          "count": 1,
+          "screen_hash": "1v4i7dg"
+        },
+        {
+          "snapshot_seq": 30,
+          "count": 1,
+          "screen_hash": "0g1g59k"
+        }
+      ]
+    }
+  ],
+  "notice_observation": "No matching incomplete/unsupported/unavailable/budget/partial warning in retained semantic observations; not a hidden internal reader counter proof.",
+  "limitations": [
+    "UI does not display process/appearance/localSequence; binding relies on original typed window and unchanged formatter/artifact identity.",
+    "Same-second identical lines prove multiplicity, not individual hidden sequence-to-row identity.",
+    "10/67 timestamp query includes seven non-target records; only three finite target rows are retained.",
+    "67 is full reader total, not historical target count.",
+    "No new independent review verdict; HOST-Q-R-01 remains Hold pending independently authorized disposition."
+  ]
+}

@@ -1,0 +1,858 @@
+{
+  "utc": "2026-10-04T09:45:00Z",
+  "algorithm": {
+    "file_hash": "SHA-256 of raw file bytes",
+    "listing_line": "{posix_path}\\t{size_bytes_decimal}\\t{file_sha256_hex}\\n",
+    "listing_order": "sorted by posix_path ascending",
+    "aggregate_digest": "SHA-256 of the concatenated UTF-8 listing",
+    "path_encoding": "POSIX relative to worktree root, no leading ./"
+  },
+  "roots": [
+    "Universe Keyboard"
+  ],
+  "note": "Additional scheme input for Universe Keyboard Debug test / Release build. Separate from the 358-file Keyboard/Core/Rime/tests/xcodeproj slice.",
+  "file_count": 168,
+  "aggregate_digest_sha256": "b5fdda0ffd8c3f7563fe70a925b166817308267392edf72f4ffa00dda96068ca",
+  "files": [
+    {
+      "path": "Universe Keyboard/App/ContentView.swift",
+      "bytes": 14886,
+      "sha256": "aa9abbe72bc40cc7561f82ce076b565f06b210ecdc7ffed570a1b9a9078fe33f"
+    },
+    {
+      "path": "Universe Keyboard/App/Universe_KeyboardApp.swift",
+      "bytes": 2856,
+      "sha256": "6e8c227cf2cc491687daee2925cc7898cc4cb3777b095bfd3efe8028c593e4ba"
+    },
+    {
+      "path": "Universe Keyboard/Assets.xcassets/AccentColor.colorset/Contents.json",
+      "bytes": 123,
+      "sha256": "9af65086fa30b49252fae1a1225731691de794f7775af74d71befeb507d12b7c"
+    },
+    {
+      "path": "Universe Keyboard/Assets.xcassets/AppIcon.appiconset/Contents.json",
+      "bytes": 700,
+      "sha256": "ebc80fa08956fa3d8ff80548df0ed5d28ab4deffc10857b5fc38287aed03b2ac"
+    },
+    {
+      "path": "Universe Keyboard/Assets.xcassets/AppIcon.appiconset/icon.png",
+      "bytes": 785461,
+      "sha256": "7f85a77f15fc9a4a9c4a8f011ecfbb3174deb84c23d73bf74e87c40371dfd32c"
+    },
+    {
+      "path": "Universe Keyboard/Assets.xcassets/Contents.json",
+      "bytes": 63,
+      "sha256": "0fd49ba3c3585c709678e0046a821c3c60685ec7063720d30d3a3448be3a208b"
+    },
+    {
+      "path": "Universe Keyboard/Models/ActivationChecklistState.swift",
+      "bytes": 10344,
+      "sha256": "681f3ee517ef97a6cc27041596dcd42666cdaa4713c371808569f9d08a1c230b"
+    },
+    {
+      "path": "Universe Keyboard/Models/ActivationTips.swift",
+      "bytes": 4890,
+      "sha256": "e92bea8bebbda1d86d12753674d111725f75a3ef1715ff3caee0c004bf2252c8"
+    },
+    {
+      "path": "Universe Keyboard/Models/AppAboutContact.swift",
+      "bytes": 1298,
+      "sha256": "ed68f7490e8405bcc32ff485f5c332bdfd21c16583ac0a179272d0c927ab4868"
+    },
+    {
+      "path": "Universe Keyboard/Models/AppAppearance.swift",
+      "bytes": 1442,
+      "sha256": "1b53b1e6cf384fd8c28aa0649dd0ea521bde24ac846b3cb05dbfa4b927884ea3"
+    },
+    {
+      "path": "Universe Keyboard/Models/RimeSyncUITestFixture.swift",
+      "bytes": 9249,
+      "sha256": "0a3737d3a0f692bb86d8ea211eb2cafbbb888e10eca90d75a2a6178ed812437d"
+    },
+    {
+      "path": "Universe Keyboard/Models/RimeSyncViewModel.swift",
+      "bytes": 52971,
+      "sha256": "c63a67b8c7814116be2cad82dde74f501646d8e5d197344fad6286d31085a4b5"
+    },
+    {
+      "path": "Universe Keyboard/Models/SchemeLicenseDownloadCopy.swift",
+      "bytes": 2364,
+      "sha256": "c6ab073fb7d7ac05ad474a8e8cc2c1e760a7811a6c2fc9c6cfa03db557195ef1"
+    },
+    {
+      "path": "Universe Keyboard/Models/SchemeProvenancePresentation.swift",
+      "bytes": 4637,
+      "sha256": "a53fa2b66401023e9bd38245ea86460b33c7d6edf22af826233e3cc7534e0cb6"
+    },
+    {
+      "path": "Universe Keyboard/Models/SettingsSearchCatalog.swift",
+      "bytes": 7226,
+      "sha256": "e0d5ef07ac79f1d78637d3e8041962b92d1b4d5176e919db65304845d3580472"
+    },
+    {
+      "path": "Universe Keyboard/Models/ThirdPartyLicenseDescriptor.swift",
+      "bytes": 12332,
+      "sha256": "85756d797c559511e4b869b02e23ef0ee508a5ace57bb8e65a8623851b6d8261"
+    },
+    {
+      "path": "Universe Keyboard/Models/TypingIntelligencePreviewFixture.swift",
+      "bytes": 2774,
+      "sha256": "133565829cf3a66fff216ccf2846754f636fa2c05f75097670af169d10ecaf2b"
+    },
+    {
+      "path": "Universe Keyboard/Models/TypingIntelligenceViewModel.swift",
+      "bytes": 6827,
+      "sha256": "db9d320694074242e44245e2f12d47c71942ef7359166609f6ec7c67a5443012"
+    },
+    {
+      "path": "Universe Keyboard/PrivacyInfo.xcprivacy",
+      "bytes": 1056,
+      "sha256": "f95ecfc75a54a82034d09db5abfb136198b22ae50aa1440c77b3191ce8c00851"
+    },
+    {
+      "path": "Universe Keyboard/RimeBuiltin/RimeBuiltin.manifest.json",
+      "bytes": 13582,
+      "sha256": "6aa2d28918b9146cdf417ddb369ba57907e5bbcc3e2ce2c9bc1280f1a6e7b233"
+    },
+    {
+      "path": "Universe Keyboard/RimeBuiltin/build/luna_pinyin.prism.bin",
+      "bytes": 31728,
+      "sha256": "012d8360150c3e2f55330d21f9aa16281660e25c15db8c983090f14293da878f"
+    },
+    {
+      "path": "Universe Keyboard/RimeBuiltin/build/luna_pinyin.reverse.bin",
+      "bytes": 252760,
+      "sha256": "bd314158c00bf36c9ba8f7321d7e6ab6dfbdaa283b11c4856adfd2f58a781179"
+    },
+    {
+      "path": "Universe Keyboard/RimeBuiltin/build/luna_pinyin.table.bin",
+      "bytes": 13011464,
+      "sha256": "55a54e8e55deaade0e4d7646a7ad2b8602901f4007b60c637d993468eff64e03"
+    },
+    {
+      "path": "Universe Keyboard/RimeBuiltin/build/stroke.prism.bin",
+      "bytes": 3501372,
+      "sha256": "5acfdf5842006fb7eacf9e2c9920e917a18356b78cd55b4023ecd836665ff383"
+    },
+    {
+      "path": "Universe Keyboard/RimeBuiltin/build/stroke.reverse.bin",
+      "bytes": 1498508,
+      "sha256": "0618448a659ec3e316ef230dce808a40388a57c664cf257eab1e9b64d86909cb"
+    },
+    {
+      "path": "Universe Keyboard/RimeBuiltin/build/stroke.table.bin",
+      "bytes": 4548444,
+      "sha256": "de1a978a7d97e7ccef5f85eaaa4cc76dcbd4d75cdf750926edfc2ea3e65603d5"
+    },
+    {
+      "path": "Universe Keyboard/RimeBuiltin/default.yaml",
+      "bytes": 1593,
+      "sha256": "0628ada16651d56c4cdfcb8e45ddba23d4d585cc8be0580a62c4e077c0bcc141"
+    },
+    {
+      "path": "Universe Keyboard/RimeBuiltin/essay.txt",
+      "bytes": 5887417,
+      "sha256": "a6f8409c261e5d21bd78e6cbcde8f8e1ef7f68c07ff1c2692c07dd4ff4151cea"
+    },
+    {
+      "path": "Universe Keyboard/RimeBuiltin/key_bindings.yaml",
+      "bytes": 3117,
+      "sha256": "ee2476598b4cae89068b823868196eb07b5f72007a600814fe5804b39008b3ed"
+    },
+    {
+      "path": "Universe Keyboard/RimeBuiltin/luna_pinyin.dict.yaml",
+      "bytes": 889896,
+      "sha256": "75bcf6eb3ff62b129882ed89cc22b2d80a5347aa72bcfa2ccc839bac298e7314"
+    },
+    {
+      "path": "Universe Keyboard/RimeBuiltin/luna_pinyin.schema.yaml",
+      "bytes": 2809,
+      "sha256": "668b4d4957e4cc8f9cea32ed3f08f0ecf4a7be8cdba058700507487bd96dd5c7"
+    },
+    {
+      "path": "Universe Keyboard/RimeBuiltin/opencc/HKVariants.ocd2",
+      "bytes": 4893,
+      "sha256": "62750cb79eef18a407030b05bd4abe0e102bec2254d04b2d2310792f44519321"
+    },
+    {
+      "path": "Universe Keyboard/RimeBuiltin/opencc/STCharacters.ocd2",
+      "bytes": 45310,
+      "sha256": "1ec2298310ca5a9151a554ea57bd86a6296ce917e4cdd1dd0884f789c477641b"
+    },
+    {
+      "path": "Universe Keyboard/RimeBuiltin/opencc/STPhrases.ocd2",
+      "bytes": 928154,
+      "sha256": "16fd5f086b2a3be7aa9679deb7f728cf447f5d5419f65b2766a2d8671e84e77d"
+    },
+    {
+      "path": "Universe Keyboard/RimeBuiltin/opencc/TSCharacters.ocd2",
+      "bytes": 46126,
+      "sha256": "85291e0173e972bbca58c848fb90b3bb41c79674cb61a75645e01bd884ad5927"
+    },
+    {
+      "path": "Universe Keyboard/RimeBuiltin/opencc/TSPhrases.ocd2",
+      "bytes": 9777,
+      "sha256": "83696b4a2074f2f5c1786949444281ae191ccb0b75d98cd9ac51bcb35f890cb3"
+    },
+    {
+      "path": "Universe Keyboard/RimeBuiltin/opencc/TWVariants.ocd2",
+      "bytes": 4595,
+      "sha256": "390f07a1867ad56aa60a7af23b6e4b3acc96ea48d893c06ede3dffb1c576c2bc"
+    },
+    {
+      "path": "Universe Keyboard/RimeBuiltin/opencc/s2t.json",
+      "bytes": 424,
+      "sha256": "0b86f3aa92c72ac5fcb11bc9df21914ed42f6847416a1d4d7f52f8b5eb861e74"
+    },
+    {
+      "path": "Universe Keyboard/RimeBuiltin/opencc/t2hk.json",
+      "bytes": 322,
+      "sha256": "3d5c1c7540992e821fef56858a001d8ea2720a394975b915fb5944fe42efc0fd"
+    },
+    {
+      "path": "Universe Keyboard/RimeBuiltin/opencc/t2s.json",
+      "bytes": 424,
+      "sha256": "18d64a23de26c39d0e247d36e12d585653f44f2e231c3397050456565581a819"
+    },
+    {
+      "path": "Universe Keyboard/RimeBuiltin/opencc/t2tw.json",
+      "bytes": 320,
+      "sha256": "7b2eb8aa8b76c1e2b1a41e8ce38a327d0aac5e49cfcefe763744b17fdeefb7b5"
+    },
+    {
+      "path": "Universe Keyboard/RimeBuiltin/pinyin.yaml",
+      "bytes": 4895,
+      "sha256": "caa220b05172bf35775db07fed6ead7719c742e6139232d9797040dbe65f746c"
+    },
+    {
+      "path": "Universe Keyboard/RimeBuiltin/punctuation.yaml",
+      "bytes": 2107,
+      "sha256": "d6f89592149098f0a2d0ed3e5c83f49adb6226cdf1d967b0bc0d293f4e5c496a"
+    },
+    {
+      "path": "Universe Keyboard/RimeBuiltin/stroke.dict.yaml",
+      "bytes": 3396330,
+      "sha256": "b3e93dce89c185f45c3d6e189b86b3a8626913352cc85e1094c786579a665791"
+    },
+    {
+      "path": "Universe Keyboard/RimeBuiltin/stroke.schema.yaml",
+      "bytes": 3056,
+      "sha256": "06f680cf7c9d9a69948681ee25e9f6aeccfde4d8d590f93e179d4c4b3caee879"
+    },
+    {
+      "path": "Universe Keyboard/RimeBuiltin/symbols.yaml",
+      "bytes": 28473,
+      "sha256": "6d08969525bd66c67abf1791c99928079356bd0e673386c49c1959d2a52fdbba"
+    },
+    {
+      "path": "Universe Keyboard/Services/AppNotificationSettings.swift",
+      "bytes": 21805,
+      "sha256": "9fd44093166dd3f91943968a59475e08b0f476c8ca447d366e272835d3b892f3"
+    },
+    {
+      "path": "Universe Keyboard/Services/DiagnosticsJournalRetentionCoordinator.swift",
+      "bytes": 14705,
+      "sha256": "b725f30e50eef37c3d4529d0b6783c39e763f3f4aee151071509869048265ec4"
+    },
+    {
+      "path": "Universe Keyboard/Services/DiagnosticsJournalRetentionScheduler.swift",
+      "bytes": 1833,
+      "sha256": "f3343c2a771d75e92605bc1f548204673e01797235eb154ad4fcfeeccc33950d"
+    },
+    {
+      "path": "Universe Keyboard/Services/NineKeyEnableOrchestrator.swift",
+      "bytes": 2657,
+      "sha256": "49df2f156835c1a1907444c55b4605609830563bde7c8c38f4a56a3aff6ab753"
+    },
+    {
+      "path": "Universe Keyboard/Services/ReleaseEvidenceStore.swift",
+      "bytes": 22863,
+      "sha256": "219944fb2da1317a9b7979ebb3b480da9171c2e74d688ea61a0a480e8065a4b1"
+    },
+    {
+      "path": "Universe Keyboard/Services/RimeAutomaticSyncScheduler.swift",
+      "bytes": 14817,
+      "sha256": "01f3c3a188341b1b34ef980f077f00323b0c9dcb5787c870c4b118297a182d13"
+    },
+    {
+      "path": "Universe Keyboard/Services/RimeSyncCoordinator.swift",
+      "bytes": 2188,
+      "sha256": "789d8f900911c1553ffd5e2bfbb8bebe0f07a142c8d31b57feca0cda6f4039dd"
+    },
+    {
+      "path": "Universe Keyboard/Services/RimeSyncCrypto.swift",
+      "bytes": 5806,
+      "sha256": "1733af2a22acdb71a45a790f1f633d3c57383a67851158d9ef5fc5a19576cc10"
+    },
+    {
+      "path": "Universe Keyboard/Services/RimeSyncDiagnostics.swift",
+      "bytes": 9490,
+      "sha256": "12c96a17f05a4121a67fd22839a6f05d2ebd3aba640c163a394949fe285dd4c9"
+    },
+    {
+      "path": "Universe Keyboard/Services/RimeSyncModels.swift",
+      "bytes": 14247,
+      "sha256": "f7157551c7f0c8bd9339e53bbe2352fa0a1bf7cb53a4fcf507ab37ed7635b984"
+    },
+    {
+      "path": "Universe Keyboard/Services/RimeSyncTransport.swift",
+      "bytes": 19459,
+      "sha256": "b414fe6e9efe57e4cf538dffebe1746e34476f84f043e240e380ccaebc0faa85"
+    },
+    {
+      "path": "Universe Keyboard/Services/RimeUserDictionaryBackupService.swift",
+      "bytes": 16416,
+      "sha256": "e1730fad19b406c8705e77d574c5a23af487d1688e363eab4ffde0dd97dc6316"
+    },
+    {
+      "path": "Universe Keyboard/Services/SchemaArchiveInstaller.swift",
+      "bytes": 16658,
+      "sha256": "7482675e83899504b0f3a5f25d415f9dd207e5f14de0f048b9066b2cd864b65f"
+    },
+    {
+      "path": "Universe Keyboard/Services/SchemaArtifactSecurity.swift",
+      "bytes": 10422,
+      "sha256": "d86ff0bb0fe5676314f361f23bc16395fa325ff61634ea210772494ce58cd6a8"
+    },
+    {
+      "path": "Universe Keyboard/Services/SchemaDeliveryDiagnostics.swift",
+      "bytes": 4217,
+      "sha256": "599f246c95e1687bb06a92c7487fa5fae516de5d51cb211ff15bfb678a49f4b9"
+    },
+    {
+      "path": "Universe Keyboard/Services/SchemaManager+Deployment.swift",
+      "bytes": 15492,
+      "sha256": "f9ac40f6d4f4276554f1432d6f42325a40bf0dec8df189163f9f124529410a81"
+    },
+    {
+      "path": "Universe Keyboard/Services/SchemaManager+Download.swift",
+      "bytes": 40573,
+      "sha256": "f53ad12bf9a969d0879cee1c7384c8a3c7e1fd444e282719a1266f89836a886d"
+    },
+    {
+      "path": "Universe Keyboard/Services/SchemaManager+Installation.swift",
+      "bytes": 15589,
+      "sha256": "1db879c83aa5ec710343ea60cc94824e873e0206f76a0bf38b4d55e13f11244f"
+    },
+    {
+      "path": "Universe Keyboard/Services/SchemaManager+LuaDiagnostics.swift",
+      "bytes": 7398,
+      "sha256": "7ec264f0493134d3fca76cbee1617edb72ebeb4289dadceb19d260436196915c"
+    },
+    {
+      "path": "Universe Keyboard/Services/SchemaManager+T9Layout.swift",
+      "bytes": 13261,
+      "sha256": "50d6513b29f3ddd78d1cc2c492502e785531e7b7f916dd8314d898f74106bb6e"
+    },
+    {
+      "path": "Universe Keyboard/Services/SchemaManager.swift",
+      "bytes": 18449,
+      "sha256": "0eae7ff93038ae4e7972f584f5f3e8f369853c1394743517b7b52250ef9ad6a3"
+    },
+    {
+      "path": "Universe Keyboard/Services/SchemaManagerDependencies.swift",
+      "bytes": 10617,
+      "sha256": "ced0c51cbd02f042fac7f25173da10b2512a7d57602a2b53ad8fe8a45ca63eeb"
+    },
+    {
+      "path": "Universe Keyboard/Services/SchemaManagerTypes.swift",
+      "bytes": 33158,
+      "sha256": "a4abde8297ca0b3e537f3006b3e45665f394de00dc60123fa9fe216291513e50"
+    },
+    {
+      "path": "Universe Keyboard/Services/SchemaTemporaryArtifactCleaner.swift",
+      "bytes": 6497,
+      "sha256": "d6463eecebcaeb6870f4871adfa5ed544f2f20b88aa86d35e4402bd9654410fb"
+    },
+    {
+      "path": "Universe Keyboard/Services/T9DeploymentSupport.swift",
+      "bytes": 6259,
+      "sha256": "a04980bf72f0936bcd2c00852b32a898f8fb64e7ed7d79f19a0a45672e7850ba"
+    },
+    {
+      "path": "Universe Keyboard/Services/T9SchemaForceGCDiagnosticsRunner.swift",
+      "bytes": 5567,
+      "sha256": "6d695bc63bb095eae39e6428644a1f675c679a8af43a238ec502dce4bf01f239"
+    },
+    {
+      "path": "Universe Keyboard/ThirdPartyLicenses/BOOST-BSL-1.0.txt",
+      "bytes": 1338,
+      "sha256": "c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566"
+    },
+    {
+      "path": "Universe Keyboard/ThirdPartyLicenses/GOOGLE-GLOG-BSD-3-Clause.txt",
+      "bytes": 1476,
+      "sha256": "3d8faa7c7349b19275982aec674fe746b274e97c3e3b781afc1e2a769ba038f0"
+    },
+    {
+      "path": "Universe Keyboard/ThirdPartyLicenses/LEVELDB-BSD-3-Clause.txt",
+      "bytes": 1484,
+      "sha256": "ccc19f1da0798ed666609b65a5b44dd8b3abe6fc08b9c0592eb76e82e174db19"
+    },
+    {
+      "path": "Universe Keyboard/ThirdPartyLicenses/LUA-5.4.8-MIT.txt",
+      "bytes": 1076,
+      "sha256": "7002f3e4a34547bfc65fe998fe8af7885987fcc964a0a9c3c9640bf8f4ab018c"
+    },
+    {
+      "path": "Universe Keyboard/ThirdPartyLicenses/MARISA-COPYING.txt",
+      "bytes": 2275,
+      "sha256": "edf58dab34c3dc239ba4ba2d5d3d844d8c5b442aa4dd1149fac81b2d8c6cb8d1"
+    },
+    {
+      "path": "Universe Keyboard/ThirdPartyLicenses/OPENCC-AUTHORS.txt",
+      "bytes": 277,
+      "sha256": "cb34e252fa994679bcbfc8355581e821ceda44bd857875e2cfe15b7ec4eec006"
+    },
+    {
+      "path": "Universe Keyboard/ThirdPartyLicenses/OPENCC-Apache-2.0.txt",
+      "bytes": 9165,
+      "sha256": "b534e465949558eec2597b04f5092b5e161236a68dfbfd04d547592ac3964308"
+    },
+    {
+      "path": "Universe Keyboard/ThirdPartyLicenses/RIME-ESSAY-AUTHORS.txt",
+      "bytes": 393,
+      "sha256": "4ab2f81451ff4819f2b0e346583b49cee37aec72a01f8ecd96be1711c4204b75"
+    },
+    {
+      "path": "Universe Keyboard/ThirdPartyLicenses/RIME-ESSAY-LGPL-3.0.txt",
+      "bytes": 7651,
+      "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768"
+    },
+    {
+      "path": "Universe Keyboard/ThirdPartyLicenses/RIME-ICE-GPL-3.0-only.txt",
+      "bytes": 35149,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    },
+    {
+      "path": "Universe Keyboard/ThirdPartyLicenses/RIME-LIBRIME-BSD-3-Clause.txt",
+      "bytes": 1513,
+      "sha256": "f67d27a6d2d586fcfed4b4c886a83747095396a39b6641e18e855086be2ec400"
+    },
+    {
+      "path": "Universe Keyboard/ThirdPartyLicenses/RIME-LUA-PLUGIN-BSD-3-Clause.txt",
+      "bytes": 1520,
+      "sha256": "c6bd4f58b13ae9d45c5e53adddeea5049114a25862797c6c6f64920431eea249"
+    },
+    {
+      "path": "Universe Keyboard/ThirdPartyLicenses/RIME-LUNA-PINYIN-AUTHORS.txt",
+      "bytes": 273,
+      "sha256": "dbf21183999dcd06d4b0f0fe08f7396fcb47cc6f734fd97c3dd851777f1b28f8"
+    },
+    {
+      "path": "Universe Keyboard/ThirdPartyLicenses/RIME-LUNA-PINYIN-LGPL-3.0.txt",
+      "bytes": 7651,
+      "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768"
+    },
+    {
+      "path": "Universe Keyboard/ThirdPartyLicenses/RIME-LUNA-PINYIN-SOURCE-ATTRIBUTIONS.txt",
+      "bytes": 735,
+      "sha256": "7bc2625f22ae4f9b3062b99195162a521b3c3bab149b59b29228095e83c40e7b"
+    },
+    {
+      "path": "Universe Keyboard/ThirdPartyLicenses/RIME-OCTAGRAM-BSD-3-Clause.txt",
+      "bytes": 1513,
+      "sha256": "f67d27a6d2d586fcfed4b4c886a83747095396a39b6641e18e855086be2ec400"
+    },
+    {
+      "path": "Universe Keyboard/ThirdPartyLicenses/RIME-OCTAGRAM-PROVENANCE.txt",
+      "bytes": 547,
+      "sha256": "4e70ceafc631201750b130768a5c77f0ce9d06e9f6b522ce16955919cf5e1e20"
+    },
+    {
+      "path": "Universe Keyboard/ThirdPartyLicenses/RIME-PRELUDE-AUTHORS.txt",
+      "bytes": 142,
+      "sha256": "9296a3509f1bcaee9e316ff70fccf76bf3a1f19c089b795710808ea5b6a0e6e7"
+    },
+    {
+      "path": "Universe Keyboard/ThirdPartyLicenses/RIME-PRELUDE-LGPL-3.0.txt",
+      "bytes": 7651,
+      "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768"
+    },
+    {
+      "path": "Universe Keyboard/ThirdPartyLicenses/RIME-STROKE-AUTHORS.txt",
+      "bytes": 273,
+      "sha256": "f0cbba217e049471ccb40751b7d2e1c98144bb2ad4ec15b9f5af057121ec99d6"
+    },
+    {
+      "path": "Universe Keyboard/ThirdPartyLicenses/RIME-STROKE-LGPL-3.0.txt",
+      "bytes": 7651,
+      "sha256": "da7eabb7bafdf7d3ae5e9f223aa5bdc1eece45ac569dc21b3b037520b4464768"
+    },
+    {
+      "path": "Universe Keyboard/ThirdPartyLicenses/RIME-WANXIANG-CC-BY-4.0.txt",
+      "bytes": 18656,
+      "sha256": "9e5f1b3c610b9c2da5c313bf81d577a7d1acec686bdb0384edefa6df0f90cd94"
+    },
+    {
+      "path": "Universe Keyboard/ThirdPartyLicenses/YAML-CPP-MIT.txt",
+      "bytes": 1061,
+      "sha256": "aa6fcc27be034e41e21dd832f9175bfe694a48491d9e14ff0fa278e19ad14f1b"
+    },
+    {
+      "path": "Universe Keyboard/Universe Keyboard.entitlements",
+      "bytes": 316,
+      "sha256": "2e6a1b5a26349fd1d89ccffc27784474208f37a6ae55ee74144063a546d30992"
+    },
+    {
+      "path": "Universe Keyboard/Views/Components/AppActionButton.swift",
+      "bytes": 8462,
+      "sha256": "1da8b39cc8f5198f2cd73606e5683c674bed1f11fb86ec711682494159738485"
+    },
+    {
+      "path": "Universe Keyboard/Views/Components/AppCard.swift",
+      "bytes": 2144,
+      "sha256": "52cea8ca82b1b198c2e7c84fe0f6131a228d2ad50945fbb57fba97ab54145b8e"
+    },
+    {
+      "path": "Universe Keyboard/Views/Components/AppIconTile.swift",
+      "bytes": 911,
+      "sha256": "4dc7795dbe33a5683c24d4e067a0f875feb1b6115740d8e09077053205083df7"
+    },
+    {
+      "path": "Universe Keyboard/Views/Components/AppMotion.swift",
+      "bytes": 1926,
+      "sha256": "eaa7dabdde40fb5bb0f1e8d2606d5d6c29bbd728b06c899751e4c4cf072a62a2"
+    },
+    {
+      "path": "Universe Keyboard/Views/Components/AppSwitch.swift",
+      "bytes": 3079,
+      "sha256": "5c0d34cb65d69a2ceb8fbb29b29a3d1de6780ac74ea95ab5529b489dd29e61b5"
+    },
+    {
+      "path": "Universe Keyboard/Views/Components/AppTokens.swift",
+      "bytes": 1871,
+      "sha256": "349b816a75a32e29292e9ab75f5e3ba63a0bd02d68fb8cbe9efc5cb572139f1c"
+    },
+    {
+      "path": "Universe Keyboard/Views/Components/BulletRow.swift",
+      "bytes": 920,
+      "sha256": "281d2761b914ecad6464fe238dba5460621f503b2c63d22220ffef58a80e8d66"
+    },
+    {
+      "path": "Universe Keyboard/Views/Components/CapsuleBadge.swift",
+      "bytes": 682,
+      "sha256": "59182df7518c92c040b46ff2818afc201e661c47749d40ca170cb0e7ed2af11c"
+    },
+    {
+      "path": "Universe Keyboard/Views/Components/EmptyStateView.swift",
+      "bytes": 1438,
+      "sha256": "3b6407cc60444d3904ac2d909f82f20ebd7bdc00fb1378fe3df0167dab715926"
+    },
+    {
+      "path": "Universe Keyboard/Views/Components/InfoSection.swift",
+      "bytes": 694,
+      "sha256": "c0c9662d0584b5b9270ed81424de0e4fab024a492fa824d0e27fdba9a9d99e64"
+    },
+    {
+      "path": "Universe Keyboard/Views/Components/KeyValueRow.swift",
+      "bytes": 994,
+      "sha256": "a34daac22060a112d61886a5d2aff5018a5a657004d72b77d203b41e9bbc19de"
+    },
+    {
+      "path": "Universe Keyboard/Views/Components/LoadingStateView.swift",
+      "bytes": 928,
+      "sha256": "f5064ed53d81ea644f1d19ed1419ec0fdcca02ab8bedfbde9d34065545e2cdcf"
+    },
+    {
+      "path": "Universe Keyboard/Views/Components/MetricCell.swift",
+      "bytes": 1934,
+      "sha256": "fe88ff9a78e7ecda55739170055b4e0111add70f200d36c5923b469a200e5238"
+    },
+    {
+      "path": "Universe Keyboard/Views/Components/SettingsNavigationLink.swift",
+      "bytes": 1840,
+      "sha256": "7eb17b3407d3794e3d4ec58a884e84b2cf102ea2c18f60f5335144d5c1ee38a9"
+    },
+    {
+      "path": "Universe Keyboard/Views/Components/ToggleRow.swift",
+      "bytes": 957,
+      "sha256": "2561baeb5ce6dc776999352f5266a4ca4bb30bf6ad4ef012d8141764ae702bd2"
+    },
+    {
+      "path": "Universe Keyboard/Views/Diagnostics/DiagnosticsDayPicker.swift",
+      "bytes": 3289,
+      "sha256": "da1fdcba7a5aab35258681f1f4c21ce8564cb1d6de11e1e10e0d07672ec3845e"
+    },
+    {
+      "path": "Universe Keyboard/Views/Diagnostics/DiagnosticsFilterBar.swift",
+      "bytes": 1359,
+      "sha256": "09d9b347a3e52d62397cc031ee877c19169581e6773d3d144390427eeaf8cdd2"
+    },
+    {
+      "path": "Universe Keyboard/Views/Diagnostics/DiagnosticsLogContentView.swift",
+      "bytes": 8115,
+      "sha256": "0cac3632266f9934391510c0fc4e97aa96eb69bf3da1aab1f046c164c72b04b1"
+    },
+    {
+      "path": "Universe Keyboard/Views/Diagnostics/DiagnosticsLogSource.swift",
+      "bytes": 25228,
+      "sha256": "deb3b7fdd68f55f5243d9ff279108e2c3459ae540569939f3ac53710d6f5cd6f"
+    },
+    {
+      "path": "Universe Keyboard/Views/Diagnostics/DiagnosticsStore.swift",
+      "bytes": 24653,
+      "sha256": "5036ce52647b5d5383450b8b7e99e9b09d43c3cb308075aee967843c5073aed4"
+    },
+    {
+      "path": "Universe Keyboard/Views/Diagnostics/DiagnosticsSummaryBar.swift",
+      "bytes": 1830,
+      "sha256": "a65a7dd71a055bf9ad58263356ae0ed6f46ed2454d685e46393631e6e7a480da"
+    },
+    {
+      "path": "Universe Keyboard/Views/Diagnostics/DiagnosticsToolbar.swift",
+      "bytes": 1017,
+      "sha256": "07a881a32a584791018b0f4f418aac96b58c97f8e0f7d68d648c63dba8d33818"
+    },
+    {
+      "path": "Universe Keyboard/Views/Diagnostics/DiagnosticsView.swift",
+      "bytes": 4028,
+      "sha256": "492b5ab87da0b561a76e727cc30069a5931fd495dc1d7f44a91a0d89ac9ffd9e"
+    },
+    {
+      "path": "Universe Keyboard/Views/Diagnostics/ReleaseEvidenceView.swift",
+      "bytes": 10353,
+      "sha256": "6ee4f62a3ebd863ee4ffe3539b5441bae98c5f05b4360551e96ddfba1386baa5"
+    },
+    {
+      "path": "Universe Keyboard/Views/Diagnostics/T9DevicePreflightEvidenceView.swift",
+      "bytes": 8706,
+      "sha256": "768410d0c89c5aef0171d69e355b178a843ce66c8bc6ed24066034814a4c3fc5"
+    },
+    {
+      "path": "Universe Keyboard/Views/Dictionary/DictionaryBrowserTypes.swift",
+      "bytes": 910,
+      "sha256": "260d4734889fb1c9cf47d8abb4a30a815bbe40255f34a37967377a1c5b063d2f"
+    },
+    {
+      "path": "Universe Keyboard/Views/Dictionary/DictionaryBrowserView.swift",
+      "bytes": 1735,
+      "sha256": "a265beff2b682512ba0524298955135444df2db2d770198d7b74b2fa292d6b62"
+    },
+    {
+      "path": "Universe Keyboard/Views/Dictionary/DictionaryEmptyStateView.swift",
+      "bytes": 414,
+      "sha256": "e769f15366b4216c3e42be3300aca35472ddde9ac6684fb09f6d60660fb593d1"
+    },
+    {
+      "path": "Universe Keyboard/Views/Dictionary/DictionaryEntriesView.swift",
+      "bytes": 1291,
+      "sha256": "668f34482e56a302c7103a08066487319e65033b00c603c606d92cde0385eb4b"
+    },
+    {
+      "path": "Universe Keyboard/Views/Dictionary/DictionaryEntryRowView.swift",
+      "bytes": 601,
+      "sha256": "11d48ffe17c36ed441c400b630b3ba2e0a7b2839c96199d594d249b32005d33e"
+    },
+    {
+      "path": "Universe Keyboard/Views/Dictionary/DictionaryFilePreviewView.swift",
+      "bytes": 1552,
+      "sha256": "cc729bedd7d97de0322c71d1125a638aa0802cb5d47cde3c95721e11bcf1cd2b"
+    },
+    {
+      "path": "Universe Keyboard/Views/Dictionary/DictionaryFilesView.swift",
+      "bytes": 1433,
+      "sha256": "561f93abe8896d9527d3fde42d55eadb248759a5ae6e4082c0a2417334a874ee"
+    },
+    {
+      "path": "Universe Keyboard/Views/Dictionary/DictionaryIndexService.swift",
+      "bytes": 3193,
+      "sha256": "612ae1d9c32c50e855cde6f7c523289640d73f114e06b3f27ad9654e02ee9c2b"
+    },
+    {
+      "path": "Universe Keyboard/Views/Dictionary/DictionaryMetricView.swift",
+      "bytes": 249,
+      "sha256": "51f123653e0559060b4b37ee6a2d4fd0945ffb3ef207304c158cca740ea12c73"
+    },
+    {
+      "path": "Universe Keyboard/Views/Dictionary/DictionaryOverviewView.swift",
+      "bytes": 816,
+      "sha256": "0b342e18f74666b7b095b0be787148d8e0364faab7e85208108a2387c98fd4be"
+    },
+    {
+      "path": "Universe Keyboard/Views/Dictionary/DictionaryScanner.swift",
+      "bytes": 3330,
+      "sha256": "8a8d40d3d7a7966c3dd1124a881b7cf2e19862ceb478b09fd21d45a0f2d50bf3"
+    },
+    {
+      "path": "Universe Keyboard/Views/Dictionary/LocalDictionaryModel.swift",
+      "bytes": 4235,
+      "sha256": "d1d02553a1f98091d8027bd8a8214ea27e5fe1825b70adb157e095d0fae92dd3"
+    },
+    {
+      "path": "Universe Keyboard/Views/Guide/ActivationGuideSheet.swift",
+      "bytes": 1030,
+      "sha256": "51b0d5a8371a9fc30909584940652edf5178b64a4fa7a0d6cbfb086e98eb53be"
+    },
+    {
+      "path": "Universe Keyboard/Views/Guide/ActivationResourcePreparePanel.swift",
+      "bytes": 12716,
+      "sha256": "4d8b5b66a38e0a09e613830f19a39a4d4b9772682336b94b7157a4106827bd24"
+    },
+    {
+      "path": "Universe Keyboard/Views/Guide/ActivationWelcomeView.swift",
+      "bytes": 3231,
+      "sha256": "bc50028bd782972687263c57028dca381b54a672ccd6d939279eb5f1849b331a"
+    },
+    {
+      "path": "Universe Keyboard/Views/Guide/GuideTab.swift",
+      "bytes": 23616,
+      "sha256": "8e073c6b9738a6c6c314939b6698c27829bbd56ad56477a6cc920d12b70083f0"
+    },
+    {
+      "path": "Universe Keyboard/Views/Home/HomeTab.swift",
+      "bytes": 18427,
+      "sha256": "064af667ffb3e11841f195f427c3122528cc0061f24e0466a2b98f8a1df5ef11"
+    },
+    {
+      "path": "Universe Keyboard/Views/License/LicenseView.swift",
+      "bytes": 6805,
+      "sha256": "3e87e52f24800a8fc6108557290e0a531b950112f5290a9525143ed98779153e"
+    },
+    {
+      "path": "Universe Keyboard/Views/Search/SearchTab.swift",
+      "bytes": 7429,
+      "sha256": "29bc0100db1517f1247eeabf1e56966c845a900b0e588c18fb1d29eb1fd6c4c2"
+    },
+    {
+      "path": "Universe Keyboard/Views/Settings/AboutSettingsView.swift",
+      "bytes": 2132,
+      "sha256": "08d6ff835b0429ba3a5734881730e9cebed4be49a65a00e5c4f315bc4695d2ec"
+    },
+    {
+      "path": "Universe Keyboard/Views/Settings/AppearanceSettingsView.swift",
+      "bytes": 4297,
+      "sha256": "1c794396231859a3967ec8955a601903653237d8bb5ce32e67a1cb667a6264aa"
+    },
+    {
+      "path": "Universe Keyboard/Views/Settings/DiagnosticsSettingsView.swift",
+      "bytes": 18893,
+      "sha256": "74945520a8ce4c78412ccacd126e57f24285aa16c34c7f0f90165ea876c812f6"
+    },
+    {
+      "path": "Universe Keyboard/Views/Settings/FeedbackLevelSelectionView.swift",
+      "bytes": 1190,
+      "sha256": "7566327861087322a93ef5de2a071be7daefe6e972f5f664fcf4aadaad3914ed"
+    },
+    {
+      "path": "Universe Keyboard/Views/Settings/FeedbackPreviewCoordinator.swift",
+      "bytes": 1894,
+      "sha256": "c3f13b35a81f0ffce243f1098ae64cb4bbf5666fb281bce29b1512d7af2db2ce"
+    },
+    {
+      "path": "Universe Keyboard/Views/Settings/FeedbackSettingsView.swift",
+      "bytes": 5743,
+      "sha256": "32cfcb26f2ee389700b75b1589f8588009aaaba250790c68798858cc8d1cfc25"
+    },
+    {
+      "path": "Universe Keyboard/Views/Settings/KeyboardLayoutSettingsView.swift",
+      "bytes": 18437,
+      "sha256": "4f1cf0f027afbbb82e3a9260e1b8133693332f7b382a9d7fb8fa30e51c548bde"
+    },
+    {
+      "path": "Universe Keyboard/Views/Settings/NotificationSettingsView.swift",
+      "bytes": 8330,
+      "sha256": "5e92c28585894df20708cdf41dcfbcff8326e90a4a0cb759b252fc7597941165"
+    },
+    {
+      "path": "Universe Keyboard/Views/Settings/PrivacyDataView.swift",
+      "bytes": 3654,
+      "sha256": "11026a25ac7b95521d9f1ebae8d871e9dba1bc26d28bb1cdab900905e3ab1159"
+    },
+    {
+      "path": "Universe Keyboard/Views/Settings/RimeAdvancedInputSettingsView.swift",
+      "bytes": 13720,
+      "sha256": "99bf8746756a5523def34ab7f81a7922ecbad2fc9f31cc74f71eae61009cd08e"
+    },
+    {
+      "path": "Universe Keyboard/Views/Settings/RimeDeploymentContent.swift",
+      "bytes": 4007,
+      "sha256": "a5d86864600ba6d684c4ad168b7156f1060b02845e7a5e7048f4ef6efcd49cd6"
+    },
+    {
+      "path": "Universe Keyboard/Views/Settings/RimeDeploymentStatusSection.swift",
+      "bytes": 820,
+      "sha256": "f7b67cc683bbbf586f5fc5cba82e80fb7edf2a4d5c81ae0e6be1c6996f0cf3ed"
+    },
+    {
+      "path": "Universe Keyboard/Views/Settings/RimeDeploymentToast.swift",
+      "bytes": 8201,
+      "sha256": "a922a2527271c45012a621ace38e5639097c2572b19233c4ac21f812f4bcf7a1"
+    },
+    {
+      "path": "Universe Keyboard/Views/Settings/RimeFuzzyPinyinSettingsView.swift",
+      "bytes": 5203,
+      "sha256": "bef4434f8085bc40fe4e4faf6de13e71ee03fa44384ee2a640a1757d18680294"
+    },
+    {
+      "path": "Universe Keyboard/Views/Settings/RimeSettingsStore+Sync.swift",
+      "bytes": 3152,
+      "sha256": "61a7fd4558bfa3261b5b9c41560a7947315ef0088e77457d951a1e245006a8d7"
+    },
+    {
+      "path": "Universe Keyboard/Views/Settings/RimeSettingsStore.swift",
+      "bytes": 39883,
+      "sha256": "8eb229689693188fe4ee937f09181145113104743db716b180aeb687c28bade4"
+    },
+    {
+      "path": "Universe Keyboard/Views/Settings/RimeSettingsView.swift",
+      "bytes": 21002,
+      "sha256": "1644f9278977e898e794b758b40c65fd99e75b29cb3072d4566bf9758f5813ee"
+    },
+    {
+      "path": "Universe Keyboard/Views/Settings/RimeSyncSettingsView.swift",
+      "bytes": 21665,
+      "sha256": "91d75b2b1a1fbd4c32219bf455f4eebe6c0b88869a81e8b08fdc425a53d2ab19"
+    },
+    {
+      "path": "Universe Keyboard/Views/Settings/RimeUserDictionarySettingsView.swift",
+      "bytes": 8796,
+      "sha256": "c3b3eb5a93a666709e98e5487db60609788d91e01c038caea137d3bb1d80111d"
+    },
+    {
+      "path": "Universe Keyboard/Views/Settings/SchemaDownloadContentViews.swift",
+      "bytes": 5333,
+      "sha256": "53c52066a9b7adeb052b89cd9396a5b2c9e07f7f35f0e51f9961932e09be1d0f"
+    },
+    {
+      "path": "Universe Keyboard/Views/Settings/SchemaDownloadSection.swift",
+      "bytes": 1429,
+      "sha256": "25520c82642b45c8a744e2c5110cd5d24feecb9254d040551f97b62f23f5e2ad"
+    },
+    {
+      "path": "Universe Keyboard/Views/Settings/SchemaPickerRow.swift",
+      "bytes": 3832,
+      "sha256": "620d89f1ff370fb1f135a012e09d4e4fc92c6caac291b21549613fb751c80065"
+    },
+    {
+      "path": "Universe Keyboard/Views/Settings/SchemaSelectionSection.swift",
+      "bytes": 1330,
+      "sha256": "5c80979ebc03ee9905ebed9598d0545436e4e579e8d06276664458fafe87a865"
+    },
+    {
+      "path": "Universe Keyboard/Views/Settings/SchemeProvenanceSheet.swift",
+      "bytes": 1659,
+      "sha256": "4ddcacc57c65e240eb5ff581f857015098c63a29a3f8a01d9c965afb998149d4"
+    },
+    {
+      "path": "Universe Keyboard/Views/Settings/SettingsTab.swift",
+      "bytes": 11434,
+      "sha256": "2ff0065c37d4297d0193a29d9db3a796d0c932f7d577866511312721afda992a"
+    },
+    {
+      "path": "Universe Keyboard/Views/Settings/TypingIntelligenceView.swift",
+      "bytes": 10939,
+      "sha256": "492f0f7fef9b8a83f983179a6f366b00b832e7fe55fa691be8818780d5ac5ed9"
+    },
+    {
+      "path": "Universe Keyboard/Views/Settings/TypoCorrectionBenchmarkModel.swift",
+      "bytes": 5499,
+      "sha256": "20425a0573e13efff9dcd6da51f6f8a3e0afb92b151eae80aaf23cd8915eff0d"
+    },
+    {
+      "path": "Universe Keyboard/Views/Settings/TypoCorrectionBenchmarkView.swift",
+      "bytes": 14053,
+      "sha256": "2ad52e9e2246f732f17303189a8bf0e91b86400d1c17fe46611105825a80a9f7"
+    }
+  ]
+}

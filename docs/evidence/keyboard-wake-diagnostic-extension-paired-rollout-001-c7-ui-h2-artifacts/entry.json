@@ -1,0 +1,18 @@
+{
+  "authorization": "\u6267\u884c H2 \u5427",
+  "utc": "2026-10-02T15:39:19.043498+00:00",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "source571_verified": true,
+  "vendor630_verified": true,
+  "before_file_count": 2860,
+  "before_dirty_count": 777,
+  "staged": 0,
+  "historical_c7b_source_differences": [
+    "Keyboard/Controllers/KeyboardViewController+Presentation.swift",
+    "Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift"
+  ],
+  "reuse_decision": "Do not reuse old build; final source differs, build both ordinary modes against H1 frozen inputs",
+  "source_packages": "reuse H1 resolved checkout paths; no update/resolve",
+  "scope": "ordinary Debug and Release generic SDK paired builds, no runtime or Release publication"
+}

@@ -53,9 +53,7 @@ and does not authorize dual-track or Migration by itself.
 
 ## KOS 2.2 Advisory Reliability Layer
 
-Universe Keyboard has adopted `kos-agent-kit@v0.8.0` in `advisory` mode. Its
-optional E-01, A-01/B-01, P-01 and D-01 contracts require explicit opt-in on
-new records; see `UPGRADE_STATUS` for the current disposition:
+Universe Keyboard has adopted KOS Agent Kit v0.9.0 in advisory mode. E-01, A-01/B-01, P-01 and D-01 still require explicit opt-in on new records. The selected M-02 and new reviewer-lane rules are prospective; see UPGRADE_STATUS for their boundaries:
 
 | Artifact | Role |
 |---|---|
@@ -63,7 +61,7 @@ new records; see `UPGRADE_STATUS` for the current disposition:
 | [`.kos/project.json`](../../.kos/project.json) | Included records, claims, environments, Gate policies and mode |
 | [`KOS-UPGRADE-UK-001`](../assignments/kos-upgrade-uk-001.md) | First advisory adoption (`v0.5.0`) |
 | [`KOS-ASTRA-UPGRADE-001`](../assignments/kos-astra-upgrade-001.md) | Historical v0.7.0 adoption |
-| [`KOS-UPGRADE-UK-004`](../assignments/kos-upgrade-uk-004-v0.8.0.md) | Current Adopted pin (`v0.8.0` advisory) |
+| [KOS-UPGRADE-UK-006](../product-decisions/KOS-UPGRADE-UK-006-v0.9.0-adoption.md) | Current Adopted pin v0.9.0 advisory; M-02 and new independent reviewer-lane clauses apply prospectively |
 | [`PD-KOS-UPGRADE-UK-005`](../product-decisions/KOS-UPGRADE-UK-005-release-evidence-adoption.md) | Project-level `kos.release-evidence` v1.0 prospective adoption decision |
 | [`PD-KOS-UPGRADE-UK-005-P1-B-SCOPE`](../product-decisions/KOS-UPGRADE-UK-005-P1-B-scope.md) | Option A residual disposition: duplicate UI/storage `Not applicable`; migration/backfill and background sync `Deferred`/unauthorized |
 | [`KOS-RELEASE-EVIDENCE-IMPLEMENTATION-001`](../assignments/kos-release-evidence-implementation-001.md) | Parent handoff; P0 Profile/owner-map stage closed, child P1 remains active for P-01/D-01 and Product/Release boundaries; `REP-Q-01` and candidate-bound hosted provenance closed |

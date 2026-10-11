@@ -1,0 +1,56 @@
+{
+  "lane": "QUALITY-C7-PROBE-UI-BINDING",
+  "round": 1,
+  "work_item": "KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001",
+  "authorization": "Human授权直接按建议继续；本次新范围仅新对象绑定局部源码静态补审，非旧运行验收续轮",
+  "allowed_content_inputs": {
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/ASSIGNMENT_POLICY.md": "e90dd8f06371e9367652d4e7cc63dee31ee7b1ac855e7802d6d2e9b8e1e90680",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/plans/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-probe-ui-binding-slice-2026-10-02.md": "13d5b426352061d98018c1adfb39a7c44ae890d325da41395888a635c040cf32",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-probe-ui-binding-artifacts/patch.diff": "708bdd9d4a14e0f67b014670b7033a3ce0827224b79ff860fab7a06ff94259c5",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-probe-ui-binding-artifacts/static-checks.json": "18b49ee3b31b64d4d37a91d9179b3b39b3116ab123b8f89e040ae0b8d6035b67",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Presentation.swift": "767c2817054484d4d4c328cb7a8deaf676509b76bbc3cb45868b6e3cf721319a",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+CandidateBar.swift": "ae1b78d5a311f60054914093458b0c78fe3d35923d82b487fd7f30d886074c80",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift": "bca0391355d9a3a60880dfdc08260095d02d6618bf0a38d40bfcc61734a891e9"
+  },
+  "allowed_source_line_ranges": {
+    "KeyboardViewController+Presentation.swift": [
+      70,
+      170
+    ],
+    "KeyboardViewController+CandidateBar.swift": [
+      29,
+      54
+    ],
+    "KeyboardViewController+WakeOwnerProbe.swift": [
+      1,
+      98
+    ]
+  },
+  "criteria": {
+    "P1": "new-bar RHS构造读取旧bar的静态gap是否明确，三个post-assignment refresh是否覆盖所有这三分支且无需新API",
+    "P2": "DEBUG&&KEYBOARD_WAKE_OWNER_PROBE guard是否正确，未改变Core/输入/touch/TTL/policy/布局或隐私合同",
+    "P3": "3parse/fileformat回执仅syntax/format，source改变不能承接旧installed/runtime通过；两个现场UI原因未知，结论不得声称runtime修复或Maps"
+  },
+  "acceptance": "P1-P3 all Covered=>仅Positive scoped static opinion；missing Partial/conflict Hold",
+  "exclusions": [
+    "device/Simulator/UI/LLDB/container/build/test/install/network/Git",
+    "source changes",
+    "outside file/line ranges",
+    "runtime review or Product residual acceptance",
+    "delegation",
+    "automatic budget renewal"
+  ],
+  "outputs": {
+    "report": "/private/tmp/ukey-wake-probe-ui-binding-20261002/quality-ui-review.md",
+    "usage": "/private/tmp/ukey-wake-probe-ui-binding-20261002/quality-ui-usage.json"
+  },
+  "budget": {
+    "max_calls": 4,
+    "hard_elapsed_seconds": 240,
+    "soft_elapsed_seconds": 150,
+    "checkpoint": "call2 only if not already delivering",
+    "delivery": "Prefer call1 timer+packet hashes+all limited lines, call2 writes concise report AND usage together; report<=600Chinese characters excluding table if possible; do not defer ledger. Actual each tool/collaboration call counts; missing actual values null."
+  },
+  "expansion_authority": "Human only",
+  "packet_digest_sha256": "d76b28381d5789ed0a013e08cee163027fe85f82e990a192e4b55348248c4ff1"
+}

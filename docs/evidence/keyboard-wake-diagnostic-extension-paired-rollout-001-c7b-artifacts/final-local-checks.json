@@ -1,0 +1,29 @@
+{
+  "markdown_link_checker": "repository scripts/ci/check_markdown_links.py missing_links function applied to explicit final dirty/untracked slice paths; CLI committed-diff enumeration is not coverage for this uncommitted slice",
+  "markdown_files": [
+    "docs/ACTIVE_WORK.md",
+    "docs/ENGINEERING_DASHBOARD.md",
+    "docs/KNOWLEDGE_INDEX.md",
+    "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md",
+    "docs/assignments/keyboard-wake-lifecycle-diagnostics-001.md",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b-entry-2026-10-02.md",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b-review-usage-reconciliation-2026-10-02.md",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b-validation-2026-10-02.md",
+    "docs/product-decisions/KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001-c7b-authorization-2026-10-02.md",
+    "docs/reviews/arch-c7-b1-review-2026-10-02.md",
+    "docs/reviews/quality-c7-b1-review-2026-10-02.md"
+  ],
+  "missing_links": [],
+  "scoped_diff_check": {
+    "exit": 0,
+    "output": ""
+  },
+  "source_build_and_vendor_identity_drift": [],
+  "compile_exits": {
+    "debug-build": 0,
+    "test-build": 0,
+    "release-build": 0,
+    "ordinary-debug-build": 0
+  },
+  "review_documentation_post_sync_delta": "Knowledge Index navigation changed after review; original text and 52/52 pre-sync hash receipt archived. Source/test/project unchanged."
+}

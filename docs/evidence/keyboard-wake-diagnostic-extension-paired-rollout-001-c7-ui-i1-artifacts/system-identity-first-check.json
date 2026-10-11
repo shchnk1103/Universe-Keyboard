@@ -1,0 +1,21 @@
+{
+  "main-data": {
+    "system_rows_changed": {
+      ".": [],
+      ".com.apple.mobile_container_manager.metadata.plist": []
+    }
+  },
+  "app-group": {
+    "system_rows_changed": {
+      ".": [],
+      ".com.apple.mobile_container_manager.metadata.plist": []
+    }
+  },
+  "main_data_system_identity": {
+    "identifier_same": true,
+    "uuid_matches_current_container": false,
+    "old_uuid_matches_old_container": false,
+    "metadata_key_set_same": true,
+    "changed_metadata_keys": []
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "recorded_utc": "2026-10-04T05:24:57.629743+00:00",
+  "human": "界面现在就像是刚打开键盘时一样，候选栏没有候选，输入框没有输入，但是按钮仍显示取证",
+  "interpretation": "visual state differs from original failure exit; no test of typing recovery; cause unobserved",
+  "additional_action": "visual only; no requested input/delete/switch"
+}

@@ -1,0 +1,104 @@
+# INT-003 P1 证据收敛独立 Test / Release Quality Review 002
+
+## Verdict
+
+总体结论：Partial / incomplete。
+
+六项 claim 中，候选身份、child-003 结果、协调器测试语义和 RimeBridge 边界均完成了定位式审查。Claim 2 的 run-004 三个结果 bundle 存在且 Info.plist hash 正确，绑定日志和 receipt 也可读；但在本轮允许的 xcrun xcresulttool get test-results summary 命令下，三个 bundle 都因工具尝试在 TestReport 目录保存 UUID 而返回权限错误。顺序重试后仍相同。因而 run-004 的 xcresult summary 不能被本轮独立读取，Claim 2 的 required result criterion 未完全核验，按 packet 必须保留 Partial / incomplete。
+
+本结论不授予 Product query-cost acceptance 或 budget，不代表 QA-001 Gate、merge readiness、parent Close、TestFlight、Release、ADR Accept 或 RimeRuntimeProvenance restoration。
+
+## Review identity and preflight
+
+- Assignment：TYPO-CORRECTION-002-INT003-QUERY-COST-P1-EVIDENCE-CONVERGENCE-QUALITY-REVIEW-002。
+- Reviewer runtime：/root/int003_p1_quality_convergence_r2；本轮为 fresh、independent Test / Release reviewer。
+- Worktree：/Users/doubleshy0n/.codex/worktrees/int003-ci-72dd-once/Universe Keyboard。
+- 固定 baseline：72dd21710f2a86c9f951d489f645bae89b053b58；tree 8ce8e8c0d9b821ca4d24aff4faf46a3e49bf87ff。
+- Assignment SHA-256：7ace2641b864771894fcf73c9cabae67e06d8066efe8555a6c80f6531ec3df05。
+- Packet R2 SHA-256：34a3762f223712ff9c0193c789e0f0cb3bc0df58dca717cf0d8eaf737d0798fa。
+- AUTH：status=consumed；consumed_at=2026-09-29T16:41:17+08:00；consumed_by 为 Codex current task before fresh reviewer dispatch。没有复用 Quality R1 AUTH。
+- 起始 UTC：2026-09-29T08:42:52Z。结束 UTC：2026-09-29T08:49:00Z。按起止时钟计算 active elapsed 约 00:06:08；期间没有主动等待或重跑。
+- 两个授权输出在 preflight 时均 absent。工作树已有预存改动；未读取 broad diff、未修改任何非输出文件。
+- Packet 所列导航、Assignment、evidence、review、plan 文件的 SHA-256 全部匹配记录值。
+- 十个候选路径的 SHA-256 与 Git blob 全部匹配 packet。九个非目标路径匹配 source-freeze-002；协调器集成测试文件单独匹配 child-003 post-format SHA-256 102adde569191ac6bf1ae4fac1765abe1b62324ff49a66b83ec2a6b40d4f9b16。没有把历史 source-freeze digest 当作包含当前第十个文件，也没有重建缺失 preimage。
+
+## Claim matrix
+
+### Claim 1 — Candidate and run identity
+
+结论：覆盖完成，带 compositional limitation。
+
+固定 HEAD/tree、Assignment/packet hash、十个候选 SHA/Git blob 均匹配。run-004 receipt 的定位为 docs/evidence/typo-correction-002-int003-query-cost-p1-ci-revalidation-004.md:10-15,21-33；child-003 receipt 的定位为 docs/evidence/typo-correction-002-int003-query-cost-p1-evidence-remediation-003.md:8-18,27-43。run-004 绑定了 source-freeze-002 的十路径执行记录，child-003 绑定了最终 post-format 的协调器测试文件。两份证据共同覆盖最终候选的九个共同路径加最终第十个测试文件，因此可以作组合式 target coverage 判断。
+
+没有一份 full matrix 同时以最终十文件字节运行。run-004 的十路径记录与 child-003 的最终测试文件记录不能被拼成一个不存在的单次执行；该事实保留为 evidence limitation。
+
+### Claim 2 — Run-004 fixed local matrix
+
+结论：Partial / incomplete；receipt 与日志可核对，但 run-004 result summary 未独立核验。
+
+- 三个 run-004 Info.plist hash 均匹配 packet：RimeBridge 213fe72fdf7c09704d6df29f7901da96b43059f931bcc71c56ca3fd700ef7a4d；App + Keyboard bc17571b936613e361f45bba5a17eb849e29c595cf1ebdf4c5295aeec1a647ca；signed Keychain e87c8cea07cda31020ac80943eeac292abfb213c641a026068efb5b3de9dc48b。
+- 绑定 receipt docs/evidence/typo-correction-002-int003-query-cost-p1-ci-revalidation-004.md:19-33 记录 KeyboardCore 1171 tests、RimeBridge 108 tests/20 optional skips/0 failures、App + Keyboard 的 410 + 16 + 5 结果及 10 个环境 skip、signed Keychain 1/1、Release build success。
+- bounded rimebridge-tests.log hash 匹配；日志定位显示三个 RimeCorrectionQueryIntegrationTests 通过，整套 108 tests、20 skipped、0 failures，最终 TEST SUCCEEDED。keychain-test.log:3831-3849 显示指定 signed test 1/1 通过；release-build.log:1430 显示 BUILD SUCCEEDED。
+- App + Keyboard 的 receipt 与绑定 app-keyboard-tests.log hash 支持 executor-recorded result；本轮不把 receipt 代替不存在的 xcresult summary。
+- 允许的 xcrun xcresulttool get test-results summary 对三个 run-004 bundle 均返回同一 TestReport UUID 写权限错误；顺序读取后仍失败。本轮没有尝试 packet 外的 object、复制、修复权限或重跑。
+- hosted CI 不在范围内，也没有从 local receipt 推断 hosted CI。
+
+### Claim 3 — Child-003 bound App + Keyboard result
+
+结论：覆盖完成，保留 433/432 discrepancy。
+
+child-003 receipt docs/evidence/typo-correction-002-int003-query-cost-p1-evidence-remediation-003.md:31-43 与 child result Info.plist hash 7cdec0eeff9fc81fb4dd74cf96d09f399e459d429ad9c3a4833b692b69486e79 一致。receipt 绑定 iPhone 17 / iOS 26.0 build 23A343、UDID D3C353BE-3AA6-499B-8F87-349073D65BE4、macOS 27.0 build 26A428、Xcode 27.0 build 27A266a。
+
+本轮允许的 xcresult summary 返回 Passed、422 passed、10 skipped、0 failed、432 total nodes。允许的 xcresult tests listing 含有五个最终节点：testHostCallbackPersistsMeasuredQueriesThroughTypedJournalRuntime、testPostCallInvalidationRecordsOneDiscardedFacadeEvent、testPreCallInvalidationSkipsFacadeAndMeasuredEvent、testReadyEmptyResultsRecordOneTypedEventAcrossBothStages、testRefreshHookKeepsCandidateBarOutsideTheTestRuntime；receipt:34-40 记录五项均 passed 及十项环境 skip 的身份/理由。
+
+XcodeBuildMCP 报告 433 discovered tests，而完整 bundle 为 432 result nodes；receipt:32-33 明确保留该一项 discrepancy，未用重跑推断或消解。当前只验证最终 target bytes 和 receipt 绑定；没有声称拥有 pre-edit source bytes 或可独立重建其差异。
+
+### Claim 4 — Coordinator test coverage
+
+结论：覆盖完成，oracle 性质与观察边界明确。
+
+- stage order/cardinality：KeyboardExtensionTests/TypoCorrectionRecallCoordinatorIntegrationTests.swift:7-40 断言 invocation count 等于 payload count 与 expected stage count、同时出现 stageOne/stageTwo、每个结果为 ready + candidatesReturned + zero bucket，并断言同一 operationOrdinal 与每次 facade invocation 一个 measured code。
+- ready-empty stage trace：同文件:238-291 通过 TypoCorrectionRecallDriver 运行 query、yield、coverage assessment、readyToApply 的有界轨迹；expectedStages 是从同一个 driver 生成的动态 oracle，不是独立硬编码的 Stage 1/Stage 2 期望序列。该事实保留为测试强度条件。
+- typed journal：同文件:44-108 的 TestRecallHost:350-357 记录 typed payload 到 DiagnosticsJournalRuntime；测试 flush、reader readback、event field cardinality、payload equality、stage 顺序，并断言 journal 中不存在 query_begin/query_outcome。
+- pre-call invalidation：同文件:111-129 在 facade 前 fence check 注入 invalidation，断言 facade invocation=0、没有 measured payload、存在 fence discard。
+- post-call discard：同文件:132-155 在 facade invocation 中 invalidation，断言 invocation=1、payload=1、disposition=discardedAfterFacade、measured count=1，且 pending turns 清空。
+- 实际 coordinator 计时与事件位置由 Keyboard/Controllers/TypoCorrectionRecallCoordinator.swift:205-256 直接支持：pre-fence、facade call、post-fence、disposition、single recordQueryMeasured、discard 后结束。
+
+因此本轮确认了断言所覆盖的 stage、cardinality、typed journal、ordinal、legacy pair exclusion、pre-call invalidation 与 post-call discard；没有把同一 driver 生成的 stage trace 称为独立 hard-coded oracle，也没有把 test recorder callback 当成未经 host callback 的独立生产 writer 证明。
+
+### Claim 5 — RimeBridge boundary
+
+结论：覆盖完成，带真实失败路径条件。
+
+Packages/RimeBridge/Tests/RimeBridgeTests/RimeCorrectionQueryIntegrationTests.swift:9-36 通过私有 synthetic_echo 与 synthetic_empty fixture、setup、initializeEngine、createSession、selectSchema、currentSchemaID 和真实 correction facade，分别断言 ready + candidatesReturned + 非空候选以及 ready + candidatesReturned + empty candidates。run-004 rimebridge-tests.log 的 1667-2229 区间记录三个 integration tests 通过。
+
+同文件:38-49 的 get_context false 测试显式设置 setCorrectionQueryContextAvailabilityForTesting(false)。Packages/RimeBridge/Sources/RimeBridgeObjC/RimeSessionManager.m:368-433 与 include/RimeSessionManager.h:74-81 表明该 seam 只在 DEBUG 覆盖 correction query 的 get_context 分支；它证明模拟分支的 envelope，不是 production get_context failure proof。
+
+真实 setup failure、schema selection failure、correction-session creation failure 和真实 librime get_context=false 的独立结果未在本组 integration tests 中展示。ensureCorrectionSession 的 failure mapping 有实现路径，但本轮没有把未执行路径写成 passed evidence。
+
+### Claim 6 — P1 evidence disposition and limits
+
+结论：本 review 不可宣告 bounded pass with conditions，因为 Claim 2 的 required result criterion 未完成；总体保持 Partial / incomplete。
+
+reconciliation 依据：
+
+- architecture review r3 将实现 contract、same-call envelope、sidecar ownership、Debug/Simulator 限制列为 Pass with conditions；其结论不替代 Quality/Product/Gate。
+- implementation/execution review 记录了 coordinator、Rime same-call 和本地执行边界；run-004 receipt:42-47 明确 local-only、无 hosted CI、无 Product/Gate/Release。
+- prior Quality R1 docs/reviews/typo-correction-002-int003-query-cost-p1-execution-evidence-quality-review-r1.md:3-21 是 Partial / incomplete，原因是无法可靠恢复 active elapsed，且没有形成五项 claim 的 verdict；本轮是新 runtime，不恢复 R1。
+- Measurement Plan:1-46 将 P1 implementation/evidence、P2 Simulator/raw segment、以及后续 Product-like evidence 分开，并明确没有固定 query budget、没有自动 Gate/parent Close。
+
+仍属于 P1 evidence 的内容是固定 candidate identity、run-004 可读 receipt/log 记录、child-003 最终测试文件及 bundle、coordinator typed event/journal 语义、synthetic Rime ready/empty 边界。raw JSONL/P2 capture、Release-like Product latency、query-cost acceptance/budget 属于后续独立授权。
+
+## Conditions and residual owners
+
+| ID | 条件 | Owner | 推荐 disposition |
+|---|---|---|---|
+| Q-R2-01 | 三个 run-004 xcresult summary 在允许命令下不可读；本轮只保留日志/receipt 证据。 | Test / Release reviewer | fix：如需完整 Claim 2，建立新 Assignment/AUTH 后重新提供可读 bundle 或等价 packet 允许的只读访问；不自动重跑。 |
+| Q-R2-02 | XcodeBuildMCP 433 discovered 与 xcresult 432 nodes 的差异未解释。 | Test / Release reviewer | accept：作为 child-003 明示的 evidence limitation；不得用推断改写计数。 |
+| Q-R2-03 | ready-empty stage expected trace 使用同一 TypoCorrectionRecallDriver 生成，缺少独立 hard-coded stage oracle。 | Input Intelligence Maintainer | tech_debt:INT003-COORDINATOR-INDEPENDENT-ORACLE。 |
+| Q-R2-04 | 真实 Rime setup/schema/get_context failure path 没有被这组 integration tests 展示。 | RimeBridge owner | tech_debt:INT003-RIME-FAILURE-BOUNDARY。 |
+| Q-R2-05 | 没有单次 full matrix 以最终十文件字节运行。 | Test / Release reviewer | accept：保留 compositional coverage 限制；若产品要求单一矩阵，另行授权并冻结新 packet。 |
+
+## Explicit non-claims
+
+本 review 不声明 Product query-cost acceptance 或 budget；不声明 raw P2 capture、QA-001 Gate、Product acceptance、parent Close、TestFlight、Release、ADR Accept、merge readiness、hosted CI success、RimeRuntimeProvenance restoration，也不授权新的测试、构建、Simulator、网络、GitHub、source edit、status edit、publication 或 AUTH 扩展。

@@ -1,0 +1,26 @@
+{
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "candidate_digest": "af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9",
+  "scope": "QUALITY-C5-HOST-DELTA round2 readonly; C5-R not executed/authorized",
+  "frozen_inputs_match_before_owner_append": 26,
+  "source_build_match": 568,
+  "built_bundle_match": 111,
+  "preserved_other_existing_files": 2543,
+  "sole_existing_modified_path": "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md",
+  "after_assignment_sha256": "b59af132c7508066cab620a92518517c95f36595ae3d5253ef5e71692709d627",
+  "output_sha256": {
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-host-delta-r2-input-manifest.json": "8c3399b5ceb20040f3b41da9136a71e864117cd1b21573212b3dca660930ffe1",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-host-delta-r2-entry.md": "e6a0ac428f14fb684956b0ab72a26978da97d9183375bfbd81ed09154c452efc",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-host-delta-r2-quality-packet.md": "86dc209897a89e9723e3ee2f42057bc79b0ee1e07b5eb19658d14b137c25b4bc",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-host-delta-r2-quality-review.md": "423ef30f9f457b518a059055545b5177f1d59b546d7351cd1fb7b579a55c0b90",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-host-delta-r2-quality-usage.json": "35e212cc3f6d094e5c4987a2e7769f418aa0ac38915c7c2e4a731abcf1afa608",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-host-delta-r2-timer.json": "c642751bf27e66c510358e17ec44ea21047f1680fbfa8a1dbb47e1ea4fae5153",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-host-delta-r2-delivery-observation.json": "98bbd13bda0b334af57fc1b7a49b3d7d4ec3044e5b658bd2f489f433a02259dd",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-host-delta-r2-validation-2026-10-01.md": "daf6920bd99f3a3688335333f4ee1afffa95ac9e65003e17b0b939a1e4dd75fc"
+  },
+  "status_z_sha256": "bcf56e16bbf03e410b6b9ebf3c864a5813abd0229cecf5206625ba0a39fd7bea",
+  "full_dirty_status_path": "/private/tmp/ukey-wake-c5-host-delta-r2-20261001/after-status.txt",
+  "dirty_entry_count": 463,
+  "staged_count": 0
+}

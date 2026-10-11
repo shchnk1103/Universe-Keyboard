@@ -1,0 +1,9 @@
+{
+  "observed_current_report_sha256": "46142620cd2cbbda0a153fe2c7d6cd18ccd3cdaff04055d9a556f963e0d2d4e5",
+  "observed_current_usage_sha256": "4ba51289bf4a6641fddffc4387ecef30d7364c11fe2cd22e4f7ff1a1f46eb979",
+  "history": "reviewer rewrote report+usage in call3 at 15:10:42Z after 240s hard deadline15:10:23Z; archived repo actual report is subsequent version, while root validation text recorded initial hash",
+  "root_interpretation": "preserve both historical hash assertions and current actual bytes; correct provenance in supplement, do not imply in-budget revision",
+  "scope": "only report/ledger consistency and new candidate validation preparation; no source/build/test/device",
+  "root_stop_receipt_report_sha256": "46142620cd2cbbda0a153fe2c7d6cd18ccd3cdaff04055d9a556f963e0d2d4e5",
+  "initial_report_sha256_in_validation_text": "393ba44def7f311e413ebf668ab0437b1957f03a0c99a66ee397e37980781c5d"
+}

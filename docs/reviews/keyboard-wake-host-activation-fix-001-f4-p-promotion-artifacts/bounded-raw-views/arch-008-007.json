@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+  "origin_sha256": "71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5",
+  "expected_sha256": "71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5",
+  "line_start": 361,
+  "line_end": 420,
+  "lines": [
+    {
+      "line": 361,
+      "text": "        XCTAssertNil(gate.pending)"
+    },
+    {
+      "line": 362,
+      "text": "    }"
+    },
+    {
+      "line": 363,
+      "text": ""
+    },
+    {
+      "line": 364,
+      "text": "    func testPermissionOrderIsEvaluatedBeforeConsumingPending() {"
+    },
+    {
+      "line": 365,
+      "text": "        enterVisible()"
+    },
+    {
+      "line": 366,
+      "text": "        execute(gate.handleHostWillResignActive(context: id(current), activatedAtSuspend: true))"
+    },
+    {
+      "line": 367,
+      "text": "        let preview = gate.previewHostDidBecomeActive(context: id(current), hasWindow: true)"
+    },
+    {
+      "line": 368,
+      "text": "        XCTAssertEqual(preview, .performSharedResume)"
+    },
+    {
+      "line": 369,
+      "text": "        XCTAssertNotNil(gate.pending)"
+    },
+    {
+      "line": 370,
+      "text": "        XCTAssertEqual("
+    },
+    {
+      "line": 371,
+      "text": "            KeyboardHostRecoveryCanaryPermission.fenceIssued.permitsOwnerStarting(source: .hostActive),"
+    },
+    {
+      "line": 372,
+      "text": "            false"
+    },
+    {
+      "line": 373,
+      "text": "        )"
+    },
+    {
+      "line": 374,
+      "text": "        execute("
+    },
+    {
+      "line": 375,
+      "text": "            gate.handleHostDidBecomeActive("
+    },
+    {
+      "line": 376,
+      "text": "                context: id(current),"
+    },
+    {
+      "line": 377,
+      "text": "                hasWindow: true,"
+    },
+    {
+      "line": 378,
+      "text": "                canary: .fenceIssued"
+    },
+    {
+      "line": 379,
+      "text": "            )"
+    },
+    {
+      "line": 380,
+      "text": "        )"
+    },
+    {
+      "line": 381,
+      "text": "        XCTAssertEqual(resumeCount, 0)"
+    },
+    {
+      "line": 382,
+      "text": "        XCTAssertEqual(gate.pending?.blocked, true)"
+    },
+    {
+      "line": 383,
+      "text": "    }"
+    },
+    {
+      "line": 384,
+      "text": ""
+    },
+    {
+      "line": 385,
+      "text": "    func testDuplicateActiveDoesNotEmitResumeThatWouldClearNewComposition() {"
+    },
+    {
+      "line": 386,
+      "text": "        enterVisible()"
+    },
+    {
+      "line": 387,
+      "text": "        execute(gate.handleHostWillResignActive(context: id(current), activatedAtSuspend: true))"
+    },
+    {
+      "line": 388,
+      "text": "        execute("
+    },
+    {
+      "line": 389,
+      "text": "            gate.handleHostDidBecomeActive("
+    },
+    {
+      "line": 390,
+      "text": "                context: id(current),"
+    },
+    {
+      "line": 391,
+      "text": "                hasWindow: true,"
+    },
+    {
+      "line": 392,
+      "text": "                canary: .nonCanaryBuild"
+    },
+    {
+      "line": 393,
+      "text": "            )"
+    },
+    {
+      "line": 394,
+      "text": "        )"
+    },
+    {
+      "line": 395,
+      "text": "        XCTAssertEqual(resumeCount, 1)"
+    },
+    {
+      "line": 396,
+      "text": "        execute("
+    },
+    {
+      "line": 397,
+      "text": "            gate.handleHostDidBecomeActive("
+    },
+    {
+      "line": 398,
+      "text": "                context: id(current),"
+    },
+    {
+      "line": 399,
+      "text": "                hasWindow: true,"
+    },
+    {
+      "line": 400,
+      "text": "                canary: .nonCanaryBuild"
+    },
+    {
+      "line": 401,
+      "text": "            )"
+    },
+    {
+      "line": 402,
+      "text": "        )"
+    },
+    {
+      "line": 403,
+      "text": "        XCTAssertEqual(resumeCount, 1)"
+    },
+    {
+      "line": 404,
+      "text": "    }"
+    },
+    {
+      "line": 405,
+      "text": ""
+    },
+    {
+      "line": 406,
+      "text": "    func testResignInvalidatesArmedTicksBeforeHostActive() {"
+    },
+    {
+      "line": 407,
+      "text": "        enterVisible()"
+    },
+    {
+      "line": 408,
+      "text": "        let arm = requireArm()"
+    },
+    {
+      "line": 409,
+      "text": "        XCTAssertEqual(tick(arm), .none)"
+    },
+    {
+      "line": 410,
+      "text": "        execute(gate.handleHostWillResignActive(context: id(current), activatedAtSuspend: false))"
+    },
+    {
+      "line": 411,
+      "text": "        XCTAssertFalse(gate.hasLiveFirstFrameArm)"
+    },
+    {
+      "line": 412,
+      "text": "        XCTAssertEqual(tick(arm), .none)"
+    },
+    {
+      "line": 413,
+      "text": "        XCTAssertEqual(tick(arm), .none)"
+    },
+    {
+      "line": 414,
+      "text": "        XCTAssertEqual(firstFrameCount, 0)"
+    },
+    {
+      "line": 415,
+      "text": "    }"
+    },
+    {
+      "line": 416,
+      "text": ""
+    },
+    {
+      "line": 417,
+      "text": "    func testStaleArmTokenTicksAfterRearmDoNotAdvanceCurrentArm() {"
+    },
+    {
+      "line": 418,
+      "text": "        enterVisible()"
+    },
+    {
+      "line": 419,
+      "text": "        let first = requireArm()"
+    },
+    {
+      "line": 420,
+      "text": "        execute(gate.handleHostWillResignActive(context: id(current), activatedAtSuspend: false))"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "utc": "2026-10-04T04:07:51.996124+00:00",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "source_input_count": 1279,
+  "matched": true,
+  "freeze_input_sha256": "a49092e957bcdca8bf50be480554660df968f172374d7bd13afebfed6e093ba1",
+  "dirty_sha256": "021f60dafb446abe09f01b3489ecaad096643ab3e71448a8a31ec2739dbe37d0"
+}

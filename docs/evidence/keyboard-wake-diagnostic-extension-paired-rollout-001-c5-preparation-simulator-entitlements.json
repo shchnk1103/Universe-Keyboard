@@ -1,0 +1,22 @@
+[
+  {
+    "file": "/private/tmp/ukey-wake-c4-20261001/DerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard",
+    "sha256": "a9d2535534d92f804b9a3630a5c978ec24c65119afe4778d7db61812c1a2c6d2",
+    "mach_o_text_entitlements": {
+      "application-identifier": "C33N6HTS9N.com.DoubleShy0N.Universe-Keyboard",
+      "com.apple.security.application-groups": [
+        "group.com.DoubleShy0N.Universe-Keyboard"
+      ]
+    }
+  },
+  {
+    "file": "/private/tmp/ukey-wake-c4-20261001/DerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+    "sha256": "3a1c3ff7454be12c45c58866bb801917644c68af1f986cd7918663e3022f4cc7",
+    "mach_o_text_entitlements": {
+      "application-identifier": "C33N6HTS9N.com.DoubleShy0N.Universe-Keyboard.Keyboard",
+      "com.apple.security.application-groups": [
+        "group.com.DoubleShy0N.Universe-Keyboard"
+      ]
+    }
+  }
+]

@@ -1,0 +1,47 @@
+{
+  "before_file_count": 2610,
+  "before_dirty_records": 520,
+  "after_nonignored_file_count": 2628,
+  "after_dirty_records": 543,
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "changed_existing_paths": [
+    "Keyboard/Controllers/KeyboardViewController+CandidateBar.swift",
+    "Keyboard/Controllers/KeyboardViewController+InputActions.swift",
+    "Keyboard/Controllers/KeyboardViewController+KeyPressFeedback.swift",
+    "Keyboard/Controllers/KeyboardViewController.swift",
+    "Keyboard/Views/CandidateBar/CandidateBarView.swift",
+    "Packages/KeyboardCore/Sources/KeyboardCore/ThreadAffineRimeSession.swift",
+    "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md"
+  ],
+  "new_paths": [
+    "Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift",
+    "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardWakeOwnerProbe.swift",
+    "Packages/KeyboardCore/Tests/KeyboardCoreTests/KeyboardWakeOwnerProbeTests.swift",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-local-artifacts/after-status.txt",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-local-artifacts/before-files.json",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-local-artifacts/before-status.txt",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-local-artifacts/core-test.log",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-local-artifacts/focused-test-final.log",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-local-artifacts/focused-test-with-helper.log",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-local-artifacts/focused-test.log",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-local-artifacts/full-core-compilation-failure.json",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-local-artifacts/local-checks.json",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-local-artifacts/preservation.json",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-local-artifacts/source-manifest.json",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-owner-probe-local-entry-2026-10-02.md",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-owner-probe-local-validation-2026-10-02.md",
+    "docs/plans/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-owner-probe-local-slice-2026-10-02.md",
+    "docs/product-decisions/KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001-c7-owner-probe-local-authorization-2026-10-02.md"
+  ],
+  "missing_existing_paths": [],
+  "unexpected_existing_changes": [],
+  "unexpected_new_paths": [],
+  "staged_records": [],
+  "scoped_final_diff_check": {
+    "exit": 0,
+    "output": ""
+  },
+  "source_identity": "9730e254cb8afd48f857ad9bef1659017fe90d26700ea3c9b1809249e3c751c8",
+  "receipt_note": "preservation.json and status artifacts exclude their own content from identity; no recursive receipt"
+}

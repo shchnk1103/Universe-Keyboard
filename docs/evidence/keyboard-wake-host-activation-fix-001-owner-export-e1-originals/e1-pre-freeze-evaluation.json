@@ -1,0 +1,77 @@
+{
+  "utc": "2026-10-06T04:34:48.277069+00:00",
+  "status": "PASS_PRECLICK_METADATA",
+  "fresh": {
+    "utc": "2026-10-06T04:16:31.537266+00:00",
+    "pid": 7923,
+    "ps": "7923 Tue Oct  6 12:13:26 2026     Ss   /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/57DC9CDA-B114-469F-98D6-B6C92F4F4AE7/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+    "binary": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/57DC9CDA-B114-469F-98D6-B6C92F4F4AE7/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+    "module_sha256": "773c4eff9640b2623036e3f819301ead3914cb99b66c9c1496ece5986e762aab",
+    "loaded_uuid": "4B207746-89A7-321F-83C4-91477259BB26",
+    "Human": "\u5b8c\u5168\u8bbf\u95ee\u5df2\u5f00\uff0c\u5019\u9009\u4e3a\u7a7a\uff0c\u300c\u89c2\u6d4b\u300d\u53ef\u89c1"
+  },
+  "config": {
+    "utc": "2026-10-06T04:18:41.627685+00:00",
+    "status": "CONFIGURED",
+    "binding": {
+      "pid": 7923,
+      "loaded_uuid": "4B207746-89A7-321F-83C4-91477259BB26",
+      "symbol": "$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF",
+      "breakpoint_pc": 4360859552,
+      "breakpoint_id": 1,
+      "location_id": 1,
+      "attach_stop_id": 1,
+      "function_name": "Keyboard.wakeOwnerProbeExportReady(Swift.UnsafeRawPointer, Swift.Int) -> ()",
+      "symbol_mangled": "$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF"
+    },
+    "callback_configured": true,
+    "async": false,
+    "breakpoint_locations": 1,
+    "hit_count": 0,
+    "callback_list": "Breakpoint 1:\n    Breakpoint commands (Python):\n      owner_export_callback.export_hit(frame, bp_loc, internal_dict)\n",
+    "function_name": "Keyboard.wakeOwnerProbeExportReady(Swift.UnsafeRawPointer, Swift.Int) -> ()",
+    "symbol_mangled": "$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF"
+  },
+  "snapshot": {
+    "utc": "2026-10-06T04:34:35.352411+00:00",
+    "pid": 7923,
+    "process_valid": true,
+    "state_code": 6,
+    "state_is_running": true,
+    "hit_count": 0,
+    "breakpoint_id": 1,
+    "target_memory_reads": 0,
+    "argument_reads": 0,
+    "target_expressions": 0,
+    "phase": "pre-freeze"
+  },
+  "ps": {
+    "returncode": 0,
+    "stdout": " 7923 Tue Oct  6 12:13:26 2026     SXs  /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/57DC9CDA-B114-469F-98D6-B6C92F4F4AE7/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard\n",
+    "stderr": ""
+  },
+  "callback_exists": false,
+  "checks": {
+    "ps_command_succeeded": true,
+    "ps_fields_complete": true,
+    "ps_pid_matches": true,
+    "start_time_matches": true,
+    "exact_binary_path": true,
+    "configured": true,
+    "same_binding_pid": true,
+    "hit_zero": true,
+    "one_location": true,
+    "callback_configured": true,
+    "sync_mode": true,
+    "callback_absent": true,
+    "same_snapshot_pid": true,
+    "process_valid": true,
+    "process_running": true,
+    "snapshot_hit_zero": true,
+    "snapshot_utc_present": true,
+    "uuid_bound": true,
+    "symbol_bound": true
+  },
+  "failures": [],
+  "ps_stat_observed": "SXs"
+}

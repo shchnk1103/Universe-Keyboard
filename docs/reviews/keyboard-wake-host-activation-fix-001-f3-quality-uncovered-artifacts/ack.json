@@ -1,0 +1,12 @@
+{
+  "reviewer": "/root/m2r2_quality_r1",
+  "round": 2,
+  "packet_sha256": "0847ea019ee4f35cbd4e265bd925243714a9be849241972d64b672fa8d36dad4",
+  "start_utc": "2026-10-05T02:24:02.950304+00:00",
+  "ack_utc": "2026-10-05T02:24:56.058837+00:00",
+  "actual_tool_calls_at_ack": 2,
+  "status": "Pass with conditions; final report, usage and hash readback completed",
+  "actual_tool_calls_before_writer": 11,
+  "reader_output_sha256": "fac15dae68e7183d39f51b3e5a8dfefd4cb03fdb8bcd4350510eaae6d9cdc161",
+  "actual_tool_calls_at_completion": 13
+}

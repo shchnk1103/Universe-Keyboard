@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+  "origin_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+  "expected_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+  "line_start": 661,
+  "line_end": 720,
+  "lines": [
+    {
+      "line": 661,
+      "text": "            context: wakeDiagnosticContext"
+    },
+    {
+      "line": 662,
+      "text": "        )"
+    },
+    {
+      "line": 663,
+      "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+    },
+    {
+      "line": 664,
+      "text": "            recordWakeOwnerProbe(.resumeBegin)"
+    },
+    {
+      "line": 665,
+      "text": "        #endif"
+    },
+    {
+      "line": 666,
+      "text": "        controller.resumeRimeAfterVisibilityChange()"
+    },
+    {
+      "line": 667,
+      "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+    },
+    {
+      "line": 668,
+      "text": "            recordWakeOwnerProbe(.resumeEnd)"
+    },
+    {
+      "line": 669,
+      "text": "        #endif"
+    },
+    {
+      "line": 670,
+      "text": "        #if T9_RESPONSIVE_CANARY_INTERNAL"
+    },
+    {
+      "line": 671,
+      "text": "            if canaryResumeRequested {"
+    },
+    {
+      "line": 672,
+      "text": "                if controller.threadAffineRimeCoordinator?.isOwnerReady == true,"
+    },
+    {
+      "line": 673,
+      "text": "                    let sessionInstance = responsiveCanaryModeCoordinator.markCanaryReady()"
+    },
+    {
+      "line": 674,
+      "text": "                {"
+    },
+    {
+      "line": 675,
+      "text": "                    controller.activateResponsiveCanarySessionInstance("
+    },
+    {
+      "line": 676,
+      "text": "                        runID: responsiveCanaryRunID,"
+    },
+    {
+      "line": 677,
+      "text": "                        modeGeneration: responsiveCanaryModeCoordinator.modeGeneration,"
+    },
+    {
+      "line": 678,
+      "text": "                        sessionInstance: sessionInstance"
+    },
+    {
+      "line": 679,
+      "text": "                    )"
+    },
+    {
+      "line": 680,
+      "text": "                    controller.resumeResponsiveCanaryPresentationAfterOwnerReady()"
+    },
+    {
+      "line": 681,
+      "text": "                    startResponsiveCanaryConfigurationMonitor()"
+    },
+    {
+      "line": 682,
+      "text": "                } else {"
+    },
+    {
+      "line": 683,
+      "text": "                    responsiveCanaryModeCoordinator.failClosed(\"visibilityResumeNotReady\")"
+    },
+    {
+      "line": 684,
+      "text": "                }"
+    },
+    {
+      "line": 685,
+      "text": "            }"
+    },
+    {
+      "line": 686,
+      "text": "            applyResponsiveCanaryKillSwitchIfNeeded()"
+    },
+    {
+      "line": 687,
+      "text": "        #endif"
+    },
+    {
+      "line": 688,
+      "text": "        // Resume may fail-close T9 → 26-key; apply before chrome is built/shown."
+    },
+    {
+      "line": 689,
+      "text": "        // Unwrap responsive bridge so chrome still sees RimeEngineImpl (R3)."
+    },
+    {
+      "line": 690,
+      "text": "        if let engine = controller.underlyingRimeEngine as? RimeEngineImpl {"
+    },
+    {
+      "line": 691,
+      "text": "            applyRealizedRuntimeSelection(from: engine)"
+    },
+    {
+      "line": 692,
+      "text": "        }"
+    },
+    {
+      "line": 693,
+      "text": "        startRimeSyncActivityHeartbeat()"
+    },
+    {
+      "line": 694,
+      "text": "    }"
+    },
+    {
+      "line": 695,
+      "text": ""
+    },
+    {
+      "line": 696,
+      "text": "    private func startRimeSyncActivityHeartbeat() {"
+    },
+    {
+      "line": 697,
+      "text": "        guard rimeSyncActivityHeartbeatTimer == nil else { return }"
+    },
+    {
+      "line": 698,
+      "text": ""
+    },
+    {
+      "line": 699,
+      "text": "        let defaults = sharedDefaults ?? .standard"
+    },
+    {
+      "line": 700,
+      "text": "        RimeSyncKeyboardActivity.recordVisibleKeyboard(in: defaults)"
+    },
+    {
+      "line": 701,
+      "text": ""
+    },
+    {
+      "line": 702,
+      "text": "        let appGroupID = Self.appGroupID"
+    },
+    {
+      "line": 703,
+      "text": "        let timer = Timer(timeInterval: 25, repeats: true) { _ in"
+    },
+    {
+      "line": 704,
+      "text": "            let sharedDefaults = UserDefaults(suiteName: appGroupID) ?? .standard"
+    },
+    {
+      "line": 705,
+      "text": "            RimeSyncKeyboardActivity.recordVisibleKeyboard(in: sharedDefaults)"
+    },
+    {
+      "line": 706,
+      "text": "        }"
+    },
+    {
+      "line": 707,
+      "text": "        RunLoop.main.add(timer, forMode: .common)"
+    },
+    {
+      "line": 708,
+      "text": "        rimeSyncActivityHeartbeatTimer = timer"
+    },
+    {
+      "line": 709,
+      "text": "    }"
+    },
+    {
+      "line": 710,
+      "text": ""
+    },
+    {
+      "line": 711,
+      "text": "    #if DEBUG"
+    },
+    {
+      "line": 712,
+      "text": "        /// 只在可见性边界读取一次 App Group 偏好。按键事件只能读取本内存标记，"
+    },
+    {
+      "line": 713,
+      "text": "        /// 绝不为判断高保真状态而访问 `UserDefaults`。"
+    },
+    {
+      "line": 714,
+      "text": "        private func refreshHighFidelityDiagnosticsMode() {"
+    },
+    {
+      "line": 715,
+      "text": "            highFidelityExpirationTask?.cancel()"
+    },
+    {
+      "line": 716,
+      "text": "            isHighFidelityDiagnosticsActive = DiagnosticsHighFidelityConfiguration.isEnabled("
+    },
+    {
+      "line": 717,
+      "text": "                in: sharedDefaults"
+    },
+    {
+      "line": 718,
+      "text": "            )"
+    },
+    {
+      "line": 719,
+      "text": "            let expiration = DiagnosticsHighFidelityConfiguration.expiration(in: sharedDefaults)"
+    },
+    {
+      "line": 720,
+      "text": "            highFidelityDiagnosticsExpiration = isHighFidelityDiagnosticsActive ? expiration : nil"
+    }
+  ]
+}

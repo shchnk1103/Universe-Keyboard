@@ -1,0 +1,71 @@
+{
+  "ditto_file_restores": 52,
+  "non_ditto_commands": [
+    {
+      "utc": "2026-10-04T11:15:48.764667+00:00",
+      "exit": 0,
+      "argv": [
+        "codesign",
+        "--verify",
+        "--deep",
+        "--strict",
+        "/private/tmp/ukey-host-activation-fix-f2-restore-20261004/Universe Keyboard.app"
+      ],
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "utc": "2026-10-04T11:15:48.764933+00:00",
+      "exit": 0,
+      "argv": [
+        "codesign",
+        "--verify",
+        "--deep",
+        "--strict",
+        "/private/tmp/ukey-host-activation-fix-f2-restore-20261004/Universe Keyboard.app/PlugIns/Keyboard.appex"
+      ],
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "utc": "2026-10-04T11:15:51.153836+00:00",
+      "exit": 0,
+      "argv": [
+        "xcrun",
+        "simctl",
+        "install",
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+        "/private/tmp/ukey-host-activation-fix-f2-restore-20261004/Universe Keyboard.app"
+      ],
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "utc": "2026-10-04T11:19:57.662671+00:00",
+      "exit": 0,
+      "argv": [
+        "codesign",
+        "--verify",
+        "--deep",
+        "--strict",
+        "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/9F532453-D3A0-4A06-B20B-165B841230A1/Universe Keyboard.app"
+      ],
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "utc": "2026-10-04T11:19:57.663590+00:00",
+      "exit": 0,
+      "argv": [
+        "codesign",
+        "--verify",
+        "--deep",
+        "--strict",
+        "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/9F532453-D3A0-4A06-B20B-165B841230A1/Universe Keyboard.app/PlugIns/Keyboard.appex"
+      ],
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "note": "ditto --rsrc --extattr --acl used for staged app once plus each restore_file; per-file dittos omitted here, see restoration-actions.json"
+}

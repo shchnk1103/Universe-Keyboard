@@ -1,0 +1,24 @@
+{
+  "checked_utc": "2026-10-01T06:54:26.493971+00:00",
+  "run_id": "C6-MAPS-20261001-01",
+  "capture_state": {
+    "logging_enabled": {
+      "present": true,
+      "value": false
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "present": false,
+      "value": null
+    },
+    "log_category_disp": {
+      "present": false,
+      "value": null
+    },
+    "log_category_engine": {
+      "present": false,
+      "value": null
+    }
+  },
+  "exact_original_value_and_presence_restored": true,
+  "human_report": "two diagnostic switches off; at reader"
+}

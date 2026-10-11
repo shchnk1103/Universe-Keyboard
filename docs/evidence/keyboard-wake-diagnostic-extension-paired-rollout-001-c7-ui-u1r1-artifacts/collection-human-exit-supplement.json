@@ -1,0 +1,11 @@
+{
+  "utc": "2026-10-03T13:26:31.135321+00:00",
+  "previous_collection_freeze_sha256": "4c63fe128b2e6ac8f05d550a14b37622dc31a536277894faa81ffd7756ebe6cb",
+  "supplement_sha256": {
+    "human-exit-visual.json": "cd186b6b62662b634a485701ce58788cae86443a4edb4433638cc9d674d5ee1d"
+  },
+  "previous_frozen_artifacts_not_modified": true,
+  "Human_visual_exit_delivered": true,
+  "additional_UI_interaction_response_test": "NOT PERFORMED",
+  "no_independent_review_or_Maps_verdict": true
+}

@@ -1,0 +1,35 @@
+--- before/Presentation.swift
++++ after/Presentation.swift
+@@ -91,6 +91,10 @@
+             rootStack.setCustomSpacing(0, after: pathBar)
+         }
+         candidateBar = makeCandidateBar()
++        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
++            // Construction refreshes the old bar; bind the new bar before updating its probe.
++            refreshWakeOwnerProbeControls()
++        #endif
+         rootStack.addArrangedSubview(candidateBar)
+         rootStack.setCustomSpacing(0, after: candidateBar)
+         addKeyboardRows(for: controller.state)
+@@ -132,6 +136,10 @@
+                 rootStack.addArrangedSubview(pathBar)
+             }
+             candidateBar = makeCandidateBar()
++            #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
++                // Construction refreshes the old bar; bind the new bar before updating its probe.
++                refreshWakeOwnerProbeControls()
++            #endif
+             rootStack.addArrangedSubview(candidateBar)
+             rootStack.setCustomSpacing(0, after: candidateBar)
+             let panel = makePinyinPathExpandedPanel()
+@@ -144,6 +152,10 @@
+                 rootStack.setCustomSpacing(0, after: pathBar)
+             }
+             candidateBar = makeCandidateBar()
++            #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
++                // Construction refreshes the old bar; bind the new bar before updating its probe.
++                refreshWakeOwnerProbeControls()
++            #endif
+             rootStack.addArrangedSubview(candidateBar)
+             rootStack.setCustomSpacing(0, after: candidateBar)
+             addKeyboardRows(for: controller.state)

@@ -1,0 +1,377 @@
+{
+  "lane": "OWN-EXPORT-E1-QUALITY-R1",
+  "reviewer": "/root/f4p_quality_four_paths_fresh GPT6 Luna",
+  "overall": "Partial",
+  "packet_sha256": "9fcb7abeccbe3dd3d7c42d85c44bf0a4355cf6dd854f6cb5a7c19b847d54434c",
+  "reader_sha256": "870a31c9bbb84888058810ec36fbdaab54f35c3e33caab576761fb3caa010923",
+  "start_capture": {
+    "utc": "2026-10-06T04:44:06.507317000Z",
+    "wall_time_ns": 1791261846507317000,
+    "monotonic_ns": 1396153699368666,
+    "boundary": "first nested command entry; outer functions.exec wrapper began slightly earlier and was not separately timestamped"
+  },
+  "end_capture": {
+    "utc": "2026-10-06T04:54:58.045005000Z",
+    "monotonic_ns": 1396805230054250,
+    "boundary": "final corrected author-file write/readback command entry, immediately before final ACK/usage/delivery updates"
+  },
+  "elapsed_seconds_from_captured_nested_start": 651.530685584,
+  "wall_budget_seconds": 900,
+  "within_900_seconds_from_captured_boundary": true,
+  "actual_calls_including_collaboration_messages": 19,
+  "call_count_breakdown": {
+    "functions.exec_wrappers": 8,
+    "nested_tools.exec_command": 8,
+    "collaboration_messages": 3
+  },
+  "delivery_reserve_calls_requested": 6,
+  "notes": [
+    "Root’s coordination reminder arrived after the report was frozen and is included in the actual call count; it occupied one of the reserved final six slots. The remaining author write/readback completed within budget.",
+    "First command had a reader.binary schema assumption error; corrected native verification followed.",
+    "Per-call UTC was not sampled except where explicitly listed; unknown timestamps remain null/unspecified, not reconstructed.",
+    "The exact outer-wrapper start precedes the first nested-command timestamp and is unknown; elapsed value is measured from the first captured nested-command boundary, therefore a lower bound.",
+    "No further event-source audit was performed to refine the author-reported final Grok call total.",
+    "最终一致性修正：ACK保留四个wrapper+nested计数，并另列含首次incoming assignment message的实际检查点计数5；本轮总调用账本包含assignment、一次outgoing进度消息及root提醒。"
+  ],
+  "calls": [
+    {
+      "n": 1,
+      "kind": "collaboration_incoming",
+      "action": "root派发OWN-EXPORT-E1-QUALITY-R1及授权/预算/范围",
+      "utc": "未捕获（首个UTC采样之前）",
+      "outcome": "received"
+    },
+    {
+      "n": 2,
+      "kind": "functions.exec_wrapper",
+      "action": "首批原生读取/哈希预检",
+      "utc": "未单独采样",
+      "outcome": "completed"
+    },
+    {
+      "n": 3,
+      "kind": "tools.exec_command",
+      "action": "读取authorization/packet/reader并校验嵌入文本；首次把reader.binary误当数组，命令以schema错误退出",
+      "utc": "2026-10-06T04:44:06.507317000Z（命令入口采样）",
+      "outcome": "partial_error_corrected"
+    },
+    {
+      "n": 4,
+      "kind": "functions.exec_wrapper",
+      "action": "原生校验30份文本与binary并写/读回ACK",
+      "utc": "未单独采样",
+      "outcome": "completed"
+    },
+    {
+      "n": 5,
+      "kind": "tools.exec_command",
+      "action": "校验packet/reader SHA、30份原件长度与SHA、binary lossless hex；写/读回ack.json",
+      "utc": "2026-10-06T04:44:58.794839000Z（ACK内preflight采样）",
+      "outcome": "completed"
+    },
+    {
+      "n": 6,
+      "kind": "collaboration_outgoing",
+      "action": "向root发送一次中期进度与已核输入/ACK哈希",
+      "utc": "未单独采样",
+      "outcome": "sent"
+    },
+    {
+      "n": 7,
+      "kind": "functions.exec_wrapper",
+      "action": "读取身份/callback/decoder/binary解码记录第一批原件",
+      "utc": "未单独采样",
+      "outcome": "completed"
+    },
+    {
+      "n": 8,
+      "kind": "tools.exec_command",
+      "action": "原生读execution、receipt、callback脚本/JSON、binding及decoded原件",
+      "utc": "未单独采样",
+      "outcome": "completed"
+    },
+    {
+      "n": 9,
+      "kind": "functions.exec_wrapper",
+      "action": "读取清理/退出/ledger/PTY第二批原件",
+      "utc": "未单独采样",
+      "outcome": "completed"
+    },
+    {
+      "n": 10,
+      "kind": "tools.exec_command",
+      "action": "原生读machine-exit、Human-exit、call-ledger、cleanup、CLI breakpoint list、driver、readback、formatter及PTY",
+      "utc": "未单独采样",
+      "outcome": "completed"
+    },
+    {
+      "n": 11,
+      "kind": "functions.exec_wrapper",
+      "action": "读取Entry/Human/prearm-prefreeze与失败continue第三批原件",
+      "utc": "未单独采样",
+      "outcome": "completed"
+    },
+    {
+      "n": 12,
+      "kind": "tools.exec_command",
+      "action": "原生读取device-entry及Human/lifecycle/failed-continue原件；输出端截断了device-entry尾部，但哈希及字节验证已完整，未据截断部分作结论",
+      "utc": "未单独采样",
+      "outcome": "completed_with_output_truncation"
+    },
+    {
+      "n": 13,
+      "kind": "functions.exec_wrapper",
+      "action": "独立离线decode并写review.md",
+      "utc": "未单独采样",
+      "outcome": "completed"
+    },
+    {
+      "n": 14,
+      "kind": "tools.exec_command",
+      "action": "用冻结decoder离线解码binary并与e1-decoded逐字段相等；读取原始E1授权；写/读回review.md",
+      "utc": "未单独采样",
+      "outcome": "completed"
+    },
+    {
+      "n": 15,
+      "kind": "collaboration_incoming",
+      "action": "root提醒立即交付、勿扩审并计协作消息",
+      "utc": "未单独采样",
+      "outcome": "received"
+    },
+    {
+      "n": 16,
+      "kind": "functions.exec_wrapper",
+      "action": "最终作者文件写入与原生读回",
+      "utc": "未单独采样",
+      "outcome": "completed"
+    },
+    {
+      "n": 17,
+      "kind": "tools.exec_command",
+      "action": "写usage.json与delivery-readback.json并原生读回全部四作者文件",
+      "utc": "2026-10-06T04:53:53.267930000Z",
+      "outcome": "completed"
+    },
+    {
+      "n": 18,
+      "kind": "functions.exec_wrapper",
+      "action": "最终交付账本口径修正并重读四作者文件",
+      "utc": "未单独采样",
+      "outcome": "completed"
+    },
+    {
+      "n": 19,
+      "kind": "tools.exec_command",
+      "action": "补充ACK含协作消息的检查点计数，更新usage/delivery-readback并原生读回四文件",
+      "utc": "2026-10-06T04:54:58.045005000Z",
+      "outcome": "completed"
+    }
+  ],
+  "native_inputs": {
+    "text_count": 30,
+    "texts_all_match_packet_and_reader": true,
+    "text_manifest": [
+      {
+        "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-execution-2026-10-06.md",
+        "bytes": 3398,
+        "sha256": "c8024438022d2152b26183e64f178aab841f6d01b433bfa439dc18062dbcf0f3",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-root-receipt-2026-10-06.md",
+        "bytes": 3280,
+        "sha256": "10d86c1a0c9bacccfd4e55a1a31ed609ab0dc78513640821338e2354f2c5599a",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/owner_export_callback.py",
+        "bytes": 9632,
+        "sha256": "5fc756ed525ebb3c71b91a208615eb34249da535617461426399dc61d5cf52e8",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/decoder.py",
+        "bytes": 3780,
+        "sha256": "fc1817ab8843dab76acd9e8ae59277719c059742bb105eebecbc60a66f58775d",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/callback.json",
+        "bytes": 575,
+        "sha256": "aee4d328d135e62bf091f9504a6fa23948abb1cf7b15410b759547f1566c3dbd",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/callback-stage.json",
+        "bytes": 1879,
+        "sha256": "b0f2231ea4b7f39ac10137f243b36fa42eda041da8a15ce99441ab40acb7c226",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/live-binding.json",
+        "bytes": 403,
+        "sha256": "70d079f9ec60a2b9d6a745e4e9916ff8eae99f03928888df039b7ca766b52969",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-decoded.json",
+        "bytes": 5309,
+        "sha256": "8ae7092edf06a5fc7bcfe682ac037a2a814207c98156bc2e0755f46cf95cbaa7",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-machine-exit.json",
+        "bytes": 1880,
+        "sha256": "80b54c93b3bf52ec942d4345935dd902b4e1d0c2b2d83fc8c2c2422e2619ab5c",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-human-exit.json",
+        "bytes": 210,
+        "sha256": "3301bc13c688e1113a8b226d5ccdd8576c2952c9cf49a185cb302981ad9b9c0f",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-call-ledger.json",
+        "bytes": 14993,
+        "sha256": "80524fdeba6be72914de4fde1baf0457fa05b55e168cf8d9e0450abc93798d8b",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-stop-and-cleanup.json",
+        "bytes": 464,
+        "sha256": "d862438e9a1309778e03defc3ab3d4f44900d93a1e6b9afc9bf33a464a99b7ee",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-breakpoint-list.txt",
+        "bytes": 55,
+        "sha256": "c20d0baed6e3498fb611ced5467ced87a36e5ae9bc0660a6a0909aae8c1ed507",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-driver-exit.json",
+        "bytes": 73,
+        "sha256": "e12dc4215559b6debd19f1fc7aa2f5bfdfa6da683957494fb1f5436793a63074",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-author-readback.json",
+        "bytes": 748,
+        "sha256": "96855f8496af0666c22cbbdf2a1d7311f1b050c8e321c153098375739caac158",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-formatter-live-readback.txt",
+        "bytes": 655,
+        "sha256": "dd01fb6eeb6f8ad8da5a738716e34a79df0e4f8508e70fab6cf93e27dfc4171a",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-device-entry.json",
+        "bytes": 22381,
+        "sha256": "0163aa9e71a5b728c2b0a1789d971e1402b1fc60049fb5d4bf189a559aff3f9e",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-fresh-instance.json",
+        "bytes": 839,
+        "sha256": "44947bbb68e35b200377be9560783ac7c85a9c4d6d3c1a6b3a77c26a0c88df2c",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-old-appex-termination.json",
+        "bytes": 826,
+        "sha256": "b51a8e6fc4606de9ad3d6cb81ae74c2316d3bc02c565f048b05628f2ef067e7f",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-human-n.json",
+        "bytes": 594,
+        "sha256": "996540e0b2810b4e0c68cf51bd760ab5b2f2b70d9a9a455e1be72a5e3c561367",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-human-appswitcher.json",
+        "bytes": 450,
+        "sha256": "032f6bc5fc862313a090d3f003e0305dadf1f8a479734aaa2b9137e84edcfad6",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-human-h.json",
+        "bytes": 426,
+        "sha256": "7683b4fa61ccf93abe86e9f2b8fc61f9b6f41a4f61c6f660a01994dbeff6bd61",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-pre-arm-evaluation.json",
+        "bytes": 3214,
+        "sha256": "1a8e8908cf414b02abfb43ad1982b7d00aea3321702e27f0c7f307b6dda2f0d7",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-pre-freeze-evaluation.json",
+        "bytes": 3217,
+        "sha256": "d3ab5c4deb64ffb80f23b3d1d88bf30636b634304d6fd3ed7fcee95cdc0005b9",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-pty-transcript.txt",
+        "bytes": 5800,
+        "sha256": "3cb81aad0d6210095ae58977fcb57baaa130e605dbe59501166a18742bf7a1bb",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-ack.json",
+        "bytes": 5326,
+        "sha256": "d9c045cb4ce719269e358301081285104183a5919004e859b352e25b417dc725",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-failed-continue-20261006/041834-e1-configuration-receipt.json",
+        "bytes": 919,
+        "sha256": "fdaf8da02d759313dba825da2775582a77ece4ebb00ca3fab16774984439705c",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-failed-continue-20261006/041834-e1-pre-arm-status.json",
+        "bytes": 93,
+        "sha256": "f3882084404a5864138c3ec398994750a33ac8bba8da2ac242b466aa8bef0e61",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-failed-continue-20261006/041834-live-binding.json",
+        "bytes": 403,
+        "sha256": "70d079f9ec60a2b9d6a745e4e9916ff8eae99f03928888df039b7ca766b52969",
+        "native_packet_reader_match": true
+      },
+      {
+        "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-prepared-artifacts/e1-grok-authorization.json",
+        "bytes": 2374,
+        "sha256": "c6cdfa40f69e3397bbe77b97f33581e714b90836003cbbd6861eee204c1a21a9",
+        "native_packet_reader_match": true
+      }
+    ],
+    "binary": {
+      "path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/owner-buffer.bin",
+      "bytes": 1496,
+      "sha256": "a8b3bde10c0c489e92b1e7f370e257d33c4156f805697af1597fe5d5fd35414d",
+      "reader_hex_matches": true
+    }
+  },
+  "criteria": {
+    "Q1": "Pass, bounded to recorded same-stop identity and one read",
+    "Q2": "Pass, bounded to frozen decoded buffer and integer lifecycle sequence",
+    "Q3": "Pass with Human-source/cleanup limits stated in review",
+    "Q4": "Partial: same-PID debugger reattachment scope deviation and >48 calls; exact final total unknown"
+  },
+  "ack": {
+    "bytes": 1735,
+    "sha256": "fb367b53276525f48fac66e9639542dea79ceb5d434276c13e3b4e71907fab71"
+  },
+  "review": {
+    "bytes": 5445,
+    "sha256": "b2a6bcd83e8ea43e3a2f8b6d7d4fc4c1458063520cd2a22e902f50ced4b22f37"
+  }
+}

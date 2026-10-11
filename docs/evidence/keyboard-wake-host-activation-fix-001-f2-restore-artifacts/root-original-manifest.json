@@ -1,0 +1,21 @@
+{
+  "grok_originals_sha256": {
+    "restoration-plan.json": "9cd60200543812efa33d8a23cf2cac4b973b1e1c2e38c2f8573932cf59c44488",
+    "restore-delivery.md": "7944f0ca66047776d2d10288d1e2a911fae29abeb00493a6a19039891f33eab3",
+    "postinstall-restoration-plan.json": "154470345cb27b68b8a47af950c63a903a58f4728ff1a18b020e1953acc20701",
+    "postinstall-restoration-plan-summary.json": "ebca4f5a127d6cfe20d1542778f2c4420e4d659d89e02137227244542ca4cdea",
+    "restoration-actions.json": "340cb07292bb7ebdf34b879df3c1b154d6207555a77d9f1826808dd3615ef432",
+    "preflight-recheck.json": "97cc2a52495ed297f6ee029b3c5c85fe5dc5a2f97d20cd2473771591256ce445",
+    "restore-commands.json": "ca77bce01a027d790adadc4a2de4a90085b0cd61db8d2cc842275e21f04a191a",
+    "postinstall-check.json": "44eb1d677239519ee77fd7c5adfacd298b5b26fcc1422d12b4e9c3b5db6a349e",
+    "restore-receipt.json": "d14e60eb5a3f37e250ba2ce6aecb9defb36b8cc3a2b561f01a90807a3c0bf7ad",
+    "restore-verification.json": "27587d3564965a52b7fb4bbed4081840bde02e243bd8ecc8a758c4dbfd0ec1b3",
+    "restoration-mutation-complete.json": "52862bb9e4c3d7af0542218cea60b9be05162fbf633f055fc6da13da27997617",
+    "preflight.json": "04848fcc6937f30eb614eedd2deede1d6cc2d416458bddce48df79666b18b480",
+    "install-receipt.json": "1b60bc38c2f8276260f36a6d252fd6c94ae93ca329a3fed933c1e1e9b889cbab",
+    "restoration-plan-summary.json": "a6511b424689bd38394c66b3643daf62322faf6a5a6bc6eddd44032d95dfa7eb",
+    "after-preservation-receipt.json": "f14d4ce9e5ae8bd7faf0845ea5b4efdd8b3ed8b38dde636898481f8f1438c05d"
+  },
+  "private_original_root": "/private/tmp/ukey-host-activation-fix-f2-restore-20261004",
+  "root_ack": "delivery consistency verified; not new independent Quality/Gate"
+}

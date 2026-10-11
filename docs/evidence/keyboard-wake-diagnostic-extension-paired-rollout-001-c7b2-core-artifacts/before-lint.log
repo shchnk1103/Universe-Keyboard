@@ -1,0 +1,57 @@
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:799:75: error: [TrailingComma] remove trailing comma from the last element in single line collection literal
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:1200:76: error: [TrailingComma] remove trailing comma from the last element in single line collection literal
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:51:73: error: [Spacing] add 1 space
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:194:50: error: [Spacing] add 1 space
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:196:47: error: [Spacing] add 1 space
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:424:50: error: [AddLines] add 1 line break
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:425:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:426:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:427:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:428:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:627:50: error: [Spacing] add 1 space
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:683:50: error: [Spacing] add 1 space
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:684:50: error: [Spacing] add 1 space
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:859:47: error: [Spacing] add 1 space
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:862:47: error: [Spacing] add 1 space
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:866:47: error: [Spacing] add 1 space
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:994:50: error: [Spacing] add 1 space
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:1334:43: error: [Spacing] add 1 space
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:1359:43: error: [Spacing] add 1 space
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:1405:32: error: [Spacing] add 1 space
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:1762:42: error: [Spacing] add 1 space
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:1860:43: error: [Spacing] add 1 space
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:1887:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:1888:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2112:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2113:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2114:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2115:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2116:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2117:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2118:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2119:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2120:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2121:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2122:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2123:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2124:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2125:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2126:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2128:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2129:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2130:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2131:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2132:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2133:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2134:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2135:1: error: [Indentation] indent by 4 spaces
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2172:47: error: [Spacing] add 1 space
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2308:24: error: [AddLines] add 1 line break
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2341:47: error: [Spacing] add 1 space
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2356:47: error: [Spacing] add 1 space
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2415:40: error: [Spacing] add 1 space
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2419:47: error: [Spacing] add 1 space
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2426:47: error: [Spacing] add 1 space
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2437:44: error: [Spacing] add 1 space
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2489:61: error: [Spacing] add 1 space
+Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift:2580:50: error: [RemoveLine] remove line break

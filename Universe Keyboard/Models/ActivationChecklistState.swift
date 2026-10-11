@@ -189,8 +189,8 @@ nonisolated enum ActivationCopy {
 
     static let resourcesRecommendRimeIce = "推荐使用雾凇拼音（开源方案，需接受许可证后下载）。"
     static let resourcesSelectThenPrepare = "点选一个方案后，按提示完成许可证、下载与部署。"
-    static let resourcesViewLicenseAndDownload = "查看许可证并下载"
-    static let resourcesAcceptLicenseAndDownload = "接受许可证并下载"
+    static let resourcesViewLicenseAndDownload = SchemeLicenseDownloadCopy.viewAndDownload
+    static let resourcesAcceptLicenseAndDownload = SchemeLicenseDownloadCopy.agreeAndDownload
     static let resourcesActivateAndDeploy = "设为当前方案并部署"
     static let resourcesOpenFullSettings = "在设置中管理全部方案"
 

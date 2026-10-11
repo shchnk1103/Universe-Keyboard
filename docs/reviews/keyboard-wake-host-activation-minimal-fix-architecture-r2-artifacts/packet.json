@@ -1,0 +1,70 @@
+{
+  "work_item": "Proposed keyboard host activation repair design; separate from Completed parent",
+  "lane_id": "HOST-ACTIVATION-FIX-DESIGN-ARCHITECTURE",
+  "round": 2,
+  "authority": "Human: 继续只对补充稿做定点复审吧",
+  "root": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "allowed_targets": {
+    "docs/plans/keyboard-wake-host-activation-minimal-fix-proposal-2026-10-04.md": "0cf7c077c5fd045bb3dfadb09a219a2f9abc4736a5adad00b1b6b29462c91fe3",
+    "docs/plans/keyboard-wake-host-activation-minimal-fix-artifacts/source-boundary-check.json": "165d366657dd12aed7842fccf4d65a36511d3482bb681b378e46e3db82863fcf",
+    "Keyboard/Controllers/KeyboardViewController.swift": "27e00c5e07d0bc1e07e045a78c9b49df1ba660beec762227434b3550630caf4c",
+    "Keyboard/Controllers/KeyboardViewController+Bootstrap.swift": "f7c024f60af52f57a04edadb5a15373c6c6f681fc63e908fc37e34d5e1e963a3",
+    "Keyboard/Controllers/KeyboardViewController+Presentation.swift": "767c2817054484d4d4c328cb7a8deaf676509b76bbc3cb45868b6e3cf721319a",
+    "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+    "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+RimeRecovery.swift": "f3cb33290ddd8fe2ac69b52775067aaa675eecd0049600641ad9d9316c0b6ab5",
+    "Packages/KeyboardCore/Sources/KeyboardCore/ThreadAffineRimeSession.swift": "b7050645be501a7f41a6732efda40b07fb82c4c930862c0f1d13d167af426a76",
+    "Packages/KeyboardCore/Sources/KeyboardCore/ResponsiveRimeCanaryMode.swift": "2bcb4684cbb0b3afee5616a3d73045f7f4f4233834f2539c9b9e6b594f22e235",
+    "docs/architecture/decisions/0002-visibility-change-abandons-composition.md": "07ec465e33ee6d191c34da2067e8dd134120540f27de6f1bafbfda00600d798e",
+    "Universe Keyboard.xcodeproj/project.pbxproj": "ab7560e3de73c31d286fe874c0237b64dd2183aab692d4ee4a3de08abfb21187",
+    "KeyboardExtensionTests/CandidatePrefetchUIContractTests.swift": "7bf9aab583fed3828fe9567c85c4b2955b3b982d8511474d15b605cc37fdce02",
+    "docs/reviews/keyboard-wake-diagnostic-extension-paired-rollout-001-m2r2-reexport-review-artifacts/architecture-review.md": "542af67c8bc137a8621d693ec9d89170d0e269c2a631f4140846e9c00bbd3108",
+    "docs/plans/keyboard-wake-host-activation-minimal-fix-state-contract-supplement-2026-10-04.md": "3eab032e2c3a1486b5192824250fea421b215ba2bd14e0011fd86da6aea04285",
+    "docs/reviews/keyboard-wake-host-activation-minimal-fix-architecture-r1-artifacts/architecture-review.md": "647d148ceb21704155daa5dc7eacf523468fd134322ca7ad7891175d7b58769a"
+  },
+  "context_only": [
+    "AGENTS.md",
+    "docs/ASSIGNMENT_POLICY.md",
+    "docs/AI_WORKFLOW.md",
+    "docs/READING_MAPS.md",
+    "docs/KNOWLEDGE_INDEX.md",
+    "docs/ACTIVE_WORK.md",
+    "docs/VIRTUAL_ENGINEERING_TEAM.md",
+    "docs/playbooks/keyboard-ui.md",
+    "docs/playbooks/keyboard-core.md",
+    "docs/playbooks/coordinator.md",
+    "docs/PROJECT_CONTEXT.md",
+    "docs/DOCUMENTATION_GOVERNANCE.md"
+  ],
+  "platform_input": "Root verified local SDK NSExtensionContext.h and Apple official documentation link in proposal; review designs from supplied semantics, do not claim actual runtime delivery",
+  "claims": {
+    "S1": "Only reassess R1 D2 event/state/effect gap against supplement: identity, idempotence, first-frame, view/notification interleavings and ADR0002; detect internal contradictions or impossible wiring",
+    "S2": "Only reassess R1 D2 pre-resume canary permission gap: map supplied conditions to actual Core protocol, do not assume readiness grants owner creation",
+    "S3": "Ensure supplement stays five-file scope and testing capability remains honest; do not reopen covered D1/D3 or Completed parent"
+  },
+  "positive_acceptance": "Covered design gaps may be resolved in R2 only with explicit source-backed limits. Pass/Pass with conditions only when necessary contract is unambiguous; otherwise Partial. No implementation or runtime approval.",
+  "operations": "read exact files; local Python/hash and static inspection only; no repo/source writes, build/test/UI/simulator/LLDB/network/newreviewers",
+  "allowed_writes": [
+    "/private/tmp/ukey-wake-minimal-fix-architecture-r2-20261004/architecture-review.md",
+    "/private/tmp/ukey-wake-minimal-fix-architecture-r2-20261004/architecture-usage.json"
+  ],
+  "budget": {
+    "max_actual_tool_calls": 8,
+    "max_wall_seconds": 600,
+    "checkpoint_after_call": 3,
+    "reserve_last_two_calls_for_delivery_and_verification": true,
+    "max_evidence_calls": 6,
+    "no_renewal": true
+  },
+  "checkpoint": "state calls/time/covered/uncovered concisely; checkpoint message counts if sent as collaboration tool",
+  "outputs": "exact claims matrix, verdict, severity/source locators, constraints vs blocking gaps, next minimum action; usage actual total wall through output write, calls includes failures; deliver files before ceiling and final hashes",
+  "exhaustion": "Partial stop, no newinputs/budget; prioritize written two deliverables instead of more evidence",
+  "expansion_authority": "Human Product Owner only",
+  "stop_conditions": [
+    "baseline/hash drift",
+    "necessary target beyondlist",
+    "new ownership/product contract or runtime need"
+  ],
+  "created_utc": "2026-10-04T07:30:08.549018+00:00"
+}

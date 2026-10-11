@@ -1,0 +1,26 @@
+{
+  "utc": "2026-10-03T14:27:03.290453+00:00",
+  "candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50",
+  "artifact_sha256": {
+    "repo-preflight.json": "41fee400d140645a4155a2e30dcea81b709599b51e5dede0d25783becbe5c840",
+    "identity-preflight.json": "c6301079eec14fd890780a2c988a7668c360f57123dd305aea1699760c65f7f1",
+    "installed-process-preflight.json": "7204a84db989e18131b6bf1b385cabbec2c9eec9d47a55d035b40cf2944aaf5a",
+    "sigterm-receipt.json": "97dc8a2a48bd317bf224e737c68dc886560d761a7effad2031de1f3d8f897e1d",
+    "backup-receipt.json": "6ac86480791468e0fbd2b893e95824b3e1a68be317d51cdb7699f7c1f2d703f4",
+    "old-backup-inventory.json": "f47193f7cab16d4cbcd0723937c0ccc2116bea96bfdabce2fcd385cca2dc7efb",
+    "old-backup-cleanup-prepared.json": "170c974e5933ca36ba4698684ff2f35da942e679048a8bf5cc871c3601fa6324",
+    "human-confirmation.json": "9323171959c433eb6da49f563e25c164c2764cee5af689565794218ac2d7de15"
+  },
+  "private_full_inventories_sha256": {
+    "before-inventories.json": "8a8fe6026eed2bef36463220b85ad3a07cf8b50e1eaafcca22fe0c5b71264783",
+    "after-inventories.json": "8a8fe6026eed2bef36463220b85ad3a07cf8b50e1eaafcca22fe0c5b71264783",
+    "backup-inventories.json": "d9205a2dd599b4c63949cb1252b8366a56c3bf54d215f9ab1cb642decbe32ff7",
+    "final-live-inventories.json": "8a8fe6026eed2bef36463220b85ad3a07cf8b50e1eaafcca22fe0c5b71264783"
+  },
+  "backup_script_sha256": "4c1d5ea3fad87cc512d2f52a11dc8bb66a7c04fe50cc2f1fffbde735fb9f9b78",
+  "source_1279_hashes_match": true,
+  "private_backup_root": "/private/tmp/ukey-wake-m0-20261003/backup",
+  "backup_allocated_KiB": 130696,
+  "no_user_file_content_in_repo": true,
+  "no_delete_restore_install_launch_build_test_or_lldb": true
+}

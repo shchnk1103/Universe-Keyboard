@@ -1,0 +1,17 @@
+[
+  {
+    "action": "restore-existing-file",
+    "relative_path": "Library/Application Support/.tipkit/tips-store.db",
+    "source_sha256": "6b585c1d488166845c9bd907064845b5db5b367fa09cfe054199cdf7b0137317"
+  },
+  {
+    "action": "restore-existing-file",
+    "relative_path": "Library/Application Support/.tipkit/tips-store.db-shm",
+    "source_sha256": "553de5704b13c49a3f9f85a67f438f720dff31c12400cb78dfada0d935bee623"
+  },
+  {
+    "action": "restore-existing-file",
+    "relative_path": "Library/Application Support/.tipkit/tips-store.db-wal",
+    "source_sha256": "d221b08bf2556fbb67cd931d18eac0cb14753d406ae66e68243a09cf4730e58c"
+  }
+]

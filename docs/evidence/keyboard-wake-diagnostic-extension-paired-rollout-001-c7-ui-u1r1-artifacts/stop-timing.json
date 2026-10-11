@@ -1,0 +1,14 @@
+{
+  "root_stop_work_start_utc": "2026-10-03T13:19:53.978Z",
+  "cleanup_completed_root_utc": "2026-10-03T13:20:57.084Z",
+  "root_observed_work_elapsed_ms": 63106,
+  "actual_human_click_utc": null,
+  "actual_target_pause_start_utc": null,
+  "actual_borrow_creation_utc": null,
+  "verified_buffer": {
+    "address": "0x000000011e62ad20",
+    "byteCount": 528,
+    "root_verified_utc": "2026-10-03T13:20:40.920Z"
+  },
+  "capture_failure": null
+}

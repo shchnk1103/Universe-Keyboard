@@ -1,0 +1,9 @@
+{
+  "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "running_exact_app_processes": [
+    "45871 /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/48C735B3-5BC6-4A0C-B64F-6218EBC9920C/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard"
+  ],
+  "no_process_termination": true,
+  "user_confirmation": "独占；健康后一直前台，现在已关闭",
+  "reader": "host readonly fallback because sandbox CoreSimulatorService denied"
+}

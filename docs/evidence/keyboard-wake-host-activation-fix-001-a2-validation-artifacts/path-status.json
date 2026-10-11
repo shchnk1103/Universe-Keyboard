@@ -1,0 +1,34 @@
+{
+  "/private/tmp/ukey-host-activation-fix-f2-backup-20261004": {
+    "exists": true,
+    "purpose": "historical protection, no overwrite/delete"
+  },
+  "/private/tmp/ukey-host-activation-fix-f2-actor-retest-20261004/before-backup": {
+    "exists": true,
+    "purpose": "historical protection, no overwrite/delete"
+  },
+  "/private/tmp/ukey-wake-m0-20261003/backup": {
+    "exists": true,
+    "purpose": "historical protection, no overwrite/delete"
+  },
+  "/private/tmp/ukey-wake-m2r1-20261004/backup": {
+    "exists": true,
+    "purpose": "historical protection, no overwrite/delete"
+  },
+  "/private/tmp/ukey-wake-m2r2-20261004/backup": {
+    "exists": true,
+    "purpose": "historical protection, no overwrite/delete"
+  },
+  "/private/tmp/ukey-wake-ui-i0-20261003/backup": {
+    "exists": true,
+    "purpose": "historical protection, no overwrite/delete"
+  },
+  "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005": {
+    "exists": false,
+    "purpose": "future isolated output, must not exist before execution AUTH; 2026-10-05 recheck"
+  },
+  "/private/tmp/ukey-host-activation-fix-a2-validation-backup-20261005": {
+    "exists": false,
+    "purpose": "future isolated output, must not exist before execution AUTH; 2026-10-05 recheck"
+  }
+}

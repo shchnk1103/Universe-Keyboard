@@ -1,0 +1,16 @@
+{
+  "recorded_at": "2026-10-06T18:46:46+08:00",
+  "timezone": "Asia/Shanghai",
+  "human_approval": "接受选项 A",
+  "approval_scope": "child-only bounded completion as diagnostic producer and parent handoff; R-JSONL/R-V6/R-COV/R-AUDIT/R-SKIP accepted-unverified; E1 excluded",
+  "accepted_proposal_sha256": "352711edc69583e6579aa666dfe9e5811fdb8dba9189d6e799a3565849718e80",
+  "snapshot_sha256": "11bafebea4e558360a155d5ac3f7739161f2e4177456fd84f7322bef1b5e631e",
+  "child_before_sha256": "818081149e90aad942cc9a88f67000127c4abdd0c5a5243201ee76107ffc5009",
+  "parent_before_sha256": "7d75ae71c209c118ebc37a412d5f07c386911ee60861eb767a8ee46ba9b75ca7",
+  "child_lifecycle_before": "Active",
+  "git_staged_before": 0,
+  "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "child_transition": "Active -> Completed (诊断 producer 与父交接交付); no Reviewed/Closed/Quality Gate assertion",
+  "no_runtime_or_source_actions": true
+}

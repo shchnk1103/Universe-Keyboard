@@ -1,0 +1,22 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "\n🐛 LLDB Command\n\n✅ Command executed\n\nOutput:\n  1 match found in /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard.debug.dylib:\n          Address: Keyboard.debug.dylib[0x000000000016873c] (Keyboard.debug.dylib.__TEXT.__text + 1468748)\n          Summary: Keyboard.debug.dylib`Keyboard.wakeOwnerProbeExportReady(Swift.UnsafeRawPointer, Swift.Int) -> () at KeyboardViewController+WakeOwnerProbe.swift:96\n"
+    }
+  ],
+  "structuredContent": {
+    "schema": "xcodebuildmcp.output.debug-command-result",
+    "schemaVersion": "2",
+    "didError": false,
+    "error": null,
+    "data": {
+      "command": "image lookup -n $s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF",
+      "outputLines": [
+        "1 match found in /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard.debug.dylib:",
+        "        Address: Keyboard.debug.dylib[0x000000000016873c] (Keyboard.debug.dylib.__TEXT.__text + 1468748)",
+        "        Summary: Keyboard.debug.dylib`Keyboard.wakeOwnerProbeExportReady(Swift.UnsafeRawPointer, Swift.Int) -> () at KeyboardViewController+WakeOwnerProbe.swift:96"
+      ]
+    }
+  }
+}

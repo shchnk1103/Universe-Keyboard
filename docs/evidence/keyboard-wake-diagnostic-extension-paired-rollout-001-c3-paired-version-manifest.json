@@ -1,0 +1,30 @@
+{
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "files": {
+    "Keyboard/Controllers/KeyboardViewController.swift": {
+      "before": "31db01dea7c2fbf5a95c2488e5823ef3ca11f5cc53348892be9e6661ee91127c",
+      "after": "d66d534d046e93bd2a543a68553934297c9ab8a80e717478298e889cc67ed5e0"
+    },
+    "Universe Keyboard/Services/RimeSyncDiagnostics.swift": {
+      "before": "19526f61da4f87349699396f183fe33eebd17e9039f6e61b2af2e38e5d95cdb0",
+      "after": "12c96a17f05a4121a67fd22839a6f05d2ebd3aba640c163a394949fe285dd4c9"
+    },
+    "Universe Keyboard/Services/SchemaDeliveryDiagnostics.swift": {
+      "before": "a10587c0d9ecfbbc116740fed1c0d4028f78cb4d0fa602e0462bf4956b89b70a",
+      "after": "599f246c95e1687bb06a92c7487fa5fae516de5d51cb211ff15bfb678a49f4b9"
+    },
+    "Universe Keyboard/App/Universe_KeyboardApp.swift": {
+      "before": "317497cc73acc83f136ab5477c633e53a3857c5fdb4cc46b688cefd94bcca8c6",
+      "after": "6e8c227cf2cc491687daee2925cc7898cc4cb3777b095bfd3efe8028c593e4ba"
+    },
+    "Universe Keyboard/Views/Diagnostics/DiagnosticsLogSource.swift": {
+      "before": "bc874c7f019645e18c04b8b2c3a9d21c8247afc75b44cc8951a857078d558a70",
+      "after": "deb3b7fdd68f55f5243d9ff279108e2c3459ae540569939f3ac53710d6f5cd6f"
+    }
+  },
+  "local_candidate_writer_version": 6,
+  "installed_identity": "not produced or verified",
+  "runtime_emission": "not executed",
+  "core_defaults": 5
+}

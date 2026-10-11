@@ -1,0 +1,9 @@
+{
+  "id": "C4-QR-LANE-LABEL-001",
+  "original_report_sha256": "b4fe5dba102c6739a8f2091cd3bcdbe30054789b598472b537270dd5f97b2128",
+  "original_label": "Architecture R3",
+  "actual_current_architecture_lane": "A-C4 round1",
+  "current_architecture_report_sha256": "2bb5fda79f604f6fafe1144d88127ac2ea99eda017b4b53a408cf50e6f318c61",
+  "scope": "root factual lane-label reconciliation only; original Quality Blocker/findings/coverage preserved",
+  "disposition": "fix by separate provenance record; historical R3 is not current C4 proof"
+}

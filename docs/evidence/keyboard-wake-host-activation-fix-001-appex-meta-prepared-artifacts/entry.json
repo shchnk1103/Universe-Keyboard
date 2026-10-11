@@ -1,0 +1,182 @@
+{
+  "utc": "2026-10-06T02:19:38.357146+00:00",
+  "stage": "AP-META-001",
+  "status": "Prepared, not Ready or execution authorized",
+  "Human": "准备 appex 的最小元数据停点核验 Entry",
+  "authority": "Human Product only for future runtime",
+  "ownership": {
+    "coordinator_environment_executor_debugger_script_writer": "root",
+    "production_source_writer": "Grok unchanged; no production scope",
+    "human_dependency": "fresh exclusive window, apps closed, empty main App Search and two clicks"
+  },
+  "worktree": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "source5": [
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController.swift",
+      "bytes": 39626,
+      "sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+Bootstrap.swift",
+      "bytes": 52473,
+      "sha256": "79d0123dabacd8e5875b66b7c8c897589adbeb8b49d1e22b263678dc1d56f6aa"
+    },
+    {
+      "path": "Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift",
+      "bytes": 12137,
+      "sha256": "c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047"
+    },
+    {
+      "path": "KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+      "bytes": 19887,
+      "sha256": "71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5"
+    },
+    {
+      "path": "Universe Keyboard.xcodeproj/project.pbxproj",
+      "bytes": 46990,
+      "sha256": "49f0ebe89db1f30323d9bf6ceb297179ffed5fc9ef983fd3b947d11d5820586c"
+    }
+  ],
+  "candidate": {
+    "path": "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app",
+    "payload_files": 78,
+    "bytes": 91448700,
+    "payload_sha256": "d53523dba8c371c67424ff07c79163a66f41e3bc5bb402637cf9ee79ae7579cb",
+    "keyboard_exe_uuid": "CD0C6F02-6094-3726-B598-F03F42ABB468",
+    "keyboard_debug_uuid": "4B207746-89A7-321F-83C4-91477259BB26",
+    "keyboard_debug_sha256": "773c4eff9640b2623036e3f819301ead3914cb99b66c9c1496ece5986e762aab",
+    "symbol": "$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF"
+  },
+  "device": {
+    "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "name": "iPhone 18 Pro",
+    "os": "iOS 27.0",
+    "fresh_exclusive": "UNKNOWN until Human confirms execution window",
+    "live_installed_path_pid_start": "UNKNOWN until fresh discovery; never reuse 64039/session85905"
+  },
+  "proposed_budget": {
+    "actual_calls": 30,
+    "wall_seconds": 1800,
+    "checkpoints": [
+      12,
+      20
+    ],
+    "reserve_final_calls": 8,
+    "stop_pause_seconds": 120,
+    "single_command_wait_seconds": 30,
+    "runtime_attempts": 1,
+    "metadata_hit_limit": 1,
+    "arm_ttl_seconds": 600,
+    "no_automatic_extension": true
+  },
+  "future_scope": [
+    "fresh readonly device/current pair/PID/start/loaded UUID/diagnostics Entry",
+    "if old exact appex remains after Human closes apps: recheck PID/start/path, only one normal SIGTERM conditional on execution AUTH explicitly approving this scope; no SIGKILL/no main App termination",
+    "fresh appex in main App empty Search field; no input or Maps",
+    "new debugger-side metadata callback only; freeze its bytes/syntax before import",
+    "native fresh PTY; explicit debugger.SetAsync(False); sole exact symbol breakpoint resolved1/hit0",
+    "single arm then freeze, metadata only, no target memory/arguments/expression",
+    "cleanup own breakpoint/detach/quit and visual Exit"
+  ],
+  "metadata_fields": [
+    "UTC and monotonic_ns",
+    "PID and exact loaded module path/UUID",
+    "thread_id, frame_id, process stop_id and state",
+    "stop_reason and breakpoint/location ID pairs",
+    "bp_loc.GetAddress code load PC, symbol/module UUID",
+    "passed frame.GetPC, module UUID and both GetSymbol/GetFunction mangled names separately",
+    "after-stop CLI same thread/frame0 comparison, no replacement frame",
+    "up to8 caller function names only for button/synchronous-borrow linkage",
+    "callback invocation count, breakpoint hit count",
+    "delete/detach/quit times and exit state"
+  ],
+  "acceptance": [
+    "fresh source/pair/device/PID/loaded module binding; same single stop from callback and verified breakpoint1.1; callback PC equals resolved code location and expected debug UUID",
+    "exact expected mangled name from symbol or function, recorded separately; null/ambiguous names reported unavailable, never repurpose CLI frame or weaken UUID",
+    "callback hit stop_id newer than attach stop_id; callback thread and stop reason pair correspond to own location; same after-stop ID/PC/module when available",
+    "one expected click-triggered hit only; bounded8 caller names support button/borrow, otherwise this causal criterion Partial",
+    "delete/list own breakpoint, resume/detach/quit, metadata timestamps and per-call ledger; same verified PID no lingering tracing, session debugserver exited or honest Partial",
+    "Human separate visual Exit; settings remain off with original key presence, no implicit restore"
+  ],
+  "exclusions": [
+    "no production Swift/pbx/Core/RimeBridge changes",
+    "no build/test/install/deploy of App",
+    "no Maps/AppSwitcher reproduction/input/candidate submission",
+    "no logging/high fidelity toggles/owner data dump/buffer pointer or count read",
+    "no register/ABI guessing/target expression/SBProcess.ReadMemory",
+    "no new large backup or deletion, no Git/Release",
+    "no automatic repeated arm/freeze, no reexport or new independent review"
+  ],
+  "input_manifest": [
+    {
+      "path": "docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/freeze-receipt.json",
+      "sha256": "530e962c122896b244a9c98b614f58b9846569f34c0989f74a0774b7dbc944f3",
+      "bytes": 1403
+    },
+    {
+      "path": "docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/paired-products.json",
+      "sha256": "14b647b6eebde9ad3b5ce62948028fcee72b92192193fd40fa444619950836db",
+      "bytes": 6532
+    },
+    {
+      "path": "docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/payload-manifest.json",
+      "sha256": "dbc6cfd07c713219c2cec09fdd3d87ab688485dce3d685ee3a915e74ea35786b",
+      "bytes": 13677
+    },
+    {
+      "path": "docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/five-source-hashes.json",
+      "sha256": "7ec3484757dfcf8977497ad928e93808ff75b718cfa847ea3380cf03af94a9fd",
+      "bytes": 899
+    },
+    {
+      "path": "docs/evidence/keyboard-wake-host-activation-fix-001-f4-m-quality-r1-validation-2026-10-06.md",
+      "sha256": "2e0ccd048dc67c1f36694f051ad7961561d4c6ddc6ffa591c6b0f4aed8e316e4",
+      "bytes": 2824
+    },
+    {
+      "path": "docs/evidence/keyboard-wake-host-activation-fix-001-h0b-eintr-artifacts/completion.json",
+      "sha256": "c45d9a29116470ef3903eb03f8c36f75d2b689f73acb92bfa72a26b55af63c72",
+      "bytes": 1898
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift",
+      "sha256": "bca0391355d9a3a60880dfdc08260095d02d6618bf0a38d40bfcc61734a891e9",
+      "bytes": 4352
+    }
+  ],
+  "local_api": {
+    "path": "/Applications/Xcode.app/Contents/SharedFrameworks/LLDB.framework/Resources/Python/lldb/__init__.py",
+    "sha256": "05ffe26562e7efd331fd775eaf78c85c5327925ce7015a698c3c22c5723e4109",
+    "methods": {
+      "SBDebugger.SetAsync": {
+        "line": 5556,
+        "source": "def SetAsync(self, b):\n        r\"\"\"\n        Set whether the debugger should run in asynchronous mode.\n\n        When in asynchronous mode, events are processed on a background thread.\n        \"\"\"\n        return _lldb.SBDebugger_SetAsync(self, b)"
+      },
+      "SBDebugger.GetAsync": {
+        "line": 5564,
+        "source": "def GetAsync(self):\n        r\"\"\"Get whether the debugger is running in asynchronous mode.\"\"\"\n        return _lldb.SBDebugger_GetAsync(self)"
+      },
+      "SBFrame.GetFunction": {
+        "line": 7403,
+        "source": "def GetFunction(self):\n        r\"\"\"GetFunction(SBFrame self) -> SBFunction\"\"\"\n        return _lldb.SBFrame_GetFunction(self)"
+      },
+      "SBFunction.GetMangledName": {
+        "line": 7940,
+        "source": "def GetMangledName(self):\n        r\"\"\"GetMangledName(SBFunction self) -> char const *\"\"\"\n        return _lldb.SBFunction_GetMangledName(self)"
+      },
+      "SBSymbol.GetMangledName": {
+        "line": 12760,
+        "source": "def GetMangledName(self):\n        r\"\"\"GetMangledName(SBSymbol self) -> char const *\"\"\"\n        return _lldb.SBSymbol_GetMangledName(self)"
+      }
+    }
+  },
+  "prepared_verification": {
+    "candidate_static_78_digest_match": true,
+    "source5_match": true,
+    "live_device_queries": 0,
+    "runtime_operations": 0,
+    "script_authored": false
+  }
+}

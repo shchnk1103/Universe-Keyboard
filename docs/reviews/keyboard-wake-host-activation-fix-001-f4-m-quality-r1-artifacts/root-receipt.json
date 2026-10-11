@@ -1,0 +1,41 @@
+{
+  "utc": "2026-10-06T01:47:40.673943+00:00",
+  "root_role": "Coordinator receiver, not independent reviewer",
+  "packet_sha256": "0d7a2dfb46744b521058fb94dc6158a323c5202a29d8a86eb4d66a11ffed247c",
+  "input_hash_matches": 15,
+  "author_outputs": [
+    {
+      "name": "ack.json",
+      "bytes": 888,
+      "sha256": "499e8b7cfe2844e7fc54cec0342ddefb5feeff152813c777bc54bd904a791123"
+    },
+    {
+      "name": "review.md",
+      "bytes": 5414,
+      "sha256": "e2c18e3bb7f313625c171696fe17880d3070579f498be5dcba05d6b48907f395"
+    },
+    {
+      "name": "usage.json",
+      "bytes": 7196,
+      "sha256": "2096b0fc7b779df2bdce1cfe68ba8f8f9a30c57f8bb1f5346902b6ed1aabea41"
+    },
+    {
+      "name": "delivery-readback.json",
+      "bytes": 767,
+      "sha256": "be81f8347caee2fea46ab1f8669fc5875c40701a68ef8ff08212fa677348bd36"
+    }
+  ],
+  "author_four_outputs_received": true,
+  "review_record_accuracy_criteria": "M-Q1..4 Covered with explicit limits; runtime remains Partial",
+  "author_usage_reported": {
+    "calls": 16,
+    "seconds": 371.499713
+  },
+  "root_erratum": {
+    "report_run_path": "/private/tmp/ukey-host-activation-f4-m-20261006",
+    "correct_frozen_run_path": "/private/tmp/ukey-host-activation-fix-f4-m-20261006",
+    "classification": "author report path typo; packet and actual frozen inputs unchanged; root correction only, original report preserved"
+  },
+  "first_ack_history": "Author documented original SHA/bytes, original file bytes not separately retained by reviewer; root read original fields before correction. No retrospective claim of original ACK schema validity.",
+  "residual_acceptance": "not granted by root; no runtime completion, Release, device operation or retry authorized"
+}

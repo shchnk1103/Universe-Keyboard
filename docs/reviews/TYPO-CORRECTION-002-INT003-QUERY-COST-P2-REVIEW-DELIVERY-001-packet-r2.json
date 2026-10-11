@@ -1,0 +1,58 @@
+{
+  "work_item": "TYPO-CORRECTION-002-INT003-QUERY-COST-P2-REVIEW-DELIVERY-001",
+  "lane_id": "TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EXISTING-RUN-ADMISSION-001:quality",
+  "round": 2,
+  "delivery_only": true,
+  "original_packet_sha256": "8cda99f0dbc427394f77618436bcc2056247d9efb706d043d01edc5c5cc4ceff",
+  "baseline": "original raw unchanged and already checked52; five prior-results inputs only",
+  "authority": "Human当前继续继续; originalAUTH exhausted not reused",
+  "criteria": {
+    "C1": "独立核对全部input hashes，两wire相等/严格v2字段、79records与61query/2ops/7seq及0active/loss/clock/TTL闭合、UUID/scope/loaded/helper/cleanup对应；不是只读executor总结",
+    "C2": "逐seq重建计数、Humanactualmapping、canonical6case与extra；两F01均0query/op，排除不改计数但不证明内部状态相同；raw不变，不将encodedarm2称warm",
+    "C3": "复算Stage/readiness/results/bucket/disposition/time samples统计；区分provider壁钟、unknownreadiness、0us量化、nativeRIME/CPU/UI/Release未证；判定可支持的计数与cost claims及完整覆盖",
+    "C4": "新合同权限/历史不倒写及oldR4/R5复用边界：旧synthetic仅历史方法证据，v2源码差异不能自动视为本机observer验证；明确overall P2 closure仍需哪些既定证据/决策，不能擅自加持久化/UI/大型trace/强制新测"
+  },
+  "scope": "Only write a formal report/usage based on completed existing C1-C4 findings. Can inspect five known own result files and verify their hashes; no newraw/source tests or factchecks. Original Partial stays; may issue currentScopedPass only if your own existing completed checks suffice, not coordinator instruction. Preserve unknown prior exactstart/elapsed. C4 historical synthetic/currentobserver limits & Productbudget remain open.",
+  "inputs": [
+    {
+      "path": "runtime-final-message.md",
+      "bytes": 2540,
+      "sha256": "b57b4d5f67165598014c5e0f52ada3245e436b1cdbbb488a78f9146f688ed769"
+    },
+    {
+      "path": "quality-usage-checkpoint.json",
+      "bytes": 990,
+      "sha256": "f401bf8d19059eefbbe7290d9eeee83678d68849add1e1870f076af5eb202cb8"
+    },
+    {
+      "path": "quality-protocol-check.json",
+      "bytes": 760,
+      "sha256": "e6426682382109bedf6d90ba30ad3e3176b8dc00a96e1a124ceb1c123c3c2b3c"
+    },
+    {
+      "path": "quality-mapping-stats-check.json",
+      "bytes": 2715,
+      "sha256": "2a821237bf5044a5bbe23736f013d13c29cd6aaa16f0a417bcb7c733a30058b3"
+    },
+    {
+      "path": "coordinator-usage-transcription.json",
+      "bytes": 1022,
+      "sha256": "68758cb30a6ea809bdafa51b758805b630cc5f7a4efeb15b9be0d9643c4ec7f5"
+    }
+  ],
+  "budget": {
+    "max_tools": 4,
+    "max_seconds": 180,
+    "output_reserve_tools": 2,
+    "checkpoint": "first tool records UTC+monotonic start; after reading immediately write report/usage; no long analysis",
+    "exhaustion": "write partial coverage and actualusage, no additional checks"
+  },
+  "outputs": [
+    "/private/tmp/uk-p2delivery1/quality-review.md",
+    "/private/tmp/uk-p2delivery1/quality-usage.json"
+  ],
+  "write_scope": "only two output files and ownstart/finite delivery receipts in this root",
+  "non_goals": "no raw/source/liveG/LLDB/device/build/tests/network/Git/contract/Gate/parentClose/Release",
+  "positive_output": "allC1-C4 stated, supportedclaim scoped withconditions/openProduct choices; original timingunknown retained, currentdelivery actualtime/toolcount; no forcedPass",
+  "stop_authority": "Human Product Lead"
+}

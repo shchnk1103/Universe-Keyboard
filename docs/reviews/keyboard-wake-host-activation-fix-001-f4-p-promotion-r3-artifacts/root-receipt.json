@@ -1,0 +1,56 @@
+{
+  "utc": "2026-10-05T04:59:16.481114+00:00",
+  "kind": "root mechanical archive and verification; not independent author readback",
+  "architecture": {
+    "native_source": "author final native response and no-tools draft extraction; author explicitly permitted root mechanical archival",
+    "native_report": {
+      "path": "architecture/author-native-review.md",
+      "sha256": "d2bdcb496b7d51c2d995b45e9689faaa7055dbab999dc9689458ad7158558663"
+    },
+    "native_usage": {
+      "path": "architecture/author-native-usage.json",
+      "sha256": "978c77d92ac0c62b2d00b418b7e7230d4bda207a7da69f6d9bc4710da530942b"
+    },
+    "direct_author_files_missing": [
+      "review.md",
+      "usage.json",
+      "delivery-readback.json"
+    ],
+    "formal_delivery": "Partial; one-time Product replacement acceptance pending",
+    "actual_ack_packet_sha256": "7e358f674b2877afb58073fad78734fb5e8ffe4a417cd668b18378d21038d309",
+    "root_correction": "Author native usage incorrectly states ACK also has missing-digit SHA; actual 1062-byte ACK has the correct 64-character packet SHA. Original author assertion retained, separately corrected here. Last writer attempted SHA remains wrong; this is not input drift.",
+    "ack_self_readback": "Embedded 910-byte digest is snapshot before adding writer_self_readback. Current 1062-byte ACK independently hashed by root.",
+    "author_ended_utc": null,
+    "author_elapsed_seconds": null,
+    "author_reported_calls": 20,
+    "root_first_final_received_no_later_than_utc": "2026-10-05T04:47:56.498813Z",
+    "root_conservative_original_review_upper_bound_seconds": 872.498813,
+    "time_bound_provenance": "Trusted root clock observed after first final (content completed and failed call20); start from original ACK04:33:24Z. This is a conservative bound, not fabricated author end/elapsed. Later no-tools full native draft extraction and mechanical archive are separate from technical review; no new tool budget."
+  },
+  "quality": {
+    "author_files_hash_bytes_match": true,
+    "actual_tool_calls": 6,
+    "elapsed_seconds": 239.242402,
+    "Q-P1": "Uncovered retained; table prose conflicts with status; native clarification refuses correction",
+    "Q-P2": "Covered",
+    "Q-P3": "Covered",
+    "Q-P4": "Prior round2 Covered carried forward"
+  },
+  "next_prepared": {
+    "architecture": "One-time accept author native report + actual ACK + root provenance/time bound as replacement of missing direct-writer/readback/exact-time receipts. No technical rereview.",
+    "quality": "Only four complete original module path/UUID lines and report consistency; fresh4actualcalls/300seconds proposed, including wrappers/nested calls; two batches read/compare then write/readback. No new facts/matrix/device.",
+    "status": "Prepared; requires Product decision and fresh Quality budget; not dispatched"
+  },
+  "excluded": [
+    "source edits",
+    "build",
+    "test",
+    "simulator/device",
+    "installation",
+    "LLDB",
+    "Maps",
+    "Git mutations",
+    "backup cleanup"
+  ],
+  "F4-I": "Blocked; not authorized"
+}

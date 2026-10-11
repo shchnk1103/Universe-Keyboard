@@ -1,0 +1,24 @@
+{
+  "work_item": "KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001 / parent KEYBOARD-WAKE-LIFECYCLE-DIAGNOSTICS-001",
+  "lane_id": "M2R2-REEXPORT-ARCHITECTURE",
+  "packet_sha256": "6537044efc63bade3810617689b702431a506642f48c045e56f926976638f749",
+  "worktree_branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "worktree_head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "allowed_targets_expected": 43,
+  "allowed_targets_checked": 43,
+  "allowed_target_hash_mismatches": 0,
+  "elapsed_seconds": 654,
+  "actual_tool_calls": 10,
+  "call_count_note": "9 local exec_command calls including this write, plus 1 parent checkpoint message; initial failed narrow lookup calls are included.",
+  "covered": [
+    "A1: actual frame 0 identity, static address/byteCount, synchronous withUnsafeBytes borrow, single bounded read, cleanup, and retained-window provenance with explicit no-old-header limitation.",
+    "A2: source-backed owner absent and no accept receipt at attempt 2 schedule; attempt 1 provides paired positive comparison.",
+    "Parent Exit clauses 5 and 6: content-free artifact/hash handling and Debug Investigator format."
+  ],
+  "uncovered": [
+    "Parent Exit clause 4: required Extension JSONL dynamic source identity and arm/writer preflight evidence are absent; KWOPROBE is not a substitute.",
+    "Parent Exit clauses 1-3 remain partial: no captured resume event or successful recovery, no correlated engine/publication/UI internals, and realized engine schema/Full Access were not newly read back.",
+    "Native command ledger sequence 5 hit-poll request/response pair was not persisted through the ledger helper; PTY and callback evidence remain available."
+  ],
+  "stop_reason": "Completed and stopped at the configured 10-call ceiling; elapsed time remained below 12 minutes. No scope expansion or budget renewal."
+}

@@ -1,0 +1,21 @@
+{
+  "source_three_reads_equal": true,
+  "provenance_exceptions": {
+    "added": 903,
+    "rewritten": 122,
+    "missing": 0
+  },
+  "other_differences": [],
+  "signature_checks": [
+    {
+      "exit": 0,
+      "stderr": ""
+    },
+    {
+      "exit": 0,
+      "stderr": ""
+    }
+  ],
+  "test_started": false,
+  "status": "Held pending disposition of rewritten provenance; no retry"
+}

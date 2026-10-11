@@ -1,0 +1,106 @@
+{
+  "sha256": "3a2a46a75d3ebd65b4950d1c6d7b6c20bd338609fcac5092d500d6126bd09422",
+  "bytes": 528,
+  "record_count": 5,
+  "run_words": [
+    17874111423777558333,
+    9611267105602676099
+  ],
+  "process_words": [
+    13683847576143940772,
+    10766134687978747917
+  ],
+  "buffer_complete": true,
+  "events": [
+    {
+      "sequence": 1,
+      "timestamp": 1134577438160875,
+      "stage": 2,
+      "coordinator": 0,
+      "appearance": 0,
+      "attempt": 0,
+      "owner": 0,
+      "receipt": 0,
+      "teardown": 0,
+      "epoch": 0,
+      "revision": 0
+    },
+    {
+      "sequence": 2,
+      "timestamp": 1134577442680041,
+      "stage": 2,
+      "coordinator": 3,
+      "appearance": 3,
+      "attempt": 0,
+      "owner": 1,
+      "receipt": 0,
+      "teardown": 0,
+      "epoch": 0,
+      "revision": 0
+    },
+    {
+      "sequence": 3,
+      "timestamp": 1134578877807333,
+      "stage": 3,
+      "coordinator": 3,
+      "appearance": 3,
+      "attempt": 1,
+      "owner": 1,
+      "receipt": 0,
+      "teardown": 0,
+      "epoch": 0,
+      "revision": 0
+    },
+    {
+      "sequence": 4,
+      "timestamp": 1134578883382708,
+      "stage": 9,
+      "coordinator": 3,
+      "appearance": 3,
+      "attempt": 1,
+      "owner": 1,
+      "receipt": 1,
+      "teardown": 0,
+      "epoch": 4,
+      "revision": 1
+    },
+    {
+      "sequence": 5,
+      "timestamp": 1134578904497291,
+      "stage": 4,
+      "coordinator": 3,
+      "appearance": 3,
+      "attempt": 1,
+      "owner": 1,
+      "receipt": 0,
+      "teardown": 0,
+      "epoch": 0,
+      "revision": 0
+    }
+  ],
+  "attempts": [
+    {
+      "ordinal": 1,
+      "paired": true,
+      "schedules": [
+        {
+          "sequence": 4,
+          "timestamp": 1134578883382708,
+          "stage": 9,
+          "coordinator": 3,
+          "appearance": 3,
+          "attempt": 1,
+          "owner": 1,
+          "receipt": 1,
+          "teardown": 0,
+          "epoch": 4,
+          "revision": 1
+        }
+      ],
+      "owner_absent_sequences": []
+    }
+  ],
+  "verdict": "requires_manual_run_binding_and_independent_review",
+  "decoder_sha256": "fc1817ab8843dab76acd9e8ae59277719c059742bb105eebecbc60a66f58775d",
+  "decoded_at_utc": "2026-10-02T14:37:26.937679+00:00"
+}

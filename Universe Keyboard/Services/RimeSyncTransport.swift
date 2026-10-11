@@ -1,5 +1,6 @@
 import CryptoKit
 import Foundation
+import RimeBridge
 
 nonisolated struct RimeSyncRemoteObject: Sendable {
     let data: Data?
@@ -19,6 +20,41 @@ nonisolated protocol RimeSyncHTTPClient: Sendable {
 nonisolated enum RimeSyncFolderAccessError: Error {
     case preflight(stage: String, underlying: Error)
     case bookmark(underlying: Error)
+}
+
+nonisolated enum RimeSyncPackageRootState: Sendable {
+    case missing
+    case directory
+    case notDirectory
+    case unknown
+}
+
+nonisolated enum RimeSyncDiagnosticErrorCode: String {
+    case folderPreflightCoordinate = "folder.preflight.coordinate"
+    case folderPreflightWrite = "folder.preflight.write"
+    case folderPreflightRead = "folder.preflight.read"
+    case folderPreflightDelete = "folder.preflight.delete"
+    case folderPreflightUnknown = "folder.preflight.unknown"
+    case folderBookmark = "folder.bookmark"
+    case syncNotConfigured = "sync.not_configured"
+    case webDAVInvalidURL = "webdav.invalid_url"
+    case webDAVInsecureURL = "webdav.insecure_url"
+    case webDAVMissingCredentials = "webdav.missing_credentials"
+    case cryptoMissingKey = "crypto.missing_key"
+    case cryptoInvalidRecoveryCode = "crypto.invalid_recovery_code"
+    case packageUnsupportedFormat = "package.unsupported_format"
+    case packageTooLarge = "package.too_large"
+    case packageCorruptedOrKeyMismatch = "package.corrupted_or_key_mismatch"
+    case transportConflict = "transport.conflict"
+    case transportFailure = "transport.failure"
+    case folderAccessDenied = "folder.access_denied"
+    case keychainAccessDenied = "keychain.access_denied"
+    case standardSyncInvalidInstallationID = "standard_sync.invalid_installation_id"
+    case standardSyncInvalidConfiguration = "standard_sync.invalid_configuration"
+    case standardSyncUserDirectoryUnavailable = "standard_sync.user_directory_unavailable"
+    case standardSyncDirectoryUnavailable = "standard_sync.sync_directory_unavailable"
+    case standardSyncFailed = "standard_sync.failed"
+    case unknown = "unknown"
 }
 
 /// 文件提供器目录的最小访问边界。
@@ -79,15 +115,53 @@ nonisolated enum RimeSyncFolderAccess {
     static func diagnosticErrorCode(for error: Error) -> String {
         if let folderError = error as? RimeSyncFolderAccessError {
             switch folderError {
-            case .preflight(let stage, let underlying):
-                return "preflight.\(stage).\(diagnosticErrorCode(for: underlying))"
-            case .bookmark(let underlying):
-                return "bookmark.\(diagnosticErrorCode(for: underlying))"
+            case .preflight(let stage, _):
+                switch stage {
+                case "coordinate": return RimeSyncDiagnosticErrorCode.folderPreflightCoordinate.rawValue
+                case "write": return RimeSyncDiagnosticErrorCode.folderPreflightWrite.rawValue
+                case "read": return RimeSyncDiagnosticErrorCode.folderPreflightRead.rawValue
+                case "delete": return RimeSyncDiagnosticErrorCode.folderPreflightDelete.rawValue
+                default: return RimeSyncDiagnosticErrorCode.folderPreflightUnknown.rawValue
+                }
+            case .bookmark:
+                return RimeSyncDiagnosticErrorCode.folderBookmark.rawValue
             }
         }
 
-        let nsError = error as NSError
-        return "\(nsError.domain)#\(nsError.code)"
+        if let error = error as? RimeSyncError {
+            switch error {
+            case .notConfigured: return RimeSyncDiagnosticErrorCode.syncNotConfigured.rawValue
+            case .invalidServerURL: return RimeSyncDiagnosticErrorCode.webDAVInvalidURL.rawValue
+            case .insecureServerURL: return RimeSyncDiagnosticErrorCode.webDAVInsecureURL.rawValue
+            case .missingCredentials: return RimeSyncDiagnosticErrorCode.webDAVMissingCredentials.rawValue
+            case .missingEncryptionKey: return RimeSyncDiagnosticErrorCode.cryptoMissingKey.rawValue
+            case .invalidRecoveryCode: return RimeSyncDiagnosticErrorCode.cryptoInvalidRecoveryCode.rawValue
+            case .unsupportedFormat: return RimeSyncDiagnosticErrorCode.packageUnsupportedFormat.rawValue
+            case .packageTooLarge: return RimeSyncDiagnosticErrorCode.packageTooLarge.rawValue
+            case .corruptedPackage: return RimeSyncDiagnosticErrorCode.packageCorruptedOrKeyMismatch.rawValue
+            case .remoteConflict: return RimeSyncDiagnosticErrorCode.transportConflict.rawValue
+            case .accessDenied: return RimeSyncDiagnosticErrorCode.folderAccessDenied.rawValue
+            case .keychainAccessDenied: return RimeSyncDiagnosticErrorCode.keychainAccessDenied.rawValue
+            case .transport: return RimeSyncDiagnosticErrorCode.transportFailure.rawValue
+            }
+        }
+
+        if let error = error as? RimeStandardSyncError {
+            switch error {
+            case .invalidInstallationID:
+                return RimeSyncDiagnosticErrorCode.standardSyncInvalidInstallationID.rawValue
+            case .invalidInstallationConfiguration:
+                return RimeSyncDiagnosticErrorCode.standardSyncInvalidConfiguration.rawValue
+            case .unavailableUserDirectory:
+                return RimeSyncDiagnosticErrorCode.standardSyncUserDirectoryUnavailable.rawValue
+            case .unavailableSyncDirectory:
+                return RimeSyncDiagnosticErrorCode.standardSyncDirectoryUnavailable.rawValue
+            case .synchronizationFailed:
+                return RimeSyncDiagnosticErrorCode.standardSyncFailed.rawValue
+            }
+        }
+
+        return RimeSyncDiagnosticErrorCode.unknown.rawValue
     }
 
     static func coordinateReading<T>(
@@ -164,9 +238,24 @@ nonisolated struct URLSessionRimeSyncHTTPClient: RimeSyncHTTPClient {
 actor LocalFolderRimeSyncTransport: RimeSyncTransport {
     private let selectedFolderURL: URL
     private let fileManager = FileManager()
+    private let packageRootState: @Sendable (URL) throws -> RimeSyncPackageRootState
 
-    init(selectedFolderURL: URL) {
+    init(
+        selectedFolderURL: URL,
+        packageRootState: @escaping @Sendable (URL) throws -> RimeSyncPackageRootState = { url in
+            do {
+                let values = try url.resourceValues(forKeys: [.isDirectoryKey])
+                guard let isDirectory = values.isDirectory else { return .unknown }
+                return isDirectory ? .directory : .notDirectory
+            } catch let error as CocoaError
+                where error.code == .fileReadNoSuchFile || error.code == .fileNoSuchFile
+            {
+                return .missing
+            }
+        }
+    ) {
         self.selectedFolderURL = selectedFolderURL
+        self.packageRootState = packageRootState
     }
 
     func fetchSettings() async throws -> RimeSyncRemoteObject {
@@ -184,14 +273,15 @@ actor LocalFolderRimeSyncTransport: RimeSyncTransport {
         try withFolderWriteAccess { folderURL in
             let packageRootURL = packageRootURL(in: folderURL)
             let settingsURL = settingsURL(in: folderURL)
-            let currentData = try? Data(contentsOf: settingsURL, options: .mappedIfSafe)
+            let currentData = try Self.readCurrentSettings(at: settingsURL)
             let currentETag = currentData.map(Self.digest)
             guard currentETag == eTag else { throw RimeSyncError.remoteConflict }
 
             // 文件提供器（iCloud Drive、第三方网盘等）要求通过协调器使用其给出的
             // URL 写入。直接在 bookmark 原始 URL 上进行原子替换，可能出现“能建目录
             // 却不能保存 format.json”的权限错误。
-            try fileManager.createDirectory(at: settingsURL.deletingLastPathComponent(), withIntermediateDirectories: true)
+            try fileManager.createDirectory(
+                at: settingsURL.deletingLastPathComponent(), withIntermediateDirectories: true)
             try formatData.write(to: packageRootURL.appendingPathComponent("format.json"), options: .atomic)
             try settingsData.write(to: settingsURL, options: .atomic)
         }
@@ -200,8 +290,14 @@ actor LocalFolderRimeSyncTransport: RimeSyncTransport {
     func deleteRemoteData() async throws {
         try withFolderWriteAccess { folderURL in
             let packageRootURL = packageRootURL(in: folderURL)
-            guard fileManager.fileExists(atPath: packageRootURL.path) else { return }
-            try fileManager.removeItem(at: packageRootURL)
+            switch try packageRootState(packageRootURL) {
+            case .missing:
+                return
+            case .directory:
+                try fileManager.removeItem(at: packageRootURL)
+            case .notDirectory, .unknown:
+                throw RimeSyncError.accessDenied
+            }
         }
     }
 
@@ -214,6 +310,20 @@ actor LocalFolderRimeSyncTransport: RimeSyncTransport {
             .appendingPathComponent("profiles", isDirectory: true)
             .appendingPathComponent("default", isDirectory: true)
             .appendingPathComponent("settings.json")
+    }
+
+    private nonisolated static func readCurrentSettings(at url: URL) throws -> Data? {
+        do {
+            return try Data(contentsOf: url, options: .mappedIfSafe)
+        } catch {
+            let nsError = error as NSError
+            guard nsError.domain == NSCocoaErrorDomain,
+                nsError.code == CocoaError.Code.fileReadNoSuchFile.rawValue
+            else {
+                throw error
+            }
+            return nil
+        }
     }
 
     private func withFolderReadAccess<T>(_ operation: (URL) throws -> T) throws -> T {
@@ -232,8 +342,8 @@ actor LocalFolderRimeSyncTransport: RimeSyncTransport {
         } catch {
             let cocoaError = error as NSError
             if cocoaError.domain == NSCocoaErrorDomain,
-               [CocoaError.Code.fileReadNoPermission.rawValue, CocoaError.Code.fileWriteNoPermission.rawValue]
-                .contains(cocoaError.code)
+                [CocoaError.Code.fileReadNoPermission.rawValue, CocoaError.Code.fileWriteNoPermission.rawValue]
+                    .contains(cocoaError.code)
             {
                 throw RimeSyncError.accessDenied
             }

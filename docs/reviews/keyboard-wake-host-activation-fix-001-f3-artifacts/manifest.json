@@ -1,0 +1,17 @@
+{
+  "KeyboardHostLifecycleRecoveryGate.swift.diff": "9e35034a15e60a0db64a12280bae4623385a907c9017fa0ef4b7e0320cdd722b",
+  "KeyboardHostLifecycleRecoveryGateTests.swift.diff": "bb63779936dea7c883c52d37659a86d59c12a656ab8085bf312c1f2519b56db1",
+  "KeyboardViewController+Bootstrap.swift.diff": "aabcbbb29edfa37cda771005e36d1ac94981f26060cb5dc32a7ab2bcd97ca848",
+  "KeyboardViewController.swift.diff": "a655e4e1016aa618d12640b532b82af638a54440be63c8ea38cbff0d08e7b407",
+  "architecture/ack.json": "b05838128e1f3b1cf5402a9d4ba2409bb3952815ad570772698a853ab0c904ae",
+  "architecture/review.md": "bd802f40a8e96f9df61bd8237c8d55f19dcab2e074582b76697b722921398730",
+  "architecture/usage.json": "a1702bf61d72dc7e7e22052b6f054b6ce2635ddd518195d6f8cc7efc00e652fd",
+  "dispatch-receipt.json": "a7b8b473b561dbe92410ac199752d814287949087fffc5df79ed47a957055dc1",
+  "packet.json": "34a37a0b8f3dbeba81b015c78985adc295c69440f0f913bc5a18d2ad108cb281",
+  "packet.sha256": "3a4b3ac022fb53b5965cdf2fe4c182714996cf3f29caac1e266c95961cb14875",
+  "project.pbxproj.diff": "b412fab1c7200048013e39c091c431248374ea46ed03229a31947932ac0526a3",
+  "quality/ack.json": "e1b9dbe0d2c77984805eb6a77d01b23833fab74fae4599e56a511ddc05c8ed7c",
+  "quality/review.md": "eeb2b35ca5190f52bf3e39a4df5b890078934e43b1ffec91956284d5ab5c42d2",
+  "quality/usage.json": "0793f091f73a53896a2cb843c761743b946d1632340a6ff889008503f3eb4e29",
+  "root-receive-consistency.json": "ee795d53121ec1b1d92b95a4673712aa3d1c70f5caf76ac0116c0f0182adbf27"
+}

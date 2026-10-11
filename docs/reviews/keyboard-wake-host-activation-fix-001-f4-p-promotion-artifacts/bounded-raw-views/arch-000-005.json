@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+CandidateBar.swift",
+  "origin_sha256": "ae1b78d5a311f60054914093458b0c78fe3d35923d82b487fd7f30d886074c80",
+  "expected_sha256": "ae1b78d5a311f60054914093458b0c78fe3d35923d82b487fd7f30d886074c80",
+  "line_start": 241,
+  "line_end": 300,
+  "lines": [
+    {
+      "line": 241,
+      "text": "    }"
+    },
+    {
+      "line": 242,
+      "text": ""
+    },
+    {
+      "line": 243,
+      "text": "    private func nextGlobalIndexAfterCurrentItems() -> Int {"
+    },
+    {
+      "line": 244,
+      "text": "        let referencedNextIndex = accumulatedCandidates.compactMap { item in"
+    },
+    {
+      "line": 245,
+      "text": "            item.selectionReference?.globalIndex.map { $0 + 1 }"
+    },
+    {
+      "line": 246,
+      "text": "        }.max()"
+    },
+    {
+      "line": 247,
+      "text": "        if let referencedNextIndex { return referencedNextIndex }"
+    },
+    {
+      "line": 248,
+      "text": "        return controller.state.lastRimeOutput?.candidates.count ?? 0"
+    },
+    {
+      "line": 249,
+      "text": "    }"
+    },
+    {
+      "line": 250,
+      "text": ""
+    },
+    {
+      "line": 251,
+      "text": "    /// Rebuilds the presentation cache from the controller state."
+    },
+    {
+      "line": 252,
+      "text": "    ///"
+    },
+    {
+      "line": 253,
+      "text": "    /// Page changes rebuild the keyboard before `refreshCandidateBar()` can run."
+    },
+    {
+      "line": 254,
+      "text": "    /// When a key both commits composition and returns to letters, this prevents"
+    },
+    {
+      "line": 255,
+      "text": "    /// the newly created candidate bar from reusing stale accumulated candidates."
+    },
+    {
+      "line": 256,
+      "text": "    func resetCandidateSnapshotFromController() {"
+    },
+    {
+      "line": 257,
+      "text": "        // Placeholder 是旧按钮式候选栏的安全哨兵，不属于当前 collection 快照。"
+    },
+    {
+      "line": 258,
+      "text": "        // 在唯一重建边界过滤一次，避免每个数据源回调都复制并过滤数组。"
+    },
+    {
+      "line": 259,
+      "text": "        let pendingItems: [CandidateItem]?"
+    },
+    {
+      "line": 260,
+      "text": "        if controller.state.pendingPunctuation != nil {"
+    },
+    {
+      "line": 261,
+      "text": "            pendingItems = controller.pendingPunctuationCandidateItems(expanded: isCandidateExpanded)"
+    },
+    {
+      "line": 262,
+      "text": "        } else if controller.state.pendingKaomoji != nil {"
+    },
+    {
+      "line": 263,
+      "text": "            pendingItems = controller.pendingKaomojiCandidateItems(expanded: isCandidateExpanded)"
+    },
+    {
+      "line": 264,
+      "text": "        } else {"
+    },
+    {
+      "line": 265,
+      "text": "            pendingItems = nil"
+    },
+    {
+      "line": 266,
+      "text": "        }"
+    },
+    {
+      "line": 267,
+      "text": "        accumulatedCandidates = (pendingItems ?? CandidateBarDataSource.candidateItems(from: controller)).filter {"
+    },
+    {
+      "line": 268,
+      "text": "            $0.kind != .placeholder"
+    },
+    {
+      "line": 269,
+      "text": "        }"
+    },
+    {
+      "line": 270,
+      "text": "        candidateSnapshotGeneration += 1"
+    },
+    {
+      "line": 271,
+      "text": "        candidateSnapshotCompositionRevision = controller.state.compositionRevision"
+    },
+    {
+      "line": 272,
+      "text": "        candidateSnapshotRawInput = controller.state.lastRimeOutput?.rawInput ?? controller.state.currentComposition"
+    },
+    {
+      "line": 273,
+      "text": "        nextCandidateGlobalIndex = nextGlobalIndexAfterCurrentItems()"
+    },
+    {
+      "line": 274,
+      "text": "        hasMoreCandidates = controller.state.lastRimeOutput?.hasMorePages ?? false"
+    },
+    {
+      "line": 275,
+      "text": "        isLoadingMoreCandidates = false"
+    },
+    {
+      "line": 276,
+      "text": "        deferredCandidatePrefetchMode = nil"
+    },
+    {
+      "line": 277,
+      "text": "        candidatePrefetchRequestSerial += 1"
+    },
+    {
+      "line": 278,
+      "text": "        candidateCellSizeCache.removeAll(keepingCapacity: true)"
+    },
+    {
+      "line": 279,
+      "text": "        candidatePageDepth = 0"
+    },
+    {
+      "line": 280,
+      "text": "        candidatePrefetchMode = isCandidateExpanded ? .expanded : .bar"
+    },
+    {
+      "line": 281,
+      "text": "    }"
+    },
+    {
+      "line": 282,
+      "text": ""
+    },
+    {
+      "line": 283,
+      "text": "    /// Publish candidates from a captured T9 composition snapshot (same revision as Path Bar)."
+    },
+    {
+      "line": 284,
+      "text": "    func resetCandidateSnapshot(from snapshot: T9CompositionPresentationSnapshot) {"
+    },
+    {
+      "line": 285,
+      "text": "        // Prefer snapshot-owned paging fields; do not re-read live controller for"
+    },
+    {
+      "line": 286,
+      "text": "        // page identity when the snapshot already captured them."
+    },
+    {
+      "line": 287,
+      "text": "        let preedit ="
+    },
+    {
+      "line": 288,
+      "text": "            !snapshot.compositionPreedit.isEmpty"
+    },
+    {
+      "line": 289,
+      "text": "            ? snapshot.compositionPreedit"
+    },
+    {
+      "line": 290,
+      "text": "            : snapshot.visiblePreedit"
+    },
+    {
+      "line": 291,
+      "text": "        let items: [CandidateItem]"
+    },
+    {
+      "line": 292,
+      "text": "        if !preedit.isEmpty || !snapshot.candidates.isEmpty {"
+    },
+    {
+      "line": 293,
+      "text": "            items = CandidateBarDataSource.candidateItems("
+    },
+    {
+      "line": 294,
+      "text": "                from: controller,"
+    },
+    {
+      "line": 295,
+      "text": "                rimeCandidates: snapshot.candidates,"
+    },
+    {
+      "line": 296,
+      "text": "                preeditText: preedit.isEmpty ? \" \" : preedit,"
+    },
+    {
+      "line": 297,
+      "text": "                pageNumber: snapshot.candidatePageNumber"
+    },
+    {
+      "line": 298,
+      "text": "            )"
+    },
+    {
+      "line": 299,
+      "text": "        } else {"
+    },
+    {
+      "line": 300,
+      "text": "            items = CandidateBarDataSource.candidateItems(from: controller)"
+    }
+  ]
+}

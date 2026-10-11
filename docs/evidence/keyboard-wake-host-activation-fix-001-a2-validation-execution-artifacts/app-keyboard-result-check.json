@@ -1,0 +1,9 @@
+{
+  "kind": "app-keyboard",
+  "actual_cases": 454,
+  "passed": 444,
+  "skipped": 10,
+  "failed": 0,
+  "historical_skip_identity_reason_match": true,
+  "gate_passed": 23
+}

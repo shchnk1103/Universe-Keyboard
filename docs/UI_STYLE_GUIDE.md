@@ -39,6 +39,8 @@ Keyboard UI is frozen for V1. Future keyboard UI changes must state a specific u
 
 **Exception — Chinese nine-key chrome:** matching the system 九宫格 layout (letter-group primary labels, left four-column pad, right delete/颜表情/tall return, bottom emoji+选拼音+拼音) is an authorized usability alignment under closed Assignment `KEYBOARD-LAYOUT-9KEY-UI-001`. Structure details live in `KEYBOARD_LAYOUT.md`. Do not redesign 26-key QWERTY metrics or candidate-bar constants without a separate reason. Shared type-scale constants (below) apply to both layouts where noted.
 
+**Exception — Delete-key scrub overlay:** `DELETE-KEY-SCRUB-001` adds a delete-key-only `trash` bubble above the key during long-press repeat. It may cover the candidate bar or Path chips and must stay inside the keyboard bounds. It does not change key metrics, candidate-bar height, or `KeyPopupView`. The symbol is a template SF Symbol, not a filled `UIButton.Configuration` or emoji. On iOS 26 the plate is regular Liquid Glass; while the finger is inside, the glass and symbol take a light system-red tint. Below iOS 26 the plate uses adaptable `systemUltraThinMaterial`, not a fixed light or dark blur. Reduce Transparency uses a solid fill with the same red state. The state is also exposed as the accessibility value 「松手清空光标前文字」.
+
 **Exception — Debug key touch overlay:** `PD-DEBUG-KEY-HITBOX-001` authorizes a Debug-only, default-off overlay that paints the live hit-test `touchFrame` (solid) and the matching visual key (dashed), including space and return. It is not product chrome and must not change key metrics or candidate-bar constants. 26-key and nine-key both fill neighbor gaps at the midline; nine-key only supplies column/row structure. 26-key nested rows (`z…m` inside Shift/Delete) still belong to that same snapshot (`PD-KEY-TOUCH-FILL-001`); overlay on/off must not change hits.
 
 **Exception — Precise pinyin path bar (ADR 0020 + ADR 0021 Amendments B/C):** Chinese nine-key letters page reserves a fixed **34 pt** path bar above the Chinese candidate bar (order: path bar → candidates → keys). Paths use plain **single-line** labels on a transparent background (no candidate pills, no multi-line wrap). A single key displays its complete canonical letter group; whole multi-key state shows at most five progressive items (`mi / ni / m / n / o` for two keys)—never a multi-syllable whole path such as `ni xian zai` as one cell. A **direct path tap** selects and immediately confirms/advances to the next syllable-level choices (`xian / zhan…`) or live-authorized letter-group branches when remaining digits exist. A newly advanced focus is always visually unselected, even when it contains only one valid choice. **选拼音** only first/next/wraps the tentative selection within the current focus—it does not confirm a segment or open a panel. Active T9 composition retitles the wide space key to **选定**. Hit targets should stay ≥ 44 pt where layout allows; Path chips expand vertically to that minimum without growing the 34 pt reservation, and taps must select the chip even in the upper third. VoiceOver reports path buttons and active selected state.
@@ -58,7 +60,7 @@ Frozen keyboard baseline:
 - Letter key height: `45`.
 - Function key width for Shift, Delete, 123, globe, and input-mode keys: `46`.
 - Function key symbol size: `22` (Delete / Return / Globe / emoji SF Symbols only).
-- Character / letter-group title size: `16`.
+- Character / letter-group title size: `17` (increased from 16 pt after repeated public-beta feedback that English letters and punctuation were too small).
 - Function key text title size: `15` (中、选拼音、123 等；与符号字号分离).
 - Space key title size: `14`（含「拼音」）.
 - Vertical row spacing: `8`.
@@ -122,7 +124,7 @@ The candidate bar must prioritize readability and speed:
   - Background: high-contrast pill drawn by `CandidateCollectionCell`.
 - Composition/preedit fallback should use `.secondaryLabel`.
 - Placeholder items should not appear as selectable candidates.
-- The expand button should be quiet: SF Symbol, secondary color, fixed width only when candidates exist.
+- The trailing candidate-bar control is always present at the existing 56 pt slot (`PD-CANDIDATE-BAR-IDLE-DISMISS-001`). Expandable content uses quiet `chevron.down` to expand. Idle uses template `chevron.down.circle` to request `dismissKeyboard()`. Draw it with `UIButton(type: .custom)` and `.alwaysTemplate`, not `UIButton.Configuration`, so the circle does not punch a white plate through keyboard glass. Swipe-down expands only in expand mode. VoiceOver labels switch with the mode.
 - Normal horizontal candidates use a 17pt base font; composition fallback uses 15pt. Keep Dynamic Type capped at 28pt so candidate rows do not resize unpredictably.
 - Candidate cells should render text with `UILabel` and an explicit highlighted background view. Avoid `UIButton.Configuration` for candidate display; it can interact poorly with system material compositing.
 - Candidate `UICollectionView`s must use `CandidateScrollViewStyle.apply(to:)`. On iOS 26+, `UIScrollEdgeEffect` can create a rectangular fade/overlay over the first candidate row inside the system keyboard glass container.
@@ -153,6 +155,7 @@ The main app lives under `Universe Keyboard/` and is SwiftUI-based. It should fe
 
 - Use `NavigationStack` per tab.
 - Use `TabView` only for top-level main-App tabs (Home, optional Help while activation/recovery requires it, Settings). Help packaging: `PD-HELP-TIPKIT-001`.
+- Settings **App 设置** lists appearance, notifications, then **关于** (`PD-APP-ABOUT-001`). About owns version/Build, 联系我们 (mail + 小红书), and navigation into Privacy and OSS license pages. Version and Build are the installed Info.plist values; Debug/Simulator showing `1.0` / Build `1` matches current project defaults. Do not add a fourth tab or put identity/contact on Home. Help stays the trailing question-mark control.
 - Prefer `Form` for detailed settings screens.
 - Prefer grouped-background scroll layouts for guide/overview screens.
 - Keep custom containers close to system grouped list appearance.
@@ -163,7 +166,7 @@ The main app lives under `Universe Keyboard/` and is SwiftUI-based. It should fe
 Reuse these components:
 
 - `AppTokens` (`AppRadius`, `AppSpacing`, `AppIconSize`): semantic layout constants — prefer these over raw `14` / `16` in shared chrome.
-- `AppActionButton`: main-app content actions such as download, deploy, retry, reset, and destructive management commands.
+- `AppActionButton`: main-app content actions such as download, deploy, retry, reset, and destructive management commands. Visual owner is `AppActionButtonChrome` (`PD-APP-ACTION-BUTTON-CONTRAST-001`): iOS 26 uses Liquid Glass (`.regular.interactive()`) unless Reduce Transparency is on. Primary enabled = label fill + systemBackground text (light black/white text, dark white/black text) with `0.92` glass tint; secondary = untinted glass + label text (iOS 18 grouped fill + `0.5 pt` separator); destructive = red-tinted glass + red text. Disabled/busy keep the same pair at `0.40` opacity. Do not hand-style a gray pill that reads as disabled. Hit owner is the same chrome (`PD-APP-ACTION-BUTTON-HIT-AREA-001`): the full visible capsule (padding and empty glass included) is tappable via `contentShape` matching `cornerRadius` 16; do not leave `.plain` hitting only the title glyphs.
 - `AppIconTile`: neutral grayscale soft icon tiles for lists and home cards.
 - `AppCard`: secondary grouped card chrome (default continuous corner `AppRadius.card`).
 - `SettingsGroup`: settings section title + content + optional caption footer.
@@ -191,7 +194,8 @@ Do not duplicate navigation row markup when `SettingsNavigationLink` fits. Do no
 - **Neutral palette (phase 1):** black / white / gray hierarchy (label / secondary / tertiary). Do not introduce a brand accent color yet. Global tab tint may stay `.primary`.
 - **Semantic color exceptions:** clear status only—e.g. home streak flame may use `.orange` when the user has input today. Do not repaint whole sections with category rainbows.
 - Copy tone: practical first, **slightly warm** one-liners OK on Home status captions and Settings group footers; avoid marketing slogans and long promotional blocks.
-- Use `AppActionButton` for explicit in-page commands. Do not hand-style `.bordered` / `.borderedProminent` buttons for download, deploy, retry, reset, license acceptance, or destructive management actions unless a new reusable variant is added first.
+- Use `AppActionButton` for explicit in-page commands. Do not hand-style `.bordered` / `.borderedProminent` buttons for download, deploy, retry, reset, license acceptance, or destructive management actions unless a new reusable variant is added first. Do not override fill or foreground at call sites; pass `prominence` and `.disabled` only.
+- First-download of a third-party scheme uses one primary `AppActionButton` titled `查看许可并下载`. It opens `SchemeLicenseView`; the sheet bottom button is `同意并下载` and is the only control that accepts the license and starts download/deploy (`PD-SCHEME-LICENSE-DOWNLOAD-CTA-001`). Do not pair `查看许可证` with a separate gray `同意并下载` on the card.
 - For dense management actions inside `Form` sections, prefer a two-column adaptive grid with stable full-width action buttons over a single horizontal button row. Button labels must remain one line at normal text sizes and avoid vertical wrapping on narrow devices.
 - RIME deployment progress, success, and failure notifications should use the main-app global bottom toast instead of one-off page-local popups. Detail pages may keep logs and retry actions, but should not duplicate transient deployment notifications.
 - RIME candidate-learning backup, restore, reset, and automatic-backup operation results should also use the global bottom toast. The settings page should show stable per-scheme status with short text and compact icons, not a persistent message section for the last operation.

@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+  "origin_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "expected_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "line_start": 241,
+  "line_end": 300,
+  "lines": [
+    {
+      "line": 241,
+      "text": "                    self?.applyResponsivePublishedSnapshot("
+    },
+    {
+      "line": 242,
+      "text": "                        publication.snapshot,"
+    },
+    {
+      "line": 243,
+      "text": "                        ownerPendingDepthAtPublish:"
+    },
+    {
+      "line": 244,
+      "text": "                            publication.pendingWorkDepthAfterCompletion,"
+    },
+    {
+      "line": 245,
+      "text": "                        canarySessionInstance: publication.canarySessionInstance"
+    },
+    {
+      "line": 246,
+      "text": "                    )"
+    },
+    {
+      "line": 247,
+      "text": "                }"
+    },
+    {
+      "line": 248,
+      "text": "            #else"
+    },
+    {
+      "line": 249,
+      "text": "                coordinator.setPublicationHandler { [weak self] publication in"
+    },
+    {
+      "line": 250,
+      "text": "                    self?.applyResponsivePublishedSnapshot("
+    },
+    {
+      "line": 251,
+      "text": "                        publication.snapshot,"
+    },
+    {
+      "line": 252,
+      "text": "                        ownerPendingDepthAtPublish:"
+    },
+    {
+      "line": 253,
+      "text": "                            publication.pendingWorkDepthAfterCompletion"
+    },
+    {
+      "line": 254,
+      "text": "                    )"
+    },
+    {
+      "line": 255,
+      "text": "                }"
+    },
+    {
+      "line": 256,
+      "text": "            #endif"
+    },
+    {
+      "line": 257,
+      "text": "            threadAffineRimeCoordinator = coordinator"
+    },
+    {
+      "line": 258,
+      "text": "            responsiveKeyApplyContexts.removeAll()"
+    },
+    {
+      "line": 259,
+      "text": "            dualGatePendingPresentationSnapshot = nil"
+    },
+    {
+      "line": 260,
+      "text": "            dualGatePendingPresentationHasKnownSuccessor = false"
+    },
+    {
+      "line": 261,
+      "text": "            dualGatePresentationCoalesceScheduled = false"
+    },
+    {
+      "line": 262,
+      "text": "            rimeEngine = ThreadAffineRimeEngineBridge(coordinator: coordinator)"
+    },
+    {
+      "line": 263,
+      "text": "            #if T9_RESPONSIVE_CANARY_INTERNAL"
+    },
+    {
+      "line": 264,
+      "text": "                responsiveCanaryPresentationFenced = false"
+    },
+    {
+      "line": 265,
+      "text": "                pendingResponsiveCanaryVisibleSnapshot = nil"
+    },
+    {
+      "line": 266,
+      "text": "                lastResponsiveCanaryVisibilityTeardown = nil"
+    },
+    {
+      "line": 267,
+      "text": "                responsiveCanaryPreterminatedPresentations.removeAll(keepingCapacity: true)"
+    },
+    {
+      "line": 268,
+      "text": "            #endif"
+    },
+    {
+      "line": 269,
+      "text": "            return"
+    },
+    {
+      "line": 270,
+      "text": "        }"
+    },
+    {
+      "line": 271,
+      "text": ""
+    },
+    {
+      "line": 272,
+      "text": "        // Fail closed for threadAffine without bootstrap: MainActor R2 path if engine exists."
+    },
+    {
+      "line": 273,
+      "text": "        guard let underlying else {"
+    },
+    {
+      "line": 274,
+      "text": "            responsiveRimeCoordinator = nil"
+    },
+    {
+      "line": 275,
+      "text": "            responsiveKeyApplyContexts.removeAll()"
+    },
+    {
+      "line": 276,
+      "text": "            return"
+    },
+    {
+      "line": 277,
+      "text": "        }"
+    },
+    {
+      "line": 278,
+      "text": ""
+    },
+    {
+      "line": 279,
+      "text": "        let coordinator = ResponsiveRimeSessionCoordinator("
+    },
+    {
+      "line": 280,
+      "text": "            engine: underlying,"
+    },
+    {
+      "line": 281,
+      "text": "            // R5-Rem-2: honor latestOnly for UI publish coalesce. Engine still"
+    },
+    {
+      "line": 282,
+      "text": "            // applies every enqueued action; R3 contexts bind to applied head"
+    },
+    {
+      "line": 283,
+      "text": "            // (last matching context), not every intermediate paint."
+    },
+    {
+      "line": 284,
+      "text": "            publishPolicy: publishPolicy,"
+    },
+    {
+      "line": 285,
+      "text": "            fixtureID: \"T9RESP-R2\","
+    },
+    {
+      "line": 286,
+      "text": "            clock: clock"
+    },
+    {
+      "line": 287,
+      "text": "        )"
+    },
+    {
+      "line": 288,
+      "text": "        coordinator.setPublishHandler { [weak self] snapshot in"
+    },
+    {
+      "line": 289,
+      "text": "            self?.applyResponsivePublishedSnapshot(snapshot)"
+    },
+    {
+      "line": 290,
+      "text": "        }"
+    },
+    {
+      "line": 291,
+      "text": "        responsiveRimeCoordinator = coordinator"
+    },
+    {
+      "line": 292,
+      "text": "        threadAffineRimeCoordinator = nil"
+    },
+    {
+      "line": 293,
+      "text": "        responsiveKeyApplyContexts.removeAll()"
+    },
+    {
+      "line": 294,
+      "text": "        dualGatePendingPresentationSnapshot = nil"
+    },
+    {
+      "line": 295,
+      "text": "        dualGatePendingPresentationHasKnownSuccessor = false"
+    },
+    {
+      "line": 296,
+      "text": "        dualGatePresentationCoalesceScheduled = false"
+    },
+    {
+      "line": 297,
+      "text": "        // All session call sites go through the bridge → single serial pipeline."
+    },
+    {
+      "line": 298,
+      "text": "        rimeEngine = ResponsiveRimeEngineBridge("
+    },
+    {
+      "line": 299,
+      "text": "            underlyingEngine: underlying,"
+    },
+    {
+      "line": 300,
+      "text": "            coordinator: coordinator"
+    }
+  ]
+}

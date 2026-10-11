@@ -1,0 +1,216 @@
+{
+  "kind": "same historical round ledger supplement; coordinator reconstruction, not newly authored independent review",
+  "lane": "QUALITY-C7-NORMAL-EXPORT",
+  "round": 1,
+  "authorization": "Human: 仅补同一历史轮的缺失账本吧",
+  "packet_digest": "c99ff6b954ebcf42b48a4cc2fd1e60b4c799b938ccc2f0fa344a0cb13b49706f",
+  "source_session_id": "01a0f298-7a06-74a0-9167-8a0e04aea197",
+  "source_path": "/Users/doubleshy0n/.codex/sessions/2026/09/30/rollout-2026-09-30T21-54-34-01a0f298-7a06-74a0-9167-8a0e04aea197.jsonl",
+  "historical_slice_lines": [
+    2628,
+    2779
+  ],
+  "historical_slice_sha256": "22b4b228390f2f10a97f8b8f76342962f688f4a27050fe21e6df4ff748ddb6d7",
+  "reconstruction_utc": "2026-10-02T14:56:43.747207+00:00",
+  "budget": {
+    "calls": 10,
+    "hard_seconds": 480,
+    "soft_seconds": 360
+  },
+  "actual_underlying_calls": 9,
+  "calls": [
+    {
+      "ordinal": 1,
+      "call_id": "call_2Wi9Wkll3CD8p6OKfLPWcSCK",
+      "tool": "exec",
+      "request_line": 2638,
+      "platform_request_utc": "2026-10-02T14:43:23.149Z",
+      "underlying_operations": 1,
+      "script_start_utc": "2026-10-02T14:43:23.299964+00:00",
+      "script_end_utc": "2026-10-02T14:43:23.305073+00:00",
+      "script_monotonic_elapsed_seconds": 0.004885,
+      "platform_output_utc": "2026-10-02T14:43:23.838Z",
+      "output_line": 2641,
+      "timing_receipts": [
+        "CALL1_START_UTC 2026-10-02T14:43:23.299964+00:00",
+        "CALL1_END_UTC 2026-10-02T14:43:23.305073+00:00",
+        "CALL1_ELAPSED_MONO 0.004885"
+      ]
+    },
+    {
+      "ordinal": 2,
+      "call_id": "call_NPAuHnFM2NKfON73VUWu7hkb",
+      "tool": "exec",
+      "request_line": 2645,
+      "platform_request_utc": "2026-10-02T14:43:37.935Z",
+      "underlying_operations": 1,
+      "script_start_utc": "2026-10-02T14:43:38.052893+00:00",
+      "script_end_utc": "2026-10-02T14:43:38.053217+00:00",
+      "script_monotonic_elapsed_seconds": 0.000224,
+      "platform_output_utc": "2026-10-02T14:43:38.081Z",
+      "output_line": 2648,
+      "timing_receipts": [
+        "CALL2_START_UTC 2026-10-02T14:43:38.052893+00:00",
+        "CALL2_END_UTC 2026-10-02T14:43:38.053217+00:00",
+        "CALL2_ELAPSED_MONO 0.000224"
+      ]
+    },
+    {
+      "ordinal": 3,
+      "call_id": "call_LBdxUOICZeoNwBopbigqQSVx",
+      "tool": "send_message",
+      "request_line": 2652,
+      "platform_request_utc": "2026-10-02T14:43:47.856Z",
+      "underlying_operations": 1,
+      "script_start_utc": null,
+      "script_end_utc": null,
+      "script_monotonic_elapsed_seconds": null,
+      "platform_output_utc": "2026-10-02T14:43:48.218Z",
+      "output_line": 2655,
+      "timing_receipts": []
+    },
+    {
+      "ordinal": 4,
+      "call_id": "call_pOohZ9jTqALV5cUeNyhDO3md",
+      "tool": "exec",
+      "request_line": 2667,
+      "platform_request_utc": "2026-10-02T14:44:41.594Z",
+      "underlying_operations": 1,
+      "script_start_utc": "2026-10-02T14:44:41.738309+00:00",
+      "script_end_utc": "2026-10-02T14:44:41.742495+00:00",
+      "script_monotonic_elapsed_seconds": 0.004099,
+      "platform_output_utc": "2026-10-02T14:44:41.843Z",
+      "output_line": 2670,
+      "timing_receipts": [
+        "CALL4_START_UTC 2026-10-02T14:44:41.738309+00:00",
+        "CALL4_END_UTC 2026-10-02T14:44:41.742495+00:00",
+        "CALL4_ELAPSED_MONO 0.004099"
+      ]
+    },
+    {
+      "ordinal": 5,
+      "call_id": "call_1wswuShn23AnCkcpKWNdzldh",
+      "tool": "exec",
+      "request_line": 2678,
+      "platform_request_utc": "2026-10-02T14:45:17.155Z",
+      "underlying_operations": 1,
+      "script_start_utc": "2026-10-02T14:45:17.295411+00:00",
+      "script_end_utc": "2026-10-02T14:45:17.296123+00:00",
+      "script_monotonic_elapsed_seconds": 0.00063,
+      "platform_output_utc": "2026-10-02T14:45:17.502Z",
+      "output_line": 2681,
+      "timing_receipts": [
+        "CALL5_START_UTC 2026-10-02T14:45:17.295411+00:00",
+        "CALL5_END_UTC 2026-10-02T14:45:17.296123+00:00",
+        "CALL5_ELAPSED_MONO 0.000630"
+      ]
+    },
+    {
+      "ordinal": 6,
+      "call_id": "call_phM2Ai3XWHG6q8kqBhtP97sC",
+      "tool": "exec",
+      "request_line": 2693,
+      "platform_request_utc": "2026-10-02T14:46:22.066Z",
+      "underlying_operations": 1,
+      "script_start_utc": "2026-10-02T14:46:22.274460+00:00",
+      "script_end_utc": "2026-10-02T14:46:22.279303+00:00",
+      "script_monotonic_elapsed_seconds": 0.004481,
+      "platform_output_utc": "2026-10-02T14:46:22.305Z",
+      "output_line": 2696,
+      "timing_receipts": [
+        "CALL6_START_UTC 2026-10-02T14:46:22.274460+00:00",
+        "CALL6_END_UTC 2026-10-02T14:46:22.279303+00:00",
+        "CALL6_ELAPSED_MONO 0.004481"
+      ]
+    },
+    {
+      "ordinal": 7,
+      "call_id": "call_MPlABmViINWtt811HLdBXTtW",
+      "tool": "send_message",
+      "request_line": 2709,
+      "platform_request_utc": "2026-10-02T14:47:05.933Z",
+      "underlying_operations": 1,
+      "script_start_utc": null,
+      "script_end_utc": null,
+      "script_monotonic_elapsed_seconds": null,
+      "platform_output_utc": "2026-10-02T14:47:06.375Z",
+      "output_line": 2712,
+      "timing_receipts": []
+    },
+    {
+      "ordinal": 8,
+      "call_id": "call_OY4xU4tVQGyq1xu5U1zS2T0E",
+      "tool": "exec",
+      "request_line": 2730,
+      "platform_request_utc": "2026-10-02T14:48:29.453Z",
+      "underlying_operations": 1,
+      "script_start_utc": "2026-10-02T14:48:29.613129+00:00",
+      "script_end_utc": "2026-10-02T14:48:29.614435+00:00",
+      "script_monotonic_elapsed_seconds": 0.001105,
+      "platform_output_utc": "2026-10-02T14:48:29.646Z",
+      "output_line": 2733,
+      "timing_receipts": [
+        "CALL8_START_UTC 2026-10-02T14:48:29.613129+00:00",
+        "CALL8_END_UTC 2026-10-02T14:48:29.614435+00:00",
+        "CALL8_ELAPSED_MONO 0.001105"
+      ]
+    },
+    {
+      "ordinal": 9,
+      "call_id": "call_uevd6BEwPM4n5PFp76BWjUdr",
+      "tool": "exec",
+      "request_line": 2764,
+      "platform_request_utc": "2026-10-02T14:50:54.263Z",
+      "underlying_operations": 1,
+      "script_start_utc": "2026-10-02T14:50:54.415832+00:00",
+      "script_end_utc": "2026-10-02T14:50:54.416840+00:00",
+      "script_monotonic_elapsed_seconds": null,
+      "platform_output_utc": "2026-10-02T14:50:54.450Z",
+      "output_line": 2767,
+      "timing_receipts": [
+        "CALL9_START_UTC 2026-10-02T14:50:54.415832+00:00",
+        "REPORT_WRITTEN_UTC 2026-10-02T14:50:54.416480+00:00 SHA256 19c3e11ce508f7ac01a905617d9191a480f84f36cdc15e252de22514e153007d",
+        "CALL9_END_UTC 2026-10-02T14:50:54.416840+00:00",
+        "TOTAL_ELAPSED_AT_CALL9_END 451.116251"
+      ]
+    }
+  ],
+  "review_start_utc": "2026-10-02T14:43:23.299964+00:00",
+  "report_written_utc": "2026-10-02T14:50:54.416480+00:00",
+  "report_wall_elapsed_seconds": 451.116516,
+  "last_call_end_monotonic_elapsed_seconds": 451.116251,
+  "abort": {
+    "platform_utc": "2026-10-02T14:51:33.208Z",
+    "line": 2779
+  },
+  "wall_elapsed_to_abort_seconds": 489.908036,
+  "hard_excess_wall_seconds": 9.908035999999981,
+  "hard_compliance": false,
+  "soft_target_met": false,
+  "checkpoints": [
+    {
+      "call": 3,
+      "purpose": "ACK and first checkpoint",
+      "logged": true
+    },
+    {
+      "call": 7,
+      "purpose": "checkpoint after sixth underlying invocation, message itself seventh",
+      "logged": true
+    }
+  ],
+  "limitations": [
+    "collaboration script-internal start/end are unavailable; platform request/output timestamps retained distinctly",
+    "call9 script elapsed missing; no inference from rounded displayed duration",
+    "final monotonic elapsed unavailable; terminal duration derived from historical wall timestamps, labeled as such",
+    "no reviewer-authored usage.json existed at interruption; this supplement is coordinator reconstructed",
+    "no task_complete/final independent delivery before turn_aborted"
+  ],
+  "substantive_review_unchanged_sha256": "19c3e11ce508f7ac01a905617d9191a480f84f36cdc15e252de22514e153007d",
+  "reviewer_criteria": {
+    "P1": "Covered",
+    "P2": "Covered",
+    "P3": "Covered"
+  },
+  "status": "missing-call-accounting gap supplemented; prior delivery Partial and budget noncompliance preserved; no formal re-verdict/Product acceptance"
+}

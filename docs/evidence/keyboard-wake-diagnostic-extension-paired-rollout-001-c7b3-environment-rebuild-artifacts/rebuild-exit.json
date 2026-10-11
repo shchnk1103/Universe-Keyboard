@@ -1,0 +1,40 @@
+{
+  "utc": "2026-10-02T13:47:47.410050+00:00",
+  "human_feedback": "好了，完全访问、候选、提交都很正常。",
+  "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "containers": {
+    "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/223097E4-C5DF-4E08-8F2A-50825F30172F/Universe Keyboard.app",
+    "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/A0C97751-269A-4A76-B5BA-1F4BC7CDB937",
+    "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/0296BFCE-F465-4F1A-9E9A-F2EDFDA41172"
+  },
+  "original_bundle_111_files_match": true,
+  "bounded_preferences": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "rime_deployed": {
+      "exists": true,
+      "value": "True"
+    },
+    "rime_needs_deploy": {
+      "exists": true,
+      "value": "False"
+    },
+    "rime_deploying": {
+      "exists": true,
+      "value": "False"
+    },
+    "rime_deploy_auto_retry_suppressed": {
+      "exists": true,
+      "value": "False"
+    }
+  },
+  "compiled_build_exists": true,
+  "new_baseline_ready": true,
+  "old_data_restored": false
+}

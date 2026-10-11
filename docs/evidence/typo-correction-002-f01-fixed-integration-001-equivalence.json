@@ -1,0 +1,35 @@
+{
+  "paths": [
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeDeploymentService.swift",
+      "candidate_sha256": "3b69b474f749c2c28cf0c91c11de668f36f632f2d8644368b5f12b76d9d4efd8",
+      "pr139_sha256": "3b69b474f749c2c28cf0c91c11de668f36f632f2d8644368b5f12b76d9d4efd8",
+      "byte_equal": true
+    },
+    {
+      "path": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeEngineContractTests.swift",
+      "candidate_sha256": "bb5a641db8dae7bc19546e7bab63a8bb832c0b97e28480bd36bb741f78b1b395",
+      "pr139_sha256": "bb5a641db8dae7bc19546e7bab63a8bb832c0b97e28480bd36bb741f78b1b395",
+      "byte_equal": true
+    },
+    {
+      "path": "Universe Keyboard/Services/SchemaManager+Deployment.swift",
+      "candidate_sha256": "59556bc04be0c3ecad4b05e6cd359a374efd34f7b4139841586d5c22032d8e71",
+      "pr139_sha256": "59556bc04be0c3ecad4b05e6cd359a374efd34f7b4139841586d5c22032d8e71",
+      "byte_equal": true
+    },
+    {
+      "path": "UniverseKeyboardTests/RimeSettingsStoreTests.swift",
+      "candidate_sha256": "266efc0b95ae755a17d6690ae8f720b1031c7569d46ed0d13555330bfe85c97a",
+      "pr139_sha256": "c394c4ea7c8d92cd4bed703f468c2c9cd8eaa551359017a73c7e1f9fb7a2a38c",
+      "byte_equal": false
+    },
+    {
+      "path": "UniverseKeyboardTests/SchemaManagerTests.swift",
+      "candidate_sha256": "803125825b24a8a8fa3f90aedb3b7f0da44144c324d7e9285fb339a363dca7f5",
+      "pr139_sha256": "803125825b24a8a8fa3f90aedb3b7f0da44144c324d7e9285fb339a363dca7f5",
+      "byte_equal": true
+    }
+  ],
+  "sole_difference": "StoreDeploymentService fixture additionally preserves main runtimeSmokePassed: succeeded ? true : nil; implementation and other three tests exactly equal PR139"
+}

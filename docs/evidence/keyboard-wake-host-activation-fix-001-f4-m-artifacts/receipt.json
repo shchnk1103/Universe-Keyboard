@@ -1,0 +1,129 @@
+{
+  "utc": "2026-10-06T01:36:21.756012+00:00",
+  "status": "Partial — human Maps input recovery observed; bounded probe export unavailable",
+  "human_sequence": [
+    "Maps空框观测已出现",
+    "点击一次观测后取证可见",
+    "单n：反馈、候选、输入框更新",
+    "AppSwitcher直接返回：键盘未关闭，旧候选保留，输入框清空",
+    "单h：反馈、候选、输入框正常更新，取证可见",
+    "单次取证",
+    "两项关闭，App已关闭"
+  ],
+  "pid": 64039,
+  "debugger_session": 85905,
+  "callback": {
+    "utc": "2026-10-06T01:32:19.922585+00:00",
+    "status": "unavailable",
+    "memory_snapshot_reads": 0,
+    "pid": 64039,
+    "frame_id": 0,
+    "symbol": null,
+    "module_uuid": "B07862D0-C2DE-3AED-898C-88190E38064E",
+    "reason": "hit_frame_identity_mismatch"
+  },
+  "snapshot_reads": 0,
+  "reason": "actual callback frame0 module/symbol mismatch; no guessing or replacement read",
+  "cleanup": {
+    "breakpoint_1_deleted": true,
+    "process_detached": true,
+    "lldb_exit_code": 0,
+    "native_exec_cleanup_output": "1 breakpoints deleted; Process 64039 detached; exit 0",
+    "exact_pause_duration_seconds": "UNKNOWN; no persisted cleanup timestamp"
+  },
+  "settings_restoration": {
+    "utc": "2026-10-06T01:36:21.756012+00:00",
+    "Human": "两项关闭，App 已关闭",
+    "original": {
+      "logging_enabled": {
+        "exists": false,
+        "value": null
+      },
+      "diagnostics_high_fidelity_expiration": {
+        "exists": false,
+        "value": null
+      },
+      "log_category_disp": {
+        "exists": false,
+        "value": null
+      },
+      "log_category_display": {
+        "exists": false,
+        "value": null
+      }
+    },
+    "before_restore": {
+      "logging_enabled": {
+        "exists": true,
+        "value": false
+      },
+      "diagnostics_high_fidelity_expiration": {
+        "exists": false,
+        "value": null
+      },
+      "log_category_disp": {
+        "exists": false,
+        "value": null
+      },
+      "log_category_display": {
+        "exists": false,
+        "value": null
+      }
+    },
+    "readbacks": [
+      {
+        "logging_enabled": {
+          "exists": false,
+          "value": null
+        },
+        "diagnostics_high_fidelity_expiration": {
+          "exists": false,
+          "value": null
+        },
+        "log_category_disp": {
+          "exists": false,
+          "value": null
+        },
+        "log_category_display": {
+          "exists": false,
+          "value": null
+        }
+      },
+      {
+        "logging_enabled": {
+          "exists": false,
+          "value": null
+        },
+        "diagnostics_high_fidelity_expiration": {
+          "exists": false,
+          "value": null
+        },
+        "log_category_disp": {
+          "exists": false,
+          "value": null
+        },
+        "log_category_display": {
+          "exists": false,
+          "value": null
+        }
+      }
+    ],
+    "other_preferences_preserved": true,
+    "root_did_not_terminate_process": true
+  },
+  "actual_calls": 58,
+  "budget_limit_calls": 60,
+  "independent_acceptance": "not executed",
+  "new_attempt": "not executed",
+  "lifecycle_claim": "Human observation supports this single return/input path; no owner/callback coverage claim",
+  "journal_coverage": "not extracted; no negative delivery inference",
+  "visual_exit": "Human confirmed settings/App closed; separate pre-close visual state not supplied",
+  "ended_utc": "2026-10-06T01:36:58.160486+00:00",
+  "wall_seconds": 1021.301751,
+  "budget_within_limit": true,
+  "final_diagnostic_keys_absent": true,
+  "source5_hashes_match": true,
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "staged_paths": 0
+}

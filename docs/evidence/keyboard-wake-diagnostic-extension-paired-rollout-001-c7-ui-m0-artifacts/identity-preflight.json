@@ -1,0 +1,19 @@
+{
+  "device": {
+    "runtime": "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
+    "dataPath": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data",
+    "dataPathSize": 4667396096,
+    "logPath": "/Users/doubleshy0n/Library/Logs/CoreSimulator/405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "lastUsedAt": "2026-10-02T09:04:39Z",
+    "isAvailable": true,
+    "logPathSize": 667648,
+    "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro",
+    "state": "Booted",
+    "name": "iPhone 18 Pro"
+  },
+  "target_processes": [
+    "88188 /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard"
+  ],
+  "maps_processes": []
+}

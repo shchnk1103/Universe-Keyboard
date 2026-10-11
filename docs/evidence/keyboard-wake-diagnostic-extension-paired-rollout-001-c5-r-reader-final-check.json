@@ -1,0 +1,30 @@
+{
+  "checked_utc": "2026-10-01T05:45:46.905350+00:00",
+  "target": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "source_build_match": 568,
+  "built_match": 111,
+  "installed_tree_match": 111,
+  "capture_state": {
+    "logging_enabled": {
+      "present": true,
+      "value": false
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "present": false,
+      "value": null
+    },
+    "log_category_disp": {
+      "present": false,
+      "value": null
+    },
+    "log_category_engine": {
+      "present": false,
+      "value": null
+    }
+  },
+  "no_arming_or_synthetic_input": true,
+  "history_window_unchanged": true,
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "reader_view_window_end_utc": "2026-10-01T05:45:46.905951+00:00"
+}

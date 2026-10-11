@@ -1,0 +1,15 @@
+{
+  "start": {
+    "utc": "2026-10-02T16:30:16.547427+00:00",
+    "unix_ns": 1790958616547507000,
+    "monotonic_ns": 1141467265476375
+  },
+  "end": {
+    "utc": "2026-10-02T16:30:17.206156+00:00",
+    "unix_ns": 1790958617206175000,
+    "monotonic_ns": 1141467924143041
+  },
+  "returncode": 0,
+  "stdout": "{\n  \"candidate\": \"43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50\",\n  \"entitlements\": 2,\n  \"machos\": 6,\n  \"payload_count\": 78\n}\n",
+  "stderr": ""
+}

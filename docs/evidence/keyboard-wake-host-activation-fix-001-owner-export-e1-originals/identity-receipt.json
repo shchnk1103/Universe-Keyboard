@@ -1,0 +1,83 @@
+{
+  "utc": "2026-10-06T03:43:42.093191+00:00",
+  "monotonic_ns": 1392529301709333,
+  "worktree": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "staged": 0,
+  "entry_sha256": "d3673a274ee76fb35cd6bae04723d3ea6a3e1deba6a55da540be4b1b71adf7e0",
+  "binding_sha256": "2f2f90d94dc9116b30aabed7f8a14b7cdc6670b18d0cfc30d8145c127554a1b3",
+  "auth_sha256": "4c2cb890f84cd3abc6760607a195989cf7b75ea3e93516ec845d25cde1d27ac9",
+  "source_rows": {
+    "source_tree": 358,
+    "app": 168,
+    "vendor": 630,
+    "sum": 1156
+  },
+  "candidate_payload": 78,
+  "inputs": [
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/source-tree-manifest.json",
+      "sha256": "61606efa4db41e88416d9b1763264fb96b2f50d5d927530424a7168aa8860827",
+      "bytes": 73805
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/app-source-manifest.json",
+      "sha256": "df7f539eadb27a683efa81e477e0fb69a0e05e7a36fc8c737c5f9b7703e7b99e",
+      "bytes": 32601
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/vendor-byte-manifest.json",
+      "sha256": "54c5d67d284c12ce630f3c17e42954f733bcb6e0117892a5b970b34d189437b5",
+      "bytes": 144326
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/payload-manifest.json",
+      "sha256": "dbc6cfd07c713219c2cec09fdd3d87ab688485dce3d685ee3a915e74ea35786b",
+      "bytes": 13677
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/paired-products.json",
+      "sha256": "14b647b6eebde9ad3b5ce62948028fcee72b92192193fd40fa444619950836db",
+      "bytes": 6532
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift",
+      "sha256": "bca0391355d9a3a60880dfdc08260095d02d6618bf0a38d40bfcc61734a891e9",
+      "bytes": 4352
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardWakeOwnerProbe.swift",
+      "sha256": "679d55e8669d7c68db2fbe58fd1b436cbb19bc61e770f9a701751326fa669af6",
+      "bytes": 15713
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-appex-meta-r4-20261006/appex_meta_callback.py",
+      "sha256": "dbacda157a79aa52f6dd523c2de998d5b311f4342d0928761d4edf2f4b9dfae1",
+      "bytes": 4414
+    },
+    {
+      "path": "/private/tmp/ukey-appex-meta-preclick-preflight-20261006/preclick_checkpoint.py",
+      "sha256": "c9def035110aafe3b133c13ec05b149ee5e616d01983f502fd36fdbca85844cb",
+      "bytes": 3933
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-f4-m-20261006/export_frame_callback.py",
+      "sha256": "007465da72774d7d70bd12ca71d06d5c4df131ed5cde687ba17e6460c24d9989",
+      "bytes": 3146
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-f4-m-20261006/decoder.py",
+      "sha256": "fc1817ab8843dab76acd9e8ae59277719c059742bb105eebecbc60a66f58775d",
+      "bytes": 3780
+    }
+  ],
+  "dirty_default_lines": 916,
+  "dirty_untracked_all_lines": 2154,
+  "dirty_default_sha256": "270f6125c8bcad1c7cb76c533dfeb97d22a5d8e87bbc4a75983e301f22f0cd7b",
+  "dirty_untracked_all_sha256": "f3bafad240ad3cbe923af7fefc9e6e8812d3aa3b0fb23cda776da352751d107d",
+  "run_root_created": true,
+  "run_root_mode": "0o700",
+  "device_queries": 0,
+  "production_edits": 0
+}

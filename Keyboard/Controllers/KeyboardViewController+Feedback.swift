@@ -55,14 +55,19 @@ extension KeyboardViewController {
         modeEnterHapticGenerator.prepare()
     }
 
+    /// One click per scrub step or repeat tick. The press click is separate and
+    /// must not be counted here. Tap lift does not call this.
     func playRepeatFeedback(effectiveDeleteCount: Int) {
-        if effectiveDeleteCount == 1 || effectiveDeleteCount.isMultiple(of: 2) {
-            playKeyClick()
-        }
-
+        playKeyClick()
         if effectiveDeleteCount.isMultiple(of: 4) {
             playHaptic(intensity: max(0.25, cachedHapticIntensity * 0.7))
         }
+    }
+
+    /// One heavier confirmation when the finger enters the trash bubble.
+    func playDeleteBubbleArmedFeedback() {
+        playKeyClick()
+        playHaptic(intensity: 1.0)
     }
 
     func refreshCachedSettings(source: String = "unspecified") {

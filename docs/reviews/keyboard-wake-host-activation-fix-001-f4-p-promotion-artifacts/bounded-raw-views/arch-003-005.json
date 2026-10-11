@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Presentation.swift",
+  "origin_sha256": "767c2817054484d4d4c328cb7a8deaf676509b76bbc3cb45868b6e3cf721319a",
+  "expected_sha256": "767c2817054484d4d4c328cb7a8deaf676509b76bbc3cb45868b6e3cf721319a",
+  "line_start": 241,
+  "line_end": 300,
+  "lines": [
+    {
+      "line": 241,
+      "text": "        (rootStack as? KeyboardInputHitAreaStackView)?.invalidateKeyTouchGeometry()"
+    },
+    {
+      "line": 242,
+      "text": "        for view in rootStack.arrangedSubviews {"
+    },
+    {
+      "line": 243,
+      "text": "            rootStack.removeArrangedSubview(view)"
+    },
+    {
+      "line": 244,
+      "text": "            view.removeFromSuperview()"
+    },
+    {
+      "line": 245,
+      "text": "        }"
+    },
+    {
+      "line": 246,
+      "text": "        expandedPanelScrollView = nil"
+    },
+    {
+      "line": 247,
+      "text": "        expandedCandidateCollectionView = nil"
+    },
+    {
+      "line": 248,
+      "text": "    }"
+    },
+    {
+      "line": 249,
+      "text": ""
+    },
+    {
+      "line": 250,
+      "text": "    func removeContentRows() {"
+    },
+    {
+      "line": 251,
+      "text": "        var foundBar = false"
+    },
+    {
+      "line": 252,
+      "text": "        for view in rootStack.arrangedSubviews {"
+    },
+    {
+      "line": 253,
+      "text": "            if view === candidateBar {"
+    },
+    {
+      "line": 254,
+      "text": "                foundBar = true"
+    },
+    {
+      "line": 255,
+      "text": "                continue"
+    },
+    {
+      "line": 256,
+      "text": "            }"
+    },
+    {
+      "line": 257,
+      "text": "            if foundBar {"
+    },
+    {
+      "line": 258,
+      "text": "                rootStack.removeArrangedSubview(view)"
+    },
+    {
+      "line": 259,
+      "text": "                view.removeFromSuperview()"
+    },
+    {
+      "line": 260,
+      "text": "            }"
+    },
+    {
+      "line": 261,
+      "text": "        }"
+    },
+    {
+      "line": 262,
+      "text": "    }"
+    },
+    {
+      "line": 263,
+      "text": ""
+    },
+    {
+      "line": 264,
+      "text": "    func syncUI(with effects: KeyboardEffect) {"
+    },
+    {
+      "line": 265,
+      "text": "        #if DEBUG"
+    },
+    {
+      "line": 266,
+      "text": "            let startTime = CACurrentMediaTime()"
+    },
+    {
+      "line": 267,
+      "text": "            defer { logKeyPerformance(\"syncUI \\(effects)\", startTime: startTime) }"
+    },
+    {
+      "line": 268,
+      "text": "        #endif"
+    },
+    {
+      "line": 269,
+      "text": "        updateReturnKeyAppearance()"
+    },
+    {
+      "line": 270,
+      "text": "        if effects.contains(.pageChanged) || effects.contains(.inputModeChanged)"
+    },
+    {
+      "line": 271,
+      "text": "            || effects.contains(.keyboardTypeChanged)"
+    },
+    {
+      "line": 272,
+      "text": "        {"
+    },
+    {
+      "line": 273,
+      "text": "            if effects.refreshesCandidatePresentation {"
+    },
+    {
+      "line": 274,
+      "text": "                resetCandidateSnapshotFromController()"
+    },
+    {
+      "line": 275,
+      "text": "            }"
+    },
+    {
+      "line": 276,
+      "text": "            if hasViewAppeared {"
+    },
+    {
+      "line": 277,
+      "text": "                reloadKeyboard()"
+    },
+    {
+      "line": 278,
+      "text": "            } else {"
+    },
+    {
+      "line": 279,
+      "text": "                UIView.performWithoutAnimation { reloadKeyboard() }"
+    },
+    {
+      "line": 280,
+      "text": "            }"
+    },
+    {
+      "line": 281,
+      "text": "            return"
+    },
+    {
+      "line": 282,
+      "text": "        }"
+    },
+    {
+      "line": 283,
+      "text": "        if effects.refreshesCandidatePresentation {"
+    },
+    {
+      "line": 284,
+      "text": "            if shouldPublishAtomicT9Presentation {"
+    },
+    {
+      "line": 285,
+      "text": "                // One Core snapshot feeds candidates + Path + panel for this revision."
+    },
+    {
+      "line": 286,
+      "text": "                refreshT9PresentationFromCoreSnapshot()"
+    },
+    {
+      "line": 287,
+      "text": "            } else {"
+    },
+    {
+      "line": 288,
+      "text": "                refreshCandidateBar()"
+    },
+    {
+      "line": 289,
+      "text": "                refreshT9PinyinPathBar()"
+    },
+    {
+      "line": 290,
+      "text": "            }"
+    },
+    {
+      "line": 291,
+      "text": "            scheduleContextualTypoCorrectionRefresh()"
+    },
+    {
+      "line": 292,
+      "text": "            if isPinyinPathExpanded {"
+    },
+    {
+      "line": 293,
+      "text": "                let stillComposing = T9CompositionCommitPolicy.isActiveT9Composition("
+    },
+    {
+      "line": 294,
+      "text": "                    usesT9InputSemantics: controller.usesT9InputSemantics,"
+    },
+    {
+      "line": 295,
+      "text": "                    rawInput: controller.state.lastRimeOutput?.rawInput"
+    },
+    {
+      "line": 296,
+      "text": "                )"
+    },
+    {
+      "line": 297,
+      "text": "                if !stillComposing {"
+    },
+    {
+      "line": 298,
+      "text": "                    dismissPinyinPathExpandedPanel(animated: false)"
+    },
+    {
+      "line": 299,
+      "text": "                } else if !shouldPublishAtomicT9Presentation {"
+    },
+    {
+      "line": 300,
+      "text": "                    refreshPinyinPathExpandedPanel()"
+    }
+  ]
+}

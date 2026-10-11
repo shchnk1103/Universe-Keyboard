@@ -1,0 +1,110 @@
+{
+  "authority.json": {
+    "sha256": "525432834c5523a2b7188fd0d0afaa1c25487049c0a7533644e5231294e851e6",
+    "private_source": "/private/tmp/ukey-wake-m2r1-20261004/authority.json"
+  },
+  "source-entry.json": {
+    "sha256": "a275abbcc81c7b176d06279f357882eacb244ab9b9477ecb110dca5683077dd9",
+    "private_source": "/private/tmp/ukey-wake-m2r1-20261004/source-entry.json"
+  },
+  "identity-preflight.json": {
+    "sha256": "422793e4d53a91f40cab7f2b48accddf239e93a943b8108aee1bd6aa7c1bc8c0",
+    "private_source": "/private/tmp/ukey-wake-m2r1-20261004/identity-preflight.json"
+  },
+  "commands.json": {
+    "sha256": "07340c793f0dca4b1e35167d412b65a0f035daf04b5967eb0ce8f3086a49839b",
+    "private_source": "/private/tmp/ukey-wake-m2r1-20261004/commands.json"
+  },
+  "sigterm-receipt.json": {
+    "sha256": "fed6ad1037eb62606c52c86cc147f85d60f66ab7c9f973f64ecdc0a77fbaaecd",
+    "private_source": "/private/tmp/ukey-wake-m2r1-20261004/sigterm-receipt.json"
+  },
+  "backup-receipt.json": {
+    "sha256": "91dabfba0ba9b62b60036868c56df350df7daa6fc57bd33a00ace72470fa60f5",
+    "private_source": "/private/tmp/ukey-wake-m2r1-20261004/backup-receipt.json"
+  },
+  "protection-stop.json": {
+    "sha256": "c96a5db93b0a085a1529c0dc213901f9066e19eb3fb28891a8f9a8b733813e46",
+    "private_source": "/private/tmp/ukey-wake-m2r1-20261004/protection-stop.json"
+  },
+  "machine-entry.json": {
+    "sha256": "4b56c7a60ea3d1957300114ba73c71249ac0a1a9345fd0919542a9f118e30492",
+    "private_source": "/private/tmp/ukey-wake-m2r1-20261004/machine-entry.json"
+  },
+  "pre-arm-readiness.json": {
+    "sha256": "88d2d49ff642cfabff7bb6e93ad5eb57f5714c79f596bd57c22b6201ff9d32c6",
+    "private_source": "/private/tmp/ukey-wake-m2r1-20261004/pre-arm-readiness.json"
+  },
+  "human-arm.json": {
+    "sha256": "91c3245f06fce1bb1fea7c6649cb86d462a47689fe42e60655f4adbac5698559",
+    "private_source": "/private/tmp/ukey-wake-m2r1-20261004/human-arm.json"
+  },
+  "session-loss-stop.json": {
+    "sha256": "668bc8215f3c3f820456893924571886c42de5ccefdd453f1b2ccc402718d215",
+    "private_source": "/private/tmp/ukey-wake-m2r1-20261004/session-loss-stop.json"
+  },
+  "orchestration-state-reload.json": {
+    "sha256": "ba21e06f48e0e75a5eacf1539765d18bd045941fdc8e16519a5a11784f7f58b7",
+    "private_source": "/private/tmp/ukey-wake-m2r1-20261004/orchestration-state-reload.json"
+  },
+  "machine-exit.json": {
+    "sha256": "933d974164cdf207c64b58e9265071927f880a9893d046a44404b090b8bd33f7",
+    "private_source": "/private/tmp/ukey-wake-m2r1-20261004/machine-exit.json"
+  },
+  "permission-comparison.json": {
+    "sha256": "d8831dd1508cd1e7b99c75a2a37d4648efa16eaf26a4c731fd5a90ced201d49e",
+    "private_source": "/private/tmp/ukey-wake-m2r1-20261004/permission-comparison.json"
+  },
+  "debug-command-ledger.jsonl": {
+    "sha256": "1f12f8fa6d6b4766fc6a8705f8eb924318293b3b0a59f97460f31098a80c1f7d",
+    "private_source": "/private/tmp/ukey-wake-m2r1-20261004/debug-command-ledger.jsonl"
+  },
+  "debug-call-02-raw.json": {
+    "sha256": "7dbdc3f224b77002510fc82caf221396d9a8e5befbb2c96778aa58a925029094",
+    "private_source": "/private/tmp/ukey-wake-m2r1-20261004/debug-call-02-raw.json"
+  },
+  "debug-call-03-raw.json": {
+    "sha256": "71c0e83db02d413eaec685f49de7f5ee75fda40235a6168d76bec5bff21ed483",
+    "private_source": "/private/tmp/ukey-wake-m2r1-20261004/debug-call-03-raw.json"
+  },
+  "debug-call-08-raw.json": {
+    "sha256": "65f8e1f20c45db67ec3f15fac1944ae200227f379a0b83cdd25ba0b34b946035",
+    "private_source": "/private/tmp/ukey-wake-m2r1-20261004/debug-call-08-raw.json"
+  },
+  "debug-call-09-raw.json": {
+    "sha256": "455c240da4e900f59b1bbc9d9812360ec0e0f810732c7f0fa4bf3fae52b8cdfb",
+    "private_source": "/private/tmp/ukey-wake-m2r1-20261004/debug-call-09-raw.json"
+  },
+  "debug-call-05-raw.json": {
+    "sha256": "65f8e1f20c45db67ec3f15fac1944ae200227f379a0b83cdd25ba0b34b946035",
+    "private_source": "/private/tmp/ukey-wake-m2r1-20261004/debug-call-05-raw.json"
+  },
+  "debug-call-04-raw.json": {
+    "sha256": "c03c670f83687cd4e2c37249ff3cba9be9b7f972f06a1671243bf746d479cb52",
+    "private_source": "/private/tmp/ukey-wake-m2r1-20261004/debug-call-04-raw.json"
+  },
+  "debug-call-01-raw.json": {
+    "sha256": "f9c4928965f5f54cc6b17c875bcbd11c389d497f145b79eca06389782362db82",
+    "private_source": "/private/tmp/ukey-wake-m2r1-20261004/debug-call-01-raw.json"
+  },
+  "debug-call-06-raw.json": {
+    "sha256": "5d8ca617aecc799db52a438a3ccde41a4ae9dafa20462ee2ddd6863370bbcdd4",
+    "private_source": "/private/tmp/ukey-wake-m2r1-20261004/debug-call-06-raw.json"
+  },
+  "debug-call-07-raw.json": {
+    "sha256": "65f8e1f20c45db67ec3f15fac1944ae200227f379a0b83cdd25ba0b34b946035",
+    "private_source": "/private/tmp/ukey-wake-m2r1-20261004/debug-call-07-raw.json"
+  },
+  "debug-call-10-raw.json": {
+    "sha256": "e6e4c555529c57630223c2733a85275829919b02a2562b1f6eef861cb938d42d",
+    "private_source": "/private/tmp/ukey-wake-m2r1-20261004/debug-call-10-raw.json"
+  },
+  "human-visual-exit.json": {
+    "sha256": "f8bedfd276e1892f1200b3075f8a88ee9cbd0c1345762c389820f1b266d3f4a6",
+    "private_source": "/private/tmp/ukey-wake-m2r1-20261004/human-visual-exit.json"
+  },
+  "tool-continuity-receipt.json": {
+    "sha256": "e9cd6af5ae0ff87c589a4db0aba1bce98f33ef9402ef80a9caaf43d747f7e387",
+    "private_source": "/private/tmp/ukey-wake-m2r1-20261004/tool-continuity-audit/receipt.json"
+  }
+}

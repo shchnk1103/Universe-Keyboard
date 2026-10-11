@@ -75,7 +75,7 @@ struct SettingsTab: View {
     private var inputBehaviorSection: some View {
         SettingsGroup(
             title: "输入体验",
-            footer: "布局、反馈和纠错都只影响本机打字习惯，可以随时改回来。这些不是人工智能功能。"
+            footer: "布局、反馈、删除键和纠错都只影响本机打字习惯，可以随时改回来。这些不是人工智能功能。"
         ) {
             SettingsNavigationLink(
                 systemImage: "keyboard",
@@ -91,6 +91,14 @@ struct SettingsTab: View {
                 subtitle: "按键音、触感震动"
             ) {
                 FeedbackSettingsView()
+            }
+
+            SettingsNavigationLink(
+                systemImage: "delete.left",
+                title: "删除键",
+                subtitle: "垃圾桶、滑动擦除、组字左滑"
+            ) {
+                DeleteKeySettingsView()
             }
 
             SettingsNavigationLink(
@@ -241,7 +249,7 @@ struct SettingsTab: View {
     private var appSettingsSection: some View {
         SettingsGroup(
             title: "App 设置",
-            footer: "外观与通知只影响主 App；输入仍在键盘扩展里完成。启用指南可随时从右上角问号重看。"
+            footer: "外观与通知只影响主 App；输入仍在键盘扩展里完成。版本、联系与隐私说明在关于页。启用指南可随时从右上角问号重看。"
         ) {
             SettingsNavigationLink(
                 systemImage: "circle.lefthalf.filled",
@@ -265,19 +273,11 @@ struct SettingsTab: View {
             }
 
             SettingsNavigationLink(
-                systemImage: "hand.raised",
-                title: "隐私与数据",
-                subtitle: "本地处理、完全访问与数据控制"
+                systemImage: "info.circle",
+                title: "关于",
+                subtitle: "版本、联系我们、隐私与开源"
             ) {
-                PrivacyDataView()
-            }
-
-            SettingsNavigationLink(
-                systemImage: "doc.text",
-                title: "开源软件与内容",
-                subtitle: "许可证、来源与修改说明"
-            ) {
-                OpenSourceLicensesView()
+                AboutSettingsView()
             }
         }
     }

@@ -1,0 +1,55 @@
+{
+  "utc": "2026-10-05T12:33:48.471119+00:00",
+  "roots": {
+    "installed-app": {
+      "added": 9,
+      "rewritten": 0,
+      "removed": 0
+    },
+    "main-data": {
+      "added": 865,
+      "rewritten": 0,
+      "removed": 0
+    },
+    "app-group": {
+      "added": 9,
+      "rewritten": 0,
+      "removed": 0
+    }
+  },
+  "total_added": 883,
+  "total_rewritten": 0,
+  "non_provenance_differences": 0,
+  "source_three_reads_stable": true,
+  "copy_two_reads_stable": true,
+  "source_not_mutated": true,
+  "backup_metadata_exact_equality_not_claimed": true,
+  "exception_accepted": false,
+  "calls_so_far": 25,
+  "backup_dispatch_calls": 17,
+  "legacy_backup_receipt_callcount11": "stale helper constant retained in original; actual new dispatch17 recorded in resume authorization; aggregate25 including preparations/polls/archive",
+  "inventory_receipts": {
+    "backup-read1-inventories.json": {
+      "bytes": 387300,
+      "sha256": "dff8dd0270e7edd9a48aaf8ad6e14156a8acb598cb135c269fdaeeb260266b91"
+    },
+    "backup-read2-inventories.json": {
+      "bytes": 387300,
+      "sha256": "dff8dd0270e7edd9a48aaf8ad6e14156a8acb598cb135c269fdaeeb260266b91"
+    },
+    "before-live-inventories.json": {
+      "bytes": 336122,
+      "sha256": "68c7d0f7d4ff1ea45158de2d1775f9fbde59e3c220b010b9f9a1df0577bcd5cc"
+    },
+    "live-read2-inventories.json": {
+      "bytes": 336122,
+      "sha256": "68c7d0f7d4ff1ea45158de2d1775f9fbde59e3c220b010b9f9a1df0577bcd5cc"
+    },
+    "live-read3-inventories.json": {
+      "bytes": 336122,
+      "sha256": "68c7d0f7d4ff1ea45158de2d1775f9fbde59e3c220b010b9f9a1df0577bcd5cc"
+    }
+  },
+  "new_backup_logical_bytes": 130237945,
+  "installed": false
+}

@@ -1,0 +1,17 @@
+{
+  "authorization": "授权更换独立审查者，先核清reader工具，再完成同一候选A1/A2",
+  "date": "2026-10-03 Asia/Shanghai",
+  "baseline": {
+    "worktree": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+    "branch": "codex/keyboard-wake-v3-compatibility-gate",
+    "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+    "candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50"
+  },
+  "before_files": 2926,
+  "before_dirty": 843,
+  "staged": 0,
+  "root_only_repo_writer": true,
+  "reviewer": "new independent GPT6 Luna /root/arch_reader_candidate",
+  "independence": "new runtime did not implement source, reader, build or prior reviews; root-prepared reader must be independently audited before verification",
+  "scope": "reader audit R0 then exact same candidate A1/A2; no build/test/device/install/runtime"
+}

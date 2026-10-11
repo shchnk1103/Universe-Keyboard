@@ -1,0 +1,27 @@
+{
+  "lane": "OWN-EXPORT-E1-QUALITY-R1",
+  "status": "author_delivery_readback_complete",
+  "overall": "Partial",
+  "readback_boundary_utc": "2026-10-06T04:54:58.045005000Z",
+  "artifacts": [
+    {
+      "name": "ack.json",
+      "bytes": 1735,
+      "sha256": "fb367b53276525f48fac66e9639542dea79ceb5d434276c13e3b4e71907fab71",
+      "readback_equal": true
+    },
+    {
+      "name": "review.md",
+      "bytes": 5445,
+      "sha256": "b2a6bcd83e8ea43e3a2f8b6d7d4fc4c1458063520cd2a22e902f50ced4b22f37",
+      "readback_equal": true
+    },
+    {
+      "name": "usage.json",
+      "bytes": 16002,
+      "sha256": "cbd7f7f0ea44d9b40f79b06986537c1c54515451c742d0c0591b2d85c83a27c7",
+      "readback_equal": true
+    }
+  ],
+  "delivery_readback_self_check": "Writer reread delivery-readback.json after writing and compared its bytes with the intended serialized payload; SHA is in final output."
+}

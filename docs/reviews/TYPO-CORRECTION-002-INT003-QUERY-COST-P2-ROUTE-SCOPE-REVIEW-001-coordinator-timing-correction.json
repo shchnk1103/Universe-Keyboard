@@ -1,0 +1,11 @@
+{
+  "observed_at": "2026-10-10T15:11:34.645155+00:00",
+  "new_round_start_from_usage": "2026-10-10T15:07:46+00:00",
+  "new_round_start_monotonic": 1731750.232498041,
+  "incorrect_report_start": "2026-10-10T13:15:07+00:00",
+  "incorrect_elapsed_seconds": 6815,
+  "correction": "use original new-round first-call start; no budget reset, extension, input change or new round",
+  "initial_tool_calls": 6,
+  "max_tool_calls": 24,
+  "max_seconds": 900
+}

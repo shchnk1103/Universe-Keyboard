@@ -1,0 +1,99 @@
+{
+  "task": "KEYBOARD-WAKE-HOST-ACTIVATION-FIX-001",
+  "stage": "Only objective A2-4 evidence and R3 report correction; independent Quality addendum",
+  "authority": "Human 批准继续吧 in response to root named Quality reviewer change and fresh8calls/10minutes proposal",
+  "reviewer": "/root/m2r2_quality_r1",
+  "role": "temporary independent objective compile-evidence reviewer for A2-4; no permanent ownership change",
+  "root": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "staged": 0,
+  "allowed_read_files": [
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-a2-r3-artifacts/review.md",
+      "bytes": 2315,
+      "sha256": "8632793b5eb84a989fe49198db256890f4a6637133d25f92b868c0784d0cb779"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-a2-r3-artifacts/usage.json",
+      "bytes": 1111,
+      "sha256": "6b85d846e5d5834a2f0ef066b7b33ae392b683108151ca771d6a6a64f8d81dca"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-a2-r3-artifacts/root-scope-parser-audit.json",
+      "bytes": 2756,
+      "sha256": "7852179416bff05530bd9af42f0c4694a010af397637f49e38f7e61d5aaaaa1f"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-execution-artifacts/four-swift-actual-compile.json",
+      "bytes": 5438,
+      "sha256": "7a5b59b14dba745b9ed2d0346f4ea894ffc49fb8feb1f61384abd4b4202d8863"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-execution-artifacts/final-input-diagnostics.json",
+      "bytes": 2350,
+      "sha256": "e396fbf308cb4f227c42f400619de59de44337d260db92a11861c8a846d301ee"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-2-rimebridge.log",
+      "bytes": 389012,
+      "sha256": "a963ffc4baebb7e48483608f0da149586c319a5e1babd1011be43e8df534adb5"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-3-app-keyboard.log",
+      "bytes": 1020885,
+      "sha256": "6f64d5f7b4220abcb4b35515c6246fad0ceb847d6060c3ffd29ae163576e12e5"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-4-release-build.log",
+      "bytes": 442425,
+      "sha256": "992a37077c4584351727ad67cb54e8e2f412d18470d82a33937641decd92b671"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-5-keychain.log",
+      "bytes": 412035,
+      "sha256": "1a9afc01554a2d3d3b6dd2eac918fab81e1d250af7a44877cfa515ea5ee7b898"
+    }
+  ],
+  "write_only_output_dir": "/private/tmp/ukey-host-activation-fix-a2-4-quality-20261005/quality",
+  "required_outputs": [
+    "ack.json",
+    "review.md",
+    "usage.json"
+  ],
+  "budget": {
+    "actual_tool_calls": 8,
+    "wall_seconds": 600,
+    "start_utc": "2026-10-05T01:43:13.246380+00:00",
+    "deadline_utc": "2026-10-05T01:53:13.246380+00:00",
+    "counting": "each functions.exec plus each nested tool separately; failed calls and collaboration messages included",
+    "reserve_final_output_calls": 3,
+    "no_auto_renewal": true
+  },
+  "schema_literal": "exact keys: allowed_read_files, write_only_output_dir, budget.start_utc, budget.deadline_utc, required_outputs. Read these exact keys; no guessed schema probes.",
+  "criteria": {
+    "E1": "Independently verify exact input hashes and find actual SwiftCompile records of KeyboardViewController.swift, KeyboardViewController+Bootstrap.swift, KeyboardHostLifecycleRecoveryGate.swift, KeyboardHostLifecycleRecoveryGateTests.swift in raw logs, consistent with bounded artifact.",
+    "E2": "Determine operation per job: RimeBridge/App+Keyboard/Keychain are test, success marker TEST SUCCEEDED; Release is build, marker BUILD SUCCEEDED. Check exact success marker and failure/Swift diagnostics from same frozen logs, not root assertion alone.",
+    "E3": "Extract the entire current warning/error set. Separate AppIntents metadata tool warning from Swift/compiler/error. Decide zero Swift warning/error, and whether current empty Swift diagnostic set is sufficient for absence of original actor warnings without adding historical identity audit as prerequisite. If such implication cannot be supported, point to exact contrary diagnostic/source-of-truth within allowed inputs, not merely lack of numeric-seven field.",
+    "E4": "Review R3 success-parser and historical-baseline criterion statements against approved narrow current-evidence scope. Issue an independent corrected A2-4 evidence conclusion/addendum; preserve R3 original and other Architecture clauses. Scope cannot expand to old Quality audit or full F3."
+  },
+  "positive_rule": "Pass means only these objective A2-4 evidence criteria all Covered and no blocking finding; does not grant whole-F3/Maps/F4/Product/Release acceptance. A real unverified in-scope claim produces Partial; do not rewrite old reviewer outputs.",
+  "forbidden": [
+    "source edits/review",
+    "build/test/simulator/LLDB",
+    "old Quality audit disposition",
+    "unlisted reads",
+    "auto renewal",
+    "network/fetch",
+    "source content reads",
+    "new unlisted prerequisite",
+    "historical seven-warning identity reconstruction",
+    "reopen Architecture A2-1/2/3 or 23 cases"
+  ],
+  "root_preflight": {
+    "9_input_hashes_match": true,
+    "1156_source_rows_match": true,
+    "output_write_read_pass": true
+  },
+  "workflow": "Aim3 batch calls: read exact packet; verify hashes/ACK with true timestamps and scan raw logs; write report/usage and reread. Can combine operations to stay within8actual calls. Do not waste calls on progress messages; preserve incomplete evidence honestly if at limit."
+}

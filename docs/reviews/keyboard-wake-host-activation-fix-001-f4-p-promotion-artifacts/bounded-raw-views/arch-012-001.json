@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-artifacts/historical-app-keyboard-skip-list.json",
+  "origin_sha256": "ae5c4ed1ddbfd2fa738fc47fb055fa70a0e079db57c425882a8a6355c03be31f",
+  "expected_sha256": "ae5c4ed1ddbfd2fa738fc47fb055fa70a0e079db57c425882a8a6355c03be31f",
+  "line_start": 1,
+  "line_end": 60,
+  "lines": [
+    {
+      "line": 1,
+      "text": "{"
+    },
+    {
+      "line": 2,
+      "text": "  \"count\": 10,"
+    },
+    {
+      "line": 3,
+      "text": "  \"tests\": ["
+    },
+    {
+      "line": 4,
+      "text": "    {"
+    },
+    {
+      "line": 5,
+      "text": "      \"children\": ["
+    },
+    {
+      "line": 6,
+      "text": "        {"
+    },
+    {
+      "line": 7,
+      "text": "          \"name\": \"Test skipped - Set TEST_RUNNER_SCHEME_PIN_ARCHIVE_ROOT to the independently downloaded source archives\","
+    },
+    {
+      "line": 8,
+      "text": "          \"nodeType\": \"Skip Message\""
+    },
+    {
+      "line": 9,
+      "text": "        }"
+    },
+    {
+      "line": 10,
+      "text": "      ],"
+    },
+    {
+      "line": 11,
+      "text": "      \"duration\": \"0.0076s\","
+    },
+    {
+      "line": 12,
+      "text": "      \"durationInSeconds\": 0.007557988166809082,"
+    },
+    {
+      "line": 13,
+      "text": "      \"name\": \"testVerifiedOfficialAndMirrorArchivesConvergeAfterProductionProcessing()\","
+    },
+    {
+      "line": 14,
+      "text": "      \"nodeIdentifier\": \"RimeIcePinnedArtifactTests/testVerifiedOfficialAndMirrorArchivesConvergeAfterProductionProcessing()\","
+    },
+    {
+      "line": 15,
+      "text": "      \"nodeIdentifierURL\": \"test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/RimeIcePinnedArtifactTests/testVerifiedOfficialAndMirrorArchivesConvergeAfterProductionProcessing\","
+    },
+    {
+      "line": 16,
+      "text": "      \"nodeType\": \"Test Case\","
+    },
+    {
+      "line": 17,
+      "text": "      \"result\": \"Skipped\""
+    },
+    {
+      "line": 18,
+      "text": "    },"
+    },
+    {
+      "line": 19,
+      "text": "    {"
+    },
+    {
+      "line": 20,
+      "text": "      \"children\": ["
+    },
+    {
+      "line": 21,
+      "text": "        {"
+    },
+    {
+      "line": 22,
+      "text": "          \"name\": \"Test skipped - Unsigned host lacks Keychain entitlement; signed Simulator lane covers integration.\","
+    },
+    {
+      "line": 23,
+      "text": "          \"nodeType\": \"Skip Message\""
+    },
+    {
+      "line": 24,
+      "text": "        }"
+    },
+    {
+      "line": 25,
+      "text": "      ],"
+    },
+    {
+      "line": 26,
+      "text": "      \"duration\": \"0.0019s\","
+    },
+    {
+      "line": 27,
+      "text": "      \"durationInSeconds\": 0.001916050910949707,"
+    },
+    {
+      "line": 28,
+      "text": "      \"name\": \"testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem()\","
+    },
+    {
+      "line": 29,
+      "text": "      \"nodeIdentifier\": \"RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem()\","
+    },
+    {
+      "line": 30,
+      "text": "      \"nodeIdentifierURL\": \"test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem\","
+    },
+    {
+      "line": 31,
+      "text": "      \"nodeType\": \"Test Case\","
+    },
+    {
+      "line": 32,
+      "text": "      \"result\": \"Skipped\""
+    },
+    {
+      "line": 33,
+      "text": "    },"
+    },
+    {
+      "line": 34,
+      "text": "    {"
+    },
+    {
+      "line": 35,
+      "text": "      \"children\": ["
+    },
+    {
+      "line": 36,
+      "text": "        {"
+    },
+    {
+      "line": 37,
+      "text": "          \"name\": \"Test skipped - CS09-10-01 requires the fixed Wanxiang extract tree\","
+    },
+    {
+      "line": 38,
+      "text": "          \"nodeType\": \"Skip Message\""
+    },
+    {
+      "line": 39,
+      "text": "        }"
+    },
+    {
+      "line": 40,
+      "text": "      ],"
+    },
+    {
+      "line": 41,
+      "text": "      \"duration\": \"0.18s\","
+    },
+    {
+      "line": 42,
+      "text": "      \"durationInSeconds\": 0.17638301849365234,"
+    },
+    {
+      "line": 43,
+      "text": "      \"name\": \"testCS06_UninstallInactiveWanxiangRetainsIcePeerInventory()\","
+    },
+    {
+      "line": 44,
+      "text": "      \"nodeIdentifier\": \"SchemeResourcePreparationCoexistenceTests/testCS06_UninstallInactiveWanxiangRetainsIcePeerInventory()\","
+    },
+    {
+      "line": 45,
+      "text": "      \"nodeIdentifierURL\": \"test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests/testCS06_UninstallInactiveWanxiangRetainsIcePeerInventory\","
+    },
+    {
+      "line": 46,
+      "text": "      \"nodeType\": \"Test Case\","
+    },
+    {
+      "line": 47,
+      "text": "      \"result\": \"Skipped\""
+    },
+    {
+      "line": 48,
+      "text": "    },"
+    },
+    {
+      "line": 49,
+      "text": "    {"
+    },
+    {
+      "line": 50,
+      "text": "      \"children\": ["
+    },
+    {
+      "line": 51,
+      "text": "        {"
+    },
+    {
+      "line": 52,
+      "text": "          \"name\": \"Test skipped - CS09-10-01 requires the fixed Wanxiang extract tree\","
+    },
+    {
+      "line": 53,
+      "text": "          \"nodeType\": \"Skip Message\""
+    },
+    {
+      "line": 54,
+      "text": "        }"
+    },
+    {
+      "line": 55,
+      "text": "      ],"
+    },
+    {
+      "line": 56,
+      "text": "      \"duration\": \"0.17s\","
+    },
+    {
+      "line": 57,
+      "text": "      \"durationInSeconds\": 0.17319393157958984,"
+    },
+    {
+      "line": 58,
+      "text": "      \"name\": \"testCS0910_RealInstallerIceRemovalPreservesCompleteWanxiangInventory()\","
+    },
+    {
+      "line": 59,
+      "text": "      \"nodeIdentifier\": \"SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerIceRemovalPreservesCompleteWanxiangInventory()\","
+    },
+    {
+      "line": 60,
+      "text": "      \"nodeIdentifierURL\": \"test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerIceRemovalPreservesCompleteWanxiangInventory\","
+    }
+  ]
+}

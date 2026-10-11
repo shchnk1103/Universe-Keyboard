@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardWakeOwnerProbe.swift",
+  "origin_sha256": "679d55e8669d7c68db2fbe58fd1b436cbb19bc61e770f9a701751326fa669af6",
+  "expected_sha256": "679d55e8669d7c68db2fbe58fd1b436cbb19bc61e770f9a701751326fa669af6",
+  "line_start": 181,
+  "line_end": 240,
+  "lines": [
+    {
+      "line": 181,
+      "text": "                value.activeAttemptOrdinal = 0"
+    },
+    {
+      "line": 182,
+      "text": "                return true"
+    },
+    {
+      "line": 183,
+      "text": "            }"
+    },
+    {
+      "line": 184,
+      "text": "        }"
+    },
+    {
+      "line": 185,
+      "text": ""
+    },
+    {
+      "line": 186,
+      "text": "        /// Appends finite metadata only while the one-shot probe is armed."
+    },
+    {
+      "line": 187,
+      "text": "        @discardableResult"
+    },
+    {
+      "line": 188,
+      "text": "        public func record("
+    },
+    {
+      "line": 189,
+      "text": "            stage: Stage,"
+    },
+    {
+      "line": 190,
+      "text": "            coordinatorOrdinal: UInt64,"
+    },
+    {
+      "line": 191,
+      "text": "            appearanceOrdinal: UInt64? = nil,"
+    },
+    {
+      "line": 192,
+      "text": "            ownerPresent: Bool,"
+    },
+    {
+      "line": 193,
+      "text": "            receiptPresent: Bool = false,"
+    },
+    {
+      "line": 194,
+      "text": "            teardownResult: TeardownResult = .notApplicable,"
+    },
+    {
+      "line": 195,
+      "text": "            epoch: UInt64 = 0,"
+    },
+    {
+      "line": 196,
+      "text": "            revision: UInt64 = 0"
+    },
+    {
+      "line": 197,
+      "text": "        ) -> Bool {"
+    },
+    {
+      "line": 198,
+      "text": "            let now = clock()"
+    },
+    {
+      "line": 199,
+      "text": "            return state.withLock { value in"
+    },
+    {
+      "line": 200,
+      "text": "                value.refreshExpiry(now: now)"
+    },
+    {
+      "line": 201,
+      "text": "                guard value.lifecycle == .armed else { return false }"
+    },
+    {
+      "line": 202,
+      "text": ""
+    },
+    {
+      "line": 203,
+      "text": "                if let appearanceOrdinal {"
+    },
+    {
+      "line": 204,
+      "text": "                    value.appearanceOrdinal = appearanceOrdinal"
+    },
+    {
+      "line": 205,
+      "text": "                }"
+    },
+    {
+      "line": 206,
+      "text": "                return Self.append("
+    },
+    {
+      "line": 207,
+      "text": "                    stage: stage,"
+    },
+    {
+      "line": 208,
+      "text": "                    timestamp: now,"
+    },
+    {
+      "line": 209,
+      "text": "                    coordinatorOrdinal: coordinatorOrdinal,"
+    },
+    {
+      "line": 210,
+      "text": "                    appearanceOrdinal: value.appearanceOrdinal,"
+    },
+    {
+      "line": 211,
+      "text": "                    attemptOrdinal: value.activeAttemptOrdinal,"
+    },
+    {
+      "line": 212,
+      "text": "                    ownerPresent: ownerPresent,"
+    },
+    {
+      "line": 213,
+      "text": "                    receiptPresent: receiptPresent,"
+    },
+    {
+      "line": 214,
+      "text": "                    teardownResult: teardownResult,"
+    },
+    {
+      "line": 215,
+      "text": "                    epoch: epoch,"
+    },
+    {
+      "line": 216,
+      "text": "                    revision: revision,"
+    },
+    {
+      "line": 217,
+      "text": "                    to: &value"
+    },
+    {
+      "line": 218,
+      "text": "                )"
+    },
+    {
+      "line": 219,
+      "text": "            }"
+    },
+    {
+      "line": 220,
+      "text": "        }"
+    },
+    {
+      "line": 221,
+      "text": ""
+    },
+    {
+      "line": 222,
+      "text": "        /// Copies the bounded values under the mutex, then encodes after unlocking."
+    },
+    {
+      "line": 223,
+      "text": "        public func freeze() -> Snapshot? {"
+    },
+    {
+      "line": 224,
+      "text": "            let now = clock()"
+    },
+    {
+      "line": 225,
+      "text": "            let frozenValue = state.withLock { value -> FrozenValue? in"
+    },
+    {
+      "line": 226,
+      "text": "                value.refreshExpiry(now: now)"
+    },
+    {
+      "line": 227,
+      "text": "                guard let runIdentifier = value.runIdentifier else { return nil }"
+    },
+    {
+      "line": 228,
+      "text": "                if let existing = value.frozenValue { return existing }"
+    },
+    {
+      "line": 229,
+      "text": ""
+    },
+    {
+      "line": 230,
+      "text": "                let incomplete ="
+    },
+    {
+      "line": 231,
+      "text": "                    value.lifecycle == .expired || value.overflowCount != 0"
+    },
+    {
+      "line": 232,
+      "text": "                    || value.invalidAttemptContext || value.activeAttemptOrdinal != 0"
+    },
+    {
+      "line": 233,
+      "text": "                let records = (0..<value.recordCount).compactMap { value.records[$0] }"
+    },
+    {
+      "line": 234,
+      "text": "                let copy = FrozenValue("
+    },
+    {
+      "line": 235,
+      "text": "                    isIncomplete: incomplete,"
+    },
+    {
+      "line": 236,
+      "text": "                    runIdentifier: runIdentifier,"
+    },
+    {
+      "line": 237,
+      "text": "                    processIdentifier: processIdentifier,"
+    },
+    {
+      "line": 238,
+      "text": "                    armedAt: value.armedAt,"
+    },
+    {
+      "line": 239,
+      "text": "                    expiresAt: value.expiresAt,"
+    },
+    {
+      "line": 240,
+      "text": "                    overflowCount: value.overflowCount,"
+    }
+  ]
+}

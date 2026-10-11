@@ -1,0 +1,14 @@
+{
+  "stage": "U0",
+  "step": 2,
+  "source": "Human manual report",
+  "received_utc": "2026-10-03T08:55:04.567489+00:00",
+  "human_quote": "候选正常，但是我输入‘n’之后‘观测’按钮没有重新出现，提交正常，且提交候选之后‘观测’按钮出现。",
+  "candidate_update_reported_normal": true,
+  "probe_hidden_while_candidates_present": true,
+  "commit_reported_normal": true,
+  "probe_visible_after_commit_empty_bar": true,
+  "elapsed_seconds": "NOT MEASURED",
+  "no_arm_instruction": true,
+  "does_not_prove_general_latency_fixed": true
+}

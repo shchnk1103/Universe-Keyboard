@@ -1,0 +1,26 @@
+{
+  "packet_sha256": "4c46f4f1ae270f37b6a609aba741391c32ac75a080b27395451bd1e77b10e654",
+  "report_path": "docs/reviews/TYPO-CORRECTION-002-F01-FIXED-INTEGRATION-REVIEW-001-quality-review-r1.original.json",
+  "report_sha256": "6fcd8f8bcc6807d6b20b1c0bb51dd25ce1fd6f928c80fdb59d759133f5534552",
+  "usage_path": "docs/reviews/TYPO-CORRECTION-002-F01-FIXED-INTEGRATION-REVIEW-001-quality-usage-r1.json",
+  "usage_sha256": "ee391e6bced99f91e5cfb3c538e8085180f1a85a7596ded4edfb46404054155f",
+  "review_runtime": "reused /root/p2_existing_run_quality_r1, independent F01 lane round1",
+  "coverage": {
+    "C1": "covered",
+    "C2": "covered",
+    "C3": "covered_with_executor_evidence_limits",
+    "C4": "covered_with_disclosed_AUTH_order_boundary"
+  },
+  "outcome": "Scoped Pass with conditions",
+  "blocking_code_findings": 0,
+  "source5_matched_at_archive": true,
+  "tool_calls": 12,
+  "elapsed_seconds": 210.302983,
+  "source_publication": "not authorized",
+  "parent_lifecycle": "Active",
+  "report_presentation_path": "docs/reviews/TYPO-CORRECTION-002-F01-FIXED-INTEGRATION-REVIEW-001-quality-review-r1.md",
+  "report_presentation_sha256": "d54b2c6daf07e7b47379840a5e1d692edc15e39ad4404d6945e62e8b22a747e4",
+  "report_presentation_changes": "two Markdown trailing spaces removed; original byte archive preserved",
+  "report_original_decoded_sha256": "00f6c71ac7300dd3bc59b78b335deef7352205d4d9c3652aa371037bc828a576",
+  "report_archive_encoding": "base64"
+}

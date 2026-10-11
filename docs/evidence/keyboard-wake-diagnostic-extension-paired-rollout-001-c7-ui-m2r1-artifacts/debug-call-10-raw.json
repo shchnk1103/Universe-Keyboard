@@ -1,0 +1,26 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "\n🐛 Detach\n\nErrors (1):\n\n  ✗ No active debug session. Provide debugSessionId or attach first.\n\n❌ Failed to detach debugger.\n"
+    }
+  ],
+  "structuredContent": {
+    "schema": "xcodebuildmcp.output.debug-session-action",
+    "schemaVersion": "2",
+    "didError": true,
+    "error": "Failed to detach debugger.",
+    "data": {
+      "diagnostics": {
+        "warnings": [],
+        "errors": [
+          {
+            "message": "No active debug session. Provide debugSessionId or attach first."
+          }
+        ]
+      },
+      "action": "detach"
+    }
+  },
+  "isError": true
+}

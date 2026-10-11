@@ -1,0 +1,14 @@
+{
+  "utc": "2026-10-06T04:12:13.183571+00:00",
+  "Human": "\u6388\u6743\u65e7\u6269\u5c55\u4e00\u6b21 SIGTERM",
+  "pid": 778,
+  "verified_ps": "778 Tue Oct  6 11:07:17 2026     Ss   /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/57DC9CDA-B114-469F-98D6-B6C92F4F4AE7/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+  "verified_path": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/57DC9CDA-B114-469F-98D6-B6C92F4F4AE7/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+  "verified_start_in_ps": "Tue Oct  6 11:07:17 2026",
+  "signal": "SIGTERM",
+  "signal_count": 1,
+  "exited": true,
+  "after": [],
+  "still_same_pid": [],
+  "sigkill": false
+}

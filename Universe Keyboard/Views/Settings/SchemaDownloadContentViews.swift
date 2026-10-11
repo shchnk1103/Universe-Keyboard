@@ -2,9 +2,7 @@ import SwiftUI
 
 struct SchemaDownloadCardView: View {
     let schema: SchemaMetadata
-    let isLicenseAccepted: Bool
     let onShowLicense: () -> Void
-    let onDownload: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -39,21 +37,12 @@ struct SchemaDownloadCardView: View {
                 }
             }
 
-            HStack(spacing: 10) {
-                AppActionButton(
-                    title: "查看许可证",
-                    systemImage: "doc.text.magnifyingglass",
-                    action: onShowLicense
-                )
-
-                AppActionButton(
-                    title: "同意并下载",
-                    systemImage: "arrow.down.to.line",
-                    prominence: .primary,
-                    action: onDownload
-                )
-                .disabled(!isLicenseAccepted)
-            }
+            AppActionButton(
+                title: SchemeLicenseDownloadCopy.viewAndDownload,
+                systemImage: "doc.text.magnifyingglass",
+                prominence: .primary,
+                action: onShowLicense
+            )
         }
         .padding(12)
         .background(Color(.secondarySystemGroupedBackground))

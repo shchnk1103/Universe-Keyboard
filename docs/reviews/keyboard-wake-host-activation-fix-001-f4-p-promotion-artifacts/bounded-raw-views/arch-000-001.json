@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+CandidateBar.swift",
+  "origin_sha256": "ae1b78d5a311f60054914093458b0c78fe3d35923d82b487fd7f30d886074c80",
+  "expected_sha256": "ae1b78d5a311f60054914093458b0c78fe3d35923d82b487fd7f30d886074c80",
+  "line_start": 1,
+  "line_end": 60,
+  "lines": [
+    {
+      "line": 1,
+      "text": "import KeyboardCore"
+    },
+    {
+      "line": 2,
+      "text": "//"
+    },
+    {
+      "line": 3,
+      "text": "//  KeyboardViewController+CandidateBar.swift"
+    },
+    {
+      "line": 4,
+      "text": "//  Keyboard"
+    },
+    {
+      "line": 5,
+      "text": "//"
+    },
+    {
+      "line": 6,
+      "text": "//  候选栏与控制器状态之间的薄适配。"
+    },
+    {
+      "line": 7,
+      "text": "//"
+    },
+    {
+      "line": 8,
+      "text": "//  候选栏架构："
+    },
+    {
+      "line": 9,
+      "text": "//    ┌──────────────────────────────────────────┐"
+    },
+    {
+      "line": 10,
+      "text": "//    │ [cand1] [cand2] ... [scroll right]  [▼] │ ← 左右无极滑动 + 展开按钮"
+    },
+    {
+      "line": 11,
+      "text": "//    └──────────────────────────────────────────┘"
+    },
+    {
+      "line": 12,
+      "text": "//"
+    },
+    {
+      "line": 13,
+      "text": "//  翻页：输入更新后准备多页数据，UICollectionView 仅渲染屏幕附近候选。"
+    },
+    {
+      "line": 14,
+      "text": "//"
+    },
+    {
+      "line": 15,
+      "text": "//  展开后面板（流式布局，填满整个键盘区域）："
+    },
+    {
+      "line": 16,
+      "text": "//    ┌─────────────────────────────────[▲]─────┐"
+    },
+    {
+      "line": 17,
+      "text": "//    │  [你好] [你好吗] [你] [你们] [你好啊]    │ ← 宽度自适应 + 自动换行"
+    },
+    {
+      "line": 18,
+      "text": "//    │  [你好世界] [你好呀] [你的] ...          │"
+    },
+    {
+      "line": 19,
+      "text": "//    │  ...                          (scroll ↓) │"
+    },
+    {
+      "line": 20,
+      "text": "//    └──────────────────────────────────────────┘"
+    },
+    {
+      "line": 21,
+      "text": "//"
+    },
+    {
+      "line": 22,
+      "text": "import UIKit"
+    },
+    {
+      "line": 23,
+      "text": ""
+    },
+    {
+      "line": 24,
+      "text": "// MARK: === 候选栏 ==="
+    },
+    {
+      "line": 25,
+      "text": ""
+    },
+    {
+      "line": 26,
+      "text": "extension KeyboardViewController {"
+    },
+    {
+      "line": 27,
+      "text": ""
+    },
+    {
+      "line": 28,
+      "text": "    // MARK: --- 候选栏容器 ---"
+    },
+    {
+      "line": 29,
+      "text": ""
+    },
+    {
+      "line": 30,
+      "text": "    /// Connects the presentation-only candidate container to controller state."
+    },
+    {
+      "line": 31,
+      "text": "    func makeCandidateBar() -> UIView {"
+    },
+    {
+      "line": 32,
+      "text": "        let view = CandidateBarView("
+    },
+    {
+      "line": 33,
+      "text": "            height: candidateBarHeight,"
+    },
+    {
+      "line": 34,
+      "text": "            bottomHitExtension: candidateToKeySpacing,"
+    },
+    {
+      "line": 35,
+      "text": "            backgroundColor: .clear,"
+    },
+    {
+      "line": 36,
+      "text": "            interactionTarget: self,"
+    },
+    {
+      "line": 37,
+      "text": "            expandAction: #selector(handleCandidateBarTrailingButton)"
+    },
+    {
+      "line": 38,
+      "text": "        )"
+    },
+    {
+      "line": 39,
+      "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+    },
+    {
+      "line": 40,
+      "text": "            installWakeOwnerProbeControls(on: view)"
+    },
+    {
+      "line": 41,
+      "text": "        #endif"
+    },
+    {
+      "line": 42,
+      "text": "        let collectionView = view.collectionView"
+    },
+    {
+      "line": 43,
+      "text": "        collectionView.dataSource = self"
+    },
+    {
+      "line": 44,
+      "text": "        collectionView.delegate = self"
+    },
+    {
+      "line": 45,
+      "text": "        candidateCollectionView = collectionView"
+    },
+    {
+      "line": 46,
+      "text": "        candidateScrollView = collectionView"
+    },
+    {
+      "line": 47,
+      "text": "        candidateExpandButton = view.expandButton"
+    },
+    {
+      "line": 48,
+      "text": "        candidateExpandButtonWidthConstraint = view.expandButtonWidthConstraint"
+    },
+    {
+      "line": 49,
+      "text": "        fillCandidateBar()"
+    },
+    {
+      "line": 50,
+      "text": "        view.onItemTap = { [weak self] indexPath in"
+    },
+    {
+      "line": 51,
+      "text": "            self?.commitCompactCandidate(at: indexPath)"
+    },
+    {
+      "line": 52,
+      "text": "        }"
+    },
+    {
+      "line": 53,
+      "text": "        return view"
+    },
+    {
+      "line": 54,
+      "text": "    }"
+    },
+    {
+      "line": 55,
+      "text": ""
+    },
+    {
+      "line": 56,
+      "text": "    /// Idle trailing control dismisses the keyboard; expandable content still expands."
+    },
+    {
+      "line": 57,
+      "text": "    @objc func handleCandidateBarTrailingButton() {"
+    },
+    {
+      "line": 58,
+      "text": "        let canExpand = presentedCandidates.contains { $0.kind.expandsCandidateBarPanel }"
+    },
+    {
+      "line": 59,
+      "text": "        if canExpand {"
+    },
+    {
+      "line": 60,
+      "text": "            toggleCandidateExpand()"
+    }
+  ]
+}

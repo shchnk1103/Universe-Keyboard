@@ -1,0 +1,8 @@
+{
+  "original_independent_delivery_preserved_sha256": {
+    "review.md": "9e739c6f3ec8f575369a4b5a830ef759d4bdc6e9243b9f1b18fe5c774674b5f8",
+    "usage.json": "1a927231bfdb14366c167a875f518312f5d6cbe2dff4b995f5bfcbef64835cba",
+    "independent-analysis.json": "a2debead61a6817a193cf79118924983ed442ee58fb8b51ee26c0fd9bdda126a"
+  },
+  "no_author_original_changed": true
+}

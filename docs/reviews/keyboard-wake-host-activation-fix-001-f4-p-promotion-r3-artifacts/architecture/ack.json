@@ -1,0 +1,32 @@
+{
+  "lane_id": "F4-P-ARCH-PROMOTION",
+  "round": 3,
+  "reviewer": "/root/f4p_arch_promotion_fresh GPT6 Luna",
+  "started_utc": "2026-10-05T04:33:24Z",
+  "packet_path": "docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r3-artifacts/architecture-packet.json",
+  "packet_sha256": "7e358f674b2877afb58073fad78734fb5e8ffe4a417cd668b18378d21038d309",
+  "scope": [
+    "A-P1",
+    "A-P2",
+    "A-P3"
+  ],
+  "candidate_digest": "d53523dba8c371c67424ff07c79163a66f41e3bc5bb402637cf9ee79ae7579cb",
+  "worktree": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "budget": {
+    "actual_tool_calls": 20,
+    "wall_clock_seconds": 900,
+    "checkpoint_calls": [
+      8,
+      14
+    ],
+    "reserved_final_calls": 6
+  },
+  "writer_self_readback": {
+    "verified": true,
+    "utc": "2026-10-05T04:33:55Z",
+    "sha256": "1a16d588a77d83acf7c58531403fdba4c0f9cf3b5b5b8097017a1447fa786ebb",
+    "bytes": 910
+  }
+}

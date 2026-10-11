@@ -1,0 +1,117 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/five-source-hashes.json",
+  "origin_sha256": "7ec3484757dfcf8977497ad928e93808ff75b718cfa847ea3380cf03af94a9fd",
+  "expected_sha256": "7ec3484757dfcf8977497ad928e93808ff75b718cfa847ea3380cf03af94a9fd",
+  "line_start": 1,
+  "line_end": 27,
+  "lines": [
+    {
+      "line": 1,
+      "text": "["
+    },
+    {
+      "line": 2,
+      "text": "  {"
+    },
+    {
+      "line": 3,
+      "text": "    \"path\": \"Keyboard/Controllers/KeyboardViewController.swift\","
+    },
+    {
+      "line": 4,
+      "text": "    \"bytes\": 39626,"
+    },
+    {
+      "line": 5,
+      "text": "    \"sha256\": \"8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a\""
+    },
+    {
+      "line": 6,
+      "text": "  },"
+    },
+    {
+      "line": 7,
+      "text": "  {"
+    },
+    {
+      "line": 8,
+      "text": "    \"path\": \"Keyboard/Controllers/KeyboardViewController+Bootstrap.swift\","
+    },
+    {
+      "line": 9,
+      "text": "    \"bytes\": 52473,"
+    },
+    {
+      "line": 10,
+      "text": "    \"sha256\": \"79d0123dabacd8e5875b66b7c8c897589adbeb8b49d1e22b263678dc1d56f6aa\""
+    },
+    {
+      "line": 11,
+      "text": "  },"
+    },
+    {
+      "line": 12,
+      "text": "  {"
+    },
+    {
+      "line": 13,
+      "text": "    \"path\": \"Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift\","
+    },
+    {
+      "line": 14,
+      "text": "    \"bytes\": 12137,"
+    },
+    {
+      "line": 15,
+      "text": "    \"sha256\": \"c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047\""
+    },
+    {
+      "line": 16,
+      "text": "  },"
+    },
+    {
+      "line": 17,
+      "text": "  {"
+    },
+    {
+      "line": 18,
+      "text": "    \"path\": \"KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift\","
+    },
+    {
+      "line": 19,
+      "text": "    \"bytes\": 19887,"
+    },
+    {
+      "line": 20,
+      "text": "    \"sha256\": \"71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5\""
+    },
+    {
+      "line": 21,
+      "text": "  },"
+    },
+    {
+      "line": 22,
+      "text": "  {"
+    },
+    {
+      "line": 23,
+      "text": "    \"path\": \"Universe Keyboard.xcodeproj/project.pbxproj\","
+    },
+    {
+      "line": 24,
+      "text": "    \"bytes\": 46990,"
+    },
+    {
+      "line": 25,
+      "text": "    \"sha256\": \"49f0ebe89db1f30323d9bf6ceb297179ffed5fc9ef983fd3b947d11d5820586c\""
+    },
+    {
+      "line": 26,
+      "text": "  }"
+    },
+    {
+      "line": 27,
+      "text": "]"
+    }
+  ]
+}

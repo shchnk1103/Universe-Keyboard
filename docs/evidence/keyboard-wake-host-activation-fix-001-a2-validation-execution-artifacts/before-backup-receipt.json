@@ -1,0 +1,83 @@
+{
+  "utc": "2026-10-04T16:13:45.092600+00:00",
+  "scope": "A2 fresh before backup; exact installed candidate recorded, not inferred from M0",
+  "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "backup_root": "/private/tmp/ukey-host-activation-fix-a2-validation-backup-20261005",
+  "backup_root_mode": "0700",
+  "source_three_reads_equal": true,
+  "container_paths_stable": true,
+  "app_appex_absent_before_after": true,
+  "copy_bytes_structure_modes_owners_original_xattrs_equal": true,
+  "copy_added_provenance_classification": {
+    "main-data": {
+      "added": 865,
+      "rewritten": 3
+    },
+    "app-group": {
+      "added": 29,
+      "rewritten": 41
+    },
+    "installed-app": {
+      "added": 9,
+      "rewritten": 78
+    }
+  },
+  "all_metadata_exact_claim": false,
+  "internal_symlinks_checked": true,
+  "backup_strict_signatures": {
+    "main": {
+      "exit": 0
+    },
+    "keyboard": {
+      "exit": 0
+    }
+  },
+  "selected_preferences": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "rime_deployed": {
+      "exists": true,
+      "value": true
+    },
+    "rime_needs_deploy": {
+      "exists": true,
+      "value": false
+    },
+    "rime_is_deploying": {
+      "exists": false,
+      "value": null
+    }
+  },
+  "counts": {
+    "main-data": {
+      "files": 827,
+      "directories": 42,
+      "symlinks": 0,
+      "file_bytes": 1142571,
+      "inventory_sha256": "7be6ee039f80b5d6d88870c815fdb781337e1e67111c7ac7102745356ba3f360"
+    },
+    "app-group": {
+      "files": 53,
+      "directories": 15,
+      "symlinks": 2,
+      "file_bytes": 37750594,
+      "inventory_sha256": "37f7bf6070fefeda20845cce2221dfe1c7eeb4fc45cce057e44fa9fb1a7deff1"
+    },
+    "installed-app": {
+      "files": 78,
+      "directories": 9,
+      "symlinks": 0,
+      "file_bytes": 91344780,
+      "inventory_sha256": "21ac53de28fa3843cf35715a5ddb65abcedbd5b45eb45d87aa5e3d4b43fe102d"
+    }
+  },
+  "keychain_and_simulator_system_settings_not_backed_up": true,
+  "old_backups_preserved": true,
+  "no_install_launch_restore_or_test": true
+}

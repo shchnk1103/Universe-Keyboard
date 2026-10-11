@@ -203,7 +203,11 @@ final class RimeAutomaticSyncScheduler {
     }
 
     /// 在设置变更、手动同步完成和主 App 进入后台时调用。
-    func refreshSchedule(defaults: UserDefaults = .standard) {
+    func refreshSchedule(defaults: UserDefaults = .standard, isEnabled: Bool = true) {
+        // UI-only fixtures must not read production preferences or cancel real
+        // pending background work on the shared Simulator.
+        guard isEnabled else { return }
+
         BGTaskScheduler.shared.cancel(taskRequestWithIdentifier: Self.taskIdentifier)
 
         guard let earliestBeginDate = nextEligibleDate(defaults: defaults) else {

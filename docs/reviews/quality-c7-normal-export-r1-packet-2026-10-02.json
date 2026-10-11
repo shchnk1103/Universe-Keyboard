@@ -1,0 +1,63 @@
+{
+  "work_item": "KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001",
+  "lane": "QUALITY-C7-NORMAL-EXPORT",
+  "round": 1,
+  "authorization": "Human: 可以做一次只读独立验收",
+  "allowed_content_inputs": {
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift": "bca0391355d9a3a60880dfdc08260095d02d6618bf0a38d40bfcc61734a891e9",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardWakeOwnerProbe.swift": "679d55e8669d7c68db2fbe58fd1b436cbb19bc61e770f9a701751326fa669af6",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/ASSIGNMENT_POLICY.md": "e90dd8f06371e9367652d4e7cc63dee31ee7b1ac855e7802d6d2e9b8e1e90680",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-normal-export-artifacts/attach-ready.json": "adc7e48acdb89ccbb0e3fdcf213dc2cebf890b5f3b541afc42d05fdaea380b0b",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-normal-export-artifacts/authorization.json": "94b82a90d465527a93c9bf9541700fcc58a5317d3a40753a780a9432bf0dc460",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-normal-export-artifacts/decoded.json": "6a750fb58a60732a9d171575974caca83d8005d81ff74c0af477b751db74b629",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-normal-export-artifacts/decoder.py": "fc1817ab8843dab76acd9e8ae59277719c059742bb105eebecbc60a66f58775d",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-normal-export-artifacts/export-receipts.json": "d97a5a85c420701b7df1b0a9328fbf1a73730521ab303fc4aa520284861bd556",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-normal-export-artifacts/human-entry-hold.json": "9231f4ae7d4311d9fbfcbdce4d86d0ef9f1c55557a43636c414b3d0054cbf4ff",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-normal-export-artifacts/human-exit.json": "96857ad5f3d0f1f9d8c5852a67143b6a5403a8e43a051e7fdaa7549df77b0047",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-normal-export-artifacts/machine-entry.json": "882ca1a7cb80c0b6bec1605578456256e8c2d7bd65e03b728a80bd4da02dbbd3",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-normal-export-artifacts/machine-exit.json": "9393ad32f3813489849e99ae9d4dc0572f27709c32da5135d9a0fd88fdcd80c0",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-normal-export-artifacts/preservation.json": "9594f32ba4a55292f8eadf7d9ac38d950d34ba8b47a16d1e812518760d46aae0",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-normal-export-artifacts/snapshot.bin": "3a2a46a75d3ebd65b4950d1c6d7b6c20bd338609fcac5092d500d6126bd09422",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-normal-export-entry-2026-10-02.md": "42d1528ac16598bca72cc330cbb4150a6ea6e7058e3a8d88a267a6504fa721bc",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-normal-export-validation-2026-10-02.md": "24e69635c70e90cba107ff300f3fd7512f2d5c79424af381d90066c0fbd0578c",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b3-artifacts/build-input-manifest.json": "370bea24345bf0ee82eb95b967f4150a524d160aab761249e448ac660025eeaf",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b3-artifacts/paired-products.json": "7a15b7f7e4cd64d6cdf607d472fbe14125b46b640e306132bdaa6cfbca7b1ab9",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/plans/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-evidence-chain-plan-2026-10-02.md": "552be7bd212fc4703ba27b68441eb187798e0168d4b8c19d094e1b1a9d5e6e4a",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/playbooks/test-release.md": "b7eb8cc76094f72699b6de77de6afa2608e6483a1c8da53dcf86a51ea6c35a58",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/RELEASE_CHECKLIST.md": "952369f9fde66b3213e73a31fb3f8c0698fa8f86b6c723f731b3f9a49751f428",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/READING_MAPS.md": "cdcf2a2f3168e8efd48405793d24ec968f59555f619fcf92eadacdc4bd0196d4",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/PERFORMANCE_BASELINE.md": "58e7d92d419ab85075ef6da1f2a775b9789455a7e59f9448e574e61dbcb526a1",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/DOCUMENTATION_GOVERNANCE.md": "d13c15217037571c8df9a43257ecae6e5d8c90556e4512116cae8568999651af"
+  },
+  "criteria": {
+    "P1": "精确候选/source/root readback、PID和loadedUUID与出口停点身份绑定；只审本次已归档证据，不重做vendor或iOS套件。",
+    "P2": "原始528字节/5行与decoder校验、attempt唯一配对及owner/receipt有限结论；独立解析或运行冻结离线decoder允许，仅本地metadata；不读目标进程。",
+    "P3": "实际borrow static参数/count上限/读取顺序与remove/continue/detach/原诊断存在性恢复/Human恢复回执；明确caller stack和UTC缺项及按钮延迟/title残项。判断哪些限制仅残项、哪些阻止 scoped acceptance，不自动接受必需缺口。"
+  },
+  "acceptance": "P1-P3全部有足够证据才可Positive scoped runtime chain acceptance；必要缺口Partial/矛盾Hold，并提出具体最小补证。不得称Maps、engine成功、整体Gate、Release或根因。",
+  "exclusions": [
+    "Simulator/device/UI/container/LLDB/new capture/build/test/install/network/Git",
+    "repo mutation",
+    "other source traversal",
+    "Product residual acceptance",
+    "subdelegation",
+    "automatic scope/budget renewal"
+  ],
+  "outputs": {
+    "report": "/private/tmp/ukey-wake-normal-export-review-20261002/review.md",
+    "usage": "/private/tmp/ukey-wake-normal-export-review-20261002/usage.json"
+  },
+  "budget": {
+    "max_calls": 10,
+    "hard_elapsed_seconds": 480,
+    "soft_elapsed_seconds": 360,
+    "checkpoint_after_calls": [
+      3,
+      6
+    ],
+    "reserve_last_calls": 2,
+    "counting": "Each underlying tools/collaboration invocation counts. First call prints and records actual UTC/unix start before reading packet; record per-call actual timestamps, unavailable null. At call8/soft stop investigation and deliver. Hard ceiling stop regardless; no inferred timings."
+  },
+  "expansion_authority": "Human only",
+  "packet_digest_sha256": "c99ff6b954ebcf42b48a4cc2fd1e60b4c799b938ccc2f0fa344a0cb13b49706f"
+}

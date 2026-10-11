@@ -1,0 +1,165 @@
+{
+  "lane": "QUALITY-C7-B1",
+  "round": 1,
+  "packet_digest_verified": true,
+  "packet_digest_sha256": "1d7315aba9e5091f1035b10d25993f4141f69afe4c77fa14ad902c4d9cc332b7",
+  "digest_method": "Remove packet_digest_sha256; sorted compact JSON, UTF-8 with ensure_ascii=true, then SHA256.",
+  "allowed_inputs": 52,
+  "allowed_input_hashes_matched": 52,
+  "mismatches": [],
+  "source_identity": "9730e254cb8afd48f857ad9bef1659017fe90d26700ea3c9b1809249e3c751c8",
+  "manifest_branch_head_match_packet": true,
+  "git_independently_checked": false,
+  "coverage": {
+    "Q1": "Covered",
+    "Q2": "Covered",
+    "Q3": "Covered"
+  },
+  "verdict": "Hold",
+  "verdict_reason": "Static criteria assessed; unresolved full KeyboardCore test-suite compile blocker and no UIKit target/runtime verification.",
+  "finding_ids": [
+    "C7-B1-F1",
+    "C7-B1-F2",
+    "C7-B1-F3"
+  ],
+  "review_path": "/private/tmp/ukey-wake-c7b-20261002/QUALITY-C7-B1-review.md",
+  "review_sha256": "2bfd075cdb9a903468ab69b50da91d7de53b809ac7ae34dd2b109b3729f343c3",
+  "call_ledger": [
+    {
+      "call": 1,
+      "kind": "exec_command",
+      "wall_seconds_observed_approx": 0.1,
+      "start_utc": null,
+      "end_utc": null,
+      "result": "packet read; initial hash serialization variant did not match"
+    },
+    {
+      "call": 2,
+      "kind": "exec_command",
+      "wall_seconds_observed_approx": 0.1,
+      "start_utc": null,
+      "end_utc": null,
+      "result": "digest variant check; exact SHA matched"
+    },
+    {
+      "call": 3,
+      "kind": "exec_command",
+      "wall_seconds_observed_approx": 0.1,
+      "start_utc": null,
+      "end_utc": null,
+      "result": "52/52 allowed input SHA matched"
+    },
+    {
+      "call": 4,
+      "kind": "exec_command",
+      "wall_seconds_observed_approx": 0.1,
+      "start_utc": null,
+      "end_utc": null,
+      "result": "parsed local-checks, preservation, full-suite error and focused logs"
+    },
+    {
+      "call": 5,
+      "kind": "exec_command",
+      "wall_seconds_observed_approx": 0.1,
+      "start_utc": null,
+      "end_utc": null,
+      "result": "broad grep; output truncated and one nonexistent candidate coordinator path returned ENOENT; subsequent searches continued"
+    },
+    {
+      "call": 6,
+      "kind": "exec_command",
+      "wall_seconds_observed_approx": 0.1,
+      "start_utc": "2026-10-02T06:41:55.527537+00:00",
+      "end_utc": "2026-10-02T06:41:55.529597+00:00",
+      "result": "narrow UI/Core/probe source windows"
+    },
+    {
+      "call": 7,
+      "kind": "exec_command",
+      "wall_seconds_observed_approx": 0.1,
+      "start_utc": null,
+      "end_utc": null,
+      "result": "read entry, validation, authorization and plan"
+    },
+    {
+      "call": 8,
+      "kind": "exec_command",
+      "wall_seconds_observed_approx": 0.2,
+      "start_utc": null,
+      "end_utc": null,
+      "result": "targeted source excerpts for key handler, coordinator, candidate control and probe"
+    },
+    {
+      "call": 9,
+      "kind": "exec_command",
+      "wall_seconds_observed_approx": 0.1,
+      "start_utc": null,
+      "end_utc": "2026-10-02T06:44:17.086383+00:00",
+      "result": "checked key path, target macro config, final log, and sampled conservative elapsed"
+    },
+    {
+      "call": 10,
+      "kind": "exec_command",
+      "wall_seconds_observed_approx": 0.1,
+      "start_utc": null,
+      "end_utc": null,
+      "result": "searched suspend/resume marker call sites"
+    },
+    {
+      "call": 11,
+      "kind": "exec_command",
+      "wall_seconds_observed_approx": 0.1,
+      "start_utc": null,
+      "end_utc": null,
+      "result": "checked button/source config and focused/full log excerpts"
+    },
+    {
+      "call": 12,
+      "kind": "exec_command",
+      "wall_seconds_observed_approx": 0.1,
+      "start_utc": null,
+      "end_utc": null,
+      "result": "final report had been written; usage generation failed with ValueError: too many values to unpack (expected 2, got 3)"
+    },
+    {
+      "call": 13,
+      "kind": "exec_command",
+      "start_utc": "2026-10-02T06:51:43.447948+00:00",
+      "end_sample_utc": "2026-10-02T06:51:43.448087+00:00",
+      "wall_seconds": 0.0001,
+      "result": "record usage and verify report hash; no new review"
+    }
+  ],
+  "budgets": {
+    "exec_command_calls_used": 13,
+    "exec_command_calls_limit": 18,
+    "soft_delivery_seconds": 600,
+    "hard_elapsed_seconds": 900,
+    "packet_mtime_utc": "2026-10-02T06:37:41.255274+00:00",
+    "conservative_elapsed_upper_bound_seconds": 842.193,
+    "upper_bound_is_not_measured_reviewer_start": true,
+    "within_soft_delivery": false,
+    "within_hard_elapsed_limit": true,
+    "checkpoint_after_call_6_sent": true,
+    "note": "Calls 1-5 and 7-11 exact UTC starts/ends were not sampled; observed per-call wrapper walltime approximations are recorded, not used to claim total elapsed. Packet mtime predates dispatch and provides a conservative upper bound."
+  },
+  "non_exec_tool_calls": {
+    "collaboration_messages": 2,
+    "purpose": [
+      "scope ACK",
+      "checkpoint after call 6"
+    ]
+  },
+  "outputs": [
+    "/private/tmp/ukey-wake-c7b-20261002/QUALITY-C7-B1-review.md",
+    "/private/tmp/ukey-wake-c7b-20261002/QUALITY-C7-B1-usage.json"
+  ],
+  "not_performed": [
+    "build",
+    "test",
+    "Simulator/device/LLDB",
+    "network",
+    "Git",
+    "repository writes"
+  ]
+}

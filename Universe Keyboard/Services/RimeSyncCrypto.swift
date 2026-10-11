@@ -32,7 +32,7 @@ nonisolated struct RimeSyncPackageCodec: Sendable {
         do {
             let envelope = try JSONDecoder().decode(RimeSyncEncryptedSettings.self, from: data)
             guard envelope.version == 1, envelope.algorithm == "chacha20-poly1305",
-                  let combined = Data(base64Encoded: envelope.combined)
+                let combined = Data(base64Encoded: envelope.combined)
             else {
                 throw RimeSyncError.unsupportedFormat
             }
@@ -72,7 +72,8 @@ nonisolated struct RimeSyncPackageCodec: Sendable {
     }
 
     static func keyData(fromRecoveryCode recoveryCode: String) throws -> Data {
-        let compact = recoveryCode
+        let compact =
+            recoveryCode
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .replacingOccurrences(of: "-", with: "+")
             .replacingOccurrences(of: "_", with: "/")
@@ -84,10 +85,16 @@ nonisolated struct RimeSyncPackageCodec: Sendable {
     }
 }
 
-actor RimeSyncSecretStore {
+nonisolated protocol RimeSyncSecretStoring: Sendable {
+    func data(for account: String) async throws -> Data?
+    func set(_ data: Data, for account: String) async throws
+    func remove(_ account: String) async throws
+}
+
+actor RimeSyncSecretStore: RimeSyncSecretStoring {
     private let service = "com.DoubleShy0N.Universe-Keyboard.rime-sync"
 
-    func data(for account: String) throws -> Data? {
+    func data(for account: String) async throws -> Data? {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
@@ -99,12 +106,12 @@ actor RimeSyncSecretStore {
         let status = SecItemCopyMatching(query as CFDictionary, &result)
         if status == errSecItemNotFound { return nil }
         guard status == errSecSuccess, let data = result as? Data else {
-            throw RimeSyncError.accessDenied
+            throw RimeSyncError.keychainAccessDenied
         }
         return data
     }
 
-    func set(_ data: Data, for account: String) throws {
+    func set(_ data: Data, for account: String) async throws {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
@@ -119,14 +126,14 @@ actor RimeSyncSecretStore {
             var insertion = query
             insertion.merge(attributes) { _, new in new }
             guard SecItemAdd(insertion as CFDictionary, nil) == errSecSuccess else {
-                throw RimeSyncError.accessDenied
+                throw RimeSyncError.keychainAccessDenied
             }
         } else if updateStatus != errSecSuccess {
-            throw RimeSyncError.accessDenied
+            throw RimeSyncError.keychainAccessDenied
         }
     }
 
-    func remove(_ account: String) throws {
+    func remove(_ account: String) async throws {
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: service,
@@ -134,7 +141,7 @@ actor RimeSyncSecretStore {
         ]
         let status = SecItemDelete(query as CFDictionary)
         guard status == errSecSuccess || status == errSecItemNotFound else {
-            throw RimeSyncError.accessDenied
+            throw RimeSyncError.keychainAccessDenied
         }
     }
 }

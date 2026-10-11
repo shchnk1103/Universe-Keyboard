@@ -1,0 +1,18 @@
+{
+  "utc": "2026-10-02T14:32:47.943916+00:00",
+  "human": "完全访问开；空栏观测按钮从询问到回复未出现，体感超过一分钟",
+  "full_access": "confirmed_on",
+  "probe_visible": false,
+  "elapsed": "human estimate only; no measured duration",
+  "entry": "Hold before arm",
+  "debugger_attached_this_round": false,
+  "arm": false,
+  "freeze": false,
+  "export": false,
+  "source_findings": [
+    "visibility requires controlsAvailable, no active touches, idle>=2s, observing or no presented candidates",
+    "idle task rescheduled by refresh and not scheduled while controlsUnavailable or activeTouches nonempty",
+    "visual empty bar does not independently establish presentedCandidates.isEmpty"
+  ],
+  "cause": "unknown"
+}

@@ -1,0 +1,77 @@
+[
+  {
+    "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-artifacts/architecture-raw-reader.json",
+    "bytes": 525822,
+    "sha256": "c3e2e7646a7813657b2ce3bc3ca3f66c61c68fe61c3cc09ccd0f406542e91817"
+  },
+  {
+    "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-artifacts/quality-raw-reader.json",
+    "bytes": 713673,
+    "sha256": "409e7364779a9bfe69715973994ae000ae137c1955854205cd75f1927cff5e73"
+  },
+  {
+    "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r3-artifacts/architecture-target-reader.json",
+    "bytes": 167286,
+    "sha256": "02dc2bdaa7247148b51b7cef5f6be0fe78b304d09a23661bd309a0eb386c9f8d"
+  },
+  {
+    "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r3-artifacts/quality-target-reader.json",
+    "bytes": 40168,
+    "sha256": "1e5500ca7deb9b56b97272e94bc35997eccba9111f226340bccd550514eeaa56"
+  },
+  {
+    "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/assignments/keyboard-wake-host-activation-fix-001.md",
+    "bytes": 27586,
+    "sha256": "94d2c322c2d5aeaefc63939a34ca04ca55cbc73dfb7bbdeb00e3b30f9f5967e0"
+  },
+  {
+    "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/AGENTS.md",
+    "bytes": 9615,
+    "sha256": "947743e29a5987f9b1abb9c220a28ebcb92bd766928e22c1dd67c046bbe62152"
+  },
+  {
+    "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/KNOWLEDGE_INDEX.md",
+    "bytes": 39680,
+    "sha256": "5664fdaf8c689ec52974963fd59f77a050f3e8b3deeb83c4f723faf93ac0673a"
+  },
+  {
+    "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/READING_MAPS.md",
+    "bytes": 27134,
+    "sha256": "45da2f62b21b19611f6f2314a64738fdaf1a98cb26276452f38001bae5d35f3f"
+  },
+  {
+    "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/ASSIGNMENT_POLICY.md",
+    "bytes": 25019,
+    "sha256": "e90dd8f06371e9367652d4e7cc63dee31ee7b1ac855e7802d6d2e9b8e1e90680"
+  },
+  {
+    "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/AI_WORKFLOW.md",
+    "bytes": 6886,
+    "sha256": "fd3ff24fc0d38ed134cace8ffd5479f76e6261b009d6f661d218e4e260b07413"
+  },
+  {
+    "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/playbooks/keyboard-ui.md",
+    "bytes": 2988,
+    "sha256": "e54a0ee6c25b07209181b239d360647d19cfd739e5f5d60ddcd4f2e34c8b13df"
+  },
+  {
+    "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/playbooks/test-release.md",
+    "bytes": 3084,
+    "sha256": "b7eb8cc76094f72699b6de77de6afa2608e6483a1c8da53dcf86a51ea6c35a58"
+  },
+  {
+    "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-promotion-r2-validation-2026-10-05.md",
+    "bytes": 4534,
+    "sha256": "7c06bcf8a385320ae00284f7ea29a585b835f4d73cdb1249ce235dc8e3f98f5d"
+  },
+  {
+    "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r2-artifacts/quality/review.md",
+    "bytes": 4939,
+    "sha256": "bfb3f4982aaf6e04ff50a5a13ab9098ed11ff7d5089a4609a99398356b859d04"
+  },
+  {
+    "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r2-artifacts/quality/usage.json",
+    "bytes": 868,
+    "sha256": "5d385cf19543454996b6221657911ff65d539fa0da7c4e865cb9782b30a098d1"
+  }
+]

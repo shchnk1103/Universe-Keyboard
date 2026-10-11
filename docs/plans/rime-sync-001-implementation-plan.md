@@ -1,8 +1,8 @@
 # RIME-SYNC-001 Implementation Plan
 
-> **Status:** Active
+> **Status:** Superseded for current status tracking; retained as a historical delivery plan
 >
-> **Current phase:** final local implementation `a7b2b2e` passed the full App gate and independent Architecture / Quality `Pass with conditions`; no implementation-level blocker remains, while formal natural scheduling/expiration retry, phone notification, cross-process and cross-front-end evidence remain pending
+> **Current phase:** bounded iOS V1 implementation is delivered. Current closure scope and residuals are governed by [`RIME-SYNC-001`](../assignments/rime-sync-001.md); full cross-platform work is deferred to `TD-008`, and CloudKit is separately deferred.
 >
 > **Current source of truth:** `docs/RIME_SYNC.md`
 >
@@ -50,7 +50,7 @@
 - Add deterministic previews for configured, syncing, offline, auth failure, wrong key, conflict and empty states without live network dependencies.
 - Validate light/dark, Dynamic Type, VoiceOver, narrow devices and offline states.
 
-### Phase 5 — Cross-Platform Compatibility
+### Deferred Phase 5 — Cross-Platform Compatibility (`TD-008`)
 
 - Publish the package specification and test vectors.
 - Build or adapt a small compatibility CLI for macOS/Windows/Linux.
@@ -67,7 +67,7 @@
 ### Follow-up Phase — Standard User-Data Evidence
 
 - Record real-device background, cancellation, keyboard-active and notification-permission evidence for the implemented main-App-only librime `sync_user_data` path.
-- Verify `*.userdb.txt` snapshot merging and per-device YAML/TXT backup with compatible macOS, Windows, Linux and Android RIME frontends; never copy live databases.
+- Verify representative cross-platform `*.userdb.txt` snapshot merging and per-device YAML/TXT backup under `TD-008`; never copy live databases.
 - Keep ADR 0005 and TD-002 as separate gates for local backup, restore, reset and any future broader user-data operation.
 
 ### Deferred Phase — CloudKit
@@ -87,7 +87,7 @@
 | WebDAV | auth, ETag race, timeout, partial transfer, server capability variance |
 | UI | loading/success/failure, Dynamic Type, VoiceOver, light/dark, narrow device |
 | Runtime | Extension offline, input hot path unchanged, main-App-only deployment |
-| Platforms | representative RIME `sync_dir` snapshot merge plus per-device YAML/TXT layout on iOS/macOS/Windows/Linux/Android frontends |
+| Platforms | bounded iOS V1 evidence is in scope; representative macOS/Windows/Linux/Android fixtures and interoperability remain deferred to `TD-008` |
 
 ## Documentation Impact
 

@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift",
+  "origin_sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+  "expected_sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+  "line_start": 121,
+  "line_end": 180,
+  "lines": [
+    {
+      "line": 121,
+      "text": "    #if DEBUG"
+    },
+    {
+      "line": 122,
+      "text": "        /// Passive observation only. The callback runs after UIKit has resolved the"
+    },
+    {
+      "line": 123,
+      "text": "        /// same hit view that would have been returned without diagnostics."
+    },
+    {
+      "line": 124,
+      "text": "        private weak var diagnosticSink: CandidateTouchDiagnosticSink?"
+    },
+    {
+      "line": 125,
+      "text": "        private weak var lastStructuredTouch: UITouch?"
+    },
+    {
+      "line": 126,
+      "text": "        private var expandHitboxOverlay: DebugKeyTouchRangeOverlayView?"
+    },
+    {
+      "line": 127,
+      "text": "        private var hitProbeLabel: UILabel?"
+    },
+    {
+      "line": 128,
+      "text": "    #endif"
+    },
+    {
+      "line": 129,
+      "text": ""
+    },
+    {
+      "line": 130,
+      "text": "    init("
+    },
+    {
+      "line": 131,
+      "text": "        height: CGFloat,"
+    },
+    {
+      "line": 132,
+      "text": "        bottomHitExtension: CGFloat,"
+    },
+    {
+      "line": 133,
+      "text": "        backgroundColor: UIColor,"
+    },
+    {
+      "line": 134,
+      "text": "        interactionTarget: Any?,"
+    },
+    {
+      "line": 135,
+      "text": "        expandAction: Selector"
+    },
+    {
+      "line": 136,
+      "text": "    ) {"
+    },
+    {
+      "line": 137,
+      "text": "        self.expandActionTarget = interactionTarget as? NSObject"
+    },
+    {
+      "line": 138,
+      "text": "        self.expandAction = expandAction"
+    },
+    {
+      "line": 139,
+      "text": "        self.candidateBarHeight = height"
+    },
+    {
+      "line": 140,
+      "text": "        self.bottomHitExtension = bottomHitExtension"
+    },
+    {
+      "line": 141,
+      "text": ""
+    },
+    {
+      "line": 142,
+      "text": "        let layout = UICollectionViewFlowLayout()"
+    },
+    {
+      "line": 143,
+      "text": "        layout.scrollDirection = .horizontal"
+    },
+    {
+      "line": 144,
+      "text": "        // 候选之间不能留下真实 layout 空隙，否则手势会从 scroll view 的非 cell 区域启动。"
+    },
+    {
+      "line": 145,
+      "text": "        // 视觉间距由 cell 自身宽度承担，保证横滑和下滑都能命中候选列表。"
+    },
+    {
+      "line": 146,
+      "text": "        layout.minimumLineSpacing = 0"
+    },
+    {
+      "line": 147,
+      "text": "        layout.minimumInteritemSpacing = 0"
+    },
+    {
+      "line": 148,
+      "text": "        layout.sectionInset = UIEdgeInsets(top: Layout.verticalTextInset, left: 4, bottom: 0, right: 8)"
+    },
+    {
+      "line": 149,
+      "text": ""
+    },
+    {
+      "line": 150,
+      "text": "        collectionView = CandidateCollectionView(frame: .zero, collectionViewLayout: layout)"
+    },
+    {
+      "line": 151,
+      "text": "        expandButton = Self.makeExpandButton(target: interactionTarget, action: expandAction)"
+    },
+    {
+      "line": 152,
+      "text": "        expandButtonWidthConstraint = expandButton.widthAnchor.constraint(equalToConstant: Layout.expandButtonTouchSize)"
+    },
+    {
+      "line": 153,
+      "text": ""
+    },
+    {
+      "line": 154,
+      "text": "        super.init(frame: .zero)"
+    },
+    {
+      "line": 155,
+      "text": ""
+    },
+    {
+      "line": 156,
+      "text": "        #if DEBUG"
+    },
+    {
+      "line": 157,
+      "text": "            diagnosticSink = interactionTarget as? CandidateTouchDiagnosticSink"
+    },
+    {
+      "line": 158,
+      "text": "            collectionView.onCandidateGestureTerminal = { [weak self] didBegin, wasCancelled in"
+    },
+    {
+      "line": 159,
+      "text": "                self?.diagnosticSink?.recordCandidateGestureTerminal("
+    },
+    {
+      "line": 160,
+      "text": "                    didBegin: didBegin,"
+    },
+    {
+      "line": 161,
+      "text": "                    wasCancelled: wasCancelled"
+    },
+    {
+      "line": 162,
+      "text": "                )"
+    },
+    {
+      "line": 163,
+      "text": "            }"
+    },
+    {
+      "line": 164,
+      "text": "        #endif"
+    },
+    {
+      "line": 165,
+      "text": ""
+    },
+    {
+      "line": 166,
+      "text": "        self.backgroundColor = backgroundColor"
+    },
+    {
+      "line": 167,
+      "text": "        isOpaque = false"
+    },
+    {
+      "line": 168,
+      "text": "        layer.cornerRadius = 0"
+    },
+    {
+      "line": 169,
+      "text": "        clipsToBounds = false"
+    },
+    {
+      "line": 170,
+      "text": ""
+    },
+    {
+      "line": 171,
+      "text": "        configureCollectionView()"
+    },
+    {
+      "line": 172,
+      "text": "        addSubview(collectionView)"
+    },
+    {
+      "line": 173,
+      "text": "        addSubview(expandButton)"
+    },
+    {
+      "line": 174,
+      "text": "        gestureBridge.collectionPan = collectionView.panGestureRecognizer"
+    },
+    {
+      "line": 175,
+      "text": "        installItemTapGesture()"
+    },
+    {
+      "line": 176,
+      "text": "        installHorizontalFallbackGesture()"
+    },
+    {
+      "line": 177,
+      "text": "        installSwipeDownExpandGesture()"
+    },
+    {
+      "line": 178,
+      "text": ""
+    },
+    {
+      "line": 179,
+      "text": "        candidateTrailingConstraint = collectionView.trailingAnchor.constraint("
+    },
+    {
+      "line": 180,
+      "text": "            equalTo: expandButton.leadingAnchor, constant: -2)"
+    }
+  ]
+}

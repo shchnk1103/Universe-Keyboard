@@ -1,0 +1,16 @@
+{
+  "observed_stop_receipt_utc": "2026-10-01T06:07:06.841276+00:00",
+  "observed_elapsed_seconds": 668.333519,
+  "review_status": "Partial/incomplete",
+  "original_finding": "HOST-Q-R-01 Hold retained",
+  "underlying_tools_confirmed_at_least": 4,
+  "final_underlying_tool_total": "unknown; final ledger not delivered",
+  "reviewer_report_delivered": false,
+  "usage_delivered": false,
+  "other_baseline_files_preserved": 6899,
+  "dirty_before_receipt": 493,
+  "staged": 0,
+  "source_match": 568,
+  "built_match": 111,
+  "independent_verdict": "not delivered; root does not substitute"
+}

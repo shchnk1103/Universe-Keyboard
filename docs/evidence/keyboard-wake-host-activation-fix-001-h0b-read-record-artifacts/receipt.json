@@ -1,0 +1,49 @@
+{
+  "utc": "2026-10-06T02:10:31.841029+00:00",
+  "Human": "请只补夹具的返回值／错误码记录吧",
+  "status": "Authored and frozen; not compiled or executed",
+  "scope": "isolated host fixture read_return/errno telemetry plus preservation of its stderr only",
+  "old_root": "/private/tmp/ukey-host-activation-fix-h0b-20261006",
+  "new_root": "/private/tmp/ukey-host-activation-fix-h0b-read-record-20261006",
+  "inputs": {
+    "fixture.c": "a4c9843cfdf201bdceb1d2a55fd1004f6545b5c6b4c6dbe15366c48c85d130a7",
+    "host_probe.py": "c55d70da1e945dd435044119a8682a7eac3dfc8e40dfa53592495007ca718799"
+  },
+  "outputs": {
+    "fixture.c": {
+      "bytes": 706,
+      "sha256": "679a56400543955d93dfd73102d2a328564d00a9b858e207b5e954779c1abfa9"
+    },
+    "host_probe.py": {
+      "bytes": 8743,
+      "sha256": "4b112279b4ebdadb132a980fa08d09a7a6fe736636bce401618138bdcc6ed185"
+    },
+    "entitlements.plist": {
+      "bytes": 243,
+      "sha256": "87a3e7fcd67af748b28d049449185056b8b076b8bd65c82720f48c99883022be"
+    },
+    "change.patch": {
+      "bytes": 1849,
+      "sha256": "ab01652bd73a66ec93aeaee17fb1d396a476a026c8e44a66832892582abc5444"
+    }
+  },
+  "checks": [
+    "Python AST parse PASS",
+    "read called exactly once; no EINTR retry",
+    "errno captured immediately before fprintf; ignored on nonnegative result",
+    "original read_result!=1 exit2 remains",
+    "single child stderr route changed; helper route and debugger lifecycle unchanged",
+    "old frozen files preserved"
+  ],
+  "not_run": [
+    "C compiler",
+    "fixture process",
+    "LLDB",
+    "simulator",
+    "target memory/expression",
+    "production implementation"
+  ],
+  "error_sample_log_exists": false,
+  "actual_tool_calls": 4,
+  "next": "A separate single host-fixture diagnostic run requires explicit authorization; no sample or root cause yet"
+}

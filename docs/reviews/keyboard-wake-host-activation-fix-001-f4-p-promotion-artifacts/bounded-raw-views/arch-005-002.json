@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+  "origin_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+  "expected_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+  "line_start": 61,
+  "line_end": 120,
+  "lines": [
+    {
+      "line": 61,
+      "text": "    /// v1 journal 与 legacy Logger 独立。闭包只会由 utility writer 调用，"
+    },
+    {
+      "line": 62,
+      "text": "    /// 因而键盘按键路径不读取 App Group 或文件系统。"
+    },
+    {
+      "line": 63,
+      "text": "    let diagnosticsJournal = DiagnosticsJournalRuntime("
+    },
+    {
+      "line": 64,
+      "text": "        origin: .keyboardExtension,"
+    },
+    {
+      "line": 65,
+      "text": "        isMainAppWriter: false,"
+    },
+    {
+      "line": 66,
+      "text": "        rootURL: {"
+    },
+    {
+      "line": 67,
+      "text": "            FileManager.default"
+    },
+    {
+      "line": 68,
+      "text": "                .containerURL("
+    },
+    {
+      "line": 69,
+      "text": "                    forSecurityApplicationGroupIdentifier: \"group.com.DoubleShy0N.Universe-Keyboard\""
+    },
+    {
+      "line": 70,
+      "text": "                )?"
+    },
+    {
+      "line": 71,
+      "text": "                .appendingPathComponent(\"Diagnostics/v1\", isDirectory: true)"
+    },
+    {
+      "line": 72,
+      "text": "        },"
+    },
+    {
+      "line": 73,
+      "text": "        isCategoryEnabled: { Logger.isLiveCategoryEnabled($0) },"
+    },
+    {
+      "line": 74,
+      "text": "        writerVersion: .v6"
+    },
+    {
+      "line": 75,
+      "text": "    )"
+    },
+    {
+      "line": 76,
+      "text": "    var diagnosticsAppearanceID: UUID?"
+    },
+    {
+      "line": 77,
+      "text": "    var wakeDiagnosticContext: KeyboardWakeDiagnosticContext {"
+    },
+    {
+      "line": 78,
+      "text": "        #if DEBUG"
+    },
+    {
+      "line": 79,
+      "text": "            return KeyboardWakeDiagnosticContext("
+    },
+    {
+      "line": 80,
+      "text": "                appearanceID: diagnosticsAppearanceID,"
+    },
+    {
+      "line": 81,
+      "text": "                isHighFidelityActive: isHighFidelityDiagnosticsActive,"
+    },
+    {
+      "line": 82,
+      "text": "                expiration: highFidelityDiagnosticsExpiration"
+    },
+    {
+      "line": 83,
+      "text": "            )"
+    },
+    {
+      "line": 84,
+      "text": "        #else"
+    },
+    {
+      "line": 85,
+      "text": "            return .disabled"
+    },
+    {
+      "line": 86,
+      "text": "        #endif"
+    },
+    {
+      "line": 87,
+      "text": "    }"
+    },
+    {
+      "line": 88,
+      "text": "    #if DEBUG"
+    },
+    {
+      "line": 89,
+      "text": "        var isHighFidelityDiagnosticsActive = false"
+    },
+    {
+      "line": 90,
+      "text": "        var highFidelityDiagnosticsExpiration: Date?"
+    },
+    {
+      "line": 91,
+      "text": "        private var highFidelityExpirationTask: Task<Void, Never>?"
+    },
+    {
+      "line": 92,
+      "text": "        var candidateTouchDiagnosticSequence: UInt64 = 0"
+    },
+    {
+      "line": 93,
+      "text": "        var activeCandidateTouchDiagnosticSequence: UInt64?"
+    },
+    {
+      "line": 94,
+      "text": "        var activeCandidateTouchDiagnosticBand: DiagnosticEvent.CandidateTouchBand?"
+    },
+    {
+      "line": 95,
+      "text": "        var activeCandidateTouchDiagnosticDidHitCell = false"
+    },
+    {
+      "line": 96,
+      "text": "        var activeCandidateTouchDiagnosticStartTime: CFTimeInterval?"
+    },
+    {
+      "line": 97,
+      "text": "        var candidateVisibilityDiagnosticsTask: Task<Void, Never>?"
+    },
+    {
+      "line": 98,
+      "text": "    #endif"
+    },
+    {
+      "line": 99,
+      "text": ""
+    },
+    {
+      "line": 100,
+      "text": "    // MARK: - 视图加载"
+    },
+    {
+      "line": 101,
+      "text": ""
+    },
+    {
+      "line": 102,
+      "text": "    /// 通过标准 UIViewController 加载流程安装输入视图。"
+    },
+    {
+      "line": 103,
+      "text": "    ///"
+    },
+    {
+      "line": 104,
+      "text": "    /// 不要在 `init` 中直接设置 `inputView`：系统可能因此跳过 `viewDidLoad`，"
+    },
+    {
+      "line": 105,
+      "text": "    /// 让 `viewWillAppear` 在 KeyboardCore 控制器创建前到达，最终留下空白键盘。"
+    },
+    {
+      "line": 106,
+      "text": "    override func loadView() {"
+    },
+    {
+      "line": 107,
+      "text": "        view = KeyboardAudioFeedbackInputView(frame: .zero, inputViewStyle: .keyboard)"
+    },
+    {
+      "line": 108,
+      "text": "    }"
+    },
+    {
+      "line": 109,
+      "text": ""
+    },
+    {
+      "line": 110,
+      "text": "    // MARK: - 视图引用"
+    },
+    {
+      "line": 111,
+      "text": ""
+    },
+    {
+      "line": 112,
+      "text": "    /// Liquid Glass-inspired 外层承载面。只负责背景、圆角和轻量层次，不参与输入逻辑。"
+    },
+    {
+      "line": 113,
+      "text": "    var keyboardSurfaceView: UIView!"
+    },
+    {
+      "line": 114,
+      "text": "    /// 实验性系统材质层。默认关闭；由主 App 的实验开关控制。"
+    },
+    {
+      "line": 115,
+      "text": "    var keyboardSurfaceMaterialView: UIVisualEffectView!"
+    },
+    {
+      "line": 116,
+      "text": "    /// 统一 surface 底色层。覆盖整个键盘区域，避免候选栏单独形成矩形断层。"
+    },
+    {
+      "line": 117,
+      "text": "    var keyboardSurfaceFillView: UIView!"
+    },
+    {
+      "line": 118,
+      "text": "    /// Surface 顶部的克制高光，用于在浅色/深色模式下提供轻微玻璃层次。"
+    },
+    {
+      "line": 119,
+      "text": "    var keyboardSurfaceHighlightView: UIView!"
+    },
+    {
+      "line": 120,
+      "text": "    /// 自定义键盘高度约束。只约束整体输入视图高度，不改变单行按键高度。"
+    }
+  ]
+}

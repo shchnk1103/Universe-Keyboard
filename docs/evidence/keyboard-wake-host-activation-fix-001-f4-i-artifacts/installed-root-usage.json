@@ -1,0 +1,13 @@
+{
+  "utc": "2026-10-05T12:40:35.218262+00:00",
+  "actual_calls": 39,
+  "budget_calls": 60,
+  "budget_wall_seconds": 5400,
+  "conservative_elapsed_seconds": 1174.103216,
+  "call_accounting": "19functions.exec wrappers+19nested exec_command/write_stdin+1list_sims across F4-I; includes failed helper/repair/all resume/prep/polls/archive",
+  "first_failure_preserved": true,
+  "resume_authority": "Human批准",
+  "backup_exception_authority": "Human接受",
+  "status": "Machine F4-I complete; Human normal health pending",
+  "budget_remaining_calls": 21
+}

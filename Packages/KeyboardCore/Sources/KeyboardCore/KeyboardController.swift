@@ -1265,6 +1265,47 @@ public final class KeyboardController {
         return effects
     }
 
+    /// Drops the still-uncommitted preedit once, without committing it.
+    ///
+    /// A confirmed Partial Commit prefix and its Delete checkpoint stay.
+    /// Continuation and pending host spans stay. This is not visibility abandon.
+    @discardableResult
+    public func dropRemainingPreeditKeepingConfirmedPrefix() -> KeyboardEffect {
+        if isResponsiveRimePipelineEnabled, let affine = threadAffineRimeCoordinator {
+            affine.bumpSessionEpoch(resetEngineSession: true)
+            clearResponsiveKeyApplyContexts()
+        } else if isResponsiveRimePipelineEnabled, let coordinator = responsiveRimeCoordinator {
+            coordinator.bumpSessionEpoch(resetEngineSession: true)
+            clearResponsiveKeyApplyContexts()
+        } else {
+            rimeEngine?.resetSession()
+        }
+        shouldRestoreRimeComposition = false
+        shouldRebuildSessionDuringRestore = false
+
+        let confirmed = state.partialCommit?.confirmedText ?? ""
+        if let partial = state.partialCommit {
+            state.partialCommit = PartialCommitState(
+                confirmedText: confirmed,
+                remainingRawInput: "",
+                remainingPreeditText: "",
+                displayText: confirmed,
+                checkpoint: partial.checkpoint,
+                source: partial.source
+            )
+        }
+        state.currentComposition = ""
+        state.lastRimeOutput = nil
+        clearTypoCorrectionSuggestions()
+        if confirmed.isEmpty {
+            deleteInlinePreedit()
+        } else {
+            updateInlinePreedit(confirmed, source: .compositionProjection)
+        }
+        let pathEffect = clearT9PinyinPathStateReturningEffect()
+        return .compositionChanged.union(pathEffect)
+    }
+
     /// 在扩展进入不可见状态前释放 RIME 的进程级资源。
     /// 必须由 UI 生命周期同步调用，不能推迟到不可预测的 `deinit`。
     public func suspendRimeForVisibilityChange() {

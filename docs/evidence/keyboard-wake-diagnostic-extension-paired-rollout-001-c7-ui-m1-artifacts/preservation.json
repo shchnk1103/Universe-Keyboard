@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-03T14:43:16.343065+00:00",
+  "artifact_sha256": {
+    "machine-entry.json": "c18e7f59ca8b69fd06a4240bb7a073ae79dc7e2439b09219889373718d81186b",
+    "read-only-command-ledger.json": "d6e3f15a15b7d04561cbb8e8236cd25a72fe0e07caa1cad9394a0a842c36f8d0",
+    "process-locator.json": "c2d0891eb501c1980d72f5c502ee13b78114607c731509cc1f097a9a84a7de18",
+    "preflight-correction.json": "18a7d2d94245ad9ac860464a6b1eaca8d38aa4a89f5630e3e49f97ddf5a962f3",
+    "human-initial-confirmation.json": "d28c9f062153b8fd091cff319c3b0a875157e7f87f498af26d3692cf466555d0"
+  },
+  "collector_sha256": "310de1e83f6c3019255f342ac11f467f3204232aa8dda1701803adb1d20b8a95",
+  "no_user_content_collected": true,
+  "first_failed_script_timing_unavailable": true,
+  "independent_review_lane_not_created": true,
+  "no_debugger_signal_launch_install_arm_input": true
+}

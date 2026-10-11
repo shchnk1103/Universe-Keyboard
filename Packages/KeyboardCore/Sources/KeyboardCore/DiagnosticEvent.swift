@@ -5,7 +5,21 @@ import Foundation
 /// 这个类型是跨 target 的持久化协议，不接受自由文本。若需要新的诊断维度，
 /// 必须先扩展下面的受控枚举并经过 ADR 0027 要求的字段审查。
 public struct DiagnosticEvent: Codable, Sendable, Equatable {
-    public static let schemaVersion = 3
+    public static let schemaVersion = 5
+
+    // Reader compatibility is independent of the production writer. Never admit future versions
+    // implicitly: each supported version must retain its own code/payload contract.
+    static func supportsReading(schemaVersion: Int) -> Bool {
+        [3, 4, 5, 6].contains(schemaVersion)
+    }
+
+    static func supportsWakeMarkers(schemaVersion: Int) -> Bool {
+        schemaVersion == 4 || schemaVersion == 6
+    }
+
+    static func supportsTypoRecall(schemaVersion: Int) -> Bool {
+        schemaVersion == 5 || schemaVersion == 6
+    }
 
     public enum Origin: String, Codable, CaseIterable, Sendable {
         case mainApp = "main_app"
@@ -36,6 +50,23 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         case rimeSyncPhaseChanged = "rime_sync.phase_changed"
         case rimeSyncSkipped = "rime_sync.skipped"
         case rimeSyncTerminal = "rime_sync.terminal"
+        /// INT-003: debounce work-item armed after eligibility (HF-gated).
+        case typoRecallDebounceScheduled = "typo_recall.debounce_scheduled"
+        /// INT-003: prior pending debounce cancelled on re-schedule or invalidate.
+        case typoRecallDebounceCancelled = "typo_recall.debounce_cancelled"
+        /// INT-003: hard invalidate bumped recallEpoch.
+        case typoRecallEpochBumped = "typo_recall.epoch_bumped"
+        /// INT-003: in-flight fence / yield / apply discarded as stale.
+        case typoRecallFenceDiscarded = "typo_recall.fence_discarded"
+        /// INT-003: contextual correction query about to run.
+        case typoRecallQueryBegin = "typo_recall.query_begin"
+        /// INT-003: contextual correction query finished with a finite Reason.
+        case typoRecallQueryOutcome = "typo_recall.query_outcome"
+        /// INT-003 P1: one content-free terminal measurement per facade invocation.
+        case typoRecallQueryMeasured = "typo_recall.query_measured"
+        case keyboardLifecyclePhaseChanged = "keyboard.lifecycle.phase_changed"
+        case rimeResumePhaseChanged = "rime.resume.phase_changed"
+        case textProxyOperationPhaseChanged = "text_proxy.operation_phase_changed"
     }
 
     public enum Reason: String, Codable, CaseIterable, Sendable {
@@ -49,6 +80,12 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         case generationChanged = "generation_changed"
         case writerReclaimed = "writer_reclaimed"
         case highFidelityExpired = "high_fidelity_expired"
+        /// INT-003 query outcome: fence held and candidates returned.
+        case typoRecallQuerySucceeded = "typo_recall_query_succeeded"
+        /// INT-003 query outcome: fence mismatch / stale discard after query.
+        case typoRecallQueryDiscarded = "typo_recall_query_discarded"
+        /// INT-003 query outcome: operation cancelled before/during query.
+        case typoRecallQueryCancelled = "typo_recall_query_cancelled"
     }
 
     public enum CountMetric: String, Codable, CaseIterable, Sendable {
@@ -63,11 +100,272 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         /// 0 = upper, 1 = middle, 2 = lower. Kept coarse so diagnostics never
         /// persist precise pointer coordinates.
         case candidateTouchBand = "candidate_touch_band"
+        /// Typo-recall fence epoch (content-free).
+        case recallEpoch = "recall_epoch"
+        /// Typo-recall composition revision (content-free).
+        case compositionRevision = "composition_revision"
+        /// Typo-recall operation ordinal (content-free).
+        case operationOrdinal = "operation_ordinal"
+        /// Normalized composition length only — never the text itself.
+        case compositionLength = "composition_length"
+        /// FNV-1a 32-bit of normalized composition; correlation fingerprint only.
+        case compositionFingerprint = "composition_fingerprint"
     }
 
     public enum DurationMetric: String, Codable, CaseIterable, Sendable {
         case elapsedMilliseconds = "elapsed_ms"
         case presentationAgeMilliseconds = "presentation_age_ms"
+    }
+
+    public enum TypoRecallCandidateBucket: String, Codable, CaseIterable, Sendable {
+        case zero
+        case oneToThree = "one_to_three"
+        case notApplicable = "not_applicable"
+
+        public static func classify(
+            candidates: [RimeCandidate],
+            resultState: TypoCorrectionQueryResultState
+        ) -> Self {
+            guard resultState == .candidatesReturned else { return .notApplicable }
+            return candidates.prefix(TypoCorrectionRecallRuntimeBudget.candidateLimit).isEmpty
+                ? .zero
+                : .oneToThree
+        }
+    }
+
+    public enum TypoRecallQueryDisposition: String, Codable, CaseIterable, Sendable {
+        case applied
+        case discardedAfterFacade = "discarded_after_facade"
+    }
+
+    public enum TypoRecallQueryDurationState: String, Codable, CaseIterable, Sendable {
+        case measured
+        case saturated
+        case clockRegression = "clock_regression"
+    }
+
+    public enum KeyboardLifecyclePhase: String, Codable, CaseIterable, Sendable {
+        case viewWillAppear = "view_will_appear"
+        case viewDidAppear = "view_did_appear"
+        case viewWillDisappear = "view_will_disappear"
+        case hostWillResignActive = "host_will_resign_active"
+        case hostDidBecomeActive = "host_did_become_active"
+    }
+
+    public struct KeyboardLifecyclePayload: Codable, Sendable, Equatable {
+        public let phase: KeyboardLifecyclePhase
+
+        public init(phase: KeyboardLifecyclePhase) {
+            self.phase = phase
+        }
+    }
+
+    public enum RimeResumePhase: String, Codable, CaseIterable, Sendable {
+        case started
+        case sessionCreated = "session_created"
+        case schemaSelected = "schema_selected"
+        case ownerReady = "owner_ready"
+        case completed
+        case failed
+    }
+
+    public enum RimeResumeFailure: String, Codable, CaseIterable, Sendable {
+        case engineUnavailable = "engine_unavailable"
+        case sessionCreationFailed = "session_creation_failed"
+        case schemaSelectionFailed = "schema_selection_failed"
+        case ownerNotReady = "owner_not_ready"
+    }
+
+    public struct RimeResumePayload: Codable, Sendable, Equatable {
+        public let phase: RimeResumePhase
+        public let failure: RimeResumeFailure?
+        public let sessionEpoch: UInt64?
+        public let revision: UInt64?
+
+        public init(
+            phase: RimeResumePhase,
+            failure: RimeResumeFailure? = nil,
+            sessionEpoch: UInt64? = nil,
+            revision: UInt64? = nil
+        ) {
+            precondition((phase == .failed) == (failure != nil))
+            self.phase = phase
+            self.failure = failure
+            self.sessionEpoch = sessionEpoch
+            self.revision = revision
+        }
+
+        fileprivate var isValid: Bool {
+            (phase == .failed) == (failure != nil)
+        }
+    }
+
+    public enum TextProxyOperation: String, Codable, CaseIterable, Sendable {
+        case setMarkedText = "set_marked_text"
+        case insertText = "insert_text"
+        case unmarkText = "unmark_text"
+    }
+
+    public enum TextProxyPhase: String, Codable, CaseIterable, Sendable {
+        case entered
+        case returned
+    }
+
+    public struct TextProxyPayload: Codable, Sendable, Equatable {
+        public let operation: TextProxyOperation
+        public let phase: TextProxyPhase
+
+        public init(operation: TextProxyOperation, phase: TextProxyPhase) {
+            self.operation = operation
+            self.phase = phase
+        }
+    }
+
+    /// Closed query metadata. This intentionally has no field for input, candidates,
+    /// host content or a composition fingerprint.
+    public struct TypoRecallQueryPayload: Codable, Sendable, Equatable {
+        public let operationOrdinal: UInt64
+        public let stage: TypoCorrectionRecallStage
+        public let readiness: TypoCorrectionQueryReadiness
+        public let resultState: TypoCorrectionQueryResultState
+        public let returnedCandidateBucket: TypoRecallCandidateBucket
+        public let disposition: TypoRecallQueryDisposition
+        public let facadeElapsedMicroseconds: UInt32
+        public let durationState: TypoRecallQueryDurationState
+
+        public init(
+            operationOrdinal: UInt64,
+            stage: TypoCorrectionRecallStage,
+            readiness: TypoCorrectionQueryReadiness,
+            resultState: TypoCorrectionQueryResultState,
+            returnedCandidateBucket: TypoRecallCandidateBucket,
+            disposition: TypoRecallQueryDisposition,
+            facadeElapsedMicroseconds: UInt32,
+            durationState: TypoRecallQueryDurationState
+        ) {
+            precondition(
+                Self.isValid(
+                    readiness: readiness,
+                    resultState: resultState,
+                    returnedCandidateBucket: returnedCandidateBucket,
+                    facadeElapsedMicroseconds: facadeElapsedMicroseconds,
+                    durationState: durationState
+                ),
+                "Invalid typo-recall query measurement"
+            )
+            self.operationOrdinal = operationOrdinal
+            self.stage = stage
+            self.readiness = readiness
+            self.resultState = resultState
+            self.returnedCandidateBucket = returnedCandidateBucket
+            self.disposition = disposition
+            self.facadeElapsedMicroseconds = facadeElapsedMicroseconds
+            self.durationState = durationState
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case operationOrdinal, stage, readiness, resultState
+            case returnedCandidateBucket, disposition, facadeElapsedMicroseconds, durationState
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let operationOrdinal = try container.decode(UInt64.self, forKey: .operationOrdinal)
+            let stage = try container.decode(TypoCorrectionRecallStage.self, forKey: .stage)
+            let readiness = try container.decode(
+                TypoCorrectionQueryReadiness.self,
+                forKey: .readiness
+            )
+            let resultState = try container.decode(
+                TypoCorrectionQueryResultState.self,
+                forKey: .resultState
+            )
+            let bucket = try container.decode(
+                TypoRecallCandidateBucket.self,
+                forKey: .returnedCandidateBucket
+            )
+            let disposition = try container.decode(
+                TypoRecallQueryDisposition.self,
+                forKey: .disposition
+            )
+            let elapsed = try container.decode(UInt32.self, forKey: .facadeElapsedMicroseconds)
+            let durationState = try container.decode(
+                TypoRecallQueryDurationState.self,
+                forKey: .durationState
+            )
+            guard
+                Self.isValid(
+                    readiness: readiness,
+                    resultState: resultState,
+                    returnedCandidateBucket: bucket,
+                    facadeElapsedMicroseconds: elapsed,
+                    durationState: durationState
+                )
+            else {
+                throw DecodingError.dataCorruptedError(
+                    forKey: .resultState,
+                    in: container,
+                    debugDescription: "Invalid typo-recall query measurement"
+                )
+            }
+            self.operationOrdinal = operationOrdinal
+            self.stage = stage
+            self.readiness = readiness
+            self.resultState = resultState
+            returnedCandidateBucket = bucket
+            self.disposition = disposition
+            facadeElapsedMicroseconds = elapsed
+            self.durationState = durationState
+        }
+
+        public func encode(to encoder: Encoder) throws {
+            var container = encoder.container(keyedBy: CodingKeys.self)
+            try container.encode(operationOrdinal, forKey: .operationOrdinal)
+            try container.encode(stage, forKey: .stage)
+            try container.encode(readiness, forKey: .readiness)
+            try container.encode(resultState, forKey: .resultState)
+            try container.encode(returnedCandidateBucket, forKey: .returnedCandidateBucket)
+            try container.encode(disposition, forKey: .disposition)
+            try container.encode(facadeElapsedMicroseconds, forKey: .facadeElapsedMicroseconds)
+            try container.encode(durationState, forKey: .durationState)
+        }
+
+        private static func isValid(
+            readiness: TypoCorrectionQueryReadiness,
+            resultState: TypoCorrectionQueryResultState,
+            returnedCandidateBucket: TypoRecallCandidateBucket,
+            facadeElapsedMicroseconds: UInt32,
+            durationState: TypoRecallQueryDurationState
+        ) -> Bool {
+            let resultIsValid: Bool
+            switch resultState {
+            case .candidatesReturned:
+                resultIsValid =
+                    (readiness == .ready || readiness == .unknown)
+                    && (returnedCandidateBucket == .zero || returnedCandidateBucket == .oneToThree)
+            case .sidecarUnavailable:
+                resultIsValid =
+                    readiness == .unavailable
+                    && returnedCandidateBucket == .notApplicable
+            case .contextUnavailable:
+                resultIsValid =
+                    readiness == .ready
+                    && returnedCandidateBucket == .notApplicable
+            case .emptyInput, .zeroLimit:
+                resultIsValid =
+                    readiness == .unknown
+                    && returnedCandidateBucket == .notApplicable
+            }
+            guard resultIsValid else { return false }
+            switch durationState {
+            case .measured:
+                return true
+            case .saturated:
+                return facadeElapsedMicroseconds == UInt32.max
+            case .clockRegression:
+                return facadeElapsedMicroseconds == 0
+            }
+        }
     }
 
     public enum Flag: String, Codable, CaseIterable, Sendable {
@@ -100,6 +398,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         case duration(DurationMetric, Int)
         case flag(Flag, Bool)
         case reason(Reason)
+        case typoRecallQuery(TypoRecallQueryPayload)
 
         private enum CodingKeys: String, CodingKey {
             case type
@@ -107,6 +406,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
             case integerValue
             case booleanValue
             case reason
+            case typoRecallQuery
         }
 
         private enum Kind: String, Codable {
@@ -114,6 +414,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
             case duration
             case flag
             case reason
+            case typoRecallQuery
         }
 
         public init(from decoder: Decoder) throws {
@@ -136,6 +437,10 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
                 )
             case .reason:
                 self = .reason(try container.decode(Reason.self, forKey: .reason))
+            case .typoRecallQuery:
+                self = .typoRecallQuery(
+                    try container.decode(TypoRecallQueryPayload.self, forKey: .typoRecallQuery)
+                )
             }
         }
 
@@ -157,6 +462,9 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
             case let .reason(reason):
                 try container.encode(Kind.reason, forKey: .type)
                 try container.encode(reason, forKey: .reason)
+            case let .typoRecallQuery(payload):
+                try container.encode(Kind.typoRecallQuery, forKey: .type)
+                try container.encode(payload, forKey: .typoRecallQuery)
             }
         }
     }
@@ -199,6 +507,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
     /// are intentionally excluded from the persisted protocol.
     public enum RimeSyncFailure: String, Codable, CaseIterable, Sendable {
         case accessDenied = "access_denied"
+        case keychainAccessDenied = "keychain_access_denied"
         case invalidInstallationID = "invalid_installation_id"
         case invalidInstallationConfiguration = "invalid_installation_configuration"
         case unavailableUserDirectory = "unavailable_user_directory"
@@ -754,6 +1063,9 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
     public let schemeDeliveryPayload: SchemeDeliveryPayload?
     public let runtimeRoutePayload: RuntimeRoutePhaseEvent?
     public let rimeSyncPayload: RimeSyncPayload?
+    public let keyboardLifecyclePayload: KeyboardLifecyclePayload?
+    public let rimeResumePayload: RimeResumePayload?
+    public let textProxyPayload: TextProxyPayload?
 
     public init(
         utcTimestamp: Date,
@@ -798,6 +1110,14 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
                 .filter { $0 }.count <= 1,
             "DiagnosticEvent cannot contain multiple composite payloads"
         )
+        precondition(
+            !Self.v4OnlyCodes.contains(code),
+            "Wake diagnostic marker codes are reader-only in the v5 candidate"
+        )
+        precondition(
+            Self.isValidTypoRecallQuery(code: code, schemaVersion: Self.schemaVersion, fields: fields),
+            "Typo-recall query measurement requires one schema-v5 typed field"
+        )
         schemaVersion = Self.schemaVersion
         self.utcTimestamp = utcTimestamp
         self.monotonicNanoseconds = monotonicNanoseconds
@@ -813,6 +1133,9 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         self.schemeDeliveryPayload = schemeDeliveryPayload
         self.runtimeRoutePayload = runtimeRoutePayload
         self.rimeSyncPayload = rimeSyncPayload
+        keyboardLifecyclePayload = nil
+        rimeResumePayload = nil
+        textProxyPayload = nil
     }
 
     private static let schemeDeliveryCodes: Set<Code> = [
@@ -829,16 +1152,327 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         .rimeSyncTerminal,
     ]
     private static let runtimeRouteCodes: Set<Code> = [.runtimeRoutePhaseChanged]
+    fileprivate static let v4OnlyCodes: Set<Code> = [
+        .keyboardLifecyclePhaseChanged,
+        .rimeResumePhaseChanged,
+        .textProxyOperationPhaseChanged,
+    ]
+
+    static func isWakeMarkerCode(_ code: Code) -> Bool {
+        v4OnlyCodes.contains(code)
+    }
+    fileprivate static let v5OnlyCodes: Set<Code> = [
+        .typoRecallDebounceScheduled,
+        .typoRecallDebounceCancelled,
+        .typoRecallEpochBumped,
+        .typoRecallFenceDiscarded,
+        .typoRecallQueryBegin,
+        .typoRecallQueryOutcome,
+        .typoRecallQueryMeasured,
+    ]
+    private static let v5OnlyReasons: Set<Reason> = [
+        .typoRecallQuerySucceeded,
+        .typoRecallQueryDiscarded,
+        .typoRecallQueryCancelled,
+    ]
+    private static let v5OnlyCountMetrics: Set<CountMetric> = [
+        .recallEpoch,
+        .compositionRevision,
+        .operationOrdinal,
+        .compositionLength,
+        .compositionFingerprint,
+    ]
+    var isWritableV5: Bool {
+        schemaVersion == Self.schemaVersion
+            && !Self.v4OnlyCodes.contains(code)
+            && keyboardLifecyclePayload == nil
+            && rimeResumePayload == nil
+            && textProxyPayload == nil
+    }
+
+    /// Normalizes only new records. Retained v3/v4 events stay readable but cannot be
+    /// relabeled by a writer; v5 ordinary events may be explicitly promoted to v6.
+    func normalizedForWriting(
+        as writerVersion: DiagnosticsJournalWriterVersion,
+        origin expectedOrigin: Origin,
+        processInstanceID expectedProcessInstanceID: UUID
+    ) -> DiagnosticEvent? {
+        guard origin == expectedOrigin else { return nil }
+
+        switch writerVersion {
+        case .v5:
+            guard isWritableV5 else { return nil }
+        case .v6:
+            guard schemaVersion == 5 || schemaVersion == 6 else { return nil }
+            if hasWakeMarkerData {
+                guard isValidV6WakeMarker else { return nil }
+            }
+        }
+
+        return DiagnosticEvent(
+            schemaVersion: writerVersion.rawValue,
+            copying: self,
+            origin: expectedOrigin,
+            processInstanceID: expectedProcessInstanceID
+        )
+    }
+
+    private var hasWakeMarkerData: Bool {
+        Self.isWakeMarkerCode(code)
+            || keyboardLifecyclePayload != nil
+            || rimeResumePayload != nil
+            || textProxyPayload != nil
+    }
+
+    private var isValidV6WakeMarker: Bool {
+        guard
+            schemaVersion == 6,
+            origin == .keyboardExtension,
+            level == .debug,
+            fields.isEmpty,
+            [
+                keyboardLifecyclePayload != nil,
+                rimeResumePayload != nil,
+                textProxyPayload != nil,
+            ].filter({ $0 }).count == 1,
+            schemeDeliveryPayload == nil,
+            runtimeRoutePayload == nil,
+            rimeSyncPayload == nil
+        else { return false }
+
+        if keyboardLifecyclePayload != nil {
+            return code == .keyboardLifecyclePhaseChanged && category == .display
+        }
+        if let rimeResumePayload {
+            return code == .rimeResumePhaseChanged
+                && category == .engine
+                && rimeResumePayload.isValid
+        }
+        if textProxyPayload != nil {
+            return code == .textProxyOperationPhaseChanged && category == .display
+        }
+        return false
+    }
+
+    static func makeV6KeyboardLifecycleEvent(
+        phase: KeyboardLifecyclePhase,
+        utcTimestamp: Date,
+        monotonicNanoseconds: UInt64,
+        origin: Origin,
+        processInstanceID: UUID,
+        localSequence: UInt64,
+        appearanceID: UUID?
+    ) -> DiagnosticEvent? {
+        guard origin == .keyboardExtension else { return nil }
+        return DiagnosticEvent(
+            schemaVersion: 6,
+            utcTimestamp: utcTimestamp,
+            monotonicNanoseconds: monotonicNanoseconds,
+            origin: origin,
+            processInstanceID: processInstanceID,
+            localSequence: localSequence,
+            appearanceID: appearanceID,
+            actionSequence: nil,
+            code: .keyboardLifecyclePhaseChanged,
+            level: .debug,
+            category: .display,
+            fields: [],
+            schemeDeliveryPayload: nil,
+            runtimeRoutePayload: nil,
+            rimeSyncPayload: nil,
+            keyboardLifecyclePayload: KeyboardLifecyclePayload(phase: phase),
+            rimeResumePayload: nil,
+            textProxyPayload: nil
+        )
+    }
+
+    static func makeV6RimeResumeEvent(
+        phase: RimeResumePhase,
+        failure: RimeResumeFailure?,
+        sessionEpoch: UInt64?,
+        revision: UInt64?,
+        utcTimestamp: Date,
+        monotonicNanoseconds: UInt64,
+        origin: Origin,
+        processInstanceID: UUID,
+        localSequence: UInt64,
+        appearanceID: UUID?
+    ) -> DiagnosticEvent? {
+        guard origin == .keyboardExtension, (phase == .failed) == (failure != nil) else { return nil }
+        return DiagnosticEvent(
+            schemaVersion: 6,
+            utcTimestamp: utcTimestamp,
+            monotonicNanoseconds: monotonicNanoseconds,
+            origin: origin,
+            processInstanceID: processInstanceID,
+            localSequence: localSequence,
+            appearanceID: appearanceID,
+            actionSequence: nil,
+            code: .rimeResumePhaseChanged,
+            level: .debug,
+            category: .engine,
+            fields: [],
+            schemeDeliveryPayload: nil,
+            runtimeRoutePayload: nil,
+            rimeSyncPayload: nil,
+            keyboardLifecyclePayload: nil,
+            rimeResumePayload: RimeResumePayload(
+                phase: phase,
+                failure: failure,
+                sessionEpoch: sessionEpoch,
+                revision: revision
+            ),
+            textProxyPayload: nil
+        )
+    }
+
+    static func makeV6TextProxyEvent(
+        operation: TextProxyOperation,
+        phase: TextProxyPhase,
+        actionSequence: UInt64?,
+        utcTimestamp: Date,
+        monotonicNanoseconds: UInt64,
+        origin: Origin,
+        processInstanceID: UUID,
+        localSequence: UInt64,
+        appearanceID: UUID?
+    ) -> DiagnosticEvent? {
+        guard origin == .keyboardExtension else { return nil }
+        return DiagnosticEvent(
+            schemaVersion: 6,
+            utcTimestamp: utcTimestamp,
+            monotonicNanoseconds: monotonicNanoseconds,
+            origin: origin,
+            processInstanceID: processInstanceID,
+            localSequence: localSequence,
+            appearanceID: appearanceID,
+            actionSequence: actionSequence,
+            code: .textProxyOperationPhaseChanged,
+            level: .debug,
+            category: .display,
+            fields: [],
+            schemeDeliveryPayload: nil,
+            runtimeRoutePayload: nil,
+            rimeSyncPayload: nil,
+            keyboardLifecyclePayload: nil,
+            rimeResumePayload: nil,
+            textProxyPayload: TextProxyPayload(operation: operation, phase: phase)
+        )
+    }
+
+    private init(
+        schemaVersion: Int,
+        copying event: DiagnosticEvent,
+        origin: Origin,
+        processInstanceID: UUID
+    ) {
+        self.schemaVersion = schemaVersion
+        utcTimestamp = event.utcTimestamp
+        monotonicNanoseconds = event.monotonicNanoseconds
+        self.origin = origin
+        self.processInstanceID = processInstanceID
+        localSequence = event.localSequence
+        appearanceID = event.appearanceID
+        actionSequence = event.actionSequence
+        code = event.code
+        level = event.level
+        category = event.category
+        fields = event.fields
+        schemeDeliveryPayload = event.schemeDeliveryPayload
+        runtimeRoutePayload = event.runtimeRoutePayload
+        rimeSyncPayload = event.rimeSyncPayload
+        keyboardLifecyclePayload = event.keyboardLifecyclePayload
+        rimeResumePayload = event.rimeResumePayload
+        textProxyPayload = event.textProxyPayload
+    }
+
+    private init(
+        schemaVersion: Int,
+        utcTimestamp: Date,
+        monotonicNanoseconds: UInt64,
+        origin: Origin,
+        processInstanceID: UUID,
+        localSequence: UInt64,
+        appearanceID: UUID?,
+        actionSequence: UInt64?,
+        code: Code,
+        level: Logger.Level,
+        category: Logger.Category,
+        fields: [Field],
+        schemeDeliveryPayload: SchemeDeliveryPayload?,
+        runtimeRoutePayload: RuntimeRoutePhaseEvent?,
+        rimeSyncPayload: RimeSyncPayload?,
+        keyboardLifecyclePayload: KeyboardLifecyclePayload?,
+        rimeResumePayload: RimeResumePayload?,
+        textProxyPayload: TextProxyPayload?
+    ) {
+        self.schemaVersion = schemaVersion
+        self.utcTimestamp = utcTimestamp
+        self.monotonicNanoseconds = monotonicNanoseconds
+        self.origin = origin
+        self.processInstanceID = processInstanceID
+        self.localSequence = localSequence
+        self.appearanceID = appearanceID
+        self.actionSequence = actionSequence
+        self.code = code
+        self.level = level
+        self.category = category
+        self.fields = fields
+        self.schemeDeliveryPayload = schemeDeliveryPayload
+        self.runtimeRoutePayload = runtimeRoutePayload
+        self.rimeSyncPayload = rimeSyncPayload
+        self.keyboardLifecyclePayload = keyboardLifecyclePayload
+        self.rimeResumePayload = rimeResumePayload
+        self.textProxyPayload = textProxyPayload
+    }
+
+    private static func isValidTypoRecallQuery(
+        code: Code,
+        schemaVersion: Int,
+        fields: [Field]
+    ) -> Bool {
+        let queryFields = fields.filter {
+            if case .typoRecallQuery = $0 { return true }
+            return false
+        }
+        if code == .typoRecallQueryMeasured {
+            guard Self.supportsTypoRecall(schemaVersion: schemaVersion), fields.count == 1 else { return false }
+            if case .typoRecallQuery = fields[0] { return true }
+            return false
+        }
+        return queryFields.isEmpty
+    }
+
+    private static func isLegacyCompatibleField(_ field: Field) -> Bool {
+        switch field {
+        case .count(let name, _):
+            return !v5OnlyCountMetrics.contains(name)
+        case .reason(let reason):
+            return !v5OnlyReasons.contains(reason)
+        case .typoRecallQuery:
+            return false
+        case .duration, .flag:
+            return true
+        }
+    }
 
     private enum CodingKeys: String, CodingKey {
         case schemaVersion, utcTimestamp, monotonicNanoseconds, origin, processInstanceID
         case localSequence, appearanceID, actionSequence, code, level, category, fields
         case schemeDeliveryPayload, runtimeRoutePayload, rimeSyncPayload
+        case keyboardLifecyclePayload, rimeResumePayload, textProxyPayload
     }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         schemaVersion = try container.decode(Int.self, forKey: .schemaVersion)
+        guard Self.supportsReading(schemaVersion: schemaVersion) else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .schemaVersion,
+                in: container,
+                debugDescription: "Unsupported diagnostic schema version"
+            )
+        }
         utcTimestamp = try container.decode(Date.self, forKey: .utcTimestamp)
         monotonicNanoseconds = try container.decode(UInt64.self, forKey: .monotonicNanoseconds)
         origin = try container.decode(Origin.self, forKey: .origin)
@@ -862,6 +1496,137 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
             RimeSyncPayload.self,
             forKey: .rimeSyncPayload
         )
+        keyboardLifecyclePayload = try container.decodeIfPresent(
+            KeyboardLifecyclePayload.self,
+            forKey: .keyboardLifecyclePayload
+        )
+        rimeResumePayload = try container.decodeIfPresent(
+            RimeResumePayload.self,
+            forKey: .rimeResumePayload
+        )
+        textProxyPayload = try container.decodeIfPresent(
+            TextProxyPayload.self,
+            forKey: .textProxyPayload
+        )
+        let containsV4OnlyKey = [
+            CodingKeys.keyboardLifecyclePayload,
+            .rimeResumePayload,
+            .textProxyPayload,
+        ].contains(where: container.contains)
+        guard
+            Self.supportsWakeMarkers(schemaVersion: schemaVersion)
+                || (!Self.v4OnlyCodes.contains(code) && !containsV4OnlyKey)
+        else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .schemaVersion,
+                in: container,
+                debugDescription: "Wake marker data requires schema v4 or v6"
+            )
+        }
+        guard
+            Self.supportsTypoRecall(schemaVersion: schemaVersion)
+                || !Self.v5OnlyCodes.contains(code)
+        else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .schemaVersion,
+                in: container,
+                debugDescription: "v5-only diagnostic code cannot be labeled as an older schema"
+            )
+        }
+        guard
+            Self.supportsTypoRecall(schemaVersion: schemaVersion)
+                || fields.allSatisfy(Self.isLegacyCompatibleField)
+        else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .fields,
+                in: container,
+                debugDescription: "v5-only diagnostic field cannot be labeled as an older schema"
+            )
+        }
+        guard
+            keyboardLifecyclePayload != nil
+                ? (code == .keyboardLifecyclePhaseChanged && Self.supportsWakeMarkers(schemaVersion: schemaVersion))
+                : code != .keyboardLifecyclePhaseChanged
+        else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .keyboardLifecyclePayload,
+                in: container,
+                debugDescription: "Keyboard lifecycle code and payload do not match"
+            )
+        }
+        guard
+            rimeResumePayload != nil
+                ? (code == .rimeResumePhaseChanged && Self.supportsWakeMarkers(schemaVersion: schemaVersion))
+                : code != .rimeResumePhaseChanged
+        else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .rimeResumePayload,
+                in: container,
+                debugDescription: "RIME resume code and payload do not match"
+            )
+        }
+        guard
+            textProxyPayload != nil
+                ? (code == .textProxyOperationPhaseChanged && Self.supportsWakeMarkers(schemaVersion: schemaVersion))
+                : code != .textProxyOperationPhaseChanged
+        else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .textProxyPayload,
+                in: container,
+                debugDescription: "Text proxy code and payload do not match"
+            )
+        }
+        guard
+            [
+                keyboardLifecyclePayload != nil,
+                rimeResumePayload != nil,
+                textProxyPayload != nil,
+            ].filter({ $0 }).count <= 1,
+            keyboardLifecyclePayload == nil || fields.isEmpty,
+            rimeResumePayload.map({ fields.isEmpty && $0.isValid }) ?? true,
+            textProxyPayload == nil || fields.isEmpty
+        else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .keyboardLifecyclePayload,
+                in: container,
+                debugDescription: "Invalid wake marker payload pairing or generic fields"
+            )
+        }
+        if keyboardLifecyclePayload != nil {
+            guard origin == .keyboardExtension, level == .debug, category == .display else {
+                throw DecodingError.dataCorruptedError(
+                    forKey: .keyboardLifecyclePayload,
+                    in: container,
+                    debugDescription: "Invalid keyboard lifecycle event envelope"
+                )
+            }
+        }
+        if rimeResumePayload != nil {
+            guard origin == .keyboardExtension, level == .debug, category == .engine else {
+                throw DecodingError.dataCorruptedError(
+                    forKey: .rimeResumePayload,
+                    in: container,
+                    debugDescription: "Invalid RIME resume event envelope"
+                )
+            }
+        }
+        if textProxyPayload != nil {
+            guard origin == .keyboardExtension, level == .debug, category == .display else {
+                throw DecodingError.dataCorruptedError(
+                    forKey: .textProxyPayload,
+                    in: container,
+                    debugDescription: "Invalid text proxy event envelope"
+                )
+            }
+        }
+        guard Self.isValidTypoRecallQuery(code: code, schemaVersion: schemaVersion, fields: fields)
+        else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .fields,
+                in: container,
+                debugDescription: "Invalid typo-recall query code, schema or typed fields"
+            )
+        }
         guard
             schemeDeliveryPayload?.code == code
                 || (schemeDeliveryPayload == nil && !Self.schemeDeliveryCodes.contains(code))
@@ -936,5 +1701,8 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         try container.encodeIfPresent(schemeDeliveryPayload, forKey: .schemeDeliveryPayload)
         try container.encodeIfPresent(runtimeRoutePayload, forKey: .runtimeRoutePayload)
         try container.encodeIfPresent(rimeSyncPayload, forKey: .rimeSyncPayload)
+        try container.encodeIfPresent(keyboardLifecyclePayload, forKey: .keyboardLifecyclePayload)
+        try container.encodeIfPresent(rimeResumePayload, forKey: .rimeResumePayload)
+        try container.encodeIfPresent(textProxyPayload, forKey: .textProxyPayload)
     }
 }

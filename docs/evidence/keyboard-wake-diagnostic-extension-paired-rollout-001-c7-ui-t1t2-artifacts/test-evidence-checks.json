@@ -1,0 +1,25 @@
+{
+  "Rime": {
+    "actual_test_cases": 105,
+    "skip_case_nodes": 20,
+    "compile_invocation_matching_swift6_probe_warnings_as_errors": 9,
+    "explicit_complete_flag_present_in_any_invocation": false,
+    "raw_log_sha256": "14b251841a5fd4e36c40c13a2736d7086a29258acf9bdc7193b7bea260e566e4",
+    "terminal_test_succeeded": true,
+    "bundles": [
+      "RimeBridgeTests"
+    ]
+  },
+  "AppKeyboard": {
+    "actual_test_cases": 431,
+    "skip_case_nodes": 10,
+    "compile_invocation_matching_swift6_probe_warnings_as_errors": 18,
+    "explicit_complete_flag_present_in_any_invocation": false,
+    "raw_log_sha256": "7ac6e6f9bd0fb9bf07aab555f83f78504d729212ad2befb504bb9357087ce572",
+    "terminal_test_succeeded": true,
+    "bundles": [
+      "UniverseKeyboardTests",
+      "KeyboardTests"
+    ]
+  }
+}

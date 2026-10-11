@@ -1,0 +1,81 @@
+{
+  "lane_id": "QUALITY-C5-P",
+  "round": 2,
+  "packet_sha256": "92261372cf80f101519d2699dca35f8a49856964f04aeddfde7a48111dcb9535",
+  "manifest_sha256": "56d6c3b4875712dee712ef93c7e691fd0bf905cbdfd555b96539bed006e34f15",
+  "entry_sha256": "f4ce5e922d70f15ff0c3de011cbe007b57a528b4379e9e004dc11b8dfffbc282",
+  "candidate_digest": "af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9",
+  "identity": {
+    "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+    "branch": "codex/keyboard-wake-v3-compatibility-gate"
+  },
+  "hash_checks": {
+    "documents": "47/47",
+    "source_build": "568/568",
+    "debug_bundle": "111/111"
+  },
+  "status_digest": {
+    "manifest_field": "before_status_z_sha256",
+    "frozen_before_status_sha256": "fc85676645d873c29eb5cd2ed31e5b7330220519c124a53eaa62a98dd7ed17bc",
+    "review_current_status_sha256": "62b1bc8d864b3f13ea35a3989a31d54ae49b147e07fc2ba65dd1e20ead3779f9",
+    "root_explanation": "字段是本轮三份冻结文档和owning Assignment bookkeeping追加前的历史状态；root确认2518项既有文件仅Assignment变动、新增仅本轮packet/manifest/Entry、staged0，非source/bundle漂移。"
+  },
+  "round1": {
+    "report_sha256": "e646bf55a3bbff690fdf4951abd40e84e283e2e70e3916fdcfdc4eec83cded4d",
+    "usage_sha256": "842848bc2319704c854556c963ac5ac738e4651c2d3cdc6ec508ed5151acbe27",
+    "verdict": "Partial due 610.087 seconds > 600-second ceiling; retained unchanged"
+  },
+  "budget": {
+    "max_underlying_tool_calls": 4,
+    "actual_underlying_tool_calls": 3,
+    "remaining_underlying_tool_calls": 1,
+    "max_elapsed_seconds": 300
+  },
+  "tool_call_ledger": [
+    "1: create timer.json first, capture UTC/monotonic, read/hash packet, manifest, Entry",
+    "2: hash all 47 documents, 568 source/build inputs, 111 bundle files; read-only identity/status; read own round1 report/usage and C5 plan",
+    "3: write this round2 report, usage and final timer"
+  ],
+  "functions_exec_wrappers": 3,
+  "collaboration_messages": 2,
+  "checkpoint": {
+    "required_after_call": 2,
+    "sent_after_call": 2,
+    "before_call": 3,
+    "timestamp_basis": "immediately after second call; wall-clock capture from file tool output was 2026-10-01T01:30:23.736913Z"
+  },
+  "timer": {
+    "start_utc": "2026-10-01T01:29:36.339099+00:00",
+    "start_monotonic": 1001027.316961208,
+    "end_utc": "2026-10-01T01:33:34.312869+00:00",
+    "end_monotonic": 1001265.289598125,
+    "elapsed_seconds": 237.973,
+    "within_300_seconds": true
+  },
+  "coverage": {
+    "D1": "Covered",
+    "D2": "Covered",
+    "D3": "Covered",
+    "P-Q1": "Confirmed/reused",
+    "P-Q2": "Confirmed/reused",
+    "P-Q3": "Confirmed/reused"
+  },
+  "verdict": "Round2 confirmation complete within budget; no new lane blocker. Round1 Partial remains historical. Product C5 disposition and C5-I/R remain pending.",
+  "actions_not_performed": [
+    "build",
+    "test",
+    "Simulator/device",
+    "install",
+    "launch",
+    "input/capture",
+    "Maps",
+    "network",
+    "Git mutation",
+    "read other reviewer report"
+  ],
+  "outputs": [
+    "/private/tmp/ukey-wake-c5-p-r2-20261001/quality-review-r2.md",
+    "/private/tmp/ukey-wake-c5-p-r2-20261001/quality-usage-r2.json",
+    "/private/tmp/ukey-wake-c5-p-r2-20261001/timer.json"
+  ]
+}

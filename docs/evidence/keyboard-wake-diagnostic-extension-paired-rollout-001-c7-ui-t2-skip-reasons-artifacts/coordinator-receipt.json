@@ -1,0 +1,20 @@
+{
+  "role": "Coordinator archival and aggregate only; independent report unchanged",
+  "formal_report_sha256": "bf149db95a7e06c5629126d5362125cf8c2a5e5e85c8f8ee551f3254248954f3",
+  "formal_usage_sha256": "6a1eab6af4ec826947df1b1ef7b769126655a03a3ac55a9e11e7a1ef7f006611",
+  "leaf_tool_calls": 2,
+  "elapsed_seconds": 163.063,
+  "source_input_drift": [],
+  "packet_whole_file_digest": "8b3e01f005f69a01bd74463c9aa34dc4d72532fe7088b87c5784c834cec2f72e",
+  "external_identity_digest_matches_packet": true,
+  "digest_message_adjudication": "Reviewer reported dispatch digest length concern. Frozen external-identity.json and actual packet both match the same 64-character whole SHA; canonical self and all 43 frozen inputs independently matched. Original report/usage/messages preserved; no fabricated reviewer whole-literal comparison.",
+  "aggregate_coverage": {
+    "T1": "S-R2 Covered",
+    "T2": "S-R2 count/case check + T2 reason addendum Covered",
+    "T3": "S-R2 Covered",
+    "T4": "P-R2 Covered",
+    "T5": "P-R2 Covered",
+    "T6": "P-R2 Covered"
+  },
+  "overall_T": "Hold pending current-stage Product disposition for29 unverified; no Gate/Release"
+}

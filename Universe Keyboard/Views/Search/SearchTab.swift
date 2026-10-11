@@ -158,6 +158,8 @@ struct SearchTab: View {
             KeyboardLayoutSettingsView(rimeStore: rimeStore)
         case .feedback:
             FeedbackSettingsView()
+        case .deleteKey:
+            DeleteKeySettingsView()
         case .typoCorrection:
             TypoCorrectionBenchmarkView()
         case .typingIntelligence:
@@ -179,8 +181,12 @@ struct SearchTab: View {
                 model: notificationSettings,
                 isRimeSyncMethodConfigured: syncModel.provider != .none
             )
+        case .about:
+            AboutSettingsView()
         case .privacy:
             PrivacyDataView()
+        case .openSource:
+            OpenSourceLicensesView()
         case .localDictionary:
             DictionaryBrowserView()
         case .diagnostics:

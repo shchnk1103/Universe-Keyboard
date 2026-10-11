@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+  "origin_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+  "expected_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+  "line_start": 301,
+  "line_end": 360,
+  "lines": [
+    {
+      "line": 301,
+      "text": "    // MARK: - 缓存的设置值"
+    },
+    {
+      "line": 302,
+      "text": ""
+    },
+    {
+      "line": 303,
+      "text": "    /// 缓存的按键音开关状态，避免每次按键都通过 XPC 跨进程访问 UserDefaults。"
+    },
+    {
+      "line": 304,
+      "text": "    /// Apple 最佳实践：自定义键盘扩展运行在独立进程中，每次 XPC 调用都有开销。"
+    },
+    {
+      "line": 305,
+      "text": "    /// 缓存这些值可以显著减少每次按键的延迟。"
+    },
+    {
+      "line": 306,
+      "text": "    var cachedKeyClickEnabled: Bool = true"
+    },
+    {
+      "line": 307,
+      "text": "    /// Cached layout preference (read on appear/activate only)."
+    },
+    {
+      "line": 308,
+      "text": "    var cachedLayoutStyle: KeyboardLayoutStyle = .twentySixKey"
+    },
+    {
+      "line": 309,
+      "text": "    /// Cached T9 readiness match for Chinese nine-key chrome."
+    },
+    {
+      "line": 310,
+      "text": "    var cachedT9ReadinessMatched: Bool = false"
+    },
+    {
+      "line": 311,
+      "text": "    var cachedHapticEnabled: Bool = false"
+    },
+    {
+      "line": 312,
+      "text": ""
+    },
+    {
+      "line": 313,
+      "text": "    /// Feedback resources and cached levels stay owned by the view controller; methods live in +Feedback."
+    },
+    {
+      "line": 314,
+      "text": "    let hapticGenerator = UIImpactFeedbackGenerator(style: .light)"
+    },
+    {
+      "line": 315,
+      "text": "    let modeEnterHapticGenerator = UIImpactFeedbackGenerator(style: .heavy)"
+    },
+    {
+      "line": 316,
+      "text": "    static let appGroupID = \"group.com.DoubleShy0N.Universe-Keyboard\""
+    },
+    {
+      "line": 317,
+      "text": "    lazy var sharedDefaults = UserDefaults(suiteName: Self.appGroupID)"
+    },
+    {
+      "line": 318,
+      "text": "    lazy var typoCorrectionLearningStore = TypoCorrectionLearningStore("
+    },
+    {
+      "line": 319,
+      "text": "        defaults: sharedDefaults"
+    },
+    {
+      "line": 320,
+      "text": "    )"
+    },
+    {
+      "line": 321,
+      "text": "    lazy var typingStatisticsWriter = TypingStatisticsWriter(appGroupID: Self.appGroupID)"
+    },
+    {
+      "line": 322,
+      "text": "    var cachedTypingIntelligenceEnabled = false"
+    },
+    {
+      "line": 323,
+      "text": "    var cachedTypingIntelligenceResetEpoch = 0"
+    },
+    {
+      "line": 324,
+      "text": "    var cachedHapticLevel: KeyboardFeedbackLevel = .defaultLevel"
+    },
+    {
+      "line": 325,
+      "text": "    var cachedHapticIntensity: CGFloat = 0.5"
+    },
+    {
+      "line": 326,
+      "text": "    var cachedLiquidGlassMaterialEnabled = false"
+    },
+    {
+      "line": 327,
+      "text": "    var deleteRepeatEffectiveFeedbackCount = 0"
+    },
+    {
+      "line": 328,
+      "text": "    /// 不在按键路径写入：仅在键盘可见期间维持同步安全检查所需的心跳。"
+    },
+    {
+      "line": 329,
+      "text": "    var rimeSyncActivityHeartbeatTimer: Timer?"
+    },
+    {
+      "line": 330,
+      "text": ""
+    },
+    {
+      "line": 331,
+      "text": "    // MARK: - 布局常量"
+    },
+    {
+      "line": 332,
+      "text": ""
+    },
+    {
+      "line": 333,
+      "text": "    /// 键盘内容顶部留白。保留少量空间，避免候选栏贴住系统外层圆角。"
+    },
+    {
+      "line": 334,
+      "text": "    let keyboardContentTopInset: CGFloat = 2"
+    },
+    {
+      "line": 335,
+      "text": "    /// 键盘内容底部留白。底部由系统容器提供圆角与安全区域，这里只保留极小间距。"
+    },
+    {
+      "line": 336,
+      "text": "    let keyboardContentBottomInset: CGFloat = 0"
+    },
+    {
+      "line": 337,
+      "text": "    /// 候选栏高度（点）。系统键盘外层容器已提供顶部承载面，候选栏保持更紧凑。"
+    },
+    {
+      "line": 338,
+      "text": "    let candidateBarHeight: CGFloat = 34"
+    },
+    {
+      "line": 339,
+      "text": "    /// Fixed precise pinyin path bar reservation for Chinese nine-key (ADR 0020)."
+    },
+    {
+      "line": 340,
+      "text": "    let t9PinyinPathBarHeight: CGFloat = 34"
+    },
+    {
+      "line": 341,
+      "text": "    /// 候选栏与第一行按键之间的间距。并入候选栏自身高度，保证这块区域也能接收候选手势。"
+    },
+    {
+      "line": 342,
+      "text": "    let candidateToKeySpacing: CGFloat = 14"
+    },
+    {
+      "line": 343,
+      "text": "    /// 仅用于裁切内部布局，避免透明内容超出系统外层大圆角；不绘制额外 surface。"
+    },
+    {
+      "line": 344,
+      "text": "    let keyboardSurfaceMaskCornerRadius: CGFloat = 34"
+    },
+    {
+      "line": 345,
+      "text": "    /// 单个按键高度（点）。45pt 比 HIG 最小触控目标略高，接近原生键盘手感。"
+    },
+    {
+      "line": 346,
+      "text": "    let keyHeight: CGFloat = 45"
+    },
+    {
+      "line": 347,
+      "text": "    /// 行间垂直间距（点）。8pt 对齐网格，接近原生键盘行间距。"
+    },
+    {
+      "line": 348,
+      "text": "    let keySpacing: CGFloat = 8"
+    },
+    {
+      "line": 349,
+      "text": "    /// 字母区与底部功能区之间的分组间距。只比常规行距略大，避免键盘显得松散。"
+    },
+    {
+      "line": 350,
+      "text": "    let keyboardGroupSpacing: CGFloat = 10"
+    },
+    {
+      "line": 351,
+      "text": "    /// 行内按键水平间距（点）。保持 6pt 紧凑排列，与原生键盘一致（行内键距 < 行间距）。"
+    },
+    {
+      "line": 352,
+      "text": "    let keyHorizontalSpacing: CGFloat = 6"
+    },
+    {
+      "line": 353,
+      "text": "    /// 第三行功能键与字母组之间的分组间距，对齐字母区与底部功能区的视觉节奏。"
+    },
+    {
+      "line": 354,
+      "text": "    let thirdRowFunctionSpacing: CGFloat = 10"
+    },
+    {
+      "line": 355,
+      "text": "    /// 主要功能键宽度（Shift、123、删除、语言切换），保持触控舒适但弱化视觉占比。"
+    },
+    {
+      "line": 356,
+      "text": "    let primaryFunctionKeyWidth: CGFloat = 46"
+    },
+    {
+      "line": 357,
+      "text": "    /// 功能键 SF Symbol 字号（Delete / Return / Globe / 表情）。与文字标题字号分离。"
+    },
+    {
+      "line": 358,
+      "text": "    let functionKeySymbolPointSize: CGFloat = 22"
+    },
+    {
+      "line": 359,
+      "text": "    /// 字母键文字字号（26 键字母、九键 ABC… 字母组）。"
+    },
+    {
+      "line": 360,
+      "text": "    let characterKeyTitlePointSize: CGFloat = 17"
+    }
+  ]
+}

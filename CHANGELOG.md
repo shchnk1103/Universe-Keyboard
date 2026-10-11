@@ -1,5 +1,79 @@
 # CHANGELOG
 
+## 2026-10-11 — F-01 部署身份守卫固定基线整合（待合并）
+
+- 主 App 部署成功要求可用librime身份；nil、空白与`(no api)`/`(unknown)`保持待部署，正常版本与已有runtime smoke继续保留。
+- 保留旧PR139祖先关系整合固定main；五源完整本地CI与一次独立增量复核通过。当前仅候选发布，不表示PR139已合并或Release。
+- INT003工具已由PR207合并`8f306c6`；下方待发布条目保留其当时的历史状态。父任务仍Active。
+
+## 2026-10-11 — INT003 查询成本 DEBUG 工具与验证收敛（待发布候选）
+
+- 加入默认关闭的有限成本探针、真实route scope、序列边界、freeze快照及时间锚点；不增加Release持久化日志或Extension部署。
+- 协调器和probe使用hostless Extension测试；Swift格式检查覆盖ExtensionTests，保留main现有模拟器准备和生命周期恢复逻辑。
+- 固定main5927233整合候选完成完整本地CI与DEBUG52回归；P2仅接受有界provider计数/elapsed，整体性能未知保留，父Active。
+- [复用说明](docs/debugging/int003-query-cost-probe-reuse.md)。尚未commit/push/merge，不代表Release或父Gate/Close。
+
+
+## 2026-10-07 — 删除键可滑动擦除并清空光标前文字
+
+- 点按删除一次。长按 0.5 秒后按 0.08 秒重复，大约再 0.15 秒出现垃圾桶。
+- 左右滑动按字素擦除，滑回可回放。正在组字时向左滑，放弃剩余组字。
+- 手指进入垃圾桶再松手，清空光标前已经能看见的文字。iOS 26 用浅红色玻璃，更低版本用随外观变化的模糊。
+- 发声仍用现有按键音和触感：按下一次；之后每删一个字一次按键音，触感每四个字一次；进入垃圾桶时一次较重的确认。
+- 设置 → 输入体验 → 删除键：长按垃圾桶、滑动擦除、组字时左滑，默认都开。点按和长按重复不能关。
+
+## 2026-09-28 — 空闲候选栏可关闭键盘
+
+- 候选栏右侧键在没有可展开内容时显示带圈向下箭头，点按请求收起键盘。
+- 有候选、组字、联想或待选符号时仍为展开；下滑展开只在展开模式生效。
+- 空闲关闭键改为 template 图标，去掉 `UIButton.Configuration` 在玻璃上叠出的白底。
+
+## 2026-09-28 — 主 App 增加关于页
+
+- 设置「App 设置」末行增加「关于」：展示版本与 Build，提供邮件和小红书联系入口。
+- 「隐私与数据」「开源软件与内容」改从关于页进入；设置根列表只保留外观、通知和关于。
+- 关于页只读当前安装包的营销版本与构建号；本地 Debug 显示 `1.0 (1)` 符合工程默认。公测/正式版数字由当次上传包决定，规则写在发布清单。
+
+## 2026-09-28 — 主 App 操作按钮整块可点
+
+- 共享 `AppActionButton` 的命中区域改为整块可见胶囊（含玻璃空白与内边距），不再只响应标题字形。
+- 命中形状与现有 16 pt 连续圆角对齐；对比度、Liquid Glass 和按钮语义不变。
+
+## 2026-09-25 — 环境采集中的设备发现诊断分层
+
+- Environment Capture Procedure 升至 `1.1.0`：分别记录 `devicectl`、`simctl`、Device Hub、Accessibility Inspector 与 XCTest/XCUITest 结果；目标模拟器操作使用当次发现的显式 UDID，并按具体失败操作记录状态和耗时。
+- 独立 Architecture review 为 **Pass**，Human Product Owner 已接受发布。此项是 docs-only 发布候选；在合并到默认分支前，已发布流程仍为 `1.0.0`。
+
+## 2026-09-23 — 键盘字母与标点字号微调
+
+- 英文字母、标点字符及九键字母组字号从 `16 pt` 调整为 `17 pt`，回应公测用户反馈偏小的问题；按键尺寸和布局不变。
+
+## 2026-09-23 — 第三方方案下载改为许可 sheet 单按钮
+
+- 首次下载入口统一为「查看许可并下载」；许可证 sheet 底部「同意并下载」才开始下载并部署。
+- 覆盖设置方案详情卡片、启用引导准备资源，以及九键安装弹出的同一 sheet。已安装管理网格不变。
+
+## 2026-09-23 — 主 App 操作按钮深浅色对比度
+
+- 共享 `AppActionButton` 的可点击 primary 改为浅色黑底白字、深色白底黑字；iOS 26 保留 Liquid Glass（Reduce Transparency 时走实心 fallback）。
+- Secondary 用近无 tint 的玻璃板；destructive 保持语义红；disabled 沿用同一颜色对并整体 40% 透明。
+- 独立 Quality 为 **Pass with conditions**；Human Product Gate 已接受既有残差与 Human-attested 目视。隔离分支实现 commit `ab98e346d8cca67f2c77287e7ebb6516f4483160`；push / Release 仍未授权。
+## 2026-09-24 — RIME-SYNC-001 当前闭环范围限于本地文件夹
+
+- Human Product Owner 将当前 iOS V1 收尾验证限定为 local-folder 路径；已实现的 WebDAV 功能保留，但 live-server 验证延期至 `TD-019`，CloudKit 与跨平台债务边界不变。
+- 授权在 iPhone 18 Pro / iOS 27.0 Simulator 创建隔离同步目录并进行本地路径验证；该工作不证明实体设备、iCloud/第三方文件提供器传播或 live WebDAV 行为。
+
+## 2026-09-23 — RIME 同步诊断错误码隐私边界
+
+- 同步诊断改用有限、稳定的错误码映射；不再输出任意 NSError domain/code 或底层错误文本，未知错误映射为 `unknown`。
+- 增加错误码映射回归测试并更新 RIME 同步诊断合同；不改变同步行为或产品范围。
+
+## 2026-09-19 — 键盘按键可被 Simulator AX 独立发现并走 UIKit 路径
+
+- Keyboard 按键显式作为独立无障碍元素（`.keyboardKey`）；全幅 touch-routing overlay 不再占用 AX 空间，hit-routing 与 Debug overlay 绘制路径保持分离。
+- Simulator 上字母键、删除、空格、回车、键盘页面、输入语言可作为独立 Key 被 harness 发现；字母/删除经现有 target-action 触发。
+- Product 接受 F-01/F-02 为有界 Pass；缝区、九键、真机 VoiceOver 不纳入本切片。不构成 INT-003、QA-001、性能、parent Close 或 Release 结论。
+
 ## 2026-09-15 — CI full 路径拆成并行 heavy jobs
 
 - `Swift 6 Quality` 在 `full` 分类下不再串行一个 `build-and-test`。改为并行 `format-swift`、`test-keyboardcore`、`test-rimebridge`、`test-app-keyboard`、`build-release`。

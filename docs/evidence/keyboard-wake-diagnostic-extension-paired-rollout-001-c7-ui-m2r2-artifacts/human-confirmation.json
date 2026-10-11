@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-04T04:45:53.229159+00:00",
+  "closed": true,
+  "exclusive": true,
+  "no_reinstall_redeploy": true,
+  "replies": [
+    "已关闭，本轮仍独占",
+    "没有重新安装或部署过 App"
+  ]
+}

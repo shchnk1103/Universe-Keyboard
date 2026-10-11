@@ -1,0 +1,8 @@
+{
+  "ended_at_utc": "2026-10-01T00:13:00.077225+00:00",
+  "target": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "reason": "all authorized matrix actions finished; no further simulator operations in current window",
+  "manual_install": false,
+  "diagnostics_armed": false,
+  "maps": false
+}

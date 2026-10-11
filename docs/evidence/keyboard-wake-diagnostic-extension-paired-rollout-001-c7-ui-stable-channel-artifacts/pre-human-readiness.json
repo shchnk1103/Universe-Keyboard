@@ -1,0 +1,17 @@
+{
+  "utc": "2026-10-04T04:34:42.463054+00:00",
+  "exec_session_id": 63415,
+  "target": "41635     4804 SXs  /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+  "debug_process_metadata": [
+    "3591 91436 Thu Sep 24 22:41:45 2026     Ss   /Applications/Xcode.app/Contents/SharedFrameworks/LLDBRPC.framework/Resources/lldb-rpc-server",
+    "41635 45734 Sun Oct  4 12:16:19 2026     SXs  /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+    "45732 45731 Sun Oct  4 12:33:29 2026     Ss+  /Applications/Xcode.app/Contents/Developer/usr/bin/lldb",
+    "45734 45732 Sun Oct  4 12:33:30 2026     S    /Applications/Xcode.app/Contents/SharedFrameworks/LLDB.framework/Resources/debugserver"
+  ],
+  "own_breakpoint": 1,
+  "initial_hit_count": 0,
+  "loaded_uuid_match": true,
+  "target_running_with_P_TRACED": true,
+  "human_boundary_check": "pending",
+  "no_arm_input_switch_freeze_read": true
+}

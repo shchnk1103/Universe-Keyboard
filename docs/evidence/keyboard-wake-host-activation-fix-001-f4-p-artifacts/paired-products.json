@@ -1,0 +1,75 @@
+[
+  {
+    "bundle_identifier": "com.DoubleShy0N.Universe-Keyboard",
+    "version": "1.0",
+    "build": "1",
+    "relative_root": ".",
+    "modules": [
+      {
+        "path": "Universe Keyboard",
+        "sha256": "38cbdd01d7b664db0c435452086dd209447135f886906bab8181610a6a7e6feb",
+        "uuid_output": "UUID: 664DE45A-5859-34F1-892C-3DD2D9DE7B98 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard",
+        "probe_export_symbols": [],
+        "host_active_symbols": [],
+        "host_resign_symbols": []
+      },
+      {
+        "path": "Universe Keyboard.debug.dylib",
+        "sha256": "c00095f4d2016cf31b876ed5f3f17f53c5ec97d64704829b629d23ab7a57e200",
+        "uuid_output": "UUID: C19CE509-A814-30AB-88F1-CE5416FDDC33 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard.debug.dylib",
+        "probe_export_symbols": [],
+        "host_active_symbols": [],
+        "host_resign_symbols": []
+      }
+    ],
+    "codesign_verify": true
+  },
+  {
+    "bundle_identifier": "com.DoubleShy0N.Universe-Keyboard.Keyboard",
+    "version": "1.0",
+    "build": "1",
+    "relative_root": "PlugIns/Keyboard.appex",
+    "modules": [
+      {
+        "path": "PlugIns/Keyboard.appex/Keyboard",
+        "sha256": "e681da52516441c044c98419a7c9750d7a90b282cb69bd27e220284376922860",
+        "uuid_output": "UUID: CD0C6F02-6094-3726-B598-F03F42ABB468 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+        "probe_export_symbols": [],
+        "host_active_symbols": [],
+        "host_resign_symbols": []
+      },
+      {
+        "path": "PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+        "sha256": "773c4eff9640b2623036e3f819301ead3914cb99b66c9c1496ece5986e762aab",
+        "uuid_output": "UUID: 4B207746-89A7-321F-83C4-91477259BB26 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+        "probe_export_symbols": [
+          "000000000016af64 T _$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF",
+          "000000000016b214 t _$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitFyyXEfU0_",
+          "000000000016b160 t _$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitFyyXEfU_",
+          "00000000007ae568 s ___profc_$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF",
+          "00000000007ae578 s ___profc_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift:$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitFyyXEfU0_",
+          "00000000007ae570 s ___profc_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift:$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitFyyXEfU_",
+          "00000000007c9c40 s ___profd_$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF",
+          "00000000007c9cc0 s ___profd_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift:$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitFyyXEfU0_",
+          "00000000007c9c80 s ___profd_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift:$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitFyyXEfU_"
+        ],
+        "host_active_symbols": [
+          "00000000001044fc t _$s8Keyboard0A14ViewControllerC28extensionHostDidBecomeActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVF",
+          "0000000000104b18 t _$s8Keyboard0A14ViewControllerC28extensionHostDidBecomeActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVFSbyXEfU_",
+          "0000000000104ba4 t _$s8Keyboard0A14ViewControllerC28extensionHostDidBecomeActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVFTo",
+          "00000000007acad8 s ___profc_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Bootstrap.swift:$s8Keyboard0A14ViewControllerC28extensionHostDidBecomeActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVF",
+          "00000000007acae8 s ___profc_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Bootstrap.swift:$s8Keyboard0A14ViewControllerC28extensionHostDidBecomeActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVFSbyXEfU_",
+          "00000000007c36c0 s ___profd_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Bootstrap.swift:$s8Keyboard0A14ViewControllerC28extensionHostDidBecomeActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVF",
+          "00000000007c3700 s ___profd_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Bootstrap.swift:$s8Keyboard0A14ViewControllerC28extensionHostDidBecomeActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVFSbyXEfU_"
+        ],
+        "host_resign_symbols": [
+          "0000000000104128 t _$s8Keyboard0A14ViewControllerC29extensionHostWillResignActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVF",
+          "00000000001043cc t _$s8Keyboard0A14ViewControllerC29extensionHostWillResignActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVFTo",
+          "00000000007acac8 s ___profc_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Bootstrap.swift:$s8Keyboard0A14ViewControllerC29extensionHostWillResignActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVF",
+          "00000000007c3680 s ___profd_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Bootstrap.swift:$s8Keyboard0A14ViewControllerC29extensionHostWillResignActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVF"
+        ]
+      }
+    ],
+    "codesign_verify": true
+  }
+]

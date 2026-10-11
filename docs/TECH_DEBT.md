@@ -17,6 +17,7 @@ Creation, repayment and removal follow `docs/DOCUMENTATION_GOVERNANCE.md`. Plans
 
 ## TD-002: Validate RIME/User Concurrent Access
 
+- **Status:** **Open; explicitly retained as `tech_debt:TD-002` for bounded RIME-SYNC-001 V1 closure by Human Product Owner authorization on 2026-09-23 Asia/Shanghai. Risk remains open.** Two 2026-09-22/23 natural iOS background operations completed, including one process-gate skip of a competing foreground request; neither observation proves cross-process exclusion from Keyboard Extension/librime writes or closes this debt.
 - **Priority:** High
 - **Risk:** Main-App backup/restore/configuration or automatic standard sync can overlap with another foreground/background main-App operation or with Extension/librime writes to `Rime/user`. Per-instance actor serialization does not prove process-wide or cross-process exclusion.
 - **Current mitigation:** Heavy user-dictionary operations remain in the main App and are not run from the key hot path; automatic standard sync checks the keyboard-activity heartbeat; documentation advises avoiding active-session overlap. These controls reduce opportunity but are not a mutual-exclusion proof.
@@ -83,12 +84,15 @@ Creation, repayment and removal follow `docs/DOCUMENTATION_GOVERNANCE.md`. Plans
 
 ## TD-008: Complete Portable RIME Data Compatibility
 
+- **Status:** **Open — explicitly deferred from bounded `RIME-SYNC-001` iOS V1 closure** by Human Product Owner decision on `2026-09-23 Asia/Shanghai`. This debt remains owned and linked; the deferral is not completion or evidence of cross-platform parity.
 - **Priority:** High
 - **Risk:** Standard RIME sync now exports per-device YAML/TXT backups and merges user-dictionary snapshots, but safe cross-device YAML import, full scheme portability and evidence across iOS, macOS, Windows, Linux and Android clients remain incomplete.
-- **Current mitigation:** librime handles user-dictionary snapshots; Universe keeps encrypted private settings separate and does not auto-import YAML, copy live databases or copy full scheme directories.
-- **Recommended fix:** Publish cross-platform fixtures and a compatibility matrix, add allowlisted staged custom-file import with diff/recovery, then verify representative RIME frontends and scheme installers.
+- **Bounded deferred scope:** representative iOS/macOS/Windows/Linux/Android fixture round-trips, full scheme portability, and allowlisted staged custom YAML/TXT import with diff/recovery. The current RIME-SYNC-001 closure makes no claim for these capabilities.
+- **Current mitigation:** librime handles standard user-dictionary snapshots on the shipped iOS path; Universe keeps encrypted private settings separate and does not auto-import YAML, copy live databases or copy full scheme directories.
+- **Recommended fix:** Publish cross-platform fixtures and a compatibility matrix, design/authorize allowlisted staged custom-file import with diff/recovery, then verify representative RIME frontends and scheme installers.
 - **Owner area:** Main App data operations, RIME Platform and cross-platform compatibility tooling.
-- **Trigger to resolve:** Before claiming full RIME configuration or learned-dictionary parity across every target platform.
+- **Trigger to resolve:** Under a separately authorized compatibility Assignment, or before claiming full RIME configuration or learned-dictionary parity across every target platform.
+- **Related:** [`RIME-SYNC-001 bounded V1 closure`](assignments/rime-sync-001.md#product-scope-disposition--v1-closure) · [`RIME Portable Sync contract`](RIME_SYNC.md#current-v1-closure-boundary).
 
 ## TD-009: Multi-Scheme Download Toast Name And Progress
 
@@ -252,7 +256,7 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
   6. 为进入诊断页、手动刷新、日期 catalog、当日快照、分页扩展与筛选各阶段增加内容无关耗时/状态证据，定位真机长时间空白究竟来自 I/O、快照 fence、分页、MainActor 状态提交还是 UI 渲染；不得在 Extension 热路径同步计时或写额外自由文本。
   7. 明确搜索范围、水位与完整性状态：当页面已显示有界 500 条记录而查询无匹配时，UI 必须区分“当前窗口无匹配”“仍在扩展历史”“日志源未写入该事件”与“查询失败”，避免把部分窗口的空结果呈现为全部历史无记录。
   8. 将 RIME 自动同步的开始、入口来源、阶段、跳过、终态及有限错误分类迁移为 `Diagnostics/v1` typed events，并用 operation ID 关联同一事务；不得桥接自由文本、路径、bookmark、NSError domain、词典或输入内容。旧 `rime_diag_log` 可在兼容期保留，但不能继续作为自动同步真机取证的唯一来源。
-- **Current status:** `2026-08-11 Asia/Shanghai` P1 已完成本地质量门、独立 Architecture `Pass`、Quality `Pass with conditions` 与 Human Product Gate；权威记录为 [`TD-013-DIAGNOSTICS-V1-P1`](assignments/td-013-diagnostics-v1-p1.md)。`2026-08-15 Asia/Shanghai` 新增 Human-attested 真机 residual：进入诊断页、手动刷新或等待均可能长时间才显示；当天页面最终显示 `500` 条记录后搜索 `TOUCHPROBE` 仍显示“当前筛选无匹配日志”。截图不证明 producer 未写入，也不证明搜索已覆盖完整当天历史；该缺口一度阻断 `KEY-TOUCH-FILL-001` 的日志探针取证，后者已通过 LLDB 分层证据与 Human 真机 Product Gate 独立完成。`2026-09-01 Asia/Shanghai` 的 `RIME-SYNC-001` 真机追查再次确认该迁移缺口：Human 确认记录总开关及全部分类均开启，但 v1 查看器搜索 `rimeSync` / `rime` 无匹配；相关 producer 仍只写 legacy `rime_diag_log`，而 v1 有结果或选择日期后查看器不会回退 legacy。由于原始 App Group 偏好可能含路径、bookmark 或其它私有配置，本轮未导出整份 plist，因此不能追认旧轮次的精确错误码。通用 fault-injection matrix、真机三模式性能、搜索完整性/阶段耗时与广泛 legacy cohort migration/删除保持后续技术债。
+- **Current status:** `2026-08-11 Asia/Shanghai` P1 已完成本地质量门、独立 Architecture `Pass`、Quality `Pass with conditions` 与 Human Product Gate；权威记录为 [`TD-013-DIAGNOSTICS-V1-P1`](assignments/td-013-diagnostics-v1-p1.md)。`2026-08-15 Asia/Shanghai` 新增 Human-attested 真机 residual：进入诊断页、手动刷新或等待均可能长时间才显示；当天页面最终显示 `500` 条记录后搜索 `TOUCHPROBE` 仍显示“当前筛选无匹配日志”。截图不证明 producer 未写入，也不证明搜索已覆盖完整当天历史；该缺口一度阻断 `KEY-TOUCH-FILL-001` 的日志探针取证，后者已通过 LLDB 分层证据与 Human 真机 Product Gate 独立完成。`2026-09-01 Asia/Shanghai` 的 `RIME-SYNC-001` 真机追查再次确认该迁移缺口：Human 确认记录总开关及全部分类均开启，但 v1 查看器搜索 `rimeSync` / `rime` 无匹配；相关 producer 仍只写 legacy `rime_diag_log`，而 v1 有结果或选择日期后查看器不会回退 legacy。由于原始 App Group 偏好可能含路径、bookmark 或其它私有配置，本轮未导出整份 plist，因此不能追认旧轮次的精确错误码。`2026-09-23 Asia/Shanghai` Human Product Owner 明确将 RIME-SYNC-001 的旧精确错误 `UNKNOWN` 及相关 Diagnostics/query 残余作为 `tech_debt:TD-013` 留存；原因仍不可追溯，本 disposition 不推断旧错误成因。通用 fault-injection matrix、真机三模式性能、搜索完整性/阶段耗时与广泛 legacy cohort migration/删除保持后续技术债。
 - **Owner area:** KeyboardCore diagnostics journal、Main App diagnostics repository/settings、Quality/Release evidence。
 - **Trigger to resolve:** 获得明确实现授权后，按 P1 Assignment 的 phase/门禁推进；日志量/导出需求增长或再次出现无法归因的视觉异常可触发 Product revalidation。
 - **Related:** ADR 0027、`DIAGNOSTICS-OBSERVABILITY-001`、[`PD-TD-013-DIAGNOSTICS-V1-P1`](product-decisions/TD-013-DIAGNOSTICS-V1-P1-authorization.md)、`docs/DEBUGGING.md`。
@@ -298,6 +302,7 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 
 ## TD-017: Investigate Background Sync Sandbox Extension Consume Failure
 
+- **Status:** **Open; explicitly retained as `tech_debt:TD-017` for bounded RIME-SYNC-001 V1 closure by Human Product Owner authorization on 2026-09-23 Asia/Shanghai.** The attribution and safety impact remain unknown.
 - **Priority:** Low–Medium。当前不阻塞 RIME 后台回调崩溃修复或强制真机同步通过；若与自然后台失败、目录授权失效或缺失输出同时出现则升级。
 - **Risk:** `2026-08-29` 真机强制后台同步在 librime 已报告 `3 tasks ran: 3 success, 0 failure` 且完成通知已生成后，控制台出现 `sandbox_extension_consume failed: 22 (Invalid argument)`。当前没有证据说明它来自 App、文件提供器、系统安全作用域实现或 librime，也没有证据证明它完全无害。若它代表 security-scoped resource 使用不对称，未来可能在自然后台或不同文件提供器上表现为目录访问失败。
 - **Current mitigation:** 标准同步仍由主 App 执行；文件夹 bookmark、写入预检和运行时目录访问失败会 fail closed 并暂停自动同步；本次真实 RIME 备份、完成通知及下一周期重排均成功。
@@ -315,6 +320,17 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 - **Owner area:** Main App `RimeSettingsStore` / `SchemaManager` uninstall orchestration.
 - **Trigger to resolve:** 产品要求「卸完非活动方案后无需再点部署」；或设置页停留导致用户误以为卸载未完成。
 - **Related:** CS-05 inactive uninstall、ADR 0001（部署状态必须可操作）、[`RIME-DEPLOY-INTERRUPT-RECOVER-001`](assignments/rime-deploy-interrupt-recover-001.md)。
+
+## TD-019: Live WebDAV Provider Validation for RIME Sync
+
+- **Status:** **Open — live WebDAV validation explicitly deferred from the current bounded `RIME-SYNC-001` closure** by Human Product Owner decision on `2026-09-24 Asia/Shanghai`; see the [scope decision](product-decisions/RIME-SYNC-001-LOCAL-FOLDER-CLOSURE-WEBDAV-DEFERRED-2026-09-24.md).
+- **Priority:** Medium; does not block the newly narrowed local-folder evidence slice, but remains a prerequisite before claiming live WebDAV interoperability or provider-side deletion behavior.
+- **Risk:** Existing fake-transport, unit and Simulator UI checks do not establish behavior against a real WebDAV server, including authentication/authorization, conditional writes/conflict responses, provider-specific metadata, or durable deletion propagation.
+- **Current mitigation:** WebDAV requires HTTPS configuration, keeps credentials in Keychain, encrypts the Universe settings package, and uses ETag conditional writes; these implementation properties do not replace live-server validation.
+- **Recommended fix:** Under a future bounded Assignment, use a disposable WebDAV namespace and explicitly authorized credentials; validate read/write/conflict/delete behavior and server-observed results without using production or personal sync data.
+- **Owner area:** Main App data operations with Quality evidence review.
+- **Trigger to resolve:** Before representing live WebDAV behavior as validated, re-including WebDAV in a closure scope, or relying on WebDAV deletion as verified provider behavior.
+- **Related:** [`RIME-SYNC-001`](assignments/rime-sync-001.md) · [`RIME Sync contract`](RIME_SYNC.md) · [scope decision](product-decisions/RIME-SYNC-001-LOCAL-FOLDER-CLOSURE-WEBDAV-DEFERRED-2026-09-24.md).
 
 ## Maintenance Rules
 

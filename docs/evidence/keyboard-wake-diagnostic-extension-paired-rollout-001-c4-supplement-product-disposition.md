@@ -1,0 +1,9 @@
+# C4-Q-01 scoped Product disposition and readonly Quality round2 authorization
+
+2026-10-01 Asia/Shanghai. Human Product Owner current-thread reply “同意” accepts the immediately preceding concrete proposal: only for C4, accept the frozen30skip records as nonblocking/unverified residuals and authorize one readonly Quality supplement with at most8tool interactions/8minutes. No test rerun, installation or Maps.
+
+Candidate SHA256 af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9; same worktree/branch/HEAD as C4. Root reverified exact C4 final dirty digest, artifact hashes, Assignment hash and all568build inputs; no source/results change. Raw30skip inventory remains immutable:20RimeBridge+10App entries remain skipped and are NOT passed; signed Keychain separate success does not relabel its unsigned skip. No v5/StageB acceptance is reused. This disposition is current C4 only, no later candidate/stage/Release carryover.
+
+C4-Q-01: owner Environment/Quality for inventory, Human Product Owner for acceptance; disposition `accept` as scoped nonblocking, still-unverified environment residual. Original Q-C4 round1 Blocker is preserved. Independent Q-C4 round2 may only verify current decision, exact unchanged candidate/evidence and disposition, then reuse already-covered Q1/Q2/Q3/Q5/Q6. No new source investigation or runtime/Gate claim.
+
+Root current Codex task remains sole repo writer/Executor for docs and factual archival; reused independent GPT6 Luna Quality reviewer /root/stage_b_quality retains reviewer role, writes scratch only. Permanent owners unchanged. No Simulator lease exists for this supplement; prior window ended. Installed pairing/default runtime write/actual appex callbacks/marker emission/promotion/Human Maps remain separate dependencies. Parent Active, no Product/Quality/Release Gate or closure, no Git publication.

@@ -21,7 +21,7 @@
 4. 按 `docs/READING_MAPS.md` 中的任务类型加载对应文档
 5. 涉及代码改动时再阅读 `docs/PROJECT_CONTEXT.md`
 6. 运营卫生规则见 `docs/kos/kos-2.1-operational-maturity.md`（不替代 KOS 2.0 冻结原则）
-7. KOS 2.2 目前为 **advisory**，Adopted pin `v0.8.0`：E-01、A-01/B-01、P-01、D-01 仅供新记录显式 opt-in；入口是 [`docs/kos/UPGRADE_STATUS.md`](docs/kos/UPGRADE_STATUS.md) 与 `.kos/project.json`。校验绿不是 Product / merge / Release。未授权 `required`。
+7. KOS 2.2 目前为 **advisory**，Adopted pin v0.9.0：E-01、A-01/B-01、P-01、D-01 仍仅供新记录显式 opt-in；v0.9.0 的 M-02 触发身份/非递归收尾适用于本决定后的触发，reviewer 范围/预算/停止条款适用于决定后新分配的独立 lane。细则见 [docs/kos/UPGRADE_STATUS.md](docs/kos/UPGRADE_STATUS.md) 与 .kos/project.json。校验绿不是 Product / merge / Release。未授权 required。
 
 `CONTEXT_INDEX.md` 保留为详细文档注册表，不再是新会话的第一导航入口。
 需要确定长期团队所有权、跨线程协作或永久线程 bootstrap 时，阅读 `docs/VIRTUAL_ENGINEERING_TEAM.md`。
@@ -66,7 +66,7 @@
 远端工作流按 [`docs/CI_CHANGE_CLASSIFICATION.md`](docs/CI_CHANGE_CLASSIFICATION.md)
 分级：分类、轻量检查和 `final-quality-gate` 始终运行；只有严格的 docs/KOS allowlist
 可跳过全部 heavy jobs（`format-swift`、`test-keyboardcore`、`test-rimebridge`、
-`test-app-keyboard`、`build-release`）。未知路径、workflow 或 `scripts/ci/**`
+`test-app-keyboard`、`test-rime-sync-keychain`、`build-release`）。未知路径、workflow 或 `scripts/ci/**`
 变更必须走完整门禁。不得按 UI/Rime 等源路径跳过其中一部分。
 
 在 **push 后预期合并**、或用户要求「上传并合并 / 修 CI / ship」时，在推送前（至少在 merge 前）于本地执行与 CI 同序的检查。默认模拟器名与 CI 一致：`iPhone 17 Pro`（本机无该机型时可用等价 iOS Simulator，并在报告中写明）。
@@ -89,9 +89,13 @@ xcrun swift-format lint --strict --configuration .swift-format <file>
    `xcodebuild -project "Universe Keyboard.xcodeproj" -scheme RimeBridgeTests -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 17 Pro' CODE_SIGNING_ALLOWED=NO SWIFT_VERSION=6.0 SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES test`
 5. **App + Keyboard 测试（含 UniverseKeyboardTests / KeyboardTests）：**  
    `xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 17 Pro' CODE_SIGNING_ALLOWED=NO SWIFT_VERSION=6.0 SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES test`
-6. **Release build：** 同上 destination，`-configuration Release` 的 `build`（参数与 CI 一致）。Debug `test` 已覆盖 Debug 编译，不再单独跑 Debug `build`。
+6. **签名 Keychain 集成：** `Universe Keyboard` Debug scheme、同上 destination，使用
+   `CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- CODE_SIGNING_REQUIRED=NO`，并以
+   `-only-testing:UniverseKeyboardTests/RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem`
+   执行 `test`（与 CI 的 `test-rime-sync-keychain` 对齐）。无签名的步骤 5 不替代此检查。
+7. **Release build：** 同上 destination，`-configuration Release` 的 `build`（参数与 CI 一致）。Debug `test` 已覆盖 Debug 编译，不再单独跑 Debug `build`。
 
-**范围收窄（仅当改动极小时）：** 纯文档且无 Swift / 工程 / 测试文件改动时，可跳过 3–6，但须在完成报告中写明「docs-only，跳过 xcodebuild」。只改 `Packages/KeyboardCore` 时至少跑步骤 3；改主 App / Extension / 测试 target 时 **不得** 只跑 KeyboardCore 就声称可合并。
+**范围收窄（仅当改动极小时）：** 纯文档且无 Swift / 工程 / 测试文件改动时，可跳过 3–7，但须在完成报告中写明「docs-only，跳过 xcodebuild」。只改 `Packages/KeyboardCore` 时至少跑步骤 3；改主 App / Extension / 测试 target 时 **不得** 只跑 KeyboardCore 就声称可合并。
 
 修改 `.github/workflows/**`、`scripts/ci/**` 或分类规则本身时不得使用 docs-only
 例外；必须验证完整路径和 docs-only 路径，并在 merge 前取得 hosted run 证据。

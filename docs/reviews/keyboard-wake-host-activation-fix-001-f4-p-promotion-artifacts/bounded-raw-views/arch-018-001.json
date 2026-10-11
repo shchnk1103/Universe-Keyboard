@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/manifest.json",
+  "origin_sha256": "8bd9fd599001a1a98587c997c5c2daaab48d8fa3b522f0a9e5718c503b212fe0",
+  "expected_sha256": "8bd9fd599001a1a98587c997c5c2daaab48d8fa3b522f0a9e5718c503b212fe0",
+  "line_start": 1,
+  "line_end": 60,
+  "lines": [
+    {
+      "line": 1,
+      "text": "["
+    },
+    {
+      "line": 2,
+      "text": "  {"
+    },
+    {
+      "line": 3,
+      "text": "    \"path\": \"actual-compiler-flags.json\","
+    },
+    {
+      "line": 4,
+      "text": "    \"bytes\": 39072,"
+    },
+    {
+      "line": 5,
+      "text": "    \"sha256\": \"ea5971c247a1390b0512f9105ff05beebd1c6789fd8aeb82bbbabc1d1a5beec8\""
+    },
+    {
+      "line": 6,
+      "text": "  },"
+    },
+    {
+      "line": 7,
+      "text": "  {"
+    },
+    {
+      "line": 8,
+      "text": "    \"path\": \"app-source-manifest.json\","
+    },
+    {
+      "line": 9,
+      "text": "    \"bytes\": 32601,"
+    },
+    {
+      "line": 10,
+      "text": "    \"sha256\": \"df7f539eadb27a683efa81e477e0fb69a0e05e7a36fc8c737c5f9b7703e7b99e\""
+    },
+    {
+      "line": 11,
+      "text": "  },"
+    },
+    {
+      "line": 12,
+      "text": "  {"
+    },
+    {
+      "line": 13,
+      "text": "    \"path\": \"artifact-freeze-reader.py\","
+    },
+    {
+      "line": 14,
+      "text": "    \"bytes\": 7178,"
+    },
+    {
+      "line": 15,
+      "text": "    \"sha256\": \"68d0ab227f917e69eec3d845b3f7d9bd43694ff89dc6e8e8885d4c664dcc01b1\""
+    },
+    {
+      "line": 16,
+      "text": "  },"
+    },
+    {
+      "line": 17,
+      "text": "  {"
+    },
+    {
+      "line": 18,
+      "text": "    \"path\": \"auth.json\","
+    },
+    {
+      "line": 19,
+      "text": "    \"bytes\": 341,"
+    },
+    {
+      "line": 20,
+      "text": "    \"sha256\": \"a8d13bd76400530970fd34ffbf268bfb6d634aa2f6e051c25a3a03b5eb90aaeb\""
+    },
+    {
+      "line": 21,
+      "text": "  },"
+    },
+    {
+      "line": 22,
+      "text": "  {"
+    },
+    {
+      "line": 23,
+      "text": "    \"path\": \"build-receipt.json\","
+    },
+    {
+      "line": 24,
+      "text": "    \"bytes\": 270,"
+    },
+    {
+      "line": 25,
+      "text": "    \"sha256\": \"bc9467a029d4ece78c861e7acd257976f8f09a33ce5cefd1e2523d3334c17add\""
+    },
+    {
+      "line": 26,
+      "text": "  },"
+    },
+    {
+      "line": 27,
+      "text": "  {"
+    },
+    {
+      "line": 28,
+      "text": "    \"path\": \"build-request.json\","
+    },
+    {
+      "line": 29,
+      "text": "    \"bytes\": 1306,"
+    },
+    {
+      "line": 30,
+      "text": "    \"sha256\": \"af100aa4c68fb99f27c5239440f93ef62396ece1f8980416f67a0fae92335d50\""
+    },
+    {
+      "line": 31,
+      "text": "  },"
+    },
+    {
+      "line": 32,
+      "text": "  {"
+    },
+    {
+      "line": 33,
+      "text": "    \"path\": \"build.log\","
+    },
+    {
+      "line": 34,
+      "text": "    \"bytes\": 548418,"
+    },
+    {
+      "line": 35,
+      "text": "    \"sha256\": \"18fe20fc1ded0462750c2ac57b79c3950ec9804febde2e4e1d435d9ad65b907b\""
+    },
+    {
+      "line": 36,
+      "text": "  },"
+    },
+    {
+      "line": 37,
+      "text": "  {"
+    },
+    {
+      "line": 38,
+      "text": "    \"path\": \"dirty-after.txt\","
+    },
+    {
+      "line": 39,
+      "text": "    \"bytes\": 178954,"
+    },
+    {
+      "line": 40,
+      "text": "    \"sha256\": \"c62b32621b5982b50fd22857d4e96386bb8f8ac819487899bc46b74ea8afa861\""
+    },
+    {
+      "line": 41,
+      "text": "  },"
+    },
+    {
+      "line": 42,
+      "text": "  {"
+    },
+    {
+      "line": 43,
+      "text": "    \"path\": \"dirty-before.txt\","
+    },
+    {
+      "line": 44,
+      "text": "    \"bytes\": 178855,"
+    },
+    {
+      "line": 45,
+      "text": "    \"sha256\": \"edb5ad09c5a30701d9bdeb2b9917bf5ba72c45b97832d469aa35f4143fba1662\""
+    },
+    {
+      "line": 46,
+      "text": "  },"
+    },
+    {
+      "line": 47,
+      "text": "  {"
+    },
+    {
+      "line": 48,
+      "text": "    \"path\": \"execution-entry.json\","
+    },
+    {
+      "line": 49,
+      "text": "    \"bytes\": 2875,"
+    },
+    {
+      "line": 50,
+      "text": "    \"sha256\": \"fea8eca0728f068431f2124d95917e2f87272601a1095a03a752d69a384514b4\""
+    },
+    {
+      "line": 51,
+      "text": "  },"
+    },
+    {
+      "line": 52,
+      "text": "  {"
+    },
+    {
+      "line": 53,
+      "text": "    \"path\": \"five-source-hashes.json\","
+    },
+    {
+      "line": 54,
+      "text": "    \"bytes\": 899,"
+    },
+    {
+      "line": 55,
+      "text": "    \"sha256\": \"7ec3484757dfcf8977497ad928e93808ff75b718cfa847ea3380cf03af94a9fd\""
+    },
+    {
+      "line": 56,
+      "text": "  },"
+    },
+    {
+      "line": 57,
+      "text": "  {"
+    },
+    {
+      "line": 58,
+      "text": "    \"path\": \"freeze-receipt.json\","
+    },
+    {
+      "line": 59,
+      "text": "    \"bytes\": 1403,"
+    },
+    {
+      "line": 60,
+      "text": "    \"sha256\": \"530e962c122896b244a9c98b614f58b9846569f34c0989f74a0774b7dbc944f3\""
+    }
+  ]
+}

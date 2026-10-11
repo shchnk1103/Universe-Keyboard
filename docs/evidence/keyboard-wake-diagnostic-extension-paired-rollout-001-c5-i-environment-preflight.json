@@ -1,0 +1,36 @@
+{
+  "target": {
+    "name": "iPhone 18 Pro",
+    "simulatorId": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "state": "Booted",
+    "isAvailable": true,
+    "runtime": "iOS 27.0"
+  },
+  "originalActiveProfile": "typo-correction-002-recall-publication-preflight-002-release",
+  "originalActiveDefaults": {
+    "projectPath": "/private/tmp/universe-keyboard-typo-correction-002-recall-preflight-001/Universe Keyboard.xcodeproj",
+    "workspacePath": null,
+    "scheme": "Universe Keyboard",
+    "configuration": "Release",
+    "simulatorName": "iPhone 17 Pro",
+    "simulatorId": "884CAC1A-516A-421F-ACF5-035A36F7088A",
+    "simulatorPlatform": "iOS Simulator",
+    "deviceId": null,
+    "useLatestOS": null,
+    "arch": null,
+    "suppressWarnings": false,
+    "derivedDataPath": "/private/tmp/universe-keyboard-typo-correction-002-recall-preflight-002-release-derived",
+    "preferXcodebuild": true,
+    "platform": null,
+    "bundleId": null,
+    "env": null,
+    "extraArgs": [
+      "CODE_SIGNING_ALLOWED=NO",
+      "SWIFT_VERSION=6.0",
+      "SWIFT_STRICT_CONCURRENCY=complete",
+      "SWIFT_SUPPRESS_WARNINGS=NO",
+      "SWIFT_TREAT_WARNINGS_AS_ERRORS=YES"
+    ]
+  },
+  "humanExclusiveWindow": "Human current thread: 授权继续，之前那台模拟器仍然独占（through current C5-I）"
+}

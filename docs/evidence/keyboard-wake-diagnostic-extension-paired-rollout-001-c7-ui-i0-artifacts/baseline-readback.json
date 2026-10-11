@@ -1,0 +1,44 @@
+{
+  "utc": "2026-10-03T08:25:02.330263+00:00",
+  "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "running_exact_processes": [
+    "45871 /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/48C735B3-5BC6-4A0C-B64F-6218EBC9920C/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard"
+  ],
+  "expected_candidate": "ddd5579ee6dce39deea3c63487cfe6817c419628c4471c0b3e9298d9c47f3ca9",
+  "installed_payload_matches_old_C7": true,
+  "installed_file_count": 78,
+  "appex_exe_sha256": "e059dfbfef672553b51d9ce2a3097348f3c40129c8afaa27b58fd90918cbd692",
+  "strict_codesign": {
+    "app": {
+      "exit": 0
+    },
+    "appex": {
+      "exit": 0
+    }
+  },
+  "selected_preferences": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "rime_deployed": {
+      "exists": true,
+      "value": true
+    },
+    "rime_needs_deploy": {
+      "exists": true,
+      "value": false
+    },
+    "rime_is_deploying": {
+      "exists": false,
+      "value": null
+    }
+  },
+  "backup_started": false,
+  "no_signal_sent": true,
+  "reader_notes": "initial baseline count field was not hash map; corrected to frozen c7b3 paired-products file_hashes; no process disappearance inferred"
+}

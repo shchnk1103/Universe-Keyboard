@@ -1,0 +1,30 @@
+[
+  {
+    "argv": [
+      "xcrun",
+      "swift-format",
+      "lint",
+      "--strict",
+      "--configuration",
+      ".swift-format",
+      "KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "git",
+      "diff",
+      "--check",
+      "--no-index",
+      "--",
+      "/dev/null",
+      "KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift"
+    ],
+    "exit": 1,
+    "stdout": "",
+    "stderr": ""
+  }
+]

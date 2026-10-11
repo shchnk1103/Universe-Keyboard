@@ -1,0 +1,35 @@
+{
+  "lane_id": "F4-P-ARCH-PROMOTION",
+  "round": 3,
+  "reviewer": "/root/f4p_arch_promotion_fresh GPT6 Luna",
+  "started_utc": "2026-10-05T04:33:24Z",
+  "ended_utc": null,
+  "elapsed_seconds": null,
+  "actual_tool_calls": 20,
+  "tool_call_accounting": "9 functions.exec wrappers + 9 nested exec_command invocations + 2 collaboration messages",
+  "budget_actual_tool_calls": 20,
+  "budget_wall_clock_seconds": 900,
+  "requested_checkpoints": [
+    8,
+    14
+  ],
+  "progress_messages_sent_after_calls": [
+    7,
+    10
+  ],
+  "coverage": {
+    "A-P1": "Covered",
+    "A-P2": "Covered",
+    "A-P3": "Covered"
+  },
+  "content_verdict": "Pass with conditions",
+  "delivery_status": "Partial",
+  "stop_reason": "第20次调用的作者写入脚本因硬编码 packet SHA 少写一个 8，在写 review.md 前的输入核验处停止。ACK 中也记录了这个错误 SHA。到达调用上限后未重试；review.md、usage.json、delivery-readback.json 未由作者写出，最终作者读回未完成。",
+  "packet_sha256_attempted": "7e358f674b2877afb58073fad78734fb5e8ffe4a417cd668b18378d2103d309",
+  "packet_sha256_actual": "7e358f674b2877afb58073fad78734fb5e8ffe4a417cd668b18378d21038d309",
+  "ack_path": "docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r3-artifacts/architecture/ack.json",
+  "ack_sha256": "739b6799d21d428b9987a26d241aac5e624782b7ac3f1a86515f1a5926dd59d9",
+  "ack_bytes": 1062,
+  "ack_writer_readback_utc": "2026-10-05T04:33:55Z",
+  "ack_recorded_packet_sha256": "7e358f674b2877afb58073fad78734fb5e8ffe4a417cd668b18378d2103d309"
+}

@@ -1,0 +1,57 @@
+{
+  "devices": [
+    {
+      "architecture": "arm64",
+      "deviceId": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "deviceName": "iPhone 18 Pro",
+      "modelName": "iPhone 18 Pro",
+      "osBuildNumber": "24A434",
+      "osVersion": "27.0",
+      "platform": "iOS Simulator"
+    }
+  ],
+  "duration": "Ran for 0.18 seconds",
+  "durationInSeconds": 0.1757270097732544,
+  "hasMediaAttachments": false,
+  "hasPerformanceMetrics": false,
+  "testDescription": "Test case with 1 run",
+  "testIdentifier": "SchemeResourcePreparationCoexistenceTests/testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds()",
+  "testIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests/testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds",
+  "testName": "testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds()",
+  "testPlanConfigurations": [
+    {
+      "configurationId": "1",
+      "configurationName": "Test Scheme Action"
+    }
+  ],
+  "testResult": "Skipped",
+  "testRuns": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "name": "Test skipped - Ice 2026.06.30 default.yaml fixture is required for P3 fingerprint recovery",
+              "nodeType": "Test Case Run",
+              "result": "Skipped"
+            }
+          ],
+          "duration": "0.18s",
+          "durationInSeconds": 0.1757270097732544,
+          "name": "Test Scheme Action",
+          "nodeIdentifier": "1",
+          "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests/testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds",
+          "nodeType": "Test Plan Configuration",
+          "result": "Skipped"
+        }
+      ],
+      "details": "iOS Simulator 27.0",
+      "duration": "0.18s",
+      "durationInSeconds": 0.1757270097732544,
+      "name": "iPhone 18 Pro",
+      "nodeIdentifier": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "nodeType": "Device",
+      "result": "Skipped"
+    }
+  ]
+}

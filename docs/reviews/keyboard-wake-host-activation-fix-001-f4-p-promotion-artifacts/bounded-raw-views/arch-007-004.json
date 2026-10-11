@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift",
+  "origin_sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+  "expected_sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+  "line_start": 181,
+  "line_end": 240,
+  "lines": [
+    {
+      "line": 181,
+      "text": "        NSLayoutConstraint.activate(["
+    },
+    {
+      "line": 182,
+      "text": "            expandButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -3),"
+    },
+    {
+      "line": 183,
+      "text": "            expandButton.centerYAnchor.constraint("
+    },
+    {
+      "line": 184,
+      "text": "                equalTo: topAnchor,"
+    },
+    {
+      "line": 185,
+      "text": "                constant: height / 2 + Layout.expandButtonVerticalAlignmentOffset"
+    },
+    {
+      "line": 186,
+      "text": "            ),"
+    },
+    {
+      "line": 187,
+      "text": "            expandButtonWidthConstraint,"
+    },
+    {
+      "line": 188,
+      "text": "            expandButton.heightAnchor.constraint(equalToConstant: Layout.expandButtonTouchSize),"
+    },
+    {
+      "line": 189,
+      "text": ""
+    },
+    {
+      "line": 190,
+      "text": "            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 2),"
+    },
+    {
+      "line": 191,
+      "text": "            candidateTrailingConstraint,"
+    },
+    {
+      "line": 192,
+      "text": "            collectionView.topAnchor.constraint(equalTo: topAnchor),"
+    },
+    {
+      "line": 193,
+      "text": "            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor),"
+    },
+    {
+      "line": 194,
+      "text": ""
+    },
+    {
+      "line": 195,
+      "text": "            heightAnchor.constraint(equalToConstant: height + bottomHitExtension),"
+    },
+    {
+      "line": 196,
+      "text": "        ])"
+    },
+    {
+      "line": 197,
+      "text": "    }"
+    },
+    {
+      "line": 198,
+      "text": ""
+    },
+    {
+      "line": 199,
+      "text": "    @available(*, unavailable)"
+    },
+    {
+      "line": 200,
+      "text": "    required init?(coder: NSCoder) {"
+    },
+    {
+      "line": 201,
+      "text": "        fatalError(\"init(coder:) has not been implemented\")"
+    },
+    {
+      "line": 202,
+      "text": "    }"
+    },
+    {
+      "line": 203,
+      "text": ""
+    },
+    {
+      "line": 204,
+      "text": "    /// True while a downward expand pan is recognized. Callers should skip"
+    },
+    {
+      "line": 205,
+      "text": "    /// `didSelect` so a swipe-to-expand does not also commit the cell."
+    },
+    {
+      "line": 206,
+      "text": "    var shouldSuppressCandidateSelection: Bool {"
+    },
+    {
+      "line": 207,
+      "text": "        isSwipeDownTracking || hasTriggeredSwipeDownExpand"
+    },
+    {
+      "line": 208,
+      "text": "    }"
+    },
+    {
+      "line": 209,
+      "text": ""
+    },
+    {
+      "line": 210,
+      "text": "    /// Direct tap delivery. UICollectionView's own selection tap waits for the"
+    },
+    {
+      "line": 211,
+      "text": "    /// bar's expand pan to fail and never fires for a stationary press."
+    },
+    {
+      "line": 212,
+      "text": "    var onItemTap: ((IndexPath) -> Void)?"
+    },
+    {
+      "line": 213,
+      "text": ""
+    },
+    {
+      "line": 214,
+      "text": "    override func layoutSubviews() {"
+    },
+    {
+      "line": 215,
+      "text": "        super.layoutSubviews()"
+    },
+    {
+      "line": 216,
+      "text": "        #if DEBUG"
+    },
+    {
+      "line": 217,
+      "text": "            refreshDebugHitboxOverlay()"
+    },
+    {
+      "line": 218,
+      "text": "        #endif"
+    },
+    {
+      "line": 219,
+      "text": "    }"
+    },
+    {
+      "line": 220,
+      "text": ""
+    },
+    {
+      "line": 221,
+      "text": "    #if DEBUG"
+    },
+    {
+      "line": 222,
+      "text": "        func refreshDebugHitboxOverlay() {"
+    },
+    {
+      "line": 223,
+      "text": "            for case let cell as CandidateCollectionCell in collectionView.visibleCells {"
+    },
+    {
+      "line": 224,
+      "text": "                cell.refreshDebugHitboxOverlay()"
+    },
+    {
+      "line": 225,
+      "text": "            }"
+    },
+    {
+      "line": 226,
+      "text": "            guard DebugHitboxOverlayPresentation.isShowing else {"
+    },
+    {
+      "line": 227,
+      "text": "                expandHitboxOverlay?.isHidden = true"
+    },
+    {
+      "line": 228,
+      "text": "                hitProbeLabel?.isHidden = true"
+    },
+    {
+      "line": 229,
+      "text": "                return"
+    },
+    {
+      "line": 230,
+      "text": "            }"
+    },
+    {
+      "line": 231,
+      "text": "            if !expandButton.isHidden {"
+    },
+    {
+      "line": 232,
+      "text": "                let overlay = expandHitboxOverlay ?? DebugKeyTouchRangeOverlayView()"
+    },
+    {
+      "line": 233,
+      "text": "                if expandHitboxOverlay == nil {"
+    },
+    {
+      "line": 234,
+      "text": "                    addSubview(overlay)"
+    },
+    {
+      "line": 235,
+      "text": "                    expandHitboxOverlay = overlay"
+    },
+    {
+      "line": 236,
+      "text": "                }"
+    },
+    {
+      "line": 237,
+      "text": "                overlay.isHidden = false"
+    },
+    {
+      "line": 238,
+      "text": "                overlay.apply("
+    },
+    {
+      "line": 239,
+      "text": "                    touchFrame: expandedButtonHitFrame,"
+    },
+    {
+      "line": 240,
+      "text": "                    visualFrame: expandButton.frame,"
+    }
+  ]
+}

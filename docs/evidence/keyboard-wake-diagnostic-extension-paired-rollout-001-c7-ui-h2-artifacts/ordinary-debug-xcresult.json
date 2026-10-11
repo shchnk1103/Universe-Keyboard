@@ -1,0 +1,26 @@
+{
+  "actionTitle" : "Build \"Universe Keyboard\"",
+  "analyzerWarningCount" : 0,
+  "analyzerWarnings" : [
+
+  ],
+  "destination" : {
+    "architecture" : "undefined_arch",
+    "deviceId" : "dvtdevice-DVTiOSDeviceSimulatorPlaceholder-iphonesimulator:placeholder",
+    "deviceName" : "Any iOS Simulator Device",
+    "modelName" : "GenericiOS SimulatorSimulator",
+    "osVersion" : "",
+    "platform" : "iOS Simulator"
+  },
+  "endTime" : 1790955634.691,
+  "errorCount" : 0,
+  "errors" : [
+
+  ],
+  "startTime" : 1790955603.498,
+  "status" : "succeeded",
+  "warningCount" : 0,
+  "warnings" : [
+
+  ]
+}

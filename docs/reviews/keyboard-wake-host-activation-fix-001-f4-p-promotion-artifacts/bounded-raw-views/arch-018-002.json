@@ -1,0 +1,217 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/manifest.json",
+  "origin_sha256": "8bd9fd599001a1a98587c997c5c2daaab48d8fa3b522f0a9e5718c503b212fe0",
+  "expected_sha256": "8bd9fd599001a1a98587c997c5c2daaab48d8fa3b522f0a9e5718c503b212fe0",
+  "line_start": 61,
+  "line_end": 112,
+  "lines": [
+    {
+      "line": 61,
+      "text": "  },"
+    },
+    {
+      "line": 62,
+      "text": "  {"
+    },
+    {
+      "line": 63,
+      "text": "    \"path\": \"inspection-commands.json\","
+    },
+    {
+      "line": 64,
+      "text": "    \"bytes\": 2700,"
+    },
+    {
+      "line": 65,
+      "text": "    \"sha256\": \"74ab32a1c0b4b7950a16b0e104218a9dcb41b7defb0e3a3dbb4c147b25440667\""
+    },
+    {
+      "line": 66,
+      "text": "  },"
+    },
+    {
+      "line": 67,
+      "text": "  {"
+    },
+    {
+      "line": 68,
+      "text": "    \"path\": \"local-cache-inventory.json\","
+    },
+    {
+      "line": 69,
+      "text": "    \"bytes\": 331,"
+    },
+    {
+      "line": 70,
+      "text": "    \"sha256\": \"b1d847eabf39424a170f1b3664d7e36b3cb84a2117735afa8ec5070ab263d031\""
+    },
+    {
+      "line": 71,
+      "text": "  },"
+    },
+    {
+      "line": 72,
+      "text": "  {"
+    },
+    {
+      "line": 73,
+      "text": "    \"path\": \"paired-products.json\","
+    },
+    {
+      "line": 74,
+      "text": "    \"bytes\": 6532,"
+    },
+    {
+      "line": 75,
+      "text": "    \"sha256\": \"14b647b6eebde9ad3b5ce62948028fcee72b92192193fd40fa444619950836db\""
+    },
+    {
+      "line": 76,
+      "text": "  },"
+    },
+    {
+      "line": 77,
+      "text": "  {"
+    },
+    {
+      "line": 78,
+      "text": "    \"path\": \"payload-manifest.json\","
+    },
+    {
+      "line": 79,
+      "text": "    \"bytes\": 13677,"
+    },
+    {
+      "line": 80,
+      "text": "    \"sha256\": \"dbc6cfd07c713219c2cec09fdd3d87ab688485dce3d685ee3a915e74ea35786b\""
+    },
+    {
+      "line": 81,
+      "text": "  },"
+    },
+    {
+      "line": 82,
+      "text": "  {"
+    },
+    {
+      "line": 83,
+      "text": "    \"path\": \"pinned-inputs.json\","
+    },
+    {
+      "line": 84,
+      "text": "    \"bytes\": 2599,"
+    },
+    {
+      "line": 85,
+      "text": "    \"sha256\": \"582e45dc73787299bc58133cb41cf011533f5b2bda2838ef94bb7f28620d66c8\""
+    },
+    {
+      "line": 86,
+      "text": "  },"
+    },
+    {
+      "line": 87,
+      "text": "  {"
+    },
+    {
+      "line": 88,
+      "text": "    \"path\": \"private-evidence-index.json\","
+    },
+    {
+      "line": 89,
+      "text": "    \"bytes\": 2455,"
+    },
+    {
+      "line": 90,
+      "text": "    \"sha256\": \"6f66a2aa6df21c387059bd5c936d1d7acb85fcc8f554cf1fb4493b39642dc213\""
+    },
+    {
+      "line": 91,
+      "text": "  },"
+    },
+    {
+      "line": 92,
+      "text": "  {"
+    },
+    {
+      "line": 93,
+      "text": "    \"path\": \"simulated-entitlements.json\","
+    },
+    {
+      "line": 94,
+      "text": "    \"bytes\": 790,"
+    },
+    {
+      "line": 95,
+      "text": "    \"sha256\": \"668ee04882290df8cfcec3aff1213bb49bc69f29303016f59f927301cc6e6cd9\""
+    },
+    {
+      "line": 96,
+      "text": "  },"
+    },
+    {
+      "line": 97,
+      "text": "  {"
+    },
+    {
+      "line": 98,
+      "text": "    \"path\": \"source-tree-manifest.json\","
+    },
+    {
+      "line": 99,
+      "text": "    \"bytes\": 73805,"
+    },
+    {
+      "line": 100,
+      "text": "    \"sha256\": \"61606efa4db41e88416d9b1763264fb96b2f50d5d927530424a7168aa8860827\""
+    },
+    {
+      "line": 101,
+      "text": "  },"
+    },
+    {
+      "line": 102,
+      "text": "  {"
+    },
+    {
+      "line": 103,
+      "text": "    \"path\": \"usage.json\","
+    },
+    {
+      "line": 104,
+      "text": "    \"bytes\": 707,"
+    },
+    {
+      "line": 105,
+      "text": "    \"sha256\": \"97f8f491079b823f4b6a90945dd993a0eb63c046c81767bc53c5d05ea3420ede\""
+    },
+    {
+      "line": 106,
+      "text": "  },"
+    },
+    {
+      "line": 107,
+      "text": "  {"
+    },
+    {
+      "line": 108,
+      "text": "    \"path\": \"vendor-byte-manifest.json\","
+    },
+    {
+      "line": 109,
+      "text": "    \"bytes\": 144326,"
+    },
+    {
+      "line": 110,
+      "text": "    \"sha256\": \"54c5d67d284c12ce630f3c17e42954f733bcb6e0117892a5b970b34d189437b5\""
+    },
+    {
+      "line": 111,
+      "text": "  }"
+    },
+    {
+      "line": 112,
+      "text": "]"
+    }
+  ]
+}

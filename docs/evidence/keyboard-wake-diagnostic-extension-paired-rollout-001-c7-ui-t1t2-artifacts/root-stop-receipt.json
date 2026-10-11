@@ -1,0 +1,27 @@
+{
+  "T1": "Partial/Hold: Rime and AppKeyboard actual passed with skips; Keychain not run",
+  "T2": "read-only delivered; stop due changed installed bundle/main data and missing original AppGroup",
+  "Rime": {
+    "actual": 105,
+    "passed": 85,
+    "failed": 0,
+    "skipped": 20,
+    "data_unchanged": true
+  },
+  "AppKeyboard": {
+    "actual": 431,
+    "passed": 421,
+    "failed": 0,
+    "skipped": 10,
+    "data_unchanged": false
+  },
+  "Keychain": "not executed; not passed",
+  "Core": "reused full strict1194/0/0,204inputs matched",
+  "current_backup_preserved": true,
+  "post_test_data_preserved": true,
+  "no_restoration_or_new_candidate_install": true,
+  "actual_source571_vendor630_and_Core204_post_matched": true,
+  "target_processes_at_readback": 0,
+  "test_count_only_rerun": false,
+  "parser_notes": "Skip first tree included two skipped suites: filter actual Test Case yields20; compact -DKEYBOARD... recognized9/18 actual Swift invocations. No test rerun."
+}

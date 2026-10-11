@@ -1,0 +1,743 @@
+{
+  "_type": {
+    "_name": "ActionsInvocationRecord"
+  },
+  "actions": {
+    "_type": {
+      "_name": "Array"
+    },
+    "_values": [
+      {
+        "_type": {
+          "_name": "ActionRecord"
+        },
+        "actionResult": {
+          "_type": {
+            "_name": "ActionResult"
+          },
+          "coverage": {
+            "_type": {
+              "_name": "CodeCoverageInfo"
+            },
+            "archiveRef": {
+              "_type": {
+                "_name": "Reference"
+              },
+              "id": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "0~9m1ybNJ6rOWG2EVK5WQ2LG_DFy2ZOnmi7IjvdvzVSuJ2ez6xy4rr0yVu5SBYpIIT8z8ttxJU7XV5claZnnsAvw=="
+              }
+            },
+            "hasCoverageData": {
+              "_type": {
+                "_name": "Bool"
+              },
+              "_value": "true"
+            },
+            "reportRef": {
+              "_type": {
+                "_name": "Reference"
+              },
+              "id": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "0~WMPWqHK_fmwrJ7RwtT2l2PdABrNX4BPIbVZyyNN24ZrYmZIHvfewzrBgPVg1RpvO-CnH4cmtqY_RdW2zpadlFg=="
+              }
+            }
+          },
+          "diagnosticsRef": {
+            "_type": {
+              "_name": "Reference"
+            },
+            "id": {
+              "_type": {
+                "_name": "String"
+              },
+              "_value": "0~1Q1ra2QhvY6aAlSGHb-03voX3HZg_N2NP2jmFKaYU8TRRDZXnKPYRhKKtZV8R-tvlADUxXGQcM3BkvQxfVo0jA=="
+            }
+          },
+          "issues": {
+            "_type": {
+              "_name": "ResultIssueSummaries"
+            },
+            "analyzerWarningSummaries": {
+              "_type": {
+                "_name": "Array"
+              }
+            },
+            "errorSummaries": {
+              "_type": {
+                "_name": "Array"
+              }
+            },
+            "testFailureSummaries": {
+              "_type": {
+                "_name": "Array"
+              }
+            },
+            "testWarningSummaries": {
+              "_type": {
+                "_name": "Array"
+              }
+            },
+            "warningSummaries": {
+              "_type": {
+                "_name": "Array"
+              }
+            }
+          },
+          "logRef": {
+            "_type": {
+              "_name": "Reference"
+            },
+            "id": {
+              "_type": {
+                "_name": "String"
+              },
+              "_value": "0~YVknv-hhM5i-E8s9l0evJ2ez3twwnBp5Gl7BvnYREucA1V-LIvq2CIBpblPaz-MQM8wqZpO-I_h9E6XkxKMfFA=="
+            },
+            "targetType": {
+              "_type": {
+                "_name": "TypeDefinition"
+              },
+              "name": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "ActivityLogSection"
+              }
+            }
+          },
+          "metrics": {
+            "_type": {
+              "_name": "ResultMetrics"
+            },
+            "analyzerWarningCount": {
+              "_type": {
+                "_name": "Int"
+              },
+              "_value": "0"
+            },
+            "errorCount": {
+              "_type": {
+                "_name": "Int"
+              },
+              "_value": "0"
+            },
+            "testsCount": {
+              "_type": {
+                "_name": "Int"
+              },
+              "_value": "1"
+            },
+            "testsFailedCount": {
+              "_type": {
+                "_name": "Int"
+              },
+              "_value": "0"
+            },
+            "testsSkippedCount": {
+              "_type": {
+                "_name": "Int"
+              },
+              "_value": "0"
+            },
+            "warningCount": {
+              "_type": {
+                "_name": "Int"
+              },
+              "_value": "0"
+            }
+          },
+          "resultName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "action"
+          },
+          "status": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "succeeded"
+          },
+          "testsRef": {
+            "_type": {
+              "_name": "Reference"
+            },
+            "id": {
+              "_type": {
+                "_name": "String"
+              },
+              "_value": "0~jP2I31hYYOapQvK25tvuSEejucjPSHdJyoj6YdRORrFPo3iy6JIh2Vzhe_sGPax9vUU5BDwR9ZDADPS6UUZf5g=="
+            },
+            "targetType": {
+              "_type": {
+                "_name": "TypeDefinition"
+              },
+              "name": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "ActionTestPlanRunSummaries"
+              }
+            }
+          }
+        },
+        "buildResult": {
+          "_type": {
+            "_name": "ActionResult"
+          },
+          "coverage": {
+            "_type": {
+              "_name": "CodeCoverageInfo"
+            },
+            "hasCoverageData": {
+              "_type": {
+                "_name": "Bool"
+              },
+              "_value": "false"
+            }
+          },
+          "issues": {
+            "_type": {
+              "_name": "ResultIssueSummaries"
+            },
+            "analyzerWarningSummaries": {
+              "_type": {
+                "_name": "Array"
+              }
+            },
+            "errorSummaries": {
+              "_type": {
+                "_name": "Array"
+              }
+            },
+            "testFailureSummaries": {
+              "_type": {
+                "_name": "Array"
+              }
+            },
+            "testWarningSummaries": {
+              "_type": {
+                "_name": "Array"
+              }
+            },
+            "warningSummaries": {
+              "_type": {
+                "_name": "Array"
+              }
+            }
+          },
+          "logRef": {
+            "_type": {
+              "_name": "Reference"
+            },
+            "id": {
+              "_type": {
+                "_name": "String"
+              },
+              "_value": "0~CZI_r7k7pdJHCZFcYInXACMGgPeyQhrcr2uRE4-wge2a4xeg5lG0ooqou63kkoU5CeLyYbuegf558y8qFtjV7g=="
+            },
+            "targetType": {
+              "_type": {
+                "_name": "TypeDefinition"
+              },
+              "name": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "ActivityLogSection"
+              }
+            }
+          },
+          "metrics": {
+            "_type": {
+              "_name": "ResultMetrics"
+            },
+            "analyzerWarningCount": {
+              "_type": {
+                "_name": "Int"
+              },
+              "_value": "0"
+            },
+            "errorCount": {
+              "_type": {
+                "_name": "Int"
+              },
+              "_value": "0"
+            },
+            "testsCount": {
+              "_type": {
+                "_name": "Int"
+              },
+              "_value": "0"
+            },
+            "testsFailedCount": {
+              "_type": {
+                "_name": "Int"
+              },
+              "_value": "0"
+            },
+            "testsSkippedCount": {
+              "_type": {
+                "_name": "Int"
+              },
+              "_value": "0"
+            },
+            "warningCount": {
+              "_type": {
+                "_name": "Int"
+              },
+              "_value": "0"
+            }
+          },
+          "resultName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "build"
+          },
+          "status": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "succeeded"
+          }
+        },
+        "endedTime": {
+          "_type": {
+            "_name": "Date"
+          },
+          "_value": "2026-09-30T21:49:12.944+0800"
+        },
+        "runDestination": {
+          "_type": {
+            "_name": "ActionRunDestinationRecord"
+          },
+          "displayName": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "iPhone 18 Pro"
+          },
+          "localComputerRecord": {
+            "_type": {
+              "_name": "ActionDeviceRecord"
+            },
+            "busSpeedInMHz": {
+              "_type": {
+                "_name": "Int"
+              },
+              "_value": "0"
+            },
+            "cpuCount": {
+              "_type": {
+                "_name": "Int"
+              },
+              "_value": "1"
+            },
+            "cpuKind": {
+              "_type": {
+                "_name": "String"
+              },
+              "_value": "Apple M1 Pro"
+            },
+            "cpuSpeedInMHz": {
+              "_type": {
+                "_name": "Int"
+              },
+              "_value": "0"
+            },
+            "identifier": {
+              "_type": {
+                "_name": "String"
+              },
+              "_value": "00006000-001C41A921C3401E"
+            },
+            "isConcreteDevice": {
+              "_type": {
+                "_name": "Bool"
+              },
+              "_value": "true"
+            },
+            "isWireless": {
+              "_type": {
+                "_name": "Bool"
+              },
+              "_value": "false"
+            },
+            "logicalCPUCoresPerPackage": {
+              "_type": {
+                "_name": "Int"
+              },
+              "_value": "8"
+            },
+            "modelCode": {
+              "_type": {
+                "_name": "String"
+              },
+              "_value": "MacBookPro18,3"
+            },
+            "modelName": {
+              "_type": {
+                "_name": "String"
+              },
+              "_value": "MacBook Pro"
+            },
+            "modelUTI": {
+              "_type": {
+                "_name": "String"
+              },
+              "_value": "com.apple.macbookpro-14-2021"
+            },
+            "name": {
+              "_type": {
+                "_name": "String"
+              },
+              "_value": "My Mac"
+            },
+            "nativeArchitecture": {
+              "_type": {
+                "_name": "String"
+              },
+              "_value": "arm64e"
+            },
+            "operatingSystemVersion": {
+              "_type": {
+                "_name": "String"
+              },
+              "_value": "27.0"
+            },
+            "operatingSystemVersionWithBuildNumber": {
+              "_type": {
+                "_name": "String"
+              },
+              "_value": "27.0 (26A428)"
+            },
+            "physicalCPUCoresPerPackage": {
+              "_type": {
+                "_name": "Int"
+              },
+              "_value": "8"
+            },
+            "platformRecord": {
+              "_type": {
+                "_name": "ActionPlatformRecord"
+              },
+              "identifier": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "com.apple.platform.macosx"
+              },
+              "userDescription": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "macOS"
+              }
+            },
+            "ramSizeInMegabytes": {
+              "_type": {
+                "_name": "Int"
+              },
+              "_value": "16384"
+            }
+          },
+          "targetArchitecture": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "arm64"
+          },
+          "targetDeviceRecord": {
+            "_type": {
+              "_name": "ActionDeviceRecord"
+            },
+            "busSpeedInMHz": {
+              "_type": {
+                "_name": "Int"
+              },
+              "_value": "0"
+            },
+            "cpuCount": {
+              "_type": {
+                "_name": "Int"
+              },
+              "_value": "0"
+            },
+            "cpuKind": {
+              "_type": {
+                "_name": "String"
+              },
+              "_value": ""
+            },
+            "cpuSpeedInMHz": {
+              "_type": {
+                "_name": "Int"
+              },
+              "_value": "0"
+            },
+            "identifier": {
+              "_type": {
+                "_name": "String"
+              },
+              "_value": "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+            },
+            "isConcreteDevice": {
+              "_type": {
+                "_name": "Bool"
+              },
+              "_value": "true"
+            },
+            "isWireless": {
+              "_type": {
+                "_name": "Bool"
+              },
+              "_value": "false"
+            },
+            "logicalCPUCoresPerPackage": {
+              "_type": {
+                "_name": "Int"
+              },
+              "_value": "0"
+            },
+            "modelCode": {
+              "_type": {
+                "_name": "String"
+              },
+              "_value": "iPhone19,2"
+            },
+            "modelName": {
+              "_type": {
+                "_name": "String"
+              },
+              "_value": "iPhone 18 Pro"
+            },
+            "modelUTI": {
+              "_type": {
+                "_name": "String"
+              },
+              "_value": "com.apple.iphone-18-pro-1"
+            },
+            "name": {
+              "_type": {
+                "_name": "String"
+              },
+              "_value": "iPhone 18 Pro"
+            },
+            "nativeArchitecture": {
+              "_type": {
+                "_name": "String"
+              },
+              "_value": "arm64"
+            },
+            "operatingSystemVersion": {
+              "_type": {
+                "_name": "String"
+              },
+              "_value": "27.0"
+            },
+            "operatingSystemVersionWithBuildNumber": {
+              "_type": {
+                "_name": "String"
+              },
+              "_value": "27.0 (24A434)"
+            },
+            "physicalCPUCoresPerPackage": {
+              "_type": {
+                "_name": "Int"
+              },
+              "_value": "0"
+            },
+            "platformRecord": {
+              "_type": {
+                "_name": "ActionPlatformRecord"
+              },
+              "identifier": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "com.apple.platform.iphonesimulator"
+              },
+              "userDescription": {
+                "_type": {
+                  "_name": "String"
+                },
+                "_value": "iOS Simulator"
+              }
+            },
+            "ramSizeInMegabytes": {
+              "_type": {
+                "_name": "Int"
+              },
+              "_value": "0"
+            }
+          },
+          "targetSDKRecord": {
+            "_type": {
+              "_name": "ActionSDKRecord"
+            },
+            "identifier": {
+              "_type": {
+                "_name": "String"
+              },
+              "_value": "iphonesimulator27.0"
+            },
+            "isInternal": {
+              "_type": {
+                "_name": "Bool"
+              },
+              "_value": "false"
+            },
+            "name": {
+              "_type": {
+                "_name": "String"
+              },
+              "_value": "Simulator - iOS 27.0"
+            },
+            "operatingSystemVersion": {
+              "_type": {
+                "_name": "String"
+              },
+              "_value": "27.0"
+            }
+          }
+        },
+        "schemeCommandName": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Test"
+        },
+        "schemeTaskName": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "BuildAndAction"
+        },
+        "startedTime": {
+          "_type": {
+            "_name": "Date"
+          },
+          "_value": "2026-09-30T21:48:50.995+0800"
+        },
+        "testPlanName": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Universe Keyboard"
+        },
+        "title": {
+          "_type": {
+            "_name": "String"
+          },
+          "_value": "Testing project Universe Keyboard with scheme Universe Keyboard"
+        }
+      }
+    ]
+  },
+  "issues": {
+    "_type": {
+      "_name": "ResultIssueSummaries"
+    },
+    "analyzerWarningSummaries": {
+      "_type": {
+        "_name": "Array"
+      }
+    },
+    "errorSummaries": {
+      "_type": {
+        "_name": "Array"
+      }
+    },
+    "testFailureSummaries": {
+      "_type": {
+        "_name": "Array"
+      }
+    },
+    "testWarningSummaries": {
+      "_type": {
+        "_name": "Array"
+      }
+    },
+    "warningSummaries": {
+      "_type": {
+        "_name": "Array"
+      }
+    }
+  },
+  "metadataRef": {
+    "_type": {
+      "_name": "Reference"
+    },
+    "id": {
+      "_type": {
+        "_name": "String"
+      },
+      "_value": "0~Ca6OwlXxhrQkrfffbOB4IDM_dfYTNkWAs_fujYZenBWYQZUG58JVV8LRx_jRZcFdB94xl44iwZ_5Oha5Yot-9w=="
+    },
+    "targetType": {
+      "_type": {
+        "_name": "TypeDefinition"
+      },
+      "name": {
+        "_type": {
+          "_name": "String"
+        },
+        "_value": "ActionsInvocationMetadata"
+      }
+    }
+  },
+  "metrics": {
+    "_type": {
+      "_name": "ResultMetrics"
+    },
+    "analyzerWarningCount": {
+      "_type": {
+        "_name": "Int"
+      },
+      "_value": "0"
+    },
+    "errorCount": {
+      "_type": {
+        "_name": "Int"
+      },
+      "_value": "0"
+    },
+    "testsCount": {
+      "_type": {
+        "_name": "Int"
+      },
+      "_value": "1"
+    },
+    "testsFailedCount": {
+      "_type": {
+        "_name": "Int"
+      },
+      "_value": "0"
+    },
+    "testsSkippedCount": {
+      "_type": {
+        "_name": "Int"
+      },
+      "_value": "0"
+    },
+    "totalCoveragePercentage": {
+      "_type": {
+        "_name": "Double"
+      },
+      "_value": "0.04499439671273814"
+    },
+    "warningCount": {
+      "_type": {
+        "_name": "Int"
+      },
+      "_value": "0"
+    }
+  }
+}

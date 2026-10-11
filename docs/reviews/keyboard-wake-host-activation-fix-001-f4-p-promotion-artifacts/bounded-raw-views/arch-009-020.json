@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+  "origin_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "expected_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "line_start": 1141,
+  "line_end": 1200,
+  "lines": [
+    {
+      "line": 1141,
+      "text": "            ResponsiveKeyApplyContext("
+    },
+    {
+      "line": 1142,
+      "text": "                rimeKey: rimeKey,"
+    },
+    {
+      "line": 1143,
+      "text": "                previousT9PathState: previousT9PathState,"
+    },
+    {
+      "line": 1144,
+      "text": "                previousRawForTrace: previousRawForTrace,"
+    },
+    {
+      "line": 1145,
+      "text": "                sessionEpoch: epoch"
+    },
+    {
+      "line": 1146,
+      "text": "            )"
+    },
+    {
+      "line": 1147,
+      "text": "        )"
+    },
+    {
+      "line": 1148,
+      "text": "    }"
+    },
+    {
+      "line": 1149,
+      "text": ""
+    },
+    {
+      "line": 1150,
+      "text": "    /// Rem-1: record ACCEPT marker after responsive key accept."
+    },
+    {
+      "line": 1151,
+      "text": "    func recordResponsiveAcceptMetrics(from receipt: ResponsiveRimeAcceptReceipt?) {"
+    },
+    {
+      "line": 1152,
+      "text": "        guard let receipt else { return }"
+    },
+    {
+      "line": 1153,
+      "text": "        let line = feltMetrics.recordAccept("
+    },
+    {
+      "line": 1154,
+      "text": "            revision: receipt.revision,"
+    },
+    {
+      "line": 1155,
+      "text": "            epoch: receipt.sessionEpoch,"
+    },
+    {
+      "line": 1156,
+      "text": "            pending: receipt.pendingDepthAfterAccept"
+    },
+    {
+      "line": 1157,
+      "text": "        )"
+    },
+    {
+      "line": 1158,
+      "text": "        recordResponsiveFeltMarker(line)"
+    },
+    {
+      "line": 1159,
+      "text": "    }"
+    },
+    {
+      "line": 1160,
+      "text": ""
+    },
+    {
+      "line": 1161,
+      "text": "    /// Keep all explicit preflight felt markers on the mandatory content-free"
+    },
+    {
+      "line": 1162,
+      "text": "    /// channel. Ordinary builds retain the regular diagnostic category filter."
+    },
+    {
+      "line": 1163,
+      "text": "    private func recordResponsiveFeltMarker(_ line: String) {"
+    },
+    {
+      "line": 1164,
+      "text": "        #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT"
+    },
+    {
+      "line": 1165,
+      "text": "            Logger.shared.devicePreflightPerformance(line)"
+    },
+    {
+      "line": 1166,
+      "text": "        #else"
+    },
+    {
+      "line": 1167,
+      "text": "            Logger.shared.performance(line)"
+    },
+    {
+      "line": 1168,
+      "text": "        #endif"
+    },
+    {
+      "line": 1169,
+      "text": "    }"
+    },
+    {
+      "line": 1170,
+      "text": ""
+    },
+    {
+      "line": 1171,
+      "text": "    /// R4-Wire helper — nil when dual-gate path is inactive or OS-unavailable."
+    },
+    {
+      "line": 1172,
+      "text": "    func threadAffineCoordinatorIfAvailable() -> ThreadAffineRimeSessionCoordinator? {"
+    },
+    {
+      "line": 1173,
+      "text": "        threadAffineRimeCoordinator"
+    },
+    {
+      "line": 1174,
+      "text": "    }"
+    },
+    {
+      "line": 1175,
+      "text": ""
+    },
+    {
+      "line": 1176,
+      "text": "    /// Schedule deferred drain turns after `scheduleProcessKey` so `handle` can"
+    },
+    {
+      "line": 1177,
+      "text": "    /// return before librime (MainActor cooperative yield between items)."
+    },
+    {
+      "line": 1178,
+      "text": "    func scheduleResponsivePipelineDrain(_ coordinator: ResponsiveRimeSessionCoordinator) {"
+    },
+    {
+      "line": 1179,
+      "text": "        Task { @MainActor [weak self] in"
+    },
+    {
+      "line": 1180,
+      "text": "            // Yield once so the current `handle` stack unwinds first."
+    },
+    {
+      "line": 1181,
+      "text": "            await Task.yield()"
+    },
+    {
+      "line": 1182,
+      "text": "            guard let self, self.isResponsiveRimePipelineEnabled else { return }"
+    },
+    {
+      "line": 1183,
+      "text": "            while coordinator.drainOneStep() {"
+    },
+    {
+      "line": 1184,
+      "text": "                // Yield between keys so multi-accept stays ordered without one"
+    },
+    {
+      "line": 1185,
+      "text": "                // monolithic blocking burst when engine work is short."
+    },
+    {
+      "line": 1186,
+      "text": "                await Task.yield()"
+    },
+    {
+      "line": 1187,
+      "text": "            }"
+    },
+    {
+      "line": 1188,
+      "text": "            _ = self"
+    },
+    {
+      "line": 1189,
+      "text": "        }"
+    },
+    {
+      "line": 1190,
+      "text": "    }"
+    },
+    {
+      "line": 1191,
+      "text": ""
+    },
+    {
+      "line": 1192,
+      "text": "    /// Reset RIME after the keyboard becomes visible again while preserving"
+    },
+    {
+      "line": 1193,
+      "text": "    /// enough state to reconstruct an in-progress inline composition."
+    },
+    {
+      "line": 1194,
+      "text": "    public func resetRimeSessionForVisibilityChange() {"
+    },
+    {
+      "line": 1195,
+      "text": "        guard rimeEngine != nil else { return }"
+    },
+    {
+      "line": 1196,
+      "text": "        if isResponsiveRimePipelineEnabled, let affine = threadAffineRimeCoordinator {"
+    },
+    {
+      "line": 1197,
+      "text": "            _ = affine.performOrderedNow(.resetSession)"
+    },
+    {
+      "line": 1198,
+      "text": "            clearResponsiveKeyApplyContexts()"
+    },
+    {
+      "line": 1199,
+      "text": "        } else if isResponsiveRimePipelineEnabled, let coordinator = responsiveRimeCoordinator {"
+    },
+    {
+      "line": 1200,
+      "text": "            // Ordered reset through the same owner; epoch advances via reset work."
+    }
+  ]
+}

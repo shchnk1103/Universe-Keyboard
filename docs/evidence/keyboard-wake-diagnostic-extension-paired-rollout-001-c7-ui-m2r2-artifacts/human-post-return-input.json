@@ -1,0 +1,10 @@
+{
+  "received_utc": "2026-10-04T04:58:35.999493+00:00",
+  "received_monotonic_ns": 1243394856980750,
+  "human_reply": "按键反馈正常，候选栏没有变化，输入框也没有变化，‘取证’按钮已再次出现。",
+  "actual_input_time": null,
+  "target_ps": "55759 55991     4804 SXs  /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+  "conservative_seconds_since_pre_arm": 526.074402,
+  "input_ordinal": "second synthetic n per issued operation card; actual UI action count not independently measured",
+  "content_not_read": true
+}

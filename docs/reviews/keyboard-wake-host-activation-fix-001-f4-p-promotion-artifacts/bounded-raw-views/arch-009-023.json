@@ -1,0 +1,173 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+  "origin_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "expected_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "line_start": 1321,
+  "line_end": 1361,
+  "lines": [
+    {
+      "line": 1321,
+      "text": "                handleInsertDirectText(text, source: .directText)"
+    },
+    {
+      "line": 1322,
+      "text": "            }"
+    },
+    {
+      "line": 1323,
+      "text": "        case .insertEmoji(let emoji):"
+    },
+    {
+      "line": 1324,
+      "text": "            return acceptingPendingPunctuationIfNeeded {"
+    },
+    {
+      "line": 1325,
+      "text": "                handleInsertDirectText(emoji, source: .emoji)"
+    },
+    {
+      "line": 1326,
+      "text": "            }"
+    },
+    {
+      "line": 1327,
+      "text": "        case .toggleShift:"
+    },
+    {
+      "line": 1328,
+      "text": "            return handleToggleShift()"
+    },
+    {
+      "line": 1329,
+      "text": "        case .togglePage:"
+    },
+    {
+      "line": 1330,
+      "text": "            return acceptingPendingPunctuationIfNeeded { handleTogglePage() }"
+    },
+    {
+      "line": 1331,
+      "text": "        case .toggleInputMode:"
+    },
+    {
+      "line": 1332,
+      "text": "            return acceptingPendingPunctuationIfNeeded { handleToggleInputMode() }"
+    },
+    {
+      "line": 1333,
+      "text": "        case .insertSpace:"
+    },
+    {
+      "line": 1334,
+      "text": "            return acceptingPendingPunctuationIfNeeded { handleInsertSpace() }"
+    },
+    {
+      "line": 1335,
+      "text": "        case .insertReturn:"
+    },
+    {
+      "line": 1336,
+      "text": "            return acceptingPendingPunctuationIfNeeded { handleInsertReturn() }"
+    },
+    {
+      "line": 1337,
+      "text": "        case .deleteBackward:"
+    },
+    {
+      "line": 1338,
+      "text": "            if let pendingEffects = deleteOwnedPendingKaomojiIfNeeded() {"
+    },
+    {
+      "line": 1339,
+      "text": "                return pendingEffects"
+    },
+    {
+      "line": 1340,
+      "text": "            }"
+    },
+    {
+      "line": 1341,
+      "text": "            if let pendingEffects = deleteOwnedPendingPunctuationIfNeeded() {"
+    },
+    {
+      "line": 1342,
+      "text": "                return pendingEffects"
+    },
+    {
+      "line": 1343,
+      "text": "            }"
+    },
+    {
+      "line": 1344,
+      "text": "            return handleDeleteBackward()"
+    },
+    {
+      "line": 1345,
+      "text": "        case .keyboardTypeChanged(let type):"
+    },
+    {
+      "line": 1346,
+      "text": "            return handleKeyboardTypeChanged(type)"
+    },
+    {
+      "line": 1347,
+      "text": "        case .selectT9PinyinPath(let path):"
+    },
+    {
+      "line": 1348,
+      "text": "            return handleSelectT9PinyinPath(path)"
+    },
+    {
+      "line": 1349,
+      "text": "        case .cycleT9PinyinPath:"
+    },
+    {
+      "line": 1350,
+      "text": "            return handleCycleT9PinyinPath()"
+    },
+    {
+      "line": 1351,
+      "text": "        case .pressT9CommonPunctuation:"
+    },
+    {
+      "line": 1352,
+      "text": "            return handlePressT9CommonPunctuation()"
+    },
+    {
+      "line": 1353,
+      "text": "        case .pressKaomoji:"
+    },
+    {
+      "line": 1354,
+      "text": "            return handlePressKaomoji()"
+    },
+    {
+      "line": 1355,
+      "text": "        case .candidatePageUp:"
+    },
+    {
+      "line": 1356,
+      "text": "            return handleCandidatePageUp()"
+    },
+    {
+      "line": 1357,
+      "text": "        case .candidatePageDown:"
+    },
+    {
+      "line": 1358,
+      "text": "            return handleCandidatePageDown()"
+    },
+    {
+      "line": 1359,
+      "text": "        }"
+    },
+    {
+      "line": 1360,
+      "text": "    }"
+    },
+    {
+      "line": 1361,
+      "text": "}"
+    }
+  ]
+}

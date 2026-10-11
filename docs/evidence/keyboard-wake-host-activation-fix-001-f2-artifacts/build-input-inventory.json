@@ -1,0 +1,120 @@
+{
+  "utc": "2026-10-04T09:45:00Z",
+  "note": "Read-only inventory of sources that participate in F2 schemes. Per-file listings and digest algorithm are in sibling manifests.",
+  "digest_algorithm": {
+    "file_hash": "SHA-256 of raw file bytes",
+    "listing_line": "{posix_path}\\t{size_bytes_decimal}\\t{file_sha256_hex}\\n",
+    "listing_order": "sorted by posix_path ascending",
+    "aggregate_digest": "SHA-256 of the concatenated UTF-8 listing"
+  },
+  "recomputable_manifests": {
+    "source_tree_358": "source-tree-manifest.json",
+    "app_target": "app-source-manifest.json",
+    "vendor_extracted_bytes": "vendor-byte-manifest.json"
+  },
+  "schemes": [
+    "RimeBridgeTests",
+    "Universe Keyboard"
+  ],
+  "targets_implied": [
+    "Universe Keyboard",
+    "Keyboard",
+    "KeyboardTests",
+    "UniverseKeyboardTests",
+    "RimeBridgeTests",
+    "KeyboardCore",
+    "RimeBridge"
+  ],
+  "pinned_files": [
+    {
+      "path": "Packages/KeyboardCore/Package.swift",
+      "exists": true,
+      "bytes": 691,
+      "sha256": "9ebf33313b560b83634a074dd675211aee9cec13b1d879e9cd4f35fbb94aa764"
+    },
+    {
+      "path": "Packages/RimeBridge/Package.swift",
+      "exists": true,
+      "bytes": 2704,
+      "sha256": "83e91b4c48c15c1c39dc919a5282c39c80da82a55a370b62fdd430c758ea9b0b"
+    },
+    {
+      "path": "config/rime-vendor-manifest.env",
+      "exists": true,
+      "bytes": 1066,
+      "sha256": "a67cf99046a180c9e648755c793182529f2937f3d0469e3b59d6f63638802804"
+    },
+    {
+      "path": "Packages/RimeBridge/Vendor/.rime-vendor-receipt",
+      "exists": true,
+      "bytes": 120,
+      "sha256": "32b81905629e811067cfc8dfcd8b1548cce6e4a92433a885aba3ed8e0beeca83"
+    },
+    {
+      "path": ".swift-format",
+      "exists": true,
+      "bytes": 335,
+      "sha256": "47735e1c2cf0ea214e5e384eadcb091a9a499e92e40f29721000d68acf86a807"
+    },
+    {
+      "path": "Universe Keyboard.xcodeproj/project.pbxproj",
+      "exists": true,
+      "bytes": 46990,
+      "sha256": "49f0ebe89db1f30323d9bf6ceb297179ffed5fc9ef983fd3b947d11d5820586c"
+    },
+    {
+      "path": "Universe Keyboard.xcodeproj/xcshareddata/xcschemes/Universe Keyboard.xcscheme",
+      "exists": true,
+      "bytes": 5754,
+      "sha256": "ed7e9b94b88097638cfc4ecaef7c391a8d633ffc0c0751fdf6dbbda2c4f730da"
+    },
+    {
+      "path": "Universe Keyboard.xcodeproj/xcshareddata/xcschemes/RimeBridgeTests.xcscheme",
+      "exists": true,
+      "bytes": 2482,
+      "sha256": "f5934541b999c57d6d7cdacd9ff66dcf569d97fc6cdf900d80d7ec2d7cfeb0f9"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+Presentation.swift",
+      "exists": true,
+      "bytes": 14818,
+      "sha256": "767c2817054484d4d4c328cb7a8deaf676509b76bbc3cb45868b6e3cf721319a"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+      "exists": true,
+      "bytes": 62147,
+      "sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+RimeRecovery.swift",
+      "exists": true,
+      "bytes": 24386,
+      "sha256": "f3cb33290ddd8fe2ac69b52775067aaa675eecd0049600641ad9d9316c0b6ab5"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/ThreadAffineRimeSession.swift",
+      "exists": true,
+      "bytes": 29988,
+      "sha256": "b7050645be501a7f41a6732efda40b07fb82c4c930862c0f1d13d167af426a76"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/ResponsiveRimeCanaryMode.swift",
+      "exists": true,
+      "bytes": 16470,
+      "sha256": "2bcb4684cbb0b3afee5616a3d73045f7f4f4233834f2539c9b9e6b594f22e235"
+    }
+  ],
+  "source_tree_file_count": 358,
+  "source_tree_aggregate_digest_sha256": "099aec228a338ed2e42ca0d44d28e30802d78f1f4bbc92c7c4bd17f21d57dfe3",
+  "source_tree_opaque_digest_superseded": "dff969d71fb7f7707a85e8572698e544b5de0585f4b3845a6f5a53c3756d6d79",
+  "app_source_file_count": 168,
+  "app_source_aggregate_digest_sha256": "b5fdda0ffd8c3f7563fe70a925b166817308267392edf72f4ffa00dda96068ca",
+  "vendor_binding": {
+    "archive_sha256": "d17aab9a8b08b5901ab583c143b0a8a03994e36fe092309fd14c5bee31399dd9",
+    "receipt_file_sha256": "32b81905629e811067cfc8dfcd8b1548cce6e4a92433a885aba3ed8e0beeca83",
+    "extracted_file_count": 630,
+    "extracted_aggregate_digest_sha256": "f9b03dea3e5be3e8d903e1c02f16dc933d5048ca48e45bf652e15ec99bdc0a9a",
+    "verify": "bash scripts/ensure_rime_vendor.sh verify PASS 2026-10-04T08:33:35Z checks structure plus receipt text; extracted payload bytes are bound by vendor-byte-manifest.json"
+  }
+}

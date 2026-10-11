@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift",
+  "origin_sha256": "c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047",
+  "expected_sha256": "c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047",
+  "line_start": 1,
+  "line_end": 60,
+  "lines": [
+    {
+      "line": 1,
+      "text": "//"
+    },
+    {
+      "line": 2,
+      "text": "//  KeyboardHostLifecycleRecoveryGate.swift"
+    },
+    {
+      "line": 3,
+      "text": "//  Keyboard"
+    },
+    {
+      "line": 4,
+      "text": "//"
+    },
+    {
+      "line": 5,
+      "text": "//  MainActor 内存状态机：宿主失活/重新激活与展示世代的恢复决策。"
+    },
+    {
+      "line": 6,
+      "text": "//  无 UIKit / KeyboardCore / I/O 依赖；不持有引擎或 composition。"
+    },
+    {
+      "line": 7,
+      "text": "//  许可判定由调用方在任何可能创建 owner 的动作之前传入。"
+    },
+    {
+      "line": 8,
+      "text": "//"
+    },
+    {
+      "line": 9,
+      "text": ""
+    },
+    {
+      "line": 10,
+      "text": "/// Opaque identity for the current `NSExtensionContext` without importing UIKit."
+    },
+    {
+      "line": 11,
+      "text": "struct KeyboardHostExtensionContextID: Hashable, Sendable {"
+    },
+    {
+      "line": 12,
+      "text": "    private let objectID: ObjectIdentifier"
+    },
+    {
+      "line": 13,
+      "text": ""
+    },
+    {
+      "line": 14,
+      "text": "    init(_ object: AnyObject) {"
+    },
+    {
+      "line": 15,
+      "text": "        objectID = ObjectIdentifier(object)"
+    },
+    {
+      "line": 16,
+      "text": "    }"
+    },
+    {
+      "line": 17,
+      "text": "}"
+    },
+    {
+      "line": 18,
+      "text": ""
+    },
+    {
+      "line": 19,
+      "text": "enum KeyboardHostRecoveryPhase: Equatable, Sendable {"
+    },
+    {
+      "line": 20,
+      "text": "    case hidden"
+    },
+    {
+      "line": 21,
+      "text": "    case appearing"
+    },
+    {
+      "line": 22,
+      "text": "    case visible"
+    },
+    {
+      "line": 23,
+      "text": "}"
+    },
+    {
+      "line": 24,
+      "text": ""
+    },
+    {
+      "line": 25,
+      "text": "enum KeyboardHostRecoveryAction: Equatable, Sendable {"
+    },
+    {
+      "line": 26,
+      "text": "    case none"
+    },
+    {
+      "line": 27,
+      "text": "    case suspendRuntime"
+    },
+    {
+      "line": 28,
+      "text": "    case performSharedResume"
+    },
+    {
+      "line": 29,
+      "text": "    case rearmFirstFrameGate"
+    },
+    {
+      "line": 30,
+      "text": "    case completeFirstFrameActivation"
+    },
+    {
+      "line": 31,
+      "text": "}"
+    },
+    {
+      "line": 32,
+      "text": ""
+    },
+    {
+      "line": 33,
+      "text": "enum KeyboardHostRecoverySource: Equatable, Sendable {"
+    },
+    {
+      "line": 34,
+      "text": "    case appearance"
+    },
+    {
+      "line": 35,
+      "text": "    case hostActive"
+    },
+    {
+      "line": 36,
+      "text": "    case firstFrame"
+    },
+    {
+      "line": 37,
+      "text": "}"
+    },
+    {
+      "line": 38,
+      "text": ""
+    },
+    {
+      "line": 39,
+      "text": "/// One-shot UI classification of Core canary state. The gate does not store or mutate Core."
+    },
+    {
+      "line": 40,
+      "text": "enum KeyboardHostRecoveryCanaryPermission: Equatable, Sendable {"
+    },
+    {
+      "line": 41,
+      "text": "    case nonCanaryBuild"
+    },
+    {
+      "line": 42,
+      "text": "    case baselineActive"
+    },
+    {
+      "line": 43,
+      "text": "    case visibilitySuspended(resumeGranted: Bool)"
+    },
+    {
+      "line": 44,
+      "text": "    case canaryStarting"
+    },
+    {
+      "line": 45,
+      "text": "    case canaryActive"
+    },
+    {
+      "line": 46,
+      "text": "    case visibilityEnding"
+    },
+    {
+      "line": 47,
+      "text": "    case fenceIssued"
+    },
+    {
+      "line": 48,
+      "text": "    case baselineRecoveryPermitted"
+    },
+    {
+      "line": 49,
+      "text": "    case fencedUnavailable"
+    },
+    {
+      "line": 50,
+      "text": ""
+    },
+    {
+      "line": 51,
+      "text": "    func permitsOwnerStarting(source: KeyboardHostRecoverySource) -> Bool {"
+    },
+    {
+      "line": 52,
+      "text": "        switch self {"
+    },
+    {
+      "line": 53,
+      "text": "        case .nonCanaryBuild, .baselineActive:"
+    },
+    {
+      "line": 54,
+      "text": "            return true"
+    },
+    {
+      "line": 55,
+      "text": "        case .visibilitySuspended(let granted):"
+    },
+    {
+      "line": 56,
+      "text": "            return granted"
+    },
+    {
+      "line": 57,
+      "text": "        case .canaryStarting:"
+    },
+    {
+      "line": 58,
+      "text": "            // Original first-frame startup owns canaryStarting; host-active must not start a second owner."
+    },
+    {
+      "line": 59,
+      "text": "            return source == .firstFrame"
+    },
+    {
+      "line": 60,
+      "text": "        case .canaryActive, .visibilityEnding, .fenceIssued, .fencedUnavailable,"
+    }
+  ]
+}

@@ -1,0 +1,145 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-artifacts/path-status.json",
+  "origin_sha256": "58996912eb6df25abf6468675e3c0d267dc5bf1b369e8c558ae428f8d877c8e8",
+  "expected_sha256": "58996912eb6df25abf6468675e3c0d267dc5bf1b369e8c558ae428f8d877c8e8",
+  "line_start": 1,
+  "line_end": 34,
+  "lines": [
+    {
+      "line": 1,
+      "text": "{"
+    },
+    {
+      "line": 2,
+      "text": "  \"/private/tmp/ukey-host-activation-fix-f2-backup-20261004\": {"
+    },
+    {
+      "line": 3,
+      "text": "    \"exists\": true,"
+    },
+    {
+      "line": 4,
+      "text": "    \"purpose\": \"historical protection, no overwrite/delete\""
+    },
+    {
+      "line": 5,
+      "text": "  },"
+    },
+    {
+      "line": 6,
+      "text": "  \"/private/tmp/ukey-host-activation-fix-f2-actor-retest-20261004/before-backup\": {"
+    },
+    {
+      "line": 7,
+      "text": "    \"exists\": true,"
+    },
+    {
+      "line": 8,
+      "text": "    \"purpose\": \"historical protection, no overwrite/delete\""
+    },
+    {
+      "line": 9,
+      "text": "  },"
+    },
+    {
+      "line": 10,
+      "text": "  \"/private/tmp/ukey-wake-m0-20261003/backup\": {"
+    },
+    {
+      "line": 11,
+      "text": "    \"exists\": true,"
+    },
+    {
+      "line": 12,
+      "text": "    \"purpose\": \"historical protection, no overwrite/delete\""
+    },
+    {
+      "line": 13,
+      "text": "  },"
+    },
+    {
+      "line": 14,
+      "text": "  \"/private/tmp/ukey-wake-m2r1-20261004/backup\": {"
+    },
+    {
+      "line": 15,
+      "text": "    \"exists\": true,"
+    },
+    {
+      "line": 16,
+      "text": "    \"purpose\": \"historical protection, no overwrite/delete\""
+    },
+    {
+      "line": 17,
+      "text": "  },"
+    },
+    {
+      "line": 18,
+      "text": "  \"/private/tmp/ukey-wake-m2r2-20261004/backup\": {"
+    },
+    {
+      "line": 19,
+      "text": "    \"exists\": true,"
+    },
+    {
+      "line": 20,
+      "text": "    \"purpose\": \"historical protection, no overwrite/delete\""
+    },
+    {
+      "line": 21,
+      "text": "  },"
+    },
+    {
+      "line": 22,
+      "text": "  \"/private/tmp/ukey-wake-ui-i0-20261003/backup\": {"
+    },
+    {
+      "line": 23,
+      "text": "    \"exists\": true,"
+    },
+    {
+      "line": 24,
+      "text": "    \"purpose\": \"historical protection, no overwrite/delete\""
+    },
+    {
+      "line": 25,
+      "text": "  },"
+    },
+    {
+      "line": 26,
+      "text": "  \"/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005\": {"
+    },
+    {
+      "line": 27,
+      "text": "    \"exists\": false,"
+    },
+    {
+      "line": 28,
+      "text": "    \"purpose\": \"future isolated output, must not exist before execution AUTH; 2026-10-05 recheck\""
+    },
+    {
+      "line": 29,
+      "text": "  },"
+    },
+    {
+      "line": 30,
+      "text": "  \"/private/tmp/ukey-host-activation-fix-a2-validation-backup-20261005\": {"
+    },
+    {
+      "line": 31,
+      "text": "    \"exists\": false,"
+    },
+    {
+      "line": 32,
+      "text": "    \"purpose\": \"future isolated output, must not exist before execution AUTH; 2026-10-05 recheck\""
+    },
+    {
+      "line": 33,
+      "text": "  }"
+    },
+    {
+      "line": 34,
+      "text": "}"
+    }
+  ]
+}

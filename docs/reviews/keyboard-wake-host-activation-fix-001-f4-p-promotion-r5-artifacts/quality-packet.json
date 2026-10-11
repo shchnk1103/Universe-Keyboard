@@ -1,0 +1,61 @@
+{
+  "lane_id": "F4-P-QUALITY-PROMOTION",
+  "round": 5,
+  "assignment_authority": "Human批准更换独立Luna并继续; only4calls/300sec four path comparison and report consistency",
+  "reviewer": "New independent GPT6 Luna /root/f4p_quality_four_paths_fresh",
+  "worktree": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "candidate_digest": "d53523dba8c371c67424ff07c79163a66f41e3bc5bb402637cf9ee79ae7579cb",
+  "budget": {
+    "actual_tool_calls": 4,
+    "wall_seconds": 300,
+    "counting": "Exactly at most2functions.exec wrappers plus2nested exec_command calls; no coordination tool calls. Capture author UTC immediately before first read, not from old budget.",
+    "reserve": "Second pair write and hash/readback all author files"
+  },
+  "inputs": [
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r4-artifacts/four-path-flat-reader-prepared.txt",
+      "bytes": 3621,
+      "sha256": "3b4d849c172d5dfc3325c2bb789dd567a3e854de67963557b3f31875e2a9de69"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r3-artifacts/quality/review.md",
+      "bytes": 3832,
+      "sha256": "e2be2fb93b206160dfc04a820cd7e2abb95a6aaae43f7bd66b616b86bc2275ba"
+    }
+  ],
+  "startup_documents": [
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/AGENTS.md",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/KNOWLEDGE_INDEX.md",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/ACTIVE_WORK.md",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/READING_MAPS.md",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/ASSIGNMENT_POLICY.md",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/AI_WORKFLOW.md",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/playbooks/test-release.md",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/VIRTUAL_ENGINEERING_TEAM.md"
+  ],
+  "output_dir": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r5-artifacts/quality",
+  "outputs": [
+    "ack.json",
+    "review.md",
+    "usage.json",
+    "delivery-readback.json"
+  ],
+  "scope": "Only Q-P1 missing complete four module path/UUID records and correction of R3 contradictory prose vs Uncovered label. Prior SHA/standalone subchecks remain closed. Q-P2/3 R3 and Q-P4 R2 carry forward only. Do not search JSON modules or standalone_payload_paths: this input is plain TEXT.",
+  "reader_contract": "Flat reader uses Module, argv[-1], Original stdout, Paired stdout, Candidate SHA, Paired SHA lines for4blocks. Each stdout has UUID: <uuid> (arm64) <full path with spaces>. Preserve the entire suffix after (arm64). Compare original full path==paired full path==argv[-1], UUID equality, relative suffix after Universe Keyboard.app/==Module, candidateSHA==pairedSHA. Report each4 row. No candidate live tool needed or authorized.",
+  "acceptance": "Only if all4 match, state Q-P1 remaining Covered and explicitly supersede R3 Uncovered just for full-path binding/consistency; historical report remains unchanged. Limited static artifact eligibility, no loaded/runtime/UI/Maps/Release claims.",
+  "write_contract": "Use exec_command require_escalated for authorized repo writer, first pair reads and writes ACK with start/scope/packetSHA computed from actual bytes, reads it back; second pair writes report/actual usage/count/endUTC and rereads hashes/bytes of ACK/report/usage then writes delivery-readback. Avoid extra preflight invocation. If any failure stop Partial; no retry above4calls or auto renewal.",
+  "exclusions": [
+    "source edits",
+    "build",
+    "test",
+    "simulator",
+    "installation",
+    "LLDB",
+    "Maps",
+    "Git mutation",
+    "backup cleanup",
+    "new standalone or full-matrix review"
+  ]
+}

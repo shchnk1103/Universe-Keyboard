@@ -1,0 +1,22 @@
+[
+  {
+    "status": "fulfilled",
+    "value": {
+      "chunk_id": "0ec788",
+      "wall_time_seconds": 0,
+      "exit_code": 1,
+      "original_token_count": 165,
+      "output": "Traceback (most recent call last):\n  File \"<stdin>\", line 4, in <module>\n  File \"/Users/doubleshy0n/.pyenv/versions/3.12.4/lib/python3.12/subprocess.py\", line 548, in run\n    with Popen(*popenargs, **kwargs) as process:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/doubleshy0n/.pyenv/versions/3.12.4/lib/python3.12/subprocess.py\", line 1026, in __init__\n    self._execute_child(args, executable, preexec_fn, close_fds,\n  File \"/Users/doubleshy0n/.pyenv/versions/3.12.4/lib/python3.12/subprocess.py\", line 1955, in _execute_child\n    raise child_exception_type(errno_num, err_msg, err_filename)\nPermissionError: [Errno 1] Operation not permitted: 'ps'\n"
+    }
+  },
+  {
+    "status": "fulfilled",
+    "value": {
+      "chunk_id": "32f0dc",
+      "wall_time_seconds": 0.462278167,
+      "exit_code": 0,
+      "original_token_count": 122,
+      "output": "{\"process\": {\"exit\": 0, \"stderr\": \"\", \"stdout\": \"41635 Ss   /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard\"}, \"device\": {\"exit\": 0, \"stderr\": \"\", \"target\": [{\"runtime\": \"com.apple.CoreSimulator.SimRuntime.iOS-27-0\", \"name\": \"iPhone 18 Pro\", \"state\": \"Booted\", \"udid\": \"405D994F-28CB-4F89-BB22-B64AD81C05A2\"}]}}\n"
+    }
+  }
+]

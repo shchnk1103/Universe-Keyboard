@@ -1,0 +1,5 @@
+{
+  "reason": "17/17 gate tests actually Passed in full-suite xcresult",
+  "command_not_run": true,
+  "not_a_test_skip": true
+}

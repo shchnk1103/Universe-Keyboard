@@ -1,0 +1,6 @@
+{
+  "utc": "2026-10-04T04:21:14.284251+00:00",
+  "error": "functions store wrapper unavailable; call not a function",
+  "target_tool_called": false,
+  "recovery": "reload explicit session and ordinal from private persisted ledger"
+}

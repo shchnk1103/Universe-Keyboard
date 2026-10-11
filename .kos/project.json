@@ -68,7 +68,7 @@
   "claims": [
     {
       "id": "CLAIM.KOS.ADVISORY_PIN",
-      "description": "Project has pinned KOS Agent Kit v0.8.0 in advisory mode; optional E-01, A-01/B-01, P-01 and D-01 apply only through explicit opt-in on new records.",
+      "description": "Project pins KOS Agent Kit v0.9.0 in advisory mode; E-01, A-01/B-01, P-01 and D-01 remain opt-in for new records, while the adopted M-02 and independent-review-lane clauses apply prospectively within PD-KOS-UPGRADE-UK-006 scope.",
       "owner": "Architecture and Knowledge Steward"
     },
     {
@@ -147,8 +147,8 @@
     "universe_keyboard": {
       "kos_kit": {
         "upstream_repository": "shchnk1103/kos-agent-kit",
-        "adopted_version": "v0.8.0",
-        "adopted_commit": "2c9907565bf6b6fcd00e698cc539d9e2db573bc5",
+        "adopted_version": "v0.9.0",
+        "adopted_commit": "c98b2813240e22b2ac7fec44b2445321b03f73e0",
         "record_envelopes_mode": "advisory"
       }
     }

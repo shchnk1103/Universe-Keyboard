@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-05T12:30:03.921042+00:00",
+  "human": "批准",
+  "scope": "Resume sameF4-I after host metadata helper repair; no budget reset",
+  "call_count": 17,
+  "conservative_elapsed_seconds": 542.805996,
+  "budget_calls": 60,
+  "budget_wall_seconds": 5400,
+  "device_process_paths_rechecked": true
+}

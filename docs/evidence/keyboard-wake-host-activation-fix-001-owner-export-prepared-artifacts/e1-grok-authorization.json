@@ -1,0 +1,41 @@
+{
+  "recorded_utc": "2026-10-06T04:02:25.580744+00:00",
+  "phase": "OWN-EXPORT-001 E1",
+  "decision_source": "Human本线程：批准，并确认原模拟器仍独占，授权若旧扩展仍存活，核实PID、启动时间和路径后，仅一次正常SIGTERM。",
+  "status": "Authorized; live Entry pending, not asserted Ready",
+  "environment_executor": "Grok sole private-script/runtime writer and simulator/debugger operator",
+  "coordinator": "Codex root, scope/checkpoint/final receipt only; no concurrent runtime",
+  "budget_actual_calls": 48,
+  "budget_wall_seconds": 3600,
+  "cleanup_reserved_calls": 12,
+  "budget_anchor": "first Grok E1 tool invocation after this explicit authorization, including reads/errors/wrappers/nested/Human requests",
+  "old_e0_budget": "57/60 stopped; not rewritten or carried into fresh E1",
+  "target": {
+    "UDID": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "name": "iPhone 18 Pro",
+    "os": "iOS 27.0",
+    "human_exclusivity": "confirmed for this authorized round"
+  },
+  "conditional_sigterm": "only if old Keyboard appex survives: recheck exact PID/start time/installed executable path, one normal SIGTERM; no SIGKILL/no main app/other processes",
+  "runtime_attempts_max": 1,
+  "arm_max": 1,
+  "freeze_max": 1,
+  "ReadMemory_max": 1,
+  "ReadMemory_size_bytes": [
+    176,
+    11352
+  ],
+  "stop_limit_seconds": 120,
+  "tool_wait_limit_seconds": 30,
+  "run_root": "/private/tmp/ukey-host-activation-fix-owner-export-20261006",
+  "root_existence_exception": "already legitimately created by authorized E0; reuse only with empty live outputs, synthetic preserved separately",
+  "frozen_e0_sha256": {
+    "owner_export_callback.py": "5fc756ed525ebb3c71b91a208615eb34249da535617461426399dc61d5cf52e8",
+    "host_preflight.py": "146766c07c6b372b3a4edacb367f02cd0058ead0688a1d80cf6fa0bc537468eb",
+    "decoder.py": "fc1817ab8843dab76acd9e8ae59277719c059742bb105eebecbc60a66f58775d",
+    "lldb-format-suppress.lldb": "ca06f497c0f2e1d4591e57e59d9d21e1830cf5cda8d359e333cd36645acdf6c9",
+    "e0-correction-preflight-results.json": "57c0738349ec0b4c5d05b90b478120ddd5662a8509f52cf8c7ff169efed238b5",
+    "e0-call-ledger.json": "3d9daaf97e60f81f10a9f29beb2abeb4f96dd7c77234931c7a2989785a308695"
+  },
+  "excluded": "production/build/test/install/deploy/restore/new logging/backup delete/Git/Release/second capture/independent review"
+}

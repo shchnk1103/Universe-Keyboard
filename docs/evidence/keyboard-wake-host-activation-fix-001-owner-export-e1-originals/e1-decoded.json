@@ -1,0 +1,267 @@
+{
+  "sha256": "a8b3bde10c0c489e92b1e7f370e257d33c4156f805697af1597fe5d5fd35414d",
+  "bytes": 1496,
+  "record_count": 16,
+  "run_words": [
+    18401526802259526135,
+    11288837255720383806
+  ],
+  "process_words": [
+    4360290669297682450,
+    12063446836245808509
+  ],
+  "buffer_complete": true,
+  "events": [
+    {
+      "sequence": 1,
+      "timestamp": 1395368022859166,
+      "stage": 2,
+      "coordinator": 0,
+      "appearance": 0,
+      "attempt": 0,
+      "owner": 0,
+      "receipt": 0,
+      "teardown": 0,
+      "epoch": 0,
+      "revision": 0
+    },
+    {
+      "sequence": 2,
+      "timestamp": 1395368026946583,
+      "stage": 2,
+      "coordinator": 1,
+      "appearance": 1,
+      "attempt": 0,
+      "owner": 1,
+      "receipt": 0,
+      "teardown": 0,
+      "epoch": 0,
+      "revision": 0
+    },
+    {
+      "sequence": 3,
+      "timestamp": 1395402988959291,
+      "stage": 3,
+      "coordinator": 1,
+      "appearance": 1,
+      "attempt": 1,
+      "owner": 1,
+      "receipt": 0,
+      "teardown": 0,
+      "epoch": 0,
+      "revision": 0
+    },
+    {
+      "sequence": 4,
+      "timestamp": 1395402992520250,
+      "stage": 9,
+      "coordinator": 1,
+      "appearance": 1,
+      "attempt": 1,
+      "owner": 1,
+      "receipt": 1,
+      "teardown": 0,
+      "epoch": 1,
+      "revision": 1
+    },
+    {
+      "sequence": 5,
+      "timestamp": 1395403048654708,
+      "stage": 4,
+      "coordinator": 1,
+      "appearance": 1,
+      "attempt": 1,
+      "owner": 1,
+      "receipt": 0,
+      "teardown": 0,
+      "epoch": 0,
+      "revision": 0
+    },
+    {
+      "sequence": 6,
+      "timestamp": 1395483985298750,
+      "stage": 5,
+      "coordinator": 1,
+      "appearance": 1,
+      "attempt": 0,
+      "owner": 1,
+      "receipt": 0,
+      "teardown": 0,
+      "epoch": 0,
+      "revision": 0
+    },
+    {
+      "sequence": 7,
+      "timestamp": 1395483989659833,
+      "stage": 10,
+      "coordinator": 1,
+      "appearance": 1,
+      "attempt": 0,
+      "owner": 0,
+      "receipt": 0,
+      "teardown": 1,
+      "epoch": 1,
+      "revision": 0
+    },
+    {
+      "sequence": 8,
+      "timestamp": 1395483990438375,
+      "stage": 6,
+      "coordinator": 1,
+      "appearance": 1,
+      "attempt": 0,
+      "owner": 0,
+      "receipt": 0,
+      "teardown": 0,
+      "epoch": 0,
+      "revision": 0
+    },
+    {
+      "sequence": 9,
+      "timestamp": 1395486437028958,
+      "stage": 7,
+      "coordinator": 1,
+      "appearance": 1,
+      "attempt": 0,
+      "owner": 0,
+      "receipt": 0,
+      "teardown": 0,
+      "epoch": 0,
+      "revision": 0
+    },
+    {
+      "sequence": 10,
+      "timestamp": 1395486437031916,
+      "stage": 7,
+      "coordinator": 1,
+      "appearance": 1,
+      "attempt": 0,
+      "owner": 0,
+      "receipt": 0,
+      "teardown": 0,
+      "epoch": 2,
+      "revision": 0
+    },
+    {
+      "sequence": 11,
+      "timestamp": 1395486439265166,
+      "stage": 11,
+      "coordinator": 1,
+      "appearance": 1,
+      "attempt": 0,
+      "owner": 1,
+      "receipt": 0,
+      "teardown": 0,
+      "epoch": 2,
+      "revision": 0
+    },
+    {
+      "sequence": 12,
+      "timestamp": 1395486439266416,
+      "stage": 8,
+      "coordinator": 1,
+      "appearance": 1,
+      "attempt": 0,
+      "owner": 1,
+      "receipt": 0,
+      "teardown": 0,
+      "epoch": 2,
+      "revision": 0
+    },
+    {
+      "sequence": 13,
+      "timestamp": 1395486439271041,
+      "stage": 8,
+      "coordinator": 1,
+      "appearance": 1,
+      "attempt": 0,
+      "owner": 1,
+      "receipt": 0,
+      "teardown": 0,
+      "epoch": 0,
+      "revision": 0
+    },
+    {
+      "sequence": 14,
+      "timestamp": 1395531541780625,
+      "stage": 3,
+      "coordinator": 1,
+      "appearance": 1,
+      "attempt": 2,
+      "owner": 1,
+      "receipt": 0,
+      "teardown": 0,
+      "epoch": 0,
+      "revision": 0
+    },
+    {
+      "sequence": 15,
+      "timestamp": 1395531541989208,
+      "stage": 9,
+      "coordinator": 1,
+      "appearance": 1,
+      "attempt": 2,
+      "owner": 1,
+      "receipt": 1,
+      "teardown": 0,
+      "epoch": 2,
+      "revision": 1
+    },
+    {
+      "sequence": 16,
+      "timestamp": 1395531542758500,
+      "stage": 4,
+      "coordinator": 1,
+      "appearance": 1,
+      "attempt": 2,
+      "owner": 1,
+      "receipt": 0,
+      "teardown": 0,
+      "epoch": 0,
+      "revision": 0
+    }
+  ],
+  "attempts": [
+    {
+      "ordinal": 1,
+      "paired": true,
+      "schedules": [
+        {
+          "sequence": 4,
+          "timestamp": 1395402992520250,
+          "stage": 9,
+          "coordinator": 1,
+          "appearance": 1,
+          "attempt": 1,
+          "owner": 1,
+          "receipt": 1,
+          "teardown": 0,
+          "epoch": 1,
+          "revision": 1
+        }
+      ],
+      "owner_absent_sequences": []
+    },
+    {
+      "ordinal": 2,
+      "paired": true,
+      "schedules": [
+        {
+          "sequence": 15,
+          "timestamp": 1395531541989208,
+          "stage": 9,
+          "coordinator": 1,
+          "appearance": 1,
+          "attempt": 2,
+          "owner": 1,
+          "receipt": 1,
+          "teardown": 0,
+          "epoch": 2,
+          "revision": 1
+        }
+      ],
+      "owner_absent_sequences": []
+    }
+  ],
+  "verdict": "requires_manual_run_binding_and_independent_review"
+}

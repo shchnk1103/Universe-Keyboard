@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-01 Asia/Shanghai",
+  "target": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "name": "iPhone 18 Pro",
+  "runtime": "iOS 27.0",
+  "state": "Booted",
+  "isAvailable": true,
+  "source": "XcodeBuildMCP list_sims enabled:true",
+  "human": "授权确认本轮模拟器仍为之前授权与独占的那台模拟器",
+  "window": "C2 verification through completion",
+  "sandbox_simctl": "denied; MCP host list verified"
+}

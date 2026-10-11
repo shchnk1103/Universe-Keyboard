@@ -1,0 +1,65 @@
+{
+  "utc": "2026-10-04T08:40:00Z",
+  "paths": [
+    {
+      "path": "/private/tmp/ukey-wake-m0-20261003/backup",
+      "exists": true,
+      "isdir": true,
+      "mode": "0o700"
+    },
+    {
+      "path": "/private/tmp/ukey-wake-m2r1-20261004/backup",
+      "exists": true,
+      "isdir": true,
+      "mode": "0o700"
+    },
+    {
+      "path": "/private/tmp/ukey-wake-m2r2-20261004/backup",
+      "exists": true,
+      "isdir": true,
+      "mode": "0o700"
+    },
+    {
+      "path": "/private/tmp/ukey-wake-ui-i0-20261003/backup",
+      "exists": true,
+      "isdir": true,
+      "mode": "0o700"
+    },
+    {
+      "path": "/private/tmp/ukey-wake-ui-t0-20261003/backup",
+      "exists": false,
+      "isdir": false,
+      "mode": null
+    },
+    {
+      "path": "/private/tmp/ukey-wake-ui-keychain-continuation-20261003/backup",
+      "exists": false,
+      "isdir": false,
+      "mode": null
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-entry-20261004",
+      "exists": true,
+      "isdir": true,
+      "mode": "0o755"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-grok-f1-20261004",
+      "exists": true,
+      "isdir": true,
+      "mode": "0o755"
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-f2-run-20261004",
+      "exists": false,
+      "isdir": false,
+      "mode": null
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-f2-backup-20261004",
+      "exists": false,
+      "isdir": false,
+      "mode": null
+    }
+  ]
+}

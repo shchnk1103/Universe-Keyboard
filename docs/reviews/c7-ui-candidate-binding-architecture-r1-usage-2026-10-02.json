@@ -1,0 +1,98 @@
+{
+  "lane": "ARCH-C7-UI-CANDIDATE-BINDING",
+  "round": 1,
+  "packet_path": "/private/tmp/ukey-wake-probe-ui-q-20261002/architecture-packet.json",
+  "packet_digest_sha256": "1aa7200ae5f93243fe3619649c994fe395eae3c0985dba8db7ccd0a6a1cdc3f6",
+  "canonicalization": "Exclude packet_digest_sha256; sorted compact JSON; ensure_ascii=False; UTF-8 SHA-256.",
+  "status": "Complete / Positive scoped artifact opinion",
+  "criteria": {
+    "A1": "Covered",
+    "A2": "Covered"
+  },
+  "start_utc": "2026-10-02T15:47:44.763710+00:00",
+  "start_unix": 1790956064.7637079,
+  "start_monotonic": 1138915.493902375,
+  "end_utc": "2026-10-02T15:54:27.396548+00:00",
+  "end_unix": 1790956467.396548,
+  "end_monotonic": 1139318.125888416,
+  "elapsed_seconds": 402.631986,
+  "calls_used": 5,
+  "max_calls": 6,
+  "soft_seconds": 240,
+  "hard_seconds": 360,
+  "allowed_content_hashes": {
+    "matched": 19,
+    "total": 19
+  },
+  "hash_only_inputs": {
+    "matched": 1201,
+    "total": 1201
+  },
+  "payload_hashes": {
+    "matched": 78,
+    "total": 78
+  },
+  "candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50",
+  "recomputed_binding": {
+    "build_input_manifest_sha256": "0c2ab27db638647735202b526e06614fa78aa209cf6340b26ff8293cd8e47d61",
+    "candidate_command_sha256": "6e7dd9ccb0d95844d4dead12b29e3f12ca478624dac28c65397a04be907cddca",
+    "payload_digest_sha256": "784c05694e420d3cab5187160c463066070fbdbd72b1c053cd39f3e6fe422aca",
+    "entitlement_rows_sha256": "920e7844ea829d7cfa31b8db9a6f298e3cddc3d1dcdfbbe025b85eaa34e15ea1"
+  },
+  "report_path": "/private/tmp/ukey-wake-probe-ui-q-20261002/architecture/review.md",
+  "report_sha256": "f4179e249d1bdee48a6dbd4a541ca02b5a2d035a25ff4ec04eba8a2bd8fff0c3",
+  "usage_path": "/private/tmp/ukey-wake-probe-ui-q-20261002/architecture/usage.json",
+  "call_ledger": [
+    {
+      "call": 1,
+      "tool": "exec_command",
+      "start_utc": "2026-10-02T15:47:44.763710+00:00",
+      "start_unix": 1790956064.7637079,
+      "start_monotonic": 1138915.493902375,
+      "end_utc": null,
+      "elapsed_seconds": 0.2,
+      "result": "Read and parsed full frozen packet; digest matched."
+    },
+    {
+      "call": 2,
+      "tool": "exec_command",
+      "start_utc": null,
+      "start_monotonic": null,
+      "end_utc": null,
+      "elapsed_seconds": 0.289,
+      "result": "19/19 allowed content SHA and 1201/1201 hash-only SHA matched."
+    },
+    {
+      "call": 3,
+      "tool": "collaboration.send_message",
+      "start_utc": null,
+      "start_monotonic": null,
+      "end_utc": null,
+      "elapsed_seconds": null,
+      "result": "Call-2 checkpoint sent to root."
+    },
+    {
+      "call": 4,
+      "tool": "exec_command",
+      "start_utc": "2026-10-02T15:51:48.954771+00:00",
+      "start_monotonic": null,
+      "end_utc": null,
+      "elapsed_seconds": 0.222,
+      "result": "Independent A1/A2 checks: 78 payloads, two entitlement pairs, candidate binding, bundles/signatures, six Mach-O SHA/UUID, bounded source impact."
+    },
+    {
+      "call": 5,
+      "tool": "exec_command",
+      "start_utc": "2026-10-02T15:54:27.395877+00:00",
+      "start_unix": 1790956467.3958762,
+      "start_monotonic": 1139318.1252165,
+      "end_utc": "2026-10-02T15:54:27.396548+00:00",
+      "end_unix": 1790956467.396548,
+      "end_monotonic": 1139318.125888416,
+      "elapsed_seconds": 0.000672,
+      "result": "Wrote report and usage together in the final call; verified report SHA and character limit."
+    }
+  ],
+  "boundaries": "Static artifact byte binding and local diff impact only; no runtime/install/Gate/Release claim. No repo writes.",
+  "timing_note": "Unavailable timestamps remain null; rounded or measured elapsed values are labeled; no timestamps inferred."
+}

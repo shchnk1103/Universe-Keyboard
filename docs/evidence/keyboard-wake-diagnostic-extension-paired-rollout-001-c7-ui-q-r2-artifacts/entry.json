@@ -1,0 +1,12 @@
+{
+  "authorization": "开始只补齐 Quality 独立交付及 Architecture 报告一致性",
+  "user_date": "2026-10-03 Asia/Shanghai",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "before_file_count": 2901,
+  "before_dirty_count": 818,
+  "staged": 0,
+  "root_single_repo_writer": true,
+  "reviewers_reused": true,
+  "scope": "Quality Q1-Q3 independent delivery and Architecture consistency only; old R1 immutable, no runtime/build/device"
+}

@@ -1,5 +1,12 @@
 # Universe Keyboard Knowledge Index
 
+2026-10-11：[F01整合复核与发布准备](evidence/typo-correction-002-f01-fixed-integration-review-001.md)：F01 PR139固定a44五源完整本地CI通过，独立增量复核Scoped Pass with conditions；Human已接受行政残项并授权本轮正常commit/push/更新139。发布候选保持draft，merge及父Gate/Close另授；父Active。
+
+2026-10-11：[PR207 单次合并状态同步](evidence/typo-correction-002-final-delivery-merge-001.md)：PR207 已合并 `8f306c6`，local/hosted CI 全绿，merge tree 与已验证候选一致。父 Active；本轮仅发布一次 M-02 docs-only 同步，无 Gate/Close。F-01 PR139 仍为 draft、有冲突，核心修复未进入 main，整合及验证须另授权。
+
+2026-10-11：P1/P2证据已收敛，固定main5927233完整CI＋DEBUG52通过；有限性能范围已获Human批准。精确交付待发布授权；父Active，无Gate/Close/Release；见[最终CI](evidence/typo-correction-002-fixed-main-validation-001.md)及[交付包](evidence/typo-correction-002-delivery-packaging-001.md)。
+
+
 本页只路由。当前工作读 [Active Work](ACTIVE_WORK.md)，按 [Reading Maps](READING_MAPS.md)
 选择一个任务路径；足以回答或行动后停止扩读。历史从 Assignment/ADR 目录按 ID 查找。
 
@@ -18,14 +25,22 @@
 - [Swift 6](architecture/swift6-migration.md) · [RIME artifacts](architecture/rime-artifacts.md) · [OpenCC](architecture/opencc-integration.md)
 - [ADR](architecture/decisions/) · [架构时间线](ARCHITECTURE_TIMELINE.md)
 - [Build 55 公开外部测试例外提案](product-decisions/RELEASE-2026-09-13-build55-limited-external-trial-exception-proposal.md) — **已接受公开测试例外；不等于 Release Gate Pass**
+- [Build 94 公开外部 TestFlight 决定](product-decisions/RELEASE-2026-09-25-BUILD94-public-beta-decision.md) — 已在既有测试组开放；**不等于 Quality/Release Pass 或正式 App Store 发布**
 
 ## 领域权威
 
 - [键盘布局与九键](KEYBOARD_LAYOUT.md) · [方案管理](RIME_SCHEME_MANAGEMENT.md)
+- 删除键滑动擦除 / 回放 / 删除全部气泡（**Closed**；产品树 `cee4f91`；Close 与 Gate 在 PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204) squash `4c2760d`）：[`DELETE-KEY-SCRUB-001`](assignments/delete-key-scrub-001.md) · [`Gate`](product-decisions/DELETE-KEY-SCRUB-001-product-gate.md) · [`Close`](evidence/delete-key-scrub-001-close-2026-10-07.md)
+- 删除键设置页（**Closed**；PR [#206](https://github.com/shchnk1103/Universe-Keyboard/pull/206)；第 6 行已空出；不等于 TestFlight 或 Release）：[`DELETE-KEY-SETTINGS-001`](assignments/delete-key-settings-001.md) · [`PD`](product-decisions/DELETE-KEY-SETTINGS-001-product-contract.md) · [`Architecture`](reviews/delete-key-settings-001-architecture-review.md) · [`Quality`](reviews/delete-key-settings-001-quality-review.md) · [`Product Gate 002`](reviews/delete-key-settings-001-product-gate-002.md) · [`Close`](evidence/delete-key-settings-001-close-2026-10-07.md)
+- 键盘唤醒有界完成（三件 Assignment **Closed**；PR [#198](https://github.com/shchnk1103/Universe-Keyboard/pull/198) squash `4b102a9`）：[`LIFECYCLE-DIAGNOSTICS-001`](assignments/keyboard-wake-lifecycle-diagnostics-001.md) · [`HOST-ACTIVATION-FIX-001`](assignments/keyboard-wake-host-activation-fix-001.md) · [`PAIRED-ROLLOUT-001`](assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md) · [`Close`](product-decisions/KEYBOARD-WAKE-BOUNDED-CLOSE-001-product-decision-2026-10-06.md) · [Close 记录](evidence/keyboard-wake-bounded-close-001-2026-10-06.md) — 不等于 Gate、TestFlight 或 Release；隔离 worktree KEEP
 - 方案下载来源状态 / 多方案资源归属（工程 Assignment **Closed**；ADR 0034 **Accepted (Conditional)**；Product/Release 仍分离）：[`SCHEME-DELIVERY-SOURCE-STATE-001`](assignments/scheme-delivery-source-state-001.md) · [`Close receipt`](evidence/scheme-delivery-source-state-001-close-2026-09-16.md) · [`plan`](plans/scheme-resource-ownership-and-coexistence-plan.md) · [`P0`](evidence/scheme-delivery-source-state-001-p0-2026-09-07.md) · [`P1`](evidence/scheme-delivery-source-state-001-p1-2026-09-07.md) · [`device`](evidence/scheme-delivery-source-state-001-p3-device-2026-09-07.md) · [`ADR 0034`](architecture/decisions/0034-multi-scheme-resource-ownership.md) · [`Accept`](evidence/adr-0034-accept-2026-09-12.md)
 - [模糊音](RIME_FUZZY_PINYIN.md) · [用户词典](RIME_USER_DICTIONARY.md) · [同步](RIME_SYNC.md)
+- [RIME-SYNC-001 bounded iOS V1 Assignment（Closed；残余债务仍开放）](assignments/rime-sync-001.md) · [生命周期决定](product-decisions/RIME-SYNC-001-ASSIGNMENT-CLOSE-2026-09-25.md)
 - [输入智能](TYPING_INTELLIGENCE.md) · [纠错](TYPO_CORRECTION.md)
 - [纠错 Benchmark](TYPO_BENCHMARK.md) · [Registry](TYPO_BENCHMARK_REGISTRY.md) · [V2 Registry](TYPO_BENCHMARK_REGISTRY_V2.md)
+- [TYPO-CORRECTION-002 recall remediation](assignments/typo-correction-002-recall-remediation-001.md) · [quality Run 002](evidence/typo-correction-002-recall-remediation-quality-run-2026-09-20-002.md) · [Architecture review](reviews/typo-correction-002-recall-remediation-final-architecture-review-2026-09-20.md) · [Quality review](reviews/typo-correction-002-recall-remediation-final-quality-review-2026-09-20.md) · [Product decision](product-decisions/TYPO-CORRECTION-002-RECALL-REMEDIATION-FINAL-BOUNDED-PUBLICATION-PREPARATION-DECISION-2026-09-20.md) · [post-merge state sync](evidence/typo-correction-002-recall-remediation-post-merge-state-sync-2026-09-20.md) — PR #141 已 squash merge `7e151598`；final manifest `e2b4373c…` 的工程 review 与 Product Accept 仍是 bounded 证据，parent 继续 Active
+- [TYPO-CORRECTION-002 INT-003 query-density diagnosis](assignments/typo-correction-002-int003-query-density-remediation-001.md) · [operation-level run](evidence/typo-correction-002-sim-run-2026-09-25-int003-query-density-diagnostic-001.md) · [query-cost assessment](evidence/typo-correction-002-int003-query-cost-assessment-2026-09-26.md) · [criterion decision](product-decisions/TYPO-CORRECTION-002-INT003-QUERY-DENSITY-DIAGNOSTIC-CRITERION-001.md) · [PR #177 merged](https://github.com/shchnk1103/Universe-Keyboard/pull/177) · [query-cost M-02 receipt](evidence/typo-correction-002-int003-query-cost-post-merge-state-sync-2026-09-26.md) — 359 real query pairs across 12 operations; Debug timing is not Product cost acceptance; original rapid-window attribution and wider Product residual remain open; parent stays Active
+- [TYPO-CORRECTION-002 INT-003 query-cost measurement](assignments/typo-correction-002-int003-query-cost-measurement-001.md) · [P0 measurement plan](plans/typo-correction-002-int003-query-cost-measurement-001.md) · [PR #184 merged](https://github.com/shchnk1103/Universe-Keyboard/pull/184) as `03f4d0cc` · [PR #179](https://github.com/shchnk1103/Universe-Keyboard/pull/179) · [PR #184 M-02 receipt](evidence/typo-correction-002-int003-query-cost-p1-implementation-post-merge-state-sync-2026-09-27.md) — P1 is on main with open coordinator/RimeBridge evidence conditions; P2 AUTH remains Active/unconsumed pending exact source/review and payload/Run freeze; parent Active, no Gate or Product cost acceptance
 - [上屏续写](POST_COMMIT_CONTINUATION.md) · [续写内容质量](POST_COMMIT_CONTINUATION_QUALITY.md)
 - [App 通知](APP_NOTIFICATIONS.md) · [隐私](PRIVACY_POLICY.md)
 - [首次启用 / 完全访问旅程](ONBOARDING_ACTIVATION.md) — 语义 `PD-RELEASE-2026-0801-03`；展示 `PD-HELP-TIPKIT-001` / [`HELP-GUIDE-SHEET-001`](assignments/help-guide-sheet-001.md)（Closed；Product Gate [`记录`](product-decisions/HELP-GUIDE-SHEET-001-product-gate.md)）
@@ -36,6 +51,7 @@
 - [发布证据增量与候选晋级](assignments/release-evidence-promotion-001.md) · [ADR 0035](architecture/decisions/0035-release-evidence-accumulation-and-promotion.md) · [正式采纳 Product Decision](product-decisions/ADR-0035-ACCEPT-authorization.md) · [REP-Q-01 receipt](evidence/release-evidence-promotion-001-rep-q-01-provenance-2026-09-15.md) · [P1-A / ADR 0035 状态对账](evidence/release-evidence-promotion-001-p1-a-adr-0035-status-reconciliation-2026-09-15.md) · [PR #128](https://github.com/shchnk1103/Universe-Keyboard/pull/128) merged `1a405143`
 - [CI 分级](CI_CHANGE_CLASSIFICATION.md) · [拆分 full 路径 heavy job（Closed；#130 merged）](assignments/ci-heavy-job-split-001.md) · [Architecture](reviews/ci-heavy-job-split-001-architecture-review.md) · [Quality](reviews/ci-heavy-job-split-001-quality-review.md) · [GitHub 环境诊断](kos/codex-github-cli-auth-troubleshooting.md)
 - [Crash/Jetsam](CRASH_JETSAM_SYMBOLICATION.md) · [环境采集](ENVIRONMENT_CAPTURE_PROCEDURE.md) · [环境摘要](ENVIRONMENT_DIGEST_TOOLING.md)
+- [设备发现诊断流程](assignments/kos-device-discovery-diagnostics-001.md) — 环境采集流程 v1.1 的诊断分层；PR [#171](https://github.com/shchnk1103/Universe-Keyboard/pull/171) 已合并（`2c3b0e2`），见 [post-merge M-02 receipt](evidence/kos-device-discovery-diagnostics-001-post-merge-state-sync-2026-09-25.md)
 - [技术债](TECH_DEBT.md) · [文档健康](DOCUMENTATION_HEALTH.md) · [协调状态镜像](ENGINEERING_DASHBOARD.md)
 
 ## KOS
@@ -43,5 +59,6 @@
 - [运行入口](KNOWLEDGE_OS.md) · [冻结规范](kos/knowledge-os-2.0-specification.md) · [零上下文启动](kos/zero-context-startup.md)
 - [Assignment Policy](ASSIGNMENT_POLICY.md) · [2.1 ops](kos/kos-2.1-operational-maturity.md)
 - [实际采用版本](kos/UPGRADE_STATUS.md) · [Profile](../.kos/project.json) · [人工证据](kos/universe-keyboard-human-operated-evidence-profile.md)
+- [KOS Kit v0.9.0 prospective adoption — UK-006](product-decisions/KOS-UPGRADE-UK-006-v0.9.0-adoption.md) · [review record](kos/upgrade-records/KOS-UPGRADE-UK-006-v0.9.0-round-2.md) · [adoption Assignment](assignments/kos-upgrade-uk-006-v0.9.0-adoption.md) · [post-merge M-02 receipt](evidence/kos-upgrade-uk-006-v0.9.0-post-merge-state-sync-2026-09-25.md) — PR #170 merged 1c14ab6
 - [UK-005 release-evidence（parent/P1 engineering scope Closed；Product/Release 分离）](assignments/kos-release-evidence-implementation-001.md) · [P1-A](assignments/kos-release-evidence-implementation-001-p1.md) · [Close receipt](evidence/kos-release-evidence-implementation-001-close-2026-09-16.md) · [F-001 remediation](assignments/kos-release-evidence-implementation-001-p1-f001.md) · [P-01/D-01 fact-only handoff](assignments/kos-release-evidence-implementation-001-p01-d01.md) · [P1-A provenance closure](evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md) · [P1-B Option A](product-decisions/KOS-UPGRADE-UK-005-P1-B-scope.md) · [Upgrade Record](kos/upgrade-records/KOS-UPGRADE-UK-005-release-evidence-v1.md)
 - [外部公测发布复盘建议稿](kos/kos-improvement-suggestions-public-beta-release-2026-09-13.md) — **建议稿；未采纳**

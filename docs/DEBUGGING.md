@@ -20,6 +20,7 @@ Classify the failure before changing code. Record the input, current page/mode, 
 | simplification wrong | setting/custom YAML -> deployment -> OpenCC assets/filter |
 | settings differ between App and keyboard | App Group access, cached settings and notification refresh |
 | key tap lands on the wrong neighbor / gap | visual key vs `KeyTouchCellLayout` touch cell; nine-key uses column stacks (`T9NineKeyChromeHost`); Debug overlay in 诊断 |
+| host Terminal lists a device/simulator but Codex or an Xcode UI operation cannot use it | identify the provider and exact operation first; see [device-discovery diagnostics](ENVIRONMENT_CAPTURE_PROCEDURE.md#simulator-and-device-discovery-diagnostics); a Device Hub/Accessibility timeout alone is not a CoreDevice health result |
 
 ## Evidence To Capture
 

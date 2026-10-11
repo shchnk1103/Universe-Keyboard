@@ -1,0 +1,17 @@
+{
+  "candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50",
+  "packet_digest_sha256": "08481da25532203cbd5877dd974010ef3a90a98fa554144e9b6e4cd3d3b2bca7",
+  "review_sha256": "4e6e65de5c84f88fd59324601fd0f17082fcc0cd3d223f6bbb8b36e1476db8db",
+  "usage_sha256": "7febb5277419006f358010d4c88148aedf581c51cc7551205c861f9889739b69",
+  "C1": "Covered",
+  "C2": "Covered",
+  "R0_A1": "valid same-candidate evidence reused, no rerun",
+  "verdict": "Complete / Positive scoped static Architecture artifact opinion",
+  "calls": 4,
+  "elapsed_seconds": 193.653,
+  "last_output_mtime_elapsed_seconds": 193.65332674980164,
+  "frozen_inputs_matched": 11,
+  "historical_round1": "Partial/incomplete and header mismatch preserved",
+  "Q": "bounded candidate artifact independent delivery complete with Quality R2; not overall Quality Gate",
+  "no_runtime_or_device_actions": true
+}

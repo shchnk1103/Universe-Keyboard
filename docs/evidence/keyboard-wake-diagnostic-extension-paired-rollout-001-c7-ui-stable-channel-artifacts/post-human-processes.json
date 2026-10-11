@@ -1,0 +1,9 @@
+{
+  "utc": "2026-10-04T04:36:29.942722+00:00",
+  "human_reply": "未操作",
+  "metadata": [
+    "41635 45734 Sun Oct  4 12:16:19 2026     SXs  /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+    "45732 45731 Sun Oct  4 12:33:29 2026     Ss+  /Applications/Xcode.app/Contents/Developer/usr/bin/lldb",
+    "45734 45732 Sun Oct  4 12:33:30 2026     S    /Applications/Xcode.app/Contents/SharedFrameworks/LLDB.framework/Resources/debugserver"
+  ]
+}

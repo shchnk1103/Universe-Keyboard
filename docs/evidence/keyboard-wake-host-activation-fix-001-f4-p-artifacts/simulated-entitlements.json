@@ -1,0 +1,24 @@
+[
+  {
+    "module": "Universe Keyboard",
+    "section": "__TEXT,__entitlements",
+    "plist": {
+      "application-identifier": "C33N6HTS9N.com.DoubleShy0N.Universe-Keyboard",
+      "com.apple.security.application-groups": [
+        "group.com.DoubleShy0N.Universe-Keyboard"
+      ]
+    },
+    "section_sha256": "6610a8c02dfe5b877f5be595941b807a687c7838e2f4b54a80b4c6726b821a6c"
+  },
+  {
+    "module": "PlugIns/Keyboard.appex/Keyboard",
+    "section": "__TEXT,__entitlements",
+    "plist": {
+      "application-identifier": "C33N6HTS9N.com.DoubleShy0N.Universe-Keyboard.Keyboard",
+      "com.apple.security.application-groups": [
+        "group.com.DoubleShy0N.Universe-Keyboard"
+      ]
+    },
+    "section_sha256": "1b5eca79f033b12423739696ae50c8dfcd679ed6484803e2e340787aee149b7b"
+  }
+]

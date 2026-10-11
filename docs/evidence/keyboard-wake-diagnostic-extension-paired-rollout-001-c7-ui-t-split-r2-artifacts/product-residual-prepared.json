@@ -1,0 +1,50 @@
+{
+  "status": "Prepared only; Product decision pending",
+  "scope": "Current T validation stage only; no Release/new candidate runtime authorization",
+  "raw_skips": 30,
+  "separately_signed_pass_identity": "RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem()",
+  "remaining_unverified": 29,
+  "groups": {
+    "RimeBridge": {
+      "raw_record_count": 20,
+      "remaining_case_ids": [
+        "RimeLuaSmokeTests/testCorrectionSidecarKeepsVisibleCompositionIntactWhenRuntimeFixtureIsProvided()",
+        "RimeLuaSmokeTests/testRimeIceLuaDynamicCandidatesWhenRuntimeFixtureIsProvided()",
+        "RimeT9AutoAnchorRetryMatrixTests/testCappedTwoSyllableControllerFrozenPairedMatrix()",
+        "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationKnownPositive()",
+        "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationNaturalReminder()",
+        "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationNaturalWeather()",
+        "RimeT9AutoAnchorRetryMatrixTests/testPartialLongSelectionIsNotPersonalizationProof()",
+        "RimeT9AutoAnchorRetryMatrixTests/testRejectedCompositionLaterOpportunityTransactionMatrix()",
+        "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerFrozenA0A1B2B3Matrix()",
+        "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerMissingLiveCompositionFailsClosedBeforeKey()",
+        "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerRealRimeDeletePathAndPartialOwnership()",
+        "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerRealRimeSecondRejectRestoreMatrix()",
+        "RimeT9CompatibilitySpikeTests/testPinnedLibrimeCanSelectT9AndProcessDigitSequenceAfterRemovingUnsupportedProcessor()",
+        "RimeT9PinyinSelectionSpikeTests/test004CatalogExactRawAcceptanceOnPinnedLibrime()",
+        "RimeT9PinyinSelectionSpikeTests/testAtomicPathDiscoveryStageAOnPinnedLibrime()",
+        "RimeT9PinyinSelectionSpikeTests/testGate5Phase05CandidateCoverageSelRangeOnPinnedLibrime()",
+        "RimeT9PinyinSelectionSpikeTests/testGate5Phase06AlternativeCoverageSelectionDeltaOnPinnedLibrime()",
+        "RimeT9PinyinSelectionSpikeTests/testPrecisePinyinPathRefinementOnPinnedLibrime()",
+        "RimeT9PinyinSelectionSpikeTests/testReadOnlyWindowCoverageForYiZiSibling()",
+        "ThreadAffineRimeRealEngineTests/testRealEngineBootstrapCreatesAndCallsOffMainThroughOwner()"
+      ],
+      "source_sha256": "3b7ffac968de6253cecd061ca4e7fe7b071cadc3ee471e57ca7db8b4cedb5bf5"
+    },
+    "AppKeyboard": {
+      "raw_record_count": 10,
+      "remaining_case_ids": [
+        "RimeIcePinnedArtifactTests/testVerifiedOfficialAndMirrorArchivesConvergeAfterProductionProcessing()",
+        "SchemeResourcePreparationCoexistenceTests/testCS06_UninstallInactiveWanxiangRetainsIcePeerInventory()",
+        "SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerIceRemovalPreservesCompleteWanxiangInventory()",
+        "SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerWanxiangRemovalPreservesCompleteIceInventory()",
+        "SchemeResourcePreparationCoexistenceTests/testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds()",
+        "SchemeResourcePreparationCoexistenceTests/testProductionProcessedIceTreeKeepsOfficialDefaultYamlWhenFixturePresent()",
+        "TD012LMDGDeviceStagingTests/testPinnedModelLoadsThroughWanxiangGrammarOnAuthorizedPhysicalDevice()",
+        "TD012LMDGDeviceStagingTests/testRemovePinnedModelAfterAuthorizedPhysicalDeviceSpike()",
+        "TD012LMDGDeviceStagingTests/testStagePinnedModelForAuthorizedPhysicalDeviceSpike()"
+      ],
+      "source_sha256": "3192978022da9ba57f33e44c4cb91924471d28e1cf1035640b48807446ba1f6d"
+    }
+  }
+}

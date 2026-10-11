@@ -1,0 +1,35 @@
+{
+  "utc": "2026-10-03T04:26:35.978051+00:00",
+  "containers_same_as_health_entry": true,
+  "old_C7_payload78_matches": true,
+  "dual_signature_valid": true,
+  "selected_preferences": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "rime_deployed": {
+      "exists": true,
+      "value": true
+    },
+    "rime_needs_deploy": {
+      "exists": true,
+      "value": false
+    },
+    "rime_deploying": {
+      "exists": true,
+      "value": false
+    }
+  },
+  "target_processes": [
+    "16297 /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/40263610-A635-40FA-AF79-538449A5DCD9/Universe Keyboard.app/Universe Keyboard",
+    "16380 /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/40263610-A635-40FA-AF79-538449A5DCD9/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard"
+  ],
+  "human_full_access_candidates_commit_normal": true,
+  "user_input_content_not_read": true,
+  "post_input_data_full_equality_not_claimed": true
+}

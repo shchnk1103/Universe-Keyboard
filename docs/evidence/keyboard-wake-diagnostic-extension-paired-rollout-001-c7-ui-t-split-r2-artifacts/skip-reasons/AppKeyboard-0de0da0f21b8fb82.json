@@ -1,0 +1,57 @@
+{
+  "devices": [
+    {
+      "architecture": "arm64",
+      "deviceId": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "deviceName": "iPhone 18 Pro",
+      "modelName": "iPhone 18 Pro",
+      "osBuildNumber": "24A434",
+      "osVersion": "27.0",
+      "platform": "iOS Simulator"
+    }
+  ],
+  "duration": "Ran for 0.0015 seconds",
+  "durationInSeconds": 0.0015009641647338867,
+  "hasMediaAttachments": false,
+  "hasPerformanceMetrics": false,
+  "testDescription": "Test case with 1 run",
+  "testIdentifier": "RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem()",
+  "testIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem",
+  "testName": "testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem()",
+  "testPlanConfigurations": [
+    {
+      "configurationId": "1",
+      "configurationName": "Test Scheme Action"
+    }
+  ],
+  "testResult": "Skipped",
+  "testRuns": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "name": "Test skipped - Unsigned host lacks Keychain entitlement; signed Simulator lane covers integration.",
+              "nodeType": "Test Case Run",
+              "result": "Skipped"
+            }
+          ],
+          "duration": "0.0015s",
+          "durationInSeconds": 0.0015009641647338867,
+          "name": "Test Scheme Action",
+          "nodeIdentifier": "1",
+          "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem",
+          "nodeType": "Test Plan Configuration",
+          "result": "Skipped"
+        }
+      ],
+      "details": "iOS Simulator 27.0",
+      "duration": "0.0015s",
+      "durationInSeconds": 0.0015009641647338867,
+      "name": "iPhone 18 Pro",
+      "nodeIdentifier": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "nodeType": "Device",
+      "result": "Skipped"
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "candidate_manifest_sha256": "af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9",
+  "core": {
+    "tests": 1184,
+    "failures": 0,
+    "command": {
+      "argv": [
+        "swift",
+        "test",
+        "--package-path",
+        "Packages/KeyboardCore",
+        "--scratch-path",
+        "/private/tmp/ukey-wake-c4-20261001/CoreBuild"
+      ],
+      "cwd": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+      "started_unix": 1790813211.353726,
+      "candidate_manifest_sha256": "af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9",
+      "target": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "exit_code": 0,
+      "ended_unix": 1790813254.2130392,
+      "log_sha256": "32efaa867c13f9559eebd0ca575ced99a016a7f55ad048e651ad39f8f2b8b15b"
+    }
+  },
+  "matrix": {
+    "RimeBridgeTests": {
+      "metrics": {
+        "analyzerWarningCount": "0",
+        "errorCount": "0",
+        "testsCount": "105",
+        "testsFailedCount": "0",
+        "testsSkippedCount": "20",
+        "warningCount": "0"
+      },
+      "counts": {
+        "Success": 85,
+        "Failure": 0,
+        "Skipped": 20
+      },
+      "exit_code": 0
+    },
+    "AppKeyboardTests": {
+      "metrics": {
+        "analyzerWarningCount": "0",
+        "errorCount": "0",
+        "testsCount": "431",
+        "testsFailedCount": "0",
+        "testsSkippedCount": "10",
+        "totalCoveragePercentage": "0.4943520002948385",
+        "warningCount": "0"
+      },
+      "counts": {
+        "Success": 421,
+        "Failure": 0,
+        "Skipped": 10
+      },
+      "exit_code": 0
+    },
+    "SignedKeychain": {
+      "metrics": {
+        "analyzerWarningCount": "0",
+        "errorCount": "0",
+        "testsCount": "1",
+        "testsFailedCount": "0",
+        "testsSkippedCount": "0",
+        "totalCoveragePercentage": "0.04450218364752059",
+        "warningCount": "0"
+      },
+      "counts": {
+        "Success": 1,
+        "Failure": 0,
+        "Skipped": 0
+      },
+      "exit_code": 0
+    },
+    "ReleaseBuild": {
+      "metrics": {
+        "analyzerWarningCount": "0",
+        "errorCount": "0",
+        "testsCount": "0",
+        "testsFailedCount": "0",
+        "testsSkippedCount": "0",
+        "warningCount": "0"
+      },
+      "counts": {
+        "Success": 0,
+        "Failure": 0,
+        "Skipped": 0
+      },
+      "exit_code": 0
+    }
+  },
+  "pair_manifest_sha256": "874a8c3a6d0802771d92b6c3b8f52749a13466319272a9bdf096b599abe37e24",
+  "skip_disposition": "unverified; no current-stage Product acceptance",
+  "installed": false,
+  "runtime_emission_verified": false
+}

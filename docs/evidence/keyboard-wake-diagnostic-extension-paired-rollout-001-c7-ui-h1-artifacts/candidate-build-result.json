@@ -1,0 +1,8 @@
+{
+  "start_utc": "2026-10-02T15:29:01.892432+00:00",
+  "end_utc": "2026-10-02T15:29:38.251863+00:00",
+  "elapsed_seconds": 36.359522042097524,
+  "exit_code": 0,
+  "command": "candidate-command.json",
+  "scope": "generic SDK standalone build only; no simulator instance/test/install"
+}

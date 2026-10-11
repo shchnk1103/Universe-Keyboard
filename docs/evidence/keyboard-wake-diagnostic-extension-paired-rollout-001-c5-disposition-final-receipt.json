@@ -1,0 +1,37 @@
+{
+  "stage": "current C5 scoped30skip Product disposition only",
+  "authority": "Human current thread: 同意（仅C5非阻塞/未验证accept，不记passed）",
+  "worktree": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "candidate_digest": "af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9",
+  "source_build_hashes_matched": 568,
+  "debug_bundle_hashes_matched": 111,
+  "inventory_sha256": "bba5d6f7ad913d54e82fc2bc9a43fc5119fa20177a352753f7c560fccd929e30",
+  "skip_records": 30,
+  "skip_status": "30/30 Skipped unchanged",
+  "decision_sha256": "5d3a181269c437fe6b92f8541256aadae5927daf9230f8cd998d2d09664af0f2",
+  "baseline_existing_files": 2526,
+  "existing_preserved_except_owning_assignment": 2525,
+  "existing_changes": [
+    "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md"
+  ],
+  "before_assignment_sha256": "0444a60df74c8d8ffe9fbe52a264445830f81cece3127980f004ab86070e2491",
+  "after_assignment_sha256": "d0c9653ffdfdc65ee223b6488f70ed9e68c3385fd32e36a64cad4d27fd127dcc",
+  "prior_outputs_preserved": {
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-p-r2-quality-review.md": "b75deed87f460abbafc54c9b7f144ed773e195bbbcfbaf005a9fcd572baa459f",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-p-r2-quality-usage.json": "553783757fcc77ab1625d91dc9572c585e55bba4da159eb071be879a57053fb1",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-p-r2-timer.json": "b6a708fcbe060294f5f779b57d389a1a44ff5845f78c7dc183e030ebe1baccdc",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-p-r2-validation-2026-10-01.md": "2c2c8d927d4ae80825954933707c03dd495706a44de2d4d5b2e220b942ca2727"
+  },
+  "before_complete_status": "/private/tmp/ukey-wake-c5-disposition-20261001/before-status.txt",
+  "after_complete_status": "/private/tmp/ukey-wake-c5-disposition-20261001/after-status.txt",
+  "install_capture_device_test_build_git_actions": "none",
+  "markdown_relative_links": "pass",
+  "dirty_total": 438,
+  "tracked_modified": 19,
+  "untracked": 419,
+  "staged": 0,
+  "status_z_sha256": "b2a2c6f5f6f28af6449cfcfe686605fb155fad0863cb199b96314b066133d96a",
+  "date_utc": "2026-10-01T01:52:51.022527+00:00"
+}

@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "xcrun",
+    "xcresulttool",
+    "get",
+    "build-results",
+    "--path",
+    "/private/tmp/ukey-wake-probe-ui-h2-20261002/ordinary-debug.xcresult"
+  ],
+  "exit": 0,
+  "stdout": "{\n  \"actionTitle\" : \"Build \\\"Universe Keyboard\\\"\",\n  \"analyzerWarningCount\" : 0,\n  \"analyzerWarnings\" : [\n\n  ],\n  \"destination\" : {\n    \"architecture\" : \"undefined_arch\",\n    \"deviceId\" : \"dvtdevice-DVTiOSDeviceSimulatorPlaceholder-iphonesimulator:placeholder\",\n    \"deviceName\" : \"Any iOS Simulator Device\",\n    \"modelName\" : \"GenericiOS SimulatorSimulator\",\n    \"osVersion\" : \"\",\n    \"platform\" : \"iOS Simulator\"\n  },\n  \"endTime\" : 1790955634.691,\n  \"errorCount\" : 0,\n  \"errors\" : [\n\n  ],\n  \"startTime\" : 1790955603.498,\n  \"status\" : \"succeeded\",\n  \"warningCount\" : 0,\n  \"warnings\" : [\n\n  ]\n}\n",
+  "stderr": ""
+}

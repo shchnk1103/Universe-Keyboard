@@ -1,0 +1,116 @@
+{
+  "lane_id": "ARCH-C7-B1-R4",
+  "packet_path": "/private/tmp/ukey-wake-arch-r4-20261002/approved-packet.json",
+  "packet_digest_sha256": "23853166ccc8a27cc19e74fddcba8458a4085ce12dc0b1e75b37ab5909f38155",
+  "packet_digest_verified": true,
+  "canonicalization": "Exclude packet_digest_sha256; json.dumps(sort_keys=True,separators=(\",\",\":\"),ensure_ascii=False).encode(\"utf-8\").",
+  "reviewer_independent": true,
+  "scope_acknowledged": true,
+  "start_utc": "2026-10-02T13:51:11.632566+00:00",
+  "start_unix": 1790949071.632564,
+  "end_utc": "2026-10-02T13:54:48.732829+00:00",
+  "end_unix": 1790949288.7328289,
+  "elapsed_seconds": 217.100265,
+  "underlying_tool_calls": 8,
+  "max_underlying_tool_calls": 8,
+  "soft_limit_seconds": 300,
+  "hard_limit_seconds": 360,
+  "status": "Covered",
+  "criterion": "Two final thin arm64 Mach-O __TEXT,__entitlements raw sections are byte-for-byte equal to their explicit frozen repo xcent pair; decoded App Group and application-identifier matched.",
+  "report_path": "/private/tmp/ukey-wake-c7b3-20261002/arch-r4-review.md",
+  "report_sha256": "a15dc9ddbe3b3e444af0bef51b9195c5acb652316eab26fc20fe32711975c017",
+  "usage_path": "/private/tmp/ukey-wake-c7b3-20261002/arch-r4-usage.json",
+  "repo_writes": 0,
+  "device_or_runtime_actions": 0,
+  "call_ledger": [
+    {
+      "call": 1,
+      "tool": "exec_command",
+      "started_utc": "2026-10-02T13:51:11.632566+00:00",
+      "started_unix": 1790949071.632564,
+      "ended_utc": null,
+      "elapsed_seconds": 0.2,
+      "elapsed_note": "Outer exec reported 0.2s rounded; inner command did not capture an end timestamp.",
+      "result": "Captured real start before packet read; verified packet digest and both frozen xcent input hashes."
+    },
+    {
+      "call": 2,
+      "tool": "exec_command",
+      "started_utc": "2026-10-02T13:51:48.918944+00:00",
+      "ended_utc": "2026-10-02T13:51:48.920213+00:00",
+      "elapsed_seconds": 0.001275,
+      "result": "Independent thin arm64 Mach-O LC_SEGMENT_64 parser; both raw entitlement sections byte-equal their explicit xcent pairs; plist fields matched."
+    },
+    {
+      "call": 3,
+      "tool": "collaboration.send_message",
+      "started_utc": null,
+      "ended_utc": null,
+      "elapsed_seconds": null,
+      "result": "Call-2 checkpoint and scope/independence ACK sent to root."
+    },
+    {
+      "call": 4,
+      "tool": "exec_command",
+      "started_utc": null,
+      "ended_utc": null,
+      "elapsed_seconds": 0.2,
+      "timing_note": "Outer exec reported 0.2s rounded; exact command timestamps unavailable.",
+      "result": "Wrote and checked arch-r4-review.md; SHA-256 879735ab8ac123cb6990da3d3547fd6b703c00108f2a1aa1742825e58bbbe651."
+    },
+    {
+      "call": 5,
+      "tool": "exec_command",
+      "started_utc": "2026-10-02T13:52:59.007007+00:00",
+      "started_unix": 1790949179.007005,
+      "ended_utc": "2026-10-02T13:52:59.007306+00:00",
+      "ended_unix": 1790949179.007306,
+      "elapsed_seconds": 0.000301,
+      "result": "Wrote and read back arch-r4-usage.json; end timestamp captured after report check and immediately before final usage serialization."
+    },
+    {
+      "call": 6,
+      "tool": "exec_command",
+      "started_utc": "2026-10-02T13:54:02.071777+00:00",
+      "started_unix": 1790949242.071775,
+      "ended_utc": "2026-10-02T13:54:02.072945+00:00",
+      "ended_unix": 1790949242.0729442,
+      "elapsed_seconds": 0.001169,
+      "result": "Revalidated packet digest and exact SHA-256 of both allowed final executables; both match."
+    },
+    {
+      "call": 7,
+      "tool": "exec_command",
+      "started_utc": "2026-10-02T13:54:20.875237+00:00",
+      "started_unix": 1790949260.875235,
+      "ended_utc": "2026-10-02T13:54:20.875606+00:00",
+      "ended_unix": 1790949260.875606,
+      "elapsed_seconds": 0.000371,
+      "result": "Added exact packet=observed executable SHA-256 values to report; report SHA-256 is now a15dc9ddbe3b3e444af0bef51b9195c5acb652316eab26fc20fe32711975c017."
+    },
+    {
+      "call": 8,
+      "tool": "exec_command",
+      "started_utc": "2026-10-02T13:54:48.732305+00:00",
+      "started_unix": 1790949288.7323039,
+      "ended_utc": "2026-10-02T13:54:48.732829+00:00",
+      "ended_unix": 1790949288.7328289,
+      "elapsed_seconds": 0.000525,
+      "result": "Updated usage ledger, read it back, and verified report/usage call counts and report SHA-256."
+    }
+  ],
+  "timing_note": "Unavailable exact timestamps remain null; rounded outer elapsed observations are explicitly labeled, with no inferred values.",
+  "amendment_note": "Same R4 round, not a new review: parent asked that exact final executable SHA-256 values be explicit in report/ledger. Call 2 parser had already enforced each against allowed_binary_inputs; call 6 independently repeated the check. No scope expansion.",
+  "executable_hashes_reverified": [
+    {
+      "label": "App",
+      "sha256": "0af5b7f021a2eb82142521f8ba1db3f87fc6712f4f19c49d5cd229d2fb133fe8",
+      "matches_packet": true
+    },
+    {
+      "label": "Keyboard",
+      "sha256": "e059dfbfef672553b51d9ce2a3097348f3c40129c8afaa27b58fd90918cbd692",
+      "matches_packet": true
+    }
+  ]
+}

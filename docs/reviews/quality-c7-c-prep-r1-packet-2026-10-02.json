@@ -1,0 +1,78 @@
+{
+  "work_item": "KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001",
+  "lane_id": "QUALITY-C7-C-PREP",
+  "round": 1,
+  "baseline": "C7-C-P evidence chain runbook / offline decoder draft frozen; no product changes",
+  "scope_authority": "Human Product Owner current message: 那请你先把取证链准备完整吧",
+  "worktree": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "allowed_content_inputs": {
+    "AGENTS.md": "947743e29a5987f9b1abb9c220a28ebcb92bd766928e22c1dd67c046bbe62152",
+    "docs/ASSIGNMENT_POLICY.md": "e90dd8f06371e9367652d4e7cc63dee31ee7b1ac855e7802d6d2e9b8e1e90680",
+    "docs/AI_WORKFLOW.md": "fd3ff24fc0d38ed134cace8ffd5479f76e6261b009d6f661d218e4e260b07413",
+    "docs/playbooks/test-release.md": "b7eb8cc76094f72699b6de77de6afa2608e6483a1c8da53dcf86a51ea6c35a58",
+    "docs/playbooks/debug-investigator.md": "3913f0f8328cb637561ad4367272bf76c94f61636aad671652d9e60f79f54430",
+    "docs/plans/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-evidence-chain-plan-2026-10-02.md": "552be7bd212fc4703ba27b68441eb187798e0168d4b8c19d094e1b1a9d5e6e4a",
+    "docs/plans/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-offline-decoder-2026-10-02.md": "baf6c42144e66e9702793d0cc4a699fce83f849b2801f1504bb3305ce857d17c",
+    "docs/product-decisions/KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001-c7c-prep-authorization-2026-10-02.md": "9aa9d0fc2073cacdc28644c5446fca5b633b91d8409b0ffada2000fb87444bb3",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-prep-entry-2026-10-02.md": "c7527ae03dcebfae14d4ca6bff71bce22a590dcfe6988a605182d759bb43671c",
+    "docs/reviews/quality-c7-b1-review-2026-10-02.md": "2bfd075cdb9a903468ab69b50da91d7de53b809ac7ae34dd2b109b3729f343c3",
+    "docs/reviews/quality-c7-b1-r2-review-2026-10-02.md": "0ff8a9ea125bd795f4525eb9816821bb4a28da9e3c128ddad4ee75bc289b92db",
+    "docs/reviews/arch-c7-b1-review-2026-10-02.md": "f0bc404eb1414e039de184cf7b160fc08de4aaa8ee1424481e758b126f0903c8",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b-validation-2026-10-02.md": "f7c42b36dfb6008bd88130dfc67111be9da9db1eff7dd2a4c279564382181848",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b-artifacts/paired-products.json": "11b33518092409764e5f65fde46289d119b7905b1508ab598d407a2474784d72",
+    "Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift": "bca0391355d9a3a60880dfdc08260095d02d6618bf0a38d40bfcc61734a891e9",
+    "Keyboard/Controllers/KeyboardViewController+InputActions.swift": "16abce7d6e6752be641ea333cc60706217c9d84211f1007315850acbc62ee2ae",
+    "Keyboard/Controllers/KeyboardViewController.swift": "27e00c5e07d0bc1e07e045a78c9b49df1ba660beec762227434b3550630caf4c",
+    "Keyboard/Views/CandidateBar/CandidateBarView.swift": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+    "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardWakeOwnerProbe.swift": "679d55e8669d7c68db2fbe58fd1b436cbb19bc61e770f9a701751326fa669af6",
+    "Packages/KeyboardCore/Sources/KeyboardCore/ThreadAffineRimeSession.swift": "b7050645be501a7f41a6732efda40b07fb82c4c930862c0f1d13d167af426a76",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-prep-artifacts/lldb-help.txt": "4f24e077d93b981dc9e8b1c26a5324ca0cb4d609e34a3f0d75c85e5bd4da656d",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-prep-artifacts/offline-example-results.json": "430c866271c970f9ad6cac20b5276bb2be7d3ddb436b9c5d23cadf0a84c002ad"
+  },
+  "criteria": {
+    "P-Q1": "Check ordered baseline/arm/sole direct AppSwitcher/sole failed key/freeze flow, process and candidate binding, future phase gates, no candidate clearing after failure, exact restore and no automatic rerun.",
+    "P-Q2": "Check fixed 11/11 UInt64 layout, <=11352 borrow memory read / static argument failure stop, parser limits and synthetic counterexamples. Reviewer static only, do not execute decoder.",
+    "P-Q3": "Check real nonzero paired schedule owner absent criterion versus synthetic zeros, receipt not completion, duplicate resumes not layer attribution, no absence root cause/overallHold/F2 closure."
+  },
+  "acceptance": "Complete all three criteria before positive scoped preparation opinion. Each uncovered=>Partial/incomplete. Material defects=>Hold; do not excuse with conditional approval. Positive only preparatory protocol, never runtime/install/Gate. Preserve F2 boundary.",
+  "operations": {
+    "allowed": [
+      "exec_command for exact allowlist read/hash and read-only branch/HEAD; host date/UTC inside commands",
+      "collaboration messages to root",
+      "write only two scratch outputs"
+    ],
+    "forbidden": [
+      "repo edits",
+      "product/source/format/build/test",
+      "execute decoder/examples",
+      "Simulator/device/container/LLDB/network",
+      "adjacent reviews",
+      "delegation",
+      "Git mutation"
+    ]
+  },
+  "outputs": {
+    "report": "/private/tmp/ukey-wake-c7c-prep-20261002/review.md",
+    "usage": "/private/tmp/ukey-wake-c7c-prep-20261002/usage.json"
+  },
+  "budget": {
+    "max_total_underlying_tool_calls": 14,
+    "max_elapsed_seconds": 600,
+    "soft_delivery_seconds": 420,
+    "checkpoint_after_total_calls": 4,
+    "counting": "every exec_command/clock/collaboration call counts once, including output write; functions.exec wrapper not double-counted",
+    "first_clock": "sample actual start UTC/unix before packet read, real final UTC end; missing call times null not invented",
+    "exhaustion": "stop, record covered/uncovered/stop reason; no automatic renewal"
+  },
+  "stop_conditions": [
+    "scope/input/hash mismatch",
+    "needed outside input locator => dependent uncovered; no expand",
+    "time/call ceiling reached",
+    "content/permission/runtime required"
+  ],
+  "expansion_authority": "Human Product Owner only; Coordinator/reviewer cannot expand",
+  "independence": "stage_b_quality did not implement probe/one-line fix/current runbook",
+  "packet_digest_sha256": "97838719a772dc3334175fb28082d6d1a659fc71aa56f941ac90d8ac0839e147"
+}

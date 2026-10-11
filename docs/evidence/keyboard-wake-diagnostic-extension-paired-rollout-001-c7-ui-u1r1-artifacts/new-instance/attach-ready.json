@@ -1,0 +1,20 @@
+{
+  "utc": "2026-10-03T13:15:53.188291+00:00",
+  "status": "pre-arm ready; no actual borrow proof yet",
+  "old_pid": 80843,
+  "new_pid": 88188,
+  "new_process_instance_confirmed": true,
+  "candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50",
+  "actual_loaded_udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "actual_loaded_app_container": "46C50C49-FA7B-4F79-BF42-0A24BF231715",
+  "Keyboard_UUID": "C3FC7115-4215-3801-ABBB-C8A648ED0C32",
+  "Keyboard_debug_UUID": "77BD18E2-E090-37D7-865F-84D762E69F70",
+  "debug_session_id": "4895a8c9-7131-4453-9336-4fcbf742717a",
+  "own_breakpoint_id": 1,
+  "resolved_locations": 1,
+  "hit_count": 0,
+  "execution_state": "running",
+  "diagnostics_original_absent_off": true,
+  "tool_defaults_label_conflict_preserved": "884CAC1A-516A-421F-ACF5-035A36F7088A",
+  "no_arm_input_freeze_export_yet": true
+}

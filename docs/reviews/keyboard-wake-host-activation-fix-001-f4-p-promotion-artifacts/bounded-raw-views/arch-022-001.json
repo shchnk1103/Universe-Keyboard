@@ -1,0 +1,197 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f3-quality-uncovered-artifacts/manifest.json",
+  "origin_sha256": "de3df4aa4698e51f842e5b41f492f08ff013c9815dd6e2cb4321e21cce66a081",
+  "expected_sha256": "de3df4aa4698e51f842e5b41f492f08ff013c9815dd6e2cb4321e21cce66a081",
+  "line_start": 1,
+  "line_end": 47,
+  "lines": [
+    {
+      "line": 1,
+      "text": "["
+    },
+    {
+      "line": 2,
+      "text": "  {"
+    },
+    {
+      "line": 3,
+      "text": "    \"path\": \"ack.json\","
+    },
+    {
+      "line": 4,
+      "text": "    \"bytes\": 537,"
+    },
+    {
+      "line": 5,
+      "text": "    \"sha256\": \"c094e366a77866098dbbd13547f38af3ee5f089db24544822e8b91fd1f13385c\""
+    },
+    {
+      "line": 6,
+      "text": "  },"
+    },
+    {
+      "line": 7,
+      "text": "  {"
+    },
+    {
+      "line": 8,
+      "text": "    \"path\": \"delivery-readback.json\","
+    },
+    {
+      "line": 9,
+      "text": "    \"bytes\": 341,"
+    },
+    {
+      "line": 10,
+      "text": "    \"sha256\": \"2b2231309cae82b2424f2be9b97d6625a4dccb89a54db7f11b8cd461fdca1503\""
+    },
+    {
+      "line": 11,
+      "text": "  },"
+    },
+    {
+      "line": 12,
+      "text": "  {"
+    },
+    {
+      "line": 13,
+      "text": "    \"path\": \"packet.json\","
+    },
+    {
+      "line": 14,
+      "text": "    \"bytes\": 774929,"
+    },
+    {
+      "line": 15,
+      "text": "    \"sha256\": \"0847ea019ee4f35cbd4e265bd925243714a9be849241972d64b672fa8d36dad4\""
+    },
+    {
+      "line": 16,
+      "text": "  },"
+    },
+    {
+      "line": 17,
+      "text": "  {"
+    },
+    {
+      "line": 18,
+      "text": "    \"path\": \"reader-output.json\","
+    },
+    {
+      "line": 19,
+      "text": "    \"bytes\": 34438,"
+    },
+    {
+      "line": 20,
+      "text": "    \"sha256\": \"fac15dae68e7183d39f51b3e5a8dfefd4cb03fdb8bcd4350510eaae6d9cdc161\""
+    },
+    {
+      "line": 21,
+      "text": "  },"
+    },
+    {
+      "line": 22,
+      "text": "  {"
+    },
+    {
+      "line": 23,
+      "text": "    \"path\": \"review.md\","
+    },
+    {
+      "line": 24,
+      "text": "    \"bytes\": 5049,"
+    },
+    {
+      "line": 25,
+      "text": "    \"sha256\": \"97e8a644d334e9607bc5c890c49c3fe05dddfa883d57e53799c6e96563fb960e\""
+    },
+    {
+      "line": 26,
+      "text": "  },"
+    },
+    {
+      "line": 27,
+      "text": "  {"
+    },
+    {
+      "line": 28,
+      "text": "    \"path\": \"root-receipt.json\","
+    },
+    {
+      "line": 29,
+      "text": "    \"bytes\": 435,"
+    },
+    {
+      "line": 30,
+      "text": "    \"sha256\": \"29448a184a95b1b163b0eecf9138bf1c7e79c20bfb403c74375a61b8d6e19193\""
+    },
+    {
+      "line": 31,
+      "text": "  },"
+    },
+    {
+      "line": 32,
+      "text": "  {"
+    },
+    {
+      "line": 33,
+      "text": "    \"path\": \"ukey-quality-delivery-repaired.py\","
+    },
+    {
+      "line": 34,
+      "text": "    \"bytes\": 2241,"
+    },
+    {
+      "line": 35,
+      "text": "    \"sha256\": \"5b013b869cbd3fd4ae4515c13c8c80748da5e0090757f1fd035abb1c852bd8ca\""
+    },
+    {
+      "line": 36,
+      "text": "  },"
+    },
+    {
+      "line": 37,
+      "text": "  {"
+    },
+    {
+      "line": 38,
+      "text": "    \"path\": \"ukey-quality-reader-repaired.py\","
+    },
+    {
+      "line": 39,
+      "text": "    \"bytes\": 5349,"
+    },
+    {
+      "line": 40,
+      "text": "    \"sha256\": \"21ec0098074edfcd0edf9a2558eeb99d18ea4bd7b20aeb5773b1e6d3d68fe7de\""
+    },
+    {
+      "line": 41,
+      "text": "  },"
+    },
+    {
+      "line": 42,
+      "text": "  {"
+    },
+    {
+      "line": 43,
+      "text": "    \"path\": \"usage.json\","
+    },
+    {
+      "line": 44,
+      "text": "    \"bytes\": 714,"
+    },
+    {
+      "line": 45,
+      "text": "    \"sha256\": \"faf5f8cbd0aae57645408b8c27e5671173828633ec9976d94942ce40367bdcd6\""
+    },
+    {
+      "line": 46,
+      "text": "  }"
+    },
+    {
+      "line": 47,
+      "text": "]"
+    }
+  ]
+}

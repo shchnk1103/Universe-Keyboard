@@ -1,0 +1,156 @@
+{
+  "count": 10,
+  "tests": [
+    {
+      "children": [
+        {
+          "name": "Test skipped - Set TEST_RUNNER_SCHEME_PIN_ARCHIVE_ROOT to the independently downloaded source archives",
+          "nodeType": "Skip Message"
+        }
+      ],
+      "duration": "0.0076s",
+      "durationInSeconds": 0.007557988166809082,
+      "name": "testVerifiedOfficialAndMirrorArchivesConvergeAfterProductionProcessing()",
+      "nodeIdentifier": "RimeIcePinnedArtifactTests/testVerifiedOfficialAndMirrorArchivesConvergeAfterProductionProcessing()",
+      "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/RimeIcePinnedArtifactTests/testVerifiedOfficialAndMirrorArchivesConvergeAfterProductionProcessing",
+      "nodeType": "Test Case",
+      "result": "Skipped"
+    },
+    {
+      "children": [
+        {
+          "name": "Test skipped - Unsigned host lacks Keychain entitlement; signed Simulator lane covers integration.",
+          "nodeType": "Skip Message"
+        }
+      ],
+      "duration": "0.0019s",
+      "durationInSeconds": 0.001916050910949707,
+      "name": "testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem()",
+      "nodeIdentifier": "RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem()",
+      "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem",
+      "nodeType": "Test Case",
+      "result": "Skipped"
+    },
+    {
+      "children": [
+        {
+          "name": "Test skipped - CS09-10-01 requires the fixed Wanxiang extract tree",
+          "nodeType": "Skip Message"
+        }
+      ],
+      "duration": "0.18s",
+      "durationInSeconds": 0.17638301849365234,
+      "name": "testCS06_UninstallInactiveWanxiangRetainsIcePeerInventory()",
+      "nodeIdentifier": "SchemeResourcePreparationCoexistenceTests/testCS06_UninstallInactiveWanxiangRetainsIcePeerInventory()",
+      "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests/testCS06_UninstallInactiveWanxiangRetainsIcePeerInventory",
+      "nodeType": "Test Case",
+      "result": "Skipped"
+    },
+    {
+      "children": [
+        {
+          "name": "Test skipped - CS09-10-01 requires the fixed Wanxiang extract tree",
+          "nodeType": "Skip Message"
+        }
+      ],
+      "duration": "0.17s",
+      "durationInSeconds": 0.17319393157958984,
+      "name": "testCS0910_RealInstallerIceRemovalPreservesCompleteWanxiangInventory()",
+      "nodeIdentifier": "SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerIceRemovalPreservesCompleteWanxiangInventory()",
+      "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerIceRemovalPreservesCompleteWanxiangInventory",
+      "nodeType": "Test Case",
+      "result": "Skipped"
+    },
+    {
+      "children": [
+        {
+          "name": "Test skipped - CS09-10-01 requires the fixed Ice extract tree",
+          "nodeType": "Skip Message"
+        }
+      ],
+      "duration": "0.18s",
+      "durationInSeconds": 0.17638099193572998,
+      "name": "testCS0910_RealInstallerWanxiangRemovalPreservesCompleteIceInventory()",
+      "nodeIdentifier": "SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerWanxiangRemovalPreservesCompleteIceInventory()",
+      "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerWanxiangRemovalPreservesCompleteIceInventory",
+      "nodeType": "Test Case",
+      "result": "Skipped"
+    },
+    {
+      "children": [
+        {
+          "name": "Test skipped - Ice 2026.06.30 default.yaml fixture is required for P3 fingerprint recovery",
+          "nodeType": "Skip Message"
+        }
+      ],
+      "duration": "0.17s",
+      "durationInSeconds": 0.17452597618103027,
+      "name": "testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds()",
+      "nodeIdentifier": "SchemeResourcePreparationCoexistenceTests/testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds()",
+      "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests/testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds",
+      "nodeType": "Test Case",
+      "result": "Skipped"
+    },
+    {
+      "children": [
+        {
+          "name": "Test skipped - Set TEST_RUNNER_SCHEME_PIN_ARCHIVE_ROOT to the independently downloaded Ice archives",
+          "nodeType": "Skip Message"
+        }
+      ],
+      "duration": "0.001s",
+      "durationInSeconds": 0.0010249614715576172,
+      "name": "testProductionProcessedIceTreeKeepsOfficialDefaultYamlWhenFixturePresent()",
+      "nodeIdentifier": "SchemeResourcePreparationCoexistenceTests/testProductionProcessedIceTreeKeepsOfficialDefaultYamlWhenFixturePresent()",
+      "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests/testProductionProcessedIceTreeKeepsOfficialDefaultYamlWhenFixturePresent",
+      "nodeType": "Test Case",
+      "result": "Skipped"
+    },
+    {
+      "children": [
+        {
+          "name": "Test skipped - TD-012 G2 model-load receipt is physical-device-only",
+          "nodeType": "Skip Message"
+        }
+      ],
+      "duration": "0.001s",
+      "durationInSeconds": 0.0010091066360473633,
+      "name": "testPinnedModelLoadsThroughWanxiangGrammarOnAuthorizedPhysicalDevice()",
+      "nodeIdentifier": "TD012LMDGDeviceStagingTests/testPinnedModelLoadsThroughWanxiangGrammarOnAuthorizedPhysicalDevice()",
+      "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/TD012LMDGDeviceStagingTests/testPinnedModelLoadsThroughWanxiangGrammarOnAuthorizedPhysicalDevice",
+      "nodeType": "Test Case",
+      "result": "Skipped"
+    },
+    {
+      "children": [
+        {
+          "name": "Test skipped - TD-012 G2 cleanup is physical-device-only",
+          "nodeType": "Skip Message"
+        }
+      ],
+      "duration": "0.00081s",
+      "durationInSeconds": 0.0008099079132080078,
+      "name": "testRemovePinnedModelAfterAuthorizedPhysicalDeviceSpike()",
+      "nodeIdentifier": "TD012LMDGDeviceStagingTests/testRemovePinnedModelAfterAuthorizedPhysicalDeviceSpike()",
+      "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/TD012LMDGDeviceStagingTests/testRemovePinnedModelAfterAuthorizedPhysicalDeviceSpike",
+      "nodeType": "Test Case",
+      "result": "Skipped"
+    },
+    {
+      "children": [
+        {
+          "name": "Test skipped - TD-012 G2 staging is physical-device-only",
+          "nodeType": "Skip Message"
+        }
+      ],
+      "duration": "0.0011s",
+      "durationInSeconds": 0.0011199712753295898,
+      "name": "testStagePinnedModelForAuthorizedPhysicalDeviceSpike()",
+      "nodeIdentifier": "TD012LMDGDeviceStagingTests/testStagePinnedModelForAuthorizedPhysicalDeviceSpike()",
+      "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/TD012LMDGDeviceStagingTests/testStagePinnedModelForAuthorizedPhysicalDeviceSpike",
+      "nodeType": "Test Case",
+      "result": "Skipped"
+    }
+  ],
+  "disposition": "Human accept current F2 only; skipped not passed; actor diagnostics not accepted"
+}

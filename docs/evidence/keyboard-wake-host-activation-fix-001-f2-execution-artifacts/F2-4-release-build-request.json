@@ -1,0 +1,7 @@
+{
+  "step": "F2-4-release-build",
+  "utc": "2026-10-04T10:53:07.760906+00:00",
+  "command": "xcodebuild -project \"Universe Keyboard.xcodeproj\" -scheme \"Universe Keyboard\" -configuration Release -destination 'platform=iOS Simulator,id=405D994F-28CB-4F89-BB22-B64AD81C05A2' -derivedDataPath /private/tmp/ukey-host-activation-fix-f2-run-20261004/DerivedData CODE_SIGNING_ALLOWED=NO SWIFT_VERSION=6.0 SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES -resultBundlePath /private/tmp/ukey-host-activation-fix-f2-run-20261004/xcresults/release-build.xcresult build",
+  "cwd": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "remaining_wall_seconds": 10012.239306
+}

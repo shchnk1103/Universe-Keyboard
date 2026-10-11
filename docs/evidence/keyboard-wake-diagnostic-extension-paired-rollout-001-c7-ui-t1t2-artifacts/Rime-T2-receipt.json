@@ -1,0 +1,36 @@
+{
+  "utc": "2026-10-03T03:47:52.746719+00:00",
+  "label": "Rime",
+  "containers": {
+    "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/4EB4A3E6-58B0-44CB-BC45-B608BA1E6518/Universe Keyboard.app",
+    "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/FB810DCE-C65C-4D74-B79C-048FFBE01AB6",
+    "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/0296BFCE-F465-4F1A-9E9A-F2EDFDA41172"
+  },
+  "target_processes": [],
+  "stable_two_reads": true,
+  "differences": {
+    "main-data": {
+      "added": [],
+      "missing": [],
+      "changed": []
+    },
+    "app-group": {
+      "added": [],
+      "missing": [],
+      "changed": []
+    },
+    "installed-app": {
+      "added": [],
+      "missing": [],
+      "changed": []
+    }
+  },
+  "counts": {
+    "main-data": 827,
+    "app-group": 52,
+    "installed-app": 78
+  },
+  "data_unchanged": true,
+  "restoration_performed": false,
+  "followup_allowed": true
+}

@@ -1,0 +1,17 @@
+{
+  "utc": "2026-10-06T04:36:00.901052+00:00",
+  "pid": 7923,
+  "stop_id": 2,
+  "state": 5,
+  "thread_id": 44708404,
+  "frame_id": 0,
+  "frame_pc": 4360859552,
+  "frame_uuid": "4B207746-89A7-321F-83C4-91477259BB26",
+  "function_name": "Keyboard.wakeOwnerProbeExportReady(Swift.UnsafeRawPointer, Swift.Int) -> ()",
+  "stop_reason": 3,
+  "hit_count": 1,
+  "target_memory_reads": 0,
+  "target_expressions": 0,
+  "delete_success": true,
+  "remaining_breakpoints": 0
+}

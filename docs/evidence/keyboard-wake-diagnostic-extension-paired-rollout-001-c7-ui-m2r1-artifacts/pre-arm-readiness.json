@@ -1,0 +1,16 @@
+{
+  "utc": "2026-10-04T04:17:39.262928+00:00",
+  "pid": 41635,
+  "session": "27ecbb96-90d1-4755-bc33-e742b014fc63",
+  "actual_udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "loaded_uuid_match": true,
+  "breakpoint": 1,
+  "resolved": 1,
+  "hit_count": 0,
+  "continued_running": true,
+  "raw_profile_udid_conflict_preserved": true,
+  "human_ready_reply": "观测已出现",
+  "human_actual_click_time": null,
+  "memory_reads": 0,
+  "target_pause_start": "UNKNOWN"
+}

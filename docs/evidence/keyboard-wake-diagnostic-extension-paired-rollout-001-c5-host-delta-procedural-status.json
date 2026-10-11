@@ -1,0 +1,17 @@
+{
+  "lane_id": "QUALITY-C5-HOST-DELTA",
+  "round": 1,
+  "status": "Partial",
+  "authority": "Human Quality-only host-delta readonly 4 underlying tools / 300 seconds",
+  "coordinator_record_not_reviewer_usage": true,
+  "reviewer_final_message": "H1-H3 covered; report written during fourth underlying tool call; usage serialization failed; 4/4 tool calls exhausted; no further tools used; timer has start only.",
+  "reviewer_report_sha256": "05d436366012ccdf77433affd8392a65902156097995598c9e1eefb8859b0f7a",
+  "reviewer_timer_sha256": "3828742dc0d47e3d4ec72bf886c421f72f96151823cd6c7a201e1e3c66c5fc3b",
+  "underlying_tools_reported": 4,
+  "elapsed_seconds": null,
+  "end_utc": null,
+  "budget_elapsed_compliance": "unverified due missing end and usage",
+  "usage_file": "not generated; do not fabricate or retroactively repair original round",
+  "next_action": "Hold C5-R; no automatic extra review. New Human authority required for new bounded review round.",
+  "reviewer_additional_message": "Reviewer retained-message account: calls 1-4 were exec_command; start 2026-10-01T02:19:17.115955Z; checkpoint after call2 approximately 02:20:12.289948Z. Call3/4 exact times/complete commands unavailable. Call4 wrote report then failed usage generation: TypeError: Object of type set is not JSON serializable. prior_evidence was accidentally a Python set. End timer not written; elapsed unknown; cannot claim completion within300seconds. 4/4 exhausted; no fifth tool. Preserve Partial.\n"
+}

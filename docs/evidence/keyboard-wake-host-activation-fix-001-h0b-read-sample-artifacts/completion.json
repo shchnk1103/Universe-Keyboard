@@ -1,0 +1,47 @@
+{
+  "utc": "2026-10-06T02:12:36.151896+00:00",
+  "status": "Single error sample completed; full callback path remains Partial",
+  "actual_calls": 9,
+  "wall_seconds": 82.832215,
+  "tool_ledger": [
+    {
+      "calls": 2,
+      "operation": "fresh isolated root/input identity/compile/sign"
+    },
+    {
+      "calls": 2,
+      "operation": "one own-host LLDB run and cleanup"
+    },
+    {
+      "calls": 3,
+      "operation": "read result/native errno mapping + official Apple read manual (one wrapper,two independent nested tools)"
+    },
+    {
+      "calls": 2,
+      "operation": "offline final identity/cleanup receipt and archive"
+    }
+  ],
+  "runtime_attempts": 1,
+  "fixture_pid": 93025,
+  "read_return": -1,
+  "errno": 4,
+  "error_symbol": "EINTR",
+  "confirmed": "This sample read was interrupted and fixture treats every read result !=1 as fatal exit2",
+  "signal_source": "UNKNOWN; no captured signal provenance sufficient to name exact cause",
+  "helper_exit_reason": "UNKNOWN; stderr not captured; do not claim EPIPE confirmed",
+  "callbacks": 0,
+  "memory_reads": 0,
+  "target_expressions": 0,
+  "cleanup": {
+    "breakpoint_deleted": true,
+    "fixture_exit_code": 2,
+    "helper_exit_code": 1
+  },
+  "LLDB_exit_code": 0,
+  "source5_hashes_match": true,
+  "staged_paths": 0,
+  "device_operations": 0,
+  "next_proposed": "Only task-owned fixture bounded EINTR handling and one host validation, separately authorized; no production code/Maps change",
+  "old_H0b_reinterpretation": "New EINTR sample does not retroactively add errno evidence to previous run",
+  "official_reference": "https://developer.apple.com/library/archive/documentation/System/Conceptual/ManPages_iPhoneOS/man2/read.2.html"
+}

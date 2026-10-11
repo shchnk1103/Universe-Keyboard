@@ -1,0 +1,42 @@
+{
+  "files": [
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController.swift",
+      "exists": true,
+      "bytes": 39237,
+      "sha256": "9aeec10f633454b7b9a032d8140ac0d9912de98ea7049c83a2a886c5ca04ec66"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+Bootstrap.swift",
+      "exists": true,
+      "bytes": 50796,
+      "sha256": "e992a9ddf431112d1a40bed80431392eb68c8ef7221b07ece47b87eefb945299"
+    },
+    {
+      "path": "Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift",
+      "exists": true,
+      "bytes": 9220,
+      "sha256": "2e7dcf3e88022a677e6ca5bfc5efd6aeacb1814c6fb7de6ec0cdc7c52ec7c9fb"
+    },
+    {
+      "path": "KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+      "exists": true,
+      "bytes": 14252,
+      "sha256": "e9ef614702dff163ea1f1723e577f2f5af97394c919fb7d03544e15356d3c1a3"
+    },
+    {
+      "path": "Universe Keyboard.xcodeproj/project.pbxproj",
+      "exists": true,
+      "bytes": 46990,
+      "sha256": "49f0ebe89db1f30323d9bf6ceb297179ffed5fc9ef983fd3b947d11d5820586c"
+    }
+  ],
+  "baseline_copies_unmutated": true,
+  "identity": {
+    "worktree": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+    "branch": "codex/keyboard-wake-v3-compatibility-gate",
+    "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+    "staged": 0,
+    "dirty_entries": 817
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "reply_observed_utc": "2026-10-01T06:50:12.335401+00:00",
+  "source": "Human current report",
+  "historical_or_current": "current C6 window",
+  "variant_A": {
+    "action": "AppSwitcher to Settings then Maps",
+    "keyboard_closed_and_reopened": true,
+    "target_symptom": "not reproduced"
+  },
+  "variant_B": {
+    "action": "open AppSwitcher then return directly to Maps without visiting another app",
+    "keyboard_feedback": "responsive",
+    "candidate_updates": "unresponsive",
+    "host_input_updates": "unresponsive",
+    "target_symptom": "Human reproduced"
+  },
+  "variant_specific_machine_start_end": "unavailable; both actions inside original C6 window",
+  "trial_accounting": "two Human transition variants in one collection window; zero automatic retries",
+  "no_unique_event_to_failed_variant_binding_yet": true
+}

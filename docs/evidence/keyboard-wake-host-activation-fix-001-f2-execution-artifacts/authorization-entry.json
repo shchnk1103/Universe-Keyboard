@@ -1,0 +1,31 @@
+{
+  "utc": "2026-10-04T10:44:18.308780+00:00",
+  "authority": "Human 批准，原模拟器仍独占。",
+  "executor": "root",
+  "phase": "F2 authorized environment Entry; quiescence/backup pending; tests not started",
+  "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "wall_clock_minutes": 180,
+  "first_failure_or_timeout_stop": true,
+  "no_automatic_restore_or_source_fix": true,
+  "checks": [
+    {
+      "manifest": "source-tree-manifest.json",
+      "files": 358,
+      "digest": "099aec228a338ed2e42ca0d44d28e30802d78f1f4bbc92c7c4bd17f21d57dfe3"
+    },
+    {
+      "manifest": "app-source-manifest.json",
+      "files": 168,
+      "digest": "b5fdda0ffd8c3f7563fe70a925b166817308267392edf72f4ffa00dda96068ca"
+    },
+    {
+      "manifest": "vendor-byte-manifest.json",
+      "files": 630,
+      "digest": "f9b03dea3e5be3e8d903e1c02f16dc933d5048ca48e45bf652e15ec99bdc0a9a"
+    }
+  ],
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "staged": 0,
+  "frozen_commands_sha256": "6e862b72d7b13c525f5be439661d1d96c81297cc5243541cb04581a27436a06c"
+}

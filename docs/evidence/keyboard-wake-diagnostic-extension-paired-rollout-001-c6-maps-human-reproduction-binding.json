@@ -1,0 +1,20 @@
+{
+  "recorded_utc": "2026-10-01T06:34:37.252410+00:00",
+  "source": "Human current reply",
+  "host": "Maps search field",
+  "historical_reproduction": {
+    "before_app_switch": "Universe Keyboard can input normally",
+    "transition": "leave via App Switcher, then return",
+    "after_return": {
+      "keyboard_visible": true,
+      "key_visual_audio_haptic_feedback": "responsive",
+      "candidate_updates": "not responding",
+      "host_input_updates": "not responding",
+      "input_possible": false
+    }
+  },
+  "current_run_result": "not executed",
+  "historical_observation_is_current_run_proof": false,
+  "full_access_current": "Human confirmed enabled before arming",
+  "full_access_confirmed_utc": "2026-10-01T06:35:23.250901+00:00"
+}

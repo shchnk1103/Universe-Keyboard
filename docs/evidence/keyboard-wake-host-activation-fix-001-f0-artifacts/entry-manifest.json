@@ -1,0 +1,76 @@
+{
+  "task_id": "KEYBOARD-WAKE-HOST-ACTIVATION-FIX-001",
+  "stage": "F0 Prepared only",
+  "utc": "2026-10-04T07:46:39.473928+00:00",
+  "root": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "staged_paths": 0,
+  "full_dirty_entries_before": 1408,
+  "dirty_status_sha256": "78ee70f2a9b189b25f48e83627477537bf664a8c56bdad28c3e1056a97e5f928",
+  "source_slice": [
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController.swift",
+      "exists": true,
+      "sha256": "27e00c5e07d0bc1e07e045a78c9b49df1ba660beec762227434b3550630caf4c",
+      "prior_diff_sha256": "8f62cba3decc69c6ef509ed597e6557eda2a026a632ab188ab6c07a2521a7715",
+      "prior_diff_present": true,
+      "ownership": "既有内容/dirty来源不重新归属；未来仅本次新增差量root独占写入，实施前重核他人writer及字节"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+Bootstrap.swift",
+      "exists": true,
+      "sha256": "f7c024f60af52f57a04edadb5a15373c6c6f681fc63e908fc37e34d5e1e963a3",
+      "prior_diff_sha256": "22804a5e8233a10f6d1c350c288079b944f6604e86a63cc0a16d74353038bb58",
+      "prior_diff_present": true,
+      "ownership": "既有内容/dirty来源不重新归属；未来仅本次新增差量root独占写入，实施前重核他人writer及字节"
+    },
+    {
+      "path": "Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift",
+      "exists": false,
+      "sha256": null,
+      "prior_diff_sha256": null,
+      "prior_diff_present": false,
+      "ownership": "既有内容/dirty来源不重新归属；未来仅本次新增差量root独占写入，实施前重核他人writer及字节"
+    },
+    {
+      "path": "KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+      "exists": false,
+      "sha256": null,
+      "prior_diff_sha256": null,
+      "prior_diff_present": false,
+      "ownership": "既有内容/dirty来源不重新归属；未来仅本次新增差量root独占写入，实施前重核他人writer及字节"
+    },
+    {
+      "path": "Universe Keyboard.xcodeproj/project.pbxproj",
+      "exists": true,
+      "sha256": "ab7560e3de73c31d286fe874c0237b64dd2183aab692d4ee4a3de08abfb21187",
+      "prior_diff_sha256": "7bd256bd59b34dfa164d6edab73e8c357a93e9712d5d81ee769bb6c9bc2d013b",
+      "prior_diff_present": true,
+      "ownership": "既有内容/dirty来源不重新归属；未来仅本次新增差量root独占写入，实施前重核他人writer及字节"
+    }
+  ],
+  "required_inputs_sha256": {
+    "docs/plans/keyboard-wake-host-activation-minimal-fix-proposal-2026-10-04.md": "0cf7c077c5fd045bb3dfadb09a219a2f9abc4736a5adad00b1b6b29462c91fe3",
+    "docs/plans/keyboard-wake-host-activation-minimal-fix-artifacts/source-boundary-check.json": "165d366657dd12aed7842fccf4d65a36511d3482bb681b378e46e3db82863fcf",
+    "Keyboard/Controllers/KeyboardViewController.swift": "27e00c5e07d0bc1e07e045a78c9b49df1ba660beec762227434b3550630caf4c",
+    "Keyboard/Controllers/KeyboardViewController+Bootstrap.swift": "f7c024f60af52f57a04edadb5a15373c6c6f681fc63e908fc37e34d5e1e963a3",
+    "Keyboard/Controllers/KeyboardViewController+Presentation.swift": "767c2817054484d4d4c328cb7a8deaf676509b76bbc3cb45868b6e3cf721319a",
+    "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+    "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+RimeRecovery.swift": "f3cb33290ddd8fe2ac69b52775067aaa675eecd0049600641ad9d9316c0b6ab5",
+    "Packages/KeyboardCore/Sources/KeyboardCore/ThreadAffineRimeSession.swift": "b7050645be501a7f41a6732efda40b07fb82c4c930862c0f1d13d167af426a76",
+    "Packages/KeyboardCore/Sources/KeyboardCore/ResponsiveRimeCanaryMode.swift": "2bcb4684cbb0b3afee5616a3d73045f7f4f4233834f2539c9b9e6b594f22e235",
+    "docs/architecture/decisions/0002-visibility-change-abandons-composition.md": "07ec465e33ee6d191c34da2067e8dd134120540f27de6f1bafbfda00600d798e",
+    "Universe Keyboard.xcodeproj/project.pbxproj": "ab7560e3de73c31d286fe874c0237b64dd2183aab692d4ee4a3de08abfb21187",
+    "KeyboardExtensionTests/CandidatePrefetchUIContractTests.swift": "7bf9aab583fed3828fe9567c85c4b2955b3b982d8511474d15b605cc37fdce02",
+    "docs/reviews/keyboard-wake-diagnostic-extension-paired-rollout-001-m2r2-reexport-review-artifacts/architecture-review.md": "542af67c8bc137a8621d693ec9d89170d0e269c2a631f4140846e9c00bbd3108",
+    "docs/plans/keyboard-wake-host-activation-minimal-fix-state-contract-supplement-2026-10-04.md": "3eab032e2c3a1486b5192824250fea421b215ba2bd14e0011fd86da6aea04285",
+    "docs/reviews/keyboard-wake-host-activation-minimal-fix-architecture-r1-artifacts/architecture-review.md": "647d148ceb21704155daa5dc7eacf523468fd134322ca7ad7891175d7b58769a",
+    "docs/evidence/keyboard-wake-host-activation-minimal-fix-architecture-r2-validation-2026-10-04.md": "1a8e2b053fbc3d4ee7de34b92cf7766eaf0f548de0ffceaf301b9ce6f073f10b"
+  },
+  "design_r2_actual_packet_sha256": "1cc40e09defa9aad3f6a2df0141ccdbc3dcd9c87775dcabcf04bf5b0069e0178",
+  "source_backups": "/private/tmp/ukey-host-activation-fix-entry-20261004",
+  "writer_window": "Pending Product source authority and immediate exact-byte revalidation; no new writer claimed now",
+  "simulator_window": "not requested/not inspected; fresh confirmation required F2/F4",
+  "authority": "Human 可以，请你继续吧 after recommendation to prepare Assignment/Entry; docs preparation only"
+}

@@ -1,0 +1,423 @@
+{
+  "recorded_at": "2026-10-06T18:56:55+08:00",
+  "source": "/private/tmp/ukey-host-activation-fix-owner-export-20261006",
+  "destination": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals",
+  "excluded": [
+    "__pycache__"
+  ],
+  "skipped_special": [
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-lldb.cmd",
+      "reason": "special_file",
+      "mode": "0o10600"
+    }
+  ],
+  "file_count": 67,
+  "owner_buffer_sha256": "a8b3bde10c0c489e92b1e7f370e257d33c4156f805697af1597fe5d5fd35414d",
+  "owner_buffer_bytes": 1496,
+  "packet_bound_verified": 28,
+  "files": [
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e0-call-ledger.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e0-call-ledger.json",
+      "bytes": 17265,
+      "sha256": "3d9daaf97e60f81f10a9f29beb2abeb4f96dd7c77234931c7a2989785a308695"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/callback-stage.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/callback-stage.json",
+      "bytes": 1879,
+      "sha256": "b0f2231ea4b7f39ac10137f243b36fa42eda041da8a15ce99441ab40acb7c226"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/host_preflight.stdout2.txt",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/host_preflight.stdout2.txt",
+      "bytes": 3608,
+      "sha256": "5477426945efb988fc0045b69ed041024041ab7cb0a33453abd073d25a9c8957"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/decoder.py",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/decoder.py",
+      "bytes": 3780,
+      "sha256": "fc1817ab8843dab76acd9e8ae59277719c059742bb105eebecbc60a66f58775d"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/pre-freeze-debugger-state.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/pre-freeze-debugger-state.json",
+      "bytes": 278,
+      "sha256": "fa8fe58e5277b1cbb3a65b83d8db77d925f4bfbf7ecc1edf76922e612563b718"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-old-appex-termination.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1-old-appex-termination.json",
+      "bytes": 826,
+      "sha256": "b51a8e6fc4606de9ad3d6cb81ae74c2316d3bc02c565f048b05628f2ef067e7f"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/lldb-format-preflight-correction.pty.txt",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/lldb-format-preflight-correction.pty.txt",
+      "bytes": 1700,
+      "sha256": "d7747cd5bb2b18a4fcc57783e9c0406ead151f0254a77660bbef403f295c7433"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-formatter-live-readback.txt",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1-formatter-live-readback.txt",
+      "bytes": 655,
+      "sha256": "dd01fb6eeb6f8ad8da5a738716e34a79df0e4f8508e70fab6cf93e27dfc4171a"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-fresh-instance.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1-fresh-instance.json",
+      "bytes": 839,
+      "sha256": "44947bbb68e35b200377be9560783ac7c85a9c4d6d3c1a6b3a77c26a0c88df2c"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/owner-buffer.bin",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/owner-buffer.bin",
+      "bytes": 1496,
+      "sha256": "a8b3bde10c0c489e92b1e7f370e257d33c4156f805697af1597fe5d5fd35414d"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/host_preflight.correction.stdout.txt",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/host_preflight.correction.stdout.txt",
+      "bytes": 4423,
+      "sha256": "0f7a227e9e377990349dc20c2be7e829aeae55f089d733aa6c2249ff4390d5eb"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1_cleanup.py",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1_cleanup.py",
+      "bytes": 1564,
+      "sha256": "ac4f2d449c042a95b5e9feb6491a731a845e8b9c43cf2032a674a65f5911eb88"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-decoded.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1-decoded.json",
+      "bytes": 5309,
+      "sha256": "8ae7092edf06a5fc7bcfe682ac037a2a814207c98156bc2e0755f46cf95cbaa7"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-pre-arm-evaluation.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1-pre-arm-evaluation.json",
+      "bytes": 3214,
+      "sha256": "1a8e8908cf414b02abfb43ad1982b7d00aea3321702e27f0c7f307b6dda2f0d7"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/identity-receipt.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/identity-receipt.json",
+      "bytes": 4003,
+      "sha256": "6960ea73d625d48102d246781925f46ba6fa2a9a50b045b926bb617418879984"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-machine-exit.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1-machine-exit.json",
+      "bytes": 1880,
+      "sha256": "80b54c93b3bf52ec942d4345935dd902b4e1d0c2b2d83fc8c2c2422e2619ab5c"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-human-exit.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1-human-exit.json",
+      "bytes": 210,
+      "sha256": "3301bc13c688e1113a8b226d5ccdd8576c2952c9cf49a185cb302981ad9b9c0f"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/script-hashes.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/script-hashes.json",
+      "bytes": 375,
+      "sha256": "275b8e8d000d8673181f11e3b9b8e0ae7642d45e2a24bb1f5d159652af45c5c5"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-breakpoint-list.txt",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1-breakpoint-list.txt",
+      "bytes": 55,
+      "sha256": "c20d0baed6e3498fb611ced5467ced87a36e5ae9bc0660a6a0909aae8c1ed507"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-author-readback.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1-author-readback.json",
+      "bytes": 748,
+      "sha256": "96855f8496af0666c22cbbdf2a1d7311f1b050c8e321c153098375739caac158"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e0-correction-receipt.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e0-correction-receipt.json",
+      "bytes": 3674,
+      "sha256": "049c2e86ad8ac1d450214dcb0824bc31f66e5231a6f7f9d62a69f0cb1f2db9f9"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e0-correction-preflight-results.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e0-correction-preflight-results.json",
+      "bytes": 4385,
+      "sha256": "57c0738349ec0b4c5d05b90b478120ddd5662a8509f52cf8c7ff169efed238b5"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-call-ledger.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1-call-ledger.json",
+      "bytes": 14993,
+      "sha256": "80524fdeba6be72914de4fde1baf0457fa05b55e168cf8d9e0450abc93798d8b"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-device-entry.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1-device-entry.json",
+      "bytes": 22381,
+      "sha256": "0163aa9e71a5b728c2b0a1789d971e1402b1fc60049fb5d4bf189a559aff3f9e"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1_lldb_driver.py",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1_lldb_driver.py",
+      "bytes": 6917,
+      "sha256": "454dffd982edefdce7297e7e0d020426768feff841b0d9c42c09e80c83406126"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/lldb-format-suppress.lldb",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/lldb-format-suppress.lldb",
+      "bytes": 305,
+      "sha256": "ca06f497c0f2e1d4591e57e59d9d21e1830cf5cda8d359e333cd36645acdf6c9"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/dirty-porcelain-all.txt",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/dirty-porcelain-all.txt",
+      "bytes": 233135,
+      "sha256": "f3bafad240ad3cbe923af7fefc9e6e8812d3aa3b0fb23cda776da352751d107d"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/lldb-format-preflight.pty.txt",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/lldb-format-preflight.pty.txt",
+      "bytes": 1700,
+      "sha256": "d7747cd5bb2b18a4fcc57783e9c0406ead151f0254a77660bbef403f295c7433"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-human-appswitcher.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1-human-appswitcher.json",
+      "bytes": 450,
+      "sha256": "032f6bc5fc862313a090d3f003e0305dadf1f8a479734aaa2b9137e84edcfad6"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/callback.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/callback.json",
+      "bytes": 575,
+      "sha256": "aee4d328d135e62bf091f9504a6fa23948abb1cf7b15410b759547f1566c3dbd"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/host_preflight.stderr.txt",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/host_preflight.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e0-correction-script-hashes.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e0-correction-script-hashes.json",
+      "bytes": 485,
+      "sha256": "d744b06c450bbe9564424291a5ea322d6959aeced1e2f1a864d2070c5fc0df37"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/host_preflight.py",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/host_preflight.py",
+      "bytes": 17281,
+      "sha256": "146766c07c6b372b3a4edacb367f02cd0058ead0688a1d80cf6fa0bc537468eb"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-driver-exit.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1-driver-exit.json",
+      "bytes": 73,
+      "sha256": "e12dc4215559b6debd19f1fc7aa2f5bfdfa6da683957494fb1f5436793a63074"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-configuration-receipt.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1-configuration-receipt.json",
+      "bytes": 919,
+      "sha256": "785e698367a1c2d8d5db8af4ee959df4983a137fd7a0f795bece3c323bd43416"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-stop-and-cleanup.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1-stop-and-cleanup.json",
+      "bytes": 464,
+      "sha256": "d862438e9a1309778e03defc3ab3d4f44900d93a1e6b9afc9bf33a464a99b7ee"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/live-binding.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/live-binding.json",
+      "bytes": 403,
+      "sha256": "70d079f9ec60a2b9d6a745e4e9916ff8eae99f03928888df039b7ca766b52969"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-pre-freeze-evaluation.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1-pre-freeze-evaluation.json",
+      "bytes": 3217,
+      "sha256": "d3ab5c4deb64ffb80f23b3d1d88bf30636b634304d6fd3ed7fcee95cdc0005b9"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/callback-private.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/callback-private.json",
+      "bytes": 2051,
+      "sha256": "b06c07d6e2e296ba66d79ca04db8f65979b59e7c6ce87ddc24535cfea095dfaa"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-human-h.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1-human-h.json",
+      "bytes": 426,
+      "sha256": "7683b4fa61ccf93abe86e9f2b8fc61f9b6f41a4f61c6f660a01994dbeff6bd61"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-live-entry-ready.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1-live-entry-ready.json",
+      "bytes": 573,
+      "sha256": "518258cf1c7fbf5f5161633c6da7adef667bc05ae3ba969e3b4fe3cedbf5ce0a"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1_checkpoint.py",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1_checkpoint.py",
+      "bytes": 3991,
+      "sha256": "0cf964c3f3cf8088238929a31ef94af512d3211139cf05879b0e4de682a5c71e"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e0-receipt.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e0-receipt.json",
+      "bytes": 5914,
+      "sha256": "bbe1075aa10aba8af0388971ca5886add10e34c00148786d8a7e49942c82d0a4"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-pre-freeze-fifo-ack.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1-pre-freeze-fifo-ack.json",
+      "bytes": 71,
+      "sha256": "91407f31eeb1e863ce94ef226a86583582eea40c6f3e3cb5b53f69ba201c2acf"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/owner_export_callback.py",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/owner_export_callback.py",
+      "bytes": 9632,
+      "sha256": "5fc756ed525ebb3c71b91a208615eb34249da535617461426399dc61d5cf52e8"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/owner-args.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/owner-args.json",
+      "bytes": 113,
+      "sha256": "1d9bd0dd0f9ab1a638d3e8ee41cc0d6e0259656cb2306229dc718b520062ac0d"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/pre-arm-debugger-state.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/pre-arm-debugger-state.json",
+      "bytes": 275,
+      "sha256": "b1013ebd591e43f24111d0305bca21922efeac904c173823ac6286cf3eb838ed"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-decoded-summary.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1-decoded-summary.json",
+      "bytes": 1018,
+      "sha256": "819cfb5ee6be4764907082121bb02ac367beb76abad406f9c967991b3f917b6f"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/host_preflight.correction.stderr.txt",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/host_preflight.correction.stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-human-n.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1-human-n.json",
+      "bytes": 594,
+      "sha256": "996540e0b2810b4e0c68cf51bd760ab5b2f2b70d9a9a455e1be72a5e3c561367"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-ack.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1-ack.json",
+      "bytes": 5326,
+      "sha256": "d9c045cb4ce719269e358301081285104183a5919004e859b352e25b417dc725"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-pre-arm-status.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1-pre-arm-status.json",
+      "bytes": 603,
+      "sha256": "a08431ad0fc45e2c2bf1cc017aa8c7c54a74ec981350853636d29f8513cdf1a3"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-pty-transcript.txt",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1-pty-transcript.txt",
+      "bytes": 5800,
+      "sha256": "3cb81aad0d6210095ae58977fcb57baaa130e605dbe59501166a18742bf7a1bb"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e0-preflight-results.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e0-preflight-results.json",
+      "bytes": 3570,
+      "sha256": "30895e2404588ddaac8238320c4672d74428c45005bf796a25dc48f918ef7711"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1_setup.py",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1_setup.py",
+      "bytes": 3058,
+      "sha256": "fe4b5caa079c1fdc039c24f7287227193c2a219186c201bf473cec7b7b813941"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/host_preflight.stdout.txt",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/host_preflight.stdout.txt",
+      "bytes": 3611,
+      "sha256": "058f426ee6dff1e533d0b585e96e414e3bbae12bbaba5ace82f4d522c338acfa"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/dirty-porcelain-default.txt",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/dirty-porcelain-default.txt",
+      "bytes": 90093,
+      "sha256": "270f6125c8bcad1c7cb76c533dfeb97d22a5d8e87bbc4a75983e301f22f0cd7b"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-failed-continue-20261006/041834-live-binding.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1-failed-continue-20261006/041834-live-binding.json",
+      "bytes": 403,
+      "sha256": "70d079f9ec60a2b9d6a745e4e9916ff8eae99f03928888df039b7ca766b52969"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-failed-continue-20261006/041834-e1-configuration-receipt.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1-failed-continue-20261006/041834-e1-configuration-receipt.json",
+      "bytes": 919,
+      "sha256": "fdaf8da02d759313dba825da2775582a77ece4ebb00ca3fab16774984439705c"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/e1-failed-continue-20261006/041834-e1-pre-arm-status.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/e1-failed-continue-20261006/041834-e1-pre-arm-status.json",
+      "bytes": 93,
+      "sha256": "f3882084404a5864138c3ec398994750a33ac8bba8da2ac242b466aa8bef0e61"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/host-fake/callback-stage.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/host-fake/callback-stage.json",
+      "bytes": 1353,
+      "sha256": "75953859dda6a36f6977b3cfd1294849550fcbcaa514443b353d363912501158"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/host-fake/callback.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/host-fake/callback.json",
+      "bytes": 532,
+      "sha256": "57f2b8b0f5a7dee3d13843d0520b8b9c679dd115adde11c1ccbc8ab1d546a81e"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/host-fake/callback-private.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/host-fake/callback-private.json",
+      "bytes": 1449,
+      "sha256": "b3ea3c797c93676a9bf06b7499eb7252ef1277c31f26afd31cdc28056e5f134a"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/synthetic-e0-leftover/callback-stage.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/synthetic-e0-leftover/callback-stage.json",
+      "bytes": 268,
+      "sha256": "b70bab9f706595dc2b4d884ba2e9a760fa4787a5012904708f875483573fcaec"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/synthetic-e0-leftover/callback.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/synthetic-e0-leftover/callback.json",
+      "bytes": 441,
+      "sha256": "50715b2209c5738bf53fbb591cc1f11d1be28b55db1162ac89d89ac1fd4cd9f6"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/synthetic-e0-leftover/callback-private.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/synthetic-e0-leftover/callback-private.json",
+      "bytes": 383,
+      "sha256": "cb418649f854e094c9d876a2e3986d72ee26bff61d517a67646f5ee30706575e"
+    },
+    {
+      "tmp_path": "/private/tmp/ukey-host-activation-fix-owner-export-20261006/synthetic-e0-leftover/synthetic-marker.json",
+      "evidence_relpath": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-originals/synthetic-e0-leftover/synthetic-marker.json",
+      "bytes": 1298,
+      "sha256": "6ebcdabcf16e0084e91131d8742874109c0b5890c7c861d81bffa12c0c3f604e"
+    }
+  ]
+}

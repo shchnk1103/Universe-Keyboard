@@ -1,0 +1,127 @@
+{
+  "stage": "A2 new candidate validation only; Prepared not Ready",
+  "execution_authorized": false,
+  "cwd": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "destination": "platform=iOS Simulator,id=405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "command_order": [
+    "A2-V-C-classify-table",
+    "A2-V-L-diff-check",
+    "A2-V-L-diff-check-untracked",
+    "A2-V-L-kos-json",
+    "A2-V-L-ci-helper-tests",
+    "A2-V-L-md-links-working-tree",
+    "A2-V-0-format",
+    "A2-V-1-keyboardcore",
+    "A2-V-2-rimebridge",
+    "A2-V-3-app-keyboard",
+    "A2-V-4-release-build",
+    "A2-V-5-keychain"
+  ],
+  "commands": [
+    {
+      "id": "A2-V-C-classify-table",
+      "required": true,
+      "substitutes_matrix": false,
+      "note": "Applicable local classification of uncommitted F1/F2 paths against docs/CI_CHANGE_CLASSIFICATION.md. Hosted classify_changes.py SHA-to-SHA (origin/main..HEAD or HEAD..HEAD) does not see dirty F1 and must not be used as skip evidence. Combined dirty is full.",
+      "command": "python3 - <<'PY'\nfrom pathlib import PurePosixPath\n\ndef is_lightweight(raw):\n    path = PurePosixPath(raw)\n    if path.is_absolute() or '..' in path.parts or not path.parts:\n        return False\n    if path.parts[0] in {'docs', '.kos'}:\n        return True\n    return len(path.parts) == 1 and path.suffix.lower() == '.md'\n\npaths = [\n    'Keyboard/Controllers/KeyboardViewController.swift',\n    'Keyboard/Controllers/KeyboardViewController+Bootstrap.swift',\n    'Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift',\n    'KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift',\n    'Universe Keyboard.xcodeproj/project.pbxproj',\n    'docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-prepared-entry-2026-10-05.md',\n]\nfull = [p for p in paths if not is_lightweight(p)]\nprint('classification=full' if full else 'classification=docs_only')\nprint('requires_full=' + ('true' if full else 'false'))\nprint('full_required_paths=' + ','.join(full))\nprint('reason=uncommitted_f1_source_is_full_by_frozen_table')\nif not full:\n    raise SystemExit(2)\nPY"
+    },
+    {
+      "id": "A2-V-L-diff-check",
+      "required": true,
+      "substitutes_matrix": false,
+      "note": "Whitespace check for tracked F1 deltas and A2 evidence already in git. Untracked new gate/tests are NOT visible to git diff HEAD --check; see F2-L-diff-check-untracked.",
+      "command": "git diff HEAD --check -- Keyboard/Controllers/KeyboardViewController.swift Keyboard/Controllers/KeyboardViewController+Bootstrap.swift \"Universe Keyboard.xcodeproj/project.pbxproj\" docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-prepared-entry-2026-10-05.md docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-artifacts/"
+    },
+    {
+      "id": "A2-V-L-diff-check-untracked",
+      "required": true,
+      "substitutes_matrix": false,
+      "note": "Root final Entry correction: do not suppress git errors; required paths must exist, all diagnostics/unexpected exit fail. Only normal no-index difference exit 1 with no diagnostic is accepted. Prepared command, not executed.",
+      "command": "python3 - <<'PYCODE'\nfrom pathlib import Path\nimport subprocess\nimport sys\nfiles = [\n    'Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift',\n    'KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift',\n]\nfor file in files:\n    if not Path(file).is_file():\n        print(f'FAIL: required new file missing: {file}', file=sys.stderr)\n        raise SystemExit(1)\n    result = subprocess.run(\n        ['git', 'diff', '--check', '--no-index', '--', '/dev/null', file],\n        capture_output=True, text=True,\n    )\n    # --no-index may return 1 for a difference. Any diagnostic or other status fails.\n    if result.returncode not in (0, 1) or result.stdout.strip() or result.stderr.strip():\n        print(f'FAIL: {file}: git exit={result.returncode}', file=sys.stderr)\n        print(result.stdout, end='')\n        print(result.stderr, end='', file=sys.stderr)\n        raise SystemExit(1)\nprint('PASS: whitespace check includes both untracked Swift files')\nPYCODE"
+    },
+    {
+      "id": "A2-V-L-kos-json",
+      "required": true,
+      "substitutes_matrix": false,
+      "command": "python3 -m json.tool .kos/project.json >/dev/null"
+    },
+    {
+      "id": "A2-V-L-ci-helper-tests",
+      "required": true,
+      "substitutes_matrix": false,
+      "note": "scripts/ci unchanged; still the applicable local subset of lightweight-checks.",
+      "command": "python3 -m unittest discover -s scripts/ci/tests -p 'test_*.py' && bash scripts/ci/tests/test_verify_final_gate.sh && bash scripts/ci/tests/test_kos_trigger_paths.sh"
+    },
+    {
+      "id": "A2-V-L-md-links-working-tree",
+      "required": true,
+      "substitutes_matrix": false,
+      "note": "check_markdown_links.py default is SHA-to-SHA; this applies the same missing_links helper to A2 evidence working-tree bytes.",
+      "command": "python3 - <<'PY'\nfrom pathlib import Path\nimport sys\nsys.path.insert(0, 'scripts/ci')\nimport check_markdown_links as m\nroot = Path('.').resolve()\nfiles = [\n    Path('docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-prepared-entry-2026-10-05.md'),\n    Path('docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-artifacts/environment-contract.md'),\n]\nfail = False\nfor f in files:\n    for line, target in m.missing_links(f, root):\n        print(f'{f}:{line}: missing {target}')\n        fail = True\nif fail:\n    raise SystemExit(1)\nprint('PASS working-tree F2 evidence local links')\nPY"
+    },
+    {
+      "id": "A2-V-0-format",
+      "required": true,
+      "substitutes_matrix": false,
+      "cwd": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+      "command": "xcrun swift-format lint --strict --configuration .swift-format Keyboard/Controllers/KeyboardViewController.swift Keyboard/Controllers/KeyboardViewController+Bootstrap.swift Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift"
+    },
+    {
+      "id": "A2-V-1-keyboardcore",
+      "required": true,
+      "substitutes_matrix": false,
+      "cwd": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+      "command": "swift test --package-path Packages/KeyboardCore --build-path /private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/keyboardcore-build"
+    },
+    {
+      "id": "A2-V-2-rimebridge",
+      "required": true,
+      "substitutes_matrix": false,
+      "cwd": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+      "command": "xcodebuild -project \"Universe Keyboard.xcodeproj\" -scheme RimeBridgeTests -configuration Debug -destination 'platform=iOS Simulator,id=405D994F-28CB-4F89-BB22-B64AD81C05A2' -derivedDataPath /private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData -parallel-testing-enabled NO CODE_SIGNING_ALLOWED=NO SWIFT_VERSION=6.0 SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES -resultBundlePath /private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/xcresults/rimebridge.xcresult test"
+    },
+    {
+      "id": "A2-V-3-app-keyboard",
+      "required": true,
+      "substitutes_matrix": false,
+      "must_execute_class": "KeyboardTests/KeyboardHostLifecycleRecoveryGateTests",
+      "must_execute_method_count": 23,
+      "cwd": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+      "command": "xcodebuild -project \"Universe Keyboard.xcodeproj\" -scheme \"Universe Keyboard\" -configuration Debug -destination 'platform=iOS Simulator,id=405D994F-28CB-4F89-BB22-B64AD81C05A2' -derivedDataPath /private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData -parallel-testing-enabled NO CODE_SIGNING_ALLOWED=NO SWIFT_VERSION=6.0 SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES -resultBundlePath /private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/xcresults/app-keyboard.xcresult test",
+      "required_methods_ref": "required-gate-methods.json",
+      "rule": "Full suite actual xcresult must show all 23 Passed, 0 skipped/failed. Coverage gap stops; no automatic focused repeat."
+    },
+    {
+      "id": "A2-V-4-release-build",
+      "required": true,
+      "substitutes_matrix": false,
+      "note": "Release configuration build is not a Release publication",
+      "cwd": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+      "command": "xcodebuild -project \"Universe Keyboard.xcodeproj\" -scheme \"Universe Keyboard\" -configuration Release -destination 'platform=iOS Simulator,id=405D994F-28CB-4F89-BB22-B64AD81C05A2' -derivedDataPath /private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData CODE_SIGNING_ALLOWED=NO SWIFT_VERSION=6.0 SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES -resultBundlePath /private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/xcresults/release-build.xcresult build"
+    },
+    {
+      "id": "A2-V-5-keychain",
+      "required": true,
+      "substitutes_matrix": false,
+      "note": "CI job test-rime-sync-keychain signing parameters retained; destination rebound to Assignment UDID. Assignment F2 body does not list this job; it remains part of the hosted heavy graph and of this 完整测试与构建矩阵.",
+      "cwd": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+      "command": "xcodebuild -project \"Universe Keyboard.xcodeproj\" -scheme \"Universe Keyboard\" -configuration Debug -destination 'platform=iOS Simulator,id=405D994F-28CB-4F89-BB22-B64AD81C05A2' -derivedDataPath /private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData -parallel-testing-enabled NO CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- CODE_SIGNING_REQUIRED=NO SWIFT_VERSION=6.0 SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES -only-testing:UniverseKeyboardTests/RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem -resultBundlePath /private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/xcresults/keychain.xcresult test"
+    }
+  ],
+  "vendor_verify_before_matrix": "bash scripts/ensure_rime_vendor.sh verify (execution AUTH only); no fetch",
+  "toolchain_preflight_on_auth": [
+    "xcode-select -p",
+    "xcodebuild -version",
+    "xcrun swift --version"
+  ],
+  "run_root": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005",
+  "backup_root": "/private/tmp/ukey-host-activation-fix-a2-validation-backup-20261005",
+  "isolated_DerivedData": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData",
+  "isolated_KeyboardCore_build_path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/keyboardcore-build",
+  "budget_proposal_wall_minutes": 180,
+  "budget_start": "execution AUTH checkpoint, including environment preflight, backup, matrix and Exit; no automatic renewal",
+  "focused_default": "not scheduled; 23/23 from full suite avoids redundant repeat",
+  "no_auto_retries": true,
+  "matrix_label": "完整测试与构建矩阵，外加适用本地分类与轻量检查；不是hosted完整CI等价",
+  "actual_counts": "xcresult actual counts only; no expected total forced"
+}

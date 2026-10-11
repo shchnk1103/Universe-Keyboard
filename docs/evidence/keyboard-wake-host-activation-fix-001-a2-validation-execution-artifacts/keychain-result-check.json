@@ -1,0 +1,9 @@
+{
+  "kind": "keychain",
+  "actual_cases": 1,
+  "passed": 1,
+  "skipped": 0,
+  "failed": 0,
+  "historical_skip_identity_reason_match": false,
+  "gate_passed": 0
+}

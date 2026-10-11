@@ -1,0 +1,197 @@
+{
+  "role": "Coordinator offline reader preflight; not independent review",
+  "packet": "/private/tmp/ukey-wake-ui-t-reader-preflight-20261003/S-preflight-packet.json",
+  "self_digest": "62f2f4f73c681fd4a72ca8c9c469fa581b95d535d3e71e4bf3bed77d0b28b768",
+  "whole_file_digest": "d6fcb49f094e9a46c3d5d1e234da4d6360427a31356cd9d52443e66c3250d7ea",
+  "baseline_identity_matches": true,
+  "content_input_count": 37,
+  "content_hash_drift": [],
+  "hash_only_count": 1201,
+  "hash_only_drift": [],
+  "observations": {
+    "Rime": {
+      "totalTestCount": 105,
+      "passedTests": 85,
+      "failedTests": 0,
+      "skippedTests": 20,
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ]
+    },
+    "AppKeyboard": {
+      "totalTestCount": 431,
+      "passedTests": 421,
+      "failedTests": 0,
+      "skippedTests": 10,
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ]
+    },
+    "Keychain": {
+      "totalTestCount": 1,
+      "passedTests": 1,
+      "failedTests": 0,
+      "skippedTests": 0,
+      "device_ids": [
+        "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+      ]
+    },
+    "core": {
+      "file_count": 204,
+      "missing": [],
+      "extra": [],
+      "hash_mismatches": [],
+      "test_summary": {
+        "exit": 0,
+        "elapsed_seconds": 38.099689245224,
+        "actual_test_total": 1194,
+        "failures": 0,
+        "skip_records": [],
+        "compiler_warning_records": [],
+        "compiler_error_records": [],
+        "terminal_log_evidence": [
+          "Test Suite 'KeyboardCoreTests.xctest' passed at 2026-10-02 15:12:43.765.",
+          "\t Executed 1194 tests, with 0 failures (0 unexpected) in 19.151 (19.275) seconds",
+          "\t Executed 1194 tests, with 0 failures (0 unexpected) in 19.151 (19.278) seconds"
+        ],
+        "package_input_sha256": "8da9ec62d8bc10c5c62b6e2a74d1d54627a4c50223ca6d0689b9b189067c0eeb",
+        "log_sha256": "048f53d7f2c49d7eb4ad433f00f97f608a72d0eead6c0b37715c3c3e2cad6cd6",
+        "scope": "Full host macOS KeyboardCore XCTest suite; no iOS target execution/Simulator/RimeBridge claim",
+        "classification_note": "Matches XCTest skip terminals/compiler location diagnostics. Test names or intentionally generated fixture diagnostics containing skipped/error are not classified as suite skips/compiler errors."
+      }
+    },
+    "candidate_manifest": {
+      "source_and_build_inputs": {
+        "count": 571,
+        "mismatches": [],
+        "hash_only_map_disagreements": []
+      },
+      "vendor_files": {
+        "count": 630,
+        "mismatches": [],
+        "hash_only_map_disagreements": []
+      },
+      "recorded_toolchain": {
+        "xcode": {
+          "argv": [
+            "xcodebuild",
+            "-version"
+          ],
+          "exit": 0,
+          "stdout": "Xcode 27.0\nBuild version 27A266a\n",
+          "stderr": ""
+        },
+        "developer": {
+          "argv": [
+            "xcode-select",
+            "-p"
+          ],
+          "exit": 0,
+          "stdout": "/Applications/Xcode.app/Contents/Developer\n",
+          "stderr": ""
+        },
+        "sdk_version": {
+          "argv": [
+            "xcrun",
+            "--sdk",
+            "iphonesimulator",
+            "--show-sdk-version"
+          ],
+          "exit": 0,
+          "stdout": "27.0\n",
+          "stderr": ""
+        },
+        "sdk_path": {
+          "argv": [
+            "xcrun",
+            "--sdk",
+            "iphonesimulator",
+            "--show-sdk-path"
+          ],
+          "exit": 0,
+          "stdout": "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk\n",
+          "stderr": ""
+        },
+        "swift": {
+          "argv": [
+            "xcrun",
+            "swiftc",
+            "--version"
+          ],
+          "exit": 0,
+          "stdout": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1)\nTarget: arm64-apple-macosx27.0.0\n",
+          "stderr": "swift-driver version: 1.168.6 "
+        }
+      }
+    },
+    "compiler_log_observations": {
+      "Rime.log": {
+        "driver_invocations": 3,
+        "swift6": 3,
+        "probe_define": 3,
+        "warnings_as_errors": 3,
+        "literal_strict_complete": 0,
+        "log_sha256": "14b251841a5fd4e36c40c13a2736d7086a29258acf9bdc7193b7bea260e566e4"
+      },
+      "AppKeyboard.log": {
+        "driver_invocations": 12,
+        "swift6": 12,
+        "probe_define": 12,
+        "warnings_as_errors": 12,
+        "literal_strict_complete": 0,
+        "log_sha256": "7ac6e6f9bd0fb9bf07aab555f83f78504d729212ad2befb504bb9357087ce572"
+      },
+      "Keychain.log": {
+        "driver_invocations": 12,
+        "swift6": 12,
+        "probe_define": 12,
+        "warnings_as_errors": 12,
+        "literal_strict_complete": 0,
+        "log_sha256": "cca43009b1e6aec2e46100ad61764bddf49a0917e45807960849dc84903f0c55"
+      }
+    },
+    "frozen_xcodebuild_argv": {
+      "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-keychain-continuation-artifacts/frozen-packet.json": [
+        [
+          "xcodebuild",
+          "-project",
+          "Universe Keyboard.xcodeproj",
+          "-configuration",
+          "Debug",
+          "-sdk",
+          "iphonesimulator",
+          "-destination",
+          "platform=iOS Simulator,id=405D994F-28CB-4F89-BB22-B64AD81C05A2",
+          "-parallel-testing-enabled",
+          "NO",
+          "-maximum-concurrent-test-simulator-destinations",
+          "1",
+          "-disableAutomaticPackageResolution",
+          "-onlyUsePackageVersionsFromResolvedFile",
+          "-skipPackageUpdates",
+          "SWIFT_VERSION=6.0",
+          "SWIFT_STRICT_CONCURRENCY=complete",
+          "SWIFT_SUPPRESS_WARNINGS=NO",
+          "SWIFT_TREAT_WARNINGS_AS_ERRORS=YES",
+          "ARCHS=arm64",
+          "ONLY_ACTIVE_ARCH=YES",
+          "SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) DEBUG KEYBOARD_WAKE_OWNER_PROBE",
+          "-scheme",
+          "Universe Keyboard",
+          "-derivedDataPath",
+          "/private/tmp/ukey-wake-ui-t1-execution-20261003/KeychainDerivedData",
+          "-clonedSourcePackagesDirPath",
+          "/private/tmp/ukey-wake-ui-t1-execution-20261003/SourcePackages",
+          "-resultBundlePath",
+          "/private/tmp/ukey-wake-ui-t1-execution-20261003/Keychain.xcresult",
+          "CODE_SIGNING_ALLOWED=YES",
+          "CODE_SIGN_IDENTITY=-",
+          "CODE_SIGNING_REQUIRED=NO",
+          "-only-testing:UniverseKeyboardTests/RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem",
+          "test"
+        ]
+      ]
+    },
+    "binding_limit": "Static inputs/recorded argv/raw drivers are evidence locators; standalone candidate versus test-host compilation equivalence still requires reviewer assessment."
+  }
+}

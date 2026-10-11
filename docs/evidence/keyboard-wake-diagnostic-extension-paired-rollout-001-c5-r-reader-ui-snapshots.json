@@ -1,0 +1,252 @@
+{
+  "snapshots": [
+    {
+      "seq": 20,
+      "screenHash": "0gpwr6k",
+      "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "targets": [
+        "e16|tap|button|诊断||BackButton",
+        "e20|tap|button|刷新日志||arrow.clockwise"
+      ],
+      "scroll": [
+        "e35|swipe|scroll-view|||",
+        "e49|swipe|scroll-view|||",
+        "e58|swipe|scroll-view|||"
+      ],
+      "text": [
+        "e65|text|text|全部日志 · 最新记录优先||",
+        "e66|text|text|67/67 条||"
+      ]
+    },
+    {
+      "seq": 21,
+      "screenHash": "1568myg",
+      "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "targets": [
+        "e16|tap|button|诊断||BackButton",
+        "e20|tap|button|刷新日志||arrow.clockwise"
+      ],
+      "scroll": [
+        "e35|swipe|scroll-view|||",
+        "e49|swipe|scroll-view|||",
+        "e58|swipe|scroll-view|||"
+      ],
+      "text": [
+        "e65|text|text|全部日志 · 最新记录优先||",
+        "e66|text|text|67/67 条||"
+      ]
+    },
+    {
+      "seq": 22,
+      "screenHash": "1568myg",
+      "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "targets": [
+        "e16|tap|button|诊断||BackButton",
+        "e20|tap|button|刷新日志||arrow.clockwise"
+      ],
+      "scroll": [
+        "e35|swipe|scroll-view|||",
+        "e49|swipe|scroll-view|||",
+        "e58|swipe|scroll-view|||"
+      ],
+      "text": [
+        "e65|text|text|全部日志 · 最新记录优先||",
+        "e66|text|text|67/67 条||"
+      ]
+    },
+    {
+      "seq": 25,
+      "screenHash": "1ppybl6",
+      "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "targets": [
+        "e16|tap|button|诊断||BackButton",
+        "e20|tap|button|刷新日志||arrow.clockwise"
+      ],
+      "scroll": [
+        "e35|swipe|scroll-view|||",
+        "e49|swipe|scroll-view|||",
+        "e58|swipe|scroll-view|||"
+      ],
+      "text": [
+        "e70|text|text|[10:46:34.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=unmark_text phase=returned||",
+        "e71|text|text|[10:46:34.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=unmark_text phase=entered||",
+        "e72|text|text|[10:46:34.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e73|text|text|[10:46:34.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||"
+      ]
+    },
+    {
+      "seq": 26,
+      "screenHash": "1ppybl6",
+      "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "targets": [
+        "e16|tap|button|诊断||BackButton",
+        "e20|tap|button|刷新日志||arrow.clockwise"
+      ],
+      "scroll": [
+        "e35|swipe|scroll-view|||",
+        "e49|swipe|scroll-view|||",
+        "e58|swipe|scroll-view|||"
+      ],
+      "text": [
+        "e70|text|text|[10:46:34.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=unmark_text phase=returned||",
+        "e71|text|text|[10:46:34.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=unmark_text phase=entered||",
+        "e72|text|text|[10:46:34.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e73|text|text|[10:46:34.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||"
+      ]
+    },
+    {
+      "seq": 27,
+      "screenHash": "1v4i7dg",
+      "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "targets": [
+        "e16|tap|button|诊断||BackButton",
+        "e20|tap|button|刷新日志||arrow.clockwise"
+      ],
+      "scroll": [
+        "e35|swipe|scroll-view|||",
+        "e49|swipe|scroll-view|||",
+        "e58|swipe|scroll-view|||"
+      ],
+      "text": [
+        "e65|text|text|[10:46:34.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=unmark_text phase=returned||",
+        "e66|text|text|[10:46:34.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=unmark_text phase=entered||",
+        "e67|text|text|[10:46:34.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e68|text|text|[10:46:34.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||",
+        "e73|text|text|[10:46:32.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e74|text|text|[10:46:32.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||"
+      ]
+    },
+    {
+      "seq": 28,
+      "screenHash": "0s7tw9o",
+      "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "targets": [
+        "e16|tap|button|诊断||BackButton",
+        "e20|tap|button|刷新日志||arrow.clockwise"
+      ],
+      "scroll": [
+        "e35|swipe|scroll-view|||",
+        "e49|swipe|scroll-view|||",
+        "e58|swipe|scroll-view|||"
+      ],
+      "text": [
+        "e67|text|text|[10:46:31.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e68|text|text|[10:46:31.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||",
+        "e75|text|text|[10:46:30.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e76|text|text|[10:46:30.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||"
+      ],
+      "observed_utc": "2026-10-01T05:30:26.346Z"
+    },
+    {
+      "seq": 29,
+      "screenHash": "0s7tw9o",
+      "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "targets": [
+        "e16|tap|button|诊断||BackButton",
+        "e20|tap|button|刷新日志||arrow.clockwise"
+      ],
+      "scroll": [
+        "e35|swipe|scroll-view|||",
+        "e49|swipe|scroll-view|||",
+        "e58|swipe|scroll-view|||"
+      ],
+      "text": [
+        "e67|text|text|[10:46:31.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e68|text|text|[10:46:31.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||",
+        "e75|text|text|[10:46:30.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e76|text|text|[10:46:30.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||"
+      ],
+      "observed_utc": "2026-10-01T05:35:26.019Z"
+    },
+    {
+      "seq": 30,
+      "screenHash": "0g1g59k",
+      "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "targets": [],
+      "scroll": [
+        "e27|swipe|scroll-view|||",
+        "e41|swipe|scroll-view|||",
+        "e50|swipe|scroll-view|||"
+      ],
+      "text": [
+        "e53|text|text|全部日志 · 最新记录优先||",
+        "e54|text|text|14/67 条||",
+        "e55|text|text|[10:46:34.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=unmark_text phase=returned||",
+        "e56|text|text|[10:46:34.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=unmark_text phase=entered||",
+        "e57|text|text|[10:46:34.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e58|text|text|[10:46:34.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||",
+        "e59|text|text|[10:46:32.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e60|text|text|[10:46:32.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||",
+        "e61|text|text|[10:46:31.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e62|text|text|[10:46:31.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||",
+        "e63|text|text|[10:46:30.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e64|text|text|[10:46:30.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||",
+        "e65|text|text|[10:46:30.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e66|text|text|[10:46:30.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||",
+        "e67|text|text|[10:46:29.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned||",
+        "e68|text|text|[10:46:29.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered||"
+      ],
+      "searchControl": [
+        {
+          "ref": "e93",
+          "role": "tab",
+          "isTextQuery": false
+        }
+      ],
+      "observed_utc": "2026-10-01T05:38:33.064Z"
+    },
+    {
+      "seq": 31,
+      "screenHash": "0glbcw7",
+      "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "targets": [],
+      "scroll": [
+        "e27|swipe|scroll-view|||",
+        "e41|swipe|scroll-view|||",
+        "e50|swipe|scroll-view|||"
+      ],
+      "text": [
+        "e57|text|text|全部日志 · 最新记录优先||",
+        "e58|text|text|10/67 条||"
+      ],
+      "observed_utc": "2026-10-01T05:44:06.434Z"
+    },
+    {
+      "seq": 33,
+      "screenHash": "08vtx4x",
+      "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "targets": [],
+      "scroll": [
+        "e27|swipe|scroll-view|||",
+        "e41|swipe|scroll-view|||",
+        "e50|swipe|scroll-view|||"
+      ],
+      "text": [
+        "e53|text|text|全部日志 · 最新记录优先||",
+        "e54|text|text|10/67 条||",
+        "e61|text|text|[10:46:26.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_did_appear||",
+        "e62|text|text|[10:46:26.000] [DEBUG] [ENGINE] rime.resume.phase_changed phase=started||",
+        "e64|text|text|[10:46:26.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_will_appear||"
+      ],
+      "observed_utc": "2026-10-01T05:45:12.366Z"
+    }
+  ],
+  "scope": "content-free original-window UI rows/counts/notices only",
+  "reader_queries": [
+    {
+      "query": "text",
+      "authority": "Human explicitly searched and requested inspection",
+      "snapshot_seq": 30,
+      "filtered_count": 14,
+      "total_count": 67
+    },
+    {
+      "query": "10:46:26",
+      "authority": "Human accepted diagnostic reader filter guidance and scrolled to bottom",
+      "snapshot_seq": 33,
+      "filtered_count": 10,
+      "total_count": 67
+    }
+  ],
+  "query_activity_boundary": "Existing diagnostic reader filtering only; no diagnostic arming or new synthetic C5-R trial. No assertion of zero keyboard/lifecycle activation."
+}

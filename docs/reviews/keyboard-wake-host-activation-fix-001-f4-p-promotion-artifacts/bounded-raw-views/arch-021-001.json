@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-prepared-entry-2026-10-05.md",
+  "origin_sha256": "980a84a4b4ffd329efdf75398ef338c46224a1d0ecac3aafad0213b49ea281bb",
+  "expected_sha256": "980a84a4b4ffd329efdf75398ef338c46224a1d0ecac3aafad0213b49ea281bb",
+  "line_start": 1,
+  "line_end": 60,
+  "lines": [
+    {
+      "line": 1,
+      "text": "# F4 安装与单轮 Maps 回归 Entry — 2026-10-05"
+    },
+    {
+      "line": 2,
+      "text": ""
+    },
+    {
+      "line": 3,
+      "text": "**Prepared，未Ready；只准备，不执行。** Human明确授权准备精确产物、备份恢复及人工步骤。root Coordinator/Environment Executor与治理writer；Grok仍唯一源码writer；Human独占、前台操作及Product决定；原Architecture/Quality责任保留，不派新review或默认续budget。唯一工作树/branch/HEAD保持既定身份，staged0、dirty原样保全。"
+    },
+    {
+      "line": 4,
+      "text": ""
+    },
+    {
+      "line": 5,
+      "text": "## 已绑定的现有产物与缺口"
+    },
+    {
+      "line": 6,
+      "text": ""
+    },
+    {
+      "line": 7,
+      "text": "[当前五源码hash](keyboard-wake-host-activation-fix-001-f4-prepared-artifacts/current-five-source-hashes.json)绑定A2已验证候选；1156构建输入读回相符，原[完整矩阵](keyboard-wake-host-activation-fix-001-a2-validation-2026-10-05.md)、[A2有界收件](keyboard-wake-host-activation-fix-001-a2-quality-evidence-receipt-2026-10-05.md)和[Quality条件通过](keyboard-wake-host-activation-fix-001-f3-quality-uncovered-validation-2026-10-05.md)保持各自范围，不以此宣布整体修复运行通过。"
+    },
+    {
+      "line": 8,
+      "text": ""
+    },
+    {
+      "line": 9,
+      "text": "当前A2 Debug/test/signing输出已[精确绑定](keyboard-wake-host-activation-fix-001-f4-prepared-artifacts/existing-debug-pair-identity.json)：111常规文件、100621009 bytes，路径/字节/SHA升序拼接摘要`7c3131b1a449838310950412a9e61cca5c83ddebeab1b1f08b04166d6d3409f9`。[payload清单](keyboard-wake-host-activation-fix-001-f4-prepared-artifacts/existing-debug-payload-manifest.json)不复制100MB包，原产物保留。"
+    },
+    {
+      "line": 10,
+      "text": ""
+    },
+    {
+      "line": 11,
+      "text": "主App `com.DoubleShy0N.Universe-Keyboard`：executable UUID E8EA7696-2857-3B65-967A-A69258EDE7B4，debug-dylib UUID 3A2B17EE-09F2-33CA-9157-2402B2FB0A99。Keyboard `com.DoubleShy0N.Universe-Keyboard.Keyboard`：executable UUID 509D1743-D09A-3D17-A09E-3850C4E96A42，debug-dylib UUID 7108B4AF-DBB5-3638-AF47-DADE6AF9A69D。两者version1.0/build1，只为工具生成的本地Debug身份，不能用这些版本号代hash判断。"
+    },
+    {
+      "line": 12,
+      "text": ""
+    },
+    {
+      "line": 13,
+      "text": "两级codesign verify deep/strict通过。签名层entitlements为空，但Simulator的`__TEXT,__entitlements`在两个executable中均实际含正确App Group；[嵌入section核验](keyboard-wake-host-activation-fix-001-f4-prepared-artifacts/simulated-entitlements-check.json)另外冻结。不能把空signature entitlement推成Group缺失。初次section parser漏掉otool尾部单字节格式，修正后只读复核通过，未修改任何二进制。"
+    },
+    {
+      "line": 14,
+      "text": ""
+    },
+    {
+      "line": 15,
+      "text": "**现有包不作为F4取证安装候选**：矩阵普通Debug未启用KEYBOARD_WAKE_OWNER_PROBE，nm确认出口不存在；Keyboard host-active/resign符号存在。不能照搬旧C7、旧PID/UUID或断点。需要下述F4-P新诊断配对build；未来包hash/UUID尚不存在，Prepared如实保留缺口，不造Ready。"
+    },
+    {
+      "line": 16,
+      "text": ""
+    },
+    {
+      "line": 17,
+      "text": "## 分阶段执行提案（均未获本次执行授权）"
+    },
+    {
+      "line": 18,
+      "text": ""
+    },
+    {
+      "line": 19,
+      "text": "| 切片 | 内容 | 必需Entry / 输出 |"
+    },
+    {
+      "line": 20,
+      "text": "|---|---|---|"
+    },
+    {
+      "line": 21,
+      "text": "| F4-P | 当前冻结源码generic arm64 Simulator standalone Debug诊断配对build及字节绑定；不接触设备实例、不test/install | 新预算提案40calls/60分钟先到停止、首失败停止；工具链/Vendor/缓存及冻结输入先核。实际产物/flags/symbol/签名/模拟entitlements、source及完整payload/UUID、命令/日志/xcresult落盘；不fetch/改源码 |"
+    },
+    {
+      "line": 22,
+      "text": "| F4-I | 新鲜原机静默完整before备份，精确新候选安装及普通输入健康 | F4-P候选及最小Architecture/Quality产物/flag适用性审查满足；Human本窗口独占与安装授权，静默、完整可恢复备份/原安装；不uninstall/部署或arm |"
+    },
+    {
+      "line": 23,
+      "text": "| F4-M | 一轮Maps正常输入→AppSwitcher直接返回→再次输入；一次arm/freeze/有界导出 | F4-I健康、同一配对/PID/module/配置；Human单轮授权与窗口独占；稳定调试通道/出口断点初始0hit、回调配置、内容无关日志能力核好 |"
+    },
+    {
+      "line": 24,
+      "text": "| F4-E | 调试清理、诊断原值/存在性恢复、after保全和独立运行证据验收 | 无自动健康加测/新一轮；若需安装/数据恢复，按实际差量再获精确授权；最终修复结论依运行证据，不代Release |"
+    },
+    {
+      "line": 25,
+      "text": ""
+    },
+    {
+      "line": 26,
+      "text": "本Entry只冻结顺序。F4-P命令见[结构化argv](keyboard-wake-host-activation-fix-001-f4-prepared-artifacts/proposed-build-command.json)，通过subprocess argv保持literal `$(inherited)`，不插进shell：generic/platform=iOS Simulator、arm64、Swift6.0/complete/不抑制warning/warnings-as-errors、DEBUG+KEYBOARD_WAKE_OWNER_PROBE、adhoc签名，新独立CandidateDerivedData/SourcePackages/xcresult。不开T9 harness/内部canary，不改defaults/feature mode，不resolve/update依赖。若缺已冻结本地缓存/依赖则停止。"
+    },
+    {
+      "line": 27,
+      "text": ""
+    },
+    {
+      "line": 28,
+      "text": "该flag只启用既有诊断UI接线；普通矩阵的Core DEBUG probe定义已存在。当前矩阵不是新flag产物的测试结果，不能换hash声称同产物全矩阵绿。F4-P至少证明两target实际编译flags、五源码/1156依赖无漂移、probe出口/真实host符号与Debug信息存在、standalone无xctest/注入测试host，并以独立最小产物/影响核验明确普通矩阵可复用范围。若flag影响生产恢复语义或必需技术覆盖不足，停止并申请具体补验证，不暗中重跑全套或强行安装。"
+    },
+    {
+      "line": 29,
+      "text": ""
+    },
+    {
+      "line": 30,
+      "text": "## 原模拟器及备份恢复绑定"
+    },
+    {
+      "line": 31,
+      "text": ""
+    },
+    {
+      "line": 32,
+      "text": "目标仅iPhone18Pro/iOS27.0，UDID405D994F-28CB-4F89-BB22-B64AD81C05A2。**本轮未查询设备、进程或容器，fresh独占/Booted/静默均待执行Entry实测**。不把上轮独占当新窗口事实。"
+    },
+    {
+      "line": 33,
+      "text": ""
+    },
+    {
+      "line": 34,
+      "text": "历史A2 before机器恢复已两读通过，旧C7安装仍是最近恢复点；不称现在live字节未变或人工健康新鲜。旧保护 `/private/tmp/ukey-host-activation-fix-a2-validation-backup-20261005` 及所有M0/F2/after副本保留，不覆盖/删除。"
+    },
+    {
+      "line": 35,
+      "text": ""
+    },
+    {
+      "line": 36,
+      "text": "F4-I授权后才创建新 `/private/tmp/ukey-host-activation-fix-f4-before-20261005`，before完整installed-app/main-data/App Group（根身份、常规文件字节/模式/owner/xattrs、内部symlink、目录与存在性），记录实际容器路径/UUID与系统metadata。要求主App/Keyboard扩展静默；先由Human关闭App回主屏，root只读核精确进程，若残留仅在另明确授权后对核实PID/start/path一次SIGTERM，不强杀或处理别的进程。"
+    },
+    {
+      "line": 37,
+      "text": ""
+    },
+    {
+      "line": 38,
+      "text": "ditto副本后完整读回并再次比较live，记录不存在/原值。任何内容/模式/非provenance差异停止；新的provenance差异按实际数量提出狭义处置，不自动继承A2例外。完整backup及恢复清单通过前不安装。安装只精确pair路径、原UDID，不uninstall。postinstall核全payload/模块UUID/签名/Group与主数据映射、部署状态；容器UUID变化保留新系统根metadata/SplashBoard，不能写旧系统UUID。无法解释的丢失/改动停止，不启动或自动部署。"
+    },
+    {
+      "line": 39,
+      "text": ""
+    },
+    {
+      "line": 40,
+      "text": "恢复方案：保全after，再从新before独立暂存精确原app并核hash/signature；重装需授权，不卸载。重列安装后actual live差量，仅恢复被确认改变的应用数据/Group文件、目录、内部links；不覆盖系统metadata、Keychain/键盘注册/Maps。每项动作与before存在性、after保全、授权清单绑定，两次读回。恢复方案准备不等于授予执行恢复；不声称恢复系统键盘或输入健康。"
+    },
+    {
+      "line": 41,
+      "text": ""
+    },
+    {
+      "line": 42,
+      "text": "## 人工步骤（待F4-I/M授权后逐步下发，现在不要操作）"
+    },
+    {
+      "line": 43,
+      "text": ""
+    },
+    {
+      "line": 44,
+      "text": "1. F4-I机器安装读回通过后，Human开启主App，仅正常搜索页健康输入：完全访问仍开，诊断两项先关闭，候选/提交正常。不点击观测、不重新部署。若部署缺失停止，另提主App最小部署方案，Extension不部署。"
+    },
+    {
+      "line": 45,
+      "text": "2. root先采诊断两个键及`log_category_display`的原值/原存在性；只有F4-M明确授权后Human打开日志诊断，确认显示类别启用；首屏高保真保持关闭（本轮不需要其额外流量）。若类别原来关闭，只在批准的具体设置范围内打开，结束恢复原值与存在性。不开输入内容记录，不清历史日志。内容无关Logger/JSONL取证只导出本run匹配标记、时间/identity/计数，不整段用户文本。"
+    },
+    {
+      "line": 46,
+      "text": "3. 进入Maps空搜索框，叫出Universe Keyboard，确认“观测”可见；root核新的精确PID/start/path、已装payload及loaded UUID，并建立仅自身出口断点、resolved单位置/0hit，然后运行；调试器附加暂停期间不要操作。"
+    },
+    {
+      "line": 47,
+      "text": "4. Human只按一次“观测”，停手。root确认未意外冻结/命中、进程运行，下一指令才继续。标题不证明armed，不能反复点击或用旧窗口拼接。arm后总窗口600秒，120秒内优先完成人工序列；工具问题/超时只记inconclusive，不自动重arm。"
+    },
+    {
+      "line": 48,
+      "text": "5. Human按一次合成`n`，报告按键反馈/候选/输入框更新，“取证”可见但不点。此为本轮Maps基线。"
+    },
+    {
+      "line": 49,
+      "text": "6. 只打开AppSwitcher，再直接点Maps回到同一搜索框，**不切系统设置/其它App**；报告键盘是否关闭重开、输入框/候选变化，不点候选、不删除、不清composition。"
+    },
+    {
+      "line": 50,
+      "text": "7. 接指令后只按一次合成`h`，便于区别上一段`n`造成的旧候选；报告新候选/输入框是否变化、按键反馈与取证可见性。不可因怀疑卡住重复按键。输入内容仅为这两个预定合成字符，取证仍只读元数据。"
+    },
+    {
+      "line": 51,
+      "text": "8. root确认原出口断点/进程仍稳定后，Human只按一次“取证”，其后不要再操作。命中时键盘短暂停顿是调试暂停，不能据此判软件卡死。root完成下述一次有界导出与清理后再做视觉Exit。"
+    },
+    {
+      "line": 52,
+      "text": "9. 调试清理及视觉确认完成后，若两次输入与回调/owner证据满足，另下发本轮一次候选提交，报告宿主提交效果；不在导出前点击候选清空，不用提交动作掩盖失败。失败路径只记录，不追加盲试。"
+    },
+    {
+      "line": 53,
+      "text": "10. 结束先保护运行证据，再按原值与原存在性恢复logging/high-fidelity/display类别（原来缺键需移除新键，不仅UI关闭）。无原值证据不继续启用。Human确认界面/诊断状态；不自动重部署或开启新轮。"
+    },
+    {
+      "line": 54,
+      "text": ""
+    },
+    {
+      "line": 55,
+      "text": "## 取证方法、完整性与停止"
+    },
+    {
+      "line": 56,
+      "text": ""
+    },
+    {
+      "line": 57,
+      "text": "[Debug工具参考](keyboard-wake-host-activation-fix-001-f4-prepared-artifacts/debugger-tools-reference.json)冻结既有静态frame callback及KWOPROBE decoder来源；**旧callback内PID55759/UUID等必须替换为F4实际绑定，不可直接import执行**。未来只写新run输出，并先做host语法/输出路径/decoder预检；实际附加能力与参数可读性仍待F4-M核，不承诺旧工具一定可用。"
+    },
+    {
+      "line": 58,
+      "text": ""
+    },
+    {
+      "line": 59,
+      "text": "用新native PTY、每request/response/raw SHA和UTC+monotonic账本，不沿旧session。出口用callback传入的actual hit-frame，不用CLI stale selected frame。必须验证精确PID/moduleUUID/symbol、frame0、最多8帧按钮同步borrow、静态`address`/`byteCount`；无dynamic/synthetic、无目标函数求值、无寄存器/ABI猜替。参数可用且pointer8对齐、长度176..11352、8倍数时，最多一次exact-size binary memory read。KWOPROBE v1：11word header+最多128×11word record、10分钟TTL；decoder拒绝不匹配长度/版本/run/process/sequence/TTL/overflow/completeness。dump不能拼接历史窗口或修补凑完整。"
+    },
+    {
+      "line": 60,
+      "text": ""
+    }
+  ]
+}

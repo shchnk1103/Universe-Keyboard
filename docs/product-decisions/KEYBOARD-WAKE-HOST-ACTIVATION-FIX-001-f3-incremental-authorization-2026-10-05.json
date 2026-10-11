@@ -1,0 +1,11 @@
+{
+  "authority": "Human Product Lead",
+  "source": "本线程：批准（对上一条Quality增量核验及两项狭义阶段处置）",
+  "date": "2026-10-05 Asia/Shanghai",
+  "reviewer": "/root/m2r2_quality_r1",
+  "calls": 16,
+  "wall_seconds": 900,
+  "audit_disposition": "F3-Q-AUDIT-001接受为保留的历史流程残项；原超时及账本文字矛盾不改写",
+  "skip_disposition": "仅本次F3及后续单轮F4，同一30项skip非阻塞未验证、不计通过、不用于Release；新增skip/fail停止",
+  "no_install_maps_authority": true
+}

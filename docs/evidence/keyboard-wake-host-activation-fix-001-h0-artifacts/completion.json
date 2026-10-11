@@ -1,0 +1,63 @@
+{
+  "utc": "2026-10-06T02:04:52.346094+00:00",
+  "status": "Partial: basic host callback identity matched, requested initial system-wait scenario not covered",
+  "actual_calls": 12,
+  "budget_calls": 20,
+  "wall_seconds": 241.707749,
+  "budget_wall_seconds": 1200,
+  "tool_ledger": [
+    {
+      "actual_calls": 2,
+      "operation": "freeze AUTH + source identity, create new isolated root"
+    },
+    {
+      "actual_calls": 2,
+      "operation": "compile/sign/verify own fixture"
+    },
+    {
+      "actual_calls": 2,
+      "operation": "write metadata callback + syntax check"
+    },
+    {
+      "actual_calls": 2,
+      "operation": "prepare/finish split before first run + syntax check"
+    },
+    {
+      "actual_calls": 2,
+      "operation": "single native LLDB run and cleanup"
+    },
+    {
+      "actual_calls": 2,
+      "operation": "offline final verification + evidence/archive"
+    }
+  ],
+  "runtime_attempts": 1,
+  "fixture_pid": 92050,
+  "helper_pid": 92054,
+  "callback_count": 1,
+  "bp_hit_count": 1,
+  "same_stop_callback_cli": true,
+  "callback_pc_equals_location": true,
+  "callback_module_equals_location": true,
+  "initial_attach_frame": "_dyld_start",
+  "initial_system_wait_covered": false,
+  "wait_gap_reason": "Fixed 0.15 second delay before attach did not prove child entered read; observed _dyld_start",
+  "async_mode": "Explicit synchronous debugger CLI continue; F4 async mode not captured, no equivalence claim",
+  "target_language": "C/macOS, not Swift/Simulator appex",
+  "memory_reads": 0,
+  "target_expressions": 0,
+  "cleanup": {
+    "breakpoint_deleted": true,
+    "detach_success": true,
+    "detach_error": "success",
+    "fixture_exit_code": 0,
+    "helper_exit_code": 0
+  },
+  "callback_to_cleanup_upper_bound_seconds": 0.028237,
+  "source5_hashes_match": true,
+  "staged_paths": 0,
+  "device_operations": 0,
+  "next": "H0b ready-handshake and same wait scenario proposed, no code/run yet",
+  "risk_acceptance": "none",
+  "no_large_backup_created": true
+}

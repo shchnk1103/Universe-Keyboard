@@ -1,0 +1,14 @@
+{
+  "reviewer": "/root/m2r2_quality_r1",
+  "packet_sha256": "00bf35de8a0e8bf38f92ea58b9953a68ed4ed48c32ec06c3726fd48fc728deed",
+  "start_utc": "2026-10-05T02:07:46.900226+00:00",
+  "ack_utc": "2026-10-05T02:08:34.595923+00:00",
+  "actual_tool_calls": 2,
+  "budget_calls": 16,
+  "budget_wall_seconds": 900,
+  "deadline_utc": "2026-10-05T02:22:46.900226+00:00",
+  "status": "in_progress",
+  "covered": [],
+  "uncovered": [],
+  "stop_reason": "review in progress"
+}

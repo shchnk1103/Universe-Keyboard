@@ -1,0 +1,87 @@
+[
+  {
+    "path": "F4-I-final-usage.json",
+    "bytes": 591,
+    "sha256": "1817d1265b9f79217028490f79041ed6837eee0a34cc98e8d040cf0c686b8420"
+  },
+  {
+    "path": "authorization.json",
+    "bytes": 745,
+    "sha256": "0fbdf61bb8277196f608ad3eca65ee360ed8764617cf811f3534f8f7d9e22bb5"
+  },
+  {
+    "path": "backup-provenance-hold.json",
+    "bytes": 1684,
+    "sha256": "379c26a360e0c739435ee03412ca73b75f160877fc86c7907098d97f2cad4aa4"
+  },
+  {
+    "path": "backup-summary.json",
+    "bytes": 1627,
+    "sha256": "a308e1e12166831c203a4e9e82aef1ec3f07e23bbf19df1ef8ec74dfe9c9dd1a"
+  },
+  {
+    "path": "dirty-entry.txt",
+    "bytes": 219207,
+    "sha256": "b269e0ce2d70085586b72fb188593e50adc0e21ae57e15910ea1202f63fc3c73"
+  },
+  {
+    "path": "entry.json",
+    "bytes": 2677,
+    "sha256": "f4842d90ce57f682a56895d0cea3ecaf9a4a864f9cc719bdd899d3da5311015f"
+  },
+  {
+    "path": "first-failure-and-host-preflight.json",
+    "bytes": 883,
+    "sha256": "d2ebae1f516c1cd2bfc40761a752bce68725393f207f076541b8b0d51c63b65a"
+  },
+  {
+    "path": "human-health-receipt.json",
+    "bytes": 641,
+    "sha256": "722e99abc9a5d7dc48c162e30e51c3b1170923e12c62c72415bca535175f2fb3"
+  },
+  {
+    "path": "install-command-receipt.json",
+    "bytes": 157,
+    "sha256": "8e494cb599253df3640f74875dcfc47e312910fd95bf5477cc1fd6e0db9492ca"
+  },
+  {
+    "path": "install-request.json",
+    "bytes": 1180,
+    "sha256": "93f839efc98ee79fad116846832ef1137467db15b35a1e60b1300025c2197b1b"
+  },
+  {
+    "path": "installed-root-usage.json",
+    "bytes": 555,
+    "sha256": "1d86b364893d02c2d9a18eb8f2e3449ade941ecaafa216f0e99016ed52dc9e25"
+  },
+  {
+    "path": "postinstall-receipt.json",
+    "bytes": 5192,
+    "sha256": "3044d8d741dc062486445624627becad14aab673949cb21ad05ae102e2208953"
+  },
+  {
+    "path": "provenance-acceptance.json",
+    "bytes": 392,
+    "sha256": "67b89fb4ed12b28b9809a253279562ac6c9c99c6ce07fcce754f496ccc895ead"
+  },
+  {
+    "path": "restore-plan-after-install.json",
+    "bytes": 4252,
+    "sha256": "3cc0e10f5619542cd6210bf959a66e763fe9dfea8e63472b561c6302e9c69f0f"
+  },
+  {
+    "path": "restore-plan.json",
+    "bytes": 1895,
+    "sha256": "88d0513cdca7b6015c1cbeaf39acf166ba9bdb2dce6cecf1f3826b0b78a40eaa"
+  },
+  {
+    "path": "resume-authorization.json",
+    "bytes": 311,
+    "sha256": "45a4d4b218bb8ca1a768df7be249d46eef1dcfe23c65ada764d6cb750d4a25e6"
+  },
+  {
+    "path": "root-usage.json",
+    "bytes": 559,
+    "sha256": "dd36eb0bbc0672c7e70cda1cbbee017becd73e5dd2664665f9dd66915b79ace0"
+  }
+]

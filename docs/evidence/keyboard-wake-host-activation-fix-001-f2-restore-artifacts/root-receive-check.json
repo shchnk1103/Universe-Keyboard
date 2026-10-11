@@ -1,0 +1,13 @@
+{
+  "repository_private_receipt_byte_match": true,
+  "five_source_hashes_match": 5,
+  "live_regular_files_rehashed": 956,
+  "live_structure_and_symlinks_match_recorded_restore": true,
+  "installed_78_payload_matches_F2_before": true,
+  "metadata_exception": "recorded by Grok; root current check verifies bytes/structure, not all xattrs or historical two-read process absence",
+  "runtime_health": "not tested",
+  "old_installed_candidate_restored": "F2-before, does not contain F1 repair build",
+  "seven_actor_diagnostics": "still unresolved",
+  "restored_application_rows_match_F2_before_excluding_declared_system_metadata_and_provenance": 925,
+  "does_not_claim_all_metadata_or_runtime_health": true
+}

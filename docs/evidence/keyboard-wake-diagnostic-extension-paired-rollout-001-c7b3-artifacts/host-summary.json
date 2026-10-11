@@ -1,0 +1,11 @@
+{
+  "build_succeeded": true,
+  "warning_lines": [
+    "2026-10-02 16:30:09.790 appintentsmetadataprocessor[2548:38450540] warning: Metadata extraction skipped, no AppIntents.framework dependency found",
+    "2026-10-02 16:30:18.591 appintentsmetadataprocessor[2647:38451044] warning: Metadata extraction skipped, no AppIntents.framework dependency found"
+  ],
+  "dsyms": [],
+  "source_changes": [],
+  "actual_ios_tests": "not-run, awaiting fresh exclusive and recovery Entry",
+  "test_host_risks": "UniverseKeyboardTests is hosted by the primary App bundle; launch prepares Diagnostics root/reclaim and may initiate normal App workflows. Verify live deployment/preferences and recovery before tests; no guarantee of zero App Group effects."
+}

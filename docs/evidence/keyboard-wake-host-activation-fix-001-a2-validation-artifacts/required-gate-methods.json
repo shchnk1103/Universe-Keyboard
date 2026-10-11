@@ -1,0 +1,31 @@
+{
+  "count": 23,
+  "class": "KeyboardTests/KeyboardHostLifecycleRecoveryGateTests",
+  "methods": [
+    "testVisibleResignThenActiveResumesExactlyOnce",
+    "testDuplicateActiveAndResignAreIdempotent",
+    "testAppearThenActiveAndActiveThenAppearConsumePendingOnce",
+    "testForeignAndMissingContextDoNotChangeState",
+    "testHiddenAndNoWindowDoNotResume",
+    "testPrecreatedHiddenInstanceDoesNotResumeOnHostActive",
+    "testCancelledFirstFrameRearmsOnceWithoutImmediateOwner",
+    "testLateFirstFrameTickAfterDisappearDoesNotActivate",
+    "testFirstFrameElapsedConsumesPendingAndActivatesOnce",
+    "testCanaryPermissionTableDeniesOwnerStartingBeforeResume",
+    "testVisibilitySuspendedGrantedAllowsExactlyOneResume",
+    "testFenceBlocksRearmAndFirstFrameCreation",
+    "testCanaryStartingAllowsOriginalFirstFrameButNotHostActiveResume",
+    "testOldPresentationPendingIsInvalidatedOnNewAppearance",
+    "testHostActiveBeforeWindowIsTakenOverByDidAppear",
+    "testPermissionOrderIsEvaluatedBeforeConsumingPending",
+    "testDuplicateActiveDoesNotEmitResumeThatWouldClearNewComposition",
+    "testResignInvalidatesArmedTicksBeforeHostActive",
+    "testStaleArmTokenTicksAfterRearmDoNotAdvanceCurrentArm",
+    "testHiddenAndNoWindowDoNotBeginFirstFrameArm",
+    "testCurrentArmTokenCompletesExactlyOnSecondTick",
+    "testRejectedOrInvalidatedArmStopsTicksWithoutRetry",
+    "testDuplicateBeginFirstFrameArmIsIdempotentUntilGenuineRearm"
+  ],
+  "all_actual_pass_required": true,
+  "expected_total_suite_count_not_pinned": true
+}

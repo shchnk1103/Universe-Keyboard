@@ -1,0 +1,32 @@
+[
+  {
+    "path": "ack.json",
+    "bytes": 485,
+    "sha256": "0203152caf13e8cd30a22c598d4bbff7dfc6e6e05f0c7e3b9011668cc8d393b9"
+  },
+  {
+    "path": "native-final-message.md",
+    "bytes": 840,
+    "sha256": "90f6bb789add4a921e349100aa85f80500ccd33e213894c9a8c91f03d8fb57fa"
+  },
+  {
+    "path": "packet.json",
+    "bytes": 773000,
+    "sha256": "00bf35de8a0e8bf38f92ea58b9953a68ed4ed48c32ec06c3726fd48fc728deed"
+  },
+  {
+    "path": "review.md",
+    "bytes": 5282,
+    "sha256": "15b59a3337f6007a67ca30348e0d9c3bff6465b543caacc46aa99afd8fc36f6e"
+  },
+  {
+    "path": "root-receipt.json",
+    "bytes": 1019,
+    "sha256": "6a7942d66579d9712a2076c0845dd814bf66f2f7771715a7d4b4484f2d4d6928"
+  },
+  {
+    "path": "usage.json",
+    "bytes": 463,
+    "sha256": "143ef4e963b75932041e74438f5c2afafac275fd0d135cf628ee2d981c550c09"
+  }
+]

@@ -34,7 +34,7 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
         "下一个键盘",
     ]
     private let appleSystemKeyboardLayoutIdentifiers = [
-        "UIKeyboardLayoutStar Preview",
+        "UIKeyboardLayoutStar Preview"
     ]
     private let universeKeyboardSurfaceTerms = [
         "切换键盘",
@@ -82,7 +82,7 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
             failureBoundary: "Snapshot collected without SearchField, text-input, or keyboard interaction.",
             limitationClassification: "No product behavior evaluated; this is host-app accessibility evidence only.",
             extraSections: [
-                "app.debugDescription": messages.debugDescription,
+                "app.debugDescription": messages.debugDescription
             ]
         )
 
@@ -94,7 +94,8 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
         let preparation = prepareMessagesConversationForKeyboard(in: messages)
 
         recordProbe(
-            purpose: "Reproduce the Messages user state used by manual NE1 collection before any keyboard switching attempt.",
+            purpose:
+                "Reproduce the Messages user state used by manual NE1 collection before any keyboard switching attempt.",
             name: "Messages conversation keyboard preparation",
             app: messages,
             failureBoundary: preparation.failureBoundary,
@@ -115,18 +116,22 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
         )
 
         recordProbe(
-            purpose: "Prove that the first Messages keyboard surface is an Apple system keyboard before any Universe Keyboard switching action.",
+            purpose:
+                "Prove that the first Messages keyboard surface is an Apple system keyboard before any Universe Keyboard switching action.",
             name: "Initial keyboard state before switching",
             app: messages,
             failureBoundary: baseline.failureBoundary(preparation: preparation),
             limitationClassification: baseline.classification(preparation: preparation),
             includeScreenshot: true,
             extraSections: preparation.metadata.merging(baseline.metadata) { _, new in new }.merging([
-                "Isolation guarantee": "This test does not press the keyboard switcher, select a keyboard, type text, or launch Universe Keyboard.",
+                "Isolation guarantee":
+                    "This test does not press the keyboard switcher, select a keyboard, type text, or launch Universe Keyboard.",
                 "Initial direct keyboard identity": preparation.keyboardSurface.directIdentity
                     ?? "No direct active keyboard identity was exposed through accessibility.",
-                "Test-order interpretation": "When invoked with -only-testing, no earlier test method can cause this observed keyboard state.",
-                "Runner and simulator-state interpretation": "The scheme pre-action prepares persistent input mode before the test session. This XCTest check fails closed if runner installation or cached simulator state still presents Universe Keyboard first.",
+                "Test-order interpretation":
+                    "When invoked with -only-testing, no earlier test method can cause this observed keyboard state.",
+                "Runner and simulator-state interpretation":
+                    "The scheme pre-action prepares persistent input mode before the test session. This XCTest check fails closed if runner installation or cached simulator state still presents Universe Keyboard first.",
             ]) { _, new in new }
         )
 
@@ -142,7 +147,8 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
 
         guard preparation.keyboardSurface.isVisible else {
             recordProbe(
-                purpose: "Investigate whether a system keyboard reached through the Messages composer exposes an accessible switcher.",
+                purpose:
+                    "Investigate whether a system keyboard reached through the Messages composer exposes an accessible switcher.",
                 name: "Keyboard switcher discovery",
                 app: messages,
                 failureBoundary: preparation.failureBoundary,
@@ -156,11 +162,13 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
         let matches = keyboardSwitcherCandidates(in: messages)
         guard !matches.isEmpty else {
             recordProbe(
-                purpose: "Investigate whether a system keyboard reached through the Messages composer exposes an accessible switcher.",
+                purpose:
+                    "Investigate whether a system keyboard reached through the Messages composer exposes an accessible switcher.",
                 name: "Keyboard switcher discovery",
                 app: messages,
                 failureBoundary: "Keyboard surface was visible, but no explicit switcher/globe candidate was exposed.",
-                limitationClassification: "XCTest or iOS accessibility exposure boundary; not Universe Keyboard product behavior.",
+                limitationClassification:
+                    "XCTest or iOS accessibility exposure boundary; not Universe Keyboard product behavior.",
                 includeScreenshot: true,
                 extraSections: [
                     "Preparation metadata": preparation.metadataReport,
@@ -171,11 +179,13 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
         }
 
         recordProbe(
-            purpose: "Investigate whether a system keyboard reached through the Messages composer exposes an accessible switcher.",
+            purpose:
+                "Investigate whether a system keyboard reached through the Messages composer exposes an accessible switcher.",
             name: "Keyboard switcher discovery",
             app: messages,
             failureBoundary: "Explicit switcher candidate(s) discovered without generic Keyboard-label matching.",
-            limitationClassification: "Switcher availability observed; keyboard selection remains a separate capability.",
+            limitationClassification:
+                "Switcher availability observed; keyboard selection remains a separate capability.",
             includeScreenshot: true,
             extraSections: [
                 "Preparation metadata": preparation.metadataReport,
@@ -196,7 +206,8 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
         )
 
         recordProbe(
-            purpose: "Determine whether XCTest can establish a known keyboard baseline before future NE1 measurement scenarios.",
+            purpose:
+                "Determine whether XCTest can establish a known keyboard baseline before future NE1 measurement scenarios.",
             name: "Keyboard state normalization feasibility",
             app: messages,
             failureBoundary: normalization.failureBoundary,
@@ -213,7 +224,8 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
         let preparation = prepareMessagesConversationForKeyboard(in: messages)
 
         recordProbe(
-            purpose: "Preserve the activation feasibility boundary while Iteration 4 validates keyboard surface detection and baseline normalization.",
+            purpose:
+                "Preserve the activation feasibility boundary while Iteration 4 validates keyboard surface detection and baseline normalization.",
             name: "Universe Keyboard activation feasibility",
             app: messages,
             failureBoundary: preparation.keyboardVisible
@@ -257,8 +269,9 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
         }
         switcher.press(forDuration: 1.0)
 
-        guard let selection = waitForUniverseKeyboardSelection(in: messages, timeout: 5)
-            .first(where: \.isHittable)
+        guard
+            let selection = waitForUniverseKeyboardSelection(in: messages, timeout: 5)
+                .first(where: \.isHittable)
         else {
             return XCTFail("Universe Keyboard was not exposed in the system keyboard menu.")
         }
@@ -289,10 +302,12 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
         let messages = launchMessages()
         let preparation = prepareMessagesConversationForKeyboard(in: messages)
         recordProbe(
-            purpose: "Report the text-input precondition without selecting Universe Keyboard during the preparation-only iteration.",
+            purpose:
+                "Report the text-input precondition without selecting Universe Keyboard during the preparation-only iteration.",
             name: "Text input after keyboard activation",
             app: messages,
-            failureBoundary: "Precondition failed: Universe Keyboard active state was not proven after Iteration 4 baseline normalization.",
+            failureBoundary:
+                "Precondition failed: Universe Keyboard active state was not proven after Iteration 4 baseline normalization.",
             limitationClassification: preparation.keyboardVisible
                 ? "System keyboard preparation observed; no typing or Universe Keyboard product behavior evaluated."
                 : preparation.classification,
@@ -368,9 +383,12 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
             XCTAssertTrue(diagnostic.contains("ownerReady=1"), "T02 owner was not ready: \(diagnostic)")
             XCTAssertTrue(diagnostic.contains("accepted="), "T02 accepted revision was not reported: \(diagnostic)")
             XCTAssertTrue(diagnostic.contains("applied="), "T02 applied counter was not reported: \(diagnostic)")
-            XCTAssertTrue(diagnostic.contains("terminal=0"), "T02 owner delivery unexpectedly terminated: \(diagnostic)")
+            XCTAssertTrue(
+                diagnostic.contains("terminal=0"), "T02 owner delivery unexpectedly terminated: \(diagnostic)")
         }
-        print("P3D1 T02 observed: product-owned surface remained foreground after three ordered taps; input content not recorded.")
+        print(
+            "P3D1 T02 observed: product-owned surface remained foreground after three ordered taps; input content not recorded."
+        )
     }
 
     /// T03 exercises the real host-driven disappearance/return boundary. It
@@ -416,12 +434,14 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
             )
         }
         let returnedSurface = waitForUniverseKeyboardSurface(in: messages, timeout: 5)
-        guard requiredUniverseKeyboardSurfaceTerms.allSatisfy({ term in
-            returnedSurface.contains { element in
-                element.label.caseInsensitiveCompare(term) == .orderedSame
-                    || element.identifier.caseInsensitiveCompare(term) == .orderedSame
-            }
-        }) else {
+        guard
+            requiredUniverseKeyboardSurfaceTerms.allSatisfy({ term in
+                returnedSurface.contains { element in
+                    element.label.caseInsensitiveCompare(term) == .orderedSame
+                        || element.identifier.caseInsensitiveCompare(term) == .orderedSame
+                }
+            })
+        else {
             throw XCTSkip(
                 "T03 blocked: the returned host surface did not expose the product-owned accessibility controls; no lifecycle conclusion."
             )
@@ -439,9 +459,12 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
         if let diagnostic {
             XCTAssertTrue(diagnostic.contains("cleared=1"), "T03 return marker was not cleared: \(diagnostic)")
             XCTAssertTrue(diagnostic.contains("epoch="), "T03 lifecycle epoch was not reported: \(diagnostic)")
-            XCTAssertTrue(diagnostic.contains("terminal=0"), "T03 owner delivery unexpectedly terminated: \(diagnostic)")
+            XCTAssertTrue(
+                diagnostic.contains("terminal=0"), "T03 owner delivery unexpectedly terminated: \(diagnostic)")
         }
-        print("P3D1 T03 observed: host disappearance/return restored a clean product-owned surface; input content not recorded.")
+        print(
+            "P3D1 T03 observed: host disappearance/return restored a clean product-owned surface; input content not recorded."
+        )
     }
 
     func testNE1ColdActivationAndFirstInput() throws {
@@ -481,8 +504,10 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
                     purpose: "Execute the isolated NE1 Messages cold-activation and first-input flow.",
                     name: "NE1 cold activation and first input",
                     app: messages,
-                    failureBoundary: "Trace handshake failed: XCTest reached the Apple keyboard baseline, but Terminal did not signal that xctrace recording started.",
-                    limitationClassification: "Measurement-runner tooling boundary; Universe Keyboard was not activated.",
+                    failureBoundary:
+                        "Trace handshake failed: XCTest reached the Apple keyboard baseline, but Terminal did not signal that xctrace recording started.",
+                    limitationClassification:
+                        "Measurement-runner tooling boundary; Universe Keyboard was not activated.",
                     includeScreenshot: true,
                     extraSections: preparation.metadata.merging(baseline.metadata) { _, new in new }
                 )
@@ -549,6 +574,108 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
         XCTAssertTrue(traceFinished, "xctrace did not signal recording completion before the bounded timeout.")
     }
 
+    /// Simulator AX/touch probe for independent key targets. Ordinary CI skips
+    /// this; invoke with `TYPO_AX_HARNESS=1` after the keyboard is enabled.
+    func testUniverseKeyboardIndependentKeyTargets() throws {
+        try XCTSkipUnless(
+            ProcessInfo.processInfo.environment["TYPO_AX_HARNESS"] == "1",
+            "Run only as the authorized Simulator AX/touch harness for independent key targets."
+        )
+        continueAfterFailure = true
+
+        let messages = launchMessages()
+        let preparation = prepareMessagesConversationForKeyboard(in: messages)
+        guard preparation.keyboardSurface.isVisible else {
+            throw XCTSkip(
+                "AX harness blocked: Messages did not expose a keyboard surface; no product conclusion."
+            )
+        }
+
+        let activation = activateUniverseKeyboard(in: messages)
+        guard activation.activated else {
+            throw XCTSkip(
+                "AX harness blocked: Universe Keyboard activation was not proven; no product conclusion."
+            )
+        }
+
+        let requiredKeys: [(role: String, names: [String])] = [
+            ("letter", ["q"]),
+            ("Delete", ["delete", "删除"]),
+            ("Space", ["space", "空格"]),
+            ("Return", ["return", "回车"]),
+            ("page switcher", ["键盘页面"]),
+            ("language switcher", ["输入语言"]),
+        ]
+        var summaries: [String] = []
+        var missing: [String] = []
+        var keysByRole: [String: XCUIElement] = [:]
+        for item in requiredKeys {
+            let key = productOwnedKey(named: item.names, in: messages)
+            let exists = key.waitForExistence(timeout: 5)
+            guard exists else {
+                summaries.append(
+                    "role=\(item.role) query=\(item.names.joined(separator: "|")) exists=false"
+                )
+                missing.append(item.role)
+                continue
+            }
+            let hittable = key.isHittable
+            summaries.append(
+                "role=\(item.role) query=\(item.names.joined(separator: "|")) exists=true hittable=\(hittable) "
+                    + "label=\(key.label) identifier=\(key.identifier) "
+                    + "type=\(key.elementType.rawValue)"
+            )
+            if hittable {
+                keysByRole[item.role] = key
+            } else {
+                missing.append(item.role)
+            }
+        }
+
+        // Globe is created for `needsInputModeSwitchKey` and hidden otherwise.
+        let globe = productOwnedKey(named: ["nextKeyboard", "切换键盘"], in: messages)
+        let globeExists = globe.waitForExistence(timeout: 2)
+        summaries.append(
+            globeExists
+                ? "role=globe query=nextKeyboard|切换键盘 exists=true hittable=\(globe.isHittable) label=\(globe.label) identifier=\(globe.identifier)"
+                : "role=globe query=nextKeyboard|切换键盘 exists=false hidden-or-unneeded"
+        )
+
+        recordProbe(
+            purpose:
+                "Prove Simulator AX exposes independent Universe Keyboard key targets and that taps use the visible UIKit key, not host-text injection.",
+            name: "Universe Keyboard independent key targets",
+            app: messages,
+            failureBoundary: missing.isEmpty
+                ? "Letter, Delete, Space, Return, page-switcher and language-switcher keys were independently addressable."
+                : "Missing or non-hittable key targets: \(missing.joined(separator: ", ")).",
+            limitationClassification: missing.isEmpty
+                ? "AX key discovery and UIKit tap path observed; no host insertText, pasteboard or marked-text injection was used."
+                : "AX publication still incomplete for the listed keys.",
+            includeScreenshot: true,
+            extraSections: [
+                "Key AX summaries": summaries.joined(separator: "\n"),
+                "Host injection guarantee":
+                    "This test does not call typeText, pasteboard, setMarkedText, or documentContext APIs.",
+                "Activation metadata": activation.failureBoundary,
+            ]
+        )
+
+        XCTAssertTrue(
+            missing.isEmpty,
+            "Independent key targets missing: \(missing.joined(separator: ", ")). Summaries:\n\(summaries.joined(separator: "\n"))"
+        )
+
+        guard let letter = keysByRole["letter"], let delete = keysByRole["Delete"] else {
+            return
+        }
+        letter.tap()
+        XCTAssertTrue(letter.exists, "Letter key disappeared after UIKit tap.")
+        delete.tap()
+        XCTAssertTrue(delete.exists, "Delete key disappeared after UIKit tap.")
+        XCTAssertEqual(messages.state, .runningForeground)
+    }
+
     private func launchMessages() -> XCUIApplication {
         let messages = XCUIApplication(bundleIdentifier: messagesBundleIdentifier)
         messages.launch()
@@ -559,7 +686,9 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
         return messages
     }
 
-    private func prepareMessagesConversationForKeyboard(in messages: XCUIApplication) -> MessageKeyboardPreparationProbeResult {
+    private func prepareMessagesConversationForKeyboard(in messages: XCUIApplication)
+        -> MessageKeyboardPreparationProbeResult
+    {
         let existingComposer = messages.textFields[composerIdentifier]
         if existingComposer.waitForExistence(timeout: 1) {
             let backButton = messages.buttons["BackButton"]
@@ -570,8 +699,10 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
                     composerTapped: false,
                     keyboardSurface: .absent,
                     composerCandidateSummaries: elementSummaries([existingComposer]),
-                    failureBoundary: "A: Messages restored a conversation, but the stable BackButton was not available to return to ConversationList.",
-                    classification: "Messages environment/accessibility boundary; not Universe Keyboard product behavior."
+                    failureBoundary:
+                        "A: Messages restored a conversation, but the stable BackButton was not available to return to ConversationList.",
+                    classification:
+                        "Messages environment/accessibility boundary; not Universe Keyboard product behavior."
                 )
             }
             backButton.tap()
@@ -589,7 +720,8 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
                 composerTapped: false,
                 keyboardSurface: .absent,
                 composerCandidateSummaries: [],
-                failureBoundary: "A: Conversation navigation failed because the deterministic conversation was not exposed in ConversationList.",
+                failureBoundary:
+                    "A: Conversation navigation failed because the deterministic conversation was not exposed in ConversationList.",
                 classification: "Messages environment/setup boundary; not Universe Keyboard product behavior."
             )
         }
@@ -603,7 +735,8 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
                 composerTapped: false,
                 keyboardSurface: .absent,
                 composerCandidateSummaries: [],
-                failureBoundary: "B: Conversation navigation completed, but Messages did not expose the composer with identifier messageBodyField.",
+                failureBoundary:
+                    "B: Conversation navigation completed, but Messages did not expose the composer with identifier messageBodyField.",
                 classification: "XCTest or Messages accessibility boundary; not Universe Keyboard product behavior."
             )
         }
@@ -621,7 +754,8 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
                 composerTapped: true,
                 keyboardSurface: keyboardSurface,
                 composerCandidateSummaries: composerCandidateSummaries,
-                failureBoundary: "C: Composer was tapped, but no keyboard surface was evidenced by the required q/w/e key descendants.",
+                failureBoundary:
+                    "C: Composer was tapped, but no keyboard surface was evidenced by the required q/w/e key descendants.",
                 classification: "XCTest/system UI boundary; not Universe Keyboard product behavior."
             )
         }
@@ -632,7 +766,8 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
             composerTapped: true,
             keyboardSurface: keyboardSurface,
             composerCandidateSummaries: composerCandidateSummaries,
-            failureBoundary: "Keyboard surface boundary reached through q/w/e accessibility descendants after composer activation.",
+            failureBoundary:
+                "Keyboard surface boundary reached through q/w/e accessibility descendants after composer activation.",
             classification: keyboardSurface.isInteractable
                 ? "Keyboard surface is visible and interactable through accessibility descendants; identity remains independently unproven."
                 : "Keyboard surface is visible, but its key descendants are not all hittable; identity remains independently unproven."
@@ -665,7 +800,8 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
                 selectionSummaries: [],
                 surfaceSummaries: [],
                 activated: false,
-                failureBoundary: "Keyboard surface was visible, but no hittable Apple system keyboard switcher was exposed.",
+                failureBoundary:
+                    "Keyboard surface was visible, but no hittable Apple system keyboard switcher was exposed.",
                 classification: "XCTest/iOS system UI boundary; Universe Keyboard product behavior was not reached."
             )
         }
@@ -679,7 +815,8 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
                 selectionSummaries: selectionSummaries,
                 surfaceSummaries: [],
                 activated: false,
-                failureBoundary: "The system keyboard switcher opened, but no hittable exact Universe Keyboard selection was exposed.",
+                failureBoundary:
+                    "The system keyboard switcher opened, but no hittable exact Universe Keyboard selection was exposed.",
                 classification: "XCTest/iOS system keyboard selection-menu boundary; no product failure inferred."
             )
         }
@@ -716,17 +853,19 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
 
         repeat {
             let types: [XCUIElement.ElementType] = [.menuItem, .button, .staticText]
-            let candidates = matchingElements(
-                in: messages,
-                terms: universeKeyboardSelectionTerms,
-                types: types,
-                allowContainsMatch: false
-            ) + matchingElements(
-                in: springboard,
-                terms: universeKeyboardSelectionTerms,
-                types: types,
-                allowContainsMatch: false
-            )
+            let candidates =
+                matchingElements(
+                    in: messages,
+                    terms: universeKeyboardSelectionTerms,
+                    types: types,
+                    allowContainsMatch: false
+                )
+                + matchingElements(
+                    in: springboard,
+                    terms: universeKeyboardSelectionTerms,
+                    types: types,
+                    allowContainsMatch: false
+                )
             if candidates.isEmpty == false {
                 return candidates
             }
@@ -789,7 +928,8 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
 
         return NE1FirstInputProbeResult(
             keySummary: keySummary,
-            candidateSummary: "Candidate Cell count before tap=\(candidateCellCountBeforeTap), after tap=\(candidateCellCountAfterTap).",
+            candidateSummary:
+                "Candidate Cell count before tap=\(candidateCellCountBeforeTap), after tap=\(candidateCellCountAfterTap).",
             realKeyTapped: true,
             candidateResponseObserved: responseObserved,
             failureBoundary: responseObserved
@@ -805,7 +945,7 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
         guard enabled else { return nil }
 
         guard let runToken = environment[traceRunTokenEnvironmentKey],
-              let preferencesDomain = environment[tracePreferencesDomainEnvironmentKey]
+            let preferencesDomain = environment[tracePreferencesDomainEnvironmentKey]
         else {
             XCTFail("Trace handshake was enabled without a run token and preferences domain.")
             throw TraceHandshakeConfigurationError.invalidEnvironment
@@ -914,12 +1054,25 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
 
     private func keyboardEvidenceKey(named label: String, in app: XCUIApplication) -> XCUIElement {
         app.keys
-            .matching(NSPredicate(
-                format: "label ==[c] %@ OR identifier ==[c] %@",
-                label,
-                label
-            ))
+            .matching(
+                NSPredicate(
+                    format: "label ==[c] %@ OR identifier ==[c] %@",
+                    label,
+                    label
+                )
+            )
             .firstMatch
+    }
+
+    /// Identifier and localized label are both accepted. Query `.any` so a
+    /// keyboardKey that surfaces as Button instead of Key is still found.
+    private func productOwnedKey(named names: [String], in app: XCUIApplication) -> XCUIElement {
+        let predicate = NSPredicate(
+            format: "label IN[c] %@ OR identifier IN[c] %@",
+            names,
+            names
+        )
+        return app.descendants(matching: .any).matching(predicate).firstMatch
     }
 
     /// Reads the explicit P3-D1 handshake exposed by the harness-only appex
@@ -936,8 +1089,8 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
         let deadline = Date().addingTimeInterval(timeout)
         repeat {
             if element.exists,
-               let value = element.value as? String,
-               value.contains(token)
+                let value = element.value as? String,
+                value.contains(token)
             {
                 return value
             }
@@ -960,19 +1113,22 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
                 finalSurface: initialSurface,
                 baselineEstablished: false,
                 failureBoundary: "Keyboard surface is absent, so keyboard state cannot be normalized.",
-                classification: "XCTest/system UI precondition boundary; no Universe Keyboard product behavior evaluated."
+                classification:
+                    "XCTest/system UI precondition boundary; no Universe Keyboard product behavior evaluated."
             )
         }
 
         if case let .visibleWithKnownIdentity(identity) = initialSurface.state,
-           baselineKeyboardTerms.contains(identity) {
+            baselineKeyboardTerms.contains(identity)
+        {
             return KeyboardNormalizationResult(
                 initialSurface: initialSurface,
                 switcherCandidateSummaries: [],
                 baselineCandidateSummaries: [],
                 finalSurface: initialSurface,
                 baselineEstablished: true,
-                failureBoundary: "Known baseline keyboard identity was directly observed before normalization was needed.",
+                failureBoundary:
+                    "Known baseline keyboard identity was directly observed before normalization was needed.",
                 classification: "Known baseline established through direct accessibility identity evidence."
             )
         }
@@ -986,7 +1142,8 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
                 baselineCandidateSummaries: [],
                 finalSurface: initialSurface,
                 baselineEstablished: false,
-                failureBoundary: "Keyboard surface is visible, but no explicit system keyboard switcher was exposed through accessibility.",
+                failureBoundary:
+                    "Keyboard surface is visible, but no explicit system keyboard switcher was exposed through accessibility.",
                 classification: "XCTest/iOS system UI limitation; deterministic baseline cannot be established."
             )
         }
@@ -1001,8 +1158,10 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
                 baselineCandidateSummaries: baselineCandidateSummaries,
                 finalSurface: observeKeyboardSurface(in: messages),
                 baselineEstablished: false,
-                failureBoundary: "Keyboard switcher was invoked, but no known baseline keyboard item was exposed through accessibility.",
-                classification: "XCTest/iOS system UI limitation; selection menu cannot be normalized deterministically."
+                failureBoundary:
+                    "Keyboard switcher was invoked, but no known baseline keyboard item was exposed through accessibility.",
+                classification:
+                    "XCTest/iOS system UI limitation; selection menu cannot be normalized deterministically."
             )
         }
 
@@ -1091,16 +1250,16 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
         extraSections: [String: String] = [:]
     ) {
         var report = """
-        Probe: \(name)
-        Test purpose: \(purpose)
-        Current application: \(messagesBundleIdentifier)
-        App state: \(app.state.rawValue)
-        Failure boundary: \(failureBoundary)
-        Limitation classification: \(limitationClassification)
+            Probe: \(name)
+            Test purpose: \(purpose)
+            Current application: \(messagesBundleIdentifier)
+            App state: \(app.state.rawValue)
+            Failure boundary: \(failureBoundary)
+            Limitation classification: \(limitationClassification)
 
-        Accessibility snapshot:
-        \(accessibilitySnapshot(for: app))
-        """
+            Accessibility snapshot:
+            \(accessibilitySnapshot(for: app))
+            """
 
         for key in extraSections.keys.sorted() {
             report += "\n\n\(key):\n\(extraSections[key] ?? "")"
@@ -1142,7 +1301,8 @@ final class NativeExperienceKeyboardAutomationFeasibilityTests: XCTestCase {
 
     private func elementSummary(_ element: XCUIElement) -> String {
         let value = element.value.map { String(describing: $0) } ?? ""
-        return "type=\(element.elementType) label='\(element.label)' identifier='\(element.identifier)' value='\(value)' hittable=\(element.isHittable)"
+        return
+            "type=\(element.elementType) label='\(element.label)' identifier='\(element.identifier)' value='\(value)' hittable=\(element.isHittable)"
     }
 
     private func truncated(_ value: String, limit: Int) -> String {
@@ -1181,10 +1341,12 @@ private struct InitialKeyboardBaselineObservation {
             return preparation.failureBoundary
         }
         guard universeSurfaceSummaries.isEmpty else {
-            return "E: Universe Keyboard-specific accessibility controls were visible on the first keyboard presentation. Cold-start baseline preparation failed."
+            return
+                "E: Universe Keyboard-specific accessibility controls were visible on the first keyboard presentation. Cold-start baseline preparation failed."
         }
         guard appleSystemSwitcherSummaries.isEmpty == false || appleSystemLayoutSummaries.isEmpty == false else {
-            return "D: Keyboard surface was visible, but XCTest could not prove an Apple system keyboard baseline from exact layout or switcher accessibility evidence."
+            return
+                "D: Keyboard surface was visible, but XCTest could not prove an Apple system keyboard baseline from exact layout or switcher accessibility evidence."
         }
         return "Known non-Universe Apple keyboard baseline was visible before any keyboard switching action."
     }

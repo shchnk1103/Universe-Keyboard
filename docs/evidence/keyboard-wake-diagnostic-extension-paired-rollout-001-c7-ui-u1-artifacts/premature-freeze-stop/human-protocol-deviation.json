@@ -1,0 +1,14 @@
+{
+  "source": "Human manual report",
+  "root_received_utc": "2026-10-03T12:59:22.453438+00:00",
+  "human_quote": "实际显示了取证，但是我有尝试再次点击‘取证’，我发现没有什么变化。",
+  "observing_title_reported": "取证",
+  "second_click_before_input_instruction": true,
+  "normal_synthetic_input_not_performed_under_this_stepwise_protocol": true,
+  "actual_click_utc": null,
+  "actual_idle_seconds": null,
+  "breakpoint_hit_count_observed_after_reply": 1,
+  "memory_reads": 0,
+  "does_not_prove_freeze_failed": true,
+  "does_not_prove_normal_input_attempt_chain": true
+}

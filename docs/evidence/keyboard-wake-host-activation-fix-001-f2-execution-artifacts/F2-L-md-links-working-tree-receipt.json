@@ -1,0 +1,12 @@
+{
+  "step": "F2-L-md-links-working-tree",
+  "utc": "2026-10-04T10:47:24.956067+00:00",
+  "command": "python3 - <<'PY'\nfrom pathlib import Path\nimport sys\nsys.path.insert(0, 'scripts/ci')\nimport check_markdown_links as m\nroot = Path('.').resolve()\nfiles = [\n    Path('docs/evidence/keyboard-wake-host-activation-fix-001-f2-prepared-entry-2026-10-04.md'),\n    Path('docs/evidence/keyboard-wake-host-activation-fix-001-f2-artifacts/occupancy-backup-requirements.md'),\n]\nfail = False\nfor f in files:\n    for line, target in m.missing_links(f, root):\n        print(f'{f}:{line}: missing {target}')\n        fail = True\nif fail:\n    raise SystemExit(1)\nprint('PASS working-tree F2 evidence local links')\nPY",
+  "cwd": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "remaining_wall_seconds": 10355.044103,
+  "ended": "2026-10-04T10:47:25.463640+00:00",
+  "elapsed_seconds": 0.507573,
+  "exit_code": 0,
+  "timeout": false,
+  "log": "/private/tmp/ukey-host-activation-fix-f2-run-20261004/logs/F2-L-md-links-working-tree.log"
+}

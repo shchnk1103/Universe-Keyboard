@@ -1,0 +1,76 @@
+{
+  "started_utc": "2026-10-06T02:03:15.387593+00:00",
+  "status": "host_identity_match",
+  "scope": "isolated macOS fixture, no Simulator",
+  "memory_reads": 0,
+  "target_expressions": 0,
+  "callbacks": [
+    {
+      "utc": "2026-10-06T02:03:16.848560+00:00",
+      "pid": 92050,
+      "thread_id": 44472156,
+      "frame_id": 0,
+      "stop_id": 13,
+      "process_state": 5,
+      "stop_reason": 3,
+      "stop_reason_data": [
+        1,
+        1
+      ],
+      "frame_pc": 4329784336,
+      "function": "h0_export_ready",
+      "module_uuid": "F8346C9C-B8C0-4301-80AB-FE93EE8F62AC",
+      "breakpoint_id": 1,
+      "location_id": 1,
+      "breakpoint_pc": 4329784336,
+      "breakpoint_module_uuid": "F8346C9C-B8C0-4301-80AB-FE93EE8F62AC",
+      "expected_pid": 92050,
+      "memory_reads": 0
+    }
+  ],
+  "cleanup": {
+    "breakpoint_deleted": true,
+    "detach_success": true,
+    "detach_error": "success",
+    "fixture_exit_code": 0,
+    "helper_exit_code": 0
+  },
+  "fixture_pid": 92050,
+  "fixture_path": "/private/tmp/ukey-host-activation-fix-h0-20261006/fixture",
+  "attach_frame": {
+    "utc": "2026-10-06T02:03:16.184942+00:00",
+    "pid": 92050,
+    "thread_id": 44472156,
+    "frame_id": 0,
+    "stop_id": 1,
+    "process_state": 5,
+    "stop_reason": 5,
+    "stop_reason_data": [
+      17
+    ],
+    "frame_pc": 4332768240,
+    "function": "_dyld_start",
+    "module_uuid": "D341DDCB-7969-3A9C-8E03-0CF4751398A9"
+  },
+  "selected_stop_frame": {
+    "utc": "2026-10-06T02:03:16.872011+00:00",
+    "pid": 92050,
+    "thread_id": 44472156,
+    "frame_id": 0,
+    "stop_id": 13,
+    "process_state": 5,
+    "stop_reason": 3,
+    "stop_reason_data": [
+      1,
+      1
+    ],
+    "frame_pc": 4329784336,
+    "function": "h0_export_ready",
+    "module_uuid": "F8346C9C-B8C0-4301-80AB-FE93EE8F62AC"
+  },
+  "passed_frame_matches_location": true,
+  "callback_count": 1,
+  "breakpoint_hit_count": 1,
+  "ended_utc": "2026-10-06T02:03:16.876797+00:00",
+  "wall_seconds": 1.489003583
+}

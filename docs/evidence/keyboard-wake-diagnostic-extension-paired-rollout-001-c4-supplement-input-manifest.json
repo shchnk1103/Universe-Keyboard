@@ -1,0 +1,12 @@
+{
+  "candidate_digest": "af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9",
+  "files": {
+    "/private/tmp/ukey-wake-c4-supplement-20261001/product-disposition.md": "ebe11c182961a4d9c4d88b80ce7764a20156d13056d0ca6cc232a2caf19c089a",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c4-integrated-quality-review.md": "b4fe5dba102c6739a8f2091cd3bcdbe30054789b598472b537270dd5f97b2128",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c4-integrated-quality-usage.json": "859e3f73171976821c7e95014747731017303b9ea70e69640bed7179d2308668",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c4-integrated-candidate-manifest.json": "af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c4-integrated-skip-inventory.json": "bba5d6f7ad913d54e82fc2bc9a43fc5119fa20177a352753f7c560fccd929e30",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c4-integrated-validation-summary.json": "a1182291ca0af06db6090aa4cd965f32a426a86219cb3bb1ed86b9160b9e6741",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c4-integrated-final-receipt.json": "3fc747dbe0c49f25575acf695aaa1d04df0ec82589e5fb2bd390e35db0c2b984"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "old_group_exists": false,
+  "old_group_children": [],
+  "app": {
+    "exit": 0,
+    "stdout": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/554EFB05-1FA9-42A5-B8B7-B58E12956FD5/Universe Keyboard.app",
+    "stderr": ""
+  },
+  "data": {
+    "exit": 0,
+    "stdout": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/CF866229-9CC6-4CC3-99F6-EF099E0EAA1B",
+    "stderr": ""
+  },
+  "groups": {
+    "exit": 0,
+    "stdout": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/0296BFCE-F465-4F1A-9E9A-F2EDFDA41172",
+    "stderr": ""
+  },
+  "matching_groups": [
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/0296BFCE-F465-4F1A-9E9A-F2EDFDA41172"
+  ]
+}

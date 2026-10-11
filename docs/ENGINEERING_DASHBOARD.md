@@ -1,12 +1,160 @@
 # Engineering Dashboard
 
+2026-10-11：[F01整合复核与发布准备](evidence/typo-correction-002-f01-fixed-integration-review-001.md)：F01 PR139固定a44五源完整本地CI通过，独立增量复核Scoped Pass with conditions；Human已接受行政残项并授权本轮正常commit/push/更新139。发布候选保持draft，merge及父Gate/Close另授；父Active。
+
+2026-10-11：[PR207 单次合并状态同步](evidence/typo-correction-002-final-delivery-merge-001.md)：PR207 已合并 `8f306c6`，local/hosted CI 全绿，merge tree 与已验证候选一致。父 Active；本轮仅发布一次 M-02 docs-only 同步，无 Gate/Close。F-01 PR139 仍为 draft、有冲突，核心修复未进入 main，整合及验证须另授权。
+
+2026-10-11：P1/P2证据已收敛，固定main5927233完整CI＋DEBUG52通过；有限性能范围已获Human批准。精确交付待发布授权；父Active，无Gate/Close/Release；见[最终CI](evidence/typo-correction-002-fixed-main-validation-001.md)及[交付包](evidence/typo-correction-002-delivery-packaging-001.md)。
+
+
 > **Status:** Active program snapshot
 >
-> **Updated:** 2026-09-16 Asia/Shanghai
+> **Updated:** 2026-10-06 Asia/Shanghai
 >
 > **Coordinator:** 📋 Program Manager / Engineering Coordinator
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
+
+## KEYBOARD-WAKE-LIFECYCLE-DIAGNOSTICS-001 — App Switch 后键盘输入失活诊断
+
+- **Lifecycle:** [`Assignment`](assignments/keyboard-wake-lifecycle-diagnostics-001.md) `Closed` — bounded diagnostic delivery
+- **Current phase:** Closed；PR [#198](https://github.com/shchnk1103/Universe-Keyboard/pull/198) squash `4b102a9`
+- **Non-claims:** 不等于根因结论、Gate、TestFlight 或 Release
+- **Next:** none for this Assignment
+- **Sources:** [Close](product-decisions/KEYBOARD-WAKE-BOUNDED-CLOSE-001-product-decision-2026-10-06.md) · [Close 记录](evidence/keyboard-wake-bounded-close-001-2026-10-06.md) · [有界完成](evidence/keyboard-wake-lifecycle-diagnostics-001-bounded-completion-2026-10-04.md)
+
+## KEYBOARD-WAKE-HOST-ACTIVATION-FIX-001 — 宿主激活恢复 gate
+
+- **Lifecycle:** [`Assignment`](assignments/keyboard-wake-host-activation-fix-001.md) `Closed` — 单轮模拟器恢复验证
+- **Current phase:** Closed；PR [#198](https://github.com/shchnk1103/Universe-Keyboard/pull/198) squash `4b102a9`
+- **Non-claims:** 不等于系统运行组合全覆盖、Gate、TestFlight 或 Release
+- **Next:** none for this Assignment
+- **Sources:** [Close](product-decisions/KEYBOARD-WAKE-BOUNDED-CLOSE-001-product-decision-2026-10-06.md) · [Close 记录](evidence/keyboard-wake-bounded-close-001-2026-10-06.md) · [有界完成](evidence/keyboard-wake-host-activation-fix-001-bounded-completion-2026-10-06.md)
+
+## KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001 — 诊断 producer 有界完成
+
+- **Lifecycle:** [`Assignment`](assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md) `Closed` — 诊断 producer 与父交接交付
+- **Current phase:** Closed；PR [#198](https://github.com/shchnk1103/Universe-Keyboard/pull/198) squash `4b102a9`
+- **Non-claims:** 不等于全局 v6 emission、已审查 v6 Maps、Gate、TestFlight 或 Release
+- **Next:** none for this Assignment
+- **Sources:** [Close](product-decisions/KEYBOARD-WAKE-BOUNDED-CLOSE-001-product-decision-2026-10-06.md) · [Close 记录](evidence/keyboard-wake-bounded-close-001-2026-10-06.md) · [有界完成](evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-bounded-completion-2026-10-06.md)
+
+
+## DELETE-KEY-SCRUB-001 — 删除键滑动擦除（Closed）
+
+- **Lifecycle:** [`Assignment`](assignments/delete-key-scrub-001.md) `Closed`
+- **Current phase:** 交接见 [`close`](evidence/delete-key-scrub-001-close-2026-10-07.md)。第 6 号空位已释放
+- **Non-claims:** 不等于 TestFlight 或 Release
+- **Next:** 无本 Assignment 的下一产品动作。PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204) 已 squash `4c2760d`
+- **Sources:** [PD](product-decisions/DELETE-KEY-SCRUB-001-product-contract.md) · [Architecture](reviews/delete-key-scrub-001-architecture-close.md) · [Quality](reviews/delete-key-scrub-001-quality-review.md) · [Follow-up Quality](reviews/delete-key-scrub-001-followup-quality-review.md) · [Product Gate](product-decisions/DELETE-KEY-SCRUB-001-product-gate.md) · [Close](evidence/delete-key-scrub-001-close-2026-10-07.md) · [PR #204 merge](authorizations/AUTH-DELETE-KEY-SCRUB-001-PRODUCT-GATE-MERGE.md)
+- **Worktree:** 已删除。功能分支 `grok/delete-key-scrub-001`、`grok/delete-bubble-001`、`grok/delete-key-scrub-001-product-gate` 已删除
+
+## DELETE-KEY-SETTINGS-001 — 删除键设置页
+
+- **Lifecycle:** [`Assignment`](assignments/delete-key-settings-001.md) `Closed`
+- **Current phase:** 交接见 [`close`](evidence/delete-key-settings-001-close-2026-10-07.md)。第 6 行已移出 Active Work 表。PR [#206](https://github.com/shchnk1103/Universe-Keyboard/pull/206)
+- **Non-claims:** 不重开 `DELETE-KEY-SCRUB-001`。Closed 不等于 TestFlight 或 Release
+- **Next:** 无
+- **Sources:** [PD](product-decisions/DELETE-KEY-SETTINGS-001-product-contract.md) · [Architecture](reviews/delete-key-settings-001-architecture-review.md) · [Quality](reviews/delete-key-settings-001-quality-review.md) · [Product Gate](reviews/delete-key-settings-001-product-gate.md) · [Product Gate 002](reviews/delete-key-settings-001-product-gate-002.md) · [Close](evidence/delete-key-settings-001-close-2026-10-07.md)
+- **Worktree:** `/private/tmp/universe-keyboard-delete-key-settings-001`，分支 `grok/delete-key-settings-001`，基线 `141bc8e`
+
+## KEYBOARD-CORNER-BLEED-001 — 键盘顶圆角透白
+
+- **Lifecycle:** [`Assignment`](assignments/keyboard-corner-bleed-001.md) `Closed`
+- **Current phase:** PR [#192](https://github.com/shchnk1103/Universe-Keyboard/pull/192) squash-merged `72dd21710f2a86c9f951d489f645bae89b053b58`；保持透明；无实施
+- **Non-claims:** 不等于填灰、TestFlight 或 Release
+- **Next:** 无（本 Assignment）
+- **Sources:** [PD](product-decisions/KEYBOARD-CORNER-BLEED-001-authorization.md) · [Merge AUTH](authorizations/AUTH-KEYBOARD-CORNER-BLEED-001-MERGE.md) · [PR #192](https://github.com/shchnk1103/Universe-Keyboard/pull/192)
+- **Worktree:** 实现 worktree 与功能分支已删；本 M-02 分支 `grok/keyboard-corner-bleed-001-m02`
+
+## CANDIDATE-BAR-IDLE-DISMISS-001 — 空闲候选栏关闭键盘
+
+- **Lifecycle:** [`Assignment`](assignments/candidate-bar-idle-dismiss-001.md) `Closed`
+- **Current phase:** PR [#190](https://github.com/shchnk1103/Universe-Keyboard/pull/190) squash-merged `944a76bd049d717dd1048a6b4eb5bc7fd9124347`；残差 `CBID-01`–`CBID-04`、`CBID-CORNER` `accept`
+- **Non-claims:** 不等于 Device-attested；不授权 TestFlight 或 Release
+- **Next:** 无（本 Assignment）。跟进 [`KEYBOARD-CORNER-BLEED-001`](assignments/keyboard-corner-bleed-001.md) 已 `Ready`。TestFlight / Release 另授权
+- **Sources:** [PD](product-decisions/CANDIDATE-BAR-IDLE-DISMISS-001-authorization.md) · [Product Gate](product-decisions/CANDIDATE-BAR-IDLE-DISMISS-001-product-gate.md) · [Merge AUTH](authorizations/AUTH-CANDIDATE-BAR-IDLE-DISMISS-001-MERGE.md) · [PR #190](https://github.com/shchnk1103/Universe-Keyboard/pull/190) · [Quality review](reviews/candidate-bar-idle-dismiss-001-quality-review.md)
+- **Worktree:** 实现 worktree 与功能分支已删；本 M-02 分支 `grok/candidate-bar-idle-dismiss-001-m02`
+
+## APP-ABOUT-001 — 主 App「关于」页
+
+- **Lifecycle:** [`Assignment`](assignments/app-about-001.md) `Closed`
+- **Current phase:** PR [#188](https://github.com/shchnk1103/Universe-Keyboard/pull/188) squash-merged `a46a6abe66be065039557897a1e3adef29cc7d32`；残差 `ABOUT-01`–`ABOUT-05` `accept`
+- **Non-claims:** 不等于 Device-attested；不授权 TestFlight 或 Release
+- **Next:** 无（本 Assignment）。TestFlight / Release 另授权
+- **Sources:** [PD](product-decisions/APP-ABOUT-001-authorization.md) · [Product Gate](product-decisions/APP-ABOUT-001-product-gate.md) · [Merge AUTH](authorizations/AUTH-APP-ABOUT-001-MERGE.md) · [PR #188](https://github.com/shchnk1103/Universe-Keyboard/pull/188) · [Quality review](reviews/app-about-001-quality-review.md)
+- **Worktree:** 实现 worktree 与功能分支已删；本 M-02 分支 `grok/app-about-001-m02`
+
+## APP-ACTION-BUTTON-HIT-AREA-001 — 主 App 操作按钮整块可点
+
+- **Lifecycle:** [`Assignment`](assignments/app-action-button-hit-area-001.md) `Closed`
+- **Current phase:** PR [#186](https://github.com/shchnk1103/Universe-Keyboard/pull/186) squash-merged `e3eb27b51caa289eae734d9194d3d5ba10f75bc6`；残差 `AABH-01`–`AABH-05` `accept`
+- **Non-claims:** 不等于 Device-attested；不授权 TestFlight 或 Release；合同只覆盖共享 `AppActionButton`
+- **Next:** 无（本 Assignment）。TestFlight / Release 另授权
+- **Sources:** [PD](product-decisions/APP-ACTION-BUTTON-HIT-AREA-001-authorization.md) · [Product Gate](product-decisions/APP-ACTION-BUTTON-HIT-AREA-001-product-gate.md) · [Merge AUTH](authorizations/AUTH-APP-ACTION-BUTTON-HIT-AREA-001-MERGE.md) · [PR #186](https://github.com/shchnk1103/Universe-Keyboard/pull/186) · [Quality review](reviews/app-action-button-hit-area-001-quality-review.md)
+- **Worktree:** 实现 worktree 与功能分支已删；本 M-02 分支 `grok/app-action-button-hit-area-001-m02`
+
+## SCHEME-LICENSE-DOWNLOAD-CTA-001 — 第三方方案许可下载单按钮
+
+- **Lifecycle:** [`Assignment`](assignments/scheme-license-download-cta-001.md) `Closed`
+- **Current phase:** PR [#164](https://github.com/shchnk1103/Universe-Keyboard/pull/164) 于 `2026-09-24T02:16:12Z` squash merge 为 [`204d0c2b`](https://github.com/shchnk1103/Universe-Keyboard/commit/204d0c2b3c3ec5253f31fad8e15cfa0501c83416)；Hosted Swift 6 Quality 同头全绿；publication Assignment 已完成
+- **Non-claims:** 不声称真实网络下载/RIME 部署成功；Simulator observation 仍是 Human-attested，非 Device-attested；Quality 绑定 22-file package digest `6146c454…`；merge 不等于 TestFlight / Release
+- **Next:** PR [#166](https://github.com/shchnk1103/Universe-Keyboard/pull/166) 已合并；最新 M-02 状态同步已在 docs-only Draft PR [#167](https://github.com/shchnk1103/Universe-Keyboard/pull/167) 发布，保持 Draft，未获 ready/merge 授权
+- **Sources:** [PD](product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-authorization.md) · [Implementation AUTH](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-001.md) · [Quality revalidation 002](reviews/scheme-license-download-cta-quality-revalidation-002.md) · [Human-attested Simulator observation](evidence/scheme-license-download-cta-simulator-observation-2026-09-23.md) · [Product Gate packet 002](evidence/scheme-license-download-cta-product-gate-packet-2026-09-24.md) · [Product Gate decision 002](product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-product-gate-revalidation-002.md) · [Gate Assignment 002](assignments/scheme-license-download-cta-product-gate-002.md) · [Gate AUTH 002](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-PRODUCT-GATE-002.md)
+- **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001/.status-sync-repo` · branch `codex/scheme-license-download-cta-status-sync-merge-002`
+
+## SCHEME-LICENSE-DOWNLOAD-CTA-PUBLICATION-001 — 有界 commit、push 与 draft PR
+
+- **Lifecycle:** [`Assignment`](assignments/scheme-license-download-cta-publication-001.md) `Completed`
+- **Current phase:** PR [#164](https://github.com/shchnk1103/Universe-Keyboard/pull/164) 已 squash merge 为 `204d0c2b`; 原功能分支已删除
+- **Non-claims:** 不声称真实网络下载/RIME 部署成功或 Device-attested；不含 TestFlight / Release
+- **Next:** None for the publication Assignment；merge 后 M-02 镜像见下方收尾 Assignment
+- **Sources:** [Publication Assignment](assignments/scheme-license-download-cta-publication-001.md) · [Publication AUTH 002](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-PUBLICATION-002.md) · [Product Gate 002](product-decisions/SCHEME-LICENSE-DOWNLOAD-CTA-001-product-gate-revalidation-002.md) · [Quality revalidation 002](reviews/scheme-license-download-cta-quality-revalidation-002.md)
+- **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001/.status-sync-repo` · isolated status-sync branch `codex/scheme-license-download-cta-status-sync-merge`; publication branch `grok/scheme-license-download-cta-001` deleted after merge
+
+## SCHEME-LICENSE-DOWNLOAD-CTA-MERGE-001 — PR #164 合并与 M-02 收尾
+
+- **Lifecycle:** [`Assignment`](assignments/scheme-license-download-cta-merge-001.md) `Completed`
+- **Current phase:** PR #165 于 `2026-09-24T02:49:14Z` squash merge 为 `99a7ef88`，已验证到达 `origin/main`；PR #166 随后独立授权并合入 `29241ea1`。对应旧本地/远端状态分支已安全删除；最新 M-02 镜像见 docs-only Draft PR [#167](https://github.com/shchnk1103/Universe-Keyboard/pull/167)
+- **Non-claims:** PR #167 未获 ready/merge 授权；无 TestFlight / Release
+- **Next:** Human review PR #167；其 Ready/merge 需另行授权
+- **Sources:** [Merge AUTH](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-MERGE-001.md) · [Publication Assignment](assignments/scheme-license-download-cta-publication-001.md)
+- **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001/.status-sync-repo` · branch `codex/scheme-license-download-cta-status-sync-merge-002`
+
+## SCHEME-LICENSE-DOWNLOAD-CTA-STATUS-SYNC-MERGE-002 — PR #166 合并与 M-02 收尾
+
+- **Lifecycle:** [`Assignment`](assignments/scheme-license-download-cta-status-sync-merge-002.md) `Completed`
+- **Current phase:** PR #166 于 `2026-09-24T04:02:35Z` squash merge 为 `29241ea1`，已验证到达 `origin/main`；旧本地与远端分支均在 tree 等价核验后安全删除；完成状态镜像见 docs-only Draft PR [#167](https://github.com/shchnk1103/Universe-Keyboard/pull/167)
+- **Non-claims:** PR #167 未获 ready/merge 授权；无 TestFlight / Release
+- **Next:** Human review PR #167；ready/merge 需另行授权
+- **Sources:** [Merge Assignment](assignments/scheme-license-download-cta-status-sync-merge-002.md) · [Merge AUTH](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-STATUS-SYNC-MERGE-002.md) · [Parent Assignment](assignments/scheme-license-download-cta-status-sync-merge-001.md)
+- **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001/.status-sync-repo` · branch `codex/scheme-license-download-cta-status-sync-merge-002`
+
+## SCHEME-LICENSE-DOWNLOAD-CTA-REGRESSION-001 — 许可下载流程回归覆盖
+
+- **Lifecycle:** [`Assignment`](assignments/scheme-license-download-cta-regression-tests-001.md) `Completed`
+- **Current phase:** 五条许可流程回归通过；strict format 通过；App + Keyboard Debug：UniverseKeyboardTests 379 passed / 9 skipped，KeyboardTests 15 passed
+- **Non-claims:** 不等于独立 Quality、Product Gate、XCUITest/人工验收、commit / push / merge 或 Release
+- **Next:** XCUITest/人工交互/真实下载未覆盖；最终树独立 Quality 已由 [`revalidation receipt`](reviews/scheme-license-download-cta-quality-revalidation-001.md) 复核
+- **Sources:** [Parent Assignment](assignments/scheme-license-download-cta-001.md) · [P2 Quality finding](reviews/scheme-license-download-cta-quality-review-001.md) · [AUTH](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-REGRESSION-001.md)
+- **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001` · original branch `grok/scheme-license-download-cta-001` (deleted after PR #164 merge)
+
+## SCHEME-LICENSE-DOWNLOAD-CTA-QUALITY-REVALIDATION-001 — 最终树独立 Quality revalidation
+
+- **Lifecycle:** [`Assignment`](assignments/scheme-license-download-cta-quality-revalidation-001.md) `Reviewed`
+- **Current phase:** fixed 22-file package 的独立 GPT-6 Luna Quality **Pass with conditions**；strict lint 9 files passed；App + Keyboard Debug 为 UniverseKeyboardTests 379 passed / 9 skipped、KeyboardTests 15 passed
+- **Non-claims:** 不等于 Product Gate、人工/真机验收、commit / push / merge 或 Release
+- **Next:** Product Gate 已完成；Quality child 保持 `Reviewed`，其 receipt 仍绑定状态写回前的精确 22-file package，不覆盖写回后的文档树
+- **Sources:** [Parent Assignment](assignments/scheme-license-download-cta-001.md) · [Prior Quality receipt](reviews/scheme-license-download-cta-quality-review-001.md) · [Revalidation receipt](reviews/scheme-license-download-cta-quality-revalidation-001.md) · [AUTH](authorizations/AUTH-SCHEME-LICENSE-DOWNLOAD-CTA-QUALITY-REVALIDATION-001.md)
+- **Worktree:** `/private/tmp/universe-keyboard-scheme-license-download-cta-001` · original branch `grok/scheme-license-download-cta-001` (deleted after PR #164 merge)
+
+## APP-ACTION-BUTTON-CONTRAST-001 — 主 App 操作按钮深浅色对比度
+
+- **Lifecycle:** [`Assignment`](assignments/app-action-button-contrast-001.md) `Closed`
+- **Current phase:** PR [#154](https://github.com/shchnk1103/Universe-Keyboard/pull/154) squash-merged `4d90b1c`；功能分支已删
+- **Non-claims:** 不等于 Device-attested、TestFlight 或 Release
+- **Next:** none for this Assignment
+- **Sources:** [PD](product-decisions/APP-ACTION-BUTTON-CONTRAST-001-authorization.md) · [Product Gate](product-decisions/APP-ACTION-BUTTON-CONTRAST-001-product-gate.md) · [Quality](reviews/app-action-button-contrast-001-quality-review.md) · [AUTH merge](authorizations/AUTH-APP-ACTION-BUTTON-CONTRAST-001-MERGE.md) · [Human observation](evidence/app-action-button-contrast-001-human-attested-observation-2026-09-23.md)
 
 ## CI-HEAVY-JOB-SPLIT-001 — 拆分 full 路径 heavy job
 
@@ -52,7 +200,13 @@
 
 - [Assignment](assignments/kos-astra-upgrade-001.md): `Closed` (historical). PR [#99](https://github.com/shchnk1103/Universe-Keyboard/pull/99) merged `4c9f424`.
 - [Evidence](evidence/kos-astra-upgrade-001.md): instruction repairs and local gates complete; no App Release claim.
-- Adopted pin superseded by [`KOS-UPGRADE-UK-004`](assignments/kos-upgrade-uk-004-v0.8.0.md) / PR [#104](https://github.com/shchnk1103/Universe-Keyboard/pull/104). Current pin is [UPGRADE_STATUS](kos/UPGRADE_STATUS.md).
+- Historical v0.7.0 pin superseded by UK-004, then by [UK-006](product-decisions/KOS-UPGRADE-UK-006-v0.9.0-adoption.md). Current pin and scope are in [UPGRADE_STATUS](kos/UPGRADE_STATUS.md).
+
+## KOS-UPGRADE-UK-006 — KOS Kit v0.9.0 prospective adoption
+
+- **Lifecycle:** Product Decision adopted; local adoption Assignment Completed; review Assignment remains Reviewed (not Closed). Docs-only PR [#170](https://github.com/shchnk1103/Universe-Keyboard/pull/170) merged at 2026-09-25T05:56:07Z as 1c14ab66d628f1a291b5484da0255c40492a80be; merge-trigger closeout is recorded in the [M-02 receipt](evidence/kos-upgrade-uk-006-v0.9.0-post-merge-state-sync-2026-09-25.md).
+- **Pin:** KOS Kit v0.9.0 at c98b2813240e22b2ac7fec44b2445321b03f73e0, advisory mode.
+- **Non-claims:** no required mode, migration/backfill, schema/validator change, Simulator/CoreDevice repair, App Product/Release Gate, TestFlight or App Store release.
 
 ## KOS-UPGRADE-UK-003 — Adopt kos-agent-kit v0.6.0 advisory (historical)
 
@@ -237,7 +391,7 @@
 ## Active Work 收敛 — 2026-08-24
 
 - **Authority:** Human Product Owner 当场拍板；详情以各 Assignment Current Status 为准，摘要见 [`ACTIVE_WORK.md`](ACTIVE_WORK.md)（`4/10`）。
-- **Still Active:** `RELEASE-2026-0801`（外部 TestFlight 候选；目标 `2026-08-26`）· `TYPING-INTELLIGENCE-001` · `TYPO-CORRECTION-002` · `RIME-SYNC-001`
+- **Still Active as of 2026-08-24 (historical snapshot):** `RELEASE-2026-0801`（外部 TestFlight 候选；目标 `2026-08-26`）· `TYPING-INTELLIGENCE-001` · `TYPO-CORRECTION-002` · `RIME-SYNC-001`
 - **Left Active:** `RELEASE-2026-0801-08` → `Closed`（PR #80 merged `54ce3bd`；功能分支已清理）
 - **Left Active:** `DEBUG-KEY-HITBOX-001` → `Closed`（PR #73 merged；Human Product Gate Passed）
 - **Left Active (not Closed / not Product Gate):**
@@ -249,15 +403,24 @@
 - **External TestFlight Decision:** [`PD-RELEASE-2026-0801-EXTERNAL-TESTFLIGHT-CANDIDATE`](product-decisions/RELEASE-2026-0801-external-testflight-candidate.md)
 - **Explicit non-claims:** 本段不关闭任何 Gate，不授权上传/发布。
 
-## RIME-SYNC-001 — RIME 后台自动同步启动崩溃修复
+## RIME-SYNC-001 — Portable RIME Settings Sync
 
-- **Lifecycle:** `Active`
+- **Current update (2026-09-27):** Human-authorized [PR #182](https://github.com/shchnk1103/Universe-Keyboard/pull/182) merged at `2026-09-27T16:35:30+08:00` as `8e4ea0f1777f1175141731797afeee5ebd964c96`; source head `d39c09e2914ae77b8f7dd75a46108b912d4b7f7f`. The bounded iOS V1 local-folder engineering Assignment remains `Closed`; this M-02 state sync records the merge pointer without changing lifecycle. Its [receipt](evidence/rime-sync-001-post-merge-state-sync-2026-09-27.md) binds the event. `TD-002`, `TD-008`, `TD-013`, `TD-017`, and deferred `TD-019` remain open; CloudKit and live WebDAV remain deferred. No Product Gate, TestFlight or Release is implied.
+
+- **Historical checkpoint (2026-09-25; superseded for merge status by the M-02 receipt):** Human Product Owner accepted the bounded iOS V1 local-folder scope and retained residual debts; Product Lead recorded the Assignment lifecycle as `Closed` in the [Product lifecycle decision](product-decisions/RIME-SYNC-001-ASSIGNMENT-CLOSE-2026-09-25.md). The final synchronized 68-path candidate received Quality `Pass with conditions` and Architecture `Accept with conditions`. At that time, authorization covered commit, push and PR creation after all publication gates; merge was not authorized. This was engineering-scope closure only, not Product Gate, TestFlight, or Release. `TD-002`, `TD-008`, `TD-013`, `TD-017`, and deferred `TD-019` remain open; CloudKit, live WebDAV, cross-platform parity, and physical-device deletion/propagation are not established. See [Assignment](assignments/rime-sync-001.md), [readiness ledger](evidence/rime-sync-v1-closure-readiness-2026-09-23.md), and [final review pair](reviews/rime-sync-v1-parent-final-quality-sync-rereview-2026-09-25.md) / [Architecture](reviews/rime-sync-v1-parent-final-architecture-sync-rereview-2026-09-25.md).
+
+- **Latest broad suite (2026-09-25):** 当前 worktree 的完整 App + Keyboard Debug scheme 在 iPhone 18 Pro / iOS 27.0 Simulator 完成：`.xcresult` 401 total = 391 passed + 10 skipped + 0 failed。Xcode 原生枚举 401 IDs 与结果完全匹配；MCP preflight 报 402 的原因仍未知，但 Human Product Owner 已按上述 Product Decision 接受本次精确运行的报告残余。10 skips 不计为通过；本次不是完整 CI heavy-job 矩阵。见 [full-suite receipt](evidence/rime-sync-v1-current-app-keyboard-full-suite-2026-09-25.md)。
+- **Latest UI regression (2026-09-25):** 完整 `UniverseKeyboardUITests` 在 iPhone 18 Pro Max / iOS 27.0 Simulator 为 36 tests、29 passed / 7 skipped / 0 failed；修复后的取消与生产路径首次同步用例均通过。执行者证据见 [full UI regression receipt](evidence/rime-sync-v1-local-folder-full-ui-regression-2026-09-25.md)。该 UI-only 收据与 App + Keyboard delta reviews 是不同范围；后续 Product 生命周期决定已关闭有界工程 Assignment，provider 相关证据限制和 `TD-002` 仍按技术债/非声明保留。
+- **Historical checkpoint (2026-09-24):** P1/P2 deletion-boundary 修订已完成，iPhone 18 Pro / iOS 27.0 Simulator 五条定向用例通过（5/5，0 skipped）。Fresh Architecture 在精确 44-path snapshot `2c09ee2f…75a4d2a` 上为 `Accept with conditions`：P1/P2 代码 finding 已解决；真实 provider 元数据与删除传播仍是开放证据条件；`TD-002` 仍开放。Human Product Owner 将当前 closure scope 缩至 local-folder，live WebDAV 验证转入 [`TD-019`](TECH_DEBT.md#td-019-live-webdav-provider-validation)，并授权 iPhone 18 Pro / iOS 27.0 Simulator 创建隔离目标执行 local-folder 验证。该时点父 Assignment 为 `Active`；后续状态见当前生命周期行。见 [scope decision](product-decisions/RIME-SYNC-001-LOCAL-FOLDER-CLOSURE-WEBDAV-DEFERRED-2026-09-24.md)、[Architecture re-review](reviews/rime-sync-v1-final-architecture-rereview-2026-09-24.md) 与 [P2 evidence](evidence/rime-sync-v1-p2-deletion-boundary-remediation-2026-09-24.md)。
+- **Historical local-folder checkpoint (2026-09-24):** 独立 iPhone 18 Pro Max / iOS 27.0 Simulator 上，生产 ViewModel/Keychain/local-folder transport 的首次手动同步 UI 用例 1/1 通过；实际输出检查确认 RIME 标准资料与加密 Universe 设置包均落盘，密文未读取。还未测试 provider 删除传播。见 [first-sync receipt](evidence/rime-sync-v1-local-folder-simulator-first-sync-2026-09-24.md)。当时旧 Architecture/Quality receipt 仍绑定旧 manifest；后续配对复审已记录在当前生命周期决定及链接收据中。
+- **Lifecycle:** `Closed` — bounded iOS V1 Assignment; see [Product lifecycle decision](product-decisions/RIME-SYNC-001-ASSIGNMENT-CLOSE-2026-09-25.md)
 - **Authority:** [`Assignment`](assignments/rime-sync-001.md) · [`Contract`](RIME_SYNC.md)
-- **Current evidence:** 新载荷由 iOS 自然触发单 operation 自动同步，Diagnostics/v1 与通知均为完成；正式 Run 02 保留 `INVALID` 审计结果。Human Product Owner 已接受范围化工程结论，确认只读日志复制及无关 `long-idle-exit` 属正常行为，暂不重测
-- **Residual:** 旧轮次精确错误、`TD-002`、[`TD-013`](TECH_DEBT.md#td-013-diagnostics-v1-p1-查询生命周期与迁移硬化) 与 [`TD-017`](TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure) 保持开放；复发或路径实质变更时再开启全新预冻结轮次
-- **Non-claims:** 不代表 Product Gate、merge、TestFlight 或 Release 已授权
-- **Review:** process-gate delta 的 [`Architecture`](assignments/rime-sync-001-process-gate-architecture-review.md) / [`Quality`](assignments/rime-sync-001-process-gate-quality-review.md) 均为 `Pass with conditions`；Run 02 最终 Architecture / Quality 均为 `HOLD`，理由记录于运行清单
-- **Next:** 日常观察；不安排重复真机测试，复发或路径实质变更时再重开
+- **Background/device evidence:** 2026-09-22 与 2026-09-23 两次真机自然后台 operation 均完成 `standard_rime_data` 与 `private_settings` 两阶段并发布成功通知；2026-09-23 的前台竞争被 `process_busy` 正确跳过。记录见 [`2026-09-22`](evidence/rime-background-sync-natural-device-success-2026-09-22.md) 与 [`2026-09-23`](evidence/rime-background-sync-natural-device-success-2026-09-23.md)。上一轮 App + Keyboard Simulator suite 为 398 discovered、387 passed、10 skipped、0 failed（397 executed），是该次运行的历史结果；见 [`reconciliation`](evidence/rime-sync-v1-xcodebuildmcp-count-reconciliation-2026-09-24.md)。当前 2026-09-25 suite 为 401 total / 391 passed / 10 skipped / 0 failed；401 个原生枚举 ID 与 `.xcresult` 一致，402 MCP discovery 的本次报告残余已由 Product 窄接受，根因仍未知。见 [current full-suite receipt](evidence/rime-sync-v1-current-app-keyboard-full-suite-2026-09-25.md) 与 [Product Decision](product-decisions/RIME-SYNC-001-QR-CURRENT-01-PRODUCT-RESIDUAL-2026-09-24.md)。signed Keychain CRUD + RIME transport 聚焦 suite 11/11 是独立历史证据，非当前广套件重跑。UI-01 五例同一 run 5/5，fresh Quality 为 `Pass with conditions`；P2 稳定错误码获 fresh Architecture `Accept`。Human Product Owner 报告 iPhone 13 Pro / iOS 27.0 上安装的 1.0 (Build 1) 完成 VoiceOver 和大字检查、未触发同步/断开/删除；Source/payload provenance 仍未知。Simulator 证据不代表实体设备 Keychain 验证，也没有 hosted CI 运行。正式 Run 02 仍保留 `INVALID`
+- **Scope disposition:** Product Owner 已将当前关闭目标限定为 iOS V1；CloudKit 延后，完整跨平台兼容 / custom YAML 导入明确留存于 [`TD-008`](TECH_DEBT.md#td-008-complete-portable-rime-data-compatibility)。这不是跨平台兼容或 CloudKit 可用性声明
+- **Residual:** `TD-002`、[`TD-008`](TECH_DEBT.md#td-008-complete-portable-rime-data-compatibility)、[`TD-013`](TECH_DEBT.md#td-013-diagnostics-v1-p1-查询生命周期与迁移硬化)、[`TD-017`](TECH_DEBT.md#td-017-investigate-background-sync-sandbox-extension-consume-failure) remain open; live WebDAV is deferred under [`TD-019`](TECH_DEBT.md#td-019-live-webdav-provider-validation), and CloudKit is deferred. `QR-CURRENT-01` acceptance is limited to this exact-run reporting mismatch; its cause remains unknown. Run 02 stays `INVALID` with historical `HOLD` unchanged. Provider-deletion XCTest remains failed; manual evidence supports only the reviewed single iOS Simulator Files local-storage observation, not binary/source binding, XCTest success, physical-device deletion, propagation, or Files UI refresh.
+- **Non-claims:** 已合并 PR #182 仅代表该有界工程快照进入 main；不代表 Product Gate、TestFlight 或 Release 已授权或通过。
+- **Review:** Final synchronized 68-path parent snapshot received independent Quality `Pass with conditions` and Architecture `Accept with conditions`; exact receipts are [Quality](reviews/rime-sync-v1-parent-final-quality-sync-rereview-2026-09-25.md) and [Architecture](reviews/rime-sync-v1-parent-final-architecture-sync-rereview-2026-09-25.md). Earlier 38/44/66-path findings remain tied to their historical snapshots. Run 02's Quality/Architecture `HOLD` is unchanged.
+- **Next:** None under this Closed Assignment. Any work on retained technical debt, live WebDAV, CloudKit, cross-platform compatibility, physical-device deletion, or propagation requires its own bounded authorization/evidence path. PR #182 merge does not imply Product Gate, TestFlight, or Release.
 
 ## PATH-BAR-TOUCH-001 — 九键 Path Bar 上半区点击投递
 
@@ -403,10 +566,10 @@
 - **Current state:** Target date is `2026-08-26 Asia/Shanghai` (historical `2026-08-01`). Exact RC `testflight-v1.0-rc1-build7` is frozen at `244b32d`, artifacts are independently Quality Reviewed, and the Store IPA is processed in TestFlight. Human has now created internal group `Build 7 Internal Smoke`, attached one build and invited two internal testers; at least one invitation delivery is confirmed. Three initial findings are captured under Pending Task11: first-run RIME/scheme/deploy confusion, unexplained builtin multi-character input failure, and scheme-download failure without VPN. F-03 is Product-prioritized urgent before broader external testing.
 - **Frozen Product scope:** iPhone + iPad, **iOS 18.0+**, Chinese nine-key, precise pinyin, post-commit continuation, kaomoji content and the Home local basic input-count display. Advanced Typing Intelligence and contextual typo correction are excluded from launch claims. The count card must not present as an AI capability in visual or accessibility copy. iOS 18 iPad Simulator compatibility preflight is recorded; physical iPad and TD-003/004/005 remain release residuals; kaomoji is Closed under `RELEASE-2026-0801-08`; see the [scope record](assignments/release-2026-08-01-02-scope-freeze.md) and [PD](product-decisions/RELEASE-2026-0801-minimum-os-ios18.md).
 - **Current blockers:** Task11 reproduction facts and implementation roles are `UNKNOWN`; F-02 may invalidate Build 7 as an external candidate, while F-03 blocks broader external testing until fixed or explicitly decided. The historical Build 7 P4 re-arm remains excluded, while two Build 55 / Xcode 27 RC diagnostic arms, one TD-004 off/on matrix, one bounded TD-005 systemCrashLogs query plus one read-only TD-005 classification follow-up and Archive/export reconciliation, one fresh-install App/J1/J2/J3/J4 observation and one scoped 雾凇 nine-key gate were retained; the independent Build 55 Quality/Release review and its re-review are **Blocked**; the re-review conditionally accepts the code-image/export provenance but keeps TD-003/TD-004/TD-005, clean App Group and the overall Release Gate open. The TD-003 follow-up still lacks a controlled cold/warm/numeric baseline, the TD-004 matrix has no shared-capability/self-diagnosing proof, the Jetsam rows remain unclassified without a victim marker, and the Archive/dSYM metadata remains `1.0 (1)` while exported packages/summaries report `1.0 (55)`; TD-003/004/005 still lack their full required evidence. Fresh-install J1, J2, automatic J3 deployment, basic Luna 26-key J4 output and the scoped 雾凇 nine-key gate are complete for this progress run; clean App Group state, remaining physical evidence and overall Product/Release Gate remain open. Exact online What to Test content also needs read-only verification. iOS 18 iPad Simulator evidence remains in [`07 preflight`](evidence/release-2026-08-01-07-ios18-ipad-simulator-preflight-2026-08-21.md).
-- **Latest channel execution (`2026-09-13`):** Human Product Owner accepted the [`Build 55 public external-testing exception`](product-decisions/RELEASE-2026-09-13-build55-limited-external-trial-exception-proposal.md). App Store Connect group `Build 55 Public Beta` contains Store export `1.0 (55)`; Beta Review is `Waiting for Review`, and the public `Open to Anyone` link is configured without a tester limit. Testers cannot join until Apple approves the build; the independent Quality/Release conclusion remains **Blocked**.
-- **Build-specific online copy:** Build 55 `What to Test` was submitted with the no-login Beta Review form; the older Build 7 online-copy gap remains a separate historical item.
-- **Authority boundary:** Internal invitations alone do not authorize external group assignment or Beta Review; this separate Product Decision authorizes the recorded Build 55 public-test channel action, but not skipped-gate acceptance, formal Release Gate Pass, App Store production submission or manual release.
-- **Next Product action:** monitor Beta Review and public-link availability while keeping TD-003/004/005, clean App Group and formal Release Gate open; track remaining screenshot and Task11/F-03 material. Do not re-arm P4.
+- **Latest channel execution (`2026-09-25 Asia/Shanghai`):** Human Product Owner accepted the [Build 94 public-beta decision](product-decisions/RELEASE-2026-09-25-BUILD94-public-beta-decision.md). Transporter delivered Store export `1.0 (94)`; App Store Connect upload is `Complete`, external Beta Review is `Approved`, and the build is `Testing` in the existing `Build 55 Public Beta` group. The group still shows 356 testers, two builds, and the existing public link `https://testflight.apple.com/join/t48JR3Q3`; Build 55 remains in the group. Automatic tester notification was enabled; per-tester delivery receipts were not exposed in the inspected views. Independent Quality/Release remains **Blocked**; this is not a formal Release Gate Pass or App Store release. The Product Decision and execution record are shared in [PR #168](https://github.com/shchnk1103/Universe-Keyboard/pull/168), squash-merged as `32aace7c810f38f68aaeebdd6557dcc5e971ba61`.
+- **Build-specific online copy:** Build 55 `What to Test` remains a historical submission; Build 94 `What to Test` was saved before Beta Review and requires Full Access while disclosing the accepted coverage limits and privacy boundary. The older Build 7 online-copy gap remains a separate historical item.
+- **Authority boundary:** The Build 55 and Build 94 Product Decisions authorize only their recorded external TestFlight actions; neither accepts skipped Quality/Release gates, grants a formal Release Gate Pass, nor authorizes App Store production submission or manual release.
+- **Next Product action:** monitor Build 94 feedback and, on `2026-09-26`, triage recent Build 55 tester feedback as directed by the Product Owner; keep TD-003/004/005, clean App Group and formal Release Gate open. Do not re-arm P4.
 
 ## RELEASE-2026-0801-03 — 新用户启用与 Full Access 降级
 
@@ -494,6 +657,9 @@
 ## TYPO-CORRECTION-002 — Contextual Multi-Error Pinyin Recovery
 
 - **Confirmed status:** `Active`
+- **INT-003 query-density children:** Docs-only [PR #175](https://github.com/shchnk1103/Universe-Keyboard/pull/175) squash merged as `10faa51c`; its [single M-02 receipt](evidence/typo-correction-002-int003-query-density-post-merge-state-sync-2026-09-26.md) was published by [PR #176](https://github.com/shchnk1103/Universe-Keyboard/pull/176), merged `9f6f83e`. The [follow-up diagnostic criterion decision](product-decisions/TYPO-CORRECTION-002-INT003-QUERY-DENSITY-DIAGNOSTIC-CRITERION-001.md) removes the 180 ms hard pass condition for that diagnosis only. The distinct [query-cost assessment](evidence/typo-correction-002-int003-query-cost-assessment-2026-09-26.md) is Completed with a Consumed AUTH and published by [PR #177](https://github.com/shchnk1103/Universe-Keyboard/pull/177), merged `501299dd`; its [M-02 receipt](evidence/typo-correction-002-int003-query-cost-post-merge-state-sync-2026-09-26.md) was published by [PR #178](https://github.com/shchnk1103/Universe-Keyboard/pull/178), merged `7b0025a`. It records 359 real facade calls across 12 operations, 26–32 per operation, with Debug elapsed intervals only. The prepared second rapid Run had no input. Original rapid-window attribution, Product cost acceptability and the wider residual remain open. No Swift / Gate / Release; parent Assignment remains Active.
+- **INT-003 query-cost P1/P2:** The Active [measurement Assignment](assignments/typo-correction-002-int003-query-cost-measurement-001.md) has P1 instrumentation merged by [PR #184](https://github.com/shchnk1103/Universe-Keyboard/pull/184) as `03f4d0cc`; the single [M-02 receipt](evidence/typo-correction-002-int003-query-cost-p1-implementation-post-merge-state-sync-2026-09-27.md) records it. P1 coordinator assertions and real same-call RimeBridge setup/get_context/schema evidence remain open. P2 AUTH is Active/unconsumed until exact source/review, installed payload and Run manifest are frozen; no Simulator capture has run. Product budget/acceptance, Gate and parent Close remain separate; parent stays Active.
+- **P0 publication:** [PR #179](https://github.com/shchnk1103/Universe-Keyboard/pull/179) squash merged the new Active measurement Assignment and plan as `9838c092`; its [single M-02 receipt](evidence/typo-correction-002-int003-query-cost-measurement-plan-m02-2026-09-26.md) is prepared. P1/P2 remain distinct authorization and environment stages; parent Active, Product residual open.
 - **Status owner/source:** Product Lead; [`Assignment`](assignments/typo-correction-002.md)
 - **Product source:** [`Contextual Typo Correction Product Contract`](TYPO_CORRECTION.md)
 - **Architecture source:** [ADR 0015](architecture/decisions/0015-contextual-multi-error-typo-correction.md) and [ADR 0016](architecture/decisions/0016-progressive-contextual-recall-preflight.md)

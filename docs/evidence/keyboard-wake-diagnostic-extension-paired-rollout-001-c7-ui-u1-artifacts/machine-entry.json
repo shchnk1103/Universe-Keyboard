@@ -1,0 +1,49 @@
+{
+  "utc": "2026-10-03T09:07:15.690141+00:00",
+  "device": {
+    "dataPath": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data",
+    "dataPathSize": 4666802176,
+    "logPath": "/Users/doubleshy0n/Library/Logs/CoreSimulator/405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "lastUsedAt": "2026-10-02T09:04:39Z",
+    "isAvailable": true,
+    "logPathSize": 667648,
+    "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro",
+    "state": "Booted",
+    "name": "iPhone 18 Pro"
+  },
+  "runtime": "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
+  "candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50",
+  "source_input_count": 1279,
+  "source_drift": [],
+  "installed_files": 78,
+  "payload_matches_H1": true,
+  "process": {
+    "pid": 80843,
+    "executable": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard"
+  },
+  "selected_diagnostic_preferences": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    }
+  },
+  "historical_backup_presence": {
+    "/private/tmp/ukey-wake-ui-i0-20261003/backup": {
+      "exists": true,
+      "components_present": true
+    },
+    "/private/tmp/ukey-wake-ui-i1-20261003/after-preservation": {
+      "exists": true,
+      "components_present": true
+    }
+  },
+  "backup_content_reverification_this_run": false,
+  "not_latest_post_U0_data_recovery_proof": true,
+  "before_files_count": 3145,
+  "no_launch_install_deploy_arm_lldb_input": true
+}

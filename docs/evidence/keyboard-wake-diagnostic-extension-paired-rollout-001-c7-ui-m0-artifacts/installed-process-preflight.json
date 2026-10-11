@@ -1,0 +1,40 @@
+{
+  "candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50",
+  "installed_files_verified": 78,
+  "signatures": {
+    "main": {
+      "exit": 0
+    },
+    "keyboard": {
+      "exit": 0
+    }
+  },
+  "pid": 88188,
+  "executable": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+  "executable_sha256": "237d9a890d96a18ebaa9427ac2836595d8e8fc7767be63712a6870a22643efe0",
+  "expected_sha256": "237d9a890d96a18ebaa9427ac2836595d8e8fc7767be63712a6870a22643efe0",
+  "main_app_absent": true,
+  "selected_preferences": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "rime_deployed": {
+      "exists": true,
+      "value": true
+    },
+    "rime_needs_deploy": {
+      "exists": true,
+      "value": false
+    },
+    "rime_is_deploying": {
+      "exists": false,
+      "value": null
+    }
+  },
+  "signal_sent": false
+}

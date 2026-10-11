@@ -1,0 +1,15 @@
+{
+  "received_utc": "2026-10-04T04:56:01.828382+00:00",
+  "received_monotonic_ns": 1243240692282541,
+  "human_reply": "键盘没有关闭再打开的动作，‘取证’仍可见，输入框被清空，但是我们的候选栏保持之前的样子不变，我没有点击任何按钮。",
+  "actual_switch_time": null,
+  "keyboard_reopened": false,
+  "button_visible": true,
+  "host_input_field_cleared": true,
+  "candidate_visual_unchanged": true,
+  "target_ps": "55759 55991     4804 SXs  /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+  "lldb_ps": "55990 Sun Oct  4 12:48:58 2026     /Applications/Xcode.app/Contents/Developer/usr/bin/lldb",
+  "same_target_path_sha_and_debugserver": true,
+  "conservative_seconds_since_pre_arm_readiness": 371.903291,
+  "TTL_actual_arm_timestamp_not_measured": true
+}

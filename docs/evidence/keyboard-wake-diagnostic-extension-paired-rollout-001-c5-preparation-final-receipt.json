@@ -1,0 +1,32 @@
+{
+  "date_utc": "2026-10-01T01:05:19.976687+00:00",
+  "scope": "preparation only; C5 execution Not Ready",
+  "worktree": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "c4_source_build_inputs_verified": 568,
+  "debug_bundle_files_verified": 111,
+  "existing_files_baseline": 2500,
+  "existing_files_preserved_except_owning_assignment": 2499,
+  "existing_file_changes": [
+    "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md"
+  ],
+  "before_assignment_sha256": "07214155914a52fd0a03df56e6295539a67e14689404fa40b373eedc6cd5eb6d",
+  "after_assignment_sha256": "a9ae9c22a5c8b3dc615f2fac4ba8dfab09e47ea7c44f3ab0ebc99ab06ea64615",
+  "new_documents_sha256": {
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-preparation-debug-install-payload-manifest.json": "28a47d2d7bf669ec3927dbf62112be268dd2bd6c161d11d59a7e0e545fcaa89a",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-preparation-payload-entitlements-readonly.json": "1310201b2abf13dc9a764b0c083ecae7513b79194f1b822a989a2c6991e609ee",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-preparation-signing-readonly.json": "4b5b792b2a91766515e80ec1eda0416ccf576d3a9bb812cc7ce73615e3500dd4",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-preparation-simulator-entitlements.json": "2bbc7c6989f2dce133b5ddd9689719196067c9fdc2748549adaf8dcec0203c4d",
+    "docs/plans/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-real-appex-promotion-install-slice.md": "beb4fd3860eb7cb8b51b430e036ebaef3c837e1861432bcd95e16a366babd550"
+  },
+  "markdown_relative_links": "pass",
+  "source_test_build_simulator_install_capture_maps_git_publication_actions": "none",
+  "complete_before_status": "/private/tmp/ukey-wake-c5-preparation-20261001/before-status.txt",
+  "complete_after_status": "/private/tmp/ukey-wake-c5-preparation-20261001/after-status.txt",
+  "dirty_total": 416,
+  "tracked_modified": 19,
+  "untracked": 397,
+  "staged": 0,
+  "status_z_sha256": "fae30f7b210c728d97ff45be690df891c977f7cd8157a5b86dd5b4a7d7e2802d"
+}

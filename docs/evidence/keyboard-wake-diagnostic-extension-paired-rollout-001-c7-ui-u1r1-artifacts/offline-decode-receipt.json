@@ -1,0 +1,10 @@
+{
+  "raw_bytes": 528,
+  "raw_sha256": "40ff2daf44c1a6495ea9188b4a10a7aa9160f3d38b35a4c8a99c1d9e41d8e467",
+  "decoder_sha256": "fc1817ab8843dab76acd9e8ae59277719c059742bb105eebecbc60a66f58775d",
+  "record_count": 5,
+  "buffer_complete": true,
+  "verdict": "requires_manual_run_binding_and_independent_review",
+  "all_rows_preserved": true,
+  "only_normal_path_scope": true
+}

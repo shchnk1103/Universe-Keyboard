@@ -1,0 +1,117 @@
+{
+  "utc": "2026-10-02T13:42:52.239115+00:00",
+  "scope": "Only this task ukey-wake scratch; build caches/results/binaries excluded; exact hash matching without decoding input/log data",
+  "roots": [
+    "/private/tmp/ukey-wake-c1-20260930",
+    "/private/tmp/ukey-wake-c2-20261001",
+    "/private/tmp/ukey-wake-c2-preflight-20260930",
+    "/private/tmp/ukey-wake-c3-20261001",
+    "/private/tmp/ukey-wake-c4-20261001",
+    "/private/tmp/ukey-wake-c4-supplement-20261001",
+    "/private/tmp/ukey-wake-c5-disposition-20261001",
+    "/private/tmp/ukey-wake-c5-host-delta-20261001",
+    "/private/tmp/ukey-wake-c5-host-delta-r2-20261001",
+    "/private/tmp/ukey-wake-c5-i-20261001",
+    "/private/tmp/ukey-wake-c5-p-20261001",
+    "/private/tmp/ukey-wake-c5-p-r2-20261001",
+    "/private/tmp/ukey-wake-c5-preparation-20261001",
+    "/private/tmp/ukey-wake-c5-r-20261001",
+    "/private/tmp/ukey-wake-c5-r-accept-20261001",
+    "/private/tmp/ukey-wake-c5-r-reader-20261001",
+    "/private/tmp/ukey-wake-c5-r-reader-focused-r3-20261001",
+    "/private/tmp/ukey-wake-c5-r-reader-review-20261001",
+    "/private/tmp/ukey-wake-c6-maps-20261001",
+    "/private/tmp/ukey-wake-c7-implementation-20261002",
+    "/private/tmp/ukey-wake-c7-readonly-20261001",
+    "/private/tmp/ukey-wake-c7b-20261002",
+    "/private/tmp/ukey-wake-c7b2-core-20261002",
+    "/private/tmp/ukey-wake-c7b2-quality-r2-20261002",
+    "/private/tmp/ukey-wake-c7b3-20261002",
+    "/private/tmp/ukey-wake-c7c-prep-20261002",
+    "/private/tmp/ukey-wake-stage-c-source-audit-20260930",
+    "/private/tmp/ukey-wake-v5-20260930.nBWReN",
+    "/private/tmp/ukey-wake-v6-decision-20260930-01a0f254",
+    "/private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254"
+  ],
+  "scanned_files": 1712,
+  "before_group_file_count": 72,
+  "byte_matching_existing_copies": {
+    "Diagnostics/v1/locks/keyboard_extension-1D80C9D6-6024-424F-8B9F-B9E7331810C7.lock": [
+      "/private/tmp/ukey-wake-c1-20260930/full-module-cache/modules.timestamp",
+      "/private/tmp/ukey-wake-c1-20260930/full-cache/manifests/manifest.db-wal",
+      "/private/tmp/ukey-wake-c3-20261001/diff-check.log",
+      "/private/tmp/ukey-wake-c7-implementation-20261002/ModuleCache/modules.timestamp",
+      "/private/tmp/ukey-wake-c7b2-core-20261002/ModuleCache/modules.timestamp",
+      "/private/tmp/ukey-wake-v6-decision-20260930-01a0f254/swift-cache/manifests/manifest.db-wal"
+    ],
+    "Diagnostics/v1/locks/keyboard_extension-9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9.lock": [
+      "/private/tmp/ukey-wake-c1-20260930/full-module-cache/modules.timestamp",
+      "/private/tmp/ukey-wake-c1-20260930/full-cache/manifests/manifest.db-wal",
+      "/private/tmp/ukey-wake-c3-20261001/diff-check.log",
+      "/private/tmp/ukey-wake-c7-implementation-20261002/ModuleCache/modules.timestamp",
+      "/private/tmp/ukey-wake-c7b2-core-20261002/ModuleCache/modules.timestamp",
+      "/private/tmp/ukey-wake-v6-decision-20260930-01a0f254/swift-cache/manifests/manifest.db-wal"
+    ],
+    "Diagnostics/v1/locks/main_app-853BBC29-A476-4C05-A4DD-C2121A8BE16D.lock": [
+      "/private/tmp/ukey-wake-c1-20260930/full-module-cache/modules.timestamp",
+      "/private/tmp/ukey-wake-c1-20260930/full-cache/manifests/manifest.db-wal",
+      "/private/tmp/ukey-wake-c3-20261001/diff-check.log",
+      "/private/tmp/ukey-wake-c7-implementation-20261002/ModuleCache/modules.timestamp",
+      "/private/tmp/ukey-wake-c7b2-core-20261002/ModuleCache/modules.timestamp",
+      "/private/tmp/ukey-wake-v6-decision-20260930-01a0f254/swift-cache/manifests/manifest.db-wal"
+    ],
+    "Diagnostics/v1/locks/snapshot.lock": [
+      "/private/tmp/ukey-wake-c1-20260930/full-module-cache/modules.timestamp",
+      "/private/tmp/ukey-wake-c1-20260930/full-cache/manifests/manifest.db-wal",
+      "/private/tmp/ukey-wake-c3-20261001/diff-check.log",
+      "/private/tmp/ukey-wake-c7-implementation-20261002/ModuleCache/modules.timestamp",
+      "/private/tmp/ukey-wake-c7b2-core-20261002/ModuleCache/modules.timestamp",
+      "/private/tmp/ukey-wake-v6-decision-20260930-01a0f254/swift-cache/manifests/manifest.db-wal"
+    ],
+    "Diagnostics/v1/locks/keyboard_extension-3F66BF6F-B473-44A7-98D0-06DFC60A7C45.lock": [
+      "/private/tmp/ukey-wake-c1-20260930/full-module-cache/modules.timestamp",
+      "/private/tmp/ukey-wake-c1-20260930/full-cache/manifests/manifest.db-wal",
+      "/private/tmp/ukey-wake-c3-20261001/diff-check.log",
+      "/private/tmp/ukey-wake-c7-implementation-20261002/ModuleCache/modules.timestamp",
+      "/private/tmp/ukey-wake-c7b2-core-20261002/ModuleCache/modules.timestamp",
+      "/private/tmp/ukey-wake-v6-decision-20260930-01a0f254/swift-cache/manifests/manifest.db-wal"
+    ],
+    "Diagnostics/v1/locks/keyboard_extension-81EFDEEA-B811-4079-8173-8180BA0A3085.lock": [
+      "/private/tmp/ukey-wake-c1-20260930/full-module-cache/modules.timestamp",
+      "/private/tmp/ukey-wake-c1-20260930/full-cache/manifests/manifest.db-wal",
+      "/private/tmp/ukey-wake-c3-20261001/diff-check.log",
+      "/private/tmp/ukey-wake-c7-implementation-20261002/ModuleCache/modules.timestamp",
+      "/private/tmp/ukey-wake-c7b2-core-20261002/ModuleCache/modules.timestamp",
+      "/private/tmp/ukey-wake-v6-decision-20260930-01a0f254/swift-cache/manifests/manifest.db-wal"
+    ],
+    "Diagnostics/v1/locks/main_app-B4998116-AE88-4492-864A-F793A4710F7E.lock": [
+      "/private/tmp/ukey-wake-c1-20260930/full-module-cache/modules.timestamp",
+      "/private/tmp/ukey-wake-c1-20260930/full-cache/manifests/manifest.db-wal",
+      "/private/tmp/ukey-wake-c3-20261001/diff-check.log",
+      "/private/tmp/ukey-wake-c7-implementation-20261002/ModuleCache/modules.timestamp",
+      "/private/tmp/ukey-wake-c7b2-core-20261002/ModuleCache/modules.timestamp",
+      "/private/tmp/ukey-wake-v6-decision-20260930-01a0f254/swift-cache/manifests/manifest.db-wal"
+    ],
+    "Rime/user/luna_pinyin.userdb/LOCK": [
+      "/private/tmp/ukey-wake-c1-20260930/full-module-cache/modules.timestamp",
+      "/private/tmp/ukey-wake-c1-20260930/full-cache/manifests/manifest.db-wal",
+      "/private/tmp/ukey-wake-c3-20261001/diff-check.log",
+      "/private/tmp/ukey-wake-c7-implementation-20261002/ModuleCache/modules.timestamp",
+      "/private/tmp/ukey-wake-c7b2-core-20261002/ModuleCache/modules.timestamp",
+      "/private/tmp/ukey-wake-v6-decision-20260930-01a0f254/swift-cache/manifests/manifest.db-wal"
+    ],
+    "Rime/user/luna_pinyin.userdb/000035.log": [
+      "/private/tmp/ukey-wake-c1-20260930/full-module-cache/modules.timestamp",
+      "/private/tmp/ukey-wake-c1-20260930/full-cache/manifests/manifest.db-wal",
+      "/private/tmp/ukey-wake-c3-20261001/diff-check.log",
+      "/private/tmp/ukey-wake-c7-implementation-20261002/ModuleCache/modules.timestamp",
+      "/private/tmp/ukey-wake-c7b2-core-20261002/ModuleCache/modules.timestamp",
+      "/private/tmp/ukey-wake-v6-decision-20260930-01a0f254/swift-cache/manifests/manifest.db-wal"
+    ]
+  },
+  "not_matching_count": 63,
+  "full_container_backup_found": false,
+  "limitation": "Not a machine-wide snapshot/TimeMachine search; no device access or mutation",
+  "matches_are_empty_bytes": true,
+  "nonempty_recoverable_copies_found": 0
+}

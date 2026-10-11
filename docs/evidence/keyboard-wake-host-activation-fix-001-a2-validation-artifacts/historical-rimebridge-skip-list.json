@@ -1,0 +1,106 @@
+{
+  "count": 20,
+  "skips": [
+    {
+      "class": "RimeLuaSmokeTests",
+      "method": "testCorrectionSidecarKeepsVisibleCompositionIntactWhenRuntimeFixtureIsProvided",
+      "reason": "Set UK_RIME_LUA_SMOKE_SHARED_DIR and UK_RIME_LUA_SMOKE_USER_DIR to run the real Lua smoke test."
+    },
+    {
+      "class": "RimeLuaSmokeTests",
+      "method": "testRimeIceLuaDynamicCandidatesWhenRuntimeFixtureIsProvided",
+      "reason": "Set UK_RIME_LUA_SMOKE_SHARED_DIR and UK_RIME_LUA_SMOKE_USER_DIR to run the real Lua smoke test."
+    },
+    {
+      "class": "RimeT9AutoAnchorRetryMatrixTests",
+      "method": "testCappedTwoSyllableControllerFrozenPairedMatrix",
+      "reason": "Set the immutable 40-character lowercase S4 commit to run the paired matrix."
+    },
+    {
+      "class": "RimeT9AutoAnchorRetryMatrixTests",
+      "method": "testIsolatedPersonalizationKnownPositive",
+      "reason": "Set isolated T9 Spike runtime directories to run this matrix."
+    },
+    {
+      "class": "RimeT9AutoAnchorRetryMatrixTests",
+      "method": "testIsolatedPersonalizationNaturalReminder",
+      "reason": "Set isolated T9 Spike runtime directories to run this matrix."
+    },
+    {
+      "class": "RimeT9AutoAnchorRetryMatrixTests",
+      "method": "testIsolatedPersonalizationNaturalWeather",
+      "reason": "Set isolated T9 Spike runtime directories to run this matrix."
+    },
+    {
+      "class": "RimeT9AutoAnchorRetryMatrixTests",
+      "method": "testPartialLongSelectionIsNotPersonalizationProof",
+      "reason": "Set isolated T9 Spike runtime directories to run this matrix."
+    },
+    {
+      "class": "RimeT9AutoAnchorRetryMatrixTests",
+      "method": "testRejectedCompositionLaterOpportunityTransactionMatrix",
+      "reason": "Set isolated T9 Spike runtime directories to run this matrix."
+    },
+    {
+      "class": "RimeT9AutoAnchorRetryMatrixTests",
+      "method": "testRollingControllerFrozenA0A1B2B3Matrix",
+      "reason": "Set isolated T9 Spike runtime directories to run this matrix."
+    },
+    {
+      "class": "RimeT9AutoAnchorRetryMatrixTests",
+      "method": "testRollingControllerMissingLiveCompositionFailsClosedBeforeKey",
+      "reason": "Set isolated T9 Spike runtime directories to run this matrix."
+    },
+    {
+      "class": "RimeT9AutoAnchorRetryMatrixTests",
+      "method": "testRollingControllerRealRimeDeletePathAndPartialOwnership",
+      "reason": "Set isolated T9 Spike runtime directories to run this matrix."
+    },
+    {
+      "class": "RimeT9AutoAnchorRetryMatrixTests",
+      "method": "testRollingControllerRealRimeSecondRejectRestoreMatrix",
+      "reason": "Set isolated T9 Spike runtime directories to run this matrix."
+    },
+    {
+      "class": "RimeT9CompatibilitySpikeTests",
+      "method": "testPinnedLibrimeCanSelectT9AndProcessDigitSequenceAfterRemovingUnsupportedProcessor",
+      "reason": "Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 compatibility Spike."
+    },
+    {
+      "class": "RimeT9PinyinSelectionSpikeTests",
+      "method": "test004CatalogExactRawAcceptanceOnPinnedLibrime",
+      "reason": "Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+    },
+    {
+      "class": "RimeT9PinyinSelectionSpikeTests",
+      "method": "testAtomicPathDiscoveryStageAOnPinnedLibrime",
+      "reason": "Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+    },
+    {
+      "class": "RimeT9PinyinSelectionSpikeTests",
+      "method": "testGate5Phase05CandidateCoverageSelRangeOnPinnedLibrime",
+      "reason": "Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+    },
+    {
+      "class": "RimeT9PinyinSelectionSpikeTests",
+      "method": "testGate5Phase06AlternativeCoverageSelectionDeltaOnPinnedLibrime",
+      "reason": "Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+    },
+    {
+      "class": "RimeT9PinyinSelectionSpikeTests",
+      "method": "testPrecisePinyinPathRefinementOnPinnedLibrime",
+      "reason": "Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+    },
+    {
+      "class": "RimeT9PinyinSelectionSpikeTests",
+      "method": "testReadOnlyWindowCoverageForYiZiSibling",
+      "reason": "Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+    },
+    {
+      "class": "ThreadAffineRimeRealEngineTests",
+      "method": "testRealEngineBootstrapCreatesAndCallsOffMainThroughOwner",
+      "reason": "Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR (or UK_RIME_R4B_*) to run R4-B real-engine proof."
+    }
+  ],
+  "disposition": "Human accept current F2 only; unverified; not passed"
+}

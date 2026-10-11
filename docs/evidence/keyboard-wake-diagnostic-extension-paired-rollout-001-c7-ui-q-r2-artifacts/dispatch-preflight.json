@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-02T16:03:19.415656+00:00",
+  "lanes": {
+    "quality": {
+      "digest": "e68f6f79d79293994b6bd79d51e58401ccd3ac1f8d6d684caab0b8ec4b7226ee",
+      "copies_equal": true,
+      "hard_seconds": 900
+    },
+    "architecture": {
+      "digest": "8dbd34558300d7e822bb4eafd74531bb0c72e48d3c53a2b086918f3f00002b6f",
+      "copies_equal": true,
+      "hard_seconds": 600
+    }
+  }
+}

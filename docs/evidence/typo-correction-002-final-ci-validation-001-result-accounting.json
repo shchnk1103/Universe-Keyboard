@@ -1,0 +1,176 @@
+{
+  "run_id": "TC2-CI-20261011-INT003-FINAL-001",
+  "grade": "Executor-recorded fixed-candidate engineering matrix; no Gate/merge claim",
+  "core": {
+    "passed": 1171,
+    "failed": 0
+  },
+  "rime": {
+    "total": 110,
+    "passed": 90,
+    "skipped": 20,
+    "failed": 0
+  },
+  "app_keyboard": {
+    "total": 432,
+    "passed": 422,
+    "skipped": 10,
+    "failed": 0,
+    "targets": [
+      {
+        "target": "UniverseKeyboardTests.xctest",
+        "count_statement": "Executed 410 tests, with 10 tests skipped and 0 failures (0 unexpected) in 11.535 (11.664) seconds"
+      },
+      {
+        "target": "KeyboardTests.xctest",
+        "count_statement": "Executed 16 tests, with 0 failures (0 unexpected) in 0.034 (0.043) seconds"
+      },
+      {
+        "target": "KeyboardExtensionTests.xctest",
+        "count_statement": "Executed 6 tests, with 0 failures (0 unexpected) in 1.898 (1.902) seconds"
+      }
+    ]
+  },
+  "signed_keychain": {
+    "passed": 1,
+    "failed": 0,
+    "skipped": 0,
+    "not_additive_to_distinct_coverage": true
+  },
+  "release": "BUILD SUCCEEDED",
+  "strict_lint_files": 23,
+  "source_files_unchanged": 28,
+  "skipped_tests": {
+    "rimebridge": [
+      {
+        "test": "RimeBridgeTests.RimeLuaSmokeTests testCorrectionSidecarKeepsVisibleCompositionIntactWhenRuntimeFixtureIsProvided",
+        "reason": "Set UK_RIME_LUA_SMOKE_SHARED_DIR and UK_RIME_LUA_SMOKE_USER_DIR to run the real Lua smoke test."
+      },
+      {
+        "test": "RimeBridgeTests.RimeLuaSmokeTests testRimeIceLuaDynamicCandidatesWhenRuntimeFixtureIsProvided",
+        "reason": "Set UK_RIME_LUA_SMOKE_SHARED_DIR and UK_RIME_LUA_SMOKE_USER_DIR to run the real Lua smoke test."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testCappedTwoSyllableControllerFrozenPairedMatrix",
+        "reason": "Set the immutable 40-character lowercase S4 commit to run the paired matrix."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testIsolatedPersonalizationKnownPositive",
+        "reason": "Set isolated T9 Spike runtime directories to run this matrix."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testIsolatedPersonalizationNaturalReminder",
+        "reason": "Set isolated T9 Spike runtime directories to run this matrix."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testIsolatedPersonalizationNaturalWeather",
+        "reason": "Set isolated T9 Spike runtime directories to run this matrix."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testPartialLongSelectionIsNotPersonalizationProof",
+        "reason": "Set isolated T9 Spike runtime directories to run this matrix."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testRejectedCompositionLaterOpportunityTransactionMatrix",
+        "reason": "Set isolated T9 Spike runtime directories to run this matrix."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testRollingControllerFrozenA0A1B2B3Matrix",
+        "reason": "Set isolated T9 Spike runtime directories to run this matrix."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testRollingControllerMissingLiveCompositionFailsClosedBeforeKey",
+        "reason": "Set isolated T9 Spike runtime directories to run this matrix."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testRollingControllerRealRimeDeletePathAndPartialOwnership",
+        "reason": "Set isolated T9 Spike runtime directories to run this matrix."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testRollingControllerRealRimeSecondRejectRestoreMatrix",
+        "reason": "Set isolated T9 Spike runtime directories to run this matrix."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9CompatibilitySpikeTests testPinnedLibrimeCanSelectT9AndProcessDigitSequenceAfterRemovingUnsupportedProcessor",
+        "reason": "Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 compatibility Spike."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9PinyinSelectionSpikeTests test004CatalogExactRawAcceptanceOnPinnedLibrime",
+        "reason": "Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9PinyinSelectionSpikeTests testAtomicPathDiscoveryStageAOnPinnedLibrime",
+        "reason": "Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9PinyinSelectionSpikeTests testGate5Phase05CandidateCoverageSelRangeOnPinnedLibrime",
+        "reason": "Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9PinyinSelectionSpikeTests testGate5Phase06AlternativeCoverageSelectionDeltaOnPinnedLibrime",
+        "reason": "Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9PinyinSelectionSpikeTests testPrecisePinyinPathRefinementOnPinnedLibrime",
+        "reason": "Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9PinyinSelectionSpikeTests testReadOnlyWindowCoverageForYiZiSibling",
+        "reason": "Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+      },
+      {
+        "test": "RimeBridgeTests.ThreadAffineRimeRealEngineTests testRealEngineBootstrapCreatesAndCallsOffMainThroughOwner",
+        "reason": "Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR (or UK_RIME_R4B_*) to run R4-B real-engine proof."
+      }
+    ],
+    "app_keyboard": [
+      {
+        "test": "UniverseKeyboardTests.RimeIcePinnedArtifactTests testVerifiedOfficialAndMirrorArchivesConvergeAfterProductionProcessing",
+        "reason": "Set TEST_RUNNER_SCHEME_PIN_ARCHIVE_ROOT to the independently downloaded source archives"
+      },
+      {
+        "test": "UniverseKeyboardTests.RimeSyncModelTests testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem",
+        "reason": "Unsigned host lacks Keychain entitlement; signed Simulator lane covers integration."
+      },
+      {
+        "test": "UniverseKeyboardTests.SchemeResourcePreparationCoexistenceTests testCS06_UninstallInactiveWanxiangRetainsIcePeerInventory",
+        "reason": "CS09-10-01 requires the fixed Wanxiang extract tree"
+      },
+      {
+        "test": "UniverseKeyboardTests.SchemeResourcePreparationCoexistenceTests testCS0910_RealInstallerIceRemovalPreservesCompleteWanxiangInventory",
+        "reason": "CS09-10-01 requires the fixed Wanxiang extract tree"
+      },
+      {
+        "test": "UniverseKeyboardTests.SchemeResourcePreparationCoexistenceTests testCS0910_RealInstallerWanxiangRemovalPreservesCompleteIceInventory",
+        "reason": "CS09-10-01 requires the fixed Ice extract tree"
+      },
+      {
+        "test": "UniverseKeyboardTests.SchemeResourcePreparationCoexistenceTests testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds",
+        "reason": "Ice 2026.06.30 default.yaml fixture is required for P3 fingerprint recovery"
+      },
+      {
+        "test": "UniverseKeyboardTests.SchemeResourcePreparationCoexistenceTests testProductionProcessedIceTreeKeepsOfficialDefaultYamlWhenFixturePresent",
+        "reason": "Set TEST_RUNNER_SCHEME_PIN_ARCHIVE_ROOT to the independently downloaded Ice archives"
+      },
+      {
+        "test": "UniverseKeyboardTests.TD012LMDGDeviceStagingTests testPinnedModelLoadsThroughWanxiangGrammarOnAuthorizedPhysicalDevice",
+        "reason": "TD-012 G2 model-load receipt is physical-device-only"
+      },
+      {
+        "test": "UniverseKeyboardTests.TD012LMDGDeviceStagingTests testRemovePinnedModelAfterAuthorizedPhysicalDeviceSpike",
+        "reason": "TD-012 G2 cleanup is physical-device-only"
+      },
+      {
+        "test": "UniverseKeyboardTests.TD012LMDGDeviceStagingTests testStagePinnedModelForAuthorizedPhysicalDeviceSpike",
+        "reason": "TD-012 G2 staging is physical-device-only"
+      }
+    ]
+  },
+  "opt_in_current52": "previous exact candidate evidence reused, no separate52 run",
+  "source_package_resolution": "existing /private/tmp/uk-armimpl1/SourcePackages; automatic resolution disabled",
+  "hosting": "not performed",
+  "publication": "not authorized/performed",
+  "parent": "Active",
+  "cpu_ui_memory_and_v2_observer": "unverified, Human-approved parent scope limit",
+  "progress_reader_error": "one auxiliary live progress reader lacked current log key before command completion; fixed log path read only; no stage retry/receipt mutation"
+}

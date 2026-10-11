@@ -9,6 +9,9 @@ extension KeyboardViewController {
             button: KeyboardKeyButton,
             phase: KeyboardKeyTrackingPhase
         ) {
+            #if KEYBOARD_WAKE_OWNER_PROBE
+                wakeOwnerProbeTouch(ObjectIdentifier(button), began: phase == .began)
+            #endif
             let role: String
             if button === shiftButton {
                 role = "shift"

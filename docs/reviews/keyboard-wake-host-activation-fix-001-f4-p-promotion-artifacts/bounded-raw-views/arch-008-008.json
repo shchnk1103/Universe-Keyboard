@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+  "origin_sha256": "71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5",
+  "expected_sha256": "71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5",
+  "line_start": 421,
+  "line_end": 480,
+  "lines": [
+    {
+      "line": 421,
+      "text": "        execute("
+    },
+    {
+      "line": 422,
+      "text": "            gate.handleHostDidBecomeActive("
+    },
+    {
+      "line": 423,
+      "text": "                context: id(current),"
+    },
+    {
+      "line": 424,
+      "text": "                hasWindow: true,"
+    },
+    {
+      "line": 425,
+      "text": "                canary: .nonCanaryBuild"
+    },
+    {
+      "line": 426,
+      "text": "            )"
+    },
+    {
+      "line": 427,
+      "text": "        )"
+    },
+    {
+      "line": 428,
+      "text": "        let second = requireArm()"
+    },
+    {
+      "line": 429,
+      "text": "        XCTAssertNotEqual(first.token, second.token)"
+    },
+    {
+      "line": 430,
+      "text": "        XCTAssertEqual(tick(first), .none)"
+    },
+    {
+      "line": 431,
+      "text": "        XCTAssertEqual(tick(first), .none)"
+    },
+    {
+      "line": 432,
+      "text": "        XCTAssertEqual(gate.firstFrameTickCount, 0)"
+    },
+    {
+      "line": 433,
+      "text": "        XCTAssertEqual(tick(second), .none)"
+    },
+    {
+      "line": 434,
+      "text": "        execute(tick(second))"
+    },
+    {
+      "line": 435,
+      "text": "        XCTAssertEqual(firstFrameCount, 1)"
+    },
+    {
+      "line": 436,
+      "text": "    }"
+    },
+    {
+      "line": 437,
+      "text": ""
+    },
+    {
+      "line": 438,
+      "text": "    func testHiddenAndNoWindowDoNotBeginFirstFrameArm() {"
+    },
+    {
+      "line": 439,
+      "text": "        gate.noteViewWillAppear(context: id(current))"
+    },
+    {
+      "line": 440,
+      "text": "        XCTAssertNil(gate.beginFirstFrameArm(hasWindow: true))"
+    },
+    {
+      "line": 441,
+      "text": "        enterVisible()"
+    },
+    {
+      "line": 442,
+      "text": "        XCTAssertNil(gate.beginFirstFrameArm(hasWindow: false))"
+    },
+    {
+      "line": 443,
+      "text": "        XCTAssertFalse(gate.hasLiveFirstFrameArm)"
+    },
+    {
+      "line": 444,
+      "text": "        XCTAssertEqual("
+    },
+    {
+      "line": 445,
+      "text": "            gate.noteFirstFrameTick("
+    },
+    {
+      "line": 446,
+      "text": "                token: 1,"
+    },
+    {
+      "line": 447,
+      "text": "                generation: gate.presentationGeneration,"
+    },
+    {
+      "line": 448,
+      "text": "                hasWindow: true,"
+    },
+    {
+      "line": 449,
+      "text": "                canary: .nonCanaryBuild"
+    },
+    {
+      "line": 450,
+      "text": "            ),"
+    },
+    {
+      "line": 451,
+      "text": "            .none"
+    },
+    {
+      "line": 452,
+      "text": "        )"
+    },
+    {
+      "line": 453,
+      "text": "        XCTAssertEqual(firstFrameCount, 0)"
+    },
+    {
+      "line": 454,
+      "text": "    }"
+    },
+    {
+      "line": 455,
+      "text": ""
+    },
+    {
+      "line": 456,
+      "text": "    func testCurrentArmTokenCompletesExactlyOnSecondTick() {"
+    },
+    {
+      "line": 457,
+      "text": "        enterVisible()"
+    },
+    {
+      "line": 458,
+      "text": "        let arm = requireArm()"
+    },
+    {
+      "line": 459,
+      "text": "        XCTAssertEqual(tick(arm), .none)"
+    },
+    {
+      "line": 460,
+      "text": "        execute(tick(arm))"
+    },
+    {
+      "line": 461,
+      "text": "        XCTAssertEqual(firstFrameCount, 1)"
+    },
+    {
+      "line": 462,
+      "text": "        XCTAssertEqual(tick(arm), .none)"
+    },
+    {
+      "line": 463,
+      "text": "        XCTAssertEqual(firstFrameCount, 1)"
+    },
+    {
+      "line": 464,
+      "text": "        XCTAssertFalse(gate.hasLiveFirstFrameArm)"
+    },
+    {
+      "line": 465,
+      "text": "    }"
+    },
+    {
+      "line": 466,
+      "text": ""
+    },
+    {
+      "line": 467,
+      "text": "    func testRejectedOrInvalidatedArmStopsTicksWithoutRetry() {"
+    },
+    {
+      "line": 468,
+      "text": "        enterVisible()"
+    },
+    {
+      "line": 469,
+      "text": "        execute(gate.handleHostWillResignActive(context: id(current), activatedAtSuspend: false))"
+    },
+    {
+      "line": 470,
+      "text": "        execute("
+    },
+    {
+      "line": 471,
+      "text": "            gate.handleHostDidBecomeActive("
+    },
+    {
+      "line": 472,
+      "text": "                context: id(current),"
+    },
+    {
+      "line": 473,
+      "text": "                hasWindow: true,"
+    },
+    {
+      "line": 474,
+      "text": "                canary: .nonCanaryBuild"
+    },
+    {
+      "line": 475,
+      "text": "            )"
+    },
+    {
+      "line": 476,
+      "text": "        )"
+    },
+    {
+      "line": 477,
+      "text": "        let denied = requireArm()"
+    },
+    {
+      "line": 478,
+      "text": "        XCTAssertEqual(tick(denied), .none)"
+    },
+    {
+      "line": 479,
+      "text": "        XCTAssertEqual(tick(denied, canary: .fenceIssued), .none)"
+    },
+    {
+      "line": 480,
+      "text": "        XCTAssertEqual(firstFrameCount, 0)"
+    }
+  ]
+}

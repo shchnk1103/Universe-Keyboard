@@ -1,0 +1,63 @@
+{
+  "utc": "2026-10-04T11:08:23.701791+00:00",
+  "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "device": {
+    "dataPath": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data",
+    "dataPathSize": 4689084416,
+    "logPath": "/Users/doubleshy0n/Library/Logs/CoreSimulator/405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "lastUsedAt": "2026-10-02T09:04:39Z",
+    "isAvailable": true,
+    "logPathSize": 569344,
+    "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro",
+    "state": "Booted",
+    "name": "iPhone 18 Pro",
+    "runtime": "com.apple.CoreSimulator.SimRuntime.iOS-27-0"
+  },
+  "live_containers": {
+    "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/37ACBFEE-EABE-4987-AD1C-8D8050A9A593/Universe Keyboard.app",
+    "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/B43FA7F3-3BC2-4437-A51E-67C1351531BC",
+    "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/05FFE2DA-4326-45EB-8291-F816EBAE5FC3"
+  },
+  "target_processes": [],
+  "historical": [
+    {
+      "path": "/private/tmp/ukey-wake-m0-20261003/backup",
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-m2r1-20261004/backup",
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-m2r2-20261004/backup",
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-ui-i0-20261003/backup",
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-entry-20261004",
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-grok-f1-20261004",
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-f2-backup-20261004",
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-f2-run-20261004",
+      "exists": true
+    }
+  ],
+  "before_backup_matches_stored_inventories": true,
+  "before_counts_match_receipt": true,
+  "before_codesign_main_exit": 0,
+  "before_codesign_keyboard_exit": 0,
+  "process_false_positive_note": "earlier stop matched this agent command line; live check uses exact app container path",
+  "ok_to_continue": true
+}

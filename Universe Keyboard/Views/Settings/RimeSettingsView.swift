@@ -165,7 +165,9 @@ private struct RimeSchemaDetailView: View {
                 acceptTitle: presentation.action.buttonTitle,
                 acceptSystemImage: presentation.action.buttonSystemImage
             ) {
-                store.acceptLicense(for: presentation.schemaID)
+                if presentation.action != .download {
+                    store.acceptLicense(for: presentation.schemaID)
+                }
                 performLicenseAction(presentation.action, schemaID: presentation.schemaID)
             }
         }
@@ -240,9 +242,7 @@ private struct RimeSchemaDetailView: View {
             Section {
                 SchemaDownloadCardView(
                     schema: schema,
-                    isLicenseAccepted: store.licenseAccepted(for: schema.schemaID),
-                    onShowLicense: { presentLicense(.review, schema: schema) },
-                    onDownload: { store.startDownload(schemaID: schema.schemaID) }
+                    onShowLicense: { presentLicense(.download, schema: schema) }
                 )
             } header: {
                 Text("下载")
@@ -297,6 +297,22 @@ private struct RimeSchemaDetailView: View {
 
     private func presentLicense(_ action: SchemeLicensePresentation.Action, schema: SchemaMetadata) {
         guard let license = schema.licenseDescriptor else { return }
+        if action == .download {
+            for effect in SchemeLicenseDownloadFlow.effects(
+                for: .requestFirstDownload(entryPoint: .settingsDetail, schemaID: schema.schemaID)
+            ) {
+                guard case .presentLicense(_, let schemaID) = effect else {
+                    assertionFailure("First-download request emitted an unexpected effect")
+                    continue
+                }
+                licensePresentation = SchemeLicensePresentation(
+                    schemaID: schemaID,
+                    license: license,
+                    action: .download
+                )
+            }
+            return
+        }
         licensePresentation = SchemeLicensePresentation(
             schemaID: schema.schemaID,
             license: license,
@@ -322,6 +338,19 @@ private struct RimeSchemaDetailView: View {
         switch action {
         case .review:
             break
+        case .download:
+            for effect in SchemeLicenseDownloadFlow.effects(
+                for: .agreeToFirstDownload(entryPoint: .settingsDetail, schemaID: schemaID)
+            ) {
+                switch effect {
+                case .acceptLicense(_, let selectedSchemaID):
+                    store.acceptLicense(for: selectedSchemaID)
+                case .startDownload(_, let selectedSchemaID):
+                    store.startDownload(schemaID: selectedSchemaID)
+                default:
+                    assertionFailure("Download confirmation emitted an unexpected effect")
+                }
+            }
         case .redownload:
             store.forceRedownload(schemaID: schemaID)
         case .checkForUpdate:
@@ -333,12 +362,14 @@ private struct RimeSchemaDetailView: View {
 private struct SchemeLicensePresentation: Identifiable {
     enum Action: String {
         case review
+        case download
         case redownload
         case checkForUpdate
 
         var buttonTitle: String {
             switch self {
             case .review: return "我已阅读"
+            case .download: return SchemeLicenseDownloadCopy.agreeAndDownload
             case .redownload: return "已阅读并重新下载"
             case .checkForUpdate: return "已阅读并检查更新"
             }
@@ -347,6 +378,7 @@ private struct SchemeLicensePresentation: Identifiable {
         var buttonSystemImage: String {
             switch self {
             case .review: return "checkmark"
+            case .download: return "arrow.down.to.line"
             case .redownload: return "arrow.down.circle"
             case .checkForUpdate: return "arrow.triangle.2.circlepath"
             }

@@ -1,0 +1,45 @@
+{
+  "stage": "C5-P Quality round2 only",
+  "worktree": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "candidate_digest": "af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9",
+  "manifest_sha256": "56d6c3b4875712dee712ef93c7e691fd0bf905cbdfd555b96539bed006e34f15",
+  "input_document_hashes_matched": 47,
+  "source_build_hashes_matched": 568,
+  "debug_bundle_hashes_matched": 111,
+  "baseline_existing_files": 2518,
+  "existing_files_preserved_except_owning_assignment": 2517,
+  "existing_file_changes": [
+    "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md"
+  ],
+  "before_assignment_sha256": "58a0afdca0df05c843e9b2a536ced8bf89924cfc867b047f288294043ec03290",
+  "reviewed_assignment_sha256": "b11eb101612a521c0692b412cc18d16a0de7d3c95f32d398440199064662833d",
+  "after_assignment_sha256": "0444a60df74c8d8ffe9fbe52a264445830f81cece3127980f004ab86070e2491",
+  "new_output_hashes": {
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-p-r2-quality-review.md": "b75deed87f460abbafc54c9b7f144ed773e195bbbcfbaf005a9fcd572baa459f",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-p-r2-quality-usage.json": "553783757fcc77ab1625d91dc9572c585e55bba4da159eb071be879a57053fb1",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-p-r2-timer.json": "b6a708fcbe060294f5f779b57d389a1a44ff5845f78c7dc183e030ebe1baccdc",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-p-r2-validation-2026-10-01.md": "2c2c8d927d4ae80825954933707c03dd495706a44de2d4d5b2e220b942ca2727"
+  },
+  "before_complete_status": "/private/tmp/ukey-wake-c5-p-r2-20261001/before-status.txt",
+  "after_complete_status": "/private/tmp/ukey-wake-c5-p-r2-20261001/after-status.txt",
+  "unexecuted": [
+    "source changes",
+    "test",
+    "build",
+    "Simulator/device discovery or operation",
+    "install",
+    "capture or input",
+    "Maps",
+    "Git mutation/publication",
+    "Release"
+  ],
+  "closeout": "owningAssignment only bookkeeping afterreview; frozenmanifest remains bound toreviewedidentity",
+  "dirty_total": 436,
+  "tracked_modified": 19,
+  "untracked": 417,
+  "staged": 0,
+  "status_z_sha256": "b43554b605ad781b3f2a835f376b6bef0ff43175b21d83426ca36ba3dcabe2f0",
+  "date_utc": "2026-10-01T01:35:38.209053+00:00"
+}

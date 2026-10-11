@@ -1,0 +1,44 @@
+{
+  "debug-build": {
+    "exit": 0,
+    "elapsed_seconds": 25.372456073760986,
+    "warnings": [
+      "2026-10-02 14:42:54.628 appintentsmetadataprocessor[92766:38311763] warning: Metadata extraction skipped, no AppIntents.framework dependency found",
+      "2026-10-02 14:43:03.451 appintentsmetadataprocessor[92897:38312734] warning: Metadata extraction skipped, no AppIntents.framework dependency found"
+    ],
+    "errors": [],
+    "log_sha256": "8b78c5d443cc98b90b738d6ad0eb2cb5636e928205c0b35f53050b31b3354939"
+  },
+  "test-build": {
+    "exit": 0,
+    "elapsed_seconds": 6.469090223312378,
+    "warnings": [
+      "2026-10-02 14:44:13.906 appintentsmetadataprocessor[93105:38315048] warning: Metadata extraction skipped, no AppIntents.framework dependency found",
+      "2026-10-02 14:44:15.408 appintentsmetadataprocessor[93131:38315156] warning: Metadata extraction skipped, no AppIntents.framework dependency found",
+      "2026-10-02 14:44:15.946 appintentsmetadataprocessor[93136:38315181] warning: Metadata extraction skipped, no AppIntents.framework dependency found",
+      "2026-10-02 14:44:16.876 appintentsmetadataprocessor[93144:38315225] warning: Metadata extraction skipped, no AppIntents.framework dependency found"
+    ],
+    "errors": [],
+    "log_sha256": "c181448ea404e09cd069525bd9d08d576461a66ddc15a855054dcae07680df0e"
+  },
+  "release-build": {
+    "exit": 0,
+    "elapsed_seconds": 70.09922695159912,
+    "warnings": [
+      "2026-10-02 14:45:18.727 appintentsmetadataprocessor[93474:38318117] warning: Metadata extraction skipped, no AppIntents.framework dependency found",
+      "2026-10-02 14:45:45.548 appintentsmetadataprocessor[93620:38319991] warning: Metadata extraction skipped, no AppIntents.framework dependency found"
+    ],
+    "errors": [],
+    "log_sha256": "189394f96b7f102a22d4c85909b3f96c3377429248263a8b61726f9447db606a"
+  },
+  "ordinary-debug-build": {
+    "exit": 0,
+    "elapsed_seconds": 22.90464997291565,
+    "warnings": [
+      "2026-10-02 14:54:09.861 appintentsmetadataprocessor[94437:38332460] warning: Metadata extraction skipped, no AppIntents.framework dependency found",
+      "2026-10-02 14:54:18.570 appintentsmetadataprocessor[94532:38332934] warning: Metadata extraction skipped, no AppIntents.framework dependency found"
+    ],
+    "errors": [],
+    "log_sha256": "894604bff70a756c1490cb0ba3d09d5abcfbc786aa5443dc841bb0097af125a8"
+  }
+}

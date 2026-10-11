@@ -1,0 +1,44 @@
+[
+  {
+    "argv": [
+      "xcrun",
+      "clang",
+      "-g",
+      "-O0",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "/private/tmp/ukey-host-activation-fix-h0b-20261006/fixture.c",
+      "-o",
+      "/private/tmp/ukey-host-activation-fix-h0b-20261006/fixture"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "codesign",
+      "--force",
+      "--sign",
+      "-",
+      "--entitlements",
+      "/private/tmp/ukey-host-activation-fix-h0b-20261006/entitlements.plist",
+      "/private/tmp/ukey-host-activation-fix-h0b-20261006/fixture"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "/private/tmp/ukey-host-activation-fix-h0b-20261006/fixture: replacing existing signature\n"
+  },
+  {
+    "argv": [
+      "codesign",
+      "--verify",
+      "--strict",
+      "/private/tmp/ukey-host-activation-fix-h0b-20261006/fixture"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  }
+]

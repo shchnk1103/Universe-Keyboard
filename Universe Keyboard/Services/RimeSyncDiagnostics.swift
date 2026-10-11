@@ -33,7 +33,8 @@ nonisolated final class RimeSyncDiagnostics: RimeSyncDiagnosing, Sendable {
                         )?
                         .appendingPathComponent("Diagnostics/v1", isDirectory: true)
                 },
-                isCategoryEnabled: Logger.isLiveCategoryEnabled
+                isCategoryEnabled: Logger.isLiveCategoryEnabled,
+                writerVersion: .v6
             )
     }
 
@@ -242,6 +243,7 @@ nonisolated enum RimeSyncDiagnosticFailureMapper {
         if let error = error as? RimeSyncError {
             switch error {
             case .notConfigured, .accessDenied: return .accessDenied
+            case .keychainAccessDenied: return .keychainAccessDenied
             case .missingEncryptionKey: return .missingEncryptionKey
             case .unsupportedFormat: return .unsupportedFormat
             case .packageTooLarge: return .packageTooLarge

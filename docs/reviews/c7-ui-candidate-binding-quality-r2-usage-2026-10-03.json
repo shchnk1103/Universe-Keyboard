@@ -1,0 +1,320 @@
+{
+  "lane": "QUALITY-C7-UI-CANDIDATE-BINDING",
+  "round": 2,
+  "packet_path": "/private/tmp/ukey-wake-probe-ui-q-r2-20261003/quality-packet.json",
+  "packet_digest_expected": "e68f6f79d79293994b6bd79d51e58401ccd3ac1f8d6d684caab0b8ec4b7226ee",
+  "packet_digest_actual": "e68f6f79d79293994b6bd79d51e58401ccd3ac1f8d6d684caab0b8ec4b7226ee",
+  "packet_digest_match": true,
+  "independence": "未参与C7实现；R2重新独立核验，不沿用R1结论/usage",
+  "baseline": {
+    "worktree": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+    "branch": "codex/keyboard-wake-v3-compatibility-gate",
+    "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+    "candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50"
+  },
+  "criteria": {
+    "Q1": "Covered",
+    "Q2": "Covered",
+    "Q3": "Covered"
+  },
+  "verdict": "Complete; Positive scoped artifact-binding review",
+  "hash_inventory": {
+    "allowed_content": 34,
+    "allowed_binary": 230,
+    "generated_xcent": 0,
+    "repo_hash_only": 1201,
+    "matched": 1465,
+    "missing": 0,
+    "mismatches": 0
+  },
+  "recomputations": {
+    "source_count": 571,
+    "vendor_count": 630,
+    "source_build_inputs_sha256": "5f16aa1031b1ee4a90d72e4d15693e3656b0c746bcd71a10874e90655a0269c9",
+    "vendor_files_sha256": "dbe27c707af8bdbe828acb2d8dc8eb6a948734c4cd10df7fafd5ff7302e270f8",
+    "build_input_digest_sha256": "c8e7a59197568ff3dede14e68a9b674439bd6e8458cf7d5ef8cb696da8700f8e",
+    "candidate_component_hashes": {
+      "build_input_manifest_sha256": "0c2ab27db638647735202b526e06614fa78aa209cf6340b26ff8293cd8e47d61",
+      "candidate_command_sha256": "6e7dd9ccb0d95844d4dead12b29e3f12ca478624dac28c65397a04be907cddca",
+      "payload_digest_sha256": "784c05694e420d3cab5187160c463066070fbdbd72b1c053cd39f3e6fe422aca",
+      "entitlement_rows_sha256": "920e7844ea829d7cfa31b8db9a6f298e3cddc3d1dcdfbbe025b85eaa34e15ea1"
+    },
+    "candidate_sha256": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50",
+    "h1_payload_count": 78,
+    "h1_payload_sha256": "784c05694e420d3cab5187160c463066070fbdbd72b1c053cd39f3e6fe422aca"
+  },
+  "mode_checks": {
+    "H1": {
+      "exit_code": 0,
+      "xcresult": "succeeded",
+      "errors": 0,
+      "warning_count": 0,
+      "raw_build_succeeded": true,
+      "strict_settings": true,
+      "mode_settings": true,
+      "compiler_rows": 6,
+      "compiler_rows_ok": true,
+      "raw_warning_lines": 2,
+      "appintents_notice_only": true
+    },
+    "H2-Debug": {
+      "exit_code": 0,
+      "xcresult": "succeeded",
+      "errors": 0,
+      "warning_count": 0,
+      "raw_build_succeeded": true,
+      "strict_settings": true,
+      "mode_settings": true,
+      "compiler_rows": 6,
+      "compiler_rows_ok": true,
+      "raw_warning_lines": 2,
+      "appintents_notice_only": true
+    },
+    "H2-Release": {
+      "exit_code": 0,
+      "xcresult": "succeeded",
+      "errors": 0,
+      "warning_count": 0,
+      "raw_build_succeeded": true,
+      "strict_settings": true,
+      "mode_settings": true,
+      "compiler_rows": 6,
+      "compiler_rows_ok": true,
+      "raw_warning_lines": 2,
+      "appintents_notice_only": true
+    }
+  },
+  "product_checks": {
+    "H1": {
+      "file_count": 78,
+      "declared_file_count": 78,
+      "payload_bad": 0,
+      "macho_count": 6,
+      "machos": [
+        {
+          "path": "PlugIns/Keyboard.appex/Keyboard",
+          "sha_match": true,
+          "uuid_match": true,
+          "nm_exit": 0,
+          "probe_symbols": 0
+        },
+        {
+          "path": "PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+          "sha_match": true,
+          "uuid_match": true,
+          "nm_exit": 0,
+          "probe_symbols": 134
+        },
+        {
+          "path": "PlugIns/Keyboard.appex/__preview.dylib",
+          "sha_match": true,
+          "uuid_match": true,
+          "nm_exit": 0,
+          "probe_symbols": 0
+        },
+        {
+          "path": "Universe Keyboard",
+          "sha_match": true,
+          "uuid_match": true,
+          "nm_exit": 0,
+          "probe_symbols": 0
+        },
+        {
+          "path": "Universe Keyboard.debug.dylib",
+          "sha_match": true,
+          "uuid_match": true,
+          "nm_exit": 0,
+          "probe_symbols": 0
+        },
+        {
+          "path": "__preview.dylib",
+          "sha_match": true,
+          "uuid_match": true,
+          "nm_exit": 0,
+          "probe_symbols": 0
+        }
+      ],
+      "codesign_all": true,
+      "bundle_info": [
+        {
+          "bundle_id": "com.DoubleShy0N.Universe-Keyboard",
+          "version": "1.0",
+          "build": "1"
+        },
+        {
+          "bundle_id": "com.DoubleShy0N.Universe-Keyboard.Keyboard",
+          "version": "1.0",
+          "build": "1"
+        }
+      ],
+      "contains_test_host": false,
+      "runtime_verified": false,
+      "installed": false
+    },
+    "H2-Debug": {
+      "file_count": 78,
+      "declared_file_count": 78,
+      "payload_bad": 0,
+      "macho_count": 6,
+      "machos": [
+        {
+          "path": "PlugIns/Keyboard.appex/Keyboard",
+          "sha_match": true,
+          "uuid_match": true,
+          "nm_exit": 0,
+          "probe_symbols": 0
+        },
+        {
+          "path": "PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+          "sha_match": true,
+          "uuid_match": true,
+          "nm_exit": 0,
+          "probe_symbols": 0
+        },
+        {
+          "path": "PlugIns/Keyboard.appex/__preview.dylib",
+          "sha_match": true,
+          "uuid_match": true,
+          "nm_exit": 0,
+          "probe_symbols": 0
+        },
+        {
+          "path": "Universe Keyboard",
+          "sha_match": true,
+          "uuid_match": true,
+          "nm_exit": 0,
+          "probe_symbols": 0
+        },
+        {
+          "path": "Universe Keyboard.debug.dylib",
+          "sha_match": true,
+          "uuid_match": true,
+          "nm_exit": 0,
+          "probe_symbols": 0
+        },
+        {
+          "path": "__preview.dylib",
+          "sha_match": true,
+          "uuid_match": true,
+          "nm_exit": 0,
+          "probe_symbols": 0
+        }
+      ],
+      "codesign_all": true,
+      "bundle_info": [
+        {
+          "bundle_id": "com.DoubleShy0N.Universe-Keyboard",
+          "version": "1.0",
+          "build": "1"
+        },
+        {
+          "bundle_id": "com.DoubleShy0N.Universe-Keyboard.Keyboard",
+          "version": "1.0",
+          "build": "1"
+        }
+      ],
+      "contains_test_host": null,
+      "runtime_verified": false,
+      "installed": false
+    },
+    "H2-Release": {
+      "file_count": 74,
+      "declared_file_count": 74,
+      "payload_bad": 0,
+      "macho_count": 2,
+      "machos": [
+        {
+          "path": "PlugIns/Keyboard.appex/Keyboard",
+          "sha_match": true,
+          "uuid_match": true,
+          "nm_exit": 0,
+          "probe_symbols": 0
+        },
+        {
+          "path": "Universe Keyboard",
+          "sha_match": true,
+          "uuid_match": true,
+          "nm_exit": 0,
+          "probe_symbols": 0
+        }
+      ],
+      "codesign_all": true,
+      "bundle_info": [
+        {
+          "bundle_id": "com.DoubleShy0N.Universe-Keyboard",
+          "version": "1.0",
+          "build": "1"
+        },
+        {
+          "bundle_id": "com.DoubleShy0N.Universe-Keyboard.Keyboard",
+          "version": "1.0",
+          "build": "1"
+        }
+      ],
+      "contains_test_host": null,
+      "runtime_verified": false,
+      "installed": false
+    }
+  },
+  "h1_testhost_absent": true,
+  "h1_dsyms": [],
+  "report_path": "/private/tmp/ukey-wake-probe-ui-q-r2-20261003/quality/review.md",
+  "report_sha256": "9fe0cda7b509e110b6bd950fc846ee0366ffffcc0f0e87e5e60514eb5defe079",
+  "call_limit": 6,
+  "calls_used": 4,
+  "soft_seconds": 600,
+  "hard_seconds": 900,
+  "start_utc": "2026-10-02T16:02:56.957776+00:00",
+  "start_monotonic": 1139827.682925291,
+  "report_write_utc": "2026-10-02T16:07:57.475614+00:00",
+  "call_ledger": [
+    {
+      "call": 1,
+      "start_utc": "2026-10-02T16:02:56.957776+00:00",
+      "start_monotonic": 1139827.682925291,
+      "end_utc": "2026-10-02T16:02:56.961108+00:00",
+      "end_monotonic": 1139827.685944,
+      "purpose": "记录本轮计时并读取packet全文、核canonical摘要/范围/输入组",
+      "result": "digest匹配，34内容/230二进制/1201 hash-only；计时文件已写"
+    },
+    {
+      "call": 2,
+      "start_utc": "2026-10-02T16:06:39.539915+00:00",
+      "start_monotonic": 1140050.264499791,
+      "end_utc": "2026-10-02T16:06:42.280284+00:00",
+      "end_monotonic": 1140053.004552041,
+      "purpose": "独立哈希、重算Q1-Q3并写report/usage",
+      "result": "report.md与usage.json已落盘",
+      "elapsed_seconds": 2.7400522499810904
+    },
+    {
+      "call": 3,
+      "start_utc": "2026-10-02T16:07:09.244095+00:00",
+      "start_monotonic": 1140079.96837875,
+      "end_utc": "2026-10-02T16:07:09.253039+00:00",
+      "end_monotonic": 1140079.977242,
+      "purpose": "定位Q1 Partial原因并核验patch insertions/哈希映射/两个重算值",
+      "result": "确认仅为review helper未去缩进导致的假Partial；实际3处条件插入符合范围"
+    },
+    {
+      "call": 4,
+      "start_utc": "2026-10-02T16:07:57.474057+00:00",
+      "start_monotonic": 1140128.198227958,
+      "end_utc": "2026-10-02T16:07:57.475618+00:00",
+      "end_monotonic": 1140128.19969525,
+      "elapsed_seconds": 0.0014672919642180204,
+      "purpose": "更正review/usage一致性并写最终交付",
+      "result": "Q1-Q3一致Covered；报告与usage完成"
+    }
+  ],
+  "caveats": [
+    "不包含实际测试、安装、设备、运行时、dSYM可读性或整体Gate。",
+    "H1 entitlement rows binding已重算；packet本轮未授权generated xcent直接输入，未另称重新提取xcent。"
+  ],
+  "end_utc": "2026-10-02T16:07:57.475618+00:00",
+  "end_monotonic": 1140128.19969525,
+  "elapsed_seconds": 300.51676995912567,
+  "within_soft_limit": true,
+  "within_hard_limit": true,
+  "review_helper_correction": "首稿Q1 Partial来自未剥除统一diff缩进的allowlist比对；call3核对normalized insertion后确认3处均为DEBUG+probe局部刷新，源码/范围结论未变。"
+}

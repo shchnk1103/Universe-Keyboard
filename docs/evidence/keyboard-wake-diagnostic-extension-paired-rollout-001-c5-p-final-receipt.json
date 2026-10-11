@@ -1,0 +1,48 @@
+{
+  "scope": "C5-P independent readonly review only",
+  "worktree": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "input_manifest_sha256": "928bfdd6412ce5b23bdad7cece3141e00c993d191079ea2b7ed692662f06d941",
+  "frozen_input_hashes_matched_before_closeout": 40,
+  "source_build_inputs_matched": 568,
+  "debug_bundle_files_matched": 111,
+  "baseline_existing_files": 2506,
+  "existing_files_preserved_except_owning_assignment": 2505,
+  "existing_changes": [
+    "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md"
+  ],
+  "before_assignment_sha256": "a9ae9c22a5c8b3dc615f2fac4ba8dfab09e47ea7c44f3ab0ebc99ab06ea64615",
+  "reviewed_assignment_sha256": "599138c7eefe29ba531264ad2db636532c28224613a86462902118cf6394636c",
+  "after_assignment_sha256": "58a0afdca0df05c843e9b2a536ced8bf89924cfc867b047f288294043ec03290",
+  "closeout_bookkeeping_after_reviews": "owning Assignment only; immutable review input manifest retains reviewed pre-closeout identity",
+  "review_outputs_sha256": {
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-p-architecture-review.md": "a84edf5893e1719b21f1cc08d56541cb9cb726b41c2e22f72ef196df6cb3e8b8",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-p-architecture-usage.json": "8a0ccc6b4e02d04da65864aeb8c4552be675335303b35ee3489e606d3ba438de",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-p-quality-review.md": "e646bf55a3bbff690fdf4951abd40e84e283e2e70e3916fdcfdc4eec83cded4d",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-p-quality-usage.json": "842848bc2319704c854556c963ac5ac738e4651c2d3cdc6ec508ed5151acbe27",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-p-architecture-factual-reconciliation.json": "e55325c08c8a23617ef0167812fff645a07d2c96bfa2683e74301e31009c8d57",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c5-p-quality-procedural-status.json": "f56ad60ca228e9a1c6f070e0338ae8a91b17f06c978d75f79bfcd057aff8d6ca"
+  },
+  "validation_sha256": "018c0fc5ad5d3ac4ec6fc7780f1d7932b723d583f5060ed492f84f9f5c78142e",
+  "unexecuted": [
+    "source edits",
+    "build",
+    "test",
+    "simulator operations/discovery",
+    "install",
+    "arming",
+    "input",
+    "Maps",
+    "Git publication",
+    "Release"
+  ],
+  "before_complete_status": "/private/tmp/ukey-wake-c5-p-20261001/before-status.txt",
+  "after_complete_status": "/private/tmp/ukey-wake-c5-p-20261001/after-status.txt",
+  "dirty_total": 428,
+  "tracked_modified": 19,
+  "untracked": 409,
+  "staged": 0,
+  "status_z_sha256": "fc85676645d873c29eb5cd2ed31e5b7330220519c124a53eaa62a98dd7ed17bc",
+  "date_utc": "2026-10-01T01:22:03.885407+00:00"
+}

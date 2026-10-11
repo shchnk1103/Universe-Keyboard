@@ -1,0 +1,61 @@
+{
+  "utc": "2026-10-06T01:20:45.794408+00:00",
+  "device": {
+    "dataPath": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data",
+    "dataPathSize": 4805066752,
+    "logPath": "/Users/doubleshy0n/Library/Logs/CoreSimulator/405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "lastUsedAt": "2026-10-02T09:04:39Z",
+    "isAvailable": true,
+    "logPathSize": 507904,
+    "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro",
+    "state": "Booted",
+    "name": "iPhone 18 Pro"
+  },
+  "runtime": "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
+  "paths": {
+    "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/57DC9CDA-B114-469F-98D6-B6C92F4F4AE7/Universe Keyboard.app",
+    "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/B74303BF-6EE1-4316-9CF1-1EB6892E2A88",
+    "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/161B78EE-E85A-47EA-8986-BA1D5AA70E39"
+  },
+  "source_rows": 1156,
+  "pinned_rows": 13,
+  "installed78payload_exact": true,
+  "diagnostic_original_values": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "log_category_display": {
+      "exists": false,
+      "value": null
+    },
+    "rime_deployed": {
+      "exists": true,
+      "value": true
+    },
+    "rime_needs_deploy": {
+      "exists": true,
+      "value": false
+    },
+    "rime_deploying": {
+      "exists": true,
+      "value": false
+    }
+  },
+  "processes": [
+    "64030 Mon Oct  5 20:42:21 2026     /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/57DC9CDA-B114-469F-98D6-B6C92F4F4AE7/Universe Keyboard.app/Universe Keyboard",
+    "64039 Mon Oct  5 20:42:32 2026     /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/57DC9CDA-B114-469F-98D6-B6C92F4F4AE7/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard"
+  ],
+  "callback_template_sha256": "95b0ccf3bdffb8e93ffc0f5ffcbc032e2b61598938f50cae375af3840004f32b",
+  "decoder_sha256": "fc1817ab8843dab76acd9e8ae59277719c059742bb105eebecbc60a66f58775d",
+  "host_syntax_preflight": "PASS; no import into LLDB or live target",
+  "loaded_PID_UUID_and_callback_output": "Pending fresh Maps instance",
+  "new_run_output_dir": "/private/tmp/ukey-host-activation-fix-f4-m-20261006",
+  "actual_calls": 4,
+  "F4-M_status": "Prepared; fresh user state then debugger Entry pending"
+}

@@ -1,0 +1,23 @@
+{
+  "main-data": {
+    "full_inventory_equal": true,
+    "added": [],
+    "removed": [],
+    "changed": [],
+    "payload_changed": []
+  },
+  "app-group": {
+    "full_inventory_equal": true,
+    "added": [],
+    "removed": [],
+    "changed": [],
+    "payload_changed": []
+  },
+  "installed-app": {
+    "full_inventory_equal": true,
+    "added": [],
+    "removed": [],
+    "changed": [],
+    "payload_changed": []
+  }
+}

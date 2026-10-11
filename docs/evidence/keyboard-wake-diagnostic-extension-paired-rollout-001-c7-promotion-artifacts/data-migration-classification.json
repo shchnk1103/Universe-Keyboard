@@ -1,0 +1,21 @@
+{
+  "non_splashboard_before_count": 822,
+  "non_splashboard_after_count": 822,
+  "non_splashboard_byte_equal": true,
+  "all_changes_confined_to_splashboard_snapshots": true,
+  "removed_snapshot_hashes": [
+    "ef8bf1cddeedaf4b85e32bf341f7d2d770614fdc722465fa580c00cd5e8e8b76",
+    "46f2a8e49bbf7f05ba4812fd0a7fb3c06fa0a8b9d56d197c91f55a55b491e7d9",
+    "a1d1777c7d166ae924317b1d5c7c514497b598418f80efeea698f353b3f7a875",
+    "6ab94aaddeff06f8f587695bc5af4c9d174b172ba6bddc18c9a3d31a4dd4ecf0"
+  ],
+  "added_snapshot_hashes": [
+    "a1d1777c7d166ae924317b1d5c7c514497b598418f80efeea698f353b3f7a875",
+    "ef8bf1cddeedaf4b85e32bf341f7d2d770614fdc722465fa580c00cd5e8e8b76",
+    "6ab94aaddeff06f8f587695bc5af4c9d174b172ba6bddc18c9a3d31a4dd4ecf0",
+    "46f2a8e49bbf7f05ba4812fd0a7fb3c06fa0a8b9d56d197c91f55a55b491e7d9"
+  ],
+  "renamed_snapshot_bytes_multiset_equal": true,
+  "appgroup_53_byte_equal": true,
+  "candidate_not_launched": true
+}

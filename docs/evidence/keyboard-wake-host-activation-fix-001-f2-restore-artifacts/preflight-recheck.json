@@ -1,0 +1,95 @@
+{
+  "utc": "2026-10-04T11:15:00.698636+00:00",
+  "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "device": {
+    "dataPath": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data",
+    "dataPathSize": 4690448384,
+    "logPath": "/Users/doubleshy0n/Library/Logs/CoreSimulator/405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "lastUsedAt": "2026-10-02T09:04:39Z",
+    "isAvailable": true,
+    "logPathSize": 569344,
+    "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro",
+    "state": "Booted",
+    "name": "iPhone 18 Pro",
+    "runtime": "com.apple.CoreSimulator.SimRuntime.iOS-27-0"
+  },
+  "live_containers": {
+    "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/37ACBFEE-EABE-4987-AD1C-8D8050A9A593/Universe Keyboard.app",
+    "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/B43FA7F3-3BC2-4437-A51E-67C1351531BC",
+    "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/05FFE2DA-4326-45EB-8291-F816EBAE5FC3"
+  },
+  "target_processes": [],
+  "historical": [
+    {
+      "path": "/private/tmp/ukey-wake-m0-20261003/backup",
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-m2r1-20261004/backup",
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-m2r2-20261004/backup",
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-wake-ui-i0-20261003/backup",
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-entry-20261004",
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-grok-f1-20261004",
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-f2-backup-20261004",
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-f2-run-20261004",
+      "exists": true
+    },
+    {
+      "path": "/private/tmp/ukey-host-activation-fix-f2-after-preservation-20261004",
+      "exists": true
+    }
+  ],
+  "before_backup_matches_stored_inventories": true,
+  "before_live_inventory_counts_match_receipt": true,
+  "before_copy_files_bytes_match_receipt": true,
+  "before_copy_added_provenance_vs_stored_before": 883,
+  "before_counts_match_receipt": true,
+  "before_codesign_main_exit": 0,
+  "before_codesign_keyboard_exit": 0,
+  "after_preservation_payload_matches_live": true,
+  "after_preservation_path": "/private/tmp/ukey-host-activation-fix-f2-after-preservation-20261004",
+  "live_counts": {
+    "main-data": {
+      "files": 872,
+      "directories": 43,
+      "symlinks": 0,
+      "file_bytes": 1190149,
+      "inventory_sha256": "c7d9960de703f9ecda7f1474db3d5c923088d9a75eb573d750360458f907e090"
+    },
+    "app-group": {
+      "files": 4,
+      "directories": 7,
+      "symlinks": 0,
+      "file_bytes": 724,
+      "inventory_sha256": "ed93a8692bff5333f041be6a4b60277922fbff9a21a4a9efede25f6c2ff870e3"
+    },
+    "installed-app": {
+      "files": 111,
+      "directories": 27,
+      "symlinks": 0,
+      "file_bytes": 100583905,
+      "inventory_sha256": "b60e7f90983bddcd7ad8b86b43ee671bcac678a403f09413e4ec818d89159f1e"
+    }
+  },
+  "ok_to_continue": true,
+  "note": "pre-install recheck; no mutations"
+}

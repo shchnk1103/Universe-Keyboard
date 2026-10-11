@@ -1,0 +1,197 @@
+{
+  "checked_utc": "2026-10-01T02:41:37.255210+00:00",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "candidate_digest": "af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9",
+  "target": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "exclusive_authority": "Human latest confirmation through this C5-R run",
+  "no_rebuild_human_statement": true,
+  "installed_app_path": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/1C8EAA6A-D18A-4684-B4E4-95252930B447/Universe Keyboard.app",
+  "installed_tree_count": 111,
+  "installed_tree_matches": true,
+  "mach_o_payloads": [
+    {
+      "path": "Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_-8730D61D9395D3A_PackageProduct",
+      "sha256": "d93ff7ffe50f05ac458ef448e8ac61f4014b9c90862bf7515b9c57056009bb0c",
+      "size": 9134112,
+      "uuid": [
+        [
+          "D4E6B3DC-F9F5-329F-8058-6693A6637E0B",
+          "arm64"
+        ]
+      ]
+    },
+    {
+      "path": "Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/RimeBridge_57276DBF982DF6E4_PackageProduct",
+      "sha256": "52ca55381df3cf609f6df128b21ce88dfc71d2329c1cadc57a3511465a33abec",
+      "size": 6504912,
+      "uuid": [
+        [
+          "4F3DA6EA-7C6B-370A-A2CB-4B7179B9B0B5",
+          "arm64"
+        ]
+      ]
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/Keyboard",
+      "sha256": "3a1c3ff7454be12c45c58866bb801917644c68af1f986cd7918663e3022f4cc7",
+      "size": 37872,
+      "uuid": [
+        [
+          "AC319AF9-EB52-3C98-9AEE-66200C42AAB2",
+          "arm64"
+        ]
+      ]
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+      "sha256": "efe14b5b4e0e21b8584658489402c6fdb7cbcee19359122b23a5558e9d595b4a",
+      "size": 4870784,
+      "uuid": [
+        [
+          "BFD00CD5-CD37-32C4-B1E4-F73432658B7F",
+          "arm64"
+        ]
+      ]
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/__preview.dylib",
+      "sha256": "eccef4a1b897ac811c714b630fbce2872a5e95af9e026818a5f6a38ef7a59f91",
+      "size": 16800,
+      "uuid": [
+        [
+          "984A99F0-EDBC-3181-8D6A-151FC3FF26B3",
+          "arm64"
+        ]
+      ]
+    },
+    {
+      "path": "PlugIns/UniverseKeyboardTests.xctest/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_-8730D61D9395D3A_PackageProduct",
+      "sha256": "d93ff7ffe50f05ac458ef448e8ac61f4014b9c90862bf7515b9c57056009bb0c",
+      "size": 9134112,
+      "uuid": [
+        [
+          "D4E6B3DC-F9F5-329F-8058-6693A6637E0B",
+          "arm64"
+        ]
+      ]
+    },
+    {
+      "path": "PlugIns/UniverseKeyboardTests.xctest/Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/RimeBridge_57276DBF982DF6E4_PackageProduct",
+      "sha256": "52ca55381df3cf609f6df128b21ce88dfc71d2329c1cadc57a3511465a33abec",
+      "size": 6504912,
+      "uuid": [
+        [
+          "4F3DA6EA-7C6B-370A-A2CB-4B7179B9B0B5",
+          "arm64"
+        ]
+      ]
+    },
+    {
+      "path": "PlugIns/UniverseKeyboardTests.xctest/UniverseKeyboardTests",
+      "sha256": "97c82582192e5accbf4d3cb118acbb1c07751444a1d991cdf303f159a5926f6c",
+      "size": 9119088,
+      "uuid": [
+        [
+          "5E28F831-9972-37CB-81E7-F37A3A65F9DA",
+          "arm64"
+        ]
+      ]
+    },
+    {
+      "path": "Universe Keyboard",
+      "sha256": "a9d2535534d92f804b9a3630a5c978ec24c65119afe4778d7db61812c1a2c6d2",
+      "size": 40512,
+      "uuid": [
+        [
+          "3841C318-24FB-3458-B189-8B0C8F823D50",
+          "arm64"
+        ]
+      ]
+    },
+    {
+      "path": "Universe Keyboard.debug.dylib",
+      "sha256": "69fc28f3ef5acb268e309a459aa0eae4ca8b9fe02c88f359580ba512af2cd505",
+      "size": 17497520,
+      "uuid": [
+        [
+          "3F14858F-82CE-30F1-BFC3-09201BF7FE20",
+          "arm64"
+        ]
+      ]
+    },
+    {
+      "path": "__preview.dylib",
+      "sha256": "39c5084b204f9a2a3244e4b94d1d38fe74346d45c4fc0a6a7b1f3d38a9645a0a",
+      "size": 16800,
+      "uuid": [
+        [
+          "3157B785-8C10-368F-A3C4-DB591625C61D",
+          "arm64"
+        ]
+      ]
+    }
+  ],
+  "group_path": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/B0D7CE38-2B36-4AF1-B585-63ED3DA340E0",
+  "prefs_path": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/B0D7CE38-2B36-4AF1-B585-63ED3DA340E0/Library/Preferences/group.com.DoubleShy0N.Universe-Keyboard.plist",
+  "capture_observed_before_machine_actions": {
+    "logging_enabled": {
+      "present": true,
+      "value": true
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "present": true,
+      "value": {
+        "plist_type": "date",
+        "iso_utc": "2026-10-01T03:09:27.894889+00:00"
+      }
+    },
+    "log_category_disp": {
+      "present": false,
+      "value": null
+    },
+    "log_category_engine": {
+      "present": false,
+      "value": null
+    }
+  },
+  "human_armed_before_snapshot": true,
+  "capture_original_before_human_actions": "pending Human response; do not treat armed snapshot as original baseline",
+  "deployment_selected": {
+    "rime_deployed": {
+      "present": true,
+      "value": true
+    },
+    "rime_deploying": {
+      "present": true,
+      "value": false
+    },
+    "rime_needs_deploy": {
+      "present": true,
+      "value": false
+    },
+    "rime_fuzzy_pending_deploy": {
+      "present": true,
+      "value": false
+    },
+    "rime_user_dict_pending_deploy": {
+      "present": true,
+      "value": false
+    },
+    "rime_advanced_input_pending_deploy": {
+      "present": true,
+      "value": false
+    },
+    "rime_deploy_auto_retry_suppressed": {
+      "present": true,
+      "value": false
+    }
+  },
+  "deployment_stable": true,
+  "source_build_match": 568,
+  "built_bundle_match": 111,
+  "baseline_existing_files": 2553,
+  "dirty_before": 463,
+  "staged_before": 0,
+  "phase": "preflight-only; no arming/input yet"
+}

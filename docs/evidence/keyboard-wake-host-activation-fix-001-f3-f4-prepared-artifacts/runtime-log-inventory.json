@@ -1,0 +1,154 @@
+[
+  {
+    "log": "A2-V-5-keychain.log",
+    "log_sha256": "1a9afc01554a2d3d3b6dd2eac918fab81e1d250af7a44877cfa515ea5ee7b898",
+    "line": 1723,
+    "kind": "iohid_loader_error",
+    "text": "2026-10-05 00:21:20.132399+0800 Universe Keyboard[64634:42372057] [loading] Error loading /System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib (100):  dlopen(/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib, 0x0106): tried: '/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData/Build/Products/Debug-iphonesimulator/IOHIDLib' (no such file), '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/IOHIDLib' (no such file), '/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.pL3kPh/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (no such file), '/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (fat file, but missing compatible architecture (have 'x86_64,arm64e,arm64e.x1', need 'arm64, arm64'))",
+    "last_started_test": null
+  },
+  {
+    "log": "A2-V-5-keychain.log",
+    "log_sha256": "1a9afc01554a2d3d3b6dd2eac918fab81e1d250af7a44877cfa515ea5ee7b898",
+    "line": 1724,
+    "kind": "iohid_factory_companion",
+    "text": "2026-10-05 00:21:20.132882+0800 Universe Keyboard[64634:42372057] [plugin] Cannot find function pointer IOHIDLibFactory for factory <CFUUID 0x106b56320> 13AA9C44-6F1B-11D4-907C-0005028F18D5 in CFBundle/CFPlugIn 0x10687ae60 </System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin> (bundle, not loaded)",
+    "last_started_test": null
+  },
+  {
+    "log": "A2-V-5-keychain.log",
+    "log_sha256": "1a9afc01554a2d3d3b6dd2eac918fab81e1d250af7a44877cfa515ea5ee7b898",
+    "line": 1727,
+    "kind": "iohid_loader_error",
+    "text": "2026-10-05 00:21:20.136758+0800 Universe Keyboard[64634:42372057] [loading] Error loading /System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib (100):  dlopen(/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib, 0x0106): tried: '/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData/Build/Products/Debug-iphonesimulator/IOHIDLib' (no such file), '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/IOHIDLib' (no such file), '/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.pL3kPh/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (no such file), '/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (fat file, but missing compatible architecture (have 'x86_64,arm64e,arm64e.x1', need 'arm64, arm64'))",
+    "last_started_test": null
+  },
+  {
+    "log": "A2-V-5-keychain.log",
+    "log_sha256": "1a9afc01554a2d3d3b6dd2eac918fab81e1d250af7a44877cfa515ea5ee7b898",
+    "line": 1728,
+    "kind": "iohid_factory_companion",
+    "text": "2026-10-05 00:21:20.137061+0800 Universe Keyboard[64634:42372057] [plugin] Cannot find function pointer IOHIDLibFactory for factory <CFUUID 0x106b56320> 13AA9C44-6F1B-11D4-907C-0005028F18D5 in CFBundle/CFPlugIn 0x10687ae60 </System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin> (bundle, not loaded)",
+    "last_started_test": null
+  },
+  {
+    "log": "A2-V-5-keychain.log",
+    "log_sha256": "1a9afc01554a2d3d3b6dd2eac918fab81e1d250af7a44877cfa515ea5ee7b898",
+    "line": 1740,
+    "kind": "iohid_loader_error",
+    "text": "2026-10-05 00:21:22.033163+0800 Universe Keyboard[64634:42372057] [loading] Error loading /System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib (100):  dlopen(/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib, 0x0106): tried: '/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData/Build/Products/Debug-iphonesimulator/IOHIDLib' (no such file), '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/IOHIDLib' (no such file), '/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.pL3kPh/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (no such file), '/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (fat file, but missing compatible architecture (have 'x86_64,arm64e,arm64e.x1', need 'arm64, arm64'))",
+    "last_started_test": "Test Case '-[UniverseKeyboardTests.RimeSyncModelTests testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem]' started."
+  },
+  {
+    "log": "A2-V-5-keychain.log",
+    "log_sha256": "1a9afc01554a2d3d3b6dd2eac918fab81e1d250af7a44877cfa515ea5ee7b898",
+    "line": 1741,
+    "kind": "iohid_factory_companion",
+    "text": "2026-10-05 00:21:22.033496+0800 Universe Keyboard[64634:42372057] [plugin] Cannot find function pointer IOHIDLibFactory for factory <CFUUID 0x106b56320> 13AA9C44-6F1B-11D4-907C-0005028F18D5 in CFBundle/CFPlugIn 0x10687ae60 </System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin> (bundle, not loaded)",
+    "last_started_test": "Test Case '-[UniverseKeyboardTests.RimeSyncModelTests testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem]' started."
+  },
+  {
+    "log": "A2-V-5-keychain.log",
+    "log_sha256": "1a9afc01554a2d3d3b6dd2eac918fab81e1d250af7a44877cfa515ea5ee7b898",
+    "line": 1744,
+    "kind": "iohid_loader_error",
+    "text": "2026-10-05 00:21:22.038961+0800 Universe Keyboard[64634:42372057] [loading] Error loading /System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib (100):  dlopen(/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib, 0x0106): tried: '/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData/Build/Products/Debug-iphonesimulator/IOHIDLib' (no such file), '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/IOHIDLib' (no such file), '/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.pL3kPh/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (no such file), '/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (fat file, but missing compatible architecture (have 'x86_64,arm64e,arm64e.x1', need 'arm64, arm64'))",
+    "last_started_test": "Test Case '-[UniverseKeyboardTests.RimeSyncModelTests testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem]' started."
+  },
+  {
+    "log": "A2-V-5-keychain.log",
+    "log_sha256": "1a9afc01554a2d3d3b6dd2eac918fab81e1d250af7a44877cfa515ea5ee7b898",
+    "line": 1745,
+    "kind": "iohid_factory_companion",
+    "text": "2026-10-05 00:21:22.039247+0800 Universe Keyboard[64634:42372057] [plugin] Cannot find function pointer IOHIDLibFactory for factory <CFUUID 0x106b56320> 13AA9C44-6F1B-11D4-907C-0005028F18D5 in CFBundle/CFPlugIn 0x10687ae60 </System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin> (bundle, not loaded)",
+    "last_started_test": "Test Case '-[UniverseKeyboardTests.RimeSyncModelTests testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem]' started."
+  },
+  {
+    "log": "A2-V-3-app-keyboard.log",
+    "log_sha256": "6f64d5f7b4220abcb4b35515c6246fad0ceb847d6060c3ffd29ae163576e12e5",
+    "line": 2950,
+    "kind": "iohid_loader_error",
+    "text": "2026-10-05 00:18:22.831697+0800 Universe Keyboard[63935:42364845] [loading] Error loading /System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib (100):  dlopen(/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib, 0x0106): tried: '/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData/Build/Products/Debug-iphonesimulator/IOHIDLib' (no such file), '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/IOHIDLib' (no such file), '/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.pL3kPh/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (no such file), '/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (fat file, but missing compatible architecture (have 'x86_64,arm64e,arm64e.x1', need 'arm64, arm64'))",
+    "last_started_test": null
+  },
+  {
+    "log": "A2-V-3-app-keyboard.log",
+    "log_sha256": "6f64d5f7b4220abcb4b35515c6246fad0ceb847d6060c3ffd29ae163576e12e5",
+    "line": 2951,
+    "kind": "iohid_factory_companion",
+    "text": "2026-10-05 00:18:22.832152+0800 Universe Keyboard[63935:42364845] [plugin] Cannot find function pointer IOHIDLibFactory for factory <CFUUID 0x1098027e0> 13AA9C44-6F1B-11D4-907C-0005028F18D5 in CFBundle/CFPlugIn 0x108ef01c0 </System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin> (bundle, not loaded)",
+    "last_started_test": null
+  },
+  {
+    "log": "A2-V-3-app-keyboard.log",
+    "log_sha256": "6f64d5f7b4220abcb4b35515c6246fad0ceb847d6060c3ffd29ae163576e12e5",
+    "line": 2954,
+    "kind": "iohid_loader_error",
+    "text": "2026-10-05 00:18:22.835589+0800 Universe Keyboard[63935:42364845] [loading] Error loading /System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib (100):  dlopen(/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib, 0x0106): tried: '/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData/Build/Products/Debug-iphonesimulator/IOHIDLib' (no such file), '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/IOHIDLib' (no such file), '/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.pL3kPh/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (no such file), '/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (fat file, but missing compatible architecture (have 'x86_64,arm64e,arm64e.x1', need 'arm64, arm64'))",
+    "last_started_test": null
+  },
+  {
+    "log": "A2-V-3-app-keyboard.log",
+    "log_sha256": "6f64d5f7b4220abcb4b35515c6246fad0ceb847d6060c3ffd29ae163576e12e5",
+    "line": 2955,
+    "kind": "iohid_factory_companion",
+    "text": "2026-10-05 00:18:22.835845+0800 Universe Keyboard[63935:42364845] [plugin] Cannot find function pointer IOHIDLibFactory for factory <CFUUID 0x1098027e0> 13AA9C44-6F1B-11D4-907C-0005028F18D5 in CFBundle/CFPlugIn 0x108ef01c0 </System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin> (bundle, not loaded)",
+    "last_started_test": null
+  },
+  {
+    "log": "A2-V-3-app-keyboard.log",
+    "log_sha256": "6f64d5f7b4220abcb4b35515c6246fad0ceb847d6060c3ffd29ae163576e12e5",
+    "line": 2960,
+    "kind": "iohid_loader_error",
+    "text": "2026-10-05 00:18:24.537696+0800 Universe Keyboard[63935:42364845] [loading] Error loading /System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib (100):  dlopen(/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib, 0x0106): tried: '/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData/Build/Products/Debug-iphonesimulator/IOHIDLib' (no such file), '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/IOHIDLib' (no such file), '/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.pL3kPh/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (no such file), '/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (fat file, but missing compatible architecture (have 'x86_64,arm64e,arm64e.x1', need 'arm64, arm64'))",
+    "last_started_test": null
+  },
+  {
+    "log": "A2-V-3-app-keyboard.log",
+    "log_sha256": "6f64d5f7b4220abcb4b35515c6246fad0ceb847d6060c3ffd29ae163576e12e5",
+    "line": 2961,
+    "kind": "iohid_factory_companion",
+    "text": "2026-10-05 00:18:24.538130+0800 Universe Keyboard[63935:42364845] [plugin] Cannot find function pointer IOHIDLibFactory for factory <CFUUID 0x1098027e0> 13AA9C44-6F1B-11D4-907C-0005028F18D5 in CFBundle/CFPlugIn 0x108ef01c0 </System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin> (bundle, not loaded)",
+    "last_started_test": null
+  },
+  {
+    "log": "A2-V-3-app-keyboard.log",
+    "log_sha256": "6f64d5f7b4220abcb4b35515c6246fad0ceb847d6060c3ffd29ae163576e12e5",
+    "line": 2964,
+    "kind": "iohid_loader_error",
+    "text": "2026-10-05 00:18:24.542412+0800 Universe Keyboard[63935:42364845] [loading] Error loading /System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib (100):  dlopen(/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib, 0x0106): tried: '/tmp/ukey-host-activation-fix-a2-validation-run-20261005/DerivedData/Build/Products/Debug-iphonesimulator/IOHIDLib' (no such file), '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/IOHIDLib' (no such file), '/private/var/run/com.apple.security.cryptexd/mnt/com.apple.iPhoneOS.SimulatorRuntime-v24.1.434.0.pL3kPh/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 27.0.simruntime/Contents/Resources/RuntimeRoot/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (no such file), '/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (fat file, but missing compatible architecture (have 'x86_64,arm64e,arm64e.x1', need 'arm64, arm64'))",
+    "last_started_test": null
+  },
+  {
+    "log": "A2-V-3-app-keyboard.log",
+    "log_sha256": "6f64d5f7b4220abcb4b35515c6246fad0ceb847d6060c3ffd29ae163576e12e5",
+    "line": 2965,
+    "kind": "iohid_factory_companion",
+    "text": "2026-10-05 00:18:24.542852+0800 Universe Keyboard[63935:42364845] [plugin] Cannot find function pointer IOHIDLibFactory for factory <CFUUID 0x1098027e0> 13AA9C44-6F1B-11D4-907C-0005028F18D5 in CFBundle/CFPlugIn 0x108ef01c0 </System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin> (bundle, not loaded)",
+    "last_started_test": null
+  },
+  {
+    "log": "A2-V-2-rimebridge.log",
+    "log_sha256": "a963ffc4baebb7e48483608f0da149586c319a5e1babd1011be43e8df534adb5",
+    "line": 1697,
+    "kind": "rime_error",
+    "text": "E20261005 00:16:08.392160 0x16bcb3000 text_db.cc:132] Error opening db 'essay' read-only.",
+    "last_started_test": "Test Case '-[RimeBridgeTests.RimeEngineContractTests testDeploymentServiceObservesRealTerminalSuccessAndFunctionalSchema]' started."
+  },
+  {
+    "log": "A2-V-2-rimebridge.log",
+    "log_sha256": "a963ffc4baebb7e48483608f0da149586c319a5e1babd1011be43e8df534adb5",
+    "line": 1910,
+    "kind": "rime_error",
+    "text": "E20261005 00:16:08.487387 0x16bcb3000 config_data.cc:78] Error parsing YAML \"/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/tmp/rime-deployment-input-7F57F23F-05F7-43B6-B1FA-70FBF8B058C1/shared/contract_fixture.schema.yaml\" : yaml-cpp: error at line 2, column 1: end of sequence flow not found",
+    "last_started_test": "Test Case '-[RimeBridgeTests.RimeEngineContractTests testRealDeployerFailsClosedForMalformedSchema]' started."
+  },
+  {
+    "log": "A2-V-2-rimebridge.log",
+    "log_sha256": "a963ffc4baebb7e48483608f0da149586c319a5e1babd1011be43e8df534adb5",
+    "line": 1911,
+    "kind": "rime_error",
+    "text": "E20261005 00:16:08.488729 0x16bcb3000 deployment_tasks.cc:338] invalid schema definition in '/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/tmp/rime-deployment-input-7F57F23F-05F7-43B6-B1FA-70FBF8B058C1/shared/contract_fixture.schema.yaml'.",
+    "last_started_test": "Test Case '-[RimeBridgeTests.RimeEngineContractTests testRealDeployerFailsClosedForMalformedSchema]' started."
+  }
+]

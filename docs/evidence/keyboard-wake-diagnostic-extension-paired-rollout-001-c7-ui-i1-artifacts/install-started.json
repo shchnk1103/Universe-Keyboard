@@ -1,0 +1,10 @@
+{
+  "argv": [
+    "xcrun",
+    "simctl",
+    "install",
+    "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "/private/tmp/ukey-wake-probe-ui-candidate-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app"
+  ],
+  "utc": "2026-10-03T08:37:17.127390+00:00"
+}

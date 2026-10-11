@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift",
+  "origin_sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+  "expected_sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+  "line_start": 661,
+  "line_end": 720,
+  "lines": [
+    {
+      "line": 661,
+      "text": "    }"
+    },
+    {
+      "line": 662,
+      "text": ""
+    },
+    {
+      "line": 663,
+      "text": "    private func logHorizontalFallbackDecision("
+    },
+    {
+      "line": 664,
+      "text": "        _ recognizer: UIPanGestureRecognizer,"
+    },
+    {
+      "line": 665,
+      "text": "        allowed: Bool,"
+    },
+    {
+      "line": 666,
+      "text": "        reason: String"
+    },
+    {
+      "line": 667,
+      "text": "    ) {"
+    },
+    {
+      "line": 668,
+      "text": "        guard CandidateTouchDiagnostics.isEnabled else { return }"
+    },
+    {
+      "line": 669,
+      "text": "        let point = recognizer.location(in: self)"
+    },
+    {
+      "line": 670,
+      "text": "        let collectionPoint = collectionView.convert(point, from: self)"
+    },
+    {
+      "line": 671,
+      "text": "        let indexPath = collectionView.indexPathForItem(at: collectionPoint)"
+    },
+    {
+      "line": 672,
+      "text": "        Logger.shared.debug("
+    },
+    {
+      "line": 673,
+      "text": "            \"candidateTouch bar horizontalFallback shouldBegin allowed=\\(allowed) \""
+    },
+    {
+      "line": 674,
+      "text": "                + \"reason=\\(reason) point=\\(CandidateTouchDiagnostics.pointDescription(point)) \""
+    },
+    {
+      "line": 675,
+      "text": "                + \"collectionPoint=\\(CandidateTouchDiagnostics.pointDescription(collectionPoint)) \""
+    },
+    {
+      "line": 676,
+      "text": "                + \"index=\\(indexPath.map { String($0.item) } ?? \"nil\")\","
+    },
+    {
+      "line": 677,
+      "text": "            category: .display"
+    },
+    {
+      "line": 678,
+      "text": "        )"
+    },
+    {
+      "line": 679,
+      "text": "    }"
+    },
+    {
+      "line": 680,
+      "text": ""
+    },
+    {
+      "line": 681,
+      "text": "    static func trailingChromeImage(expanding: Bool) -> UIImage? {"
+    },
+    {
+      "line": 682,
+      "text": "        let name = expanding ? \"chevron.down\" : \"chevron.down.circle\""
+    },
+    {
+      "line": 683,
+      "text": "        return UIImage("
+    },
+    {
+      "line": 684,
+      "text": "            systemName: name,"
+    },
+    {
+      "line": 685,
+      "text": "            withConfiguration: UIImage.SymbolConfiguration(pointSize: 12, weight: .medium)"
+    },
+    {
+      "line": 686,
+      "text": "        )?"
+    },
+    {
+      "line": 687,
+      "text": "        .withRenderingMode(.alwaysTemplate)"
+    },
+    {
+      "line": 688,
+      "text": "    }"
+    },
+    {
+      "line": 689,
+      "text": ""
+    },
+    {
+      "line": 690,
+      "text": "    private static func makeExpandButton(target: Any?, action: Selector) -> UIButton {"
+    },
+    {
+      "line": 691,
+      "text": "        let button = CandidateBarExpandButton(type: .custom)"
+    },
+    {
+      "line": 692,
+      "text": "        button.translatesAutoresizingMaskIntoConstraints = false"
+    },
+    {
+      "line": 693,
+      "text": "        button.backgroundColor = UIColor.systemGray.withAlphaComponent(0.001)"
+    },
+    {
+      "line": 694,
+      "text": "        button.tintColor = .secondaryLabel"
+    },
+    {
+      "line": 695,
+      "text": "        button.setImage(trailingChromeImage(expanding: true), for: .normal)"
+    },
+    {
+      "line": 696,
+      "text": "        button.addTarget(target, action: action, for: .touchUpInside)"
+    },
+    {
+      "line": 697,
+      "text": "        button.accessibilityLabel = \"展开更多候选词\""
+    },
+    {
+      "line": 698,
+      "text": "        button.accessibilityHint = \"双击以查看完整候选列表\""
+    },
+    {
+      "line": 699,
+      "text": "        return button"
+    },
+    {
+      "line": 700,
+      "text": "    }"
+    },
+    {
+      "line": 701,
+      "text": "}"
+    },
+    {
+      "line": 702,
+      "text": ""
+    },
+    {
+      "line": 703,
+      "text": "#if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+    },
+    {
+      "line": 704,
+      "text": "    private final class WakeOwnerProbeTouchObserver: UIGestureRecognizer {"
+    },
+    {
+      "line": 705,
+      "text": "        var onTouch: ((ObjectIdentifier, Bool) -> Void)?"
+    },
+    {
+      "line": 706,
+      "text": "        private var active: Set<ObjectIdentifier> = []"
+    },
+    {
+      "line": 707,
+      "text": "        override func canPrevent(_ preventedGestureRecognizer: UIGestureRecognizer) -> Bool { false }"
+    },
+    {
+      "line": 708,
+      "text": "        override func canBePrevented(by preventingGestureRecognizer: UIGestureRecognizer) -> Bool { false }"
+    },
+    {
+      "line": 709,
+      "text": "        override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {"
+    },
+    {
+      "line": 710,
+      "text": "            for touch in touches {"
+    },
+    {
+      "line": 711,
+      "text": "                let identifier = ObjectIdentifier(touch)"
+    },
+    {
+      "line": 712,
+      "text": "                active.insert(identifier)"
+    },
+    {
+      "line": 713,
+      "text": "                onTouch?(identifier, true)"
+    },
+    {
+      "line": 714,
+      "text": "            }"
+    },
+    {
+      "line": 715,
+      "text": "            state = .began"
+    },
+    {
+      "line": 716,
+      "text": "        }"
+    },
+    {
+      "line": 717,
+      "text": "        override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) { state = .changed }"
+    },
+    {
+      "line": 718,
+      "text": "        override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) { finish(touches) }"
+    },
+    {
+      "line": 719,
+      "text": "        override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) { finish(touches) }"
+    },
+    {
+      "line": 720,
+      "text": "        private func finish(_ touches: Set<UITouch>) {"
+    }
+  ]
+}

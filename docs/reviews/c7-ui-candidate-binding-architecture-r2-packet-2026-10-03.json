@@ -1,0 +1,69 @@
+{
+  "work_item": "KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001",
+  "lane": "ARCH-C7-UI-CANDIDATE-BINDING",
+  "round": 2,
+  "authorization": "开始只补齐 Quality 独立交付及 Architecture 报告一致性",
+  "baseline": {
+    "worktree": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+    "branch": "codex/keyboard-wake-v3-compatibility-gate",
+    "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+    "candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50"
+  },
+  "allowed_content_inputs": {
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/AGENTS.md": "947743e29a5987f9b1abb9c220a28ebcb92bd766928e22c1dd67c046bbe62152",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/ASSIGNMENT_POLICY.md": "e90dd8f06371e9367652d4e7cc63dee31ee7b1ac855e7802d6d2e9b8e1e90680",
+    "/private/tmp/ukey-wake-probe-ui-q-20261002/architecture-packet.json": "119b08225d2674b76b2649657006dcf6e957e4447f0590f66d769b4bdd3441a8",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/c7-ui-candidate-binding-architecture-r1-review-2026-10-02.md": "f4179e249d1bdee48a6dbd4a541ca02b5a2d035a25ff4ec04eba8a2bd8fff0c3",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/c7-ui-candidate-binding-architecture-r1-usage-2026-10-02.json": "2f04ba5b15c97d8631d6c83f12e54d4e13c62e8b9d36158a9a3923a2349b5d45",
+    "/private/tmp/ukey-wake-probe-ui-q-20261002/root-stop-and-adjudication.json": "0c4e1961784acf350a242f3166172183c13e9990fe781451fd3d1d0e3f124b50",
+    "/private/tmp/ukey-wake-probe-ui-q-r2-20261003/entry.json": "1349628d00c3a57917f650f51d79a11ae8411fc9caa008ecb7416f17b2acfe6c"
+  },
+  "allowed_binary_inputs": {},
+  "allowed_generated_xcent_inputs": {},
+  "allowed_hash_only_repo_inputs": {},
+  "criteria": {
+    "C1": "Independently reconcile R1 report/usage actual402.631986seconds against360hard, call5 afterhard; R1 Complete/Positive text cannot be accepted, formalPartial/incomplete retained. Original A1/A2 substantiveCovered remains only reported historical checks.",
+    "C2": "Deliver NEW R2 report+usage consistent: Complete only this consistency supplement; NOT originalartifact review complete/positive acceptance, no retro budget waiver/newartifact acceptance. Record original report+usage hashes unchanged and old missing Quality remains distinct. Do not modify old reports or reread binary/source."
+  },
+  "allowed_operations": [
+    "Read/hash only seven allowed content paths",
+    "Python JSON/time/hash consistency computations",
+    "Write new R2 report and usage only own scratch"
+  ],
+  "outputs": {
+    "report": "/private/tmp/ukey-wake-probe-ui-q-r2-20261003/architecture/review.md",
+    "usage": "/private/tmp/ukey-wake-probe-ui-q-r2-20261003/architecture/usage.json",
+    "findings": "in review criteria rows",
+    "scratch": "/private/tmp/ukey-wake-probe-ui-q-r2-20261003/architecture"
+  },
+  "budget": {
+    "max_calls": 4,
+    "hard_elapsed_seconds": 600,
+    "soft_elapsed_seconds": 360,
+    "checkpoint": "call2 unless report+usage delivered together; no extra checkpoint needed after final",
+    "start": "first actual toolcall; capture actual UTC and monotonic",
+    "count": "actual underlying toolcalls incl exec_command/collaboration, wrapper not counted; subprocess operations within one toolcall are not separate MCP calls",
+    "stop": "earliest call or elapsed ceiling; leave ample time to write concise report+usage together before hard, no automatic renewal",
+    "delivery": "Prefer2calls: parse packet and inspect inputs programmatically without dumping huge maps/logs; second call independently verify AND write concise report/usage together. Report <=600Chinese chars plus identity table. No extra message tools needed."
+  },
+  "acceptance": "C1-C2 Covered permits Complete consistency-only supplement; R1 artifact acceptance remains Partial/incomplete. No new A1/A2 artifact acceptance, no Positive gate/install, no retroactive budget acceptance.",
+  "exclusions": [
+    "source/recipe/build product/old report mutations",
+    "build/test/device/simulator/container/UI/LLDB/Maps/network",
+    "Git stage/commit/push/reset/branch change",
+    "new source contents outside3 allowed files; unrelated architecture investigation",
+    "delegation, automatic budget renewal",
+    "runtime root cause/button delay proof/old Partial or budget acceptance",
+    "binary/source/build artifacts reading (no new A1/A2 review)",
+    "rewrite R1 report/usage or root stop receipt",
+    "reclassify old artifact review as Complete after consistency correction"
+  ],
+  "expansion_authority": "Human Product Owner only",
+  "stop_conditions": [
+    "missing path/hash mismatch stop dependent part",
+    "input outside allowlist needed:one locator+reason, uncovered and stop",
+    "hard or call ceiling:stop, precise usage and uncovered criteria"
+  ],
+  "digest_rule": "SHA256 sorted compact JSON ensure_ascii=False without packet_digest_sha256",
+  "packet_digest_sha256": "8dbd34558300d7e822bb4eafd74531bb0c72e48d3c53a2b086918f3f00002b6f"
+}

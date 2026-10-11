@@ -1,0 +1,48 @@
+{
+  "lane": "Architecture A2 targeted independent review round 2",
+  "packet_sha256": "d3eac7837fe86fd7623c9e1f62cc2a42c4184adc111bc604a6dedf0664c6d965",
+  "verdict": "Partial / incomplete",
+  "coverage": {
+    "A2-1": "Covered",
+    "A2-2": "Covered",
+    "A2-3": "Covered",
+    "A2-4": "Uncovered"
+  },
+  "actual_tool_calls": 24,
+  "tool_call_budget": 24,
+  "call_counting": "Each functions.exec invocation and each nested tools.exec_command invocation counted separately; collaboration checkpoint messages counted; failed tool calls counted.",
+  "checkpoint_tool_calls": [
+    8,
+    16,
+    21
+  ],
+  "start_utc_ack_timestamp": "2026-10-04T16:52:33Z",
+  "end_utc": "2026-10-04T16:52:33Z",
+  "elapsed_seconds_from_ack_timestamp": 0,
+  "elapsed_note": "Budget begins at follow-up receipt before packet-only reads; exact receipt timestamp was not captured before ACK. ACK timestamp is the first recorded wall-clock marker, so reported elapsed is a lower bound. Root checkpoint reported about 12 minutes at call 21.",
+  "stop_reason": "Completed bounded A2 review and final output readback; no scope/budget extension.",
+  "input_verification": {
+    "exact_allowlist_count": 38,
+    "all_38_hashes_match": true,
+    "required_test_methods": 23,
+    "actual_passed_23": true,
+    "four_swift_compile_sources": {
+      "KeyboardViewController.swift": true,
+      "KeyboardViewController+Bootstrap.swift": true,
+      "KeyboardHostLifecycleRecoveryGate.swift": true,
+      "KeyboardHostLifecycleRecoveryGateTests.swift": true
+    },
+    "zero_new_diagnostics_evidence": []
+  },
+  "tests_run_by_reviewer": false,
+  "build_run_by_reviewer": false,
+  "source_or_docs_written": false,
+  "runtime_notification_maps_or_f4_verified": false,
+  "ack_sha256": "91f32e5f78d35c497f5128683658a1a55aeaef00e6866487878156ffec0d5a06",
+  "review_sha256": "4b1b51a30561d326912ac741cb61f4a44f8dad71ee59cce43758732526e2051f",
+  "outputs": {
+    "ack": "/private/tmp/ukey-host-activation-fix-a2-review-20261005/architecture/ack.json",
+    "review": "/private/tmp/ukey-host-activation-fix-a2-review-20261005/architecture/review.md",
+    "usage": "/private/tmp/ukey-host-activation-fix-a2-review-20261005/architecture/usage.json"
+  }
+}

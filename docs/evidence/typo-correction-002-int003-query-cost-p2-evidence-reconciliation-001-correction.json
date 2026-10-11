@@ -1,0 +1,51 @@
+{
+  "type": "post_execution_metadata_correction",
+  "timestamp": "2026-10-10T15:20:36.968619+00:00",
+  "finding": "ROUTE-REVIEW-R1-E01 / AR-01 / F1",
+  "candidate_sha256": "d45bdc9be791aa1654dfde1699a261c34434cd05f68de9456d8102beebd1c2c2",
+  "original_binding_path": "/private/tmp/uk-route-val1/execution-binding.json",
+  "original_binding_sha256": "eb3b865468b9d3945b1b4d5037d6b2a22e241ba96018dbb35f6c217e5c426fdf",
+  "corrected_binding_path": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-evidence-reconciliation-001-execution-binding-corrected.json",
+  "corrected_binding_sha256": "d76ca5e6d133541dbcb5af97f6451ee1f9841e0b66ebed96d510540fd42fa03b",
+  "change": {
+    "json_pointer": "/expected_extension_tests",
+    "old_preflight_estimate": 34,
+    "correct_selected_suite_count": 33,
+    "reason": "func test count included private testingHooks; actualtest methods8+15+10"
+  },
+  "unchanged": [
+    "core_argv",
+    "extension_argv",
+    "environment",
+    "source candidate",
+    "all raw logs/receipt/summary/coverage",
+    "original binding",
+    "original archive manifest",
+    "original review packet/reports"
+  ],
+  "test_evidence_reused": {
+    "execution-binding.json": "eb3b865468b9d3945b1b4d5037d6b2a22e241ba96018dbb35f6c217e5c426fdf",
+    "receipts.json": "d6d9d16fe44c0f6888e4f73310a708f322f912d47968736fa03bba17dde72edd",
+    "core.stdout": "15354f234069a3d09d433bbfe559de02256c1eff178f6942ae7024678f7e9fba",
+    "core.stderr": "bfdfc01882ab65ecbe1259ec6edb32ff8cdc15638a898b510aa94c6389f99722",
+    "extension.stdout": "270c35eb38388b6f9f1b1bd3c493f661590976390a8647885d5092ee9b1ce6fd",
+    "extension.stderr": "799f9afedad92c641ac4918e340aefeaf9667b3455ca1601c60e51e664be7733",
+    "extension-summary.json": "13e70f82925469ba960e2620205f701f8ca897f500928f42061617e31121c41c",
+    "coverage.json": "93565a70359e29da82ab72228d720147f3bd9f5dcbf32a47aaa6d4416127d912",
+    "final-identity.json": "f4fea0b0d8e0828197a4149f2625645bf23a272459c25a34e69b91af93bc72be"
+  },
+  "actual": {
+    "core": 19,
+    "extension_suites": [
+      8,
+      15,
+      10
+    ],
+    "extension": 33,
+    "passed_total": 52,
+    "failed": 0,
+    "skipped": 0
+  },
+  "new_test_runs": 0,
+  "original_history": "original pre-execution estimate remains immutable; this corrected derivative is not a new execution"
+}

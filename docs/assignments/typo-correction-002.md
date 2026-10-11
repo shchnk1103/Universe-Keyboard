@@ -1,8 +1,21 @@
 # Assignment: TYPO-CORRECTION-002 — Contextual Multi-Error Pinyin Recovery
 
+2026-10-11：[F01整合复核与发布准备](../evidence/typo-correction-002-f01-fixed-integration-review-001.md)：F01 PR139固定a44五源完整本地CI通过，独立增量复核Scoped Pass with conditions；Human已接受行政残项并授权本轮正常commit/push/更新139。发布候选保持draft，merge及父Gate/Close另授；父Active。
+
+2026-10-11：[PR207 单次合并状态同步](../evidence/typo-correction-002-final-delivery-merge-001.md)：PR207 已合并 `8f306c6`，local/hosted CI 全绿，merge tree 与已验证候选一致。父 Active；本轮仅发布一次 M-02 docs-only 同步，无 Gate/Close。F-01 PR139 仍为 draft、有冲突，核心修复未进入 main，整合及验证须另授权。
+
 **Policy version:** `1.0.0`
 
 **Lifecycle status:** `Active`
+
+## Current Status
+
+| Field | Value |
+|---|---|
+| Lifecycle | **Active** — INT-003 query-cost P1 instrumentation is on main; this does not close the parent |
+| Current phase | F01 PR139固定a44五源完整本地CI通过，独立增量复核Scoped Pass with conditions；Human已接受行政残项并授权本轮正常commit/push/更新139。发布候选保持draft，merge及父Gate/Close另授；父Active。 |
+| Non-claims | Whole CPU/UI/memory/native nonempty-query cost and current v2 overall observer unverified; no Gate/Close/Release/ADR Accept/provenance restoration |
+| Next | Publish the frozen delivery package only with specific commit/push/PR authority; hosted CI and merge, then Gate/Close each separately authorized. Do not recapture P2 or chase main. |
 
 **Repository change types:** `Contract`, `Implementation`, `Evidence`, `State`
 
@@ -19,6 +32,24 @@
 - **Non-goals:** Network/cloud correction; host context; automatic commit; RIME schema/weight/user-dictionary changes; unbounded search; input-history persistence; changes to `TYPING-INTELLIGENCE-001`; substituting another simulator or physical device for the designated Device Hub target.
 - **Required Inputs:** `TYPO_CORRECTION.md`; ADR 0002, 0004, 0008, 0009, 0010 and 0015; `TYPO_BENCHMARK.md`; `TYPO_BENCHMARK_REGISTRY.md`; `PERFORMANCE_BASELINE.md`; `DEBUGGING.md`; `RELEASE_CHECKLIST.md`; current KeyboardCore/RimeBridge source and tests.
 
+### Scope Amendment — 2026-09-17
+
+- **Authorization:** The Human Product Owner explicitly authorizes a physical-device supplemental evidence arm in the current Codex task on 2026-09-17 Asia/Shanghai.
+- **Supplemental arm:** A connected physical iOS device may collect additional manual-cadence and stale-work observations for `TC2-CASE-INT-003` only. The run must capture the physical model, UDID, OS build, signed app/extension identity, active schema, exact RIME provenance receipt, Full Access state, host app and a new Run ID.
+- **No substitution:** This arm supplements the designated Device Hub iOS 27 iPhone 17 Pro Max simulator. It cannot satisfy `TC2-CASE-QA-001`, the paired performance case, the Product acceptance boundary or any Product, Quality, TestFlight, Release or merge decision.
+- **Revalidation boundary:** A physical-device run is a separately bound evidence receipt. Any rebuild, reinstall, device change, schema change or restarted capture requires a new Run ID and fresh identity capture.
+
+### Related child closure — 2026-09-19
+
+- [`TYPO-CORRECTION-002-TESTABILITY-ACCESSIBILITY-001`](typo-correction-002-testability-accessibility-001.md) is Closed only for the bounded keyboard UI testability/accessibility child after PR #140 merged as `162b09fd58ba60538a944026b1902efa405c75aa`.
+- This child closure does not close or satisfy the parent sidecar observability, INT-003, QA-001 or paired performance exits. The parent remains `Active`.
+
+### Parent checkpoint publication — 2026-09-19
+
+- The existing parent implementation and KOS evidence pack were frozen and published in checkpoint [`84978748d89d329a7d2c6e89400c1ff556cfd9b5`](../evidence/typo-correction-002-parent-checkpoint-2026-09-19.md).
+- This is a recovery/provenance checkpoint, not a new Run and not a Product, Quality, Release or merge decision. Existing sidecar, INT-003, QA-001 and paired-performance receipts retain their original source/build/Run ID boundaries.
+- The next production change requires a separate bounded recall-remediation Assignment/Authorization rooted at the exact checkpoint commit. No search-budget or candidate-recall change is authorized by this checkpoint.
+
 ## Assignment
 
 - **Domain Owner:** Input Intelligence Maintainer
@@ -29,6 +60,98 @@
 - **Quality Reviewer:** Quality, Performance & Release Maintainer
 - **Product Approver:** Product Lead
 - **Handoff Target:** Product Lead for Product Review, then Program Manager for source-linked Dashboard synchronization
+
+## Related child records (link only)
+
+Keyboard UI testability/accessibility and F-02 overlay on/off **do not close this parent**. Canonical F-02/QR-01 residual for the child worktree is:
+
+- [`F-02 reconcile Assignment`](typo-correction-002-testability-accessibility-f02-reconcile-001.md) — `Reviewed`, not Closed
+- [`F-02/QR-01 evidence`](../evidence/typo-correction-002-testability-accessibility-f02-reconciliation.md) — **bounded Pass**
+- [`F-02 Architecture 最终处置`](../reviews/typo-correction-002-testability-accessibility-f02-architecture-final.md) — **有界 Pass**；不关闭本 parent
+- [`Child consolidated Quality`](../reviews/typo-correction-002-testability-accessibility-001-quality-consolidated.md) — **Pass with conditions**；不关闭本 parent
+- Sidecar implementation/revalidation records remain under `/private/tmp/universe-keyboard-typo-correction-002-provenance-sidecar/docs/` (do not fork status there)
+
+This parent remains **Active** for sidecar observability, INT-003, QA-001, and performance evidence.
+
+
+
+### INT-003 evidence package — 2026-09-23 (Stale-cancel Product Capture)
+
+- Capture AUTH [`AUTH-…-STALE-CANCEL-PRODUCT-CAPTURE-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001.md) **Consumed**; Assignment [`…-stale-cancel-product-capture-001`](typo-correction-002-int003-stale-cancel-product-capture-001.md)
+- Squash-merge PR [#157](https://github.com/shchnk1103/Universe-Keyboard/pull/157) → evidence on main; [#158](https://github.com/shchnk1103/Universe-Keyboard/pull/158) → Architecture; [#159](https://github.com/shchnk1103/Universe-Keyboard/pull/159) → Quality; [#161](https://github.com/shchnk1103/Universe-Keyboard/pull/161) → Product residual; [#162](https://github.com/shchnk1103/Universe-Keyboard/pull/162) → Proposed remediation AUTH on main tip `a9b82a58cac0c28e8a5d8a957d464d803d6d92d1`
+- Evidence [`…-int003-stale-cancel-product-001.md`](../evidence/typo-correction-002-sim-run-2026-09-23-int003-stale-cancel-product-001.md) SHA-256 `3dde0362923fb36071c611134c6c0022ce70d20839afa2dd67894260428835b4` — **Bounded / Pass-with-conditions** (Capture ≠ Gate)
+- Architecture [`…-001-architecture-review.md`](../reviews/typo-correction-002-int003-stale-cancel-product-capture-2026-09-23-001-architecture-review.md) SHA-256 `50fba2bc918c26a39a86419ef15a444e4fd28105629cdfcbcba85a18d85b13a4` — **Pass with conditions**; AUTH [`…-ARCHITECTURE-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001-ARCHITECTURE-001.md) **Consumed**
+- Quality [`…-001-quality-review.md`](../reviews/typo-correction-002-int003-stale-cancel-product-capture-2026-09-23-001-quality-review.md) SHA-256 `bf54b8745091d24dd1af66136960c20356391a9c2a21098dfbe99d076c3495ac` — **Bounded Pass with conditions** (on main via #159); AUTH [`…-QUALITY-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001-QUALITY-001.md) **Consumed**
+- Residuals: `fence_discarded=0`; high `query_*` (574/574); same-lineage reviewer; raw JSONL not re-hashed on review hosts
+- Product residual [`…-STALE-CANCEL-PRODUCT-CAPTURE-001-PRODUCT-RESIDUAL`](../product-decisions/TYPO-CORRECTION-002-INT003-STALE-CANCEL-PRODUCT-CAPTURE-001-PRODUCT-RESIDUAL.md) — Human selected **Open remediation (narrow `query_*`)** after #161 tip `65a0a11…`. Does **not** grant Gate / Close / Swift / TestFlight / Release
+- Remediation AUTH [`AUTH-…-QUERY-DENSITY-REMEDIATION-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-REMEDIATION-001.md) + Assignment [`…-query-density-remediation-001`](typo-correction-002-int003-query-density-remediation-001.md) — **Consumed** at `2026-09-25T15:35:47+08:00` after binding to main `e28491a…`; PR [#163](https://github.com/shchnk1103/Universe-Keyboard/pull/163) merged as `15e2be5…`, and its M-02 closeout PR [#173](https://github.com/shchnk1103/Universe-Keyboard/pull/173) merged as `e28491a…`.
+- Follow-up diagnostic Capture Assignment [`…-QUERY-DENSITY-DIAGNOSTIC-CAPTURE-001`](typo-correction-002-int003-query-density-diagnostic-capture-001.md) / AUTH [`…-DIAGNOSTIC-CAPTURE-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-DENSITY-DIAGNOSTIC-CAPTURE-001.md) — **Consumed** at `2026-09-25T16:06:56+08:00`, bound to main `4ef275b…`; Run [`TC2-SIM-20260925-161830-INT003-QUERY-DENSITY-DIAGNOSTIC-001`](../evidence/typo-correction-002-sim-run-2026-09-25-int003-query-density-diagnostic-001.md) records 359 real query pairs across 12 operations (26–32 per operation). User's fastest manual input remained above 180 ms, so the earlier 16/16 rapid-window cause remains unresolved; no Swift change.
+- [Product criterion decision](../product-decisions/TYPO-CORRECTION-002-INT003-QUERY-DENSITY-DIAGNOSTIC-CRITERION-001.md) on `2026-09-26` removes `<180 ms` as a hard pass condition **only for this follow-up diagnosis**. The remediation and first diagnostic Capture children are **Completed** with bounded outputs, not Reviewed/Closed. The prepared [rapid child](typo-correction-002-int003-query-density-rapid-diagnostic-001.md) has a no-run disposition: its AUTH is Consumed, but only a read-only UI snapshot occurred before Product stopped that route. The original rapid-window attribution and wider query-density Product residual remain open; no rapid-behavior Pass is inferred.
+- [PR #175](https://github.com/shchnk1103/Universe-Keyboard/pull/175) published that docs-only package as squash merge `10faa51caf20e3c558f21f26b625eff7f3aa941d`. The [M-02 receipt](../evidence/typo-correction-002-int003-query-density-post-merge-state-sync-2026-09-26.md) binds this one lifecycle-changing merge; its closeout [PR #176](https://github.com/shchnk1103/Universe-Keyboard/pull/176) merged as `9f6f83edb13c8dd7d5598c1b398587bf4aa76f5b`.
+- New [query-cost assessment child](typo-correction-002-int003-query-cost-assessment-001.md) is **Completed** under its distinct [Consumed AUTH](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-ASSESSMENT-001.md). Its [bounded evidence](../evidence/typo-correction-002-int003-query-cost-assessment-2026-09-26.md) counts 359 actual facade calls over 12 operations and reports Debug elapsed intervals, not RIME CPU cost or Product acceptance. The wider Product residual remains open; parent remains **Active** with no Product/QA-001 Gate.
+- Human-authorized [PR #177](https://github.com/shchnk1103/Universe-Keyboard/pull/177) published that child as squash merge `501299dd14f317d67965330cb32dbf2e04ea2780`. Its [single M-02 receipt](../evidence/typo-correction-002-int003-query-cost-post-merge-state-sync-2026-09-26.md) binds the exact trigger; the closeout publication is recorded below. This publication does not resolve Product cost acceptability or the wider residual. Parent remains **Active**.
+- Human-authorized [PR #178](https://github.com/shchnk1103/Universe-Keyboard/pull/178) published that non-recursive closeout as squash merge `7b0025a10a3079731628e63a7ffd587af57608d6`. A distinct [query-cost measurement Assignment](typo-correction-002-int003-query-cost-measurement-001.md) is **Active** for P0 planning only under its [Consumed docs-only AUTH](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-MEASUREMENT-PLAN-001.md). The [plan](../plans/typo-correction-002-int003-query-cost-measurement-001.md) requires a separate P1/P2 execution decision; no Swift, device operation, Product budget or Gate is inferred. Parent remains **Active**.
+- Human-authorized [PR #179](https://github.com/shchnk1103/Universe-Keyboard/pull/179) published the measurement P0 package as squash merge `9838c092672dae60c63b34e4d9be6dffafc3869f`. Its [single M-02 receipt](../evidence/typo-correction-002-int003-query-cost-measurement-plan-m02-2026-09-26.md) binds this lifecycle-changing merge. P1/P2 are separately gated; parent remains **Active** and the Product residual remains open.
+- Human-authorized [PR #180](https://github.com/shchnk1103/Universe-Keyboard/pull/180) merged as `c3cc229619604131d6358bbc85f74e81f2874dc6`; [PR #181](https://github.com/shchnk1103/Universe-Keyboard/pull/181) then merged separate Active/unconsumed P1 instrumentation and P2 Simulator-capture AUTH records as `2b9b15ee2d1d903b3a948109b2c2217535bd5248`. PR #182 advanced main to `8e4ea0f1777f1175141731797afeee5ebd964c96` and added `keychain_access_denied` to `DiagnosticEvent.RimeSyncFailure` and a test without a schema bump. PR #183 advanced the last verified main baseline to `1160ac6fd8696c3036391cdf59bc9fe096d0b219` with documentation-only changes outside the P1 source manifest; the 28-file manifest was refreshed at that tip. Round 1 returned a schema/cardinality **Blocker**; round 2 returned a writer-scope **Blocker** and observer-cost **Uncovered**. Independent round 3 returned **Pass with conditions** for all seven claims: the closed typed `DiagnosticEvent.Field` uses existing `record(code:fields:)` and retains the allowed source set. P1 AUTH was consumed at `2026-09-27T18:01:36+08:00` on the exact reviewed baseline before source edits; implementation conditions remain open. P2 AUTH remains unconsumed pending exact installed-payload and Run-manifest freeze. See the #181 [M-02 post-merge receipt](../evidence/typo-correction-002-int003-query-cost-p1-p2-authorization-post-merge-state-sync-2026-09-27.md), [source freeze r3](../evidence/typo-correction-002-int003-query-cost-p1-arch-source-freeze-r3.json), [Architecture review r3](../reviews/typo-correction-002-int003-query-cost-p1-architecture-review-r3.md), [usage record](../evidence/typo-correction-002-int003-query-cost-p1-architecture-review-r3-usage.md), and [round-3 packet](../reviews/typo-correction-002-int003-query-cost-p1-architecture-review-packet-r3.md). No Gate, parent Close, TestFlight, Release, or ADR Accept is claimed.
+- Markers AUTH and the original Product Capture AUTH remain **Consumed**. Parent remains **Active**. No Product Gate / QA-001 Gate / Close / TestFlight / Release.
+
+### INT-003 evidence package — 2026-09-22 (Cadence-003)
+
+- Child [`TYPO-CORRECTION-002-INT003-CADENCE-003`](typo-correction-002-int003-cadence-003.md) **Closed** after same-process smoke→rapid
+- Run `TC2-SIM-20260922-225841-INT003-CADENCE-003` on tip `69f5bd1ad662be4d980787d9a496b0d85aa7428a`
+- Evidence [`typo-correction-002-int003-cadence-2026-09-22-003.md`](../evidence/typo-correction-002-int003-cadence-2026-09-22-003.md) — same process `F9245C6C-…`; rapid starts 3/3 <180 ms
+- Architecture **Pass with conditions** ([review](../reviews/typo-correction-002-int003-cadence-2026-09-22-003-architecture-review.md)); Quality **Bounded Pass with conditions** ([review](../reviews/typo-correction-002-int003-cadence-2026-09-22-003-quality-review.md))
+- Capture-002 process-churn and rapid <180 residuals addressed for this Run; same-agent-lineage review residual remains visible
+- Product residual [`TYPO-CORRECTION-002-INT003-CADENCE-003-PRODUCT-RESIDUAL`](../product-decisions/TYPO-CORRECTION-002-INT003-CADENCE-003-PRODUCT-RESIDUAL.md) **Accepted** under [`AUTH-…-PRODUCT-RESIDUAL-001`](../authorizations/AUTH-TYPO-CORRECTION-002-INT003-CADENCE-003-PRODUCT-RESIDUAL-001.md) after PR #147 merge `bfee5ff…` — cleared residuals for this Run; **not** Product Gate / parent Close
+
+This package does **not** close the parent, satisfy Product/Quality/Release Gate, or invent a global <180 ms product claim. Parent remains `Active`.
+
+### INT-003 evidence package — 2026-09-22 (Capture-002)
+
+Journal-backed controlled capture after Main App / App Group container diagnostics arm:
+
+- Assignment [`TYPO-CORRECTION-002-INT003-CONTROLLED-CAPTURE-002`](typo-correction-002-int003-controlled-capture-002.md) — execution complete for Run `TC2-SIM-20260922-223301-INT003-CONTROLLED-002`
+- Evidence [`typo-correction-002-int003-controlled-capture-2026-09-22-002.md`](../evidence/typo-correction-002-int003-controlled-capture-2026-09-22-002.md) — smoke Pass (`touch.terminal`); rapid timeline recorded; `<180 ms` cadence bar **not** met
+- Architecture [`…-002-architecture-review.md`](../reviews/typo-correction-002-int003-controlled-capture-2026-09-22-002-architecture-review.md) — **Pass with conditions**
+- Quality [`…-002-quality-review.md`](../reviews/typo-correction-002-int003-controlled-capture-2026-09-22-002-quality-review.md) — **Bounded Pass with conditions**
+
+Supporting diagnostics arm records: [`arm-preflight`](typo-correction-002-diagnostics-journal-arm-preflight-001.md), [`ui-arm-retest`](typo-correction-002-diagnostics-journal-ui-arm-retest-001.md).
+
+This package does **not** close the parent, satisfy Product/Quality/Release Gate, or clear the INT-003 cadence residual. Parent remains `Active`.
+
+### INT-003 query-cost P1 implementation — 2026-09-27
+
+- Child [`query-cost measurement Assignment`](typo-correction-002-int003-query-cost-measurement-001.md) remains **Active**; P1 and CI-remediation AUTHs are Consumed; P2 AUTH is Active/unconsumed.
+- PR [#184](https://github.com/shchnk1103/Universe-Keyboard/pull/184) squash-merged as `03f4d0cc68ce22df60e1f0545afe6ae3b27d30ab` at `2026-09-27T13:59:18Z`. The [implementation receipt](../evidence/typo-correction-002-int003-query-cost-p1-implementation-001.md) and independent Architecture review remain linked; the review is bound to implementation commit `6606fbe` and returned **Pass with conditions**.
+- Local CI-equivalent passed at `fe4c935` (strict Swift format, KeyboardCore 1,170, RimeBridge 105, App + Keyboard 421, Keychain 1, Release build); only docs changed between that tested source state and merged PR head `a572765`. Hosted run [36322160611](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/36322160611) passed every job at exact head `a572765`. The pinned KOS v0.9.0 validator and lightweight checks passed with pre-existing legacy warnings.
+- Open P1 conditions: coordinator stage/ready-empty/post-call-discard/pre-call-cancel/one-event assertions and real same-call RimeBridge setup/get_context/schema evidence. P2 sealed-journal censoring and independent Quality remain open. The [single M-02 receipt](../evidence/typo-correction-002-int003-query-cost-p1-implementation-post-merge-state-sync-2026-09-27.md) binds PR #184's merge.
+- P2 requires its own exact source/review, installed-payload and Run-manifest freeze and consumption before any Simulator operation. A read-only `simctl` query failed because CoreSimulatorService was unavailable; no P2 boot, install, diagnostics arm or input was performed.
+- No Product cost acceptance, budget, Gate, parent Close, TestFlight, Release, ADR Accept or `RimeRuntimeProvenance` restoration is claimed; parent remains **Active**.
+
+### Recall remediation child
+
+The bounded recall-remediation lane is tracked separately and does not close this parent:
+
+- [`Recall remediation Assignment`](typo-correction-002-recall-remediation-001.md) — `Active`
+- [`Final Product decision`](../product-decisions/TYPO-CORRECTION-002-RECALL-REMEDIATION-FINAL-BOUNDED-PUBLICATION-PREPARATION-DECISION-2026-09-20.md) — `Bounded Accept with conditions`; parent remains `Active`
+- [`Final publication Authorization`](../authorizations/AUTH-TYPO-CORRECTION-002-RECALL-REMEDIATION-FINAL-PUBLICATION-001.md) — `Consumed` for commit/push/PR; merge remains separately unauthorized
+- [`Scope reconciliation evidence`](../evidence/typo-correction-002-recall-remediation-publication-scope-reconciliation-2026-09-20.md) — old mixed worktree retained; clean `origin/main` staging started
+
+The child remains bounded to recall remediation and its own provenance/quality handoff; it does not authorize parent closure, Product/Quality/Release Gate, device evidence, INT-003, QA-001 or paired-performance conclusions.
+
+### Runtime integration child
+
+The bounded controller/sidecar runtime-integration lane is tracked separately and does not close this parent:
+
+- [`Runtime integration design`](typo-correction-002-runtime-integration-design-001.md) — `Reviewed`, Conditional Accept
+- [`Runtime integration implementation`](typo-correction-002-runtime-integration-implementation-001.md) — `Reviewed`; Product accepted bounded residuals
+- [`Product Decision`](../product-decisions/TYPO-CORRECTION-002-RUNTIME-INTEGRATION-IMPLEMENTATION-001.md) — bounded Grok implementation package
+- [`Residual Product Decision`](../product-decisions/TYPO-CORRECTION-002-RUNTIME-INTEGRATION-IMPLEMENTATION-RESIDUAL-001.md) — accepted named residuals; no publication
+- [`Implementation AUTH`](../authorizations/AUTH-TYPO-CORRECTION-002-RUNTIME-INTEGRATION-IMPLEMENTATION-001.md) — consumed
+- [`Residual-hardening Assignment`](typo-correction-002-runtime-integration-hardening-001.md) — `Active`; independent Architecture returned `Blocker`, so Quality is blocked
+- [`Blocker-remediation Assignment`](typo-correction-002-runtime-integration-hardening-blocker-remediation-001.md) — `Ready`; Grok-only Authorization is active/unconsumed; no execution, publication or parent-evidence authority
+
+This child does not authorize parent closure, Product/Quality/Release Gate, device evidence, INT-003, QA-001 or paired-performance conclusions.
 
 ## Gates
 
@@ -45,7 +168,7 @@
 - Multi-error hypotheses and candidate ranking are bounded, tested and default-safe.
 - Registry and benchmark cases distinguish single-edit legacy behavior from V2 multi-error behavior.
 - Focused and full affected-package tests pass, along with Debug and Release builds.
-- Performance evidence records the required environment and comparison results.
+- Performance evidence follows the [Human-approved scoped amendment](../product-decisions/TYPO-CORRECTION-002-PARENT-PERFORMANCE-SCOPE-PROPOSAL-001.md): accepted bounded P2 counts/elapsed and query-boundedness evidence; no new paired performance capture is required for this task. Whole CPU/UI/memory and v2 observer cost remain unverified, not a performance Pass.
 - Device Hub iOS 27 iPhone 17 Pro Max acceptance records candidate recovery and interaction regression results.
 - Documentation, changelog and Dashboard impacts are complete.
 
@@ -61,3 +184,7 @@
 
 - **Required Handoff Content:** changed-file inventory, candidate/session boundary evidence, benchmark results, performance evidence, Device Hub result, residual risks and documentation impact.
 - **Revalidation Trigger:** any change to data retention, learning semantics, query-session lifecycle, RIME/session ownership, default promotion, device constraint or Product Contract.
+
+## 2026-10-11 scoped convergence and delivery
+
+The preceding historical open conditions retain their original date/binding; current P1 disposition is the byte-preserved [convergence original](../evidence/typo-correction-002-fixed-candidate-delivery-audit-001-p1-convergence-original.txt) and [delivery audit](../evidence/typo-correction-002-fixed-candidate-delivery-audit-001.md). [Accepted P2 contract](../product-decisions/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-LOCAL-EVIDENCE-REQUIREMENTS-001.md), [Human performance amendment](../product-decisions/TYPO-CORRECTION-002-PARENT-PERFORMANCE-SCOPE-PROPOSAL-001.md) and [new fixed CI](../evidence/typo-correction-002-fixed-main-validation-001.md) bind current conclusions. Parent remains Active. This state sync grants no merge/Gate/Close.

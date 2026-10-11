@@ -1,0 +1,12 @@
+{
+  "utc": "2026-10-04T04:36:44.676363+00:00",
+  "monotonic_ns": 1242083530695708,
+  "exec_session_id": 63415,
+  "commands": [
+    "breakpoint delete 1",
+    "breakpoint list",
+    "process detach",
+    "quit"
+  ],
+  "continue_omitted": "target confirmed running"
+}

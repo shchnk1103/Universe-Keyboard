@@ -1,0 +1,11 @@
+{
+  "utc": "2026-10-04T04:34:01.603051+00:00",
+  "monotonic_ns": 1241920457588916,
+  "exec_session_id": 63415,
+  "commands": [
+    "image list -u -f Keyboard Keyboard.debug.dylib",
+    "image lookup -n $s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF",
+    "breakpoint set --name $s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF",
+    "breakpoint list 1"
+  ]
+}

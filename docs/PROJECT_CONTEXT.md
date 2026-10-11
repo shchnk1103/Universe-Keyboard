@@ -79,7 +79,7 @@ Keyboard/
 │   ├── KeyboardAudioFeedbackInputView.swift  — UIKit 系统输入点击音承载视图
 │   ├── KeyPopupView.swift                    — 变体弹出面板
 │   └── CandidateBar/
-│       ├── CandidateBarView.swift             — 候选栏容器
+│       ├── CandidateBarView.swift             — 候选栏容器（空闲关闭 / 有内容展开）
 │       ├── CandidateCell.swift                — 候选单元格
 │       ├── CandidateScrollViewStyle.swift      — 候选滚动视图外观防护
 │       └── CandidateBarDataSource.swift       — 候选数据源（RIME 优先，回退 Fake）
@@ -100,7 +100,7 @@ Universe Keyboard/
 │   └── ContentView.swift                 — 双 Tab 布局（引导 / 设置）
 ├── Views/
 │   ├── Components/
-│   │   ├── AppActionButton.swift         — 主 App 内容操作按钮（Liquid Glass + fallback）
+│   │   ├── AppActionButton.swift         — 主 App 内容操作按钮（Liquid Glass + 深浅反转对比度 + 整块胶囊命中）
 │   │   ├── InfoSection.swift             — 信息卡片容器
 │   │   ├── ToggleRow.swift               — 设置开关行
 │   │   ├── BulletRow.swift               — 项目符号行（dot / checkmark）
@@ -110,6 +110,7 @@ Universe Keyboard/
 │   │   └── GuideTab.swift                — 首次启用与系统设置引导
 │   ├── Settings/
 │   │   ├── SettingsTab.swift             — 设置导航
+│   │   ├── AboutSettingsView.swift       — 关于（版本、联系、隐私/开源入口）
 │   │   ├── RimeSettings*.swift           — RIME 多方案设置与状态
 │   │   └── *SettingsView.swift           — 反馈、外观、高级输入、模糊音、用户词典与纠错
 │   ├── Diagnostics/

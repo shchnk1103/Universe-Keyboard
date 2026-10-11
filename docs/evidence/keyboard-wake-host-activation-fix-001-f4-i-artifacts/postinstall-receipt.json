@@ -1,0 +1,103 @@
+{
+  "utc": "2026-10-05T12:38:39.925701+00:00",
+  "exit_code": 0,
+  "candidate_digest": "d53523dba8c371c67424ff07c79163a66f41e3bc5bb402637cf9ee79ae7579cb",
+  "installed_payload78_exact": true,
+  "signatures_valid": true,
+  "uuids": [
+    {
+      "module": "Universe Keyboard",
+      "stdout": "UUID: 664DE45A-5859-34F1-892C-3DD2D9DE7B98 (arm64) /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/57DC9CDA-B114-469F-98D6-B6C92F4F4AE7/Universe Keyboard.app/Universe Keyboard"
+    },
+    {
+      "module": "Universe Keyboard.debug.dylib",
+      "stdout": "UUID: C19CE509-A814-30AB-88F1-CE5416FDDC33 (arm64) /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/57DC9CDA-B114-469F-98D6-B6C92F4F4AE7/Universe Keyboard.app/Universe Keyboard.debug.dylib"
+    },
+    {
+      "module": "PlugIns/Keyboard.appex/Keyboard",
+      "stdout": "UUID: CD0C6F02-6094-3726-B598-F03F42ABB468 (arm64) /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/57DC9CDA-B114-469F-98D6-B6C92F4F4AE7/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard"
+    },
+    {
+      "module": "PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+      "stdout": "UUID: 4B207746-89A7-321F-83C4-91477259BB26 (arm64) /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/57DC9CDA-B114-469F-98D6-B6C92F4F4AE7/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard.debug.dylib"
+    }
+  ],
+  "before_paths": {
+    "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/66F04FA2-BC18-442C-97FE-2846CD55FBE1/Universe Keyboard.app",
+    "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/9100282B-92E4-4ED0-87C6-3A79BB6F24C1",
+    "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/161B78EE-E85A-47EA-8986-BA1D5AA70E39"
+  },
+  "after_paths": {
+    "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/57DC9CDA-B114-469F-98D6-B6C92F4F4AE7/Universe Keyboard.app",
+    "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/B74303BF-6EE1-4316-9CF1-1EB6892E2A88",
+    "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/161B78EE-E85A-47EA-8986-BA1D5AA70E39"
+  },
+  "data_group_readbacks_stable": true,
+  "data_differences": {
+    "main-data": [
+      {
+        "path": "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/08693F04-8783-438F-A791-2E933328D0B0@3x.ktx",
+        "field": "existence"
+      },
+      {
+        "path": "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/4B2A05DF-8474-4EDB-9DD9-C365F8D86FCC@3x.ktx",
+        "field": "existence"
+      },
+      {
+        "path": "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/4C814589-78A6-46DE-A7AD-B124056E15B1@3x.ktx",
+        "field": "existence"
+      },
+      {
+        "path": "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/84E7307B-F6F5-4069-8949-CF535C2D164D@3x.ktx",
+        "field": "existence"
+      },
+      {
+        "path": "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/96BF9486-8AE5-4453-A5BD-23D8FAED580E@3x.ktx",
+        "field": "existence"
+      },
+      {
+        "path": "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/A990AF84-5719-4E55-884C-E90AC3C2C03A@3x.ktx",
+        "field": "existence"
+      },
+      {
+        "path": "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/C238C4E6-3172-4FBB-8083-F66D283D1FC8@3x.ktx",
+        "field": "existence"
+      },
+      {
+        "path": "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/FD34A687-227D-444C-AC0F-F30AD732DC81@3x.ktx",
+        "field": "existence"
+      }
+    ],
+    "app-group": []
+  },
+  "unexpected_data_differences": [],
+  "selected_preferences": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "log_category_display": {
+      "exists": false,
+      "value": null
+    },
+    "rime_deployed": {
+      "exists": true,
+      "value": true
+    },
+    "rime_needs_deploy": {
+      "exists": true,
+      "value": false
+    },
+    "rime_deploying": {
+      "exists": true,
+      "value": false
+    }
+  },
+  "status": "Ready for Human normal health",
+  "app_launched": false,
+  "Maps_or_LLDB": false
+}

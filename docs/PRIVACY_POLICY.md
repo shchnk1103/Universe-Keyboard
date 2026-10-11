@@ -54,7 +54,7 @@ Disconnecting or deleting the encrypted Universe settings package does not remov
 
 The Keyboard Extension does not use network access for input processing or Typing Intelligence.
 
-The containing App may connect to GitHub when the user requests information about, downloads or updates an optional RIME input scheme. When the user explicitly configures RIME settings sync, the App may also connect to the selected WebDAV or file-provider destination. Keyboard input, Typing Intelligence aggregates, user dictionaries and diagnostics are not included in those requests.
+The containing App may connect to GitHub when the user requests information about, downloads or updates an optional RIME input scheme. When the user explicitly configures RIME settings sync, the App may also connect to the selected WebDAV or file-provider destination. The About page may open the system mail composer or the linked Xiaohongshu profile only after the user taps those controls; the App does not attach diagnostics or typed content. Keyboard input, Typing Intelligence aggregates, user dictionaries and diagnostics are not included in those requests.
 
 ## Tracking, Advertising And Accounts
 

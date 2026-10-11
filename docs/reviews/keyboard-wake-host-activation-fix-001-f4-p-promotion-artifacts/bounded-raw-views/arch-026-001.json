@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/paired-products.json",
+  "origin_sha256": "14b647b6eebde9ad3b5ce62948028fcee72b92192193fd40fa444619950836db",
+  "expected_sha256": "14b647b6eebde9ad3b5ce62948028fcee72b92192193fd40fa444619950836db",
+  "line_start": 1,
+  "line_end": 60,
+  "lines": [
+    {
+      "line": 1,
+      "text": "["
+    },
+    {
+      "line": 2,
+      "text": "  {"
+    },
+    {
+      "line": 3,
+      "text": "    \"bundle_identifier\": \"com.DoubleShy0N.Universe-Keyboard\","
+    },
+    {
+      "line": 4,
+      "text": "    \"version\": \"1.0\","
+    },
+    {
+      "line": 5,
+      "text": "    \"build\": \"1\","
+    },
+    {
+      "line": 6,
+      "text": "    \"relative_root\": \".\","
+    },
+    {
+      "line": 7,
+      "text": "    \"modules\": ["
+    },
+    {
+      "line": 8,
+      "text": "      {"
+    },
+    {
+      "line": 9,
+      "text": "        \"path\": \"Universe Keyboard\","
+    },
+    {
+      "line": 10,
+      "text": "        \"sha256\": \"38cbdd01d7b664db0c435452086dd209447135f886906bab8181610a6a7e6feb\","
+    },
+    {
+      "line": 11,
+      "text": "        \"uuid_output\": \"UUID: 664DE45A-5859-34F1-892C-3DD2D9DE7B98 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard\","
+    },
+    {
+      "line": 12,
+      "text": "        \"probe_export_symbols\": [],"
+    },
+    {
+      "line": 13,
+      "text": "        \"host_active_symbols\": [],"
+    },
+    {
+      "line": 14,
+      "text": "        \"host_resign_symbols\": []"
+    },
+    {
+      "line": 15,
+      "text": "      },"
+    },
+    {
+      "line": 16,
+      "text": "      {"
+    },
+    {
+      "line": 17,
+      "text": "        \"path\": \"Universe Keyboard.debug.dylib\","
+    },
+    {
+      "line": 18,
+      "text": "        \"sha256\": \"c00095f4d2016cf31b876ed5f3f17f53c5ec97d64704829b629d23ab7a57e200\","
+    },
+    {
+      "line": 19,
+      "text": "        \"uuid_output\": \"UUID: C19CE509-A814-30AB-88F1-CE5416FDDC33 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard.debug.dylib\","
+    },
+    {
+      "line": 20,
+      "text": "        \"probe_export_symbols\": [],"
+    },
+    {
+      "line": 21,
+      "text": "        \"host_active_symbols\": [],"
+    },
+    {
+      "line": 22,
+      "text": "        \"host_resign_symbols\": []"
+    },
+    {
+      "line": 23,
+      "text": "      }"
+    },
+    {
+      "line": 24,
+      "text": "    ],"
+    },
+    {
+      "line": 25,
+      "text": "    \"codesign_verify\": true"
+    },
+    {
+      "line": 26,
+      "text": "  },"
+    },
+    {
+      "line": 27,
+      "text": "  {"
+    },
+    {
+      "line": 28,
+      "text": "    \"bundle_identifier\": \"com.DoubleShy0N.Universe-Keyboard.Keyboard\","
+    },
+    {
+      "line": 29,
+      "text": "    \"version\": \"1.0\","
+    },
+    {
+      "line": 30,
+      "text": "    \"build\": \"1\","
+    },
+    {
+      "line": 31,
+      "text": "    \"relative_root\": \"PlugIns/Keyboard.appex\","
+    },
+    {
+      "line": 32,
+      "text": "    \"modules\": ["
+    },
+    {
+      "line": 33,
+      "text": "      {"
+    },
+    {
+      "line": 34,
+      "text": "        \"path\": \"PlugIns/Keyboard.appex/Keyboard\","
+    },
+    {
+      "line": 35,
+      "text": "        \"sha256\": \"e681da52516441c044c98419a7c9750d7a90b282cb69bd27e220284376922860\","
+    },
+    {
+      "line": 36,
+      "text": "        \"uuid_output\": \"UUID: CD0C6F02-6094-3726-B598-F03F42ABB468 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard\","
+    },
+    {
+      "line": 37,
+      "text": "        \"probe_export_symbols\": [],"
+    },
+    {
+      "line": 38,
+      "text": "        \"host_active_symbols\": [],"
+    },
+    {
+      "line": 39,
+      "text": "        \"host_resign_symbols\": []"
+    },
+    {
+      "line": 40,
+      "text": "      },"
+    },
+    {
+      "line": 41,
+      "text": "      {"
+    },
+    {
+      "line": 42,
+      "text": "        \"path\": \"PlugIns/Keyboard.appex/Keyboard.debug.dylib\","
+    },
+    {
+      "line": 43,
+      "text": "        \"sha256\": \"773c4eff9640b2623036e3f819301ead3914cb99b66c9c1496ece5986e762aab\","
+    },
+    {
+      "line": 44,
+      "text": "        \"uuid_output\": \"UUID: 4B207746-89A7-321F-83C4-91477259BB26 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard.debug.dylib\","
+    },
+    {
+      "line": 45,
+      "text": "        \"probe_export_symbols\": ["
+    },
+    {
+      "line": 46,
+      "text": "          \"000000000016af64 T _$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF\","
+    },
+    {
+      "line": 47,
+      "text": "          \"000000000016b214 t _$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitFyyXEfU0_\","
+    },
+    {
+      "line": 48,
+      "text": "          \"000000000016b160 t _$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitFyyXEfU_\","
+    },
+    {
+      "line": 49,
+      "text": "          \"00000000007ae568 s ___profc_$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF\","
+    },
+    {
+      "line": 50,
+      "text": "          \"00000000007ae578 s ___profc_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift:$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitFyyXEfU0_\","
+    },
+    {
+      "line": 51,
+      "text": "          \"00000000007ae570 s ___profc_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift:$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitFyyXEfU_\","
+    },
+    {
+      "line": 52,
+      "text": "          \"00000000007c9c40 s ___profd_$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF\","
+    },
+    {
+      "line": 53,
+      "text": "          \"00000000007c9cc0 s ___profd_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift:$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitFyyXEfU0_\","
+    },
+    {
+      "line": 54,
+      "text": "          \"00000000007c9c80 s ___profd_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift:$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitFyyXEfU_\""
+    },
+    {
+      "line": 55,
+      "text": "        ],"
+    },
+    {
+      "line": 56,
+      "text": "        \"host_active_symbols\": ["
+    },
+    {
+      "line": 57,
+      "text": "          \"00000000001044fc t _$s8Keyboard0A14ViewControllerC28extensionHostDidBecomeActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVF\","
+    },
+    {
+      "line": 58,
+      "text": "          \"0000000000104b18 t _$s8Keyboard0A14ViewControllerC28extensionHostDidBecomeActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVFSbyXEfU_\","
+    },
+    {
+      "line": 59,
+      "text": "          \"0000000000104ba4 t _$s8Keyboard0A14ViewControllerC28extensionHostDidBecomeActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVFTo\","
+    },
+    {
+      "line": 60,
+      "text": "          \"00000000007acad8 s ___profc_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Bootstrap.swift:$s8Keyboard0A14ViewControllerC28extensionHostDidBecomeActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVF\","
+    }
+  ]
+}

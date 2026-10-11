@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-04T05:24:05.661347+00:00",
+  "binary_reads": 1,
+  "bytes": 1056,
+  "snapshot_sha256": "11bafebea4e558360a155d5ac3f7739161f2e4177456fd84f7322bef1b5e631e",
+  "callback_static_arguments_verified": true,
+  "original_M2R2_no_read_record_unchanged": true,
+  "historical_binding": "retained PID/start/path; Human no additional actions; freeze existing-value source contract",
+  "visual_exit": "pending"
+}

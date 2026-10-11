@@ -1,0 +1,267 @@
+[
+  {
+    "step": "RimeBridgeTests",
+    "metrics": {
+      "analyzerWarningCount": "0",
+      "errorCount": "0",
+      "testsCount": "105",
+      "testsFailedCount": "0",
+      "testsSkippedCount": "20",
+      "warningCount": "0"
+    },
+    "statuses": {
+      "Success": 85,
+      "Skipped": 20
+    },
+    "skips": [
+      {
+        "identifier": "RimeLuaSmokeTests/testCorrectionSidecarKeepsVisibleCompositionIntactWhenRuntimeFixtureIsProvided()",
+        "messages": [
+          "Test skipped - Set UK_RIME_LUA_SMOKE_SHARED_DIR and UK_RIME_LUA_SMOKE_USER_DIR to run the real Lua smoke test."
+        ]
+      },
+      {
+        "identifier": "RimeLuaSmokeTests/testRimeIceLuaDynamicCandidatesWhenRuntimeFixtureIsProvided()",
+        "messages": [
+          "Test skipped - Set UK_RIME_LUA_SMOKE_SHARED_DIR and UK_RIME_LUA_SMOKE_USER_DIR to run the real Lua smoke test."
+        ]
+      },
+      {
+        "identifier": "RimeT9AutoAnchorRetryMatrixTests/testCappedTwoSyllableControllerFrozenPairedMatrix()",
+        "messages": [
+          "Test skipped - Set the immutable 40-character lowercase S4 commit to run the paired matrix."
+        ]
+      },
+      {
+        "identifier": "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationKnownPositive()",
+        "messages": [
+          "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+        ]
+      },
+      {
+        "identifier": "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationNaturalReminder()",
+        "messages": [
+          "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+        ]
+      },
+      {
+        "identifier": "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationNaturalWeather()",
+        "messages": [
+          "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+        ]
+      },
+      {
+        "identifier": "RimeT9AutoAnchorRetryMatrixTests/testPartialLongSelectionIsNotPersonalizationProof()",
+        "messages": [
+          "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+        ]
+      },
+      {
+        "identifier": "RimeT9AutoAnchorRetryMatrixTests/testRejectedCompositionLaterOpportunityTransactionMatrix()",
+        "messages": [
+          "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+        ]
+      },
+      {
+        "identifier": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerFrozenA0A1B2B3Matrix()",
+        "messages": [
+          "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+        ]
+      },
+      {
+        "identifier": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerMissingLiveCompositionFailsClosedBeforeKey()",
+        "messages": [
+          "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+        ]
+      },
+      {
+        "identifier": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerRealRimeDeletePathAndPartialOwnership()",
+        "messages": [
+          "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+        ]
+      },
+      {
+        "identifier": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerRealRimeSecondRejectRestoreMatrix()",
+        "messages": [
+          "Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+        ]
+      },
+      {
+        "identifier": "RimeT9CompatibilitySpikeTests/testPinnedLibrimeCanSelectT9AndProcessDigitSequenceAfterRemovingUnsupportedProcessor()",
+        "messages": [
+          "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 compatibility Spike."
+        ]
+      },
+      {
+        "identifier": "RimeT9PinyinSelectionSpikeTests/test004CatalogExactRawAcceptanceOnPinnedLibrime()",
+        "messages": [
+          "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+        ]
+      },
+      {
+        "identifier": "RimeT9PinyinSelectionSpikeTests/testAtomicPathDiscoveryStageAOnPinnedLibrime()",
+        "messages": [
+          "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+        ]
+      },
+      {
+        "identifier": "RimeT9PinyinSelectionSpikeTests/testGate5Phase05CandidateCoverageSelRangeOnPinnedLibrime()",
+        "messages": [
+          "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+        ]
+      },
+      {
+        "identifier": "RimeT9PinyinSelectionSpikeTests/testGate5Phase06AlternativeCoverageSelectionDeltaOnPinnedLibrime()",
+        "messages": [
+          "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+        ]
+      },
+      {
+        "identifier": "RimeT9PinyinSelectionSpikeTests/testPrecisePinyinPathRefinementOnPinnedLibrime()",
+        "messages": [
+          "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+        ]
+      },
+      {
+        "identifier": "RimeT9PinyinSelectionSpikeTests/testReadOnlyWindowCoverageForYiZiSibling()",
+        "messages": [
+          "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+        ]
+      },
+      {
+        "identifier": "ThreadAffineRimeRealEngineTests/testRealEngineBootstrapCreatesAndCallsOffMainThroughOwner()",
+        "messages": [
+          "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR (or UK_RIME_R4B_*) to run R4-B real-engine proof."
+        ]
+      }
+    ],
+    "v6_case": []
+  },
+  {
+    "step": "AppV6Focused-r2",
+    "metrics": {
+      "analyzerWarningCount": "0",
+      "errorCount": "0",
+      "testsCount": "1",
+      "testsFailedCount": "0",
+      "testsSkippedCount": "0",
+      "totalCoveragePercentage": "0.048505790063503924",
+      "warningCount": "0"
+    },
+    "statuses": {
+      "Success": 1
+    },
+    "skips": [],
+    "v6_case": [
+      {
+        "identifier": "DiagnosticsLogSourceTests/testV6HistoriesPropagateCompletenessThroughCompositeQuery()",
+        "name": "testV6HistoriesPropagateCompletenessThroughCompositeQuery()",
+        "testStatus": "Success",
+        "duration": "0.13072896003723145"
+      }
+    ]
+  },
+  {
+    "step": "AppKeyboardTests-r2",
+    "metrics": {
+      "analyzerWarningCount": "0",
+      "errorCount": "0",
+      "testsCount": "429",
+      "testsFailedCount": "0",
+      "testsSkippedCount": "10",
+      "totalCoveragePercentage": "0.4881210310048562",
+      "warningCount": "0"
+    },
+    "statuses": {
+      "Success": 419,
+      "Skipped": 10
+    },
+    "skips": [
+      {
+        "identifier": "RimeIcePinnedArtifactTests/testVerifiedOfficialAndMirrorArchivesConvergeAfterProductionProcessing()",
+        "messages": [
+          "Test skipped - Set TEST_RUNNER_SCHEME_PIN_ARCHIVE_ROOT to the independently downloaded source archives"
+        ]
+      },
+      {
+        "identifier": "RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem()",
+        "messages": [
+          "Test skipped - Unsigned host lacks Keychain entitlement; signed Simulator lane covers integration."
+        ]
+      },
+      {
+        "identifier": "SchemeResourcePreparationCoexistenceTests/testCS06_UninstallInactiveWanxiangRetainsIcePeerInventory()",
+        "messages": [
+          "Test skipped - CS09-10-01 requires the fixed Wanxiang extract tree"
+        ]
+      },
+      {
+        "identifier": "SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerIceRemovalPreservesCompleteWanxiangInventory()",
+        "messages": [
+          "Test skipped - CS09-10-01 requires the fixed Wanxiang extract tree"
+        ]
+      },
+      {
+        "identifier": "SchemeResourcePreparationCoexistenceTests/testCS0910_RealInstallerWanxiangRemovalPreservesCompleteIceInventory()",
+        "messages": [
+          "Test skipped - CS09-10-01 requires the fixed Ice extract tree"
+        ]
+      },
+      {
+        "identifier": "SchemeResourcePreparationCoexistenceTests/testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds()",
+        "messages": [
+          "Test skipped - Ice 2026.06.30 default.yaml fixture is required for P3 fingerprint recovery"
+        ]
+      },
+      {
+        "identifier": "SchemeResourcePreparationCoexistenceTests/testProductionProcessedIceTreeKeepsOfficialDefaultYamlWhenFixturePresent()",
+        "messages": [
+          "Test skipped - Set TEST_RUNNER_SCHEME_PIN_ARCHIVE_ROOT to the independently downloaded Ice archives"
+        ]
+      },
+      {
+        "identifier": "TD012LMDGDeviceStagingTests/testPinnedModelLoadsThroughWanxiangGrammarOnAuthorizedPhysicalDevice()",
+        "messages": [
+          "Test skipped - TD-012 G2 model-load receipt is physical-device-only"
+        ]
+      },
+      {
+        "identifier": "TD012LMDGDeviceStagingTests/testRemovePinnedModelAfterAuthorizedPhysicalDeviceSpike()",
+        "messages": [
+          "Test skipped - TD-012 G2 cleanup is physical-device-only"
+        ]
+      },
+      {
+        "identifier": "TD012LMDGDeviceStagingTests/testStagePinnedModelForAuthorizedPhysicalDeviceSpike()",
+        "messages": [
+          "Test skipped - TD-012 G2 staging is physical-device-only"
+        ]
+      }
+    ],
+    "v6_case": [
+      {
+        "identifier": "DiagnosticsLogSourceTests/testV6HistoriesPropagateCompletenessThroughCompositeQuery()",
+        "name": "testV6HistoriesPropagateCompletenessThroughCompositeQuery()",
+        "testStatus": "Success",
+        "duration": "0.04086601734161377"
+      }
+    ]
+  },
+  {
+    "step": "SignedKeychain-r2",
+    "metrics": {
+      "analyzerWarningCount": "0",
+      "errorCount": "0",
+      "testsCount": "1",
+      "testsFailedCount": "0",
+      "testsSkippedCount": "0",
+      "totalCoveragePercentage": "0.04499439671273814",
+      "warningCount": "0"
+    },
+    "statuses": {
+      "Success": 1
+    },
+    "skips": [],
+    "v6_case": []
+  }
+]

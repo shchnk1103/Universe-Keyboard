@@ -1,0 +1,70 @@
+{
+  "record": "keyboard-wake-diagnostic-extension-paired-rollout-001-jsonl-parent-exit-map-2026-10-06",
+  "worktree": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "staged": 0,
+  "algorithm": "SHA-256 of raw file bytes",
+  "inputs": [
+    {
+      "path": "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md",
+      "bytes": 136527,
+      "sha256": "df7a25426cd97431165bb647270e7baeff2fb89fb6e2585136acb6b2ae44048e"
+    },
+    {
+      "path": "docs/assignments/keyboard-wake-lifecycle-diagnostics-001.md",
+      "bytes": 39657,
+      "sha256": "7d75ae71c209c118ebc37a412d5f07c386911ee60861eb767a8ee46ba9b75ca7"
+    },
+    {
+      "path": "docs/assignments/keyboard-wake-host-activation-fix-001.md",
+      "bytes": 54671,
+      "sha256": "92c07693191515735e063453cc84daeb183f4f7e87583f7709a2aed4f873997f"
+    },
+    {
+      "path": "docs/product-decisions/KEYBOARD-WAKE-LIFECYCLE-DIAGNOSTICS-001-bounded-completion-product-decision-2026-10-04.md",
+      "bytes": 3698,
+      "sha256": "997cc82c2adbd5d214ccf767a534618d38445c880f16c90c2ab427e259a15961"
+    },
+    {
+      "path": "docs/product-decisions/KEYBOARD-WAKE-HOST-ACTIVATION-FIX-001-bounded-completion-product-decision-2026-10-06.md",
+      "bytes": 2424,
+      "sha256": "23326568e70326565501bf649a827f75cb8ac80e10a0ec7ed319ffde74e683f2"
+    },
+    {
+      "path": "docs/evidence/keyboard-wake-lifecycle-diagnostics-001-historical-exit-map-2026-10-04.md",
+      "bytes": 4834,
+      "sha256": "ec35101656b4e6210d7e138f20a806d98040fdf19867ed8f17e1174393d3a39f"
+    },
+    {
+      "path": "docs/evidence/keyboard-wake-lifecycle-diagnostics-001-bounded-completion-2026-10-04.md",
+      "bytes": 1873,
+      "sha256": "efb68b21bec71e2e6f542416109b56b67b7deeee40117c2efece59e447d8b664"
+    },
+    {
+      "path": "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-m2r2-reexport-review-validation-2026-10-04.md",
+      "bytes": 5259,
+      "sha256": "b885895322f913ba06c20e7a10f6848c8e9d4b85bb6334c24a38d0f84141ad96"
+    },
+    {
+      "path": "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m2r2-reexport-validation-2026-10-04.md",
+      "bytes": 4326,
+      "sha256": "f1faf9fc3b451892712506b2b9a62ab9685c39ccb0b0b4adf57238443bf78760"
+    },
+    {
+      "path": "docs/evidence/keyboard-wake-host-activation-fix-001-bounded-completion-2026-10-06.md",
+      "bytes": 2389,
+      "sha256": "45297e4c247d14b9203925446279ee6959499fa271c86693953699267597021d"
+    },
+    {
+      "path": "docs/evidence/keyboard-wake-host-activation-fix-001-final-exit-map-2026-10-06.md",
+      "bytes": 5105,
+      "sha256": "20aa75a09a323ce8b9227799ec8abd8f4f28e1c18ea22e339ed2e202278c3952"
+    },
+    {
+      "path": "docs/evidence/keyboard-wake-host-activation-fix-001-owner-export-e1-quality-validation-2026-10-06.md",
+      "bytes": 2908,
+      "sha256": "d2455e0338a064145a3b99a168f5147f48d5ca36943959090ab3f913e763d140"
+    }
+  ]
+}

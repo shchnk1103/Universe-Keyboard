@@ -1,0 +1,31 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "\n📦 Install App\n\n✅ App installed successfully\n\nNext steps:\n1. Open the Simulator app: open_sim()\n2. Launch the app: launch_app_sim({ simulatorId: \"405D994F-28CB-4F89-BB22-B64AD81C05A2\", bundleId: \"com.DoubleShy0N.Universe-Keyboard\" })\n"
+    }
+  ],
+  "structuredContent": {
+    "schema": "xcodebuildmcp.output.install-result",
+    "schemaVersion": "2",
+    "didError": false,
+    "error": null,
+    "data": {
+      "summary": {
+        "status": "SUCCEEDED"
+      },
+      "artifacts": {
+        "simulatorId": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+        "appPath": "/private/tmp/ukey-wake-c7b3-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app"
+      },
+      "diagnostics": {
+        "warnings": [],
+        "errors": []
+      }
+    },
+    "nextSteps": [
+      "Open the Simulator app: open_sim()",
+      "Launch the app: launch_app_sim({ simulatorId: \"405D994F-28CB-4F89-BB22-B64AD81C05A2\", bundleId: \"com.DoubleShy0N.Universe-Keyboard\" })"
+    ]
+  }
+}

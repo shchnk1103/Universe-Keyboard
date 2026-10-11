@@ -1,0 +1,86 @@
+{
+  "work_item": "KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001",
+  "lane": "QUALITY-C7-UI-U1R1-DELIVERY-CONSISTENCY",
+  "round": 1,
+  "authority": "Human explicit authorization of2calls/180s author correction,2026-10-03",
+  "assignment_authority": "Human Product Lead only",
+  "reviewer": "reused /root/t_split_p, independent GPT6 Luna low",
+  "coordinator": "/root",
+  "baseline": {
+    "worktree": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+    "branch": "codex/keyboard-wake-v3-compatibility-gate",
+    "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+    "candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50",
+    "prior_runtime_lane": "QUALITY-C7-UI-U1R1-RUNTIME round1",
+    "prior_runtime_report_sha256": "9e739c6f3ec8f575369a4b5a830ef759d4bdc6e9243b9f1b18fe5c774674b5f8",
+    "prior_runtime_usage_sha256": "1a927231bfdb14366c167a875f518312f5d6cbe2dff4b995f5bfcbef64835cba"
+  },
+  "allowed_content_inputs": {
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/AGENTS.md": "947743e29a5987f9b1abb9c220a28ebcb92bd766928e22c1dd67c046bbe62152",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/ASSIGNMENT_POLICY.md": "e90dd8f06371e9367652d4e7cc63dee31ee7b1ac855e7802d6d2e9b8e1e90680",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-u1r1-delivery-correction-entry-2026-10-03.md": "35d3be4b02a9af0c4e7100e6207f204123df08f4c26aabfc834c22cc7c00d7f0",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/plans/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-u1r1-review-delivery-correction-prepared-2026-10-03.md": "2cdd5ccd15c394071e076031b5cd1809f2fecaff4b6f3fb4d9a7aee5d01b0a97",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/quality-c7-ui-u1r1-runtime-r1-packet-2026-10-03.json": "e3faf25fbd3d1b0b854ea475aa17b35ee77c04d85561be2a8274179c0c1b8c74",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-u1r1-review-artifacts/review.md": "9e739c6f3ec8f575369a4b5a830ef759d4bdc6e9243b9f1b18fe5c774674b5f8",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-u1r1-review-artifacts/usage.json": "1a927231bfdb14366c167a875f518312f5d6cbe2dff4b995f5bfcbef64835cba",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-u1r1-review-artifacts/external-identity.json": "567e9028c2fcd34dfbad660a9ff782c8126b9045a091ad2c764aa3b89c57a6cf",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-u1r1-review-artifacts/root-dispatch.json": "dd167101787e9503bd289cb420688233f903acd9f2def01b33012bb7acaa44a3",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-u1r1-review-artifacts/root-receipt.json": "ccb52b677e568c0979b316e16921ace672046802df33a017f57e9820985b1728",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-u1r1-review-artifacts/preservation.json": "d4963a08ab72ed35dabdec4ad3d2934c4a175cf2a31dde8abe6a6cd1f823f4d0",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-u1r1-artifacts/debug-call-01-raw.json": "e11d26691e0ad56200729997fe73451d52fa935d0dc2e7a0fcd636914147875b",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-u1r1-artifacts/debug-call-02-raw.json": "355bc744a72c981bf5b3adcf24c9e41ae3309c9dbe5e64046f81ae060871dadd"
+  },
+  "allowed_hash_only_inputs": {
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-u1r1-review-artifacts/independent-analysis.json": "a2debead61a6817a193cf79118924983ed442ee58fb8b51ee26c0fd9bdda126a"
+  },
+  "allowed_write_root": "/private/tmp/ukey-wake-ui-u1r1-delivery-correction-20261003",
+  "allowed_operations": [
+    "read only listed files",
+    "stdlib JSON/SHA256 and timer",
+    "git branch/HEAD read-only",
+    "use own existing reviewer context for actual known call enumeration",
+    "write new supplement files only"
+  ],
+  "forbidden_operations": [
+    "Simulator/UI/container/LLDB/process/build/test/install/network/source inputs",
+    "execute old collectors/readers",
+    "new substantive P1/P2/P3 review",
+    "mutate original reviewer outputs or repo",
+    "additional checkpoint messages/tools or history reads outside allowlist",
+    "scope/budget self-expansion"
+  ],
+  "required_outputs": {
+    "delivery": "/private/tmp/ukey-wake-ui-u1r1-delivery-correction-20261003/delivery-supplement.md",
+    "usage": "/private/tmp/ukey-wake-ui-u1r1-delivery-correction-20261003/usage-supplement.json"
+  },
+  "criteria": {
+    "D001": "Author corrects runtime report image-list ordinal to debugcall02; debugcall01=attach, cite frozen raws.",
+    "D002": "Author explicitly fixes named prior usage external_identity_matches=false to true by correct external whole/self field comparisons; original self_sha_matches already true, do not mislabel.",
+    "D003": "Author explicitly says prior status Partial/in-progress is obsolete relative to final P1-P3 Covered report; only metadata correction, independent narrow opinion unchanged.",
+    "D004": "Author enumerates original6leaf calls including checkpoint. Per-call tool types/timing-source fields added; actual uncaptured request/output UTC must be null and explicitly unavailable, no fabricated times. Original aggregate259.904644s and actual6calls stay separate. Any unknown type remainsunknown, not invented. Do not claim original full per-call timing evidence now exists."
+  },
+  "positive_acceptance": "D001-D004 all explicitly addressed; original bytes/hash preserved; formal author supplement and accurate current2call usage delivered; null+unavailable for genuinely unmeasured historic timing is required truthful completion of this correction, not proof of that timing.",
+  "complete_coverage": "All fourD Covered as author consistency addendum. Missing/contradictory mandatory correction=>Partial/incomplete. No new runtime acceptance/Product residual disposition.",
+  "budget": {
+    "leaf_calls": 2,
+    "hard_seconds": 180,
+    "soft_seconds": 120,
+    "start": "first actual tool request; record script wall/monotonic clocks separately when available",
+    "checkpoint": "No message checkpoint; call1 writes formal supplement/usage, call2 reads back hashes and final fields and writes accurate2call usage. Final answer is not another tool call.",
+    "exhaustion": "stop Partial, actualcalls/elapsed/reason; no renewal"
+  },
+  "finding_record": "/private/tmp/ukey-wake-ui-u1r1-delivery-correction-20261003/delivery-supplement.md",
+  "usage_fields": [
+    "current lane/round",
+    "model/effort",
+    "new packet whole/self SHA",
+    "actual calls/time sources",
+    "coveredD criteria",
+    "original runtime call enumeration/null times",
+    "prior report/usage hashes",
+    "current supplement hash",
+    "no old files changed",
+    "stop reason"
+  ],
+  "packet_digest_sha256": "116f55a2d99d40c59c88738bb05e088fae51668e0a3e5977a6645a2b31035fa5"
+}

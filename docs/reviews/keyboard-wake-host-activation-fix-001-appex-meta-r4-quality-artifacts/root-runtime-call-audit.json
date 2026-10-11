@@ -1,0 +1,215 @@
+{
+  "scope": "mechanical original root call audit only; independent reviewer not replaced",
+  "audit_path": "/Users/doubleshy0n/.codex/sessions/2026/10/06/rollout-2026-10-06T10-21-31-01a0f254-ec9a-7832-b022-f80e22d73fec_01a10f04-2339-75f1-b36f-07305f727f49.jsonl",
+  "audit_start_line": 597,
+  "audit_end_line": 747,
+  "actual_calls_reconstructed": 35,
+  "wrapper_calls": 14,
+  "nested_calls": 16,
+  "direct_request_user_input_calls": 5,
+  "ledger": [
+    {
+      "audit_line": 597,
+      "utc": "2026-10-06T03:06:17.884Z",
+      "tool_name": "exec",
+      "call_id": "call_ogwJi0tlkGbRhrwwyrDdZXWe",
+      "nested_tool_names": [
+        "exec_command"
+      ],
+      "actual_calls": 2,
+      "input_sha256": "35a25eace16fb989ef4068b4e69c3e4be10d69c5ea54e074ab895ca321e203cf"
+    },
+    {
+      "audit_line": 602,
+      "utc": "2026-10-06T03:06:28.291Z",
+      "tool_name": "request_user_input_async",
+      "call_id": "call_R82dOcwV5yMypJD5ZsNHHbVW",
+      "nested_tool_names": [],
+      "actual_calls": 1,
+      "input_sha256": "1c6c4ced3d98f7e433a95dc183fb8cc8ca9944ad282ee4a1e9107116fa8902b2"
+    },
+    {
+      "audit_line": 619,
+      "utc": "2026-10-06T03:06:50.764Z",
+      "tool_name": "exec",
+      "call_id": "call_mznnj2F12sEGsLhtTASyFuzP",
+      "nested_tool_names": [
+        "exec_command"
+      ],
+      "actual_calls": 2,
+      "input_sha256": "79c7355bf98efee9e51dad9b59223ef043005b9f8705adcd08eb54c46bd6b9ad"
+    },
+    {
+      "audit_line": 624,
+      "utc": "2026-10-06T03:06:58.228Z",
+      "tool_name": "request_user_input_async",
+      "call_id": "call_h5xFqmaaPr1KrN9ejg8rAsv1",
+      "nested_tool_names": [],
+      "actual_calls": 1,
+      "input_sha256": "cb51bccad4e6fc6a36ac0b0674b67a630aadc72b02419d7dfd0db04ac99148be"
+    },
+    {
+      "audit_line": 641,
+      "utc": "2026-10-06T03:07:31.065Z",
+      "tool_name": "exec",
+      "call_id": "call_sqGej7vPzo6gmNRTdjBOj3pX",
+      "nested_tool_names": [
+        "exec_command"
+      ],
+      "actual_calls": 2,
+      "input_sha256": "9890bfd241863c147073545a0205ccd6f0aeba5a4dccc05c31232fc3e5d53eb4"
+    },
+    {
+      "audit_line": 646,
+      "utc": "2026-10-06T03:07:37.859Z",
+      "tool_name": "exec",
+      "call_id": "call_kchYQFIimtNEwyRf9vbYeQCu",
+      "nested_tool_names": [
+        "exec_command"
+      ],
+      "actual_calls": 2,
+      "input_sha256": "415640b55e1e852a65a0994af862d45da53edb3fea269f5d882b7dc0f0ac2951"
+    },
+    {
+      "audit_line": 650,
+      "utc": "2026-10-06T03:07:46.638Z",
+      "tool_name": "exec",
+      "call_id": "call_qRkmTDBtKxjCrpkBeZuZuzzC",
+      "nested_tool_names": [
+        "write_stdin"
+      ],
+      "actual_calls": 2,
+      "input_sha256": "da756a9bcedda61175ab22ffd7218340c3fb78dd06ee6ba7a803cf546b84bc1b"
+    },
+    {
+      "audit_line": 654,
+      "utc": "2026-10-06T03:07:53.211Z",
+      "tool_name": "exec",
+      "call_id": "call_AoyWo01Sd4uMQumOcxiGFvGG",
+      "nested_tool_names": [
+        "write_stdin"
+      ],
+      "actual_calls": 2,
+      "input_sha256": "597ee647d68d59e47cd2bb22207af31d1ccc00d14dff8cbf0350b69cca25e3c4"
+    },
+    {
+      "audit_line": 658,
+      "utc": "2026-10-06T03:08:00.902Z",
+      "tool_name": "exec",
+      "call_id": "call_rZ085TJyJoWhEXbHrhbKBYJJ",
+      "nested_tool_names": [
+        "write_stdin"
+      ],
+      "actual_calls": 2,
+      "input_sha256": "7eb9669a0d8f174812f6c1d9c7575bc57e8df5c8291a345e7332db863019e3ad"
+    },
+    {
+      "audit_line": 662,
+      "utc": "2026-10-06T03:08:13.835Z",
+      "tool_name": "exec",
+      "call_id": "call_UJaggXhRjLo652szvi3qq0ys",
+      "nested_tool_names": [
+        "exec_command"
+      ],
+      "actual_calls": 2,
+      "input_sha256": "25edfa36045838ab1a512378a9f0b2a4fd5e848c352e422763a21b4c25dd4a8b"
+    },
+    {
+      "audit_line": 669,
+      "utc": "2026-10-06T03:08:21.649Z",
+      "tool_name": "request_user_input_async",
+      "call_id": "call_a5mmhkkAPMiTD9ZlJl34iF7J",
+      "nested_tool_names": [],
+      "actual_calls": 1,
+      "input_sha256": "c6c05587f031c8cbafd844b32d8bb018d27f482465588d193a18eb3936c93c1a"
+    },
+    {
+      "audit_line": 686,
+      "utc": "2026-10-06T03:08:39.170Z",
+      "tool_name": "exec",
+      "call_id": "call_oMogbgzBM0Ndl0KHF21v6GpV",
+      "nested_tool_names": [
+        "write_stdin"
+      ],
+      "actual_calls": 2,
+      "input_sha256": "225c91b8347d561d43e1f1a0878e56504705cc317ae8c1d28ed2eda81b759b1a"
+    },
+    {
+      "audit_line": 690,
+      "utc": "2026-10-06T03:08:51.267Z",
+      "tool_name": "exec",
+      "call_id": "call_bO16YzLBkG91SBpyUz2mJd9Y",
+      "nested_tool_names": [
+        "exec_command"
+      ],
+      "actual_calls": 2,
+      "input_sha256": "cd5ab7993c7829b615949f08bd1c39d2d82795d59f5fc33d67b4a28aeffae003"
+    },
+    {
+      "audit_line": 695,
+      "utc": "2026-10-06T03:08:57.983Z",
+      "tool_name": "request_user_input_async",
+      "call_id": "call_XAUd8MJ2DyFHvsoaZPFyl4PP",
+      "nested_tool_names": [],
+      "actual_calls": 1,
+      "input_sha256": "7c95fb79264e614143e105dedde1754c130622a5a70f0022dcc4df2c1a8af41c"
+    },
+    {
+      "audit_line": 714,
+      "utc": "2026-10-06T03:09:28.628Z",
+      "tool_name": "exec",
+      "call_id": "call_267729JYcTPrA6VJ58yA6bwn",
+      "nested_tool_names": [
+        "exec_command",
+        "write_stdin",
+        "write_stdin"
+      ],
+      "actual_calls": 4,
+      "input_sha256": "29e9312ddf315cbcda5155a50af0834e41b14957a9b7081a326b024940d49af4"
+    },
+    {
+      "audit_line": 724,
+      "utc": "2026-10-06T03:10:11.844Z",
+      "tool_name": "exec",
+      "call_id": "call_08IQDSiYdJObu8obqzUih7dk",
+      "nested_tool_names": [
+        "exec_command"
+      ],
+      "actual_calls": 2,
+      "input_sha256": "967f43d2acf3522a32a025f9660a44a7dece9cea22e818d9d3857773e18598dc"
+    },
+    {
+      "audit_line": 729,
+      "utc": "2026-10-06T03:10:20.176Z",
+      "tool_name": "request_user_input_async",
+      "call_id": "call_8f8FMMtNGn5tyGoGhoVvytg9",
+      "nested_tool_names": [],
+      "actual_calls": 1,
+      "input_sha256": "96be9207e9308c7b92b4a6109e6a6b05bb9adbcb2e661b94f170bf8074c8e8fb"
+    },
+    {
+      "audit_line": 736,
+      "utc": "2026-10-06T03:11:09.230Z",
+      "tool_name": "exec",
+      "call_id": "call_rMN5F8IEXT63CQs2V2UjHb4e",
+      "nested_tool_names": [
+        "exec_command"
+      ],
+      "actual_calls": 2,
+      "input_sha256": "066cca270457b43fb114b941fe00979e0fa29b16caa23d0abd13a62ecf93b058"
+    },
+    {
+      "audit_line": 747,
+      "utc": "2026-10-06T03:11:41.327Z",
+      "tool_name": "exec",
+      "call_id": "call_xsDpseNeb6ea4t1yl8GiNGX5",
+      "nested_tool_names": [
+        "exec_command"
+      ],
+      "actual_calls": 2,
+      "input_sha256": "0f06ccf90759f851472637c0446d2bf82bd27a1c98d056dc8b704864fc9f9d11"
+    }
+  ],
+  "method": "original stage response_item tool calls; each wrapper/direct1 plus explicit awaited nested invocations1",
+  "limitations": "event records prove invocation count, not correctness of each command; root-generated receipt, reviewer may independently recheck native audit"
+}

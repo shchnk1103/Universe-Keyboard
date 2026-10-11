@@ -1,0 +1,41 @@
+{
+  "lane": "QUALITY-C5-R-ACCEPT",
+  "round": 3,
+  "started_utc": "2026-10-01T06:11:30.870797+00:00",
+  "monotonic_start": 1017941.743266208,
+  "ended_utc_before_final_timer_write": "2026-10-01T06:14:42.916590+00:00",
+  "elapsed_seconds_before_final_timer_write": 192.044,
+  "underlying_tools_used": 3,
+  "underlying_tool_budget": 4,
+  "elapsed_budget_seconds": 600,
+  "tool_ledger": [
+    {
+      "call": 1,
+      "tool": "exec_command",
+      "started_utc": "2026-10-01T06:11:30.870797+00:00",
+      "purpose": "start timer; read/hash packet, manifest, Entry; hash 18 inputs; check HEAD/branch",
+      "ended_utc": "2026-10-01T06:11:30.922716+00:00",
+      "elapsed_seconds": 0.052
+    },
+    {
+      "call": 2,
+      "tool": "exec_command",
+      "started_utc": null,
+      "ended_utc": null,
+      "elapsed_seconds": null,
+      "timing_note": "per-call wall timestamps were not sampled; order and purpose are known",
+      "purpose": "hash 18 direct inputs; check HEAD/branch; list frozen inputs"
+    },
+    {
+      "call": 3,
+      "tool": "exec_command",
+      "started_utc": "2026-10-01T06:14:42.906885+00:00",
+      "purpose": "independent typed-window/snapshot multiset recomputation; reader source/plan review; write final artifacts",
+      "ended_utc": "2026-10-01T06:14:42.914567+00:00",
+      "elapsed_seconds": 0.006
+    }
+  ],
+  "all_other_outputs_written": true,
+  "final_timer_write_is_last_artifact": true,
+  "measurement_note": "call 2 per-call timestamps were not sampled; total elapsed is monotonic from call 1 and sampled immediately before terminal timer write."
+}

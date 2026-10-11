@@ -1,0 +1,29 @@
+{
+  "lane": "UK-WAKE-V6-B-ARCH",
+  "round": "R1",
+  "packet_sha256": "501bdcb9a05b1fe5d8dd9bd84ebd04ab50667f091baca3f2bd560eb01b10c550",
+  "started_at": "Not captured at start; review began before the recorded end time.",
+  "ended_at_utc": "2026-09-30 13:41:06 UTC",
+  "elapsed": "Under 12 minutes; exact elapsed time unavailable because start time was not captured.",
+  "tool_interactions": 11,
+  "checkpoints": {
+    "4": "Missed: the first root update was sent after interaction 6 (7th interaction including the message).",
+    "10": "Status was recorded in the artifact at interaction 10 and sent to root at interaction 11."
+  },
+  "covered": [],
+  "uncovered": [
+    "AS1",
+    "AS2",
+    "AS3",
+    "AS4",
+    "AS5",
+    "AS6"
+  ],
+  "stop_reason": "R1 packet omitted the absolute repository root. Initial hash check used the default checkout and cannot establish candidate identity. Coordinator identified the intended worktree; R1 stopped without accessing it. R2 packet supplied explicit root.",
+  "source_reads": 0,
+  "build_test_simulator_git_mutation_network_or_source_write": false,
+  "outputs": [
+    "architecture-review.md",
+    "architecture-usage.json"
+  ]
+}

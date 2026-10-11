@@ -1,0 +1,36 @@
+{
+  "pr": {
+    "headRefOid": "25fa3d3861c8189f7b256f8c05a403de48592abe",
+    "mergeCommit": {
+      "oid": "8f306c601bbae83a2ce945df0c76659343c36096"
+    },
+    "mergedAt": "2026-10-11T00:32:29Z",
+    "state": "MERGED",
+    "url": "https://github.com/shchnk1103/Universe-Keyboard/pull/207"
+  },
+  "merge_tree": "5b13b5ee3c5f47bca9347ce5c28f3775a9feb5b3",
+  "merge_parent": "59272331b3627856c1c4480b0b5d7ad0ddade0ad",
+  "main_compare": {
+    "status": "identical",
+    "ahead_by": 0,
+    "behind_by": 0
+  },
+  "historical_pr163": {
+    "mergeCommit": {
+      "oid": "15e2be5ef3ebdef2b07ac6ec2429a1fe8cd9436a"
+    },
+    "mergedAt": "2026-09-25T06:54:54Z",
+    "state": "MERGED",
+    "url": "https://github.com/shchnk1103/Universe-Keyboard/pull/163"
+  },
+  "hosted_run": 38098365888,
+  "m02_trigger": {
+    "work_item": "TYPO-CORRECTION-002",
+    "pr": 207,
+    "merge_commit": "8f306c601bbae83a2ce945df0c76659343c36096",
+    "authority": "AUTH-TYPO-CORRECTION-002-FINAL-DELIVERY-MERGE-001"
+  },
+  "source_changed": false,
+  "parent_lifecycle": "Active",
+  "sync_publication": "not authorized; local preparation only"
+}

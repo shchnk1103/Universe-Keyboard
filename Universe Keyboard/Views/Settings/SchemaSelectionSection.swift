@@ -11,9 +11,7 @@ struct SchemaSelectionSection: View {
                     if schema.schemaID == "rime_ice" && !schema.installed {
                         SchemaDownloadCardView(
                             schema: schema,
-                            isLicenseAccepted: store.licenseAccepted,
-                            onShowLicense: onShowLicense,
-                            onDownload: { store.startDownload() }
+                            onShowLicense: onShowLicense
                         )
                     } else {
                         SchemaPickerRow(

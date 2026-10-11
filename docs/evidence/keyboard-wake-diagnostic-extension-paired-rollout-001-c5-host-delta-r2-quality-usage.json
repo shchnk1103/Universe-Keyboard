@@ -1,0 +1,72 @@
+{
+  "lane": "QUALITY-C5-HOST-DELTA",
+  "round": 2,
+  "verdict": "Covered",
+  "covered_criteria": [
+    "H1",
+    "H2",
+    "H3"
+  ],
+  "tool_ledger": [
+    {
+      "call": 1,
+      "tool": "exec_command",
+      "purpose": "timer; frozen packet/manifest/Entry; HEAD/branch; identity and batch hash/source review deferred"
+    },
+    {
+      "call": 2,
+      "tool": "exec_command",
+      "purpose": "26/568/111 hash verification; source/report/plan review; write report, usage, timer"
+    }
+  ],
+  "underlying_tool_calls": 2,
+  "tool_budget": 2,
+  "elapsed_budget_seconds": 180,
+  "started_utc": "2026-10-01T02:30:49.734829+00:00",
+  "end_utc_before_final_timer_write": "2026-10-01T02:33:16.459424+00:00",
+  "elapsed_seconds_before_final_timer_write": 146.722,
+  "within_budget": true,
+  "checkpoint_after_call_1": true,
+  "identity": {
+    "packet": {
+      "expected": "86dc209897a89e9723e3ee2f42057bc79b0ee1e07b5eb19658d14b137c25b4bc",
+      "actual": "86dc209897a89e9723e3ee2f42057bc79b0ee1e07b5eb19658d14b137c25b4bc",
+      "match": true
+    },
+    "manifest": {
+      "expected": "8c3399b5ceb20040f3b41da9136a71e864117cd1b21573212b3dca660930ffe1",
+      "actual": "8c3399b5ceb20040f3b41da9136a71e864117cd1b21573212b3dca660930ffe1",
+      "match": true
+    },
+    "entry": {
+      "expected": "e6a0ac428f14fb684956b0ab72a26978da97d9183375bfbd81ed09154c452efc",
+      "actual": "e6a0ac428f14fb684956b0ab72a26978da97d9183375bfbd81ed09154c452efc",
+      "match": true
+    }
+  },
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "hash_verification": {
+    "inputs": {
+      "count": 26,
+      "matched": 26,
+      "mismatches": []
+    },
+    "source_build": {
+      "count": 568,
+      "matched": 568,
+      "mismatches": []
+    },
+    "built_bundle": {
+      "count": 111,
+      "matched": 111,
+      "mismatches": []
+    }
+  },
+  "issues": [],
+  "limitations": [
+    "静态审阅；未访问设备/Simulator/安装目录/AppGroup/prefs/UI/journal",
+    "未执行C5-R；Product host决定未作出",
+    "Round1 Partial不改判"
+  ]
+}

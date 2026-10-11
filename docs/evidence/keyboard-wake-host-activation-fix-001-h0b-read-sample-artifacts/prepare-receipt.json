@@ -1,0 +1,32 @@
+{
+  "fixture_pid": 93025,
+  "helper_pid": 93027,
+  "fixture_path": "/private/tmp/ukey-host-activation-fix-h0b-read-sample-20261006/fixture",
+  "attach_frame": {
+    "utc": "2026-10-06T02:11:26.005498+00:00",
+    "pid": 93025,
+    "thread_id": 44487526,
+    "frame_id": 0,
+    "stop_id": 1,
+    "process_state": 5,
+    "stop_reason": 5,
+    "stop_reason_data": [
+      17
+    ],
+    "frame_pc": 6504306960,
+    "function": "read",
+    "module_uuid": "F63BF418-8F75-34A4-AAF1-8CAF2B9B6A05"
+  },
+  "wait_proof": {
+    "ready_received_utc": "2026-10-06T02:11:25.845783+00:00",
+    "attach_module": "libsystem_kernel.dylib",
+    "caller_names": [
+      "read",
+      "main",
+      "start"
+    ],
+    "initial_system_wait_verified": true
+  },
+  "breakpoint_id": 1,
+  "location_pc": 4295787616
+}

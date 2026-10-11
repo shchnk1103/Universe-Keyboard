@@ -1,0 +1,82 @@
+{
+  "authority.json": {
+    "sha256": "73511a6c980ec897a66398abe5fcf9ab11a848a6196de5d84e0d51cd55a3aeec",
+    "private_source": "/private/tmp/ukey-wake-m2-arm-check-20261003/authority.json"
+  },
+  "machine-entry.json": {
+    "sha256": "a90a95f5d7e34ddd78285a9060e8fe7d142ac7b6f30fe20580a97bd972d2dbad",
+    "private_source": "/private/tmp/ukey-wake-m2-arm-check-20261003/machine-entry.json"
+  },
+  "read-only-command-ledger.json": {
+    "sha256": "813340deeae00810f213fba7acbddc7d328bd5ed8325ef4411a6e616bd5f9724",
+    "private_source": "/private/tmp/ukey-wake-m2-arm-check-20261003/read-only-command-ledger.json"
+  },
+  "old-instance-exit.json": {
+    "sha256": "79e2182cf047e0a6a74890625e1decd000e9910d2b0faa36dd8837d1ee928cea",
+    "private_source": "/private/tmp/ukey-wake-m2-arm-check-20261003/old-instance-exit.json"
+  },
+  "pre-arm-readiness.json": {
+    "sha256": "3604f633d7ba8e9fb8c3174ec0615d4fdefc28d4e9339d7d288434707669893b",
+    "private_source": "/private/tmp/ukey-wake-m2-arm-check-20261003/pre-arm-readiness.json"
+  },
+  "debug-command-ledger.jsonl": {
+    "sha256": "8cf900614aa2d31666ea23afe8a8f8c0a7cfe08756b6450b51117af94045b994",
+    "private_source": "/private/tmp/ukey-wake-m2-arm-check-20261003/debug-command-ledger.jsonl"
+  },
+  "machine-exit.json": {
+    "sha256": "b929185c76cb8c59173a9ef26a8b557ff90ef93d7d542262ba9d67115bfa8bb7",
+    "private_source": "/private/tmp/ukey-wake-m2-arm-check-20261003/machine-exit.json"
+  },
+  "exit-read-only-command-ledger.json": {
+    "sha256": "7bf174c30de9723fba4d58a106def64fe018ca22ede40ba4f4db7b69d660554d",
+    "private_source": "/private/tmp/ukey-wake-m2-arm-check-20261003/exit-read-only-command-ledger.json"
+  },
+  "arm-only-result.json": {
+    "sha256": "51fc57913e567549fd67745dbca8680e754d452fb79f06ca4f496bc350c55b97",
+    "private_source": "/private/tmp/ukey-wake-m2-arm-check-20261003/arm-only-result.json"
+  },
+  "debug-call-01-raw.json": {
+    "sha256": "2ff6c7361979b973ec6e8711b71c1cb2d77567b9f47631e14acb2ef808c6295a",
+    "private_source": "/private/tmp/ukey-wake-m2-arm-check-20261003/debug-call-01-raw.json"
+  },
+  "debug-call-02-raw.json": {
+    "sha256": "4622e0f735d3063aed20e519d02a99eaaf77ff73ed11864959832ee80b0ca9e7",
+    "private_source": "/private/tmp/ukey-wake-m2-arm-check-20261003/debug-call-02-raw.json"
+  },
+  "debug-call-03-raw.json": {
+    "sha256": "71c0e83db02d413eaec685f49de7f5ee75fda40235a6168d76bec5bff21ed483",
+    "private_source": "/private/tmp/ukey-wake-m2-arm-check-20261003/debug-call-03-raw.json"
+  },
+  "debug-call-04-raw.json": {
+    "sha256": "517c1d80cad0321efbd8fe10499f573ab5cf4c98f8a69f60466e84679f824760",
+    "private_source": "/private/tmp/ukey-wake-m2-arm-check-20261003/debug-call-04-raw.json"
+  },
+  "debug-call-05-raw.json": {
+    "sha256": "a61328fe794a6e216f183d7dca4e593577008236c8cb1cddd048ee604f476cdb",
+    "private_source": "/private/tmp/ukey-wake-m2-arm-check-20261003/debug-call-05-raw.json"
+  },
+  "debug-call-06-raw.json": {
+    "sha256": "048da62e5e9d93eb248db8d7a8da1afdcb60f4474c6f6475d18affe129d36dfa",
+    "private_source": "/private/tmp/ukey-wake-m2-arm-check-20261003/debug-call-06-raw.json"
+  },
+  "debug-call-07-raw.json": {
+    "sha256": "a61328fe794a6e216f183d7dca4e593577008236c8cb1cddd048ee604f476cdb",
+    "private_source": "/private/tmp/ukey-wake-m2-arm-check-20261003/debug-call-07-raw.json"
+  },
+  "debug-call-08-raw.json": {
+    "sha256": "f377da0c6d02a940228aa62ca943614dcae810d70dd80a6aa540a6f1ad8e76e7",
+    "private_source": "/private/tmp/ukey-wake-m2-arm-check-20261003/debug-call-08-raw.json"
+  },
+  "debug-call-09-raw.json": {
+    "sha256": "6bee9cb7719e157bcebe1ec6b8009a72dc1f43315d415d18b4e18be7f3fc737c",
+    "private_source": "/private/tmp/ukey-wake-m2-arm-check-20261003/debug-call-09-raw.json"
+  },
+  "debug-call-10-raw.json": {
+    "sha256": "d9090795718a6a6ceaa498a9192f789a33e5c9f9701371e5c7131adb2f517d4c",
+    "private_source": "/private/tmp/ukey-wake-m2-arm-check-20261003/debug-call-10-raw.json"
+  },
+  "debug-call-11-raw.json": {
+    "sha256": "e4ff9904150eb3427e4c0bfe79cd8cb22cd234e23f30c4cd4a4c5a4c4ba7a923",
+    "private_source": "/private/tmp/ukey-wake-m2-arm-check-20261003/debug-call-11-raw.json"
+  }
+}

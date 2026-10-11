@@ -48,12 +48,26 @@ struct ContentView: View {
     @State private var toastDismissTask: Task<Void, Never>?
     @State private var deploymentToastOperationActive = false
 
+    #if DEBUG
+        private var isRimeSyncUITestFixture: Bool {
+            RimeSyncUITestFixture.isRequested()
+        }
+    #else
+        private var isRimeSyncUITestFixture: Bool { false }
+    #endif
+
     init() {
         let rimeSettingsStore = RimeSettingsStore()
         _rimeSettingsStore = State(initialValue: rimeSettingsStore)
-        _rimeSyncViewModel = State(
-            initialValue: RimeSyncViewModel(rimeStore: rimeSettingsStore)
-        )
+        let rimeSyncViewModel: RimeSyncViewModel
+        #if DEBUG
+            rimeSyncViewModel =
+                RimeSyncUITestFixture.makeViewModelIfRequested(rimeStore: rimeSettingsStore)
+                ?? RimeSyncViewModel(rimeStore: rimeSettingsStore)
+        #else
+            rimeSyncViewModel = RimeSyncViewModel(rimeStore: rimeSettingsStore)
+        #endif
+        _rimeSyncViewModel = State(initialValue: rimeSyncViewModel)
         _notificationSettingsModel = State(initialValue: AppNotificationSettingsModel())
         #if DEBUG
             TypingIntelligencePreviewFixture.installIfRequested()
@@ -202,9 +216,12 @@ struct ContentView: View {
                 case .active:
                     Task {
                         await notificationSettingsModel.refreshAuthorizationStatus()
-                        await rimeSyncViewModel.synchronizeIfNeeded()
+                        if !isRimeSyncUITestFixture {
+                            await rimeSyncViewModel.synchronizeIfNeeded()
+                        }
                     }
                 case .inactive, .background:
+                    guard !isRimeSyncUITestFixture else { break }
                     rimeSettingsStore.runAutomaticUserDictionaryBackupIfNeeded()
                     Task { await rimeSettingsStore.triggerPendingDeploymentIfNeeded() }
                     RimeAutomaticSyncScheduler.shared.refreshSchedule()
@@ -215,8 +232,10 @@ struct ContentView: View {
             .task {
                 await notificationSettingsModel.refreshAuthorizationStatus()
                 await rimeSyncViewModel.loadSecrets()
-                await rimeSyncViewModel.synchronizeIfNeeded()
-                RimeAutomaticSyncScheduler.shared.refreshSchedule()
+                if !isRimeSyncUITestFixture {
+                    await rimeSyncViewModel.synchronizeIfNeeded()
+                    RimeAutomaticSyncScheduler.shared.refreshSchedule()
+                }
                 // Unit tests inject this process as the host app. Skip the
                 // first-launch seed/deploy so librime does not run against
                 // the unentitled simulator App Group.

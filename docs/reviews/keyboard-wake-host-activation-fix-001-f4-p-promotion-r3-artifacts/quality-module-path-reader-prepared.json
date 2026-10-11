@@ -1,0 +1,67 @@
+{
+  "kind": "Prepared only; original four full path/UUID output records, no verdict",
+  "origin": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r3-artifacts/quality-target-reader.json",
+  "origin_sha256": "1e5500ca7deb9b56b97272e94bc35997eccba9111f226340bccd550514eeaa56",
+  "modules": [
+    {
+      "module_path": "Universe Keyboard",
+      "candidate_sha256": "38cbdd01d7b664db0c435452086dd209447135f886906bab8181610a6a7e6feb",
+      "paired_products_sha256": "38cbdd01d7b664db0c435452086dd209447135f886906bab8181610a6a7e6feb",
+      "uuid_command_argv": [
+        "xcrun",
+        "dwarfdump",
+        "--uuid",
+        "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard"
+      ],
+      "uuid_command_exit_code": 0,
+      "uuid_stdout_complete": "UUID: 664DE45A-5859-34F1-892C-3DD2D9DE7B98 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard\n",
+      "paired_uuid_stdout_complete": "UUID: 664DE45A-5859-34F1-892C-3DD2D9DE7B98 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard",
+      "bundle_id": "com.DoubleShy0N.Universe-Keyboard"
+    },
+    {
+      "module_path": "Universe Keyboard.debug.dylib",
+      "candidate_sha256": "c00095f4d2016cf31b876ed5f3f17f53c5ec97d64704829b629d23ab7a57e200",
+      "paired_products_sha256": "c00095f4d2016cf31b876ed5f3f17f53c5ec97d64704829b629d23ab7a57e200",
+      "uuid_command_argv": [
+        "xcrun",
+        "dwarfdump",
+        "--uuid",
+        "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard.debug.dylib"
+      ],
+      "uuid_command_exit_code": 0,
+      "uuid_stdout_complete": "UUID: C19CE509-A814-30AB-88F1-CE5416FDDC33 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard.debug.dylib\n",
+      "paired_uuid_stdout_complete": "UUID: C19CE509-A814-30AB-88F1-CE5416FDDC33 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard.debug.dylib",
+      "bundle_id": "com.DoubleShy0N.Universe-Keyboard"
+    },
+    {
+      "module_path": "PlugIns/Keyboard.appex/Keyboard",
+      "candidate_sha256": "e681da52516441c044c98419a7c9750d7a90b282cb69bd27e220284376922860",
+      "paired_products_sha256": "e681da52516441c044c98419a7c9750d7a90b282cb69bd27e220284376922860",
+      "uuid_command_argv": [
+        "xcrun",
+        "dwarfdump",
+        "--uuid",
+        "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard"
+      ],
+      "uuid_command_exit_code": 0,
+      "uuid_stdout_complete": "UUID: CD0C6F02-6094-3726-B598-F03F42ABB468 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard\n",
+      "paired_uuid_stdout_complete": "UUID: CD0C6F02-6094-3726-B598-F03F42ABB468 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+      "bundle_id": "com.DoubleShy0N.Universe-Keyboard.Keyboard"
+    },
+    {
+      "module_path": "PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+      "candidate_sha256": "773c4eff9640b2623036e3f819301ead3914cb99b66c9c1496ece5986e762aab",
+      "paired_products_sha256": "773c4eff9640b2623036e3f819301ead3914cb99b66c9c1496ece5986e762aab",
+      "uuid_command_argv": [
+        "xcrun",
+        "dwarfdump",
+        "--uuid",
+        "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard.debug.dylib"
+      ],
+      "uuid_command_exit_code": 0,
+      "uuid_stdout_complete": "UUID: 4B207746-89A7-321F-83C4-91477259BB26 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard.debug.dylib\n",
+      "paired_uuid_stdout_complete": "UUID: 4B207746-89A7-321F-83C4-91477259BB26 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+      "bundle_id": "com.DoubleShy0N.Universe-Keyboard.Keyboard"
+    }
+  ]
+}

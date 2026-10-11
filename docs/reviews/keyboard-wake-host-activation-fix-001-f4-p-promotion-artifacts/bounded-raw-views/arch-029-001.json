@@ -1,0 +1,129 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/freeze-receipt.json",
+  "origin_sha256": "530e962c122896b244a9c98b614f58b9846569f34c0989f74a0774b7dbc944f3",
+  "expected_sha256": "530e962c122896b244a9c98b614f58b9846569f34c0989f74a0774b7dbc944f3",
+  "line_start": 1,
+  "line_end": 30,
+  "lines": [
+    {
+      "line": 1,
+      "text": "{"
+    },
+    {
+      "line": 2,
+      "text": "  \"utc\": \"2026-10-05T02:53:32.394594+00:00\","
+    },
+    {
+      "line": 3,
+      "text": "  \"status\": \"F4-P build and byte freeze complete; not installation/runtime acceptance\","
+    },
+    {
+      "line": 4,
+      "text": "  \"app_path\": \"/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app\","
+    },
+    {
+      "line": 5,
+      "text": "  \"regular_files\": 78,"
+    },
+    {
+      "line": 6,
+      "text": "  \"file_bytes\": 91448700,"
+    },
+    {
+      "line": 7,
+      "text": "  \"payload_sha256\": \"d53523dba8c371c67424ff07c79163a66f41e3bc5bb402637cf9ee79ae7579cb\","
+    },
+    {
+      "line": 8,
+      "text": "  \"sha_algorithm\": \"raw bytes per-file; sorted path TAB bytes TAB sha LF listing SHA256\","
+    },
+    {
+      "line": 9,
+      "text": "  \"1156_inputs_and_membership_match\": true,"
+    },
+    {
+      "line": 10,
+      "text": "  \"13_pinned_match\": true,"
+    },
+    {
+      "line": 11,
+      "text": "  \"probe_export_present\": true,"
+    },
+    {
+      "line": 12,
+      "text": "  \"real_host_symbols_present\": true,"
+    },
+    {
+      "line": 13,
+      "text": "  \"standalone_no_xctest_or_injection\": true,"
+    },
+    {
+      "line": 14,
+      "text": "  \"two_level_signature_and_embedded_group_pass\": true,"
+    },
+    {
+      "line": 15,
+      "text": "  \"non_swift_warnings\": ["
+    },
+    {
+      "line": 16,
+      "text": "    {"
+    },
+    {
+      "line": 17,
+      "text": "      \"line\": 1951,"
+    },
+    {
+      "line": 18,
+      "text": "      \"text\": \"2026-10-05 10:52:01.666 appintentsmetadataprocessor[13400:43029400] warning: Metadata extraction skipped, no AppIntents.framework dependency found\""
+    },
+    {
+      "line": 19,
+      "text": "    },"
+    },
+    {
+      "line": 20,
+      "text": "    {"
+    },
+    {
+      "line": 21,
+      "text": "      \"line\": 2889,"
+    },
+    {
+      "line": 22,
+      "text": "      \"text\": \"2026-10-05 10:52:12.829 appintentsmetadataprocessor[13501:43030021] warning: Metadata extraction skipped, no AppIntents.framework dependency found\""
+    },
+    {
+      "line": 23,
+      "text": "    }"
+    },
+    {
+      "line": 24,
+      "text": "  ],"
+    },
+    {
+      "line": 25,
+      "text": "  \"test_run\": false,"
+    },
+    {
+      "line": 26,
+      "text": "  \"device_instance_operated\": false,"
+    },
+    {
+      "line": 27,
+      "text": "  \"install\": false,"
+    },
+    {
+      "line": 28,
+      "text": "  \"source_written\": false,"
+    },
+    {
+      "line": 29,
+      "text": "  \"next\": \"independent scoped product/flag applicability preflight and F4-I fresh backup, all separately authorized\""
+    },
+    {
+      "line": 30,
+      "text": "}"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+[
+  {
+    "source_commit": "e20e7c8a3a48822e2e712d36453e2cf574088e87",
+    "source_path": "docs/evidence/typo-correction-002-f01-commit-revalidation-001.md",
+    "archive_path": "docs/evidence/typo-correction-002-f01-fixed-integration-001-original-typo-correction-002-f01-commit-revalidation-001.md.txt",
+    "sha256": "131718faf4ab5b798f4a76fee4e268d3fefc702176b00d8a06d0762ea4b5388f"
+  },
+  {
+    "source_commit": "e20e7c8a3a48822e2e712d36453e2cf574088e87",
+    "source_path": "docs/evidence/typo-correction-002-f01-remediation-001-close-2026-09-19.md",
+    "archive_path": "docs/evidence/typo-correction-002-f01-fixed-integration-001-original-typo-correction-002-f01-remediation-001-close-2026-09-19.md.txt",
+    "sha256": "3d48e81911bc87c08ac8f848fbfdd8b6a59461c979b415c79e21db0d959bf311"
+  }
+]

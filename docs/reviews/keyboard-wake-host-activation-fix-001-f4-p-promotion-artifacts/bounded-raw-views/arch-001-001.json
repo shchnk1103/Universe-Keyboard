@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+InputActions.swift",
+  "origin_sha256": "16abce7d6e6752be641ea333cc60706217c9d84211f1007315850acbc62ee2ae",
+  "expected_sha256": "16abce7d6e6752be641ea333cc60706217c9d84211f1007315850acbc62ee2ae",
+  "line_start": 1,
+  "line_end": 60,
+  "lines": [
+    {
+      "line": 1,
+      "text": "import KeyboardCore"
+    },
+    {
+      "line": 2,
+      "text": "import UIKit"
+    },
+    {
+      "line": 3,
+      "text": ""
+    },
+    {
+      "line": 4,
+      "text": "extension KeyboardViewController {"
+    },
+    {
+      "line": 5,
+      "text": "    @objc func insertKey(_ sender: UIButton) {"
+    },
+    {
+      "line": 6,
+      "text": "        // T9 letter-group keys show `ABC` etc. but must send the digit identity to RIME."
+    },
+    {
+      "line": 7,
+      "text": "        let key: String"
+    },
+    {
+      "line": 8,
+      "text": "        if sender.accessibilityValue == KeyboardViewController.t9DigitAccessibilityValue,"
+    },
+    {
+      "line": 9,
+      "text": "            let digit = sender.accessibilityIdentifier,"
+    },
+    {
+      "line": 10,
+      "text": "            !digit.isEmpty"
+    },
+    {
+      "line": 11,
+      "text": "        {"
+    },
+    {
+      "line": 12,
+      "text": "            key = digit"
+    },
+    {
+      "line": 13,
+      "text": "        } else {"
+    },
+    {
+      "line": 14,
+      "text": "            key ="
+    },
+    {
+      "line": 15,
+      "text": "                sender.title(for: .normal)"
+    },
+    {
+      "line": 16,
+      "text": "                ?? sender.accessibilityIdentifier"
+    },
+    {
+      "line": 17,
+      "text": "                ?? \"\""
+    },
+    {
+      "line": 18,
+      "text": "        }"
+    },
+    {
+      "line": 19,
+      "text": "        guard !key.isEmpty else { return }"
+    },
+    {
+      "line": 20,
+      "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+    },
+    {
+      "line": 21,
+      "text": "            let wakeAttempt = KeyboardWakeOwnerProbe.shared.beginAttempt(appearanceOrdinal: wakeProbeAppearanceOrdinal)"
+    },
+    {
+      "line": 22,
+      "text": "            recordWakeOwnerProbe(.insertBegin)"
+    },
+    {
+      "line": 23,
+      "text": "            defer {"
+    },
+    {
+      "line": 24,
+      "text": "                recordWakeOwnerProbe(.insertEnd)"
+    },
+    {
+      "line": 25,
+      "text": "                if let wakeAttempt { KeyboardWakeOwnerProbe.shared.endAttempt(wakeAttempt) }"
+    },
+    {
+      "line": 26,
+      "text": "            }"
+    },
+    {
+      "line": 27,
+      "text": "        #endif"
+    },
+    {
+      "line": 28,
+      "text": "        let startTime = CACurrentMediaTime()"
+    },
+    {
+      "line": 29,
+      "text": "        inputEventSequence += 1"
+    },
+    {
+      "line": 30,
+      "text": "        let eventID = inputEventSequence"
+    },
+    {
+      "line": 31,
+      "text": "        let compositionLengthBefore = controller.state.currentComposition.count"
+    },
+    {
+      "line": 32,
+      "text": "        #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT"
+    },
+    {
+      "line": 33,
+      "text": "            // Segmented sample for continuous T9 digit typing (no Path/candidate pick)."
+    },
+    {
+      "line": 34,
+      "text": "            // Privacy: lengths only — never log the digit sequence itself."
+    },
+    {
+      "line": 35,
+      "text": "            let shouldSampleT9Segments ="
+    },
+    {
+      "line": 36,
+      "text": "                controller.usesT9InputSemantics"
+    },
+    {
+      "line": 37,
+      "text": "                && key.count == 1"
+    },
+    {
+      "line": 38,
+      "text": "                && key.first?.isNumber == true"
+    },
+    {
+      "line": 39,
+      "text": "            if shouldSampleT9Segments {"
+    },
+    {
+      "line": 40,
+      "text": "                #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT"
+    },
+    {
+      "line": 41,
+      "text": "                    recordDevicePreflightExecutionGeometryBeforeFirstT9Key()"
+    },
+    {
+      "line": 42,
+      "text": "                #endif"
+    },
+    {
+      "line": 43,
+      "text": "                HotPathSegmentTiming.beginKey("
+    },
+    {
+      "line": 44,
+      "text": "                    eventID: UInt64(eventID),"
+    },
+    {
+      "line": 45,
+      "text": "                    keyLength: key.count,"
+    },
+    {
+      "line": 46,
+      "text": "                    compositionLengthBefore: compositionLengthBefore,"
+    },
+    {
+      "line": 47,
+      "text": "                    session: controller.rimeEngine?.diagnosticSessionSnapshot"
+    },
+    {
+      "line": 48,
+      "text": "                )"
+    },
+    {
+      "line": 49,
+      "text": "            }"
+    },
+    {
+      "line": 50,
+      "text": "        #endif"
+    },
+    {
+      "line": 51,
+      "text": ""
+    },
+    {
+      "line": 52,
+      "text": "        #if DEBUG"
+    },
+    {
+      "line": 53,
+      "text": "            let idleMs = lastInputCompletionTime.map { (startTime - $0) * 1000 }"
+    },
+    {
+      "line": 54,
+      "text": "            Logger.shared.debug("
+    },
+    {
+      "line": 55,
+      "text": "                \"KEY BEGIN #\\(eventID) keyLength=\\(key.count) idleMs=\\(idleMs.map { String(format: \"%.1f\", $0) } ?? \"first\") \""
+    },
+    {
+      "line": 56,
+      "text": "                    + \"compositionLength=\\(compositionLengthBefore)\","
+    },
+    {
+      "line": 57,
+      "text": "                category: .performance"
+    },
+    {
+      "line": 58,
+      "text": "            )"
+    },
+    {
+      "line": 59,
+      "text": ""
+    },
+    {
+      "line": 60,
+      "text": "            let identifier = ObjectIdentifier(sender)"
+    }
+  ]
+}

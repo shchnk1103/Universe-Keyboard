@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-04T10:45:39.641875+00:00",
+  "pid": 55759,
+  "before": "55759 52681 Sun Oct  4 12:48:08 2026     /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+  "signal": "SIGTERM",
+  "signal_count": 1,
+  "after_absent": true,
+  "authority": "Human 授权仅该扩展一次 SIGTERM",
+  "no_other_signal": true
+}

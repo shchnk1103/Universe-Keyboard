@@ -1,0 +1,12 @@
+{
+  "utc": "2026-10-05T05:11:51.088532+00:00",
+  "human_message": "批准更换独立 Luna 并继续",
+  "scope": "Only Q-P1 missing complete four module path/UUID records and correction of R3 contradictory prose vs Uncovered label. Prior SHA/standalone subchecks remain closed. Q-P2/3 R3 and Q-P4 R2 carry forward only. Do not search JSON modules or standalone_payload_paths: this input is plain TEXT.",
+  "budget": {
+    "actual_tool_calls": 4,
+    "wall_seconds": 300,
+    "counting": "Exactly at most2functions.exec wrappers plus2nested exec_command calls; no coordination tool calls. Capture author UTC immediately before first read, not from old budget.",
+    "reserve": "Second pair write and hash/readback all author files"
+  },
+  "packet_sha256": "464d9dc838b1616ffafcae9bd3b589b0b2c6d2ee1ee17a6e9e9563b2b482f6ef"
+}

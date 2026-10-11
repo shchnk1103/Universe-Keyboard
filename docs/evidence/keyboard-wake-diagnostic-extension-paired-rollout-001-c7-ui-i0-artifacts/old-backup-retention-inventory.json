@@ -1,0 +1,28 @@
+{
+  "scope": "Known T snapshot roots only; not exhaustive historical task backups",
+  "old_snapshots": [
+    {
+      "root": "/private/tmp/ukey-wake-ui-t0-20261003/backup",
+      "allocated_KiB": 134420,
+      "unchanged_by_this_stage": true
+    },
+    {
+      "root": "/private/tmp/ukey-wake-ui-t1-execution-20261003/test-after-preservation",
+      "allocated_KiB": 103008,
+      "unchanged_by_this_stage": true
+    },
+    {
+      "root": "/private/tmp/ukey-wake-ui-keychain-continuation-20261003/backup",
+      "allocated_KiB": 134628,
+      "unchanged_by_this_stage": true
+    },
+    {
+      "root": "/private/tmp/ukey-wake-ui-keychain-continuation-20261003/test-after-preservation",
+      "allocated_KiB": 139772,
+      "unchanged_by_this_stage": true
+    }
+  ],
+  "retention": "preserve until validation and explicit cleanup decision",
+  "raw_private_tmp_not_permanent_backup": true,
+  "deleted_or_moved": false
+}

@@ -101,15 +101,66 @@ public enum DiagnosticsJournalError: Error, Equatable, Sendable {
     case writeFailed
 }
 
+/// Content-free reasons why complete JSONL records could not be interpreted.
+/// The finite set keeps the summary bounded regardless of journal size.
+public enum DiagnosticsJournalRejectionReason: String, CaseIterable, Hashable, Sendable {
+    case malformedRecord
+    case unsupportedSchemaVersion
+    case unsupportedCode
+    case unknownKey
+    case unknownValue
+    case malformedPayload
+    case invalidPayloadPairing
+}
+
+/// Indicates whether all complete records examined by a read were accepted.
+/// Query coverage and read-budget limits remain represented by page status.
+public enum DiagnosticsJournalCompleteness: Equatable, Sendable {
+    case complete
+    case incomplete(reasons: Set<DiagnosticsJournalRejectionReason>)
+
+    public var isComplete: Bool {
+        if case .complete = self { return true }
+        return false
+    }
+
+    public var rejectionReasons: Set<DiagnosticsJournalRejectionReason> {
+        switch self {
+        case .complete:
+            []
+        case .incomplete(let reasons):
+            reasons
+        }
+    }
+
+    fileprivate func including(_ reason: DiagnosticsJournalRejectionReason) -> Self {
+        var reasons = rejectionReasons
+        reasons.insert(reason)
+        return .incomplete(reasons: reasons)
+    }
+
+    fileprivate func merging(_ other: Self) -> Self {
+        var reasons = rejectionReasons
+        reasons.formUnion(other.rejectionReasons)
+        return reasons.isEmpty ? .complete : .incomplete(reasons: reasons)
+    }
+}
+
 /// 主 App 查询当前 generation 时的不可变水位。UI 可以在这个快照上筛选、
 /// 搜索和复制，而不会把之后到达的事件混进本次导出。
 public struct DiagnosticsJournalSnapshot: Sendable {
     public let generation: UInt64
     public let events: [DiagnosticEvent]
+    public let completeness: DiagnosticsJournalCompleteness
 
-    public init(generation: UInt64, events: [DiagnosticEvent]) {
+    public init(
+        generation: UInt64,
+        events: [DiagnosticEvent],
+        completeness: DiagnosticsJournalCompleteness = .complete
+    ) {
         self.generation = generation
         self.events = events
+        self.completeness = completeness
     }
 }
 
@@ -194,18 +245,27 @@ public struct DiagnosticsJournalPage: Sendable {
     public let events: [DiagnosticEvent]
     public let nextCursor: DiagnosticsJournalPageCursor?
     public let status: DiagnosticsJournalPageStatus
+    public let completeness: DiagnosticsJournalCompleteness
 
     public init(
         generation: UInt64,
         events: [DiagnosticEvent],
         nextCursor: DiagnosticsJournalPageCursor?,
-        status: DiagnosticsJournalPageStatus
+        status: DiagnosticsJournalPageStatus,
+        completeness: DiagnosticsJournalCompleteness = .complete
     ) {
         self.generation = generation
         self.events = events
         self.nextCursor = nextCursor
         self.status = status
+        self.completeness = completeness
     }
+}
+
+/// Selects the static schema used for newly persisted records. Reader support is per record.
+public enum DiagnosticsJournalWriterVersion: Int, Sendable {
+    case v5 = 5
+    case v6 = 6
 }
 
 /// 每个 process 独占自己的 JSONL 段。这个 actor 只在 utility writer 调用；
@@ -216,6 +276,7 @@ public actor DiagnosticsJournalWriter {
 
     private let rootURL: URL
     private let origin: DiagnosticEvent.Origin
+    private let writerVersion: DiagnosticsJournalWriterVersion
     private var processInstanceID: UUID
     private let isMainAppWriter: Bool
 
@@ -229,10 +290,12 @@ public actor DiagnosticsJournalWriter {
         rootURL: URL,
         origin: DiagnosticEvent.Origin,
         processInstanceID: UUID = UUID(),
-        isMainAppWriter: Bool
+        isMainAppWriter: Bool,
+        writerVersion: DiagnosticsJournalWriterVersion = .v5
     ) {
         self.rootURL = rootURL
         self.origin = origin
+        self.writerVersion = writerVersion
         self.processInstanceID = processInstanceID
         self.isMainAppWriter = isMainAppWriter
     }
@@ -277,26 +340,29 @@ public actor DiagnosticsJournalWriter {
         guard events.allSatisfy({ $0.origin == origin }) else {
             throw DiagnosticsJournalError.writerIdentityMismatch
         }
-        let normalizedEvents = events.map { event in
-            DiagnosticEvent(
-                utcTimestamp: event.utcTimestamp,
-                monotonicNanoseconds: event.monotonicNanoseconds,
-                origin: origin,
-                processInstanceID: processInstanceID,
-                localSequence: event.localSequence,
-                appearanceID: event.appearanceID,
-                actionSequence: event.actionSequence,
-                code: event.code,
-                level: event.level,
-                category: event.category,
-                fields: event.fields,
-                schemeDeliveryPayload: event.schemeDeliveryPayload,
-                runtimeRoutePayload: event.runtimeRoutePayload,
-                rimeSyncPayload: event.rimeSyncPayload
-            )
+        let normalizedEvents = try events.map { event -> DiagnosticEvent in
+            guard
+                let normalized = event.normalizedForWriting(
+                    as: writerVersion,
+                    origin: origin,
+                    processInstanceID: processInstanceID
+                )
+            else {
+                throw DiagnosticsJournalError.writeFailed
+            }
+            return normalized
         }
         let hour = Self.hourStamp(for: normalizedEvents[0].utcTimestamp)
         let encodedLines = try normalizedEvents.map(Self.encodeLine)
+        if writerVersion == .v6 {
+            for line in encodedLines {
+                guard line.last == 0x0A,
+                    DiagnosticEventWireValidator.rejectionReason(for: Data(line.dropLast())) == nil
+                else {
+                    throw DiagnosticsJournalError.writeFailed
+                }
+            }
+        }
         let byteCount = encodedLines.reduce(0) { $0 + $1.count }
 
         try DiagnosticsJournalIdentityLock.withSharedSnapshotFence(rootURL: rootURL) { [self] in
@@ -726,7 +792,17 @@ public actor DiagnosticsJournalReader {
         let generation: UInt64
         let manifest: [SegmentManifest]
         let events: [DiagnosticEvent]
+        let completeness: DiagnosticsJournalCompleteness
         var nextEventIndex = 0
+    }
+
+    private struct EventDecodeSummary {
+        var events: [DiagnosticEvent] = []
+        var completeness: DiagnosticsJournalCompleteness = .complete
+    }
+
+    private struct EventDecodeFailure: Error, Sendable {
+        let reason: DiagnosticsJournalRejectionReason
     }
 
     /// 路径只保留在 reader actor 内部。`fileSystemNumber` 把“同名新文件”与
@@ -740,10 +816,10 @@ public actor DiagnosticsJournalReader {
     }
 
     private enum PageSnapshotResult {
-        case events([DiagnosticEvent], [SegmentManifest])
-        case exceedsReadBudget
-        case exceedsEventBudget
-        case unavailable
+        case events([DiagnosticEvent], [SegmentManifest], DiagnosticsJournalCompleteness)
+        case exceedsReadBudget(DiagnosticsJournalCompleteness)
+        case exceedsEventBudget(DiagnosticsJournalCompleteness)
+        case unavailable(DiagnosticsJournalCompleteness)
     }
 
     private struct CompleteLine {
@@ -840,13 +916,16 @@ public actor DiagnosticsJournalReader {
         let segmentURLs = try segmentURLs(in: generationDirectory)
         var readBytes = 0
         var events: [DiagnosticEvent] = []
+        var completeness = DiagnosticsJournalCompleteness.complete
 
         for url in segmentURLs {
             guard readBytes < effectiveReadBudget else { break }
             let remainingBytes = effectiveReadBudget - readBytes
             let tail = try readTail(at: url, maximumBytes: remainingBytes)
             readBytes += tail.data.count
-            events.append(contentsOf: decodeCompleteLines(from: tail))
+            let decoded = decodeCompleteLines(from: tail)
+            events.append(contentsOf: decoded.events)
+            completeness = completeness.merging(decoded.completeness)
             if events.count >= effectiveEventLimit {
                 break
             }
@@ -855,7 +934,8 @@ public actor DiagnosticsJournalReader {
         let newestFirst = events.sorted(by: Self.isNewer)
         return DiagnosticsJournalSnapshot(
             generation: control.currentGeneration,
-            events: Array(newestFirst.prefix(effectiveEventLimit))
+            events: Array(newestFirst.prefix(effectiveEventLimit)),
+            completeness: completeness
         )
     }
 
@@ -885,30 +965,35 @@ public actor DiagnosticsJournalReader {
         )
         let events: [DiagnosticEvent]
         let manifest: [SegmentManifest]
+        let completeness: DiagnosticsJournalCompleteness
         switch snapshot {
-        case let .events(snapshotEvents, snapshotManifest):
+        case let .events(snapshotEvents, snapshotManifest, snapshotCompleteness):
             events = snapshotEvents
             manifest = snapshotManifest
-        case .exceedsReadBudget:
+            completeness = snapshotCompleteness
+        case .exceedsReadBudget(let snapshotCompleteness):
             return DiagnosticsJournalPage(
                 generation: control.currentGeneration,
                 events: [],
                 nextCursor: nil,
-                status: .snapshotExceedsReadBudget
+                status: .snapshotExceedsReadBudget,
+                completeness: snapshotCompleteness
             )
-        case .exceedsEventBudget:
+        case .exceedsEventBudget(let snapshotCompleteness):
             return DiagnosticsJournalPage(
                 generation: control.currentGeneration,
                 events: [],
                 nextCursor: nil,
-                status: .snapshotExceedsEventBudget
+                status: .snapshotExceedsEventBudget,
+                completeness: snapshotCompleteness
             )
-        case .unavailable:
+        case .unavailable(let snapshotCompleteness):
             return DiagnosticsJournalPage(
                 generation: control.currentGeneration,
                 events: [],
                 nextCursor: nil,
-                status: .snapshotUnavailable
+                status: .snapshotUnavailable,
+                completeness: snapshotCompleteness
             )
         }
         insertPageQuery(
@@ -916,7 +1001,8 @@ public actor DiagnosticsJournalReader {
             query: PageQuery(
                 generation: control.currentGeneration,
                 manifest: manifest,
-                events: events.sorted(by: Self.isNewer)
+                events: events.sorted(by: Self.isNewer),
+                completeness: completeness
             )
         )
         return try readPage(
@@ -963,6 +1049,7 @@ public actor DiagnosticsJournalReader {
         let effectiveEventLimit = min(maximumEventCount, Self.defaultMaximumEventCount)
         var remainingBytes = effectiveReadBudget
         var events: [DiagnosticEvent] = []
+        var completeness = DiagnosticsJournalCompleteness.complete
 
         for (index, segment) in scopedManifest.enumerated() {
             guard remainingBytes > 0 else { break }
@@ -976,11 +1063,16 @@ public actor DiagnosticsJournalReader {
                 endOffset: segment.byteWatermark
             )
             remainingBytes -= segment.byteWatermark - startOffset
-            events.append(
-                contentsOf: lines.compactMap { decodeEvent(from: $0.data) }.filter {
-                    dateRange.contains($0.utcTimestamp)
+            for line in lines {
+                switch decodeEvent(from: line.data) {
+                case .success(let event):
+                    if dateRange.contains(event.utcTimestamp) {
+                        events.append(event)
+                    }
+                case .failure(let failure):
+                    completeness = completeness.including(failure.reason)
                 }
-            )
+            }
         }
         guard
             try readControl().currentGeneration == control.currentGeneration,
@@ -990,14 +1082,16 @@ public actor DiagnosticsJournalReader {
                 generation: control.currentGeneration,
                 events: [],
                 nextCursor: nil,
-                status: .snapshotUnavailable
+                status: .snapshotUnavailable,
+                completeness: completeness
             )
         }
         return DiagnosticsJournalPage(
             generation: control.currentGeneration,
             events: Array(events.sorted(by: Self.isNewer).prefix(effectiveEventLimit)),
             nextCursor: nil,
-            status: .partialRecentWindow
+            status: .partialRecentWindow,
+            completeness: completeness
         )
     }
 
@@ -1080,7 +1174,8 @@ public actor DiagnosticsJournalReader {
                 generation: currentGeneration,
                 events: [],
                 nextCursor: nil,
-                status: .invalidatedByGeneration
+                status: .invalidatedByGeneration,
+                completeness: query.completeness
             )
         }
 
@@ -1090,7 +1185,8 @@ public actor DiagnosticsJournalReader {
                 generation: query.generation,
                 events: [],
                 nextCursor: nil,
-                status: .invalidatedByReclaim
+                status: .invalidatedByReclaim,
+                completeness: query.completeness
             )
         }
 
@@ -1111,7 +1207,8 @@ public actor DiagnosticsJournalReader {
             generation: query.generation,
             events: events,
             nextCursor: hasMore ? DiagnosticsJournalPageCursor(queryID: queryID) : nil,
-            status: hasMore ? .hasMore : .completed
+            status: hasMore ? .hasMore : .completed,
+            completeness: query.completeness
         )
     }
 
@@ -1130,7 +1227,7 @@ public actor DiagnosticsJournalReader {
                 generation: generation
             )
         else {
-            return .unavailable
+            return .unavailable(.complete)
         }
         let scopedManifest: [SegmentManifest]
         if let dateRange {
@@ -1142,12 +1239,13 @@ public actor DiagnosticsJournalReader {
         let currentManifest = try segmentManifest(in: generationDirectory)
         var remainingBytes = maximumReadBytes
         var events: [DiagnosticEvent] = []
+        var completeness = DiagnosticsJournalCompleteness.complete
         for segment in scopedManifest {
             guard segment.byteWatermark <= remainingBytes else {
-                return .exceedsReadBudget
+                return .exceedsReadBudget(completeness)
             }
             guard let resolvedURL = resolve(segment, in: currentManifest) else {
-                return .unavailable
+                return .unavailable(completeness)
             }
             let lines = try completeLines(
                 at: resolvedURL,
@@ -1155,20 +1253,24 @@ public actor DiagnosticsJournalReader {
                 endOffset: segment.byteWatermark
             )
             remainingBytes -= segment.byteWatermark
-            let decoded = lines.compactMap { decodeEvent(from: $0.data) }
-            if let dateRange {
-                events.append(contentsOf: decoded.filter { dateRange.contains($0.utcTimestamp) })
-            } else {
-                events.append(contentsOf: decoded)
+            for line in lines {
+                switch decodeEvent(from: line.data) {
+                case .success(let event):
+                    if dateRange == nil || dateRange!.contains(event.utcTimestamp) {
+                        events.append(event)
+                    }
+                case .failure(let failure):
+                    completeness = completeness.including(failure.reason)
+                }
             }
             guard events.count <= Self.defaultMaximumEventCount else {
-                return .exceedsEventBudget
+                return .exceedsEventBudget(completeness)
             }
         }
         guard try readControl().currentGeneration == generation else {
-            return .unavailable
+            return .unavailable(completeness)
         }
-        return .events(events, scopedManifest)
+        return .events(events, scopedManifest, completeness)
     }
 
     private func stableSegmentManifest(
@@ -1381,8 +1483,17 @@ public actor DiagnosticsJournalReader {
         return result
     }
 
-    private func decodeEvent(from data: Data) -> DiagnosticEvent? {
-        try? eventDecoder.decode(DiagnosticEvent.self, from: data)
+    private func decodeEvent(
+        from data: Data
+    ) -> Result<DiagnosticEvent, EventDecodeFailure> {
+        if let reason = DiagnosticEventWireValidator.rejectionReason(for: data) {
+            return .failure(EventDecodeFailure(reason: reason))
+        }
+        do {
+            return .success(try eventDecoder.decode(DiagnosticEvent.self, from: data))
+        } catch {
+            return .failure(EventDecodeFailure(reason: .malformedPayload))
+        }
     }
 
     private func readTail(at url: URL, maximumBytes: Int) throws -> (data: Data, startsMidLine: Bool) {
@@ -1400,7 +1511,7 @@ public actor DiagnosticsJournalReader {
 
     private func decodeCompleteLines(
         from tail: (data: Data, startsMidLine: Bool)
-    ) -> [DiagnosticEvent] {
+    ) -> EventDecodeSummary {
         var lines = tail.data.split(separator: 0x0A, omittingEmptySubsequences: true)
         if tail.startsMidLine, !lines.isEmpty {
             lines.removeFirst()
@@ -1409,9 +1520,16 @@ public actor DiagnosticsJournalReader {
             lines.removeLast()
         }
 
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        return lines.compactMap { try? decoder.decode(DiagnosticEvent.self, from: Data($0)) }
+        var summary = EventDecodeSummary()
+        for line in lines {
+            switch decodeEvent(from: Data(line)) {
+            case .success(let event):
+                summary.events.append(event)
+            case .failure(let failure):
+                summary.completeness = summary.completeness.including(failure.reason)
+            }
+        }
+        return summary
     }
 
     private static func isNewer(_ lhs: DiagnosticEvent, _ rhs: DiagnosticEvent) -> Bool {

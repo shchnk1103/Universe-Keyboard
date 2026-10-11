@@ -1,0 +1,51 @@
+{
+  "recorded_utc": "2026-10-04T04:31:01.283944+00:00",
+  "scope": "read-only debugger lifetime and remaining attachment evidence; no reattach/signal/tool restart",
+  "package": {
+    "path": "/Users/doubleshy0n/.npm/_npx/99336612077b7094/node_modules/xcodebuildmcp",
+    "version": "2.7.0",
+    "active_node_package_paths_previously_matched": true
+  },
+  "source_hashes": {
+    "/Users/doubleshy0n/.npm/_npx/99336612077b7094/node_modules/xcodebuildmcp/package.json": "dc85bf6a19b57d5da3244a51b9c9077980b8e86e12d10096731bd8aaf41277de",
+    "/Users/doubleshy0n/.npm/_npx/99336612077b7094/node_modules/xcodebuildmcp/build/utils/debugger/index.js": "3d615ddc1bc8c0442b28065853c7b23156ac01fd2e36c21e414924d10800f0f3",
+    "/Users/doubleshy0n/.npm/_npx/99336612077b7094/node_modules/xcodebuildmcp/build/utils/debugger/debugger-manager.js": "bfc434322f331c188a585d31f7b7f98ecabceaf1904039c6bc068e3b92017e7e",
+    "/Users/doubleshy0n/.npm/_npx/99336612077b7094/node_modules/xcodebuildmcp/build/utils/debugger/tool-context.js": "52ba5a73307e0b59fa4121f35fce8045899be579a08a22eadda73464b56cba71",
+    "/Users/doubleshy0n/.npm/_npx/99336612077b7094/node_modules/xcodebuildmcp/build/utils/debugger/backends/dap-backend.js": "b33d88b1d752ea06af31262758bff923f6ef3fa00869e0e7c2e87bedc19855a4",
+    "/Users/doubleshy0n/.npm/_npx/99336612077b7094/node_modules/xcodebuildmcp/build/utils/debugger/dap/transport.js": "ab3123ee9eae05c7bd438a8d2d638acf7e9867898ebcc3079b8113e456764787",
+    "/Users/doubleshy0n/.npm/_npx/99336612077b7094/node_modules/xcodebuildmcp/build/mcp/tools/debugging/debug_lldb_command.js": "a5a278efe092211eef0ecb72adf120f4be014e30a0d7a6cae22eed5d49869323",
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/proc.h": "593af71b2740ba6248995691280bcb15f8900d46b1d9868f7345084aa0692949"
+  },
+  "target": {
+    "pid": 41635,
+    "ps_flags_hex": "4004",
+    "P_TRACED_mask_hex": "0x800",
+    "P_TRACED_set": false,
+    "state": "Ss",
+    "executable": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard"
+  },
+  "manager_process_metadata": [
+    "42819 90653 Sun Oct  4 12:20:26 2026     S    npm exec xcodebuildmcp@latest mcp",
+    "43294 42819 Sun Oct  4 12:20:27 2026     S    node",
+    "44304 90653 Sun Oct  4 12:24:56 2026     S    npm exec xcodebuildmcp@latest mcp",
+    "44493 44304 Sun Oct  4 12:24:57 2026     S    node"
+  ],
+  "key_request_times_utc": {
+    "1": "2026-10-04T04:16:51.630Z",
+    "8": "2026-10-04T04:19:55.676Z",
+    "9": "2026-10-04T04:21:14.291Z",
+    "10": "2026-10-04T04:22:24.488Z"
+  },
+  "facts": [
+    "manager session registry process-local Map",
+    "runCommand/detach requireSession throws before backend when ID absent",
+    "two currently observed MCP server instances started after call08 success and before/after call09 failure respectively",
+    "no matching live debugserver/lldb-dap in scoped process inventory",
+    "P_TRACED currently clear"
+  ],
+  "inference": "MCP runtime replacement or routing to different process-local manager is consistent with loss; original manager PID and termination reason not recorded, exact causality unproven",
+  "old_breakpoint_deletion_receipt": "UNKNOWN",
+  "original_detach_receipt": "UNKNOWN",
+  "software_breakpoint_memory_bytes": "NOT_READ",
+  "future_probe": "separately authorized stable-channel attach with one cross-Human-reply persistence check, no input/arm/Maps reproduction"
+}

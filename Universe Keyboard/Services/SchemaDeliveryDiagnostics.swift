@@ -26,7 +26,8 @@ nonisolated final class SchemaDeliveryDiagnostics: SchemaDeliveryDiagnosing, Sen
                         )?
                         .appendingPathComponent("Diagnostics/v1", isDirectory: true)
                 },
-                isCategoryEnabled: Logger.isLiveCategoryEnabled
+                isCategoryEnabled: Logger.isLiveCategoryEnabled,
+                writerVersion: .v6
             )
     }
 

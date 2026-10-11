@@ -1,0 +1,190 @@
+{
+  "stage": "AP-META-004",
+  "status": "Metadata identity matched; scope exception / acceptance pending",
+  "actual_calls": 35,
+  "started_utc": "2026-10-06T03:06:21.170377+00:00",
+  "archived_utc": "2026-10-06T03:11:12.713763+00:00",
+  "wall_seconds": 323.988017,
+  "visual_exit": {
+    "Human": "界面正常，显示取证；App 已关闭",
+    "recorded_utc": "2026-10-06T03:11:45.158394+00:00"
+  },
+  "runtime_attempts": 1,
+  "arm_requests": 1,
+  "freeze_requests": 1,
+  "callback_count": 1,
+  "scope_deviation": {
+    "default_lldb_stop_formatter_displayed_arguments": true,
+    "explicit_script_argument_reads": 0,
+    "explicit_buffer_reads": 0,
+    "no_claim_whole_debugger_argument_reads_zero": true,
+    "no_claim_any_debugger_memory_reads_zero": true
+  },
+  "metadata_evidence": "callback/frame0/codePC/UUID/mangled/bp1.1/thread/StopID2 and same-stop CLI all matched; caller includes button and withUnsafeBytes",
+  "cleanup": "delete/list0, detach/quit0, same PID Ss, no matching debugserver, original keys unchanged",
+  "source5_match": true,
+  "independent_review": "not executed/authorized",
+  "owner_buffer": "not read; owner/session runtime conclusions unavailable",
+  "files": {
+    "appex_meta_callback.py": "dbacda157a79aa52f6dd523c2de998d5b311f4342d0928761d4edf2f4b9dfae1",
+    "appex_meta_setup.py": "c80d732bdacd08eae97abd482d368de7438bb6f8102ca50690c68944f9290b01",
+    "authorization.json": "a55ffb7375a75641a7c28db82cce97683d43932ec19b4086a08e3cac12e76f7e",
+    "callback.json": "094a650733607eb34e758a9b9822c491e4cce4ffb29dd724b15e93160fa7526a",
+    "cleanup.lldb": "5c8760916a01815d0befa1dc67d4c9a50c4c293774209b6c31a354006ba240d2",
+    "configuration-receipt.json": "d7c2cbc4be92936fa71e7a1dbc751ae1f99e87d683d261aeaa80766e00be0bbf",
+    "configure.lldb": "6778e0704a40f5da07907c2ff0d802766b8b0d4b3a4248b7f7b841e4325d8e5a",
+    "device-entry.json": "8347be8f199b063849073a021cc69fa4bc6888e430a40ea2098f1a138296f656",
+    "fresh-instance.json": "4b72b99e6d5e1532456667a4e240946f39007509bf1c9a80dccf92e7e3ba5544",
+    "human-arm.json": "4c19d9887f62725f06a6b849b3ab463fd4615f287ebfffa2e36ec7b1e53bdd72",
+    "human-freeze.json": "84f87810b8d011428fd737dfbe52610a91411d75c676003044d9acff107b72dc",
+    "live-binding.json": "2a1373230159051156bdd5c8fd6d92109d07730bae82e4fd5a8914a824495f3e",
+    "machine-exit.json": "508e67b02105b15b7aea339171eaf6327f1b15cf44d97239c5ec8d20472af4ab",
+    "old-appex-termination.json": "b1aac34b85fb4915e5316c4b9a0b5964e6e79fc1b2412315ee6c5c5c70fdb2c2",
+    "pre-arm-debugger-state.json": "6af972754d02876262910bb035ab710aa6547082bd001b4e9fa0eeab72376379",
+    "pre-arm-evaluation.json": "aa1c08b70bec9bf3806aa790402376f849ae75e9dae5e137c96398815eedb57d",
+    "pre-freeze-debugger-state.json": "4eae545f53ce902992f01523e6c3170abb2c5946d199448b94bf32f21be576e4",
+    "pre-freeze-evaluation.json": "ade24bd23abc9056282355dc0fd809634c81c8322c2cc9f2f38ed5b4414cd841",
+    "preclick_checkpoint.py": "c9def035110aafe3b133c13ec05b149ee5e616d01983f502fd36fdbca85844cb",
+    "pty-transcript.txt": "804f82468706419ae457f7f45fa6252ab3fd265f9ceca29e8141ea15336e8d2a",
+    "stop-and-cleanup.json": "9aaa4fabb453749ad8d36601f9874c89b608f25ca8fe6c2234de90e7449a5a6a"
+  },
+  "closed_utc": "2026-10-06T03:11:45.158394+00:00",
+  "call_ledger": [
+    {
+      "calls": [
+        1,
+        2
+      ],
+      "action": "fresh Entry/source/payload/script freeze"
+    },
+    {
+      "calls": [
+        3
+      ],
+      "action": "old appex SIGTERM approval request"
+    },
+    {
+      "calls": [
+        4,
+        5
+      ],
+      "action": "verified one SIGTERM"
+    },
+    {
+      "calls": [
+        6
+      ],
+      "action": "Human fresh empty keyboard request"
+    },
+    {
+      "calls": [
+        7,
+        8
+      ],
+      "action": "new instance identity"
+    },
+    {
+      "calls": [
+        9,
+        10
+      ],
+      "action": "native attach"
+    },
+    {
+      "calls": [
+        11,
+        12
+      ],
+      "action": "callback/configuration file source"
+    },
+    {
+      "calls": [
+        13,
+        14
+      ],
+      "action": "standalone continue"
+    },
+    {
+      "calls": [
+        15,
+        16
+      ],
+      "action": "pre-arm new LLDB snapshot"
+    },
+    {
+      "calls": [
+        17,
+        18
+      ],
+      "action": "pre-arm raw inputs and named evaluation"
+    },
+    {
+      "calls": [
+        19
+      ],
+      "action": "single Human arm request"
+    },
+    {
+      "calls": [
+        20,
+        21
+      ],
+      "action": "pre-freeze new LLDB snapshot"
+    },
+    {
+      "calls": [
+        22,
+        23
+      ],
+      "action": "pre-freeze raw inputs and named evaluation"
+    },
+    {
+      "calls": [
+        24
+      ],
+      "action": "single Human freeze request"
+    },
+    {
+      "calls": [
+        25,
+        26,
+        27,
+        28
+      ],
+      "action": "callback read/delete/list/detach/standalone quit"
+    },
+    {
+      "calls": [
+        29,
+        30
+      ],
+      "action": "same stop comparisons/machine Exit/deviation record"
+    },
+    {
+      "calls": [
+        31
+      ],
+      "action": "Human visual Exit request"
+    },
+    {
+      "calls": [
+        32,
+        33
+      ],
+      "action": "archive and mirrors"
+    },
+    {
+      "calls": [
+        34,
+        35
+      ],
+      "action": "Human Exit/final ledger/native readback"
+    }
+  ],
+  "native_documents_sha256": {
+    "docs/evidence/keyboard-wake-host-activation-fix-001-appex-meta-r4-execution-2026-10-06.md": "75e8d301a42e22b7add254e8fb1a9f5c3f79bfee76db71771bd3ad06ae0dcc71",
+    "docs/assignments/keyboard-wake-host-activation-fix-001.md": "78e450e8e266a338e1cf46360586353dd47c23b0bc1744a2656803706d2897d2",
+    "docs/KNOWLEDGE_INDEX.md": "449ff7225fe83ebf2a4b805a0a029f0dc3b89fb83315a861116980dd2fd55f0d",
+    "docs/ACTIVE_WORK.md": "6c35dfc5962843a6f4ef620fe886a2e4f95e3d5c42087c923dd3b6f0e09a43d2"
+  }
+}

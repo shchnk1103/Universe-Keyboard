@@ -1,0 +1,9 @@
+{
+  "role": "Coordinator failure rehearsal",
+  "coverage": "Partial",
+  "error_type": "AssertionError",
+  "error": "expected unique locator: c7b2-core-artifacts/test-summary.json",
+  "report_sha256": "e678df7fbcfa3ed12e8f7c9dc0fc46d924b0d5a811d772bcfa85ca76a9768d64",
+  "failure_observed_epoch": 1791014200.062452,
+  "elapsed_before_failure_usage_write_seconds": 0.3947021961212158
+}

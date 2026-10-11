@@ -1,0 +1,77 @@
+{
+  "count": 10,
+  "disposition": "unverified; no Stage B acceptance carried into C2",
+  "source_log_sha256": "13ff3affe5befee881a1b1773d2f5a46ef59023784ae25d0c92eba552aaa29ec",
+  "skips": [
+    {
+      "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/RimeIcePinnedArtifactTests.swift",
+      "line": 26,
+      "class": "UniverseKeyboardTests.RimeIcePinnedArtifactTests",
+      "test": "testVerifiedOfficialAndMirrorArchivesConvergeAfterProductionProcessing",
+      "reason": "Set TEST_RUNNER_SCHEME_PIN_ARCHIVE_ROOT to the independently downloaded source archives"
+    },
+    {
+      "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/RimeSyncTests.swift",
+      "line": 91,
+      "class": "UniverseKeyboardTests.RimeSyncModelTests",
+      "test": "testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem",
+      "reason": "Unsigned host lacks Keychain entitlement; signed Simulator lane covers integration."
+    },
+    {
+      "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests.swift",
+      "line": 1568,
+      "class": "UniverseKeyboardTests.SchemeResourcePreparationCoexistenceTests",
+      "test": "testCS06_UninstallInactiveWanxiangRetainsIcePeerInventory",
+      "reason": "CS09-10-01 requires the fixed Wanxiang extract tree"
+    },
+    {
+      "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests.swift",
+      "line": 1568,
+      "class": "UniverseKeyboardTests.SchemeResourcePreparationCoexistenceTests",
+      "test": "testCS0910_RealInstallerIceRemovalPreservesCompleteWanxiangInventory",
+      "reason": "CS09-10-01 requires the fixed Wanxiang extract tree"
+    },
+    {
+      "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests.swift",
+      "line": 1553,
+      "class": "UniverseKeyboardTests.SchemeResourcePreparationCoexistenceTests",
+      "test": "testCS0910_RealInstallerWanxiangRemovalPreservesCompleteIceInventory",
+      "reason": "CS09-10-01 requires the fixed Ice extract tree"
+    },
+    {
+      "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests.swift",
+      "line": 357,
+      "class": "UniverseKeyboardTests.SchemeResourcePreparationCoexistenceTests",
+      "test": "testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds",
+      "reason": "Ice 2026.06.30 default.yaml fixture is required for P3 fingerprint recovery"
+    },
+    {
+      "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests.swift",
+      "line": 1763,
+      "class": "UniverseKeyboardTests.SchemeResourcePreparationCoexistenceTests",
+      "test": "testProductionProcessedIceTreeKeepsOfficialDefaultYamlWhenFixturePresent",
+      "reason": "Set TEST_RUNNER_SCHEME_PIN_ARCHIVE_ROOT to the independently downloaded Ice archives"
+    },
+    {
+      "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/TD012LMDGDeviceStagingTests.swift",
+      "line": 95,
+      "class": "UniverseKeyboardTests.TD012LMDGDeviceStagingTests",
+      "test": "testPinnedModelLoadsThroughWanxiangGrammarOnAuthorizedPhysicalDevice",
+      "reason": "TD-012 G2 model-load receipt is physical-device-only"
+    },
+    {
+      "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/TD012LMDGDeviceStagingTests.swift",
+      "line": 76,
+      "class": "UniverseKeyboardTests.TD012LMDGDeviceStagingTests",
+      "test": "testRemovePinnedModelAfterAuthorizedPhysicalDeviceSpike",
+      "reason": "TD-012 G2 cleanup is physical-device-only"
+    },
+    {
+      "file": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/UniverseKeyboardTests/TD012LMDGDeviceStagingTests.swift",
+      "line": 49,
+      "class": "UniverseKeyboardTests.TD012LMDGDeviceStagingTests",
+      "test": "testStagePinnedModelForAuthorizedPhysicalDeviceSpike",
+      "reason": "TD-012 G2 staging is physical-device-only"
+    }
+  ]
+}

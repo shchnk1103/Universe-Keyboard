@@ -1,0 +1,343 @@
+{
+  "run_id": "C5-R-20261001-01",
+  "start_utc": "2026-10-01T02:45:13.845149+00:00",
+  "end_utc": "2026-10-01T02:47:55.900354+00:00",
+  "read_utc": "2026-10-01T02:49:04.584636+00:00",
+  "journal_root": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/B0D7CE38-2B36-4AF1-B585-63ED3DA340E0/Diagnostics/v1",
+  "segments": [
+    {
+      "relative_path": "g1/open/keyboard_extension-9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9-20261001T02-0.jsonl",
+      "size_at_read": 27711,
+      "mtime_utc": "2026-10-01T02:46:34.997959+00:00"
+    }
+  ],
+  "counts": {
+    "scanned_lines": 55,
+    "window_lines": 55,
+    "target_lines": 17
+  },
+  "exported_content_free_target_events": 17,
+  "events": [
+    {
+      "schemaVersion": 6,
+      "utcTimestamp": "2026-10-01T02:46:26Z",
+      "monotonicNanoseconds": 1005637312895166,
+      "origin": "keyboard_extension",
+      "processInstanceID": "9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9",
+      "localSequence": 1,
+      "appearanceID": "FADC7351-EEBD-4CB2-9DF9-4DB3E26B8BC6",
+      "actionSequence": null,
+      "code": "keyboard.lifecycle.phase_changed",
+      "level": "DEBUG",
+      "category": "DISP",
+      "keyboardLifecyclePayload": {
+        "phase": "view_will_appear"
+      },
+      "source_relative_path": "g1/open/keyboard_extension-9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9-20261001T02-0.jsonl",
+      "source_byte_offset": 0
+    },
+    {
+      "schemaVersion": 6,
+      "utcTimestamp": "2026-10-01T02:46:26Z",
+      "monotonicNanoseconds": 1005637313029125,
+      "origin": "keyboard_extension",
+      "processInstanceID": "9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9",
+      "localSequence": 3,
+      "appearanceID": "FADC7351-EEBD-4CB2-9DF9-4DB3E26B8BC6",
+      "actionSequence": null,
+      "code": "rime.resume.phase_changed",
+      "level": "DEBUG",
+      "category": "ENGINE",
+      "rimeResumePayload": {
+        "phase": "started"
+      },
+      "source_relative_path": "g1/open/keyboard_extension-9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9-20261001T02-0.jsonl",
+      "source_byte_offset": 738
+    },
+    {
+      "schemaVersion": 6,
+      "utcTimestamp": "2026-10-01T02:46:26Z",
+      "monotonicNanoseconds": 1005637591252750,
+      "origin": "keyboard_extension",
+      "processInstanceID": "9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9",
+      "localSequence": 4,
+      "appearanceID": "FADC7351-EEBD-4CB2-9DF9-4DB3E26B8BC6",
+      "actionSequence": null,
+      "code": "keyboard.lifecycle.phase_changed",
+      "level": "DEBUG",
+      "category": "DISP",
+      "keyboardLifecyclePayload": {
+        "phase": "view_did_appear"
+      },
+      "source_relative_path": "g1/open/keyboard_extension-9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9-20261001T02-0.jsonl",
+      "source_byte_offset": 1120
+    },
+    {
+      "schemaVersion": 6,
+      "utcTimestamp": "2026-10-01T02:46:29Z",
+      "monotonicNanoseconds": 1005640249083208,
+      "origin": "keyboard_extension",
+      "processInstanceID": "9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9",
+      "localSequence": 13,
+      "appearanceID": "FADC7351-EEBD-4CB2-9DF9-4DB3E26B8BC6",
+      "actionSequence": null,
+      "code": "text_proxy.operation_phase_changed",
+      "level": "DEBUG",
+      "category": "DISP",
+      "textProxyPayload": {
+        "phase": "entered",
+        "operation": "set_marked_text"
+      },
+      "source_relative_path": "g1/open/keyboard_extension-9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9-20261001T02-0.jsonl",
+      "source_byte_offset": 6868
+    },
+    {
+      "schemaVersion": 6,
+      "utcTimestamp": "2026-10-01T02:46:29Z",
+      "monotonicNanoseconds": 1005640251042166,
+      "origin": "keyboard_extension",
+      "processInstanceID": "9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9",
+      "localSequence": 14,
+      "appearanceID": "FADC7351-EEBD-4CB2-9DF9-4DB3E26B8BC6",
+      "actionSequence": null,
+      "code": "text_proxy.operation_phase_changed",
+      "level": "DEBUG",
+      "category": "DISP",
+      "textProxyPayload": {
+        "phase": "returned",
+        "operation": "set_marked_text"
+      },
+      "source_relative_path": "g1/open/keyboard_extension-9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9-20261001T02-0.jsonl",
+      "source_byte_offset": 7287
+    },
+    {
+      "schemaVersion": 6,
+      "utcTimestamp": "2026-10-01T02:46:30Z",
+      "monotonicNanoseconds": 1005641051666208,
+      "origin": "keyboard_extension",
+      "processInstanceID": "9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9",
+      "localSequence": 20,
+      "appearanceID": "FADC7351-EEBD-4CB2-9DF9-4DB3E26B8BC6",
+      "actionSequence": null,
+      "code": "text_proxy.operation_phase_changed",
+      "level": "DEBUG",
+      "category": "DISP",
+      "textProxyPayload": {
+        "operation": "set_marked_text",
+        "phase": "entered"
+      },
+      "source_relative_path": "g1/open/keyboard_extension-9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9-20261001T02-0.jsonl",
+      "source_byte_offset": 10161
+    },
+    {
+      "schemaVersion": 6,
+      "utcTimestamp": "2026-10-01T02:46:30Z",
+      "monotonicNanoseconds": 1005641051702750,
+      "origin": "keyboard_extension",
+      "processInstanceID": "9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9",
+      "localSequence": 21,
+      "appearanceID": "FADC7351-EEBD-4CB2-9DF9-4DB3E26B8BC6",
+      "actionSequence": null,
+      "code": "text_proxy.operation_phase_changed",
+      "level": "DEBUG",
+      "category": "DISP",
+      "textProxyPayload": {
+        "operation": "set_marked_text",
+        "phase": "returned"
+      },
+      "source_relative_path": "g1/open/keyboard_extension-9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9-20261001T02-0.jsonl",
+      "source_byte_offset": 10580
+    },
+    {
+      "schemaVersion": 6,
+      "utcTimestamp": "2026-10-01T02:46:30Z",
+      "monotonicNanoseconds": 1005641865925916,
+      "origin": "keyboard_extension",
+      "processInstanceID": "9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9",
+      "localSequence": 28,
+      "appearanceID": "FADC7351-EEBD-4CB2-9DF9-4DB3E26B8BC6",
+      "actionSequence": null,
+      "code": "text_proxy.operation_phase_changed",
+      "level": "DEBUG",
+      "category": "DISP",
+      "textProxyPayload": {
+        "phase": "entered",
+        "operation": "set_marked_text"
+      },
+      "source_relative_path": "g1/open/keyboard_extension-9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9-20261001T02-0.jsonl",
+      "source_byte_offset": 14046
+    },
+    {
+      "schemaVersion": 6,
+      "utcTimestamp": "2026-10-01T02:46:30Z",
+      "monotonicNanoseconds": 1005641865944000,
+      "origin": "keyboard_extension",
+      "processInstanceID": "9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9",
+      "localSequence": 29,
+      "appearanceID": "FADC7351-EEBD-4CB2-9DF9-4DB3E26B8BC6",
+      "actionSequence": null,
+      "code": "text_proxy.operation_phase_changed",
+      "level": "DEBUG",
+      "category": "DISP",
+      "textProxyPayload": {
+        "operation": "set_marked_text",
+        "phase": "returned"
+      },
+      "source_relative_path": "g1/open/keyboard_extension-9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9-20261001T02-0.jsonl",
+      "source_byte_offset": 14465
+    },
+    {
+      "schemaVersion": 6,
+      "utcTimestamp": "2026-10-01T02:46:31Z",
+      "monotonicNanoseconds": 1005642735959458,
+      "origin": "keyboard_extension",
+      "processInstanceID": "9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9",
+      "localSequence": 36,
+      "appearanceID": "FADC7351-EEBD-4CB2-9DF9-4DB3E26B8BC6",
+      "actionSequence": null,
+      "code": "text_proxy.operation_phase_changed",
+      "level": "DEBUG",
+      "category": "DISP",
+      "textProxyPayload": {
+        "operation": "set_marked_text",
+        "phase": "entered"
+      },
+      "source_relative_path": "g1/open/keyboard_extension-9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9-20261001T02-0.jsonl",
+      "source_byte_offset": 17931
+    },
+    {
+      "schemaVersion": 6,
+      "utcTimestamp": "2026-10-01T02:46:31Z",
+      "monotonicNanoseconds": 1005642735986041,
+      "origin": "keyboard_extension",
+      "processInstanceID": "9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9",
+      "localSequence": 37,
+      "appearanceID": "FADC7351-EEBD-4CB2-9DF9-4DB3E26B8BC6",
+      "actionSequence": null,
+      "code": "text_proxy.operation_phase_changed",
+      "level": "DEBUG",
+      "category": "DISP",
+      "textProxyPayload": {
+        "phase": "returned",
+        "operation": "set_marked_text"
+      },
+      "source_relative_path": "g1/open/keyboard_extension-9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9-20261001T02-0.jsonl",
+      "source_byte_offset": 18350
+    },
+    {
+      "schemaVersion": 6,
+      "utcTimestamp": "2026-10-01T02:46:32Z",
+      "monotonicNanoseconds": 1005643792157958,
+      "origin": "keyboard_extension",
+      "processInstanceID": "9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9",
+      "localSequence": 44,
+      "appearanceID": "FADC7351-EEBD-4CB2-9DF9-4DB3E26B8BC6",
+      "actionSequence": null,
+      "code": "text_proxy.operation_phase_changed",
+      "level": "DEBUG",
+      "category": "DISP",
+      "textProxyPayload": {
+        "phase": "entered",
+        "operation": "set_marked_text"
+      },
+      "source_relative_path": "g1/open/keyboard_extension-9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9-20261001T02-0.jsonl",
+      "source_byte_offset": 21816
+    },
+    {
+      "schemaVersion": 6,
+      "utcTimestamp": "2026-10-01T02:46:32Z",
+      "monotonicNanoseconds": 1005643792170208,
+      "origin": "keyboard_extension",
+      "processInstanceID": "9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9",
+      "localSequence": 45,
+      "appearanceID": "FADC7351-EEBD-4CB2-9DF9-4DB3E26B8BC6",
+      "actionSequence": null,
+      "code": "text_proxy.operation_phase_changed",
+      "level": "DEBUG",
+      "category": "DISP",
+      "textProxyPayload": {
+        "operation": "set_marked_text",
+        "phase": "returned"
+      },
+      "source_relative_path": "g1/open/keyboard_extension-9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9-20261001T02-0.jsonl",
+      "source_byte_offset": 22235
+    },
+    {
+      "schemaVersion": 6,
+      "utcTimestamp": "2026-10-01T02:46:34Z",
+      "monotonicNanoseconds": 1005645689305583,
+      "origin": "keyboard_extension",
+      "processInstanceID": "9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9",
+      "localSequence": 50,
+      "appearanceID": "FADC7351-EEBD-4CB2-9DF9-4DB3E26B8BC6",
+      "actionSequence": null,
+      "code": "text_proxy.operation_phase_changed",
+      "level": "DEBUG",
+      "category": "DISP",
+      "textProxyPayload": {
+        "phase": "entered",
+        "operation": "set_marked_text"
+      },
+      "source_relative_path": "g1/open/keyboard_extension-9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9-20261001T02-0.jsonl",
+      "source_byte_offset": 24792
+    },
+    {
+      "schemaVersion": 6,
+      "utcTimestamp": "2026-10-01T02:46:34Z",
+      "monotonicNanoseconds": 1005645689340958,
+      "origin": "keyboard_extension",
+      "processInstanceID": "9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9",
+      "localSequence": 51,
+      "appearanceID": "FADC7351-EEBD-4CB2-9DF9-4DB3E26B8BC6",
+      "actionSequence": null,
+      "code": "text_proxy.operation_phase_changed",
+      "level": "DEBUG",
+      "category": "DISP",
+      "textProxyPayload": {
+        "phase": "returned",
+        "operation": "set_marked_text"
+      },
+      "source_relative_path": "g1/open/keyboard_extension-9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9-20261001T02-0.jsonl",
+      "source_byte_offset": 25211
+    },
+    {
+      "schemaVersion": 6,
+      "utcTimestamp": "2026-10-01T02:46:34Z",
+      "monotonicNanoseconds": 1005645689342500,
+      "origin": "keyboard_extension",
+      "processInstanceID": "9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9",
+      "localSequence": 52,
+      "appearanceID": "FADC7351-EEBD-4CB2-9DF9-4DB3E26B8BC6",
+      "actionSequence": null,
+      "code": "text_proxy.operation_phase_changed",
+      "level": "DEBUG",
+      "category": "DISP",
+      "textProxyPayload": {
+        "phase": "entered",
+        "operation": "unmark_text"
+      },
+      "source_relative_path": "g1/open/keyboard_extension-9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9-20261001T02-0.jsonl",
+      "source_byte_offset": 25631
+    },
+    {
+      "schemaVersion": 6,
+      "utcTimestamp": "2026-10-01T02:46:34Z",
+      "monotonicNanoseconds": 1005645689362500,
+      "origin": "keyboard_extension",
+      "processInstanceID": "9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9",
+      "localSequence": 53,
+      "appearanceID": "FADC7351-EEBD-4CB2-9DF9-4DB3E26B8BC6",
+      "actionSequence": null,
+      "code": "text_proxy.operation_phase_changed",
+      "level": "DEBUG",
+      "category": "DISP",
+      "textProxyPayload": {
+        "phase": "returned",
+        "operation": "unmark_text"
+      },
+      "source_relative_path": "g1/open/keyboard_extension-9F7731CB-BB7C-4C26-8D9D-1ACC43C14EF9-20261001T02-0.jsonl",
+      "source_byte_offset": 26046
+    }
+  ],
+  "limits": "Only three typed-v6 marker families in authorized UTC window. No raw lines/input/candidates/query/fullhistory copied. Duplicate target records rejected; Python projection is not MainApp reader proof."
+}

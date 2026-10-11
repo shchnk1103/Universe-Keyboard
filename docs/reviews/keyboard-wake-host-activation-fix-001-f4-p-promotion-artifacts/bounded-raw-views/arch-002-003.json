@@ -1,0 +1,245 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+KeyPressFeedback.swift",
+  "origin_sha256": "c1d361a34e5aa788a4a518f46cbb7370ff5903e05736a72281da04f859a0fe7a",
+  "expected_sha256": "c1d361a34e5aa788a4a518f46cbb7370ff5903e05736a72281da04f859a0fe7a",
+  "line_start": 121,
+  "line_end": 179,
+  "lines": [
+    {
+      "line": 121,
+      "text": "        restoreKeyAppearance(sender)"
+    },
+    {
+      "line": 122,
+      "text": "    }"
+    },
+    {
+      "line": 123,
+      "text": ""
+    },
+    {
+      "line": 124,
+      "text": "    func restoreKeyAppearance(_ sender: UIButton) {"
+    },
+    {
+      "line": 125,
+      "text": "        let restore = {"
+    },
+    {
+      "line": 126,
+      "text": "            sender.transform = .identity"
+    },
+    {
+      "line": 127,
+      "text": ""
+    },
+    {
+      "line": 128,
+      "text": "            if sender === self.shiftButton {"
+    },
+    {
+      "line": 129,
+      "text": "                self.updateShiftButtonAppearance()"
+    },
+    {
+      "line": 130,
+      "text": "                return"
+    },
+    {
+      "line": 131,
+      "text": "            }"
+    },
+    {
+      "line": 132,
+      "text": ""
+    },
+    {
+      "line": 133,
+      "text": "            guard let style = self.keyStyle(for: sender) else {"
+    },
+    {
+      "line": 134,
+      "text": "                sender.backgroundColor = self.characterKeyColor"
+    },
+    {
+      "line": 135,
+      "text": "                return"
+    },
+    {
+      "line": 136,
+      "text": "            }"
+    },
+    {
+      "line": 137,
+      "text": "            sender.backgroundColor = self.backgroundForStyle(style)"
+    },
+    {
+      "line": 138,
+      "text": "        }"
+    },
+    {
+      "line": 139,
+      "text": ""
+    },
+    {
+      "line": 140,
+      "text": "        guard !UIAccessibility.isReduceMotionEnabled else {"
+    },
+    {
+      "line": 141,
+      "text": "            restore()"
+    },
+    {
+      "line": 142,
+      "text": "            return"
+    },
+    {
+      "line": 143,
+      "text": "        }"
+    },
+    {
+      "line": 144,
+      "text": ""
+    },
+    {
+      "line": 145,
+      "text": "        UIView.animate("
+    },
+    {
+      "line": 146,
+      "text": "            withDuration: 0.25,"
+    },
+    {
+      "line": 147,
+      "text": "            delay: 0,"
+    },
+    {
+      "line": 148,
+      "text": "            usingSpringWithDamping: 0.6,"
+    },
+    {
+      "line": 149,
+      "text": "            initialSpringVelocity: 0,"
+    },
+    {
+      "line": 150,
+      "text": "            options: [.allowUserInteraction, .beginFromCurrentState],"
+    },
+    {
+      "line": 151,
+      "text": "            animations: restore,"
+    },
+    {
+      "line": 152,
+      "text": "            completion: nil"
+    },
+    {
+      "line": 153,
+      "text": "        )"
+    },
+    {
+      "line": 154,
+      "text": "    }"
+    },
+    {
+      "line": 155,
+      "text": ""
+    },
+    {
+      "line": 156,
+      "text": "    func resetAllKeyPressVisualState() {"
+    },
+    {
+      "line": 157,
+      "text": "        keyTouchDownTimes.removeAll()"
+    },
+    {
+      "line": 158,
+      "text": "        keyPressFeedbackEmittedButtonIDs.removeAll()"
+    },
+    {
+      "line": 159,
+      "text": "        restoreButtons(in: view)"
+    },
+    {
+      "line": 160,
+      "text": "    }"
+    },
+    {
+      "line": 161,
+      "text": ""
+    },
+    {
+      "line": 162,
+      "text": "    private func restoreButtons(in root: UIView?) {"
+    },
+    {
+      "line": 163,
+      "text": "        guard let root else { return }"
+    },
+    {
+      "line": 164,
+      "text": "        if let button = root as? UIButton {"
+    },
+    {
+      "line": 165,
+      "text": "            UIView.performWithoutAnimation {"
+    },
+    {
+      "line": 166,
+      "text": "                button.transform = .identity"
+    },
+    {
+      "line": 167,
+      "text": "                if button === shiftButton {"
+    },
+    {
+      "line": 168,
+      "text": "                    updateShiftButtonAppearance()"
+    },
+    {
+      "line": 169,
+      "text": "                } else if let style = keyStyle(for: button) {"
+    },
+    {
+      "line": 170,
+      "text": "                    button.backgroundColor = backgroundForStyle(style)"
+    },
+    {
+      "line": 171,
+      "text": "                }"
+    },
+    {
+      "line": 172,
+      "text": "            }"
+    },
+    {
+      "line": 173,
+      "text": "        }"
+    },
+    {
+      "line": 174,
+      "text": ""
+    },
+    {
+      "line": 175,
+      "text": "        for subview in root.subviews {"
+    },
+    {
+      "line": 176,
+      "text": "            restoreButtons(in: subview)"
+    },
+    {
+      "line": 177,
+      "text": "        }"
+    },
+    {
+      "line": 178,
+      "text": "    }"
+    },
+    {
+      "line": 179,
+      "text": "}"
+    }
+  ]
+}

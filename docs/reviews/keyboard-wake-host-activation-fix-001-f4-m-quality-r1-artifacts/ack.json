@@ -1,0 +1,16 @@
+{
+  "lane": "F4-M-RUNTIME-QUALITY",
+  "round": 1,
+  "acknowledged": true,
+  "author_utc_start": "2026-10-06T01:39:42.321705+00:00",
+  "packet_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-m-quality-r1-artifacts/packet.json",
+  "packet_bytes": 8032,
+  "packet_sha256": "0d7a2dfb46744b521058fb94dc6158a323c5202a29d8a86eb4d66a11ffed247c",
+  "criteria": [
+    "M-Q1",
+    "M-Q2",
+    "M-Q3",
+    "M-Q4"
+  ],
+  "access": "Only read frozen inputs plus named governance; write own four delivery files. Shell local filesystem only; use require_escalated for own output directory outside writable roots. No simulator/container/live queries, no LLDB/build/test/source/Git mutations/network/adjacent investigation. Frozen copy provenance explicitly stated; cannot pretend current device verification."
+}

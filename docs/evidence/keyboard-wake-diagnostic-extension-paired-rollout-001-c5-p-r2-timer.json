@@ -1,0 +1,8 @@
+{
+  "start_utc": "2026-10-01T01:29:36.339099+00:00",
+  "start_monotonic": 1001027.316961208,
+  "end_utc": "2026-10-01T01:33:34.312869+00:00",
+  "end_monotonic": 1001265.289598125,
+  "elapsed_seconds": 237.973,
+  "underlying_tool_calls": 3
+}

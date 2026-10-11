@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+CandidateBar.swift",
+  "origin_sha256": "ae1b78d5a311f60054914093458b0c78fe3d35923d82b487fd7f30d886074c80",
+  "expected_sha256": "ae1b78d5a311f60054914093458b0c78fe3d35923d82b487fd7f30d886074c80",
+  "line_start": 61,
+  "line_end": 120,
+  "lines": [
+    {
+      "line": 61,
+      "text": "        } else {"
+    },
+    {
+      "line": 62,
+      "text": "            dismissKeyboard()"
+    },
+    {
+      "line": 63,
+      "text": "        }"
+    },
+    {
+      "line": 64,
+      "text": "    }"
+    },
+    {
+      "line": 65,
+      "text": ""
+    },
+    {
+      "line": 66,
+      "text": "    /// 切换候选面板展开/收起。展开面板覆盖在现有键盘之上，"
+    },
+    {
+      "line": 67,
+      "text": "    /// 不拆除底层按键和候选栏，因此切换动画期间没有整页重排。"
+    },
+    {
+      "line": 68,
+      "text": "    @objc func toggleCandidateExpand() {"
+    },
+    {
+      "line": 69,
+      "text": "        if isPinyinPathExpanded {"
+    },
+    {
+      "line": 70,
+      "text": "            dismissPinyinPathExpandedPanel(animated: false)"
+    },
+    {
+      "line": 71,
+      "text": "        }"
+    },
+    {
+      "line": 72,
+      "text": "        isCandidateExpanded.toggle()"
+    },
+    {
+      "line": 73,
+      "text": "        candidatePrefetchRequestSerial += 1"
+    },
+    {
+      "line": 74,
+      "text": "        deferredCandidatePrefetchMode = nil"
+    },
+    {
+      "line": 75,
+      "text": "        updateExpandButtonAppearance()"
+    },
+    {
+      "line": 76,
+      "text": "        if isCandidateExpanded {"
+    },
+    {
+      "line": 77,
+      "text": "            candidatePrefetchMode = .expanded"
+    },
+    {
+      "line": 78,
+      "text": "            if controller.state.pendingPunctuation != nil || controller.state.pendingKaomoji != nil {"
+    },
+    {
+      "line": 79,
+      "text": "                resetCandidateSnapshotFromController()"
+    },
+    {
+      "line": 80,
+      "text": "                fillCandidateBar()"
+    },
+    {
+      "line": 81,
+      "text": "            }"
+    },
+    {
+      "line": 82,
+      "text": "            presentExpandedCandidatePanel()"
+    },
+    {
+      "line": 83,
+      "text": "            if hasMoreCandidates {"
+    },
+    {
+      "line": 84,
+      "text": "                scheduleCandidatePrefetch(mode: .expanded)"
+    },
+    {
+      "line": 85,
+      "text": "            }"
+    },
+    {
+      "line": 86,
+      "text": "        } else {"
+    },
+    {
+      "line": 87,
+      "text": "            candidatePrefetchMode = .bar"
+    },
+    {
+      "line": 88,
+      "text": "            if controller.state.pendingPunctuation != nil || controller.state.pendingKaomoji != nil {"
+    },
+    {
+      "line": 89,
+      "text": "                resetCandidateSnapshotFromController()"
+    },
+    {
+      "line": 90,
+      "text": "                fillCandidateBar()"
+    },
+    {
+      "line": 91,
+      "text": "            }"
+    },
+    {
+      "line": 92,
+      "text": "            dismissExpandedCandidatePanel(animated: true)"
+    },
+    {
+      "line": 93,
+      "text": "        }"
+    },
+    {
+      "line": 94,
+      "text": "    }"
+    },
+    {
+      "line": 95,
+      "text": ""
+    },
+    {
+      "line": 96,
+      "text": "    // MARK: --- 刷新 ---"
+    },
+    {
+      "line": 97,
+      "text": ""
+    },
+    {
+      "line": 98,
+      "text": "    /// 刷新候选栏内容。"
+    },
+    {
+      "line": 99,
+      "text": "    ///"
+    },
+    {
+      "line": 100,
+      "text": "    /// 每次新的拼音输入时："
+    },
+    {
+      "line": 101,
+      "text": "    ///   1. 从 RIME 获取第一页候选"
+    },
+    {
+      "line": 102,
+      "text": "    ///   2. 集合视图立即显示第一页，仅渲染可见 cell"
+    },
+    {
+      "line": 103,
+      "text": "    ///   3. 用户实际滚动到末尾时，再按需请求后续页"
+    },
+    {
+      "line": 104,
+      "text": "    func refreshCandidateBar() {"
+    },
+    {
+      "line": 105,
+      "text": "        guard candidateCollectionView != nil else { return }"
+    },
+    {
+      "line": 106,
+      "text": "        let refreshStart = CACurrentMediaTime()"
+    },
+    {
+      "line": 107,
+      "text": ""
+    },
+    {
+      "line": 108,
+      "text": "        resetCandidateSnapshotFromController()"
+    },
+    {
+      "line": 109,
+      "text": "        #if DEBUG"
+    },
+    {
+      "line": 110,
+      "text": "            let preeditLength = controller.state.lastRimeOutput?.composition?.preeditText.count ?? 0"
+    },
+    {
+      "line": 111,
+      "text": ""
+    },
+    {
+      "line": 112,
+      "text": "            Logger.shared.info("
+    },
+    {
+      "line": 113,
+      "text": "                \"refreshCandidateBar: page1=\\(accumulatedCandidates.count), next=\\(nextCandidateGlobalIndex), \""
+    },
+    {
+      "line": 114,
+      "text": "                    + \"hasMore=\\(hasMoreCandidates), preeditLength=\\(preeditLength)\","
+    },
+    {
+      "line": 115,
+      "text": "                category: .display"
+    },
+    {
+      "line": 116,
+      "text": "            )"
+    },
+    {
+      "line": 117,
+      "text": "        #endif"
+    },
+    {
+      "line": 118,
+      "text": ""
+    },
+    {
+      "line": 119,
+      "text": "        fillCandidateBar()"
+    },
+    {
+      "line": 120,
+      "text": "        let refreshMs = (CACurrentMediaTime() - refreshStart) * 1000"
+    }
+  ]
+}

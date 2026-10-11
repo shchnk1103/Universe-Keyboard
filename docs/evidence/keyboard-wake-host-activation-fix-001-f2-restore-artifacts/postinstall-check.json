@@ -1,0 +1,83 @@
+{
+  "utc": "2026-10-04T11:16:02.492886+00:00",
+  "old_containers": {
+    "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/37ACBFEE-EABE-4987-AD1C-8D8050A9A593/Universe Keyboard.app",
+    "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/B43FA7F3-3BC2-4437-A51E-67C1351531BC",
+    "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/05FFE2DA-4326-45EB-8291-F816EBAE5FC3"
+  },
+  "new_containers": {
+    "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/9F532453-D3A0-4A06-B20B-165B841230A1/Universe Keyboard.app",
+    "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/FB2E1C3F-E443-473B-9965-079D7BC0EF40",
+    "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/05FFE2DA-4326-45EB-8291-F816EBAE5FC3"
+  },
+  "uuid_changed": {
+    "app": true,
+    "data": true,
+    "group": false
+  },
+  "installed_payload_equal_before": true,
+  "dual_signature_staged_valid": true,
+  "group_registered": true,
+  "group_initial_files": [
+    ".com.apple.mobile_container_manager.metadata.plist",
+    "Diagnostics/v1/control.json",
+    "Diagnostics/v1/locks/snapshot.lock",
+    "Library/Preferences/group.com.DoubleShy0N.Universe-Keyboard.plist"
+  ],
+  "group_initial_directories": [
+    ".",
+    "Diagnostics",
+    "Diagnostics/v1",
+    "Diagnostics/v1/locks",
+    "Library",
+    "Library/Caches",
+    "Library/Preferences"
+  ],
+  "no_target_process": true,
+  "counts": {
+    "main-data": {
+      "files": 872,
+      "directories": 43,
+      "symlinks": 0,
+      "file_bytes": 1190149,
+      "inventory_sha256": "c01d624bd3a50048089656a06f70a7b5c2bf4700e7d970c9cbf8b3ee7c6f37b0"
+    },
+    "app-group": {
+      "files": 4,
+      "directories": 7,
+      "symlinks": 0,
+      "file_bytes": 724,
+      "inventory_sha256": "ed93a8692bff5333f041be6a4b60277922fbff9a21a4a9efede25f6c2ff870e3"
+    },
+    "installed-app": {
+      "files": 78,
+      "directories": 9,
+      "symlinks": 0,
+      "file_bytes": 91344780,
+      "inventory_sha256": "21ac53de28fa3843cf35715a5ddb65abcedbd5b45eb45d87aa5e3d4b43fe102d"
+    }
+  },
+  "plan_summary": {
+    "main-data": {
+      "restore_file": 3,
+      "restore_dir": 0,
+      "restore_symlink": 0,
+      "remove": 46,
+      "keep_system": 14,
+      "unclassified_extra": 0
+    },
+    "app-group": {
+      "restore_file": 48,
+      "restore_dir": 8,
+      "restore_symlink": 2,
+      "remove": 0,
+      "keep_system": 2,
+      "unclassified_extra": 0
+    },
+    "installed-app": {
+      "method": "simctl install of before installed-app staged as Universe Keyboard.app",
+      "do_not_uninstall": true,
+      "postinstall_payload_matches_before_files": true
+    }
+  }
+}

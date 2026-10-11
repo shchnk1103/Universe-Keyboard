@@ -1,0 +1,57 @@
+{
+  "devices": [
+    {
+      "architecture": "arm64",
+      "deviceId": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "deviceName": "iPhone 18 Pro",
+      "modelName": "iPhone 18 Pro",
+      "osBuildNumber": "24A434",
+      "osVersion": "27.0",
+      "platform": "iOS Simulator"
+    }
+  ],
+  "duration": "Ran for 0.0016 seconds",
+  "durationInSeconds": 0.0016440153121948242,
+  "hasMediaAttachments": false,
+  "hasPerformanceMetrics": false,
+  "testDescription": "Test case with 1 run",
+  "testIdentifier": "RimeT9PinyinSelectionSpikeTests/test004CatalogExactRawAcceptanceOnPinnedLibrime()",
+  "testIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/RimeBridgeTests/RimeT9PinyinSelectionSpikeTests/test004CatalogExactRawAcceptanceOnPinnedLibrime",
+  "testName": "test004CatalogExactRawAcceptanceOnPinnedLibrime()",
+  "testPlanConfigurations": [
+    {
+      "configurationId": "1",
+      "configurationName": "Test Scheme Action"
+    }
+  ],
+  "testResult": "Skipped",
+  "testRuns": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "name": "Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike.",
+              "nodeType": "Test Case Run",
+              "result": "Skipped"
+            }
+          ],
+          "duration": "0.0016s",
+          "durationInSeconds": 0.0016440153121948242,
+          "name": "Test Scheme Action",
+          "nodeIdentifier": "1",
+          "nodeIdentifierURL": "test://com.apple.xcode/Universe%20Keyboard/RimeBridgeTests/RimeT9PinyinSelectionSpikeTests/test004CatalogExactRawAcceptanceOnPinnedLibrime",
+          "nodeType": "Test Plan Configuration",
+          "result": "Skipped"
+        }
+      ],
+      "details": "iOS Simulator 27.0",
+      "duration": "0.0016s",
+      "durationInSeconds": 0.0016440153121948242,
+      "name": "iPhone 18 Pro",
+      "nodeIdentifier": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "nodeType": "Device",
+      "result": "Skipped"
+    }
+  ]
+}

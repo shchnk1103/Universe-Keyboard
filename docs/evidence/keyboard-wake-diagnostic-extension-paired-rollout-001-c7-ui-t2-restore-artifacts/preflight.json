@@ -1,0 +1,13 @@
+{
+  "utc": "2026-10-03T03:57:59.066385+00:00",
+  "authorized": "Human授权清单内旧C7安装包及数据恢复",
+  "old_backup_all_three_complete": true,
+  "test_after_current_and_preserved_match": true,
+  "target_processes_absent": true,
+  "source571_vendor630_match": true,
+  "install_path": "/private/tmp/ukey-wake-ui-t2-restore-20261003/Universe Keyboard.app",
+  "app_payload_files": 78,
+  "dual_signature_valid": true,
+  "restoration_of_metadata_exceptions_planned": true,
+  "install_executed": false
+}

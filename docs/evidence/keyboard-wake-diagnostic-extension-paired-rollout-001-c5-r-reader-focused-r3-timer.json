@@ -1,0 +1,15 @@
+{
+  "lane": "QUALITY-C5-R-ACCEPT round3",
+  "overall_start_utc": "2026-10-01T06:11:30.870797+00:00",
+  "call4_start_utc": "2026-10-01T06:20:14.672937+00:00",
+  "report_and_usage_written_utc": "2026-10-01T06:20:14.674063+00:00",
+  "final_timer_write_started_utc": "2026-10-01T06:20:14.674267+00:00",
+  "elapsed_seconds_through_report_and_usage_write": 523.803,
+  "wall_seconds_limit": 600,
+  "underlying_calls_used": 4,
+  "underlying_calls_limit": 4,
+  "status": "F1_F2_COVERED_HOST_Q_R_01_CLOSED_FOR_ARCHIVED_WINDOW_ONLY",
+  "report_sha256": "2a732d5c91bdfacd5f8f027070974c19901dbf9ab133ff08003b24a7ffbe9b40",
+  "usage_sha256": "b53593d465ba60146295ea905e65ffae9dc02e4803c30271fcd94a1368a81853",
+  "note": "Timer end is measured after report and usage are written, immediately before the final timer write. Call2/call3 per-call timestamps were not sampled."
+}

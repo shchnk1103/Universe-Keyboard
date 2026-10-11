@@ -286,5 +286,19 @@ final class ActivationChecklistStateTests: XCTestCase {
         let fuzzy = SettingsSearchCatalog.matches(query: "模糊")
         XCTAssertTrue(fuzzy.contains(where: { $0.destination == .fuzzyPinyin }))
         XCTAssertTrue(SettingsSearchCatalog.matches(query: "   ").isEmpty)
+        XCTAssertTrue(
+            SettingsSearchCatalog.matches(query: "关于").contains(where: { $0.destination == .about })
+        )
+        XCTAssertTrue(
+            SettingsSearchCatalog.matches(query: "小红书").contains(where: { $0.destination == .about })
+        )
+        XCTAssertTrue(
+            SettingsSearchCatalog.matches(query: "开源").contains(
+                where: { $0.destination == .openSource }
+            )
+        )
+        XCTAssertTrue(
+            SettingsSearchCatalog.matches(query: "隐私").contains(where: { $0.destination == .privacy })
+        )
     }
 }

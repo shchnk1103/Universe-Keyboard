@@ -1,0 +1,8 @@
+{
+  "stage": "before-backup verification",
+  "reason": "copy differs from source inventory",
+  "test_started": false,
+  "automatic_retry": false,
+  "source_modified": false,
+  "backup_receipt_exists": false
+}

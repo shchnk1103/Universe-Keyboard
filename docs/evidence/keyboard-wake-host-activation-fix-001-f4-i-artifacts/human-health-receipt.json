@@ -1,0 +1,13 @@
+{
+  "utc": "2026-10-05T12:45:06.179666+00:00",
+  "source": "Human current reply",
+  "verbatim": "完全访问开；两项诊断关闭；候选正常；提交正常",
+  "UDID": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "candidate_digest": "d53523dba8c371c67424ff07c79163a66f41e3bc5bb402637cf9ee79ae7579cb",
+  "scope": "Normal main-App synthetic input health only; not Maps/AppSwitcher/probe/runtime recovery proof",
+  "full_access": "Human confirmed enabled",
+  "logging_and_high_fidelity": "Human confirmed off",
+  "candidate_and_commit": "Human confirmed normal",
+  "F4-I": "Complete",
+  "F4-M": "Prepared only; execution not authorized"
+}

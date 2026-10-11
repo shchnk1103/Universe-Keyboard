@@ -1,0 +1,62 @@
+{
+  "utc": "2026-10-06T04:35:03.350336+00:00",
+  "monotonic_ns": 984186733291,
+  "stop_utc": "2026-10-06T04:35:03.350336+00:00",
+  "stop_monotonic_ns": 984186733291,
+  "status": "owner_buffer_copied",
+  "memory_snapshot_reads": 1,
+  "read_attempted": 1,
+  "target_expressions": 0,
+  "argument_reads": 1,
+  "deadline_exceeded": false,
+  "pid": 7923,
+  "thread_id": 44708404,
+  "frame_id": 0,
+  "stop_id": 2,
+  "process_state": 5,
+  "stop_reason": 3,
+  "stop_reason_data": [
+    1,
+    1
+  ],
+  "stop_reason_data_count": 2,
+  "frame_pc": 4360859552,
+  "frame_uuid": "4B207746-89A7-321F-83C4-91477259BB26",
+  "symbol_mangled": "$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF",
+  "function_mangled": "$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF",
+  "breakpoint_id": 1,
+  "location_id": 1,
+  "breakpoint_pc": 4360859552,
+  "breakpoint_uuid": "4B207746-89A7-321F-83C4-91477259BB26",
+  "caller_function_names": [
+    "Keyboard.wakeOwnerProbeExportReady(Swift.UnsafeRawPointer, Swift.Int) -> ()",
+    "closure #1 (Swift.UnsafeRawBufferPointer) -> () in Keyboard.KeyboardViewController.handleWakeOwnerProbeButton() -> ()",
+    "Swift.Array.withUnsafeBytes<\u03c4_0_0>((Swift.UnsafeRawBufferPointer) throws -> \u03c4_1_0) throws -> \u03c4_1_0",
+    "Keyboard.KeyboardViewController.handleWakeOwnerProbeButton() -> ()",
+    "@objc Keyboard.KeyboardViewController.handleWakeOwnerProbeButton() -> ()",
+    "-[UIApplication sendAction:to:from:forEvent:]",
+    "-[UIControl sendAction:to:forEvent:]",
+    "-[UIControl _sendActionsForEvents:withEvent:]"
+  ],
+  "identity_checks": {
+    "pid": true,
+    "frame0": true,
+    "pc": true,
+    "module": true,
+    "mangled": true,
+    "breakpoint": true,
+    "reason": true,
+    "new_stop": true,
+    "thread": true
+  },
+  "identity_match": true,
+  "button_caller": true,
+  "synchronous_borrow_caller": true,
+  "bytes": 1496,
+  "sha256": "a8b3bde10c0c489e92b1e7f370e257d33c4156f805697af1597fe5d5fd35414d",
+  "callback_count": 1,
+  "hits_status": [
+    "owner_buffer_copied"
+  ],
+  "unexpected_multiple_hits": false
+}

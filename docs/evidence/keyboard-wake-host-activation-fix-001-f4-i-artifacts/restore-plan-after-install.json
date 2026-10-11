@@ -1,0 +1,68 @@
+{
+  "status": "Prepared only; restoration separately authorized",
+  "before_root": "/private/tmp/ukey-host-activation-fix-f4-before-20261005",
+  "original_roots": {
+    "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/66F04FA2-BC18-442C-97FE-2846CD55FBE1/Universe Keyboard.app",
+    "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/9100282B-92E4-4ED0-87C6-3A79BB6F24C1",
+    "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/161B78EE-E85A-47EA-8986-BA1D5AA70E39"
+  },
+  "before_installed_app_bytes_manifest": "/private/tmp/ukey-host-activation-fix-f4-i-20261005/before-live-inventories.json",
+  "before_installed_app_signature_valid": true,
+  "main_group_scope": [
+    "application files/directories/internal symlinks and original existence",
+    "preserve install-created container root metadata/SplashBoard/system UUID; no Keychain/keyboard registration/Maps rollback"
+  ],
+  "steps": [
+    "Preserve after evidence/data before any restore",
+    "Stage exact before installed-app independently and verify original payload/signature before reinstall; no uninstall",
+    "Rediscover live roots after installation; compare against before and freeze per-path actions",
+    "Restore only Product-authorized application-data difference list including originally absent paths; do not overwrite system metadata",
+    "Two readbacks prove accepted scope; Human normal input health separately confirms function"
+  ],
+  "provenance": "883addedbackup metadata accepted only this before; not exact provenance restoration",
+  "execution_authorized": false,
+  "after_install_roots": {
+    "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/57DC9CDA-B114-469F-98D6-B6C92F4F4AE7/Universe Keyboard.app",
+    "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/B74303BF-6EE1-4316-9CF1-1EB6892E2A88",
+    "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/161B78EE-E85A-47EA-8986-BA1D5AA70E39"
+  },
+  "actual_install_data_differences": {
+    "main-data": [
+      {
+        "path": "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/08693F04-8783-438F-A791-2E933328D0B0@3x.ktx",
+        "field": "existence"
+      },
+      {
+        "path": "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/4B2A05DF-8474-4EDB-9DD9-C365F8D86FCC@3x.ktx",
+        "field": "existence"
+      },
+      {
+        "path": "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/4C814589-78A6-46DE-A7AD-B124056E15B1@3x.ktx",
+        "field": "existence"
+      },
+      {
+        "path": "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/84E7307B-F6F5-4069-8949-CF535C2D164D@3x.ktx",
+        "field": "existence"
+      },
+      {
+        "path": "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/96BF9486-8AE5-4453-A5BD-23D8FAED580E@3x.ktx",
+        "field": "existence"
+      },
+      {
+        "path": "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/A990AF84-5719-4E55-884C-E90AC3C2C03A@3x.ktx",
+        "field": "existence"
+      },
+      {
+        "path": "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/C238C4E6-3172-4FBB-8083-F66D283D1FC8@3x.ktx",
+        "field": "existence"
+      },
+      {
+        "path": "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/FD34A687-227D-444C-AC0F-F30AD732DC81@3x.ktx",
+        "field": "existence"
+      }
+    ],
+    "app-group": []
+  },
+  "unexpected_application_data_changes": [],
+  "after_inventory_sha256": "35bb124ed30454c470ea534ea163bae9337651179af75030ad70d826eeacdce2"
+}

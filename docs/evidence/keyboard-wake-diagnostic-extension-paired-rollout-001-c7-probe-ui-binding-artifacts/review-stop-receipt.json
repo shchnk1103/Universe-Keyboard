@@ -1,0 +1,13 @@
+{
+  "recorded_utc": "2026-10-02T15:11:59.420283+00:00",
+  "reviewer_outputs_preserved": true,
+  "scope": "QUALITY-C7-PROBE-UI-BINDING round1",
+  "status": "Partial retained; inconsistent report/usage; no promotion",
+  "report_sha256": "46142620cd2cbbda0a153fe2c7d6cd18ccd3cdaff04055d9a556f963e0d2d4e5",
+  "usage_sha256": "4ba51289bf4a6641fddffc4387ecef30d7364c11fe2cd22e4f7ff1a1f46eb979",
+  "interrupt_previous_status": "running",
+  "exact_interrupt_utc": null,
+  "coordinator_clock_before_interrupt": "2026-10-02 15:10:41 UTC",
+  "hard_deadline": "2026-10-02T15:10:23.642013Z",
+  "no_automatic_renewal": true
+}

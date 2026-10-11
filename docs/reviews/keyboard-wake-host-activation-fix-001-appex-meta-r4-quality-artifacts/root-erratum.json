@@ -1,0 +1,151 @@
+{
+  "utc": "2026-10-06T03:15:43.082012+00:00",
+  "source_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/ACTIVE_WORK.md",
+  "source_sha256": "99c39f6c8988a9c9116e59f460fe6fbdbd2391c3866ef33f4b2a24773b7b262b",
+  "copied_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-appex-meta-r4-quality-artifacts/root-misfiled-final-summary-original.json",
+  "scope": "root mechanical preservation of misfiled final summary, not modification of original run-summary.json or independent verdict",
+  "confirmed_error": "final archiving reused variable p for ACTIVE_WORK path; final summary JSON was written into ACTIVE_WORK.md instead of private run-summary.json",
+  "final_summary_observable": {
+    "actual_calls": 35,
+    "visual_exit": {
+      "Human": "界面正常，显示取证；App 已关闭",
+      "recorded_utc": "2026-10-06T03:11:45.158394+00:00"
+    },
+    "call_ledger": [
+      {
+        "calls": [
+          1,
+          2
+        ],
+        "action": "fresh Entry/source/payload/script freeze"
+      },
+      {
+        "calls": [
+          3
+        ],
+        "action": "old appex SIGTERM approval request"
+      },
+      {
+        "calls": [
+          4,
+          5
+        ],
+        "action": "verified one SIGTERM"
+      },
+      {
+        "calls": [
+          6
+        ],
+        "action": "Human fresh empty keyboard request"
+      },
+      {
+        "calls": [
+          7,
+          8
+        ],
+        "action": "new instance identity"
+      },
+      {
+        "calls": [
+          9,
+          10
+        ],
+        "action": "native attach"
+      },
+      {
+        "calls": [
+          11,
+          12
+        ],
+        "action": "callback/configuration file source"
+      },
+      {
+        "calls": [
+          13,
+          14
+        ],
+        "action": "standalone continue"
+      },
+      {
+        "calls": [
+          15,
+          16
+        ],
+        "action": "pre-arm new LLDB snapshot"
+      },
+      {
+        "calls": [
+          17,
+          18
+        ],
+        "action": "pre-arm raw inputs and named evaluation"
+      },
+      {
+        "calls": [
+          19
+        ],
+        "action": "single Human arm request"
+      },
+      {
+        "calls": [
+          20,
+          21
+        ],
+        "action": "pre-freeze new LLDB snapshot"
+      },
+      {
+        "calls": [
+          22,
+          23
+        ],
+        "action": "pre-freeze raw inputs and named evaluation"
+      },
+      {
+        "calls": [
+          24
+        ],
+        "action": "single Human freeze request"
+      },
+      {
+        "calls": [
+          25,
+          26,
+          27,
+          28
+        ],
+        "action": "callback read/delete/list/detach/standalone quit"
+      },
+      {
+        "calls": [
+          29,
+          30
+        ],
+        "action": "same stop comparisons/machine Exit/deviation record"
+      },
+      {
+        "calls": [
+          31
+        ],
+        "action": "Human visual Exit request"
+      },
+      {
+        "calls": [
+          32,
+          33
+        ],
+        "action": "archive and mirrors"
+      },
+      {
+        "calls": [
+          34,
+          35
+        ],
+        "action": "Human Exit/final ledger/native readback"
+      }
+    ],
+    "closed_utc": "2026-10-06T03:11:45.158394+00:00"
+  },
+  "intended_active_work_content_sha256": "6c35dfc5962843a6f4ef620fe886a2e4f95e3d5c42087c923dd3b6f0e09a43d2",
+  "frozen_original_run_summary_unchanged": true,
+  "ACTIVE_WORK_repair": "pending exact pre-overwrite source recovery; do not replace shared dirty content with HEAD or unrelated main"
+}

@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-06T03:20:39.670986+00:00",
+  "historical_full_audit_line": 5158,
+  "current_prefix_audit_line": 167,
+  "historical_full_chars": 99835,
+  "prefix_chars": 16000,
+  "overlap_chars": 1200,
+  "overlap_unique": true,
+  "reconstruction": "unmodified historical tail plus exact early prefix; current shared Knowledge Index prefix, identical root mirror updates",
+  "candidate_sha256": "6c35dfc5962843a6f4ef620fe886a2e4f95e3d5c42087c923dd3b6f0e09a43d2",
+  "expected_pre_overwrite_sha256": "6c35dfc5962843a6f4ef620fe886a2e4f95e3d5c42087c923dd3b6f0e09a43d2",
+  "exact_match": true,
+  "candidate_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-appex-meta-r4-quality-artifacts/active-work-recovery-candidate.md",
+  "original_active_modified": false
+}

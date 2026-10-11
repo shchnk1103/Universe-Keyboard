@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+  "origin_sha256": "71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5",
+  "expected_sha256": "71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5",
+  "line_start": 481,
+  "line_end": 540,
+  "lines": [
+    {
+      "line": 481,
+      "text": "        XCTAssertEqual(gate.pending?.blocked, true)"
+    },
+    {
+      "line": 482,
+      "text": "        XCTAssertFalse(gate.hasLiveFirstFrameArm)"
+    },
+    {
+      "line": 483,
+      "text": "        XCTAssertEqual(tick(denied, canary: .fenceIssued), .none)"
+    },
+    {
+      "line": 484,
+      "text": "        XCTAssertNil(gate.beginFirstFrameArm(hasWindow: true))"
+    },
+    {
+      "line": 485,
+      "text": ""
+    },
+    {
+      "line": 486,
+      "text": "        resetCounts()"
+    },
+    {
+      "line": 487,
+      "text": "        gate = KeyboardHostLifecycleRecoveryGate()"
+    },
+    {
+      "line": 488,
+      "text": "        current = FakeHostContext()"
+    },
+    {
+      "line": 489,
+      "text": "        enterVisible()"
+    },
+    {
+      "line": 490,
+      "text": "        let vanished = requireArm()"
+    },
+    {
+      "line": 491,
+      "text": "        XCTAssertEqual(tick(vanished), .none)"
+    },
+    {
+      "line": 492,
+      "text": "        XCTAssertEqual(tick(vanished, hasWindow: false), .none)"
+    },
+    {
+      "line": 493,
+      "text": "        XCTAssertEqual(firstFrameCount, 0)"
+    },
+    {
+      "line": 494,
+      "text": "        XCTAssertFalse(gate.hasLiveFirstFrameArm)"
+    },
+    {
+      "line": 495,
+      "text": "        XCTAssertEqual(tick(vanished), .none)"
+    },
+    {
+      "line": 496,
+      "text": "        XCTAssertNil(gate.beginFirstFrameArm(hasWindow: true))"
+    },
+    {
+      "line": 497,
+      "text": "    }"
+    },
+    {
+      "line": 498,
+      "text": ""
+    },
+    {
+      "line": 499,
+      "text": "    func testDuplicateBeginFirstFrameArmIsIdempotentUntilGenuineRearm() {"
+    },
+    {
+      "line": 500,
+      "text": "        enterVisible()"
+    },
+    {
+      "line": 501,
+      "text": "        let first = requireArm()"
+    },
+    {
+      "line": 502,
+      "text": "        XCTAssertEqual(tick(first), .none)"
+    },
+    {
+      "line": 503,
+      "text": "        XCTAssertEqual(gate.firstFrameTickCount, 1)"
+    },
+    {
+      "line": 504,
+      "text": "        XCTAssertEqual(gate.beginFirstFrameArm(hasWindow: true), first.token)"
+    },
+    {
+      "line": 505,
+      "text": "        XCTAssertEqual(gate.firstFrameTickCount, 1)"
+    },
+    {
+      "line": 506,
+      "text": "        execute(tick(first))"
+    },
+    {
+      "line": 507,
+      "text": "        XCTAssertEqual(firstFrameCount, 1)"
+    },
+    {
+      "line": 508,
+      "text": ""
+    },
+    {
+      "line": 509,
+      "text": "        resetCounts()"
+    },
+    {
+      "line": 510,
+      "text": "        gate = KeyboardHostLifecycleRecoveryGate()"
+    },
+    {
+      "line": 511,
+      "text": "        current = FakeHostContext()"
+    },
+    {
+      "line": 512,
+      "text": "        enterVisible()"
+    },
+    {
+      "line": 513,
+      "text": "        let beforeResign = requireArm()"
+    },
+    {
+      "line": 514,
+      "text": "        XCTAssertEqual(tick(beforeResign), .none)"
+    },
+    {
+      "line": 515,
+      "text": "        execute(gate.handleHostWillResignActive(context: id(current), activatedAtSuspend: false))"
+    },
+    {
+      "line": 516,
+      "text": "        execute("
+    },
+    {
+      "line": 517,
+      "text": "            gate.handleHostDidBecomeActive("
+    },
+    {
+      "line": 518,
+      "text": "                context: id(current),"
+    },
+    {
+      "line": 519,
+      "text": "                hasWindow: true,"
+    },
+    {
+      "line": 520,
+      "text": "                canary: .nonCanaryBuild"
+    },
+    {
+      "line": 521,
+      "text": "            )"
+    },
+    {
+      "line": 522,
+      "text": "        )"
+    },
+    {
+      "line": 523,
+      "text": "        let afterRearm = requireArm()"
+    },
+    {
+      "line": 524,
+      "text": "        XCTAssertNotEqual(beforeResign.token, afterRearm.token)"
+    },
+    {
+      "line": 525,
+      "text": "        XCTAssertEqual(gate.firstFrameTickCount, 0)"
+    },
+    {
+      "line": 526,
+      "text": "        XCTAssertEqual(tick(afterRearm), .none)"
+    },
+    {
+      "line": 527,
+      "text": "        execute(tick(afterRearm))"
+    },
+    {
+      "line": 528,
+      "text": "        XCTAssertEqual(firstFrameCount, 1)"
+    },
+    {
+      "line": 529,
+      "text": "    }"
+    },
+    {
+      "line": 530,
+      "text": ""
+    },
+    {
+      "line": 531,
+      "text": "    private func enterVisible() {"
+    },
+    {
+      "line": 532,
+      "text": "        gate.noteViewWillAppear(context: id(current))"
+    },
+    {
+      "line": 533,
+      "text": "        gate.noteViewDidAppear(hasWindow: true)"
+    },
+    {
+      "line": 534,
+      "text": "        XCTAssertEqual(gate.phase, .visible)"
+    },
+    {
+      "line": 535,
+      "text": "    }"
+    },
+    {
+      "line": 536,
+      "text": ""
+    },
+    {
+      "line": 537,
+      "text": "    private func id(_ object: FakeHostContext) -> KeyboardHostExtensionContextID {"
+    },
+    {
+      "line": 538,
+      "text": "        KeyboardHostExtensionContextID(object)"
+    },
+    {
+      "line": 539,
+      "text": "    }"
+    },
+    {
+      "line": 540,
+      "text": ""
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "run_id": "TC2-CI-20261011-INT003-FIXED592-001",
+  "files": [
+    {
+      "source": "/private/tmp/uk-finalci592-001/execution-receipt.json",
+      "archive": "docs/evidence/typo-correction-002-fixed-main-validation-001-execution-receipt.json",
+      "sha256": "785126fc3a7b83793251a3bfc439382e9faf2bc3fd86d8e6db58c51f8ad15296",
+      "bytes": 46912
+    },
+    {
+      "source": "/private/tmp/uk-finalci592-001/binding-original.json",
+      "archive": "docs/evidence/typo-correction-002-fixed-main-validation-001-binding-original.json",
+      "sha256": "8f9320a53c4f1bedb490f2cfce807d837b4b406d6ebe249f9ce10ca87b8957f6",
+      "bytes": 16095
+    },
+    {
+      "source": "/private/tmp/uk-finalci592-001/human-authorization.json",
+      "archive": "docs/evidence/typo-correction-002-fixed-main-validation-001-human-authorization.json",
+      "sha256": "f292e7d5632e8e536e26099d0af66f330a2a882fe44495efaea10b6939146b54",
+      "bytes": 340
+    },
+    {
+      "source": "/private/tmp/uk-finalci592-001/run.py",
+      "archive": "docs/evidence/typo-correction-002-fixed-main-validation-001-run.py",
+      "sha256": "0e3d3811603882b32b82977a4b269c577cfebfcd95cf6cba1f2a1484cf01f07f",
+      "bytes": 5856
+    },
+    {
+      "source": "/private/tmp/uk-finalci592-001/result-accounting.json",
+      "archive": "docs/evidence/typo-correction-002-fixed-main-validation-001-result-accounting.json",
+      "sha256": "1db58a267b2d7c21f11e4b6841e8cc1f59b31bfaea291647088e31f80eb7f9ed",
+      "bytes": 13843
+    },
+    {
+      "archive": "docs/evidence/typo-correction-002-fixed-main-validation-001-rimebridge-summary.json",
+      "sha256": "8c1965e0b73d846c79a8fdadc398264a46e7b7c96783d5b4344a1c0fa96a6001",
+      "bytes": 1160
+    },
+    {
+      "archive": "docs/evidence/typo-correction-002-fixed-main-validation-001-app_keyboard-summary.json",
+      "sha256": "6fa45eefc0af4ee05adbb7fed7997e3381c4fce9a7af676306832621c9f87176",
+      "bytes": 1169
+    },
+    {
+      "archive": "docs/evidence/typo-correction-002-fixed-main-validation-001-keychain-summary.json",
+      "sha256": "5bf5101995c708f56c811192893ee634caeb8a4ba15baf4634f046e678b4e12a",
+      "bytes": 969
+    },
+    {
+      "archive": "docs/evidence/typo-correction-002-fixed-main-validation-001-probe_extension-summary.json",
+      "sha256": "91e0d62bbfd44450e0b875fb9d4b81406b139a6ab189626eb5b54858075f9f0e",
+      "bytes": 1173
+    }
+  ],
+  "raw_logs_and_xcresults_retained": "/private/tmp/uk-finalci592-001",
+  "claim": "Only selected small files archived; no full migration of xcresults claimed"
+}

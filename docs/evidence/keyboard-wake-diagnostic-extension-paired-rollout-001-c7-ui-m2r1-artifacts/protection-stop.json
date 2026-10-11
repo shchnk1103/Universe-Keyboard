@@ -1,0 +1,27 @@
+{
+  "status": "STOPPED_NOT_READY",
+  "reason": "backup structure mismatch",
+  "roots": {
+    "main-data": {
+      "live_three_equal": true,
+      "live_entries": 869,
+      "copy_entries": 852,
+      "missing_entries": 17,
+      "extra_entries": 0
+    },
+    "app-group": {
+      "live_three_equal": true,
+      "live_entries": 68,
+      "copy_entries": 68,
+      "missing_entries": 0,
+      "extra_entries": 0
+    },
+    "installed-app": {
+      "live_three_equal": true,
+      "live_entries": 87,
+      "copy_entries": 87,
+      "missing_entries": 0,
+      "extra_entries": 0
+    }
+  }
+}

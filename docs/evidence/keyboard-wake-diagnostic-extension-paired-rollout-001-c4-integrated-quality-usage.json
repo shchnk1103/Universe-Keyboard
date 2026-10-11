@@ -1,0 +1,68 @@
+{
+  "lane": "Q-C4 independent Quality review round 1",
+  "packet": "/private/tmp/ukey-wake-c4-20261001/quality-packet.md",
+  "packet_sha256": "175b4a059e8cc87daeab63a14f0583873f853c8019b9b25102b8ab3a5b1710c4",
+  "input_manifest_sha256": "12677b893a67d942777e16202f8e2e7fa62ae38656b1524928cddf9351887851",
+  "candidate_manifest_sha256": "af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9",
+  "repo_root": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "budget": {
+    "max_underlying_interactions": 40,
+    "max_elapsed_seconds": 1800,
+    "actual_underlying_interactions": 31,
+    "remaining_interactions": 9
+  },
+  "underlying_interactions": {
+    "exec_command": 27,
+    "collaboration_send_message": 4,
+    "total": 31
+  },
+  "functions_exec_wrappers_separately_recorded": 27,
+  "start_utc_observed_after_initial_ack": "2026-10-01T00:14:38.273815+00:00",
+  "end_utc": "2026-10-01T00:42:40.914055+00:00",
+  "elapsed_seconds": 1682.64,
+  "elapsed_within_30_minute_ceiling": true,
+  "checkpoint_counts": {
+    "required": [
+      10,
+      20,
+      30
+    ],
+    "submitted_at": [
+      14,
+      23,
+      30
+    ],
+    "deviations": "首个检查点晚4次，第二个晚3次，第三个准时；按实际计数记录。"
+  },
+  "coverage": {
+    "Q1": "Covered",
+    "Q2": "Covered",
+    "Q3": "Covered",
+    "Q4": "Covered with blocker disposition",
+    "Q5": "Covered",
+    "Q6": "Covered"
+  },
+  "verdict": "Blocker; sole substantive blocker is no current-stage Human Product acceptance for the exact 30 skipped cases",
+  "hash_checks": {
+    "manifest_entries": "64/64",
+    "source_build_inputs": "568 matched",
+    "review_targets": "34 matched"
+  },
+  "device_window_end_utc": "2026-10-01T00:13:00.077225Z",
+  "writes": [
+    "quality-review.md",
+    "quality-usage.json"
+  ],
+  "prohibited_actions": {
+    "source_or_result_mutation": false,
+    "git_mutation": false,
+    "build_or_test_execution": false,
+    "simulator_operation": false,
+    "network_access": false
+  },
+  "notes": [
+    "Frozen dirty baseline was 365 rows, staged 0; review-time status was 368 rows, staged 0. Root attributed the 3 added rows to authorized C4 evidence documents.",
+    "A prior report-writing wrapper attempt failed at JavaScript parse time before any nested tool call; it consumed no underlying interaction and wrote no file."
+  ]
+}

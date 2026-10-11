@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+  "origin_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+  "expected_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+  "line_start": 601,
+  "line_end": 660,
+  "lines": [
+    {
+      "line": 601,
+      "text": "            \"\\(reason): runtime released before extension suspension, bounds=\\(view.bounds)\","
+    },
+    {
+      "line": 602,
+      "text": "            category: .display"
+    },
+    {
+      "line": 603,
+      "text": "        )"
+    },
+    {
+      "line": 604,
+      "text": "        #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS"
+    },
+    {
+      "line": 605,
+      "text": "            p3d1RecordLifecycleMarker(\"SUSPEND_RELEASE\", reason: reason, cleared: true)"
+    },
+    {
+      "line": 606,
+      "text": "        #endif"
+    },
+    {
+      "line": 607,
+      "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+    },
+    {
+      "line": 608,
+      "text": "            recordWakeOwnerProbe(.suspendEnd)"
+    },
+    {
+      "line": 609,
+      "text": "        #endif"
+    },
+    {
+      "line": 610,
+      "text": "        Logger.shared.suspendPersistenceForExtensionLifecycle()"
+    },
+    {
+      "line": 611,
+      "text": "        diagnosticsJournal.suspendForExtensionLifecycle()"
+    },
+    {
+      "line": 612,
+      "text": "        diagnosticsAppearanceID = nil"
+    },
+    {
+      "line": 613,
+      "text": "    }"
+    },
+    {
+      "line": 614,
+      "text": ""
+    },
+    {
+      "line": 615,
+      "text": "    func currentHostExtensionContextID() -> KeyboardHostExtensionContextID? {"
+    },
+    {
+      "line": 616,
+      "text": "        guard let extensionContext else { return nil }"
+    },
+    {
+      "line": 617,
+      "text": "        return KeyboardHostExtensionContextID(extensionContext)"
+    },
+    {
+      "line": 618,
+      "text": "    }"
+    },
+    {
+      "line": 619,
+      "text": ""
+    },
+    {
+      "line": 620,
+      "text": "    func hostNotificationMatchesCurrentExtensionContext(_ notification: Notification) -> Bool {"
+    },
+    {
+      "line": 621,
+      "text": "        guard let current = extensionContext else { return false }"
+    },
+    {
+      "line": 622,
+      "text": "        guard let object = notification.object as AnyObject? else { return false }"
+    },
+    {
+      "line": 623,
+      "text": "        return object === current"
+    },
+    {
+      "line": 624,
+      "text": "    }"
+    },
+    {
+      "line": 625,
+      "text": ""
+    },
+    {
+      "line": 626,
+      "text": "    func resolveHostRecoveryCanaryPermission("
+    },
+    {
+      "line": 627,
+      "text": "        grantVisibilityResume: Bool"
+    },
+    {
+      "line": 628,
+      "text": "    ) -> KeyboardHostRecoveryCanaryPermission {"
+    },
+    {
+      "line": 629,
+      "text": "        #if T9_RESPONSIVE_CANARY_INTERNAL"
+    },
+    {
+      "line": 630,
+      "text": "            switch responsiveCanaryModeCoordinator.state {"
+    },
+    {
+      "line": 631,
+      "text": "            case .baselineActive:"
+    },
+    {
+      "line": 632,
+      "text": "                return .baselineActive"
+    },
+    {
+      "line": 633,
+      "text": "            case .canaryStarting:"
+    },
+    {
+      "line": 634,
+      "text": "                return .canaryStarting"
+    },
+    {
+      "line": 635,
+      "text": "            case .canaryActive:"
+    },
+    {
+      "line": 636,
+      "text": "                return .canaryActive"
+    },
+    {
+      "line": 637,
+      "text": "            case .visibilityEnding:"
+    },
+    {
+      "line": 638,
+      "text": "                return .visibilityEnding"
+    },
+    {
+      "line": 639,
+      "text": "            case .visibilitySuspended:"
+    },
+    {
+      "line": 640,
+      "text": "                if grantVisibilityResume {"
+    },
+    {
+      "line": 641,
+      "text": "                    return .visibilitySuspended("
+    },
+    {
+      "line": 642,
+      "text": "                        resumeGranted: responsiveCanaryModeCoordinator.beginVisibilityResume()"
+    },
+    {
+      "line": 643,
+      "text": "                    )"
+    },
+    {
+      "line": 644,
+      "text": "                }"
+    },
+    {
+      "line": 645,
+      "text": "                return .visibilitySuspended(resumeGranted: false)"
+    },
+    {
+      "line": 646,
+      "text": "            case .fenceIssued:"
+    },
+    {
+      "line": 647,
+      "text": "                return .fenceIssued"
+    },
+    {
+      "line": 648,
+      "text": "            case .baselineRecoveryPermitted:"
+    },
+    {
+      "line": 649,
+      "text": "                return .baselineRecoveryPermitted"
+    },
+    {
+      "line": 650,
+      "text": "            case .fencedUnavailable:"
+    },
+    {
+      "line": 651,
+      "text": "                return .fencedUnavailable"
+    },
+    {
+      "line": 652,
+      "text": "            }"
+    },
+    {
+      "line": 653,
+      "text": "        #else"
+    },
+    {
+      "line": 654,
+      "text": "            return .nonCanaryBuild"
+    },
+    {
+      "line": 655,
+      "text": "        #endif"
+    },
+    {
+      "line": 656,
+      "text": "    }"
+    },
+    {
+      "line": 657,
+      "text": ""
+    },
+    {
+      "line": 658,
+      "text": "    func performHostSharedResumeAfterLicense(canaryResumeRequested: Bool) {"
+    },
+    {
+      "line": 659,
+      "text": "        KeyboardWakeDiagnosticProducer.recordRimeResumeStarted("
+    },
+    {
+      "line": 660,
+      "text": "            journal: diagnosticsJournal,"
+    }
+  ]
+}

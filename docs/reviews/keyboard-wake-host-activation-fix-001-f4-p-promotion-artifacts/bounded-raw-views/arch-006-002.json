@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift",
+  "origin_sha256": "c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047",
+  "expected_sha256": "c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047",
+  "line_start": 61,
+  "line_end": 120,
+  "lines": [
+    {
+      "line": 61,
+      "text": "            .baselineRecoveryPermitted:"
+    },
+    {
+      "line": 62,
+      "text": "            return false"
+    },
+    {
+      "line": 63,
+      "text": "        }"
+    },
+    {
+      "line": 64,
+      "text": "    }"
+    },
+    {
+      "line": 65,
+      "text": ""
+    },
+    {
+      "line": 66,
+      "text": "    /// Host-active must not rearm or resume when first-frame creation or generic resume is forbidden."
+    },
+    {
+      "line": 67,
+      "text": "    var blocksHostActiveRecovery: Bool {"
+    },
+    {
+      "line": 68,
+      "text": "        switch self {"
+    },
+    {
+      "line": 69,
+      "text": "        case .fenceIssued, .visibilityEnding, .fencedUnavailable, .baselineRecoveryPermitted,"
+    },
+    {
+      "line": 70,
+      "text": "            .canaryActive:"
+    },
+    {
+      "line": 71,
+      "text": "            return true"
+    },
+    {
+      "line": 72,
+      "text": "        case .visibilitySuspended(let granted):"
+    },
+    {
+      "line": 73,
+      "text": "            return !granted"
+    },
+    {
+      "line": 74,
+      "text": "        case .canaryStarting, .nonCanaryBuild, .baselineActive:"
+    },
+    {
+      "line": 75,
+      "text": "            return false"
+    },
+    {
+      "line": 76,
+      "text": "        }"
+    },
+    {
+      "line": 77,
+      "text": "    }"
+    },
+    {
+      "line": 78,
+      "text": "}"
+    },
+    {
+      "line": 79,
+      "text": ""
+    },
+    {
+      "line": 80,
+      "text": "/// Pending host-suspend request, consumed at most once per generation/context pair."
+    },
+    {
+      "line": 81,
+      "text": "struct KeyboardHostPendingSuspend: Equatable, Sendable {"
+    },
+    {
+      "line": 82,
+      "text": "    var generation: UInt64"
+    },
+    {
+      "line": 83,
+      "text": "    var context: KeyboardHostExtensionContextID"
+    },
+    {
+      "line": 84,
+      "text": "    var activatedAtSuspend: Bool"
+    },
+    {
+      "line": 85,
+      "text": "    var blocked: Bool"
+    },
+    {
+      "line": 86,
+      "text": "}"
+    },
+    {
+      "line": 87,
+      "text": ""
+    },
+    {
+      "line": 88,
+      "text": "@MainActor"
+    },
+    {
+      "line": 89,
+      "text": "final class KeyboardHostLifecycleRecoveryGate {"
+    },
+    {
+      "line": 90,
+      "text": "    private(set) var presentationGeneration: UInt64 = 0"
+    },
+    {
+      "line": 91,
+      "text": "    private(set) var phase: KeyboardHostRecoveryPhase = .hidden"
+    },
+    {
+      "line": 92,
+      "text": "    private(set) var currentContext: KeyboardHostExtensionContextID?"
+    },
+    {
+      "line": 93,
+      "text": "    private(set) var pending: KeyboardHostPendingSuspend?"
+    },
+    {
+      "line": 94,
+      "text": "    private(set) var firstFrameRearmPending = false"
+    },
+    {
+      "line": 95,
+      "text": "    private(set) var didSuspendCurrentGeneration = false"
+    },
+    {
+      "line": 96,
+      "text": "    private(set) var firstFrameConsumedForGeneration = false"
+    },
+    {
+      "line": 97,
+      "text": "    private(set) var firstFrameArmToken: UInt64 = 0"
+    },
+    {
+      "line": 98,
+      "text": "    private(set) var firstFrameArmGeneration: UInt64 = 0"
+    },
+    {
+      "line": 99,
+      "text": "    private(set) var firstFrameTickCount = 0"
+    },
+    {
+      "line": 100,
+      "text": "    private(set) var hasLiveFirstFrameArm = false"
+    },
+    {
+      "line": 101,
+      "text": "    /// After reject/complete, begin must not mint a new token until rearm or a new presentation."
+    },
+    {
+      "line": 102,
+      "text": "    private var firstFrameArmSuppressed = false"
+    },
+    {
+      "line": 103,
+      "text": ""
+    },
+    {
+      "line": 104,
+      "text": "    var hasVisibleResumePending: Bool {"
+    },
+    {
+      "line": 105,
+      "text": "        guard let pending, !pending.blocked else { return false }"
+    },
+    {
+      "line": 106,
+      "text": "        return pending.generation == presentationGeneration && pending.context == currentContext"
+    },
+    {
+      "line": 107,
+      "text": "    }"
+    },
+    {
+      "line": 108,
+      "text": ""
+    },
+    {
+      "line": 109,
+      "text": "    func noteViewWillAppear(context: KeyboardHostExtensionContextID?) {"
+    },
+    {
+      "line": 110,
+      "text": "        presentationGeneration &+= 1"
+    },
+    {
+      "line": 111,
+      "text": "        phase = .appearing"
+    },
+    {
+      "line": 112,
+      "text": "        currentContext = context"
+    },
+    {
+      "line": 113,
+      "text": "        pending = nil"
+    },
+    {
+      "line": 114,
+      "text": "        firstFrameRearmPending = false"
+    },
+    {
+      "line": 115,
+      "text": "        didSuspendCurrentGeneration = false"
+    },
+    {
+      "line": 116,
+      "text": "        firstFrameConsumedForGeneration = false"
+    },
+    {
+      "line": 117,
+      "text": "        firstFrameArmSuppressed = false"
+    },
+    {
+      "line": 118,
+      "text": "        invalidateFirstFrameArm()"
+    },
+    {
+      "line": 119,
+      "text": "    }"
+    },
+    {
+      "line": 120,
+      "text": ""
+    }
+  ]
+}

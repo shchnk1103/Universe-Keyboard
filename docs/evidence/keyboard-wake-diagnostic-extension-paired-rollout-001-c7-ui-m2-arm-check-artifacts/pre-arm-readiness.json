@@ -1,0 +1,16 @@
+{
+  "recorded_utc": "2026-10-03T15:18:47.018047+00:00",
+  "pid": 8491,
+  "actual_device_udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "debug_session_id": "1aa93c8c-de39-4b22-946f-6e823c2127b6",
+  "breakpoint_id": 1,
+  "resolved_locations": 1,
+  "initial_hit_count": 0,
+  "memory_reads": 0,
+  "human": "观测已出现",
+  "loaded_appex_uuid": "C3FC7115-4215-3801-ABBB-C8A648ED0C32",
+  "loaded_debug_uuid": "77BD18E2-E090-37D7-865F-84D762E69F70",
+  "raw_profile_device_label_conflict": "884CAC1A-516A-421F-ACF5-035A36F7088A",
+  "scope": "one arm only; no input/switch/freeze/read",
+  "pause_start": "UNKNOWN"
+}

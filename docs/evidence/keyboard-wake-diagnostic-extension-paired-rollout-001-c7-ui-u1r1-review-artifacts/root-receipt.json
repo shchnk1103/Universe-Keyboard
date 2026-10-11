@@ -1,0 +1,57 @@
+{
+  "utc": "2026-10-03T13:41:41.006615+00:00",
+  "reviewer": "/root/t_split_p independent GPT6 Luna low",
+  "lane": "QUALITY-C7-UI-U1R1-RUNTIME",
+  "round": 1,
+  "whole_packet_digest_computed": "e3faf25fbd3d1b0b854ea475aa17b35ee77c04d85561be2a8274179c0c1b8c74",
+  "canonical_self_digest_computed": "a447488e9e2568f78638ce4b41d4bd776507aa2a78f804c4acdd905a8558c2a5",
+  "external_identity_actual_matches": true,
+  "original_usage_external_identity_matches": false,
+  "original_usage_self_sha_matches": true,
+  "author_final_message_misidentified_boolean_field": "author referred to self_sha_matches as possibly false; actual self true and external false",
+  "report_sha256": "9e739c6f3ec8f575369a4b5a830ef759d4bdc6e9243b9f1b18fe5c774674b5f8",
+  "usage_sha256": "1a927231bfdb14366c167a875f518312f5d6cbe2dff4b995f5bfcbef64835cba",
+  "analysis_sha256": "a2debead61a6817a193cf79118924983ed442ee58fb8b51ee26c0fd9bdda126a",
+  "frozen_content_input_count": 65,
+  "frozen_input_drift": [],
+  "independent_P1_P2_P3_opinion": "Covered, narrow positive runtime-chain acceptance",
+  "reviewer_budget": {
+    "reported_leaf_calls": 6,
+    "reported_elapsed_seconds": 259.904644,
+    "within_ceiling": true,
+    "no_auto_extension": true
+  },
+  "formal_delivery_consistency": "Partial/incomplete: required usage details and three contradictory locators/fields remain",
+  "issues": [
+    {
+      "id": "U1R1-D-001",
+      "field": "review P1 module image list call ordinal",
+      "actual": "raw call02=image list; call01=attach",
+      "original": "Call1 image list",
+      "action": "author-only exact locator correction in separate supplement"
+    },
+    {
+      "id": "U1R1-D-002",
+      "field": "usage external_identity_matches",
+      "actual": true,
+      "original": false,
+      "action": "author-only correct named external field; keep original"
+    },
+    {
+      "id": "U1R1-D-003",
+      "field": "usage status",
+      "actual": "final Complete P1/P2/P3 report and analysis exist",
+      "original": "formal partial issued by call4; raw/P3 independent details in progress",
+      "action": "author-only distinguish final state from earlier checkpoint"
+    },
+    {
+      "id": "U1R1-D-004",
+      "field": "per-reviewer-call request/output timing sources",
+      "actual": "not supplied per-call; only aggregate wallclock and checkpoint",
+      "original": "missing per-call fields",
+      "action": "author supplement actual available observations; unknown individual timestamps must remain null, never infer or fabricate"
+    }
+  ],
+  "no_runtime_or_independent_verdict_replacement_by_coordinator": true,
+  "original_files_not_modified": true
+}

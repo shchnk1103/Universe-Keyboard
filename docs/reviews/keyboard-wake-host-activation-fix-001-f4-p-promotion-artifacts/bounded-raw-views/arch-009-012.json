@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+  "origin_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "expected_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "line_start": 661,
+  "line_end": 720,
+  "lines": [
+    {
+      "line": 661,
+      "text": "            revision: snapshot.revision,"
+    },
+    {
+      "line": 662,
+      "text": "            pendingAfter: pendingAfter,"
+    },
+    {
+      "line": 663,
+      "text": "            coalesced: coalesced"
+    },
+    {
+      "line": 664,
+      "text": "        )"
+    },
+    {
+      "line": 665,
+      "text": "        recordResponsiveFeltMarker(metrics.presentationLine)"
+    },
+    {
+      "line": 666,
+      "text": "        if let burst = metrics.burstLine {"
+    },
+    {
+      "line": 667,
+      "text": "            recordResponsiveFeltMarker(burst)"
+    },
+    {
+      "line": 668,
+      "text": "        }"
+    },
+    {
+      "line": 669,
+      "text": "        if let visible = feltMetrics.recordVisible("
+    },
+    {
+      "line": 670,
+      "text": "            revision: snapshot.revision,"
+    },
+    {
+      "line": 671,
+      "text": "            source: .engine"
+    },
+    {
+      "line": 672,
+      "text": "        ) {"
+    },
+    {
+      "line": 673,
+      "text": "            recordResponsiveFeltMarker(visible)"
+    },
+    {
+      "line": 674,
+      "text": "        }"
+    },
+    {
+      "line": 675,
+      "text": ""
+    },
+    {
+      "line": 676,
+      "text": "        // Re-check after metrics (abandon can race on MainActor between awaits)."
+    },
+    {
+      "line": 677,
+      "text": "        guard isLivePresentationSnapshot(snapshot, expectedGeneration: expectedGeneration) else {"
+    },
+    {
+      "line": 678,
+      "text": "            return"
+    },
+    {
+      "line": 679,
+      "text": "        }"
+    },
+    {
+      "line": 680,
+      "text": "        // Rem-3 / Polish: L2 wins — cancel deferred L1 visual and clear ledger."
+    },
+    {
+      "line": 681,
+      "text": "        cancelDeferredProvisionalVisualPaint()"
+    },
+    {
+      "line": 682,
+      "text": "        if provisionalCompositionMirror.isProvisionalAhead"
+    },
+    {
+      "line": 683,
+      "text": "            || provisionalCompositionMirror.isActive"
+    },
+    {
+      "line": 684,
+      "text": "        {"
+    },
+    {
+      "line": 685,
+      "text": "            provisionalCompositionMirror.alignToEngineApply("
+    },
+    {
+      "line": 686,
+      "text": "                epoch: snapshot.sessionEpoch,"
+    },
+    {
+      "line": 687,
+      "text": "                revision: snapshot.revision"
+    },
+    {
+      "line": 688,
+      "text": "            )"
+    },
+    {
+      "line": 689,
+      "text": "        }"
+    },
+    {
+      "line": 690,
+      "text": "        lastPresentedSessionEpoch = snapshot.sessionEpoch"
+    },
+    {
+      "line": 691,
+      "text": "        lastPresentedRevision = snapshot.revision"
+    },
+    {
+      "line": 692,
+      "text": "        #if T9_RESPONSIVE_CANARY_INTERNAL"
+    },
+    {
+      "line": 693,
+      "text": "            pendingResponsiveCanaryVisibleSnapshot = ("
+    },
+    {
+      "line": 694,
+      "text": "                snapshot: snapshot,"
+    },
+    {
+      "line": 695,
+      "text": "                canarySessionInstance: canarySessionInstance"
+    },
+    {
+      "line": 696,
+      "text": "            )"
+    },
+    {
+      "line": 697,
+      "text": "        #endif"
+    },
+    {
+      "line": 698,
+      "text": ""
+    },
+    {
+      "line": 699,
+      "text": "        // Drop contexts invalidated by epoch barriers (abandon / reset / recover)."
+    },
+    {
+      "line": 700,
+      "text": "        while let head = responsiveKeyApplyContexts.first,"
+    },
+    {
+      "line": 701,
+      "text": "            head.sessionEpoch != snapshot.sessionEpoch"
+    },
+    {
+      "line": 702,
+      "text": "        {"
+    },
+    {
+      "line": 703,
+      "text": "            responsiveKeyApplyContexts.removeFirst()"
+    },
+    {
+      "line": 704,
+      "text": "        }"
+    },
+    {
+      "line": 705,
+      "text": ""
+    },
+    {
+      "line": 706,
+      "text": "        // Nested Bridge publishes (ord-*) must not consume processKey contexts."
+    },
+    {
+      "line": 707,
+      "text": "        // Under latestOnly / dual-gate coalesce, one paint may cover N keys —"
+    },
+    {
+      "line": 708,
+      "text": "        // keep only the last matching pk context (applied head)."
+    },
+    {
+      "line": 709,
+      "text": "        let ctx: ResponsiveKeyApplyContext?"
+    },
+    {
+      "line": 710,
+      "text": "        if snapshot.actionID.hasPrefix(\"pk-\") {"
+    },
+    {
+      "line": 711,
+      "text": "            var last: ResponsiveKeyApplyContext?"
+    },
+    {
+      "line": 712,
+      "text": "            while let head = responsiveKeyApplyContexts.first,"
+    },
+    {
+      "line": 713,
+      "text": "                head.sessionEpoch == snapshot.sessionEpoch"
+    },
+    {
+      "line": 714,
+      "text": "            {"
+    },
+    {
+      "line": 715,
+      "text": "                last = responsiveKeyApplyContexts.removeFirst()"
+    },
+    {
+      "line": 716,
+      "text": "            }"
+    },
+    {
+      "line": 717,
+      "text": "            ctx = last"
+    },
+    {
+      "line": 718,
+      "text": "        } else {"
+    },
+    {
+      "line": 719,
+      "text": "            ctx = nil"
+    },
+    {
+      "line": 720,
+      "text": "        }"
+    }
+  ]
+}

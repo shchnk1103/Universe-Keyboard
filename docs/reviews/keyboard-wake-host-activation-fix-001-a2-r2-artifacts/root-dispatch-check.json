@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-04T16:37:50.757075+00:00",
+  "packet_sha256": "d3eac7837fe86fd7623c9e1f62cc2a42c4184adc111bc604a6dedf0664c6d965",
+  "38_allowed_inputs_match": true,
+  "identity_match": true,
+  "staged": 0,
+  "reviewer": "/root/m2r2_arch_r1",
+  "fresh_round": 2,
+  "old_budget_not_renewed": true
+}

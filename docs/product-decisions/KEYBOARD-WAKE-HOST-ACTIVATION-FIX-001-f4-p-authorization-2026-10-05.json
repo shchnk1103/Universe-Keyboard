@@ -1,0 +1,7 @@
+{
+  "source": "Human: 仅授权 F4-P：从冻结源码构建诊断配对包并冻结产物，预算上限40次调用/60分钟",
+  "date": "2026-10-05 Asia/Shanghai",
+  "scope": "generic standalone signed diagnostic Debug pair; no source/test/device/install",
+  "first_failure_stop": true,
+  "entry_receipt": "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/execution-entry.json"
+}

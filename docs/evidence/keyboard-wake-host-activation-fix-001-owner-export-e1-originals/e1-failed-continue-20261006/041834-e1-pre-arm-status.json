@@ -1,0 +1,4 @@
+{
+  "status": "DRIVER_ERROR",
+  "error": "TimeoutError: lldb prompt timeout: continue\r\n"
+}

@@ -1,0 +1,9 @@
+{
+  "utc": "2026-10-06T04:16:31.537266+00:00",
+  "pid": 7923,
+  "ps": "7923 Tue Oct  6 12:13:26 2026     Ss   /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/57DC9CDA-B114-469F-98D6-B6C92F4F4AE7/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+  "binary": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/57DC9CDA-B114-469F-98D6-B6C92F4F4AE7/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+  "module_sha256": "773c4eff9640b2623036e3f819301ead3914cb99b66c9c1496ece5986e762aab",
+  "loaded_uuid": "4B207746-89A7-321F-83C4-91477259BB26",
+  "Human": "\u5b8c\u5168\u8bbf\u95ee\u5df2\u5f00\uff0c\u5019\u9009\u4e3a\u7a7a\uff0c\u300c\u89c2\u6d4b\u300d\u53ef\u89c1"
+}

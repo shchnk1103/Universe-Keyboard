@@ -1,0 +1,11 @@
+{
+  "source_inputs_unchanged": 15,
+  "source_project_files_changed_this_stage": 0,
+  "new_swift_paths_absent": 2,
+  "links_checked": 10,
+  "staged_paths": 0,
+  "status": "Prepared / Assignment Pending",
+  "tests_build_simulator": "not run; not authorized",
+  "parent": "Completed unchanged",
+  "rollout": "Active unchanged"
+}

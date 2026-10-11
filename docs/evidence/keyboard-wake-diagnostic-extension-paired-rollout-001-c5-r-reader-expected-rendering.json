@@ -1,0 +1,195 @@
+{
+  "run_id": "C5-R-20261001-01",
+  "window_start_utc": "2026-10-01T02:45:13.845149+00:00",
+  "window_end_utc": "2026-10-01T02:47:55.900354+00:00",
+  "source": "existing typed-window + unchanged DiagnosticsEventDisplayFormatter",
+  "expected_event_count": 17,
+  "comparison": "multiset of content-free display timestamp/code/operation/phase with exact multiplicity, not hidden process/appearance/seq from UI",
+  "display_timezone_for_expected_lines": "Asia/Shanghai; actual UI timezone to be observed and offset verified",
+  "rows": [
+    {
+      "localSequence": 1,
+      "expected_rendered_line": "[10:46:26.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_will_appear",
+      "code": "keyboard.lifecycle.phase_changed",
+      "payload": {
+        "phase": "view_will_appear"
+      },
+      "utcTimestamp": "2026-10-01T02:46:26Z"
+    },
+    {
+      "localSequence": 3,
+      "expected_rendered_line": "[10:46:26.000] [DEBUG] [ENGINE] rime.resume.phase_changed phase=started",
+      "code": "rime.resume.phase_changed",
+      "payload": {
+        "phase": "started"
+      },
+      "utcTimestamp": "2026-10-01T02:46:26Z"
+    },
+    {
+      "localSequence": 4,
+      "expected_rendered_line": "[10:46:26.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_did_appear",
+      "code": "keyboard.lifecycle.phase_changed",
+      "payload": {
+        "phase": "view_did_appear"
+      },
+      "utcTimestamp": "2026-10-01T02:46:26Z"
+    },
+    {
+      "localSequence": 13,
+      "expected_rendered_line": "[10:46:29.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered",
+      "code": "text_proxy.operation_phase_changed",
+      "payload": {
+        "phase": "entered",
+        "operation": "set_marked_text"
+      },
+      "utcTimestamp": "2026-10-01T02:46:29Z"
+    },
+    {
+      "localSequence": 14,
+      "expected_rendered_line": "[10:46:29.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned",
+      "code": "text_proxy.operation_phase_changed",
+      "payload": {
+        "phase": "returned",
+        "operation": "set_marked_text"
+      },
+      "utcTimestamp": "2026-10-01T02:46:29Z"
+    },
+    {
+      "localSequence": 20,
+      "expected_rendered_line": "[10:46:30.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered",
+      "code": "text_proxy.operation_phase_changed",
+      "payload": {
+        "operation": "set_marked_text",
+        "phase": "entered"
+      },
+      "utcTimestamp": "2026-10-01T02:46:30Z"
+    },
+    {
+      "localSequence": 21,
+      "expected_rendered_line": "[10:46:30.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned",
+      "code": "text_proxy.operation_phase_changed",
+      "payload": {
+        "operation": "set_marked_text",
+        "phase": "returned"
+      },
+      "utcTimestamp": "2026-10-01T02:46:30Z"
+    },
+    {
+      "localSequence": 28,
+      "expected_rendered_line": "[10:46:30.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered",
+      "code": "text_proxy.operation_phase_changed",
+      "payload": {
+        "phase": "entered",
+        "operation": "set_marked_text"
+      },
+      "utcTimestamp": "2026-10-01T02:46:30Z"
+    },
+    {
+      "localSequence": 29,
+      "expected_rendered_line": "[10:46:30.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned",
+      "code": "text_proxy.operation_phase_changed",
+      "payload": {
+        "operation": "set_marked_text",
+        "phase": "returned"
+      },
+      "utcTimestamp": "2026-10-01T02:46:30Z"
+    },
+    {
+      "localSequence": 36,
+      "expected_rendered_line": "[10:46:31.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered",
+      "code": "text_proxy.operation_phase_changed",
+      "payload": {
+        "operation": "set_marked_text",
+        "phase": "entered"
+      },
+      "utcTimestamp": "2026-10-01T02:46:31Z"
+    },
+    {
+      "localSequence": 37,
+      "expected_rendered_line": "[10:46:31.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned",
+      "code": "text_proxy.operation_phase_changed",
+      "payload": {
+        "phase": "returned",
+        "operation": "set_marked_text"
+      },
+      "utcTimestamp": "2026-10-01T02:46:31Z"
+    },
+    {
+      "localSequence": 44,
+      "expected_rendered_line": "[10:46:32.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered",
+      "code": "text_proxy.operation_phase_changed",
+      "payload": {
+        "phase": "entered",
+        "operation": "set_marked_text"
+      },
+      "utcTimestamp": "2026-10-01T02:46:32Z"
+    },
+    {
+      "localSequence": 45,
+      "expected_rendered_line": "[10:46:32.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned",
+      "code": "text_proxy.operation_phase_changed",
+      "payload": {
+        "operation": "set_marked_text",
+        "phase": "returned"
+      },
+      "utcTimestamp": "2026-10-01T02:46:32Z"
+    },
+    {
+      "localSequence": 50,
+      "expected_rendered_line": "[10:46:34.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered",
+      "code": "text_proxy.operation_phase_changed",
+      "payload": {
+        "phase": "entered",
+        "operation": "set_marked_text"
+      },
+      "utcTimestamp": "2026-10-01T02:46:34Z"
+    },
+    {
+      "localSequence": 51,
+      "expected_rendered_line": "[10:46:34.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned",
+      "code": "text_proxy.operation_phase_changed",
+      "payload": {
+        "phase": "returned",
+        "operation": "set_marked_text"
+      },
+      "utcTimestamp": "2026-10-01T02:46:34Z"
+    },
+    {
+      "localSequence": 52,
+      "expected_rendered_line": "[10:46:34.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=unmark_text phase=entered",
+      "code": "text_proxy.operation_phase_changed",
+      "payload": {
+        "phase": "entered",
+        "operation": "unmark_text"
+      },
+      "utcTimestamp": "2026-10-01T02:46:34Z"
+    },
+    {
+      "localSequence": 53,
+      "expected_rendered_line": "[10:46:34.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=unmark_text phase=returned",
+      "code": "text_proxy.operation_phase_changed",
+      "payload": {
+        "phase": "returned",
+        "operation": "unmark_text"
+      },
+      "utcTimestamp": "2026-10-01T02:46:34Z"
+    }
+  ],
+  "expected_line_multiplicities": {
+    "[10:46:26.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_will_appear": 1,
+    "[10:46:26.000] [DEBUG] [ENGINE] rime.resume.phase_changed phase=started": 1,
+    "[10:46:26.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_did_appear": 1,
+    "[10:46:29.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": 1,
+    "[10:46:29.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": 1,
+    "[10:46:30.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": 2,
+    "[10:46:30.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": 2,
+    "[10:46:31.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": 1,
+    "[10:46:31.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": 1,
+    "[10:46:32.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": 1,
+    "[10:46:32.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": 1,
+    "[10:46:34.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": 1,
+    "[10:46:34.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": 1,
+    "[10:46:34.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=unmark_text phase=entered": 1,
+    "[10:46:34.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=unmark_text phase=returned": 1
+  }
+}

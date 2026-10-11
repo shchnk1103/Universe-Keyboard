@@ -1,0 +1,229 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController.swift",
+  "origin_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+  "expected_sha256": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+  "line_start": 781,
+  "line_end": 835,
+  "lines": [
+    {
+      "line": 781,
+      "text": "        #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT"
+    },
+    {
+      "line": 782,
+      "text": "            recordDevicePreflightPreparedGeometryIfPossible()"
+    },
+    {
+      "line": 783,
+      "text": "            // Capture execution geometry from the first complete visible T9 layout"
+    },
+    {
+      "line": 784,
+      "text": "            // when UIKit finishes a reload. This is still before the first key and"
+    },
+    {
+      "line": 785,
+      "text": "            // avoids treating a transient pre-layout pass as a permanent failure."
+    },
+    {
+      "line": 786,
+      "text": "            if devicePreflightPreparedGeometryDigest != nil {"
+    },
+    {
+      "line": 787,
+      "text": "                recordDevicePreflightExecutionGeometryBeforeFirstT9Key()"
+    },
+    {
+      "line": 788,
+      "text": "            }"
+    },
+    {
+      "line": 789,
+      "text": "        #endif"
+    },
+    {
+      "line": 790,
+      "text": "    }"
+    },
+    {
+      "line": 791,
+      "text": ""
+    },
+    {
+      "line": 792,
+      "text": "    // MARK: === 文本变化回调 ==="
+    },
+    {
+      "line": 793,
+      "text": ""
+    },
+    {
+      "line": 794,
+      "text": "    /// textWillChange 在宿主 App 的文本即将变化时调用。"
+    },
+    {
+      "line": 795,
+      "text": "    /// Apple 文档：可在此准备键盘状态以响应即将到来的文本变更。"
+    },
+    {
+      "line": 796,
+      "text": "    /// 当前我们不需要在文本变化前做任何预处理，保留空实现。"
+    },
+    {
+      "line": 797,
+      "text": "    override func textWillChange(_ textInput: UITextInput?) {"
+    },
+    {
+      "line": 798,
+      "text": "        // 预留：可在文本变化前做预处理"
+    },
+    {
+      "line": 799,
+      "text": "    }"
+    },
+    {
+      "line": 800,
+      "text": ""
+    },
+    {
+      "line": 801,
+      "text": "    /// textDidChange 在宿主 App 的文本发生变化后调用。"
+    },
+    {
+      "line": 802,
+      "text": "    /// Apple 文档要求自定义键盘在此方法中："
+    },
+    {
+      "line": 803,
+      "text": "    /// 1. 检查 textDocumentProxy.keyboardType 以识别宿主 App 期望的键盘类型"
+    },
+    {
+      "line": 804,
+      "text": "    /// 2. 根据键盘类型调整布局"
+    },
+    {
+      "line": 805,
+      "text": "    /// 3. 更新地球键的文本颜色以匹配键盘外观（浅色/深色模式）"
+    },
+    {
+      "line": 806,
+      "text": "    ///"
+    },
+    {
+      "line": 807,
+      "text": "    /// 我们的实现额外检查："
+    },
+    {
+      "line": 808,
+      "text": "    /// - 自动大写是否需要重新应用（切换键盘类型后）"
+    },
+    {
+      "line": 809,
+      "text": "    /// - RIME 引擎部署状态"
+    },
+    {
+      "line": 810,
+      "text": "    override func textDidChange(_ textInput: UITextInput?) {"
+    },
+    {
+      "line": 811,
+      "text": "        synchronizeAfterTextChange()"
+    },
+    {
+      "line": 812,
+      "text": "    }"
+    },
+    {
+      "line": 813,
+      "text": ""
+    },
+    {
+      "line": 814,
+      "text": "    // MARK: === 内存警告处理 ==="
+    },
+    {
+      "line": 815,
+      "text": ""
+    },
+    {
+      "line": 816,
+      "text": "    /// Apple 文档《Creating a Custom Keyboard》明确指出："
+    },
+    {
+      "line": 817,
+      "text": "    /// \"自定义键盘扩展运行在独立进程中，有着严格的内存限制；"
+    },
+    {
+      "line": 818,
+      "text": "    ///  超出这些限制会导致系统终止你的扩展。\""
+    },
+    {
+      "line": 819,
+      "text": "    ///"
+    },
+    {
+      "line": 820,
+      "text": "    /// \"始终处理低内存通知，释放非必要资源。\""
+    },
+    {
+      "line": 821,
+      "text": "    ///"
+    },
+    {
+      "line": 822,
+      "text": "    /// 我们的键盘扩展内存上限约 50-80MB（取决于设备型号）。"
+    },
+    {
+      "line": 823,
+      "text": "    /// 当系统内存紧张时，UIKit 会调用此方法。"
+    },
+    {
+      "line": 824,
+      "text": "    /// 我们应该释放可重新创建的缓存和资源。"
+    },
+    {
+      "line": 825,
+      "text": "    override func didReceiveMemoryWarning() {"
+    },
+    {
+      "line": 826,
+      "text": "        super.didReceiveMemoryWarning()"
+    },
+    {
+      "line": 827,
+      "text": "        releaseRecoverableResourcesAfterMemoryWarning()"
+    },
+    {
+      "line": 828,
+      "text": "    }"
+    },
+    {
+      "line": 829,
+      "text": ""
+    },
+    {
+      "line": 830,
+      "text": "}"
+    },
+    {
+      "line": 831,
+      "text": ""
+    },
+    {
+      "line": 832,
+      "text": "enum CandidatePrefetchMode {"
+    },
+    {
+      "line": 833,
+      "text": "    case bar"
+    },
+    {
+      "line": 834,
+      "text": "    case expanded"
+    },
+    {
+      "line": 835,
+      "text": "}"
+    }
+  ]
+}

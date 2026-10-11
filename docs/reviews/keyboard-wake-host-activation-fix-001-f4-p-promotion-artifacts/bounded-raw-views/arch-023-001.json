@@ -1,0 +1,165 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/build-request.json",
+  "origin_sha256": "af100aa4c68fb99f27c5239440f93ef62396ece1f8980416f67a0fae92335d50",
+  "expected_sha256": "af100aa4c68fb99f27c5239440f93ef62396ece1f8980416f67a0fae92335d50",
+  "line_start": 1,
+  "line_end": 39,
+  "lines": [
+    {
+      "line": 1,
+      "text": "{"
+    },
+    {
+      "line": 2,
+      "text": "  \"started_utc\": \"2026-10-05T02:51:40.538896+00:00\","
+    },
+    {
+      "line": 3,
+      "text": "  \"argv\": ["
+    },
+    {
+      "line": 4,
+      "text": "    \"xcodebuild\","
+    },
+    {
+      "line": 5,
+      "text": "    \"-project\","
+    },
+    {
+      "line": 6,
+      "text": "    \"Universe Keyboard.xcodeproj\","
+    },
+    {
+      "line": 7,
+      "text": "    \"-scheme\","
+    },
+    {
+      "line": 8,
+      "text": "    \"Universe Keyboard\","
+    },
+    {
+      "line": 9,
+      "text": "    \"-configuration\","
+    },
+    {
+      "line": 10,
+      "text": "    \"Debug\","
+    },
+    {
+      "line": 11,
+      "text": "    \"-sdk\","
+    },
+    {
+      "line": 12,
+      "text": "    \"iphonesimulator\","
+    },
+    {
+      "line": 13,
+      "text": "    \"-destination\","
+    },
+    {
+      "line": 14,
+      "text": "    \"generic/platform=iOS Simulator\","
+    },
+    {
+      "line": 15,
+      "text": "    \"-derivedDataPath\","
+    },
+    {
+      "line": 16,
+      "text": "    \"/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData\","
+    },
+    {
+      "line": 17,
+      "text": "    \"-clonedSourcePackagesDirPath\","
+    },
+    {
+      "line": 18,
+      "text": "    \"/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/SourcePackages\","
+    },
+    {
+      "line": 19,
+      "text": "    \"-resultBundlePath\","
+    },
+    {
+      "line": 20,
+      "text": "    \"/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateBuild.xcresult\","
+    },
+    {
+      "line": 21,
+      "text": "    \"-disableAutomaticPackageResolution\","
+    },
+    {
+      "line": 22,
+      "text": "    \"-onlyUsePackageVersionsFromResolvedFile\","
+    },
+    {
+      "line": 23,
+      "text": "    \"-skipPackageUpdates\","
+    },
+    {
+      "line": 24,
+      "text": "    \"CODE_SIGNING_ALLOWED=YES\","
+    },
+    {
+      "line": 25,
+      "text": "    \"SWIFT_VERSION=6.0\","
+    },
+    {
+      "line": 26,
+      "text": "    \"SWIFT_STRICT_CONCURRENCY=complete\","
+    },
+    {
+      "line": 27,
+      "text": "    \"SWIFT_SUPPRESS_WARNINGS=NO\","
+    },
+    {
+      "line": 28,
+      "text": "    \"SWIFT_TREAT_WARNINGS_AS_ERRORS=YES\","
+    },
+    {
+      "line": 29,
+      "text": "    \"ARCHS=arm64\","
+    },
+    {
+      "line": 30,
+      "text": "    \"ONLY_ACTIVE_ARCH=YES\","
+    },
+    {
+      "line": 31,
+      "text": "    \"SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) DEBUG KEYBOARD_WAKE_OWNER_PROBE\","
+    },
+    {
+      "line": 32,
+      "text": "    \"CODE_SIGN_IDENTITY=-\","
+    },
+    {
+      "line": 33,
+      "text": "    \"CODE_SIGNING_REQUIRED=NO\","
+    },
+    {
+      "line": 34,
+      "text": "    \"build\""
+    },
+    {
+      "line": 35,
+      "text": "  ],"
+    },
+    {
+      "line": 36,
+      "text": "  \"cwd\": \"/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard\","
+    },
+    {
+      "line": 37,
+      "text": "  \"calls_at_dispatch\": 10,"
+    },
+    {
+      "line": 38,
+      "text": "  \"wall_seconds_remaining\": 3441.215053"
+    },
+    {
+      "line": 39,
+      "text": "}"
+    }
+  ]
+}

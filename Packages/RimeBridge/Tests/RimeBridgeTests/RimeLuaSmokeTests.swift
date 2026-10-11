@@ -19,8 +19,14 @@ final class RimeLuaSmokeTests: XCTestCase {
         let beforeLookup = engine.processKey("i")
         XCTAssertEqual(beforeLookup.rawInput, "ni")
 
-        let correctionCandidates = engine.correctionCandidates(for: "nihao", limit: 3)
-        XCTAssertFalse(correctionCandidates.isEmpty)
+        let correctionResult = engine.correctionQueryResult(for: "nihao", limit: 3)
+        XCTAssertEqual(correctionResult.readiness, .ready)
+        XCTAssertEqual(correctionResult.state, .candidatesReturned)
+        XCTAssertFalse(correctionResult.candidates.isEmpty)
+
+        let unrecognized = engine.correctionQueryResult(for: "unrecognizedzz", limit: 3)
+        XCTAssertEqual(unrecognized.readiness, .ready)
+        XCTAssertEqual(unrecognized.state, .candidatesReturned)
 
         let afterLookup = engine.processKey("h")
         XCTAssertEqual(
@@ -85,7 +91,8 @@ final class RimeLuaSmokeTests: XCTestCase {
         let userDir = env["UK_RIME_LUA_SMOKE_USER_DIR"] ?? env["TEST_RUNNER_UK_RIME_LUA_SMOKE_USER_DIR"]
 
         guard let sharedDir, let userDir else {
-            throw XCTSkip("Set UK_RIME_LUA_SMOKE_SHARED_DIR and UK_RIME_LUA_SMOKE_USER_DIR to run the real Lua smoke test.")
+            throw XCTSkip(
+                "Set UK_RIME_LUA_SMOKE_SHARED_DIR and UK_RIME_LUA_SMOKE_USER_DIR to run the real Lua smoke test.")
         }
 
         let fileManager = FileManager.default
@@ -93,7 +100,7 @@ final class RimeLuaSmokeTests: XCTestCase {
             throw XCTSkip("Provided RIME Lua smoke-test directories do not exist.")
         }
         guard fileManager.fileExists(atPath: "\(sharedDir)/rime_ice.schema.yaml"),
-              fileManager.fileExists(atPath: "\(sharedDir)/lua/date_translator.lua")
+            fileManager.fileExists(atPath: "\(sharedDir)/lua/date_translator.lua")
         else {
             throw XCTSkip("Provided RIME runtime does not contain complete rime_ice Lua files.")
         }

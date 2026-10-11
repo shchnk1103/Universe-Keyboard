@@ -1351,7 +1351,8 @@ private actor StoreDeploymentService: RimeDeploymentServicing {
         return RimeDeploymentResult(
             succeeded: succeeded,
             diagnosticMessage: "test",
-            librimeVersion: succeeded ? "test-librime" : nil
+            librimeVersion: succeeded ? "test-librime" : nil,
+            runtimeSmokePassed: succeeded ? true : nil
         )
     }
 }

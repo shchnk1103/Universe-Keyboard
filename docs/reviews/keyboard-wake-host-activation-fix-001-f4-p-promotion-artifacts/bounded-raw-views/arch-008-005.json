@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+  "origin_sha256": "71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5",
+  "expected_sha256": "71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5",
+  "line_start": 241,
+  "line_end": 300,
+  "lines": [
+    {
+      "line": 241,
+      "text": "            .visibilitySuspended(resumeGranted: false),"
+    },
+    {
+      "line": 242,
+      "text": "        ]"
+    },
+    {
+      "line": 243,
+      "text": "        for permission in denials {"
+    },
+    {
+      "line": 244,
+      "text": "            resetCounts()"
+    },
+    {
+      "line": 245,
+      "text": "            gate = KeyboardHostLifecycleRecoveryGate()"
+    },
+    {
+      "line": 246,
+      "text": "            current = FakeHostContext()"
+    },
+    {
+      "line": 247,
+      "text": "            enterVisible()"
+    },
+    {
+      "line": 248,
+      "text": "            execute(gate.handleHostWillResignActive(context: id(current), activatedAtSuspend: true))"
+    },
+    {
+      "line": 249,
+      "text": "            XCTAssertEqual("
+    },
+    {
+      "line": 250,
+      "text": "                gate.previewHostDidBecomeActive(context: id(current), hasWindow: true),"
+    },
+    {
+      "line": 251,
+      "text": "                .performSharedResume"
+    },
+    {
+      "line": 252,
+      "text": "            )"
+    },
+    {
+      "line": 253,
+      "text": "            execute("
+    },
+    {
+      "line": 254,
+      "text": "                gate.handleHostDidBecomeActive("
+    },
+    {
+      "line": 255,
+      "text": "                    context: id(current),"
+    },
+    {
+      "line": 256,
+      "text": "                    hasWindow: true,"
+    },
+    {
+      "line": 257,
+      "text": "                    canary: permission"
+    },
+    {
+      "line": 258,
+      "text": "                )"
+    },
+    {
+      "line": 259,
+      "text": "            )"
+    },
+    {
+      "line": 260,
+      "text": "            XCTAssertEqual(resumeCount, 0, \"denied \\(permission) must not resume\")"
+    },
+    {
+      "line": 261,
+      "text": "            XCTAssertEqual(gate.pending?.blocked, true)"
+    },
+    {
+      "line": 262,
+      "text": "        }"
+    },
+    {
+      "line": 263,
+      "text": "    }"
+    },
+    {
+      "line": 264,
+      "text": ""
+    },
+    {
+      "line": 265,
+      "text": "    func testVisibilitySuspendedGrantedAllowsExactlyOneResume() {"
+    },
+    {
+      "line": 266,
+      "text": "        enterVisible()"
+    },
+    {
+      "line": 267,
+      "text": "        execute(gate.handleHostWillResignActive(context: id(current), activatedAtSuspend: true))"
+    },
+    {
+      "line": 268,
+      "text": "        execute("
+    },
+    {
+      "line": 269,
+      "text": "            gate.handleHostDidBecomeActive("
+    },
+    {
+      "line": 270,
+      "text": "                context: id(current),"
+    },
+    {
+      "line": 271,
+      "text": "                hasWindow: true,"
+    },
+    {
+      "line": 272,
+      "text": "                canary: .visibilitySuspended(resumeGranted: true)"
+    },
+    {
+      "line": 273,
+      "text": "            )"
+    },
+    {
+      "line": 274,
+      "text": "        )"
+    },
+    {
+      "line": 275,
+      "text": "        XCTAssertEqual(resumeCount, 1)"
+    },
+    {
+      "line": 276,
+      "text": "        XCTAssertNil(gate.pending)"
+    },
+    {
+      "line": 277,
+      "text": "    }"
+    },
+    {
+      "line": 278,
+      "text": ""
+    },
+    {
+      "line": 279,
+      "text": "    func testFenceBlocksRearmAndFirstFrameCreation() {"
+    },
+    {
+      "line": 280,
+      "text": "        enterVisible()"
+    },
+    {
+      "line": 281,
+      "text": "        execute(gate.handleHostWillResignActive(context: id(current), activatedAtSuspend: false))"
+    },
+    {
+      "line": 282,
+      "text": "        execute("
+    },
+    {
+      "line": 283,
+      "text": "            gate.handleHostDidBecomeActive("
+    },
+    {
+      "line": 284,
+      "text": "                context: id(current),"
+    },
+    {
+      "line": 285,
+      "text": "                hasWindow: true,"
+    },
+    {
+      "line": 286,
+      "text": "                canary: .fenceIssued"
+    },
+    {
+      "line": 287,
+      "text": "            )"
+    },
+    {
+      "line": 288,
+      "text": "        )"
+    },
+    {
+      "line": 289,
+      "text": "        XCTAssertEqual(rearmCount, 0)"
+    },
+    {
+      "line": 290,
+      "text": "        XCTAssertEqual(firstFrameCount, 0)"
+    },
+    {
+      "line": 291,
+      "text": "        XCTAssertEqual(gate.pending?.blocked, true)"
+    },
+    {
+      "line": 292,
+      "text": "        XCTAssertNil(gate.beginFirstFrameArm(hasWindow: true))"
+    },
+    {
+      "line": 293,
+      "text": "        XCTAssertEqual("
+    },
+    {
+      "line": 294,
+      "text": "            gate.noteFirstFrameTick("
+    },
+    {
+      "line": 295,
+      "text": "                token: 1,"
+    },
+    {
+      "line": 296,
+      "text": "                generation: gate.presentationGeneration,"
+    },
+    {
+      "line": 297,
+      "text": "                hasWindow: true,"
+    },
+    {
+      "line": 298,
+      "text": "                canary: .fenceIssued"
+    },
+    {
+      "line": 299,
+      "text": "            ),"
+    },
+    {
+      "line": 300,
+      "text": "            .none"
+    }
+  ]
+}

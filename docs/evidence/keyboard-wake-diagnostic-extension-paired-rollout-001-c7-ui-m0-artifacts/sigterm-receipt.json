@@ -1,0 +1,22 @@
+{
+  "authority": "Human M0 only, referencing frozen M prepared conditional exact-process one-SIGTERM scope",
+  "start_utc": "2026-10-03T14:22:49.137814+00:00",
+  "finish_utc": "2026-10-03T14:22:49.454277+00:00",
+  "pid": 88188,
+  "executable": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+  "executable_sha256": "237d9a890d96a18ebaa9427ac2836595d8e8fc7767be63712a6870a22643efe0",
+  "signals_sent": 1,
+  "signal": "SIGTERM",
+  "polls": [
+    {
+      "returncode": 0,
+      "present": true
+    },
+    {
+      "returncode": 1,
+      "present": false
+    }
+  ],
+  "remaining_target_processes": [],
+  "force_kill_or_relaunch": false
+}

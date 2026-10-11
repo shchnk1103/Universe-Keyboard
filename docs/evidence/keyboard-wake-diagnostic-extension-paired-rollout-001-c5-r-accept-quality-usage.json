@@ -1,0 +1,116 @@
+{
+  "lane": "QUALITY-C5-R-ACCEPT",
+  "round": 1,
+  "review_coverage": "Complete",
+  "runtime_acceptance": "Hold",
+  "identity": {
+    "packet_sha256": "3e2f15cc08a8fce89f36ff822630f64d41f3164bfe7aaeb81b9b1d76c259ff07",
+    "manifest_sha256": "91c0f006b6376cb6944590a51486a90145d91453806da96bcebf58d38f2ab8ca",
+    "entry_sha256": "44ab7e3a025bba8ca5fe4c21969ea59667a11a79bec002f7f9fc4e29a07647be",
+    "all_match": true,
+    "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+    "branch": "codex/keyboard-wake-v3-compatibility-gate",
+    "candidate": "af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9",
+    "run_id": "C5-R-20261001-01"
+  },
+  "hash_counts": {
+    "repo_inputs": {
+      "matched": 30,
+      "total": 30
+    },
+    "scratch_scripts": {
+      "matched": 3,
+      "total": 3
+    },
+    "source_build": {
+      "matched": 568,
+      "total": 568
+    },
+    "built_bundle": {
+      "matched": 111,
+      "total": 111
+    }
+  },
+  "marker_recomputation": {
+    "events": 17,
+    "single_origin_process_appearance": true,
+    "strict_local_sequence": true,
+    "strict_monotonic": true,
+    "inside_window": true,
+    "keyboard_lifecycle": {
+      "will_appear": 1,
+      "did_appear": 1
+    },
+    "rime_resume_started": 1,
+    "proxy_pairs": {
+      "set_marked_text": 6,
+      "unmark_text": 1
+    },
+    "action_sequence_all_null": true,
+    "insert_text": "not observed, not passed",
+    "tail_disappearance": "not observed, supplemental only"
+  },
+  "criteria": {
+    "R1": "Covered",
+    "R2": "Covered",
+    "R3": "Covered as assessed; required reader completeness remains insufficient",
+    "R4": "Covered"
+  },
+  "hold_finding": {
+    "id": "HOST-Q-R-01",
+    "owner": "Environment Executor / Product Lead for future Entry",
+    "reason": "Human confirms three families/no warning but archive lacks a reader count or other evidence binding all 17 window events to the same-App read; do not invent counters or treat the original restoration acceptance as covering this gap.",
+    "minimum_supplement": "Existing same-App same-window content-free reader record binding the 17-event projection and displaying count plus clean completeness/unsupported state; otherwise new run requires fresh authority."
+  },
+  "tool_ledger": [
+    {
+      "call": 1,
+      "tool": "exec_command",
+      "purpose": "start timer; read frozen packet/manifest/Entry; hash three identities and inspect criteria"
+    },
+    {
+      "call": 2,
+      "tool": "exec_command",
+      "purpose": "hash 30 repo inputs, 3 scratch scripts, 568 source/build, 111 built files; verify HEAD/branch"
+    },
+    {
+      "call": 3,
+      "tool": "exec_command",
+      "purpose": "read archived C5-R evidence, projection script as text, plan and reader/producer source excerpts; recompute 17 markers"
+    },
+    {
+      "call": 4,
+      "tool": "exec_command",
+      "purpose": "inspect Main App reader UI/completeness callpath and record checkpoint"
+    },
+    {
+      "call": 5,
+      "tool": "exec_command",
+      "purpose": "inspect typed event validator, marker writer and proxy adapter source boundaries"
+    },
+    {
+      "call": 6,
+      "tool": "exec_command",
+      "purpose": "write this report, usage and final timer"
+    }
+  ],
+  "underlying_tools_used": 6,
+  "underlying_tool_budget": 6,
+  "elapsed_budget_seconds": 480,
+  "soft_write_target_seconds": 360,
+  "started_utc": "2026-10-01T02:59:49.054797+00:00",
+  "elapsed_seconds_before_final_timer_write": 461.005,
+  "within_480_seconds": true,
+  "checkpoint_after_call_2": true,
+  "checkpoint_after_call_4": true,
+  "write_target_360s_exceeded": true,
+  "limitations": [
+    "No current Simulator/device/installed path/AppGroup/prefs/journal/UI access",
+    "No capture/build/test/install/input/network/Git mutation/Maps/Release",
+    "Three scripts were read as text only",
+    "No event-by-event or internal reader counters claimed",
+    "No original logging/expiry exact-restore claim"
+  ],
+  "checkpoint_note": "360秒优先落盘目标已超过；在480秒硬上限内提交最终交付。",
+  "end_utc_before_final_timer_write": "2026-10-01T03:07:30.063241+00:00"
+}

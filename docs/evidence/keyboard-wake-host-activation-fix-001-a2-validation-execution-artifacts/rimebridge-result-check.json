@@ -1,0 +1,9 @@
+{
+  "kind": "rimebridge",
+  "actual_cases": 105,
+  "passed": 85,
+  "skipped": 20,
+  "failed": 0,
+  "historical_skip_identity_reason_match": true,
+  "gate_passed": 0
+}

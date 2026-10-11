@@ -1,0 +1,2 @@
+COMMAND=xcrun swift-format lint --strict --configuration .swift-format Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticEvent.swift Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournal.swift Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticEventWireValidator.swift Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticEventTests.swift Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticsJournalTests.swift "Universe Keyboard/Views/Diagnostics/DiagnosticsLogSource.swift" UniverseKeyboardTests/DiagnosticsLogSourceTests.swift
+EXIT_CODE=0

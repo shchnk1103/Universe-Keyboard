@@ -1,0 +1,169 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift",
+  "origin_sha256": "bca0391355d9a3a60880dfdc08260095d02d6618bf0a38d40bfcc61734a891e9",
+  "expected_sha256": "bca0391355d9a3a60880dfdc08260095d02d6618bf0a38d40bfcc61734a891e9",
+  "line_start": 61,
+  "line_end": 100,
+  "lines": [
+    {
+      "line": 61,
+      "text": "            wakeProbeActiveTouches.removeAll()"
+    },
+    {
+      "line": 62,
+      "text": "            refreshWakeOwnerProbeControls()"
+    },
+    {
+      "line": 63,
+      "text": "        }"
+    },
+    {
+      "line": 64,
+      "text": ""
+    },
+    {
+      "line": 65,
+      "text": "        func recordWakeOwnerProbe(_ stage: KeyboardWakeOwnerProbe.Stage) {"
+    },
+    {
+      "line": 66,
+      "text": "            let coordinator = controller?.threadAffineRimeCoordinator"
+    },
+    {
+      "line": 67,
+      "text": "            wakeProbe.record("
+    },
+    {
+      "line": 68,
+      "text": "                stage: stage,"
+    },
+    {
+      "line": 69,
+      "text": "                coordinatorOrdinal: coordinator?.wakeProbeCoordinatorOrdinal ?? 0,"
+    },
+    {
+      "line": 70,
+      "text": "                appearanceOrdinal: wakeProbeAppearanceOrdinal,"
+    },
+    {
+      "line": 71,
+      "text": "                ownerPresent: coordinator?.wakeProbeOwnerPresent == true"
+    },
+    {
+      "line": 72,
+      "text": "            )"
+    },
+    {
+      "line": 73,
+      "text": "        }"
+    },
+    {
+      "line": 74,
+      "text": ""
+    },
+    {
+      "line": 75,
+      "text": "        @objc private func handleWakeOwnerProbeButton() {"
+    },
+    {
+      "line": 76,
+      "text": "            // Never route this control through Core, the proxy or keyboard dismissal."
+    },
+    {
+      "line": 77,
+      "text": "            if !wakeProbe.isArmed && !wakeProbe.isFrozen {"
+    },
+    {
+      "line": 78,
+      "text": "                _ = wakeProbe.arm()"
+    },
+    {
+      "line": 79,
+      "text": "                recordWakeOwnerProbe(.armed)"
+    },
+    {
+      "line": 80,
+      "text": "                refreshWakeOwnerProbeControls()"
+    },
+    {
+      "line": 81,
+      "text": "                return"
+    },
+    {
+      "line": 82,
+      "text": "            }"
+    },
+    {
+      "line": 83,
+      "text": "            guard let snapshot = wakeProbe.freeze() else { return }"
+    },
+    {
+      "line": 84,
+      "text": "            let words = snapshot.words"
+    },
+    {
+      "line": 85,
+      "text": "            // Freeze releases the Mutex before the debugger's read-only breakpoint."
+    },
+    {
+      "line": 86,
+      "text": "            words.withUnsafeBytes { bytes in"
+    },
+    {
+      "line": 87,
+      "text": "                guard let address = bytes.baseAddress else { return }"
+    },
+    {
+      "line": 88,
+      "text": "                wakeOwnerProbeExportReady(address, bytes.count)"
+    },
+    {
+      "line": 89,
+      "text": "            }"
+    },
+    {
+      "line": 90,
+      "text": "            refreshWakeOwnerProbeControls()"
+    },
+    {
+      "line": 91,
+      "text": "        }"
+    },
+    {
+      "line": 92,
+      "text": "    }"
+    },
+    {
+      "line": 93,
+      "text": ""
+    },
+    {
+      "line": 94,
+      "text": "    /// Exact Debug symbol used for fixed-size memory reads; the borrow must stay in the caller."
+    },
+    {
+      "line": 95,
+      "text": "    @inline(never)"
+    },
+    {
+      "line": 96,
+      "text": "    func wakeOwnerProbeExportReady(_ address: UnsafeRawPointer, _ byteCount: Int) {"
+    },
+    {
+      "line": 97,
+      "text": "        withExtendedLifetime(address) {}"
+    },
+    {
+      "line": 98,
+      "text": "        withExtendedLifetime(byteCount) {}"
+    },
+    {
+      "line": 99,
+      "text": "    }"
+    },
+    {
+      "line": 100,
+      "text": "#endif"
+    }
+  ]
+}

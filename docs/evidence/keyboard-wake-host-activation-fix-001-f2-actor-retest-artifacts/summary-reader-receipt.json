@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "xcrun",
+    "xcresulttool",
+    "get",
+    "test-results",
+    "summary",
+    "--path",
+    "/private/tmp/ukey-host-activation-fix-f2-actor-retest-20261004/gate-focused.xcresult",
+    "--format",
+    "json"
+  ],
+  "exit": 0,
+  "stderr": ""
+}

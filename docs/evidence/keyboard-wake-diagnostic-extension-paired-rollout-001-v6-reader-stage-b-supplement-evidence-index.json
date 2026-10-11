@@ -1,0 +1,64 @@
+{
+  "candidate_sha256": "5b2ced9d3a8220357c603bd9e5c2236837c51a8200e28980d73fceee8c5bf21c",
+  "entries": [
+    {
+      "source": "/private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254/architecture-r3-packet.md",
+      "path": "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-v6-reader-stage-b-architecture-r3-packet.md",
+      "sha256": "5f67f5885b455932efb98b4f570c4f6e12c4186c6a15bd6eaa65fb454ac4835e"
+    },
+    {
+      "source": "/private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254/architecture-r3-packet.sha256",
+      "path": "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-v6-reader-stage-b-architecture-r3-packet.sha256",
+      "sha256": "0e05f21677d3a50c0263aeebfa9f9b17f537ac12ab4848d2258c451e5fcbc5f2"
+    },
+    {
+      "source": "/private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254/architecture-r3-inputs.json",
+      "path": "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-v6-reader-stage-b-architecture-r3-inputs.json",
+      "sha256": "f018506e05290347cdf3e99f9eaca10580ad4843e1c426da075176f98be2d5af"
+    },
+    {
+      "source": "/private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254/architecture-review-r3.md",
+      "path": "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-v6-reader-stage-b-architecture-review-r3.md",
+      "sha256": "6238a0adc7c55e0d7281ba897a0ecf81d8ce8df5d1bc90e78de926cdb0db77a5"
+    },
+    {
+      "source": "/private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254/architecture-usage-r3.json",
+      "path": "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-v6-reader-stage-b-architecture-usage-r3.json",
+      "sha256": "d28617aacf9461d044a58579fa0a92ba3fdd4240849f1e8511d160b8c1f8d474"
+    },
+    {
+      "source": "/private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254/quality-r2-packet.md",
+      "path": "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-v6-reader-stage-b-quality-r2-packet.md",
+      "sha256": "a1cf0362a878ea3020a50db2592a32df57c761309a311112ed2c3f9b3423f103"
+    },
+    {
+      "source": "/private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254/quality-r2-packet.sha256",
+      "path": "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-v6-reader-stage-b-quality-r2-packet.sha256",
+      "sha256": "7000f188d7344e8dc767e30eed2c6726d8c4a16eb449d82d148d109a8dac99ff"
+    },
+    {
+      "source": "/private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254/quality-r2-inputs.json",
+      "path": "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-v6-reader-stage-b-quality-r2-inputs.json",
+      "sha256": "91b589fa5af6717661cabfc41af0c814808c6315ca749cf4a20813de0535d926"
+    },
+    {
+      "source": "/private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254/quality-review-r2.md",
+      "path": "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-v6-reader-stage-b-quality-review-r2.md",
+      "sha256": "5baf1ef1f643afe893117185f8b5ed9a47cd513171933e9712112f2c100d23ba"
+    },
+    {
+      "source": "/private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254/quality-usage-r2.json",
+      "path": "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-v6-reader-stage-b-quality-usage-r2.json",
+      "sha256": "62768fc9e1db3674b2a6a2ac2b27f41fe39123915cd7a8cceb5b2fbf3992cb29"
+    },
+    {
+      "source": "/private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254/quality-r2-verdict-clarification.md",
+      "path": "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-v6-reader-stage-b-quality-r2-verdict-clarification.md",
+      "sha256": "65e6527128de0dc90efcf0018babfab4555c4c5700710bd9a7ad42cef7c642da"
+    },
+    {
+      "path": "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-v6-reader-stage-b-supplement-validation-2026-09-30.md",
+      "sha256": "194e5ab00ea3e8a49724f7359dd6f25595104af55125446ba59991a28b213888"
+    }
+  ]
+}

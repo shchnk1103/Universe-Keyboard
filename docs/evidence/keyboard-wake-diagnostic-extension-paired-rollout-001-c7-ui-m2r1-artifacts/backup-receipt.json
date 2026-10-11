@@ -1,0 +1,81 @@
+{
+  "utc": "2026-10-04T04:14:07.671079+00:00",
+  "scope": "M2R1 complete fresh protection after explicit empty-directory copy correction",
+  "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "backup_roots": {
+    "main-data": "/private/tmp/ukey-wake-m0-20261003/backup/main-data",
+    "app-group": "/private/tmp/ukey-wake-m2r1-20261004/backup/app-group",
+    "installed-app": "/private/tmp/ukey-wake-m0-20261003/backup/installed-app"
+  },
+  "reused_exact_roots": [
+    "main-data",
+    "installed-app"
+  ],
+  "source_three_reads_equal": true,
+  "copy_bytes_structure_modes_owners_original_xattrs_equal": true,
+  "copy_added_provenance_classification": {
+    "main-data": 865,
+    "app-group": 9,
+    "installed-app": 9
+  },
+  "all_metadata_exact_claim": false,
+  "internal_symlinks_checked": true,
+  "backup_strict_signatures": {
+    "main": {
+      "exit": 0
+    },
+    "keyboard": {
+      "exit": 0
+    }
+  },
+  "selected_preferences": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "rime_deployed": {
+      "exists": true,
+      "value": true
+    },
+    "rime_needs_deploy": {
+      "exists": true,
+      "value": false
+    },
+    "rime_is_deploying": {
+      "exists": false,
+      "value": null
+    }
+  },
+  "initial_failure_preserved": true,
+  "empty_directories_added_private_only": 17,
+  "counts": {
+    "main-data": {
+      "files": 827,
+      "directories": 42,
+      "symlinks": 0,
+      "file_bytes": 1101984
+    },
+    "app-group": {
+      "files": 51,
+      "directories": 15,
+      "symlinks": 2,
+      "file_bytes": 37749281
+    },
+    "installed-app": {
+      "files": 78,
+      "directories": 9,
+      "symlinks": 0,
+      "file_bytes": 91344780
+    }
+  },
+  "no_install_launch_restore_or_test": true,
+  "keychain_and_system_settings_and_maps_not_backed_up": true,
+  "empty_directory_correction_root": "/private/tmp/ukey-wake-m0-20261003/backup/main-data",
+  "retained_M0_copy_structure_repaired": true,
+  "retained_M0_copy_existing_files_unchanged": true,
+  "correction_disclosure": "17 empty directories were restored in the reused M0 main-data backup, not a newly allocated main-data copy. Source data and existing files unchanged; original incomplete inventory retained."
+}

@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+  "origin_sha256": "71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5",
+  "expected_sha256": "71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5",
+  "line_start": 61,
+  "line_end": 120,
+  "lines": [
+    {
+      "line": 61,
+      "text": "                canary: .baselineActive"
+    },
+    {
+      "line": 62,
+      "text": "            )"
+    },
+    {
+      "line": 63,
+      "text": "        )"
+    },
+    {
+      "line": 64,
+      "text": ""
+    },
+    {
+      "line": 65,
+      "text": "        XCTAssertEqual(suspendCount, 1)"
+    },
+    {
+      "line": 66,
+      "text": "        XCTAssertEqual(resumeCount, 1)"
+    },
+    {
+      "line": 67,
+      "text": "    }"
+    },
+    {
+      "line": 68,
+      "text": ""
+    },
+    {
+      "line": 69,
+      "text": "    func testAppearThenActiveAndActiveThenAppearConsumePendingOnce() {"
+    },
+    {
+      "line": 70,
+      "text": "        enterVisible()"
+    },
+    {
+      "line": 71,
+      "text": "        execute(gate.handleHostWillResignActive(context: id(current), activatedAtSuspend: true))"
+    },
+    {
+      "line": 72,
+      "text": "        execute("
+    },
+    {
+      "line": 73,
+      "text": "            gate.handleHostDidBecomeActive("
+    },
+    {
+      "line": 74,
+      "text": "                context: id(current),"
+    },
+    {
+      "line": 75,
+      "text": "                hasWindow: true,"
+    },
+    {
+      "line": 76,
+      "text": "                canary: .nonCanaryBuild"
+    },
+    {
+      "line": 77,
+      "text": "            )"
+    },
+    {
+      "line": 78,
+      "text": "        )"
+    },
+    {
+      "line": 79,
+      "text": "        execute("
+    },
+    {
+      "line": 80,
+      "text": "            gate.handleVisibleWindowEstablished("
+    },
+    {
+      "line": 81,
+      "text": "                hasWindow: true,"
+    },
+    {
+      "line": 82,
+      "text": "                canary: .nonCanaryBuild"
+    },
+    {
+      "line": 83,
+      "text": "            )"
+    },
+    {
+      "line": 84,
+      "text": "        )"
+    },
+    {
+      "line": 85,
+      "text": "        XCTAssertEqual(resumeCount, 1)"
+    },
+    {
+      "line": 86,
+      "text": ""
+    },
+    {
+      "line": 87,
+      "text": "        resumeCount = 0"
+    },
+    {
+      "line": 88,
+      "text": "        gate.noteViewWillAppear(context: id(current))"
+    },
+    {
+      "line": 89,
+      "text": "        execute("
+    },
+    {
+      "line": 90,
+      "text": "            gate.handleVisibleWindowEstablished("
+    },
+    {
+      "line": 91,
+      "text": "                hasWindow: true,"
+    },
+    {
+      "line": 92,
+      "text": "                canary: .nonCanaryBuild"
+    },
+    {
+      "line": 93,
+      "text": "            )"
+    },
+    {
+      "line": 94,
+      "text": "        )"
+    },
+    {
+      "line": 95,
+      "text": "        XCTAssertEqual(resumeCount, 0, \"new appearance must not consume a completed host recovery\")"
+    },
+    {
+      "line": 96,
+      "text": "    }"
+    },
+    {
+      "line": 97,
+      "text": ""
+    },
+    {
+      "line": 98,
+      "text": "    func testForeignAndMissingContextDoNotChangeState() {"
+    },
+    {
+      "line": 99,
+      "text": "        enterVisible()"
+    },
+    {
+      "line": 100,
+      "text": "        let generation = gate.presentationGeneration"
+    },
+    {
+      "line": 101,
+      "text": "        XCTAssertEqual("
+    },
+    {
+      "line": 102,
+      "text": "            gate.handleHostWillResignActive(context: nil, activatedAtSuspend: true),"
+    },
+    {
+      "line": 103,
+      "text": "            .none"
+    },
+    {
+      "line": 104,
+      "text": "        )"
+    },
+    {
+      "line": 105,
+      "text": "        XCTAssertEqual("
+    },
+    {
+      "line": 106,
+      "text": "            gate.handleHostWillResignActive(context: id(foreign), activatedAtSuspend: true),"
+    },
+    {
+      "line": 107,
+      "text": "            .none"
+    },
+    {
+      "line": 108,
+      "text": "        )"
+    },
+    {
+      "line": 109,
+      "text": "        XCTAssertEqual("
+    },
+    {
+      "line": 110,
+      "text": "            gate.handleHostDidBecomeActive("
+    },
+    {
+      "line": 111,
+      "text": "                context: nil,"
+    },
+    {
+      "line": 112,
+      "text": "                hasWindow: true,"
+    },
+    {
+      "line": 113,
+      "text": "                canary: .nonCanaryBuild"
+    },
+    {
+      "line": 114,
+      "text": "            ),"
+    },
+    {
+      "line": 115,
+      "text": "            .none"
+    },
+    {
+      "line": 116,
+      "text": "        )"
+    },
+    {
+      "line": 117,
+      "text": "        XCTAssertEqual("
+    },
+    {
+      "line": 118,
+      "text": "            gate.handleHostDidBecomeActive("
+    },
+    {
+      "line": 119,
+      "text": "                context: id(foreign),"
+    },
+    {
+      "line": 120,
+      "text": "                hasWindow: true,"
+    }
+  ]
+}

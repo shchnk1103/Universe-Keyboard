@@ -1,0 +1,13 @@
+{
+  "utc": "2026-10-03T08:27:43.239647+00:00",
+  "authority": "Human 可以，授权你继续吧 to exact PID45871 one SIGTERM",
+  "pid": 45871,
+  "exact_executable": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/48C735B3-5BC6-4A0C-B64F-6218EBC9920C/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+  "executable_sha256": "e059dfbfef672553b51d9ce2a3097348f3c40129c8afaa27b58fd90918cbd692",
+  "signals_sent": [
+    "SIGTERM"
+  ],
+  "pid_absent_after": true,
+  "target_app_processes_after": [],
+  "no_SIGKILL_no_restart_no_install": true
+}

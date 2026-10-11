@@ -10,6 +10,7 @@ extension KeyboardViewController {
 
     @objc func toggleKeyboardPage(_ sender: UIButton) {
         emitKeyPressFeedbackIfNeeded(for: sender)
+        typoCorrectionRecallCoordinator.invalidateTypoCorrectionRecall()
         let effects = controller.handle(.togglePage)
         syncUI(with: effects)
     }
@@ -72,6 +73,8 @@ extension KeyboardViewController {
         var effects: KeyboardEffect = []
         var remainingSteps = 4
 
+        guard controller.state.currentPage != targetPage else { return effects }
+        typoCorrectionRecallCoordinator.invalidateTypoCorrectionRecall()
         while controller.state.currentPage != targetPage && remainingSteps > 0 {
             effects.formUnion(controller.handle(.togglePage))
             remainingSteps -= 1
@@ -82,6 +85,9 @@ extension KeyboardViewController {
 
     @objc func toggleInputMode(_ sender: UIButton) {
         emitKeyPressFeedbackIfNeeded(for: sender)
+        // This must run even without composition: an old delayed recall is still stale
+        // once the input-mode contract changes.
+        typoCorrectionRecallCoordinator.invalidateTypoCorrectionRecall()
         var effects = controller.handle(.toggleInputMode)
 
         if controller.state.inputMode == .english {

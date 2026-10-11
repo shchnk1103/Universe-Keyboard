@@ -1,0 +1,180 @@
+{
+  "budget": {
+    "calls_used": 12,
+    "checkpoint_after_call": 4,
+    "checkpoint_sent": true,
+    "hard_elapsed_seconds": 600,
+    "max_underlying_calls": 12,
+    "soft_elapsed_seconds": 420
+  },
+  "call_ledger": [
+    {
+      "call": 1,
+      "end_utc": "2026-10-02T08:37:17.305412+00:00",
+      "kind": "exec_command",
+      "result": "记录首个 UTC/Unix，读 packet 并验证 digest。",
+      "start_utc": "2026-10-02T08:37:17.302222+00:00"
+    },
+    {
+      "call": 2,
+      "end_utc": null,
+      "kind": "collaboration.send_message",
+      "result": "发送范围/独立性/预算 ACK，时间未采样。",
+      "start_utc": null
+    },
+    {
+      "call": 3,
+      "end_utc": "2026-10-02T08:37:57.835449+00:00",
+      "kind": "exec_command",
+      "result": "核对 26/26 内容、1279/1279 hash-only、branch/HEAD。",
+      "start_utc": "2026-10-02T08:37:57.475385+00:00"
+    },
+    {
+      "call": 4,
+      "end_utc": "2026-10-02T08:38:33.722025+00:00",
+      "kind": "exec_command",
+      "result": "读取 Entry/授权/host candidate/build 结果、entitlement 与 manifest 摘要。",
+      "start_utc": "2026-10-02T08:38:33.686643+00:00"
+    },
+    {
+      "call": 5,
+      "end_utc": null,
+      "kind": "collaboration.send_message",
+      "result": "checkpoint 尝试使用无效 target `..`，调用失败且未送达。",
+      "start_utc": null
+    },
+    {
+      "call": 6,
+      "end_utc": null,
+      "kind": "collaboration.send_message",
+      "result": "成功向 root 发送第4内容调用后 checkpoint；时间未采样。",
+      "start_utc": null
+    },
+    {
+      "call": 7,
+      "end_utc": "2026-10-02T08:39:39.190513+00:00",
+      "kind": "exec_command",
+      "result": "解析 paired-products 78 payload、2 bundles、6 Mach-O、无 dSYM 及 entitlement 报告。",
+      "start_utc": "2026-10-02T08:39:39.185258+00:00"
+    },
+    {
+      "call": 8,
+      "end_utc": "2026-10-02T08:42:01.653055+00:00",
+      "kind": "exec_command",
+      "result": "独立验证 571+630 输入和78 payload；codesign verify、六 Mach-O UUID/nm、两项 embedded entitlements/xcent byte compare。初始 empty 判断误把 stderr 元数据纳入，call9纠正。",
+      "start_utc": "2026-10-02T08:42:00.701738+00:00"
+    },
+    {
+      "call": 9,
+      "end_utc": "2026-10-02T08:42:33.266062+00:00",
+      "kind": "exec_command",
+      "result": "直接读取 codesign entitlement stdout 确认空 dict；核读允许的历史 Quality Hold/F2/F3/格式边界。",
+      "start_utc": "2026-10-02T08:42:33.245230+00:00"
+    },
+    {
+      "call": 10,
+      "end_utc": null,
+      "kind": "exec_command",
+      "result": "报告写入尝试，Python 语法括号不匹配，未落盘。",
+      "start_utc": null
+    },
+    {
+      "call": 11,
+      "end_utc": "2026-10-02T08:45:51.159225+00:00",
+      "kind": "exec_command",
+      "result": "写入最终 scoped Quality report 与 usage。",
+      "start_utc": "2026-10-02T08:45:51.158693+00:00"
+    },
+    {
+      "call": 12,
+      "end_utc": "2026-10-02T08:46:12.125131+00:00",
+      "kind": "exec_command",
+      "result": "补充软时限超出声明，更新最终 report hash 与 usage。",
+      "start_utc": "2026-10-02T08:46:12.124697+00:00"
+    }
+  ],
+  "checks": {
+    "app_group_present": [
+      true,
+      true
+    ],
+    "app_payloads": {
+      "expected": 78,
+      "matched": 78,
+      "mismatches": 0,
+      "missing": 0
+    },
+    "bundles": 2,
+    "codesign_verify_exits": [
+      0,
+      0
+    ],
+    "contains_test_host": false,
+    "embedded_entitlements_equal_xcent": [
+      true,
+      true
+    ],
+    "independent_dsym_count": 0,
+    "installed": false,
+    "macho_uuid_hash_size_matches": 6,
+    "probe_symbols_matched": 16,
+    "runtime_verified": false,
+    "source_build_inputs": {
+      "expected": 571,
+      "matched": 571
+    },
+    "vendor_files": {
+      "expected": 630,
+      "matched": 630
+    }
+  },
+  "coverage": {
+    "H1": "Covered",
+    "H2": "Covered",
+    "H3": "Covered"
+  },
+  "elapsed_seconds": 534.822909,
+  "end_utc": "2026-10-02T08:46:12.125131+00:00",
+  "identity": {
+    "branch": "codex/keyboard-wake-v3-compatibility-gate",
+    "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+    "matches_packet": true
+  },
+  "independent_reviewer": true,
+  "input_hashes": {
+    "content_expected": 26,
+    "content_matched": 26,
+    "hash_only_expected": 1279,
+    "hash_only_matched": 1279,
+    "mismatches": 0
+  },
+  "lane": "QUALITY-C7-B1",
+  "not_performed": [
+    "build",
+    "test",
+    "Simulator/device/container/UI/LLDB",
+    "network",
+    "codesign mutation",
+    "repo mutation",
+    "delegation"
+  ],
+  "packet_digest_sha256": "793355b0508578e7f68fba73ae2fca769302420bd34f00465f01231e518c8233",
+  "packet_digest_verified": true,
+  "packet_path": "/private/tmp/ukey-wake-c7b3-20261002/quality-packet.json",
+  "preserved": [
+    "Original overall Hold",
+    "F2/F3",
+    "57 format diagnostics",
+    "historical 30 skips",
+    "actual suites/install/restore/runtime unverified"
+  ],
+  "review_path": "/private/tmp/ukey-wake-c7b3-20261002/quality-review.md",
+  "review_sha256": "40412d1189712df323067ad8b8cc3793ab8e037a6ea28ceaed811f9cb5fe551d",
+  "round": 3,
+  "soft_overrun_seconds": 114.822909,
+  "start_unix": 1790930237.302569,
+  "start_utc": "2026-10-02T08:37:17.302222+00:00",
+  "verdict": "Positive scoped host-artifact opinion only; not installation, runtime, actual suite, Product/Gate, Release, or overall Quality acceptance.",
+  "within_hard_limit": true,
+  "within_soft_delivery": false
+}

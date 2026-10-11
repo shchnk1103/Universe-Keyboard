@@ -1,0 +1,12 @@
+{
+  "argv": [
+    "xcrun",
+    "xcresulttool",
+    "get",
+    "build-results",
+    "--path",
+    "/private/tmp/ukey-wake-probe-ui-candidate-20261002/CandidateBuildHost.xcresult"
+  ],
+  "exit": 0,
+  "stderr": ""
+}

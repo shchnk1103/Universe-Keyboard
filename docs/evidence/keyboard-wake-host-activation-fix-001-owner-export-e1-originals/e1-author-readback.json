@@ -1,0 +1,20 @@
+{
+  "utc": "2026-10-06T04:38:49.720636+00:00",
+  "human_exit": {
+    "utc": "2026-10-06T04:38:49.720636+00:00",
+    "Human": "\u672a\u5361\u4f4f\uff0c\u4e24 App \u5df2\u5173\u3002",
+    "frozen_or_stuck": false,
+    "maps_closed_claimed": true,
+    "main_app_closed_claimed": true
+  },
+  "ps_main": [],
+  "ps_maps": [],
+  "ps_appex": [
+    "7923 Tue Oct  6 12:13:26 2026     Ss   /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/57DC9CDA-B114-469F-98D6-B6C92F4F4AE7/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard"
+  ],
+  "ps_lldb": [],
+  "ps_debugserver": [],
+  "main_absent": true,
+  "maps_absent": true,
+  "author_does_not_claim_quality_or_release": true
+}

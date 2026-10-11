@@ -1,0 +1,31 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "\n🐛 Attach Debugger\n\n✅ Attached DAP debugger to simulator process 88188 (884CAC1A-516A-421F-ACF5-035A36F7088A)\n  ├ Debug session ID: 4895a8c9-7131-4453-9336-4fcbf742717a\n  ├ Status: This session is now the current debug session.\n  └ Execution: Execution is paused. Use debug_continue to resume before UI automation.\n\nNext steps:\n1. Add a breakpoint: debug_breakpoint_add({ debugSessionId: \"4895a8c9-7131-4453-9336-4fcbf742717a\", file: \"...\", line: 123 })\n2. Continue execution: debug_continue({ debugSessionId: \"4895a8c9-7131-4453-9336-4fcbf742717a\" })\n3. Show call stack: debug_stack({ debugSessionId: \"4895a8c9-7131-4453-9336-4fcbf742717a\" })\n"
+    }
+  ],
+  "structuredContent": {
+    "schema": "xcodebuildmcp.output.debug-session-action",
+    "schemaVersion": "2",
+    "didError": false,
+    "error": null,
+    "data": {
+      "action": "attach",
+      "session": {
+        "debugSessionId": "4895a8c9-7131-4453-9336-4fcbf742717a",
+        "connectionState": "attached",
+        "executionState": "paused"
+      },
+      "artifacts": {
+        "simulatorId": "884CAC1A-516A-421F-ACF5-035A36F7088A",
+        "processId": 88188
+      }
+    },
+    "nextSteps": [
+      "Add a breakpoint: debug_breakpoint_add({ debugSessionId: \"4895a8c9-7131-4453-9336-4fcbf742717a\", file: \"...\", line: 123 })",
+      "Continue execution: debug_continue({ debugSessionId: \"4895a8c9-7131-4453-9336-4fcbf742717a\" })",
+      "Show call stack: debug_stack({ debugSessionId: \"4895a8c9-7131-4453-9336-4fcbf742717a\" })"
+    ]
+  }
+}

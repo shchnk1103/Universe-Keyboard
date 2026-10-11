@@ -1,0 +1,587 @@
+[
+  {
+    "action": "restore-existing-file",
+    "root": "main-data",
+    "relative_path": "Library/Application Support/.tipkit/tips-store.db"
+  },
+  {
+    "action": "restore-existing-file",
+    "root": "main-data",
+    "relative_path": "Library/Application Support/.tipkit/tips-store.db-shm"
+  },
+  {
+    "action": "restore-existing-file",
+    "root": "main-data",
+    "relative_path": "Library/Application Support/.tipkit/tips-store.db-wal"
+  },
+  {
+    "action": "restore-existing-file",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/group.com.DoubleShy0N.Universe-Keyboard.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/AppNotificationSettingsTests-027DB3B4-DCE6-41CB-B315-BE36F282C674.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/AppNotificationSettingsTests-03061BEF-83CF-4432-9B22-FEFF1E2E1E44.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/AppNotificationSettingsTests-21180772-E1B8-4587-B425-3054FC6CC492.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/AppNotificationSettingsTests-43C9E4CC-402B-4014-95E3-7B8A4D04FC4B.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/AppNotificationSettingsTests-5E5CAF5B-5793-4882-8C76-277DDC061690.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/AppNotificationSettingsTests-68AE51E3-53E1-496E-9123-332509330B2F.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/AppNotificationSettingsTests-6CB7EF6C-B7DD-45D4-BE85-93A190408762.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/AppNotificationSettingsTests-7FC066EE-554C-4709-ACAF-54EF61A508B6.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/AppNotificationSettingsTests-8AC390D5-DD87-4C01-B7E1-F54371745F97.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/AppNotificationSettingsTests-A6546ACC-A890-4502-867E-3ABC41646172.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/AppNotificationSettingsTests-B3ADEE19-1BB5-40E0-8921-00278332250F.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/AppNotificationSettingsTests-CE1B0742-318A-49CB-B4D5-984F16B94A6B.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/AppNotificationSettingsTests-D590C87D-44E7-47DF-805B-DDD1BBBCF1F0.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/AppNotificationSettingsTests-F65DB138-5857-428B-A109-1772415FC498.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/RimeSyncBackgroundContender-1649F854-366F-4787-9EB9-51C7E4412688.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/RimeSyncBackgroundOwner-D6D75131-20F8-4EA3-BC3E-6F045D8B1A2A.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/RimeSyncBackgroundProcessGate-231C4C6D-D034-48FD-A945-5D61A07D59BD.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/RimeSyncConfigurationBusy-970C6940-31ED-41BA-B528-5F2251135C63.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/RimeSyncDiagnosticsBusy-3FBAB131-CBD3-4433-B64A-D039EBF6A90A.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/RimeSyncDiagnosticsSuccess-F28005BE-E15A-4366-A659-9AF5FC950097.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/RimeSyncDisconnect-5153EAC6-08D7-4530-9121-D056674F534B.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/RimeSyncDisconnectBusy-C7BD5283-25D7-42F1-8C46-081F62024A26.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/RimeSyncDisconnectPartialCleanup-39DD1FB5-9374-41B9-9CD5-F6759A527FB1.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/RimeSyncForegroundProcessGate-4D411ED9-3A13-4D53-A149-0CB2B04492B2.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/RimeSyncLocalFolderDeleteFailure-D398405B-8660-43AE-BC42-202CBD8CE0AA.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/RimeSyncLocalFolderUnknownRootType-D5413232-CFAD-457C-97E5-810CF322ED1B.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/RimeSyncOptIn-8E666F31-D536-463A-846E-D0862A58836F.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/RimeSyncSuboptions-587DA0BF-64F5-458E-880E-748B32A77A7C.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/RimeSyncUITestFixture-75E6FC38-6D61-4A12-B87E-2E17FC451E1B.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/TypingIntelligenceViewModelTests.4F5C0E5B-771B-4A30-B180-348528DEB825.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/TypingIntelligenceViewModelTests.B7B56FE1-E7A2-44A6-B76F-A93F9A7775E7.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/TypingIntelligenceViewModelTests.ECA6A88B-351F-41BE-953D-DCF65F8A82E0.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/test.group.keyboard-wake-v6-54899E0F-2436-4370-9100-7F846DF76C2E.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/test.group.keyboard-wake-v6-55E45847-3A07-4077-8A36-4B4235423A83.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/test.group.keyboard-wake-v6-983BB50B-5D13-4FFF-82BC-CAA99F9A624B.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/test.group.keyboard-wake-v6-E7E235AA-BFD0-493A-856D-FFACE327928D.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/test.group.keyboard-wake-v6-FF98C211-3C23-4C0C-816C-49AC01FCB28C.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "Library/Preferences/uk.ninekey.tx.E63BB50D-2BB0-42AB-AE05-55E6F3E90B5F.plist"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "tmp/5596EDAA-2C53-4F10-BBF9-A3847E5C41F4"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "tmp/controlled-download-11FB51BD-CBED-4302-B2FC-7E7CE013ED01.zip"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "tmp/controlled-download-40E597D7-7018-4956-91EC-316D50521450.zip"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "tmp/controlled-download-8D66D3B4-D9B4-495D-A06A-092674CCDD2A.zip"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "tmp/controlled-download-91C73191-9C6F-4112-A769-1729DC6D5B60.zip"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "tmp/controlled-download-A2A11D87-F4E8-4BB1-8FD8-CD5054897F44.zip"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "tmp/controlled-download-BAA27834-5FF1-4263-A5A8-F3D87065EE83.zip"
+  },
+  {
+    "action": "remove-preserved-test-added-path",
+    "root": "main-data",
+    "relative_path": "tmp/controlled-download-DF9CFFEC-7F8E-46E4-ABF2-C57B69AE83BD.zip"
+  },
+  {
+    "action": "restore-directory",
+    "root": "app-group",
+    "relative_path": "Diagnostics"
+  },
+  {
+    "action": "restore-directory",
+    "root": "app-group",
+    "relative_path": "Library"
+  },
+  {
+    "action": "restore-directory",
+    "root": "app-group",
+    "relative_path": "Rime"
+  },
+  {
+    "action": "restore-directory",
+    "root": "app-group",
+    "relative_path": "Diagnostics/v1"
+  },
+  {
+    "action": "restore-directory",
+    "root": "app-group",
+    "relative_path": "Library/Caches"
+  },
+  {
+    "action": "restore-directory",
+    "root": "app-group",
+    "relative_path": "Library/Preferences"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/builtin-overlay-receipt.json"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/builtin-resource-receipt.json"
+  },
+  {
+    "action": "restore-directory",
+    "root": "app-group",
+    "relative_path": "Rime/shared"
+  },
+  {
+    "action": "restore-directory",
+    "root": "app-group",
+    "relative_path": "Rime/user"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Diagnostics/v1/control.json"
+  },
+  {
+    "action": "restore-directory",
+    "root": "app-group",
+    "relative_path": "Diagnostics/v1/locks"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Library/Preferences/group.com.DoubleShy0N.Universe-Keyboard.plist"
+  },
+  {
+    "action": "restore-directory",
+    "root": "app-group",
+    "relative_path": "Rime/shared/build"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/shared/default.yaml"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/shared/essay.txt"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/shared/key_bindings.yaml"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/shared/luna_pinyin.dict.yaml"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/shared/luna_pinyin.schema.yaml"
+  },
+  {
+    "action": "restore-directory",
+    "root": "app-group",
+    "relative_path": "Rime/shared/opencc"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/shared/pinyin.yaml"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/shared/punctuation.yaml"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/shared/stroke.dict.yaml"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/shared/stroke.schema.yaml"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/shared/symbols.yaml"
+  },
+  {
+    "action": "restore-directory",
+    "root": "app-group",
+    "relative_path": "Rime/user/build"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/user/default.custom.yaml"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/user/installation.yaml"
+  },
+  {
+    "action": "restore-directory",
+    "root": "app-group",
+    "relative_path": "Rime/user/logs"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/user/luna_pinyin.custom.yaml"
+  },
+  {
+    "action": "restore-directory",
+    "root": "app-group",
+    "relative_path": "Rime/user/luna_pinyin.userdb"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/user/rime_ice.custom.yaml"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/user/user.yaml"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Diagnostics/v1/locks/snapshot.lock"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/shared/build/luna_pinyin.prism.bin"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/shared/build/luna_pinyin.reverse.bin"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/shared/build/luna_pinyin.table.bin"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/shared/build/stroke.prism.bin"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/shared/build/stroke.reverse.bin"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/shared/build/stroke.table.bin"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/shared/opencc/HKVariants.ocd2"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/shared/opencc/STCharacters.ocd2"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/shared/opencc/STPhrases.ocd2"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/shared/opencc/TSCharacters.ocd2"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/shared/opencc/TSPhrases.ocd2"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/shared/opencc/TWVariants.ocd2"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/shared/opencc/s2t.json"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/shared/opencc/t2hk.json"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/shared/opencc/t2s.json"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/shared/opencc/t2tw.json"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/user/build/default.yaml"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/user/build/luna_pinyin.prism.bin"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/user/build/luna_pinyin.schema.yaml"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/user/build/stroke.prism.bin"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/user/build/stroke.schema.yaml"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/user/logs/rime.UniverseKeyboard.DoubleShy0Ns-MacBook-Pro-66.local.uid501.log.INFO.20261002-214524.19680.log"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/user/logs/rime.UniverseKeyboard.DoubleShy0Ns-MacBook-Pro-66.local.uid501.log.WARNING.20261002-214524.19680.log"
+  },
+  {
+    "action": "restore-internal-symlink",
+    "root": "app-group",
+    "relative_path": "Rime/user/logs/rime.UniverseKeyboard.INFO"
+  },
+  {
+    "action": "restore-internal-symlink",
+    "root": "app-group",
+    "relative_path": "Rime/user/logs/rime.UniverseKeyboard.WARNING"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/user/luna_pinyin.userdb/000005.ldb"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/user/luna_pinyin.userdb/000012.ldb"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/user/luna_pinyin.userdb/000043.log"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/user/luna_pinyin.userdb/CURRENT"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/user/luna_pinyin.userdb/LOCK"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/user/luna_pinyin.userdb/LOG"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/user/luna_pinyin.userdb/LOG.old"
+  },
+  {
+    "action": "restore-file",
+    "root": "app-group",
+    "relative_path": "Rime/user/luna_pinyin.userdb/MANIFEST-000042"
+  }
+]

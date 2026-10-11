@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+  "origin_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "expected_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "line_start": 721,
+  "line_end": 780,
+  "lines": [
+    {
+      "line": 721,
+      "text": ""
+    },
+    {
+      "line": 722,
+      "text": "        // Select host apply is owned by Core (`handleInsertCandidate`). If a"
+    },
+    {
+      "line": 723,
+      "text": "        // `sel-*` snapshot still reaches presentation (suppress race / late"
+    },
+    {
+      "line": 724,
+      "text": "        // MainActor hop), strip committedText so partial/final segments are not"
+    },
+    {
+      "line": 725,
+      "text": "        // inserted twice (e.g. long multi-segment 全拼: 今天… + 我们…我们…)."
+    },
+    {
+      "line": 726,
+      "text": "        let output = presentationOutputStrippingSelectOwnedCommit("
+    },
+    {
+      "line": 727,
+      "text": "            from: augmentRimeOutputIfNeeded(snapshot.output),"
+    },
+    {
+      "line": 728,
+      "text": "            actionID: snapshot.actionID"
+    },
+    {
+      "line": 729,
+      "text": "        )"
+    },
+    {
+      "line": 730,
+      "text": "        // Prefer underlying session for post-process (already applied processKey)."
+    },
+    {
+      "line": 731,
+      "text": "        // Thread-affine mode has no MainActor live engine — presentation-only path."
+    },
+    {
+      "line": 732,
+      "text": "        let engineForPostProcess = underlyingRimeEngine"
+    },
+    {
+      "line": 733,
+      "text": "        guard let engineForPostProcess else {"
+    },
+    {
+      "line": 734,
+      "text": "            applyRimeOutput(output)"
+    },
+    {
+      "line": 735,
+      "text": "            if usesT9InputSemantics {"
+    },
+    {
+      "line": 736,
+      "text": "                _ = refreshT9PinyinPathState(forceNewProvenance: false)"
+    },
+    {
+      "line": 737,
+      "text": "            }"
+    },
+    {
+      "line": 738,
+      "text": "            notifyResponsivePresentation(pathChanged: usesT9InputSemantics)"
+    },
+    {
+      "line": 739,
+      "text": "            return"
+    },
+    {
+      "line": 740,
+      "text": "        }"
+    },
+    {
+      "line": 741,
+      "text": ""
+    },
+    {
+      "line": 742,
+      "text": "        // Temporarily expose underlying as `rimeEngine` so Path resync helpers that"
+    },
+    {
+      "line": 743,
+      "text": "        // read `self.rimeEngine` do not re-enter the Bridge pipeline (Arch P1-2)."
+    },
+    {
+      "line": 744,
+      "text": "        // Also suppress publish handler if any Bridge path is still hit."
+    },
+    {
+      "line": 745,
+      "text": "        let bridge = rimeEngine as? ResponsiveRimeEngineBridge"
+    },
+    {
+      "line": 746,
+      "text": "        let runPostProcess = { [self] in"
+    },
+    {
+      "line": 747,
+      "text": "            if bridge != nil {"
+    },
+    {
+      "line": 748,
+      "text": "                rimeEngine = engineForPostProcess"
+    },
+    {
+      "line": 749,
+      "text": "            }"
+    },
+    {
+      "line": 750,
+      "text": "            defer {"
+    },
+    {
+      "line": 751,
+      "text": "                if let bridge {"
+    },
+    {
+      "line": 752,
+      "text": "                    rimeEngine = bridge"
+    },
+    {
+      "line": 753,
+      "text": "                }"
+    },
+    {
+      "line": 754,
+      "text": "            }"
+    },
+    {
+      "line": 755,
+      "text": ""
+    },
+    {
+      "line": 756,
+      "text": "            if let ctx,"
+    },
+    {
+      "line": 757,
+      "text": "                rejectUnusableAcceptedT9AutoAnchorDigitIfNeeded("
+    },
+    {
+      "line": 758,
+      "text": "                    ctx.rimeKey,"
+    },
+    {
+      "line": 759,
+      "text": "                    previousLedger: state.t9ReversibleAutoAnchorState,"
+    },
+    {
+      "line": 760,
+      "text": "                    output: output,"
+    },
+    {
+      "line": 761,
+      "text": "                    using: engineForPostProcess"
+    },
+    {
+      "line": 762,
+      "text": "                )"
+    },
+    {
+      "line": 763,
+      "text": "            {"
+    },
+    {
+      "line": 764,
+      "text": "                notifyResponsivePresentation(pathChanged: true)"
+    },
+    {
+      "line": 765,
+      "text": "                return"
+    },
+    {
+      "line": 766,
+      "text": "            }"
+    },
+    {
+      "line": 767,
+      "text": ""
+    },
+    {
+      "line": 768,
+      "text": "            if output.composition == nil,"
+    },
+    {
+      "line": 769,
+      "text": "                output.committedText == nil,"
+    },
+    {
+      "line": 770,
+      "text": "                !engineForPostProcess.isComposing(),"
+    },
+    {
+      "line": 771,
+      "text": "                let ctx"
+    },
+    {
+      "line": 772,
+      "text": "            {"
+    },
+    {
+      "line": 773,
+      "text": "                let intendedComposition ="
+    },
+    {
+      "line": 774,
+      "text": "                    state.currentComposition + fallbackInputText(for: ctx.rimeKey)"
+    },
+    {
+      "line": 775,
+      "text": "                if restoreRimeComposition("
+    },
+    {
+      "line": 776,
+      "text": "                    intendedComposition,"
+    },
+    {
+      "line": 777,
+      "text": "                    using: engineForPostProcess,"
+    },
+    {
+      "line": 778,
+      "text": "                    rebuildSession: true"
+    },
+    {
+      "line": 779,
+      "text": "                ) {"
+    },
+    {
+      "line": 780,
+      "text": "                    notifyResponsivePresentation(pathChanged: true)"
+    }
+  ]
+}

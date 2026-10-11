@@ -1,0 +1,60 @@
+{
+  "candidate_manifest_sha256": "af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9",
+  "products": [
+    {
+      "configuration": "Debug",
+      "label": "MainApp",
+      "bundle_path": "/private/tmp/ukey-wake-c4-20261001/DerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app",
+      "bundle_id": "com.DoubleShy0N.Universe-Keyboard",
+      "version": "1.0",
+      "build": "1",
+      "executable": "/private/tmp/ukey-wake-c4-20261001/DerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard",
+      "executable_sha256": "a9d2535534d92f804b9a3630a5c978ec24c65119afe4778d7db61812c1a2c6d2",
+      "info_plist_sha256": "78ab124236b7101b69301f4493fb185f08a1d0e612ab630909540278db15f680",
+      "build_provenance": "Debug retained after signed Keychain test / Release final matrix build",
+      "installed_identity": false
+    },
+    {
+      "configuration": "Debug",
+      "label": "KeyboardExtension",
+      "bundle_path": "/private/tmp/ukey-wake-c4-20261001/DerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex",
+      "bundle_id": "com.DoubleShy0N.Universe-Keyboard.Keyboard",
+      "version": "1.0",
+      "build": "1",
+      "executable": "/private/tmp/ukey-wake-c4-20261001/DerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+      "executable_sha256": "3a1c3ff7454be12c45c58866bb801917644c68af1f986cd7918663e3022f4cc7",
+      "info_plist_sha256": "81b5c6912d13ebe448910bab37349e1d5b427251ec24b51a7c9442bd0b4e8f9a",
+      "build_provenance": "Debug retained after signed Keychain test / Release final matrix build",
+      "installed_identity": false
+    },
+    {
+      "configuration": "Release",
+      "label": "MainApp",
+      "bundle_path": "/private/tmp/ukey-wake-c4-20261001/DerivedData/Build/Products/Release-iphonesimulator/Universe Keyboard.app",
+      "bundle_id": "com.DoubleShy0N.Universe-Keyboard",
+      "version": "1.0",
+      "build": "1",
+      "executable": "/private/tmp/ukey-wake-c4-20261001/DerivedData/Build/Products/Release-iphonesimulator/Universe Keyboard.app/Universe Keyboard",
+      "executable_sha256": "926578a60ab46904e7e63842742179719910e6cedf5b4e33ecf87fefe3a02c42",
+      "info_plist_sha256": "78ab124236b7101b69301f4493fb185f08a1d0e612ab630909540278db15f680",
+      "build_provenance": "Debug retained after signed Keychain test / Release final matrix build",
+      "installed_identity": false
+    },
+    {
+      "configuration": "Release",
+      "label": "KeyboardExtension",
+      "bundle_path": "/private/tmp/ukey-wake-c4-20261001/DerivedData/Build/Products/Release-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex",
+      "bundle_id": "com.DoubleShy0N.Universe-Keyboard.Keyboard",
+      "version": "1.0",
+      "build": "1",
+      "executable": "/private/tmp/ukey-wake-c4-20261001/DerivedData/Build/Products/Release-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+      "executable_sha256": "5c2e67a4520f1aa34466e5420cf66cb4e24668f9c781725284e01908b24ea22a",
+      "info_plist_sha256": "81b5c6912d13ebe448910bab37349e1d5b427251ec24b51a7c9442bd0b4e8f9a",
+      "build_provenance": "Debug retained after signed Keychain test / Release final matrix build",
+      "installed_identity": false
+    }
+  ],
+  "same_source": true,
+  "installed": false,
+  "actual_appex_callback_validated": false
+}

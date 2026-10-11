@@ -1,0 +1,69 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/paired-products.json",
+  "origin_sha256": "14b647b6eebde9ad3b5ce62948028fcee72b92192193fd40fa444619950836db",
+  "expected_sha256": "14b647b6eebde9ad3b5ce62948028fcee72b92192193fd40fa444619950836db",
+  "line_start": 61,
+  "line_end": 75,
+  "lines": [
+    {
+      "line": 61,
+      "text": "          \"00000000007acae8 s ___profc_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Bootstrap.swift:$s8Keyboard0A14ViewControllerC28extensionHostDidBecomeActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVFSbyXEfU_\","
+    },
+    {
+      "line": 62,
+      "text": "          \"00000000007c36c0 s ___profd_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Bootstrap.swift:$s8Keyboard0A14ViewControllerC28extensionHostDidBecomeActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVF\","
+    },
+    {
+      "line": 63,
+      "text": "          \"00000000007c3700 s ___profd_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Bootstrap.swift:$s8Keyboard0A14ViewControllerC28extensionHostDidBecomeActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVFSbyXEfU_\""
+    },
+    {
+      "line": 64,
+      "text": "        ],"
+    },
+    {
+      "line": 65,
+      "text": "        \"host_resign_symbols\": ["
+    },
+    {
+      "line": 66,
+      "text": "          \"0000000000104128 t _$s8Keyboard0A14ViewControllerC29extensionHostWillResignActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVF\","
+    },
+    {
+      "line": 67,
+      "text": "          \"00000000001043cc t _$s8Keyboard0A14ViewControllerC29extensionHostWillResignActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVFTo\","
+    },
+    {
+      "line": 68,
+      "text": "          \"00000000007acac8 s ___profc_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Bootstrap.swift:$s8Keyboard0A14ViewControllerC29extensionHostWillResignActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVF\","
+    },
+    {
+      "line": 69,
+      "text": "          \"00000000007c3680 s ___profd_/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Bootstrap.swift:$s8Keyboard0A14ViewControllerC29extensionHostWillResignActive33_98A5490A64F1E61AD1574F3E2C44B2FCLLyy10Foundation12NotificationVF\""
+    },
+    {
+      "line": 70,
+      "text": "        ]"
+    },
+    {
+      "line": 71,
+      "text": "      }"
+    },
+    {
+      "line": 72,
+      "text": "    ],"
+    },
+    {
+      "line": 73,
+      "text": "    \"codesign_verify\": true"
+    },
+    {
+      "line": 74,
+      "text": "  }"
+    },
+    {
+      "line": 75,
+      "text": "]"
+    }
+  ]
+}

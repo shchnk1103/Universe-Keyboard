@@ -1,0 +1,196 @@
+{
+  "work_item": "typo-correction-002-f01-fixed-integration-review-001",
+  "lane_id": "F01_FIXED_A44_QUALITY_R1",
+  "round": 1,
+  "assignment_authority": "Human Product Lead",
+  "baseline": "a44f850d638204aa5c992ac13fb71f5f5424734c",
+  "candidate_manifest_sha256": "44fbd8924502c48f36f1f58bcf8446f83801119b78dbf666d124ae45b2b47be1",
+  "run_id": "TC2-CI-20261011-F01-FIXEDA44-001",
+  "runtime": "reuse /root/p2_existing_run_quality_r1; independent of F01 implementation",
+  "claims": {
+    "C1": "All five source hashes and baseline/index/status match current frozen validation identity. Four source files exact PR139; sole test fixture union preserved.",
+    "C2": "Cover complete five-file delta and every changed type/fixture context. Reject nil/blank/sentinels, preserve valid version and existing runtime smoke, maintain Main App ownership; no RimeRuntimeProvenance.",
+    "C3": "Verify actual current CI receipt matches exact binding, once per stage, hash-stable source/status; counts and focused six passes backed by summaries/pass lines, skips not passes. Treat flags and observed logs according to evidence limits.",
+    "C4": "Original accepted review/Close retain original identity/residual limits; assess integration delta only. Sequence-recording incident disclosed, not retroactively erased. No Product/Gate/Release or overall performance claims; any new gap precisely classified."
+  },
+  "inputs": [
+    {
+      "path": "source/Packages/RimeBridge/Sources/RimeBridge/RimeDeploymentService.swift",
+      "sha256": "3b69b474f749c2c28cf0c91c11de668f36f632f2d8644368b5f12b76d9d4efd8",
+      "bytes": 9936,
+      "origin": "/Users/doubleshy0n/.codex/worktrees/typo-f01-fixed-integration/Universe Keyboard/Packages/RimeBridge/Sources/RimeBridge/RimeDeploymentService.swift"
+    },
+    {
+      "path": "source/Packages/RimeBridge/Tests/RimeBridgeTests/RimeEngineContractTests.swift",
+      "sha256": "bb5a641db8dae7bc19546e7bab63a8bb832c0b97e28480bd36bb741f78b1b395",
+      "bytes": 32732,
+      "origin": "/Users/doubleshy0n/.codex/worktrees/typo-f01-fixed-integration/Universe Keyboard/Packages/RimeBridge/Tests/RimeBridgeTests/RimeEngineContractTests.swift"
+    },
+    {
+      "path": "source/Universe Keyboard/Services/SchemaManager+Deployment.swift",
+      "sha256": "59556bc04be0c3ecad4b05e6cd359a374efd34f7b4139841586d5c22032d8e71",
+      "bytes": 16278,
+      "origin": "/Users/doubleshy0n/.codex/worktrees/typo-f01-fixed-integration/Universe Keyboard/Universe Keyboard/Services/SchemaManager+Deployment.swift"
+    },
+    {
+      "path": "source/UniverseKeyboardTests/RimeSettingsStoreTests.swift",
+      "sha256": "266efc0b95ae755a17d6690ae8f720b1031c7569d46ed0d13555330bfe85c97a",
+      "bytes": 59901,
+      "origin": "/Users/doubleshy0n/.codex/worktrees/typo-f01-fixed-integration/Universe Keyboard/UniverseKeyboardTests/RimeSettingsStoreTests.swift"
+    },
+    {
+      "path": "source/UniverseKeyboardTests/SchemaManagerTests.swift",
+      "sha256": "803125825b24a8a8fa3f90aedb3b7f0da44144c324d7e9285fb339a363dca7f5",
+      "bytes": 151167,
+      "origin": "/Users/doubleshy0n/.codex/worktrees/typo-f01-fixed-integration/Universe Keyboard/UniverseKeyboardTests/SchemaManagerTests.swift"
+    },
+    {
+      "path": "evidence/candidate.json",
+      "sha256": "44fbd8924502c48f36f1f58bcf8446f83801119b78dbf666d124ae45b2b47be1",
+      "bytes": 1160,
+      "origin": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-f01-fixed-integration-001-candidate.json"
+    },
+    {
+      "path": "evidence/binding-original.json",
+      "sha256": "9d1c6e5260cd6e274950ff6da9bf60628c74d073dd3b95fa669935eb2d36a0d6",
+      "bytes": 8499,
+      "origin": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-f01-fixed-integration-001-binding-original.json"
+    },
+    {
+      "path": "evidence/equivalence.json",
+      "sha256": "022032fe4ab3fa66dc7f1d153de26c5a661dce522a6247d68108b427e68cbe06",
+      "bytes": 1695,
+      "origin": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-f01-fixed-integration-001-equivalence.json"
+    },
+    {
+      "path": "evidence/execution-receipt.json",
+      "sha256": "41133216e67c974156d0f40849464d4a75df8e3ca6bc5c03ed272d4d6c026077",
+      "bytes": 22638,
+      "origin": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-f01-fixed-integration-001-execution-receipt.json"
+    },
+    {
+      "path": "evidence/result-accounting.json",
+      "sha256": "8c5e9fe75ee06cca583d78089ef551a4d2b81e1ef3bb343f4313df11efb06c58",
+      "bytes": 1879,
+      "origin": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-f01-fixed-integration-001-result-accounting.json"
+    },
+    {
+      "path": "evidence/focused-pass-lines.txt",
+      "sha256": "083c7ade3802e90c140ed072a5dcf7d76816f094967fb36bd5c7c6169f708bca",
+      "bytes": 861,
+      "origin": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-f01-fixed-integration-001-focused-pass-lines.txt"
+    },
+    {
+      "path": "evidence/archive-manifest.json",
+      "sha256": "ef74bca719f77641d7dd713ea5fc45987f582694450fd880a509723b8b165a9d",
+      "bytes": 1324,
+      "origin": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-f01-fixed-integration-001-archive-manifest.json"
+    },
+    {
+      "path": "evidence/rimebridge-summary.json",
+      "sha256": "5f46684b15a682b28814804186cff5af488ee9b4dd99899566d130334deb3e79",
+      "bytes": 1166,
+      "origin": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-f01-fixed-integration-001-rimebridge-summary.json"
+    },
+    {
+      "path": "evidence/app_keyboard-summary.json",
+      "sha256": "377d62e5da6af5d32a41250d9dca319600a9a22bd9715f3b14e4369fe2bf2389",
+      "bytes": 1173,
+      "origin": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-f01-fixed-integration-001-app_keyboard-summary.json"
+    },
+    {
+      "path": "evidence/keychain-summary.json",
+      "sha256": "0f43cb5769a2f7e74369406ab20f6542e0cf9c0a77bdcf4450ee42f169aab8f9",
+      "bytes": 973,
+      "origin": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-f01-fixed-integration-001-keychain-summary.json"
+    },
+    {
+      "path": "evidence/original-review-index.json",
+      "sha256": "9d9225ac04ee343f38edcbac9abd3ad63fd6e4daf61db5ed1db5547d4f8445f4",
+      "bytes": 799,
+      "origin": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-f01-fixed-integration-001-original-review-index.json"
+    },
+    {
+      "path": "historical/typo-correction-002-f01-fixed-integration-001-original-typo-correction-002-f01-commit-revalidation-001.md.txt",
+      "sha256": "131718faf4ab5b798f4a76fee4e268d3fefc702176b00d8a06d0762ea4b5388f",
+      "bytes": 6152,
+      "origin": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-f01-fixed-integration-001-original-typo-correction-002-f01-commit-revalidation-001.md.txt"
+    },
+    {
+      "path": "historical/typo-correction-002-f01-fixed-integration-001-original-typo-correction-002-f01-remediation-001-close-2026-09-19.md.txt",
+      "sha256": "3d48e81911bc87c08ac8f848fbfdd8b6a59461c979b415c79e21db0d959bf311",
+      "bytes": 4594,
+      "origin": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-f01-fixed-integration-001-original-typo-correction-002-f01-remediation-001-close-2026-09-19.md.txt"
+    },
+    {
+      "path": "evidence/executor-evidence.md",
+      "sha256": "8507d0e097dd36013a3188b3767e6b31ebe8d53f85dff74f25cfc68326573735",
+      "bytes": 4114,
+      "origin": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-f01-fixed-integration-001.md"
+    },
+    {
+      "path": "source-delta.patch",
+      "sha256": "53dd538312103ee6c339425ffc8ed06f8d993c5b6ae93127f687aee15d2ecfa8",
+      "bytes": 15822,
+      "origin": "git diff a44f850d638204aa5c992ac13fb71f5f5424734c in isolated writer"
+    },
+    {
+      "path": "old-head-delta.patch",
+      "sha256": "ad440bcecac12cc0b0ab895ca02e734dd05c67f384fbd6c1aea4afc4e192ee06",
+      "bytes": 662,
+      "origin": "git diff e20e7c8a3a48822e2e712d36453e2cf574088e87 in isolated writer"
+    },
+    {
+      "path": "evidence/log-excerpts.json",
+      "sha256": "23add60464f16b8423b0789eef166c129a2c5e01d782a420cab85547c88c1038",
+      "bytes": 1678,
+      "origin": "hash-checked execution logs"
+    },
+    {
+      "path": "evidence/identity.json",
+      "sha256": "6942985ad57f93f759424a501affdcd69126843fe76edcb0fb58367640aff135",
+      "bytes": 635,
+      "origin": "readonly source writer Git identity"
+    }
+  ],
+  "permissions": {
+    "read": "Only files in this frozen packet; source identity check may rehash the exact five original source paths, no other workspace read. No network, device, tests/builds, cleanup, or git mutation.",
+    "write": [
+      "/private/tmp/uk-f01-review1/quality-review.md",
+      "/private/tmp/uk-f01-review1/quality-usage.json"
+    ],
+    "tools": "exec_command with bounded file reads/hash checks; view no UI; no new subagents",
+    "max_read_chars_per_call": 45000
+  },
+  "exclusions": [
+    "other worktrees/threads",
+    "P1/P2 broad history",
+    "new performance or native runtime proof",
+    "source or docs implementation",
+    "source publishing or merge",
+    "Gate/Close/ADR/Release"
+  ],
+  "acceptance": "Scoped Pass only if C1-C4 all fully covered and no blocking integration finding. Conditions must identify an already-disposed historical residual or exact remaining boundary; not a new unapproved gap. Otherwise Changes requested or Partial/incomplete. Executor tests are evidence, not reviewer reruns.",
+  "outputs": {
+    "report": "quality-review.md with C1-C4 evidence matrix, exact identities, findings/residuals, coverage, limitations and conclusion",
+    "usage": "quality-usage.json: actual tool calls and UTC elapsed, budget stop reason, covered/uncovered claims; do not guess unavailable token counts"
+  },
+  "budget": {
+    "tool_calls": 16,
+    "input_tokens": 30000,
+    "output_tokens": 15000,
+    "elapsed_seconds": 900,
+    "checkpoints": [
+      "after identity",
+      "half budget"
+    ],
+    "extension_owner": "Human Product Lead"
+  },
+  "stop_conditions": [
+    "input hash mismatch",
+    "need outside packet: report one locator and stop dependent claim",
+    "budget exhaustion: Partial if incomplete",
+    "scope breach or independence conflict"
+  ],
+  "non_goals": "No automated or independent full test rerun; no architecture approval/parent completion."
+}

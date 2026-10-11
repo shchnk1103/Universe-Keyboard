@@ -1,0 +1,21 @@
+{
+  "stage": "AP-META-004 archive reconciliation only",
+  "utc": "2026-10-06T03:30:57.669169+00:00",
+  "authorization": "Human 可以按照你的建议继续",
+  "original_source": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-appex-meta-r4-quality-artifacts/root-misfiled-final-summary-original.json",
+  "sha256": "99c39f6c8988a9c9116e59f460fe6fbdbd2391c3866ef33f4b2a24773b7b262b",
+  "archive_copy": "final-runtime-summary-original.json",
+  "copy_semantics": "byte-identical historical final summary; historical independent_review field is superseded by review receipt, not edited",
+  "recorded_utc_semantics": "coordinator recording/receipt time, not an independently measured Human click event time",
+  "runtime_calls": 35,
+  "runtime_calls_evidence": "root-runtime-call-audit.json; coordinator supplement not independently reviewed",
+  "runtime_attempts_added": 0,
+  "independent_verdict_unchanged": "Partial",
+  "frozen_inputs": {
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-appex-meta-r4-quality-artifacts/reader.json": "a5cb4b5623852ee0bf6825fe707cb12e954bdd15884409b5e7fb678d46d369be",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-appex-meta-r4-quality-artifacts/review.md": "0176c9868e21fb41db84f63e44aca49b4e7dedbfd4eb55deecf159ae63416755",
+    "/private/tmp/ukey-host-activation-fix-appex-meta-r4-20261006/run-summary.json": "19e94407dc3dfca19624fc868358ace702c0738994e1db31bba23d06e88b3496"
+  },
+  "product_disposition": "Pending explicit stage-limited acceptance; no owner/Maps/Release claim",
+  "reviewer_full_wall": "UNKNOWN, unchanged"
+}

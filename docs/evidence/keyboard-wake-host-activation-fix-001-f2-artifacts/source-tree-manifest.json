@@ -1,0 +1,1823 @@
+{
+  "utc": "2026-10-04T09:45:00Z",
+  "algorithm": {
+    "file_hash": "SHA-256 of raw file bytes",
+    "listing_line": "{posix_path}\\t{size_bytes_decimal}\\t{file_sha256_hex}\\n",
+    "listing_order": "sorted by posix_path ascending",
+    "aggregate_digest": "SHA-256 of the concatenated UTF-8 listing",
+    "path_encoding": "POSIX relative to worktree root, no leading ./"
+  },
+  "roots": [
+    "Keyboard",
+    "KeyboardTests",
+    "UniverseKeyboardTests",
+    "Packages/KeyboardCore",
+    "Packages/RimeBridge",
+    "Universe Keyboard.xcodeproj"
+  ],
+  "exclusions": [
+    "any relative path containing .xcframework (extracted Vendor payloads are in vendor-byte-manifest.json)",
+    "Packages/RimeBridge/TestTool/**",
+    ".DS_Store",
+    "xcuserdata and *.xcuserdatad",
+    "Universe Keyboard/** app target sources (see app-source-manifest.json)"
+  ],
+  "file_count": 358,
+  "aggregate_digest_sha256": "099aec228a338ed2e42ca0d44d28e30802d78f1f4bbc92c7c4bd17f21d57dfe3",
+  "supersedes_opaque_digest": {
+    "previous_digest_sha256": "dff969d71fb7f7707a85e8572698e544b5de0585f4b3845a6f5a53c3756d6d79",
+    "status": "count matched 358 with this root/exclusion set; previous aggregate lacked a published listing so it is not independently recomputable and is superseded by aggregate_digest_sha256"
+  },
+  "files": [
+    {
+      "path": "Keyboard/Bridge/KeyboardType+UIKit.swift",
+      "bytes": 1832,
+      "sha256": "ba85b5d4207c127ba4f73080393afa80a29729af08acc381267dd764c55913f9"
+    },
+    {
+      "path": "Keyboard/Controllers/DeleteRepeatController.swift",
+      "bytes": 1282,
+      "sha256": "24136eef01e26316ca9b40eedafe04276b7254361963b71c99aa8bee0e3c4d9b"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyVisualStyle.swift",
+      "bytes": 133,
+      "sha256": "3b00e0c37ff18943e622b8f2786cbfb1b329dbc6b9ae5fe68d75941a766100d3"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardInputHitAreaStackView.swift",
+      "bytes": 18135,
+      "sha256": "51ee23b1639993a8b6e074277f5f76a58af4c1e1a068c7b72375cc7295b3bd3c"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardKeyButton.swift",
+      "bytes": 2766,
+      "sha256": "26d4592435e84236e91ec7f1b78ecf4b25070580e9c920dedf594a4a691ee263"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+Bootstrap.swift",
+      "bytes": 50796,
+      "sha256": "e992a9ddf431112d1a40bed80431392eb68c8ef7221b07ece47b87eefb945299"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+BottomRow.swift",
+      "bytes": 8620,
+      "sha256": "094b6bd0966a9c2354539cf698174d0272df5863548d8fe94698eda9ccac19ff"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+CandidateBar.swift",
+      "bytes": 13901,
+      "sha256": "ae1b78d5a311f60054914093458b0c78fe3d35923d82b487fd7f30d886074c80"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift",
+      "bytes": 12452,
+      "sha256": "b8a9bf40fdd84f64a45372af913a93caf53b01b9044c690839e8a2e6364f8bbe"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+CandidatePaging.swift",
+      "bytes": 14906,
+      "sha256": "98d5a3702c472a9e23859143fc6e003d362d120a9aa906468e083879deac9e80"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+CandidateTouchDiagnostics.swift",
+      "bytes": 3919,
+      "sha256": "38940a52234a5e255644fbc69ce935849a24e75d05f6108cef4372a53c29e1dd"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+DeleteActions.swift",
+      "bytes": 1996,
+      "sha256": "1736e92d57a59ecacc860921f51a5a5456ddbf9270af90b7534bc5f86ae11b5f"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+DevicePreflight.swift",
+      "bytes": 6000,
+      "sha256": "c9eee06418a5fd8e3ded687b62a158027283f6f1dcfd05d28a204a5cd60b3084"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+Display.swift",
+      "bytes": 8886,
+      "sha256": "98a4f7c36a2f0adb9f1a76469207c7e9a3098c1c9b8d1992a42870785aac2dfa"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+DocumentChanges.swift",
+      "bytes": 2088,
+      "sha256": "2acc4c3167d649cf3ead60b2add1d3bfd5367e8b8729e67f730de2f5932be470"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+EmojiLayout.swift",
+      "bytes": 3644,
+      "sha256": "d043e1499dd32af12109c8049f9c967ae633d493243e92df74fbe3a7734f5aa4"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+ExpandedCandidatePanel.swift",
+      "bytes": 19036,
+      "sha256": "0177c7750f017f978773f6bfd3c739be17f2228936369ee6ba1aef7e9c6d301f"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+Feedback.swift",
+      "bytes": 7497,
+      "sha256": "429cad4e014425fe909ec2effd9be0a7babe65a31db842a0992bf40738764353"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+Gestures.swift",
+      "bytes": 5744,
+      "sha256": "e1fec5eff7fd7784a56fbdf8d3886e8fa56a66ebdd3f57640bcff52c66c8c569"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+InputActions.swift",
+      "bytes": 9590,
+      "sha256": "16abce7d6e6752be641ea333cc60706217c9d84211f1007315850acbc62ee2ae"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+KeyAccessibility.swift",
+      "bytes": 5075,
+      "sha256": "55815f17fc31a42e9328b5db1bdf8fe2e75f415484d8c4bfc99544b455ab0afe"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+KeyFactory.swift",
+      "bytes": 8104,
+      "sha256": "b537e751b54d683bd35298f508dadaec37311e5a6717129374da0470a51540df"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+KeyPressFeedback.swift",
+      "bytes": 7164,
+      "sha256": "c1d361a34e5aa788a4a518f46cbb7370ff5903e05736a72281da04f859a0fe7a"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+KeyStyle.swift",
+      "bytes": 8268,
+      "sha256": "a7c811a310e77dd33c4c13426e328e58ea347ed871c7c69d253362353c904291"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+Layout.swift",
+      "bytes": 3240,
+      "sha256": "b7b43f4dd9f298b7616e1376bf9858ed03c08254571abb07e97595a5c2623c54"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+ModeActions.swift",
+      "bytes": 4434,
+      "sha256": "a5466366756c038a678897378541ef94ece8b193722a529baf25615a2ff1b96e"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+Presentation.swift",
+      "bytes": 14818,
+      "sha256": "767c2817054484d4d4c328cb7a8deaf676509b76bbc3cb45868b6e3cf721319a"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+Rows.swift",
+      "bytes": 18904,
+      "sha256": "f234c9b6d21c0f64fc29b2768a40ab7dd2c1c786a4ecca43ec412b8e7f6bf93a"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+SpaceCursor.swift",
+      "bytes": 2799,
+      "sha256": "cd5a88c39f115d9633d4077841e2627450dc952361d21d10af532ce4407084a0"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+T9PinyinPath.swift",
+      "bytes": 17203,
+      "sha256": "367ef0ba689675ff480082a413dfc5afdaff673e6850b1f8cffde022a64ff78b"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+TypoCorrection.swift",
+      "bytes": 2070,
+      "sha256": "29c48738c02abe8756f21d68f90cfc78109d1847d4de85e34175342e5d8e470a"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+WakeOwnerProbe.swift",
+      "bytes": 4352,
+      "sha256": "bca0391355d9a3a60880dfdc08260095d02d6618bf0a38d40bfcc61734a891e9"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController.swift",
+      "bytes": 39237,
+      "sha256": "9aeec10f633454b7b9a032d8140ac0d9912de98ea7049c83a2a886c5ca04ec66"
+    },
+    {
+      "path": "Keyboard/Controllers/TypoCorrectionRecallCoordinator.swift",
+      "bytes": 14112,
+      "sha256": "db5cd320abad9bae0a170e9514818308d1c669b7b65d12f2c47954681a101a42"
+    },
+    {
+      "path": "Keyboard/Info.plist",
+      "bytes": 660,
+      "sha256": "e3ff0e22789c1fc7043001ed99acd84aba94a1ea534b027ffad6955d0cb3c277"
+    },
+    {
+      "path": "Keyboard/Keyboard.entitlements",
+      "bytes": 316,
+      "sha256": "2e6a1b5a26349fd1d89ccffc27784474208f37a6ae55ee74144063a546d30992"
+    },
+    {
+      "path": "Keyboard/PrivacyInfo.xcprivacy",
+      "bytes": 815,
+      "sha256": "1b857c60b79d63a424a44bbc6401f080d05863a5e669372609dd353ed2de14e7"
+    },
+    {
+      "path": "Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift",
+      "bytes": 9220,
+      "sha256": "2e7dcf3e88022a677e6ca5bfc5efd6aeacb1814c6fb7de6ec0cdc7c52ec7c9fb"
+    },
+    {
+      "path": "Keyboard/Services/UITextDocumentProxyAdapter.swift",
+      "bytes": 7571,
+      "sha256": "5f219c69ea09e4790e1504d7e446456359710dc93a52a5e5dc32a611a20e0f7e"
+    },
+    {
+      "path": "Keyboard/Views/CandidateBar/CandidateBarDataSource.swift",
+      "bytes": 7252,
+      "sha256": "032f18cc869ae9c61034607417dffb60437009cc780347309c63e8cb087f6ba3"
+    },
+    {
+      "path": "Keyboard/Views/CandidateBar/CandidateBarView.swift",
+      "bytes": 32769,
+      "sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8"
+    },
+    {
+      "path": "Keyboard/Views/CandidateBar/CandidateButtonFactory.swift",
+      "bytes": 5925,
+      "sha256": "27de454b957072923422fffb0b8eccc5c3091c8b353932ce1b16558fedfd587e"
+    },
+    {
+      "path": "Keyboard/Views/CandidateBar/CandidateCell.swift",
+      "bytes": 15488,
+      "sha256": "e216eaac1ba6ffa6e54bd93e3293e68560151da93831723435bb797133d30dec"
+    },
+    {
+      "path": "Keyboard/Views/CandidateBar/CandidateCollectionView.swift",
+      "bytes": 6803,
+      "sha256": "84fead8b2be1a12ddc3fec875200ebd11eaa46fefb5355f948a85c0f86fc3956"
+    },
+    {
+      "path": "Keyboard/Views/CandidateBar/CandidateScrollViewStyle.swift",
+      "bytes": 970,
+      "sha256": "0129f45419f05d31248737b4a56a064ad40776e4ac1703061de4394925bacbb3"
+    },
+    {
+      "path": "Keyboard/Views/DebugKeyTouchRangeOverlayView.swift",
+      "bytes": 6492,
+      "sha256": "5e412b8eb4d472721ef55e0e81f1b98e95bef2c16b663f6f33e77aba013c1bc2"
+    },
+    {
+      "path": "Keyboard/Views/EmojiDataSource.swift",
+      "bytes": 3379,
+      "sha256": "51bf1a8d1f4dbebd09262d2096f6637f8d67d6692e887d817da3c20831033117"
+    },
+    {
+      "path": "Keyboard/Views/KeyPopupView.swift",
+      "bytes": 7782,
+      "sha256": "c72c48b4eb324ee330b4962cae993188fc61b6feaa4f00f26ac2837359e50a22"
+    },
+    {
+      "path": "Keyboard/Views/KeyboardAudioFeedbackInputView.swift",
+      "bytes": 535,
+      "sha256": "596253a5da4293988f48f455ad86cc6fd70634941e4fa7da8dd7fb306d05b13d"
+    },
+    {
+      "path": "Keyboard/Views/T9PinyinPathBarView.swift",
+      "bytes": 23514,
+      "sha256": "2be9805a870e0339f433ce49d11f420ba323f69593397a82277bf62aa59fdebb"
+    },
+    {
+      "path": "KeyboardTests/CandidateAccessibilityContractTests.swift",
+      "bytes": 1004,
+      "sha256": "8513d09e8e4fc39ffaafc68eb4bf440c83d7a05ac932b8bdf14cfc44d39630e7"
+    },
+    {
+      "path": "KeyboardTests/CandidateBarIdleDismissContractTests.swift",
+      "bytes": 1779,
+      "sha256": "bafa0a0bf677adc7188486a8e4b191a115d2588ac161719198d5d666937fa93c"
+    },
+    {
+      "path": "KeyboardTests/CandidateModelContractTests.swift",
+      "bytes": 941,
+      "sha256": "1e51da10e2e333d94b33407bbd4735537de4721196f6c6e804afbb0fd47dbb33"
+    },
+    {
+      "path": "KeyboardTests/CandidatePagingContractTests.swift",
+      "bytes": 6853,
+      "sha256": "50f7c65e4693649d6e3da762162bba0b5dd4a11b59d8311f21ee7216f0d8eb7a"
+    },
+    {
+      "path": "KeyboardTests/KeyAccessibilityContractTests.swift",
+      "bytes": 3816,
+      "sha256": "198c69d650db3202e01675ea530eb012b886c534202c45dbbabc31cfc3916fd7"
+    },
+    {
+      "path": "KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+      "bytes": 14252,
+      "sha256": "e9ef614702dff163ea1f1723e577f2f5af97394c919fb7d03544e15356d3c1a3"
+    },
+    {
+      "path": "KeyboardTests/KeyboardWakeDiagnosticProducerTests.swift",
+      "bytes": 14224,
+      "sha256": "604f60598f515b98d1ad8e1ef9d314adf0332d1ad51e69ef6b41dcbc49f4211b"
+    },
+    {
+      "path": "KeyboardTests/ResponsiveRimeCanaryLifecycleTests.swift",
+      "bytes": 1102,
+      "sha256": "b59051ed993d9bab95047375ec160bd24692364fbb72726c0d396b4416f93584"
+    },
+    {
+      "path": "KeyboardTests/T9KaomojiChromeContractTests.swift",
+      "bytes": 1308,
+      "sha256": "d0eace65f9bfc5ef0aabe304a089d56c9ffa71ce1c3fc63768425fa8f5e38a62"
+    },
+    {
+      "path": "KeyboardTests/T9PunctuationChromeContractTests.swift",
+      "bytes": 1360,
+      "sha256": "7f0209cb21c8477c07a1cb9f798e3ba5fc419aa2a4d7026c157fb8e642714841"
+    },
+    {
+      "path": "KeyboardTests/TypoCorrectionRecallRuntimeTests.swift",
+      "bytes": 483,
+      "sha256": "da8828fecac0c88c3ac1b4551b5dd1c39bebaa925bf1a7bc5dfc65f5a8748953"
+    },
+    {
+      "path": "Packages/KeyboardCore/Package.swift",
+      "bytes": 691,
+      "sha256": "9ebf33313b560b83634a074dd675211aee9cec13b1d879e9cd4f35fbb94aa764"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/AutoCapitalizationRules.swift",
+      "bytes": 715,
+      "sha256": "7620a291ddf02fb4ff79979306222cc4acab7e13a45fef909481bf15a30c6e19"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/CandidateItem.swift",
+      "bytes": 5849,
+      "sha256": "e08a0d59d7cf6506b1c1344450166c530d852a5279e935eeb5e973693d150200"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/CandidateProvider.swift",
+      "bytes": 95,
+      "sha256": "f89b002b8eb8790956e76238ec21e34685a82dc7d7ae028e73cc70e67ab3d0ff"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/CandidateProviderRimeAdapter.swift",
+      "bytes": 4110,
+      "sha256": "f54ed6f47cdafbf720d7360457be2e6b6fbf5355e0e0746f9fa6dd07a9350c22"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/ChromeTouchHitGeometry.swift",
+      "bytes": 2497,
+      "sha256": "3741a0482363abb0386db6c46d0b7b8501007ae0c56ae125b62c41d007593589"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/ContextualTypoCorrection.swift",
+      "bytes": 13063,
+      "sha256": "08745e149975b5feb844107a570428cd9a51e1a754ede2f0368ae3177667c949"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/DebugKeyHitboxConfiguration.swift",
+      "bytes": 603,
+      "sha256": "515386c12c8e7bec347d78e0fe00700d9b68c3f3d64965347bf0de39c63e73db"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticEvent.swift",
+      "bytes": 68292,
+      "sha256": "e6aa39532653eb62af41ff62d2caca8af2984a79f841a849aeb36249ce33c235"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticEventWireValidator.swift",
+      "bytes": 31987,
+      "sha256": "e2c53bb24b000531dd838e984ab892629445189df48a114b22f45765c6c887d5"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsHighFidelityConfiguration.swift",
+      "bytes": 973,
+      "sha256": "8f65891e613974bdcfb1e4f4eb6ffbe190e44482cb6c741cfa5b6619a9ad30cb"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournal.swift",
+      "bytes": 64369,
+      "sha256": "ba85bd454b3fa5b9765513cb3b3c4d54dbfc2f23f60dc456d4795cfae6e894ac"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournalIngress.swift",
+      "bytes": 12484,
+      "sha256": "097f888e7d3ca91b98fcb943d9ce007cb3caee47ec452c3dacec5b1b7bc9040c"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournalRuntime.swift",
+      "bytes": 10137,
+      "sha256": "d694e226522930e585553818a58591a8a3733818ccdda7545bf1a62bcec73329"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/FakeCandidateProvider.swift",
+      "bytes": 1093,
+      "sha256": "51332b2e12346eb063b241f3b377c039ba95cea0b9b5201d5881d705be6642a5"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/FakeTextInputClient.swift",
+      "bytes": 2970,
+      "sha256": "62dc3e9f1d0061a97eba89aef7513519f7cb99db423a868ba5480640c2bb0db6"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/HotPathSegmentTiming.swift",
+      "bytes": 9803,
+      "sha256": "6d55cbb103a36b012d31c85b70618d68a2b9c5c855764b096b3415ff4a07e079"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyTouchCellLayout.swift",
+      "bytes": 11876,
+      "sha256": "478a21ce8a1379723a945c4bb17e17c731dd2c4b8d606e1e4fa7ed6ecf7d9df0"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardAction.swift",
+      "bytes": 2153,
+      "sha256": "916d31806b29b1f64036dfe7361b724c13ae43024c92a6e655cb6939eec9cf27"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardAppearanceSettings.swift",
+      "bytes": 138,
+      "sha256": "dfca2c6a22e832fed0aeb8ee66e35dea0e977923a46f389b21bef44b660772a7"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+Candidates.swift",
+      "bytes": 9393,
+      "sha256": "ccb18d89847ea7943523fe7c60c82dae1c585746376c917bdf66d831e749618f"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+Continuation.swift",
+      "bytes": 1638,
+      "sha256": "b3ee662a3ce02551795e844ed117d849e1671f4e228a0a46662aa19628e70b87"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+ModeAndShift.swift",
+      "bytes": 6681,
+      "sha256": "3b4a53655d67f52469169c810c9ae5ee4d5d498d7f2e72836c4225c03f5a2f4e"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+PartialCommit.swift",
+      "bytes": 52822,
+      "sha256": "65e2451ca510c285fd428ff1a09afe36dcf82d41bcebbef20d8388ca066fabb4"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+PendingKaomoji.swift",
+      "bytes": 6823,
+      "sha256": "c4ef9189ccdf141328a9ecea8a8c86dc152e07cc6ea6c8391c50226d575f7164"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+PendingPunctuation.swift",
+      "bytes": 11896,
+      "sha256": "23734f6f48b003008233065fa3370b3c0aa629ed8a3ff9846251a026e5f85085"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+RimeRecovery.swift",
+      "bytes": 24386,
+      "sha256": "f3cb33290ddd8fe2ac69b52775067aaa675eecd0049600641ad9d9316c0b6ab5"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+T9PinyinPath.swift",
+      "bytes": 99929,
+      "sha256": "188f3fd9ffcdb53ab9c54407c0798cd29e76d3d8963c827dfddde9be6e3e99d6"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+T9ReversibleAutoAnchor.swift",
+      "bytes": 21135,
+      "sha256": "5b97463bc7cc156ad7c21bc96e7f748c4c0c9bd6f2fb8cf68a1cc099b7f50110"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+TextEditing.swift",
+      "bytes": 29916,
+      "sha256": "2ac22486406f298172ed5668f5fe50358926c1c7753d5fd399afbb3013e5ac9a"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+TypoCorrection.swift",
+      "bytes": 9265,
+      "sha256": "955c9058bbe5a8c1f0d46de96eae3815637d89588974fb5d758d028d038032bb"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+      "bytes": 62147,
+      "sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardEffect.swift",
+      "bytes": 1466,
+      "sha256": "02f9f50d441f5001d2faa450c143fb4ff6c8fadff179e5af9b4d44507ed8b971"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardFeedbackSettings.swift",
+      "bytes": 2963,
+      "sha256": "32737c769de5b58cddfeb452178fa9799539e64958511315b8cde1fc7c41c58a"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardInputSettings.swift",
+      "bytes": 219,
+      "sha256": "e2538e301e60e1c87dae32016ee0b82cb41d300858f1d3d2cd06c58615516eec"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardLayoutStyle.swift",
+      "bytes": 1084,
+      "sha256": "91a5478a9884ce94277c209ba403ae87c7a9a8731a2d54f83ba9fb5256144323"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardState.swift",
+      "bytes": 4264,
+      "sha256": "9f930e3317bdda5bf6009e7f9f1dd7488d13764d149042c871bb2c542ef627b2"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardWakeOwnerProbe.swift",
+      "bytes": 15713,
+      "sha256": "679d55e8669d7c68db2fbe58fd1b436cbb19bc61e770f9a701751326fa669af6"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/Logger.swift",
+      "bytes": 6037,
+      "sha256": "970dd1e215283b327ae705b3c306c52b973d6f8041db020bd4596881e4b2a2e2"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/LoggerWriter.swift",
+      "bytes": 8496,
+      "sha256": "a6e60ea684100c799b3886a6498ee4df0c1e745490c9a0e5bc88d833ede3d87b"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/P3D1LifecycleEvidenceValidator.swift",
+      "bytes": 10455,
+      "sha256": "8fc6421b61650c90a4da86b295492f50c8cef852ab1a6164707989fd49dd457b"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/PartialCommitState.swift",
+      "bytes": 2520,
+      "sha256": "73866313490edda2c21075e36e24c499f29f66313396e1561ad15546e1edc8ca"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/PendingKaomoji.swift",
+      "bytes": 2900,
+      "sha256": "be1951c8d4f7031403fbc7c07a2f06f757446816674f2556b9285f3368c29344"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/PendingPunctuation.swift",
+      "bytes": 3495,
+      "sha256": "a136f9529aa8bdaaf33bc022b273bc46aab466e6f89dac348119b58ee9b00239"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/PostCommitContinuation.swift",
+      "bytes": 6389,
+      "sha256": "5277a6a3c7d796a700060d39348332a0e1a2e5225b50f1cd1bd3caeb0470a4b9"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/ResourceOwnership.swift",
+      "bytes": 13687,
+      "sha256": "803c5beedf8e05d4cade3665cdb0f06c1ec24766e51e048dc404613cbc1210eb"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/Resources/post_commit_continuations_v1_3.json",
+      "bytes": 22728,
+      "sha256": "20266049927492e18b9673b550745ab53e188daaac0ea8cb9acc94de3077a6e4"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/ResponsiveProvisionalComposition.swift",
+      "bytes": 5695,
+      "sha256": "22c0ba0d225cc8b1b59eeb275c3c12bb81c2fbd2dabf9aa0f6094bd9062fb9d8"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/ResponsiveRimeCanaryMode.swift",
+      "bytes": 16470,
+      "sha256": "2bcb4684cbb0b3afee5616a3d73045f7f4f4233834f2539c9b9e6b594f22e235"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/ResponsiveRimeFeltMetrics.swift",
+      "bytes": 10392,
+      "sha256": "0fddc7704b57547d6b09eae4b93875eaf8bc25727b4444361f660066b3512c57"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/ResponsiveRimePipeline.swift",
+      "bytes": 19302,
+      "sha256": "adb6a0c435deb847c6b89fc02d58dfad5e07b71edb2394f6d4e559eaa7517a3d"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/ResponsiveRimePreflight.swift",
+      "bytes": 19516,
+      "sha256": "149aa6fabbd46bd4eba7c4c0f9bd3e89b38564cc2e9b657a2d1b77231ce59c35"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/RimeAdvancedInputPostProcessor.swift",
+      "bytes": 4597,
+      "sha256": "74135233f44d2a76925c3cf686740e1fd35244d2db16b79172c58e62ac41e9fc"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/RimeAdvancedInputSettings.swift",
+      "bytes": 3495,
+      "sha256": "b137709239973480bb8d9ea10abc5ca63f1937f160fc5274446889aac8b9bae1"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/RimeBaseSchemaTemplates.swift",
+      "bytes": 3931,
+      "sha256": "6153ee2707020b677da678c3e3855cc1f231f4e6e1036bec38cf832552065322"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/RimeCandidate.swift",
+      "bytes": 593,
+      "sha256": "9a7092c5e3143966fa8929e3e34c4c9239b90ad80606aceb67b09de0de05a983"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/RimeComposition.swift",
+      "bytes": 1380,
+      "sha256": "26092f23cb8c4634372793b727c58f8f05ca944c9fe660a8b9932b216d0d6e87"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/RimeConfigPostProcessor.swift",
+      "bytes": 6718,
+      "sha256": "27dea311f6ef2c1775898a8857b7a388cb40f1523177710fe4e561000dbc7157"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/RimeConfigTemplateGenerator.swift",
+      "bytes": 4407,
+      "sha256": "931e94955de542ec7e415a841d93b08e5418f92bcd1820c8e73062af45f9d5f1"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/RimeEngine.swift",
+      "bytes": 4415,
+      "sha256": "07cb164f6655cde5c72266ffbb8533b83694ba6edc8c542797c0df35b26dd1e4"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/RimeFallbackDictionaryTemplate.swift",
+      "bytes": 4243,
+      "sha256": "1f0ea1f2052e69a5ce44d3132adcacad6762ac6e8d85fcd0f3a68a3cb18d2b5b"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/RimeFuzzyPinyinPostProcessor.swift",
+      "bytes": 10013,
+      "sha256": "6bf0418dcaea227e54e05f6e86c9ef7fbbcac487751483607e31a88384ef7739"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/RimeFuzzyPinyinSettings.swift",
+      "bytes": 2323,
+      "sha256": "b174ffb08211d5f9bebb9baf5e1a2099b381edbcba048a1c3f0c4b5e9b02ba08"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/RimeIceSharedDefaultAdapter.swift",
+      "bytes": 2956,
+      "sha256": "33e25d81464a388ba51de5afe3199577e5d1e87cdfdd86aeb4232f973252bf8d"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/RimeOpenCCConversionTemplates.swift",
+      "bytes": 999,
+      "sha256": "893e23d9c1d5d9b46cef738d26febc59260cbae5899a1ac59ba9ba57a306ffc4"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/RimeOutput.swift",
+      "bytes": 2915,
+      "sha256": "73b97889f2419989160072de102cf6894b4957da77804222bd293be4557723f5"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/RimeRuntimeRouteReconciliation.swift",
+      "bytes": 20276,
+      "sha256": "0f57c4464cef195b2dc9e6edb2e2e151a32f44bc0c2fd6211f759233e42c4c63"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/RimeRuntimeSelection.swift",
+      "bytes": 11980,
+      "sha256": "c6da303d6ab73b9f994b7648f207aee44b209d887f0720508b8620b863de8cae"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/RimeSchemeCapabilityMatrix.swift",
+      "bytes": 3386,
+      "sha256": "cd059cf2a7ac60415dacb1ab116e87d77b13c3f0d53653de8b66007edef53d29"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/RimeSchemeNativeUsageGuide.swift",
+      "bytes": 4924,
+      "sha256": "d09d557ec3f2deb886dd35584e17fb120feb51361f7dd8fbb824726a9114395d"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/RimeT9Readiness.swift",
+      "bytes": 3613,
+      "sha256": "c8a9b63d9be23f2c76110242b9353a4f919432aed394d2e97b3650022902e263"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/RimeUserDictionarySettings.swift",
+      "bytes": 1472,
+      "sha256": "f672e17a4829d16ca5809af97ab601f4936eb4510604de5ec4704b78fe4d5e09"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/RimeWanxiangSharedDefaultAdapter.swift",
+      "bytes": 3110,
+      "sha256": "5f0995487637085b339b823bf94917006d5c6723ec16c167401c24fb00303c2f"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/SchemeAdapter.swift",
+      "bytes": 9412,
+      "sha256": "714f8e035f0cc7368354118fef6d6d95a30f1a0997c269e2e43948ff951a023c"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/SchemePostExtractHooks.swift",
+      "bytes": 2245,
+      "sha256": "03f6ed99acc0c2d3dd8f1165346da6073aee0b5606a52f33599f329f98421706"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/SchemeUninstallHooks.swift",
+      "bytes": 3661,
+      "sha256": "1484bfa5f8040d500d5a6498b845102c9329b135b08833c56febb2910d1b3738"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/SerialRimeSession.swift",
+      "bytes": 13882,
+      "sha256": "ad83378309229277ee26aa5f6735628a980175d7ad6102ae59e520fb8369962f"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/T9AutoAnchorRetryShadowAnalyzer.swift",
+      "bytes": 3186,
+      "sha256": "115483f9f680c3b70d047fa443a679ee3a9f606a1e4dfd87a49919c9effd41f7"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/T9CompositionIdentity.swift",
+      "bytes": 16962,
+      "sha256": "88eb6fc3cad69280aa9016023b3a2672d631e4310c0f18cd0625cb28fc950ec4"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/T9DevicePreflightEvidenceLineFilter.swift",
+      "bytes": 726,
+      "sha256": "e1372b7b21997bb76cad95469ab0ec9d21cc363403ebb89ea6cd976c8b38b20b"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/T9DevicePreflightRun.swift",
+      "bytes": 8448,
+      "sha256": "ffae9885ddcdd1936231eefea8130655af682654720e9f3b73d55527ee93036b"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/T9Gate5CompositionTrace.swift",
+      "bytes": 6791,
+      "sha256": "453cf9622f2a07b30b2c9d91b4974d58202f2923e273fce193bc6f9b895179ce"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/T9IdlePathHintPolicy.swift",
+      "bytes": 896,
+      "sha256": "2e859fc98b78c52db9c899a0773e78e4996db841e81e0e0eefb33faf5fa77ddb"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/T9PinyinLocalPathCatalog.swift",
+      "bytes": 18161,
+      "sha256": "f56f2002fa33e19f5eb8bb728c028cfcfebef84119b06f85f8370c934101d32f"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/T9PinyinPath.swift",
+      "bytes": 32772,
+      "sha256": "aed22d7c7272a13727eea43cc0662ec3d1b2d267e91a91e18d55c592bfd450d4"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/T9PinyinSyllableCatalog.generated.swift",
+      "bytes": 11843,
+      "sha256": "c2824fc8e377def94f9723ffb76155aed061dd6a9c94bd74a2a385667338471e"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/T9PreeditResolver.swift",
+      "bytes": 8672,
+      "sha256": "a635a4eef710afcaaae0bf8832305041e9167663d6227e014605e894af79a545"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/T9ResponsiveEvidenceValidator.swift",
+      "bytes": 36107,
+      "sha256": "1a722eb59611fd3e49bff2c9fc29e03dcb827df619e8da1de025f434f4c09c92"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/T9ReversibleAutoAnchor.swift",
+      "bytes": 17565,
+      "sha256": "ad9f87b9b57c01332d344fb84099aedf007ab2b40c24dd0f1dd3b08d00821a4b"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/T9SchemaCompatibility.swift",
+      "bytes": 3661,
+      "sha256": "87446b1a0a6440c24c45ef2f30dfeaa9f257d9d7e74931048641b768bfda9d87"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/T9SchemaForceGCDiagnostic.swift",
+      "bytes": 11048,
+      "sha256": "1ae9123e0d85adb535af0a55c483784e2d75bb9829433e8fd9b7ae8fd7224ca4"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/T9ShadowAnchorAnalyzer.swift",
+      "bytes": 8665,
+      "sha256": "93ae67d7fd34ec44df69af5b070ec4030b7c7dd1d185ce1f8db52e7149f98513"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/TextInputClient.swift",
+      "bytes": 587,
+      "sha256": "9403d90d180efbd3e7637b06689c28af379a0cf9cf49eb8ec1f0eafcbe143da1"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/ThreadAffineRimeSession.swift",
+      "bytes": 29988,
+      "sha256": "b7050645be501a7f41a6732efda40b07fb82c4c930862c0f1d13d167af426a76"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/ThreadAffineRimeSpike.swift",
+      "bytes": 39079,
+      "sha256": "1a5e2d15d540c47c3c763ce94e22c467cb6a2a7c9bd08d789aa072d963296243"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/TypingIntelligence.swift",
+      "bytes": 4866,
+      "sha256": "7183739a2529ee20db017a7a6c130779f3e57e8f61a9f6ab6753fa19e714a32f"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/TypingStatisticsStore.swift",
+      "bytes": 10947,
+      "sha256": "f0c5036c902a6f8c770127194a4362ecae2ad7f669dbbb10100787a89fc25b15"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrection.swift",
+      "bytes": 37049,
+      "sha256": "0449b972f50ec8bc66ce379241650988b6c00d7107d5157f47816d8ebb9014f5"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionBenchmark.swift",
+      "bytes": 13375,
+      "sha256": "525f2521035ccdcc27079133f74ad1ec444fcec1b1c54c6f2bba1ba203361ae8"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionCandidateQuery.swift",
+      "bytes": 4890,
+      "sha256": "b86b8ccc2cff106203ca63a4f6d1e5e70b66b1a81cfcdaad1d3943a2f0a42b78"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionDecisionTrace.swift",
+      "bytes": 6115,
+      "sha256": "11292e3a5b1214e0530c5634f25979556d6a73dc288a7e89d5235e3593d905bb"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionExperimentalSettings.swift",
+      "bytes": 1588,
+      "sha256": "44e0e0b94fbd5e35af9de8f2339f5dd98f8536dcdbb11416440591335048f3e6"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionLearning.swift",
+      "bytes": 5523,
+      "sha256": "46c965a11e38c7cd80428fd3835009d121bdf0ef6eb25ed54f76fa394ca68065"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionRecallDiagnosticMarkers.swift",
+      "bytes": 1484,
+      "sha256": "e27d0d0cd51425f84120cca300c99b40c332c48327977deefa87c57fee9c5154"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionRecallMaterial.swift",
+      "bytes": 10999,
+      "sha256": "c371a47032ddbcb879bde151ee697ca24a37813e9275b92fa45a75d0795740ff"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionRecallPreflight.swift",
+      "bytes": 16541,
+      "sha256": "f7ba8bec024f71e39b073eb0cef767960fd81dc538923a975d8de267b7136a6a"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionSidecarOwner.swift",
+      "bytes": 2798,
+      "sha256": "006fe2fcb302ca9de561cb1eaac23c2c582efb255844c2740332d03c1701561a"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/Unzip.swift",
+      "bytes": 3642,
+      "sha256": "b269778832bbd1402c022913cf4d2f5055ebb4dbe68937cb1de6c47a6cc2e01c"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/ZLib.swift",
+      "bytes": 2133,
+      "sha256": "76a24253793798da73f424de6f5f7c53e508bc623f7c4ff32d1571fab7d9b085"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/ZipArchiveReader.swift",
+      "bytes": 7314,
+      "sha256": "f6a0ff9decb15cfff97f6e188e83210cd73094db8c06309c35f564e3e8c05fb3"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/ZipBinaryReader.swift",
+      "bytes": 1438,
+      "sha256": "b1fe8b64ea6aaf6e24899e80e865d4000182c9bad9e903e292e83af20489ef10"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/ZipInflater.swift",
+      "bytes": 2958,
+      "sha256": "622059e4268c05ed3c724c5273d47ce2bc5dce99d2c9d41c95a55136e3dde4e9"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/AutoCapitalizeTests.swift",
+      "bytes": 6535,
+      "sha256": "8239a9d9576828ff3fa58edf7169c61cce518f0d8dfd67b162ad3315c5dfabcb"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/BenchmarkEvidenceSnapshot.swift",
+      "bytes": 21712,
+      "sha256": "95bd415c97fb15882619dd97d4d18eb25b8db448df8cb684e2ea1aff709210cc"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/BenchmarkEvidenceSnapshotTests.swift",
+      "bytes": 27558,
+      "sha256": "f2cf514b8fa616be7c82653e04d21eb10e00df6d5e4207eeabfaa93f32a0ccfb"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/CandidateKindTests.swift",
+      "bytes": 6499,
+      "sha256": "316bcbaacb70e630884cb6144ff048a3778c5ae171e675cf6aa6de29532ed394"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/CompositionTests.swift",
+      "bytes": 7890,
+      "sha256": "dfa9b606cee0fad462c97d25d1cd5a2e37c85b7ebb928bc4f57478611810cd6d"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/ContinuationQualityBenchmarkTests.swift",
+      "bytes": 11239,
+      "sha256": "c0e209be9dc72db7dc6bc541c7b0bad55e59d596f10ca641de06d2d799fd6dc3"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/DeleteTests.swift",
+      "bytes": 4316,
+      "sha256": "92c2e759daf4216b9de07b3ac42792bb198ef6dafa3f140ee9184be12e6b7639"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticEventTests.swift",
+      "bytes": 43406,
+      "sha256": "a9ba472652f140bf6c93cd6cd1f01302e7e70ded88e255a5c72896dac3dfa72e"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticsHighFidelityConfigurationTests.swift",
+      "bytes": 998,
+      "sha256": "7ba8840c9ab2dc4286352436d20661ad60976e33edaf0b9ac20c21f9e0fcedcf"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticsJournalIngressTests.swift",
+      "bytes": 9422,
+      "sha256": "15a5a39a318b1b73e24735f6258110dcba714a3dee337afecff29ff2c7ebb339"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticsJournalRuntimeTests.swift",
+      "bytes": 7275,
+      "sha256": "67fd13af32f939613578feaef98e30675879f06bfcadd254723a7ac45b6cdd33"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticsJournalTests.swift",
+      "bytes": 48605,
+      "sha256": "7cbbce79d83ae698014eacdbdf70d0cf68a778ec3980e828a57b87f4fd96a54e"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticsJournalV6WriterTests.swift",
+      "bytes": 20778,
+      "sha256": "6a57819ac4a5de73c23e1d29f8488c0129f40d35014ed3509e46047b55c18af2"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/DisplayLogicTests.swift",
+      "bytes": 6855,
+      "sha256": "256b2bf7e8b730ff58fdd012d565adc067eaf479189ab78790834f92be1ba706"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/FakeRimeEngine.swift",
+      "bytes": 14750,
+      "sha256": "07f7b70f68a0e7ad6212add9975d2dcd6d235674c512bd5ff2910c8b6e6c8a81"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/InputModeTests.swift",
+      "bytes": 3490,
+      "sha256": "0ebcf099066afc319e3336f4a94c76034a70f7e1a7a2072ef54f230c4816bc40"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/KeyTouchCellLayoutTests.swift",
+      "bytes": 22647,
+      "sha256": "73f8721c078592e0a77c021721ae8ab0e61f50ee86f3ebed7d25f45600ebe239"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/KeyboardFeedbackSettingsTests.swift",
+      "bytes": 2485,
+      "sha256": "ec55fc5b970a664df0a799917fc93d2af79914290c2a2040cac299cb3f08e1b0"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/KeyboardLayoutAndT9RuntimeTests.swift",
+      "bytes": 17259,
+      "sha256": "cfe816e52c1d4251c1cc0f75aa41437b50c663497205554801d847c76e620d9c"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/KeyboardTypeTests.swift",
+      "bytes": 1663,
+      "sha256": "ed7410488c5abca0095110fab559cb08091e612e985283cd78ad62b247a80ba0"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/KeyboardWakeOwnerProbeTests.swift",
+      "bytes": 9205,
+      "sha256": "c5819c3695926cfb94ce64c69636ec4b10f1696f7ac76263a4aaf96326a49f47"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/LayoutBoundRimeRuntimeSelectionTests.swift",
+      "bytes": 6690,
+      "sha256": "c7e2f932a9b0406af038cacf36a48366d27e2b927598ebf9b2c8321b206eedc9"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/LoggerTests.swift",
+      "bytes": 10033,
+      "sha256": "e3b0e228c33dbb72596a0073d13f20e521cff48df70319f29bfb897a6688035b"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/P3D1LifecycleEvidenceValidatorTests.swift",
+      "bytes": 4086,
+      "sha256": "b640688bdd81e98fbdf02b77c3cadca818b5edba733ddfa502bc3f25a0cf606e"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/PageSwitchTests.swift",
+      "bytes": 14486,
+      "sha256": "59f069a88f57ae01b110a66163affdfe5dae301410cacf4851bb58edf20d9ce3"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/PartialCommitControllerTests.swift",
+      "bytes": 106351,
+      "sha256": "1c5ef0ebae63de8d962ddfac8afd3883349cfb3e230928921c33552cef09a14d"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/PartialCommitStateTests.swift",
+      "bytes": 1381,
+      "sha256": "c7d33fb7c9abbacda752df69403828485a587672e91942767c2c05da9f616efa"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/PendingKaomojiTests.swift",
+      "bytes": 11346,
+      "sha256": "d2c9284abf3d1e9013279303712ffb492c91244729bd40e3bd882399fd1890e3"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/PostCommitContinuationTests.swift",
+      "bytes": 10520,
+      "sha256": "e6b0113a1a837c1f09707619f861a7f9e0da64ef52040baa89b939382c3527b4"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/RealizedSelectionLifecycleTests.swift",
+      "bytes": 8338,
+      "sha256": "16c2f2c23b9cda4d0409ccd8be93f38188c1e77292e5c623fe689e1436c7b4c6"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/ResourceOwnershipStrategyTests.swift",
+      "bytes": 8221,
+      "sha256": "8e8e48a4af5cad50df70413e43a08becea361033e9db89d9a3cee8257b333334"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/ResponsiveCandidateAnomalyTests.swift",
+      "bytes": 12125,
+      "sha256": "6be4bc4ca1b75766ccc7027986d2b154c3b7ec2de83cb3344de79992c7bd26ef"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/ResponsiveDeleteAnomalyTests.swift",
+      "bytes": 5035,
+      "sha256": "fbfa98dad35f8bb553a28cec50ef10faffd97792578485f374c129842518c58c"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/ResponsiveProvisionalCompositionTests.swift",
+      "bytes": 31014,
+      "sha256": "1d153793b2da9b50b465f2dab1e876f2b60a950ab65ac356afcedc130a3f384d"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/ResponsiveRimeAllLayoutsTests.swift",
+      "bytes": 7898,
+      "sha256": "be62e6aaabfdf0cba052209e4693acecc2ff45f3943cee9e05d3f81acf49fc68"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/ResponsiveRimeCanaryContractTests.swift",
+      "bytes": 18943,
+      "sha256": "bf16f82a0c62ff308b70bc77754e06314e8d302a02a5b64ca99aa338140ddf5f"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/ResponsiveRimeFeltMetricsTests.swift",
+      "bytes": 4556,
+      "sha256": "9bcef22cc36e832e18af52bf1d0b17324a8cb1afa789edd595e3457b554a4515"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/ResponsiveRimePipelineTests.swift",
+      "bytes": 22483,
+      "sha256": "26e5f805084b86e64530383e19a676f00f8b9a9bf2fb550e7a66f82f3db5a3b1"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/ResponsiveRimePreflightTests.swift",
+      "bytes": 4185,
+      "sha256": "914ada850d90a0799c3a921c2400d242c3a7703bd5c0be1236ab444a0e4c4ed0"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/ResponsiveRimeR2CoordinatorTests.swift",
+      "bytes": 15351,
+      "sha256": "07723907d5d96498a9714263150501d856329bd667ca8b838b47c4b1d7c6e67e"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeAdvancedInputSettingsTests.swift",
+      "bytes": 5256,
+      "sha256": "a8ebbc1f4de5f2eaae9f55e8eff0e7be78466b317a76a695bcee313532d6fab2"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeConfigBehaviorTests.swift",
+      "bytes": 1110,
+      "sha256": "74850bfd92c69edb174c2be64a1cf7a5a82fc2c0404867136be63137dd8a7523"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeConfigPostProcessorBasicTests.swift",
+      "bytes": 5517,
+      "sha256": "8cd0a043ea8d415838ec503eeb07acb0a6f71dce1b510f4bf0c79f0bd0805d67"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeConfigPostProcessorRepairTests.swift",
+      "bytes": 6536,
+      "sha256": "b398004017bc94e22880ff8c635c09626befd11db6981af0d000d69fe1359c45"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeConfigPostProcessorValidationTests.swift",
+      "bytes": 2184,
+      "sha256": "0dfa2ab2600f3d5a9165dc7851e0dc461df5d295080bfdefee83838a32e6aea5"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeConfigStaticTemplatesTests.swift",
+      "bytes": 4329,
+      "sha256": "9af8fb1d5cf5f127f4dc183acb37c8065ee054f92707fe1ee7463f303f8566e6"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeConfigTemplateGenerationTests.swift",
+      "bytes": 6899,
+      "sha256": "5e15267fc8710de1cfdd5c59d1a1591e9ca2ae19140c95e4c809b6c6d99f01ca"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeControllerInputTests.swift",
+      "bytes": 22309,
+      "sha256": "075fdab796120efba07aaf36f6dbcaaacfe1a5d991190c2ee4a438f2edd0a45b"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeControllerPagingTests.swift",
+      "bytes": 4648,
+      "sha256": "60add87ab75c0a31e5e329cea2eaa5fb72b55820ab8a3de37440ecf25feee043"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeControllerRecoveryTests.swift",
+      "bytes": 7069,
+      "sha256": "0ac9d7d1bf927830a68c64d51b5b8d3942ef659c9e42c475b861ad6ea11e091d"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeControllerTestSupport.swift",
+      "bytes": 493,
+      "sha256": "f9937900b233a5d2404bb0e50ec664d4d294e33000e5bb63dced03a87a336764"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeEngineProtocolTests.swift",
+      "bytes": 10384,
+      "sha256": "18bc31c3a6bbcd8c9c1474c2ae1d2147f44b125a78ee7664e465f3e5a04b9c22"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeFuzzyPinyinTests.swift",
+      "bytes": 15490,
+      "sha256": "da6a52f04afc166093667911d81b4ebab077258ee878c02187e8999e273312ba"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeIceSharedDefaultAdapterTests.swift",
+      "bytes": 3128,
+      "sha256": "95c56bd52381e31de0a8dbb0998b4561b761b4ffddb38d099ea8d43a3ed9042a"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeRuntimeRouteReconciliationTests.swift",
+      "bytes": 21704,
+      "sha256": "62eefab1b1fb5a8272c60fbb6de66e632a47bb9dff46dcb0c87f0f8897250954"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeSchemeCapabilityMatrixTests.swift",
+      "bytes": 1870,
+      "sha256": "51b854fd43b822a01e9ffce06630b722c3cbcb53ba6bf7ea6297d2e6316a9699"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeSchemeNativeUsageGuideTests.swift",
+      "bytes": 1381,
+      "sha256": "b9fae87c0f18a096d8e7e3e9290801fb66e364eeba213e4564b7d939266bebdb"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeSessionDiagnosticTests.swift",
+      "bytes": 535,
+      "sha256": "381259c96b932ea345fb5783e0d29e78d2a153ceb42e3bccafaf8ef7024d582b"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeUserDictionarySettingsTests.swift",
+      "bytes": 933,
+      "sha256": "5ad58e4b6a9e5210f41af09ea61a139e79b02e4ff3ad38035fa0b4c00816d59e"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeWanxiangSharedDefaultAdapterTests.swift",
+      "bytes": 3788,
+      "sha256": "25348ca80997c198a7bb78d0ac04347ac5998e91e991411903e8164f96be5f8a"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/SchemeAdapterRegistryTests.swift",
+      "bytes": 12532,
+      "sha256": "deb7a774de72594f47fc7658df282a29313559a3c57dcec7e01133bfab4c0a45"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/SchemePostExtractHooksTests.swift",
+      "bytes": 1280,
+      "sha256": "3f3c3d4fb4833e5df42614fdd0b54d50b0a5f7be985c90558e8be1c1b89e3fa3"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/SchemeUninstallHooksTests.swift",
+      "bytes": 4384,
+      "sha256": "4fb27e8955631b7a37093c4e699476870addddd6510481fc04d3f1dd139d47f7"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/ShiftStateTests.swift",
+      "bytes": 3956,
+      "sha256": "b6e19a25c53e8b97d1a3c59d971900fa547f7a0f979823dabdc76a0bffe9f089"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/SpaceReturnTests.swift",
+      "bytes": 5821,
+      "sha256": "6a55057c2fac77410488caefb8f8c7811273a66212927a9246bbe121965017a2"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/SymbolPageTests.swift",
+      "bytes": 6973,
+      "sha256": "d4a1ef8c225bca5e9d8c7b1a04648ffd08fad8453424358f95f877d442d6bc88"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/T9AutoAnchorRetryShadowAnalyzerTests.swift",
+      "bytes": 5162,
+      "sha256": "66fef70d0fde3fabeec04b971bd163d17c2d0264ac1033064b11c81c2cd81e6e"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/T9CompositionIdentityTests.swift",
+      "bytes": 4865,
+      "sha256": "b388c56ddb0ecabf9946335e49cb886029955e171f274f1355d236802a80149a"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/T9DevicePreflightRunTests.swift",
+      "bytes": 10101,
+      "sha256": "09a91f438f1445df4c897f95f78d0e0d8bf271daafd7382df2e539142d56bc75"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/T9HostPreeditSafetyTests.swift",
+      "bytes": 5084,
+      "sha256": "ae95dd9c4f3f08646cf27f8d25d55edbe90b7fde0219b073faadcf814de5cae0"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/T9IdlePathHintPolicyTests.swift",
+      "bytes": 1031,
+      "sha256": "95d91546316b8465f928ffc0e955332f9dbca10b3f31f5b7cdf76d07f33139e9"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PendingPunctuationTests.swift",
+      "bytes": 11812,
+      "sha256": "21c4900044160269b00ab3debf23500b29506bfbfc6515d348442bcec3354955"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinCatalogTests.swift",
+      "bytes": 10238,
+      "sha256": "439dff6c6508ecf38fe48747685880ab3a07afd083ee13f49540e844aa250e72"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift",
+      "bytes": 122324,
+      "sha256": "3c908fb727f1b83aeba8c70ef553a55013ecad3962d4a27ae785d9c9a00e152b"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PresentationSnapshotContractTests.swift",
+      "bytes": 5881,
+      "sha256": "4d268510ef3f9e42fe4ca0c7c0559d4a76d1e2e2f981a7af43744483a597f7eb"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/T9ResponsiveEvidenceValidatorTests.swift",
+      "bytes": 20752,
+      "sha256": "352c40a9d5c1477b511b51e415071efd5343a20f33778f344f1640e49e7ee588"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/T9ReversibleAutoAnchorTests.swift",
+      "bytes": 69493,
+      "sha256": "216eb55742512dbcf6759177bd65fa2175c2a802adc6bb6c0dbfb52a5cf75abd"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/T9ShadowAnchorAnalyzerTests.swift",
+      "bytes": 7507,
+      "sha256": "ead7fa305f015e47ddd0ecb71abe73ff8999f5b28d87dfb42ed9994b0dfe8532"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/ThreadAffineRimeSpikeTests.swift",
+      "bytes": 18621,
+      "sha256": "bd3a368d4bb0e37c002fdb115d310ff32553db2591567bfb333e01acf62a64fa"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/ThreadAffineRimeWireTests.swift",
+      "bytes": 34333,
+      "sha256": "b47a2e567c9b26fc4819de6ef41030373f7ff333aedbe5f8bc211f7a5298ae86"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/TypingIntelligencePerformanceTests.swift",
+      "bytes": 2156,
+      "sha256": "403ff29582e52b4bbe4592e9803f14cdd07d7a371da88f82abc1512cbc5fc39b"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/TypingIntelligenceTests.swift",
+      "bytes": 4654,
+      "sha256": "d0792f69f2c9466517c936993ea9a775628967193928ff2d7b75ce5cd44f913b"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/TypingStatisticsStoreTests.swift",
+      "bytes": 5947,
+      "sha256": "3d7a0740294e9071d6bb8abb465def197bbb52b297aba5b4718d74f6c6eafb37"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/TypoCorrectionBenchmarkEvaluatorTests.swift",
+      "bytes": 9981,
+      "sha256": "af819a20c0bca69f3b0e482fb7329ac3e9612e80acee861537a9bd314ea4df9f"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/TypoCorrectionRecallDiagnosticMarkersTests.swift",
+      "bytes": 2386,
+      "sha256": "301c89f63a0e5696f6d156ef9053350709d997bbc15473694b0ca4be2d8fb99e"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/TypoCorrectionRecallPreflightTests.swift",
+      "bytes": 19265,
+      "sha256": "edbf636f9b66c336189c213769d84fdb4425d440a4ac7b169a0e5cde47315780"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/TypoCorrectionRuntimeIntegrationTests.swift",
+      "bytes": 15794,
+      "sha256": "2458f5585f72511d8be75d25c31200e37b558696c0668b191373a283441cecdb"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/TypoCorrectionTests.swift",
+      "bytes": 68985,
+      "sha256": "4c05812a22f486f515a1c4fbbc106c89282b2b43353fa22830257dbf170efa1d"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/UnzipArchiveReadingTests.swift",
+      "bytes": 14258,
+      "sha256": "7511c2ec47943d6dafc44574c2edcb0f0fea7d9426dc4f44c11d94afcb926e71"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/UnzipBinaryReaderTests.swift",
+      "bytes": 3453,
+      "sha256": "30d763cacc705fad218ac715aca301d04daec9341a180630adcaf849769a5de7"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/UnzipExtractionErrorTests.swift",
+      "bytes": 17419,
+      "sha256": "398c5fd552d331528c122b5188d63ae411c5b53bede0caf57e5d926d92d6e61f"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/UnzipTestSupport.swift",
+      "bytes": 7232,
+      "sha256": "f984b07064b0faea3ffb0b8227d9c0ba50e907517c4b76da478350cfd2f47db0"
+    },
+    {
+      "path": "Packages/RimeBridge/Package.swift",
+      "bytes": 2704,
+      "sha256": "83e91b4c48c15c1c39dc919a5282c39c80da82a55a370b62fdd430c758ea9b0b"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeBridgeCapabilities.swift",
+      "bytes": 1253,
+      "sha256": "08d770d221968e4dc6c31c38f1754a927d9dad603b0156105fa2436fa4421b50"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeBuiltinResourceInstaller.swift",
+      "bytes": 38345,
+      "sha256": "293dfca843f0d7e88700105f2d21c50061a621d82eb3594ce387fbadb23c2341"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeConfigManager+CustomYaml.swift",
+      "bytes": 14063,
+      "sha256": "e18386b6676d823bcfd2d79fdd2b19813ec6df8fdb2a8aa2a2512305e96bbdcf"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeConfigManager+DeploymentResources.swift",
+      "bytes": 8599,
+      "sha256": "9b28e342e7e540255d2ab87702a635cc113f5f6abe2d342b32a897fe89d4aa34"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeConfigManager+Preferences.swift",
+      "bytes": 3425,
+      "sha256": "968a07c1bc0cf6216d64368022e830a9654bf1f87f717c4eb6d2fafd003b5da3"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeConfigManager+RuntimeDirectories.swift",
+      "bytes": 1702,
+      "sha256": "dc3bff1463a90c9dc2420abf868e306b5615f7b2bf78347d9fec194f7b38fe14"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeConfigManager.swift",
+      "bytes": 198,
+      "sha256": "98f4635a90504788652ae920403bd5f13bc008e903b0864cb79296b566ad9891"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeDeploymentService.swift",
+      "bytes": 8398,
+      "sha256": "b1ffd45c75839191fd93d875304b1969021f35c78826db942b4932b8fec6f53b"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+Candidates.swift",
+      "bytes": 2147,
+      "sha256": "e1f2f3d44115e607dba15fe1324cfaeb10fc512390c2842411622374fd73e850"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+CorrectionQuery.swift",
+      "bytes": 1583,
+      "sha256": "cafc2e6179011248b5dc06e1cc78a64d73e9f194e89439d18fbe33123b7af56d"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+Input.swift",
+      "bytes": 3347,
+      "sha256": "99193b0574a74de43b48ab8b699abeca9f75ea0bb48342164b8ea521e050239f"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+Keycodes.swift",
+      "bytes": 816,
+      "sha256": "d45fbfd69cc20fdf620897c5c4ae96397ac9c5484c4f16fec462760f4869b91b"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+Output.swift",
+      "bytes": 5745,
+      "sha256": "ec1e4b1e1a964f91d6004278a11e530c2aa6940c4fe71d246231667ebd7ba015"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+SchemaValidation.swift",
+      "bytes": 5363,
+      "sha256": "246cd08eefb1e469d6115f8b9a9fbc2692c0438b679b2881b2864d67cd81c1ba"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+SessionRecovery.swift",
+      "bytes": 1842,
+      "sha256": "af4bba3c8cbbba6f464acd7a1361366a5076ab78488b1738843ad5740a9bc54f"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl.swift",
+      "bytes": 15627,
+      "sha256": "568f5894ae7dfe3ae57bcf1951d0292f3ead85bd6fff3558f5ecb7afaeb9abd3"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeFirstKeyBridgeTiming.swift",
+      "bytes": 1463,
+      "sha256": "a01026df34adb5ba9b74961cbd02107310b3f6dadcf0c38649c95c69d1983296"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeLuaRuntimeSmokeProbe.swift",
+      "bytes": 3219,
+      "sha256": "e59c8984c6557a5dde7832693bba66ca6fcb98233987c4b930b4b3f79f15cef4"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeProcessKeyBridgeTiming.swift",
+      "bytes": 1700,
+      "sha256": "913777537f90fc99bf99e134ac0ea4e07780db29e35b9431d9dda557456f5fa1"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeRuntimeLogSnapshot.swift",
+      "bytes": 2140,
+      "sha256": "b1fe818e471cf6137910089519d5713375335d46660701f01b3c0db1a6f58308"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeRuntimeSelectionBridge.swift",
+      "bytes": 704,
+      "sha256": "eced94c82551d950454232c68fc8f13bd57b4e0a86b358146c11f7d9497ec696"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeSchemaRuntimeSmokeProbe.swift",
+      "bytes": 12845,
+      "sha256": "c364dbad062c07904071c9a051a853e91304f3be1db978ca0f65c2f9a73e776f"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeStandardSyncService.swift",
+      "bytes": 7160,
+      "sha256": "e608c2f7aa5ad26fc5f95d54fbe31a95e5e102adc950c140e772911f99061ca7"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeSyncKeyboardActivity.swift",
+      "bytes": 1254,
+      "sha256": "a5698d528c148344ca75baa9774600ac80fd5eb966103cff5c901859d9f3f8fb"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeT9SmokeProbe.swift",
+      "bytes": 940,
+      "sha256": "21e1739ca859e8dc8ffa588a7309634ee11e4e2b6a275667b3e543e3cdaca9d3"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/ThreadAffineRimeEngineImplBootstrap.swift",
+      "bytes": 1471,
+      "sha256": "165790d758fd8a1b6f29a8e4a24e17607dbe32c0bf919f5d26a0d7d861700325"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/TypoCorrectionSidecarOwnerAdapters.swift",
+      "bytes": 897,
+      "sha256": "434a019c11aad73b821cd74dc457172af03f2ab4e7c4ad1105ca687b5afd2300"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridgeObjC/RimeDeployer.m",
+      "bytes": 8882,
+      "sha256": "ec009a5ea4216fd7c7e9418eeba16d5ab5b8e8fff9071e258743997852c26c0f"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridgeObjC/RimeLuaModuleShim.h",
+      "bytes": 594,
+      "sha256": "fc204250b1775d4a26debbf83148f9edd2713d33709745b19472e10dadb3581b"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridgeObjC/RimeLuaModuleShim.mm",
+      "bytes": 947,
+      "sha256": "608500e8d2d3f67799d8543dcdb617c63660bbcd21d33af3c1670bcc547f34e5"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridgeObjC/RimeOctagramModuleShim.h",
+      "bytes": 1411,
+      "sha256": "0e9134b190719c53ad645e4aa2b98bc5824faa67cd17589708558bffc31260dc"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridgeObjC/RimeOctagramModuleShim.mm",
+      "bytes": 6915,
+      "sha256": "6df945eb159597dade7d60ae4cd6b2c9077333bf2c53f00e82ecbebff9c452a4"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridgeObjC/RimeOpenCCConverter.m",
+      "bytes": 1273,
+      "sha256": "9eaefb3c1900f87fe4fd03d3bbdd5f4a224ac8a04aa97b7ef73de13451d23a68"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridgeObjC/RimeSessionManager.m",
+      "bytes": 24750,
+      "sha256": "934a7f15897603fee8362b8249bfd2bac1f48678ee954675987fc30f8e33b3d3"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridgeObjC/RimeUserDataSynchronizer.m",
+      "bytes": 1268,
+      "sha256": "93ef855a73f4ca863d6a8b2d1ff8149877d94b3cd4c07a386984a0395edae804"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridgeObjC/include/RimeBridgeObjC.h",
+      "bytes": 395,
+      "sha256": "a965d7e72edc4091f4b8e5d906226b36f8271f6f0a17db08ea20e71deb6d73c0"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridgeObjC/include/RimeDeployer.h",
+      "bytes": 2022,
+      "sha256": "2963db2c2a4833d50c99179e0f710f0ddc258a0a7a4cb3f6de227e5397854fc0"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridgeObjC/include/RimeOpenCCConverter.h",
+      "bytes": 467,
+      "sha256": "c162d38e4c3fac9498752bf6734ba3c86816056780c432ede626ab5925be034f"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridgeObjC/include/RimeSessionManager.h",
+      "bytes": 7330,
+      "sha256": "168e887d06b348847db4cc2e2bf4eba3527bc8342ed295ebbad9f32160ce5a5c"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridgeObjC/include/RimeUserDataSynchronizer.h",
+      "bytes": 722,
+      "sha256": "c42a176f5f1edc7d9b2656c876b1e0632ecee5de5659feaedefe79d17cf74384"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridgeObjC/include/rime_api.h",
+      "bytes": 20038,
+      "sha256": "6eb5629162c44761e7b878f1b122f464de5c8685bd3cd5ac1e8519badc6d6424"
+    },
+    {
+      "path": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeBuiltinResourceInstallerTests.swift",
+      "bytes": 50316,
+      "sha256": "253a75d8794ff8581f3cc8ce3389a4f055151588af624b9a8d00baec88d102cd"
+    },
+    {
+      "path": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeEngineContractTests.swift",
+      "bytes": 30456,
+      "sha256": "d1fefff3bf46b40be86b212e4f44f30019063f4f6ef62ec751b77f0b28007b0f"
+    },
+    {
+      "path": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeLuaSmokeTests.swift",
+      "bytes": 4987,
+      "sha256": "c6b0947b960ed23a551c1d79d7a7d33f005aec3f5322ba42dd6f18a2b7fe422d"
+    },
+    {
+      "path": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeOctagramCapabilityTests.swift",
+      "bytes": 5178,
+      "sha256": "ccc92ef9c4653e185d83544be3bc0c75216fc9a56d86c33f584093c485f50333"
+    },
+    {
+      "path": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeRuntimeSelectionBridgeTests.swift",
+      "bytes": 9119,
+      "sha256": "3430c9eb5d45676d784fdef02b5f3740a371ce09964b328a21f5e5440070aa23"
+    },
+    {
+      "path": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeSyncKeyboardActivityTests.swift",
+      "bytes": 1942,
+      "sha256": "8b3a6f4c1b7392246332aa4390069786ba9cd1761f675ccba7393f2e3df8e360"
+    },
+    {
+      "path": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift",
+      "bytes": 102755,
+      "sha256": "2c61112bf047921867edffb20aaec56d43fab10c95d3d4f28cc7b49fe48ce520"
+    },
+    {
+      "path": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9CompatibilitySpikeTests.swift",
+      "bytes": 6188,
+      "sha256": "eff3d8100bf04baa194a4ca824b9f9c6a9ae43d46f6d4978248780ce48d25965"
+    },
+    {
+      "path": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9PinyinSelectionSpikeTests.swift",
+      "bytes": 66412,
+      "sha256": "385f9a87dc3c9234c159086a64f6dc8e589b47bb7f338941a81c0870a9a0498a"
+    },
+    {
+      "path": "Packages/RimeBridge/Tests/RimeBridgeTests/ThreadAffineRimeRealEngineTests.swift",
+      "bytes": 6784,
+      "sha256": "feeb5606e1345b80490f84718fa4765e5645b16589026a433ff0d262f4d44c42"
+    },
+    {
+      "path": "Packages/RimeBridge/Tests/RimeBridgeTests/TypoCorrectionSidecarOwnerAdapterTests.swift",
+      "bytes": 4744,
+      "sha256": "a781630f7d244fca25046953fd8c65bb716a83c26c5a206d488245cdf51a9d70"
+    },
+    {
+      "path": "Packages/RimeBridge/Vendor/.rime-vendor-receipt",
+      "bytes": 120,
+      "sha256": "32b81905629e811067cfc8dfcd8b1548cce6e4a92433a885aba3ed8e0beeca83"
+    },
+    {
+      "path": "Packages/RimeBridge/Vendor/THIRD_PARTY_OCTAGRAM_NOTICE.txt",
+      "bytes": 547,
+      "sha256": "4e70ceafc631201750b130768a5c77f0ce9d06e9f6b522ce16955919cf5e1e20"
+    },
+    {
+      "path": "Packages/RimeBridge/scripts/build_all_xcframeworks.sh",
+      "bytes": 6052,
+      "sha256": "7b43a52cda915583d23b73217902d5174f46d03fa065ee973eb54b176ca067e3"
+    },
+    {
+      "path": "Packages/RimeBridge/scripts/build_deps.sh",
+      "bytes": 5289,
+      "sha256": "6280c7c4ba1e5712f799af1951938e8211af16da3e6e070273b396a6dd96c51d"
+    },
+    {
+      "path": "Universe Keyboard.xcodeproj/project.pbxproj",
+      "bytes": 46990,
+      "sha256": "49f0ebe89db1f30323d9bf6ceb297179ffed5fc9ef983fd3b947d11d5820586c"
+    },
+    {
+      "path": "Universe Keyboard.xcodeproj/project.xcworkspace/contents.xcworkspacedata",
+      "bytes": 135,
+      "sha256": "7f3b00b5c3fdb45242d7b87e1e5c4e25d1fa8129a16c94295ecc4e8ea2235c5f"
+    },
+    {
+      "path": "Universe Keyboard.xcodeproj/xcshareddata/xcodecloud/manifest.json",
+      "bytes": 172,
+      "sha256": "bec0b677b76baa77c2dcfa7d668b0dfb3d16a0f5a34783af60ae41d91ef8afa5"
+    },
+    {
+      "path": "Universe Keyboard.xcodeproj/xcshareddata/xcschemes/Keyboard.xcscheme",
+      "bytes": 4061,
+      "sha256": "a09d05bbf466d17bd132c7ad5be6e5ad8e5e9f81c49fd665e00fba519f6d1766"
+    },
+    {
+      "path": "Universe Keyboard.xcodeproj/xcshareddata/xcschemes/KeyboardExtensionTests.xcscheme",
+      "bytes": 2989,
+      "sha256": "c57eae6288cf4d8bae5e8db1038f03085fa167a31fd0b9d9fc37f7024f9d40f7"
+    },
+    {
+      "path": "Universe Keyboard.xcodeproj/xcshareddata/xcschemes/RimeBridgeTests.xcscheme",
+      "bytes": 2482,
+      "sha256": "f5934541b999c57d6d7cdacd9ff66dcf569d97fc6cdf900d80d7ec2d7cfeb0f9"
+    },
+    {
+      "path": "Universe Keyboard.xcodeproj/xcshareddata/xcschemes/Universe Keyboard.xcscheme",
+      "bytes": 5754,
+      "sha256": "ed7e9b94b88097638cfc4ecaef7c391a8d633ffc0c0751fdf6dbbda2c4f730da"
+    },
+    {
+      "path": "Universe Keyboard.xcodeproj/xcshareddata/xcschemes/UniverseKeyboardUITests.xcscheme",
+      "bytes": 6020,
+      "sha256": "a09bca8e0c4eee860d7ecfa1d551aa5e49cc4517d91ebd3102066e111cfa5b8f"
+    },
+    {
+      "path": "UniverseKeyboardTests/ActivationChecklistStateTests.swift",
+      "bytes": 12441,
+      "sha256": "2aac73f5bd54aeba14030b89481a5f9f49466cb0670989400314c4246d69ca8a"
+    },
+    {
+      "path": "UniverseKeyboardTests/AppAboutContactTests.swift",
+      "bytes": 1137,
+      "sha256": "b8f25387505a0a00e028ea9cf3e77b13bf1985ad1122f6efc852ae1824d5a35f"
+    },
+    {
+      "path": "UniverseKeyboardTests/AppActionButtonChromeTests.swift",
+      "bytes": 2717,
+      "sha256": "95e90b3e810ee27138e500530c427b9ce6baac38cff4e2d88d93d2a411dbfff6"
+    },
+    {
+      "path": "UniverseKeyboardTests/AppNotificationSettingsTests.swift",
+      "bytes": 16896,
+      "sha256": "ca9f742855aeef2e93a2f6e8389b4592dfbe7fe8604f4427b01c53dba436db65"
+    },
+    {
+      "path": "UniverseKeyboardTests/AppSwitchChromeTests.swift",
+      "bytes": 762,
+      "sha256": "e832f3ea7491e2cf157f4ca026e05e52d9a1c873e147c875ef7860e11a627d0d"
+    },
+    {
+      "path": "UniverseKeyboardTests/DiagnosticsJournalRetentionCoordinatorTests.swift",
+      "bytes": 8383,
+      "sha256": "08d523d5b832b5ff26cb7564cb961d3ed25a432c106468414a5f8db3aae8b576"
+    },
+    {
+      "path": "UniverseKeyboardTests/DiagnosticsJournalRetentionSchedulerTests.swift",
+      "bytes": 4269,
+      "sha256": "77df135e783a66d996e7d044c9e253a80a414c75c64d88861b97700ca1d5536f"
+    },
+    {
+      "path": "UniverseKeyboardTests/DiagnosticsLogSourceTests.swift",
+      "bytes": 17019,
+      "sha256": "b3f89cab7d94bdde0aebb4874290d90ae8e992336ae09a726f23cc3397f3630c"
+    },
+    {
+      "path": "UniverseKeyboardTests/DiagnosticsRuntimeRouteDisplayTests.swift",
+      "bytes": 4118,
+      "sha256": "503d1a227f0f3cc414e0a7167c11a4c6ad1bf34704515cf8766858b50b848b2e"
+    },
+    {
+      "path": "UniverseKeyboardTests/DiagnosticsStoreTests.swift",
+      "bytes": 28325,
+      "sha256": "5374ae55fd68f9ac1aa3c0380e9f7e9e3763967d4988b1459cf9cefcb268d38f"
+    },
+    {
+      "path": "UniverseKeyboardTests/LocalDictionaryModelTests.swift",
+      "bytes": 6052,
+      "sha256": "fe9827b2131efb1d2894fc164d96388c58364cd48027c8daab2fbac8afd1a647"
+    },
+    {
+      "path": "UniverseKeyboardTests/NineKeyEnableTransactionTests.swift",
+      "bytes": 19535,
+      "sha256": "5cece3aaec26cc57aaa6f51512982d86cb221952ac522e84a551bfa980211221"
+    },
+    {
+      "path": "UniverseKeyboardTests/ReleaseEvidenceStoreTests.swift",
+      "bytes": 10574,
+      "sha256": "a5120932edf378dfa49838241ad0230a3ac9e4c2e79ced09fd38b3f196558ffa"
+    },
+    {
+      "path": "UniverseKeyboardTests/RimeAutomaticSyncPolicyTests.swift",
+      "bytes": 22286,
+      "sha256": "1bac10ba64d092c01b546d252d829872d4c3f0d416e0007abb2b75bfffa08b86"
+    },
+    {
+      "path": "UniverseKeyboardTests/RimeBuiltinRuntimeClosureTests.swift",
+      "bytes": 6716,
+      "sha256": "7ece1e254ddb5a58b4e91882ae66effad36a896c57ef661910aac78363733bf7"
+    },
+    {
+      "path": "UniverseKeyboardTests/RimeIcePinnedArtifactTests.swift",
+      "bytes": 4238,
+      "sha256": "28cdd15c3a3ccdeb23b1af06288d5b67f00db15763af8c3df0c58adf523cf202"
+    },
+    {
+      "path": "UniverseKeyboardTests/RimeSettingsStoreTests.swift",
+      "bytes": 59839,
+      "sha256": "737206cf1020c35e339bf3dd2a461ce8a1d77c440a22eebe9b8741e3b444705b"
+    },
+    {
+      "path": "UniverseKeyboardTests/RimeSyncDiagnosticsTests.swift",
+      "bytes": 9839,
+      "sha256": "9ada0d05485af44fcfb0f91d61ce87e979987bbae9cdd58b6d40c51688f35d2d"
+    },
+    {
+      "path": "UniverseKeyboardTests/RimeSyncTests.swift",
+      "bytes": 54024,
+      "sha256": "1025f4835f0f19da0dc4f4372074d74fbcb101bc1e4a4e8d4aeaa4421065716c"
+    },
+    {
+      "path": "UniverseKeyboardTests/SchemaArtifactSecurityTests.swift",
+      "bytes": 27410,
+      "sha256": "9b635dbb0af0bb361f696a67cb9add3b92fd860439b3b1ffa661ab63a684a6b2"
+    },
+    {
+      "path": "UniverseKeyboardTests/SchemaManagerTests.swift",
+      "bytes": 148113,
+      "sha256": "6c29713e3d83b25d814aeae8ccf48b846baaa02f7d0263a17510f195ce655549"
+    },
+    {
+      "path": "UniverseKeyboardTests/SchemaSourceProbeTests.swift",
+      "bytes": 5920,
+      "sha256": "352bdd7f0280c3ec373d8dd059dbfacc52c95e1497f341d2ce401a4457b5452b"
+    },
+    {
+      "path": "UniverseKeyboardTests/SchemeLicenseDownloadCopyTests.swift",
+      "bytes": 3349,
+      "sha256": "5c422c500aff784299b400b51955884d3cbace06b7aad2cbce90255eff835ded"
+    },
+    {
+      "path": "UniverseKeyboardTests/SchemeProvenancePresentationTests.swift",
+      "bytes": 5937,
+      "sha256": "1f2d166f29d302480f3a06f4be3caa6ce726ed64137a24ee923c0035ecfb6053"
+    },
+    {
+      "path": "UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests.swift",
+      "bytes": 82969,
+      "sha256": "a619808507a73687972fa17cb8282f4c61cb94afdffe113e7f39a8659d85451d"
+    },
+    {
+      "path": "UniverseKeyboardTests/TD012LMDGDeviceStagingTests.swift",
+      "bytes": 17031,
+      "sha256": "cfd02536696755d00bc852f078fa72fb17ba64986c4f2c02de4302d869e1232c"
+    },
+    {
+      "path": "UniverseKeyboardTests/TypingIntelligenceViewModelTests.swift",
+      "bytes": 5105,
+      "sha256": "6ad396c0865ad1b6cd47470c762a87ae366f418315a90e02b4e5858b0001cd8d"
+    },
+    {
+      "path": "UniverseKeyboardTests/TypoCorrectionBenchmarkModelTests.swift",
+      "bytes": 2106,
+      "sha256": "827c1156abb9c3909ce5023e7bced33e198c27a0bc23d0038af82a08139047a8"
+    }
+  ]
+}

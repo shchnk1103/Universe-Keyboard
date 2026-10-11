@@ -1,0 +1,37 @@
+{
+  "h1_positive_candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50",
+  "h1_payload78_unchanged": true,
+  "h2_modes": [
+    {
+      "mode": "ordinary-debug",
+      "file_count": 78,
+      "macho_count": 6,
+      "payload_sha256": "1e7cdddafce2949b87b7f0ce145db5bcdddc38a0b7a20b278bcb397ba49bee8c",
+      "exit": 0,
+      "elapsed_seconds": 33.700489416951314,
+      "warning_count": 0,
+      "ui_export_absent": true
+    },
+    {
+      "mode": "ordinary-release",
+      "file_count": 74,
+      "macho_count": 2,
+      "payload_sha256": "23bf80d0bd9937c8278a00bc680e752d6b6360dcc1cfceddb6b3c10c1a319fd3",
+      "exit": 0,
+      "elapsed_seconds": 83.02583945798688,
+      "warning_count": 0,
+      "ui_export_absent": true
+    }
+  ],
+  "postbuild_inputs": {
+    "source_and_build_inputs": {
+      "count": 571,
+      "mismatches": []
+    },
+    "vendor_files": {
+      "count": 630,
+      "mismatches": []
+    }
+  },
+  "scope": "host isolation only; ordinary Debug Core DEBUG hook not asserted absent; no runtime/Release/Gate"
+}

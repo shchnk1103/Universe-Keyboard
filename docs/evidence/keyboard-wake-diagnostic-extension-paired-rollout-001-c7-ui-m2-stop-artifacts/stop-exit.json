@@ -1,0 +1,45 @@
+{
+  "utc": "2026-10-03T14:57:29.845086+00:00",
+  "pid": 3626,
+  "process_state": "3626 Ss   /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+  "installed78_matches": true,
+  "source1279_matches": true,
+  "selected_preferences": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "rime_deployed": {
+      "exists": true,
+      "value": true
+    },
+    "rime_needs_deploy": {
+      "exists": true,
+      "value": false
+    },
+    "rime_is_deploying": {
+      "exists": false,
+      "value": null
+    }
+  },
+  "debug_calls": 11,
+  "ledger_rows": 22,
+  "raw_hashes_verified": 11,
+  "breakpoint_hit_count_before_cleanup": 1,
+  "breakpoint_deleted": true,
+  "breakpoint_list_empty": true,
+  "continued_running": true,
+  "detached": true,
+  "memory_reads": 0,
+  "snapshot_exported": false,
+  "target_AppSwitcher_transition_not_instructed": true,
+  "actual_pause_start_and_cause": "UNKNOWN",
+  "actual_input_attempt_count": "UNKNOWN; Human reported several presses",
+  "human_visual_exit": "pending",
+  "typing_health_not_verified": true,
+  "no_relaunch_restore_install_or_retry": true
+}

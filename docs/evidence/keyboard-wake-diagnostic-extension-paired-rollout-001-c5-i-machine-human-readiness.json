@@ -1,0 +1,107 @@
+{
+  "date_utc": "2026-10-01T02:11:50.554353+00:00",
+  "target": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "human_operator_reply": "完全访问已开启，搜索框是在“搜索”Tab页中，而不是在本地词典中。",
+  "full_access": "enabled per Human system-Settings observation; no setting changed by this task",
+  "host_readiness": "original local-dictionary search host not confirmed; alternative existing SearchTab observed by Human, not yet authorized/review-rebound for C5-R",
+  "selected_capture_keys_after_operator": {
+    "logging_enabled": {
+      "present": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "present": false,
+      "value": null
+    },
+    "log_category_disp": {
+      "present": false,
+      "value": null
+    },
+    "log_category_engine": {
+      "present": false,
+      "value": null
+    }
+  },
+  "capture_keys_unchanged": true,
+  "keyboard_system_preference": [
+    {
+      "domain": ".GlobalPreferences.plist",
+      "keyboard_list_summaries": [
+        {
+          "key": "AppleKeyboards",
+          "target_keyboard_present": true,
+          "item_count": 4
+        },
+        {
+          "key": "ApplePasscodeKeyboards",
+          "target_keyboard_present": false,
+          "item_count": 3
+        }
+      ]
+    },
+    {
+      "domain": "com.apple.Preferences.plist",
+      "keyboard_list_summaries": []
+    },
+    {
+      "domain": "com.apple.keyboard.plist",
+      "keyboard_list_summaries": []
+    }
+  ],
+  "group_resource_observation": {
+    "group_path": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/B0D7CE38-2B36-4AF1-B585-63ED3DA340E0",
+    "host_file_presence_only": {
+      "Diagnostics/v1": true,
+      "Rime/shared": true,
+      "Rime/user": true,
+      "Rime/shared/build/luna_pinyin.schema.yaml": false,
+      "Rime/shared/build/luna_pinyin.table.bin": true,
+      "Rime/shared/build/luna_pinyin.prism.bin": true,
+      "Rime/user/build/luna_pinyin.schema.yaml": true,
+      "Rime/user/build/luna_pinyin.table.bin": false,
+      "Rime/user/build/luna_pinyin.prism.bin": true
+    },
+    "selected_capture_keys": {
+      "logging_enabled": {
+        "present": false,
+        "value": null
+      },
+      "diagnostics_high_fidelity_expiration": {
+        "present": false,
+        "value": null
+      },
+      "log_category_disp": {
+        "present": false,
+        "value": null
+      },
+      "log_category_engine": {
+        "present": false,
+        "value": null
+      }
+    },
+    "app_rime_deployed_flag": true,
+    "app_group_runtime_extension_access_proven": false,
+    "rime_session_runtime_ready_proven": false
+  },
+  "source_hashes_for_host_delta": {
+    "Universe Keyboard/Views/Search/SearchTab.swift": "29bc0100db1517f1247eeabf1e56966c845a900b0e588c18fb1d29eb1fd6c4c2",
+    "Universe Keyboard/Models/SettingsSearchCatalog.swift": "e0d5ef07ac79f1d78637d3e8041962b92d1b4d5176e919db65304845d3580472",
+    "Universe Keyboard/Views/Settings/RimeSettingsStore.swift": "8eb229689693188fe4ee937f09181145113104743db716b180aeb687c28bade4",
+    "Universe Keyboard/Views/Dictionary/DictionaryBrowserView.swift": "a265beff2b682512ba0524298955135444df2db2d770198d7b74b2fa292d6b62"
+  },
+  "static_host_delta": {
+    "SearchTab.swift:11": "query is @State; no persisted query field",
+    "SearchTab.swift:15-16": "results delegate to SettingsSearchCatalog.matches",
+    "SearchTab.swift:39-40": "onAppear calls rimeStore.load",
+    "SearchTab.swift:56-60": "existing trial TextField; no autocorrection/capitalization, FocusState",
+    "SettingsSearchCatalog.swift:188-192": "in-memory setting-catalog filter",
+    "RimeSettingsStore.swift:207-249": "load reads prefs and seedFirstLaunchBuiltinDeploymentIntentIfNeeded",
+    "RimeSettingsStore.swift:790-796": "seed returns ifrime_deployedtrue; otherwise may write deploymentintent, so do not describe load as unconditionally side-effect-free"
+  },
+  "rime_deployed_flag_at_read": true,
+  "appex_runtime_access_or_rime_session_ready_proven": false,
+  "keyboard_activation_or_input_performed_by_executor": false,
+  "no_diagnostic_arming": true,
+  "C5I_status": "installed pairing pass; original host readiness unresolved/Hold; not complete runtime Exit",
+  "C5R_status": "not authorized; host needs exact rebind before capture"
+}

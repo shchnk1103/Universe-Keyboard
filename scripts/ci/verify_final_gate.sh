@@ -9,13 +9,15 @@ format_result=${4:-}
 keyboardcore_result=${5:-}
 rimebridge_result=${6:-}
 app_keyboard_result=${7:-}
-release_result=${8:-}
+keychain_result=${8:-}
+release_result=${9:-}
 
 heavy_names=(
   format-swift
   test-keyboardcore
   test-rimebridge
   test-app-keyboard
+  test-rime-sync-keychain
   build-release
 )
 heavy_results=(
@@ -23,6 +25,7 @@ heavy_results=(
   "$keyboardcore_result"
   "$rimebridge_result"
   "$app_keyboard_result"
+  "$keychain_result"
   "$release_result"
 )
 

@@ -1,0 +1,52 @@
+[
+  {
+    "path": "authorization.json",
+    "bytes": 1251,
+    "sha256": "070bcdb4bc9948aedd7539ffefba89c9406cbaef216eefdda575a9f6353392ce"
+  },
+  {
+    "path": "fixture.c",
+    "bytes": 337,
+    "sha256": "fd8ad8a5ef629acdfaacfc1f6aeb0805a16587a99bfdc57c34aa2e4e738e046c"
+  },
+  {
+    "path": "host_probe.py",
+    "bytes": 6978,
+    "sha256": "58bdf1a9a699f42507a2811675efd2bbb84d6670626bd7c3ed06782ff499cde3"
+  },
+  {
+    "path": "entitlements.plist",
+    "bytes": 243,
+    "sha256": "87a3e7fcd67af748b28d049449185056b8b076b8bd65c82720f48c99883022be"
+  },
+  {
+    "path": "compile-receipt.json",
+    "bytes": 948,
+    "sha256": "4f86a7d463b990e4a4ed75d193e849d8bdfccbfa8fd60b76f3123e1079741c88"
+  },
+  {
+    "path": "prepare-receipt.json",
+    "bytes": 539,
+    "sha256": "19eeb1a058cc455e27d0db0d6d46997edab1a67528dbdf13f1d7142c62a7752f"
+  },
+  {
+    "path": "callback.json",
+    "bytes": 558,
+    "sha256": "09737d883182c950287dd643c64c31d5438bf6e895064d886197df5ec98a108d"
+  },
+  {
+    "path": "run-receipt.json",
+    "bytes": 1991,
+    "sha256": "cd3145963b6ade9e3cef33f079106b22a6a8ba265e6e5cb642d4942cef626aa4"
+  },
+  {
+    "path": "completion.json",
+    "bytes": 1998,
+    "sha256": "cb1dc0f7b373d7ffb8ed379dc7c1f86070b70fe0b9b56de5446c47002242cfce"
+  },
+  {
+    "path": "lldb-transcript.txt",
+    "bytes": 3397,
+    "sha256": "91059b86fbfb63e82f4e70cb6f22c6ac7cab5b818359402bfd69bad843fb95fd"
+  }
+]

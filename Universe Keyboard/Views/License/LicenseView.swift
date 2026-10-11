@@ -26,7 +26,7 @@ struct SchemeLicenseView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("关闭") { dismiss() }
+                    Button("关闭", action: dismissLicense)
                 }
             }
             .safeAreaInset(edge: .bottom) {
@@ -45,11 +45,21 @@ struct SchemeLicenseView: View {
                 minHeight: 46
             ) {
                 onAccept()
-                dismiss()
+                dismissLicense()
             }
             .padding()
         }
         .background(.regularMaterial)
+    }
+
+    private func dismissLicense() {
+        for effect in SchemeLicenseDownloadFlow.effects(for: .dismissLicense) {
+            guard case .dismissLicense = effect else {
+                assertionFailure("License dismissal emitted an unexpected effect")
+                continue
+            }
+            dismiss()
+        }
     }
 }
 

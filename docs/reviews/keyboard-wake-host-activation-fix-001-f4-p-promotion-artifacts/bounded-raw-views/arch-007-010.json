@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift",
+  "origin_sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+  "expected_sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+  "line_start": 541,
+  "line_end": 600,
+  "lines": [
+    {
+      "line": 541,
+      "text": "        guard"
+    },
+    {
+      "line": 542,
+      "text": "            phase != \"changed\" || now - lastFallbackPanDiagnosticLogTime >= CandidateTouchDiagnostics.minimumLogInterval"
+    },
+    {
+      "line": 543,
+      "text": "        else { return }"
+    },
+    {
+      "line": 544,
+      "text": "        lastFallbackPanDiagnosticLogTime = now"
+    },
+    {
+      "line": 545,
+      "text": "        let point = recognizer.location(in: self)"
+    },
+    {
+      "line": 546,
+      "text": "        let translation = recognizer.translation(in: self)"
+    },
+    {
+      "line": 547,
+      "text": "        let velocity = recognizer.velocity(in: self)"
+    },
+    {
+      "line": 548,
+      "text": "        Logger.shared.debug("
+    },
+    {
+      "line": 549,
+      "text": "            \"candidateTouch bar horizontalFallback \\(phase) \""
+    },
+    {
+      "line": 550,
+      "text": "                + \"point=\\(CandidateTouchDiagnostics.pointDescription(point)) \""
+    },
+    {
+      "line": 551,
+      "text": "                + \"translation=\\(CandidateTouchDiagnostics.pointDescription(translation)) \""
+    },
+    {
+      "line": 552,
+      "text": "                + \"velocity=\\(CandidateTouchDiagnostics.pointDescription(velocity)) \""
+    },
+    {
+      "line": 553,
+      "text": "                + \"offset=\\(Int(collectionView.contentOffset.x))\","
+    },
+    {
+      "line": 554,
+      "text": "            category: .display"
+    },
+    {
+      "line": 555,
+      "text": "        )"
+    },
+    {
+      "line": 556,
+      "text": "    }"
+    },
+    {
+      "line": 557,
+      "text": ""
+    },
+    {
+      "line": 558,
+      "text": "    private func installSwipeDownExpandGesture() {"
+    },
+    {
+      "line": 559,
+      "text": "        let recognizer = UIPanGestureRecognizer(target: self, action: #selector(handleSwipeDownExpand(_:)))"
+    },
+    {
+      "line": 560,
+      "text": "        // Do not cancel cell taps. A downward micro-movement used to begin this"
+    },
+    {
+      "line": 561,
+      "text": "        // pan, kill `didSelect`, and then fail the expand threshold."
+    },
+    {
+      "line": 562,
+      "text": "        recognizer.cancelsTouchesInView = false"
+    },
+    {
+      "line": 563,
+      "text": "        recognizer.delegate = gestureBridge"
+    },
+    {
+      "line": 564,
+      "text": "        swipeDownRecognizer = recognizer"
+    },
+    {
+      "line": 565,
+      "text": "        gestureBridge.swipeDown = recognizer"
+    },
+    {
+      "line": 566,
+      "text": "        addGestureRecognizer(recognizer)"
+    },
+    {
+      "line": 567,
+      "text": "    }"
+    },
+    {
+      "line": 568,
+      "text": ""
+    },
+    {
+      "line": 569,
+      "text": "    @objc private func handleSwipeDownExpand(_ recognizer: UIPanGestureRecognizer) {"
+    },
+    {
+      "line": 570,
+      "text": "        switch recognizer.state {"
+    },
+    {
+      "line": 571,
+      "text": "        case .began:"
+    },
+    {
+      "line": 572,
+      "text": "            if collectionView.isDecelerating {"
+    },
+    {
+      "line": 573,
+      "text": "                collectionView.setContentOffset(collectionView.contentOffset, animated: false)"
+    },
+    {
+      "line": 574,
+      "text": "            }"
+    },
+    {
+      "line": 575,
+      "text": "            isSwipeDownTracking = true"
+    },
+    {
+      "line": 576,
+      "text": "            hasTriggeredSwipeDownExpand = false"
+    },
+    {
+      "line": 577,
+      "text": "            updateSwipePreviewHighlight(for: recognizer)"
+    },
+    {
+      "line": 578,
+      "text": "        case .changed:"
+    },
+    {
+      "line": 579,
+      "text": "            updateSwipePreviewHighlight(for: recognizer)"
+    },
+    {
+      "line": 580,
+      "text": "            triggerExpandIfSwipeDownThresholdPassed(recognizer)"
+    },
+    {
+      "line": 581,
+      "text": "        default:"
+    },
+    {
+      "line": 582,
+      "text": "            clearSwipePreviewHighlight()"
+    },
+    {
+      "line": 583,
+      "text": "            isSwipeDownTracking = false"
+    },
+    {
+      "line": 584,
+      "text": "            hasTriggeredSwipeDownExpand = false"
+    },
+    {
+      "line": 585,
+      "text": "        }"
+    },
+    {
+      "line": 586,
+      "text": "    }"
+    },
+    {
+      "line": 587,
+      "text": ""
+    },
+    {
+      "line": 588,
+      "text": "    private func triggerExpandIfSwipeDownThresholdPassed(_ recognizer: UIPanGestureRecognizer) {"
+    },
+    {
+      "line": 589,
+      "text": "        guard !hasTriggeredSwipeDownExpand, allowsSwipeToExpand else { return }"
+    },
+    {
+      "line": 590,
+      "text": "        let translation = recognizer.translation(in: self)"
+    },
+    {
+      "line": 591,
+      "text": "        let velocity = recognizer.velocity(in: self)"
+    },
+    {
+      "line": 592,
+      "text": "        let isIntentionalDownSwipe ="
+    },
+    {
+      "line": 593,
+      "text": "            translation.y > 18"
+    },
+    {
+      "line": 594,
+      "text": "            && velocity.y > 180"
+    },
+    {
+      "line": 595,
+      "text": "            && abs(translation.y) > abs(translation.x) * 1.2"
+    },
+    {
+      "line": 596,
+      "text": "        guard isIntentionalDownSwipe else { return }"
+    },
+    {
+      "line": 597,
+      "text": "        hasTriggeredSwipeDownExpand = true"
+    },
+    {
+      "line": 598,
+      "text": "        DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) { [weak self] in"
+    },
+    {
+      "line": 599,
+      "text": "            self?.clearSwipePreviewHighlight()"
+    },
+    {
+      "line": 600,
+      "text": "        }"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "C4-AR-PACKET-TRANSCRIPTION-001",
+  "classification": "review-output packet digest transcription only",
+  "original_report_sha256": "2bb5fda79f604f6fafe1144d88127ac2ea99eda017b4b53a408cf50e6f318c61",
+  "original_usage_sha256": "8e532bcb23865a6a1fde7b1c79bdfabf26e226b1899cdead7fa7906022fa636e",
+  "original_recorded_packet_digest": "18473e76335c59bc3c0109e3dd1deada015148a433dc6d76aa0a897cecd17",
+  "actual_packet_sha256": "18473e76335c59bc3c0109e3dd1deada015148a433645dc6d76aa0a897cecd17",
+  "candidate_manifest_sha256": "af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9",
+  "reviewer_final_ack": "Reviewer explicitly identified omitted 645 and provided correct digest in final message after budget end",
+  "disposition": "fix by separate root factual reconciliation; original independent outputs preserved byte-for-byte",
+  "scope": "no change to findings/verdict/coverage/usage/source",
+  "review_process_notes": "usage discloses checkpoints at12/21/31 instead of10/20/30 and two guessed absent documentary paths; not hidden or rebadged as strict protocol compliance"
+}

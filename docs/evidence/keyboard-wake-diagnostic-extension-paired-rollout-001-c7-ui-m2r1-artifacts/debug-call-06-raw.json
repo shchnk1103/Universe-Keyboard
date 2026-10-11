@@ -1,0 +1,22 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "\n🐛 Continue\n\n✅ Resumed debugger session 27ecbb96-90d1-4755-bc33-e742b014fc63\n"
+    }
+  ],
+  "structuredContent": {
+    "schema": "xcodebuildmcp.output.debug-session-action",
+    "schemaVersion": "2",
+    "didError": false,
+    "error": null,
+    "data": {
+      "action": "continue",
+      "session": {
+        "debugSessionId": "27ecbb96-90d1-4755-bc33-e742b014fc63",
+        "connectionState": "attached",
+        "executionState": "running"
+      }
+    }
+  }
+}

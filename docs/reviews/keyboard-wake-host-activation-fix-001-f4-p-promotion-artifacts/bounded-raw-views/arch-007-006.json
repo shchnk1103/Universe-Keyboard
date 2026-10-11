@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift",
+  "origin_sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+  "expected_sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+  "line_start": 301,
+  "line_end": 360,
+  "lines": [
+    {
+      "line": 301,
+      "text": "            bounds.contains(point)"
+    },
+    {
+      "line": 302,
+      "text": "            || (!expandButton.isHidden && expandedButtonHitFrame.contains(point))"
+    },
+    {
+      "line": 303,
+      "text": "        logTouch("
+    },
+    {
+      "line": 304,
+      "text": "            \"bar pointInside\","
+    },
+    {
+      "line": 305,
+      "text": "            point: point,"
+    },
+    {
+      "line": 306,
+      "text": "            lastLogTime: &lastPointInsideDiagnosticLogTime,"
+    },
+    {
+      "line": 307,
+      "text": "            extra: \"inside=\\(result)\""
+    },
+    {
+      "line": 308,
+      "text": "        )"
+    },
+    {
+      "line": 309,
+      "text": "        return result"
+    },
+    {
+      "line": 310,
+      "text": "    }"
+    },
+    {
+      "line": 311,
+      "text": ""
+    },
+    {
+      "line": 312,
+      "text": "    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {"
+    },
+    {
+      "line": 313,
+      "text": "        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE"
+    },
+    {
+      "line": 314,
+      "text": "            if let button = wakeProbeButton, !button.isHidden, button.frame.contains(point) {"
+    },
+    {
+      "line": 315,
+      "text": "                return button.hitTest(button.convert(point, from: self), with: event)"
+    },
+    {
+      "line": 316,
+      "text": "            }"
+    },
+    {
+      "line": 317,
+      "text": "        #endif"
+    },
+    {
+      "line": 318,
+      "text": "        let superHit = super.hitTest(point, with: event)"
+    },
+    {
+      "line": 319,
+      "text": "        let result: UIView?"
+    },
+    {
+      "line": 320,
+      "text": "        let collectionPoint = collectionView.convert(point, from: self)"
+    },
+    {
+      "line": 321,
+      "text": "        let hitsCandidateItem ="
+    },
+    {
+      "line": 322,
+      "text": "            collectionView.frame.contains(point)"
+    },
+    {
+      "line": 323,
+      "text": "            && collectionView.indexPathForItem(at: collectionPoint) != nil"
+    },
+    {
+      "line": 324,
+      "text": "        if !hitsCandidateItem, !expandButton.isHidden, expandedButtonHitFrame.contains(point) {"
+    },
+    {
+      "line": 325,
+      "text": "            let buttonPoint = expandButton.convert(point, from: self)"
+    },
+    {
+      "line": 326,
+      "text": "            result = expandButton.hitTest(buttonPoint, with: event) ?? expandButton"
+    },
+    {
+      "line": 327,
+      "text": "        } else if bounds.contains(point), collectionView.frame.contains(point) {"
+    },
+    {
+      "line": 328,
+      "text": "            result = collectionView.hitTest(collectionPoint, with: event) ?? collectionView"
+    },
+    {
+      "line": 329,
+      "text": "        } else if bounds.contains(point) {"
+    },
+    {
+      "line": 330,
+      "text": "            result = self"
+    },
+    {
+      "line": 331,
+      "text": "        } else {"
+    },
+    {
+      "line": 332,
+      "text": "            result = nil"
+    },
+    {
+      "line": 333,
+      "text": "        }"
+    },
+    {
+      "line": 334,
+      "text": "        logTouch("
+    },
+    {
+      "line": 335,
+      "text": "            \"bar hitTest\","
+    },
+    {
+      "line": 336,
+      "text": "            point: point,"
+    },
+    {
+      "line": 337,
+      "text": "            lastLogTime: &lastHitTestDiagnosticLogTime,"
+    },
+    {
+      "line": 338,
+      "text": "            extra: \"super=\\(CandidateTouchDiagnostics.viewName(superHit)) \""
+    },
+    {
+      "line": 339,
+      "text": "                + \"hit=\\(CandidateTouchDiagnostics.viewName(result)) \""
+    },
+    {
+      "line": 340,
+      "text": "                + \"collectionFrame=\\(rectDescription(collectionView.frame)) \""
+    },
+    {
+      "line": 341,
+      "text": "                + \"pan=\\(CandidateTouchDiagnostics.gestureStateName(collectionView.panGestureRecognizer.state))\""
+    },
+    {
+      "line": 342,
+      "text": "        )"
+    },
+    {
+      "line": 343,
+      "text": "        #if DEBUG"
+    },
+    {
+      "line": 344,
+      "text": "            recordStructuredTouchIfNeeded(point: point, hitView: result, event: event)"
+    },
+    {
+      "line": 345,
+      "text": "            recordHitProbe(point: point, hitView: result)"
+    },
+    {
+      "line": 346,
+      "text": "        #endif"
+    },
+    {
+      "line": 347,
+      "text": "        return result"
+    },
+    {
+      "line": 348,
+      "text": "    }"
+    },
+    {
+      "line": 349,
+      "text": ""
+    },
+    {
+      "line": 350,
+      "text": "    #if DEBUG"
+    },
+    {
+      "line": 351,
+      "text": "        private func recordStructuredTouchIfNeeded(point: CGPoint, hitView: UIView?, event: UIEvent?) {"
+    },
+    {
+      "line": 352,
+      "text": "            // Physical keyboard extensions may enter hit-testing before UIKit"
+    },
+    {
+      "line": 353,
+      "text": "            // exposes `.began`. Identity still deduplicates repeated hit-test"
+    },
+    {
+      "line": 354,
+      "text": "            // passes for the same single-finger operation."
+    },
+    {
+      "line": 355,
+      "text": "            guard let touches = event?.allTouches,"
+    },
+    {
+      "line": 356,
+      "text": "                touches.count == 1,"
+    },
+    {
+      "line": 357,
+      "text": "                let touch = touches.first,"
+    },
+    {
+      "line": 358,
+      "text": "                touch.type == .direct"
+    },
+    {
+      "line": 359,
+      "text": "            else { return }"
+    },
+    {
+      "line": 360,
+      "text": "            guard touch !== lastStructuredTouch else { return }"
+    }
+  ]
+}

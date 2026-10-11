@@ -1,0 +1,42 @@
+{
+  "baseline_files": 2691,
+  "baseline_dirty": 607,
+  "files_before_receipts": 2703,
+  "dirty_before_receipts": 619,
+  "changed_existing": [
+    "docs/ACTIVE_WORK.md",
+    "docs/ENGINEERING_DASHBOARD.md",
+    "docs/KNOWLEDGE_INDEX.md",
+    "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md",
+    "docs/assignments/keyboard-wake-lifecycle-diagnostics-001.md"
+  ],
+  "new_before_receipts": [
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-prep-artifacts/before-files.json",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-prep-artifacts/before-status.z",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-prep-artifacts/lldb-help.txt",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-prep-artifacts/offline-example-results.json",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-prep-entry-2026-10-02.md",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-prep-validation-2026-10-02.md",
+    "docs/plans/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-evidence-chain-plan-2026-10-02.md",
+    "docs/plans/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-offline-decoder-2026-10-02.md",
+    "docs/product-decisions/KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001-c7c-prep-authorization-2026-10-02.md",
+    "docs/reviews/quality-c7-c-prep-r1-packet-2026-10-02.json",
+    "docs/reviews/quality-c7-c-prep-r1-review-2026-10-02.md",
+    "docs/reviews/quality-c7-c-prep-r1-usage-2026-10-02.json"
+  ],
+  "deleted": [],
+  "out_of_scope_changes": [],
+  "source_changes": [],
+  "staged_count": 0,
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "frozen_inputs_unchanged": true,
+  "self_hashes_excluded": true,
+  "final_files": 2706,
+  "final_dirty": 622,
+  "receipt_paths": [
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-prep-artifacts/preservation.json",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-prep-artifacts/checks.json",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7c-prep-artifacts/final-status.z"
+  ]
+}

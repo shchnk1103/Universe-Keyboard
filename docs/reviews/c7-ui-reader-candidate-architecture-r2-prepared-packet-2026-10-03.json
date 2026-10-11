@@ -1,0 +1,60 @@
+{
+  "work_item": "KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001",
+  "lane": "ARCH-C7-UI-READER-AND-CANDIDATE",
+  "round": 2,
+  "authorization": "PREPARED; requires Human exact supplement/new budget approval, not executable yet",
+  "baseline": {
+    "worktree": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+    "branch": "codex/keyboard-wake-v3-compatibility-gate",
+    "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+    "candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50"
+  },
+  "allowed_content_inputs": {
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/AGENTS.md": "947743e29a5987f9b1abb9c220a28ebcb92bd766928e22c1dd67c046bbe62152",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/ASSIGNMENT_POLICY.md": "e90dd8f06371e9367652d4e7cc63dee31ee7b1ac855e7802d6d2e9b8e1e90680",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/AI_WORKFLOW.md": "fd3ff24fc0d38ed134cace8ffd5479f76e6261b009d6f661d218e4e260b07413",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-probe-ui-binding-artifacts/patch.diff": "708bdd9d4a14e0f67b014670b7033a3ce0827224b79ff860fab7a06ff94259c5",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Controllers/KeyboardViewController+Presentation.swift": "767c2817054484d4d4c328cb7a8deaf676509b76bbc3cb45868b6e3cf721319a",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/c7-ui-reader-candidate-architecture-r1-review-2026-10-03.md": "2c7d13fb369f359f233267e55649f6e83799b15a51887aa01c0cbbc99338cf0f",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/c7-ui-reader-candidate-architecture-r1-usage-2026-10-03.json": "636af07cca1807771202b5fb0d1c337958c71fa55163cdae3ab45147a17a314b",
+    "/private/tmp/ukey-wake-reader-new-20261003/reader-checks.json": "2f44867de6fed5f6ad841675345ce12f7ce2614abd1f72ea682f690cf51b01b9",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-reader-new-artifacts/root-stop-receipt.json": "083829e430ed2b713f5fe92e7141bbec591438437f50292afd3e37ed8523b103",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-reader-new-artifacts/preservation.json": "8a3c45a734ba7f3a80df151e40c58495536656f0633877dc1cc914518a3529ed"
+  },
+  "allowed_binary_inputs": {},
+  "allowed_generated_xcent_inputs": {},
+  "allowed_hash_only_repo_inputs": {},
+  "criteria": {
+    "C1": "Read raw unified patch.diff directly, no parser needed: --- before/Presentation.swift and +++ after/Presentation.swift map same source;3hunks/12added/no deleted lines, each4line group #ifDEBUG&&probe/comment/refresh/#endif. Compare3 current source guarded callsites. Independently determine only local diagnostic postbinding refresh, no RIME/deployment/concurrency contract diff. No required diff --git header.",
+    "C2": "New report/usage consistent, preserve original report header mismatch/Partial. Explicitly reuse R1 R0/A1 independentreader/codeaudit and actual reader-checks on same candidate under AI_WORKFLOW finalcontent/baseline/environment/coverage conditions; rootpreservation shows no frozen input change. New complete scoped combined artifact opinion only if C1Covered and reusableR0/A1 evidence sufficient; do not waive oldPartial/budget defects. Report <=250Chinese chars+candidate shortidentity; put detailed timing/hash/criteria in usage."
+  },
+  "outputs": {
+    "report": "/private/tmp/ukey-wake-reader-final-supplement-20261003/review.md",
+    "usage": "/private/tmp/ukey-wake-reader-final-supplement-20261003/usage.json",
+    "scratch": "/private/tmp/ukey-wake-reader-final-supplement-20261003",
+    "findings": "criteria rows"
+  },
+  "budget": {
+    "max_calls": 4,
+    "hard_elapsed_seconds": 600,
+    "soft_elapsed_seconds": 360,
+    "start": "first actual toolcall persisted UTC/monotonic",
+    "checkpoint": "call2 may be merged with final report+usage",
+    "delivery": "Prefer2calls:1 read raw patch/Presentation/oldreport+usage/reader-checks+policy and save timer;2 independently decide/reconcile then write short report+usage together. No new parser, no binary or reader rerun. At earliest ceiling stop, no auto renewal."
+  },
+  "acceptance": "C1/C2 Covered and explicit valid reuse R0/A1 => Complete/Positive current combined scoped Architecture artifact opinion in newR2 only; oldR1Partial unchanged. Missing reuse or unresolveddiff=>Partial. No ProductGate/test/install/runtime.",
+  "allowed_operations": [
+    "Read/hash exact10 content files",
+    "Manually inspect raw unified diff and source guards, no new diff parser",
+    "Write report/usage/timer only own scratch"
+  ],
+  "exclusions": [
+    "build/test/device/Simulator/UI/LLDB/network/Git mutations",
+    "binary reread/reader rerun/newparser",
+    "old report/usage/source edits",
+    "automatic budget renewal/delegation"
+  ],
+  "expansion_authority": "Human only",
+  "digest_rule": "sortedcompact JSON ensure_ascii=False SHA256 excluding packet_digest_sha256",
+  "packet_digest_sha256": "140fe494b49262723eeb3d06240c66b776a98d6d6854c0de31281389724fb01e"
+}

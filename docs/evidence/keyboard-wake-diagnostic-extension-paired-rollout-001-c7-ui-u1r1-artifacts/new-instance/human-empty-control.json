@@ -1,0 +1,8 @@
+{
+  "source": "Human manual report",
+  "root_received_utc": "2026-10-03T13:14:02.331731+00:00",
+  "human_quote": "观测已出现",
+  "control_visible": true,
+  "actual_elapsed_seconds": "NOT MEASURED",
+  "no_arm_or_input_instructed": true
+}

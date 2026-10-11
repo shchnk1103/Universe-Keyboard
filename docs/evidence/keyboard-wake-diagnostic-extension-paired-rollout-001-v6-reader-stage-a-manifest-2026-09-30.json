@@ -1,0 +1,105 @@
+{
+  "stage": "v6 reader-only Stage A",
+  "worktree": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "production_writer_version": 5,
+  "production_wake_markers": false,
+  "approved_packet_sha256": "ffcee387766e41dc0a82233cf27b1758d8097f539dfc7efcf4006f9becc0a7ea",
+  "baseline_dirty_porcelain_z_sha256": "41cf5fba172c36fc254bda40f00f9b4d7291441501b1adcc9cd62bc83892e127",
+  "implementation_files": [
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticEvent.swift",
+      "sha256": "7e8a7c68eaa8593c4f14d5c796312d119137d8b925a91ba686ecfd4ba72ea794",
+      "pre_edit_sha256": "346efd59225cdf71fc61917fcb26bc72f3b1cf84aea19d873b3f238e791b492b"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticEventWireValidator.swift",
+      "sha256": "e2c53bb24b000531dd838e984ab892629445189df48a114b22f45765c6c887d5",
+      "pre_edit_sha256": "965667328c2db1cba4c4f99e21a82ee13ae3890ff18bf510b9967c5396273534"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticEventTests.swift",
+      "sha256": "a9ba472652f140bf6c93cd6cd1f01302e7e70ded88e255a5c72896dac3dfa72e",
+      "pre_edit_sha256": "7da854233e4454ccd44c587acca5cf8b4d4b89b15c726277748fa172da1e7c53"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticsJournalTests.swift",
+      "sha256": "7cbbce79d83ae698014eacdbdf70d0cf68a778ec3980e828a57b87f4fd96a54e",
+      "pre_edit_sha256": "8760b930ff9f1045f8689f73c2dddb33bf199b86d7246cc6dd6e50feb2af1ba5"
+    },
+    {
+      "path": "UniverseKeyboardTests/DiagnosticsLogSourceTests.swift",
+      "sha256": "576e0aac3b2e2c6160a1673a6f8ad7be723bed2b4fc32b09924f04a59b393189",
+      "pre_edit_sha256": "ad24cef7d5512b621a53724b3b1043b29a5b1863ef163aa8de0e25b6e2fa855c"
+    }
+  ],
+  "read_only_dependencies": [
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournal.swift",
+      "sha256": "49077a7a6ade1b41724fda92314cb4a41071163dc9f6c5e2a8666ee38273dbc9"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournalRuntime.swift",
+      "sha256": "9720d22bb3ec5668b7a9f466ac84c34d77c7a7ed2969da01b5c6f2568c41b406"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticsJournalIngress.swift",
+      "sha256": "22df98f25a44704763e4669d60787c2157477a97587645645e5b10af3437a696"
+    },
+    {
+      "path": "Universe Keyboard/Views/Diagnostics/DiagnosticsLogSource.swift",
+      "sha256": "bc874c7f019645e18c04b8b2c3a9d21c8247afc75b44cc8951a857078d558a70"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController.swift",
+      "sha256": "8591c5d9c7b93530bb2c5eb2a3eb000a3c53bc8133183eaa3b9a48b1be147aa8"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+Bootstrap.swift",
+      "sha256": "e931105a51915084e90ef39270ebd3c3378b0d3e01dfe633d51f54293ff48db8"
+    },
+    {
+      "path": "Keyboard/Services/UITextDocumentProxyAdapter.swift",
+      "sha256": "f5cad10abb6b01594819cbb5dcf72a2989d389ed235364237abdfce7853b6de5"
+    }
+  ],
+  "host_result": {
+    "executed": 1181,
+    "failures": 0,
+    "exit_code": 0,
+    "app_tests": "authored/not-run"
+  },
+  "limitations": [
+    "no duplicate JSON member detection",
+    "no independent Architecture/Quality review",
+    "no Simulator/full CI validation",
+    "no production v6 emission/install/Maps/Gate/Release"
+  ],
+  "evidence": [
+    {
+      "path": "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-v6-reader-stage-a-host-test.log",
+      "sha256": "d302536a66932db1f4f69e06370431727cc0a77a90591063399324457c2ce62d"
+    },
+    {
+      "path": "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-v6-reader-stage-a-host-test-host.log",
+      "sha256": "47430fc6bb63c5bc93c5a0f1628837c20946a8f52a6e07a9e44eefe873b78753"
+    },
+    {
+      "path": "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-v6-reader-stage-a-host-test-final.log",
+      "sha256": "e2d96fe9de459580ef77710cb5652678e76cba6734efc81ae9d117a95e0238c3"
+    },
+    {
+      "path": "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-v6-reader-stage-a-swift-format.log",
+      "sha256": "47b1c9488778cf679a42d2330d750da5f3620d0128bb5bfbad6ab75a3e2fee95"
+    },
+    {
+      "path": "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-v6-reader-stage-a-before-file-hashes.json",
+      "sha256": "ae1121bb7cc83fb827d6c9be11c8b28e12e7039f6da78a571b750a60278bfd2f"
+    },
+    {
+      "path": "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-v6-reader-stage-a-before-status.z",
+      "sha256": "41cf5fba172c36fc254bda40f00f9b4d7291441501b1adcc9cd62bc83892e127"
+    }
+  ]
+}

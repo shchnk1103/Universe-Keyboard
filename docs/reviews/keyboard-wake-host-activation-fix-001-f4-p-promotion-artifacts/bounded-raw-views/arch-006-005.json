@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift",
+  "origin_sha256": "c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047",
+  "expected_sha256": "c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047",
+  "line_start": 241,
+  "line_end": 300,
+  "lines": [
+    {
+      "line": 241,
+      "text": "    ) -> KeyboardHostRecoveryAction {"
+    },
+    {
+      "line": 242,
+      "text": "        guard isLiveArm(token: token, generation: generation) else { return .none }"
+    },
+    {
+      "line": 243,
+      "text": "        guard phase == .visible, hasWindow else { return .none }"
+    },
+    {
+      "line": 244,
+      "text": "        guard firstFrameTickCount + 1 >= 2 else { return .none }"
+    },
+    {
+      "line": 245,
+      "text": "        return decideFirstFrameElapsed(hasWindow: hasWindow)"
+    },
+    {
+      "line": 246,
+      "text": "    }"
+    },
+    {
+      "line": 247,
+      "text": ""
+    },
+    {
+      "line": 248,
+      "text": "    @discardableResult"
+    },
+    {
+      "line": 249,
+      "text": "    func noteFirstFrameTick("
+    },
+    {
+      "line": 250,
+      "text": "        token: UInt64,"
+    },
+    {
+      "line": 251,
+      "text": "        generation: UInt64,"
+    },
+    {
+      "line": 252,
+      "text": "        hasWindow: Bool,"
+    },
+    {
+      "line": 253,
+      "text": "        canary: KeyboardHostRecoveryCanaryPermission"
+    },
+    {
+      "line": 254,
+      "text": "    ) -> KeyboardHostRecoveryAction {"
+    },
+    {
+      "line": 255,
+      "text": "        guard isLiveArm(token: token, generation: generation) else { return .none }"
+    },
+    {
+      "line": 256,
+      "text": "        if phase != .visible || !hasWindow {"
+    },
+    {
+      "line": 257,
+      "text": "            rejectCurrentArm(blockPending: false)"
+    },
+    {
+      "line": 258,
+      "text": "            return .none"
+    },
+    {
+      "line": 259,
+      "text": "        }"
+    },
+    {
+      "line": 260,
+      "text": "        firstFrameTickCount += 1"
+    },
+    {
+      "line": 261,
+      "text": "        if firstFrameTickCount < 2 {"
+    },
+    {
+      "line": 262,
+      "text": "            return .none"
+    },
+    {
+      "line": 263,
+      "text": "        }"
+    },
+    {
+      "line": 264,
+      "text": "        let action = decideFirstFrameElapsed(hasWindow: hasWindow)"
+    },
+    {
+      "line": 265,
+      "text": "        guard action == .completeFirstFrameActivation else {"
+    },
+    {
+      "line": 266,
+      "text": "            rejectCurrentArm(blockPending: false)"
+    },
+    {
+      "line": 267,
+      "text": "            return .none"
+    },
+    {
+      "line": 268,
+      "text": "        }"
+    },
+    {
+      "line": 269,
+      "text": "        if !canary.permitsOwnerStarting(source: .firstFrame) {"
+    },
+    {
+      "line": 270,
+      "text": "            rejectCurrentArm(blockPending: true)"
+    },
+    {
+      "line": 271,
+      "text": "            return .none"
+    },
+    {
+      "line": 272,
+      "text": "        }"
+    },
+    {
+      "line": 273,
+      "text": "        consumePendingAndRearm()"
+    },
+    {
+      "line": 274,
+      "text": "        firstFrameConsumedForGeneration = true"
+    },
+    {
+      "line": 275,
+      "text": "        firstFrameArmSuppressed = true"
+    },
+    {
+      "line": 276,
+      "text": "        invalidateFirstFrameArm()"
+    },
+    {
+      "line": 277,
+      "text": "        return .completeFirstFrameActivation"
+    },
+    {
+      "line": 278,
+      "text": "    }"
+    },
+    {
+      "line": 279,
+      "text": ""
+    },
+    {
+      "line": 280,
+      "text": "    /// Same recovery branch as host-active, used when active arrived before the window existed."
+    },
+    {
+      "line": 281,
+      "text": "    @discardableResult"
+    },
+    {
+      "line": 282,
+      "text": "    func handleVisibleWindowEstablished("
+    },
+    {
+      "line": 283,
+      "text": "        hasWindow: Bool,"
+    },
+    {
+      "line": 284,
+      "text": "        canary: KeyboardHostRecoveryCanaryPermission"
+    },
+    {
+      "line": 285,
+      "text": "    ) -> KeyboardHostRecoveryAction {"
+    },
+    {
+      "line": 286,
+      "text": "        handleHostDidBecomeActive("
+    },
+    {
+      "line": 287,
+      "text": "            context: currentContext,"
+    },
+    {
+      "line": 288,
+      "text": "            hasWindow: hasWindow,"
+    },
+    {
+      "line": 289,
+      "text": "            canary: canary"
+    },
+    {
+      "line": 290,
+      "text": "        )"
+    },
+    {
+      "line": 291,
+      "text": "    }"
+    },
+    {
+      "line": 292,
+      "text": ""
+    },
+    {
+      "line": 293,
+      "text": "    private func isLiveArm(token: UInt64, generation: UInt64) -> Bool {"
+    },
+    {
+      "line": 294,
+      "text": "        hasLiveFirstFrameArm && token == firstFrameArmToken && generation == firstFrameArmGeneration"
+    },
+    {
+      "line": 295,
+      "text": "    }"
+    },
+    {
+      "line": 296,
+      "text": ""
+    },
+    {
+      "line": 297,
+      "text": "    private func rejectCurrentArm(blockPending shouldBlock: Bool) {"
+    },
+    {
+      "line": 298,
+      "text": "        firstFrameArmSuppressed = true"
+    },
+    {
+      "line": 299,
+      "text": "        if shouldBlock {"
+    },
+    {
+      "line": 300,
+      "text": "            blockPending()"
+    }
+  ]
+}

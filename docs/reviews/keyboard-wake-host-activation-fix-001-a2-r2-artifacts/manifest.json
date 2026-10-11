@@ -1,0 +1,42 @@
+[
+  {
+    "path": "ack.json",
+    "bytes": 1822,
+    "sha256": "91f32e5f78d35c497f5128683658a1a55aeaef00e6866487878156ffec0d5a06"
+  },
+  {
+    "path": "assignment-at-r2-freeze.md",
+    "bytes": 16097,
+    "sha256": "b3f00bedc0c114e5d7df896775274709f26b03426953ed8958070532c36cae4b"
+  },
+  {
+    "path": "packet.json",
+    "bytes": 14166,
+    "sha256": "d3eac7837fe86fd7623c9e1f62cc2a42c4184adc111bc604a6dedf0664c6d965"
+  },
+  {
+    "path": "review.md",
+    "bytes": 2457,
+    "sha256": "4b1b51a30561d326912ac741cb61f4a44f8dad71ee59cce43758732526e2051f"
+  },
+  {
+    "path": "root-acceptance.json",
+    "bytes": 721,
+    "sha256": "efb7cc98a9a6e593e2cc561d5f813137fa77e2e1f8aa95ed2a8741243d11ee11"
+  },
+  {
+    "path": "root-dispatch-check.json",
+    "bytes": 300,
+    "sha256": "c9d5d4110d38d692938671d55b8109ddb0b01ed4eb702646ecb52104addfad40"
+  },
+  {
+    "path": "root-time-audit.json",
+    "bytes": 676,
+    "sha256": "82d883ab08fe6bf5e3bf7263157a2a4719597357bb8852a9f87125ac31c452e8"
+  },
+  {
+    "path": "usage.json",
+    "bytes": 2209,
+    "sha256": "9be508ab49eb4203e5b2a3d841480a9ae06eb7c67e28aef46766558821dd1bab"
+  }
+]

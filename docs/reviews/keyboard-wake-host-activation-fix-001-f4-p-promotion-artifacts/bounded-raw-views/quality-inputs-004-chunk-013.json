@@ -1,0 +1,7 @@
+{
+  "original_view_path": "bounded-raw-views/quality-inputs-004.json",
+  "original_view_sha256": "659247d0630d64fa6bd02da202206fe143287c15fb25674dbabc926de033791c",
+  "raw_json_character_start": 39000,
+  "raw_json_character_end_exclusive": 39946,
+  "raw_json_slice": "build/Debug-iphonesimulator/Universe\\\\\\\\ Keyboard.build/DerivedSources-normal/arm64 -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\\\\\\\ Keyboard.build/Debug-iphonesimulator/Universe\\\\\\\\ Keyboard.build/DerivedSources/arm64 -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\\\\\\\ Keyboard.build/Debug-iphonesimulator/Universe\\\\\\\\ Keyboard.build/DerivedSources -Xcc -DDEBUG\\\\\\\\=1 -emit-objc-header -emit-objc-header-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\\\\\\\ Keyboard.build/Debug-iphonesimulator/Universe\\\\\\\\ Keyboard.build/Objects-normal/arm64/Universe_Keyboard-Swift.h -working-directory /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\\\\\\\ Keyboard -experimental-emit-module-separately -disable-cmo\\\"\\n    }\\n  ]\\n}\\n\"\n}\n"
+}

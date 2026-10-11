@@ -1,0 +1,35 @@
+{
+  "reviewer": "independent Architecture reviewer / GPT-6 Luna",
+  "lane": "architecture",
+  "round": 1,
+  "packet": "/private/tmp/ukey-host-activation-fix-f3-20261004/packet.json",
+  "packet_sha256": "34a37a0b8f3dbeba81b015c78985adc295c69440f0f913bc5a18d2ad108cb281",
+  "independence": "I did not participate in Grok implementation; this review is independent.",
+  "scope": "Read-only review of lanes.architecture contract and packet-listed candidate evidence only.",
+  "prohibitions": [
+    "no repository/source writes",
+    "no build/test/compiler",
+    "no simulator/process/container",
+    "no LLDB",
+    "no Git mutation",
+    "no network",
+    "do not execute author helpers",
+    "1156 source inputs may be hashed only, not read as full code"
+  ],
+  "budget": {
+    "max_actual_tool_calls": 24,
+    "max_wall_seconds": 1200,
+    "stop_at_first_limit": true,
+    "checkpoints_at_calls": [
+      8,
+      16,
+      21
+    ],
+    "final_three_calls_reserved": [
+      "write review.md",
+      "write usage.json",
+      "read back and verify outputs"
+    ]
+  },
+  "baseline": "F0 dirty baseline; five-file comparison is against packet-provided 5 diffs, not HEAD."
+}

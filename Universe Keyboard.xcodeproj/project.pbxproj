@@ -16,7 +16,13 @@
 		7A6100092FC0000000000001 /* RimeBridge in Frameworks */ = {isa = PBXBuildFile; productRef = 7A6000042FC0000000000001 /* RimeBridge */; };
 		7A6200012FC0000000000001 /* KeyboardCore in Frameworks */ = {isa = PBXBuildFile; productRef = 793AC8812FB0BE0600DAE8A0 /* KeyboardCore */; };
 		7A6200022FC0000000000001 /* KeyboardCore in Frameworks */ = {isa = PBXBuildFile; productRef = 793AC8812FB0BE0600DAE8A0 /* KeyboardCore */; };
-		7A64000C2FD0000000000001 /* Keyboard.appex in Frameworks */ = {isa = PBXBuildFile; fileRef = 793AC85C2FB0BE0600DAE835 /* Keyboard.appex */; };
+		C2E000000000000000000001 /* UITextDocumentProxyAdapter.swift in KeyboardTests */ = {isa = PBXBuildFile; fileRef = C2F000000000000000000001 /* UITextDocumentProxyAdapter.swift */; };
+		C2E000000000000000000002 /* KeyboardHostLifecycleRecoveryGate.swift in KeyboardTests */ = {isa = PBXBuildFile; fileRef = C2F000000000000000000002 /* KeyboardHostLifecycleRecoveryGate.swift */; };
+		7A64000D2FD0000000000001 /* KeyboardCore in Frameworks */ = {isa = PBXBuildFile; productRef = 793AC8812FB0BE0600DAE8A0 /* KeyboardCore */; };
+		7A64000E2FD0000000000001 /* TypoCorrectionRecallCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A64000F2FD0000000000001 /* TypoCorrectionRecallCoordinator.swift */; };
+		7A6500012FD0000000000001 /* TypoCorrectionCallbackLedger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A6500022FD0000000000001 /* TypoCorrectionCallbackLedger.swift */; };
+		7A6600012FD0000000000001 /* QueryCostClockAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A6600022FD0000000000001 /* QueryCostClockAnchor.swift */; };
+		7A6700012FD0000000000001 /* QueryCostArmDiagnostic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A6700022FD0000000000001 /* QueryCostArmDiagnostic.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +78,12 @@
 		7A6200042FC0000000000001 /* KeyboardTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KeyboardTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A6300012FD0000000000001 /* UniverseKeyboardUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UniverseKeyboardUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A6400042FD0000000000001 /* KeyboardExtensionTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KeyboardExtensionTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2F000000000000000000001 /* UITextDocumentProxyAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Services/UITextDocumentProxyAdapter.swift"; sourceTree = "<group>"; };
+		C2F000000000000000000002 /* KeyboardHostLifecycleRecoveryGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift"; sourceTree = "<group>"; };
+		7A64000F2FD0000000000001 /* TypoCorrectionRecallCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypoCorrectionRecallCoordinator.swift; sourceTree = "<group>"; };
+		7A6500022FD0000000000001 /* TypoCorrectionCallbackLedger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypoCorrectionCallbackLedger.swift; sourceTree = "<group>"; };
+		7A6600022FD0000000000001 /* QueryCostClockAnchor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryCostClockAnchor.swift; sourceTree = "<group>"; };
+		7A6700022FD0000000000001 /* QueryCostArmDiagnostic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryCostArmDiagnostic.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -121,6 +133,17 @@
 		7A6400052FD0000000000001 /* KeyboardExtensionTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = KeyboardExtensionTests;
+			sourceTree = "<group>";
+		};
+		7A6400102FD0000000000001 /* Coordinator source compiled for extension tests */ = {
+			isa = PBXGroup;
+			children = (
+				7A64000F2FD0000000000001 /* TypoCorrectionRecallCoordinator.swift */,
+                7A6500022FD0000000000001 /* TypoCorrectionCallbackLedger.swift */,
+				7A6600022FD0000000000001 /* QueryCostClockAnchor.swift */,
+				7A6700022FD0000000000001 /* QueryCostArmDiagnostic.swift */,
+			);
+			path = Keyboard/Controllers;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -180,7 +203,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7A64000C2FD0000000000001 /* Keyboard.appex in Frameworks */,
+				7A64000D2FD0000000000001 /* KeyboardCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -195,8 +218,11 @@
 				7A6100022FC0000000000001 /* Packages/RimeBridge/Tests/RimeBridgeTests */,
 				7A6200052FC0000000000001 /* UniverseKeyboardTests */,
 				7A6200062FC0000000000001 /* KeyboardTests */,
+				C2F000000000000000000001 /* UITextDocumentProxyAdapter.swift */,
+				C2F000000000000000000002 /* KeyboardHostLifecycleRecoveryGate.swift */,
 				7A6300022FD0000000000001 /* UniverseKeyboardUITests */,
 				7A6400052FD0000000000001 /* KeyboardExtensionTests */,
+				7A6400102FD0000000000001 /* Coordinator source compiled for extension tests */,
 				793AC84B2FB0BDB000DAE835 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -380,6 +406,7 @@
 			);
 			name = KeyboardExtensionTests;
 			packageProductDependencies = (
+				793AC8812FB0BE0600DAE8A0 /* KeyboardCore */,
 			);
 			productName = KeyboardExtensionTests;
 			productReference = 7A6400042FD0000000000001 /* KeyboardExtensionTests.xctest */;
@@ -533,6 +560,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C2E000000000000000000001 /* UITextDocumentProxyAdapter.swift in KeyboardTests */,
+				C2E000000000000000000002 /* KeyboardHostLifecycleRecoveryGate.swift in KeyboardTests */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -547,6 +576,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7A64000E2FD0000000000001 /* TypoCorrectionRecallCoordinator.swift in Sources */,
+                7A6500012FD0000000000001 /* TypoCorrectionCallbackLedger.swift in Sources */,
+				7A6600012FD0000000000001 /* QueryCostClockAnchor.swift in Sources */,
+				7A6700012FD0000000000001 /* QueryCostArmDiagnostic.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -636,7 +669,9 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				// Empty by default. Flag-on validation must also bind package Swift flags explicitly.
+                QUERY_COST_PROBE_CONDITIONS = "";
+                SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited) $(QUERY_COST_PROBE_CONDITIONS)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -1117,6 +1152,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.DoubleShy0N.Universe-Keyboard.KeyboardExtensionTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				// Synthetic injection exists only in this hostless Debug test target.
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) KEYBOARD_QUERY_COST_PROBE_TESTING";
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
 				SWIFT_STRICT_CONCURRENCY = complete;
 				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;

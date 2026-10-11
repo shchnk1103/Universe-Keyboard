@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-03T03:45:38.834486+00:00",
+  "Human": "授权执行T1＋T2只读核验",
+  "packet_digest": "090f2f150b018d5d289cfedbb51315c153f700fce9df8ff094631a8ee6743abf",
+  "source571_vendor630_matched": true,
+  "T1_authorized": true,
+  "T2_read_only_authorized": true,
+  "restoration_not_authorized": true,
+  "strict_copy_provenance_limit_retained": true
+}

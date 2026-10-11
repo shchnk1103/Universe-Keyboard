@@ -1,0 +1,19 @@
+{
+  "recorded_at": "2026-10-05T03:12:30.120974+00:00",
+  "lane": "F4-P-QUALITY-PROMOTION",
+  "round": 1,
+  "status": "Incomplete; independent examination not performed",
+  "author_reported_actual_calls": 16,
+  "author_reported_stopped_at": "2026-10-05T03:10:58+00:00",
+  "author_ack_report_usage_readback_missing": true,
+  "author_start_and_elapsed": "UNKNOWN; no ACK written",
+  "claims_uncovered": [
+    "Q-P1",
+    "Q-P2",
+    "Q-P3",
+    "Q-P4"
+  ],
+  "root_proxy_reader_prepared_after_stop": true,
+  "no_auto_budget_renewal": true,
+  "not_author_report": true
+}

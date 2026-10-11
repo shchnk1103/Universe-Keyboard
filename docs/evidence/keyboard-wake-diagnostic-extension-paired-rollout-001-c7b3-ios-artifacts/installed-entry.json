@@ -1,0 +1,98 @@
+{
+  "app": {
+    "CFBundleIdentifier": "com.DoubleShy0N.Universe-Keyboard",
+    "CFBundleShortVersionString": "1.0",
+    "CFBundleVersion": "1",
+    "executable_sha256": "a9d2535534d92f804b9a3630a5c978ec24c65119afe4778d7db61812c1a2c6d2"
+  },
+  "keyboard": {
+    "CFBundleIdentifier": "com.DoubleShy0N.Universe-Keyboard.Keyboard",
+    "CFBundleShortVersionString": "1.0",
+    "CFBundleVersion": "1",
+    "executable_sha256": "3a1c3ff7454be12c45c58866bb801917644c68af1f986cd7918663e3022f4cc7"
+  },
+  "groups_query": {
+    "exit": 0,
+    "stdout": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/B0D7CE38-2B36-4AF1-B585-63ED3DA340E0\n",
+    "stderr": ""
+  },
+  "metadata_group_path": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/B0D7CE38-2B36-4AF1-B585-63ED3DA340E0",
+  "prefs_file_exists": true,
+  "bounded_preferences": {
+    "logging_enabled": {
+      "exists": true,
+      "value": "False"
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "rime_deployed": {
+      "exists": true,
+      "value": "True"
+    },
+    "rime_needs_deploy": {
+      "exists": true,
+      "value": "False"
+    },
+    "rime_deploy_in_progress": {
+      "exists": false,
+      "value": null
+    }
+  },
+  "rime_build_exists": false,
+  "restore_backup": {
+    "path": "/private/tmp/ukey-wake-c7b3-20261002/current-round/InstalledRestore/Universe Keyboard.app",
+    "files": 111,
+    "byte_equal": true
+  },
+  "additional_bounded_preferences": {
+    "rime_deploying": {
+      "exists": true,
+      "value": "False"
+    },
+    "rime_deploy_auto_retry_suppressed": {
+      "exists": true,
+      "value": "False"
+    },
+    "log_category_gen": {
+      "exists": false,
+      "value": null
+    },
+    "log_category_engine": {
+      "exists": false,
+      "value": null
+    },
+    "log_category_config": {
+      "exists": false,
+      "value": null
+    },
+    "log_category_deploy": {
+      "exists": false,
+      "value": null
+    },
+    "log_category_perf": {
+      "exists": false,
+      "value": null
+    },
+    "log_category_disp": {
+      "exists": false,
+      "value": null
+    }
+  },
+  "compiled_paths": {
+    "Rime/shared": true,
+    "Rime/user": true,
+    "Rime/user/build": true
+  },
+  "restore_signature": {
+    "app": {
+      "exit": 0,
+      "stderr": ""
+    },
+    "keyboard": {
+      "exit": 0,
+      "stderr": ""
+    }
+  }
+}

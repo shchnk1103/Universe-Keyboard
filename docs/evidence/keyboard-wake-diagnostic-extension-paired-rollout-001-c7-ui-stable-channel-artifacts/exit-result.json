@@ -1,0 +1,39 @@
+{
+  "utc": "2026-10-04T04:38:27.706950+00:00",
+  "scope_result": "one cross-Human-reply stable-channel check covered",
+  "human_reply": "未操作",
+  "target_pid": 41635,
+  "same_lldb_pid": 45732,
+  "same_debugserver_pid": 45734,
+  "same_exec_session": 63415,
+  "post_human_export_hit_count": 0,
+  "own_breakpoint_deleted": true,
+  "breakpoint_list_empty": true,
+  "detach_receipt": true,
+  "pty_exit_code": 0,
+  "debug_processes_gone": {
+    "45732": true,
+    "45734": true
+  },
+  "target_final_ps": "41635     4004 Ss   /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+  "target_final_P_TRACED": false,
+  "installed_files_verified": 78,
+  "source_inputs_verified": 1279,
+  "diagnostic_preferences": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    }
+  },
+  "memory_reads": 0,
+  "arm_input_switch_freeze": false,
+  "source_install_restore_changes": false,
+  "original_M2R1_cleanup_receipt_retroactively_proved": false,
+  "human_visual_exit": "confirmed: interface normal; previous composition preserved; button取证",
+  "target_pause_actual_start": "UNKNOWN",
+  "future_full_run_stability": "not established"
+}

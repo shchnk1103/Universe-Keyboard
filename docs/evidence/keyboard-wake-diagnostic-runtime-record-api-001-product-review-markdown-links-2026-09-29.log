@@ -1,0 +1,10 @@
+KOS M-02 markdown-link validation
+Assignment: KEYBOARD-WAKE-DIAGNOSTIC-RUNTIME-RECORD-API-001 Product review status synchronization
+Baseline commit: 9eb83158e49218c1e8f75dbe7dd9e0390db81409
+Candidate Markdown tree: 73d852f8ef6add65997e262d76923b37780f8200
+Comparison pair: baseline 9eb83158e49218c1e8f75dbe7dd9e0390db81409 -> candidate tree 73d852f8ef6add65997e262d76923b37780f8200
+Command: python3 scripts/ci/check_markdown_links.py --base 9eb83158e49218c1e8f75dbe7dd9e0390db81409 --head 73d852f8ef6add65997e262d76923b37780f8200
+Result: PASS changed Markdown links (4 files)
+Whitespace check: git diff --check baseline candidate -> PASS
+Scope: Runtime Record API Assignment, parent lifecycle Assignment, ACTIVE_WORK.md, and the Product review decision.
+Isolation: candidate tree/index/object writes used a temporary location under /private/tmp; the shared Git index, object database, refs, source files and tests were not modified by this validation.

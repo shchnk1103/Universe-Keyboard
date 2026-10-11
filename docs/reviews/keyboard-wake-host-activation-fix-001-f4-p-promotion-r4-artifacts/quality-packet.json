@@ -1,0 +1,67 @@
+{
+  "lane_id": "F4-P-QUALITY-PROMOTION",
+  "round": 4,
+  "reviewer": "Reuse /root/m2r2_quality_r1 GPT6 Luna",
+  "authority": {
+    "utc": "2026-10-05T05:01:54.032758+00:00",
+    "human_message": "批准",
+    "accepted": "Only this Architecture R3 native author report + actual ACK + root provenance/time-bound receipts replace missing direct author writer/readback/end-time metadata; originals and defects preserved. No technical rereview.",
+    "quality_authorized": "Only four full module path/UUID binding and R3 report consistency; fresh4actualcalls/300sec; no old budget renewal.",
+    "exclusions": [
+      "source",
+      "build",
+      "test",
+      "simulator",
+      "install",
+      "LLDB",
+      "Maps",
+      "Git mutation",
+      "backup cleanup"
+    ]
+  },
+  "candidate_digest": "d53523dba8c371c67424ff07c79163a66f41e3bc5bb402637cf9ee79ae7579cb",
+  "scope": "Only Q-P1 remaining four complete module path/UUID binding and consistency correction to original R3 prose/status; prior standalone/SHA subchecks already verified, Q-P2/3 R3 and Q-P4 R2 retain unchanged. No adjacent review.",
+  "budget": {
+    "actual_tool_calls": 4,
+    "wall_clock_seconds": 300,
+    "counting": "functions.exec wrappers plus nested exec_command and any coordination calls. Use exactly2exec wrappers +2nested calls max, no coordination tools. Start own UTC just before first read; no root guessed start."
+  },
+  "inputs": [
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r3-artifacts/quality-module-path-reader-prepared.json",
+      "bytes": 4971,
+      "sha256": "2f7dab91ffcf91d02458d1935e0b79373e80a647acd3383263b8e4d54f3e102f"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r3-artifacts/quality/review.md",
+      "bytes": 3832,
+      "sha256": "e2be2fb93b206160dfc04a820cd7e2abb95a6aaae43f7bd66b616b86bc2275ba"
+    },
+    {
+      "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r3-artifacts/quality/root-clarification-receipt.json",
+      "bytes": 332,
+      "sha256": "387d339683190a2ce541c636e9a05db187fd98caa8fd7d21f644700c70d26f18"
+    }
+  ],
+  "output_dir": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r4-artifacts/quality",
+  "outputs": [
+    "ack.json",
+    "review.md",
+    "usage.json",
+    "delivery-readback.json"
+  ],
+  "reader": "Repo only. Parse UUID line with regex ^UUID: ([A-F0-9-]+) \\(arm64\\) (.+)$, preserving spaces in full path. Independently compare full path to argv[-1], paired full stdout path, and module relative path; all4 candidate/paired SHA equality. No new dwarfdump/otool or private lookups.",
+  "writer": "Authorized exec_command require_escalated for repo outputs; first batch read small inputs, write ACK and read it back. Second batch write review with explicit4row results and limited Q-P1 Covered or Uncovered; accurate UTC/call usage; read back hashes/bytes and write delivery-readback. All inputs known here; avoid copying hashes by hand, compute from bytes. Do not rewrite R3 originals.",
+  "acceptance": "Four full path/UUID lines independently match, R3 contradiction explicitly corrected in additive report; no runtime claims. If any missing/failed =>Partial and stop. All four author files required, root will read back. No auto renew.",
+  "exclusions": [
+    "source",
+    "build",
+    "test",
+    "simulator",
+    "install",
+    "LLDB",
+    "Maps",
+    "Git mutation",
+    "backup cleanup"
+  ]
+}

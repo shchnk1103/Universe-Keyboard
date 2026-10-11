@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-06T01:24:13.460445+00:00",
+  "Human": "Maps空框，观测已出现；未输入/点击",
+  "pid": 64039,
+  "process_ps": "64039 Ss   Mon Oct  5 20:42:32 2026     /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/57DC9CDA-B114-469F-98D6-B6C92F4F4AE7/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+  "installed_module_uuid_stdout": "UUID: 4B207746-89A7-321F-83C4-91477259BB26 (arm64) /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/57DC9CDA-B114-469F-98D6-B6C92F4F4AE7/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+  "callback_sha256": "007465da72774d7d70bd12ca71d06d5c4df131ed5cde687ba17e6460c24d9989",
+  "decoder_sha256": "fc1817ab8843dab76acd9e8ae59277719c059742bb105eebecbc60a66f58775d",
+  "expected_symbol": "$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF",
+  "elapsed_seconds": 256.60171,
+  "calls": 22,
+  "sandbox_ps_denial_preserved": true,
+  "runtime_attempts": 0,
+  "status": "Exact pre-attach binding; loadedUUID/resolved singlebreakpoint pending"
+}

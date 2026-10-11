@@ -1,0 +1,52 @@
+{
+  "utc": "2026-10-02T14:06:43.841652+00:00",
+  "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "human_disposition": "同意此阶段残项处置，并确认独占",
+  "containers": {
+    "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/223097E4-C5DF-4E08-8F2A-50825F30172F/Universe Keyboard.app",
+    "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/A0C97751-269A-4A76-B5BA-1F4BC7CDB937",
+    "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/0296BFCE-F465-4F1A-9E9A-F2EDFDA41172"
+  },
+  "backups": {
+    "main-data": {
+      "source": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/A0C97751-269A-4A76-B5BA-1F4BC7CDB937",
+      "backup": "/private/tmp/ukey-wake-promotion-preflight-20261002/FreshBaselineBackup/main-data",
+      "files": 827,
+      "byte_equal": true
+    },
+    "app-group": {
+      "source": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/0296BFCE-F465-4F1A-9E9A-F2EDFDA41172",
+      "backup": "/private/tmp/ukey-wake-promotion-preflight-20261002/FreshBaselineBackup/app-group",
+      "files": 53,
+      "byte_equal": true
+    },
+    "installed-app": {
+      "source": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/223097E4-C5DF-4E08-8F2A-50825F30172F/Universe Keyboard.app",
+      "backup": "/private/tmp/ukey-wake-promotion-preflight-20261002/FreshBaselineBackup/installed-app",
+      "files": 111,
+      "byte_equal": true
+    }
+  },
+  "before_preferences": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "rime_deployed": {
+      "exists": true,
+      "value": "True"
+    },
+    "rime_needs_deploy": {
+      "exists": true,
+      "value": "False"
+    },
+    "rime_deploying": {
+      "exists": true,
+      "value": "False"
+    }
+  }
+}

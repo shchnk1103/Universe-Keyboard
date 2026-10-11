@@ -1,0 +1,14 @@
+{
+  "utc": "2026-10-03T14:41:41.067130+00:00",
+  "first_script_error": "AssertionError: [] at inline script line13; no final machine-entry or complete first-script command ledger persisted",
+  "initial_root_interpretation": "reported extension absent; not justified by unlabeled AssertionError and later corrected",
+  "read_only_locator": "found exact original-device Keyboard.appex PID3626 and Maps PID3610",
+  "maps_path_alias_observed": {
+    "simctl_app_root_prefix": "/private/var/run/",
+    "ps_process_prefix": "/var/run/",
+    "comparison": "Path.resolve normalization succeeds"
+  },
+  "successful_named_stage_preflight": "verify-m1.py completed; explicit command ledger written before each assertion",
+  "first_failed_call_per_command_times": "unavailable; not retrospectively fabricated",
+  "no_process_restart_signal_or_debugger": true
+}

@@ -1,0 +1,27 @@
+{
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "allowed_inputs": {
+    "Keyboard/Controllers/KeyboardViewController.swift": "8591c5d9c7b93530bb2c5eb2a3eb000a3c53bc8133183eaa3b9a48b1be147aa8",
+    "Keyboard/Controllers/KeyboardViewController+Bootstrap.swift": "e931105a51915084e90ef39270ebd3c3378b0d3e01dfe633d51f54293ff48db8",
+    "Keyboard/Services/UITextDocumentProxyAdapter.swift": "f5cad10abb6b01594819cbb5dcf72a2989d389ed235364237abdfce7853b6de5",
+    "KeyboardTests/KeyboardWakeDiagnosticProducerTests.swift": null,
+    "Universe Keyboard.xcodeproj/project.pbxproj": "adc7e4a2e1fd10ede0a7e9346683b0a86dc833f8279f34db3f1f0b2b4091e1d3"
+  },
+  "baseline_count": 2427,
+  "pre_status_sha256": "25e51cdbad742587c4ee5454648060633029ac4b9c09d289e94615775a5d7707",
+  "device": {
+    "date": "2026-10-01 Asia/Shanghai",
+    "target": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "name": "iPhone 18 Pro",
+    "runtime": "iOS 27.0",
+    "state": "Booted",
+    "isAvailable": true,
+    "source": "XcodeBuildMCP list_sims enabled:true",
+    "human": "授权确认本轮模拟器仍为之前授权与独占的那台模拟器",
+    "window": "C2 verification through completion",
+    "sandbox_simctl": "denied; MCP host list verified"
+  },
+  "scratch": "/private/tmp/ukey-wake-c2-20261001",
+  "roles": "root sole repo writer/Environment Executor; Luna scratch author; permanent Domain Owner Keyboard Experience unchanged"
+}

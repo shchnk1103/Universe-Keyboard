@@ -1,0 +1,59 @@
+{
+  "utc": "2026-10-06T02:08:42.300055+00:00",
+  "handshake_status": "Completed: ready pipe received and actual read/system-wait frame verified",
+  "runtime_validation_status": "Partial: fixture exited before export callback; no full wait→hit validation",
+  "actual_calls": 8,
+  "budget_calls": 12,
+  "wall_seconds": 124.42743,
+  "budget_wall_seconds": 600,
+  "tool_ledger": [
+    {
+      "calls": 2,
+      "operation": "AUTH/new isolated root/source identity"
+    },
+    {
+      "calls": 2,
+      "operation": "ready-handshake-only source/script adaptation + compile/sign/syntax"
+    },
+    {
+      "calls": 2,
+      "operation": "single own fixture LLDB attach/wait gate/run/cleanup"
+    },
+    {
+      "calls": 2,
+      "operation": "offline receipt/source recheck and archive"
+    }
+  ],
+  "runtime_attempts": 1,
+  "fixture_pid": 92468,
+  "helper_pid": 92470,
+  "initial_wait_proof": {
+    "ready_received_utc": "2026-10-06T02:07:30.261641+00:00",
+    "attach_module": "libsystem_kernel.dylib",
+    "caller_names": [
+      "read",
+      "main",
+      "start"
+    ],
+    "initial_system_wait_verified": true
+  },
+  "callbacks": 0,
+  "memory_reads": 0,
+  "target_expressions": 0,
+  "cleanup": {
+    "breakpoint_deleted": true,
+    "fixture_exit_code": 2,
+    "helper_exit_code": 1
+  },
+  "LLDB_command_exit_code": 0,
+  "fixture_exit_reason_code": "C main returns 2 only if read(...,1) did not return 1; raw return value/errno not captured",
+  "helper_exit_reason": "exit1; stderr was DEVNULL, exact cause not captured",
+  "cause": "UNKNOWN; do not assert EINTR/EOF/pipe cause without new evidence",
+  "source5_hashes_match": true,
+  "staged_paths": 0,
+  "device_operations": 0,
+  "new_backup": false,
+  "new_retry": false,
+  "purpose": "Tool calibration only; no keyboard/RIME/user data; host success or failure cannot establish keyboard bug/root cause",
+  "next": "Only if separately authorized: capture fixed-token read return/errno and handle verified interruption in isolated fixture; no Maps retry"
+}

@@ -1,0 +1,47 @@
+[
+  {
+    "path": "ack.json",
+    "bytes": 537,
+    "sha256": "c094e366a77866098dbbd13547f38af3ee5f089db24544822e8b91fd1f13385c"
+  },
+  {
+    "path": "delivery-readback.json",
+    "bytes": 341,
+    "sha256": "2b2231309cae82b2424f2be9b97d6625a4dccb89a54db7f11b8cd461fdca1503"
+  },
+  {
+    "path": "packet.json",
+    "bytes": 774929,
+    "sha256": "0847ea019ee4f35cbd4e265bd925243714a9be849241972d64b672fa8d36dad4"
+  },
+  {
+    "path": "reader-output.json",
+    "bytes": 34438,
+    "sha256": "fac15dae68e7183d39f51b3e5a8dfefd4cb03fdb8bcd4350510eaae6d9cdc161"
+  },
+  {
+    "path": "review.md",
+    "bytes": 5049,
+    "sha256": "97e8a644d334e9607bc5c890c49c3fe05dddfa883d57e53799c6e96563fb960e"
+  },
+  {
+    "path": "root-receipt.json",
+    "bytes": 435,
+    "sha256": "29448a184a95b1b163b0eecf9138bf1c7e79c20bfb403c74375a61b8d6e19193"
+  },
+  {
+    "path": "ukey-quality-delivery-repaired.py",
+    "bytes": 2241,
+    "sha256": "5b013b869cbd3fd4ae4515c13c8c80748da5e0090757f1fd035abb1c852bd8ca"
+  },
+  {
+    "path": "ukey-quality-reader-repaired.py",
+    "bytes": 5349,
+    "sha256": "21ec0098074edfcd0edf9a2558eeb99d18ea4bd7b20aeb5773b1e6d3d68fe7de"
+  },
+  {
+    "path": "usage.json",
+    "bytes": 714,
+    "sha256": "faf5f8cbd0aae57645408b8c27e5671173828633ec9976d94942ce40367bdcd6"
+  }
+]

@@ -1,0 +1,217 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift",
+  "origin_sha256": "c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047",
+  "expected_sha256": "c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047",
+  "line_start": 301,
+  "line_end": 352,
+  "lines": [
+    {
+      "line": 301,
+      "text": "        } else {"
+    },
+    {
+      "line": 302,
+      "text": "            invalidateFirstFrameArm()"
+    },
+    {
+      "line": 303,
+      "text": "        }"
+    },
+    {
+      "line": 304,
+      "text": "    }"
+    },
+    {
+      "line": 305,
+      "text": ""
+    },
+    {
+      "line": 306,
+      "text": "    private func decideHostDidBecomeActive("
+    },
+    {
+      "line": 307,
+      "text": "        context: KeyboardHostExtensionContextID?,"
+    },
+    {
+      "line": 308,
+      "text": "        hasWindow: Bool"
+    },
+    {
+      "line": 309,
+      "text": "    ) -> KeyboardHostRecoveryAction {"
+    },
+    {
+      "line": 310,
+      "text": "        guard let context, context == currentContext else { return .none }"
+    },
+    {
+      "line": 311,
+      "text": "        guard phase == .visible, hasWindow else { return .none }"
+    },
+    {
+      "line": 312,
+      "text": "        guard let pending, !pending.blocked else { return .none }"
+    },
+    {
+      "line": 313,
+      "text": "        guard pending.generation == presentationGeneration, pending.context == context else {"
+    },
+    {
+      "line": 314,
+      "text": "            return .none"
+    },
+    {
+      "line": 315,
+      "text": "        }"
+    },
+    {
+      "line": 316,
+      "text": "        if firstFrameRearmPending {"
+    },
+    {
+      "line": 317,
+      "text": "            return .none"
+    },
+    {
+      "line": 318,
+      "text": "        }"
+    },
+    {
+      "line": 319,
+      "text": "        if pending.activatedAtSuspend {"
+    },
+    {
+      "line": 320,
+      "text": "            return .performSharedResume"
+    },
+    {
+      "line": 321,
+      "text": "        }"
+    },
+    {
+      "line": 322,
+      "text": "        return .rearmFirstFrameGate"
+    },
+    {
+      "line": 323,
+      "text": "    }"
+    },
+    {
+      "line": 324,
+      "text": ""
+    },
+    {
+      "line": 325,
+      "text": "    private func decideFirstFrameElapsed(hasWindow: Bool) -> KeyboardHostRecoveryAction {"
+    },
+    {
+      "line": 326,
+      "text": "        guard phase == .visible, hasWindow else { return .none }"
+    },
+    {
+      "line": 327,
+      "text": "        if firstFrameConsumedForGeneration, !firstFrameRearmPending {"
+    },
+    {
+      "line": 328,
+      "text": "            return .none"
+    },
+    {
+      "line": 329,
+      "text": "        }"
+    },
+    {
+      "line": 330,
+      "text": "        if let pending {"
+    },
+    {
+      "line": 331,
+      "text": "            guard !pending.blocked else { return .none }"
+    },
+    {
+      "line": 332,
+      "text": "            guard pending.generation == presentationGeneration, pending.context == currentContext"
+    },
+    {
+      "line": 333,
+      "text": "            else {"
+    },
+    {
+      "line": 334,
+      "text": "                return .none"
+    },
+    {
+      "line": 335,
+      "text": "            }"
+    },
+    {
+      "line": 336,
+      "text": "        }"
+    },
+    {
+      "line": 337,
+      "text": "        return .completeFirstFrameActivation"
+    },
+    {
+      "line": 338,
+      "text": "    }"
+    },
+    {
+      "line": 339,
+      "text": ""
+    },
+    {
+      "line": 340,
+      "text": "    private func blockPending() {"
+    },
+    {
+      "line": 341,
+      "text": "        pending?.blocked = true"
+    },
+    {
+      "line": 342,
+      "text": "        firstFrameRearmPending = false"
+    },
+    {
+      "line": 343,
+      "text": "        firstFrameArmSuppressed = true"
+    },
+    {
+      "line": 344,
+      "text": "        invalidateFirstFrameArm()"
+    },
+    {
+      "line": 345,
+      "text": "    }"
+    },
+    {
+      "line": 346,
+      "text": ""
+    },
+    {
+      "line": 347,
+      "text": "    private func consumePendingAndRearm() {"
+    },
+    {
+      "line": 348,
+      "text": "        pending = nil"
+    },
+    {
+      "line": 349,
+      "text": "        firstFrameRearmPending = false"
+    },
+    {
+      "line": 350,
+      "text": "        didSuspendCurrentGeneration = false"
+    },
+    {
+      "line": 351,
+      "text": "    }"
+    },
+    {
+      "line": 352,
+      "text": "}"
+    }
+  ]
+}

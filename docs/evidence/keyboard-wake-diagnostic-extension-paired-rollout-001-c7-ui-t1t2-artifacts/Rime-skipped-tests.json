@@ -1,0 +1,122 @@
+[
+  {
+    "name": "testCorrectionSidecarKeepsVisibleCompositionIntactWhenRuntimeFixtureIsProvided()",
+    "nodeIdentifier": "RimeLuaSmokeTests/testCorrectionSidecarKeepsVisibleCompositionIntactWhenRuntimeFixtureIsProvided()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  },
+  {
+    "name": "testRimeIceLuaDynamicCandidatesWhenRuntimeFixtureIsProvided()",
+    "nodeIdentifier": "RimeLuaSmokeTests/testRimeIceLuaDynamicCandidatesWhenRuntimeFixtureIsProvided()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  },
+  {
+    "name": "testCappedTwoSyllableControllerFrozenPairedMatrix()",
+    "nodeIdentifier": "RimeT9AutoAnchorRetryMatrixTests/testCappedTwoSyllableControllerFrozenPairedMatrix()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  },
+  {
+    "name": "testIsolatedPersonalizationKnownPositive()",
+    "nodeIdentifier": "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationKnownPositive()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  },
+  {
+    "name": "testIsolatedPersonalizationNaturalReminder()",
+    "nodeIdentifier": "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationNaturalReminder()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  },
+  {
+    "name": "testIsolatedPersonalizationNaturalWeather()",
+    "nodeIdentifier": "RimeT9AutoAnchorRetryMatrixTests/testIsolatedPersonalizationNaturalWeather()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  },
+  {
+    "name": "testPartialLongSelectionIsNotPersonalizationProof()",
+    "nodeIdentifier": "RimeT9AutoAnchorRetryMatrixTests/testPartialLongSelectionIsNotPersonalizationProof()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  },
+  {
+    "name": "testRejectedCompositionLaterOpportunityTransactionMatrix()",
+    "nodeIdentifier": "RimeT9AutoAnchorRetryMatrixTests/testRejectedCompositionLaterOpportunityTransactionMatrix()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  },
+  {
+    "name": "testRollingControllerFrozenA0A1B2B3Matrix()",
+    "nodeIdentifier": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerFrozenA0A1B2B3Matrix()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  },
+  {
+    "name": "testRollingControllerMissingLiveCompositionFailsClosedBeforeKey()",
+    "nodeIdentifier": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerMissingLiveCompositionFailsClosedBeforeKey()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  },
+  {
+    "name": "testRollingControllerRealRimeDeletePathAndPartialOwnership()",
+    "nodeIdentifier": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerRealRimeDeletePathAndPartialOwnership()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  },
+  {
+    "name": "testRollingControllerRealRimeSecondRejectRestoreMatrix()",
+    "nodeIdentifier": "RimeT9AutoAnchorRetryMatrixTests/testRollingControllerRealRimeSecondRejectRestoreMatrix()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  },
+  {
+    "name": "testPinnedLibrimeCanSelectT9AndProcessDigitSequenceAfterRemovingUnsupportedProcessor()",
+    "nodeIdentifier": "RimeT9CompatibilitySpikeTests/testPinnedLibrimeCanSelectT9AndProcessDigitSequenceAfterRemovingUnsupportedProcessor()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  },
+  {
+    "name": "test004CatalogExactRawAcceptanceOnPinnedLibrime()",
+    "nodeIdentifier": "RimeT9PinyinSelectionSpikeTests/test004CatalogExactRawAcceptanceOnPinnedLibrime()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  },
+  {
+    "name": "testAtomicPathDiscoveryStageAOnPinnedLibrime()",
+    "nodeIdentifier": "RimeT9PinyinSelectionSpikeTests/testAtomicPathDiscoveryStageAOnPinnedLibrime()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  },
+  {
+    "name": "testGate5Phase05CandidateCoverageSelRangeOnPinnedLibrime()",
+    "nodeIdentifier": "RimeT9PinyinSelectionSpikeTests/testGate5Phase05CandidateCoverageSelRangeOnPinnedLibrime()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  },
+  {
+    "name": "testGate5Phase06AlternativeCoverageSelectionDeltaOnPinnedLibrime()",
+    "nodeIdentifier": "RimeT9PinyinSelectionSpikeTests/testGate5Phase06AlternativeCoverageSelectionDeltaOnPinnedLibrime()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  },
+  {
+    "name": "testPrecisePinyinPathRefinementOnPinnedLibrime()",
+    "nodeIdentifier": "RimeT9PinyinSelectionSpikeTests/testPrecisePinyinPathRefinementOnPinnedLibrime()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  },
+  {
+    "name": "testReadOnlyWindowCoverageForYiZiSibling()",
+    "nodeIdentifier": "RimeT9PinyinSelectionSpikeTests/testReadOnlyWindowCoverageForYiZiSibling()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  },
+  {
+    "name": "testRealEngineBootstrapCreatesAndCallsOffMainThroughOwner()",
+    "nodeIdentifier": "ThreadAffineRimeRealEngineTests/testRealEngineBootstrapCreatesAndCallsOffMainThroughOwner()",
+    "nodeType": "Test Case",
+    "result": "Skipped"
+  }
+]

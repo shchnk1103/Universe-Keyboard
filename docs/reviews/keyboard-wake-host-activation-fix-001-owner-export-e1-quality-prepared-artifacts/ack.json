@@ -1,0 +1,29 @@
+{
+  "lane": "OWN-EXPORT-E1-QUALITY-R1",
+  "reviewer": "/root/f4p_quality_four_paths_fresh GPT6 Luna",
+  "status": "accepted_for_bounded_review",
+  "authorization_sha256": "0e5e0e41f033fd415bb426f643beaa18492fa64a0931a310af08d169ce2b0ad0",
+  "packet_sha256": "9fcb7abeccbe3dd3d7c42d85c44bf0a4355cf6dd854f6cb5a7c19b847d54434c",
+  "reader_sha256": "870a31c9bbb84888058810ec36fbdaab54f35c3e33caab576761fb3caa010923",
+  "scope": [
+    "Q1 exact run/frame/borrow/single bounded read",
+    "Q2 exact binary decode/completeness/attempt and lifecycle integer limits",
+    "Q3 human-source binding and cleanup including ambiguous machine field",
+    "Q4 reconnect/scope and budget overrun; final exact counts unknown not fabricate"
+  ],
+  "native_input_validation": {
+    "text_inputs": 30,
+    "all_text_match_packet_and_reader": true,
+    "binary_lossless_hex_match": true,
+    "binary_bytes": 1496,
+    "binary_sha256": "a8b3bde10c0c489e92b1e7f370e257d33c4156f805697af1597fe5d5fd35414d"
+  },
+  "preflight_utc": "2026-10-06T04:44:58.794839000Z",
+  "actual_calls_used_including_this_wrapper_and_nested_command": 4,
+  "notes": [
+    "One initial reader traversal printed and verified all 30 embedded text byte counts and SHA-256 values, then exited nonzero on a shape assumption for reader.binary; packet and reader use an object, not an array. This corrected preflight verified every native text input and binary against packet and reader.",
+    "No candidate evidence was modified."
+  ],
+  "actual_calls_used_including_collaboration_messages_at_ack": 5,
+  "call_count_note": "At ACK completion: four functions.exec/nested exec_command invocations plus the incoming lane assignment message; the one outgoing progress message came afterward."
+}

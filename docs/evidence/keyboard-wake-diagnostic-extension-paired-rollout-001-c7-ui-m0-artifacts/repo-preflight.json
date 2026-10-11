@@ -1,0 +1,9 @@
+{
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "source_hash_count": 1279,
+  "mismatches": [],
+  "candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50",
+  "authorization": "M0 only; Human fresh exclusivity/closed-app confirmation pending",
+  "no_simulator_access_yet": true
+}

@@ -7,9 +7,9 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | Closed (historical) |
-| Current Phase | v0.7.0 advisory published via PR [#99](https://github.com/shchnk1103/Universe-Keyboard/pull/99) merged `4c9f424`; Adopted pin superseded by [`KOS-UPGRADE-UK-004`](kos-upgrade-uk-004-v0.8.0.md) / PR [#104](https://github.com/shchnk1103/Universe-Keyboard/pull/104) |
+| Current Phase | v0.7.0 advisory published via PR [#99](https://github.com/shchnk1103/Universe-Keyboard/pull/99) merged 4c9f424; v0.8.0/PR #104 was the next historical pin; current pin is v0.9.0 under [UK-006](../product-decisions/KOS-UPGRADE-UK-006-v0.9.0-adoption.md). |
 | Material non-claims | Historical v0.7.0 pin only; no required, product Swift, device or App Release claim |
-| Next handoff / decision | None for this pin; current adoption is UK-004 `v0.8.0` advisory |
+| Next handoff / decision | None for this historical Assignment; current adoption and prospective rules are maintained in [UPGRADE_STATUS](../kos/UPGRADE_STATUS.md). |
 | Residuals | Earlier failures retained historically |
 
 ## Authority
@@ -63,4 +63,4 @@ Adoption review: [independent review and finding closure](../reviews/kos-astra-a
 
 ## 2026-09-10 post-merge status
 
-PR [#99](https://github.com/shchnk1103/Universe-Keyboard/pull/99) merged `4c9f424`. The Adopted pin is no longer v0.7.0; see [`KOS-UPGRADE-UK-004`](kos-upgrade-uk-004-v0.8.0.md) and PR [#104](https://github.com/shchnk1103/Universe-Keyboard/pull/104). This Assignment stays historical and does not authorize `required`, H-02/W-01, or Release.
+PR #99 merged 4c9f424. The Adopted pin is no longer v0.7.0; v0.8.0 and PR #104 are historical snapshots. Current pin is v0.9.0 under [UK-006](../product-decisions/KOS-UPGRADE-UK-006-v0.9.0-adoption.md) and [UPGRADE_STATUS](../kos/UPGRADE_STATUS.md). This Assignment stays historical and does not authorize required, H-02/W-01, or Release.

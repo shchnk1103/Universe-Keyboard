@@ -1,0 +1,19 @@
+{
+  "markdown_checker": "repository missing_links function on exact final changed/untracked slice; not committed-diff CLI",
+  "markdown_paths": [
+    "docs/ACTIVE_WORK.md",
+    "docs/ENGINEERING_DASHBOARD.md",
+    "docs/KNOWLEDGE_INDEX.md",
+    "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md",
+    "docs/assignments/keyboard-wake-lifecycle-diagnostics-001.md",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b2-core-test-entry-2026-10-02.md",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b2-core-validation-2026-10-02.md",
+    "docs/product-decisions/KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001-c7b2-core-test-authorization-2026-10-02.md"
+  ],
+  "missing_links": [],
+  "diff_exit": 0,
+  "diff_output": "",
+  "single_line_exact": true,
+  "full_core_tested_package_matches_current_repo": true,
+  "style_limit": "57 unchanged original diagnostics, lint exit1; no format-in-place and no commit/push"
+}

@@ -104,7 +104,23 @@ private final class KeyboardTouchRoutingCanvas: UIView {
         backgroundColor = .clear
         isOpaque = false
         isAccessibilityElement = false
-        accessibilityElementsHidden = true
+        // Touch `hitTest` returns nil over visible key faces so UIKit can
+        // reach the UIButton underneath. Accessibility hit-testing uses
+        // frames, not that override. Hiding AX elements on this full-frame
+        // overlay occupies the key region and conceals sibling
+        // `KeyboardKeyButton`s from the Simulator AX tree. Gap controls stay
+        // non-elements; this canvas must not occupy AX space.
+        accessibilityElementsHidden = false
+    }
+
+    override var accessibilityFrame: CGRect {
+        get { .null }
+        set { super.accessibilityFrame = .null }
+    }
+
+    override var accessibilityElements: [Any]? {
+        get { [] }
+        set { /* overlay never vends AX children; keys remain siblings underneath */  }
     }
 
     required init?(coder: NSCoder) {

@@ -1,0 +1,7 @@
+{
+  "start_utc": "2026-10-02T15:40:01.198525+00:00",
+  "end_utc": "2026-10-02T15:40:34.898933+00:00",
+  "elapsed_seconds": 33.700489416951314,
+  "exit_code": 0,
+  "command": "ordinary-debug-command.json"
+}

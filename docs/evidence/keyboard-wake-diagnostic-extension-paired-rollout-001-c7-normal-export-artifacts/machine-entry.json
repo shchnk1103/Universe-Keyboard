@@ -1,0 +1,35 @@
+{
+  "utc": "2026-10-02T14:30:20.497726+00:00",
+  "mismatches": [],
+  "source_count": 571,
+  "vendor_count": 630,
+  "installed_count": 78,
+  "processes": [
+    "24050 /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/4EB4A3E6-58B0-44CB-BC45-B608BA1E6518/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard"
+  ],
+  "preferences": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "rime_deployed": {
+      "exists": true,
+      "value": "True"
+    },
+    "rime_needs_deploy": {
+      "exists": true,
+      "value": "False"
+    },
+    "rime_deploying": {
+      "exists": true,
+      "value": "False"
+    }
+  },
+  "candidate": "ddd5579ee6dce39deea3c63487cfe6817c419628c4471c0b3e9298d9c47f3ca9",
+  "source_identity": "3c45e4d76a858d4d5484496d216cb8b1dc6a1d59d5bc3311eb5a2e451602e0e0",
+  "backup_available": true
+}

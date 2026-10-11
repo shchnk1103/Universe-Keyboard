@@ -1,0 +1,476 @@
+{
+  "run_id": "C6-MAPS-20261001-01",
+  "expected": 30,
+  "observed": 30,
+  "exact_multiset_match": true,
+  "missing": {},
+  "extra": {},
+  "rows": [
+    {
+      "localSequence": 1,
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "expected_rendered_line": "[14:39:22.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_will_appear"
+    },
+    {
+      "localSequence": 3,
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "expected_rendered_line": "[14:39:22.000] [DEBUG] [ENGINE] rime.resume.phase_changed phase=started"
+    },
+    {
+      "localSequence": 4,
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "expected_rendered_line": "[14:39:22.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_did_appear"
+    },
+    {
+      "localSequence": 13,
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "expected_rendered_line": "[14:39:30.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered"
+    },
+    {
+      "localSequence": 14,
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "expected_rendered_line": "[14:39:30.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned"
+    },
+    {
+      "localSequence": 21,
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "expected_rendered_line": "[14:39:31.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered"
+    },
+    {
+      "localSequence": 22,
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "expected_rendered_line": "[14:39:31.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned"
+    },
+    {
+      "localSequence": 29,
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "expected_rendered_line": "[14:39:32.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered"
+    },
+    {
+      "localSequence": 30,
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "expected_rendered_line": "[14:39:32.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned"
+    },
+    {
+      "localSequence": 37,
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "expected_rendered_line": "[14:39:33.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered"
+    },
+    {
+      "localSequence": 38,
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "expected_rendered_line": "[14:39:33.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned"
+    },
+    {
+      "localSequence": 45,
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "expected_rendered_line": "[14:39:33.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered"
+    },
+    {
+      "localSequence": 46,
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "expected_rendered_line": "[14:39:33.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned"
+    },
+    {
+      "localSequence": 52,
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "expected_rendered_line": "[14:39:59.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered"
+    },
+    {
+      "localSequence": 53,
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "expected_rendered_line": "[14:39:59.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned"
+    },
+    {
+      "localSequence": 58,
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "expected_rendered_line": "[14:40:00.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered"
+    },
+    {
+      "localSequence": 59,
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "expected_rendered_line": "[14:40:00.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned"
+    },
+    {
+      "localSequence": 63,
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "expected_rendered_line": "[14:40:00.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered"
+    },
+    {
+      "localSequence": 64,
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "expected_rendered_line": "[14:40:00.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned"
+    },
+    {
+      "localSequence": 68,
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "expected_rendered_line": "[14:40:00.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered"
+    },
+    {
+      "localSequence": 69,
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "expected_rendered_line": "[14:40:00.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned"
+    },
+    {
+      "localSequence": 73,
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "expected_rendered_line": "[14:40:00.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered"
+    },
+    {
+      "localSequence": 74,
+      "processInstanceID": "1D80C9D6-6024-424F-8B9F-B9E7331810C7",
+      "appearanceID": "06D88854-BCA2-4154-8203-35F7556112A6",
+      "expected_rendered_line": "[14:40:00.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned"
+    },
+    {
+      "localSequence": 1,
+      "processInstanceID": "3F66BF6F-B473-44A7-98D0-06DFC60A7C45",
+      "appearanceID": "99A7FD8B-E3DC-407A-9905-DE432C52D8C2",
+      "expected_rendered_line": "[14:46:01.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_will_appear"
+    },
+    {
+      "localSequence": 3,
+      "processInstanceID": "3F66BF6F-B473-44A7-98D0-06DFC60A7C45",
+      "appearanceID": "99A7FD8B-E3DC-407A-9905-DE432C52D8C2",
+      "expected_rendered_line": "[14:46:01.000] [DEBUG] [ENGINE] rime.resume.phase_changed phase=started"
+    },
+    {
+      "localSequence": 4,
+      "processInstanceID": "3F66BF6F-B473-44A7-98D0-06DFC60A7C45",
+      "appearanceID": "99A7FD8B-E3DC-407A-9905-DE432C52D8C2",
+      "expected_rendered_line": "[14:46:02.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_did_appear"
+    },
+    {
+      "localSequence": 13,
+      "processInstanceID": "3F66BF6F-B473-44A7-98D0-06DFC60A7C45",
+      "appearanceID": "99A7FD8B-E3DC-407A-9905-DE432C52D8C2",
+      "expected_rendered_line": "[14:46:04.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered"
+    },
+    {
+      "localSequence": 14,
+      "processInstanceID": "3F66BF6F-B473-44A7-98D0-06DFC60A7C45",
+      "appearanceID": "99A7FD8B-E3DC-407A-9905-DE432C52D8C2",
+      "expected_rendered_line": "[14:46:04.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned"
+    },
+    {
+      "localSequence": 20,
+      "processInstanceID": "3F66BF6F-B473-44A7-98D0-06DFC60A7C45",
+      "appearanceID": "99A7FD8B-E3DC-407A-9905-DE432C52D8C2",
+      "expected_rendered_line": "[14:46:05.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered"
+    },
+    {
+      "localSequence": 21,
+      "processInstanceID": "3F66BF6F-B473-44A7-98D0-06DFC60A7C45",
+      "appearanceID": "99A7FD8B-E3DC-407A-9905-DE432C52D8C2",
+      "expected_rendered_line": "[14:46:05.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned"
+    }
+  ],
+  "expected_line_multiplicities": {
+    "[14:39:22.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_will_appear": 1,
+    "[14:39:22.000] [DEBUG] [ENGINE] rime.resume.phase_changed phase=started": 1,
+    "[14:39:22.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_did_appear": 1,
+    "[14:39:30.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": 1,
+    "[14:39:30.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": 1,
+    "[14:39:31.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": 1,
+    "[14:39:31.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": 1,
+    "[14:39:32.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": 1,
+    "[14:39:32.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": 1,
+    "[14:39:33.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": 2,
+    "[14:39:33.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": 2,
+    "[14:39:59.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": 1,
+    "[14:39:59.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": 1,
+    "[14:40:00.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": 4,
+    "[14:40:00.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": 4,
+    "[14:46:01.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_will_appear": 1,
+    "[14:46:01.000] [DEBUG] [ENGINE] rime.resume.phase_changed phase=started": 1,
+    "[14:46:02.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_did_appear": 1,
+    "[14:46:04.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": 1,
+    "[14:46:04.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": 1,
+    "[14:46:05.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": 1,
+    "[14:46:05.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": 1
+  },
+  "observed_line_multiplicities": {
+    "[14:46:05.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": 1,
+    "[14:46:05.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": 1,
+    "[14:46:04.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": 1,
+    "[14:46:04.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": 1,
+    "[14:46:02.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_did_appear": 1,
+    "[14:46:01.000] [DEBUG] [ENGINE] rime.resume.phase_changed phase=started": 1,
+    "[14:46:01.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_will_appear": 1,
+    "[14:40:00.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": 4,
+    "[14:40:00.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": 4,
+    "[14:39:59.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": 1,
+    "[14:39:59.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": 1,
+    "[14:39:33.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": 2,
+    "[14:39:33.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": 2,
+    "[14:39:32.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": 1,
+    "[14:39:32.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": 1,
+    "[14:39:31.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": 1,
+    "[14:39:31.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": 1,
+    "[14:39:30.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": 1,
+    "[14:39:30.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": 1,
+    "[14:39:22.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_did_appear": 1,
+    "[14:39:22.000] [DEBUG] [ENGINE] rime.resume.phase_changed phase=started": 1,
+    "[14:39:22.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_will_appear": 1
+  },
+  "ui_references": {
+    "[14:46:05.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": [
+      {
+        "seq": 34,
+        "screen_hash": "113rf27",
+        "count": 1
+      },
+      {
+        "seq": 35,
+        "screen_hash": "0pnpp65",
+        "count": 1
+      }
+    ],
+    "[14:46:05.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": [
+      {
+        "seq": 34,
+        "screen_hash": "113rf27",
+        "count": 1
+      },
+      {
+        "seq": 35,
+        "screen_hash": "0pnpp65",
+        "count": 1
+      },
+      {
+        "seq": 36,
+        "screen_hash": "1rbm7q8",
+        "count": 1
+      }
+    ],
+    "[14:46:04.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": [
+      {
+        "seq": 35,
+        "screen_hash": "0pnpp65",
+        "count": 1
+      },
+      {
+        "seq": 36,
+        "screen_hash": "1rbm7q8",
+        "count": 1
+      }
+    ],
+    "[14:46:04.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": [
+      {
+        "seq": 35,
+        "screen_hash": "0pnpp65",
+        "count": 1
+      },
+      {
+        "seq": 36,
+        "screen_hash": "1rbm7q8",
+        "count": 1
+      }
+    ],
+    "[14:46:02.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_did_appear": [
+      {
+        "seq": 35,
+        "screen_hash": "0pnpp65",
+        "count": 1
+      },
+      {
+        "seq": 36,
+        "screen_hash": "1rbm7q8",
+        "count": 1
+      }
+    ],
+    "[14:46:01.000] [DEBUG] [ENGINE] rime.resume.phase_changed phase=started": [
+      {
+        "seq": 35,
+        "screen_hash": "0pnpp65",
+        "count": 1
+      },
+      {
+        "seq": 36,
+        "screen_hash": "1rbm7q8",
+        "count": 1
+      }
+    ],
+    "[14:46:01.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_will_appear": [
+      {
+        "seq": 35,
+        "screen_hash": "0pnpp65",
+        "count": 1
+      },
+      {
+        "seq": 36,
+        "screen_hash": "1rbm7q8",
+        "count": 1
+      }
+    ],
+    "[14:40:00.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": [
+      {
+        "seq": 35,
+        "screen_hash": "0pnpp65",
+        "count": 2
+      },
+      {
+        "seq": 36,
+        "screen_hash": "1rbm7q8",
+        "count": 4
+      },
+      {
+        "seq": 37,
+        "screen_hash": "1bnn46x",
+        "count": 1
+      }
+    ],
+    "[14:40:00.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": [
+      {
+        "seq": 35,
+        "screen_hash": "0pnpp65",
+        "count": 2
+      },
+      {
+        "seq": 36,
+        "screen_hash": "1rbm7q8",
+        "count": 4
+      },
+      {
+        "seq": 37,
+        "screen_hash": "1bnn46x",
+        "count": 1
+      }
+    ],
+    "[14:39:59.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": [
+      {
+        "seq": 36,
+        "screen_hash": "1rbm7q8",
+        "count": 1
+      },
+      {
+        "seq": 37,
+        "screen_hash": "1bnn46x",
+        "count": 1
+      }
+    ],
+    "[14:39:59.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": [
+      {
+        "seq": 36,
+        "screen_hash": "1rbm7q8",
+        "count": 1
+      },
+      {
+        "seq": 37,
+        "screen_hash": "1bnn46x",
+        "count": 1
+      }
+    ],
+    "[14:39:33.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": [
+      {
+        "seq": 36,
+        "screen_hash": "1rbm7q8",
+        "count": 1
+      },
+      {
+        "seq": 37,
+        "screen_hash": "1bnn46x",
+        "count": 2
+      }
+    ],
+    "[14:39:33.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": [
+      {
+        "seq": 36,
+        "screen_hash": "1rbm7q8",
+        "count": 1
+      },
+      {
+        "seq": 37,
+        "screen_hash": "1bnn46x",
+        "count": 2
+      }
+    ],
+    "[14:39:32.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": [
+      {
+        "seq": 37,
+        "screen_hash": "1bnn46x",
+        "count": 1
+      }
+    ],
+    "[14:39:32.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": [
+      {
+        "seq": 37,
+        "screen_hash": "1bnn46x",
+        "count": 1
+      }
+    ],
+    "[14:39:31.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": [
+      {
+        "seq": 37,
+        "screen_hash": "1bnn46x",
+        "count": 1
+      }
+    ],
+    "[14:39:31.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": [
+      {
+        "seq": 37,
+        "screen_hash": "1bnn46x",
+        "count": 1
+      }
+    ],
+    "[14:39:30.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=returned": [
+      {
+        "seq": 37,
+        "screen_hash": "1bnn46x",
+        "count": 1
+      }
+    ],
+    "[14:39:30.000] [DEBUG] [DISP] text_proxy.operation_phase_changed operation=set_marked_text phase=entered": [
+      {
+        "seq": 37,
+        "screen_hash": "1bnn46x",
+        "count": 1
+      }
+    ],
+    "[14:39:22.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_did_appear": [
+      {
+        "seq": 37,
+        "screen_hash": "1bnn46x",
+        "count": 1
+      }
+    ],
+    "[14:39:22.000] [DEBUG] [ENGINE] rime.resume.phase_changed phase=started": [
+      {
+        "seq": 37,
+        "screen_hash": "1bnn46x",
+        "count": 1
+      }
+    ],
+    "[14:39:22.000] [DEBUG] [DISP] keyboard.lifecycle.phase_changed phase=view_will_appear": [
+      {
+        "seq": 37,
+        "screen_hash": "1bnn46x",
+        "count": 1
+      }
+    ]
+  },
+  "comparison": "max per-snapshot Counter per line, preserving same-second duplicates; hidden identity not observed in UI",
+  "timezone": "actual same-App observed +08:00 for this historical window, not fixed-timezone behavior guarantee"
+}

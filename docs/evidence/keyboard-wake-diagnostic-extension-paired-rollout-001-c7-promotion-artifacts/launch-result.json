@@ -1,0 +1,34 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "\n🚀 Launch App\n\n✅ App launched successfully\n  ├ Process ID: 23981\n  └ Files:\n     └── ~/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/\n         ├── com.DoubleShy0N.Universe-Keyboard_2026-10-02T14-15-17-686Z_helperpid23935_ownerpid18426_1e78e72d.log — Runtime Logs\n         └── com.DoubleShy0N.Universe-Keyboard_oslog_2026-10-02T14-15-23-636Z_helperpid24010_ownerpid18426_73994123.log — OSLog\n\nNext steps:\n1. Open Simulator app to see it: open_sim()\n2. Stop app in simulator: stop_app_sim({ simulatorId: \"405D994F-28CB-4F89-BB22-B64AD81C05A2\", bundleId: \"com.DoubleShy0N.Universe-Keyboard\" })\n"
+    }
+  ],
+  "structuredContent": {
+    "schema": "xcodebuildmcp.output.launch-result",
+    "schemaVersion": "2",
+    "didError": false,
+    "error": null,
+    "data": {
+      "summary": {
+        "status": "SUCCEEDED"
+      },
+      "artifacts": {
+        "simulatorId": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+        "bundleId": "com.DoubleShy0N.Universe-Keyboard",
+        "processId": 23981,
+        "runtimeLogPath": "/Users/doubleshy0n/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/com.DoubleShy0N.Universe-Keyboard_2026-10-02T14-15-17-686Z_helperpid23935_ownerpid18426_1e78e72d.log",
+        "osLogPath": "/Users/doubleshy0n/Library/Developer/XcodeBuildMCP/workspaces/Universe-Keyboard-dc07bf780737/logs/com.DoubleShy0N.Universe-Keyboard_oslog_2026-10-02T14-15-23-636Z_helperpid24010_ownerpid18426_73994123.log"
+      },
+      "diagnostics": {
+        "warnings": [],
+        "errors": []
+      }
+    },
+    "nextSteps": [
+      "Open Simulator app to see it: open_sim()",
+      "Stop app in simulator: stop_app_sim({ simulatorId: \"405D994F-28CB-4F89-BB22-B64AD81C05A2\", bundleId: \"com.DoubleShy0N.Universe-Keyboard\" })"
+    ]
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "stage": "arm",
+  "verbatim": "点击之后是变为了‘取证’，我没有继续点击‘取证’",
+  "root_recorded_utc": "2026-10-03T14:53:16.064186+00:00",
+  "actual_click_utc": null,
+  "click_count_reported": 1,
+  "title_reported": "取证",
+  "no_second_click_reported": true,
+  "conservative_elapsed_from_prearm_seconds": 94.602422,
+  "conservative_deadline_utc": "2026-10-03T15:01:41.461764+00:00",
+  "timing_basis": "prearm readiness precedes Human arm instruction; not actual arm time; actual probe TTL checked in raw snapshot",
+  "protocol_deviations_reported": []
+}

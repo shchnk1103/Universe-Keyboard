@@ -1,0 +1,19 @@
+{
+  "recorded_utc": "2026-10-02T14:53:05.804499+00:00",
+  "lane": "QUALITY-C7-NORMAL-EXPORT",
+  "round": 1,
+  "packet_digest": "c99ff6b954ebcf42b48a4cc2fd1e60b4c799b938ccc2f0fa344a0cb13b49706f",
+  "hard_deadline_utc": "2026-10-02T14:51:23.299964Z",
+  "coordinator_clock_before_interrupt": "2026-10-02 14:51:22 UTC",
+  "stop": "Coordinator interrupted at hard-limit boundary; last measured coordinator clock 14:51:22Z, precise interrupt UTC unavailable; no renewal",
+  "independent_report_exists": true,
+  "report_sha256": "19c3e11ce508f7ac01a905617d9191a480f84f36cdc15e252de22514e153007d",
+  "independent_usage_exists": false,
+  "known_checkpoint_call_count": 7,
+  "actual_final_call_count": null,
+  "actual_final_elapsed_seconds": null,
+  "per_call_ledger": null,
+  "reviewer_substantive_verdict": "P1/P2/P3 Covered; Positive scoped runtime-chain acceptance",
+  "coordinator_delivery_status": "Partial / incomplete due to missing required usage ledger; substantive report preserved, not formal completed acceptance",
+  "restrictions": "No device/LLDB/source/build/test/Maps/Git performed in this review; no new capture"
+}

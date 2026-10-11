@@ -1,0 +1,73 @@
+{
+  "utc": "2026-10-04T11:19:57.664210+00:00",
+  "containers": {
+    "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/9F532453-D3A0-4A06-B20B-165B841230A1/Universe Keyboard.app",
+    "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/FB2E1C3F-E443-473B-9965-079D7BC0EF40",
+    "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/05FFE2DA-4326-45EB-8291-F816EBAE5FC3"
+  },
+  "before_app_payload78_match": true,
+  "dual_signature_valid": true,
+  "main_application_baseline_match": true,
+  "group_application_baseline_match": true,
+  "system_metadata_and_root_identity_same_as_postinstall": true,
+  "snapshots_kept_as_postinstall": true,
+  "two_reads_stable": true,
+  "target_processes_absent": true,
+  "selected_preferences": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "rime_deployed": {
+      "exists": true,
+      "value": true
+    },
+    "rime_needs_deploy": {
+      "exists": true,
+      "value": false
+    },
+    "rime_is_deploying": {
+      "exists": false,
+      "value": null
+    }
+  },
+  "counts": {
+    "main-data": {
+      "files": 827,
+      "directories": 42,
+      "symlinks": 0,
+      "file_bytes": 1101984,
+      "inventory_sha256": "e7c41309d043b1b0f6be5e919b4fc39773a491c7d095e92f089c872678a0d926"
+    },
+    "app-group": {
+      "files": 51,
+      "directories": 15,
+      "symlinks": 2,
+      "file_bytes": 37749287,
+      "inventory_sha256": "5550bff4921177f1c23f4e660c097d25a60b088e1f3898343e949065b7e26dbe"
+    },
+    "installed-app": {
+      "files": 78,
+      "directories": 9,
+      "symlinks": 0,
+      "file_bytes": 91344780,
+      "inventory_sha256": "21ac53de28fa3843cf35715a5ddb65abcedbd5b45eb45d87aa5e3d4b43fe102d"
+    }
+  },
+  "provenance_classification": {
+    "rewritten": 54,
+    "missing_on_live": 8,
+    "added": 7
+  },
+  "all_metadata_exact_equal_not_claimed": true,
+  "runtime_health_not_tested": true,
+  "keychain_not_restored": true,
+  "no_launch_redeploy_or_typing": true,
+  "before_backup_preserved": true,
+  "after_preservation_preserved": true,
+  "f2_run_evidence_preserved": true
+}

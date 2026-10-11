@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+  "origin_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "expected_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "line_start": 361,
+  "line_end": 420,
+  "lines": [
+    {
+      "line": 361,
+      "text": "            responsiveCanaryPresentationFenced = true"
+    },
+    {
+      "line": 362,
+      "text": "            responsivePresentationGeneration &+= 1"
+    },
+    {
+      "line": 363,
+      "text": "            finalizeResponsiveCanaryFencedPresentations()"
+    },
+    {
+      "line": 364,
+      "text": "            dualGatePendingPresentationSnapshot = nil"
+    },
+    {
+      "line": 365,
+      "text": "            dualGatePendingPresentationHasKnownSuccessor = false"
+    },
+    {
+      "line": 366,
+      "text": "            dualGatePresentationCoalesceScheduled = false"
+    },
+    {
+      "line": 367,
+      "text": "            pendingResponsiveCanaryVisibleSnapshot = nil"
+    },
+    {
+      "line": 368,
+      "text": "        }"
+    },
+    {
+      "line": 369,
+      "text": ""
+    },
+    {
+      "line": 370,
+      "text": "        public func resumeResponsiveCanaryPresentationAfterOwnerReady() {"
+    },
+    {
+      "line": 371,
+      "text": "            guard threadAffineRimeCoordinator?.isOwnerReady == true else { return }"
+    },
+    {
+      "line": 372,
+      "text": "            responsiveCanaryPresentationFenced = false"
+    },
+    {
+      "line": 373,
+      "text": "            pendingResponsiveCanaryVisibleSnapshot = nil"
+    },
+    {
+      "line": 374,
+      "text": "            lastResponsiveCanaryVisibilityTeardown = nil"
+    },
+    {
+      "line": 375,
+      "text": "        }"
+    },
+    {
+      "line": 376,
+      "text": ""
+    },
+    {
+      "line": 377,
+      "text": "        /// Converts every owner-delivered but not yet MainActor-terminal PUBLISH"
+    },
+    {
+      "line": 378,
+      "text": "        /// into a stale terminal before an owner pointer or pipeline flag is cleared."
+    },
+    {
+      "line": 379,
+      "text": "        public func finalizeResponsiveCanaryFencedPresentations() {"
+    },
+    {
+      "line": 380,
+      "text": "            guard let affine = threadAffineRimeCoordinator else { return }"
+    },
+    {
+      "line": 381,
+      "text": "            for identity in affine.pendingPresentationIdentities {"
+    },
+    {
+      "line": 382,
+      "text": "                let key ="
+    },
+    {
+      "line": 383,
+      "text": "                    \"\\(identity.canarySessionInstance):\""
+    },
+    {
+      "line": 384,
+      "text": "                    + \"\\(identity.sessionEpoch):\\(identity.revision)\""
+    },
+    {
+      "line": 385,
+      "text": "                guard responsiveCanaryPreterminatedPresentations.insert(key).inserted else {"
+    },
+    {
+      "line": 386,
+      "text": "                    continue"
+    },
+    {
+      "line": 387,
+      "text": "                }"
+    },
+    {
+      "line": 388,
+      "text": "                emitResponsiveCanaryTerminal("
+    },
+    {
+      "line": 389,
+      "text": "                    sessionEpoch: identity.sessionEpoch,"
+    },
+    {
+      "line": 390,
+      "text": "                    revision: identity.revision,"
+    },
+    {
+      "line": 391,
+      "text": "                    canarySessionInstance: identity.canarySessionInstance,"
+    },
+    {
+      "line": 392,
+      "text": "                    completion: .staleAfterFence,"
+    },
+    {
+      "line": 393,
+      "text": "                    visibility: .notVisibleFencedBeforeVisible,"
+    },
+    {
+      "line": 394,
+      "text": "                    paint: .failedFencedBeforeVisible"
+    },
+    {
+      "line": 395,
+      "text": "                )"
+    },
+    {
+      "line": 396,
+      "text": "            }"
+    },
+    {
+      "line": 397,
+      "text": "        }"
+    },
+    {
+      "line": 398,
+      "text": "    #endif"
+    },
+    {
+      "line": 399,
+      "text": ""
+    },
+    {
+      "line": 400,
+      "text": "    /// Apply a published responsive snapshot on MainActor and run gate-off-parity"
+    },
+    {
+      "line": 401,
+      "text": "    /// Path / auto-anchor post-processing when a key context is available (R3)."
+    },
+    {
+      "line": 402,
+      "text": "    ///"
+    },
+    {
+      "line": 403,
+      "text": "    /// R5-Rem-2:"
+    },
+    {
+      "line": 404,
+      "text": "    /// - Dual-gate: coalesce UI paints to latest under owner backlog (O2)."
+    },
+    {
+      "line": 405,
+      "text": "    /// - Contexts: under latestOnly, keep the **last** matching pk context so"
+    },
+    {
+      "line": 406,
+      "text": "    ///   multi-key drain does not require `.everyResult` UI publishes."
+    },
+    {
+      "line": 407,
+      "text": "    /// - Engine FIFO is unchanged (all session actions still execute)."
+    },
+    {
+      "line": 408,
+      "text": "    func applyResponsivePublishedSnapshot("
+    },
+    {
+      "line": 409,
+      "text": "        _ snapshot: ResponsiveRimeSnapshot?,"
+    },
+    {
+      "line": 410,
+      "text": "        coalesced: Bool = false,"
+    },
+    {
+      "line": 411,
+      "text": "        ownerPendingDepthAtPublish: Int? = nil,"
+    },
+    {
+      "line": 412,
+      "text": "        canarySessionInstance: UInt64 = 0"
+    },
+    {
+      "line": 413,
+      "text": "    ) {"
+    },
+    {
+      "line": 414,
+      "text": "        guard let snapshot else { return }"
+    },
+    {
+      "line": 415,
+      "text": ""
+    },
+    {
+      "line": 416,
+      "text": "        #if T9_RESPONSIVE_CANARY_INTERNAL"
+    },
+    {
+      "line": 417,
+      "text": "            let terminalKey ="
+    },
+    {
+      "line": 418,
+      "text": "                \"\\(canarySessionInstance):\""
+    },
+    {
+      "line": 419,
+      "text": "                + \"\\(snapshot.sessionEpoch):\\(snapshot.revision)\""
+    },
+    {
+      "line": 420,
+      "text": "            if responsiveCanaryPreterminatedPresentations.remove(terminalKey) != nil {"
+    }
+  ]
+}

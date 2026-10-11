@@ -1,0 +1,52 @@
+{
+  "status": "TEMPLATE_NOT_EXECUTED",
+  "run_id": null,
+  "candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50",
+  "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "pid": null,
+  "debug_session_id": null,
+  "own_breakpoint_id": null,
+  "human_events": [],
+  "tool_calls": [],
+  "human_event_fields": [
+    "stage",
+    "verbatim_metadata_report",
+    "root_received_utc",
+    "actual_action_utc_if_human_measured_else_null",
+    "actual_idle_seconds_if_measured_else_null"
+  ],
+  "tool_call_fields": [
+    "sequence",
+    "tool",
+    "explicit_session",
+    "arguments",
+    "root_request_utc",
+    "root_response_utc",
+    "monotonic_start",
+    "monotonic_end",
+    "elapsed_seconds",
+    "raw_receipt_file",
+    "raw_receipt_sha256",
+    "outcome"
+  ],
+  "borrow_fields": {
+    "actual_stopped_export_frame": null,
+    "bounded_caller_stack_receipt": null,
+    "valid_address_and_bytecount": null,
+    "read_started_utc": null,
+    "read_finished_utc": null,
+    "exact_bytes_written": null,
+    "snapshot_sha256": null,
+    "cleanup_receipts": []
+  },
+  "timestamp_semantics": "Root request/response clocks bound command execution; Human receive time is not the actual click time. Borrow creation time remains unmeasured; do not invent it.",
+  "host": "com.apple.Maps",
+  "stage": "M2",
+  "baseline_attempt": null,
+  "returned_attempt": null,
+  "app_switcher_transition": null,
+  "maps_version": null,
+  "schema_layout": null,
+  "protocol_deviations": [],
+  "fresh_backup_receipt": null
+}

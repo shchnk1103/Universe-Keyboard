@@ -1,0 +1,311 @@
+{
+  "kind": "Prepared reader for exact remaining Q-P1/2/3 subitems; no independent verdict",
+  "raw_origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-artifacts/quality-raw-reader.json",
+  "raw_origin_sha256": "409e7364779a9bfe69715973994ae000ae137c1955854205cd75f1927cff5e73",
+  "modules": [
+    {
+      "path": "Universe Keyboard",
+      "candidate_sha256": "38cbdd01d7b664db0c435452086dd209447135f886906bab8181610a6a7e6feb",
+      "paired_products_sha256": "38cbdd01d7b664db0c435452086dd209447135f886906bab8181610a6a7e6feb",
+      "dwarfdump_original": {
+        "argv": [
+          "xcrun",
+          "dwarfdump",
+          "--uuid",
+          "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard"
+        ],
+        "exit_code": 0,
+        "stdout": "UUID: 664DE45A-5859-34F1-892C-3DD2D9DE7B98 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard\n",
+        "stderr": ""
+      },
+      "paired_uuid_original": "UUID: 664DE45A-5859-34F1-892C-3DD2D9DE7B98 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard",
+      "bundle_id": "com.DoubleShy0N.Universe-Keyboard"
+    },
+    {
+      "path": "Universe Keyboard.debug.dylib",
+      "candidate_sha256": "c00095f4d2016cf31b876ed5f3f17f53c5ec97d64704829b629d23ab7a57e200",
+      "paired_products_sha256": "c00095f4d2016cf31b876ed5f3f17f53c5ec97d64704829b629d23ab7a57e200",
+      "dwarfdump_original": {
+        "argv": [
+          "xcrun",
+          "dwarfdump",
+          "--uuid",
+          "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard.debug.dylib"
+        ],
+        "exit_code": 0,
+        "stdout": "UUID: C19CE509-A814-30AB-88F1-CE5416FDDC33 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard.debug.dylib\n",
+        "stderr": ""
+      },
+      "paired_uuid_original": "UUID: C19CE509-A814-30AB-88F1-CE5416FDDC33 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard.debug.dylib",
+      "bundle_id": "com.DoubleShy0N.Universe-Keyboard"
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/Keyboard",
+      "candidate_sha256": "e681da52516441c044c98419a7c9750d7a90b282cb69bd27e220284376922860",
+      "paired_products_sha256": "e681da52516441c044c98419a7c9750d7a90b282cb69bd27e220284376922860",
+      "dwarfdump_original": {
+        "argv": [
+          "xcrun",
+          "dwarfdump",
+          "--uuid",
+          "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard"
+        ],
+        "exit_code": 0,
+        "stdout": "UUID: CD0C6F02-6094-3726-B598-F03F42ABB468 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard\n",
+        "stderr": ""
+      },
+      "paired_uuid_original": "UUID: CD0C6F02-6094-3726-B598-F03F42ABB468 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+      "bundle_id": "com.DoubleShy0N.Universe-Keyboard.Keyboard"
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+      "candidate_sha256": "773c4eff9640b2623036e3f819301ead3914cb99b66c9c1496ece5986e762aab",
+      "paired_products_sha256": "773c4eff9640b2623036e3f819301ead3914cb99b66c9c1496ece5986e762aab",
+      "dwarfdump_original": {
+        "argv": [
+          "xcrun",
+          "dwarfdump",
+          "--uuid",
+          "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard.debug.dylib"
+        ],
+        "exit_code": 0,
+        "stdout": "UUID: 4B207746-89A7-321F-83C4-91477259BB26 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard.debug.dylib\n",
+        "stderr": ""
+      },
+      "paired_uuid_original": "UUID: 4B207746-89A7-321F-83C4-91477259BB26 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+      "bundle_id": "com.DoubleShy0N.Universe-Keyboard.Keyboard"
+    }
+  ],
+  "standalone_payload_paths": [
+    "AppIcon60x60@2x.png",
+    "AppIcon76x76@2x~ipad.png",
+    "Assets.car",
+    "BOOST-BSL-1.0.txt",
+    "GOOGLE-GLOG-BSD-3-Clause.txt",
+    "HKVariants.ocd2",
+    "Info.plist",
+    "KeyboardCore_KeyboardCore.bundle/Info.plist",
+    "KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeDirectory",
+    "KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeRequirements",
+    "KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeResources",
+    "KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeSignature",
+    "KeyboardCore_KeyboardCore.bundle/post_commit_continuations_v1_3.json",
+    "LEVELDB-BSD-3-Clause.txt",
+    "LUA-5.4.8-MIT.txt",
+    "MARISA-COPYING.txt",
+    "OPENCC-AUTHORS.txt",
+    "OPENCC-Apache-2.0.txt",
+    "PkgInfo",
+    "PlugIns/Keyboard.appex/Info.plist",
+    "PlugIns/Keyboard.appex/Keyboard",
+    "PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+    "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/Info.plist",
+    "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeDirectory",
+    "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeRequirements",
+    "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeResources",
+    "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/_CodeSignature/CodeSignature",
+    "PlugIns/Keyboard.appex/KeyboardCore_KeyboardCore.bundle/post_commit_continuations_v1_3.json",
+    "PlugIns/Keyboard.appex/PrivacyInfo.xcprivacy",
+    "PlugIns/Keyboard.appex/_CodeSignature/CodeResources",
+    "PlugIns/Keyboard.appex/__preview.dylib",
+    "PrivacyInfo.xcprivacy",
+    "RIME-ESSAY-AUTHORS.txt",
+    "RIME-ESSAY-LGPL-3.0.txt",
+    "RIME-ICE-GPL-3.0-only.txt",
+    "RIME-LIBRIME-BSD-3-Clause.txt",
+    "RIME-LUA-PLUGIN-BSD-3-Clause.txt",
+    "RIME-LUNA-PINYIN-AUTHORS.txt",
+    "RIME-LUNA-PINYIN-LGPL-3.0.txt",
+    "RIME-LUNA-PINYIN-SOURCE-ATTRIBUTIONS.txt",
+    "RIME-OCTAGRAM-BSD-3-Clause.txt",
+    "RIME-OCTAGRAM-PROVENANCE.txt",
+    "RIME-PRELUDE-AUTHORS.txt",
+    "RIME-PRELUDE-LGPL-3.0.txt",
+    "RIME-STROKE-AUTHORS.txt",
+    "RIME-STROKE-LGPL-3.0.txt",
+    "RIME-WANXIANG-CC-BY-4.0.txt",
+    "RimeBuiltin.manifest.json",
+    "STCharacters.ocd2",
+    "STPhrases.ocd2",
+    "TSCharacters.ocd2",
+    "TSPhrases.ocd2",
+    "TWVariants.ocd2",
+    "Universe Keyboard",
+    "Universe Keyboard.debug.dylib",
+    "YAML-CPP-MIT.txt",
+    "_CodeSignature/CodeResources",
+    "__preview.dylib",
+    "default.yaml",
+    "essay.txt",
+    "key_bindings.yaml",
+    "luna_pinyin.dict.yaml",
+    "luna_pinyin.prism.bin",
+    "luna_pinyin.reverse.bin",
+    "luna_pinyin.schema.yaml",
+    "luna_pinyin.table.bin",
+    "pinyin.yaml",
+    "punctuation.yaml",
+    "s2t.json",
+    "stroke.dict.yaml",
+    "stroke.prism.bin",
+    "stroke.reverse.bin",
+    "stroke.schema.yaml",
+    "stroke.table.bin",
+    "symbols.yaml",
+    "t2hk.json",
+    "t2s.json",
+    "t2tw.json"
+  ],
+  "request_origin": {
+    "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/build-request.json",
+    "bytes": 1306,
+    "sha256": "af100aa4c68fb99f27c5239440f93ef62396ece1f8980416f67a0fae92335d50",
+    "expected_sha256": "af100aa4c68fb99f27c5239440f93ef62396ece1f8980416f67a0fae92335d50",
+    "text": "{\n  \"started_utc\": \"2026-10-05T02:51:40.538896+00:00\",\n  \"argv\": [\n    \"xcodebuild\",\n    \"-project\",\n    \"Universe Keyboard.xcodeproj\",\n    \"-scheme\",\n    \"Universe Keyboard\",\n    \"-configuration\",\n    \"Debug\",\n    \"-sdk\",\n    \"iphonesimulator\",\n    \"-destination\",\n    \"generic/platform=iOS Simulator\",\n    \"-derivedDataPath\",\n    \"/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData\",\n    \"-clonedSourcePackagesDirPath\",\n    \"/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/SourcePackages\",\n    \"-resultBundlePath\",\n    \"/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateBuild.xcresult\",\n    \"-disableAutomaticPackageResolution\",\n    \"-onlyUsePackageVersionsFromResolvedFile\",\n    \"-skipPackageUpdates\",\n    \"CODE_SIGNING_ALLOWED=YES\",\n    \"SWIFT_VERSION=6.0\",\n    \"SWIFT_STRICT_CONCURRENCY=complete\",\n    \"SWIFT_SUPPRESS_WARNINGS=NO\",\n    \"SWIFT_TREAT_WARNINGS_AS_ERRORS=YES\",\n    \"ARCHS=arm64\",\n    \"ONLY_ACTIVE_ARCH=YES\",\n    \"SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) DEBUG KEYBOARD_WAKE_OWNER_PROBE\",\n    \"CODE_SIGN_IDENTITY=-\",\n    \"CODE_SIGNING_REQUIRED=NO\",\n    \"build\"\n  ],\n  \"cwd\": \"/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard\",\n  \"calls_at_dispatch\": 10,\n  \"wall_seconds_remaining\": 3441.215053\n}\n"
+  },
+  "receipt_origin": {
+    "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/build-receipt.json",
+    "bytes": 270,
+    "sha256": "bc9467a029d4ece78c861e7acd257976f8f09a33ce5cefd1e2523d3334c17add",
+    "expected_sha256": "bc9467a029d4ece78c861e7acd257976f8f09a33ce5cefd1e2523d3334c17add",
+    "text": "{\n  \"started_utc\": \"2026-10-05T02:51:40.538896+00:00\",\n  \"ended_utc\": \"2026-10-05T02:52:13.974565+00:00\",\n  \"elapsed_seconds\": 33.43521387502551,\n  \"exit_code\": 0,\n  \"timeout\": false,\n  \"test_run\": false,\n  \"device_instance_targeted\": false,\n  \"source_written\": false\n}\n"
+  },
+  "actual_target_invocations": {
+    "Keyboard": [
+      {
+        "line": 1425,
+        "text": "    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Keyboard -Onone @/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Objects-normal/arm64/Keyboard.SwiftFileList -DDEBUG -DDEBUG -DKEYBOARD_WAKE_OWNER_PROBE -Xcc -fmodule-map-file\\=/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/RimeBridgeObjC.modulemap -default-isolation\\=MainActor -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios18.0-simulator -g -module-cache-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -application-extension -profile-coverage-mapping -profile-generate -enable-testing -warnings-as-errors -index-store-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator -F /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator -emit-localized-strings -emit-localized-strings-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Objects-normal/arm64 -c -j8 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/SDKStatCaches.noindex/iphonesimulator27.0-24A430-8dc58220667be655e1bcc261a7455254.sdkstatcache -output-file-map /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Objects-normal/arm64/Keyboard-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/ModuleCache.noindex -sdk-module-cache-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Objects-normal/arm64/Keyboard.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Objects-normal/arm64/Keyboard-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\\=86400 -Xcc -fmodules-prune-after\\=345600 -emit-const-values -const-gather-protocols-list /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Objects-normal/arm64/Keyboard_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Keyboard-generated-files.hmap -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Keyboard-own-target-headers.hmap -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Keyboard-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard-c7db5b74330b406efaaaa4547e6a5407-VFS-iphonesimulator/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Keyboard-project-headers.hmap -Xcc -I/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridgeObjC/include -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/include -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/DerivedSources-normal/arm64 -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/DerivedSources/arm64 -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/DerivedSources -Xcc -DDEBUG\\=1 -emit-objc-header -emit-objc-header-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Keyboard.build/Objects-normal/arm64/Keyboard-Swift.h -working-directory /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard -experimental-emit-module-separately -disable-cmo"
+      }
+    ],
+    "Universe_Keyboard": [
+      {
+        "line": 2210,
+        "text": "    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name Universe_Keyboard -Onone @/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Objects-normal/arm64/Universe\\ Keyboard.SwiftFileList -DDEBUG -DDEBUG -DKEYBOARD_WAKE_OWNER_PROBE -Xcc -fmodule-map-file\\=/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/RimeBridgeObjC.modulemap -default-isolation\\=MainActor -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.0.sdk -target arm64-apple-ios18.0-simulator -g -module-cache-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -warnings-as-errors -index-store-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator -F /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator -emit-localized-strings -emit-localized-strings-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Objects-normal/arm64 -c -j8 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/SDKStatCaches.noindex/iphonesimulator27.0-24A430-8dc58220667be655e1bcc261a7455254.sdkstatcache -output-file-map /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Objects-normal/arm64/Universe\\ Keyboard-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/ModuleCache.noindex -sdk-module-cache-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Objects-normal/arm64/Universe_Keyboard.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Objects-normal/arm64/Universe_Keyboard-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\\=86400 -Xcc -fmodules-prune-after\\=345600 -emit-const-values -const-gather-protocols-list /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Objects-normal/arm64/Universe\\ Keyboard_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Universe\\ Keyboard-generated-files.hmap -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Universe\\ Keyboard-own-target-headers.hmap -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Universe\\ Keyboard-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard-c7db5b74330b406efaaaa4547e6a5407-VFS-iphonesimulator/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Universe\\ Keyboard-project-headers.hmap -Xcc -I/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard/Packages/RimeBridge/Sources/RimeBridgeObjC/include -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/include -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/DerivedSources-normal/arm64 -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/DerivedSources/arm64 -Xcc -I/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/DerivedSources -Xcc -DDEBUG\\=1 -emit-objc-header -emit-objc-header-path /tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Intermediates.noindex/Universe\\ Keyboard.build/Debug-iphonesimulator/Universe\\ Keyboard.build/Objects-normal/arm64/Universe_Keyboard-Swift.h -working-directory /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe\\ Keyboard -experimental-emit-module-separately -disable-cmo"
+      }
+    ]
+  },
+  "entitlements": [
+    {
+      "module": "Universe Keyboard",
+      "original_otool": {
+        "argv": [
+          "xcrun",
+          "otool",
+          "-s",
+          "__TEXT",
+          "__entitlements",
+          "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard"
+        ],
+        "exit_code": 0,
+        "stdout": "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard:\nContents of (__TEXT,__entitlements) section\n0000000100003480\t6d783f3c 6576206c 6f697372 31223d6e \n0000000100003490\t2022302e 6f636e65 676e6964 5455223d \n00000001000034a0\t22382d46 3c0a3e3f 434f4421 45505954 \n00000001000034b0\t696c7020 50207473 494c4255 2d222043 \n00000001000034c0\t70412f2f 2f656c70 4454442f 494c5020 \n00000001000034d0\t31205453 2f2f302e 20224e45 74746822 \n00000001000034e0\t2f2f3a70 2e777777 6c707061 6f632e65 \n00000001000034f0\t54442f6d 502f7344 65706f72 4c797472 \n0000000100003500\t2d747369 2e302e31 22647464 703c0a3e \n0000000100003510\t7473696c 72657620 6e6f6973 2e31223d \n0000000100003520\t0a3e2230 6369643c 090a3e74 79656b3c \n0000000100003530\t7070613e 6163696c 6e6f6974 6564692d \n0000000100003540\t6669746e 3c726569 79656b2f 3c090a3e \n0000000100003550\t69727473 433e676e 364e3333 39535448 \n0000000100003560\t6f632e4e 6f442e6d 656c6275 30796853 \n0000000100003570\t6e552e4e 72657669 4b2d6573 6f627965 \n0000000100003580\t3c647261 7274732f 3e676e69 6b3c090a \n0000000100003590\t633e7965 612e6d6f 656c7070 6365732e \n00000001000035a0\t74697275 70612e79 63696c70 6f697461 \n00000001000035b0\t72672d6e 7370756f 656b2f3c 090a3e79 \n00000001000035c0\t7272613c 0a3e7961 733c0909 6e697274 \n00000001000035d0\t72673e67 2e70756f 2e6d6f63 62756f44 \n00000001000035e0\t6853656c 2e4e3079 76696e55 65737265 \n00000001000035f0\t79654b2d 72616f62 732f3c64 6e697274 \n0000000100003600\t090a3e67 72612f3c 3e796172 642f3c0a \n0000000100003610\t3e746369 702f3c0a 7473696c 3e 0a \n",
+        "stderr": ""
+      },
+      "decoded_plist": {
+        "application-identifier": "C33N6HTS9N.com.DoubleShy0N.Universe-Keyboard",
+        "com.apple.security.application-groups": [
+          "group.com.DoubleShy0N.Universe-Keyboard"
+        ]
+      },
+      "decoded_raw_bytes_sha256": "6610a8c02dfe5b877f5be595941b807a687c7838e2f4b54a80b4c6726b821a6c",
+      "otool_all_bytes_sha256": "6610a8c02dfe5b877f5be595941b807a687c7838e2f4b54a80b4c6726b821a6c",
+      "original_section_record": {
+        "module": "Universe Keyboard",
+        "section": "__TEXT,__entitlements",
+        "plist": {
+          "application-identifier": "C33N6HTS9N.com.DoubleShy0N.Universe-Keyboard",
+          "com.apple.security.application-groups": [
+            "group.com.DoubleShy0N.Universe-Keyboard"
+          ]
+        },
+        "section_sha256": "6610a8c02dfe5b877f5be595941b807a687c7838e2f4b54a80b4c6726b821a6c"
+      },
+      "decoding_method": "Read arm64 otool printed hex words as little-endian bytes; trailing NUL padding removed only for plist parse. Record both all-byte and parsed-byte hashes."
+    },
+    {
+      "module": "PlugIns/Keyboard.appex/Keyboard",
+      "original_otool": {
+        "argv": [
+          "xcrun",
+          "otool",
+          "-s",
+          "__TEXT",
+          "__entitlements",
+          "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard"
+        ],
+        "exit_code": 0,
+        "stdout": "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard:\nContents of (__TEXT,__entitlements) section\n0000000100002832\t6d783f3c 6576206c 6f697372 31223d6e \n0000000100002842\t2022302e 6f636e65 676e6964 5455223d \n0000000100002852\t22382d46 3c0a3e3f 434f4421 45505954 \n0000000100002862\t696c7020 50207473 494c4255 2d222043 \n0000000100002872\t70412f2f 2f656c70 4454442f 494c5020 \n0000000100002882\t31205453 2f2f302e 20224e45 74746822 \n0000000100002892\t2f2f3a70 2e777777 6c707061 6f632e65 \n00000001000028a2\t54442f6d 502f7344 65706f72 4c797472 \n00000001000028b2\t2d747369 2e302e31 22647464 703c0a3e \n00000001000028c2\t7473696c 72657620 6e6f6973 2e31223d \n00000001000028d2\t0a3e2230 6369643c 090a3e74 79656b3c \n00000001000028e2\t7070613e 6163696c 6e6f6974 6564692d \n00000001000028f2\t6669746e 3c726569 79656b2f 3c090a3e \n0000000100002902\t69727473 433e676e 364e3333 39535448 \n0000000100002912\t6f632e4e 6f442e6d 656c6275 30796853 \n0000000100002922\t6e552e4e 72657669 4b2d6573 6f627965 \n0000000100002932\t2e647261 6279654b 6472616f 74732f3c \n0000000100002942\t676e6972 3c090a3e 3e79656b 2e6d6f63 \n0000000100002952\t6c707061 65732e65 69727563 612e7974 \n0000000100002962\t696c7070 69746163 672d6e6f 70756f72 \n0000000100002972\t6b2f3c73 0a3e7965 72613c09 3e796172 \n0000000100002982\t3c09090a 69727473 673e676e 70756f72 \n0000000100002992\t6d6f632e 756f442e 53656c62 4e307968 \n00000001000029a2\t696e552e 73726576 654b2d65 616f6279 \n00000001000029b2\t2f3c6472 69727473 0a3e676e 612f3c09 \n00000001000029c2\t79617272 2f3c0a3e 74636964 2f3c0a3e \n00000001000029d2\t73696c70 74 3e 0a \n",
+        "stderr": ""
+      },
+      "decoded_plist": {
+        "application-identifier": "C33N6HTS9N.com.DoubleShy0N.Universe-Keyboard.Keyboard",
+        "com.apple.security.application-groups": [
+          "group.com.DoubleShy0N.Universe-Keyboard"
+        ]
+      },
+      "decoded_raw_bytes_sha256": "1b5eca79f033b12423739696ae50c8dfcd679ed6484803e2e340787aee149b7b",
+      "otool_all_bytes_sha256": "1b5eca79f033b12423739696ae50c8dfcd679ed6484803e2e340787aee149b7b",
+      "original_section_record": {
+        "module": "PlugIns/Keyboard.appex/Keyboard",
+        "section": "__TEXT,__entitlements",
+        "plist": {
+          "application-identifier": "C33N6HTS9N.com.DoubleShy0N.Universe-Keyboard.Keyboard",
+          "com.apple.security.application-groups": [
+            "group.com.DoubleShy0N.Universe-Keyboard"
+          ]
+        },
+        "section_sha256": "1b5eca79f033b12423739696ae50c8dfcd679ed6484803e2e340787aee149b7b"
+      },
+      "decoding_method": "Read arm64 otool printed hex words as little-endian bytes; trailing NUL padding removed only for plist parse. Record both all-byte and parsed-byte hashes."
+    }
+  ],
+  "load_commands": [
+    {
+      "argv": [
+        "xcrun",
+        "otool",
+        "-L",
+        "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard"
+      ],
+      "exit_code": 0,
+      "stdout": "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard:\n\t@rpath/Universe Keyboard.debug.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1359.0.0)\n",
+      "stderr": "",
+      "module_sha256": "38cbdd01d7b664db0c435452086dd209447135f886906bab8181610a6a7e6feb"
+    },
+    {
+      "argv": [
+        "xcrun",
+        "otool",
+        "-L",
+        "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard.debug.dylib"
+      ],
+      "exit_code": 0,
+      "stdout": "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard.debug.dylib:\n\t@rpath/Universe Keyboard.debug.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2200.27.0)\n\t/usr/lib/libz.1.dylib (compatibility version 1.0.0, current version 1.2.12)\n\t/System/Library/Frameworks/Foundation.framework/Foundation (compatibility version 300.0.0, current version 5027.0.69)\n\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1359.0.0)\n\t/System/Library/Frameworks/BackgroundTasks.framework/BackgroundTasks (compatibility version 1.0.0, current version 1.0.0)\n\t/System/Library/Frameworks/Charts.framework/Charts (compatibility version 1.0.0, current version 8.0.82)\n\t/System/Library/Frameworks/Combine.framework/Combine (compatibility version 1.0.0, current version 3023.0.0)\n\t/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation (compatibility version 150.0.0, current version 5027.0.69)\n\t/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics (compatibility version 64.0.0, current version 2050.0.0)\n\t/System/Library/Frameworks/CryptoKit.framework/CryptoKit (compatibility version 1.0.0, current version 1.0.0)\n\t/System/Library/Frameworks/DeveloperToolsSupport.framework/DeveloperToolsSupport (compatibility version 1.0.0, current version 24.0.24)\n\t/System/Library/Frameworks/QuartzCore.framework/QuartzCore (compatibility version 1.2.0, current version 1223.0.18)\n\t/System/Library/Frameworks/Security.framework/Security (compatibility version 1.0.0, current version 62460.2.2)\n\t/System/Library/Frameworks/SwiftUI.framework/SwiftUI (compatibility version 1.0.0, current version 8.0.84)\n\t/System/Library/Frameworks/Symbols.framework/Symbols (compatibility version 1.0.0, current version 204.0.0)\n\t/System/Library/Frameworks/TipKit.framework/TipKit (compatibility version 1.0.0, current version 129.0.0)\n\t/System/Library/Frameworks/UIKit.framework/UIKit (compatibility version 1.0.0, current version 9127.0.84)\n\t/System/Library/Frameworks/UserNotifications.framework/UserNotifications (compatibility version 1.0.0, current version 1.0.0)\n\t/usr/lib/swift/libswiftCore.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/usr/lib/swift/libswiftCoreAudio.dylib (compatibility version 1.0.0, current version 482.102.0, weak)\n\t/usr/lib/swift/libswiftCoreFoundation.dylib (compatibility version 1.0.0, current version 120.100.0)\n\t/usr/lib/swift/libswiftCoreImage.dylib (compatibility version 1.0.0, current version 3.0.0, weak)\n\t/usr/lib/swift/libswiftCoreLocation.dylib (compatibility version 1.0.0, current version 57.0.0, weak)\n\t/usr/lib/swift/libswiftDarwin.dylib (compatibility version 1.0.0, current version 428.0.10)\n\t/usr/lib/swift/libswiftDispatch.dylib (compatibility version 1.0.0, current version 1605.0.2)\n\t/usr/lib/swift/libswiftMetal.dylib (compatibility version 1.0.0, current version 382.5.3, weak)\n\t/usr/lib/swift/libswiftOSLog.dylib (compatibility version 1.0.0, current version 10.0.0, weak)\n\t/usr/lib/swift/libswiftObjectiveC.dylib (compatibility version 1.0.0, current version 973.1.0)\n\t/usr/lib/swift/libswiftObservation.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/usr/lib/swift/libswiftQuartzCore.dylib (compatibility version 1.0.0, current version 5.0.0, weak)\n\t/usr/lib/swift/libswiftSpatial.dylib (compatibility version 1.0.0, current version 1.0.0, weak)\n\t/usr/lib/swift/libswiftSynchronization.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/usr/lib/swift/libswiftUniformTypeIdentifiers.dylib (compatibility version 1.0.0, current version 919.0.1)\n\t/usr/lib/swift/libswiftXPC.dylib (compatibility version 1.0.0, current version 167.0.2, weak)\n\t/usr/lib/swift/libswift_Builtin_float.dylib (compatibility version 0.0.0, current version 0.0.0, weak)\n\t/usr/lib/swift/libswift_Concurrency.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/usr/lib/swift/libswiftos.dylib (compatibility version 1.0.0, current version 1090.0.0, weak)\n\t/usr/lib/swift/libswiftsimd.dylib (compatibility version 1.0.0, current version 25.0.0, weak)\n\t/usr/lib/swift/libswift_errno.dylib (compatibility version 1.0.0, current version 428.0.10)\n",
+      "stderr": "",
+      "module_sha256": "c00095f4d2016cf31b876ed5f3f17f53c5ec97d64704829b629d23ab7a57e200"
+    },
+    {
+      "argv": [
+        "xcrun",
+        "otool",
+        "-L",
+        "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard"
+      ],
+      "exit_code": 0,
+      "stdout": "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard:\n\t@rpath/Keyboard.debug.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1359.0.0)\n",
+      "stderr": "",
+      "module_sha256": "e681da52516441c044c98419a7c9750d7a90b282cb69bd27e220284376922860"
+    },
+    {
+      "argv": [
+        "xcrun",
+        "otool",
+        "-L",
+        "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard.debug.dylib"
+      ],
+      "exit_code": 0,
+      "stdout": "/private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard.debug.dylib:\n\t@rpath/Keyboard.debug.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2200.27.0)\n\t/usr/lib/libz.1.dylib (compatibility version 1.0.0, current version 1.2.12)\n\t/System/Library/Frameworks/Foundation.framework/Foundation (compatibility version 300.0.0, current version 5027.0.69)\n\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1359.0.0)\n\t/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation (compatibility version 150.0.0, current version 5027.0.69)\n\t/System/Library/Frameworks/CoreGraphics.framework/CoreGraphics (compatibility version 64.0.0, current version 2050.0.0)\n\t/System/Library/Frameworks/CryptoKit.framework/CryptoKit (compatibility version 1.0.0, current version 1.0.0)\n\t/System/Library/Frameworks/QuartzCore.framework/QuartzCore (compatibility version 1.2.0, current version 1223.0.18)\n\t/System/Library/Frameworks/UIKit.framework/UIKit (compatibility version 1.0.0, current version 9127.0.84)\n\t/usr/lib/swift/libswiftCore.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/usr/lib/swift/libswiftCoreFoundation.dylib (compatibility version 1.0.0, current version 120.100.0)\n\t/usr/lib/swift/libswiftCoreImage.dylib (compatibility version 1.0.0, current version 3.0.0, weak)\n\t/usr/lib/swift/libswiftCoreLocation.dylib (compatibility version 1.0.0, current version 57.0.0, weak)\n\t/usr/lib/swift/libswiftDarwin.dylib (compatibility version 1.0.0, current version 428.0.10)\n\t/usr/lib/swift/libswiftDispatch.dylib (compatibility version 1.0.0, current version 1605.0.2)\n\t/usr/lib/swift/libswiftMetal.dylib (compatibility version 1.0.0, current version 382.5.3, weak)\n\t/usr/lib/swift/libswiftOSLog.dylib (compatibility version 1.0.0, current version 10.0.0, weak)\n\t/usr/lib/swift/libswiftObjectiveC.dylib (compatibility version 1.0.0, current version 973.1.0)\n\t/usr/lib/swift/libswiftQuartzCore.dylib (compatibility version 1.0.0, current version 5.0.0, weak)\n\t/usr/lib/swift/libswiftSpatial.dylib (compatibility version 1.0.0, current version 1.0.0, weak)\n\t/usr/lib/swift/libswiftSynchronization.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/usr/lib/swift/libswiftUniformTypeIdentifiers.dylib (compatibility version 1.0.0, current version 919.0.1, weak)\n\t/usr/lib/swift/libswiftXPC.dylib (compatibility version 1.0.0, current version 167.0.2, weak)\n\t/usr/lib/swift/libswift_Builtin_float.dylib (compatibility version 0.0.0, current version 0.0.0, weak)\n\t/usr/lib/swift/libswift_Concurrency.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/usr/lib/swift/libswiftos.dylib (compatibility version 1.0.0, current version 1090.0.0, weak)\n\t/usr/lib/swift/libswiftsimd.dylib (compatibility version 1.0.0, current version 25.0.0, weak)\n\t/usr/lib/swift/libswift_errno.dylib (compatibility version 1.0.0, current version 428.0.10)\n",
+      "stderr": "",
+      "module_sha256": "773c4eff9640b2623036e3f819301ead3914cb99b66c9c1496ece5986e762aab"
+    }
+  ]
+}

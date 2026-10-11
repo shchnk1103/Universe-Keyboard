@@ -1,0 +1,42 @@
+[
+  {
+    "configuration": "Debug",
+    "bundle": "/private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254/DerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app",
+    "bundle_id": "com.DoubleShy0N.Universe-Keyboard",
+    "version": "1.0",
+    "build": "1",
+    "executable": "/private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254/DerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard",
+    "sha256": "4fdfcaf460fcd772f0ae1f44008f81229e69e004d0fba9a1f4fc42c3f42b5ad2",
+    "uuid": "UUID: 5480637C-CA5C-3F75-AE00-3ADA8529D289 (arm64) /private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254/DerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard"
+  },
+  {
+    "configuration": "Debug",
+    "bundle": "/private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254/DerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex",
+    "bundle_id": "com.DoubleShy0N.Universe-Keyboard.Keyboard",
+    "version": "1.0",
+    "build": "1",
+    "executable": "/private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254/DerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+    "sha256": "c6198b9519cb933f958dec49c351773f121f17dafe8e816c604928ac4d831904",
+    "uuid": "UUID: 6E05BC2B-9A44-3EF1-9DEB-D070A6F94FEE (arm64) /private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254/DerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard"
+  },
+  {
+    "configuration": "Release",
+    "bundle": "/private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254/DerivedData/Build/Products/Release-iphonesimulator/Universe Keyboard.app",
+    "bundle_id": "com.DoubleShy0N.Universe-Keyboard",
+    "version": "1.0",
+    "build": "1",
+    "executable": "/private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254/DerivedData/Build/Products/Release-iphonesimulator/Universe Keyboard.app/Universe Keyboard",
+    "sha256": "368a53318766931878a2d33c45eed124d79393ecbf16489da60470f56e9d97a2",
+    "uuid": "UUID: 3DEB1152-C177-33F6-94AC-41F69C1A0F89 (arm64) /private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254/DerivedData/Build/Products/Release-iphonesimulator/Universe Keyboard.app/Universe Keyboard"
+  },
+  {
+    "configuration": "Release",
+    "bundle": "/private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254/DerivedData/Build/Products/Release-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex",
+    "bundle_id": "com.DoubleShy0N.Universe-Keyboard.Keyboard",
+    "version": "1.0",
+    "build": "1",
+    "executable": "/private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254/DerivedData/Build/Products/Release-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+    "sha256": "69451ee2c07c8d35a009e794247d45c1005711fd7c3e65414cb179edb3aaf028",
+    "uuid": "UUID: 452298A1-0F77-3C92-A461-63EC5E9523C5 (arm64) /private/tmp/ukey-wake-v6-stage-b-20260930-01a0f254/DerivedData/Build/Products/Release-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard"
+  }
+]

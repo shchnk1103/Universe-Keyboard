@@ -1,0 +1,51 @@
+{
+  "lane": "S",
+  "round": 2,
+  "reviewer": "reused independent GPT6 Luna low",
+  "packet_whole_file_sha256": "3cb88c79021c7b90ac25e31407c4704ce3f17d286096185b421f83f08cd4c4f7",
+  "packet_canonical_self_digest": "a780cac5c6bedb6a4ce2fd01e8e67cdfc89166d73d4524c3cdfe82c449f90b1a",
+  "leaf_tool_calls": 6,
+  "leaf_tool_call_limit": 6,
+  "clock_start_epoch": 1791014455.796287,
+  "clock_start_utc": "2026-10-03T08:00:55.796287+00:00",
+  "clock_end_epoch": 1791014655.730793,
+  "clock_end_utc": "2026-10-03T08:04:15.730793+00:00",
+  "elapsed_seconds": 199.935,
+  "elapsed_limit_seconds": 900,
+  "checkpoint_leaf_call": 3,
+  "checkpoint_status": "input digests and helper reviewed; Pending skeleton written",
+  "report_sha256": "adb1b8ad7aca52139e595aeea33977f95bdd4909dcaf0e5d20ef881cc7f69d72",
+  "criteria": {
+    "T1": "Covered",
+    "T2": "Partial",
+    "T3": "Covered"
+  },
+  "coverage": "Partial",
+  "complete": false,
+  "overall_T": "Hold",
+  "stop_reason": "T2 skipped-test reason evidence unavailable in allowlisted result trees and raw-log reason scan",
+  "independent_leaf_calls": 5,
+  "notes": {
+    "xcresult_totals": "537 total, 507 passed, 0 failed, 30 skipped",
+    "core_files": 204,
+    "core_test_result": "1194 passed, 0 failed, 0 skipped",
+    "candidate_source_build_inputs": 571,
+    "candidate_vendor_files": 630,
+    "candidate_binding_canonical_digest_matches": true,
+    "entitlement_rows_digest_matches": true,
+    "skip_identity_count": 30,
+    "skip_reason_log_scan": {
+      "Rime.log": {
+        "skipped_cases": 20,
+        "case_name_occurrences": 0,
+        "skip_reason_markers": 0
+      },
+      "AppKeyboard.log": {
+        "skipped_cases": 10,
+        "case_name_occurrences": 0,
+        "skip_reason_markers": 0
+      }
+    }
+  },
+  "final_call_includes_usage_update_and_readback": true
+}

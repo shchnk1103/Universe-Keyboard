@@ -91,6 +91,10 @@ extension KeyboardViewController {
             rootStack.setCustomSpacing(0, after: pathBar)
         }
         candidateBar = makeCandidateBar()
+        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
+            // Construction refreshes the old bar; bind the new bar before updating its probe.
+            refreshWakeOwnerProbeControls()
+        #endif
         rootStack.addArrangedSubview(candidateBar)
         rootStack.setCustomSpacing(0, after: candidateBar)
         addKeyboardRows(for: controller.state)
@@ -132,6 +136,10 @@ extension KeyboardViewController {
                 rootStack.addArrangedSubview(pathBar)
             }
             candidateBar = makeCandidateBar()
+            #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
+                // Construction refreshes the old bar; bind the new bar before updating its probe.
+                refreshWakeOwnerProbeControls()
+            #endif
             rootStack.addArrangedSubview(candidateBar)
             rootStack.setCustomSpacing(0, after: candidateBar)
             let panel = makePinyinPathExpandedPanel()
@@ -144,6 +152,10 @@ extension KeyboardViewController {
                 rootStack.setCustomSpacing(0, after: pathBar)
             }
             candidateBar = makeCandidateBar()
+            #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
+                // Construction refreshes the old bar; bind the new bar before updating its probe.
+                refreshWakeOwnerProbeControls()
+            #endif
             rootStack.addArrangedSubview(candidateBar)
             rootStack.setCustomSpacing(0, after: candidateBar)
             addKeyboardRows(for: controller.state)

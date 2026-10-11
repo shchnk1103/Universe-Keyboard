@@ -1,0 +1,9 @@
+{
+  "started_utc": "2026-10-06T01:19:56.858735+00:00",
+  "Human": "批准，并确认原模拟器本轮仍独占",
+  "scope": "Only F4-M single Maps n→AppSwitcher directly return→h→single freeze/bounded export and cleanup/settings restore; no install/build/deploy/new attempt",
+  "budget_calls": 60,
+  "budget_wall_seconds": 5400,
+  "initial_calls": 2,
+  "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2"
+}

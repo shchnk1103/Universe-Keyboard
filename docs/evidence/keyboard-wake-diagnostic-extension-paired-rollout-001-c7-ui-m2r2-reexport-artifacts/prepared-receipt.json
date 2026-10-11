@@ -1,0 +1,10 @@
+{
+  "utc": "2026-10-04T05:10:46.994703+00:00",
+  "callback_sha256": "95b0ccf3bdffb8e93ffc0f5ffcbc032e2b61598938f50cae375af3840004f32b",
+  "static_syntax": "parsed only, not attached/imported/called",
+  "scope": "debugger host only; exact hit frame and static argument metadata; no transport memory read or automatic continue",
+  "actual_hit_frame_and_arguments": "NOT_YET_VALIDATED",
+  "retained_historical_window": "M2R2 PID55759 frozen instance; no new arm/input/switch",
+  "reexport_authority": "PENDING",
+  "stack_limit": "at most frame indexes0..7; no GetNumFrames full unwind"
+}

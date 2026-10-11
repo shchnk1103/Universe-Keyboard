@@ -1,0 +1,65 @@
+{
+  "lane": "UK-WAKE-V6-B-ARCH",
+  "round": 3,
+  "packet_sha256": "5f67f5885b455932efb98b4f570c4f6e12c4186c6a15bd6eaa65fb454ac4835e",
+  "candidate_root": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "candidate_head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "candidate_branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "candidate_dirty_sha256": "5b2ced9d3a8220357c603bd9e5c2236837c51a8200e28980d73fceee8c5bf21c",
+  "started_at_utc": "2026-09-30 14:21:59 UTC",
+  "ended_at_utc": "2026-09-30 14:31:25 UTC",
+  "elapsed_seconds": 566.777,
+  "budget_minutes": 15,
+  "tool_interactions": {
+    "total": 20,
+    "orchestration_functions_exec": 9,
+    "nested_exec_command": 9,
+    "nested_clock_calls": 1,
+    "collaboration_messages": 1,
+    "ceiling_reached": true
+  },
+  "checkpoints": {
+    "5": "Missed at the exact threshold; concise progress was sent at interaction 12.",
+    "10": "Missed; no separate progress message was sent.",
+    "15": "Missed; no further message was possible within the remaining interaction budget."
+  },
+  "identity": {
+    "packet_digest_match": true,
+    "sidecar_match": true,
+    "allowlist_inputs": 29,
+    "input_hash_mismatches": 0,
+    "head_match": true,
+    "branch_match": true,
+    "read_only_dependency_hashes_match": 7,
+    "final_app_fixture_hash_bound": true
+  },
+  "independence": "Same GPT-6 Luna reviewer runtime continued the original Architecture lane; no implementation or test execution participation.",
+  "covered": [
+    "AS1 reaffirmed by unchanged hash",
+    "AS2",
+    "AS3",
+    "AS4",
+    "AS5",
+    "AS6"
+  ],
+  "uncovered": [],
+  "findings": [
+    "B-JSON-001",
+    "B-SKIP-001",
+    "B-SKIP-002"
+  ],
+  "verdict": "Pass with conditions for the current Stage B reader candidate only; not a Gate.",
+  "stop_reason": "R3 interaction ceiling reached after required review output was written. No budget renewal or scope expansion.",
+  "tests_builds_simulator_network_git_mutation_source_write": false,
+  "excluded_not_reviewed": [
+    "Quality raw result structure beyond frozen summary",
+    "Stage C producer/writer integration",
+    "full CI/Release acceptance",
+    "real device/performance",
+    "Maps/root cause/promotion"
+  ],
+  "outputs": [
+    "architecture-review-r3.md",
+    "architecture-usage-r3.json"
+  ]
+}

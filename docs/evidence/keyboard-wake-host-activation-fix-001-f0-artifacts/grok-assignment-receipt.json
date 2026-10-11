@@ -1,0 +1,16 @@
+{
+  "utc": "2026-10-04T07:51:28.646351+00:00",
+  "authority": "Human批准责任绑定与F1并指定Grok实施",
+  "lifecycle": "Assigned",
+  "executor": "Grok",
+  "grok_ack": "Pending",
+  "root_domain_coordinator_ack": "Confirmed for exact frozen inputs and five-file constraints",
+  "unchanged_required_inputs": 16,
+  "source_slice_existing": 3,
+  "source_slice_absent": 2,
+  "staged_paths": 0,
+  "root_source_writes": 0,
+  "outbound_message": "not sent",
+  "f2_f3_f4": "not authorized",
+  "supersedes": "F0 root-proposed source executor/writer only; frozen F0 original retained"
+}

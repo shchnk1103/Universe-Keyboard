@@ -1,0 +1,65 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-a2-validation-artifacts/manifest.json",
+  "origin_sha256": "5eccf9e7c67926019b80f294f45b546e5e1a85e14525798aae4a681c7cb35f8e",
+  "expected_sha256": "5eccf9e7c67926019b80f294f45b546e5e1a85e14525798aae4a681c7cb35f8e",
+  "line_start": 1,
+  "line_end": 14,
+  "lines": [
+    {
+      "line": 1,
+      "text": "{"
+    },
+    {
+      "line": 2,
+      "text": "  \"app-source-manifest.json\": \"df7f539eadb27a683efa81e477e0fb69a0e05e7a36fc8c737c5f9b7703e7b99e\","
+    },
+    {
+      "line": 3,
+      "text": "  \"dirty-before.txt\": \"3b7d5ed1e1f45e5a31baff118c98fedced44dc102da297e0284e691f7710b5d1\","
+    },
+    {
+      "line": 4,
+      "text": "  \"environment-contract.md\": \"6399f22fa01ba0014a1242d2f2e84bcd82e3d7e7d8e4727081d646fb2b041cfd\","
+    },
+    {
+      "line": 5,
+      "text": "  \"frozen-commands.json\": \"f22f3199fb2977a018fd73ed06fd5745aacd19e6d3f481312be34d42a580972c\","
+    },
+    {
+      "line": 6,
+      "text": "  \"historical-app-keyboard-skip-list.json\": \"ae5c4ed1ddbfd2fa738fc47fb055fa70a0e079db57c425882a8a6355c03be31f\","
+    },
+    {
+      "line": 7,
+      "text": "  \"historical-rimebridge-skip-list.json\": \"23e2ad749bb992da2f7c0d50397e2505278c9ffc810f711279b9ab49af35180d\","
+    },
+    {
+      "line": 8,
+      "text": "  \"path-status.json\": \"58996912eb6df25abf6468675e3c0d267dc5bf1b369e8c558ae428f8d877c8e8\","
+    },
+    {
+      "line": 9,
+      "text": "  \"pinned-inputs.json\": \"582e45dc73787299bc58133cb41cf011533f5b2bda2838ef94bb7f28620d66c8\","
+    },
+    {
+      "line": 10,
+      "text": "  \"prepared-check.json\": \"40c3f566d4e18522388efd4019e5c60ee0e03c06ab0b4d52fbb7e221891af828\","
+    },
+    {
+      "line": 11,
+      "text": "  \"required-gate-methods.json\": \"c9a016cd4258722c34d33bf0b2e645660d9d61d4adf4223186e77d06792f0f19\","
+    },
+    {
+      "line": 12,
+      "text": "  \"source-tree-manifest.json\": \"61606efa4db41e88416d9b1763264fb96b2f50d5d927530424a7168aa8860827\","
+    },
+    {
+      "line": 13,
+      "text": "  \"vendor-byte-manifest.json\": \"54c5d67d284c12ce630f3c17e42954f733bcb6e0117892a5b970b34d189437b5\""
+    },
+    {
+      "line": 14,
+      "text": "}"
+    }
+  ]
+}

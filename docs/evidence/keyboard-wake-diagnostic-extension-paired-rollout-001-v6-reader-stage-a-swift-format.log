@@ -1,0 +1,10 @@
+xcrun swift-format format --in-place --configuration .swift-format Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticEvent.swift
+xcrun swift-format lint --strict --configuration .swift-format Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticEvent.swift
+xcrun swift-format format --in-place --configuration .swift-format Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticEventWireValidator.swift
+xcrun swift-format lint --strict --configuration .swift-format Packages/KeyboardCore/Sources/KeyboardCore/DiagnosticEventWireValidator.swift
+xcrun swift-format format --in-place --configuration .swift-format Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticEventTests.swift
+xcrun swift-format lint --strict --configuration .swift-format Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticEventTests.swift
+xcrun swift-format format --in-place --configuration .swift-format Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticsJournalTests.swift
+xcrun swift-format lint --strict --configuration .swift-format Packages/KeyboardCore/Tests/KeyboardCoreTests/DiagnosticsJournalTests.swift
+xcrun swift-format format --in-place --configuration .swift-format UniverseKeyboardTests/DiagnosticsLogSourceTests.swift
+xcrun swift-format lint --strict --configuration .swift-format UniverseKeyboardTests/DiagnosticsLogSourceTests.swift

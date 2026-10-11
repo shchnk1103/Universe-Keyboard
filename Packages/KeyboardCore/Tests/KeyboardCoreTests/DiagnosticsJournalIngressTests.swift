@@ -48,6 +48,61 @@ final class DiagnosticsJournalIngressTests: XCTestCase {
         XCTAssertEqual(events.map(\.localSequence), expectedSequences)
     }
 
+    func testQueueFullCanDropQueryMeasurementWithoutChangingItsMeaning() async throws {
+        let rootURL = makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let processID = UUID()
+        let ingress = DiagnosticsJournalIngress(
+            origin: .mainApp,
+            processInstanceID: processID,
+            isMainAppWriter: true,
+            rootURL: { rootURL },
+            isCategoryEnabled: { _ in true },
+            flushDelay: 5
+        )
+
+        for sequence in 0..<DiagnosticsJournalIngress.maximumPendingEventCount {
+            ingress.record(makeEvent(sequence: UInt64(sequence), processInstanceID: processID))
+        }
+        ingress.record(
+            makeQueryMeasurementEvent(
+                sequence: UInt64(DiagnosticsJournalIngress.maximumPendingEventCount),
+                origin: .mainApp,
+                processInstanceID: processID
+            ))
+        ingress.requestFlush()
+
+        try await waitForJournal(at: rootURL)
+        let events = try readEvents(at: rootURL)
+        XCTAssertEqual(events.count, DiagnosticsJournalIngress.maximumPendingEventCount)
+        XCTAssertFalse(events.contains { $0.code == .typoRecallQueryMeasured })
+    }
+
+    func testSuspendCanDropQueryMeasurementBeforeJournalWrite() async throws {
+        let rootURL = makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        try FileManager.default.removeItem(at: rootURL)
+        let processID = UUID()
+        let ingress = DiagnosticsJournalIngress(
+            origin: .keyboardExtension,
+            processInstanceID: processID,
+            isMainAppWriter: false,
+            rootURL: { rootURL },
+            isCategoryEnabled: { _ in true },
+            flushDelay: 0.1
+        )
+
+        ingress.record(
+            makeQueryMeasurementEvent(
+                sequence: 1,
+                origin: .keyboardExtension,
+                processInstanceID: processID
+            ))
+        ingress.suspendForExtensionLifecycle()
+        try await Task.sleep(for: .milliseconds(250))
+        XCTAssertFalse(FileManager.default.fileExists(atPath: rootURL.path))
+    }
+
     func testDisabledCategoryIsNotWritten() async throws {
         let rootURL = makeTemporaryDirectory()
         defer { try? FileManager.default.removeItem(at: rootURL) }
@@ -124,6 +179,37 @@ final class DiagnosticsJournalIngressTests: XCTestCase {
             code: .journalStarted,
             level: .info,
             category: .general
+        )
+    }
+
+    private func makeQueryMeasurementEvent(
+        sequence: UInt64,
+        origin: DiagnosticEvent.Origin,
+        processInstanceID: UUID
+    ) -> DiagnosticEvent {
+        DiagnosticEvent(
+            utcTimestamp: Date(),
+            monotonicNanoseconds: sequence,
+            origin: origin,
+            processInstanceID: processInstanceID,
+            localSequence: sequence,
+            code: .typoRecallQueryMeasured,
+            level: .info,
+            category: .performance,
+            fields: [
+                .typoRecallQuery(
+                    .init(
+                        operationOrdinal: 1,
+                        stage: .stageOne,
+                        readiness: .unknown,
+                        resultState: .candidatesReturned,
+                        returnedCandidateBucket: .zero,
+                        disposition: .applied,
+                        facadeElapsedMicroseconds: 0,
+                        durationState: .measured
+                    )
+                )
+            ]
         )
     }
 

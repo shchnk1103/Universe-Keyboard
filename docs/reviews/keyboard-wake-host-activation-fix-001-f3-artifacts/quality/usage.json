@@ -1,0 +1,40 @@
+{
+  "reviewer": "/root/m2r2_quality_r1",
+  "lane_id": "F3-quality-implementation",
+  "round": 1,
+  "packet_sha256": "34a37a0b8f3dbeba81b015c78985adc295c69440f0f913bc5a18d2ad108cb281",
+  "start_utc": "2026-10-04T14:59:43.350494+00:00",
+  "usage_written_utc": "2026-10-04T15:19:41.779225+00:00",
+  "elapsed_seconds": 1258.326,
+  "elapsed_basis": "ack.json ack_utc through usage.json write; final readback occurs in reserved final call",
+  "actual_tool_calls": 24,
+  "tool_call_count_basis": "21 review/checkpoint invocations plus 3 reserved output/verification invocations, including this write and final readback",
+  "budget": {
+    "tool_calls": 24,
+    "wall_minutes": 20,
+    "checkpoints": [
+      8,
+      16,
+      21
+    ],
+    "reserve_final_output_calls": 3
+  },
+  "covered": [
+    "Q1",
+    "Q2",
+    "Q3"
+  ],
+  "uncovered": [],
+  "residuals": [
+    "Q2-R1: F2-only 20+10 skip disposition does not transfer to F3; Product Lead / Human Product Owner must state F4 treatment.",
+    "F4 must separately verify real host notification delivery/context identity, controller recovery and Maps behavior."
+  ],
+  "verdict": "Pass with conditions for F3 Quality evidence to enter separately authorized F4; no overall fix, Maps or Release pass.",
+  "stop_reason": "completed_within_frozen_budget_after_final_readback",
+  "output_files": [
+    "ack.json",
+    "review.md",
+    "usage.json"
+  ],
+  "finished_utc": "2026-10-04T15:20:41.676938+00:00"
+}

@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-05T12:26:31.790376+00:00",
+  "failure": "Python os.listxattr unavailable on this host",
+  "first_failure_call_count": 11,
+  "calls_after_host_only_repair_and_fixture": 13,
+  "repair": "Use previously proven /usr/bin/xattr -s/-p -x -s; no simulator or live container reads during repair",
+  "failed_common_sha256": "61a9d6a5fedb257309a9341bc4db019628497e916ce2a255f0fbf8bd3328fdcc",
+  "repaired_common_sha256": "790e0999fd16947b910cafafcb5c50bb565ed9dc5ad1389fb013753e39273a86",
+  "host_fixture_inventory_supported": true,
+  "host_fixture_non_provenance_differences": 0,
+  "host_fixture_provenance_differences": 0,
+  "full_simulator_backup_created": false,
+  "installed": false,
+  "next": "Frozen backup.py identical; helper repaired and fixture verified. Resume backup requires Human decision under first-failure stop. No source/device/app mutations or retry."
+}

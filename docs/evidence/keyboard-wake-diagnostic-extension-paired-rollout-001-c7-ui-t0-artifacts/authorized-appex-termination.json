@@ -1,0 +1,9 @@
+{
+  "utc": "2026-10-03T03:33:01.119699+00:00",
+  "pid": 24050,
+  "path_verified": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/4EB4A3E6-58B0-44CB-BC45-B608BA1E6518/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+  "signal": "SIGTERM",
+  "signals_sent": 1,
+  "exited": true,
+  "force_termination": false
+}

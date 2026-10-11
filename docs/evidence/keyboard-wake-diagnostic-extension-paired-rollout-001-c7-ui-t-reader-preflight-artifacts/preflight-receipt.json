@@ -1,0 +1,51 @@
+{
+  "role": "Coordinator preflight; not independent acceptance",
+  "reader_sha256": "25d996d2fcbd27b809265263b9c2687f23509f9eb487a53597425d62b895923b",
+  "cases": [
+    {
+      "case": "S fresh success",
+      "exit": 0,
+      "elapsed_including_output_write_and_readback": 0.5831968784332275,
+      "stdout": {
+        "output": "/private/tmp/ukey-wake-ui-t-reader-preflight-20261003/S-fresh",
+        "content_drift_count": 0,
+        "source_drift_count": 0,
+        "report_and_usage_roundtrip": true,
+        "elapsed_through_readback_seconds": 0.5292139053344727
+      }
+    },
+    {
+      "case": "P fresh success",
+      "exit": 0,
+      "elapsed_including_output_write_and_readback": 0.11745810508728027,
+      "stdout": {
+        "output": "/private/tmp/ukey-wake-ui-t-reader-preflight-20261003/P-fresh",
+        "content_drift_count": 0,
+        "source_drift_count": 0,
+        "report_and_usage_roundtrip": true,
+        "elapsed_through_readback_seconds": 0.07309174537658691
+      }
+    },
+    {
+      "case": "old-input-drift",
+      "exit": 1,
+      "error": "allowlisted content hash mismatch: /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md",
+      "failure_report_usage_roundtrip": true,
+      "elapsed_including_output_write_and_readback": 0.230241060256958
+    },
+    {
+      "case": "packet-digest-mismatch",
+      "exit": 1,
+      "error": "whole packet mismatch",
+      "failure_report_usage_roundtrip": true,
+      "elapsed_including_output_write_and_readback": 0.04817795753479004
+    },
+    {
+      "case": "missing-core-locator",
+      "exit": 1,
+      "error": "expected unique locator: c7b2-core-artifacts/test-summary.json",
+      "failure_report_usage_roundtrip": true,
+      "elapsed_including_output_write_and_readback": 0.44421815872192383
+    }
+  ]
+}

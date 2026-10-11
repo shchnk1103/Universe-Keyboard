@@ -1,0 +1,32 @@
+[
+  {
+    "path": "ack.json",
+    "bytes": 3308,
+    "sha256": "bdd3f41b729422d0b9da44b8f8a7603f77eb0fc749ced08e1055d241329c6d70"
+  },
+  {
+    "path": "packet.json",
+    "bytes": 6252,
+    "sha256": "e09765b79a817d96c469645756e5e88f8500951c4904b5943642f82fcf583eaf"
+  },
+  {
+    "path": "reviewer-final-message.md",
+    "bytes": 1569,
+    "sha256": "a574de7ad772d243f6f06f09b462cc141b6a73fb098efae7b3c6e82f73e75e74"
+  },
+  {
+    "path": "root-identity-input-check.json",
+    "bytes": 206,
+    "sha256": "3e2c94eba34669ae7864b2d22acbfb856979b1a6537f0a60315902aaced79d4f"
+  },
+  {
+    "path": "root-receiving-ledger.json",
+    "bytes": 1287,
+    "sha256": "5d5b53509a607e159f5da4954814e9af47805464ecc81251dd007d2b81b50afb"
+  },
+  {
+    "path": "product-receipt-acceptance.json",
+    "bytes": 706,
+    "sha256": "c3435147af8921387f4f2751c783dd2d5d1e1ee4cad150a31fb04240016b1124"
+  }
+]

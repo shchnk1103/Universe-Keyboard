@@ -1,0 +1,15 @@
+{
+  "old_files_checked": 2940,
+  "old_changes_allowed": [
+    "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md",
+    "docs/assignments/keyboard-wake-lifecycle-diagnostics-001.md",
+    "docs/ACTIVE_WORK.md",
+    "docs/KNOWLEDGE_INDEX.md",
+    "docs/ENGINEERING_DASHBOARD.md"
+  ],
+  "other_old_files_unchanged": true,
+  "staged": 0,
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "dirty_entries_before_final_receipt": 865
+}

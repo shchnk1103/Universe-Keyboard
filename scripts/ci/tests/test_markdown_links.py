@@ -35,6 +35,44 @@ class MarkdownLinkTests(unittest.TestCase):
             source.write_text("first\n[missing](nope.md)\n", encoding="utf-8")
             self.assertEqual(MODULE.missing_links(source, root), [(2, "nope.md")])
 
+    def test_frozen_snapshot_paths_are_skipped(self) -> None:
+        self.assertTrue(
+            MODULE.is_frozen_snapshot(
+                Path(
+                    "docs/reviews/keyboard-wake-host-activation-fix-001-appex-meta-r4-quality-artifacts/active-work-recovery-candidate.md"
+                )
+            )
+        )
+        self.assertTrue(
+            MODULE.is_frozen_snapshot(
+                Path(
+                    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-bounded-completion-artifacts/accepted-exit-map-original.md"
+                )
+            )
+        )
+        self.assertTrue(
+            MODULE.is_frozen_snapshot(
+                Path(
+                    "docs/reviews/keyboard-wake-host-activation-fix-001-a2-r2-artifacts/assignment-at-r2-freeze.md"
+                )
+            )
+        )
+        self.assertTrue(
+            MODULE.is_frozen_snapshot(
+                Path(
+                    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-ui-m2-stop-artifacts/initial-entry-frozen.md"
+                )
+            )
+        )
+        self.assertFalse(
+            MODULE.is_frozen_snapshot(
+                Path("docs/reviews/quality-c7-c-prep-r1-review-2026-10-02.md")
+            )
+        )
+        self.assertFalse(
+            MODULE.is_frozen_snapshot(Path("docs/ARCHITECTURE_TIMELINE.md"))
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

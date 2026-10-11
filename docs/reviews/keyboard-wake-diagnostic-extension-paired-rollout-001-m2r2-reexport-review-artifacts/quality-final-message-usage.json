@@ -1,0 +1,21 @@
+{
+  "elapsed_seconds": 289.137,
+  "elapsed_basis": "冻结包 created_utc 至最后一次审查工具结果；以 2026-10-04T05:32:02Z 为最后观察时间",
+  "actual_tool_calls": 10,
+  "covered": [
+    "冻结包摘要与 sidecar 匹配",
+    "worktree branch/HEAD 匹配",
+    "43/43 allowed target hashes 匹配",
+    "独立复算 snapshot 头部、11 条记录、局部完整性及两组 attempt 配对",
+    "一次 binary read、cleanup 与视觉 Exit 有界核验"
+  ],
+  "uncovered": [
+    "序号 5 native poll 的持久化 request/response 配对",
+    "视觉 Exit 变化原因及实际输入恢复",
+    "旧正常 v6 JSONL 与父级完整 Exit 映射",
+    "系统级全部 lifecycle/engine/host 覆盖及其他独立阶段结论"
+  ],
+  "stop_reason": "tool_call_ceiling_10_reached_before_output_write",
+  "packet_sha256": "6569b3aaa25126d50f64e0aad40095e30b1e97108a39140573a1868e4916a170",
+  "required_output_files_written": false
+}

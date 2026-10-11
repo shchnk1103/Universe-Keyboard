@@ -1,0 +1,7 @@
+{
+  "path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-host-activation-fix-001-f4-p-artifacts/build-receipt.json",
+  "bytes": 270,
+  "sha256": "bc9467a029d4ece78c861e7acd257976f8f09a33ce5cefd1e2523d3334c17add",
+  "expected_sha256": "bc9467a029d4ece78c861e7acd257976f8f09a33ce5cefd1e2523d3334c17add",
+  "text": "{\n  \"started_utc\": \"2026-10-05T02:51:40.538896+00:00\",\n  \"ended_utc\": \"2026-10-05T02:52:13.974565+00:00\",\n  \"elapsed_seconds\": 33.43521387502551,\n  \"exit_code\": 0,\n  \"timeout\": false,\n  \"test_run\": false,\n  \"device_instance_targeted\": false,\n  \"source_written\": false\n}\n"
+}

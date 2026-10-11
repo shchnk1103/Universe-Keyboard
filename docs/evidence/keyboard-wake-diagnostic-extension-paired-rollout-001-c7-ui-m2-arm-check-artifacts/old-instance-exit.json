@@ -1,0 +1,21 @@
+{
+  "start_utc": "2026-10-03T15:11:20.756935+00:00",
+  "finish_utc": "2026-10-03T15:11:21.097185+00:00",
+  "pid": 3626,
+  "executable": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+  "executable_sha256": "237d9a890d96a18ebaa9427ac2836595d8e8fc7767be63712a6870a22643efe0",
+  "signal": "SIGTERM",
+  "signals_sent": 1,
+  "checks": [
+    {
+      "exit": 0,
+      "present": true
+    },
+    {
+      "exit": 1,
+      "present": false
+    }
+  ],
+  "remaining_target_processes": [],
+  "no_force_kill_or_relaunch": true
+}

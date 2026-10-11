@@ -1,0 +1,10 @@
+{
+  "discovered": 432,
+  "executed": 431,
+  "rerun": false,
+  "discovery_list_complete": false,
+  "discovery_preview_count": 6,
+  "discovered_not_in_test_cases_preview_only": [],
+  "cause": "UNKNOWN: MCP discovery preview contains only six items; do not infer complete correspondence",
+  "xcresult_executed_count": 431
+}

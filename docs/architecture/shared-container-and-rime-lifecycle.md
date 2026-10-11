@@ -88,7 +88,7 @@ Typing Intelligence does not use `Rime/shared`, `Rime/user`, candidate storage o
    restores the prior built-in files.
 3. It sets `rime_deployed=false`, `rime_needs_deploy=true`, then starts deployment.
 4. `RimeDeploymentService` serializes `.fullCheck` deployment in an actor and calls the ObjC deployer.
-5. Success requires librime's terminal `deploy/success` notification and a content-free basic-input smoke for the
+5. Success requires librime's terminal `deploy/success` notification, a usable librime identity (nil, blank and bridge sentinels `(no api)` / `(unknown)` fail closed), and a content-free basic-input smoke for the
    active schema. For `rime_ice`, the App also records the separate runtime Lua smoke result.
 6. On failure it keeps deployment pending and exposes retry/diagnostic state.
 7. A subsequently created keyboard process authorizes the prepared built-in

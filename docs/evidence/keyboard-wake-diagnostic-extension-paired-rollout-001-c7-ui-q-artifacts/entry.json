@@ -1,0 +1,17 @@
+{
+  "authorization": "\u5f00\u59cb Q \u5427",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "utc": "2026-10-02T15:46:13.482408+00:00",
+  "before_files": 2890,
+  "before_dirty": 807,
+  "staged": 0,
+  "source571_vendor630_matched": true,
+  "reviewers": {
+    "Quality": "/root/stage_b_quality",
+    "Architecture": "/root/c7b_architecture"
+  },
+  "independence": "Neither reviewer implemented the local Presentation wiring fix or H1/H2 executor tools; root sole repo writer",
+  "scope": "Q read-only new source/command/payload/entitlement binding, no build/test/install/device/runtime",
+  "candidate": "43d85d612af6c606b5434dcb0a989e43e3c472bf6f296df3bd7c2fcb6220ba50"
+}

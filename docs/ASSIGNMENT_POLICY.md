@@ -203,6 +203,57 @@ Canonical examples are the Assignments currently included by the Profile.
 Templates and executable field rules come from the pinned Kit version recorded
 in [`kos/UPGRADE_STATUS.md`](kos/UPGRADE_STATUS.md).
 
+## Independent Reviewer Lane Packet (KOS Kit v0.9.0 selective adoption)
+
+Effective from 2026-09-25 Asia/Shanghai under
+[PD-KOS-UPGRADE-UK-006](product-decisions/KOS-UPGRADE-UK-006-v0.9.0-adoption.md),
+this section applies to independent reviewer lanes first assigned on or after
+that date. It applies when a new lane is assigned under an existing Work Item
+as well as under a new Assignment. It does not change the assignment baseline
+or packet of an already assigned lane, and does not require this packet for
+ordinary subagent investigation that is not an independent review.
+
+Before dispatch, freeze a review packet that names:
+
+1. Work Item, stable lane ID, positive integer review round, exact baseline,
+   packet digest and the question or claims to decide. A new lane starts at
+   round 1; each newly frozen baseline on the same lane advances the round.
+   Preserve UNKNOWN if historical numbering cannot be proven.
+2. Allowed files/artifacts and explicit exclusions.
+3. Read/write boundaries, allowed tools/operations, access and data limits.
+4. Required outputs, positive acceptance criteria, complete-coverage criteria
+   and the finding-record location.
+5. The lane-specific budget, checkpoint schedule, usage-record location and
+   exhaustion behavior.
+6. Stop conditions and the named Assignment Authority allowed to approve
+   specific scope or budget expansion.
+
+The Coordinator preflights the packet before dispatch. If a required input,
+claim, boundary or acceptance rule is underspecified, repair and freeze the
+packet before starting the reviewer; do not rely on repeated narrowing
+instructions after review has begun.
+
+A reviewer must stay within the frozen target set. If another input, claim,
+environment or adjacent investigation becomes necessary, report one concise
+locator and reason, mark the dependent claim uncovered, and stop that part of
+the review. The reviewer and Coordinator cannot authorize their own expansion.
+Only the Assignment Authority named in the Assignment may approve exact added
+scope and revised budget. Freeze the approved change and its new packet digest
+before the reviewer continues; budget does not renew automatically.
+
+The packet defines checkpoints and the first budget ceiling. At exhaustion,
+the reviewer stops and records elapsed time, actual call/tool count, stop
+reason, covered criteria and remaining coverage. Any required input or claim
+left uncovered produces Partial / incomplete; it is never Pass or Pass with
+conditions. Pass with conditions still requires complete coverage and the
+residual disposition required by M-03.
+
+This is a selective adoption of reviewer scope, budget and stop clauses only.
+It does not adopt provider/model routing, the full optional orchestration
+package, or a global ORCHESTRATION_PLAN. Existing Active Assignments and
+already assigned lanes are not backfilled. KOS record_envelopes schema and
+validator are unchanged.
+
 ## Residual Disposition Before Close (KOS 2.1 ops)
 
 When Architecture or Quality returns **Pass with conditions** (or Conditional

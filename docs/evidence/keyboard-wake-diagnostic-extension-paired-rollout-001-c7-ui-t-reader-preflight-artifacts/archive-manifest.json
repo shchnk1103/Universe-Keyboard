@@ -1,0 +1,21 @@
+{
+  "P-fresh/reader-result.json": "def7156cb0801362af264d5ce859b582d8e6ee92e1c1ada1498a0f482b26a341",
+  "P-fresh/report.md": "4a5d34e0629ce6e72df72f8241458dbb469948cd04675c4f57036795aa3fc46c",
+  "P-fresh/usage.json": "47b09a865ba5baaae41b1eeb7a58881cd6d8a850abd21e3008211cff809d94b6",
+  "P-identity.json": "11552ada0b8665d3395a45d70995778204dfe00280a22f38fad02966826b4ee5",
+  "P-preflight-packet.json": "660ec05c5911acc9aaf20fbc6f662ce4fbe7256f607b4762f58eb455550c05e6",
+  "S-fresh/reader-result.json": "45dd84aec09520dd46745454928c72ff779070962b14560a4be0ff7e6cbd9b5b",
+  "S-fresh/report.md": "cad1243633e3721a83fa0a558abec9c4b7fa04a12f97cae424315be4adc302fb",
+  "S-fresh/usage.json": "46fbfcd7d2022da3f6553fda8d9307107516094c9ce2492a33a3f3070e027baa",
+  "S-identity.json": "45ed7eed8074d7f3e25f6f2f0f23808ac36335d6902e440613ed65da557964f4",
+  "S-preflight-packet.json": "d6fcb49f094e9a46c3d5d1e234da4d6360427a31356cd9d52443e66c3250d7ea",
+  "missing-core-locator/report.md": "e678df7fbcfa3ed12e8f7c9dc0fc46d924b0d5a811d772bcfa85ca76a9768d64",
+  "missing-core-locator/usage.json": "e5ef6cf5d90a2daa2e0097bd7af2778797e11ed27e5aeeddbcd6669211cbbb03",
+  "old-input-drift/report.md": "95f0fe03f2ec58ad70909611fd3c696e1f41efa730fbdd2e35fdc85ab9d27cea",
+  "old-input-drift/usage.json": "7e939087292da46cd3796e49f40184274e00047d63f224747afd792a70b914f7",
+  "packet-digest-mismatch/report.md": "82218b6a9df56b235c26fd504c03aeb1fce65a89d9ec3bced37345643589b310",
+  "packet-digest-mismatch/usage.json": "6e0855e1851824c59b11b044820a129ffb8b11360d75218a9962e79b1069343d",
+  "preflight-receipt.json": "c70c3422c5957c53d80633856548ebe30536e143c0016c87e38dfd4a72909842",
+  "reader.py": "25d996d2fcbd27b809265263b9c2687f23509f9eb487a53597425d62b895923b",
+  "run-preflight.py": "27bec56c3978d3130167af55e606c483c401939f072e65e0814e14d8a1396085"
+}

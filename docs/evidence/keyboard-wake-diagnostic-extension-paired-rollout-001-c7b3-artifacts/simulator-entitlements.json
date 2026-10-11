@@ -1,0 +1,45 @@
+{
+  "bundles": [
+    {
+      "bundle_id": "com.DoubleShy0N.Universe-Keyboard",
+      "mach_o": "/private/tmp/ukey-wake-c7b3-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard",
+      "macho_sha256": "0af5b7f021a2eb82142521f8ba1db3f87fc6712f4f19c49d5cd229d2fb133fe8",
+      "simulated_xcent": "/private/tmp/ukey-wake-c7b3-20261002/CandidateDerivedData/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Universe Keyboard.build/Universe Keyboard.app-Simulated.xcent",
+      "xcent_sha256": "6610a8c02dfe5b877f5be595941b807a687c7838e2f4b54a80b4c6726b821a6c",
+      "embedded_section": {
+        "offset": 13416,
+        "bytes": 414,
+        "entitlements": {
+          "application-identifier": "C33N6HTS9N.com.DoubleShy0N.Universe-Keyboard",
+          "com.apple.security.application-groups": [
+            "group.com.DoubleShy0N.Universe-Keyboard"
+          ]
+        },
+        "section_sha256": "6610a8c02dfe5b877f5be595941b807a687c7838e2f4b54a80b4c6726b821a6c"
+      },
+      "normal_codesign_entitlements": {},
+      "interpretation": "Simulator __TEXT,__entitlements is present and equals generated xcent; empty codesign display does not prove App Group missing. Runtime container/Keychain still unverified."
+    },
+    {
+      "bundle_id": "com.DoubleShy0N.Universe-Keyboard.Keyboard",
+      "mach_o": "/private/tmp/ukey-wake-c7b3-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+      "macho_sha256": "e059dfbfef672553b51d9ce2a3097348f3c40129c8afaa27b58fd90918cbd692",
+      "simulated_xcent": "/private/tmp/ukey-wake-c7b3-20261002/CandidateDerivedData/Build/Intermediates.noindex/Universe Keyboard.build/Debug-iphonesimulator/Keyboard.build/Keyboard.appex-Simulated.xcent",
+      "xcent_sha256": "1b5eca79f033b12423739696ae50c8dfcd679ed6484803e2e340787aee149b7b",
+      "embedded_section": {
+        "offset": 10266,
+        "bytes": 423,
+        "entitlements": {
+          "application-identifier": "C33N6HTS9N.com.DoubleShy0N.Universe-Keyboard.Keyboard",
+          "com.apple.security.application-groups": [
+            "group.com.DoubleShy0N.Universe-Keyboard"
+          ]
+        },
+        "section_sha256": "1b5eca79f033b12423739696ae50c8dfcd679ed6484803e2e340787aee149b7b"
+      },
+      "normal_codesign_entitlements": {},
+      "interpretation": "Simulator __TEXT,__entitlements is present and equals generated xcent; empty codesign display does not prove App Group missing. Runtime container/Keychain still unverified."
+    }
+  ],
+  "runtime_verified": false
+}

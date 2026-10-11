@@ -1,0 +1,19 @@
+# F3 Quality未覆盖项收口 — 2026-10-05
+
+Human授权“先修通 reader 和交付流程，再只补未覆盖项”后，root完成实际只读reader预检及假数据交付预检，复用原独立Quality reviewer执行同lane round2。结论**Pass with conditions，仅当前候选Quality阶段证据**。Q1/Q2/Q4/Q5完整覆盖，Q3保留round1 Covered，A2有界复审不重开。旧round1 Partial和未最终usage原件保持，不改成通过。
+
+[独立作者报告](../reviews/keyboard-wake-host-activation-fix-001-f3-quality-uncovered-artifacts/review.md)、[真实用量](../reviews/keyboard-wake-host-activation-fix-001-f3-quality-uncovered-artifacts/usage.json)、[ACK](../reviews/keyboard-wake-host-activation-fix-001-f3-quality-uncovered-artifacts/ack.json)及[作者读回](../reviews/keyboard-wake-host-activation-fix-001-f3-quality-uncovered-artifacts/delivery-readback.json)完整归档。13实际calls、451.874秒在16calls/900秒内，root复算起止一致，三文件hash全部匹配；2472精确输入接收时仍符合。报告/usage已由writer正确写出，不依赖替代收件。
+
+## 已核齐的事实
+
+strict lint收据exit0；23个gate方法与required及原xcresult逐项一致，23Passed/0skip/0fail。Core1194/0failure，Bridge105=85Passed+20Skipped，App454=444Passed+10Skipped，签名Keychain1/1，Release日志BUILD SUCCEEDED。30个skip方法及消息逐项符合Human批准同一清单，不计通过、不用于Release。原四Swift实际编译/无Swift诊断沿A2-4独立结论保留，不重审源码。
+
+RIME3条：essay1＋负向malformed-schema2；IOHID loading8、factory伴随8。reader精确定位19行与相邻测试结果，独立判不阻塞本次有界诊断F4，但原因、无害性和真实产品影响仍未知，不能外推Maps恢复。Human已批准的同30skip仅当前F3及后续单轮F4未验证非阻塞限制继续适用，新增skip/fail停止；旧F3-Q-AUDIT历史流程残项接受不改史。
+
+## 流程修复与权限
+
+[reader/交付预检](keyboard-wake-host-activation-fix-001-f3-reader-flow-repair-2026-10-05.json)修复结构化inventory序列化与packet自路径校验错误，实际原xcresult只读预检和假数据写/读回均通过。作者为了hash-only源内容边界，执行reader时省略可选Swift fixture源码片段；作者报告明确该行为，reader-output不含该源码读取。归档的reader文件是冻结基础工具，不冒称未经修改执行了源码片段。工具辅助独立核验，不用root结果代作者结论。
+
+[只读输出](../reviews/keyboard-wake-host-activation-fix-001-f3-quality-uncovered-artifacts/reader-output.json)、[root接收](../reviews/keyboard-wake-host-activation-fix-001-f3-quality-uncovered-artifacts/root-receipt.json)、[manifest](../reviews/keyboard-wake-host-activation-fix-001-f3-quality-uncovered-artifacts/manifest.json)保存来源与hash。所有原报告/备份保持。
+
+本轮未源码/build/test/lint/simulator/LLDB/安装/Maps/Git或Release操作。下一建议准备F4精确配对产物、通知/owner取证方法、现场独占/静默备份与恢复、Human单轮步骤和Exit；目前F4仍非Ready且未获执行授权，不宣称整体修复完成。实际通知context/controller恢复及Maps行为必须由新候选运行证据验证。无新增ADR合同或CHANGELOG变更；后者在修复验证/交付阶段另授权。

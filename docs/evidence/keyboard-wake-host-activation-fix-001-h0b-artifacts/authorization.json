@@ -1,0 +1,19 @@
+{
+  "started_utc": "2026-10-06T02:06:37.872625+00:00",
+  "Human": "可以，请你接下来只补 H0b 就绪握手吧",
+  "scope": "H0b task-owned macOS ready-pipe fixture; confirm actual read wait before own attach, single continue/export hit and cleanup; no Simulator, production code, target contents, expressions or existing processes",
+  "budget_calls": 12,
+  "budget_wall_seconds": 600,
+  "actual_calls": 2,
+  "root": "/private/tmp/ukey-host-activation-fix-h0b-20261006",
+  "source5": {
+    "Keyboard/Controllers/KeyboardViewController.swift": "8f2d9a9644da439d3c954f920000e2379bfc6dcba9ddec523d07fbcb86bb155a",
+    "Keyboard/Controllers/KeyboardViewController+Bootstrap.swift": "79d0123dabacd8e5875b66b7c8c897589adbeb8b49d1e22b263678dc1d56f6aa",
+    "Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift": "c8c355a0ffedfc516e64babeffbc7aac9612e0baf3a3de41b22b9c75b231d047",
+    "KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift": "71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5",
+    "Universe Keyboard.xcodeproj/project.pbxproj": "49f0ebe89db1f30323d9bf6ceb297179ffed5fc9ef983fd3b947d11d5820586c"
+  },
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "baseline_host_probe_sha256": "58bdf1a9a699f42507a2811675efd2bbb84d6670626bd7c3ed06782ff499cde3"
+}

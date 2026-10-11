@@ -1,0 +1,28 @@
+{
+  "candidate_digest": "af38fac6758df45f6686ff00845a065157c6679fd57de8dcf015c0e9f283cbd9",
+  "head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "unchanged_existing_files": 2493,
+  "changed_existing_files": [
+    "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md"
+  ],
+  "source_build_inputs_unchanged": 568,
+  "dirty_total": 410,
+  "tracked_modified": 19,
+  "untracked": 391,
+  "staged": 0,
+  "full_dirty_status": "/private/tmp/ukey-wake-c4-supplement-20261001/after-status.txt",
+  "status_z_sha256": "f0f583a9b7d7377583d805aba2f54e8902df35f3db5452d70ae113c97981720b",
+  "assignment_sha256": "07214155914a52fd0a03df56e6295539a67e14689404fa40b373eedc6cd5eb6d",
+  "supplement_artifacts": {
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c4-supplement-input-manifest.json": "4665065e6f1bb3a018722cc038861208cf81b46635de396ff50f46b967c72ea4",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c4-supplement-packet.md": "9b7dee4af17e01a4fce231087f208af00a9ac911201aa4768dc045588eec7e2c",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c4-supplement-product-disposition.md": "ebe11c182961a4d9c4d88b80ce7764a20156d13056d0ca6cc232a2caf19c089a",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c4-supplement-quality-review-r2.md": "56414d1e612887d204ac82835556bcd80f8eddfb18fc393870cc61b503c0426a",
+    "docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c4-supplement-quality-usage-r2.json": "5a52561b449a8bb32ad1259affd5c9a0340e863ff2fa67b818d1f78ca8b25561"
+  },
+  "scope": "C4-Q-01 accept only current C4; nonblocking/unverified;30Skipped retained",
+  "quality": "D1-D3 covered; scoped disposition confirmed, no overallQuality/Gate",
+  "source_test_simulator_install_maps_git_actions": false,
+  "diff_check_exit": 0
+}

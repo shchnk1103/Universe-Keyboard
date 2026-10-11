@@ -1,0 +1,37 @@
+[
+  {
+    "path": "authorization.json",
+    "bytes": 615,
+    "sha256": "e7a75d92be7224c3785c34f22a3f76ae4ff8bbb55629eb5be478d53cf35aa9ed"
+  },
+  {
+    "path": "dirty-after.txt",
+    "bytes": 217980,
+    "sha256": "67cd2f7554d87ac54ed6c69fbf092739a0f7f6df2c11818573cc4802c9eb49f4"
+  },
+  {
+    "path": "four-path-flat-reader-prepared.txt",
+    "bytes": 3621,
+    "sha256": "3b4d849c172d5dfc3325c2bb789dd567a3e854de67963557b3f31875e2a9de69"
+  },
+  {
+    "path": "quality/author-native-stop-excerpt.txt",
+    "bytes": 414,
+    "sha256": "3a98d945f390f0b0784b949744121c8c157033d0691703ce0c94f2bab77a10ec"
+  },
+  {
+    "path": "quality-packet.json",
+    "bytes": 3797,
+    "sha256": "0cefc1525688d5c72faad53faa81d83dd0b869d93b801055b9b589a98381a8ac"
+  },
+  {
+    "path": "root-four-path-facts.json",
+    "bytes": 2354,
+    "sha256": "6c661cd21026509801c44dfa870844f986d1cc03c83fa3521cc862fc8aef6a77"
+  },
+  {
+    "path": "root-receipt.json",
+    "bytes": 789,
+    "sha256": "602c23204e3d91a7934302e987e0016cd141962e9e3fb8a387ab053203038d1a"
+  }
+]

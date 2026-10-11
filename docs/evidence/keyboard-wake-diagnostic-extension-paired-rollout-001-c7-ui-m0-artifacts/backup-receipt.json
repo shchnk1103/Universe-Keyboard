@@ -1,0 +1,79 @@
+{
+  "utc": "2026-10-03T14:23:27.549419+00:00",
+  "scope": "M0 current post-U1R1 new-candidate full backup, not historical I0/T baseline",
+  "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "backup_root": "/private/tmp/ukey-wake-m0-20261003/backup",
+  "backup_root_mode": "0700",
+  "containers": {
+    "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app",
+    "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/351890B0-93B6-4875-ACB2-1B6A678678A7",
+    "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/53661EB9-A6C9-4323-A997-346A2C10FE68"
+  },
+  "source_three_reads_equal": true,
+  "container_paths_stable": true,
+  "app_appex_absent_before_after": true,
+  "copy_bytes_structure_modes_owners_original_xattrs_equal": true,
+  "copy_added_provenance_classification": {
+    "main-data": 865,
+    "app-group": 9,
+    "installed-app": 9
+  },
+  "all_metadata_exact_claim": false,
+  "internal_symlinks_checked": true,
+  "backup_strict_signatures": {
+    "main": {
+      "exit": 0
+    },
+    "keyboard": {
+      "exit": 0
+    }
+  },
+  "selected_preferences": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "rime_deployed": {
+      "exists": true,
+      "value": true
+    },
+    "rime_needs_deploy": {
+      "exists": true,
+      "value": false
+    },
+    "rime_is_deploying": {
+      "exists": false,
+      "value": null
+    }
+  },
+  "counts": {
+    "main-data": {
+      "files": 827,
+      "directories": 42,
+      "symlinks": 0,
+      "file_bytes": 1101984,
+      "inventory_sha256": "9a853740093d0676abbe5aff0354c782e6c86729bfb51b57ec413f53c06fb8c2"
+    },
+    "app-group": {
+      "files": 51,
+      "directories": 15,
+      "symlinks": 2,
+      "file_bytes": 37749281,
+      "inventory_sha256": "41a12badd8c0b30f865409fa531491c4bdc57589010f21762b51d7d88fa37fdb"
+    },
+    "installed-app": {
+      "files": 78,
+      "directories": 9,
+      "symlinks": 0,
+      "file_bytes": 91344780,
+      "inventory_sha256": "c7478c5ae523e2ab3824bbf463659403fdd68d634477a82520b0b849da91b83b"
+    }
+  },
+  "keychain_and_simulator_system_settings_not_backed_up": true,
+  "old_backups_preserved": true,
+  "no_install_launch_restore_or_test": true
+}

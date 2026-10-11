@@ -1,0 +1,58 @@
+{
+  "run_id": "TC2-CI-20261011-F01-FIXEDA44-001",
+  "counts": {
+    "Core": {
+      "total": 1207,
+      "passed": 1207,
+      "skipped": 0,
+      "failed": 0,
+      "summary_line": "Executed 1207 tests, with 0 failures (0 unexpected) in 19.173 (19.294) seconds"
+    },
+    "RimeBridge": {
+      "total": 112,
+      "passed": 92,
+      "skipped": 20,
+      "failed": 0,
+      "summary_line": "Executed 112 tests, with 20 tests skipped and 0 failures (0 unexpected) in 3.070 (3.114) seconds"
+    },
+    "App": {
+      "total": 417,
+      "passed": 407,
+      "skipped": 10,
+      "failed": 0,
+      "summary_line": "Executed 417 tests, with 10 tests skipped and 0 failures (0 unexpected) in 11.734 (11.925) seconds"
+    },
+    "Keyboard": {
+      "total": 44,
+      "passed": 44,
+      "skipped": 0,
+      "failed": 0,
+      "summary_line": "Executed 44 tests, with 0 failures (0 unexpected) in 0.153 (0.171) seconds"
+    },
+    "ExtensionDefault": {
+      "total": 6,
+      "passed": 6,
+      "skipped": 0,
+      "failed": 0,
+      "summary_line": "Executed 6 tests, with 0 failures (0 unexpected) in 1.868 (1.871) seconds"
+    },
+    "SignedKeychain": {
+      "total": 1,
+      "passed": 1,
+      "skipped": 0,
+      "failed": 0,
+      "summary_line": "Executed 1 test, with 0 failures (0 unexpected) in 0.055 (0.057) seconds"
+    },
+    "Release": "build succeeded"
+  },
+  "focused_cases": [
+    "testDeploymentIdentityRejectsUnavailableBridgeSentinels",
+    "testDeploymentServiceFailsClosedWhenMaintenanceForwardsUnavailableIdentity",
+    "testSuccessfulDeploymentWithEmptyLibrimeIdentityRemainsPending",
+    "testSuccessfulDeploymentWithNoAPILibrimeIdentityRemainsPending",
+    "testSuccessfulDeploymentWithoutLibrimeIdentityRemainsPending",
+    "testSuccessfulDeploymentWithUnknownLibrimeIdentityRemainsPending"
+  ],
+  "no_retry": true,
+  "elapsed_s": 237.54135300000002
+}

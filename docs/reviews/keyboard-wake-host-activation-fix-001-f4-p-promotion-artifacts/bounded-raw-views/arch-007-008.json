@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Keyboard/Views/CandidateBar/CandidateBarView.swift",
+  "origin_sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+  "expected_sha256": "5c468dcde434a8b91ac1be692d60d02e6b5139b148edb6a1acaeb0006cf162f8",
+  "line_start": 421,
+  "line_end": 480,
+  "lines": [
+    {
+      "line": 421,
+      "text": "            button.translatesAutoresizingMaskIntoConstraints = false"
+    },
+    {
+      "line": 422,
+      "text": "            button.backgroundColor = UIColor.systemGray.withAlphaComponent(0.001)"
+    },
+    {
+      "line": 423,
+      "text": "            button.setTitleColor(.label, for: .normal)"
+    },
+    {
+      "line": 424,
+      "text": "            button.titleLabel?.font = .systemFont(ofSize: 12, weight: .medium)"
+    },
+    {
+      "line": 425,
+      "text": "            button.addTarget(target, action: action, for: .touchUpInside)"
+    },
+    {
+      "line": 426,
+      "text": "            button.isHidden = true"
+    },
+    {
+      "line": 427,
+      "text": "            addSubview(button)"
+    },
+    {
+      "line": 428,
+      "text": "            wakeProbeButton = button"
+    },
+    {
+      "line": 429,
+      "text": "            gestureBridge.wakeProbeButton = button"
+    },
+    {
+      "line": 430,
+      "text": "            NSLayoutConstraint.activate(["
+    },
+    {
+      "line": 431,
+      "text": "                button.trailingAnchor.constraint(equalTo: expandButton.leadingAnchor, constant: -2),"
+    },
+    {
+      "line": 432,
+      "text": "                button.topAnchor.constraint(equalTo: topAnchor),"
+    },
+    {
+      "line": 433,
+      "text": "                button.widthAnchor.constraint(equalToConstant: 44),"
+    },
+    {
+      "line": 434,
+      "text": "                button.heightAnchor.constraint(equalToConstant: min(candidateBarHeight, 44)),"
+    },
+    {
+      "line": 435,
+      "text": "            ])"
+    },
+    {
+      "line": 436,
+      "text": "            wakeProbeTrailingConstraint = collectionView.trailingAnchor.constraint("
+    },
+    {
+      "line": 437,
+      "text": "                equalTo: button.leadingAnchor, constant: -2)"
+    },
+    {
+      "line": 438,
+      "text": "            let observer = WakeOwnerProbeTouchObserver()"
+    },
+    {
+      "line": 439,
+      "text": "            observer.cancelsTouchesInView = false"
+    },
+    {
+      "line": 440,
+      "text": "            observer.delaysTouchesBegan = false"
+    },
+    {
+      "line": 441,
+      "text": "            observer.delaysTouchesEnded = false"
+    },
+    {
+      "line": 442,
+      "text": "            observer.delegate = gestureBridge"
+    },
+    {
+      "line": 443,
+      "text": "            observer.onTouch = { [weak self] identifier, began in"
+    },
+    {
+      "line": 444,
+      "text": "                self?.onWakeOwnerProbeTouch?(identifier, began)"
+    },
+    {
+      "line": 445,
+      "text": "            }"
+    },
+    {
+      "line": 446,
+      "text": "            addGestureRecognizer(observer)"
+    },
+    {
+      "line": 447,
+      "text": "        }"
+    },
+    {
+      "line": 448,
+      "text": ""
+    },
+    {
+      "line": 449,
+      "text": "        func setWakeOwnerProbeButton(visible: Bool, title: String) {"
+    },
+    {
+      "line": 450,
+      "text": "            guard let button = wakeProbeButton else { return }"
+    },
+    {
+      "line": 451,
+      "text": "            button.setTitle(title, for: .normal)"
+    },
+    {
+      "line": 452,
+      "text": "            button.accessibilityLabel = title == \"观测\" ? \"开始 owner 观测\" : \"冻结并导出 owner 观测\""
+    },
+    {
+      "line": 453,
+      "text": "            guard button.isHidden == visible else { return }"
+    },
+    {
+      "line": 454,
+      "text": "            if visible {"
+    },
+    {
+      "line": 455,
+      "text": "                candidateTrailingConstraint.isActive = false"
+    },
+    {
+      "line": 456,
+      "text": "                wakeProbeTrailingConstraint?.isActive = true"
+    },
+    {
+      "line": 457,
+      "text": "            } else {"
+    },
+    {
+      "line": 458,
+      "text": "                wakeProbeTrailingConstraint?.isActive = false"
+    },
+    {
+      "line": 459,
+      "text": "                candidateTrailingConstraint.isActive = true"
+    },
+    {
+      "line": 460,
+      "text": "            }"
+    },
+    {
+      "line": 461,
+      "text": "            button.isHidden = !visible"
+    },
+    {
+      "line": 462,
+      "text": "        }"
+    },
+    {
+      "line": 463,
+      "text": "    #endif"
+    },
+    {
+      "line": 464,
+      "text": ""
+    },
+    {
+      "line": 465,
+      "text": "    private func configureCollectionView() {"
+    },
+    {
+      "line": 466,
+      "text": "        CandidateScrollViewStyle.apply(to: collectionView)"
+    },
+    {
+      "line": 467,
+      "text": "        collectionView.showsHorizontalScrollIndicator = false"
+    },
+    {
+      "line": 468,
+      "text": "        collectionView.showsVerticalScrollIndicator = false"
+    },
+    {
+      "line": 469,
+      "text": "        collectionView.bounces = true"
+    },
+    {
+      "line": 470,
+      "text": "        collectionView.alwaysBounceHorizontal = false"
+    },
+    {
+      "line": 471,
+      "text": "        collectionView.decelerationRate = .normal"
+    },
+    {
+      "line": 472,
+      "text": "        collectionView.delaysContentTouches = false"
+    },
+    {
+      "line": 473,
+      "text": "        collectionView.canCancelContentTouches = true"
+    },
+    {
+      "line": 474,
+      "text": "        collectionView.clipsToBounds = false"
+    },
+    {
+      "line": 475,
+      "text": "        collectionView.panGestureRecognizer.addTarget(self, action: #selector(handleCandidatePan(_:)))"
+    },
+    {
+      "line": 476,
+      "text": "        collectionView.translatesAutoresizingMaskIntoConstraints = false"
+    },
+    {
+      "line": 477,
+      "text": "        collectionView.register("
+    },
+    {
+      "line": 478,
+      "text": "            CandidateCollectionCell.self,"
+    },
+    {
+      "line": 479,
+      "text": "            forCellWithReuseIdentifier: CandidateCollectionCell.barReuseIdentifier"
+    },
+    {
+      "line": 480,
+      "text": "        )"
+    }
+  ]
+}

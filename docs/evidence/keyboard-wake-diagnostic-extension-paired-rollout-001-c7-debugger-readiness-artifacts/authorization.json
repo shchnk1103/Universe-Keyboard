@@ -1,0 +1,21 @@
+{
+  "utc": "2026-10-02T14:25:00.508315+00:00",
+  "authorization": "授权调试器就绪核验，并确认独占",
+  "scope": [
+    "exact appex PID attach",
+    "module UUID",
+    "export symbol and breakpoint resolution",
+    "remove breakpoint continue detach"
+  ],
+  "excluded": [
+    "arm",
+    "freeze",
+    "export",
+    "memory read",
+    "input",
+    "Maps",
+    "build",
+    "test",
+    "install"
+  ]
+}

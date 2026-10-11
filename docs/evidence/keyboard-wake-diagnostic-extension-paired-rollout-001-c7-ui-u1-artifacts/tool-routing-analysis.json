@@ -1,0 +1,22 @@
+{
+  "utc": "2026-10-03T09:13:40.398216+00:00",
+  "expected_udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "receipt_udid": "884CAC1A-516A-421F-ACF5-035A36F7088A",
+  "receipt_pid": 80843,
+  "current_defaults_observed_udid": "884CAC1A-516A-421F-ACF5-035A36F7088A",
+  "defaults_changed": false,
+  "cached_source_sha256": {
+    "/Users/doubleshy0n/.npm/_npx/99336612077b7094/node_modules/xcodebuildmcp/build/mcp/tools/debugging/debug_attach_sim.js": "a5aa5f3ed1f96e2790c9a2edbdeec73c3cc1532351abd2a60bfc81285aa7be10",
+    "/Users/doubleshy0n/.npm/_npx/99336612077b7094/node_modules/xcodebuildmcp/build/utils/debugger/debugger-manager.js": "bfc434322f331c188a585d31f7b7f98ecabceaf1904039c6bc068e3b92017e7e",
+    "/Users/doubleshy0n/.npm/_npx/99336612077b7094/node_modules/xcodebuildmcp/build/utils/debugger/backends/dap-backend.js": "b33d88b1d752ea06af31262758bff923f6ef3fa00869e0e7c2e87bedc19855a4"
+  },
+  "cached_source_findings": [
+    "public schema omits simulatorId and simulatorName",
+    "determineSimulatorUuid receives session defaults",
+    "explicit params.pid is passed to createSession without simulator membership validation",
+    "DAP attach ignores opts.simulatorId and sends opts.pid",
+    "makeCurrent false should avoid setCurrentSession; human renderer current-session wording is not authoritative"
+  ],
+  "interpretation": "Cached source supports metadata-label/defaults mismatch; not a new actual loaded-module identity proof.",
+  "running_server_exact_cache_provenance_verified": false
+}

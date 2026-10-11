@@ -1,0 +1,15 @@
+{
+  "recorded_utc": "2026-10-04T06:59:53.224075+00:00",
+  "timezone": "Asia/Shanghai",
+  "human_approval": "批准",
+  "approval_scope": "parent-only bounded diagnostic completion and PEXIT-R1/R2/R3 accepted-unverified residuals; exact proposal unchanged",
+  "accepted_proposal_sha256": "5d81efbea1fb03c43cf21ec688449c6645cce5a9ad8b00e1c4ee9562c23b9ef2",
+  "snapshot_sha256": "11bafebea4e558360a155d5ac3f7739161f2e4177456fd84f7322bef1b5e631e",
+  "parent_before_sha256": "04a6173fd0139bc5d2037030d1948cb9463933dcd270f38ffca994d41bcca3d2",
+  "child_before_sha256": "42fa7502d9ee7f391d80359ff161b3779946154240148612c7ec82b0ad7ee73b",
+  "child_lifecycle_before": "Active",
+  "git_before_dirty_paths_all_files": 1386,
+  "git_staged_before": 0,
+  "parent_transition": "Active -> Completed (bounded diagnostic delivery); no Reviewed/Closed/Quality Gate assertion",
+  "no_runtime_or_source_actions": true
+}

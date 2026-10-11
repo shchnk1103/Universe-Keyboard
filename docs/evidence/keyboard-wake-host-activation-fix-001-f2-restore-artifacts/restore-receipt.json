@@ -1,0 +1,130 @@
+{
+  "utc": "2026-10-04T11:19:57.666931+00:00",
+  "scope": "F2-before restore on original UDID; installed-app + main-data + app-group application content only",
+  "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "source_backup": "/private/tmp/ukey-host-activation-fix-f2-backup-20261004",
+  "after_preservation": "/private/tmp/ukey-host-activation-fix-f2-after-preservation-20261004",
+  "restore_work": "/private/tmp/ukey-host-activation-fix-f2-restore-20261004",
+  "containers_before_restore_window": {
+    "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/37ACBFEE-EABE-4987-AD1C-8D8050A9A593/Universe Keyboard.app",
+    "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/B43FA7F3-3BC2-4437-A51E-67C1351531BC",
+    "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/05FFE2DA-4326-45EB-8291-F816EBAE5FC3"
+  },
+  "containers_after_restore": {
+    "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/9F532453-D3A0-4A06-B20B-165B841230A1/Universe Keyboard.app",
+    "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/FB2E1C3F-E443-473B-9965-079D7BC0EF40",
+    "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/05FFE2DA-4326-45EB-8291-F816EBAE5FC3"
+  },
+  "install": {
+    "utc": "2026-10-04T11:15:51.154366+00:00",
+    "argv": [
+      "xcrun",
+      "simctl",
+      "install",
+      "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+      "/private/tmp/ukey-host-activation-fix-f2-restore-20261004/Universe Keyboard.app"
+    ],
+    "exit": 0,
+    "stdout": "",
+    "stderr": "",
+    "do_not_uninstall": true,
+    "staged_app": "/private/tmp/ukey-host-activation-fix-f2-restore-20261004/Universe Keyboard.app",
+    "source_backup": "/private/tmp/ukey-host-activation-fix-f2-backup-20261004/installed-app"
+  },
+  "mutation": {
+    "utc": "2026-10-04T11:18:01.650670+00:00",
+    "actions": 107,
+    "all_listed_actions_done": true,
+    "main_restore_file": 3,
+    "main_removed": 46,
+    "group_restore_file": 48,
+    "group_restore_dir": 8,
+    "group_restore_symlink": 2,
+    "system_root_metadata_not_overwritten": true,
+    "no_launch_test_deploy": true,
+    "containers": {
+      "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/9F532453-D3A0-4A06-B20B-165B841230A1/Universe Keyboard.app",
+      "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/FB2E1C3F-E443-473B-9965-079D7BC0EF40",
+      "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/05FFE2DA-4326-45EB-8291-F816EBAE5FC3"
+    }
+  },
+  "verification": {
+    "utc": "2026-10-04T11:19:57.664210+00:00",
+    "before_app_payload78_match": true,
+    "dual_signature_valid": true,
+    "main_application_baseline_match": true,
+    "group_application_baseline_match": true,
+    "system_metadata_and_root_identity_same_as_postinstall": true,
+    "snapshots_kept_as_postinstall": true,
+    "two_reads_stable": true,
+    "target_processes_absent": true,
+    "selected_preferences": {
+      "logging_enabled": {
+        "exists": false,
+        "value": null
+      },
+      "diagnostics_high_fidelity_expiration": {
+        "exists": false,
+        "value": null
+      },
+      "rime_deployed": {
+        "exists": true,
+        "value": true
+      },
+      "rime_needs_deploy": {
+        "exists": true,
+        "value": false
+      },
+      "rime_is_deploying": {
+        "exists": false,
+        "value": null
+      }
+    },
+    "counts": {
+      "main-data": {
+        "files": 827,
+        "directories": 42,
+        "symlinks": 0,
+        "file_bytes": 1101984,
+        "inventory_sha256": "e7c41309d043b1b0f6be5e919b4fc39773a491c7d095e92f089c872678a0d926"
+      },
+      "app-group": {
+        "files": 51,
+        "directories": 15,
+        "symlinks": 2,
+        "file_bytes": 37749287,
+        "inventory_sha256": "5550bff4921177f1c23f4e660c097d25a60b088e1f3898343e949065b7e26dbe"
+      },
+      "installed-app": {
+        "files": 78,
+        "directories": 9,
+        "symlinks": 0,
+        "file_bytes": 91344780,
+        "inventory_sha256": "21ac53de28fa3843cf35715a5ddb65abcedbd5b45eb45d87aa5e3d4b43fe102d"
+      }
+    },
+    "provenance_classification": {
+      "rewritten": 54,
+      "missing_on_live": 8,
+      "added": 7
+    },
+    "all_metadata_exact_equal_not_claimed": true,
+    "runtime_health_not_tested": true,
+    "keychain_not_restored": true,
+    "no_launch_redeploy_or_typing": true,
+    "before_backup_preserved": true,
+    "after_preservation_preserved": true,
+    "f2_run_evidence_preserved": true
+  },
+  "historical_backups_retained": true,
+  "source_five_files_not_modified": true,
+  "ok": true,
+  "does_not_claim_runtime_health_f3_f4_or_release": true,
+  "five_file_sha256": {
+    "Keyboard/Controllers/KeyboardViewController.swift": "9aeec10f633454b7b9a032d8140ac0d9912de98ea7049c83a2a886c5ca04ec66",
+    "Keyboard/Controllers/KeyboardViewController+Bootstrap.swift": "e992a9ddf431112d1a40bed80431392eb68c8ef7221b07ece47b87eefb945299",
+    "Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift": "2e7dcf3e88022a677e6ca5bfc5efd6aeacb1814c6fb7de6ec0cdc7c52ec7c9fb",
+    "KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift": "e9ef614702dff163ea1f1723e577f2f5af97394c919fb7d03544e15356d3c1a3",
+    "Universe Keyboard.xcodeproj/project.pbxproj": "49f0ebe89db1f30323d9bf6ceb297179ffed5fc9ef983fd3b947d11d5820586c"
+  }
+}

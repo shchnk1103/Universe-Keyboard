@@ -1,0 +1,25 @@
+{
+  "authority": "live simctl get_app_container for exact bundle and UDID",
+  "app_data_paths_changed": {
+    "app": true,
+    "data": true,
+    "groups": false
+  },
+  "main_data_system_root_row_same": true,
+  "main_data_system_metadata_bytes_attrs_same": true,
+  "system_metadata_identifier_matches_bundle": true,
+  "main_data_changed_inventory_paths": [
+    "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/95F856F4-EC3E-40D6-9FE8-CFFD5D47ED41@3x.ktx",
+    "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/BD56C079-0AD9-43DC-B70E-9AE8EDBD2C64@3x.ktx",
+    "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/B0464B32-B328-46CA-8D44-BC005FED7478@3x.ktx",
+    "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/146E08D6-B3A6-4035-91E7-132D877D2EC5@3x.ktx",
+    "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/69D5271C-2E55-45E5-9549-79E3D9F3239D@3x.ktx",
+    "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/FF8B920F-6BB2-43D9-9887-57F22F8EEDFF@3x.ktx",
+    "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/7BBC954E-241F-42E1-BD95-CE0D8E041545@3x.ktx",
+    "Library/SplashBoard/Snapshots/com.DoubleShy0N.Universe-Keyboard - {DEFAULT GROUP}/968517EE-BDA3-455F-88B9-D97D036D7EE9@3x.ktx"
+  ],
+  "all_main_data_differences_within_snapshot_subtree": true,
+  "group_full_inventory_equal": true,
+  "no_mcm_uuid_to_directory_name_equivalence_claim": true,
+  "first_schema_assumption_note": "MCMMetadataUUID did not equal either physical directory name; not used as identity gate. Actual container binding read from simctl; metadata unchanged."
+}

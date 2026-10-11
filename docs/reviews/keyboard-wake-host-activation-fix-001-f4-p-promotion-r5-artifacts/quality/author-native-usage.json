@@ -1,0 +1,19 @@
+{
+  "reviewer": "/root/f4p_quality_four_paths_fresh GPT6 Luna",
+  "lane_id": "F4-P-QUALITY-PROMOTION",
+  "round": 5,
+  "author_reported_actual_tool_calls": 2,
+  "accounting": "1functions.exec wrapper+1exec_command nested; no more author tools after first failure",
+  "started_utc": "2026-10-05T05:12:52.806117Z",
+  "ended_utc": null,
+  "elapsed_seconds": null,
+  "budget_actual_tool_calls": 4,
+  "budget_wall_seconds": 300,
+  "tool_stop": "ACK PermissionError; did not use require_escalated; initial stdout truncated; stopped tool operations before reading2evidence files",
+  "native_judgment": "Later same-scope no-tools judgment on root-forwarded full original records; direct file access not claimed",
+  "content_coverage": {
+    "Q-P1-full-path-and-consistency": "Covered"
+  },
+  "formal_delivery": "Partial",
+  "author_writer_readback_success": false
+}

@@ -1,0 +1,17 @@
+{
+  "utc": "2026-10-05T05:01:54.032758+00:00",
+  "human_message": "批准",
+  "accepted": "Only this Architecture R3 native author report + actual ACK + root provenance/time-bound receipts replace missing direct author writer/readback/end-time metadata; originals and defects preserved. No technical rereview.",
+  "quality_authorized": "Only four full module path/UUID binding and R3 report consistency; fresh4actualcalls/300sec; no old budget renewal.",
+  "exclusions": [
+    "source",
+    "build",
+    "test",
+    "simulator",
+    "install",
+    "LLDB",
+    "Maps",
+    "Git mutation",
+    "backup cleanup"
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "work_item": "KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001",
+  "lane": "QUALITY-C7-PROBE-UI-BINDING",
+  "round": 2,
+  "authorization": "Human: 可以只补正其一致性，再准备新候选验证",
+  "allowed_content_inputs": {
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/ASSIGNMENT_POLICY.md": "e90dd8f06371e9367652d4e7cc63dee31ee7b1ac855e7802d6d2e9b8e1e90680",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/quality-c7-probe-ui-binding-r1-packet-2026-10-02.json": "2d2f643cd3b76ec3093169b74c2e8c1289019ced80845315216c4558a4d4ba51",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/quality-c7-probe-ui-binding-r1-review-2026-10-02.md": "46142620cd2cbbda0a153fe2c7d6cd18ccd3cdaff04055d9a556f963e0d2d4e5",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/quality-c7-probe-ui-binding-r1-usage-2026-10-02.json": "4ba51289bf4a6641fddffc4387ecef30d7364c11fe2cd22e4f7ff1a1f46eb979",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-probe-ui-binding-artifacts/patch.diff": "708bdd9d4a14e0f67b014670b7033a3ce0827224b79ff860fab7a06ff94259c5",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-probe-ui-binding-artifacts/source-identity.json": "b1c3634ec9e48e737e4392f21e62d039f9a7e23742aeefae57de4d1df94658e5",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7-probe-ui-binding-artifacts/preservation.json": "f7853fc56d95c2847c2c9a83c2fc68015f4c13e6796521a286c3b59dd70755a4",
+    "/private/tmp/ukey-wake-probe-ui-consistency-20261002/root-provenance-note.json": "526b2ab7708a54d593a5c81787ddf705ef2c9a19c03cb408a39008db6797cfae"
+  },
+  "criteria": {
+    "C1": "仅补P2单文件计数矛盾：unified diff before/Presentation.swift与after/Presentation.swift映射同源码；以source-identity changed_inputs/root-preservation验证，不要求不存在的diff --git header",
+    "C2": "仅补P3 scope判定：实际runtime/UI根因验证排除；未声称runtime已修复、不能复用旧产物是限制，不自动视作当前静态criterion缺口；按原P2/P3标准独立明确Covered或具体必需缺口，P1原Covered保留不重审",
+    "C3": "新report与usage字段/哈希/criteria一致且一起写；原R1 call3 posthard事实、原Partial/旧root初版hash记录保留，不能改写旧轮budget；指出root归档报告实际SHA与旧393叙述不一致"
+  },
+  "acceptance": "C1-C3全Covered才可仅一致性补正Complete及限定静态意见；具体缺口Partial/矛盾Hold。不得独立验收runtime、Product接受旧budget违规或晋级install",
+  "exclusions": [
+    "new source reading or changes",
+    "build/test/device/Simulator/UI/container/LLDB/network/Git",
+    "new capture/runtime review",
+    "old report/usage mutation",
+    "delegation",
+    "automatic budget renewal"
+  ],
+  "outputs": {
+    "report": "/private/tmp/ukey-wake-probe-ui-consistency-20261002/review.md",
+    "usage": "/private/tmp/ukey-wake-probe-ui-consistency-20261002/usage.json"
+  },
+  "budget": {
+    "max_calls": 4,
+    "hard_elapsed_seconds": 360,
+    "soft_elapsed_seconds": 240,
+    "checkpoint": "call2 unless delivering report+usage together",
+    "delivery": "call1 actual start/hash all inputs/read; call2 concise 3criterion report+usage together. Prefer <=500 Chinese characters. Count actual tools including collaboration; missing time null, no speculation."
+  },
+  "expansion_authority": "Human only",
+  "packet_digest_sha256": "034a371f8ae933ebafcca795a2d5caf63f3eb90b3e0956748f33e4f1ad11f013"
+}

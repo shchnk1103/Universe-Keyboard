@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+  "origin_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "expected_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "line_start": 961,
+  "line_end": 1020,
+  "lines": [
+    {
+      "line": 961,
+      "text": "        lastPresentedRevision = 0"
+    },
+    {
+      "line": 962,
+      "text": "        cancelDeferredProvisionalVisualPaint()"
+    },
+    {
+      "line": 963,
+      "text": "        provisionalCompositionMirror.clear()"
+    },
+    {
+      "line": 964,
+      "text": "        feltMetrics.reset()"
+    },
+    {
+      "line": 965,
+      "text": "    }"
+    },
+    {
+      "line": 966,
+      "text": ""
+    },
+    {
+      "line": 967,
+      "text": "    /// Rem-3: fail closed for selection / Path / 选定 while L1 is ahead of L2."
+    },
+    {
+      "line": 968,
+      "text": "    func rejectIfResponsiveProvisionalAhead("
+    },
+    {
+      "line": 969,
+      "text": "        _ site: StaticString = #function"
+    },
+    {
+      "line": 970,
+      "text": "    ) -> Bool {"
+    },
+    {
+      "line": 971,
+      "text": "        guard provisionalCompositionMirror.isProvisionalAhead else { return false }"
+    },
+    {
+      "line": 972,
+      "text": "        Logger.shared.performance("
+    },
+    {
+      "line": 973,
+      "text": "            \"T9RESP marker=L1_FAIL_CLOSED site=\\(site) \""
+    },
+    {
+      "line": 974,
+      "text": "                + \"fixture=\\(ResponsiveRimeFeltMetrics.fixtureID)\""
+    },
+    {
+      "line": 975,
+      "text": "        )"
+    },
+    {
+      "line": 976,
+      "text": "        return true"
+    },
+    {
+      "line": 977,
+      "text": "    }"
+    },
+    {
+      "line": 978,
+      "text": ""
+    },
+    {
+      "line": 979,
+      "text": "    /// Rem-3 Layer Rule 3: drop L1 without ever committing `·` to the host."
+    },
+    {
+      "line": 980,
+      "text": "    func abandonResponsiveProvisionalL1WithoutHostCommit() {"
+    },
+    {
+      "line": 981,
+      "text": "        guard"
+    },
+    {
+      "line": 982,
+      "text": "            provisionalCompositionMirror.isProvisionalAhead"
+    },
+    {
+      "line": 983,
+      "text": "                || provisionalCompositionMirror.isActive"
+    },
+    {
+      "line": 984,
+      "text": "                || state.currentComposition.contains(ResponsiveProvisionalComposition.placeholderScalar)"
+    },
+    {
+      "line": 985,
+      "text": "        else {"
+    },
+    {
+      "line": 986,
+      "text": "            return"
+    },
+    {
+      "line": 987,
+      "text": "        }"
+    },
+    {
+      "line": 988,
+      "text": "        cancelDeferredProvisionalVisualPaint()"
+    },
+    {
+      "line": 989,
+      "text": "        provisionalCompositionMirror.clear()"
+    },
+    {
+      "line": 990,
+      "text": "        state.currentComposition = \"\""
+    },
+    {
+      "line": 991,
+      "text": "        state.lastRimeOutput = nil"
+    },
+    {
+      "line": 992,
+      "text": "        state.partialCommit = nil"
+    },
+    {
+      "line": 993,
+      "text": "        if usesT9InputSemantics {"
+    },
+    {
+      "line": 994,
+      "text": "            clearT9PinyinPathState()"
+    },
+    {
+      "line": 995,
+      "text": "        }"
+    },
+    {
+      "line": 996,
+      "text": "        updateInlinePreedit(\"\", source: .compositionProjection)"
+    },
+    {
+      "line": 997,
+      "text": "    }"
+    },
+    {
+      "line": 998,
+      "text": ""
+    },
+    {
+      "line": 999,
+      "text": "    /// Rem-3: ordered engine apply (Delete / performOrderedNow) must clear L1 ledger."
+    },
+    {
+      "line": 1000,
+      "text": "    func alignResponsiveProvisionalAfterOrderedEngineApply() {"
+    },
+    {
+      "line": 1001,
+      "text": "        guard isResponsiveRimePipelineEnabled, isThreadAffineRimeOwnerEnabled else {"
+    },
+    {
+      "line": 1002,
+      "text": "            return"
+    },
+    {
+      "line": 1003,
+      "text": "        }"
+    },
+    {
+      "line": 1004,
+      "text": "        cancelDeferredProvisionalVisualPaint()"
+    },
+    {
+      "line": 1005,
+      "text": "        provisionalCompositionMirror.clearPending()"
+    },
+    {
+      "line": 1006,
+      "text": "        // Ordered actions (notably Delete) return a fresh host snapshot before"
+    },
+    {
+      "line": 1007,
+      "text": "        // the bridge's publish callback necessarily reaches MainActor. Capture"
+    },
+    {
+      "line": 1008,
+      "text": "        // the current safe snapshot after clearing the pending ledger; the"
+    },
+    {
+      "line": 1009,
+      "text": "        // engine-output completion boundary below will refresh it again after"
+    },
+    {
+      "line": 1010,
+      "text": "        // the branch has installed its new marked text."
+    },
+    {
+      "line": 1011,
+      "text": "        captureResponsiveStablePreeditIfReady()"
+    },
+    {
+      "line": 1012,
+      "text": "    }"
+    },
+    {
+      "line": 1013,
+      "text": ""
+    },
+    {
+      "line": 1014,
+      "text": "    private func cancelDeferredProvisionalVisualPaint() {"
+    },
+    {
+      "line": 1015,
+      "text": "        provisionalVisualPaintGeneration &+= 1"
+    },
+    {
+      "line": 1016,
+      "text": "    }"
+    },
+    {
+      "line": 1017,
+      "text": ""
+    },
+    {
+      "line": 1018,
+      "text": "    /// Rem-3: after dual-gate processKey accept, arm L1 ledger + deferred visual."
+    },
+    {
+      "line": 1019,
+      "text": "    ///"
+    },
+    {
+      "line": 1020,
+      "text": "    /// Rem-3-Polish: do **not** paint dots/chrome immediately. Fast engine"
+    }
+  ]
+}

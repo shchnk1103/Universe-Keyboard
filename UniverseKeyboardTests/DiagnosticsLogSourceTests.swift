@@ -153,6 +153,159 @@ final class DiagnosticsLogSourceTests: XCTestCase {
     }
 
     @MainActor
+    func testIncompleteEmptyV1SuppressesLegacyFallback() async throws {
+        let rootURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let appGroupID = "test.group.keyboard-wake-incomplete"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: appGroupID))
+        defaults.set("legacy fallback sentinel", forKey: "rime_diag_log")
+        defer { defaults.removeObject(forKey: "rime_diag_log") }
+
+        let processID = UUID()
+        let writer = DiagnosticsJournalWriter(
+            rootURL: rootURL,
+            origin: .mainApp,
+            processInstanceID: processID,
+            isMainAppWriter: true
+        )
+        try await writer.prepareRootIfOwnedByMainApp()
+        try await writer.append([
+            DiagnosticEvent(
+                utcTimestamp: Date(timeIntervalSince1970: 1_723_123_456),
+                monotonicNanoseconds: 1,
+                origin: .mainApp,
+                processInstanceID: processID,
+                localSequence: 1,
+                code: .journalStarted,
+                level: .info,
+                category: .general
+            )
+        ])
+        let segmentURL = try XCTUnwrap(
+            FileManager.default.contentsOfDirectory(
+                at: rootURL.appendingPathComponent("g1/open"),
+                includingPropertiesForKeys: nil
+            ).first { $0.pathExtension == "jsonl" }
+        )
+        let rejectedRecord =
+            #"{"schemaVersion":5,"utcTimestamp":"2024-08-08T12:24:16Z","monotonicNanoseconds":2,"origin":"main_app","processInstanceID":"00000000-0000-0000-0000-000000000002","localSequence":2,"code":"unknown.event","level":"INFO","category":"GEN","fields":[]}"#
+        try Data((rejectedRecord + "\n").utf8).write(to: segmentURL, options: .atomic)
+
+        let source = CompositeDiagnosticsLogSource(
+            appGroupID: appGroupID,
+            rootURLProvider: { rootURL }
+        )
+        let text = await source.loadLogText()
+        let notice = await source.pagingNotice()
+
+        XCTAssertNil(text)
+        XCTAssertTrue(notice?.contains("部分诊断记录无法读取") == true)
+        XCTAssertFalse(text?.contains("legacy fallback sentinel") ?? false)
+    }
+
+    @MainActor
+    func testV6HistoriesPropagateCompletenessThroughCompositeQuery() async throws {
+        // Keep a legacy sentinel in every scenario: incomplete v6 history must never look empty.
+        let scenarios: [(name: String, versions: [Int], rejected: Set<Int>)] = [
+            ("v6-only", [6], []),
+            ("mixed-complete", [5, 6], []),
+            ("v6-incomplete", [6, 6], [1]),
+            ("mixed-incomplete", [5, 6, 6], [2]),
+            ("rejected-only", [6], [0]),
+        ]
+        for scenario in scenarios {
+            let rootURL = FileManager.default.temporaryDirectory
+                .appendingPathComponent("wake-v6-\(UUID().uuidString)", isDirectory: true)
+            let appGroupID = "test.group.keyboard-wake-v6-\(UUID().uuidString)"
+            let sentinel = "legacy-v6-\(UUID().uuidString)"
+            let defaults = try XCTUnwrap(UserDefaults(suiteName: appGroupID))
+            defaults.set(sentinel, forKey: "rime_diag_log")
+            defer {
+                defaults.removePersistentDomain(forName: appGroupID)
+                try? FileManager.default.removeItem(at: rootURL)
+            }
+
+            let processID = UUID()
+            let writer = DiagnosticsJournalWriter(
+                rootURL: rootURL, origin: .mainApp, processInstanceID: processID,
+                isMainAppWriter: true
+            )
+            try await writer.prepareRootIfOwnedByMainApp()
+            // Raw fixtures go only into this test-owned temporary segment; no runtime emits v6.
+            var fixtureData = Data()
+            for (index, version) in scenario.versions.enumerated() {
+                let object: [String: Any] = [
+                    "schemaVersion": version,
+                    "utcTimestamp": "2024-08-08T12:24:16Z",
+                    "monotonicNanoseconds": index + 1,
+                    "origin": DiagnosticEvent.Origin.mainApp.rawValue,
+                    "processInstanceID": processID.uuidString,
+                    "localSequence": index + 1,
+                    "code": scenario.rejected.contains(index) ? "unknown.event" : "journal.started",
+                    "level": Logger.Level.info.rawValue,
+                    "category": Logger.Category.general.rawValue,
+                    "fields": [],
+                ]
+                fixtureData.append(try JSONSerialization.data(withJSONObject: object, options: [.sortedKeys]))
+                fixtureData.append(0x0A)
+            }
+            let segmentURL = rootURL.appendingPathComponent("g1/open", isDirectory: true)
+                .appendingPathComponent("main_app-\(processID.uuidString)-20240808T12-0.jsonl")
+            // Preparing the control file does not create a generation's segment directories.
+            try FileManager.default.createDirectory(
+                at: segmentURL.deletingLastPathComponent(), withIntermediateDirectories: true
+            )
+            try fixtureData.write(to: segmentURL, options: .atomic)
+
+            let source = CompositeDiagnosticsLogSource(
+                appGroupID: appGroupID, rootURLProvider: { rootURL }
+            )
+            let text = await source.loadLogText()
+            let notice = await source.pagingNotice()
+            let validCount = scenario.versions.count - scenario.rejected.count
+            if validCount == 0 {
+                XCTAssertNil(text, scenario.name)
+            } else {
+                let displayedCount =
+                    try XCTUnwrap(text)
+                    .components(separatedBy: "journal.started").count - 1
+                XCTAssertEqual(displayedCount, validCount, scenario.name)
+            }
+            XCTAssertFalse(text?.contains(sentinel) ?? false, scenario.name)
+            XCTAssertEqual(
+                notice?.contains("部分诊断记录无法读取") ?? false,
+                !scenario.rejected.isEmpty, scenario.name
+            )
+            XCTAssertEqual(try Data(contentsOf: segmentURL), fixtureData, scenario.name)
+        }
+    }
+
+    @MainActor
+    func testCompleteEmptyV1AllowsLegacyFallback() async throws {
+        let rootURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let appGroupID = "test.group.keyboard-wake-empty"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: appGroupID))
+        defaults.set("legacy fallback sentinel", forKey: "rime_diag_log")
+        defer { defaults.removeObject(forKey: "rime_diag_log") }
+
+        let writer = DiagnosticsJournalWriter(
+            rootURL: rootURL,
+            origin: .mainApp,
+            isMainAppWriter: true
+        )
+        try await writer.prepareRootIfOwnedByMainApp()
+
+        let source = CompositeDiagnosticsLogSource(
+            appGroupID: appGroupID,
+            rootURLProvider: { rootURL }
+        )
+        let text = await source.loadLogText()
+
+        XCTAssertEqual(text, "legacy fallback sentinel")
+    }
+
+    @MainActor
     func testClearReportsFailureWhenJournalRootIsUnavailable() async {
         let source = V1DiagnosticsLogSource(
             appGroupID: "test.group",

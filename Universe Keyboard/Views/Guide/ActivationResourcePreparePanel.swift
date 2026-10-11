@@ -110,11 +110,24 @@ struct ActivationResourcePreparePanel: View {
         .sheet(item: $presentedLicense) { presentation in
             SchemeLicenseView(
                 license: presentation.license,
-                acceptTitle: ActivationCopy.resourcesAcceptLicenseAndDownload,
+                acceptTitle: SchemeLicenseDownloadCopy.agreeAndDownload,
                 acceptSystemImage: "arrow.down.to.line"
             ) {
-                store.acceptLicense(for: presentation.schemaID)
-                store.startDownload(schemaID: presentation.schemaID)
+                for effect in SchemeLicenseDownloadFlow.effects(
+                    for: .agreeToFirstDownload(
+                        entryPoint: .activationGuide,
+                        schemaID: presentation.schemaID
+                    )
+                ) {
+                    switch effect {
+                    case .acceptLicense(_, let schemaID):
+                        store.acceptLicense(for: schemaID)
+                    case .startDownload(_, let schemaID):
+                        store.startDownload(schemaID: schemaID)
+                    default:
+                        assertionFailure("Download confirmation emitted an unexpected effect")
+                    }
+                }
             }
         }
     }
@@ -177,28 +190,14 @@ struct ActivationResourcePreparePanel: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
-                // Single CTA: open license sheet; accept there starts download.
-                // If already accepted (e.g. previous session), download directly.
-                let alreadyAccepted = store.licenseAccepted(for: schema.schemaID)
                 AppActionButton(
                     title: isDownloadBusy
                         ? "正在处理…"
-                        : (alreadyAccepted
-                            ? "下载并安装"
-                            : ActivationCopy.resourcesViewLicenseAndDownload),
-                    systemImage: alreadyAccepted ? "arrow.down.to.line" : "doc.text.magnifyingglass",
+                        : SchemeLicenseDownloadCopy.viewAndDownload,
+                    systemImage: "doc.text.magnifyingglass",
                     prominence: .primary
                 ) {
-                    if alreadyAccepted {
-                        store.startDownload(schemaID: schema.schemaID)
-                    } else {
-                        if let license = schema.licenseDescriptor {
-                            presentedLicense = PresentedSchemeLicense(
-                                schemaID: schema.schemaID,
-                                license: license
-                            )
-                        }
-                    }
+                    presentFirstDownloadLicense(for: schema)
                 }
                 .disabled(isDownloadBusy)
             }
@@ -217,6 +216,19 @@ struct ActivationResourcePreparePanel: View {
                     .font(.subheadline.weight(.medium))
                     .foregroundStyle(.primary)
             }
+        }
+    }
+
+    private func presentFirstDownloadLicense(for schema: SchemaMetadata) {
+        guard let license = schema.licenseDescriptor else { return }
+        for effect in SchemeLicenseDownloadFlow.effects(
+            for: .requestFirstDownload(entryPoint: .activationGuide, schemaID: schema.schemaID)
+        ) {
+            guard case .presentLicense(_, let schemaID) = effect else {
+                assertionFailure("First-download request emitted an unexpected effect")
+                continue
+            }
+            presentedLicense = PresentedSchemeLicense(schemaID: schemaID, license: license)
         }
     }
 

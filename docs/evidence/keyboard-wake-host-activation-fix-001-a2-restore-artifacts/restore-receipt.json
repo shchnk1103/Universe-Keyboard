@@ -1,0 +1,66 @@
+{
+  "utc": "2026-10-04T16:34:38.722174+00:00",
+  "started_utc": "2026-10-04T16:33:57.285140+00:00",
+  "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "ok": true,
+  "installed_before_78_files_match": true,
+  "application_content_match": true,
+  "two_reads_equal": true,
+  "target_processes_absent": true,
+  "postinstall_system_identity_and_SplashBoard_exactly_preserved": true,
+  "provenance_added_rewritten": {
+    "rewritten": 44,
+    "added": 20
+  },
+  "missing_provenance_accepted": false,
+  "all_metadata_exact_claim": false,
+  "counts": {
+    "main-data": {
+      "files": 827,
+      "directories": 42,
+      "symlinks": 0,
+      "file_bytes": 1142571,
+      "inventory_sha256": "51f5a11e0a0b6102ae19b0181fca6da6587967a2f5eb39d41482ab11d3a117f3"
+    },
+    "app-group": {
+      "files": 53,
+      "directories": 15,
+      "symlinks": 2,
+      "file_bytes": 37750594,
+      "inventory_sha256": "b0826bb4d6238cf92f54221b3f094425626ab48bea7933b0c1c0cdf7a90d982f"
+    },
+    "installed-app": {
+      "files": 78,
+      "directories": 9,
+      "symlinks": 0,
+      "file_bytes": 91344780,
+      "inventory_sha256": "f524c0917bc3c67734e80b306acfd88c5430b76d1270e5fdf0a75940cd1882b0"
+    }
+  },
+  "selected_preferences": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "rime_deployed": {
+      "exists": true,
+      "value": true
+    },
+    "rime_needs_deploy": {
+      "exists": true,
+      "value": false
+    },
+    "rime_is_deploying": {
+      "exists": false,
+      "value": null
+    }
+  },
+  "actions_count": 110,
+  "no_launch_deploy_input_or_maps": true,
+  "runtime_health_not_tested": true,
+  "historical_backups_and_test_evidence_retained": true
+}

@@ -1,0 +1,234 @@
+{
+  "utc": "2026-10-06T04:11:47.507232+00:00",
+  "monotonic_ns": 1394214713243166,
+  "human": {
+    "reinstall_or_deploy_since_last": "\u672a\u91cd\u88c5\u672a\u90e8\u7f72",
+    "closed_maps_and_main_home_keyboard": true,
+    "diagnostics_remain_off": true
+  },
+  "device": {
+    "dataPath": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data",
+    "dataPathSize": 4808261632,
+    "logPath": "/Users/doubleshy0n/Library/Logs/CoreSimulator/405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "lastUsedAt": "2026-10-02T09:04:39Z",
+    "isAvailable": true,
+    "logPathSize": 491520,
+    "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro",
+    "state": "Booted",
+    "name": "iPhone 18 Pro"
+  },
+  "runtime": "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
+  "udid_match": true,
+  "booted": true,
+  "name_os_ok": true,
+  "containers": {
+    "app": {
+      "exit": 0,
+      "path": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/57DC9CDA-B114-469F-98D6-B6C92F4F4AE7/Universe Keyboard.app",
+      "stderr": ""
+    },
+    "appex": {
+      "exit": 2,
+      "path": null,
+      "stderr": "An error was encountered processing the command (domain=NSPOSIXErrorDomain, code=2):\nThe operation couldn\u2019t be completed. No such file or directory\nNo such file or directory"
+    },
+    "data": {
+      "exit": 0,
+      "path": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/B74303BF-6EE1-4316-9CF1-1EB6892E2A88",
+      "stderr": ""
+    },
+    "group": {
+      "exit": 2,
+      "path": null,
+      "stderr": "An error was encountered processing the command (domain=NSPOSIXErrorDomain, code=2):\nThe operation couldn\u2019t be completed. No such file or directory\nNo such file or directory"
+    },
+    "groups": {
+      "exit": 0,
+      "stdout": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/161B78EE-E85A-47EA-8986-BA1D5AA70E39",
+      "stderr": ""
+    }
+  },
+  "installed_app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/57DC9CDA-B114-469F-98D6-B6C92F4F4AE7/Universe Keyboard.app",
+  "installed78_ok": 78,
+  "installed78_bad": [],
+  "installed78_exact": true,
+  "modules": [
+    {
+      "path": "Universe Keyboard",
+      "exists": true,
+      "sha256": "38cbdd01d7b664db0c435452086dd209447135f886906bab8181610a6a7e6feb",
+      "sha256_match": true,
+      "uuid_output": "UUID: 664DE45A-5859-34F1-892C-3DD2D9DE7B98 (arm64) /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/57DC9CDA-B114-469F-98D6-B6C92F4F4AE7/Universe Keyboard.app/Universe Keyboard",
+      "uuid_match": true,
+      "expected_sha256": "38cbdd01d7b664db0c435452086dd209447135f886906bab8181610a6a7e6feb",
+      "expected_uuid_line": "UUID: 664DE45A-5859-34F1-892C-3DD2D9DE7B98 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard"
+    },
+    {
+      "path": "Universe Keyboard.debug.dylib",
+      "exists": true,
+      "sha256": "c00095f4d2016cf31b876ed5f3f17f53c5ec97d64704829b629d23ab7a57e200",
+      "sha256_match": true,
+      "uuid_output": "UUID: C19CE509-A814-30AB-88F1-CE5416FDDC33 (arm64) /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/57DC9CDA-B114-469F-98D6-B6C92F4F4AE7/Universe Keyboard.app/Universe Keyboard.debug.dylib",
+      "uuid_match": true,
+      "expected_sha256": "c00095f4d2016cf31b876ed5f3f17f53c5ec97d64704829b629d23ab7a57e200",
+      "expected_uuid_line": "UUID: C19CE509-A814-30AB-88F1-CE5416FDDC33 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/Universe Keyboard.debug.dylib"
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/Keyboard",
+      "exists": true,
+      "sha256": "e681da52516441c044c98419a7c9750d7a90b282cb69bd27e220284376922860",
+      "sha256_match": true,
+      "uuid_output": "UUID: CD0C6F02-6094-3726-B598-F03F42ABB468 (arm64) /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/57DC9CDA-B114-469F-98D6-B6C92F4F4AE7/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+      "uuid_match": true,
+      "expected_sha256": "e681da52516441c044c98419a7c9750d7a90b282cb69bd27e220284376922860",
+      "expected_uuid_line": "UUID: CD0C6F02-6094-3726-B598-F03F42ABB468 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard"
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+      "exists": true,
+      "sha256": "773c4eff9640b2623036e3f819301ead3914cb99b66c9c1496ece5986e762aab",
+      "sha256_match": true,
+      "uuid_output": "UUID: 4B207746-89A7-321F-83C4-91477259BB26 (arm64) /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/57DC9CDA-B114-469F-98D6-B6C92F4F4AE7/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+      "uuid_match": true,
+      "expected_sha256": "773c4eff9640b2623036e3f819301ead3914cb99b66c9c1496ece5986e762aab",
+      "expected_uuid_line": "UUID: 4B207746-89A7-321F-83C4-91477259BB26 (arm64) /private/tmp/ukey-host-activation-fix-f4-p-build-20261005/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard.debug.dylib"
+    }
+  ],
+  "modules_all_match": true,
+  "processes": {
+    "main": [],
+    "appex": [
+      {
+        "pid": 778,
+        "ps": "778 Tue Oct  6 11:07:17 2026     Ss   /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/57DC9CDA-B114-469F-98D6-B6C92F4F4AE7/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+        "path": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/57DC9CDA-B114-469F-98D6-B6C92F4F4AE7/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard"
+      }
+    ]
+  },
+  "diagnostic_original_values": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null,
+      "exit": 1,
+      "stderr": "Error: Could not find key 'logging_enabled' in domain 'group.com.DoubleShy0N.Universe-Keyboard'."
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null,
+      "exit": 1,
+      "stderr": "Error: Could not find key 'diagnostics_high_fidelity_expiration' in domain 'group.com.DoubleShy0N.Universe-Keyboard'."
+    },
+    "log_category_disp": {
+      "exists": false,
+      "value": null,
+      "exit": 1,
+      "stderr": "Error: Could not find key 'log_category_disp' in domain 'group.com.DoubleShy0N.Universe-Keyboard'."
+    }
+  },
+  "deploy_keys_readonly": {
+    "deployed": {
+      "exists": false,
+      "value": null
+    },
+    "needs": {
+      "exists": false,
+      "value": null
+    },
+    "deploying": {
+      "exists": false,
+      "value": null
+    }
+  },
+  "group_plist_hits": [
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/161B78EE-E85A-47EA-8986-BA1D5AA70E39/Library/Preferences/group.com.DoubleShy0N.Universe-Keyboard.plist"
+  ],
+  "group_dirs": [
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/48C2BFE6-1D79-4E8A-81A2-35C33F79E46F",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/9DBA6599-598D-4DDF-A073-7488CE0DD185",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/2DE07D1C-0D17-4652-8DCF-46F442021489",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/B626B110-EE87-486E-851F-3D00BE6C3641",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/41D8DF74-E546-4DAA-AAA6-CCF206EE56CC",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/E353A694-413D-48E0-830A-548EFF867E7C",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/E555C96E-E018-4FB4-8EB3-3894EF4CE115",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/F1584C5B-E618-41D6-906E-1485C0F51B0C",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/B07223DC-EE73-410E-9348-FA19F4203026",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/E95B5B28-2F8D-4FD7-BF99-1C9673DCB90A",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/91FBA686-4EEA-4C4A-8145-287BDAA1BA24",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/6AEEE5D3-4E8B-4BB7-ADCF-3096BB58880E",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/DD3D1EEE-F769-44E4-8B59-23DCAA51F756",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/0291733D-94BC-4E5F-B0A4-6D08E66FDDF7",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/5CA9C239-CCAD-490C-B1C6-62EEC0E79BCF",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/03B1909A-FAFC-46AE-854E-07F1AEBA3751",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/3A823D88-6B7C-4B05-BCFB-35D8562FA78E",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/8146199A-FA49-467A-9B13-D9FD0A9144D2",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/60121582-5E44-47EF-AA5F-487BF8B0B803",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/73C5D673-1E19-4008-A752-1B998FE53010",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/161B78EE-E85A-47EA-8986-BA1D5AA70E39",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/58172503-B0E5-46DD-91E5-A4AB914F2D02",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/09B311A7-F746-403A-ADEF-12D6C55D40AD",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/6FB63C5E-9495-44FC-AED9-192B50B13E9F",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/5C056A8E-E156-48C5-AEAA-DBA9E4B5CAA3",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/0B9D2139-878C-4B73-AB35-A2840C541A31",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/8E9D724E-4BC4-4CCF-AAA7-FAA1A453CE15",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/1531ED72-1A8E-4011-9749-09D5C1790F26",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/922B2145-6BDB-4B3F-A152-152531799905",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/A6FC5F7B-DD64-4E02-8F00-23A5F3F350AC",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/216D8F1F-6044-4634-9BBC-EA60662B682E",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/B76F981E-EFC9-4DF7-94CB-70649F362A90",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/2398AA67-3C53-4F54-980B-8A527AD8AE30",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/93261012-99E4-4144-8313-B461377B1419",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/4BD8EF1F-2EAC-4A8B-A3BB-E98D80AC9B12",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/1FE8F804-80E3-40C0-8E48-0B6C1366CA93",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/DC4D9DE7-1AA3-4135-A9F8-4C26A5FCC83D",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/5B2C8E1E-2530-4BC3-8CC5-95AD137D6C1A",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/141A1C01-B79B-4D25-8A81-5E05379576C7",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/F2DE8519-493B-4285-A0BE-7F3342D16394",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/A9A39579-D374-47F3-B1D8-79CB4576E7DD",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/CA9563E1-425B-4D66-8F2B-EBEEDF3EA564",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/484AACFE-2FD1-41C7-A621-4490CBE17A50",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/6F4B9AF5-0114-46DC-B83B-D43648A62FDD",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/93DA05E3-ADE7-4AB0-9E59-F8358B7AFE15",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/FFD62867-3191-4771-BA6E-30E1F327FB21",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/65122589-53A4-4DD2-A889-69DB9837237A",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/9D052A5E-EA47-49BD-BA52-E932074D4C44",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/618C9695-F698-4DDE-82DE-4784584D2280",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/2FB8F96F-EE4E-4C42-8EA8-60C1BB392A27",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/A12A2D36-BA3A-4293-B40E-01A1BD0CE19B",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/873524C7-1D36-4595-9C64-35FBB413A4C2",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/1FBB6183-73F3-4020-9C7A-A777D9253753",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/FF5E0794-7AC3-4CAA-B193-53DFFD8475D0",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/EFADC212-565F-4F3B-8873-A0C834D81784",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/86EC05F4-0968-4084-8ED0-CA37FB645102",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/22251FEE-68B1-4C54-A4C2-7612E275CEAD",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/A1A2201A-94C9-426C-8165-90F3B7934564",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/BE993520-D67C-438D-A330-209AE2C2452E",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/EEB16AE0-FA56-4353-9001-5D9B9F0E5E43",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/05D9F390-BD9F-464E-9562-7A7A4A78AB0C",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/499E3CC7-8AC1-46DE-9624-30529DB102D3",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/A15C9A19-EECF-407F-A119-89D9E4F5C904",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/AD2D96EC-5BC9-444B-9D72-68A12A577913",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/461D4018-434D-4B37-9A4E-8A26F1144ABA",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/27A60935-0F4E-4629-A51A-900E8EA8176A",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/83857A32-2FBC-4C19-9E97-7485F98905EB",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/C5DC85AA-EADA-4A3E-83D4-DBA2643FA585",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/8D20B47D-B5D4-4EBA-B789-F48E0007AC52",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/57377560-CA85-4D68-A211-4AB71E4BBFEA",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/59E9E614-00E7-40B1-A514-99E75CCC50AE",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/0C1260D4-12F1-4A8A-B479-E43CBFB597F5",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/E4267292-A74C-412B-8528-A5B27B9BA2E3",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/E638B855-CEE6-4DD2-9225-E6509F17E7F8",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/9544C431-2811-45D2-AD2A-DEC61B0ABAA0",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/B32832A5-183B-4C73-B2E9-76954FCF96C8",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/1FE7E16B-FB05-43F2-8CD8-B674980E5572",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/730C165F-D628-4FBA-AAE4-35057B3CCDDE",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/2DD18ADF-55C2-42DF-8A2F-2168C7B97B49",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/E9C20AF0-D2DB-4BAC-985D-9538D284937F",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/A0CAAB43-3F69-487D-B78C-FD066B2140E4",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/D5163324-B4C7-48CD-B02B-1A9F248C8E1A",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/534EC0B0-E35D-4731-857C-0168684A630E",
+    "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/F9D6551E-174D-43DC-99CB-1D3BFBD14AD6"
+  ],
+  "production_edits": 0,
+  "install_or_deploy": 0
+}

@@ -1,0 +1,21 @@
+{
+  "utc": "2026-10-04T05:20:51.536765+00:00",
+  "status": "static_arguments_available",
+  "memory_snapshot_reads": 0,
+  "pid": 55759,
+  "frame_id": 0,
+  "symbol": "$s8Keyboard25wakeOwnerProbeExportReadyyySV_SitF",
+  "module_uuid": "77BD18E2-E090-37D7-865F-84D762E69F70",
+  "caller_function_names": [
+    "Keyboard.wakeOwnerProbeExportReady(Swift.UnsafeRawPointer, Swift.Int) -> ()",
+    "closure #1 (Swift.UnsafeRawBufferPointer) -> () in Keyboard.KeyboardViewController.handleWakeOwnerProbeButton() -> ()",
+    "Swift.Array.withUnsafeBytes<τ_0_0>((Swift.UnsafeRawBufferPointer) throws -> τ_1_0) throws -> τ_1_0",
+    "Keyboard.KeyboardViewController.handleWakeOwnerProbeButton() -> ()",
+    "@objc Keyboard.KeyboardViewController.handleWakeOwnerProbeButton() -> ()",
+    "-[UIApplication sendAction:to:from:forEvent:]",
+    "-[UIControl sendAction:to:forEvent:]",
+    "-[UIControl _sendActionsForEvents:withEvent:]"
+  ],
+  "address": 4726458912,
+  "byteCount": 1056
+}

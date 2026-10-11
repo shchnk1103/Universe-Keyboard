@@ -1,0 +1,11 @@
+{
+  "canonical_digest_expected": "e4ea33e9e183fe5c1264b16a68580ec8fd607984406e9f611e1f30b7e0a29fa8",
+  "canonical_digest_recomputed": "e4ea33e9e183fe5c1264b16a68580ec8fd607984406e9f611e1f30b7e0a29fa8",
+  "whole_file_sha256": "9e93749875e1669016adb60c1e669550268cfcc2652e3e4deb35d4c68449467a",
+  "canonical_vs_file_are_distinct_algorithms": true,
+  "packet_algorithm_not_explicit_in_round1": true,
+  "reviewer_stopped_before_dependency_verification": true,
+  "actual_elapsed_missing_in_original_usage": true,
+  "product_30skip_disposition_still_absent": true,
+  "root_not_substituting_independent_coverage": true
+}

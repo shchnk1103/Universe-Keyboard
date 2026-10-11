@@ -1,0 +1,36 @@
+{
+  "lane": "TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001:architecture",
+  "round": 2,
+  "round2_start_utc": "2026-10-10T15:21:01.383975+00:00",
+  "round2_start_monotonic_seconds": 1732545.149738833,
+  "tool_calls": 8,
+  "expected_packet_sha256": "1235f074caad3c9793470f601ff99d4754cf8e76813c312288246371822cc4a2",
+  "packet_path": "/private/tmp/uk-routecount1/packet.json",
+  "packet_sha256": "1235f074caad3c9793470f601ff99d4754cf8e76813c312288246371822cc4a2",
+  "expected_input_count": 31,
+  "inputs_verified": 31,
+  "criteria_covered": 1,
+  "elapsed_seconds": 105.13731408282183,
+  "stop_reason": "completed_within_budget",
+  "input_count_actual": 31,
+  "input_hash_mismatches": [],
+  "checkpoint": "completed",
+  "checkpoint_utc": "2026-10-10T15:22:46.522502+00:00",
+  "elapsed_includes_reasoning_and_waiting": true,
+  "coverage": {
+    "criterion": "仅 AR-01/F1：派生 binding 只将 expected_extension_tests 34 改为 33；命令/env/candidate 不变；8+15+10 与原 summary/raw/coverage 一致；保留原件/历史，不虚称新测试或整体 R1 Pass。",
+    "status": "covered",
+    "finding_closure": "Pass",
+    "uncovered": []
+  },
+  "tool_call_accounting": [
+    "initial round2 clock and packet/input verification",
+    "governance entry and coordinator required reading",
+    "assignment/auth and correction/binding/evidence comparison",
+    "raw log and prior review inspection plus checkpoint",
+    "checkpoint write",
+    "root checkpoint notification",
+    "archive manifest and digest consistency check",
+    "final review and usage write"
+  ]
+}

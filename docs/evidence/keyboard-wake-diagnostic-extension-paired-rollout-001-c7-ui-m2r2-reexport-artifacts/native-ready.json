@@ -1,0 +1,13 @@
+{
+  "utc": "2026-10-04T05:19:51.786009+00:00",
+  "pty": 96777,
+  "own_breakpoint": 1,
+  "loaded_uuids_match": true,
+  "callback_attached": true,
+  "rows": [
+    " 3591 91436     4004 Ss   /Applications/Xcode.app/Contents/SharedFrameworks/LLDBRPC.framework/Resources/lldb-rpc-server",
+    "55759 59735     4804 SXs  /Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard",
+    "59734 59733     4006 Ss+  /Applications/Xcode.app/Contents/Developer/usr/bin/lldb",
+    "59735 59734     4006 S    /Applications/Xcode.app/Contents/SharedFrameworks/LLDB.framework/Resources/debugserver"
+  ]
+}

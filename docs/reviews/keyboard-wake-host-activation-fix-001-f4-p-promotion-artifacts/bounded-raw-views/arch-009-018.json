@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+  "origin_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "expected_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "line_start": 1021,
+  "line_end": 1080,
+  "lines": [
+    {
+      "line": 1021,
+      "text": "    /// results replace the streak before the delay and skip empty→full thrash."
+    },
+    {
+      "line": 1022,
+      "text": "    func applyResponsiveProvisionalL1IfEligible(rimeKey: String) {"
+    },
+    {
+      "line": 1023,
+      "text": "        // Dual-gate only (thread-affine owner + responsive gate)."
+    },
+    {
+      "line": 1024,
+      "text": "        guard isResponsiveRimePipelineEnabled, isThreadAffineRimeOwnerEnabled else {"
+    },
+    {
+      "line": 1025,
+      "text": "            logL1Skip(.noDual)"
+    },
+    {
+      "line": 1026,
+      "text": "            return"
+    },
+    {
+      "line": 1027,
+      "text": "        }"
+    },
+    {
+      "line": 1028,
+      "text": "        guard usesT9InputSemantics else {"
+    },
+    {
+      "line": 1029,
+      "text": "            logL1Skip(.nonT9)"
+    },
+    {
+      "line": 1030,
+      "text": "            return"
+    },
+    {
+      "line": 1031,
+      "text": "        }"
+    },
+    {
+      "line": 1032,
+      "text": "        guard ResponsiveProvisionalComposition.isT9DigitKey(rimeKey) else {"
+    },
+    {
+      "line": 1033,
+      "text": "            logL1Skip(.nonT9)"
+    },
+    {
+      "line": 1034,
+      "text": "            return"
+    },
+    {
+      "line": 1035,
+      "text": "        }"
+    },
+    {
+      "line": 1036,
+      "text": "        let receipt = threadAffineRimeCoordinator?.lastAcceptReceipt"
+    },
+    {
+      "line": 1037,
+      "text": "        guard let receipt else {"
+    },
+    {
+      "line": 1038,
+      "text": "            logL1Skip(.emptyLedger)"
+    },
+    {
+      "line": 1039,
+      "text": "            return"
+    },
+    {
+      "line": 1040,
+      "text": "        }"
+    },
+    {
+      "line": 1041,
+      "text": "        if let skip = provisionalCompositionMirror.appendT9DigitAccept("
+    },
+    {
+      "line": 1042,
+      "text": "            revision: receipt.revision,"
+    },
+    {
+      "line": 1043,
+      "text": "            epoch: receipt.sessionEpoch"
+    },
+    {
+      "line": 1044,
+      "text": "        ) {"
+    },
+    {
+      "line": 1045,
+      "text": "            logL1Skip(skip)"
+    },
+    {
+      "line": 1046,
+      "text": "            return"
+    },
+    {
+      "line": 1047,
+      "text": "        }"
+    },
+    {
+      "line": 1048,
+      "text": "        guard let presentation = provisionalCompositionMirror.makePresentation() else {"
+    },
+    {
+      "line": 1049,
+      "text": "            logL1Skip(.emptyLedger)"
+    },
+    {
+      "line": 1050,
+      "text": "            return"
+    },
+    {
+      "line": 1051,
+      "text": "        }"
+    },
+    {
+      "line": 1052,
+      "text": "        // Raise presentation floor so older L2 cannot roll back L1 (ledger ahead)."
+    },
+    {
+      "line": 1053,
+      "text": "        if lastPresentedSessionEpoch == presentation.sessionEpoch {"
+    },
+    {
+      "line": 1054,
+      "text": "            lastPresentedRevision = max(lastPresentedRevision, presentation.watermark)"
+    },
+    {
+      "line": 1055,
+      "text": "        } else if lastPresentedSessionEpoch == 0"
+    },
+    {
+      "line": 1056,
+      "text": "            || presentation.sessionEpoch != lastPresentedSessionEpoch"
+    },
+    {
+      "line": 1057,
+      "text": "        {"
+    },
+    {
+      "line": 1058,
+      "text": "            lastPresentedSessionEpoch = presentation.sessionEpoch"
+    },
+    {
+      "line": 1059,
+      "text": "            lastPresentedRevision = presentation.watermark"
+    },
+    {
+      "line": 1060,
+      "text": "        }"
+    },
+    {
+      "line": 1061,
+      "text": "        scheduleDeferredProvisionalVisualPaint(presentation)"
+    },
+    {
+      "line": 1062,
+      "text": "    }"
+    },
+    {
+      "line": 1063,
+      "text": ""
+    },
+    {
+      "line": 1064,
+      "text": "    /// Delayed L1 visual: only runs if still provisionalAhead after the delay."
+    },
+    {
+      "line": 1065,
+      "text": "    private func scheduleDeferredProvisionalVisualPaint("
+    },
+    {
+      "line": 1066,
+      "text": "        _ presentation: ResponsiveProvisionalPresentation"
+    },
+    {
+      "line": 1067,
+      "text": "    ) {"
+    },
+    {
+      "line": 1068,
+      "text": "        provisionalVisualPaintGeneration &+= 1"
+    },
+    {
+      "line": 1069,
+      "text": "        let generation = provisionalVisualPaintGeneration"
+    },
+    {
+      "line": 1070,
+      "text": "        let delay = provisionalVisualPaintDelayNanoseconds"
+    },
+    {
+      "line": 1071,
+      "text": "        Task { @MainActor [weak self] in"
+    },
+    {
+      "line": 1072,
+      "text": "            if delay > 0 {"
+    },
+    {
+      "line": 1073,
+      "text": "                try? await Task.sleep(nanoseconds: delay)"
+    },
+    {
+      "line": 1074,
+      "text": "            } else {"
+    },
+    {
+      "line": 1075,
+      "text": "                await Task.yield()"
+    },
+    {
+      "line": 1076,
+      "text": "            }"
+    },
+    {
+      "line": 1077,
+      "text": "            guard let self else { return }"
+    },
+    {
+      "line": 1078,
+      "text": "            guard generation == self.provisionalVisualPaintGeneration else { return }"
+    },
+    {
+      "line": 1079,
+      "text": "            guard self.provisionalCompositionMirror.isProvisionalAhead else { return }"
+    },
+    {
+      "line": 1080,
+      "text": "            // Only paint if ledger still covers at least this watermark streak head."
+    }
+  ]
+}

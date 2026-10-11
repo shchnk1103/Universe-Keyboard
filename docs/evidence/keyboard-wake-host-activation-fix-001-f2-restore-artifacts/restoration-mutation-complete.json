@@ -1,0 +1,17 @@
+{
+  "utc": "2026-10-04T11:18:01.650670+00:00",
+  "actions": 107,
+  "all_listed_actions_done": true,
+  "main_restore_file": 3,
+  "main_removed": 46,
+  "group_restore_file": 48,
+  "group_restore_dir": 8,
+  "group_restore_symlink": 2,
+  "system_root_metadata_not_overwritten": true,
+  "no_launch_test_deploy": true,
+  "containers": {
+    "app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/9F532453-D3A0-4A06-B20B-165B841230A1/Universe Keyboard.app",
+    "data": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Data/Application/FB2E1C3F-E443-473B-9965-079D7BC0EF40",
+    "groups": "group.com.DoubleShy0N.Universe-Keyboard\t/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Shared/AppGroup/05FFE2DA-4326-45EB-8291-F816EBAE5FC3"
+  }
+}

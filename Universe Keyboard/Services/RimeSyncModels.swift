@@ -1,16 +1,18 @@
 import Foundation
 import Synchronization
 
-/// 主 App 进程内所有同步事务共享的所有权门。
+/// 主 App 进程内所有同步与断开事务共享的所有权门。
 ///
 /// 前台界面与 `BGProcessingTask` 会分别创建 `RimeSyncViewModel`，因此不能依赖
-/// ViewModel、coordinator 或 RIME service 的实例状态互斥。这里仅闭合同一 App
-/// 进程内的同步入口；Keyboard Extension 与其他进程仍由 TD-002 单独约束。
+/// ViewModel、coordinator 或 RIME service 的实例状态互斥。这里闭合同一 App
+/// 进程内的同步及断开入口；Keyboard Extension 与其他进程仍由 TD-002 单独约束。
 nonisolated final class RimeSyncProcessGate: Sendable {
     enum Source: String, Equatable, Sendable {
         case manual
         case foregroundAutomatic
         case backgroundAutomatic
+        case configuration
+        case disconnect
     }
 
     struct Lease: Equatable, Sendable {
@@ -382,6 +384,7 @@ nonisolated enum RimeSyncError: LocalizedError, Equatable, Sendable {
     case corruptedPackage
     case remoteConflict
     case accessDenied
+    case keychainAccessDenied
     case transport(String)
 
     var errorDescription: String? {
@@ -397,6 +400,7 @@ nonisolated enum RimeSyncError: LocalizedError, Equatable, Sendable {
         case .corruptedPackage: return "云端数据损坏或密钥不匹配。"
         case .remoteConflict: return "其他设备正在更新，请稍后重试。"
         case .accessDenied: return "无法访问或写入同步目录，请重新选择一个可写文件夹。"
+        case .keychainAccessDenied: return "无法访问本机 Keychain 同步凭据，请检查钥匙串权限后重试。"
         case .transport(let message): return message
         }
     }

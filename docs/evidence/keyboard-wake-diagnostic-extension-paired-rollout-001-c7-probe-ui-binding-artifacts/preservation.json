@@ -1,0 +1,18 @@
+{
+  "changed_existing": [
+    "docs/assignments/keyboard-wake-diagnostic-extension-paired-rollout-001.md",
+    "docs/assignments/keyboard-wake-lifecycle-diagnostics-001.md",
+    "Keyboard/Controllers/KeyboardViewController+Presentation.swift",
+    "docs/ACTIVE_WORK.md",
+    "docs/ENGINEERING_DASHBOARD.md",
+    "docs/KNOWLEDGE_INDEX.md"
+  ],
+  "outside_allowlist": [],
+  "frozen_review_input_drift": [],
+  "staged": [],
+  "dirty_entries_at_checkpoint": 745,
+  "missing_links": [],
+  "diff_check_exit": 0,
+  "branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "HEAD": "84b9c19227330b0fe6ff391be001ee398010fd6a"
+}

@@ -1,0 +1,15 @@
+{
+  "utc": "2026-10-06T04:34:35.243192+00:00",
+  "step": "h",
+  "Human": "\u641c\u7d22\u6846\u91cc\u51fa\u73b0\u4e86\u2018h\u2019\uff0c\u5019\u9009\u680f\u51fa\u73b0\u2018\u548c/\u597d/\u8fd8/\u4f1a/\u5f88/\u540e\u2019\uff0c\u51fa\u73b0\u2018\u53d6\u8bc1\u2019",
+  "candidates": [
+    "\u548c",
+    "\u597d",
+    "\u8fd8",
+    "\u4f1a",
+    "\u5f88",
+    "\u540e"
+  ],
+  "probe_button": "\u53d6\u8bc1",
+  "input_field": "h"
+}

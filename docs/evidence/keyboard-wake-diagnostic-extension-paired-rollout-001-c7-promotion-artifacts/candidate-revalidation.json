@@ -1,0 +1,27 @@
+{
+  "source_and_build_inputs": {
+    "count": 571,
+    "mismatches": []
+  },
+  "vendor_files": {
+    "count": 630,
+    "mismatches": []
+  },
+  "payload": {
+    "count": 78,
+    "mismatches": [],
+    "candidate": "ddd5579ee6dce39deea3c63487cfe6817c419628c4471c0b3e9298d9c47f3ca9",
+    "payload_digest": "5a935a0e648fd8939b1e56b4e40f5da24828a0f2e6bfe9e6365b98ca3a2a80e4",
+    "app_root": "/private/tmp/ukey-wake-c7b3-20261002/CandidateDerivedData/Build/Products/Debug-iphonesimulator/Universe Keyboard.app"
+  },
+  "codesign": {
+    "app": {
+      "exit": 0,
+      "stderr": ""
+    },
+    "keyboard": {
+      "exit": 0,
+      "stderr": ""
+    }
+  }
+}

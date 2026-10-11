@@ -1,0 +1,437 @@
+[
+  {
+    "_type": {
+      "_name": "ActionTestPlanRunSummaries"
+    },
+    "summaries": {
+      "_type": {
+        "_name": "Array"
+      },
+      "_values": [
+        {
+          "_type": {
+            "_name": "ActionTestPlanRunSummary",
+            "_supertype": {
+              "_name": "ActionAbstractTestSummary"
+            }
+          },
+          "name": {
+            "_type": {
+              "_name": "String"
+            },
+            "_value": "Test Scheme Action"
+          },
+          "testableSummaries": {
+            "_type": {
+              "_name": "Array"
+            },
+            "_values": [
+              {
+                "_type": {
+                  "_name": "ActionTestableSummary",
+                  "_supertype": {
+                    "_name": "ActionAbstractTestSummary"
+                  }
+                },
+                "diagnosticsDirectoryName": {
+                  "_type": {
+                    "_name": "String"
+                  },
+                  "_value": ""
+                },
+                "failureSummaries": {
+                  "_type": {
+                    "_name": "Array"
+                  }
+                },
+                "identifierURL": {
+                  "_type": {
+                    "_name": "String"
+                  },
+                  "_value": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests"
+                },
+                "name": {
+                  "_type": {
+                    "_name": "String"
+                  },
+                  "_value": "UniverseKeyboardTests"
+                },
+                "projectRelativePath": {
+                  "_type": {
+                    "_name": "String"
+                  },
+                  "_value": "Universe Keyboard.xcodeproj"
+                },
+                "targetName": {
+                  "_type": {
+                    "_name": "String"
+                  },
+                  "_value": "UniverseKeyboardTests"
+                },
+                "testKind": {
+                  "_type": {
+                    "_name": "String"
+                  },
+                  "_value": "app hosted"
+                },
+                "testLanguage": {
+                  "_type": {
+                    "_name": "String"
+                  },
+                  "_value": ""
+                },
+                "testRegion": {
+                  "_type": {
+                    "_name": "String"
+                  },
+                  "_value": ""
+                },
+                "tests": {
+                  "_type": {
+                    "_name": "Array"
+                  },
+                  "_values": [
+                    {
+                      "_type": {
+                        "_name": "ActionTestSummaryGroup",
+                        "_supertype": {
+                          "_name": "ActionTestSummaryIdentifiableObject",
+                          "_supertype": {
+                            "_name": "ActionAbstractTestSummary"
+                          }
+                        }
+                      },
+                      "activitySummaries": {
+                        "_type": {
+                          "_name": "Array"
+                        }
+                      },
+                      "documentation": {
+                        "_type": {
+                          "_name": "Array"
+                        }
+                      },
+                      "duration": {
+                        "_type": {
+                          "_name": "Double"
+                        },
+                        "_value": "0.09997189044952393"
+                      },
+                      "expectedFailures": {
+                        "_type": {
+                          "_name": "Array"
+                        }
+                      },
+                      "failureSummaries": {
+                        "_type": {
+                          "_name": "Array"
+                        }
+                      },
+                      "identifier": {
+                        "_type": {
+                          "_name": "String"
+                        },
+                        "_value": "Selected tests"
+                      },
+                      "identifierURL": {
+                        "_type": {
+                          "_name": "String"
+                        },
+                        "_value": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/Selected%20tests"
+                      },
+                      "name": {
+                        "_type": {
+                          "_name": "String"
+                        },
+                        "_value": "Selected tests"
+                      },
+                      "subtests": {
+                        "_type": {
+                          "_name": "Array"
+                        },
+                        "_values": [
+                          {
+                            "_type": {
+                              "_name": "ActionTestSummaryGroup",
+                              "_supertype": {
+                                "_name": "ActionTestSummaryIdentifiableObject",
+                                "_supertype": {
+                                  "_name": "ActionAbstractTestSummary"
+                                }
+                              }
+                            },
+                            "activitySummaries": {
+                              "_type": {
+                                "_name": "Array"
+                              }
+                            },
+                            "documentation": {
+                              "_type": {
+                                "_name": "Array"
+                              }
+                            },
+                            "duration": {
+                              "_type": {
+                                "_name": "Double"
+                              },
+                              "_value": "0.09997189044952393"
+                            },
+                            "expectedFailures": {
+                              "_type": {
+                                "_name": "Array"
+                              }
+                            },
+                            "failureSummaries": {
+                              "_type": {
+                                "_name": "Array"
+                              }
+                            },
+                            "identifier": {
+                              "_type": {
+                                "_name": "String"
+                              },
+                              "_value": "UniverseKeyboardTests.xctest"
+                            },
+                            "identifierURL": {
+                              "_type": {
+                                "_name": "String"
+                              },
+                              "_value": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/UniverseKeyboardTests.xctest"
+                            },
+                            "name": {
+                              "_type": {
+                                "_name": "String"
+                              },
+                              "_value": "UniverseKeyboardTests.xctest"
+                            },
+                            "subtests": {
+                              "_type": {
+                                "_name": "Array"
+                              },
+                              "_values": [
+                                {
+                                  "_type": {
+                                    "_name": "ActionTestSummaryGroup",
+                                    "_supertype": {
+                                      "_name": "ActionTestSummaryIdentifiableObject",
+                                      "_supertype": {
+                                        "_name": "ActionAbstractTestSummary"
+                                      }
+                                    }
+                                  },
+                                  "activitySummaries": {
+                                    "_type": {
+                                      "_name": "Array"
+                                    }
+                                  },
+                                  "documentation": {
+                                    "_type": {
+                                      "_name": "Array"
+                                    }
+                                  },
+                                  "duration": {
+                                    "_type": {
+                                      "_name": "Double"
+                                    },
+                                    "_value": "0.09997189044952393"
+                                  },
+                                  "expectedFailures": {
+                                    "_type": {
+                                      "_name": "Array"
+                                    }
+                                  },
+                                  "failureSummaries": {
+                                    "_type": {
+                                      "_name": "Array"
+                                    }
+                                  },
+                                  "identifier": {
+                                    "_type": {
+                                      "_name": "String"
+                                    },
+                                    "_value": "RimeSyncModelTests"
+                                  },
+                                  "identifierURL": {
+                                    "_type": {
+                                      "_name": "String"
+                                    },
+                                    "_value": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/RimeSyncModelTests"
+                                  },
+                                  "name": {
+                                    "_type": {
+                                      "_name": "String"
+                                    },
+                                    "_value": "RimeSyncModelTests"
+                                  },
+                                  "subtests": {
+                                    "_type": {
+                                      "_name": "Array"
+                                    },
+                                    "_values": [
+                                      {
+                                        "_type": {
+                                          "_name": "ActionTestMetadata",
+                                          "_supertype": {
+                                            "_name": "ActionTestSummaryIdentifiableObject",
+                                            "_supertype": {
+                                              "_name": "ActionAbstractTestSummary"
+                                            }
+                                          }
+                                        },
+                                        "activitySummariesCount": {
+                                          "_type": {
+                                            "_name": "Int"
+                                          },
+                                          "_value": "0"
+                                        },
+                                        "duration": {
+                                          "_type": {
+                                            "_name": "Double"
+                                          },
+                                          "_value": "0.09997189044952393"
+                                        },
+                                        "failureSummariesCount": {
+                                          "_type": {
+                                            "_name": "Int"
+                                          },
+                                          "_value": "0"
+                                        },
+                                        "identifier": {
+                                          "_type": {
+                                            "_name": "String"
+                                          },
+                                          "_value": "RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem()"
+                                        },
+                                        "identifierURL": {
+                                          "_type": {
+                                            "_name": "String"
+                                          },
+                                          "_value": "test://com.apple.xcode/Universe%20Keyboard/UniverseKeyboardTests/RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem"
+                                        },
+                                        "name": {
+                                          "_type": {
+                                            "_name": "String"
+                                          },
+                                          "_value": "testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem()"
+                                        },
+                                        "performanceMetricsCount": {
+                                          "_type": {
+                                            "_name": "Int"
+                                          },
+                                          "_value": "0"
+                                        },
+                                        "summaryRef": {
+                                          "_type": {
+                                            "_name": "Reference"
+                                          },
+                                          "id": {
+                                            "_type": {
+                                              "_name": "String"
+                                            },
+                                            "_value": "0~0n1tLkCZO5RtEyMeTE7R-Im0YeIciZpZ0huGR6Lpp9bXKGI1cX6Nxte5Cj6iboguWPapE9wz6dO2J43300D1XQ=="
+                                          },
+                                          "targetType": {
+                                            "_type": {
+                                              "_name": "TypeDefinition"
+                                            },
+                                            "name": {
+                                              "_type": {
+                                                "_name": "String"
+                                              },
+                                              "_value": "ActionTestSummary"
+                                            },
+                                            "supertype": {
+                                              "_type": {
+                                                "_name": "TypeDefinition"
+                                              },
+                                              "name": {
+                                                "_type": {
+                                                  "_name": "String"
+                                                },
+                                                "_value": "ActionTestSummaryIdentifiableObject"
+                                              },
+                                              "supertype": {
+                                                "_type": {
+                                                  "_name": "TypeDefinition"
+                                                },
+                                                "name": {
+                                                  "_type": {
+                                                    "_name": "String"
+                                                  },
+                                                  "_value": "ActionAbstractTestSummary"
+                                                }
+                                              }
+                                            }
+                                          }
+                                        },
+                                        "testStatus": {
+                                          "_type": {
+                                            "_name": "String"
+                                          },
+                                          "_value": "Success"
+                                        }
+                                      }
+                                    ]
+                                  },
+                                  "tags": {
+                                    "_type": {
+                                      "_name": "Array"
+                                    }
+                                  },
+                                  "trackedIssues": {
+                                    "_type": {
+                                      "_name": "Array"
+                                    }
+                                  },
+                                  "warningSummaries": {
+                                    "_type": {
+                                      "_name": "Array"
+                                    }
+                                  }
+                                }
+                              ]
+                            },
+                            "tags": {
+                              "_type": {
+                                "_name": "Array"
+                              }
+                            },
+                            "trackedIssues": {
+                              "_type": {
+                                "_name": "Array"
+                              }
+                            },
+                            "warningSummaries": {
+                              "_type": {
+                                "_name": "Array"
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      "tags": {
+                        "_type": {
+                          "_name": "Array"
+                        }
+                      },
+                      "trackedIssues": {
+                        "_type": {
+                          "_name": "Array"
+                        }
+                      },
+                      "warningSummaries": {
+                        "_type": {
+                          "_name": "Array"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+]

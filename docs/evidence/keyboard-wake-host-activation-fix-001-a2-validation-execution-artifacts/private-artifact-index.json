@@ -1,0 +1,98 @@
+[
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-L-kos-json.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "private_retained": true
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-L-diff-check-untracked.log",
+    "bytes": 59,
+    "sha256": "64188f640a184946c160512552878c58288b4413a5009db21c22a764d366ebcf",
+    "private_retained": true
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-5-keychain.log",
+    "bytes": 412035,
+    "sha256": "1a9afc01554a2d3d3b6dd2eac918fab81e1d250af7a44877cfa515ea5ee7b898",
+    "private_retained": true
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-L-diff-check.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "private_retained": true
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-3-app-keyboard.log",
+    "bytes": 1020885,
+    "sha256": "6f64d5f7b4220abcb4b35515c6246fad0ceb847d6060c3ffd29ae163576e12e5",
+    "private_retained": true
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-L-ci-helper-tests.log",
+    "bytes": 175,
+    "sha256": "5704f914af0409d05bbd5ad4fbd358edcd31c332337b24613bd159ac06d8cdfb",
+    "private_retained": true
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-C-classify-table.log",
+    "bytes": 383,
+    "sha256": "60681fb58b51c676d9081a6aebafbdc9b9ae4d4e18e2d8ff7dd02172fcf84eb0",
+    "private_retained": true
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-2-rimebridge.log",
+    "bytes": 389012,
+    "sha256": "a963ffc4baebb7e48483608f0da149586c319a5e1babd1011be43e8df534adb5",
+    "private_retained": true
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-1-keyboardcore.log",
+    "bytes": 318906,
+    "sha256": "22f2a7eab8a85f083eb81f75260dfc88a42aa974e6a2700dac404162e62bfe50",
+    "private_retained": true
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-4-release-build.log",
+    "bytes": 442425,
+    "sha256": "992a37077c4584351727ad67cb54e8e2f412d18470d82a33937641decd92b671",
+    "private_retained": true
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-L-md-links-working-tree.log",
+    "bytes": 42,
+    "sha256": "d732c8d93a8edcfb6e42a34d73007445408ecb4a0e81fc6a2b966dc2b9139f92",
+    "private_retained": true
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/logs/A2-V-0-format.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "private_retained": true
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/before-inventories.json",
+    "bytes": 304782,
+    "sha256": "9ed99017b39910a7e89b42ecc21778e16c337f1d938ae9fdbbd2a4909b1153b3",
+    "private_retained": true
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/environment-after/inventories.json",
+    "bytes": 317543,
+    "sha256": "f44f6ead53d214d48c13469ea75e86583f976f90883249169bae30515d7c87a3",
+    "private_retained": true
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/restore-plan-private.json",
+    "bytes": 8258,
+    "sha256": "2647faabb0d6c697fc284f0fa63c40aa84a1256553d1aa4bd970c658897e98e9",
+    "private_retained": true
+  },
+  {
+    "path": "/private/tmp/ukey-host-activation-fix-a2-validation-run-20261005/toolchain-device-entry.json",
+    "bytes": 108711,
+    "sha256": "b158434e8ae0235f0e71610a154d244e9d85fa7953ecf6f1225d0fff87445b98",
+    "private_retained": true
+  }
+]

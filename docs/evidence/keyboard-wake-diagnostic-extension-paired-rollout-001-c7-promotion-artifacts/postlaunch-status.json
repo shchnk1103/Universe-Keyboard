@@ -1,0 +1,28 @@
+{
+  "utc": "2026-10-02T14:16:02.645624+00:00",
+  "preferences": {
+    "logging_enabled": {
+      "exists": false,
+      "value": null
+    },
+    "diagnostics_high_fidelity_expiration": {
+      "exists": false,
+      "value": null
+    },
+    "rime_deployed": {
+      "exists": true,
+      "value": "True"
+    },
+    "rime_needs_deploy": {
+      "exists": true,
+      "value": "False"
+    },
+    "rime_deploying": {
+      "exists": true,
+      "value": "False"
+    }
+  },
+  "compiled_build_exists": true,
+  "human_candidate_keyboard_check": "pending",
+  "probe_armed": false
+}

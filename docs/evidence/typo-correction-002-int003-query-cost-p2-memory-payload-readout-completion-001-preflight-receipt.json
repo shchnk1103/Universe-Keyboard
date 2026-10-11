@@ -1,0 +1,11 @@
+{
+  "status": "pass",
+  "whole_script_syntax": true,
+  "mock_success_commands": 2,
+  "mock_first_failure_commands": 1,
+  "report_JSON_roundtrip": true,
+  "real_fixed_inputs_and_XML_sections": true,
+  "native_codesign_calls": 0,
+  "script_sha256": "514eb5e974a36fb47b14812fe05cc93b07cef55199b50d1bd5b4cbeedc4e27e0",
+  "helper_sha256": "cd3ac83f9bd251501664f13f62a58df9a1451101c8da587989dbba885531593b"
+}

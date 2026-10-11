@@ -1,0 +1,9 @@
+# C7-B1 reviewer usage factual reconciliation
+
+2026-10-02 root Coordinator事实补证，不是review续轮、扩围或新的verdict。两原reports/usage保持原字节，作者独立性、claims和覆盖判断不改写。
+
+Architecture作者在最终回复主动指出soft_deadline_status误写：原usage checkpoint 06:41:17.429975Z至delivery06:51:39.741330Z为622.311秒，已经超过600秒，即使不加precheckpoint也不可能称soft合规。packet的mtime06:37:41.255013Z早于dispatch；至delivery保守elapsed上界838.486317秒<900秒，因此hard time未超。未采firstcall时钟，实际总elapsed不可复原。原总18toolcalls含16exec和2collaboration消息；达到硬调用上限后停止，未再调用工具修原usage。root写单独事实更正而非修改reviewer原记录。
+
+Quality13exec和2collaboration消息共15toolcalls（packet max18）；原usage将13/18作为exec计数，补充总tool口径15/18。第6exec checkpoint已发送，原逐call时钟缺项/初始digest尝试/最终脚本错误均保持。packetmtime到末次sample的保守上界842.193秒<900，超过soft600，不能宣称soft按时或全部协议严格合规。
+
+两lane required static criteria均Covered；Architecture未发现材料性source blocker、Quality推进Hold分别保留。root新SDK结果不在reviewpacket目标集，不能借此改写QualityHold。归档前pre-sync时52/52原input hash匹配，见review-final-pre-sync-hashes.json。随后普通状态同步仅更改其中Knowledge Index导航摘要，原字节另存；source/tests/project identity不变，不触发review自动续轮。当前Human只有未来具体新增scope/budget扩展权威，root未追加任何独立review轮次。

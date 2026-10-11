@@ -1,0 +1,18 @@
+{
+  "recorded_monotonic_ns": 1243477358415583,
+  "human_reply": "已点击取证",
+  "actual_click_time": null,
+  "export_breakpoint_hit_count": 1,
+  "frame0_actual_report": "libsystem_kernel.dylib mach_msg2_trap + 8 despite breakpoint1.1 stop",
+  "caller": "handleWakeOwnerProbeButton closure/Array.withUnsafeBytes in bounded backtrace",
+  "argument_result": "byteCount undeclared at selected frame0",
+  "memory_reads": 0,
+  "snapshot_created": false,
+  "stop_reason": "true export frame static address/byteCount unavailable; stop without guessing ABI/caller bytes/historical address",
+  "retry": false,
+  "actual_target_pause_start": "UNKNOWN",
+  "recorded_utc": "2026-10-04T04:59:58.506548+00:00",
+  "human_reply_first_followup_request_utc": "2026-10-04T04:59:19.697Z",
+  "first_machine_stopped_output_recorded_utc": "2026-10-04T04:59:27.195Z",
+  "human_receipt_timestamp_not_independently_instrumented": true
+}

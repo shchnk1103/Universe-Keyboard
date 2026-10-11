@@ -1,0 +1,27 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "\n🐛 LLDB Command\n\nErrors (1):\n\n  ✗ No active debug session. Provide debugSessionId or attach first.\n\n❌ Failed to run LLDB command.\n"
+    }
+  ],
+  "structuredContent": {
+    "schema": "xcodebuildmcp.output.debug-command-result",
+    "schemaVersion": "2",
+    "didError": true,
+    "error": "Failed to run LLDB command.",
+    "data": {
+      "diagnostics": {
+        "warnings": [],
+        "errors": [
+          {
+            "message": "No active debug session. Provide debugSessionId or attach first."
+          }
+        ]
+      },
+      "command": "breakpoint list 1",
+      "outputLines": []
+    }
+  },
+  "isError": true
+}

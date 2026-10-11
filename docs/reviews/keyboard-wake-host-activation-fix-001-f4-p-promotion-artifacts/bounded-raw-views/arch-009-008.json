@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+  "origin_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "expected_sha256": "fac2f75a67b2a7dc301a24be4944b1594e556791e13e0c205c24a650e5ee85bd",
+  "line_start": 421,
+  "line_end": 480,
+  "lines": [
+    {
+      "line": 421,
+      "text": "                return"
+    },
+    {
+      "line": 422,
+      "text": "            }"
+    },
+    {
+      "line": 423,
+      "text": "        #endif"
+    },
+    {
+      "line": 424,
+      "text": "        guard isResponsiveRimePipelineEnabled else { return }"
+    },
+    {
+      "line": 425,
+      "text": ""
+    },
+    {
+      "line": 426,
+      "text": "        #if T9_RESPONSIVE_CANARY_INTERNAL"
+    },
+    {
+      "line": 427,
+      "text": "            if responsiveCanaryPresentationFenced {"
+    },
+    {
+      "line": 428,
+      "text": "                emitResponsiveCanaryTerminal("
+    },
+    {
+      "line": 429,
+      "text": "                    for: snapshot,"
+    },
+    {
+      "line": 430,
+      "text": "                    canarySessionInstance: canarySessionInstance,"
+    },
+    {
+      "line": 431,
+      "text": "                    completion: .staleAfterFence,"
+    },
+    {
+      "line": 432,
+      "text": "                    visibility: .notVisibleFencedBeforeVisible,"
+    },
+    {
+      "line": 433,
+      "text": "                    paint: .failedFencedBeforeVisible"
+    },
+    {
+      "line": 434,
+      "text": "                )"
+    },
+    {
+      "line": 435,
+      "text": "                return"
+    },
+    {
+      "line": 436,
+      "text": "            }"
+    },
+    {
+      "line": 437,
+      "text": "            // Reads only the owner-published immutable selection snapshot."
+    },
+    {
+      "line": 438,
+      "text": "            applyRealizedSelectionFromEngine()"
+    },
+    {
+      "line": 439,
+      "text": "            if let selection = rimeEngine?.runtimeSelection {"
+    },
+    {
+      "line": 440,
+      "text": "                onResponsiveCanaryRuntimeSelection?(selection)"
+    },
+    {
+      "line": 441,
+      "text": "            }"
+    },
+    {
+      "line": 442,
+      "text": "        #endif"
+    },
+    {
+      "line": 443,
+      "text": ""
+    },
+    {
+      "line": 444,
+      "text": "        // P2-D1: owner completion is recorded before any latest-only UI"
+    },
+    {
+      "line": 445,
+      "text": "        // coalescing. A missing UI paint must not be mistaken for missing"
+    },
+    {
+      "line": 446,
+      "text": "        // engine work, and the marker remains bound to the accepted revision."
+    },
+    {
+      "line": 447,
+      "text": "        if isThreadAffineRimeOwnerEnabled,"
+    },
+    {
+      "line": 448,
+      "text": "            let ownerCompletion = feltMetrics.recordOwnerCompletion("
+    },
+    {
+      "line": 449,
+      "text": "                epoch: snapshot.sessionEpoch,"
+    },
+    {
+      "line": 450,
+      "text": "                revision: snapshot.revision"
+    },
+    {
+      "line": 451,
+      "text": "            )"
+    },
+    {
+      "line": 452,
+      "text": "        {"
+    },
+    {
+      "line": 453,
+      "text": "            recordResponsiveFeltMarker(ownerCompletion)"
+    },
+    {
+      "line": 454,
+      "text": "        }"
+    },
+    {
+      "line": 455,
+      "text": ""
+    },
+    {
+      "line": 456,
+      "text": "        // Dual-gate: prefer latest-only presentation while owner still has work."
+    },
+    {
+      "line": 457,
+      "text": "        if isThreadAffineRimeOwnerEnabled, !coalesced {"
+    },
+    {
+      "line": 458,
+      "text": "            let livePendingDepth ="
+    },
+    {
+      "line": 459,
+      "text": "                threadAffineRimeCoordinator?.diagnostics.pendingWorkDepth ?? 0"
+    },
+    {
+      "line": 460,
+      "text": "            let pendingDepth = max("
+    },
+    {
+      "line": 461,
+      "text": "                ownerPendingDepthAtPublish ?? 0,"
+    },
+    {
+      "line": 462,
+      "text": "                livePendingDepth"
+    },
+    {
+      "line": 463,
+      "text": "            )"
+    },
+    {
+      "line": 464,
+      "text": "            if pendingDepth >= ResponsiveRimeFeltMetrics.presentationCoalescePendingThreshold"
+    },
+    {
+      "line": 465,
+      "text": "                || dualGatePresentationCoalesceScheduled"
+    },
+    {
+      "line": 466,
+      "text": "                || dualGatePendingPresentationSnapshot != nil"
+    },
+    {
+      "line": 467,
+      "text": "            {"
+    },
+    {
+      "line": 468,
+      "text": "                #if T9_RESPONSIVE_CANARY_INTERNAL"
+    },
+    {
+      "line": 469,
+      "text": "                    if let absorbed = dualGatePendingPresentationSnapshot,"
+    },
+    {
+      "line": 470,
+      "text": "                        absorbed.revision != snapshot.revision"
+    },
+    {
+      "line": 471,
+      "text": "                    {"
+    },
+    {
+      "line": 472,
+      "text": "                        emitResponsiveCanaryTerminal("
+    },
+    {
+      "line": 473,
+      "text": "                            for: absorbed,"
+    },
+    {
+      "line": 474,
+      "text": "                            canarySessionInstance: dualGatePendingCanarySessionInstance,"
+    },
+    {
+      "line": 475,
+      "text": "                            completion: .published,"
+    },
+    {
+      "line": 476,
+      "text": "                            visibility: .notVisibleCoalesced("
+    },
+    {
+      "line": 477,
+      "text": "                                absorbedRevisionRange: absorbed.revision...absorbed.revision,"
+    },
+    {
+      "line": 478,
+      "text": "                                replacementRevision: snapshot.revision"
+    },
+    {
+      "line": 479,
+      "text": "                            ),"
+    },
+    {
+      "line": 480,
+      "text": "                            paint: .coalesced("
+    }
+  ]
+}

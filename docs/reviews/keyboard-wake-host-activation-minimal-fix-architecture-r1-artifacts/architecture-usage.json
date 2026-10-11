@@ -1,0 +1,24 @@
+{
+  "lane_id": "HOST-ACTIVATION-FIX-DESIGN-ARCHITECTURE",
+  "round": 1,
+  "packet_sha256": "0ac5cd80d70cf8649a78d1c1434b9e101c0b30bb5004360c9ddbe7757bef05b8",
+  "worktree_branch": "codex/keyboard-wake-v3-compatibility-gate",
+  "worktree_head": "84b9c19227330b0fe6ff391be001ee398010fd6a",
+  "allowed_targets_expected": 13,
+  "allowed_targets_checked": 13,
+  "allowed_target_hash_mismatches": 0,
+  "elapsed_seconds": 416,
+  "actual_tool_calls": 8,
+  "covered": [
+    "D1 proposed notification symmetry and local owner boundary; runtime delivery/effect explicitly not claimed.",
+    "D3 five-file slice and KeyboardTests gate-model capability, subject to explicit cross-target source membership.",
+    "ADR 0002 clean-composition constraint and first-frame fence identified."
+  ],
+  "uncovered": [
+    "D2 complete executable presentation/notification transition table and idempotent pending contract.",
+    "D2 guard before generic resume for canary fenced/failed states; current static ordering can call owner-starting resume before canary validation.",
+    "No runtime notification, controller wiring, owner readiness, or fix effectiveness evidence in this design-only lane."
+  ],
+  "stop_reason": "Completed at configured 8-call ceiling; no scope expansion or budget renewal. Elapsed time includes analysis and report writing, recorded during final verification.",
+  "verdict": "Partial; Proposed design review only; no implementation approval."
+}

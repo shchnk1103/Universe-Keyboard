@@ -1,0 +1,8 @@
+{
+  "headRefOid": "e20e7c8a3a48822e2e712d36453e2cf574088e87",
+  "isDraft": true,
+  "mergeStateStatus": "DIRTY",
+  "state": "OPEN",
+  "title": "fix: fail closed on unavailable RIME identity",
+  "url": "https://github.com/shchnk1103/Universe-Keyboard/pull/139"
+}

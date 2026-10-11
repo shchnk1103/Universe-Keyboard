@@ -1,0 +1,12 @@
+{
+  "recorded_utc": "2026-10-04T05:04:41.848675+00:00",
+  "human_reply": "界面现在还是处于之前打开过 App 切换器之后的样子，按钮显示‘取证’。",
+  "actual_observation_time": null,
+  "visual_exit_confirmed": true,
+  "visual_state": "post-switch interface retained; button取证 visible; candidate bar present; no candidate/host text copied",
+  "input_function_recovery": "NOT_VERIFIED",
+  "additional_typing": "NOT_REQUESTED",
+  "screenshot_user_attached": true,
+  "screenshot_copied_to_repo": false,
+  "screenshot_sha256": "5f6a80bdbd24f30c0911fc5ad74a3f95ee0dbcdc2e3e026c36f59319b1fc8ba1"
+}

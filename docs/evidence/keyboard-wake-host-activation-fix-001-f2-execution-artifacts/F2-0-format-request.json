@@ -1,0 +1,7 @@
+{
+  "step": "F2-0-format",
+  "utc": "2026-10-04T10:47:29.539890+00:00",
+  "command": "xcrun swift-format lint --strict --configuration .swift-format Keyboard/Controllers/KeyboardViewController.swift Keyboard/Controllers/KeyboardViewController+Bootstrap.swift Keyboard/Services/KeyboardHostLifecycleRecoveryGate.swift KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+  "cwd": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard",
+  "remaining_wall_seconds": 10350.460329
+}

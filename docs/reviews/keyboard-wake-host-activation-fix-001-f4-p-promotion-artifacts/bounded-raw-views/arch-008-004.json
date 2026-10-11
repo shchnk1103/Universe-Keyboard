@@ -1,0 +1,249 @@
+{
+  "origin_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/KeyboardTests/KeyboardHostLifecycleRecoveryGateTests.swift",
+  "origin_sha256": "71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5",
+  "expected_sha256": "71bb7bd42aa7072cb47bfc7398993c0940fab87282769e6cea83904f790d3ba5",
+  "line_start": 181,
+  "line_end": 240,
+  "lines": [
+    {
+      "line": 181,
+      "text": "        )"
+    },
+    {
+      "line": 182,
+      "text": "        XCTAssertEqual(rearmCount, 1)"
+    },
+    {
+      "line": 183,
+      "text": "        XCTAssertEqual(firstFrameCount, 0)"
+    },
+    {
+      "line": 184,
+      "text": "        XCTAssertEqual(resumeCount, 0)"
+    },
+    {
+      "line": 185,
+      "text": "        XCTAssertTrue(gate.firstFrameRearmPending)"
+    },
+    {
+      "line": 186,
+      "text": "        XCTAssertNotNil(gate.pending)"
+    },
+    {
+      "line": 187,
+      "text": ""
+    },
+    {
+      "line": 188,
+      "text": "        execute("
+    },
+    {
+      "line": 189,
+      "text": "            gate.handleHostDidBecomeActive("
+    },
+    {
+      "line": 190,
+      "text": "                context: id(current),"
+    },
+    {
+      "line": 191,
+      "text": "                hasWindow: true,"
+    },
+    {
+      "line": 192,
+      "text": "                canary: .nonCanaryBuild"
+    },
+    {
+      "line": 193,
+      "text": "            )"
+    },
+    {
+      "line": 194,
+      "text": "        )"
+    },
+    {
+      "line": 195,
+      "text": "        XCTAssertEqual(rearmCount, 1)"
+    },
+    {
+      "line": 196,
+      "text": "    }"
+    },
+    {
+      "line": 197,
+      "text": ""
+    },
+    {
+      "line": 198,
+      "text": "    func testLateFirstFrameTickAfterDisappearDoesNotActivate() {"
+    },
+    {
+      "line": 199,
+      "text": "        enterVisible()"
+    },
+    {
+      "line": 200,
+      "text": "        execute(gate.handleHostWillResignActive(context: id(current), activatedAtSuspend: false))"
+    },
+    {
+      "line": 201,
+      "text": "        execute("
+    },
+    {
+      "line": 202,
+      "text": "            gate.handleHostDidBecomeActive("
+    },
+    {
+      "line": 203,
+      "text": "                context: id(current),"
+    },
+    {
+      "line": 204,
+      "text": "                hasWindow: true,"
+    },
+    {
+      "line": 205,
+      "text": "                canary: .nonCanaryBuild"
+    },
+    {
+      "line": 206,
+      "text": "            )"
+    },
+    {
+      "line": 207,
+      "text": "        )"
+    },
+    {
+      "line": 208,
+      "text": "        let arm = requireArm()"
+    },
+    {
+      "line": 209,
+      "text": "        gate.noteViewWillDisappear()"
+    },
+    {
+      "line": 210,
+      "text": "        XCTAssertEqual(tick(arm), .none)"
+    },
+    {
+      "line": 211,
+      "text": "        XCTAssertEqual(firstFrameCount, 0)"
+    },
+    {
+      "line": 212,
+      "text": "    }"
+    },
+    {
+      "line": 213,
+      "text": ""
+    },
+    {
+      "line": 214,
+      "text": "    func testFirstFrameElapsedConsumesPendingAndActivatesOnce() {"
+    },
+    {
+      "line": 215,
+      "text": "        enterVisible()"
+    },
+    {
+      "line": 216,
+      "text": "        execute(gate.handleHostWillResignActive(context: id(current), activatedAtSuspend: false))"
+    },
+    {
+      "line": 217,
+      "text": "        execute("
+    },
+    {
+      "line": 218,
+      "text": "            gate.handleHostDidBecomeActive("
+    },
+    {
+      "line": 219,
+      "text": "                context: id(current),"
+    },
+    {
+      "line": 220,
+      "text": "                hasWindow: true,"
+    },
+    {
+      "line": 221,
+      "text": "                canary: .nonCanaryBuild"
+    },
+    {
+      "line": 222,
+      "text": "            )"
+    },
+    {
+      "line": 223,
+      "text": "        )"
+    },
+    {
+      "line": 224,
+      "text": "        let arm = requireArm()"
+    },
+    {
+      "line": 225,
+      "text": "        XCTAssertEqual(tick(arm), .none)"
+    },
+    {
+      "line": 226,
+      "text": "        execute(tick(arm))"
+    },
+    {
+      "line": 227,
+      "text": "        execute(tick(arm))"
+    },
+    {
+      "line": 228,
+      "text": "        XCTAssertEqual(firstFrameCount, 1)"
+    },
+    {
+      "line": 229,
+      "text": "        XCTAssertNil(gate.pending)"
+    },
+    {
+      "line": 230,
+      "text": "        XCTAssertFalse(gate.firstFrameRearmPending)"
+    },
+    {
+      "line": 231,
+      "text": "    }"
+    },
+    {
+      "line": 232,
+      "text": ""
+    },
+    {
+      "line": 233,
+      "text": "    func testCanaryPermissionTableDeniesOwnerStartingBeforeResume() {"
+    },
+    {
+      "line": 234,
+      "text": "        let denials: [KeyboardHostRecoveryCanaryPermission] = ["
+    },
+    {
+      "line": 235,
+      "text": "            .fenceIssued,"
+    },
+    {
+      "line": 236,
+      "text": "            .visibilityEnding,"
+    },
+    {
+      "line": 237,
+      "text": "            .fencedUnavailable,"
+    },
+    {
+      "line": 238,
+      "text": "            .canaryStarting,"
+    },
+    {
+      "line": 239,
+      "text": "            .canaryActive,"
+    },
+    {
+      "line": 240,
+      "text": "            .baselineRecoveryPermitted,"
+    }
+  ]
+}

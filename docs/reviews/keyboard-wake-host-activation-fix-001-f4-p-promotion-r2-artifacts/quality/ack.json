@@ -1,0 +1,26 @@
+{
+  "budget": {
+    "actual_tool_calls": 20,
+    "checkpoints": [
+      8,
+      14
+    ],
+    "counting": "Each tool invocation incl functions.exec wrapper and nested or coordination tools",
+    "exhaustion": "Stop, persist actual UTC/count and missing coverage; no auto renewal",
+    "reserve_last_calls": 6,
+    "wall_clock_seconds": 900
+  },
+  "lane_id": "F4-P-QUALITY-PROMOTION",
+  "output_dir": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r2-artifacts/quality",
+  "packet_path": "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/keyboard-wake-host-activation-fix-001-f4-p-promotion-r2-artifacts/quality-packet.json",
+  "packet_sha256": "49b9ddcef36ae3e3cb4174c0a61e0fa4e3373ebcc54980f49b31427e4e63805e",
+  "reviewer": "Reuse original /root/m2r2_quality_r1",
+  "round": 2,
+  "scope": [
+    "Q-P1",
+    "Q-P2",
+    "Q-P3",
+    "Q-P4"
+  ],
+  "start_utc": "2026-10-05T03:25:46.815451+00:00"
+}

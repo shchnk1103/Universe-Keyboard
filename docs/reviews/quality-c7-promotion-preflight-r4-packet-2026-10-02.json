@@ -1,0 +1,52 @@
+{
+  "work_item": "KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001",
+  "lane": "QUALITY-C7-B1",
+  "round": 4,
+  "status": "Ready",
+  "authorization": "Human: 可以，那接下来干嘛，你可以继续下一步，我信任你，如果需要我在模拟器中操作你直接说就好了。Next scoped integrated promotion preflight only; not Product residual acceptance or installation execution.",
+  "allowed_content_inputs": {
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/ASSIGNMENT_POLICY.md": "e90dd8f06371e9367652d4e7cc63dee31ee7b1ac855e7802d6d2e9b8e1e90680",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/playbooks/test-release.md": "b7eb8cc76094f72699b6de77de6afa2608e6483a1c8da53dcf86a51ea6c35a58",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/quality-c7-b3-review-2026-10-02.md": "40412d1189712df323067ad8b8cc3793ab8e037a6ea28ceaed811f9cb5fe551d",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/arch-c7-b3-review-2026-10-02.md": "a7d6f1baf8d0294b1f11e6e324ee880073da5c4511cbf44c6b71c03dc8ab5794",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/arch-c7-b3-r4-review-2026-10-02.md": "a15dc9ddbe3b3e444af0bef51b9195c5acb652316eab26fc20fe32711975c017",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/reviews/arch-c7-b3-r4-usage-2026-10-02.json": "b753d1cd7026f661c1e028d1b7e57e0344472bf427fc9014f724278bbcf3b870",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b3-artifacts/build-input-manifest.json": "370bea24345bf0ee82eb95b967f4150a524d160aab761249e448ac660025eeaf",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b3-artifacts/paired-products.json": "7a15b7f7e4cd64d6cdf607d472fbe14125b46b640e306132bdaa6cfbca7b1ab9",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b3-ios-validation-2026-10-02.md": "6552bc5db89b3cba9fbf06e0e56c2e1864025a9fb5fe82c14e9b5958536ac02f",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b3-ios-artifacts/rime-xcresult-summary.json": "6f53ff16c0f9e7a12637aa87b6610ff27178b731d85839635c0b5199db5c559f",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b3-ios-artifacts/app-xcresult-summary.json": "a467e4d1b5a2d6fc424836f349bf55457d6e6527440f3a61aa938e259a867464",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b3-ios-artifacts/keychain-xcresult-summary.json": "993ee9aa9a38821622c9faa2a1f185fda0e68a01234d2ea7413080dac1a407ff",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b3-environment-rebuild-entry-2026-10-02.md": "ce57ac754e6b47de911588d474c20f7689a10e015667c0f5f0b8cf981d615040",
+    "/Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard/docs/evidence/keyboard-wake-diagnostic-extension-paired-rollout-001-c7b3-environment-rebuild-artifacts/rebuild-exit.json": "b848ebee61f4be026d16a65af093c12cc5a49f648b3414bfc01460757194e916",
+    "/private/tmp/ukey-wake-promotion-preflight-20261002/candidate-revalidation.json": "0a9c31ecb7b2d968a972e4aee05b5a6a3a7529e222b7d2a9f0edb77dacd148d1",
+    "/private/tmp/ukey-wake-promotion-preflight-20261002/skip-details.json": "596850bbd0cfd29c5b8161daab813bb92dec905d375a8b18184c8790c704b9b1",
+    "/private/tmp/ukey-wake-promotion-preflight-20261002/installation-plan.md": "cbf33559f3ab87a25078b9c83300976ea2606466fb18b87dc777bb7183207a34"
+  },
+  "criteria": {
+    "P1": "Compare exact root hash revalidation/manifest/paired candidate with independent host Quality and Architecture reports; classify retained old partial/claims without re-reviewing source. No installed-candidate claim.",
+    "P2": "Actual three xcresult counts/30 skip identities+reasons and signed unique Keychain pass are reconciled; do not turn skips into passes or carry old Human acceptance; list Product residual dependencies. No count-only rerun.",
+    "P3": "Plan must protect current NEW baseline using fresh full main/data group backup before install, preserve old-loss limitation; exactdevice/exclusivity/source/bundle/diagnostics/restore missing=>dependent no-go. Assess bounded preparation/stop protocol, no device execution approval."
+  },
+  "acceptance": "All P1/P2/P3 covered required for scoped Positive preparation opinion; may still retain installation Hold for named Product/fresh Entry dependencies. Missing necessary claim=>Partial; contradiction=>Hold. No overall Gate or acceptance by reviewer.",
+  "exclusions": [
+    "No source/Vendor body or new hash traversal required; reuse frozen root revalidation with named prior independent reports",
+    "No device/Simulator/UI/container/network/build/test/install/LLDB/signing/Git/repo mutation",
+    "No other criteria/old report edits/automatic scope renewal/Product acceptance",
+    "No delegation"
+  ],
+  "outputs": {
+    "report": "/private/tmp/ukey-wake-promotion-preflight-20261002/quality-review.md",
+    "usage": "/private/tmp/ukey-wake-promotion-preflight-20261002/quality-usage.json"
+  },
+  "budget": {
+    "max_calls": 12,
+    "hard_elapsed_seconds": 600,
+    "soft_elapsed_seconds": 480,
+    "checkpoint_after_calls": 3,
+    "counting": "All underlying tool/collaboration calls count; first call real start UTC/unix before packet access; missing time null, not inferred",
+    "delivery_reserve": "Reserve last two calls; at call10 or480soft stop investigation/write outputs; do not renew"
+  },
+  "expansion_authority": "Human only",
+  "packet_digest_sha256": "a621b310200706e97e5b0470362c7751471ef08051c2d646d9ac4ee35aa6f92d"
+}

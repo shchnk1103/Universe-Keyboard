@@ -1,0 +1,7 @@
+{
+  "chunk_id": "0a39cd",
+  "wall_time_seconds": 5.000934167,
+  "session_id": 96777,
+  "original_token_count": 190,
+  "output": "Process 55759 stopped\r\n* thread #1, queue = 'com.apple.main-thread', stop reason = signal SIGSTOP\r\n       frame #0: 0x0000000100360b5c libsystem_kernel.dylib`mach_msg2_trap + 8\r\nlibsystem_kernel.dylib`mach_msg2_trap:\r\n->  0x100360b5c <+8>: ret    \r\n\r\nlibsystem_kernel.dylib`macx_swapon:\r\n    0x100360b60 <+0>: mov    x16, #-0x30               ; =-48 \r\n    0x100360b64 <+4>: svc    #0x80\r\n    0x100360b68 <+8>: ret    \r\nTarget 0: (Keyboard) stopped.\r\nExecutable binary set to \"/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/46C50C49-FA7B-4F79-BF42-0A24BF231715/Universe Keyboard.app/PlugIns/Keyboard.appex/Keyboard\".\r\nArchitecture set to: arm64-apple-ios-simulator.\r\n(lldb) "
+}

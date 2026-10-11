@@ -1,0 +1,9 @@
+{
+  "utc": "2026-10-05T12:36:57.214177+00:00",
+  "Human": "接受",
+  "scope": "Only this fresh F4-I before883addedcom.apple.provenance;0rewritten/0non-provenance difference; source live unchanged",
+  "receipt_sha256": "379c26a360e0c739435ee03412ca73b75f160877fc86c7907098d97f2cad4aa4",
+  "budget_not_reset": true,
+  "new_backup_protected": true,
+  "next_stage_exception_not_inherited": true
+}

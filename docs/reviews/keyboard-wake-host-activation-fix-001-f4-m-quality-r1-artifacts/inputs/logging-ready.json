@@ -1,0 +1,11 @@
+{
+  "utc": "2026-10-06T01:22:15.464538+00:00",
+  "Human": "未安装部署、未点观测；日志已开，高保真关闭",
+  "logging_enabled": true,
+  "high_fidelity_off": true,
+  "display_category_enabled": true,
+  "display_key_exists": false,
+  "journal_file_baseline": [],
+  "actual_calls": 13,
+  "Maps_or_input_by_root": false
+}

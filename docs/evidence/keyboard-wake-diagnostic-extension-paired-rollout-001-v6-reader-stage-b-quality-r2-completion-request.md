@@ -1,0 +1,11 @@
+# Quality lane R2 completion request — prepared / awaiting Human authority
+
+WorkItem KEYBOARD-WAKE-DIAGNOSTIC-EXTENSION-PAIRED-ROLLOUT-001; lane UK-WAKE-V6-B-QUALITY; proposedround2. Original24tool budget exhausted; no dispatch/renewal by this request.
+
+Smallest required review: Q3 independent structured cross-check using the already frozen RimeBridgeTests/AppV6Focused-r2/AppKeyboardTests-r2/SignedKeychain-r2 legacy JSON and test-tree JSON, validation-summary/test-evidence and logs. Same final candidate-r2 SHA2565b2ced9d3a8220357c603bd9e5c2236837c51a8200e28980d73fceee8c5bf21c. Confirm metrics vs bottom ActionTestMetadata statuses, focused/full v6 case pass and all30skip identities/reasons. No new test/results queries, no resultbundle mutation.
+
+Also correct three textual residuals in the prior review through an additive R2 report: iPhone17Pro was available in discovery, approved18Pro was explicit destination not fallback for absence; Release build uses Release configuration, not Debug; exact CS0910 Ice-removal test lacks Ice extracttree, Wanxiang-removal lacks Wanxiang extracttree. Preserve prior R1 original report and the reviewer final qualification that Q3 lacked bottom-structure traversal. No retrospective edit to original verdict/usage.
+
+Mandatoryroot /Users/doubleshy0n/.codex/worktrees/paired-rollout-preflight/Universe Keyboard. Source reads limited metadata/StageBauthority/CI plus exact App query test if needed; no new implementation/architecture/fixture/StageC investigation. Freeze absolute inputallowlist/digest after authorization. Positive fullcoverage requires structured data independently inspected, all named discrepancies resolved and dispositionlimitations preserved; otherwisePartial. Current30skips riskacceptance remainsHuman authority; this review cannot accept them or substitute Architecture.
+
+Requested addedbudget max10tools or8minutes, checkpoints4/8; capture current start/end time. OnlyHumanProductOwner may approve. Readonlyrepo/artifacts, writes only quality-review-r2.md/quality-usage-r2.json in this private/tmp. No build/test/simulator/network/Git/source edits. No automatic budgetrenewal. Excluded broadcode/release/performance/realdevice or originalv5reconciliation.
