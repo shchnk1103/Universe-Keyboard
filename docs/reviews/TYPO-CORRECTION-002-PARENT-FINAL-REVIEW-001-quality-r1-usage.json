@@ -1,0 +1,34 @@
+{
+  "lane": "TC2_PARENT_FINAL_EVIDENCE_R1",
+  "round": 1,
+  "review_start_utc": "2026-10-11T04:57:17.558278+00:00",
+  "review_end_utc": "2026-10-11T05:05:33.997663+00:00",
+  "elapsed_seconds_utc": 496.439,
+  "start_monotonic_sample": 1773186.727879291,
+  "end_monotonic_elapsed_seconds": null,
+  "monotonic_note": "本轮最初记录的 monotonic 样本来自运行时；本次隔离命令报告的 monotonic 样本与其不在可比较时钟域，故不伪造 monotonic elapsed。UTC elapsed 由开始和结束 UTC 时间差计算。",
+  "tool_calls": {
+    "top_level_total": 16,
+    "functions_exec": 15,
+    "collaboration_send_message": 1,
+    "nested_exec_command_invocations": 14,
+    "exec_syntax_error_without_nested_command": 1
+  },
+  "tokens": {
+    "input": null,
+    "output": null,
+    "note": "本runtime未暴露准确 token 计数。"
+  },
+  "input_verification": {
+    "packet_sha256": "e7f63b64d55481a4e926996e4fbf5de5e25488450b49169339bff02c6bb553ce",
+    "listed_input_count": 22,
+    "listed_inputs_sha256_and_bytes_matched": true
+  },
+  "decision": {
+    "C1_through_C7_covered": true,
+    "verdict": "Pass with conditions",
+    "close_eligible": true,
+    "gate_or_close_executed": false
+  },
+  "stop_reason": "完成限定文档证据复核并交付报告和usage；未扩围。"
+}

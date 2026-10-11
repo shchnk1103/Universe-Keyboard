@@ -1,0 +1,28 @@
+{
+  "recorded_at": "2026-10-11T04:51:34.016729+00:00",
+  "scope": "new finite 5 paths only; unrelated dirty writer excluded",
+  "validated_files": [
+    "docs/assignments/typo-correction-002-parent-gate-preparation-001.md",
+    "docs/authorizations/AUTH-TYPO-CORRECTION-002-PARENT-GATE-PREPARATION-001.md",
+    "docs/evidence/typo-correction-002-parent-gate-preparation-001.md",
+    "docs/evidence/typo-correction-002-parent-gate-preparation-001-inputs.json",
+    "docs/product-decisions/TYPO-CORRECTION-002-PARENT-FINAL-GATE-PROPOSAL-001.md"
+  ],
+  "selected_inputs": 18,
+  "input_hashes_matched": 18,
+  "local_links_checked": 18,
+  "missing_links": 0,
+  "kos_json_records_parsed": 2,
+  "whitespace_check": "pass_new_files",
+  "full_repo_kos_validator": "not_run; unrelated dirty governance writer outside scope",
+  "source_tests_build_device": "none",
+  "parent_active": true,
+  "gate_close": "not_authorized_not_executed",
+  "output_sha256": {
+    "docs/assignments/typo-correction-002-parent-gate-preparation-001.md": "c0c54a079b98a82ca6f957a9573d8749d98fd43abcf438fd95f3cf784f3302eb",
+    "docs/authorizations/AUTH-TYPO-CORRECTION-002-PARENT-GATE-PREPARATION-001.md": "9d62db7ba35463f7fca5dd0a8677f7ddeb9de5f55250708582b68d2ab284cd7d",
+    "docs/evidence/typo-correction-002-parent-gate-preparation-001.md": "b03e913f26b250dde8d0ff629e1f78755b22486d8f3a7bd378bafd3f27ed2ca0",
+    "docs/evidence/typo-correction-002-parent-gate-preparation-001-inputs.json": "1f50e1e5b469f9364df33455a93147c30e99eb13dae7bfda374bff0243045106",
+    "docs/product-decisions/TYPO-CORRECTION-002-PARENT-FINAL-GATE-PROPOSAL-001.md": "bd669d81383a9c6a78bacf9b1d78f3374637aaa7be72ad3d1562f3b4ef3b5109"
+  }
+}

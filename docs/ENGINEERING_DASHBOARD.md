@@ -1,5 +1,7 @@
 # Engineering Dashboard
 
+2026-10-11 当前：父 **TYPO-CORRECTION-002 Closed**；独立最终复核C1–C7完整Pass with conditions，无必需blocker；Human条件授权执行有界Gate/Close。保留性能未知、QA证据边界及P1技术债。[Close回执](evidence/typo-correction-002-parent-close-2026-10-11.md)。本地Close已生效；本次docs-only发布已授权，main同步待PR合并；下方Active等阶段快照为历史。
+
 2026-10-11 当前：[PR139 合并回执](evidence/typo-correction-002-f01-pr139-merge-001.md)：PR207与F01 PR139均已合并；139 squash `9355200`，精确head完整本地/hosted CI通过，merge tree与已验证候选一致；本次仅一次M-02状态同步，父Active。 下一步核对父任务收尾条件；Gate/Close须另授权。
 
 > 以下已有2026-10-11阶段快照仅为历史；其中draft/未合并/待发布描述已由本次回执取代。
@@ -659,17 +661,19 @@
 
 ## TYPO-CORRECTION-002 — Contextual Multi-Error Pinyin Recovery
 
-- **Current phase (2026-10-11):** PR207与F01 PR139均已合并；139 squash `9355200`，精确head完整本地/hosted CI通过，merge tree与已验证候选一致；本次仅一次M-02状态同步，父Active。
-- **Next:** 父收尾条件核对与Human独立Gate/Close决定；以下阶段记录为历史，不复用已耗尽AUTH。
+- **Current phase:** Bounded Gate passed / parentClosed; latest Close receipt governs current state
+- **Next:** Publish finite Close docs with separate authority; no new runtime/test work
 
-- **Confirmed status:** `Active`
+- **Confirmed status:** `Closed` (local authority, publication pending)
+### History — 以下阶段快照不表示当前待办
+
 - **INT-003 query-density children:** Docs-only [PR #175](https://github.com/shchnk1103/Universe-Keyboard/pull/175) squash merged as `10faa51c`; its [single M-02 receipt](evidence/typo-correction-002-int003-query-density-post-merge-state-sync-2026-09-26.md) was published by [PR #176](https://github.com/shchnk1103/Universe-Keyboard/pull/176), merged `9f6f83e`. The [follow-up diagnostic criterion decision](product-decisions/TYPO-CORRECTION-002-INT003-QUERY-DENSITY-DIAGNOSTIC-CRITERION-001.md) removes the 180 ms hard pass condition for that diagnosis only. The distinct [query-cost assessment](evidence/typo-correction-002-int003-query-cost-assessment-2026-09-26.md) is Completed with a Consumed AUTH and published by [PR #177](https://github.com/shchnk1103/Universe-Keyboard/pull/177), merged `501299dd`; its [M-02 receipt](evidence/typo-correction-002-int003-query-cost-post-merge-state-sync-2026-09-26.md) was published by [PR #178](https://github.com/shchnk1103/Universe-Keyboard/pull/178), merged `7b0025a`. It records 359 real facade calls across 12 operations, 26–32 per operation, with Debug elapsed intervals only. The prepared second rapid Run had no input. Original rapid-window attribution, Product cost acceptability and the wider residual remain open. No Swift / Gate / Release; parent Assignment remains Active.
 - **INT-003 query-cost P1/P2:** The Active [measurement Assignment](assignments/typo-correction-002-int003-query-cost-measurement-001.md) has P1 instrumentation merged by [PR #184](https://github.com/shchnk1103/Universe-Keyboard/pull/184) as `03f4d0cc`; the single [M-02 receipt](evidence/typo-correction-002-int003-query-cost-p1-implementation-post-merge-state-sync-2026-09-27.md) records it. P1 coordinator assertions and real same-call RimeBridge setup/get_context/schema evidence remain open. P2 AUTH is Active/unconsumed until exact source/review, installed payload and Run manifest are frozen; no Simulator capture has run. Product budget/acceptance, Gate and parent Close remain separate; parent stays Active.
 - **P0 publication:** [PR #179](https://github.com/shchnk1103/Universe-Keyboard/pull/179) squash merged the new Active measurement Assignment and plan as `9838c092`; its [single M-02 receipt](evidence/typo-correction-002-int003-query-cost-measurement-plan-m02-2026-09-26.md) is prepared. P1/P2 remain distinct authorization and environment stages; parent Active, Product residual open.
 - **Status owner/source:** Product Lead; [`Assignment`](assignments/typo-correction-002.md)
 - **Product source:** [`Contextual Typo Correction Product Contract`](TYPO_CORRECTION.md)
 - **Architecture source:** [ADR 0015](architecture/decisions/0015-contextual-multi-error-typo-correction.md) and [ADR 0016](architecture/decisions/0016-progressive-contextual-recall-preflight.md)
-- **Current phase:** Core/bridge, bounded progressive-recall preflight and iOS UI baseline evidence captured; semantic scoring, contextual UI and designated-simulator acceptance pending
+- **Current phase:** Bounded Gate passed / parentClosed; latest Close receipt governs current state
 - **Domain Owner / Executor:** Input Intelligence Maintainer
 - **Supporting owners:** RIME Platform, Keyboard Experience, Architecture and Quality
 - **Device constraint:** environment-specific evidence may use only the designated Device Hub iOS 27 iPhone 17 Pro Max simulator.

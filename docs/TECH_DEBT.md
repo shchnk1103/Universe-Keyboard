@@ -337,3 +337,23 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 - Update an item when priority, mitigation, owner area or trigger changes.
 - Remove an item only after implementation and verification are recorded in `CHANGELOG.md` and relevant architecture docs.
 - New plans must link to the debt item they resolve; plans do not replace this register.
+
+## INT003-COORDINATOR-INDEPENDENT-ORACLE: 独立协调器stage oracle
+
+- **Status:** Open / retained technical debt; not fixed or verified.
+- **Source and disposition:** 原P1收敛 `Q-R2-03` 已采用 `tech_debt:INT003-COORDINATOR-INDEPENDENT-ORACLE`；[P1原回执](evidence/typo-correction-002-fixed-candidate-delivery-audit-001-p1-convergence-original.txt)。2026-10-11父收尾补齐canonical登记，不创建新实施任务或风险决定。
+- **Risk:** ready-empty的期望stage trace与实现共享TypoCorrectionRecallDriver；现有测试并非完全独立hard-coded oracle。
+- **Owner:** Input Intelligence Maintainer
+- **Current mitigation:** 原有有界实现、组合式测试和固定候选全套CI；不宣称已消除本限制。
+- **Trigger to resolve:** 需要强化协调器stage判定独立性或修改其状态/阶段合同时单独评估；不是当前父任务追加验证前置。
+- **Boundary:** 父任务Gate/Close需最终复核和Human条件授权；此债不能被CI绿灯或关闭文档改成已解决。
+
+## INT003-RIME-FAILURE-BOUNDARY: 真实RIME失败边界证据
+
+- **Status:** Open / retained technical debt; not fixed or verified.
+- **Source and disposition:** 原P1收敛 `Q-R2-04` 已采用 `tech_debt:INT003-RIME-FAILURE-BOUNDARY`；[P1原回执](evidence/typo-correction-002-fixed-candidate-delivery-audit-001-p1-convergence-original.txt)。2026-10-11父收尾补齐canonical登记，不创建新实施任务或风险决定。
+- **Risk:** 现有集成证据未直接展示真实setup/schema-selection/get-context失败；有限合成测试不替代真实故障行为。
+- **Owner:** RimeBridge owner
+- **Current mitigation:** 原有有界实现、组合式测试和固定候选全套CI；不宣称已消除本限制。
+- **Trigger to resolve:** 真实故障出现或修改setup/schema/get-context失败处理时单独评估；不从本次收尾自动启动新采集。
+- **Boundary:** 父任务Gate/Close需最终复核和Human条件授权；此债不能被CI绿灯或关闭文档改成已解决。

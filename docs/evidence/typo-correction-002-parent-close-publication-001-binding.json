@@ -1,0 +1,134 @@
+{
+  "base": "89bbce7087d0dd59a6429694ccd70f6d78ad1eb4",
+  "branch": "codex/typo-parent-close-89b",
+  "scope": "finite docs-only finalclose publication; no Swift or other product input changes",
+  "review_original_sha256": "29a8a19e2b77c6aeb32a76f5400381236f3441094fd17bab54b372fce3d1a766",
+  "inputs22_durable": true,
+  "technical_debt_copy_policy": "main TECH_DEBT bytes preserved as prefix; only two originalP1 debt sections appended",
+  "paths": [
+    {
+      "path": "CHANGELOG.md",
+      "sha256": "8510aec00337bda0c08ecf0cc3a13725ee38389d32b3c8941070cb71b17e48ff"
+    },
+    {
+      "path": "docs/ACTIVE_WORK.md",
+      "sha256": "91b79225dde7469f6581048a4a01a1bc64d023f7988414ed5980f0d428b4de96"
+    },
+    {
+      "path": "docs/ENGINEERING_DASHBOARD.md",
+      "sha256": "c9b434ad67a3cff6dda88eccd476a6931a6cc120842c8d094b22059979daac54"
+    },
+    {
+      "path": "docs/KNOWLEDGE_INDEX.md",
+      "sha256": "0967fca175248611da353aa23e8e3f4560d0a63f60416d985728c3b4d462553e"
+    },
+    {
+      "path": "docs/TECH_DEBT.md",
+      "sha256": "77dac6772736721818876ad0e9d2838d44b4f3c830bc55e0e894a8044fc59b3e"
+    },
+    {
+      "path": "docs/TYPO_BENCHMARK_REGISTRY_V2.md",
+      "sha256": "d4cca589ee7ee92a3d2f8975cf3cc2fdc4c1091475fb6c6e5d22de35c2616530"
+    },
+    {
+      "path": "docs/assignments/typo-correction-002-f01-pr139-state-sync-merge-001.md",
+      "sha256": "d98f776882cdf7c794c6affc804cbfbc606db7b121b308143812ed0437990f33"
+    },
+    {
+      "path": "docs/assignments/typo-correction-002-parent-close-publication-001.md",
+      "sha256": "7b3bd3b4bb63fc4f0cd75522b75252d4a783054ae14f9eb5609c8544695acfb8"
+    },
+    {
+      "path": "docs/assignments/typo-correction-002-parent-final-review-001.md",
+      "sha256": "39cc9d6c6b4adcff473ad2492bbb0b18e5248e553ff6accf5d228d92a14791ed"
+    },
+    {
+      "path": "docs/assignments/typo-correction-002-parent-gate-preparation-001.md",
+      "sha256": "c0c54a079b98a82ca6f957a9573d8749d98fd43abcf438fd95f3cf784f3302eb"
+    },
+    {
+      "path": "docs/assignments/typo-correction-002.md",
+      "sha256": "b47954559fbf457e3d2817f74e64d11b14d0f351c7e4cc0c36273021836b479e"
+    },
+    {
+      "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-F01-PR139-STATE-SYNC-MERGE-001.md",
+      "sha256": "b75144d3a997f63067061d64a7eaf333cae30d139ea4eed36f190794fc69f763"
+    },
+    {
+      "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-PARENT-CLOSE-PUBLICATION-001.md",
+      "sha256": "4b310e18ae8bbf7ad4ca07d092dce81b681da48114c30d6174024fdbfb211620"
+    },
+    {
+      "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-PARENT-FINAL-GATE-CLOSE-001.md",
+      "sha256": "634be2059ae96bf127c54037a791f8b86d50b5bb47a994e835728a6cbd9c93b8"
+    },
+    {
+      "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-PARENT-FINAL-REVIEW-001.md",
+      "sha256": "95423537793b2aa4f82634b98a91291de19f250c73d453e6160b688979095dbc"
+    },
+    {
+      "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-PARENT-GATE-PREPARATION-001.md",
+      "sha256": "9d62db7ba35463f7fca5dd0a8677f7ddeb9de5f55250708582b68d2ab284cd7d"
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-f01-pr139-state-sync-merge-001-receipt.json",
+      "sha256": "edaeb25e56d0d92442028fd54a713e14c15e64578bb99bcca9f1b89ac7c150ba"
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-f01-pr139-state-sync-merge-001.md",
+      "sha256": "daf4458926e6ffe7e2bb7c54479f93fba97274ac8ad3ec0086a98f754283f613"
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-parent-close-2026-10-11-receipt.json",
+      "sha256": "65da8b983778ce40d8cfb748e24b93426aae665185e8a9fabf07064055477184"
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-parent-close-2026-10-11.md",
+      "sha256": "c2032dcf386e8cd9c9e92b6bc98daa89a0d1ed854d6be51227766d7675bee31e"
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-parent-final-exit-map-2026-10-11.md",
+      "sha256": "f673d798a72fe35c853b983571e93a1bf5ffca7936e3b88f07e3ebf74c4da6c6"
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-parent-final-review-001-inputs-archive.json",
+      "sha256": "8054e70d5e08cdd25bbb0a0df5283dbd96f38f4fd875c4114fc5469c67102447"
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-parent-final-review-001-packet.json",
+      "sha256": "e7f63b64d55481a4e926996e4fbf5de5e25488450b49169339bff02c6bb553ce"
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-parent-gate-preparation-001-inputs.json",
+      "sha256": "1f50e1e5b469f9364df33455a93147c30e99eb13dae7bfda374bff0243045106"
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-parent-gate-preparation-001-receipt.json",
+      "sha256": "272f26b8191ff6da953d91c0b462df49175e93ed3c8f248f229743e96d238b63"
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-parent-gate-preparation-001.md",
+      "sha256": "b03e913f26b250dde8d0ff629e1f78755b22486d8f3a7bd378bafd3f27ed2ca0"
+    },
+    {
+      "path": "docs/product-decisions/TYPO-CORRECTION-002-PARENT-FINAL-GATE-PROPOSAL-001.md",
+      "sha256": "a19b7723f9d4def48f226f61230cbe0d9b3ea4e3713bc18bc99002bb357bdac2"
+    },
+    {
+      "path": "docs/product-decisions/TYPO-CORRECTION-002-PARENT-FINAL-PRODUCT-GATE-001.md",
+      "sha256": "0a64d2377114a4e3c752d434ad2cc7dc1b182ef228feac8f58e04b4b7e0f44d5"
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-PARENT-FINAL-REVIEW-001-quality-r1-usage.json",
+      "sha256": "b5b71f8a155bddbda98dba4007fa539033c70f3fcab18868ab8d1abaa587d458"
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-PARENT-FINAL-REVIEW-001-quality-r1.md",
+      "sha256": "c32904f9b3f92342474aaf2e59e7a559b12116c398c2966e26dec87be345c048"
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-PARENT-FINAL-REVIEW-001-quality-r1.original.json",
+      "sha256": "5ac54dca38b88a7ed86e121bb24d983c933ff45467bd47e6460164df363a2412"
+    }
+  ]
+}
