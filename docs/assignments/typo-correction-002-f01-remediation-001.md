@@ -1,6 +1,6 @@
 # Assignment: TYPO-CORRECTION-002-F01-REMEDIATION-001 — RIME identity sentinel fail-closed remediation
 
-2026-10-11 当前交付补充：本子任务历史工程Closed保持，PR139仍待merge；固定a44整合候选已通过本轮完整CI及限定独立复核，Human已接受行政残项并授权正常发布。原源/Run/Close事实不改写为新结果。见[本轮复核](../evidence/typo-correction-002-f01-fixed-integration-review-001.md)。
+2026-10-11 当前交付：PR139已squash-merge `9355200`，本子任务历史工程Closed保持；父Active。见[合并回执](../evidence/typo-correction-002-f01-pr139-merge-001.md)。下方原授权、源/Run/Close叙述为历史，不改写原审查边界。
 
 **Policy version:** `1.0.0`
 
@@ -19,12 +19,16 @@ KOS 2.2 optional contracts (E-01, A-01/B-01, P-01, D-01) are not opted in.
 | Field | Value |
 |---|---|
 | Lifecycle | Closed |
-| Current Phase | Bounded engineering Close recorded after Human Product Owner accepted `F01-R-01`–`F01-R-03`; close receipt is linked below. Draft PR `#139` remains open and unmerged; parent `TYPO-CORRECTION-002` remains Active |
+| Current Phase | Bounded historical engineering Closed; PR139 merged as `9355200`; parent Active |
 | Parent Assignment | `TYPO-CORRECTION-002` — remains Active and is not being closed or migrated |
-| Exact base | `409eeab8ad4f1dd66f0139b5d1c561dc927316ce` (`7d2e3b212daa7c8dc36d82d629e5ee15313b34bf`) |
+| Exact base | Current delivery fixed main `a44f850`; original implementation base retained below as historical evidence |
 | Working branch | `codex/typo-correction-002-f01-remediation-001` |
-| Merge / publication status | Draft PR `#139` is open; no merge, Release, TestFlight, or external publication is authorized |
+| Merge / publication status | PR139 MERGED, current delivery on main; no Release/TestFlight/parent Gate/Close |
 | Material non-claims | No Product, Quality, Release, Device, performance, INT-003, or QA-001 conclusion follows from this Assignment |
+
+## History — 原实施、复核与Close边界
+
+以下draft/旧head等仅为对应历史阶段事实；当前交付状态以上方回执为准。
 
 ## Authority
 
