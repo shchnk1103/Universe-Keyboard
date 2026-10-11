@@ -1,0 +1,355 @@
+{
+  "run_id": "TC2-CI-20261011-INT003-FIXED592-001",
+  "grade": "Executor-recorded fixed-candidate CI evidence",
+  "outcome": "required_matrix_passed_executor_recorded",
+  "core": {
+    "total": 1207,
+    "skipped": 0,
+    "failed": 0,
+    "passed": 1207
+  },
+  "rime": {
+    "total": 110,
+    "skipped": 20,
+    "failed": 0,
+    "passed": 90
+  },
+  "app_keyboard_suites": {
+    "UniverseKeyboardTests.xctest": {
+      "total": 413,
+      "skipped": 10,
+      "failed": 0,
+      "passed": 403
+    },
+    "KeyboardTests.xctest": {
+      "total": 44,
+      "skipped": 0,
+      "failed": 0,
+      "passed": 44
+    },
+    "KeyboardExtensionTests.xctest": {
+      "total": 6,
+      "skipped": 0,
+      "failed": 0,
+      "passed": 6
+    }
+  },
+  "signed_keychain": {
+    "total": 1,
+    "skipped": 0,
+    "failed": 0,
+    "passed": 1
+  },
+  "probe_core": {
+    "total": 19,
+    "skipped": 0,
+    "failed": 0,
+    "passed": 19
+  },
+  "probe_extension": {
+    "total": 33,
+    "skipped": 0,
+    "failed": 0,
+    "passed": 33
+  },
+  "release": "passed",
+  "skipped_tests": {
+    "rimebridge": [
+      {
+        "test": "RimeBridgeTests.RimeLuaSmokeTests testCorrectionSidecarKeepsVisibleCompositionIntactWhenRuntimeFixtureIsProvided",
+        "reason": "Set UK_RIME_LUA_SMOKE_SHARED_DIR and UK_RIME_LUA_SMOKE_USER_DIR to run the real Lua smoke test."
+      },
+      {
+        "test": "RimeBridgeTests.RimeLuaSmokeTests testRimeIceLuaDynamicCandidatesWhenRuntimeFixtureIsProvided",
+        "reason": "Set UK_RIME_LUA_SMOKE_SHARED_DIR and UK_RIME_LUA_SMOKE_USER_DIR to run the real Lua smoke test."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testCappedTwoSyllableControllerFrozenPairedMatrix",
+        "reason": "Set the immutable 40-character lowercase S4 commit to run the paired matrix."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testIsolatedPersonalizationKnownPositive",
+        "reason": "Set isolated T9 Spike runtime directories to run this matrix."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testIsolatedPersonalizationNaturalReminder",
+        "reason": "Set isolated T9 Spike runtime directories to run this matrix."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testIsolatedPersonalizationNaturalWeather",
+        "reason": "Set isolated T9 Spike runtime directories to run this matrix."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testPartialLongSelectionIsNotPersonalizationProof",
+        "reason": "Set isolated T9 Spike runtime directories to run this matrix."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testRejectedCompositionLaterOpportunityTransactionMatrix",
+        "reason": "Set isolated T9 Spike runtime directories to run this matrix."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testRollingControllerFrozenA0A1B2B3Matrix",
+        "reason": "Set isolated T9 Spike runtime directories to run this matrix."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testRollingControllerMissingLiveCompositionFailsClosedBeforeKey",
+        "reason": "Set isolated T9 Spike runtime directories to run this matrix."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testRollingControllerRealRimeDeletePathAndPartialOwnership",
+        "reason": "Set isolated T9 Spike runtime directories to run this matrix."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testRollingControllerRealRimeSecondRejectRestoreMatrix",
+        "reason": "Set isolated T9 Spike runtime directories to run this matrix."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9CompatibilitySpikeTests testPinnedLibrimeCanSelectT9AndProcessDigitSequenceAfterRemovingUnsupportedProcessor",
+        "reason": "Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 compatibility Spike."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9PinyinSelectionSpikeTests test004CatalogExactRawAcceptanceOnPinnedLibrime",
+        "reason": "Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9PinyinSelectionSpikeTests testAtomicPathDiscoveryStageAOnPinnedLibrime",
+        "reason": "Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9PinyinSelectionSpikeTests testGate5Phase05CandidateCoverageSelRangeOnPinnedLibrime",
+        "reason": "Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9PinyinSelectionSpikeTests testGate5Phase06AlternativeCoverageSelectionDeltaOnPinnedLibrime",
+        "reason": "Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9PinyinSelectionSpikeTests testPrecisePinyinPathRefinementOnPinnedLibrime",
+        "reason": "Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+      },
+      {
+        "test": "RimeBridgeTests.RimeT9PinyinSelectionSpikeTests testReadOnlyWindowCoverageForYiZiSibling",
+        "reason": "Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+      },
+      {
+        "test": "RimeBridgeTests.ThreadAffineRimeRealEngineTests testRealEngineBootstrapCreatesAndCallsOffMainThroughOwner",
+        "reason": "Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR (or UK_RIME_R4B_*) to run R4-B real-engine proof."
+      }
+    ],
+    "app_keyboard": [
+      {
+        "test": "UniverseKeyboardTests.RimeIcePinnedArtifactTests testVerifiedOfficialAndMirrorArchivesConvergeAfterProductionProcessing",
+        "reason": "Set TEST_RUNNER_SCHEME_PIN_ARCHIVE_ROOT to the independently downloaded source archives"
+      },
+      {
+        "test": "UniverseKeyboardTests.RimeSyncModelTests testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem",
+        "reason": "Unsigned host lacks Keychain entitlement; signed Simulator lane covers integration."
+      },
+      {
+        "test": "UniverseKeyboardTests.SchemeResourcePreparationCoexistenceTests testCS06_UninstallInactiveWanxiangRetainsIcePeerInventory",
+        "reason": "CS09-10-01 requires the fixed Wanxiang extract tree"
+      },
+      {
+        "test": "UniverseKeyboardTests.SchemeResourcePreparationCoexistenceTests testCS0910_RealInstallerIceRemovalPreservesCompleteWanxiangInventory",
+        "reason": "CS09-10-01 requires the fixed Wanxiang extract tree"
+      },
+      {
+        "test": "UniverseKeyboardTests.SchemeResourcePreparationCoexistenceTests testCS0910_RealInstallerWanxiangRemovalPreservesCompleteIceInventory",
+        "reason": "CS09-10-01 requires the fixed Ice extract tree"
+      },
+      {
+        "test": "UniverseKeyboardTests.SchemeResourcePreparationCoexistenceTests testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds",
+        "reason": "Ice 2026.06.30 default.yaml fixture is required for P3 fingerprint recovery"
+      },
+      {
+        "test": "UniverseKeyboardTests.SchemeResourcePreparationCoexistenceTests testProductionProcessedIceTreeKeepsOfficialDefaultYamlWhenFixturePresent",
+        "reason": "Set TEST_RUNNER_SCHEME_PIN_ARCHIVE_ROOT to the independently downloaded Ice archives"
+      },
+      {
+        "test": "UniverseKeyboardTests.TD012LMDGDeviceStagingTests testPinnedModelLoadsThroughWanxiangGrammarOnAuthorizedPhysicalDevice",
+        "reason": "TD-012 G2 model-load receipt is physical-device-only"
+      },
+      {
+        "test": "UniverseKeyboardTests.TD012LMDGDeviceStagingTests testRemovePinnedModelAfterAuthorizedPhysicalDeviceSpike",
+        "reason": "TD-012 G2 cleanup is physical-device-only"
+      },
+      {
+        "test": "UniverseKeyboardTests.TD012LMDGDeviceStagingTests testStagePinnedModelForAuthorizedPhysicalDeviceSpike",
+        "reason": "TD-012 G2 staging is physical-device-only"
+      }
+    ]
+  },
+  "summaries": {
+    "rimebridge": {
+      "devicesAndConfigurations": [
+        {
+          "device": {
+            "architecture": "arm64",
+            "deviceId": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+            "deviceName": "iPhone 18 Pro",
+            "modelName": "iPhone 18 Pro",
+            "osBuildNumber": "24A434",
+            "osVersion": "27.0",
+            "platform": "iOS Simulator"
+          },
+          "expectedFailures": 0,
+          "failedTests": 0,
+          "passedTests": 90,
+          "skippedTests": 20,
+          "testPlanConfiguration": {
+            "configurationId": "1",
+            "configurationName": "Test Scheme Action"
+          }
+        }
+      ],
+      "environmentDescription": "RimeBridgeTests · Built with macOS 27.0",
+      "expectedFailures": 0,
+      "failedTests": 0,
+      "finishTime": 1791677532.04,
+      "passedTests": 90,
+      "result": "Passed",
+      "runtimeWarnings": [],
+      "skippedTests": 20,
+      "startTime": 1791677509.51,
+      "statistics": [],
+      "testFailures": [],
+      "title": "Test - RimeBridgeTests",
+      "topInsights": [
+        {
+          "category": "Longest Test Runs",
+          "impact": "40% of duration",
+          "text": "1 longest test run with outlier durations exceeding 0.38s (three standard deviations)"
+        }
+      ],
+      "totalTestCount": 110
+    },
+    "app_keyboard": {
+      "devicesAndConfigurations": [
+        {
+          "device": {
+            "architecture": "arm64",
+            "deviceId": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+            "deviceName": "iPhone 18 Pro",
+            "modelName": "iPhone 18 Pro",
+            "osBuildNumber": "24A434",
+            "osVersion": "27.0",
+            "platform": "iOS Simulator"
+          },
+          "expectedFailures": 0,
+          "failedTests": 0,
+          "passedTests": 453,
+          "skippedTests": 10,
+          "testPlanConfiguration": {
+            "configurationId": "1",
+            "configurationName": "Test Scheme Action"
+          }
+        }
+      ],
+      "environmentDescription": "Universe Keyboard · Built with macOS 27.0",
+      "expectedFailures": 0,
+      "failedTests": 0,
+      "finishTime": 1791677586.224,
+      "passedTests": 453,
+      "result": "Passed",
+      "runtimeWarnings": [],
+      "skippedTests": 10,
+      "startTime": 1791677533.389,
+      "statistics": [],
+      "testFailures": [],
+      "title": "Test - Universe Keyboard",
+      "topInsights": [
+        {
+          "category": "Longest Test Runs",
+          "impact": "33% of duration",
+          "text": "2 longest test runs with outlier durations exceeding 0.51s (three standard deviations)"
+        }
+      ],
+      "totalTestCount": 463
+    },
+    "keychain": {
+      "devicesAndConfigurations": [
+        {
+          "device": {
+            "architecture": "arm64",
+            "deviceId": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+            "deviceName": "iPhone 18 Pro",
+            "modelName": "iPhone 18 Pro",
+            "osBuildNumber": "24A434",
+            "osVersion": "27.0",
+            "platform": "iOS Simulator"
+          },
+          "expectedFailures": 0,
+          "failedTests": 0,
+          "passedTests": 1,
+          "skippedTests": 0,
+          "testPlanConfiguration": {
+            "configurationId": "1",
+            "configurationName": "Test Scheme Action"
+          }
+        }
+      ],
+      "environmentDescription": "Universe Keyboard · Built with macOS 27.0",
+      "expectedFailures": 0,
+      "failedTests": 0,
+      "finishTime": 1791677619.793,
+      "passedTests": 1,
+      "result": "Passed",
+      "runtimeWarnings": [],
+      "skippedTests": 0,
+      "startTime": 1791677588.079,
+      "statistics": [],
+      "testFailures": [],
+      "title": "Test - Universe Keyboard",
+      "topInsights": [],
+      "totalTestCount": 1
+    },
+    "probe_extension": {
+      "devicesAndConfigurations": [
+        {
+          "device": {
+            "architecture": "arm64",
+            "deviceId": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+            "deviceName": "iPhone 18 Pro",
+            "modelName": "iPhone 18 Pro",
+            "osBuildNumber": "24A434",
+            "osVersion": "27.0",
+            "platform": "iOS Simulator"
+          },
+          "expectedFailures": 0,
+          "failedTests": 0,
+          "passedTests": 33,
+          "skippedTests": 0,
+          "testPlanConfiguration": {
+            "configurationId": "1",
+            "configurationName": "Test Scheme Action"
+          }
+        }
+      ],
+      "environmentDescription": "KeyboardExtensionTests · Built with macOS 27.0",
+      "expectedFailures": 0,
+      "failedTests": 0,
+      "finishTime": 1791677745.574,
+      "passedTests": 33,
+      "result": "Passed",
+      "runtimeWarnings": [],
+      "skippedTests": 0,
+      "startTime": 1791677720.164,
+      "statistics": [],
+      "testFailures": [],
+      "title": "Test - KeyboardExtensionTests",
+      "topInsights": [
+        {
+          "category": "Longest Test Runs",
+          "impact": "22% of duration",
+          "text": "1 longest test run with outlier durations exceeding 0.74s (three standard deviations)"
+        }
+      ],
+      "totalTestCount": 33
+    }
+  },
+  "source_hashes_matched": 28,
+  "publication": "none",
+  "parent": "Active",
+  "overall_cpu_ui_memory": "unverified / Human-approved narrowed contract",
+  "reader_error": "One auxiliary progress reader KeyError(log) during receipt row publication; corrected with optional log lookup. No executor/command retry."
+}

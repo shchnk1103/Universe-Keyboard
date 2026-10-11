@@ -1,0 +1,377 @@
+{
+  "date": "2026-10-11",
+  "head": "72dd21710f2a86c9f951d489f645bae89b053b58",
+  "tree": "8ce8e8c0d9b821ca4d24aff4faf46a3e49bf87ff",
+  "writer": "/Users/doubleshy0n/.codex/worktrees/int003-query-cost-memory-impl-001/Universe Keyboard",
+  "index_empty": true,
+  "candidate_manifest_sha256": "d45bdc9be791aa1654dfde1699a261c34434cd05f68de9456d8102beebd1c2c2",
+  "baseline_manifest_sha256": "b8fe308328dd640f81d50ed21241f974cddcc45871505f1fdcd0248b821b1176",
+  "source_paths": [
+    {
+      "path": ".github/workflows/swift6-quality.yml",
+      "bytes": 9200,
+      "sha256": "a1ce0a87f4cdcc51c4b3270fd0e9ecdf58f315104daa643598443c1a1d6a7844",
+      "status": " M",
+      "scope": "inherited_unchanged_baseline3"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+Layout.swift",
+      "bytes": 4372,
+      "sha256": "fceb438279a43f6df89e7b0c7928ba943b4b6614372aa67026fd7c17b93f2553",
+      "status": " M",
+      "scope": "current_candidate25"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+TypoCorrection.swift",
+      "bytes": 6119,
+      "sha256": "0c34a4c68230d5ef5b793338926c1a282cb798dbe1a1a52f0e90d19316a62587",
+      "status": " M",
+      "scope": "current_candidate25"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController.swift",
+      "bytes": 33962,
+      "sha256": "a44a10ffda0f14db5201344339e3acdeadf0d45a414119a82040be6b1f45a007",
+      "status": " M",
+      "scope": "current_candidate25"
+    },
+    {
+      "path": "Keyboard/Controllers/TypoCorrectionRecallCoordinator.swift",
+      "bytes": 22539,
+      "sha256": "d10ea4e89e128eb1f0c161d654071338a3b951e027c4136a7a85174704b36860",
+      "status": " M",
+      "scope": "current_candidate25"
+    },
+    {
+      "path": "KeyboardExtensionTests/CandidatePrefetchUIContractTests.swift",
+      "bytes": 434,
+      "sha256": "be962355b166cd2ebde2215e6a4cd6d4ebf55b6a9f4b1d3a32982792e471414a",
+      "status": " M",
+      "scope": "inherited_unchanged_baseline3"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionSidecarOwner.swift",
+      "bytes": 4109,
+      "sha256": "5f0878ca242ac53831d5f8333d7e60775bd77da8078e24b2f0c095f494d69f86",
+      "status": " M",
+      "scope": "current_candidate25"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift",
+      "bytes": 122473,
+      "sha256": "6d5670d14266b6446763801919dc1020304dc5046f45c7763c5f97c8c452748e",
+      "status": " M",
+      "scope": "current_candidate25"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+CorrectionQuery.swift",
+      "bytes": 2228,
+      "sha256": "c99002fc4a8ef435bdcb4f2455a802bd48a256f5a583c7e97b8af1bec6647e0f",
+      "status": " M",
+      "scope": "current_candidate25"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridgeObjC/RimeSessionManager.m",
+      "bytes": 26831,
+      "sha256": "79ae6d943879891aaf1a0799b9d9d3acbaa58669727d3f3adc5260d7f516367c",
+      "status": " M",
+      "scope": "current_candidate25"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridgeObjC/include/RimeSessionManager.h",
+      "bytes": 7781,
+      "sha256": "6e746cf149b8b8a4727398fcca5d46b32eca761464bcb32adee372d47ad8bba3",
+      "status": " M",
+      "scope": "current_candidate25"
+    },
+    {
+      "path": "Universe Keyboard.xcodeproj/project.pbxproj",
+      "bytes": 48613,
+      "sha256": "ba1a9558fdf398c11d3a7db107f07f26e04ed2d378d9a79651e43ca5dcee7027",
+      "status": " M",
+      "scope": "current_candidate25"
+    },
+    {
+      "path": "Universe Keyboard.xcodeproj/xcshareddata/xcschemes/Universe Keyboard.xcscheme",
+      "bytes": 6828,
+      "sha256": "6f50a3cb7fb788e598ef0270fed92d68a3eaa71530d51f8677bb6ae931b9a786",
+      "status": " M",
+      "scope": "inherited_unchanged_baseline3"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+QueryCostProbe.swift",
+      "bytes": 8892,
+      "sha256": "cf9e79e4eca75263af62ae262fc034f374cc142e48e12e8c64ae8e8a4c2b97fd",
+      "status": "??",
+      "scope": "current_candidate25"
+    },
+    {
+      "path": "Keyboard/Controllers/QueryCostArmDiagnostic.swift",
+      "bytes": 4303,
+      "sha256": "659533bc91e6069f268501a15682f4f7857bed035d3ecb720b734c91de7fd4d7",
+      "status": "??",
+      "scope": "current_candidate25"
+    },
+    {
+      "path": "Keyboard/Controllers/QueryCostClockAnchor.swift",
+      "bytes": 6138,
+      "sha256": "e8bbb21826fdb899711c0e861d976884b5e21d04f17865fd44a793722ab47635",
+      "status": "??",
+      "scope": "current_candidate25"
+    },
+    {
+      "path": "Keyboard/Controllers/TypoCorrectionCallbackLedger.swift",
+      "bytes": 5448,
+      "sha256": "8093a248b15948da416245886c56f1d1ef8fb1cc89b583795eae290f6f7fd0d6",
+      "status": "??",
+      "scope": "current_candidate25"
+    },
+    {
+      "path": "KeyboardExtensionTests/QueryCostArmDiagnosticTests.swift",
+      "bytes": 8116,
+      "sha256": "89d759467373b1a4a419652a6ffc906c99028eefade36277597723fb8bf604bd",
+      "status": "??",
+      "scope": "current_candidate25"
+    },
+    {
+      "path": "KeyboardExtensionTests/TypoCorrectionCallbackLedgerTests.swift",
+      "bytes": 4562,
+      "sha256": "a505f2b2c3a617bd07d4da441ebf03b4282df46147f1acbb30e84afd249098f4",
+      "status": "??",
+      "scope": "current_candidate25"
+    },
+    {
+      "path": "KeyboardExtensionTests/TypoCorrectionQueryCostProbeIntegrationTests.swift",
+      "bytes": 13445,
+      "sha256": "0b414efb6d8f324693746fe2f914fbc1bac9d438008fcad052dfe9cd321c2af7",
+      "status": "??",
+      "scope": "current_candidate25"
+    },
+    {
+      "path": "KeyboardExtensionTests/TypoCorrectionRecallCoordinatorIntegrationTests.swift",
+      "bytes": 23087,
+      "sha256": "d12854dca3748dd61cf7eada1c0c1ba45707ee5d9051155ff866a5209d59cc97",
+      "status": "??",
+      "scope": "current_candidate25"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/QueryCostMemoryProbe.swift",
+      "bytes": 31210,
+      "sha256": "dfbc619e75982cf94e654627d56b1ffe46d25ed56a12d78cc8dc019c769742f7",
+      "status": "??",
+      "scope": "current_candidate25"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/QueryCostTouchLedger.swift",
+      "bytes": 1850,
+      "sha256": "b7ee5dca0beff2864c121a77c0a588594ce7c0a1c3895f86d83258b6b700a262",
+      "status": "??",
+      "scope": "current_candidate25"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionQueryDebugScope.swift",
+      "bytes": 659,
+      "sha256": "78ea222205b86d29736da5d9256571f750a4ad9b51550615ee2c2b3140a0dd80",
+      "status": "??",
+      "scope": "current_candidate25"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostMemoryProbePerformanceTests.swift",
+      "bytes": 18045,
+      "sha256": "04b856eafd33318ed2bcd82a2bb173ccdde68b966d885faa8206e6316c1bf014",
+      "status": "??",
+      "scope": "current_candidate25"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostMemoryProbeTests.swift",
+      "bytes": 22144,
+      "sha256": "9f08de6864ebe5d0d3acab01d03fd460468623819d8c393677e52179cec3ee7f",
+      "status": "??",
+      "scope": "current_candidate25"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostTouchLedgerTests.swift",
+      "bytes": 4331,
+      "sha256": "93478b1f68250f755db76242c31c3a7366416f8e9a71f9682e7990c215873c5e",
+      "status": "??",
+      "scope": "current_candidate25"
+    },
+    {
+      "path": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeCorrectionQueryIntegrationTests.swift",
+      "bytes": 8993,
+      "sha256": "bb0e6d57d198be2493152db78ca3a2019a519f9f82b28ce05ec7cb05301961d9",
+      "status": "??",
+      "scope": "current_candidate25"
+    }
+  ],
+  "candidate_count": 25,
+  "inherited_count": 3,
+  "full_delivery_count": 28,
+  "p1_ci004_manifest": {
+    "source": "/Users/doubleshy0n/.codex/worktrees/int003-ci-72dd-once/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p1-ci-revalidation-source-freeze-002.json",
+    "sha256": "43e7e5b57615a2a49af7c9e772f4fdcff500d5aeeac55287d260227379daebae",
+    "paths": [
+      {
+        "path": ".github/workflows/swift6-quality.yml",
+        "same_current_bytes": true
+      },
+      {
+        "path": "Keyboard/Controllers/KeyboardViewController+TypoCorrection.swift",
+        "same_current_bytes": false
+      },
+      {
+        "path": "Keyboard/Controllers/TypoCorrectionRecallCoordinator.swift",
+        "same_current_bytes": false
+      },
+      {
+        "path": "KeyboardExtensionTests/CandidatePrefetchUIContractTests.swift",
+        "same_current_bytes": true
+      },
+      {
+        "path": "KeyboardExtensionTests/TypoCorrectionRecallCoordinatorIntegrationTests.swift",
+        "same_current_bytes": false
+      },
+      {
+        "path": "Packages/RimeBridge/Sources/RimeBridgeObjC/RimeSessionManager.m",
+        "same_current_bytes": false
+      },
+      {
+        "path": "Packages/RimeBridge/Sources/RimeBridgeObjC/include/RimeSessionManager.h",
+        "same_current_bytes": false
+      },
+      {
+        "path": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeCorrectionQueryIntegrationTests.swift",
+        "same_current_bytes": false
+      },
+      {
+        "path": "Universe Keyboard.xcodeproj/project.pbxproj",
+        "same_current_bytes": false
+      },
+      {
+        "path": "Universe Keyboard.xcodeproj/xcshareddata/xcschemes/Universe Keyboard.xcscheme",
+        "same_current_bytes": true
+      }
+    ]
+  },
+  "p2_oct09_matrix_manifest": {
+    "source": "/private/tmp/universe-keyboard-int003-p2-memory-test-number-binding-001/final-source-manifest.json",
+    "sha256": "d0eb9d1474de069d9301a31b3a434b99cf97fc5e788b1793e711c5dc36a58fd8",
+    "paths": [
+      {
+        "path": "Keyboard/Controllers/KeyboardViewController+Layout.swift",
+        "same_current_bytes": false
+      },
+      {
+        "path": "Keyboard/Controllers/KeyboardViewController+QueryCostProbe.swift",
+        "same_current_bytes": false
+      },
+      {
+        "path": "Keyboard/Controllers/KeyboardViewController+TypoCorrection.swift",
+        "same_current_bytes": false
+      },
+      {
+        "path": "Keyboard/Controllers/KeyboardViewController.swift",
+        "same_current_bytes": false
+      },
+      {
+        "path": "Keyboard/Controllers/TypoCorrectionCallbackLedger.swift",
+        "same_current_bytes": true
+      },
+      {
+        "path": "Keyboard/Controllers/TypoCorrectionRecallCoordinator.swift",
+        "same_current_bytes": false
+      },
+      {
+        "path": "KeyboardExtensionTests/TypoCorrectionCallbackLedgerTests.swift",
+        "same_current_bytes": true
+      },
+      {
+        "path": "KeyboardExtensionTests/TypoCorrectionQueryCostProbeIntegrationTests.swift",
+        "same_current_bytes": false
+      },
+      {
+        "path": "KeyboardExtensionTests/TypoCorrectionRecallCoordinatorIntegrationTests.swift",
+        "same_current_bytes": false
+      },
+      {
+        "path": "Packages/KeyboardCore/Sources/KeyboardCore/QueryCostMemoryProbe.swift",
+        "same_current_bytes": false
+      },
+      {
+        "path": "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionQueryDebugScope.swift",
+        "same_current_bytes": true
+      },
+      {
+        "path": "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionSidecarOwner.swift",
+        "same_current_bytes": false
+      },
+      {
+        "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostMemoryProbePerformanceTests.swift",
+        "same_current_bytes": false
+      },
+      {
+        "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostMemoryProbeTests.swift",
+        "same_current_bytes": false
+      },
+      {
+        "path": "Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+CorrectionQuery.swift",
+        "same_current_bytes": true
+      },
+      {
+        "path": "Packages/RimeBridge/Sources/RimeBridgeObjC/RimeSessionManager.m",
+        "same_current_bytes": true
+      },
+      {
+        "path": "Packages/RimeBridge/Sources/RimeBridgeObjC/include/RimeSessionManager.h",
+        "same_current_bytes": true
+      },
+      {
+        "path": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeCorrectionQueryIntegrationTests.swift",
+        "same_current_bytes": true
+      },
+      {
+        "path": "Universe Keyboard.xcodeproj/project.pbxproj",
+        "same_current_bytes": false
+      },
+      {
+        "path": "Packages/KeyboardCore/Sources/KeyboardCore/QueryCostTouchLedger.swift",
+        "same_current_bytes": true
+      },
+      {
+        "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostTouchLedgerTests.swift",
+        "same_current_bytes": true
+      },
+      {
+        "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift",
+        "same_current_bytes": true
+      }
+    ]
+  },
+  "no_new_tests_build_device_or_git_mutations": true,
+  "archived_p1_sources": [
+    {
+      "source": "/Users/doubleshy0n/.codex/worktrees/int003-ci-72dd-once/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p1-evidence-convergence-002.md",
+      "archive": "docs/evidence/typo-correction-002-fixed-candidate-delivery-audit-001-p1-convergence-original.txt",
+      "bytes": 5592,
+      "sha256": "b196ec55519e3d8bf33d0185d0eca71a6b53258fa1a05f5eb0c036f3d0241e79"
+    },
+    {
+      "source": "/Users/doubleshy0n/.codex/worktrees/int003-ci-72dd-once/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p1-ci-revalidation-004.md",
+      "archive": "docs/evidence/typo-correction-002-fixed-candidate-delivery-audit-001-p1-ci004-original.txt",
+      "bytes": 5912,
+      "sha256": "9f34cc5a63f50ff69e91ee5e4b992be701375bc871deb7f3b55645af0ed11004"
+    },
+    {
+      "source": "/Users/doubleshy0n/.codex/worktrees/int003-ci-72dd-once/Universe Keyboard/docs/reviews/typo-correction-002-int003-query-cost-p1-evidence-convergence-quality-review-004.md",
+      "archive": "docs/evidence/typo-correction-002-fixed-candidate-delivery-audit-001-p1-quality004-original.txt",
+      "bytes": 15575,
+      "sha256": "9775ae837cdeea554b42b99b73f569b0f8fe3a8d4a4e27979017a1d9461b49c8"
+    },
+    {
+      "source": "/Users/doubleshy0n/.codex/worktrees/int003-ci-72dd-once/Universe Keyboard/docs/reviews/typo-correction-002-int003-query-cost-p1-evidence-convergence-quality-review-002.md",
+      "archive": "docs/evidence/typo-correction-002-fixed-candidate-delivery-audit-001-p1-quality002-original.txt",
+      "bytes": 12453,
+      "sha256": "6bb500ac5bef6ef377fb9ea9d4cce9e66975732093ecffa3d614b9eece9afbcf"
+    }
+  ]
+}

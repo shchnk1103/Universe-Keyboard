@@ -1,0 +1,59 @@
+{
+  "work_item": "TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001",
+  "lane_id": "TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001:quality",
+  "round": 1,
+  "packet_sha256_expected": "a40aff12b6e47a40cf3b3039faf781272db31286a931b2220b3730d973ad7f0c",
+  "start_utc": "2026-10-10T15:07:46+00:00",
+  "start_monotonic": 1731750.232498041,
+  "tool_calls": 21,
+  "elapsed_seconds": 432.955,
+  "packet_sha256_verified": true,
+  "declared_input_count": 94,
+  "input_hash_mismatches": 0,
+  "coverage": {
+    "packet_sha256": "verified",
+    "frozen_inputs": {
+      "expected": 94,
+      "verified": 94,
+      "mismatches": 0
+    },
+    "candidate_source_hashes": {
+      "expected": 25,
+      "verified": 25,
+      "mismatches": 0
+    },
+    "delta_paths": {
+      "expected": 10,
+      "matched_format_receipt_paths": 10
+    },
+    "test_name_match": {
+      "KeyboardCore.QueryCostMemoryProbeTests": 19,
+      "KeyboardExtension.QueryCostArmDiagnosticTests": 8,
+      "KeyboardExtension.TypoCorrectionQueryCostProbeIntegrationTests": 15,
+      "KeyboardExtension.TypoCorrectionRecallCoordinatorIntegrationTests": 10
+    },
+    "actual_total_passed": 52,
+    "executor_expected_extension_tests": 34,
+    "extension_raw_summary_and_coverage_total": 33,
+    "F1": "open; expected extension count differs from actual; requires evidence-record correction/reconciliation",
+    "Q2": "covered for Swift v2 cost and arm codecs; private Python arm decoder reviewed statically, not dynamically exercised",
+    "Q3": "covered with explicit synthetic-host vs actual-controller route boundary",
+    "Q4": "format/lint receipts pass, candidate/source and archive child hashes match; execution count discrepancy remains"
+  },
+  "stop_reason": null,
+  "packet_sha256_actual": "a40aff12b6e47a40cf3b3039faf781272db31286a931b2220b3730d973ad7f0c",
+  "input_mismatches": [],
+  "first_call_completed_utc": "2026-10-10T15:07:46+00:00",
+  "last_checkpoint_utc": "2026-10-10T15:14:59.415572+00:00",
+  "elapsed_source": "time.monotonic from coordinator-confirmed first-call origin; includes reasoning and waiting",
+  "monotonic_elapsed_seconds_at_last_observation": 144.418,
+  "clock_note": "Prior report incorrectly reused a prior round start_utc and reported 6815s. Corrected to this round start 2026-10-10T15:07:46+00:00 / monotonic 1731750.232498041. Previous stop was erroneous; preserve its history, continue with remaining budget.",
+  "decision": "Changes requested",
+  "criteria_covered": {
+    "Q1": "Reviewed; actual 19/8/15/10 names match source/raw logs/coverage/receipts/commands/candidate; F1 expected_extension_tests 34 conflicts with actual 33",
+    "Q2": "Reviewed; two scope types, identity changes/invalidation, unsupported and Swift v2 positive/negative codec coverage; Python decoder statically checked, not run",
+    "Q3": "Reviewed; actual controller route helper is not invoked by synthetic host tests; Executor claim properly limits runtime/route/arm conclusions",
+    "Q4": "Reviewed; 94 input hashes, 25 candidate source hashes, 10-path delta, format/lint receipts and archive hashes match; F1 is evidence metadata inconsistency"
+  },
+  "finding": "F1: validation/execution-binding.json expected_extension_tests=34; raw logs, coverage and extension summary report 33."
+}

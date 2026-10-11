@@ -1,0 +1,31 @@
+{
+  "lane_id": "TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001:quality",
+  "round": 3,
+  "start_utc": "2026-10-10T15:28:58.834126+00:00",
+  "start_monotonic": 1733022.597184083,
+  "tool_calls": 10,
+  "elapsed_seconds": 170.043,
+  "packet_sha256_expected": "36f2018c8bd2d46adbd4ff9650d80e26903bb647131fe9264c8709d26ea623a4",
+  "packet_sha256_actual": "36f2018c8bd2d46adbd4ff9650d80e26903bb647131fe9264c8709d26ea623a4",
+  "packet_sha256_verified": true,
+  "declared_input_count": 30,
+  "input_hash_mismatches": [],
+  "criteria_covered": {
+    "Q-R3-1": true,
+    "Q-R3-2": true
+  },
+  "decision": "Pass — R3 remaining evidence; F1 finding closure only when combined with R2-covered scope",
+  "stop_reason": "Completed within budget; no source/test/build/device/network/Git activity",
+  "checkpoint": {
+    "tool_call": 6,
+    "elapsed_seconds": 58.657,
+    "note": "Q-R3-1 and Q-R3-2 evidence recorded; final outputs reserved."
+  },
+  "finished_utc": "2026-10-10T15:30:53.781849+00:00",
+  "output_files": {
+    "review": "/private/tmp/uk-routeq3/quality-review.md",
+    "review_sha256": "ffdf42bafc551b7bcb1111c4bb4009e89c1bf8212d4732c78b48b4828c331700",
+    "usage": "/private/tmp/uk-routeq3/quality-usage.json"
+  },
+  "lane_id_corrected_from_packet": true
+}

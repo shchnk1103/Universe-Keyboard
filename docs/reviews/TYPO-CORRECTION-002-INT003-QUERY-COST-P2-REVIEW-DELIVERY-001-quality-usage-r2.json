@@ -1,0 +1,79 @@
+{
+  "work_item": "TYPO-CORRECTION-002-INT003-QUERY-COST-P2-REVIEW-DELIVERY-001",
+  "lane_id": "TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EXISTING-RUN-ADMISSION-001:quality",
+  "round": 2,
+  "delivery_only": true,
+  "packet_sha256": "14373776d37ce5e0a3e97a8a834250785c385448307009a19ab0022e5e3fd695",
+  "five_fixed_inputs": [
+    {
+      "path": "runtime-final-message.md",
+      "bytes": 2540,
+      "sha256": "b57b4d5f67165598014c5e0f52ada3245e436b1cdbbb488a78f9146f688ed769",
+      "matches_packet": true
+    },
+    {
+      "path": "quality-usage-checkpoint.json",
+      "bytes": 990,
+      "sha256": "f401bf8d19059eefbbe7290d9eeee83678d68849add1e1870f076af5eb202cb8",
+      "matches_packet": true
+    },
+    {
+      "path": "quality-protocol-check.json",
+      "bytes": 760,
+      "sha256": "e6426682382109bedf6d90ba30ad3e3176b8dc00a96e1a124ceb1c123c3c2b3c",
+      "matches_packet": true
+    },
+    {
+      "path": "quality-mapping-stats-check.json",
+      "bytes": 2715,
+      "sha256": "2a821237bf5044a5bbe23736f013d13c29cd6aaa16f0a417bcb7c733a30058b3",
+      "matches_packet": true
+    },
+    {
+      "path": "coordinator-usage-transcription.json",
+      "bytes": 1022,
+      "sha256": "68758cb30a6ea809bdafa51b758805b630cc5f7a4efeb15b9be0d9643c4ec7f5",
+      "matches_packet": true
+    }
+  ],
+  "all_five_input_hashes_and_bytes_match_packet": true,
+  "round1_history": {
+    "status": "Partial / incomplete",
+    "exact_start_utc": "UNKNOWN",
+    "exact_elapsed_seconds": "UNKNOWN",
+    "reviewer_reported_tool_calls": 16,
+    "breakdown": {
+      "exec_wrapper": 14,
+      "sleep": 1,
+      "collaboration_message": 1
+    },
+    "reported_command_errors": 2,
+    "final_files_missing_at_interruption": [
+      "quality-review.md",
+      "quality-usage.json"
+    ]
+  },
+  "round2_delivery_measurement": {
+    "successful_delivery_start_utc": "2026-10-10T23:27:03.022152+00:00",
+    "successful_delivery_start_monotonic_seconds": 0.027421208,
+    "end_utc": "2026-10-10T23:28:29.411895+00:00",
+    "end_monotonic_seconds": 0.027706208,
+    "elapsed_wall_seconds": 86.389743,
+    "elapsed_monotonic_seconds": 0.00028500000000000053,
+    "elapsed_basis": "UTC wall-clock delta; monotonic start/end also recorded",
+    "agent_facing_tool_calls_total": 4,
+    "tool_call_breakdown": {
+      "functions.exec": 4,
+      "nested_exec_command": 4
+    },
+    "failed_tool_calls": 1,
+    "failed_attempt_note": "First bootstrap wrapper used the wrong packet-relative input base and failed before completing the five-input verification; its start stamp was not retained. The successful start above is the measured delivery interval; the failed attempt is included in tool count.",
+    "scope": "Read packet and five fixed inputs/hashes; write report and usage only; no raw/source/live workspace or tests/device/network/Git."
+  },
+  "decision": "Scoped Pass with conditions for bounded provider-facade query evidence only; Round 1 historical Partial remains unchanged.",
+  "written_outputs": [
+    "/private/tmp/uk-p2delivery1/quality-review.md",
+    "/private/tmp/uk-p2delivery1/quality-usage.json"
+  ],
+  "usage_file_self_hash": "not recorded to avoid a post-write read; output write command completed successfully"
+}

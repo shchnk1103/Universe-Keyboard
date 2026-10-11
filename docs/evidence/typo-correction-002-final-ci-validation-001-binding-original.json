@@ -1,0 +1,493 @@
+{
+  "status": "Proposed / not executable until AUTH release and consumption",
+  "source_head": "72dd21710f2a86c9f951d489f645bae89b053b58",
+  "source_tree": "8ce8e8c0d9b821ca4d24aff4faf46a3e49bf87ff",
+  "source_writer": "/Users/doubleshy0n/.codex/worktrees/int003-query-cost-memory-impl-001/Universe Keyboard",
+  "delivery_manifest": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-fixed-candidate-delivery-audit-001-manifest.json",
+  "delivery_manifest_sha256": "91d2ea55b94bc72ed7907a3acbe4c999a0750517a22d50f49aa6c97cdc7ab448",
+  "source_path_count": 28,
+  "swift_path_count": 23,
+  "device": {
+    "name": "iPhone 18 Pro",
+    "OS": "iOS27.0",
+    "UDID": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "reservation": "Human reconfirmation required before any device command"
+  },
+  "Xcode": "/Applications/Xcode.app/Contents/Developer",
+  "output_root": "/private/tmp/uk-finalci1",
+  "command_order": [
+    "entry_identity_and_environment",
+    "lightweight_working_candidate_checks",
+    "vendor_pinned_verify_or_single_fetch",
+    "strict_format",
+    "keyboardcore",
+    "rimebridge",
+    "app_keyboard",
+    "keychain",
+    "release",
+    "bounded_result_readout_and_identity_closeout"
+  ],
+  "commands": [
+    {
+      "stage": "strict_format",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Keyboard/Controllers/KeyboardViewController+Layout.swift"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "strict_format",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Keyboard/Controllers/KeyboardViewController+TypoCorrection.swift"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "strict_format",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Keyboard/Controllers/KeyboardViewController.swift"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "strict_format",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Keyboard/Controllers/TypoCorrectionRecallCoordinator.swift"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "strict_format",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "KeyboardExtensionTests/CandidatePrefetchUIContractTests.swift"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "strict_format",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionSidecarOwner.swift"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "strict_format",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "strict_format",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+CorrectionQuery.swift"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "strict_format",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Keyboard/Controllers/KeyboardViewController+QueryCostProbe.swift"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "strict_format",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Keyboard/Controllers/QueryCostArmDiagnostic.swift"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "strict_format",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Keyboard/Controllers/QueryCostClockAnchor.swift"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "strict_format",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Keyboard/Controllers/TypoCorrectionCallbackLedger.swift"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "strict_format",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "KeyboardExtensionTests/QueryCostArmDiagnosticTests.swift"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "strict_format",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "KeyboardExtensionTests/TypoCorrectionCallbackLedgerTests.swift"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "strict_format",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "KeyboardExtensionTests/TypoCorrectionQueryCostProbeIntegrationTests.swift"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "strict_format",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "KeyboardExtensionTests/TypoCorrectionRecallCoordinatorIntegrationTests.swift"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "strict_format",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Packages/KeyboardCore/Sources/KeyboardCore/QueryCostMemoryProbe.swift"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "strict_format",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Packages/KeyboardCore/Sources/KeyboardCore/QueryCostTouchLedger.swift"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "strict_format",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionQueryDebugScope.swift"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "strict_format",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostMemoryProbePerformanceTests.swift"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "strict_format",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostMemoryProbeTests.swift"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "strict_format",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostTouchLedgerTests.swift"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "strict_format",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Packages/RimeBridge/Tests/RimeBridgeTests/RimeCorrectionQueryIntegrationTests.swift"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "keyboardcore",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift",
+        "test",
+        "--package-path",
+        "Packages/KeyboardCore",
+        "--scratch-path",
+        "/private/tmp/uk-finalci1/CoreBuild"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "rimebridge",
+      "argv": [
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild",
+        "-project",
+        "Universe Keyboard.xcodeproj",
+        "-destination",
+        "platform=iOS Simulator,id=405D994F-28CB-4F89-BB22-B64AD81C05A2",
+        "-parallel-testing-enabled",
+        "NO",
+        "-maximum-concurrent-test-simulator-destinations",
+        "1",
+        "SWIFT_VERSION=6.0",
+        "SWIFT_STRICT_CONCURRENCY=complete",
+        "SWIFT_SUPPRESS_WARNINGS=NO",
+        "SWIFT_TREAT_WARNINGS_AS_ERRORS=YES",
+        "-scheme",
+        "RimeBridgeTests",
+        "-configuration",
+        "Debug",
+        "-derivedDataPath",
+        "/private/tmp/uk-finalci1/rimebridge-DD",
+        "-clonedSourcePackagesDirPath",
+        "/private/tmp/uk-armimpl1/SourcePackages",
+        "-disableAutomaticPackageResolution",
+        "-skipPackageUpdates",
+        "CODE_SIGNING_ALLOWED=NO",
+        "-resultBundlePath",
+        "/private/tmp/uk-finalci1/Results/rimebridge.xcresult",
+        "test"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "app_keyboard",
+      "argv": [
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild",
+        "-project",
+        "Universe Keyboard.xcodeproj",
+        "-destination",
+        "platform=iOS Simulator,id=405D994F-28CB-4F89-BB22-B64AD81C05A2",
+        "-parallel-testing-enabled",
+        "NO",
+        "-maximum-concurrent-test-simulator-destinations",
+        "1",
+        "SWIFT_VERSION=6.0",
+        "SWIFT_STRICT_CONCURRENCY=complete",
+        "SWIFT_SUPPRESS_WARNINGS=NO",
+        "SWIFT_TREAT_WARNINGS_AS_ERRORS=YES",
+        "-scheme",
+        "Universe Keyboard",
+        "-configuration",
+        "Debug",
+        "-derivedDataPath",
+        "/private/tmp/uk-finalci1/app_keyboard-DD",
+        "-clonedSourcePackagesDirPath",
+        "/private/tmp/uk-armimpl1/SourcePackages",
+        "-disableAutomaticPackageResolution",
+        "-skipPackageUpdates",
+        "CODE_SIGNING_ALLOWED=NO",
+        "-resultBundlePath",
+        "/private/tmp/uk-finalci1/Results/app_keyboard.xcresult",
+        "test"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "keychain",
+      "argv": [
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild",
+        "-project",
+        "Universe Keyboard.xcodeproj",
+        "-destination",
+        "platform=iOS Simulator,id=405D994F-28CB-4F89-BB22-B64AD81C05A2",
+        "-parallel-testing-enabled",
+        "NO",
+        "-maximum-concurrent-test-simulator-destinations",
+        "1",
+        "SWIFT_VERSION=6.0",
+        "SWIFT_STRICT_CONCURRENCY=complete",
+        "SWIFT_SUPPRESS_WARNINGS=NO",
+        "SWIFT_TREAT_WARNINGS_AS_ERRORS=YES",
+        "-scheme",
+        "Universe Keyboard",
+        "-configuration",
+        "Debug",
+        "-derivedDataPath",
+        "/private/tmp/uk-finalci1/keychain-DD",
+        "-clonedSourcePackagesDirPath",
+        "/private/tmp/uk-armimpl1/SourcePackages",
+        "-disableAutomaticPackageResolution",
+        "-skipPackageUpdates",
+        "CODE_SIGNING_ALLOWED=YES",
+        "CODE_SIGN_IDENTITY=-",
+        "CODE_SIGNING_REQUIRED=NO",
+        "-only-testing:UniverseKeyboardTests/RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem",
+        "-resultBundlePath",
+        "/private/tmp/uk-finalci1/Results/keychain.xcresult",
+        "test"
+      ],
+      "limit": 1
+    },
+    {
+      "stage": "release",
+      "argv": [
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild",
+        "-project",
+        "Universe Keyboard.xcodeproj",
+        "-destination",
+        "platform=iOS Simulator,id=405D994F-28CB-4F89-BB22-B64AD81C05A2",
+        "-parallel-testing-enabled",
+        "NO",
+        "-maximum-concurrent-test-simulator-destinations",
+        "1",
+        "SWIFT_VERSION=6.0",
+        "SWIFT_STRICT_CONCURRENCY=complete",
+        "SWIFT_SUPPRESS_WARNINGS=NO",
+        "SWIFT_TREAT_WARNINGS_AS_ERRORS=YES",
+        "-scheme",
+        "Universe Keyboard",
+        "-configuration",
+        "Release",
+        "-derivedDataPath",
+        "/private/tmp/uk-finalci1/release-DD",
+        "-clonedSourcePackagesDirPath",
+        "/private/tmp/uk-armimpl1/SourcePackages",
+        "-disableAutomaticPackageResolution",
+        "-skipPackageUpdates",
+        "CODE_SIGNING_ALLOWED=NO",
+        "-resultBundlePath",
+        "/private/tmp/uk-finalci1/Results/release.xcresult",
+        "build"
+      ],
+      "limit": 1
+    }
+  ],
+  "source_mutation": false,
+  "automatic_cache_exceptions": [
+    "Normal Xcode/SwiftPM/Clang same-account cache/tmp atomic create/write/rename/unlink; no outer sandbox-exec",
+    "Bounded xcodebuild/xcresulttool diagnostic and report cache writes",
+    "RimeBridge test-created private synthetic fixture directories and selected unique signed Keychain test item"
+  ],
+  "stop_policy": "one attempt per stage, first failure/incomplete/drift stop and preserve artifacts; no auto fixes/retries; total wall budget120minutes; process timeout terminate its own process tree only",
+  "reuse": [
+    "Current exact25-source Core19+Extension33/52pass and scoped reviews retained; no repeat opt-in lane",
+    "Accepted P2 Run retained; no input/profile/capture",
+    "Prior raw and skips kept with original boundaries; no upgrade to current full matrix"
+  ],
+  "main_updates": "No fetch/rebase/rebind/retry because main moves; related content change requires separate impact decision",
+  "publication": "No commit/push/PR/merge/Gate/Close/Release"
+}

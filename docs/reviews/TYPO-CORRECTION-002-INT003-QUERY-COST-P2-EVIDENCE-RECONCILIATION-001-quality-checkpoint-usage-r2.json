@@ -1,0 +1,22 @@
+{
+  "lane_id": "TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001:quality",
+  "round": 2,
+  "tool_calls": 4,
+  "start_utc": "2026-10-10T15:21:21.840569+00:00",
+  "start_monotonic": 1732565.605758125,
+  "elapsed_seconds": 50.117,
+  "packet_sha256_expected": "1235f074caad3c9793470f601ff99d4754cf8e76813c312288246371822cc4a2",
+  "packet_sha256_actual": "1235f074caad3c9793470f601ff99d4754cf8e76813c312288246371822cc4a2",
+  "declared_input_count": 31,
+  "input_hash_mismatches": [],
+  "criteria_covered": {},
+  "stop_reason": null,
+  "decision": "In progress",
+  "packet_sha256_verified": true,
+  "first_call_completed_utc": "2026-10-10T15:21:21.842581+00:00",
+  "checkpoint": {
+    "tool_call": 4,
+    "utc": "2026-10-10T15:22:11Z",
+    "note": "Checkpoint at 4 calls; detailed structural comparison pending."
+  }
+}

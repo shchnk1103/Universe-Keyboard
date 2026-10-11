@@ -1,0 +1,1162 @@
+{
+  "run_id": "TC2-CI-20261011-INT003-FIXED592-001",
+  "started_at": "2026-10-11T00:10:52.661622+00:00",
+  "binding_sha256": "8f9320a53c4f1bedb490f2cfce807d837b4b406d6ebe249f9ce10ca87b8957f6",
+  "steps": [
+    {
+      "stage": "xcode_identity",
+      "argv": [
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild",
+        "-version"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:10:52.741532+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/01-xcode_identity.log",
+      "exit_code": 0,
+      "elapsed_s": 0.129105459,
+      "ended_at": "2026-10-11T00:10:52.871134+00:00",
+      "log_sha256": "694b44731d0b415c5b11d844151e466d7f5e200a95627efda377f232f1a6ab77"
+    },
+    {
+      "stage": "sdk_identity",
+      "argv": [
+        "/usr/bin/xcrun",
+        "--sdk",
+        "iphonesimulator",
+        "--show-sdk-version"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:10:52.871571+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/02-sdk_identity.log",
+      "exit_code": 0,
+      "elapsed_s": 0.010562999999999989,
+      "ended_at": "2026-10-11T00:10:52.882301+00:00",
+      "log_sha256": "7b01c549928398a045692f24bcac7803b348524cdd76f21265b02984b2ba556a"
+    },
+    {
+      "stage": "simulator_entry",
+      "argv": [
+        "/usr/bin/xcrun",
+        "simctl",
+        "list",
+        "devices",
+        "--json"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:10:52.882823+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/03-simulator_entry.log",
+      "exit_code": 0,
+      "elapsed_s": 0.558927459,
+      "ended_at": "2026-10-11T00:10:53.442007+00:00",
+      "log_sha256": "d0ec83015b49312ab5b8a83f6976d283052126686c1eb18943709d86dfdc64bc"
+    },
+    {
+      "stage": "whitespace",
+      "argv": [
+        "git",
+        "diff",
+        "--check"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:10:53.448580+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/04-whitespace.log",
+      "exit_code": 0,
+      "elapsed_s": 0.041561457999999996,
+      "ended_at": "2026-10-11T00:10:53.490492+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "lightweight_python",
+      "argv": [
+        "/usr/bin/python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "scripts/ci/tests",
+        "-p",
+        "test_*.py"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:10:53.494956+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/05-lightweight_python.log",
+      "exit_code": 0,
+      "elapsed_s": 0.505454625,
+      "ended_at": "2026-10-11T00:10:54.000786+00:00",
+      "log_sha256": "9a5d8d5738c39fba5b111fb052569d177e4c30850772872ed9c17c47923d15c4"
+    },
+    {
+      "stage": "lightweight_final_gate",
+      "argv": [
+        "/bin/bash",
+        "scripts/ci/tests/test_verify_final_gate.sh"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:10:54.001612+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/06-lightweight_final_gate.log",
+      "exit_code": 0,
+      "elapsed_s": 0.07805537500000015,
+      "ended_at": "2026-10-11T00:10:54.079952+00:00",
+      "log_sha256": "5a536f744243d87124c72cb813fe45267540fb3592a704fb5546e47c1e036e3b"
+    },
+    {
+      "stage": "lightweight_kos_trigger",
+      "argv": [
+        "/bin/bash",
+        "scripts/ci/tests/test_kos_trigger_paths.sh"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:10:54.080775+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/07-lightweight_kos_trigger.log",
+      "exit_code": 0,
+      "elapsed_s": 0.019711499999999882,
+      "ended_at": "2026-10-11T00:10:54.100753+00:00",
+      "log_sha256": "bed0c15a3b92486d63a55ca78e568ccef3427050c262aa5b22f4267d6e58eec9"
+    },
+    {
+      "stage": "vendor_pinned",
+      "argv": [
+        "/bin/bash",
+        "scripts/ensure_rime_vendor.sh",
+        "fetch"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:10:54.101445+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/08-vendor_pinned.log",
+      "exit_code": 0,
+      "elapsed_s": 9.581867667000001,
+      "ended_at": "2026-10-11T00:11:03.683584+00:00",
+      "log_sha256": "79080fa92cdc4e8b958c26e8bb430434d7c528223366da8e58582b375e1318fd"
+    },
+    {
+      "stage": "strict_format:Keyboard/Controllers/KeyboardViewController+Layout.swift",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Keyboard/Controllers/KeyboardViewController+Layout.swift"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:11:03.684332+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/09-strict_format_Keyboard_Controllers_KeyboardViewController_Layout_swift.log",
+      "exit_code": 0,
+      "elapsed_s": 0.040728332999998784,
+      "ended_at": "2026-10-11T00:11:03.725479+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Keyboard/Controllers/KeyboardViewController+TypoCorrection.swift",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Keyboard/Controllers/KeyboardViewController+TypoCorrection.swift"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:11:03.726236+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/10-strict_format_Keyboard_Controllers_KeyboardViewController_TypoCorrection_swift.log",
+      "exit_code": 0,
+      "elapsed_s": 0.04079166700000059,
+      "ended_at": "2026-10-11T00:11:03.767392+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Keyboard/Controllers/KeyboardViewController.swift",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Keyboard/Controllers/KeyboardViewController.swift"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:11:03.768127+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/11-strict_format_Keyboard_Controllers_KeyboardViewController_swift.log",
+      "exit_code": 0,
+      "elapsed_s": 0.040932249999999115,
+      "ended_at": "2026-10-11T00:11:03.809394+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Keyboard/Controllers/TypoCorrectionRecallCoordinator.swift",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Keyboard/Controllers/TypoCorrectionRecallCoordinator.swift"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:11:03.810169+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/12-strict_format_Keyboard_Controllers_TypoCorrectionRecallCoordinator_swift.log",
+      "exit_code": 0,
+      "elapsed_s": 0.03863854200000105,
+      "ended_at": "2026-10-11T00:11:03.849151+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:KeyboardExtensionTests/CandidatePrefetchUIContractTests.swift",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "KeyboardExtensionTests/CandidatePrefetchUIContractTests.swift"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:11:03.849931+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/13-strict_format_KeyboardExtensionTests_CandidatePrefetchUIContractTests_swift.log",
+      "exit_code": 0,
+      "elapsed_s": 0.020726542000000236,
+      "ended_at": "2026-10-11T00:11:03.871034+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionSidecarOwner.swift",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionSidecarOwner.swift"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:11:03.871785+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/14-strict_format_Packages_KeyboardCore_Sources_KeyboardCore_TypoCorrectionSidecarOwner_swift.log",
+      "exit_code": 0,
+      "elapsed_s": 0.03682700000000061,
+      "ended_at": "2026-10-11T00:11:03.909046+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:11:03.909772+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/15-strict_format_Packages_KeyboardCore_Tests_KeyboardCoreTests_T9PinyinPathTests_swift.log",
+      "exit_code": 0,
+      "elapsed_s": 0.12389462500000015,
+      "ended_at": "2026-10-11T00:11:04.034009+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+CorrectionQuery.swift",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+CorrectionQuery.swift"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:11:04.035176+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/16-strict_format_Packages_RimeBridge_Sources_RimeBridge_RimeEngineImpl_CorrectionQuery_swift.log",
+      "exit_code": 0,
+      "elapsed_s": 0.040066749999999374,
+      "ended_at": "2026-10-11T00:11:04.075738+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Keyboard/Controllers/KeyboardViewController+QueryCostProbe.swift",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Keyboard/Controllers/KeyboardViewController+QueryCostProbe.swift"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:11:04.076711+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/17-strict_format_Keyboard_Controllers_KeyboardViewController_QueryCostProbe_swift.log",
+      "exit_code": 0,
+      "elapsed_s": 0.04085304200000017,
+      "ended_at": "2026-10-11T00:11:04.117960+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Keyboard/Controllers/QueryCostArmDiagnostic.swift",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Keyboard/Controllers/QueryCostArmDiagnostic.swift"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:11:04.118810+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/18-strict_format_Keyboard_Controllers_QueryCostArmDiagnostic_swift.log",
+      "exit_code": 0,
+      "elapsed_s": 0.03981974999999949,
+      "ended_at": "2026-10-11T00:11:04.159003+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Keyboard/Controllers/QueryCostClockAnchor.swift",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Keyboard/Controllers/QueryCostClockAnchor.swift"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:11:04.159857+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/19-strict_format_Keyboard_Controllers_QueryCostClockAnchor_swift.log",
+      "exit_code": 0,
+      "elapsed_s": 0.04033420899999918,
+      "ended_at": "2026-10-11T00:11:04.200654+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Keyboard/Controllers/TypoCorrectionCallbackLedger.swift",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Keyboard/Controllers/TypoCorrectionCallbackLedger.swift"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:11:04.201484+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/20-strict_format_Keyboard_Controllers_TypoCorrectionCallbackLedger_swift.log",
+      "exit_code": 0,
+      "elapsed_s": 0.04077670799999922,
+      "ended_at": "2026-10-11T00:11:04.242654+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:KeyboardExtensionTests/QueryCostArmDiagnosticTests.swift",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "KeyboardExtensionTests/QueryCostArmDiagnosticTests.swift"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:11:04.243441+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/21-strict_format_KeyboardExtensionTests_QueryCostArmDiagnosticTests_swift.log",
+      "exit_code": 0,
+      "elapsed_s": 0.04064895900000032,
+      "ended_at": "2026-10-11T00:11:04.284578+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:KeyboardExtensionTests/TypoCorrectionCallbackLedgerTests.swift",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "KeyboardExtensionTests/TypoCorrectionCallbackLedgerTests.swift"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:11:04.285475+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/22-strict_format_KeyboardExtensionTests_TypoCorrectionCallbackLedgerTests_swift.log",
+      "exit_code": 0,
+      "elapsed_s": 0.04075441700000049,
+      "ended_at": "2026-10-11T00:11:04.326639+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:KeyboardExtensionTests/TypoCorrectionQueryCostProbeIntegrationTests.swift",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "KeyboardExtensionTests/TypoCorrectionQueryCostProbeIntegrationTests.swift"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:11:04.327469+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/23-strict_format_KeyboardExtensionTests_TypoCorrectionQueryCostProbeIntegrationTests_swift.log",
+      "exit_code": 0,
+      "elapsed_s": 0.04023491699999937,
+      "ended_at": "2026-10-11T00:11:04.368136+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:KeyboardExtensionTests/TypoCorrectionRecallCoordinatorIntegrationTests.swift",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "KeyboardExtensionTests/TypoCorrectionRecallCoordinatorIntegrationTests.swift"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:11:04.369351+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/24-strict_format_KeyboardExtensionTests_TypoCorrectionRecallCoordinatorIntegrationTests_swift.log",
+      "exit_code": 0,
+      "elapsed_s": 0.040911665999999514,
+      "ended_at": "2026-10-11T00:11:04.410737+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Packages/KeyboardCore/Sources/KeyboardCore/QueryCostMemoryProbe.swift",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Packages/KeyboardCore/Sources/KeyboardCore/QueryCostMemoryProbe.swift"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:11:04.411533+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/25-strict_format_Packages_KeyboardCore_Sources_KeyboardCore_QueryCostMemoryProbe_swift.log",
+      "exit_code": 0,
+      "elapsed_s": 0.07098912500000054,
+      "ended_at": "2026-10-11T00:11:04.483138+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Packages/KeyboardCore/Sources/KeyboardCore/QueryCostTouchLedger.swift",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Packages/KeyboardCore/Sources/KeyboardCore/QueryCostTouchLedger.swift"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:11:04.483983+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/26-strict_format_Packages_KeyboardCore_Sources_KeyboardCore_QueryCostTouchLedger_swift.log",
+      "exit_code": 0,
+      "elapsed_s": 0.03680066599999954,
+      "ended_at": "2026-10-11T00:11:04.521236+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionQueryDebugScope.swift",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionQueryDebugScope.swift"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:11:04.522070+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/27-strict_format_Packages_KeyboardCore_Sources_KeyboardCore_TypoCorrectionQueryDebugScope_swift.log",
+      "exit_code": 0,
+      "elapsed_s": 0.03915183400000011,
+      "ended_at": "2026-10-11T00:11:04.561658+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostMemoryProbePerformanceTests.swift",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostMemoryProbePerformanceTests.swift"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:11:04.562469+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/28-strict_format_Packages_KeyboardCore_Tests_KeyboardCoreTests_QueryCostMemoryProbePerformanceTests_swift.log",
+      "exit_code": 0,
+      "elapsed_s": 0.04111666699999894,
+      "ended_at": "2026-10-11T00:11:04.604045+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostMemoryProbeTests.swift",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostMemoryProbeTests.swift"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:11:04.604901+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/29-strict_format_Packages_KeyboardCore_Tests_KeyboardCoreTests_QueryCostMemoryProbeTests_swift.log",
+      "exit_code": 0,
+      "elapsed_s": 0.041266333000001154,
+      "ended_at": "2026-10-11T00:11:04.646621+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostTouchLedgerTests.swift",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostTouchLedgerTests.swift"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:11:04.647551+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/30-strict_format_Packages_KeyboardCore_Tests_KeyboardCoreTests_QueryCostTouchLedgerTests_swift.log",
+      "exit_code": 0,
+      "elapsed_s": 0.039206916999999564,
+      "ended_at": "2026-10-11T00:11:04.687378+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "strict_format:Packages/RimeBridge/Tests/RimeBridgeTests/RimeCorrectionQueryIntegrationTests.swift",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift-format",
+        "lint",
+        "--strict",
+        "--configuration",
+        ".swift-format",
+        "Packages/RimeBridge/Tests/RimeBridgeTests/RimeCorrectionQueryIntegrationTests.swift"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:11:04.688284+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/31-strict_format_Packages_RimeBridge_Tests_RimeBridgeTests_RimeCorrectionQueryIntegrationTests_swift.log",
+      "exit_code": 0,
+      "elapsed_s": 0.036826208000000804,
+      "ended_at": "2026-10-11T00:11:04.725648+00:00",
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "stage": "keyboardcore",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift",
+        "test",
+        "--package-path",
+        "Packages/KeyboardCore",
+        "--scratch-path",
+        "/private/tmp/uk-finalci592-001/CoreBuild"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:11:04.726449+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/32-keyboardcore.log",
+      "exit_code": 0,
+      "elapsed_s": 41.807189208,
+      "ended_at": "2026-10-11T00:11:46.534143+00:00",
+      "log_sha256": "72842639c050176fc281bfc824e361e9923a6e715489f8377fde2cd78e76da87"
+    },
+    {
+      "stage": "rimebridge",
+      "argv": [
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild",
+        "-project",
+        "Universe Keyboard.xcodeproj",
+        "-destination",
+        "platform=iOS Simulator,id=405D994F-28CB-4F89-BB22-B64AD81C05A2",
+        "-parallel-testing-enabled",
+        "NO",
+        "-maximum-concurrent-test-simulator-destinations",
+        "1",
+        "SWIFT_VERSION=6.0",
+        "SWIFT_STRICT_CONCURRENCY=complete",
+        "SWIFT_SUPPRESS_WARNINGS=NO",
+        "SWIFT_TREAT_WARNINGS_AS_ERRORS=YES",
+        "-scheme",
+        "RimeBridgeTests",
+        "-configuration",
+        "Debug",
+        "-derivedDataPath",
+        "/private/tmp/uk-finalci592-001/rimebridge-DD",
+        "-clonedSourcePackagesDirPath",
+        "/private/tmp/uk-armimpl1/SourcePackages",
+        "-disableAutomaticPackageResolution",
+        "-skipPackageUpdates",
+        "CODE_SIGNING_ALLOWED=NO",
+        "-resultBundlePath",
+        "/private/tmp/uk-finalci592-001/Results/rimebridge.xcresult",
+        "test"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:11:46.535784+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/33-rimebridge.log",
+      "exit_code": 0,
+      "elapsed_s": 25.644743791999993,
+      "ended_at": "2026-10-11T00:12:12.181139+00:00",
+      "log_sha256": "cc43222b6e0b28a63f98d22011a929378d81c34fa55306a2400b3d5db23b059d"
+    },
+    {
+      "stage": "app_keyboard",
+      "argv": [
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild",
+        "-project",
+        "Universe Keyboard.xcodeproj",
+        "-destination",
+        "platform=iOS Simulator,id=405D994F-28CB-4F89-BB22-B64AD81C05A2",
+        "-parallel-testing-enabled",
+        "NO",
+        "-maximum-concurrent-test-simulator-destinations",
+        "1",
+        "SWIFT_VERSION=6.0",
+        "SWIFT_STRICT_CONCURRENCY=complete",
+        "SWIFT_SUPPRESS_WARNINGS=NO",
+        "SWIFT_TREAT_WARNINGS_AS_ERRORS=YES",
+        "-scheme",
+        "Universe Keyboard",
+        "-configuration",
+        "Debug",
+        "-derivedDataPath",
+        "/private/tmp/uk-finalci592-001/app_keyboard-DD",
+        "-clonedSourcePackagesDirPath",
+        "/private/tmp/uk-armimpl1/SourcePackages",
+        "-disableAutomaticPackageResolution",
+        "-skipPackageUpdates",
+        "CODE_SIGNING_ALLOWED=NO",
+        "-resultBundlePath",
+        "/private/tmp/uk-finalci592-001/Results/app_keyboard.xcresult",
+        "test"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:12:12.182988+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/34-app_keyboard.log",
+      "exit_code": 0,
+      "elapsed_s": 54.696773583999985,
+      "ended_at": "2026-10-11T00:13:06.880490+00:00",
+      "log_sha256": "aa9c1167ec40286537f057681a141656ad6ae7b2f35b4207762eefde989b7749"
+    },
+    {
+      "stage": "keychain",
+      "argv": [
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild",
+        "-project",
+        "Universe Keyboard.xcodeproj",
+        "-destination",
+        "platform=iOS Simulator,id=405D994F-28CB-4F89-BB22-B64AD81C05A2",
+        "-parallel-testing-enabled",
+        "NO",
+        "-maximum-concurrent-test-simulator-destinations",
+        "1",
+        "SWIFT_VERSION=6.0",
+        "SWIFT_STRICT_CONCURRENCY=complete",
+        "SWIFT_SUPPRESS_WARNINGS=NO",
+        "SWIFT_TREAT_WARNINGS_AS_ERRORS=YES",
+        "-scheme",
+        "Universe Keyboard",
+        "-configuration",
+        "Debug",
+        "-derivedDataPath",
+        "/private/tmp/uk-finalci592-001/keychain-DD",
+        "-clonedSourcePackagesDirPath",
+        "/private/tmp/uk-armimpl1/SourcePackages",
+        "-disableAutomaticPackageResolution",
+        "-skipPackageUpdates",
+        "CODE_SIGNING_ALLOWED=YES",
+        "CODE_SIGN_IDENTITY=-",
+        "CODE_SIGNING_REQUIRED=NO",
+        "-only-testing:UniverseKeyboardTests/RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem",
+        "-resultBundlePath",
+        "/private/tmp/uk-finalci592-001/Results/keychain.xcresult",
+        "test"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:13:06.882932+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/35-keychain.log",
+      "exit_code": 0,
+      "elapsed_s": 33.44934891699998,
+      "ended_at": "2026-10-11T00:13:40.332902+00:00",
+      "log_sha256": "591e647018d1e485e5c551df783061bed151653feffae8c1c0793194b480716d"
+    },
+    {
+      "stage": "release",
+      "argv": [
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild",
+        "-project",
+        "Universe Keyboard.xcodeproj",
+        "-destination",
+        "platform=iOS Simulator,id=405D994F-28CB-4F89-BB22-B64AD81C05A2",
+        "-parallel-testing-enabled",
+        "NO",
+        "-maximum-concurrent-test-simulator-destinations",
+        "1",
+        "SWIFT_VERSION=6.0",
+        "SWIFT_STRICT_CONCURRENCY=complete",
+        "SWIFT_SUPPRESS_WARNINGS=NO",
+        "SWIFT_TREAT_WARNINGS_AS_ERRORS=YES",
+        "-scheme",
+        "Universe Keyboard",
+        "-configuration",
+        "Release",
+        "-derivedDataPath",
+        "/private/tmp/uk-finalci592-001/release-DD",
+        "-clonedSourcePackagesDirPath",
+        "/private/tmp/uk-armimpl1/SourcePackages",
+        "-disableAutomaticPackageResolution",
+        "-skipPackageUpdates",
+        "CODE_SIGNING_ALLOWED=NO",
+        "-resultBundlePath",
+        "/private/tmp/uk-finalci592-001/Results/release.xcresult",
+        "build"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:13:40.335194+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/36-release.log",
+      "exit_code": 0,
+      "elapsed_s": 78.038865875,
+      "ended_at": "2026-10-11T00:14:58.375739+00:00",
+      "log_sha256": "4b207477b08aee4a1235b1092f19ab30dac925cd66983ba31066f21e99955ef7"
+    },
+    {
+      "stage": "probe_core",
+      "argv": [
+        "/usr/bin/xcrun",
+        "swift",
+        "test",
+        "--package-path",
+        "Packages/KeyboardCore",
+        "--scratch-path",
+        "/private/tmp/uk-finalci592-001/ProbeCoreBuild",
+        "-Xswiftc",
+        "-DKEYBOARD_QUERY_COST_PROBE",
+        "-Xswiftc",
+        "-strict-concurrency=complete",
+        "-Xswiftc",
+        "-warnings-as-errors",
+        "--filter",
+        "QueryCostMemoryProbeTests"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:14:58.377514+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/37-probe_core.log",
+      "exit_code": 0,
+      "elapsed_s": 20.026923624999995,
+      "ended_at": "2026-10-11T00:15:18.405353+00:00",
+      "log_sha256": "b288d825950d026382e468a7a66d1184fdbc82e6f3ad2a9b22efeea193a370f6"
+    },
+    {
+      "stage": "probe_extension",
+      "argv": [
+        "/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild",
+        "-project",
+        "Universe Keyboard.xcodeproj",
+        "-scheme",
+        "KeyboardExtensionTests",
+        "-configuration",
+        "Debug",
+        "-destination",
+        "platform=iOS Simulator,id=405D994F-28CB-4F89-BB22-B64AD81C05A2",
+        "-parallel-testing-enabled",
+        "NO",
+        "-maximum-concurrent-test-simulator-destinations",
+        "1",
+        "-clonedSourcePackagesDirPath",
+        "/private/tmp/uk-armimpl1/SourcePackages",
+        "-disableAutomaticPackageResolution",
+        "-skipPackageUpdates",
+        "-derivedDataPath",
+        "/private/tmp/uk-finalci592-001/probe_extension-DD",
+        "CODE_SIGNING_ALLOWED=NO",
+        "SWIFT_VERSION=6.0",
+        "SWIFT_STRICT_CONCURRENCY=complete",
+        "SWIFT_SUPPRESS_WARNINGS=NO",
+        "SWIFT_TREAT_WARNINGS_AS_ERRORS=YES",
+        "QUERY_COST_PROBE_CONDITIONS=KEYBOARD_QUERY_COST_PROBE",
+        "OTHER_SWIFT_FLAGS=$(inherited) -DKEYBOARD_QUERY_COST_PROBE",
+        "OTHER_CFLAGS=$(inherited) -DDEBUG=1",
+        "ENABLE_CODE_COVERAGE=NO",
+        "CLANG_ENABLE_CODE_COVERAGE=NO",
+        "CLANG_COVERAGE_MAPPING=NO",
+        "-resultBundlePath",
+        "/private/tmp/uk-finalci592-001/Results/probe_extension.xcresult",
+        "-only-testing:KeyboardExtensionTests/QueryCostArmDiagnosticTests",
+        "-only-testing:KeyboardExtensionTests/TypoCorrectionQueryCostProbeIntegrationTests",
+        "-only-testing:KeyboardExtensionTests/TypoCorrectionRecallCoordinatorIntegrationTests",
+        "test"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:15:18.407205+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/38-probe_extension.log",
+      "exit_code": 0,
+      "elapsed_s": 27.305108958000005,
+      "ended_at": "2026-10-11T00:15:45.713167+00:00",
+      "log_sha256": "7f8fd2c6232a8d3d88bb6d6584de492f198ba798122936c7d154bae3a49b1a95"
+    },
+    {
+      "stage": "readout_rimebridge",
+      "argv": [
+        "/usr/bin/xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "summary",
+        "--path",
+        "/private/tmp/uk-finalci592-001/Results/rimebridge.xcresult"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:15:45.715391+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/39-readout_rimebridge.log",
+      "exit_code": 0,
+      "elapsed_s": 0.18564212499995847,
+      "ended_at": "2026-10-11T00:15:45.901770+00:00",
+      "log_sha256": "9abba73da9dd0e2a8645cfee5346c2bb2f8acd9011fcd1b7af2599a77a685d11"
+    },
+    {
+      "stage": "readout_app_keyboard",
+      "argv": [
+        "/usr/bin/xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "summary",
+        "--path",
+        "/private/tmp/uk-finalci592-001/Results/app_keyboard.xcresult"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:15:45.904442+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/40-readout_app_keyboard.log",
+      "exit_code": 0,
+      "elapsed_s": 0.2327267910000046,
+      "ended_at": "2026-10-11T00:15:46.137954+00:00",
+      "log_sha256": "0e8d5f362c0605e7b7d4ed1cf48b9a3eb632d7d8295bb18d3db2d334d23e7db9"
+    },
+    {
+      "stage": "readout_keychain",
+      "argv": [
+        "/usr/bin/xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "summary",
+        "--path",
+        "/private/tmp/uk-finalci592-001/Results/keychain.xcresult"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:15:46.139024+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/41-readout_keychain.log",
+      "exit_code": 0,
+      "elapsed_s": 0.07770879100002048,
+      "ended_at": "2026-10-11T00:15:46.217409+00:00",
+      "log_sha256": "f4b0cfdd431f7cd98d97a908e60805d5f01a2848d69a339363ad5381c4e5d951"
+    },
+    {
+      "stage": "readout_probe_extension",
+      "argv": [
+        "/usr/bin/xcrun",
+        "xcresulttool",
+        "get",
+        "test-results",
+        "summary",
+        "--path",
+        "/private/tmp/uk-finalci592-001/Results/probe_extension.xcresult"
+      ],
+      "attempt": 1,
+      "started_at": "2026-10-11T00:15:46.218589+00:00",
+      "log": "/private/tmp/uk-finalci592-001/Logs/42-readout_probe_extension.log",
+      "exit_code": 0,
+      "elapsed_s": 0.12734433299999637,
+      "ended_at": "2026-10-11T00:15:46.346838+00:00",
+      "log_sha256": "2f67a260dbfb8b9eebadb9ebc1e0a4997d6740dd3cd5478798fb93dfb9cadfd2"
+    }
+  ],
+  "stop_reason": null,
+  "outcome": "required_matrix_passed_executor_recorded",
+  "entry_source_paths_matched": 28,
+  "source_status_before": " M .github/workflows/swift6-quality.yml\u0000 M Keyboard/Controllers/KeyboardViewController+Layout.swift\u0000 M Keyboard/Controllers/KeyboardViewController+TypoCorrection.swift\u0000 M Keyboard/Controllers/KeyboardViewController.swift\u0000 M Keyboard/Controllers/TypoCorrectionRecallCoordinator.swift\u0000 M KeyboardExtensionTests/CandidatePrefetchUIContractTests.swift\u0000 M Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionSidecarOwner.swift\u0000 M Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift\u0000 M Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+CorrectionQuery.swift\u0000 M Packages/RimeBridge/Sources/RimeBridgeObjC/RimeSessionManager.m\u0000 M Packages/RimeBridge/Sources/RimeBridgeObjC/include/RimeSessionManager.h\u0000 M Universe Keyboard.xcodeproj/project.pbxproj\u0000 M Universe Keyboard.xcodeproj/xcshareddata/xcschemes/Universe Keyboard.xcscheme\u0000?? Keyboard/Controllers/KeyboardViewController+QueryCostProbe.swift\u0000?? Keyboard/Controllers/QueryCostArmDiagnostic.swift\u0000?? Keyboard/Controllers/QueryCostClockAnchor.swift\u0000?? Keyboard/Controllers/TypoCorrectionCallbackLedger.swift\u0000?? KeyboardExtensionTests/QueryCostArmDiagnosticTests.swift\u0000?? KeyboardExtensionTests/TypoCorrectionCallbackLedgerTests.swift\u0000?? KeyboardExtensionTests/TypoCorrectionQueryCostProbeIntegrationTests.swift\u0000?? KeyboardExtensionTests/TypoCorrectionRecallCoordinatorIntegrationTests.swift\u0000?? Packages/KeyboardCore/Sources/KeyboardCore/QueryCostMemoryProbe.swift\u0000?? Packages/KeyboardCore/Sources/KeyboardCore/QueryCostTouchLedger.swift\u0000?? Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionQueryDebugScope.swift\u0000?? Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostMemoryProbePerformanceTests.swift\u0000?? Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostMemoryProbeTests.swift\u0000?? Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostTouchLedgerTests.swift\u0000?? Packages/RimeBridge/Tests/RimeBridgeTests/RimeCorrectionQueryIntegrationTests.swift\u0000",
+  "entry_disk_free_bytes": 21097791488,
+  "device_observed": {
+    "runtime": "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
+    "dataPath": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data",
+    "dataPathSize": 4976988160,
+    "logPath": "/Users/doubleshy0n/Library/Logs/CoreSimulator/405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+    "lastUsedAt": "2026-10-10T15:38:02Z",
+    "isAvailable": true,
+    "deviceTypeIdentifier": "com.apple.CoreSimulator.SimDeviceType.iPhone-18-Pro",
+    "state": "Booted",
+    "name": "iPhone 18 Pro"
+  },
+  "classification": {
+    "full": {
+      "name": "full",
+      "requires_full": true,
+      "changed_paths": [
+        ".github/workflows/swift6-quality.yml",
+        "Keyboard/Controllers/KeyboardViewController+Layout.swift",
+        "Keyboard/Controllers/KeyboardViewController+QueryCostProbe.swift",
+        "Keyboard/Controllers/KeyboardViewController+TypoCorrection.swift",
+        "Keyboard/Controllers/KeyboardViewController.swift",
+        "Keyboard/Controllers/QueryCostArmDiagnostic.swift",
+        "Keyboard/Controllers/QueryCostClockAnchor.swift",
+        "Keyboard/Controllers/TypoCorrectionCallbackLedger.swift",
+        "Keyboard/Controllers/TypoCorrectionRecallCoordinator.swift",
+        "KeyboardExtensionTests/CandidatePrefetchUIContractTests.swift",
+        "KeyboardExtensionTests/QueryCostArmDiagnosticTests.swift",
+        "KeyboardExtensionTests/TypoCorrectionCallbackLedgerTests.swift",
+        "KeyboardExtensionTests/TypoCorrectionQueryCostProbeIntegrationTests.swift",
+        "KeyboardExtensionTests/TypoCorrectionRecallCoordinatorIntegrationTests.swift",
+        "Packages/KeyboardCore/Sources/KeyboardCore/QueryCostMemoryProbe.swift",
+        "Packages/KeyboardCore/Sources/KeyboardCore/QueryCostTouchLedger.swift",
+        "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionQueryDebugScope.swift",
+        "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionSidecarOwner.swift",
+        "Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostMemoryProbePerformanceTests.swift",
+        "Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostMemoryProbeTests.swift",
+        "Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostTouchLedgerTests.swift",
+        "Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift",
+        "Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+CorrectionQuery.swift",
+        "Packages/RimeBridge/Sources/RimeBridgeObjC/RimeSessionManager.m",
+        "Packages/RimeBridge/Sources/RimeBridgeObjC/include/RimeSessionManager.h",
+        "Packages/RimeBridge/Tests/RimeBridgeTests/RimeCorrectionQueryIntegrationTests.swift",
+        "Universe Keyboard.xcodeproj/project.pbxproj",
+        "Universe Keyboard.xcodeproj/xcshareddata/xcschemes/Universe Keyboard.xcscheme"
+      ],
+      "full_required_paths": [
+        ".github/workflows/swift6-quality.yml",
+        "Keyboard/Controllers/KeyboardViewController+Layout.swift",
+        "Keyboard/Controllers/KeyboardViewController+QueryCostProbe.swift",
+        "Keyboard/Controllers/KeyboardViewController+TypoCorrection.swift",
+        "Keyboard/Controllers/KeyboardViewController.swift",
+        "Keyboard/Controllers/QueryCostArmDiagnostic.swift",
+        "Keyboard/Controllers/QueryCostClockAnchor.swift",
+        "Keyboard/Controllers/TypoCorrectionCallbackLedger.swift",
+        "Keyboard/Controllers/TypoCorrectionRecallCoordinator.swift",
+        "KeyboardExtensionTests/CandidatePrefetchUIContractTests.swift",
+        "KeyboardExtensionTests/QueryCostArmDiagnosticTests.swift",
+        "KeyboardExtensionTests/TypoCorrectionCallbackLedgerTests.swift",
+        "KeyboardExtensionTests/TypoCorrectionQueryCostProbeIntegrationTests.swift",
+        "KeyboardExtensionTests/TypoCorrectionRecallCoordinatorIntegrationTests.swift",
+        "Packages/KeyboardCore/Sources/KeyboardCore/QueryCostMemoryProbe.swift",
+        "Packages/KeyboardCore/Sources/KeyboardCore/QueryCostTouchLedger.swift",
+        "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionQueryDebugScope.swift",
+        "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionSidecarOwner.swift",
+        "Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostMemoryProbePerformanceTests.swift",
+        "Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostMemoryProbeTests.swift",
+        "Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostTouchLedgerTests.swift",
+        "Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift",
+        "Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+CorrectionQuery.swift",
+        "Packages/RimeBridge/Sources/RimeBridgeObjC/RimeSessionManager.m",
+        "Packages/RimeBridge/Sources/RimeBridgeObjC/include/RimeSessionManager.h",
+        "Packages/RimeBridge/Tests/RimeBridgeTests/RimeCorrectionQueryIntegrationTests.swift",
+        "Universe Keyboard.xcodeproj/project.pbxproj",
+        "Universe Keyboard.xcodeproj/xcshareddata/xcschemes/Universe Keyboard.xcscheme"
+      ],
+      "reason": "sensitive_or_unknown_path"
+    },
+    "docs_only": {
+      "name": "docs_only",
+      "requires_full": false,
+      "changed_paths": [
+        "docs/assignments/typo-correction-002.md"
+      ],
+      "full_required_paths": [],
+      "reason": "all_paths_in_lightweight_allowlist"
+    }
+  },
+  "summaries": {
+    "rimebridge": {
+      "devicesAndConfigurations": [
+        {
+          "device": {
+            "architecture": "arm64",
+            "deviceId": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+            "deviceName": "iPhone 18 Pro",
+            "modelName": "iPhone 18 Pro",
+            "osBuildNumber": "24A434",
+            "osVersion": "27.0",
+            "platform": "iOS Simulator"
+          },
+          "expectedFailures": 0,
+          "failedTests": 0,
+          "passedTests": 90,
+          "skippedTests": 20,
+          "testPlanConfiguration": {
+            "configurationId": "1",
+            "configurationName": "Test Scheme Action"
+          }
+        }
+      ],
+      "environmentDescription": "RimeBridgeTests · Built with macOS 27.0",
+      "expectedFailures": 0,
+      "failedTests": 0,
+      "finishTime": 1791677532.04,
+      "passedTests": 90,
+      "result": "Passed",
+      "runtimeWarnings": [],
+      "skippedTests": 20,
+      "startTime": 1791677509.51,
+      "statistics": [],
+      "testFailures": [],
+      "title": "Test - RimeBridgeTests",
+      "topInsights": [
+        {
+          "category": "Longest Test Runs",
+          "impact": "40% of duration",
+          "text": "1 longest test run with outlier durations exceeding 0.38s (three standard deviations)"
+        }
+      ],
+      "totalTestCount": 110
+    },
+    "app_keyboard": {
+      "devicesAndConfigurations": [
+        {
+          "device": {
+            "architecture": "arm64",
+            "deviceId": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+            "deviceName": "iPhone 18 Pro",
+            "modelName": "iPhone 18 Pro",
+            "osBuildNumber": "24A434",
+            "osVersion": "27.0",
+            "platform": "iOS Simulator"
+          },
+          "expectedFailures": 0,
+          "failedTests": 0,
+          "passedTests": 453,
+          "skippedTests": 10,
+          "testPlanConfiguration": {
+            "configurationId": "1",
+            "configurationName": "Test Scheme Action"
+          }
+        }
+      ],
+      "environmentDescription": "Universe Keyboard · Built with macOS 27.0",
+      "expectedFailures": 0,
+      "failedTests": 0,
+      "finishTime": 1791677586.224,
+      "passedTests": 453,
+      "result": "Passed",
+      "runtimeWarnings": [],
+      "skippedTests": 10,
+      "startTime": 1791677533.389,
+      "statistics": [],
+      "testFailures": [],
+      "title": "Test - Universe Keyboard",
+      "topInsights": [
+        {
+          "category": "Longest Test Runs",
+          "impact": "33% of duration",
+          "text": "2 longest test runs with outlier durations exceeding 0.51s (three standard deviations)"
+        }
+      ],
+      "totalTestCount": 463
+    },
+    "keychain": {
+      "devicesAndConfigurations": [
+        {
+          "device": {
+            "architecture": "arm64",
+            "deviceId": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+            "deviceName": "iPhone 18 Pro",
+            "modelName": "iPhone 18 Pro",
+            "osBuildNumber": "24A434",
+            "osVersion": "27.0",
+            "platform": "iOS Simulator"
+          },
+          "expectedFailures": 0,
+          "failedTests": 0,
+          "passedTests": 1,
+          "skippedTests": 0,
+          "testPlanConfiguration": {
+            "configurationId": "1",
+            "configurationName": "Test Scheme Action"
+          }
+        }
+      ],
+      "environmentDescription": "Universe Keyboard · Built with macOS 27.0",
+      "expectedFailures": 0,
+      "failedTests": 0,
+      "finishTime": 1791677619.793,
+      "passedTests": 1,
+      "result": "Passed",
+      "runtimeWarnings": [],
+      "skippedTests": 0,
+      "startTime": 1791677588.079,
+      "statistics": [],
+      "testFailures": [],
+      "title": "Test - Universe Keyboard",
+      "topInsights": [],
+      "totalTestCount": 1
+    },
+    "probe_extension": {
+      "devicesAndConfigurations": [
+        {
+          "device": {
+            "architecture": "arm64",
+            "deviceId": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+            "deviceName": "iPhone 18 Pro",
+            "modelName": "iPhone 18 Pro",
+            "osBuildNumber": "24A434",
+            "osVersion": "27.0",
+            "platform": "iOS Simulator"
+          },
+          "expectedFailures": 0,
+          "failedTests": 0,
+          "passedTests": 33,
+          "skippedTests": 0,
+          "testPlanConfiguration": {
+            "configurationId": "1",
+            "configurationName": "Test Scheme Action"
+          }
+        }
+      ],
+      "environmentDescription": "KeyboardExtensionTests · Built with macOS 27.0",
+      "expectedFailures": 0,
+      "failedTests": 0,
+      "finishTime": 1791677745.574,
+      "passedTests": 33,
+      "result": "Passed",
+      "runtimeWarnings": [],
+      "skippedTests": 0,
+      "startTime": 1791677720.164,
+      "statistics": [],
+      "testFailures": [],
+      "title": "Test - KeyboardExtensionTests",
+      "topInsights": [
+        {
+          "category": "Longest Test Runs",
+          "impact": "22% of duration",
+          "text": "1 longest test run with outlier durations exceeding 0.74s (three standard deviations)"
+        }
+      ],
+      "totalTestCount": 33
+    }
+  },
+  "source_closeout_paths_matched": 28,
+  "ended_at": "2026-10-11T00:15:46.419725+00:00",
+  "elapsed_s": 293.757018791
+}

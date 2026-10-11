@@ -1,0 +1,156 @@
+{
+  "work_item": "TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001",
+  "round": 2,
+  "root": "/private/tmp/uk-routecount1",
+  "authority": "Human Product Lead current继续吧; VERIFY AUTH newly consumed",
+  "candidate_sha256": "d45bdc9be791aa1654dfde1699a261c34434cd05f68de9456d8102beebd1c2c2",
+  "target": "only ROUTE-REVIEW-R1-E01 (AR-01/F1) correction; no source or test re-review",
+  "lanes": {
+    "architecture": {
+      "lane_id": "TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001:architecture",
+      "round": 2,
+      "playbook": "governance/docs/playbooks/coordinator.md",
+      "criterion": "核对唯一finding：新binding只改expected_extension_tests34→33，原命令/env不变；8+15+10=33与原summary/raw/coverage对应；更正摘要链保留原件，不虚称新test或整体R1 Pass。覆盖这一项且无差异才finding closure Pass。"
+    },
+    "quality": {
+      "lane_id": "TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001:quality",
+      "round": 2,
+      "playbook": "governance/docs/playbooks/test-release.md",
+      "criterion": "核对唯一finding：新binding只改expected_extension_tests34→33，原命令/env不变；8+15+10=33与原summary/raw/coverage对应；更正摘要链保留原件，不虚称新test或整体R1 Pass。覆盖这一项且无差异才finding closure Pass。"
+    }
+  },
+  "budget": {
+    "max_tools_each": 8,
+    "max_seconds_each": 180,
+    "checkpoint": "first tool set unique round2 UTC/monotonic; 4calls or90s save usage and checkpoint; first cap stops; no renewal",
+    "outputs": "<lane>-review.md and <lane>-usage.json; actual calls/elapsed,1 criterion covered, closure finding result only"
+  },
+  "access": "only read frozen inputs listed here; only write own review/usage in root; no source/Git/network/decoder/tests/build/device; navigation governance links not source target expansion",
+  "stop": "missing mandatory input/hash discrepancy/budget cap => Partial/incomplete, locator and stop. No new full review/retries.",
+  "inputs": [
+    {
+      "path": "candidate.json",
+      "sha256": "d45bdc9be791aa1654dfde1699a261c34434cd05f68de9456d8102beebd1c2c2"
+    },
+    {
+      "path": "governance/AGENTS.md",
+      "sha256": "947743e29a5987f9b1abb9c220a28ebcb92bd766928e22c1dd67c046bbe62152"
+    },
+    {
+      "path": "governance/docs/ACTIVE_WORK.md",
+      "sha256": "8d1e8fcaa0c9f5e8066197d7cf2d87a09473954d91c89e1d58ec40768873dc68"
+    },
+    {
+      "path": "governance/docs/AI_WORKFLOW.md",
+      "sha256": "fd3ff24fc0d38ed134cace8ffd5479f76e6261b009d6f661d218e4e260b07413"
+    },
+    {
+      "path": "governance/docs/ASSIGNMENT_POLICY.md",
+      "sha256": "e90dd8f06371e9367652d4e7cc63dee31ee7b1ac855e7802d6d2e9b8e1e90680"
+    },
+    {
+      "path": "governance/docs/DOCUMENTATION_GOVERNANCE.md",
+      "sha256": "d13c15217037571c8df9a43257ecae6e5d8c90556e4512116cae8568999651af"
+    },
+    {
+      "path": "governance/docs/KNOWLEDGE_INDEX.md",
+      "sha256": "f0417dd2e50eb0788241e9d609b2819ee0733b18b40dcae7f4046659abc2fa85"
+    },
+    {
+      "path": "governance/docs/PERFORMANCE_BASELINE.md",
+      "sha256": "e0bfd08cb77d63567dbdfe258d3e1ac99996466a216a929380607eccf75f109c"
+    },
+    {
+      "path": "governance/docs/READING_MAPS.md",
+      "sha256": "cdcf2a2f3168e8efd48405793d24ec968f59555f619fcf92eadacdc4bd0196d4"
+    },
+    {
+      "path": "governance/docs/RELEASE_CHECKLIST.md",
+      "sha256": "952369f9fde66b3213e73a31fb3f8c0698fa8f86b6c723f731b3f9a49751f428"
+    },
+    {
+      "path": "governance/docs/assignments/typo-correction-002-int003-query-cost-p2-evidence-reconciliation-001.md",
+      "sha256": "659ba0ef1062ee93a1b19e450bbddec23c7786510de50d5d4028a65de5f28b5c"
+    },
+    {
+      "path": "governance/docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-VERIFY-001.md",
+      "sha256": "73e1e63435ee757a1332739a0113d529b2dfc9c32f45cce9c66d01fc079e6928"
+    },
+    {
+      "path": "governance/docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001.md",
+      "sha256": "0098ef6ac5a7868c4caa82b995c839c10113015a7bd1519d375504c059ecc8c4"
+    },
+    {
+      "path": "governance/docs/evidence/typo-correction-002-int003-query-cost-p2-evidence-reconciliation-001-correction.json",
+      "sha256": "87c63ad0dd61e4741673f56f8f97c9d3cdbe587f0284c9204bdf5fc68c57a461"
+    },
+    {
+      "path": "governance/docs/evidence/typo-correction-002-int003-query-cost-p2-evidence-reconciliation-001-execution-binding-corrected.json",
+      "sha256": "d76ca5e6d133541dbcb5af97f6451ee1f9841e0b66ebed96d510540fd42fa03b"
+    },
+    {
+      "path": "governance/docs/evidence/typo-correction-002-int003-query-cost-p2-evidence-reconciliation-001.md",
+      "sha256": "7b6fcc94978eb604bdbbb7dbf28505d9adc63015ca8d5c3821ab08185c5bc6d7"
+    },
+    {
+      "path": "governance/docs/evidence/typo-correction-002-int003-query-cost-p2-route-scope-validation-001.md",
+      "sha256": "fc8b101a274b31a22986fdf9d8a3591045b2d9cdb51eeec5b3575778d6ed4a6b"
+    },
+    {
+      "path": "governance/docs/playbooks/coordinator.md",
+      "sha256": "137b83f9f8f9824de23078e82fa4ceeadabe23723e054ce6347dc37561df1e30"
+    },
+    {
+      "path": "governance/docs/playbooks/test-release.md",
+      "sha256": "b7eb8cc76094f72699b6de77de6afa2608e6483a1c8da53dcf86a51ea6c35a58"
+    },
+    {
+      "path": "original/archive-manifest.json",
+      "sha256": "c39fca60aa920686c216a2e48bbb9e67c2845f9e643349e7c4323bcb0a4d06ac"
+    },
+    {
+      "path": "original/core.stderr",
+      "sha256": "bfdfc01882ab65ecbe1259ec6edb32ff8cdc15638a898b510aa94c6389f99722"
+    },
+    {
+      "path": "original/core.stdout",
+      "sha256": "15354f234069a3d09d433bbfe559de02256c1eff178f6942ae7024678f7e9fba"
+    },
+    {
+      "path": "original/coverage.json",
+      "sha256": "93565a70359e29da82ab72228d720147f3bd9f5dcbf32a47aaa6d4416127d912"
+    },
+    {
+      "path": "original/execution-binding.json",
+      "sha256": "eb3b865468b9d3945b1b4d5037d6b2a22e241ba96018dbb35f6c217e5c426fdf"
+    },
+    {
+      "path": "original/extension-summary.json",
+      "sha256": "13e70f82925469ba960e2620205f701f8ca897f500928f42061617e31121c41c"
+    },
+    {
+      "path": "original/extension.stderr",
+      "sha256": "799f9afedad92c641ac4918e340aefeaf9667b3455ca1601c60e51e664be7733"
+    },
+    {
+      "path": "original/extension.stdout",
+      "sha256": "270c35eb38388b6f9f1b1bd3c493f661590976390a8647885d5092ee9b1ce6fd"
+    },
+    {
+      "path": "original/final-identity.json",
+      "sha256": "f4fea0b0d8e0828197a4149f2625645bf23a272459c25a34e69b91af93bc72be"
+    },
+    {
+      "path": "original/receipts.json",
+      "sha256": "d6d9d16fe44c0f6888e4f73310a708f322f912d47968736fa03bba17dde72edd"
+    },
+    {
+      "path": "prior/architecture-review-r1.md",
+      "sha256": "cf554ab1a8606d375d9eb7e48082537f22fa6c49cb4cc88406d184e7b9ed6e0b"
+    },
+    {
+      "path": "prior/quality-review-r1.md",
+      "sha256": "20aeb7aee13a7a1b42bab37ad2e57d0ec784c9767486304aa5ea028b9ee7904b"
+    }
+  ]
+}

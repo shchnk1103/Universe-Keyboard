@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-10-11 — INT003 查询成本 DEBUG 工具与验证收敛（待发布候选）
+
+- 加入默认关闭的有限成本探针、真实route scope、序列边界、freeze快照及时间锚点；不增加Release持久化日志或Extension部署。
+- 协调器和probe使用hostless Extension测试；Swift格式检查覆盖ExtensionTests，保留main现有模拟器准备和生命周期恢复逻辑。
+- 固定main5927233整合候选完成完整本地CI与DEBUG52回归；P2仅接受有界provider计数/elapsed，整体性能未知保留，父Active。
+- [复用说明](docs/debugging/int003-query-cost-probe-reuse.md)。尚未commit/push/merge，不代表Release或父Gate/Close。
+
+
 ## 2026-10-07 — 删除键可滑动擦除并清空光标前文字
 
 - 点按删除一次。长按 0.5 秒后按 0.08 秒重复，大约再 0.15 秒出现垃圾桶。

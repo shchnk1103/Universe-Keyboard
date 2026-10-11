@@ -1,0 +1,78 @@
+{
+  "status": "installed_full_manifest_match",
+  "installed_app": "/Users/doubleshy0n/Library/Developer/CoreSimulator/Devices/405D994F-28CB-4F89-BB22-B64AD81C05A2/data/Containers/Bundle/Application/89DBF2C8-CE4A-4811-9046-79B27B1D2CB1/Universe Keyboard.app",
+  "device_udid": "405D994F-28CB-4F89-BB22-B64AD81C05A2",
+  "candidate_sha256": "d45bdc9be791aa1654dfde1699a261c34434cd05f68de9456d8102beebd1c2c2",
+  "source_head": "72dd21710f2a86c9f951d489f645bae89b053b58",
+  "payload_manifest_sha256": "8bded308bca12cac26d3a1f572287464d1642aea957b338b6d176ebeaa6aa442",
+  "files_match": 78,
+  "mach_o_identity_bound_by_bytes": [
+    {
+      "path": "PlugIns/Keyboard.appex/Keyboard",
+      "sha256": "68c14d3ce4bd8759483aeaf6ecd1f56cc8473eb380a89733f4b5951344a99f67",
+      "bytes": 37872,
+      "arch": "arm64",
+      "uuid": "057416AF-EA68-32D1-A849-56A91DD8548F",
+      "platforms": [
+        "7"
+      ]
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/Keyboard.debug.dylib",
+      "sha256": "11c17c39e1df94a0f0a05d47ebccce938d3ca68303c0f256a834212e7438e4bd",
+      "bytes": 14871072,
+      "arch": "arm64",
+      "uuid": "46F38D70-5630-30BF-AF9E-A13C8E303B20",
+      "platforms": [
+        "7"
+      ]
+    },
+    {
+      "path": "PlugIns/Keyboard.appex/__preview.dylib",
+      "sha256": "eccef4a1b897ac811c714b630fbce2872a5e95af9e026818a5f6a38ef7a59f91",
+      "bytes": 16800,
+      "arch": "arm64",
+      "uuid": "984A99F0-EDBC-3181-8D6A-151FC3FF26B3",
+      "platforms": [
+        "7"
+      ]
+    },
+    {
+      "path": "Universe Keyboard",
+      "sha256": "3d005a2e17e81cd9af5c818d587db53d653273289b2594a2d3fecc2c4a6fee75",
+      "bytes": 40512,
+      "arch": "arm64",
+      "uuid": "67E7D49C-2AE9-3AFA-802E-4CFB0EC1843A",
+      "platforms": [
+        "7"
+      ]
+    },
+    {
+      "path": "Universe Keyboard.debug.dylib",
+      "sha256": "2d03bcb97a99900d7ba63bb694a9459eef851a85728fbb737a0ff4c241fe5f3e",
+      "bytes": 27028400,
+      "arch": "arm64",
+      "uuid": "97964328-92C0-3A55-B02E-4BE0F8B2F283",
+      "platforms": [
+        "7"
+      ]
+    },
+    {
+      "path": "__preview.dylib",
+      "sha256": "39c5084b204f9a2a3244e4b94d1d38fe74346d45c4fc0a6a7b1f3d38a9645a0a",
+      "bytes": 16800,
+      "arch": "arm64",
+      "uuid": "3157B785-8C10-368F-A3C4-DB591625C61D",
+      "platforms": [
+        "7"
+      ]
+    }
+  ],
+  "source25_match": true,
+  "install_attempts": 1,
+  "launches": 0,
+  "input": 0,
+  "loaded_uuid_read": false,
+  "runtime_arm_confirmed": false,
+  "utc": "2026-10-10T15:46:32.667676+00:00"
+}

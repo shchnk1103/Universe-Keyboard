@@ -1,0 +1,57 @@
+[
+  {
+    "path": "typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001-completion-readout.json",
+    "sha256": "7d81894e01810847f02d2214099a476c1bf53473ee28ccefa4f9382b114a9bb7",
+    "bytes": 4680
+  },
+  {
+    "path": "typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001-preflight-receipt.json",
+    "sha256": "b561c2405bbff42afc437403298cb548050e456c3d49558ba43610a753fdf44e",
+    "bytes": 403
+  },
+  {
+    "path": "typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001-authority-entry-receipt.json",
+    "sha256": "ec60e3f147f94d4efa84037871a0552fdcf9d3aaab75a1b283dd8a9231f50fb0",
+    "bytes": 578
+  },
+  {
+    "path": "typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001-input-manifest.json",
+    "sha256": "3c7b54c2ff5b42ece187f05ab4307d80e7139dd9e05b1b1b871e05297cf76a5b",
+    "bytes": 23125
+  },
+  {
+    "path": "typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001-finish_readout.py",
+    "sha256": "514eb5e974a36fb47b14812fe05cc93b07cef55199b50d1bd5b4cbeedc4e27e0",
+    "bytes": 4629
+  },
+  {
+    "path": "typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001-readout_helpers.py",
+    "sha256": "cd3ac83f9bd251501664f13f62a58df9a1451101c8da587989dbba885531593b",
+    "bytes": 2383
+  },
+  {
+    "path": "typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001-preflight.py",
+    "sha256": "f5f269e857f12b022d7e200b191fd799d860ad71376a5116db27e49c4520b18f",
+    "bytes": 1951
+  },
+  {
+    "path": "typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001-Logs-embedded-keyboard-verify.stdout",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001-Logs-embedded-keyboard-verify.stderr",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001-Logs-embedded-keyboard-display.stdout",
+    "sha256": "00491886daae07a5296c8bad50f116bf006b0004d7bf7338ad46669fbd903a4a",
+    "bytes": 184
+  },
+  {
+    "path": "typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001-Logs-embedded-keyboard-display.stderr",
+    "sha256": "1946d16bcc0ba97f7d9b9f12e2e3e55dea11e7137516038adc2706d8d9770f46",
+    "bytes": 262
+  }
+]

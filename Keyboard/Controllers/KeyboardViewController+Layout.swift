@@ -34,7 +34,8 @@ import UIKit
 
 extension KeyboardViewController {
     var preferredKeyboardHeight: CGFloat {
-        var height = keyboardContentTopInset
+        var height =
+            keyboardContentTopInset
             + candidateBarHeight
             + candidateToKeySpacing
             + keyHeight * 4
@@ -65,3 +66,25 @@ extension KeyboardViewController {
         return constraint
     }
 }
+
+#if DEBUG && KEYBOARD_QUERY_COST_PROBE
+    extension KeyboardViewController {
+        func layoutQueryCostProbeControls() {
+            installQueryCostProbeControlsIfNeeded()
+            guard let controls = queryCostControls, let candidateBar else { return }
+            let candidateFrame = candidateBar.convert(candidateBar.bounds, to: view)
+            // Keep these DEBUG controls clear of the trailing dismiss/expand hit area
+            // (56-point button, 16-point left hit outset, trailing inset and gap).
+            let leadingInset: CGFloat = 4
+            let trailingHitReservation: CGFloat = 84
+            let width = min(286, max(0, candidateFrame.width - leadingInset - trailingHitReservation))
+            controls.isHidden = width == 0 || candidateFrame.height == 0
+            controls.frame = CGRect(
+                x: candidateFrame.minX + leadingInset, y: candidateFrame.minY + 2,
+                width: width, height: 24
+            )
+            // The overlay must receive its own touches before the candidate surface.
+            view.bringSubviewToFront(controls)
+        }
+    }
+#endif

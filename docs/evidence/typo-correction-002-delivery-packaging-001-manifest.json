@@ -1,0 +1,2289 @@
+{
+  "record_id": "TYPO-CORRECTION-002-DELIVERY-PACKAGING-001",
+  "base": "59272331b3627856c1c4480b0b5d7ad0ddade0ad",
+  "source_manifest_sha256": "8cf4b3d3cd11dbff9baddb343cf25aa2dc3f2a2d92f864040db83286eb6d2b35",
+  "source_paths": 28,
+  "source_unchanged_verified": 28,
+  "package_paths": [
+    {
+      "path": ".github/workflows/swift6-quality.yml",
+      "status": " M",
+      "bytes": 9636,
+      "sha256": "c1b06313840b6f283a629c10548695f495e20603771e65c0ee385bdaef58f40a",
+      "kind": "validated_source"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "status": " M",
+      "bytes": 146778,
+      "sha256": "a60d6fddd36dcbb5e60e4835420f6ddd6feb3fae744c02c3ed4d84e5ee435786",
+      "kind": "scoped_delivery_document"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+Layout.swift",
+      "status": " M",
+      "bytes": 4372,
+      "sha256": "fceb438279a43f6df89e7b0c7928ba943b4b6614372aa67026fd7c17b93f2553",
+      "kind": "validated_source"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+TypoCorrection.swift",
+      "status": " M",
+      "bytes": 6119,
+      "sha256": "0c34a4c68230d5ef5b793338926c1a282cb798dbe1a1a52f0e90d19316a62587",
+      "kind": "validated_source"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController.swift",
+      "status": " M",
+      "bytes": 40439,
+      "sha256": "deb103c29ab520ac432e9d7b262e4802de45efef5fdbe537da4e0bd883eb9f02",
+      "kind": "validated_source"
+    },
+    {
+      "path": "Keyboard/Controllers/TypoCorrectionRecallCoordinator.swift",
+      "status": " M",
+      "bytes": 22539,
+      "sha256": "d10ea4e89e128eb1f0c161d654071338a3b951e027c4136a7a85174704b36860",
+      "kind": "validated_source"
+    },
+    {
+      "path": "KeyboardExtensionTests/CandidatePrefetchUIContractTests.swift",
+      "status": " M",
+      "bytes": 434,
+      "sha256": "be962355b166cd2ebde2215e6a4cd6d4ebf55b6a9f4b1d3a32982792e471414a",
+      "kind": "validated_source"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionSidecarOwner.swift",
+      "status": " M",
+      "bytes": 4109,
+      "sha256": "5f0878ca242ac53831d5f8333d7e60775bd77da8078e24b2f0c095f494d69f86",
+      "kind": "validated_source"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift",
+      "status": " M",
+      "bytes": 122473,
+      "sha256": "6d5670d14266b6446763801919dc1020304dc5046f45c7763c5f97c8c452748e",
+      "kind": "validated_source"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl+CorrectionQuery.swift",
+      "status": " M",
+      "bytes": 2228,
+      "sha256": "c99002fc4a8ef435bdcb4f2455a802bd48a256f5a583c7e97b8af1bec6647e0f",
+      "kind": "validated_source"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridgeObjC/RimeSessionManager.m",
+      "status": " M",
+      "bytes": 26831,
+      "sha256": "79ae6d943879891aaf1a0799b9d9d3acbaa58669727d3f3adc5260d7f516367c",
+      "kind": "validated_source"
+    },
+    {
+      "path": "Packages/RimeBridge/Sources/RimeBridgeObjC/include/RimeSessionManager.h",
+      "status": " M",
+      "bytes": 7781,
+      "sha256": "6e746cf149b8b8a4727398fcca5d46b32eca761464bcb32adee372d47ad8bba3",
+      "kind": "validated_source"
+    },
+    {
+      "path": "Universe Keyboard.xcodeproj/project.pbxproj",
+      "status": " M",
+      "bytes": 49771,
+      "sha256": "fc399db4ae635e2b660c0fb59523139dccd315ebf5360b7944ac551d7d93f69d",
+      "kind": "validated_source"
+    },
+    {
+      "path": "Universe Keyboard.xcodeproj/xcshareddata/xcschemes/Universe Keyboard.xcscheme",
+      "status": " M",
+      "bytes": 6828,
+      "sha256": "6f50a3cb7fb788e598ef0270fed92d68a3eaa71530d51f8677bb6ae931b9a786",
+      "kind": "validated_source"
+    },
+    {
+      "path": "docs/ACTIVE_WORK.md",
+      "status": " M",
+      "bytes": 94794,
+      "sha256": "45d815e12cd3d4536f7a3f6af15d08f6748b48612f96469ae0f2f239366b9f7c",
+      "kind": "scoped_delivery_document"
+    },
+    {
+      "path": "docs/ENGINEERING_DASHBOARD.md",
+      "status": " M",
+      "bytes": 101561,
+      "sha256": "4f5e1ec52ffe7dc85529a7e9838a2b2f6a77f864fb445a0e6d84ccfdf4836478",
+      "kind": "scoped_delivery_document"
+    },
+    {
+      "path": "docs/KNOWLEDGE_INDEX.md",
+      "status": " M",
+      "bytes": 11192,
+      "sha256": "3d52fbdf7c700d7f2d9d2a561168245a1cefcedbe573c98bdf36697d77ce82b5",
+      "kind": "scoped_delivery_document"
+    },
+    {
+      "path": "docs/TYPO_BENCHMARK_REGISTRY_V2.md",
+      "status": " M",
+      "bytes": 7602,
+      "sha256": "e4597f18187eaad83d8733e2df9802830ce069fce77656c6f5b312297b1ad22e",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/TYPO_BENCHMARK_REGISTRY_V2.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/TYPO_BENCHMARK_REGISTRY_V2.md",
+        "sha256": "e4597f18187eaad83d8733e2df9802830ce069fce77656c6f5b312297b1ad22e",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/assignments/typo-correction-002-int003-query-cost-measurement-001.md",
+      "status": " M",
+      "bytes": 13283,
+      "sha256": "0d3399046b7da08df826ebbc41d7c7f7675314b2636ea607722b6f73800da23b",
+      "kind": "scoped_delivery_document"
+    },
+    {
+      "path": "docs/assignments/typo-correction-002.md",
+      "status": " M",
+      "bytes": 25236,
+      "sha256": "a73683e2196008f89e0b1fb06f1eeb2258445578bfcd44c06c22b6cf2d800f89",
+      "kind": "scoped_delivery_document"
+    },
+    {
+      "path": "Keyboard/Controllers/KeyboardViewController+QueryCostProbe.swift",
+      "status": "??",
+      "bytes": 8892,
+      "sha256": "cf9e79e4eca75263af62ae262fc034f374cc142e48e12e8c64ae8e8a4c2b97fd",
+      "kind": "validated_source"
+    },
+    {
+      "path": "Keyboard/Controllers/QueryCostArmDiagnostic.swift",
+      "status": "??",
+      "bytes": 4303,
+      "sha256": "659533bc91e6069f268501a15682f4f7857bed035d3ecb720b734c91de7fd4d7",
+      "kind": "validated_source"
+    },
+    {
+      "path": "Keyboard/Controllers/QueryCostClockAnchor.swift",
+      "status": "??",
+      "bytes": 6138,
+      "sha256": "e8bbb21826fdb899711c0e861d976884b5e21d04f17865fd44a793722ab47635",
+      "kind": "validated_source"
+    },
+    {
+      "path": "Keyboard/Controllers/TypoCorrectionCallbackLedger.swift",
+      "status": "??",
+      "bytes": 5448,
+      "sha256": "8093a248b15948da416245886c56f1d1ef8fb1cc89b583795eae290f6f7fd0d6",
+      "kind": "validated_source"
+    },
+    {
+      "path": "KeyboardExtensionTests/QueryCostArmDiagnosticTests.swift",
+      "status": "??",
+      "bytes": 8116,
+      "sha256": "89d759467373b1a4a419652a6ffc906c99028eefade36277597723fb8bf604bd",
+      "kind": "validated_source"
+    },
+    {
+      "path": "KeyboardExtensionTests/TypoCorrectionCallbackLedgerTests.swift",
+      "status": "??",
+      "bytes": 4562,
+      "sha256": "a505f2b2c3a617bd07d4da441ebf03b4282df46147f1acbb30e84afd249098f4",
+      "kind": "validated_source"
+    },
+    {
+      "path": "KeyboardExtensionTests/TypoCorrectionQueryCostProbeIntegrationTests.swift",
+      "status": "??",
+      "bytes": 13445,
+      "sha256": "0b414efb6d8f324693746fe2f914fbc1bac9d438008fcad052dfe9cd321c2af7",
+      "kind": "validated_source"
+    },
+    {
+      "path": "KeyboardExtensionTests/TypoCorrectionRecallCoordinatorIntegrationTests.swift",
+      "status": "??",
+      "bytes": 23087,
+      "sha256": "d12854dca3748dd61cf7eada1c0c1ba45707ee5d9051155ff866a5209d59cc97",
+      "kind": "validated_source"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/QueryCostMemoryProbe.swift",
+      "status": "??",
+      "bytes": 31210,
+      "sha256": "dfbc619e75982cf94e654627d56b1ffe46d25ed56a12d78cc8dc019c769742f7",
+      "kind": "validated_source"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/QueryCostTouchLedger.swift",
+      "status": "??",
+      "bytes": 1850,
+      "sha256": "b7ee5dca0beff2864c121a77c0a588594ce7c0a1c3895f86d83258b6b700a262",
+      "kind": "validated_source"
+    },
+    {
+      "path": "Packages/KeyboardCore/Sources/KeyboardCore/TypoCorrectionQueryDebugScope.swift",
+      "status": "??",
+      "bytes": 659,
+      "sha256": "78ea222205b86d29736da5d9256571f750a4ad9b51550615ee2c2b3140a0dd80",
+      "kind": "validated_source"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostMemoryProbePerformanceTests.swift",
+      "status": "??",
+      "bytes": 18045,
+      "sha256": "04b856eafd33318ed2bcd82a2bb173ccdde68b966d885faa8206e6316c1bf014",
+      "kind": "validated_source"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostMemoryProbeTests.swift",
+      "status": "??",
+      "bytes": 22144,
+      "sha256": "9f08de6864ebe5d0d3acab01d03fd460468623819d8c393677e52179cec3ee7f",
+      "kind": "validated_source"
+    },
+    {
+      "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/QueryCostTouchLedgerTests.swift",
+      "status": "??",
+      "bytes": 4331,
+      "sha256": "93478b1f68250f755db76242c31c3a7366416f8e9a71f9682e7990c215873c5e",
+      "kind": "validated_source"
+    },
+    {
+      "path": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeCorrectionQueryIntegrationTests.swift",
+      "status": "??",
+      "bytes": 8993,
+      "sha256": "bb0e6d57d198be2493152db78ca3a2019a519f9f82b28ce05ec7cb05301961d9",
+      "kind": "validated_source"
+    },
+    {
+      "path": "docs/architecture/decisions/proposed-query-cost-local-export.md",
+      "status": "??",
+      "bytes": 2575,
+      "sha256": "c82a12ee8e8ef0c9459c68e616d7c64b84782e75a2bbdcdffec776bf2fd3b9f4",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/architecture/decisions/proposed-query-cost-local-export.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/architecture/decisions/proposed-query-cost-local-export.md",
+        "sha256": "c82a12ee8e8ef0c9459c68e616d7c64b84782e75a2bbdcdffec776bf2fd3b9f4",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/assignments/typo-correction-002-delivery-packaging-001.md",
+      "status": "??",
+      "bytes": 3001,
+      "sha256": "9b211fd526998b11c2d1b11c1f61b8371ad71a4531b256670388304da15c57c7",
+      "kind": "scoped_delivery_document"
+    },
+    {
+      "path": "docs/assignments/typo-correction-002-final-ci-preparation-001.md",
+      "status": "??",
+      "bytes": 3014,
+      "sha256": "29ee7930d67689c4e8b92239cd4d6c2e4009152a3273fcf40d17243214d47041",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/assignments/typo-correction-002-final-ci-preparation-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/assignments/typo-correction-002-final-ci-preparation-001.md",
+        "sha256": "29ee7930d67689c4e8b92239cd4d6c2e4009152a3273fcf40d17243214d47041",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/assignments/typo-correction-002-final-ci-validation-001.md",
+      "status": "??",
+      "bytes": 3274,
+      "sha256": "f1ba6da597bcc42232c1398c64ef48ce4d0d52d6805b7554efecdd392348c9e9",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/assignments/typo-correction-002-final-ci-validation-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/assignments/typo-correction-002-final-ci-validation-001.md",
+        "sha256": "f1ba6da597bcc42232c1398c64ef48ce4d0d52d6805b7554efecdd392348c9e9",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/assignments/typo-correction-002-final-delivery-publication-001.md",
+      "kind": "scoped_delivery_document",
+      "status": "??",
+      "bytes": 3588,
+      "sha256": "3b1328beafc8e44af436aaf67db3453fc8230104f4ce25352e5e0b2b9e5d1e20"
+    },
+    {
+      "path": "docs/assignments/typo-correction-002-fixed-candidate-delivery-audit-001.md",
+      "status": "??",
+      "bytes": 2989,
+      "sha256": "67ea9ba36197d83430731388cda5b1c7b11a4e5a6352553bce9863071be3b7ad",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/assignments/typo-correction-002-fixed-candidate-delivery-audit-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/assignments/typo-correction-002-fixed-candidate-delivery-audit-001.md",
+        "sha256": "67ea9ba36197d83430731388cda5b1c7b11a4e5a6352553bce9863071be3b7ad",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/assignments/typo-correction-002-fixed-main-integration-001.md",
+      "status": "??",
+      "bytes": 3599,
+      "sha256": "7479878987abff2baf6452b394c31f8619272e1dbfa5c4d61892cd31c81c23e3",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/assignments/typo-correction-002-fixed-main-integration-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/assignments/typo-correction-002-fixed-main-integration-001.md",
+        "sha256": "7479878987abff2baf6452b394c31f8619272e1dbfa5c4d61892cd31c81c23e3",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/assignments/typo-correction-002-fixed-main-validation-001.md",
+      "status": "??",
+      "bytes": 3023,
+      "sha256": "513547426131be972a56faf15122728f6294f4f3c109557593a9cfd18914a461",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/assignments/typo-correction-002-fixed-main-validation-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/assignments/typo-correction-002-fixed-main-validation-001.md",
+        "sha256": "513547426131be972a56faf15122728f6294f4f3c109557593a9cfd18914a461",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/assignments/typo-correction-002-int003-query-cost-p2-arm-conditions-capture-002.md",
+      "status": "??",
+      "bytes": 4676,
+      "sha256": "bb535440338b48f73f1d606e0b92d60c03766fbd3edcabe5b717e94509e6edbb",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/assignments/typo-correction-002-int003-query-cost-p2-arm-conditions-capture-002.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/assignments/typo-correction-002-int003-query-cost-p2-arm-conditions-capture-002.md",
+        "sha256": "bb535440338b48f73f1d606e0b92d60c03766fbd3edcabe5b717e94509e6edbb",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/assignments/typo-correction-002-int003-query-cost-p2-evidence-reconciliation-001.md",
+      "status": "??",
+      "bytes": 4129,
+      "sha256": "8cf35c6c7526b2541a8491c865dcd13d0574c573a4e5956aa2fa03ccd99fcdf8",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/assignments/typo-correction-002-int003-query-cost-p2-evidence-reconciliation-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/assignments/typo-correction-002-int003-query-cost-p2-evidence-reconciliation-001.md",
+        "sha256": "8cf35c6c7526b2541a8491c865dcd13d0574c573a4e5956aa2fa03ccd99fcdf8",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/assignments/typo-correction-002-int003-query-cost-p2-lldb-event-loop-validation-001.md",
+      "status": "??",
+      "bytes": 4523,
+      "sha256": "1951c7a4e8750ea58b248a6d9e6859d0cf28ab9836879398c4010dd95b65e8f9",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/assignments/typo-correction-002-int003-query-cost-p2-lldb-event-loop-validation-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/assignments/typo-correction-002-int003-query-cost-p2-lldb-event-loop-validation-001.md",
+        "sha256": "1951c7a4e8750ea58b248a6d9e6859d0cf28ab9836879398c4010dd95b65e8f9",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/assignments/typo-correction-002-int003-query-cost-p2-memory-debug-payload-build-001.md",
+      "status": "??",
+      "bytes": 4090,
+      "sha256": "015f9928989e400f44d9e8e6e1977392d3b121e56edf15150a0dc55b30ceebe6",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/assignments/typo-correction-002-int003-query-cost-p2-memory-debug-payload-build-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/assignments/typo-correction-002-int003-query-cost-p2-memory-debug-payload-build-001.md",
+        "sha256": "015f9928989e400f44d9e8e6e1977392d3b121e56edf15150a0dc55b30ceebe6",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/assignments/typo-correction-002-int003-query-cost-p2-memory-interface-design-001.md",
+      "status": "??",
+      "bytes": 10044,
+      "sha256": "1993d21d6fedb8d00cdffc949bad1be778fbbc41adee046f2229d35d3e088499",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/assignments/typo-correction-002-int003-query-cost-p2-memory-interface-design-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/assignments/typo-correction-002-int003-query-cost-p2-memory-interface-design-001.md",
+        "sha256": "1993d21d6fedb8d00cdffc949bad1be778fbbc41adee046f2229d35d3e088499",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/assignments/typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001.md",
+      "status": "??",
+      "bytes": 4102,
+      "sha256": "1f52965a24be4095a32a1a0e5540d099ead1757cdf7c6ca5f72b6e0fc261c6f2",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/assignments/typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/assignments/typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001.md",
+        "sha256": "1f52965a24be4095a32a1a0e5540d099ead1757cdf7c6ca5f72b6e0fc261c6f2",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/assignments/typo-correction-002-int003-query-cost-p2-partial-export-001.md",
+      "status": "??",
+      "bytes": 7221,
+      "sha256": "3dc136cc631bf79c57d347c1d805994cc0950d3f20b0dc76377e062afcaeb09e",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/assignments/typo-correction-002-int003-query-cost-p2-partial-export-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/assignments/typo-correction-002-int003-query-cost-p2-partial-export-001.md",
+        "sha256": "3dc136cc631bf79c57d347c1d805994cc0950d3f20b0dc76377e062afcaeb09e",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/assignments/typo-correction-002-int003-query-cost-p2-quality-remainder-001.md",
+      "status": "??",
+      "bytes": 3640,
+      "sha256": "6e38e636a2e9f21bc29b5a439dd24c2306b64643af916ddaff2ab498a47a51ee",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/assignments/typo-correction-002-int003-query-cost-p2-quality-remainder-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/assignments/typo-correction-002-int003-query-cost-p2-quality-remainder-001.md",
+        "sha256": "6e38e636a2e9f21bc29b5a439dd24c2306b64643af916ddaff2ab498a47a51ee",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/assignments/typo-correction-002-int003-query-cost-p2-review-delivery-001.md",
+      "status": "??",
+      "bytes": 3406,
+      "sha256": "f3cb083c6065ce9f65e294643b8d08855c920913eb0cb6616c49f36f12200b89",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/assignments/typo-correction-002-int003-query-cost-p2-review-delivery-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/assignments/typo-correction-002-int003-query-cost-p2-review-delivery-001.md",
+        "sha256": "f3cb083c6065ce9f65e294643b8d08855c920913eb0cb6616c49f36f12200b89",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/assignments/typo-correction-002-int003-query-cost-p2-route-install-001.md",
+      "status": "??",
+      "bytes": 4699,
+      "sha256": "54c690fc5a3dfb1426be72358c92470df0f215a4ed61000fcebbffaf86eb2b76",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/assignments/typo-correction-002-int003-query-cost-p2-route-install-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/assignments/typo-correction-002-int003-query-cost-p2-route-install-001.md",
+        "sha256": "54c690fc5a3dfb1426be72358c92470df0f215a4ed61000fcebbffaf86eb2b76",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/assignments/typo-correction-002-int003-query-cost-p2-route-payload-001.md",
+      "status": "??",
+      "bytes": 7787,
+      "sha256": "43deb72b521aed7fd3da308c74e16c74ddb2fd64e4a7912502262c24b55f9939",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/assignments/typo-correction-002-int003-query-cost-p2-route-payload-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/assignments/typo-correction-002-int003-query-cost-p2-route-payload-001.md",
+        "sha256": "43deb72b521aed7fd3da308c74e16c74ddb2fd64e4a7912502262c24b55f9939",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/assignments/typo-correction-002-int003-query-cost-p2-route-scope-implementation-001.md",
+      "status": "??",
+      "bytes": 5252,
+      "sha256": "31e0b9da242ef00274180e1f68b868d2ab1825dbe6b0932329ea2a9423e28e25",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/assignments/typo-correction-002-int003-query-cost-p2-route-scope-implementation-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/assignments/typo-correction-002-int003-query-cost-p2-route-scope-implementation-001.md",
+        "sha256": "31e0b9da242ef00274180e1f68b868d2ab1825dbe6b0932329ea2a9423e28e25",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/assignments/typo-correction-002-int003-query-cost-p2-route-scope-review-001.md",
+      "status": "??",
+      "bytes": 5144,
+      "sha256": "81e5e39527f24b38c1ca44c6133669f98d21c0c0380304743da9be6704e7bfaa",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/assignments/typo-correction-002-int003-query-cost-p2-route-scope-review-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/assignments/typo-correction-002-int003-query-cost-p2-route-scope-review-001.md",
+        "sha256": "81e5e39527f24b38c1ca44c6133669f98d21c0c0380304743da9be6704e7bfaa",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/assignments/typo-correction-002-int003-query-cost-p2-route-scope-validation-001.md",
+      "status": "??",
+      "bytes": 6307,
+      "sha256": "132921881cfdcd3bbcf99b9c43094135165111895b5dbdf29d427a6aa6fb045e",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/assignments/typo-correction-002-int003-query-cost-p2-route-scope-validation-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/assignments/typo-correction-002-int003-query-cost-p2-route-scope-validation-001.md",
+        "sha256": "132921881cfdcd3bbcf99b9c43094135165111895b5dbdf29d427a6aa6fb045e",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/assignments/typo-correction-002-parent-closeout-inventory-001.md",
+      "status": "??",
+      "bytes": 2737,
+      "sha256": "ffc2642d9fd1a3d2c6adf567327c7212029a19eca97d6323f34918c2a3bacf91",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/assignments/typo-correction-002-parent-closeout-inventory-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/assignments/typo-correction-002-parent-closeout-inventory-001.md",
+        "sha256": "ffc2642d9fd1a3d2c6adf567327c7212029a19eca97d6323f34918c2a3bacf91",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-DELIVERY-PACKAGING-001.md",
+      "status": "??",
+      "bytes": 1222,
+      "sha256": "81e34d05468914993288d769ad588dfb8406c099d1163265593adbd5089618e7",
+      "kind": "scoped_delivery_document"
+    },
+    {
+      "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-FINAL-CI-PREPARATION-001.md",
+      "status": "??",
+      "bytes": 1206,
+      "sha256": "fde6d515f8797e0ce5c81e09396fd5e6e3a6a2b248e18ac0da54c695769f8bb7",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-FINAL-CI-PREPARATION-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/authorizations/AUTH-TYPO-CORRECTION-002-FINAL-CI-PREPARATION-001.md",
+        "sha256": "fde6d515f8797e0ce5c81e09396fd5e6e3a6a2b248e18ac0da54c695769f8bb7",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-FINAL-CI-VALIDATION-001.md",
+      "status": "??",
+      "bytes": 1865,
+      "sha256": "ad2865c15edbd882452ad6a5406d54cf61f281e78331c0065966bbc3dbe97f79",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-FINAL-CI-VALIDATION-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/authorizations/AUTH-TYPO-CORRECTION-002-FINAL-CI-VALIDATION-001.md",
+        "sha256": "ad2865c15edbd882452ad6a5406d54cf61f281e78331c0065966bbc3dbe97f79",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-FINAL-DELIVERY-PUBLICATION-001.md",
+      "kind": "scoped_delivery_document",
+      "status": "??",
+      "bytes": 1115,
+      "sha256": "d02145b7691eaccb0a3318941008ac2a91d8a904d1839cbf7e6322a2a4228809"
+    },
+    {
+      "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-FIXED-CANDIDATE-DELIVERY-AUDIT-001.md",
+      "status": "??",
+      "bytes": 1167,
+      "sha256": "8249aa2a43c3d3aae2e4b8f8e5cdacbfd156dc4206147e9b6e0542260b99fd2d",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-FIXED-CANDIDATE-DELIVERY-AUDIT-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/authorizations/AUTH-TYPO-CORRECTION-002-FIXED-CANDIDATE-DELIVERY-AUDIT-001.md",
+        "sha256": "8249aa2a43c3d3aae2e4b8f8e5cdacbfd156dc4206147e9b6e0542260b99fd2d",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-FIXED-MAIN-INTEGRATION-001.md",
+      "status": "??",
+      "bytes": 1214,
+      "sha256": "54a39955816c61d819df99be96889505393d7ce1376fc1f784aa705f2ac9df3d",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-FIXED-MAIN-INTEGRATION-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/authorizations/AUTH-TYPO-CORRECTION-002-FIXED-MAIN-INTEGRATION-001.md",
+        "sha256": "54a39955816c61d819df99be96889505393d7ce1376fc1f784aa705f2ac9df3d",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-FIXED-MAIN-VALIDATION-001.md",
+      "status": "??",
+      "bytes": 1186,
+      "sha256": "01e3275ed0855d9055d880ec2267b2ef9a20fe908ae37d4d85ab62ecc04aaf27",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-FIXED-MAIN-VALIDATION-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/authorizations/AUTH-TYPO-CORRECTION-002-FIXED-MAIN-VALIDATION-001.md",
+        "sha256": "01e3275ed0855d9055d880ec2267b2ef9a20fe908ae37d4d85ab62ecc04aaf27",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ARM-CONDITIONS-CAPTURE-002.md",
+      "status": "??",
+      "bytes": 2079,
+      "sha256": "9ed13f851640a342ac64d214e9da3d72d58ff9cd283bff8a3f5232d596d75c4b",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ARM-CONDITIONS-CAPTURE-002.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ARM-CONDITIONS-CAPTURE-002.md",
+        "sha256": "9ed13f851640a342ac64d214e9da3d72d58ff9cd283bff8a3f5232d596d75c4b",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-VERIFY-001.md",
+      "status": "??",
+      "bytes": 1428,
+      "sha256": "80db1ccc1d5e94e94232cf36a3469657770b206bc39ec732b47813febded479e",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-VERIFY-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-VERIFY-001.md",
+        "sha256": "80db1ccc1d5e94e94232cf36a3469657770b206bc39ec732b47813febded479e",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001.md",
+      "status": "??",
+      "bytes": 1358,
+      "sha256": "0098ef6ac5a7868c4caa82b995c839c10113015a7bd1519d375504c059ecc8c4",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001.md",
+        "sha256": "0098ef6ac5a7868c4caa82b995c839c10113015a7bd1519d375504c059ecc8c4",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-LLDB-EVENT-LOOP-VALIDATION-001.md",
+      "status": "??",
+      "bytes": 2068,
+      "sha256": "6c283dd3ec519d88ac223a7bbbee84125fed1c2e99c02797454889970d7566ec",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-LLDB-EVENT-LOOP-VALIDATION-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-LLDB-EVENT-LOOP-VALIDATION-001.md",
+        "sha256": "6c283dd3ec519d88ac223a7bbbee84125fed1c2e99c02797454889970d7566ec",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-PARTIAL-EXPORT-001.md",
+      "status": "??",
+      "bytes": 5659,
+      "sha256": "88e6eb4c8b6c2429e6f2885ed2fe48c91ed0b8a7c826ac4a87ef9b18ff38578e",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-PARTIAL-EXPORT-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-PARTIAL-EXPORT-001.md",
+        "sha256": "88e6eb4c8b6c2429e6f2885ed2fe48c91ed0b8a7c826ac4a87ef9b18ff38578e",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-QUALITY-REMAINDER-001.md",
+      "status": "??",
+      "bytes": 1464,
+      "sha256": "a66aea4bfc3ae3fddff2b55ca155a61206d9bab04989406038b53bcb0e29211e",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-QUALITY-REMAINDER-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-QUALITY-REMAINDER-001.md",
+        "sha256": "a66aea4bfc3ae3fddff2b55ca155a61206d9bab04989406038b53bcb0e29211e",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-REVIEW-DELIVERY-001.md",
+      "status": "??",
+      "bytes": 1438,
+      "sha256": "210f0ac101762e430e130fe4e2abf16a4e1fbe0db3f7dce322894bfdda968ff6",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-REVIEW-DELIVERY-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-REVIEW-DELIVERY-001.md",
+        "sha256": "210f0ac101762e430e130fe4e2abf16a4e1fbe0db3f7dce322894bfdda968ff6",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-INSTALL-001.md",
+      "status": "??",
+      "bytes": 1588,
+      "sha256": "b7072407683a0ad82281730e309cf2a808f79a3ca0ec09859242d2ba45c7322e",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-INSTALL-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-INSTALL-001.md",
+        "sha256": "b7072407683a0ad82281730e309cf2a808f79a3ca0ec09859242d2ba45c7322e",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-PAYLOAD-001.md",
+      "status": "??",
+      "bytes": 1678,
+      "sha256": "2c7caa8175c5157f025104ef606617b76cb86fee5ddcf5ddf2276e6681f75b5d",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-PAYLOAD-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-PAYLOAD-001.md",
+        "sha256": "2c7caa8175c5157f025104ef606617b76cb86fee5ddcf5ddf2276e6681f75b5d",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-IMPLEMENTATION-001.md",
+      "status": "??",
+      "bytes": 1630,
+      "sha256": "1352632de526933c0f549e74c079c1be7a904d4773141e5cd30554c3cf0534ff",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-IMPLEMENTATION-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-IMPLEMENTATION-001.md",
+        "sha256": "1352632de526933c0f549e74c079c1be7a904d4773141e5cd30554c3cf0534ff",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001.md",
+      "status": "??",
+      "bytes": 1546,
+      "sha256": "80fc328266cd44abc55f472b1748db5f34fd27592bacb7e29b8078f3c8717733",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001.md",
+        "sha256": "80fc328266cd44abc55f472b1748db5f34fd27592bacb7e29b8078f3c8717733",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-VALIDATION-001.md",
+      "status": "??",
+      "bytes": 1616,
+      "sha256": "9ab0a93f601a3ebbd4ef4aee7e85c8e1e070a4b19bfa786a8a791d7803bdb48c",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-VALIDATION-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-VALIDATION-001.md",
+        "sha256": "9ab0a93f601a3ebbd4ef4aee7e85c8e1e070a4b19bfa786a8a791d7803bdb48c",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-PARENT-CLOSEOUT-INVENTORY-001.md",
+      "status": "??",
+      "bytes": 1141,
+      "sha256": "533e53dc97fa32803883393b6f5685ef6b54ffa124814dec95baabd12533484d",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-PARENT-CLOSEOUT-INVENTORY-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/authorizations/AUTH-TYPO-CORRECTION-002-PARENT-CLOSEOUT-INVENTORY-001.md",
+        "sha256": "533e53dc97fa32803883393b6f5685ef6b54ffa124814dec95baabd12533484d",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/debugging/int003-query-cost-probe-reuse.md",
+      "status": "??",
+      "bytes": 3290,
+      "sha256": "165817cd17747a4edca9499f57c083d0e9753b8725c771871934629793db6bee",
+      "kind": "scoped_delivery_document"
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-delivery-packaging-001.md",
+      "status": "??",
+      "bytes": 2362,
+      "sha256": "df80046e741de31b2b4c43de32275f0f950a2b9730d914d7b56f4cfe7dc15788",
+      "kind": "scoped_delivery_document"
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-final-ci-validation-001-app_keyboard-summary.json",
+      "status": "??",
+      "bytes": 1214,
+      "sha256": "2844daa7f9cd6b8a6c285b0add24cef8a214b6253e6c14046da99935ffff88d0",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-final-ci-validation-001-app_keyboard-summary.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-final-ci-validation-001-app_keyboard-summary.json",
+        "sha256": "2844daa7f9cd6b8a6c285b0add24cef8a214b6253e6c14046da99935ffff88d0",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-final-ci-validation-001-archive-manifest.json",
+      "status": "??",
+      "bytes": 14385,
+      "sha256": "5f23614270dc2fa74866090cb670709813544711559b4a01f8972a5103950256",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-final-ci-validation-001-archive-manifest.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-final-ci-validation-001-archive-manifest.json",
+        "sha256": "5f23614270dc2fa74866090cb670709813544711559b4a01f8972a5103950256",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-final-ci-validation-001-binding-original.json",
+      "status": "??",
+      "bytes": 14057,
+      "sha256": "a507dcc71d8fd12422210d05505240e85314f7d3eb00bbb187d0cab99a0f8146",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-final-ci-validation-001-binding-original.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-final-ci-validation-001-binding-original.json",
+        "sha256": "a507dcc71d8fd12422210d05505240e85314f7d3eb00bbb187d0cab99a0f8146",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-final-ci-validation-001-execution-receipt.json",
+      "status": "??",
+      "bytes": 41785,
+      "sha256": "a12b261fd486476ef14554f7506365fc4bd1d158a5464b48893294f028e07ca9",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-final-ci-validation-001-execution-receipt.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-final-ci-validation-001-execution-receipt.json",
+        "sha256": "a12b261fd486476ef14554f7506365fc4bd1d158a5464b48893294f028e07ca9",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-final-ci-validation-001-human-authorization.json",
+      "status": "??",
+      "bytes": 465,
+      "sha256": "62e257513f0a5d365f5a64e4b062bfd661d2ba510c2d7a985aaf40b5d64af699",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-final-ci-validation-001-human-authorization.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-final-ci-validation-001-human-authorization.json",
+        "sha256": "62e257513f0a5d365f5a64e4b062bfd661d2ba510c2d7a985aaf40b5d64af699",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-final-ci-validation-001-keychain-summary.json",
+      "status": "??",
+      "bytes": 1015,
+      "sha256": "08a6979629fc2d479756464d7d9c1bc37d8d8d2f15423c80fe5e2fc11aeec27a",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-final-ci-validation-001-keychain-summary.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-final-ci-validation-001-keychain-summary.json",
+        "sha256": "08a6979629fc2d479756464d7d9c1bc37d8d8d2f15423c80fe5e2fc11aeec27a",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-final-ci-validation-001-result-accounting.json",
+      "status": "??",
+      "bytes": 8960,
+      "sha256": "e10b86e832b6cc93abd297d1c43b06fd0683a0d14d7d369fadfe90a7cb322e9a",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-final-ci-validation-001-result-accounting.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-final-ci-validation-001-result-accounting.json",
+        "sha256": "e10b86e832b6cc93abd297d1c43b06fd0683a0d14d7d369fadfe90a7cb322e9a",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-final-ci-validation-001-rimebridge-summary.json",
+      "status": "??",
+      "bytes": 1207,
+      "sha256": "0dd3a141184f4b16ca0c9231d419e9c7fe31f39c485a97d4c2b8ffc55abbb1e7",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-final-ci-validation-001-rimebridge-summary.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-final-ci-validation-001-rimebridge-summary.json",
+        "sha256": "0dd3a141184f4b16ca0c9231d419e9c7fe31f39c485a97d4c2b8ffc55abbb1e7",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-final-ci-validation-001-run.py",
+      "status": "??",
+      "bytes": 5866,
+      "sha256": "bb175651a4235d044fa6630ea43c2e068fe06f8b3967db02b1a10673b4c24d52",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-final-ci-validation-001-run.py",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-final-ci-validation-001-run.py",
+        "sha256": "bb175651a4235d044fa6630ea43c2e068fe06f8b3967db02b1a10673b4c24d52",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-final-ci-validation-001.md",
+      "status": "??",
+      "bytes": 4938,
+      "sha256": "03e97604346ee37a67ae9442b65eb73cded98ae2131b99d6184e128346b1a3b9",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-final-ci-validation-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-final-ci-validation-001.md",
+        "sha256": "03e97604346ee37a67ae9442b65eb73cded98ae2131b99d6184e128346b1a3b9",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-fixed-candidate-delivery-audit-001-manifest.json",
+      "status": "??",
+      "bytes": 14642,
+      "sha256": "91d2ea55b94bc72ed7907a3acbe4c999a0750517a22d50f49aa6c97cdc7ab448",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-fixed-candidate-delivery-audit-001-manifest.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-fixed-candidate-delivery-audit-001-manifest.json",
+        "sha256": "91d2ea55b94bc72ed7907a3acbe4c999a0750517a22d50f49aa6c97cdc7ab448",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-fixed-candidate-delivery-audit-001-p1-ci004-original.txt",
+      "status": "??",
+      "bytes": 5912,
+      "sha256": "9f34cc5a63f50ff69e91ee5e4b992be701375bc871deb7f3b55645af0ed11004",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-fixed-candidate-delivery-audit-001-p1-ci004-original.txt",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-fixed-candidate-delivery-audit-001-p1-ci004-original.txt",
+        "sha256": "9f34cc5a63f50ff69e91ee5e4b992be701375bc871deb7f3b55645af0ed11004",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-fixed-candidate-delivery-audit-001-p1-convergence-original.txt",
+      "status": "??",
+      "bytes": 5592,
+      "sha256": "b196ec55519e3d8bf33d0185d0eca71a6b53258fa1a05f5eb0c036f3d0241e79",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-fixed-candidate-delivery-audit-001-p1-convergence-original.txt",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-fixed-candidate-delivery-audit-001-p1-convergence-original.txt",
+        "sha256": "b196ec55519e3d8bf33d0185d0eca71a6b53258fa1a05f5eb0c036f3d0241e79",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-fixed-candidate-delivery-audit-001-p1-quality002-original.txt",
+      "status": "??",
+      "bytes": 12453,
+      "sha256": "6bb500ac5bef6ef377fb9ea9d4cce9e66975732093ecffa3d614b9eece9afbcf",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-fixed-candidate-delivery-audit-001-p1-quality002-original.txt",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-fixed-candidate-delivery-audit-001-p1-quality002-original.txt",
+        "sha256": "6bb500ac5bef6ef377fb9ea9d4cce9e66975732093ecffa3d614b9eece9afbcf",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-fixed-candidate-delivery-audit-001-p1-quality004-original.txt",
+      "status": "??",
+      "bytes": 15575,
+      "sha256": "9775ae837cdeea554b42b99b73f569b0f8fe3a8d4a4e27979017a1d9461b49c8",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-fixed-candidate-delivery-audit-001-p1-quality004-original.txt",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-fixed-candidate-delivery-audit-001-p1-quality004-original.txt",
+        "sha256": "9775ae837cdeea554b42b99b73f569b0f8fe3a8d4a4e27979017a1d9461b49c8",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-fixed-candidate-delivery-audit-001.md",
+      "status": "??",
+      "bytes": 9632,
+      "sha256": "aed2ab95fabab3b9ec967d402b4c50347f730fd137548367e11281c3ed43710a",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-fixed-candidate-delivery-audit-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-fixed-candidate-delivery-audit-001.md",
+        "sha256": "aed2ab95fabab3b9ec967d402b4c50347f730fd137548367e11281c3ed43710a",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-fixed-main-integration-001-candidate.json",
+      "status": "??",
+      "bytes": 10226,
+      "sha256": "8cf4b3d3cd11dbff9baddb343cf25aa2dc3f2a2d92f864040db83286eb6d2b35",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-fixed-main-integration-001-candidate.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-fixed-main-integration-001-candidate.json",
+        "sha256": "8cf4b3d3cd11dbff9baddb343cf25aa2dc3f2a2d92f864040db83286eb6d2b35",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-fixed-main-integration-001-format.log",
+      "status": "??",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-fixed-main-integration-001-format.log",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-fixed-main-integration-001-format.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-fixed-main-integration-001-lint.log",
+      "status": "??",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-fixed-main-integration-001-lint.log",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-fixed-main-integration-001-lint.log",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-fixed-main-integration-001.md",
+      "status": "??",
+      "bytes": 2756,
+      "sha256": "48f33c3397ad4c4ed2bbc8e0b1fd18af2421d3bc1c45478cd49d5dfa2a3c42f0",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-fixed-main-integration-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-fixed-main-integration-001.md",
+        "sha256": "48f33c3397ad4c4ed2bbc8e0b1fd18af2421d3bc1c45478cd49d5dfa2a3c42f0",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-fixed-main-validation-001-app_keyboard-summary.json",
+      "status": "??",
+      "bytes": 1169,
+      "sha256": "6fa45eefc0af4ee05adbb7fed7997e3381c4fce9a7af676306832621c9f87176",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-fixed-main-validation-001-app_keyboard-summary.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-fixed-main-validation-001-app_keyboard-summary.json",
+        "sha256": "6fa45eefc0af4ee05adbb7fed7997e3381c4fce9a7af676306832621c9f87176",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-fixed-main-validation-001-archive-manifest.json",
+      "status": "??",
+      "bytes": 2556,
+      "sha256": "a98b3b32b2b3ee9098cfc8f262a5ad189c9ccb07f83f89c0502c8f3622cb5644",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-fixed-main-validation-001-archive-manifest.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-fixed-main-validation-001-archive-manifest.json",
+        "sha256": "a98b3b32b2b3ee9098cfc8f262a5ad189c9ccb07f83f89c0502c8f3622cb5644",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-fixed-main-validation-001-binding-original.json",
+      "status": "??",
+      "bytes": 16095,
+      "sha256": "8f9320a53c4f1bedb490f2cfce807d837b4b406d6ebe249f9ce10ca87b8957f6",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-fixed-main-validation-001-binding-original.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-fixed-main-validation-001-binding-original.json",
+        "sha256": "8f9320a53c4f1bedb490f2cfce807d837b4b406d6ebe249f9ce10ca87b8957f6",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-fixed-main-validation-001-execution-receipt.json",
+      "status": "??",
+      "bytes": 46912,
+      "sha256": "785126fc3a7b83793251a3bfc439382e9faf2bc3fd86d8e6db58c51f8ad15296",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-fixed-main-validation-001-execution-receipt.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-fixed-main-validation-001-execution-receipt.json",
+        "sha256": "785126fc3a7b83793251a3bfc439382e9faf2bc3fd86d8e6db58c51f8ad15296",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-fixed-main-validation-001-human-authorization.json",
+      "status": "??",
+      "bytes": 340,
+      "sha256": "f292e7d5632e8e536e26099d0af66f330a2a882fe44495efaea10b6939146b54",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-fixed-main-validation-001-human-authorization.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-fixed-main-validation-001-human-authorization.json",
+        "sha256": "f292e7d5632e8e536e26099d0af66f330a2a882fe44495efaea10b6939146b54",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-fixed-main-validation-001-keychain-summary.json",
+      "status": "??",
+      "bytes": 969,
+      "sha256": "5bf5101995c708f56c811192893ee634caeb8a4ba15baf4634f046e678b4e12a",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-fixed-main-validation-001-keychain-summary.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-fixed-main-validation-001-keychain-summary.json",
+        "sha256": "5bf5101995c708f56c811192893ee634caeb8a4ba15baf4634f046e678b4e12a",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-fixed-main-validation-001-probe_extension-summary.json",
+      "status": "??",
+      "bytes": 1173,
+      "sha256": "91e0d62bbfd44450e0b875fb9d4b81406b139a6ab189626eb5b54858075f9f0e",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-fixed-main-validation-001-probe_extension-summary.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-fixed-main-validation-001-probe_extension-summary.json",
+        "sha256": "91e0d62bbfd44450e0b875fb9d4b81406b139a6ab189626eb5b54858075f9f0e",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-fixed-main-validation-001-result-accounting.json",
+      "status": "??",
+      "bytes": 13843,
+      "sha256": "1db58a267b2d7c21f11e4b6841e8cc1f59b31bfaea291647088e31f80eb7f9ed",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-fixed-main-validation-001-result-accounting.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-fixed-main-validation-001-result-accounting.json",
+        "sha256": "1db58a267b2d7c21f11e4b6841e8cc1f59b31bfaea291647088e31f80eb7f9ed",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-fixed-main-validation-001-rimebridge-summary.json",
+      "status": "??",
+      "bytes": 1160,
+      "sha256": "8c1965e0b73d846c79a8fdadc398264a46e7b7c96783d5b4344a1c0fa96a6001",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-fixed-main-validation-001-rimebridge-summary.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-fixed-main-validation-001-rimebridge-summary.json",
+        "sha256": "8c1965e0b73d846c79a8fdadc398264a46e7b7c96783d5b4344a1c0fa96a6001",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-fixed-main-validation-001-run.py",
+      "status": "??",
+      "bytes": 5856,
+      "sha256": "0e3d3811603882b32b82977a4b269c577cfebfcd95cf6cba1f2a1484cf01f07f",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-fixed-main-validation-001-run.py",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-fixed-main-validation-001-run.py",
+        "sha256": "0e3d3811603882b32b82977a4b269c577cfebfcd95cf6cba1f2a1484cf01f07f",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-fixed-main-validation-001.md",
+      "status": "??",
+      "bytes": 3209,
+      "sha256": "db1fbc5279ccfa977e534a40cd2bbbeecb3340fea7fde78dee2e1622f8c4f632",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-fixed-main-validation-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-fixed-main-validation-001.md",
+        "sha256": "db1fbc5279ccfa977e534a40cd2bbbeecb3340fea7fde78dee2e1622f8c4f632",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-arm-conditions-capture-002.md",
+      "status": "??",
+      "bytes": 3149,
+      "sha256": "0e993c0d32ba6bb984d6d91eeeed31e2f27800529b87f77673adbc7fc71665cc",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-arm-conditions-capture-002.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-arm-conditions-capture-002.md",
+        "sha256": "0e993c0d32ba6bb984d6d91eeeed31e2f27800529b87f77673adbc7fc71665cc",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-evidence-reconciliation-001-correction.json",
+      "status": "??",
+      "bytes": 2403,
+      "sha256": "87c63ad0dd61e4741673f56f8f97c9d3cdbe587f0284c9204bdf5fc68c57a461",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-evidence-reconciliation-001-correction.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-evidence-reconciliation-001-correction.json",
+        "sha256": "87c63ad0dd61e4741673f56f8f97c9d3cdbe587f0284c9204bdf5fc68c57a461",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-evidence-reconciliation-001-execution-binding-corrected.json",
+      "status": "??",
+      "bytes": 2855,
+      "sha256": "d76ca5e6d133541dbcb5af97f6451ee1f9841e0b66ebed96d510540fd42fa03b",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-evidence-reconciliation-001-execution-binding-corrected.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-evidence-reconciliation-001-execution-binding-corrected.json",
+        "sha256": "d76ca5e6d133541dbcb5af97f6451ee1f9841e0b66ebed96d510540fd42fa03b",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-evidence-reconciliation-001.md",
+      "status": "??",
+      "bytes": 2510,
+      "sha256": "0af58a1d4bacf2c17903e572dd73a2a6fc52880eb3b1dda092afcf84bfecc090",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-evidence-reconciliation-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-evidence-reconciliation-001.md",
+        "sha256": "0af58a1d4bacf2c17903e572dd73a2a6fc52880eb3b1dda092afcf84bfecc090",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-lldb-event-handling-review-001.md",
+      "status": "??",
+      "bytes": 3234,
+      "sha256": "5a2269e95c9db35b24b101760a800105c83fb4f16622a7feb3c8d6a20bedd3f2",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-lldb-event-handling-review-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-lldb-event-handling-review-001.md",
+        "sha256": "5a2269e95c9db35b24b101760a800105c83fb4f16622a7feb3c8d6a20bedd3f2",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-lldb-event-loop-validation-001.md",
+      "status": "??",
+      "bytes": 4433,
+      "sha256": "576261682de11040ddfbdc2e58118f34637699e622110462141b745f3e3707f0",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-lldb-event-loop-validation-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-lldb-event-loop-validation-001.md",
+        "sha256": "576261682de11040ddfbdc2e58118f34637699e622110462141b745f3e3707f0",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-memory-debug-payload-build-001-artifact-readout.json",
+      "status": "??",
+      "bytes": 51372,
+      "sha256": "b3152b40c979438e5ded6b2afc09af3b3954cdf062c6206cb98171c489252453",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-memory-debug-payload-build-001-artifact-readout.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-memory-debug-payload-build-001-artifact-readout.json",
+        "sha256": "b3152b40c979438e5ded6b2afc09af3b3954cdf062c6206cb98171c489252453",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-memory-debug-payload-build-001-execution-receipt.json",
+      "status": "??",
+      "bytes": 2985,
+      "sha256": "f460a89cd84fea4bb87fb7fd5b63ae44eec8e3cc3912c51959d0ca4792c547cf",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-memory-debug-payload-build-001-execution-receipt.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-memory-debug-payload-build-001-execution-receipt.json",
+        "sha256": "f460a89cd84fea4bb87fb7fd5b63ae44eec8e3cc3912c51959d0ca4792c547cf",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-memory-debug-payload-build-001-payload-manifest-partial.json",
+      "status": "??",
+      "bytes": 14764,
+      "sha256": "50f44e607637aa69fded114e0c4612e24438aff3a02002ca75c68f5022484bd4",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-memory-debug-payload-build-001-payload-manifest-partial.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-memory-debug-payload-build-001-payload-manifest-partial.json",
+        "sha256": "50f44e607637aa69fded114e0c4612e24438aff3a02002ca75c68f5022484bd4",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-memory-debug-payload-build-001-proposed-binding.json",
+      "status": "??",
+      "bytes": 4389,
+      "sha256": "6f092894ac1182ba195f9fc61d611c86ebd5ed7b0805ffa4901c18367577653e",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-memory-debug-payload-build-001-proposed-binding.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-memory-debug-payload-build-001-proposed-binding.json",
+        "sha256": "6f092894ac1182ba195f9fc61d611c86ebd5ed7b0805ffa4901c18367577653e",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-memory-debug-payload-build-001.md",
+      "status": "??",
+      "bytes": 2810,
+      "sha256": "fef5af8b3130fdfc0ed7a673f3237e05619ad72796080964b94b483571f16fe7",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-memory-debug-payload-build-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-memory-debug-payload-build-001.md",
+        "sha256": "fef5af8b3130fdfc0ed7a673f3237e05619ad72796080964b94b483571f16fe7",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001-archive-manifest.json",
+      "status": "??",
+      "bytes": 2523,
+      "sha256": "62bd9daab51d3cf720e1562c4ce234c33580070dd7c63b16c497e9d02e130bab",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001-archive-manifest.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001-archive-manifest.json",
+        "sha256": "62bd9daab51d3cf720e1562c4ce234c33580070dd7c63b16c497e9d02e130bab",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001-completion-readout.json",
+      "status": "??",
+      "bytes": 4680,
+      "sha256": "7d81894e01810847f02d2214099a476c1bf53473ee28ccefa4f9382b114a9bb7",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001-completion-readout.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001-completion-readout.json",
+        "sha256": "7d81894e01810847f02d2214099a476c1bf53473ee28ccefa4f9382b114a9bb7",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001-preflight-receipt.json",
+      "status": "??",
+      "bytes": 403,
+      "sha256": "b561c2405bbff42afc437403298cb548050e456c3d49558ba43610a753fdf44e",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001-preflight-receipt.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001-preflight-receipt.json",
+        "sha256": "b561c2405bbff42afc437403298cb548050e456c3d49558ba43610a753fdf44e",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001.md",
+      "status": "??",
+      "bytes": 2821,
+      "sha256": "f1028087b8c0d97d57177dfd84af331945b0df59b4f763b66404a3e20442eacd",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001.md",
+        "sha256": "f1028087b8c0d97d57177dfd84af331945b0df59b4f763b66404a3e20442eacd",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-memory-test-number-binding-001.json",
+      "status": "??",
+      "bytes": 199719,
+      "sha256": "e0c2e25f71c534b106cd14e340b7ffe4b9fcbac4da03249eaf6e27b888db8fea",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-memory-test-number-binding-001.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-memory-test-number-binding-001.json",
+        "sha256": "e0c2e25f71c534b106cd14e340b7ffe4b9fcbac4da03249eaf6e27b888db8fea",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-memory-test-number-binding-001.md",
+      "status": "??",
+      "bytes": 3259,
+      "sha256": "c0dc7bd0faf021b5cdf7bde58221d2219d9166bb686b0b6d135347672b0478e0",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-memory-test-number-binding-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-memory-test-number-binding-001.md",
+        "sha256": "c0dc7bd0faf021b5cdf7bde58221d2219d9166bb686b0b6d135347672b0478e0",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-partial-export-001-actual-sequence-accounting.json",
+      "status": "??",
+      "bytes": 2109,
+      "sha256": "08683df45191734e490e23d24e1aca37a968610f34056deaf4cc6d1fe7bc1462",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-partial-export-001-actual-sequence-accounting.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-partial-export-001-actual-sequence-accounting.json",
+        "sha256": "08683df45191734e490e23d24e1aca37a968610f34056deaf4cc6d1fe7bc1462",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-partial-export-001-detach.json",
+      "status": "??",
+      "bytes": 124,
+      "sha256": "98ffd13357748a3ab8dab215e6f61a2723a83b5d05ee0155cebf719c042810c6",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-partial-export-001-detach.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-partial-export-001-detach.json",
+        "sha256": "98ffd13357748a3ab8dab215e6f61a2723a83b5d05ee0155cebf719c042810c6",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-partial-export-001-human-export-response.json",
+      "status": "??",
+      "bytes": 155,
+      "sha256": "a74974aa009033c03c6785560171cdbf815550b3354eb11caf60dc6884edddb2",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-partial-export-001-human-export-response.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-partial-export-001-human-export-response.json",
+        "sha256": "a74974aa009033c03c6785560171cdbf815550b3354eb11caf60dc6884edddb2",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-partial-export-001-process-after-detach.json",
+      "status": "??",
+      "bytes": 452,
+      "sha256": "b7550de2ee3c2c4fea24edaf2ce28344f8b3a1b9120a67734ad014bdd18a66ad",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-partial-export-001-process-after-detach.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-partial-export-001-process-after-detach.json",
+        "sha256": "b7550de2ee3c2c4fea24edaf2ce28344f8b3a1b9120a67734ad014bdd18a66ad",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-partial-export-001-session-result.json",
+      "status": "??",
+      "bytes": 116,
+      "sha256": "5b4dd1ad5071ef50998573757b4ad7ec557741a72c4b24e5e5314382b1a33322",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-partial-export-001-session-result.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-partial-export-001-session-result.json",
+        "sha256": "5b4dd1ad5071ef50998573757b4ad7ec557741a72c4b24e5e5314382b1a33322",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-partial-export-001-snapshot-result.json",
+      "status": "??",
+      "bytes": 1527,
+      "sha256": "bd23583f9a79a9324ff63fd77e12eecc7ba81dad56232a0b9f46399293d152d8",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-partial-export-001-snapshot-result.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-partial-export-001-snapshot-result.json",
+        "sha256": "bd23583f9a79a9324ff63fd77e12eecc7ba81dad56232a0b9f46399293d152d8",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-partial-export-001-snapshot.bin",
+      "status": "??",
+      "bytes": 12896,
+      "sha256": "729b9422660e891239235e84b869c2e6686c06c0ab40a775b924a5b23cac8106",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-partial-export-001-snapshot.bin",
+        "source": "/private/tmp/uk-routepartial1/copy1.bin",
+        "sha256": "729b9422660e891239235e84b869c2e6686c06c0ab40a775b924a5b23cac8106",
+        "transfer": "byte_exact_of_two_identical_originals",
+        "second_source": "/private/tmp/uk-routepartial1/copy2.bin"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-partial-export-001.md",
+      "status": "??",
+      "bytes": 3689,
+      "sha256": "05b649bd43ca4e90a8bce36c89b691ec9aa20272d08a0e77970597d63261f055",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-partial-export-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-partial-export-001.md",
+        "sha256": "05b649bd43ca4e90a8bce36c89b691ec9aa20272d08a0e77970597d63261f055",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-route-install-001-installed-identity.json",
+      "status": "??",
+      "bytes": 2527,
+      "sha256": "fa3e202ecb98cea227c6fbfc3a0e20ecc00799fea46b3f1fc13314120c218ed8",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-route-install-001-installed-identity.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-route-install-001-installed-identity.json",
+        "sha256": "fa3e202ecb98cea227c6fbfc3a0e20ecc00799fea46b3f1fc13314120c218ed8",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-route-install-001.md",
+      "status": "??",
+      "bytes": 4015,
+      "sha256": "379b7b518c42e6e73836960780285e70898229460f0f0be42bef0d71ac99c6e6",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-route-install-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-route-install-001.md",
+        "sha256": "379b7b518c42e6e73836960780285e70898229460f0f0be42bef0d71ac99c6e6",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-route-payload-001-payload-manifest.json",
+      "status": "??",
+      "bytes": 16142,
+      "sha256": "8bded308bca12cac26d3a1f572287464d1642aea957b338b6d176ebeaa6aa442",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-route-payload-001-payload-manifest.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-route-payload-001-payload-manifest.json",
+        "sha256": "8bded308bca12cac26d3a1f572287464d1642aea957b338b6d176ebeaa6aa442",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-route-payload-001.md",
+      "status": "??",
+      "bytes": 6800,
+      "sha256": "4a51678b25fb582f3b46c300131df130baffd11509dbdad9304eafc03ceddeab",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-route-payload-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-route-payload-001.md",
+        "sha256": "4a51678b25fb582f3b46c300131df130baffd11509dbdad9304eafc03ceddeab",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-route-scope-implementation-001.md",
+      "status": "??",
+      "bytes": 5319,
+      "sha256": "93aa3f4ffd9ed926187b896210554a9a6a117cd36f4458c2dc1812c30eddee7e",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-route-scope-implementation-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-route-scope-implementation-001.md",
+        "sha256": "93aa3f4ffd9ed926187b896210554a9a6a117cd36f4458c2dc1812c30eddee7e",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-route-scope-validation-001.md",
+      "status": "??",
+      "bytes": 7396,
+      "sha256": "fc8b101a274b31a22986fdf9d8a3591045b2d9cdb51eeec5b3575778d6ed4a6b",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-route-scope-validation-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-route-scope-validation-001.md",
+        "sha256": "fc8b101a274b31a22986fdf9d8a3591045b2d9cdb51eeec5b3575778d6ed4a6b",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-scope-readiness-readonly-001.md",
+      "status": "??",
+      "bytes": 4393,
+      "sha256": "f837045e3bfefe14d479cdc9344b05f4eba89f43e87a7357c6f996a2d8c4e37c",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-int003-query-cost-p2-scope-readiness-readonly-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-int003-query-cost-p2-scope-readiness-readonly-001.md",
+        "sha256": "f837045e3bfefe14d479cdc9344b05f4eba89f43e87a7357c6f996a2d8c4e37c",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/evidence/typo-correction-002-parent-closeout-inventory-001.md",
+      "status": "??",
+      "bytes": 7438,
+      "sha256": "b26327c6c39c639e0e3440f6f8b45b34066e109433b2d44bc7d3e338af9328ea",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/evidence/typo-correction-002-parent-closeout-inventory-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/evidence/typo-correction-002-parent-closeout-inventory-001.md",
+        "sha256": "b26327c6c39c639e0e3440f6f8b45b34066e109433b2d44bc7d3e338af9328ea",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/plans/typo-correction-002-final-ci-validation-001-binding.json",
+      "status": "??",
+      "bytes": 14057,
+      "sha256": "a507dcc71d8fd12422210d05505240e85314f7d3eb00bbb187d0cab99a0f8146",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/plans/typo-correction-002-final-ci-validation-001-binding.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/plans/typo-correction-002-final-ci-validation-001-binding.json",
+        "sha256": "a507dcc71d8fd12422210d05505240e85314f7d3eb00bbb187d0cab99a0f8146",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/plans/typo-correction-002-final-ci-validation-001.md",
+      "status": "??",
+      "bytes": 4756,
+      "sha256": "4c826213ea693b7c8edbb07e4f1ebadb0e25151bdcadde9796507ffa800ef0bf",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/plans/typo-correction-002-final-ci-validation-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/plans/typo-correction-002-final-ci-validation-001.md",
+        "sha256": "4c826213ea693b7c8edbb07e4f1ebadb0e25151bdcadde9796507ffa800ef0bf",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/plans/typo-correction-002-final-delivery-publication-001.md",
+      "kind": "scoped_delivery_document",
+      "status": "??",
+      "bytes": 1696,
+      "sha256": "f70693d437a827269eab1535972d2cf7748d4362e392e66127cb76b231b22294"
+    },
+    {
+      "path": "docs/plans/typo-correction-002-fixed-main-validation-001-binding.json",
+      "status": "??",
+      "bytes": 16095,
+      "sha256": "8f9320a53c4f1bedb490f2cfce807d837b4b406d6ebe249f9ce10ca87b8957f6",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/plans/typo-correction-002-fixed-main-validation-001-binding.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/plans/typo-correction-002-fixed-main-validation-001-binding.json",
+        "sha256": "8f9320a53c4f1bedb490f2cfce807d837b4b406d6ebe249f9ce10ca87b8957f6",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/plans/typo-correction-002-fixed-main-validation-001.md",
+      "status": "??",
+      "bytes": 2717,
+      "sha256": "e4994777f8d65f82ae2ba79d2d403e79818550f6a1b5e5bea3dd30170260070e",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/plans/typo-correction-002-fixed-main-validation-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/plans/typo-correction-002-fixed-main-validation-001.md",
+        "sha256": "e4994777f8d65f82ae2ba79d2d403e79818550f6a1b5e5bea3dd30170260070e",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/plans/typo-correction-002-int003-query-cost-p2-lldb-event-loop-validation-001.md",
+      "status": "??",
+      "bytes": 4131,
+      "sha256": "dc2c33bf0d6b063339213e69920e3b257d4308de61f38f73fc2116cfae2985d5",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/plans/typo-correction-002-int003-query-cost-p2-lldb-event-loop-validation-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/plans/typo-correction-002-int003-query-cost-p2-lldb-event-loop-validation-001.md",
+        "sha256": "dc2c33bf0d6b063339213e69920e3b257d4308de61f38f73fc2116cfae2985d5",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/plans/typo-correction-002-int003-query-cost-p2-local-evidence-design-001.md",
+      "status": "??",
+      "bytes": 14834,
+      "sha256": "f4fa437c1f6eb5b00ac6f64bb6d21449bce36cb1634b55e6ed2e1863eefccf5b",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/plans/typo-correction-002-int003-query-cost-p2-local-evidence-design-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/plans/typo-correction-002-int003-query-cost-p2-local-evidence-design-001.md",
+        "sha256": "f4fa437c1f6eb5b00ac6f64bb6d21449bce36cb1634b55e6ed2e1863eefccf5b",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/plans/typo-correction-002-int003-query-cost-p2-memory-debug-payload-build-001.md",
+      "status": "??",
+      "bytes": 6909,
+      "sha256": "13e83f6586a43e2585c4426f7a96cf2c70190ddcf0eda9d49658e622f9b67fb3",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/plans/typo-correction-002-int003-query-cost-p2-memory-debug-payload-build-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/plans/typo-correction-002-int003-query-cost-p2-memory-debug-payload-build-001.md",
+        "sha256": "13e83f6586a43e2585c4426f7a96cf2c70190ddcf0eda9d49658e622f9b67fb3",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/plans/typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001.md",
+      "status": "??",
+      "bytes": 1087,
+      "sha256": "8502bc4abeab6d951a44ab5cd688f5aee33047250439412a614efda185cb5d13",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/plans/typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/plans/typo-correction-002-int003-query-cost-p2-memory-payload-readout-completion-001.md",
+        "sha256": "8502bc4abeab6d951a44ab5cd688f5aee33047250439412a614efda185cb5d13",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/plans/typo-correction-002-int003-query-cost-p2-memory-payload-readout-recovery-001.md",
+      "status": "??",
+      "bytes": 2777,
+      "sha256": "cbddeca0ff48d60c5d8234760bebd81f87a7bd7d5263904453795473944262b1",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/plans/typo-correction-002-int003-query-cost-p2-memory-payload-readout-recovery-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/plans/typo-correction-002-int003-query-cost-p2-memory-payload-readout-recovery-001.md",
+        "sha256": "cbddeca0ff48d60c5d8234760bebd81f87a7bd7d5263904453795473944262b1",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/plans/typo-correction-002-int003-query-cost-p2-memory-payload-transport-preparation-001.md",
+      "status": "??",
+      "bytes": 7498,
+      "sha256": "cc1abadad270c9896d7583d9db99105840bbf87c8ef26da866906b5a71d043e0",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/plans/typo-correction-002-int003-query-cost-p2-memory-payload-transport-preparation-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/plans/typo-correction-002-int003-query-cost-p2-memory-payload-transport-preparation-001.md",
+        "sha256": "cc1abadad270c9896d7583d9db99105840bbf87c8ef26da866906b5a71d043e0",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/plans/typo-correction-002-int003-query-cost-p2-minimal-route-preparation-001.md",
+      "status": "??",
+      "bytes": 4928,
+      "sha256": "3e023d9d431ef437ca7102241a7554998c6c61e76a19cdcc2897e6557fa3db03",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/plans/typo-correction-002-int003-query-cost-p2-minimal-route-preparation-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/plans/typo-correction-002-int003-query-cost-p2-minimal-route-preparation-001.md",
+        "sha256": "3e023d9d431ef437ca7102241a7554998c6c61e76a19cdcc2897e6557fa3db03",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/plans/typo-correction-002-int003-query-cost-p2-route-compatibility-design-001.md",
+      "status": "??",
+      "bytes": 8917,
+      "sha256": "94b83db50552b0aed2d581a49fb34b9b2f9cf5873f1dabf21378f6077b29b634",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/plans/typo-correction-002-int003-query-cost-p2-route-compatibility-design-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/plans/typo-correction-002-int003-query-cost-p2-route-compatibility-design-001.md",
+        "sha256": "94b83db50552b0aed2d581a49fb34b9b2f9cf5873f1dabf21378f6077b29b634",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/product-decisions/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-LOCAL-EVIDENCE-REQUIREMENTS-001.md",
+      "status": "??",
+      "bytes": 8681,
+      "sha256": "5525d039cbeacfdf10fa178bf5276e7d6be9c9c494cf3287bcca44affaf980ea",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/product-decisions/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-LOCAL-EVIDENCE-REQUIREMENTS-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/product-decisions/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-LOCAL-EVIDENCE-REQUIREMENTS-001.md",
+        "sha256": "5525d039cbeacfdf10fa178bf5276e7d6be9c9c494cf3287bcca44affaf980ea",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/product-decisions/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-MEMORY-EVIDENCE-ROUTE-001.md",
+      "status": "??",
+      "bytes": 3295,
+      "sha256": "d9479ad02bd4e3984cd05e5961efc80177cd43cd1a126ec8a3c4bc2eea3115dc",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/product-decisions/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-MEMORY-EVIDENCE-ROUTE-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/product-decisions/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-MEMORY-EVIDENCE-ROUTE-001.md",
+        "sha256": "d9479ad02bd4e3984cd05e5961efc80177cd43cd1a126ec8a3c4bc2eea3115dc",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/product-decisions/TYPO-CORRECTION-002-PARENT-PERFORMANCE-SCOPE-PROPOSAL-001.md",
+      "status": "??",
+      "bytes": 2543,
+      "sha256": "5b12365c31f2b2a5aadeb7b4ed967bd585d4d6c39e8287b9d67a9fe294ce91eb",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/product-decisions/TYPO-CORRECTION-002-PARENT-PERFORMANCE-SCOPE-PROPOSAL-001.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/product-decisions/TYPO-CORRECTION-002-PARENT-PERFORMANCE-SCOPE-PROPOSAL-001.md",
+        "sha256": "5b12365c31f2b2a5aadeb7b4ed967bd585d4d6c39e8287b9d67a9fe294ce91eb",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-architecture-review-r2.md",
+      "status": "??",
+      "bytes": 3764,
+      "sha256": "a24e2e48de1dfc6d33d5130df9e7cd47b1a5e49c060796da0a5999dac3ba5dfc",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-architecture-review-r2.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-architecture-review-r2.md",
+        "sha256": "a24e2e48de1dfc6d33d5130df9e7cd47b1a5e49c060796da0a5999dac3ba5dfc",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-architecture-usage-r2.json",
+      "status": "??",
+      "bytes": 1592,
+      "sha256": "acae3cd3ac1f08b70eed55a4f72bfaffced7a9e7e3b9c71bfac1c2631a79e372",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-architecture-usage-r2.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-architecture-usage-r2.json",
+        "sha256": "acae3cd3ac1f08b70eed55a4f72bfaffced7a9e7e3b9c71bfac1c2631a79e372",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-closeout-r2.md",
+      "status": "??",
+      "bytes": 2773,
+      "sha256": "ee458c3116a1c47b21453e844e37c868411a4ba45ac844d05425522c3ad749e9",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-closeout-r2.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-closeout-r2.md",
+        "sha256": "ee458c3116a1c47b21453e844e37c868411a4ba45ac844d05425522c3ad749e9",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-coordinator-supplementary-check-r2.json",
+      "status": "??",
+      "bytes": 398,
+      "sha256": "5e47647eee44dc95ccc85082b7e041f8a6f8c45b207fac260ca7e59de54d9c98",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-coordinator-supplementary-check-r2.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-coordinator-supplementary-check-r2.json",
+        "sha256": "5e47647eee44dc95ccc85082b7e041f8a6f8c45b207fac260ca7e59de54d9c98",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-packet-r2.json",
+      "status": "??",
+      "bytes": 7055,
+      "sha256": "1235f074caad3c9793470f601ff99d4754cf8e76813c312288246371822cc4a2",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-packet-r2.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-packet-r2.json",
+        "sha256": "1235f074caad3c9793470f601ff99d4754cf8e76813c312288246371822cc4a2",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-quality-checkpoint-usage-r2.json",
+      "status": "??",
+      "bytes": 828,
+      "sha256": "4bfb61004c73842a03076d66efeebf7fb338229544ec150418d531ea13f21f81",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-quality-checkpoint-usage-r2.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-quality-checkpoint-usage-r2.json",
+        "sha256": "4bfb61004c73842a03076d66efeebf7fb338229544ec150418d531ea13f21f81",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-quality-final-message-r2.md",
+      "status": "??",
+      "bytes": 1285,
+      "sha256": "87b121e621bc5d4f17ef71976632c0150ca2fe695078722fdaa72364f5bebd58",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-quality-final-message-r2.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-EVIDENCE-RECONCILIATION-001-quality-final-message-r2.md",
+        "sha256": "87b121e621bc5d4f17ef71976632c0150ca2fe695078722fdaa72364f5bebd58",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-QUALITY-REMAINDER-001-closeout-r3.md",
+      "status": "??",
+      "bytes": 2892,
+      "sha256": "e491916f2b386d7daa8d769d6b9485d77363b7ffa4f0240e73d762f71c450305",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-QUALITY-REMAINDER-001-closeout-r3.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-QUALITY-REMAINDER-001-closeout-r3.md",
+        "sha256": "e491916f2b386d7daa8d769d6b9485d77363b7ffa4f0240e73d762f71c450305",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-QUALITY-REMAINDER-001-packet-r3.json",
+      "status": "??",
+      "bytes": 6952,
+      "sha256": "36f2018c8bd2d46adbd4ff9650d80e26903bb647131fe9264c8709d26ea623a4",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-QUALITY-REMAINDER-001-packet-r3.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-QUALITY-REMAINDER-001-packet-r3.json",
+        "sha256": "36f2018c8bd2d46adbd4ff9650d80e26903bb647131fe9264c8709d26ea623a4",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-QUALITY-REMAINDER-001-quality-review-r3.md",
+      "status": "??",
+      "bytes": 4223,
+      "sha256": "0f782fe6f2aee0ef24c04e4e7e48ba61f1fe74b7f34687717bb7ec44206b6836",
+      "kind": "historical_review_presentation_only",
+      "origin": {
+        "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-QUALITY-REMAINDER-001-quality-review-r3.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-QUALITY-REMAINDER-001-quality-review-r3.md",
+        "sha256": "ffdf42bafc551b7bcb1111c4bb4009e89c1bf8212d4732c78b48b4828c331700",
+        "transfer": "byte_exact"
+      },
+      "immutable_original": {
+        "published_path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-QUALITY-REMAINDER-001-quality-review-r3.md",
+        "original_archive": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-QUALITY-REMAINDER-001-quality-review-r3.original.txt",
+        "original_sha256": "ffdf42bafc551b7bcb1111c4bb4009e89c1bf8212d4732c78b48b4828c331700",
+        "presentation_sha256": "0f782fe6f2aee0ef24c04e4e7e48ba61f1fe74b7f34687717bb7ec44206b6836",
+        "change": "only temp-path link syntax, original report immutable"
+      }
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-QUALITY-REMAINDER-001-quality-review-r3.original.txt",
+      "kind": "immutable_original_review",
+      "status": "??",
+      "bytes": 3674,
+      "sha256": "ffdf42bafc551b7bcb1111c4bb4009e89c1bf8212d4732c78b48b4828c331700"
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-QUALITY-REMAINDER-001-quality-usage-r3.json",
+      "status": "??",
+      "bytes": 1277,
+      "sha256": "c6d1e2b6382730bba95a1ed516e45994c5d8c35044ee3d02454145f1f588688b",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-QUALITY-REMAINDER-001-quality-usage-r3.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-QUALITY-REMAINDER-001-quality-usage-r3.json",
+        "sha256": "c6d1e2b6382730bba95a1ed516e45994c5d8c35044ee3d02454145f1f588688b",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-REVIEW-DELIVERY-001-closeout-r2.md",
+      "status": "??",
+      "bytes": 4112,
+      "sha256": "d76d33b90a46d01216a4f42de5db24cb9f47868bf1424b1192482fa8a5c092c4",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-REVIEW-DELIVERY-001-closeout-r2.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-REVIEW-DELIVERY-001-closeout-r2.md",
+        "sha256": "d76d33b90a46d01216a4f42de5db24cb9f47868bf1424b1192482fa8a5c092c4",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-REVIEW-DELIVERY-001-packet-r2.json",
+      "status": "??",
+      "bytes": 3531,
+      "sha256": "14373776d37ce5e0a3e97a8a834250785c385448307009a19ab0022e5e3fd695",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-REVIEW-DELIVERY-001-packet-r2.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-REVIEW-DELIVERY-001-packet-r2.json",
+        "sha256": "14373776d37ce5e0a3e97a8a834250785c385448307009a19ab0022e5e3fd695",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-REVIEW-DELIVERY-001-quality-review-r2.md",
+      "status": "??",
+      "bytes": 6309,
+      "sha256": "ce48b211bb9d7bbd1a409a0688290bcd4d6914591c0529b04e19c6d35809da57",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-REVIEW-DELIVERY-001-quality-review-r2.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-REVIEW-DELIVERY-001-quality-review-r2.md",
+        "sha256": "ce48b211bb9d7bbd1a409a0688290bcd4d6914591c0529b04e19c6d35809da57",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-REVIEW-DELIVERY-001-quality-usage-r2.json",
+      "status": "??",
+      "bytes": 3213,
+      "sha256": "076a6f796af6485c5b1844c5afe0e11045aa19beec5886025301d7a6bfdba35c",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-REVIEW-DELIVERY-001-quality-usage-r2.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-REVIEW-DELIVERY-001-quality-usage-r2.json",
+        "sha256": "076a6f796af6485c5b1844c5afe0e11045aa19beec5886025301d7a6bfdba35c",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-REVIEW-DELIVERY-001-usage-interpretation-r2.json",
+      "status": "??",
+      "bytes": 648,
+      "sha256": "cafbcf639aae4bfa484af47c7254244ab8fc549cf5e79f6980ca59a35f2d069c",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-REVIEW-DELIVERY-001-usage-interpretation-r2.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-REVIEW-DELIVERY-001-usage-interpretation-r2.json",
+        "sha256": "cafbcf639aae4bfa484af47c7254244ab8fc549cf5e79f6980ca59a35f2d069c",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-architecture-review-r1.md",
+      "status": "??",
+      "bytes": 5613,
+      "sha256": "cf554ab1a8606d375d9eb7e48082537f22fa6c49cb4cc88406d184e7b9ed6e0b",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-architecture-review-r1.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-architecture-review-r1.md",
+        "sha256": "cf554ab1a8606d375d9eb7e48082537f22fa6c49cb4cc88406d184e7b9ed6e0b",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-architecture-usage-r1.json",
+      "status": "??",
+      "bytes": 3366,
+      "sha256": "6b9a7cad9226d6d0c4d761f52dd77c9bff534e1165bab75cad41b6278d464590",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-architecture-usage-r1.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-architecture-usage-r1.json",
+        "sha256": "6b9a7cad9226d6d0c4d761f52dd77c9bff534e1165bab75cad41b6278d464590",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-closeout-r1.md",
+      "status": "??",
+      "bytes": 3494,
+      "sha256": "409f234f131dd5666e6533a81931621bda35d82cf468edad33ead88e54df98f8",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-closeout-r1.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-closeout-r1.md",
+        "sha256": "409f234f131dd5666e6533a81931621bda35d82cf468edad33ead88e54df98f8",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-coordinator-timing-correction.json",
+      "status": "??",
+      "bytes": 448,
+      "sha256": "4e06f7d08cde5c5e7c33fc35a5ffe0b90885addd9fae54ea658338fefd988e1b",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-coordinator-timing-correction.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-coordinator-timing-correction.json",
+        "sha256": "4e06f7d08cde5c5e7c33fc35a5ffe0b90885addd9fae54ea658338fefd988e1b",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-packet-r1.json",
+      "status": "??",
+      "bytes": 21066,
+      "sha256": "a40aff12b6e47a40cf3b3039faf781272db31286a931b2220b3730d973ad7f0c",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-packet-r1.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-packet-r1.json",
+        "sha256": "a40aff12b6e47a40cf3b3039faf781272db31286a931b2220b3730d973ad7f0c",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-premature-quality-review.md",
+      "status": "??",
+      "bytes": 3755,
+      "sha256": "1c17f5295d4f0cf8e2f1d2b8c1bad155f42185c87df4fab6bc842133cdec516b",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-premature-quality-review.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-premature-quality-review.md",
+        "sha256": "1c17f5295d4f0cf8e2f1d2b8c1bad155f42185c87df4fab6bc842133cdec516b",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-premature-quality-usage.json",
+      "status": "??",
+      "bytes": 1938,
+      "sha256": "ed07b8033977da6b6d3ab4d06de071eb65bd19389f6ae4f5cce5ed22d433cae1",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-premature-quality-usage.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-premature-quality-usage.json",
+        "sha256": "ed07b8033977da6b6d3ab4d06de071eb65bd19389f6ae4f5cce5ed22d433cae1",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-quality-review-r1.md",
+      "status": "??",
+      "bytes": 8625,
+      "sha256": "eb6099fe66a465bff53bceecb841a0370430e0575b5bef251f8c5cce9807e497",
+      "kind": "historical_review_presentation_only",
+      "origin": {
+        "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-quality-review-r1.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-quality-review-r1.md",
+        "sha256": "20aeb7aee13a7a1b42bab37ad2e57d0ec784c9767486304aa5ea028b9ee7904b",
+        "transfer": "byte_exact"
+      },
+      "immutable_original": {
+        "published_path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-quality-review-r1.md",
+        "original_archive": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-quality-review-r1.original.txt",
+        "original_sha256": "20aeb7aee13a7a1b42bab37ad2e57d0ec784c9767486304aa5ea028b9ee7904b",
+        "presentation_sha256": "eb6099fe66a465bff53bceecb841a0370430e0575b5bef251f8c5cce9807e497",
+        "change": "only temp-path link syntax, original report immutable"
+      }
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-quality-review-r1.original.txt",
+      "kind": "immutable_original_review",
+      "status": "??",
+      "bytes": 7702,
+      "sha256": "20aeb7aee13a7a1b42bab37ad2e57d0ec784c9767486304aa5ea028b9ee7904b"
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-quality-usage-r1.json",
+      "status": "??",
+      "bytes": 3297,
+      "sha256": "db62c94dfc2f18e2999d0861521cddf741f86c681e37a6b990b2790179772dcb",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-quality-usage-r1.json",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-quality-usage-r1.json",
+        "sha256": "db62c94dfc2f18e2999d0861521cddf741f86c681e37a6b990b2790179772dcb",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-residuals-r1.md",
+      "status": "??",
+      "bytes": 1495,
+      "sha256": "8c8f8d72d150477eab655c0c0858bd33a08660844c9e6d8a8e42fd8a97098183",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-residuals-r1.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-residuals-r1.md",
+        "sha256": "8c8f8d72d150477eab655c0c0858bd33a08660844c9e6d8a8e42fd8a97098183",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/reviews/typo-correction-002-int003-query-cost-p2-memory-callsite-review-completion-001-quality-r5.md",
+      "status": "??",
+      "bytes": 4955,
+      "sha256": "70da178241c840c7c1d032d1b50536c180432f5a94b3f591ba8a0bbdfb1a2e63",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/reviews/typo-correction-002-int003-query-cost-p2-memory-callsite-review-completion-001-quality-r5.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/typo-correction-002-int003-query-cost-p2-memory-callsite-review-completion-001-quality-r5.md",
+        "sha256": "70da178241c840c7c1d032d1b50536c180432f5a94b3f591ba8a0bbdfb1a2e63",
+        "transfer": "byte_exact"
+      }
+    },
+    {
+      "path": "docs/reviews/typo-correction-002-int003-query-cost-p2-memory-review-delivery-completion-001-quality-r4.md",
+      "status": "??",
+      "bytes": 7538,
+      "sha256": "5631f063573256dc02fe51fed84ccc591d10ee58679ff67fae7ed9692b7bb82e",
+      "kind": "byte_exact_evidence",
+      "origin": {
+        "path": "docs/reviews/typo-correction-002-int003-query-cost-p2-memory-review-delivery-completion-001-quality-r4.md",
+        "source": "/Users/doubleshy0n/.codex/worktrees/int003-xcode-env-preflight-001/Universe Keyboard/docs/reviews/typo-correction-002-int003-query-cost-p2-memory-review-delivery-completion-001-quality-r4.md",
+        "sha256": "5631f063573256dc02fe51fed84ccc591d10ee58679ff67fae7ed9692b7bb82e",
+        "transfer": "byte_exact"
+      }
+    }
+  ],
+  "byte_exact_transfers": 147,
+  "selected_root_count": 36,
+  "main_dependency_refs_not_copied": [
+    "docs/TYPO_CORRECTION.md",
+    "docs/architecture/decisions/0015-contextual-multi-error-typo-correction.md",
+    "docs/architecture/decisions/0016-progressive-contextual-recall-preflight.md",
+    "docs/assignments/typo-correction-002-qa001-revalidation-08-fresh-package-001.md",
+    "docs/assignments/typo-correction-002.md",
+    "docs/assignments/typo-correction-003.md",
+    "docs/evidence/typo-correction-002-device-hub-validation.md",
+    "docs/evidence/typo-correction-002-int003-query-cost-p1-ci-remediation-001.md",
+    "docs/evidence/typo-correction-002-runtime-integration-hardening-blocker-remediation-publication-001.md",
+    "docs/evidence/typo-correction-002-runtime-integration-implementation-001.md",
+    "docs/evidence/typo-correction-002-sim-run-2026-09-19-performance-reval-03-inconclusive.md",
+    "docs/evidence/typo-correction-002-sim-run-2026-09-19-sidecar-reval-01.md",
+    "docs/evidence/typo-correction-002-sim-run-2026-09-22-qa001-reval-08-target-observed.md",
+    "docs/evidence/typo-correction-002-sim-run-2026-09-23-int003-stale-cancel-product-001.md",
+    "docs/reviews/typo-correction-002-sim-run-2026-09-19-sidecar-reval-01-quality-review.md",
+    "docs/reviews/typo-correction-002-sim-run-2026-09-22-qa001-reval-08-quality-review.md"
+  ],
+  "metadata_self_excluded_path": "docs/evidence/typo-correction-002-delivery-packaging-001-manifest.json",
+  "index_empty": true,
+  "publication_authority": "Human authorized one commit/push/draft PR; consumed, execution active",
+  "historical_review_aliases": [
+    {
+      "published_path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-QUALITY-REMAINDER-001-quality-review-r3.md",
+      "original_archive": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-QUALITY-REMAINDER-001-quality-review-r3.original.txt",
+      "original_sha256": "ffdf42bafc551b7bcb1111c4bb4009e89c1bf8212d4732c78b48b4828c331700",
+      "presentation_sha256": "0f782fe6f2aee0ef24c04e4e7e48ba61f1fe74b7f34687717bb7ec44206b6836",
+      "change": "only temp-path link syntax, original report immutable"
+    },
+    {
+      "published_path": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-quality-review-r1.md",
+      "original_archive": "docs/reviews/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001-quality-review-r1.original.txt",
+      "original_sha256": "20aeb7aee13a7a1b42bab37ad2e57d0ec784c9767486304aa5ea028b9ee7904b",
+      "presentation_sha256": "eb6099fe66a465bff53bceecb841a0370430e0575b5bef251f8c5cce9807e497",
+      "change": "only temp-path link syntax, original report immutable"
+    }
+  ],
+  "publication_proposal": {
+    "assignment_path": "docs/assignments/typo-correction-002-final-delivery-publication-001.md",
+    "authorization_path": "docs/authorizations/AUTH-TYPO-CORRECTION-002-FINAL-DELIVERY-PUBLICATION-001.md",
+    "status": "live_consumed_current_execution"
+  },
+  "checks": {
+    "markdown": 98,
+    "json": 53,
+    "kos_json_fences": 43,
+    "missing_links": 0,
+    "source_hashes_matched": 28,
+    "diff_check": "pass",
+    "tests": "not_repeated_source_unchanged"
+  }
+}

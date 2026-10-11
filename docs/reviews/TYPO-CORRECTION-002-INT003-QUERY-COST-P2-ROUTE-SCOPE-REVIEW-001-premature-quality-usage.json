@@ -1,0 +1,35 @@
+{
+  "work_item": "TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001",
+  "lane_id": "TYPO-CORRECTION-002-INT003-QUERY-COST-P2-ROUTE-SCOPE-REVIEW-001:quality",
+  "round": 1,
+  "packet_sha256_expected": "a40aff12b6e47a40cf3b3039faf781272db31286a931b2220b3730d973ad7f0c",
+  "start_utc": "2026-10-10T15:07:46+00:00",
+  "start_monotonic": 1731750.232498041,
+  "tool_calls": 7,
+  "elapsed_seconds": 144.418,
+  "packet_sha256_verified": true,
+  "declared_input_count": 94,
+  "input_hash_mismatches": 0,
+  "coverage": {
+    "packet_sha256": "verified",
+    "frozen_inputs": {
+      "expected": 94,
+      "verified": 94,
+      "mismatches": 0
+    },
+    "governance_required_reading": "read; required reading frozen in packet",
+    "Q1": "partial; underlying logs/receipts/source membership/candidate binding not cross-checked",
+    "Q2": "incomplete; ten-path plus decoder/test coverage not reviewed",
+    "Q3": "partial; claim boundary read, static controller/helper chain not reviewed",
+    "Q4": "partial; packet inputs hashes verified, detailed candidate/format/execution provenance not cross-checked"
+  },
+  "stop_reason": null,
+  "packet_sha256_actual": "a40aff12b6e47a40cf3b3039faf781272db31286a931b2220b3730d973ad7f0c",
+  "input_mismatches": [],
+  "first_call_completed_utc": "2026-10-10T15:07:46+00:00",
+  "last_checkpoint_utc": "2026-10-10T15:10:10.877090+00:00",
+  "elapsed_source": "time.monotonic from coordinator-confirmed first-call origin; includes reasoning and waiting",
+  "monotonic_elapsed_seconds_at_last_observation": 144.418,
+  "clock_note": "Prior report incorrectly reused a prior round start_utc and reported 6815s. Corrected to this round start 2026-10-10T15:07:46+00:00 / monotonic 1731750.232498041. Previous stop was erroneous; preserve its history, continue with remaining budget.",
+  "decision": "In progress; prior Partial is superseded by completed review only if remaining coverage is achieved."
+}

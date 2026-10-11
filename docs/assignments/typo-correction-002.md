@@ -9,9 +9,9 @@
 | Field | Value |
 |---|---|
 | Lifecycle | **Active** — INT-003 query-cost P1 instrumentation is on main; this does not close the parent |
-| Current phase | PR #184 merged as `03f4d0cc68ce22df60e1f0545afe6ae3b27d30ab`. P1 coordinator assertions and the real same-call RimeBridge readiness/setup/schema matrix remain open; P2 capture awaits exact source/review, installed-payload and Run-manifest freeze plus its separate AUTH consumption. |
-| Non-claims | No Product cost acceptance or budget, QA-001/Product Gate, parent Close, TestFlight/Release, ADR Accept, or `RimeRuntimeProvenance` restoration |
-| Next | Complete the bounded P1 evidence conditions, then freeze and execute the separately authorized P2 Simulator capture; keep this parent Active |
+| Current phase | P1 bounded evidence and accepted P2 converged; fixed main5927233 integration/full CI/DEBUG52 passed. Delivery prepared; parent Active. |
+| Non-claims | Whole CPU/UI/memory/native nonempty-query cost and current v2 overall observer unverified; no Gate/Close/Release/ADR Accept/provenance restoration |
+| Next | Publish the frozen delivery package only with specific commit/push/PR authority; hosted CI and merge, then Gate/Close each separately authorized. Do not recapture P2 or chase main. |
 
 **Repository change types:** `Contract`, `Implementation`, `Evidence`, `State`
 
@@ -164,7 +164,7 @@ This child does not authorize parent closure, Product/Quality/Release Gate, devi
 - Multi-error hypotheses and candidate ranking are bounded, tested and default-safe.
 - Registry and benchmark cases distinguish single-edit legacy behavior from V2 multi-error behavior.
 - Focused and full affected-package tests pass, along with Debug and Release builds.
-- Performance evidence records the required environment and comparison results.
+- Performance evidence follows the [Human-approved scoped amendment](../product-decisions/TYPO-CORRECTION-002-PARENT-PERFORMANCE-SCOPE-PROPOSAL-001.md): accepted bounded P2 counts/elapsed and query-boundedness evidence; no new paired performance capture is required for this task. Whole CPU/UI/memory and v2 observer cost remain unverified, not a performance Pass.
 - Device Hub iOS 27 iPhone 17 Pro Max acceptance records candidate recovery and interaction regression results.
 - Documentation, changelog and Dashboard impacts are complete.
 
@@ -180,3 +180,7 @@ This child does not authorize parent closure, Product/Quality/Release Gate, devi
 
 - **Required Handoff Content:** changed-file inventory, candidate/session boundary evidence, benchmark results, performance evidence, Device Hub result, residual risks and documentation impact.
 - **Revalidation Trigger:** any change to data retention, learning semantics, query-session lifecycle, RIME/session ownership, default promotion, device constraint or Product Contract.
+
+## 2026-10-11 scoped convergence and delivery
+
+The preceding historical open conditions retain their original date/binding; current P1 disposition is the byte-preserved [convergence original](../evidence/typo-correction-002-fixed-candidate-delivery-audit-001-p1-convergence-original.txt) and [delivery audit](../evidence/typo-correction-002-fixed-candidate-delivery-audit-001.md). [Accepted P2 contract](../product-decisions/TYPO-CORRECTION-002-INT003-QUERY-COST-P2-LOCAL-EVIDENCE-REQUIREMENTS-001.md), [Human performance amendment](../product-decisions/TYPO-CORRECTION-002-PARENT-PERFORMANCE-SCOPE-PROPOSAL-001.md) and [new fixed CI](../evidence/typo-correction-002-fixed-main-validation-001.md) bind current conclusions. Parent remains Active. This state sync grants no merge/Gate/Close.

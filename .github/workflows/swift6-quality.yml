@@ -94,7 +94,7 @@ jobs:
         run: |
           git cat-file -e "${BASE_SHA}^{commit}"
           changed_files="$(git diff --name-only --diff-filter=ACMR "${BASE_SHA}" "${GITHUB_SHA}" -- \
-            "Universe Keyboard" "Keyboard" "Packages" "UniverseKeyboardTests" "KeyboardTests")"
+            "Universe Keyboard" "Keyboard" "Packages" "UniverseKeyboardTests" "KeyboardTests" "KeyboardExtensionTests")"
           while IFS= read -r file; do
             [[ "${file}" == *.swift ]] || continue
             xcrun swift-format lint --strict --configuration .swift-format "${file}"
