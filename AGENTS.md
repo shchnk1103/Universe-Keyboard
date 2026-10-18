@@ -22,6 +22,7 @@
 5. 涉及代码改动时再阅读 `docs/PROJECT_CONTEXT.md`
 6. 运营卫生规则见 `docs/kos/kos-2.1-operational-maturity.md`（不替代 KOS 2.0 冻结原则）
 7. KOS 2.2 目前为 **advisory**，Adopted pin v0.9.0：E-01、A-01/B-01、P-01、D-01 仍仅供新记录显式 opt-in；v0.9.0 的 M-02 触发身份/非递归收尾适用于本决定后的触发，reviewer 范围/预算/停止条款适用于决定后新分配的独立 lane。细则见 [docs/kos/UPGRADE_STATUS.md](docs/kos/UPGRADE_STATUS.md) 与 .kos/project.json。校验绿不是 Product / merge / Release。未授权 required。
+8. **Task Workspace（opt-in，UK-007）**：只对 Assignment 明确写明采用 `ops/task-workspace.md`（Kit commit `9ca6dc015bf01084150538aac65cedc25b2a33a5`，见 [docs/kos/UPGRADE_STATUS.md](docs/kos/UPGRADE_STATUS.md)）的新任务生效；现有 Active 任务、Codex 任务与 Worktree 不迁移、不修改。拿到 Task ID 时：① 在 `docs/assignments/` 按 `record_id` 定位 Assignment（找不到再按 Task ID 搜 PR 与远端分支）；② 定位 carrier 分支；③ fetch 后读该分支 head 上的 `docs/tasks/<TASK-ID>/BRIEF.md`、`log.md`，以及 AUTH、Plan 和 `read_on_demand` 指向的必要证据；④ 确认当前阶段、Checkpoint 与剩余工作；⑤ 按合同第四、八节核对 Writer：只有从 `log.md` 推出的 `W` 且无待接收 `P` 才能写，镜像与 log 冲突或无法确认唯一 Writer 就停止；⑥ 在有效授权内继续；⑦ 重要进度变化时写 Checkpoint。无法访问仓库或 GitHub 的 Agent 须明确请求所需资料，或由 Human 中转。无法判断阶段调整是否属于已授权的非实质性细节时，停止并请求 Human。本入口不绑定模型、客户端或厂商，也不是完全自动化的跨平台接管或排他锁。
 
 `CONTEXT_INDEX.md` 保留为详细文档注册表，不再是新会话的第一导航入口。
 需要确定长期团队所有权、跨线程协作或永久线程 bootstrap 时，阅读 `docs/VIRTUAL_ENGINEERING_TEAM.md`。

@@ -10,10 +10,11 @@
 | Last checked at | 2026-09-25 Asia/Shanghai; exact query time is not recorded in the independent Quality Round 3 receipt |
 | Upgrade owner | Human Product Owner |
 | Current disposition | Adopted — v0.9.0 advisory; the selected M-02 update applies to triggers from the effective date and reviewer scope/budget/stop clauses apply to newly assigned independent lanes; v0.8-origin optional contracts remain opt-in for new records; UK-005 release-evidence stays unchanged; no required mode, migration or backfill |
-| Next review | When the adopted scope or Kit pin changes; before enabling required mode or migrating records; when a newer Kit Release appears; or when changing the UK-005 contract/Profile |
+| Next review | When the adopted scope or Kit pin changes; before enabling required mode or migrating records; when a newer Kit Release appears; when changing the UK-005 contract/Profile; or when changing the UK-007 Task Workspace pin |
 | Latest decision record | [PD-KOS-UPGRADE-UK-006](../product-decisions/KOS-UPGRADE-UK-006-v0.9.0-adoption.md) |
 | Latest project contract-scope decision | [PD-KOS-UPGRADE-UK-006](../product-decisions/KOS-UPGRADE-UK-006-v0.9.0-adoption.md) — M-02 and newly assigned independent reviewer lanes |
 | Preserved project optional contract | [PD-KOS-UPGRADE-UK-005 release-evidence adoption](../product-decisions/KOS-UPGRADE-UK-005-release-evidence-adoption.md) |
+| Project optional contract: Task Workspace | [PD-KOS-UPGRADE-UK-007](../product-decisions/KOS-UPGRADE-UK-007-task-workspace-adoption.md) — `ops/task-workspace.md` only, exact Kit commit `9ca6dc015bf01084150538aac65cedc25b2a33a5`; opt-in for new Assignments; the adopted Kit version stays v0.9.0 |
 | Latest residual-scope decision | [PD-KOS-UPGRADE-UK-005-P1-B-SCOPE](../product-decisions/KOS-UPGRADE-UK-005-P1-B-scope.md) — Option A: duplicate UI/storage Not applicable; migration/backfill and background sync Deferred/unauthorized |
 
 ---
@@ -143,3 +144,18 @@ Later, UK-006 adopted the upstream v0.9.0 Kit pin prospectively; that pin does n
   Upstream tag/Release metadata, P-01/D-01 facts and any publication readiness remain
   separately owned and unclaimed; adoption itself is not a Product, Quality, Gate or
   Release approval.
+
+## Project optional contract: Task Workspace (UK-007)
+
+The Human Product Owner's `2026-10-18 Asia/Shanghai` decision in
+[`PD-KOS-UPGRADE-UK-007`](../product-decisions/KOS-UPGRADE-UK-007-task-workspace-adoption.md)
+adopts the single Kit file `ops/task-workspace.md` at the exact merged, untagged commit
+`9ca6dc015bf01084150538aac65cedc25b2a33a5` (sha256 `91d3da26728c210de3b605f28f65e0377f9ee90b2f0eaf65c8e12b7f8cb5f76a`). This does not change the adopted Kit
+version (v0.9.0) or claim a new Kit Release.
+
+- Scope is prospective and opt-in: only a new Assignment that states it uses the contract.
+- F-01 and L-01 are not adopted; section 4.1 of F-01 is a read-only classification reference.
+- Existing active Codex tasks and worktrees are not migrated or modified by this adoption.
+- Upgrade record: [`KOS-UPGRADE-UK-007-task-workspace`](upgrade-records/KOS-UPGRADE-UK-007-task-workspace.md).
+  Assignment: [`KOS-UPGRADE-UK-007`](../assignments/kos-upgrade-uk-007-task-workspace.md).
+- The Agent entry point is `AGENTS.md` item 8. It is a protocol, not an exclusive lock or automatic takeover.
