@@ -213,6 +213,13 @@
 - **Pin:** KOS Kit v0.9.0 at c98b2813240e22b2ac7fec44b2445321b03f73e0, advisory mode.
 - **Non-claims:** no required mode, migration/backfill, schema/validator change, Simulator/CoreDevice repair, App Product/Release Gate, TestFlight or App Store release.
 
+## KOS-UPGRADE-UK-007 — Task Workspace contract adoption (opt-in)
+
+- **Lifecycle:** [`Assignment`](assignments/kos-upgrade-uk-007-task-workspace.md) `Closed` (effective on merge of the M-02 closeout PR) — docs-only PR [#211](https://github.com/shchnk1103/Universe-Keyboard/pull/211) merged at 2026-10-18T14:37:30Z as `834c6af3e0c0772b261f5284677a399e09ca6489`; hosted classify-change, lightweight-checks, final-quality-gate and GitGuardian succeeded; the M-02 closeout is recorded in the Assignment.
+- **Contract:** `ops/task-workspace.md` at Kit `9ca6dc015bf01084150538aac65cedc25b2a33a5` only; opt-in per new Assignment ([PD](product-decisions/KOS-UPGRADE-UK-007-task-workspace-adoption.md)); the adopted Kit version stays v0.9.0 ([UPGRADE_STATUS](kos/UPGRADE_STATUS.md)).
+- **Non-claims:** not a Kit Release; no F-01 or L-01 adoption, required mode, migration or backfill; existing active Codex tasks and worktrees are not migrated or modified; no fully automated cross-platform takeover.
+- **Next:** none for this Assignment.
+
 ## KOS-UPGRADE-UK-003 — Adopt kos-agent-kit v0.6.0 advisory (historical)
 
 - **Lifecycle:** `Closed` — PR #96 merged `41c0dc5`
