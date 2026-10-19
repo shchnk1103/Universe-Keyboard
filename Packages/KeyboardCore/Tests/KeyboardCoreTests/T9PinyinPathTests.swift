@@ -2645,6 +2645,70 @@ final class T9PinyinPathTests: XCTestCase {
         XCTAssertTrue(client.markedTextHistory.allSatisfy { !$0.contains(where: \.isNumber) })
     }
 
+    /// Model the reported same-key re-ranking through the engine, without injecting Core state.
+    func testYinciDeleteRetypeWithXinaiPredictionThenYinPathPreservesTail() throws {
+        for anchorEnabled in [false, true] {
+            let engine = FakeRimeEngine(
+                dictionary: [
+                    "9": ["一"], "94": ["一"], "946": ["因"],
+                    "yin": ["因"], "9462": ["因啊"], "94624": ["因此"],
+                    "yin24": ["因爱"],
+                ],
+                comments: [
+                    "9": ["y"], "94": ["yi"], "946": ["yin"],
+                    "yin": ["yin"], "9462": ["yin a"], "94624": ["yin ci"],
+                    "yin24": ["yin ai"],
+                ]
+            )
+            engine.appendDigitsToComposition = true
+            engine.seedRuntimeSelection(
+                RimeRuntimeSelection(
+                    baseSchemaID: "rime_ice", layoutStyle: .nineKey, t9ReadinessMatched: true)
+            )
+            let controller = makeController(engine: engine)
+            controller.isReversibleT9AutoAnchorEnabled = anchorEnabled
+            let host = FakeTextInputClient()
+            controller.textClient = host
+            for digit in "94624" { _ = controller.handle(.insertKey(String(digit))) }
+            XCTAssertEqual(host.markedText.replacingOccurrences(of: " ", with: ""), "yinci")
+            _ = controller.handle(.deleteBackward)
+            _ = controller.handle(.deleteBackward)
+            XCTAssertEqual(controller.state.t9PinyinPathState.segmentSourceDigits, "946")
+            XCTAssertTrue(controller.state.t9PinyinPathState.confirmedSegmentValues.isEmpty)
+
+            // Controlled re-ranking is a fixture premise, not a claim about native learning.
+            engine.dictionary["94624"] = ["心爱"]
+            engine.comments["94624"] = ["xin ai"]
+            for digit in "24" { _ = controller.handle(.insertKey(String(digit))) }
+            XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "94624")
+            XCTAssertEqual(controller.state.t9PinyinPathState.segmentSourceDigits, "94624")
+            XCTAssertEqual(host.markedText.replacingOccurrences(of: " ", with: ""), "xinai")
+            XCTAssertTrue(controller.state.t9PinyinPathState.confirmedSegmentValues.isEmpty)
+            let yin = try XCTUnwrap(
+                controller.state.t9PinyinPathState.compactPaths.first {
+                    $0.displayText == "yin" && $0.kind == .completeSyllable
+                })
+            engine.resetCallCounts()
+            let effects = controller.handle(.selectT9PinyinPath(yin))
+            XCTAssertTrue(effects.contains(.compositionChanged))
+            XCTAssertEqual(engine.replaceInputArguments, ["yin24"])
+            XCTAssertEqual(engine.sessionComposition, "yin24")
+            XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "yin24")
+            XCTAssertEqual(controller.state.t9PinyinPathState.segmentSourceDigits, "94624")
+            XCTAssertEqual(controller.state.t9PinyinPathState.confirmedSegmentValues, ["yin"])
+            XCTAssertEqual(controller.state.t9PinyinPathState.focusedSegmentIndex, 1)
+            XCTAssertTrue(
+                controller.state.t9PinyinPathState.compactPaths.contains {
+                    $0.displayText == "ai" && $0.kind == .completeSyllable
+                })
+            XCTAssertEqual(host.markedText.replacingOccurrences(of: " ", with: ""), "yinai")
+            XCTAssertEqual(host.text, host.markedText, "Path refinement must not implicitly commit text.")
+            XCTAssertNil(controller.state.lastRimeOutput?.committedText)
+            XCTAssertEqual(engine.processKeyCallCount, 0, "Path refinement is not a candidate-selection key.")
+            XCTAssertLessThanOrEqual(engine.candidateWindowCallCount, 1)
+        }
+    }
+
     // MARK: - Helpers
 
     private func makeT9Engine() -> FakeRimeEngine {

@@ -385,6 +385,70 @@ final class RimeControllerInputTests: RimeControllerTestSupport {
         XCTAssertTrue(engine.isComposing())
     }
 
+    func testReturnFinalizesNumericPreeditAndRevokesPagingAuthority() {
+        prepareNumericPreeditWithPaging()
+
+        // This is ordinary 26-key preedit, not internal T9 digits or a numeric suffix.
+        // Establish the stale paging authority through accepted engine output only.
+        XCTAssertFalse(controller.usesT9InputSemantics)
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "n2")
+        XCTAssertEqual(client.markedText, "n2")
+        XCTAssertNil(controller.state.partialCommit)
+        XCTAssertTrue(controller.state.lastRimeOutput?.hasMorePages == true)
+
+        let effects = controller.handle(.insertReturn)
+
+        XCTAssertEqual(client.text, "n2")
+        XCTAssertEqual(client.markedText, "")
+        XCTAssertTrue(controller.state.currentComposition.isEmpty)
+        XCTAssertNil(controller.state.lastRimeOutput)
+        XCTAssertFalse(controller.state.lastRimeOutput?.hasMorePages ?? false)
+        XCTAssertFalse(engine.isComposing())
+        XCTAssertTrue(effects.contains(.compositionChanged))
+    }
+
+    func testEmojiFinalizesNumericPreeditAndRevokesPagingAuthority() {
+        prepareNumericPreeditWithPaging()
+        _ = controller.handle(.togglePage)
+        _ = controller.handle(.togglePage)
+        XCTAssertEqual(controller.state.currentPage, .emoji)
+        XCTAssertTrue(controller.state.lastRimeOutput?.hasMorePages == true)
+
+        let effects = controller.handle(.insertEmoji("🙂"))
+
+        XCTAssertEqual(client.text, "n2🙂")
+        XCTAssertEqual(client.markedText, "")
+        XCTAssertTrue(controller.state.currentComposition.isEmpty)
+        XCTAssertNil(controller.state.lastRimeOutput)
+        XCTAssertFalse(engine.isComposing())
+        XCTAssertTrue(effects.contains(.compositionChanged))
+    }
+
+    private func prepareNumericPreeditWithPaging() {
+        engine.processKeyScript = [
+            RimeOutput(
+                rawInput: "n",
+                composition: RimeComposition(preeditText: "n", cursorPosition: 1),
+                candidates: []
+            )
+        ]
+        // Number-page continuation uses replacement rather than processKey.
+        engine.replaceInputScript = [
+            RimeOutput(
+                rawInput: "n2",
+                composition: RimeComposition(preeditText: "n2", cursorPosition: 2),
+                candidates: [RimeCandidate(text: "N2", globalIndex: 0)],
+                hasMorePages: true,
+                highlightedIndex: 0
+            )
+        ]
+
+        _ = controller.handle(.insertKey("n"))
+        _ = controller.handle(.togglePage)
+        _ = controller.handle(.insertKey("2"))
+
+    }
+
     func testCalculatorOperatorContinuesChineseCompositionFromSymbolPage() {
         _ = controller.handle(.insertKey("c"))
         _ = controller.handle(.togglePage)
@@ -514,12 +578,12 @@ final class RimeControllerInputTests: RimeControllerTestSupport {
         XCTAssertEqual(client.markedText, "")
     }
 
-   func testInsertCandidateWithNilLastRimeOutput() {
-       controller.state.lastRimeOutput = nil
-       _ = controller.handle(.insertCandidate("测试", kind: .candidate))
-       XCTAssertEqual(client.text, "测试")
-       XCTAssertEqual(controller.state.currentComposition, "")
-   }
+    func testInsertCandidateWithNilLastRimeOutput() {
+        controller.state.lastRimeOutput = nil
+        _ = controller.handle(.insertCandidate("测试", kind: .candidate))
+        XCTAssertEqual(client.text, "测试")
+        XCTAssertEqual(controller.state.currentComposition, "")
+    }
 
     // MARK: - Return key with single‑character composition (commitInlinePreedit edge case)
 

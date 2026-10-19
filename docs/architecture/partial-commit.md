@@ -93,3 +93,12 @@ partial-commit-v1
 ```
 
 Keep the feature branch until at least one post-merge build and smoke test has passed. Delete it later only after the tag is pushed and main is confirmed healthy.
+
+
+## Failed affine checkpoint protection
+
+On a failed checkpoint rebuild, preserve confirmed prefix and the current marked remainder while revoking the checkpoint and all candidate authority. This is independent of the default-off R174 exact-retype policy. Candidate, paging, Path, Space and Return cannot consume the failed session.
+
+The next explicit Delete cancels the entire unconfirmed remainder, keeping the prefix marked. The next Chinese letter/digit spends at most one ordered recovery and one replacement containing only that fresh key; never replay the old tail. Failure, changed schema or invalid owner/receipt keeps the fence and cannot grant another implicit retry. Unbinding or external document edits forget old host spans without writing through a newly bound adapter. A positively suspended owner followed by verified ready resume can release the fence.
+
+Ordinary 26-key visible literal digits may finalize only as their already-visible spelling. Internal T9 digits remain forbidden on host finalization, including Return, symbols and emoji.

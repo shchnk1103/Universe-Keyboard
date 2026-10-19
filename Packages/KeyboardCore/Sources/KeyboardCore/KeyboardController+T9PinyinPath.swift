@@ -11,7 +11,7 @@ extension KeyboardController {
         let generation = state.t9PinyinPathState.rawInputGeneration
         let provenance = state.t9PinyinPathState.provenanceRevision
         let compositionRevision = state.compositionRevision
-        let catalogPaths = state.t9PinyinPathState.compactPaths
+        let catalogPaths = isT9InputRecoveryPending ? [] : state.t9PinyinPathState.compactPaths
         let safeLimit = max(0, limit)
         let start = max(0, globalIndex)
         let end = min(catalogPaths.count, start + safeLimit)
@@ -48,7 +48,7 @@ extension KeyboardController {
         } else {
             visible = state.insertedPreeditText
         }
-        let output = state.lastRimeOutput
+        let output = isPartialCommitFailureRecoveryPending ? nil : state.lastRimeOutput
         return T9CompositionPresentationSnapshot(
             revision: state.compositionRevision,
             sourceDigits: source,
@@ -70,6 +70,7 @@ extension KeyboardController {
     }
 
     public func t9PinyinPathAvailability() -> T9PinyinPathAvailability {
+        guard !isCompositionInputRecoveryPending else { return .noComposition }
         let raw = state.lastRimeOutput?.rawInput
         guard usesT9InputSemantics,
             T9CompositionCommitPolicy.isActiveT9Composition(
@@ -98,6 +99,7 @@ extension KeyboardController {
     }
 
     func handleCycleT9PinyinPath() -> KeyboardEffect {
+        guard !isCompositionInputRecoveryPending else { return [] }
         if rejectIfResponsiveProvisionalAhead() {
             return []
         }
@@ -126,6 +128,7 @@ extension KeyboardController {
     }
 
     func handleSelectT9PinyinPath(_ path: T9PinyinPath) -> KeyboardEffect {
+        guard !isCompositionInputRecoveryPending else { return [] }
         if rejectIfResponsiveProvisionalAhead() {
             return []
         }
@@ -337,6 +340,7 @@ extension KeyboardController {
     }
 
     func clearT9PinyinPathState() {
+        clearT9UnconfirmedDeleteHistory()
         state.t9PinyinPathState = T9PinyinPathState(
             // Empty Path state still belongs to the current composition. Its
             // zero provenance invalidates any panel issued from a live snapshot
@@ -684,7 +688,7 @@ extension KeyboardController {
             selectedPath = lockedPath
         }
 
-        let newState = T9PinyinPathState(
+        var newState = T9PinyinPathState(
             compactPaths: paths,
             selectedPath: selectedPath,
             compositionRevision: state.compositionRevision,
@@ -702,6 +706,9 @@ extension KeyboardController {
             lockedLetterPrefix: lockedLetterPrefix,
             provisionalPathID: provisionalID
         )
+        if let preferredID = t9HistoricalProvisionalPathID(in: newState) {
+            newState.provisionalPathID = preferredID
+        }
         let changed =
             newState.compactPaths != state.t9PinyinPathState.compactPaths
             || newState.selectedPath != state.t9PinyinPathState.selectedPath
@@ -1127,6 +1134,48 @@ extension KeyboardController {
         }
     }
 
+    /// A coalesced affine publication may contain several digits appended to
+    /// letter raw left by Delete. Validate those slots against the old ledger
+    /// before reusing its pure-digit resync; never infer input from candidates.
+    @discardableResult
+    func retainUnconfirmedT9IdentityAfterAffineDigit(
+        previous snapshot: T9PinyinPathState,
+        digit: Character
+    ) -> Bool {
+        guard usesT9InputSemantics,
+            state.partialCommit == nil,
+            snapshot.selectedPath == nil,
+            snapshot.confirmedSegmentValues.isEmpty,
+            state.t9ReversibleAutoAnchorState.phase != .accepted,
+            let source = snapshot.segmentSourceDigits,
+            !source.isEmpty,
+            let raw = state.lastRimeOutput?.rawInput,
+            !raw.allSatisfy(\.isNumber),
+            raw.count > source.count
+        else { return false }
+
+        let prefix = raw.prefix(source.count)
+        let appendedDigits = raw.dropFirst(source.count)
+        guard appendedDigits.allSatisfy({ "23456789".contains($0) }),
+            appendedDigits.last == digit,
+            zip(source, prefix).allSatisfy({ slot, character in
+                slot == character
+                    || T9PinyinPathExtractor.keyLetters(forDigit: slot)
+                        .contains(character)
+            })
+        else { return false }
+
+        // Use all completed slots, not just the last context's key: several
+        // accepts can share the same previous Path snapshot before one paint.
+        var beforeLastDigit = snapshot
+        beforeLastDigit.segmentSourceDigits =
+            source + String(appendedDigits.dropLast())
+        return retainFocusedT9SegmentAfterAppendingDigit(
+            previous: beforeLastDigit,
+            digit: digit
+        )
+    }
+
     /// Called after a selected segment receives another nine-key digit. The live
     /// output has already been installed; this method only rebuilds the Core-owned
     /// focused snapshot against the extended original digit sequence.
@@ -1311,7 +1360,8 @@ extension KeyboardController {
         if !identity.confirmedSyllables.isEmpty {
             _ = resyncRimeCompositionFromT9Identity()
         } else if identity.sourceDigits.count <= 3 {
-            _ = resyncRimeCompositionFromT9Identity()
+            let historical = t9HistoricalSpellingForDelete(digits: identity.sourceDigits)
+            _ = resyncRimeCompositionFromT9Identity(preferredUnconfirmedSpelling: historical)
             if let label = previousSelectedLabel,
                 let remapped = state.t9PinyinPathState.compactPaths.first(where: {
                     $0.displayText == label
@@ -1413,7 +1463,9 @@ extension KeyboardController {
     /// catalog letter raw (e.g. `qin`) over bare `746`, otherwise candidates become
     /// 手/瘦 (shou) while Path correctly lists qin/pin.
     @discardableResult
-    func resyncRimeCompositionFromT9Identity() -> Bool {
+    func resyncRimeCompositionFromT9Identity(
+        preferredUnconfirmedSpelling: String? = nil
+    ) -> Bool {
         guard usesT9InputSemantics,
             let identity = T9CompositionIdentity.from(pathState: state.t9PinyinPathState),
             let engine = rimeEngine
@@ -1466,10 +1518,12 @@ extension KeyboardController {
             // - no full complete → pure digits (Path stays on ledger length)
             // Ambiguous multi-complete on *confirmed+remaining* uses unique-only above.
             // Never use letterPrefix replacement like `t6` as the whole raw.
-            raw = shortUnconfirmedResyncRaw(
-                sourceDigits: identity.sourceDigits,
-                focusPaths: state.t9PinyinPathState.compactPaths
-            )
+            raw =
+                preferredUnconfirmedSpelling
+                ?? shortUnconfirmedResyncRaw(
+                    sourceDigits: identity.sourceDigits,
+                    focusPaths: state.t9PinyinPathState.compactPaths
+                )
         } else {
             // Human C: after Delete, longer unconfirmed compositions return to pure
             // digit input mode so retyping matches first-entry Path discovery.
@@ -1478,13 +1532,32 @@ extension KeyboardController {
             raw = identity.sourceDigits
         }
         guard !raw.isEmpty else { return false }
+        let historyGeneration = t9UnconfirmedDeleteHistory.generation
         let output = engine.replaceInput(raw)
+        if let spelling = preferredUnconfirmedSpelling {
+            guard output.committedText == nil, output.rawInput == spelling,
+                output.composition?.preeditText.isEmpty == false,
+                historyGeneration == t9UnconfirmedDeleteHistory.generation
+            else {
+                // A failed soft restore must not commit or paint guessed history.
+                engine.resetSession()
+                state.currentComposition = ""
+                state.lastRimeOutput = nil
+                clearInlinePreedit()
+                clearT9PinyinPathState()
+                return false
+            }
+            t9UnconfirmedDeleteHistory.preferred = (identity.sourceDigits, spelling)
+        }
         // Keep Path identity; do not let applyRimeOutput wipe conf via resegment.
         let preserved = state.t9PinyinPathState
         state.lastRimeOutput = output
         state.currentComposition = raw
         state.t9PinyinPathState = preserved
 
+        if let preferredID = t9HistoricalProvisionalPathID(in: preserved) {
+            state.t9PinyinPathState.provisionalPathID = preferredID
+        }
         let projected = t9VisiblePreedit(for: output)
         let hostText: String
         if !projected.isEmpty,

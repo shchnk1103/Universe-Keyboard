@@ -21,9 +21,11 @@ extension KeyboardController {
 
     /// Host-visible T9 preedit using provisional Path when it fully covers focus slots.
     func t9VisiblePreedit(for output: RimeOutput) -> String {
+        let pathState = state.t9PinyinPathState
         let provisional =
-            state.t9PinyinPathState.selectedPath == nil
-            ? state.t9PinyinPathState.compactPaths.first
+            pathState.selectedPath == nil
+            ? (pathState.compactPaths.first { $0.id == pathState.provisionalPathID }
+                ?? pathState.compactPaths.first)
             : nil
         return T9PreeditResolver.visiblePreedit(
             rawInput: output.rawInput,
@@ -501,6 +503,7 @@ extension KeyboardController {
                 checkpoint: nil,
                 source: partialCommit.source
             )
+            beginPartialCommitFailureRecovery()
             return true
         }
 
@@ -633,10 +636,10 @@ extension KeyboardController {
         }
         let preferred = activeCompositionDisplayText
         let displayText =
-            compositionProjectionContainsInternalDigit(preferred)
-            ? state.insertedPreeditText
-            : preferred
-        guard !compositionProjectionContainsInternalDigit(displayText) else { return }
+            isSafeCompositionFinalizationText(preferred)
+            ? preferred
+            : state.insertedPreeditText
+        guard isSafeCompositionFinalizationText(displayText) else { return }
         guard !displayText.isEmpty else { return }
         commitInlinePreedit(as: displayText)
         state.currentComposition = ""
@@ -665,10 +668,10 @@ extension KeyboardController {
             ?? state.lastRimeOutput?.rawInput
             ?? state.currentComposition
         let commitText =
-            compositionProjectionContainsInternalDigit(preferred)
-            ? state.insertedPreeditText
-            : preferred
-        guard !compositionProjectionContainsInternalDigit(commitText) else { return }
+            isSafeCompositionFinalizationText(preferred)
+            ? preferred
+            : state.insertedPreeditText
+        guard isSafeCompositionFinalizationText(commitText) else { return }
         guard !commitText.isEmpty else {
             return
         }
@@ -678,6 +681,17 @@ extension KeyboardController {
         state.partialCommit = nil
         clearTypoCorrectionSuggestions()
         _ = clearT9PinyinPathStateReturningEffect()
+    }
+
+    private func isSafeCompositionFinalizationText(_ text: String) -> Bool {
+        if !compositionProjectionContainsInternalDigit(text) {
+            return true
+        }
+        // Ordinary 26-key input may already display literal digits. Only finalize
+        // that same visible spelling; a runtime change must not expose old T9 raw.
+        guard !usesT9InputSemantics else { return false }
+        let visible = state.insertedPreeditText.filter { !$0.isWhitespace }
+        return !visible.isEmpty && text.filter { !$0.isWhitespace } == visible
     }
 
     var hasActiveCompositionForSymbolInput: Bool {

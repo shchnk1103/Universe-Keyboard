@@ -403,6 +403,7 @@ extension KeyboardViewController {
     }
 
     func commitExpandedCandidate(_ item: CandidateItem) {
+        guard !controller.isCompositionInputRecoveryPending else { return }
         if let origin = item.selectionReference?.candidateOrigin {
             guard controller.state.lastRimeOutput?.candidateOrigin == origin else { return }
         }

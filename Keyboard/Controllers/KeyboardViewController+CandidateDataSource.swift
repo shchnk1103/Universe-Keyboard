@@ -23,7 +23,7 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
     /// `resetCandidateSnapshotFromController()` 在唯一重建边界移除 placeholder。
     /// 分页窗口只生成普通 RIME candidate，因此数据源回调可以直接复用同一数组。
     var presentedCandidates: [CandidateItem] {
-        accumulatedCandidates
+        shouldBlockT9RecoveryPresentation ? [] : accumulatedCandidates
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -249,6 +249,7 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
     }
 
     private func commitCandidate(_ item: CandidateItem) {
+        guard !controller.isCompositionInputRecoveryPending else { return }
         if let origin = item.selectionReference?.candidateOrigin {
             guard controller.state.lastRimeOutput?.candidateOrigin == origin else { return }
         }

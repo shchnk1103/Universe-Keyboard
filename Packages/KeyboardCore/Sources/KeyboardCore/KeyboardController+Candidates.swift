@@ -4,6 +4,7 @@ extension KeyboardController {
         kind: CandidateKind,
         selectionReference: CandidateSelectionReference? = nil
     ) -> KeyboardEffect {
+        guard !isCompositionInputRecoveryPending else { return [] }
         // Amendment B: every candidate-like affordance is stale while the
         // visual shadow is ahead, including continuation items.
         if rejectIfResponsiveProvisionalAhead() {
@@ -123,6 +124,7 @@ extension KeyboardController {
     }
 
     func handleInsertCorrectionCandidate(_ correction: TypoCorrectionCommit) -> KeyboardEffect {
+        guard !isCompositionInputRecoveryPending else { return [] }
         // Amendment B: stale correction UI is visible but never authoritative
         // while the visual shadow is ahead of the engine snapshot.
         if rejectIfResponsiveProvisionalAhead() {
@@ -147,6 +149,7 @@ extension KeyboardController {
     }
 
     func handleCandidatePageUp() -> KeyboardEffect {
+        guard !isCompositionInputRecoveryPending else { return [] }
         if rejectIfResponsiveProvisionalAhead() {
             return []
         }
@@ -155,6 +158,7 @@ extension KeyboardController {
     }
 
     func handleCandidatePageDown() -> KeyboardEffect {
+        guard !isCompositionInputRecoveryPending else { return [] }
         if rejectIfResponsiveProvisionalAhead() {
             return []
         }

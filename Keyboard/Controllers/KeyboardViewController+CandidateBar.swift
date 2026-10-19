@@ -55,6 +55,7 @@ extension KeyboardViewController {
 
     /// Idle trailing control dismisses the keyboard; expandable content still expands.
     @objc func handleCandidateBarTrailingButton() {
+        guard !shouldBlockT9RecoveryPresentation else { return }
         let canExpand = presentedCandidates.contains { $0.kind.expandsCandidateBarPanel }
         if canExpand {
             toggleCandidateExpand()
@@ -66,6 +67,7 @@ extension KeyboardViewController {
     /// 切换候选面板展开/收起。展开面板覆盖在现有键盘之上，
     /// 不拆除底层按键和候选栏，因此切换动画期间没有整页重排。
     @objc func toggleCandidateExpand() {
+        guard !shouldBlockT9RecoveryPresentation else { return }
         if isPinyinPathExpanded {
             dismissPinyinPathExpandedPanel(animated: false)
         }
@@ -167,6 +169,8 @@ extension KeyboardViewController {
             bar.allowsSwipeToExpand = canExpand
         }
         updateExpandButtonAppearance(canExpand: canExpand)
+        (candidateBar as? CandidateBarView)?.setInputRecoveryNotice(
+            shouldBlockT9RecoveryPresentation ? controller.compositionInputRecoveryMessage : nil)
         #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
             refreshWakeOwnerProbeControls()
         #endif
@@ -234,6 +238,7 @@ extension KeyboardViewController {
     /// 无极滑动模式下优先返回累积列表（包含已加载的所有页的候选），
     /// 确保候选栏和展开面板始终显示相同的候选集合。
     func candidateItems() -> [CandidateItem] {
+        guard !shouldBlockT9RecoveryPresentation else { return [] }
         if !accumulatedCandidates.isEmpty {
             return accumulatedCandidates
         }
@@ -254,6 +259,10 @@ extension KeyboardViewController {
     /// When a key both commits composition and returns to letters, this prevents
     /// the newly created candidate bar from reusing stale accumulated candidates.
     func resetCandidateSnapshotFromController() {
+        if controller.isCompositionInputRecoveryPending {
+            invalidateCandidatesForInputRecovery()
+            return
+        }
         // Placeholder 是旧按钮式候选栏的安全哨兵，不属于当前 collection 快照。
         // 在唯一重建边界过滤一次，避免每个数据源回调都复制并过滤数组。
         let pendingItems: [CandidateItem]?
@@ -283,6 +292,10 @@ extension KeyboardViewController {
 
     /// Publish candidates from a captured T9 composition snapshot (same revision as Path Bar).
     func resetCandidateSnapshot(from snapshot: T9CompositionPresentationSnapshot) {
+        if controller.isCompositionInputRecoveryPending {
+            invalidateCandidatesForInputRecovery()
+            return
+        }
         // Prefer snapshot-owned paging fields; do not re-read live controller for
         // page identity when the snapshot already captured them.
         let preedit =

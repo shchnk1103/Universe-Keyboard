@@ -1,0 +1,82 @@
+{
+  "app-keyboard.log": {
+    "path": "/private/tmp/ird003-evidence/app-keyboard.log",
+    "sha256": "8229dcd86fa76a696791cf1d86bed1f1c729f3d8a6e8e113bc274a02794a35ca",
+    "bytes": 410267
+  },
+  "core-final-2.log": {
+    "path": "/private/tmp/ird003-evidence/core-final-2.log",
+    "sha256": "16cce5cf9fd86843c3eceee4ca932898c474b7296fa22dd2513abd4a06114a9e",
+    "bytes": 34728
+  },
+  "core-final-3.log": {
+    "path": "/private/tmp/ird003-evidence/core-final-3.log",
+    "sha256": "fc6188c223931d0c6e4cefd1108c8f68dd55015a76eb59df4906ac1ffae340ed",
+    "bytes": 345141
+  },
+  "core-final.log": {
+    "path": "/private/tmp/ird003-evidence/core-final.log",
+    "sha256": "1a10c40c89ae5366799d591c988e7305cc5abb84c39db1f4b2220e49cb73ee92",
+    "bytes": 35379
+  },
+  "core-formatted-final.log": {
+    "path": "/private/tmp/ird003-evidence/core-formatted-final.log",
+    "sha256": "2638b13a008ce30226c10a881b041fc906b6ad66809b303661072efcfc01b422",
+    "bytes": 345649
+  },
+  "core-ingress-isolated.log": {
+    "path": "/private/tmp/ird003-evidence/core-ingress-isolated.log",
+    "sha256": "455b9e8f97c4238acba916956339989e33d398c4b00ffb73caf4779950740c33",
+    "bytes": 1007
+  },
+  "core-initial.log": {
+    "path": "/private/tmp/ird003-evidence/core-initial.log",
+    "sha256": "29505eba59061911e1ce54143cd947c818c9a7103d26a5242811ee9cc2058c5b",
+    "bytes": 348204
+  },
+  "core-serial-final.log": {
+    "path": "/private/tmp/ird003-evidence/core-serial-final.log",
+    "sha256": "dae3b397d8d4f3be75c8360a7a090b684cb9b3bb4106c7797f6f073863215413",
+    "bytes": 344997
+  },
+  "debug-build.log": {
+    "path": "/private/tmp/ird003-evidence/debug-build.log",
+    "sha256": "906a6de2fa513ed668772263ce92a70622e79b133df4e293380440751c361562",
+    "bytes": 750396
+  },
+  "kos-validate.log": {
+    "path": "/private/tmp/ird003-evidence/kos-validate.log",
+    "sha256": "2920d55273f6c986826d24ea7e40f6588ddfb3f558dcabddb9066aceb0b83256",
+    "bytes": 120643
+  },
+  "partial-adapted.log": {
+    "path": "/private/tmp/ird003-evidence/partial-adapted.log",
+    "sha256": "614f04b4dfef7ee16e0733a25eae511187ab4d2a1f9766b59a455e08fd6a7e9c",
+    "bytes": 2660
+  },
+  "r174-optin-build.log": {
+    "path": "/private/tmp/ird003-evidence/r174-optin-build.log",
+    "sha256": "3c0a43b037e715a2e8b44d7859bff81307b1512d6e400e32e375b5cf2538cb3e",
+    "bytes": 752877
+  },
+  "r174-optin.log": {
+    "path": "/private/tmp/ird003-evidence/r174-optin.log",
+    "sha256": "ff5040f0abf48faed4374c92f894409606e0f72aadc02034847f666fe0958b56",
+    "bytes": 3418
+  },
+  "release-build.log": {
+    "path": "/private/tmp/ird003-evidence/release-build.log",
+    "sha256": "76deb8d4499d57752b921966d49182547318109064f10ee09148d266119a316f",
+    "bytes": 423327
+  },
+  "rime-full.log": {
+    "path": "/private/tmp/ird003-evidence/rime-full.log",
+    "sha256": "c4b0598b3ab6c091b2659864dbb32fb9817f65de2b425aaa6966edad6e8c6981",
+    "bytes": 651403
+  },
+  "vendor.log": {
+    "path": "/private/tmp/ird003-evidence/vendor.log",
+    "sha256": "f5574a6842ce420971a5f1076faafa7c7e8d6cadacefc2ac0ff8aa31a5b2cfec",
+    "bytes": 6735
+  }
+}

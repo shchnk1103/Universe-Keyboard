@@ -262,6 +262,8 @@ extension KeyboardViewController {
     }
 
     func syncUI(with effects: KeyboardEffect) {
+        // Refresh last so normal presentation cannot re-enable recovery-blocked controls.
+        defer { refreshT9InputRecoveryPresentation() }
         #if DEBUG
             let startTime = CACurrentMediaTime()
             defer { logKeyPerformance("syncUI \(effects)", startTime: startTime) }

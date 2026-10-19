@@ -11,6 +11,17 @@ extension KeyboardViewController {
     /// moving the insertion point horizontally inside the host app's active text field.
     @objc func handleSpaceCursorLongPress(_ gesture: UILongPressGestureRecognizer) {
         guard let spaceButton = gesture.view as? UIButton else { return }
+        // Gesture recognizers can still deliver after UIButton.isEnabled changes.
+        guard !shouldBlockT9RecoveryPresentation else {
+            if isCursorMovementModeActive {
+                isCursorMovementModeActive = false
+                spaceCursorLastLocationX = nil
+                setCursorMovementModeUI(active: false, exceptionView: spaceButton)
+                restoreKeyAppearance(spaceButton)
+                refreshT9InputRecoveryPresentation()
+            }
+            return
+        }
 
         switch gesture.state {
         case .began:
@@ -27,7 +38,7 @@ extension KeyboardViewController {
             let diff = currentX - lastX
             // A 10-point threshold keeps small finger jitter from moving the cursor too aggressively.
             let offset = Int(diff / 10)
-            
+
             if offset != 0 {
                 textDocumentProxy.adjustTextPosition(byCharacterOffset: offset)
                 // Compensate the last location by the exact movement distance we just applied

@@ -1,0 +1,122 @@
+[
+  {
+    "run": "rime-full.log",
+    "diagnostic": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeLuaSmokeTests.swift:94: -[RimeBridgeTests.RimeLuaSmokeTests testCorrectionSidecarKeepsVisibleCompositionIntactWhenRuntimeFixtureIsProvided] : Test skipped - Set UK_RIME_LUA_SMOKE_SHARED_DIR and UK_RIME_LUA_SMOKE_USER_DIR to run the real Lua smoke test."
+  },
+  {
+    "run": "rime-full.log",
+    "diagnostic": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeLuaSmokeTests.swift:94: -[RimeBridgeTests.RimeLuaSmokeTests testRimeIceLuaDynamicCandidatesWhenRuntimeFixtureIsProvided] : Test skipped - Set UK_RIME_LUA_SMOKE_SHARED_DIR and UK_RIME_LUA_SMOKE_USER_DIR to run the real Lua smoke test."
+  },
+  {
+    "run": "rime-full.log",
+    "diagnostic": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift:766: -[RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testCappedTwoSyllableControllerFrozenPairedMatrix] : Test skipped - Set the immutable 40-character lowercase S4 commit to run the paired matrix."
+  },
+  {
+    "run": "rime-full.log",
+    "diagnostic": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift:2787: -[RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testIsolatedPersonalizationKnownPositive] : Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+  },
+  {
+    "run": "rime-full.log",
+    "diagnostic": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift:2787: -[RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testIsolatedPersonalizationNaturalReminder] : Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+  },
+  {
+    "run": "rime-full.log",
+    "diagnostic": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift:2787: -[RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testIsolatedPersonalizationNaturalWeather] : Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+  },
+  {
+    "run": "rime-full.log",
+    "diagnostic": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift:2787: -[RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testPartialLongSelectionIsNotPersonalizationProof] : Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+  },
+  {
+    "run": "rime-full.log",
+    "diagnostic": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift:2787: -[RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testRejectedCompositionLaterOpportunityTransactionMatrix] : Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+  },
+  {
+    "run": "rime-full.log",
+    "diagnostic": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift:2787: -[RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testRollingControllerFrozenA0A1B2B3Matrix] : Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+  },
+  {
+    "run": "rime-full.log",
+    "diagnostic": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift:2787: -[RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testRollingControllerMissingLiveCompositionFailsClosedBeforeKey] : Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+  },
+  {
+    "run": "rime-full.log",
+    "diagnostic": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift:2787: -[RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testRollingControllerRealRimeDeletePathAndPartialOwnership] : Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+  },
+  {
+    "run": "rime-full.log",
+    "diagnostic": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9AutoAnchorRetryMatrixTests.swift:2787: -[RimeBridgeTests.RimeT9AutoAnchorRetryMatrixTests testRollingControllerRealRimeSecondRejectRestoreMatrix] : Test skipped - Set isolated T9 Spike runtime directories to run this matrix."
+  },
+  {
+    "run": "rime-full.log",
+    "diagnostic": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9CompatibilitySpikeTests.swift:117: -[RimeBridgeTests.RimeT9CompatibilitySpikeTests testPinnedLibrimeCanSelectT9AndProcessDigitSequenceAfterRemovingUnsupportedProcessor] : Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 compatibility Spike."
+  },
+  {
+    "run": "rime-full.log",
+    "diagnostic": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9PinyinSelectionSpikeTests.swift:1407: -[RimeBridgeTests.RimeT9PinyinSelectionSpikeTests test004CatalogExactRawAcceptanceOnPinnedLibrime] : Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+  },
+  {
+    "run": "rime-full.log",
+    "diagnostic": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9PinyinSelectionSpikeTests.swift:1407: -[RimeBridgeTests.RimeT9PinyinSelectionSpikeTests testAtomicPathDiscoveryStageAOnPinnedLibrime] : Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+  },
+  {
+    "run": "rime-full.log",
+    "diagnostic": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9PinyinSelectionSpikeTests.swift:1407: -[RimeBridgeTests.RimeT9PinyinSelectionSpikeTests testGate5Phase05CandidateCoverageSelRangeOnPinnedLibrime] : Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+  },
+  {
+    "run": "rime-full.log",
+    "diagnostic": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9PinyinSelectionSpikeTests.swift:1407: -[RimeBridgeTests.RimeT9PinyinSelectionSpikeTests testGate5Phase06AlternativeCoverageSelectionDeltaOnPinnedLibrime] : Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+  },
+  {
+    "run": "rime-full.log",
+    "diagnostic": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9PinyinSelectionSpikeTests.swift:1407: -[RimeBridgeTests.RimeT9PinyinSelectionSpikeTests testPrecisePinyinPathRefinementOnPinnedLibrime] : Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+  },
+  {
+    "run": "rime-full.log",
+    "diagnostic": "Packages/RimeBridge/Tests/RimeBridgeTests/RimeT9PinyinSelectionSpikeTests.swift:1407: -[RimeBridgeTests.RimeT9PinyinSelectionSpikeTests testReadOnlyWindowCoverageForYiZiSibling] : Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR to run the T9 pinyin selection Spike."
+  },
+  {
+    "run": "rime-full.log",
+    "diagnostic": "Packages/RimeBridge/Tests/RimeBridgeTests/ThreadAffineRimeRealEngineTests.swift:120: -[RimeBridgeTests.ThreadAffineRimeRealEngineTests testRealEngineBootstrapCreatesAndCallsOffMainThroughOwner] : Test skipped - Set UK_RIME_T9_SPIKE_SHARED_DIR and UK_RIME_T9_SPIKE_USER_DIR (or UK_RIME_R4B_*) to run R4-B real-engine proof."
+  },
+  {
+    "run": "app-keyboard.log",
+    "diagnostic": "UniverseKeyboardTests/RimeIcePinnedArtifactTests.swift:26: -[UniverseKeyboardTests.RimeIcePinnedArtifactTests testVerifiedOfficialAndMirrorArchivesConvergeAfterProductionProcessing] : Test skipped - Set TEST_RUNNER_SCHEME_PIN_ARCHIVE_ROOT to the independently downloaded source archives"
+  },
+  {
+    "run": "app-keyboard.log",
+    "diagnostic": "UniverseKeyboardTests/RimeSyncTests.swift:91: -[UniverseKeyboardTests.RimeSyncModelTests testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem] : Test skipped - Unsigned host lacks Keychain entitlement; signed Simulator lane covers integration."
+  },
+  {
+    "run": "app-keyboard.log",
+    "diagnostic": "UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests.swift:1568: -[UniverseKeyboardTests.SchemeResourcePreparationCoexistenceTests testCS06_UninstallInactiveWanxiangRetainsIcePeerInventory] : Test skipped - CS09-10-01 requires the fixed Wanxiang extract tree"
+  },
+  {
+    "run": "app-keyboard.log",
+    "diagnostic": "UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests.swift:1568: -[UniverseKeyboardTests.SchemeResourcePreparationCoexistenceTests testCS0910_RealInstallerIceRemovalPreservesCompleteWanxiangInventory] : Test skipped - CS09-10-01 requires the fixed Wanxiang extract tree"
+  },
+  {
+    "run": "app-keyboard.log",
+    "diagnostic": "UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests.swift:1553: -[UniverseKeyboardTests.SchemeResourcePreparationCoexistenceTests testCS0910_RealInstallerWanxiangRemovalPreservesCompleteIceInventory] : Test skipped - CS09-10-01 requires the fixed Ice extract tree"
+  },
+  {
+    "run": "app-keyboard.log",
+    "diagnostic": "UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests.swift:357: -[UniverseKeyboardTests.SchemeResourcePreparationCoexistenceTests testKnownIceDefaultYamlPollutionIsRecoveredThenBuiltinRedeploySucceeds] : Test skipped - Ice 2026.06.30 default.yaml fixture is required for P3 fingerprint recovery"
+  },
+  {
+    "run": "app-keyboard.log",
+    "diagnostic": "UniverseKeyboardTests/SchemeResourcePreparationCoexistenceTests.swift:1763: -[UniverseKeyboardTests.SchemeResourcePreparationCoexistenceTests testProductionProcessedIceTreeKeepsOfficialDefaultYamlWhenFixturePresent] : Test skipped - Set TEST_RUNNER_SCHEME_PIN_ARCHIVE_ROOT to the independently downloaded Ice archives"
+  },
+  {
+    "run": "app-keyboard.log",
+    "diagnostic": "UniverseKeyboardTests/TD012LMDGDeviceStagingTests.swift:95: -[UniverseKeyboardTests.TD012LMDGDeviceStagingTests testPinnedModelLoadsThroughWanxiangGrammarOnAuthorizedPhysicalDevice] : Test skipped - TD-012 G2 model-load receipt is physical-device-only"
+  },
+  {
+    "run": "app-keyboard.log",
+    "diagnostic": "UniverseKeyboardTests/TD012LMDGDeviceStagingTests.swift:76: -[UniverseKeyboardTests.TD012LMDGDeviceStagingTests testRemovePinnedModelAfterAuthorizedPhysicalDeviceSpike] : Test skipped - TD-012 G2 cleanup is physical-device-only"
+  },
+  {
+    "run": "app-keyboard.log",
+    "diagnostic": "UniverseKeyboardTests/TD012LMDGDeviceStagingTests.swift:49: -[UniverseKeyboardTests.TD012LMDGDeviceStagingTests testStagePinnedModelForAuthorizedPhysicalDeviceSpike] : Test skipped - TD-012 G2 staging is physical-device-only"
+  }
+]

@@ -92,6 +92,9 @@ final class CandidateBarView: UIView {
         static let expandButtonVerticalAlignmentOffset: CGFloat = 9
     }
 
+    private let recoveryLabel = UILabel()
+    private var isShowingRecoveryNotice = false
+
     let collectionView: CandidateCollectionView
     let expandButton: UIButton
     let expandButtonWidthConstraint: NSLayoutConstraint
@@ -171,6 +174,20 @@ final class CandidateBarView: UIView {
         configureCollectionView()
         addSubview(collectionView)
         addSubview(expandButton)
+        recoveryLabel.translatesAutoresizingMaskIntoConstraints = false
+        recoveryLabel.font = .preferredFont(forTextStyle: .caption1)
+        recoveryLabel.textColor = .secondaryLabel
+        recoveryLabel.numberOfLines = 2
+        recoveryLabel.isHidden = true
+        recoveryLabel.isAccessibilityElement = true
+        recoveryLabel.accessibilityIdentifier = "t9.input-recovery.notice"
+        addSubview(recoveryLabel)
+        NSLayoutConstraint.activate([
+            recoveryLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
+            recoveryLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
+            recoveryLabel.topAnchor.constraint(equalTo: topAnchor),
+            recoveryLabel.heightAnchor.constraint(equalToConstant: height),
+        ])
         gestureBridge.collectionPan = collectionView.panGestureRecognizer
         installItemTapGesture()
         installHorizontalFallbackGesture()
@@ -210,6 +227,22 @@ final class CandidateBarView: UIView {
     /// Direct tap delivery. UICollectionView's own selection tap waits for the
     /// bar's expand pan to fail and never fires for a stationary press.
     var onItemTap: ((IndexPath) -> Void)?
+
+    /// Occupies the existing row; recovery never changes keyboard geometry.
+    func setInputRecoveryNotice(_ message: String?) {
+        isShowingRecoveryNotice = message != nil
+        recoveryLabel.text = message
+        recoveryLabel.accessibilityLabel = message
+        recoveryLabel.isHidden = !isShowingRecoveryNotice
+        collectionView.isHidden = isShowingRecoveryNotice
+        collectionView.isUserInteractionEnabled = !isShowingRecoveryNotice
+        expandButton.isHidden = isShowingRecoveryNotice
+        expandButton.isEnabled = !isShowingRecoveryNotice
+        itemTapRecognizer.isEnabled = !isShowingRecoveryNotice
+        swipeDownRecognizer?.isEnabled = !isShowingRecoveryNotice
+        horizontalFallbackRecognizer?.isEnabled = !isShowingRecoveryNotice
+        if isShowingRecoveryNotice { bringSubviewToFront(recoveryLabel) }
+    }
 
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -310,6 +343,7 @@ final class CandidateBarView: UIView {
     }
 
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        if isShowingRecoveryNotice { return bounds.contains(point) ? self : nil }
         #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
             if let button = wakeProbeButton, !button.isHidden, button.frame.contains(point) {
                 return button.hitTest(button.convert(point, from: self), with: event)

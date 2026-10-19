@@ -189,3 +189,12 @@ Direct symbols/text first finalize any active composition through the appropriat
 - 普通九宫格按键先进入 RIME，但 host marked text 只投影用户已输入的槽位；`8 / 86 / 868` 分别显示 `t / to / tou`，预测的额外字母留在候选层。
 - Path Bar 显式选择是更高优先级的用户事实；确认 `qiu` 后显示只到 `qiu`，session raw 以 `qiu' + 剩余数字` 维持候选连续性。
 - 后续完整音节必须由有界 live-RIME probe 授权；内部数字、未确认预测和不继承确认前缀的 comment 均不得进入 marked text。
+
+
+## Bounded T9 editing recovery
+
+Short-delete history is an in-memory prediction, never a user-confirmed Path. It retains only bounded full source lengths within the current owner/epoch; explicit choices, commits, unbinding and lifecycle fences invalidate it. After letter resynchronization, subsequent affine digits advance the Core slot ledger using every completed slot, including coalesced presentation.
+
+R174 exact retype is separate and normal-build default off. Only `DEBUG && targetEnvironment(simulator) && INPUT_RELIABILITY_R174_SIMULATOR_TEST` changes its initial internal value. It has no public setting or persisted toggle. Its bounded two-syllable history, restore validation and failure quarantine do not grant candidate authority; existing Batch 2 origin/owner/epoch/revision checks remain mandatory.
+
+During either recovery quarantine, Core rejects candidate, correction, paging, Path and submission endpoints before engine or host side effects. UIKit invalidates cached candidates/prefetch requests and closes candidate/Path panels; the existing candidate row displays the notice without geometry changes. Restore only controls disabled by this adapter. These guards do not depend on R174 being enabled when Partial Commit failure protection is active.

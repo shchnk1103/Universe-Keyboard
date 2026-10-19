@@ -1,0 +1,212 @@
+[
+  {
+    "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+T9UnconfirmedDeleteHistory.swift",
+    "source_sha256": "a9d56274dc42d852d28396bfcd4bf548f6f9c9605af9009d577842fa5a5df8e6",
+    "extracted_sha256": "a9d56274dc42d852d28396bfcd4bf548f6f9c9605af9009d577842fa5a5df8e6",
+    "method": "new file",
+    "adapted": false
+  },
+  {
+    "path": "Packages/KeyboardCore/Sources/KeyboardCore/T9ExactRetypeRecovery.swift",
+    "source_sha256": "ec7a3e9c23f68dc334ae1397d3d8808519bd5d03d9376d259383d93fdf47e35e",
+    "extracted_sha256": "ec7a3e9c23f68dc334ae1397d3d8808519bd5d03d9376d259383d93fdf47e35e",
+    "method": "new file",
+    "adapted": false
+  },
+  {
+    "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+T9ExactRetypeRecovery.swift",
+    "source_sha256": "a50c920d9874ea86fbe20156f7df491f2e8c74dcc26c5ed0ad340be52bf49b9a",
+    "extracted_sha256": "a50c920d9874ea86fbe20156f7df491f2e8c74dcc26c5ed0ad340be52bf49b9a",
+    "method": "new file",
+    "adapted": false
+  },
+  {
+    "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+PartialCommitFailureRecovery.swift",
+    "source_sha256": "af06483a5016aa463bc39527b0245738a070bf26f2985bb1501f651126bcd34c",
+    "extracted_sha256": "af06483a5016aa463bc39527b0245738a070bf26f2985bb1501f651126bcd34c",
+    "method": "new file",
+    "adapted": false
+  },
+  {
+    "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController.swift",
+    "source_sha256": "ca81f741caea8666ab8c7e2ae76ccac5a0656e0753931fffa61ee37e7cf03851",
+    "extracted_sha256": "ca81f741caea8666ab8c7e2ae76ccac5a0656e0753931fffa61ee37e7cf03851",
+    "method": "reviewed hunk patch",
+    "adapted": false
+  },
+  {
+    "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+PartialCommit.swift",
+    "source_sha256": "2647ac0834dee89dc7a23dd7c36bb817ea51265a6975c8b4b79cde5c03fbda11",
+    "extracted_sha256": "2647ac0834dee89dc7a23dd7c36bb817ea51265a6975c8b4b79cde5c03fbda11",
+    "method": "reviewed hunk patch",
+    "adapted": false
+  },
+  {
+    "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+RimeRecovery.swift",
+    "source_sha256": "8d4f99f029438f5041dd20b4ac45df5215a9963441b98cd2163d839e801dfb0c",
+    "extracted_sha256": "8d4f99f029438f5041dd20b4ac45df5215a9963441b98cd2163d839e801dfb0c",
+    "method": "reviewed hunk patch",
+    "adapted": false
+  },
+  {
+    "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+T9PinyinPath.swift",
+    "source_sha256": "a6b51983450e4f1ff37d098fd6059259c8a1876f1d9612601d1bc248a4697e44",
+    "extracted_sha256": "a6b51983450e4f1ff37d098fd6059259c8a1876f1d9612601d1bc248a4697e44",
+    "method": "reviewed hunk patch",
+    "adapted": false
+  },
+  {
+    "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+Continuation.swift",
+    "source_sha256": "2acc88d09d2e2490715beb9a2fe2c7dd6aa9c220e5bc2da873700088aa526aea",
+    "extracted_sha256": "2acc88d09d2e2490715beb9a2fe2c7dd6aa9c220e5bc2da873700088aa526aea",
+    "method": "reviewed hunk patch",
+    "adapted": false
+  },
+  {
+    "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+PendingPunctuation.swift",
+    "source_sha256": "706a21590c1edebe2e81073abac5eb24f2f60c912496349c3695684fb2199ad2",
+    "extracted_sha256": "706a21590c1edebe2e81073abac5eb24f2f60c912496349c3695684fb2199ad2",
+    "method": "reviewed hunk patch",
+    "adapted": false
+  },
+  {
+    "path": "Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+Candidates.swift",
+    "source_sha256": "fcac4db3d72df7d183cc7c9af7f4d4492d5b2f3fc45d9e389f2f6ccbefff3418",
+    "extracted_sha256": "b55453bedbd75f6ccbf6e8ae510a62f5c6b22ab87cf82f69aea5a4f2e76bf451",
+    "method": "reviewed hunk patch",
+    "adapted": true
+  },
+  {
+    "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/T9UnconfirmedDeleteStabilityTests.swift",
+    "source_sha256": "69f5b496ae5a1455fefd399c78099b032843a7b08317429e39df8b2e68aa2015",
+    "extracted_sha256": "69f5b496ae5a1455fefd399c78099b032843a7b08317429e39df8b2e68aa2015",
+    "method": "new file",
+    "adapted": false
+  },
+  {
+    "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/T9ExactRetypeRecoveryTests.swift",
+    "source_sha256": "d5ee515610f2b199d82fe58e7e59dd3051b6e53e90afeb938381c4c176d9d1fd",
+    "extracted_sha256": "d5ee515610f2b199d82fe58e7e59dd3051b6e53e90afeb938381c4c176d9d1fd",
+    "method": "new file",
+    "adapted": false
+  },
+  {
+    "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/T9ExactRetypeControllerTests.swift",
+    "source_sha256": "7847b9cbe4a82109822ead465f917d70aa472158d8e88e65504ec3f8532c4191",
+    "extracted_sha256": "7847b9cbe4a82109822ead465f917d70aa472158d8e88e65504ec3f8532c4191",
+    "method": "new file",
+    "adapted": false
+  },
+  {
+    "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/PartialCommitFailureProtectionTests.swift",
+    "source_sha256": "603ac1c3700250b2ef4ac6c67c56ffbd54f145074ca11a18e8987d00cbbc2f56",
+    "extracted_sha256": "603ac1c3700250b2ef4ac6c67c56ffbd54f145074ca11a18e8987d00cbbc2f56",
+    "method": "new file",
+    "adapted": false
+  },
+  {
+    "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift",
+    "source_sha256": "0b9b67732b6d43f7a011e3eedeb5d9627507997bb83e4167ba353020883d37f9",
+    "extracted_sha256": "0b9b67732b6d43f7a011e3eedeb5d9627507997bb83e4167ba353020883d37f9",
+    "method": "reviewed hunk patch",
+    "adapted": false
+  },
+  {
+    "path": "Packages/KeyboardCore/Tests/KeyboardCoreTests/RimeControllerInputTests.swift",
+    "source_sha256": "bb34c2aa6892d730c3ce07be4ab0b509e348a3418b3de0dff2e8deba48784563",
+    "extracted_sha256": "bb34c2aa6892d730c3ce07be4ab0b509e348a3418b3de0dff2e8deba48784563",
+    "method": "reviewed hunk patch",
+    "adapted": false
+  },
+  {
+    "path": "Keyboard/Controllers/KeyboardViewController+CandidateBar.swift",
+    "source_sha256": "27f00abc04afffb8e82c1b0bdbf846c72b23935795f142d1c0859ca0378a28a4",
+    "extracted_sha256": "058eb8a98f97c5eb8130784cbb469aa5176a9c113bad27cae7ee17ec2ddc5afd",
+    "method": "reviewed hunk patch",
+    "adapted": true
+  },
+  {
+    "path": "Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift",
+    "source_sha256": "c262757c4908bdcc6ac657ac0595402ff3efa6cc85c887aac1853ccb6414b907",
+    "extracted_sha256": "c262757c4908bdcc6ac657ac0595402ff3efa6cc85c887aac1853ccb6414b907",
+    "method": "reviewed hunk patch",
+    "adapted": false
+  },
+  {
+    "path": "Keyboard/Controllers/KeyboardViewController+CandidatePaging.swift",
+    "source_sha256": "ba2ad0a3c958dc3f3b4cb82e695da908e81b9ccdc6789b5c817250a79480bf6f",
+    "extracted_sha256": "ba2ad0a3c958dc3f3b4cb82e695da908e81b9ccdc6789b5c817250a79480bf6f",
+    "method": "reviewed hunk patch",
+    "adapted": false
+  },
+  {
+    "path": "Keyboard/Controllers/KeyboardViewController+ExpandedCandidatePanel.swift",
+    "source_sha256": "bbfde54a070210c30b64ebdd8e3d0a23d8fbfba9435ea3c628d16a0b11e9016b",
+    "extracted_sha256": "bbfde54a070210c30b64ebdd8e3d0a23d8fbfba9435ea3c628d16a0b11e9016b",
+    "method": "reviewed hunk patch",
+    "adapted": false
+  },
+  {
+    "path": "Keyboard/Controllers/KeyboardViewController+SpaceCursor.swift",
+    "source_sha256": "e05d595c2fbb5fa7e716ee541eee053d6a98bf08c0c0333ff545108803712235",
+    "extracted_sha256": "e05d595c2fbb5fa7e716ee541eee053d6a98bf08c0c0333ff545108803712235",
+    "method": "reviewed hunk patch",
+    "adapted": false
+  },
+  {
+    "path": "Keyboard/Controllers/KeyboardViewController+T9PinyinPath.swift",
+    "source_sha256": "b56def53404e360e4c42a8e6c134242072dc2126b829cb2db8375cc544a55b76",
+    "extracted_sha256": "b56def53404e360e4c42a8e6c134242072dc2126b829cb2db8375cc544a55b76",
+    "method": "reviewed hunk patch",
+    "adapted": false
+  },
+  {
+    "path": "Keyboard/Controllers/KeyboardViewController.swift",
+    "source_sha256": "51542e92c7a0e103aa092cc81a9e95547184c364cac3ed77a3a5ccff290517bc",
+    "extracted_sha256": "51542e92c7a0e103aa092cc81a9e95547184c364cac3ed77a3a5ccff290517bc",
+    "method": "reviewed hunk patch",
+    "adapted": false
+  },
+  {
+    "path": "Keyboard/Controllers/KeyboardViewController+T9InputRecovery.swift",
+    "source_sha256": "70f118283c91a971d14700595a49a5fa9e3d26f1ef1cda34c21ead8e001ad023",
+    "extracted_sha256": "3047f683cfc539eb79b38fe1a5f7629ff3810732af66de6f2dab0e0f3bb08bf6",
+    "method": "new file",
+    "adapted": true
+  },
+  {
+    "path": "Keyboard/Views/CandidateBar/CandidateBarView.swift",
+    "source_sha256": "f6e5971d55bc83ba2b707c7f094aff6a06f984c41957a00fec04859333dc959d",
+    "extracted_sha256": "f6e5971d55bc83ba2b707c7f094aff6a06f984c41957a00fec04859333dc959d",
+    "method": "reviewed hunk patch",
+    "adapted": false
+  },
+  {
+    "path": "KeyboardExtensionTests/T9RecoveryPresentationAdapterTests.swift",
+    "source_sha256": "80077ad31f75c7c18bc017063cc9b9b91238735199e89ef91f45b16246f710bc",
+    "extracted_sha256": "80077ad31f75c7c18bc017063cc9b9b91238735199e89ef91f45b16246f710bc",
+    "method": "new file",
+    "adapted": false
+  },
+  {
+    "path": "KeyboardExtensionTests/CandidateBarRecoveryViewTests.swift",
+    "source_sha256": "4ddfe79b08ea57994952e6ebbe4a890eeb839069661083d1ee7ac7a79ddd5bff",
+    "extracted_sha256": "4ddfe79b08ea57994952e6ebbe4a890eeb839069661083d1ee7ac7a79ddd5bff",
+    "method": "new file",
+    "adapted": false
+  },
+  {
+    "path": "KeyboardExtensionTests/KeyRecoveryAccessibilityTests.swift",
+    "source_sha256": "74e6b8c20a19012d50466ebffc5b8438afeb9876d9f58ed8820c1ad5a6ef67a8",
+    "extracted_sha256": "74e6b8c20a19012d50466ebffc5b8438afeb9876d9f58ed8820c1ad5a6ef67a8",
+    "method": "new file",
+    "adapted": false
+  },
+  {
+    "path": "KeyboardExtensionTests/CandidatePagingConsumerFixtureTests.swift",
+    "source_sha256": "0e6fcece2d9f5e350f721f10da7a3fa758945c11b006f872390b61a43f8904cd",
+    "extracted_sha256": "0e6fcece2d9f5e350f721f10da7a3fa758945c11b006f872390b61a43f8904cd",
+    "method": "new file",
+    "adapted": false
+  }
+]
