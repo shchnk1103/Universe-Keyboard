@@ -1,24 +1,24 @@
 # KOS Handoff Snapshot
 
 - Work Item / Assignment: INPUT-RELIABILITY-DELIVERY-001 @ docs/assignments/input-reliability-delivery-001.md
-- Canonical lifecycle/status: Active / C1 local fix ready for a directed re-review @ docs/assignments/input-reliability-delivery-001.md
-- Current legal actions: wait for Human Product Lead before a product pull request or a C1 re-review assignment
-- Explicitly prohibited actions: product push, product pull request, merge, R174 enablement, R349, Build 94 investigation, phases C and D, edits to the original Codex worktree, C2–C5 fixes
-- Frozen branch / commit / artifact: grok/input-reliability-delivery-001 @ local C1 commit recorded by CP-003; parent remains 3f2ea2752790432655bfc39720e92a7287d46ca8
-- Completed outputs: Batch 1 source, the C1 session-prefix retention fix, directly related tests, and this task record on the local carrier
-- Open Gates and owners: C1 directed re-review — Claude Independent Reviewer, after Human routes it; C2–C5 remain open observations; product publication — Human Product Lead
-- Evidence and freshness: C1 checks recorded in log CP-003 on 2026-10-19 Asia/Shanghai; CP-002 evidence remains the Batch 1 baseline; not a hosted CI run
+- Canonical lifecycle/status: Closed / merged on main @ docs/assignments/input-reliability-delivery-001.md@bb430f914deaf7b19a61183f744b5dcf2fdb8eae
+- Current legal actions: none; Batch 2 needs a new Assignment
+- Explicitly prohibited actions: further product edits on this task, R174 enablement, R349, Build 94 investigation, phases C and D, Batch 2 or Batch 3, branch or worktree deletion without a new Human decision
+- Frozen branch / commit / artifact: origin/main @ bb430f914deaf7b19a61183f744b5dcf2fdb8eae; PR https://github.com/shchnk1103/Universe-Keyboard/pull/213
+- Completed outputs: Batch 1 document identity, safe document switch, session-loss recovery, synchronous fallback refusal, C1 prefix retention, and the private-schema test fixture, squashed into bb430f914deaf7b19a61183f744b5dcf2fdb8eae
+- Open Gates and owners: none for this task
+- Evidence and freshness: GitHub PR 213 state MERGED at 2026-10-19T12:27:34Z; CI run 39249616722 success, including final-quality-gate; Claude Independent Review recorded C1 Resolved and Ready for PR Preparation
 - Environment state:
   - Resource ledger（可选 L-01）: none
   - Environment leases（可选 L-02）: none
-- Recorded authorization receipts and audit consumption state: Human Product Lead session authorization, 2026-10-19 Asia/Shanghai; no formal AUTH file yet
+- Recorded authorization receipts and audit consumption state: Human Product Lead session authorizations through closeout, 2026-10-19 Asia/Shanghai; no formal AUTH file
 - Extension-referenced authorizations（可选 L-01）: none
-- Human Dependencies: product push, pull request, and merge
-- Residual findings / debt: R345 remains evidence-insufficient and is outside Batch 1. KeyboardTests carries a behavior-matched copy of the identity tracker and reader because it does not link the Keyboard extension. Review observations C2, C3, C4, and C5 are unchanged. A failed automatic recovery still waits out the existing 0.5s retry window before the next attempt.
-- Next safest action: Human routes the C1 commit to Claude for a directed re-review
-- Revalidation triggers: origin/main moves; Task Workspace pin changes; batch boundary changes
-- based_on: d6e087bf3b6c153e4d8fa0cd975395483cd7a0ab
-- snapshot_rev: 4
-- log_cursor: CP-004
+- Human Dependencies: none for closeout; a later batch needs a new authorization
+- Residual findings / debt: R345 stays evidence-insufficient and outside this task. R174 stays off. C2, C3, C4, and C5 stay accepted observations and were not promoted to tech debt. The replaceInput-failure edge stays a disclosed non-blocking risk. Accepted by Human Product Lead at merge; no TECH_DEBT entry is created by this closeout.
+- Next safest action: stop; do not start Batch 2 from this carrier
+- Revalidation triggers: none for this closed task
+- based_on: be474bc8783e27b20d810ebc58eb2948a23ae3c3
+- snapshot_rev: 5
+- log_cursor: CP-005
 - read_on_demand:
-  - docs/assignments/input-reliability-delivery-001.md
+  - docs/assignments/input-reliability-delivery-001.md@bb430f914deaf7b19a61183f744b5dcf2fdb8eae

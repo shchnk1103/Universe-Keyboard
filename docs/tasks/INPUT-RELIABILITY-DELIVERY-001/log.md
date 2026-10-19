@@ -31,3 +31,11 @@
 - lane: grok-build
 - kind: CHECKPOINT
 - note: PR 213 test-rimebridge failed because a restarted librime reads user/build, while the fixture only wrote shared sources. Test-only copy of default.yaml and the private schema into user/build. Production code unchanged. C1 assertions unchanged. Local SynchronousSessionLossRecoveryTests 2 passed. swift-format lint --strict passed for the test file.
+
+## CP-005 CHECKPOINT
+
+- id: CP-005
+- at: 2026-10-19T20:40:00+08:00
+- lane: grok-build
+- kind: CHECKPOINT
+- note: Closeout. GitHub reports PR 213 MERGED at 2026-10-19T12:27:34Z. Squash merge commit bb430f914deaf7b19a61183f744b5dcf2fdb8eae is origin/main and contains the Batch 1 files. CI run 39249616722 succeeded, including test-rimebridge and final-quality-gate. Claude Independent Review: C1 Resolved, Ready for PR Preparation. Human Product Lead accepted that review and confirmed the merge. Residuals C2–C5, R345, and the replaceInput edge are accepted observations, not new debt. Writer remains grok-build. No HANDOFF and no pending P. No product source change in this checkpoint.

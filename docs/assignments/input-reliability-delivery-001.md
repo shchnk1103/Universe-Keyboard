@@ -6,11 +6,11 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| Lifecycle | Active |
-| Current phase | Active: C1 local fix is ready for a directed re-review |
-| Material non-claims | Not an Architecture, Quality, or Product Gate. Not a merge, TestFlight, or Release. R345 remains evidence-insufficient. R174 stays off. The original INPUT-RELIABILITY-B-001 Assignment and worktree are not migrated. |
-| Next handoff / decision | Human Product Lead decides whether this carrier may be pushed as a product PR after local validation |
-| Residuals | R345 candidate identity stays out of this batch. Batch 2 and Batch 3 are not started. |
+| Lifecycle | Closed |
+| Current phase | Closed: PR 213 is merged on main |
+| Material non-claims | Not a TestFlight or Release. R345 remains evidence-insufficient. R174 stays off. The original INPUT-RELIABILITY-B-001 Assignment and worktree are not migrated. C2–C5 and the replaceInput edge stay accepted observations. |
+| Next handoff / decision | None. A later batch needs a new Assignment. |
+| Residuals | R345 stays outside this task. C2–C5 and the replaceInput-failure edge were accepted by Human Product Lead at merge and are not new tech debt. |
 
 ---
 
@@ -45,7 +45,7 @@ The initial writer lane is `grok-build`. There is no predecessor writer, so the 
 ## Gates and Handoff
 
 - Entry: Human named this Task ID, the initial executor, and the Batch 1 scope; `origin/main` was reconfirmed at `31d06e0`.
-- Exit: Batch 1 source and tests are committed on the carrier; the authorized local checks have a recorded result; no product pull request exists.
+- Exit: PR 213 merged to main as bb430f914deaf7b19a61183f744b5dcf2fdb8eae; CI run 39249616722 succeeded; Human Product Lead confirmed closeout.
 - Stop: a hard dependency on Batch 2 or Batch 3 design; a failing check that is not a bounded extraction error; any need to modify the original Codex worktree.
 - Handoff Target: Human Product Lead.
 - Required Handoff Content: carrier HEAD, extracted paths, checks run, and whether an independent review can start.
@@ -57,3 +57,4 @@ The initial writer lane is `grok-build`. There is no predecessor writer, so the 
 - 2026-10-19 Asia/Shanghai: grok-build committed the Batch 1 extraction locally after the authorized checks. Product publication remains a Human decision.
 - 2026-10-19 Asia/Shanghai: Human authorized a bounded C1 fix. grok-build keeps the failed-recovery raw prefix and commits that fix locally. C2–C5 stay open. Product publication remains a Human decision.
 - 2026-10-19 Asia/Shanghai: Human authorized the PR 213 test-rimebridge fixture fix. The private schema is copied into user/build. Production code stays unchanged.
+- 2026-10-19 Asia/Shanghai: GitHub reports PR 213 MERGED. Squash commit bb430f914deaf7b19a61183f744b5dcf2fdb8eae. CI run 39249616722 succeeded. Human Product Lead authorized this closeout. Lifecycle is Closed.
