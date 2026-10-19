@@ -7,7 +7,7 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current phase | Active: local Batch 2 is committed and awaits independent review |
+| Current phase | Active: review remediation is committed locally and awaits bounded re-review |
 | Material non-claims | Not an Architecture, Quality, or Product Gate. Not a product push, pull request, merge, TestFlight, or Release. R345 stays evidence-insufficient until this batch records a bounded conclusion. R174 stays off. The original INPUT-RELIABILITY-B-001 Assignment and worktree are not migrated. INPUT-RELIABILITY-DELIVERY-001 stays Closed on its own carrier. |
 | Next handoff / decision | Human Product Lead decides whether this carrier may be pushed as a product pull request after local validation and independent review |
 | Residuals | T9 delete and retype recovery, partial-commit failure protection, R174 enablement, and phases C and D stay out of this batch. |
@@ -55,3 +55,4 @@ The initial writer lane is `grok-build`. There is no predecessor writer, so the 
 
 - 2026-10-19 Asia/Shanghai: Human Product Lead authorized this new Assignment and named Grok Build as the initial executor. The original INPUT-RELIABILITY-B-001 Assignment and the Closed INPUT-RELIABILITY-DELIVERY-001 Assignment stay unchanged.
 - 2026-10-19 Asia/Shanghai: grok-build committed the Batch 2 extraction locally after the authorized checks. Product publication remains a Human decision.
+- 2026-10-19 Asia/Shanghai: grok-build committed the authorized review remediation locally. Authority engines no longer send an origin-less candidate through selectCandidate(globalIndex:). Two out-of-batch functional edits were restored. Product publication remains a Human decision.

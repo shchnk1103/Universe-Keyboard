@@ -135,4 +135,25 @@ final class CandidateWindowBindingControllerTests: XCTestCase {
         XCTAssertEqual(probe.snapshot().selections, 0)
         XCTAssertFalse(host.text.isEmpty)
     }
+
+    func testStaleOriginFreeCandidateDoesNotSelectOrCommitDisplayedText() throws {
+        let probe = CandidateAuthorityProbe()
+        let (coordinator, bridge) = makeBridge(probe)
+        defer { coordinator.shutdown() }
+        let output = bridge.processKey("n")
+        let displayed = try XCTUnwrap(output.candidates.first?.text)
+        let controller = KeyboardController()
+        let host = FakeTextInputClient()
+        controller.textClient = host
+        controller.rimeEngine = bridge
+        controller.applyRimeOutput(output)
+        let committedBefore = host.text
+        _ = controller.handle(
+            .insertCandidate(
+                "过期候选", kind: .candidate,
+                selectionReference: .init(page: 0, indexOnPage: 0, globalIndex: 0)))
+        XCTAssertEqual(probe.snapshot().selections, 0)
+        XCTAssertEqual(host.text, committedBefore)
+        XCTAssertEqual(controller.state.lastRimeOutput?.candidates.first?.text, displayed)
+    }
 }

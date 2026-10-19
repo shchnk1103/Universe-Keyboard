@@ -69,15 +69,13 @@ extension KeyboardController {
                     case .applied(let selected): result = selected
                     case .rejected: return []
                     }
-                } else if output.candidateOrigin != nil {
-                    // The displayed page has a native origin, but this item does
-                    // not. Its page or global index is not a native select argument.
-                    return []
-                } else if output.candidates.contains(where: { $0.text == candidate }),
-                    engine is RimeCandidateAuthorityProviding
-                {
-                    // Local augmentation publishes candidates with no native
-                    // origin. Commit the displayed text.
+                } else if engine is RimeCandidateAuthorityProviding {
+                    // No native origin is available. A synthetic page or global
+                    // index must not reach native select. Only the exact text of
+                    // the current origin-free page may commit locally.
+                    guard output.candidateOrigin == nil,
+                        output.candidates.contains(where: { $0.text == candidate })
+                    else { return [] }
                     commitFallbackCandidate(candidate)
                     let pathEffect = clearT9PinyinPathStateReturningEffect()
                     return .compositionChanged.union(pathEffect)
