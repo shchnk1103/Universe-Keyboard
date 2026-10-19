@@ -1,0 +1,10 @@
+# AUTH-INPUT-RELIABILITY-DELIVERY-003-CLOSEOUT
+
+- Issuer: Human Product Lead, current session, 2026-10-20 Asia/Shanghai, “Human Authorization — Minimal KOS Closeout”.
+- Target / Writer: INPUT-RELIABILITY-DELIVERY-003 / codex-batch3; no transfer, no pending HANDOFF.
+- State: active only for this bounded closeout and remote verification; authority ends with final report. Earlier implementation/publication scopes are completed and not reused as closeout authority.
+- Authorized: verify merged PR #215, main product identity, CI, Writer/AUTH/checkpoints; mark Assignment Closed; record bounded delivery receipt and open release gates; create final CHECKPOINT; normal commit/push to existing carrier; verify remote history and stop.
+- Allowlist: this AUTH, owning Assignment, task BRIEF/log, closeout evidence receipt, this task's ACTIVE_WORK/ENGINEERING_DASHBOARD mirrors only.
+- Prohibited: production/test changes, running tests, main writes, forced synchronization/rewrite of snapshot ancestors, fabricated based_on/HANDOFF/ACCEPT, force push, deletion of branch/worktrees/backups, new development or TestFlight/R174 enablement.
+- Explicit squash-history handling: Human requires product/main squash history and KOS carrier history to remain separate, with no Closeout sync to main. Main snapshot 096183ca118cc40ffc16854d1a5336a42cfcbd89 and carrier snapshot 2477472396d827ade9f08d88714c426da3f6d5c9 have equal BRIEF blobs but neither is ancestor of the other. This specific closeout proceeds under that current Human instruction as a bounded exception to Task Workspace section 8 common prerequisite 4 (and its stop-row consequence), not as a claim that prerequisite passed. No general contract amendment or future takeover exemption. All carrier-local ancestry, real parent/based_on, unique Writer, append-only log and normal-push checks remain required.
+- Remaining release gates: real librime T9 delete/retype recovery; complete system interaction after real Extension activation; R174 normal default off, future enablement needs separate validation and authorization. Closed engineering delivery does not waive them or upgrade Quality Partial.

@@ -7,11 +7,11 @@ record_id: INPUT-RELIABILITY-DELIVERY-003
 
 | Field | Value |
 |---|---|
-| Lifecycle | Active |
-| Current phase | Product PR preparation and hosted CI verification |
-| Material non-claims | Human reports Claude Architecture Pass / Quality Partial / Ready for PR Preparation Yes. No Quality Pass, Merge, TestFlight or Closeout authority. R174 remains off. |
-| Next handoff / decision | Push reviewed candidate, open PR to main, check actual CI, then stop for Human Merge decision |
-| Residuals | [Verification and evidence gaps](../evidence/input-reliability-delivery-003/verification.md); no Closeout in this phase. |
+| Lifecycle | Closed |
+| Current phase | Closed — bounded Batch 3 engineering delivery |
+| Material non-claims | PR #215 merged; final product CI success. Quality remains Partial. No TestFlight or R174 enablement; open real-input gates remain. |
+| Next handoff / decision | Finish carrier closeout sync and stop; future release validation needs separate Human authorization |
+| Residuals | [Open release gates A/B/C and closeout facts](../evidence/input-reliability-delivery-003/closeout.md); not waived by Closed |
 
 ## Authority
 
@@ -62,3 +62,7 @@ Current Codex session acknowledges scope, read-only extraction source, access an
 Human explicitly authorized final Git/KOS checks, normal push of the reviewed product and necessary task records, a product PR to main, actual GitHub CI observation and a report. [Publication AUTH](../authorizations/AUTH-INPUT-RELIABILITY-DELIVERY-003-PRODUCT-PR.md) supersedes the earlier local-only boundary for this slice; no new feature, production behavior, Merge, TestFlight or Closeout is authorized. [Independent review receipt](../evidence/input-reliability-delivery-003/independent-review-received.md) records Human's relay, not a newly performed review. Existing assignees and Writer remain unchanged.
 
 The earlier implementation plan and local-only statements above describe the completed stage. This stage's exit is a published PR with actual check results and an explicit stop. Source/test hashes must remain those of product `286d3e91c0cc0e94d1d439c10d799948abcb9a1f`. Only necessary publication records and public-path sanitization may be added. Real RIME T9 recovery integration and the activated Extension's complete system interaction must be addressed before TestFlight; neither is waived by opening a PR.
+
+## Minimal closeout — 2026-10-20 Asia/Shanghai
+
+Human Product Lead explicitly authorized this bounded lifecycle closure after PR #215 squash merge `096183ca118cc40ffc16854d1a5336a42cfcbd89` and final CI `39279966879` SUCCESS. [Closeout AUTH](../authorizations/AUTH-INPUT-RELIABILITY-DELIVERY-003-CLOSEOUT.md) is current for this slice; earlier phase restrictions are historical. [Receipt](../evidence/input-reliability-delivery-003/closeout.md) records the verified main product identity, unchanged Quality Partial, mandatory open release gates, and narrow squash/main ancestry exception. Lifecycle Closed does not accept missing real-input evidence or authorize TestFlight. Codex acknowledged closeout scope; no source/test edits or tests. Retain the full carrier and all worktrees/backups; do not sync this closeout onto main.
