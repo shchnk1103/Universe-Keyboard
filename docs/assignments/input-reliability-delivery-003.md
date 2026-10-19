@@ -8,9 +8,9 @@ record_id: INPUT-RELIABILITY-DELIVERY-003
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current phase | Local candidate ready for independent review |
-| Material non-claims | No independent Review, merge readiness, Product Gate or Release claimed. R174 remains off in normal builds. No product push, PR, merge or TestFlight authorization. |
-| Next handoff / decision | Local candidate to Human for Claude independent Architecture / Quality Review |
+| Current phase | Product PR preparation and hosted CI verification |
+| Material non-claims | Human reports Claude Architecture Pass / Quality Partial / Ready for PR Preparation Yes. No Quality Pass, Merge, TestFlight or Closeout authority. R174 remains off. |
+| Next handoff / decision | Push reviewed candidate, open PR to main, check actual CI, then stop for Human Merge decision |
 | Residuals | [Verification and evidence gaps](../evidence/input-reliability-delivery-003/verification.md); no Closeout in this phase. |
 
 ## Authority
@@ -37,7 +37,7 @@ Carrier: `codex/input-reliability-delivery-003`. Keep its continuity history sep
 ## Scope and inputs
 
 Baseline: actual fetched `origin/main` `d08175b915aee40998398d7fdc03f2fd7cf0833f`, containing Batch 1 `bb430f914deaf7b19a61183f744b5dcf2fdb8eae` and Batch 2 `d08175b915aee40998398d7fdc03f2fd7cf0833f`.
-Extraction source, strictly read-only: `/Users/doubleshy0n/.codex/worktrees/input-reliability-main-20261012/Universe Keyboard`, HEAD `eedbee993f8d89cd283c1487356f27f66c5e044a` plus its uncommitted files. Handoff: external backup `input-reliability-b-001-step1-20261019T083952Z/GROK-DELIVERY-HANDOFF.md`.
+Extraction source, strictly read-only: the original read-only Codex worktree identified by Human, HEAD `eedbee993f8d89cd283c1487356f27f66c5e044a` plus its uncommitted files. Handoff: external backup `input-reliability-b-001-step1-20261019T083952Z/GROK-DELIVERY-HANDOFF.md`.
 Scope: T9 short-delete history/retype/state consistency; failed Partial Commit checkpoint protection; R174 implementation/tests with normal-build default off; Core and Extension recovery rejection, candidate/paging/Path invalidation and notices; directly related Return/space/symbol/emoji finalization/cancellation. Extract shared files by hunk, preserve all merged identity/authority protections.
 Non-goals: reimplement Batch 1/2; R345/R349 investigation; Build 94; C/D phases; deployment lifecycle changes; R174 user/persistent/TestFlight switch; changes to source/other/main worktrees or backups; large test framework; product publication or Closeout.
 
@@ -56,3 +56,9 @@ Revalidation: baseline/contract/scope/owner changes, second Writer, AUTH revocat
 ## Acknowledgment
 
 Current Codex session acknowledges scope, read-only extraction source, access and stop boundaries. Implementation is authorized; independent Claude review and Product publication remain separate stages.
+
+## Product PR authorization — 2026-10-19 Asia/Shanghai
+
+Human explicitly authorized final Git/KOS checks, normal push of the reviewed product and necessary task records, a product PR to main, actual GitHub CI observation and a report. [Publication AUTH](../authorizations/AUTH-INPUT-RELIABILITY-DELIVERY-003-PRODUCT-PR.md) supersedes the earlier local-only boundary for this slice; no new feature, production behavior, Merge, TestFlight or Closeout is authorized. [Independent review receipt](../evidence/input-reliability-delivery-003/independent-review-received.md) records Human's relay, not a newly performed review. Existing assignees and Writer remain unchanged.
+
+The earlier implementation plan and local-only statements above describe the completed stage. This stage's exit is a published PR with actual check results and an explicit stop. Source/test hashes must remain those of product `286d3e91c0cc0e94d1d439c10d799948abcb9a1f`. Only necessary publication records and public-path sanitization may be added. Real RIME T9 recovery integration and the activated Extension's complete system interaction must be addressed before TestFlight; neither is waived by opening a PR.

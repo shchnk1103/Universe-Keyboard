@@ -1,11 +1,13 @@
 # INPUT-RELIABILITY-DELIVERY-003 — Local candidate verification
 
+Historical verification receipt for product `286d3e91c0cc0e94d1d439c10d799948abcb9a1f`; later publication authority/status is owned by the Assignment and task log.
+
 Date: 2026-10-19 Asia/Shanghai. Executor / Writer: current Codex session, lane `codex-batch3`. Independent reviewer assigned: Claude; not run by this lane. This is not independent Quality, Product acceptance, merge readiness or Release.
 
 ## Identity and scope
 
 - Actual fetched baseline: `d08175b915aee40998398d7fdc03f2fd7cf0833f`; includes Batch 1 `bb430f914deaf7b19a61183f744b5dcf2fdb8eae` and Batch 2 `d08175b915aee40998398d7fdc03f2fd7cf0833f`.
-- New worktree: `/Users/doubleshy0n/.codex/worktrees/input-reliability-delivery-003/Universe Keyboard`.
+- New worktree: the isolated task carrier checkout.
 - Carrier: `codex/input-reliability-delivery-003`. Remote synchronized docs-only initialization ends at `582a5a54267e6f5813626f1ef48ce53d4e992137`; no product ancestor is pushed.
 - Read-only extraction source: original Codex worktree at `eedbee993f8d89cd283c1487356f27f66c5e044a` plus uncommitted files. No original/main/Grok checkout or backup was written.
 - Extraction: bounded T9 short-delete history; affine post-delete continuous digits/ledger; R174 bounded policy/controller integration; failed Partial Commit checkpoint recovery; candidate/Path/paging/direct action rejection; UIKit notices, disabled controls and cache invalidation; numeric 26-key finalization compatibility, no internal T9 digits to host.
