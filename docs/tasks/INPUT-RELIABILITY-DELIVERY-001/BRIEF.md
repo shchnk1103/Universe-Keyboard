@@ -1,24 +1,24 @@
 # KOS Handoff Snapshot
 
 - Work Item / Assignment: INPUT-RELIABILITY-DELIVERY-001 @ docs/assignments/input-reliability-delivery-001.md
-- Canonical lifecycle/status: Active / extract and locally validate Batch 1 @ docs/assignments/input-reliability-delivery-001.md@31d06e0bf8d931f001189a31168901286e9ba40f
-- Current legal actions: initialize the carrier; extract Batch 1 hunks; run the authorized local checks; create the local delivery commit
+- Canonical lifecycle/status: Active / local Batch 1 commit ready for independent review @ docs/assignments/input-reliability-delivery-001.md
+- Current legal actions: wait for Human Product Lead before a product pull request
 - Explicitly prohibited actions: product push, product pull request, merge, R174 enablement, R349, Build 94 investigation, phases C and D, edits to the original Codex worktree
-- Frozen branch / commit / artifact: grok/input-reliability-delivery-001 @ 31d06e0bf8d931f001189a31168901286e9ba40f
-- Completed outputs: none yet
-- Open Gates and owners: local validation — grok-build; independent Architecture and Quality — unassigned; product publication — Human Product Lead
-- Evidence and freshness: none yet
+- Frozen branch / commit / artifact: grok/input-reliability-delivery-001 @ local delivery commit recorded by CP-002
+- Completed outputs: Batch 1 source, directly related tests, and this task record on the local carrier
+- Open Gates and owners: independent Architecture and Quality — unassigned; product publication — Human Product Lead
+- Evidence and freshness: local checks recorded in log CP-002 on 2026-10-19 Asia/Shanghai; not a hosted CI run
 - Environment state:
   - Resource ledger（可选 L-01）: none
   - Environment leases（可选 L-02）: none
 - Recorded authorization receipts and audit consumption state: Human Product Lead session authorization, 2026-10-19 Asia/Shanghai; no formal AUTH file yet
 - Extension-referenced authorizations（可选 L-01）: none
 - Human Dependencies: product push, pull request, and merge
-- Residual findings / debt: R345 remains evidence-insufficient and is outside Batch 1
-- Next safest action: push this initial checkpoint, then extract Batch 1
+- Residual findings / debt: R345 remains evidence-insufficient and is outside Batch 1. KeyboardTests carries a behavior-matched copy of the identity tracker and reader because it does not link the Keyboard extension.
+- Next safest action: Human decides whether to start an independent review
 - Revalidation triggers: origin/main moves; Task Workspace pin changes; batch boundary changes
-- based_on: 31d06e0bf8d931f001189a31168901286e9ba40f
-- snapshot_rev: 1
-- log_cursor: CP-001
+- based_on: e8c06eba7a5f8400dd7aaf91a83624642dc86c1f
+- snapshot_rev: 2
+- log_cursor: CP-002
 - read_on_demand:
-  - docs/assignments/input-reliability-delivery-001.md@31d06e0bf8d931f001189a31168901286e9ba40f
+  - docs/assignments/input-reliability-delivery-001.md

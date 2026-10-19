@@ -7,7 +7,7 @@ Policy version: 1.0.0
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current phase | Active: extract and locally validate Batch 1 on an isolated carrier |
+| Current phase | Active: local Batch 1 commit is ready for an independent review decision |
 | Material non-claims | Not an Architecture, Quality, or Product Gate. Not a merge, TestFlight, or Release. R345 remains evidence-insufficient. R174 stays off. The original INPUT-RELIABILITY-B-001 Assignment and worktree are not migrated. |
 | Next handoff / decision | Human Product Lead decides whether this carrier may be pushed as a product PR after local validation |
 | Residuals | R345 candidate identity stays out of this batch. Batch 2 and Batch 3 are not started. |
@@ -54,3 +54,4 @@ The initial writer lane is `grok-build`. There is no predecessor writer, so the 
 ## History
 
 - 2026-10-19 Asia/Shanghai: Human Product Lead authorized this new Assignment and named Grok Build as the initial executor. The original INPUT-RELIABILITY-B-001 Assignment stays unchanged.
+- 2026-10-19 Asia/Shanghai: grok-build committed the Batch 1 extraction locally after the authorized checks. Product publication remains a Human decision.

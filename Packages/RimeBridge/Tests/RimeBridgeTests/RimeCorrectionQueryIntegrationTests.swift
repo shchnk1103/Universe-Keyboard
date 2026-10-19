@@ -2,6 +2,7 @@ import Foundation
 import RimeBridgeObjC
 import XCTest
 
+@testable import KeyboardCore
 @testable import RimeBridge
 
 @MainActor
@@ -185,6 +186,163 @@ final class RimeCorrectionQueryIntegrationTests: XCTestCase {
 
         return RuntimeFixture(rootURL: rootURL, sharedURL: sharedURL, userURL: userURL, schemaID: schemaID)
     }
+
+    private func finalizeInstalledEngine(_ bridge: RimeSessionManager, fixture: RuntimeFixture) {
+        bridge.finalize()
+        try? FileManager.default.removeItem(at: fixture.rootURL)
+    }
+
+    #if DEBUG
+        func testSynchronousFallbackInstallerRejectsResidualResponsiveStateWithoutCreatingEngine() throws {
+            for residual in ["responsive-gate", "owner-gate", "bootstrap", "coordinator", "bridge"] {
+                let controller = KeyboardController()
+                controller.enableDefaultRimeEngine()
+                let original = try XCTUnwrap(controller.rimeEngine)
+                let pipeline = ResponsiveRimeSessionCoordinator(engine: original)
+                let replacement = ResponsiveRimeEngineBridge(underlyingEngine: original, coordinator: pipeline)
+                switch residual {
+                case "responsive-gate":
+                    controller.isResponsiveRimePipelineEnabled = true
+                case "owner-gate":
+                    controller.isThreadAffineRimeOwnerEnabled = true
+                case "bootstrap":
+                    controller.threadAffineEngineBootstrap = AnyThreadAffineRimeEngineBootstrap(
+                        ThreadAffineRimeEngineImplBootstrap(sharedDataDir: "unused", userDataDir: "unused")
+                    )
+                case "coordinator":
+                    controller.isResponsiveRimePipelineEnabled = true
+                    controller.rebuildResponsiveRimeCoordinatorIfNeeded()
+                    controller.isResponsiveRimePipelineEnabled = false
+                default:
+                    controller.rimeEngine = replacement
+                }
+                let beforeInstall = try XCTUnwrap(controller.rimeEngine)
+                var factoryCalls = 0
+                let result = SynchronousRimeFallbackInstaller.install(
+                    on: controller,
+                    makeEngine: {
+                        factoryCalls += 1
+                        return replacement
+                    },
+                    onRuntimeSelectionChanged: { _ in XCTFail("Rejected install must not publish") }
+                )
+                XCTAssertNil(result, residual)
+                XCTAssertEqual(factoryCalls, 0, residual)
+                XCTAssertTrue(controller.rimeEngine === beforeInstall, residual)
+                controller.isResponsiveRimePipelineEnabled = false
+                controller.isThreadAffineRimeOwnerEnabled = false
+                controller.threadAffineEngineBootstrap = nil
+                controller.rebuildResponsiveRimeCoordinatorIfNeeded()
+            }
+        }
+
+        /// Turning off configuration does not itself destroy the installed owner.
+        /// The installer must leave that owner usable until lifecycle teardown.
+        func testSynchronousFallbackInstallerPreservesLiveThreadAffineOwnerWhenConfigurationIsCleared() throws {
+            let fixture = try makeRuntimeFixture(schemaID: "synthetic_empty", hasTranslator: false)
+            try deployPrivateFixture(fixture)
+            let sharedPath = fixture.sharedURL.path
+            let userPath = fixture.userURL.path
+            let schemaID = fixture.schemaID
+            let controller = KeyboardController()
+            controller.isResponsiveRimePipelineEnabled = true
+            controller.isThreadAffineRimeOwnerEnabled = true
+            controller.threadAffineEngineBootstrap = AnyThreadAffineRimeEngineBootstrap {
+                let engine = RimeEngineImpl(sharedDataDir: sharedPath, userDataDir: userPath)
+                XCTAssertTrue(engine.bridge.selectSchema(schemaID))
+                return engine
+            }
+            controller.rebuildResponsiveRimeCoordinatorIfNeeded()
+            let coordinator = try XCTUnwrap(controller.threadAffineRimeCoordinator)
+            let bridge = try XCTUnwrap(controller.rimeEngine as? ThreadAffineRimeEngineBridge)
+            defer {
+                let teardown = coordinator.suspendForVisibilityChange(timeout: .now() + 10)
+                XCTAssertTrue(teardown?.isPositive == true)
+                if teardown?.isPositive == true {
+                    try? FileManager.default.removeItem(at: fixture.rootURL)
+                } else {
+                    coordinator.shutdown()
+                }
+            }
+
+            XCTAssertEqual(bridge.processKey("n").rawInput, "n")
+            let originalSession = try XCTUnwrap(bridge.diagnosticSessionSnapshot)
+            XCTAssertTrue(originalSession.isValid)
+            XCTAssertTrue(bridge.isOwnerReady)
+            let beforeInstall = try XCTUnwrap(coordinator.lastPublished)
+
+            // Clear only configuration: rebuilding here would tear down the owner
+            // and erase the residual state this regression needs to exercise.
+            controller.isResponsiveRimePipelineEnabled = false
+            controller.isThreadAffineRimeOwnerEnabled = false
+            controller.threadAffineEngineBootstrap = nil
+            XCTAssertNil(controller.responsiveRimeCoordinator)
+            var factoryCalls = 0
+            let replacement = SynchronousRimeFallbackInstaller.install(
+                on: controller,
+                makeEngine: {
+                    factoryCalls += 1
+                    return RimeEngineImpl(sharedDataDir: sharedPath, userDataDir: userPath)
+                },
+                onRuntimeSelectionChanged: { _ in XCTFail("Rejected install must not publish") }
+            )
+            XCTAssertNil(replacement)
+            XCTAssertEqual(factoryCalls, 0)
+            XCTAssertTrue(controller.rimeEngine === bridge)
+            XCTAssertTrue(controller.threadAffineRimeCoordinator === coordinator)
+            XCTAssertTrue(bridge.isOwnerReady)
+            XCTAssertEqual(bridge.diagnosticSessionSnapshot?.identity, originalSession.identity)
+
+            // An exact ordered reply proves refusal did not shut down the owner.
+            XCTAssertEqual(bridge.processKey("i").rawInput, "ni")
+            let afterInstall = try XCTUnwrap(coordinator.lastPublished)
+            let receipt = try XCTUnwrap(coordinator.lastAcceptReceipt)
+            XCTAssertEqual(afterInstall.revision, receipt.revision)
+            XCTAssertGreaterThan(afterInstall.revision, beforeInstall.revision)
+            XCTAssertEqual(afterInstall.sessionEpoch, beforeInstall.sessionEpoch)
+            XCTAssertTrue(bridge.diagnosticSessionSnapshot?.isValid == true)
+            XCTAssertEqual(bridge.diagnosticSessionSnapshot?.identity, originalSession.identity)
+        }
+
+        func testSynchronousFallbackInstallerInstallsOneRealEngineAndSelectionCallback() throws {
+            let fixture = try makeRuntimeFixture(schemaID: "synthetic_empty", hasTranslator: false)
+            try deployPrivateFixture(fixture)
+            let controller = KeyboardController()
+            controller.enableDefaultRimeEngine()
+            let original = try XCTUnwrap(controller.rimeEngine)
+            var factoryCalls = 0
+            var callbackSelections: [RimeRuntimeSelection] = []
+            let engine = try XCTUnwrap(
+                SynchronousRimeFallbackInstaller.install(
+                    on: controller,
+                    makeEngine: {
+                        factoryCalls += 1
+                        XCTAssertTrue(controller.rimeEngine === original)
+                        return RimeEngineImpl(
+                            sharedDataDir: fixture.sharedURL.path,
+                            userDataDir: fixture.userURL.path
+                        )
+                    },
+                    onRuntimeSelectionChanged: { callbackSelections.append($0) }
+                )
+            )
+            defer { finalizeInstalledEngine(engine.bridge, fixture: fixture) }
+            XCTAssertEqual(factoryCalls, 1)
+            XCTAssertTrue(controller.rimeEngine === engine)
+            XCTAssertNil(controller.responsiveRimeCoordinator)
+            XCTAssertNil(controller.threadAffineRimeCoordinator)
+            XCTAssertTrue(engine.bridge.selectSchema(fixture.schemaID))
+            XCTAssertEqual(engine.bridge.currentSchemaID(), fixture.schemaID)
+            XCTAssertTrue(engine.diagnosticSessionSnapshot?.isValid == true)
+            let callback = try XCTUnwrap(engine.onRuntimeSelectionChanged)
+            let selection = try XCTUnwrap(engine.runtimeSelection)
+            callback(selection)
+            XCTAssertEqual(callbackSelections, [selection])
+            _ = controller.handle(.insertKey("n"))
+            XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "n")
+            XCTAssertNotNil(controller.state.lastRimeOutput?.composition)
+        }
+    #endif
 
     private func close(_ manager: RimeSessionManager, fixture: RuntimeFixture) {
         manager.finalize()

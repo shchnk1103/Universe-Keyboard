@@ -42,6 +42,10 @@ public final class RimeEngineImpl: RimeEngine {
     public let sharedDataDir: String
     public let userDataDir: String
     var nextRecoveryAttemptTime: CFTimeInterval = 0
+    /// Last raw input accepted by this process-local session. If librime drops
+    /// the session between key events, restore this prefix before applying the
+    /// next key so the bridge's empty-session recovery cannot consume it.
+    private var lastKnownRawInput = ""
     private var isSuspendedForVisibilityChange = false
     var activeSchemaID = "luna_pinyin"
     /// Last resolved effective selection (schema + layout semantics).
@@ -49,14 +53,14 @@ public final class RimeEngineImpl: RimeEngine {
     /// Propagates realized selection (including fail-closed) to extension chrome/controller.
     public var onRuntimeSelectionChanged: ((RimeRuntimeSelection) -> Void)?
     #if DEBUG
-    /// Content-free timing exposed only to the controlled Simulator preflight.
-    internal var lastLibrimeProcessKeyDurationMs: Double?
-    /// Test-target-only boundary counter for exact auto-anchor mutation budgets.
-    internal private(set) var replaceInputCallCountForTesting = 0
-    /// Content-free counters freeze fail-closed behavior at the native boundary.
-    internal private(set) var processKeyCallCountForTesting = 0
-    internal private(set) var resetSessionCallCountForTesting = 0
-    internal private(set) var recoverSessionCallCountForTesting = 0
+        /// Content-free timing exposed only to the controlled Simulator preflight.
+        internal var lastLibrimeProcessKeyDurationMs: Double?
+        /// Test-target-only boundary counter for exact auto-anchor mutation budgets.
+        internal private(set) var replaceInputCallCountForTesting = 0
+        /// Content-free counters freeze fail-closed behavior at the native boundary.
+        internal private(set) var processKeyCallCountForTesting = 0
+        internal private(set) var resetSessionCallCountForTesting = 0
+        internal private(set) var recoverSessionCallCountForTesting = 0
     #endif
 
     public var diagnosticSessionSnapshot: RimeSessionDiagnosticSnapshot? {
@@ -222,20 +226,53 @@ public final class RimeEngineImpl: RimeEngine {
     /// - Returns: RimeOutput（包含 composition、candidates、committed text）
     public func processKey(_ key: String) -> KeyboardCore.RimeOutput {
         #if DEBUG
-        processKeyCallCountForTesting += 1
+            processKeyCallCountForTesting += 1
         #endif
-        return processInputKey(key)
+        guard restoreMissingSessionCompositionIfNeeded() else {
+            return KeyboardCore.RimeOutput()
+        }
+        let output = processInputKey(key)
+        rememberRawInput(from: output)
+        return output
+    }
+
+    /// Rebuilds the session-owned prefix before forwarding a new key. The
+    /// Objective-C bridge can create a missing session on demand, but it cannot
+    /// know the composition held by KeyboardCore and would otherwise accept only
+    /// the newly pressed key.
+    private func restoreMissingSessionCompositionIfNeeded() -> Bool {
+        guard bridge.currentSessionIdentifier() == 0 else { return true }
+
+        let rawInput = lastKnownRawInput
+        recoverSession()
+        guard bridge.currentSessionIdentifier() != 0 else { return false }
+        guard !rawInput.isEmpty else { return true }
+
+        let restored = replaceInput(rawInput)
+        return restored.composition != nil || bridge.isComposing()
+    }
+
+    private func rememberRawInput(from output: KeyboardCore.RimeOutput) {
+        if let rawInput = output.rawInput {
+            lastKnownRawInput = rawInput
+        } else if output.committedText != nil || output.composition == nil {
+            lastKnownRawInput = ""
+        }
     }
 
     /// 选择指定索引的候选词。
     /// - Parameter index: 0-based 候选索引
     /// - Returns: 选择后的 RIME 输出（可能包含新的候选页或 commit）
     public func selectCandidate(at index: Int) -> KeyboardCore.RimeOutput {
-        chooseCandidate(at: index)
+        let output = chooseCandidate(at: index)
+        rememberRawInput(from: output)
+        return output
     }
 
     public func selectCandidate(globalIndex index: Int) -> KeyboardCore.RimeOutput {
-        chooseCandidate(globalIndex: index)
+        let output = chooseCandidate(globalIndex: index)
+        rememberRawInput(from: output)
+        return output
     }
 
     public func candidateWindow(from globalIndex: Int, limit: Int) -> KeyboardCore.RimeCandidateWindow {
@@ -244,32 +281,38 @@ public final class RimeEngineImpl: RimeEngine {
 
     /// 在 RIME 中删除一个字符（回退拼音）。
     public func deleteBackward() -> KeyboardCore.RimeOutput {
-        processDeletion()
+        let output = processDeletion()
+        rememberRawInput(from: output)
+        return output
     }
 
     /// 用未格式化输入替换当前 RIME composition。
     public func replaceInput(_ input: String) -> KeyboardCore.RimeOutput {
         #if DEBUG
-        replaceInputCallCountForTesting += 1
+            replaceInputCallCountForTesting += 1
         #endif
-        return parseOutput(bridge.replaceInput(input))
+        let output = parseOutput(bridge.replaceInput(input))
+        rememberRawInput(from: output)
+        return output
     }
 
     /// 重置当前 RIME session 的输入状态（清除拼音 composition）。
     public func resetSession() {
         #if DEBUG
-        resetSessionCallCountForTesting += 1
+            resetSessionCallCountForTesting += 1
         #endif
         bridge.clearComposition()
+        lastKnownRawInput = ""
     }
 
     /// 宿主展示自己的表情/键盘后，旧 session 可能仍有 id 但已经不能处理输入。
     /// 先重建 session；若 librime 已无法创建 session，则重新初始化整个引擎。
     public func recoverSession() {
         #if DEBUG
-        recoverSessionCallCountForTesting += 1
+            recoverSessionCallCountForTesting += 1
         #endif
         restoreInputSession()
+        lastKnownRawInput = ""
     }
 
     /// iOS 会在扩展挂起时终止仍持有数据库文件锁的进程。

@@ -148,6 +148,7 @@ class KeyboardViewController: UIInputViewController {
 
     /// 状态机核心，处理所有按键逻辑（纯逻辑，无 UI 依赖）
     var controller: KeyboardController!
+    var documentIdentityTracker = KeyboardDocumentIdentityTracker()
 
     #if T9_RESPONSIVE_CANARY_INTERNAL
         /// Unique MainActor mode authority for the internal CANARY-001 artifact.
@@ -491,6 +492,8 @@ class KeyboardViewController: UIInputViewController {
             activateRimeRuntimeAfterKeyboardPresentation()
         }
         handleKeyboardDidAppear()
+        // Establish host identity after presentation, before ordinary interaction.
+        synchronizeAfterTextChange()
         #if DEBUG
             recordKeyboardVisualDiagnostic("DID_APPEAR_AFTER")
         #endif
