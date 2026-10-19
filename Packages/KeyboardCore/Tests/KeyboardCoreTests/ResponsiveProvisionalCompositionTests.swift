@@ -1,4 +1,6 @@
+import Synchronization
 import XCTest
+
 @testable import KeyboardCore
 
 final class ResponsiveProvisionalCompositionTests: XCTestCase {
@@ -395,7 +397,7 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
         controller.onResponsivePresentationNeeded = { [weak controller] _ in
             guard let controller else { return }
             if controller.threadAffineRimeCoordinator?.lastPublished?.revision == 1,
-               !controller.isResponsiveProvisionalAhead
+                !controller.isResponsiveProvisionalAhead
             {
                 firstL2.fulfill()
             }
@@ -412,7 +414,7 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
         controller.onResponsivePresentationNeeded = { [weak controller] _ in
             guard let controller else { return }
             if controller.threadAffineRimeCoordinator?.lastPublished?.revision == 2,
-               !controller.isResponsiveProvisionalAhead
+                !controller.isResponsiveProvisionalAhead
             {
                 finalL2.fulfill()
             }
@@ -466,7 +468,7 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
             presentationCount += 1
             guard let controller else { return }
             if controller.threadAffineRimeCoordinator?.lastPublished?.revision == 1,
-               !controller.isResponsiveProvisionalAhead
+                !controller.isResponsiveProvisionalAhead
             {
                 firstL2.fulfill()
             }
@@ -541,12 +543,20 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
         controller.textClient = client
 
         let firstL2 = expectation(description: "first-l2-before-delete")
+        let fulfilledFirstL2 = Mutex(false)
         controller.onResponsivePresentationNeeded = { [weak controller] _ in
             guard let controller else { return }
             if controller.threadAffineRimeCoordinator?.lastPublished?.revision == 1,
-               !controller.isResponsiveProvisionalAhead
+                !controller.isResponsiveProvisionalAhead
             {
-                firstL2.fulfill()
+                let shouldFulfill = fulfilledFirstL2.withLock { fulfilled -> Bool in
+                    guard !fulfilled else { return false }
+                    fulfilled = true
+                    return true
+                }
+                if shouldFulfill {
+                    firstL2.fulfill()
+                }
             }
         }
         _ = controller.handle(.insertKey("2"))
@@ -682,7 +692,7 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
         // a false failure.
         let deadline = DispatchTime.now().uptimeNanoseconds + 2_000_000_000
         while controller.state.insertedPreeditText != "·····",
-              DispatchTime.now().uptimeNanoseconds < deadline
+            DispatchTime.now().uptimeNanoseconds < deadline
         {
             try? await Task.sleep(nanoseconds: 10_000_000)
         }

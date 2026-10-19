@@ -6,10 +6,10 @@ extension KeyboardController {
             return partial.displayText
         }
         if let output = state.lastRimeOutput,
-           T9CompositionCommitPolicy.isActiveT9Composition(
-            usesT9InputSemantics: usesT9InputSemantics,
-            rawInput: output.rawInput
-           )
+            T9CompositionCommitPolicy.isActiveT9Composition(
+                usesT9InputSemantics: usesT9InputSemantics,
+                rawInput: output.rawInput
+            )
         {
             return t9VisiblePreedit(for: output)
         }
@@ -21,8 +21,11 @@ extension KeyboardController {
 
     /// Host-visible T9 preedit using provisional Path when it fully covers focus slots.
     func t9VisiblePreedit(for output: RimeOutput) -> String {
-        let provisional = state.t9PinyinPathState.selectedPath == nil
-            ? state.t9PinyinPathState.compactPaths.first
+        let pathState = state.t9PinyinPathState
+        let provisional =
+            pathState.selectedPath == nil
+            ? (pathState.compactPaths.first { $0.id == pathState.provisionalPathID }
+                ?? pathState.compactPaths.first)
             : nil
         return T9PreeditResolver.visiblePreedit(
             rawInput: output.rawInput,
@@ -112,16 +115,16 @@ extension KeyboardController {
             committedCandidate: committedText
         )
         #if DEBUG
-        // Phase 0 only: structural identity after partial — no host document text.
-        // Note encodes whether pure-digit restore succeeded and whether unconsumed
-        // path syllables still lack a slot-rebase model (B root cause class).
-        gate5TraceComposition(
-            event: .partialCommit,
-            previousRaw: previousRawForTrace,
-            note: "restore=\(restored) preservedConfCount=\(preservedPathConfirmed.count) "
-                + "livePureDigits=\(result.rawInput?.allSatisfy(\.isNumber) ?? false) "
-                + "slotRebaseMissing=\(!restored && !preservedPathConfirmed.isEmpty)"
-        )
+            // Phase 0 only: structural identity after partial — no host document text.
+            // Note encodes whether pure-digit restore succeeded and whether unconsumed
+            // path syllables still lack a slot-rebase model (B root cause class).
+            gate5TraceComposition(
+                event: .partialCommit,
+                previousRaw: previousRawForTrace,
+                note: "restore=\(restored) preservedConfCount=\(preservedPathConfirmed.count) "
+                    + "livePureDigits=\(result.rawInput?.allSatisfy(\.isNumber) ?? false) "
+                    + "slotRebaseMissing=\(!restored && !preservedPathConfirmed.isEmpty)"
+            )
         #endif
     }
 
@@ -142,11 +145,11 @@ extension KeyboardController {
         committedCandidate: String = ""
     ) -> Bool {
         guard usesT9InputSemantics,
-              let preserved = preservedSegmentSource,
-              !preserved.isEmpty,
-              preserved.allSatisfy(\.isNumber),
-              let liveRaw = state.lastRimeOutput?.rawInput,
-              !liveRaw.isEmpty
+            let preserved = preservedSegmentSource,
+            !preserved.isEmpty,
+            preserved.allSatisfy(\.isNumber),
+            let liveRaw = state.lastRimeOutput?.rawInput,
+            !liveRaw.isEmpty
         else { return false }
 
         // Pure-digit path still requires prior confirmed syllables (nested peel).
@@ -165,15 +168,16 @@ extension KeyboardController {
             candidateText: committedCandidate,
             remainingUserPathSyllables: preservedPathConfirmed.count
         )
-        let usePathLedgerCursor = peelK > 0
+        let usePathLedgerCursor =
+            peelK > 0
             && (preservedPathConfirmed.count >= 2
                 || isUnchangedRawEncoding(liveRaw, previousSource: preserved))
         if usePathLedgerCursor,
-           let identity = T9CompositionIdentity.afterPathLedgerPeel(
-            previousSource: preserved,
-            previousConfirmed: preservedPathConfirmed,
-            peelSyllableCount: peelK
-           )
+            let identity = T9CompositionIdentity.afterPathLedgerPeel(
+                previousSource: preserved,
+                previousConfirmed: preservedPathConfirmed,
+                peelSyllableCount: peelK
+            )
         {
             installPathLedgerCursorState(identity)
             _ = resyncRimeAfterPathLedgerCursor(identity: identity)
@@ -295,7 +299,8 @@ extension KeyboardController {
                 let letters = String(
                     projected.unicodeScalars.filter(T9PinyinPathExtractor.isASCIILetter)
                 )
-                hostTail = letters.isEmpty
+                hostTail =
+                    letters.isEmpty
                     ? identity.confirmedSyllables.joined()
                     : letters
             } else {
@@ -375,9 +380,9 @@ extension KeyboardController {
         // (ordered Delete / L2 presentation both flow here).
         alignResponsiveProvisionalAfterOrderedEngineApply()
         if let committedText = output.committedText,
-           !engineCommitIsHostSafe(committedText)
+            !engineCommitIsHostSafe(committedText)
         {
-            failClosedUnexpectedEngineCommit(output)
+            failClosedUnexpectedEngineCommit()
             return
         }
         guard let partialCommit = state.partialCommit else {
@@ -386,7 +391,8 @@ extension KeyboardController {
         }
 
         if let committedText = output.committedText, !committedText.isEmpty {
-            let finalText = committedText.hasPrefix(partialCommit.confirmedText)
+            let finalText =
+                committedText.hasPrefix(partialCommit.confirmedText)
                 ? committedText
                 : partialCommit.confirmedText + committedText
             commitInlinePreedit(as: finalText, source: .engineCommit)
@@ -510,8 +516,8 @@ extension KeyboardController {
             applyRimeOutput(output)
             // β-limited: re-install pre-partial Path identity when captured.
             if let source = checkpoint.previousSegmentSourceDigits,
-               !source.isEmpty,
-               source.allSatisfy(\.isNumber)
+                !source.isEmpty,
+                source.allSatisfy(\.isNumber)
             {
                 installIdentityAsPathState(
                     T9CompositionIdentity(
@@ -540,8 +546,8 @@ extension KeyboardController {
                     highlightedIndex: output.highlightedIndex
                 )
                 if isDigitOnlyPreeditTail(visible),
-                   !checkpoint.previousDisplayText.isEmpty,
-                   !isDigitOnlyPreeditTail(checkpoint.previousDisplayText)
+                    !checkpoint.previousDisplayText.isEmpty,
+                    !isDigitOnlyPreeditTail(checkpoint.previousDisplayText)
                 {
                     updateInlinePreedit(
                         checkpoint.previousDisplayText,
@@ -564,7 +570,7 @@ extension KeyboardController {
         // RIME preedit (`qiu5`, another prediction, etc.) overwrite that user-
         // visible fact. Raw/session identity remains the rebuilt internal state.
         if !checkpoint.previousDisplayText.isEmpty,
-           !containsInternalT9Digit(checkpoint.previousDisplayText)
+            !containsInternalT9Digit(checkpoint.previousDisplayText)
         {
             state.partialCommit = PartialCommitState(
                 confirmedText: checkpoint.previousConfirmedText,
@@ -600,9 +606,9 @@ extension KeyboardController {
         // after an earlier segment is confirmed, and Delete must rebuild only the
         // editable suffix after that stable Chinese prefix.
         if usesT9InputSemantics,
-           checkpoint.previousRawInput.unicodeScalars.contains(
-            where: T9PinyinPathExtractor.isASCIILetter
-           )
+            checkpoint.previousRawInput.unicodeScalars.contains(
+                where: T9PinyinPathExtractor.isASCIILetter
+            )
         {
             return checkpoint.previousRawInput
         }
@@ -628,10 +634,11 @@ extension KeyboardController {
             return
         }
         let preferred = activeCompositionDisplayText
-        let displayText = compositionProjectionContainsInternalDigit(preferred)
-            ? state.insertedPreeditText
-            : preferred
-        guard !compositionProjectionContainsInternalDigit(displayText) else { return }
+        let displayText =
+            isSafeCompositionFinalizationText(preferred)
+            ? preferred
+            : state.insertedPreeditText
+        guard isSafeCompositionFinalizationText(displayText) else { return }
         guard !displayText.isEmpty else { return }
         commitInlinePreedit(as: displayText)
         state.currentComposition = ""
@@ -655,13 +662,15 @@ extension KeyboardController {
             clearTypoCorrectionSuggestions()
             return
         }
-        let preferred = state.partialCommit?.displayText
+        let preferred =
+            state.partialCommit?.displayText
             ?? state.lastRimeOutput?.rawInput
             ?? state.currentComposition
-        let commitText = compositionProjectionContainsInternalDigit(preferred)
-            ? state.insertedPreeditText
-            : preferred
-        guard !compositionProjectionContainsInternalDigit(commitText) else { return }
+        let commitText =
+            isSafeCompositionFinalizationText(preferred)
+            ? preferred
+            : state.insertedPreeditText
+        guard isSafeCompositionFinalizationText(commitText) else { return }
         guard !commitText.isEmpty else {
             return
         }
@@ -671,6 +680,17 @@ extension KeyboardController {
         state.partialCommit = nil
         clearTypoCorrectionSuggestions()
         _ = clearT9PinyinPathStateReturningEffect()
+    }
+
+    private func isSafeCompositionFinalizationText(_ text: String) -> Bool {
+        if !compositionProjectionContainsInternalDigit(text) {
+            return true
+        }
+        // Ordinary 26-key input may already display literal digits. Only finalize
+        // that same visible spelling; a runtime change must not expose old T9 raw.
+        guard !usesT9InputSemantics else { return false }
+        let visible = state.insertedPreeditText.filter { !$0.isWhitespace }
+        return !visible.isEmpty && text.filter { !$0.isWhitespace } == visible
     }
 
     var hasActiveCompositionForSymbolInput: Bool {
@@ -816,9 +836,11 @@ extension KeyboardController {
             let result = engine.selectCandidate(at: 0)
             let confirmedPrefix = state.partialCommit?.confirmedText ?? ""
             let priorCandidate = state.lastRimeOutput?.candidates.first?.text
-            let semanticSelection = priorCandidate ?? result.committedText.flatMap { committed in
-                compositionProjectionContainsInternalDigit(committed) ? nil : committed
-            }
+            let semanticSelection =
+                priorCandidate
+                ?? result.committedText.flatMap { committed in
+                    compositionProjectionContainsInternalDigit(committed) ? nil : committed
+                }
             let projectedFallback = [
                 result.composition?.preeditText,
                 state.insertedPreeditText,
@@ -827,7 +849,8 @@ extension KeyboardController {
                 !$0.isEmpty && !compositionProjectionContainsInternalDigit($0)
             }
             let selectedText = semanticSelection ?? projectedFallback ?? confirmedPrefix
-            let commitText = selectedText.hasPrefix(confirmedPrefix)
+            let commitText =
+                selectedText.hasPrefix(confirmedPrefix)
                 ? selectedText
                 : confirmedPrefix + selectedText
             state.lastRimeOutput = RimeOutput(
@@ -839,13 +862,23 @@ extension KeyboardController {
             return commitText
         }
 
-        return activeCompositionDisplayText
+        let commitText = activeCompositionDisplayText
+        // A lost engine session can leave Core's last page visible. This fallback
+        // still commits the composition, so its old candidates must lose authority.
+        state.lastRimeOutput = RimeOutput(
+            composition: nil,
+            candidates: [],
+            committedText: commitText,
+            hasMorePages: false
+        )
+        return commitText
     }
 
     private func finishNormalCandidateSelection(candidate: String, result: RimeOutput) {
         let confirmedPrefix = state.partialCommit?.confirmedText ?? ""
         let committedText = result.committedText ?? candidate
-        let finalText = committedText.hasPrefix(confirmedPrefix)
+        let finalText =
+            committedText.hasPrefix(confirmedPrefix)
             ? committedText
             : confirmedPrefix + committedText
         commitInlinePreedit(as: finalText, source: .candidate)
@@ -874,17 +907,17 @@ extension KeyboardController {
                 // Path snapshot first so provisional Path can own host projection
                 // when it fully covers the current focus slots (ADR 0023).
                 #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
-                _ = HotPathSegmentTiming.measure(.pathLocal) {
-                    applyT9PinyinPathStateFromNewRimeOutput()
-                }
-                HotPathSegmentTiming.measure(.preedit) {
+                    _ = HotPathSegmentTiming.measure(.pathLocal) {
+                        applyT9PinyinPathStateFromNewRimeOutput()
+                    }
+                    HotPathSegmentTiming.measure(.preedit) {
+                        let visible = t9VisiblePreedit(for: output)
+                        updateInlinePreedit(visible, source: .compositionProjection)
+                    }
+                #else
+                    _ = applyT9PinyinPathStateFromNewRimeOutput()
                     let visible = t9VisiblePreedit(for: output)
                     updateInlinePreedit(visible, source: .compositionProjection)
-                }
-                #else
-                _ = applyT9PinyinPathStateFromNewRimeOutput()
-                let visible = t9VisiblePreedit(for: output)
-                updateInlinePreedit(visible, source: .compositionProjection)
                 #endif
                 clearTypoCorrectionSuggestions()
             }
@@ -930,7 +963,7 @@ extension KeyboardController {
         source: PartialCommitSource
     ) {
         guard let rimeRawInput = output.rawInput, !rimeRawInput.isEmpty,
-              let rimePreeditText = output.composition?.preeditText, !rimePreeditText.isEmpty
+            let rimePreeditText = output.composition?.preeditText, !rimePreeditText.isEmpty
         else {
             return
         }
@@ -1011,11 +1044,12 @@ extension KeyboardController {
                 // identity merely because both still cover the same slot count.
                 remainingRawInput = rimeRawInput
             } else {
-                remainingRawInput = T9PinyinPathExtractor.remainingT9RawAfterPartialCommit(
-                    previousRaw: previousRawForRemainder,
-                    resultRaw: internalRemainingRaw ?? rimeRawInput,
-                    remainingDisplayPreedit: remainingPreeditText
-                ) ?? rimeRawInput
+                remainingRawInput =
+                    T9PinyinPathExtractor.remainingT9RawAfterPartialCommit(
+                        previousRaw: previousRawForRemainder,
+                        resultRaw: internalRemainingRaw ?? rimeRawInput,
+                        remainingDisplayPreedit: remainingPreeditText
+                    ) ?? rimeRawInput
             }
             compositionTracker = remainingRawInput
         } else {
@@ -1035,7 +1069,7 @@ extension KeyboardController {
         // path bar must be the remaining raw (may differ from librime full raw).
         let pathAlignedOutput: RimeOutput
         if isT9Remaining,
-           remainingRawInput != rimeRawInput
+            remainingRawInput != rimeRawInput
         {
             pathAlignedOutput = RimeOutput(
                 rawInput: remainingRawInput,
@@ -1047,7 +1081,8 @@ extension KeyboardController {
                 committedText: output.committedText,
                 hasMorePages: output.hasMorePages,
                 highlightedIndex: output.highlightedIndex,
-                candidatePageNumber: output.candidatePageNumber
+                candidatePageNumber: output.candidatePageNumber,
+                candidateOrigin: output.candidateOrigin
             )
         } else {
             pathAlignedOutput = output
@@ -1064,7 +1099,7 @@ extension KeyboardController {
             _ = applyT9PinyinPathStateFromNewRimeOutput()
             let projected = t9VisiblePreedit(for: pathAlignedOutput)
             if !projected.isEmpty,
-               !projected.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
+                !projected.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
             {
                 finalRemainingPreedit = projected
                 finalDisplay = confirmedText + projected
@@ -1106,7 +1141,8 @@ extension KeyboardController {
             return true
         }
         let confirmedPrefix = state.partialCommit?.confirmedText ?? ""
-        let finalText = committedText.hasPrefix(confirmedPrefix)
+        let finalText =
+            committedText.hasPrefix(confirmedPrefix)
             ? committedText
             : confirmedPrefix + committedText
         if !compositionProjectionContainsInternalDigit(finalText) {
@@ -1121,10 +1157,11 @@ extension KeyboardController {
         }) == true
     }
 
-    private func failClosedUnexpectedEngineCommit(_ output: RimeOutput) {
+    private func failClosedUnexpectedEngineCommit() {
         clearInlinePreedit()
         state.currentComposition = ""
-        state.lastRimeOutput = output
+        // Reject candidate and paging authority together with the unsafe commit.
+        state.lastRimeOutput = nil
         state.partialCommit = nil
         rimeEngine?.resetSession()
         clearTypoCorrectionSuggestions()

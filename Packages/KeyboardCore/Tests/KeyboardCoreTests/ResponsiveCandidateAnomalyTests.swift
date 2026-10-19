@@ -1,4 +1,5 @@
 import XCTest
+
 @testable import KeyboardCore
 
 /// RESPONSIVE-CANDIDATE-ANOMALY-001: select double-commit + ThreadAffine paging window.
@@ -111,7 +112,8 @@ final class ResponsiveCandidateAnomalyTests: XCTestCase {
                 selectionReference: CandidateSelectionReference(
                     page: 0,
                     indexOnPage: 0,
-                    globalIndex: 0
+                    globalIndex: 0,
+                    candidateOrigin: controller.state.lastRimeOutput?.candidateOrigin
                 )
             )
         )

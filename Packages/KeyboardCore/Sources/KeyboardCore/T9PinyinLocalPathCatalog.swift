@@ -34,7 +34,8 @@ public struct T9PinyinPath: Equatable, Sendable, Hashable {
         focusSlotStart: Int = 0,
         focusSlotEnd: Int? = nil
     ) {
-        let slots = consumedSlotCount
+        let slots =
+            consumedSlotCount
             ?? T9PinyinPathExtractor.asciiLetterCount(in: displayText)
         self.kind = kind
         self.consumedSlotCount = max(0, slots)
@@ -44,12 +45,14 @@ public struct T9PinyinPath: Equatable, Sendable, Hashable {
         self.focusSlotStart = max(0, focusSlotStart)
         let end = focusSlotEnd ?? (self.focusSlotStart + self.consumedSlotCount)
         self.focusSlotEnd = max(self.focusSlotStart, end)
-        self.id = id ?? Self.makeID(
-            kind: kind,
-            displayText: displayText,
-            replacementRawInput: replacementRawInput,
-            consumedSlotCount: self.consumedSlotCount
-        )
+        self.id =
+            id
+            ?? Self.makeID(
+                kind: kind,
+                displayText: displayText,
+                replacementRawInput: replacementRawInput,
+                consumedSlotCount: self.consumedSlotCount
+            )
     }
 
     public static func makeID(
@@ -80,6 +83,7 @@ public struct T9PinyinPath: Equatable, Sendable, Hashable {
 
 /// Coherent T9 presentation published with one composition revision (ADR 0023).
 public struct T9CompositionPresentationSnapshot: Equatable, Sendable {
+    public var candidateOrigin: RimeOutputOrigin?
     public var revision: UInt64
     public var sourceDigits: String
     public var rimeRawInput: String?
@@ -113,7 +117,8 @@ public struct T9CompositionPresentationSnapshot: Equatable, Sendable {
         visiblePreedit: String = "",
         candidatePageNumber: Int = 0,
         hasMorePages: Bool = false,
-        compositionPreedit: String = ""
+        compositionPreedit: String = "",
+        candidateOrigin: RimeOutputOrigin? = nil
     ) {
         self.revision = revision
         self.sourceDigits = sourceDigits
@@ -130,6 +135,7 @@ public struct T9CompositionPresentationSnapshot: Equatable, Sendable {
         self.candidatePageNumber = candidatePageNumber
         self.hasMorePages = hasMorePages
         self.compositionPreedit = compositionPreedit
+        self.candidateOrigin = candidateOrigin
     }
 
     public static let empty = T9CompositionPresentationSnapshot()
@@ -167,14 +173,14 @@ public enum T9PinyinLocalPathCatalog {
         compositionRevision: UInt64
     ) -> [T9PinyinPath] {
         guard !focusDigits.isEmpty,
-              focusDigits.allSatisfy({ $0.isASCII && $0.isNumber })
+            focusDigits.allSatisfy({ $0.isASCII && $0.isNumber })
         else { return [] }
 
         let focusStart = T9PinyinPathExtractor.letterCount(ofSyllables: confirmedSyllables)
         // `sourceDigits` is the full composition digit identity when confirmed
         // syllables already consumed leading slots; otherwise it equals focusDigits.
         let resolvedSource = sourceDigits.isEmpty ? focusDigits : sourceDigits
-        _ = focusStart + focusDigits.count // documented bound; callers keep identity coherent
+        _ = focusStart + focusDigits.count  // documented bound; callers keep identity coherent
         let locked = lockedLetterPrefix?.lowercased()
         if let locked, locked.count == 1, let letter = locked.first, letter.isLetter {
             return pathsWithLockedPrefix(
@@ -228,15 +234,18 @@ public enum T9PinyinLocalPathCatalog {
             let display = String(letter)
             let kind: T9PinyinPathKind =
                 completeSet.contains(display) ? .completeSyllable : .letterPrefix
-            guard let replacement = replacementForLetterPrefix(
-                letter: display,
-                confirmedSyllables: confirmedSyllables,
-                focusDigits: focusDigits
-            ) ?? T9PinyinPathExtractor.replacementForProgressiveSyllable(
-                displaySyllable: display,
-                confirmedSyllables: confirmedSyllables,
-                sourceDigits: sourceDigits
-            ) else { return nil }
+            guard
+                let replacement = replacementForLetterPrefix(
+                    letter: display,
+                    confirmedSyllables: confirmedSyllables,
+                    focusDigits: focusDigits
+                )
+                    ?? T9PinyinPathExtractor.replacementForProgressiveSyllable(
+                        displaySyllable: display,
+                        confirmedSyllables: confirmedSyllables,
+                        sourceDigits: sourceDigits
+                    )
+            else { return nil }
             return T9PinyinPath(
                 kind: kind,
                 consumedSlotCount: 1,
@@ -269,7 +278,7 @@ public enum T9PinyinLocalPathCatalog {
                 var matches = true
                 for index in confirmedSyllables.indices {
                     guard segments.indices.contains(index),
-                          segments[index].hasPrefix(confirmedSyllables[index].lowercased())
+                        segments[index].hasPrefix(confirmedSyllables[index].lowercased())
                     else {
                         matches = false
                         break
@@ -314,11 +323,13 @@ public enum T9PinyinLocalPathCatalog {
         for letter in letters {
             let display = String(letter)
             if completeDisplays.contains(display) { continue }
-            guard let replacement = replacementForLetterPrefix(
-                letter: display,
-                confirmedSyllables: confirmedSyllables,
-                focusDigits: focusDigits
-            ) else { continue }
+            guard
+                let replacement = replacementForLetterPrefix(
+                    letter: display,
+                    confirmedSyllables: confirmedSyllables,
+                    focusDigits: focusDigits
+                )
+            else { continue }
             result.append(
                 T9PinyinPath(
                     kind: .letterPrefix,
@@ -347,7 +358,7 @@ public enum T9PinyinLocalPathCatalog {
     ) -> [T9PinyinPath] {
         let prefix = String(letter)
         guard let firstDigit = focusDigits.first,
-              (t9Groups[firstDigit] ?? []).contains(letter)
+            (t9Groups[firstDigit] ?? []).contains(letter)
         else { return [] }
 
         let complete = completeSyllableEntries(
@@ -430,11 +441,13 @@ public enum T9PinyinLocalPathCatalog {
         }
 
         return entries.compactMap { entry in
-            guard let replacement = T9PinyinPathExtractor.replacementForProgressiveSyllable(
-                displaySyllable: entry.syllable,
-                confirmedSyllables: confirmedSyllables,
-                sourceDigits: sourceDigits
-            ) else { return nil }
+            guard
+                let replacement = T9PinyinPathExtractor.replacementForProgressiveSyllable(
+                    displaySyllable: entry.syllable,
+                    confirmedSyllables: confirmedSyllables,
+                    sourceDigits: sourceDigits
+                )
+            else { return nil }
             return T9PinyinPath(
                 kind: .completeSyllable,
                 consumedSlotCount: entry.slots,
@@ -453,10 +466,10 @@ public enum T9PinyinLocalPathCatalog {
         focusDigits: String
     ) -> String? {
         guard letter.count == 1,
-              focusDigits.count >= 1,
-              let first = focusDigits.first,
-              let ch = letter.first,
-              (t9Groups[first] ?? []).contains(ch)
+            focusDigits.count >= 1,
+            let first = focusDigits.first,
+            let ch = letter.first,
+            (t9Groups[first] ?? []).contains(ch)
         else { return nil }
         let suffix = String(focusDigits.dropFirst())
         let prefix = confirmedSyllables.joined(separator: "'")

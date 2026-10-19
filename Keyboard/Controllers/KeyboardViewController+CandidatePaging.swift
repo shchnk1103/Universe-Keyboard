@@ -16,15 +16,15 @@ extension KeyboardViewController: UIScrollViewDelegate {
         }
         guard scrollView === candidateScrollView || scrollView === expandedPanelScrollView else { return }
         isCandidateScrollInteracting = true
-#if DEBUG
-        Logger.shared.debug(
-            "candidate scroll begin: expanded=\(scrollView === expandedPanelScrollView), "
-                + "items=\(accumulatedCandidates.count), offset=(\(Int(scrollView.contentOffset.x)),\(Int(scrollView.contentOffset.y))), "
-                + "content=(\(Int(scrollView.contentSize.width)),\(Int(scrollView.contentSize.height)))",
-            category: .display
-        )
-        Logger.shared.requestFlush()
-#endif
+        #if DEBUG
+            Logger.shared.debug(
+                "candidate scroll begin: expanded=\(scrollView === expandedPanelScrollView), "
+                    + "items=\(accumulatedCandidates.count), offset=(\(Int(scrollView.contentOffset.x)),\(Int(scrollView.contentOffset.y))), "
+                    + "content=(\(Int(scrollView.contentSize.width)),\(Int(scrollView.contentSize.height)))",
+                category: .display
+            )
+            Logger.shared.requestFlush()
+        #endif
     }
 
     public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
@@ -34,13 +34,13 @@ extension KeyboardViewController: UIScrollViewDelegate {
             return
         }
         guard scrollView === candidateScrollView || scrollView === expandedPanelScrollView else { return }
-#if DEBUG
-        Logger.shared.debug(
-            "candidate scroll endDrag: decelerate=\(decelerate), offset=(\(Int(scrollView.contentOffset.x)),\(Int(scrollView.contentOffset.y)))",
-            category: .display
-        )
-        Logger.shared.requestFlush()
-#endif
+        #if DEBUG
+            Logger.shared.debug(
+                "candidate scroll endDrag: decelerate=\(decelerate), offset=(\(Int(scrollView.contentOffset.x)),\(Int(scrollView.contentOffset.y)))",
+                category: .display
+            )
+            Logger.shared.requestFlush()
+        #endif
         guard !decelerate else { return }
         isCandidateScrollInteracting = false
         requestMoreCandidatesIfNeeded(after: scrollView)
@@ -53,14 +53,14 @@ extension KeyboardViewController: UIScrollViewDelegate {
             return
         }
         guard scrollView === candidateScrollView || scrollView === expandedPanelScrollView else { return }
-#if DEBUG
-        Logger.shared.debug(
-            "candidate scroll settled: offset=(\(Int(scrollView.contentOffset.x)),\(Int(scrollView.contentOffset.y))), "
-                + "content=(\(Int(scrollView.contentSize.width)),\(Int(scrollView.contentSize.height)))",
-            category: .display
-        )
-        Logger.shared.requestFlush()
-#endif
+        #if DEBUG
+            Logger.shared.debug(
+                "candidate scroll settled: offset=(\(Int(scrollView.contentOffset.x)),\(Int(scrollView.contentOffset.y))), "
+                    + "content=(\(Int(scrollView.contentSize.width)),\(Int(scrollView.contentSize.height)))",
+                category: .display
+            )
+            Logger.shared.requestFlush()
+        #endif
         isCandidateScrollInteracting = false
         requestMoreCandidatesIfNeeded(after: scrollView)
         runDeferredCandidatePrefetchIfNeeded()
@@ -83,9 +83,9 @@ extension KeyboardViewController: UIScrollViewDelegate {
             return
         }
         if shouldLoad {
-#if DEBUG
-            Logger.shared.debug("candidate paging after scrolling settled", category: .display)
-#endif
+            #if DEBUG
+                Logger.shared.debug("candidate paging after scrolling settled", category: .display)
+            #endif
             scheduleCandidatePrefetch(mode: scrollView === expandedPanelScrollView ? .expanded : .bar)
         }
     }
@@ -183,30 +183,51 @@ extension KeyboardViewController: UIScrollViewDelegate {
         let startIndex = nextCandidateGlobalIndex
         let generation = candidateSnapshotGeneration
         let rawInput = candidateSnapshotRawInput
-#if DEBUG
-        Logger.shared.info(
-            "loadMoreCandidates START: start=\(startIndex), limit=\(batchLimit), mode=\(activeMode), "
-                + "rawLength=\(rawInput?.count ?? 0), total=\(accumulatedCandidates.count)",
-            category: .display
-        )
-        Logger.shared.requestFlush()
-#endif
+        #if DEBUG
+            Logger.shared.info(
+                "loadMoreCandidates START: start=\(startIndex), limit=\(batchLimit), mode=\(activeMode), "
+                    + "rawLength=\(rawInput?.count ?? 0), total=\(accumulatedCandidates.count)",
+                category: .display
+            )
+            Logger.shared.requestFlush()
+        #endif
         isLoadingMoreCandidates = true
         let loadStart = CACurrentMediaTime()
         let expectedRevision = candidateSnapshotCompositionRevision
-        let window = engine.candidateWindow(from: startIndex, limit: batchLimit)
+        let sourceOrigin = candidateSnapshotOrigin
+        let authority = engine as? RimeCandidateAuthorityProviding
+        let boundWindow: RimeBoundCandidateWindow?
+        let window: RimeCandidateWindow
+        if let authority {
+            guard let sourceOrigin else {
+                isLoadingMoreCandidates = false
+                return
+            }
+            switch authority.readCandidateWindow(origin: sourceOrigin, from: startIndex, limit: batchLimit) {
+            case .available(let value):
+                boundWindow = value
+                window = value.window
+            case .rejected:
+                isLoadingMoreCandidates = false
+                return
+            }
+        } else {
+            boundWindow = nil
+            window = engine.candidateWindow(from: startIndex, limit: batchLimit)
+        }
         guard candidateSnapshotGeneration == generation,
             candidateSnapshotRawInput == rawInput,
+            candidateSnapshotOrigin == sourceOrigin,
             candidateSnapshotCompositionRevision == expectedRevision,
             controller.state.compositionRevision == expectedRevision
         else {
             isLoadingMoreCandidates = false
-#if DEBUG
-            Logger.shared.debug(
-                "loadMoreCandidates discarded stale generation/revision",
-                category: .display
-            )
-#endif
+            #if DEBUG
+                Logger.shared.debug(
+                    "loadMoreCandidates discarded stale generation/revision",
+                    category: .display
+                )
+            #endif
             return
         }
         let nextItems = window.candidates.enumerated().map { offset, candidate in
@@ -215,16 +236,18 @@ extension KeyboardViewController: UIScrollViewDelegate {
                 candidate,
                 page: pageForGlobalCandidateIndex(globalIndex),
                 indexOnPage: indexOnPageForGlobalCandidateIndex(globalIndex),
-                globalIndex: globalIndex
+                globalIndex: globalIndex,
+                candidateOrigin: boundWindow?.permit.origin
             )
         }
-#if DEBUG
-        Logger.shared.info(
-            "loadMoreCandidates RIME: rawNewItems=\(nextItems.count), hasMore=\(window.hasMoreCandidates)",
-            category: .display
-        )
-#endif
+        #if DEBUG
+            Logger.shared.info(
+                "loadMoreCandidates RIME: rawNewItems=\(nextItems.count), hasMore=\(window.hasMoreCandidates)",
+                category: .display
+            )
+        #endif
 
+        var combinedCandidates = accumulatedCandidates
         var newAppended: [CandidateItem] = []
         var loadedGlobalIndices = Set(
             accumulatedCandidates.compactMap { $0.selectionReference?.globalIndex }
@@ -233,9 +256,9 @@ extension KeyboardViewController: UIScrollViewDelegate {
         var hasLoadedCandidateWithoutGlobalIndex = accumulatedCandidates.contains {
             $0.selectionReference?.globalIndex == nil
         }
-#if DEBUG
-        var duplicateCount = 0
-#endif
+        #if DEBUG
+            var duplicateCount = 0
+        #endif
         for item in nextItems {
             let isNewCandidate: Bool
             if let globalIndex = item.selectionReference?.globalIndex {
@@ -246,24 +269,40 @@ extension KeyboardViewController: UIScrollViewDelegate {
             }
 
             if isNewCandidate {
-                accumulatedCandidates.append(item)
+                combinedCandidates.append(item)
                 newAppended.append(item)
             } else {
-#if DEBUG
-                duplicateCount += 1
-#endif
+                #if DEBUG
+                    duplicateCount += 1
+                #endif
             }
         }
-        nextCandidateGlobalIndex = max(nextCandidateGlobalIndex, window.nextIndex)
-        hasMoreCandidates = window.hasMoreCandidates
-        if nextItems.isEmpty, window.nextIndex <= startIndex {
-            hasMoreCandidates = false
+        let nextIndex = max(nextCandidateGlobalIndex, window.nextIndex)
+        let stoppedWithoutProgress = nextItems.isEmpty && window.nextIndex <= startIndex
+        let prepared = RimeCandidatePresentationPage(
+            items: combinedCandidates, nextIndex: nextIndex,
+            hasMore: window.hasMoreCandidates && !stoppedWithoutProgress,
+            depth: max(0, nextIndex - combinedCandidates.count)
+        )
+        if let authority, let boundWindow {
+            guard
+                authority.consumeCandidateWindow(
+                    boundWindow, prepared: prepared, into: candidatePresentationStore
+                ) == .accepted
+            else {
+                isLoadingMoreCandidates = false
+                return
+            }
+        } else {
+            candidatePresentationStore.page = prepared
+        }
+        // UIKit, logs and callbacks run only after the authority transaction.
+        if stoppedWithoutProgress {
             Logger.shared.warning(
                 "candidate prefetch stopped: empty window without index progress start=\(startIndex) mode=\(activeMode)",
                 category: .display
             )
         }
-        candidatePageDepth = max(0, nextCandidateGlobalIndex - accumulatedCandidates.count)
         isLoadingMoreCandidates = false
         if !newAppended.isEmpty {
             isCandidateExpanded
@@ -271,13 +310,13 @@ extension KeyboardViewController: UIScrollViewDelegate {
                 : appendToCandidateBar(insertedCount: newAppended.count)
         }
         let elapsedMs = (CACurrentMediaTime() - loadStart) * 1000
-#if DEBUG
-        Logger.shared.info(
-            "loadMoreCandidates DONE: +\(newAppended.count) new, \(duplicateCount) dup, total=\(accumulatedCandidates.count), "
-                + "next=\(nextCandidateGlobalIndex), hasMore=\(hasMoreCandidates), durationMs=\(String(format: "%.1f", elapsedMs))",
-            category: .display
-        )
-#endif
+        #if DEBUG
+            Logger.shared.info(
+                "loadMoreCandidates DONE: +\(newAppended.count) new, \(duplicateCount) dup, total=\(accumulatedCandidates.count), "
+                    + "next=\(nextCandidateGlobalIndex), hasMore=\(hasMoreCandidates), durationMs=\(String(format: "%.1f", elapsedMs))",
+                category: .display
+            )
+        #endif
         if elapsedMs >= 30 {
             Logger.shared.warning(
                 "SLOW candidate prefetch duration=\(String(format: "%.1f", elapsedMs))ms "
@@ -285,9 +324,9 @@ extension KeyboardViewController: UIScrollViewDelegate {
                 category: .performance
             )
         }
-#if DEBUG
-        Logger.shared.requestFlush()
-#endif
+        #if DEBUG
+            Logger.shared.requestFlush()
+        #endif
         if shouldContinuePrefetching(mode: activeMode, elapsedMs: elapsedMs) {
             scheduleCandidatePrefetch(mode: activeMode)
         }

@@ -269,6 +269,7 @@ extension KeyboardViewController {
         }
         candidateSnapshotGeneration += 1
         candidateSnapshotCompositionRevision = controller.state.compositionRevision
+        candidateSnapshotOrigin = controller.state.lastRimeOutput?.candidateOrigin
         candidateSnapshotRawInput = controller.state.lastRimeOutput?.rawInput ?? controller.state.currentComposition
         nextCandidateGlobalIndex = nextGlobalIndexAfterCurrentItems()
         hasMoreCandidates = controller.state.lastRimeOutput?.hasMorePages ?? false
@@ -294,7 +295,8 @@ extension KeyboardViewController {
                 from: controller,
                 rimeCandidates: snapshot.candidates,
                 preeditText: preedit.isEmpty ? " " : preedit,
-                pageNumber: snapshot.candidatePageNumber
+                pageNumber: snapshot.candidatePageNumber,
+                candidateOrigin: snapshot.candidateOrigin
             )
         } else {
             items = CandidateBarDataSource.candidateItems(from: controller)
@@ -302,6 +304,7 @@ extension KeyboardViewController {
         accumulatedCandidates = items.filter { $0.kind != .placeholder }
         candidateSnapshotGeneration += 1
         candidateSnapshotCompositionRevision = snapshot.revision
+        candidateSnapshotOrigin = snapshot.candidateOrigin
         candidateSnapshotRawInput =
             snapshot.rimeRawInput
             ?? controller.state.currentComposition

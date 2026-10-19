@@ -182,6 +182,18 @@ public struct ThreadAffineRimeVisibilityTeardownResult: Sendable, Equatable {
 /// dual-enter a MainActor-held engine.
 public typealias ThreadAffineRimeSpikeWork = ResponsiveRimeWork
 
+/// Candidate data read from the owner and bound to the epoch that requested it.
+/// Callers must compare `sessionEpoch` with their current epoch before presentation.
+public struct ThreadAffineRimeCandidateWindowSnapshot: Equatable, Sendable {
+    public let sessionEpoch: UInt64
+    public let window: RimeCandidateWindow
+
+    public init(sessionEpoch: UInt64, window: RimeCandidateWindow) {
+        self.sessionEpoch = sessionEpoch
+        self.window = window
+    }
+}
+
 /// Result delivered from the dedicated RIME owner thread.
 ///
 /// The diagnostic booleans are content-free. They prove only the isolation
@@ -246,7 +258,7 @@ public final class ThreadAffineRimeSpikeApplyGate {
     public func apply(_ result: ThreadAffineRimeSpikeResult) -> Bool {
         let snapshot = result.snapshot
         guard snapshot.sessionEpoch == sessionEpoch,
-              snapshot.revision > lastAppliedRevision
+            snapshot.revision > lastAppliedRevision
         else {
             discardedResultCount += 1
             return false
@@ -270,7 +282,7 @@ private struct ThreadAffineRimeSpikeEnvelope: Sendable {
 /// Sync reply for owner-thread read-only candidate window queries.
 ///
 /// Read path must not advance session revision or publish a composition snapshot.
-private final class ThreadAffineCandidateWindowReply: Sendable {
+final class ThreadAffineCandidateWindowReply: Sendable {
     private struct State: Sendable {
         var window: RimeCandidateWindow?
         var fulfilled = false
@@ -296,11 +308,43 @@ private final class ThreadAffineCandidateWindowReply: Sendable {
     }
 }
 
+/// Internal two-phase request keeps the enqueue point observable to deterministic tests.
+struct ThreadAffineCandidateWindowRequest: Sendable {
+    let sessionEpoch: UInt64
+    private let reply: ThreadAffineCandidateWindowReply?
+    private let fallbackWindow: RimeCandidateWindow
+
+    fileprivate init(
+        sessionEpoch: UInt64,
+        reply: ThreadAffineCandidateWindowReply?,
+        fallbackWindow: RimeCandidateWindow
+    ) {
+        self.sessionEpoch = sessionEpoch
+        self.reply = reply
+        self.fallbackWindow = fallbackWindow
+    }
+
+    func wait(timeout: DispatchTime) -> ThreadAffineRimeCandidateWindowSnapshot {
+        ThreadAffineRimeCandidateWindowSnapshot(
+            sessionEpoch: sessionEpoch,
+            window: reply?.wait(timeout: timeout) ?? fallbackWindow
+        )
+    }
+}
+
 private enum ThreadAffineRimeControlCommand: Sendable {
+    case boundCandidateWindow(
+        origin: RimeOutputOrigin, from: Int, limit: Int, reply: RimeBoundCandidateWindowReply
+    )
     case advanceEpoch(UInt64)
     case stop
     /// Read-only; does not mutate composition or revision.
-    case candidateWindow(from: Int, limit: Int, reply: ThreadAffineCandidateWindowReply)
+    case candidateWindow(
+        sessionEpoch: UInt64,
+        from: Int,
+        limit: Int,
+        reply: ThreadAffineCandidateWindowReply
+    )
 }
 
 private enum ThreadAffineRimeOwnerCommand: Sendable {
@@ -371,12 +415,16 @@ private final class ThreadAffineRimeSpikeMailbox: Sendable {
         }
     }
 
-    /// Drop queued work for epochs other than `currentEpoch` (stale barrier).
-    func purgeWork(notMatchingEpoch currentEpoch: UInt64) -> Int {
+    /// Remove queued work for epochs other than `currentEpoch` (stale barrier).
+    func purgeWork(notMatchingEpoch currentEpoch: UInt64) -> [ThreadAffineRimeSpikeEnvelope] {
         state.withLock { state in
-            let before = state.work.count
-            state.work.removeAll { $0.sessionEpoch != currentEpoch }
-            return before - state.work.count
+            var purged: [ThreadAffineRimeSpikeEnvelope] = []
+            state.work.removeAll { envelope in
+                guard envelope.sessionEpoch != currentEpoch else { return false }
+                purged.append(envelope)
+                return true
+            }
+            return purged
         }
     }
 
@@ -509,6 +557,31 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
     public typealias ResultHandler = @Sendable (ThreadAffineRimeSpikeResult) -> Void
 
     private struct AcceptanceState: Sendable {
+        let ownerID = UUID()
+        var candidateOrigin: RimeOutputOrigin?
+        var candidateVersion: UInt64 = 0
+        var candidateVersionExhausted = false
+        // Constant-space bookkeeping includes dequeued/executing work and epoch controls.
+        var unsettledCandidateWork = 0
+        var unsettledEpochControls = 0
+
+        mutating func invalidateCandidatePermits() {
+            if candidateVersion == UInt64.max {
+                candidateVersionExhausted = true
+            } else {
+                candidateVersion += 1
+            }
+        }
+
+        func candidateRejection(for origin: RimeOutputOrigin) -> RimeCandidateAuthorityRejection? {
+            guard isReady, !stopped, activeKillFence == nil, !candidateVersionExhausted else {
+                return .unavailable
+            }
+            guard unsettledCandidateWork == 0, unsettledEpochControls == 0 else { return .busy }
+            guard candidateOrigin == origin, sessionEpoch == origin.sessionEpoch else { return .stale }
+            return nil
+        }
+
         var sessionEpoch: UInt64 = 1
         var nextRevision: UInt64 = 1
         var stopped = false
@@ -518,6 +591,8 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
         var isReady = false
         var activeKillFence: ThreadAffineRimeActiveKillFence?
         var lastSettledRevision: UInt64 = 0
+        /// Retains settlement for the fenced epoch after lifecycle work advances it.
+        var activeKillSettledThroughRevision: UInt64 = 0
         var rejectedAtBoundCount = 0
         var skippedStaleEpochCount = 0
         var abandonedAtStopCount = 0
@@ -534,6 +609,29 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
             state.withLock { state in
                 body(&state)
             }
+        }
+
+        @MainActor
+        func consume(
+            _ window: RimeBoundCandidateWindow,
+            prepared: RimeCandidatePresentationPage,
+            into store: RimeCandidatePresentationStore
+        ) -> RimeCandidateConsumptionDecision {
+            // Retain old storage outside the critical section so replacement cannot
+            // release a potentially large previous page while acceptance is locked.
+            let previous = store.page
+            let decision = state.withLockIfAvailable { state -> RimeCandidateConsumptionDecision in
+                if let rejection = state.candidateRejection(for: window.permit.origin) {
+                    return .rejected(rejection)
+                }
+                guard state.candidateVersion == window.permit.version else { return .rejected(.stale) }
+                state.invalidateCandidatePermits()
+                guard !state.candidateVersionExhausted else { return .rejected(.unavailable) }
+                store.page = prepared
+                return .accepted
+            }
+            withExtendedLifetime(previous) {}
+            return decision ?? .rejected(.busy)
         }
     }
 
@@ -607,24 +705,79 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
         requestStop()
     }
 
-    /// Read-only candidate window on the owner thread after mutations are drained.
+    /// Read-only candidate window on the owner thread.
+    /// Direct calls use the priority control lane and may overtake queued work;
+    /// the session facade drains pending mutations before calling this method.
+    /// The returned epoch identifies the request; callers must reject stale results.
     /// Does not allocate a revision or publish a composition snapshot.
     public func candidateWindow(
         from globalIndex: Int,
         limit: Int,
         timeout: DispatchTime = .now() + 5
-    ) -> RimeCandidateWindow {
-        let reply = ThreadAffineCandidateWindowReply()
-        mailbox.enqueueControl(
-            .candidateWindow(from: globalIndex, limit: limit, reply: reply)
-        )
-        return reply.wait(timeout: timeout)
-            ?? RimeCandidateWindow(
+    ) -> ThreadAffineRimeCandidateWindowSnapshot {
+        enqueueCandidateWindowRequest(from: globalIndex, limit: limit).wait(timeout: timeout)
+    }
+
+    /// Captures the epoch and enqueues the read while holding the same lock used
+    /// by `advanceSessionEpoch`, so their control-lane order matches their epochs.
+    func enqueueCandidateWindowRequest(
+        from globalIndex: Int,
+        limit: Int
+    ) -> ThreadAffineCandidateWindowRequest {
+        counters.withAcceptance { state in
+            let requestEpoch = state.sessionEpoch
+            let fallbackWindow = RimeCandidateWindow(
                 candidates: [],
                 startIndex: max(0, globalIndex),
                 nextIndex: max(0, globalIndex),
                 hasMoreCandidates: false
             )
+
+            guard !state.stopped else {
+                return ThreadAffineCandidateWindowRequest(
+                    sessionEpoch: requestEpoch,
+                    reply: nil,
+                    fallbackWindow: fallbackWindow
+                )
+            }
+
+            let reply = ThreadAffineCandidateWindowReply()
+            mailbox.enqueueControl(
+                .candidateWindow(
+                    sessionEpoch: requestEpoch,
+                    from: globalIndex,
+                    limit: limit,
+                    reply: reply
+                )
+            )
+            return ThreadAffineCandidateWindowRequest(
+                sessionEpoch: requestEpoch,
+                reply: reply,
+                fallbackWindow: fallbackWindow
+            )
+        }
+    }
+
+    public func readCandidateWindow(
+        origin: RimeOutputOrigin, from: Int, limit: Int,
+        timeout: DispatchTime = .now() + 5
+    ) -> RimeCandidateWindowReadResult {
+        let reply = RimeBoundCandidateWindowReply()
+        let rejection = counters.withAcceptance { state -> RimeCandidateAuthorityRejection? in
+            if let rejection = state.candidateRejection(for: origin) { return rejection }
+            mailbox.enqueueControl(.boundCandidateWindow(origin: origin, from: from, limit: limit, reply: reply))
+            return nil
+        }
+        if let rejection { return .rejected(rejection) }
+        return reply.wait(timeout: timeout)
+    }
+
+    @MainActor
+    public func consumeCandidateWindow(
+        _ window: RimeBoundCandidateWindow, prepared: RimeCandidatePresentationPage,
+        into store: RimeCandidatePresentationStore
+    ) -> RimeCandidateConsumptionDecision {
+        counters.consume(window, prepared: prepared, into: store)
     }
 
     /// Hot-path entry (call from keyboard MainActor). Allocates a revision and
@@ -633,11 +786,13 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
     @discardableResult
     public func accept(
         _ work: ThreadAffineRimeSpikeWork,
-        actionID: String
+        actionID: String,
+        candidateOrigin: RimeOutputOrigin? = nil
     ) -> ResponsiveRimeAcceptReceipt? {
         let accepted = counters.withAcceptance {
             state -> (epoch: UInt64, revision: UInt64, depth: Int)? in
             guard !state.stopped, state.activeKillFence == nil else { return nil }
+            if let candidateOrigin, state.candidateRejection(for: candidateOrigin) != nil { return nil }
 
             let revision = state.nextRevision
             let envelope = ThreadAffineRimeSpikeEnvelope(
@@ -651,6 +806,8 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
                 return nil
             }
             state.nextRevision &+= 1
+            state.unsettledCandidateWork += 1
+            state.invalidateCandidatePermits()
             return (state.sessionEpoch, revision, depth)
         }
         guard let accepted else { return nil }
@@ -676,6 +833,7 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
                 acceptedThroughRevision: state.nextRevision &- 1
             )
             state.activeKillFence = fence
+            state.activeKillSettledThroughRevision = state.lastSettledRevision
             return fence
         }
     }
@@ -751,7 +909,7 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
     /// the owner resets its local engine before executing new-epoch work.
     @discardableResult
     public func advanceSessionEpoch() -> UInt64? {
-        let epoch = counters.withAcceptance { state -> UInt64? in
+        counters.withAcceptance { state -> UInt64? in
             guard !state.stopped, state.activeKillFence == nil else { return nil }
             state.sessionEpoch &+= 1
             state.nextRevision = 1
@@ -759,15 +917,19 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
             // the prior high-water mark forward could let active kill mistake
             // new-epoch work for an already drained accepted prefix.
             state.lastSettledRevision = 0
-            return state.sessionEpoch
+            let epoch = state.sessionEpoch
+
+            // Keep epoch publication and barrier enqueue in the same acceptance
+            // critical section so a new-epoch item cannot overtake its reset.
+            let purged = mailbox.purgeWork(notMatchingEpoch: epoch)
+            state.skippedStaleEpochCount &+= purged.count
+            state.unsettledCandidateWork -= purged.count
+            state.unsettledEpochControls += 1
+            state.candidateOrigin = nil
+            state.invalidateCandidatePermits()
+            mailbox.enqueueControl(.advanceEpoch(epoch))
+            return epoch
         }
-        guard let epoch else { return nil }
-        let purged = mailbox.purgeWork(notMatchingEpoch: epoch)
-        if purged > 0 {
-            counters.withAcceptance { $0.skippedStaleEpochCount &+= purged }
-        }
-        mailbox.enqueueControl(.advanceEpoch(epoch))
-        return epoch
     }
 
     /// Explicit lifecycle endpoint. Production wiring still needs Extension
@@ -795,6 +957,8 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
         let shouldStop = counters.withAcceptance { state in
             guard !state.stopped else { return false }
             state.stopped = true
+            state.candidateOrigin = nil
+            state.invalidateCandidatePermits()
             return true
         }
         if shouldStop {
@@ -818,15 +982,15 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
     ) -> Bool {
         while DispatchTime.now() < timeout {
             let settled = counters.withAcceptance { state in
-                state.sessionEpoch == fence.sessionEpoch
-                    && state.lastSettledRevision >= fence.acceptedThroughRevision
+                state.activeKillFence == fence
+                    && state.activeKillSettledThroughRevision >= fence.acceptedThroughRevision
             }
             if settled { return true }
             _ = settledSignal.wait(timeout: .now() + .milliseconds(1))
         }
         return counters.withAcceptance { state in
-            state.sessionEpoch == fence.sessionEpoch
-                && state.lastSettledRevision >= fence.acceptedThroughRevision
+            state.activeKillFence == fence
+                && state.activeKillSettledThroughRevision >= fence.acceptedThroughRevision
         }
     }
 
@@ -836,8 +1000,17 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
         settledSignal: DispatchSemaphore
     ) {
         counters.withAcceptance { state in
-            guard state.sessionEpoch == envelope.sessionEpoch else { return }
-            state.lastSettledRevision = max(state.lastSettledRevision, envelope.revision)
+            precondition(state.unsettledCandidateWork > 0)
+            state.unsettledCandidateWork -= 1
+            if state.sessionEpoch == envelope.sessionEpoch {
+                state.lastSettledRevision = max(state.lastSettledRevision, envelope.revision)
+            }
+            if state.activeKillFence?.sessionEpoch == envelope.sessionEpoch {
+                state.activeKillSettledThroughRevision = max(
+                    state.activeKillSettledThroughRevision,
+                    envelope.revision
+                )
+            }
         }
         settledSignal.signal()
     }
@@ -870,27 +1043,38 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
                     continue
                 }
 
-                guard let output = execute(
-                    envelope.work,
-                    engine: engine,
-                    lastAppliedRevision: &lastAppliedRevision
-                ) else {
+                guard
+                    let output = execute(
+                        envelope.work,
+                        engine: engine,
+                        lastAppliedRevision: &lastAppliedRevision,
+                        sessionEpoch: ownerEpoch
+                    )
+                else {
                     counters.withAcceptance { $0.skippedStaleEpochCount &+= 1 }
                     markSettled(envelope, counters: counters, settledSignal: settledSignal)
                     continue
                 }
+                let advancesEpoch = advancesSessionEpoch(after: envelope.work)
                 lastAppliedRevision = envelope.revision
                 let diagnosticSessionSnapshot = engine.diagnosticSessionSnapshot
-                counters.withAcceptance {
-                    $0.diagnosticSessionSnapshot = diagnosticSessionSnapshot
-                    $0.runtimeSelection = engine.runtimeSelection
+                let origin = counters.withAcceptance { state -> RimeOutputOrigin? in
+                    state.diagnosticSessionSnapshot = diagnosticSessionSnapshot
+                    state.runtimeSelection = engine.runtimeSelection
+                    let origin =
+                        !advancesEpoch && output.composition != nil
+                        ? RimeOutputOrigin(
+                            ownerID: state.ownerID, sessionEpoch: envelope.sessionEpoch,
+                            revision: envelope.revision) : nil
+                    state.candidateOrigin = state.sessionEpoch == envelope.sessionEpoch && !state.stopped ? origin : nil
+                    return origin
                 }
                 let result = ThreadAffineRimeSpikeResult(
                     snapshot: ResponsiveRimeSnapshot(
                         sessionEpoch: envelope.sessionEpoch,
                         revision: envelope.revision,
                         actionID: envelope.actionID,
-                        output: output
+                        output: output.replacingCandidateOrigin(origin)
                     ),
                     engineCreatedOffMainThread: engineCreatedOffMainThread,
                     engineCallStayedOnCreationThread:
@@ -899,23 +1083,99 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
                     diagnosticSessionSnapshot: diagnosticSessionSnapshot,
                     runtimeSelection: engine.runtimeSelection
                 )
+
+                if advancesEpoch {
+                    let lifecycleAdvance = counters.withAcceptance {
+                        state -> (epoch: UInt64, purged: [ThreadAffineRimeSpikeEnvelope]) in
+                        // A concurrent external barrier is already authoritative.
+                        // Never move acceptance backward or purge its newer work.
+                        guard state.sessionEpoch == envelope.sessionEpoch else {
+                            return (state.sessionEpoch, [])
+                        }
+
+                        state.sessionEpoch &+= 1
+                        state.candidateOrigin = nil
+                        state.nextRevision = 1
+                        state.lastSettledRevision = 0
+                        let purged = mailbox.purgeWork(notMatchingEpoch: state.sessionEpoch)
+                        state.skippedStaleEpochCount &+= purged.count
+                        return (state.sessionEpoch, purged)
+                    }
+                    ownerEpoch = max(ownerEpoch, lifecycleAdvance.epoch)
+                    lastAppliedRevision = 0
+
+                    // The lifecycle transition intentionally invalidates queued
+                    // old-epoch work. Count each removed revision as settled so
+                    // an active-kill fence over that accepted prefix can finish.
+                    for purgedEnvelope in lifecycleAdvance.purged {
+                        markSettled(
+                            purgedEnvelope,
+                            counters: counters,
+                            settledSignal: settledSignal
+                        )
+                    }
+                }
+                // A completed lifecycle receipt may immediately be followed by new
+                // input. Advance acceptance first so that input cannot enter the old epoch.
+                // The receipt itself retains its accepted epoch/revision for exact waiting.
                 delivery.enqueue(result)
                 markSettled(envelope, counters: counters, settledSignal: settledSignal)
 
             case .control(.advanceEpoch(let epoch)):
                 engine.resetSession()
-                counters.withAcceptance {
-                    $0.diagnosticSessionSnapshot = engine.diagnosticSessionSnapshot
-                    $0.runtimeSelection = engine.runtimeSelection
+                let isCurrent = counters.withAcceptance { state -> Bool in
+                    precondition(state.unsettledEpochControls > 0)
+                    state.unsettledEpochControls -= 1
+                    state.candidateOrigin = nil
+                    guard state.sessionEpoch == epoch else { return false }
+                    state.diagnosticSessionSnapshot = engine.diagnosticSessionSnapshot
+                    state.runtimeSelection = engine.runtimeSelection
+                    let purged = mailbox.purgeWork(notMatchingEpoch: epoch)
+                    state.skippedStaleEpochCount &+= purged.count
+                    state.unsettledCandidateWork -= purged.count
+                    return true
                 }
-                ownerEpoch = epoch
-                lastAppliedRevision = 0
-                let purged = mailbox.purgeWork(notMatchingEpoch: epoch)
-                if purged > 0 {
-                    counters.withAcceptance { $0.skippedStaleEpochCount &+= purged }
+                if isCurrent {
+                    ownerEpoch = epoch
+                    lastAppliedRevision = 0
                 }
 
-            case .control(.candidateWindow(let from, let limit, let reply)):
+            case .control(.boundCandidateWindow(let origin, let from, let limit, let reply)):
+                let permit = counters.withAcceptance { state -> RimeCandidateWindowPermit? in
+                    guard state.candidateRejection(for: origin) == nil,
+                        ownerEpoch == origin.sessionEpoch, lastAppliedRevision == origin.revision
+                    else { return nil }
+                    return RimeCandidateWindowPermit(origin: origin, version: state.candidateVersion)
+                }
+                guard let permit else {
+                    reply.fulfill(.rejected(.stale))
+                    continue
+                }
+                let window = engine.candidateWindow(from: from, limit: limit)
+                let result = counters.withAcceptance { state -> RimeCandidateWindowReadResult in
+                    if let rejection = state.candidateRejection(for: origin) { return .rejected(rejection) }
+                    guard state.candidateVersion == permit.version else { return .rejected(.stale) }
+                    return .available(RimeBoundCandidateWindow(window: window, permit: permit))
+                }
+                reply.fulfill(result)
+
+            case .control(.candidateWindow(let requestEpoch, let from, let limit, let reply)):
+                // Reject a queued read after either external or owner-side epoch advance.
+                let isCurrentEpoch = counters.withAcceptance {
+                    $0.sessionEpoch == requestEpoch
+                }
+                guard isCurrentEpoch, ownerEpoch == requestEpoch else {
+                    reply.fulfill(
+                        RimeCandidateWindow(
+                            candidates: [],
+                            startIndex: max(0, from),
+                            nextIndex: max(0, from),
+                            hasMoreCandidates: false
+                        )
+                    )
+                    continue
+                }
+
                 // Read-only: no revision bump, no snapshot delivery.
                 reply.fulfill(engine.candidateWindow(from: from, limit: limit))
 
@@ -928,6 +1188,8 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
                     for envelope in abandoned {
                         counters.withAcceptance { state in
                             state.abandonedAtStopCount &+= 1
+                            precondition(state.unsettledCandidateWork > 0)
+                            state.unsettledCandidateWork -= 1
                             state.visibilityAbandonmentReceipts.append(
                                 ThreadAffineRimeVisibilityAbandonmentReceipt(
                                     sessionEpoch: envelope.sessionEpoch,
@@ -952,7 +1214,8 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
     private static func execute(
         _ work: ThreadAffineRimeSpikeWork,
         engine: RimeEngine,
-        lastAppliedRevision: inout UInt64
+        lastAppliedRevision: inout UInt64,
+        sessionEpoch: UInt64
     ) -> RimeOutput? {
         switch work {
         case .processKey(let key):
@@ -961,15 +1224,22 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
         case .deleteBackward:
             return engine.deleteBackward()
 
-        case .selectCandidate(let pageIndex, _, let boundRevision):
-            guard boundRevision == lastAppliedRevision else { return nil }
+        case .selectCandidate(let pageIndex, let boundEpoch, let boundRevision):
+            guard boundEpoch == sessionEpoch,
+                boundRevision == lastAppliedRevision
+            else { return nil }
             return engine.selectCandidate(at: pageIndex)
 
-        case .selectCandidateGlobal(let index, _, let boundRevision):
-            guard boundRevision == lastAppliedRevision else { return nil }
+        case .selectCandidateGlobal(let index, let boundEpoch, let boundRevision):
+            guard boundEpoch == sessionEpoch,
+                boundRevision == lastAppliedRevision
+            else { return nil }
             return engine.selectCandidate(globalIndex: index)
 
-        case .replaceInput(let input, _, let boundRevision):
+        case .replaceInput(let input, let boundEpoch, let boundRevision):
+            if let boundEpoch {
+                guard boundEpoch == sessionEpoch else { return nil }
+            }
             if let boundRevision {
                 guard boundRevision == lastAppliedRevision else { return nil }
             }
@@ -977,12 +1247,10 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
 
         case .resetSession:
             engine.resetSession()
-            lastAppliedRevision = 0
             return RimeOutput(composition: nil, candidates: [], highlightedIndex: -1)
 
         case .recoverSession:
             engine.recoverSession()
-            lastAppliedRevision = 0
             return RimeOutput(composition: nil, candidates: [], highlightedIndex: -1)
 
         case .pageUp:
@@ -990,6 +1258,15 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
 
         case .pageDown:
             return engine.pageDown()
+        }
+    }
+
+    private static func advancesSessionEpoch(after work: ThreadAffineRimeSpikeWork) -> Bool {
+        switch work {
+        case .resetSession, .recoverSession:
+            return true
+        default:
+            return false
         }
     }
 }

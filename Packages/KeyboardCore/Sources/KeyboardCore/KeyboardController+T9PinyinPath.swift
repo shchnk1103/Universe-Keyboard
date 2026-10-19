@@ -39,10 +39,10 @@ extension KeyboardController {
         if let partial = state.partialCommit {
             visible = partial.displayText
         } else if let output = state.lastRimeOutput,
-                  T9CompositionCommitPolicy.isActiveT9Composition(
-                    usesT9InputSemantics: usesT9InputSemantics,
-                    rawInput: output.rawInput
-                  )
+            T9CompositionCommitPolicy.isActiveT9Composition(
+                usesT9InputSemantics: usesT9InputSemantics,
+                rawInput: output.rawInput
+            )
         {
             visible = t9VisiblePreedit(for: output)
         } else {
@@ -64,17 +64,18 @@ extension KeyboardController {
             visiblePreedit: visible,
             candidatePageNumber: output?.candidatePageNumber ?? 0,
             hasMorePages: output?.hasMorePages ?? false,
-            compositionPreedit: output?.composition?.preeditText ?? ""
+            compositionPreedit: output?.composition?.preeditText ?? "",
+            candidateOrigin: output?.candidateOrigin
         )
     }
 
     public func t9PinyinPathAvailability() -> T9PinyinPathAvailability {
         let raw = state.lastRimeOutput?.rawInput
         guard usesT9InputSemantics,
-              T9CompositionCommitPolicy.isActiveT9Composition(
+            T9CompositionCommitPolicy.isActiveT9Composition(
                 usesT9InputSemantics: usesT9InputSemantics,
                 rawInput: raw
-              )
+            )
         else {
             return .noComposition
         }
@@ -105,9 +106,10 @@ extension KeyboardController {
 
         let nextIndex: Int
         if let selected = state.t9PinyinPathState.selectedPath,
-           let selectedIndex = paths.firstIndex(of: selected)
+            let selectedIndex = paths.firstIndex(of: selected)
         {
-            nextIndex = paths.index(after: selectedIndex) == paths.endIndex
+            nextIndex =
+                paths.index(after: selectedIndex) == paths.endIndex
                 ? paths.startIndex
                 : paths.index(after: selectedIndex)
         } else {
@@ -138,13 +140,13 @@ extension KeyboardController {
             )
         }
         #if DEBUG
-        if !effects.isEmpty {
-            gate5TraceComposition(
-                event: .pathSelect,
-                previousRaw: previousRaw,
-                note: "selectedKind=\(path.kind) selectedLength=\(path.displayText.count)"
-            )
-        }
+            if !effects.isEmpty {
+                gate5TraceComposition(
+                    event: .pathSelect,
+                    previousRaw: previousRaw,
+                    note: "selectedKind=\(path.kind) selectedLength=\(path.displayText.count)"
+                )
+            }
         #endif
         return effects
     }
@@ -157,13 +159,13 @@ extension KeyboardController {
         autoAdvance: Bool
     ) -> KeyboardEffect {
         guard usesT9InputSemantics,
-              let engine = rimeEngine,
-              let previous = state.lastRimeOutput,
-              let previousRaw = previous.rawInput,
-              T9CompositionCommitPolicy.isActiveT9Composition(
+            let engine = rimeEngine,
+            let previous = state.lastRimeOutput,
+            let previousRaw = previous.rawInput,
+            T9CompositionCommitPolicy.isActiveT9Composition(
                 usesT9InputSemantics: usesT9InputSemantics,
                 rawInput: previousRaw
-              )
+            )
         else {
             return []
         }
@@ -182,16 +184,16 @@ extension KeyboardController {
         // every composition revision. Zero means "legacy unstamped test path" and
         // is accepted only when the replacement key is currently issued.
         if path.compositionRevision != 0,
-           path.compositionRevision != state.compositionRevision
+            path.compositionRevision != state.compositionRevision
         {
             return []
         }
 
         // Already selected path: second direct tap confirms/advances when allowed.
         if autoAdvance,
-           path == state.t9PinyinPathState.selectedPath,
-           isFocusedSegmentChoice(path, in: state.t9PinyinPathState),
-           canConfirmAndAdvance(path, in: state.t9PinyinPathState)
+            path == state.t9PinyinPathState.selectedPath,
+            isFocusedSegmentChoice(path, in: state.t9PinyinPathState),
+            canConfirmAndAdvance(path, in: state.t9PinyinPathState)
         {
             return confirmFocusedT9SegmentAndAdvance(
                 selected: path,
@@ -204,12 +206,15 @@ extension KeyboardController {
             in: state.t9PinyinPathState
         )
         if !isCurrentFocusedChoice {
-            let compatibilityRaw = state.t9PinyinPathState.retainedChoiceSourceRawInput
+            let compatibilityRaw =
+                state.t9PinyinPathState.retainedChoiceSourceRawInput
                 ?? previousRaw
-            guard T9PinyinPathExtractor.isCompatible(
-                path: path,
-                withRawInput: compatibilityRaw
-            ) else {
+            guard
+                T9PinyinPathExtractor.isCompatible(
+                    path: path,
+                    withRawInput: compatibilityRaw
+                )
+            else {
                 return []
             }
         }
@@ -217,8 +222,8 @@ extension KeyboardController {
         // Direct path tap advances when remaining slots exist (complete syllables,
         // or single-digit letter choices in progressive segment mode).
         if autoAdvance,
-           isCurrentFocusedChoice,
-           canConfirmAndAdvance(path, in: state.t9PinyinPathState)
+            isCurrentFocusedChoice,
+            canConfirmAndAdvance(path, in: state.t9PinyinPathState)
         {
             return confirmFocusedT9SegmentAndAdvance(
                 selected: path,
@@ -227,7 +232,8 @@ extension KeyboardController {
         }
 
         let previousMarked = state.insertedPreeditText
-        let previousVisibleRemainder = state.partialCommit?.remainingPreeditText
+        let previousVisibleRemainder =
+            state.partialCommit?.remainingPreeditText
             ?? previousMarked
         let previousComposition = state.currentComposition
         let previousPathState = state.t9PinyinPathState
@@ -261,7 +267,8 @@ extension KeyboardController {
                 state.t9PinyinPathState = transition
             }
 
-            let retainsSingleDigitChoices = previousPathState.retainedChoiceSourceRawInput != nil
+            let retainsSingleDigitChoices =
+                previousPathState.retainedChoiceSourceRawInput != nil
                 && previousPathState.compactPaths.contains {
                     $0.displayText == path.displayText
                 }
@@ -287,9 +294,10 @@ extension KeyboardController {
                         lockedLetterPrefix: path.displayText
                     )
                     state.t9PinyinPathState.compactPaths = built.paths
-                    state.t9PinyinPathState.selectedPath = built.paths.first {
-                        $0.kind == .letterPrefix && $0.displayText == path.displayText
-                    } ?? path
+                    state.t9PinyinPathState.selectedPath =
+                        built.paths.first {
+                            $0.kind == .letterPrefix && $0.displayText == path.displayText
+                        } ?? path
                     state.t9PinyinPathState.issuedReplacementKeys = Set(
                         built.paths.map(\.replacementRawInput)
                     )
@@ -340,7 +348,8 @@ extension KeyboardController {
 
     @discardableResult
     func clearT9PinyinPathStateReturningEffect() -> KeyboardEffect {
-        let had = !state.t9PinyinPathState.compactPaths.isEmpty
+        let had =
+            !state.t9PinyinPathState.compactPaths.isEmpty
             || state.t9PinyinPathState.selectedPath != nil
             || state.t9PinyinPathState.rawInputGeneration != 0
             || state.t9PinyinPathState.provenanceRevision != 0
@@ -389,13 +398,14 @@ extension KeyboardController {
     func refreshT9PinyinPathState(forceNewProvenance: Bool = false) -> Bool {
         let raw = state.lastRimeOutput?.rawInput
         guard usesT9InputSemantics,
-              T9CompositionCommitPolicy.isActiveT9Composition(
+            T9CompositionCommitPolicy.isActiveT9Composition(
                 usesT9InputSemantics: usesT9InputSemantics,
                 rawInput: raw
-              ),
-              let output = state.lastRimeOutput
+            ),
+            let output = state.lastRimeOutput
         else {
-            let had = !state.t9PinyinPathState.compactPaths.isEmpty
+            let had =
+                !state.t9PinyinPathState.compactPaths.isEmpty
                 || state.t9PinyinPathState.selectedPath != nil
                 || state.t9PinyinPathState.rawInputGeneration != 0
                 || state.t9PinyinPathState.provenanceRevision != 0
@@ -454,10 +464,12 @@ extension KeyboardController {
         }
 
         let deterministicPaths = T9PinyinPathExtractor.deterministicSingleDigitPaths(rawInput: raw)
-        let pureDigits = normalizedRaw.allSatisfy { $0.isASCII && $0.isNumber }
+        let pureDigits =
+            normalizedRaw.allSatisfy { $0.isASCII && $0.isNumber }
             ? normalizedRaw
             : ""
-        let isWholeMultiDigit = pureDigits.count > 1
+        let isWholeMultiDigit =
+            pureDigits.count > 1
             && pureDigits.first.map { !T9PinyinPathExtractor.keyLetters(forDigit: $0).isEmpty } == true
 
         // Nested partial remainder: live raw is a pure-digit suffix of the still-
@@ -467,8 +479,8 @@ extension KeyboardController {
         // siblings for `748` instead of permanently forgetting them.
         let nestedRemainderSource: String? = {
             guard !pureDigits.isEmpty,
-                  let prev = previousSegmentSource,
-                  !previousConfirmed.isEmpty
+                let prev = previousSegmentSource,
+                !previousConfirmed.isEmpty
             else { return nil }
             let confirmedLetters = T9PinyinPathExtractor.letterCount(
                 ofSyllables: previousConfirmed
@@ -479,8 +491,8 @@ extension KeyboardController {
             // nested remainder `5` after selecting 球).
             let unresolvedTail = String(prev.dropFirst(confirmedLetters))
             guard !unresolvedTail.isEmpty,
-                  pureDigits.count < unresolvedTail.count,
-                  (unresolvedTail.hasPrefix(pureDigits)
+                pureDigits.count < unresolvedTail.count,
+                (unresolvedTail.hasPrefix(pureDigits)
                     || unresolvedTail.hasSuffix(pureDigits))
             else { return nil }
             return String(prev.prefix(confirmedLetters)) + pureDigits
@@ -555,9 +567,9 @@ extension KeyboardController {
             segmentSourceDigits = pureDigits.isEmpty ? nil : pureDigits
             focusedSegmentIndex = pureDigits.isEmpty ? nil : 0
         } else if isWholeMultiDigit,
-                  !previousConfirmed.isEmpty,
-                  let prev = previousSegmentSource,
-                  !prev.isEmpty
+            !previousConfirmed.isEmpty,
+            let prev = previousSegmentSource,
+            !prev.isEmpty
         {
             // Human C / device: after typo Delete, RIME may re-emit a long pure-digit
             // re-segmentation that is *not* the Core ledger. Never wipe confirmed Path
@@ -601,9 +613,9 @@ extension KeyboardController {
             selectedPath = built.selectedPath
             // Keep locked prefix only while raw still matches the prefix constraint.
             if let locked = lockedLetterPrefix,
-               let first = normalizedRaw.unicodeScalars.first(where: {
-                   T9PinyinPathExtractor.isASCIILetter($0)
-               })
+                let first = normalizedRaw.unicodeScalars.first(where: {
+                    T9PinyinPathExtractor.isASCIILetter($0)
+                })
             {
                 let letter = Character(T9PinyinPathExtractor.lowercaseASCIILetter(first))
                 if String(letter) != locked {
@@ -632,7 +644,8 @@ extension KeyboardController {
             lockedLetterPrefix = preserved.lockedLetterPrefix
         } else {
             // Fallback: derive digit focus identity if possible; else letter-only catalog.
-            let focusDigits = pureDigits.isEmpty
+            let focusDigits =
+                pureDigits.isEmpty
                 ? T9PinyinPathExtractor.pureDigitRaw(previousSegmentSource)
                 : pureDigits
             if !focusDigits.isEmpty {
@@ -663,10 +676,10 @@ extension KeyboardController {
         let issuedIDs = Set(paths.map(\.id))
         let provisionalID = selectedPath == nil ? paths.first?.id : nil
         if selectedPath == nil,
-           let locked = lockedLetterPrefix,
-           let lockedPath = paths.first(where: {
-               $0.kind == .letterPrefix && $0.displayText == locked
-           })
+            let locked = lockedLetterPrefix,
+            let lockedPath = paths.first(where: {
+                $0.kind == .letterPrefix && $0.displayText == locked
+            })
         {
             selectedPath = lockedPath
         }
@@ -689,7 +702,8 @@ extension KeyboardController {
             lockedLetterPrefix: lockedLetterPrefix,
             provisionalPathID: provisionalID
         )
-        let changed = newState.compactPaths != state.t9PinyinPathState.compactPaths
+        let changed =
+            newState.compactPaths != state.t9PinyinPathState.compactPaths
             || newState.selectedPath != state.t9PinyinPathState.selectedPath
             || newState.compositionRevision
                 != state.t9PinyinPathState.compositionRevision
@@ -776,12 +790,12 @@ extension KeyboardController {
         lockedLetterPrefix: String?
     )? {
         guard let previousSource = previousSegmentSource, !previousSource.isEmpty,
-              previousSource.allSatisfy({ $0.isASCII && $0.isNumber })
+            previousSource.allSatisfy({ $0.isASCII && $0.isNumber })
         else { return nil }
 
         // Letter-prefix refine such as `b8` / `b'8`: keep focus, locked prefix.
         if let locked = lockedLetterPrefix,
-           let first = raw.unicodeScalars.first(where: T9PinyinPathExtractor.isASCIILetter)
+            let first = raw.unicodeScalars.first(where: T9PinyinPathExtractor.isASCIILetter)
         {
             let letter = Character(T9PinyinPathExtractor.lowercaseASCIILetter(first))
             if String(letter) == locked {
@@ -794,9 +808,10 @@ extension KeyboardController {
                     lockedLetterPrefix: locked
                 )
                 guard !built.paths.isEmpty else { return nil }
-                let selected = built.paths.first {
-                    $0.kind == .letterPrefix && $0.displayText == locked
-                } ?? built.selectedPath
+                let selected =
+                    built.paths.first {
+                        $0.kind == .letterPrefix && $0.displayText == locked
+                    } ?? built.selectedPath
                 return (
                     built.paths,
                     0,
@@ -816,7 +831,7 @@ extension KeyboardController {
         // (`qiu / shu / p / q / r`), not a ghost `j/k/l` leftover from an
         // earlier trailing `5`.
         if raw.unicodeScalars.allSatisfy(T9PinyinPathExtractor.isASCIILetter),
-           !raw.isEmpty
+            !raw.isEmpty
         {
             return rebuildLetterOnlySyllableFocusPaths(
                 letterRaw: raw.lowercased(),
@@ -941,7 +956,7 @@ extension KeyboardController {
         guard letterCount > 0, letterCount <= previousSource.count else { return nil }
         let source = String(previousSource.prefix(letterCount))
         guard source.count == letterCount,
-              source.allSatisfy({ $0.isASCII && $0.isNumber })
+            source.allSatisfy({ $0.isASCII && $0.isNumber })
         else { return nil }
 
         let built = buildProgressiveCompactPaths(
@@ -989,11 +1004,11 @@ extension KeyboardController {
     @discardableResult
     func rebuildT9PinyinPathStateIfComposing() -> KeyboardEffect {
         guard usesT9InputSemantics,
-              state.currentPage == .letters,
-              T9CompositionCommitPolicy.isActiveT9Composition(
+            state.currentPage == .letters,
+            T9CompositionCommitPolicy.isActiveT9Composition(
                 usesT9InputSemantics: usesT9InputSemantics,
                 rawInput: state.lastRimeOutput?.rawInput
-              )
+            )
         else {
             return clearT9PinyinPathStateReturningEffect()
         }
@@ -1014,9 +1029,9 @@ extension KeyboardController {
         discoveryMayHaveMore: Bool
     ) {
         guard generation > 0,
-              provenanceRevision > 0,
-              generation == state.t9PinyinPathState.rawInputGeneration,
-              provenanceRevision == state.t9PinyinPathState.provenanceRevision
+            provenanceRevision > 0,
+            generation == state.t9PinyinPathState.rawInputGeneration,
+            provenanceRevision == state.t9PinyinPathState.provenanceRevision
         else { return }
         for path in paths {
             state.t9PinyinPathState.issuedReplacementKeys.insert(path.replacementRawInput)
@@ -1055,7 +1070,8 @@ extension KeyboardController {
         state.t9PinyinPathState.focusedSegmentIndex = snapshot.focusedSegmentIndex
         state.t9PinyinPathState.confirmedSegmentValues = snapshot.confirmedSegmentValues
         state.t9PinyinPathState.lockedLetterPrefix = snapshot.lockedLetterPrefix
-        state.t9PinyinPathState.provisionalPathID = state.t9PinyinPathState.selectedPath == nil
+        state.t9PinyinPathState.provisionalPathID =
+            state.t9PinyinPathState.selectedPath == nil
             ? restamped.first?.id
             : nil
         state.t9PinyinPathState.compositionRevision = state.compositionRevision
@@ -1087,7 +1103,8 @@ extension KeyboardController {
         state.t9PinyinPathState.focusedSegmentIndex = snapshot.focusedSegmentIndex
         state.t9PinyinPathState.confirmedSegmentValues = snapshot.confirmedSegmentValues
         state.t9PinyinPathState.lockedLetterPrefix = snapshot.lockedLetterPrefix
-        state.t9PinyinPathState.provisionalPathID = state.t9PinyinPathState.selectedPath == nil
+        state.t9PinyinPathState.provisionalPathID =
+            state.t9PinyinPathState.selectedPath == nil
             ? choices.first?.id
             : nil
         state.t9PinyinPathState.compositionRevision = state.compositionRevision
@@ -1119,14 +1136,14 @@ extension KeyboardController {
         digit: Character
     ) -> Bool {
         guard digit.isASCII, digit.isNumber,
-              var identity = T9CompositionIdentity.from(pathState: snapshot),
-              let appended = identity.appendingDigit(digit)
+            var identity = T9CompositionIdentity.from(pathState: snapshot),
+            let appended = identity.appendingDigit(digit)
         else { return false }
         identity = appended
 
         // With a selected focused choice: keep it if still authorized on the extended source.
         if let selected = snapshot.selectedPath,
-           isFocusedSegmentChoice(selected, in: snapshot)
+            isFocusedSegmentChoice(selected, in: snapshot)
         {
             var extended = snapshot
             extended.segmentSourceDigits = identity.sourceDigits
@@ -1138,9 +1155,11 @@ extension KeyboardController {
                 previouslyAuthorizedValues.contains($0.displayText)
             }
             extended.issuedReplacementKeys = Set(extended.compactPaths.map(\.replacementRawInput))
-            guard let remappedSelection = extended.compactPaths.first(where: {
-                $0.displayText == selected.displayText
-            }) else {
+            guard
+                let remappedSelection = extended.compactPaths.first(where: {
+                    $0.displayText == selected.displayText
+                })
+            else {
                 // Selected label invalid after append — still advance source identity.
                 installIdentityAsPathState(identity)
                 _ = resyncRimeCompositionFromT9Identity()
@@ -1171,7 +1190,7 @@ extension KeyboardController {
         // (device: `qing wei fan fa` after Delete), re-drive pure digits and refresh
         // host so continue cannot leave fan-fan / ghost morphology on marked text.
         guard identity.confirmedSyllables.isEmpty,
-              identity.sourceDigits.count > 1
+            identity.sourceDigits.count > 1
         else { return false }
         installIdentityAsPathState(identity)
         // Automatic anchoring is deliberately invisible to user Path
@@ -1216,14 +1235,14 @@ extension KeyboardController {
             useCommentHints: false
         )
         if !progressive.isEmpty,
-           !progressive.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
+            !progressive.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
         {
             updateInlinePreedit(progressive, source: .compositionProjection)
             return
         }
         let projected = t9VisiblePreedit(for: output)
         if !projected.isEmpty,
-           !projected.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
+            !projected.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
         {
             updateInlinePreedit(projected, source: .compositionProjection)
         }
@@ -1242,9 +1261,9 @@ extension KeyboardController {
         using engine: RimeEngine
     ) -> KeyboardEffect? {
         guard usesT9InputSemantics,
-              state.partialCommit == nil,
-              var identity = T9CompositionIdentity.from(pathState: state.t9PinyinPathState),
-              (!identity.confirmedSyllables.isEmpty || identity.sourceDigits.count > 1)
+            state.partialCommit == nil,
+            var identity = T9CompositionIdentity.from(pathState: state.t9PinyinPathState),
+            (!identity.confirmedSyllables.isEmpty || identity.sourceDigits.count > 1)
         else { return nil }
 
         let previousRaw = state.lastRimeOutput?.rawInput
@@ -1256,22 +1275,23 @@ extension KeyboardController {
             clearInlinePreedit()
             clearTypoCorrectionSuggestions()
             #if DEBUG
-            gate5TraceComposition(
-                event: .deleteBackward,
-                previousRaw: previousRaw,
-                note: "branch=identityDelete emptied=true"
-            )
+                gate5TraceComposition(
+                    event: .deleteBackward,
+                    previousRaw: previousRaw,
+                    note: "branch=identityDelete emptied=true"
+                )
             #endif
             return .compositionChanged.union(clearT9PinyinPathStateReturningEffect())
         }
 
         identity = deleted
-        let previousSelectedLabel = state.t9PinyinPathState.selectedPath?.displayText
+        let previousSelectedLabel =
+            state.t9PinyinPathState.selectedPath?.displayText
             ?? {
                 // Letter-only refined raw (e.g. `n` after cycling on key 6).
                 guard let previousRaw,
-                      previousRaw.unicodeScalars.allSatisfy(T9PinyinPathExtractor.isASCIILetter),
-                      previousRaw.count == 1
+                    previousRaw.unicodeScalars.allSatisfy(T9PinyinPathExtractor.isASCIILetter),
+                    previousRaw.count == 1
                 else { return nil as String? }
                 return previousRaw.lowercased()
             }()
@@ -1293,10 +1313,10 @@ extension KeyboardController {
         } else if identity.sourceDigits.count <= 3 {
             _ = resyncRimeCompositionFromT9Identity()
             if let label = previousSelectedLabel,
-               let remapped = state.t9PinyinPathState.compactPaths.first(where: {
-                   $0.displayText == label
-               }),
-               let engine = rimeEngine
+                let remapped = state.t9PinyinPathState.compactPaths.first(where: {
+                    $0.displayText == label
+                }),
+                let engine = rimeEngine
             {
                 var preserved = state.t9PinyinPathState
                 preserved.selectedPath = remapped
@@ -1304,7 +1324,7 @@ extension KeyboardController {
                 state.t9PinyinPathState = preserved
                 let refined = engine.replaceInput(label)
                 if refined.composition != nil,
-                   (refined.rawInput == label || isUsableT9SessionOutput(refined))
+                    (refined.rawInput == label || isUsableT9SessionOutput(refined))
                 {
                     state.lastRimeOutput = refined
                     state.currentComposition = label
@@ -1322,11 +1342,11 @@ extension KeyboardController {
         }
         clearTypoCorrectionSuggestions()
         #if DEBUG
-        gate5TraceComposition(
-            event: .deleteBackward,
-            previousRaw: previousRaw,
-            note: "branch=identityDelete success=true confCount=\(identity.confirmedSyllables.count)"
-        )
+            gate5TraceComposition(
+                event: .deleteBackward,
+                previousRaw: previousRaw,
+                note: "branch=identityDelete success=true confCount=\(identity.confirmedSyllables.count)"
+            )
         #endif
         return .compositionChanged.union(.t9PinyinPathsChanged)
     }
@@ -1339,7 +1359,7 @@ extension KeyboardController {
         previous snapshot: T9PinyinPathState
     ) -> Bool {
         guard var identity = T9CompositionIdentity.from(pathState: snapshot),
-              let deleted = identity.deletingLastDigit()
+            let deleted = identity.deletingLastDigit()
         else { return false }
 
         identity = deleted
@@ -1366,7 +1386,7 @@ extension KeyboardController {
         restored.provisionalPathID = remapped.first?.id
 
         if let selectedValue,
-           let selected = remapped.first(where: { $0.displayText == selectedValue })
+            let selected = remapped.first(where: { $0.displayText == selectedValue })
         {
             restoreSegmentFocusSnapshot(restored, selectedPath: selected)
             applySelectedT9PinyinPathDisplay(selected)
@@ -1395,8 +1415,8 @@ extension KeyboardController {
     @discardableResult
     func resyncRimeCompositionFromT9Identity() -> Bool {
         guard usesT9InputSemantics,
-              let identity = T9CompositionIdentity.from(pathState: state.t9PinyinPathState),
-              let engine = rimeEngine
+            let identity = T9CompositionIdentity.from(pathState: state.t9PinyinPathState),
+            let engine = rimeEngine
         else { return false }
 
         // Rebuild Path first so provisional letter paths exist for RIME raw choice.
@@ -1413,17 +1433,18 @@ extension KeyboardController {
             if rem.isEmpty {
                 raw = plan.pathConfirmedSyllables.joined(separator: "'")
             } else if let refocus = plan.refocusedSyllable,
-                      plan.focusDigits.count == T9PinyinPathExtractor.asciiLetterCount(in: refocus)
+                plan.focusDigits.count == T9PinyinPathExtractor.asciiLetterCount(in: refocus)
             {
                 // Re-focusing last syllable: confirm prefix + letter form of last
                 // when we have a catalog path; else prefix + digit tail.
-                let focusLetter = state.t9PinyinPathState.compactPaths
+                let focusLetter =
+                    state.t9PinyinPathState.compactPaths
                     .first(where: { $0.displayText == refocus })?
                     .displayText
                     ?? state.t9PinyinPathState.compactPaths.first?.displayText
                 if let focusLetter,
-                   !focusLetter.isEmpty,
-                   focusLetter.unicodeScalars.allSatisfy(T9PinyinPathExtractor.isASCIILetter)
+                    !focusLetter.isEmpty,
+                    focusLetter.unicodeScalars.allSatisfy(T9PinyinPathExtractor.isASCIILetter)
                 {
                     raw = (plan.pathConfirmedSyllables + [focusLetter]).joined(separator: "'")
                 } else {
@@ -1467,12 +1488,13 @@ extension KeyboardController {
         let projected = t9VisiblePreedit(for: output)
         let hostText: String
         if !projected.isEmpty,
-           !projected.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
+            !projected.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
         {
             hostText = projected
         } else {
             let labels = plan.pathConfirmedSyllables
-            let focusLabel = plan.refocusedSyllable
+            let focusLabel =
+                plan.refocusedSyllable
                 ?? state.t9PinyinPathState.compactPaths.first?.displayText
             if let focusLabel, !focusLabel.isEmpty {
                 hostText = (labels + [focusLabel]).joined(separator: " ")
@@ -1483,7 +1505,7 @@ extension KeyboardController {
             }
         }
         if !hostText.isEmpty,
-           !hostText.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
+            !hostText.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
         {
             updateInlinePreedit(hostText, source: .compositionProjection)
         }
@@ -1511,15 +1533,16 @@ extension KeyboardController {
         from previousPathState: T9PinyinPathState
     ) -> KeyboardEffect {
         guard let engine = rimeEngine,
-              let previousOutput = state.lastRimeOutput,
-              let previousRaw = previousOutput.rawInput,
-              let source = previousPathState.segmentSourceDigits,
-              previousPathState.focusedSegmentIndex != nil,
-              canConfirmAndAdvance(selected, in: previousPathState)
+            let previousOutput = state.lastRimeOutput,
+            let previousRaw = previousOutput.rawInput,
+            let source = previousPathState.segmentSourceDigits,
+            previousPathState.focusedSegmentIndex != nil,
+            canConfirmAndAdvance(selected, in: previousPathState)
         else { return [] }
 
         let previousMarked = state.insertedPreeditText
-        let previousVisibleRemainder = state.partialCommit?.remainingPreeditText
+        let previousVisibleRemainder =
+            state.partialCommit?.remainingPreeditText
             ?? previousMarked
         let previousComposition = state.currentComposition
         var confirmed = previousPathState.confirmedSegmentValues
@@ -1534,7 +1557,8 @@ extension KeyboardController {
         // otherwise the Core-issued replacement (`ni94` / `n'g5`) is already exact.
         // Remaining focus prefers letter form when a complete path covers it
         // (standalone da parity inside a multi-syllable sentence).
-        let needsExplicitTrailingBoundary = state.partialCommit != nil
+        let needsExplicitTrailingBoundary =
+            state.partialCommit != nil
             || !previousPathState.confirmedSegmentValues.isEmpty
         let focusPathsForRemaining = T9PinyinLocalPathCatalog.pathsForFocus(
             focusDigits: remainingDigits,
@@ -1559,7 +1583,7 @@ extension KeyboardController {
             // concatenations like `qiu53` must become `qiu'53` under partial commit
             // so the confirmed syllable stays anchored.
             if selected.replacementRawInput.contains("'"),
-               selected.replacementRawInput.hasSuffix(remainingDigits)
+                selected.replacementRawInput.hasSuffix(remainingDigits)
             {
                 requestedRaw = selected.replacementRawInput
             } else {
@@ -1574,13 +1598,15 @@ extension KeyboardController {
         )
         let currentIdentity = T9PinyinPathExtractor.normalizeRawIdentity(previousRaw)
         let requestedIdentity = T9PinyinPathExtractor.normalizeRawIdentity(requestedRaw)
-        let refinedOutput = currentIdentity == requestedIdentity
+        let refinedOutput =
+            currentIdentity == requestedIdentity
             ? previousOutput
             : engine.replaceInput(requestedRaw)
-        guard isExactSuccessfulT9Refinement(
-            result: refinedOutput,
-            requestedPath: requestedPath
-        )
+        guard
+            isExactSuccessfulT9Refinement(
+                result: refinedOutput,
+                requestedPath: requestedPath
+            )
         else {
             return rollbackT9PinyinRefinement(
                 engine: engine,
@@ -1633,7 +1659,7 @@ extension KeyboardController {
     /// Syllable-level and single-letter choices share this set (Amendment B).
     private func focusedSegmentChoices(from snapshot: T9PinyinPathState) -> [T9PinyinPath] {
         guard snapshot.focusedSegmentIndex != nil,
-              snapshot.segmentSourceDigits != nil
+            snapshot.segmentSourceDigits != nil
         else { return [] }
         return snapshot.compactPaths
     }
@@ -1644,7 +1670,7 @@ extension KeyboardController {
         from snapshot: T9PinyinPathState
     ) -> [T9PinyinPath] {
         guard let source = snapshot.segmentSourceDigits,
-              snapshot.focusedSegmentIndex != nil
+            snapshot.focusedSegmentIndex != nil
         else { return [] }
         let confirmed = snapshot.confirmedSegmentValues
         let confirmedLetters = T9PinyinPathExtractor.letterCount(ofSyllables: confirmed)
@@ -1674,13 +1700,13 @@ extension KeyboardController {
             }
             // Single-letter fallback when syllable remap fails (digit identity only).
             guard display.count == 1,
-                  let letter = display.first,
-                  letter.isLetter
+                let letter = display.first,
+                letter.isLetter
             else { continue }
             guard confirmedLetters < source.count else { continue }
             let remaining = String(source.dropFirst(confirmedLetters))
             guard let digit = remaining.first,
-                  T9PinyinPathExtractor.keyLetters(forDigit: digit).contains(letter)
+                T9PinyinPathExtractor.keyLetters(forDigit: digit).contains(letter)
             else { continue }
             let suffix = String(remaining.dropFirst())
             let prefix = confirmed.joined(separator: "'")
@@ -1694,7 +1720,8 @@ extension KeyboardController {
                 )
                 kind = completeSet.contains(display) ? .completeSyllable : .letterPrefix
             } else {
-                kind = path.kind == .completeSyllable && display.count > 1
+                kind =
+                    path.kind == .completeSyllable && display.count > 1
                     ? .completeSyllable
                     : .letterPrefix
             }
@@ -1823,8 +1850,8 @@ extension KeyboardController {
                     .filter(T9PinyinPathExtractor.isASCIILetter)
             )
             guard !letters.isEmpty,
-                  let enc = t9DigitSignature(forLetters: letters),
-                  enc == sourceDigits
+                let enc = t9DigitSignature(forLetters: letters),
+                enc == sourceDigits
             else { return nil }
             return letters
         }) {
@@ -1928,7 +1955,7 @@ extension KeyboardController {
         )
         let confJoined = confirmedSyllables.joined()
         if projectedLetters.hasPrefix(confJoined),
-           projectedLetters.count == confJoined.count + remainingDigits.count
+            projectedLetters.count == confJoined.count + remainingDigits.count
         {
             return String(projectedLetters.dropFirst(confJoined.count))
         }
@@ -1937,7 +1964,8 @@ extension KeyboardController {
             candidates: output.candidates,
             highlightedIndex: output.highlightedIndex
         ) {
-            let segments = comment
+            let segments =
+                comment
                 .split(whereSeparator: { $0 == " " || $0 == "'" })
                 .map { String($0).lowercased() }
                 .filter { !$0.isEmpty && $0.unicodeScalars.allSatisfy(T9PinyinPathExtractor.isASCIILetter) }
@@ -1948,8 +1976,8 @@ extension KeyboardController {
                     slotLimit: remainingDigits.count
                 )
                 if !remProjected.isEmpty,
-                   let enc = t9DigitSignature(forLetters: remProjected),
-                   enc == remainingDigits
+                    let enc = t9DigitSignature(forLetters: remProjected),
+                    enc == remainingDigits
                 {
                     return remProjected
                 }
@@ -1999,12 +2027,13 @@ extension KeyboardController {
             let used = complete.consumedSlotCount
             let rest = String(remainingDigits.dropFirst(used))
             if rest.isEmpty { return complete.displayText }
-            return complete.displayText + progressiveCatalogLetters(
-                forRemainingDigits: rest,
-                confirmedSyllables: confirmedSyllables + [complete.displayText],
-                sourceDigits: sourceDigits,
-                useCommentHints: useCommentHints
-            )
+            return complete.displayText
+                + progressiveCatalogLetters(
+                    forRemainingDigits: rest,
+                    confirmedSyllables: confirmedSyllables + [complete.displayText],
+                    sourceDigits: sourceDigits,
+                    useCommentHints: useCommentHints
+                )
         }
         if let letter = paths.first(where: {
             $0.consumedSlotCount == 1
@@ -2012,12 +2041,13 @@ extension KeyboardController {
         }) {
             let rest = String(remainingDigits.dropFirst(1))
             if rest.isEmpty { return letter.displayText }
-            return letter.displayText + progressiveCatalogLetters(
-                forRemainingDigits: rest,
-                confirmedSyllables: confirmedSyllables,
-                sourceDigits: sourceDigits,
-                useCommentHints: useCommentHints
-            )
+            return letter.displayText
+                + progressiveCatalogLetters(
+                    forRemainingDigits: rest,
+                    confirmedSyllables: confirmedSyllables,
+                    sourceDigits: sourceDigits,
+                    useCommentHints: useCommentHints
+                )
         }
         return ""
     }
@@ -2099,8 +2129,8 @@ extension KeyboardController {
                     selectedPath: previousSelected
                 )
             } else if let previousSelected,
-               state.t9PinyinPathState.issuedReplacementKeys
-                .contains(previousSelected.replacementRawInput)
+                state.t9PinyinPathState.issuedReplacementKeys
+                    .contains(previousSelected.replacementRawInput)
             {
                 if let live = state.t9PinyinPathState.compactPaths
                     .first(where: { $0.replacementRawInput == previousSelected.replacementRawInput })

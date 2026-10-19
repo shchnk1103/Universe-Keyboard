@@ -249,6 +249,9 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
     }
 
     private func commitCandidate(_ item: CandidateItem) {
+        if let origin = item.selectionReference?.candidateOrigin {
+            guard controller.state.lastRimeOutput?.candidateOrigin == origin else { return }
+        }
         emitFeedback(for: .commit)
         let effects: KeyboardEffect
         if let correction = item.correction {

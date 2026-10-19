@@ -84,11 +84,17 @@ public struct CandidateSelectionReference: Equatable, Sendable {
     public let page: Int
     public let indexOnPage: Int
     public let globalIndex: Int?
+    /// Original native page identity, never rebound from current UI text or cache.
+    public let candidateOrigin: RimeOutputOrigin?
 
-    public init(page: Int, indexOnPage: Int, globalIndex: Int? = nil) {
+    public init(
+        page: Int, indexOnPage: Int, globalIndex: Int? = nil,
+        candidateOrigin: RimeOutputOrigin? = nil
+    ) {
         self.page = page
         self.indexOnPage = indexOnPage
         self.globalIndex = globalIndex
+        self.candidateOrigin = candidateOrigin
     }
 }
 
@@ -126,7 +132,8 @@ public struct CandidateItem: Equatable, Sendable {
         _ candidate: RimeCandidate,
         page: Int,
         indexOnPage: Int,
-        globalIndex: Int? = nil
+        globalIndex: Int? = nil,
+        candidateOrigin: RimeOutputOrigin? = nil
     ) -> CandidateItem {
         CandidateItem(
             title: candidate.text,
@@ -134,7 +141,8 @@ public struct CandidateItem: Equatable, Sendable {
             selectionReference: CandidateSelectionReference(
                 page: page,
                 indexOnPage: indexOnPage,
-                globalIndex: globalIndex
+                globalIndex: globalIndex,
+                candidateOrigin: candidateOrigin
             )
         )
     }

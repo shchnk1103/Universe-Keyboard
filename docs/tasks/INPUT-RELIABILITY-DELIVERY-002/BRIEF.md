@@ -1,24 +1,24 @@
 # KOS Handoff Snapshot
 
 - Work Item / Assignment: INPUT-RELIABILITY-DELIVERY-002 @ docs/assignments/input-reliability-delivery-002.md
-- Canonical lifecycle/status: Active / extract and locally validate Batch 2 @ docs/assignments/input-reliability-delivery-002.md@bb430f914deaf7b19a61183f744b5dcf2fdb8eae
-- Current legal actions: initialize the carrier; extract Batch 2 hunks; run the authorized local checks; create the local delivery commit
+- Canonical lifecycle/status: Active / local Batch 2 committed, awaiting independent review @ docs/assignments/input-reliability-delivery-002.md@7898873c443396aa10ccbdcb3d78b134b300d2dc
+- Current legal actions: none until Human authorizes product push or independent review
 - Explicitly prohibited actions: product push, product pull request, merge, R174 enablement, R349, Build 94 investigation, phases C and D, Batch 3, edits to the original Codex worktree or the Batch 1 carrier
-- Frozen branch / commit / artifact: grok/input-reliability-delivery-002 @ bb430f914deaf7b19a61183f744b5dcf2fdb8eae
-- Completed outputs: none yet
-- Open Gates and owners: local validation — grok-build; independent Architecture and Quality — unassigned; product publication — Human Product Lead
-- Evidence and freshness: none yet
+- Frozen branch / commit / artifact: grok/input-reliability-delivery-002 @ 7898873c443396aa10ccbdcb3d78b134b300d2dc
+- Completed outputs: local candidate identity, paging consumption, and native-select binding; R345 synthetic-index path is refused
+- Open Gates and owners: independent Architecture and Quality — unassigned; product publication — Human Product Lead
+- Evidence and freshness: KeyboardCore swift test 1227 passed; swift-format lint --strict passed; Debug build-for-testing succeeded; Release build succeeded. Destination iPhone 17 Pro 884CAC1A-516A-421F-ACF5-035A36F7088A. No simulator reset.
 - Environment state:
   - Resource ledger（可选 L-01）: none
   - Environment leases（可选 L-02）: none
 - Recorded authorization receipts and audit consumption state: Human Product Lead session authorization, 2026-10-19 Asia/Shanghai; no formal AUTH file
 - Extension-referenced authorizations（可选 L-01）: none
 - Human Dependencies: product push, pull request, and merge
-- Residual findings / debt: R345 remains evidence-insufficient until this batch records a bounded conclusion. R174 stays off.
-- Next safest action: push this initial checkpoint, then extract Batch 2
+- Residual findings / debt: R345 is constrained for the synthetic-index path and is not a universal unreachable proof. R174 stays off. Batch 3 remains out of scope.
+- Next safest action: stop for independent Architecture and Quality review
 - Revalidation triggers: origin/main moves; Task Workspace pin changes; batch boundary changes
-- based_on: bb430f914deaf7b19a61183f744b5dcf2fdb8eae
-- snapshot_rev: 1
-- log_cursor: CP-001
+- based_on: 7898873c443396aa10ccbdcb3d78b134b300d2dc
+- snapshot_rev: 2
+- log_cursor: CP-002
 - read_on_demand:
-  - docs/assignments/input-reliability-delivery-002.md@bb430f914deaf7b19a61183f744b5dcf2fdb8eae
+  - docs/assignments/input-reliability-delivery-002.md@7898873c443396aa10ccbdcb3d78b134b300d2dc

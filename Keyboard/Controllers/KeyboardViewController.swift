@@ -222,15 +222,31 @@ class KeyboardViewController: UIInputViewController {
     /// 上次滑动翻页的时间戳（用于防抖，避免连续触发）
     var lastPageSwipeTime: CFTimeInterval = 0
     /// 累积候选词列表（无极滑动：随着用户滚动持续追加后续页的候选）
-    var accumulatedCandidates: [CandidateItem] = []
+    // This pure-value store is the actual paging model, not a shadow cache.
+    let candidatePresentationStore = RimeCandidatePresentationStore()
+    var candidateSnapshotOrigin: RimeOutputOrigin?
+    var accumulatedCandidates: [CandidateItem] {
+        get { candidatePresentationStore.page.items }
+        set { candidatePresentationStore.page.items = newValue }
+        _modify { yield &candidatePresentationStore.page.items }
+    }
     /// RIME 是否还有更多页的候选
-    var hasMoreCandidates: Bool = false
+    var hasMoreCandidates: Bool {
+        get { candidatePresentationStore.page.hasMore }
+        set { candidatePresentationStore.page.hasMore = newValue }
+    }
     /// 是否正在加载更多候选（防止重复触发）
     var isLoadingMoreCandidates: Bool = false
     /// 候选栏已加载的页数深度。旧分页诊断字段保留，当前全局索引预取路径不再依赖它。
-    var candidatePageDepth: Int = 0
+    var candidatePageDepth: Int {
+        get { candidatePresentationStore.page.depth }
+        set { candidatePresentationStore.page.depth = newValue }
+    }
     /// 下一次从 RIME 全局候选列表读取的起始索引。
-    var nextCandidateGlobalIndex: Int = 0
+    var nextCandidateGlobalIndex: Int {
+        get { candidatePresentationStore.page.nextIndex }
+        set { candidatePresentationStore.page.nextIndex = newValue }
+    }
     /// 当前候选快照对应的 raw input，用于丢弃旧输入的延迟预取结果。
     var candidateSnapshotRawInput: String?
     /// Core composition revision bound to the published T9/candidate snapshot.

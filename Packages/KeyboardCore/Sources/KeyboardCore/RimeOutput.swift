@@ -2,6 +2,9 @@
 /// 一次返回 UI 层需要的所有信息：当前拼音、候选列表、要上屏的文字。
 public struct RimeOutput: Equatable, Sendable {
 
+    /// Source of this native candidate space; nil for local or terminal output.
+    public let candidateOrigin: RimeOutputOrigin?
+
     /// RIME 当前未格式化的原始输入，例如 "nihao"。
     /// 与可能包含分段空格的 composition.preeditText 分离。
     public let rawInput: String?
@@ -39,8 +42,10 @@ public struct RimeOutput: Equatable, Sendable {
         highlightedIndex: Int = -1,
         candidatePageNumber: Int = 0,
         caretPositionInRaw: Int? = nil,
-        commitPreviewLength: Int? = nil
+        commitPreviewLength: Int? = nil,
+        candidateOrigin: RimeOutputOrigin? = nil
     ) {
+        self.candidateOrigin = candidateOrigin
         self.rawInput = rawInput
         self.composition = composition
         self.candidates = candidates
@@ -51,6 +56,16 @@ public struct RimeOutput: Equatable, Sendable {
         self.caretPositionInRaw = caretPositionInRaw
         self.commitPreviewLength = commitPreviewLength
     }
+    func replacingCandidateOrigin(_ origin: RimeOutputOrigin?) -> RimeOutput {
+        RimeOutput(
+            rawInput: rawInput, composition: composition, candidates: candidates,
+            committedText: committedText, hasMorePages: hasMorePages,
+            highlightedIndex: highlightedIndex, candidatePageNumber: candidatePageNumber,
+            caretPositionInRaw: caretPositionInRaw, commitPreviewLength: commitPreviewLength,
+            candidateOrigin: origin
+        )
+    }
+
 }
 
 /// 从 RIME 全局候选列表中读取的一段候选窗口。
