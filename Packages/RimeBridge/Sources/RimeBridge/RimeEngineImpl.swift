@@ -243,13 +243,24 @@ public final class RimeEngineImpl: RimeEngine {
     private func restoreMissingSessionCompositionIfNeeded() -> Bool {
         guard bridge.currentSessionIdentifier() == 0 else { return true }
 
+        // Copy before recovery. recoverSession() clears the remembered prefix
+        // because an explicit recovery is a fresh session. This automatic path
+        // must keep the prefix when recreation fails, so the next attempt can
+        // restore it and the rejected key is not the only surviving input.
         let rawInput = lastKnownRawInput
         recoverSession()
-        guard bridge.currentSessionIdentifier() != 0 else { return false }
+        guard bridge.currentSessionIdentifier() != 0 else {
+            lastKnownRawInput = rawInput
+            return false
+        }
         guard !rawInput.isEmpty else { return true }
 
         let restored = replaceInput(rawInput)
-        return restored.composition != nil || bridge.isComposing()
+        let restoredComposition = restored.composition != nil || bridge.isComposing()
+        if !restoredComposition, restored.committedText == nil {
+            lastKnownRawInput = rawInput
+        }
+        return restoredComposition
     }
 
     private func rememberRawInput(from output: KeyboardCore.RimeOutput) {

@@ -53,12 +53,25 @@ final class SynchronousSessionLossRecoveryTests: XCTestCase {
         XCTAssertTrue(engine.bridge.destroySession())
 
         engine.bridge.failNextSessionCreationsForTesting(8)
-        let output = engine.processKey("i")
+        let rejected = engine.processKey("i")
 
-        XCTAssertNil(output.composition)
-        XCTAssertNil(output.rawInput)
+        XCTAssertNil(rejected.composition)
+        XCTAssertNil(rejected.rawInput)
+        XCTAssertNil(rejected.committedText)
         XCTAssertEqual(engine.bridge.currentSessionIdentifier(), 0)
         XCTAssertGreaterThan(engine.bridge.injectedSessionCreationFailureCountForTesting, 0)
+
+        // A failed recreation backs off for 0.5s. The remembered prefix must
+        // still be available once that window opens.
+        engine.bridge.failNextSessionCreationsForTesting(0)
+        Thread.sleep(forTimeInterval: 0.7)
+        let restored = engine.processKey("i")
+
+        XCTAssertEqual(restored.rawInput, "ni")
+        XCTAssertEqual(restored.composition?.preeditText, "ni")
+        XCTAssertNil(restored.committedText)
+        XCTAssertTrue(engine.isComposing())
+        XCTAssertEqual(engine.bridge.currentSessionIdentifier() == 0, false)
     }
 }
 

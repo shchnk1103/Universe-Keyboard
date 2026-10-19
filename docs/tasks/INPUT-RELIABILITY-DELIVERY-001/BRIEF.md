@@ -1,24 +1,24 @@
 # KOS Handoff Snapshot
 
 - Work Item / Assignment: INPUT-RELIABILITY-DELIVERY-001 @ docs/assignments/input-reliability-delivery-001.md
-- Canonical lifecycle/status: Active / local Batch 1 commit ready for independent review @ docs/assignments/input-reliability-delivery-001.md
-- Current legal actions: wait for Human Product Lead before a product pull request
-- Explicitly prohibited actions: product push, product pull request, merge, R174 enablement, R349, Build 94 investigation, phases C and D, edits to the original Codex worktree
-- Frozen branch / commit / artifact: grok/input-reliability-delivery-001 @ local delivery commit recorded by CP-002
-- Completed outputs: Batch 1 source, directly related tests, and this task record on the local carrier
-- Open Gates and owners: independent Architecture and Quality — unassigned; product publication — Human Product Lead
-- Evidence and freshness: local checks recorded in log CP-002 on 2026-10-19 Asia/Shanghai; not a hosted CI run
+- Canonical lifecycle/status: Active / C1 local fix ready for a directed re-review @ docs/assignments/input-reliability-delivery-001.md
+- Current legal actions: wait for Human Product Lead before a product pull request or a C1 re-review assignment
+- Explicitly prohibited actions: product push, product pull request, merge, R174 enablement, R349, Build 94 investigation, phases C and D, edits to the original Codex worktree, C2–C5 fixes
+- Frozen branch / commit / artifact: grok/input-reliability-delivery-001 @ local C1 commit recorded by CP-003; parent remains 3f2ea2752790432655bfc39720e92a7287d46ca8
+- Completed outputs: Batch 1 source, the C1 session-prefix retention fix, directly related tests, and this task record on the local carrier
+- Open Gates and owners: C1 directed re-review — Claude Independent Reviewer, after Human routes it; C2–C5 remain open observations; product publication — Human Product Lead
+- Evidence and freshness: C1 checks recorded in log CP-003 on 2026-10-19 Asia/Shanghai; CP-002 evidence remains the Batch 1 baseline; not a hosted CI run
 - Environment state:
   - Resource ledger（可选 L-01）: none
   - Environment leases（可选 L-02）: none
 - Recorded authorization receipts and audit consumption state: Human Product Lead session authorization, 2026-10-19 Asia/Shanghai; no formal AUTH file yet
 - Extension-referenced authorizations（可选 L-01）: none
 - Human Dependencies: product push, pull request, and merge
-- Residual findings / debt: R345 remains evidence-insufficient and is outside Batch 1. KeyboardTests carries a behavior-matched copy of the identity tracker and reader because it does not link the Keyboard extension.
-- Next safest action: Human decides whether to start an independent review
+- Residual findings / debt: R345 remains evidence-insufficient and is outside Batch 1. KeyboardTests carries a behavior-matched copy of the identity tracker and reader because it does not link the Keyboard extension. Review observations C2, C3, C4, and C5 are unchanged. A failed automatic recovery still waits out the existing 0.5s retry window before the next attempt.
+- Next safest action: Human routes the C1 commit to Claude for a directed re-review
 - Revalidation triggers: origin/main moves; Task Workspace pin changes; batch boundary changes
-- based_on: e8c06eba7a5f8400dd7aaf91a83624642dc86c1f
-- snapshot_rev: 2
-- log_cursor: CP-002
+- based_on: 3f2ea2752790432655bfc39720e92a7287d46ca8
+- snapshot_rev: 3
+- log_cursor: CP-003
 - read_on_demand:
   - docs/assignments/input-reliability-delivery-001.md
