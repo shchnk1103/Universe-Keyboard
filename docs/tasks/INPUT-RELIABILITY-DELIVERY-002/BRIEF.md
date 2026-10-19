@@ -1,24 +1,24 @@
 # KOS Handoff Snapshot
 
 - Work Item / Assignment: INPUT-RELIABILITY-DELIVERY-002 @ docs/assignments/input-reliability-delivery-002.md
-- Canonical lifecycle/status: Active / review remediation committed locally, awaiting bounded re-review @ docs/assignments/input-reliability-delivery-002.md@670fd7456e12a174770ada2f9f3338310730e6a1
-- Current legal actions: none until Human authorizes a bounded re-review or product publication
-- Explicitly prohibited actions: product push, product pull request, merge, R174 enablement, R349, Build 94 investigation, phases C and D, Batch 3, edits to the original Codex worktree or the Batch 1 carrier
-- Frozen branch / commit / artifact: grok/input-reliability-delivery-002 @ 670fd7456e12a174770ada2f9f3338310730e6a1
-- Completed outputs: authority engines reject origin-less candidates that are not the current origin-free page; current local candidates still commit displayed text; composition-finalization and provisional-path edits from outside this batch are restored
-- Open Gates and owners: bounded Architecture and Quality re-review — unassigned; product publication — Human Product Lead
-- Evidence and freshness: KeyboardCore swift test 1228 passed; SynchronousSessionLossRecoveryTests succeeded; swift-format lint --strict passed; Debug build-for-testing succeeded; Release build succeeded. Destination iPhone 17 Pro 884CAC1A-516A-421F-ACF5-035A36F7088A. No simulator reset. Ordered-delete comparison: baseline bb430f9 four passes and candidate four passes.
+- Canonical lifecycle/status: Closed / PR #214 squash-merged; closeout remains on the carrier @ docs/assignments/input-reliability-delivery-002.md@7e2b773db116317c510e624d0f8a0a91e3a5e553
+- Current legal actions: none
+- Explicitly prohibited actions: product source edits, TestFlight, Release, R174 enablement, R349, Build 94 investigation, phases C and D, Batch 3, copying this snapshot onto main, edits to the original Codex worktree or the Batch 1 carrier, deletion of this carrier or worktree
+- Frozen branch / commit / artifact: grok/input-reliability-delivery-002 @ 7e2b773db116317c510e624d0f8a0a91e3a5e553; product squash origin/main @ d08175b915aee40998398d7fdc03f2fd7cf0833f
+- Completed outputs: candidate identity and safe selection published by https://github.com/shchnk1103/Universe-Keyboard/pull/214; Claude Architecture Pass and Quality Pass; GitHub Actions run 39262772623 success
+- Open Gates and owners: none for this task
+- Evidence and freshness: PR #214 MERGED at 2026-10-19T13:55:48Z. Squash parent is bb430f914deaf7b19a61183f744b5dcf2fdb8eae. CI head is 7e2b773db116317c510e624d0f8a0a91e3a5e553. Local evidence remains KeyboardCore 1228 passed, SynchronousSessionLossRecoveryTests succeeded, Debug build-for-testing succeeded, Release build succeeded, and the ordered-delete comparison of four baseline runs and four candidate runs.
 - Environment state:
   - Resource ledger（可选 L-01）: none
   - Environment leases（可选 L-02）: none
-- Recorded authorization receipts and audit consumption state: Human Product Lead review-remediation authorization, 2026-10-19 Asia/Shanghai; no formal AUTH file
+- Recorded authorization receipts and audit consumption state: Human Product Lead minimal closeout authorization, 2026-10-19 Asia/Shanghai; no formal AUTH file
 - Extension-referenced authorizations（可选 L-01）: none
-- Human Dependencies: bounded re-review, product push, pull request, and merge
-- Residual findings / debt: D4 old select entries and D5 spike precondition accounting stay deferred. R345 is constrained for the identified path and is not a universal unreachable proof. R174 stays off. Batch 3 remains out of scope. Candidate bar and expanded panel stale rejection has no dedicated UI test.
-- Next safest action: stop for a bounded independent re-review
-- Revalidation triggers: origin/main moves; Task Workspace pin changes; batch boundary changes
-- based_on: 670fd7456e12a174770ada2f9f3338310730e6a1
-- snapshot_rev: 3
-- log_cursor: CP-003
+- Human Dependencies: none for Batch 2
+- Residual findings / debt: D4 and D5 stay deferred and non-blocking. R345 is constrained for the identified path and is not a universal unreachable proof. The candidate bar and expanded panel have no dedicated UI tap test. R174 stays off. Batch 3 was not started.
+- Next safest action: stop this Batch 2 session
+- Revalidation triggers: a later Human authorization changes this closeout
+- based_on: 7e2b773db116317c510e624d0f8a0a91e3a5e553
+- snapshot_rev: 4
+- log_cursor: CP-004
 - read_on_demand:
-  - docs/assignments/input-reliability-delivery-002.md@670fd7456e12a174770ada2f9f3338310730e6a1
+  - docs/assignments/input-reliability-delivery-002.md@7e2b773db116317c510e624d0f8a0a91e3a5e553

@@ -23,3 +23,11 @@
 - lane: grok-build
 - kind: CHECKPOINT
 - note: Review remediation. Writer remains grok-build. No HANDOFF and no pending P. Under an authority engine, an origin-less candidate commits only when the current page is origin-free and contains that text; otherwise it is refused and does not call selectCandidate(globalIndex:). Non-authority engines keep the previous path. isSafeCompositionFinalizationText and the provisionalPathID lookup in t9VisiblePreedit are restored to merged-main behavior. Ordered-delete isolated comparison found no regression: baseline bb430f9 four passes, candidate four passes. Checks: swift-format lint --strict; KeyboardCore swift test 1228 passed; RimeBridge SynchronousSessionLossRecoveryTests succeeded; Debug build-for-testing succeeded; Release build succeeded. Product source is not pushed. D4 and D5 remain deferred.
+
+## CP-004 CHECKPOINT
+
+- id: CP-004
+- at: 2026-10-19T21:59:00+08:00
+- lane: grok-build
+- kind: CHECKPOINT
+- note: Closeout. Writer remains grok-build. No HANDOFF and no pending P. Human merged PR #214 by squash as d08175b915aee40998398d7fdc03f2fd7cf0833f on origin/main. The squash parent is bb430f914deaf7b19a61183f744b5dcf2fdb8eae. GitHub Actions run 39262772623 succeeded for head 7e2b773db116317c510e624d0f8a0a91e3a5e553. Claude recorded Architecture Pass and Quality Pass. Assignment lifecycle is Closed. This snapshot stays on the carrier and is not copied to main. Product source was not edited. D4 and D5 remain deferred. Batch 3 was not started.
