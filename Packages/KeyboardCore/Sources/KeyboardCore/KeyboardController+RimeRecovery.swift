@@ -238,6 +238,9 @@ extension KeyboardController {
         if retainedFocusedSegment || autoAnchorOutcome.status != .notEligible {
             effects.insert(.t9PinyinPathsChanged)
         }
+        if rimeKey.count == 1, rimeKey.allSatisfy({ "23456789".contains($0) }) {
+            captureT9UnconfirmedDigitInterpretation()
+        }
         return effectsAfterChineseCompositionKey(effects, originalKey: key)
     }
 
@@ -358,6 +361,7 @@ extension KeyboardController {
     }
 
     func appendFallbackCompositionKey(_ key: String) -> KeyboardEffect {
+        clearT9UnconfirmedDeleteHistory()
         state.currentComposition += fallbackInputText(for: key)
         if let partialCommit = state.partialCommit {
             let remainingDisplayText: String
@@ -427,6 +431,7 @@ extension KeyboardController {
         using engine: RimeEngine,
         rebuildSession: Bool = false
     ) -> Bool {
+        clearT9UnconfirmedDeleteHistory()
         if rebuildSession {
             engine.recoverSession()
             // In-place recovery may fail-close T9 → 26-key; sync controller policy immediately.
@@ -471,8 +476,8 @@ extension KeyboardController {
             return output
         }
 
-        // Local suffix candidates have no native index space, so this
-        // reconstruction intentionally keeps candidateOrigin nil.
+        // These local candidates do not retain the native candidate index space;
+        // the reconstructed output intentionally has no candidateOrigin.
         let prefixCandidates = candidateProvider.candidates(for: split.prefix)
         guard !prefixCandidates.isEmpty else { return output }
 

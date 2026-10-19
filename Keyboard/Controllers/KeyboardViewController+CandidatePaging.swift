@@ -102,6 +102,7 @@ extension KeyboardViewController: UIScrollViewDelegate {
     }
 
     func scheduleCandidatePrefetch(mode: CandidatePrefetchMode) {
+        guard !controller.isCompositionInputRecoveryPending else { return }
         let generation = candidateSnapshotGeneration
         candidatePrefetchRequestSerial += 1
         let requestSerial = candidatePrefetchRequestSerial
@@ -150,7 +151,8 @@ extension KeyboardViewController: UIScrollViewDelegate {
         generation: Int,
         requestSerial: Int
     ) {
-        guard candidateSnapshotGeneration == generation,
+        guard !controller.isCompositionInputRecoveryPending,
+            candidateSnapshotGeneration == generation,
             candidatePrefetchRequestSerial == requestSerial,
             hasMoreCandidates,
             !isLoadingMoreCandidates
@@ -170,7 +172,7 @@ extension KeyboardViewController: UIScrollViewDelegate {
         // affordance. It must not bypass Core's fail-closed contract while the
         // visual shadow is ahead of the engine snapshot; otherwise this direct
         // candidateWindow call can flush the thread-affine owner on MainActor.
-        guard !controller.isResponsiveProvisionalAhead else { return }
+        guard !controller.isCompositionInputRecoveryPending, !controller.isResponsiveProvisionalAhead else { return }
         guard let engine = controller.rimeEngine else { return }
         guard !isCandidateScrollInteracting else {
             deferredCandidatePrefetchMode = mode ?? candidatePrefetchMode
@@ -215,7 +217,8 @@ extension KeyboardViewController: UIScrollViewDelegate {
             boundWindow = nil
             window = engine.candidateWindow(from: startIndex, limit: batchLimit)
         }
-        guard candidateSnapshotGeneration == generation,
+        guard !controller.isCompositionInputRecoveryPending,
+            candidateSnapshotGeneration == generation,
             candidateSnapshotRawInput == rawInput,
             candidateSnapshotOrigin == sourceOrigin,
             candidateSnapshotCompositionRevision == expectedRevision,

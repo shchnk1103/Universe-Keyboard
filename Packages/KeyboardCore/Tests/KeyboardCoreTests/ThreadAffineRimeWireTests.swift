@@ -1,5 +1,6 @@
 import Foundation
 import XCTest
+
 @testable import KeyboardCore
 
 /// R4-Wire: dual-gate controller wiring for the thread-affine owner.
@@ -14,12 +15,12 @@ final class ThreadAffineRimeWireTests: XCTestCase {
         _ observer: @escaping (KeyboardEffect) -> Void
     ) {
         #if T9_RESPONSIVE_CANARY_INTERNAL
-        controller.onResponsiveCanaryPresentationNeeded = { effects in
-            observer(effects)
-            return true
-        }
+            controller.onResponsiveCanaryPresentationNeeded = { effects in
+                observer(effects)
+                return true
+            }
         #else
-        controller.onResponsivePresentationNeeded = observer
+            controller.onResponsivePresentationNeeded = observer
         #endif
     }
 
@@ -64,7 +65,9 @@ final class ThreadAffineRimeWireTests: XCTestCase {
     }
 
     private final class BlockingFirstProcessFakeEngine: RimeEngine {
-        private let delegate = FakeRimeEngine(dictionary: ["ni": ["你"], "n": ["你"], "nih": ["你"], "niha": ["你"], "nihao": ["你好"]])
+        private let delegate = FakeRimeEngine(dictionary: [
+            "ni": ["你"], "n": ["你"], "nih": ["你"], "niha": ["你"], "nihao": ["你好"],
+        ])
         private let processEntered: DispatchSemaphore
         private let releaseFirst: DispatchSemaphore
         private let blockedProcessCall: Int
@@ -109,6 +112,65 @@ final class ThreadAffineRimeWireTests: XCTestCase {
         func isComposing() -> Bool { delegate.isComposing() }
         func pageUp() -> RimeOutput { delegate.pageUp() }
         func pageDown() -> RimeOutput { delegate.pageDown() }
+    }
+
+    private struct T9AppendBootstrap: ThreadAffineRimeEngineBootstrap {
+        func makeEngineOnOwnerThread() -> any RimeEngine {
+            let engine = FakeRimeEngine(dictionary: ["53": ["可以"], "5394": ["可以"]])
+            engine.appendDigitsToComposition = true
+            return engine
+        }
+    }
+
+    func testAffineDigitAfterDeleteLetterResyncAdvancesUnconfirmedLedger() async throws {
+        try await assertAffineRetypeLedger(keys: ["3"], expected: "53")
+    }
+
+    func testAffineBurstAfterDeleteLetterResyncRetainsEveryCompletedSlot() async throws {
+        try await assertAffineRetypeLedger(keys: ["3", "9", "4"], expected: "5394")
+    }
+
+    private func assertAffineRetypeLedger(keys: [String], expected: String) async throws {
+        let controller = KeyboardController()
+        let host = FakeTextInputClient()
+        controller.textClient = host
+        controller.state.inputMode = .chinese
+        controller.usesT9InputSemantics = true
+        controller.isResponsiveRimePipelineEnabled = true
+        controller.isThreadAffineRimeOwnerEnabled = true
+        controller.threadAffineEngineBootstrap =
+            AnyThreadAffineRimeEngineBootstrap(T9AppendBootstrap())
+        controller.rebuildResponsiveRimeCoordinatorIfNeeded()
+        let coordinator = try XCTUnwrap(controller.threadAffineRimeCoordinator)
+        defer { coordinator.shutdown() }
+        let engine = try XCTUnwrap(controller.rimeEngine)
+        // Model the exact boundary found by R83, without candidate/Path clicks.
+        controller.applyRimeOutput(engine.replaceInput("j"))
+        controller.state.t9PinyinPathState.segmentSourceDigits = "5"
+        var commits: [String] = []
+        controller.onCommittedText = { commits.append($0.text) }
+        var presentationCount = 0
+        observePresentation(on: controller) { _ in presentationCount += 1 }
+        for key in keys {
+            _ = controller.handle(.insertKey(key))
+        }
+        let deadline = Date().addingTimeInterval(2)
+        while Date() < deadline {
+            if controller.state.lastRimeOutput?.rawInput == expected,
+                controller.state.t9PinyinPathState.segmentSourceDigits == expected,
+                presentationCount > 0
+            {
+                break
+            }
+            try await Task.sleep(nanoseconds: 1_000_000)
+        }
+        XCTAssertGreaterThan(presentationCount, 0)
+        XCTAssertEqual(controller.state.t9PinyinPathState.segmentSourceDigits, expected)
+        XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, expected)
+        XCTAssertEqual(coordinator.lastPublished?.output.rawInput, expected)
+        XCTAssertEqual(controller.state.lastRimeOutput?.candidates.first?.text, "可以")
+        XCTAssertTrue(commits.isEmpty)
+        XCTAssertNil(controller.underlyingRimeEngine, "Do not create a MainActor live session")
     }
 
     func testDualGatesDefaultOff() {
@@ -401,10 +463,12 @@ final class ThreadAffineRimeWireTests: XCTestCase {
         )
 
         release.signal()
-        guard let result = coordinator.drainActiveKillAndShutdown(
-            after: fence,
-            timeout: .now() + 2
-        ) else {
+        guard
+            let result = coordinator.drainActiveKillAndShutdown(
+                after: fence,
+                timeout: .now() + 2
+            )
+        else {
             return XCTFail("fenced owner must return a shutdown result")
         }
         XCTAssertEqual(result.acceptedThrough, fence)
@@ -502,127 +566,127 @@ final class ThreadAffineRimeWireTests: XCTestCase {
     }
 
     #if T9_RESPONSIVE_CANARY_INTERNAL
-    func testPresentationAcknowledgementRequiresCompleteCanarySessionIdentity() throws {
-        let coordinator = ThreadAffineRimeSessionCoordinator(
-            bootstrap: AnyThreadAffineRimeEngineBootstrap(FakeBootstrap())
-        )
-        coordinator.setCanarySessionInstance(1)
-        let snapshot = try XCTUnwrap(
-            coordinator.performOrderedNow(.processKey("n"))
-        )
+        func testPresentationAcknowledgementRequiresCompleteCanarySessionIdentity() throws {
+            let coordinator = ThreadAffineRimeSessionCoordinator(
+                bootstrap: AnyThreadAffineRimeEngineBootstrap(FakeBootstrap())
+            )
+            coordinator.setCanarySessionInstance(1)
+            let snapshot = try XCTUnwrap(
+                coordinator.performOrderedNow(.processKey("n"))
+            )
 
-        XCTAssertEqual(coordinator.pendingPresentationIdentities.count, 1)
-        coordinator.acknowledgePresentationTerminal(
-            canarySessionInstance: 2,
-            sessionEpoch: snapshot.sessionEpoch,
-            revision: snapshot.revision
-        )
-        XCTAssertEqual(
-            coordinator.pendingPresentationIdentities.count,
-            1,
-            "a new session must not consume an old session's pending terminal"
-        )
+            XCTAssertEqual(coordinator.pendingPresentationIdentities.count, 1)
+            coordinator.acknowledgePresentationTerminal(
+                canarySessionInstance: 2,
+                sessionEpoch: snapshot.sessionEpoch,
+                revision: snapshot.revision
+            )
+            XCTAssertEqual(
+                coordinator.pendingPresentationIdentities.count,
+                1,
+                "a new session must not consume an old session's pending terminal"
+            )
 
-        coordinator.acknowledgePresentationTerminal(
-            canarySessionInstance: 1,
-            sessionEpoch: snapshot.sessionEpoch,
-            revision: snapshot.revision
-        )
-        XCTAssertTrue(coordinator.pendingPresentationIdentities.isEmpty)
-        coordinator.suspendForVisibilityChange()
-    }
-
-    func testCanaryPaintRequiresPositiveSynchronousUIAcknowledgement() async {
-        let terminalReceived = expectation(description: "failed-visible terminal")
-        var observedTerminal: ResponsiveRimeCanaryPresentationTerminal?
-        let controller = KeyboardController()
-        controller.textClient = FakeTextInputClient()
-        controller.isResponsiveRimePipelineEnabled = true
-        controller.isThreadAffineRimeOwnerEnabled = true
-        controller.threadAffineEngineBootstrap = AnyThreadAffineRimeEngineBootstrap(
-            FakeBootstrap()
-        )
-        controller.onResponsiveCanaryPresentationNeeded = { _ in false }
-        controller.onResponsiveCanaryPresentationTerminal = { terminal in
-            observedTerminal = terminal
-            terminalReceived.fulfill()
+            coordinator.acknowledgePresentationTerminal(
+                canarySessionInstance: 1,
+                sessionEpoch: snapshot.sessionEpoch,
+                revision: snapshot.revision
+            )
+            XCTAssertTrue(coordinator.pendingPresentationIdentities.isEmpty)
+            coordinator.suspendForVisibilityChange()
         }
-        controller.rebuildResponsiveRimeCoordinatorIfNeeded()
-        controller.markResponsiveCanaryOwnerInstalled(
-            runID: "paint-failure",
-            modeGeneration: 1,
-            sessionInstance: 1
-        )
 
-        _ = controller.handle(.insertKey("n"))
-        await fulfillment(of: [terminalReceived], timeout: 2)
+        func testCanaryPaintRequiresPositiveSynchronousUIAcknowledgement() async {
+            let terminalReceived = expectation(description: "failed-visible terminal")
+            var observedTerminal: ResponsiveRimeCanaryPresentationTerminal?
+            let controller = KeyboardController()
+            controller.textClient = FakeTextInputClient()
+            controller.isResponsiveRimePipelineEnabled = true
+            controller.isThreadAffineRimeOwnerEnabled = true
+            controller.threadAffineEngineBootstrap = AnyThreadAffineRimeEngineBootstrap(
+                FakeBootstrap()
+            )
+            controller.onResponsiveCanaryPresentationNeeded = { _ in false }
+            controller.onResponsiveCanaryPresentationTerminal = { terminal in
+                observedTerminal = terminal
+                terminalReceived.fulfill()
+            }
+            controller.rebuildResponsiveRimeCoordinatorIfNeeded()
+            controller.markResponsiveCanaryOwnerInstalled(
+                runID: "paint-failure",
+                modeGeneration: 1,
+                sessionInstance: 1
+            )
 
-        guard let paint = observedTerminal?.paint,
-              case .failedVisible(let reason) = paint
-        else {
+            _ = controller.handle(.insertKey("n"))
+            await fulfillment(of: [terminalReceived], timeout: 2)
+
+            guard let paint = observedTerminal?.paint,
+                case .failedVisible(let reason) = paint
+            else {
+                controller.suspendRimeForVisibilityChange()
+                return XCTFail("missing UI acknowledgement must not be recorded as PAINT")
+            }
+            XCTAssertEqual(reason, .uiSynchronizationFailed)
             controller.suspendRimeForVisibilityChange()
-            return XCTFail("missing UI acknowledgement must not be recorded as PAINT")
         }
-        XCTAssertEqual(reason, .uiSynchronizationFailed)
-        controller.suspendRimeForVisibilityChange()
-    }
 
-    func testVisibilityPreterminationDoesNotConsumeFreshSessionPublish() async {
-        let entered = DispatchSemaphore(value: 0)
-        let release = DispatchSemaphore(value: 0)
-        let twoTerminals = expectation(description: "old fenced plus fresh painted")
-        twoTerminals.expectedFulfillmentCount = 2
-        var terminals: [ResponsiveRimeCanaryPresentationTerminal] = []
+        func testVisibilityPreterminationDoesNotConsumeFreshSessionPublish() async {
+            let entered = DispatchSemaphore(value: 0)
+            let release = DispatchSemaphore(value: 0)
+            let twoTerminals = expectation(description: "old fenced plus fresh painted")
+            twoTerminals.expectedFulfillmentCount = 2
+            var terminals: [ResponsiveRimeCanaryPresentationTerminal] = []
 
-        let controller = KeyboardController()
-        controller.textClient = FakeTextInputClient()
-        controller.isResponsiveRimePipelineEnabled = true
-        controller.isThreadAffineRimeOwnerEnabled = true
-        controller.threadAffineEngineBootstrap = AnyThreadAffineRimeEngineBootstrap(
-            FakeBootstrap(processEntered: entered, releaseFirst: release)
-        )
-        controller.onResponsiveCanaryPresentationNeeded = { _ in true }
-        controller.onResponsiveCanaryPresentationTerminal = { terminal in
-            terminals.append(terminal)
-            twoTerminals.fulfill()
+            let controller = KeyboardController()
+            controller.textClient = FakeTextInputClient()
+            controller.isResponsiveRimePipelineEnabled = true
+            controller.isThreadAffineRimeOwnerEnabled = true
+            controller.threadAffineEngineBootstrap = AnyThreadAffineRimeEngineBootstrap(
+                FakeBootstrap(processEntered: entered, releaseFirst: release)
+            )
+            controller.onResponsiveCanaryPresentationNeeded = { _ in true }
+            controller.onResponsiveCanaryPresentationTerminal = { terminal in
+                terminals.append(terminal)
+                twoTerminals.fulfill()
+            }
+            controller.rebuildResponsiveRimeCoordinatorIfNeeded()
+            controller.markResponsiveCanaryOwnerInstalled(
+                runID: "visibility-identity",
+                modeGeneration: 1,
+                sessionInstance: 1
+            )
+
+            _ = controller.handle(.insertKey("n"))
+            XCTAssertEqual(entered.wait(timeout: .now() + 1), .success)
+            release.signal()
+            controller.threadAffineRimeCoordinator?.flushPending()
+
+            // Preterminate the owner-delivered publication while its MainActor
+            // notification is still queued, then complete the visibility teardown.
+            controller.beginResponsiveCanaryPresentationFence()
+            controller.suspendRimeForVisibilityChange()
+            controller.finalizeResponsiveCanaryFencedPresentations()
+            _ = controller.abandonCompositionForVisibilityChange()
+            XCTAssertTrue(controller.lastResponsiveCanaryVisibilityTeardown?.isPositive == true)
+
+            controller.resumeRimeAfterVisibilityChange()
+            controller.activateResponsiveCanarySessionInstance(
+                runID: "visibility-identity",
+                modeGeneration: 2,
+                sessionInstance: 2
+            )
+            controller.resumeResponsiveCanaryPresentationAfterOwnerReady()
+            _ = controller.handle(.insertKey("n"))
+            XCTAssertEqual(entered.wait(timeout: .now() + 1), .success)
+            release.signal()
+
+            await fulfillment(of: [twoTerminals], timeout: 3)
+            XCTAssertEqual(terminals.map(\.canarySessionInstance), [1, 2])
+            XCTAssertEqual(terminals.first?.paint, .failedFencedBeforeVisible)
+            XCTAssertEqual(terminals.last?.paint, .painted)
+            controller.suspendRimeForVisibilityChange()
         }
-        controller.rebuildResponsiveRimeCoordinatorIfNeeded()
-        controller.markResponsiveCanaryOwnerInstalled(
-            runID: "visibility-identity",
-            modeGeneration: 1,
-            sessionInstance: 1
-        )
-
-        _ = controller.handle(.insertKey("n"))
-        XCTAssertEqual(entered.wait(timeout: .now() + 1), .success)
-        release.signal()
-        controller.threadAffineRimeCoordinator?.flushPending()
-
-        // Preterminate the owner-delivered publication while its MainActor
-        // notification is still queued, then complete the visibility teardown.
-        controller.beginResponsiveCanaryPresentationFence()
-        controller.suspendRimeForVisibilityChange()
-        controller.finalizeResponsiveCanaryFencedPresentations()
-        _ = controller.abandonCompositionForVisibilityChange()
-        XCTAssertTrue(controller.lastResponsiveCanaryVisibilityTeardown?.isPositive == true)
-
-        controller.resumeRimeAfterVisibilityChange()
-        controller.activateResponsiveCanarySessionInstance(
-            runID: "visibility-identity",
-            modeGeneration: 2,
-            sessionInstance: 2
-        )
-        controller.resumeResponsiveCanaryPresentationAfterOwnerReady()
-        _ = controller.handle(.insertKey("n"))
-        XCTAssertEqual(entered.wait(timeout: .now() + 1), .success)
-        release.signal()
-
-        await fulfillment(of: [twoTerminals], timeout: 3)
-        XCTAssertEqual(terminals.map(\.canarySessionInstance), [1, 2])
-        XCTAssertEqual(terminals.first?.paint, .failedFencedBeforeVisible)
-        XCTAssertEqual(terminals.last?.paint, .painted)
-        controller.suspendRimeForVisibilityChange()
-    }
     #endif
 
     func testVisibilityTeardownReceiptsCoverEveryAcceptedUnexecutedRevision() {
@@ -652,9 +716,11 @@ final class ThreadAffineRimeWireTests: XCTestCase {
         XCTAssertTrue(coordinator.isOwnerReady)
 
         release.signal()
-        guard let result = coordinator.suspendForVisibilityChange(
-            timeout: .now() + 2
-        ) else {
+        guard
+            let result = coordinator.suspendForVisibilityChange(
+                timeout: .now() + 2
+            )
+        else {
             return XCTFail("visibility teardown must expose its terminal result")
         }
 
@@ -723,7 +789,7 @@ final class ThreadAffineRimeWireTests: XCTestCase {
         let painted = expectation(description: "at least one paint")
         painted.assertForOverFulfill = false
         #if T9_RESPONSIVE_CANARY_INTERNAL
-        var presentationTerminals: [ResponsiveRimeCanaryPresentationTerminal] = []
+            var presentationTerminals: [ResponsiveRimeCanaryPresentationTerminal] = []
         #endif
 
         let controller = KeyboardController()
@@ -738,9 +804,9 @@ final class ThreadAffineRimeWireTests: XCTestCase {
             painted.fulfill()
         }
         #if T9_RESPONSIVE_CANARY_INTERNAL
-        controller.onResponsiveCanaryPresentationTerminal = { terminal in
-            presentationTerminals.append(terminal)
-        }
+            controller.onResponsiveCanaryPresentationTerminal = { terminal in
+                presentationTerminals.append(terminal)
+            }
         #endif
         controller.rebuildResponsiveRimeCoordinatorIfNeeded()
 
@@ -771,40 +837,41 @@ final class ThreadAffineRimeWireTests: XCTestCase {
         XCTAssertEqual(controller.threadAffineRimeCoordinator?.lastPublished?.revision, 5)
         XCTAssertEqual(controller.state.currentComposition, "nihao")
         #if T9_RESPONSIVE_CANARY_INTERNAL
-        XCTAssertEqual(presentationTerminals.count, 5)
-        XCTAssertEqual(
-            Set(presentationTerminals.map(\.revision)),
-            Set([1, 2, 3, 4, 5])
-        )
-        for terminal in presentationTerminals {
-            if terminal.revision == 5 {
-                XCTAssertEqual(
-                    terminal.visibility,
-                    .visible(presentationRevision: 5)
-                )
-                XCTAssertEqual(terminal.paint, .painted)
-            } else {
-                guard case .notVisibleCoalesced(
-                    let absorbedRevisionRange,
-                    let replacementRevision
-                ) = terminal.visibility,
-                      case .coalesced(
-                          let paintedAbsorbedRange,
-                          let paintedReplacementRevision
-                      ) = terminal.paint
-                else {
-                    XCTFail("non-latest revision must have one coalesced terminal")
-                    continue
+            XCTAssertEqual(presentationTerminals.count, 5)
+            XCTAssertEqual(
+                Set(presentationTerminals.map(\.revision)),
+                Set([1, 2, 3, 4, 5])
+            )
+            for terminal in presentationTerminals {
+                if terminal.revision == 5 {
+                    XCTAssertEqual(
+                        terminal.visibility,
+                        .visible(presentationRevision: 5)
+                    )
+                    XCTAssertEqual(terminal.paint, .painted)
+                } else {
+                    guard
+                        case .notVisibleCoalesced(
+                            let absorbedRevisionRange,
+                            let replacementRevision
+                        ) = terminal.visibility,
+                        case .coalesced(
+                            let paintedAbsorbedRange,
+                            let paintedReplacementRevision
+                        ) = terminal.paint
+                    else {
+                        XCTFail("non-latest revision must have one coalesced terminal")
+                        continue
+                    }
+                    XCTAssertEqual(
+                        absorbedRevisionRange,
+                        terminal.revision...terminal.revision
+                    )
+                    XCTAssertEqual(paintedAbsorbedRange, absorbedRevisionRange)
+                    XCTAssertEqual(paintedReplacementRevision, replacementRevision)
+                    XCTAssertGreaterThan(replacementRevision, terminal.revision)
                 }
-                XCTAssertEqual(
-                    absorbedRevisionRange,
-                    terminal.revision...terminal.revision
-                )
-                XCTAssertEqual(paintedAbsorbedRange, absorbedRevisionRange)
-                XCTAssertEqual(paintedReplacementRevision, replacementRevision)
-                XCTAssertGreaterThan(replacementRevision, terminal.revision)
             }
-        }
         #endif
         controller.suspendRimeForVisibilityChange()
     }

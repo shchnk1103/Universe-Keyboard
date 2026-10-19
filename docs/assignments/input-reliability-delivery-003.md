@@ -8,10 +8,10 @@ record_id: INPUT-RELIABILITY-DELIVERY-003
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current phase | Batch 3 implementation and candidate validation |
+| Current phase | Local candidate ready for independent review |
 | Material non-claims | No independent Review, merge readiness, Product Gate or Release claimed. R174 remains off in normal builds. No product push, PR, merge or TestFlight authorization. |
 | Next handoff / decision | Local candidate to Human for Claude independent Architecture / Quality Review |
-| Residuals | Verification results will be recorded in the task evidence; no Closeout in this phase. |
+| Residuals | [Verification and evidence gaps](../evidence/input-reliability-delivery-003/verification.md); no Closeout in this phase. |
 
 ## Authority
 

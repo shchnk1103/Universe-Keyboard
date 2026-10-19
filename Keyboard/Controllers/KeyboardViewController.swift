@@ -206,6 +206,7 @@ class KeyboardViewController: UIInputViewController {
     /// 展开按钮宽度约束（无候选时设为 0 隐藏）
     var candidateExpandButtonWidthConstraint: NSLayoutConstraint?
     /// 候选面板是否处于展开状态
+    var wasT9RecoveryPresentationBlocked = false
     var isCandidateExpanded = false
     /// Precise pinyin path expansion (mutually exclusive with candidate expansion).
     var isPinyinPathExpanded = false

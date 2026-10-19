@@ -20,6 +20,7 @@ extension KeyboardController {
     @discardableResult
     public func noteExternalDocumentChange() -> KeyboardEffect {
         guard !isPerformingOwnedHostMutation else { return [] }
+        fencePartialCommitFailureRecovery()
         return acceptPendingKaomoji(refreshContinuation: false)
             .union(acceptPendingPunctuation(refreshContinuation: false))
     }

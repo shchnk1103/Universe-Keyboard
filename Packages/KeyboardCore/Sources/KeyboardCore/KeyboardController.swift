@@ -6,7 +6,28 @@ public final class KeyboardController {
     // MARK: - Public properties
 
     public internal(set) var state: KeyboardState
-    public var textClient: TextInputClient?
+    public var textClient: TextInputClient? {
+        didSet {
+            // Same-document proxy adapters may be replaced on every callback.
+            if textClient == nil {
+                clearT9UnconfirmedDeleteHistory()
+                abandonUntrustedRetypeWithoutHostWrite()
+                fencePartialCommitFailureRecovery()
+            }
+        }
+    }
+    var t9UnconfirmedDeleteHistory = T9UnconfirmedDeleteHistory()
+    var t9ExactRetypeRecovery = T9ExactRetypeRecovery()
+    var partialCommitFailureRecovery: PartialCommitFailureRecovery?
+    var t9RetypeEditingGeneration: UInt64 = 0
+    // Internal staging switch; ordinary keyboards stay off until Controller,
+    // native and Extension failure handling have all been verified.
+    #if DEBUG && targetEnvironment(simulator) && INPUT_RELIABILITY_R174_SIMULATOR_TEST
+        // Only the isolated Simulator artifact may opt in without a public API.
+        var isT9ExactRetypeRecoveryEnabled = true
+    #else
+        var isT9ExactRetypeRecoveryEnabled = false
+    #endif
     public let candidateProvider: CandidateProvider
     public let continuationSuggestionProvider: any ContinuationSuggestionProviding
     public var typoCorrectionCandidateQuery: TypoCorrectionCandidateQuerying
@@ -192,6 +213,7 @@ public final class KeyboardController {
         publishPolicy: ResponsiveRimePublishPolicy = .latestOnly,
         clock: ResponsiveRimeExecutionClock = NoopResponsiveRimeClock()
     ) {
+        clearT9UnconfirmedDeleteHistory()
         #if T9_RESPONSIVE_CANARY_INTERNAL
             // Once installed, only the unique canary lifecycle/kill paths may tear
             // down the owner. Legacy flag rebuilds must not create a second mode
@@ -411,7 +433,7 @@ public final class KeyboardController {
         ownerPendingDepthAtPublish: Int? = nil,
         canarySessionInstance: UInt64 = 0
     ) {
-        guard let snapshot else { return }
+        guard let snapshot, !isPartialCommitFailureRecoveryPending else { return }
 
         #if T9_RESPONSIVE_CANARY_INTERNAL
             let terminalKey =
@@ -731,9 +753,45 @@ public final class KeyboardController {
         // Thread-affine mode has no MainActor live engine — presentation-only path.
         let engineForPostProcess = underlyingRimeEngine
         guard let engineForPostProcess else {
+            if let ctx {
+                switch presentExactRetypeIfNeeded(
+                    snapshot: snapshot, previous: ctx.previousT9PathState, key: ctx.rimeKey)
+                {
+                case .installed: return
+                case .frozen:
+                    applyRimeOutput(output)
+                    _ = refreshT9PinyinPathState(forceNewProvenance: false)
+                    notifyResponsivePresentation(pathChanged: true)
+                    return
+                case .ordinary: break
+                }
+            }
             applyRimeOutput(output)
             if usesT9InputSemantics {
-                _ = refreshT9PinyinPathState(forceNewProvenance: false)
+                var retainedIdentity = false
+                if output.committedText == nil,
+                    let ctx,
+                    ctx.rimeKey.count == 1,
+                    let digit = ctx.rimeKey.first,
+                    let coordinator = threadAffineRimeCoordinator
+                {
+                    // Resync stays on the owner. Suppress its nested ord paint
+                    // so the completed replacement is applied only by the helper.
+                    retainedIdentity = coordinator.withPublishHandlerSuppressed {
+                        retainUnconfirmedT9IdentityAfterAffineDigit(
+                            previous: ctx.previousT9PathState,
+                            digit: digit
+                        )
+                    }
+                }
+                if !retainedIdentity {
+                    _ = refreshT9PinyinPathState(forceNewProvenance: false)
+                }
+            }
+            if let ctx, ctx.rimeKey.count == 1,
+                ctx.rimeKey.allSatisfy({ "23456789".contains($0) })
+            {
+                captureT9UnconfirmedDigitInterpretation()
             }
             notifyResponsivePresentation(pathChanged: usesT9InputSemantics)
             return
@@ -816,6 +874,11 @@ public final class KeyboardController {
                 }
             } else if usesT9InputSemantics {
                 _ = refreshT9PinyinPathState(forceNewProvenance: false)
+            }
+            if let ctx, ctx.rimeKey.count == 1,
+                ctx.rimeKey.allSatisfy({ "23456789".contains($0) })
+            {
+                captureT9UnconfirmedDigitInterpretation()
             }
             notifyResponsivePresentation(pathChanged: pathChanged)
         }
@@ -1193,6 +1256,13 @@ public final class KeyboardController {
     /// Reset RIME after the keyboard becomes visible again while preserving
     /// enough state to reconstruct an in-progress inline composition.
     public func resetRimeSessionForVisibilityChange() {
+        if isT9InputRecoveryPending {
+            _ = abandonCompositionForVisibilityChange()
+            return
+        }
+        t9ExactRetypeRecovery.clearHistory()
+        t9RetypeEditingGeneration &+= 1
+        clearT9UnconfirmedDeleteHistory()
         guard rimeEngine != nil else { return }
         if isResponsiveRimePipelineEnabled, let affine = threadAffineRimeCoordinator {
             _ = affine.performOrderedNow(.resetSession)
@@ -1215,6 +1285,7 @@ public final class KeyboardController {
     /// candidates must not remain visible from the previous host interaction.
     @discardableResult
     public func abandonCompositionForVisibilityChange() -> KeyboardEffect {
+        defer { finishRetypeLifecycleFence() }
         let hadVisibleComposition =
             !state.currentComposition.isEmpty
             || state.lastRimeOutput != nil
@@ -1272,6 +1343,7 @@ public final class KeyboardController {
     /// Continuation and pending host spans stay. This is not visibility abandon.
     @discardableResult
     public func dropRemainingPreeditKeepingConfirmedPrefix() -> KeyboardEffect {
+        defer { finishRetypeLifecycleFence() }
         if isResponsiveRimePipelineEnabled, let affine = threadAffineRimeCoordinator {
             affine.bumpSessionEpoch(resetEngineSession: true)
             clearResponsiveKeyApplyContexts()
@@ -1311,10 +1383,10 @@ public final class KeyboardController {
     /// 必须由 UI 生命周期同步调用，不能推迟到不可预测的 `deinit`。
     public func suspendRimeForVisibilityChange() {
         if isResponsiveRimePipelineEnabled, let affine = threadAffineRimeCoordinator {
+            let teardown = affine.suspendForVisibilityChange()
+            noteCheckpointOwnerSuspended(teardown?.isPositive == true)
             #if T9_RESPONSIVE_CANARY_INTERNAL
-                lastResponsiveCanaryVisibilityTeardown = affine.suspendForVisibilityChange()
-            #else
-                affine.suspendForVisibilityChange()
+                lastResponsiveCanaryVisibilityTeardown = teardown
             #endif
         } else if isResponsiveRimePipelineEnabled, let coordinator = responsiveRimeCoordinator {
             coordinator.suspendForVisibilityChange()
@@ -1334,6 +1406,7 @@ public final class KeyboardController {
             rimeEngine?.resumeAfterVisibilityChange()
         }
         applyRealizedSelectionFromEngine()
+        noteCheckpointOwnerResumeRequested()
     }
 
     /// Align `usesT9InputSemantics` with the engine's last published realized selection.
@@ -1347,6 +1420,11 @@ public final class KeyboardController {
 
     @discardableResult
     public func handle(_ action: KeyboardAction) -> KeyboardEffect {
+        if let effects = interceptPartialCommitFailureAction(action) { return effects }
+        if let effects = interceptUntrustedT9Action(action) { return effects }
+        let retypeDelete = prepareExactRetypeHistory(for: action)
+        defer { completeExactRetypeDelete(retypeDelete) }
+        prepareT9UnconfirmedHistory(for: action)
         switch action {
         case .insertKey(let key):
             return acceptingPendingPunctuationIfNeeded { handleInsertKey(key) }

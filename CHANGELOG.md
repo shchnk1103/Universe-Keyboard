@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2026-10-19 — Input Reliability Batch 3（本地候选，待独立 Review）
+
+- 九键短删除保留已呈现的未确认拼音历史；连续重输入维持数字槽位与 Path 一致，不伪造用户确认。
+- affine Partial Commit checkpoint 恢复失败后保留已选前缀，撤销候选/分页权限；删除取消未确认尾段，新中文键只允许一次 fresh 恢复。
+- 恢复提示占用现有候选行，阻断失效候选、Path、展开与提交控件；相关终结路径防止内部 T9 数字上屏。
+- R174 精确补回实现仅保留受控内部测试入口，正常 Debug/Release 默认关闭；不代表 TestFlight、Release 或可合并。
+
 ## 2026-10-11 — TYPO-CORRECTION-002 有界父任务收尾（本地记录，待发布）
 
 - 独立最终证据复核完整通过；按Human条件授权记录有界Product Gate并Closed。P1技术债、QA人工观察边界与整体性能未知保留；不表示Release。

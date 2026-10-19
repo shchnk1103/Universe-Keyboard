@@ -10,6 +10,7 @@ extension KeyboardController {
     }
 
     func didCommitText(_ text: String, source: CommittedTextSource) {
+        clearT9UnconfirmedDeleteHistory()
         refreshContinuation(afterCommitting: text)
         onCommittedText?(CommittedTextEvent(text: text, source: source))
     }

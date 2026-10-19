@@ -1,0 +1,14 @@
+{
+  "Keyboard/Controllers/KeyboardViewController+Bootstrap.swift": "0850117abda20ce9d0c0042bb558cac19784626a7350c5e8f24beb7fffaf2d14",
+  "Keyboard/Controllers/KeyboardViewController+DocumentChanges.swift": "7d0cc98bd6a40922fe8b7a2b9b46c38e547e92fff12b3e71e0593a86cd21af3b",
+  "Keyboard/Bridge/KeyboardDocumentIdentity.h": "fee3e5eadf3fa6e8345b9c127d0bf615fb11c98da13ba5ca0d1db04ce8d6c00c",
+  "Keyboard/Bridge/KeyboardDocumentIdentity.m": "325079fe798e162ecfd7520353e9fcc26464fc332e894cc1566dc6ec59578838",
+  "Keyboard/Services/KeyboardDocumentIdentityTracker.swift": "739f3f34928ee405dbbb238a627c31f665b2988ceac87c9b5b0a46517ff7a709",
+  "Packages/RimeBridge/Sources/RimeBridge/RimeEngineImpl.swift": "a1591c0cfef2188cc6b8991017e83e3cfffde44080c69f1d84aba2edd920856d",
+  "Packages/RimeBridge/Sources/RimeBridge/SynchronousRimeFallbackInstaller.swift": "531f01576b8f3f7187ec5ffe1e7e749f4d2e41599b6fcf81eda2cfcc647e5cb1",
+  "Packages/KeyboardCore/Sources/KeyboardCore/RimeCandidateAuthority.swift": "386c723182e06c96b92678de7b3a06f75e68f1dcd8344a5b2f5f5c783c361c36",
+  "Packages/KeyboardCore/Sources/KeyboardCore/RimeOutput.swift": "9d99557b88c9585953052f800d112c79dc97b2553361290a239a08c6ca05fe91",
+  "Packages/KeyboardCore/Sources/KeyboardCore/ThreadAffineRimeSession.swift": "d075a0a71cd1f997d77112775ed3ccf9955459435103a28015337912e341dfba",
+  "Packages/KeyboardCore/Sources/KeyboardCore/ThreadAffineRimeSpike.swift": "3ea7f25164f1841b8a5fca8d63e0d8da0e71723ffb04177f27079d2ad208ce45",
+  "candidate_endpoints": "Only four early recovery guards added; all original origin/native selection code byte-identical."
+}

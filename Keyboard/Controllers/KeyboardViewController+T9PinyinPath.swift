@@ -48,21 +48,21 @@ extension KeyboardViewController {
             let selected = snapshot.paths.first { $0.id == snapshot.selectedPathID }
             let idleHint = t9IdlePathHintText(pathCount: snapshot.paths.count)
             #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
-            HotPathSegmentTiming.measure(.pathUI) {
+                HotPathSegmentTiming.measure(.pathUI) {
+                    bar.setPaths(
+                        snapshot.paths,
+                        selected: selected,
+                        compositionRevision: snapshot.revision,
+                        idleHintText: idleHint
+                    )
+                }
+            #else
                 bar.setPaths(
                     snapshot.paths,
                     selected: selected,
                     compositionRevision: snapshot.revision,
                     idleHintText: idleHint
                 )
-            }
-            #else
-            bar.setPaths(
-                snapshot.paths,
-                selected: selected,
-                compositionRevision: snapshot.revision,
-                idleHintText: idleHint
-            )
             #endif
         }
         t9SpaceButton?.setTitle(spaceButtonTitle, for: .normal)
@@ -76,7 +76,20 @@ extension KeyboardViewController {
         // Candidate bar from the same snapshot candidates/revision
         if candidateCollectionView != nil {
             #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
-            HotPathSegmentTiming.measure(.candidateUI) {
+                HotPathSegmentTiming.measure(.candidateUI) {
+                    resetCandidateSnapshot(from: snapshot)
+                    fillCandidateBar()
+                    if candidateScrollView.contentOffset.x != 0 {
+                        candidateScrollView.setContentOffset(.zero, animated: false)
+                    }
+                    if isCandidateExpanded {
+                        refreshExpandedPanel()
+                    }
+                    if hasMoreCandidates {
+                        scheduleCandidatePrefetch(mode: candidatePrefetchMode)
+                    }
+                }
+            #else
                 resetCandidateSnapshot(from: snapshot)
                 fillCandidateBar()
                 if candidateScrollView.contentOffset.x != 0 {
@@ -88,19 +101,6 @@ extension KeyboardViewController {
                 if hasMoreCandidates {
                     scheduleCandidatePrefetch(mode: candidatePrefetchMode)
                 }
-            }
-            #else
-            resetCandidateSnapshot(from: snapshot)
-            fillCandidateBar()
-            if candidateScrollView.contentOffset.x != 0 {
-                candidateScrollView.setContentOffset(.zero, animated: false)
-            }
-            if isCandidateExpanded {
-                refreshExpandedPanel()
-            }
-            if hasMoreCandidates {
-                scheduleCandidatePrefetch(mode: candidatePrefetchMode)
-            }
             #endif
         }
         // Expanded path panel also binds the same revision paths
@@ -158,7 +158,7 @@ extension KeyboardViewController {
 
     func updateSelectPinyinButtonAvailability() {
         let state = controller.state.t9PinyinPathState
-        let enabled = !state.compactPaths.isEmpty
+        let enabled = !shouldBlockT9RecoveryPresentation && !state.compactPaths.isEmpty
         t9SelectPinyinButton?.isEnabled = enabled
         t9SelectPinyinButton?.alpha = enabled ? 1 : 0.45
         t9SelectPinyinButton?.accessibilityLabel = "选拼音"
@@ -168,7 +168,8 @@ extension KeyboardViewController {
             t9SelectPinyinButton?.accessibilityHint = "选择下一个拼音"
         } else {
             t9SelectPinyinButton?.accessibilityValue = nil
-            t9SelectPinyinButton?.accessibilityHint = enabled
+            t9SelectPinyinButton?.accessibilityHint =
+                enabled
                 ? "选择第一个拼音"
                 : "请先输入九键拼音"
         }
@@ -182,7 +183,7 @@ extension KeyboardViewController {
     @objc func handleT9PinyinPathButton(_ sender: UIButton) {
         emitKeyPressFeedbackIfNeeded(for: sender)
         guard let pathButton = sender as? T9PinyinPathButton,
-              let path = pathButton.path
+            let path = pathButton.path
         else {
             return
         }
@@ -197,7 +198,7 @@ extension KeyboardViewController {
             }
         guard authorized else { return }
         if path.compositionRevision != 0,
-           path.compositionRevision != controller.state.compositionRevision
+            path.compositionRevision != controller.state.compositionRevision
         {
             return
         }
@@ -335,7 +336,7 @@ extension KeyboardViewController {
         let compositionRevision = pathState.compositionRevision
         let provenanceRevision = pathState.provenanceRevision
         guard compositionRevision == pinyinPathPanelGeneration,
-              provenanceRevision == pinyinPathPanelProvenanceRevision
+            provenanceRevision == pinyinPathPanelProvenanceRevision
         else {
             refreshPinyinPathExpandedPanel()
             return
@@ -346,7 +347,7 @@ extension KeyboardViewController {
             limit: T9PinyinPathExtractor.panelWindowLimit
         )
         guard window.compositionRevision == compositionRevision,
-              window.provenanceRevision == provenanceRevision
+            window.provenanceRevision == provenanceRevision
         else {
             refreshPinyinPathExpandedPanel()
             return

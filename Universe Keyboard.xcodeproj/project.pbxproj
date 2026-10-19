@@ -23,6 +23,16 @@
 		7A6500012FD0000000000001 /* TypoCorrectionCallbackLedger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A6500022FD0000000000001 /* TypoCorrectionCallbackLedger.swift */; };
 		7A6600012FD0000000000001 /* QueryCostClockAnchor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A6600022FD0000000000001 /* QueryCostClockAnchor.swift */; };
 		7A6700012FD0000000000001 /* QueryCostArmDiagnostic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A6700022FD0000000000001 /* QueryCostArmDiagnostic.swift */; };
+		C2E000000000000000000005 /* KeyboardViewController+CandidatePaging.swift in KeyboardExtensionTests */ = {isa = PBXBuildFile; fileRef = C2F000000000000000000005 /* KeyboardViewController+CandidatePaging.swift */; };
+		D31940000000000000000001 /* CandidateBarView.swift in KeyboardExtensionTests */ = {isa = PBXBuildFile; fileRef = D31930000000000000000001 /* CandidateBarView.swift */; };
+		D31940000000000000000002 /* CandidateCollectionView.swift in KeyboardExtensionTests */ = {isa = PBXBuildFile; fileRef = D31930000000000000000002 /* CandidateCollectionView.swift */; };
+		D31940000000000000000003 /* CandidateCell.swift in KeyboardExtensionTests */ = {isa = PBXBuildFile; fileRef = D31930000000000000000003 /* CandidateCell.swift */; };
+		D31940000000000000000004 /* CandidateScrollViewStyle.swift in KeyboardExtensionTests */ = {isa = PBXBuildFile; fileRef = D31930000000000000000004 /* CandidateScrollViewStyle.swift */; };
+		D31940000000000000000005 /* DebugKeyTouchRangeOverlayView.swift in KeyboardExtensionTests */ = {isa = PBXBuildFile; fileRef = D31930000000000000000005 /* DebugKeyTouchRangeOverlayView.swift */; };
+		D31960000000000000000001 /* KeyboardViewController+T9InputRecovery.swift in KeyboardExtensionTests */ = {isa = PBXBuildFile; fileRef = D31950000000000000000001 /* KeyboardViewController+T9InputRecovery.swift */; };
+		D213B0000000000000000001 /* KeyboardKeyButton.swift in KeyboardExtensionTests */ = {isa = PBXBuildFile; fileRef = D213F0000000000000000001 /* KeyboardKeyButton.swift */; };
+		D213B0000000000000000002 /* KeyVisualStyle.swift in KeyboardExtensionTests */ = {isa = PBXBuildFile; fileRef = D213F0000000000000000002 /* KeyVisualStyle.swift */; };
+		D213B0000000000000000003 /* KeyboardViewController+KeyAccessibility.swift in KeyboardExtensionTests */ = {isa = PBXBuildFile; fileRef = D213F0000000000000000003 /* KeyboardViewController+KeyAccessibility.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -84,6 +94,16 @@
 		7A6500022FD0000000000001 /* TypoCorrectionCallbackLedger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TypoCorrectionCallbackLedger.swift; sourceTree = "<group>"; };
 		7A6600022FD0000000000001 /* QueryCostClockAnchor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryCostClockAnchor.swift; sourceTree = "<group>"; };
 		7A6700022FD0000000000001 /* QueryCostArmDiagnostic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueryCostArmDiagnostic.swift; sourceTree = "<group>"; };
+		C2F000000000000000000005 /* KeyboardViewController+CandidatePaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Controllers/KeyboardViewController+CandidatePaging.swift"; sourceTree = "<group>"; };
+		D31930000000000000000001 /* CandidateBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Views/CandidateBar/CandidateBarView.swift"; sourceTree = "<group>"; };
+		D31930000000000000000002 /* CandidateCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Views/CandidateBar/CandidateCollectionView.swift"; sourceTree = "<group>"; };
+		D31930000000000000000003 /* CandidateCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Views/CandidateBar/CandidateCell.swift"; sourceTree = "<group>"; };
+		D31930000000000000000004 /* CandidateScrollViewStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Views/CandidateBar/CandidateScrollViewStyle.swift"; sourceTree = "<group>"; };
+		D31930000000000000000005 /* DebugKeyTouchRangeOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Views/DebugKeyTouchRangeOverlayView.swift"; sourceTree = "<group>"; };
+		D31950000000000000000001 /* KeyboardViewController+T9InputRecovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Controllers/KeyboardViewController+T9InputRecovery.swift"; sourceTree = "<group>"; };
+		D213F0000000000000000001 /* KeyboardKeyButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Controllers/KeyboardKeyButton.swift"; sourceTree = "<group>"; };
+		D213F0000000000000000002 /* KeyVisualStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Controllers/KeyVisualStyle.swift"; sourceTree = "<group>"; };
+		D213F0000000000000000003 /* KeyboardViewController+KeyAccessibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Controllers/KeyboardViewController+KeyAccessibility.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -220,6 +240,16 @@
 				7A6200062FC0000000000001 /* KeyboardTests */,
 				C2F000000000000000000001 /* UITextDocumentProxyAdapter.swift */,
 				C2F000000000000000000002 /* KeyboardHostLifecycleRecoveryGate.swift */,
+				C2F000000000000000000005 /* KeyboardViewController+CandidatePaging.swift */,
+				D31950000000000000000001 /* KeyboardViewController+T9InputRecovery.swift */,
+				D213F0000000000000000001 /* KeyboardKeyButton.swift */,
+				D213F0000000000000000002 /* KeyVisualStyle.swift */,
+				D213F0000000000000000003 /* KeyboardViewController+KeyAccessibility.swift */,
+				D31930000000000000000001 /* CandidateBarView.swift */,
+				D31930000000000000000002 /* CandidateCollectionView.swift */,
+				D31930000000000000000003 /* CandidateCell.swift */,
+				D31930000000000000000004 /* CandidateScrollViewStyle.swift */,
+				D31930000000000000000005 /* DebugKeyTouchRangeOverlayView.swift */,
 				7A6300022FD0000000000001 /* UniverseKeyboardUITests */,
 				7A6400052FD0000000000001 /* KeyboardExtensionTests */,
 				7A6400102FD0000000000001 /* Coordinator source compiled for extension tests */,
@@ -577,6 +607,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				7A64000E2FD0000000000001 /* TypoCorrectionRecallCoordinator.swift in Sources */,
+				C2E000000000000000000005 /* KeyboardViewController+CandidatePaging.swift in KeyboardExtensionTests */,
+				D31960000000000000000001 /* KeyboardViewController+T9InputRecovery.swift in KeyboardExtensionTests */,
+				D213B0000000000000000001 /* KeyboardKeyButton.swift in KeyboardExtensionTests */,
+				D213B0000000000000000002 /* KeyVisualStyle.swift in KeyboardExtensionTests */,
+				D213B0000000000000000003 /* KeyboardViewController+KeyAccessibility.swift in KeyboardExtensionTests */,
+				D31940000000000000000001 /* CandidateBarView.swift in KeyboardExtensionTests */,
+				D31940000000000000000002 /* CandidateCollectionView.swift in KeyboardExtensionTests */,
+				D31940000000000000000003 /* CandidateCell.swift in KeyboardExtensionTests */,
+				D31940000000000000000004 /* CandidateScrollViewStyle.swift in KeyboardExtensionTests */,
+				D31940000000000000000005 /* DebugKeyTouchRangeOverlayView.swift in KeyboardExtensionTests */,
                 7A6500012FD0000000000001 /* TypoCorrectionCallbackLedger.swift in Sources */,
 				7A6600012FD0000000000001 /* QueryCostClockAnchor.swift in Sources */,
 				7A6700012FD0000000000001 /* QueryCostArmDiagnostic.swift in Sources */,
