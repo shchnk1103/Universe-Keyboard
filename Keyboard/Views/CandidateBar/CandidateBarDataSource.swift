@@ -53,7 +53,8 @@ struct CandidateBarDataSource {
                 from: controller,
                 rimeCandidates: rimeOutput.candidates,
                 preeditText: comp.preeditText,
-                pageNumber: rimeOutput.candidatePageNumber
+                pageNumber: rimeOutput.candidatePageNumber,
+                candidateOrigin: rimeOutput.candidateOrigin
             )
         }
 
@@ -66,7 +67,8 @@ struct CandidateBarDataSource {
         from controller: KeyboardController,
         rimeCandidates: [RimeCandidate],
         preeditText: String,
-        pageNumber: Int
+        pageNumber: Int,
+        candidateOrigin: RimeOutputOrigin? = nil
     ) -> [CandidateItem] {
         let state = controller.state
         guard state.inputMode == .chinese else { return [] }
@@ -81,7 +83,8 @@ struct CandidateBarDataSource {
                     candidate,
                     page: pageNumber,
                     indexOnPage: index,
-                    globalIndex: candidate.globalIndex ?? (pageNumber == 0 ? index : nil)
+                    globalIndex: candidate.globalIndex ?? (pageNumber == 0 ? index : nil),
+                    candidateOrigin: candidateOrigin
                 )
             )
         }

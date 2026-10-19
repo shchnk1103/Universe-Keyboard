@@ -33,6 +33,13 @@ extension KeyboardController {
             // Path state cleared inside finishActiveCompositionAsDisplayText.
             return .compositionChanged.union(.t9PinyinPathsChanged)
         case .candidate:
+            // A bound native item cannot become a local/text fallback after loss
+            // or replacement of its engine, even when the visible text is equal.
+            if let origin = selectionReference?.candidateOrigin {
+                guard rimeEngine is RimeCandidateAuthorityProviding,
+                    state.lastRimeOutput?.candidateOrigin == origin
+                else { return [] }
+            }
             if state.partialCommit?.source == .numberSuffix {
                 commitInlinePreedit(as: candidate, source: .candidate)
                 state.currentComposition = ""
@@ -54,7 +61,25 @@ extension KeyboardController {
                     ?? selectionReference?.globalIndex
             {
                 let result: RimeOutput
-                if let globalIndex = selectionReference?.globalIndex {
+                if let origin = selectionReference?.candidateOrigin {
+                    guard let provider = engine as? RimeCandidateAuthorityProviding else { return [] }
+                    switch provider.selectCandidate(
+                        origin: origin, pageIndex: index, globalIndex: selectionReference?.globalIndex
+                    ) {
+                    case .applied(let selected): result = selected
+                    case .rejected: return []
+                    }
+                } else if engine is RimeCandidateAuthorityProviding {
+                    // No native origin is available. A synthetic page or global
+                    // index must not reach native select. Only the exact text of
+                    // the current origin-free page may commit locally.
+                    guard output.candidateOrigin == nil,
+                        output.candidates.contains(where: { $0.text == candidate })
+                    else { return [] }
+                    commitFallbackCandidate(candidate)
+                    let pathEffect = clearT9PinyinPathStateReturningEffect()
+                    return .compositionChanged.union(pathEffect)
+                } else if let globalIndex = selectionReference?.globalIndex {
                     result = engine.selectCandidate(globalIndex: globalIndex)
                 } else {
                     result = engine.selectCandidate(at: index)
@@ -159,7 +184,8 @@ extension KeyboardController {
             committedText: nil,
             hasMorePages: output.hasMorePages,
             highlightedIndex: output.highlightedIndex,
-            candidatePageNumber: output.candidatePageNumber
+            candidatePageNumber: output.candidatePageNumber,
+            candidateOrigin: output.candidateOrigin
         )
         // Keep confirmed text, remaining preedit, display text, and checkpoint.
         // Only re-rank T9 Path against the same remaining identity when needed.

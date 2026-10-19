@@ -165,6 +165,13 @@ extension KeyboardViewController {
             let candidate = sender.configuration?.title,
             let kind = CandidateKind(rawValue: sender.tag)
         else { return }
+        // The legacy title-only button cannot authenticate a native page item.
+        // Collection and expanded paths carry the original selectionReference.
+        if kind == .candidate,
+            candidateSnapshotOrigin != nil || controller.state.lastRimeOutput?.candidateOrigin != nil
+        {
+            return
+        }
         emitKeyPressFeedbackIfNeeded(for: sender)
         let effects = controller.handle(.insertCandidate(candidate, kind: kind))
         syncUI(with: effects)

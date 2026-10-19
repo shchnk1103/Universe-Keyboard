@@ -57,12 +57,17 @@ private final class ThreadAffineDeliverySink: Sendable {
         let revision: UInt64
     }
 
+    private struct OrderedWaiter: Sendable {
+        let token: UUID
+        var snapshot: ResponsiveRimeSnapshot?
+    }
+
     private struct State: Sendable {
         var lastPublished: ResponsiveRimeSnapshot?
         var completedPublishCount: Int = 0
         var publishSuppressed: Bool = false
-        /// Revisions that have been delivered (exact-match wait).
-        var deliveredRevisions: Set<UInt64> = []
+        /// Only active calls retain their own completion; no historical cache.
+        var orderedWaiters: [String: OrderedWaiter] = [:]
         #if T9_RESPONSIVE_CANARY_INTERNAL
             var canarySessionInstance: UInt64 = 0
             var pendingPresentation: Set<PresentationIdentity> = []
@@ -76,7 +81,10 @@ private final class ThreadAffineDeliverySink: Sendable {
         let delivery = state.withLock { state -> (suppressed: Bool, sessionInstance: UInt64) in
             state.lastPublished = snapshot
             state.completedPublishCount &+= 1
-            state.deliveredRevisions.insert(snapshot.revision)
+            if var waiter = state.orderedWaiters[snapshot.actionID], waiter.snapshot == nil {
+                waiter.snapshot = snapshot
+                state.orderedWaiters[snapshot.actionID] = waiter
+            }
             let suppressed = state.publishSuppressed
             #if T9_RESPONSIVE_CANARY_INTERNAL
                 if !suppressed {
@@ -133,7 +141,20 @@ private final class ThreadAffineDeliverySink: Sendable {
     func clearLastPublished() {
         state.withLock {
             $0.lastPublished = nil
-            $0.deliveredRevisions.removeAll(keepingCapacity: true)
+            $0.orderedWaiters.removeAll()
+        }
+    }
+
+    /// Lifecycle receipts keep their original identity for ordered completion,
+    /// but must not become the editable binding for the newly created session.
+    func invalidateLifecyclePublication(_ receipt: ResponsiveRimeAcceptReceipt) {
+        state.withLock {
+            guard let published = $0.lastPublished,
+                published.actionID == receipt.actionID,
+                published.sessionEpoch == receipt.sessionEpoch,
+                published.revision == receipt.revision
+            else { return }
+            $0.lastPublished = nil
         }
     }
 
@@ -163,22 +184,49 @@ private final class ThreadAffineDeliverySink: Sendable {
         }
     #endif
 
-    func waitForRevision(_ revision: UInt64, timeout: DispatchTime) -> ResponsiveRimeSnapshot? {
+    func registerOrderedWaiter(actionID: String) -> UUID {
+        let token = UUID()
+        state.withLock { $0.orderedWaiters[actionID] = OrderedWaiter(token: token) }
+        return token
+    }
+
+    func removeOrderedWaiter(actionID: String, token: UUID) {
+        state.withLock {
+            // Cleanup of an old call must not remove a later registration.
+            guard $0.orderedWaiters[actionID]?.token == token else { return }
+            $0.orderedWaiters.removeValue(forKey: actionID)
+        }
+    }
+
+    func cancelOrderedWaiters() {
+        state.withLock { $0.orderedWaiters.removeAll() }
+    }
+
+    func waitForReceipt(
+        _ receipt: ResponsiveRimeAcceptReceipt,
+        token: UUID,
+        timeout: DispatchTime
+    ) -> ResponsiveRimeSnapshot? {
         while DispatchTime.now() < timeout {
-            let hit = state.withLock { state -> ResponsiveRimeSnapshot? in
-                guard state.deliveredRevisions.contains(revision) else { return nil }
-                // Prefer exact revision snapshot when it is still the latest;
-                // otherwise return latest (caller primarily needs completion).
-                if let published = state.lastPublished, published.revision == revision {
-                    return published
-                }
-                return state.lastPublished
+            let completion = state.withLock { state -> (active: Bool, snapshot: ResponsiveRimeSnapshot?) in
+                guard let waiter = state.orderedWaiters[receipt.actionID],
+                    waiter.token == token
+                else { return (false, nil) }
+                guard let snapshot = waiter.snapshot,
+                    snapshot.actionID == receipt.actionID,
+                    snapshot.sessionEpoch == receipt.sessionEpoch,
+                    snapshot.revision == receipt.revision
+                else { return (true, nil) }
+                return (true, snapshot)
             }
-            if let hit { return hit }
+            if !completion.active { return nil }
+            if let snapshot = completion.snapshot { return snapshot }
             Thread.sleep(forTimeInterval: 0.001)
         }
-        return lastPublished()
+        // A timeout is not delivery. Deferred cleanup makes late results inert.
+        return nil
     }
+
 }
 
 // MARK: - MainActor publish router
@@ -188,10 +236,10 @@ private final class ThreadAffineDeliverySink: Sendable {
 /// closures (Swift 6 / CI `warnings-as-errors`).
 @MainActor
 private enum ThreadAffinePublishRouter {
-    private static var handlers: [ObjectIdentifier: (ThreadAffineRimePublishedSnapshot) -> Void] = [:]
+    private static var handlers: [UUID: (ThreadAffineRimePublishedSnapshot) -> Void] = [:]
 
     static func setHandler(
-        _ id: ObjectIdentifier,
+        _ id: UUID,
         _ handler: ((ThreadAffineRimePublishedSnapshot) -> Void)?
     ) {
         if let handler {
@@ -201,7 +249,11 @@ private enum ThreadAffinePublishRouter {
         }
     }
 
-    static func deliver(_ id: ObjectIdentifier, publication: ThreadAffineRimePublishedSnapshot) {
+    #if DEBUG
+        static func hasHandler(_ id: UUID) -> Bool { handlers[id] != nil }
+    #endif
+
+    static func deliver(_ id: UUID, publication: ThreadAffineRimePublishedSnapshot) {
         handlers[id]?(publication)
     }
 }
@@ -243,8 +295,10 @@ public final class ThreadAffineRimeSessionCoordinator {
     /// counter starts at 1) from accepting a late snapshot from the previous
     /// lifecycle as if it belonged to the new session.
     private var lifecycleEpoch: UInt64 = 1
-    /// Retained token whose `ObjectIdentifier` is Sendable and stable for routing.
-    private let routerToken = NSObject()
+    /// Independent generation identity survives delayed delivery and cleanup.
+    /// An object address can be reused after deinit, allowing retired work to
+    /// unregister or deliver into a newly created coordinator at that address.
+    private let routerID = UUID()
     public private(set) var lastAcceptReceipt: ResponsiveRimeAcceptReceipt?
     public private(set) var lastScheduledActionID: String?
     public let fixtureID: String
@@ -258,7 +312,7 @@ public final class ThreadAffineRimeSessionCoordinator {
         self.configuration = configuration
         self.fixtureID = fixtureID
         // Capture only Sendable values in the @Sendable notification body.
-        let routeID = ObjectIdentifier(routerToken)
+        let routeID = routerID
         observer = NotificationCenter.default.addObserver(
             forName: .threadAffineRimeSnapshotPublished,
             object: nil,
@@ -290,12 +344,22 @@ public final class ThreadAffineRimeSessionCoordinator {
         if let observer {
             NotificationCenter.default.removeObserver(observer)
         }
+        sink.cancelOrderedWaiters()
         owner?.shutdown()
-        let routeID = ObjectIdentifier(routerToken)
+        let routeID = routerID
         Task { @MainActor in
             ThreadAffinePublishRouter.setHandler(routeID, nil)
         }
     }
+
+    #if DEBUG
+        internal var publishRouteIdentityForTesting: UUID { routerID }
+        @MainActor internal var isPublishRouteRegisteredForTesting: Bool {
+            ThreadAffinePublishRouter.hasHandler(routerID)
+        }
+    #endif
+
+    internal var instanceIdentity: UUID { routerID }
 
     public var lastPublished: ResponsiveRimeSnapshot? { sink.lastPublished() }
     public var completedPublishCount: Int { sink.completedPublishCount() }
@@ -374,7 +438,7 @@ public final class ThreadAffineRimeSessionCoordinator {
     @MainActor
     public func setPublishHandler(_ handler: PublishHandler?) {
         publishHandler = handler
-        let routeID = ObjectIdentifier(routerToken)
+        let routeID = routerID
         if let handler {
             ThreadAffinePublishRouter.setHandler(routeID) { publication in
                 handler(publication.snapshot)
@@ -389,7 +453,7 @@ public final class ThreadAffineRimeSessionCoordinator {
     @MainActor
     public func setPublicationHandler(_ handler: PublicationHandler?) {
         publicationHandler = handler
-        let routeID = ObjectIdentifier(routerToken)
+        let routeID = routerID
         ThreadAffinePublishRouter.setHandler(routeID, handler)
     }
 
@@ -397,7 +461,7 @@ public final class ThreadAffineRimeSessionCoordinator {
         /// Canary-only handler preserves the complete delivery identity.
         @MainActor
         public func setCanaryPublishHandler(_ handler: CanaryPublishHandler?) {
-            let routeID = ObjectIdentifier(routerToken)
+            let routeID = routerID
             ThreadAffinePublishRouter.setHandler(routeID, handler)
         }
     #endif
@@ -456,15 +520,28 @@ public final class ThreadAffineRimeSessionCoordinator {
     @discardableResult
     public func performOrderedNow(
         _ work: ResponsiveRimeWork,
-        actionIDPrefix: String = "ord"
+        actionIDPrefix: String = "ord",
+        candidateOrigin: RimeOutputOrigin? = nil
     ) -> ResponsiveRimeSnapshot? {
         actionSequence &+= 1
         let actionID = "\(actionIDPrefix)-\(actionSequence)"
-        guard let receipt = owner?.accept(work, actionID: actionID) else {
+        // Register before accept: the owner can complete before accept returns.
+        let token = sink.registerOrderedWaiter(actionID: actionID)
+        defer { sink.removeOrderedWaiter(actionID: actionID, token: token) }
+        guard let receipt = owner?.accept(work, actionID: actionID, candidateOrigin: candidateOrigin) else {
             return nil
         }
         lastAcceptReceipt = receipt
-        return sink.waitForRevision(receipt.revision, timeout: .now() + 5)
+        let snapshot = sink.waitForReceipt(receipt, token: token, timeout: .now() + 5)
+        if snapshot != nil {
+            switch work {
+            case .resetSession, .recoverSession:
+                sink.invalidateLifecyclePublication(receipt)
+            default:
+                break
+            }
+        }
+        return snapshot
     }
 
     public func flushPending() {
@@ -490,7 +567,34 @@ public final class ThreadAffineRimeSessionCoordinator {
                 hasMoreCandidates: false
             )
         }
-        return owner.candidateWindow(from: globalIndex, limit: limit, timeout: timeout)
+        let snapshot = owner.candidateWindow(
+            from: globalIndex,
+            limit: limit,
+            timeout: timeout
+        )
+        guard snapshot.sessionEpoch == owner.diagnostics().sessionEpoch else {
+            return RimeCandidateWindow(
+                candidates: [],
+                startIndex: max(0, globalIndex),
+                nextIndex: max(0, globalIndex),
+                hasMoreCandidates: false
+            )
+        }
+        return snapshot.window
+    }
+
+    public func readCandidateWindow(
+        origin: RimeOutputOrigin, from: Int, limit: Int
+    ) -> RimeCandidateWindowReadResult {
+        owner?.readCandidateWindow(origin: origin, from: from, limit: limit) ?? .rejected(.unavailable)
+    }
+
+    @MainActor
+    public func consumeCandidateWindow(
+        _ window: RimeBoundCandidateWindow, prepared: RimeCandidatePresentationPage,
+        into store: RimeCandidatePresentationStore
+    ) -> RimeCandidateConsumptionDecision {
+        owner?.consumeCandidateWindow(window, prepared: prepared, into: store) ?? .rejected(.unavailable)
     }
 
     public func bumpSessionEpoch(resetEngineSession: Bool = true) {
@@ -580,6 +684,7 @@ public final class ThreadAffineRimeSessionCoordinator {
     }
 
     public func shutdown() {
+        sink.cancelOrderedWaiters()
         owner?.shutdown()
         _ = owner?.waitUntilStopped(timeout: .now() + 2)
         _ = owner?.waitUntilDeliveryDrained(timeout: .now() + 2)
@@ -619,7 +724,7 @@ public final class ThreadAffineRimeSessionCoordinator {
 /// `RimeEngine` facade for thread-affine mode: all mutations enter the owner.
 /// Call only from the keyboard MainActor (same expectation as
 /// `ResponsiveRimeEngineBridge`).
-public final class ThreadAffineRimeEngineBridge: RimeEngine {
+public final class ThreadAffineRimeEngineBridge: RimeEngine, RimeCandidateAuthorityProviding {
     private let coordinator: ThreadAffineRimeSessionCoordinator
     #if T9_RESPONSIVE_CANARY_INTERNAL
         private let chromeEngineHint: RimeEngine?
@@ -773,6 +878,38 @@ public final class ThreadAffineRimeEngineBridge: RimeEngine {
 
     public func pageDown() -> RimeOutput {
         output(from: coordinator.performOrderedNow(.pageDown))
+    }
+
+    public func readCandidateWindow(
+        origin: RimeOutputOrigin, from: Int, limit: Int
+    ) -> RimeCandidateWindowReadResult {
+        // No extra flush or mutation: unsettled work rejects this read explicitly.
+        coordinator.readCandidateWindow(origin: origin, from: from, limit: limit)
+    }
+
+    @MainActor
+    public func consumeCandidateWindow(
+        _ window: RimeBoundCandidateWindow, prepared: RimeCandidatePresentationPage,
+        into store: RimeCandidatePresentationStore
+    ) -> RimeCandidateConsumptionDecision {
+        coordinator.consumeCandidateWindow(window, prepared: prepared, into: store)
+    }
+
+    public func selectCandidate(
+        origin: RimeOutputOrigin, pageIndex: Int, globalIndex: Int?
+    ) -> RimeBoundCandidateSelectionResult {
+        let work: ResponsiveRimeWork =
+            globalIndex.map {
+                .selectCandidateGlobal(index: $0, boundEpoch: origin.sessionEpoch, boundRevision: origin.revision)
+            } ?? .selectCandidate(pageIndex: pageIndex, boundEpoch: origin.sessionEpoch, boundRevision: origin.revision)
+        return coordinator.withPublishHandlerSuppressed {
+            guard
+                let snapshot = coordinator.performOrderedNow(
+                    work, actionIDPrefix: "sel", candidateOrigin: origin
+                )
+            else { return .rejected(.unavailable) }
+            return .applied(snapshot.output)
+        }
     }
 
     private func bindingIdentity() -> (epoch: UInt64, revision: UInt64) {

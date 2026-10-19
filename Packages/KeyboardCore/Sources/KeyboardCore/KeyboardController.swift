@@ -850,7 +850,8 @@ public final class KeyboardController {
             highlightedIndex: output.highlightedIndex,
             candidatePageNumber: output.candidatePageNumber,
             caretPositionInRaw: output.caretPositionInRaw,
-            commitPreviewLength: output.commitPreviewLength
+            commitPreviewLength: output.commitPreviewLength,
+            candidateOrigin: output.candidateOrigin
         )
     }
 

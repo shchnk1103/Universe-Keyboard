@@ -146,23 +146,23 @@ extension KeyboardController {
         let output: RimeOutput
         if let replacementInput = replacementRawInputForSymbolPageContinuation(appending: rimeKey) {
             #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
-            output = HotPathSegmentTiming.measure(.rime) {
-                engine.replaceInput(replacementInput)
-            }
+                output = HotPathSegmentTiming.measure(.rime) {
+                    engine.replaceInput(replacementInput)
+                }
             #else
-            output = engine.replaceInput(replacementInput)
+                output = engine.replaceInput(replacementInput)
             #endif
         } else {
             #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
-            output = HotPathSegmentTiming.measure(.rime) {
-                engine.processKey(rimeKey)
-            }
+                output = HotPathSegmentTiming.measure(.rime) {
+                    engine.processKey(rimeKey)
+                }
             #else
-            output = engine.processKey(rimeKey)
+                output = engine.processKey(rimeKey)
             #endif
         }
         #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
-        HotPathSegmentTiming.noteEngineOutput(output)
+            HotPathSegmentTiming.noteEngineOutput(output)
         #endif
         if rejectUnusableAcceptedT9AutoAnchorDigitIfNeeded(
             rimeKey,
@@ -203,17 +203,17 @@ extension KeyboardController {
             let digit = rimeKey.first
         {
             #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
-            retainedFocusedSegment = HotPathSegmentTiming.measure(.pathLocal) {
-                retainFocusedT9SegmentAfterAppendingDigit(
+                retainedFocusedSegment = HotPathSegmentTiming.measure(.pathLocal) {
+                    retainFocusedT9SegmentAfterAppendingDigit(
+                        previous: previousT9PathState,
+                        digit: digit
+                    )
+                }
+            #else
+                retainedFocusedSegment = retainFocusedT9SegmentAfterAppendingDigit(
                     previous: previousT9PathState,
                     digit: digit
                 )
-            }
-            #else
-            retainedFocusedSegment = retainFocusedT9SegmentAfterAppendingDigit(
-                previous: previousT9PathState,
-                digit: digit
-            )
             #endif
         } else {
             retainedFocusedSegment = false
@@ -225,14 +225,14 @@ extension KeyboardController {
         )
         let autoAnchorOutcome = attemptReversibleT9AutoAnchorIfNeeded(using: engine)
         #if DEBUG
-        if usesT9InputSemantics, rimeKey.count == 1, rimeKey.first?.isNumber == true {
-            gate5TraceComposition(
-                event: .digitAppend,
-                previousRaw: previousRawForTrace,
-                note: "digitAppend=true retainFocus=\(retainedFocusedSegment) "
-                    + "autoAnchor=\(autoAnchorOutcome.status.rawValue)"
-            )
-        }
+            if usesT9InputSemantics, rimeKey.count == 1, rimeKey.first?.isNumber == true {
+                gate5TraceComposition(
+                    event: .digitAppend,
+                    previousRaw: previousRawForTrace,
+                    note: "digitAppend=true retainFocus=\(retainedFocusedSegment) "
+                        + "autoAnchor=\(autoAnchorOutcome.status.rawValue)"
+                )
+            }
         #endif
         var effects = consumeSingleUseShiftIfNeeded().union(.compositionChanged)
         if retainedFocusedSegment || autoAnchorOutcome.status != .notEligible {
@@ -277,8 +277,8 @@ extension KeyboardController {
 
         guard shouldStartNumberSuffixCommit(appending: key) else { return nil }
         guard let output = state.lastRimeOutput,
-              let prefix = output.candidates.first?.text,
-              let rawPrefix = output.rawInput
+            let prefix = output.candidates.first?.text,
+            let rawPrefix = output.rawInput
         else {
             return nil
         }
@@ -292,9 +292,9 @@ extension KeyboardController {
         guard state.currentPage == .numbers else { return false }
         guard state.partialCommit == nil else { return false }
         guard let output = state.lastRimeOutput,
-              let rawInput = output.rawInput,
-              Self.isPlainLowercasePinyinRawInput(rawInput),
-              output.candidates.first != nil
+            let rawInput = output.rawInput,
+            Self.isPlainLowercasePinyinRawInput(rawInput),
+            output.candidates.first != nil
         else {
             return false
         }
@@ -373,7 +373,8 @@ extension KeyboardController {
                     candidates: [],
                     highlightedIndex: nil
                 )
-                remainingDisplayText = explicitLetters.isEmpty
+                remainingDisplayText =
+                    explicitLetters.isEmpty
                     ? partialCommit.remainingPreeditText
                     : explicitLetters
             } else {
@@ -402,7 +403,7 @@ extension KeyboardController {
             )
             // Prefer non-digit visible; if only digits available, keep prior host text.
             if !visible.isEmpty,
-               !visible.unicodeScalars.allSatisfy(T9PinyinPathExtractor.isASCIIDigit)
+                !visible.unicodeScalars.allSatisfy(T9PinyinPathExtractor.isASCIIDigit)
             {
                 updateInlinePreedit(visible, source: .compositionProjection)
             }
@@ -470,6 +471,8 @@ extension KeyboardController {
             return output
         }
 
+        // Local suffix candidates have no native index space, so this
+        // reconstruction intentionally keeps candidateOrigin nil.
         let prefixCandidates = candidateProvider.candidates(for: split.prefix)
         guard !prefixCandidates.isEmpty else { return output }
 
@@ -487,7 +490,7 @@ extension KeyboardController {
     func splitLetterPrefixAndNumericSuffix(_ rawInput: String) -> (prefix: String, suffix: String)? {
         let scalars = Array(rawInput.unicodeScalars)
         guard let firstDigitIndex = scalars.firstIndex(where: { Self.isASCIIDigit($0) }),
-              firstDigitIndex > scalars.startIndex
+            firstDigitIndex > scalars.startIndex
         else {
             return nil
         }
@@ -495,7 +498,7 @@ extension KeyboardController {
         let prefixScalars = scalars[..<firstDigitIndex]
         let suffixScalars = scalars[firstDigitIndex..<scalars.endIndex]
         guard prefixScalars.allSatisfy({ Self.isASCIILowercaseLetter($0) }),
-              suffixScalars.allSatisfy({ Self.isASCIIDigit($0) })
+            suffixScalars.allSatisfy({ Self.isASCIIDigit($0) })
         else {
             return nil
         }
