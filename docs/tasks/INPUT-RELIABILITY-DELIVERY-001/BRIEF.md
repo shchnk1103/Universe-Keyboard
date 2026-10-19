@@ -1,0 +1,24 @@
+# KOS Handoff Snapshot
+
+- Work Item / Assignment: INPUT-RELIABILITY-DELIVERY-001 @ docs/assignments/input-reliability-delivery-001.md
+- Canonical lifecycle/status: Active / extract and locally validate Batch 1 @ docs/assignments/input-reliability-delivery-001.md@31d06e0bf8d931f001189a31168901286e9ba40f
+- Current legal actions: initialize the carrier; extract Batch 1 hunks; run the authorized local checks; create the local delivery commit
+- Explicitly prohibited actions: product push, product pull request, merge, R174 enablement, R349, Build 94 investigation, phases C and D, edits to the original Codex worktree
+- Frozen branch / commit / artifact: grok/input-reliability-delivery-001 @ 31d06e0bf8d931f001189a31168901286e9ba40f
+- Completed outputs: none yet
+- Open Gates and owners: local validation — grok-build; independent Architecture and Quality — unassigned; product publication — Human Product Lead
+- Evidence and freshness: none yet
+- Environment state:
+  - Resource ledger（可选 L-01）: none
+  - Environment leases（可选 L-02）: none
+- Recorded authorization receipts and audit consumption state: Human Product Lead session authorization, 2026-10-19 Asia/Shanghai; no formal AUTH file yet
+- Extension-referenced authorizations（可选 L-01）: none
+- Human Dependencies: product push, pull request, and merge
+- Residual findings / debt: R345 remains evidence-insufficient and is outside Batch 1
+- Next safest action: push this initial checkpoint, then extract Batch 1
+- Revalidation triggers: origin/main moves; Task Workspace pin changes; batch boundary changes
+- based_on: 31d06e0bf8d931f001189a31168901286e9ba40f
+- snapshot_rev: 1
+- log_cursor: CP-001
+- read_on_demand:
+  - docs/assignments/input-reliability-delivery-001.md@31d06e0bf8d931f001189a31168901286e9ba40f
