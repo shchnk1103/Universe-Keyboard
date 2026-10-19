@@ -428,15 +428,24 @@ extension KeyboardViewController {
 
         Logger.shared.info("Keyboard visible; creating RimeEngineImpl", category: .engine)
         typoCorrectionRecallCoordinator.invalidateTypoCorrectionRecall()
-        let engine = RimeEngineImpl(
-            sharedDataDir: directories.sharedDataDir,
-            userDataDir: directories.userDataDir
-        )
-        // Immediate propagation for in-place recovery / resume fail-closed (not only view lifecycle).
-        engine.onRuntimeSelectionChanged = { [weak self] selection in
-            self?.applyRealizedRuntimeSelection(selection)
+        guard
+            let engine = SynchronousRimeFallbackInstaller.install(
+                on: controller,
+                makeEngine: {
+                    RimeEngineImpl(
+                        sharedDataDir: directories.sharedDataDir,
+                        userDataDir: directories.userDataDir
+                    )
+                },
+                onRuntimeSelectionChanged: { [weak self] selection in
+                    self?.applyRealizedRuntimeSelection(selection)
+                }
+            )
+        else {
+            // Residual owner state must never create a second native entry.
+            Logger.shared.warning("RIME sync install refused residual responsive state", category: .engine)
+            return
         }
-        controller.rimeEngine = engine
         installTypoCorrectionSidecarOwner(engine)
         // Rebuild bridge if responsive gate is ever enabled before/after engine install.
         controller.rebuildResponsiveRimeCoordinatorIfNeeded()

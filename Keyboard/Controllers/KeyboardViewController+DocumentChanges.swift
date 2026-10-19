@@ -19,10 +19,34 @@ extension KeyboardViewController {
         }
 
         let proxy = textDocumentProxy
-        var effects = controller.handle(
-            .keyboardTypeChanged(KeyboardType.from(uiKeyboardType: proxy.keyboardType))
+        let observation = documentIdentityTracker.observe(KeyboardReadDocumentIdentifier(proxy))
+        // An unavailable sample cannot establish a new baseline or authorize a
+        // rebind. Keep the last valid identity for the next host callback.
+        guard observation != .unavailable else { return }
+        let documentDidChange = observation == .changed
+        var effects: KeyboardEffect = []
+
+        if documentDidChange {
+            // UIKit already points at the new document. Unbind before clearing
+            // composition so the old marked text is never cleared in the new host.
+            controller.textClient = nil
+            effects.formUnion(controller.abandonCompositionForVisibilityChange())
+        }
+
+        // Rebind on each host callback in case UIKit has supplied a new proxy.
+        // Rebinding must preserve the same content-free diagnostic gates as Bootstrap.
+        controller.textClient = UITextDocumentProxyAdapter(
+            proxy: proxy,
+            diagnosticsJournal: diagnosticsJournal,
+            diagnosticContext: { [weak self] in
+                self?.wakeDiagnosticContext ?? .disabled
+            }
         )
-        if !controller.isPerformingOwnedHostMutation {
+        effects.formUnion(
+            controller.handle(
+                .keyboardTypeChanged(KeyboardType.from(uiKeyboardType: proxy.keyboardType))
+            ))
+        if !documentDidChange, !controller.isPerformingOwnedHostMutation {
             effects.formUnion(controller.noteExternalDocumentChange())
         }
         effects.formUnion(

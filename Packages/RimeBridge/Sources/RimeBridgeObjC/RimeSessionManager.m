@@ -60,6 +60,8 @@ NSString * const RimeKeyProcessKeyCollectDurationMs = @"processKeyCollectDuratio
 /// 每个新 session 仅细分首个真实 processKey，避免把常规按键路径的观测成本放大。
 @property (nonatomic, assign) BOOL shouldMeasureFirstProcessKey;
 #if DEBUG
+@property (nonatomic, assign) NSUInteger sessionCreationFailuresForTesting;
+@property (nonatomic, assign, readwrite) NSUInteger injectedSessionCreationFailureCountForTesting;
 /// Nil preserves the real librime call; tests may cover the otherwise hard-to-induce false branch.
 @property (nonatomic, strong, nullable) NSNumber *correctionQueryContextAvailabilityOverrideForTesting;
 #endif
@@ -177,11 +179,26 @@ static __weak RimeSessionManager *RimeActiveRuntimeOwner = nil;
     if (!_initialized) return NO;
     if (_sessionId != 0) return YES; // already has session
 
+#if DEBUG
+    if (_sessionCreationFailuresForTesting > 0) {
+        _sessionCreationFailuresForTesting -= 1;
+        self.injectedSessionCreationFailureCountForTesting += 1;
+        return NO;
+    }
+#endif
+
     _sessionId = _api->create_session();
     _shouldMeasureFirstProcessKey = _sessionId != 0;
     RIME_DIAGNOSTIC_LOG(@"[RIME] createSession: sessionId=%lu", (unsigned long) _sessionId);
     return _sessionId != 0;
 }
+
+#if DEBUG
+- (void)failNextSessionCreationsForTesting:(NSUInteger)count {
+    self.sessionCreationFailuresForTesting = count;
+    self.injectedSessionCreationFailureCountForTesting = 0;
+}
+#endif
 
 - (BOOL)destroySession {
     if (_sessionId == 0) return NO;

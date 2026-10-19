@@ -27,6 +27,13 @@ NS_ASSUME_NONNULL_BEGIN
 /// @return 是否成功
 - (BOOL)createSession;
 
+#if DEBUG
+/// Debug test hook: the next `count` session creations fail at the bridge.
+- (void)failNextSessionCreationsForTesting:(NSUInteger)count
+    NS_SWIFT_NAME(failNextSessionCreationsForTesting(_:));
+@property (nonatomic, assign, readonly) NSUInteger injectedSessionCreationFailureCountForTesting;
+#endif
+
 /// 销毁当前 session
 /// @return 是否成功
 - (BOOL)destroySession;
