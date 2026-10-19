@@ -1,0 +1,24 @@
+# KOS Handoff Snapshot
+
+- Work Item / Assignment: INPUT-RELIABILITY-DELIVERY-002 @ docs/assignments/input-reliability-delivery-002.md
+- Canonical lifecycle/status: Active / extract and locally validate Batch 2 @ docs/assignments/input-reliability-delivery-002.md@bb430f914deaf7b19a61183f744b5dcf2fdb8eae
+- Current legal actions: initialize the carrier; extract Batch 2 hunks; run the authorized local checks; create the local delivery commit
+- Explicitly prohibited actions: product push, product pull request, merge, R174 enablement, R349, Build 94 investigation, phases C and D, Batch 3, edits to the original Codex worktree or the Batch 1 carrier
+- Frozen branch / commit / artifact: grok/input-reliability-delivery-002 @ bb430f914deaf7b19a61183f744b5dcf2fdb8eae
+- Completed outputs: none yet
+- Open Gates and owners: local validation — grok-build; independent Architecture and Quality — unassigned; product publication — Human Product Lead
+- Evidence and freshness: none yet
+- Environment state:
+  - Resource ledger（可选 L-01）: none
+  - Environment leases（可选 L-02）: none
+- Recorded authorization receipts and audit consumption state: Human Product Lead session authorization, 2026-10-19 Asia/Shanghai; no formal AUTH file
+- Extension-referenced authorizations（可选 L-01）: none
+- Human Dependencies: product push, pull request, and merge
+- Residual findings / debt: R345 remains evidence-insufficient until this batch records a bounded conclusion. R174 stays off.
+- Next safest action: push this initial checkpoint, then extract Batch 2
+- Revalidation triggers: origin/main moves; Task Workspace pin changes; batch boundary changes
+- based_on: bb430f914deaf7b19a61183f744b5dcf2fdb8eae
+- snapshot_rev: 1
+- log_cursor: CP-001
+- read_on_demand:
+  - docs/assignments/input-reliability-delivery-002.md@bb430f914deaf7b19a61183f744b5dcf2fdb8eae
