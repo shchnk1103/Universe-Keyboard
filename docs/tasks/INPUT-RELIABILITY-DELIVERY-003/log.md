@@ -25,3 +25,11 @@
 - by: claude-independent-reviewer
 - independence: independent
 - note: Human relayed Architecture Pass / Quality Partial / Ready for PR Preparation Yes; no explicit pre-PR blocker. Pointer: docs/evidence/input-reliability-delivery-003/independent-review-received.md. This Writer records receipt only, not a new review or Quality Pass. Human separately authorized product PR publication; no Merge/TestFlight/Closeout.
+
+## CP-003 CHECKPOINT
+
+- id: CP-003
+- at: 2026-10-19T23:41:15+08:00
+- lane: codex-batch3
+- kind: CHECKPOINT
+- note: Publication-stage records 8aae8b4409a9338266e21f2d2e7ace540455b045; reviewed source/test hashes unchanged from product 286d3e91c0cc0e94d1d439c10d799948abcb9a1f. W remains codex-batch3, P=none. Human now authorizes normal product push and PR/CI observation; prior local-only boundary superseded only for this slice. Claude Architecture Pass / Quality Partial / PR Preparation Yes received via Human. Current private path strings sanitized in live documents without history rewrite. Real T9 recovery and activated Extension system interaction are mandatory pre-TestFlight evidence items. No product edits, Merge/TestFlight/Closeout or fabricated HANDOFF/ACCEPT.
