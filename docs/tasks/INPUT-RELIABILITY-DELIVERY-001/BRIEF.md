@@ -17,8 +17,8 @@
 - Residual findings / debt: R345 remains evidence-insufficient and is outside Batch 1. KeyboardTests carries a behavior-matched copy of the identity tracker and reader because it does not link the Keyboard extension. Review observations C2, C3, C4, and C5 are unchanged. A failed automatic recovery still waits out the existing 0.5s retry window before the next attempt.
 - Next safest action: Human routes the C1 commit to Claude for a directed re-review
 - Revalidation triggers: origin/main moves; Task Workspace pin changes; batch boundary changes
-- based_on: 3f2ea2752790432655bfc39720e92a7287d46ca8
-- snapshot_rev: 3
-- log_cursor: CP-003
+- based_on: d6e087bf3b6c153e4d8fa0cd975395483cd7a0ab
+- snapshot_rev: 4
+- log_cursor: CP-004
 - read_on_demand:
   - docs/assignments/input-reliability-delivery-001.md

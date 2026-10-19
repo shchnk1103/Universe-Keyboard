@@ -56,3 +56,4 @@ The initial writer lane is `grok-build`. There is no predecessor writer, so the 
 - 2026-10-19 Asia/Shanghai: Human Product Lead authorized this new Assignment and named Grok Build as the initial executor. The original INPUT-RELIABILITY-B-001 Assignment stays unchanged.
 - 2026-10-19 Asia/Shanghai: grok-build committed the Batch 1 extraction locally after the authorized checks. Product publication remains a Human decision.
 - 2026-10-19 Asia/Shanghai: Human authorized a bounded C1 fix. grok-build keeps the failed-recovery raw prefix and commits that fix locally. C2–C5 stay open. Product publication remains a Human decision.
+- 2026-10-19 Asia/Shanghai: Human authorized the PR 213 test-rimebridge fixture fix. The private schema is copied into user/build. Production code stays unchanged.

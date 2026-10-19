@@ -111,8 +111,9 @@ private struct RuntimeFixture {
             .appendingPathComponent("uk-delivery-001-\(UUID().uuidString)", isDirectory: true)
         let sharedURL = rootURL.appendingPathComponent("shared", isDirectory: true)
         let userURL = rootURL.appendingPathComponent("user", isDirectory: true)
+        let buildURL = userURL.appendingPathComponent("build", isDirectory: true)
         try FileManager.default.createDirectory(at: sharedURL, withIntermediateDirectories: true)
-        try FileManager.default.createDirectory(at: userURL, withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(at: buildURL, withIntermediateDirectories: true)
         try """
         config_version: "0.1"
         schema_list:
@@ -121,6 +122,14 @@ private struct RuntimeFixture {
             to: sharedURL.appendingPathComponent("default.yaml"),
             atomically: true,
             encoding: .utf8
+        )
+        // A failed recovery finalizes and restarts librime. The restarted
+        // runtime reads the compiled config from user/build, not the shared
+        // source. Copy the source there so the private schema does not depend
+        // on a compile that only the first process lifetime happened to keep.
+        try FileManager.default.copyItem(
+            at: sharedURL.appendingPathComponent("default.yaml"),
+            to: buildURL.appendingPathComponent("default.yaml")
         )
         let translators = hasTranslator ? "    - script_translator\n" : ""
         try """
@@ -146,6 +155,10 @@ private struct RuntimeFixture {
             to: sharedURL.appendingPathComponent("\(schemaID).schema.yaml"),
             atomically: true,
             encoding: .utf8
+        )
+        try FileManager.default.copyItem(
+            at: sharedURL.appendingPathComponent("\(schemaID).schema.yaml"),
+            to: buildURL.appendingPathComponent("\(schemaID).schema.yaml")
         )
         return RuntimeFixture(rootURL: rootURL, sharedURL: sharedURL, userURL: userURL, schemaID: schemaID)
     }
