@@ -817,6 +817,10 @@ class KeyboardViewController: UIInputViewController {
             panel.synchronizeCoveredGeometry()
         }
 
+        #if DEBUG
+            T9QA001DeviceTrace.shared.layout(.rootLayout, owner: self)
+        #endif
+
         // Nested nine-key stacks finish layout after the root stack. Build the
         // shared hit-test/overlay snapshot only at this stable UIKit boundary.
         (rootStack as? KeyboardInputHitAreaStackView)?.refreshKeyTouchGeometry()

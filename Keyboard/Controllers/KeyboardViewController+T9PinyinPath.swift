@@ -92,11 +92,17 @@ extension KeyboardViewController {
 
     /// Capture one Core snapshot and publish Path Bar + candidates together.
     func refreshT9PresentationFromCoreSnapshot() {
+        #if DEBUG
+            T9QA001DeviceTrace.shared.record(.refresh, owner: self, extra: ["entry": 2])
+        #endif
         let snapshot = controller.t9CompositionPresentationSnapshot()
         applyT9PresentationSnapshot(snapshot)
     }
 
     func applyT9PresentationSnapshot(_ snapshot: T9CompositionPresentationSnapshot) {
+        #if DEBUG
+            T9QA001DeviceTrace.shared.model(snapshot, owner: self)
+        #endif
         defer { refreshT9PinyinPathBarVisibility(snapshot) }
         // Path bar
         if let bar = t9PinyinPathBarView {
@@ -171,6 +177,9 @@ extension KeyboardViewController {
     }
 
     func refreshT9PinyinPathBar() {
+        #if DEBUG
+            T9QA001DeviceTrace.shared.record(.refresh, owner: self, extra: ["entry": 1])
+        #endif
         // Prefer full atomic publish when T9 composition is active.
         if shouldPublishAtomicT9Presentation {
             refreshT9PresentationFromCoreSnapshot()
@@ -178,6 +187,9 @@ extension KeyboardViewController {
         }
         guard let bar = t9PinyinPathBarView else { return }
         let snapshot = controller.t9CompositionPresentationSnapshot()
+        #if DEBUG
+            T9QA001DeviceTrace.shared.model(snapshot, owner: self)
+        #endif
         defer { refreshT9PinyinPathBarVisibility(snapshot) }
         let selected = snapshot.paths.first { $0.id == snapshot.selectedPathID }
         bar.setPaths(

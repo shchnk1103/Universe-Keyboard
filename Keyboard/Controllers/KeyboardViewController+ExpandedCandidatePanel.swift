@@ -337,6 +337,9 @@ final class ExpandedCandidatePanelContainerView: UIView {
     func animateReveal(to height: CGFloat, duration: TimeInterval, completion: @escaping () -> Void) {
         let duration = UIAccessibility.isReduceMotionEnabled || !UIView.areAnimationsEnabled ? 0 : duration
         guard duration > 0 else { setRevealedHeight(height); completion(); return }
+        #if DEBUG
+            let qa001Animation = T9QA001DeviceTrace.shared.panelStart(self)
+        #endif
         let token = UUID()
         revealToken = token
         isTransitioning = true
@@ -346,6 +349,12 @@ final class ExpandedCandidatePanelContainerView: UIView {
         UIView.animate(withDuration: duration, delay: 0, options: [.curveEaseOut, .beginFromCurrentState]) {
             self.setRevealedHeight(height)
         } completion: { [weak self] _ in
+            #if DEBUG
+                if let self {
+                    T9QA001DeviceTrace.shared.panel(
+                        self, stage: .panelEnd, tokenMatches: self.revealToken == token, origin: qa001Animation)
+                }
+            #endif
             guard let self, self.revealToken == token else { return }
             self.isTransitioning = false
             self.synchronizeCoveredGeometry()
@@ -353,6 +362,9 @@ final class ExpandedCandidatePanelContainerView: UIView {
             self.collapseButton?.isEnabled = true
             if height >= self.bounds.height { self.revealedHeight = nil }
             completion()
+            #if DEBUG
+                T9QA001DeviceTrace.shared.panel(self, stage: .panelStable, origin: qa001Animation)
+            #endif
         }
         let animation = CABasicAnimation(keyPath: "path")
         animation.fromValue = previous

@@ -8,7 +8,7 @@ record_id: KEYBOARD-T9-ADAPTIVE-ROW-001
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current phase | QA-001 bounded device trace preparation |
+| Current phase | Device trace ready; Human capture pending |
 | Non-claims | Human-relayed Claude Conditional review; no real Extension/Product Gate, Ready, Merge, TestFlight or Close |
 | Next | Human/Claude independent review of local integration candidate; no publication |
 | Residuals | [Current Sticky verification](../evidence/keyboard-t9-adaptive-row-001/sticky-verification.md); real host geometry and interaction remain Human Gate |
@@ -70,3 +70,5 @@ QA-001诊断结果：[报告](../evidence/keyboard-t9-adaptive-row-001/qa001-dia
 ## Device trace preparation
 
 [Current AUTH](../authorizations/AUTH-KEYBOARD-T9-ADAPTIVE-ROW-001-DEVICE-TRACE.md) permits only DEBUG memory diagnostics, local validation/commits and shortest Human instructions. QA-001 OPEN/MAJOR; no root-cause fix or real-device PASS claim.
+
+Device trace prepared：[操作单](../evidence/keyboard-t9-adaptive-row-001/device-trace-runbook.md)、[本地证据](../evidence/keyboard-t9-adaptive-row-001/device-trace-verification.md)。仅DEBUG内存诊断，QA-001仍OPEN/MAJOR，无根因修复/真机PASS。Human工程文件原样保留、不提交。等待Human采集。

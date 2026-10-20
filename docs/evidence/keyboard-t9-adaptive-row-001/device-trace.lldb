@@ -1,0 +1,7 @@
+# Local debugger aliases only. No device action or file export occurs on import.
+command alias ui2-check expression -l objc -O -- NSClassFromString(@"DebugT9QA001Trace")
+command alias ui2-arm expression -l objc -- (void)[(id)NSClassFromString(@"DebugT9QA001Trace") arm]
+command alias ui2-blank expression -l objc -- (void)[(id)NSClassFromString(@"DebugT9QA001Trace") sawBlank]
+command alias ui2-visible expression -l objc -- (void)[(id)NSClassFromString(@"DebugT9QA001Trace") sawVisible]
+command alias ui2-dump expression -l objc -O -- (id)[(id)NSClassFromString(@"DebugT9QA001Trace") report]
+command alias ui2-stop expression -l objc -- (void)[(id)NSClassFromString(@"DebugT9QA001Trace") stop]

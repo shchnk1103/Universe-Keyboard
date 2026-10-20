@@ -419,6 +419,55 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
         }
     }
 
+    #if DEBUG
+        @MainActor
+        func testDeviceTraceIsExplicitBoundedAndNeverExportsText() throws {
+            let owner = makeOwner(width: 390)
+            let trace = T9QA001DeviceTrace.shared
+            T9QA001DeviceTrace.arm()
+            T9QA001DeviceTrace.stop()
+            trace.begin(owner: owner, event: 10)
+            func exported() throws -> [String: Any] {
+                let data = try XCTUnwrap(T9QA001DeviceTrace.report().data(using: .utf8))
+                return try XCTUnwrap(JSONSerialization.jsonObject(with: data) as? [String: Any])
+            }
+            XCTAssertEqual((try exported()["records"] as? [Any])?.count, 0)
+            let privateText = "PRIVATE_SENTINEL_DO_NOT_EXPORT"
+            owner.controller.state.currentComposition = privateText
+            let path = T9PinyinPath(displayText: privateText, replacementRawInput: privateText)
+            let snapshot = T9CompositionPresentationSnapshot(revision: 23, rimeRawInput: privateText, paths: [path])
+            T9QA001DeviceTrace.arm()
+            defer { T9QA001DeviceTrace.stop() }
+            trace.begin(owner: owner, event: 11)
+            trace.model(snapshot, owner: owner)
+            owner.applyT9PresentationSnapshot(snapshot)
+            let label = UILabel()
+            label.text = privateText
+            trace.bar(.label, bar: try XCTUnwrap(owner.t9PinyinPathBarView), label: label)
+            T9QA001DeviceTrace.sawBlank()
+            let report = T9QA001DeviceTrace.report()
+            XCTAssertFalse(report.contains(privateText))
+            XCTAssertTrue(report.contains("T2_MODEL_CAPTURED"))
+            XCTAssertTrue(report.contains("T4_LABEL_CONFIGURED"))
+            XCTAssertTrue(report.contains("T7_HUMAN"))
+            XCTAssertEqual(try exported()["nativeOperationReturnObserved"] as? Bool, false)
+            for _ in 0..<150 { trace.record(.returned, owner: owner) }
+            let bounded = try exported()
+            XCTAssertEqual((bounded["records"] as? [Any])?.count, 128)
+            XCTAssertGreaterThan(try XCTUnwrap(bounded["dropped"] as? Int), 0)
+            XCTAssertEqual(bounded["triageHint"] as? String, "INCONCLUSIVE")
+            trace.begin(owner: owner, event: 12)
+            trace.begin(owner: owner, event: 13)
+            XCTAssertEqual(try exported()["keysCaptured"] as? Int, 2)
+            XCTAssertEqual(try exported()["armed"] as? Bool, false)
+            XCTAssertNotNil(NSClassFromString("DebugT9QA001Trace"))
+            for name in ["arm", "report", "sawBlank", "sawVisible", "stop"] {
+                XCTAssertTrue(T9QA001DeviceTrace.responds(to: NSSelectorFromString(name)))
+            }
+        }
+
+    #endif
+
     @MainActor
     private func expectedHeight(_ owner: KeyboardViewController, expanded: Bool) -> CGFloat {
         owner.keyboardHeightWithoutT9Path + (expanded ? owner.t9PinyinPathBarHeight : 0)

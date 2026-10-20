@@ -139,6 +139,56 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
         fatalError("init(coder:) has not been implemented")
     }
 
+    #if DEBUG
+        func qa001ViewMetrics(in root: UIView?, overlay: UIView?) -> [String: Double] {
+            let cell = collectionView.visibleCells.compactMap { $0 as? T9PinyinPathBarCell }.first
+            let label = cell?.qa001TitleLabel
+            var hidden = false
+            var effectiveAlpha: CGFloat = 1
+            var ancestor: UIView? = label ?? self
+            for _ in 0..<16 {
+                guard let view = ancestor else { break }
+                hidden = hidden || view.isHidden
+                effectiveAlpha *= view.alpha
+                ancestor = view.superview
+            }
+            var values: [String: Double] = [
+                "boundPaths": Double(paths.count),
+                "boundPathLength": Double(paths.reduce(0) { $0 + $1.displayText.count }),
+                "rowWidth": Double(bounds.width), "rowHeight": Double(bounds.height),
+                "collectionWidth": Double(collectionView.bounds.width),
+                "collectionHeight": Double(collectionView.bounds.height),
+                "visibleCells": Double(collectionView.visibleCells.count), "hiddenAncestor": hidden ? 1 : 0,
+                "rowHidden": isHidden ? 1 : 0, "rowAlpha": Double(alpha),
+                "collectionHidden": collectionView.isHidden ? 1 : 0, "collectionAlpha": Double(collectionView.alpha),
+                "idleHintVisible": idleHintLabel.isHidden ? 0 : 1,
+                "effectiveAlpha": Double(effectiveAlpha), "labelLength": Double(label?.text?.count ?? 0),
+                "labelEmpty": label?.text?.isEmpty == false ? 0 : 1,
+                "labelHidden": label?.isHidden == true ? 1 : 0, "labelAlpha": Double(label?.alpha ?? 0),
+                "labelWidth": Double(label?.bounds.width ?? 0), "labelHeight": Double(label?.bounds.height ?? 0),
+                "labelMatchesModel": label.map { label in paths.contains { $0.displayText == label.text } } == true
+                    ? 1 : 0,
+            ]
+            if let overlay, let label {
+                let point = label.convert(CGPoint(x: label.bounds.midX, y: label.bounds.midY), to: overlay)
+                values["panelModelCoversLabel"] =
+                    !overlay.isHidden && overlay.alpha > 0.01 && overlay.bounds.contains(point) ? 1 : 0
+            }
+            if let root, let label {
+                let point = label.convert(CGPoint(x: label.bounds.midX, y: label.bounds.midY), to: root)
+                if let mask = root.layer.mask as? CAShapeLayer {
+                    values["maskModelContains"] = mask.path?.contains(point) == true ? 1 : 0
+                    values["maskPresentationContains"] =
+                        mask.presentation().flatMap { $0.path?.contains(point) }.map { $0 ? 1 : 0 } ?? -1
+                    values["maskAnimating"] = mask.animationKeys()?.isEmpty == false ? 1 : 0
+                } else {
+                    values["maskModelContains"] = 1
+                }
+            }
+            return values
+        }
+    #endif
+
     /// Collapse the actual arranged row, including hit testing and accessibility.
     /// Keep the collection's required edges valid even at zero height.
     func setRowVisible(_ visible: Bool) {
@@ -149,6 +199,9 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
         accessibilityElementsHidden = !visible
         isHidden = !visible
         setNeedsLayout()
+        #if DEBUG
+            T9QA001DeviceTrace.shared.bar(.row, bar: self)
+        #endif
     }
 
     /// Publish Core paths for one composition revision.
@@ -178,6 +231,9 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
         separator.isHidden = paths.isEmpty && idleHintText == nil
         collectionView.reloadData()
         collectionView.layoutIfNeeded()
+        #if DEBUG
+            T9QA001DeviceTrace.shared.bar(.bound, bar: self)
+        #endif
 
         revealPendingPathIfPossible()
         setNeedsLayout()
@@ -290,6 +346,9 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
         let path = paths[indexPath.item]
         let selected = selectedPath.map { $0.id == path.id || $0 == path } ?? false
         cell.configure(path: path, selected: selected)
+        #if DEBUG
+            T9QA001DeviceTrace.shared.bar(.label, bar: self, label: cell.qa001TitleLabel)
+        #endif
         return cell
     }
 
@@ -343,6 +402,7 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
         collectionView.layoutIfNeeded()
         revealPendingPathIfPossible()
         #if DEBUG
+            T9QA001DeviceTrace.shared.bar(.pathLayout, bar: self)
             refreshDebugHitboxOverlay()
         #endif
     }
@@ -568,6 +628,10 @@ final class T9PinyinPathBarCell: UICollectionViewCell {
             )
             bringSubviewToFront(overlay)
         }
+    #endif
+
+    #if DEBUG
+        var qa001TitleLabel: UILabel { titleLabel }
     #endif
 
     func configure(path: T9PinyinPath, selected: Bool) {
