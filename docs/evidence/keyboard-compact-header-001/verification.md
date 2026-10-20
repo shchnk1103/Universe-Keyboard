@@ -311,7 +311,8 @@ unchanged. Original failed log/bundle remain failed. No unexplained retry or ski
 Human saved project.pbxproj during implementation and explicitly asked to preserve it uncommitted.
 The observed Xcode rewrite is mostly ordering/comments; parsed semantic diff against entry has one
 change: KeyboardLayoutIntegrationTests membershipExceptions no longer lists Keyboard.entitlements.
-It changes resource membership, not Swift source membership. Tests/build used the preserved Human
+Only a non-Swift file exclusion changed; actual resource packaging is not inferred from that field.
+Swift source membership is unchanged. Tests/build used the preserved Human
 project; source and config hashes/copies are recorded. No project changes are included in this lane's
 product commit. Do not restore/clean that Human file. Artifact project-entry.pbxproj and
 project-observed.pbxproj retain the comparison. Product review must distinguish this unstaged config.
