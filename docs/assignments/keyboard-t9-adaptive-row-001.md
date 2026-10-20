@@ -8,7 +8,7 @@ record_id: KEYBOARD-T9-ADAPTIVE-ROW-001
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current phase | Local review candidate; Runtime validation pending |
+| Current phase | Bounded Sticky Expansion correction and validation |
 | Non-claims | No independent review, real Extension validation, Product Gate, product push, PR, Merge or TestFlight |
 | Next | Local review candidate to Human; intended independent Claude review |
 | Residuals | [Verification](../evidence/keyboard-t9-adaptive-row-001/verification.md); real host geometry and interaction remain Human Gate |
@@ -44,3 +44,7 @@ Stop: Core semantics needed, weakened Recovery/authority, unexplained required-c
 Revalidation: baseline/scope/owner/contract changes, AUTH revocation, new Writer. Material changes return to Human.
 
 Current Codex acknowledges this bounded assignment. No independent reviewer or Product acceptance conclusion is asserted.
+
+## Current policy correction — 2026-10-20
+
+Human explicitly supersedes per-composition collapse with per-presentation Sticky Expansion. Existing initial Writer codex-t9-adaptive-row remains W, P=none. Prior local candidate5cc4a74/checkpoint2b59617 retained. Plan: inspect existing lifecycle; add minimal UI latch with conservative reset; update real Controller L1; run affected L2/Debug build-for-testing/strict format; local commit/checkpoint then stop. Existing scope protections and stop conditions remain. Completed disappearance + existing hidden gate + detached view is a conservative boundary candidate; host lifecycle coverage is not proven by in-process fixtures. Ordinary appear/reload/document/page/layout events alone never reset. No new task/Writer/remote publication.
