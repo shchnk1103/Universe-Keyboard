@@ -49,7 +49,7 @@ Path selection visual contract: before first selection all labels remain plain. 
 
 Path list presentation (implementation): Path cells render with plain `UILabel` plus an explicit selected-highlight background view—same anti-material rule as candidates. Avoid `UIButton.Configuration` for on-screen Path chips; on iOS 26 keyboard chrome it can wash the entire 34 pt Path strip and create a hard rectangular band under the top rounded corners. Path `UICollectionView`s must use `CandidateScrollViewStyle.apply(to:)`. Keep Path container/cell/contentView clear and non-opaque; do not add an opaque Path card fill to “fix” haze. Selection plumbing may still use a non-visible `T9PinyinPathButton` proxy for the existing selector contract.
 
-**Idle empty-state Path hint:** Retired. The Path row collapses to 0pt only when all existing composition and Path signals are idle. Active composition with temporarily empty Paths and Recovery retain 34pt. The candidate container stays48pt (visual34 + gesture bridge14); key metrics remain unchanged. Do not bring back 「点选拼音可加快输入」 or mid-type “after N digits” banners.
+**Idle empty-state Path hint:** Retired. Each confirmed new presentation starts at0pt only when existing composition/Path/Partial Commit/Recovery signals are idle. First effective input or safety presentation latches34pt for the rest of that presentation, including commit/delete-to-empty, reload and page/layout switches. Ambiguous lifecycle events retain the latch. The candidate container stays48pt (visual34 + gesture bridge14); key metrics remain unchanged. Do not bring back 「点选拼音可加快输入」 or mid-type “after N digits” banners.
 
 Frozen keyboard baseline:
 

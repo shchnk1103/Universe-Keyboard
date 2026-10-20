@@ -1,5 +1,7 @@
 # KEYBOARD-T9-ADAPTIVE-ROW-001 — local implementation evidence
 
+> Historical adaptive candidate5cc4a74 evidence. Current Sticky policy and fresh checks supersede per-composition collapse claims below: [Sticky correction](sticky-verification.md). Original log/manifests remain preserved.
+
 Baseline `096183ca118cc40ffc16854d1a5336a42cfcbd89`; Writer `codex-t9-adaptive-row`; branch `codex/keyboard-t9-adaptive-row-001`; worktree `t9-adaptive-row-001`. Implementation complete, Runtime validation pending. No independent review, Product Gate, product push/PR/merge/TestFlight. UI-1 PR216 is not included.
 
 ## Implementation and boundaries

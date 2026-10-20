@@ -12,11 +12,11 @@ extension KeyboardViewController {
             && cachedT9ReadinessMatched
     }
 
-    /// Presentation only: collapse only when every existing composition signal is idle.
-    /// A temporarily empty Path catalog is not evidence that composition ended.
+    /// Once expanded, only a confirmed new presentation can release the UI latch.
+    /// Composition signals are used to expand, never to collapse within a cycle.
     func shouldShowT9PinyinPathBar(_ snapshot: T9CompositionPresentationSnapshot) -> Bool {
         guard shouldReserveT9PinyinPathBar else { return false }
-        if shouldBlockT9RecoveryPresentation { return true }
+        if hasExpandedT9PinyinRowInPresentation || shouldBlockT9RecoveryPresentation { return true }
         return !snapshot.paths.isEmpty
             || !snapshot.sourceDigits.isEmpty
             || !(snapshot.rimeRawInput ?? "").isEmpty
@@ -30,6 +30,23 @@ extension KeyboardViewController {
             || controller.state.partialCommit != nil
     }
 
+    /// A completed disappearance is usable only with the existing hidden gate and
+    /// a detached view. Host resign/activate, proxy changes and willAppear alone
+    /// are ambiguous and must not clear an expanded row.
+    func noteT9PinyinPresentationDidDisappear(hasWindow: Bool) {
+        guard hostLifecycleRecoveryGate.phase == .hidden, !hasWindow else { return }
+        hasEndedT9PinyinPresentation = true
+    }
+
+    func beginT9PinyinPresentationIfNeeded() {
+        guard hasEndedT9PinyinPresentation, hostLifecycleRecoveryGate.phase == .appearing else { return }
+        hasEndedT9PinyinPresentation = false
+        hasExpandedT9PinyinRowInPresentation = false
+        // Existing composition / Partial Commit / Recovery immediately wins over
+        // compactness. Reused content receives the same request as a new row.
+        refreshT9PinyinPathBarVisibility()
+    }
+
     var presentedT9PinyinPathBarHeight: CGFloat {
         guard controller != nil, shouldReserveT9PinyinPathBar else { return 0 }
         return shouldShowT9PinyinPathBar(controller.t9CompositionPresentationSnapshot())
@@ -41,6 +58,7 @@ extension KeyboardViewController {
         let snapshot = snapshot ?? controller.t9CompositionPresentationSnapshot()
         UIView.performWithoutAnimation {
             let visible = shouldShowT9PinyinPathBar(snapshot)
+            if visible { hasExpandedT9PinyinRowInPresentation = true }
             bar.setRowVisible(visible)
             installPreferredKeyboardHeight(
                 height: keyboardHeightWithoutT9Path + (visible ? t9PinyinPathBarHeight : 0)

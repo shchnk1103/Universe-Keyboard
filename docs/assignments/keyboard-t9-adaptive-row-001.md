@@ -8,12 +8,12 @@ record_id: KEYBOARD-T9-ADAPTIVE-ROW-001
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current phase | Bounded Sticky Expansion correction and validation |
+| Current phase | Local Sticky review candidate; Runtime validation pending |
 | Non-claims | No independent review, real Extension validation, Product Gate, product push, PR, Merge or TestFlight |
 | Next | Local review candidate to Human; intended independent Claude review |
-| Residuals | [Verification](../evidence/keyboard-t9-adaptive-row-001/verification.md); real host geometry and interaction remain Human Gate |
+| Residuals | [Current Sticky verification](../evidence/keyboard-t9-adaptive-row-001/sticky-verification.md); real host geometry and interaction remain Human Gate |
 
-Implementation complete; L1 4/0/0, L2 Keyboard49/0/0 + Extension35/0/0, Debug build-for-testing and strict format passed. Real host evidence is pending; no Gate/Close. Writer remains codex-t9-adaptive-row, P=none.
+Sticky correction complete; current L1 5/0/0, L2 Keyboard49/0/0 + Extension35/0/0, Debug build-for-testing and strict format8 passed. Real host evidence is pending; no Gate/Close. Writer remains codex-t9-adaptive-row, P=none.
 
 ## Authority and responsibility
 

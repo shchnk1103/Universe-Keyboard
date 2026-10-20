@@ -23,14 +23,17 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
             XCTAssertNil(bar.hitTest(CGPoint(x: 20, y: 0), with: nil))
             XCTAssertTrue(bar.accessibilityElementsHidden)
 
+            for _ in 0..<3 {
+                owner.refreshT9PinyinPathBar()  // A no-input function/UI refresh is not first input.
+                XCTAssertEqual(request.constant, 256)
+            }
             for raw in ["2", "", "6", "64", "", "2", ""] {
                 owner.controller.state.t9PinyinPathState = .init(trackedRawInput: raw)
                 owner.refreshT9PinyinPathBar()
                 layout(owner)
-                let active = !raw.isEmpty
-                XCTAssertEqual(request.constant, active ? 290 : 256)
-                XCTAssertEqual(bar.frame.height, active ? 34 : 0, accuracy: 0.01)
-                XCTAssertEqual(bar.isHidden, !active)
+                XCTAssertEqual(request.constant, 290)
+                XCTAssertEqual(bar.frame.height, 34, accuracy: 0.01)
+                XCTAssertFalse(bar.isHidden)
                 XCTAssertEqual(owner.rootStack.frame.height, request.constant - 2, accuracy: 0.01)
                 let next = measure(owner)
                 XCTAssertEqual(next.candidate.size, idle.candidate.size)
@@ -94,13 +97,13 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
         owner.controller.partialCommitFailureRecovery = nil
         owner.refreshT9InputRecoveryPresentation()
         layout(owner)
-        XCTAssertEqual(owner.t9PinyinPathBarView?.frame.height, 0)
+        XCTAssertEqual(owner.t9PinyinPathBarView?.frame.height, 34)
         XCTAssertTrue(try XCTUnwrap(owner.t9SpaceButton).isEnabled)
         for page: KeyboardPage in [.numbers, .symbols, .emoji, .letters] {
             owner.controller.state.currentPage = page
             owner.reloadKeyboard()
             layout(owner)
-            XCTAssertEqual(owner.keyboardHeightConstraint?.constant, 256)
+            XCTAssertEqual(owner.keyboardHeightConstraint?.constant, page == .letters ? 290 : 256)
             XCTAssertEqual(owner.t9PinyinPathBarView != nil, page == .letters)
         }
         owner.cachedLayoutStyle = .twentySixKey
@@ -111,7 +114,7 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
         owner.cachedLayoutStyle = .nineKey
         owner.reloadKeyboard()
         layout(owner)
-        XCTAssertEqual(owner.t9PinyinPathBarView?.frame.height, 0)
+        XCTAssertEqual(owner.t9PinyinPathBarView?.frame.height, 34)
         owner.controller.state.t9PinyinPathState = .init(trackedRawInput: "64")
         owner.reloadKeyboard()
         layout(owner)
@@ -128,7 +131,11 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
     func testExpandedPanelTracksRootAndRestoresBothRowStates() throws {
         let owner = makeOwner(width: 390)
         for raw in ["", "64"] {
+            newPresentation(owner)
             owner.controller.state.t9PinyinPathState = .init(trackedRawInput: raw)
+            owner.refreshT9PinyinPathBar()
+            layout(owner)
+            owner.controller.state.t9PinyinPathState = .init(trackedRawInput: "64")
             owner.refreshT9PinyinPathBar()
             layout(owner)
             let before = measure(owner)
@@ -174,6 +181,9 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
         XCTAssertEqual(bar.frame.height, 34)
         owner.applyT9PresentationSnapshot(.empty)
         layout(owner)
+        XCTAssertEqual(bar.frame.height, 34)
+        newPresentation(owner)
+        layout(owner)
         XCTAssertEqual(bar.frame.height, 0)
         XCTAssertNil(bar.hitTest(CGPoint(x: 20, y: 10), with: nil))
 
@@ -213,6 +223,60 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
         host.view.layoutIfNeeded()
         XCTAssertEqual(pathBar.frame.height, 34)
         XCTAssertEqual(collection.numberOfItems(inSection: 0), 1)
+    }
+
+    @MainActor
+    func testOnlyCompletedDetachedPresentationCanResetSticky() throws {
+        let owner = makeOwner(width: 390)
+        let request = try XCTUnwrap(owner.keyboardHeightConstraint)
+        owner.controller.state.currentComposition = "ni"
+        owner.refreshT9PinyinPathBar()
+        owner.controller.state.currentComposition = ""
+        for _ in 0..<3 {
+            owner.hostLifecycleRecoveryGate.noteViewWillAppear(context: nil)
+            owner.beginT9PinyinPresentationIfNeeded()
+            owner.refreshT9PinyinPathBar()
+            layout(owner)
+            XCTAssertEqual(request.constant, 290)
+            XCTAssertTrue(owner.keyboardHeightConstraint === request)
+        }
+        // Resign/host activity and an attached disappearance cannot prove a new cycle.
+        owner.noteT9PinyinPresentationDidDisappear(hasWindow: false)  // gate is appearing
+        XCTAssertFalse(owner.hasEndedT9PinyinPresentation)
+        owner.hostLifecycleRecoveryGate.noteViewWillDisappear()
+        owner.noteT9PinyinPresentationDidDisappear(hasWindow: true)
+        owner.hostLifecycleRecoveryGate.noteViewWillAppear(context: nil)
+        owner.beginT9PinyinPresentationIfNeeded()
+        XCTAssertEqual(owner.preferredKeyboardHeight, 290)
+        newPresentation(owner)
+        layout(owner)
+        XCTAssertEqual(request.constant, 256)
+        XCTAssertEqual(owner.t9PinyinPathBarView?.frame.height, 0)
+        XCTAssertTrue(owner.keyboardHeightConstraint === request)
+        // A new presentation with safety state must expand immediately.
+        owner.controller.partialCommitFailureRecovery = .init(ownerID: UUID(), editingGeneration: 0)
+        newPresentation(owner)
+        layout(owner)
+        XCTAssertEqual(request.constant, 290)
+        XCTAssertTrue(owner.hasExpandedT9PinyinRowInPresentation)
+        let partialOwner = makeOwner(width: 390)
+        partialOwner.controller.state.partialCommit = .init(
+            confirmedText: "你", remainingRawInput: "", remainingPreeditText: "", displayText: "")
+        newPresentation(partialOwner)
+        XCTAssertEqual(partialOwner.keyboardHeightConstraint?.constant, 290)
+        partialOwner.controller.state.partialCommit = nil
+        partialOwner.refreshT9PinyinPathBar()
+        XCTAssertEqual(partialOwner.keyboardHeightConstraint?.constant, 290)
+    }
+
+    @MainActor
+    private func newPresentation(_ owner: KeyboardViewController) {
+        // Exercises the production policy with explicit boundary observations;
+        // does not claim that a real Extension will deliver this callback sequence.
+        owner.hostLifecycleRecoveryGate.noteViewWillDisappear()
+        owner.viewDidDisappear(false)
+        owner.hostLifecycleRecoveryGate.noteViewWillAppear(context: nil)
+        owner.beginT9PinyinPresentationIfNeeded()
     }
 
     @MainActor
