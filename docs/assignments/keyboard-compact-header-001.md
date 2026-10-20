@@ -8,9 +8,9 @@ record_id: KEYBOARD-COMPACT-HEADER-001
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current phase | N2/N1 final local corrections delivered; awaiting Human / Claude final diff review; UI-2 deferred |
+| Current phase | Bounded visual polish local candidate; awaiting Human iPhone comparison; UI-2 untouched |
 | Writer / pending handoff | codex-compact-header / none; canonical W/P derived from carrier log |
-| Next decision | Human sends corrected candidate for Claude targeted re-review or decides next bounded step; no product publication |
+| Next decision | Human reviews local visual diff and real-iPhone appearance; no new product publication authorized |
 
 ## Authority and responsibilities
 
@@ -58,3 +58,5 @@ Human authorization in the current chat supersedes CP-002's stop only for A1/A3 
 Targeted correction delivery: local product `e21d076cc6615b2601059df98a3a435bff41019d`; L1 18/0/0, L2 Keyboard49/0/0 + Extension40/0/0, Debug test build and strict Swift Pass. Evidence appended to existing verification. Stop for Human / Claude targeted re-review; no independent acceptance claim. W unchanged, P=none.
 
 Final targeted delivery: product `5ca35456a86c7de9f0e99fce84ad11d7225bf60c`; N2 full surface-top panel/content with independently aligned action, N1 exact-prefix log reconciliation (three requested plus l1-final-r2). Focused12/0/0, strict format exit0, test compilation Pass. Human relayed Architecture/Quality Pass for prior candidate; this final diff awaits review. No activated Extension claim, no publication; W unchanged/P=none, stop.
+
+Visual-polish delivery: local product `86df674649b590667c09db30194f10eb2c97baa6` on top of published PR216 head ddcd81c; same Writer/P=none. Human reports six prior iPhone interactions accepted; latest visuals not yet device-accepted. V1 measured/no height change; V2/V3/V5/V6 material/icon/corner cleanup; V4 original-path-preserving overlay with fixed34pt residual explicitly recorded. L1 20/0/0; Keyboard49/0/0 + Extension41/0/0; final Controller3/0/0, strict5/Debug compile Pass. Combined initial L2 run exit65 from exact floating-point size assertion remains failed; corrected directed run passes. Evidence: existing verification plus visual-polish-evidence.json. Stop; no Push, remote PR update, merge, release, task closure or UI-2 edits.

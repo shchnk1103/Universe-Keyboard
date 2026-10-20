@@ -1,27 +1,27 @@
 # KOS Handoff Snapshot
 
 - Work Item / Assignment: KEYBOARD-COMPACT-HEADER-001 @ docs/assignments/keyboard-compact-header-001.md
-- Canonical lifecycle/status: Active / N2-N1 final correction delivered; stop for Human / Claude final diff review; UI-2 deferred
-- Current legal actions: preserve local candidate/evidence; stop. No further implementation or publication without Human direction @ docs/authorizations/AUTH-KEYBOARD-COMPACT-HEADER-001.md
-- Explicitly prohibited actions: product push/PR/merge/TestFlight, Writer transfer, historical worktree/device/backup edits, Core/RIME reliability changes; A2/A4/A6 and UI-2 not reopened
-- Frozen branch / commit / artifact: codex/keyboard-compact-header-001 @ 5ca35456a86c7de9f0e99fce84ad11d7225bf60c; correction-evidence.json under docs/evidence/keyboard-compact-header-001
-- Completed outputs: N2 surface-top panel/content with independent action anchor; N1 preserved-prefix log reconciliation; fill-aligned row wrapper for full-width46pt header, matching56×46pt compact/expanded action zones with22pt symbols, actual Controller integration target; expanded Cells42pt; unused collapsedHeight removed; L1/L2/L3 guide
-- Open Gates and owners: Human relayed Claude Architecture/Quality Pass on prior candidate; final N2/N1 diff awaits review, no self-issued approval
-- Evidence and freshness: current N2 focused12/0/0, strict Swift2 exit0, test compile Pass; /private/tmp/kch001-final has completed logs/exit receipts. Prior A1/A3 L1 18/0/0 including real Controller2/0/0; L2 Keyboard49/0/0 + Extension40/0/0; strict Swift6 files, Debug build-for-testing, plist/diff Pass. Current product lightweight Pass, sha256 9465ae17d43cdff0ed30daff3a7ff0340416db238ccc45026f31ffc88b7484d7; pinned-Kit validator not run, required before any future merge
-- Environment state: same task-owned simulator5F983B43-FAAC-46ED-B2B0-33E0E30F099F, /private/tmp/kch001-build, local logs/bundles /private/tmp/kch001-corrections and /private/tmp/kch001-final; other devices/worktrees untouched
-- Recorded authorization receipts and audit consumption state: bounded correction slice delivered; no HANDOFF or pending ACCEPT. Initial docs-only remote carrier remains a29a9df7ddd02b0d08fa5ce0aa7733f3f6580b5a; all product descendants remain local
+- Canonical lifecycle/status: Active / bounded V1–V6 local visual candidate; stop for Human real-iPhone comparison
+- Current legal actions: preserve local candidate/evidence; stop. New Push/PR update/merge/release needs Human authority @ docs/authorizations/AUTH-KEYBOARD-COMPACT-HEADER-001.md
+- Explicitly prohibited actions: product push, remote PR216 update, new PR, merge/TestFlight, task closure/Writer transfer, historical workspace/device edits, UI-2#217 or input/sticky state-machine changes
+- Frozen branch / commit / artifact: codex/keyboard-compact-header-001 @ 86df674649b590667c09db30194f10eb2c97baa6; visual-polish-evidence.json under docs/evidence/keyboard-compact-header-001
+- Completed outputs: idle background hidden, redundant decorative gradient removed, shared22pt custom symbol, header-origin overlay preserves original T9 path; top-only34pt panel corners; V1 measured without height changes
+- Open Gates and owners: Human device comparison/approval. Prior Claude Architecture/Quality/N1/N2 Pass and six prior iPhone interaction checks are Human-reported, not acceptance of this new diff
+- Evidence and freshness: L1 20/0/0; L2 module Keyboard49/0/0 + Extension41/0/0; final Controller3/0/0, strict Swift5 files and Debug test compile Pass. Initial combined L2 failed from exact rotation float assertion, retained/explained; fixed directed run passes. Product lightweight Pass sha256 59a2f47222da4e6a8ca32d0075c5c5c7b7f70337aabe2a02ebe1632f09c2886f; pinned Kit validator remains unrun before future merge
+- Environment state: same task simulator5F983B43-FAAC-46ED-B2B0-33E0E30F099F, /private/tmp/kch001-build; completed raw logs/exit receipts /private/tmp/kch001-visual; no resource cleanup
+- Recorded authorization receipts and audit consumption state: Human allowed previous push/Draft PR216 at ddcd81cec41720b5ea1490936e693500fa8cf875, full CI then passed. Current visual slice explicitly local-only; remote Carrier/PR stay at ddcd81c. No HANDOFF/ACCEPT
 - Extension-referenced authorizations: none
-- Human Dependencies: re-review / acceptance / any new runtime or publication authority
-- Residual findings / debt: no live Extension/system-touch/screen-coordinate/VoiceOver evidence; panel/content now cover surface top while action remains header-aligned; real pixel compositing remains unverified; animations and existing scroll-overlay architecture retained. A1 unsatisfiable diagnostic not reproduced; invalid private-frame checker is not conflict proof. No full merge-gate claim
-- Next safest action: submit local candidate/evidence to Claude for N2/N1 final diff review through Human; preserve all artifacts
-- Revalidation triggers: source/base/environment/scope/authority/Writer changes or evidence mismatch
-- based_on: 5ca35456a86c7de9f0e99fce84ad11d7225bf60c
-- snapshot_rev: 4
-- log_cursor: CP-004
+- Human Dependencies: screenshot/interaction comparison, then approval of any next bounded step
+- Residual findings / debt: real host V1 empty space unresolved beyond measured fixed header; original34pt no-path/no-hint policy can still leave empty row, not silently changed via UI-2. Actual blur/color/native corner match, animation, VoiceOver and gestures need iPhone recheck
+- Next safest action: review local visual diff and scenarios in verification; preserve Carrier and all failed/successful evidence
+- Revalidation triggers: source/base/authority/Writer/host changes or evidence mismatch
+- based_on: 86df674649b590667c09db30194f10eb2c97baa6
+- snapshot_rev: 5
+- log_cursor: CP-005
 - read_on_demand:
   - docs/assignments/keyboard-compact-header-001.md
-  - docs/authorizations/AUTH-KEYBOARD-COMPACT-HEADER-001.md@5ca35456a86c7de9f0e99fce84ad11d7225bf60c
-  - docs/evidence/keyboard-compact-header-001/verification.md@5ca35456a86c7de9f0e99fce84ad11d7225bf60c
-  - docs/evidence/keyboard-compact-header-001/correction-evidence.json@5ca35456a86c7de9f0e99fce84ad11d7225bf60c
+  - docs/authorizations/AUTH-KEYBOARD-COMPACT-HEADER-001.md@86df674649b590667c09db30194f10eb2c97baa6
+  - docs/evidence/keyboard-compact-header-001/verification.md@86df674649b590667c09db30194f10eb2c97baa6
+  - docs/evidence/keyboard-compact-header-001/visual-polish-evidence.json@86df674649b590667c09db30194f10eb2c97baa6
 
-W=codex-compact-header; P=none. This local checkpoint is not a Writer handoff or independent approval.
+W=codex-compact-header; P=none. Local checkpoint only, not a Writer handoff or independent approval.
