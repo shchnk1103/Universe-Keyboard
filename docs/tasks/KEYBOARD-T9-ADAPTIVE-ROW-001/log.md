@@ -87,3 +87,11 @@
 - lane: codex-t9-adaptive-row
 - kind: CHECKPOINT
 - note: Device-trace-only AUTH @ 83f712cd5f3a6b98b4ec7eac4a6158caa52aa6cb; clean entry44bc548, W unchanged/P=none. Existing logs lack label/layout/panel correlation; debugger-only breakpoints may perturb first-frame timing. Prepare explicitly armed DEBUG bounded content-free memory observations and honest native/async uncertainty. No root fix/Core/order changes or external actions; Human FAIL OPEN/MAJOR.
+
+## CP-012 CHECKPOINT
+
+- id: CP-012
+- at: 2026-10-20T23:39:26+08:00
+- lane: codex-t9-adaptive-row
+- kind: CHECKPOINT
+- note: DEVICE TRACE READY candidate d6f56ad864e905197e8d06f3bb9daf023d8ff0bd; DEBUG explicit-arm128 memory ring/two-key metadata only, no IO/polling/background/input text or production state changes. UI handle return distinct from native return; async attribution uncertain and incomplete evidenceINCONCLUSIVE. Controller19 + Extension41 pass; finalT9 subset7 and probe1 pass, strict13, localReleaseSimulator symbols/literals absent and LLDB aliases parse pass. Human project save explicitly compile-authorized, hash unchanged, not committed; only that user-owned dirty file remains. W unchanged/P=none. QA-001 OPEN/MAJOR and Human8PASS/1FAIL retained; no device run, root fix, QA acceptance, push/PR/main/release/Close. Runbook delivered; stop for Human device capture.
