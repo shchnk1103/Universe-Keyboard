@@ -8,7 +8,7 @@ record_id: KEYBOARD-COMPACT-HEADER-001
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current phase | A1/A3 corrected local candidate; awaiting Human / Claude targeted re-review; UI-2 deferred |
+| Current phase | N2/N1 final local corrections delivered; awaiting Human / Claude final diff review; UI-2 deferred |
 | Writer / pending handoff | codex-compact-header / none; canonical W/P derived from carrier log |
 | Next decision | Human sends corrected candidate for Claude targeted re-review or decides next bounded step; no product publication |
 
@@ -56,3 +56,5 @@ UI-1 delivered locally with [verification](../evidence/keyboard-compact-header-0
 Human authorization in the current chat supersedes CP-002's stop only for A1/A3 and explicitly allowed cleanup/testing/records; see the appended AUTH. Claude Architecture/Quality Partial are Human-relayed results, not newly performed reviews. Same W/P, carrier, worktree and protected boundaries. The stage is L1 directed reproduction and corrections, then L2 affected targets/Debug test build, local candidate/checkpoint and stop. Independent re-review remains Human-owned.
 
 Targeted correction delivery: local product `e21d076cc6615b2601059df98a3a435bff41019d`; L1 18/0/0, L2 Keyboard49/0/0 + Extension40/0/0, Debug test build and strict Swift Pass. Evidence appended to existing verification. Stop for Human / Claude targeted re-review; no independent acceptance claim. W unchanged, P=none.
+
+Final targeted delivery: product `5ca35456a86c7de9f0e99fce84ad11d7225bf60c`; N2 full surface-top panel/content with independently aligned action, N1 exact-prefix log reconciliation (three requested plus l1-final-r2). Focused12/0/0, strict format exit0, test compilation Pass. Human relayed Architecture/Quality Pass for prior candidate; this final diff awaits review. No activated Extension claim, no publication; W unchanged/P=none, stop.
