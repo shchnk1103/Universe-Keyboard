@@ -8,7 +8,7 @@ record_id: KEYBOARD-T9-ADAPTIVE-ROW-001
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current phase | Local integration complete; independent review pending |
+| Current phase | QA-001 local diagnosis and minimal remediation |
 | Non-claims | Human-relayed Claude Conditional review; no real Extension/Product Gate, Ready, Merge, TestFlight or Close |
 | Next | Human/Claude independent review of local integration candidate; no publication |
 | Residuals | [Current Sticky verification](../evidence/keyboard-t9-adaptive-row-001/sticky-verification.md); real host geometry and interaction remain Human Gate |
@@ -60,3 +60,7 @@ Publication completed: [Draft217 and exact-head CI receipt](../evidence/keyboard
 Human authorizes [bounded local integration](../authorizations/AUTH-KEYBOARD-T9-ADAPTIVE-ROW-001-INTEGRATION.md) of exact main78b795f. Same Writer, task, worktree and existing two local docs retained. CI attempt2/Xcode Cloud pass; suspected historical diagnostic-test flake preserved and excluded from fixes. Resolve only I-1–I-5 and test I-6/I-7; minimal product fix only on reproduced layout-integration cause. Target contract candidate46/Path0→34Sticky/root254→288. No pushes/PR updates/main actions. Retired UI-1 worktree/Human project edits are not inputs.
 
 本地集成完成：[集成证据](../evidence/keyboard-t9-adaptive-row-001/integration-verification.md)。Controller17、Keyboard49、Extension41均通过，Debug build-for-testing及格式通过；真实Extension未验证。等待独立复核，禁止外部发布。
+
+## QA-001 Human device finding
+
+[Current bounded AUTH](../authorizations/AUTH-KEYBOARD-T9-ADAPTIVE-ROW-001-QA001.md). Human011d3fa two rounds8 PASS/1 FAIL; first input following punctuation/kaomoji expansion leaves blank Path until next key, which includes both inputs. Root cause unconfirmed at entry; no input-loss/Core claim. Same Writer/P=none; local only, then independent re-review and Human retest.
