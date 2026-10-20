@@ -30,8 +30,6 @@ extension KeyboardViewController {
     /// Connects the presentation-only candidate container to controller state.
     func makeCandidateBar() -> UIView {
         let view = CandidateBarView(
-            height: candidateBarHeight,
-            bottomHitExtension: candidateToKeySpacing,
             backgroundColor: .clear,
             interactionTarget: self,
             expandAction: #selector(handleCandidateBarTrailingButton)
@@ -162,9 +160,6 @@ extension KeyboardViewController {
         // expandable content keeps expand + swipe-down; idle shows dismiss.
         let canExpand = items.contains { $0.kind.expandsCandidateBarPanel }
         candidateExpandButton?.isHidden = false
-        if candidateExpandButtonWidthConstraint?.constant != 56 {
-            candidateExpandButtonWidthConstraint?.constant = 56
-        }
         if let bar = candidateBar as? CandidateBarView {
             bar.allowsSwipeToExpand = canExpand
         }

@@ -223,6 +223,7 @@ extension KeyboardViewController {
             canExpand
             ?? presentedCandidates.contains { $0.kind.expandsCandidateBarPanel }
             || isCandidateExpanded
+        (candidateBar as? CandidateBarView)?.setCanExpandCandidates(expands)
         button.configuration = nil
         button.backgroundColor = UIColor.systemGray.withAlphaComponent(0.001)
         button.tintColor = isCandidateExpanded ? .label : .secondaryLabel

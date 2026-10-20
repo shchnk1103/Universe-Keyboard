@@ -168,14 +168,11 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
         let items = presentedCandidates
         let isExpanded = collectionView === expandedCandidateCollectionView
         let visualHeight: CGFloat = isExpanded ? 38 : 32
-        // The compact bar is 48 pt tall (34 pt visible bar + 14 pt gesture
-        // bridge). A 32 pt cell was centered at y=8, leaving most of the
-        // visible upper third outside every selectable cell. Expanding only
-        // the cell bounds preserves the label's center and visual size.
+        // Compact cells fill the bar's real viewport; expanded rows retain their original metrics.
         let itemHeight =
             isExpanded
             ? visualHeight + CandidateSizing.expandedVisualVerticalGap
-            : candidateBarHeight + candidateToKeySpacing
+            : KeyboardDesignTokens.CandidateBar.normalCellHeight
         guard items.indices.contains(indexPath.item) else { return CGSize(width: 44, height: itemHeight) }
         let item = items[indexPath.item]
         let preferred = isPreferredCandidate(item, at: indexPath.item)

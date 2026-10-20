@@ -20,6 +20,7 @@ extension KeyboardViewController {
         rootStack.axis = .vertical
         rootStack.spacing = keySpacing
         rootStack.distribution = .fill
+        rootStack.alignment = .center
         rootStack.translatesAutoresizingMaskIntoConstraints = false
 
         view.clipsToBounds = true
@@ -69,6 +70,16 @@ extension KeyboardViewController {
         )
     }
 
+    private func constrainArrangedContentWidths() {
+        // Center alignment lets only the header escape the unchanged 7pt key margins.
+        for child in rootStack.arrangedSubviews {
+            let container = child === candidateBar ? keyboardSurfaceView! : rootStack!
+            let width = child.widthAnchor.constraint(equalTo: container.widthAnchor)
+            width.identifier = "keyboard.content.width"
+            width.isActive = true
+        }
+    }
+
     func reloadKeyboard() {
         isCandidateExpanded = false
         isPinyinPathExpanded = false
@@ -99,6 +110,7 @@ extension KeyboardViewController {
         rootStack.setCustomSpacing(0, after: candidateBar)
         addKeyboardRows(for: controller.state)
         updateReturnKeyAppearance()
+        constrainArrangedContentWidths()
         updateSelectPinyinButtonAvailability()
         installPreferredKeyboardHeight()
         Logger.shared.debug(
@@ -160,6 +172,7 @@ extension KeyboardViewController {
             rootStack.setCustomSpacing(0, after: candidateBar)
             addKeyboardRows(for: controller.state)
         }
+        constrainArrangedContentWidths()
         updateSelectPinyinButtonAvailability()
         installPreferredKeyboardHeight()
     }

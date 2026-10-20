@@ -1,27 +1,8 @@
 import KeyboardCore
 import UIKit
 
-/// 展开按钮视觉上只显示 chevron，但真实命中范围略大。
-/// iOS Keyboard Extension 中完全透明的区域可能不稳定，保留不可见 backing 来承接点击和下滑。
-private final class CandidateBarExpandButton: UIButton {
-    var hitOutsets = UIEdgeInsets(top: 10, left: 16, bottom: 12, right: 12)
-
-    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        guard isUserInteractionEnabled, !isHidden, alpha > 0.01 else { return false }
-        return expandedHitBounds.contains(point)
-    }
-
-    var expandedHitBounds: CGRect {
-        bounds.inset(
-            by: UIEdgeInsets(
-                top: -hitOutsets.top,
-                left: -hitOutsets.left,
-                bottom: -hitOutsets.bottom,
-                right: -hitOutsets.right
-            )
-        )
-    }
-}
+/// The visible action zone is also its entire touch area; candidates own their viewport.
+private final class CandidateBarExpandButton: UIButton {}
 
 #if DEBUG
     @MainActor
@@ -84,13 +65,11 @@ private final class CandidateBarGestureBridge: NSObject, UIGestureRecognizerDele
 
 @MainActor
 final class CandidateBarView: UIView {
-    private enum Layout {
-        /// Keeps candidate text visually settled in the thinner bar.
-        static let verticalTextInset: CGFloat = 0
-        /// Hit area is intentionally larger than the visible chevron for reliable touch.
-        static let expandButtonTouchSize: CGFloat = 56
-        static let expandButtonVerticalAlignmentOffset: CGFloat = 9
-    }
+    private let actionMaterialView = UIVisualEffectView(effect: nil)
+    private let actionTintView = UIView()
+    private let actionEdgeView = UIView()
+    private let actionEdgeGradient = CAGradientLayer()
+    private var canExpandCandidates = false
 
     private let recoveryLabel = UILabel()
     private var isShowingRecoveryNotice = false
@@ -110,8 +89,7 @@ final class CandidateBarView: UIView {
     private let expandAction: Selector
     private let itemTapRecognizer = UITapGestureRecognizer()
     private let gestureBridge = CandidateBarGestureBridge()
-    private let candidateBarHeight: CGFloat
-    private let bottomHitExtension: CGFloat
+    private var candidateBarHeight: CGFloat { KeyboardDesignTokens.CandidateBar.totalHeight }
     private var swipeDownRecognizer: UIPanGestureRecognizer?
     private var horizontalFallbackRecognizer: UIPanGestureRecognizer?
     private var hasTriggeredSwipeDownExpand = false
@@ -131,16 +109,12 @@ final class CandidateBarView: UIView {
     #endif
 
     init(
-        height: CGFloat,
-        bottomHitExtension: CGFloat,
         backgroundColor: UIColor,
         interactionTarget: Any?,
         expandAction: Selector
     ) {
         self.expandActionTarget = interactionTarget as? NSObject
         self.expandAction = expandAction
-        self.candidateBarHeight = height
-        self.bottomHitExtension = bottomHitExtension
 
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
@@ -148,11 +122,14 @@ final class CandidateBarView: UIView {
         // 视觉间距由 cell 自身宽度承担，保证横滑和下滑都能命中候选列表。
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
-        layout.sectionInset = UIEdgeInsets(top: Layout.verticalTextInset, left: 4, bottom: 0, right: 8)
+        layout.sectionInset = UIEdgeInsets(
+            top: 0, left: KeyboardDesignTokens.CandidateBar.horizontalPadding, bottom: 0,
+            right: KeyboardDesignTokens.CandidateBar.trailingContentPadding)
 
         collectionView = CandidateCollectionView(frame: .zero, collectionViewLayout: layout)
         expandButton = Self.makeExpandButton(target: interactionTarget, action: expandAction)
-        expandButtonWidthConstraint = expandButton.widthAnchor.constraint(equalToConstant: Layout.expandButtonTouchSize)
+        expandButtonWidthConstraint = expandButton.widthAnchor.constraint(
+            equalToConstant: KeyboardDesignTokens.CandidateBar.actionZoneWidth)
 
         super.init(frame: .zero)
 
@@ -174,6 +151,8 @@ final class CandidateBarView: UIView {
         configureCollectionView()
         addSubview(collectionView)
         addSubview(expandButton)
+        installActionBackground()
+        bringSubviewToFront(expandButton)
         recoveryLabel.translatesAutoresizingMaskIntoConstraints = false
         recoveryLabel.font = .preferredFont(forTextStyle: .caption1)
         recoveryLabel.textColor = .secondaryLabel
@@ -186,31 +165,82 @@ final class CandidateBarView: UIView {
             recoveryLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
             recoveryLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
             recoveryLabel.topAnchor.constraint(equalTo: topAnchor),
-            recoveryLabel.heightAnchor.constraint(equalToConstant: height),
+            recoveryLabel.heightAnchor.constraint(equalToConstant: candidateBarHeight),
         ])
         gestureBridge.collectionPan = collectionView.panGestureRecognizer
         installItemTapGesture()
         installHorizontalFallbackGesture()
         installSwipeDownExpandGesture()
 
-        candidateTrailingConstraint = collectionView.trailingAnchor.constraint(
-            equalTo: expandButton.leadingAnchor, constant: -2)
+        candidateTrailingConstraint = collectionView.trailingAnchor.constraint(equalTo: expandButton.leadingAnchor)
         NSLayoutConstraint.activate([
-            expandButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -3),
-            expandButton.centerYAnchor.constraint(
-                equalTo: topAnchor,
-                constant: height / 2 + Layout.expandButtonVerticalAlignmentOffset
-            ),
+            expandButton.trailingAnchor.constraint(equalTo: trailingAnchor),
+            expandButton.topAnchor.constraint(equalTo: topAnchor),
+            expandButton.bottomAnchor.constraint(equalTo: bottomAnchor),
             expandButtonWidthConstraint,
-            expandButton.heightAnchor.constraint(equalToConstant: Layout.expandButtonTouchSize),
 
-            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 2),
+            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
             candidateTrailingConstraint,
             collectionView.topAnchor.constraint(equalTo: topAnchor),
             collectionView.bottomAnchor.constraint(equalTo: bottomAnchor),
-
-            heightAnchor.constraint(equalToConstant: height + bottomHitExtension),
+            heightAnchor.constraint(equalToConstant: candidateBarHeight),
         ])
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(updateActionAppearance),
+            name: UIAccessibility.reduceTransparencyStatusDidChangeNotification, object: nil)
+        registerForTraitChanges([UITraitUserInterfaceStyle.self]) { (bar: CandidateBarView, _: UITraitCollection) in
+            bar.updateActionAppearance()
+        }
+        updateActionAppearance()
+    }
+
+    private func installActionBackground() {
+        for background in [actionMaterialView, actionTintView, actionEdgeView] {
+            background.translatesAutoresizingMaskIntoConstraints = false
+            background.isUserInteractionEnabled = false
+            addSubview(background)
+        }
+        actionMaterialView.accessibilityIdentifier = "candidateActionMaterial"
+        actionTintView.accessibilityIdentifier = "candidateActionTint"
+        actionEdgeView.layer.addSublayer(actionEdgeGradient)
+        NSLayoutConstraint.activate([
+            actionMaterialView.leadingAnchor.constraint(equalTo: expandButton.leadingAnchor),
+            actionMaterialView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            actionMaterialView.topAnchor.constraint(equalTo: topAnchor),
+            actionMaterialView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            actionTintView.leadingAnchor.constraint(equalTo: actionMaterialView.leadingAnchor),
+            actionTintView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            actionTintView.topAnchor.constraint(equalTo: topAnchor),
+            actionTintView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            // The fade is decorative and stays inside the action zone, never over tappable text.
+            actionEdgeView.leadingAnchor.constraint(equalTo: actionMaterialView.leadingAnchor),
+            actionEdgeView.widthAnchor.constraint(
+                equalToConstant: KeyboardDesignTokens.CandidateActionAppearance.edgeFadeWidth),
+            actionEdgeView.topAnchor.constraint(equalTo: topAnchor),
+            actionEdgeView.bottomAnchor.constraint(equalTo: bottomAnchor),
+        ])
+    }
+
+    func setCanExpandCandidates(_ canExpand: Bool) {
+        canExpandCandidates = canExpand
+        updateActionAppearance()
+    }
+
+    @objc private func updateActionAppearance() {
+        let appearance = KeyboardDesignTokens.CandidateActionAppearance.self
+        let reduceTransparency = UIAccessibility.isReduceTransparencyEnabled
+        let showMaterial = canExpandCandidates && !reduceTransparency && !isShowingRecoveryNotice
+        // Keep the effect and every ancestor fully opaque in alpha; color tint is a separate layer.
+        actionMaterialView.effect = showMaterial ? UIBlurEffect(style: appearance.materialStyle) : nil
+        actionMaterialView.isHidden = !showMaterial
+        actionTintView.isHidden = isShowingRecoveryNotice
+        actionEdgeView.isHidden = isShowingRecoveryNotice || reduceTransparency
+        let opacity = reduceTransparency ? 1 : (canExpandCandidates ? appearance.tintOpacity : appearance.idleOpacity)
+        actionTintView.backgroundColor = appearance.backgroundColor.withAlphaComponent(opacity)
+        let color = appearance.backgroundColor.resolvedColor(with: traitCollection)
+        actionEdgeGradient.colors = [color.withAlphaComponent(0).cgColor, color.withAlphaComponent(opacity).cgColor]
+        actionEdgeGradient.startPoint = CGPoint(x: 0, y: 0.5)
+        actionEdgeGradient.endPoint = CGPoint(x: 1, y: 0.5)
     }
 
     @available(*, unavailable)
@@ -241,11 +271,13 @@ final class CandidateBarView: UIView {
         itemTapRecognizer.isEnabled = !isShowingRecoveryNotice
         swipeDownRecognizer?.isEnabled = !isShowingRecoveryNotice
         horizontalFallbackRecognizer?.isEnabled = !isShowingRecoveryNotice
+        updateActionAppearance()
         if isShowingRecoveryNotice { bringSubviewToFront(recoveryLabel) }
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
+        actionEdgeGradient.frame = actionEdgeView.bounds
         #if DEBUG
             refreshDebugHitboxOverlay()
         #endif
@@ -330,9 +362,7 @@ final class CandidateBarView: UIView {
     #endif
 
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        let result =
-            bounds.contains(point)
-            || (!expandButton.isHidden && expandedButtonHitFrame.contains(point))
+        let result = isUserInteractionEnabled && !isHidden && alpha > 0.01 && bounds.contains(point)
         logTouch(
             "bar pointInside",
             point: point,
@@ -343,7 +373,8 @@ final class CandidateBarView: UIView {
     }
 
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        if isShowingRecoveryNotice { return bounds.contains(point) ? self : nil }
+        guard isUserInteractionEnabled, !isHidden, alpha > 0.01, bounds.contains(point) else { return nil }
+        if isShowingRecoveryNotice { return self }
         #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
             if let button = wakeProbeButton, !button.isHidden, button.frame.contains(point) {
                 return button.hitTest(button.convert(point, from: self), with: event)
@@ -352,10 +383,7 @@ final class CandidateBarView: UIView {
         let superHit = super.hitTest(point, with: event)
         let result: UIView?
         let collectionPoint = collectionView.convert(point, from: self)
-        let hitsCandidateItem =
-            collectionView.frame.contains(point)
-            && collectionView.indexPathForItem(at: collectionPoint) != nil
-        if !hitsCandidateItem, !expandButton.isHidden, expandedButtonHitFrame.contains(point) {
+        if !expandButton.isHidden, expandedButtonHitFrame.contains(point) {
             let buttonPoint = expandButton.convert(point, from: self)
             result = expandButton.hitTest(buttonPoint, with: event) ?? expandButton
         } else if bounds.contains(point), collectionView.frame.contains(point) {
@@ -415,16 +443,7 @@ final class CandidateBarView: UIView {
     #endif
 
     private var expandedButtonHitFrame: CGRect {
-        guard let button = expandButton as? CandidateBarExpandButton else { return expandButton.frame }
-        let outsets = button.hitOutsets
-        return ChromeTouchHitGeometry.candidateExpandButtonHitFrame(
-            buttonFrame: button.frame,
-            topOutset: outsets.top,
-            leftOutset: outsets.left,
-            bottomOutset: outsets.bottom,
-            rightOutset: outsets.right,
-            barBounds: bounds
-        )
+        expandButton.frame.intersection(bounds)
     }
 
     private func logTouch(
@@ -505,7 +524,7 @@ final class CandidateBarView: UIView {
         collectionView.decelerationRate = .normal
         collectionView.delaysContentTouches = false
         collectionView.canCancelContentTouches = true
-        collectionView.clipsToBounds = false
+        collectionView.clipsToBounds = true
         collectionView.panGestureRecognizer.addTarget(self, action: #selector(handleCandidatePan(_:)))
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(
@@ -716,7 +735,8 @@ final class CandidateBarView: UIView {
         let name = expanding ? "chevron.down" : "chevron.down.circle"
         return UIImage(
             systemName: name,
-            withConfiguration: UIImage.SymbolConfiguration(pointSize: 12, weight: .medium)
+            withConfiguration: UIImage.SymbolConfiguration(
+                pointSize: KeyboardDesignTokens.CandidateBar.actionSymbolSize, weight: .medium)
         )?
         .withRenderingMode(.alwaysTemplate)
     }

@@ -41,7 +41,8 @@ nonisolated final class T9RecoveryPresentationAdapterTests: XCTestCase {
             f.owner.isCandidateExpanded = true
             f.owner.isPinyinPathExpanded = true
             f.owner.accumulatedCandidates = [CandidateItem(title: "旧候选", kind: .candidate)]
-            f.owner.candidateCellSizeCache["old"] = CGSize(width: 100, height: 40)
+            f.owner.candidateCellSizeCache["old"] = CGSize(
+                width: 100, height: KeyboardDesignTokens.CandidateBar.normalCellHeight)
             f.owner.hasMoreCandidates = true
             f.owner.isLoadingMoreCandidates = true
             f.owner.deferredCandidatePrefetchMode = .expanded
@@ -152,7 +153,7 @@ nonisolated final class T9RecoveryPresentationAdapterTests: XCTestCase {
     private final class Fixture {
         let owner = KeyboardViewController()
         let bar = CandidateBarView(
-            height: 40, bottomHitExtension: 4, backgroundColor: .clear,
+            backgroundColor: .clear,
             interactionTarget: nil, expandAction: NSSelectorFromString("unused"))
         let space = UIButton()
         let select = UIButton()

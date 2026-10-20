@@ -33,6 +33,7 @@
 		D213B0000000000000000001 /* KeyboardKeyButton.swift in KeyboardExtensionTests */ = {isa = PBXBuildFile; fileRef = D213F0000000000000000001 /* KeyboardKeyButton.swift */; };
 		D213B0000000000000000002 /* KeyVisualStyle.swift in KeyboardExtensionTests */ = {isa = PBXBuildFile; fileRef = D213F0000000000000000002 /* KeyVisualStyle.swift */; };
 		D213B0000000000000000003 /* KeyboardViewController+KeyAccessibility.swift in KeyboardExtensionTests */ = {isa = PBXBuildFile; fileRef = D213F0000000000000000003 /* KeyboardViewController+KeyAccessibility.swift */; };
+		D32040000000000000000001 /* KeyboardDesignTokens.swift in KeyboardExtensionTests */ = {isa = PBXBuildFile; fileRef = D32030000000000000000001 /* KeyboardDesignTokens.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -104,6 +105,7 @@
 		D213F0000000000000000001 /* KeyboardKeyButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Controllers/KeyboardKeyButton.swift"; sourceTree = "<group>"; };
 		D213F0000000000000000002 /* KeyVisualStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Controllers/KeyVisualStyle.swift"; sourceTree = "<group>"; };
 		D213F0000000000000000003 /* KeyboardViewController+KeyAccessibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Controllers/KeyboardViewController+KeyAccessibility.swift"; sourceTree = "<group>"; };
+		D32030000000000000000001 /* KeyboardDesignTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Views/KeyboardDesignTokens.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -245,6 +247,7 @@
 				D213F0000000000000000001 /* KeyboardKeyButton.swift */,
 				D213F0000000000000000002 /* KeyVisualStyle.swift */,
 				D213F0000000000000000003 /* KeyboardViewController+KeyAccessibility.swift */,
+				D32030000000000000000001 /* KeyboardDesignTokens.swift */,
 				D31930000000000000000001 /* CandidateBarView.swift */,
 				D31930000000000000000002 /* CandidateCollectionView.swift */,
 				D31930000000000000000003 /* CandidateCell.swift */,
@@ -612,6 +615,7 @@
 				D213B0000000000000000001 /* KeyboardKeyButton.swift in KeyboardExtensionTests */,
 				D213B0000000000000000002 /* KeyVisualStyle.swift in KeyboardExtensionTests */,
 				D213B0000000000000000003 /* KeyboardViewController+KeyAccessibility.swift in KeyboardExtensionTests */,
+				D32040000000000000000001 /* KeyboardDesignTokens.swift in KeyboardExtensionTests */,
 				D31940000000000000000001 /* CandidateBarView.swift in KeyboardExtensionTests */,
 				D31940000000000000000002 /* CandidateCollectionView.swift in KeyboardExtensionTests */,
 				D31940000000000000000003 /* CandidateCell.swift in KeyboardExtensionTests */,
