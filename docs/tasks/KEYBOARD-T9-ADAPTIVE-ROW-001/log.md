@@ -47,3 +47,11 @@
 - lane: codex-t9-adaptive-row
 - kind: CHECKPOINT
 - note: Draft PR217 normal push/create succeeded, published head6f6fc129d7eb959f695de09a46e6808d146dd819/base096183ca118cc40ffc16854d1a5336a42cfcbd89. Hosted CI39399503737 all9 jobs success, including final-quality-gate. Product hashes unchanged55283ff. Final local receipt @ 6001416f7939112a3f3110f29d0568cbe63227c6; current receipt/checkpoint not pushed and not represented as exact-head CI-covered. UI-1 remains separate; read-only future-integration text conflicts recorded, none resolved/applied. W unchanged/P=none. Runtime Gate and Conditional review remain; no Ready/Merge/TestFlight/Close. Stop for Human.
+
+## CP-007 CHECKPOINT
+
+- id: CP-007
+- at: 2026-10-20T22:14:39+08:00
+- lane: codex-t9-adaptive-row
+- kind: CHECKPOINT
+- note: Controlled local integration AUTH @ 34c1409e1717008f49281735b957d7d91efdb8a0; exact main78b795f CI attempt2 nine success and Xcode Cloud success verified. Initial local52568c3/remote6f6fc12, two docs retained, clean. Read-only predicted conflicts limited to project/Scheme/UI guide/changelog. W unchanged/P=none. Local ordinary merge authorized; no push/PR update/main change, UI-1 worktree restoration, unrelated diagnostics/Core/Authority edits or historical rewrite.
