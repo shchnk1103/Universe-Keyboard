@@ -14,7 +14,10 @@ enum KeyboardDesignTokens {
 
     enum ExpandedCandidates {
         static let rowHeight: CGFloat = 42
-        static let contentInsets = UIEdgeInsets(top: 3, left: 8, bottom: 6, right: 8)
+        // Center the shorter first row on the compact row's text baseline.
+        static let contentInsets = UIEdgeInsets(
+            top: (CandidateBar.normalCellHeight - rowHeight) / 2,
+            left: CandidateBar.horizontalPadding, bottom: 6, right: CandidateBar.trailingContentPadding)
         static let itemSpacing: CGFloat = 0
         static let minimumReadableExtent: CGFloat = 12
         static let minimumReadableFraction: CGFloat = 0.2
@@ -29,6 +32,15 @@ enum KeyboardDesignTokens {
     enum CandidateActionAppearance {
         static let materialStyle: UIBlurEffect.Style = .systemMaterial
         static let tintOpacity: CGFloat = 0.72
+        static let edgeFadeWidth: CGFloat = 10
+        static let controlDiameter: CGFloat = 36
+        static var controlBackgroundInsets: UIEdgeInsets {
+            let vertical = (CandidateBar.totalHeight - controlDiameter) / 2
+            let horizontal = (CandidateBar.actionZoneWidth - controlDiameter) / 2
+            return UIEdgeInsets(top: vertical, left: horizontal, bottom: vertical, right: horizontal)
+        }
+        static var controlCornerRadius: CGFloat { controlDiameter / 2 }
+        static var symbolColor: UIColor { .secondaryLabel }
 
         static var backgroundColor: UIColor {
             UIColor { traits in

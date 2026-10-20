@@ -73,7 +73,7 @@ nonisolated final class CompactCandidateBarLayoutTests: XCTestCase {
             XCTAssertTrue(f.bar.subviews.compactMap { $0 as? UIVisualEffectView }.first === material)
             XCTAssertEqual(material.alpha, 1)
             XCTAssertNil(material.superview?.mask)
-            XCTAssertNotNil(material.effect)
+            XCTAssertNil(material.effect)
             f.host.view.layoutIfNeeded()
             RunLoop.current.run(until: Date().addingTimeInterval(0.05))
             XCTAssertEqual(f.bar.traitCollection.userInterfaceStyle, style)
@@ -119,11 +119,12 @@ nonisolated final class CompactCandidateBarLayoutTests: XCTestCase {
                 f.bar.setCanExpandCandidates(true)
                 f.bar.updateActionAppearance(reduceTransparency: reduceTransparency)
                 XCTAssertFalse(tint.isHidden)
-                XCTAssertEqual(material.isHidden, reduceTransparency)
-                XCTAssertFalse(
-                    f.bar.subviews.contains { view in
-                        view.layer.sublayers?.contains { $0 is CAGradientLayer } == true
-                    })
+                XCTAssertTrue(material.isHidden)
+                let gradients = tint.layer.sublayers?.compactMap { $0 as? CAGradientLayer } ?? []
+                XCTAssertEqual(gradients.count, 1)
+                XCTAssertEqual(gradients.first?.isHidden, reduceTransparency)
+                XCTAssertEqual(gradients.first?.frame, tint.bounds)
+                XCTAssertEqual(gradients.first?.locations?.count, 3)
             }
         }
     }
@@ -141,7 +142,7 @@ nonisolated final class CompactCandidateBarLayoutTests: XCTestCase {
         XCTAssertEqual(tint.frame.maxX, f.bar.bounds.maxX)
         NotificationCenter.default.post(
             name: UIAccessibility.reduceTransparencyStatusDidChangeNotification, object: nil)
-        XCTAssertEqual(material.isHidden, UIAccessibility.isReduceTransparencyEnabled)
+        XCTAssertTrue(material.isHidden)
     }
 
     @MainActor

@@ -67,6 +67,7 @@ private final class CandidateBarGestureBridge: NSObject, UIGestureRecognizerDele
 final class CandidateBarView: UIView {
     private let actionMaterialView = UIVisualEffectView(effect: nil)
     private let actionTintView = UIView()
+    private let actionEdgeFill = CAGradientLayer()
     private var canExpandCandidates = false
 
     private let recoveryLabel = UILabel()
@@ -202,6 +203,9 @@ final class CandidateBarView: UIView {
         }
         actionMaterialView.accessibilityIdentifier = "candidateActionMaterial"
         actionTintView.accessibilityIdentifier = "candidateActionTint"
+        actionEdgeFill.startPoint = CGPoint(x: 0, y: 0.5)
+        actionEdgeFill.endPoint = CGPoint(x: 1, y: 0.5)
+        actionTintView.layer.addSublayer(actionEdgeFill)
         NSLayoutConstraint.activate([
             actionMaterialView.leadingAnchor.constraint(equalTo: expandButton.leadingAnchor),
             actionMaterialView.trailingAnchor.constraint(equalTo: trailingAnchor),
@@ -226,17 +230,19 @@ final class CandidateBarView: UIView {
     /// The environment supplies accessibility preference; the view owns only material presentation.
     func updateActionAppearance(reduceTransparency: Bool) {
         let appearance = KeyboardDesignTokens.CandidateActionAppearance.self
-        let showMaterial = canExpandCandidates && !reduceTransparency && !isShowingRecoveryNotice
-        // Keep the effect and every ancestor fully opaque in alpha; color tint is a separate layer.
-        if showMaterial != (actionMaterialView.effect != nil) {
-            actionMaterialView.effect = showMaterial ? UIBlurEffect(style: appearance.materialStyle) : nil
-        }
-        actionMaterialView.isHidden = !showMaterial
-        // A disjoint, clipped viewport already prevents text beneath this zone. Do not stack a
-        // decorative gradient over the tint, or leave a standalone plate in idle-dismiss mode.
+        // Use the existing semantic tint as a single blend instead of masking a live backdrop.
+        // The disjoint viewport already clips text; blur is retained only in the expanded control.
+        actionMaterialView.effect = nil
+        actionMaterialView.isHidden = true
         actionTintView.isHidden = !canExpandCandidates || isShowingRecoveryNotice
-        let opacity = reduceTransparency ? 1 : appearance.tintOpacity
-        actionTintView.backgroundColor = appearance.backgroundColor.withAlphaComponent(opacity)
+        let color = appearance.backgroundColor.resolvedColor(with: traitCollection)
+        actionTintView.backgroundColor = reduceTransparency ? color : .clear
+        actionEdgeFill.isHidden = reduceTransparency
+        actionEdgeFill.colors = [
+            color.withAlphaComponent(0).cgColor, color.withAlphaComponent(appearance.tintOpacity).cgColor,
+            color.withAlphaComponent(appearance.tintOpacity).cgColor,
+        ]
+        updateActionEdgeGeometry()
     }
 
     @available(*, unavailable)
@@ -273,9 +279,20 @@ final class CandidateBarView: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
+        updateActionEdgeGeometry()
         #if DEBUG
             refreshDebugHitboxOverlay()
         #endif
+    }
+
+    private func updateActionEdgeGeometry() {
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        actionEdgeFill.frame = actionTintView.bounds
+        let fraction = min(
+            1, KeyboardDesignTokens.CandidateActionAppearance.edgeFadeWidth / max(1, actionTintView.bounds.width))
+        actionEdgeFill.locations = [0, NSNumber(value: Double(fraction)), 1]
+        CATransaction.commit()
     }
 
     #if DEBUG
@@ -740,7 +757,7 @@ final class CandidateBarView: UIView {
         let button = CandidateBarExpandButton(type: .custom)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = UIColor.systemGray.withAlphaComponent(0.001)
-        button.tintColor = .secondaryLabel
+        button.tintColor = KeyboardDesignTokens.CandidateActionAppearance.symbolColor
         button.setImage(trailingChromeImage(expanding: true), for: .normal)
         button.addTarget(target, action: action, for: .touchUpInside)
         button.accessibilityLabel = "展开更多候选词"

@@ -85,8 +85,8 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
                 XCTAssertEqual(collection.frame.minY, 0, accuracy: 0.01)
                 XCTAssertEqual(collection.frame.height, panel.bounds.height)
                 let first = try XCTUnwrap(collection.layoutAttributesForItem(at: IndexPath(item: 0, section: 0)))
-                XCTAssertEqual(first.frame.minY, 3, accuracy: 0.01)
-                XCTAssertEqual(collection.convert(first.frame, to: surface).minY, expected.minY + 3, accuracy: 0.01)
+                XCTAssertEqual(first.frame.minY, 2, accuracy: 0.01)
+                XCTAssertEqual(collection.convert(first.frame, to: surface).minY, expected.minY + 2, accuracy: 0.01)
                 XCTAssertTrue(panel.clipsToBounds)
                 XCTAssertEqual(panel.layer.cornerRadius, sut.keyboardSurfaceMaskCornerRadius)
                 XCTAssertEqual(panel.layer.maskedCorners, [.layerMinXMinYCorner, .layerMaxXMinYCorner])
@@ -172,6 +172,48 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
             XCTAssertEqual(firstKeyTop, 48)
             XCTAssertEqual(sut.preferredKeyboardHeight, 254)
             XCTAssertFalse(sut.shouldReserveT9PinyinPathBar)
+        }
+    }
+
+    @MainActor
+    func testFirstRowTextAlignmentAcrossPresentations() throws {
+        let animations = UIView.areAnimationsEnabled
+        UIView.setAnimationsEnabled(false)
+        defer { UIView.setAnimationsEnabled(animations) }
+        for width in [320.0, 390.0, 430.0] {
+            for nineKey in [false, true] {
+                let sut = makeController(width: width, nineKey: nineKey)
+                seedReadingCandidates(sut)
+                let surface = try XCTUnwrap(sut.keyboardSurfaceView)
+                func textGeometry(_ collection: UICollectionView) throws -> (rect: CGRect, baseline: CGFloat) {
+                    let cell = try XCTUnwrap(collection.cellForItem(at: IndexPath(item: 0, section: 0)))
+                    let label = try XCTUnwrap(descendants(cell).compactMap { $0 as? UILabel }.first { $0.text == "词0" })
+                    let rect = label.textRect(forBounds: label.bounds, limitedToNumberOfLines: 1)
+                    let text = label.convert(rect, to: surface)
+                    let flow = try XCTUnwrap(collection.collectionViewLayout as? UICollectionViewFlowLayout)
+                    print(
+                        "TEXT_GEOMETRY width=\(width) t9=\(nineKey) viewport=\(collection.convert(collection.bounds, to: surface)) inset=\(collection.contentInset) section=\(flow.sectionInset) offset=\(collection.contentOffset) cell=\(cell.frame) label=\(label.frame) text=\(text) font=\(label.font.pointSize) baseline=\(text.minY + label.font.ascender) measured=\((label.text! as NSString).size(withAttributes: [.font: label.font!]))"
+                    )
+                    return (text, text.minY + label.font.ascender)
+                }
+                let compact = try textGeometry(XCTUnwrap(sut.candidateCollectionView))
+                sut.toggleCandidateExpand()
+                layout(sut)
+                let expanded = try textGeometry(XCTUnwrap(sut.expandedCandidateCollectionView))
+                print(
+                    "TEXT_DELTA x=\(expanded.rect.minX - compact.rect.minX) y=\(expanded.rect.minY - compact.rect.minY)"
+                )
+                XCTAssertEqual(expanded.rect.minX, compact.rect.minX, accuracy: 0.01)
+                XCTAssertEqual(expanded.rect.minY, compact.rect.minY, accuracy: 0.01)
+                XCTAssertEqual(expanded.rect.height, compact.rect.height, accuracy: 0.01)
+                XCTAssertEqual(expanded.baseline, compact.baseline, accuracy: 0.01)
+                let compactButton = try XCTUnwrap((sut.candidateBar as? CandidateBarView)?.expandButton)
+                let expandedButton = try XCTUnwrap(
+                    sut.candidateExpandedPanel?.subviews.compactMap { $0 as? UIButton }.first)
+                XCTAssertEqual(compactButton.tintColor, expandedButton.tintColor)
+                XCTAssertEqual(expandedButton.tintColor, KeyboardDesignTokens.CandidateActionAppearance.symbolColor)
+                assertRequiredEqualities(in: sut.view)
+            }
         }
     }
 
@@ -324,7 +366,12 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
             let expanded = try XCTUnwrap(sut.expandedCandidateCollectionView)
             let button = try XCTUnwrap(panel.subviews.compactMap { $0 as? UIButton }.first)
             let material = try XCTUnwrap(panel.subviews.compactMap { $0 as? UIVisualEffectView }.first)
-            XCTAssertEqual(material.frame, button.frame)
+            XCTAssertEqual(
+                material.frame,
+                button.frame.inset(by: KeyboardDesignTokens.CandidateActionAppearance.controlBackgroundInsets))
+            XCTAssertTrue(material.clipsToBounds)
+            XCTAssertEqual(
+                material.layer.cornerRadius, KeyboardDesignTokens.CandidateActionAppearance.controlCornerRadius)
             XCTAssertEqual(panel.backgroundColor?.cgColor.alpha, 0)
             let frames = (0..<120).compactMap {
                 expanded.layoutAttributesForItem(at: IndexPath(item: $0, section: 0))?.frame
@@ -336,7 +383,8 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
                 if left.minY == right.minY {
                     XCTAssertEqual(left.maxX, right.minX)
                 } else {
-                    XCTAssertEqual(right.minX, 8); XCTAssertGreaterThan(right.minY, left.minY)
+                    XCTAssertEqual(right.minX, KeyboardDesignTokens.CandidateBar.horizontalPadding);
+                    XCTAssertGreaterThan(right.minY, left.minY)
                 }
             }
             let originalFrames = frames

@@ -251,6 +251,11 @@ final class ExpandedCandidatePanelContainerView: UIView {
     fileprivate func installActionMaterial(fallbackColor: UIColor) {
         actionFallbackColor = fallbackColor
         guard let button = collapseButton else { return }
+        let appearance = KeyboardDesignTokens.CandidateActionAppearance.self
+        let insets = appearance.controlBackgroundInsets
+        actionMaterial.layer.cornerRadius = appearance.controlCornerRadius
+        actionMaterial.layer.cornerCurve = .continuous
+        actionMaterial.clipsToBounds = true
         actionMaterial.translatesAutoresizingMaskIntoConstraints = false
         actionMaterial.isUserInteractionEnabled = false
         actionMaterial.accessibilityIdentifier = "expandedCandidateActionMaterial"
@@ -259,10 +264,10 @@ final class ExpandedCandidatePanelContainerView: UIView {
         actionFill.isUserInteractionEnabled = false
         actionMaterial.contentView.addSubview(actionFill)
         NSLayoutConstraint.activate([
-            actionMaterial.leadingAnchor.constraint(equalTo: button.leadingAnchor),
-            actionMaterial.trailingAnchor.constraint(equalTo: button.trailingAnchor),
-            actionMaterial.topAnchor.constraint(equalTo: button.topAnchor),
-            actionMaterial.bottomAnchor.constraint(equalTo: button.bottomAnchor),
+            actionMaterial.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: insets.left),
+            actionMaterial.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -insets.right),
+            actionMaterial.topAnchor.constraint(equalTo: button.topAnchor, constant: insets.top),
+            actionMaterial.bottomAnchor.constraint(equalTo: button.bottomAnchor, constant: -insets.bottom),
             actionFill.leadingAnchor.constraint(equalTo: actionMaterial.contentView.leadingAnchor),
             actionFill.trailingAnchor.constraint(equalTo: actionMaterial.contentView.trailingAnchor),
             actionFill.topAnchor.constraint(equalTo: actionMaterial.contentView.topAnchor),
@@ -382,7 +387,7 @@ extension KeyboardViewController {
         (candidateBar as? CandidateBarView)?.setCanExpandCandidates(expands)
         button.configuration = nil
         button.backgroundColor = UIColor.systemGray.withAlphaComponent(0.001)
-        button.tintColor = isCandidateExpanded ? .label : .secondaryLabel
+        button.tintColor = KeyboardDesignTokens.CandidateActionAppearance.symbolColor
         button.setImage(CandidateBarView.trailingChromeImage(expanding: expands), for: .normal)
         if expands {
             button.accessibilityLabel = isCandidateExpanded ? "收起候选词" : "展开更多候选词"
@@ -523,7 +528,7 @@ extension KeyboardViewController {
         let collapseButton = ExpandedCandidateCollapseButton(type: .custom)
         collapseButton.setImage(CandidateBarView.trailingChromeImage(expanding: true), for: .normal)
         collapseButton.imageView?.transform = CGAffineTransform(rotationAngle: .pi)
-        collapseButton.tintColor = .label
+        collapseButton.tintColor = KeyboardDesignTokens.CandidateActionAppearance.symbolColor
         collapseButton.translatesAutoresizingMaskIntoConstraints = false
         // 与横向展开按钮一致：极低 alpha 的 backing 不改变视觉，但能稳定承接操作区触摸。
         collapseButton.backgroundColor = UIColor.systemGray.withAlphaComponent(0.001)

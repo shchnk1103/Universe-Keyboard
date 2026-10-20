@@ -328,3 +328,57 @@ actual iPhone VoiceOver/fast swipe/touch, host apps and corner compositing still
 review. Compare mid-list half-visible expand, scroll upward then downward to ~40 and collapse; rapidly
 toggle and trigger recovery; light/dark/Reduce Transparency; both keyboard layouts including empty T9
 path area. No claim of complete real-device acceptance, no infinite attempts to manufacture visual proof.
+
+
+## V7–V10 bounded visual delivery — 2026-10-20
+
+Entry CP006 c61cd895 / product a415f599; same Writer codex-compact-header, P=none. Human
+reports all five Continuous Candidate Surface device interactions accepted. This iteration only
+changes three presentation files and their two existing test files. Anchor thresholds, reading/snapshot
+semantics, ordered data/paging/selection, reveal animation, fixed34pt path/root/key sizing are unchanged.
+No UI-2/main/other-worktree edits. No Push, PR update, merge, release or closure.
+
+- V7 cause: full-width ordinary action material and flat tint terminate at the same hard edge.
+  Replace the flat tint's appearance with one persistent10pt edge gradient using the existing dynamic
+  semantic background color. Use tint-only fallback for this ordinary disjoint zone (no live blur to
+  mask or expose a second backdrop seam); expanded action retains systemMaterial. Gradient stays
+  entirely inside the56pt action zone, not candidate viewport. Idle/recovery hide it; Reduce Transparency
+  uses opaque semantic fill and hides gradient. No effect-view/ancestor alpha or fade mask introduced.
+- V8 cause: full56×46 material intersects panel's34pt outer corner, yielding irregular clipping.
+  Center a36×36 circular material (radius18) inside the unchanged56×46 hit rectangle. Round geometry
+  is independent of panel corners/background/reveal. Panel stays clear over original keyboard surface;
+  action still consumes its full touch zone while candidates scroll beneath it.
+- V9 measured before production edits:320/390/430 × QWERTY/T9 all +2pt right/+1pt down, including
+  actual UILabel textRect and font-derived baseline. Compact inset left6/top0, Cell46; expanded
+  left8/top3, Cell42. Now shared leading6, top=(46−42)/2=2; contentInset remains zero, initial offset0.
+  Final six fixtures show text delta0/0 and equal font-derived baseline (0.01pt tolerance), not just
+  Cell frames. At390pt: QWERTY text x16/y15/baseline31.1865234375; T9 x16/y49/baseline65.1865234375,
+  identical in both presentations. Font17pt, measured title29.8413×20.2871; actual text rect30×20.3333.
+  Natural wrap and noninitial reading-anchor placement are intentionally not forced into identical x.
+- V10 cause: compact.secondaryLabel versus expanded.label (including state-update path).
+  All three tint sites now use CandidateActionAppearance.symbolColor = secondaryLabel; shared22pt
+  medium glyph and pi rotation unchanged. Dynamic semantic color, no new RGB.
+
+L1 final28/0/0: Controller11 + Extension16 + Keyboard idle1; same actual Controller hierarchy,
+widths/modes, reading-anchor half/sliver/scroll-back/exact-unscrolled-return/invalidation, rapid toggles,
+Reduce Motion/recovery, fixed42/46 rows, symbol geometry, right-boundary and covered hit routing.
+L2 Keyboard49/0/0 + Extension41/0/0. Debug build-for-testing exit0. Format-before-commit and strict
+lint over all16 branch-changed Swift files exit0. No required unsatisfiable/UISV-canvas-connection
+log diagnostics; rendered required-equation assertions pass. Hostless Keyboard screen/host-connection
+warnings are expected harness limitations, not real Extension evidence. No L3 rerun requested.
+
+Preserved first L1 exit65:214 repeated old-leading-inset assertions within one natural-flow case;
+all errors at old test line383 expected8 but actual6, matching authorized shared leading change.
+Updated that assertion to the shared token; kept row contiguity, stable-frame, access and hit checks.
+No unexplained retry, skip, failed-log deletion or relabeling. Measurement and final logs/bundles remain
+in /private/tmp/kch001-v7-v10; v7-v10-evidence.json hashes only completed files after exit receipts.
+Human project.pbxproj remains unstaged, hash298cfdc9cd121ac2413463f5cc9360db2c3317ae024af17ee9d4f57dfceecc9e,
+identical to entry; tests use that preserved Human configuration, excluded from product commit.
+
+Real-device follow-up: both layouts, idle versus populated compact, light/dark/Reduce Transparency,
+compare10pt ordinary edge blend and no idle plate; same first word before/after expansion (left/top/
+baseline and gray glyph),36pt local circle and outer panel corners; scroll under fixed action and last
+candidate; repeat five previously accepted reading/return/rapid-toggle checks, recovery and VoiceOver.
+These visual/gesture properties are pending Human, not declared device-passed by unit tests.
+This is a bounded presentation refinement; verification/tokens capture it, no new architecture document
+or broad design-system migration needed. Existing CHANGELOG UI-1 entry remains applicable.

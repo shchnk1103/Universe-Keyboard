@@ -1,0 +1,92 @@
+{
+  "comparison_head": "c61cd89510548e5018d6f334991b97502876ee6d",
+  "scope": "V7–V10 local presentation only; no publication",
+  "source_sha256": {
+    "Keyboard/Controllers/KeyboardViewController+ExpandedCandidatePanel.swift": "c02c4beb87d91faeb01f7c9ee7f1231bbdd7a9180e31b52eeee58f6e5f0cb804",
+    "Keyboard/Views/CandidateBar/CandidateBarView.swift": "ac59b14d56c98bae1677265becca76401cb498b691a627c54355a276dd49abd8",
+    "Keyboard/Views/KeyboardDesignTokens.swift": "f740bbbafab96aa9de1f8ea3a1df1d7abeb22e14e8027c21d59724c059a5a4f0",
+    "KeyboardExtensionTests/CompactCandidateBarLayoutTests.swift": "e922cb952e6c04527fd11e6beb1cd748ec3b72e6d19e95aff73aee2e13f0c54a",
+    "KeyboardTests/ControllerLayout/CompactHeaderControllerLayoutTests.swift": "4914ee9d39c759fd9abddaad540155f2651bfdefe2dccf240c60a839bb4f19a8"
+  },
+  "human_uncommitted_project": {
+    "path": "Universe Keyboard.xcodeproj/project.pbxproj",
+    "sha256": "298cfdc9cd121ac2413463f5cc9360db2c3317ae024af17ee9d4f57dfceecc9e",
+    "included_in_commit": false,
+    "unchanged_since_entry": true
+  },
+  "run_results": {
+    "measurement": "Pass exit0;1 test; pre-fix actual text delta +2pt x/+1pt y in six width/mode fixtures",
+    "l1": "Failed exit65;214 assertions in one natural-flow test still expected obsolete8pt leading inset; all other directed cases passed; preserved, not relabeled",
+    "l1-final": "Pass exit0;28 tests/0 failures/0 skipped (Controller11,Extension16,Keyboard1)",
+    "l2": "Pass exit0;Keyboard49 and Extension41/0 failures/0 skipped",
+    "debug-build-for-testing": "Pass exit0",
+    "format-precommit": "Pass exit0;all16 changed Swift files against origin/main"
+  },
+  "completed_artifacts": {
+    "/private/tmp/kch001-v7-v10/debug-build-for-testing.exit": {
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "size_bytes": 2
+    },
+    "/private/tmp/kch001-v7-v10/debug-build-for-testing.log": {
+      "sha256": "8539743a98e06ffed9fb25c987f06f06423228efc1f7b5624578d8500d12747e",
+      "size_bytes": 5235
+    },
+    "/private/tmp/kch001-v7-v10/format-files.txt": {
+      "sha256": "d6541241edcc6386d4d24504ffddc77ca41b942e7fbe925e6e38c42ddd515b88",
+      "size_bytes": 960
+    },
+    "/private/tmp/kch001-v7-v10/format-precommit.exit": {
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "size_bytes": 2
+    },
+    "/private/tmp/kch001-v7-v10/format-precommit.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    "/private/tmp/kch001-v7-v10/l1-final.exit": {
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "size_bytes": 2
+    },
+    "/private/tmp/kch001-v7-v10/l1-final.log": {
+      "sha256": "cdc73d075b064b897f36c799045f625bbe43f15dd13c2d9a68c18d7076a74ced",
+      "size_bytes": 257077
+    },
+    "/private/tmp/kch001-v7-v10/l1.exit": {
+      "sha256": "979b894f2d91bf199766571d58024f020d1a44a417da5f48e1fa1cdf554a14f5",
+      "size_bytes": 3
+    },
+    "/private/tmp/kch001-v7-v10/l1.log": {
+      "sha256": "722680e9eaafd524cac3b2242cc61391a772645f68d1c384224bf6991c1c7158",
+      "size_bytes": 339075
+    },
+    "/private/tmp/kch001-v7-v10/l2.exit": {
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "size_bytes": 2
+    },
+    "/private/tmp/kch001-v7-v10/l2.log": {
+      "sha256": "9049261d2ed38d464789bfad6b741b4c6535b4fc60d45633a16cd1bd50b1b0bf",
+      "size_bytes": 59473
+    },
+    "/private/tmp/kch001-v7-v10/measurement.exit": {
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "size_bytes": 2
+    },
+    "/private/tmp/kch001-v7-v10/measurement.log": {
+      "sha256": "1593a0b2d6ffe8d446e1cda0914501ec47b15e082d1a5af2a371d60a4de12bb7",
+      "size_bytes": 74190
+    },
+    "/private/tmp/kch001-v7-v10/strict-format.exit": {
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+      "size_bytes": 2
+    },
+    "/private/tmp/kch001-v7-v10/strict-format.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    }
+  },
+  "limitations": [
+    "In-process production Controller, not system-activated Keyboard Extension",
+    "Real blur/color/corner/baseline perception and gestures still require Human iPhone review",
+    "L3 Core/App/Bridge/Release not rerun; previous evidence not claimed as current visual proof"
+  ]
+}
