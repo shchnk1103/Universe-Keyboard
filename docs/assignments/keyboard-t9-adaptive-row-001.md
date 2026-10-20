@@ -8,7 +8,7 @@ record_id: KEYBOARD-T9-ADAPTIVE-ROW-001
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current phase | QA-001 diagnosis complete; native evidence pending |
+| Current phase | QA-001 bounded device trace preparation |
 | Non-claims | Human-relayed Claude Conditional review; no real Extension/Product Gate, Ready, Merge, TestFlight or Close |
 | Next | Human/Claude independent review of local integration candidate; no publication |
 | Residuals | [Current Sticky verification](../evidence/keyboard-t9-adaptive-row-001/sticky-verification.md); real host geometry and interaction remain Human Gate |
@@ -66,3 +66,7 @@ Human authorizes [bounded local integration](../authorizations/AUTH-KEYBOARD-T9-
 [Current bounded AUTH](../authorizations/AUTH-KEYBOARD-T9-ADAPTIVE-ROW-001-QA001.md). Human011d3fa two rounds8 PASS/1 FAIL; first input following punctuation/kaomoji expansion leaves blank Path until next key, which includes both inputs. Root cause unconfirmed at entry; no input-loss/Core claim. Same Writer/P=none; local only, then independent re-review and Human retest.
 
 QA-001诊断结果：[报告](../evidence/keyboard-t9-adaptive-row-001/qa001-diagnosis.md)。同步边界8序列首键正确、108项定向测试通过，但未复现native空白、根因未知、未改产品源码。Human FAIL保持OPEN；Implementation BLOCK / Validation CONDITIONAL PASS / INSUFFICIENT EVIDENCE。等待Human/Claude决定设备诊断安排，禁止发布。
+
+## Device trace preparation
+
+[Current AUTH](../authorizations/AUTH-KEYBOARD-T9-ADAPTIVE-ROW-001-DEVICE-TRACE.md) permits only DEBUG memory diagnostics, local validation/commits and shortest Human instructions. QA-001 OPEN/MAJOR; no root-cause fix or real-device PASS claim.
