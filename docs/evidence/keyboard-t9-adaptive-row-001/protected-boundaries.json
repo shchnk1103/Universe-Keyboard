@@ -1,0 +1,13 @@
+{
+  "baseline": "096183ca118cc40ffc16854d1a5336a42cfcbd89",
+  "changed_protected_paths": {
+    "Packages/KeyboardCore": [],
+    "Packages/RimeBridge": [],
+    "Keyboard/Views/CandidateBar": [],
+    "Keyboard/Controllers/KeyboardViewController+CandidateBar.swift": [],
+    "Keyboard/Controllers/KeyboardViewController+ExpandedCandidatePanel.swift": [],
+    "Keyboard/Controllers/KeyboardViewController.swift": []
+  },
+  "UI1_commits_included": false,
+  "root_policy": "single priority750 request, unchanged allowsSelfSizing default"
+}

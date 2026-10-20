@@ -401,6 +401,9 @@ final class KeyboardViewController: UIViewController {
         pathPanelDismissals += 1
         isPinyinPathExpanded = false
     }
+    // The real Controller layout is covered by KeyboardLayoutIntegrationTests.
+    func refreshT9PinyinPathBarVisibility() {}
+
     func updateSelectPinyinButtonAvailability() {
         selectionAvailabilityRefreshes += 1
         t9SelectPinyinButton?.isEnabled = selectionShouldBeAvailable

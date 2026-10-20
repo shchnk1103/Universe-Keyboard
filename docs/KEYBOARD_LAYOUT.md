@@ -78,7 +78,7 @@ Nine-key depends on fog-song / rime-ice T9 resources. If those resources are mis
 
 ### Precise path bar geometry
 
-- Order: **path bar (34 pt, fixed reservation)** → Chinese candidate bar (34 pt) → nine-key pad.
+- Order: **adaptive path bar (idle0pt / composition34pt)** → Chinese candidate container (48pt = visual34 + gesture bridge14) → nine-key pad. `KEYBOARD-T9-ADAPTIVE-ROW-001` retains34pt while any existing composition/Path signal or Recovery is active, even with an empty Path catalog. Only the top row and the existing750-priority root request change; keys and candidate metrics stay fixed. Real Extension screen-coordinate acceptance remains pending Human Gate.
 - Path bar is reserved whenever Chinese nine-key letters chrome is active, even with empty composition (no height jump).
 - Path chip hit targets expand vertically to 44 pt via `ChromeTouchHitGeometry.pathBarExpandedHitBounds`. Delivery remaps item-frame chrome to the cell and uses a direct tap; `didSelect` is only a fallback. See [`PATH-BAR-TOUCH-001`](assignments/path-bar-touch-001.md).
 - Compact bar shows at most **5** single-line path labels (no multi-syllable wrap); plain text, no candidate pills; optional 1px separator above the Chinese candidate bar.
@@ -123,7 +123,7 @@ Return **never** shows host action text such as `send`; VoiceOver still uses `re
 
 ### Placeholders / productized controls
 
-- **选拼音** — current behavior is governed by [`KEYBOARD-LAYOUT-9KEY-PINYIN-002`](assignments/keyboard-layout-9key-pinyin-002.md) / ADR 0021: enabled only when compact choices exist; first press selects the first choice, later presses select next/wrap. Compact paths remain directly tappable in the fixed bar.
+- **选拼音** — current behavior is governed by [`KEYBOARD-LAYOUT-9KEY-PINYIN-002`](assignments/keyboard-layout-9key-pinyin-002.md) / ADR 0021: enabled only when compact choices exist; first press selects the first choice, later presses select next/wrap. Compact paths remain directly tappable in the visible34pt bar; a collapsed row has no hit/AX area.
 - **常用标点 (`，。？！`)** — [`KEYBOARD-LAYOUT-9KEY-PUNCT-001`](assignments/keyboard-layout-9key-punct-001.md) / ADR 0029: 单击上屏待确认 `，`，候选栏展示本地标点；1.0s 内同键轮换 `，。？！`；候选点选替换 pending，之后再点该键新开逗号。
 - **颜表情 (`^_^`)** — [`RELEASE-2026-0801-08`](assignments/release-2026-08-01-08-kaomoji-content.md) / ADR 0030: 九键与中文符号页共用 `.pressKaomoji`；单击上屏待确认 `^_^`，候选栏展示本地颜表情并可替换；同键不再轮换，而是接受后再新开默认 `^_^`。
 

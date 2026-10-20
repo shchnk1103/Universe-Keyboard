@@ -21,7 +21,7 @@ private final class T9PinyinPathBarCollectionView: UICollectionView {
     }
 }
 
-/// Fixed-height precise pinyin path bar above the Chinese candidate bar (ADR 0020/0023).
+/// Adaptive precise pinyin path bar above the Chinese candidate bar (ADR 0020/0023).
 /// Horizontal collection shows the full Core-issued focus Path set (no prefix(5) truncation).
 ///
 /// Presentation mirrors the candidate bar: transparent scroll container, plain `UILabel`
@@ -33,6 +33,8 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
     private let idleHintLabel = UILabel()
     private let separator = UIView()
     private let height: CGFloat
+    private var rowHeightConstraint: NSLayoutConstraint!
+    private var collectionBottomConstraint: NSLayoutConstraint!
     private weak var target: AnyObject?
     private let selectAction: Selector
     private let itemTapRecognizer = UITapGestureRecognizer()
@@ -111,12 +113,14 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
         separator.isOpaque = false
         addSubview(separator)
 
+        rowHeightConstraint = heightAnchor.constraint(equalToConstant: height)
+        collectionBottomConstraint = collectionView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -1)
         NSLayoutConstraint.activate([
-            heightAnchor.constraint(equalToConstant: height),
+            rowHeightConstraint,
             collectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
             collectionView.topAnchor.constraint(equalTo: topAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -1),
+            collectionBottomConstraint,
             idleHintLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
             idleHintLabel.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -12),
             idleHintLabel.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor),
@@ -133,6 +137,18 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    /// Collapse the actual arranged row, including hit testing and accessibility.
+    /// Keep the collection's required edges valid even at zero height.
+    func setRowVisible(_ visible: Bool) {
+        let targetHeight = visible ? height : 0
+        guard rowHeightConstraint.constant != targetHeight else { return }
+        rowHeightConstraint.constant = targetHeight
+        collectionBottomConstraint.constant = visible ? -1 : 0
+        accessibilityElementsHidden = !visible
+        isHidden = !visible
+        setNeedsLayout()
     }
 
     /// Publish Core paths for one composition revision.
@@ -163,6 +179,14 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
         collectionView.reloadData()
         collectionView.layoutIfNeeded()
 
+        revealPendingPathIfPossible()
+        setNeedsLayout()
+    }
+
+    /// A newly expanded row must obtain its real viewport before scrolling.
+    /// Never consume a pending reveal against the collapsed zero-height viewport.
+    private func revealPendingPathIfPossible() {
+        guard !isHidden, collectionView.bounds.width > 0, collectionView.bounds.height > 0 else { return }
         if shouldScrollToStartOnNextReload, !paths.isEmpty {
             shouldScrollToStartOnNextReload = false
             let index = IndexPath(item: 0, section: 0)
@@ -290,11 +314,12 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
     /// Expand the vertical hit target toward the 44pt accessibility minimum without
     /// changing the fixed 34pt Path Bar reservation used by keyboard chrome.
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        ChromeTouchHitGeometry.pathBarExpandedHitBounds(barBounds: bounds).contains(point)
+        !isHidden && rowHeightConstraint.constant > 0
+            && ChromeTouchHitGeometry.pathBarExpandedHitBounds(barBounds: bounds).contains(point)
     }
 
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        guard isUserInteractionEnabled, !isHidden, alpha > 0.01 else { return nil }
+        guard isUserInteractionEnabled, !isHidden, rowHeightConstraint.constant > 0, alpha > 0.01 else { return nil }
         guard ChromeTouchHitGeometry.pathBarExpandedHitBounds(barBounds: bounds).contains(point)
         else { return nil }
 
@@ -315,6 +340,8 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
 
     override func layoutSubviews() {
         super.layoutSubviews()
+        collectionView.layoutIfNeeded()
+        revealPendingPathIfPossible()
         #if DEBUG
             refreshDebugHitboxOverlay()
         #endif

@@ -1,0 +1,11 @@
+{
+  "Keyboard/Controllers/KeyboardViewController+Layout.swift": "5bed9ad1bf99d1f2a27beb8f163f24d7009e08cc8838a141e57b61190d0d4e59",
+  "Keyboard/Controllers/KeyboardViewController+Presentation.swift": "ea0f776b8323d0a88437e8df3d65e0b77a8ee7f4aef82bf05e6add174153bf31",
+  "Keyboard/Controllers/KeyboardViewController+T9InputRecovery.swift": "1176c0fa4ddc3c1f353f7ba4f6171977b04b1c1eb7c8aeedc67d4c16725f577c",
+  "Keyboard/Controllers/KeyboardViewController+T9PinyinPath.swift": "12591b8ad63d2b18d272d5f53ae377132a83a68a11b021de4c695962d324e3ec",
+  "Keyboard/Views/T9PinyinPathBarView.swift": "c3f8f619bd409805043c21c3fdc09c843dec6f93dd7e16738bc678ca66ce2736",
+  "KeyboardExtensionTests/CandidatePagingConsumerFixtureTests.swift": "8f719696b0635a3a488e0291a2c6cf918f41a14c29ffb0b0cf87a64597299c05",
+  "Universe Keyboard.xcodeproj/project.pbxproj": "2d413e614d9085d5111285e0faf4f6ea7fbe5d567f18b47ea8fc4a3573892709",
+  "Universe Keyboard.xcodeproj/xcshareddata/xcschemes/Universe Keyboard.xcscheme": "f228a2255203e3d23118659d8780792575ded1cd65d01647ccba476c015d070d",
+  "KeyboardLayoutIntegrationTests/T9AdaptiveRowTests.swift": "362e25925ae2384dfeaf94b969cf5d83626b130f057acd42ef58f67ac025cefc"
+}

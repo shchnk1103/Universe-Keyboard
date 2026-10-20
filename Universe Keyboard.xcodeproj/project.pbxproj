@@ -33,6 +33,8 @@
 		D213B0000000000000000001 /* KeyboardKeyButton.swift in KeyboardExtensionTests */ = {isa = PBXBuildFile; fileRef = D213F0000000000000000001 /* KeyboardKeyButton.swift */; };
 		D213B0000000000000000002 /* KeyVisualStyle.swift in KeyboardExtensionTests */ = {isa = PBXBuildFile; fileRef = D213F0000000000000000002 /* KeyVisualStyle.swift */; };
 		D213B0000000000000000003 /* KeyboardViewController+KeyAccessibility.swift in KeyboardExtensionTests */ = {isa = PBXBuildFile; fileRef = D213F0000000000000000003 /* KeyboardViewController+KeyAccessibility.swift */; };
+		ADA900000000000000000005 /* KeyboardCore integration */ = {isa = PBXBuildFile; productRef = 793AC8812FB0BE0600DAE8A0; };
+		ADA900000000000000000006 /* RimeBridge integration */ = {isa = PBXBuildFile; productRef = 7A6000042FC0000000000001; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -104,6 +106,7 @@
 		D213F0000000000000000001 /* KeyboardKeyButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Controllers/KeyboardKeyButton.swift"; sourceTree = "<group>"; };
 		D213F0000000000000000002 /* KeyVisualStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Controllers/KeyVisualStyle.swift"; sourceTree = "<group>"; };
 		D213F0000000000000000003 /* KeyboardViewController+KeyAccessibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Controllers/KeyboardViewController+KeyAccessibility.swift"; sourceTree = "<group>"; };
+		ADA900000000000000000001 /* KeyboardLayoutIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = KeyboardLayoutIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -114,6 +117,7 @@
 			);
 			target = 793AC85B2FB0BE0600DAE835 /* Keyboard */;
 		};
+		ADA900000000000000000002 /* Integration sources exclusions */ = {isa = PBXFileSystemSynchronizedBuildFileExceptionSet; membershipExceptions = (Info.plist,); target = ADA900000000000000000003; };
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -126,6 +130,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				793AC8642FB0BE0600DAE835 /* Exceptions for "Keyboard" folder in "Keyboard" target */,
+                ADA900000000000000000002 /* Integration sources exclusions */,
 			);
 			path = Keyboard;
 			sourceTree = "<group>";
@@ -166,6 +171,7 @@
 			path = Keyboard/Controllers;
 			sourceTree = "<group>";
 		};
+		ADA900000000000000000004 /* KeyboardLayoutIntegrationTests */ = {isa = PBXFileSystemSynchronizedRootGroup; path = KeyboardLayoutIntegrationTests; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -227,6 +233,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		ADA900000000000000000007 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (ADA900000000000000000005, ADA900000000000000000006,); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -252,6 +259,7 @@
 				D31930000000000000000005 /* DebugKeyTouchRangeOverlayView.swift */,
 				7A6300022FD0000000000001 /* UniverseKeyboardUITests */,
 				7A6400052FD0000000000001 /* KeyboardExtensionTests */,
+                ADA900000000000000000004 /* KeyboardLayoutIntegrationTests */,
 				7A6400102FD0000000000001 /* Coordinator source compiled for extension tests */,
 				793AC84B2FB0BDB000DAE835 /* Products */,
 			);
@@ -267,6 +275,7 @@
 				7A6200042FC0000000000001 /* KeyboardTests.xctest */,
 				7A6300012FD0000000000001 /* UniverseKeyboardUITests.xctest */,
 				7A6400042FD0000000000001 /* KeyboardExtensionTests.xctest */,
+                ADA900000000000000000001 /* KeyboardLayoutIntegrationTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -442,6 +451,18 @@
 			productReference = 7A6400042FD0000000000001 /* KeyboardExtensionTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		ADA900000000000000000003 /* KeyboardLayoutIntegrationTests */ = {
+            isa = PBXNativeTarget;
+            buildConfigurationList = ADA90000000000000000000A;
+            buildPhases = (ADA900000000000000000008, ADA900000000000000000007, ADA900000000000000000009,);
+            buildRules = (); dependencies = ();
+            fileSystemSynchronizedGroups = (793AC85D2FB0BE0600DAE835, ADA900000000000000000004,);
+            name = KeyboardLayoutIntegrationTests;
+            packageProductDependencies = (793AC8812FB0BE0600DAE8A0, 7A6000042FC0000000000001,);
+            productName = KeyboardLayoutIntegrationTests;
+            productReference = ADA900000000000000000001;
+            productType = "com.apple.product-type.bundle.unit-test";
+        };
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -501,6 +522,7 @@
 				7A62000A2FC0000000000001 /* KeyboardTests */,
 				7A6300062FD0000000000001 /* UniverseKeyboardUITests */,
 				7A6400062FD0000000000001 /* KeyboardExtensionTests */,
+                ADA900000000000000000003 /* KeyboardLayoutIntegrationTests */,
 			);
 		};
 /* End PBXProject section */
@@ -555,6 +577,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		ADA900000000000000000009 = {isa = PBXResourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -623,6 +646,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		ADA900000000000000000008 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1233,6 +1257,117 @@
 			};
 			name = Release;
 		};
+		ADA90000000000000000000B /* Debug */ = {
+            isa = XCBuildConfiguration;
+            buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = C33N6HTS9N;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Universe Keyboard";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LIBGLOG_FORCE_LOAD = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libglog.xcframework/ios-arm64/libglog.a";
+				"LIBGLOG_FORCE_LOAD[sdk=iphonesimulator*]" = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libglog.xcframework/ios-arm64_x86_64-simulator/libglog.a";
+				LIBLUA_FORCE_LOAD = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/liblua.xcframework/ios-arm64/liblua.a";
+				"LIBLUA_FORCE_LOAD[sdk=iphonesimulator*]" = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/liblua.xcframework/ios-arm64_x86_64-simulator/liblua.a";
+				LIBRIME_LUA_FORCE_LOAD = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/librime-lua.xcframework/ios-arm64/librime-lua.a";
+				"LIBRIME_LUA_FORCE_LOAD[sdk=iphonesimulator*]" = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/librime-lua.xcframework/ios-arm64_x86_64-simulator/librime-lua.a";
+				LIBRIME_OCTAGRAM_FORCE_LOAD = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/librime-octagram.xcframework/ios-arm64/librime-octagram.a";
+				"LIBRIME_OCTAGRAM_FORCE_LOAD[sdk=iphonesimulator*]" = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/librime-octagram.xcframework/ios-arm64_x86_64-simulator/librime-octagram.a";
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-lc++",
+					"-force_load",
+					"$(LIBLUA_FORCE_LOAD)",
+					"-force_load",
+					"$(LIBRIME_LUA_FORCE_LOAD)",
+					"-force_load",
+					"$(LIBRIME_OCTAGRAM_FORCE_LOAD)",
+					"-force_load",
+					"$(LIBGLOG_FORCE_LOAD)",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.DoubleShy0N.Universe-Keyboard.KeyboardLayoutIntegrationTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Keyboard/Bridge/Keyboard-Bridging-Header.h";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+                GENERATE_INFOPLIST_FILE = YES;
+                TEST_HOST = "";
+                BUNDLE_LOADER = "";
+            };
+            name = Debug;
+        };
+		ADA90000000000000000000C /* Release */ = {
+            isa = XCBuildConfiguration;
+            buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = C33N6HTS9N;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Universe Keyboard";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LIBGLOG_FORCE_LOAD = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libglog.xcframework/ios-arm64/libglog.a";
+				"LIBGLOG_FORCE_LOAD[sdk=iphonesimulator*]" = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libglog.xcframework/ios-arm64_x86_64-simulator/libglog.a";
+				LIBLUA_FORCE_LOAD = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/liblua.xcframework/ios-arm64/liblua.a";
+				"LIBLUA_FORCE_LOAD[sdk=iphonesimulator*]" = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/liblua.xcframework/ios-arm64_x86_64-simulator/liblua.a";
+				LIBRIME_LUA_FORCE_LOAD = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/librime-lua.xcframework/ios-arm64/librime-lua.a";
+				"LIBRIME_LUA_FORCE_LOAD[sdk=iphonesimulator*]" = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/librime-lua.xcframework/ios-arm64_x86_64-simulator/librime-lua.a";
+				LIBRIME_OCTAGRAM_FORCE_LOAD = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/librime-octagram.xcframework/ios-arm64/librime-octagram.a";
+				"LIBRIME_OCTAGRAM_FORCE_LOAD[sdk=iphonesimulator*]" = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/librime-octagram.xcframework/ios-arm64_x86_64-simulator/librime-octagram.a";
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-lc++",
+					"-force_load",
+					"$(LIBLUA_FORCE_LOAD)",
+					"-force_load",
+					"$(LIBRIME_LUA_FORCE_LOAD)",
+					"-force_load",
+					"$(LIBRIME_OCTAGRAM_FORCE_LOAD)",
+					"-force_load",
+					"$(LIBGLOG_FORCE_LOAD)",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.DoubleShy0N.Universe-Keyboard.KeyboardLayoutIntegrationTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_STRICT_CONCURRENCY = complete;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "Keyboard/Bridge/Keyboard-Bridging-Header.h";
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+                GENERATE_INFOPLIST_FILE = YES;
+                TEST_HOST = "";
+                BUNDLE_LOADER = "";
+            };
+            name = Release;
+        };
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1308,6 +1443,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		ADA90000000000000000000A = {isa = XCConfigurationList; buildConfigurations = (ADA90000000000000000000B, ADA90000000000000000000C,); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */

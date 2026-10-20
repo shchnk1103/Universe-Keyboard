@@ -33,26 +33,30 @@ import KeyboardCore
 import UIKit
 
 extension KeyboardViewController {
-    var preferredKeyboardHeight: CGFloat {
-        var height =
-            keyboardContentTopInset
+    var keyboardHeightWithoutT9Path: CGFloat {
+        keyboardContentTopInset
             + candidateBarHeight
             + candidateToKeySpacing
             + keyHeight * 4
             + keySpacing * 2
             + keyboardGroupSpacing
             + keyboardContentBottomInset
-        if shouldReserveT9PinyinPathBar {
-            height += t9PinyinPathBarHeight
-        }
-        return height
+    }
+
+    var preferredKeyboardHeight: CGFloat {
+        keyboardHeightWithoutT9Path + presentedT9PinyinPathBarHeight
     }
 
     /// Requests the compact visual height used by the current keyboard layout.
     /// Row heights remain unchanged; the reduction comes from candidate/top spacing only.
-    func installPreferredKeyboardHeight() {
-        keyboardHeightConstraint?.isActive = false
-        let constraint = view.heightAnchor.constraint(equalToConstant: preferredKeyboardHeight)
+    func installPreferredKeyboardHeight(height: CGFloat? = nil) {
+        let height = height ?? preferredKeyboardHeight
+        if let constraint = keyboardHeightConstraint {
+            // Keep a single flexible request; same-state refreshes do no constraint work.
+            if constraint.constant != height { constraint.constant = height }
+            return
+        }
+        let constraint = view.heightAnchor.constraint(equalToConstant: height)
         constraint.priority = .defaultHigh
         constraint.isActive = true
         keyboardHeightConstraint = constraint

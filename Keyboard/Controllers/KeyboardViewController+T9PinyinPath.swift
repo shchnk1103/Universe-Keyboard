@@ -12,6 +12,42 @@ extension KeyboardViewController {
             && cachedT9ReadinessMatched
     }
 
+    /// Presentation only: collapse only when every existing composition signal is idle.
+    /// A temporarily empty Path catalog is not evidence that composition ended.
+    func shouldShowT9PinyinPathBar(_ snapshot: T9CompositionPresentationSnapshot) -> Bool {
+        guard shouldReserveT9PinyinPathBar else { return false }
+        if shouldBlockT9RecoveryPresentation { return true }
+        return !snapshot.paths.isEmpty
+            || !snapshot.sourceDigits.isEmpty
+            || !(snapshot.rimeRawInput ?? "").isEmpty
+            || !snapshot.visiblePreedit.isEmpty
+            || !snapshot.compositionPreedit.isEmpty
+            || !snapshot.confirmedSyllables.isEmpty
+            || !(snapshot.lockedLetterPrefix ?? "").isEmpty
+            || snapshot.provisionalPathID != nil
+            || snapshot.selectedPathID != nil
+            || !controller.state.currentComposition.isEmpty
+            || controller.state.partialCommit != nil
+    }
+
+    var presentedT9PinyinPathBarHeight: CGFloat {
+        guard controller != nil, shouldReserveT9PinyinPathBar else { return 0 }
+        return shouldShowT9PinyinPathBar(controller.t9CompositionPresentationSnapshot())
+            ? t9PinyinPathBarHeight : 0
+    }
+
+    func refreshT9PinyinPathBarVisibility(_ snapshot: T9CompositionPresentationSnapshot? = nil) {
+        guard let bar = t9PinyinPathBarView else { return }
+        let snapshot = snapshot ?? controller.t9CompositionPresentationSnapshot()
+        UIView.performWithoutAnimation {
+            let visible = shouldShowT9PinyinPathBar(snapshot)
+            bar.setRowVisible(visible)
+            installPreferredKeyboardHeight(
+                height: keyboardHeightWithoutT9Path + (visible ? t9PinyinPathBarHeight : 0)
+            )
+        }
+    }
+
     func makeT9PinyinPathBar() -> UIView {
         let bar = T9PinyinPathBarView(
             height: t9PinyinPathBarHeight,
@@ -43,6 +79,7 @@ extension KeyboardViewController {
     }
 
     func applyT9PresentationSnapshot(_ snapshot: T9CompositionPresentationSnapshot) {
+        defer { refreshT9PinyinPathBarVisibility(snapshot) }
         // Path bar
         if let bar = t9PinyinPathBarView {
             let selected = snapshot.paths.first { $0.id == snapshot.selectedPathID }
@@ -123,6 +160,7 @@ extension KeyboardViewController {
         }
         guard let bar = t9PinyinPathBarView else { return }
         let snapshot = controller.t9CompositionPresentationSnapshot()
+        defer { refreshT9PinyinPathBarVisibility(snapshot) }
         let selected = snapshot.paths.first { $0.id == snapshot.selectedPathID }
         bar.setPaths(
             snapshot.paths,
