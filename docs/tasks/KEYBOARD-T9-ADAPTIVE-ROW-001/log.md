@@ -31,3 +31,11 @@
 - lane: codex-t9-adaptive-row
 - kind: CHECKPOINT
 - note: Sticky local product 55283ff718d9197ad7f7564f0808573369835187; L1 5/0/0, Keyboard49/0/0, Extension35/0/0, Debug build-for-testing and strict Swift8 Pass. No failed test/skip or new required-constraint conflict in this correction. Existing750/root/view/Recovery/panel mechanisms retained. Reset requires completed disappearance + existing hidden gate + detached view, consumed on next appearance; ambiguous real-host cases conservatively retain34pt and remain Runtime Gate. W unchanged/P=none; no HANDOFF/ACCEPT. Product/checkpoint stay local, remote initial docs carrier unchanged. Stop for Human; no product Push/PR/Merge/TestFlight.
+
+## CP-005 CHECKPOINT
+
+- id: CP-005
+- at: 2026-10-20T17:15:52+08:00
+- lane: codex-t9-adaptive-row
+- kind: CHECKPOINT
+- note: Human authorizes frozen product push, Draft PR to main and existing CI observation @ 417e150052bae14e9cb553922f8608713ae86495. Source hashes match55283ff, main remains096183ca, UI-1 Draft216 remains independent. Human relays Sticky Pass / Lifecycle, Architecture, Quality Conditional, no code blocker; no new independent review claimed. W unchanged/P=none. No product edit, CI fix/bypass, Merge, Ready, TestFlight or Close permitted. Prior local-only frontier superseded only by publication AUTH.
