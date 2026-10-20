@@ -3,7 +3,7 @@
 - Issuer: Human Product Lead, current Codex chat, 2026-10-20 Asia/Shanghai.
 - Decision: UI-2 Draft PR Authorization; this is a receipt of Human authority.
 - Target: KEYBOARD-T9-ADAPTIVE-ROW-001; existing Writer codex-t9-adaptive-row / branch codex/keyboard-t9-adaptive-row-001.
-- State: active for this bounded publication/observation slice, ending at report and stop.
+- State: publication and CI observation completed; final local record/checkpoint and report only, then stop. PR217 remains Draft; no further publication/product action authorized.
 - Actions: normal push of unchanged reviewed product55283ff718d9197ad7f7564f0808573369835187 plus existing history/necessary KOS records; create one Draft PR to main; observe existing complete GitHub CI; necessary records/checkpoints.
 - Scope: product hashes frozen in sticky-manifest.json; no product source/test changes. Only this publication receipt, Assignment/task/evidence/current-status records may change.
 - Supersession: prior local-only product frontier is superseded only for this slice. Implementation and Sticky authority remain historical receipts, not authority for new implementation.
