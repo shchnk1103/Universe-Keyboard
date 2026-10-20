@@ -811,6 +811,12 @@ class KeyboardViewController: UIInputViewController {
             layoutQueryCostProbeControls()
         #endif
 
+        if let panel = candidateExpandedPanel as? ExpandedCandidatePanelContainerView {
+            rootStack.layoutIfNeeded()
+            panel.layoutIfNeeded()
+            panel.synchronizeCoveredGeometry()
+        }
+
         // Nested nine-key stacks finish layout after the root stack. Build the
         // shared hit-test/overlay snapshot only at this stable UIKit boundary.
         (rootStack as? KeyboardInputHitAreaStackView)?.refreshKeyTouchGeometry()

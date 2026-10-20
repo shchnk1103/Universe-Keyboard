@@ -10,6 +10,8 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
     func testIdleCompositionAndRapidRetypePreserveCandidateAndKeys() throws {
         for width: CGFloat in [320, 390, 430] {
             let owner = makeOwner(width: width)
+            XCTAssertEqual(owner.keyboardHeightWithoutT9Path, 254)
+            XCTAssertEqual(expectedHeight(owner, expanded: true), 288)
             let bar = try XCTUnwrap(owner.t9PinyinPathBarView)
             let request = try XCTUnwrap(owner.keyboardHeightConstraint)
             let candidate = try XCTUnwrap(owner.candidateBar)
@@ -17,7 +19,7 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
             XCTAssertFalse(keys.isEmpty)
             let idle = measure(owner)
             XCTAssertEqual(idle.keys.first?.height, 45)
-            XCTAssertEqual(request.constant, 256)
+            XCTAssertEqual(request.constant, expectedHeight(owner, expanded: false))
             XCTAssertEqual(bar.frame.height, 0)
             XCTAssertTrue(bar.isHidden)
             XCTAssertNil(bar.hitTest(CGPoint(x: 20, y: 0), with: nil))
@@ -25,20 +27,22 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
 
             for _ in 0..<3 {
                 owner.refreshT9PinyinPathBar()  // A no-input function/UI refresh is not first input.
-                XCTAssertEqual(request.constant, 256)
+                XCTAssertEqual(request.constant, expectedHeight(owner, expanded: false))
             }
             for raw in ["2", "", "6", "64", "", "2", ""] {
                 owner.controller.state.t9PinyinPathState = .init(trackedRawInput: raw)
                 owner.refreshT9PinyinPathBar()
                 layout(owner)
-                XCTAssertEqual(request.constant, 290)
+                XCTAssertEqual(request.constant, expectedHeight(owner, expanded: true))
                 XCTAssertEqual(bar.frame.height, 34, accuracy: 0.01)
                 XCTAssertFalse(bar.isHidden)
                 XCTAssertEqual(owner.rootStack.frame.height, request.constant - 2, accuracy: 0.01)
                 let next = measure(owner)
                 XCTAssertEqual(next.candidate.size, idle.candidate.size)
-                XCTAssertEqual(next.candidate.height, 48, accuracy: 0.01)
-                XCTAssertEqual(next.candidate.minY - request.constant, idle.candidate.minY - 256, accuracy: 0.01)
+                XCTAssertEqual(next.candidate.height, KeyboardDesignTokens.CandidateBar.totalHeight, accuracy: 0.01)
+                XCTAssertEqual(
+                    next.candidate.minY - request.constant,
+                    idle.candidate.minY - expectedHeight(owner, expanded: false), accuracy: 0.01)
                 XCTAssertEqual(next.keys.count, idle.keys.count)
                 for (before, after) in zip(idle.keys, next.keys) {
                     XCTAssertEqual(after.size, before.size)
@@ -103,14 +107,16 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
             owner.controller.state.currentPage = page
             owner.reloadKeyboard()
             layout(owner)
-            XCTAssertEqual(owner.keyboardHeightConstraint?.constant, page == .letters ? 290 : 256)
+            XCTAssertEqual(
+                owner.keyboardHeightConstraint?.constant,
+                page == .letters ? expectedHeight(owner, expanded: true) : expectedHeight(owner, expanded: false))
             XCTAssertEqual(owner.t9PinyinPathBarView != nil, page == .letters)
         }
         owner.cachedLayoutStyle = .twentySixKey
         owner.reloadKeyboard()
         layout(owner)
         XCTAssertNil(owner.t9PinyinPathBarView)
-        XCTAssertEqual(owner.keyboardHeightConstraint?.constant, 256)
+        XCTAssertEqual(owner.keyboardHeightConstraint?.constant, expectedHeight(owner, expanded: false))
         owner.cachedLayoutStyle = .nineKey
         owner.reloadKeyboard()
         layout(owner)
@@ -119,16 +125,19 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
         owner.reloadKeyboard()
         layout(owner)
         XCTAssertEqual(owner.t9PinyinPathBarView?.frame.height, 34)
-        XCTAssertEqual(owner.keyboardHeightConstraint?.constant, 290)
+        XCTAssertEqual(owner.keyboardHeightConstraint?.constant, expectedHeight(owner, expanded: true))
         owner.cachedT9ReadinessMatched = false
         owner.reloadKeyboard()
         layout(owner)
         XCTAssertNil(owner.t9PinyinPathBarView)
-        XCTAssertEqual(owner.keyboardHeightConstraint?.constant, 256)
+        XCTAssertEqual(owner.keyboardHeightConstraint?.constant, expectedHeight(owner, expanded: false))
     }
 
     @MainActor
     func testExpandedPanelTracksRootAndRestoresBothRowStates() throws {
+        let animations = UIView.areAnimationsEnabled
+        UIView.setAnimationsEnabled(false)
+        defer { UIView.setAnimationsEnabled(animations) }
         let owner = makeOwner(width: 390)
         for raw in ["", "64"] {
             newPresentation(owner)
@@ -143,19 +152,19 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
             owner.presentExpandedCandidatePanel()
             layout(owner)
             let panel = try XCTUnwrap(owner.candidateExpandedPanel)
-            XCTAssertEqual(panel.frame, owner.rootStack.frame)
+            assertPanelGeometry(owner, panel: panel)
             XCTAssertTrue(descendants(panel).compactMap { $0 as? UIButton }.contains { $0.isEnabled })
             // Dynamic state changes keep the existing overlay pinned to the root.
             for transientRaw in ["64", "", raw] {
                 owner.controller.state.t9PinyinPathState = .init(trackedRawInput: transientRaw)
                 owner.refreshT9PinyinPathBar()
                 layout(owner)
-                XCTAssertEqual(panel.frame, owner.rootStack.frame)
+                assertPanelGeometry(owner, panel: panel)
             }
             // An empty catalog during composition must not resize the overlay.
             owner.refreshT9PinyinPathBar()
             layout(owner)
-            XCTAssertEqual(panel.frame, owner.rootStack.frame)
+            assertPanelGeometry(owner, panel: panel)
             owner.isCandidateExpanded = false
             owner.dismissExpandedCandidatePanel(animated: false)
             layout(owner)
@@ -174,9 +183,9 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
         owner.applyT9PresentationSnapshot(snapshot)
         // Deliberately do not alter Core here: the supplied presentation snapshot
         // must determine both row and height without a second state read.
-        owner.view.frame.size.height = 290
+        owner.view.frame.size.height = expectedHeight(owner, expanded: true)
         owner.view.layoutIfNeeded()
-        XCTAssertEqual(owner.keyboardHeightConstraint?.constant, 290)
+        XCTAssertEqual(owner.keyboardHeightConstraint?.constant, expectedHeight(owner, expanded: true))
         let bar = try XCTUnwrap(owner.t9PinyinPathBarView)
         XCTAssertEqual(bar.frame.height, 34)
         owner.applyT9PresentationSnapshot(.empty)
@@ -237,7 +246,7 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
             owner.beginT9PinyinPresentationIfNeeded()
             owner.refreshT9PinyinPathBar()
             layout(owner)
-            XCTAssertEqual(request.constant, 290)
+            XCTAssertEqual(request.constant, expectedHeight(owner, expanded: true))
             XCTAssertTrue(owner.keyboardHeightConstraint === request)
         }
         // Resign/host activity and an attached disappearance cannot prove a new cycle.
@@ -247,26 +256,26 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
         owner.noteT9PinyinPresentationDidDisappear(hasWindow: true)
         owner.hostLifecycleRecoveryGate.noteViewWillAppear(context: nil)
         owner.beginT9PinyinPresentationIfNeeded()
-        XCTAssertEqual(owner.preferredKeyboardHeight, 290)
+        XCTAssertEqual(owner.preferredKeyboardHeight, expectedHeight(owner, expanded: true))
         newPresentation(owner)
         layout(owner)
-        XCTAssertEqual(request.constant, 256)
+        XCTAssertEqual(request.constant, expectedHeight(owner, expanded: false))
         XCTAssertEqual(owner.t9PinyinPathBarView?.frame.height, 0)
         XCTAssertTrue(owner.keyboardHeightConstraint === request)
         // A new presentation with safety state must expand immediately.
         owner.controller.partialCommitFailureRecovery = .init(ownerID: UUID(), editingGeneration: 0)
         newPresentation(owner)
         layout(owner)
-        XCTAssertEqual(request.constant, 290)
+        XCTAssertEqual(request.constant, expectedHeight(owner, expanded: true))
         XCTAssertTrue(owner.hasExpandedT9PinyinRowInPresentation)
         let partialOwner = makeOwner(width: 390)
         partialOwner.controller.state.partialCommit = .init(
             confirmedText: "你", remainingRawInput: "", remainingPreeditText: "", displayText: "")
         newPresentation(partialOwner)
-        XCTAssertEqual(partialOwner.keyboardHeightConstraint?.constant, 290)
+        XCTAssertEqual(partialOwner.keyboardHeightConstraint?.constant, expectedHeight(partialOwner, expanded: true))
         partialOwner.controller.state.partialCommit = nil
         partialOwner.refreshT9PinyinPathBar()
-        XCTAssertEqual(partialOwner.keyboardHeightConstraint?.constant, 290)
+        XCTAssertEqual(partialOwner.keyboardHeightConstraint?.constant, expectedHeight(partialOwner, expanded: true))
     }
 
     @MainActor
@@ -280,13 +289,30 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
     }
 
     @MainActor
+    private func expectedHeight(_ owner: KeyboardViewController, expanded: Bool) -> CGFloat {
+        owner.keyboardHeightWithoutT9Path + (expanded ? owner.t9PinyinPathBarHeight : 0)
+    }
+
+    @MainActor
+    private func assertPanelGeometry(_ owner: KeyboardViewController, panel: UIView) {
+        let frame = panel.convert(panel.bounds, to: owner.view)
+        let surface = owner.keyboardSurfaceView.convert(owner.keyboardSurfaceView.bounds, to: owner.view)
+        let candidate = owner.candidateBar.convert(owner.candidateBar.bounds, to: owner.view)
+        let root = owner.rootStack.convert(owner.rootStack.bounds, to: owner.view)
+        XCTAssertEqual(frame.minY, candidate.minY, accuracy: 0.01)
+        XCTAssertEqual(frame.maxY, root.maxY, accuracy: 0.01)
+        XCTAssertEqual(frame.minX, surface.minX, accuracy: 0.01)
+        XCTAssertEqual(frame.maxX, surface.maxX, accuracy: 0.01)
+    }
+
+    @MainActor
     private func makeOwner(width: CGFloat) -> LayoutController {
         let owner = LayoutController()
         owner.loadViewIfNeeded()
         owner.controller = KeyboardController(state: KeyboardState())
         owner.cachedLayoutStyle = .nineKey
         owner.cachedT9ReadinessMatched = true
-        owner.view.frame = CGRect(x: 0, y: 0, width: width, height: 256)
+        owner.view.frame = CGRect(x: 0, y: 0, width: width, height: expectedHeight(owner, expanded: false))
         owner.setupRootStack()
         owner.reloadKeyboard()
         layout(owner)

@@ -8,12 +8,12 @@ record_id: KEYBOARD-T9-ADAPTIVE-ROW-001
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current phase | Controlled local integration and targeted verification |
+| Current phase | Local integration complete; independent review pending |
 | Non-claims | Human-relayed Claude Conditional review; no real Extension/Product Gate, Ready, Merge, TestFlight or Close |
-| Next | Local integration of exact merged UI-1, targeted evidence, then Human/Claude review |
+| Next | Human/Claude independent review of local integration candidate; no publication |
 | Residuals | [Current Sticky verification](../evidence/keyboard-t9-adaptive-row-001/sticky-verification.md); real host geometry and interaction remain Human Gate |
 
-Sticky correction complete; current L1 5/0/0, L2 Keyboard49/0/0 + Extension35/0/0, Debug build-for-testing and strict format8 passed. Real host evidence is pending; no Gate/Close. Writer remains codex-t9-adaptive-row, P=none.
+Historical pre-integration Sticky correction evidence: L1 5/0/0, L2 Keyboard49/0/0 + Extension35/0/0, Debug build-for-testing and strict format8 passed. Real host evidence is pending; no Gate/Close. Writer remains codex-t9-adaptive-row, P=none.
 
 ## Authority and responsibility
 
@@ -27,7 +27,7 @@ Carrier / product branch: `codex/keyboard-t9-adaptive-row-001`; worktree `t9-ada
 
 ## Scope and protected boundaries
 
-Baseline: freshly fetched origin/main `096183ca118cc40ffc16854d1a5336a42cfcbd89`. No UI-1 commits. Main candidate container48pt = visual34 + gesture14; do not change candidates/actions/blur/cells.
+Historical initial scope (superseded only by the controlled integration authorization below): freshly fetched origin/main `096183ca118cc40ffc16854d1a5336a42cfcbd89`. No UI-1 commits. Main candidate container48pt = visual34 + gesture14; do not change candidates/actions/blur/cells.
 Implement Chinese nine-key letters Path row true0/34pt from existing composition snapshot/state. Preserve temporary-empty composition, Recovery/Disabled safety, selection and expanded panels. Reuse750 root mechanism; no allowsSelfSizing or second height system. Allowed: small UIKit controller/view edits, focused tests and necessary test-target wiring, directly affected docs and evidence.
 Forbidden: Core/session/authority/origin/native select/owner/epoch/revision/R174 semantics; RIME deploy/reset to change height; UI-1 PR216/worktree, shared/main/historical workspaces; product push/PR/merge/TestFlight/cleanup.
 
@@ -58,3 +58,5 @@ Publication completed: [Draft217 and exact-head CI receipt](../evidence/keyboard
 ## Controlled local integration — 2026-10-20
 
 Human authorizes [bounded local integration](../authorizations/AUTH-KEYBOARD-T9-ADAPTIVE-ROW-001-INTEGRATION.md) of exact main78b795f. Same Writer, task, worktree and existing two local docs retained. CI attempt2/Xcode Cloud pass; suspected historical diagnostic-test flake preserved and excluded from fixes. Resolve only I-1–I-5 and test I-6/I-7; minimal product fix only on reproduced layout-integration cause. Target contract candidate46/Path0→34Sticky/root254→288. No pushes/PR updates/main actions. Retired UI-1 worktree/Human project edits are not inputs.
+
+本地集成完成：[集成证据](../evidence/keyboard-t9-adaptive-row-001/integration-verification.md)。Controller17、Keyboard49、Extension41均通过，Debug build-for-testing及格式通过；真实Extension未验证。等待独立复核，禁止外部发布。

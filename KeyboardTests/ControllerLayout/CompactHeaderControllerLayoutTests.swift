@@ -1,6 +1,7 @@
-import KeyboardCore
 import UIKit
 import XCTest
+
+@testable import KeyboardCore
 
 /// Real production Controller and root hierarchy, with lifecycle/engine bootstrap deliberately not run.
 /// This is in-process UIKit integration, not a system-activated Keyboard Extension.
@@ -8,8 +9,10 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
     @MainActor
     func testRealRootAlignsHeaderAndKeepsKeyGeometryAcrossReloads() throws {
         for width in [320.0, 390.0, 430.0] {
-            for nineKey in [false, true] {
-                let sut = makeController(width: width, nineKey: nineKey)
+            for (nineKey, hasPath, stickyEmpty) in [
+                (false, false, false), (true, false, false), (true, true, false), (true, true, true),
+            ] {
+                let sut = makeController(width: width, nineKey: nineKey, hasPath: hasPath, stickyEmpty: stickyEmpty)
                 let surface = try XCTUnwrap(sut.keyboardSurfaceView)
                 let bar = try XCTUnwrap(sut.candidateBar as? CandidateBarView)
                 let frame = bar.convert(bar.bounds, to: surface)
@@ -46,15 +49,11 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
         UIView.setAnimationsEnabled(false)
         defer { UIView.setAnimationsEnabled(animationsEnabled) }
         for width in [320.0, 390.0, 430.0] {
-            for (nineKey, hasPath) in [(false, false), (true, false), (true, true)] {
-                let sut = makeController(width: width, nineKey: nineKey)
+            for (nineKey, hasPath, stickyEmpty) in [
+                (false, false, false), (true, false, false), (true, true, false), (true, true, true),
+            ] {
+                let sut = makeController(width: width, nineKey: nineKey, hasPath: hasPath, stickyEmpty: stickyEmpty)
                 sut.overrideUserInterfaceStyle = width == 390 ? .dark : .light
-                if hasPath {
-                    // Presentation fixture only: not live RIME path issuance or selection evidence.
-                    let path = T9PinyinPath(displayText: "ni", replacementRawInput: "ni")
-                    sut.t9PinyinPathBarView?.setPaths([path], selected: path, compositionRevision: 0)
-                    layout(sut)
-                }
                 let originalKeys = keyFrames(sut)
                 let originalAccessibility = sut.rootStack.arrangedSubviews.map { $0.accessibilityElementsHidden }
                 let surface = try XCTUnwrap(sut.keyboardSurfaceView)
@@ -103,7 +102,7 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
                 for row in sut.rootStack.arrangedSubviews where row !== sut.t9PinyinPathBarView {
                     XCTAssertTrue(row.accessibilityElementsHidden)
                 }
-                if let pathBar = sut.t9PinyinPathBarView {
+                if let pathBar = sut.t9PinyinPathBarView, hasPath {
                     XCTAssertFalse(pathBar.isHidden)
                     let point = pathBar.convert(CGPoint(x: 30, y: 17), to: sut.view)
                     let hit = try XCTUnwrap(sut.view.hitTest(point, with: nil))
@@ -114,7 +113,12 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
                     let hit = try XCTUnwrap(sut.view.hitTest(CGPoint(x: key.midX, y: key.midY), with: nil))
                     XCTAssertTrue(hit === panel || hit.isDescendant(of: panel))
                 }
-                if nineKey { XCTAssertEqual(expected.minY, 36, accuracy: 0.01) }
+                if nineKey {
+                    XCTAssertEqual(
+                        expected.minY, sut.keyboardContentTopInset + (hasPath ? sut.t9PinyinPathBarHeight : 0),
+                        accuracy: 0.01)
+                    XCTAssertEqual(sut.t9PinyinPathBarView?.frame.height, hasPath ? sut.t9PinyinPathBarHeight : 0)
+                }
                 let buttonFrame = button.convert(button.bounds, to: collection)
                 for index in 0..<80 {
                     let attributes = try XCTUnwrap(
@@ -353,7 +357,7 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
         UIView.setAnimationsEnabled(false)
         defer { UIView.setAnimationsEnabled(animations) }
         for width in [320.0, 390.0, 430.0] {
-            let sut = makeController(width: width, nineKey: true)
+            let sut = makeController(width: width, nineKey: true, hasPath: true)
             seedReadingCandidates(sut)
             let mixed = ["你", "一个自然换行的较长候选词", String(repeating: "长词", count: 25), "abc", "中英混合"]
             sut.accumulatedCandidates = (0..<120).map {
@@ -529,7 +533,85 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
     }
 
     @MainActor
-    private func makeController(width: CGFloat, nineKey: Bool) -> KeyboardViewController {
+    func testAdaptiveExpansionKeepsPanelReadingAndMaskGeometry() async throws {
+        let previousAnimations = UIView.areAnimationsEnabled
+        defer { UIView.setAnimationsEnabled(previousAnimations) }
+        for animated in [false, true] {
+            UIView.setAnimationsEnabled(false)
+            let sut = makeController(width: 390, nineKey: true)
+            seedReadingCandidates(sut)
+            XCTAssertEqual(sut.t9PinyinPathBarView?.frame.height, 0)
+            sut.toggleCandidateExpand()
+            layout(sut)
+            let panel = try XCTUnwrap(sut.candidateExpandedPanel as? ExpandedCandidatePanelContainerView)
+            let expanded = try XCTUnwrap(sut.expandedCandidateCollectionView)
+            expanded.scrollToItem(at: IndexPath(item: 40, section: 0), at: .top, animated: false)
+            expanded.layoutIfNeeded()
+            panel.recordUserScroll()
+            let anchor = try XCTUnwrap(
+                CandidateReadingAnchor.capture(
+                    in: expanded, items: sut.presentedCandidates, horizontal: false,
+                    occluded: panel.actionFrame(in: expanded)))
+            let offset = expanded.contentOffset
+            let snapshot = panel.readingPosition?.snapshot
+            func expandAndCheck() {
+                sut.refreshT9PinyinPathBarVisibility(.init(rimeRawInput: "64"))
+                layout(sut)
+                let frame = panel.convert(panel.bounds, to: sut.view)
+                let candidate = sut.candidateBar.convert(sut.candidateBar.bounds, to: sut.view)
+                let surface = sut.keyboardSurfaceView.convert(sut.keyboardSurfaceView.bounds, to: sut.view)
+                XCTAssertEqual(frame.minY, candidate.minY, accuracy: 0.01)
+                XCTAssertEqual(frame.maxY, sut.rootStack.frame.maxY, accuracy: 0.01)
+                XCTAssertEqual(frame.minX, surface.minX, accuracy: 0.01)
+                XCTAssertEqual(frame.width, surface.width, accuracy: 0.01)
+                XCTAssertEqual(panel.revealViewport.bounds.width, panel.bounds.width)
+                XCTAssertEqual(sut.rootStack.layer.mask?.frame, sut.rootStack.bounds)
+                let mask = sut.rootStack.layer.mask as? CAShapeLayer
+                XCTAssertTrue(
+                    mask?.path?.contains(CGPoint(x: 20, y: 17)) == true,
+                    "New Path row must remain outside the covered candidate/key region")
+                XCTAssertEqual(panel.readingPosition?.snapshot, snapshot)
+                XCTAssertEqual(expanded.contentOffset, offset)
+                XCTAssertTrue(anchor.isValid(in: sut.presentedCandidates))
+                assertRequiredEqualities(in: sut.view)
+            }
+            if animated {
+                UIView.setAnimationsEnabled(true)
+                await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+                    panel.animateReveal(
+                        to: panel.bounds.height,
+                        duration: KeyboardDesignTokens.ExpandedCandidates.expandDuration
+                    ) { continuation.resume() }
+                    XCTAssertTrue(panel.isTransitioning)
+                    expandAndCheck()
+                }
+            } else {
+                expandAndCheck()
+            }
+            XCTAssertFalse(panel.isTransitioning)
+            XCTAssertEqual(sut.rootStack.layer.mask?.frame, sut.rootStack.bounds)
+            let action = panel.actionFrame(in: sut.view)
+            let hit = sut.view.hitTest(CGPoint(x: action.midX, y: action.midY), with: nil)
+            XCTAssertTrue(hit is UIButton)
+            let expectedKeys = keyFrames(sut)
+            UIView.setAnimationsEnabled(false)
+            sut.isCandidateExpanded = false
+            sut.dismissExpandedCandidatePanel(animated: false)
+            layout(sut)
+            XCTAssertNil(sut.rootStack.layer.mask)
+            XCTAssertEqual(keyFrames(sut), expectedKeys)
+            XCTAssertFalse(sut.candidateBar.isHidden)
+            assertFirstRowTouchCells(sut, nineKey: true)
+            let compact = try XCTUnwrap(sut.candidateCollectionView)
+            let cell = try XCTUnwrap(compact.layoutAttributesForItem(at: IndexPath(item: anchor.index, section: 0)))
+            XCTAssertTrue(compact.bounds.intersects(cell.frame))
+        }
+    }
+
+    @MainActor
+    private func makeController(width: CGFloat, nineKey: Bool, hasPath: Bool = false, stickyEmpty: Bool = false)
+        -> KeyboardViewController
+    {
         let sut = KeyboardViewController()
         let core = KeyboardController(state: KeyboardState())
         sut.controller = core
@@ -540,6 +622,16 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
         sut.cachedT9ReadinessMatched = nineKey
         sut.setupRootStack()
         sut.reloadKeyboard()
+        if nineKey, hasPath {
+            // Enter through the production snapshot/presentation path, never set the latch directly.
+            let path = T9PinyinPath(displayText: "ni", replacementRawInput: "ni")
+            sut.controller.state.t9PinyinPathState = .init(compactPaths: [path], trackedRawInput: "64")
+            sut.refreshT9PinyinPathBar()
+            if stickyEmpty {
+                sut.controller.state.t9PinyinPathState = .empty
+                sut.refreshT9PinyinPathBar()
+            }
+        }
         sut.view.frame = CGRect(x: 0, y: 0, width: width, height: sut.preferredKeyboardHeight)
         layout(sut)
         return sut
@@ -578,10 +670,14 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
 
     @MainActor
     private func layout(_ sut: KeyboardViewController) {
+        // In-process geometry assumes the host accepts the single flexible request.
+        sut.view.frame.size.height = sut.preferredKeyboardHeight
         // No host run loop installs the keyboard here. Explicitly flush pending arranged-view layout.
         sut.view.setNeedsLayout()
         sut.view.layoutIfNeeded()
         for view in [sut.rootStack!] + descendants(sut.rootStack) { view.layoutIfNeeded() }
+        // Direct loadView bypasses UIKit containment; deliver the real post-layout callback.
+        sut.viewDidLayoutSubviews()
     }
 
     /// Check required equations between rendered views, including stack canvas connections.
