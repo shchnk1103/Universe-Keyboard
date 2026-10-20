@@ -23,3 +23,11 @@
 - lane: codex-t9-adaptive-row
 - kind: CHECKPOINT
 - note: Human authorizes Sticky correction under existing task/Writer. W unchanged, P=none. Current AUTH/Assignment @ aa038aa4bc34ad8c48ff7ecda7de0dc6dfad3f79; previous5cc4a74 product preserved. Ordinary appearance/reload/document callbacks are not new-cycle proof; conservative paired end/new-entry policy to be validated. Product ancestry remains local; no HANDOFF/ACCEPT or remote sync.
+
+## CP-004 CHECKPOINT
+
+- id: CP-004
+- at: 2026-10-20T15:51:14+08:00
+- lane: codex-t9-adaptive-row
+- kind: CHECKPOINT
+- note: Sticky local product 55283ff718d9197ad7f7564f0808573369835187; L1 5/0/0, Keyboard49/0/0, Extension35/0/0, Debug build-for-testing and strict Swift8 Pass. No failed test/skip or new required-constraint conflict in this correction. Existing750/root/view/Recovery/panel mechanisms retained. Reset requires completed disappearance + existing hidden gate + detached view, consumed on next appearance; ambiguous real-host cases conservatively retain34pt and remain Runtime Gate. W unchanged/P=none; no HANDOFF/ACCEPT. Product/checkpoint stay local, remote initial docs carrier unchanged. Stop for Human; no product Push/PR/Merge/TestFlight.
