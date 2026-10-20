@@ -39,3 +39,11 @@
 - lane: codex-t9-adaptive-row
 - kind: CHECKPOINT
 - note: Human authorizes frozen product push, Draft PR to main and existing CI observation @ 417e150052bae14e9cb553922f8608713ae86495. Source hashes match55283ff, main remains096183ca, UI-1 Draft216 remains independent. Human relays Sticky Pass / Lifecycle, Architecture, Quality Conditional, no code blocker; no new independent review claimed. W unchanged/P=none. No product edit, CI fix/bypass, Merge, Ready, TestFlight or Close permitted. Prior local-only frontier superseded only by publication AUTH.
+
+## CP-006 CHECKPOINT
+
+- id: CP-006
+- at: 2026-10-20T17:27:43+08:00
+- lane: codex-t9-adaptive-row
+- kind: CHECKPOINT
+- note: Draft PR217 normal push/create succeeded, published head6f6fc129d7eb959f695de09a46e6808d146dd819/base096183ca118cc40ffc16854d1a5336a42cfcbd89. Hosted CI39399503737 all9 jobs success, including final-quality-gate. Product hashes unchanged55283ff. Final local receipt @ 6001416f7939112a3f3110f29d0568cbe63227c6; current receipt/checkpoint not pushed and not represented as exact-head CI-covered. UI-1 remains separate; read-only future-integration text conflicts recorded, none resolved/applied. W unchanged/P=none. Runtime Gate and Conditional review remain; no Ready/Merge/TestFlight/Close. Stop for Human.

@@ -1,27 +1,28 @@
 # KOS Handoff Snapshot
 
-- Work Item / Assignment: KEYBOARD-T9-ADAPTIVE-ROW-001 @ docs/assignments/keyboard-t9-adaptive-row-001.md@417e150052bae14e9cb553922f8608713ae86495
-- Canonical lifecycle/status: Active / Draft PR publication and CI observation @ docs/assignments/keyboard-t9-adaptive-row-001.md@417e150052bae14e9cb553922f8608713ae86495
-- Current legal actions: normal frozen product push, one Draft PR and existing CI observation @ docs/authorizations/AUTH-KEYBOARD-T9-ADAPTIVE-ROW-001-DRAFT-PR.md@417e150052bae14e9cb553922f8608713ae86495
-- Explicitly prohibited actions: further product edits without Human authority; Merge/Ready for Review/TestFlight; Core/reliability semantics; other workspaces/UI-1; Writer transfer
-- Frozen branch / commit / artifact: codex/keyboard-t9-adaptive-row-001 @ 417e150052bae14e9cb553922f8608713ae86495; source/critical-boundary digests @ docs/evidence/keyboard-t9-adaptive-row-001/sticky-manifest.json@417e150052bae14e9cb553922f8608713ae86495
-- Completed outputs: UI-only Sticky latch, conservative paired lifecycle reset, tests and directly affected contracts @ docs/evidence/keyboard-t9-adaptive-row-001/sticky-verification.md@417e150052bae14e9cb553922f8608713ae86495
-- Open Gates and owners: Human relayed Claude Sticky Pass; Lifecycle/Architecture/Quality Conditional; native Extension lifecycle/height/touch/Product acceptance — Human
-- Evidence and freshness: Sticky L1 5/0/0; Keyboard49/0/0; Extension35/0/0; Debug build-for-testing, strict Swift8 and Markdown/diff Pass @ docs/evidence/keyboard-t9-adaptive-row-001/sticky-verification.md@417e150052bae14e9cb553922f8608713ae86495
-- Environment state: existing task worktree t9-adaptive-row-001; task-owned Simulator5DEEF120-CB85-47BB-A690-303613DD85EC/iOS26.5; raw /private/tmp/t9-adaptive-row-001-sticky; no GUI retry/shared reset
-- Recorded authorization receipts and audit consumption state: active bounded publication and observation @ docs/authorizations/AUTH-KEYBOARD-T9-ADAPTIVE-ROW-001-DRAFT-PR.md@417e150052bae14e9cb553922f8608713ae86495
+- Work Item / Assignment: KEYBOARD-T9-ADAPTIVE-ROW-001 @ docs/assignments/keyboard-t9-adaptive-row-001.md@6001416f7939112a3f3110f29d0568cbe63227c6
+- Canonical lifecycle/status: Active / Draft published; CI passed; Runtime Gate pending @ docs/assignments/keyboard-t9-adaptive-row-001.md@6001416f7939112a3f3110f29d0568cbe63227c6
+- Current legal actions: final local bookkeeping/report, then read-only pending new Human authority @ docs/authorizations/AUTH-KEYBOARD-T9-ADAPTIVE-ROW-001-DRAFT-PR.md@6001416f7939112a3f3110f29d0568cbe63227c6
+- Explicitly prohibited actions: product edits/automatic CI fixes, Merge/Ready/TestFlight/Release/Close, force push/carrier deletion, UI-1 changes or Writer transfer
+- Frozen branch / commit / artifact: published codex/keyboard-t9-adaptive-row-001 @6f6fc129d7eb959f695de09a46e6808d146dd819; product55283ff718d9197ad7f7564f0808573369835187; final local administrative receipt @ docs/evidence/keyboard-t9-adaptive-row-001/draft-publication.md@6001416f7939112a3f3110f29d0568cbe63227c6
+- Completed outputs: Draft PR217 pushed/created and attached; exact-head CI39399503737 success @ docs/evidence/keyboard-t9-adaptive-row-001/draft-publication.md@6001416f7939112a3f3110f29d0568cbe63227c6
+- Open Gates and owners: Human-relayed Claude Sticky Pass / Lifecycle, Architecture, Quality Conditional; Runtime Gate — Human
+- Evidence and freshness: all9 hosted quality jobs success on6f6fc12; L1 5/0/0, Keyboard49/0/0, Extension35/0/0 and local build/lint remain source-matched @ docs/evidence/keyboard-t9-adaptive-row-001/draft-publication.md@6001416f7939112a3f3110f29d0568cbe63227c6
+- Environment state: task worktree t9-adaptive-row-001 retained; no GUI/shared-device/other-worktree changes; raw /private/tmp/t9-adaptive-row-001-publication
+- Recorded authorization receipts and audit consumption state: publication/CI slice completed; final local report only @ docs/authorizations/AUTH-KEYBOARD-T9-ADAPTIVE-ROW-001-DRAFT-PR.md@6001416f7939112a3f3110f29d0568cbe63227c6
 - Extension-referenced authorizations: none
-- Human Dependencies: independent review and actual host evidence; future product changes/publication require Human authority
-- Residual findings / debt: paired detached disappearance/new appearance is a conservative sufficient policy, not proven native wake classification; ambiguous lifecycle retains34pt; no screen/flicker/native-input proof @ docs/evidence/keyboard-t9-adaptive-row-001/sticky-verification.md@417e150052bae14e9cb553922f8608713ae86495
-- Next safest action: normal push/create Draft PR, observe CI, report and stop; no automatic fixes
-- Revalidation triggers: baseline/scope/owner/contract changes, source edits, second Writer, new authority
-- based_on: 417e150052bae14e9cb553922f8608713ae86495
-- snapshot_rev: 5
-- log_cursor: CP-005
+- Human Dependencies: bounded real Extension/device validation; later Ready/Merge/TestFlight require separate authority
+- Residual findings / debt: no new CI blocker; future UI-1/UI-2 simulated text conflicts in project/Scheme/UI guide/changelog; no native lifecycle/height/screen/input/animation/touch/VoiceOver acceptance @ docs/evidence/keyboard-t9-adaptive-row-001/draft-publication.md@6001416f7939112a3f3110f29d0568cbe63227c6
+- Next safest action: stop for Human Runtime Gate authorization; keep PR Draft, carrier/history preserved
+- Revalidation triggers: baseline/source/authority/owner changes; current CI covers published head only
+- based_on: 6001416f7939112a3f3110f29d0568cbe63227c6
+- snapshot_rev: 6
+- log_cursor: CP-006
 - read_on_demand:
-  - docs/assignments/keyboard-t9-adaptive-row-001.md@417e150052bae14e9cb553922f8608713ae86495
-  - docs/authorizations/AUTH-KEYBOARD-T9-ADAPTIVE-ROW-001-DRAFT-PR.md@417e150052bae14e9cb553922f8608713ae86495
-  - docs/evidence/keyboard-t9-adaptive-row-001/sticky-verification.md@417e150052bae14e9cb553922f8608713ae86495
-  - docs/evidence/keyboard-t9-adaptive-row-001/sticky-manifest.json@417e150052bae14e9cb553922f8608713ae86495
+  - docs/assignments/keyboard-t9-adaptive-row-001.md@6001416f7939112a3f3110f29d0568cbe63227c6
+  - docs/authorizations/AUTH-KEYBOARD-T9-ADAPTIVE-ROW-001-DRAFT-PR.md@6001416f7939112a3f3110f29d0568cbe63227c6
+  - docs/evidence/keyboard-t9-adaptive-row-001/draft-publication.md@6001416f7939112a3f3110f29d0568cbe63227c6
+  - docs/evidence/keyboard-t9-adaptive-row-001/sticky-manifest.json@6001416f7939112a3f3110f29d0568cbe63227c6
+  - docs/evidence/keyboard-t9-adaptive-row-001/review-received.md@6001416f7939112a3f3110f29d0568cbe63227c6
 
-W=codex-t9-adaptive-row, P=none; no HANDOFF/ACCEPT. Human publication AUTH now permits pushing the frozen product ancestry and necessary records to the existing carrier. Preserve every prior commit and the carrier. Product/source hashes remain those of55283ff718d9197ad7f7564f0808573369835187; no new implementation.
+W=codex-t9-adaptive-row, P=none; no HANDOFF/ACCEPT. Final CI receipt and this checkpoint are local-only after published head6f6fc12; do not imply exact-head CI coverage for these later administrative docs. No additional push authorized/needed for this ending receipt. PR217 remains OPEN/Draft; no Merge/Ready/TestFlight/Close.
