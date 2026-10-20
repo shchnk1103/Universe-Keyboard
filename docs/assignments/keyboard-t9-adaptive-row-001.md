@@ -8,9 +8,9 @@ record_id: KEYBOARD-T9-ADAPTIVE-ROW-001
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current phase | Draft published; CI passed; Runtime Gate pending |
+| Current phase | Controlled local integration and targeted verification |
 | Non-claims | Human-relayed Claude Conditional review; no real Extension/Product Gate, Ready, Merge, TestFlight or Close |
-| Next | Human decides bounded real Extension Runtime Gate; keep Draft, no Merge/Close |
+| Next | Local integration of exact merged UI-1, targeted evidence, then Human/Claude review |
 | Residuals | [Current Sticky verification](../evidence/keyboard-t9-adaptive-row-001/sticky-verification.md); real host geometry and interaction remain Human Gate |
 
 Sticky correction complete; current L1 5/0/0, L2 Keyboard49/0/0 + Extension35/0/0, Debug build-for-testing and strict format8 passed. Real host evidence is pending; no Gate/Close. Writer remains codex-t9-adaptive-row, P=none.
@@ -54,3 +54,7 @@ Human explicitly supersedes per-composition collapse with per-presentation Stick
 Human authorizes normal product push, one Draft PR to main and existing CI observation. [Publication AUTH](../authorizations/AUTH-KEYBOARD-T9-ADAPTIVE-ROW-001-DRAFT-PR.md) supersedes prior local-only frontier for this slice only; no further product edits or automatic CI fixes. [Human review relay](../evidence/keyboard-t9-adaptive-row-001/review-received.md): Sticky Pass, Lifecycle/Architecture/Quality Conditional, no reported code blocker. Runtime Gate remains pending. Baseline/source hash/Writer checks passed; no rebase/UI-1 integration/Close. Carrier and all history retained. Stop after results.
 
 Publication completed: [Draft217 and exact-head CI receipt](../evidence/keyboard-t9-adaptive-row-001/draft-publication.md). All9 jobs successful; Runtime Gate remains pending. Final CI receipt/checkpoint intentionally local-only; published head6f6fc12 retained. Stop for Human, no further external action.
+
+## Controlled local integration — 2026-10-20
+
+Human authorizes [bounded local integration](../authorizations/AUTH-KEYBOARD-T9-ADAPTIVE-ROW-001-INTEGRATION.md) of exact main78b795f. Same Writer, task, worktree and existing two local docs retained. CI attempt2/Xcode Cloud pass; suspected historical diagnostic-test flake preserved and excluded from fixes. Resolve only I-1–I-5 and test I-6/I-7; minimal product fix only on reproduced layout-integration cause. Target contract candidate46/Path0→34Sticky/root254→288. No pushes/PR updates/main actions. Retired UI-1 worktree/Human project edits are not inputs.
