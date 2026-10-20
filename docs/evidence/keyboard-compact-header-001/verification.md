@@ -225,3 +225,105 @@ screenshots. VoiceOver focus and contrast require a real system pass. Stop for H
 PR update, merge, release, task closure or UI-2 integration.
 
 V4 boundary: fixed34pt Path reservation and its existing idle-hint/recovery display policy remain unchanged. No new idle text or conditional height is introduced. If a real host presents expandable continuation candidates with no path/hint, that original reserved row can still be empty; this slice does not silently solve it via UI-2 or invent a second presentation policy. Human should specifically compare that state. Normal no-candidate trailing action still dismisses rather than opens the panel.
+
+
+## Continuous Candidate Surface — bounded phase A / B, 2026-10-20
+
+Entry bb74235 / product86df674, same Writer codex-compact-header and P=none. Human pasted authorization
+permits UI-only feasibility→implementation/L1/L2/local commit/checkpoint, no product publication or UI-2.
+Phase A found the two existing CollectionViews already read presentedCandidates and retain shared
+CandidateItem identities, ordering, font/width calculation and guarded paging. No Core, RIME, authority,
+native selection, owner/epoch/revision rules or height framework changes are required. This is bounded
+source feasibility, not an independent Architecture Review.
+
+Implementation: CandidateReadingPosition.swift stores one observed CandidateItem/index plus visible
+fraction/leading offset, original compact offset, and a token read from existing generation, published
+and live revision/origin, raw input and compact-view identity. It is not another datasource or selection
+permission. Before index reuse, token and item-at-index must match; duplicates are not rebound by title.
+Snapshot refresh invalidates/resets to zero, even for same-size data; layout reload removes the view and
+cleans its context. Append-only pagination with unchanged publication keeps anchors and order. Collapsing
+also reloads the inactive compact view from the existing published list so appended items are reachable.
+
+Readable partial threshold is max(12pt,20% of cell extent), capped at the whole cell extent. Iterate
+visible items in original order; skip fully action-covered cells. Prefer the first passing threshold;
+for a degenerate viewport with none passing, use the largest real visible remainder rather than invent
+an index. Half-visible item15 is retained,1pt tail selects16. The original offset and clipped local
+position are recorded. Expanded row aligns at the first readable region; when its column intersects
+the action, put the anchor immediately below that action so it is fully visible (an earlier row can
+remain visible above). All earlier candidates stay in content and can be scrolled back to. No-user-pan
+collapse restores the exact observed/clamped compact offset, including fractional pixel position. A
+recognized user pan marks the UI context; collapse selects the current valid visible item and positions
+its compact Cell fully when it fits. Programmatic positioning/paging does not mark a user pan.
+
+Adaptive flow retains measured text widths, shared CandidateCollectionCell font/weight/padding and
+left alignment. New tokens name existing42pt expanded rows,3/8/6/8 section insets,0 layout gaps, reading
+threshold and existing0.18/0.16s durations. Initial top rows reserve action width; all subsequent rows
+use full width. No per-scroll invalidation/reflow or snapping is added; frame-equality tests pass while
+scrolling and appending. Compact46pt/action56pt/symbol22pt remain unchanged.
+
+The panel has no independent RGB fill: it is clear over the actual original keyboard surface/material.
+An owned CAShapeLayer on the content stack removes covered keys progressively, retaining the real T9
+path region and original key geometry. It never masks the Controller root or system globe/microphone.
+The compact header/material stays hidden while the stack mask is installed; remove mask before showing
+it again. Save/restore the prior mask and covered accessibility flags; removal/reload/recovery cancels
+stale reveal completions. This supersedes the prior full-panel gray fill. No screenshot-derived color
+match is claimed.
+
+A single fixed UIVisualEffectView sits behind the collapse button, separate from the revealed content,
+with tint/fallback derived from the existing keyboardSurfaceMaterialTintColor source. Reduce Transparency
+uses that shared color opaque; no new RGB or gradient. The action is not faded/masked with the reveal,
+remains56×46pt at the original screen position, and has priority hit routing. Later rows may scroll
+behind it; button points never forward to the collection while visible cells outside the zone do.
+
+Reveal viewport clipping and one matching content-stack mask path animation uncover rows and cover
+keys on the same ease-out curve. Collection/root frames and root height do not animate. Compact text
+is hidden until overlay removal to avoid duplicates. A short UI-only transition token disables cell/
+action interaction and ignores repeated toggles; immediate recovery/removal invalidates old callbacks.
+Reduce Motion or disabled UIView animations snap directly. No input/sticky expansion state machine
+was added or changed. Existing paging's UI interaction flag is settled when its vertical view closes;
+all original window requests, prefetch bounds and native selection checks remain unchanged.
+
+Verification (same task simulator5F983B43-FAAC-46ED-B2B0-33E0E30F099F, /private/tmp/kch001-build;
+Swift6/complete concurrency, CODE_SIGNING_ALLOWED=NO, visible warnings/as-errors):
+
+| Current check | Result | Completed local log under /private/tmp/kch001-continuous |
+|---|---|---|
+| L1: Controller10 + compact6 + recovery4 + adapter6 + idle1 | 27 passed /0 failed /0 skipped | l1-final.log/.exit + xcresult |
+| L2 KeyboardTests | 49/0/0 | l2.log/.exit + xcresult |
+| L2 KeyboardExtensionTests | 41/0/0 | same L2 run |
+| Debug build-for-testing | Pass,exit0 | debug-build-for-testing.log/.exit + xcresult |
+| Changed Swift6 files strict lint | Pass,exit0 | format-final.log/.exit |
+
+L1 covers320/390/430,26/T9, initial/mid/half/sliver, upward/downward access, exact unscrolled return,
+new vertical anchor return, long/short/mixed natural widths,0/1/3 candidate boundaries, publication/raw/
+value/layout invalidation, actual UIKit incremental append, fixed frame equality during scrolling,
+covered/uncovered hit routing, local material/reduce-transparency policy, small repeated toggles,
+short real UIView transition lifecycle and immediate recovery dismissal. These are in-process production
+Controller/layout tests and existing adapter suites, not live RIME/Extension/user-gesture execution.
+No required Auto Layout unsatisfiable diagnostic; rendered required-equation assertions pass. The
+previous complete Core/App/Bridge and PR216 CI are background evidence, not rerun/current L3 proof.
+
+Preserved failure: first l1 command exit65 had6 measurement assertions in the half-visible case,
+49.7435897% versus exact50% after UIKit pixel-quantized scrolling. Functional anchor/index assertions
+passed. Corrected the test tolerance to one actual display pixel / cell width; production threshold
+unchanged. Original failed log/bundle remain failed. No unexplained retry or skipped test hidden.
+
+Human saved project.pbxproj during implementation and explicitly asked to preserve it uncommitted.
+The observed Xcode rewrite is mostly ordering/comments; parsed semantic diff against entry has one
+change: KeyboardLayoutIntegrationTests membershipExceptions no longer lists Keyboard.entitlements.
+It changes resource membership, not Swift source membership. Tests/build used the preserved Human
+project; source and config hashes/copies are recorded. No project changes are included in this lane's
+product commit. Do not restore/clean that Human file. Artifact project-entry.pbxproj and
+project-observed.pbxproj retain the comparison. Product review must distinguish this unstaged config.
+
+All hashes are collected only after command exit receipts. continuous-evidence.json records product
+source, current test configuration and completed success/failure logs. Raw evidence remains local;
+no Push, PR update, merge/release, Writer handoff or task closure. New code not in PR216; UI-2#217
+untouched. Human now explicitly allows an empty fixed34pt T9 path region; candidate content starts at
+original header top, never inside that region. V1–V6 geometry/idle/material/icon/corner fixes are retained.
+
+P0/P1 directed evidence passes. P2 animation fluency, true backdrop blur/readability/color matching,
+actual iPhone VoiceOver/fast swipe/touch, host apps and corner compositing still require Human device
+review. Compare mid-list half-visible expand, scroll upward then downward to ~40 and collapse; rapidly
+toggle and trigger recovery; light/dark/Reduce Transparency; both keyboard layouts including empty T9
+path area. No claim of complete real-device acceptance, no infinite attempts to manufacture visual proof.

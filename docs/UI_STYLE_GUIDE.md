@@ -132,7 +132,7 @@ The candidate bar must prioritize readability and speed:
 - Candidate `UICollectionView`s must use `CandidateScrollViewStyle.apply(to:)`. On iOS 26+, `UIScrollEdgeEffect` can create a rectangular fade/overlay over the first candidate row inside the system keyboard glass container.
 - Candidate `UICollectionView` layouts should avoid real spacing between items. Keep item spacing at zero, put the visual gap inside the cell, and keep a nearly invisible backing view (`alpha` around `0.001`) so the apparent gap remains part of a cell's touch area in the Keyboard Extension.
 - Compact expand/dismiss hits are exactly the visible 56 × 46pt action zone, disjoint from the clipped candidate viewport. Do not restore horizontal hit outsets into candidate text. The expanded-panel collapse control uses the same 56 × 46pt zone and screen position; only its first row reserves that zone, retaining 42pt candidate Cells.
-- Only the compact action zone may use a persistent `.systemMaterial` effect plus semantic tint. Idle-dismiss mode hides both material and tint; no separate gradient is needed inside the disjoint zone. Candidates are clipped before this material, with no additional 56pt trailing content inset. Reduce Transparency uses an opaque fill; recovery hides all action layers. Keep effect ancestors at alpha 1 and unmasked; expanded-panel transitions hide the covered compact header rather than fading a material ancestor. The opaque overlay begins at the compact header and clips only its own top corners; the original fixed T9 path bar above stays visible and interactive.
+- Compact and expanded fixed action zones may use a persistent `.systemMaterial` effect plus semantic tint. Idle-dismiss mode hides both material and tint; no separate gradient is needed inside the disjoint zone. Candidates are clipped before this material, with no additional 56pt trailing content inset. Reduce Transparency uses an opaque fill; recovery hides all action layers. Keep effect ancestors at alpha 1 and unmasked; expanded-panel transitions hide the covered compact header rather than fading a material ancestor. The expanded viewport begins at the compact header and retains top-only corners; its clear background shares the existing keyboard surface. A temporary content-stack reveal mask hides covered keys without changing their frames or masking the Controller root; the original fixed T9 path bar above stays visible and interactive. The hidden compact material is restored only after that mask is removed.
 - Candidate touch diagnostics should use the shared logger. Diagnostic logging must not change visible candidate or chevron styling; otherwise real-device hit testing can accidentally depend on the debug view.
 
 Do not use tint-colored candidate text if it reduces contrast against the candidate background.
@@ -258,3 +258,18 @@ Manual keyboard UI verification before changing the frozen baseline:
 - Edge keys: first and last keys in each row should not feel too close to the screen edge.
 - Candidate commit: selecting candidates and expanded-panel candidates should keep readable candidate state and emit feedback once.
 - Accessibility: VoiceOver labels remain semantic, and dynamic labels such as Return still fit.
+
+### Continuous candidate reading (local UI-1)
+
+Keep the existing compact and expanded CollectionViews over one published ordered list. Reading anchors
+are presentation observations, not candidate IDs or selection authority. A meaningful partial item has
+at least max(12pt,20% of its axis extent) visible; a pixel sliver yields to the next readable item.
+Unscrolled collapse restores the original offset; a user pan transfers the current visible anchor.
+Validate publication generation/revision/origin, live revision/origin, raw input, compact-view identity
+and the candidate value before reusing an index. On mismatch reset deterministically; append-only
+paging with unchanged snapshot preserves the anchor. Earlier items remain scrollable, never sliced off.
+
+Flow positions are stable while scrolling. Only initial rows avoid the fixed action; later candidates
+may pass behind its blur, whose hit zone never forwards selection. Reveal clips content rather than
+resizing the keyboard; 0.18/0.16s transitions reject repeated toggles and candidate touches, and Reduce
+Motion is immediate. Preserve V1–V6 and existing fixed34pt T9 path reservation (empty is Human-allowed).

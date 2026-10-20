@@ -25,3 +25,7 @@ Human relayed Claude Architecture Pass / Quality Pass and authorized only N2 sur
 ## Bounded visual polish — Human, current chat, 2026-10-20
 
 Human reports six interaction behaviors passed on real iPhone and authorizes only V1–V6 local UIKit visual corrections, directed L1/L2, local commit/evidence/checkpoint. This supersedes prior N2 content-top choice: expanded candidates start at original candidate bar, with real T9 paths preserved above. Same Writer/P=none/worktree; no product push/remote PR update/merge/release, UI-2 #217 changes or input/sticky-expansion state-machine edits. Task stays Active.
+
+## Continuous Candidate Surface — Human pasted authorization, current chat, 2026-10-20
+
+Same task/Writer/worktree, P=none; entry bb74235 / product86df674. Human authorizes bounded phase-A feasibility then UI-only implementation/L1/L2/local commit/checkpoint when no Core/authority/native-select changes are needed. Keep two CollectionViews, original ordered snapshot/paging; UI-only reading anchors, stable flow, shared surface background, local action material and reveal transition. Existing fixed34pt T9 path area may remain empty. No product push/PR update/merge/release/UI-2#217/handoff/main changes. P0 identity/selection and P1 stable layout take precedence over unproven P2 visuals.

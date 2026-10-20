@@ -12,6 +12,16 @@ enum KeyboardDesignTokens {
         static let trailingContentPadding: CGFloat = 8
     }
 
+    enum ExpandedCandidates {
+        static let rowHeight: CGFloat = 42
+        static let contentInsets = UIEdgeInsets(top: 3, left: 8, bottom: 6, right: 8)
+        static let itemSpacing: CGFloat = 0
+        static let minimumReadableExtent: CGFloat = 12
+        static let minimumReadableFraction: CGFloat = 0.2
+        static let expandDuration: TimeInterval = 0.18
+        static let collapseDuration: TimeInterval = 0.16
+    }
+
     enum T9PinyinBar {
         static let visibleHeight: CGFloat = 34
     }

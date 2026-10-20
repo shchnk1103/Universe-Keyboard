@@ -113,9 +113,23 @@ private final class ExpandedCandidateCollapseButton: UIButton {
 final class ExpandedCandidatePanelContainerView: UIView {
     fileprivate weak var collapseButton: ExpandedCandidateCollapseButton?
     fileprivate var actionTopConstraint: NSLayoutConstraint?
+    let revealViewport = UIView()
+    weak var collectionView: UICollectionView?
+    var readingPosition: CandidateReadingPosition?
+    private(set) var isTransitioning = false
+    private var revealedHeight: CGFloat?
+    private var revealToken = UUID()
+    private weak var coveredRoot: UIStackView?
+    private var previousRootMask: CALayer?
+    private let coveredMask = CAShapeLayer()
+    private let actionMaterial = UIVisualEffectView(effect: nil)
+    private let actionFill = UIView()
+    private var actionFallbackColor: UIColor = .secondarySystemBackground
     private var coveredAccessibilityViews: [(UIView, Bool)] = []
 
     fileprivate func hideCoveredAccessibility(in root: UIStackView, keeping pathBar: UIView?) {
+        coveredRoot = root
+        previousRootMask = root.layer.mask
         coveredAccessibilityViews = root.arrangedSubviews.filter { $0 !== pathBar }.map {
             let previous = $0.accessibilityElementsHidden
             $0.accessibilityElementsHidden = true
@@ -124,6 +138,13 @@ final class ExpandedCandidatePanelContainerView: UIView {
     }
 
     fileprivate func restoreCoveredAccessibility() {
+        revealToken = UUID()
+        isTransitioning = false
+        revealViewport.layer.removeAllAnimations()
+        coveredMask.removeAllAnimations()
+        if coveredRoot?.layer.mask === coveredMask { coveredRoot?.layer.mask = previousRootMask }
+        coveredRoot = nil
+        previousRootMask = nil
         for (view, previous) in coveredAccessibilityViews { view.accessibilityElementsHidden = previous }
         coveredAccessibilityViews = []
     }
@@ -134,6 +155,16 @@ final class ExpandedCandidatePanelContainerView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        revealViewport.clipsToBounds = true
+        addSubview(revealViewport)
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(refreshActionMaterial),
+            name: UIAccessibility.reduceTransparencyStatusDidChangeNotification, object: nil)
+    }
+
+    override func willMove(toSuperview newSuperview: UIView?) {
+        if newSuperview == nil { restoreCoveredAccessibility() }
+        super.willMove(toSuperview: newSuperview)
     }
 
     @available(*, unavailable)
@@ -143,15 +174,9 @@ final class ExpandedCandidatePanelContainerView: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        // Reserve only rows intersecting the fixed action; candidate content starts at the header.
-        if let button = collapseButton,
-            let collection = subviews.compactMap({ $0 as? CandidateCollectionView }).first,
-            let layout = collection.collectionViewLayout as? LeftAlignedCandidateFlowLayout,
-            layout.reservedActionBottom != button.frame.maxY
-        {
-            layout.reservedActionBottom = button.frame.maxY
-            layout.invalidateLayout()
-        }
+        revealViewport.frame = CGRect(
+            x: 0, y: 0, width: bounds.width, height: min(bounds.height, revealedHeight ?? bounds.height))
+        if !isTransitioning { updateCoveredMask() }
         #if DEBUG
             refreshDebugHitboxOverlay()
         #endif
@@ -160,7 +185,7 @@ final class ExpandedCandidatePanelContainerView: UIView {
     #if DEBUG
         func refreshDebugHitboxOverlay() {
             for case let cell as CandidateCollectionCell
-                in (subviews.compactMap { $0 as? CandidateCollectionView }.first?.visibleCells ?? [])
+                in (collectionView?.visibleCells ?? [])
             {
                 cell.refreshDebugHitboxOverlay()
             }
@@ -190,6 +215,7 @@ final class ExpandedCandidatePanelContainerView: UIView {
 
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         guard isUserInteractionEnabled, !isHidden, alpha > 0.01 else { return nil }
+        if isTransitioning { return bounds.contains(point) ? self : nil }
         if let button = collapseButton,
             button.isUserInteractionEnabled,
             !button.isHidden,
@@ -205,6 +231,113 @@ final class ExpandedCandidatePanelContainerView: UIView {
         let result = super.hitTest(point, with: event)
         logHitTest(point: point, result: result, reason: "super")
         return result
+    }
+
+    func actionFrame(in view: UIView) -> CGRect {
+        guard let button = collapseButton else { return .null }
+        return button.convert(button.bounds, to: view)
+    }
+
+    func recordUserScroll() { readingPosition?.userScrolled = true }
+
+    @objc private func observeReadingDrag(_ pan: UIPanGestureRecognizer) {
+        if pan.state == .began { recordUserScroll() }
+    }
+
+    fileprivate func observeUserScroll(in collection: UICollectionView) {
+        collection.panGestureRecognizer.addTarget(self, action: #selector(observeReadingDrag(_:)))
+    }
+
+    fileprivate func installActionMaterial(fallbackColor: UIColor) {
+        actionFallbackColor = fallbackColor
+        guard let button = collapseButton else { return }
+        actionMaterial.translatesAutoresizingMaskIntoConstraints = false
+        actionMaterial.isUserInteractionEnabled = false
+        actionMaterial.accessibilityIdentifier = "expandedCandidateActionMaterial"
+        insertSubview(actionMaterial, belowSubview: button)
+        actionFill.translatesAutoresizingMaskIntoConstraints = false
+        actionFill.isUserInteractionEnabled = false
+        actionMaterial.contentView.addSubview(actionFill)
+        NSLayoutConstraint.activate([
+            actionMaterial.leadingAnchor.constraint(equalTo: button.leadingAnchor),
+            actionMaterial.trailingAnchor.constraint(equalTo: button.trailingAnchor),
+            actionMaterial.topAnchor.constraint(equalTo: button.topAnchor),
+            actionMaterial.bottomAnchor.constraint(equalTo: button.bottomAnchor),
+            actionFill.leadingAnchor.constraint(equalTo: actionMaterial.contentView.leadingAnchor),
+            actionFill.trailingAnchor.constraint(equalTo: actionMaterial.contentView.trailingAnchor),
+            actionFill.topAnchor.constraint(equalTo: actionMaterial.contentView.topAnchor),
+            actionFill.bottomAnchor.constraint(equalTo: actionMaterial.contentView.bottomAnchor),
+        ])
+        refreshActionMaterial()
+    }
+
+    @objc private func refreshActionMaterial() {
+        updateActionMaterial(reduceTransparency: UIAccessibility.isReduceTransparencyEnabled)
+    }
+
+    func updateActionMaterial(reduceTransparency: Bool) {
+        actionMaterial.effect =
+            reduceTransparency ? nil : UIBlurEffect(style: KeyboardDesignTokens.CandidateActionAppearance.materialStyle)
+        actionFill.backgroundColor = actionFallbackColor.withAlphaComponent(
+            reduceTransparency ? 1 : KeyboardDesignTokens.CandidateActionAppearance.tintOpacity)
+    }
+
+    /// Reveal candidates and cover keys using the same curve; neither root height nor cell frames animate.
+    /// The mask belongs only to the content stack; its material-bearing compact bar is hidden throughout.
+    private func updateCoveredMask() {
+        guard let root = coveredRoot else { return }
+        let path = UIBezierPath()
+        let top = convert(.zero, to: root).y
+        if top > 0 { path.append(UIBezierPath(rect: CGRect(x: 0, y: 0, width: root.bounds.width, height: top))) }
+        let bottomStart = top + min(bounds.height, revealedHeight ?? bounds.height)
+        if bottomStart < root.bounds.height {
+            path.append(
+                UIBezierPath(
+                    rect: CGRect(
+                        x: 0, y: bottomStart, width: root.bounds.width, height: root.bounds.height - bottomStart)))
+        } else {
+            // Keep a degenerate bottom rectangle so interpolation has the same path structure.
+            path.append(UIBezierPath(rect: CGRect(x: 0, y: root.bounds.height, width: root.bounds.width, height: 0)))
+        }
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        coveredMask.frame = root.bounds
+        coveredMask.path = path.cgPath
+        root.layer.mask = coveredMask
+        CATransaction.commit()
+    }
+
+    func setRevealedHeight(_ height: CGFloat) {
+        revealedHeight = height
+        revealViewport.frame = CGRect(x: 0, y: 0, width: bounds.width, height: min(bounds.height, height))
+        updateCoveredMask()
+    }
+
+    func animateReveal(to height: CGFloat, duration: TimeInterval, completion: @escaping () -> Void) {
+        let duration = UIAccessibility.isReduceMotionEnabled || !UIView.areAnimationsEnabled ? 0 : duration
+        guard duration > 0 else { setRevealedHeight(height); completion(); return }
+        let token = UUID()
+        revealToken = token
+        isTransitioning = true
+        collectionView?.isUserInteractionEnabled = false
+        collapseButton?.isEnabled = false
+        let previous = coveredMask.presentation()?.path ?? coveredMask.path
+        UIView.animate(withDuration: duration, delay: 0, options: [.curveEaseOut, .beginFromCurrentState]) {
+            self.setRevealedHeight(height)
+        } completion: { [weak self] _ in
+            guard let self, self.revealToken == token else { return }
+            self.isTransitioning = false
+            self.collectionView?.isUserInteractionEnabled = true
+            self.collapseButton?.isEnabled = true
+            if height >= self.bounds.height { self.revealedHeight = nil }
+            completion()
+        }
+        let animation = CABasicAnimation(keyPath: "path")
+        animation.fromValue = previous
+        animation.toValue = coveredMask.path
+        animation.duration = duration
+        animation.timingFunction = CAMediaTimingFunction(name: .easeOut)
+        coveredMask.add(animation, forKey: "candidate.reveal")
     }
 
     private var collapseButtonHitFrame: CGRect {
@@ -271,7 +404,15 @@ extension KeyboardViewController {
     func presentExpandedCandidatePanel() {
         (candidateExpandedPanel as? ExpandedCandidatePanelContainerView)?.restoreCoveredAccessibility()
         candidateExpandedPanel?.removeFromSuperview()
+        candidateCollectionView?.layoutIfNeeded()
+        let reading = CandidateReadingPosition(
+            snapshot: currentCandidateReadingSnapshot,
+            anchor: candidateCollectionView.flatMap {
+                CandidateReadingAnchor.capture(in: $0, items: presentedCandidates, horizontal: true)
+            },
+            compactOffset: candidateCollectionView?.contentOffset ?? .zero)
         let panel = makeExpandedCandidatePanel()
+        (panel as? ExpandedCandidatePanelContainerView)?.readingPosition = reading
         panel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(panel)
         NSLayoutConstraint.activate([
@@ -291,48 +432,61 @@ extension KeyboardViewController {
         // The opaque panel covers the keys. Keep the real T9 path bar above it visible and
         // interactive; hiding the entire root would turn its fixed row into an empty strip.
         candidateBar.isHidden = true
-        guard !UIAccessibility.isReduceMotionEnabled else { return }
-        panel.alpha = 0
-        panel.transform = CGAffineTransform(translationX: 0, y: 8)
-        UIView.animate(withDuration: 0.18, delay: 0, options: [.curveEaseOut, .beginFromCurrentState]) {
-            panel.alpha = 1
-            panel.transform = .identity
+        view.layoutIfNeeded()
+        guard let container = panel as? ExpandedCandidatePanelContainerView,
+            let collection = expandedCandidateCollectionView
+        else { return }
+        collection.layoutIfNeeded()
+        if let anchor = reading.entryAnchor, anchor.isValid(in: presentedCandidates),
+            let attributes = collection.layoutAttributesForItem(at: IndexPath(item: anchor.index, section: 0))
+        {
+            let action = container.actionFrame(in: collection)
+            let sharesActionColumn = attributes.frame.maxX > action.minX
+            let topPadding =
+                sharesActionColumn
+                ? KeyboardDesignTokens.CandidateBar.totalHeight
+                : KeyboardDesignTokens.ExpandedCandidates.contentInsets.top
+            let maxY = max(0, collection.contentSize.height - collection.bounds.height)
+            collection.setContentOffset(
+                CGPoint(x: 0, y: min(maxY, max(0, attributes.frame.minY - topPadding))), animated: false)
         }
+        container.setRevealedHeight(KeyboardDesignTokens.CandidateBar.totalHeight)
+        container.animateReveal(
+            to: panel.bounds.height, duration: KeyboardDesignTokens.ExpandedCandidates.expandDuration
+        ) {}
     }
 
     func dismissExpandedCandidatePanel(animated: Bool) {
-        guard let panel = candidateExpandedPanel else {
+        guard let panel = candidateExpandedPanel as? ExpandedCandidatePanelContainerView else {
             candidateBar?.isHidden = false
-            rootStack.isUserInteractionEnabled = true
             expandedPanelScrollView = nil
             expandedCandidateCollectionView = nil
             return
         }
-        let completion: (Bool) -> Void = { _ in
-            (panel as? ExpandedCandidatePanelContainerView)?.restoreCoveredAccessibility()
+        restoreCompactReadingPosition(from: panel)
+        let completion = { [weak self, weak panel] in
+            guard let self, let panel, self.candidateExpandedPanel === panel else { return }
+            panel.restoreCoveredAccessibility()
             panel.removeFromSuperview()
             self.candidateExpandedPanel = nil
             self.expandedPanelScrollView = nil
             self.expandedCandidateCollectionView = nil
-            self.rootStack.isUserInteractionEnabled = true
-        }
-        guard animated, !UIAccessibility.isReduceMotionEnabled else {
-            candidateBar?.isHidden = false
-            completion(true)
-            return
-        }
-        UIView.animate(withDuration: 0.16, delay: 0, options: [.curveEaseIn, .beginFromCurrentState]) {
-            panel.alpha = 0
-            panel.transform = CGAffineTransform(translationX: 0, y: 6)
             self.candidateBar?.isHidden = false
-        } completion: { finished in
-            completion(finished)
+        }
+        if animated {
+            panel.animateReveal(
+                to: KeyboardDesignTokens.CandidateBar.totalHeight,
+                duration: KeyboardDesignTokens.ExpandedCandidates.collapseDuration, completion: completion)
+        } else {
+            completion()
         }
     }
 
     func makeExpandedCandidatePanel(with precomputedItems: [CandidateItem]? = nil) -> UIView {
         let container = ExpandedCandidatePanelContainerView()
-        container.backgroundColor = KeyboardDesignTokens.CandidateActionAppearance.backgroundColor
+        // Share the actual underlying keyboard surface. Covered keys are removed by the reveal mask,
+        // so transparency does not expose key plates or introduce a second RGB background.
+        container.backgroundColor = .clear
         // Clip only this overlay. Root input/keyboard-bottom touch geometry stays untouched.
         container.layer.cornerRadius = keyboardSurfaceMaskCornerRadius
         container.layer.cornerCurve = .continuous
@@ -343,10 +497,10 @@ extension KeyboardViewController {
         let collapseButtonHeight = KeyboardDesignTokens.CandidateBar.totalHeight
         let layout = LeftAlignedCandidateFlowLayout()
         layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 0
-        layout.minimumInteritemSpacing = 0
+        layout.minimumLineSpacing = KeyboardDesignTokens.ExpandedCandidates.itemSpacing
+        layout.minimumInteritemSpacing = KeyboardDesignTokens.ExpandedCandidates.itemSpacing
         // 真实 cell 连续铺满；2pt 视觉内缩由 CandidateCollectionCell 负责。
-        layout.sectionInset = UIEdgeInsets(top: 3, left: 8, bottom: 6, right: 8)
+        layout.sectionInset = KeyboardDesignTokens.ExpandedCandidates.contentInsets
         layout.firstRowTrailingReservedWidth = collapseButtonWidth + 8
         let collectionView = CandidateCollectionView(frame: .zero, collectionViewLayout: layout)
         CandidateScrollViewStyle.apply(to: collectionView)
@@ -360,7 +514,9 @@ extension KeyboardViewController {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         expandedCandidateCollectionView = collectionView
         expandedPanelScrollView = collectionView
-        container.addSubview(collectionView)
+        container.revealViewport.addSubview(collectionView)
+        container.collectionView = collectionView
+        container.observeUserScroll(in: collectionView)
 
         // Use the exact compact symbol and unconfigured button rendering path. A half-turn
         // preserves its glyph bounds instead of relying on differently scaled up/down symbols.
@@ -376,6 +532,7 @@ extension KeyboardViewController {
         collapseButton.accessibilityHint = "双击以返回键盘"
         container.addSubview(collapseButton)
         container.collapseButton = collapseButton
+        container.installActionMaterial(fallbackColor: keyboardSurfaceMaterialTintColor)
         container.bringSubviewToFront(collapseButton)
         let actionTop = collapseButton.topAnchor.constraint(equalTo: container.topAnchor)
         container.actionTopConstraint = actionTop
@@ -385,10 +542,10 @@ extension KeyboardViewController {
                 equalTo: container.trailingAnchor, constant: 0),
             collapseButton.widthAnchor.constraint(equalToConstant: collapseButtonWidth),
             collapseButton.heightAnchor.constraint(equalToConstant: collapseButtonHeight),
-            collectionView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
-            collectionView.topAnchor.constraint(equalTo: container.topAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: container.bottomAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: container.revealViewport.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: container.revealViewport.trailingAnchor),
+            collectionView.topAnchor.constraint(equalTo: container.revealViewport.topAnchor),
+            collectionView.heightAnchor.constraint(equalTo: container.heightAnchor),
         ])
         #if DEBUG
             Logger.shared.info(
@@ -399,7 +556,11 @@ extension KeyboardViewController {
 
     func refreshExpandedPanel() {
         guard isCandidateExpanded, let collectionView = expandedCandidateCollectionView else { return }
+        let position = (candidateExpandedPanel as? ExpandedCandidatePanelContainerView)?.readingPosition
+        let snapshotChanged = position?.snapshot != currentCandidateReadingSnapshot
+        if snapshotChanged { position?.reset(to: currentCandidateReadingSnapshot) }
         collectionView.reloadData()
+        if snapshotChanged { collectionView.setContentOffset(.zero, animated: false) }
         collectionView.alwaysBounceVertical = hasMoreCandidates
     }
 

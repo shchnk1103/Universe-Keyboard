@@ -66,6 +66,8 @@ extension KeyboardViewController {
     /// 不拆除底层按键和候选栏，因此切换动画期间没有整页重排。
     @objc func toggleCandidateExpand() {
         guard !shouldBlockT9RecoveryPresentation else { return }
+        // UIKit reveal owns this short interaction boundary; do not race overlapping overlays.
+        guard (candidateExpandedPanel as? ExpandedCandidatePanelContainerView)?.isTransitioning != true else { return }
         if isPinyinPathExpanded {
             dismissPinyinPathExpandedPanel(animated: false)
         }

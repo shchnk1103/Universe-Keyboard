@@ -71,7 +71,7 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
                 let panel = try XCTUnwrap(sut.candidateExpandedPanel)
                 XCTAssertEqual(panel.convert(panel.bounds, to: surface).minY, expected.minY, accuracy: 0.01)
                 XCTAssertEqual(panel.bounds.width, width)
-                XCTAssertEqual(panel.backgroundColor?.cgColor.alpha, 1)
+                XCTAssertEqual(panel.backgroundColor?.cgColor.alpha, 0)
                 let button = try XCTUnwrap(panel.subviews.compactMap { $0 as? UIButton }.first)
                 XCTAssertEqual(button.convert(button.bounds, to: surface), expected)
                 XCTAssertEqual(button.accessibilityLabel, "收起候选面板")
@@ -173,6 +173,311 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
             XCTAssertEqual(sut.preferredKeyboardHeight, 254)
             XCTAssertFalse(sut.shouldReserveT9PinyinPathBar)
         }
+    }
+
+    @MainActor
+    private func seedReadingCandidates(_ sut: KeyboardViewController, count: Int = 120) {
+        sut.candidateSnapshotGeneration = 10
+        sut.accumulatedCandidates = (0..<count).map {
+            CandidateItem(title: "词\($0)", kind: .continuationCandidate)
+        }
+        sut.hasMoreCandidates = false
+        sut.fillCandidateBar()
+        layout(sut)
+        sut.candidateCollectionView?.layoutIfNeeded()
+    }
+
+    @MainActor
+    func testPartialAndSliverAnchorsExpandWithoutDroppingEarlierCandidates() throws {
+        let animations = UIView.areAnimationsEnabled
+        UIView.setAnimationsEnabled(false)
+        defer { UIView.setAnimationsEnabled(animations) }
+        for width in [320.0, 390.0, 430.0] {
+            for nineKey in [false, true] {
+                for sliver in [false, true] {
+                    let sut = makeController(width: width, nineKey: nineKey)
+                    seedReadingCandidates(sut)
+                    let compact = try XCTUnwrap(sut.candidateCollectionView)
+                    let cell = try XCTUnwrap(compact.layoutAttributesForItem(at: IndexPath(item: 15, section: 0)))
+                    let x = cell.frame.minX + (sliver ? cell.frame.width - 1 : cell.frame.width * 0.5)
+                    compact.setContentOffset(CGPoint(x: x, y: 0), animated: false)
+                    let original = compact.contentOffset.x
+                    sut.toggleCandidateExpand()
+                    layout(sut)
+                    let panel = try XCTUnwrap(sut.candidateExpandedPanel as? ExpandedCandidatePanelContainerView)
+                    let anchor = try XCTUnwrap(panel.readingPosition?.entryAnchor)
+                    XCTAssertEqual(anchor.index, sliver ? 16 : 15)
+                    if !sliver {  // UIKit quantizes scroll offsets to the display pixel grid.
+                        let pixelFraction = 1 / max(1, sut.traitCollection.displayScale) / cell.frame.width
+                        XCTAssertEqual(anchor.visibleFraction, 0.5, accuracy: pixelFraction)
+                    }
+                    let expanded = try XCTUnwrap(sut.expandedCandidateCollectionView)
+                    expanded.layoutIfNeeded()
+                    let attribute = try XCTUnwrap(
+                        expanded.layoutAttributesForItem(at: IndexPath(item: anchor.index, section: 0)))
+                    XCTAssertTrue(expanded.bounds.contains(attribute.frame))
+                    XCTAssertFalse(attribute.frame.intersects(panel.actionFrame(in: expanded)))
+                    XCTAssertGreaterThan(expanded.contentOffset.y, 0)
+                    XCTAssertEqual(expanded.numberOfItems(inSection: 0), 120)
+                    expanded.setContentOffset(.zero, animated: false)
+                    XCTAssertNotNil(expanded.layoutAttributesForItem(at: IndexPath(item: 0, section: 0)))
+                    // Programmatic positioning is not a user's vertical pan.
+                    XCTAssertFalse(panel.readingPosition?.userScrolled == true)
+                    sut.toggleCandidateExpand()
+                    XCTAssertEqual(compact.contentOffset.x, original, accuracy: 0.001)
+                    XCTAssertNil(sut.rootStack.layer.mask)
+                }
+            }
+        }
+    }
+
+    @MainActor
+    func testUserScrolledAnchorReturnsToCompactAndSnapshotChangesFallBack() throws {
+        let animations = UIView.areAnimationsEnabled
+        UIView.setAnimationsEnabled(false)
+        defer { UIView.setAnimationsEnabled(animations) }
+        for invalidate in [false, true] {
+            let sut = makeController(width: 390, nineKey: true)
+            seedReadingCandidates(sut)
+            let compact = try XCTUnwrap(sut.candidateCollectionView)
+            compact.setContentOffset(CGPoint(x: 300.375, y: 0), animated: false)
+            sut.toggleCandidateExpand()
+            layout(sut)
+            let panel = try XCTUnwrap(sut.candidateExpandedPanel as? ExpandedCandidatePanelContainerView)
+            let expanded = try XCTUnwrap(sut.expandedCandidateCollectionView)
+            expanded.scrollToItem(at: IndexPath(item: 40, section: 0), at: .top, animated: false)
+            expanded.layoutIfNeeded()
+            panel.recordUserScroll()  // The same UI-only event the collection's pan observer records.
+            let anchor = try XCTUnwrap(
+                CandidateReadingAnchor.capture(
+                    in: expanded, items: sut.presentedCandidates, horizontal: false,
+                    occluded: panel.actionFrame(in: expanded)))
+            XCTAssertGreaterThan(anchor.index, 15)
+            if invalidate {
+                sut.candidateSnapshotGeneration += 1
+                sut.refreshExpandedPanel()
+                expanded.layoutIfNeeded()
+                XCTAssertEqual(expanded.contentOffset, .zero)
+            }
+            sut.toggleCandidateExpand()
+            if invalidate {
+                XCTAssertEqual(compact.contentOffset, .zero)
+            } else {
+                let frame = try XCTUnwrap(
+                    compact.layoutAttributesForItem(at: IndexPath(item: anchor.index, section: 0))
+                ).frame
+                XCTAssertTrue(compact.bounds.contains(frame))
+                XCTAssertEqual(compact.contentOffset.x, frame.minX, accuracy: 0.001)
+            }
+        }
+    }
+
+    @MainActor
+    func testPagingAppendKeepsAnchorAndFlowStableAcrossScrolling() async throws {
+        let animations = UIView.areAnimationsEnabled
+        UIView.setAnimationsEnabled(false)
+        defer { UIView.setAnimationsEnabled(animations) }
+        let sut = makeController(width: 320, nineKey: false)
+        seedReadingCandidates(sut, count: 60)
+        let compact = try XCTUnwrap(sut.candidateCollectionView)
+        compact.setContentOffset(CGPoint(x: 350.25, y: 0), animated: false)
+        let offset = compact.contentOffset
+        let original = sut.presentedCandidates
+        sut.toggleCandidateExpand()
+        layout(sut)
+        let expanded = try XCTUnwrap(sut.expandedCandidateCollectionView)
+        let frames = (0..<60).compactMap {
+            expanded.layoutAttributesForItem(at: IndexPath(item: $0, section: 0))?.frame
+        }
+        sut.accumulatedCandidates += (60..<72).map { CandidateItem(title: "词\($0)", kind: .continuationCandidate) }
+        sut.appendToExpandedCandidatePanel(insertedCount: 12)
+        try await Task.sleep(for: .milliseconds(50))
+        expanded.layoutIfNeeded()
+        XCTAssertEqual(Array(sut.presentedCandidates.prefix(60)), original)
+        XCTAssertEqual(expanded.numberOfItems(inSection: 0), 72)
+        expanded.setContentOffset(CGPoint(x: 0, y: 200), animated: false)
+        expanded.layoutIfNeeded()
+        XCTAssertEqual(
+            (0..<60).compactMap { expanded.layoutAttributesForItem(at: IndexPath(item: $0, section: 0))?.frame }, frames
+        )
+        sut.toggleCandidateExpand()
+        XCTAssertEqual(compact.numberOfItems(inSection: 0), 72)
+        XCTAssertEqual(compact.contentOffset, offset)
+    }
+
+    @MainActor
+    func testNaturalFlowFixedActionMaterialAndTouchOcclusion() throws {
+        let animations = UIView.areAnimationsEnabled
+        UIView.setAnimationsEnabled(false)
+        defer { UIView.setAnimationsEnabled(animations) }
+        for width in [320.0, 390.0, 430.0] {
+            let sut = makeController(width: width, nineKey: true)
+            seedReadingCandidates(sut)
+            let mixed = ["你", "一个自然换行的较长候选词", String(repeating: "长词", count: 25), "abc", "中英混合"]
+            sut.accumulatedCandidates = (0..<120).map {
+                CandidateItem(title: mixed[$0 % mixed.count], kind: .continuationCandidate)
+            }
+            sut.fillCandidateBar()
+            sut.toggleCandidateExpand()
+            layout(sut)
+            let panel = try XCTUnwrap(sut.candidateExpandedPanel as? ExpandedCandidatePanelContainerView)
+            let expanded = try XCTUnwrap(sut.expandedCandidateCollectionView)
+            let button = try XCTUnwrap(panel.subviews.compactMap { $0 as? UIButton }.first)
+            let material = try XCTUnwrap(panel.subviews.compactMap { $0 as? UIVisualEffectView }.first)
+            XCTAssertEqual(material.frame, button.frame)
+            XCTAssertEqual(panel.backgroundColor?.cgColor.alpha, 0)
+            let frames = (0..<120).compactMap {
+                expanded.layoutAttributesForItem(at: IndexPath(item: $0, section: 0))?.frame
+            }
+            XCTAssertEqual(frames.count, 120)
+            XCTAssertGreaterThan(Set(frames.map(\.width)).count, 1)
+            for frame in frames { XCTAssertEqual(frame.height, 42); XCTAssertLessThanOrEqual(frame.maxX, width - 8) }
+            for (left, right) in zip(frames, frames.dropFirst()) {
+                if left.minY == right.minY {
+                    XCTAssertEqual(left.maxX, right.minX)
+                } else {
+                    XCTAssertEqual(right.minX, 8); XCTAssertGreaterThan(right.minY, left.minY)
+                }
+            }
+            let originalFrames = frames
+            expanded.setContentOffset(CGPoint(x: 0, y: 120), animated: false)
+            expanded.layoutIfNeeded()
+            XCTAssertEqual(
+                (0..<120).compactMap { expanded.layoutAttributesForItem(at: IndexPath(item: $0, section: 0))?.frame },
+                originalFrames)
+            let point = CGPoint(x: width - 20, y: 23)
+            XCTAssertTrue(panel.hitTest(point, with: nil) === button)
+            let visiblePoint = CGPoint(x: 30, y: 70)
+            let hit = try XCTUnwrap(panel.hitTest(visiblePoint, with: nil))
+            XCTAssertTrue(hit === expanded || hit.isDescendant(of: expanded))
+            panel.updateActionMaterial(reduceTransparency: true)
+            XCTAssertNil(material.effect)
+            XCTAssertEqual(material.contentView.subviews.first?.backgroundColor?.cgColor.alpha, 1)
+            panel.updateActionMaterial(reduceTransparency: false)
+            XCTAssertNotNil(material.effect)
+            XCTAssertEqual(
+                ObjectIdentifier(material),
+                ObjectIdentifier(try XCTUnwrap(panel.subviews.compactMap { $0 as? UIVisualEffectView }.first)))
+            let mask = try XCTUnwrap(sut.rootStack.layer.mask as? CAShapeLayer)
+            XCTAssertFalse(mask.path?.contains(CGPoint(x: 40, y: 100)) == true)
+            XCTAssertTrue(mask.path?.contains(CGPoint(x: 40, y: 17)) == true)
+            expanded.scrollToItem(at: IndexPath(item: 119, section: 0), at: .bottom, animated: false)
+            expanded.layoutIfNeeded()
+            XCTAssertTrue(
+                expanded.bounds.contains(
+                    try XCTUnwrap(expanded.layoutAttributesForItem(at: IndexPath(item: 119, section: 0))).frame))
+            assertRequiredEqualities(in: sut.view)
+            sut.toggleCandidateExpand()
+            XCTAssertNil(sut.rootStack.layer.mask)
+        }
+    }
+
+    @MainActor
+    func testRepeatedRevealAndRecoveryDismissRestoreOriginalGeometry() async throws {
+        let animations = UIView.areAnimationsEnabled
+        UIView.setAnimationsEnabled(false)
+        defer { UIView.setAnimationsEnabled(animations) }
+        let sut = makeController(width: 390, nineKey: true)
+        seedReadingCandidates(sut, count: 3)
+        let keys = keyFrames(sut)
+        let height = sut.view.bounds.height
+        for _ in 0..<10 {
+            sut.toggleCandidateExpand(); layout(sut)
+            XCTAssertEqual(sut.expandedCandidateCollectionView?.contentOffset, .zero)
+            sut.toggleCandidateExpand(); layout(sut)
+            XCTAssertEqual(keyFrames(sut), keys)
+            XCTAssertEqual(sut.view.bounds.height, height)
+            XCTAssertNil(sut.rootStack.layer.mask)
+        }
+        UIView.setAnimationsEnabled(true)
+        sut.toggleCandidateExpand()
+        layout(sut)
+        let panel = try XCTUnwrap(sut.candidateExpandedPanel as? ExpandedCandidatePanelContainerView)
+        if panel.isTransitioning {
+            sut.toggleCandidateExpand()
+            XCTAssertTrue(sut.isCandidateExpanded)
+            XCTAssertTrue(sut.candidateExpandedPanel === panel)
+            XCTAssertTrue(panel.hitTest(CGPoint(x: 30, y: 70), with: nil) === panel)
+        }
+        // Recovery's UI adapter uses this immediate dismissal; no Core recovery state is fabricated here.
+        sut.isCandidateExpanded = false
+        sut.dismissExpandedCandidatePanel(animated: false)
+        (sut.candidateBar as? CandidateBarView)?.setInputRecoveryNotice("输入恢复失败")
+        try await Task.sleep(for: .milliseconds(250))
+        XCTAssertNil(sut.candidateExpandedPanel)
+        XCTAssertNil(sut.rootStack.layer.mask)
+        XCTAssertEqual(keyFrames(sut), keys)
+        XCTAssertFalse((sut.candidateBar as? CandidateBarView)?.expandButton.isEnabled == true)
+    }
+
+    @MainActor
+    func testFewCandidatesAndPublicationChangesNeverReuseOldIndices() throws {
+        let animations = UIView.areAnimationsEnabled
+        UIView.setAnimationsEnabled(false)
+        defer { UIView.setAnimationsEnabled(animations) }
+        for count in [0, 1, 3] {
+            let sut = makeController(width: 320, nineKey: false)
+            seedReadingCandidates(sut, count: count)
+            sut.toggleCandidateExpand(); layout(sut)
+            XCTAssertEqual(sut.expandedCandidateCollectionView?.numberOfItems(inSection: 0), count)
+            sut.toggleCandidateExpand()
+            XCTAssertEqual(sut.candidateCollectionView?.contentOffset, .zero)
+        }
+        for mutation in 0..<3 {
+            let sut = makeController(width: 390, nineKey: false)
+            seedReadingCandidates(sut)
+            sut.candidateCollectionView?.setContentOffset(CGPoint(x: 400, y: 0), animated: false)
+            sut.toggleCandidateExpand(); layout(sut)
+            switch mutation {
+            case 0: sut.candidateSnapshotCompositionRevision += 1
+            case 1: sut.candidateSnapshotRawInput = "new composition"
+            default: sut.accumulatedCandidates.reverse()  // Same count/text set is insufficient identity.
+            }
+            sut.toggleCandidateExpand()
+            XCTAssertEqual(sut.candidateCollectionView?.contentOffset, .zero)
+        }
+        let sut = makeController(width: 390, nineKey: true)
+        seedReadingCandidates(sut)
+        sut.toggleCandidateExpand(); layout(sut)
+        let snapshot = sut.currentCandidateReadingSnapshot
+        sut.cachedLayoutStyle = .twentySixKey
+        sut.reloadKeyboard(); layout(sut)
+        XCTAssertNil(sut.candidateExpandedPanel)
+        XCTAssertNil(sut.rootStack.layer.mask)
+        XCTAssertFalse(sut.candidateBar.isHidden)
+        XCTAssertNotEqual(snapshot, sut.currentCandidateReadingSnapshot)
+    }
+
+    @MainActor
+    func testAnimatedRevealRejectsRapidToggleAndRestoresPagingInteraction() async throws {
+        let animations = UIView.areAnimationsEnabled
+        UIView.setAnimationsEnabled(true)
+        defer { UIView.setAnimationsEnabled(animations) }
+        let sut = makeController(width: 390, nineKey: false)
+        seedReadingCandidates(sut)
+        let keys = keyFrames(sut)
+        sut.toggleCandidateExpand(); layout(sut)
+        let panel = try XCTUnwrap(sut.candidateExpandedPanel as? ExpandedCandidatePanelContainerView)
+        if panel.isTransitioning {
+            for _ in 0..<5 { sut.toggleCandidateExpand() }
+            XCTAssertTrue(sut.isCandidateExpanded)
+            XCTAssertTrue(sut.candidateExpandedPanel === panel)
+        }
+        try await Task.sleep(for: .milliseconds(250))
+        XCTAssertFalse(panel.isTransitioning)
+        sut.isCandidateScrollInteracting = true
+        sut.toggleCandidateExpand()
+        XCTAssertFalse(sut.isCandidateScrollInteracting)
+        if panel.isTransitioning {
+            for _ in 0..<5 { sut.toggleCandidateExpand() }
+            XCTAssertFalse(sut.isCandidateExpanded)
+            XCTAssertTrue(sut.candidateExpandedPanel === panel)
+        }
+        try await Task.sleep(for: .milliseconds(250))
+        XCTAssertNil(sut.candidateExpandedPanel)
+        XCTAssertNil(sut.rootStack.layer.mask)
+        XCTAssertFalse(sut.candidateBar.isHidden)
+        XCTAssertEqual(keyFrames(sut), keys)
     }
 
     @MainActor
