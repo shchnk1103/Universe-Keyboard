@@ -8,9 +8,9 @@ record_id: KEYBOARD-COMPACT-HEADER-001
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current phase | UI-1 local candidate; UI-2 deferred pending real Extension evidence |
+| Current phase | A1/A3 corrected local candidate; awaiting Human / Claude targeted re-review; UI-2 deferred |
 | Writer / pending handoff | codex-compact-header / none; canonical W/P derived from carrier log |
-| Next decision | Human assigns independent review or a new bounded runtime step; no product publication |
+| Next decision | Human sends corrected candidate for Claude targeted re-review or decides next bounded step; no product publication |
 
 ## Authority and responsibilities
 
@@ -54,3 +54,5 @@ UI-1 delivered locally with [verification](../evidence/keyboard-compact-header-0
 ## Targeted correction stage
 
 Human authorization in the current chat supersedes CP-002's stop only for A1/A3 and explicitly allowed cleanup/testing/records; see the appended AUTH. Claude Architecture/Quality Partial are Human-relayed results, not newly performed reviews. Same W/P, carrier, worktree and protected boundaries. The stage is L1 directed reproduction and corrections, then L2 affected targets/Debug test build, local candidate/checkpoint and stop. Independent re-review remains Human-owned.
+
+Targeted correction delivery: local product `e21d076cc6615b2601059df98a3a435bff41019d`; L1 18/0/0, L2 Keyboard49/0/0 + Extension40/0/0, Debug test build and strict Swift Pass. Evidence appended to existing verification. Stop for Human / Claude targeted re-review; no independent acceptance claim. W unchanged, P=none.
