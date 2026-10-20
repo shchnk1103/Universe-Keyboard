@@ -185,6 +185,17 @@ final class KeyboardInputHitAreaStackView: UIStackView {
         isUserInteractionEnabled = true
     }
 
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        guard isUserInteractionEnabled, !isHidden, alpha > 0.01 else { return false }
+        if super.point(inside: point, with: event) { return true }
+        // Only the full-width header escapes the stack's 7pt key margins.
+        // Let its visible edge receive touches without widening any key touch cell.
+        return arrangedSubviews.contains { child in
+            guard let header = child as? CandidateBarView else { return false }
+            return header.point(inside: header.convert(point, from: self), with: event)
+        }
+    }
+
     /// Rebuilds geometry after the view controller reports that every nested
     /// stack has completed layout. Calling this from the root stack's own
     /// `layoutSubviews` is too early for the deeper nine-key hierarchy.

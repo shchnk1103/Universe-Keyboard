@@ -143,6 +143,8 @@ final class CandidateBarView: UIView {
             }
         #endif
 
+        accessibilityIdentifier = "compactCandidateBar"
+        collectionView.accessibilityIdentifier = "compactCandidateViewport"
         self.backgroundColor = backgroundColor
         isOpaque = false
         layer.cornerRadius = 0
@@ -186,12 +188,12 @@ final class CandidateBarView: UIView {
             heightAnchor.constraint(equalToConstant: candidateBarHeight),
         ])
         NotificationCenter.default.addObserver(
-            self, selector: #selector(updateActionAppearance),
+            self, selector: #selector(refreshActionAppearance),
             name: UIAccessibility.reduceTransparencyStatusDidChangeNotification, object: nil)
         registerForTraitChanges([UITraitUserInterfaceStyle.self]) { (bar: CandidateBarView, _: UITraitCollection) in
-            bar.updateActionAppearance()
+            bar.refreshActionAppearance()
         }
-        updateActionAppearance()
+        refreshActionAppearance()
     }
 
     private func installActionBackground() {
@@ -223,15 +225,21 @@ final class CandidateBarView: UIView {
 
     func setCanExpandCandidates(_ canExpand: Bool) {
         canExpandCandidates = canExpand
-        updateActionAppearance()
+        refreshActionAppearance()
     }
 
-    @objc private func updateActionAppearance() {
+    @objc private func refreshActionAppearance() {
+        updateActionAppearance(reduceTransparency: UIAccessibility.isReduceTransparencyEnabled)
+    }
+
+    /// The environment supplies accessibility preference; the view owns only material presentation.
+    func updateActionAppearance(reduceTransparency: Bool) {
         let appearance = KeyboardDesignTokens.CandidateActionAppearance.self
-        let reduceTransparency = UIAccessibility.isReduceTransparencyEnabled
         let showMaterial = canExpandCandidates && !reduceTransparency && !isShowingRecoveryNotice
         // Keep the effect and every ancestor fully opaque in alpha; color tint is a separate layer.
-        actionMaterialView.effect = showMaterial ? UIBlurEffect(style: appearance.materialStyle) : nil
+        if showMaterial != (actionMaterialView.effect != nil) {
+            actionMaterialView.effect = showMaterial ? UIBlurEffect(style: appearance.materialStyle) : nil
+        }
         actionMaterialView.isHidden = !showMaterial
         actionTintView.isHidden = isShowingRecoveryNotice
         actionEdgeView.isHidden = isShowingRecoveryNotice || reduceTransparency
@@ -271,7 +279,7 @@ final class CandidateBarView: UIView {
         itemTapRecognizer.isEnabled = !isShowingRecoveryNotice
         swipeDownRecognizer?.isEnabled = !isShowingRecoveryNotice
         horizontalFallbackRecognizer?.isEnabled = !isShowingRecoveryNotice
-        updateActionAppearance()
+        refreshActionAppearance()
         if isShowingRecoveryNotice { bringSubviewToFront(recoveryLabel) }
     }
 

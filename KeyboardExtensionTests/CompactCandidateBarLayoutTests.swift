@@ -64,15 +64,22 @@ nonisolated final class CompactCandidateBarLayoutTests: XCTestCase {
         let f = Fixture(width: 390)
         let material = try XCTUnwrap(f.bar.subviews.compactMap { $0 as? UIVisualEffectView }.first)
         for style in [UIUserInterfaceStyle.light, .dark] {
+            f.window.overrideUserInterfaceStyle = style
+            f.bar.overrideUserInterfaceStyle = style
             f.host.overrideUserInterfaceStyle = style
+            f.host.view.backgroundColor = KeyboardDesignTokens.CandidateActionAppearance.backgroundColor.resolvedColor(
+                with: UITraitCollection(userInterfaceStyle: style))
             for _ in 0..<3 { f.bar.setCanExpandCandidates(true) }
             XCTAssertTrue(f.bar.subviews.compactMap { $0 as? UIVisualEffectView }.first === material)
             XCTAssertEqual(material.alpha, 1)
             XCTAssertNil(material.superview?.mask)
             XCTAssertNotNil(material.effect)
             f.host.view.layoutIfNeeded()
+            RunLoop.current.run(until: Date().addingTimeInterval(0.05))
+            XCTAssertEqual(f.bar.traitCollection.userInterfaceStyle, style)
             let attachment = XCTAttachment(
                 image: UIGraphicsImageRenderer(bounds: f.host.view.bounds).image { context in
+                    // Offscreen layer capture verifies text/fill geometry, not the live backdrop blur.
                     f.host.view.layer.render(in: context.cgContext)
                 })
             attachment.name = "compact-candidates-\(style.rawValue)"
@@ -93,6 +100,22 @@ nonisolated final class CompactCandidateBarLayoutTests: XCTestCase {
     }
 
     @MainActor
+    func testReduceTransparencyUsesOpaqueFillAndNotificationRestoresSystemPreference() throws {
+        let f = Fixture(width: 390)
+        f.bar.setCanExpandCandidates(true)
+        let material = try XCTUnwrap(f.bar.subviews.compactMap { $0 as? UIVisualEffectView }.first)
+        let tint = try XCTUnwrap(f.bar.subviews.first { $0.accessibilityIdentifier == "candidateActionTint" })
+        f.bar.updateActionAppearance(reduceTransparency: true)
+        XCTAssertTrue(material.isHidden)
+        XCTAssertNil(material.effect)
+        XCTAssertEqual(tint.backgroundColor?.cgColor.alpha, 1)
+        XCTAssertEqual(tint.frame.maxX, f.bar.bounds.maxX)
+        NotificationCenter.default.post(
+            name: UIAccessibility.reduceTransparencyStatusDidChangeNotification, object: nil)
+        XCTAssertEqual(material.isHidden, UIAccessibility.isReduceTransparencyEnabled)
+    }
+
+    @MainActor
     private func descendants(of view: UIView) -> [UIView] {
         view.subviews.flatMap { [$0] + descendants(of: $0) }
     }
@@ -100,10 +123,14 @@ nonisolated final class CompactCandidateBarLayoutTests: XCTestCase {
     @MainActor
     private final class Fixture: NSObject, UICollectionViewDataSource {
         let host: UIViewController
+        let window: UIWindow
         let bar: CandidateBarView
 
         init(width: CGFloat) {
             host = UIViewController()
+            window = UIWindow(frame: CGRect(x: 0, y: 0, width: width, height: 46))
+            window.rootViewController = host
+            window.makeKeyAndVisible()
             host.view.frame = CGRect(x: 0, y: 0, width: width, height: 46)
             host.view.backgroundColor = KeyboardDesignTokens.CandidateActionAppearance.backgroundColor
             bar = CandidateBarView(

@@ -51,12 +51,14 @@ Path list presentation (implementation): Path cells render with plain `UILabel` 
 
 **Idle empty-state Path hint:** Retired. Path bar stays empty when there is no composition and no Path chips. Do not bring back 「点选拼音可加快输入」 or mid-type “after N digits” banners.
 
-Frozen keyboard baseline:
+**Exception — Compact candidate header (`KEYBOARD-COMPACT-HEADER-001`):** Human authorized a 46pt total shared candidate row, a full-trailing 56pt action zone and 22pt medium symbols. Local parameters live in `Keyboard/Views/KeyboardDesignTokens.swift`; the compact Cell derives its height from the same total. The original 14pt gesture bridge is already included and must not be added again. Candidate fonts, key metrics and expanded-panel Cell height are unchanged. UI-2 dynamic T9 height is deferred: the shipped candidate retains the existing fixed 34pt Path reservation until real Extension stability evidence is available.
+
+Frozen keyboard baseline (with the authorized compact-header exception):
 
 - Keyboard content top inset: `2`.
 - Keyboard content bottom inset: `0`.
-- Candidate bar height: `34`.
-- Candidate-to-key spacing: `8`.
+- Candidate bar **total** height / normal Cell height: `46` (shared semantic token).
+- Additional candidate-to-key spacing: `0` (no extra legacy 14pt outside the total).
 - Letter key height: `45`.
 - Function key width for Shift, Delete, 123, globe, and input-mode keys: `46`.
 - Function key symbol size: `22` (Delete / Return / Globe / emoji SF Symbols only).
@@ -124,12 +126,13 @@ The candidate bar must prioritize readability and speed:
   - Background: high-contrast pill drawn by `CandidateCollectionCell`.
 - Composition/preedit fallback should use `.secondaryLabel`.
 - Placeholder items should not appear as selectable candidates.
-- The trailing candidate-bar control is always present at the existing 56 pt slot (`PD-CANDIDATE-BAR-IDLE-DISMISS-001`). Expandable content uses quiet `chevron.down` to expand. Idle uses template `chevron.down.circle` to request `dismissKeyboard()`. Draw it with `UIButton(type: .custom)` and `.alwaysTemplate`, not `UIButton.Configuration`, so the circle does not punch a white plate through keyboard glass. Swipe-down expands only in expand mode. VoiceOver labels switch with the mode.
+- The trailing candidate-bar control is always present in a 56 × 46pt action zone, flush with the keyboard surface trailing edge (`PD-CANDIDATE-BAR-IDLE-DISMISS-001`). Expandable content uses quiet `chevron.down` to expand. Idle uses template `chevron.down.circle` to request `dismissKeyboard()`. Draw it with `UIButton(type: .custom)` and `.alwaysTemplate`, not `UIButton.Configuration`, so the circle does not punch a white plate through keyboard glass. Swipe-down expands only in expand mode. VoiceOver labels switch with the mode.
 - Normal horizontal candidates use a 17pt base font; composition fallback uses 15pt. Keep Dynamic Type capped at 28pt so candidate rows do not resize unpredictably.
 - Candidate cells should render text with `UILabel` and an explicit highlighted background view. Avoid `UIButton.Configuration` for candidate display; it can interact poorly with system material compositing.
 - Candidate `UICollectionView`s must use `CandidateScrollViewStyle.apply(to:)`. On iOS 26+, `UIScrollEdgeEffect` can create a rectangular fade/overlay over the first candidate row inside the system keyboard glass container.
 - Candidate `UICollectionView` layouts should avoid real spacing between items. Keep item spacing at zero, put the visual gap inside the cell, and keep a nearly invisible backing view (`alpha` around `0.001`) so the apparent gap remains part of a cell's touch area in the Keyboard Extension.
-- Candidate expand and collapse chevrons may have a larger real hit area than their visible symbol. Do this through the button's own `point(inside:with:)` and nearly invisible backing, not through visible diagnostic overlays or red debug backgrounds.
+- Compact expand/dismiss hits are exactly the visible 56 × 46pt action zone, disjoint from the clipped candidate viewport. Do not restore horizontal hit outsets into candidate text. The separate expanded-panel collapse control retains its existing touch reservation.
+- Only the compact action zone may use a persistent `.systemMaterial` effect plus semantic tint and an 8pt decorative transition inside the zone. Candidates are clipped before this material, with no additional 56pt trailing content inset. Reduce Transparency uses an opaque fill; recovery hides all action layers. Keep effect ancestors at alpha 1 and unmasked; expanded-panel transitions hide the underlying root rather than fading its material ancestor.
 - Candidate touch diagnostics should use the shared logger. Diagnostic logging must not change visible candidate or chevron styling; otherwise real-device hit testing can accidentally depend on the debug view.
 
 Do not use tint-colored candidate text if it reduces contrast against the candidate background.

@@ -259,7 +259,7 @@ extension KeyboardViewController {
         candidateExpandedPanel = panel
         rootStack.isUserInteractionEnabled = false
         guard !UIAccessibility.isReduceMotionEnabled else {
-            rootStack.alpha = 0
+            rootStack.isHidden = true
             return
         }
         panel.alpha = 0
@@ -267,13 +267,13 @@ extension KeyboardViewController {
         UIView.animate(withDuration: 0.18, delay: 0, options: [.curveEaseOut, .beginFromCurrentState]) {
             panel.alpha = 1
             panel.transform = .identity
-            self.rootStack.alpha = 0
+            self.rootStack.isHidden = true
         }
     }
 
     func dismissExpandedCandidatePanel(animated: Bool) {
         guard let panel = candidateExpandedPanel else {
-            rootStack.alpha = 1
+            rootStack.isHidden = false
             rootStack.isUserInteractionEnabled = true
             expandedPanelScrollView = nil
             expandedCandidateCollectionView = nil
@@ -287,14 +287,14 @@ extension KeyboardViewController {
             self.rootStack.isUserInteractionEnabled = true
         }
         guard animated, !UIAccessibility.isReduceMotionEnabled else {
-            rootStack.alpha = 1
+            rootStack.isHidden = false
             completion(true)
             return
         }
         UIView.animate(withDuration: 0.16, delay: 0, options: [.curveEaseIn, .beginFromCurrentState]) {
             panel.alpha = 0
             panel.transform = CGAffineTransform(translationX: 0, y: 6)
-            self.rootStack.alpha = 1
+            self.rootStack.isHidden = false
         } completion: { finished in
             completion(finished)
         }
@@ -333,7 +333,9 @@ extension KeyboardViewController {
         var config = UIButton.Configuration.plain()
         config.contentInsets = .zero
         config.image = UIImage(
-            systemName: "chevron.up", withConfiguration: UIImage.SymbolConfiguration(pointSize: 12, weight: .medium))
+            systemName: "chevron.up",
+            withConfiguration: UIImage.SymbolConfiguration(
+                pointSize: KeyboardDesignTokens.CandidateBar.actionSymbolSize, weight: .medium))
         config.baseForegroundColor = .label
         let collapseButton = ExpandedCandidateCollapseButton(configuration: config, primaryAction: nil)
         collapseButton.translatesAutoresizingMaskIntoConstraints = false

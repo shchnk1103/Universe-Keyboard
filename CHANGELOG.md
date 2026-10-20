@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-10-20 — Compact Candidate Header（本地 UI-1 候选，待独立 Review）
+
+- 26键与九键共用46pt总候选行；局部Semantic UI Tokens统一容器、Cell、56pt操作区和22pt图标参数，不再叠加旧14pt。
+- 候选viewport裁剪绘制，操作区贴完整右边且命中不侵入候选；保留展开/关闭双模式、滚动分页与恢复阻断。
+- 操作区复用系统材质与语义底色；减少透明度使用不透明兜底，恢复提示隐藏操作层。展开动画避免降低材质祖先alpha。
+- UI-2的T9动态0/34pt试验已撤回：尚未建立真实Extension激活与键位屏幕坐标证据，继续保留原固定34pt拼音行。
+- [验证与限制](docs/evidence/keyboard-compact-header-001/verification.md)；无产品push/PR/merge/TestFlight，不代表Quality或Product Gate通过。
+
 ## 2026-10-19 — Input Reliability Batch 3（本地候选，待独立 Review）
 
 - 九键短删除保留已呈现的未确认拼音历史；连续重输入维持数字槽位与 Path 一致，不伪造用户确认。

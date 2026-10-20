@@ -8,9 +8,9 @@ record_id: KEYBOARD-COMPACT-HEADER-001
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current phase | UI-1 implementation and validation, then conditional UI-2 |
+| Current phase | UI-1 local candidate; UI-2 deferred pending real Extension evidence |
 | Writer / pending handoff | codex-compact-header / none; canonical W/P derived from carrier log |
-| Next decision | Deliver local review candidate to Human; no product publication |
+| Next decision | Human assigns independent review or a new bounded runtime step; no product publication |
 
 ## Authority and responsibilities
 
@@ -46,3 +46,7 @@ Protected: RIME session, recovery/Partial Commit state machines, candidateOrigin
 Entry: exact merged baseline, isolated clean worktree, valid Human authorization, unique Writer from initialized remote carrier.
 Stop: Writer conflict/rejection, required Core reliability changes, unexplained input regression/touch conflict/host layout behavior. UI-2 instability stops UI-2 only, retaining verified UI-1. No independent Gate or mergeability claim from self-checks.
 Revalidation: baseline/scope/contract/ownership changes, AUTH revoked, second Writer, evidence identity changes.
+
+## Local delivery disposition
+
+UI-1 delivered locally with [verification](../evidence/keyboard-compact-header-001/verification.md) and source hashes. UI-2 prototype withdrawn under authorized fallback because real Extension activation/coordinate evidence was not established; fixed 34pt reservation remains. No host-stability failure inferred. W=codex-compact-header, P=none. No reviewer assigned, HANDOFF, Gate, Closeout or product publication. Stop for Human after final local checkpoint.

@@ -94,6 +94,7 @@ extension KeyboardViewController {
         expandedCandidateCollectionView = nil
         candidateCellSizeCache.removeAll(keepingCapacity: true)
         rootStack.alpha = 1
+        rootStack.isHidden = false
         rootStack.isUserInteractionEnabled = true
         clearAllRows()
         if shouldReserveT9PinyinPathBar {
