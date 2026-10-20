@@ -159,6 +159,30 @@ private final class KeyboardTouchRoutingCanvas: UIView {
     }
 }
 
+/// Keeps the stack's required horizontal canvas constraints separate from the full-width header.
+final class CandidateBarRowView: UIView {
+    let header: UIView
+
+    init(header: UIView) {
+        self.header = header
+        super.init(frame: .zero)
+        translatesAutoresizingMaskIntoConstraints = false
+        header.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(header)
+        NSLayoutConstraint.activate([
+            header.topAnchor.constraint(equalTo: topAnchor),
+            header.bottomAnchor.constraint(equalTo: bottomAnchor),
+        ])
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        header.point(inside: header.convert(point, from: self), with: event)
+    }
+}
+
 /// Root stack for the key area.
 ///
 /// Visual keys intentionally leave breathing room. Their touch cells do not:
@@ -183,6 +207,17 @@ final class KeyboardInputHitAreaStackView: UIStackView {
     required init(coder: NSCoder) {
         super.init(coder: coder)
         isUserInteractionEnabled = true
+    }
+
+    override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
+        guard isUserInteractionEnabled, !isHidden, alpha > 0.01 else { return false }
+        if super.point(inside: point, with: event) { return true }
+        // Only the full-width header escapes the stack's 7pt key margins.
+        // Let its visible edge receive touches without widening any key touch cell.
+        return arrangedSubviews.contains { child in
+            guard let header = child as? CandidateBarRowView else { return false }
+            return header.point(inside: header.convert(point, from: self), with: event)
+        }
     }
 
     /// Rebuilds geometry after the view controller reports that every nested

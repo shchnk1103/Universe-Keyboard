@@ -49,14 +49,16 @@ Path selection visual contract: before first selection all labels remain plain. 
 
 Path list presentation (implementation): Path cells render with plain `UILabel` plus an explicit selected-highlight background view—same anti-material rule as candidates. Avoid `UIButton.Configuration` for on-screen Path chips; on iOS 26 keyboard chrome it can wash the entire 34 pt Path strip and create a hard rectangular band under the top rounded corners. Path `UICollectionView`s must use `CandidateScrollViewStyle.apply(to:)`. Keep Path container/cell/contentView clear and non-opaque; do not add an opaque Path card fill to “fix” haze. Selection plumbing may still use a non-visible `T9PinyinPathButton` proxy for the existing selector contract.
 
-**Idle empty-state Path hint:** Retired. Each confirmed new presentation starts at0pt only when existing composition/Path/Partial Commit/Recovery signals are idle. First effective input or safety presentation latches34pt for the rest of that presentation, including commit/delete-to-empty, reload and page/layout switches. Ambiguous lifecycle events retain the latch. The candidate container stays48pt (visual34 + gesture bridge14); key metrics remain unchanged. Do not bring back 「点选拼音可加快输入」 or mid-type “after N digits” banners.
+**Idle empty-state Path hint:** Retired. Each confirmed new presentation starts at0pt only when existing composition/Path/Partial Commit/Recovery signals are idle. First effective input or safety presentation latches34pt for the rest of that presentation, including commit/delete-to-empty, reload and page/layout switches. Ambiguous lifecycle events retain the latch. The integrated candidate container is46pt with no extra14pt bridge; key metrics remain unchanged. Do not bring back 「点选拼音可加快输入」 or mid-type “after N digits” banners.
 
-Frozen keyboard baseline:
+**Exception — Compact candidate header (`KEYBOARD-COMPACT-HEADER-001`):** Human authorized a 46pt total shared candidate row, a full-trailing 56pt action zone and 22pt medium symbols. Local parameters live in `Keyboard/Views/KeyboardDesignTokens.swift`; the compact Cell derives its height from the same total. The original 14pt gesture bridge is already included and must not be added again. Candidate fonts, key metrics and expanded-panel Cell height are unchanged. The UI-1 fixed34pt Path baseline is superseded in this integrated candidate by UI-2 initial0pt / Sticky34pt. Real Extension integration acceptance remains pending.
+
+Frozen keyboard baseline (with the authorized compact-header exception):
 
 - Keyboard content top inset: `2`.
 - Keyboard content bottom inset: `0`.
-- Candidate visual base height: `34`; full candidate container: `48` including the gesture bridge.
-- Candidate-to-key gesture bridge: `14` (part of the fixed `48 pt` candidate container).
+- Candidate bar **total** height / normal Cell height: `46` (shared semantic token).
+- Additional candidate-to-key spacing: `0` (no extra legacy 14pt outside the total).
 - Letter key height: `45`.
 - Function key width for Shift, Delete, 123, globe, and input-mode keys: `46`.
 - Function key symbol size: `22` (Delete / Return / Globe / emoji SF Symbols only).
@@ -124,12 +126,13 @@ The candidate bar must prioritize readability and speed:
   - Background: high-contrast pill drawn by `CandidateCollectionCell`.
 - Composition/preedit fallback should use `.secondaryLabel`.
 - Placeholder items should not appear as selectable candidates.
-- The trailing candidate-bar control is always present at the existing 56 pt slot (`PD-CANDIDATE-BAR-IDLE-DISMISS-001`). Expandable content uses quiet `chevron.down` to expand. Idle uses template `chevron.down.circle` to request `dismissKeyboard()`. Draw it with `UIButton(type: .custom)` and `.alwaysTemplate`, not `UIButton.Configuration`, so the circle does not punch a white plate through keyboard glass. Swipe-down expands only in expand mode. VoiceOver labels switch with the mode.
+- The trailing candidate-bar control is always present in a 56 × 46pt action zone, flush with the keyboard surface trailing edge (`PD-CANDIDATE-BAR-IDLE-DISMISS-001`). Expandable content uses quiet `chevron.down` to expand. Idle uses template `chevron.down.circle` to request `dismissKeyboard()`. Draw it with `UIButton(type: .custom)` and `.alwaysTemplate`, not `UIButton.Configuration`, so the circle does not punch a white plate through keyboard glass. Swipe-down expands only in expand mode. VoiceOver labels switch with the mode.
 - Normal horizontal candidates use a 17pt base font; composition fallback uses 15pt. Keep Dynamic Type capped at 28pt so candidate rows do not resize unpredictably.
 - Candidate cells should render text with `UILabel` and an explicit highlighted background view. Avoid `UIButton.Configuration` for candidate display; it can interact poorly with system material compositing.
 - Candidate `UICollectionView`s must use `CandidateScrollViewStyle.apply(to:)`. On iOS 26+, `UIScrollEdgeEffect` can create a rectangular fade/overlay over the first candidate row inside the system keyboard glass container.
 - Candidate `UICollectionView` layouts should avoid real spacing between items. Keep item spacing at zero, put the visual gap inside the cell, and keep a nearly invisible backing view (`alpha` around `0.001`) so the apparent gap remains part of a cell's touch area in the Keyboard Extension.
-- Candidate expand and collapse chevrons may have a larger real hit area than their visible symbol. Do this through the button's own `point(inside:with:)` and nearly invisible backing, not through visible diagnostic overlays or red debug backgrounds.
+- Compact expand/dismiss hits are exactly the visible 56 × 46pt action zone, disjoint from the clipped candidate viewport. Do not restore horizontal hit outsets into candidate text. The expanded-panel collapse control uses the same 56 × 46pt zone and screen position; only its first row reserves that zone, retaining 42pt candidate Cells.
+- Compact and expanded fixed action zones may use a persistent `.systemMaterial` effect plus semantic tint. Idle-dismiss mode hides both material and tint; no separate gradient is needed inside the disjoint zone. Candidates are clipped before this material, with no additional 56pt trailing content inset. Reduce Transparency uses an opaque fill; recovery hides all action layers. Keep effect ancestors at alpha 1 and unmasked; expanded-panel transitions hide the covered compact header rather than fading a material ancestor. The expanded viewport begins at the compact header and retains top-only corners; its clear background shares the existing keyboard surface. A temporary content-stack reveal mask hides covered keys without changing their frames or masking the Controller root; the original fixed T9 path bar above stays visible and interactive. The hidden compact material is restored only after that mask is removed.
 - Candidate touch diagnostics should use the shared logger. Diagnostic logging must not change visible candidate or chevron styling; otherwise real-device hit testing can accidentally depend on the debug view.
 
 Do not use tint-colored candidate text if it reduces contrast against the candidate background.
@@ -255,3 +258,18 @@ Manual keyboard UI verification before changing the frozen baseline:
 - Edge keys: first and last keys in each row should not feel too close to the screen edge.
 - Candidate commit: selecting candidates and expanded-panel candidates should keep readable candidate state and emit feedback once.
 - Accessibility: VoiceOver labels remain semantic, and dynamic labels such as Return still fit.
+
+### Continuous candidate reading (local UI-1)
+
+Keep the existing compact and expanded CollectionViews over one published ordered list. Reading anchors
+are presentation observations, not candidate IDs or selection authority. A meaningful partial item has
+at least max(12pt,20% of its axis extent) visible; a pixel sliver yields to the next readable item.
+Unscrolled collapse restores the original offset; a user pan transfers the current visible anchor.
+Validate publication generation/revision/origin, live revision/origin, raw input, compact-view identity
+and the candidate value before reusing an index. On mismatch reset deterministically; append-only
+paging with unchanged snapshot preserves the anchor. Earlier items remain scrollable, never sliced off.
+
+Flow positions are stable while scrolling. Only initial rows avoid the fixed action; later candidates
+may pass behind its blur, whose hit zone never forwards selection. Reveal clips content rather than
+resizing the keyboard; 0.18/0.16s transitions reject repeated toggles and candidate touches, and Reduce
+Motion is immediate. Preserve V1–V6; integrated T9 Path uses initial0pt / Sticky34pt (empty after expansion is allowed).

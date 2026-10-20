@@ -77,7 +77,7 @@
                ReferencedContainer = "container:Universe Keyboard.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
-      <BuildActionEntry buildForTesting="YES" buildForRunning="NO" buildForProfiling="NO" buildForArchiving="NO" buildForAnalyzing="YES"><BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="ADA900000000000000000003" BuildableName="KeyboardLayoutIntegrationTests.xctest" BlueprintName="KeyboardLayoutIntegrationTests" ReferencedContainer="container:Universe Keyboard.xcodeproj" /></BuildActionEntry>
+      <BuildActionEntry buildForTesting="YES" buildForRunning="NO" buildForProfiling="NO" buildForArchiving="NO" buildForAnalyzing="YES"><BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="D32170000000000000000001" BuildableName="KeyboardLayoutIntegrationTests.xctest" BlueprintName="KeyboardLayoutIntegrationTests" ReferencedContainer="container:Universe Keyboard.xcodeproj"/></BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -117,7 +117,7 @@
                ReferencedContainer = "container:Universe Keyboard.xcodeproj">
             </BuildableReference>
          </TestableReference>
-      <TestableReference skipped="NO"><BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="ADA900000000000000000003" BuildableName="KeyboardLayoutIntegrationTests.xctest" BlueprintName="KeyboardLayoutIntegrationTests" ReferencedContainer="container:Universe Keyboard.xcodeproj" /></TestableReference>
+      <TestableReference skipped="NO"><BuildableReference BuildableIdentifier="primary" BlueprintIdentifier="D32170000000000000000001" BuildableName="KeyboardLayoutIntegrationTests.xctest" BlueprintName="KeyboardLayoutIntegrationTests" ReferencedContainer="container:Universe Keyboard.xcodeproj"/></TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

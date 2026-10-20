@@ -1,0 +1,20 @@
+{
+  "baseline": "096183ca118cc40ffc16854d1a5336a42cfcbd89",
+  "scope": "UI-1 only; UI-2 withdrawn",
+  "files": {
+    "Keyboard/Controllers/KeyboardInputHitAreaStackView.swift": "f5c74d1525d5f7f8cc35eecfd3c2b40161ee0b8572200c1ccac83706b34460f1",
+    "Keyboard/Controllers/KeyboardViewController+CandidateBar.swift": "1f33bc1a234d572234e01e0be8498c06455e7c2037e188f5f2efc029c618ec92",
+    "Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift": "1f026237fba8394525bfed62be9b0256b722f9f3175bd830b96ee7709134195d",
+    "Keyboard/Controllers/KeyboardViewController+ExpandedCandidatePanel.swift": "698b17a2d6e3cc0abd85c8bc4be16f06b946e23a20db71ace2fe1bf01ec5bd92",
+    "Keyboard/Controllers/KeyboardViewController+Layout.swift": "99917c2249e5bb8d0a358644372db64452ee0c28aa51cb77bcfa38a79d3f9121",
+    "Keyboard/Controllers/KeyboardViewController+Presentation.swift": "8b8617625e7512f9b1b7ef8feab6e6685843741ac731fa99435525d7c28123bf",
+    "Keyboard/Controllers/KeyboardViewController.swift": "9bd88e97848571413985652fee093424e388f57e512040f6ffec0220d6bc3e8f",
+    "Keyboard/Views/CandidateBar/CandidateBarView.swift": "c28071e612f07ba2a1a30258ea4eb6d02287e33c67ba750eff35ebc2f6b8a5ec",
+    "Keyboard/Views/KeyboardDesignTokens.swift": "93b42b174b83e2644d4a086844fd21711a940d24cebfc3122d7007e28d34d7ad",
+    "KeyboardExtensionTests/CandidateBarRecoveryViewTests.swift": "1a0a868806b2a30b475b687665eed1494e6e7769f03d77e77d310549baac63f0",
+    "KeyboardExtensionTests/CompactCandidateBarLayoutTests.swift": "d007defbd5bb592d25136e46416461f36fab9afac56f6ae19b8f81588e340676",
+    "KeyboardExtensionTests/T9RecoveryPresentationAdapterTests.swift": "bf256bb018570e278695a74e3c764ce86579fe987cd49df37a225f204bdc373d",
+    "KeyboardTests/CandidateBarIdleDismissContractTests.swift": "c3d4c9a6f84d5fcc8ca2c5735bbf51fcd58f94a330c0484dd77407657e579895",
+    "Universe Keyboard.xcodeproj/project.pbxproj": "b8c8a2a8337e898b01a4ba9a914562c094632a5856de709618eb843a0be1efea"
+  }
+}

@@ -36,7 +36,6 @@ extension KeyboardViewController {
     var keyboardHeightWithoutT9Path: CGFloat {
         keyboardContentTopInset
             + candidateBarHeight
-            + candidateToKeySpacing
             + keyHeight * 4
             + keySpacing * 2
             + keyboardGroupSpacing
