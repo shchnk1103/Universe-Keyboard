@@ -113,6 +113,20 @@ private final class ExpandedCandidateCollapseButton: UIButton {
 final class ExpandedCandidatePanelContainerView: UIView {
     fileprivate weak var collapseButton: ExpandedCandidateCollapseButton?
     fileprivate var actionTopConstraint: NSLayoutConstraint?
+    private var coveredAccessibilityViews: [(UIView, Bool)] = []
+
+    fileprivate func hideCoveredAccessibility(in root: UIStackView, keeping pathBar: UIView?) {
+        coveredAccessibilityViews = root.arrangedSubviews.filter { $0 !== pathBar }.map {
+            let previous = $0.accessibilityElementsHidden
+            $0.accessibilityElementsHidden = true
+            return ($0, previous)
+        }
+    }
+
+    fileprivate func restoreCoveredAccessibility() {
+        for (view, previous) in coveredAccessibilityViews { view.accessibilityElementsHidden = previous }
+        coveredAccessibilityViews = []
+    }
     private var lastHitTestDiagnosticLogTime: CFTimeInterval = 0
     #if DEBUG
         private var collapseHitboxOverlay: DebugKeyTouchRangeOverlayView?
@@ -129,7 +143,7 @@ final class ExpandedCandidatePanelContainerView: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        // The panel and collection start at the surface top, while the action stays at header height.
+        // Reserve only rows intersecting the fixed action; candidate content starts at the header.
         if let button = collapseButton,
             let collection = subviews.compactMap({ $0 as? CandidateCollectionView }).first,
             let layout = collection.collectionViewLayout as? LeftAlignedCandidateFlowLayout,
@@ -255,6 +269,7 @@ extension KeyboardViewController {
     }
 
     func presentExpandedCandidatePanel() {
+        (candidateExpandedPanel as? ExpandedCandidatePanelContainerView)?.restoreCoveredAccessibility()
         candidateExpandedPanel?.removeFromSuperview()
         let panel = makeExpandedCandidatePanel()
         panel.translatesAutoresizingMaskIntoConstraints = false
@@ -262,38 +277,39 @@ extension KeyboardViewController {
         NSLayoutConstraint.activate([
             panel.leadingAnchor.constraint(equalTo: keyboardSurfaceView.leadingAnchor),
             panel.trailingAnchor.constraint(equalTo: keyboardSurfaceView.trailingAnchor),
-            panel.topAnchor.constraint(equalTo: keyboardSurfaceView.topAnchor),
+            panel.topAnchor.constraint(equalTo: candidateBar.topAnchor),
             panel.bottomAnchor.constraint(equalTo: rootStack.bottomAnchor),
         ])
         if let container = panel as? ExpandedCandidatePanelContainerView, let button = container.collapseButton {
             container.actionTopConstraint?.isActive = false
             container.actionTopConstraint = button.topAnchor.constraint(equalTo: candidateBar.topAnchor)
             container.actionTopConstraint?.isActive = true
+            // Root stays visible for the path row; covered keys must remain absent from VoiceOver.
+            container.hideCoveredAccessibility(in: rootStack, keeping: t9PinyinPathBarView)
         }
         candidateExpandedPanel = panel
-        rootStack.isUserInteractionEnabled = false
-        guard !UIAccessibility.isReduceMotionEnabled else {
-            rootStack.isHidden = true
-            return
-        }
+        // The opaque panel covers the keys. Keep the real T9 path bar above it visible and
+        // interactive; hiding the entire root would turn its fixed row into an empty strip.
+        candidateBar.isHidden = true
+        guard !UIAccessibility.isReduceMotionEnabled else { return }
         panel.alpha = 0
         panel.transform = CGAffineTransform(translationX: 0, y: 8)
         UIView.animate(withDuration: 0.18, delay: 0, options: [.curveEaseOut, .beginFromCurrentState]) {
             panel.alpha = 1
             panel.transform = .identity
-            self.rootStack.isHidden = true
         }
     }
 
     func dismissExpandedCandidatePanel(animated: Bool) {
         guard let panel = candidateExpandedPanel else {
-            rootStack.isHidden = false
+            candidateBar?.isHidden = false
             rootStack.isUserInteractionEnabled = true
             expandedPanelScrollView = nil
             expandedCandidateCollectionView = nil
             return
         }
         let completion: (Bool) -> Void = { _ in
+            (panel as? ExpandedCandidatePanelContainerView)?.restoreCoveredAccessibility()
             panel.removeFromSuperview()
             self.candidateExpandedPanel = nil
             self.expandedPanelScrollView = nil
@@ -301,14 +317,14 @@ extension KeyboardViewController {
             self.rootStack.isUserInteractionEnabled = true
         }
         guard animated, !UIAccessibility.isReduceMotionEnabled else {
-            rootStack.isHidden = false
+            candidateBar?.isHidden = false
             completion(true)
             return
         }
         UIView.animate(withDuration: 0.16, delay: 0, options: [.curveEaseIn, .beginFromCurrentState]) {
             panel.alpha = 0
             panel.transform = CGAffineTransform(translationX: 0, y: 6)
-            self.rootStack.isHidden = false
+            self.candidateBar?.isHidden = false
         } completion: { finished in
             completion(finished)
         }
@@ -317,7 +333,11 @@ extension KeyboardViewController {
     func makeExpandedCandidatePanel(with precomputedItems: [CandidateItem]? = nil) -> UIView {
         let container = ExpandedCandidatePanelContainerView()
         container.backgroundColor = KeyboardDesignTokens.CandidateActionAppearance.backgroundColor
-        container.clipsToBounds = false
+        // Clip only this overlay. Root input/keyboard-bottom touch geometry stays untouched.
+        container.layer.cornerRadius = keyboardSurfaceMaskCornerRadius
+        container.layer.cornerCurve = .continuous
+        container.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
+        container.clipsToBounds = true
         let candidates = precomputedItems ?? candidateItems()
         let collapseButtonWidth = KeyboardDesignTokens.CandidateBar.actionZoneWidth
         let collapseButtonHeight = KeyboardDesignTokens.CandidateBar.totalHeight
@@ -342,14 +362,12 @@ extension KeyboardViewController {
         expandedPanelScrollView = collectionView
         container.addSubview(collectionView)
 
-        var config = UIButton.Configuration.plain()
-        config.contentInsets = .zero
-        config.image = UIImage(
-            systemName: "chevron.up",
-            withConfiguration: UIImage.SymbolConfiguration(
-                pointSize: KeyboardDesignTokens.CandidateBar.actionSymbolSize, weight: .medium))
-        config.baseForegroundColor = .label
-        let collapseButton = ExpandedCandidateCollapseButton(configuration: config, primaryAction: nil)
+        // Use the exact compact symbol and unconfigured button rendering path. A half-turn
+        // preserves its glyph bounds instead of relying on differently scaled up/down symbols.
+        let collapseButton = ExpandedCandidateCollapseButton(type: .custom)
+        collapseButton.setImage(CandidateBarView.trailingChromeImage(expanding: true), for: .normal)
+        collapseButton.imageView?.transform = CGAffineTransform(rotationAngle: .pi)
+        collapseButton.tintColor = .label
         collapseButton.translatesAutoresizingMaskIntoConstraints = false
         // 与横向展开按钮一致：极低 alpha 的 backing 不改变视觉，但能稳定承接操作区触摸。
         collapseButton.backgroundColor = UIColor.systemGray.withAlphaComponent(0.001)

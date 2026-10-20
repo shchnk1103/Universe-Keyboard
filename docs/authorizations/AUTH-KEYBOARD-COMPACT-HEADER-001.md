@@ -21,3 +21,7 @@ L1 directed real Controller layout, compact/recovery/adapter/idle-dismiss/expand
 ## Final targeted authorization — Human, current chat, 2026-10-20
 
 Human relayed Claude Architecture Pass / Quality Pass and authorized only N2 surface-top expanded panel coverage with independently aligned action, N1 historical-log reconciliation, directly related L1/format/compile, local product commit and separate checkpoint. Same Writer codex-compact-header, P=none. UI-2/N3/A4 remain deferred. No product push/PR/merge/TestFlight/handoff/other workspace changes.
+
+## Bounded visual polish — Human, current chat, 2026-10-20
+
+Human reports six interaction behaviors passed on real iPhone and authorizes only V1–V6 local UIKit visual corrections, directed L1/L2, local commit/evidence/checkpoint. This supersedes prior N2 content-top choice: expanded candidates start at original candidate bar, with real T9 paths preserved above. Same Writer/P=none/worktree; no product push/remote PR update/merge/release, UI-2 #217 changes or input/sticky-expansion state-machine edits. Task stays Active.

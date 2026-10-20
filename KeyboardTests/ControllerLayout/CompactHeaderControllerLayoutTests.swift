@@ -48,6 +48,7 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
         for width in [320.0, 390.0, 430.0] {
             for (nineKey, hasPath) in [(false, false), (true, false), (true, true)] {
                 let sut = makeController(width: width, nineKey: nineKey)
+                sut.overrideUserInterfaceStyle = width == 390 ? .dark : .light
                 if hasPath {
                     // Presentation fixture only: not live RIME path issuance or selection evidence.
                     let path = T9PinyinPath(displayText: "ni", replacementRawInput: "ni")
@@ -55,16 +56,20 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
                     layout(sut)
                 }
                 let originalKeys = keyFrames(sut)
+                let originalAccessibility = sut.rootStack.arrangedSubviews.map { $0.accessibilityElementsHidden }
                 let surface = try XCTUnwrap(sut.keyboardSurfaceView)
                 let compact = try XCTUnwrap((sut.candidateBar as? CandidateBarView)?.expandButton)
                 let expected = compact.convert(compact.bounds, to: surface)
                 sut.accumulatedCandidates = (0..<80).map {
                     CandidateItem(title: "候选\($0)", kind: .continuationCandidate)
                 }
+                sut.updateExpandButtonAppearance()
+                layout(sut)
+                let compactGlyphSize = try XCTUnwrap(compact.imageView).bounds.size
                 sut.toggleCandidateExpand()
                 layout(sut)
                 let panel = try XCTUnwrap(sut.candidateExpandedPanel)
-                XCTAssertEqual(panel.convert(panel.bounds, to: surface).minY, 0, accuracy: 0.01)
+                XCTAssertEqual(panel.convert(panel.bounds, to: surface).minY, expected.minY, accuracy: 0.01)
                 XCTAssertEqual(panel.bounds.width, width)
                 XCTAssertEqual(panel.backgroundColor?.cgColor.alpha, 1)
                 let button = try XCTUnwrap(panel.subviews.compactMap { $0 as? UIButton }.first)
@@ -80,7 +85,35 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
                 XCTAssertEqual(collection.frame.minY, 0, accuracy: 0.01)
                 XCTAssertEqual(collection.frame.height, panel.bounds.height)
                 let first = try XCTUnwrap(collection.layoutAttributesForItem(at: IndexPath(item: 0, section: 0)))
-                XCTAssertLessThan(first.frame.minY, 34)
+                XCTAssertEqual(first.frame.minY, 3, accuracy: 0.01)
+                XCTAssertEqual(collection.convert(first.frame, to: surface).minY, expected.minY + 3, accuracy: 0.01)
+                XCTAssertTrue(panel.clipsToBounds)
+                XCTAssertEqual(panel.layer.cornerRadius, sut.keyboardSurfaceMaskCornerRadius)
+                XCTAssertEqual(panel.layer.maskedCorners, [.layerMinXMinYCorner, .layerMaxXMinYCorner])
+                XCTAssertNil(compact.configuration)
+                XCTAssertNil(button.configuration)
+                let collapseGlyphSize = try XCTUnwrap(button.imageView).bounds.size
+                // A pi rotation introduces floating-point tails; compare well below one pixel.
+                XCTAssertEqual(collapseGlyphSize.width, compactGlyphSize.width, accuracy: 0.001)
+                XCTAssertEqual(collapseGlyphSize.height, compactGlyphSize.height, accuracy: 0.001)
+                XCTAssertEqual(compact.image(for: .normal)?.size, button.image(for: .normal)?.size)
+                XCTAssertEqual(compact.image(for: .normal)?.pngData(), button.image(for: .normal)?.pngData())
+                XCTAssertEqual(compact.contentHorizontalAlignment, button.contentHorizontalAlignment)
+                XCTAssertFalse(sut.rootStack.isHidden)
+                for row in sut.rootStack.arrangedSubviews where row !== sut.t9PinyinPathBarView {
+                    XCTAssertTrue(row.accessibilityElementsHidden)
+                }
+                if let pathBar = sut.t9PinyinPathBarView {
+                    XCTAssertFalse(pathBar.isHidden)
+                    let point = pathBar.convert(CGPoint(x: 30, y: 17), to: sut.view)
+                    let hit = try XCTUnwrap(sut.view.hitTest(point, with: nil))
+                    XCTAssertTrue(hit === pathBar || hit.isDescendant(of: pathBar))
+                }
+                // The unchanged underlying keys cannot receive a touch through the opaque overlay.
+                if let key = originalKeys.first {
+                    let hit = try XCTUnwrap(sut.view.hitTest(CGPoint(x: key.midX, y: key.midY), with: nil))
+                    XCTAssertTrue(hit === panel || hit.isDescendant(of: panel))
+                }
                 if nineKey { XCTAssertEqual(expected.minY, 36, accuracy: 0.01) }
                 let buttonFrame = button.convert(button.bounds, to: collection)
                 for index in 0..<80 {
@@ -108,11 +141,37 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
                 XCTAssertTrue(surface.hitTest(CGPoint(x: width - 1, y: expected.midY), with: nil) === compact)
                 XCTAssertEqual(compact.convert(compact.bounds, to: surface), expected)
                 XCTAssertEqual(keyFrames(sut), originalKeys)
+                XCTAssertEqual(
+                    sut.rootStack.arrangedSubviews.map { $0.accessibilityElementsHidden }, originalAccessibility)
                 let bar = try XCTUnwrap(sut.candidateBar as? CandidateBarView)
                 bar.setInputRecoveryNotice("输入恢复失败，按删除取消本段后重试")
                 layout(sut)
                 XCTAssertTrue(surface.hitTest(CGPoint(x: width - 1, y: expected.midY), with: nil) === bar)
             }
+        }
+    }
+
+    @MainActor
+    func testIdleHeaderMeasurementsKeepOnlyFixedCandidateReservation() throws {
+        for width in [320.0, 390.0, 430.0] {
+            let sut = makeController(width: width, nineKey: false)
+            let surface = try XCTUnwrap(sut.keyboardSurfaceView)
+            let bar = try XCTUnwrap(sut.candidateBar as? CandidateBarView)
+            let row = try XCTUnwrap(bar.superview)
+            let collection = bar.collectionView
+            let keys = keyFrames(sut)
+            let firstKeyTop = try XCTUnwrap(keys.map(\.minY).min())
+            print(
+                "VISUAL_HEADER W=\(width) surface=\(surface.frame) root=\(sut.rootStack.frame) row=\(row.convert(row.bounds, to: sut.view)) viewport=\(collection.convert(collection.bounds, to: sut.view)) firstKeyY=\(firstKeyTop) targetHeight=\(sut.preferredKeyboardHeight)"
+            )
+            XCTAssertEqual(surface.frame.minY, 0)
+            XCTAssertEqual(sut.rootStack.frame.minY, 2)
+            XCTAssertEqual(row.convert(row.bounds, to: sut.view).minY, 2)
+            XCTAssertEqual(collection.convert(collection.bounds, to: sut.view).minY, 2)
+            XCTAssertEqual(collection.bounds.height, 46)
+            XCTAssertEqual(firstKeyTop, 48)
+            XCTAssertEqual(sut.preferredKeyboardHeight, 254)
+            XCTAssertFalse(sut.shouldReserveT9PinyinPathBar)
         }
     }
 

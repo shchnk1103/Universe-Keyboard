@@ -67,8 +67,6 @@ private final class CandidateBarGestureBridge: NSObject, UIGestureRecognizerDele
 final class CandidateBarView: UIView {
     private let actionMaterialView = UIVisualEffectView(effect: nil)
     private let actionTintView = UIView()
-    private let actionEdgeView = UIView()
-    private let actionEdgeGradient = CAGradientLayer()
     private var canExpandCandidates = false
 
     private let recoveryLabel = UILabel()
@@ -197,14 +195,13 @@ final class CandidateBarView: UIView {
     }
 
     private func installActionBackground() {
-        for background in [actionMaterialView, actionTintView, actionEdgeView] {
+        for background in [actionMaterialView, actionTintView] {
             background.translatesAutoresizingMaskIntoConstraints = false
             background.isUserInteractionEnabled = false
             addSubview(background)
         }
         actionMaterialView.accessibilityIdentifier = "candidateActionMaterial"
         actionTintView.accessibilityIdentifier = "candidateActionTint"
-        actionEdgeView.layer.addSublayer(actionEdgeGradient)
         NSLayoutConstraint.activate([
             actionMaterialView.leadingAnchor.constraint(equalTo: expandButton.leadingAnchor),
             actionMaterialView.trailingAnchor.constraint(equalTo: trailingAnchor),
@@ -214,12 +211,6 @@ final class CandidateBarView: UIView {
             actionTintView.trailingAnchor.constraint(equalTo: trailingAnchor),
             actionTintView.topAnchor.constraint(equalTo: topAnchor),
             actionTintView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            // The fade is decorative and stays inside the action zone, never over tappable text.
-            actionEdgeView.leadingAnchor.constraint(equalTo: actionMaterialView.leadingAnchor),
-            actionEdgeView.widthAnchor.constraint(
-                equalToConstant: KeyboardDesignTokens.CandidateActionAppearance.edgeFadeWidth),
-            actionEdgeView.topAnchor.constraint(equalTo: topAnchor),
-            actionEdgeView.bottomAnchor.constraint(equalTo: bottomAnchor),
         ])
     }
 
@@ -241,14 +232,11 @@ final class CandidateBarView: UIView {
             actionMaterialView.effect = showMaterial ? UIBlurEffect(style: appearance.materialStyle) : nil
         }
         actionMaterialView.isHidden = !showMaterial
-        actionTintView.isHidden = isShowingRecoveryNotice
-        actionEdgeView.isHidden = isShowingRecoveryNotice || reduceTransparency
-        let opacity = reduceTransparency ? 1 : (canExpandCandidates ? appearance.tintOpacity : appearance.idleOpacity)
+        // A disjoint, clipped viewport already prevents text beneath this zone. Do not stack a
+        // decorative gradient over the tint, or leave a standalone plate in idle-dismiss mode.
+        actionTintView.isHidden = !canExpandCandidates || isShowingRecoveryNotice
+        let opacity = reduceTransparency ? 1 : appearance.tintOpacity
         actionTintView.backgroundColor = appearance.backgroundColor.withAlphaComponent(opacity)
-        let color = appearance.backgroundColor.resolvedColor(with: traitCollection)
-        actionEdgeGradient.colors = [color.withAlphaComponent(0).cgColor, color.withAlphaComponent(opacity).cgColor]
-        actionEdgeGradient.startPoint = CGPoint(x: 0, y: 0.5)
-        actionEdgeGradient.endPoint = CGPoint(x: 1, y: 0.5)
     }
 
     @available(*, unavailable)
@@ -285,7 +273,6 @@ final class CandidateBarView: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        actionEdgeGradient.frame = actionEdgeView.bounds
         #if DEBUG
             refreshDebugHitboxOverlay()
         #endif

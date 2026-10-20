@@ -160,3 +160,68 @@ This round's independent lint exit0 receipt resolves the current-format evidence
 Prior Release/Core/App evidence remains historical/unchanged-module context only. No live Extension
 screen-coordinate, color-compositing or interaction acceptance is claimed. Ready for Claude final diff
 review; stop for Human, no product push/PR/merge/release.
+
+
+## V1–V6 real-iPhone feedback: bounded local visual polish — 2026-10-20
+
+Entry: clean branch/head ddcd81cec41720b5ea1490936e693500fa8cf875, same Writer codex-compact-header,
+P=none. Remote Carrier/PR216 still at that head. Human reports six interaction checks passed on real
+iPhone before this slice. These are Human observations, not this lane's new device validation. New
+permission is local changes/tests/commit/checkpoint only; previous Push authority is not reused.
+UI-2 PR217/worktree, core/session/authority/epoch/recovery/sticky-expansion logic were untouched.
+
+| Item | Confirmed local cause / observation | Bounded action |
+|---|---|---|
+| V1 | With target height, QWERTY surface y0; root/row/viewport y2; fixed46pt header; first key y48; target254pt, safe area0 in hostless fixture | No height/key changes: no extra placeholder beyond original2pt inset and required46pt found. Device host-container contribution remains unmeasured; screenshot was not supplied to this run |
+| V2 | Idle hid material but retained35% tint; Reduce Transparency made idle tint opaque | Hide material and tint in idle/recovery, retain56×46pt action and dual-mode semantics; expandable mode keeps existing material/opaque fallback |
+| V3 | Compact uses custom/unconfigured button; collapse used Configuration.plain and separate chevron.up glyph | Both now use custom rendering and same22pt-medium chevron.down image, collapse rotated pi. Same56×46 frame, symbol image bytes and UIImageView bounds verified; no transform on button frame |
+| V4 | N2 placed collection at surface top while action stayed at header; hiding entire root removed original paths | Panel/collection begin at original header top, first Cell retains3pt section padding. Keep real fixed34pt path above visible/interactable; hide only covered compact header, opaque panel intercepts underlying keys. Save/restore covered rows' accessibilityElementsHidden; path row untouched |
+| V5 | Surface relies on iOS container outline, own cornerRadius0; sibling overlay had no clipping | Clip only panel's top two corners with existing keyboardSurfaceMaskCornerRadius34/continuous; no root/bottom mask. Hidden compact header prevents its text showing through rounded cutouts. Actual host-radius visual match requires iPhone review |
+| V6 | Source has one decorative action gradient composited over flat tint plus material, not two separate shadow layers; no collection trailing gradient in CandidateScrollViewStyle | Remove redundant gradient and now-unused edge/idle tokens. Disjoint clipped viewport already prevents text under action; no fade needed in idle or over actionable candidate text |
+
+V1 measurements at widths320/390/430: surface=(0,0,W,254), root=(7,2,W−14,252), candidate row=
+(7,2,W−14,46), actual bar=(0,2,W,46), viewport=(0,2,W−56,46), first-key top48. These are actual
+production Controller UIKit fixture frames at its requested height, not real-iPhone screen coordinates.
+No rule deleting the fixed candidate row or overriding host height has been introduced.
+
+Tests use same task-owned simulator5F983B43-FAAC-46ED-B2B0-33E0E30F099F and /private/tmp/kch001-build,
+Universe Keyboard scheme Debug test, Swift6 complete concurrency, CODE_SIGNING_ALLOWED=NO,
+SWIFT_SUPPRESS_WARNINGS=NO, SWIFT_TREAT_WARNINGS_AS_ERRORS=YES. Only selected targets are run.
+
+- L1:20/0/0 (Controller3 + compact6 + recovery4 + adapter6 + idle1). Width320/390/430,
+  QWERTY and T9 idle/path fixtures, expanded/restored geometry, path hit route, first/last candidate,
+  clipped viewport/action hits, material/light/dark/reduce-transparency policy and Recovery.
+- L2 KeyboardTests49/0/0 and KeyboardExtensionTests41/0/0. Combined l2 command exit65 because the
+  strengthened Controller glyph-size test used exact equality after pi rotation: observed widths
+  24.666666666666668 vs24.666666666666664, heights15 vs15.000000000000004. Nine assertions failed;
+  all failed records remain failed. Fixed only that test to0.001pt tolerance, far below one pixel.
+- Controller integration then3/0/0; final added covered-accessibility save/restore verified3/0/0.
+  Final file checks include actual rendered UIImageView sizes, matching shared images and custom
+  config, both light/dark traits, panel top-only clipping, visible original path hit and no key hit
+  through panel, same keys/action frames after collapse. No repeated whole-module rerun: module
+  evidence reused; final production panel changes compiled/executed in actual Controller target.
+- Changed Swift5 files strict format exit0; xcodebuild test includes Debug production/test compilation.
+  No separate redundant build-for-testing, full Core/App/Bridge, Release or L3 CI run in this slice.
+- No Unable-to-simultaneously-satisfy-constraints/UISV-canvas warning in local logs; rendered required
+  equations remain satisfied. Hostless keyboard connection/screen warnings are not real-host proof.
+
+Raw completed runs/exit receipts: /private/tmp/kch001-visual/{l1,l2,integration-final,
+integration-accessibility}.{log,exit,xcresult}; final format-delivery.log/.exit. Checksums and source
+identity: visual-polish-evidence.json. No hashes were captured before their command exit receipts.
+Old manifests remain snapshots of their prior product versions, not current visual-polish source.
+
+Existing selection/scroll/paging/gesture code and button hit geometry are unchanged. Physical rapid
+swipes, live blur/color, actual rounded-edge compositing and animation appearance cannot be proven by
+these tests; no claim that all six visual findings now pass on iPhone. Same historical anti-flicker
+principle retained: never animate material ancestor alpha; hide covered compact material, not the
+path-bearing root. No new input state machine, height framework or sticky-expansion changes.
+
+Human screenshot comparison: (1) QWERTY idle full keyboard including host boundary; (2) QWERTY with
+candidates and expanded/collapsed action at same scale; (3) T9 with actual selected path, expanded and
+restored, preserving path row; (4) light/dark and Reduce Transparency on/off for idle and populated
+bar; include both top corners, action bottom edge and system bottom area. Recheck rapid horizontal
+swipes/edge candidates, path selection, recovery and collapse restoration as interactions, not static
+screenshots. VoiceOver focus and contrast require a real system pass. Stop for Human; no Push, remote
+PR update, merge, release, task closure or UI-2 integration.
+
+V4 boundary: fixed34pt Path reservation and its existing idle-hint/recovery display policy remain unchanged. No new idle text or conditional height is introduced. If a real host presents expandable continuation candidates with no path/hint, that original reserved row can still be empty; this slice does not silently solve it via UI-2 or invent a second presentation policy. Human should specifically compare that state. Normal no-candidate trailing action still dismisses rather than opens the panel.

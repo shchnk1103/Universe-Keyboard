@@ -18,9 +18,7 @@ enum KeyboardDesignTokens {
 
     enum CandidateActionAppearance {
         static let materialStyle: UIBlurEffect.Style = .systemMaterial
-        static let edgeFadeWidth: CGFloat = 8
         static let tintOpacity: CGFloat = 0.72
-        static let idleOpacity: CGFloat = 0.35
 
         static var backgroundColor: UIColor {
             UIColor { traits in

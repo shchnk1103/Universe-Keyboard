@@ -1,0 +1,84 @@
+{
+  "comparison_head": "ddcd81cec41720b5ea1490936e693500fa8cf875",
+  "scope": "V1 measurements; V2-V6 bounded presentation only; no UI-2 or input-state changes",
+  "files": {
+    "Keyboard/Views/CandidateBar/CandidateBarView.swift": "313427a223c374f2118c9e92ba59f7e64445d05ae37f2a082f0575cd6e2dbf57",
+    "Keyboard/Views/KeyboardDesignTokens.swift": "10a8e88b44452017591cfa7097bd320e065ac386d4cbb7236bb31aed8be1b4f1",
+    "Keyboard/Controllers/KeyboardViewController+ExpandedCandidatePanel.swift": "8e5d5436392418d57b6c59a4a3b1ae2c8efa42b5a9670847262c69d957f56cb8",
+    "KeyboardTests/ControllerLayout/CompactHeaderControllerLayoutTests.swift": "96a2031a6039609bda45d780c82a995410424c737289e2db10610b911f4c7cf4",
+    "KeyboardExtensionTests/CompactCandidateBarLayoutTests.swift": "093c5c552670a7167755b7aa3aada6236bb439426530b3d598c87a75a4845099"
+  },
+  "completed_local_artifacts": {
+    "/private/tmp/kch001-visual/format-delivery.exit": {
+      "sha256": "19eaf43821a7660ec323a87c8457bf74823beb296c39f5e01aa8a683aa50f061",
+      "size_bytes": 7
+    },
+    "/private/tmp/kch001-visual/format-delivery.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    "/private/tmp/kch001-visual/format-final.exit": {
+      "sha256": "19eaf43821a7660ec323a87c8457bf74823beb296c39f5e01aa8a683aa50f061",
+      "size_bytes": 7
+    },
+    "/private/tmp/kch001-visual/format-final.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    "/private/tmp/kch001-visual/format-precommit.exit": {
+      "sha256": "19eaf43821a7660ec323a87c8457bf74823beb296c39f5e01aa8a683aa50f061",
+      "size_bytes": 7
+    },
+    "/private/tmp/kch001-visual/format-precommit.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    "/private/tmp/kch001-visual/format.exit": {
+      "sha256": "19eaf43821a7660ec323a87c8457bf74823beb296c39f5e01aa8a683aa50f061",
+      "size_bytes": 7
+    },
+    "/private/tmp/kch001-visual/format.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    "/private/tmp/kch001-visual/integration-accessibility.exit": {
+      "sha256": "19eaf43821a7660ec323a87c8457bf74823beb296c39f5e01aa8a683aa50f061",
+      "size_bytes": 7
+    },
+    "/private/tmp/kch001-visual/integration-accessibility.log": {
+      "sha256": "795989a856c60413f9b33e9bfd22bc56f1f639f7e6a3f54204609494409fed73",
+      "size_bytes": 131942
+    },
+    "/private/tmp/kch001-visual/integration-final.exit": {
+      "sha256": "19eaf43821a7660ec323a87c8457bf74823beb296c39f5e01aa8a683aa50f061",
+      "size_bytes": 7
+    },
+    "/private/tmp/kch001-visual/integration-final.log": {
+      "sha256": "ad13baf0da45da17ae30b27c1431b791fc099e35c0316b4db3aa68fdf88c7df4",
+      "size_bytes": 94838
+    },
+    "/private/tmp/kch001-visual/l1.exit": {
+      "sha256": "19eaf43821a7660ec323a87c8457bf74823beb296c39f5e01aa8a683aa50f061",
+      "size_bytes": 7
+    },
+    "/private/tmp/kch001-visual/l1.log": {
+      "sha256": "e75d1fa6dd74b4d08cac7fc7e0d6eab52aab0a8de95388dcc693821620a14a4c",
+      "size_bytes": 230367
+    },
+    "/private/tmp/kch001-visual/l2.exit": {
+      "sha256": "7758d6215728792b579ec5342f740f95b64e6ee55b4c4473fceaf88a0855a5b2",
+      "size_bytes": 8
+    },
+    "/private/tmp/kch001-visual/l2.log": {
+      "sha256": "913826aba82af61fdacc5222a766214ea2a3e7c59179b24dd3274d656ea3130c",
+      "size_bytes": 167927
+    }
+  },
+  "run_results": {
+    "l1": "20 passed / 0 failed / 0 skipped; before image-view-size assertion strengthening",
+    "l2": "Keyboard49/0/0 and Extension41/0/0; Controller integration failed nine exact float assertions; command exit65, not a passing run",
+    "integration-final": "3/0/0 after 0.001pt tolerance correction",
+    "integration-accessibility": "3/0/0 final production Controller source including covered-AX restore",
+    "format-delivery": "changed Swift5 files strict lint exit0"
+  }
+}

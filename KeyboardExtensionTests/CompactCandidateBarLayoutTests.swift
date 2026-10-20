@@ -100,6 +100,35 @@ nonisolated final class CompactCandidateBarLayoutTests: XCTestCase {
     }
 
     @MainActor
+    func testIdleActionHasNoPlateOrGradientAcrossAppearances() throws {
+        let f = Fixture(width: 390)
+        let material = try XCTUnwrap(f.bar.subviews.compactMap { $0 as? UIVisualEffectView }.first)
+        let tint = try XCTUnwrap(f.bar.subviews.first { $0.accessibilityIdentifier == "candidateActionTint" })
+        for style in [UIUserInterfaceStyle.light, .dark] {
+            f.host.traitOverrides.userInterfaceStyle = style
+            for reduceTransparency in [false, true] {
+                f.bar.setCanExpandCandidates(false)
+                f.bar.updateActionAppearance(reduceTransparency: reduceTransparency)
+                XCTAssertTrue(material.isHidden)
+                XCTAssertNil(material.effect)
+                XCTAssertTrue(tint.isHidden)
+                XCTAssertFalse(f.bar.expandButton.isHidden)
+                XCTAssertTrue(f.bar.expandButton.isEnabled)
+                XCTAssertEqual(f.bar.expandButton.frame.size, CGSize(width: 56, height: 46))
+                XCTAssertTrue(f.bar.hitTest(CGPoint(x: 389, y: 23), with: nil) === f.bar.expandButton)
+                f.bar.setCanExpandCandidates(true)
+                f.bar.updateActionAppearance(reduceTransparency: reduceTransparency)
+                XCTAssertFalse(tint.isHidden)
+                XCTAssertEqual(material.isHidden, reduceTransparency)
+                XCTAssertFalse(
+                    f.bar.subviews.contains { view in
+                        view.layer.sublayers?.contains { $0 is CAGradientLayer } == true
+                    })
+            }
+        }
+    }
+
+    @MainActor
     func testReduceTransparencyUsesOpaqueFillAndNotificationRestoresSystemPreference() throws {
         let f = Fixture(width: 390)
         f.bar.setCanExpandCandidates(true)
