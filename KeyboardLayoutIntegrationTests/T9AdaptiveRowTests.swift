@@ -288,6 +288,137 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
         owner.beginT9PinyinPresentationIfNeeded()
     }
 
+    /// Baseline also passes this synchronous seam guard: it does not reproduce or clear the native QA-001 finding.
+    @MainActor
+    func testQA001FirstPathIsVisibleAfterPendingPanelBeforeSecondKey() async throws {
+        let animations = UIView.areAnimationsEnabled
+        UIView.setAnimationsEnabled(false)
+        defer { UIView.setAnimationsEnabled(animations) }
+        for (kaomoji, stage) in [
+            (false, 0), (true, 0), (false, 1), (true, 1), (false, 2), (true, 2), (false, 3), (true, 3),
+        ] {
+            UIView.setAnimationsEnabled(false)
+            let closing = stage == 1 || stage == 2
+            let owner = makeOwner(width: 390)
+            let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 400))
+            let host = UIViewController()
+            window.rootViewController = host
+            host.view.addSubview(owner.view)
+            window.isHidden = false
+            defer { window.isHidden = true }
+            let input = QA001TextClient()
+            owner.controller.textClient = input
+            layout(owner)
+            XCTAssertEqual(owner.t9PinyinPathBarView?.frame.height, 0)
+            if kaomoji { owner.insertKaomoji(UIButton()) } else { owner.insertT9CommonPunctuation(UIButton()) }
+            UIView.setAnimationsEnabled(stage == 3)
+            owner.toggleCandidateExpand()
+            layout(owner)
+            XCTAssertTrue(owner.isCandidateExpanded)
+            XCTAssertTrue(
+                owner.controller.state.pendingPunctuation != nil || owner.controller.state.pendingKaomoji != nil)
+            let panel = try XCTUnwrap(owner.candidateExpandedPanel as? ExpandedCandidatePanelContainerView)
+            if closing {
+                UIView.setAnimationsEnabled(true)
+                owner.toggleCandidateExpand()
+                XCTAssertTrue(panel.isTransitioning)
+            }
+            let engine = QA001RimeEngine()
+            owner.controller.rimeEngine = engine
+            owner.controller.usesT9InputSemantics = true
+            let key = try XCTUnwrap(
+                descendants(owner.rootStack).compactMap { $0 as? KeyboardKeyButton }.first {
+                    $0.accessibilityIdentifier == "6"
+                })
+            if stage == 2 || stage == 3 {
+                let halfway = expectation(description: "real halfway reveal/collapse")
+                let full = panel.bounds.height
+                let observer = QA001DisplayObserver {
+                    guard let shown = panel.revealViewport.layer.presentation()?.bounds.height else { return false }
+                    return shown > 46 + (full - 46) * 0.25 && shown < full - (full - 46) * 0.25
+                }
+                observer.completion = {
+                    print(
+                        "QA001 halfway presentation=\(panel.revealViewport.layer.presentation()?.bounds.height ?? -1)")
+                    owner.insertKey(key)
+                    halfway.fulfill()
+                }
+                observer.start()
+                await fulfillment(of: [halfway], timeout: 2)
+                observer.stop()
+            } else {
+                owner.insertKey(key)
+            }
+            print(
+                "QA001 engine=\(engine.keys) raw=\(owner.controller.state.lastRimeOutput?.rawInput ?? "nil") paths=\(owner.controller.t9CompositionPresentationSnapshot().paths.map(\.displayText))"
+            )
+            XCTAssertEqual(engine.keys, ["6"])
+            let firstSnapshot = owner.controller.t9CompositionPresentationSnapshot()
+            XCTAssertEqual(firstSnapshot.rimeRawInput, "6")
+            XCTAssertEqual(firstSnapshot.paths.map(\.displayText), ["m", "n", "o"])
+            XCTAssertEqual(input.marked, "m")
+            layout(owner)
+            owner.viewDidLayoutSubviews()
+            let bar = try XCTUnwrap(owner.t9PinyinPathBarView)
+            let collection = try XCTUnwrap(descendants(bar).compactMap { $0 as? UICollectionView }.first)
+            collection.layoutIfNeeded()
+            XCTAssertEqual(bar.frame.height, 34)
+            XCTAssertEqual(collection.numberOfItems(inSection: 0), firstSnapshot.paths.count)
+            let cell = try XCTUnwrap(collection.cellForItem(at: IndexPath(item: 0, section: 0)))
+            let label = try XCTUnwrap(descendants(cell).compactMap { $0 as? UILabel }.first { $0.text == "m" })
+            print(
+                "QA001 first model=m row=\(bar.frame) collection=\(collection.frame) cell=\(cell.frame) label=\(label.frame) hidden=\(label.isHidden) alpha=\(label.alpha)"
+            )
+            XCTAssertFalse(label.isHidden)
+            XCTAssertGreaterThan(label.bounds.width, 0)
+            XCTAssertGreaterThan(label.bounds.height, 0)
+            XCTAssertEqual(label.alpha, 1)
+            XCTAssertTrue(collection.bounds.intersects(cell.frame))
+            XCTAssertEqual(owner.presentedCandidates.first?.title, "哦")
+            XCTAssertEqual(owner.candidateSnapshotRawInput, "6")
+            assertPanelGeometry(owner, panel: panel)
+            let textPoint = label.convert(CGPoint(x: label.bounds.midX, y: label.bounds.midY), to: owner.rootStack)
+            let mask = try XCTUnwrap(owner.rootStack.layer.mask as? CAShapeLayer)
+            XCTAssertTrue(mask.path?.contains(textPoint) == true)
+            if let visibleMask = mask.presentation() {
+                XCTAssertTrue(visibleMask.path?.contains(textPoint) == true)
+            }
+            for view in [label, cell, collection, bar, owner.rootStack!] {
+                XCTAssertFalse(view.isHidden)
+                XCTAssertGreaterThan(view.alpha, 0.99)
+            }
+            if closing || stage == 3 {
+                // Wait for production animation completion, not for another input to repair UI.
+                let finished = expectation(description: "production collapse removes panel")
+                let observation = QA001DisplayObserver {
+                    closing ? owner.candidateExpandedPanel == nil : !panel.isTransitioning
+                }
+                observation.completion = { finished.fulfill() }
+                observation.start()
+                await fulfillment(of: [finished], timeout: 2)
+                observation.stop()
+            }
+            if !closing {
+                UIView.setAnimationsEnabled(false)
+                owner.toggleCandidateExpand()
+            }
+            layout(owner)
+            XCTAssertNil(owner.candidateExpandedPanel)
+            XCTAssertNil(owner.rootStack.layer.mask)
+            XCTAssertEqual(bar.frame.height, 34)
+            XCTAssertEqual(label.text, "m")
+            let keyPoint = key.convert(CGPoint(x: key.bounds.midX, y: key.bounds.midY), to: owner.view)
+            let hit = owner.view.hitTest(keyPoint, with: nil)
+            XCTAssertTrue(hit === key || hit?.isDescendant(of: key) == true)
+            owner.insertKey(key)
+            layout(owner)
+            XCTAssertEqual(engine.keys, ["6", "6"])
+            XCTAssertEqual(owner.controller.state.lastRimeOutput?.rawInput, "66")
+            XCTAssertEqual(input.marked, "mo")
+            XCTAssertEqual(bar.frame.height, 34)
+        }
+    }
+
     @MainActor
     private func expectedHeight(_ owner: KeyboardViewController, expanded: Bool) -> CGFloat {
         owner.keyboardHeightWithoutT9Path + (expanded ? owner.t9PinyinPathBarHeight : 0)
@@ -353,4 +484,62 @@ private final class LayoutController: KeyboardViewController {
 private final class PathReceiver: NSObject {
     var path: T9PinyinPath?
     @objc func select(_ sender: T9PinyinPathButton) { path = sender.path }
+}
+
+/// Synchronous engine seam only; it does not represent a native librime session.
+private final class QA001RimeEngine: RimeEngine {
+    var keys: [String] = []
+    var raw = ""
+    var runtimeSelection: RimeRuntimeSelection? { nil }
+    var onRuntimeSelectionChanged: ((RimeRuntimeSelection) -> Void)?
+    func output() -> RimeOutput {
+        RimeOutput(
+            rawInput: raw, composition: .init(preeditText: raw == "6" ? "m" : "mo", cursorPosition: raw.count),
+            candidates: [.init(text: "哦", comment: raw == "6" ? "m" : "mo")])
+    }
+    func processKey(_ key: String) -> RimeOutput { keys.append(key); raw += key; return output() }
+    func replaceInput(_ input: String) -> RimeOutput { raw = input; return output() }
+    func selectCandidate(at index: Int) -> RimeOutput { output() }
+    func selectCandidate(globalIndex index: Int) -> RimeOutput { output() }
+    func candidateWindow(from globalIndex: Int, limit: Int) -> RimeCandidateWindow {
+        .init(candidates: [], startIndex: globalIndex, nextIndex: globalIndex, hasMoreCandidates: false)
+    }
+    func deleteBackward() -> RimeOutput { if !raw.isEmpty { raw.removeLast() }; return output() }
+    func resetSession() { raw = "" }
+    func recoverSession() {}
+    func suspendForVisibilityChange() {}
+    func resumeAfterVisibilityChange() {}
+    func isComposing() -> Bool { !raw.isEmpty }
+    func pageUp() -> RimeOutput { output() }
+    func pageDown() -> RimeOutput { output() }
+}
+
+@MainActor
+private final class QA001TextClient: TextInputClient {
+    var text = ""
+    var marked = ""
+    var hasTextBeforeInput: Bool { !text.isEmpty || !marked.isEmpty }
+    func insertText(_ value: String) { text += value }
+    func deleteBackward() { if !text.isEmpty { text.removeLast() } }
+    func adjustTextPosition(byCharacterOffset offset: Int) {}
+    func setMarkedText(_ value: String, selectedRange: Range<Int>) { marked = value }
+    func unmarkText() { text += marked; marked = "" }
+}
+
+/// Waits for actual display/animation state, without a fixed sleep or product timing patch.
+@MainActor
+private final class QA001DisplayObserver: NSObject {
+    let condition: () -> Bool
+    var completion: (() -> Void)?
+    private var link: CADisplayLink?
+    init(condition: @escaping () -> Bool) { self.condition = condition }
+    func start() {
+        let link = CADisplayLink(target: self, selector: #selector(tick))
+        self.link = link
+        link.add(to: .main, forMode: .common)
+    }
+    func stop() { link?.invalidate(); link = nil }
+    @objc private func tick() {
+        if condition() { stop(); completion?() }
+    }
 }

@@ -1,0 +1,107 @@
+Test Suite 'All tests' started at 2026-10-20 23:06:04.581.
+Test Suite 'KeyboardTests.xctest' started at 2026-10-20 23:06:04.585.
+Test Suite 'CandidateAccessibilityContractTests' started at 2026-10-20 23:06:04.585.
+Test Suite 'CandidateAccessibilityContractTests' passed at 2026-10-20 23:06:04.588.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+Test Suite 'CandidateBarIdleDismissContractTests' started at 2026-10-20 23:06:04.589.
+Test Suite 'CandidateBarIdleDismissContractTests' passed at 2026-10-20 23:06:04.600.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.011 (0.011) seconds
+Test Suite 'CandidateModelContractTests' started at 2026-10-20 23:06:04.600.
+Test Suite 'CandidateModelContractTests' passed at 2026-10-20 23:06:04.603.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.001 (0.002) seconds
+Test Suite 'CandidatePagingContractTests' started at 2026-10-20 23:06:04.603.
+Test Suite 'CandidatePagingContractTests' passed at 2026-10-20 23:06:04.621.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.017 (0.018) seconds
+Test Suite 'DeleteKeyScrubContractTests' started at 2026-10-20 23:06:04.622.
+Test Suite 'DeleteKeyScrubContractTests' passed at 2026-10-20 23:06:04.634.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.011 (0.012) seconds
+Test Suite 'KeyAccessibilityContractTests' started at 2026-10-20 23:06:04.634.
+Test Suite 'KeyAccessibilityContractTests' passed at 2026-10-20 23:06:04.643.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.007 (0.008) seconds
+Test Suite 'KeyboardDocumentIdentityTests' started at 2026-10-20 23:06:04.643.
+Test Suite 'KeyboardDocumentIdentityTests' passed at 2026-10-20 23:06:04.647.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.002 (0.004) seconds
+Test Suite 'KeyboardHostLifecycleRecoveryGateTests' started at 2026-10-20 23:06:04.647.
+Test Suite 'KeyboardHostLifecycleRecoveryGateTests' passed at 2026-10-20 23:06:04.680.
+	 Executed 23 tests, with 0 failures (0 unexpected) in 0.027 (0.033) seconds
+Test Suite 'KeyboardWakeDiagnosticProducerTests' started at 2026-10-20 23:06:04.680.
+Test Suite 'KeyboardWakeDiagnosticProducerTests' passed at 2026-10-20 23:06:04.770.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.087 (0.089) seconds
+Test Suite 'R174BuildGateTests' started at 2026-10-20 23:06:04.770.
+Test Suite 'R174BuildGateTests' passed at 2026-10-20 23:06:04.771.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'T9KaomojiChromeContractTests' started at 2026-10-20 23:06:04.771.
+Test Suite 'T9KaomojiChromeContractTests' passed at 2026-10-20 23:06:04.774.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+Test Suite 'T9PunctuationChromeContractTests' started at 2026-10-20 23:06:04.774.
+Test Suite 'T9PunctuationChromeContractTests' passed at 2026-10-20 23:06:04.777.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'TypoCorrectionRecallRuntimeTests' started at 2026-10-20 23:06:04.777.
+Test Suite 'TypoCorrectionRecallRuntimeTests' passed at 2026-10-20 23:06:04.778.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'KeyboardTests.xctest' passed at 2026-10-20 23:06:04.778.
+	 Executed 49 tests, with 0 failures (0 unexpected) in 0.172 (0.194) seconds
+Test Suite 'All tests' passed at 2026-10-20 23:06:04.779.
+	 Executed 49 tests, with 0 failures (0 unexpected) in 0.172 (0.198) seconds
+Test Suite 'All tests' started at 2026-10-20 23:06:05.435.
+Test Suite 'KeyboardExtensionTests.xctest' started at 2026-10-20 23:06:05.436.
+Test Suite 'CandidateBarRecoveryViewTests' started at 2026-10-20 23:06:05.436.
+Test Suite 'CandidateBarRecoveryViewTests' passed at 2026-10-20 23:06:05.952.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.515 (0.516) seconds
+Test Suite 'CandidatePagingConsumerFixtureTests' started at 2026-10-20 23:06:05.953.
+Test Suite 'CandidatePagingConsumerFixtureTests' passed at 2026-10-20 23:06:09.865.
+	 Executed 16 tests, with 0 failures (0 unexpected) in 3.904 (3.912) seconds
+Test Suite 'CandidatePrefetchUIContractTests' started at 2026-10-20 23:06:09.865.
+Test Suite 'CandidatePrefetchUIContractTests' passed at 2026-10-20 23:06:09.867.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.001 (0.002) seconds
+Test Suite 'CompactCandidateBarLayoutTests' started at 2026-10-20 23:06:09.868.
+Test Suite 'CompactCandidateBarLayoutTests' passed at 2026-10-20 23:06:10.239.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.369 (0.371) seconds
+Test Suite 'KeyRecoveryAccessibilityTests' started at 2026-10-20 23:06:10.239.
+Test Suite 'KeyRecoveryAccessibilityTests' passed at 2026-10-20 23:06:10.246.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.006 (0.007) seconds
+Test Suite 'T9RecoveryPresentationAdapterTests' started at 2026-10-20 23:06:10.246.
+Test Suite 'T9RecoveryPresentationAdapterTests' passed at 2026-10-20 23:06:10.262.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.014 (0.016) seconds
+Test Suite 'TypoCorrectionRecallCoordinatorIntegrationTests' started at 2026-10-20 23:06:10.263.
+Test Suite 'TypoCorrectionRecallCoordinatorIntegrationTests' passed at 2026-10-20 23:06:12.188.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 1.924 (1.925) seconds
+Test Suite 'KeyboardExtensionTests.xctest' passed at 2026-10-20 23:06:12.188.
+	 Executed 41 tests, with 0 failures (0 unexpected) in 6.733 (6.752) seconds
+Test Suite 'All tests' passed at 2026-10-20 23:06:12.188.
+	 Executed 41 tests, with 0 failures (0 unexpected) in 6.733 (6.753) seconds
+Test Suite 'All tests' started at 2026-10-20 23:06:12.922.
+Test Suite 'KeyboardLayoutIntegrationTests.xctest' started at 2026-10-20 23:06:12.922.
+Test Suite 'CompactHeaderControllerLayoutTests' started at 2026-10-20 23:06:12.923.
+Test Suite 'CompactHeaderControllerLayoutTests' passed at 2026-10-20 23:06:35.454.
+	 Executed 12 tests, with 0 failures (0 unexpected) in 22.527 (22.532) seconds
+Test Suite 'T9AdaptiveRowTests' started at 2026-10-20 23:06:35.455.
+Test Case '-[KeyboardLayoutIntegrationTests.T9AdaptiveRowTests testQA001FirstPathIsVisibleAfterPendingPanelBeforeSecondKey]' started.
+QA001 engine=["6"] raw=6 paths=["m", "n", "o"]
+QA001 first model=m row=(0.0, 0.0, 376.0, 34.0) collection=(0.0, 0.0, 376.0, 33.0) cell=(4.0, 0.0, 44.0, 33.0) label=(10.0, 0.0, 24.0, 33.0) hidden=false alpha=1.0
+QA001 engine=["6"] raw=6 paths=["m", "n", "o"]
+QA001 first model=m row=(0.0, 0.0, 376.0, 34.0) collection=(0.0, 0.0, 376.0, 33.0) cell=(4.0, 0.0, 44.0, 33.0) label=(10.0, 0.0, 24.0, 33.0) hidden=false alpha=1.0
+QA001 engine=["6"] raw=6 paths=["m", "n", "o"]
+QA001 first model=m row=(0.0, 0.0, 376.0, 34.0) collection=(0.0, 0.0, 376.0, 33.0) cell=(4.0, 0.0, 44.0, 33.0) label=(10.0, 0.0, 24.0, 33.0) hidden=false alpha=1.0
+QA001 engine=["6"] raw=6 paths=["m", "n", "o"]
+QA001 first model=m row=(0.0, 0.0, 376.0, 34.0) collection=(0.0, 0.0, 376.0, 33.0) cell=(4.0, 0.0, 44.0, 33.0) label=(10.0, 0.0, 24.0, 33.0) hidden=false alpha=1.0
+QA001 halfway presentation=196.8002129793167
+QA001 engine=["6"] raw=6 paths=["m", "n", "o"]
+QA001 first model=m row=(0.0, 0.0, 376.0, 34.0) collection=(0.0, 0.0, 376.0, 33.0) cell=(4.0, 0.0, 44.0, 33.0) label=(10.0, 0.0, 24.0, 33.0) hidden=false alpha=1.0
+QA001 halfway presentation=176.08455020189285
+QA001 engine=["6"] raw=6 paths=["m", "n", "o"]
+QA001 first model=m row=(0.0, 0.0, 376.0, 34.0) collection=(0.0, 0.0, 376.0, 33.0) cell=(4.0, 0.0, 44.0, 33.0) label=(10.0, 0.0, 24.0, 33.0) hidden=false alpha=1.0
+QA001 halfway presentation=105.38141530752182
+QA001 engine=["6"] raw=6 paths=["m", "n", "o"]
+QA001 first model=m row=(0.0, 0.0, 376.0, 34.0) collection=(0.0, 0.0, 376.0, 33.0) cell=(4.0, 0.0, 44.0, 33.0) label=(10.0, 0.0, 24.0, 33.0) hidden=false alpha=1.0
+QA001 halfway presentation=108.38902324438095
+QA001 engine=["6"] raw=6 paths=["m", "n", "o"]
+QA001 first model=m row=(0.0, 0.0, 376.0, 34.0) collection=(0.0, 0.0, 376.0, 33.0) cell=(4.0, 0.0, 44.0, 33.0) label=(10.0, 0.0, 24.0, 33.0) hidden=false alpha=1.0
+Test Case '-[KeyboardLayoutIntegrationTests.T9AdaptiveRowTests testQA001FirstPathIsVisibleAfterPendingPanelBeforeSecondKey]' passed (1.924 seconds).
+Test Suite 'T9AdaptiveRowTests' passed at 2026-10-20 23:06:37.768.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 2.312 (2.314) seconds
+Test Suite 'KeyboardLayoutIntegrationTests.xctest' passed at 2026-10-20 23:06:37.769.
+	 Executed 18 tests, with 0 failures (0 unexpected) in 24.838 (24.846) seconds
+Test Suite 'All tests' passed at 2026-10-20 23:06:37.769.
+	 Executed 18 tests, with 0 failures (0 unexpected) in 24.838 (24.847) seconds
+** TEST SUCCEEDED **
