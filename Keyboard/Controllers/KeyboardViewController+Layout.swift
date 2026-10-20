@@ -37,7 +37,6 @@ extension KeyboardViewController {
         var height =
             keyboardContentTopInset
             + candidateBarHeight
-            + candidateToKeySpacing
             + keyHeight * 4
             + keySpacing * 2
             + keyboardGroupSpacing

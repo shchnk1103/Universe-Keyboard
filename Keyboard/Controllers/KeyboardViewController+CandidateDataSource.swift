@@ -4,7 +4,6 @@ import UIKit
 private enum CandidateSizing {
     /// 视觉间距并入 cell 尺寸；layout spacing 保持为 0，避免候选之间出现真实触控空洞。
     static let visualHorizontalGap: CGFloat = 4
-    static let expandedVisualVerticalGap: CGFloat = 4
     static let minimumTouchWidth: CGFloat = 44
     static let correctionHintSpacing: CGFloat = 3
 }
@@ -167,15 +166,11 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
         }
         let items = presentedCandidates
         let isExpanded = collectionView === expandedCandidateCollectionView
-        let visualHeight: CGFloat = isExpanded ? 38 : 32
-        // The compact bar is 48 pt tall (34 pt visible bar + 14 pt gesture
-        // bridge). A 32 pt cell was centered at y=8, leaving most of the
-        // visible upper third outside every selectable cell. Expanding only
-        // the cell bounds preserves the label's center and visual size.
+        // Compact cells fill the bar's real viewport; expanded rows retain their original metrics.
         let itemHeight =
             isExpanded
-            ? visualHeight + CandidateSizing.expandedVisualVerticalGap
-            : candidateBarHeight + candidateToKeySpacing
+            ? KeyboardDesignTokens.ExpandedCandidates.rowHeight
+            : KeyboardDesignTokens.CandidateBar.normalCellHeight
         guard items.indices.contains(indexPath.item) else { return CGSize(width: 44, height: itemHeight) }
         let item = items[indexPath.item]
         let preferred = isPreferredCandidate(item, at: indexPath.item)

@@ -86,6 +86,24 @@ Nine-key depends on fog-song / rime-ice T9 resources. If those resources are mis
 - While T9 composition is active, the wide space key title changes from `拼音` to **选定**. Its action remains candidate finalization (highlighted/first Chinese candidate), not segment confirmation.
 - Before the first selection there is no path highlight. The selected path uses the same inverse-color 8 pt rounded highlight language as the preferred candidate and retains an accurate VoiceOver selected state.
 
+## Compact Candidate Header
+
+`KEYBOARD-COMPACT-HEADER-001` introduces local semantic parameters in
+`Keyboard/Views/KeyboardDesignTokens.swift`: compact row / normal Cell total 46pt,
+full-trailing action zone 56 × 46pt, 22pt medium symbol. Both keyboard layouts use
+one candidate implementation. Candidate fonts and expanded-panel row metrics are
+unchanged. The viewport clips candidate drawing; the action zone owns exactly its
+visible hit area and does not add a duplicate trailing content inset. Root key
+margins remain 7pt; only the candidate header extends beyond them, with explicit
+parent hit routing for that extension.
+
+T9 0/34pt dynamic height was prototyped but withdrawn from this local candidate:
+real Extension activation/screen-coordinate evidence was not established. The
+existing fixed 34pt Path reservation and input/recovery semantics remain. This is
+not a new Input Reliability batch. See the task's
+[verification](evidence/keyboard-compact-header-001/verification.md) for evidence
+and unverified runtime coverage.
+
 ## Nine-key Chrome (UI)
 
 Chinese nine-key chrome matches the **system 九宫格** visual rhythm (Assignment `KEYBOARD-LAYOUT-9KEY-UI-001`), not the classic phone-pad “large digit + tiny letters” look.

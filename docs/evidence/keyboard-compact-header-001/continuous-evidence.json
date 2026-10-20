@@ -1,0 +1,92 @@
+{
+  "comparison_head": "bb74235da7eb0e44d7abc2ca06f624b0a7baf404",
+  "scope": "Continuous Candidate Surface; UI presentation only; same Writer; no product publication",
+  "files": {
+    "Keyboard/Controllers/KeyboardViewController+CandidateBar.swift": "fc4948b549cc85797b88169fd5fccf987e99e6995d307a4a2920fb404bed4f23",
+    "Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift": "34493f5a0f18266da82d2df3dab4de63fca1d30cb1e415853480c6d1174f774c",
+    "Keyboard/Controllers/KeyboardViewController+ExpandedCandidatePanel.swift": "672f374bddef96c272716bac777b9b5f37e684b8a7b4b953f30faa05ca31fef8",
+    "Keyboard/Views/KeyboardDesignTokens.swift": "6d4c893c69717d7dd7c836db45373cf508a72a55194494d0e6a36fa28626492d",
+    "Keyboard/Views/CandidateBar/CandidateReadingPosition.swift": "031b94217b8f7ff33fff135ce1a57a37e404c8b21b1c1fdad15b8a6562a883ea",
+    "KeyboardTests/ControllerLayout/CompactHeaderControllerLayoutTests.swift": "320d3ec3eb0e155f495274af237151645c0fe5eb0a3f0153c3a76bb76370b786"
+  },
+  "human_uncommitted_project": {
+    "path": "Universe Keyboard.xcodeproj/project.pbxproj",
+    "sha256": "298cfdc9cd121ac2413463f5cc9360db2c3317ae024af17ee9d4f57dfceecc9e",
+    "included_in_product_commit": false,
+    "preservation_authority": "Human confirmed Xcode save in this chat; preserve, do not overwrite or commit",
+    "semantic_difference": "KeyboardLayoutIntegrationTests membershipExceptions removes Keyboard.entitlements; no Swift membership change"
+  },
+  "run_results": {
+    "l1": "Failed exit65:6 half-visible ratio measurement assertions; preserved",
+    "l1-final": "Pass exit0;27/0/0",
+    "l2": "Pass exit0;Keyboard49/0/0,Extension41/0/0",
+    "debug-build-for-testing": "Pass exit0",
+    "format-precommit": "Pass exit0;6 Swift files"
+  },
+  "completed_artifacts": {
+    "/private/tmp/kch001-continuous/debug-build-for-testing.exit": {
+      "sha256": "19eaf43821a7660ec323a87c8457bf74823beb296c39f5e01aa8a683aa50f061",
+      "size_bytes": 7
+    },
+    "/private/tmp/kch001-continuous/debug-build-for-testing.log": {
+      "sha256": "d21e967e003db1388b102ddb47acac5dfbb3911fe3cacacced5d6f11292a1e6d",
+      "size_bytes": 25440
+    },
+    "/private/tmp/kch001-continuous/format-final.exit": {
+      "sha256": "19eaf43821a7660ec323a87c8457bf74823beb296c39f5e01aa8a683aa50f061",
+      "size_bytes": 7
+    },
+    "/private/tmp/kch001-continuous/format-final.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    "/private/tmp/kch001-continuous/format-precommit.exit": {
+      "sha256": "19eaf43821a7660ec323a87c8457bf74823beb296c39f5e01aa8a683aa50f061",
+      "size_bytes": 7
+    },
+    "/private/tmp/kch001-continuous/format-precommit.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    "/private/tmp/kch001-continuous/format.exit": {
+      "sha256": "19eaf43821a7660ec323a87c8457bf74823beb296c39f5e01aa8a683aa50f061",
+      "size_bytes": 7
+    },
+    "/private/tmp/kch001-continuous/format.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    "/private/tmp/kch001-continuous/l1-final.exit": {
+      "sha256": "19eaf43821a7660ec323a87c8457bf74823beb296c39f5e01aa8a683aa50f061",
+      "size_bytes": 7
+    },
+    "/private/tmp/kch001-continuous/l1-final.log": {
+      "sha256": "93fabb772652abc50fbfebf34fff587225c9d4015cb428cd918b009adbc8df3a",
+      "size_bytes": 209863
+    },
+    "/private/tmp/kch001-continuous/l1.exit": {
+      "sha256": "7758d6215728792b579ec5342f740f95b64e6ee55b4c4473fceaf88a0855a5b2",
+      "size_bytes": 8
+    },
+    "/private/tmp/kch001-continuous/l1.log": {
+      "sha256": "59e8d81bbd94a0c4ff6b27083763093018264fc66f4f66883ff228bfab4eec2c",
+      "size_bytes": 274835
+    },
+    "/private/tmp/kch001-continuous/l2.exit": {
+      "sha256": "19eaf43821a7660ec323a87c8457bf74823beb296c39f5e01aa8a683aa50f061",
+      "size_bytes": 7
+    },
+    "/private/tmp/kch001-continuous/l2.log": {
+      "sha256": "724cc9a07a33e596555a9cb4795df582f1baaf6d6975c24d3185aae2b3bb7edf",
+      "size_bytes": 53596
+    },
+    "/private/tmp/kch001-continuous/project-entry.pbxproj": {
+      "sha256": "dceaee04fecf4c64806eaedd3dcc3a867c49d2d29dc72898963a24f1bc8e974d",
+      "size_bytes": 62354
+    },
+    "/private/tmp/kch001-continuous/project-observed.pbxproj": {
+      "sha256": "298cfdc9cd121ac2413463f5cc9360db2c3317ae024af17ee9d4f57dfceecc9e",
+      "size_bytes": 62805
+    }
+  }
+}

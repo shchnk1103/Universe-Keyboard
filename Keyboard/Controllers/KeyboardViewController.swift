@@ -364,11 +364,9 @@ class KeyboardViewController: UIInputViewController {
     /// 键盘内容底部留白。底部由系统容器提供圆角与安全区域，这里只保留极小间距。
     let keyboardContentBottomInset: CGFloat = 0
     /// 候选栏高度（点）。系统键盘外层容器已提供顶部承载面，候选栏保持更紧凑。
-    let candidateBarHeight: CGFloat = 34
+    var candidateBarHeight: CGFloat { KeyboardDesignTokens.CandidateBar.totalHeight }
     /// Fixed precise pinyin path bar reservation for Chinese nine-key (ADR 0020).
-    let t9PinyinPathBarHeight: CGFloat = 34
-    /// 候选栏与第一行按键之间的间距。并入候选栏自身高度，保证这块区域也能接收候选手势。
-    let candidateToKeySpacing: CGFloat = 14
+    var t9PinyinPathBarHeight: CGFloat { KeyboardDesignTokens.T9PinyinBar.visibleHeight }
     /// 仅用于裁切内部布局，避免透明内容超出系统外层大圆角；不绘制额外 surface。
     let keyboardSurfaceMaskCornerRadius: CGFloat = 34
     /// 单个按键高度（点）。45pt 比 HIG 最小触控目标略高，接近原生键盘手感。

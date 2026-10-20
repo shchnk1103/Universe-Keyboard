@@ -1,0 +1,117 @@
+{
+  "comparison_head": "7dd2b230a092fbb764b87d24650375b4d1209c50",
+  "scope": "A1/A3 only; UI-2 fixed34pt",
+  "files": {
+    "Keyboard/Controllers/KeyboardInputHitAreaStackView.swift": "1a484f2632262716bd4b40fc6bf5f904949ef9c9e12dce0199b536652b4e4f4b",
+    "Keyboard/Controllers/KeyboardViewController+ExpandedCandidatePanel.swift": "df9a4f2fff9e9f41cc3b62f0713ec2b0467bc70706d04245a66fb6156ec0eef9",
+    "Keyboard/Controllers/KeyboardViewController+Presentation.swift": "0fcb167900753583fa030eb4d8d92f8d02c6adf32f98881498ee14f42f685d96",
+    "Keyboard/Controllers/KeyboardViewController+T9PinyinPath.swift": "fd3d4ca6a4b4bd64d45553999383681999a543f266f3bbc139786210c6a8c140",
+    "Keyboard/Views/KeyboardDesignTokens.swift": "ab0815b80b5c44f0e5f2e210d5d423c732fdc189f16be4b6e2c1de063b963f07",
+    "Universe Keyboard.xcodeproj/project.pbxproj": "dceaee04fecf4c64806eaedd3dcc3a867c49d2d29dc72898963a24f1bc8e974d",
+    "Universe Keyboard.xcodeproj/xcshareddata/xcschemes/Universe Keyboard.xcscheme": "ba1990c1ba575c798eed030ef215ad426c1ed92580ae25ddd196b5239e52a4e9",
+    "KeyboardTests/ControllerLayout/CompactHeaderControllerLayoutTests.swift": "820b313bf237d173b6da9b812d44f735c3df40d33a498cd6c11e0f7d218cf846"
+  },
+  "historical_format_evidence": {
+    "path": "/private/tmp/kch001-corrections/strict-format.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "size_bytes": 0,
+    "mtime_utc": "2026-10-20T04:08:14.238052+00:00",
+    "status": "Pass supported by retained execution command: strict lint && L2 xcodebuild test, with downstream L2 run completed. Empty log alone is not evidence of success. New N2 lint has an explicit exit receipt."
+  },
+  "files_snapshot_commit": "e21d076cc6615b2601059df98a3a435bff41019d",
+  "successful_logs": {
+    "/private/tmp/kch001-corrections/debug-build-for-testing.log": {
+      "sha256": "597986185a2a7e398449680aa7dae31ea10e04b01ddf6661caf25d08870cfb7e",
+      "size_bytes": 25443,
+      "mtime_utc": "2026-10-20T04:08:43.033112+00:00"
+    },
+    "/private/tmp/kch001-corrections/l1-final-r3.log": {
+      "sha256": "c995168bdd98078258e3541d710cd51036f12da6d82a903a7d891dbead1944ad",
+      "size_bytes": 96891,
+      "mtime_utc": "2026-10-20T04:08:02.885393+00:00"
+    },
+    "/private/tmp/kch001-corrections/l2-keyboard.log": {
+      "sha256": "7e46e253a81dd137b2a7b6b00155f3abddd0eec755f87d136894f2de29c9c460",
+      "size_bytes": 60962,
+      "mtime_utc": "2026-10-20T04:08:26.704509+00:00"
+    }
+  },
+  "historical_failed_logs": {
+    "/private/tmp/kch001-corrections/a1-before-r2.log": {
+      "sha256": "c55d0f494c85b1ead2b063259674aa5fb0d786cf95e8ba5e69261ce7eee828e6",
+      "size_bytes": 125193,
+      "mtime_utc": "2026-10-20T03:58:13.205171+00:00",
+      "outcome": "historical failed attempt; not passing evidence"
+    },
+    "/private/tmp/kch001-corrections/a1-before-r3.log": {
+      "sha256": "e74856549eb208505e59dcb92aca324a86a0595a33316fa5dbe54b0d0d901d08",
+      "size_bytes": 1359045,
+      "mtime_utc": "2026-10-20T04:10:25.663007+00:00",
+      "outcome": "historical failed attempt; not passing evidence",
+      "prior_manifest_sha256": "cead37396e1d5647e1d5a9a179b92e4a5fa67af533eab43dcb7cd1c3b6acc270",
+      "prior_snapshot_prefix_bytes": 1217424,
+      "reconciliation": "Prior digest matches exact preserved prefix. Appended suffix records xcodebuild 600-second simulator diagnostic-collection timeout and final TEST FAILED. Original prefix remains independently hash-verifiable; no overwrite established."
+    },
+    "/private/tmp/kch001-corrections/a1-before-r4.log": {
+      "sha256": "99b0edd3e1103d8212b00ce048aa13da4649e4b542f1d5aa1406010bca2cf624",
+      "size_bytes": 183657,
+      "mtime_utc": "2026-10-20T04:11:56.014243+00:00",
+      "outcome": "historical failed attempt; not passing evidence",
+      "prior_manifest_sha256": "80b75d9abc271cc10e6af3febec8588070300571366fb2505e6f79fc4c775f7e",
+      "prior_snapshot_prefix_bytes": 167531,
+      "reconciliation": "Prior digest matches exact preserved prefix. Appended suffix records xcodebuild 600-second simulator diagnostic-collection timeout and final TEST FAILED. Original prefix remains independently hash-verifiable; no overwrite established."
+    },
+    "/private/tmp/kch001-corrections/a1-before.log": {
+      "sha256": "56d67187cf4e6490eebdd58865ee8147d60b571da70eab2bfa289211a17fe05a",
+      "size_bytes": 258126,
+      "mtime_utc": "2026-10-20T03:57:20.869037+00:00",
+      "outcome": "historical failed attempt; not passing evidence"
+    },
+    "/private/tmp/kch001-corrections/l1-final-r2.log": {
+      "sha256": "52bba7e688f715c2d188ab872719b783a9f793a59384b2eaa1a155406509ce47",
+      "size_bytes": 127063,
+      "mtime_utc": "2026-10-20T04:17:16.323938+00:00",
+      "outcome": "historical failed attempt; not passing evidence",
+      "prior_manifest_sha256": "5181ce881b5704c7a580b5a9ffe0e08562846e0b878da5119467b9fdd9a45de3",
+      "prior_snapshot_prefix_bytes": 126226,
+      "reconciliation": "Prior digest matches exact preserved prefix. Appended suffix records xcodebuild 600-second simulator diagnostic-collection timeout and final TEST FAILED. Original prefix remains independently hash-verifiable; no overwrite established."
+    },
+    "/private/tmp/kch001-corrections/l1-final.log": {
+      "sha256": "b9fbd3fb99aa533d0211411b4f5e538a3fe13a3e50e300040a929326a1fe1615",
+      "size_bytes": 101128,
+      "mtime_utc": "2026-10-20T04:06:51.585977+00:00",
+      "outcome": "historical failed attempt; not passing evidence"
+    },
+    "/private/tmp/kch001-corrections/l1-layout.log": {
+      "sha256": "4822941b3594a926e7bd31687c3c1aad9d9b60f49901a7b5871e7035a1e66c44",
+      "size_bytes": 167273,
+      "mtime_utc": "2026-10-20T04:15:29.885702+00:00",
+      "outcome": "historical failed attempt; not passing evidence",
+      "prior_manifest_sha256": "2d07bcebf98d746c5e84d74faa1337befa5b810860f82dac8f24f8946ba93c6c",
+      "prior_snapshot_prefix_bytes": 166438,
+      "reconciliation": "Prior digest matches exact preserved prefix. Appended suffix records xcodebuild 600-second simulator diagnostic-collection timeout and final TEST FAILED. Original prefix remains independently hash-verifiable; no overwrite established."
+    }
+  },
+  "n2_files": {
+    "Keyboard/Controllers/KeyboardViewController+ExpandedCandidatePanel.swift": "27e735ad68f96ce9a72a4361b59b94638c1c4823348655832d4790aa51ef47c1",
+    "KeyboardTests/ControllerLayout/CompactHeaderControllerLayoutTests.swift": "fb9082d9113298c136391abd4d58d5adb8b94041d6ca4c56bdfc81df9a20773a"
+  },
+  "n2_validation": {
+    "/private/tmp/kch001-final/n2-focused.log": {
+      "sha256": "5db38621722a02b6467adf675403573a62a6ceb214aa407bee7cd9771a2d9999",
+      "size_bytes": 130505
+    },
+    "/private/tmp/kch001-final/n2-focused.exit": {
+      "sha256": "19eaf43821a7660ec323a87c8457bf74823beb296c39f5e01aa8a683aa50f061",
+      "size_bytes": 7
+    },
+    "/private/tmp/kch001-final/strict-format.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size_bytes": 0
+    },
+    "/private/tmp/kch001-final/strict-format.exit": {
+      "sha256": "19eaf43821a7660ec323a87c8457bf74823beb296c39f5e01aa8a683aa50f061",
+      "size_bytes": 7
+    }
+  }
+}

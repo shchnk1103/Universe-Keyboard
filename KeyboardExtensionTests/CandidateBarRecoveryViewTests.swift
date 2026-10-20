@@ -105,7 +105,7 @@ nonisolated final class CandidateBarRecoveryViewTests: XCTestCase {
         init(width: CGFloat) {
             container = UIView(frame: CGRect(x: 0, y: 0, width: width, height: 60))
             bar = CandidateBarView(
-                height: 40, bottomHitExtension: 4, backgroundColor: .clear,
+                backgroundColor: .clear,
                 interactionTarget: nil, expandAction: #selector(expand))
             super.init()
             bar.translatesAutoresizingMaskIntoConstraints = false
@@ -117,7 +117,7 @@ nonisolated final class CandidateBarRecoveryViewTests: XCTestCase {
             ])
             bar.collectionView.dataSource = self
             (bar.collectionView.collectionViewLayout as? UICollectionViewFlowLayout)?.itemSize =
-                CGSize(width: 100, height: 40)
+                CGSize(width: 100, height: KeyboardDesignTokens.CandidateBar.normalCellHeight)
             container.layoutIfNeeded()
             bar.collectionView.reloadData()
             bar.collectionView.layoutIfNeeded()

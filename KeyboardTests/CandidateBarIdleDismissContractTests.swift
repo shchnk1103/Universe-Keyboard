@@ -12,7 +12,7 @@ final class CandidateBarIdleDismissContractTests: XCTestCase {
         XCTAssertTrue(bar.contains("dismissKeyboard()"))
         XCTAssertTrue(bar.contains("expandsCandidateBarPanel"))
         XCTAssertTrue(bar.contains("allowsSwipeToExpand = canExpand"))
-        XCTAssertTrue(bar.contains("candidateExpandButtonWidthConstraint?.constant != 56"))
+        XCTAssertFalse(bar.contains("candidateExpandButtonWidthConstraint?.constant = 56"))
         XCTAssertTrue(panel.contains("关闭键盘"))
         XCTAssertTrue(panel.contains("button.configuration = nil"))
         XCTAssertTrue(view.contains("var allowsSwipeToExpand"))
