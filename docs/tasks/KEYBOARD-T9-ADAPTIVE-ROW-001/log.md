@@ -63,3 +63,11 @@
 - lane: codex-t9-adaptive-row
 - kind: CHECKPOINT
 - note: Local integrated candidate a26a7e947419f4360dc49f5b3db021230a9306bc; merge b34cea88a4633194908e0c1f0793b65db7cb2bd6 preserves exact main78b795f and original6001416/52568c3. I-1–I-5 complete; I-7 mask stale-root geometry reproduced and fixed at UIKit layout boundary, I-6 reading/transition checks pass. Controller17/0/0, Keyboard49/0/0, Extension41/0/0; Debug build-for-testing, strict format10 and no new required conflicts. W unchanged/P=none, no HANDOFF/ACCEPT. Source/assignment/evidence pointers reanchored after authorized ordinary merge. Remote/PR217 remains6f6fc12; no push/PR update/main operation/UI-1 archived workspace access. Integration Implementation PASS, Quality CONDITIONAL PASS; READY FOR INDEPENDENT REVIEW. Real integrated host acceptance pending Human; no Gate/Release/Close. Stop.
+
+## CP-009 CHECKPOINT
+
+- id: CP-009
+- at: 2026-10-20T22:59:35+08:00
+- lane: codex-t9-adaptive-row
+- kind: CHECKPOINT
+- note: QA-001 bounded local AUTH @ 5d00a412899d444fb7bbc226dc2bc7cab493c490; entry011d3fa clean, Human8 PASS/1 FAIL first-key Path blank then second key includes both. No assumed Core/F-3 root cause. W unchanged/P=none, no HANDOFF/ACCEPT. Diagnose/test/minimal UIKit fix locally; no push/PR/main/release.
