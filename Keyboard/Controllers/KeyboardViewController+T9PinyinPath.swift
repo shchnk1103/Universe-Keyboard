@@ -235,7 +235,7 @@ extension KeyboardViewController {
 
         let panel = makePinyinPathExpandedPanel()
         rootStack.arrangedSubviews
-            .filter { $0 !== candidateBar && $0 !== t9PinyinPathBarView }
+            .filter { $0 !== candidateBar?.superview && $0 !== t9PinyinPathBarView }
             .forEach { $0.removeFromSuperview() }
         rootStack.addArrangedSubview(panel)
         pinyinPathExpandedPanel = panel

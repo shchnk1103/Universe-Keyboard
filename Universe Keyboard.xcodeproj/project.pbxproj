@@ -34,6 +34,8 @@
 		D213B0000000000000000002 /* KeyVisualStyle.swift in KeyboardExtensionTests */ = {isa = PBXBuildFile; fileRef = D213F0000000000000000002 /* KeyVisualStyle.swift */; };
 		D213B0000000000000000003 /* KeyboardViewController+KeyAccessibility.swift in KeyboardExtensionTests */ = {isa = PBXBuildFile; fileRef = D213F0000000000000000003 /* KeyboardViewController+KeyAccessibility.swift */; };
 		D32040000000000000000001 /* KeyboardDesignTokens.swift in KeyboardExtensionTests */ = {isa = PBXBuildFile; fileRef = D32030000000000000000001 /* KeyboardDesignTokens.swift */; };
+        D32110000000000000000001 /* KeyboardCore in layout tests */ = {isa = PBXBuildFile; productRef = 793AC8812FB0BE0600DAE8A0 /* KeyboardCore */; };
+        D32110000000000000000002 /* RimeBridge in layout tests */ = {isa = PBXBuildFile; productRef = 7A6000042FC0000000000001 /* RimeBridge */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -106,6 +108,7 @@
 		D213F0000000000000000002 /* KeyVisualStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Controllers/KeyVisualStyle.swift"; sourceTree = "<group>"; };
 		D213F0000000000000000003 /* KeyboardViewController+KeyAccessibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Controllers/KeyboardViewController+KeyAccessibility.swift"; sourceTree = "<group>"; };
 		D32030000000000000000001 /* KeyboardDesignTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Views/KeyboardDesignTokens.swift"; sourceTree = "<group>"; };
+        D32120000000000000000001 /* KeyboardLayoutIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = KeyboardLayoutIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -116,6 +119,16 @@
 			);
 			target = 793AC85B2FB0BE0600DAE835 /* Keyboard */;
 		};
+        D32130000000000000000001 /* Production keyboard sources for layout tests */ = {
+            isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+            membershipExceptions = (Info.plist, Keyboard.entitlements,);
+            target = D32170000000000000000001 /* KeyboardLayoutIntegrationTests */;
+        };
+        D32130000000000000000002 /* Layout tests use their own target */ = {
+            isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+            membershipExceptions = (ControllerLayout/CompactHeaderControllerLayoutTests.swift,);
+            target = 7A62000A2FC0000000000001 /* KeyboardTests */;
+        };
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -128,6 +141,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				793AC8642FB0BE0600DAE835 /* Exceptions for "Keyboard" folder in "Keyboard" target */,
+                D32130000000000000000001 /* Production keyboard sources for layout tests */,
 			);
 			path = Keyboard;
 			sourceTree = "<group>";
@@ -144,6 +158,7 @@
 		};
 		7A6200062FC0000000000001 /* KeyboardTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+            exceptions = (D32130000000000000000002 /* Layout tests use their own target */,);
 			path = KeyboardTests;
 			sourceTree = "<group>";
 		};
@@ -168,6 +183,11 @@
 			path = Keyboard/Controllers;
 			sourceTree = "<group>";
 		};
+        D32140000000000000000001 /* ControllerLayout */ = {
+            isa = PBXFileSystemSynchronizedRootGroup;
+            path = KeyboardTests/ControllerLayout;
+            sourceTree = "<group>";
+        };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -229,6 +249,12 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+        D32150000000000000000001 /* Layout test frameworks */ = {
+            isa = PBXFrameworksBuildPhase;
+            buildActionMask = 2147483647;
+            files = (D32110000000000000000001, D32110000000000000000002,);
+            runOnlyForDeploymentPostprocessing = 0;
+        };
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -255,6 +281,7 @@
 				D31930000000000000000005 /* DebugKeyTouchRangeOverlayView.swift */,
 				7A6300022FD0000000000001 /* UniverseKeyboardUITests */,
 				7A6400052FD0000000000001 /* KeyboardExtensionTests */,
+                D32140000000000000000001 /* ControllerLayout */,
 				7A6400102FD0000000000001 /* Coordinator source compiled for extension tests */,
 				793AC84B2FB0BDB000DAE835 /* Products */,
 			);
@@ -270,6 +297,7 @@
 				7A6200042FC0000000000001 /* KeyboardTests.xctest */,
 				7A6300012FD0000000000001 /* UniverseKeyboardUITests.xctest */,
 				7A6400042FD0000000000001 /* KeyboardExtensionTests.xctest */,
+                D32120000000000000000001 /* KeyboardLayoutIntegrationTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -445,6 +473,19 @@
 			productReference = 7A6400042FD0000000000001 /* KeyboardExtensionTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+        D32170000000000000000001 /* KeyboardLayoutIntegrationTests */ = {
+            isa = PBXNativeTarget;
+            buildConfigurationList = D32190000000000000000001;
+            buildPhases = (D32160000000000000000001, D32150000000000000000001, D32160000000000000000002,);
+            buildRules = ();
+            dependencies = ();
+            fileSystemSynchronizedGroups = (793AC85D2FB0BE0600DAE835, D32140000000000000000001,);
+            name = KeyboardLayoutIntegrationTests;
+            packageProductDependencies = (793AC8812FB0BE0600DAE8A0, 7A6000042FC0000000000001,);
+            productName = KeyboardLayoutIntegrationTests;
+            productReference = D32120000000000000000001;
+            productType = "com.apple.product-type.bundle.unit-test";
+        };
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -504,6 +545,7 @@
 				7A62000A2FC0000000000001 /* KeyboardTests */,
 				7A6300062FD0000000000001 /* UniverseKeyboardUITests */,
 				7A6400062FD0000000000001 /* KeyboardExtensionTests */,
+                D32170000000000000000001 /* KeyboardLayoutIntegrationTests */,
 			);
 		};
 /* End PBXProject section */
@@ -558,6 +600,12 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+        D32160000000000000000002 /* Layout test resources */ = {
+            isa = PBXResourcesBuildPhase;
+            buildActionMask = 2147483647;
+            files = ();
+            runOnlyForDeploymentPostprocessing = 0;
+        };
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -627,6 +675,12 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+        D32160000000000000000001 /* Layout test sources */ = {
+            isa = PBXSourcesBuildPhase;
+            buildActionMask = 2147483647;
+            files = ();
+            runOnlyForDeploymentPostprocessing = 0;
+        };
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -1237,6 +1291,52 @@
 			};
 			name = Release;
 		};
+        D32180000000000000000001 /* Debug */ = {
+            isa = XCBuildConfiguration;
+            buildSettings = {
+                BUNDLE_LOADER = "";
+                CODE_SIGN_STYLE = Automatic;
+                DEVELOPMENT_TEAM = C33N6HTS9N;
+                GENERATE_INFOPLIST_FILE = YES;
+                IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+                LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "@loader_path/Frameworks",);
+                OTHER_LDFLAGS = ("$(inherited)", "-lc++",);
+                PRODUCT_BUNDLE_IDENTIFIER = "com.DoubleShy0N.Universe-Keyboard.KeyboardLayoutIntegrationTests";
+                PRODUCT_NAME = "$(TARGET_NAME)";
+                SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+                SWIFT_APPROACHABLE_CONCURRENCY = YES;
+                SWIFT_OBJC_BRIDGING_HEADER = "Keyboard/Bridge/Keyboard-Bridging-Header.h";
+                SWIFT_STRICT_CONCURRENCY = complete;
+                SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
+                SWIFT_VERSION = 6.0;
+                TARGETED_DEVICE_FAMILY = "1,2";
+                TEST_HOST = "";
+            };
+            name = Debug;
+        };
+        D32180000000000000000002 /* Release */ = {
+            isa = XCBuildConfiguration;
+            buildSettings = {
+                BUNDLE_LOADER = "";
+                CODE_SIGN_STYLE = Automatic;
+                DEVELOPMENT_TEAM = C33N6HTS9N;
+                GENERATE_INFOPLIST_FILE = YES;
+                IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+                LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "@loader_path/Frameworks",);
+                OTHER_LDFLAGS = ("$(inherited)", "-lc++",);
+                PRODUCT_BUNDLE_IDENTIFIER = "com.DoubleShy0N.Universe-Keyboard.KeyboardLayoutIntegrationTests";
+                PRODUCT_NAME = "$(TARGET_NAME)";
+                SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+                SWIFT_APPROACHABLE_CONCURRENCY = YES;
+                SWIFT_OBJC_BRIDGING_HEADER = "Keyboard/Bridge/Keyboard-Bridging-Header.h";
+                SWIFT_STRICT_CONCURRENCY = complete;
+                SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
+                SWIFT_VERSION = 6.0;
+                TARGETED_DEVICE_FAMILY = "1,2";
+                TEST_HOST = "";
+            };
+            name = Release;
+        };
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1312,6 +1412,12 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+        D32190000000000000000001 /* Layout test configurations */ = {
+            isa = XCConfigurationList;
+            buildConfigurations = (D32180000000000000000001, D32180000000000000000002,);
+            defaultConfigurationIsVisible = 0;
+            defaultConfigurationName = Release;
+        };
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */

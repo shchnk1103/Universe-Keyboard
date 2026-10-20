@@ -45,7 +45,12 @@ private final class LeftAlignedCandidateFlowLayout: UICollectionViewFlowLayout {
                 if nextX > sectionInset.left, nextX + originalSize.width > rowMaxX {
                     rowIndex += 1
                     nextX = sectionInset.left
-                    nextY += rowHeight + minimumLineSpacing
+                    // First-row cells stay 42pt; only the next row clears the 46pt action zone.
+                    nextY +=
+                        max(
+                            rowHeight,
+                            rowIndex == 1 ? KeyboardDesignTokens.CandidateBar.totalHeight - sectionInset.top : 0)
+                        + minimumLineSpacing
                     rowHeight = 0
                     rowMaxX = fullRowMaxX
                 }
@@ -88,10 +93,10 @@ private final class LeftAlignedCandidateFlowLayout: UICollectionViewFlowLayout {
     }
 }
 
-/// 收起按钮视觉上保持 56pt，但真实命中区域略大。
-/// 不能只在父容器里返回 button；UIButton 自身 tracking 也需要承认外扩区域。
+/// 收起按钮使用与普通候选栏相同的操作区，命中不侵占相邻候选。
+/// 父容器和 UIButton tracking 使用同一边界。
 private final class ExpandedCandidateCollapseButton: UIButton {
-    var hitOutsets = UIEdgeInsets(top: 12, left: 12, bottom: 8, right: 18)
+    var hitOutsets = UIEdgeInsets.zero
 
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         guard isUserInteractionEnabled, !isHidden, alpha > 0.01 else { return false }
@@ -251,9 +256,9 @@ extension KeyboardViewController {
         panel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(panel)
         NSLayoutConstraint.activate([
-            panel.leadingAnchor.constraint(equalTo: rootStack.leadingAnchor),
-            panel.trailingAnchor.constraint(equalTo: rootStack.trailingAnchor),
-            panel.topAnchor.constraint(equalTo: rootStack.topAnchor),
+            panel.leadingAnchor.constraint(equalTo: keyboardSurfaceView.leadingAnchor),
+            panel.trailingAnchor.constraint(equalTo: keyboardSurfaceView.trailingAnchor),
+            panel.topAnchor.constraint(equalTo: candidateBar.topAnchor),
             panel.bottomAnchor.constraint(equalTo: rootStack.bottomAnchor),
         ])
         candidateExpandedPanel = panel
@@ -305,17 +310,15 @@ extension KeyboardViewController {
         container.backgroundColor = .clear
         container.clipsToBounds = false
         let candidates = precomputedItems ?? candidateItems()
-        let collapseButtonSize: CGFloat = 56
-        // 与横向候选栏的 34pt 高度、9pt 下移量对齐：34 / 2 + 9 - 56 / 2 = -2。
-        let collapseButtonTopOffset: CGFloat = -2
-        let collapseButtonTrailingInset: CGFloat = 3
+        let collapseButtonWidth = KeyboardDesignTokens.CandidateBar.actionZoneWidth
+        let collapseButtonHeight = KeyboardDesignTokens.CandidateBar.totalHeight
         let layout = LeftAlignedCandidateFlowLayout()
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
         // 真实 cell 连续铺满；2pt 视觉内缩由 CandidateCollectionCell 负责。
         layout.sectionInset = UIEdgeInsets(top: 3, left: 8, bottom: 6, right: 8)
-        layout.firstRowTrailingReservedWidth = collapseButtonSize + 8
+        layout.firstRowTrailingReservedWidth = collapseButtonWidth + 8
         let collectionView = CandidateCollectionView(frame: .zero, collectionViewLayout: layout)
         CandidateScrollViewStyle.apply(to: collectionView)
         collectionView.showsVerticalScrollIndicator = false
@@ -339,7 +342,7 @@ extension KeyboardViewController {
         config.baseForegroundColor = .label
         let collapseButton = ExpandedCandidateCollapseButton(configuration: config, primaryAction: nil)
         collapseButton.translatesAutoresizingMaskIntoConstraints = false
-        // 与横向展开按钮一致：极低 alpha 的 backing 不改变视觉，但能稳定承接扩展命中区触摸。
+        // 与横向展开按钮一致：极低 alpha 的 backing 不改变视觉，但能稳定承接操作区触摸。
         collapseButton.backgroundColor = UIColor.systemGray.withAlphaComponent(0.001)
         collapseButton.addTarget(self, action: #selector(toggleCandidateExpand), for: .touchUpInside)
         collapseButton.accessibilityLabel = "收起候选面板"
@@ -348,11 +351,11 @@ extension KeyboardViewController {
         container.collapseButton = collapseButton
         container.bringSubviewToFront(collapseButton)
         NSLayoutConstraint.activate([
-            collapseButton.topAnchor.constraint(equalTo: container.topAnchor, constant: collapseButtonTopOffset),
+            collapseButton.topAnchor.constraint(equalTo: container.topAnchor, constant: 0),
             collapseButton.trailingAnchor.constraint(
-                equalTo: container.trailingAnchor, constant: -collapseButtonTrailingInset),
-            collapseButton.widthAnchor.constraint(equalToConstant: collapseButtonSize),
-            collapseButton.heightAnchor.constraint(equalToConstant: collapseButtonSize),
+                equalTo: container.trailingAnchor, constant: 0),
+            collapseButton.widthAnchor.constraint(equalToConstant: collapseButtonWidth),
+            collapseButton.heightAnchor.constraint(equalToConstant: collapseButtonHeight),
             collectionView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
             collectionView.topAnchor.constraint(equalTo: container.topAnchor),

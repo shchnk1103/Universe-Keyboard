@@ -20,7 +20,7 @@ extension KeyboardViewController {
         rootStack.axis = .vertical
         rootStack.spacing = keySpacing
         rootStack.distribution = .fill
-        rootStack.alignment = .center
+        rootStack.alignment = .fill
         rootStack.translatesAutoresizingMaskIntoConstraints = false
 
         view.clipsToBounds = true
@@ -70,14 +70,16 @@ extension KeyboardViewController {
         )
     }
 
-    private func constrainArrangedContentWidths() {
-        // Center alignment lets only the header escape the unchanged 7pt key margins.
-        for child in rootStack.arrangedSubviews {
-            let container = child === candidateBar ? keyboardSurfaceView! : rootStack!
-            let width = child.widthAnchor.constraint(equalTo: container.widthAnchor)
-            width.identifier = "keyboard.content.width"
-            width.isActive = true
-        }
+    private func installCandidateBarRow() {
+        // The arranged row obeys the key margins. Only its ordinary child extends to the surface;
+        // UIStackView therefore never has to contain an oversized arrangedSubview.
+        let row = CandidateBarRowView(header: candidateBar)
+        rootStack.addArrangedSubview(row)
+        rootStack.setCustomSpacing(0, after: row)
+        NSLayoutConstraint.activate([
+            candidateBar.leadingAnchor.constraint(equalTo: keyboardSurfaceView.leadingAnchor),
+            candidateBar.trailingAnchor.constraint(equalTo: keyboardSurfaceView.trailingAnchor),
+        ])
     }
 
     func reloadKeyboard() {
@@ -107,11 +109,9 @@ extension KeyboardViewController {
             // Construction refreshes the old bar; bind the new bar before updating its probe.
             refreshWakeOwnerProbeControls()
         #endif
-        rootStack.addArrangedSubview(candidateBar)
-        rootStack.setCustomSpacing(0, after: candidateBar)
+        installCandidateBarRow()
         addKeyboardRows(for: controller.state)
         updateReturnKeyAppearance()
-        constrainArrangedContentWidths()
         updateSelectPinyinButtonAvailability()
         installPreferredKeyboardHeight()
         Logger.shared.debug(
@@ -153,8 +153,7 @@ extension KeyboardViewController {
                 // Construction refreshes the old bar; bind the new bar before updating its probe.
                 refreshWakeOwnerProbeControls()
             #endif
-            rootStack.addArrangedSubview(candidateBar)
-            rootStack.setCustomSpacing(0, after: candidateBar)
+            installCandidateBarRow()
             let panel = makePinyinPathExpandedPanel()
             rootStack.addArrangedSubview(panel)
             pinyinPathExpandedPanel = panel
@@ -169,11 +168,9 @@ extension KeyboardViewController {
                 // Construction refreshes the old bar; bind the new bar before updating its probe.
                 refreshWakeOwnerProbeControls()
             #endif
-            rootStack.addArrangedSubview(candidateBar)
-            rootStack.setCustomSpacing(0, after: candidateBar)
+            installCandidateBarRow()
             addKeyboardRows(for: controller.state)
         }
-        constrainArrangedContentWidths()
         updateSelectPinyinButtonAvailability()
         installPreferredKeyboardHeight()
     }

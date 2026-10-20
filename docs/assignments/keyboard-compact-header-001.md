@@ -50,3 +50,7 @@ Revalidation: baseline/scope/contract/ownership changes, AUTH revoked, second Wr
 ## Local delivery disposition
 
 UI-1 delivered locally with [verification](../evidence/keyboard-compact-header-001/verification.md) and source hashes. UI-2 prototype withdrawn under authorized fallback because real Extension activation/coordinate evidence was not established; fixed 34pt reservation remains. No host-stability failure inferred. W=codex-compact-header, P=none. No reviewer assigned, HANDOFF, Gate, Closeout or product publication. Stop for Human after final local checkpoint.
+
+## Targeted correction stage
+
+Human authorization in the current chat supersedes CP-002's stop only for A1/A3 and explicitly allowed cleanup/testing/records; see the appended AUTH. Claude Architecture/Quality Partial are Human-relayed results, not newly performed reviews. Same W/P, carrier, worktree and protected boundaries. The stage is L1 directed reproduction and corrections, then L2 affected targets/Debug test build, local candidate/checkpoint and stop. Independent re-review remains Human-owned.

@@ -11,3 +11,9 @@
 - Protected: all Core/RIME reliability/selection/owner rules and R174 defaults; existing recovery notice/disabled presentation must remain.
 - UI-2 fallback: if actual host dynamic-height stability fails or cannot be established, preserve UI-1, do not deliver unverified UI-2 as complete; revert only new isolated UI-2 changes without destructive shared Git operations.
 - Gates: local checks do not grant independent Architecture/Quality/Product acceptance; Human assigns later review and publication.
+
+## Human targeted-correction authorization — 2026-10-20
+
+Human relayed Claude independent Architecture Partial / Quality Partial and authorized A1 real-root constraint investigation/correction, A3 compact/expanded action alignment, removal of unused local UI tokens, directly necessary tests/wiring, a short L1/L2/L3 addition to the existing test guide, local commits/evidence/checkpoints. Same task, worktree and Writer `codex-compact-header`, P=none. This reopens only that bounded implementation slice after CP-002. Original initialization authority is not reused to broaden scope.
+
+L1 directed real Controller layout, compact/recovery/adapter/idle-dismiss/expanded-panel tests and format/compile; after L1 passes, L2 KeyboardTests + KeyboardExtensionTests and necessary Debug build-for-testing. Reuse prior unchanged Core/App/Bridge/Release evidence where identity/dependencies/coverage still apply; do not claim it proves new layout. No default full Core/App/Bridge rerun, no CI requirement change. UI-2 remains withdrawn/fixed34pt; A2 dead-code, A4 animation refactor, A6 performance deferred. No reliability changes, product push/PR/merge/TestFlight, Writer transfer or historical workspace edits. Ends at corrected local candidate delivery or Human revocation.

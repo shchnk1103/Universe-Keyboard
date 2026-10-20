@@ -45,3 +45,59 @@ Per authorized fallback, save `ui2-deferred/experiment.patch` and experimental S
 UI-1 source/local machine evidence can enter independent Architecture/Quality review with explicit real-Extension/interaction/visual gaps. No independent Gate Pass, complete Product acceptance or mergeability. Human assigns reviewers or the next bounded runtime step; UI-2 needs a working real Extension entry or Human device evidence before resumption. Only initial four-doc carrier initialization was pushed; no product push/PR/merge/TestFlight. Final product/records stay local.
 
 [Raw log hashes](raw-log-hashes.json). Raw bundles are transient local artifacts; preserve/export before moving hosts. UI_STYLE_GUIDE, KEYBOARD_LAYOUT and CHANGELOG are updated; no Core contract/ADR change is needed for UI-1.
+
+
+## A1/A3 targeted correction — 2026-10-20
+
+Human relayed Claude Architecture/Quality Partial and reopened only the bounded A1/A3 slice.
+Same Writer/worktree/carrier; no product publication or handoff. UI-2 stays withdrawn, fixed34pt.
+
+A1 was **not reproduced as a UIKit unsatisfiable-constraint diagnostic**: historical logs and this
+round's real Controller logs contain no `Unable to simultaneously satisfy constraints` diagnostic.
+The initial test checker incorrectly treated private solver-spacer/layout-guide frames and intrinsic
+hugging/resistance wrappers as rendered required equalities; those failures are not conflict proof.
+Generated `UISV-canvas-connection` descriptions in the diagnostic dump are constraints, not warnings.
+To remove the structural concern, root alignment is restored to fill. Its ordinary CandidateBarRowView
+obeys the unchanged 7pt key margins; the nested bar alone anchors to the full surface. No priorities
+were lowered. Pinyin expanded-view filtering follows the row wrapper; no Core or path state changed.
+
+Real KeyboardViewController/loadView/setupRootStack/reloadKeyboard/reloadKeyboardContent run in the
+new hostless KeyboardLayoutIntegrationTests target, compiling production Keyboard sources with their
+production actor isolation. The existing test targets retain their isolation/source membership.
+Widths320/390/430 × QWERTY/T9 verify surface-aligned46pt bar, x=W−1 action hit, first-key edge hits,
+45pt key height, unchanged key frames across reloads, Recovery blocking, and required equations between
+rendered public UIViews. Private solver proxy/guide frames are not observable constraint evidence.
+No new UIKit constraint-conflict diagnostic occurred. This is in-process UIKit, **not activated Extension**.
+
+A3: presented overlay spans the surface and starts at compact bar.top; collapse shares56×46pt tokens,
+22pt symbol and exact bounds-only hits. First-row reservation clears the46pt action before the next
+row; candidate Cells remain42pt. Test verifies identical action frames, targets/labels, expand/collapse
+restoration and scroll-to-last with80 candidates. In T9, the old34pt path area remains above the panel
+(root hidden during expansion); no dynamic row or root-height change. The original panel scroll-overlay
+architecture and animations are retained; live scrolling/gesture/VoiceOver still need host evidence.
+Unused collapsedHeight token removed. Short L1/L2/L3 guidance added; CI full gate is unchanged.
+
+| Current check | Passed / failed / skipped | Local artifact under `/private/tmp/kch001-corrections` |
+|---|---|---|
+| L1: real Controller integration (2), compact (5), recovery view (4), recovery adapter (6), idle-dismiss (1) | 18 / 0 / 0 | l1-final-r3.log + xcresult |
+| L2 KeyboardTests | 49 / 0 / 0 | l2-keyboard.log + xcresult |
+| L2 KeyboardExtensionTests | 40 / 0 / 0 | l2-keyboard.log + xcresult |
+| Debug build-for-testing | Pass | debug-build-for-testing.log + xcresult |
+| Changed Swift strict lint (6 files), plist and diff whitespace | Pass | strict-format.log; local checks |
+
+Commands use the same task-owned simulator5F983B43-FAAC-46ED-B2B0-33E0E30F099F and
+/private/tmp/kch001-build, Debug, CODE_SIGNING_ALLOWED=NO, Swift6 complete concurrency,
+SWIFT_SUPPRESS_WARNINGS=NO and SWIFT_TREAT_WARNINGS_AS_ERRORS=YES. No other device reset/cleanup.
+All failed attempts are preserved: a1-before/r2 were test-target actor-isolation wiring failures;
+r3/r4 exposed the invalid private-frame checker; l1-layout used the wrong surface subtree for panel
+hits; l1-final used UIApplication dispatch absent from hostless XCTest; l1-final-r2 checked restoration
+before UIKit animation completion. Final tests verify the target registration, invoke the target, and
+await the existing0.16s transition completion (250ms), without changing production animation behavior.
+No unexplained/flaky product failure was hidden by retry; no new test was skipped.
+
+Prior Core1277/0/0 and App407/0/10 at the original UI-1 snapshot are reused only for unchanged
+Core/App behavior; they do not prove this changed layout. Prior Release build is historical, not a new
+Release check. No full Core/App/RimeBridge rerun under Human risk selection; no prior RimeBridge run
+is claimed. Actual Extension screen coordinates, live backdrop/VoiceOver and system touch delivery
+remain unverified. A2/A4/A6 and UI-2 are deferred. Ready for Claude targeted re-review, not Gate Pass.
+Source/log digests: correction-evidence.json. Original snapshot manifests remain intact.

@@ -14,7 +14,6 @@ enum KeyboardDesignTokens {
 
     enum T9PinyinBar {
         static let visibleHeight: CGFloat = 34
-        static let collapsedHeight: CGFloat = 0
     }
 
     enum CandidateActionAppearance {
