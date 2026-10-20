@@ -79,3 +79,11 @@
 - lane: codex-t9-adaptive-row
 - kind: CHECKPOINT
 - note: QA-001 bounded diagnosis candidate 9a5c37b4a6fe4d77bb308e918a9ddefd8437991b; entry011d3fa product sources unchanged. Synchronous engine/Core/UIKit8 sequences all show first-key m/n/o and visible m without second key, including actual midway animation frames; native failure not reproduced and root cause unknown. L1Controller18/0/0, Keyboard49/0/0, Extension41/0/0, strict10 pass; old fixture failures preserved, only own hung diagnostic collector TERM143. F-1 old hash matches exact705951-byte prefix, later1186-byte timeout/failure trailer explains complete hash mismatch; old log/manifest unmodified. W unchanged/P=none. Human8PASS/1FAIL retained OPEN; no speculative fix or independent Gate. Implementation BLOCK / Validation CONDITIONAL PASS / INSUFFICIENT EVIDENCE. Stop for Human/Claude native evidence decision; no push/PR/main/release/Close.
+
+## CP-011 CHECKPOINT
+
+- id: CP-011
+- at: 2026-10-20T23:18:44+08:00
+- lane: codex-t9-adaptive-row
+- kind: CHECKPOINT
+- note: Device-trace-only AUTH @ 83f712cd5f3a6b98b4ec7eac4a6158caa52aa6cb; clean entry44bc548, W unchanged/P=none. Existing logs lack label/layout/panel correlation; debugger-only breakpoints may perturb first-frame timing. Prepare explicitly armed DEBUG bounded content-free memory observations and honest native/async uncertainty. No root fix/Core/order changes or external actions; Human FAIL OPEN/MAJOR.
