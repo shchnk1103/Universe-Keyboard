@@ -8,9 +8,9 @@ record_id: KEYBOARD-T9-ADAPTIVE-ROW-001
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current phase | Local Sticky review candidate; Runtime validation pending |
+| Current phase | Draft PR publication and CI observation |
 | Non-claims | No independent review, real Extension validation, Product Gate, product push, PR, Merge or TestFlight |
-| Next | Local review candidate to Human; intended independent Claude review |
+| Next | Push frozen candidate, create Draft PR, observe CI, report and stop for Human |
 | Residuals | [Current Sticky verification](../evidence/keyboard-t9-adaptive-row-001/sticky-verification.md); real host geometry and interaction remain Human Gate |
 
 Sticky correction complete; current L1 5/0/0, L2 Keyboard49/0/0 + Extension35/0/0, Debug build-for-testing and strict format8 passed. Real host evidence is pending; no Gate/Close. Writer remains codex-t9-adaptive-row, P=none.
@@ -48,3 +48,7 @@ Current Codex acknowledges this bounded assignment. No independent reviewer or P
 ## Current policy correction — 2026-10-20
 
 Human explicitly supersedes per-composition collapse with per-presentation Sticky Expansion. Existing initial Writer codex-t9-adaptive-row remains W, P=none. Prior local candidate5cc4a74/checkpoint2b59617 retained. Plan: inspect existing lifecycle; add minimal UI latch with conservative reset; update real Controller L1; run affected L2/Debug build-for-testing/strict format; local commit/checkpoint then stop. Existing scope protections and stop conditions remain. Completed disappearance + existing hidden gate + detached view is a conservative boundary candidate; host lifecycle coverage is not proven by in-process fixtures. Ordinary appear/reload/document/page/layout events alone never reset. No new task/Writer/remote publication.
+
+## Draft PR publication authorization — 2026-10-20
+
+Human authorizes normal product push, one Draft PR to main and existing CI observation. [Publication AUTH](../authorizations/AUTH-KEYBOARD-T9-ADAPTIVE-ROW-001-DRAFT-PR.md) supersedes prior local-only frontier for this slice only; no further product edits or automatic CI fixes. [Human review relay](../evidence/keyboard-t9-adaptive-row-001/review-received.md): Sticky Pass, Lifecycle/Architecture/Quality Conditional, no reported code blocker. Runtime Gate remains pending. Baseline/source hash/Writer checks passed; no rebase/UI-1 integration/Close. Carrier and all history retained. Stop after results.

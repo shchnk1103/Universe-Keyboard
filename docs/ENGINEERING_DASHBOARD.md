@@ -1,6 +1,6 @@
 # Engineering Dashboard
 
-2026-10-20：[KEYBOARD-T9-ADAPTIVE-ROW-001](assignments/keyboard-t9-adaptive-row-001.md) **Active**，本地Sticky修正完成，L1/L2通过；真实Extension验证pending，待Human安排独立Claude审阅；无产品push/PR/merge/TestFlight。
+2026-10-20：[KEYBOARD-T9-ADAPTIVE-ROW-001](assignments/keyboard-t9-adaptive-row-001.md) **Active**，Human已授权冻结Sticky候选Draft PR及CI观察；Claude Sticky Pass、Lifecycle/Architecture/Quality Conditional；真实Extension验证pending，无Merge/TestFlight/Close。
 
 2026-10-19：[INPUT-RELIABILITY-DELIVERY-003](assignments/input-reliability-delivery-003.md) **Active**，Human 已授权产品 PR 与 CI 检查；Claude Architecture Pass / Quality Partial。R174 正常构建关闭；无 merge / TestFlight / Closeout 授权。
 
