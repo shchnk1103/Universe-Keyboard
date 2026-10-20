@@ -46,8 +46,15 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
         UIView.setAnimationsEnabled(false)
         defer { UIView.setAnimationsEnabled(animationsEnabled) }
         for width in [320.0, 390.0, 430.0] {
-            for nineKey in [false, true] {
+            for (nineKey, hasPath) in [(false, false), (true, false), (true, true)] {
                 let sut = makeController(width: width, nineKey: nineKey)
+                if hasPath {
+                    // Presentation fixture only: not live RIME path issuance or selection evidence.
+                    let path = T9PinyinPath(displayText: "ni", replacementRawInput: "ni")
+                    sut.t9PinyinPathBarView?.setPaths([path], selected: path, compositionRevision: 0)
+                    layout(sut)
+                }
+                let originalKeys = keyFrames(sut)
                 let surface = try XCTUnwrap(sut.keyboardSurfaceView)
                 let compact = try XCTUnwrap((sut.candidateBar as? CandidateBarView)?.expandButton)
                 let expected = compact.convert(compact.bounds, to: surface)
@@ -57,6 +64,9 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
                 sut.toggleCandidateExpand()
                 layout(sut)
                 let panel = try XCTUnwrap(sut.candidateExpandedPanel)
+                XCTAssertEqual(panel.convert(panel.bounds, to: surface).minY, 0, accuracy: 0.01)
+                XCTAssertEqual(panel.bounds.width, width)
+                XCTAssertEqual(panel.backgroundColor?.cgColor.alpha, 1)
                 let button = try XCTUnwrap(panel.subviews.compactMap { $0 as? UIButton }.first)
                 XCTAssertEqual(button.convert(button.bounds, to: surface), expected)
                 XCTAssertEqual(button.accessibilityLabel, "收起候选面板")
@@ -67,6 +77,11 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
                 assertRequiredEqualities(in: sut.view)
                 let collection = try XCTUnwrap(sut.expandedCandidateCollectionView)
                 collection.layoutIfNeeded()
+                XCTAssertEqual(collection.frame.minY, 0, accuracy: 0.01)
+                XCTAssertEqual(collection.frame.height, panel.bounds.height)
+                let first = try XCTUnwrap(collection.layoutAttributesForItem(at: IndexPath(item: 0, section: 0)))
+                XCTAssertLessThan(first.frame.minY, 34)
+                if nineKey { XCTAssertEqual(expected.minY, 36, accuracy: 0.01) }
                 let buttonFrame = button.convert(button.bounds, to: collection)
                 for index in 0..<80 {
                     let attributes = try XCTUnwrap(
@@ -91,6 +106,12 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
                 XCTAssertTrue(sut.rootStack.isUserInteractionEnabled)
                 layout(sut)
                 XCTAssertTrue(surface.hitTest(CGPoint(x: width - 1, y: expected.midY), with: nil) === compact)
+                XCTAssertEqual(compact.convert(compact.bounds, to: surface), expected)
+                XCTAssertEqual(keyFrames(sut), originalKeys)
+                let bar = try XCTUnwrap(sut.candidateBar as? CandidateBarView)
+                bar.setInputRecoveryNotice("输入恢复失败，按删除取消本段后重试")
+                layout(sut)
+                XCTAssertTrue(surface.hitTest(CGPoint(x: width - 1, y: expected.midY), with: nil) === bar)
             }
         }
     }

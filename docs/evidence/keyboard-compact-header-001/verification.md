@@ -101,3 +101,62 @@ Release check. No full Core/App/RimeBridge rerun under Human risk selection; no 
 is claimed. Actual Extension screen coordinates, live backdrop/VoiceOver and system touch delivery
 remain unverified. A2/A4/A6 and UI-2 are deferred. Ready for Claude targeted re-review, not Gate Pass.
 Source/log digests: correction-evidence.json. Original snapshot manifests remain intact.
+
+
+## N2 layout / N1 evidence reconciliation — 2026-10-20
+
+Human relayed Claude second-review Architecture Pass / Quality Pass (A1/A3 blockers removed), then
+reopened only N2/N1 and focused validation. Same Writer/branch/worktree; no HANDOFF/ACCEPT.
+
+N2: the presented panel and collection now start at keyboardSurfaceView.top, with an opaque semantic
+background across the entire panel. The collapse action has a separate required top constraint to the
+compact candidate bar; its56×46pt frame and22pt symbol remain aligned in both layouts. Top rows whose
+42pt Cells intersect the action's vertical band reserve its trailing width, including both top rows
+in T9. Collection starts at y=0 (first Cell y=3), reclaiming the old34pt region for candidate content.
+No constraint priority lowered; compact46pt, fixed T9 path34pt, keys, root-height policy, recovery/input
+logic and animations unchanged. N3/A4/UI-2 remain deferred.
+
+Focused current run: **12 passed / 0 failed / 0 skipped**, xcodebuild exit0. Real Controller integration2
+includes widths320/390/430 × QWERTY, T9 idle, T9 path-presentation fixture: top coverage/background
+geometry, identical action frames, no Cell/action overlap,42pt Cells, scroll-to-last of80 candidates,
+restored key/action frames and Recovery-notice hits after collapse. Existing recovery view4 and
+recovery adapter6 also passed. Path fixture uses real Path Bar.setPaths; it is not live engine path
+issuance/selection evidence. Adapter tests retain their existing test boundary; not live host proof.
+No `Unable to simultaneously satisfy constraints` diagnostic in the completed run; rendered-view
+required-equation assertions pass. Only geometric/background configuration correctness is established,
+not final pixel compositing, transparency, animation appearance or system touch/VoiceOver delivery.
+
+Command: Universe Keyboard scheme Debug test, task-owned simulator5F983B43-FAAC-46ED-B2B0-33E0E30F099F,
+/private/tmp/kch001-build, only KeyboardLayoutIntegrationTests, CandidateBarRecoveryViewTests and
+T9RecoveryPresentationAdapterTests, CODE_SIGNING_ALLOWED=NO, Swift6/complete concurrency,
+SWIFT_SUPPRESS_WARNINGS=NO and SWIFT_TREAT_WARNINGS_AS_ERRORS=YES. The test command compiled production
+Keyboard and integration sources successfully. Changed Swift2 files format + strict lint exit0.
+No separate build, L2/L3, full Core/App/Bridge/Keyboard suite or Release rerun needed for this bounded
+slice. Raw completed artifacts: /private/tmp/kch001-final/n2-focused.log + .xcresult + .exit;
+strict-format.log + strict-format.exit. Exit receipts were written only after each command returned.
+
+N1 read-only reconciliation: all requested files exist. Old recorded digests match exact byte prefixes
+of current files, so the recorded original snapshots remain independently verifiable. Current file
+hashes/byte sizes/UTC mtimes and old digests are in correction-evidence.json, separated into successful
+and historical-failure sections. No raw log, timestamp or failed outcome was edited, regenerated or
+deleted. The appended suffixes contain xcodebuild simulator diagnostic-collection timeout after600s,
+then final TEST FAILED; the prior manifest was captured before those processes finished writing.
+This conclusion is supported by exact prefix hashes and timestamped process suffixes, not mtime alone.
+
+| Historical failed log | Preserved old-prefix bytes | Current total bytes | Current mtime (Asia/Shanghai) |
+|---|---:|---:|---|
+| a1-before-r3 | 1217424 | 1359045 | 2026-10-20 12:10:25.663007 +08:00 |
+| a1-before-r4 | 167531 | 183657 | 2026-10-20 12:11:56.014243 +08:00 |
+| l1-layout | 166438 | 167273 | 2026-10-20 12:15:29.885702 +08:00 |
+
+The same manifest audit additionally found historical failure l1-final-r2 with the same exact-prefix
+and600s timeout suffix pattern (old-prefix126226 bytes/current127063); recorded alongside the three,
+not silently retained with a stale hash. All successful test/build log hashes still match the prior
+manifest. These historical assertion failures plus diagnostic timeouts remain failures.
+
+Historical strict-format.log is0 bytes. The retained execution command used strict lint && L2 test,
+and the downstream L2 run is recorded, supporting lint exit0; the empty file alone does not prove it.
+This round's independent lint exit0 receipt resolves the current-format evidence boundary explicitly.
+Prior Release/Core/App evidence remains historical/unchanged-module context only. No live Extension
+screen-coordinate, color-compositing or interaction acceptance is claimed. Ready for Claude final diff
+review; stop for Human, no product push/PR/merge/release.

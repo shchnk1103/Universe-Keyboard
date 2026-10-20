@@ -4,8 +4,9 @@ import UIKit
 /// Flow layout 默认会把同一行的 item 间距拉大到填满宽度。
 /// 候选展开面板需要像文字流一样从左到右紧凑排列，所以这里固定为左对齐。
 private final class LeftAlignedCandidateFlowLayout: UICollectionViewFlowLayout {
-    /// 右上角收起按钮只占用第一行的尾部区域，不能让所有行都空出一整列。
+    /// 只为与操作区垂直相交的顶部行预留尾部，不能让所有行空出一整列。
     var firstRowTrailingReservedWidth: CGFloat = 0
+    var reservedActionBottom: CGFloat = KeyboardDesignTokens.CandidateBar.totalHeight
 
     private var cachedAttributes: [UICollectionViewLayoutAttributes] = []
     private var cachedAttributesByIndexPath: [IndexPath: UICollectionViewLayoutAttributes] = [:]
@@ -27,7 +28,6 @@ private final class LeftAlignedCandidateFlowLayout: UICollectionViewFlowLayout {
         var nextX = sectionInset.left
         var nextY = sectionInset.top
         var rowHeight: CGFloat = 0
-        var rowIndex = 0
         let fullRowMaxX = collectionView.bounds.width - sectionInset.right
         let firstRowMaxX = max(sectionInset.left, fullRowMaxX - firstRowTrailingReservedWidth)
         var preparedAttributes: [UICollectionViewLayoutAttributes] = []
@@ -41,18 +41,12 @@ private final class LeftAlignedCandidateFlowLayout: UICollectionViewFlowLayout {
                 else { continue }
 
                 let originalSize = sourceAttribute.frame.size
-                var rowMaxX = rowIndex == 0 ? firstRowMaxX : fullRowMaxX
+                var rowMaxX = nextY < reservedActionBottom ? firstRowMaxX : fullRowMaxX
                 if nextX > sectionInset.left, nextX + originalSize.width > rowMaxX {
-                    rowIndex += 1
                     nextX = sectionInset.left
-                    // First-row cells stay 42pt; only the next row clears the 46pt action zone.
-                    nextY +=
-                        max(
-                            rowHeight,
-                            rowIndex == 1 ? KeyboardDesignTokens.CandidateBar.totalHeight - sectionInset.top : 0)
-                        + minimumLineSpacing
+                    nextY += rowHeight + minimumLineSpacing
                     rowHeight = 0
-                    rowMaxX = fullRowMaxX
+                    rowMaxX = nextY < reservedActionBottom ? firstRowMaxX : fullRowMaxX
                 }
                 var size = originalSize
                 size.width = min(size.width, max(44, rowMaxX - sectionInset.left))
@@ -118,6 +112,7 @@ private final class ExpandedCandidateCollapseButton: UIButton {
 /// 展开面板里 collectionView 填满整个区域，右上角收起按钮需要明确的命中优先级。
 final class ExpandedCandidatePanelContainerView: UIView {
     fileprivate weak var collapseButton: ExpandedCandidateCollapseButton?
+    fileprivate var actionTopConstraint: NSLayoutConstraint?
     private var lastHitTestDiagnosticLogTime: CFTimeInterval = 0
     #if DEBUG
         private var collapseHitboxOverlay: DebugKeyTouchRangeOverlayView?
@@ -134,6 +129,15 @@ final class ExpandedCandidatePanelContainerView: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
+        // The panel and collection start at the surface top, while the action stays at header height.
+        if let button = collapseButton,
+            let collection = subviews.compactMap({ $0 as? CandidateCollectionView }).first,
+            let layout = collection.collectionViewLayout as? LeftAlignedCandidateFlowLayout,
+            layout.reservedActionBottom != button.frame.maxY
+        {
+            layout.reservedActionBottom = button.frame.maxY
+            layout.invalidateLayout()
+        }
         #if DEBUG
             refreshDebugHitboxOverlay()
         #endif
@@ -258,9 +262,14 @@ extension KeyboardViewController {
         NSLayoutConstraint.activate([
             panel.leadingAnchor.constraint(equalTo: keyboardSurfaceView.leadingAnchor),
             panel.trailingAnchor.constraint(equalTo: keyboardSurfaceView.trailingAnchor),
-            panel.topAnchor.constraint(equalTo: candidateBar.topAnchor),
+            panel.topAnchor.constraint(equalTo: keyboardSurfaceView.topAnchor),
             panel.bottomAnchor.constraint(equalTo: rootStack.bottomAnchor),
         ])
+        if let container = panel as? ExpandedCandidatePanelContainerView, let button = container.collapseButton {
+            container.actionTopConstraint?.isActive = false
+            container.actionTopConstraint = button.topAnchor.constraint(equalTo: candidateBar.topAnchor)
+            container.actionTopConstraint?.isActive = true
+        }
         candidateExpandedPanel = panel
         rootStack.isUserInteractionEnabled = false
         guard !UIAccessibility.isReduceMotionEnabled else {
@@ -307,7 +316,7 @@ extension KeyboardViewController {
 
     func makeExpandedCandidatePanel(with precomputedItems: [CandidateItem]? = nil) -> UIView {
         let container = ExpandedCandidatePanelContainerView()
-        container.backgroundColor = .clear
+        container.backgroundColor = KeyboardDesignTokens.CandidateActionAppearance.backgroundColor
         container.clipsToBounds = false
         let candidates = precomputedItems ?? candidateItems()
         let collapseButtonWidth = KeyboardDesignTokens.CandidateBar.actionZoneWidth
@@ -350,8 +359,10 @@ extension KeyboardViewController {
         container.addSubview(collapseButton)
         container.collapseButton = collapseButton
         container.bringSubviewToFront(collapseButton)
+        let actionTop = collapseButton.topAnchor.constraint(equalTo: container.topAnchor)
+        container.actionTopConstraint = actionTop
         NSLayoutConstraint.activate([
-            collapseButton.topAnchor.constraint(equalTo: container.topAnchor, constant: 0),
+            actionTop,
             collapseButton.trailingAnchor.constraint(
                 equalTo: container.trailingAnchor, constant: 0),
             collapseButton.widthAnchor.constraint(equalToConstant: collapseButtonWidth),
