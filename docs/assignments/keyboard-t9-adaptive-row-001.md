@@ -8,10 +8,12 @@ record_id: KEYBOARD-T9-ADAPTIVE-ROW-001
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current phase | Device trace ready; Human capture pending |
-| Non-claims | Human-relayed Claude Conditional review; no real Extension/Product Gate, Ready, Merge, TestFlight or Close |
-| Next | Human/Claude independent review of local integration candidate; no publication |
-| Residuals | [Current Sticky verification](../evidence/keyboard-t9-adaptive-row-001/sticky-verification.md); real host geometry and interaction remain Human Gate |
+| Current phase | Human device acceptance complete; closure preparation; governance disposition pending |
+| Non-claims | Human device7/7 accepted; Claude Quality remains CONDITIONAL PASS as relayed; no formal Closed, PR update, Merge or Release |
+| Next | Human Product Lead/Coordinator disposes historical Reviewer Lane Packet evidence gaps; no publication |
+| Residuals | [Current closure report](../evidence/keyboard-t9-adaptive-row-001/acceptance-20261021/closure-report.md); technical/device gates passed at f610763, formal governance/PR/CI gates remain separate |
+
+以下dated阶段保留为历史记录；其中device pending / OPEN状态由文末2026-10-21验收收据更新，不回写历史负证据。
 
 Historical pre-integration Sticky correction evidence: L1 5/0/0, L2 Keyboard49/0/0 + Extension35/0/0, Debug build-for-testing and strict format8 passed. Real host evidence is pending; no Gate/Close. Writer remains codex-t9-adaptive-row, P=none.
 
@@ -72,3 +74,15 @@ QA-001诊断结果：[报告](../evidence/keyboard-t9-adaptive-row-001/qa001-dia
 [Current AUTH](../authorizations/AUTH-KEYBOARD-T9-ADAPTIVE-ROW-001-DEVICE-TRACE.md) permits only DEBUG memory diagnostics, local validation/commits and shortest Human instructions. QA-001 OPEN/MAJOR; no root-cause fix or real-device PASS claim.
 
 Device trace prepared：[操作单](../evidence/keyboard-t9-adaptive-row-001/device-trace-runbook.md)、[本地证据](../evidence/keyboard-t9-adaptive-row-001/device-trace-verification.md)。仅DEBUG内存诊断，QA-001仍OPEN/MAJOR，无根因修复/真机PASS。Human工程文件原样保留、不提交。等待Human采集。
+
+## Human device acceptance and closure preparation — 2026-10-21
+
+Human current-chat authorization permits Assignment/Evidence updates, exact-head Keyboard/Extension/UI-2 regression and local docs commits only. Writer remains codex-t9-adaptive-row; no reassignment or fabricated handoff/checkpoint. Tested product HEAD f610763df0cc12e89d0a8cd8c3b90197ced2d88b; product sources unchanged during this slice.
+
+[Human receipt](../evidence/keyboard-t9-adaptive-row-001/acceptance-20261021/human-acceptance.md): DSON13Pro7/7 PASS (punctuation/kaomoji first path, subsequent/fast input, delete/Sticky/reset, wake/layout/rotation, masks/touch/reading). Human also relays Claude Architecture PASS, Quality CONDITIONAL PASS, Finding A CLOSED. These are Human-supplied acceptance/review records, not Codex device execution or a new independent review.
+
+[Fresh regression and closure report](../evidence/keyboard-t9-adaptive-row-001/acceptance-20261021/closure-report.md): Keyboard49 + Extension41 + Controller21 =111 PASS/0FAIL/0SKIP, exit0, Debug test build success. Product/device validation is satisfied for the stated scope; no new code blocker. Prior HumanFAIL/raw traces remain historical evidence, not overwritten.
+
+[Reviewer Lane Packet audit](../evidence/keyboard-t9-adaptive-row-001/acceptance-20261021/review-packet-audit.md) discloses absent local proof of historical lane ID/round/pre-dispatch freeze/digest/budget/preflight; lane first-assignment/possible grandfathering not established. No backdated packet or approval created. Human Product Lead/Coordinator owns applicability/disposition and remainingQuality conditional clarification. QA-001 formal closure recommendation: CLOSURE BLOCKED by this governance disposition, not by a device or local test failure. Lifecycle remains Active (closure preparation); no task close, publication or release authority inferred.
+
+Human project.pbxproj and existing Scheme remain dirty/unmodified/not staged. No production/test/Signing edits, other worktree changes, push/PR217 update/merge/release or cleanup. Task BRIEF/log CP-012 kept historical under this slice's Assignment/Evidence-only allowlist; current authority is this Assignment plus latest Human instruction. Next: Human disposition and separately authorized PR preparation with exact-base/head/clean-checkout/CI gates.
