@@ -18,7 +18,7 @@ record_id: KEYBOARD-T9-ADAPTIVE-ROW-001-STATE-SYNC-001
 ## Authority
 
 - **Assignment Authority:** Product Lead
-- **Decision Source / Date:** Human Product Owner chat instruction dispatching this State Sync Assignment, `2026-10-21 Asia/Shanghai` (observed in-session at about 21:16 CST; exact dispatch time not recorded by the harness)
+- **Decision Source / Date:** Dispatch originated from a Human Product Owner chat instruction, `2026-10-21 Asia/Shanghai` (observed in-session at about 21:16 CST; exact dispatch time not recorded by the harness). Approved handoff reference (local, non-repository file): `/Users/doubleshy0n/.kos-work/Universe-Keyboard/KEYBOARD-UI2-PR217-PACKET-GOVERNANCE-REVIEW-001/evidence/state-sync-assignment-and-brief-001.md`, SHA-256 `85a97d24532bededbd933237e4ac65809a817756eaab93287788f6c1d2b44c2b`. It is a Coordinator-written Assignment draft and Executor brief, written before dispatch (its own header says not yet dispatched at that time), subsequently approved and dispatched by the Human Product Owner on 2026-10-21 Asia/Shanghai, as confirmed by the Human in chat. It is not stored in this repository.
 - **Product Approver:** Human Product Owner acting as Product Lead
 
 ## M-02 trigger identity
