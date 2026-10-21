@@ -332,6 +332,22 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 - **Trigger to resolve:** Before representing live WebDAV behavior as validated, re-including WebDAV in a closure scope, or relying on WebDAV deletion as verified provider behavior.
 - **Related:** [`RIME-SYNC-001`](assignments/rime-sync-001.md) · [`RIME Sync contract`](RIME_SYNC.md) · [scope decision](product-decisions/RIME-SYNC-001-LOCAL-FOLDER-CLOSURE-WEBDAV-DEFERRED-2026-09-24.md).
 
+## TD-020: Intermittent hosted failure in the QA-001 first-path test
+
+- **Status:** **Open; `tech_debt:TD-020` for residual `UI2-HOSTED-PANEL-COLLAPSE-001`**, dispositioned by the Human Product Owner on `2026-10-21 Asia/Shanghai`. Root cause **UNKNOWN**. This replaces the earlier `accept` disposition of that residual, which was given before the same test failed again on `main`. Not FIXED.
+- **Priority:** Medium. It does not block anything already merged, but it can intermittently fail the required `test-app-keyboard` job and therefore `final-quality-gate` on any PR or `main` push.
+- **Risk:** Hosted outcomes of `T9AdaptiveRowTests.testQA001FirstPathIsVisibleAfterPendingPanelBeforeSecondKey`:
+  - [run 39579404750](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/39579404750) on PR #217 head `ec7fd04`: Attempt 1 failed (wait "production collapse removes panel" exceeded 2 s); Attempt 2 on the same head passed 9/9.
+  - Instrumented diagnostics (local Xcode 27.1 and hosted run 39586094057) passed, but they were not behavior-equivalent to the original test, so they do not clear Attempt 1.
+  - [run 39598364040](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/39598364040) on `main` `e4fc037`: failed (wait "real halfway reveal/collapse" exceeded 2 s, the second key was never inserted, later assertions cascaded; the test took 22.9 s against 2.4 s when it passed).
+  - [run 39606780704](https://github.com/shchnk1103/Universe-Keyboard/actions/runs/39606780704) on `main` `7af3f02` (after #218): passed.
+  - The two failures hit different waits of the same test. Both observe a 0.16 s animation through a `CADisplayLink`. Whether they share one root cause is **not established**. A product-side cause (panel not removed after collapse) is not excluded; no product defect has been confirmed, and the Human device acceptance did not show one.
+- **Current mitigation:** [PR #218](https://github.com/shchnk1103/Universe-Keyboard/pull/218) (`7af3f02`) removed the display-link halfway sampling (the second key is now inserted while `isTransitioning`) and raised the completion-wait ceiling from 2 s to 10 s. **Unverified:** the failure was never reproduced locally (a CPU-loaded run and an injected main-thread stall both passed the old test). After #218, `main` passed once and the Human observed one further pass; that is not evidence of stability. The test is also slightly weaker: the key now arrives at the start of the transition rather than mid-animation.
+- **Recommended fix:** Do not relax timeouts further. If the same test, or another display-link wait in `T9AdaptiveRowTests`, fails again on hosted CI: keep the full failing log; run a hosted diagnostic on a throwaway branch that does not change test behavior (earlier diagnostics swapped `fulfillment` and added scheduling), recording tick cadence, `isTransitioning`, and panel and mask state at timeout; then decide between a product fix and a test fix on that evidence.
+- **Owner area:** `KeyboardLayoutIntegrationTests/T9AdaptiveRowTests.swift`; expanded candidate panel reveal and collapse (`Keyboard/Controllers/KeyboardViewController+ExpandedCandidatePanel.swift`); hosted `test-app-keyboard`.
+- **Trigger to resolve:** Any recurrence of this class of failure on hosted CI; before UI-2 is declared complete or Release-ready; or a Human-set observation window ends with no recurrence (the Human sets the length; none is assumed here).
+- **Related:** [`KEYBOARD-T9-ADAPTIVE-ROW-001`](assignments/keyboard-t9-adaptive-row-001.md), PR #217, PR #218. Local non-repo evidence: `/Users/doubleshy0n/.kos-work/Universe-Keyboard/` tasks `UI2-HOSTED-PANEL-COLLAPSE-001`, `UI2-HOSTED-PANEL-COLLAPSE-002`, `UI2-MAIN-CI-FLAKE-FIX-001`, `KEYBOARD-UI2-PR217-FINAL-QUALITY-DISPOSITION-001`.
+
 ## Maintenance Rules
 
 - Update an item when priority, mitigation, owner area or trigger changes.

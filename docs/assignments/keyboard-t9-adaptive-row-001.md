@@ -11,10 +11,10 @@ record_id: KEYBOARD-T9-ADAPTIVE-ROW-001
 | Field | Value |
 |---|---|
 | Lifecycle | Active (UI-2 feature; this Assignment states no exit criterion declaring the feature complete, so it is not closed here) |
-| Current phase | PR #217 merged as `e4fc037` on 2026-10-21; post-merge `main` CI run `39598364040` concluded failure and is handled by another session; QA-001 formally closed (defect scope only) |
-| Non-claims | Not Release / Release-ready; no UI-2 completion claim; no residual weakened or closed; no root-cause claim and no green claim for post-merge `main` CI; missed pre-dispatch Reviewer Packet freeze is a real deviation, not fixed, not retroactively compliant; F-04 10/10 device pass is Human-reported with limited build traceability |
-| Next | Another session owns the post-merge `main` CI failure; this Assignment's lifecycle disposition needs a separate Human decision |
-| Residuals | R-QA001-GOV-01 / Q-01 / Q-02 / Q-03 retained: accept, non-blocking for QA-001 only; [register](../evidence/keyboard-t9-adaptive-row-001/formal-closure-20261021/residuals.md) |
+| Current phase | PR #217 merged as `e4fc037` on 2026-10-21; post-merge `main` CI failure (run `39598364040`) was addressed by test-only [PR #218](https://github.com/shchnk1103/Universe-Keyboard/pull/218) (`7af3f02`), after which `main` passed (run `39606780704`); the mitigation is unverified and the hosted residual is now `tech_debt:TD-020`; QA-001 formally closed (defect scope only) |
+| Non-claims | Not Release / Release-ready; no UI-2 completion claim; no residual weakened or closed; no root-cause claim and no stability claim for `main` CI (it passed once after #218); missed pre-dispatch Reviewer Packet freeze is a real deviation, not fixed, not retroactively compliant; F-04 10/10 device pass is Human-reported with limited build traceability; no root-cause claim for the hosted collapse failure, and #218 is not claimed to have fixed it |
+| Next | Watch `main` CI for recurrence of the TD-020 failure class; this Assignment's lifecycle disposition needs a separate Human decision |
+| Residuals | R-QA001-GOV-01 / Q-01 / Q-02 / Q-03 retained: accept, non-blocking for QA-001 only; [register](../evidence/keyboard-t9-adaptive-row-001/formal-closure-20261021/residuals.md). `UI2-HOSTED-PANEL-COLLAPSE-001`: `tech_debt:TD-020` ([TECH_DEBT](../TECH_DEBT.md)), replacing the earlier `accept` |
 | QA-001 defect status | CLOSED; [Human formal decision](../evidence/keyboard-t9-adaptive-row-001/formal-closure-20261021/human-decision.md) |
 | QA-001 Quality Closure | SUPPORTED; Human-relayed independent Quality Sufficiency CONDITIONAL PASS, not an original Reviewer Artifact |
 
@@ -130,6 +130,8 @@ Facts recorded (local non-repo pointers: root `/Users/doubleshy0n/.kos-work/Univ
 - **Human limited acceptances recorded:** `R-UI2-FQ-GOV-01` accept; `G-2` accept; hosted collapse residual; F-04 C3/C5; build traceability (`m03-residual-register-001.md`, `m03-g2-human-limited-acceptance-001.md`, `human-governance-risk-acceptance-001.md`). All remain open residuals as accepted; none is FIXED.
 - **Process deviation:** the missed pre-dispatch Reviewer Packet freeze is a real deviation; it is not fixed and not retroactively compliant.
 - **QA-001:** formally closed by the Human (defect scope only; see [closure](../evidence/keyboard-t9-adaptive-row-001/formal-closure-20261021/closure.md)). **F-04** 10/10 device pass is Human-reported with limited build traceability.
-- **Post-merge `main` CI:** run `39598364040` on `e4fc037` concluded **failure** (`test-app-keyboard` and `final-quality-gate` failed). Another session is handling it. This record makes no root-cause claim, does not claim `main` CI is green, and does not equate it with the earlier accepted hosted-collapse residual.
+- **Post-merge `main` CI:** run `39598364040` on `e4fc037` concluded **failure** (`test-app-keyboard` and `final-quality-gate`). It is the same test as the earlier hosted-collapse residual but failed at a different wait; a shared root cause is **not established**. Test-only [PR #218](https://github.com/shchnk1103/Universe-Keyboard/pull/218) (`7af3f02`) changed the synchronization, and `main` then passed (run `39606780704`). The failure was never reproduced locally, so #218 is an unverified mitigation, not a fix.
+
+**Hosted collapse residual disposition — 2026-10-21.** The Human Product Owner changed the disposition of `UI2-HOSTED-PANEL-COLLAPSE-001` from `accept` to `tech_debt:TD-020`, because the re-evaluation trigger "same class of test failing again" fired on `main`. Owner: Human Product Owner. Pointer: [TD-020](../TECH_DEBT.md). Root cause UNKNOWN; not FIXED; the earlier failure records are retained. Recurrence escalates to a hosted diagnostic as written in TD-020.
 
 Not claimed: Release / Release-ready; UI-2 complete; residual closure; real-Extension device validation beyond the Human-reported receipts above.
