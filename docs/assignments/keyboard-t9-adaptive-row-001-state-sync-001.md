@@ -41,8 +41,8 @@ record_id: KEYBOARD-T9-ADAPTIVE-ROW-001-STATE-SYNC-001
 - **Executor:** Claude Executor session, model `claude-sonnet-5-5` (Sonnet 5.5). Effort: the harness exposed only a numeric `reasoning_effort` value (5); the brief's recommended `medium` is **not confirmed applied**.
 - **Environment Executor:** same session, local
 - **Human Dependency:** Human Product Owner for any push / PR / merge
-- **Architecture Reviewer:** `Not Applicable — docs-only mirror synchronization` — **COORDINATOR PROPOSAL, pending Human confirmation**
-- **Quality Reviewer:** `Not Applicable — publication check is the Markdown link check` — **COORDINATOR PROPOSAL, pending Human confirmation**
+- **Architecture Reviewer:** codex, an independent session that did not take part in this State Sync, PR217 product work, the Final Quality Review or the Governance Review; named by the Human Product Owner on 2026-10-21; Reviewer Lane Packet to be frozen by the Coordinator after this commit.
+- **Quality Reviewer:** codex, an independent session that did not take part in this State Sync, PR217 product work, the Final Quality Review or the Governance Review; named by the Human Product Owner on 2026-10-21; Reviewer Lane Packet to be frozen by the Coordinator after this commit.
 
 ## Gates
 
