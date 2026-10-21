@@ -1,0 +1,940 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -configuration Debug -destination "platform=iOS Simulator,id=5DEEF120-CB85-47BB-A690-303613DD85EC" -derivedDataPath /private/tmp/t9-adaptive-row-001-integration-build -resultBundlePath /private/tmp/ui2-qa001-review-remediation/before.xcresult "-only-testing:KeyboardLayoutIntegrationTests/T9AdaptiveRowTests/testHiddenPathShrinkEmptyAndRepeatedShowKeepCollectionConsistent" CODE_SIGNING_ALLOWED=NO SWIFT_VERSION=6.0 SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES test
+
+Build settings from command line:
+    CODE_SIGNING_ALLOWED = NO
+    SWIFT_STRICT_CONCURRENCY = complete
+    SWIFT_SUPPRESS_WARNINGS = NO
+    SWIFT_TREAT_WARNINGS_AS_ERRORS = YES
+    SWIFT_VERSION = 6.0
+
+Resolve Package Graph
+
+
+Resolved source packages:
+  KeyboardCore: /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe Keyboard/Packages/KeyboardCore @ local
+  RimeBridge: /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe Keyboard/Packages/RimeBridge @ local
+
+Writing result bundle at path:
+	/private/tmp/ui2-qa001-review-remediation/before.xcresult
+
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (12 targets)
+    Target 'KeyboardLayoutIntegrationTests' in project 'Universe Keyboard'
+        ➜ Explicit dependency on target 'KeyboardCore-product' in project 'KeyboardCore'
+        ➜ Explicit dependency on target 'RimeBridge-product' in project 'RimeBridge'
+    Target 'KeyboardExtensionTests' in project 'Universe Keyboard'
+        ➜ Explicit dependency on target 'Keyboard' in project 'Universe Keyboard'
+        ➜ Explicit dependency on target 'KeyboardCore-product' in project 'KeyboardCore'
+    Target 'KeyboardTests' in project 'Universe Keyboard'
+        ➜ Explicit dependency on target 'KeyboardCore-product' in project 'KeyboardCore'
+    Target 'UniverseKeyboardTests' in project 'Universe Keyboard'
+        ➜ Explicit dependency on target 'Universe Keyboard' in project 'Universe Keyboard'
+        ➜ Explicit dependency on target 'RimeBridge-product' in project 'RimeBridge'
+        ➜ Explicit dependency on target 'KeyboardCore-product' in project 'KeyboardCore'
+    Target 'Universe Keyboard' in project 'Universe Keyboard'
+        ➜ Explicit dependency on target 'Keyboard' in project 'Universe Keyboard'
+        ➜ Explicit dependency on target 'KeyboardCore-product' in project 'KeyboardCore'
+        ➜ Explicit dependency on target 'RimeBridge-product' in project 'RimeBridge'
+    Target 'Keyboard' in project 'Universe Keyboard'
+        ➜ Explicit dependency on target 'KeyboardCore-product' in project 'KeyboardCore'
+        ➜ Explicit dependency on target 'RimeBridge-product' in project 'RimeBridge'
+    Target 'RimeBridge-product' in project 'RimeBridge'
+        ➜ Explicit dependency on target 'RimeBridge' in project 'RimeBridge'
+        ➜ Explicit dependency on target 'RimeBridgeObjC' in project 'RimeBridge'
+        ➜ Explicit dependency on target 'KeyboardCore-product' in project 'KeyboardCore'
+    Target 'RimeBridge' in project 'RimeBridge'
+        ➜ Explicit dependency on target 'RimeBridgeObjC' in project 'RimeBridge'
+        ➜ Explicit dependency on target 'KeyboardCore-product' in project 'KeyboardCore'
+    Target 'RimeBridgeObjC' in project 'RimeBridge' (no dependencies)
+    Target 'KeyboardCore-product' in project 'KeyboardCore'
+        ➜ Explicit dependency on target 'KeyboardCore' in project 'KeyboardCore'
+        ➜ Explicit dependency on target 'KeyboardCore_KeyboardCore' in project 'KeyboardCore'
+    Target 'KeyboardCore' in project 'KeyboardCore'
+        ➜ Explicit dependency on target 'KeyboardCore_KeyboardCore' in project 'KeyboardCore'
+    Target 'KeyboardCore_KeyboardCore' in project 'KeyboardCore' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.1.sdk -x objective-c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --print-asset-tag-combinations --output-format xml1 /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe Keyboard/Universe Keyboard/Assets.xcassets
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.1.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.1.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.1.sdk -x objective-c++ -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --version --output-format xml1
+
+Build description signature: f9db9b77bd98e8550bfa9ee8b694c1bf
+Build description path: /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/XCBuildData/f9db9b77bd98e8550bfa9ee8b694c1bf.xcbuilddata
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.1.sdk /tmp/t9-adaptive-row-001-integration-build/SDKStatCaches.noindex/iphonesimulator27.1-24A94232-35d3147121984ba087c28d913653d626.sdkstatcache
+    cd /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard/Universe\ Keyboard.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.1.sdk -o /tmp/t9-adaptive-row-001-integration-build/SDKStatCaches.noindex/iphonesimulator27.1-24A94232-35d3147121984ba087c28d913653d626.sdkstatcache
+
+ProcessInfoPlistFile /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardCore_KeyboardCore.bundle/Info.plist /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/KeyboardCore.build/Debug-iphonesimulator/KeyboardCore_KeyboardCore-b.build/empty-KeyboardCore_KeyboardCore.plist (in target 'KeyboardCore_KeyboardCore' from project 'KeyboardCore')
+    cd /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard/Packages/KeyboardCore
+    builtin-infoPlistUtility /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/KeyboardCore.build/Debug-iphonesimulator/KeyboardCore_KeyboardCore-b.build/empty-KeyboardCore_KeyboardCore.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphonesimulator -o /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardCore_KeyboardCore.bundle/Info.plist
+
+ProcessInfoPlistFile /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/PackageFrameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/Info.plist /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/KeyboardCore.build/Debug-iphonesimulator/KeyboardCore-product-t.build/empty-KeyboardCore_-8730D61D9395D3A_PackageProduct.plist (in target 'KeyboardCoredynamic-product' from project 'KeyboardCore')
+    cd /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard/Packages/KeyboardCore
+    builtin-infoPlistUtility /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/KeyboardCore.build/Debug-iphonesimulator/KeyboardCore-product-t.build/empty-KeyboardCore_-8730D61D9395D3A_PackageProduct.plist -producttype com.apple.product-type.framework -expandbuildsettings -format binary -platform iphonesimulator -o /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/PackageFrameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/Info.plist
+
+ProcessInfoPlistFile /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/PackageFrameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/Info.plist /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/RimeBridge.build/Debug-iphonesimulator/RimeBridge-product-t.build/empty-RimeBridge_57276DBF982DF6E4_PackageProduct.plist (in target 'RimeBridgedynamic-product' from project 'RimeBridge')
+    cd /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard/Packages/RimeBridge
+    builtin-infoPlistUtility /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/RimeBridge.build/Debug-iphonesimulator/RimeBridge-product-t.build/empty-RimeBridge_57276DBF982DF6E4_PackageProduct.plist -producttype com.apple.product-type.framework -expandbuildsettings -format binary -platform iphonesimulator -o /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/PackageFrameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/Info.plist
+
+ProcessInfoPlistFile /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/Keyboard.appex/Info.plist /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard/Keyboard/Info.plist (in target 'Keyboard' from project 'Universe Keyboard')
+    cd /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard
+    builtin-infoPlistUtility /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard/Keyboard/Info.plist -producttype com.apple.product-type.app-extension -expandbuildsettings -format binary -platform iphonesimulator -scanforprivacyfile /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/Keyboard.appex/KeyboardCore_KeyboardCore.bundle -o /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/Keyboard.appex/Info.plist
+
+ProcessInfoPlistFile /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardTests.xctest/Info.plist /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardTests.build/empty-KeyboardTests.plist (in target 'KeyboardTests' from project 'Universe Keyboard')
+    cd /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard
+    builtin-infoPlistUtility /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardTests.build/empty-KeyboardTests.plist -producttype com.apple.product-type.bundle.unit-test -expandbuildsettings -format binary -platform iphonesimulator -scanforprivacyfile /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardTests.xctest/KeyboardCore_KeyboardCore.bundle -o /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardTests.xctest/Info.plist
+
+ProcessInfoPlistFile /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardExtensionTests.xctest/Info.plist /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardExtensionTests.build/empty-KeyboardExtensionTests.plist (in target 'KeyboardExtensionTests' from project 'Universe Keyboard')
+    cd /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard
+    builtin-infoPlistUtility /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardExtensionTests.build/empty-KeyboardExtensionTests.plist -producttype com.apple.product-type.bundle.unit-test -expandbuildsettings -format binary -platform iphonesimulator -scanforprivacyfile /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardExtensionTests.xctest/KeyboardCore_KeyboardCore.bundle -o /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardExtensionTests.xctest/Info.plist
+
+SwiftDriver KeyboardLayoutIntegrationTests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'KeyboardLayoutIntegrationTests' from project 'Universe Keyboard')
+    cd /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name KeyboardLayoutIntegrationTests -Onone @/tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests.SwiftFileList -DDEBUG -Xcc -fmodule-map-file\=/tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/RimeBridgeObjC.modulemap -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -default-isolation\=MainActor -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.1.sdk -target arm64-apple-ios18.0-simulator -g -module-cache-path /tmp/t9-adaptive-row-001-integration-build/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -warnings-as-errors -index-store-path /tmp/t9-adaptive-row-001-integration-build/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.1.sdk/Developer/Library/Frameworks -c -j8 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/t9-adaptive-row-001-integration-build/SDKStatCaches.noindex/iphonesimulator27.1-24A94232-35d3147121984ba087c28d913653d626.sdkstatcache -output-file-map /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/t9-adaptive-row-001-integration-build/ModuleCache.noindex -sdk-module-cache-path /tmp/t9-adaptive-row-001-integration-build/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/t9-adaptive-row-001-integration-build/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/KeyboardLayoutIntegrationTests-generated-files.hmap -Xcc -I/tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/KeyboardLayoutIntegrationTests-own-target-headers.hmap -Xcc -I/tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/KeyboardLayoutIntegrationTests-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/Universe\ Keyboard-c7db5b74330b406efaaaa4547e6a5407-VFS-iphonesimulator/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/KeyboardLayoutIntegrationTests-project-headers.hmap -Xcc -I/Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard/Packages/RimeBridge/Sources/RimeBridgeObjC/include -Xcc -I/tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/include -Xcc -I/tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/DerivedSources-normal/arm64 -Xcc -I/tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/DerivedSources/arm64 -Xcc -I/tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests-Swift.h -import-objc-header /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard/Keyboard/Bridge/Keyboard-Bridging-Header.h -working-directory /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard -experimental-emit-module-separately -disable-cmo
+
+CopySwiftLibs /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardTests.xctest (in target 'KeyboardTests' from project 'Universe Keyboard')
+    cd /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard
+    builtin-swiftStdLibTool --copy --verbose --scan-executable /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardTests.xctest/KeyboardTests --scan-folder /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardTests.xctest/Frameworks --scan-folder /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardTests.xctest/PlugIns --scan-folder /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardTests.xctest/SystemExtensions --scan-folder /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardTests.xctest/Extensions --scan-folder /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/PackageFrameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework --platform iphonesimulator --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardTests.xctest/Frameworks --strip-bitcode --scan-executable /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardTests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+Ignoring --strip-bitcode because --sign was not passed
+
+CopySwiftLibs /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardExtensionTests.xctest (in target 'KeyboardExtensionTests' from project 'Universe Keyboard')
+    cd /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard
+    builtin-swiftStdLibTool --copy --verbose --scan-executable /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardExtensionTests.xctest/KeyboardExtensionTests --scan-folder /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardExtensionTests.xctest/Frameworks --scan-folder /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardExtensionTests.xctest/PlugIns --scan-folder /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardExtensionTests.xctest/SystemExtensions --scan-folder /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardExtensionTests.xctest/Extensions --scan-folder /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/PackageFrameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework --platform iphonesimulator --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardExtensionTests.xctest/Frameworks --strip-bitcode --scan-executable /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardExtensionTests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+Ignoring --strip-bitcode because --sign was not passed
+
+ProcessInfoPlistFile /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/Universe\ Keyboard.app/Info.plist /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard/config/Info.plist (in target 'Universe Keyboard' from project 'Universe Keyboard')
+    cd /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard
+    builtin-infoPlistUtility /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard/config/Info.plist -producttype com.apple.product-type.application -genpkginfo /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/Universe\ Keyboard.app/PkgInfo -expandbuildsettings -format binary -platform iphonesimulator -additionalcontentfile /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/Universe\ Keyboard.build/assetcatalog_generated_info.plist -scanforprivacyfile /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/Universe\ Keyboard.app/Frameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework -scanforprivacyfile /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/Universe\ Keyboard.app/Frameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework -scanforprivacyfile /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/Universe\ Keyboard.app/KeyboardCore_KeyboardCore.bundle -scanforprivacyfile /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/Universe\ Keyboard.app/PlugIns/Keyboard.appex -o /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/Universe\ Keyboard.app/Info.plist
+
+CopySwiftLibs /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/Universe\ Keyboard.app (in target 'Universe Keyboard' from project 'Universe Keyboard')
+    cd /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard
+    builtin-swiftStdLibTool --copy --verbose --scan-executable /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/Universe\ Keyboard.app/Universe\ Keyboard.debug.dylib --scan-folder /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/Universe\ Keyboard.app/Frameworks --scan-folder /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/Universe\ Keyboard.app/PlugIns --scan-folder /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/Universe\ Keyboard.app/SystemExtensions --scan-folder /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/Universe\ Keyboard.app/Extensions --scan-folder /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/PackageFrameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework --scan-folder /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/PackageFrameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework --platform iphonesimulator --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/Universe\ Keyboard.app/Frameworks --strip-bitcode --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/Universe\ Keyboard.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+Ignoring --strip-bitcode because --sign was not passed
+
+ProcessInfoPlistFile /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/Universe\ Keyboard.app/PlugIns/UniverseKeyboardTests.xctest/Info.plist /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/UniverseKeyboardTests.build/empty-UniverseKeyboardTests.plist (in target 'UniverseKeyboardTests' from project 'Universe Keyboard')
+    cd /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard
+    builtin-infoPlistUtility /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/UniverseKeyboardTests.build/empty-UniverseKeyboardTests.plist -producttype com.apple.product-type.bundle.unit-test -expandbuildsettings -format binary -platform iphonesimulator -scanforprivacyfile /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/Universe\ Keyboard.app/PlugIns/UniverseKeyboardTests.xctest/KeyboardCore_KeyboardCore.bundle -o /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/Universe\ Keyboard.app/PlugIns/UniverseKeyboardTests.xctest/Info.plist
+
+CopySwiftLibs /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/Universe\ Keyboard.app/PlugIns/UniverseKeyboardTests.xctest (in target 'UniverseKeyboardTests' from project 'Universe Keyboard')
+    cd /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard
+    builtin-swiftStdLibTool --copy --verbose --scan-executable /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/Universe\ Keyboard.app/PlugIns/UniverseKeyboardTests.xctest/UniverseKeyboardTests --scan-folder /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/Universe\ Keyboard.app/PlugIns/UniverseKeyboardTests.xctest/Frameworks --scan-folder /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/Universe\ Keyboard.app/PlugIns/UniverseKeyboardTests.xctest/PlugIns --scan-folder /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/Universe\ Keyboard.app/PlugIns/UniverseKeyboardTests.xctest/SystemExtensions --scan-folder /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/Universe\ Keyboard.app/PlugIns/UniverseKeyboardTests.xctest/Extensions --scan-folder /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/PackageFrameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework --scan-folder /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/PackageFrameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework --platform iphonesimulator --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/Universe\ Keyboard.app/PlugIns/UniverseKeyboardTests.xctest/Frameworks --strip-bitcode --scan-executable /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/UniverseKeyboardTests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+Ignoring --strip-bitcode because --sign was not passed
+
+SwiftGeneratePch normal arm64 Compiling\ bridging\ header (in target 'KeyboardLayoutIntegrationTests' from project 'Universe Keyboard')
+
+SwiftDriverJobDiscovery normal arm64 Compiling bridging header (in target 'KeyboardLayoutIntegrationTests' from project 'Universe Keyboard')
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ KeyboardLayoutIntegrationTests (in target 'KeyboardLayoutIntegrationTests' from project 'Universe Keyboard')
+
+SwiftCompile normal arm64 (in target 'KeyboardLayoutIntegrationTests' from project 'Universe Keyboard')
+    cd /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard
+    
+
+SwiftCompile normal arm64 Compiling\ T9AdaptiveRowTests.swift /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard/KeyboardLayoutIntegrationTests/T9AdaptiveRowTests.swift (in target 'KeyboardLayoutIntegrationTests' from project 'Universe Keyboard')
+
+SwiftCompile normal arm64 /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard/KeyboardLayoutIntegrationTests/T9AdaptiveRowTests.swift (in target 'KeyboardLayoutIntegrationTests' from project 'Universe Keyboard')
+    cd /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard
+    builtin-SwiftPerFileCompile T9AdaptiveRowTests.swift
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for KeyboardLayoutIntegrationTests (in target 'KeyboardLayoutIntegrationTests' from project 'Universe Keyboard')
+
+SwiftDriver\ Compilation\ Requirements KeyboardLayoutIntegrationTests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'KeyboardLayoutIntegrationTests' from project 'Universe Keyboard')
+    cd /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name KeyboardLayoutIntegrationTests -Onone @/tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests.SwiftFileList -DDEBUG -Xcc -fmodule-map-file\=/tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/RimeBridgeObjC.modulemap -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -default-isolation\=MainActor -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.1.sdk -target arm64-apple-ios18.0-simulator -g -module-cache-path /tmp/t9-adaptive-row-001-integration-build/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -warnings-as-errors -index-store-path /tmp/t9-adaptive-row-001-integration-build/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.1.sdk/Developer/Library/Frameworks -c -j8 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/t9-adaptive-row-001-integration-build/SDKStatCaches.noindex/iphonesimulator27.1-24A94232-35d3147121984ba087c28d913653d626.sdkstatcache -output-file-map /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/t9-adaptive-row-001-integration-build/ModuleCache.noindex -sdk-module-cache-path /tmp/t9-adaptive-row-001-integration-build/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/t9-adaptive-row-001-integration-build/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/KeyboardLayoutIntegrationTests-generated-files.hmap -Xcc -I/tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/KeyboardLayoutIntegrationTests-own-target-headers.hmap -Xcc -I/tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/KeyboardLayoutIntegrationTests-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/Universe\ Keyboard-c7db5b74330b406efaaaa4547e6a5407-VFS-iphonesimulator/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/KeyboardLayoutIntegrationTests-project-headers.hmap -Xcc -I/Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard/Packages/RimeBridge/Sources/RimeBridgeObjC/include -Xcc -I/tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/include -Xcc -I/tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/DerivedSources-normal/arm64 -Xcc -I/tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/DerivedSources/arm64 -Xcc -I/tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests-Swift.h -import-objc-header /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard/Keyboard/Bridge/Keyboard-Bridging-Header.h -working-directory /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard -experimental-emit-module-separately -disable-cmo
+
+SwiftMergeGeneratedHeaders /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/DerivedSources/KeyboardLayoutIntegrationTests-Swift.h /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests-Swift.h (in target 'KeyboardLayoutIntegrationTests' from project 'Universe Keyboard')
+    cd /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard
+    builtin-swiftHeaderTool -arch arm64 /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests-Swift.h -o /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/DerivedSources/KeyboardLayoutIntegrationTests-Swift.h
+
+Copy /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.swiftmodule/arm64-apple-ios-simulator.swiftmodule /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests.swiftmodule (in target 'KeyboardLayoutIntegrationTests' from project 'Universe Keyboard')
+    cd /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests.swiftmodule /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.swiftmodule/arm64-apple-ios-simulator.swiftmodule
+
+Copy /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.swiftmodule/arm64-apple-ios-simulator.abi.json /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests.abi.json (in target 'KeyboardLayoutIntegrationTests' from project 'Universe Keyboard')
+    cd /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests.abi.json /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.swiftmodule/arm64-apple-ios-simulator.abi.json
+
+Copy /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests.swiftsourceinfo (in target 'KeyboardLayoutIntegrationTests' from project 'Universe Keyboard')
+    cd /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests.swiftsourceinfo /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.swiftmodule/Project/arm64-apple-ios-simulator.swiftsourceinfo
+
+SwiftDriverJobDiscovery normal arm64 Compiling T9AdaptiveRowTests.swift (in target 'KeyboardLayoutIntegrationTests' from project 'Universe Keyboard')
+
+SwiftDriver\ Compilation KeyboardLayoutIntegrationTests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'KeyboardLayoutIntegrationTests' from project 'Universe Keyboard')
+    cd /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard
+    builtin-Swift-Compilation -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name KeyboardLayoutIntegrationTests -Onone @/tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests.SwiftFileList -DDEBUG -Xcc -fmodule-map-file\=/tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/GeneratedModuleMaps-iphonesimulator/RimeBridgeObjC.modulemap -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -default-isolation\=MainActor -enable-upcoming-feature MemberImportVisibility -enable-upcoming-feature InferIsolatedConformances -enable-upcoming-feature NonisolatedNonsendingByDefault -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.1.sdk -target arm64-apple-ios18.0-simulator -g -module-cache-path /tmp/t9-adaptive-row-001-integration-build/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -warnings-as-errors -index-store-path /tmp/t9-adaptive-row-001-integration-build/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/PackageFrameworks -F /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -F /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.1.sdk/Developer/Library/Frameworks -c -j8 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /tmp/t9-adaptive-row-001-integration-build/SDKStatCaches.noindex/iphonesimulator27.1-24A94232-35d3147121984ba087c28d913653d626.sdkstatcache -output-file-map /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /tmp/t9-adaptive-row-001-integration-build/ModuleCache.noindex -sdk-module-cache-path /tmp/t9-adaptive-row-001-integration-build/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /tmp/t9-adaptive-row-001-integration-build/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests_const_extract_protocols.json -Xcc -iquote -Xcc /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/KeyboardLayoutIntegrationTests-generated-files.hmap -Xcc -I/tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/KeyboardLayoutIntegrationTests-own-target-headers.hmap -Xcc -I/tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/KeyboardLayoutIntegrationTests-all-non-framework-target-headers.hmap -Xcc -ivfsoverlay -Xcc /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/Universe\ Keyboard-c7db5b74330b406efaaaa4547e6a5407-VFS-iphonesimulator/all-product-headers.yaml -Xcc -iquote -Xcc /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/KeyboardLayoutIntegrationTests-project-headers.hmap -Xcc -I/Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard/Packages/RimeBridge/Sources/RimeBridgeObjC/include -Xcc -I/tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/include -Xcc -I/tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/DerivedSources-normal/arm64 -Xcc -I/tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/DerivedSources/arm64 -Xcc -I/tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests-Swift.h -import-objc-header /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard/Keyboard/Bridge/Keyboard-Bridging-Header.h -working-directory /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard -experimental-emit-module-separately -disable-cmo
+
+ProcessInfoPlistFile /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.xctest/Info.plist /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/empty-KeyboardLayoutIntegrationTests.plist (in target 'KeyboardLayoutIntegrationTests' from project 'Universe Keyboard')
+    cd /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard
+    builtin-infoPlistUtility /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/empty-KeyboardLayoutIntegrationTests.plist -producttype com.apple.product-type.bundle.unit-test -expandbuildsettings -format binary -platform iphonesimulator -scanforprivacyfile /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.xctest/KeyboardCore_KeyboardCore.bundle -o /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.xctest/Info.plist
+
+Ld /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.xctest/KeyboardLayoutIntegrationTests normal (in target 'KeyboardLayoutIntegrationTests' from project 'Universe Keyboard')
+    cd /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-ios18.0-simulator -bundle -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.1.sdk -O0 -Xlinker -no_warn_duplicate_libraries -L/tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -L/tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator -L/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib -F/tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/EagerLinkingTBDs/Debug-iphonesimulator -F/tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/PackageFrameworks -F/tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator -iframework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/Library/Frameworks -iframework /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.1.sdk/Developer/Library/Frameworks -filelist /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests.LinkFileList -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @loader_path -Xlinker -rpath -Xlinker /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/PackageFrameworks -Xlinker -rpath -Xlinker @loader_path/Frameworks -Xlinker -rpath -Xlinker @executable_path/Frameworks -Xlinker -dead_strip -Xlinker -object_path_lto -Xlinker /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -objc_abi_version -Xlinker 2 -Xlinker -debug_variant -Xlinker -dependency_info -Xlinker /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests_dependency_info.dat -fobjc-arc -fobjc-link-runtime -fprofile-instr-generate -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/iphonesimulator -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests.swiftmodule -lc++ -lc++ -force_load /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard/Packages/RimeBridge/Vendor/liblua.xcframework/ios-arm64_x86_64-simulator/liblua.a -force_load /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard/Packages/RimeBridge/Vendor/librime-lua.xcframework/ios-arm64_x86_64-simulator/librime-lua.a -force_load /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard/Packages/RimeBridge/Vendor/librime-octagram.xcframework/ios-arm64_x86_64-simulator/librime-octagram.a -force_load /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard/Packages/RimeBridge/Vendor/libglog.xcframework/ios-arm64_x86_64-simulator/libglog.a -lc++ -lz -Xlinker -needed_framework -Xlinker XCTest -framework XCTest -Xlinker -needed-lXCTestSwiftSupport -lXCTestSwiftSupport /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/PackageFrameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework/KeyboardCore_-8730D61D9395D3A_PackageProduct /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/PackageFrameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework/RimeBridge_57276DBF982DF6E4_PackageProduct -o /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.xctest/KeyboardLayoutIntegrationTests
+
+CopySwiftLibs /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.xctest (in target 'KeyboardLayoutIntegrationTests' from project 'Universe Keyboard')
+    cd /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard
+    builtin-swiftStdLibTool --copy --verbose --scan-executable /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.xctest/KeyboardLayoutIntegrationTests --scan-folder /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.xctest/Frameworks --scan-folder /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.xctest/PlugIns --scan-folder /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.xctest/SystemExtensions --scan-folder /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.xctest/Extensions --scan-folder /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/PackageFrameworks/KeyboardCore_-8730D61D9395D3A_PackageProduct.framework --scan-folder /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/PackageFrameworks/RimeBridge_57276DBF982DF6E4_PackageProduct.framework --platform iphonesimulator --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.xctest/Frameworks --strip-bitcode --scan-executable /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os
+Ignoring --strip-bitcode because --sign was not passed
+
+ExtractAppIntentsMetadata (in target 'KeyboardLayoutIntegrationTests' from project 'Universe Keyboard')
+    cd /Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe\ Keyboard
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name KeyboardLayoutIntegrationTests --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator27.1.sdk --xcode-version 27A9275 --platform-family iOS --deployment-target 18.0 --bundle-identifier com.DoubleShy0N.Universe-Keyboard.KeyboardLayoutIntegrationTests --output /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.xctest --target-triple arm64-apple-ios18.0-simulator --binary-file /tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.xctest/KeyboardLayoutIntegrationTests --dependency-file /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests_dependency_info.dat --stringsdata-file /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests.SwiftFileList --metadata-file-list /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/KeyboardLayoutIntegrationTests.DependencyMetadataFileList --static-metadata-file-list /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/KeyboardLayoutIntegrationTests.DependencyStaticMetadataFileList --swift-const-vals-list /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/Universe\ Keyboard.build/Debug-iphonesimulator/KeyboardLayoutIntegrationTests.build/Objects-normal/arm64/KeyboardLayoutIntegrationTests.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --no-app-shortcuts-localization
+2026-10-21 15:39:00.536 appintentsmetadataprocessor[49748:81241816] Starting appintentsmetadataprocessor export
+2026-10-21 15:39:00.540 appintentsmetadataprocessor[49748:81241816] warning: Metadata extraction skipped, no AppIntents.framework dependency found
+
+PruneExplicitPrecompiledModules /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /tmp/t9-adaptive-row-001-integration-build/SDKExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /tmp/t9-adaptive-row-001-integration-build/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+2026-10-21 15:39:03.809 xcodebuild[49670:81241243] [MT] IDESchemeActionSDKRecord: operatingSystemBuild = <DVTBuildVersion 24A94232>, error = invalidDigitCount(94232).
+Test Suite 'Selected tests' started at 2026-10-21 15:39:14.666.
+Test Suite 'KeyboardLayoutIntegrationTests.xctest' started at 2026-10-21 15:39:14.669.
+Test Suite 'T9AdaptiveRowTests' started at 2026-10-21 15:39:14.669.
+Test Case '-[KeyboardLayoutIntegrationTests.T9AdaptiveRowTests testHiddenPathShrinkEmptyAndRepeatedShowKeepCollectionConsistent]' started.
+2026-10-21 15:39:14.778126+0800 xctest[49817:81242390] [loading] Error loading /System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib (100):  dlopen(/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib, 0x0106): tried: '/tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/IOHIDLib' (no such file), '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/IOHIDLib' (no such file), '/Library/Developer/CoreSimulator/Volumes/iOS_23F73/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.5.simruntime/Contents/Resources/RuntimeRoot/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (no such file), '/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (fat file, but missing compatible architecture (have 'x86_64,arm64e,unknown', need 'arm64' or 'arm64'))
+2026-10-21 15:39:14.785257+0800 xctest[49817:81242390] [plugin] Cannot find function pointer IOHIDLibFactory for factory <CFUUID 0x102fa9ba0> 13AA9C44-6F1B-11D4-907C-0005028F18D5 in CFBundle/CFPlugIn 0x102d10e00 </System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin> (bundle, not loaded)
+2026-10-21 15:39:14.790833+0800 xctest[49817:81242390] [default] failed to create instance for plugin for <CFUUID 0x102fa9a80> 7DDEECA8-A7B4-11DA-8A0E-0014519758EF
+2026-10-21 15:39:14.791027+0800 xctest[49817:81242390] [default] IOCreatePlugInInterfaceForService:0xe00002be for serviceID:0x100001491
+2026-10-21 15:39:14.808942+0800 xctest[49817:81242390] [loading] Error loading /System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib (100):  dlopen(/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib, 0x0106): tried: '/tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/IOHIDLib' (no such file), '/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/usr/lib/IOHIDLib' (no such file), '/Library/Developer/CoreSimulator/Volumes/iOS_23F73/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.5.simruntime/Contents/Resources/RuntimeRoot/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (no such file), '/System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin/Contents/MacOS/IOHIDLib' (fat file, but missing compatible architecture (have 'x86_64,arm64e,unknown', need 'arm64' or 'arm64'))
+2026-10-21 15:39:14.818784+0800 xctest[49817:81242390] [plugin] Cannot find function pointer IOHIDLibFactory for factory <CFUUID 0x102fa9ba0> 13AA9C44-6F1B-11D4-907C-0005028F18D5 in CFBundle/CFPlugIn 0x102d10e00 </System/Library/Extensions/IOHIDFamily.kext/Contents/PlugIns/IOHIDLib.plugin> (bundle, not loaded)
+2026-10-21 15:39:14.872870+0800 xctest[49817:81242390] [default] failed to create instance for plugin for <CFUUID 0x102fa9a80> 7DDEECA8-A7B4-11DA-8A0E-0014519758EF
+2026-10-21 15:39:14.885555+0800 xctest[49817:81242390] [default] IOCreatePlugInInterfaceForService:0xe00002be for serviceID:0x100001490
+/Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe Keyboard/KeyboardLayoutIntegrationTests/T9AdaptiveRowTests.swift:264: error: -[KeyboardLayoutIntegrationTests.T9AdaptiveRowTests testHiddenPathShrinkEmptyAndRepeatedShowKeepCollectionConsistent] : XCTAssertEqual failed: ("3") is not equal to ("1") - Hidden reload must synchronize UIKit's cached item count
+Test Case '-[KeyboardLayoutIntegrationTests.T9AdaptiveRowTests testHiddenPathShrinkEmptyAndRepeatedShowKeepCollectionConsistent]' failed (1.209 seconds).
+Test Suite 'T9AdaptiveRowTests' failed at 2026-10-21 15:39:15.880.
+	 Executed 1 test, with 1 failure (0 unexpected) in 1.209 (1.210) seconds
+Test Suite 'KeyboardLayoutIntegrationTests.xctest' failed at 2026-10-21 15:39:15.880.
+	 Executed 1 test, with 1 failure (0 unexpected) in 1.209 (1.210) seconds
+Test Suite 'Selected tests' failed at 2026-10-21 15:39:15.880.
+	 Executed 1 test, with 1 failure (0 unexpected) in 1.209 (1.214) seconds
+2026-10-21 15:39:15.913 xcodebuild[49670:81241243] [MT] IDESchemeActionSDKRecord: operatingSystemBuild = <DVTBuildVersion 24A94232>, error = invalidDigitCount(94232).
+2026-10-21 15:39:15.916 xcodebuild[49670:81241243] [MT] IDESchemeActionSDKRecord: operatingSystemBuild = <DVTBuildVersion 24A94232>, error = invalidDigitCount(94232).
+Testing started
+In flight operation:   <DVTOperationGroup: 0x7af6a20000; state = AREfc>
+     <IDEBuildOperationGroup: 0x7af6936d00; state = AReFc>
+         <DVTOperationGroup: 0x7af6936700; state = AReFc>
+             <IDEXCBuildSupportCore.IDEXCBuildServiceBuildOperation:0x7af62c4600:AReFc>
+         <__DVTSwiftAsyncOperation: 0x7af6937600; state = AReFc>
+         <DVTOperation: 0x7af6aa2bc0; state = aReFc>
+         <__DVTSwiftAsyncOperation: 0x7af6936b80; state = AReFc>
+         <__DVTSwiftAsyncOperation: 0x7af6936e80; state = AReFc>
+         <DVTOperation: 0x7af6aa2a80; state = aReFc>
+         <DVTOperation: 0x7af6aa2d00; state = aReFc>
+         <__DVTSwiftAsyncOperation: 0x7af6937000; state = AReFc>
+         <DVTOperation: 0x7af6aa2940; state = aReFc>
+     <DVTOperationGroup: 0x7af6a22880; state = AREfc>
+         <DVTOperation: 0x7af69183c0; name = 'Remove Log If Needed', state = aReFc>
+         <DVTOperationGroup: 0x7af6a22700; state = AREfc>
+             <DVTOperationGroup: 0x7af6a22580; state = AREfc>
+                 <DVTOperationGroup: 0x7af6a22400; state = AREfc>
+                     <__DVTSwiftAsyncOperation: 0x7af6a21f80; state = AReFc>
+                     <__DVTSwiftAsyncOperation: 0x7af6a22280; state = AReFc>
+                     <DVTOperation: 0x7af6723c00; state = aReFc>
+                     <DVTOperation: 0x7af6723e80; state = arefc>
+                     <__DVTSwiftAsyncOperation: 0x7af6a21e00; state = AReFc>
+                     <__DVTSwiftAsyncOperation: 0x7af6a22100; state = AReFc>
+                     <DVTOperation: 0x7af6683d40; state = arefc>
+                     <IDESchemeActionResultOperation: 0x7af6a21b00; state = Arefc>
+                     <DVTOperation: 0x7af6723d40; state = aReFc>
+                     <DVTOperationGroup: 0x7af6a21680; state = AReF!c, blocking { Blocking finish to clean up test session. }>
+                         <DVTOperation: 0x7af6723200; state = aReFc>
+                         <XCTHOperationGroup: 0x7af6a21500>
+                 <_DVTAsyncBlockOperation: 0x7af6918280; name = 'Download and merge code coverage profiles', state = Arefc>
+                 <XCTHCoverageReportGenerationOperation: 0x7af921f2c0>{name = 'Generate coverage report'}
+             <DVTOperation: 0x7af6918000; state = aReFc>
+         <_IDETestingFinalizeLogsOperation: 0x7af6918500; name = 'Finalize test log', state = aref!c, blocking { waiting for test log to finish recording }>
+<DVTOperationGroup: 0x7af6a20000; state = AREfc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   -[DVTOperationGroup init] (in DVTFoundation)
+  2   +[DVTOperationGroup operationGroupWithSuboperations:] (in DVTFoundation)
+  3   -[IDEScheme _groupAndImposeDependenciesForOrderedOperations:] (in IDEFoundation)
+  4   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  5   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  6   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+  7   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+  8   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  9   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 10   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 11   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 12   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 13   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 14   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 15   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 16   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 17   main (in xcodebuild)
+ 18   start (in dyld)
+
+<IDEBuildOperationGroup: 0x7af6936d00; state = AReFc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   -[DVTOperationGroup init] (in DVTFoundation)
+  2   -[IDEBuildOperationGroup initWithBuildOperations:otherOperations:buildLog:] (in IDEFoundation)
+  3   -[IDEBuildOperationGroup initWithBuildOperations:buildLog:] (in IDEFoundation)
+  4   -[IDEScheme _buildOperationGroupForSchemeOperationParameters:primaryBuildParameters:variantSpecifiers:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:schemeActionRecord:error:] (in IDEFoundation)
+  5   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  6   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  7   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+  8   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+  9   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+ 10   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 11   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 12   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 13   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 14   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 15   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 16   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 17   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 18   main (in xcodebuild)
+ 19   start (in dyld)
+
+<DVTOperationGroup: 0x7af6936700; state = AReFc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   -[DVTOperationGroup init] (in DVTFoundation)
+  2   +[DVTOperationGroup operationGroupWithSuboperations:] (in DVTFoundation)
+  3   -[IDEBuildOperationGroup initWithBuildOperations:otherOperations:buildLog:] (in IDEFoundation)
+  4   -[IDEBuildOperationGroup initWithBuildOperations:buildLog:] (in IDEFoundation)
+  5   -[IDEScheme _buildOperationGroupForSchemeOperationParameters:primaryBuildParameters:variantSpecifiers:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:schemeActionRecord:error:] (in IDEFoundation)
+  6   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  7   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  8   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+  9   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+ 10   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+ 11   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 12   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 13   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 14   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 15   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 16   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 17   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 18   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 19   main (in xcodebuild)
+ 20   start (in dyld)
+
+<IDEXCBuildSupportCore.IDEXCBuildServiceBuildOperation:0x7af62c4600:AReFc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   -[IDEBuildOperation initWithConfiguration:] (in IDEFoundation)
+  2   IDEXCBuildServiceBuildOperation.init(configuration:) (in IDEXCBuildSupportCore)
+  3   @objc IDEXCBuildServiceBuildOperation.init(configuration:) (in IDEXCBuildSupportCore)
+  4   -[IDEScheme _buildOperationGroupForSchemeOperationParameters:primaryBuildParameters:variantSpecifiers:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:schemeActionRecord:error:] (in IDEFoundation)
+  5   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  6   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  7   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+  8   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+  9   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+ 10   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 11   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 12   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 13   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 14   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 15   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 16   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 17   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 18   main (in xcodebuild)
+ 19   start (in dyld)
+
+<__DVTSwiftAsyncOperation: 0x7af6937600; state = AReFc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   @objc DVTAsyncOperation.init() (in DVTFoundation)
+  2   @objc static DVTOperation.operationWithMainThreadBlock(_:) (in DVTFoundation)
+  3   -[IDESchemeAction _setUpOperationsForPackageLoadingInWorkspace:handlePreActionsActivityLogSection:isCleanOperation:] (in IDEFoundation)
+  4   -[IDESchemeAction setUpActionDependenciesForCorePhaseOperation:shouldRunPostActionsBlock:prePhaseEnvironmentPopulationBlock:postPhaseEnvironmentPopulationBlock:handlePreActionsActivityLogSection:handlePostActionsActivityLogSection:buildParameters:schemeActionResultOperation:error:] (in IDEFoundation)
+  5   -[IDEScheme _buildOperationGroupForSchemeOperationParameters:primaryBuildParameters:variantSpecifiers:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:schemeActionRecord:error:] (in IDEFoundation)
+  6   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  7   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  8   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+  9   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+ 10   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+ 11   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 12   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 13   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 14   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 15   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 16   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 17   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 18   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 19   main (in xcodebuild)
+ 20   start (in dyld)
+
+<DVTOperation: 0x7af6aa2bc0; state = aReFc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   +[DVTOperation(DVTConveniences) operationWithBlock:] (in DVTFoundation)
+  2   -[IDESchemeAction setUpActionDependenciesForCorePhaseOperation:shouldRunPostActionsBlock:prePhaseEnvironmentPopulationBlock:postPhaseEnvironmentPopulationBlock:handlePreActionsActivityLogSection:handlePostActionsActivityLogSection:buildParameters:schemeActionResultOperation:error:] (in IDEFoundation)
+  3   -[IDEScheme _buildOperationGroupForSchemeOperationParameters:primaryBuildParameters:variantSpecifiers:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:schemeActionRecord:error:] (in IDEFoundation)
+  4   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  5   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  6   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+  7   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+  8   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  9   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 10   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 11   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 12   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 13   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 14   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 15   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 16   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 17   main (in xcodebuild)
+ 18   start (in dyld)
+
+<__DVTSwiftAsyncOperation: 0x7af6936b80; state = AReFc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   @objc DVTAsyncOperation.init() (in DVTFoundation)
+  2   static DVTOperation.awaiting(_:) (in DVTFoundation)
+  3   @objc static IDESchemeAction.operationToWaitForFinishedLoadingOperation(of:) (in IDEFoundation)
+  4   -[IDESchemeAction setUpActionDependenciesForCorePhaseOperation:shouldRunPostActionsBlock:prePhaseEnvironmentPopulationBlock:postPhaseEnvironmentPopulationBlock:handlePreActionsActivityLogSection:handlePostActionsActivityLogSection:buildParameters:schemeActionResultOperation:error:] (in IDEFoundation)
+  5   -[IDEScheme _buildOperationGroupForSchemeOperationParameters:primaryBuildParameters:variantSpecifiers:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:schemeActionRecord:error:] (in IDEFoundation)
+  6   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  7   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  8   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+  9   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+ 10   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+ 11   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 12   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 13   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 14   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 15   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 16   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 17   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 18   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 19   main (in xcodebuild)
+ 20   start (in dyld)
+
+<__DVTSwiftAsyncOperation: 0x7af6936e80; state = AReFc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   @objc DVTAsyncOperation.init() (in DVTFoundation)
+  2   @objc static DVTOperation.operationWithMainThreadBlock(_:) (in DVTFoundation)
+  3   -[IDESchemeAction _setUpOperationsForPackageLoadingInWorkspace:handlePreActionsActivityLogSection:isCleanOperation:] (in IDEFoundation)
+  4   -[IDESchemeAction setUpActionDependenciesForCorePhaseOperation:shouldRunPostActionsBlock:prePhaseEnvironmentPopulationBlock:postPhaseEnvironmentPopulationBlock:handlePreActionsActivityLogSection:handlePostActionsActivityLogSection:buildParameters:schemeActionResultOperation:error:] (in IDEFoundation)
+  5   -[IDEScheme _buildOperationGroupForSchemeOperationParameters:primaryBuildParameters:variantSpecifiers:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:schemeActionRecord:error:] (in IDEFoundation)
+  6   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  7   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  8   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+  9   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+ 10   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+ 11   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 12   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 13   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 14   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 15   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 16   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 17   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 18   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 19   main (in xcodebuild)
+ 20   start (in dyld)
+
+<DVTOperation: 0x7af6aa2a80; state = aReFc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   +[DVTOperation(DVTConveniences) operationWithBlock:] (in DVTFoundation)
+  2   -[IDESchemeAction setUpActionDependenciesForCorePhaseOperation:shouldRunPostActionsBlock:prePhaseEnvironmentPopulationBlock:postPhaseEnvironmentPopulationBlock:handlePreActionsActivityLogSection:handlePostActionsActivityLogSection:buildParameters:schemeActionResultOperation:error:] (in IDEFoundation)
+  3   -[IDEScheme _buildOperationGroupForSchemeOperationParameters:primaryBuildParameters:variantSpecifiers:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:schemeActionRecord:error:] (in IDEFoundation)
+  4   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  5   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  6   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+  7   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+  8   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  9   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 10   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 11   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 12   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 13   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 14   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 15   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 16   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 17   main (in xcodebuild)
+ 18   start (in dyld)
+
+<DVTOperation: 0x7af6aa2d00; state = aReFc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   +[DVTOperation(DVTConveniences) operationWithBlock:] (in DVTFoundation)
+  2   -[IDESchemeAction setUpActionDependenciesForCorePhaseOperation:shouldRunPostActionsBlock:prePhaseEnvironmentPopulationBlock:postPhaseEnvironmentPopulationBlock:handlePreActionsActivityLogSection:handlePostActionsActivityLogSection:buildParameters:schemeActionResultOperation:error:] (in IDEFoundation)
+  3   -[IDEScheme _buildOperationGroupForSchemeOperationParameters:primaryBuildParameters:variantSpecifiers:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:schemeActionRecord:error:] (in IDEFoundation)
+  4   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  5   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  6   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+  7   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+  8   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  9   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 10   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 11   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 12   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 13   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 14   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 15   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 16   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 17   main (in xcodebuild)
+ 18   start (in dyld)
+
+<__DVTSwiftAsyncOperation: 0x7af6937000; state = AReFc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   @objc DVTAsyncOperation.init() (in DVTFoundation)
+  2   static DVTOperation.awaiting(_:) (in DVTFoundation)
+  3   @objc static IDESchemeAction.operationToWaitForFinishedLoadingOperation(of:) (in IDEFoundation)
+  4   -[IDESchemeAction _setUpOperationsForPackageLoadingInWorkspace:handlePreActionsActivityLogSection:isCleanOperation:] (in IDEFoundation)
+  5   -[IDESchemeAction setUpActionDependenciesForCorePhaseOperation:shouldRunPostActionsBlock:prePhaseEnvironmentPopulationBlock:postPhaseEnvironmentPopulationBlock:handlePreActionsActivityLogSection:handlePostActionsActivityLogSection:buildParameters:schemeActionResultOperation:error:] (in IDEFoundation)
+  6   -[IDEScheme _buildOperationGroupForSchemeOperationParameters:primaryBuildParameters:variantSpecifiers:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:schemeActionRecord:error:] (in IDEFoundation)
+  7   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  8   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  9   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+ 10   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+ 11   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+ 12   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 13   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 14   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 15   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 16   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 17   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 18   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 19   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 20   main (in xcodebuild)
+ 21   start (in dyld)
+
+<DVTOperation: 0x7af6aa2940; state = aReFc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   +[DVTOperation(DVTConveniences) operationWithBlock:] (in DVTFoundation)
+  2   -[IDESchemeAction setUpActionDependenciesForCorePhaseOperation:shouldRunPostActionsBlock:prePhaseEnvironmentPopulationBlock:postPhaseEnvironmentPopulationBlock:handlePreActionsActivityLogSection:handlePostActionsActivityLogSection:buildParameters:schemeActionResultOperation:error:] (in IDEFoundation)
+  3   -[IDEScheme _buildOperationGroupForSchemeOperationParameters:primaryBuildParameters:variantSpecifiers:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:schemeActionRecord:error:] (in IDEFoundation)
+  4   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  5   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  6   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+  7   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+  8   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  9   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 10   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 11   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 12   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 13   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 14   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 15   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 16   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 17   main (in xcodebuild)
+ 18   start (in dyld)
+
+<DVTOperationGroup: 0x7af6a22880; state = AREfc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   -[DVTOperationGroup init] (in DVTFoundation)
+  2   +[DVTOperationGroup operationGroupWithSuboperations:] (in DVTFoundation)
+  3   -[IDETestSchemeAction testOperationWithSchemeOperationParameters:testManager:buildOperation:buildParameters:schemeCommand:actionRecord:testPlanRunSpecifications:deviceAvailableChecker:outError:actionCallbackBlock:] (in IDEFoundation)
+  4   -[IDEScheme(TestSchemeAction) executionOperationForTestSchemeActionWithOperationParameters:command:buildOperationVariantSpecifiers:buildOperationGroup:schemeActionResult:buildParameters:shouldOnlyBuild:runDestination:orderedOperations:schemeActionRecord:deviceAvailableChecker:actionCallbackBlock:error:] (in IDEFoundation)
+  5   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  6   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  7   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+  8   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+  9   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+ 10   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 11   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 12   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 13   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 14   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 15   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 16   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 17   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 18   main (in xcodebuild)
+ 19   start (in dyld)
+
+<DVTOperation: 0x7af69183c0; name = 'Remove Log If Needed', state = aReFc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   +[DVTOperation(DVTConveniences) operationWithBlock:] (in DVTFoundation)
+  2   -[IDETestSchemeAction _removeLogIfNeededOperationWithLogStore:logRecord:buildOperation:] (in IDEFoundation)
+  3   -[IDETestSchemeAction testOperationWithSchemeOperationParameters:testManager:buildOperation:buildParameters:schemeCommand:actionRecord:testPlanRunSpecifications:deviceAvailableChecker:outError:actionCallbackBlock:] (in IDEFoundation)
+  4   -[IDEScheme(TestSchemeAction) executionOperationForTestSchemeActionWithOperationParameters:command:buildOperationVariantSpecifiers:buildOperationGroup:schemeActionResult:buildParameters:shouldOnlyBuild:runDestination:orderedOperations:schemeActionRecord:deviceAvailableChecker:actionCallbackBlock:error:] (in IDEFoundation)
+  5   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  6   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  7   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+  8   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+  9   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+ 10   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 11   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 12   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 13   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 14   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 15   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 16   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 17   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 18   main (in xcodebuild)
+ 19   start (in dyld)
+
+<DVTOperationGroup: 0x7af6a22700; state = AREfc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   -[DVTOperationGroup init] (in DVTFoundation)
+  2   +[DVTOperationGroup operationGroupWithSuboperations:] (in DVTFoundation)
+  3   -[IDETestSchemeAction testOperationWithSchemeOperationParameters:testManager:buildOperation:buildParameters:schemeCommand:actionRecord:testPlanRunSpecifications:deviceAvailableChecker:outError:actionCallbackBlock:] (in IDEFoundation)
+  4   -[IDEScheme(TestSchemeAction) executionOperationForTestSchemeActionWithOperationParameters:command:buildOperationVariantSpecifiers:buildOperationGroup:schemeActionResult:buildParameters:shouldOnlyBuild:runDestination:orderedOperations:schemeActionRecord:deviceAvailableChecker:actionCallbackBlock:error:] (in IDEFoundation)
+  5   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  6   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  7   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+  8   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+  9   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+ 10   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 11   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 12   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 13   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 14   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 15   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 16   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 17   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 18   main (in xcodebuild)
+ 19   start (in dyld)
+
+<DVTOperationGroup: 0x7af6a22580; state = AREfc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   -[DVTOperationGroup init] (in DVTFoundation)
+  2   +[DVTOperationGroup operationGroupWithSuboperations:] (in DVTFoundation)
+  3   -[IDETestSchemeAction testOperationWithSchemeOperationParameters:testManager:buildOperation:buildParameters:schemeCommand:actionRecord:testPlanRunSpecifications:deviceAvailableChecker:outError:actionCallbackBlock:] (in IDEFoundation)
+  4   -[IDEScheme(TestSchemeAction) executionOperationForTestSchemeActionWithOperationParameters:command:buildOperationVariantSpecifiers:buildOperationGroup:schemeActionResult:buildParameters:shouldOnlyBuild:runDestination:orderedOperations:schemeActionRecord:deviceAvailableChecker:actionCallbackBlock:error:] (in IDEFoundation)
+  5   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  6   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  7   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+  8   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+  9   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+ 10   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 11   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 12   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 13   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 14   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 15   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 16   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 17   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 18   main (in xcodebuild)
+ 19   start (in dyld)
+
+<DVTOperationGroup: 0x7af6a22400; state = AREfc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   -[DVTOperationGroup init] (in DVTFoundation)
+  2   +[DVTOperationGroup operationGroupWithSuboperations:] (in DVTFoundation)
+  3   -[IDETestSchemeAction testOperationWithSchemeOperationParameters:testManager:buildOperation:buildParameters:schemeCommand:actionRecord:testPlanRunSpecifications:deviceAvailableChecker:outError:actionCallbackBlock:] (in IDEFoundation)
+  4   -[IDEScheme(TestSchemeAction) executionOperationForTestSchemeActionWithOperationParameters:command:buildOperationVariantSpecifiers:buildOperationGroup:schemeActionResult:buildParameters:shouldOnlyBuild:runDestination:orderedOperations:schemeActionRecord:deviceAvailableChecker:actionCallbackBlock:error:] (in IDEFoundation)
+  5   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  6   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  7   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+  8   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+  9   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+ 10   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 11   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 12   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 13   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 14   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 15   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 16   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 17   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 18   main (in xcodebuild)
+ 19   start (in dyld)
+
+<__DVTSwiftAsyncOperation: 0x7af6a21f80; state = AReFc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   @objc DVTAsyncOperation.init() (in DVTFoundation)
+  2   @objc static DVTOperation.operationWithMainThreadBlock(_:) (in DVTFoundation)
+  3   -[IDESchemeAction _setUpOperationsForPackageLoadingInWorkspace:handlePreActionsActivityLogSection:isCleanOperation:] (in IDEFoundation)
+  4   -[IDESchemeAction setUpActionDependenciesForCorePhaseOperation:shouldRunPostActionsBlock:prePhaseEnvironmentPopulationBlock:postPhaseEnvironmentPopulationBlock:handlePreActionsActivityLogSection:handlePostActionsActivityLogSection:buildParameters:schemeActionResultOperation:error:] (in IDEFoundation)
+  5   -[IDETestSchemeAction testOperationWithSchemeOperationParameters:testManager:buildOperation:buildParameters:schemeCommand:actionRecord:testPlanRunSpecifications:deviceAvailableChecker:outError:actionCallbackBlock:] (in IDEFoundation)
+  6   -[IDEScheme(TestSchemeAction) executionOperationForTestSchemeActionWithOperationParameters:command:buildOperationVariantSpecifiers:buildOperationGroup:schemeActionResult:buildParameters:shouldOnlyBuild:runDestination:orderedOperations:schemeActionRecord:deviceAvailableChecker:actionCallbackBlock:error:] (in IDEFoundation)
+  7   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  8   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  9   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+ 10   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+ 11   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+ 12   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 13   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 14   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 15   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 16   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 17   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 18   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 19   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 20   main (in xcodebuild)
+ 21   start (in dyld)
+
+<__DVTSwiftAsyncOperation: 0x7af6a22280; state = AReFc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   @objc DVTAsyncOperation.init() (in DVTFoundation)
+  2   @objc static DVTOperation.operationWithMainThreadBlock(_:) (in DVTFoundation)
+  3   -[IDESchemeAction _setUpOperationsForPackageLoadingInWorkspace:handlePreActionsActivityLogSection:isCleanOperation:] (in IDEFoundation)
+  4   -[IDESchemeAction setUpActionDependenciesForCorePhaseOperation:shouldRunPostActionsBlock:prePhaseEnvironmentPopulationBlock:postPhaseEnvironmentPopulationBlock:handlePreActionsActivityLogSection:handlePostActionsActivityLogSection:buildParameters:schemeActionResultOperation:error:] (in IDEFoundation)
+  5   -[IDETestSchemeAction testOperationWithSchemeOperationParameters:testManager:buildOperation:buildParameters:schemeCommand:actionRecord:testPlanRunSpecifications:deviceAvailableChecker:outError:actionCallbackBlock:] (in IDEFoundation)
+  6   -[IDEScheme(TestSchemeAction) executionOperationForTestSchemeActionWithOperationParameters:command:buildOperationVariantSpecifiers:buildOperationGroup:schemeActionResult:buildParameters:shouldOnlyBuild:runDestination:orderedOperations:schemeActionRecord:deviceAvailableChecker:actionCallbackBlock:error:] (in IDEFoundation)
+  7   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  8   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  9   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+ 10   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+ 11   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+ 12   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 13   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 14   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 15   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 16   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 17   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 18   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 19   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 20   main (in xcodebuild)
+ 21   start (in dyld)
+
+<DVTOperation: 0x7af6723c00; state = aReFc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   +[DVTOperation(DVTConveniences) operationWithBlock:] (in DVTFoundation)
+  2   -[IDESchemeAction setUpActionDependenciesForCorePhaseOperation:shouldRunPostActionsBlock:prePhaseEnvironmentPopulationBlock:postPhaseEnvironmentPopulationBlock:handlePreActionsActivityLogSection:handlePostActionsActivityLogSection:buildParameters:schemeActionResultOperation:error:] (in IDEFoundation)
+  3   -[IDETestSchemeAction testOperationWithSchemeOperationParameters:testManager:buildOperation:buildParameters:schemeCommand:actionRecord:testPlanRunSpecifications:deviceAvailableChecker:outError:actionCallbackBlock:] (in IDEFoundation)
+  4   -[IDEScheme(TestSchemeAction) executionOperationForTestSchemeActionWithOperationParameters:command:buildOperationVariantSpecifiers:buildOperationGroup:schemeActionResult:buildParameters:shouldOnlyBuild:runDestination:orderedOperations:schemeActionRecord:deviceAvailableChecker:actionCallbackBlock:error:] (in IDEFoundation)
+  5   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  6   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  7   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+  8   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+  9   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+ 10   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 11   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 12   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 13   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 14   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 15   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 16   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 17   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 18   main (in xcodebuild)
+ 19   start (in dyld)
+
+<DVTOperation: 0x7af6723e80; state = arefc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   +[DVTOperation(DVTConveniences) operationWithBlock:] (in DVTFoundation)
+  2   -[IDESchemeAction setUpActionDependenciesForCorePhaseOperation:shouldRunPostActionsBlock:prePhaseEnvironmentPopulationBlock:postPhaseEnvironmentPopulationBlock:handlePreActionsActivityLogSection:handlePostActionsActivityLogSection:buildParameters:schemeActionResultOperation:error:] (in IDEFoundation)
+  3   -[IDETestSchemeAction testOperationWithSchemeOperationParameters:testManager:buildOperation:buildParameters:schemeCommand:actionRecord:testPlanRunSpecifications:deviceAvailableChecker:outError:actionCallbackBlock:] (in IDEFoundation)
+  4   -[IDEScheme(TestSchemeAction) executionOperationForTestSchemeActionWithOperationParameters:command:buildOperationVariantSpecifiers:buildOperationGroup:schemeActionResult:buildParameters:shouldOnlyBuild:runDestination:orderedOperations:schemeActionRecord:deviceAvailableChecker:actionCallbackBlock:error:] (in IDEFoundation)
+  5   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  6   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  7   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+  8   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+  9   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+ 10   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 11   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 12   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 13   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 14   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 15   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 16   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 17   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 18   main (in xcodebuild)
+ 19   start (in dyld)
+
+<__DVTSwiftAsyncOperation: 0x7af6a21e00; state = AReFc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   @objc DVTAsyncOperation.init() (in DVTFoundation)
+  2   static DVTOperation.awaiting(_:) (in DVTFoundation)
+  3   @objc static IDESchemeAction.operationToWaitForFinishedLoadingOperation(of:) (in IDEFoundation)
+  4   -[IDESchemeAction setUpActionDependenciesForCorePhaseOperation:shouldRunPostActionsBlock:prePhaseEnvironmentPopulationBlock:postPhaseEnvironmentPopulationBlock:handlePreActionsActivityLogSection:handlePostActionsActivityLogSection:buildParameters:schemeActionResultOperation:error:] (in IDEFoundation)
+  5   -[IDETestSchemeAction testOperationWithSchemeOperationParameters:testManager:buildOperation:buildParameters:schemeCommand:actionRecord:testPlanRunSpecifications:deviceAvailableChecker:outError:actionCallbackBlock:] (in IDEFoundation)
+  6   -[IDEScheme(TestSchemeAction) executionOperationForTestSchemeActionWithOperationParameters:command:buildOperationVariantSpecifiers:buildOperationGroup:schemeActionResult:buildParameters:shouldOnlyBuild:runDestination:orderedOperations:schemeActionRecord:deviceAvailableChecker:actionCallbackBlock:error:] (in IDEFoundation)
+  7   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  8   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  9   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+ 10   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+ 11   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+ 12   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 13   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 14   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 15   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 16   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 17   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 18   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 19   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 20   main (in xcodebuild)
+ 21   start (in dyld)
+
+<__DVTSwiftAsyncOperation: 0x7af6a22100; state = AReFc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   @objc DVTAsyncOperation.init() (in DVTFoundation)
+  2   static DVTOperation.awaiting(_:) (in DVTFoundation)
+  3   @objc static IDESchemeAction.operationToWaitForFinishedLoadingOperation(of:) (in IDEFoundation)
+  4   -[IDESchemeAction _setUpOperationsForPackageLoadingInWorkspace:handlePreActionsActivityLogSection:isCleanOperation:] (in IDEFoundation)
+  5   -[IDESchemeAction setUpActionDependenciesForCorePhaseOperation:shouldRunPostActionsBlock:prePhaseEnvironmentPopulationBlock:postPhaseEnvironmentPopulationBlock:handlePreActionsActivityLogSection:handlePostActionsActivityLogSection:buildParameters:schemeActionResultOperation:error:] (in IDEFoundation)
+  6   -[IDETestSchemeAction testOperationWithSchemeOperationParameters:testManager:buildOperation:buildParameters:schemeCommand:actionRecord:testPlanRunSpecifications:deviceAvailableChecker:outError:actionCallbackBlock:] (in IDEFoundation)
+  7   -[IDEScheme(TestSchemeAction) executionOperationForTestSchemeActionWithOperationParameters:command:buildOperationVariantSpecifiers:buildOperationGroup:schemeActionResult:buildParameters:shouldOnlyBuild:runDestination:orderedOperations:schemeActionRecord:deviceAvailableChecker:actionCallbackBlock:error:] (in IDEFoundation)
+  8   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  9   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+ 10   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+ 11   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+ 12   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+ 13   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 14   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 15   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 16   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 17   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 18   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 19   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 20   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 21   main (in xcodebuild)
+ 22   start (in dyld)
+
+<DVTOperation: 0x7af6683d40; state = arefc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   +[DVTOperation(DVTConveniences) operationWithBlock:] (in DVTFoundation)
+  2   -[IDESchemeAction setUpActionDependenciesForCorePhaseOperation:shouldRunPostActionsBlock:prePhaseEnvironmentPopulationBlock:postPhaseEnvironmentPopulationBlock:handlePreActionsActivityLogSection:handlePostActionsActivityLogSection:buildParameters:schemeActionResultOperation:error:] (in IDEFoundation)
+  3   -[IDETestSchemeAction testOperationWithSchemeOperationParameters:testManager:buildOperation:buildParameters:schemeCommand:actionRecord:testPlanRunSpecifications:deviceAvailableChecker:outError:actionCallbackBlock:] (in IDEFoundation)
+  4   -[IDEScheme(TestSchemeAction) executionOperationForTestSchemeActionWithOperationParameters:command:buildOperationVariantSpecifiers:buildOperationGroup:schemeActionResult:buildParameters:shouldOnlyBuild:runDestination:orderedOperations:schemeActionRecord:deviceAvailableChecker:actionCallbackBlock:error:] (in IDEFoundation)
+  5   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  6   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  7   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+  8   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+  9   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+ 10   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 11   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 12   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 13   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 14   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 15   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 16   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 17   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 18   main (in xcodebuild)
+ 19   start (in dyld)
+
+<IDESchemeActionResultOperation: 0x7af6a21b00; state = Arefc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   +[IDESchemeActionResultOperation schemeActionResultOperationWithSchemeActionRecord:trackingExecutionOfOperation:actionCallbackBlock:schemeActionResultComputationBlock:] (in IDEFoundation)
+  2   -[IDETestRunSession testOperationForTestRunSpecificationGroups:executionEnvironment:invocationRecord:actionRecord:schemeIdentifier:outSchemeActionResultOperation:launchParametersBlock:actionCallbackBlock:error:] (in IDEFoundation)
+  3   -[IDETestManager testOperationForTestRunSpecificationGroups:executionEnvironment:runDestinationPool:invocationRecord:actionRecord:schemeIdentifier:outSchemeActionResultOperation:launchParametersBlock:actionCallbackBlock:error:] (in IDEFoundation)
+  4   -[IDETestSchemeAction testOperationWithSchemeOperationParameters:testManager:buildOperation:buildParameters:schemeCommand:actionRecord:testPlanRunSpecifications:deviceAvailableChecker:outError:actionCallbackBlock:] (in IDEFoundation)
+  5   -[IDEScheme(TestSchemeAction) executionOperationForTestSchemeActionWithOperationParameters:command:buildOperationVariantSpecifiers:buildOperationGroup:schemeActionResult:buildParameters:shouldOnlyBuild:runDestination:orderedOperations:schemeActionRecord:deviceAvailableChecker:actionCallbackBlock:error:] (in IDEFoundation)
+  6   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  7   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  8   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+  9   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+ 10   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+ 11   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 12   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 13   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 14   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 15   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 16   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 17   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 18   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 19   main (in xcodebuild)
+ 20   start (in dyld)
+
+<DVTOperation: 0x7af6723d40; state = aReFc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   +[DVTOperation(DVTConveniences) operationWithBlock:] (in DVTFoundation)
+  2   -[IDESchemeAction setUpActionDependenciesForCorePhaseOperation:shouldRunPostActionsBlock:prePhaseEnvironmentPopulationBlock:postPhaseEnvironmentPopulationBlock:handlePreActionsActivityLogSection:handlePostActionsActivityLogSection:buildParameters:schemeActionResultOperation:error:] (in IDEFoundation)
+  3   -[IDETestSchemeAction testOperationWithSchemeOperationParameters:testManager:buildOperation:buildParameters:schemeCommand:actionRecord:testPlanRunSpecifications:deviceAvailableChecker:outError:actionCallbackBlock:] (in IDEFoundation)
+  4   -[IDEScheme(TestSchemeAction) executionOperationForTestSchemeActionWithOperationParameters:command:buildOperationVariantSpecifiers:buildOperationGroup:schemeActionResult:buildParameters:shouldOnlyBuild:runDestination:orderedOperations:schemeActionRecord:deviceAvailableChecker:actionCallbackBlock:error:] (in IDEFoundation)
+  5   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  6   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  7   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+  8   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+  9   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+ 10   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 11   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 12   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 13   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 14   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 15   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 16   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 17   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 18   main (in xcodebuild)
+ 19   start (in dyld)
+
+<DVTOperationGroup: 0x7af6a21680; state = AReF!c> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   -[DVTOperationGroup init] (in DVTFoundation)
+  2   -[IDETestRunSession testOperationForTestRunSpecificationGroups:executionEnvironment:invocationRecord:actionRecord:schemeIdentifier:outSchemeActionResultOperation:launchParametersBlock:actionCallbackBlock:error:] (in IDEFoundation)
+  3   -[IDETestManager testOperationForTestRunSpecificationGroups:executionEnvironment:runDestinationPool:invocationRecord:actionRecord:schemeIdentifier:outSchemeActionResultOperation:launchParametersBlock:actionCallbackBlock:error:] (in IDEFoundation)
+  4   -[IDETestSchemeAction testOperationWithSchemeOperationParameters:testManager:buildOperation:buildParameters:schemeCommand:actionRecord:testPlanRunSpecifications:deviceAvailableChecker:outError:actionCallbackBlock:] (in IDEFoundation)
+  5   -[IDEScheme(TestSchemeAction) executionOperationForTestSchemeActionWithOperationParameters:command:buildOperationVariantSpecifiers:buildOperationGroup:schemeActionResult:buildParameters:shouldOnlyBuild:runDestination:orderedOperations:schemeActionRecord:deviceAvailableChecker:actionCallbackBlock:error:] (in IDEFoundation)
+  6   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  7   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  8   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+  9   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+ 10   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+ 11   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 12   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 13   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 14   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 15   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 16   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 17   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 18   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 19   main (in xcodebuild)
+ 20   start (in dyld)
+
+<DVTOperation: 0x7af6723200; state = aReFc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   +[DVTOperation(DVTConveniences) operationWithBlock:] (in DVTFoundation)
+  2   -[IDETestRunSession testOperationForTestRunSpecificationGroups:executionEnvironment:invocationRecord:actionRecord:schemeIdentifier:outSchemeActionResultOperation:launchParametersBlock:actionCallbackBlock:error:] (in IDEFoundation)
+  3   -[IDETestManager testOperationForTestRunSpecificationGroups:executionEnvironment:runDestinationPool:invocationRecord:actionRecord:schemeIdentifier:outSchemeActionResultOperation:launchParametersBlock:actionCallbackBlock:error:] (in IDEFoundation)
+  4   -[IDETestSchemeAction testOperationWithSchemeOperationParameters:testManager:buildOperation:buildParameters:schemeCommand:actionRecord:testPlanRunSpecifications:deviceAvailableChecker:outError:actionCallbackBlock:] (in IDEFoundation)
+  5   -[IDEScheme(TestSchemeAction) executionOperationForTestSchemeActionWithOperationParameters:command:buildOperationVariantSpecifiers:buildOperationGroup:schemeActionResult:buildParameters:shouldOnlyBuild:runDestination:orderedOperations:schemeActionRecord:deviceAvailableChecker:actionCallbackBlock:error:] (in IDEFoundation)
+  6   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  7   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  8   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+  9   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+ 10   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+ 11   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 12   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 13   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 14   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 15   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 16   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 17   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 18   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 19   main (in xcodebuild)
+ 20   start (in dyld)
+
+<_DVTAsyncBlockOperation: 0x7af6918280; name = 'Download and merge code coverage profiles', state = Arefc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   -[_DVTAsyncBlockOperation initWithBlock:] (in DVTFoundation)
+  2   +[DVTOperation(DVTConveniences) operationWithAsynchronousBlock:] (in DVTFoundation)
+  3   -[IDETestSchemeAction testOperationWithSchemeOperationParameters:testManager:buildOperation:buildParameters:schemeCommand:actionRecord:testPlanRunSpecifications:deviceAvailableChecker:outError:actionCallbackBlock:] (in IDEFoundation)
+  4   -[IDEScheme(TestSchemeAction) executionOperationForTestSchemeActionWithOperationParameters:command:buildOperationVariantSpecifiers:buildOperationGroup:schemeActionResult:buildParameters:shouldOnlyBuild:runDestination:orderedOperations:schemeActionRecord:deviceAvailableChecker:actionCallbackBlock:error:] (in IDEFoundation)
+  5   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  6   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  7   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+  8   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+  9   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+ 10   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 11   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 12   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 13   -[Xcode3CommandLineBuildTool _buildWithTimingSection:] (in Xcode3Core)
+ 14   -[Xcode3CommandLineBuildTool run] (in Xcode3Core)
+ 15   XcodeBuildMain (in libxcodebuildLoader.dylib)
+ 16   -[XcodebuildPreIDEHandler loadXcode3ProjectSupportAndRunXcode3CommandLineBuildToolWithArguments:] (in xcodebuild)
+ 17   -[XcodebuildPreIDEHandler runWithArguments:] (in xcodebuild)
+ 18   main (in xcodebuild)
+ 19   start (in dyld)
+
+<DVTOperation: 0x7af6918000; state = aReFc> created at:
+  0   -[DVTOperation init] (in DVTFoundation)
+  1   +[DVTOperation(DVTConveniences) operationWithBlock:] (in DVTFoundation)
+  2   -[IDETestSchemeAction testOperationWithSchemeOperationParameters:testManager:buildOperation:buildParameters:schemeCommand:actionRecord:testPlanRunSpecifications:deviceAvailableChecker:outError:actionCallbackBlock:] (in IDEFoundation)
+  3   -[IDEScheme(TestSchemeAction) executionOperationForTestSchemeActionWithOperationParameters:command:buildOperationVariantSpecifiers:buildOperationGroup:schemeActionResult:buildParameters:shouldOnlyBuild:runDestination:orderedOperations:schemeActionRecord:deviceAvailableChecker:actionCallbackBlock:error:] (in IDEFoundation)
+  4   -[IDEScheme _executionOperationForSchemeOperationParameters:build:onlyBuild:buildParameters:title:buildLog:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:actionCallbackBlock:] (in IDEFoundation)
+  5   -[IDEScheme(TestSchemeAction) schemeTestActionOperationForSchemeOperationParameters:onlyBuild:buildLog:deviceAvailableChecker:buildParameters:shouldBuild:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  6   -[IDEScheme buildAndActionTaskForSchemeOperationParameters:shouldBuild:onlyBuild:buildParameters:buildLog:deviceAvailableChecker:restorePersistedBuildResults:dontActuallyRunCommands:error:completionBlock:] (in IDEFoundation)
+  7   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:deviceAvailableChecker:error:completionBlock:] (in IDEFoundation)
+  8   -[IDEScheme schemeOperationForSchemeOperationParameters:buildLog:overridingProperties:overridingBuildConfiguration:dontActuallyRunCommands:restorePersistedBuildResults:error:completionBlock:] (in IDEFoundation)
+  9   -[Xcode3CommandLineBuildTool(TestSchemeAction) buildForTestSchemeCommandWantsSkip:buildAction:isProjectBuild:title:buildLog:isMoreDestinationsPending:runDestinations:runDestination:schemeCommand:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 10   -[Xcode3CommandLineBuildTool doSchemeBuildWithRunDestinations:runDestinationIdx:wantsSkip:buildActionTimingSection:timingSection:buildAction:isMoreDesinationsPending:actionResultBlock:title:buildLog:executionEnvironment:restorePersistedBuildResults:operationToEnqueue:error:] (in Xcode3Core)
+ 11   -[Xcode3CommandLineBuildTool doBuildForBuildAction:timingSection:colorize:colorizeFailure:error:] (in Xcode3Core)
+ 12   -[Xcode3Comman** BUILD INTERRUPTED **

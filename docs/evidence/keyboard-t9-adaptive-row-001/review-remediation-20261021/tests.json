@@ -1,0 +1,28 @@
+{
+  "passed": [
+    "KeyboardLayoutIntegrationTests.CompactHeaderControllerLayoutTests testAdaptiveExpansionKeepsPanelReadingAndMaskGeometry",
+    "KeyboardLayoutIntegrationTests.CompactHeaderControllerLayoutTests testAnimatedRevealRejectsRapidToggleAndRestoresPagingInteraction",
+    "KeyboardLayoutIntegrationTests.CompactHeaderControllerLayoutTests testExpandedActionMatchesCompactActionWithoutChangingCellHeight",
+    "KeyboardLayoutIntegrationTests.CompactHeaderControllerLayoutTests testFewCandidatesAndPublicationChangesNeverReuseOldIndices",
+    "KeyboardLayoutIntegrationTests.CompactHeaderControllerLayoutTests testFirstRowTextAlignmentAcrossPresentations",
+    "KeyboardLayoutIntegrationTests.CompactHeaderControllerLayoutTests testIdleHeaderMeasurementsKeepOnlyFixedCandidateReservation",
+    "KeyboardLayoutIntegrationTests.CompactHeaderControllerLayoutTests testNaturalFlowFixedActionMaterialAndTouchOcclusion",
+    "KeyboardLayoutIntegrationTests.CompactHeaderControllerLayoutTests testPagingAppendKeepsAnchorAndFlowStableAcrossScrolling",
+    "KeyboardLayoutIntegrationTests.CompactHeaderControllerLayoutTests testPartialAndSliverAnchorsExpandWithoutDroppingEarlierCandidates",
+    "KeyboardLayoutIntegrationTests.CompactHeaderControllerLayoutTests testRealRootAlignsHeaderAndKeepsKeyGeometryAcrossReloads",
+    "KeyboardLayoutIntegrationTests.CompactHeaderControllerLayoutTests testRepeatedRevealAndRecoveryDismissRestoreOriginalGeometry",
+    "KeyboardLayoutIntegrationTests.CompactHeaderControllerLayoutTests testUserScrolledAnchorReturnsToCompactAndSnapshotChangesFallBack",
+    "KeyboardLayoutIntegrationTests.T9AdaptiveRowTests testAtomicSnapshotAndVisiblePathSelectionSurviveCollapse",
+    "KeyboardLayoutIntegrationTests.T9AdaptiveRowTests testConservativeSignalsRecoveryAndLayoutSwitches",
+    "KeyboardLayoutIntegrationTests.T9AdaptiveRowTests testDeviceTraceIsExplicitBoundedAndNeverExportsText",
+    "KeyboardLayoutIntegrationTests.T9AdaptiveRowTests testExpandedPanelTracksRootAndRestoresBothRowStates",
+    "KeyboardLayoutIntegrationTests.T9AdaptiveRowTests testHiddenPathShrinkEmptyAndRepeatedShowKeepCollectionConsistent",
+    "KeyboardLayoutIntegrationTests.T9AdaptiveRowTests testIdleCompositionAndRapidRetypePreserveCandidateAndKeys",
+    "KeyboardLayoutIntegrationTests.T9AdaptiveRowTests testOnlyCompletedDetachedPresentationCanResetSticky",
+    "KeyboardLayoutIntegrationTests.T9AdaptiveRowTests testQA001FirstPathIsVisibleAfterPendingPanelBeforeSecondKey",
+    "KeyboardLayoutIntegrationTests.T9AdaptiveRowTests testQA001HiddenViewportPublishesFirstCellsWithoutSecondInput"
+  ],
+  "pass_count": 21,
+  "fail": 0,
+  "skip": 0
+}

@@ -198,14 +198,22 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
         let first = T9PinyinPath(displayText: "m", replacementRawInput: "m")
         // Production binds the model before unhiding the row. Only normal parent
         // layout follows: no test-side collection reload or forced Cell layout.
+        let reloadsBeforeFirstPath = bar.debugPathReloadCount
         bar.setPaths([first], selected: first, compositionRevision: 1)
+        XCTAssertEqual(bar.debugPathReloadCount, reloadsBeforeFirstPath + 1)
         host.view.setNeedsLayout()
         host.view.layoutIfNeeded()
         XCTAssertTrue(collection.visibleCells.isEmpty)
+        XCTAssertEqual(bar.debugPathReloadCount, reloadsBeforeFirstPath + 1)
         bar.setRowVisible(true)
         host.view.setNeedsLayout()
         host.view.layoutIfNeeded()
         XCTAssertEqual(bar.bounds.height, 34)
+        XCTAssertEqual(bar.debugPathReloadCount, reloadsBeforeFirstPath + 2)
+        bar.setNeedsLayout()
+        host.view.setNeedsLayout()
+        host.view.layoutIfNeeded()
+        XCTAssertEqual(bar.debugPathReloadCount, reloadsBeforeFirstPath + 2, "Ordinary layout must not reload again")
         let cell = try XCTUnwrap(collection.cellForItem(at: IndexPath(item: 0, section: 0)))
         let label = try XCTUnwrap(descendants(cell).compactMap { $0 as? UILabel }.first { $0.text == "m" })
         XCTAssertFalse(label.isHidden)
@@ -230,6 +238,74 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
         host.view.layoutIfNeeded()
         XCTAssertEqual(bar.bounds.height, 0)
         XCTAssertNil(bar.hitTest(CGPoint(x: 20, y: 10), with: nil))
+    }
+
+    @MainActor
+    func testHiddenPathShrinkEmptyAndRepeatedShowKeepCollectionConsistent() throws {
+        let receiver = PathReceiver()
+        let bar = T9PinyinPathBarView(
+            height: 34, target: receiver, selectAction: #selector(PathReceiver.select(_:)))
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 100))
+        let host = UIViewController()
+        window.rootViewController = host
+        host.view.addSubview(bar)
+        NSLayoutConstraint.activate([
+            bar.leadingAnchor.constraint(equalTo: host.view.leadingAnchor),
+            bar.topAnchor.constraint(equalTo: host.view.topAnchor),
+            bar.widthAnchor.constraint(equalToConstant: 376),
+        ])
+        window.isHidden = false
+        defer { window.isHidden = true }
+        let collection = try XCTUnwrap(descendants(bar).compactMap { $0 as? UICollectionView }.first)
+        let paths = ["m", "n", "o"].map { T9PinyinPath(displayText: $0, replacementRawInput: $0) }
+        bar.setRowVisible(true)
+        bar.setPaths(paths, selected: nil, compositionRevision: 1)
+        host.view.layoutIfNeeded()
+        XCTAssertEqual(collection.numberOfItems(inSection: 0), 3)
+        XCTAssertEqual(collection.visibleCells.count, 3)
+
+        for cycle in 0..<3 {
+            bar.setRowVisible(false)
+            host.view.layoutIfNeeded()
+            bar.setPaths([paths[0]], selected: nil, compositionRevision: UInt64(2 + cycle * 3))
+            let cachedCount = collection.numberOfItems(inSection: 0)
+            XCTAssertEqual(cachedCount, 1, "Hidden reload must synchronize UIKit's cached item count")
+            // Preserve an assertion failure on the old patch without deliberately
+            // provoking its stale-index crash in subsequent UIKit invalidation.
+            guard cachedCount == 1 else { return }
+            collection.collectionViewLayout.invalidateLayout()
+            host.view.setNeedsLayout()
+            host.view.layoutIfNeeded()
+            bar.setRowVisible(true)
+            host.view.layoutIfNeeded()
+            XCTAssertEqual(collection.visibleCells.count, 1)
+            XCTAssertTrue(
+                collection.visibleCells.allSatisfy { cell in
+                    descendants(cell).compactMap { $0 as? UILabel }.contains { $0.text == "m" }
+                })
+
+            bar.setRowVisible(false)
+            host.view.layoutIfNeeded()
+            bar.setPaths([], selected: nil, compositionRevision: UInt64(3 + cycle * 3), idleHintText: "hint")
+            XCTAssertEqual(collection.numberOfItems(inSection: 0), 0)
+            XCTAssertTrue(collection.isHidden)
+            let hintReloadCount = bar.debugPathReloadCount
+            collection.collectionViewLayout.invalidateLayout()
+            bar.setRowVisible(true)
+            host.view.layoutIfNeeded()
+            XCTAssertTrue(collection.visibleCells.isEmpty)
+            XCTAssertEqual(bar.bounds.height, 34)
+            XCTAssertEqual(bar.debugPathReloadCount, hintReloadCount, "A hidden collection is not a usable viewport")
+
+            // The row is positive-height while the hint hides the collection.
+            // A subsequent non-empty publication must restore actual Cell content.
+            bar.setPaths(paths, selected: nil, compositionRevision: UInt64(4 + cycle * 3))
+            host.view.setNeedsLayout()
+            host.view.layoutIfNeeded()
+            XCTAssertFalse(collection.isHidden)
+            XCTAssertEqual(collection.numberOfItems(inSection: 0), 3)
+            XCTAssertEqual(collection.visibleCells.count, 3)
+        }
     }
 
     @MainActor

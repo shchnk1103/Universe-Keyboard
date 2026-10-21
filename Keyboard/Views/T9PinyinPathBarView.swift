@@ -45,6 +45,10 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
     private var shouldScrollToStartOnNextReload = false
     private var selectedPathIDToReveal: String?
     private var hasPendingPathReload = false
+    #if DEBUG
+        /// Counts actual reload calls, without capturing path contents or changing scheduling.
+        private(set) var debugPathReloadCount = 0
+    #endif
     private var lastDeliveredPathID: String?
     private var lastDeliveredAt: CFTimeInterval = 0
     #if DEBUG
@@ -228,10 +232,15 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
 
         self.paths = paths
         self.selectedPath = selected
+        // Keep UIKit's cached item count synchronized even while hidden. Deferring
+        // this notification would expose new paths to old layout index paths.
+        reloadPathData()
         applyIdleHint(pathsEmpty: paths.isEmpty, text: idleHintText)
         separator.isHidden = paths.isEmpty && idleHintText == nil
-        hasPendingPathReload = true
-        renderPendingPathsIfPossible()
+        hasPendingPathReload = !hasUsablePathViewport
+        if !hasPendingPathReload {
+            collectionView.layoutIfNeeded()
+        }
         #if DEBUG
             T9QA001DeviceTrace.shared.bar(.bound, bar: self)
         #endif
@@ -241,12 +250,19 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
     }
 
     private var hasUsablePathViewport: Bool {
-        !isHidden && bounds.width > 0 && bounds.height > 0
+        !isHidden && !collectionView.isHidden && bounds.width > 0 && bounds.height > 0
             && collectionView.bounds.width > 0 && collectionView.bounds.height > 0
     }
 
-    /// Model binding can precede the Controller's row expansion. Defer the
-    /// collection transaction until both parent and child have a real viewport;
+    private func reloadPathData() {
+        collectionView.reloadData()
+        #if DEBUG
+            debugPathReloadCount += 1
+        #endif
+    }
+
+    /// Model binding can precede the Controller's row expansion. Supplement the
+    /// synchronous data-source reload once both parent and child are visible;
     /// a positive child frame alone can still belong to a zero-height parent.
     private func renderPendingPathsIfPossible() {
         guard hasPendingPathReload, hasUsablePathViewport else { return }
@@ -254,7 +270,7 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
         // model publication sets the flag again; ordinary layout never reloads.
         hasPendingPathReload = false
         collectionView.collectionViewLayout.invalidateLayout()
-        collectionView.reloadData()
+        reloadPathData()
         collectionView.layoutIfNeeded()
     }
 

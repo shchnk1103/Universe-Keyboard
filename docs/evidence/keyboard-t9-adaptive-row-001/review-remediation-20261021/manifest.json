@@ -1,0 +1,23 @@
+{
+  "baseline": "af339d9df00eb834a66fa4a38991449fc17719a9",
+  "files": {
+    "docs/evidence/keyboard-t9-adaptive-row-001/review-remediation-20261021/after.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "docs/evidence/keyboard-t9-adaptive-row-001/review-remediation-20261021/after.log": "d7983a0ece62d1298d0fee6d0edf3af01a5e02ab5377b54dafec0449e715ca41",
+    "docs/evidence/keyboard-t9-adaptive-row-001/review-remediation-20261021/before.exit": "9d9b18720961e9b4689fd763b85e7b6f36160ccd3a8a1c9ddc5103bb0f66c396",
+    "docs/evidence/keyboard-t9-adaptive-row-001/review-remediation-20261021/before.log": "29b7db27fef50c06c452138381912e617b2c007794063e0df387188d507dd780",
+    "docs/evidence/keyboard-t9-adaptive-row-001/review-remediation-20261021/format.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "docs/evidence/keyboard-t9-adaptive-row-001/review-remediation-20261021/format.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/evidence/keyboard-t9-adaptive-row-001/review-remediation-20261021/original-fix.patch": "062387d518fb92067bcf3f25494c06a8c530a679f385ec0b56250be511d5c8ad",
+    "docs/evidence/keyboard-t9-adaptive-row-001/review-remediation-20261021/report.md": "3143879d00185df35815aa42614452f7ae37a7d52ddedf072fa68e6dc9896627",
+    "docs/evidence/keyboard-t9-adaptive-row-001/review-remediation-20261021/revision.patch": "50079c57eb41b9a5f9d2ab4181a7276a3cb8d96611b6e448607874fac3564c0c",
+    "docs/evidence/keyboard-t9-adaptive-row-001/review-remediation-20261021/tests.json": "c0009887a0cb08ecbab3b2cbc14acb9752f48b0add376b5bf39bd25bbbf9603f"
+  },
+  "source": {
+    "Keyboard/Views/T9PinyinPathBarView.swift": "cdcd5f5b1ef8162d8e228f063fc28b7f8de79cfd41690f9e2190dd23ed50feec",
+    "KeyboardLayoutIntegrationTests/T9AdaptiveRowTests.swift": "d70769f2bb83e1702f69efa83f6d6386123992a0d7a1dc3296366a164f6b0eb2"
+  },
+  "protected_unchanged_not_staged": {
+    "Universe Keyboard.xcodeproj/project.pbxproj": "a0fa659a049834b692071955a82f8fe5087bf9d7ab9d3453a047a5c47df7cb3b",
+    "Universe Keyboard.xcodeproj/xcshareddata/xcschemes/Universe Keyboard.xcscheme": "b266a5c6d238c6b1821de98ef4b0819c447af18aa3ab9086eb5343e04704c83e"
+  }
+}
