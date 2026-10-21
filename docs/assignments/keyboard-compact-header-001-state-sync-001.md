@@ -61,5 +61,5 @@ Entry 核验：`git fetch origin` 后 `origin/main` = `b266be269cd978772a7f532ef
 | 4. `docs/KNOWLEDGE_INDEX.md` | 不适用 — 无导航文字编码该 Work Item 状态 |
 | 5. Active plan Status line | 不适用 — `docs/plans/` 下无该 Work Item 的 plan |
 | 6. `docs/ACTIVE_WORK.md` | 已更新：第 11 行改写，并加 2026-10-21 当前更新；第 3 行及 UI-2 同步记录未触碰 |
-| 7. Markdown link check（baseline/HEAD） | 修正前内容提交的检查：`python3 scripts/ci/check_markdown_links.py --base b266be269cd978772a7f532efe862631a16b3da7 --head ec580ac4bb097a7a9de70d639eff39b8db1fc0e4`，结果 `PASS changed Markdown links (3 files)`。修正提交之后的检查：因在本文件内记录会改变 HEAD，结果写在修正提交的提交信息中，不写进文件 |
+| 7. Markdown link check（baseline/HEAD） | 修正前内容提交的检查：`python3 scripts/ci/check_markdown_links.py --base b266be269cd978772a7f532efe862631a16b3da7 --head ec580ac4bb097a7a9de70d639eff39b8db1fc0e4`，结果 `PASS changed Markdown links (3 files)`。修正提交之后的检查：因在本文件内记录会改变 HEAD，本文件不记录该结果；由 Round 2 独立 Reviewer 对最终提交重新运行并在其评审记录中给出。 |
 | `CHANGELOG.md` | 未更新 — 条目记录行为/特性变更，不作状态同步镜像；2026-10-20 各条中的“无 push/PR”为历史叙述，按规则不重写 |
