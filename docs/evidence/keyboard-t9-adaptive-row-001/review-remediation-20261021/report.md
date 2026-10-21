@@ -28,7 +28,7 @@ Human当前聊天 Independent Review Finding Closure / LIMITED REMEDIATION + TAR
 2. 改进 testQA001HiddenViewportPublishesFirstCellsWithoutSecondInput：保留真实Cell/Label/触控断言；新增实际reload计数：隐藏发布+1、零高layout不增加、首次有效viewport再+1、普通后续layout+0。hint测试也校验collection隐藏期间没有额外reload。它在上一轮已作为guard通过；新增计数验证的是修复行为，不是设备red→green证明。
 3. after.log：KeyboardLayoutIntegrationTests **21 PASS / 0 FAIL / 0 SKIP**（T9Adaptive9 + CompactHeader12），exit0。全部精确名称见tests.json。原Sticky、恢复、面板/I-6/I-7、生命周期、实际首Cell相关测试全部保留。
 4. before.log：新缩减测试 **0 PASS / 1 FAIL / 0 SKIP**，断言明确见日志。xctest进程已退出，xcodebuild随后收尾停滞，等待约2分钟后仅终止本任务精确PID49670（先INT后TERM）；最终exit143 / BUILD INTERRUPTED，而不是正常测试exit65。失败记录原样保存，before.xcresult可能未完整收尾，不能冒充完整结果包。
-5. format.log/exit：相对origin/main13个Swift严格lint，exit0；本轮两Swift已format。git diff --check通过。
+5. format.log/exit：相对origin/main13个Swift严格lint，exit0；本轮两Swift已format。源码diff检查通过。证据暂存后，git diff --cached --check报告原始构建日志及patch上下文空行的尾随空白；为保持原始字节和哈希，未清洗这些证据。这不是Swift格式失败。
 6. Debug test编译及执行成功；未修改签名/Scheme/project。after日志没有Unable to simultaneously satisfy / Breaking constraint。hostless连接警告与Xcode operatingSystemBuild解析警告保留，不等于真实Extension验证。
 
 命令：xcodebuild -project 'Universe Keyboard.xcodeproj' -scheme 'Universe Keyboard' -configuration Debug -destination 'platform=iOS Simulator,id=5DEEF120-CB85-47BB-A690-303613DD85EC' -derivedDataPath /private/tmp/t9-adaptive-row-001-integration-build -resultBundlePath /private/tmp/ui2-qa001-review-remediation/after.xcresult -only-testing:KeyboardLayoutIntegrationTests CODE_SIGNING_ALLOWED=NO SWIFT_VERSION=6.0 SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES test
