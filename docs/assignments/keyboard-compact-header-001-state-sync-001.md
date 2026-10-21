@@ -29,7 +29,7 @@ record_id: KEYBOARD-COMPACT-HEADER-001-STATE-SYNC-001
 ## Boundary
 
 - **Scope（docs-only）:** 拥有者 Assignment Current Status；`docs/ACTIVE_WORK.md` 第 11 行及当前更新；`docs/ENGINEERING_DASHBOARD.md`（判断是否新增）；Markdown 链接检查；其余 M-02 项逐项检查；本 Assignment 记录文件。
-- **Non-goals:** 产品/测试/workflow/CI/Xcode 工程改动；诊断或重跑 CI；对 UI-1 残项或风险做接受、关闭、削弱；修改 `.kos/project.json`；伪造载体日志 HANDOFF / ACCEPT；push / PR / merge；CI #705 事实更正（Run #705 在 PR #217 合并提交上失败，其后 Run #707、#709 成功，PR #218 改了 QA-001 首键测试，根因未确认——另立小记录，不在本次范围）。
+- **Non-goals:** 产品/测试/workflow/CI/Xcode 工程改动；诊断或重跑 CI；对 UI-1 残项或风险做接受、关闭、削弱；修改 `.kos/project.json`；伪造载体日志 HANDOFF / ACCEPT；push / PR / merge；CI #705 事实更正：另立记录处理，不在本次范围。
 - **Required Inputs:** `AGENTS.md`；Knowledge Index；Assignment Policy；`kos-2.1-operational-maturity.md` 的 M-02 / S-03；`AI_WORKFLOW.md`；拥有者 Assignment；`ops/task-workspace.md`（UK-007）。注：Executor 所在 checkout 的 `ops/` 目录不存在该文件；UK-007 在仓库内的记录为 `docs/assignments/kos-upgrade-uk-007-task-workspace.md`，已据此阅读。
 
 ## Assignment
@@ -61,5 +61,5 @@ Entry 核验：`git fetch origin` 后 `origin/main` = `b266be269cd978772a7f532ef
 | 4. `docs/KNOWLEDGE_INDEX.md` | 不适用 — 无导航文字编码该 Work Item 状态 |
 | 5. Active plan Status line | 不适用 — `docs/plans/` 下无该 Work Item 的 plan |
 | 6. `docs/ACTIVE_WORK.md` | 已更新：第 11 行改写，并加 2026-10-21 当前更新；第 3 行及 UI-2 同步记录未触碰 |
-| 7. Markdown link check（baseline/HEAD） | 见 Executor 交接与最终提交信息（在本文件内记录会改变 HEAD） |
+| 7. Markdown link check（baseline/HEAD） | 修正前内容提交的检查：`python3 scripts/ci/check_markdown_links.py --base b266be269cd978772a7f532efe862631a16b3da7 --head ec580ac4bb097a7a9de70d639eff39b8db1fc0e4`，结果 `PASS changed Markdown links (3 files)`。修正提交之后的检查：因在本文件内记录会改变 HEAD，结果写在修正提交的提交信息中，不写进文件 |
 | `CHANGELOG.md` | 未更新 — 条目记录行为/特性变更，不作状态同步镜像；2026-10-20 各条中的“无 push/PR”为历史叙述，按规则不重写 |
