@@ -8,12 +8,14 @@ record_id: KEYBOARD-T9-ADAPTIVE-ROW-001
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current phase | Device/targeted regression accepted; policy checked; Human/Quality governance decision pending |
-| Non-claims | Human device7/7 accepted; Claude Quality remains CONDITIONAL PASS as relayed; no formal Closed, PR update, Merge or Release |
-| Next | Quality assesses historical review evidence/coverage; Human Product Lead decides explicit residual disposition; Coordinator records only |
-| Residuals | R-QA001-GOV-01 Pending: [Policy check and proposed unsigned decision](../evidence/keyboard-t9-adaptive-row-001/governance-check-20261021/policy-check.md); no implicit Packet waiver or formal close |
+| Current phase | QA-001 FORMALLY CLOSED by Human; UI-2 feature remains Active, publication gated |
+| Non-claims | QA-001-only closure; Quality remains CONDITIONAL PASS as relayed; no whole-feature/task close, PR update, Merge or Release |
+| Next | Stop; await separate Human authorization before PR217 update or any publication; retain worktree and Human files |
+| Residuals | R-QA001-GOV-01 / Q-01 / Q-02 / Q-03 retained: accept, non-blocking for QA-001 only; [register](../evidence/keyboard-t9-adaptive-row-001/formal-closure-20261021/residuals.md) |
+| QA-001 defect status | CLOSED; [Human formal decision](../evidence/keyboard-t9-adaptive-row-001/formal-closure-20261021/human-decision.md) |
+| QA-001 Quality Closure | SUPPORTED; Human-relayed independent Quality Sufficiency CONDITIONAL PASS, not an original Reviewer Artifact |
 
-以下dated阶段保留为历史记录；其中device pending / OPEN状态由文末2026-10-21验收收据更新，不回写历史负证据。
+以下 dated 阶段均为历史记录；其中 device pending / OPEN / CLOSURE BLOCKED / HUMAN DECISION REQUIRED 及 unsigned proposal 由文末本次明确 Human 正式决定更新。历史负证据、流程偏差和原件缺失不回写；仅 QA-001 关闭，整个 UI-2 Assignment 保持 Active。
 
 Historical pre-integration Sticky correction evidence: L1 5/0/0, L2 Keyboard49/0/0 + Extension35/0/0, Debug build-for-testing and strict format8 passed. Real host evidence is pending; no Gate/Close. Writer remains codex-t9-adaptive-row, P=none.
 
@@ -96,3 +98,20 @@ Human 本轮仅授权 Policy 核查、本 Assignment / Evidence 更新及本地�
 `R-QA001-GOV-01` 仍 Pending：历史 Packet / lane 首次指派证据本地不可核验，需明确 Quality 的完整覆盖及剩余条件、M-03 处置。[待确认决定](../evidence/keyboard-t9-adaptive-row-001/governance-check-20261021/proposed-decision.md) 中的 accept 尚未生效或签署；它只是本任务限定、不构成先例、不倒填的未来选项，不是已经执行的例外。若证据不足，可由 Human 另授权有真实事前 Packet 的有界 Quality 补充复核，不默认重跑全部测试。
 
 当前结论 **HUMAN DECISION REQUIRED**；QA-001 正式关闭仍 BLOCKED，技术和设备验收仍 PASS。Task Lifecycle 保持 Active / closure preparation，未写 QA 或任务 Closed。两个 Human dirty 文件原样保留且不暂存；没有新 Writer、Policy 修改、追溯 Packet、审批补造、Push、PR、Merge、Release 或 Worktree 清理。完成后停止，等待 Human 及相应 Quality 处置。
+
+## QA-001 formal defect closure — 2026-10-21
+
+**QA-001 FORMALLY CLOSED — Closure Scope: QA-001 defect only.** Human 本次明确接受四项 non-blocking residual 并批准正式关闭，完整原文见[Human Decision](../evidence/keyboard-t9-adaptive-row-001/formal-closure-20261021/human-decision.md)。这是当前真实授权，不是追溯Packet或历史审批，不修改KOS Policy、不代替Quality签核。
+
+技术证据：Human DSON13Pro7/7 PASS（Device-attested）；Keyboard49 + Extension41 + Integration21 =111/0/0，exit0（Executor-recorded）；Finding A CLOSED、Architecture PASS均为既有Human转述。本次Human另外转述独立Claude Quality Sufficiency CONDITIONAL PASS / QA-001 Quality Closure SUPPORTED / Historical Packet Residual NON-BLOCKING CANDIDATE；原件未归档，不伪装原始Artifact。源码从f271f68后未变，等同Human验收f610763；本轮只核验既有证据，不重跑测试。
+
+| Residual ID | Owner | Disposition at QA-001 close | Evidence Pointer |
+|---|---|---|---|
+| R-QA001-GOV-01 | Human Product Owner | `accept` — NON-BLOCKING FOR QA-001 ONLY | [历史Packet流程偏差及新一轮未冻结记录](../evidence/keyboard-t9-adaptive-row-001/formal-closure-20261021/residuals.md#r-qa001-gov-01) |
+| R-QA001-Q-01 | Human Product Owner (Residual Acceptance) | `accept` — NON-BLOCKING FOR QA-001 ONLY | [UIKit内部根因不确定性](../evidence/keyboard-t9-adaptive-row-001/formal-closure-20261021/residuals.md#r-qa001-q-01) |
+| R-QA001-Q-02 | Human Product Owner (Residual Acceptance) | `accept` — NON-BLOCKING FOR QA-001 ONLY | [Human设备证据范围及原始trace/录像缺失](../evidence/keyboard-t9-adaptive-row-001/formal-closure-20261021/residuals.md#r-qa001-q-02) |
+| R-QA001-Q-03 | Human Product Owner (Residual Acceptance) | `accept` — NON-BLOCKING FOR QA-001 ONLY | [Review原件及条件清单来源限制](../evidence/keyboard-t9-adaptive-row-001/formal-closure-20261021/residuals.md#r-qa001-q-03) |
+
+四项均在close保留，不倒填历史、不声称历史Review流程合规，不构成未来省略Packet的先例。Owner仅接受Residual，不替代独立Architecture/Quality职责。原始FAIL、Blocked报告与unsigned提案继续作为历史证据。[关闭报告](../evidence/keyboard-t9-adaptive-row-001/formal-closure-20261021/closure.md)列明哈希、证据来源、监控/重开条件和发布边界。
+
+本任务Lifecycle仍为Active（UI-2 feature），未关闭整个Assignment或Feature/Release Gate。PR217、Merge、Release状态不变；未来更新需单独Human授权及远端基线/提交链/精确HEAD CI核验。Human project.pbxproj/Scheme前后哈希一致，均未修改/暂存/提交。只更新本Assignment及Evidence，创建一个本地docs-only提交；不触碰其他Worktree、不清理。当前会话可由Human归档，但Worktree/分支/未发布提交/Human dirty现场必须保留。完成后停止。

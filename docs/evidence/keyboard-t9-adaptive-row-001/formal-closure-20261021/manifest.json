@@ -1,0 +1,29 @@
+{
+  "entry_head": "8f559a2e5d576ae6dd9839d7eae84fe86288dc24",
+  "accepted_product_head": "f610763df0cc12e89d0a8cd8c3b90197ced2d88b",
+  "product_source_last_change": "f271f68f5b3bccc863b446437512540d681fb837",
+  "receipt_recorded_at": "2026-10-21T16:14:38+08:00",
+  "authorization_source": "/Users/doubleshy0n/.codex/attachments/bf788dda-849d-4693-b641-25df59fa9a89/\u5df2\u7c98\u8d34\u7684\u6587\u672c.txt",
+  "authorization_sha256": "fa222dfe2c0aa33523153d1e6df68e162e0b2cd54d2479191b38fa7915a50440",
+  "files": {
+    "docs/evidence/keyboard-t9-adaptive-row-001/formal-closure-20261021/closure.md": "0063de89e8e7619930ec7bd5f287a92ffda4bfd0467a71b1fd1df8f798f34630",
+    "docs/evidence/keyboard-t9-adaptive-row-001/formal-closure-20261021/human-authorization-original.txt": "fa222dfe2c0aa33523153d1e6df68e162e0b2cd54d2479191b38fa7915a50440",
+    "docs/evidence/keyboard-t9-adaptive-row-001/formal-closure-20261021/human-decision.md": "7b9a7119a1d7e9f8c5bfc98460e1a885aaf3bedf10ff45ce76be28582799b835",
+    "docs/evidence/keyboard-t9-adaptive-row-001/formal-closure-20261021/preclosure-evidence-inventory.json": "55e180fc866e2cd8dc4289ef0df6a947427c3066513fd11e773ee2b692d5db14",
+    "docs/evidence/keyboard-t9-adaptive-row-001/formal-closure-20261021/residuals.md": "894eaa953a4d0ce3bd21c5d383793af384f38a8de04fb6a86359c91a21bbaeb4"
+  },
+  "assignment": {
+    "docs/assignments/keyboard-t9-adaptive-row-001.md": "ac5fca87f393a369b07fab5f43d1492fa6b87b5fc5a07a58d858a180d2cb1622"
+  },
+  "protected_before": {
+    "Universe Keyboard.xcodeproj/project.pbxproj": "a0fa659a049834b692071955a82f8fe5087bf9d7ab9d3453a047a5c47df7cb3b",
+    "Universe Keyboard.xcodeproj/xcshareddata/xcschemes/Universe Keyboard.xcscheme": "b266a5c6d238c6b1821de98ef4b0819c447af18aa3ab9086eb5343e04704c83e"
+  },
+  "protected_after": {
+    "Universe Keyboard.xcodeproj/project.pbxproj": "a0fa659a049834b692071955a82f8fe5087bf9d7ab9d3453a047a5c47df7cb3b",
+    "Universe Keyboard.xcodeproj/xcshareddata/xcschemes/Universe Keyboard.xcscheme": "b266a5c6d238c6b1821de98ef4b0819c447af18aa3ab9086eb5343e04704c83e"
+  },
+  "closure_scope": "QA-001 defect only",
+  "status": "QA-001 FORMALLY CLOSED",
+  "tests_rerun": false
+}
