@@ -63,3 +63,26 @@ Entry 核验：`git fetch origin` 后 `origin/main` = `b266be269cd978772a7f532ef
 | 6. `docs/ACTIVE_WORK.md` | 已更新：第 11 行改写，并加 2026-10-21 当前更新；第 3 行及 UI-2 同步记录未触碰 |
 | 7. Markdown link check（baseline/HEAD） | 修正前内容提交的检查：`python3 scripts/ci/check_markdown_links.py --base b266be269cd978772a7f532efe862631a16b3da7 --head ec580ac4bb097a7a9de70d639eff39b8db1fc0e4`，结果 `PASS changed Markdown links (3 files)`。修正提交之后的检查：因在本文件内记录会改变 HEAD，本文件不记录该结果；由 Round 2 独立 Reviewer 对最终提交重新运行并在其评审记录中给出。 |
 | `CHANGELOG.md` | 未更新 — 条目记录行为/特性变更，不作状态同步镜像；2026-10-20 各条中的“无 push/PR”为历史叙述，按规则不重写 |
+
+## Review results and residual disposition
+
+Post-review, append-only. 以上各节在 Reviewer 评审时已固定为提交 `857ad719545eab64d53f75019192e1c4914a3319`；本节之前的内容不因本节改动。
+
+- Architecture：Round 1 Partial → Round 2 Partial → Round 2 Addendum 1 后 **Pass**（lane `KCH001-SS001-ARCH`）。记录见 `docs/reviews/keyboard-compact-header-001-state-sync-001-architecture-review.md`。
+- Quality：Round 1 Partial → Round 2 **Pass with conditions**（lane `KCH001-SS001-QUAL`）。记录见 `docs/reviews/keyboard-compact-header-001-state-sync-001-quality-review.md`。
+- Packet：各轮 packet 在派发前冻结，随评审记录入库于 `docs/reviews/keyboard-compact-header-001-state-sync-001-packets/`，摘要与记录一致。
+- 两个 Partial 的缺口均由 Coordinator 的 packet 允许集缺陷造成（Round 1 未允许读取 Dashboard、Knowledge Index、plans、CHANGELOG；Round 2 的 Architecture packet 未允许运行链接检查），不是被评对象缺陷。Round 2 扩大了允许集；Architecture 经 Assignment Authority 批准的 Addendum 1 补齐。
+- 基线漂移：评审期间 `origin/main` 由 `b266be2` 前进到 `de98a1e`（PR #220，改动 `docs/TECH_DEBT.md` 与 `docs/assignments/keyboard-t9-adaptive-row-001.md`），与本变更无文件重叠，合并检查干净。Human Product Owner 于 2026-10-21 Asia/Shanghai 在对话中接受该漂移，Round 2 仍按 `b266be2` 评审。
+
+### 残项 R-Q5
+
+- 内容：Executor 的模型为 `claude-sonnet-5-5`；实际 effort 仅为 Executor 自述（harness 只暴露数值 5），未经独立验证，不推定为 medium。
+- Owner / 处置人：Human Product Owner。
+- 处置：Human Product Owner 于 2026-10-21 Asia/Shanghai 在 Coordinator 会话中接受 R-Q5 为**有界残项**，不补充配置证据。该处置只覆盖 R-Q5，不接受、不关闭、不削弱任何其它残项。
+- 指针：本 Assignment 中关于 Executor 模型与 effort 的一行。
+
+### 授权与边界
+
+- Human Product Owner 于 2026-10-21 Asia/Shanghai 在对话中授权：push 本分支并开一个 docs-only PR。**不含 merge。**
+- 不声称 Release / Release-ready；不声称 UI-1 已完成、已验收；Final Merge Gate 指针与 Human 真机对比是否完成仍为 UNKNOWN；本 Assignment 的 Lifecycle 处置待 PR 合并后另行决定。
+- CI #705 事实更正仍属另立记录，不在本次范围。
