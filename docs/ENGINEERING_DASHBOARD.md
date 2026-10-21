@@ -1,5 +1,8 @@
 # Engineering Dashboard
 
+2026-10-21 当前：[KEYBOARD-T9-ADAPTIVE-ROW-001](assignments/keyboard-t9-adaptive-row-001.md) **Active**；PR #217 已合并为 `e4fc037`（M-02 同步见 [STATE-SYNC-001](assignments/keyboard-t9-adaptive-row-001-state-sync-001.md)）。Final Quality / Governance 均为 CONDITIONAL PASS，Human 有限接受的 residual 全部保留、无一 FIXED；QA-001 已正式关闭（仅缺陷范围）。合并后 `main` CI run `39598364040` 结论 failure，由另一会话处理，不声称根因或 green。非 Release / Release-ready，不声称 UI-2 完成。
+
+> 下一行 2026-10-20 条目（Draft PR217 / 真实 Extension pending / 无 Merge）为历史，已被上一行取代。
 2026-10-20：[KEYBOARD-T9-ADAPTIVE-ROW-001](assignments/keyboard-t9-adaptive-row-001.md) **Active**，Draft PR217已发布、精确Head CI9项通过；Claude Sticky Pass、Lifecycle/Architecture/Quality Conditional；真实Extension验证pending，无Ready/Merge/TestFlight/Close。
 
 2026-10-19：[INPUT-RELIABILITY-DELIVERY-003](assignments/input-reliability-delivery-003.md) **Active**，Human 已授权产品 PR 与 CI 检查；Claude Architecture Pass / Quality Partial。R174 正常构建关闭；无 merge / TestFlight / Closeout 授权。

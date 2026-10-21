@@ -5,12 +5,15 @@ record_id: KEYBOARD-T9-ADAPTIVE-ROW-001
 
 ## Current Status
 
+> **Superseded for current status:** see [PR217 post-merge State Sync](#pr217-post-merge-state-sync--2026-10-21) below and [`KEYBOARD-T9-ADAPTIVE-ROW-001-STATE-SYNC-001`](keyboard-t9-adaptive-row-001-state-sync-001.md) (2026-10-21).
+> PR #217 is **merged** (`e4fc037`). Any text in this document, or in the evidence it links, that reads "Draft PR217", "QA-001 OPEN", "PR217 not updated" or "no Merge" is historical narrative as of its own date, not current truth. QA-001 is formally closed (defect scope only).
+
 | Field | Value |
 |---|---|
-| Lifecycle | Active |
-| Current phase | QA-001 FORMALLY CLOSED by Human; UI-2 feature remains Active, publication gated |
-| Non-claims | QA-001-only closure; Quality remains CONDITIONAL PASS as relayed; no whole-feature/task close, PR update, Merge or Release |
-| Next | Stop; await separate Human authorization before PR217 update or any publication; retain worktree and Human files |
+| Lifecycle | Active (UI-2 feature; this Assignment states no exit criterion declaring the feature complete, so it is not closed here) |
+| Current phase | PR #217 merged as `e4fc037` on 2026-10-21; post-merge `main` CI run `39598364040` concluded failure and is handled by another session; QA-001 formally closed (defect scope only) |
+| Non-claims | Not Release / Release-ready; no UI-2 completion claim; no residual weakened or closed; no root-cause claim and no green claim for post-merge `main` CI; missed pre-dispatch Reviewer Packet freeze is a real deviation, not fixed, not retroactively compliant; F-04 10/10 device pass is Human-reported with limited build traceability |
+| Next | Another session owns the post-merge `main` CI failure; this Assignment's lifecycle disposition needs a separate Human decision |
 | Residuals | R-QA001-GOV-01 / Q-01 / Q-02 / Q-03 retained: accept, non-blocking for QA-001 only; [register](../evidence/keyboard-t9-adaptive-row-001/formal-closure-20261021/residuals.md) |
 | QA-001 defect status | CLOSED; [Human formal decision](../evidence/keyboard-t9-adaptive-row-001/formal-closure-20261021/human-decision.md) |
 | QA-001 Quality Closure | SUPPORTED; Human-relayed independent Quality Sufficiency CONDITIONAL PASS, not an original Reviewer Artifact |
@@ -115,3 +118,18 @@ Human 本轮仅授权 Policy 核查、本 Assignment / Evidence 更新及本地�
 四项均在close保留，不倒填历史、不声称历史Review流程合规，不构成未来省略Packet的先例。Owner仅接受Residual，不替代独立Architecture/Quality职责。原始FAIL、Blocked报告与unsigned提案继续作为历史证据。[关闭报告](../evidence/keyboard-t9-adaptive-row-001/formal-closure-20261021/closure.md)列明哈希、证据来源、监控/重开条件和发布边界。
 
 本任务Lifecycle仍为Active（UI-2 feature），未关闭整个Assignment或Feature/Release Gate。PR217、Merge、Release状态不变；未来更新需单独Human授权及远端基线/提交链/精确HEAD CI核验。Human project.pbxproj/Scheme前后哈希一致，均未修改/暂存/提交。只更新本Assignment及Evidence，创建一个本地docs-only提交；不触碰其他Worktree、不清理。当前会话可由Human归档，但Worktree/分支/未发布提交/Human dirty现场必须保留。完成后停止。
+
+## PR217 post-merge State Sync — 2026-10-21
+
+M-02 trigger: merge of tip PR [#217](https://github.com/shchnk1103/Universe-Keyboard/pull/217) as `e4fc0378753dc17c0a8d4189a9ad5d2202bd2e0a` (reviewed head `ec7fd043d7030a2e4f3109e424829f5f4864d611`, tree `c5b31f863307d7c2f11e11f16e9235bdf097b129`), merged `2026-10-21T12:16:58Z` by `shchnk1103`. Identity and executor record: [`KEYBOARD-T9-ADAPTIVE-ROW-001-STATE-SYNC-001`](keyboard-t9-adaptive-row-001-state-sync-001.md). Final Merge Gate repo/evidence pointer: **UNKNOWN**.
+
+Facts recorded (local non-repo pointers: root `/Users/doubleshy0n/.kos-work/Universe-Keyboard/`, task `KEYBOARD-UI2-PR217-PACKET-GOVERNANCE-REVIEW-001`, `evidence/`; SHA-256 list in the State Sync Assignment):
+
+- **Pre-merge hosted CI:** run `39579404750` Attempt 1 **failed**; Attempt 2 on the same head passed 9/9. Root cause of Attempt 1 is **UNKNOWN** (evidence `UI2-HOSTED-PANEL-COLLAPSE-001` / `-002` in `historical-ci-evidence-index-001.md`). Diagnostic commit `8ecb564` exists only on branch `diagnostic/ui2-panel-collapse-002` and is not merged.
+- **Reviews:** Final Quality **CONDITIONAL PASS**; Governance review **CONDITIONAL PASS**.
+- **Human limited acceptances recorded:** `R-UI2-FQ-GOV-01` accept; `G-2` accept; hosted collapse residual; F-04 C3/C5; build traceability (`m03-residual-register-001.md`, `m03-g2-human-limited-acceptance-001.md`, `human-governance-risk-acceptance-001.md`). All remain open residuals as accepted; none is FIXED.
+- **Process deviation:** the missed pre-dispatch Reviewer Packet freeze is a real deviation; it is not fixed and not retroactively compliant.
+- **QA-001:** formally closed by the Human (defect scope only; see [closure](../evidence/keyboard-t9-adaptive-row-001/formal-closure-20261021/closure.md)). **F-04** 10/10 device pass is Human-reported with limited build traceability.
+- **Post-merge `main` CI:** run `39598364040` on `e4fc037` concluded **failure** (`test-app-keyboard` and `final-quality-gate` failed). Another session is handling it. This record makes no root-cause claim, does not claim `main` CI is green, and does not equate it with the earlier accepted hosted-collapse residual.
+
+Not claimed: Release / Release-ready; UI-2 complete; residual closure; real-Extension device validation beyond the Human-reported receipts above.
