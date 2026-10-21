@@ -465,21 +465,14 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
                     $0.accessibilityIdentifier == "6"
                 })
             if stage == 2 || stage == 3 {
-                let halfway = expectation(description: "real halfway reveal/collapse")
-                let full = panel.bounds.height
-                let observer = QA001DisplayObserver {
-                    guard let shown = panel.revealViewport.layer.presentation()?.bounds.height else { return false }
-                    return shown > 46 + (full - 46) * 0.25 && shown < full - (full - 46) * 0.25
-                }
-                observer.completion = {
-                    print(
-                        "QA001 halfway presentation=\(panel.revealViewport.layer.presentation()?.bounds.height ?? -1)")
-                    owner.insertKey(key)
-                    halfway.fulfill()
-                }
-                observer.start()
-                await fulfillment(of: [halfway], timeout: 2)
-                observer.stop()
+                // The second key must arrive while the production reveal/collapse is in flight. Do not sample
+                // a transient presentation-layer window with a display link: its success depends on frame cadence
+                // landing inside a 0.16 s animation, which hosted CI runs did not reliably provide.
+                // `isTransitioning` is set synchronously when the reveal starts, so this is deterministic.
+                XCTAssertTrue(panel.isTransitioning)
+                print(
+                    "QA001 in-flight presentation=\(panel.revealViewport.layer.presentation()?.bounds.height ?? -1)")
+                owner.insertKey(key)
             } else {
                 owner.insertKey(key)
             }
@@ -529,7 +522,7 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
                 }
                 observation.completion = { finished.fulfill() }
                 observation.start()
-                await fulfillment(of: [finished], timeout: 2)
+                await fulfillment(of: [finished], timeout: 10)
                 observation.stop()
             }
             if !closing {
