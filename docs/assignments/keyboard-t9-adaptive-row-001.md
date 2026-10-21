@@ -8,10 +8,10 @@ record_id: KEYBOARD-T9-ADAPTIVE-ROW-001
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current phase | Human device acceptance complete; closure preparation; governance disposition pending |
+| Current phase | Device/targeted regression accepted; policy checked; Human/Quality governance decision pending |
 | Non-claims | Human device7/7 accepted; Claude Quality remains CONDITIONAL PASS as relayed; no formal Closed, PR update, Merge or Release |
-| Next | Human Product Lead/Coordinator disposes historical Reviewer Lane Packet evidence gaps; no publication |
-| Residuals | [Current closure report](../evidence/keyboard-t9-adaptive-row-001/acceptance-20261021/closure-report.md); technical/device gates passed at f610763, formal governance/PR/CI gates remain separate |
+| Next | Quality assesses historical review evidence/coverage; Human Product Lead decides explicit residual disposition; Coordinator records only |
+| Residuals | R-QA001-GOV-01 Pending: [Policy check and proposed unsigned decision](../evidence/keyboard-t9-adaptive-row-001/governance-check-20261021/policy-check.md); no implicit Packet waiver or formal close |
 
 以下dated阶段保留为历史记录；其中device pending / OPEN状态由文末2026-10-21验收收据更新，不回写历史负证据。
 
@@ -86,3 +86,13 @@ Human current-chat authorization permits Assignment/Evidence updates, exact-head
 [Reviewer Lane Packet audit](../evidence/keyboard-t9-adaptive-row-001/acceptance-20261021/review-packet-audit.md) discloses absent local proof of historical lane ID/round/pre-dispatch freeze/digest/budget/preflight; lane first-assignment/possible grandfathering not established. No backdated packet or approval created. Human Product Lead/Coordinator owns applicability/disposition and remainingQuality conditional clarification. QA-001 formal closure recommendation: CLOSURE BLOCKED by this governance disposition, not by a device or local test failure. Lifecycle remains Active (closure preparation); no task close, publication or release authority inferred.
 
 Human project.pbxproj and existing Scheme remain dirty/unmodified/not staged. No production/test/Signing edits, other worktree changes, push/PR217 update/merge/release or cleanup. Task BRIEF/log CP-012 kept historical under this slice's Assignment/Evidence-only allowlist; current authority is this Assignment plus latest Human instruction. Next: Human disposition and separately authorized PR preparation with exact-base/head/clean-checkout/CI gates.
+
+## Governance policy check — 2026-10-21
+
+Human 本轮仅授权 Policy 核查、本 Assignment / Evidence 更新及本地文档提交，不含 Policy、源码、测试、工程、Scheme 或外部操作。入口 `10b277461f238815e08c1fb5d6d1bf4ccf93547d`；已验收产品 `f610763` 未变。Human 7/7、Executor 111/0/0，以及 Human 转述的 Claude Architecture PASS / Quality CONDITIONAL PASS / Finding A CLOSED 均已核对。证据哈希有效，本轮无需且未重新测试。
+
+[Policy 核查](../evidence/keyboard-t9-adaptive-row-001/governance-check-20261021/policy-check.md)：适用的 Reviewer Packet 必须事前冻结；未找到专门的追溯 Packet 豁免或自动全部重审条款。M-03 允许明确 non-blocking 的 residual accept，但不能据此补造完整覆盖或历史合规。证据缺口归 Quality 判断，Product Lead 拥有 Assignment / Product 验收权；Coordinator 不拥有独立豁免或 Quality 签核权。本段澄清上轮“Human/Coordinator 处置”的泛称，不回写历史收据。
+
+`R-QA001-GOV-01` 仍 Pending：历史 Packet / lane 首次指派证据本地不可核验，需明确 Quality 的完整覆盖及剩余条件、M-03 处置。[待确认决定](../evidence/keyboard-t9-adaptive-row-001/governance-check-20261021/proposed-decision.md) 中的 accept 尚未生效或签署；它只是本任务限定、不构成先例、不倒填的未来选项，不是已经执行的例外。若证据不足，可由 Human 另授权有真实事前 Packet 的有界 Quality 补充复核，不默认重跑全部测试。
+
+当前结论 **HUMAN DECISION REQUIRED**；QA-001 正式关闭仍 BLOCKED，技术和设备验收仍 PASS。Task Lifecycle 保持 Active / closure preparation，未写 QA 或任务 Closed。两个 Human dirty 文件原样保留且不暂存；没有新 Writer、Policy 修改、追溯 Packet、审批补造、Push、PR、Merge、Release 或 Worktree 清理。完成后停止，等待 Human 及相应 Quality 处置。
