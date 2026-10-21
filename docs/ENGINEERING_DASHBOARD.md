@@ -1,5 +1,10 @@
 # Engineering Dashboard
 
+2026-10-21 当前（迟到同步，[ACTIVE-WORK-STALE-FACTS-SYNC-001](assignments/active-work-stale-facts-sync-001.md)）：[KEYBOARD-T9-ADAPTIVE-ROW-001](assignments/keyboard-t9-adaptive-row-001.md) 合并后 `main` CI run `39598364040` failure 之后，仅测试的 [PR #218](https://github.com/shchnk1103/Universe-Keyboard/pull/218)（`7af3f02`）合入，`main` 通过一次（run `39606780704`）；缓解未经验证，hosted 残项为 `tech_debt:TD-020`，根因 UNKNOWN，不声称稳定或已修复。Assignment 仍 Active，非 Release。
+
+2026-10-21 当前（迟到同步，同上）：INPUT-RELIABILITY-DELIVERY-001/002/003 对应的 PR [#213](https://github.com/shchnk1103/Universe-Keyboard/pull/213)、[#214](https://github.com/shchnk1103/Universe-Keyboard/pull/214)、[#215](https://github.com/shchnk1103/Universe-Keyboard/pull/215) 均已于 2026-10-19 合并（`bb430f9` / `d08175b` / `096183c`）。Final Merge Gate / Merge 授权记录 UNKNOWN；各 Lifecycle 值未改，残项保留，无 TestFlight / Closeout，非 Release。
+
+> 下一行 2026-10-21 T9 条目中“`main` CI run `39598364040` 结论 failure，由另一会话处理”及下文 2026-10-19 INPUT-RELIABILITY-DELIVERY-003 条目（“无 merge …”）均为历史，已被上两行取代。
 2026-10-21 当前：[KEYBOARD-T9-ADAPTIVE-ROW-001](assignments/keyboard-t9-adaptive-row-001.md) **Active**；PR #217 已合并为 `e4fc037`（M-02 同步见 [STATE-SYNC-001](assignments/keyboard-t9-adaptive-row-001-state-sync-001.md)）。Final Quality / Governance 均为 CONDITIONAL PASS，Human 有限接受的 residual 全部保留、无一 FIXED；QA-001 已正式关闭（仅缺陷范围）。合并后 `main` CI run `39598364040` 结论 failure，由另一会话处理，不声称根因或 green。非 Release / Release-ready，不声称 UI-2 完成。
 
 > 下一行 2026-10-20 条目（Draft PR217 / 真实 Extension pending / 无 Merge）为历史，已被上一行取代。

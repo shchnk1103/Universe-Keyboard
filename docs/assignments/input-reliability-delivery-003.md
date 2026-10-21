@@ -5,6 +5,9 @@ record_id: INPUT-RELIABILITY-DELIVERY-003
 
 ## Current Status
 
+> **Superseded for current status:** see [PR #215 post-merge State Sync](#pr-215-post-merge-state-sync--2026-10-21) below and [`ACTIVE-WORK-STALE-FACTS-SYNC-001`](active-work-stale-facts-sync-001.md) (2026-10-21).
+> PR [#215](https://github.com/shchnk1103/Universe-Keyboard/pull/215) is **merged** (`096183ca118cc40ffc16854d1a5336a42cfcbd89`). Text in this document such as "Product PR preparation and hosted CI verification", "stop for Human Merge decision" and "No ... Merge" is historical narrative as of its own date, not current truth. This note does not change the Lifecycle value.
+
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
@@ -62,3 +65,15 @@ Current Codex session acknowledges scope, read-only extraction source, access an
 Human explicitly authorized final Git/KOS checks, normal push of the reviewed product and necessary task records, a product PR to main, actual GitHub CI observation and a report. [Publication AUTH](../authorizations/AUTH-INPUT-RELIABILITY-DELIVERY-003-PRODUCT-PR.md) supersedes the earlier local-only boundary for this slice; no new feature, production behavior, Merge, TestFlight or Closeout is authorized. [Independent review receipt](../evidence/input-reliability-delivery-003/independent-review-received.md) records Human's relay, not a newly performed review. Existing assignees and Writer remain unchanged.
 
 The earlier implementation plan and local-only statements above describe the completed stage. This stage's exit is a published PR with actual check results and an explicit stop. Source/test hashes must remain those of product `286d3e91c0cc0e94d1d439c10d799948abcb9a1f`. Only necessary publication records and public-path sanitization may be added. Real RIME T9 recovery integration and the activated Extension's complete system interaction must be addressed before TestFlight; neither is waived by opening a PR.
+
+## PR #215 post-merge State Sync — 2026-10-21
+
+Late M-02 sync: written after the event, not at the time of the merge.
+
+- **Trigger:** PR [#215](https://github.com/shchnk1103/Universe-Keyboard/pull/215) `fix(keyboard): improve T9 and partial commit recovery`; merge commit `096183ca118cc40ffc16854d1a5336a42cfcbd89`; head `2477472396d827ade9f08d88714c426da3f6d5c9` (branch `codex/input-reliability-delivery-003`); merged `2026-10-19T23:30:33Z` (`2026-10-20 07:30:33 Asia/Shanghai`) by `shchnk1103` (read-only `gh pr view 215`). The PR body states baseline `d08175b` (the PR #214 merge) and links `docs/evidence/input-reliability-delivery-003/`.
+- **Current:** Batch 3 is on `main` through PR #215. This Assignment's own publication authorization excluded Merge; a Merge authorization record was not found in the repository: UNKNOWN. The merge action was performed by `shchnk1103`.
+- **Residuals unchanged, none closed:** see [verification](../evidence/input-reliability-delivery-003/verification.md). Real RIME T9 recovery integration evidence and the activated Extension's complete system interaction had to be disposed of before TestFlight; whether that has happened is UNKNOWN (no record found). The PR body also states that 30 skipped tests are not passes, live-native R174 is unverified, and R174 stays off by default.
+- **Review wording:** Claude Architecture Pass / Quality Partial remain Human-relayed results (see the [receipt](../evidence/input-reliability-delivery-003/independent-review-received.md)); Quality Partial is not raised to Pass here.
+- **Final Merge Gate / Authority record for the merge:** UNKNOWN (none found in the repository).
+- **Lifecycle:** this file still reads `Active`; not changed here, needs a separate Human decision.
+- **Non-claims:** not Release; no TestFlight, no Closeout; no residual weakened or closed.
