@@ -1,0 +1,83 @@
+name: UI-2 Panel Collapse Diagnostic
+
+# One-shot hosted observation for UI2-HOSTED-PANEL-COLLAPSE-002.
+# Exists only on diagnostic/ui2-panel-collapse-002. Do not merge into main.
+
+on:
+  push:
+    branches:
+      - diagnostic/ui2-panel-collapse-002
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ui2-panel-collapse-diagnostic-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  panel-collapse:
+    name: panel-collapse-selector
+    runs-on: macos-26
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.6.app/Contents/Developer
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Record hosted identity
+        run: |
+          {
+            echo "GITHUB_SHA=${GITHUB_SHA}"
+            echo "GITHUB_REF=${GITHUB_REF}"
+            echo "GITHUB_EVENT_NAME=${GITHUB_EVENT_NAME}"
+            echo "RUN_ID=${GITHUB_RUN_ID}"
+            echo "RUNNER_OS=${RUNNER_OS}"
+            echo "RUNNER_ARCH=${RUNNER_ARCH}"
+            echo "Image=${ImageOS:-unknown}"
+            xcodebuild -version
+            xcodebuild -showsdks | awk '/iphonesimulator/ { print }'
+          } | tee hosted-identity.txt
+
+      - name: Prepare pinned RIME artifacts
+        run: bash scripts/ensure_rime_vendor.sh fetch
+
+      - name: Ensure iPhone 17 Pro simulator
+        run: bash scripts/ci/ensure_iphone_17_pro_simulator.sh
+
+      - name: Test panel collapse selector
+        id: selector
+        run: |
+          set +e
+          xcodebuild \
+            -project "Universe Keyboard.xcodeproj" \
+            -scheme "Universe Keyboard" \
+            -configuration Debug \
+            -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
+            -resultBundlePath "$RUNNER_TEMP/QA001Collapse.xcresult" \
+            -only-testing:KeyboardLayoutIntegrationTests/T9AdaptiveRowTests/testQA001FirstPathIsVisibleAfterPendingPanelBeforeSecondKey \
+            -parallel-testing-enabled NO \
+            CODE_SIGNING_ALLOWED=NO \
+            SWIFT_VERSION=6.0 \
+            SWIFT_STRICT_CONCURRENCY=complete \
+            SWIFT_SUPPRESS_WARNINGS=NO \
+            SWIFT_TREAT_WARNINGS_AS_ERRORS=YES \
+            test
+          code=$?
+          echo "xctest_exit=${code}" | tee xctest-exit-code.txt
+          echo "exit_code=${code}" >> "$GITHUB_OUTPUT"
+          exit "$code"
+
+      - name: Upload diagnostic evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ui2-panel-collapse-diagnostic
+          if-no-files-found: warn
+          retention-days: 14
+          path: |
+            hosted-identity.txt
+            xctest-exit-code.txt
+            ${{ runner.temp }}/QA001Collapse.xcresult

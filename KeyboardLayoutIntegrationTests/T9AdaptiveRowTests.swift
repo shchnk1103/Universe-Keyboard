@@ -524,13 +524,36 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
             if closing || stage == 3 {
                 // Wait for production animation completion, not for another input to repair UI.
                 let finished = expectation(description: "production collapse removes panel")
+                let phase = closing ? "collapse-cleanup" : "reveal-settle"
+                let trace = QA001CollapseTrace(scenario: stage, kaomoji: kaomoji, phase: phase, panel: panel)
+                trace.mark("wait-start")
                 let observation = QA001DisplayObserver {
                     closing ? owner.candidateExpandedPanel == nil : !panel.isTransitioning
                 }
-                observation.completion = { finished.fulfill() }
+                observation.onTick = { matched in
+                    trace.sample(owner: owner, predicate: matched)
+                }
+                observation.completion = {
+                    trace.mark("predicate-met")
+                    finished.fulfill()
+                }
                 observation.start()
-                await fulfillment(of: [finished], timeout: 2)
+                let waitStarted = CACurrentMediaTime()
+                let waitResult = await XCTWaiter().fulfillment(of: [finished], timeout: 2)
+                let waitFulfilled = waitResult == .completed
+                trace.noteWait(CACurrentMediaTime() - waitStarted, fulfilled: waitFulfilled)
+                trace.mark(waitFulfilled ? "wait-fulfilled" : "wait-timeout")
                 observation.stop()
+                trace.mark("after-stop")
+                // One later main-queue turn records whether cleanup arrived after the wait.
+                // It does not extend the 2 second expectation or change the assertions below.
+                await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+                    DispatchQueue.main.async {
+                        trace.mark("next-turn")
+                        trace.finish(owner: owner, key: key)
+                        continuation.resume()
+                    }
+                }
             }
             if !closing {
                 UIView.setAnimationsEnabled(false)
@@ -714,6 +737,7 @@ private final class QA001TextClient: TextInputClient {
 private final class QA001DisplayObserver: NSObject {
     let condition: () -> Bool
     var completion: (() -> Void)?
+    var onTick: ((Bool) -> Void)?
     private var link: CADisplayLink?
     init(condition: @escaping () -> Bool) { self.condition = condition }
     func start() {
@@ -723,6 +747,93 @@ private final class QA001DisplayObserver: NSObject {
     }
     func stop() { link?.invalidate(); link = nil }
     @objc private func tick() {
-        if condition() { stop(); completion?() }
+        let matched = condition()
+        onTick?(matched)
+        if matched { stop(); completion?() }
+    }
+}
+
+/// In-memory collapse observations. Flushed once per scenario so display ticks do not touch disk.
+@MainActor
+private final class QA001CollapseTrace {
+    let scenario: Int
+    let kaomoji: Bool
+    let phase: String
+    let panelID: ObjectIdentifier
+    let startedAt: CFTimeInterval
+    private var lines: [String] = []
+    private var tickCount = 0
+    private var lastPredicate = false
+    private var predicateMetAt: CFTimeInterval?
+    private var waitElapsed: CFTimeInterval = 0
+    private var waitFulfilled = false
+
+    init(scenario: Int, kaomoji: Bool, phase: String, panel: UIView) {
+        self.scenario = scenario
+        self.kaomoji = kaomoji
+        self.phase = phase
+        panelID = ObjectIdentifier(panel)
+        startedAt = CACurrentMediaTime()
+        lines.append(header("begin"))
+    }
+
+    func mark(_ name: String) {
+        lines.append(header(name))
+    }
+
+    func noteWait(_ elapsed: CFTimeInterval, fulfilled: Bool) {
+        waitElapsed = elapsed
+        waitFulfilled = fulfilled
+    }
+
+    func sample(owner: KeyboardViewController, predicate: Bool) {
+        tickCount += 1
+        lastPredicate = predicate
+        if predicate, predicateMetAt == nil { predicateMetAt = CACurrentMediaTime() }
+        // Keep the first ticks, the matching tick, and a sparse tail. Avoid a line per frame.
+        let interesting = tickCount <= 3 || predicate || tickCount % 30 == 0
+        guard interesting else { return }
+        lines.append(snapshot(owner, label: "tick-\(tickCount)"))
+    }
+
+    func finish(owner: KeyboardViewController, key: UIView) {
+        lines.append(snapshot(owner, label: "final"))
+        let keyPoint = key.convert(CGPoint(x: key.bounds.midX, y: key.bounds.midY), to: owner.view)
+        let hit = owner.view.hitTest(keyPoint, with: nil)
+        let hitName = String(describing: type(of: hit as Any))
+        let samePanel = owner.candidateExpandedPanel.map { ObjectIdentifier($0) == panelID } ?? false
+        let removed = owner.candidateExpandedPanel == nil || !samePanel
+        let maskRestored = owner.rootStack.layer.mask == nil
+        let late = predicateMetAt == nil && removed
+        lines.append(
+            header("summary")
+                + " ticks=\(tickCount) wait=\(String(format: "%.4f", waitElapsed)) fulfilled=\(waitFulfilled)"
+                + " predicate=\(lastPredicate) panelRemoved=\(removed) samePanel=\(samePanel)"
+                + " maskRestored=\(maskRestored) lateCleanup=\(late) hit=\(hitName)"
+                + " hitIsKey=\(hit === key)"
+        )
+        let text = lines.joined(separator: "\n")
+        print(text)
+        fflush(stdout)
+    }
+
+    private func header(_ label: String) -> String {
+        let elapsed = CACurrentMediaTime() - startedAt
+        return
+            "QA001DIAG scenario=\(scenario) kind=\(kaomoji ? "kaomoji" : "punctuation") phase=\(phase)"
+            + " event=\(label) t=\(String(format: "%.4f", elapsed)) mono=\(String(format: "%.4f", CACurrentMediaTime()))"
+    }
+
+    private func snapshot(_ owner: KeyboardViewController, label: String) -> String {
+        let panel = owner.candidateExpandedPanel as? ExpandedCandidatePanelContainerView
+        let currentID = owner.candidateExpandedPanel.map { ObjectIdentifier($0) }
+        let same = currentID == panelID
+        let mask = owner.rootStack.layer.mask
+        let maskName = mask.map { String(describing: type(of: $0)) } ?? "nil"
+        return
+            header(label)
+            + " predicate=\(lastPredicate) panelSame=\(same) panelNil=\(owner.candidateExpandedPanel == nil)"
+            + " transitioning=\(panel?.isTransitioning ?? false) expanded=\(owner.isCandidateExpanded)"
+            + " mask=\(maskName) inWindow=\(panel?.window != nil)"
     }
 }
