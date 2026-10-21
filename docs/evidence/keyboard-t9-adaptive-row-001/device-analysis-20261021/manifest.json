@@ -1,0 +1,75 @@
+{
+  "authorization": "Evidence preservation and read-only root-cause analysis; no implementation or commits",
+  "device_provenance": "Human states DSON 13 Pro; JSON has no device/build attestation",
+  "head": "fa8c2cb63c8be32d6723a7538bd1c39746af12e8",
+  "source_sha256": {
+    "Keyboard/Views/T9PinyinPathBarView.swift": "cb7f28b2ee39399e7725944af010a0b5ec34a5d65221ddd4ff15c9e1bd0672fe",
+    "Keyboard/Controllers/KeyboardViewController+T9PinyinPath.swift": "820b74a47cd2504c6da50bbe0f4671c192e7e6583f83fd6c222046b740e66504",
+    "Keyboard/Controllers/KeyboardViewController+Presentation.swift": "cae4b6bc671d4bf7be1521382373fbee055cb3f3f021f211e373526f305eea77",
+    "Keyboard/Controllers/T9QA001DeviceTrace.swift": "9fbbaf7a58f521d10eb119c1410a6c2df8bb12922f2e1ba5ab7cc79b39e19458",
+    "Keyboard/Controllers/KeyboardViewController+CandidateBar.swift": "fc4948b549cc85797b88169fd5fccf987e99e6995d307a4a2920fb404bed4f23",
+    "Keyboard/Controllers/KeyboardViewController+ExpandedCandidatePanel.swift": "6f45250fe19eb79b3a31d172b31996f2a545f05f8073fa63d84a4744bd08c63d"
+  },
+  "protected_uncommitted_sha256": {
+    "Universe Keyboard.xcodeproj/project.pbxproj": "a0fa659a049834b692071955a82f8fe5087bf9d7ab9d3453a047a5c47df7cb3b",
+    "Universe Keyboard.xcodeproj/xcshareddata/xcschemes/Universe Keyboard.xcscheme": "b266a5c6d238c6b1821de98ef4b0819c447af18aa3ab9086eb5343e04704c83e"
+  },
+  "artifacts": [
+    {
+      "name": "first-key-blank",
+      "source_path": "/Users/doubleshy0n/Downloads/ui2-first-key-blank.json",
+      "raw_path": "docs/evidence/keyboard-t9-adaptive-row-001/device-analysis-20261021/raw/ui2-first-key-blank.json",
+      "raw_bytes": 17667,
+      "raw_sha256": "5dcde47b171ccb6757fb73bad74708897efe94b7b458211ee963cc599b3ce0fa",
+      "extracted_path": "docs/evidence/keyboard-t9-adaptive-row-001/device-analysis-20261021/extracted/ui2-first-key-blank.json",
+      "extracted_sha256": "ccb1e3a340b4cb901708c9de76069c4e3296245fa9541c4356d8f06a632e9b4f",
+      "console_prefix": "(lldb) ui2-blank\n(lldb) ui2-dump",
+      "records": 16,
+      "schema": 1,
+      "keysCaptured": 1,
+      "dropped": 0,
+      "triageHint": "INCONCLUSIVE",
+      "all_asyncAttributionUncertain": 1,
+      "nativeOperationReturnObserved": false
+    },
+    {
+      "name": "second-key-visible",
+      "source_path": "/Users/doubleshy0n/Downloads/ui2-second-key-visible.json",
+      "raw_path": "docs/evidence/keyboard-t9-adaptive-row-001/device-analysis-20261021/raw/ui2-second-key-visible.json",
+      "raw_bytes": 29767,
+      "raw_sha256": "59eeeed026f5bb980807b2d9c9dbf57915fda790957354a9cc2142e0e899282a",
+      "extracted_path": "docs/evidence/keyboard-t9-adaptive-row-001/device-analysis-20261021/extracted/ui2-second-key-visible.json",
+      "extracted_sha256": "213b617ec183412cb1792c6f32a34ae55247faf2e12a0f96d311435db0238508",
+      "console_prefix": "(lldb) continue\nProcess 23524 resuming\n(lldb) ui2-visible\n(lldb) ui2-dump",
+      "records": 29,
+      "schema": 1,
+      "keysCaptured": 2,
+      "dropped": 0,
+      "triageHint": "INCONCLUSIVE",
+      "all_asyncAttributionUncertain": 1,
+      "nativeOperationReturnObserved": false
+    }
+  ],
+  "exact_record_prefix": true,
+  "validation": {
+    "finite_numbers": true,
+    "unique_keys": true,
+    "schema_1": true,
+    "contiguous_seq": true,
+    "monotonic_ms": true,
+    "one_T0_per_event": true,
+    "stage_order_checked": true,
+    "no_dropped_records": true,
+    "no_T6_events": true
+  },
+  "limitations": [
+    "UI event association only, no native operation ID",
+    "no direct native RIME return observation",
+    "labelEmpty=1 with no visible Cell is nil fallback, not measured UILabel.text",
+    "boundPaths is private view-model count, not UICollectionView cached item count",
+    "ms includes debugger pauses; not end-to-end latency",
+    "only punctuation-pending case captured, no full expanded overlay during either key"
+  ],
+  "analysis_sha256": "c762998a53e613e1d90ae1229e92bd970f7fd8f03fbf587b372e11a59c9d0a95",
+  "timeline_sha256": "db9031e5a17ad072d92a02e0d40926ca638b4e6fa34613b9f169b372d6bc331c"
+}

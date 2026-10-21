@@ -44,6 +44,7 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
     private var boundCompositionRevision: UInt64 = 0
     private var shouldScrollToStartOnNextReload = false
     private var selectedPathIDToReveal: String?
+    private var hasPendingPathReload = false
     private var lastDeliveredPathID: String?
     private var lastDeliveredAt: CFTimeInterval = 0
     #if DEBUG
@@ -229,8 +230,8 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
         self.selectedPath = selected
         applyIdleHint(pathsEmpty: paths.isEmpty, text: idleHintText)
         separator.isHidden = paths.isEmpty && idleHintText == nil
-        collectionView.reloadData()
-        collectionView.layoutIfNeeded()
+        hasPendingPathReload = true
+        renderPendingPathsIfPossible()
         #if DEBUG
             T9QA001DeviceTrace.shared.bar(.bound, bar: self)
         #endif
@@ -239,10 +240,28 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
         setNeedsLayout()
     }
 
+    private var hasUsablePathViewport: Bool {
+        !isHidden && bounds.width > 0 && bounds.height > 0
+            && collectionView.bounds.width > 0 && collectionView.bounds.height > 0
+    }
+
+    /// Model binding can precede the Controller's row expansion. Defer the
+    /// collection transaction until both parent and child have a real viewport;
+    /// a positive child frame alone can still belong to a zero-height parent.
+    private func renderPendingPathsIfPossible() {
+        guard hasPendingPathReload, hasUsablePathViewport else { return }
+        // Consume before UIKit layout, which may re-enter this view. A later
+        // model publication sets the flag again; ordinary layout never reloads.
+        hasPendingPathReload = false
+        collectionView.collectionViewLayout.invalidateLayout()
+        collectionView.reloadData()
+        collectionView.layoutIfNeeded()
+    }
+
     /// A newly expanded row must obtain its real viewport before scrolling.
     /// Never consume a pending reveal against the collapsed zero-height viewport.
     private func revealPendingPathIfPossible() {
-        guard !isHidden, collectionView.bounds.width > 0, collectionView.bounds.height > 0 else { return }
+        guard hasUsablePathViewport, !hasPendingPathReload else { return }
         if shouldScrollToStartOnNextReload, !paths.isEmpty {
             shouldScrollToStartOnNextReload = false
             let index = IndexPath(item: 0, section: 0)
@@ -399,6 +418,7 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
 
     override func layoutSubviews() {
         super.layoutSubviews()
+        renderPendingPathsIfPossible()
         collectionView.layoutIfNeeded()
         revealPendingPathIfPossible()
         #if DEBUG

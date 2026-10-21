@@ -175,6 +175,64 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
     }
 
     @MainActor
+    func testQA001HiddenViewportPublishesFirstCellsWithoutSecondInput() throws {
+        let receiver = PathReceiver()
+        let bar = T9PinyinPathBarView(
+            height: 34, target: receiver, selectAction: #selector(PathReceiver.select(_:)))
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 100))
+        let host = UIViewController()
+        window.rootViewController = host
+        host.view.addSubview(bar)
+        NSLayoutConstraint.activate([
+            bar.leadingAnchor.constraint(equalTo: host.view.leadingAnchor),
+            bar.topAnchor.constraint(equalTo: host.view.topAnchor),
+            bar.widthAnchor.constraint(equalToConstant: 376),
+        ])
+        bar.setRowVisible(false)
+        bar.setPaths([], selected: nil, compositionRevision: 0)
+        window.isHidden = false
+        defer { window.isHidden = true }
+        host.view.layoutIfNeeded()
+        XCTAssertEqual(bar.bounds.height, 0)
+        let collection = try XCTUnwrap(descendants(bar).compactMap { $0 as? UICollectionView }.first)
+        let first = T9PinyinPath(displayText: "m", replacementRawInput: "m")
+        // Production binds the model before unhiding the row. Only normal parent
+        // layout follows: no test-side collection reload or forced Cell layout.
+        bar.setPaths([first], selected: first, compositionRevision: 1)
+        host.view.setNeedsLayout()
+        host.view.layoutIfNeeded()
+        XCTAssertTrue(collection.visibleCells.isEmpty)
+        bar.setRowVisible(true)
+        host.view.setNeedsLayout()
+        host.view.layoutIfNeeded()
+        XCTAssertEqual(bar.bounds.height, 34)
+        let cell = try XCTUnwrap(collection.cellForItem(at: IndexPath(item: 0, section: 0)))
+        let label = try XCTUnwrap(descendants(cell).compactMap { $0 as? UILabel }.first { $0.text == "m" })
+        XCTAssertFalse(label.isHidden)
+        XCTAssertGreaterThan(label.alpha, 0)
+        XCTAssertGreaterThan(label.bounds.height, 0)
+        XCTAssertTrue(collection.bounds.intersects(cell.frame))
+
+        let next = T9PinyinPath(displayText: "ma", replacementRawInput: "ma")
+        bar.setPaths([next], selected: next, compositionRevision: 2)
+        host.view.setNeedsLayout()
+        host.view.layoutIfNeeded()
+        XCTAssertTrue(
+            collection.visibleCells.contains { cell in
+                descendants(cell).compactMap { $0 as? UILabel }.contains { $0.text == "ma" }
+            })
+        bar.setPaths([], selected: nil, compositionRevision: 3)
+        host.view.setNeedsLayout()
+        host.view.layoutIfNeeded()
+        XCTAssertTrue(collection.visibleCells.isEmpty)
+        XCTAssertEqual(bar.bounds.height, 34)
+        bar.setRowVisible(false)
+        host.view.layoutIfNeeded()
+        XCTAssertEqual(bar.bounds.height, 0)
+        XCTAssertNil(bar.hitTest(CGPoint(x: 20, y: 10), with: nil))
+    }
+
+    @MainActor
     func testAtomicSnapshotAndVisiblePathSelectionSurviveCollapse() throws {
         let owner = makeOwner(width: 390)
         let path = T9PinyinPath(displayText: "ni", replacementRawInput: "ni")
