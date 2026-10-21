@@ -5,6 +5,9 @@ record_id: KEYBOARD-COMPACT-HEADER-001
 
 ## Current Status
 
+> **Superseded for current status:** see [PR216 post-merge State Sync](#pr216-post-merge-state-sync--2026-10-21) below and [`KEYBOARD-COMPACT-HEADER-001-STATE-SYNC-001`](keyboard-compact-header-001-state-sync-001.md) (2026-10-21).
+> PR [#216](https://github.com/shchnk1103/Universe-Keyboard/pull/216) is **merged**. Any text in this document that reads "awaiting Human device comparison", "no new product publication authorized", "UI-2 untouched", "UI-2 withdrawn", "published PR216 head" or "no product publication" is historical narrative as of its own date, not current truth.
+
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
@@ -64,3 +67,13 @@ Visual-polish delivery: local product `86df674649b590667c09db30194f10eb2c97baa6`
 Continuous surface delivery: local product `a415f59945412969e18d7c1f3992b160e922bfbb` on top of visual86df674/CP005 bb74235. Phase A confirms UI-only feasibility; same two lists and original candidate/paging/selection identities. Partial reading anchor and bidirectional position sync, stable flow, shared surface and fixed local material, clipped reveal/interaction guard implemented. L1 27/0/0, L2 Keyboard49/0/0 + Extension41/0/0, Debug build-for-testing/strict Swift6 files Pass. One prior failed run retained (6 pixel-quantized proportion assertions; test tolerance fixed, product threshold unchanged). Human Xcode project rewrite remains unstaged/uncommitted by explicit instruction; source/config hashes and single non-Swift exclusion difference recorded. P0/P1 directed evidence, not live P2 approval. Stop; no Push/PR update/merge/release/close/handoff/UI-2 changes.
 
 V7–V10 delivery: local product `a006e637cf22906ec45de817b156668af604f2a7`; Human reports prior five continuous-surface iPhone interactions accepted. Shared6pt leading and derived2pt first-row top eliminate measured+2/+1 text offset; shared secondaryLabel tint, single10pt tint-only ordinary blend,36pt circular expanded material inside unchanged56×46 hit area. Anchors/snapshot/paging/selection/animation/root/path/key contracts unchanged. L1 28/0/0, L2 Keyboard49/0/0 + Extension41/0/0, Debug testing build/strict16 Swift Pass. Initial old8pt assertion failures retained; current results are in-process, not new device acceptance. Evidence verification.md/v7-v10-evidence.json. Human project remains untouched/uncommitted. Same Writer/P=none; stop, no Push/PR update/merge/release/close/handoff/UI-2 edits.
+
+## PR216 post-merge State Sync — 2026-10-21
+
+M-02 trigger: merge of tip PR [#216](https://github.com/shchnk1103/Universe-Keyboard/pull/216) `feat(keyboard): compact candidate bar and trailing action refinement`; merge commit `78b795fb1429bd30721907b3035ce261d0342e6f`; PR head `e308033e102915e38838a342ec61e1db2c846277`; merged `2026-10-20T13:30:51Z` (`21:30:51 Asia/Shanghai`) by `shchnk1103` (read-only `gh pr view 216`). Details: [`KEYBOARD-COMPACT-HEADER-001-STATE-SYNC-001`](keyboard-compact-header-001-state-sync-001.md).
+
+- Current: UI-1 is on `main` via PR #216. The earlier "awaiting Human device comparison / no product publication" and "UI-2 withdrawn / untouched" statements above are historical.
+- UI-2 was delivered separately by [`KEYBOARD-T9-ADAPTIVE-ROW-001`](keyboard-t9-adaptive-row-001.md), PR [#217](https://github.com/shchnk1103/Universe-Keyboard/pull/217), which integrated UI-1; see [its State Sync](keyboard-t9-adaptive-row-001.md#pr217-post-merge-state-sync--2026-10-21). Not restated here.
+- Final Merge Gate / Pre-Merge Final Check pointer for PR #216: **UNKNOWN** (none found in the repository).
+- Whether the Human real-device comparison of the final UI-1 visuals was completed: **UNKNOWN** (no reliable source; the history above records only Human-reported acceptance of earlier iterations).
+- Non-claims: not Release / Release-ready; no UI-1 completion, acceptance or independent-review claim (the Claude Architecture/Quality Partial results above are Human-relayed, not independent review); no residual or risk accepted, closed or weakened; Lifecycle stays Active, and its disposition needs a separate Human decision.
