@@ -19,6 +19,9 @@ extension KeyboardViewController {
         controller.onResponsivePresentationNeeded = { [weak self] effects in
             guard let self else { return }
             #if DEBUG
+                T9QA001DeviceTrace.shared.record(.published, owner: self)
+            #endif
+            #if DEBUG
                 if self.isHighFidelityDiagnosticsActive {
                     self.diagnosticsJournal.record(
                         code: .rimeOwnerPublished,

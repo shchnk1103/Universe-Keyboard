@@ -1,0 +1,24 @@
+{
+  "entry_head": "10b277461f238815e08c1fb5d6d1bf4ccf93547d",
+  "accepted_product_head": "f610763df0cc12e89d0a8cd8c3b90197ced2d88b",
+  "files": {
+    "docs/evidence/keyboard-t9-adaptive-row-001/governance-check-20261021/policy-check.md": "f26a14d0c54e33fa022042f669f38a07ce3ded1946add4076380a0f5e4a3ed70",
+    "docs/evidence/keyboard-t9-adaptive-row-001/governance-check-20261021/proposed-decision.md": "a3d84defa0f8f95420e4bc9b02a60a217fd763c934755e303beee6889cd9e892"
+  },
+  "assignment": {
+    "docs/assignments/keyboard-t9-adaptive-row-001.md": "6b11ced03bb75f8f1de4c71a69318a23877c8bb837136c8a651cebf19e683e0a"
+  },
+  "policy_read_only": {
+    "docs/ASSIGNMENT_POLICY.md": "e90dd8f06371e9367652d4e7cc63dee31ee7b1ac855e7802d6d2e9b8e1e90680",
+    "docs/kos/kos-2.1-operational-maturity.md": "9bf2d40df0a8d427e2d7aa77a601e6c4d8c49e6805f48afba1a7ae7bc9a244b6",
+    "docs/product-decisions/KOS-UPGRADE-UK-006-v0.9.0-adoption.md": "c593837fb72b970f91f4c25fa2598f54a127084a0fab5618d2b4a34e08ba69fd",
+    "docs/VIRTUAL_ENGINEERING_TEAM.md": "a684b2a00dae198f58b0983dccff30b9e3dc8f70cb80f5c1119301fe09dfa58d",
+    "docs/AI_WORKFLOW.md": "b2933cda7c1cbfcf866ff237eb5286c7b705ea25a3837c4a4c2abe2f9a966f46",
+    ".kos/project.json": "a75c3203c878953796c3f2d82eb6738ad8228650bcde432b6085208132bd54da"
+  },
+  "protected": {
+    "Universe Keyboard.xcodeproj/project.pbxproj": "a0fa659a049834b692071955a82f8fe5087bf9d7ab9d3453a047a5c47df7cb3b",
+    "Universe Keyboard.xcodeproj/xcshareddata/xcschemes/Universe Keyboard.xcscheme": "b266a5c6d238c6b1821de98ef4b0819c447af18aa3ab9086eb5343e04704c83e"
+  },
+  "evidence_verification": "38 preserved artifacts match; historical source hashes checked against corresponding commits, not current source; acceptance Assignment hash verified before this update"
+}

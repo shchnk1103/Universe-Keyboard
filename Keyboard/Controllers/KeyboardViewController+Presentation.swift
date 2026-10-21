@@ -147,6 +147,7 @@ extension KeyboardViewController {
             if shouldReserveT9PinyinPathBar {
                 let pathBar = makeT9PinyinPathBar()
                 rootStack.addArrangedSubview(pathBar)
+                rootStack.setCustomSpacing(0, after: pathBar)
             }
             candidateBar = makeCandidateBar()
             #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE

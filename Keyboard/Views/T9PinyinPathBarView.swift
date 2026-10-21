@@ -21,7 +21,7 @@ private final class T9PinyinPathBarCollectionView: UICollectionView {
     }
 }
 
-/// Fixed-height precise pinyin path bar above the Chinese candidate bar (ADR 0020/0023).
+/// Adaptive precise pinyin path bar above the Chinese candidate bar (ADR 0020/0023).
 /// Horizontal collection shows the full Core-issued focus Path set (no prefix(5) truncation).
 ///
 /// Presentation mirrors the candidate bar: transparent scroll container, plain `UILabel`
@@ -33,6 +33,8 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
     private let idleHintLabel = UILabel()
     private let separator = UIView()
     private let height: CGFloat
+    private var rowHeightConstraint: NSLayoutConstraint!
+    private var collectionBottomConstraint: NSLayoutConstraint!
     private weak var target: AnyObject?
     private let selectAction: Selector
     private let itemTapRecognizer = UITapGestureRecognizer()
@@ -42,6 +44,11 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
     private var boundCompositionRevision: UInt64 = 0
     private var shouldScrollToStartOnNextReload = false
     private var selectedPathIDToReveal: String?
+    private var hasPendingPathReload = false
+    #if DEBUG
+        /// Counts actual reload calls, without capturing path contents or changing scheduling.
+        private(set) var debugPathReloadCount = 0
+    #endif
     private var lastDeliveredPathID: String?
     private var lastDeliveredAt: CFTimeInterval = 0
     #if DEBUG
@@ -111,12 +118,14 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
         separator.isOpaque = false
         addSubview(separator)
 
+        rowHeightConstraint = heightAnchor.constraint(equalToConstant: height)
+        collectionBottomConstraint = collectionView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -1)
         NSLayoutConstraint.activate([
-            heightAnchor.constraint(equalToConstant: height),
+            rowHeightConstraint,
             collectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: trailingAnchor),
             collectionView.topAnchor.constraint(equalTo: topAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -1),
+            collectionBottomConstraint,
             idleHintLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 12),
             idleHintLabel.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -12),
             idleHintLabel.centerYAnchor.constraint(equalTo: collectionView.centerYAnchor),
@@ -133,6 +142,71 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
     @available(*, unavailable)
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    #if DEBUG
+        func qa001ViewMetrics(in root: UIView?, overlay: UIView?) -> [String: Double] {
+            let cell = collectionView.visibleCells.compactMap { $0 as? T9PinyinPathBarCell }.first
+            let label = cell?.qa001TitleLabel
+            var hidden = false
+            var effectiveAlpha: CGFloat = 1
+            var ancestor: UIView? = label ?? self
+            for _ in 0..<16 {
+                guard let view = ancestor else { break }
+                hidden = hidden || view.isHidden
+                effectiveAlpha *= view.alpha
+                ancestor = view.superview
+            }
+            var values: [String: Double] = [
+                "boundPaths": Double(paths.count),
+                "boundPathLength": Double(paths.reduce(0) { $0 + $1.displayText.count }),
+                "rowWidth": Double(bounds.width), "rowHeight": Double(bounds.height),
+                "collectionWidth": Double(collectionView.bounds.width),
+                "collectionHeight": Double(collectionView.bounds.height),
+                "visibleCells": Double(collectionView.visibleCells.count), "hiddenAncestor": hidden ? 1 : 0,
+                "rowHidden": isHidden ? 1 : 0, "rowAlpha": Double(alpha),
+                "collectionHidden": collectionView.isHidden ? 1 : 0, "collectionAlpha": Double(collectionView.alpha),
+                "idleHintVisible": idleHintLabel.isHidden ? 0 : 1,
+                "effectiveAlpha": Double(effectiveAlpha), "labelLength": Double(label?.text?.count ?? 0),
+                "labelEmpty": label?.text?.isEmpty == false ? 0 : 1,
+                "labelHidden": label?.isHidden == true ? 1 : 0, "labelAlpha": Double(label?.alpha ?? 0),
+                "labelWidth": Double(label?.bounds.width ?? 0), "labelHeight": Double(label?.bounds.height ?? 0),
+                "labelMatchesModel": label.map { label in paths.contains { $0.displayText == label.text } } == true
+                    ? 1 : 0,
+            ]
+            if let overlay, let label {
+                let point = label.convert(CGPoint(x: label.bounds.midX, y: label.bounds.midY), to: overlay)
+                values["panelModelCoversLabel"] =
+                    !overlay.isHidden && overlay.alpha > 0.01 && overlay.bounds.contains(point) ? 1 : 0
+            }
+            if let root, let label {
+                let point = label.convert(CGPoint(x: label.bounds.midX, y: label.bounds.midY), to: root)
+                if let mask = root.layer.mask as? CAShapeLayer {
+                    values["maskModelContains"] = mask.path?.contains(point) == true ? 1 : 0
+                    values["maskPresentationContains"] =
+                        mask.presentation().flatMap { $0.path?.contains(point) }.map { $0 ? 1 : 0 } ?? -1
+                    values["maskAnimating"] = mask.animationKeys()?.isEmpty == false ? 1 : 0
+                } else {
+                    values["maskModelContains"] = 1
+                }
+            }
+            return values
+        }
+    #endif
+
+    /// Collapse the actual arranged row, including hit testing and accessibility.
+    /// Keep the collection's required edges valid even at zero height.
+    func setRowVisible(_ visible: Bool) {
+        let targetHeight = visible ? height : 0
+        guard rowHeightConstraint.constant != targetHeight else { return }
+        rowHeightConstraint.constant = targetHeight
+        collectionBottomConstraint.constant = visible ? -1 : 0
+        accessibilityElementsHidden = !visible
+        isHidden = !visible
+        setNeedsLayout()
+        #if DEBUG
+            T9QA001DeviceTrace.shared.bar(.row, bar: self)
+        #endif
     }
 
     /// Publish Core paths for one composition revision.
@@ -158,11 +232,52 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
 
         self.paths = paths
         self.selectedPath = selected
+        // Keep UIKit's cached item count synchronized even while hidden. Deferring
+        // this notification would expose new paths to old layout index paths.
+        reloadPathData()
         applyIdleHint(pathsEmpty: paths.isEmpty, text: idleHintText)
         separator.isHidden = paths.isEmpty && idleHintText == nil
-        collectionView.reloadData()
-        collectionView.layoutIfNeeded()
+        hasPendingPathReload = !hasUsablePathViewport
+        if !hasPendingPathReload {
+            collectionView.layoutIfNeeded()
+        }
+        #if DEBUG
+            T9QA001DeviceTrace.shared.bar(.bound, bar: self)
+        #endif
 
+        revealPendingPathIfPossible()
+        setNeedsLayout()
+    }
+
+    private var hasUsablePathViewport: Bool {
+        !isHidden && !collectionView.isHidden && bounds.width > 0 && bounds.height > 0
+            && collectionView.bounds.width > 0 && collectionView.bounds.height > 0
+    }
+
+    private func reloadPathData() {
+        collectionView.reloadData()
+        #if DEBUG
+            debugPathReloadCount += 1
+        #endif
+    }
+
+    /// Model binding can precede the Controller's row expansion. Supplement the
+    /// synchronous data-source reload once both parent and child are visible;
+    /// a positive child frame alone can still belong to a zero-height parent.
+    private func renderPendingPathsIfPossible() {
+        guard hasPendingPathReload, hasUsablePathViewport else { return }
+        // Consume before UIKit layout, which may re-enter this view. A later
+        // model publication sets the flag again; ordinary layout never reloads.
+        hasPendingPathReload = false
+        collectionView.collectionViewLayout.invalidateLayout()
+        reloadPathData()
+        collectionView.layoutIfNeeded()
+    }
+
+    /// A newly expanded row must obtain its real viewport before scrolling.
+    /// Never consume a pending reveal against the collapsed zero-height viewport.
+    private func revealPendingPathIfPossible() {
+        guard hasUsablePathViewport, !hasPendingPathReload else { return }
         if shouldScrollToStartOnNextReload, !paths.isEmpty {
             shouldScrollToStartOnNextReload = false
             let index = IndexPath(item: 0, section: 0)
@@ -266,6 +381,9 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
         let path = paths[indexPath.item]
         let selected = selectedPath.map { $0.id == path.id || $0 == path } ?? false
         cell.configure(path: path, selected: selected)
+        #if DEBUG
+            T9QA001DeviceTrace.shared.bar(.label, bar: self, label: cell.qa001TitleLabel)
+        #endif
         return cell
     }
 
@@ -290,11 +408,12 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
     /// Expand the vertical hit target toward the 44pt accessibility minimum without
     /// changing the fixed 34pt Path Bar reservation used by keyboard chrome.
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        ChromeTouchHitGeometry.pathBarExpandedHitBounds(barBounds: bounds).contains(point)
+        !isHidden && rowHeightConstraint.constant > 0
+            && ChromeTouchHitGeometry.pathBarExpandedHitBounds(barBounds: bounds).contains(point)
     }
 
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        guard isUserInteractionEnabled, !isHidden, alpha > 0.01 else { return nil }
+        guard isUserInteractionEnabled, !isHidden, rowHeightConstraint.constant > 0, alpha > 0.01 else { return nil }
         guard ChromeTouchHitGeometry.pathBarExpandedHitBounds(barBounds: bounds).contains(point)
         else { return nil }
 
@@ -315,7 +434,11 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
 
     override func layoutSubviews() {
         super.layoutSubviews()
+        renderPendingPathsIfPossible()
+        collectionView.layoutIfNeeded()
+        revealPendingPathIfPossible()
         #if DEBUG
+            T9QA001DeviceTrace.shared.bar(.pathLayout, bar: self)
             refreshDebugHitboxOverlay()
         #endif
     }
@@ -541,6 +664,10 @@ final class T9PinyinPathBarCell: UICollectionViewCell {
             )
             bringSubviewToFront(overlay)
         }
+    #endif
+
+    #if DEBUG
+        var qa001TitleLabel: UILabel { titleLabel }
     #endif
 
     func configure(path: T9PinyinPath, selected: Bool) {

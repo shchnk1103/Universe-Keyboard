@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 2026-10-20 — UI-1 × UI-2 受控本地集成（未推送，待独立复核）
+
+- 修复已复现的动态路径行展开后面板遮罩坐标过期：在根布局及转场结束同步，坐标变化时移除旧遮罩插值。
+- 统一一个Controller集成测试Target，保留双方测试；普通候选46pt，T9路径初始0pt、Sticky34pt，整体请求254/288pt。
+- 保留Continuous Candidate Surface、阅读锚点、42pt展开行、56×46pt操作区及Sticky/750高度机制；真实集成后的动态高度与动画仍需Human复验。
+- 以下同日条目保留各自开发阶段的历史发布/验收边界；本次不Push、更新PR或发布TestFlight。
+
+## 2026-10-20 — 九宫格按需拼音行（本地候选，真实宿主待验收）
+
+- 中文九宫格在可确认的新呈现周期空闲时从0pt开始；首次组字/Path/Partial Commit或Recovery触发展开34pt，此后上屏、删空和刷新均保持展开。仅明确结束且脱离window后的下一次呈现可复位；不明确时保守保留。
+- 复用既有750柔性根高度请求，保留当前46pt候选容器与按键尺寸；收起关闭Path命中和AX，展开在实际viewport下刷新路径布局。
+- 仅本地实现/进程内UIKit证据；未推送产品、未合并、未发布TestFlight，不代表真实Extension屏幕稳定性或Product Gate。
 ## 2026-10-20 — Continuous Candidate Surface（仅本地，待真机复验）
 
 - 现有横向/纵向候选列表共享原有候选顺序与分页；新增UI-only阅读锚点，支持部分可见候选、展开后前后浏览、未拖动原偏移恢复及拖动后阅读位置回传。
@@ -19,7 +31,7 @@
 - 26键与九键共用46pt总候选行；局部Semantic UI Tokens统一容器、Cell、56pt操作区和22pt图标参数，不再叠加旧14pt。
 - 候选viewport裁剪绘制，操作区贴完整右边且命中不侵入候选；保留展开/关闭双模式、滚动分页与恢复阻断。
 - 操作区复用系统材质与语义底色；减少透明度使用不透明兜底，恢复提示隐藏操作层。展开动画避免降低材质祖先alpha。
-- UI-2的T9动态0/34pt试验已撤回：尚未建立真实Extension激活与键位屏幕坐标证据，继续保留原固定34pt拼音行。
+- 历史UI-1阶段：UI-2的T9动态0/34pt试验因缺少真实Extension证据撤回，当时保留固定34pt；本次集成已由上方0/34pt Sticky合同取代。
 - [验证与限制](docs/evidence/keyboard-compact-header-001/verification.md)；无产品push/PR/merge/TestFlight，不代表Quality或Product Gate通过。
 
 ## 2026-10-19 — Input Reliability Batch 3（本地候选，待独立 Review）

@@ -120,6 +120,7 @@ final class ExpandedCandidatePanelContainerView: UIView {
     private var revealedHeight: CGFloat?
     private var revealToken = UUID()
     private weak var coveredRoot: UIStackView?
+    private var lastCoveredGeometry: CGRect?
     private var previousRootMask: CALayer?
     private let coveredMask = CAShapeLayer()
     private let actionMaterial = UIVisualEffectView(effect: nil)
@@ -176,7 +177,7 @@ final class ExpandedCandidatePanelContainerView: UIView {
         super.layoutSubviews()
         revealViewport.frame = CGRect(
             x: 0, y: 0, width: bounds.width, height: min(bounds.height, revealedHeight ?? bounds.height))
-        if !isTransitioning { updateCoveredMask() }
+        synchronizeCoveredGeometry()
         #if DEBUG
             refreshDebugHitboxOverlay()
         #endif
@@ -289,6 +290,21 @@ final class ExpandedCandidatePanelContainerView: UIView {
 
     /// Reveal candidates and cover keys using the same curve; neither root height nor cell frames animate.
     /// The mask belongs only to the content stack; its material-bearing compact bar is hidden throughout.
+    /// The panel can move without resizing when the T9 row expands. Its own
+    /// layout callback is insufficient; the Controller also calls this after root layout.
+    func synchronizeCoveredGeometry() {
+        guard let root = coveredRoot else { return }
+        let geometry = convert(bounds, to: root)
+        let changed = lastCoveredGeometry != geometry || coveredMask.frame != root.bounds
+        guard !isTransitioning || changed else { return }
+        if changed {
+            // A path interpolated in the old root coordinates must not cover the new T9 row.
+            coveredMask.removeAnimation(forKey: "candidate.reveal")
+        }
+        lastCoveredGeometry = geometry
+        updateCoveredMask()
+    }
+
     private func updateCoveredMask() {
         guard let root = coveredRoot else { return }
         let path = UIBezierPath()
@@ -321,6 +337,9 @@ final class ExpandedCandidatePanelContainerView: UIView {
     func animateReveal(to height: CGFloat, duration: TimeInterval, completion: @escaping () -> Void) {
         let duration = UIAccessibility.isReduceMotionEnabled || !UIView.areAnimationsEnabled ? 0 : duration
         guard duration > 0 else { setRevealedHeight(height); completion(); return }
+        #if DEBUG
+            let qa001Animation = T9QA001DeviceTrace.shared.panelStart(self)
+        #endif
         let token = UUID()
         revealToken = token
         isTransitioning = true
@@ -330,12 +349,22 @@ final class ExpandedCandidatePanelContainerView: UIView {
         UIView.animate(withDuration: duration, delay: 0, options: [.curveEaseOut, .beginFromCurrentState]) {
             self.setRevealedHeight(height)
         } completion: { [weak self] _ in
+            #if DEBUG
+                if let self {
+                    T9QA001DeviceTrace.shared.panel(
+                        self, stage: .panelEnd, tokenMatches: self.revealToken == token, origin: qa001Animation)
+                }
+            #endif
             guard let self, self.revealToken == token else { return }
             self.isTransitioning = false
+            self.synchronizeCoveredGeometry()
             self.collectionView?.isUserInteractionEnabled = true
             self.collapseButton?.isEnabled = true
             if height >= self.bounds.height { self.revealedHeight = nil }
             completion()
+            #if DEBUG
+                T9QA001DeviceTrace.shared.panel(self, stage: .panelStable, origin: qa001Animation)
+            #endif
         }
         let animation = CABasicAnimation(keyPath: "path")
         animation.fromValue = previous

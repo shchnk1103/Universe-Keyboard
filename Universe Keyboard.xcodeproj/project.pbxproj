@@ -188,6 +188,7 @@
             path = KeyboardTests/ControllerLayout;
             sourceTree = "<group>";
         };
+		ADA900000000000000000004 /* KeyboardLayoutIntegrationTests */ = {isa = PBXFileSystemSynchronizedRootGroup; path = KeyboardLayoutIntegrationTests; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -282,6 +283,7 @@
 				7A6300022FD0000000000001 /* UniverseKeyboardUITests */,
 				7A6400052FD0000000000001 /* KeyboardExtensionTests */,
                 D32140000000000000000001 /* ControllerLayout */,
+                ADA900000000000000000004 /* UI-2 Controller integration tests */,
 				7A6400102FD0000000000001 /* Coordinator source compiled for extension tests */,
 				793AC84B2FB0BDB000DAE835 /* Products */,
 			);
@@ -479,7 +481,7 @@
             buildPhases = (D32160000000000000000001, D32150000000000000000001, D32160000000000000000002,);
             buildRules = ();
             dependencies = ();
-            fileSystemSynchronizedGroups = (793AC85D2FB0BE0600DAE835, D32140000000000000000001,);
+            fileSystemSynchronizedGroups = (793AC85D2FB0BE0600DAE835, D32140000000000000000001, ADA900000000000000000004,);
             name = KeyboardLayoutIntegrationTests;
             packageProductDependencies = (793AC8812FB0BE0600DAE8A0, 7A6000042FC0000000000001,);
             productName = KeyboardLayoutIntegrationTests;
@@ -1300,7 +1302,7 @@
                 GENERATE_INFOPLIST_FILE = YES;
                 IPHONEOS_DEPLOYMENT_TARGET = 18.0;
                 LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "@loader_path/Frameworks",);
-                OTHER_LDFLAGS = ("$(inherited)", "-lc++",);
+                OTHER_LDFLAGS = ("$(inherited)", "-lc++", "-force_load", "$(LIBLUA_FORCE_LOAD)", "-force_load", "$(LIBRIME_LUA_FORCE_LOAD)", "-force_load", "$(LIBRIME_OCTAGRAM_FORCE_LOAD)", "-force_load", "$(LIBGLOG_FORCE_LOAD)",);
                 PRODUCT_BUNDLE_IDENTIFIER = "com.DoubleShy0N.Universe-Keyboard.KeyboardLayoutIntegrationTests";
                 PRODUCT_NAME = "$(TARGET_NAME)";
                 SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
@@ -1311,6 +1313,18 @@
                 SWIFT_VERSION = 6.0;
                 TARGETED_DEVICE_FAMILY = "1,2";
                 TEST_HOST = "";
+                "SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY" = "YES";
+                "LIBRIME_OCTAGRAM_FORCE_LOAD[sdk=iphonesimulator*]" = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/librime-octagram.xcframework/ios-arm64_x86_64-simulator/librime-octagram.a";
+                "LIBGLOG_FORCE_LOAD[sdk=iphonesimulator*]" = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libglog.xcframework/ios-arm64_x86_64-simulator/libglog.a";
+                "LIBRIME_OCTAGRAM_FORCE_LOAD" = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/librime-octagram.xcframework/ios-arm64/librime-octagram.a";
+                "GCC_TREAT_WARNINGS_AS_ERRORS" = "YES";
+                "SWIFT_OPTIMIZATION_LEVEL" = "-Onone";
+                "CLANG_ENABLE_MODULES" = "YES";
+                "LIBLUA_FORCE_LOAD[sdk=iphonesimulator*]" = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/liblua.xcframework/ios-arm64_x86_64-simulator/liblua.a";
+                "LIBRIME_LUA_FORCE_LOAD" = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/librime-lua.xcframework/ios-arm64/librime-lua.a";
+                "LIBGLOG_FORCE_LOAD" = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libglog.xcframework/ios-arm64/libglog.a";
+                "LIBLUA_FORCE_LOAD" = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/liblua.xcframework/ios-arm64/liblua.a";
+                "LIBRIME_LUA_FORCE_LOAD[sdk=iphonesimulator*]" = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/librime-lua.xcframework/ios-arm64_x86_64-simulator/librime-lua.a";
             };
             name = Debug;
         };
@@ -1323,7 +1337,7 @@
                 GENERATE_INFOPLIST_FILE = YES;
                 IPHONEOS_DEPLOYMENT_TARGET = 18.0;
                 LD_RUNPATH_SEARCH_PATHS = ("$(inherited)", "@executable_path/Frameworks", "@loader_path/Frameworks",);
-                OTHER_LDFLAGS = ("$(inherited)", "-lc++",);
+                OTHER_LDFLAGS = ("$(inherited)", "-lc++", "-force_load", "$(LIBLUA_FORCE_LOAD)", "-force_load", "$(LIBRIME_LUA_FORCE_LOAD)", "-force_load", "$(LIBRIME_OCTAGRAM_FORCE_LOAD)", "-force_load", "$(LIBGLOG_FORCE_LOAD)",);
                 PRODUCT_BUNDLE_IDENTIFIER = "com.DoubleShy0N.Universe-Keyboard.KeyboardLayoutIntegrationTests";
                 PRODUCT_NAME = "$(TARGET_NAME)";
                 SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
@@ -1334,6 +1348,17 @@
                 SWIFT_VERSION = 6.0;
                 TARGETED_DEVICE_FAMILY = "1,2";
                 TEST_HOST = "";
+                "SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY" = "YES";
+                "LIBRIME_OCTAGRAM_FORCE_LOAD[sdk=iphonesimulator*]" = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/librime-octagram.xcframework/ios-arm64_x86_64-simulator/librime-octagram.a";
+                "LIBGLOG_FORCE_LOAD[sdk=iphonesimulator*]" = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libglog.xcframework/ios-arm64_x86_64-simulator/libglog.a";
+                "LIBRIME_OCTAGRAM_FORCE_LOAD" = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/librime-octagram.xcframework/ios-arm64/librime-octagram.a";
+                "GCC_TREAT_WARNINGS_AS_ERRORS" = "YES";
+                "CLANG_ENABLE_MODULES" = "YES";
+                "LIBLUA_FORCE_LOAD[sdk=iphonesimulator*]" = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/liblua.xcframework/ios-arm64_x86_64-simulator/liblua.a";
+                "LIBRIME_LUA_FORCE_LOAD" = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/librime-lua.xcframework/ios-arm64/librime-lua.a";
+                "LIBGLOG_FORCE_LOAD" = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/libglog.xcframework/ios-arm64/libglog.a";
+                "LIBLUA_FORCE_LOAD" = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/liblua.xcframework/ios-arm64/liblua.a";
+                "LIBRIME_LUA_FORCE_LOAD[sdk=iphonesimulator*]" = "$(PROJECT_DIR)/Packages/RimeBridge/Vendor/librime-lua.xcframework/ios-arm64_x86_64-simulator/librime-lua.a";
             };
             name = Release;
         };

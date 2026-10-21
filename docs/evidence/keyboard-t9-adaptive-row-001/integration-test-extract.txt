@@ -1,0 +1,120 @@
+Test Suite 'All tests' started at 2026-10-20 22:28:21.796.
+Test Suite 'KeyboardTests.xctest' started at 2026-10-20 22:28:21.802.
+Test Suite 'CandidateAccessibilityContractTests' started at 2026-10-20 22:28:21.802.
+Test Suite 'CandidateAccessibilityContractTests' passed at 2026-10-20 22:28:21.807.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.004 (0.005) seconds
+Test Suite 'CandidateBarIdleDismissContractTests' started at 2026-10-20 22:28:21.807.
+Test Suite 'CandidateBarIdleDismissContractTests' passed at 2026-10-20 22:28:21.818.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.010 (0.010) seconds
+Test Suite 'CandidateModelContractTests' started at 2026-10-20 22:28:21.818.
+Test Suite 'CandidateModelContractTests' passed at 2026-10-20 22:28:21.820.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.001 (0.002) seconds
+Test Suite 'CandidatePagingContractTests' started at 2026-10-20 22:28:21.820.
+Test Suite 'CandidatePagingContractTests' passed at 2026-10-20 22:28:21.839.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.017 (0.019) seconds
+Test Suite 'DeleteKeyScrubContractTests' started at 2026-10-20 22:28:21.839.
+Test Suite 'DeleteKeyScrubContractTests' passed at 2026-10-20 22:28:21.851.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.011 (0.012) seconds
+Test Suite 'KeyAccessibilityContractTests' started at 2026-10-20 22:28:21.852.
+Test Suite 'KeyAccessibilityContractTests' passed at 2026-10-20 22:28:21.860.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.007 (0.008) seconds
+Test Suite 'KeyboardDocumentIdentityTests' started at 2026-10-20 22:28:21.860.
+Test Suite 'KeyboardDocumentIdentityTests' passed at 2026-10-20 22:28:21.864.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+Test Suite 'KeyboardHostLifecycleRecoveryGateTests' started at 2026-10-20 22:28:21.864.
+Test Suite 'KeyboardHostLifecycleRecoveryGateTests' passed at 2026-10-20 22:28:21.893.
+	 Executed 23 tests, with 0 failures (0 unexpected) in 0.022 (0.029) seconds
+Test Suite 'KeyboardWakeDiagnosticProducerTests' started at 2026-10-20 22:28:21.894.
+Test Suite 'KeyboardWakeDiagnosticProducerTests' passed at 2026-10-20 22:28:21.981.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.086 (0.087) seconds
+Test Suite 'R174BuildGateTests' started at 2026-10-20 22:28:21.981.
+Test Suite 'R174BuildGateTests' passed at 2026-10-20 22:28:21.982.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'T9KaomojiChromeContractTests' started at 2026-10-20 22:28:21.983.
+Test Suite 'T9KaomojiChromeContractTests' passed at 2026-10-20 22:28:21.987.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+Test Suite 'T9PunctuationChromeContractTests' started at 2026-10-20 22:28:21.987.
+Test Suite 'T9PunctuationChromeContractTests' passed at 2026-10-20 22:28:21.990.
+	 Executed 2 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+Test Suite 'TypoCorrectionRecallRuntimeTests' started at 2026-10-20 22:28:21.990.
+Test Suite 'TypoCorrectionRecallRuntimeTests' passed at 2026-10-20 22:28:21.991.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'KeyboardTests.xctest' passed at 2026-10-20 22:28:21.991.
+	 Executed 49 tests, with 0 failures (0 unexpected) in 0.167 (0.189) seconds
+Test Suite 'All tests' passed at 2026-10-20 22:28:21.991.
+	 Executed 49 tests, with 0 failures (0 unexpected) in 0.167 (0.195) seconds
+Test Suite 'All tests' started at 2026-10-20 22:28:22.666.
+Test Suite 'KeyboardExtensionTests.xctest' started at 2026-10-20 22:28:22.667.
+Test Suite 'CandidateBarRecoveryViewTests' started at 2026-10-20 22:28:22.667.
+Test Suite 'CandidateBarRecoveryViewTests' passed at 2026-10-20 22:28:23.165.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.497 (0.498) seconds
+Test Suite 'CandidatePagingConsumerFixtureTests' started at 2026-10-20 22:28:23.165.
+Test Suite 'CandidatePagingConsumerFixtureTests' passed at 2026-10-20 22:28:27.073.
+	 Executed 16 tests, with 0 failures (0 unexpected) in 3.901 (3.907) seconds
+Test Suite 'CandidatePrefetchUIContractTests' started at 2026-10-20 22:28:27.073.
+Test Suite 'CandidatePrefetchUIContractTests' passed at 2026-10-20 22:28:27.074.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.001 (0.001) seconds
+Test Suite 'CompactCandidateBarLayoutTests' started at 2026-10-20 22:28:27.075.
+Test Suite 'CompactCandidateBarLayoutTests' passed at 2026-10-20 22:28:27.413.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.337 (0.339) seconds
+Test Suite 'KeyRecoveryAccessibilityTests' started at 2026-10-20 22:28:27.414.
+Test Suite 'KeyRecoveryAccessibilityTests' passed at 2026-10-20 22:28:27.422.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.007 (0.008) seconds
+Test Suite 'T9RecoveryPresentationAdapterTests' started at 2026-10-20 22:28:27.422.
+Test Suite 'T9RecoveryPresentationAdapterTests' passed at 2026-10-20 22:28:27.439.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.015 (0.017) seconds
+Test Suite 'TypoCorrectionRecallCoordinatorIntegrationTests' started at 2026-10-20 22:28:27.440.
+Test Suite 'TypoCorrectionRecallCoordinatorIntegrationTests' passed at 2026-10-20 22:28:29.410.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 1.968 (1.970) seconds
+Test Suite 'KeyboardExtensionTests.xctest' passed at 2026-10-20 22:28:29.410.
+	 Executed 41 tests, with 0 failures (0 unexpected) in 6.725 (6.743) seconds
+Test Suite 'All tests' passed at 2026-10-20 22:28:29.410.
+	 Executed 41 tests, with 0 failures (0 unexpected) in 6.725 (6.745) seconds
+Test Suite 'All tests' started at 2026-10-20 22:28:30.162.
+Test Suite 'KeyboardLayoutIntegrationTests.xctest' started at 2026-10-20 22:28:30.163.
+Test Suite 'CompactHeaderControllerLayoutTests' started at 2026-10-20 22:28:30.163.
+Test Case '-[KeyboardLayoutIntegrationTests.CompactHeaderControllerLayoutTests testAdaptiveExpansionKeepsPanelReadingAndMaskGeometry]' started.
+Test Case '-[KeyboardLayoutIntegrationTests.CompactHeaderControllerLayoutTests testAdaptiveExpansionKeepsPanelReadingAndMaskGeometry]' passed (0.930 seconds).
+HEADER_ROOT width=320.0 nineKey=false frame=(0.0, 2.0, 320.0, 46.0)
+HEADER_ROOT width=320.0 nineKey=true frame=(0.0, 2.0, 320.0, 46.0)
+HEADER_ROOT width=320.0 nineKey=true frame=(0.0, 36.0, 320.0, 46.0)
+HEADER_ROOT width=320.0 nineKey=true frame=(0.0, 36.0, 320.0, 46.0)
+HEADER_ROOT width=390.0 nineKey=false frame=(0.0, 2.0, 390.0, 46.0)
+HEADER_ROOT width=390.0 nineKey=true frame=(0.0, 2.0, 390.0, 46.0)
+HEADER_ROOT width=390.0 nineKey=true frame=(0.0, 36.0, 390.0, 46.0)
+HEADER_ROOT width=390.0 nineKey=true frame=(0.0, 36.0, 390.0, 46.0)
+HEADER_ROOT width=430.0 nineKey=false frame=(0.0, 2.0, 430.0, 46.0)
+HEADER_ROOT width=430.0 nineKey=true frame=(0.0, 2.0, 430.0, 46.0)
+HEADER_ROOT width=430.0 nineKey=true frame=(0.0, 36.0, 430.0, 46.0)
+HEADER_ROOT width=430.0 nineKey=true frame=(0.0, 36.0, 430.0, 46.0)
+Test Suite 'CompactHeaderControllerLayoutTests' passed at 2026-10-20 22:28:53.307.
+	 Executed 12 tests, with 0 failures (0 unexpected) in 23.139 (23.145) seconds
+Test Suite 'T9AdaptiveRowTests' started at 2026-10-20 22:28:53.308.
+UI2_GEOMETRY width=320.0 raw=2 root=(7.0, 2.0, 306.0, 286.0) target=288.0 path=(0.0, 0.0, 306.0, 34.0) candidate=(0.0, 36.0, 320.0, 46.0) first=(7.0, 82.0, 55.666666666666664, 45.0) bottom=(130.0, 243.0, 117.0, 45.0)
+UI2_GEOMETRY width=320.0 raw= root=(7.0, 2.0, 306.0, 286.0) target=288.0 path=(0.0, 0.0, 306.0, 34.0) candidate=(0.0, 36.0, 320.0, 46.0) first=(7.0, 82.0, 55.666666666666664, 45.0) bottom=(130.0, 243.0, 117.0, 45.0)
+UI2_GEOMETRY width=320.0 raw=6 root=(7.0, 2.0, 306.0, 286.0) target=288.0 path=(0.0, 0.0, 306.0, 34.0) candidate=(0.0, 36.0, 320.0, 46.0) first=(7.0, 82.0, 55.666666666666664, 45.0) bottom=(130.0, 243.0, 117.0, 45.0)
+UI2_GEOMETRY width=320.0 raw=64 root=(7.0, 2.0, 306.0, 286.0) target=288.0 path=(0.0, 0.0, 306.0, 34.0) candidate=(0.0, 36.0, 320.0, 46.0) first=(7.0, 82.0, 55.666666666666664, 45.0) bottom=(130.0, 243.0, 117.0, 45.0)
+UI2_GEOMETRY width=320.0 raw= root=(7.0, 2.0, 306.0, 286.0) target=288.0 path=(0.0, 0.0, 306.0, 34.0) candidate=(0.0, 36.0, 320.0, 46.0) first=(7.0, 82.0, 55.666666666666664, 45.0) bottom=(130.0, 243.0, 117.0, 45.0)
+UI2_GEOMETRY width=320.0 raw=2 root=(7.0, 2.0, 306.0, 286.0) target=288.0 path=(0.0, 0.0, 306.0, 34.0) candidate=(0.0, 36.0, 320.0, 46.0) first=(7.0, 82.0, 55.666666666666664, 45.0) bottom=(130.0, 243.0, 117.0, 45.0)
+UI2_GEOMETRY width=320.0 raw= root=(7.0, 2.0, 306.0, 286.0) target=288.0 path=(0.0, 0.0, 306.0, 34.0) candidate=(0.0, 36.0, 320.0, 46.0) first=(7.0, 82.0, 55.666666666666664, 45.0) bottom=(130.0, 243.0, 117.0, 45.0)
+UI2_GEOMETRY width=390.0 raw=2 root=(7.0, 2.0, 376.0, 286.0) target=288.0 path=(0.0, 0.0, 376.0, 34.0) candidate=(0.0, 36.0, 390.0, 46.0) first=(7.0, 82.0, 69.66666666666667, 45.0) bottom=(158.0, 243.0, 145.0, 45.0)
+UI2_GEOMETRY width=390.0 raw= root=(7.0, 2.0, 376.0, 286.0) target=288.0 path=(0.0, 0.0, 376.0, 34.0) candidate=(0.0, 36.0, 390.0, 46.0) first=(7.0, 82.0, 69.66666666666667, 45.0) bottom=(158.0, 243.0, 145.0, 45.0)
+UI2_GEOMETRY width=390.0 raw=6 root=(7.0, 2.0, 376.0, 286.0) target=288.0 path=(0.0, 0.0, 376.0, 34.0) candidate=(0.0, 36.0, 390.0, 46.0) first=(7.0, 82.0, 69.66666666666667, 45.0) bottom=(158.0, 243.0, 145.0, 45.0)
+UI2_GEOMETRY width=390.0 raw=64 root=(7.0, 2.0, 376.0, 286.0) target=288.0 path=(0.0, 0.0, 376.0, 34.0) candidate=(0.0, 36.0, 390.0, 46.0) first=(7.0, 82.0, 69.66666666666667, 45.0) bottom=(158.0, 243.0, 145.0, 45.0)
+UI2_GEOMETRY width=390.0 raw= root=(7.0, 2.0, 376.0, 286.0) target=288.0 path=(0.0, 0.0, 376.0, 34.0) candidate=(0.0, 36.0, 390.0, 46.0) first=(7.0, 82.0, 69.66666666666667, 45.0) bottom=(158.0, 243.0, 145.0, 45.0)
+UI2_GEOMETRY width=390.0 raw=2 root=(7.0, 2.0, 376.0, 286.0) target=288.0 path=(0.0, 0.0, 376.0, 34.0) candidate=(0.0, 36.0, 390.0, 46.0) first=(7.0, 82.0, 69.66666666666667, 45.0) bottom=(158.0, 243.0, 145.0, 45.0)
+UI2_GEOMETRY width=390.0 raw= root=(7.0, 2.0, 376.0, 286.0) target=288.0 path=(0.0, 0.0, 376.0, 34.0) candidate=(0.0, 36.0, 390.0, 46.0) first=(7.0, 82.0, 69.66666666666667, 45.0) bottom=(158.0, 243.0, 145.0, 45.0)
+UI2_GEOMETRY width=430.0 raw=2 root=(7.0, 2.0, 416.0, 286.0) target=288.0 path=(0.0, 0.0, 416.0, 34.0) candidate=(0.0, 36.0, 430.0, 46.0) first=(7.0, 82.0, 77.66666666666667, 45.0) bottom=(174.0, 243.0, 161.0, 45.0)
+UI2_GEOMETRY width=430.0 raw= root=(7.0, 2.0, 416.0, 286.0) target=288.0 path=(0.0, 0.0, 416.0, 34.0) candidate=(0.0, 36.0, 430.0, 46.0) first=(7.0, 82.0, 77.66666666666667, 45.0) bottom=(174.0, 243.0, 161.0, 45.0)
+UI2_GEOMETRY width=430.0 raw=6 root=(7.0, 2.0, 416.0, 286.0) target=288.0 path=(0.0, 0.0, 416.0, 34.0) candidate=(0.0, 36.0, 430.0, 46.0) first=(7.0, 82.0, 77.66666666666667, 45.0) bottom=(174.0, 243.0, 161.0, 45.0)
+UI2_GEOMETRY width=430.0 raw=64 root=(7.0, 2.0, 416.0, 286.0) target=288.0 path=(0.0, 0.0, 416.0, 34.0) candidate=(0.0, 36.0, 430.0, 46.0) first=(7.0, 82.0, 77.66666666666667, 45.0) bottom=(174.0, 243.0, 161.0, 45.0)
+UI2_GEOMETRY width=430.0 raw= root=(7.0, 2.0, 416.0, 286.0) target=288.0 path=(0.0, 0.0, 416.0, 34.0) candidate=(0.0, 36.0, 430.0, 46.0) first=(7.0, 82.0, 77.66666666666667, 45.0) bottom=(174.0, 243.0, 161.0, 45.0)
+UI2_GEOMETRY width=430.0 raw=2 root=(7.0, 2.0, 416.0, 286.0) target=288.0 path=(0.0, 0.0, 416.0, 34.0) candidate=(0.0, 36.0, 430.0, 46.0) first=(7.0, 82.0, 77.66666666666667, 45.0) bottom=(174.0, 243.0, 161.0, 45.0)
+UI2_GEOMETRY width=430.0 raw= root=(7.0, 2.0, 416.0, 286.0) target=288.0 path=(0.0, 0.0, 416.0, 34.0) candidate=(0.0, 36.0, 430.0, 46.0) first=(7.0, 82.0, 77.66666666666667, 45.0) bottom=(174.0, 243.0, 161.0, 45.0)
+Test Suite 'T9AdaptiveRowTests' passed at 2026-10-20 22:28:53.802.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.492 (0.494) seconds
+Test Suite 'KeyboardLayoutIntegrationTests.xctest' passed at 2026-10-20 22:28:53.802.
+	 Executed 17 tests, with 0 failures (0 unexpected) in 23.632 (23.640) seconds
+Test Suite 'All tests' passed at 2026-10-20 22:28:53.803.
+	 Executed 17 tests, with 0 failures (0 unexpected) in 23.632 (23.641) seconds
+** TEST SUCCEEDED **

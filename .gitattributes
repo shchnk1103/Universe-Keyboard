@@ -1,1 +1,13 @@
 "Universe Keyboard/ThirdPartyLicenses/OPENCC-AUTHORS.txt" whitespace=-blank-at-eof
+
+# UI-2 (KEYBOARD-T9-ADAPTIVE-ROW-001) raw tool output kept byte-for-byte: recorded SHA-256s and patches
+# depend on the original bytes (trailing spaces; CRLF in timeline.csv). Exempt only end-of-line
+# whitespace for exactly these files; any new or other file is still checked.
+docs/evidence/keyboard-t9-adaptive-row-001/device-analysis-20261021/timeline.csv whitespace=-blank-at-eol
+docs/evidence/keyboard-t9-adaptive-row-001/minimal-fix-20261021/baseline.log whitespace=-blank-at-eol
+docs/evidence/keyboard-t9-adaptive-row-001/minimal-fix-20261021/baseline2.log whitespace=-blank-at-eol
+docs/evidence/keyboard-t9-adaptive-row-001/minimal-fix-20261021/fixed.log whitespace=-blank-at-eol
+docs/evidence/keyboard-t9-adaptive-row-001/review-remediation-20261021/after.log whitespace=-blank-at-eol
+docs/evidence/keyboard-t9-adaptive-row-001/review-remediation-20261021/before.log whitespace=-blank-at-eol
+docs/evidence/keyboard-t9-adaptive-row-001/review-remediation-20261021/original-fix.patch whitespace=-blank-at-eol
+docs/evidence/keyboard-t9-adaptive-row-001/review-remediation-20261021/revision.patch whitespace=-blank-at-eol

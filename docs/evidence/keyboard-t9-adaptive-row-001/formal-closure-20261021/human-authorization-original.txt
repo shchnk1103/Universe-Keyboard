@@ -1,0 +1,508 @@
+# Universe Keyboard — UI-2 QA-001 Formal Closure
+# Task: keyboard-t9-adaptive-row-001
+# Executor: Original UI-2 Writer Codex
+# Authority: Human Product Owner
+# Phase: Formal Defect Closure + Governance Residual Recording
+# Authorization: LIMITED DOCS-ONLY WRITE AND LOCAL COMMIT
+
+继续当前 UI-2 Codex 会话。
+
+Human Product Owner 已明确作出正式决定：
+
+接受下列四项残余为 QA-001 缺陷级
+non-blocking residual：
+
+R-QA001-GOV-01
+R-QA001-Q-01
+R-QA001-Q-02
+R-QA001-Q-03
+
+保留全部历史流程偏差与证据限制。
+
+正式批准关闭：
+
+UI-2 QA-001
+
+本授权仅适用于 QA-001 缺陷级关闭。
+
+明确不授权：
+
+- Push
+- 更新或创建 PR
+- Merge
+- Release
+- 修改生产代码
+- 修改测试代码
+- 修改 KOS Policy
+- 清理或删除 Worktree
+
+==================================================
+一、固定任务身份与现场
+==================================================
+
+Task ID:
+keyboard-t9-adaptive-row-001
+
+Worktree:
+
+/Users/doubleshy0n/.codex/worktrees/t9-adaptive-row-001/Universe Keyboard
+
+Branch:
+
+codex/keyboard-t9-adaptive-row-001
+
+Expected HEAD:
+
+8f559a2e5d576ae6dd9839d7eae84fe86288dc24
+
+开始前只读核查：
+
+1. 当前 Branch。
+2. 当前 HEAD。
+3. Git 工作区状态。
+4. 最新 Assignment。
+5. QA-001 全部 Evidence。
+6. Governance Check。
+7. Claude Quality Disposition。
+8. KOS Assignment Policy。
+9. 现有 Residual ID。
+
+如果发现 HEAD 不匹配、
+未知 dirty 文件或证据冲突：
+
+立即停止并报告。
+
+不得 Reset、Restore、Stash、Clean、
+Rebase 或覆盖未知修改。
+
+特别保护 Human 未提交的：
+
+Universe Keyboard.xcodeproj/project.pbxproj
+
+以及现有 Scheme 文件。
+
+必须在修改前后记录两者 SHA-256。
+
+不得修改、暂存或提交这两项 Human 文件。
+
+==================================================
+二、记录 Human 正式决定
+==================================================
+
+Human Product Owner 正式决定：
+
+“I explicitly accept
+R-QA001-GOV-01,
+R-QA001-Q-01,
+R-QA001-Q-02,
+and R-QA001-Q-03
+as non-blocking residuals
+for QA-001 defect-level closure.
+
+All historical governance deviations
+and evidence limitations
+must remain recorded.
+
+I approve formal closure of QA-001.
+
+This approval does not authorize
+Push, PR update, Merge or Release.”
+
+将此决定记录为：
+
+Human Product Owner Decision:
+ACCEPT NON-BLOCKING RESIDUALS
+
+QA-001 Closure Authorization:
+APPROVED
+
+决定来源：
+
+Human 本次明确指令。
+
+不得伪造历史审批时间、
+Reviewer Packet、签名或审核记录。
+
+仅记录实际已确认的授权事实。
+
+不能将此次接受解释为：
+
+- Reviewer Lane Packet 事前已冻结。
+- 历史 Review 完全符合 KOS Policy。
+- Human 替代 Quality Reviewer 签核。
+- QA-001 技术质量不存在任何风险。
+- UI-2 整体已经完成验收。
+- PR #217 可以更新或合并。
+- Universe Keyboard 1.0 可以发布。
+
+==================================================
+三、正式登记 Governance Residual
+==================================================
+
+Residual ID:
+R-QA001-GOV-01
+
+Category:
+Governance / Historical Process Deviation
+
+Owner:
+Human Product Owner
+
+Disposition:
+ACCEPT — NON-BLOCKING FOR QA-001 ONLY
+
+事实：
+
+本任务未找到符合现行 Policy 要求的、
+事前冻结的完整 Reviewer Lane Packet。
+
+此前独立 Review 有 Human 转述、
+代码修订及相关证据支持，
+但原始 Review 原件与条件清单
+未完整归档。
+
+新一轮 Quality Disposition
+同样未形成事前冻结的完整 Packet。
+
+不得声称上述历史流程已经合规。
+
+Human 接受该历史偏差，
+仅用于 QA-001 缺陷级关闭。
+
+该决定：
+
+- 不追溯修改历史。
+- 不豁免未来任务的 Packet 要求。
+- 不修改 KOS Policy。
+- 不代表其他 Gate PASS。
+
+Evidence Pointer：
+
+docs/evidence/keyboard-t9-adaptive-row-001/
+governance-check-20261021/
+
+docs/evidence/keyboard-t9-adaptive-row-001/
+acceptance-20261021/
+
+以及本次 Human Decision 记录。
+
+==================================================
+四、正式登记 Quality Residual
+==================================================
+
+Residual ID:
+R-QA001-Q-01
+
+Category:
+Quality / Root Cause Uncertainty
+
+Owner:
+Human Product Owner
+(Residual Acceptance)
+
+Disposition:
+ACCEPT — NON-BLOCKING FOR QA-001 ONLY
+
+事实：
+
+首次按键空白的 UIKit 内部根因
+尚未完全证明。
+
+现有设备证据与补丁行为支持
+首次有效 viewport 补充刷新方案。
+
+Human 真机复验已经 7/7 PASS。
+
+接受此项剩余不确定性，
+但不将推断描述为已经证明的根因。
+
+Evidence Pointer：
+
+device-analysis-20261021/
+minimal-fix-20261021/
+review-remediation-20261021/
+
+--------------------------------------------------
+
+Residual ID:
+R-QA001-Q-02
+
+Category:
+Quality / Device Evidence Limitations
+
+Owner:
+Human Product Owner
+(Residual Acceptance)
+
+Disposition:
+ACCEPT — NON-BLOCKING FOR QA-001 ONLY
+
+事实：
+
+修复后设备验收为 Human
+在 DSON 13 Pro 上报告的 7/7 PASS。
+
+该证据属于 Human Device Attestation。
+
+没有新的原始 device trace 或录像。
+
+验证范围仅限现有设备和测试场景。
+
+未提供独立 VoiceOver、
+Release 性能或多设备验证证据。
+
+不得把 Human 声明升级成
+独立工具录制的设备证据。
+
+Evidence Pointer：
+
+acceptance-20261021/
+human-acceptance.md
+
+--------------------------------------------------
+
+Residual ID:
+R-QA001-Q-03
+
+Category:
+Quality / Review Evidence Provenance
+
+Owner:
+Human Product Owner
+(Residual Acceptance)
+
+Disposition:
+ACCEPT — NON-BLOCKING FOR QA-001 ONLY
+
+事实：
+
+原 Claude Architecture / Quality Review
+完整原件及原始条件清单
+尚未归档进本任务 Evidence。
+
+现有部分结论来自 Human 转述。
+
+后续独立 Claude Quality Disposition
+已重新核查证据充分性，
+结论为：
+
+Quality Sufficiency:
+CONDITIONAL PASS
+
+QA-001 Quality Closure:
+SUPPORTED
+
+Historical Packet Residual:
+NON-BLOCKING CANDIDATE
+
+Human 现已正式接受该残余。
+
+不得将转述伪装成原始 Review Artifact。
+
+如果将来获得真实 Review 原件，
+可在独立授权下按照真实来源补录。
+
+Evidence Pointer：
+
+governance-check-20261021/
+acceptance-20261021/
+
+==================================================
+五、核对技术关闭证据
+==================================================
+
+在更新 QA-001 状态前，
+复核以下既有证据：
+
+Human Device Acceptance:
+7 PASS / 0 FAIL
+
+Automated Regression:
+111 PASS / 0 FAIL / 0 SKIP
+
+具体测试：
+
+KeyboardTests: 49 PASS
+KeyboardExtensionTests: 41 PASS
+UI-2 Integration: 21 PASS
+
+Finding A:
+CLOSED
+
+Architecture Review:
+PASS（既有报告结论，注明来源）
+
+Latest Quality Sufficiency:
+CONDITIONAL PASS
+
+QA-001 Quality Closure:
+SUPPORTED
+
+同时核实：
+
+- 产品源码自 f271f68 后未变。
+- Human 验收版本与当前源码等同。
+- 自动化回归日志和哈希一致。
+- 没有仍未处理的 MAJOR / BLOCKER。
+- 四项 Residual 已记录并有指针。
+- Human 已明确批准缺陷级关闭。
+
+如果任何事实无法证实：
+
+不得补造证据。
+
+保留原始来源等级，
+明确 UNKNOWN 或不完整项。
+
+如发现新的实际阻断，
+停止关闭并报告。
+
+不重复运行测试。
+
+==================================================
+六、更新 Assignment 与 Evidence
+==================================================
+
+仅允许更新：
+
+docs/assignments/keyboard-t9-adaptive-row-001.md
+
+以及：
+
+docs/evidence/keyboard-t9-adaptive-row-001/
+
+如现有 KOS 规则要求
+在本任务内其他已存在的
+专属治理文件登记状态，
+须先核实路径和写入权限。
+
+不得扩展到其他项目或任务文档。
+
+需要准确记录：
+
+1. QA-001: CLOSED。
+2. Closure Scope: QA-001 defect only。
+3. Human Device Acceptance: 7/7 PASS。
+4. Automated Regression: 111/0/0。
+5. Finding A: CLOSED。
+6. Independent Quality: CONDITIONAL PASS。
+7. Quality Closure: SUPPORTED。
+8. Human Residual Acceptance: APPROVED。
+9. 四项残余的 ID / Owner /
+   Disposition / Evidence Pointer。
+10. 历史 Packet 缺失事实。
+11. 原始 Review 原件缺失事实。
+12. PR #217 状态仍未获更新授权。
+13. Release 状态不变。
+14. 后续监控及重新开启条件。
+
+若 Assignment 同时追踪
+整个 UI-2 Feature 和 QA-001：
+
+只能关闭 QA-001 子问题。
+
+不得自动将整个 UI-2 Assignment、
+Feature Gate 或 Release Gate
+标记为 CLOSED / PASS。
+
+==================================================
+七、最小验证与本地提交
+==================================================
+
+完成文档更新后：
+
+1. 检查本轮 docs-only diff。
+2. 核对 Evidence 事实与引用。
+3. 核对四项 Residual 完整性。
+4. 核对 Human 文件前后哈希。
+5. 检查 Git status。
+6. 只暂存明确授权的文档文件。
+7. 创建一个本地 docs-only commit。
+8. 再次检查最终工作区状态。
+
+不得：
+
+git add -A
+git add .
+git commit -a
+
+必须使用显式文件路径暂存。
+
+如果 Git 状态中出现未知修改，
+停止并报告。
+
+不得为了生成干净状态而
+清理 Human 文件。
+
+不得运行不必要的 Build 或 XCTest。
+
+==================================================
+八、关闭后的边界
+==================================================
+
+QA-001 CLOSED
+不等于：
+
+UI-2 FEATURE ACCEPTED
+PR #217 READY TO MERGE
+ALL QUALITY GATES PASS
+UNIVERSE KEYBOARD 1.0 RELEASE READY
+
+PR #217 更新仍需独立 Human 授权。
+
+届时必须核对：
+
+- 远端 main / PR base。
+- 当前本地提交链。
+- 已审源码范围。
+- 是否存在新的上游变化。
+- CI 对精确提交的验证结果。
+- Human 未提交工程文件保护状态。
+
+本轮全部禁止执行。
+
+==================================================
+九、最终报告
+==================================================
+
+请输出：
+
+1. Git Branch 与最终 HEAD。
+2. QA-001 最终状态。
+3. Human 正式决定登记位置。
+4. 四项 Residual 登记结果。
+5. Assignment 更新位置。
+6. Evidence 更新位置。
+7. 技术证据核对结果。
+8. Quality 结论及其来源等级。
+9. KOS 历史偏差保留方式。
+10. 本地 Commit SHA。
+11. Docs-only Diff 清单。
+12. Human 工程与 Scheme 哈希比较。
+13. 最终 Git Status。
+14. 是否触碰其他 Worktree。
+15. PR #217 下一步所需授权。
+16. 当前 Codex 会话是否可归档。
+
+最终结论只能选择：
+
+QA-001 FORMALLY CLOSED
+
+或
+
+QA-001 CLOSURE BLOCKED
+
+如果符合所有条件，
+记录为：
+
+QA-001 FORMALLY CLOSED
+
+随后停止。
+
+不 Push。
+不更新 PR。
+不 Merge。
+不 Release。
+不清理 Worktree。
+
+等待 Human 下一步指令。

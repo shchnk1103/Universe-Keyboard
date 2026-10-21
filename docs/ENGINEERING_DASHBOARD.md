@@ -1,5 +1,7 @@
 # Engineering Dashboard
 
+2026-10-20：[KEYBOARD-T9-ADAPTIVE-ROW-001](assignments/keyboard-t9-adaptive-row-001.md) **Active**，Draft PR217已发布、精确Head CI9项通过；Claude Sticky Pass、Lifecycle/Architecture/Quality Conditional；真实Extension验证pending，无Ready/Merge/TestFlight/Close。
+
 2026-10-19：[INPUT-RELIABILITY-DELIVERY-003](assignments/input-reliability-delivery-003.md) **Active**，Human 已授权产品 PR 与 CI 检查；Claude Architecture Pass / Quality Partial。R174 正常构建关闭；无 merge / TestFlight / Closeout 授权。
 
 2026-10-11 当前：父 **TYPO-CORRECTION-002 Closed**；独立最终复核C1–C7完整Pass with conditions，无必需blocker；Human条件授权执行有界Gate/Close。保留性能未知、QA证据边界及P1技术债。[Close回执](evidence/typo-correction-002-parent-close-2026-10-11.md)。本地Close已生效；本次docs-only发布已授权，main同步待PR合并；下方Active等阶段快照为历史。

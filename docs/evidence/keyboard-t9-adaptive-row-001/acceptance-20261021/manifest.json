@@ -1,0 +1,24 @@
+{
+  "tested_product_head": "f610763df0cc12e89d0a8cd8c3b90197ced2d88b",
+  "files": {
+    "docs/evidence/keyboard-t9-adaptive-row-001/acceptance-20261021/closure-report.md": "8837d4b2cf17eae4d3137ba38c1bc83c44170d82c4fa36aff59b94cd6b4ada9c",
+    "docs/evidence/keyboard-t9-adaptive-row-001/acceptance-20261021/human-acceptance.md": "8af5d690d46ac0d3e43d16e4284e40655f0f1a6ff0e0908a0600194ce0e7f3d2",
+    "docs/evidence/keyboard-t9-adaptive-row-001/acceptance-20261021/regression.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "docs/evidence/keyboard-t9-adaptive-row-001/acceptance-20261021/regression.log": "cef8731d0a53e78a8212ab18e8690bd8f77a249e7964c24dcd8c9b217ea11e83",
+    "docs/evidence/keyboard-t9-adaptive-row-001/acceptance-20261021/review-packet-audit.md": "b134dca47415febc4a4ae5c644597d1f9641646d5918a1b48bff771daa021534",
+    "docs/evidence/keyboard-t9-adaptive-row-001/acceptance-20261021/summary-retry.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "docs/evidence/keyboard-t9-adaptive-row-001/acceptance-20261021/summary-retry.json": "60eae2f462bb0e5a2ac5fe04261068cfbc1aad81d608132ec85aba8d6809f0c8",
+    "docs/evidence/keyboard-t9-adaptive-row-001/acceptance-20261021/summary-retry.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/evidence/keyboard-t9-adaptive-row-001/acceptance-20261021/summary.exit": "913f5d1da2feaf4deeccc9e55cbb350a20f12b3f507e87be85dbb77fdd3cb9bc",
+    "docs/evidence/keyboard-t9-adaptive-row-001/acceptance-20261021/summary.json": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/evidence/keyboard-t9-adaptive-row-001/acceptance-20261021/tests.json": "b8b499bfab926648bace3050b32ef56cc72c195be0fe6478109fdc8beb51aed0"
+  },
+  "assignment": {
+    "docs/assignments/KEYBOARD-T9-ADAPTIVE-ROW-001.md": "0057e00a8bab8594b3f99b7794232912b6fa26ab9f3f87339db293b8dcb04e88"
+  },
+  "protected_unchanged_not_staged": {
+    "Universe Keyboard.xcodeproj/project.pbxproj": "a0fa659a049834b692071955a82f8fe5087bf9d7ab9d3453a047a5c47df7cb3b",
+    "Universe Keyboard.xcodeproj/xcshareddata/xcschemes/Universe Keyboard.xcscheme": "b266a5c6d238c6b1821de98ef4b0819c447af18aa3ab9086eb5343e04704c83e"
+  },
+  "xcresult_path": "/private/tmp/ui2-qa001-acceptance-20261021/regression.xcresult"
+}

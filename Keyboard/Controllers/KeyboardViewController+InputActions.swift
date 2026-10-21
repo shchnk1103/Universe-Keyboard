@@ -28,6 +28,9 @@ extension KeyboardViewController {
         let startTime = CACurrentMediaTime()
         inputEventSequence += 1
         let eventID = inputEventSequence
+        #if DEBUG
+            T9QA001DeviceTrace.shared.begin(owner: self, event: eventID)
+        #endif
         let compositionLengthBefore = controller.state.currentComposition.count
         #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
             // Segmented sample for continuous T9 digit typing (no Path/candidate pick).
@@ -72,6 +75,9 @@ extension KeyboardViewController {
 
         let handleStartTime = CACurrentMediaTime()
         let effects = controller.handle(.insertKey(key))
+        #if DEBUG
+            T9QA001DeviceTrace.shared.record(.returned, owner: self)
+        #endif
         let handleMs = (CACurrentMediaTime() - handleStartTime) * 1000
         #if DEBUG || T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
             if shouldSampleT9Segments {

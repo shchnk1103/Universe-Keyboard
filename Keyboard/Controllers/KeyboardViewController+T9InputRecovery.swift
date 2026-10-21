@@ -60,6 +60,7 @@ extension KeyboardViewController {
                 }
             }
         }
+        refreshT9PinyinPathBarVisibility()
         wasT9RecoveryPresentationBlocked = blocked
     }
 }

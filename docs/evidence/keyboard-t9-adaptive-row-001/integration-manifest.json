@@ -1,0 +1,48 @@
+{
+  "task": "KEYBOARD-T9-ADAPTIVE-ROW-001",
+  "writer": "codex-t9-adaptive-row",
+  "baseline": "78b795fb1429bd30721907b3035ce261d0342e6f",
+  "merge": "b34cea88a4633194908e0c1f0793b65db7cb2bd6",
+  "raw_directory": "/private/tmp/t9-adaptive-row-001-integration",
+  "changed_files_sha256": {
+    "Keyboard/Controllers/KeyboardViewController+ExpandedCandidatePanel.swift": "a5fb53c874bee4e2d2e25c83db9c7be0c6f6ea382dcc0ef284298bbd4e15835a",
+    "Keyboard/Controllers/KeyboardViewController+Layout.swift": "3bb3e8b881b304a62de675217392a80cfa00c80353fa0d527f4d37496923af34",
+    "Keyboard/Controllers/KeyboardViewController+Presentation.swift": "cae4b6bc671d4bf7be1521382373fbee055cb3f3f021f211e373526f305eea77",
+    "Keyboard/Controllers/KeyboardViewController+T9InputRecovery.swift": "1176c0fa4ddc3c1f353f7ba4f6171977b04b1c1eb7c8aeedc67d4c16725f577c",
+    "Keyboard/Controllers/KeyboardViewController+T9PinyinPath.swift": "288e0a91da86fe58c8b3aad0fb39ee6d694505b557c9aae8e3fa7b2daef21abd",
+    "Keyboard/Controllers/KeyboardViewController.swift": "6472c0e9300678f6ab4b4e99cf0093c4463bfe080b79990e9c208efcfe176099",
+    "Keyboard/Views/T9PinyinPathBarView.swift": "c3f8f619bd409805043c21c3fdc09c843dec6f93dd7e16738bc678ca66ce2736",
+    "KeyboardExtensionTests/CandidatePagingConsumerFixtureTests.swift": "8f719696b0635a3a488e0291a2c6cf918f41a14c29ffb0b0cf87a64597299c05",
+    "KeyboardLayoutIntegrationTests/T9AdaptiveRowTests.swift": "fa053c53d734e4ee7f213207aa80812bf2dabc17b9fcab0b7d7e0d0b3e504399",
+    "KeyboardTests/ControllerLayout/CompactHeaderControllerLayoutTests.swift": "ee04575d827669cc977a6d34df3209645ec2dde3bf8494269e7dfc097f7b4056",
+    "Universe Keyboard.xcodeproj/project.pbxproj": "c68ce9242090e36e1fffa013e74212e0f0766ca285edbee5679c133c4e3cc738"
+  },
+  "raw_sha256": {
+    "l1-initial.log": "cd8ceb486202dd9b3e4a5580ed3680ee865f2b2a713d9f436819109634821af4",
+    "build-for-testing.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "l1-second.log": "19e8167f58d8be3f1f78506cd99a5020cf660f9ab27a6903e720ba2c624c1a87",
+    "build-for-testing.log": "3c9536626a938932bcb002c88e53fd7db6b23122842a0070688daaa840e77f42",
+    "targeted-final.log": "09f2e9d52aaa45b17f2715444c9182ab8877d087c86948ba09ad08159cc99520",
+    "targeted-final.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "pr217-final.json": "f136bbb637794e9e8d9c1e56e12ed52a7a778dad6fc104eef453f505d532c6cb",
+    "ui1-project.json": "8955326b92e8f6f25d6d5f8f7f6fbebd63e2a36e0251937191c171b5fdce299f",
+    "main-check-runs.json": "aeeadd097bbb81fa763ac0ef0710e56dc8b692a40bd953dbb4a12cbe629695f4",
+    "l1-final.exit": "979b894f2d91bf199766571d58024f020d1a44a417da5f48e1fa1cdf554a14f5",
+    "ui2-project.json": "2b099e66091af3804bd10f6c3bae4762b1e95fff7cb9084622f69ef88413421d",
+    "target-setting-reconciliation.json": "f82f6f7097fe2888a25d41833ed5aac1382e038c18d6713b7a01bea941ec37ab",
+    "l1-initial.exit": "979b894f2d91bf199766571d58024f020d1a44a417da5f48e1fa1cdf554a14f5",
+    "l1-final.log": "62e704a4caa42763c53021776c4793609fcf0fc51a912aa86d4f2c5a008d1341",
+    "main-ci.json": "29cf9b9bb35605abc2f1170586ef4e4b3a46d419d3985144c5857a97232b9ad6"
+  },
+  "results": {
+    "Controller": 17,
+    "KeyboardTests": 49,
+    "KeyboardExtensionTests": 41,
+    "failures": 0,
+    "skips": 0,
+    "Debug_build_for_testing": "PASS",
+    "strict_swift_files": 10
+  },
+  "protected_diff": "",
+  "runtime": "NOT RUN; Human Gate pending"
+}

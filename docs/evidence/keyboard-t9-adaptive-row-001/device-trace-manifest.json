@@ -1,0 +1,67 @@
+{
+  "task": "KEYBOARD-T9-ADAPTIVE-ROW-001",
+  "writer": "codex-t9-adaptive-row",
+  "finding": "QA-001 OPEN / MAJOR",
+  "entry": "44bc548032873cab4fd03be10d3acd1055a7dcfb",
+  "status": "DEVICE TRACE READY; no device run or root fix",
+  "source_sha256": {
+    "Keyboard/Controllers/KeyboardViewController+Bootstrap.swift": "290c3111fa572ea3df838765b4c4840e63d57280cede35342c179afb99aeb460",
+    "Keyboard/Controllers/KeyboardViewController+ExpandedCandidatePanel.swift": "6f45250fe19eb79b3a31d172b31996f2a545f05f8073fa63d84a4744bd08c63d",
+    "Keyboard/Controllers/KeyboardViewController+InputActions.swift": "a1b6696d7804d3b40135221d6d9db7b29174e58d4e90d9bb00e965b141331049",
+    "Keyboard/Controllers/KeyboardViewController+T9PinyinPath.swift": "820b74a47cd2504c6da50bbe0f4671c192e7e6583f83fd6c222046b740e66504",
+    "Keyboard/Controllers/KeyboardViewController.swift": "e0bd1068d3e4d0c16872ab4c2d4f9dfa2d14f54b3258c014d83a79e05e965258",
+    "Keyboard/Views/T9PinyinPathBarView.swift": "cb7f28b2ee39399e7725944af010a0b5ec34a5d65221ddd4ff15c9e1bd0672fe",
+    "KeyboardLayoutIntegrationTests/T9AdaptiveRowTests.swift": "e71bd719e837b6743d575b4a6903d4fa97261aa30a33eabe00d0167af77bf637",
+    "Keyboard/Controllers/T9QA001DeviceTrace.swift": "9fbbaf7a58f521d10eb119c1410a6c2df8bb12922f2e1ba5ab7cc79b39e19458"
+  },
+  "human_project": {
+    "path": "Universe Keyboard.xcodeproj/project.pbxproj",
+    "sha256": "a0fa659a049834b692071955a82f8fe5087bf9d7ab9d3453a047a5c47df7cb3b",
+    "authority": "Human confirmed may compile but do not commit",
+    "committed": false
+  },
+  "raw_directory": "/private/tmp/t9-qa001-trace",
+  "raw_sha256": {
+    "release-sealed.log": "b89951337c0882898a8a82f36a525b731d4f2e531e1a03b6d2785a6d0abfd46e",
+    "release.log": "6276442146c982253919415c164bd9bc194d6858bc5130ff1fd47daa3af8ae7f",
+    "diagnostic-final.log": "d1af4b52456fa35a3bde5ecb39c7d0d9236d565e9d5a75688de3b47c43c48ce1",
+    "probe.log": "0ad6beae178a48d8fe4bac3e959e97c5c7ae17ec5968d5fac2763b30949fbc09",
+    "sealed.log": "b16d0553f2d2ea2e3a68d5151ea8bbf9faa2bf9c048e34530bd51858acdb0d38",
+    "sealed.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "probe.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "release-final.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "release.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "release-final.log": "868dc556882e16bfd619b147c997fdf1042a732aa00e6f142a6ea3c60852ea6a",
+    "binary-isolation.json": "5ba5a6e9c0ad471c522bf37acab94f32043e907dea3dcbcd801fd9c01e2cbe0c",
+    "lldb-aliases.log": "91e7c89dcd987ccd3486a98eaef5d76403384da9ef94339cbcb62866de49ff53",
+    "diagnostic-final.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "final.log": "b45da8f34c348fd23db0ef81179d99066709669b3eefff23825533102531c5cd",
+    "release-sealed.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "lldb-aliases.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "ready.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "final.exit": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "ready.log": "fca7d29ed77fb3e8fae51ce787d22d9a4c04949a36b4f25aa14588a26b2f8345"
+  },
+  "binary_isolation": {
+    "release_binary": "/private/tmp/t9-qa001-trace/release-build/Build/Products/Release-iphonesimulator/Keyboard.appex/Keyboard",
+    "release_sha256": "3d9d0e98ceac2327ac01836c92ad39df14d17d194b63d88f8a3a23feef205eab",
+    "debug_binary": "/private/tmp/t9-adaptive-row-001-integration-build/Build/Products/Debug-iphonesimulator/Keyboard.appex/Keyboard.debug.dylib",
+    "debug_sha256": "9cb77405c39bd8d4b3d5fe9f7cb122e1652177b9da983fd02eac8062b9e726ce",
+    "release_probe_symbols_absent": true,
+    "release_probe_literals_absent": true,
+    "debug_objc_class_present": true
+  },
+  "results": {
+    "Controller": 19,
+    "KeyboardExtensionTests": 41,
+    "finalT9Subset": 7,
+    "finalProbeSelfTest": 1,
+    "failures": 0,
+    "skips": 0,
+    "strictSwiftFiles": 13,
+    "releaseLocalSimulatorBuild": "PASS",
+    "LLDBaliasParse": "PASS",
+    "realDeviceAttachExport": "PENDING HUMAN"
+  },
+  "protected_core_diff": ""
+}

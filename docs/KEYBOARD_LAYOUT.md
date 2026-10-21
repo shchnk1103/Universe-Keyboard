@@ -78,7 +78,7 @@ Nine-key depends on fog-song / rime-ice T9 resources. If those resources are mis
 
 ### Precise path bar geometry
 
-- Order: **path bar (34 pt, fixed reservation)** → Chinese candidate bar (34 pt) → nine-key pad.
+- Order: **sticky path bar (new idle presentation0pt / first composition onward34pt)** → Chinese candidate container (46pt total, no additional bridge) → nine-key pad. `KEYBOARD-T9-ADAPTIVE-ROW-001` latches34pt on existing composition/Path/Partial Commit/Recovery signals, even with an empty Path catalog, and retains it through subsequent idle/commit/delete/page/reload states. Only a completed disappearance with existing hidden gate and detached view, paired with the next appearance, permits a new-cycle reset; otherwise retain34pt conservatively. Only the top row and the existing750-priority root request change; keys and candidate metrics stay fixed. Real Extension screen-coordinate acceptance remains pending Human Gate.
 - Path bar is reserved whenever Chinese nine-key letters chrome is active, even with empty composition (no height jump).
 - Path chip hit targets expand vertically to 44 pt via `ChromeTouchHitGeometry.pathBarExpandedHitBounds`. Delivery remaps item-frame chrome to the cell and uses a direct tap; `didSelect` is only a fallback. See [`PATH-BAR-TOUCH-001`](assignments/path-bar-touch-001.md).
 - Compact bar shows at most **5** single-line path labels (no multi-syllable wrap); plain text, no candidate pills; optional 1px separator above the Chinese candidate bar.
@@ -97,7 +97,7 @@ visible hit area and does not add a duplicate trailing content inset. Root key
 margins remain 7pt; only the candidate header extends beyond them, with explicit
 parent hit routing for that extension.
 
-T9 0/34pt dynamic height was prototyped but withdrawn from this local candidate:
+Historical UI-1-only stage: T9 0/34pt dynamic height was prototyped but withdrawn from that candidate (superseded by the current integrated Sticky contract above):
 real Extension activation/screen-coordinate evidence was not established. The
 existing fixed 34pt Path reservation and input/recovery semantics remain. This is
 not a new Input Reliability batch. See the task's
@@ -141,7 +141,7 @@ Return **never** shows host action text such as `send`; VoiceOver still uses `re
 
 ### Placeholders / productized controls
 
-- **选拼音** — current behavior is governed by [`KEYBOARD-LAYOUT-9KEY-PINYIN-002`](assignments/keyboard-layout-9key-pinyin-002.md) / ADR 0021: enabled only when compact choices exist; first press selects the first choice, later presses select next/wrap. Compact paths remain directly tappable in the fixed bar.
+- **选拼音** — current behavior is governed by [`KEYBOARD-LAYOUT-9KEY-PINYIN-002`](assignments/keyboard-layout-9key-pinyin-002.md) / ADR 0021: enabled only when compact choices exist; first press selects the first choice, later presses select next/wrap. Compact paths remain directly tappable in the visible34pt bar; a collapsed row has no hit/AX area.
 - **常用标点 (`，。？！`)** — [`KEYBOARD-LAYOUT-9KEY-PUNCT-001`](assignments/keyboard-layout-9key-punct-001.md) / ADR 0029: 单击上屏待确认 `，`，候选栏展示本地标点；1.0s 内同键轮换 `，。？！`；候选点选替换 pending，之后再点该键新开逗号。
 - **颜表情 (`^_^`)** — [`RELEASE-2026-0801-08`](assignments/release-2026-08-01-08-kaomoji-content.md) / ADR 0030: 九键与中文符号页共用 `.pressKaomoji`；单击上屏待确认 `^_^`，候选栏展示本地颜表情并可替换；同键不再轮换，而是接受后再新开默认 `^_^`。
 
@@ -155,7 +155,7 @@ Only the main App installs T9 schema artifacts, runs full deployment and writes 
 
 This is a discovery note, not an authorized V1 feature or Assignment.
 
-- On iPad, the extra shortcuts bar above a software keyboard is UIKit-owned. It may contain system typing suggestions and text-management controls such as undo, redo, cut, copy and paste. It is separate from Universe Keyboard's own fixed `34 pt` candidate bar.
+- On iPad, the extra shortcuts bar above a software keyboard is UIKit-owned. It may contain system typing suggestions and text-management controls such as undo, redo, cut, copy and paste. It is separate from Universe Keyboard's own fixed `46 pt` candidate bar.
 - The supported configuration entry is [`UIResponder.inputAssistantItem`](https://developer.apple.com/documentation/uikit/uiresponder/inputassistantitem) / [`UITextInputAssistantItem`](https://developer.apple.com/documentation/uikit/uitextinputassistantitem). An App that owns the active responder may provide `leadingBarButtonGroups` and `trailingBarButtonGroups`; UIKit keeps the center typing-suggestion area system-managed.
 - **Ownership boundary:** a third-party keyboard extension does not own the responder chain of an arbitrary host App. Universe may customize this bar for text inputs in its own Main App, but must not assume it can add global controls to the iPad shortcuts bar in Notes, Messages or other hosts.
 - A future keyboard-wide clipboard/history feature would therefore need a separate Product Decision and Assignment. Its likely surface is Extension-owned UI, with an explicit feasibility review for pasteboard access, Full Access behavior, privacy, retention, sensitive-data handling and App Review policy. Do not treat the system shortcuts bar as authorization or proof that this is feasible.

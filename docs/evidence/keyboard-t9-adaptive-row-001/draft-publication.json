@@ -1,0 +1,110 @@
+{
+  "pr": {
+    "number": 217,
+    "url": "https://github.com/shchnk1103/Universe-Keyboard/pull/217",
+    "state": "OPEN",
+    "isDraft": true,
+    "baseRefOid": "096183ca118cc40ffc16854d1a5336a42cfcbd89",
+    "headRefOid": "6f6fc129d7eb959f695de09a46e6808d146dd819",
+    "mergeable": "MERGEABLE"
+  },
+  "ci": {
+    "url": "https://github.com/shchnk1103/Universe-Keyboard/actions/runs/39399503737",
+    "headSha": "6f6fc129d7eb959f695de09a46e6808d146dd819",
+    "status": "completed",
+    "conclusion": "success",
+    "jobs": [
+      {
+        "name": "classify-change",
+        "conclusion": "success",
+        "url": "https://github.com/shchnk1103/Universe-Keyboard/actions/runs/39399503737/job/118550391225"
+      },
+      {
+        "name": "lightweight-checks",
+        "conclusion": "success",
+        "url": "https://github.com/shchnk1103/Universe-Keyboard/actions/runs/39399503737/job/118550473065"
+      },
+      {
+        "name": "test-keyboardcore",
+        "conclusion": "success",
+        "url": "https://github.com/shchnk1103/Universe-Keyboard/actions/runs/39399503737/job/118550540333"
+      },
+      {
+        "name": "test-rimebridge",
+        "conclusion": "success",
+        "url": "https://github.com/shchnk1103/Universe-Keyboard/actions/runs/39399503737/job/118550540498"
+      },
+      {
+        "name": "test-app-keyboard",
+        "conclusion": "success",
+        "url": "https://github.com/shchnk1103/Universe-Keyboard/actions/runs/39399503737/job/118550540500"
+      },
+      {
+        "name": "format-swift",
+        "conclusion": "success",
+        "url": "https://github.com/shchnk1103/Universe-Keyboard/actions/runs/39399503737/job/118550540526"
+      },
+      {
+        "name": "build-release",
+        "conclusion": "success",
+        "url": "https://github.com/shchnk1103/Universe-Keyboard/actions/runs/39399503737/job/118550540558"
+      },
+      {
+        "name": "test-rime-sync-keychain",
+        "conclusion": "success",
+        "url": "https://github.com/shchnk1103/Universe-Keyboard/actions/runs/39399503737/job/118550540604"
+      },
+      {
+        "name": "final-quality-gate",
+        "conclusion": "success",
+        "url": "https://github.com/shchnk1103/Universe-Keyboard/actions/runs/39399503737/job/118553569445"
+      }
+    ]
+  },
+  "readonly_ui1_ui2_comparison": {
+    "base": "096183ca118cc40ffc16854d1a5336a42cfcbd89",
+    "ui1": "ddcd81cec41720b5ea1490936e693500fa8cf875",
+    "ui2": "6f6fc129d7eb959f695de09a46e6808d146dd819",
+    "conflicting_paths": [
+      "CHANGELOG.md",
+      "Universe Keyboard.xcodeproj/project.pbxproj",
+      "Universe Keyboard.xcodeproj/xcshareddata/xcschemes/Universe Keyboard.xcscheme",
+      "docs/UI_STYLE_GUIDE.md"
+    ],
+    "applied": false
+  },
+  "raw_artifacts": {
+    "ci-final.json": {
+      "bytes": 11141,
+      "sha256": "643d9bd950dfea6599a7d61769e5f10ce97ddf16267eba6ac8213614bb1bf943"
+    },
+    "checks-watch.log": {
+      "bytes": 31190,
+      "sha256": "ef8f3b10ef53d01d29cc50196f2144625ab698076147950df0dc24cf5358f8f8"
+    },
+    "pr-final.json": {
+      "bytes": 3267,
+      "sha256": "67d330aecd415402f748952923107dc47c6b460922ec45f8a5a4c2a28d3e4637"
+    },
+    "ui1-ui2-readonly-merge-tree.txt": {
+      "bytes": 112841,
+      "sha256": "fbf26b69042b40258a341550477fd5a6456c81e6b9f55fd622611d0d003881a7"
+    },
+    "ui1-ui2-conflicts.json": {
+      "bytes": 181,
+      "sha256": "c532201c47aef62dcb5a59d6b314f0f258e27dc13667d2d7fce323803b483ad7"
+    },
+    "pr-initial.json": {
+      "bytes": 568,
+      "sha256": "aa7a3152c3ab2d09cfb5077f853a7fc00604c8a64fb16a267c8b893aaeab51e6"
+    },
+    "ci-full.log": {
+      "bytes": 5949494,
+      "sha256": "226003212c3cb4f811f079b3a7bb9f230f63a5de70b9b0bd6d96eb18c88809b5"
+    },
+    "ci-current.json": {
+      "bytes": 3934,
+      "sha256": "06ba6ee184c955de1a68a6ec8c9e50eeab8a67d55f61096752fa692bbe223820"
+    }
+  }
+}

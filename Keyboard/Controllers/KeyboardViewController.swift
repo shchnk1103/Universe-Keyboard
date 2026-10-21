@@ -309,6 +309,9 @@ class KeyboardViewController: UIInputViewController {
     var hasViewAppeared = false
     /// 按键内容仅在键盘即将呈现时安装，避免初始过渡容器绘制整份键盘。
     var isKeyboardUIInstalled = false
+    /// UI-only latch: never participates in composition, candidate authority or persistence.
+    var hasExpandedT9PinyinRowInPresentation = false
+    var hasEndedT9PinyinPresentation = false
     /// 真正的 librime 只能在键盘已经呈现后启动。
     /// 系统有时会预创建控制器后直接挂起，若此时打开用户词典会触发 0xdead10cc。
     var hasActivatedVisibleRimeRuntime = false
@@ -462,6 +465,7 @@ class KeyboardViewController: UIInputViewController {
             #endif
             startRimeSyncActivityHeartbeat()
         }
+        beginT9PinyinPresentationIfNeeded()
         installKeyboardUIIfNeeded()
         #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
             p3d1RecordLifecycleMarker("APPEAR", reason: "viewWillAppear")
@@ -558,6 +562,11 @@ class KeyboardViewController: UIInputViewController {
         #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
             p3d1RecordLifecycleMarker("DISAPPEAR", reason: "viewWillDisappear", cleared: true)
         #endif
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        noteT9PinyinPresentationDidDisappear(hasWindow: viewIfLoaded?.window != nil)
     }
 
     /// Releases every resource that could cross the extension suspension boundary.
@@ -800,6 +809,16 @@ class KeyboardViewController: UIInputViewController {
         super.viewDidLayoutSubviews()
         #if DEBUG && KEYBOARD_QUERY_COST_PROBE
             layoutQueryCostProbeControls()
+        #endif
+
+        if let panel = candidateExpandedPanel as? ExpandedCandidatePanelContainerView {
+            rootStack.layoutIfNeeded()
+            panel.layoutIfNeeded()
+            panel.synchronizeCoveredGeometry()
+        }
+
+        #if DEBUG
+            T9QA001DeviceTrace.shared.layout(.rootLayout, owner: self)
         #endif
 
         // Nested nine-key stacks finish layout after the root stack. Build the

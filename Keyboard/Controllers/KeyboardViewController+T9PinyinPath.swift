@@ -12,6 +12,60 @@ extension KeyboardViewController {
             && cachedT9ReadinessMatched
     }
 
+    /// Once expanded, only a confirmed new presentation can release the UI latch.
+    /// Composition signals are used to expand, never to collapse within a cycle.
+    func shouldShowT9PinyinPathBar(_ snapshot: T9CompositionPresentationSnapshot) -> Bool {
+        guard shouldReserveT9PinyinPathBar else { return false }
+        if hasExpandedT9PinyinRowInPresentation || shouldBlockT9RecoveryPresentation { return true }
+        return !snapshot.paths.isEmpty
+            || !snapshot.sourceDigits.isEmpty
+            || !(snapshot.rimeRawInput ?? "").isEmpty
+            || !snapshot.visiblePreedit.isEmpty
+            || !snapshot.compositionPreedit.isEmpty
+            || !snapshot.confirmedSyllables.isEmpty
+            || !(snapshot.lockedLetterPrefix ?? "").isEmpty
+            || snapshot.provisionalPathID != nil
+            || snapshot.selectedPathID != nil
+            || !controller.state.currentComposition.isEmpty
+            || controller.state.partialCommit != nil
+    }
+
+    /// A completed disappearance is usable only with the existing hidden gate and
+    /// a detached view. Host resign/activate, proxy changes and willAppear alone
+    /// are ambiguous and must not clear an expanded row.
+    func noteT9PinyinPresentationDidDisappear(hasWindow: Bool) {
+        guard hostLifecycleRecoveryGate.phase == .hidden, !hasWindow else { return }
+        hasEndedT9PinyinPresentation = true
+    }
+
+    func beginT9PinyinPresentationIfNeeded() {
+        guard hasEndedT9PinyinPresentation, hostLifecycleRecoveryGate.phase == .appearing else { return }
+        hasEndedT9PinyinPresentation = false
+        hasExpandedT9PinyinRowInPresentation = false
+        // Existing composition / Partial Commit / Recovery immediately wins over
+        // compactness. Reused content receives the same request as a new row.
+        refreshT9PinyinPathBarVisibility()
+    }
+
+    var presentedT9PinyinPathBarHeight: CGFloat {
+        guard controller != nil, shouldReserveT9PinyinPathBar else { return 0 }
+        return shouldShowT9PinyinPathBar(controller.t9CompositionPresentationSnapshot())
+            ? t9PinyinPathBarHeight : 0
+    }
+
+    func refreshT9PinyinPathBarVisibility(_ snapshot: T9CompositionPresentationSnapshot? = nil) {
+        guard let bar = t9PinyinPathBarView else { return }
+        let snapshot = snapshot ?? controller.t9CompositionPresentationSnapshot()
+        UIView.performWithoutAnimation {
+            let visible = shouldShowT9PinyinPathBar(snapshot)
+            if visible { hasExpandedT9PinyinRowInPresentation = true }
+            bar.setRowVisible(visible)
+            installPreferredKeyboardHeight(
+                height: keyboardHeightWithoutT9Path + (visible ? t9PinyinPathBarHeight : 0)
+            )
+        }
+    }
+
     func makeT9PinyinPathBar() -> UIView {
         let bar = T9PinyinPathBarView(
             height: t9PinyinPathBarHeight,
@@ -38,11 +92,18 @@ extension KeyboardViewController {
 
     /// Capture one Core snapshot and publish Path Bar + candidates together.
     func refreshT9PresentationFromCoreSnapshot() {
+        #if DEBUG
+            T9QA001DeviceTrace.shared.record(.refresh, owner: self, extra: ["entry": 2])
+        #endif
         let snapshot = controller.t9CompositionPresentationSnapshot()
         applyT9PresentationSnapshot(snapshot)
     }
 
     func applyT9PresentationSnapshot(_ snapshot: T9CompositionPresentationSnapshot) {
+        #if DEBUG
+            T9QA001DeviceTrace.shared.model(snapshot, owner: self)
+        #endif
+        defer { refreshT9PinyinPathBarVisibility(snapshot) }
         // Path bar
         if let bar = t9PinyinPathBarView {
             let selected = snapshot.paths.first { $0.id == snapshot.selectedPathID }
@@ -116,6 +177,9 @@ extension KeyboardViewController {
     }
 
     func refreshT9PinyinPathBar() {
+        #if DEBUG
+            T9QA001DeviceTrace.shared.record(.refresh, owner: self, extra: ["entry": 1])
+        #endif
         // Prefer full atomic publish when T9 composition is active.
         if shouldPublishAtomicT9Presentation {
             refreshT9PresentationFromCoreSnapshot()
@@ -123,6 +187,10 @@ extension KeyboardViewController {
         }
         guard let bar = t9PinyinPathBarView else { return }
         let snapshot = controller.t9CompositionPresentationSnapshot()
+        #if DEBUG
+            T9QA001DeviceTrace.shared.model(snapshot, owner: self)
+        #endif
+        defer { refreshT9PinyinPathBarVisibility(snapshot) }
         let selected = snapshot.paths.first { $0.id == snapshot.selectedPathID }
         bar.setPaths(
             snapshot.paths,
