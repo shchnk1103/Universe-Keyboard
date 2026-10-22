@@ -7,11 +7,11 @@ record_id: PORTFOLIO-REFRESH-001
 
 | Field | Value |
 |---|---|
-| Lifecycle | Active（docs-only，在本地执行；未 push） |
-| Current phase | 定稿，待派发 Executor。把任务组合目录更新到 2026-10-22 的实际进展：修正 PF-004（已 accept 的 `PD001-ARCH-R2-F01`）、更新 PF-001 / PF-003、新增 UI-4 详情文档与相关条目、补决定记录、在 `docs/READING_MAPS.md` 的 “Enter With Zero Context” 加必读来源，并给已合并的 `portfolio-directory-001` 追加 Environment Executor 的 Policy 字段更正 |
-| Material non-claims | 目录是优先级与指针索引，不是状态权威；不声称 UI-4 已立项、已授权或已有 Product Decision；不声称 Dynamic Task Portfolio 完整 MVP 已立项；不声称任何 UNKNOWN 行的真实状态；不改任何代码、测试、CI 或其它 Assignment 的状态；不 push / PR / merge |
+| Lifecycle | Closed（此前：Active（docs-only，在本地执行；未 push）；Round 1 评审：Quality Pass，Architecture Pass with conditions；Round 2（Architecture，窄范围）：Pass with conditions，P3 条件已在发布时落地修正并由 Coordinator 核对；进入 main 后生效） |
+| Current phase | 评审与两轮修正完成：Quality Pass；Architecture Round 1 与 Round 2 均为 Pass with conditions，条件为记录一致性问题，已修正；第二轮修正未经独立 Reviewer 复核，由 Coordinator 核对并披露；经 Human 授权发布为 docs-only PR，待 Human 决定 merge。目录是优先级与指针索引，不是状态权威 |
+| Material non-claims | 目录是优先级与指针索引，不是状态权威；不声称 UI-4 已立项、已授权或已有 Product Decision；不声称 Dynamic Task Portfolio 完整 MVP 已立项；不声称任何 UNKNOWN 行的真实状态；不改任何代码、测试、CI 或其它 Assignment 的状态；未经 Human 授权不 merge |
 | Human 确认状态 | 刷新立项与 `READING_MAPS.md` 入口：**已确认**（Human Product Owner，2026-10-22，Coordinator 会话：“先做目录刷新，在 READING_MAPS.md 中加上吧”）。UI-4 先于 UI-3、最高行高待模拟器实测、无完全访问时的行为待真机验证：**已确认**（同日同会话）。Environment Executor 填 `Not Applicable — repository documentation only`，以及对 `portfolio-directory-001` 追加同值的更正：**已确认**（Human Product Owner，2026-10-22，Coordinator 会话） |
-| Next handoff / decision | 派发 Executor → Coordinator 冻结 Reviewer Lane Packet → Architecture / Quality Reviewer → Human 决定 push / PR / merge |
+| Next handoff / decision | Human 决定 merge；UI-4 的 Technical Spike、数值核对脚本（PF-022）、Reviewer 独立性政策（PF-019）另行立项与处理；目录按规则 7 在每个任务合并后顺带更新 |
 
 ## Authority
 
@@ -166,3 +166,93 @@ Post-review，追加式。本节之前的内容不改（包括上一节中的转
 
 - 本节所述的第二轮修正由 Executor 在本节之前的一个提交里落地；这一轮修正**没有经过独立 Reviewer 复核**，由 Coordinator 对 `docs/portfolio/ui-4-keyboard-height.md` 做了指针、标签、标题与重复条目的逐项核对，并对提交范围、字节前缀与摘要做了机械核对，结果见评审后记录。
 - 不声称 UI-4 已立项、已授权或已有 Product Decision；不改变任何代码、数值或其它 Assignment 的状态。
+
+## Review results and residual disposition
+
+Post-review，追加式。上文各节在 Round 2 评审时固定为提交 `1e49d11d616d949a397b37a5af1bb9b6b7a611b0`（其中 “Remediation round 2” 一节与第二轮修正随发布前的一个提交落地）；本节之前的内容不因本节改动，唯一例外是 Current Status 表的 Lifecycle、Current phase、Material non-claims、Next handoff / decision 四格，它们随本节同步到评审后的事实。本节所列报告、packet、指令保存在仓库外，仓库内只记录路径与 SHA-256，路径前缀为 `~/.kos-work/Universe-Keyboard/PORTFOLIO-REFRESH-001/`。
+
+### 提交链
+
+`477c042e5c69d00eb6752ed52c58b0f441707c16`（base，PR #227 合并后的 origin/main）→ `87ae8c1e24381d7d5446971658a43905583d1b0d`（Executor 落地冻结内容；Round 1 评审目标）→ `1e49d11d616d949a397b37a5af1bb9b6b7a611b0`（修正轮 1：`PR001-ARCH-R1-F01`、`F02`、`F03` 与 `R4-SELF-01`；Round 2 评审目标）→ 发布时的修正轮 2 提交（`R2-F01` 到 `R2-F05`）→ 本节所在的评审后记录提交。基线 `origin/main` 在整个过程中保持 `477c042e5c69d00eb6752ed52c58b0f441707c16`，没有漂移。前三轮 Executor 因冻结内容里的事实不一致在复制前停止，均没有产生提交（报告 `reports/executor-report-r1.md` 到 `r3.md` 中 r3 为最终落地）；这些不一致都是 Coordinator 在加入新信息后没有同步旧句造成的。
+
+### 评审结果与运行时身份
+
+身份取自各报告开头的自我声明；“未确认”表示报告自己没有声明。
+
+| Lane | Round | 运行时身份 | 结论 | 报告 | SHA-256 |
+|---|---|---|---|---|---|
+| `PR001-ARCH` | 1 | Codex / GPT-6（新会话，同模型不同会话），变体 / effort / 会话未确认 | Pass with conditions；R3、R4、R5、R7 全部 Covered；残项 `PR001-ARCH-R1-F01`、`F02`（P2）、`F03`（P3） | `reports/architecture-review-r1.md` | `b7001efdb92023e41b86c175bdff6c4b62aaf8fb4950af67262c9f29c4c77cb7` |
+| `PR001-QUAL` | 1 | Codex / GPT-6（新会话，同模型不同会话），变体 / effort / 会话未确认 | **Pass**；R1、R2、R6、R8 全部 Covered 且通过；无发现 | `reports/quality-review-r1.md` | `05d10903f61101d4d870b56d121d24b78f05b6ca9d78e96d44d1ca803829c38d` |
+| `PR001-ARCH` | 2（窄范围） | Claude Code，`claude-sonnet-5-5`，全新会话；相对实现者（Codex、Grok）为不同厂商，相对 Coordinator 为同厂商不同会话 | Pass with conditions；R2-A1 到 R2-A7 全部 Covered；残项 `R2-F01`、`R2-F02`、`R2-F03`、`R2-F05`（P3）与可选的 `R2-F04`（P3） | `reports/architecture-review-r2.md` | `e69612a618774b96cdba136beab572c83663aa42785ba89a00d57f1f8d04deb8` |
+
+Executor 身份：第一到第三轮为 Codex / GPT-6（变体、effort、会话未确认；r1、r2 因冻结内容不一致停止，r3 落地）；修正轮 1 的第一次尝试（`reports/executor-report-r4.md`）是 Round 1 Architecture 评审者的那个 Codex 会话按 Human 的指令改任 Executor，在落地前自查里发现第 4 处问题并停止，没有提交，因此它不再担任 Round 2 评审者；落地修正轮 1 的 Executor 是 Grok（`reports/executor-report-r5.md`）。发布步骤的 Executor 身份见 `reports/executor-report-r6.md`。Coordinator 为 Claude Code。Quality Round 1 不在 Round 2 重做（见下）。
+
+### 记忆声明
+
+- Round 1 的两位评审者与 Round 2 的评审者都声明工作区记忆里没有本任务、任务组合目录或 UI-4 的专项记录，也没有据记忆评审。Round 2 评审者另声明没有打开记忆文件。
+
+### 独立性分级候选的样本
+
+这是 `PORTFOLIO-DIRECTORY-001`、`KEYBOARD-VALUES-DOC-001` 之后第三个使用同模型不同会话（L1）评审的任务，也是第一次在其中加入**不同厂商**（L3）的评审者：Round 2 由 Claude Code 完成，而实现者是 Codex 与 Grok。Round 1 的两位 Codex 评审者找到了 3 条记录一致性发现；Round 2 的不同厂商评审者在同一份文档上又找到了 5 条前面都没发现的 P3 一致性问题（指针标签不存在、标题与条目状态不符、重复条目、没有来源的措辞、对修正者身份的披露不足）。这只是一个样本，不构成政策结论，也不改变任何标准。
+
+### 发现的最终状态
+
+| 发现 | 状态 |
+|---|---|
+| `PR001-ARCH-R1-F01`（P2，已接受的宿主限高行为又被列为待决） | 已修：`1e49d11`；Round 2 R2-A1 复核通过 |
+| `PR001-ARCH-R1-F02`（P2，步进已决定为连续拖动，待决清单仍写 “再定上限与步进”） | 已修：`1e49d11`；Round 2 R2-A2 复核通过 |
+| `PR001-ARCH-R1-F03`（P3，排他式的 UI-4 仓库提及清单漏了本次 Assignment） | 已修：`1e49d11`；Round 2 R2-A3 复核通过，所列仓库提及逐条核实属实 |
+| `R4-SELF-01`（P3，修正 Executor 落地前自查发现：“见下” 方向指针应为 “见上”） | 已修：`1e49d11`；Round 2 R2-A4 复核通过 |
+| `R2-F01`（P3，“见历史需求基线的‘不在第一版范围’”，实际条目名为 “第一版不做”） | 已修：发布时的修正轮 2 提交，引用标签改为 “第一版不做” |
+| `R2-F02`（P3，“待 Human 决定” 标题下第 3、4 条已是已决定） | 已修：标题改为 “……的差异与各条现状”，各条标明（待决）或（已决定） |
+| `R2-F03`（P3，“上限规则” 与 “最高行高与上限规则” 两条重叠） | 已修：合并为一条 “最高行高与上限规则” |
+| `R2-F04`（P3，可选：“大厂键盘” 无来源；历史基线里的 “步进待定” 易误读） | 已修：改为 “另一款第三方键盘”；历史基线处补 “后已决定为连续拖动” |
+| `R2-F05`（P3，上一节未披露修正者身份；引号里的修正文字是转述而非逐字文本） | 已处理：由 “Remediation round 2” 一节的 “更正说明” 记录，上一节旧文不改 |
+
+### 第二轮修正未经独立复核（披露）
+
+`R2-F01` 到 `R2-F05` 的修正落地后**没有再开独立 Reviewer 复核**。依据：Human Product Owner（Product Lead）2026-10-22 在 Coordinator 会话中决定：这些都是单文件、仅措辞的 P3，不再开第三轮评审，由 Executor 在发布时落地、由 Coordinator 只读核对并披露。Coordinator 核对的范围：对修正后的 `docs/portfolio/ui-4-keyboard-height.md` 做指针、标签、标题与重复条目的逐项核对（所有 “见……” 指针的方向与目标；被引用标签是否真实存在；标题与各条状态是否一致；是否仍有排他词不成立；是否有重复或矛盾的待决条目），对提交范围、字节前缀与摘要做机械核对。核对结果见 PR 说明与 Executor 报告 `reports/executor-report-r6.md`。这不是独立 Reviewer 的复核。Quality Round 1 为 Pass，本次不重做；两轮修正相关的 Quality 类检查（范围、字节前缀、摘要、链接、空白）同样由 Coordinator 机械复核。
+
+### 残项与未决事项
+
+- 无其它未处置残项；Round 2 的五条按上表处置。
+- 仍为 `UNKNOWN`：目录里所有 UNKNOWN 行的真实状态；Human 在 Coordinator 会话中的决定、ChatGPT 讨论整理与截图（仓库外，仓库内只有本 Assignment 与 `docs/portfolio/ui-4-keyboard-height.md` 作为载体）；UI-4 的任何运行时、设备或宿主行为（216pt、首次设置时序、完全访问读取、可访问性）。
+- 本地未配置 pinned KOS validator，该校验未运行。
+- 后续（不在本任务范围）：UI-4 的 Technical Spike、数值核对脚本（PF-022）、Reviewer 独立性政策（PF-019）；目录按规则 7 在每个任务合并后顺带更新。
+
+### 授权与边界
+
+- Human Product Owner 于 2026-10-22 在 Coordinator 会话中授权：追加本评审后记录提交（含前一个修正轮 2 提交）、push 分支 `docs/portfolio-refresh-001`、开一个 docs-only PR。**不含 merge。**
+- 基线：评审与本记录均以 `origin/main` = `477c042e5c69d00eb6752ed52c58b0f441707c16` 为 base；Coordinator 于 2026-10-22 核对该基线未前进。
+- 本 Assignment 自身依 D7 的 Closed 在本 PR 合并进 `main` 后生效。不声称 UI-4 已立项、已授权或已有 Product Decision；不声称 Dynamic Task Portfolio 完整 MVP 已立项；目录是优先级与指针索引，不是状态权威；不改任何代码、测试、CI、数值或其它 Assignment 的状态。
+- Executor 自述的模型与 effort 不作为验收项。
+
+### 冻结内容与报告、packet、指令摘要
+
+| 文件 | SHA-256 |
+|---|---|
+| `PORTFOLIO.md` | `c270e22810f2ae48963f0931cd9c55dc4380711ed153988edf830aba5ebf5355` |
+| `portfolio/kos-optimization.md` | `89f1c7105dcc939d431de46c737da72d634344eaba3242787b1f1a83cec872bd` |
+| `portfolio/ui-4-keyboard-height.md` | `1d27a70b89046a6af3edf8a6f63e96ff22dd3b05760894c103fc0c3171307033` |
+| `policy-correction-portfolio-directory-001.md` | `6c0329cda8d05d682c6feddc862f38a9b4ef8cf259946ecfbcf435619f049ad0` |
+| `remediation-round1-section.md` | `dfc086811bc8635f5f8f62be15f6f8d8f4aa8fd1b65e2babc90ad4974dd2eebb` |
+| `remediation-round2-section.md` | `a086976430173f795d95574eb319e722e7ec699deea92332769850fa1a22a3c4` |
+| `reports/executor-report-r1.md` | `8e541e64b2705c001e6bb6f1bfe4ab48ba6ee71182e4447e77287591d4614e26` |
+| `reports/executor-report-r2.md` | `0e347ce96cc661c1257a67cb1533d18fb57434ac534e7ebf7f90bd2af73e79e2` |
+| `reports/executor-report-r3.md` | `92c71c3341cece914c0823df794f279d35b29b2a2d78e1f09190f3133462c07c` |
+| `reports/executor-report-r4.md` | `c03a95d46fcf6b50a5d3fb99dc7dcc04040347d3b5623bc38187f88a3ac0e257` |
+| `reports/executor-report-r5.md` | `ed7ed7fce8f64d1ef4a36ad21e3e9c087ba5916882eb1e1cec6d834fdb23d9c4` |
+| `packets/packet-architecture-r1.md` | `a9bb70e840b94d3f03adb7437d7d68128a22d1a2bb4e6a61faefd0d3201f084c` |
+| `packets/packet-quality-r1.md` | `d88f831e82d485ce2f25ff5a56b0b43be565fdcd4e2a106dc72fba9fa8cc3247` |
+| `packets/packet-architecture-r2.md` | `481fe53238e54ed42fbd9a9c914a93861f16594d59f73482faed9de49a51d55f` |
+| `instructions/assignment-final.md` | `6a2588495a0ee93ddf75465df756fe6e69e4351a9d9608916c2c0cce1aab78f5` |
+| `instructions/executor-brief-r1.md` | `5aa78ccb2ebd63d578a5bd2c77b09a4cbbcf137ffd69ae4b67107dcfd129ea7c` |
+| `instructions/executor-brief-r2.md` | `2b5ea39c11b55c6ff4112099e03d6a7e9a205e0cd0ac088d567f24a9024b786d` |
+| `instructions/executor-brief-r3.md` | `fdfd3fc006e8da0609b2a848e89d934d10bb75392d38e3c22c98d277410d858a` |
+| `instructions/executor-remediation-r1.md` | `9954b096cc4f8e69fb189f0d4721a6e993cc82dce7e4b4830e0979f3341ebf89` |
+| `instructions/executor-remediation-r2.md` | `161dba536407d627579832ccf0ab367d5e517f4b3cf9da77a62429c168028c6b` |
+| `instructions/reviewer-architecture-r1.md` | `dd8ff3905ece96d96c184e751f02496131c52a27d9d82e033f07bae3421bbb75` |
+| `instructions/reviewer-quality-r1.md` | `59b53f5fc2bd4fe241de8c8e345197b929b8af4328753750b71f9a3138b2f48d` |
+| `instructions/reviewer-architecture-r2.md` | `30cc201108cd2c3fd17bf9e5f167bd32425b87587f8d9ad9a9df15607b305098` |
+
+发布步骤（修正轮 2 提交与本评审后记录提交）的 Executor 报告为 `reports/executor-report-r6.md`；报告不能包含自身哈希，其 SHA-256 由 Executor 在对话末尾报告。
