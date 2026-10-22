@@ -1,5 +1,7 @@
 # Engineering Dashboard
 
+2026-10-22 当前（[LIFECYCLE-CLOSEOUT-BATCH-1-001](assignments/lifecycle-closeout-batch-1-001.md)，批次 1；本地提交，待评审与 Human push / PR / merge）：实际关闭 7 项 TYPO-CORRECTION-002 子项与已完成的同步记录（PARENT-CLOSE-PUBLICATION-001、DIAGNOSTICS-JOURNAL-UI-ARM-RETEST-001、INT003-CONTROLLED-CAPTURE-002 及其 ARCHITECTURE-REVIEW / QUALITY-REVIEW、KEYBOARD-COMPACT-HEADER-001-STATE-SYNC-001、ACTIVE-WORK-STALE-FACTS-SYNC-001）；INT003-QUERY-COST-MEASUREMENT-001 与 PARENT-REVALIDATION-002 因残项缺来源明确的处置而**未关闭**。非 Release，不改父任务；各 Close 的残项处置见各自文件的 Closeout 一节。
+
 2026-10-21 当前（迟到同步，[ACTIVE-WORK-STALE-FACTS-SYNC-001](assignments/active-work-stale-facts-sync-001.md)）：[KEYBOARD-T9-ADAPTIVE-ROW-001](assignments/keyboard-t9-adaptive-row-001.md) 合并后 `main` CI run `39598364040` failure 之后，仅测试的 [PR #218](https://github.com/shchnk1103/Universe-Keyboard/pull/218)（`7af3f02`）合入，`main` 通过一次（run `39606780704`）；缓解未经验证，hosted 残项为 `tech_debt:TD-020`，根因 UNKNOWN，不声称稳定或已修复。Assignment 仍 Active，非 Release。
 
 2026-10-21 当前（迟到同步，同上）：INPUT-RELIABILITY-DELIVERY-001/002/003 对应的 PR [#213](https://github.com/shchnk1103/Universe-Keyboard/pull/213)、[#214](https://github.com/shchnk1103/Universe-Keyboard/pull/214)、[#215](https://github.com/shchnk1103/Universe-Keyboard/pull/215) 均已于 2026-10-19 合并（`bb430f9` / `d08175b` / `096183c`）。Final Merge Gate / Merge 授权记录 UNKNOWN；各 Lifecycle 值未改，残项保留，无 TestFlight / Closeout，非 Release。

@@ -5,9 +5,12 @@ record_id: KEYBOARD-COMPACT-HEADER-001-STATE-SYNC-001
 
 ## Current Status
 
+> **Superseded for current status:** 本 Work Item 于 2026-10-22 在 [`LIFECYCLE-CLOSEOUT-BATCH-1-001`](lifecycle-closeout-batch-1-001.md) 下关闭，见文末 [Closeout (2026-10-22)](#closeout-2026-10-22)。
+> 其后出现的 Active / “交接 Reviewer / Human” / Next 等文字均为各自日期的历史叙述，不是当前事实。Lifecycle 值在本改动进入 `main` 时生效。
+
 | Field | Value |
 |---|---|
-| Lifecycle | Active（docs-only State Sync 在本地执行；未 push） |
+| Lifecycle | Closed（此前：Active（docs-only State Sync 在本地执行；未 push）） |
 | Current phase | 镜像已在基于 `origin/main` 的本地分支同步；交接 Reviewer / Human |
 | Material non-claims | 不声称 Release / Release-ready；不声称 UI-1 已完成、已验收或已通过独立复核；不关闭、削弱任何残项；不对 main CI 根因或“已修复”作结论；不 push / PR / merge / cleanup |
 | Next handoff / decision | Coordinator 冻结 Reviewer Lane Packet → Architecture / Quality Reviewer → Human 决定 push / PR |
@@ -86,3 +89,20 @@ Post-review, append-only. 以上各节在 Reviewer 评审时已固定为提交 `
 - Human Product Owner 于 2026-10-21 Asia/Shanghai 在对话中授权：push 本分支并开一个 docs-only PR。**不含 merge。**
 - 不声称 Release / Release-ready；不声称 UI-1 已完成、已验收；Final Merge Gate 指针与 Human 真机对比是否完成仍为 UNKNOWN；本 Assignment 的 Lifecycle 处置待 PR 合并后另行决定。
 - CI #705 事实更正仍属另立记录，不在本次范围。
+
+## Closeout (2026-10-22)
+
+- **决定来源：** Human Product Owner 于 2026-10-22 Asia/Shanghai 在 Coordinator 会话中批准 D1（TYPO-CORRECTION-002 子项按批收尾）与 D7（同步记录评审后直接 Close），并要求起草批次 1；本 Close 在任务 `LIFECYCLE-CLOSEOUT-BATCH-1-001` 下由 Executor 逐项核实来源后写入，基线 `origin/main` `7953e8bc96af69298aa4a17efdf982721497e145`。
+- **证据指针：**
+  - PR [#221](https://github.com/shchnk1103/Universe-Keyboard/pull/221) `docs(kos): M-02 state sync after PR216 merge (UI-1)`，合并提交 `9f7a88a1b1c31106c26555bed4a7e324f6ed7b5d`，合并时间 `2026-10-21T14:46:44Z`（只读 `gh pr view 221`）。
+  - 评审记录 `docs/reviews/keyboard-compact-header-001-state-sync-001-architecture-review.md`（最终 Pass，“无本轮评审残项”，第 55 行）与 `docs/reviews/keyboard-compact-header-001-state-sync-001-quality-review.md`（Pass with conditions，残项表第 44–50 行）；packet 在 `docs/reviews/keyboard-compact-header-001-state-sync-001-packets/`。
+  - 本文件 §“Review results and residual disposition”（第 67 行起）。
+
+**残项处置表**（ID | owner | 处置 | 来源指针）：
+
+| ID | owner | 处置 | 来源指针 |
+|---|---|---|---|
+| R-Q5（Executor 实际 effort 仅为自述） | Human Product Owner | accept（有界残项；不补充配置证据） | 本文件 §残项 R-Q5（第 77 行起）；`docs/reviews/keyboard-compact-header-001-state-sync-001-quality-review.md` 第 48 行 |
+| Architecture / Quality Round 1–2 的 Partial 缺口与 F-01 / F-02 | Coordinator / Executor | fix（已修正，见评审记录） | 上两份评审记录；本文件 §Review results and residual disposition |
+
+**非声称：** 不是 Release / Release-ready；不改父任务 `TYPO-CORRECTION-002`（已 Closed）；未关闭、削弱本表之外的任何残项；本记录文字中仍为 UNKNOWN 的事项（PR #216 的 Final Merge Gate 指针、UI-1 Human 真机对比是否完成）属被同步的 Work Item `KEYBOARD-COMPACT-HEADER-001`，保持 UNKNOWN，不因本 Close 改变；本 Close 先在本地提交，待 Reviewer 评审及 Human push / PR / merge 后在 `main` 生效。
