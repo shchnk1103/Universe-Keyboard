@@ -95,12 +95,12 @@ Executor 与 Reviewer 的最终报告、指令、packet 均保存为文件，根
 | 项 | Result |
 |---|---|
 | 三份文件摘要匹配（来源 vs 提交内 blob） | Executor-recorded：三份来源与工作树逐字节一致；最终提交 blob 核对见报告。 |
-| `docs/KNOWLEDGE_INDEX.md` 追加行（前后对照） | 原行 `- [任务路径](READING_MAPS.md) · [当前工作](ACTIVE_WORK.md) · [Assignment 目录](assignments/)`；仅末尾追加 ` · [任务组合](PORTFOLIO.md)`，其余字节不动。 |
+| `docs/KNOWLEDGE_INDEX.md` 追加行（前后对照） | 原行包含“任务路径 · 当前工作 · Assignment 目录”；仅末尾追加“ · 任务组合”链接，精确前后字节对照见 Executor 报告，其余字节不动。 |
 | `docs/ACTIVE_WORK.md`、`CHANGELOG.md`、`docs/TECH_DEBT.md`、`docs/ENGINEERING_DASHBOARD.md`、`docs/READING_MAPS.md`、`AGENTS.md` | 不适用，全部未改：本任务只增加目录导航，不发生 Product Gate、ADR Accept、Assignment Close 或 merge；不改变现有工作项、产品、技术债或权限。`docs/authorizations/**` 同样只检查，未修改。 |
 | 批次 1c 在 `main` 上的实际状态（供 PF-003 过期核对） | 未合并；指定 main 树无 batch-1c Assignment；其本地分支 tip 不为 origin/main 祖先，来源 git ls-tree / git merge-base --is-ancestor。PF-003 是已声明日期快照。 |
-| Markdown link check（baseline/最终提交） | 最终内容提交后执行，精确 baseline / HEAD 与命令结果登记于 Executor 报告；本 Assignment 无后续改动。 |
+| Markdown link check（baseline/最终提交） | FAIL：冻结原文 Scope 第 44 行的字面链接示例被检查器解析为 docs/assignments/PORTFOLIO.md，该目标不存在；不改写冻结原文。精确最终提交检查见 Executor 报告。 |
 | Executor 报告路径与 SHA-256 | `~/.kos-work/Universe-Keyboard/PORTFOLIO-DIRECTORY-001/reports/executor-report-r3.md`；最终 SHA-256 在 Executor 对话交付，避免报告自身摘要、最终提交 SHA 之间的循环引用。 |
 
 ## Closeout Decision — 结果
 
-2026-10-22，Executor：本地 docs-only 交付；三份冻结文档逐字节复制，仅追加 Knowledge Index 指定入口。事实核验无新增确定性不一致，UNKNOWN 未补全；前两轮 finding 已修复。独立 Architecture / Quality 尚未执行，等待 Coordinator 冻结 Reviewer packet。Assignment 保持 Active；本轮不作 Human Close / push / PR / merge 决定。最终本地提交身份、检查结果、文件级 numstat、blob 与摘要证据见 Executor 报告。
+2026-10-22，Executor：本地 docs-only 交付；三份冻结文档逐字节复制，仅追加 Knowledge Index 指定入口。仓库状态事实核验无新增确定性不一致，UNKNOWN 未补全；前两轮 finding 已修复。最终链接检查发现冻结 Assignment 的 Scope 字面链接示例解析失败；已修正 Executor 自填 Exit evidence 的同类示例，冻结 Scope 原文未改，交回 Coordinator 处理。独立 Architecture / Quality 尚未执行，等待 Coordinator 冻结 Reviewer packet。Assignment 保持 Active；本轮不作 Human Close / push / PR / merge 决定。最终本地提交身份、检查结果、文件级 numstat、blob 与摘要证据见 Executor 报告。
