@@ -1,5 +1,7 @@
 # Engineering Dashboard
 
+2026-10-22 当前（[LIFECYCLE-CLOSEOUT-BATCH-1C-001](assignments/lifecycle-closeout-batch-1c-001.md)，批次 1c；本地提交，待评审与 Human push / PR / merge）：TYPO-CORRECTION-002-RUNTIME-INTEGRATION-DESIGN-001、…IMPLEMENTATION-001、…HARDENING-001 与 …HARDENING-BLOCKER-REMEDIATION-001 **已关闭**（Lifecycle 在本改动进入 `main` 时生效），残项均已枚举并有来源明确的处置；F-04 登记为 `tech_debt:TYPO-CORRECTION-002-F04-OPERATION-RECEIPT-DIAGNOSTICS`（Open，不是已解决）；真实 RIME / QA-001 / INT-003 / 性能 / 180 ms 仍为 `UNKNOWN`，已合并树是否逐字节包含冻结快照仍为 `UNKNOWN`；`HARDENING-001` AUTH 为 superseded / unconsumed，只读记录并声明不可重放，未改动任何 AUTH。非 Release，不改父任务。
+
 2026-10-22 当前（[LIFECYCLE-CLOSEOUT-BATCH-1B-001](assignments/lifecycle-closeout-batch-1b-001.md)，批次 1b；本地提交，待评审与 Human push / PR / merge）：TYPO-CORRECTION-002-INT003-QUERY-COST-MEASUREMENT-001 与 TYPO-CORRECTION-002-PARENT-REVALIDATION-002 **已关闭**（Lifecycle 在本改动进入 `main` 时生效），残项均已枚举并有来源明确的处置；A16 的原 query-density Product 残项由 Human 作为受限未知 accept，**不是性能 Pass**，更宽 fan-out 是否可接受仍未建立；三份 AUTH 只读记录并声明不可重放，未改动。非 Release，不改父任务。
 
 2026-10-22 当前（[LIFECYCLE-CLOSEOUT-BATCH-1-001](assignments/lifecycle-closeout-batch-1-001.md)，批次 1；本地提交，待评审与 Human push / PR / merge）：实际关闭 7 项 TYPO-CORRECTION-002 子项与已完成的同步记录（PARENT-CLOSE-PUBLICATION-001、DIAGNOSTICS-JOURNAL-UI-ARM-RETEST-001、INT003-CONTROLLED-CAPTURE-002 及其 ARCHITECTURE-REVIEW / QUALITY-REVIEW、KEYBOARD-COMPACT-HEADER-001-STATE-SYNC-001、ACTIVE-WORK-STALE-FACTS-SYNC-001）；INT003-QUERY-COST-MEASUREMENT-001 与 PARENT-REVALIDATION-002 因残项缺来源明确的处置而**未关闭**。非 Release，不改父任务；各 Close 的残项处置见各自文件的 Closeout 一节。
