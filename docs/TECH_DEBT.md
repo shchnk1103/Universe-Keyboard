@@ -373,3 +373,13 @@ Even with perfect install of 万象 Lua: product/user test of bare **`rq`** is *
 - **Current mitigation:** 原有有界实现、组合式测试和固定候选全套CI；不宣称已消除本限制。
 - **Trigger to resolve:** 真实故障出现或修改setup/schema/get-context失败处理时单独评估；不从本次收尾自动启动新采集。
 - **Boundary:** 父任务Gate/Close需最终复核和Human条件授权；此债不能被CI绿灯或关闭文档改成已解决。
+
+## TYPO-CORRECTION-002-F04-OPERATION-RECEIPT-DIAGNOSTICS: 纠错运行时 operation-receipt 与诊断隐私评审
+
+- **Status:** Open / retained technical debt; not fixed or verified.
+- **Source and disposition:** runtime-integration 链的 F-04 在 [design Architecture review](reviews/typo-correction-002-runtime-integration-design-architecture-review-2026-09-21.md) 第 75 行处置为 `tech_debt`；[design re-review](reviews/typo-correction-002-runtime-integration-design-architecture-rereview-2026-09-21.md) “F-04 disposition”（第 106–111 行）、[implementation Architecture review](reviews/typo-correction-002-runtime-integration-implementation-architecture-review-2026-09-21.md) 第 220 行、[implementation Quality review](reviews/typo-correction-002-runtime-integration-implementation-quality-review-2026-09-21.md) 第 144 行、[hardening Architecture review](reviews/typo-correction-002-runtime-integration-hardening-architecture-review-2026-09-22.md) 第 53、64 行与 [Product 决定](product-decisions/TYPO-CORRECTION-002-RUNTIME-INTEGRATION-IMPLEMENTATION-RESIDUAL-001.md)第 52 行沿用。2026-10-22 批次 1c 补登记 canonical 条目（[`LIFECYCLE-CLOSEOUT-BATCH-1C-001`](assignments/lifecycle-closeout-batch-1c-001.md)），不创建新实施任务或风险决定。
+- **Risk:** operation-receipt 的 schema、保留期与隐私评审为 `UNKNOWN`（design re-review 第 103 行），尚需单独的 diagnostics/privacy 授权来规定（design Architecture review 第 75 行）；DEBUG decision trace 仍在 `applyRankedTypoCorrection`（implementation Quality review 第 144 行；implementation Architecture review 第 188 行）。
+- **Owner:** Input Intelligence Maintainer
+- **Current mitigation:** 常规 telemetry 不含内容，不挪用 DEBUG decision trace，也无新的持久 receipt 或原文日志（design re-review 第 106–111 行；design Architecture review 第 75 行；hardening Architecture review 第 53 行）；不宣称已消除本限制。
+- **Trigger to resolve:** 需要一次单独授权的 diagnostics/privacy 变更时再评估（design Architecture review 第 75 行；design re-review 第 109–110 行）。`tech_debt:<ID>` 条目存在即满足 Close 的残项处置要求（`docs/kos/kos-2.1-operational-maturity.md` M-03 表第 113 行），所以不是本链 Close 的前置。
+- **Boundary:** 本链的 Close 记录与 CI 绿灯都不能把此债改成已解决。
