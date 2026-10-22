@@ -300,7 +300,31 @@ Any source or dirty-diff change, merge/rebase, build or install restart, schema/
 | QA-001 07：`AR-QA07-01/02/03`、`QR-QA07-01/02/03/04` | Architecture / Quality | Product Accepted（既有处置） | `…QA001-REVALIDATION-07-PRODUCT-RESIDUAL.md` 第 61–66 行 |
 | rime-ice smoke：`QR-01` / `AR-01`（下载的归档文件未单独重算 SHA）、`QR-02`（文档 HEAD 不同于已安装包 source） | Architecture / Quality | Product Accepted（既有处置）：`QR-01 / AR-01` “Accepted for this deployment precondition”，`QR-02` “Accepted with exact package binding” | `docs/product-decisions/TYPO-CORRECTION-002-RIME-ICE-DEPLOYMENT-PRODUCT-RESIDUAL.md` 第 24、25 行；第 49 行 “closes the Product disposition of QR-01/QR-02”；评审 `…rime-ice-deployment-smoke-01-architecture-review.md` 第 66–70 行、`…-quality-review.md` 第 48–53 行 |
 
-其余 lane（INT-003 attempt 01 / retry 02 / retry 03 / low-overhead / coordinate feasibility，QA-001 revalidation 03 / 04 / 06，performance revalidation 02，diagnostic smoke，Simulator App Group 对账）只有 “inconclusive” 回执，没有独立评审的残项表；其未建立目标由 `PR-05` 与 AX reval-03 残项的 Human 决定覆盖。
+其余 lane 按回执原文分组如下（2026-10-22 修正轮 2 就地更正；此前把这些 lane 一律写成 “只有 inconclusive 回执” 的句子不准确）。它们没有独立评审的残项表。其未建立的目标（候选恢复、QA-001、INT-003）由 `PR-05` 与 AX reval-03 残项的 Human 决定覆盖。
+
+**范围 pass**
+
+- diagnostic smoke（`docs/evidence/typo-correction-002-sim-run-2026-09-19-diagnostic-smoke-01.md` 第 97–102 行）：Smoke result 为 `pass`，范围只限 fresh high-fidelity keyboard observability。保留限制：未建立候选恢复、目标选择、交互回归、INT-003 stale-work 取消、计时预算或 Product Gate；该 smoke Authorization 已消费、不得重用。允许的下一步只是为 QA-001 与 paired performance 另行申请新的 Authorization 与 Run ID。
+
+**有明列保留残项**
+
+- Simulator App Group / signing 对账（`docs/evidence/typo-correction-002-simulator-app-group-signing-reconciliation-2026-09-20.md` 第 131–148 行 “Remaining residuals and next boundary”）。四条及处置来源：
+  1. `rime_ice` deployment 在当时的当前包上仍是 `not-run`，本次对账没有新建 Run ID。处置：随后的 RIME Ice deployment-smoke 回执（`docs/evidence/typo-correction-002-sim-run-2026-09-20-rime-ice-deployment-smoke-01.md` 第 136–137 行）记录同一已安装包上的部署前置条件 **Pass**；Product 决定 `docs/product-decisions/TYPO-CORRECTION-002-RIME-ICE-DEPLOYMENT-PRODUCT-RESIDUAL.md` 第 49–50 行只关闭该次 named setup run 的 QR-01/QR-02 处置，并写明父任务当时仍 Active、QA-001 / INT-003 / paired performance 仍开放。
+  2. `security find-identity` 仍报告本机没有 Apple Development 身份；回执写明这与物理设备构建有关，不是上述 Simulator entitlement 证明的阻断项。处置：本对账任务的范围是 Simulator 包与 App Group 容器（回执第 104–117、136–137 行已证明当时的签名 Simulator 包到达共享容器）；物理设备签名身份不在该 Simulator 证据任务内，回执第 135–137 行已把它排除在阻断之外，本 Close 不把它改记为已解决。
+  3. 更早的 shell `simctl get_app_container` 失败保留为 CoreSimulatorService / 工具观察限制，不归类为 App Group 缺失。处置：sidecar Quality 评审 `SR-04`（`docs/reviews/typo-correction-002-sim-run-2026-09-19-sidecar-reval-01-quality-review.md` 第 56 行）已 Accept 为 historical tool limitation，并记录 App Group 存在已被独立恢复；上表 `SR-04` 行沿用该既有处置。
+  4. 旧的 signed-rebuild Authorization 保持不可重用；它对普通 `codesign` 输出的原解释由本回执取代，历史停止记录保留。处置：该 Authorization 的不可重用是回执自己写下的边界（第 141–143 行），本 Close 不重放它，也不另发新的采集授权。
+
+**只有 inconclusive 回执、没有独立评审残项表**
+
+- INT-003 attempt 01：`docs/evidence/typo-correction-002-sim-run-2026-09-19-int003-ax-reval-01-inconclusive.md`（第 72 行：inconclusive/invalid attempt；错误 key ref，键盘身份不稳定）。
+- INT-003 retry 02：`docs/evidence/typo-correction-002-sim-run-2026-09-19-int003-ax-reval-02-compile-blocked.md`（第 5 行：UI-test target 编译失败，运行前阻断；无运行时证据）。
+- INT-003 retry 03：`docs/evidence/typo-correction-002-sim-run-2026-09-19-int003-ax-reval-03-inconclusive.md`（第 110 行：INT-003 stale-work cancellation 为 inconclusive；同回执另有 harness 子项与 sidecar 子项的范围 pass，不是 INT-003 Pass）。其独立评审残项已在上表单列，不在本组。
+- INT-003 low-overhead：`docs/evidence/typo-correction-002-sim-run-2026-09-19-int003-ax-low-overhead-reval-01-inconclusive.md`（第 5、13–14 行：inconclusive；当前键盘不是 Universe Keyboard；复制件与 retry 03 字节相同，非新证据）。
+- INT-003 coordinate feasibility：`docs/evidence/typo-correction-002-sim-run-2026-09-19-int003-ax-coordinate-feas-01-inconclusive.md`（第 106 行：INT-003 inconclusive；无产品按键事件）。
+- QA-001 revalidation 03：`docs/evidence/typo-correction-002-sim-run-2026-09-19-qa001-reval-03-inconclusive.md`（第 135 行：inconclusive; no pass）。
+- QA-001 revalidation 04：`docs/evidence/typo-correction-002-sim-run-2026-09-19-qa001-reval-04-inconclusive.md`（第 108 行：inconclusive; no QA pass）。
+- QA-001 revalidation 06：`docs/evidence/typo-correction-002-sim-run-2026-09-20-qa001-reval-06-inconclusive.md`（第 81 行：inconclusive；多输入一个 `n`，注册短语无效）。
+- performance revalidation 02：`docs/evidence/typo-correction-002-sim-run-2026-09-19-performance-reval-02-inconclusive.md`（第 123–125 行：BASELINE inconclusive，TREATMENT not-run，配对不可测）。performance revalidation 03 有独立评审与 Product 残项，已在上表，不在本组。
 
 **AUTH 现状与不可重放声明**（只读核对，本批次未修改任何 `docs/authorizations/` 文件）：
 

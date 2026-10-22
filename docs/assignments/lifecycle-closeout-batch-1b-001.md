@@ -134,7 +134,7 @@ Executor 与 Reviewer 的最终报告、指令、packet 均保存为文件，根
 | 三份 AUTH 的现状与不可重放声明 | 三份 AUTH 均只读核对，状态与本 Assignment 所述一致（原文行号见 A16、A27 各自的 Closeout 与文末 §三份 AUTH 的现状）。不可重放声明已写入：A16 的 Closeout（`…P2-SIM-CAPTURE-001`）、A27 的 Closeout（`…INT003-REVALIDATION-001`、`…PARENT-REVALIDATION-001`）；处置 `accept`（D-1B-AUTH）；TD-014 仅引用、未修改 |
 | 1. 各拥有者 Assignment Current Status | 已更新：A16、A27 的 JSON `lifecycle`（仅 A16 有 JSON）、Current Status 的 Lifecycle 格、S-03 取代说明（A16 与既有 “2026-10-11 current convergence” 及既有 S-03 说明并存）、文末 Closeout 三者一致 |
 | 2. Parent Assignment | 不适用 — 不改任何父 Assignment（Executor 确认：`docs/assignments/typo-correction-002.md` 未改动） |
-| 3. `docs/ENGINEERING_DASHBOARD.md` | 已更新：顶部新增一条 2026-10-22 带日期条目（修正轮 1 就地更正为“已关闭”）；既有的 INT003-QUERY-COST 三处提及（第 689、690、691 行）位于第 687 行 `### History — 以下阶段快照不表示当前待办` 小节之下，保持不改 |
+| 3. `docs/ENGINEERING_DASHBOARD.md` | 已更新：顶部新增一条 2026-10-22 带日期条目（修正轮 1 就地更正为“已关闭”）；既有的 INT003-QUERY-COST 三处提及位于 `### History — 以下阶段快照不表示当前待办` 小节之下的 INT-003 query-density / query-cost P1/P2 / P0 publication 三条（行号会随文件顶部插入而变，不以行号为准），保持不改 |
 | 4. `docs/KNOWLEDGE_INDEX.md` | 已更新：A16 已关闭，第 48 行末尾追加 2026-10-22 带日期补充说明，原文不改 |
 | 5. Active plan Status line | 已更新：A16 已关闭，`docs/plans/typo-correction-002-int003-query-cost-measurement-001.md` 在既有取代说明之后追加一条带日期说明，原文不改 |
 | 6. `docs/ACTIVE_WORK.md`（移出的行、保留行校验） | 已更新：新增一条 2026-10-22 带日期的当前更新（修正轮 1 就地更正）；**移出 2 行**——A27 的原第 4 行、A16 的原第 10 行；表由 11 行变为 9 行，其余 9 行经脚本与 base 逐行对比，全部表行逐字一致 |
@@ -194,6 +194,8 @@ Executor 与 Reviewer 的最终报告、指令、packet 均保存为文件，根
 
 A27 的其余 lane（INT-003 attempt 01 / retry 02 / retry 03 / low-overhead / coordinate feasibility，QA-001 revalidation 03 / 04 / 06，performance revalidation 02，diagnostic smoke，Simulator App Group 对账）只有 “inconclusive” 回执，没有独立评审的残项表；它们的未建立目标由 `PR-05` 与 AX reval-03 残项的 Human 决定覆盖，这一对应关系同样是 Human 的决定。
 
+> **修正轮 2 更正指针：** 上一句把 diagnostic smoke 与 Simulator App Group 对账也概括成 “只有 inconclusive 回执”，不准确。分组后的核实结果见文末 §Remediation round 2。本句保留作 r1 原始记录，不倒写。
+
 ### 三份 AUTH 的现状（只读核对，与本 Assignment 所述一致）
 
 | AUTH | 原文 |
@@ -227,6 +229,8 @@ r1 报告的 A27 缺口 `AR-01`、`QR-01`、`QR-02`（rime-ice deployment-smoke 
 
 撤回后，Executor 重新做了更广的核对：把 `docs/product-decisions/` 下全部 `TYPO-CORRECTION-002-*` 文件逐个按 “PARENT-REVALIDATION-002” 与 A27 的残项关键词（`SR-0`、`AX`、`reval-03`、`diagnostic smoke`、`App Group`、`coordinate`）检索，引用 A27 作为 Parent 的 Product 决定恰为三份——QA-001 07、性能 reval-03、RIME Ice deployment——均已纳入；`docs/reviews/` 与 `docs/evidence/` 中引用 A27 的文件已逐类核对（sidecar、AX reval-03、performance reval-03、QA-001 07、rime-ice smoke 各自的评审；其余为 “inconclusive” 回执）；`TYPO-CORRECTION-002-QA001-REVALIDATION-08-*` 属另一个 child，A27 文件并不引用，不在 A27 残项范围内。**没有发现第二处遗漏。**
 
+> **修正轮 2 更正指针：** 上一句末尾 “其余为 inconclusive 回执” 沿用了不准确的概括。diagnostic smoke 是有范围的 pass，Simulator App Group 对账列了 Remaining residuals。分组核实见文末 §Remediation round 2。本句保留作修正轮 1 的原始记录，不倒写。
+
 ### (ii) Human 对 A16 的决定
 
 A16 的 “original query-density Product 残项”（更宽的 `query_*` fan-out；2026-09-23 Product Capture 的 `fence_discarded=0`、`query_*` 574/574、旧 rapid-window 归因）：Human Product Owner（Product Lead）于 2026-10-22 在 Coordinator 会话中**明确 accept，作为受限未知接受**。边界：**不是性能 Pass**；更宽 fan-out 是否可接受仍未建立；与父 Gate 对整体性能未知的接受范围一致；**不新建 tech_debt**。决定人：Human Product Owner（Product Lead）；决定来源：Coordinator 会话，2026-10-22。A18（`typo-correction-002-int003-stale-cancel-product-capture-001`）的同一残项由后续批次按同一决定落实，本批次不改 A18 文件。此前的决定（D-1B-AUTH；A16 的 `IMPL-R1…R5`；A27 的 `SR-02`、AX reval-03 评审残项、`PR-05`）仍然有效。
@@ -255,3 +259,46 @@ A16 的 “original query-density Product 残项”（更宽的 `query_*` fan-ou
 ### Round 1 之后的 Reviewer 栏与运行时身份
 
 Reviewer 栏保持原文，未填任何具体 AI。Executor 运行时身份同 r1：Claude（Claude Code），模型 `claude-sonnet-5-5`，effort 未确认，会话标识未确认。
+
+## Remediation round 2 (2026-10-22)
+
+追加式。提交 `eeeb1539f68d73eb73359136c9508d62ed5d82fb` 经 Architecture 与 Quality 独立评审，均为 Pass with conditions。本节只记录两条低严重度条件的文档更正，不改写 r1 / r2 报告，也不改写上面各节的原文。
+
+### (i) LCB1B-QUAL-R1-F01
+
+Quality 指出 A27 Closeout 把一组 lane 概括成 “只有 inconclusive 回执，没有独立评审的残项表”，与两份回执不符：
+
+- `docs/evidence/typo-correction-002-sim-run-2026-09-19-diagnostic-smoke-01.md` 第 97 行写明 Smoke result 为 `pass`，范围是 fresh high-fidelity keyboard observability。
+- `docs/evidence/typo-correction-002-simulator-app-group-signing-reconciliation-2026-09-20.md` 第 131–143 行列了 Remaining residuals。
+
+修正轮 2 的 Executor 回到每份回执核实，没有沿用旧概括。核实结果：
+
+| lane | 回执 | 实际结果 |
+|---|---|---|
+| diagnostic smoke | `docs/evidence/typo-correction-002-sim-run-2026-09-19-diagnostic-smoke-01.md` | 范围 pass（仅 fresh high-fidelity keyboard observability）；候选恢复、目标选择、交互回归、INT-003、计时预算、Product Gate 未建立 |
+| Simulator App Group / signing 对账 | `docs/evidence/typo-correction-002-simulator-app-group-signing-reconciliation-2026-09-20.md` | 纠正了未签名包缺少 Simulator entitlement 的解释；明列四条 Remaining residuals，各有来源明确的处置（见 A27 Closeout） |
+| INT-003 attempt 01、retry 02、low-overhead、coordinate feasibility；QA-001 revalidation 03 / 04 / 06；performance revalidation 02 | 各 lane 自己的 inconclusive 回执（路径见 A27 Closeout） | inconclusive，或 retry 02 在运行前编译阻断、无运行时证据 |
+| INT-003 retry 03 | `docs/evidence/typo-correction-002-sim-run-2026-09-19-int003-ax-reval-03-inconclusive.md` | INT-003 目标仍为 inconclusive；回执内另有 harness 与 sidecar 的范围 pass。其独立评审残项已在 Closeout 表内，不在“其余 lane”组 |
+
+四条 App Group 残项的处置均能指回来源，没有无处置残项，因此没有停止、也没有新建 tech_debt：
+
+1. 当时的 `rime_ice` deployment `not-run`：由随后的 deployment-smoke 回执（bounded pass）与 Product 决定第 49–50 行承接；该决定只关闭 named setup run 的 QR-01/QR-02，不关闭 QA-001 / INT-003 / paired performance。
+2. 本机没有 Apple Development 身份：回执自己写明它与物理设备构建有关，不是该 Simulator entitlement 证明的阻断项；本 Close 不把它改记为已解决。
+3. `simctl get_app_container` 工具失败：sidecar Quality `SR-04` 已 Accept 为 historical tool limitation。
+4. 旧 signed-rebuild Authorization 不可重用：回执自己保留该边界；本 Close 不重放它。
+
+A27 Closeout（`docs/assignments/typo-correction-002-parent-revalidation-002.md` 文末 “Closeout (2026-10-22)” 残项表之后的那一段）已就地替换为上述分组。未建立的目标仍由 `PR-05` 与 AX reval-03 残项的 Human 决定覆盖。
+
+### (ii) 保留的历史文字与更正指针
+
+下列句子沿用了旧概括，原文保留，不倒写成从未发生：
+
+- 本文件 §Closeout Decision — 结果 的 A27 枚举之后那一句（“只有 inconclusive 回执 …”）。节内已附指向本节的更正指针。
+- 本文件 §Remediation round 1 (i) 末句里的 “其余为 inconclusive 回执”。节内已附指向本节的更正指针。
+- Executor 报告 r1 第 53 行、r2 第 32 行。两份报告不改；更正以本节与 `executor-report-r3.md` 为准。
+
+### (iii) LCB1B-ARCH-R1-C01
+
+Exit evidence 第 3 项原先写 History 标题在第 687 行、三条在第 689–691 行。那是顶部插入两行之前的行号。修正轮 2 开工时在 HEAD `eeeb1539f68d73eb73359136c9508d62ed5d82fb` 上核实：标题 `### History — 以下阶段快照不表示当前待办` 在第 691 行，INT-003 query-density、query-cost P1/P2、P0 publication 三条在第 693–695 行。该行号引用已改为不依赖行号的描述。A16 与 A27 文件中没有 Dashboard 行号引用。行号会随文件顶部插入而变，以后不以行号为准。
+
+本轮 Executor 运行时身份见 `executor-report-r3.md`。没有 push，没有开 PR。
