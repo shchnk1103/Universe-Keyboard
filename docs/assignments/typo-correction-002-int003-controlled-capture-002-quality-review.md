@@ -50,7 +50,7 @@ Policy version: 1.0.0
 | Extension process churn smoke→rapid | Product Lead（经 Cadence-003） | cleared for this Run（Product 决定） | Cadence-003 Product 决定第 63 行；评审记录第 89 行 |
 | Bundle hashes not re-frozen this Run | Product Lead | accept（with condition：Gate 需要时另行绑定） | Cadence-003 Product 决定第 66 行；评审记录第 90 行 |
 | Reviewer independence weaker（同 agent 谱系） | Product Lead | accept（with condition：Product 可后续要求第三运行时只读复审） | Cadence-003 Product 决定第 65 行；评审记录第 91 行 |
-| `RimeRuntimeProvenance.swift` 在 tip 上缺失 | Product Lead | accept（保留的能力缺口，Product 决定不恢复） | Cadence-003 Product 决定第 67 行；父 Gate 决定第 59 行；评审记录第 92 行 |
+| `RimeRuntimeProvenance.swift` 在 tip 上缺失 | Product Lead | accept（保留的能力缺口，Product 决定不恢复）。Human Product Owner（Product Lead）于 2026-10-22 在 Coordinator 会话中明确 accept：保留的能力缺口，不恢复，作为本项关闭处置。 | Cadence-003 Product 决定第 67 行；父 Gate 决定第 59 行；评审记录第 92 行；Human accept 决定：Coordinator 会话 2026-10-22（记录于 `lifecycle-closeout-batch-1-001.md` §Remediation round 1） |
 | Parent / Gate / Close not authorized | — | 不是本 Work Item 的残项；父任务其后经 Gate 决定 Closed，本 Close 不改父任务 | `docs/product-decisions/TYPO-CORRECTION-002-PARENT-FINAL-PRODUCT-GATE-001.md`；评审记录第 93 行 |
 
 **非声称：** 不是 Release / Release-ready；不是 Quality Gate 或 Product Gate；不改父任务 `TYPO-CORRECTION-002`（已 Closed）；未关闭、削弱本表之外的任何残项；上表 accept with condition 的条件保持有效；本 Close 先在本地提交，待 Reviewer 评审及 Human push / PR / merge 后在 `main` 生效。

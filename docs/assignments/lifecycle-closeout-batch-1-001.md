@@ -59,11 +59,11 @@ record_id: LIFECYCLE-CLOSEOUT-BATCH-1-001
 ## Assignment
 
 - **Domain Owner:** Architecture and Knowledge Steward
-- **Executor:** Claude Executor 会话，目标 `claude-sonnet-5-5`，目标 effort medium。实际配置：模型为 `claude-sonnet-5-5`（会话系统信息）；effort 未确认——harness 仅暴露数值 `reasoning_effort` 5，无法确认其等于 medium，**不声称已应用 medium**。
+- **Executor:** Executor 角色（AI 不限）；建议模型 `claude-sonnet-5-5`、effort medium；实际配置：模型为 `claude-sonnet-5-5`（会话系统信息）；effort 未确认——harness 仅暴露数值 `reasoning_effort` 5，无法确认其等于 medium，**不声称已应用 medium**。
 - **Environment Executor:** 同一会话，本地
 - **Human Dependency:** Human Product Owner（任何 push / PR / merge）
-- **Architecture Reviewer:** codex，全新的独立会话，未参与本批次实现；lane `LCB1-ARCH`；指名由 Human 确认并记录：（派发前由 Human 确认）
-- **Quality Reviewer:** codex，全新的独立会话，且不得与 Architecture Reviewer 是同一会话；lane `LCB1-QUAL`；指名同上
+- **Architecture Reviewer:** 独立 Reviewer 会话（AI 不限）；独立性条件：未参与本批次实现，且不是 Quality Reviewer 的同一会话；lane `LCB1-ARCH`；实际 AI、模型与会话标识由 Reviewer 在报告开头声明并记入 Reviewer Lane Packet；Human Product Owner 于 2026-10-22 在 Coordinator 会话中确认按此角色派发。
+- **Quality Reviewer:** 独立 Reviewer 会话（AI 不限）；独立性条件：未参与本批次实现，且不是 Architecture Reviewer 的同一会话；lane `LCB1-QUAL`；实际 AI、模型与会话标识由 Reviewer 在报告开头声明并记入 Reviewer Lane Packet；Human Product Owner 于 2026-10-22 在 Coordinator 会话中确认按此角色派发。
 
 ## Reviewer claim register
 
@@ -110,6 +110,9 @@ Executor 与 Reviewer 的最终报告、指令、packet 均保存为文件，根
 | `CHANGELOG.md` | 不适用 — 条目记录行为/特性变更，不作状态或生命周期镜像；未改动 |
 | `docs/TECH_DEBT.md` | 不适用 — Non-goal，未改动；未新建 tech_debt；仅核实被引用的 `INT003-COORDINATOR-INDEPENDENT-ORACLE`、`INT003-RIME-FAILURE-BOUNDARY` 条目真实存在 |
 | Executor 报告路径与 SHA-256 | 路径 `~/.kos-work/Universe-Keyboard/LIFECYCLE-CLOSEOUT-BATCH-1-001/reports/executor-report-r1.md`；SHA-256 由 Executor 在对话末尾报告（报告不能包含自身哈希，也不在仓库内循环记录） |
+| 修正轮 1 更新：条件项判断 | A19/A20/A21 的关闭依据含 Human Product Owner（Product Lead）2026-10-22 对 `RimeRuntimeProvenance.swift` 缺口的明确 accept；A16 与 A27 文件相对 base 逐字节一致（仍不关闭）；Human 对 A16、A27 缺口的处置决定留待批次 1b，本批次未应用；A16 缺口措辞更正见 §Remediation round 1 (2026-10-22)。以上行之前的原行保留为批次 1 提交 `024e596` 时的记录 |
+| 修正轮 1 更新：残项处置表（A19/A20/A21 的 provenance 一行） | 处置 `accept`；三个 Closeout 表中该行已就地增加“Human Product Owner（Product Lead）于 2026-10-22 在 Coordinator 会话中明确 accept：保留的能力缺口，不恢复，作为本项关闭处置”，并保留原指针（Cadence-003 Product 决定第 67 行、父 Gate 第 59 行、评审记录行号） |
+| 修正轮 1 更新：Executor 报告路径与 SHA-256 | 路径 `~/.kos-work/Universe-Keyboard/LIFECYCLE-CLOSEOUT-BATCH-1-001/reports/executor-report-r2.md`（`executor-report-r1.md` 保留）；SHA-256 由 Executor 在对话末尾报告 |
 
 ## Closeout Decision — 结果（Executor，2026-10-22，评审前）
 
@@ -160,3 +163,56 @@ Executor 与 Reviewer 的最终报告、指令、packet 均保存为文件，根
 1. A19/A20/A21 的 `RimeRuntimeProvenance.swift` 缺口：Cadence-003 Product 决定仅写 “Retained capability-gap … separate lane”，父 Gate 第 59 行写 “不恢复 RimeRuntimeProvenance”。Executor 将两者合并判为 `accept`（保留的缺口）；这是对措辞的归类判断。
 2. C3 的 “fix” 分类：处置是 Human 批准的 Coordinator 更正说明，Reviewer 尚未重新核对；Executor 未将其升级为已复核。
 3. 本节与各文件的 Closeout 引用的行号取自基线 `7953e8b` 的文件。
+
+## Remediation round 1 (2026-10-22)
+
+追加式。批次 1 提交 `024e5969babdc247fd3567749380bebd426cff0c` 的两份评审记录作为历史保留，不改写；本节与对应的修正提交需要 Round 2 评审，Executor 不声称其已通过。
+
+### 评审结果摘要
+
+报告保存在仓库外，仓库内只记录路径与 SHA-256（路径前缀 `~/.kos-work/Universe-Keyboard/LIFECYCLE-CLOSEOUT-BATCH-1-001/`）。
+
+| Lane | Round | 结论 | 报告 | SHA-256 |
+|---|---|---|---|---|
+| `LCB1-ARCH` | 1 | Partial（B1、B4、B5、B7 Covered 通过；B3 Uncovered） | `reports/architecture-review-r1.md` | `21624c30e217594388c39a726e0ebb34aa9139d1395ed3c3710c7f1095e0b2c5` |
+| `LCB1-QUAL` | 1 | Partial，含一个 Blocker（`LCB1-QUAL-R1-F01`；B2 覆盖但不通过，B10 Uncovered） | `reports/quality-review-r1.md` | `29b83c03e9e07692c387ddd9ab7b007a0eda0ec481c1d491039b813d4fbdbfe4` |
+
+### 发现与处理
+
+| 发现 | 严重度 | 内容 | 处理 |
+|---|---|---|---|
+| `LCB1-ARCH-R1-F01` | 中 | A27 缺口陈述所引用的三份评审文件不在 packet 允许集，B3 无法核实该部分 | A27 缺口陈述的核实从批次 1 移到批次 1b；批次 1 不扩围，不再要求核实这三份文件；A27 保持不关闭（文件相对 base 逐字节一致，仍须核对） |
+| `LCB1-ARCH-R1-F02` | 低 | A16 缺口论据把 Current Status 的 “IMPL-R1/R2 remain open” 当作现行文字，混用了当前与历史依据 | 见下 §A16 缺口措辞更正 |
+| `LCB1-QUAL-R1-F02` | Low | 同上（报告事实措辞） | 同上 |
+| `LCB1-QUAL-R1-F01` | Blocker | A19/A20/A21 的 `RimeRuntimeProvenance.swift` 缺口归类为 accept，现有来源不足以明确支持 | Human Product Owner 已作明确 accept 决定（见下），三个 Closeout 表中该行已就地记录 |
+| `LCB1-QUAL-R1` U01 | 未覆盖 | B10 需核实 A27 缺口陈述，所引文件不在允许集 | 同 `LCB1-ARCH-R1-F01`：移到批次 1b |
+
+### Human 决定记录
+
+决定人：Human Product Owner（Product Lead）。决定来源：Coordinator 会话，2026-10-22。
+
+1. **RimeRuntimeProvenance 缺口：明确 accept。** `RimeRuntimeProvenance.swift` 在 tip 上缺失这一能力缺口不恢复，作为 A19（`TYPO-CORRECTION-002-INT003-CONTROLLED-CAPTURE-002`）、A20、A21 的关闭处置。已落实到三个文件的 Closeout 残项处置表。
+2. **缩窄批次 1 的 B3、B10：** A27 缺口陈述的核实从批次 1 移到批次 1b；批次 1 不再要求核实 A27 缺口所引用的三份评审文件。A27 保持不关闭。
+3. **Reviewer 栏改为只写角色，不写具体 AI。** 已就地替换本文件 Architecture Reviewer / Quality Reviewer 两行（Executor 一行同步改为“Executor 角色（AI 不限）”）。
+4. **对 A16、A27 缺口的处置决定（留待批次 1b 落实，本批次未应用；A16、A27 文件、ACTIVE_WORK 第 4、10 行、Knowledge Index、plan 均未改）：**
+   - A16：`IMPL-R1` → `tech_debt:INT003-COORDINATOR-INDEPENDENT-ORACLE`；`IMPL-R2` → `tech_debt:INT003-RIME-FAILURE-BOUNDARY`；`IMPL-R3` → fix，已完成；`IMPL-R4`、`IMPL-R5` → accept。
+   - A27：`SR-02`、INT-003 AX reval-03 评审残项、`PR-05` → accept，指向父 Gate `PD-TYPO-CORRECTION-002-PARENT-FINAL-PRODUCT-GATE-001`。
+
+### A16 缺口措辞更正
+
+上文 §Closeout Decision — 结果 中 A16 的 “缺口” 段引用了 A16 Current Status 的 “IMPL-R1/R2 remain open”。该文件第 73–74 行的 S-03 说明已把该表述标为历史（P1 bounded convergence 与 Human-accepted P2 已作为证据阶段完成）。更正如下：缺口的真实内容是 “`docs/reviews/typo-correction-002-int003-query-cost-p1-implementation-review-001.md` 第 169–173 行的 `IMPL-R1…R5` 在仓库中没有点名处置它们的记录”；该判断不依赖 A16 Current Status 的旧文字。原段不重写，以本更正为准。
+
+### Claim register 修订
+
+经 Human 作为 Assignment Authority 于 2026-10-22 批准：
+
+- **B3** 修订为 “A19/A20/A21 的关闭依据（含 Human accept 决定）有来源；A16 与 A27 文件相对 base 逐字节一致；A16 缺口真实存在”。
+- **B10** 修订为 “Executor 报告与仓库事实一致（7 关闭 / 2 不关闭、UNKNOWN 未填充）；A27 缺口陈述的核实不在本批次，移到批次 1b”。
+
+### Round 1 Reviewer 运行时身份
+
+Round 1 两份报告均未声明运行时身份（AI、模型、会话标识），记为 **UNKNOWN**；此后模板要求 Reviewer 在报告开头声明。
+
+### A27 缺口陈述标注
+
+上文 §Closeout Decision — 结果 中关于 A27 缺口的 4 点陈述，**未经 Reviewer 核实；由批次 1b 核实**。

@@ -68,7 +68,7 @@ Policy version: 1.0.0
 | <180 ms cadence bar not met | Product Lead（经 Cadence-003） | cleared for this Run（Product 决定）；父 Gate 另决定不恢复手动 <180 ms 通过门槛 | Cadence-003 Product 决定第 64 行；`docs/product-decisions/TYPO-CORRECTION-002-PARENT-FINAL-PRODUCT-GATE-001.md` 第 59 行 |
 | Reviewer independence weaker（同 agent 谱系） | Product Lead | accept（with condition：Product 可后续要求第三运行时只读复审） | Cadence-003 Product 决定第 65 行 |
 | Installed bundle hashes not re-frozen this Run | Product Lead | accept（with condition：Gate 需要时另行绑定） | Cadence-003 Product 决定第 66 行 |
-| `RimeRuntimeProvenance.swift` 在 tip 上缺失 | Product Lead | accept（保留的能力缺口，Product 决定不恢复） | Cadence-003 Product 决定第 67 行（Retained capability-gap）；父 Gate 决定第 59 行（不恢复 RimeRuntimeProvenance） |
+| `RimeRuntimeProvenance.swift` 在 tip 上缺失 | Product Lead | accept（保留的能力缺口，Product 决定不恢复）。Human Product Owner（Product Lead）于 2026-10-22 在 Coordinator 会话中明确 accept：保留的能力缺口，不恢复，作为本项关闭处置。 | Cadence-003 Product 决定第 67 行（Retained capability-gap）；父 Gate 决定第 59 行（不恢复 RimeRuntimeProvenance）；Human accept 决定：Coordinator 会话 2026-10-22（记录于 `lifecycle-closeout-batch-1-001.md` §Remediation round 1） |
 | Independent Quality review（Architecture 记为 Open） | Quality | fix（已完成） | `typo-correction-002-int003-controlled-capture-002-quality-review.md` 与 `docs/reviews/…-002-quality-review.md` |
 | Parent / Gate / Close not authorized | — | 不是本 Work Item 的残项；父任务其后经 Gate 决定 Closed，本 Close 不改父任务 | 父 Gate 决定 `docs/product-decisions/TYPO-CORRECTION-002-PARENT-FINAL-PRODUCT-GATE-001.md` |
 
