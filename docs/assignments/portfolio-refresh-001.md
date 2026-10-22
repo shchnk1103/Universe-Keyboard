@@ -132,3 +132,37 @@ Post-review，追加式。上文各节在评审时固定为提交 `87ae8c1e24381
 
 - 修正提交位于本节所在提交；是否经独立复核，见随后的 Round 2 记录（若有）。
 - 不声称 UI-4 已立项、已授权或已有 Product Decision；不改变任何代码、数值或其它 Assignment 的状态。
+
+## Remediation round 2
+
+Post-review，追加式。本节之前的内容不改（包括上一节中的转述文字，见下“更正说明”）。评审报告保存在仓库外，路径前缀 `~/.kos-work/Universe-Keyboard/PORTFOLIO-REFRESH-001/`。
+
+### Round 2 评审（Architecture，窄范围）
+
+| Lane | 运行时身份 | 结论 | 报告 | SHA-256 |
+|---|---|---|---|---|
+| `PR001-ARCH` | Claude Code，`claude-sonnet-5-5`，全新会话，不是 Round 1 的任何评审者、不是任何 Executor；相对实现者（Codex、Grok）为不同厂商，相对 Coordinator 为同厂商不同会话 | Pass with conditions；R2-A1 到 R2-A7 全部 Covered；残项 `R2-F01`、`R2-F02`、`R2-F03`、`R2-F05`（P3）与可选的 `R2-F04`（P3） | `reports/architecture-review-r2.md` | `e69612a618774b96cdba136beab572c83663aa42785ba89a00d57f1f8d04deb8` |
+
+评审者声明工作区记忆里没有本任务、任务组合目录或 UI-4 的记录，也没有据记忆评审。Round 1 的四条发现（`F01`、`F02`、`F03`、`R4-SELF-01`）经确认已修好。
+
+### 发现与修正（均在 `docs/portfolio/ui-4-keyboard-height.md`，除 `R2-F05` 外）
+
+| 发现 | 问题 | 修正 |
+|---|---|---|
+| `R2-F01` | 参考小节写 “见历史需求基线的‘不在第一版范围’”，文档里实际条目叫 “第一版不做” | 引用标签改为 “第一版不做” |
+| `R2-F02` | 小节标题 “……的差异，待 Human 决定” 之下，第 3、4 条已是已决定 | 标题改为 “……的差异与各条现状”，各条标明 （待决）或 （已决定） |
+| `R2-F03` | “上限规则” 与 “最高行高与上限规则” 两条重叠，实测手段说法不同 | 合并为一条 “最高行高与上限规则”，统一为模拟器各机型 / 方向实测加 iPhone 13 Pro 竖横屏真机实测，保存精度指向下一条 |
+| `R2-F04`（可选） | “参考的大厂键盘” 的 “大厂” 没有来源；“步进待定” 在历史基线里与已决定的连续拖动并存易误读 | “大厂键盘” 改为 “另一款第三方键盘”；历史基线的 “步进待定” 后补 “（后已决定为连续拖动，见‘已决定’）” |
+| `R2-F05` | 上一节没有披露修正者身份；其中引号里的修正文字不是文档里的逐字文本 | 见下 “更正说明” |
+
+修正后 `docs/portfolio/ui-4-keyboard-height.md` 的 SHA-256 为 `1d27a70b89046a6af3edf8a6f63e96ff22dd3b05760894c103fc0c3171307033`。
+
+### 更正说明（针对 `R2-F05`，不改上一节旧文）
+
+- **修正者身份：** 上一节写 “两位评审者都声明……不是任何 Executor 会话”，在评审当时成立。随后 Round 1 的 Architecture 评审会话（Codex）按 Human 的指令改任修正 Executor（报告 `reports/executor-report-r4.md`，SHA-256 `c03a95d46fcf6b50a5d3fb99dc7dcc04040347d3b5623bc38187f88a3ac0e257`），它在落地前的自查里发现第 4 处问题并停止，没有提交，因此不再担任 Round 2 的评审者；落地修正的 Executor 是 Grok（`reports/executor-report-r5.md`，SHA-256 `ed7ed7fce8f64d1ef4a36ad21e3e9c087ba5916882eb1e1cec6d834fdb23d9c4`，提交 `1e49d11d616d949a397b37a5af1bb9b6b7a611b0`）。
+- **引文性质：** 上一节 “发现与修正” 表里 `F01`、`F02` 的修正栏用引号写的文字是**转述**，不是文档里的逐字文本；实际文字以 `docs/portfolio/ui-4-keyboard-height.md` 为准（例如 `F02` 的修正落在 “最高行高与上限规则” 一条里，现已与另一条合并）。
+
+### 状态与披露
+
+- 本节所述的第二轮修正由 Executor 在本节之前的一个提交里落地；这一轮修正**没有经过独立 Reviewer 复核**，由 Coordinator 对 `docs/portfolio/ui-4-keyboard-height.md` 做了指针、标签、标题与重复条目的逐项核对，并对提交范围、字节前缀与摘要做了机械核对，结果见评审后记录。
+- 不声称 UI-4 已立项、已授权或已有 Product Decision；不改变任何代码、数值或其它 Assignment 的状态。
