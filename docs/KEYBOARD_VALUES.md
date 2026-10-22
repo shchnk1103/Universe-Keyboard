@@ -82,7 +82,12 @@
 | numbers / symbols / bottom rows | 复用 keyHeight=45 与 keySpacing=8、分组 10 | `Keyboard/Controllers/KeyboardViewController+Presentation.swift:209`；`Keyboard/Controllers/KeyboardViewController+Presentation.swift:229`；`Keyboard/Controllers/KeyboardViewController+BottomRow.swift:63` | 页构造仍复用公共几何，不另增高度设置 |
 | KeyPopupView itemWidth / spacing / padding / popupHeight / gap | 36 / 2 / 8 / 38 / 6 | `Keyboard/Views/KeyPopupView.swift:103` | 变体字符覆盖层，不增加根视图请求高度 |
 | KeyPopupView horizontal clamp | 3 | `Keyboard/Views/KeyPopupView.swift:120` | 左右最小边界 |
+| KeyPopupView.stackView vertical inset | 上下各 4 | `Keyboard/Views/KeyPopupView.swift:145`；`Keyboard/Views/KeyPopupView.swift:146` | 标签栈内边距，独立于覆盖层外框高度 38 |
+| KeyPopupView 变体 label font | 17；选中 bold，未选中 medium | `Keyboard/Views/KeyPopupView.swift:155`；`Keyboard/Views/KeyPopupView.swift:196`；`Keyboard/Views/KeyPopupView.swift:199` | 初始化与高亮切换保持相同基准字号 |
 | DeleteTrashBubbleView preferredHeight / minimumHeight / gapAboveKey / topInset / width | 32 / 12 / 6 / 2 / 36 | `Keyboard/Views/DeleteTrashBubbleView.swift:5` | 覆盖层可压低；不改变按键或候选高度 |
+| DeleteTrashBubbleView.symbolView size upper bounds | 宽≤容器宽−10；高≤容器高−8 | `Keyboard/Views/DeleteTrashBubbleView.swift:39`；`Keyboard/Views/DeleteTrashBubbleView.swift:40` | 符号内部约束，不是 bubble 外框内缩或根高度请求 |
+| DeleteTrashBubbleView.symbolView pointSize | 15（regular） | `Keyboard/Views/DeleteTrashBubbleView.swift:42`；`Keyboard/Views/DeleteTrashBubbleView.swift:43` | trash SF Symbol 基准字号 |
+| DeleteTrashBubbleView.intrinsicContentSize | 36×28 | `Keyboard/Views/DeleteTrashBubbleView.swift:70`；`Keyboard/Views/DeleteTrashBubbleView.swift:71` | intrinsic 尺寸；不同于控制器使用的 preferredHeight 32，实际外框仍受 available 限制 |
 | Delete bubble 实际 height | min(32, keyMinY−6−2)，available≥12 才展示 | `Keyboard/Controllers/KeyboardViewController+DeleteActions.swift:261`；`Keyboard/Controllers/KeyboardViewController+DeleteActions.swift:265` | 容器内可用空间约束 |
 
 ### 触摸热区
@@ -109,9 +114,12 @@
 | T9PinyinPathCell label / measurement | 17 | `Keyboard/Controllers/KeyboardViewController+T9PinyinPath.swift:458`；`Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift:163` | 旧展开 Path，不等于紧凑 chip |
 | CandidateButtonFactory.candidateConfiguration | composition 14 / candidate 16；上限 28 | `Keyboard/Views/CandidateBar/CandidateButtonFactory.swift:100`；`Keyboard/Views/CandidateBar/CandidateButtonFactory.swift:122` | 基线 Swift 检索仅有定义，无生产调用命中；不得据此断言动态运行绝不调用 |
 | functionKeySymbol / characterKeyTitle / functionKeyTitle / spaceKeyTitlePointSize | 22 / 17 / 15 / 14 | `Keyboard/Controllers/KeyboardViewController.swift:388`；`Keyboard/Controllers/KeyboardViewController.swift:390`；`Keyboard/Controllers/KeyboardViewController.swift:392`；`Keyboard/Controllers/KeyboardViewController.swift:394` | 公共按键 type scale，非候选 Dynamic Type |
-| installPreferredKeyboardHeight priority | defaultHigh（750） | `Keyboard/Controllers/KeyboardViewController+Layout.swift:58`；`Keyboard/Controllers/KeyboardViewController+Layout.swift:59` | 单一 view.heightAnchor 等式期望约束，已有约束仅更新常量 |
-| preferredRowHeightConstraint priority | defaultHigh（750） | `Keyboard/Controllers/KeyboardViewController+Layout.swift:66`；`Keyboard/Controllers/KeyboardViewController+Layout.swift:68` | 系统可压缩；不是硬性指定实际高度 |
-| 路径 row / 候选 row / 旧路径最小高度 | 未显式降 priority，NSLayoutConstraint 默认 required（1000） | `Keyboard/Views/T9PinyinPathBarView.swift:121`；`Keyboard/Views/CandidateBar/CandidateBarView.swift:187`；`Keyboard/Controllers/KeyboardViewController+T9PinyinPath.swift:358` | 与公共按键行的 defaultHigh 区别；实际求解需运行证据 |
+| makeT9KeyButton 字母组 minimumScaleFactor | 0.7 | `Keyboard/Controllers/KeyboardViewController+KeyFactory.swift:51`；`Keyboard/Controllers/KeyboardViewController+KeyFactory.swift:52` | 已有 adjustsFontSizeToFitWidth 宽度适配比例下限，不是固定字号或 Dynamic Type 上限 |
+| punctuationButton / kaomojiButton minimumScaleFactor | 均 0.55 | `Keyboard/Controllers/KeyboardViewController+Rows.swift:58`；`Keyboard/Controllers/KeyboardViewController+Rows.swift:59`；`Keyboard/Controllers/KeyboardViewController+Rows.swift:69`；`Keyboard/Controllers/KeyboardViewController+Rows.swift:70` | 标点 / 颜文字已有宽度适配比例，不表示始终按该倍率渲染 |
+| selectPinyinButton minimumScaleFactor | 0.45 | `Keyboard/Controllers/KeyboardViewController+Rows.swift:202`；`Keyboard/Controllers/KeyboardViewController+Rows.swift:203` | 选拼音已有宽度适配下限，不是固定字号 |
+| installPreferredKeyboardHeight priority | defaultHigh（750） | `Keyboard/Controllers/KeyboardViewController+Layout.swift:58`；`Keyboard/Controllers/KeyboardViewController+Layout.swift:59` ；外部 SDK `/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/System/Library/Frameworks/UIKit.framework/Headers/NSLayoutConstraint.h:19`（非仓库文件，随 Xcode 版本变化） | 单一 view.heightAnchor 等式期望约束，已有约束仅更新常量 |
+| preferredRowHeightConstraint priority | defaultHigh（750） | `Keyboard/Controllers/KeyboardViewController+Layout.swift:66`；`Keyboard/Controllers/KeyboardViewController+Layout.swift:68` ；外部 SDK `/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/System/Library/Frameworks/UIKit.framework/Headers/NSLayoutConstraint.h:19`（非仓库文件，随 Xcode 版本变化） | 系统可压缩；不是硬性指定实际高度 |
+| 路径 row / 候选 row / 旧路径最小高度 | 未显式降 priority，NSLayoutConstraint 默认 required（1000） | `Keyboard/Views/T9PinyinPathBarView.swift:121`；`Keyboard/Views/CandidateBar/CandidateBarView.swift:187`；`Keyboard/Controllers/KeyboardViewController+T9PinyinPath.swift:358` ；外部 SDK `/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/System/Library/Frameworks/UIKit.framework/Headers/NSLayoutConstraint.h:18`（非仓库文件，随 Xcode 版本变化） | 与公共按键行的 defaultHigh 区别；实际求解需运行证据 |
 
 ### 独立检索补充的内边距与页面参数
 
@@ -126,9 +134,10 @@
 | TwentySixKeyThumbnail rows / padding | 字母行高 13；底行高 14；padding 8 | `Universe Keyboard/Views/Settings/KeyboardLayoutSettingsView.swift:299`；`Universe Keyboard/Views/Settings/KeyboardLayoutSettingsView.swift:311`；`Universe Keyboard/Views/Settings/KeyboardLayoutSettingsView.swift:319` | 轮廓比例而非实际尺寸 |
 | NineKeyThumbnail letterH / bottomH / returnH | 15 / 13 / 15+3+13=31 | `Universe Keyboard/Views/Settings/KeyboardLayoutSettingsView.swift:370`；`Universe Keyboard/Views/Settings/KeyboardLayoutSettingsView.swift:371`；`Universe Keyboard/Views/Settings/KeyboardLayoutSettingsView.swift:380` | 静态缩略图，padding 8（:427） |
 
-750 / 1000 的 UIKit 语义另按本机 iPhoneSimulator27.1.sdk 的
-`System/Library/Frameworks/UIKit.framework/Headers/NSLayoutConstraint.h:18–19` 核对：
-DefaultHigh=750、Required=1000。系统默认 priority 不是仓库自行定义的常量。
+750 / 1000 的 UIKit 语义来源为上述完整路径的外部 SDK 头文件第 18–19 行：
+Required=1000、DefaultHigh=750。它是外部 SDK，非仓库文件，随 Xcode 版本变化；
+本次核对为 Xcode 27.1（Build 27A9275）、iPhoneSimulator SDK 27.1，
+通用 iPhoneSimulator.sdk 路径解析到 iPhoneSimulator27.1.sdk。系统默认 priority 不是仓库自行定义的常量。
 
 ### 共享存储与布局设置
 
@@ -217,6 +226,8 @@ DefaultHigh=750、Required=1000。系统默认 priority 不是仓库自行定义
    `:45–46` 与 `+T9PinyinPath.swift:49–65` 的 0/34 高度变化。另 `KeyboardViewController.swift:371` 仍称 fixed reservation。
 6. `Keyboard/Views/CandidateBar/CandidateButtonFactory.swift:100` 定义 14/16，`:119` 注释称候选栏 44；
    当前 `CandidateCell.swift:309` 与 `+CandidateDataSource.swift:191` 为 15/17，`KeyboardDesignTokens.swift:6` 为 46。
+   同一文件 `Keyboard/Views/CandidateBar/CandidateButtonFactory.swift:89` 的注释写高亮 contentInsets 为 6，
+   实际 `Keyboard/Views/CandidateBar/CandidateButtonFactory.swift:110` 为左右各 8；仅记录，不改源码。
    全仓 Swift 引用检索只有 factory 定义与测试注释，未发现生产调用；“完全死代码”不作运行时结论。
 7. 盘点材料把 Path chip 记为 17；紧凑 Path `Keyboard/Views/T9PinyinPathBarView.swift:548` 实为 16，
    17 对应旧展开 Path `+T9PinyinPath.swift:458`。这属于参数归属差异，不修代码。

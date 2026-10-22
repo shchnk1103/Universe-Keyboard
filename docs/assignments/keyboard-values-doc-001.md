@@ -135,3 +135,56 @@ SHA-256 `6734193f455d0577937a8bb80899604928d6e3b7b0acbe90e34ba1d675934cbe`。
 
 所有 398 个受保护文件已逐个比较基线 / 提交 blob 相同；三个目录同时比较 tree 相同。
 Reviewer 栏、claim register、增补记录与输入逐字相同。本轮无 push / PR / merge，无历史改写。
+
+## Remediation round 1
+
+2026-10-22，依据 Human 派发的 `executor-remediation-r1.md`（SHA-256
+`ab691639a18b6518d8fb0015db3c812684b9c4916d663f4538763e5ec794b05d`），
+在原分支、原 worktree、`6031ebae6abf50f968b62b7b749a1286b993507a` 之后追加修正。
+此前正文为历史记录，保持原字节不变；本节更新本轮事实，不倒写 r2 报告。
+
+- ARCH-R1-01：数值表由 **86 行增至 94 行**，新增 8 行（均重新读取基线源码）：
+  1. KeyPopupView 标签栈上下 inset 各 4（:145–146）。
+  2. KeyPopupView 变体字号 17；选中 bold、其它 medium（:155,196,199）。
+  3. DeleteTrashBubbleView 符号宽 / 高上限：容器减 10 / 8（:39–40）。
+  4. DeleteTrashBubbleView 符号字号 15 regular（:42–43）。
+  5. DeleteTrashBubbleView intrinsicContentSize 36×28（:70–71），与 preferredHeight 32 分开。
+  6. makeT9KeyButton 字母组 minimumScaleFactor 0.7（+KeyFactory.swift:51–52）。
+  7. 标点 / 颜文字 minimumScaleFactor 0.55（+Rows.swift:58–59,69–70）。
+  8. 选拼音 minimumScaleFactor 0.45（+Rows.swift:202–203）。
+  缩放项是已有宽度适配比例下限，不是固定字号；无源码或数值变更。完整仓库路径见 KEYBOARD_VALUES 对应行。
+- ARCH-R1-02：已知分歧第 6 项补充 CandidateButtonFactory.swift:89 注释 6 与 :110 实际左右 8 的两侧来源，未修改 factory。
+- QUAL P3-Q1：r2 报告称 Policy “20 项必填字段”计数不准确；Required Assignment Fields 数据行实际 **19 行**，20 是包含表头的行数（不计 Markdown 分隔行）。重新核对下表全部 19 项，均在本 Assignment 中。r2 报告不改写。
+
+| Policy 必填字段 | 本 Assignment 的对应位置 / 内容 |
+|---|---|
+| Task ID / Title | 标题及 record_id |
+| Assignment Authority | Authority / Product Lead |
+| Decision Source / Date | Authority / Decision Source / Date（2026-10-22 Asia/Shanghai） |
+| Scope | Boundary / Scope |
+| Non-goals | Boundary / Non-goals |
+| Domain Owner | Assignment / Architecture and Knowledge Steward |
+| Executor | Assignment / Executor 角色与实际配置 |
+| Environment Executor | Assignment / Not Applicable — repository documentation only；增补记录 |
+| Human Dependency | Assignment / Human Product Owner（push / PR / merge） |
+| Architecture Reviewer | Assignment / 独立 Reviewer 会话；KVD001-ARCH |
+| Quality Reviewer | Assignment / 同上；KVD001-QUAL |
+| Product Approver | Authority / Human Product Owner（Product Lead） |
+| Required Inputs | Boundary / Required Inputs |
+| Entry Criteria | Gates / Entry |
+| Exit Criteria | Gates / Exit |
+| Stop Conditions | Gates / Stop |
+| Handoff Target | Gates / Handoff Target；Current Status / Next handoff |
+| Lifecycle Status | Current Status / Lifecycle Active；最终 Close 仍受原规则约束 |
+| Revalidation Trigger | Gates / Revalidation |
+
+Quality 未覆盖输入补充（Executor 记录，不替代 Reviewer）：
+- 已亲自读取外部 UIKit NSLayoutConstraint.h:18–19，Required=1000、DefaultHigh=750；索引对应三行补齐完整外部 SDK 路径及版本变化声明。Xcode 27.1（27A9275）/ iPhoneSimulator SDK 27.1。
+- 两份额外测试的基线值 / 行号已复核：T9DevicePreflightUITests.swift 的 45 是高度 fixture（:179,183,187,217,221,1362–1369）；RimeT9AutoAnchorRetryMatrixTests.swift 的 34 是槽位（:2601,2660），不是键盘高度。原清单无需修改；Round 2 Packet 允许集由 Coordinator 补充。
+
+本轮报告路径：`/Users/doubleshy0n/.kos-work/Universe-Keyboard/KEYBOARD-VALUES-DOC-001/reports/executor-report-r3.md`；
+最终提交、检查结果、对象比对与报告 SHA-256 随交付提供，由 Coordinator 冻结 Round 2 packet。
+本节取代此前 Exit evidence 的 86 行作为当前表行数；旧记录、评审报告与其摘要保留。
+仅文档修正；未宣布 Reviewer 条件已独立关闭，未提升 Quality 的 Partial 结论。
+7 类运行时 UNKNOWN 不变；不改冻结基线、代码、测试、CI、脚本或其它镜像；不 push / PR / merge。
+CHANGELOG 与架构文档不需更新：本轮仅补充来源索引与记录口径，且 Scope 禁止修改这些文件。
