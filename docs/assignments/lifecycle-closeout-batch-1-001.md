@@ -7,10 +7,10 @@ record_id: LIFECYCLE-CLOSEOUT-BATCH-1-001
 
 | Field | Value |
 |---|---|
-| Lifecycle | Active（docs-only closeout 在本地执行；未 push） |
-| Current phase | Executor 已在本地执行：关闭 7 项，未关闭 2 项（缺口见文末 §Closeout Decision — 结果）；本地提交，待 Coordinator 冻结 Reviewer packet。批次内每一项都以“所有残项均有来源明确的处置”为关闭前提 |
-| Material non-claims | 不声称 Release / Release-ready；不改父任务 `TYPO-CORRECTION-002`（已 Closed）；不关闭、削弱任何残项；不新建 tech_debt；不处理本批次范围外的任何 Assignment；不 push / PR / merge |
-| Next handoff / decision | Coordinator 冻结 Reviewer Lane Packet → Architecture / Quality Reviewer → Human 决定 push / PR / merge |
+| Lifecycle | Closed（此前：Active（docs-only closeout 在本地执行；未 push）；Round 2 两位独立 Reviewer 均 Pass；进入 main 后生效） |
+| Current phase | 评审完成：Round 2 Architecture / Quality 均 Pass；关闭 7 项，未关闭 2 项（A16、A27，缺口见文末 §Closeout Decision — 结果，处置决定留待批次 1b）；经 Human 授权发布为 docs-only PR，待 Human 决定 merge |
+| Material non-claims | 不声称 Release / Release-ready；不改父任务 `TYPO-CORRECTION-002`（已 Closed）；不关闭、削弱任何残项；不新建 tech_debt；不处理本批次范围外的任何 Assignment；未经 Human 授权不 merge |
+| Next handoff / decision | Human 决定 merge；批次 1b（关闭 A16、A27）待本 PR 合并后另行起草 |
 
 ## Authority
 
@@ -216,3 +216,62 @@ Round 1 两份报告均未声明运行时身份（AI、模型、会话标识）�
 ### A27 缺口陈述标注
 
 上文 §Closeout Decision — 结果 中关于 A27 缺口的 4 点陈述，**未经 Reviewer 核实；由批次 1b 核实**。
+
+## Review results and residual disposition
+
+Post-review，追加式。以上各节在 Round 2 评审时固定为提交 `b12958b90cedf433cc4d0274b006ddd8723aae50`；本节之前的内容不因本节改动，唯一例外是 Current Status 表的 Lifecycle、Current phase、Material non-claims、Next handoff / decision 四格，它们随本节同步到评审后的事实（见提交信息）。本节所列报告、packet 与指令保存在仓库外，仓库内只记录路径与 SHA-256，路径前缀为 `~/.kos-work/Universe-Keyboard/LIFECYCLE-CLOSEOUT-BATCH-1-001/`。
+
+### 提交链
+
+`7953e8bc96af69298aa4a17efdf982721497e145`（base，origin/main）→ `024e5969babdc247fd3567749380bebd426cff0c`（批次 1）→ `b12958b90cedf433cc4d0274b006ddd8723aae50`（修正轮 1，Round 2 评审的最终目标）。本节所在的评审后记录提交是此后追加的。
+
+### 评审结果
+
+| Lane | Round | 结论 | 报告 | SHA-256 |
+|---|---|---|---|---|
+| `LCB1-ARCH` | 1 | Partial（B3 Uncovered；F01 材料缺口、F02 措辞） | `reports/architecture-review-r1.md` | `21624c30e217594388c39a726e0ebb34aa9139d1395ed3c3710c7f1095e0b2c5` |
+| `LCB1-QUAL` | 1 | Partial，含 Blocker `LCB1-QUAL-R1-F01`（B2 不通过、B10 Uncovered） | `reports/quality-review-r1.md` | `29b83c03e9e07692c387ddd9ab7b007a0eda0ec481c1d491039b813d4fbdbfe4` |
+| `LCB1-ARCH` | 2 | **Pass**（B1'、B3'、B4'、B7'、B11 全部 Covered 且通过；无新增发现或残项） | `reports/architecture-review-r2.md` | `e60331081213f10b2eb5b088fd7b58f849e9ab90b9ff9d5cfc8e8ef4a7ccd092` |
+| `LCB1-QUAL` | 2 | **Pass**（B2'、B8'、B9'、B10'、B12 全部 Covered 且通过；无新增发现或残项） | `reports/quality-review-r2.md` | `461014e41f6d10a0f1db319411a9f2c8286f1510c45fbc2fdea6a5cdb87a9d8a` |
+
+Reviewer 运行时身份：Round 2 两份报告均声明为 AI 名称 Codex、模型 GPT-6（具体变体未确认）、effort 与会话标识未确认；Round 1 两份报告未声明身份，记为 UNKNOWN。本批次 Assignment 只按角色与独立性条件派发，实际 AI 是被记录的事实，不是派发条件。
+
+### Executor 报告、packet 与指令
+
+| 文件 | SHA-256 |
+|---|---|
+| `reports/executor-report-r1.md` | `58ea9d024f54a7d304c9844f90c0ed036d8124c7d4fd4dae0ce792edd59804e3` |
+| `reports/executor-report-r2.md` | `f0b83e84aeccaaeebf9372284bce13f99a0ca4365506bcbeaf2dbfce0b65627d` |
+| `packets/packet-architecture-r1.md` | `8356e5e79ed86e450ce03ed7e323288808c4fd719116e4a59245208ed329900c` |
+| `packets/packet-quality-r1.md` | `0dd3ea8499650629d56443ca03bee4325a9fce23095c4e0bf868d2cd2bdd8bdd` |
+| `packets/packet-architecture-r2.md` | `c1164f9359061e559bd13daef0cdc70c5f8c2015ed5750772079ecf77450733e` |
+| `packets/packet-quality-r2.md` | `0011d535eb7f5a38178174cec2bf784f8c85608e2c80026c21326ddc63cb5219` |
+| `instructions/executor-brief-r1.md` | `faf9121c0e176e666a14a1828651e1ff7a8c31fdc041ba6fb8875699d5939723` |
+| `instructions/executor-remediation-r1.md` | `41e0b347ffbf4d9751ac7bd878db2bd0e804364ba16c486ed4aa07364f83ad8a` |
+| `instructions/reviewer-architecture-r1.md` | `c54fa07ba8fb0c525e1016101f89a54bb8b0c9117ea7e601845f0f0be8b6ea67` |
+| `instructions/reviewer-quality-r1.md` | `68579a0143487afdb9bd670fe3bccd0a9ec4ca652c65682a91dee3835c29bc65` |
+| `instructions/reviewer-architecture-r2.md` | `3a4954fb7dca97c90c8256e11a5120d2ada9cd8c29f10bc52dafd0de56c157fd` |
+| `instructions/reviewer-quality-r2.md` | `678b47a13837286c8023a373683935006037db378cb02e81cdfb30a80f38fe8b` |
+
+评审后记录提交本身的 Executor 报告为 `reports/executor-report-r3.md`；报告不能包含自身哈希，其 SHA-256 由 Executor 在对话末尾报告。Executor 的建议模型与实际配置见上文 Assignment 栏，effort 未经独立验证，不作为验收项。
+
+### Round 1 发现的最终状态
+
+| 发现 | 状态 |
+|---|---|
+| `LCB1-ARCH-R1-F01` / `LCB1-QUAL-R1` U01（A27 缺口所引三份评审不在 packet 允许集） | 经 Human 批准缩窄 claim，A27 缺口陈述的核实移到批次 1b；Round 2 两位 Reviewer 均按缩窄后的范围 Pass，不证明该陈述为真 |
+| `LCB1-ARCH-R1-F02`、`LCB1-QUAL-R1-F02`（A16 缺口论据时态） | 已由 Remediation round 1 的追加更正处理，原文保留；Quality Round 2 并更正了其 Round 1 对归因的一处表述 |
+| `LCB1-QUAL-R1-F01`（`RimeRuntimeProvenance` 归类缺明确 accept） | 已由 Human Product Owner（Product Lead）2026-10-22 的明确 accept 解决，记录在 A19、A20、A21 的 Closeout 与本文件 Remediation 节 |
+
+### 残项与未决事项
+
+- Round 2 两位 Reviewer 均无新增发现，无本轮残项需要处置。
+- 本批次**未关闭**的两项：A16（`TYPO-CORRECTION-002-INT003-QUERY-COST-MEASUREMENT-001`）与 A27（`TYPO-CORRECTION-002-PARENT-REVALIDATION-002`）。Human 已对它们的缺口作出处置决定（见 Remediation 节），**留待批次 1b 落实，本批次未应用**；两个文件相对 base 逐字节一致，`docs/ACTIVE_WORK.md` 表第 4、10 行保留。
+- 仍为 `UNKNOWN`：PR #210、#221、#222 的 Final Merge Gate / Merge 授权记录；A27 缺口陈述所引三份评审的内容（待批次 1b 核实）；Round 1 两位 Reviewer 的运行时身份。
+- 本地未配置 pinned KOS validator，该校验未运行；`record_envelopes` 为 advisory。
+
+### 授权与边界
+
+- Human Product Owner 于 2026-10-22 在 Coordinator 会话中授权：追加本评审后记录提交、push 分支 `docs/lifecycle-closeout-batch-1-001`、开一个 docs-only PR。**不含 merge。**
+- 基线：评审与本记录均以 `origin/main` = `7953e8bc96af69298aa4a17efdf982721497e145` 为 base；Coordinator 于 2026-10-22 核对该基线未前进，且与本分支无文件重叠、合并检查干净。
+- 本批次关闭的 7 项 Lifecycle 变更在本 PR 合并进 `main` 后生效；不声称 Release / Release-ready；不改变父任务 `TYPO-CORRECTION-002` 的状态；不新建 tech_debt。本 Assignment 自身依 D7（同步记录评审后直接 Close）同样在合并后生效为 Closed。
