@@ -104,3 +104,31 @@ Executor 与 Reviewer 的最终报告、指令、packet 均保存为文件，根
 ## Closeout Decision — 结果
 
 2026-10-22，Executor：本地 docs-only 交付，冻结内容逐字节落地，READING_MAPS 仅改一行；旧 Assignment 只追加。最终检查、提交身份和报告摘要见 Executor 报告及对话交付。未 push / PR / merge，未补全 UNKNOWN；独立评审尚未执行，Lifecycle 保持 Active，等待 Coordinator 冻结 Reviewer packet，Close 仍须原 Gate 满足并进入 main 后生效。
+
+## Remediation round 1
+
+Post-review，追加式。上文各节在评审时固定为提交 `87ae8c1e24381d7d5446971658a43905583d1b0d`；本节之前的内容不改。评审报告保存在仓库外，路径前缀 `~/.kos-work/Universe-Keyboard/PORTFOLIO-REFRESH-001/`。
+
+### 评审结果
+
+| Lane | 运行时身份 | 结论 | 报告 | SHA-256 |
+|---|---|---|---|---|
+| `PR001-ARCH` | Codex / GPT-6（新会话，同模型不同会话），变体 / effort / 会话未确认 | Pass with conditions；R3、R4、R5、R7 全部 Covered；残项 `PR001-ARCH-R1-F01`、`F02`（P2）、`F03`（P3） | `reports/architecture-review-r1.md` | `b7001efdb92023e41b86c175bdff6c4b62aaf8fb4950af67262c9f29c4c77cb7` |
+| `PR001-QUAL` | Codex / GPT-6（新会话，同模型不同会话），变体 / effort / 会话未确认 | **Pass**；R1、R2、R6、R8 全部 Covered 且通过；无发现 | `reports/quality-review-r1.md` | `05d10903f61101d4d870b56d121d24b78f05b6ca9d78e96d44d1ca803829c38d` |
+
+两位评审者都声明未参与实现、不是任何 Executor 会话，记忆里没有本任务的专项记录。
+
+### 发现与修正（均为 `docs/portfolio/ui-4-keyboard-height.md` 的记录一致性问题，没有越权）
+
+| 发现 | 问题 | 修正 |
+|---|---|---|
+| `PR001-ARCH-R1-F01`（P2） | “待决问题” 里仍问 “宿主限高时调高可能无效，产品上是否接受”，而 Human 已在 “已决定” 里接受 | 改为 “Human 已决定接受；仍待决的是要不要在设置里提示当前可达的上限” |
+| `PR001-ARCH-R1-F02`（P2） | “待决问题” 里 “再定上限与步进”，而步进已决定为连续拖动 | 改为 “再定上限；步进已决定为连续拖动，只有保存精度待定” |
+| `PR001-ARCH-R1-F03`（P3） | “治理提示” 里 “与 UI-4 有关的只有……” 的排他清单漏了本次新增的 `portfolio-refresh-001.md` | 去掉排他词，补入本 Assignment 并注明它只记录目录刷新，不是 UI-4 的开发 Assignment |
+
+这三处都是 Coordinator 在加入 Human 的新决定时没有同步旧句的疏漏。落地前修正 Executor 的内部一致性自查又发现第 4 处（`R4-SELF-01`，P3）：“只有保存精度待定（见下）” 的方向指针应为 “见上面的‘保存精度’一条”，已一并修正。修正后 `docs/portfolio/ui-4-keyboard-height.md` 的 SHA-256 为 `a580757df31a291c70d11271b46504bfe803fe383f7c9152a9ff57f6683d1131`（旧值 `f485903eace612d9a82f55aeb82bd319376ea1b3e9ccbeaf9c6d282f8826e3bc`）。其余冻结内容不变。
+
+### 状态
+
+- 修正提交位于本节所在提交；是否经独立复核，见随后的 Round 2 记录（若有）。
+- 不声称 UI-4 已立项、已授权或已有 Product Decision；不改变任何代码、数值或其它 Assignment 的状态。

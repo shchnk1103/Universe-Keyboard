@@ -67,15 +67,15 @@
 - 上限规则：有效行高要同时受宿主允许的高度与一个“不遮挡输入内容”的比例限制；比例取值用 iPhone 13 Pro 的竖屏与横屏实测来定，由 Human 决定。
 - 保存精度：连续拖动之后保存到什么精度。
 - 拖动过程中何时向宿主请求新的键盘高度：随手实时请求，还是先只改内容、松手或确定时再请求（参考截图里是后者的样子，但无法确认）。
-- 最高行高：模拟器实测各机型 / 方向下系统实际给到的高度，再定上限与步进。
+- 最高行高与上限规则：模拟器实测各机型 / 方向下系统实际给到的高度，再定；步进已决定为连续拖动，只有保存精度待定（见上面的“保存精度”一条）。
 - 完全访问：键盘没有完全访问时能否读取 App Group 里的共享设置；主 App 如何知道（目前没有检测原语）。
 - 36pt 是否可用：行间距为 8 且触摸热区按相邻键中线补缝，推算内部行的有效命中高度约为行高加 8；这只是推算，需要实测和可访问性复核。
 - 设置读取时机与首次布局安装的先后；是否会出现“先按默认高度画出来再跳变”。
-- 在系统只给较低高度的宿主里“调高”可能看不出变化：产品上是否接受，是否需要在设置里提示。
+- 在系统只给较低高度的宿主里“调高”可能看不出变化：Human 已决定接受（见“已决定”）；仍待决的是要不要在设置里提示当前可达的上限。
 - 对测试的影响：写死 254 / 288 / 45 / 46 的断言要改成读取默认值或参数化，且不能碰 TD-020 的失败模式。
 
 ## 治理提示
 
 - 改动冻结基线（`docs/UI_STYLE_GUIDE.md` 的 V1 UI Freeze，行高 45）需要 Product Decision；`docs/KEYBOARD_VALUES.md` 要在同一次变更里更新。
-- 一个责任区一个 writer（`docs/AI_WORKFLOW.md`）；项目目前采用 KOS Agent Kit v0.9.0 的 advisory pin（`AGENTS.md`）。2026-10-22 在 `docs/` 与 `.kos/` 里没有找到 UI-4 的独立 Task、Assignment 或 Registry 条目；仓库里目前与 UI-4 有关的只有：本目录的 PF-013 行与本文件，以及 `docs/assignments/keyboard-values-doc-001.md` 与 `docs/KEYBOARD_VALUES.md` 对 UI-4 的提及（前者把 UI-4 的 Product Decision 列为后续候选）。
+- 一个责任区一个 writer（`docs/AI_WORKFLOW.md`）；项目目前采用 KOS Agent Kit v0.9.0 的 advisory pin（`AGENTS.md`）。2026-10-22 在 `docs/` 与 `.kos/` 里没有找到 UI-4 的独立 Task、Assignment 或 Registry 条目；仓库里目前与 UI-4 有关的记录包括：本目录的 PF-013 行与本文件，`docs/assignments/keyboard-values-doc-001.md` 与 `docs/KEYBOARD_VALUES.md` 对 UI-4 的提及（前者把 UI-4 的 Product Decision 列为后续候选），以及本次目录刷新的 Assignment `docs/assignments/portfolio-refresh-001.md`（它只记录目录刷新，不是 UI-4 的开发 Assignment）。
 - 真机与模拟器验证需要 Human 操作；可用真机目前只有一台 iPhone 13 Pro（iOS 27.0.1）；需要其它设备或系统版本时再向 Human 确认。
