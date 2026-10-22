@@ -8,7 +8,7 @@ record_id: LIFECYCLE-CLOSEOUT-BATCH-1B-001
 | Field | Value |
 |---|---|
 | Lifecycle | Active（docs-only closeout 在本地执行；未 push） |
-| Current phase | Executor 已在本地执行：A16、A27 均未关闭（各有一处缺口，见文末 §Closeout Decision — 结果），本地提交，待 Coordinator 冻结 Reviewer packet。本批次落实 `LIFECYCLE-CLOSEOUT-BATCH-1-001` 中 Human 对 A16、A27 缺口的处置决定；每项关闭仍以“所有残项均有来源明确的处置”为前提 |
+| Current phase | Executor 已在本地执行并经修正轮 1：A16、A27 均已关闭（Lifecycle 在进入 `main` 时生效；A27 的缺口已撤回，A16 的缺口由 Human accept，见文末 §Remediation round 1），本地提交，待 Coordinator 冻结 Reviewer packet。本批次落实 `LIFECYCLE-CLOSEOUT-BATCH-1-001` 中 Human 对 A16、A27 缺口的处置决定；每项关闭仍以“所有残项均有来源明确的处置”为前提 |
 | Material non-claims | 不声称 Release / Release-ready；不改父任务 `TYPO-CORRECTION-002`（已 Closed）；不关闭、削弱任何残项；不新建 tech_debt；不修改任何 `docs/authorizations/` 文件；不处理本批次范围外的任何 Assignment；不 push / PR / merge |
 | Human 确认状态 | D-1B-AUTH：**已确认**（Human Product Owner，2026-10-22，Coordinator 会话）。采用确认方案：不修改任何 `docs/authorizations/` 文件；Closeout 逐项记录三份 AUTH 的现状并声明不可重放；处置记为 `accept`；TD-014 仅作为既有同类登记引用、不修改 |
 | Next handoff / decision | 派发 Executor → Coordinator 冻结 Reviewer Lane Packet → Architecture / Quality Reviewer → Human 决定 push / PR / merge |
@@ -129,22 +129,24 @@ Executor 与 Reviewer 的最终报告、指令、packet 均保存为文件，根
 
 | 项 | Result |
 |---|---|
-| 每个 Work Item 的关闭/不关闭结论与依据 | **A16 不关闭；A27 不关闭**（两个文件相对 base 逐字节一致）。各有一处没有任何处置记录的残项，见文末 §Closeout Decision — 结果：A16 的 “original query-density Product residual / wider `query_*` residual”；A27 的 rime-ice deployment-smoke 评审残项 `AR-01`、`QR-01`、`QR-02`。其余残项均已枚举并对应到 Human 处置表或既有来源明确的处置 |
-| 残项枚举与处置表（每项每条残项、处置、来源指针） | 完整枚举见文末 §Closeout Decision — 结果 的两张表（A16、A27） |
-| 三份 AUTH 的现状与不可重放声明 | 三份 AUTH 均只读核对，状态与本 Assignment 所述一致（原文行号见文末 §三份 AUTH 的现状）。因 A16、A27 本批次均未关闭，**未写入**不可重放声明（该声明属于对应 Work Item 的 Closeout，二者未关闭则没有 Closeout）；声明文字保留给关闭时使用 |
-| 1. 各拥有者 Assignment Current Status | 不适用 — A16、A27 均未关闭，未改动任何一个文件 |
+| 每个 Work Item 的关闭/不关闭结论与依据 | **A16 关闭；A27 关闭**（修正轮 1；r1 曾为“均不关闭”，见文末 §Remediation round 1）。A27 的缺口 `AR-01`/`QR-01`/`QR-02` 已撤回——Product 决定 `TYPO-CORRECTION-002-RIME-ICE-DEPLOYMENT-PRODUCT-RESIDUAL.md` 已存在；A16 的 “original query-density Product residual” 由 Human 作为受限未知 accept（不是性能 Pass）。其余残项均已枚举并对应到 Human 处置决定或既有来源明确的处置 |
+| 残项枚举与处置表（每项每条残项、处置、来源指针） | 完整枚举见 A16、A27 各自文件的 “Closeout (2026-10-22)” 残项处置表；批次内的汇总与 r1 的原始枚举见文末 §Closeout Decision — 结果（r1 的缺口陈述已由 §Remediation round 1 更正） |
+| 三份 AUTH 的现状与不可重放声明 | 三份 AUTH 均只读核对，状态与本 Assignment 所述一致（原文行号见 A16、A27 各自的 Closeout 与文末 §三份 AUTH 的现状）。不可重放声明已写入：A16 的 Closeout（`…P2-SIM-CAPTURE-001`）、A27 的 Closeout（`…INT003-REVALIDATION-001`、`…PARENT-REVALIDATION-001`）；处置 `accept`（D-1B-AUTH）；TD-014 仅引用、未修改 |
+| 1. 各拥有者 Assignment Current Status | 已更新：A16、A27 的 JSON `lifecycle`（仅 A16 有 JSON）、Current Status 的 Lifecycle 格、S-03 取代说明（A16 与既有 “2026-10-11 current convergence” 及既有 S-03 说明并存）、文末 Closeout 三者一致 |
 | 2. Parent Assignment | 不适用 — 不改任何父 Assignment（Executor 确认：`docs/assignments/typo-correction-002.md` 未改动） |
-| 3. `docs/ENGINEERING_DASHBOARD.md` | 已更新：顶部新增一条 2026-10-22 带日期条目；既有的 INT003-QUERY-COST 三处提及（第 689、690、691 行）位于第 687 行 `### History — 以下阶段快照不表示当前待办` 小节之下，保持不改 |
-| 4. `docs/KNOWLEDGE_INDEX.md` | 不适用 — A16 未关闭，按任务要求不改第 48 行 |
-| 5. Active plan Status line | 不适用 — A16 未关闭，按任务要求不改 `docs/plans/typo-correction-002-int003-query-cost-measurement-001.md` |
-| 6. `docs/ACTIVE_WORK.md`（移出的行、保留行校验） | 已更新：仅新增一条 2026-10-22 带日期的当前更新；**未移出任何行**（A27 的第 4 行、A16 的第 10 行均保留）；表仍为 11 行，经脚本与 base 逐行对比，全部表行逐字一致 |
-| 7. Markdown link check（baseline/最终提交） | 命令 `python3 -B scripts/ci/check_markdown_links.py --base cd0b850cce7f22781c03fb9e66a4590be4357100 --head <最终提交 SHA>`；因在本文件内记录最终 SHA 会改变 HEAD，baseline/最终提交一对与结果记录在 Executor 报告 `executor-report-r1.md`（仓库外，路径见下） |
+| 3. `docs/ENGINEERING_DASHBOARD.md` | 已更新：顶部新增一条 2026-10-22 带日期条目（修正轮 1 就地更正为“已关闭”）；既有的 INT003-QUERY-COST 三处提及（第 689、690、691 行）位于第 687 行 `### History — 以下阶段快照不表示当前待办` 小节之下，保持不改 |
+| 4. `docs/KNOWLEDGE_INDEX.md` | 已更新：A16 已关闭，第 48 行末尾追加 2026-10-22 带日期补充说明，原文不改 |
+| 5. Active plan Status line | 已更新：A16 已关闭，`docs/plans/typo-correction-002-int003-query-cost-measurement-001.md` 在既有取代说明之后追加一条带日期说明，原文不改 |
+| 6. `docs/ACTIVE_WORK.md`（移出的行、保留行校验） | 已更新：新增一条 2026-10-22 带日期的当前更新（修正轮 1 就地更正）；**移出 2 行**——A27 的原第 4 行、A16 的原第 10 行；表由 11 行变为 9 行，其余 9 行经脚本与 base 逐行对比，全部表行逐字一致 |
+| 7. Markdown link check（baseline/最终提交） | 命令 `python3 -B scripts/ci/check_markdown_links.py --base cd0b850cce7f22781c03fb9e66a4590be4357100 --head <最终提交 SHA>`；因在本文件内记录最终 SHA 会改变 HEAD，baseline/最终提交一对与结果记录在 Executor 报告 `executor-report-r2.md`（仓库外，路径见下；`executor-report-r1.md` 保留） |
 | `CHANGELOG.md` | 不适用 — 条目记录行为/特性变更，不作生命周期镜像；未改动 |
 | `docs/TECH_DEBT.md` | 不适用 — Non-goal，未改动；未新建 tech_debt；仅核实被引用的 `INT003-COORDINATOR-INDEPENDENT-ORACLE`（第 357 行起）、`INT003-RIME-FAILURE-BOUNDARY`（第 367 行起）真实存在且 Status 仍为 Open |
 | `docs/authorizations/**` | 未改动（三份 AUTH 只读） |
-| Executor 报告路径与 SHA-256 | 路径 `~/.kos-work/Universe-Keyboard/LIFECYCLE-CLOSEOUT-BATCH-1B-001/reports/executor-report-r1.md`；SHA-256 由 Executor 在对话末尾报告（报告不能包含自身哈希，也不在仓库内循环记录） |
+| Executor 报告路径与 SHA-256 | 路径 `~/.kos-work/Universe-Keyboard/LIFECYCLE-CLOSEOUT-BATCH-1B-001/reports/executor-report-r2.md`（`executor-report-r1.md` 保留）；SHA-256 由 Executor 在对话末尾报告（报告不能包含自身哈希，也不在仓库内循环记录） |
 
 ## Closeout Decision — 结果（Executor，2026-10-22，评审前）
+
+> **修正轮 1 更正（追加于 2026-10-22）：** 本节是 Executor r1 的原始结论，保留作历史。其中 “A16、A27 均不关闭” 以及 “A27 的缺口 `AR-01` / `QR-01` / `QR-02`” 已被文末 §Remediation round 1 取代：A27 的缺口不存在（Product 决定已存在），A16 的缺口已由 Human accept；A16、A27 均已关闭。下文关于 A16、A27 的枚举表仍可用作残项来源的原始记录。
 
 本节追加式记录 Executor 的核实结果。所有结论待 Reviewer 评审；Executor 不自行评审，不声称已评审。规则：`docs/ASSIGNMENT_POLICY.md` §Residual Disposition Before Close、`docs/kos/kos-2.1-operational-maturity.md` M-03，以及本 Assignment 的条件规则——Executor 自己从原文枚举残项，凡不在 Human 处置表和“已有处置”清单里、也没有既有来源明确处置的残项，该 Work Item 不关闭，不自行下结论，不新建 tech_debt。
 
@@ -208,3 +210,48 @@ A16、A27 本批次均未关闭，因此这三份 AUTH 的 “不可重放声明
 2. A27 的 rime-ice smoke 残项：Executor 把评审者层面的 “Accepted / Non-blocking” 视为不足以构成 “来源明确的处置”（与批次 1 对 `SR-02` 的处理标准一致，Human 对 `SR-02` 另作了决定）。
 3. `Q-R2-02`、`Q-R2-05`、`P2-ADMISSION-R1-REPORT-001`、`ROUTE-REVIEW-R1-E01` 不在 Human 处置表中，Executor 依据既有来源明确的处置将其记为已处置；若 Reviewer 认为应严格要求出现在表中，请指出。
 4. 本节引用的行号取自基线 `cd0b850` 的文件。
+
+## Remediation round 1 (2026-10-22)
+
+追加式。Executor r1 提交 `ab4e8f548e1bdc5cf3ce872080cc63a04b332414` 的结论（A16、A27 均不关闭）经 Coordinator 复核后修正；本节与对应的修正提交需要新一轮评审，Executor 不声称其已通过。
+
+### (i) A27 缺口撤回及原因
+
+r1 报告的 A27 缺口 `AR-01`、`QR-01`、`QR-02`（rime-ice deployment-smoke 评审残项）**并不存在，已撤回**。原因是 Executor 的检索遗漏：Product 决定 `docs/product-decisions/TYPO-CORRECTION-002-RIME-ICE-DEPLOYMENT-PRODUCT-RESIDUAL.md` 在仓库中已存在（Status: Accepted — bounded residual disposition；决定人 Human Product Owner / Product Lead，2026-09-20），其中：
+
+- 第 24 行 “QR-01 / AR-01: downloaded archive not independently re-hashed — Accepted for this deployment precondition”；
+- 第 25 行 “QR-02: documentation HEAD differs from installed package source — Accepted with exact package binding”；
+- 第 49 行 “This docs-only decision closes the Product disposition of QR-01/QR-02 for the named setup run only”。
+
+`docs/ACTIVE_WORK.md` 表第 4 行（基线 `cd0b850` 中即已）链接了该决定（“Product residual decision”）。r1 的检索词（围绕 “wider residual / rapid-window / archive re-hash” 等）没有覆盖到这份文件，且当时只把 A27 文本里直接出现的两份 Product 决定当作全集——这是 Executor 的疏漏。
+
+撤回后，Executor 重新做了更广的核对：把 `docs/product-decisions/` 下全部 `TYPO-CORRECTION-002-*` 文件逐个按 “PARENT-REVALIDATION-002” 与 A27 的残项关键词（`SR-0`、`AX`、`reval-03`、`diagnostic smoke`、`App Group`、`coordinate`）检索，引用 A27 作为 Parent 的 Product 决定恰为三份——QA-001 07、性能 reval-03、RIME Ice deployment——均已纳入；`docs/reviews/` 与 `docs/evidence/` 中引用 A27 的文件已逐类核对（sidecar、AX reval-03、performance reval-03、QA-001 07、rime-ice smoke 各自的评审；其余为 “inconclusive” 回执）；`TYPO-CORRECTION-002-QA001-REVALIDATION-08-*` 属另一个 child，A27 文件并不引用，不在 A27 残项范围内。**没有发现第二处遗漏。**
+
+### (ii) Human 对 A16 的决定
+
+A16 的 “original query-density Product 残项”（更宽的 `query_*` fan-out；2026-09-23 Product Capture 的 `fence_discarded=0`、`query_*` 574/574、旧 rapid-window 归因）：Human Product Owner（Product Lead）于 2026-10-22 在 Coordinator 会话中**明确 accept，作为受限未知接受**。边界：**不是性能 Pass**；更宽 fan-out 是否可接受仍未建立；与父 Gate 对整体性能未知的接受范围一致；**不新建 tech_debt**。决定人：Human Product Owner（Product Lead）；决定来源：Coordinator 会话，2026-10-22。A18（`typo-correction-002-int003-stale-cancel-product-capture-001`）的同一残项由后续批次按同一决定落实，本批次不改 A18 文件。此前的决定（D-1B-AUTH；A16 的 `IMPL-R1…R5`；A27 的 `SR-02`、AX reval-03 评审残项、`PR-05`）仍然有效。
+
+### (iii) 实际关闭清单
+
+- A16 `TYPO-CORRECTION-002-INT003-QUERY-COST-MEASUREMENT-001`：**关闭**（JSON `lifecycle` = `closed`、Current Status 的 Lifecycle = `**Closed**`、文末 Closeout 三者一致）。
+- A27 `TYPO-CORRECTION-002-PARENT-REVALIDATION-002`：**关闭**（无 JSON；Current Status 的 Lifecycle = `Closed`、文末 Closeout）。
+- 镜像：`docs/ACTIVE_WORK.md` 移出原第 4、10 行（表 11 行 → 9 行）；`docs/KNOWLEDGE_INDEX.md` 第 48 行与 INT003 plan 各追加一条带日期说明；`docs/ENGINEERING_DASHBOARD.md` 条目更正。Lifecycle 在本改动进入 `main` 时生效。
+- 未关闭其它 Work Item（A18 由后续批次落实）；三份 AUTH、`docs/TECH_DEBT.md`、`CHANGELOG.md`、父 Assignment、`.kos/project.json` 未改。
+
+### (iv) 对 r1 提交 `ab4e8f5` 自有文字的就地更正
+
+以下均为 Executor 在 r1 新写、尚未评审也未发布的文字，因结论改变而过期，就地更正（删除行即被替换的旧行）：
+
+| 位置 | 更正内容 | 删除行归属 |
+|---|---|---|
+| `docs/ACTIVE_WORK.md` 顶部 2026-10-22 条目（1 行） | 由 “没有关闭任何项” 改为 “关闭 2 项、移出原第 4、10 行、表 11→9 行” | 该条目旧文字（同一物理行内的替换） |
+| `docs/ENGINEERING_DASHBOARD.md` 顶部 2026-10-22 条目（1 行） | 由 “均未关闭” 改为 “已关闭”，补 “不是性能 Pass” | 该条目旧文字（同一物理行内的替换） |
+| 本文件 Current Status 的 `Current phase` 一格 | 由 “A16、A27 均未关闭” 改为 “均已关闭（A27 缺口撤回、A16 缺口由 Human accept）” | 该格旧文字（同一物理行内的替换） |
+| 本文件 Exit evidence：`每个 Work Item 的关闭/不关闭结论与依据`、`残项枚举与处置表`、`三份 AUTH 的现状与不可重放声明`、`1. 各拥有者 Assignment Current Status` 四行 | 结论、枚举指向与 AUTH 声明按关闭后的事实改写 | 这四行旧文字（每行一行） |
+| 本文件 Exit evidence：`3. Dashboard` 一行（括注）、`4. Knowledge Index`、`5. Active plan Status line`、`6. ACTIVE_WORK` 四行 | 由 “不适用 / 未移出” 改为 “已更新 / 移出 2 行” | 这几行旧文字（每行一行） |
+| 本文件 Exit evidence：`7. Markdown link check` 与 `Executor 报告路径与 SHA-256` 两行 | 报告指向由 `executor-report-r1.md` 改为 `executor-report-r2.md`（r1 保留） | 这两行旧文字（每行一行） |
+| 本文件 §Closeout Decision — 结果 | **未改写**，仅在节首追加一条 “修正轮 1 更正” 提示，原文保留作 r1 的原始记录 | 无删除 |
+
+### Round 1 之后的 Reviewer 栏与运行时身份
+
+Reviewer 栏保持原文，未填任何具体 AI。Executor 运行时身份同 r1：Claude（Claude Code），模型 `claude-sonnet-5-5`，effort 未确认，会话标识未确认。

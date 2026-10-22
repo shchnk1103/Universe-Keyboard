@@ -4,6 +4,8 @@ Status: **P0 complete; P1 implementation merged with conditions; P2 execution no
 
 > **Superseded for current status (2026-10-22):** the Status above, including "P2 execution not yet live" and "P2 AUTH is Active/unconsumed", is a 2026-09-27 historical snapshot. Current state: see the "2026-10-11 current convergence" at the top of the [owning Assignment](../assignments/typo-correction-002-int003-query-cost-measurement-001.md#2026-10-11-current-convergence) and row 10 of [`ACTIVE_WORK`](../ACTIVE_WORK.md): P1 bounded convergence and Human-accepted P2 are complete as evidence stages; the child remains Active pending a separately authorized lifecycle disposition; no Gate or Close.
 
+> **Superseded for current status (2026-10-22, later note):** the owning [Assignment](../assignments/typo-correction-002-int003-query-cost-measurement-001.md) was closed on 2026-10-22 under [`LIFECYCLE-CLOSEOUT-BATCH-1B-001`](../assignments/lifecycle-closeout-batch-1b-001.md) (see its [Closeout](../assignments/typo-correction-002-int003-query-cost-measurement-001.md#closeout-2026-10-22); the Lifecycle takes effect when this change reaches `main`). "The child remains Active" in the note above is historical. Not a performance Pass; no Gate or Release.
+
 ## Decision question
 
 The [existing assessment](../evidence/typo-correction-002-int003-query-cost-assessment-2026-09-26.md) established 359 real facade calls over 12 Debug Simulator operations, 26–32 calls per operation. It cannot tell which calls yielded candidates, which entered a ready RIME sidecar, or how much actual work occurred beyond its journal brackets. The next evidence must answer:
