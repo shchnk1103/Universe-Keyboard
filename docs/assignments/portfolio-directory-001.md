@@ -41,7 +41,7 @@ Executor **逐字节复制**这三份文件，不润色、不增删。发现内�
 
 - **Scope（docs-only）:**
   1. 新增 `docs/PORTFOLIO.md`、`docs/portfolio/lifecycle-closeout.md`、`docs/portfolio/kos-optimization.md`（逐字节来自上表）。
-  2. `docs/KNOWLEDGE_INDEX.md`：只在“工作入口”小节（现第 18 到 20 行附近）已有的 `任务路径 · 当前工作 · Assignment 目录` 那一行**末尾**追加 `· [任务组合](PORTFOLIO.md)`，其余字节不动。
+  2. `docs/KNOWLEDGE_INDEX.md`：只在“工作入口”小节（现第 18 到 20 行附近）已有的 `任务路径 · 当前工作 · Assignment 目录` 那一行**末尾**追加“ · ”分隔符加一个文字为“任务组合”、目标为同目录 PORTFOLIO.md 的 Markdown 链接（不要在本 Assignment 里写出该链接的字面写法，否则放进 `docs/assignments/` 后会被链接检查器解析成不存在的相对路径），其余字节不动。
   3. 本 Assignment 记录文件 `docs/assignments/portfolio-directory-001.md` 及其 Exit evidence / “Closeout Decision — 结果”。
   4. 链接检查与行尾空白检查。
   5. `CHANGELOG.md`、`docs/ACTIVE_WORK.md`、`docs/ENGINEERING_DASHBOARD.md`、`docs/TECH_DEBT.md`、`docs/READING_MAPS.md`、`AGENTS.md`、`docs/authorizations/**`：逐项检查并写“不适用及依据”，**不修改**。
