@@ -7,11 +7,11 @@ record_id: LIFECYCLE-CLOSEOUT-BATCH-1C-001
 
 | Field | Value |
 |---|---|
-| Lifecycle | Active（docs-only closeout 在本地执行；未 push） |
-| Current phase | 定稿，待派发 Executor。本批次关闭 runtime-integration hardening 链的四个 Work Item；每项关闭以“所有残项均有来源明确的处置”为前提，缺口项不关闭 |
-| Material non-claims | 不声称 Release / Release-ready；不声称真实 RIME、QA-001、INT-003、性能或 180 ms 结论（均保持 `UNKNOWN`）；不改父任务 `TYPO-CORRECTION-002`（已 Closed）；不关闭、削弱任何残项；不修改任何 `docs/authorizations/` 文件；不处理本批次范围外的任何 Assignment；不 push / PR / merge |
+| Lifecycle | Closed（此前：Active（docs-only closeout 在本地执行；未 push）；Round 2 评审完成：Quality Pass，Architecture Pass with conditions（唯一条件 F2-LOW-1 为记录披露，已由评审后记录处理）；进入 main 后生效） |
+| Current phase | 评审完成：Round 2 Quality Pass，Architecture Pass with conditions（唯一条件 F2-LOW-1 为记录披露，已处理）；H1 到 H4 四个 Work Item 均已关闭（Lifecycle 在进入 main 时生效）；经 Human 授权发布为 docs-only PR，待 Human 决定 merge |
+| Material non-claims | 不声称 Release / Release-ready；不声称真实 RIME、QA-001、INT-003、性能或 180 ms 结论（均保持 `UNKNOWN`）；不改父任务 `TYPO-CORRECTION-002`（已 Closed）；不关闭、削弱任何残项；不修改任何 `docs/authorizations/` 文件；不处理本批次范围外的任何 Assignment；未经 Human 授权不 merge |
 | Human 确认状态 | F-04 处置：**已确认**（Human Product Owner，2026-10-22，Coordinator 会话）：新建 tech_debt 条目 `TYPO-CORRECTION-002-F04-OPERATION-RECEIPT-DIAGNOSTICS`，并放入本批次。D-1C-AUTH：**已确认**（Human Product Owner，2026-10-22，Coordinator 会话）：沿用 D-1B-AUTH 方案，不修改任何 `docs/authorizations/` 文件，只记录现状并加不可重放声明（见下文） |
-| Next handoff / decision | 派发 Executor → Coordinator 冻结 Reviewer Lane Packet → Architecture / Quality Reviewer → Human 决定 push / PR / merge |
+| Next handoff / decision | Human 决定 merge；链批次剩余部分（second-stage-recall-runtime-design-001、runtime-preflight-implementation-001、recall-remediation-publication-preflight-001）、A18、A28/A29 与同链 publication 子 Assignment 另行起草 |
 
 ## Authority
 
@@ -218,3 +218,79 @@ Executor 在基线 `origin/main` = `e828a9969f6d41414d8bb991da9f7202fe056636` �
 来源同上。批次 1c 的 Architecture 角色先交给一个 Grok Build 会话；该会话因工作区记忆中存在同链实现与评审记录，无法声明独立性而停止，未写报告，随后改由 Claude Code 会话完成。Quality 由另一个 Grok Build 会话完成，其会话读到同一工作区记忆。Human 于 2026-10-22 决定保留该 Quality 结果，独立性疑点在此保留，不改写为疑点已消除，也不重写原 Reviewer 声明。
 
 本轮只作指针修正、限定与追加决定记录；不重新执行或声称产品、性能、设备、真实 RIME 验证，不修改 AUTH，不新建 tech_debt，不 push / PR / merge。停止等待 Coordinator 冻结 Round 2 Reviewer packet。
+
+## Review results and residual disposition
+
+Post-review，追加式。上文各节在 Round 2 评审时固定为提交 `a804bfe50ffd04c81a92425692f0a4466f49732d`；本节之前的内容不因本节改动，唯一例外是 Current Status 表的 Lifecycle、Current phase、Material non-claims、Next handoff / decision 四格，它们随本节同步到评审后的事实。本节所列报告、packet、指令保存在仓库外，仓库内只记录路径与 SHA-256，路径前缀为 `~/.kos-work/Universe-Keyboard/LIFECYCLE-CLOSEOUT-BATCH-1C-001/`。
+
+### 提交链
+
+`e828a9969f6d41414d8bb991da9f7202fe056636`（base，PR #224 合并后的 origin/main）→ `b4ee513b27201091eeba512db5b6d7ef48611b22`（Executor，关闭 H1 到 H4 四个 Work Item，新增 F-04 tech_debt，`ACTIVE_WORK` 表 9 行变 6 行）→ `a804bfe50ffd04c81a92425692f0a4466f49732d`（修正轮 1：更正四处交叉引用与限定句，追加 “Remediation round 1” 节；Round 2 评审的最终目标）。本节所在的评审后记录提交是此后追加的。
+
+### 评审结果与运行时身份
+
+身份取自各报告开头的自我声明；“未确认”表示报告自己没有声明。
+
+| Lane | Round | 运行时身份 | 结论 | 报告 | SHA-256 |
+|---|---|---|---|---|---|
+| `LCB1C-ARCH` | 1 | Claude Code，`claude-sonnet-5-5`，effort 与会话未确认 | Pass with conditions；条件 `F-LOW-1`、`F-LOW-2`、`F-LOW-3`（均 Low） | `reports/architecture-review-r1.md` | `a30c2e1c86846c3f212ae5098537242505dd0a9cd840365ad84990c1e7abeb6b` |
+| `LCB1C-QUAL` | 1 | Grok（xAI），`grok-4.7-build-fast`，会话 `01a16284-b80d-7ef0-93d8-fc7e981de699` | Pass with conditions；条件 `QF-1`、`QF-2`（均 Low） | `reports/quality-review-r1.md` | `ca6dc7b4a6e4c58fa2481323233745f7a9ea5bef9b9ab030fae86d69d3cbbddd` |
+| `LCB1C-ARCH` | 2 | Claude Code，`claude-sonnet-5-5`，effort 与会话未确认（与 Round 1 为同一对话） | Pass with conditions；R2-A1 到 R2-A5 全部 Covered 且通过；唯一条件 `F2-LOW-1`（记录披露，见下） | `reports/architecture-review-r2.md` | `b293392795e62c7e71ac2d0b1421297b43eaad38cf362d2786f065d47d62c36b` |
+| `LCB1C-QUAL` | 2 | Grok（xAI），`grok-4.7-build-fast`，会话 `01a16284-b80d-7ef0-93d8-fc7e981de699`（与 Round 1 为同一会话） | **Pass**；R2-Q1 到 R2-Q5 全部 Covered 且通过，无发现 | `reports/quality-review-r2.md` | `6005afc2742ba8048c52011ef3d38e2ebfebcd18eaa37d3e0d7f3fd8e397c5dc` |
+
+Executor 身份：首轮 Executor 为 Claude Code，`claude-sonnet-5-5`，effort 与会话未确认；修正轮 1 Executor 为 Codex / GPT-6（变体、effort、会话未确认）。
+
+### 独立性事项（补充披露）
+
+- Architecture 角色最初交给一个 Grok Build 会话（会话 `01a16284-aa63-7cb3-925c-85e3eb921c9e`）。该会话读到工作区记忆里记录着自己在 2026-09-21 对同一条 runtime-integration 链做过实现与 Architecture 审查，无法如实声明独立性，在评审开始前停止，没有写报告。随后由一个 Claude Code 会话完成 Round 1 与 Round 2。
+- Quality 角色由另一个 Grok Build 会话完成 Round 1 与 Round 2，其会话读到同一工作区记忆；Human 于 2026-10-22 决定保留该结果，疑点保留。
+- **F2-LOW-1 的处置（披露）：** 承接 Architecture 的 Claude Code 会话同样加载了工作区记忆索引（4 条：KOS Executor 模型偏好、PM 角色与派发流程、KOS 优化 backlog、生命周期收尾决定）。它在 Round 2 报告中声明这些是 Human 决定与流程记录，不是本批次或该链的实现 / 评审记录，没有打开记忆正文，评审依据全部来自 git 对象与 packet 允许集；Round 1 时该指令没有要求记忆声明，所以 Round 1 报告里没有这一声明。本节补记这一事实。
+- 同一类问题已作为 KOS 优化候选记入 Portfolio / backlog：独立性应按会话和加载的记忆共同判断，packet 应点名哪些工具已做过被评审的链。本批次不据此改变任何结论。
+
+### 读写边界违规披露
+
+Architecture Round 2 评审者在做 “旧内容是否为新文件字节前缀” 检查时，用 `git show … > /tmp/old1c.$$` 在报告文件之外创建了临时文件，超出 packet 第 3 节唯一允许的写入。内容仅是 `b4ee513` 版批次 Assignment 的副本，不含凭据；它已在报告中披露，Human 随后删除了该文件（`/tmp/old1c.85038`），Coordinator 核对 `/tmp` 与 `$TMPDIR` 下不再有 `old1c*`，worktree 的 HEAD 仍是 `a804bfe` 且 `git status` 为空。该违规不影响评审结论。
+
+### 发现的最终状态
+
+| 发现 | 状态 |
+|---|---|
+| `QF-1`（`H1-R4` 把“合取未测”指到 `H2-R11`，应为 `H2-R10`） | 已修：`a804bfe`；Architecture R2-A1、Quality R2-Q1 复核通过 |
+| `QF-2` / `F-LOW-2`（`H2-R12`、`H1-R4` 的 `H2 L125–L126` 行号错，应为 `H2 L128–L129`、`L186`） | 已修：`a804bfe`；R2-A2、R2-Q4 复核通过 |
+| `F-LOW-1`（H4 的 `FSQ L35` 应为 `FSQ L135–L136`） | 已修：`a804bfe`；R2-A2、R2-Q1 复核通过 |
+| `F-LOW-3`（父 Gate 台账覆盖段里“最新集成包的可观察结果 → GATE L42”应标明其为整体台账的一般性接受） | 已修：四处限定句，`a804bfe`；R2-A3、R2-Q4 复核通过 |
+| `F2-LOW-1`（记录未披露 Architecture 评审会话也加载了工作区记忆索引） | 已处理：由上文 “独立性事项（补充披露）” 记录 |
+
+### 残项与未决事项
+
+- Round 2 无新增残项；`F2-LOW-1` 已按上表处置。
+- Human Product Owner（Product Lead）2026-10-22 对 J1、J4、J5 三处映射的明确 accept 已记录在上文 “Remediation round 1”。
+- 仍为 `UNKNOWN`：已合并树（PR #144 squash `e1b28ae`）是否逐字节包含 H2 / H3 / H4 的冻结快照；AUTH 全内容哈希 `3cf0d23c…` 未复现；Q-01 警告在终态树上是否消失；H2 correction-disable 缺口后来是否修复；PR #144 的 Final Merge Gate / merge 授权记录；真实 RIME、QA-001、INT-003、paired performance、180 ms；Round 2 两位 Reviewer 的 effort 与（Architecture 的）会话标识。
+- 本地未配置 pinned KOS validator，该校验未运行。
+
+### 授权与边界
+
+- Human Product Owner 于 2026-10-22 在 Coordinator 会话中授权：追加本评审后记录提交、push 分支 `docs/lifecycle-closeout-batch-1c-001`、开一个 docs-only PR。**不含 merge。**
+- 基线：评审与本记录均以 `origin/main` = `e828a9969f6d41414d8bb991da9f7202fe056636` 为 base；Coordinator 于 2026-10-22 核对该基线未前进。
+- H1 到 H4 的 Lifecycle 变更、F-04 tech_debt 条目与本 Assignment 依 D7 自身的 Closed，均在本 PR 合并进 `main` 后生效。不声称 Release / Release-ready；不声称真实 RIME、QA-001、INT-003、性能或 180 ms 的任何结论；不改变父任务状态；不修改任何 `docs/authorizations/` 文件。
+- Executor 自述的模型与 effort 不作为验收项。
+
+### Executor 报告、packet 与指令摘要
+
+| 文件 | SHA-256 |
+|---|---|
+| `reports/executor-report-r1.md` | `409f947b36a587ea0375d1961ed8d58b7d9caaa3b6238b3d63f4bf5aaa5b5fea` |
+| `reports/executor-report-r2.md` | `38f9f2d9b6d0b8cbe73390e6befd9b72f63e48bf8433e34b08b4974909dcbfac` |
+| `packets/packet-architecture-r1.md` | `779dcf8beee897b7dc98f3f1e1786c09dbc32715a7c2b9a0fa126f05387f30a0` |
+| `packets/packet-quality-r1.md` | `bdd275723ae003b477d0aff0ab7a4e82bfe0819bf8cc677bd63651b72a39fd4d` |
+| `packets/packet-architecture-r2.md` | `8fa81da23880b251d4799d5fb994f9e8930827ebf58b12b11468d257292a3936` |
+| `packets/packet-quality-r2.md` | `48aeff4768fd5bd9f9eb3e83293e989dafee8b67d5a3836fda24a9105e10092b` |
+| `instructions/assignment-final.md` | `146c7799a4c65d4fcc6b245fb500a7eb5a4c726523f85cfa8549e3f3e3f936de` |
+| `instructions/executor-brief-r1.md` | `987092fc130a93b4bb8663178fe024539a3f125551276d009c2667c96fb6eb46` |
+| `instructions/executor-remediation-r1.md` | `cc52ac34d0639893bcf863555f29cb85f8b6f0b5681a5842c5107f367a1711d2` |
+| `instructions/reviewer-architecture-r1.md` | `06abe46ce52d5a74444dfda9a6334db65f3fa900d89385fe6602ae0f8f406fe0` |
+| `instructions/reviewer-quality-r1.md` | `98551f204233c0b08bd77da6ab3eb44d54560f28ac5b5264f60bfa27397d1267` |
+| `instructions/reviewer-architecture-r2.md` | `8880fdaab433c6b3a1af7a82e3c14fb7016dca676e7acba71ee2836030e5a5f7` |
+| `instructions/reviewer-quality-r2.md` | `1bc43c2fefb85a495582791a0f7f7d949fab080973bec662fa6a2345e383a3bb` |
+
+评审后记录提交本身的 Executor 报告为 `reports/executor-report-r3.md`；报告不能包含自身哈希，其 SHA-256 由 Executor 在对话末尾报告。
