@@ -100,7 +100,7 @@ Executor 与 Reviewer 的最终报告、指令、packet 均保存为文件，根
 
 | 项 | Result |
 |---|---|
-| 数值表每行核对结果（总行数、与盘点材料不一致的行及原因） | 85 行；全部按基线 git show 及带行号源码逐行核对。紧凑 Path chip 实为 16，17 属旧展开 cell；首次 appear 刷新需区分返回已有键盘，详见 KEYBOARD_VALUES 已知分歧 7、10 |
+| 数值表每行核对结果（总行数、与盘点材料不一致的行及原因） | 86 行；全部按基线 git show 及带行号源码逐行核对。紧凑 Path chip 实为 16，17 属旧展开 cell；首次 appear 刷新需区分返回已有键盘，详见 KEYBOARD_VALUES 已知分歧 7、10 |
 | 独立检索补充的常量（盘点材料没有、Executor 自己找到的） | 候选 padding / 内缩 / gap、可读阈值、首行保留宽、Path section / cell 几何、触摸分行容差与 slop、表情细节、覆盖层、底行宽度、主 App 缩略图、布局及 readiness 存储键；见 KEYBOARD_VALUES 数值表 |
 | 已知分歧清单（条数，每条两侧来源） | 10 条；两侧来源均列于 KEYBOARD_VALUES 的已知分歧，不改受保护文件 |
 | UNKNOWN 清单 | 7 类：横屏小窗高度、216 压缩、表情页解析高度、真实生命周期顺序、无 Full Access 读取、大字可用性、旧组件动态可达性；见 KEYBOARD_VALUES |

@@ -96,6 +96,7 @@
 | ChromeTouchHitGeometry.pathBarMinimumHitHeight | 44 | `Packages/KeyboardCore/Sources/KeyboardCore/ChromeTouchHitGeometry.swift:9`；`Packages/KeyboardCore/Sources/KeyboardCore/ChromeTouchHitGeometry.swift:14` | max(0,(44−barHeight)/2) 向上下外扩，不增加布局高 |
 | CandidateBar action hit | 全部可见 56×46，无额外 outset | `Keyboard/Views/CandidateBar/CandidateBarView.swift:4`；`Keyboard/Views/CandidateBar/CandidateBarView.swift:130`；`Keyboard/Views/CandidateBar/CandidateBarView.swift:177` | 候选 viewport 与操作区分开 |
 | ExpandedCandidateCollapseButton.hitOutsets | 初值 zero | `Keyboard/Controllers/KeyboardViewController+ExpandedCandidatePanel.swift:93` | 收起操作区不侵占旁边候选 |
+| 触摸资格 / frame 有效性门槛 | alpha > 0.01；frame 宽高 > 0 | `Keyboard/Controllers/KeyboardInputHitAreaStackView.swift:435`；`Keyboard/Controllers/KeyboardInputHitAreaStackView.swift:439`；`Keyboard/Controllers/KeyboardKeyButton.swift:30` | 隐藏或不可交互对象排除；这影响命中资格，不是几何扩展 padding |
 
 ### 字号与高度请求
 
