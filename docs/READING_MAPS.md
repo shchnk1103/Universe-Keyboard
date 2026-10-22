@@ -51,7 +51,7 @@ Long-lived thread ownership is defined in [`VIRTUAL_ENGINEERING_TEAM.md`](VIRTUA
 Ownership: Architecture & Knowledge Steward owns startup routing; Product Lead owns any new Product Assignment required before formal work; Program Manager may synchronize status only after owner-confirmed sources exist.
 
 1. `AGENTS.md` — mandatory collaboration rules.
-2. `KNOWLEDGE_INDEX.md` — top-level navigation.
+2. `KNOWLEDGE_INDEX.md` — top-level navigation; then `PORTFOLIO.md` — unfinished-task and priority index (not a status authority): read it and verify the rows you rely on before starting.
 3. `kos/zero-context-startup.md` — startup reading order, repository discovery, Work Item discovery, lifecycle discovery, role discovery, repository truth and prompt compression.
 4. `KNOWLEDGE_OS.md` — only when operational layers, navigation protocol or self-healing behavior are required (not for frozen governance tables).
 5. The task-specific reading map selected after startup.

@@ -205,3 +205,11 @@ Executor 身份：六轮均为 Codex / GPT-6（具体变体、effort、会话未
 | `instructions/reviewer-quality-r2.md` | `e2e2688718afa5af44a23d3b6c7440e485d401b02e3a5cd88d3b377afc56c400` |
 
 冻结内容（最终三份，已逐字节提交）：`content/PORTFOLIO.md` `30de5de7c67dbd96c9ba59299224f3486577b5a596c0656aaf552d94a3564b7a`；`content/portfolio/lifecycle-closeout.md` `bf6e39c0afe6ed85cb4bc80f08b08c7e197f5c6a6bceb90758632f1e473a5872`；`content/portfolio/kos-optimization.md` `1922609ac52e3c3590dd624c059d7dfac799e451be2c205cf2a496918dd16e1b`。评审后记录提交本身的 Executor 报告为 `reports/executor-report-r7.md`；报告不能包含自身哈希，其 SHA-256 由 Executor 在对话末尾报告。
+
+## Policy field correction (2026-10-22)
+
+本 Assignment 创建时缺少 `docs/ASSIGNMENT_POLICY.md` 的 Required Assignment Fields 要求的必填字段 **Environment Executor**，合并之前的评审也没有发现。这是 Coordinator 起草时的疏漏。本节追加更正，不改写上文任何内容：
+
+- **Environment Executor：** `Not Applicable — repository documentation only`（本 Assignment 只改仓库文档，没有设备、模拟器或其它环境操作）。依据：Policy 对 docs-only 任务给出的示例值。
+- **确认：** Human Product Owner（Product Lead）对本字段值的确认记录在 `PORTFOLIO-REFRESH-001` 的 Assignment（`docs/assignments/portfolio-refresh-001.md`）的 “Human 确认状态” 一栏。
+- 其余字段、范围、结论与评审记录均不变。同类疏漏已作为 KOS 优化候选记入 `docs/portfolio/kos-optimization.md` 第 20 条。

@@ -29,3 +29,5 @@
 17. Reviewer 独立性按“会话 + 加载的记忆”共同判断（批次 1c Architecture 暴露）：一个全新的 Grok Build 会话读到工作区记忆里记录着自己此前对同一条链做过实现与评审，无法声明独立性并停止；另一个新 Grok 会话读到同一记忆却作了声明。packet 只写了“未参与”。需要规则：独立性同时看会话和记忆里是否有对被评审对象的自有记录；packet 点名哪些工具已做过该链；报告声明加载的记忆。
 18. 独立性分级（Human 2026-10-22 同意方向，起因是只有一家 AI 的用户）：L1 同一模型不同会话；L2 同一厂商不同模型；L3 不同厂商。由 Assignment 按风险规定最低级别（记账性质的文档收尾 L1，发布 / 安全 / 对外公开类 L3 或 Human 亲评），报告声明实际级别；Reviewer 只读产物、不读 Executor 或另一位 Reviewer 的推理；优先写成可用命令复现的声称。不改变正在进行的批次；政策文本待起草并经评审。
 19. 目录化的任务组合（本目录）：把“还没有 Assignment 的意图、优先级、依赖与决定”从对话里搬到文件里。
+20. Assignment 草稿定稿前对照 `docs/ASSIGNMENT_POLICY.md` 的 Required Assignment Fields 表做机械自查：`KEYBOARD-VALUES-DOC-001` 与 `PORTFOLIO-DIRECTORY-001` 的 Assignment 都漏了必填的 Environment Executor，前者被 Executor 在入口合同处拦下，后者合并后才发现。
+21. Executor 与 Reviewer 把报告写成文件后，对话里的最终消息只给状态、路径、SHA-256 与文件里没有的内容，不要复述报告（Human 2026-10-22 反馈）。
