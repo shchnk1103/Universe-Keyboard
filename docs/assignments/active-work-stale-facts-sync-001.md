@@ -42,6 +42,7 @@ Final Merge Gate / Authority record 指针：PR #213、#214、#215、#144 均为
   - 其余 M-02 镜像逐项检查并记录“已更新”或“不适用及依据”：`docs/ENGINEERING_DASHBOARD.md`、`docs/KNOWLEDGE_INDEX.md`、`CHANGELOG.md`、`docs/TECH_DEBT.md`。
   - 链接检查：最后一次内容编辑后，用 baseline 与最终提交各记录一对。
   - 本 Assignment 记录文件本身。
+  - **经 Human Product Owner 于 2026-10-22 批准的修正轮 1 增加：** `docs/KNOWLEDGE_INDEX.md`（INT-003 query-cost 条目，第 48 行）；`docs/plans/typo-correction-002-int003-query-cost-measurement-001.md`（Status 段落之后追加取代说明）。
 - **Non-goals:**
   - 任何 Lifecycle 值的修改；关闭、取代或合并任何 Assignment；`ACTIVE_WORK.md` 表的成员、顺序、行数（保持 11 行）；历史“当前更新”快照的重写（只加新的带日期条目）；ACTIVE_WORK 的归档或重构。
   - 第 1、2、4、5 行；`input-reliability-delivery-001/002` 加入 ACTIVE_WORK 表；TYPO-002 的其它子项（含表外的 Active 子项）。
@@ -102,10 +103,24 @@ Entry 核验：`git fetch origin` 后 `origin/main` = `9f7a88a1b1c31106c26555bed
 | 1. 各拥有者 Assignment Current Status | 已更新：delivery-001/002/003、runtime-integration implementation-001 / hardening-001 / blocker-remediation-001、int003 query-cost 共 7 份加 S-03 取代说明（delivery-001/002/003 另有带日期的同步节）；历史文字与 Lifecycle 值均未改 |
 | 2. Parent Assignment | 不适用 — 不改任何父 Assignment；`TYPO-CORRECTION-002` 的 Lifecycle 与内容均未触碰 |
 | 3. `docs/ENGINEERING_DASHBOARD.md` | 已更新：顶部新增两条 2026-10-21 带日期条目（T9 CI；INPUT-RELIABILITY 链）及一行“历史”提示；既有条目未重写；TYPO-002 runtime 链在 Dashboard 无对应条目，不新增 |
-| 4. `docs/KNOWLEDGE_INDEX.md` | 不适用 — 无导航文字提及 INPUT-RELIABILITY-DELIVERY、runtime-integration 子项或这些状态（`grep` 无匹配） |
-| 5. Active plan Status line | 不适用 — 本次涉及的 Work Item 均无需更新的 plan Status 行（未发现引用这些状态的 plan） |
+| 3a. Dashboard INT003-QUERY-COST 三处（修正轮 1 核对） | 不需要改动：第 689、690、691 行均位于 `### History — 以下阶段快照不表示当前待办` 小节之下（该小节标题自身声明其为阶段快照，不表示当前待办），第 690 行的 “P2 AUTH is Active/unconsumed” 已按历史快照对待；当前状态由 ACTIVE_WORK 第 10 行与 Assignment 顶部收敛说明承载。依据：`docs/ENGINEERING_DASHBOARD.md` 第 686 行标题与 689–691 行位置 |
+| 4. `docs/KNOWLEDGE_INDEX.md` | 已更新（修正轮 1）：INT-003 query-cost 条目（第 48 行）编码了已过期的 “P2 AUTH Active/unconsumed” 状态，已追加 2026-10-22 取代说明，指向 Assignment 顶部 2026-10-11 收敛说明与 ACTIVE_WORK 第 10 行；其余条目无需更新（INPUT-RELIABILITY-DELIVERY、其余 runtime-integration 子项在 Index 无条目） |
+| 5. Active plan Status line | 已更新（修正轮 1）：`docs/plans/typo-correction-002-int003-query-cost-measurement-001.md` 的 Status 写着 “P2 execution not yet live”，已在 Status 段落后追加 2026-10-22 取代说明（原 Status 文字未改）。`docs/plans/typo-correction-002-runtime-integration-design-2026-09-21.md` 命中的只是对 review 文件的链接，不是 Status，不适用。搜索范围：`docs/plans/` 下对 INPUT-RELIABILITY-DELIVERY、runtime-integration、T9-ADAPTIVE-ROW、INT003 query-cost 的引用 |
 | 6. `docs/ACTIVE_WORK.md` | 已更新：第 3、6、7、8、9 行改写（Lifecycle 列不变），顶部新增三条 2026-10-21 带日期条目；第 10 行未改（文本仍准确）；表仍为 11 行，成员与顺序不变 |
 | 7. Markdown link check（baseline/HEAD） | 命令 `python3 -B scripts/ci/check_markdown_links.py --base 9f7a88a1b1c31106c26555bed4a7e324f6ed7b5d --head <最终提交 SHA>`；因在本文件内记录 HEAD 会改变 HEAD，baseline/HEAD 一对与结果记录在 Executor 报告 `executor-report-r1.md`（仓库外，路径见下）中 |
 | `CHANGELOG.md` | 不适用 — 条目记录行为/特性变更，不作状态镜像；既有条目中的“本地候选 / 待独立 Review”为历史叙述，按规则不重写 |
 | `docs/TECH_DEBT.md` | 不适用 — Non-goal，未改动；TD-020 内容仅作为 WP3 的来源事实被引用 |
 | Executor 报告路径与 SHA-256 | 路径 `~/.kos-work/Universe-Keyboard/ACTIVE-WORK-STALE-FACTS-SYNC-001/reports/executor-report-r1.md`；SHA-256 由 Executor 在对话末尾报告（报告不能包含自身哈希，也不在仓库内循环记录） |
+
+## Remediation round 1
+
+经 Human Product Owner 于 2026-10-22 批准的修正轮 1。对提交 `7f11ab93647763e3d783cacb91db8f3150833b10` 的两份评审（Architecture Partial、Quality Blocker）作为历史保留，不改写；修正提交需要新一轮独立评审，本节不声称已通过。
+
+| 发现 | 改了什么 |
+|---|---|
+| AWSF001-ARCH-F01 | `docs/KNOWLEDGE_INDEX.md` 第 48 行（INT-003 query-cost 条目）追加 2026-10-22 取代说明；Exit evidence 第 4 项改为准确依据 |
+| AWSF001-ARCH-F02 | `docs/plans/typo-correction-002-int003-query-cost-measurement-001.md` 在 Status 段落后追加取代说明（原 Status 不改）；Exit evidence 第 5 项改为准确依据，并写明 runtime-integration design plan 的命中只是对 review 的链接、不是 Status |
+| AWSF001-QUAL-F01 | `docs/assignments/input-reliability-delivery-003.md` 的 PR #215 同步节追加对应依据：分支名等于 Carrier、PR 正文基线等于 Baseline、PR 正文链接本 Assignment 证据目录；分类为“文档性对应”，不是推断（PR 正文叙述中未直接写出 Assignment ID，仅出现在证据目录链接里） |
+| AWSF001-QUAL-F02 | Executor 报告 `executor-report-r2.md` 更正 r1 中“plans 目录无相关匹配”的措辞，写清搜索范围与判断依据；仓库内 Exit evidence 第 5 项同步改写 |
+
+另：按修正轮 1 要求核对了 Dashboard 的 INT003-QUERY-COST 三处，结论见 Exit evidence 第 3a 行（不需要改动）。已披露的 Scope 差异（delivery-003 的当前更新实际位于 Dashboard）保持不动。本轮未改任何 Lifecycle 取值，未改 `docs/ACTIVE_WORK.md`、`CHANGELOG.md`、`docs/TECH_DEBT.md`。
