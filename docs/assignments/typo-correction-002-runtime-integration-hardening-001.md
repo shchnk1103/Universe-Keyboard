@@ -47,6 +47,9 @@ Policy version: 1.0.0
 
 ## Current Status
 
+> **Superseded for current status:** see [`TYPO-CORRECTION-002-RUNTIME-INTEGRATION-HARDENING-BLOCKER-REMEDIATION-001`](typo-correction-002-runtime-integration-hardening-blocker-remediation-001.md) and [`ACTIVE-WORK-STALE-FACTS-SYNC-001`](active-work-stale-facts-sync-001.md) (2026-10-21).
+> The Architecture `Blocker` and "new bounded remediation or an explicit Product residual disposition is required" below are historical as of 2026-09-22. The remediation Assignment ran; its Current Status records Architecture F-01/F-02/F-03 Closed, Quality `Pass with conditions` and a Product-accepted bounded residual decision, and GitHub PR [#144](https://github.com/shchnk1103/Universe-Keyboard/pull/144) was squash-merged as `e1b28aebe8f6b2f2a8587db1e525e332aa9bfe00` (2026-09-22T10:19:31Z). This file's Lifecycle `Active` is not changed here and needs a separate Human decision; F-04 (`tech_debt`) and every other residual named below are not closed by this note.
+
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Active` |

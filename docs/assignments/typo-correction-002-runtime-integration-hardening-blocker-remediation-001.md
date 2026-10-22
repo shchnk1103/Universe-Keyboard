@@ -50,6 +50,9 @@ Policy version: 1.0.0
 
 ## Current Status
 
+> **Superseded for current status:** see [`ACTIVE-WORK-STALE-FACTS-SYNC-001`](active-work-stale-facts-sync-001.md) (2026-10-21).
+> GitHub PR [#144](https://github.com/shchnk1103/Universe-Keyboard/pull/144) was squash-merged as `e1b28aebe8f6b2f2a8587db1e525e332aa9bfe00` on `2026-09-22T10:19:31Z`. "Preserve this uncommitted checkpoint", "No ... commit, publication, Gate or Close" and "Any commit/push/PR needs a new AUTH" below are historical as of their own date, not current truth; the publication records are the [publication receipt](../evidence/typo-correction-002-runtime-integration-hardening-blocker-remediation-publication-001.md) and the [PR #144 final-SHA Quality review](../reviews/typo-correction-002-runtime-integration-hardening-blocker-remediation-pr144-final-sha-quality-review-2026-09-22.md). Lifecycle `Reviewed` is not changed; the detached / dual-gate / CandidateProvider residuals are not closed or weakened by this note; no Gate or Close is claimed.
+
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Reviewed` |

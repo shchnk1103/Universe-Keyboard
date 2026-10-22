@@ -47,6 +47,10 @@ Policy version: 1.0.0
 
 ## Current Status
 
+> **Superseded for current status:** see [`ACTIVE-WORK-STALE-FACTS-SYNC-001`](active-work-stale-facts-sync-001.md) (2026-10-21).
+> GitHub PR [#144](https://github.com/shchnk1103/Universe-Keyboard/pull/144) was squash-merged as `e1b28aebe8f6b2f2a8587db1e525e332aa9bfe00` on `2026-09-22T10:19:31Z` (181 files; read-only `gh pr view 144`). Text below such as "frozen uncommitted snapshot", "No ... commit, push, PR, merge" and "Publication ... remain separately unauthorized" is historical narrative as of 2026-09-21, not current truth.
+> PR #144 adds product files for the components listed under "What landed" in the [evidence](../evidence/typo-correction-002-runtime-integration-implementation-001.md) (for example `TypoCorrectionRecallCoordinator.swift`, `TypoCorrectionSidecarOwner.swift`). Whether the merged tree contains the frozen snapshot byte-for-byte is **UNKNOWN**: that snapshot was never committed (its recorded base `4d1050f` is the earlier `main` commit from PR #143), and its checkpoint diff SHA-256 `8bb105c5…` is not comparable with PR #144's cumulative diff. Lifecycle `Reviewed` and all residuals are not changed or closed by this note.
+
 | Field | Value |
 |---|---|
 | **Lifecycle** | `Reviewed` |

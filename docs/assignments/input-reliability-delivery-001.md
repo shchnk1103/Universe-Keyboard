@@ -4,6 +4,9 @@ Policy version: 1.0.0
 
 ## Current Status
 
+> **Superseded for current status:** see [PR #213 post-merge State Sync](#pr-213-post-merge-state-sync--2026-10-21) below and [`ACTIVE-WORK-STALE-FACTS-SYNC-001`](active-work-stale-facts-sync-001.md) (2026-10-21).
+> PR [#213](https://github.com/shchnk1103/Universe-Keyboard/pull/213) is **merged** (`bb430f914deaf7b19a61183f744b5dcf2fdb8eae`). Text in this document such as "C1 local fix is ready for a directed re-review", "no product pull request exists" and "Human decides whether this carrier may be pushed" is historical narrative as of its own date, not current truth. This note does not change the Lifecycle value.
+
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
@@ -57,3 +60,14 @@ The initial writer lane is `grok-build`. There is no predecessor writer, so the 
 - 2026-10-19 Asia/Shanghai: grok-build committed the Batch 1 extraction locally after the authorized checks. Product publication remains a Human decision.
 - 2026-10-19 Asia/Shanghai: Human authorized a bounded C1 fix. grok-build keeps the failed-recovery raw prefix and commits that fix locally. C2–C5 stay open. Product publication remains a Human decision.
 - 2026-10-19 Asia/Shanghai: Human authorized the PR 213 test-rimebridge fixture fix. The private schema is copied into user/build. Production code stays unchanged.
+
+## PR #213 post-merge State Sync — 2026-10-21
+
+Late M-02 sync: written after the event, not at the time of the merge.
+
+- **Trigger:** PR [#213](https://github.com/shchnk1103/Universe-Keyboard/pull/213) `fix(keyboard): improve document identity and session recovery`; merge commit `bb430f914deaf7b19a61183f744b5dcf2fdb8eae`; head `be474bc8783e27b20d810ebc58eb2948a23ae3c3` (branch `grok/input-reliability-delivery-001`); merged `2026-10-19T12:27:34Z` by `shchnk1103` (read-only `gh pr view 213`). The PR body names task `INPUT-RELIABILITY-DELIVERY-001`.
+- **Current:** Batch 1 is on `main` through PR #213. "No product pull request exists" and the push decision above are historical.
+- **Residuals unchanged, none closed:** C2–C5 and the other items under "Known Limitations" in the PR #213 body; R345 not closed; R174 stays off by default. Pointers only.
+- **Final Merge Gate / Authority record for the merge:** UNKNOWN (none found in the repository).
+- **Lifecycle:** this file still reads `Active`. The later [Batch 2 Assignment](input-reliability-delivery-002.md) calls Delivery-001 "Closed on its own carrier", but no closure record was found in this repository: UNKNOWN. The Lifecycle value is not changed here and needs a separate Human decision.
+- **Non-claims:** not Release; no Architecture/Quality Gate claim (the review lines in the PR #213 body are the PR author's own description and were not verified here); no residual weakened or closed.

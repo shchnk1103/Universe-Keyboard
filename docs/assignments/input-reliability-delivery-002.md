@@ -4,6 +4,9 @@ Policy version: 1.0.0
 
 ## Current Status
 
+> **Superseded for current status:** see [PR #214 post-merge State Sync](#pr-214-post-merge-state-sync--2026-10-21) below and [`ACTIVE-WORK-STALE-FACTS-SYNC-001`](active-work-stale-facts-sync-001.md) (2026-10-21).
+> PR [#214](https://github.com/shchnk1103/Universe-Keyboard/pull/214) is **merged** (`d08175b915aee40998398d7fdc03f2fd7cf0833f`). Text in this document such as "review remediation is committed locally and awaits bounded re-review", "Not a product push, pull request, merge" and "no product pull request exists" is historical narrative as of its own date, not current truth. This note does not change the Lifecycle value.
+
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
@@ -56,3 +59,16 @@ The initial writer lane is `grok-build`. There is no predecessor writer, so the 
 - 2026-10-19 Asia/Shanghai: Human Product Lead authorized this new Assignment and named Grok Build as the initial executor. The original INPUT-RELIABILITY-B-001 Assignment and the Closed INPUT-RELIABILITY-DELIVERY-001 Assignment stay unchanged.
 - 2026-10-19 Asia/Shanghai: grok-build committed the Batch 2 extraction locally after the authorized checks. Product publication remains a Human decision.
 - 2026-10-19 Asia/Shanghai: grok-build committed the authorized review remediation locally. Authority engines no longer send an origin-less candidate through selectCandidate(globalIndex:). Two out-of-batch functional edits were restored. Product publication remains a Human decision.
+
+## PR #214 post-merge State Sync — 2026-10-21
+
+Late M-02 sync: written after the event, not at the time of the merge.
+
+- **Trigger:** PR [#214](https://github.com/shchnk1103/Universe-Keyboard/pull/214) `fix(keyboard): enforce candidate identity and safe selection`; merge commit `d08175b915aee40998398d7fdc03f2fd7cf0833f`; head `7e2b773db116317c510e624d0f8a0a91e3a5e553` (branch `grok/input-reliability-delivery-002`); merged `2026-10-19T13:55:48Z` by `shchnk1103` (read-only `gh pr view 214`).
+- **Why PR #214 maps to this Assignment:** the PR body does not cite an Assignment ID. The mapping rests on two direct facts: (1) the PR head branch `grok/input-reliability-delivery-002` equals this Assignment's carrier ("Project baseline" above); (2) the PR body's comparison baseline `bb430f9` (the PR #213 merge commit) equals this Assignment's Required Input. The body's scope (candidate origin, native select authority, paging, stale-candidate rejection) also matches this Assignment's Scope. The link to the Assignment ID itself is an **inference** from these facts, not a stated one.
+- **Current:** Batch 2 is on `main` through PR #214 (the baseline of [Delivery-003](input-reliability-delivery-003.md)). "No product pull request exists" is historical.
+- **Residuals unchanged, none closed:** D4/D5 non-blocking observations; the identified R345 wrong-select path is blocked by an explicit constraint, which is not a claim that every wrong-select path is unreachable; no dedicated UI tap test for the candidate bar or expanded panel; R174 stays off by default (all per the PR #214 body). Pointers only.
+- **Hosted CI result at merge:** UNKNOWN (the PR body's "GitHub CI on this pull request" box is unchecked; no other record was read).
+- **Final Merge Gate / Authority record for the merge:** UNKNOWN (none found in the repository).
+- **Lifecycle:** this file still reads `Active`; not changed here.
+- **Non-claims:** not Release; no Architecture/Quality Gate claim (the review lines in the PR body are the PR author's description and were not verified here); no residual weakened or closed.

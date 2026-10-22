@@ -70,6 +70,9 @@ Policy version: 1.0.0
 
 ## Current Status
 
+> **Superseded for current status:** see the "2026-10-11 current convergence" at the top of this file and [`ACTIVE-WORK-STALE-FACTS-SYNC-001`](active-work-stale-facts-sync-001.md) (2026-10-21).
+> The state table below (for example "P2 freeze pending", "P2 AUTH Active/unconsumed", IMPL-R1/R2 "remain open") predates that convergence and is historical narrative, not current truth. Per the convergence note, P1 bounded convergence and the Human-accepted P2 are complete as evidence stages, the child stays Active pending a separately authorized lifecycle disposition, and there is no Gate or Close. This note does not change the Lifecycle value.
+
 | Field | Value |
 |---|---|
 | Lifecycle | **Active** — P1 instrumentation is merged and independently Architecture-reviewed **Pass with conditions**; local CI-equivalent and hosted checks pass. Coordinator assertions, the real RimeBridge failure/readiness matrix, P2 journal censoring and independent Quality remain open; P2 freeze pending |
