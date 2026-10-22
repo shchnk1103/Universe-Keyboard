@@ -186,3 +186,35 @@ Executor 在基线 `origin/main` = `e828a9969f6d41414d8bb991da9f7202fe056636` �
 ### 边界
 
 没有 push，没有开 PR，没有改写已有提交；没有修改任何 `docs/authorizations/` 文件、`CHANGELOG.md`、父 Assignment `docs/assignments/typo-correction-002.md`、`.kos/project.json`、产品代码、测试、CI、Xcode 工程；没有改任何未关闭 Work Item 的 Lifecycle 或文字；没有新建 F-04 以外的 tech_debt。
+
+## Remediation round 1
+
+2026-10-22，Executor Codex / GPT-6（具体变体未确认；effort、会话标识未确认）。本节追加记录，不改前文；原始评审结论和限制保留，不将本轮自检视为独立复审。
+
+### Round 1 评审及条件修正
+
+- Architecture：**Pass with conditions**，无 Blocker；报告声明身份 Claude Code（Claude Agent SDK），模型 `claude-sonnet-5-5`，effort、会话标识未确认。报告 `~/.kos-work/Universe-Keyboard/LIFECYCLE-CLOSEOUT-BATCH-1C-001/reports/architecture-review-r1.md`，SHA-256 `a30c2e1c86846c3f212ae5098537242505dd0a9cd840365ad84990c1e7abeb6b`。
+- Quality：**Pass with conditions**，无 Blocker；报告声明身份 Grok（xAI），模型 `grok-4.7-build-fast`，effort 未确认，会话标识 `01a16284-b80d-7ef0-93d8-fc7e981de699`。报告 `~/.kos-work/Universe-Keyboard/LIFECYCLE-CLOSEOUT-BATCH-1C-001/reports/quality-review-r1.md`，SHA-256 `ca6dc7b4a6e4c58fa2481323233745f7a9ea5bef9b9ab030fae86d69d3cbbddd`。
+
+以下原文行号由 Executor 直接读取基线 `e828a9969f6d41414d8bb991da9f7202fe056636` 核实；被修改位置行号对应本轮内容。
+
+| 条件 | 原文核实与修正位置 |
+|---|---|
+| QF-1 | design-001 的 H1-R4（L125）：合取未测交叉引用由 H2-R11 改为 H2-R10。implementation Closeout L288 的 H2-R10 是谓词与字母/中文/最短长度的合取未测，L289 的 H2-R11 是 KeyboardTests 常量断言；基线 implementation Quality review L140 与 L141–L142 分别支持二者 |
+| QF-2 / F-LOW-2 | implementation-001 的 H2-R12（L290）两处 H2 L125–L126 改为 H2 L128–L129、L186；基线 L125–L126 为 Non-goals 标题/空行，L128–L129 明示生产第一阶段 12/8 不变，预算表为 L177–L184，L186 说明 runtime caps 不改 production 12/8。design-001 的 H1-R4（L125）实际原文为 H2 L161–L186，没有 L125–L126 误引；本轮保留该范围并补充 L128–L129、L186 的精确生产预算来源。PD-I0 L38 保留 |
+| F-LOW-1 | hardening-blocker-remediation-001 的 H4-R1 判定依据（L165）去掉 FSQ L35，保留 FSQ L135–L136；基线 final-SHA Quality review L35 是复核 worktree HEAD 表格，named remote branch 说明在 L135–L136 |
+| F-LOW-3 | design-001 L130、implementation-001 L297、hardening-001 L247、hardening-blocker-remediation-001 L167：每处“最新集成包的可观察结果 → GATE L42”后追加一般性覆盖及 Human accept 限定。父 Gate L42 非本链专门条目；原有 UNKNOWN、accept 与非验证边界不变 |
+
+### Human accept（来源与边界）
+
+决定人：Human Product Owner（Product Lead）；日期与来源：2026-10-22，Coordinator 会话，由本轮冻结指令 `~/.kos-work/Universe-Keyboard/LIFECYCLE-CLOSEOUT-BATCH-1C-001/instructions/executor-remediation-r1.md`（SHA-256 `cc52ac34d0639893bcf863555f29cb85f8b6f0b5681a5842c5107f367a1711d2`）明确传达。
+
+- **J1 accept：** H4 的 detached 残项，以 `…PUBLICATION-PREPARATION-001` 的 branch-identity 记录视为 `PD-B` 所要求的前置处置已满足。不把准备切片自身改写为接受残项，也不把 PD-B 对未提交检查点的接受扩大到已提交状态。
+- **J4 accept：** H1 的“目标硬件交互预算”归入父 Gate 的“整体性能未知”。这是 Human 接受的映射，不是逐字专门条目，也不是性能 Pass。
+- **J5 accept：** “本链最新集成包的可观察结果”由父 Gate 整体台账一般性覆盖，不是针对本链的专门条目，不证明最新集成包已复测或验证。
+
+### 独立性事项（Human 决定保留并披露）
+
+来源同上。批次 1c 的 Architecture 角色先交给一个 Grok Build 会话；该会话因工作区记忆中存在同链实现与评审记录，无法声明独立性而停止，未写报告，随后改由 Claude Code 会话完成。Quality 由另一个 Grok Build 会话完成，其会话读到同一工作区记忆。Human 于 2026-10-22 决定保留该 Quality 结果，独立性疑点在此保留，不改写为疑点已消除，也不重写原 Reviewer 声明。
+
+本轮只作指针修正、限定与追加决定记录；不重新执行或声称产品、性能、设备、真实 RIME 验证，不修改 AUTH，不新建 tech_debt，不 push / PR / merge。停止等待 Coordinator 冻结 Round 2 Reviewer packet。
