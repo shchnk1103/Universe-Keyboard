@@ -15,8 +15,8 @@
 
 | ID | 优先级 | 任务 | 状态 | 下一步 / 阻塞 | 详情 / 来源 | 核对 |
 |---|---|---|---|---|---|---|
-| PF-001 | P0 | Main CI 失败（Run #705） | UNKNOWN | `main` 最新 `Swift 6 Quality` 为绿（`e828a99`）；#705 根因与关闭记录未核实 | 无 | 2026-10-22 |
-| PF-003 | P0 | KOS 全局任务对账（生命周期收尾） | In progress | 批次 1c 已派发 Executor；之后是链批次剩余部分、A18 | [lifecycle-closeout](portfolio/lifecycle-closeout.md) | 2026-10-22 |
+| PF-001 | P0 | Main CI 失败（Run #705） | UNKNOWN | `Swift 6 Quality` 在 `e828a99` 上为绿（`main` 之后的 `64385fe` 上的结果未核实）；#705 根因与关闭记录未核实 | 无 | 2026-10-22 |
+| PF-003 | P0 | KOS 全局任务对账（生命周期收尾） | In progress | 批次 1、1b、1c 已合并（PR #223、#224、#225）；剩余：链批次其余三项、A18、A28 / A29、同链 publication 子 Assignment、B 区 | [lifecycle-closeout](portfolio/lifecycle-closeout.md) | 2026-10-22 |
 | PF-004 | P1 | Dynamic Task Portfolio（本目录是其种子） | Waiting Human | 需 Human 决定是否立项为正式 Assignment，以及目录放哪里 | [本文件](PORTFOLIO.md) | 2026-10-22 |
 | PF-005 | P1 | UI-1 / UI-2 正式 Closeout | Blocked | UI-2 受 TD-020 约束；UI-1 的 Lifecycle 仍为 Active（PR216 post-merge sync 明确无完成 / 验收 / 独立复核声称），处置待 Human 另行决定 | `docs/ACTIVE_WORK.md` 的第 11、3 项 | 2026-10-22 |
 | PF-006 | P1 | Input Reliability | UNKNOWN | 清单称 Batch 1–3 已合并、剩余验证待完成；`ACTIVE_WORK` 第 6 项（INPUT-RELIABILITY-DELIVERY-003）当前为 Active，其余 delivery 项的处置未在本目录核实 | `docs/ACTIVE_WORK.md` 的第 6 项 | 2026-10-22 |
@@ -31,7 +31,8 @@
 | PF-015 | P2 | KTW001 / KTW002：Task Workspace | UNKNOWN | 清单称授权及环境阻断待处理 | 无 | 2026-10-22 |
 | PF-016 | P2 | AI Budget Governance | UNKNOWN | 清单称已合并，待证据与集成核验 | 无 | 2026-10-22 |
 | PF-017 | P3 | Branch Retention & Handoff Lifecycle | Backlog | 待差异审计 | 无 | 2026-10-22 |
-| PF-018 | P1 | KOS 流程优化（交接、报告落盘、预检） | Backlog | 共 17 条候选（第 17 条即本目录）；最先做：放行 Reviewer reports 目录、冻结 packet 前的路径扫描 | [kos-optimization](portfolio/kos-optimization.md) | 2026-10-22 |
+| PF-018 | P1 | KOS 流程优化（交接、报告落盘、预检） | Backlog | 共 19 条候选（第 19 条即本目录）；最先做：放行 Reviewer reports 目录、冻结 packet 前的路径扫描 | [kos-optimization](portfolio/kos-optimization.md) | 2026-10-22 |
+| PF-019 | P1 | Reviewer 独立性政策（按上下文隔离判断，分级 L1 到 L3） | Waiting Human | Human 已同意方向；待起草政策文本并经评审；不适用于已在进行的批次 | [kos-optimization](portfolio/kos-optimization.md) 第 17、18 条 | 2026-10-22 |
 
 ## 决定记录
 
@@ -39,6 +40,8 @@
 |---|---|---|
 | 2026-10-22 | 批准 D1（TYPO-CORRECTION-002 子项按批收尾）与 D7（同步记录评审后直接 Close） | [lifecycle-closeout](portfolio/lifecycle-closeout.md) |
 | 2026-10-22 | 派发只指定角色，不固定 AI；报告开头声明实际运行时身份 | [kos-optimization](portfolio/kos-optimization.md) 第 10 条 |
+| 2026-10-22 | Product Lead 明确 accept 批次 1c 的三处映射：J1（H4 的 detached 残项以 `…PUBLICATION-PREPARATION-001` 的 branch-identity 记录视为 `PD-B` 所要求的前置处置已满足）、J4、J5 | [lifecycle-closeout](portfolio/lifecycle-closeout.md) |
+| 2026-10-22 | 同意方向：Reviewer 独立性放宽为“同一 AI 不同会话”，但按会话与加载的记忆共同判断，并分级、在报告里声明达到的级别；不改变正在进行的批次；政策文本待起草并评审 | [kos-optimization](portfolio/kos-optimization.md) 第 17、18 条 |
 | 2026-10-22 | F-04 新建 tech_debt `TYPO-CORRECTION-002-F04-OPERATION-RECEIPT-DIAGNOSTICS`，放入批次 1c | [lifecycle-closeout](portfolio/lifecycle-closeout.md) |
 
 ## 已完成

@@ -104,3 +104,14 @@ Executor 与 Reviewer 的最终报告、指令、packet 均保存为文件，根
 ## Closeout Decision — 结果
 
 2026-10-22，Executor：本地 docs-only 交付；三份冻结文档逐字节复制，仅追加 Knowledge Index 指定入口。仓库状态事实核验无新增确定性不一致，UNKNOWN 未补全；前两轮 finding 已修复。最终链接检查发现冻结 Assignment 的 Scope 字面链接示例解析失败；已修正 Executor 自填 Exit evidence 的同类示例，冻结 Scope 原文未改，交回 Coordinator 处理。独立 Architecture / Quality 尚未执行，等待 Coordinator 冻结 Reviewer packet。Assignment 保持 Active；本轮不作 Human Close / push / PR / merge 决定。最终本地提交身份、检查结果、文件级 numstat、blob 与摘要证据见 Executor 报告。
+
+
+## Content refresh (2026-10-22)
+
+触发原因：PR #225 已合并（64385fecda846d88598f54b735abd2667610204f），批次 1c 已关闭四个 Work Item；Human 同意 Reviewer 独立性政策方向，新增 PF-019。按 assignment-final 修订 4 逐字节复制三份冻结正文，优化候选扩为 19 条。不改写既有提交，不更新范围外镜像。
+
+三份文件的 SHA-256（旧 → 新）：
+
+- docs/PORTFOLIO.md：b2a59bf6eea1fba5dad87e5fd53f61eaf1ff38458285d68270f750fd43928842 → 4c7c3460d686366eee636a00d8c7ed193e2e62e714a7695062617613459c455f
+- docs/portfolio/lifecycle-closeout.md：6c5c111ad575ee2e05d92750d63be521c9b3b54de6206f4ea63aab509de7d04c → bf6e39c0afe6ed85cb4bc80f08b08c7e197f5c6a6bceb90758632f1e473a5872
+- docs/portfolio/kos-optimization.md：7b384ae65d9a90c141381db2e985fe67a2f019e8517b6e2a5f80749031e383c6 → 1922609ac52e3c3590dd624c059d7dfac799e451be2c205cf2a496918dd16e1b
