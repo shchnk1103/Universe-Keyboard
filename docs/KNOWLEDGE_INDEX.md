@@ -17,7 +17,7 @@
 
 ## 工作入口
 
-- [任务路径](READING_MAPS.md) · [当前工作](ACTIVE_WORK.md) · [Assignment 目录](assignments/)
+- [任务路径](READING_MAPS.md) · [当前工作](ACTIVE_WORK.md) · [Assignment 目录](assignments/) · [任务组合](PORTFOLIO.md)
 - [架构概览](PROJECT_CONTEXT.md)（代码/架构任务）· [UI 规则](UI_STYLE_GUIDE.md)
 - [文档治理](DOCUMENTATION_GOVERNANCE.md) · [依赖影响](KNOWLEDGE_DEPENDENCIES.md) · [决策树](DECISION_TREES.md)
 - [AI 协作](AI_WORKFLOW.md) · [领域 playbooks](playbooks/) · [长期所有权](VIRTUAL_ENGINEERING_TEAM.md)
