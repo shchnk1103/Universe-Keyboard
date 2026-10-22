@@ -124,3 +124,76 @@ Entry 核验：`git fetch origin` 后 `origin/main` = `9f7a88a1b1c31106c26555bed
 | AWSF001-QUAL-F02 | Executor 报告 `executor-report-r2.md` 更正 r1 中“plans 目录无相关匹配”的措辞，写清搜索范围与判断依据；仓库内 Exit evidence 第 5 项同步改写 |
 
 另：按修正轮 1 要求核对了 Dashboard 的 INT003-QUERY-COST 三处，结论见 Exit evidence 第 3a 行（不需要改动）。已披露的 Scope 差异（delivery-003 的当前更新实际位于 Dashboard）保持不动。本轮未改任何 Lifecycle 取值，未改 `docs/ACTIVE_WORK.md`、`CHANGELOG.md`、`docs/TECH_DEBT.md`。
+
+## Review results and residual disposition
+
+Post-review, append-only. 以上各节在 Reviewer 评审时固定为提交 `c9838f1e97f768520911421ecdeafdec6a4f3f3b`；本节之前的内容不因本节改动。本节所列报告与 packet 保存在仓库外，仓库内只记录路径与 SHA-256，路径前缀为 `~/.kos-work/Universe-Keyboard/ACTIVE-WORK-STALE-FACTS-SYNC-001/`。
+
+### 提交链
+
+`9f7a88a1b1c31106c26555bed4a7e324f6ed7b5d`（base，origin/main）→ `7f11ab93647763e3d783cacb91db8f3150833b10`（同步）→ `f0dc74576e5cde0771bda1d2e3c513db41fdec81`（修正轮 1）→ `c9838f1e97f768520911421ecdeafdec6a4f3f3b`（Round 2 评审的最终目标）。本节所在的评审后记录提交是此后追加的，只新增本节。
+
+### 评审结果
+
+| Lane | Round | 结论 | 报告（相对前缀） | SHA-256 |
+|---|---|---|---|---|
+| `AWSF001-ARCH` | 1 | Partial | `reports/architecture-review-r1.md` | `a9ed282535dfb3801f3a78f1d7ff28b67e37e85f724698c08b7e4e4fa62c1051` |
+| `AWSF001-ARCH` | 2 | Pass with conditions | `reports/architecture-review-r2.md` | `90eb0cde3d1909323dda63baec58a7d07dac39c0a18ae62c9ff4850d1b5a057e` |
+| `AWSF001-QUAL` | 1 | Blocker | `reports/quality-review-r1.md` | `4c0efb5ef939852ae26d06b5628288df8d405442ed37b8749d8d7a1d1b438247` |
+| `AWSF001-QUAL` | 2 | Pass with conditions | `reports/quality-review-r2.md` | `d0d84ea0c5a009ac14ed463f3e8240d11983d03bd8df01b8e59f7e13e02b136d` |
+
+Reviewer 均为全新的 codex 独立会话，未参与本次同步实现；会话标识未在仓库内记录（UNKNOWN）。Round 2 两位 Reviewer 的覆盖均完整，无 Uncovered。
+
+### Executor 报告与更正说明
+
+| 文件 | SHA-256 |
+|---|---|
+| `reports/executor-report-r1.md` | `f135c52f41c63078e00cc0b5bc903129705dc800844949aeb667a3b8ec815e1b` |
+| `reports/executor-report-r2.md`（原文保留） | `1677d08ca6febf35ecbbeab0806f219362c5cc4c370be925e043dfec20e1e332` |
+| `reports/executor-report-r3.md` | `cf68384272b8e54a5f1eb9b34549097488e3fba95734975ae40be0ed84aada81` |
+| `reports/coordinator-correction-to-executor-report-r2.md`（Coordinator 写，非 Executor） | `7153938abee174d7eb9d6808ad67f57d9137f16a1e510bbb3b4b62e5ba76868e` |
+
+评审后记录提交本身的 Executor 报告为 `reports/executor-report-r4.md`；报告不能包含自身哈希，其 SHA-256 由 Executor 在对话末尾报告。
+
+### Reviewer Lane Packet 与指令
+
+Packet 在派发前冻结，按 Round 保存在 `packets/`，指令保存在 `instructions/`。
+
+| 文件 | SHA-256 |
+|---|---|
+| `packets/packet-architecture-r1.md` | `7452ddf4b75178d08f55bd6da3a924f357b916798565e0e4d444d1ecc5aaf0d6` |
+| `packets/packet-quality-r1.md` | `e50efb006f45a916ae352dc532706146d8bfd3a2eb50146ff940f910f7b6e556` |
+| `packets/packet-architecture-r2.md` | `208477e0a7b4b076ca27083dfe9ccde34c67d5c6c32aef93ee511034aa40f8c5` |
+| `packets/packet-quality-r2.md` | `0ac1a2b6158ad17ec4adfbf0277a1d0060ff81603eb89f7707e82e746976cfc5` |
+| `instructions/reviewer-architecture-r2.md` | `e194e06fec735e466838b2dff3d449311a62ed486f1faa70e3f86e49d5a441f9` |
+| `instructions/reviewer-quality-r2.md` | `60a85140908c456eed9785551102a9694a13f39155b6a2ce1646a0e26164082a` |
+
+Round 1 的派发指令与 Executor 的各轮简报只存在于对话中，未保存为文件；其实质内容保存在本 Assignment 中。
+
+### Round 1 发现的状态
+
+| 发现 | 状态 |
+|---|---|
+| `AWSF001-ARCH-F01`（Knowledge Index 第 48 行） | 已修正；Architecture Round 2 A6 复核通过 |
+| `AWSF001-ARCH-F02`（INT003 plan Status） | 已修正；Architecture Round 2 A6 复核通过 |
+| `AWSF001-QUAL-F01`（delivery-003 对应依据） | 已解决：Round 1 packet 的 Q2 把 #215 要求标为“推断”过严，Round 2 改写；#215 的对应依据在 delivery-003 同步节中写清，分类为文档性对应；Quality Round 2 Q2 通过 |
+| `AWSF001-QUAL-F02`（“plans 无相关匹配”措辞过宽） | 已解决；Quality Round 2 Q7 确认 `executor-report-r2.md` 的更正准确 |
+
+两个 Round 1 的不通过结论，部分源于 Coordinator 的缺陷，如实记录：packet 的 Q2 对 #215 的要求过严；Assignment 的 Scope 起草时未点名已知提及 INT003 的 Knowledge Index 条目与 plan，导致 Executor 以过窄的检索得出“无匹配”。
+
+### 残项
+
+| 残项 | 严重度 | 内容 | Owner | 处置 |
+|---|---|---|---|---|
+| `AWSF001-ARCH-R2-F01` | Minor | `executor-report-r2.md` 第 18 行对三条删除行归属的解释错误（实际为 Knowledge Index 1 行加本 Assignment 2 行） | Executor；Coordinator 跟踪 | 已处置：Human Product Owner 于 2026-10-22 在 Coordinator 会话中批准按“补一份更正说明”处置；更正说明为 `reports/coordinator-correction-to-executor-report-r2.md`（SHA-256 见上）；r2 原文保留。Reviewer 尚未重新核对该说明 |
+| `AWSF001-QUAL-R2-F01` | Low | 同上，同一问题 | 同上 | 同上 |
+
+两项指向同一个问题，仓库内容不受影响。处置不改变任何 Lifecycle，不关闭其它残项。
+
+### 授权与边界
+
+- Human Product Owner 于 2026-10-22 在 Coordinator 会话中授权：追加本评审后记录提交、push 分支 `docs/active-work-stale-facts-sync-001`、开一个 docs-only PR。**不含 merge。**
+- 基线：评审与本记录均以 `origin/main` = `9f7a88a1b1c31106c26555bed4a7e324f6ed7b5d` 为 base；Coordinator 于 2026-10-22 核对该基线未前进。
+- 仍为 `UNKNOWN`：PR #213、#214、#215、#144 的 Final Merge Gate / Merge 授权记录；PR #214 合并时的 hosted CI；delivery-003 两项 TestFlight 前事项是否已处置；delivery-001 的 Lifecycle 矛盾；#144 合并树与 implementation-001 冻结快照的逐字节关系。
+- 不声称 Release / Release-ready；不声称任何工作项完成或验收；本任务未改变任何 Assignment 的 Lifecycle；本 Assignment 的 Lifecycle 处置待 PR 合并后另行决定。
+- Executor 自述的模型为 `claude-sonnet-5-5`，effort 未确认，不作为验收项。pinned KOS validator 在本地未配置、未运行。
