@@ -7,11 +7,11 @@ record_id: LIFECYCLE-CLOSEOUT-BATCH-1B-001
 
 | Field | Value |
 |---|---|
-| Lifecycle | Active（docs-only closeout 在本地执行；未 push） |
-| Current phase | Executor 已在本地执行并经修正轮 1：A16、A27 均已关闭（Lifecycle 在进入 `main` 时生效；A27 的缺口已撤回，A16 的缺口由 Human accept，见文末 §Remediation round 1），本地提交，待 Coordinator 冻结 Reviewer packet。本批次落实 `LIFECYCLE-CLOSEOUT-BATCH-1-001` 中 Human 对 A16、A27 缺口的处置决定；每项关闭仍以“所有残项均有来源明确的处置”为前提 |
-| Material non-claims | 不声称 Release / Release-ready；不改父任务 `TYPO-CORRECTION-002`（已 Closed）；不关闭、削弱任何残项；不新建 tech_debt；不修改任何 `docs/authorizations/` 文件；不处理本批次范围外的任何 Assignment；不 push / PR / merge |
+| Lifecycle | Closed（此前：Active（docs-only closeout 在本地执行；未 push）；Round 2 评审完成：Quality Pass，Architecture Pass with conditions（唯一条件 LCB1B-ARCH-R2-C01 已被 Product Lead accept）；进入 main 后生效） |
+| Current phase | 评审完成：Round 2 Quality Pass，Architecture Pass with conditions（唯一条件 LCB1B-ARCH-R2-C01 已被 Product Lead accept）；A16、A27 均已关闭（Lifecycle 在进入 main 时生效）；经 Human 授权发布为 docs-only PR，待 Human 决定 merge |
+| Material non-claims | 不声称 Release / Release-ready；不改父任务 `TYPO-CORRECTION-002`（已 Closed）；不关闭、削弱任何残项；不新建 tech_debt；不修改任何 `docs/authorizations/` 文件；不处理本批次范围外的任何 Assignment；未经 Human 授权不 merge |
 | Human 确认状态 | D-1B-AUTH：**已确认**（Human Product Owner，2026-10-22，Coordinator 会话）。采用确认方案：不修改任何 `docs/authorizations/` 文件；Closeout 逐项记录三份 AUTH 的现状并声明不可重放；处置记为 `accept`；TD-014 仅作为既有同类登记引用、不修改 |
-| Next handoff / decision | 派发 Executor → Coordinator 冻结 Reviewer Lane Packet → Architecture / Quality Reviewer → Human 决定 push / PR / merge |
+| Next handoff / decision | Human 决定 merge；链批次（A4、A10 到 A15）与 A18 的后续批次另行起草 |
 
 ## Authority
 
@@ -302,3 +302,76 @@ A27 Closeout（`docs/assignments/typo-correction-002-parent-revalidation-002.md`
 Exit evidence 第 3 项原先写 History 标题在第 687 行、三条在第 689–691 行。那是顶部插入两行之前的行号。修正轮 2 开工时在 HEAD `eeeb1539f68d73eb73359136c9508d62ed5d82fb` 上核实：标题 `### History — 以下阶段快照不表示当前待办` 在第 691 行，INT-003 query-density、query-cost P1/P2、P0 publication 三条在第 693–695 行。该行号引用已改为不依赖行号的描述。A16 与 A27 文件中没有 Dashboard 行号引用。行号会随文件顶部插入而变，以后不以行号为准。
 
 本轮 Executor 运行时身份见 `executor-report-r3.md`。没有 push，没有开 PR。
+
+## Review results and residual disposition
+
+Post-review，追加式。以上各节在 Round 2 评审时固定为提交 `f79154313d2095b2ecc4725f6e2fdcd22ba45734`；本节之前的内容不因本节改动，唯一例外是 Current Status 表的 Lifecycle、Current phase、Material non-claims、Next handoff / decision 四格，它们随本节同步到评审后的事实（见提交信息）。本节所列报告、packet、指令与交接记录保存在仓库外，仓库内只记录路径与 SHA-256，路径前缀为 `~/.kos-work/Universe-Keyboard/LIFECYCLE-CLOSEOUT-BATCH-1B-001/`。
+
+### 提交链
+
+`cd0b850cce7f22781c03fb9e66a4590be4357100`（base，PR #223 合并后的 origin/main）→ `ab4e8f548e1bdc5cf3ce872080cc63a04b332414`（Executor r1，关闭 0 项并上报两处缺口）→ `eeeb1539f68d73eb73359136c9508d62ed5d82fb`（修正轮 1：撤回 A27 缺口，落实 Human 对 A16 的决定，A16、A27 关闭，`ACTIVE_WORK` 表 11 行变 9 行）→ `f79154313d2095b2ecc4725f6e2fdcd22ba45734`（修正轮 2：更正 A27 Closeout 的 lane 概括与 Dashboard 引用，Round 2 评审的最终目标）。本节所在的评审后记录提交是此后追加的。
+
+### 评审结果与运行时身份
+
+身份均取自各报告开头的自我声明；“未确认”表示报告自己没有声明。
+
+| Lane | Round | 运行时身份 | 结论 | 报告 | SHA-256 |
+|---|---|---|---|---|---|
+| `LCB1B-ARCH` | 1 | Grok（Grok Build），`grok-4.7`，effort medium，会话 `01a16205-5a7e-7ea0-bc88-be1b1a016b0b` | Pass with conditions；条件 `LCB1B-ARCH-R1-C01` | `reports/architecture-review-r1.md` | `728fc356a71787ffb7fff59d38f5f644faa4d66c230f4c2b87366bf06f00068d` |
+| `LCB1B-QUAL` | 1 | Codex，GPT-6，effort 与会话未确认 | Pass with conditions；条件 `LCB1B-QUAL-R1-F01` | `reports/quality-review-r1.md` | `e42f347eabb88e57b3dd428b3a0447509bf3f3f1f69be0e5bf5e52f2d4a2dfcd` |
+| `LCB1B-ARCH` | 2 | Codex（接手会话），模型 / effort / 会话未确认 | Pass with conditions；条件 `LCB1B-ARCH-R2-C01`；D1'、D7'、D9'、D13 全部 Covered，无 Blocker、无 Uncovered | `reports/architecture-review-r2.md` | `7125c51e3e667532c0b2d482b221919de89df02173f15d441d01fb5998e82f29` |
+| `LCB1B-QUAL` | 2 | Codex，GPT-6，effort 与会话未确认 | **Pass**；D2'、D14、D10'、D11'、D12' 全部 Covered 且通过 | `reports/quality-review-r2.md` | `80e7a6fd476de7a6522a67449fac939dfc1f884ae04b57d074aa8dda26abd0c7` |
+
+Executor 身份：r1、r2 为 Claude（`claude-sonnet-5-5`，effort 未确认）；r3（修正轮 2）为 Grok（Grok Build，`grok-4.7`，effort medium，会话 `01a16212-c82b-7d21-aa51-05a98a9a543c`）。
+
+### Architecture lane Round 2 的交接
+
+Architecture 角色的 Round 2 先交给一个 Grok Build 会话，该会话因供应商额度用尽中断，没有留下任何持久化产物（`reports/` 下不存在 `architecture-review-r2.md`）。Coordinator 写了交接记录（`reports/handoff-architecture-lane-r2-01.md`），由一个全新的 Codex 会话按同一份冻结 packet 从头评审，不继承前任的任何私有数据或部分结论，预算按 packet 重新计算，报告第一行为状态行“已完成”，报告头有“接手说明”。前任会话标识与停止位置记为 UNKNOWN。接手会话首次写报告被权限拦截，待 Human 放行后才开始落盘。
+
+### Executor 报告、packet、指令与工具
+
+| 文件 | SHA-256 |
+|---|---|
+| `reports/executor-report-r1.md` | `a19369857a570e5c9f669b51f73d2e03e2e9b8f7f121e0ff14e5d1368a0f24e8` |
+| `reports/executor-report-r2.md` | `77650a01f1410d931fab9295e2262e2f6e6d5c11ffff3de4181a897113f8772c` |
+| `reports/executor-report-r3.md` | `6990969681df4033c0b8430573b9c537ebf4d78faa2be5d873d4c1221f0e71a3` |
+| `packets/packet-architecture-r1.md` | `46389232b6a9188f9a7c36998a98598b0cd174aec864a1e5f18dc53298053fd1` |
+| `packets/packet-quality-r1.md` | `8d9ada780ce4ebf2630ddbd56623e98415aa33430fe1d8713f2754bb288629d3` |
+| `packets/packet-architecture-r2.md` | `5a80fff4a2667a5152bb36e6061324b1f9b232830074cb12252fec23725b7ac1` |
+| `packets/packet-quality-r2.md` | `9db9ee154c8d5b4c6497845f9f81c03b202d39d2bb08bd9ba0274c2c5bcb97a3` |
+| `packets/preflight-matrix.md` | `d7f0c513f8fbd560edce5d19ef94e6538ab3ad97d4e43569352b7a461bd9a3d7` |
+| `tools/scan_cited_paths.py` | `df584ad74db2ae75b77f5c31cc42e1723089df99c4c47491964fb18f06460a91` |
+| `instructions/assignment-final.md` | `565145ae510aa9025fad1e78beee6c865527fc639e9731cb938a7cefff87e046` |
+| `instructions/executor-brief-r1.md` | `2ae9bd3e9cdd6782691c9530fddf86c14635940d6131f5224228d77e40d48776` |
+| `instructions/executor-remediation-r1.md` | `7fc12049c8f9ed8bc9ff84c0c9a5f97ac63ac168a15f5905d1d73ad38d404e58` |
+| `instructions/executor-remediation-r2.md` | `d9e54a3145d7cd740d78e7aa0ea23bb46d0eb856a4d6ca871c52e092e2f4d255` |
+| `instructions/reviewer-architecture-r1.md` | `f6c44088787fcd19604597806db9b430419cbd1d548f46854ded9d1a587a874c` |
+| `instructions/reviewer-quality-r1.md` | `a5313a87a5be7fb8bfd4d305a681e28f28f83370c25bc6be6ebcd46c3e86fe2b` |
+| `instructions/reviewer-architecture-r2.md` | `0a10abe72ef27c92198da15594af75d401df70f821835bd8b4ce75387d01fb8d` |
+| `instructions/reviewer-quality-r2.md` | `eae67d8ec5e697dac2f5446bb5ebc3196711a3671e17e67ecfd40a2a740a23d0` |
+| `instructions/reviewer-architecture-r2-successor-01.md` | `233d80ca41a90f2685b9af99dff0459ce677260ef67ba3b4a29fd2b3c35c5e25` |
+
+评审后记录提交本身的 Executor 报告为 `reports/executor-report-r4.md`；报告不能包含自身哈希，其 SHA-256 由 Executor 在对话末尾报告。
+
+### 发现的最终状态
+
+| 发现 | 状态 |
+|---|---|
+| `LCB1B-ARCH-R1-C01`（Exit evidence 的 Dashboard 行号随顶部插入而过期） | 已修：改为不依赖行号的描述；Architecture Round 2 D7' 复核通过 |
+| `LCB1B-QUAL-R1-F01`（A27 Closeout 把一组 lane 概括成“只有 inconclusive 回执”不准确） | 已修：按回执原文改为分组记录；Quality Round 2 D2'、D14 复核通过 |
+| `LCB1B-ARCH-R2-C01`（Low，非阻断：A27 Closeout 分组标题“没有独立评审残项表”下列了 INT-003 retry 03，条目末尾已说明其独立评审残项在上表，标题与层级需读者自行消解） | **Product Lead 明确 accept，不再修正**（Human Product Owner，2026-10-22，Coordinator 会话）。依据：Architecture 自己判为 Low、非阻断，并确认末尾排除说明避免了实质越权；Quality Round 2 独立读同一段，结论为 retry 03 已明确有独立评审、不属于无评审组。无事实错误，不改变任何残项、Human 决定或 pass 边界 |
+
+### 残项与未决事项
+
+- Round 2 无新增残项。`LCB1B-ARCH-R2-C01` 已按上表处置。
+- A16、A27 的各项残项处置、三份 AUTH 的不可重放声明与 D-1B-AUTH、A16 的原 query-density Product 残项（accept 为受限未知，不是性能 Pass，不新建 tech_debt，A18 的同一残项留待后续批次）均已记录在 A16、A27 的 Closeout 与上文 “Remediation round 1”。其中 `SR-02`、AX reval-03 评审残项、`PR-05`、A16 的原 query-density 残项在仓库内没有各自点名的 Product 文件，只有 Human 在 Coordinator 会话中的决定，以本批次的记录为载体。
+- A16、A27 的 Closeout 末句“本 Close 先在本地提交，待 Reviewer 评审及 Human push / PR / merge 后在 `main` 生效”描述的是提交时的状态；评审与发布已按本节完成，Lifecycle 仍在 PR 合并进 `main` 后生效。
+- 仍为 `UNKNOWN`：批次 1 中 PR #210、#221、#222 的 Final Merge Gate / Merge 授权记录；`docs/authorizations/` 里其它 Work Item 的 active AUTH（如 `RUNTIME-INTEGRATION-HARDENING-001`）与 A16、A27 的关系未核对；物理设备 Apple Development 身份是否补齐；前任 Architecture 会话的标识与停止位置；Round 2 两位 Reviewer 的具体模型变体与会话标识。
+- 本地未配置 pinned KOS validator，该校验未运行；`record_envelopes` 为 advisory。
+
+### 授权与边界
+
+- Human Product Owner 于 2026-10-22 在 Coordinator 会话中授权：追加本评审后记录提交、push 分支 `docs/lifecycle-closeout-batch-1b-001`、开一个 docs-only PR。**不含 merge。**
+- 基线：评审与本记录均以 `origin/main` = `cd0b850cce7f22781c03fb9e66a4590be4357100` 为 base；Coordinator 于 2026-10-22 核对该基线未前进。
+- A16、A27 的 Lifecycle 变更与本 Assignment 自身依 D7（同步记录评审后直接 Close）的 Closed，均在本 PR 合并进 `main` 后生效。不声称 Release / Release-ready；不声称任何性能或产品验收；不改变父任务 `TYPO-CORRECTION-002` 的状态；不修改任何 `docs/authorizations/` 文件；不新建 tech_debt。
+- Executor 自述的模型与 effort 不作为验收项。
