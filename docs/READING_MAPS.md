@@ -113,6 +113,7 @@ Ownership: Primary [`Keyboard UI`](playbooks/keyboard-ui.md); secondary [`Keyboa
 3. `architecture/input-pipeline-and-marked-text.md` — if selection or composition changes.
 4. ADR 0002 and ADR 0004 — if lifecycle/session semantics are involved.
 5. `DEBUGGING.md` — stale/frozen candidate evidence.
+6. [键盘数值](KEYBOARD_VALUES.md) — 改任何布局 / 高度 / 触摸 / 字号数值之前先读，改完同一变更里更新。
 
 Required review: candidate selection references, paging snapshots, marked-text finalization, physical-device UI checks, `KeyboardTests`/relevant KeyboardCore coverage. Review `RELEASE_CHECKLIST.md` if user-visible interaction changes.
 
@@ -220,6 +221,7 @@ Ownership: Primary [`RimeBridge`](playbooks/rime-bridge.md) for T9 schema compat
 3. `architecture/shared-container-and-rime-lifecycle.md` and `architecture/input-pipeline-and-marked-text.md`.
 4. `RIME_SCHEME_MANAGEMENT.md`, `UI_STYLE_GUIDE.md`, `DEBUGGING.md` and `RELEASE_CHECKLIST.md`.
 5. `architecture/rime-artifacts.md` only if the pinned librime artifact itself must change.
+6. [键盘数值](KEYBOARD_VALUES.md) — 改任何布局 / 高度 / 触摸 / 字号数值之前先读，改完同一变更里更新。
 
 Required review: T9 Spike evidence against the pinned librime, base scheme vs effective scheme separation, main-App-only readiness writes, failure fallback to 26-key, no raw-digit host commits, no Extension deployment, nine-key chrome contract in `KEYBOARD_LAYOUT.md` / `UI_STYLE_GUIDE.md` when changing Extension appearance, and physical-device nine-key acceptance when productizing.
 
@@ -280,6 +282,7 @@ Required review: immutable Canonical IDs, exactly one Primary Contract per Case,
 2. `UI_STYLE_GUIDE.md`.
 3. Candidate/input map if keyboard interaction semantics change.
 4. `RELEASE_CHECKLIST.md` accessibility/device checks.
+5. [键盘数值](KEYBOARD_VALUES.md) — 改任何布局 / 高度 / 触摸 / 字号数值之前先读，改完同一变更里更新。
 
 Required review: existing components, light/dark, VoiceOver, Dynamic Type, frozen geometry and no accidental product-contract change.
 
