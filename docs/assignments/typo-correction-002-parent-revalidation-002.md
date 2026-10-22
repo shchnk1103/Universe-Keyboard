@@ -4,9 +4,12 @@ Policy version: 1.0.0
 
 ## Current Status
 
+> **Superseded for current status:** 本 Work Item 于 2026-10-22 在 [`LIFECYCLE-CLOSEOUT-BATCH-1B-001`](lifecycle-closeout-batch-1b-001.md) 下关闭，见文末 [Closeout (2026-10-22)](#closeout-2026-10-22)。
+> 其后出现的 Active / Phase / Next（例如 “Runtime-integration implementation Assignment is `Ready`”、 “INT-003/performance capture … remain out of scope”）等叙述均属各自日期的历史，不是当前事实。Lifecycle 值在本改动进入 `main` 时生效。
+
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` |
+| **Lifecycle** | `Closed` |
 | **Phase** | Sidecar lane: Architecture + Quality **bounded Pass** recorded; INT-003 AX retry 03 independently reviewed as Architecture **Conditional Accept** and Quality **Pass with conditions**, but remains inconclusive because `XCUIElement.tap()` cadence was 526.6–880.8 ms; coordinate-touch feasibility produced no fresh product key event; QA-001 revalidation 06 is invalid for the registered phrase because one extra `n` was entered; revalidation 07 proves the exact 22-letter input, real `rime_ice` sidecar activity and visible candidate UI, but the Human did not observe the target candidate; independent Architecture **bounded Pass** (evidence boundary) and Quality **Bounded Pass with conditions** (evidence completeness) retain the case as inconclusive; Product residual is accepted and a same-package retry is not authorized; no candidate selection or interaction checks ran; paired-performance revalidation 03 captured fresh baseline and treatment streams, but the treatment keyboard process changed, so the pair is invalid and no timing conclusion is available; Architecture and Quality independently reviewed that performance boundary, and Product residual disposition is accepted without upgrading the result; the diagnostic smoke and RIME Ice deployment-smoke preconditions passed; parent remains Active |
 | **Non-claims** | Sidecar observability remains bounded evidence only. INT-003 attempt 01 is inconclusive and retry 02 produced no runtime evidence. No INT-003, QA-001, paired-performance, Product, Quality, Release or merge Gate is closed. Parent Assignment remains Active. |
 | **Next** | QA-001 07 residual is accepted; do not same-package retry. Runtime-integration implementation Assignment is `Ready`; matching AUTH waits for Human live confirmation before Grok copies the pure-Core snapshot. INT-003/performance capture, publication, Gate and parent Close remain out of scope. |
@@ -276,3 +279,57 @@ The parent sidecar worktree is intentionally dirty and is not cleaned or synchro
 ## Revalidation Trigger
 
 Any source or dirty-diff change, merge/rebase, build or install restart, schema/vendor/archive change, App Group/receipt identity change, device/OS/host change, measurement-method change, production recall-bound change or review finding invalidates the applicable lane and requires a new Authorization/Run ID.
+
+## Closeout (2026-10-22)
+
+- **决定来源：** Human Product Owner（Product Lead）于 2026-10-22 Asia/Shanghai 在 Coordinator 会话中的处置决定，记录于 [`lifecycle-closeout-batch-1-001.md`](lifecycle-closeout-batch-1-001.md) §Remediation round 1（`SR-02`、INT-003 AX reval-03 评审残项、`PR-05` 的处置）；D1（TYPO-CORRECTION-002 子项按批收尾）；D-1B-AUTH 确认方案。本 Close 在任务 `LIFECYCLE-CLOSEOUT-BATCH-1B-001` 下由 Executor 回到原文核实来源后写入，基线 `origin/main` `cd0b850cce7f22781c03fb9e66a4590be4357100`。
+- **证据指针：** 父任务 Gate `docs/product-decisions/TYPO-CORRECTION-002-PARENT-FINAL-PRODUCT-GATE-001.md`（父任务已 Closed）；`docs/product-decisions/TYPO-CORRECTION-002-QA001-REVALIDATION-07-PRODUCT-RESIDUAL.md`、`…-PERFORMANCE-REVALIDATION-003-residual.md`、`…-RIME-ICE-DEPLOYMENT-PRODUCT-RESIDUAL.md`（本文件引用或以本 Assignment 为 Parent 的三份 Product 残项决定）；sidecar / AX reval-03 / performance reval-03 / QA-001 07 / rime-ice smoke 的 Architecture 与 Quality 评审（见下表）。
+
+**残项处置表**（ID | owner | 处置 | 来源指针）：
+
+| ID | owner | 处置 | 来源指针 |
+|---|---|---|---|
+| `SR-01`（包 SHA-256 未从安装重算） | Quality | Closed for this lane（既有处置） | `docs/reviews/typo-correction-002-sim-run-2026-09-19-sidecar-reval-01-quality-review.md` 第 53 行 |
+| `SR-02`（键盘选择 / Full Access / high-fidelity 设置为 Executor 自述） | Quality / Human | `accept`，指向父 Gate（Human 决定） | 同一 Quality 评审第 54、64 行；Architecture 评审第 117 行；父 Gate 第 51、55 行。注：仓库内没有一条记录点名 `SR-02` 的 Product 处置，这条对应是 Human 的决定 |
+| `SR-03`、`SR-04` | Architecture / Quality | Accept（既有处置） | Quality 评审第 55、56 行 |
+| startup `route=unavailable` 生命周期 | Architecture | accept（既有处置） | Architecture 评审第 120 行；Quality 评审第 58、65 行；`…PERFORMANCE-REVALIDATION-003-residual.md` 第 56 行（`PR-02`） |
+| INT-003 AX reval-03 Architecture 残项（3 条：stale-work 取消仍 inconclusive；`XCUIElement.tap()` 仅证明 AX 可达；QA-001 与 paired performance 未建立） | Architecture | `accept`，指向父 Gate（Human 决定） | `docs/reviews/typo-correction-002-sim-run-2026-09-19-int003-ax-reval-03-architecture-review.md` 第 27–33 行 |
+| INT-003 AX reval-03 Quality 残项（3 条：无合格 rapid stimulus 与取消标记；无 QA-001 / 性能 / 语义结论；receipt 仍为 Executor-recorded） | Quality | `accept`，指向父 Gate（Human 决定） | `…int003-ax-reval-03-quality-review.md` 第 21–30 行 |
+| `PR-01…PR-04`（性能 reval-03） | Quality / Product | Product Accepted（既有处置） | `…PERFORMANCE-REVALIDATION-003-residual.md` 第 55–58 行 |
+| `PR-05`（候选恢复、QA-001、INT-003 保持独立开放） | Product / Quality | `accept`，指向父 Gate（Human 决定） | 同 Product 决定第 59 行 “Retained open outside this Run”；性能 Quality 评审第 181 行 |
+| QA-001 07：`AR-QA07-01/02/03`、`QR-QA07-01/02/03/04` | Architecture / Quality | Product Accepted（既有处置） | `…QA001-REVALIDATION-07-PRODUCT-RESIDUAL.md` 第 61–66 行 |
+| rime-ice smoke：`QR-01` / `AR-01`（下载的归档文件未单独重算 SHA）、`QR-02`（文档 HEAD 不同于已安装包 source） | Architecture / Quality | Product Accepted（既有处置）：`QR-01 / AR-01` “Accepted for this deployment precondition”，`QR-02` “Accepted with exact package binding” | `docs/product-decisions/TYPO-CORRECTION-002-RIME-ICE-DEPLOYMENT-PRODUCT-RESIDUAL.md` 第 24、25 行；第 49 行 “closes the Product disposition of QR-01/QR-02”；评审 `…rime-ice-deployment-smoke-01-architecture-review.md` 第 66–70 行、`…-quality-review.md` 第 48–53 行 |
+
+其余 lane 按回执原文分组如下（2026-10-22 修正轮 2 就地更正；此前把这些 lane 一律写成 “只有 inconclusive 回执” 的句子不准确）。它们没有独立评审的残项表。其未建立的目标（候选恢复、QA-001、INT-003）由 `PR-05` 与 AX reval-03 残项的 Human 决定覆盖。
+
+**范围 pass**
+
+- diagnostic smoke（`docs/evidence/typo-correction-002-sim-run-2026-09-19-diagnostic-smoke-01.md` 第 97–102 行）：Smoke result 为 `pass`，范围只限 fresh high-fidelity keyboard observability。保留限制：未建立候选恢复、目标选择、交互回归、INT-003 stale-work 取消、计时预算或 Product Gate；该 smoke Authorization 已消费、不得重用。允许的下一步只是为 QA-001 与 paired performance 另行申请新的 Authorization 与 Run ID。
+
+**有明列保留残项**
+
+- Simulator App Group / signing 对账（`docs/evidence/typo-correction-002-simulator-app-group-signing-reconciliation-2026-09-20.md` 第 131–148 行 “Remaining residuals and next boundary”）。四条及处置来源：
+  1. `rime_ice` deployment 在当时的当前包上仍是 `not-run`，本次对账没有新建 Run ID。处置：随后的 RIME Ice deployment-smoke 回执（`docs/evidence/typo-correction-002-sim-run-2026-09-20-rime-ice-deployment-smoke-01.md` 第 136–137 行）记录同一已安装包上的部署前置条件 **Pass**；Product 决定 `docs/product-decisions/TYPO-CORRECTION-002-RIME-ICE-DEPLOYMENT-PRODUCT-RESIDUAL.md` 第 49–50 行只关闭该次 named setup run 的 QR-01/QR-02 处置，并写明父任务当时仍 Active、QA-001 / INT-003 / paired performance 仍开放。
+  2. `security find-identity` 仍报告本机没有 Apple Development 身份；回执写明这与物理设备构建有关，不是上述 Simulator entitlement 证明的阻断项。处置：本对账任务的范围是 Simulator 包与 App Group 容器（回执第 104–117、136–137 行已证明当时的签名 Simulator 包到达共享容器）；物理设备签名身份不在该 Simulator 证据任务内，回执第 135–137 行已把它排除在阻断之外，本 Close 不把它改记为已解决。
+  3. 更早的 shell `simctl get_app_container` 失败保留为 CoreSimulatorService / 工具观察限制，不归类为 App Group 缺失。处置：sidecar Quality 评审 `SR-04`（`docs/reviews/typo-correction-002-sim-run-2026-09-19-sidecar-reval-01-quality-review.md` 第 56 行）已 Accept 为 historical tool limitation，并记录 App Group 存在已被独立恢复；上表 `SR-04` 行沿用该既有处置。
+  4. 旧的 signed-rebuild Authorization 保持不可重用；它对普通 `codesign` 输出的原解释由本回执取代，历史停止记录保留。处置：该 Authorization 的不可重用是回执自己写下的边界（第 141–143 行），本 Close 不重放它，也不另发新的采集授权。
+
+**只有 inconclusive 回执、没有独立评审残项表**
+
+- INT-003 attempt 01：`docs/evidence/typo-correction-002-sim-run-2026-09-19-int003-ax-reval-01-inconclusive.md`（第 72 行：inconclusive/invalid attempt；错误 key ref，键盘身份不稳定）。
+- INT-003 retry 02：`docs/evidence/typo-correction-002-sim-run-2026-09-19-int003-ax-reval-02-compile-blocked.md`（第 5 行：UI-test target 编译失败，运行前阻断；无运行时证据）。
+- INT-003 retry 03：`docs/evidence/typo-correction-002-sim-run-2026-09-19-int003-ax-reval-03-inconclusive.md`（第 110 行：INT-003 stale-work cancellation 为 inconclusive；同回执另有 harness 子项与 sidecar 子项的范围 pass，不是 INT-003 Pass）。其独立评审残项已在上表单列，不在本组。
+- INT-003 low-overhead：`docs/evidence/typo-correction-002-sim-run-2026-09-19-int003-ax-low-overhead-reval-01-inconclusive.md`（第 5、13–14 行：inconclusive；当前键盘不是 Universe Keyboard；复制件与 retry 03 字节相同，非新证据）。
+- INT-003 coordinate feasibility：`docs/evidence/typo-correction-002-sim-run-2026-09-19-int003-ax-coordinate-feas-01-inconclusive.md`（第 106 行：INT-003 inconclusive；无产品按键事件）。
+- QA-001 revalidation 03：`docs/evidence/typo-correction-002-sim-run-2026-09-19-qa001-reval-03-inconclusive.md`（第 135 行：inconclusive; no pass）。
+- QA-001 revalidation 04：`docs/evidence/typo-correction-002-sim-run-2026-09-19-qa001-reval-04-inconclusive.md`（第 108 行：inconclusive; no QA pass）。
+- QA-001 revalidation 06：`docs/evidence/typo-correction-002-sim-run-2026-09-20-qa001-reval-06-inconclusive.md`（第 81 行：inconclusive；多输入一个 `n`，注册短语无效）。
+- performance revalidation 02：`docs/evidence/typo-correction-002-sim-run-2026-09-19-performance-reval-02-inconclusive.md`（第 123–125 行：BASELINE inconclusive，TREATMENT not-run，配对不可测）。performance revalidation 03 有独立评审与 Product 残项，已在上表，不在本组。
+
+**AUTH 现状与不可重放声明**（只读核对，本批次未修改任何 `docs/authorizations/` 文件）：
+
+- `AUTH-TYPO-CORRECTION-002-INT003-REVALIDATION-001`：`docs/authorizations/AUTH-TYPO-CORRECTION-002-INT003-REVALIDATION-001.md` 第 7 行 `Status | active — unconsumed`。
+- `AUTH-TYPO-CORRECTION-002-PARENT-REVALIDATION-001`：`docs/authorizations/AUTH-TYPO-CORRECTION-002-PARENT-REVALIDATION-001.md` 第 7 行 `Status | active — bounded evidence revalidation only`，第 28 行 `"status": "active"`，第 103 行 `"consumption_state": "active"`。
+- 声明：所属 Assignment 已 Closed；这两份 AUTH 不得再被消费或重放；任何后续采集或复核须由 Human 另行签发新的 AUTH。处置：`accept`（Human 2026-10-22 确认的 D-1B-AUTH）。`docs/TECH_DEBT.md` 的 `TD-014`（第 264 行）是同类问题（AUTH consumption_state 卫生）的既有登记，仅作引用，本 Close 不修改它，也不把它当作这两份 AUTH 的处置。
+
+**非声称：** 不是 Release / Release-ready；不是 INT-003、QA-001 或 paired-performance 的 Pass 或 Gate；不改父任务 `TYPO-CORRECTION-002`（已 Closed）；未关闭、削弱本表之外的任何残项；本 Close 先在本地提交，待 Reviewer 评审及 Human push / PR / merge 后在 `main` 生效。

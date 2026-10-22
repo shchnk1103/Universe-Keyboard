@@ -1,5 +1,7 @@
 # Engineering Dashboard
 
+2026-10-22 当前（[LIFECYCLE-CLOSEOUT-BATCH-1B-001](assignments/lifecycle-closeout-batch-1b-001.md)，批次 1b；本地提交，待评审与 Human push / PR / merge）：TYPO-CORRECTION-002-INT003-QUERY-COST-MEASUREMENT-001 与 TYPO-CORRECTION-002-PARENT-REVALIDATION-002 **已关闭**（Lifecycle 在本改动进入 `main` 时生效），残项均已枚举并有来源明确的处置；A16 的原 query-density Product 残项由 Human 作为受限未知 accept，**不是性能 Pass**，更宽 fan-out 是否可接受仍未建立；三份 AUTH 只读记录并声明不可重放，未改动。非 Release，不改父任务。
+
 2026-10-22 当前（[LIFECYCLE-CLOSEOUT-BATCH-1-001](assignments/lifecycle-closeout-batch-1-001.md)，批次 1；本地提交，待评审与 Human push / PR / merge）：实际关闭 7 项 TYPO-CORRECTION-002 子项与已完成的同步记录（PARENT-CLOSE-PUBLICATION-001、DIAGNOSTICS-JOURNAL-UI-ARM-RETEST-001、INT003-CONTROLLED-CAPTURE-002 及其 ARCHITECTURE-REVIEW / QUALITY-REVIEW、KEYBOARD-COMPACT-HEADER-001-STATE-SYNC-001、ACTIVE-WORK-STALE-FACTS-SYNC-001）；INT003-QUERY-COST-MEASUREMENT-001 与 PARENT-REVALIDATION-002 因残项缺来源明确的处置而**未关闭**。非 Release，不改父任务；各 Close 的残项处置见各自文件的 Closeout 一节。
 
 2026-10-21 当前（迟到同步，[ACTIVE-WORK-STALE-FACTS-SYNC-001](assignments/active-work-stale-facts-sync-001.md)）：[KEYBOARD-T9-ADAPTIVE-ROW-001](assignments/keyboard-t9-adaptive-row-001.md) 合并后 `main` CI run `39598364040` failure 之后，仅测试的 [PR #218](https://github.com/shchnk1103/Universe-Keyboard/pull/218)（`7af3f02`）合入，`main` 通过一次（run `39606780704`）；缓解未经验证，hosted 残项为 `tech_debt:TD-020`，根因 UNKNOWN，不声称稳定或已修复。Assignment 仍 Active，非 Release。
