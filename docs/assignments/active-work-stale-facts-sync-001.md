@@ -5,9 +5,12 @@ record_id: ACTIVE-WORK-STALE-FACTS-SYNC-001
 
 ## Current Status
 
+> **Superseded for current status:** 本 Work Item 于 2026-10-22 在 [`LIFECYCLE-CLOSEOUT-BATCH-1-001`](lifecycle-closeout-batch-1-001.md) 下关闭，见文末 [Closeout (2026-10-22)](#closeout-2026-10-22)。
+> 其后出现的 Active / “交接 Reviewer / Human” / Next 等文字均为各自日期的历史叙述，不是当前事实。Lifecycle 值在本改动进入 `main` 时生效。
+
 | Field | Value |
 |---|---|
-| Lifecycle | Active（docs-only 同步在本地执行；未 push） |
+| Lifecycle | Closed（此前：Active（docs-only 同步在本地执行；未 push）） |
 | Current phase | 三个工作包的镜像已在基于 `origin/main` 的本地分支同步；交接 Reviewer / Human |
 | Material non-claims | 不改任何 Assignment 的 Lifecycle 值；不关闭、削弱任何残项；不声称 Release / Release-ready；不声称任何工作项完成、验收或通过独立复核；不对 CI 根因或稳定性作结论；不 push / PR / merge |
 | Next handoff / decision | Coordinator 冻结 Reviewer Lane Packet → Architecture / Quality Reviewer → Human 决定 push / PR |
@@ -197,3 +200,20 @@ Round 1 的派发指令与 Executor 的各轮简报只存在于对话中，未�
 - 仍为 `UNKNOWN`：PR #213、#214、#215、#144 的 Final Merge Gate / Merge 授权记录；PR #214 合并时的 hosted CI；delivery-003 两项 TestFlight 前事项是否已处置；delivery-001 的 Lifecycle 矛盾；#144 合并树与 implementation-001 冻结快照的逐字节关系。
 - 不声称 Release / Release-ready；不声称任何工作项完成或验收；本任务未改变任何 Assignment 的 Lifecycle；本 Assignment 的 Lifecycle 处置待 PR 合并后另行决定。
 - Executor 自述的模型为 `claude-sonnet-5-5`，effort 未确认，不作为验收项。pinned KOS validator 在本地未配置、未运行。
+
+## Closeout (2026-10-22)
+
+- **决定来源：** Human Product Owner 于 2026-10-22 Asia/Shanghai 在 Coordinator 会话中批准 D1（TYPO-CORRECTION-002 子项按批收尾）与 D7（同步记录评审后直接 Close），并要求起草批次 1；本 Close 在任务 `LIFECYCLE-CLOSEOUT-BATCH-1-001` 下由 Executor 逐项核实来源后写入，基线 `origin/main` `7953e8bc96af69298aa4a17efdf982721497e145`。
+- **证据指针：**
+  - PR [#222](https://github.com/shchnk1103/Universe-Keyboard/pull/222) `docs(kos): sync stale post-merge facts (input reliability, TYPO-002 runtime integration, T9 CI mirror)`，合并提交 `7953e8bc96af69298aa4a17efdf982721497e145`，合并时间 `2026-10-22T02:22:49Z`（只读 `gh pr view 222`）。
+  - 本文件 §“Review results and residual disposition”（第 128 行起；Reviewer 报告在仓库外，仓库内记录路径与 SHA-256）。
+
+**残项处置表**（ID | owner | 处置 | 来源指针）：
+
+| ID | owner | 处置 | 来源指针 |
+|---|---|---|---|
+| `AWSF001-ARCH-R2-F01`（Minor） | Executor；Coordinator 跟踪 | fix（Coordinator 更正说明，Human 于 2026-10-22 批准此处置）；Reviewer 尚未重新核对该说明（原文如此，如实保留） | 本文件 §残项（第 184–190 行）；仓库外 `reports/coordinator-correction-to-executor-report-r2.md`（SHA-256 `7153938abee174d7eb9d6808ad67f57d9137f16a1e510bbb3b4b62e5ba76868e`） |
+| `AWSF001-QUAL-R2-F01`（Low） | 同上 | 同上（同一问题） | 同上 |
+| `AWSF001-ARCH-F01` / `F02`、`AWSF001-QUAL-F01` / `F02`（Round 1） | Executor / Coordinator | fix（已修正或解决，Round 2 复核通过） | 本文件 §Round 1 发现的状态 |
+
+**非声称：** 不是 Release / Release-ready；不改父任务 `TYPO-CORRECTION-002`（已 Closed）；未关闭、削弱本表之外的任何残项；本记录“授权与边界”中列出的 UNKNOWN 事项（PR #213、#214、#215、#144 的 Final Merge Gate / Merge 授权记录等）不是 Reviewer 残项，保持 UNKNOWN，不因本 Close 改变；`input-reliability-delivery-001/002/003` 与 TYPO-002 runtime 链各 Assignment 的 Lifecycle 不在本批次内；本 Close 先在本地提交，待 Reviewer 评审及 Human push / PR / merge 后在 `main` 生效。
