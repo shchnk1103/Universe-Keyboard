@@ -15,7 +15,7 @@
 
 | ID | 优先级 | 任务 | 状态 | 下一步 / 阻塞 | 详情 / 来源 | 核对 |
 |---|---|---|---|---|---|---|
-| PF-001 | P0 | Main CI 失败（Run #705） | UNKNOWN | `Swift 6 Quality` 在 `e828a99` 上为绿（`main` 之后的 `64385fe` 上的结果未核实）；#705 根因与关闭记录未核实 | 无 | 2026-10-22 |
+| PF-001 | P0 | Main CI 失败（Run #705） | UNKNOWN | `Swift 6 Quality` 在 `e828a99`（run 39736213387）与 `64385fe`（run 39747053667）上均为 success（`gh run list` 核对于 2026-10-22）；#705 根因与关闭记录未核实 | 无 | 2026-10-22 |
 | PF-003 | P0 | KOS 全局任务对账（生命周期收尾） | In progress | 批次 1、1b、1c 已合并（PR #223、#224、#225）；剩余：链批次其余三项、A18、A28 / A29、同链 publication 子 Assignment、B 区 | [lifecycle-closeout](portfolio/lifecycle-closeout.md) | 2026-10-22 |
 | PF-004 | P1 | Dynamic Task Portfolio（本目录是其种子） | Waiting Human | 需 Human 决定是否立项为正式 Assignment，以及目录放哪里 | [本文件](PORTFOLIO.md) | 2026-10-22 |
 | PF-005 | P1 | UI-1 / UI-2 正式 Closeout | Blocked | UI-2 受 TD-020 约束；UI-1 的 Lifecycle 仍为 Active（PR216 post-merge sync 明确无完成 / 验收 / 独立复核声称），处置待 Human 另行决定 | `docs/ACTIVE_WORK.md` 的第 11、3 项 | 2026-10-22 |
@@ -25,12 +25,12 @@
 | PF-009 | P1 | Real RIME T9 Batch A | UNKNOWN | 清单称 Execution Preflight BLOCKED | 无 | 2026-10-22 |
 | PF-010 | P1 | Next TestFlight Release Gate | UNKNOWN | 清单称等待稳定性验收 | 无 | 2026-10-22 |
 | PF-011 | P2 | ClipboardLab | UNKNOWN | 清单称签名及测试阻断待核实 | 无 | 2026-10-22 |
-| PF-012 | P2 | UI-3：候选字体大小 | Backlog | 需求与设计待冻结 | `docs/plans/keyboard-height-and-candidate-size-discussion-2026-10-08.md`（Human 本地未跟踪文件，不在 `main`；内容与状态 UNKNOWN） | 2026-10-22 |
-| PF-013 | P2 | UI-4：自定义键盘高度 | Backlog | 方案及约束待冻结 | 同上 | 2026-10-22 |
+| PF-012 | P2 | UI-3：候选字体大小 | UNKNOWN | 清单称需求与设计待冻结；仓库内无对应来源 | `docs/plans/keyboard-height-and-candidate-size-discussion-2026-10-08.md`（Human 本地未跟踪文件，不在 `main`；内容与状态 UNKNOWN） | 2026-10-22 |
+| PF-013 | P2 | UI-4：自定义键盘高度 | UNKNOWN | 清单称方案及约束待冻结；仓库内无对应来源 | 同上 | 2026-10-22 |
 | PF-014 | P2 | KW002：Workspace Cleanup | UNKNOWN | 清单称 W1–W6 状态待核实 | 无 | 2026-10-22 |
 | PF-015 | P2 | KTW001 / KTW002：Task Workspace | UNKNOWN | 清单称授权及环境阻断待处理 | 无 | 2026-10-22 |
 | PF-016 | P2 | AI Budget Governance | UNKNOWN | 清单称已合并，待证据与集成核验 | 无 | 2026-10-22 |
-| PF-017 | P3 | Branch Retention & Handoff Lifecycle | Backlog | 待差异审计 | 无 | 2026-10-22 |
+| PF-017 | P3 | Branch Retention & Handoff Lifecycle | UNKNOWN | 清单称 BACKLOG、待差异审计；仓库内无对应来源 | 无 | 2026-10-22 |
 | PF-018 | P1 | KOS 流程优化（交接、报告落盘、预检） | Backlog | 共 19 条候选（第 19 条即本目录）；最先做：放行 Reviewer reports 目录、冻结 packet 前的路径扫描 | [kos-optimization](portfolio/kos-optimization.md) | 2026-10-22 |
 | PF-019 | P1 | Reviewer 独立性政策（按上下文隔离判断，分级 L1 到 L3） | Waiting Human | Human 已同意方向；待起草政策文本并经评审；不适用于已在进行的批次 | [kos-optimization](portfolio/kos-optimization.md) 第 17、18 条 | 2026-10-22 |
 
