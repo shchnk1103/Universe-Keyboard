@@ -73,6 +73,7 @@ record_id: UI3-PD-LANDING-001
 | 全部代码 | 不适用：docs-only，不实施产品 |
 | 全部测试 | 不适用：未改实现与测试合同，不改断言 |
 | 遗留措辞 | 保留 Dashboard 的 UI-3 未立项措辞、Portfolio PF-013 及发布方案 B 的 UI-3 本周只做规格；Knowledge Index 原文无 UI-3 措辞。完整基线位置与原文见外置报告，由 Coordinator 决定 |
+| 修订 1：遗留措辞处置 | 依 Coordinator 修订 1，更新 Dashboard UI4-HEIGHT-001 Non-claims 与 PORTFOLIO PF-013 的两处 UI-3 当前状态陈述为实现 Assigned、未授权开工；2026-10-22 的排序决定与 2026-10-23 发布方案 B 两条带日期历史记录有意保持原样，保留当时的决定与节奏意向，不将其改写为当前状态；本行追加说明取代上行对两处当前陈述的保留安排，其余边界不变 |
 | 内部一致性与验证 | 日期、状态、编号、路径、角色自查；最终字节、JSON、六文件范围、链接与 git diff --check 结果见外置报告；docs-only，跳过 xcodebuild |
 | Executor 报告 | `~/.kos-work/Universe-Keyboard/UI3-PD-001/reports/executor-report.md`；SHA-256 在最终对话交付，避免循环引用 |
 

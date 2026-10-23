@@ -49,7 +49,7 @@
 
 - **Lifecycle:** [实现 Assignment](assignments/ui4-height-001.md) `Assigned`，Entry 尚未满足，不计入 Ready/Active。
 - **Current phase:** [产品决定](product-decisions/UI4-KEYBOARD-HEIGHT-001-product-contract.md) 已被 Human 接受（2026-10-23）；第 11 节时点修订同日确认。
-- **Non-claims:** 未授权开工；无实现、验收、Product Gate、TestFlight 或 Release 许可；UI-3 本周只做规格，未声称立项。
+- **Non-claims:** 未授权开工；无实现、验收、Product Gate、TestFlight 或 Release 许可；UI-3 见 UI3-FONT-001（同为 Assigned，未授权开工）。
 - **Next:** Human 决定派发；实现先完成 P0 并经 Coordinator 确认再继续。发布方案 B 是节奏意向，发布另授权。
 
 ## KEYBOARD-WAKE-LIFECYCLE-DIAGNOSTICS-001 — App Switch 后键盘输入失活诊断
