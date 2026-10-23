@@ -20,7 +20,7 @@
 | PF-003 | P0 | KOS 全局任务对账（生命周期收尾） | In progress | 批次 1、1b、1c 已合并（PR #223、#224、#225）；剩余：链批次其余三项、A18、A28 / A29、同链 publication 子 Assignment、B 区 | [lifecycle-closeout](portfolio/lifecycle-closeout.md) | 2026-10-22 |
 | PF-004 | P1 | Dynamic Task Portfolio（完整 MVP） | UNKNOWN | 清单称“新增，待设计与立项”（Human 2026-10-22 提供，仓库内无记录）；其种子——本目录——已合并（PR #226，`b62bde1`），见 `docs/assignments/portfolio-directory-001.md`；完整 MVP 是否立项、范围与位置待 Human 决定 | `docs/assignments/portfolio-directory-001.md`（仅种子） | 2026-10-22 |
 | PF-005 | P1 | UI-1 / UI-2 正式 Closeout | Blocked | UI-2 受 TD-020 约束；UI-1 的 Lifecycle 仍为 Active（PR216 post-merge sync 明确无完成 / 验收 / 独立复核声称），处置待 Human 另行决定 | `docs/ACTIVE_WORK.md` 的第 11、3 项 | 2026-10-22 |
-| PF-013 | P1 | UI-4：自定义键盘高度 | Backlog | Human 2026-10-22 决定先只做 UI-4、连续拖动、模拟器加一台真机（iPhone 13 Pro）验证；下一步：Technical Spike（实测最高行高与上限规则；真机验证完全访问依赖；评估预览与调节入口）待立项，Product Decision 与 Assignment 均尚未起草；最高行高与无完全访问时的行为待 Spike 后再定 | [ui-4-keyboard-height](portfolio/ui-4-keyboard-height.md) | 2026-10-22 |
+| PF-013 | P1 | UI-4：自定义键盘高度 | Waiting Human | Spike 已完成并被 Human 接受；下一步由 Human 决定 Product Decision 的待决项（见详情）；Product Decision 与 UI-4 Assignment 尚未起草 | [ui-4-keyboard-height](portfolio/ui-4-keyboard-height.md) · [Spike 摘要](evidence/ui4-spike-001-summary.md) · [Spike Assignment](assignments/ui4-spike-001.md) | 2026-10-23 |
 | PF-022 | P1 | 键盘数值核对脚本 | Backlog | 把 `docs/KEYBOARD_VALUES.md` 的数值与代码常量逐个比对，接入 `scripts/ci/run_lightweight_checks.sh`，让文档漂移在 CI 里暴露；尚未立项 | `docs/assignments/keyboard-values-doc-001.md`（评审后记录的后续候选） | 2026-10-22 |
 | PF-006 | P1 | Input Reliability | UNKNOWN | 清单称 Batch 1–3 已合并、剩余验证待完成；`ACTIVE_WORK` 第 6 项（INPUT-RELIABILITY-DELIVERY-003）当前为 Active，其余 delivery 项的处置未在本目录核实 | `docs/ACTIVE_WORK.md` 的第 6 项 | 2026-10-22 |
 | PF-007 | P1 | RIME Deploy Crash / Recovery | UNKNOWN | 清单称 Stage C / D2 等验证未闭环；未核实 | 无 | 2026-10-22 |
@@ -49,6 +49,10 @@
 | 2026-10-22 | UI-4（键盘高度）先于 UI-3（候选字大小）；最高行高待模拟器实测后再定；没有完全访问时的行为待一次真机验证后再定；调节页面里键盘不能被真正按动（硬要求）；接受宿主限高时调高可能无效、横屏不能撑满屏幕（需要上限规则）；步进连续；验证用模拟器加 iPhone 13 Pro（iOS 27.0.1）；第一版功能可用即可，不追求拖动流畅度 | [ui-4-keyboard-height](portfolio/ui-4-keyboard-height.md) |
 | 2026-10-22 | `PD001-ARCH-R2-F01`（PF-004 来源自指）：Product Lead accept，在本次刷新里修正 | `docs/assignments/portfolio-directory-001.md` |
 | 2026-10-22 | F-04 新建 tech_debt `TYPO-CORRECTION-002-F04-OPERATION-RECEIPT-DIAGNOSTICS`，放入批次 1c | [lifecycle-closeout](portfolio/lifecycle-closeout.md) |
+| 2026-10-23 | 接受 UI4-SPIKE-001 报告声明范围内的结论；补充3未经独立复核的边界保留，Close在承载记录的PR合并时生效 | [Spike Assignment](assignments/ui4-spike-001.md) · [摘要](evidence/ui4-spike-001-summary.md) |
+| 2026-10-23 | UI-4 v1主App管理入口，键盘暂不放入口；调节页无用户可输入文字区域；完全访问开关均可调节，仅作建议提醒 | [UI-4详情](portfolio/ui-4-keyboard-height.md) |
+| 2026-10-23 | 存储一个pt行高，按方向夹低不写回；横竖屏按屏高比例限制整块总高（含路径栏），比例待定，约50%/65%仅候选；v1不按设备算默认高度；均为方向决定、未实现 | [UI-4详情](portfolio/ui-4-keyboard-height.md) |
+| 2026-10-23 | 下一次TestFlight打算在UI-4完成后发布；无具体日期、无候选构建，不是发布授权 | [UI-4详情](portfolio/ui-4-keyboard-height.md) |
 
 ## 已完成
 
@@ -57,6 +61,7 @@
 | PF-020 | 任务组合目录（种子） | PR #226（`b62bde1`），`docs/assignments/portfolio-directory-001.md` |
 | PF-021 | 键盘数值文档 | PR #227（`477c042`），`docs/assignments/keyboard-values-doc-001.md` |
 | PF-002 | UI-1 合并后状态同步 | PR #221（`9f7a88a`）；UI-2 的合并后同步与 PR #222（`7953e8b`，过期事实同步）各自的范围未在本目录核实，UNKNOWN |
+| UI4-SPIKE-001 | UI-4 Technical Spike（限定结论已被Human接受，Close合并时生效） | [Spike Assignment](assignments/ui4-spike-001.md)；核对 2026-10-23；不代表UI-4产品开发完成 |
 
 ## 接手须知
 
