@@ -106,3 +106,5 @@ Executor 与 Reviewer 的最终报告、指令、packet 均保存为文件，根
 ### Close 披露（PORTFOLIO-REFRESH-003）
 
 该记录的评审后修订提交（`bd4ec7c`）没有再经独立 Reviewer 复核，仅由 Coordinator 只读核验并已在原结果节披露；本次 Close 依 D7，在 PORTFOLIO-REFRESH-003 进入 main 时生效。
+
+C02（D7 Lifecycle 措辞）经 Human 于 2026-10-23 接受（accept）为残项：仅为文档措辞，无产品或运行时风险；owner 为 Architecture and Knowledge Steward；跟踪在 KOS 优化清单（docs/portfolio/kos-optimization.md，PF-018），下一次触及 Assignment Policy 的变更时一并处理。

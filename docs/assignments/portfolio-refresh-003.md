@@ -78,6 +78,7 @@ record_id: PORTFOLIO-REFRESH-003
 | 落地范围 | M1–M3 的九处精确替换与追加节；`docs/PORTFOLIO.md` 的 PF-012 下一步、PF-023 指针、PF-030、决定记录三行；本记录 |
 | 链接检查与 `git diff --check` | 见外置 Executor 报告 |
 | Executor 报告路径与 SHA-256 | `~/.kos-work/Universe-Keyboard/PORTFOLIO-REFRESH-003/reports/executor-report.md`；SHA-256 由对话交付，避免循环引用 |
+| Round 1 残项处置（2026-10-23，Human） | 外置记录 `~/.kos-work/Universe-Keyboard/PORTFOLIO-REFRESH-003/reports/human-decision-residuals-1.md`，SHA-256 `3c921011041dbc94aea3594af008162bf2e19254b28886c3e437a7bce8cb76af`。本提交不是独立复核 |
 
 ## Closeout Decision
 
