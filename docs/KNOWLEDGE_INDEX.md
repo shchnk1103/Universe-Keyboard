@@ -34,6 +34,8 @@
 
 ## 领域权威
 
+- UI-3 候选字大小：[产品决定](product-decisions/UI3-CANDIDATE-FONT-SIZE-001-product-contract.md)（Accepted）· [实现 Assignment](assignments/ui3-font-001.md)（Assigned，待 Human 授权派发；尚未实现）
+
 - UI-4 自定义键盘高度：[产品决定](product-decisions/UI4-KEYBOARD-HEIGHT-001-product-contract.md)（Accepted）· [实现 Assignment](assignments/ui4-height-001.md)（Assigned，待 Human 授权派发；尚未实现）
 
 - [键盘布局与九键](KEYBOARD_LAYOUT.md) · [方案管理](RIME_SCHEME_MANAGEMENT.md)

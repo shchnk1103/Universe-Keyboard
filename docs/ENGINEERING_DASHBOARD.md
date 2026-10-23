@@ -38,6 +38,13 @@
 
 本文汇总当前项目状态、依赖、Handoff、Blocker 和建议下一步。它不是 Product Contract、架构、Registry、实现或 Quality Evidence 的 Source of Truth，也不独立授予 `Accepted`、`Ready`、`Closed` 或 `Authorized` 状态。
 
+## UI3-FONT-001 — 候选字大小（v1）
+
+- **Lifecycle:** [实现 Assignment](assignments/ui3-font-001.md) `Assigned`，Entry 尚未满足，不计入 Ready/Active；Human 已确认登记本条目（2026-10-23）。
+- **Current phase:** [产品决定](product-decisions/UI3-CANDIDATE-FONT-SIZE-001-product-contract.md) 已被 Human 接受（2026-10-23）。
+- **Non-claims:** 未授权开工；无实现、验收、Product Gate、TestFlight 或 Release 许可；PF-029 仅为目录候选事项。
+- **Next:** Human 决定派发；实现先完成 P0 并经 Coordinator 确认再继续。
+
 ## UI4-HEIGHT-001 — 自定义键盘高度（v1）
 
 - **Lifecycle:** [实现 Assignment](assignments/ui4-height-001.md) `Assigned`，Entry 尚未满足，不计入 Ready/Active。
