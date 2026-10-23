@@ -1,6 +1,6 @@
 # PF-013 — UI-4 自定义键盘高度（含 UI-3 背景）
 
-**状态：Waiting Human。Technical Spike 已完成并被 Human 接受（2026-10-23）；Product Decision 与 Assignment 尚未起草。** 后者指 UI-4 产品开发；Spike 的[补录 Assignment](../assignments/ui4-spike-001.md)在承载记录的 PR 合并时 Close。本文不是产品合同，不授权开发。
+**状态：产品决定已接受，实现 Assignment UI4-HEIGHT-001 为 Assigned，待 Human 授权派发。** [产品决定](../product-decisions/UI4-KEYBOARD-HEIGHT-001-product-contract.md)与[实现 Assignment](../assignments/ui4-height-001.md)于 2026-10-23 定稿，尚未开工；Spike 的[补录 Assignment](../assignments/ui4-spike-001.md)在承载记录的 PR 合并时 Close。本文不是产品合同，不授权开发。
 
 ## 已决定
 
@@ -58,6 +58,8 @@
 
 ## 与本地讨论记录（来源 2）的差异与各条现状
 
+以下“待决”为历史状态；预览采用真键盘调节态、确定后退出调节态，已由[产品决定](../product-decisions/UI4-KEYBOARD-HEIGHT-001-product-contract.md)第 3、7 节回答。
+
 1. **预览方式（待决）**：来源 2 是在设置页里弹出**真正的键盘**，只在顶部显示手柄，用页面上的临时标记告诉键盘进入调节状态，拖动只改内存里的行高；来源 1 是 App 内的**实时预览**（不执行真实输入）。上面的参考截图更接近来源 2 的形态（真键盘、按键变暗、手柄与按钮在键盘上）。
 2. **确定之后（待决）**：来源 2 留在本页并可立刻在输入框里试手感；来源 1 未提。
 3. **完全访问（历史待定；2026-10-23已决定不作门槛）**：来源 2 写“看得见但点不进去”；来源 1 写“尚需验证”。Human 当时决定真机验证后再说；现状以上方2026-10-23决定为准。
@@ -71,18 +73,19 @@
 - `docs/PROJECT_CONTEXT.md` 描述的“216pt 时先隐藏再显示”机制，在代码里找不到；216pt 下的真实压缩结果 UNKNOWN。
 - 两份布局测试把 254 / 288 / 45 / 46 写死，其中一份所在文件含 TD-020 记录的间歇性失败测试；`docs/TECH_DEBT.md` 的指引是不要再放宽超时。
 
-## 待决问题与待验证假设（未授权实施；Spike 后现状见[结果摘要](../evidence/ui4-spike-001-summary.md)）
+## 待决问题与待验证假设（未授权实施）
 
-- 预览具体形态仍待定；已决定主 App 入口和不可输入文字区域。已有静态缩略图，无联动实时预览；成本比较仅推断，布局保真及全路径不可输入未证明。
-- 入口位置已由 Human 决定（见2026-10-23）；Spike 自有存储仅限定观察，正式保存/采用通道仍未验证，不再由 Executor 选择键盘内入口。
-- 最高行高与上限规则：有效行高要同时受宿主允许的高度与一个“不遮挡输入内容”的比例限制；最高行高与比例的取值，用模拟器各机型 / 方向的实测，加上 iPhone 13 Pro 的竖屏与横屏真机实测来定，由 Human 决定。步进已决定为连续拖动，只有保存精度待定（见下一条）。
-- 保存精度：连续拖动之后保存到什么精度。
-- 拖动过程中何时向宿主请求新的键盘高度：随手实时请求，还是先只改内容、松手或确定时再请求（参考截图里是后者的样子，但无法确认）。
-- 完全访问：Spike 关/开时共享键存在的单机单次观察不等于平台保证；主 App 无检测原语，建议提醒的位置/时机/依据待定。
-- 36pt 是否可用：行间距为 8 且触摸热区按相邻键中线补缝，推算内部行的有效命中高度约为行高加 8；这只是推算，需要实测和可访问性复核。
-- 设置读取时机与首次布局安装的关系、是否先默认再跳变仍 UNKNOWN；实验读自有行高不能证明正式链路。
-- 在系统只给较低高度的宿主里“调高”可能看不出变化：Human 已决定接受（见“已决定”）；仍待决的是要不要在设置里提示当前可达的上限。
-- 对测试的影响：写死 254 / 288 / 45 / 46 的断言要改成读取默认值或参数化，且不能碰 TD-020 的失败模式。
+下列条目的产品选择已由[产品决定](../product-decisions/UI4-KEYBOARD-HEIGHT-001-product-contract.md)回答；验证缺口仍保留，Spike 证据边界见[结果摘要](../evidence/ui4-spike-001-summary.md)。
+
+- **已由产品决定回答：预览形态与保存通道。** 采用真正键盘调节态、扩展自有存储，不依赖共享存储或完全访问；全路径输入拦截仍须验证（第 3、4、7 节）。
+- **已由产品决定回答：封顶与精度。** 横屏行高不超过默认 45，竖屏总高不超过屏高 50%（含路径栏），保存整数 pt；比例及九键组字态须实测复核（第 4、5 节）。
+- **已由产品决定回答：拖动生效时点。** 第一版接受松手生效，不要求跟手（第 3 节）。
+- **已由产品决定回答：完全访问说明。** 不作门槛，入口旁固定文字；确切文案仍待定，单机观察不是平台保证（第 6、11、12 节）。
+- **已由产品决定回答：下限。** 采用 40pt，取代实验下限 36；真机触控与可访问性验证仍待执行（第 5、10 节）。
+- **仍待解决：** 设置读取与首次布局顺序、屏幕高度与方向来源、隐形输入框 VoiceOver 与关闭方式，在实现 Assignment P0 解决并经 Coordinator 确认；不先闪默认高度仍须验证（第 11 节）。
+- **仍待验证：** 宿主压缩时有效行高跟随且不覆盖保存值；是否额外提示当前可达上限未定。Human 接受调高可能无效的历史决定保留。
+- **已由产品决定回答：测试边界。** 写死默认数值的断言改为引用常量或参数化，不放宽任何超时或断言；TD-020 失败模式仍须关注（第 8、10 节）。
+- **仍待决定 / 验证：** 设置页具体文字、Spike 之外机型与系统是否补测、真机封顶比例是否调整、九键组字态 288 实测（第 11 节）。
 
 ## Spike 结果
 
@@ -96,5 +99,5 @@
 ## 治理提示
 
 - 改动冻结基线（`docs/UI_STYLE_GUIDE.md` 的 V1 UI Freeze，行高 45）需要 Product Decision；`docs/KEYBOARD_VALUES.md` 要在同一次变更里更新。
-- 一个责任区一个 writer（`docs/AI_WORKFLOW.md`）；项目目前采用 KOS Agent Kit v0.9.0 的 advisory pin（`AGENTS.md`）。2026-10-22 未找到 UI-4 独立开发 Task/Assignment/Registry 是历史盘点；本次补录的是 Spike 及其 Closeout，均不授权产品开发。既有记录包括：本目录的 PF-013 行与本文件，`docs/assignments/keyboard-values-doc-001.md` 与 `docs/KEYBOARD_VALUES.md` 对 UI-4 的提及（前者把 UI-4 的 Product Decision 列为后续候选），以及本次目录刷新的 Assignment `docs/assignments/portfolio-refresh-001.md`（它只记录目录刷新，不是 UI-4 的开发 Assignment）。
+- 一个责任区一个 writer（`docs/AI_WORKFLOW.md`）；项目目前采用 KOS Agent Kit v0.9.0 的 advisory pin（`AGENTS.md`）。2026-10-22 未找到 UI-4 独立开发 Task/Assignment/Registry 是历史盘点；Spike 及其 Closeout 不授权产品开发；现已新增上述产品决定与 Assigned 实现 Assignment，仍待 Human 派发。既有记录包括：本目录的 PF-013 行与本文件，`docs/assignments/keyboard-values-doc-001.md` 与 `docs/KEYBOARD_VALUES.md` 对 UI-4 的提及（前者把 UI-4 的 Product Decision 列为后续候选），以及本次目录刷新的 Assignment `docs/assignments/portfolio-refresh-001.md`（它只记录目录刷新，不是 UI-4 的开发 Assignment）。
 - 真机与模拟器验证需要 Human 操作；可用真机目前只有一台 iPhone 13 Pro（iOS 27.0.1）；需要其它设备或系统版本时再向 Human 确认。
