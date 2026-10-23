@@ -7,10 +7,10 @@ record_id: UI4-SPIKE-001-CLOSEOUT-001
 
 | Field | Value |
 |---|---|
-| Lifecycle | Completed |
-| Current phase | Executor文档与本地核验已完成；本地候选身份及报告回执见Exit evidence，独立评审已完成（见本记录结果节），待Human发布决定 |
-| Material non-claims | 非UI-4产品决定/开发Assignment/授权；不提升实验、Quality、设备或Release结论；无push/PR/merge |
-| Next handoff / decision | 独立评审已完成（见本记录结果节），待Human发布决定 |
+| Lifecycle | Closed — 按 D7 在进入 main 时生效；承载本记录的 PR #229 已于 2026-10-23 合并（`ba01a45472b8e52da8cdda3473c4031976d1db02`） |
+| Current phase | Executor文档与本地核验已完成；独立评审已完成（见本记录结果节）；PR #229 已合并，Close 已生效 |
+| Material non-claims | 非UI-4产品决定/开发Assignment/授权；不提升实验、Quality、设备或Release结论 |
+| Next handoff / decision | 无。UI-4 Product Decision 与开发 Assignment 另行起草 |
 | Residuals | 本Closeout独立评审已完成，U4S-CLOSE-ARCH-F01由本轮修正落实（见本记录结果节）；原Spike条件处置见[Spike记录](ui4-spike-001.md) |
 
 ---
@@ -98,7 +98,7 @@ Reviewer claim register C1–C8沿用冻结指令：摘要忠实/证据边界、
 - U4S-CLOSE-ARCH-F01：Owner为Closeout Executor；disposition为`fix`，由本提交在Portfolio的UI4-SPIKE-001已完成行“完成依据”单元格补入“核对 2026-10-23”落实；不新增列、不重编号、不改其它历史行。
 - 两位Reviewer分别曾担任原Spike对应lane的Reviewer（Architecture R1/R2、Quality R1–R3），不是本次Closeout实现者；不是对来源材料完全盲审。该披露保留给Human发布决定判断，不扩大独立性声明。
 - 本轮日期/状态措辞修订没有再请独立Reviewer复核；由Coordinator后续只读核对本提交并披露，不将Executor的fix记录改成Reviewer复核通过。
-- Human发布决定仍待；本Assignment在进入`main`时按D7 Close。没有push/PR/merge、UI-4实施或Release授权。
+- 承载本记录的 PR #229 已于 2026-10-23 合并（`ba01a45472b8e52da8cdda3473c4031976d1db02`），本 Assignment 按 D7 在进入 `main` 时 Close，该 Close 现已生效。没有 UI-4 实施或 Release 授权。
 
 ## Exit evidence
 
@@ -124,4 +124,4 @@ Reviewer claim register C1–C8沿用冻结指令：摘要忠实/证据边界、
 - 内容提交：`2fa77d2e249ebb633096aba0b29ba73894b81558`；报告冻结后本节仅登记交付元数据，不改变四份成果正文。
 - 报告路径/SHA-256见上；报告自身不嵌自身摘要。最终本地HEAD由对话交付，不产生循环自引用。
 - 最终检查命令：`python3 scripts/ci/check_markdown_links.py --base ce165f732c333fcd07b9a8cc950524d5e450acd1 --head HEAD`；`git diff --check ce165f732c333fcd07b9a8cc950524d5e450acd1 HEAD`。本回执提交后执行，若失败即停止交付、不发布；结果在最终对话报告。
-- 独立评审已完成（见本记录结果节），待Human发布决定；push/PR/merge未执行，本任务仍为Completed，按D7在进入main时Close。
+- 独立评审已完成（见本记录结果节）。承载本记录的 PR #229 已合并，本任务按 D7 在进入 main 时 Close，该 Close 现已生效。

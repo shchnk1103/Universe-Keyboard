@@ -31,3 +31,6 @@
 19. 目录化的任务组合（本目录）：把“还没有 Assignment 的意图、优先级、依赖与决定”从对话里搬到文件里。
 20. Assignment 草稿定稿前对照 `docs/ASSIGNMENT_POLICY.md` 的 Required Assignment Fields 表做机械自查：`KEYBOARD-VALUES-DOC-001` 与 `PORTFOLIO-DIRECTORY-001` 的 Assignment 都漏了必填的 Environment Executor，前者被 Executor 在入口合同处拦下，后者合并后才发现。
 21. Executor 与 Reviewer 把报告写成文件后，对话里的最终消息只给状态、路径、SHA-256 与文件里没有的内容，不要复述报告（Human 2026-10-22 反馈）。
+22. 冻结 Reviewer 包之前做自洽性检查：要求读取或复算的材料必须都在允许集内。停止条件按项区分。整轮停止只用于独立性无法声明、冻结表摘要不符、HEAD 不对、越权写入。其它缺口标成未覆盖并停该条，不把整轮停掉。
+23. 派发 = 角色 + 文件路径 + SHA-256。不在对话里粘贴长指令；指令先落盘，派发消息只指向那份文件和它的 SHA-256。
+24. “任务完成”的定义：报告与 Reviewer 结论交付即完成。待 Human 决定的事写进报告的固定一节。最终消息只写一句，指向该节，不在对话里展开。

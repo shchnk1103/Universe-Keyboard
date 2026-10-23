@@ -22,18 +22,22 @@
 | PF-005 | P1 | UI-1 / UI-2 正式 Closeout | Blocked | UI-2 受 TD-020 约束；UI-1 的 Lifecycle 仍为 Active（PR216 post-merge sync 明确无完成 / 验收 / 独立复核声称），处置待 Human 另行决定 | `docs/ACTIVE_WORK.md` 的第 11、3 项 | 2026-10-22 |
 | PF-013 | P1 | UI-4：自定义键盘高度 | Waiting Human | Spike 已完成并被 Human 接受；下一步由 Human 决定 Product Decision 的待决项（见详情）；Product Decision 与 UI-4 Assignment 尚未起草 | [ui-4-keyboard-height](portfolio/ui-4-keyboard-height.md) · [Spike 摘要](evidence/ui4-spike-001-summary.md) · [Spike Assignment](assignments/ui4-spike-001.md) | 2026-10-23 |
 | PF-022 | P1 | 键盘数值核对脚本 | Backlog | 把 `docs/KEYBOARD_VALUES.md` 的数值与代码常量逐个比对，接入 `scripts/ci/run_lightweight_checks.sh`，让文档漂移在 CI 里暴露；尚未立项 | `docs/assignments/keyboard-values-doc-001.md`（评审后记录的后续候选） | 2026-10-22 |
-| PF-006 | P1 | Input Reliability | UNKNOWN | 清单称 Batch 1–3 已合并、剩余验证待完成；`ACTIVE_WORK` 第 6 项（INPUT-RELIABILITY-DELIVERY-003）当前为 Active，其余 delivery 项的处置未在本目录核实 | `docs/ACTIVE_WORK.md` 的第 6 项 | 2026-10-22 |
-| PF-007 | P1 | RIME Deploy Crash / Recovery | UNKNOWN | 清单称 Stage C / D2 等验证未闭环；未核实 | 无 | 2026-10-22 |
-| PF-008 | P1 | Keyboard Wake V3 | UNKNOWN | 清单称兼容性门禁待核实 | 无 | 2026-10-22 |
-| PF-009 | P1 | Real RIME T9 Batch A | UNKNOWN | 清单称 Execution Preflight BLOCKED | 无 | 2026-10-22 |
-| PF-010 | P1 | Next TestFlight Release Gate | UNKNOWN | 清单称等待稳定性验收 | 无 | 2026-10-22 |
-| PF-011 | P2 | ClipboardLab | UNKNOWN | 清单称签名及测试阻断待核实 | 无 | 2026-10-22 |
+| PF-006 | P1 | Input Reliability | In progress | 三份 `input-reliability-delivery-001/002/003.md` 的 Lifecycle 都是 Active；PR #213 `bb430f9`、#214 `d08175b`、#215 `096183c` 已合并；`docs/ACTIVE_WORK.md` 第 6 项为 Active。残项（真实 RIME T9 恢复集成、激活后 Extension 完整交互、Final Merge Gate 记录）UNKNOWN。Lifecycle 处置留给生命周期收尾批次，本行不处置 | `docs/assignments/input-reliability-delivery-001.md`、`input-reliability-delivery-002.md`、`input-reliability-delivery-003.md`；`docs/ACTIVE_WORK.md` 第 6 项 | 2026-10-23 |
+| PF-007 | P1 | RIME Deploy Crash / Recovery | UNKNOWN | 不与 `RIME-DEPLOY-INTERRUPT-RECOVER-001`（Closed，PR #115）合并；是否同线 UNKNOWN | 无直接 Assignment；相关见 `docs/assignments/rime-deploy-interrupt-recover-001.md`（是否同线 UNKNOWN） | 2026-10-23 |
+| PF-008 | P1 | Keyboard Wake V3 | Waiting Human | 有界发布已合并（PR #198）；三件相关 Assignment 已 Closed（`docs/ACTIVE_WORK.md` 第 45 行）；`keyboard-wake-diagnostic-v3-compatibility-gate-001` 仍为 Reviewed，父 Assignment Active，v6 合同待实现；是否关闭由 Human 决定 | `docs/ACTIVE_WORK.md` 第 45 行；`docs/assignments/keyboard-wake-diagnostic-v3-compatibility-gate-001.md` | 2026-10-23 |
+| PF-009 | P1 | Real RIME T9 Batch A | UNKNOWN | 仓库内无 “Batch A” Assignment；相关线索是 real RIME T9 残项，是否同一所指 UNKNOWN | 无（仓库内无 “Batch A” Assignment；相关线索：`docs/assignments/input-reliability-delivery-003.md` 第 76 行的 real RIME T9 残项） | 2026-10-23 |
+| PF-010 | P1 | Next TestFlight Release Gate | Blocked | 先决定这次 TestFlight 的范围，并逐项分类 `docs/RELEASE_CHECKLIST.md` 第 66–77 行的 TD-002 / 003 / 004 / 005；`docs/authorizations/AUTH-INPUT-RELIABILITY-DELIVERY-003-PRODUCT-PR.md` 第 10 行的真实 RIME T9 恢复集成与激活后 Extension 真实交互尚未处置；Human 打算在 UI-4 完成之后发布，无日期与候选构建（意向，不是授权） | [testflight-gates](portfolio/testflight-gates.md) | 2026-10-23 |
+| PF-011 | P2 | ClipboardLab | UNKNOWN | 是否还要做：未说 | 无（仓库内无 ClipboardLab / smart-paste 记录；Human 认为与 clipboard-smart-paste-spike-001 同一件事，未经仓库核对） | 2026-10-23 |
 | PF-012 | P2 | UI-3：候选字体大小 | Backlog | Human 2026-10-22 决定排在 UI-4 之后；需求与设计尚未冻结 | [ui-4-keyboard-height](portfolio/ui-4-keyboard-height.md)（同源讨论背景）；Human 本地未跟踪的 `docs/plans/keyboard-height-and-candidate-size-discussion-2026-10-08.md`（不在 `main`，内容未核实） | 2026-10-22 |
-| PF-014 | P2 | KW002：Workspace Cleanup | UNKNOWN | 清单称 W1–W6 状态待核实 | 无 | 2026-10-22 |
-| PF-015 | P2 | KTW001 / KTW002：Task Workspace | UNKNOWN | 清单称授权及环境阻断待处理 | 无 | 2026-10-22 |
-| PF-016 | P2 | AI Budget Governance | UNKNOWN | 清单称已合并，待证据与集成核验 | 无 | 2026-10-22 |
-| PF-017 | P3 | Branch Retention & Handoff Lifecycle | UNKNOWN | 清单称 BACKLOG、待差异审计；仓库内无对应来源 | 无 | 2026-10-22 |
-| PF-018 | P1 | KOS 流程优化（交接、报告落盘、预检） | Backlog | 共 21 条候选（第 19 条为本目录，第 20、21 条为后续新增）；最先做：放行 Reviewer reports 目录、冻结 packet 前的路径扫描 | [kos-optimization](portfolio/kos-optimization.md) | 2026-10-22 |
+| PF-014 | P2 | KW002：Workspace Cleanup | UNKNOWN | 清单称 W1–W6 状态待核实；分支与 worktree 的清理见 PF-023 | 无（PR #53 = TD-009 `8a530a9`，与本行无关；相关规则 `AGENTS.md` 第 60–63 行） | 2026-10-23 |
+| PF-015 | P2 | KTW001 / KTW002 试点 | UNKNOWN | `docs/tasks/` 下没有 KTW 目录；试点是否立项待 Human 决定 | 无（`docs/tasks/` 下没有 KTW 目录） | 2026-10-23 |
+| PF-016 | P2 | AI Budget Governance | Backlog | 已落地部分为 UK-006 reviewer 范围 / 预算 / 停止条款（PR #170 `1c14ab6`，#172 收尾）；规则差异审计、轻量使用记录试点、与目录打通仍为讨论，未立项；PR #54 / `72c7379` 为错误引用 | [ai-budget-governance](portfolio/ai-budget-governance.md)；`docs/product-decisions/KOS-UPGRADE-UK-006-v0.9.0-adoption.md` | 2026-10-23 |
+| PF-017 | P3 | Branch Retention & Handoff Lifecycle | Backlog | 四种生命周期概念写在 PF-023；规则细节待定，未立项 | 无直接来源；相关既有规则 `AGENTS.md` 第 60–63 行、`docs/ASSIGNMENT_POLICY.md` 第 159 行；详情见 [branch-worktree-cleanup](portfolio/branch-worktree-cleanup.md) | 2026-10-23 |
+| PF-018 | P1 | KOS 流程优化（交接、报告落盘、预检） | Backlog | 共 24 条候选（第 19 条为本目录，第 22–24 条为 2026-10-23 追加）；最先做：放行 Reviewer reports 目录、冻结 packet 前的路径扫描 | [kos-optimization](portfolio/kos-optimization.md) | 2026-10-23 |
+| PF-023 | P2 | 分支与 worktree 的清理机制 | Backlog | 只读盘点已做；规则细节待定；本行不授权任何清理 | [branch-worktree-cleanup](portfolio/branch-worktree-cleanup.md) | 2026-10-23 |
+| PF-024 | P2 | GitHub CI 的后续改进 | Backlog | Human 的想法：进一步拆分、更快、更易定位；只读分析认为拆分提速不是优先项；不改 CI | [ci-improvement](portfolio/ci-improvement.md) | 2026-10-23 |
+| PF-025 | P2 | Release Evidence / 构建来源管理 | Backlog | Human 与 ChatGPT 的讨论，未核对；尚未立项 | 无直接来源；相关：`docs/RELEASE_CHECKLIST.md` | 2026-10-23 |
+| PF-026 | P2 | RIME Sync / UI01 | UNKNOWN | Human 只留线索，之后有空再说 | 无（Human 不记得，只留线索，之后有空再说） | 2026-10-23 |
 | PF-019 | P1 | Reviewer 独立性政策（按上下文隔离判断，分级 L1 到 L3） | Waiting Human | Human 已同意方向；待起草政策文本并经评审；不适用于已在进行的批次 | [kos-optimization](portfolio/kos-optimization.md) 第 17、18 条 | 2026-10-22 |
 
 ## 决定记录
@@ -53,6 +57,12 @@
 | 2026-10-23 | UI-4 v1主App管理入口，键盘暂不放入口；调节页无用户可输入文字区域；完全访问开关均可调节，仅作建议提醒 | [UI-4详情](portfolio/ui-4-keyboard-height.md) |
 | 2026-10-23 | 存储一个pt行高，按方向夹低不写回；横竖屏按屏高比例限制整块总高（含路径栏），比例待定，约50%/65%仅候选；v1不按设备算默认高度；均为方向决定、未实现 | [UI-4详情](portfolio/ui-4-keyboard-height.md) |
 | 2026-10-23 | 下一次TestFlight打算在UI-4完成后发布；无具体日期、无候选构建，不是发布授权 | [UI-4详情](portfolio/ui-4-keyboard-height.md) |
+| 2026-10-23 | D1–D6：PF-007 保持 UNKNOWN 且不与 `RIME-DEPLOY-INTERRUPT-RECOVER-001` 合并；PF-008 改为 Waiting Human，不移到已完成；PF-010 改为 Blocked；PF-011 保持 UNKNOWN；PF-014 保持 UNKNOWN，Cleanup Audit 未入库；PF-017 改为 Backlog | 本文件对应行；[testflight-gates](portfolio/testflight-gates.md)；[branch-worktree-cleanup](portfolio/branch-worktree-cleanup.md) |
+| 2026-10-23 | PF-008 更正：三件 keyboard-wake Assignment 已 Closed、PR #198 已合并，但 `keyboard-wake-diagnostic-v3-compatibility-gate-001` 仍为 Reviewed，不移到已完成 | `docs/ACTIVE_WORK.md` 第 45 行；`docs/assignments/keyboard-wake-diagnostic-v3-compatibility-gate-001.md` |
+| 2026-10-23 | PF-016 来源是 Human 与 ChatGPT 的讨论总结（仓库外，未核对）；旧总结“经 PR #54、提交 `72c7379` 合并”是错误引用，不得当证据 | [ai-budget-governance](portfolio/ai-budget-governance.md) |
+| 2026-10-23 | Human 提出进一步拆分 GitHub CI；只读抽样后的发现是：最长几条 run 的主因是 TD-020 间歇失败后的重跑，拆分提速不是优先项。想法未立项 | [ci-improvement](portfolio/ci-improvement.md) |
+| 2026-10-23 | Human 提出分支与 worktree 清理机制（合并 PF-014 / PF-017 的动机）；同意先做只读盘点（已由 Grok bot 完成）；规则细节待定；本次没有执行也没有授权清理 | [branch-worktree-cleanup](portfolio/branch-worktree-cleanup.md) |
+| 2026-10-23 | Human 说明已不记得 PF-004 所指的那些事；这正是需要持久化任务管理系统的理由。不改变 PF-004 的行 | 本文件 PF-004 |
 
 ## 已完成
 
@@ -61,6 +71,7 @@
 | PF-020 | 任务组合目录（种子） | PR #226（`b62bde1`），`docs/assignments/portfolio-directory-001.md` |
 | PF-021 | 键盘数值文档 | PR #227（`477c042`），`docs/assignments/keyboard-values-doc-001.md` |
 | PF-002 | UI-1 合并后状态同步 | PR #221（`9f7a88a`）；UI-2 的合并后同步与 PR #222（`7953e8b`，过期事实同步）各自的范围未在本目录核实，UNKNOWN |
+| UK-007 | KOS Task Workspace 采纳（UK-007） | `docs/assignments/kos-upgrade-uk-007-task-workspace.md` Closed；PR #211 `834c6af3`；产品决定 2026-10-18 Accepted，opt-in，不含自动跨平台接管。KTW 试点仍是未完成表的 PF-015（UNKNOWN） |
 | UI4-SPIKE-001 | UI-4 Technical Spike（限定结论已被Human接受，Close合并时生效） | [Spike Assignment](assignments/ui4-spike-001.md)；核对 2026-10-23；不代表UI-4产品开发完成 |
 
 ## 接手须知
