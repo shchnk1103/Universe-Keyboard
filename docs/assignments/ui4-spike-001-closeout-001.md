@@ -99,6 +99,13 @@ Reviewer claim register C1–C8沿用冻结指令：摘要忠实/证据边界、
 | Markdown link check | 基线ce165f7的两份原文件无坏链；base=head基线检查通过；最终提交比较对由外置报告/最终交接记录 |
 | git diff --check | Executor-recorded：工作树检查通过；提交比较检查在最终回执中记录 |
 | 本地提交与外部动作 | 本地提交身份在外置报告及最终交接给出；无push/PR/merge，不声称可合并 |
-| Executor报告路径与SHA-256 | `~/.kos-work/Universe-Keyboard/UI4-SPIKE-001-CLOSEOUT-001/reports/executor-report-final.md`；外置报告完成后追加SHA-256回执（仅交付元数据，不重写成果） |
+| Executor报告路径与SHA-256 | `~/.kos-work/Universe-Keyboard/UI4-SPIKE-001-CLOSEOUT-001/reports/executor-report-final.md`；`b07c1661f3546a2d4571ee44d034b15d2e7fc987670924da0c9eaa1f67d8b574`；内容提交`2fa77d2e249ebb633096aba0b29ba73894b81558`，仅后续追加本交付元数据 |
 
 本次docs-only，跳过xcodebuild、Swift格式与单元测试；无Swift变更，不新增设备实验。CHANGELOG/架构文档不需要更新，理由见逐项检查。
+
+## 最终交付回执（2026-10-23，Executor-recorded）
+
+- 内容提交：`2fa77d2e249ebb633096aba0b29ba73894b81558`；报告冻结后本节仅登记交付元数据，不改变四份成果正文。
+- 报告路径/SHA-256见上；报告自身不嵌自身摘要。最终本地HEAD由对话交付，不产生循环自引用。
+- 最终检查命令：`python3 scripts/ci/check_markdown_links.py --base ce165f732c333fcd07b9a8cc950524d5e450acd1 --head HEAD`；`git diff --check ce165f732c333fcd07b9a8cc950524d5e450acd1 HEAD`。本回执提交后执行，若失败即停止交付、不发布；结果在最终对话报告。
+- 独立评审、push/PR/merge未执行；本任务仍为Completed，合并生效的Close须经过后续评审/发布决定。
