@@ -104,7 +104,12 @@ class KeyboardViewController: UIInputViewController {
     /// 不要在 `init` 中直接设置 `inputView`：系统可能因此跳过 `viewDidLoad`，
     /// 让 `viewWillAppear` 在 KeyboardCore 控制器创建前到达，最终留下空白键盘。
     override func loadView() {
-        view = KeyboardAudioFeedbackInputView(frame: .zero, inputViewStyle: .keyboard)
+        let inputView = KeyboardAudioFeedbackInputView(frame: .zero, inputViewStyle: .keyboard)
+        inputView.onWindowRemoved = { [weak self] in
+            self?.keyboardHeightAdjustmentAcceptsMarkers = false
+            self?.finishKeyboardHeightAdjustment(.windowRemoved)
+        }
+        view = inputView
     }
 
     // MARK: - 视图引用
@@ -374,8 +379,15 @@ class KeyboardViewController: UIInputViewController {
     let keyboardSurfaceMaskCornerRadius: CGFloat = 34
     /// 本轮显示的有效行高；用户期望值保存在独立快照里，夹取不回写。
     var keyHeight = CGFloat(KeyboardHeightSettings.defaultRowHeight)
-    /// P2 仅提供注入点；默认没有保存值，不接共享存储或主 App。
-    var keyboardRowHeightSource: () -> Int? = { nil }
+    /// 默认读写扩展私有偏好；测试注入独立存储，不走共享设置快照。
+    var keyboardRowHeightSource: () -> Int? = { KeyboardHeightPreferenceStore(defaults: .standard).read() }
+    var keyboardRowHeightSink: (Int?) -> Void = { KeyboardHeightPreferenceStore(defaults: .standard).write($0) }
+    var keyboardHeightAdjustmentTokenConsumer: (UUID) -> Bool = {
+        KeyboardHeightAdjustmentTokenStore(defaults: .standard).consume($0)
+    }
+    var keyboardHeightAdjustmentAcceptsMarkers = false
+    var keyboardHeightAdjustmentSession: KeyboardHeightAdjustmentSession?
+    var keyboardHeightAdjustmentOverlay: KeyboardHeightAdjustmentOverlay?
     var keyboardHeightGeometrySource: (() -> KeyboardHeightGeometry?)?
     var keyboardHeightSettings = KeyboardHeightSettings()
     var keyboardHeightNeedsRead = true
@@ -432,6 +444,7 @@ class KeyboardViewController: UIInputViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        keyboardHeightAdjustmentAcceptsMarkers = true
         #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
             wakeOwnerProbeWillAppear()
         #endif
@@ -539,6 +552,8 @@ class KeyboardViewController: UIInputViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        keyboardHeightAdjustmentAcceptsMarkers = false
+        finishKeyboardHeightAdjustment(.disappeared)
         keyboardHeightNeedsRead = true
         #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
             wakeOwnerProbeWillDisappear()
@@ -590,6 +605,8 @@ class KeyboardViewController: UIInputViewController {
     /// RIME is finalized first because its database locks are the critical resource;
     /// diagnostic persistence is disabled last so no delayed App Group write survives.
     func suspendKeyboardRuntime(reason: String, updateUI: Bool) {
+        keyboardHeightAdjustmentAcceptsMarkers = false
+        finishKeyboardHeightAdjustment(.disappeared)
         #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
             recordWakeOwnerProbe(.suspendBegin)
         #endif
@@ -842,6 +859,7 @@ class KeyboardViewController: UIInputViewController {
         // Nested nine-key stacks finish layout after the root stack. Build the
         // shared hit-test/overlay snapshot only at this stable UIKit boundary.
         (rootStack as? KeyboardInputHitAreaStackView)?.refreshKeyTouchGeometry()
+        layoutKeyboardHeightAdjustmentOverlay()
 
         // 仅在 bounds 变化时记录（避免 layout 循环时刷屏日志）
         if view.bounds != lastLoggedBounds {

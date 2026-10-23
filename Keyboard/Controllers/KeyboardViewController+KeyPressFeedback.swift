@@ -101,6 +101,7 @@ extension KeyboardViewController {
 
     /// Records touch timing and responds synchronously so rapid typing receives immediate feedback.
     @objc func keyTouchDown(_ sender: UIButton) {
+        guard !isKeyboardHeightAdjusting else { return }
         let identifier = ObjectIdentifier(sender)
         #if DEBUG
             keyTouchDownTimes[identifier] = CACurrentMediaTime()

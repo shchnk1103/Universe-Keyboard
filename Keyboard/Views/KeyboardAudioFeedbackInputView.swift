@@ -13,4 +13,10 @@ import UIKit
 /// `UIDevice.playInputClick()` 走系统键盘反馈策略，不创建 Extension 自己的音频会话。
 final class KeyboardAudioFeedbackInputView: UIInputView, UIInputViewAudioFeedback {
     var enableInputClicksWhenVisible: Bool { true }
+    var onWindowRemoved: (() -> Void)?
+
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        if window == nil { onWindowRemoved?() }
+    }
 }

@@ -62,7 +62,8 @@ extension KeyboardViewController {
             keyboardContentTopInset + candidateBarHeight + keySpacing * 2
             + keyboardGroupSpacing + keyboardContentBottomInset + pathHeight
         do {
-            let desired = try keyboardHeightSettings.effectiveRowHeight(
+            let settings = keyboardHeightAdjustmentSession?.previewSettings ?? keyboardHeightSettings
+            let desired = try settings.effectiveRowHeight(
                 orientation: geometry.isLandscape ? .landscape : .portrait,
                 screenHeight: geometry.screenHeight, fixedHeight: Double(fixedHeight))
             keyboardUncompressedHeight = fixedHeight + CGFloat(desired) * 4

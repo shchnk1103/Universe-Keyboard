@@ -249,6 +249,7 @@ extension KeyboardViewController {
     }
 
     @objc func handleT9PinyinPathButton(_ sender: UIButton) {
+        guard !isKeyboardHeightAdjusting else { return }
         emitKeyPressFeedbackIfNeeded(for: sender)
         guard let pathButton = sender as? T9PinyinPathButton,
             let path = pathButton.path
@@ -276,6 +277,7 @@ extension KeyboardViewController {
     }
 
     @objc func t9SelectPinyin(_ sender: UIButton) {
+        guard !isKeyboardHeightAdjusting else { return }
         emitKeyPressFeedbackIfNeeded(for: sender)
         guard !controller.state.t9PinyinPathState.compactPaths.isEmpty else {
             updateSelectPinyinButtonAvailability()

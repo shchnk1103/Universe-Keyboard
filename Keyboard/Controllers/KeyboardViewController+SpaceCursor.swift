@@ -10,6 +10,7 @@ extension KeyboardViewController {
     /// tapping inserts a normal space, while a long-press converts the keyboard into a trackpad,
     /// moving the insertion point horizontally inside the host app's active text field.
     @objc func handleSpaceCursorLongPress(_ gesture: UILongPressGestureRecognizer) {
+        guard !isKeyboardHeightAdjusting else { return }
         guard let spaceButton = gesture.view as? UIButton else { return }
         // Gesture recognizers can still deliver after UIButton.isEnabled changes.
         guard !shouldBlockT9RecoveryPresentation else {
@@ -54,6 +55,13 @@ extension KeyboardViewController {
         default:
             break
         }
+    }
+
+    func endSpaceCursorMovementForHeightAdjustment() {
+        guard isCursorMovementModeActive else { return }
+        isCursorMovementModeActive = false
+        spaceCursorLastLocationX = nil
+        if let root = rootStack { setCursorMovementModeUI(active: false, exceptionView: root) }
     }
 
     private func setCursorMovementModeUI(active: Bool, exceptionView: UIView) {

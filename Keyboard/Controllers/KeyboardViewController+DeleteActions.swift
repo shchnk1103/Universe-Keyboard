@@ -5,6 +5,7 @@ extension KeyboardViewController {
     // MARK: === 删除键 V1 会话（单击松手 / 擦除 / 长按气泡）===
 
     @objc func deleteKeyTouchDown(_ sender: UIButton, forEvent event: UIEvent) {
+        guard !isKeyboardHeightAdjusting else { return }
         endDeleteGestureSession(restoreAppearance: false, reason: .superseded)
         resetDeleteRepeatFeedback()
         keyTouchDown(sender)
@@ -347,6 +348,7 @@ extension KeyboardViewController {
         shouldEmitFeedback: Bool = true,
         oneGraphemeBeforeCursor: Bool = false
     ) -> Bool {
+        guard !isKeyboardHeightAdjusting else { return false }
         let before = textDocumentProxy.documentContextBeforeInput ?? ""
         let hadText = textDocumentProxy.hasText
         let preedit = hasActivePreedit
@@ -401,17 +403,20 @@ extension KeyboardViewController {
     }
 
     func restoreScrubbedGrapheme(_ token: String) {
+        guard !isKeyboardHeightAdjusting else { return }
         guard !token.isEmpty, !hasActivePreedit else { return }
         let effects = controller.handle(.insertDirectText(token))
         syncUI(with: effects)
     }
 
     func abandonActivePreedit() {
+        guard !isKeyboardHeightAdjusting else { return }
         let effects = controller.dropRemainingPreeditKeepingConfirmedPrefix()
         syncUI(with: effects)
     }
 
     func performDeleteAllBeforeCursor() {
+        guard !isKeyboardHeightAdjusting else { return }
         if hasActivePreedit {
             abandonActivePreedit()
         }

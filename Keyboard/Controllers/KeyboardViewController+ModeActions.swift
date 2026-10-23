@@ -3,12 +3,14 @@ import UIKit
 
 extension KeyboardViewController {
     @objc func toggleShift(_ sender: UIButton) {
+        guard !isKeyboardHeightAdjusting else { return }
         emitKeyPressFeedbackIfNeeded(for: sender)
         let effects = controller.handle(.toggleShift)
         syncUI(with: effects)
     }
 
     @objc func toggleKeyboardPage(_ sender: UIButton) {
+        guard !isKeyboardHeightAdjusting else { return }
         emitKeyPressFeedbackIfNeeded(for: sender)
         typoCorrectionRecallCoordinator.invalidateTypoCorrectionRecall()
         let effects = controller.handle(.togglePage)
@@ -16,24 +18,28 @@ extension KeyboardViewController {
     }
 
     @objc func switchToLettersPage(_ sender: UIButton) {
+        guard !isKeyboardHeightAdjusting else { return }
         emitKeyPressFeedbackIfNeeded(for: sender)
         let effects = cycleKeyboardPage(to: .letters)
         syncUI(with: effects)
     }
 
     @objc func switchToNumbersPage(_ sender: UIButton) {
+        guard !isKeyboardHeightAdjusting else { return }
         emitKeyPressFeedbackIfNeeded(for: sender)
         let effects = cycleKeyboardPage(to: .numbers)
         syncUI(with: effects)
     }
 
     @objc func switchToEmojiPage(_ sender: UIButton) {
+        guard !isKeyboardHeightAdjusting else { return }
         emitKeyPressFeedbackIfNeeded(for: sender)
         let effects = cycleKeyboardPage(to: .emoji)
         syncUI(with: effects)
     }
 
     @objc func switchToSymbolsPage(_ sender: UIButton) {
+        guard !isKeyboardHeightAdjusting else { return }
         emitKeyPressFeedbackIfNeeded(for: sender)
         let effects = cycleKeyboardPage(to: .symbols)
         syncUI(with: effects)
@@ -41,6 +47,7 @@ extension KeyboardViewController {
 
     /// Clears active T9 composition without committing raw digits (ADR 0018).
     @objc func reinputT9Composition(_ sender: UIButton) {
+        guard !isKeyboardHeightAdjusting else { return }
         emitKeyPressFeedbackIfNeeded(for: sender)
         let effects = controller.abandonCompositionForVisibilityChange()
         syncUI(with: effects)
@@ -48,6 +55,7 @@ extension KeyboardViewController {
 
     /// Native-style punctuation entry on the nine-key grid (comma-first common mark).
     @objc func insertT9CommonPunctuation(_ sender: UIButton) {
+        guard !isKeyboardHeightAdjusting else { return }
         emitKeyPressFeedbackIfNeeded(for: sender)
         let effects = controller.handle(.pressT9CommonPunctuation)
         syncUI(with: effects)
@@ -59,6 +67,7 @@ extension KeyboardViewController {
     }
 
     @objc func insertKaomoji(_ sender: UIButton) {
+        guard !isKeyboardHeightAdjusting else { return }
         emitKeyPressFeedbackIfNeeded(for: sender)
         let effects = controller.handle(.pressKaomoji)
         syncUI(with: effects)
@@ -84,6 +93,7 @@ extension KeyboardViewController {
     }
 
     @objc func toggleInputMode(_ sender: UIButton) {
+        guard !isKeyboardHeightAdjusting else { return }
         emitKeyPressFeedbackIfNeeded(for: sender)
         // This must run even without composition: an old delayed recall is still stale
         // once the input-mode contract changes.
@@ -100,24 +110,28 @@ extension KeyboardViewController {
     }
 
     @objc func candidatePageUp() {
+        guard !isKeyboardHeightAdjusting else { return }
         emitKeyPressFeedback()
         let effects = controller.handle(.candidatePageUp)
         syncUI(with: effects)
     }
 
     @objc func candidatePageDown() {
+        guard !isKeyboardHeightAdjusting else { return }
         emitKeyPressFeedback()
         let effects = controller.handle(.candidatePageDown)
         syncUI(with: effects)
     }
 
     @objc func insertSpace(_ sender: UIButton) {
+        guard !isKeyboardHeightAdjusting else { return }
         emitKeyPressFeedbackIfNeeded(for: sender)
         let effects = controller.handle(.insertSpace)
         syncUI(with: effects)
     }
 
     @objc func insertReturn(_ sender: UIButton) {
+        guard !isKeyboardHeightAdjusting else { return }
         emitKeyPressFeedbackIfNeeded(for: sender)
         let effects = controller.handle(.insertReturn)
         syncUI(with: effects)
