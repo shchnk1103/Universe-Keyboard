@@ -8,10 +8,10 @@ record_id: UI4-PD-LANDING-001
 | Field | Value |
 |---|---|
 | Lifecycle | Closed — effective on merge of the PR that carries this record |
-| Current phase | 本地文档交付，待独立评审；合并前 Close 尚未生效 |
-| Material non-claims | 不授权 UI4-HEIGHT-001 实现；不声称验收、Product Gate、TestFlight、Release 或 UI-3 立项；未 push / PR / merge |
+| Current phase | 独立评审已完成（见“评审结果”节）；PR #231 已合并（871f2730cf1d29953fe8680578bddda67bb85d7b），Close 已生效 |
+| Material non-claims | 不授权 UI4-HEIGHT-001 实现；不声称验收、Product Gate、TestFlight、Release 或 UI-3 立项 |
 | Human 确认状态 | 产品决定接受、发布方案 B、第 11 节修订均于 2026-10-23 确认；本任务派发同时确认文档 Environment Executor 不适用 |
-| Next handoff / decision | Coordinator 冻结并自查 Reviewer Lane Packet → 独立 Architecture / Quality → Human 决定发布动作 |
+| Next handoff / decision | 无。评审与合并已完成（见“评审结果”节）；UI4-HEIGHT-001 的开工以其自身记录为准 |
 
 ## Authority
 
@@ -85,3 +85,17 @@ record_id: UI4-PD-LANDING-001
 ## Closeout Decision — 结果
 
 2026-10-23：Executor 完成本地文档交付后交回 Coordinator；独立 Architecture / Quality 尚未执行，Human 尚未决定 push / PR / merge。顶部 Lifecycle 是附条件的合并生效声明；评审后由有权角色追加最终结果，不提前声明 Gate 或 Release。
+
+### 评审结果（追加，PORTFOLIO-REFRESH-003）
+
+上一段是交付当时的历史记录，不回写。以下结果在 PORTFOLIO-REFRESH-003 追加。报告路径相对 `~/.kos-work/Universe-Keyboard/`，SHA-256 与 `PORTFOLIO-REFRESH-003/content/review-report-hashes.md` 的 UI4 表一致。
+
+| 报告 | 路径 | SHA-256 | 结论 |
+|---|---|---|---|
+| Architecture Round 1 | `UI4-PD-001/reports/review-architecture-r1.md` | `eeae839c5710c296626ec992aa5a3bef85cc6db643894f50397f4e13a5aa8012` | Partial |
+| Quality Round 1 | `UI4-PD-001/reports/review-quality-r1.md` | `0df68f010a137b42bae63c8df254e88ab3a559b032812c5359b6a763d7accea3` | Partial |
+| Coordinator 缺口核对（非独立复核） | `UI4-PD-001/reports/coordinator-gap-closure-r1.md` | `51a550926d7f7cfcd906a652355e24f9e38e3bae5a4c04d3edcfa53cd938418d` | 非独立复核 |
+| Executor 报告 v2 | `UI4-PD-001/reports/executor-report-v2.md` | `18f2e558cd5a4f1d4c8336348c60b4bfb1338324fff162ab355b3b6108796230` | Executor 报告 |
+| Human 授权发布记录 | `UI4-PD-001/reports/human-authorization-publish-1.md` | `ba005807c642fd01dcb3bef9f0c7e483124f8eaf643384472c545e7972fec810` | Human 授权发布 |
+
+Architecture 与 Quality 的 Round 1 均为 Partial：原因是 Coordinator 冻结的 packet 允许集不自洽，所有已覆盖项通过，未发现交付文档缺陷。没有独立 Round 2。收尾依靠 Coordinator 缺口核对（非独立复核）加 Human 采纳：Dashboard 小节保留并由 Human 确认；Executor 对历史动作的自述登记为自述。
