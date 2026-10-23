@@ -28,13 +28,13 @@
 | PF-009 | P1 | Real RIME T9 Batch A | UNKNOWN | 仓库内无 “Batch A” Assignment；相关线索是 real RIME T9 残项，是否同一所指 UNKNOWN | 无（仓库内无 “Batch A” Assignment；相关线索：`docs/assignments/input-reliability-delivery-003.md` 第 76 行的 real RIME T9 残项） | 2026-10-23 |
 | PF-010 | P1 | Next TestFlight Release Gate | Blocked | 先决定这次 TestFlight 的范围，并逐项分类 `docs/RELEASE_CHECKLIST.md` 第 66–77 行的 TD-002 / 003 / 004 / 005；`docs/authorizations/AUTH-INPUT-RELIABILITY-DELIVERY-003-PRODUCT-PR.md` 第 10 行的真实 RIME T9 恢复集成与激活后 Extension 真实交互尚未处置；Human 打算在 UI-4 完成之后发布，无日期与候选构建（意向，不是授权） | [testflight-gates](portfolio/testflight-gates.md) | 2026-10-23 |
 | PF-011 | P2 | ClipboardLab | UNKNOWN | 是否还要做：未说 | 无（仓库内无 ClipboardLab / smart-paste 记录；Human 认为与 clipboard-smart-paste-spike-001 同一件事，未经仓库核对） | 2026-10-23 |
-| PF-012 | P2 | UI-3：候选字体大小 | Waiting Human | 产品决定 PD-UI3-CANDIDATE-FONT-SIZE-001 已被 Human 接受（2026-10-23）；实现 Assignment UI3-FONT-001 为 Assigned，待 Human 授权派发 | [ui-4-keyboard-height](portfolio/ui-4-keyboard-height.md)（同源讨论背景）；Human 本地未跟踪的 `docs/plans/keyboard-height-and-candidate-size-discussion-2026-10-08.md`（不在 `main`，内容未核实） · [产品决定](product-decisions/UI3-CANDIDATE-FONT-SIZE-001-product-contract.md) · [实现 Assignment](assignments/ui3-font-001.md) | 2026-10-23 |
+| PF-012 | P2 | UI-3：候选字体大小 | Waiting Human | 产品决定 PD-UI3-CANDIDATE-FONT-SIZE-001 已被 Human 接受（2026-10-23）；实现 Assignment UI3-FONT-001 为 Assigned，待 Human 授权派发；入库记录已随 PR #232 进入 main | [ui-4-keyboard-height](portfolio/ui-4-keyboard-height.md)（同源讨论背景）；Human 本地未跟踪的 `docs/plans/keyboard-height-and-candidate-size-discussion-2026-10-08.md`（不在 `main`，内容未核实） · [产品决定](product-decisions/UI3-CANDIDATE-FONT-SIZE-001-product-contract.md) · [实现 Assignment](assignments/ui3-font-001.md) | 2026-10-23 |
 | PF-014 | P2 | KW002：Workspace Cleanup | UNKNOWN | 清单称 W1–W6 状态待核实；分支与 worktree 的清理见 PF-023 | 无（PR #53 = TD-009 `8a530a9`，与本行无关；相关规则 `AGENTS.md` 第 60–63 行） | 2026-10-23 |
 | PF-015 | P2 | KTW001 / KTW002 试点 | UNKNOWN | `docs/tasks/` 下没有 KTW 目录；试点是否立项待 Human 决定 | 无（`docs/tasks/` 下没有 KTW 目录） | 2026-10-23 |
 | PF-016 | P2 | AI Budget Governance | Backlog | 已落地部分为 UK-006 reviewer 范围 / 预算 / 停止条款（PR #170 `1c14ab6`，#172 收尾）；规则差异审计、轻量使用记录试点、与目录打通仍为讨论，未立项；PR #54 / `72c7379` 为错误引用 | [ai-budget-governance](portfolio/ai-budget-governance.md)；`docs/product-decisions/KOS-UPGRADE-UK-006-v0.9.0-adoption.md` | 2026-10-23 |
 | PF-017 | P3 | Branch Retention & Handoff Lifecycle | Backlog | 四种生命周期概念写在 PF-023；规则细节待定，未立项 | 无直接来源；相关既有规则 `AGENTS.md` 第 60–63 行、`docs/ASSIGNMENT_POLICY.md` 第 159 行；详情见 [branch-worktree-cleanup](portfolio/branch-worktree-cleanup.md) | 2026-10-23 |
 | PF-018 | P1 | KOS 流程优化（交接、报告落盘、预检） | Backlog | 共 24 条候选（第 19 条为本目录，第 22–24 条为 2026-10-23 追加）；最先做：放行 Reviewer reports 目录、冻结 packet 前的路径扫描 | [kos-optimization](portfolio/kos-optimization.md) | 2026-10-23 |
-| PF-023 | P2 | 分支与 worktree 的清理机制 | Backlog | 只读盘点已做；规则细节待定；本行不授权任何清理 | [branch-worktree-cleanup](portfolio/branch-worktree-cleanup.md) | 2026-10-23 |
+| PF-023 | P2 | 分支与 worktree 的清理机制 | Backlog | 只读盘点已做；规则细节待定；本行不授权任何清理。下一步只指向外置结果 `~/.kos-work/Universe-Keyboard/GROK-BOT-TRIAL-012/reports/retirement-check.md`（SHA-256 `6f0a5d2c7542d0bd3716f5ef60307316c761a32ea0643f371fc42ff06c9f0ba6`），不处置、不列删除清单 | [branch-worktree-cleanup](portfolio/branch-worktree-cleanup.md) | 2026-10-23 |
 | PF-024 | P2 | GitHub CI 的后续改进 | Backlog | Human 的想法：进一步拆分、更快、更易定位；只读分析认为拆分提速不是优先项；不改 CI | [ci-improvement](portfolio/ci-improvement.md) | 2026-10-23 |
 | PF-025 | P2 | Release Evidence / 构建来源管理 | Backlog | Human 与 ChatGPT 的讨论，未核对；尚未立项 | 无直接来源；相关：`docs/RELEASE_CHECKLIST.md` | 2026-10-23 |
 | PF-026 | P2 | RIME Sync / UI01 | UNKNOWN | Human 只留线索，之后有空再说 | 无（只留线索，之后有空再说） | 2026-10-23 |
@@ -42,6 +42,7 @@
 | PF-019 | P1 | Reviewer 独立性政策（按上下文隔离判断，分级 L1 到 L3） | Waiting Human | Human 已同意方向；待起草政策文本并经评审；不适用于已在进行的批次 | [kos-optimization](portfolio/kos-optimization.md) 第 17、18 条 | 2026-10-22 |
 | PF-028 | P2 | 发布节奏与优先级提醒（基于任务目录） | Backlog | 候选事项，未立项；与 PF-004 相关 | 无直接来源（Human 2026-10-23 口述：之后要有更智能的方案，结合任务目录由 Coordinator 提醒哪些任务优先级高、帮助安排发布节奏；与 PF-004 相关，未立项） | 2026-10-23 |
 | PF-029 | P2 | 26 键与九宫格字母显示（默认大写，主 App 可选大写 / 小写） | Backlog | 候选事项，未立项；范围已定：只作用于中文 26 键与九宫格，英文键盘不变，只改显示不改上屏；选项为“大写 / 小写”两项，默认大写；设置读取受完全访问影响，按现有设置的行为处理，没有完全访问时保持默认大写；需要先做字母显示逻辑与设置读取路径的只读事实清单，再起草产品决定 | 无直接来源（Human 2026-10-23 口述；用户反馈 26 键字母偏小；九宫格目前默认大写，未核实） | 2026-10-23 |
+| PF-030 | 未定 | PM 会话日志（试行） | Backlog | 试行中。适当时机再决定是否写进 KOS | 无直接来源（Human 2026-10-23 口述：PM 角色没有报告保存约定，同意试行会话日志，之后纳入未完成工作目录、适当时机优化 KOS）。外置模板与补录不入库 | 2026-10-23 |
 
 ## 决定记录
 
@@ -72,6 +73,9 @@
 | 2026-10-23 | 提出基于任务目录的发布节奏与优先级提醒，登记 PF-028 Backlog，未立项 | 本文件 PF-028 |
 | 2026-10-23 | 接受 PD-UI3-CANDIDATE-FONT-SIZE-001；实现 Assignment UI3-FONT-001 为 Assigned，待 Human 授权派发，未授权开工 | [产品决定](product-decisions/UI3-CANDIDATE-FONT-SIZE-001-product-contract.md) · [实现 Assignment](assignments/ui3-font-001.md) |
 | 2026-10-23 | 提出 PF-029 字母大小写显示候选事项，Backlog、未立项；只作用于中文 26 键与九宫格，英文键盘不变，只改显示不改上屏；大写 / 小写两项、默认大写；无完全访问保持默认，先做只读事实清单再起草产品决定 | 本文件 PF-029 |
+| 2026-10-23 | PR #232 已合并（ed01fc5947fa0eca21fca347945375bba2ebd9d8）：UI3-PD-LANDING-001 的 Close 生效；UI3-FONT-001 仍为 Assigned，未授权开工 | [入库记录](assignments/ui3-pd-landing-001.md) |
+| 2026-10-23 | 退役候选核对结果（GROK-BOT-TRIAL-012）先保存、暂不判断；这些分支与 worktree 是否仍有会话在使用尚未确认，合适时机再判断；实际清理前须按 `AGENTS.md` 先拉取最新远端状态 | 本文件 PF-023 |
+| 2026-10-23 | 登记 PM 会话日志（试行）为 PF-030，Backlog，未立项；不把日志正文放进仓库 | 本文件 PF-030 |
 
 ## 已完成
 

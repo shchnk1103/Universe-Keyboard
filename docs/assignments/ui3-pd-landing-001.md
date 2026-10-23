@@ -8,10 +8,10 @@ record_id: UI3-PD-LANDING-001
 | Field | Value |
 |---|---|
 | Lifecycle | Closed — effective on merge of the PR that carries this record |
-| Current phase | 本地文档交付，待独立评审；合并前 Close 尚未生效 |
-| Material non-claims | 不授权 UI3-FONT-001 实现；不声称实现、验收、Product Gate、TestFlight 或 Release；PF-029 未立项；未 push / PR / merge |
+| Current phase | 独立评审已完成（见“评审结果”节）；PR #232 已合并（ed01fc5947fa0eca21fca347945375bba2ebd9d8），Close 已生效 |
+| Material non-claims | 不授权 UI3-FONT-001 实现；不声称实现、验收、Product Gate、TestFlight 或 Release；PF-029 未立项 |
 | Human 确认状态 | 产品决定接受与 PF-029 登记于 2026-10-23 确认；本任务派发同时确认文档 Environment Executor 不适用 |
-| Next handoff / decision | Coordinator 冻结并自查 Reviewer Lane Packet → 独立 Architecture / Quality → Human 决定 push / PR / merge |
+| Next handoff / decision | 无。评审与合并已完成（见“评审结果”节）；UI3-FONT-001 仍为 Assigned，开工另授权 |
 
 ## Authority
 
@@ -85,3 +85,18 @@ record_id: UI3-PD-LANDING-001
 ## Closeout Decision — 结果
 
 2026-10-23：Executor 完成本地文档交付后交回 Coordinator；独立 Architecture / Quality 尚未执行，Human 尚未决定 push / PR / merge。顶部 Lifecycle 是附条件的合并生效声明；评审后由有权角色追加最终结果，不提前声明 Gate 或 Release。
+
+### 评审结果（追加，PORTFOLIO-REFRESH-003）
+
+上一段是交付当时的历史记录，不回写。以下结果在 PORTFOLIO-REFRESH-003 追加。报告路径相对 `~/.kos-work/Universe-Keyboard/`，SHA-256 与 `PORTFOLIO-REFRESH-003/content/review-report-hashes.md` 的 UI3 表一致。
+
+| 报告 | 路径 | SHA-256 | 结论 |
+|---|---|---|---|
+| Architecture Round 1 | `UI3-PD-001/reports/review-architecture-r1.md` | `2f460cebf33b46fca5aa7ff33b254695f78a77dbf18b6e7a7c83f2519b6151f8` | Pass with conditions，F01 |
+| Quality Round 1 | `UI3-PD-001/reports/review-quality-r1.md` | `b6b3e18b0b9a73454697572497e0e6fad4ff54d0712465e3a082a770112a9838` | Partial，U01/P01 |
+| Architecture Round 2 | `UI3-PD-001/reports/review-architecture-r2.md` | `313abed8e4128d2b5551a67f95d345e96f550b8e65a4830b1bb5f34b03ac4012` | Pass |
+| Quality Round 2 | `UI3-PD-001/reports/review-quality-r2.md` | `59c40533e0f3463e76019588d240103654cc30e148a86684b49889cd296088a0` | Pass |
+| Human 确认产品决定 v2 与残项处置 | `UI3-PD-001/reports/human-confirmation-pd-v2-2026-10-23.md` | `6c8b2536c81fc10adf51c5708666ab2537e3798317adaeede91df3428d6931a4` | Human 确认 |
+| Human 授权发布记录（定稿） | `UI3-PD-001/reports/human-authorization-publish-1.md` | `62d04e8ef3462ee59a458ebc02ed343f75c56aaf3be6a0bf2161578f44d96066` | Human 授权发布 |
+
+U01 登记为自述；P01 接受并保留披露；产品决定换 v2 与 F01 由修订 2 处置。

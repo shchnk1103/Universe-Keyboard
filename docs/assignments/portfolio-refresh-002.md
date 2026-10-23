@@ -7,11 +7,11 @@ record_id: PORTFOLIO-REFRESH-002
 
 | Field | Value |
 |---|---|
-| Lifecycle | Active（docs-only，在本地执行；未 push） |
-| Current phase | Executor 已按定稿落地目录行、四份详情、三条 KOS 优化项、本记录，以及 PR #229 合并后的过期状态句。未 push |
+| Lifecycle | Closed — effective on merge of the PR that carries this Close update（PORTFOLIO-REFRESH-003）；承载本记录原始内容的 PR #230 已于 2026-10-23 合并（2c60a0b59a01475a1616540686df5602178845c5） |
+| Current phase | Executor 已按定稿落地目录行、四份详情、三条 KOS 优化项、本记录，以及 PR #229 合并后的过期状态句。PR #230 已合并（2c60a0b59a01475a1616540686df5602178845c5）；评审与残项处置见“Closeout Decision — 结果”节 |
 | Material non-claims | 目录是优先级与指针索引，不是状态权威；不声称任何新事项已立项、已授权或已有 Product Decision；不声称任何 UNKNOWN 行的真实状态超出仓库证据；不改任何代码、测试、CI 配置、数值或其它 Assignment 的结论；不 push / PR / merge |
 | Human 确认状态 | 立项与范围：**已确认**（Human Product Owner，2026-10-23）。Environment Executor 填 `Not Applicable — repository documentation only`：**已确认**（Human 派发消息，2026-10-23）。PF-016 状态词 `Backlog`：**已确认**（同一派发消息） |
-| Next handoff / decision | Coordinator 冻结 Reviewer Lane Packet（先做自洽性检查）→ Architecture / Quality Reviewer → Human 决定 push / PR / merge |
+| Next handoff / decision | 无。评审与合并已完成；Close 随 PORTFOLIO-REFRESH-003 合并生效 |
 
 ## Authority
 
@@ -102,3 +102,9 @@ Executor 与 Reviewer 的最终报告、指令、packet 均保存为文件，根
 - 本修正提交没有再请独立 Reviewer 复核，由 Coordinator 只读核对。
 - Human 发布决定仍待；本 Assignment 在进入 `main` 时按 D7 Close。
 - 同一提交另按 Human 2026-10-23 授权记入 PF-027（INPUT-RELIABILITY-B-001 的本机快照，未推送）。这不是评审通过，也不可合并。
+
+### Close 披露（PORTFOLIO-REFRESH-003）
+
+该记录的评审后修订提交（`bd4ec7c`）没有再经独立 Reviewer 复核，仅由 Coordinator 只读核验并已在原结果节披露；本次 Close 依 D7，在 PORTFOLIO-REFRESH-003 进入 main 时生效。
+
+C02（D7 Lifecycle 措辞）经 Human 于 2026-10-23 接受（accept）为残项：仅为文档措辞，无产品或运行时风险；owner 为 Architecture and Knowledge Steward；跟踪在 KOS 优化清单（docs/portfolio/kos-optimization.md，PF-018），下一次触及 Assignment Policy 的变更时一并处理。
