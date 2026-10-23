@@ -20,7 +20,7 @@
 | PF-003 | P0 | KOS 全局任务对账（生命周期收尾） | In progress | 批次 1、1b、1c 已合并（PR #223、#224、#225）；剩余：链批次其余三项、A18、A28 / A29、同链 publication 子 Assignment、B 区 | [lifecycle-closeout](portfolio/lifecycle-closeout.md) | 2026-10-22 |
 | PF-004 | P1 | Dynamic Task Portfolio（完整 MVP） | UNKNOWN | 清单称“新增，待设计与立项”（Human 2026-10-22 提供，仓库内无记录）；其种子——本目录——已合并（PR #226，`b62bde1`），见 `docs/assignments/portfolio-directory-001.md`；完整 MVP 是否立项、范围与位置待 Human 决定 | `docs/assignments/portfolio-directory-001.md`（仅种子） | 2026-10-22 |
 | PF-005 | P1 | UI-1 / UI-2 正式 Closeout | Blocked | UI-2 受 TD-020 约束；UI-1 的 Lifecycle 仍为 Active（PR216 post-merge sync 明确无完成 / 验收 / 独立复核声称），处置待 Human 另行决定 | `docs/ACTIVE_WORK.md` 的第 11、3 项 | 2026-10-22 |
-| PF-013 | P1 | UI-4：自定义键盘高度 | Waiting Human | Spike 已完成并被 Human 接受；下一步由 Human 决定 Product Decision 的待决项（见详情）；Product Decision 与 UI-4 Assignment 尚未起草 | [ui-4-keyboard-height](portfolio/ui-4-keyboard-height.md) · [Spike 摘要](evidence/ui4-spike-001-summary.md) · [Spike Assignment](assignments/ui4-spike-001.md) | 2026-10-23 |
+| PF-013 | P1 | UI-4：自定义键盘高度 | Waiting Human | 产品决定 PD-UI4-KEYBOARD-HEIGHT-001 已被 Human 接受（2026-10-23）；实现 Assignment UI4-HEIGHT-001 为 Assigned，待 Human 授权派发；UI-3 本周只做规格 | [UI-4 详情](portfolio/ui-4-keyboard-height.md) · [产品决定](product-decisions/UI4-KEYBOARD-HEIGHT-001-product-contract.md) · [实现 Assignment](assignments/ui4-height-001.md) | 2026-10-23 |
 | PF-022 | P1 | 键盘数值核对脚本 | Backlog | 把 `docs/KEYBOARD_VALUES.md` 的数值与代码常量逐个比对，接入 `scripts/ci/run_lightweight_checks.sh`，让文档漂移在 CI 里暴露；尚未立项 | `docs/assignments/keyboard-values-doc-001.md`（评审后记录的后续候选） | 2026-10-22 |
 | PF-006 | P1 | Input Reliability | In progress | 三份 `input-reliability-delivery-001/002/003.md` 的 Lifecycle 都是 Active；PR #213 `bb430f9`、#214 `d08175b`、#215 `096183c` 已合并；`docs/ACTIVE_WORK.md` 的 Ready/Active 表第 6 项（INPUT-RELIABILITY-DELIVERY-003，当前约第 314 行）为 Active。残项（真实 RIME T9 恢复集成、激活后 Extension 完整交互、Final Merge Gate 记录）UNKNOWN。Lifecycle 处置留给生命周期收尾批次，本行不处置 | `docs/assignments/input-reliability-delivery-001.md`、`input-reliability-delivery-002.md`、`input-reliability-delivery-003.md`；`docs/ACTIVE_WORK.md` 的 Ready/Active 表第 6 项 | 2026-10-23 |
 | PF-007 | P1 | RIME Deploy Crash / Recovery | UNKNOWN | 不与 `RIME-DEPLOY-INTERRUPT-RECOVER-001`（Closed，PR #115）合并；是否同线 UNKNOWN | 无直接 Assignment；相关见 `docs/assignments/rime-deploy-interrupt-recover-001.md`（是否同线 UNKNOWN） | 2026-10-23 |
@@ -40,6 +40,7 @@
 | PF-026 | P2 | RIME Sync / UI01 | UNKNOWN | Human 只留线索，之后有空再说 | 无（只留线索，之后有空再说） | 2026-10-23 |
 | PF-027 | P1 | INPUT-RELIABILITY-B-001（输入可靠性边界核查与最小补缺） | UNKNOWN | Assignment 记录写 Active，但只存在于 Codex 工作区 `~/.codex/worktrees/input-reliability-main-20261012`（分支 `codex/input-reliability-b-main-20261012`，约 1078 条未提交记录），不在 `main` 也不在任何远端分支；已在本机做完整的本地快照提交 `preserve/input-reliability-b-001-20261023`（`d9e1de64b8760e3ae04b25a20abd05f60a0b5976`），**未推送**（仓库公开，内含设备截图、录像与数据库）；Human 说明这是一项快要完成的、从一个开源项目吸取经验的工作，打算在本周 TestFlight 发布之后回头看（口述，未核对）；与 PF-006 的关系 UNKNOWN | 无（Assignment 与快照都不在仓库；仅在 Human 本机） | 2026-10-23 |
 | PF-019 | P1 | Reviewer 独立性政策（按上下文隔离判断，分级 L1 到 L3） | Waiting Human | Human 已同意方向；待起草政策文本并经评审；不适用于已在进行的批次 | [kos-optimization](portfolio/kos-optimization.md) 第 17、18 条 | 2026-10-22 |
+| PF-028 | P2 | 发布节奏与优先级提醒（基于任务目录） | Backlog | 候选事项，未立项；与 PF-004 相关 | 无直接来源（Human 2026-10-23 口述：之后要有更智能的方案，结合任务目录由 Coordinator 提醒哪些任务优先级高、帮助安排发布节奏；与 PF-004 相关，未立项） | 2026-10-23 |
 
 ## 决定记录
 
@@ -65,6 +66,9 @@
 | 2026-10-23 | Human 提出分支与 worktree 清理机制（合并 PF-014 / PF-017 的动机）；同意先做只读盘点（已由 Grok bot 完成）；规则细节待定；本次没有执行也没有授权清理 | [branch-worktree-cleanup](portfolio/branch-worktree-cleanup.md) |
 | 2026-10-23 | 这些事此前没有持久化记录，靠对话与外部总结才找回；这正是需要持久化任务管理系统的理由。不改变 PF-004 的行 | 本文件 PF-004 |
 | 2026-10-23 | INPUT-RELIABILITY-B-001 的未提交工作（约 215MB，含设备截图、录像、数据库）在本机做了本地快照提交，Human 选择只保留本地、不推送（仓库公开）；本周 TestFlight 发布之后再回头看；这不是评审通过，也不可合并 | 本文件 PF-027 |
+| 2026-10-23 | 接受 PD-UI4-KEYBOARD-HEIGHT-001；第 11 节时点措辞修订同日经 Human 确认；实现 Assignment 为 Assigned，待授权派发 | [产品决定](product-decisions/UI4-KEYBOARD-HEIGHT-001-product-contract.md) · [实现 Assignment](assignments/ui4-height-001.md) |
+| 2026-10-23 | 发布方案 B：本周做 UI-4 产品决定、Assignment 与实现，下周验收后发布含 UI-4 的版本；UI-3 本周只做规格。这是节奏意向，不是实现或发布授权 | [入库记录](assignments/ui4-pd-landing-001.md) |
+| 2026-10-23 | 提出基于任务目录的发布节奏与优先级提醒，登记 PF-028 Backlog，未立项 | 本文件 PF-028 |
 
 ## 已完成
 

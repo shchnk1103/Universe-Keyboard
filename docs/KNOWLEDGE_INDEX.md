@@ -34,6 +34,8 @@
 
 ## 领域权威
 
+- UI-4 自定义键盘高度：[产品决定](product-decisions/UI4-KEYBOARD-HEIGHT-001-product-contract.md)（Accepted）· [实现 Assignment](assignments/ui4-height-001.md)（Assigned，待 Human 授权派发；尚未实现）
+
 - [键盘布局与九键](KEYBOARD_LAYOUT.md) · [方案管理](RIME_SCHEME_MANAGEMENT.md)
 - 删除键滑动擦除 / 回放 / 删除全部气泡（**Closed**；产品树 `cee4f91`；Close 与 Gate 在 PR [#204](https://github.com/shchnk1103/Universe-Keyboard/pull/204) squash `4c2760d`）：[`DELETE-KEY-SCRUB-001`](assignments/delete-key-scrub-001.md) · [`Gate`](product-decisions/DELETE-KEY-SCRUB-001-product-gate.md) · [`Close`](evidence/delete-key-scrub-001-close-2026-10-07.md)
 - 删除键设置页（**Closed**；PR [#206](https://github.com/shchnk1103/Universe-Keyboard/pull/206)；第 6 行已空出；不等于 TestFlight 或 Release）：[`DELETE-KEY-SETTINGS-001`](assignments/delete-key-settings-001.md) · [`PD`](product-decisions/DELETE-KEY-SETTINGS-001-product-contract.md) · [`Architecture`](reviews/delete-key-settings-001-architecture-review.md) · [`Quality`](reviews/delete-key-settings-001-quality-review.md) · [`Product Gate 002`](reviews/delete-key-settings-001-product-gate-002.md) · [`Close`](evidence/delete-key-settings-001-close-2026-10-07.md)
