@@ -10,7 +10,7 @@ record_id: UI4-SPIKE-001
 | Lifecycle | Closed — effective on merge of the PR that carries this record |
 | Current phase | 报告组已被Human接受（2026-10-23）；本记录合并前Close尚未生效 |
 | Material non-claims | 不实现UI-4/UI-3；不合并实验代码；未测项仍UNKNOWN；非产品、设备运行时、Release或TestFlight许可 |
-| Next handoff / decision | 本次Closeout独立评审后由Human决定发布；之后另起UI-4 Product Decision与Assignment |
+| Next handoff / decision | 本次Closeout独立评审已完成（见[Closeout结果节](ui4-spike-001-closeout-001.md#closeout-decision--结果)），待Human发布决定；之后另起UI-4 Product Decision与Assignment |
 | Residuals | 见下“评审条件处置”；全部实验缺口保留于结果摘要 |
 
 ---
@@ -76,11 +76,11 @@ Architecture R1 Pass with conditions → R2 Pass；Quality R1/R2 Partial（Coord
 
 ## Closeout Decision — 结果
 
-依据Human Product Owner于2026-10-23接受UI4-SPIKE-001报告声明范围内的结论、原Assignment的D7收尾规则及[Closeout Assignment](ui4-spike-001-closeout-001.md)，本记录写`Closed — effective on merge of the PR that carries this record`。合并前不声称Close已生效；本Closeout仍待独立评审与Human发布决定。
+依据Human Product Owner于2026-10-23接受UI4-SPIKE-001报告声明范围内的结论、原Assignment的D7收尾规则及[Closeout Assignment](ui4-spike-001-closeout-001.md)，本记录写`Closed — effective on merge of the PR that carries this record`。合并前不声称Close已生效；本Closeout独立评审已完成（见[Closeout结果节](ui4-spike-001-closeout-001.md#closeout-decision--结果)），待Human发布决定。
 稳定触发身份：`UI4-SPIKE-001 / Human acceptance 2026-10-23 / reports/human-acceptance-2026-10-23.md`（摘要见清单）。本次是该触发的结果入库/同步事务，其行政完成不递归触发另一轮M-02；未来独立Product Gate/实现或新生命周期决定另计。
 
 ## Exit evidence
 
 - [结果摘要与外置清单](../evidence/ui4-spike-001-summary.md)：原Assignment、最终报告及三补充、五轮评审、Human接受、日志/表/清单的路径与SHA-256。
 - [UI-4详情](../portfolio/ui-4-keyboard-height.md)保留既有Human决定并记录新方向；[Portfolio](../PORTFOLIO.md)仅同步PF-013及指定追加区域。
-- 本次文档核对、验证和本地提交由[Closeout Assignment](ui4-spike-001-closeout-001.md)承载。push/PR/merge均未执行，UI-4 Product Decision与开发Assignment尚未起草。
+- 本次文档核对、验证和本地提交由[Closeout Assignment](ui4-spike-001-closeout-001.md)承载；独立评审已完成（见该记录结果节），待Human发布决定。push/PR/merge均未执行，UI-4 Product Decision与开发Assignment尚未起草。

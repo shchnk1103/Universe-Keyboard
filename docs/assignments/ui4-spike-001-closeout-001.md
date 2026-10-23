@@ -8,10 +8,10 @@ record_id: UI4-SPIKE-001-CLOSEOUT-001
 | Field | Value |
 |---|---|
 | Lifecycle | Completed |
-| Current phase | Executor文档与本地核验已完成；本地候选身份及报告回执见Exit evidence，待Coordinator冻结Reviewer包 |
+| Current phase | Executor文档与本地核验已完成；本地候选身份及报告回执见Exit evidence，独立评审已完成（见本记录结果节），待Human发布决定 |
 | Material non-claims | 非UI-4产品决定/开发Assignment/授权；不提升实验、Quality、设备或Release结论；无push/PR/merge |
-| Next handoff / decision | Coordinator自洽性检查并冻结U4S-CLOSE-ARCH/QUAL包，独立评审后Human决定发布 |
-| Residuals | 本Closeout尚未独立评审；原Spike条件处置见[Spike记录](ui4-spike-001.md) |
+| Next handoff / decision | 独立评审已完成（见本记录结果节），待Human发布决定 |
+| Residuals | 本Closeout独立评审已完成，U4S-CLOSE-ARCH-F01由本轮修正落实（见本记录结果节）；原Spike条件处置见[Spike记录](ui4-spike-001.md) |
 
 ---
 
@@ -40,11 +40,11 @@ record_id: UI4-SPIKE-001-CLOSEOUT-001
 | Executor | 本会话Codex desktop Executor；系统身份基于GPT-6，精确部署后缀/effort未确认，仅身份残项 |
 | Environment Executor | Not Applicable — repository documentation only；Human于2026-10-23本次派发明确确认 |
 | Human Dependency | Human Product Owner：任何push/PR/merge与是否备份外置证据；本次不发布 |
-| Architecture Reviewer | 独立Reviewer会话（AI不限），lane U4S-CLOSE-ARCH；不得参与本批实现，不得与Quality同会话；Coordinator后续冻结派发 |
-| Quality Reviewer | 独立Reviewer会话（AI不限），lane U4S-CLOSE-QUAL；独立性同上；Coordinator后续冻结派发 |
+| Architecture Reviewer | 独立Reviewer会话（AI不限），lane U4S-CLOSE-ARCH；不得参与本批实现，不得与Quality同会话；评审已完成，报告见本记录结果节 |
+| Quality Reviewer | 独立Reviewer会话（AI不限），lane U4S-CLOSE-QUAL；独立性同上；评审已完成，报告见本记录结果节 |
 | Product Approver | Human Product Owner（Product Lead） |
 
-Human已明确确认“摘要加外置清单，不入库原始文件”。实际Reviewer尚待派发，以上保持原角色合同，不把本Executor指定为Reviewer。
+Human已明确确认“摘要加外置清单，不入库原始文件”。实际Reviewer已完成评审（见本记录结果节），以上保留原角色合同，不把本Executor指定为Reviewer。
 
 ## Gates
 
@@ -84,6 +84,22 @@ Reviewer claim register C1–C8沿用冻结指令：摘要忠实/证据边界、
 稳定触发身份沿用`UI4-SPIKE-001 / Human acceptance 2026-10-23 / reports/human-acceptance-2026-10-23.md`；行政Closeout是同一M-02事务，不递归另起同步PR。没有UI-4产品生命周期决定。
 评审完成后的最终结果由有权限角色在此追加，不伪造Reviewer或Human未来结论。
 
+
+### 评审后结果追加（2026-10-23）
+
+本节上方“独立Architecture/Quality尚未进行”“评审完成后的最终结果”等文字为首次交付时的历史状态；当前独立评审已完成，以下追加结果取代其中待评审状态，不回写原文。
+报告路径均相对 `~/.kos-work/Universe-Keyboard/UI4-SPIKE-001-CLOSEOUT-001/`。
+
+| Lane | 报告路径 | SHA-256 | 结论 |
+|---|---|---|---|
+| U4S-CLOSE-ARCH | `reports/review-closeout-architecture-r1.md` | `cf56af96836eef979800c09e833bf1949e2267720f0f0e9b831504d2a7db6e30` | Pass with conditions；唯一残项U4S-CLOSE-ARCH-F01（P3） |
+| U4S-CLOSE-QUAL | `reports/review-closeout-quality-r1.md` | `2980a9078eecaa28b42adf7df477057447cc437f582d3466ccb6db7fc63f20be` | Pass；C3、C4、C5机械、C7机械、C8、Q-A全部通过，无残项 |
+
+- U4S-CLOSE-ARCH-F01：Owner为Closeout Executor；disposition为`fix`，由本提交在Portfolio的UI4-SPIKE-001已完成行“完成依据”单元格补入“核对 2026-10-23”落实；不新增列、不重编号、不改其它历史行。
+- 两位Reviewer分别曾担任原Spike对应lane的Reviewer（Architecture R1/R2、Quality R1–R3），不是本次Closeout实现者；不是对来源材料完全盲审。该披露保留给Human发布决定判断，不扩大独立性声明。
+- 本轮日期/状态措辞修订没有再请独立Reviewer复核；由Coordinator后续只读核对本提交并披露，不将Executor的fix记录改成Reviewer复核通过。
+- Human发布决定仍待；本Assignment在进入`main`时按D7 Close。没有push/PR/merge、UI-4实施或Release授权。
+
 ## Exit evidence
 
 | 项 | Result |
@@ -108,4 +124,4 @@ Reviewer claim register C1–C8沿用冻结指令：摘要忠实/证据边界、
 - 内容提交：`2fa77d2e249ebb633096aba0b29ba73894b81558`；报告冻结后本节仅登记交付元数据，不改变四份成果正文。
 - 报告路径/SHA-256见上；报告自身不嵌自身摘要。最终本地HEAD由对话交付，不产生循环自引用。
 - 最终检查命令：`python3 scripts/ci/check_markdown_links.py --base ce165f732c333fcd07b9a8cc950524d5e450acd1 --head HEAD`；`git diff --check ce165f732c333fcd07b9a8cc950524d5e450acd1 HEAD`。本回执提交后执行，若失败即停止交付、不发布；结果在最终对话报告。
-- 独立评审、push/PR/merge未执行；本任务仍为Completed，合并生效的Close须经过后续评审/发布决定。
+- 独立评审已完成（见本记录结果节），待Human发布决定；push/PR/merge未执行，本任务仍为Completed，按D7在进入main时Close。
