@@ -372,8 +372,20 @@ class KeyboardViewController: UIInputViewController {
     var t9PinyinPathBarHeight: CGFloat { KeyboardDesignTokens.T9PinyinBar.visibleHeight }
     /// 仅用于裁切内部布局，避免透明内容超出系统外层大圆角；不绘制额外 surface。
     let keyboardSurfaceMaskCornerRadius: CGFloat = 34
-    /// 单个按键高度（点）。45pt 比 HIG 最小触控目标略高，接近原生键盘手感。
-    let keyHeight: CGFloat = 45
+    /// 本轮显示的有效行高；用户期望值保存在独立快照里，夹取不回写。
+    var keyHeight = CGFloat(KeyboardHeightSettings.defaultRowHeight)
+    /// P2 仅提供注入点；默认没有保存值，不接共享存储或主 App。
+    var keyboardRowHeightSource: () -> Int? = { nil }
+    var keyboardHeightGeometrySource: (() -> KeyboardHeightGeometry?)?
+    var keyboardHeightSettings = KeyboardHeightSettings()
+    var keyboardHeightNeedsRead = true
+    var isKeyboardHeightManaged = false
+    var keyboardHeightGeometry: KeyboardHeightGeometry?
+    var keyboardAcceptedHeight: CGFloat?
+    var keyboardUncompressedHeight: CGFloat?
+    var keyboardHeightConstraints: [KeyboardRowHeightConstraint] = []
+    var keyboardHeightStatus: String?
+    var isUpdatingKeyboardHeight = false
     /// 行间垂直间距（点）。8pt 对齐网格，接近原生键盘行间距。
     let keySpacing: CGFloat = 8
     /// 字母区与底部功能区之间的分组间距。只比常规行距略大，避免键盘显得松散。
@@ -465,8 +477,11 @@ class KeyboardViewController: UIInputViewController {
             #endif
             startRimeSyncActivityHeartbeat()
         }
+        // 行高快照由 bootstrap 初始化；可见性回调只刷新已初始化的管理状态。
+        if isKeyboardHeightManaged { prepareKeyboardHeightForAppearance() }
         beginT9PinyinPresentationIfNeeded()
         installKeyboardUIIfNeeded()
+        synchronizeKeyboardHeightLayout()
         #if DEBUG && T9_P3_D1_LIFECYCLE_HARNESS
             p3d1RecordLifecycleMarker("APPEAR", reason: "viewWillAppear")
         #endif
@@ -511,6 +526,7 @@ class KeyboardViewController: UIInputViewController {
             activateRimeRuntimeAfterKeyboardPresentation()
         }
         handleKeyboardDidAppear()
+        view.setNeedsLayout()
         // Establish host identity after presentation, before ordinary interaction.
         synchronizeAfterTextChange()
         #if DEBUG
@@ -523,6 +539,7 @@ class KeyboardViewController: UIInputViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        keyboardHeightNeedsRead = true
         #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
             wakeOwnerProbeWillDisappear()
         #endif
@@ -807,6 +824,7 @@ class KeyboardViewController: UIInputViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        if isKeyboardHeightManaged { synchronizeKeyboardHeightLayout() }
         #if DEBUG && KEYBOARD_QUERY_COST_PROBE
             layoutQueryCostProbeControls()
         #endif

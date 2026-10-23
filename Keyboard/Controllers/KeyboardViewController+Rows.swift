@@ -31,7 +31,7 @@ extension KeyboardViewController {
         for view in views {
             row.addArrangedSubview(view)
         }
-        preferredRowHeightConstraint(for: row, height: keyHeight).isActive = true
+        preferredRowHeightConstraint(for: row).isActive = true
         return row
     }
 
@@ -114,10 +114,9 @@ extension KeyboardViewController {
         leftStack.setCustomSpacing(keyboardGroupSpacing, after: row3)
 
         // Right function column: delete + 颜表情 + tall return spanning row3+bottom.
-        let returnHeight = keyHeight * 2 + keyboardGroupSpacing
-        preferredRowHeightConstraint(for: deleteButton, height: keyHeight).isActive = true
-        preferredRowHeightConstraint(for: kaomojiButton, height: keyHeight).isActive = true
-        preferredRowHeightConstraint(for: returnButton, height: returnHeight).isActive = true
+        preferredRowHeightConstraint(for: deleteButton).isActive = true
+        preferredRowHeightConstraint(for: kaomojiButton).isActive = true
+        preferredRowHeightConstraint(for: returnButton, rows: 2, extraHeight: keyboardGroupSpacing).isActive = true
 
         let rightStack = UIStackView(arrangedSubviews: [deleteButton, kaomojiButton, returnButton])
         rightStack.axis = .vertical
@@ -153,11 +152,9 @@ extension KeyboardViewController {
             ),
         ])
 
-        let totalHeight =
-            keyHeight * 4
-            + keySpacing * 2
-            + keyboardGroupSpacing
-        preferredRowHeightConstraint(for: host, height: totalHeight).isActive = true
+        preferredRowHeightConstraint(
+            for: host, rows: 4, extraHeight: keySpacing * 2 + keyboardGroupSpacing
+        ).isActive = true
 
         return [host]
     }
@@ -234,7 +231,7 @@ extension KeyboardViewController {
         spaceButton.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
 
         NSLayoutConstraint.activate([
-            preferredRowHeightConstraint(for: row, height: keyHeight),
+            preferredRowHeightConstraint(for: row),
             emojiButton.widthAnchor.constraint(equalTo: selectPinyinButton.widthAnchor),
             spaceButton.widthAnchor.constraint(
                 equalTo: emojiButton.widthAnchor,
@@ -282,7 +279,7 @@ extension KeyboardViewController {
             row.addArrangedSubview(button)
         }
 
-        preferredRowHeightConstraint(for: row, height: keyHeight).isActive = true
+        preferredRowHeightConstraint(for: row).isActive = true
         return row
     }
 
@@ -301,7 +298,7 @@ extension KeyboardViewController {
             )
         }
 
-        preferredRowHeightConstraint(for: row, height: keyHeight).isActive = true
+        preferredRowHeightConstraint(for: row).isActive = true
         return row
     }
 
@@ -328,7 +325,7 @@ extension KeyboardViewController {
         row.addArrangedSubview(deleteButton)
 
         NSLayoutConstraint.activate([
-            preferredRowHeightConstraint(for: row, height: keyHeight),
+            preferredRowHeightConstraint(for: row),
             symbolPageButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth),
             deleteButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth),
         ])
@@ -379,7 +376,7 @@ extension KeyboardViewController {
         row.addArrangedSubview(deleteButton)
 
         NSLayoutConstraint.activate([
-            preferredRowHeightConstraint(for: row, height: keyHeight),
+            preferredRowHeightConstraint(for: row),
             leadingButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth),
             deleteButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth),
         ])
@@ -408,7 +405,7 @@ extension KeyboardViewController {
         row.addArrangedSubview(deleteButton)
 
         NSLayoutConstraint.activate([
-            preferredRowHeightConstraint(for: row, height: keyHeight),
+            preferredRowHeightConstraint(for: row),
             numbersPageButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth),
             deleteButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth),
         ])
@@ -431,7 +428,7 @@ extension KeyboardViewController {
             row.addArrangedSubview(makeKeyButton(title: key, action: action))
         }
 
-        preferredRowHeightConstraint(for: row, height: keyHeight).isActive = true
+        preferredRowHeightConstraint(for: row).isActive = true
         return row
     }
 
@@ -453,7 +450,7 @@ extension KeyboardViewController {
         row.addArrangedSubview(deleteButton)
 
         NSLayoutConstraint.activate([
-            preferredRowHeightConstraint(for: row, height: keyHeight),
+            preferredRowHeightConstraint(for: row),
             shiftButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth),
             deleteButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth),
         ])

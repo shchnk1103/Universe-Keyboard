@@ -10,6 +10,7 @@ extension KeyboardViewController {
         // Request a compact keyboard height while keeping the system-provided outer container.
         view.isOpaque = false
         view.backgroundColor = .clear
+        prepareKeyboardHeightForAppearance()
         installPreferredKeyboardHeight()
 
         let keyboardType = KeyboardType.from(uiKeyboardType: textDocumentProxy.keyboardType)

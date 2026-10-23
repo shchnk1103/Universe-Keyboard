@@ -60,7 +60,7 @@ extension KeyboardViewController {
 
         // Fixed widths keep the utility keys stable while the space key absorbs remaining room.
         var constraints: [NSLayoutConstraint] = [
-            preferredRowHeightConstraint(for: row, height: keyHeight),
+            preferredRowHeightConstraint(for: row),
             nextKeyboardButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth),
             pageSwitchButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth),
             returnButton.widthAnchor.constraint(equalToConstant: 78),
@@ -91,7 +91,8 @@ extension KeyboardViewController {
         // button itself, while the long-press gesture enters cursor movement mode.
         // UILongPressGestureRecognizer defaults to cancelsTouchesInView = true, which correctly
         // prevents the underlying touchUpInside (space insertion) once the long press is recognized.
-        let spaceLongPress = UILongPressGestureRecognizer(target: self, action: #selector(handleSpaceCursorLongPress(_:)))
+        let spaceLongPress = UILongPressGestureRecognizer(
+            target: self, action: #selector(handleSpaceCursorLongPress(_:)))
         spaceButton.addGestureRecognizer(spaceLongPress)
         row.addArrangedSubview(spaceButton)
 
@@ -156,7 +157,8 @@ extension KeyboardViewController {
         languageButton.titleLabel?.adjustsFontSizeToFitWidth = true
         languageButton.titleLabel?.minimumScaleFactor = 0.65
 
-        let spaceLongPress = UILongPressGestureRecognizer(target: self, action: #selector(handleSpaceCursorLongPress(_:)))
+        let spaceLongPress = UILongPressGestureRecognizer(
+            target: self, action: #selector(handleSpaceCursorLongPress(_:)))
         spaceButton.addGestureRecognizer(spaceLongPress)
 
         row.addArrangedSubview(languageButton)
@@ -165,7 +167,7 @@ extension KeyboardViewController {
         row.addArrangedSubview(returnButton)
 
         NSLayoutConstraint.activate([
-            preferredRowHeightConstraint(for: row, height: keyHeight),
+            preferredRowHeightConstraint(for: row),
             languageButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth),
             emojiButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth),
             returnButton.widthAnchor.constraint(equalToConstant: 78),

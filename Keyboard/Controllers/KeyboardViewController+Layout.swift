@@ -46,13 +46,15 @@ extension KeyboardViewController {
         keyboardHeightWithoutT9Path + presentedT9PinyinPathBarHeight
     }
 
-    /// Requests the compact visual height used by the current keyboard layout.
-    /// Row heights remain unchanged; the reduction comes from candidate/top spacing only.
-    func installPreferredKeyboardHeight(height: CGFloat? = nil) {
-        let height = height ?? preferredKeyboardHeight
+    /// 总高请求与行约束一起更新；宿主仍可压低 defaultHigh 的请求。
+    func installPreferredKeyboardHeight(pathHeight: CGFloat? = nil) {
+        let pathHeight = pathHeight ?? presentedT9PinyinPathBarHeight
+        guard !isKeyboardHeightManaged || resolveKeyboardRowHeight(pathHeight: pathHeight) else { return }
+        let height = keyboardUncompressedHeight ?? (keyboardHeightWithoutT9Path + pathHeight)
         if let constraint = keyboardHeightConstraint {
             // Keep a single flexible request; same-state refreshes do no constraint work.
             if constraint.constant != height { constraint.constant = height }
+            constraint.isActive = true
             return
         }
         let constraint = view.heightAnchor.constraint(equalToConstant: height)
@@ -63,9 +65,18 @@ extension KeyboardViewController {
 
     /// 高度是布局期望值而不是对系统输入容器的硬性要求。
     /// 与 Hamster/KeyboardKit 一致，系统过渡布局时可临时压缩或扩展按键行。
-    func preferredRowHeightConstraint(for view: UIView, height: CGFloat) -> NSLayoutConstraint {
-        let constraint = view.heightAnchor.constraint(equalToConstant: height)
-        constraint.priority = .defaultHigh
+    func preferredRowHeightConstraint(
+        for view: UIView, rows: CGFloat = 1, extraHeight: CGFloat = 0, minimum: Bool = false
+    ) -> NSLayoutConstraint {
+        let height = keyHeight * rows + extraHeight
+        let constraint =
+            minimum
+            ? view.heightAnchor.constraint(greaterThanOrEqualToConstant: height)
+            : view.heightAnchor.constraint(equalToConstant: height)
+        constraint.priority = minimum ? .required : .defaultHigh
+        keyboardHeightConstraints.removeAll { $0.constraint == nil }
+        keyboardHeightConstraints.append(
+            KeyboardRowHeightConstraint(constraint: constraint, rows: rows, extraHeight: extraHeight))
         return constraint
     }
 }

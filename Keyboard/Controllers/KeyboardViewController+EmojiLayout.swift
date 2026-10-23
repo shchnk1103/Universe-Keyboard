@@ -72,7 +72,7 @@ extension KeyboardViewController {
             emojiGrid.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
             emojiGrid.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
             emojiGrid.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor),
-            preferredRowHeightConstraint(for: emojiGrid, height: keyHeight * 3 + keySpacing * 2),
+            preferredRowHeightConstraint(for: emojiGrid, rows: 3, extraHeight: keySpacing * 2),
         ])
 
         return container

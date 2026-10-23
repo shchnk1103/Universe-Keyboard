@@ -19,7 +19,7 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
                 print("HEADER_ROOT width=\(width) nineKey=\(nineKey) frame=\(frame)")
                 XCTAssertEqual(frame.minX, 0, accuracy: 0.01)
                 XCTAssertEqual(frame.maxX, width, accuracy: 0.01)
-                XCTAssertEqual(frame.height, 46, accuracy: 0.01)
+                XCTAssertEqual(frame.height, KeyboardDesignTokens.CandidateBar.totalHeight, accuracy: 0.01)
                 assertRequiredEqualities(in: sut.view)
                 let point = CGPoint(x: width - 1, y: frame.midY)
                 XCTAssertTrue(surface.hitTest(point, with: nil) === bar.expandButton)
@@ -172,9 +172,9 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
             XCTAssertEqual(sut.rootStack.frame.minY, 2)
             XCTAssertEqual(row.convert(row.bounds, to: sut.view).minY, 2)
             XCTAssertEqual(collection.convert(collection.bounds, to: sut.view).minY, 2)
-            XCTAssertEqual(collection.bounds.height, 46)
+            XCTAssertEqual(collection.bounds.height, KeyboardDesignTokens.CandidateBar.totalHeight)
             XCTAssertEqual(firstKeyTop, 48)
-            XCTAssertEqual(sut.preferredKeyboardHeight, 254)
+            XCTAssertEqual(sut.preferredKeyboardHeight, KeyboardViewController.defaultKeyboardHeightWithoutPath)
             XCTAssertFalse(sut.shouldReserveT9PinyinPathBar)
         }
     }
@@ -653,7 +653,7 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
             nineKey ? $0.accessibilityIdentifier == "2" : $0.accessibilityLabel == "q"
         }
         guard let first else { return XCTFail("Missing first row key") }
-        XCTAssertEqual(first.bounds.height, 45, accuracy: 0.01)
+        XCTAssertEqual(first.bounds.height, CGFloat(KeyboardHeightSettings.defaultRowHeight), accuracy: 0.01)
         for x in [first.bounds.minX + 0.5, first.bounds.maxX - 0.5] {
             let point = first.convert(CGPoint(x: x, y: first.bounds.midY), to: sut.view)
             let hit = sut.view.hitTest(point, with: nil)

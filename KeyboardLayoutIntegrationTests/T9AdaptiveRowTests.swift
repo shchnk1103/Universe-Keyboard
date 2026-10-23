@@ -10,15 +10,18 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
     func testIdleCompositionAndRapidRetypePreserveCandidateAndKeys() throws {
         for width: CGFloat in [320, 390, 430] {
             let owner = makeOwner(width: width)
-            XCTAssertEqual(owner.keyboardHeightWithoutT9Path, 254)
-            XCTAssertEqual(expectedHeight(owner, expanded: true), 288)
+            XCTAssertEqual(owner.keyboardHeightWithoutT9Path, KeyboardViewController.defaultKeyboardHeightWithoutPath)
+            XCTAssertEqual(
+                expectedHeight(owner, expanded: true),
+                KeyboardViewController.defaultKeyboardHeightWithoutPath + KeyboardDesignTokens.T9PinyinBar.visibleHeight
+            )
             let bar = try XCTUnwrap(owner.t9PinyinPathBarView)
             let request = try XCTUnwrap(owner.keyboardHeightConstraint)
             let candidate = try XCTUnwrap(owner.candidateBar)
             let keys = descendants(owner.rootStack).compactMap { $0 as? KeyboardKeyButton }
             XCTAssertFalse(keys.isEmpty)
             let idle = measure(owner)
-            XCTAssertEqual(idle.keys.first?.height, 45)
+            XCTAssertEqual(idle.keys.first?.height, CGFloat(KeyboardHeightSettings.defaultRowHeight))
             XCTAssertEqual(request.constant, expectedHeight(owner, expanded: false))
             XCTAssertEqual(bar.frame.height, 0)
             XCTAssertTrue(bar.isHidden)
