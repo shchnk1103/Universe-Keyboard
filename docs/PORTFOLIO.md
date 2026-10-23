@@ -22,7 +22,7 @@
 | PF-005 | P1 | UI-1 / UI-2 正式 Closeout | Blocked | UI-2 受 TD-020 约束；UI-1 的 Lifecycle 仍为 Active（PR216 post-merge sync 明确无完成 / 验收 / 独立复核声称），处置待 Human 另行决定 | `docs/ACTIVE_WORK.md` 的第 11、3 项 | 2026-10-22 |
 | PF-013 | P1 | UI-4：自定义键盘高度 | Waiting Human | Spike 已完成并被 Human 接受；下一步由 Human 决定 Product Decision 的待决项（见详情）；Product Decision 与 UI-4 Assignment 尚未起草 | [ui-4-keyboard-height](portfolio/ui-4-keyboard-height.md) · [Spike 摘要](evidence/ui4-spike-001-summary.md) · [Spike Assignment](assignments/ui4-spike-001.md) | 2026-10-23 |
 | PF-022 | P1 | 键盘数值核对脚本 | Backlog | 把 `docs/KEYBOARD_VALUES.md` 的数值与代码常量逐个比对，接入 `scripts/ci/run_lightweight_checks.sh`，让文档漂移在 CI 里暴露；尚未立项 | `docs/assignments/keyboard-values-doc-001.md`（评审后记录的后续候选） | 2026-10-22 |
-| PF-006 | P1 | Input Reliability | In progress | 三份 `input-reliability-delivery-001/002/003.md` 的 Lifecycle 都是 Active；PR #213 `bb430f9`、#214 `d08175b`、#215 `096183c` 已合并；`docs/ACTIVE_WORK.md` 第 6 项为 Active。残项（真实 RIME T9 恢复集成、激活后 Extension 完整交互、Final Merge Gate 记录）UNKNOWN。Lifecycle 处置留给生命周期收尾批次，本行不处置 | `docs/assignments/input-reliability-delivery-001.md`、`input-reliability-delivery-002.md`、`input-reliability-delivery-003.md`；`docs/ACTIVE_WORK.md` 第 6 项 | 2026-10-23 |
+| PF-006 | P1 | Input Reliability | In progress | 三份 `input-reliability-delivery-001/002/003.md` 的 Lifecycle 都是 Active；PR #213 `bb430f9`、#214 `d08175b`、#215 `096183c` 已合并；`docs/ACTIVE_WORK.md` 的 Ready/Active 表第 6 项（INPUT-RELIABILITY-DELIVERY-003，当前约第 314 行）为 Active。残项（真实 RIME T9 恢复集成、激活后 Extension 完整交互、Final Merge Gate 记录）UNKNOWN。Lifecycle 处置留给生命周期收尾批次，本行不处置 | `docs/assignments/input-reliability-delivery-001.md`、`input-reliability-delivery-002.md`、`input-reliability-delivery-003.md`；`docs/ACTIVE_WORK.md` 的 Ready/Active 表第 6 项 | 2026-10-23 |
 | PF-007 | P1 | RIME Deploy Crash / Recovery | UNKNOWN | 不与 `RIME-DEPLOY-INTERRUPT-RECOVER-001`（Closed，PR #115）合并；是否同线 UNKNOWN | 无直接 Assignment；相关见 `docs/assignments/rime-deploy-interrupt-recover-001.md`（是否同线 UNKNOWN） | 2026-10-23 |
 | PF-008 | P1 | Keyboard Wake V3 | Waiting Human | 有界发布已合并（PR #198）；三件相关 Assignment 已 Closed（`docs/ACTIVE_WORK.md` 第 45 行）；`keyboard-wake-diagnostic-v3-compatibility-gate-001` 仍为 Reviewed，父 Assignment Active，v6 合同待实现；是否关闭由 Human 决定 | `docs/ACTIVE_WORK.md` 第 45 行；`docs/assignments/keyboard-wake-diagnostic-v3-compatibility-gate-001.md` | 2026-10-23 |
 | PF-009 | P1 | Real RIME T9 Batch A | UNKNOWN | 仓库内无 “Batch A” Assignment；相关线索是 real RIME T9 残项，是否同一所指 UNKNOWN | 无（仓库内无 “Batch A” Assignment；相关线索：`docs/assignments/input-reliability-delivery-003.md` 第 76 行的 real RIME T9 残项） | 2026-10-23 |
@@ -37,7 +37,8 @@
 | PF-023 | P2 | 分支与 worktree 的清理机制 | Backlog | 只读盘点已做；规则细节待定；本行不授权任何清理 | [branch-worktree-cleanup](portfolio/branch-worktree-cleanup.md) | 2026-10-23 |
 | PF-024 | P2 | GitHub CI 的后续改进 | Backlog | Human 的想法：进一步拆分、更快、更易定位；只读分析认为拆分提速不是优先项；不改 CI | [ci-improvement](portfolio/ci-improvement.md) | 2026-10-23 |
 | PF-025 | P2 | Release Evidence / 构建来源管理 | Backlog | Human 与 ChatGPT 的讨论，未核对；尚未立项 | 无直接来源；相关：`docs/RELEASE_CHECKLIST.md` | 2026-10-23 |
-| PF-026 | P2 | RIME Sync / UI01 | UNKNOWN | Human 只留线索，之后有空再说 | 无（Human 不记得，只留线索，之后有空再说） | 2026-10-23 |
+| PF-026 | P2 | RIME Sync / UI01 | UNKNOWN | Human 只留线索，之后有空再说 | 无（只留线索，之后有空再说） | 2026-10-23 |
+| PF-027 | P1 | INPUT-RELIABILITY-B-001（输入可靠性边界核查与最小补缺） | UNKNOWN | Assignment 记录写 Active，但只存在于 Codex 工作区 `~/.codex/worktrees/input-reliability-main-20261012`（分支 `codex/input-reliability-b-main-20261012`，约 1078 条未提交记录），不在 `main` 也不在任何远端分支；已在本机做完整的本地快照提交 `preserve/input-reliability-b-001-20261023`（`d9e1de64b8760e3ae04b25a20abd05f60a0b5976`），**未推送**（仓库公开，内含设备截图、录像与数据库）；Human 说明这是一项快要完成的、从一个开源项目吸取经验的工作，打算在本周 TestFlight 发布之后回头看（口述，未核对）；与 PF-006 的关系 UNKNOWN | 无（Assignment 与快照都不在仓库；仅在 Human 本机） | 2026-10-23 |
 | PF-019 | P1 | Reviewer 独立性政策（按上下文隔离判断，分级 L1 到 L3） | Waiting Human | Human 已同意方向；待起草政策文本并经评审；不适用于已在进行的批次 | [kos-optimization](portfolio/kos-optimization.md) 第 17、18 条 | 2026-10-22 |
 
 ## 决定记录
@@ -62,7 +63,8 @@
 | 2026-10-23 | PF-016 来源是 Human 与 ChatGPT 的讨论总结（仓库外，未核对）；旧总结“经 PR #54、提交 `72c7379` 合并”是错误引用，不得当证据 | [ai-budget-governance](portfolio/ai-budget-governance.md) |
 | 2026-10-23 | Human 提出进一步拆分 GitHub CI；只读抽样后的发现是：最长几条 run 的主因是 TD-020 间歇失败后的重跑，拆分提速不是优先项。想法未立项 | [ci-improvement](portfolio/ci-improvement.md) |
 | 2026-10-23 | Human 提出分支与 worktree 清理机制（合并 PF-014 / PF-017 的动机）；同意先做只读盘点（已由 Grok bot 完成）；规则细节待定；本次没有执行也没有授权清理 | [branch-worktree-cleanup](portfolio/branch-worktree-cleanup.md) |
-| 2026-10-23 | Human 说明已不记得 PF-004 所指的那些事；这正是需要持久化任务管理系统的理由。不改变 PF-004 的行 | 本文件 PF-004 |
+| 2026-10-23 | 这些事此前没有持久化记录，靠对话与外部总结才找回；这正是需要持久化任务管理系统的理由。不改变 PF-004 的行 | 本文件 PF-004 |
+| 2026-10-23 | INPUT-RELIABILITY-B-001 的未提交工作（约 215MB，含设备截图、录像、数据库）在本机做了本地快照提交，Human 选择只保留本地、不推送（仓库公开）；本周 TestFlight 发布之后再回头看；这不是评审通过，也不可合并 | 本文件 PF-027 |
 
 ## 已完成
 

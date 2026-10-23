@@ -35,7 +35,7 @@ record_id: PORTFOLIO-REFRESH-002
 | D4 | `ci-improvement.md` 采用更正后的数据：重跑而非排队；重复准备开销小；可节省分钟数与拆分后时长不混淆 |
 | D5 | `branch-worktree-cleanup.md` 转述盘点、标明抽样、写明候选须先确认 KEEP，并写明没有执行也没有授权清理 |
 | D6 | `PORTFOLIO.md` 只改指定行并追加；其它行逐字节不变；状态词合规；PF-023 至 PF-026 无冲突 |
-| D7 | `ai-budget-governance.md` 按决定清单修改且不含“不记得具体对话”；`testflight-gates.md` 的“是否仍适用”没有被填成事实 |
+| D7 | `ai-budget-governance.md` 按决定清单修改且不含任何关于 Human 记忆状态的句子；`testflight-gates.md` 的“是否仍适用”没有被填成事实 |
 | D8 | `kos-optimization.md` 只追加且编号接续；本记录含 Policy 必填字段 |
 | D9 | PR #229 合并后同步只改过期状态句 |
 | D10 | 链接检查与 `git diff --check` 通过；diff 只含 Scope 内文件 |
@@ -84,3 +84,21 @@ Executor 与 Reviewer 的最终报告、指令、packet 均保存为文件，根
 ## Closeout Decision — 结果
 
 2026-10-23，Executor：本地 docs-only 交付已完成。未 push / PR / merge。独立评审尚未执行。Lifecycle 保持 Active。Close 仍须评审完成并在进入 `main` 时生效。
+
+### 评审后结果追加（2026-10-23）
+
+本节上方“独立评审尚未执行”是首次交付时的历史状态。当前独立评审已完成，以下追加结果取代其中待评审状态，不回写原文。报告路径均相对 `~/.kos-work/Universe-Keyboard/PORTFOLIO-REFRESH-002/`。
+
+| Lane | 报告 | SHA-256 | 结论 |
+|---|---|---|---|
+| `PR002-QUAL` | `reports/review-quality-r1.md` | `6d63cac402db4a2d2770ef6eee3c00dc608945fbfa1999dc1d46e0d18d14b1ce` | Pass with conditions；残项 `QUAL-F01`（低） |
+| `PR002-ARCH` | `reports/review-architecture-r1.md` | `1e8a11b376641b0a50ff94b57788d7ab5be18ff63009c2ef15e9dd8f19b86667` | Pass with conditions；残项 `PR002-ARCH-R1-C01`、`C02`、`C03`（低） |
+
+- `QUAL-F01` 与 `PR002-ARCH-R1-C03`：disposition 为 `fix`，由本提交落地。三处关于 Human 记忆状态的句子改成中性写法，不改它们表达的其它信息。
+- `PR002-ARCH-R1-C01`：disposition 为 `fix`，由本提交落地。PF-006 的“第 6 项”改为 Ready/Active 表第 6 项（INPUT-RELIABILITY-DELIVERY-003，当前约第 314 行）。不改 PF-006 的状态。
+- `PR002-ARCH-R1-C02`：不在本任务范围。记为后续一次文档任务“说明 D7 记录类在合并前 Lifecycle 的两种合法写法”。Owner：Architecture and Knowledge Steward。
+- 独立性：两位 Reviewer 都是 Grok Build 会话，与 Executor 同属 Grok Build 这一产品。Architecture 声明独立性级别为“同一模型族的另一个会话”。Quality 声明“会话独立”。两者都加载了含 Universe Keyboard 的工作区记忆。
+- `docs/PORTFOLIO.md` 的 PF-018 一行（候选条数与核对日期）已被两位 Reviewer 判定在授权范围内。本提交不改该行。
+- 本修正提交没有再请独立 Reviewer 复核，由 Coordinator 只读核对。
+- Human 发布决定仍待；本 Assignment 在进入 `main` 时按 D7 Close。
+- 同一提交另按 Human 2026-10-23 授权记入 PF-027（INPUT-RELIABILITY-B-001 的本机快照，未推送）。这不是评审通过，也不可合并。
