@@ -55,6 +55,8 @@ Path list presentation (implementation): Path cells render with plain `UILabel` 
 
 **Exception — UI-4 row height (`UI4-HEIGHT-001`):** The user may adjust the shared effective row height; the frozen default remains45pt (254pt without Path, 288pt with34pt Path). Candidate46pt, Path34pt, fonts, widths and spacing keep their frozen values. The extension applies direction caps and actual-budget clipping without implicitly saving clipped values; below four40pt rows the whole surface is hidden. See [current values and priority limits](KEYBOARD_VALUES.md#p3-r2-旋转完成后的高度请求优先级) and [the product contract](product-decisions/UI4-KEYBOARD-HEIGHT-001-product-contract.md). This exception does not unfreeze other metrics or establish device-wide acceptance.
 
+**Exception — UI-3 candidate font (`UI3-FONT-001`):** Only candidate/composition text is adjustable via integer tiers13–22; default17 retains independent17/15 body scaling capped at28. Other tiers use fixed n/n−2 without Dynamic Type. This does not alter key fonts, candidate height or UI-4 geometry. See Candidate Bar below.
+
 Frozen keyboard baseline (with the authorized compact-header exception):
 
 - Keyboard content top inset: `2`.
@@ -129,7 +131,7 @@ The candidate bar must prioritize readability and speed:
 - Composition/preedit fallback should use `.secondaryLabel`.
 - Placeholder items should not appear as selectable candidates.
 - The trailing candidate-bar control is always present in a 56 × 46pt action zone, flush with the keyboard surface trailing edge (`PD-CANDIDATE-BAR-IDLE-DISMISS-001`). Expandable content uses quiet `chevron.down` to expand. Idle uses template `chevron.down.circle` to request `dismissKeyboard()`. Draw it with `UIButton(type: .custom)` and `.alwaysTemplate`, not `UIButton.Configuration`, so the circle does not punch a white plate through keyboard glass. Swipe-down expands only in expand mode. VoiceOver labels switch with the mode.
-- Normal horizontal candidates use a 17pt base font; composition fallback uses 15pt. Keep Dynamic Type capped at 28pt so candidate rows do not resize unpredictably.
+- UI3-FONT-001 default tier 17 preserves the 17pt candidate / 15pt composition bases, each independently scaled with body Dynamic Type and capped at 28pt. The main App offers integer tiers 13–22 under 设置 → 键盘布局 → 候选字大小; every other tier uses fixed n / n−2 pt without system scaling. `CandidateFontSnapshot` is shared by keyboard rendering, measurement and the static App preview. Candidate row geometry remains unchanged.
 - Candidate cells should render text with `UILabel` and an explicit highlighted background view. Avoid `UIButton.Configuration` for candidate display; it can interact poorly with system material compositing.
 - Candidate `UICollectionView`s must use `CandidateScrollViewStyle.apply(to:)`. On iOS 26+, `UIScrollEdgeEffect` can create a rectangular fade/overlay over the first candidate row inside the system keyboard glass container.
 - Candidate `UICollectionView` layouts should avoid real spacing between items. Keep item spacing at zero, put the visual gap inside the cell, and keep a nearly invisible backing view (`alpha` around `0.001`) so the apparent gap remains part of a cell's touch area in the Keyboard Extension.

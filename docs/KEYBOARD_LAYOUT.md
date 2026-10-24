@@ -15,12 +15,20 @@ Related Assignments:
 
 ## Product Model
 
-Users choose a keyboard layout in the main App under 设置 → 输入体验:
+Users choose a keyboard layout in the main App under 设置 → 键盘布局:
 
 - **26键** — standard full QWERTY. Default.
 - **9键** — Chinese alphabet page uses **system-style 九宫格 chrome** (letter-group labels, side functions). English and automatic-English contexts stay on existing QWERTY.
 
 Nine-key depends on fog-song / rime-ice T9 resources. If those resources are missing, the main App must explain the dependency, obtain GPL acceptance, download, install, deploy and verify T9 before persisting the nine-key preference.
+
+## Candidate Font Setting (UI3-FONT-001, local delivery)
+
+设置 → 键盘布局内，“候选字大小”与“键盘高度”并列；首页的键盘布局快捷入口进入同一页，搜索支持候选、候选字、字号、字体大小、大小。
+页面显示只读静态候选栏示例和13–22的十档整数滑杆，17标为“默认”。默认档候选17 / 组字15分别跟随系统更大字体、各封顶28；其它档固定为n / n−2，不随系统变化。
+主 App 与键盘使用同一份 `CandidateFontSnapshot.swift`，预览不连接真实键盘，也没有试打框。
+主 App 写 App Group 的 `keyboard_candidate_font_size`，选17删键；键盘在下次呈现前采用，不在热输入路径读设置。
+关闭完全访问时的端到端采用仍为UNKNOWN，页面不作权限能力承诺。UI-4的私有高度存储、旋转租约与几何不变。
 
 ## Runtime Rules
 
