@@ -286,6 +286,35 @@ nonisolated final class KeyboardHeightControllerTests: XCTestCase {
     }
 
     @MainActor
+    func testSuspendRestoresHeldRotationLeaseAndRejectsLateCompletion() throws {
+        let (owner, window) = makeRotationOwner()
+        defer { window.isHidden = true }
+        let request = try XCTUnwrap(owner.keyboardHeightConstraint)
+        let coordinator = HeightRotationCoordinator()
+        owner.viewWillTransition(to: CGSize(width: 390, height: 254), with: coordinator)
+        coordinator.complete()
+        XCTAssertEqual(request.priority.rawValue, 999)
+        owner.suspendKeyboardRuntime(reason: "syntheticHostResign", updateUI: false)
+        XCTAssertEqual(request.priority, .defaultHigh)
+        coordinator.complete()
+        XCTAssertEqual(request.priority, .defaultHigh)
+        XCTAssertEqual(owner.keyboardHeightSettings.savedRowHeight, 60)
+    }
+
+    @MainActor
+    func testSuspendInvalidatesPendingRotationCompletion() throws {
+        let (owner, window) = makeRotationOwner()
+        defer { window.isHidden = true }
+        let request = try XCTUnwrap(owner.keyboardHeightConstraint)
+        let coordinator = HeightRotationCoordinator()
+        owner.viewWillTransition(to: CGSize(width: 390, height: 254), with: coordinator)
+        owner.suspendKeyboardRuntime(reason: "syntheticHostResign", updateUI: false)
+        coordinator.complete()
+        XCTAssertEqual(request.priority, .defaultHigh)
+        XCTAssertEqual(owner.keyboardHeightSettings.savedRowHeight, 60)
+    }
+
+    @MainActor
     private func makeRotationOwner() -> (HeightLayoutController, UIWindow) {
         let owner = makeOwner(saved: 60)
         install(owner)

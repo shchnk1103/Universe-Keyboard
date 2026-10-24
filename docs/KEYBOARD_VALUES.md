@@ -28,8 +28,8 @@ P5 高度镜像核对日期：2026-10-24 Asia/Shanghai；高度相关更新基�
 | rootStack leading / trailing | +7 / -7 | `Keyboard/Controllers/KeyboardViewController+Presentation.swift:57`；`Keyboard/Controllers/KeyboardViewController+Presentation.swift:58` | 按键横向边距；候选 header 单独延伸至全宽 |
 | installCandidateBarRow custom spacing | 0 | `Keyboard/Controllers/KeyboardViewController+Presentation.swift:78` | 不再额外添加候选到按键的 14pt 桥接 |
 | makeLetterRow horizontalInset | 默认 0；第二行 18 | `Keyboard/Controllers/KeyboardViewController+Rows.swift:257`；`Keyboard/Controllers/KeyboardViewController+Presentation.swift:202` | 第二行横向错位，非垂直留白 |
-| makeT9NineKeyChrome totalHeight | 4×h + 8×2 + 10；默认 206 | `Keyboard/Controllers/KeyboardViewController+Rows.swift:156` | 九键 host，不含候选与路径栏 |
-| returnHeight | 2×h + 10；默认 100 | `Keyboard/Controllers/KeyboardViewController+Rows.swift:117` | 九键右侧跨两行 Return |
+| makeT9NineKeyChrome totalHeight | 4×h + 8×2 + 10；默认 206 | `Keyboard/Controllers/KeyboardViewController+Rows.swift:155` 的 preferredRowHeightConstraint(for: host, rows: 4, extraHeight: keySpacing * 2 + keyboardGroupSpacing) | 九键 host，不含候选与路径栏 |
+| makeT9NineKeyChrome / returnButton 高度 | 2×h + 10；默认 100 | `Keyboard/Controllers/KeyboardViewController+Rows.swift:119` 的 preferredRowHeightConstraint(for: returnButton, rows: 2, extraHeight: keyboardGroupSpacing) | 九键右侧跨两行 Return；当前源码无 returnHeight 局部符号 |
 | rightStack / leftStack 宽度比 | 0.25 | `Keyboard/Controllers/KeyboardViewController+Rows.swift:138` | 右列相当于左侧四列之一 |
 
 ### 候选栏与展开面板
@@ -69,7 +69,7 @@ P5 高度镜像核对日期：2026-10-24 Asia/Shanghai；高度相关更新基�
 | T9PinyinPathBarCell contentView 最小尺寸 | 宽 44 / 高 32 | `Keyboard/Views/T9PinyinPathBarView.swift:612` | 不等于 44pt 外扩触摸高度 |
 | idleHintLabel | 字号 14；左右 12 | `Keyboard/Views/T9PinyinPathBarView.swift:107`；`Keyboard/Views/T9PinyinPathBarView.swift:129` | 保留实现定义，不据此声称空闲提示实际展示 |
 | makePinyinPathExpandedPanel layout | item / line 8；inset top/left/bottom/right=12/12/12/56 | `Keyboard/Controllers/KeyboardViewController+T9PinyinPath.swift:336` | 旧路径展开面板定义，与紧凑栏分开 |
-| 路径展开 container minimumHeight | 4×h+8×3；默认 204 | `Keyboard/Controllers/KeyboardViewController+T9PinyinPath.swift:358` | 最小高度约束，不是九键 host 206 |
+| makePinyinPathExpandedPanel / container 最小高度 | 4×h+8×3；默认 204 | `Keyboard/Controllers/KeyboardViewController+T9PinyinPath.swift:360` 的 preferredRowHeightConstraint；`:361` 的 rows: 4 / extraHeight: keySpacing * 3 / minimum: true（约束调用至362） | 最小高度约束，不是九键 host 206 |
 | 路径展开 close / cell 最小尺寸 | 44×44 | `Keyboard/Controllers/KeyboardViewController+T9PinyinPath.swift:367`；`Keyboard/Controllers/KeyboardViewController+T9PinyinPath.swift:468` | 关闭按钮与旧路径 cell |
 | 路径展开 cell label inset / item 宽度 | 左右 8，上下 6；测量 textWidth+24，至少 44 | `Keyboard/Controllers/KeyboardViewController+T9PinyinPath.swift:464`；`Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift:163` | 两处横向数字独立存在，不能混为同一个 token |
 
@@ -82,7 +82,7 @@ P5 高度镜像核对日期：2026-10-24 Asia/Shanghai；高度相关更新基�
 | emoji columns / maxRows / visibleCount | 8 / 4 / 32 | `Keyboard/Controllers/KeyboardViewController+EmojiLayout.swift:41` | 初始最多显示 32 个槽 |
 | emojiGrid preferred height | 3×h+8×2；默认 151 | `Keyboard/Controllers/KeyboardViewController+EmojiLayout.swift:75` | 是 grid 内容的期望高度，不是整页解析高度 |
 | emoji button font | 24 | `Keyboard/Controllers/KeyboardViewController+EmojiLayout.swift:84` | 非候选字号 |
-| numbers / symbols / bottom rows | 复用有效 keyHeight=h（默认45）与 keySpacing=8、分组10 | `Keyboard/Controllers/KeyboardViewController+Presentation.swift:209`；`Keyboard/Controllers/KeyboardViewController+Presentation.swift:229`；`Keyboard/Controllers/KeyboardViewController+BottomRow.swift:63` | 页构造仍复用公共几何，不另增高度设置 |
+| numbers / symbols / bottom rows | 复用有效 keyHeight=h（默认45）与 keySpacing=8、分组10 | `Keyboard/Controllers/KeyboardViewController+Presentation.swift:183` 的 addKeyboardRows(for:)：`:213` numbers、`:233` symbols；`Keyboard/Controllers/KeyboardViewController+BottomRow.swift:16` 的 makeBottomRow 在 `:63` 接入公共行约束 | 页构造仍复用公共几何，不另增高度设置 |
 | KeyPopupView itemWidth / spacing / padding / popupHeight / gap | 36 / 2 / 8 / 38 / 6 | `Keyboard/Views/KeyPopupView.swift:103` | 变体字符覆盖层，不增加根视图请求高度 |
 | KeyPopupView horizontal clamp | 3 | `Keyboard/Views/KeyPopupView.swift:120` | 左右最小边界 |
 | KeyPopupView.stackView vertical inset | 上下各 4 | `Keyboard/Views/KeyPopupView.swift:145`；`Keyboard/Views/KeyPopupView.swift:146` | 标签栈内边距，独立于覆盖层外框高度 38 |
@@ -121,7 +121,7 @@ P5 高度镜像核对日期：2026-10-24 Asia/Shanghai；高度相关更新基�
 | punctuationButton / kaomojiButton minimumScaleFactor | 均 0.55 | `Keyboard/Controllers/KeyboardViewController+Rows.swift:58`；`Keyboard/Controllers/KeyboardViewController+Rows.swift:59`；`Keyboard/Controllers/KeyboardViewController+Rows.swift:69`；`Keyboard/Controllers/KeyboardViewController+Rows.swift:70` | 标点 / 颜文字已有宽度适配比例，不表示始终按该倍率渲染 |
 | selectPinyinButton minimumScaleFactor | 0.45 | `Keyboard/Controllers/KeyboardViewController+Rows.swift:202`；`Keyboard/Controllers/KeyboardViewController+Rows.swift:203` | 选拼音已有宽度适配下限，不是固定字号 |
 | languageButton minimumScaleFactor（符号页返回语言键） | 0.65 | `Keyboard/Controllers/KeyboardViewController+BottomRow.swift:156`；`Keyboard/Controllers/KeyboardViewController+BottomRow.swift:157` | makeSymbolicBottomRow 内已有宽度适配下限，不是固定字号或 Dynamic Type 上限 |
-| installPreferredKeyboardHeight priority | 常态 defaultHigh（750）；旋转后条件性 999 | P3-R2：`Keyboard/Controllers/KeyboardViewController+Layout.swift` 的 KeyboardHeightRotationPriority / installPreferredKeyboardHeight；`Keyboard/Controllers/KeyboardViewController.swift` 的 viewWillTransition / viewWillDisappear | 持有租约绑定约束身份；下一旋转、消失、换约束或窗口移除恢复750，不是硬性指定系统实授 |
+| installPreferredKeyboardHeight priority | 常态 defaultHigh（750）；旋转后条件性 999 | P3-R2：`Keyboard/Controllers/KeyboardViewController+Layout.swift` 的 KeyboardHeightRotationPriority / installPreferredKeyboardHeight；`Keyboard/Controllers/KeyboardViewController.swift` 的 viewWillTransition / viewWillDisappear | 持有租约绑定约束身份；下一旋转、消失、换约束、窗口移除或宿主suspend恢复750，不是硬性指定系统实授 |
 | preferredRowHeightConstraint priority | defaultHigh（750） | `Keyboard/Controllers/KeyboardViewController+Layout.swift:66`；`Keyboard/Controllers/KeyboardViewController+Layout.swift:68` ；外部 SDK `/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/System/Library/Frameworks/UIKit.framework/Headers/NSLayoutConstraint.h:19`（非仓库文件，随 Xcode 版本变化） | 系统可压缩；不是硬性指定实际高度 |
 | 路径 row / 候选 row / 旧路径最小高度 | 未显式降 priority，NSLayoutConstraint 默认 required（1000） | `Keyboard/Views/T9PinyinPathBarView.swift:121`；`Keyboard/Views/CandidateBar/CandidateBarView.swift:187`；`Keyboard/Controllers/KeyboardViewController+T9PinyinPath.swift:358` ；外部 SDK `/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/System/Library/Frameworks/UIKit.framework/Headers/NSLayoutConstraint.h:18`（非仓库文件，随 Xcode 版本变化） | 与公共按键行的 defaultHigh 区别；实际求解需运行证据 |
 
@@ -274,7 +274,7 @@ Required=1000、DefaultHigh=750。它是外部 SDK，非仓库文件，随 Xcode
 750 为常态请求；旋转完成后宿主仍未采用请求（尤其仍小于请求）时，只有未取消、窗口存在、
 生命周期 visible、已有约束且实际高度不等于 uncompressed 请求值，才条件性提升到999。
 一个 transition 最多一次，不定时重试；持有至下一次旋转开始（super之前）、消失（super之后）、
-约束对象重建/替换或窗口移除，再恢复750并失效旧完成回调。
+约束对象重建/替换、窗口移除或宿主 resign 的 suspend 路径，再恢复750并失效旧完成回调。
 `KeyboardHeightRotationPriority` 是唯一提升/还原所有者，适用于 Debug 与 Release，不带临时日志。
 行约束仍为750；模型默认45/254/288、方向封顶、40下限与保存不写回不变。
 即使提升后宿主仍给低预算，既有 accepted 预算采样仍执行，按实授压低行高或在不足四行40时隐藏。
@@ -292,6 +292,25 @@ Required=1000、DefaultHigh=750。它是外部 SDK，非仓库文件，随 Xcode
 - C4 实验小补丁 SHA-256 `8a18ac4cddea1d54071d7d28cb49961264447f253f4251a306adaf6abbd6e1c6`，
   总补丁 SHA-256 `652136bea164cc820b586bc10e2233b6ea57395003dee920c230e2d1795ed306`；
   正式代码新增约束身份与退出保护，不直接带入 DEBUG 实验代码。
+
+## Round 1 已接受限制与有界记录（P3-R3）
+
+本节记录 Human 明确处置，不改变产品规则；与外置 `reports/pm-acceptance-matrix-v2.md` 的
+Human 观察 / 夹具 / UNKNOWN 层级一致。上面本次修订的 Return、九键host、路径面板与数字/符号表行，
+已按本分支 P3-R3 最终源码符号和行号核对；其它历史盘点项不作无界刷新。
+
+- R-01（Human accept）：宿主预算不足四行40pt时整面隐藏，不是缩到任意可用高度；
+  模型/夹具证明该分支，真实宿主全覆盖未验证。出现真实设备/宿主触发隐藏时复审。
+- R-04（Human accept）：999参与求解后，accepted只观察求解后的bounds；它不保证识别被更高优先级覆盖的软预算意图。
+  真实低预算、iPad分屏、浮动键盘未独立验证；有裁切/高度异常反馈或取得这些环境设备时复审。
+- R-06（Human accept UNKNOWN）：本次真机iOS版本、安装时间、所装完整提交/配置及未提供的最大高度测量仍UNKNOWN；
+  Human单机总体通过不是独立测量，Release真机二进制配置未独立核验。
+- 竖屏最大值占屏比例：Human目测“约三分之二”不是测量，是否含系统底栏未知，50%实际符合性仍UNKNOWN（已接受待测）。
+- 端点震动：完全访问开时端点震动为已接受剩余，来源UNKNOWN；不因此声称无触觉。
+- `KeyboardHeightAdjustmentTokenStore.consume` 在私有存储中按FIFO仅保留最近64个已消费UUID；
+  界内重复仍拒绝，淘汰后的旧UUID不再承诺去重，活动会话和宿主内容不持久化，协议格式/存储键不变。
+- 宿主 resign 可能没有 willDisappear；`suspendKeyboardRuntime` 也通过原单一租约owner还原750并失效迟到完成。
+  这是清理边界补齐，不把挂起/恢复夹具当成所有真实宿主的测量证明。
 
 ## UNKNOWN 清单
 

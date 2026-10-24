@@ -62,6 +62,27 @@ nonisolated final class KeyboardHeightAdjustmentTests: XCTestCase {
     }
 
     @MainActor
+    func testConsumedTokensKeepOnlyNewestSixtyFourAcrossStoreRecreation() throws {
+        let suite = "UI4-Bounded-Tokens-" + UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let store = KeyboardHeightAdjustmentTokenStore(defaults: defaults)
+        let tokens = (0..<65).map { _ in UUID() }
+        for token in tokens { XCTAssertTrue(store.consume(token)) }
+        let expected = tokens.suffix(64).map(\.uuidString)
+        XCTAssertEqual(defaults.stringArray(forKey: KeyboardHeightAdjustmentTokenStore.consumedTokensKey), expected)
+        let reopened = KeyboardHeightAdjustmentTokenStore(defaults: defaults)
+        for token in tokens.suffix(64) { XCTAssertFalse(reopened.consume(token)) }
+        XCTAssertEqual(defaults.stringArray(forKey: KeyboardHeightAdjustmentTokenStore.consumedTokensKey)?.count, 64)
+        // 被淘汰的UUID不再受去重承诺保护；再消费它应淘汰下一个最旧记录。
+        XCTAssertTrue(reopened.consume(tokens[0]))
+        XCTAssertEqual(
+            defaults.stringArray(forKey: KeyboardHeightAdjustmentTokenStore.consumedTokensKey),
+            tokens.suffix(63).map(\.uuidString) + [tokens[0].uuidString])
+        XCTAssertFalse(KeyboardHeightAdjustmentTokenStore(defaults: defaults).consume(tokens[0]))
+    }
+
+    @MainActor
     func testDragIsIntegerPreviewOnlyAndClampsHandleAtBothEnds() throws {
         let owner = makeOwner(saved: 60)
         var writes: [Int?] = []

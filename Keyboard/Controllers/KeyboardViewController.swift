@@ -612,6 +612,8 @@ class KeyboardViewController: UIInputViewController {
     /// RIME is finalized first because its database locks are the critical resource;
     /// diagnostic persistence is disabled last so no delayed App Group write survives.
     func suspendKeyboardRuntime(reason: String, updateUI: Bool) {
+        // 宿主挂起不保证先触发willDisappear；同步撤销租约并失效迟到完成。
+        keyboardHeightRotationPriority.restore()
         keyboardHeightAdjustmentAcceptsMarkers = false
         finishKeyboardHeightAdjustment(.disappeared)
         #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE

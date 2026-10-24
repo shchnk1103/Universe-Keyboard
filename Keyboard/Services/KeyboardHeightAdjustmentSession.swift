@@ -42,6 +42,8 @@ struct KeyboardHeightAdjustmentTokenStore {
         var consumed = defaults.stringArray(forKey: Self.consumedTokensKey) ?? []
         guard !consumed.contains(identifier) else { return false }
         consumed.append(identifier)
+        // 只承诺最近64个页面标记不重入，避免每次新会话无限读写历史。
+        if consumed.count > 64 { consumed.removeFirst(consumed.count - 64) }
         defaults.set(consumed, forKey: Self.consumedTokensKey)
         return true
     }
