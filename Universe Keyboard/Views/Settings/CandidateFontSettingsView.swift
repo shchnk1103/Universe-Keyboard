@@ -23,8 +23,9 @@ struct CandidateFontSettingsView: View {
         Form {
             Section("预览") {
                 CandidateFontPreview(tier: model.tier)
-                    .frame(height: 46)
                     .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color(uiColor: CandidateFontPreviewBar.surfaceColor))
+                    .listRowSeparator(.hidden)
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel(CandidateFontSettingsCopy.preview)
             }
@@ -69,6 +70,10 @@ private struct CandidateFontPreview: UIViewRepresentable {
 
     func makeUIView(context: Context) -> CandidateFontPreviewBar { CandidateFontPreviewBar() }
 
+    func sizeThatFits(_ proposal: ProposedViewSize, uiView: CandidateFontPreviewBar, context: Context) -> CGSize? {
+        CGSize(width: proposal.width ?? 350, height: uiView.intrinsicContentSize.height)
+    }
+
     func updateUIView(_ uiView: CandidateFontPreviewBar, context: Context) {
         uiView.update(tier: tier)
     }
@@ -81,23 +86,36 @@ final class CandidateFontPreviewBar: UIView {
     private let viewport = UIScrollView()
     private let actionZone = UIView()
     private var tier = 17
+    private var compositionHeight: NSLayoutConstraint!
+    private var candidateHeight: NSLayoutConstraint!
+
+    // 只用于设置页两行示意；真实键盘仍把 composition 作为同一候选条的 item。
+    // 上下各8、行间4，行高取字体度量，不使用真实键盘固定46pt条高。
+    private enum PreviewSpacing {
+        static let vertical: CGFloat = 8
+        static let rowGap: CGFloat = 4
+        static let leading: CGFloat = 12
+    }
+
+    // 对应 Keyboard/Controllers/KeyboardViewController+KeyStyle.swift / keyboardBackgroundColor。
+    static var surfaceColor: UIColor {
+        UIColor { traits in
+            traits.userInterfaceStyle == .dark
+                ? UIColor(red: 30 / 255, green: 30 / 255, blue: 32 / 255, alpha: 1)
+                : UIColor(red: 209 / 255, green: 209 / 255, blue: 214 / 255, alpha: 1)
+        }
+    }
 
     // 等值镜像，不搬动扩展常量：Keyboard/Views/KeyboardDesignTokens.swift 的 CandidateBar，
-    // totalHeight=46、actionZoneWidth=56、actionSymbolSize=22。
+    // actionZoneWidth=56、actionSymbolSize=22；设置页两行高度独立计算。
     private enum Metrics {
-        static let height: CGFloat = 46
         static let actionWidth: CGFloat = 56
         static let symbolSize: CGFloat = 22
     }
 
     init() {
         super.init(frame: .zero)
-        // 对应 Keyboard/Controllers/KeyboardViewController+KeyStyle.swift 的 keyboardBackgroundColor。
-        backgroundColor = UIColor { traits in
-            traits.userInterfaceStyle == .dark
-                ? UIColor(red: 30 / 255, green: 30 / 255, blue: 32 / 255, alpha: 1)
-                : UIColor(red: 209 / 255, green: 209 / 255, blue: 214 / 255, alpha: 1)
-        }
+        backgroundColor = Self.surfaceColor
         // 只读示例：没有候选选择、展开动作或输入连接。
         isUserInteractionEnabled = false
         viewport.showsHorizontalScrollIndicator = false
@@ -127,9 +145,15 @@ final class CandidateFontPreviewBar: UIView {
             label.adjustsFontForContentSizeCategory = false
             label.setContentCompressionResistancePriority(.required, for: .horizontal)
             label.translatesAutoresizingMaskIntoConstraints = false
+            sampleLabels.append(label)
+            if index == 0 {
+                addSubview(label)
+                continue
+            }
             let cell = UIView()
             let title = UIView()
             title.translatesAutoresizingMaskIntoConstraints = false
+            candidates.addArrangedSubview(cell)
             cell.addSubview(title)
             title.addSubview(label)
             // 对应 Keyboard/Views/CandidateBar/CandidateCell.swift 的 VisualSpacing.horizontalGap / configureTitle：
@@ -141,7 +165,7 @@ final class CandidateFontPreviewBar: UIView {
                 title.layer.cornerCurve = .continuous
             }
             NSLayoutConstraint.activate([
-                cell.heightAnchor.constraint(equalToConstant: Metrics.height),
+                cell.heightAnchor.constraint(equalTo: viewport.heightAnchor),
                 cell.widthAnchor.constraint(greaterThanOrEqualToConstant: 48),
                 title.leadingAnchor.constraint(equalTo: cell.leadingAnchor, constant: 2),
                 title.trailingAnchor.constraint(equalTo: cell.trailingAnchor, constant: -2),
@@ -151,8 +175,6 @@ final class CandidateFontPreviewBar: UIView {
                 label.topAnchor.constraint(equalTo: title.topAnchor, constant: 4),
                 label.bottomAnchor.constraint(equalTo: title.bottomAnchor, constant: -4),
             ])
-            sampleLabels.append(label)
-            candidates.addArrangedSubview(cell)
         }
 
         // 对应 Keyboard/Views/CandidateBar/CandidateBarView.swift 的 expandButton 操作区；不注册动作。
@@ -164,18 +186,27 @@ final class CandidateFontPreviewBar: UIView {
         chevron.contentMode = .center
         chevron.translatesAutoresizingMaskIntoConstraints = false
         actionZone.addSubview(chevron)
+        let composition = sampleLabels[0]
+        compositionHeight = composition.heightAnchor.constraint(equalToConstant: 0)
+        candidateHeight = viewport.heightAnchor.constraint(equalToConstant: 0)
         NSLayoutConstraint.activate([
+            composition.leadingAnchor.constraint(equalTo: leadingAnchor, constant: PreviewSpacing.leading + 2 + 8),
+            composition.trailingAnchor.constraint(lessThanOrEqualTo: trailingAnchor, constant: -PreviewSpacing.leading),
+            composition.topAnchor.constraint(equalTo: topAnchor, constant: PreviewSpacing.vertical),
+            compositionHeight,
+            candidateHeight,
             viewport.leadingAnchor.constraint(equalTo: leadingAnchor),
-            viewport.topAnchor.constraint(equalTo: topAnchor),
-            viewport.bottomAnchor.constraint(equalTo: bottomAnchor),
+            viewport.topAnchor.constraint(equalTo: composition.bottomAnchor, constant: PreviewSpacing.rowGap),
+            viewport.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -PreviewSpacing.vertical),
             viewport.trailingAnchor.constraint(equalTo: actionZone.leadingAnchor),
             actionZone.trailingAnchor.constraint(equalTo: trailingAnchor),
-            actionZone.topAnchor.constraint(equalTo: topAnchor),
-            actionZone.bottomAnchor.constraint(equalTo: bottomAnchor),
+            actionZone.topAnchor.constraint(equalTo: viewport.topAnchor),
+            actionZone.bottomAnchor.constraint(equalTo: viewport.bottomAnchor),
             actionZone.widthAnchor.constraint(equalToConstant: Metrics.actionWidth),
             chevron.centerXAnchor.constraint(equalTo: actionZone.centerXAnchor),
             chevron.centerYAnchor.constraint(equalTo: actionZone.centerYAnchor),
-            candidates.leadingAnchor.constraint(equalTo: viewport.contentLayoutGuide.leadingAnchor),
+            candidates.leadingAnchor.constraint(
+                equalTo: viewport.contentLayoutGuide.leadingAnchor, constant: PreviewSpacing.leading),
             candidates.trailingAnchor.constraint(equalTo: viewport.contentLayoutGuide.trailingAnchor),
             candidates.topAnchor.constraint(equalTo: viewport.contentLayoutGuide.topAnchor),
             candidates.bottomAnchor.constraint(equalTo: viewport.contentLayoutGuide.bottomAnchor),
@@ -191,7 +222,10 @@ final class CandidateFontPreviewBar: UIView {
     required init(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
     override var intrinsicContentSize: CGSize {
-        CGSize(width: UIView.noIntrinsicMetric, height: Metrics.height)
+        CGSize(
+            width: UIView.noIntrinsicMetric,
+            height: compositionHeight.constant + candidateHeight.constant
+                + PreviewSpacing.rowGap + 2 * PreviewSpacing.vertical)
     }
 
     func update(tier: Int) {
@@ -203,5 +237,10 @@ final class CandidateFontPreviewBar: UIView {
         for (index, label) in sampleLabels.enumerated() {
             label.font = snapshot.titleFont(kind: index == 0 ? .composition : .candidate, preferred: index == 1)
         }
+        compositionHeight.constant = ceil(sampleLabels[0].font.lineHeight)
+        candidateHeight.constant =
+            max(
+                Metrics.symbolSize, sampleLabels.dropFirst().map { ceil($0.font.lineHeight) }.max() ?? 0) + 8
+        invalidateIntrinsicContentSize()
     }
 }

@@ -75,9 +75,12 @@ nonisolated final class CandidateFontSettingsPageTests: XCTestCase {
     @MainActor
     func testPreviewUsesCompactGeometryAndReversedPreferredColors() throws {
         let preview = CandidateFontPreviewBar()
-        preview.frame = CGRect(x: 0, y: 0, width: 350, height: 46)
+        preview.frame = CGRect(x: 0, y: 0, width: 350, height: preview.intrinsicContentSize.height)
         preview.layoutIfNeeded()
-        XCTAssertEqual(preview.intrinsicContentSize.height, 46)
+        let expectedHeight =
+            ceil(preview.sampleLabels[0].font.lineHeight)
+            + max(22, preview.sampleLabels.dropFirst().map { ceil($0.font.lineHeight) }.max()!) + 8 + 4 + 16
+        XCTAssertEqual(preview.intrinsicContentSize.height, expectedHeight)
         XCTAssertFalse(preview.isUserInteractionEnabled)
         let viewport = try XCTUnwrap(preview.subviews.compactMap { $0 as? UIScrollView }.first)
         XCTAssertEqual(viewport.frame.width, 350 - 56)
@@ -106,9 +109,73 @@ nonisolated final class CandidateFontSettingsPageTests: XCTestCase {
                 preferred.textColor.resolvedColor(with: traits), plate.backgroundColor?.resolvedColor(with: traits))
         }
         preview.update(tier: 22)
+        preview.frame.size.height = preview.intrinsicContentSize.height
         preview.layoutIfNeeded()
-        XCTAssertEqual(preview.bounds.height, 46)
+        let largestHeight =
+            ceil(preview.sampleLabels[0].font.lineHeight)
+            + max(22, preview.sampleLabels.dropFirst().map { ceil($0.font.lineHeight) }.max()!) + 8 + 4 + 16
+        XCTAssertEqual(preview.bounds.height, largestHeight)
         XCTAssertEqual(preferred.font.pointSize, 22)
+        let composition = preview.sampleLabels[0]
+        XCTAssertEqual(composition.frame.minY, 8)
+        XCTAssertEqual(viewport.frame.minY, composition.frame.maxY + 4)
+        XCTAssertEqual(viewport.frame.maxY, preview.bounds.maxY - 8)
+        XCTAssertEqual(viewport.frame.minX, 0)
+        let preferredRect = preferred.convert(preferred.bounds, to: preview)
+        let compositionLeading = try XCTUnwrap(
+            preview.constraints.first { $0.firstItem === composition && $0.firstAttribute == .leading })
+        XCTAssertEqual(compositionLeading.constant, 12 + 2 + 8)
+        XCTAssertGreaterThanOrEqual(preferred.bounds.height, preferred.font.lineHeight)
+        XCTAssertLessThanOrEqual(preferredRect.maxY, preview.bounds.maxY - 8)
+        for style in [UIUserInterfaceStyle.light, .dark] {
+            let traits = UITraitCollection(userInterfaceStyle: style)
+            XCTAssertEqual(
+                preview.backgroundColor?.resolvedColor(with: traits),
+                CandidateFontPreviewBar.surfaceColor.resolvedColor(with: traits))
+        }
+    }
+
+    @MainActor
+    func testTwoRowsFitEveryTierAndLargestDynamicTypeWithoutClipping() throws {
+        let preview = CandidateFontPreviewBar()
+        for tier in 13...22 {
+            for category in [UIContentSizeCategory.large, .accessibilityExtraExtraExtraLarge] {
+                let snapshot = CandidateFontSnapshot(
+                    settings: CandidateFontSettings(savedValue: tier),
+                    traits: UITraitCollection(preferredContentSizeCategory: category))
+                preview.apply(snapshot)
+                preview.frame = CGRect(x: 0, y: 0, width: 350, height: preview.intrinsicContentSize.height)
+                preview.layoutIfNeeded()
+                let composition = preview.sampleLabels[0]
+                let viewport = try XCTUnwrap(preview.subviews.compactMap { $0 as? UIScrollView }.first)
+                XCTAssertEqual(composition.font, snapshot.titleFont(kind: .composition, preferred: false))
+                XCTAssertEqual(composition.frame.minY, 8)
+                XCTAssertEqual(composition.frame.height, ceil(composition.font.lineHeight))
+                XCTAssertEqual(viewport.frame.minY, composition.frame.maxY + 4)
+                XCTAssertEqual(viewport.frame.maxY, preview.bounds.maxY - 8)
+                XCTAssertEqual(viewport.frame.minX, 0)
+                XCTAssertEqual(viewport.frame.maxX, preview.bounds.maxX - 56)
+                for (index, label) in preview.sampleLabels.enumerated().dropFirst() {
+                    XCTAssertEqual(label.font, snapshot.titleFont(kind: .candidate, preferred: index == 1))
+                    XCTAssertGreaterThanOrEqual(label.bounds.height, label.font.lineHeight)
+                    let rect = label.convert(label.bounds, to: preview)
+                    XCTAssertGreaterThanOrEqual(rect.minY, composition.frame.maxY + 4)
+                    XCTAssertLessThanOrEqual(rect.maxY, preview.bounds.maxY - 8)
+                    if index == 1 {
+                        let leading = try XCTUnwrap(
+                            preview.constraints.first { $0.firstItem === composition && $0.firstAttribute == .leading })
+                        XCTAssertEqual(leading.constant, 12 + 2 + 8)
+                    }
+                }
+                for style in [UIUserInterfaceStyle.light, .dark] {
+                    let traits = UITraitCollection(userInterfaceStyle: style)
+                    XCTAssertEqual(
+                        preview.backgroundColor?.resolvedColor(with: traits),
+                        CandidateFontPreviewBar.surfaceColor.resolvedColor(with: traits))
+                }
+                XCTAssertEqual(preview.layer.cornerRadius, 0)
+            }
+        }
     }
 
     /// 自动化导航不可用时，承载同一生产设置页；不造替代预览或改产品入口。
@@ -154,7 +221,7 @@ nonisolated final class CandidateFontSettingsPageTests: XCTestCase {
                 }
                 XCTAssertGreaterThan(image.size.width, 0)
                 let attachment = XCTAttachment(image: image)
-                attachment.name = "ui3-p6-preview-\(name)-tier\(tier)"
+                attachment.name = "ui3-p6r1-preview-\(name)-tier\(tier)"
                 attachment.lifetime = .keepAlways
                 add(attachment)
             }
