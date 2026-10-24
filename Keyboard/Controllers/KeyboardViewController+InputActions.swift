@@ -3,6 +3,7 @@ import UIKit
 
 extension KeyboardViewController {
     @objc func insertKey(_ sender: UIButton) {
+        guard !isKeyboardHeightAdjusting else { return }
         // T9 letter-group keys show `ABC` etc. but must send the digit identity to RIME.
         let key: String
         if sender.accessibilityValue == KeyboardViewController.t9DigitAccessibilityValue,
@@ -167,6 +168,7 @@ extension KeyboardViewController {
     }
 
     @objc func insertCandidate(_ sender: UIButton) {
+        guard !isKeyboardHeightAdjusting else { return }
         guard
             let candidate = sender.configuration?.title,
             let kind = CandidateKind(rawValue: sender.tag)
@@ -184,6 +186,7 @@ extension KeyboardViewController {
     }
 
     @objc func insertDirectText(_ sender: UIButton) {
+        guard !isKeyboardHeightAdjusting else { return }
         guard let text = sender.title(for: .normal) else { return }
         emitKeyPressFeedbackIfNeeded(for: sender)
         let effects = controller.handle(.insertDirectText(text))
@@ -191,6 +194,7 @@ extension KeyboardViewController {
     }
 
     @objc func insertSmartDoubleQuote(_ sender: UIButton) {
+        guard !isKeyboardHeightAdjusting else { return }
         emitKeyPressFeedbackIfNeeded(for: sender)
         let quote = nextSmartDoubleQuote(contextBeforeInput: textDocumentProxy.documentContextBeforeInput)
         let effects = controller.handle(.insertDirectText(quote))
@@ -211,6 +215,7 @@ extension KeyboardViewController {
     }
 
     @objc func insertEmoji(_ sender: UIButton) {
+        guard !isKeyboardHeightAdjusting else { return }
         guard let emoji = sender.title(for: .normal) else { return }
         emitKeyPressFeedbackIfNeeded(for: sender)
         let effects = controller.handle(.insertEmoji(emoji))

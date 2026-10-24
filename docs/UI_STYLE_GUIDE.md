@@ -53,13 +53,15 @@ Path list presentation (implementation): Path cells render with plain `UILabel` 
 
 **Exception — Compact candidate header (`KEYBOARD-COMPACT-HEADER-001`):** Human authorized a 46pt total shared candidate row, a full-trailing 56pt action zone and 22pt medium symbols. Local parameters live in `Keyboard/Views/KeyboardDesignTokens.swift`; the compact Cell derives its height from the same total. The original 14pt gesture bridge is already included and must not be added again. Candidate fonts, key metrics and expanded-panel Cell height are unchanged. The UI-1 fixed34pt Path baseline is superseded in this integrated candidate by UI-2 initial0pt / Sticky34pt. Real Extension integration acceptance remains pending.
 
+**Exception — UI-4 row height (`UI4-HEIGHT-001`):** The user may adjust the shared effective row height; the frozen default remains45pt (254pt without Path, 288pt with34pt Path). Candidate46pt, Path34pt, fonts, widths and spacing keep their frozen values. The extension applies direction caps and actual-budget clipping without implicitly saving clipped values; below four40pt rows the whole surface is hidden. See [current values and priority limits](KEYBOARD_VALUES.md#p3-r2-旋转完成后的高度请求优先级) and [the product contract](product-decisions/UI4-KEYBOARD-HEIGHT-001-product-contract.md). This exception does not unfreeze other metrics or establish device-wide acceptance.
+
 Frozen keyboard baseline (with the authorized compact-header exception):
 
 - Keyboard content top inset: `2`.
 - Keyboard content bottom inset: `0`.
 - Candidate bar **total** height / normal Cell height: `46` (shared semantic token).
 - Additional candidate-to-key spacing: `0` (no extra legacy 14pt outside the total).
-- Letter key height: `45`.
+- Letter key height: `45` by default (frozen baseline; UI-4 effective-height exception below).
 - Function key width for Shift, Delete, 123, globe, and input-mode keys: `46`.
 - Function key symbol size: `22` (Delete / Return / Globe / emoji SF Symbols only).
 - Character / letter-group title size: `17` (increased from 16 pt after repeated public-beta feedback that English letters and punctuation were too small).
@@ -101,7 +103,7 @@ Current key styles:
 
 Key rules:
 
-- Keep letter key height at `45`.
+- Keep the default letter key height at `45`; only the authorized UI-4 row-height setting may change its effective value.
 - Keep primary function keys at `46` wide unless a usability issue requires a change.
 - Keep vertical row spacing at `8`, letter-area to bottom-row group spacing at `10`, third-row function spacing at `10`, and within-row horizontal spacing at `6`.
 - Keep keyboard content horizontal margins at `7`.

@@ -26,6 +26,8 @@ struct KeyboardLayoutSettingsView: View {
                 Text("选择主键盘外形后，下方只显示该布局使用的输入方案。九宫格依赖已就绪的雾凇 T9；启用前会检查安装与部署。全键盘可选用万象等方案，不影响九宫格。英文与自动英文在九键偏好下仍用 26 键。")
             }
 
+            KeyboardHeightSettingsEntry()
+
             // Only show the scheme picker for the layout currently selected as 主键盘.
             // Showing both slots at once misleads when 26-key is 万象 (no nine-key pack)
             // while nine-key still uses fog T9 independently.

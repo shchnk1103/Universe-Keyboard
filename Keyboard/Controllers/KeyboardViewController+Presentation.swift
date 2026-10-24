@@ -2,7 +2,7 @@ import KeyboardCore
 import UIKit
 
 extension KeyboardViewController {
-    /// Installs content inside the system-provided input region without requesting a custom height.
+    /// 在系统输入容器中安装内容；所有行与总高使用同一份有效行高。
     func setupRootStack() {
         keyboardSurfaceView = UIView()
         keyboardSurfaceView.translatesAutoresizingMaskIntoConstraints = false
@@ -124,6 +124,9 @@ extension KeyboardViewController {
     }
 
     func installKeyboardUIIfNeeded() {
+        guard !isKeyboardHeightManaged || resolveKeyboardRowHeight(pathHeight: presentedT9PinyinPathBarHeight) else {
+            return
+        }
         guard !isKeyboardUIInstalled else { return }
         isKeyboardUIInstalled = true
         view.backgroundColor = .clear
@@ -132,6 +135,7 @@ extension KeyboardViewController {
             reloadKeyboard()
             view.layoutIfNeeded()
         }
+        if isKeyboardHeightManaged { view.alpha = 1 }
         Logger.shared.debug("installKeyboardUI: systemBounds=\(view.bounds)", category: .display)
         Logger.shared.requestFlush()
     }

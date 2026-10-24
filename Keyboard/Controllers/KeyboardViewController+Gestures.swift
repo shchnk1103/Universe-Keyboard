@@ -26,6 +26,7 @@ extension KeyboardViewController {
     ///   .ended: 手指离开 → 提交当前高亮的变体
     ///   .cancelled/.failed: 手势失败 → 关闭面板
     @objc func handleKeyLongPress(_ gesture: UILongPressGestureRecognizer) {
+        guard !isKeyboardHeightAdjusting else { return }
         guard let button = gesture.view as? UIButton else { return }
 
         switch gesture.state {

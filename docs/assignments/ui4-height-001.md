@@ -7,11 +7,11 @@ record_id: UI4-HEIGHT-001
 
 | Field | Value |
 |---|---|
-| Lifecycle | Assigned（职责已定；Entry Criteria 尚未全部满足，尤其 Human 授权派发。满足后由 Coordinator 在派发记录里改为 Ready，再随开工转 Active） |
-| Current phase | 定稿，待 Human 授权派发 Executor。产品决定 [PD-UI4-KEYBOARD-HEIGHT-001](../product-decisions/UI4-KEYBOARD-HEIGHT-001-product-contract.md) 已于 2026-10-23 被接受；本 Assignment 把它落成产品代码、测试与镜像文档 |
-| Material non-claims | 不是 UI-3（候选字大小）；不是 Product Gate、TestFlight 或 Release；不合并 Spike 的实验分支或实验代码；不改默认高度与任何既有布局数值；不放宽任何超时或断言；本记录本身不含任何代码 |
-| Human 确认状态 | 产品决定的接受：**已确认**（Human Product Owner，2026-10-23）。开工授权：**待 Human**。Environment Executor 与真机分工（见下）：**待 Human 在派发时确认** |
-| Next handoff / decision | Human 授权派发 → Executor 阶段 P0（先出预检报告）→ 逐阶段推进 → Coordinator 冻结 Reviewer 包 → Architecture / Quality Reviewer → Human 真机验收 → Human 决定 push / PR / merge |
+| Lifecycle | Reviewed（Architecture 与 Quality 的 Round 1 和 Round 2 均已给出结论；仍未 push / PR / merge，Close 须在 Human 决定之后） |
+| Current phase | P0 至 P6 与 P3-R1、P3-R2、P3-R3 修订已完成并有外置报告；Architecture / Quality 两轮评审完成；Human 真机观察（单机）已记录；剩余：Human 决定 push / PR / merge |
+| Material non-claims | 不是 UI-3（候选字大小）；不是 Product Gate、TestFlight 或 Release；不合并 Spike 的实验分支或实验代码；不改默认高度与任何既有布局数值；不放宽任何超时或断言；本记录本身不含任何代码；不是 TestFlight / Release 许可；Human 观察不是测量；已知限制见 Exit evidence |
+| Human 确认状态 | 产品决定已接受（Human Product Owner，2026-10-23）；各阶段由 Human 逐阶段授权（见外置 `reports/human-authorization-*.md`）；R-01、R-04 accept，R-06 接受为 UNKNOWN，R2-F01 边界接受（确认记录 `reports/human-confirmation-r2-f01-closeout.md`，SHA-256 `ec382ccba6f9b53102e4150f662b4a0f546d63530a0c21609970d76133973002`）；端点震动 accept |
+| Next handoff / decision | Human 决定 push / PR / merge；合并后目录刷新与 UI-3 开工 |
 
 ## Authority
 
@@ -75,7 +75,7 @@ record_id: UI4-HEIGHT-001
 
 ## Closeout Decision
 
-本 Assignment 是产品开发（代码）类，**不适用 D7 的直接 Close**：Reviewer 评审、Human 真机验收（产品决定第 10 节八条）与 Human 对 PR 的决定之后，才由 Human 决定 Close。Close 之后是否并入 TestFlight 候选，由 Human 另行决定。
+本 Assignment 是产品开发（代码）类，**不适用 D7 的直接 Close**：Reviewer 评审、Human 真机验收（产品决定第 10 节八条）与 Human 对 PR 的决定之后，才由 Human 决定 Close。Close 之后是否并入 TestFlight 候选，由 Human 另行决定。本 Assignment 为产品开发类，Close 在 Human 对 PR 的决定与合并之后由 Human 决定。
 
 ## Assignment
 
@@ -100,8 +100,16 @@ Executor 与 Reviewer 的指令、packet、报告均保存为文件，根目录 
 
 | 项 | Result |
 |---|---|
-| P0 预检报告（三件 UNKNOWN 的结论） | （Executor 填） |
-| 阶段 P1 至 P5 的门禁结果与测试摘要 | （Executor 填） |
-| 默认值不变的证据（H1） | （Executor 填） |
-| Reviewer 报告路径与 SHA-256 | （Coordinator 填） |
-| Human 真机验收清单与结果 | （Human / Executor 填） |
+| P0 预检报告（三件 UNKNOWN 的结论） | `reports/executor-report-p0.md`（SHA-256 `1154f327931e8d438b29bbe6cf7b34e4dbffed1ce9803dd503ba67c857c0d0d5`） |
+| 阶段 P1 至 P5 的门禁结果与测试摘要 | `reports/executor-report-p1.md`（`bc9601d7ee52db0abfe4596a384d517340609c0e35b290e72ecf73972a3f253b`）；`reports/executor-report-p2.md`（`deeaf418503f6621f206a2dd6cb87b28fa2bd33242c49cbebedf73613081fe92`）；`reports/executor-report-p3.md`（`db6afef22dd936ed9d9ede439d1f316a723b33f0fd61f421ba84532dad96d573`）；`reports/executor-report-p4.md`（`09336a0ee0fab2431991e75a836e6cc2651f267cea82442ab8ec2c066d9bd31d`）；`reports/executor-report-p5.md`（`5b52d0a3ae89aeac4bba1301a65960a618a3332453318424d8294ae7b593cbc8`）；P5 重跑 `reports/executor-report-p5-rerun.md`（`5b0f8a2e5b71883875e3be199bd115f766eddaff24cf5b58ce5b6d417818ccb5`） |
+| P6 验收准备 | `reports/executor-report-p6.md`（`95d3772db9bd89b10273afe9ed5e0d0c50bd2a45f4a17a9d8572e5dad1036ffe`） |
+| QA-001 | `reports/executor-report-qa001.md`（`8228151052842a3a67d6313ae363d6281cd1cf81636a2edc39d4b8b6d1465cbd`） |
+| P3-R1 修订 | `reports/executor-report-p3-r1-fix.md`（`5cd6e610f32c9cc98caadd94a2cb9ff8c2c8f84c0f33546924d260e8c51f2bc7`）；`reports/executor-report-p3-r1-commit.md`（`c065cd3cd82c0b2e156a2210582d9dcd591b1a0395c382f9635cf686e7b265d7`） |
+| P3-R2 修订（方向修复实现） | `reports/executor-report-orientation-fix-impl.md`（`cec6aa66812346ab02f4e722e8697f0f97f291b4fe6edc03a75c5952d60626ad`） |
+| P3-R3 修订（Round 1 评审整改） | `reports/executor-report-review-r1-remediation.md`（`ad2d1daf4cb177140898e69436106aad6d329f383b0f6eef1d5a59f373690747`） |
+| 默认值不变的证据（H1） | `reports/executor-report-p2.md`（同上 SHA-256）第 33–34 行：T9 与 CompactHeader 默认 254 / 288 / 45 / 46 断言改为引用默认常量，期望不放宽；默认值测试为进程内夹具证据，不是真实宿主测量 |
+| Reviewer 报告路径与 SHA-256 | Architecture R1 `reports/review-architecture-r1.md`（`290c14c075e8a7c42592166e7f2815cec2271f25f8e1cd52cb8e1b14a61715c6`）：Pass with conditions（仅 Architecture lane）；Quality R1 `reports/review-quality-r1.md`（`507d78894bff7e26ecadeac78dd7726b6fd81b818c66cca1180bdabb1a9963a7`）：Pass with conditions（残项待 Authority 处置）；Architecture R2 `reports/review-architecture-r2.md`（`b2cd6c0fa052781c92d17e4ebbff441c52d7ae42d4d9583591a34eb83cfc1731`）：Pass with conditions（增量审查，无 Blocker）；Quality R2 `reports/review-quality-r2.md`（`de81ac660ab564b1e7f300ac7bb5e055e91d375d01197a0dd9178079aca00302`）：Pass（窄范围，新增发现 0） |
+| Human 真机验收清单与结果 | Human 单机观察，不是测量：`reports/p4-human-device-result.md`（`a66311ba6df47679210ec5141f35fb9ec11e2e8164c761d53f267fcf1862a359`）；`reports/p6-human-gap-result.md`（`f5a7f083afe35e188daacb8ef40198897ba8f1c127a0763fe1ecc9eeb3e52c65`）；`reports/p3-r1-human-recheck.md`（`96f498bce01238dc05ee5ab2d1766fa989a50f3d36bfa9ac39fd49ded691a89b`）；`reports/orientation-fix-impl-human-result.md`（`935a5d2c9799e2330f27a0a25a2e9e1ab2e75fbd27605192ef1169d225c5db3d`）；`reports/human-gap-answers-2026-10-24.md`（`61d21d312777a00b3b12794e596f60cd99d0ec77085bb987213579463bc4fc53`）及附录 `reports/human-gap-answers-2026-10-24-addendum.md`（`8216cd3d796f57828882d26600d57c8742e8f9c4ffcf810821f17dea6ff5a37a`）；`reports/review-r1-remediation-human-result.md`（`482e2ec95781cb465655062e8ea462c255f55473e97612df3739d19ea6081a67`） |
+| 残项处置 | 端点震动 accept `reports/human-decision-p3r1-endpoint-vibration.md`（`a517c364179c11c8c0fd9b61941c9b5cd358fc1de2d1e547ad064242e624d4cf`）；R-01、R-04 accept、R-06 接受为 UNKNOWN `reports/review-r1-human-disposition-confirmation.md`（`341ed14926cdebc92939563daea59148dd82d4d1712526e70505fdfd2a3cc147`）；R2-F01 边界接受 `reports/human-confirmation-r2-f01-closeout.md`（`ec382ccba6f9b53102e4150f662b4a0f546d63530a0c21609970d76133973002`） |
+| 当前验收矩阵 | `reports/pm-acceptance-matrix-v3.md`（`f54efe17f5c6a5f4fb5c8681584cfec92658c5f36e79994b9cea05a7ba2244c5`） |
+| 已知限制 | 端点震动（完全访问开时，来源 UNKNOWN，已接受）；竖屏最大值占屏比例未测量（Human 目测不是测量）；宿主预算不足四行 40pt 时整面隐藏；999 与真实低预算 / iPad 分屏 / 浮动键盘未验证；标记去重只保证最近 64 次成功消费内不重入；Release 真机二进制配置 UNKNOWN |

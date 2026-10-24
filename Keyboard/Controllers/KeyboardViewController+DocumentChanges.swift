@@ -19,7 +19,11 @@ extension KeyboardViewController {
         }
 
         let proxy = textDocumentProxy
-        let observation = documentIdentityTracker.observe(KeyboardReadDocumentIdentifier(proxy))
+        let identifier = KeyboardReadDocumentIdentifier(proxy)
+        synchronizeKeyboardHeightAdjustment(
+            before: proxy.documentContextBeforeInput, after: proxy.documentContextAfterInput,
+            documentIdentifier: identifier)
+        let observation = documentIdentityTracker.observe(identifier)
         // An unavailable sample cannot establish a new baseline or authorize a
         // rebind. Keep the last valid identity for the next host callback.
         guard observation != .unavailable else { return }

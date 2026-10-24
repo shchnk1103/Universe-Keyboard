@@ -53,6 +53,7 @@ extension KeyboardViewController {
 
     /// Idle trailing control dismisses the keyboard; expandable content still expands.
     @objc func handleCandidateBarTrailingButton() {
+        guard !isKeyboardHeightAdjusting else { return }
         guard !shouldBlockT9RecoveryPresentation else { return }
         let canExpand = presentedCandidates.contains { $0.kind.expandsCandidateBarPanel }
         if canExpand {
@@ -65,6 +66,7 @@ extension KeyboardViewController {
     /// 切换候选面板展开/收起。展开面板覆盖在现有键盘之上，
     /// 不拆除底层按键和候选栏，因此切换动画期间没有整页重排。
     @objc func toggleCandidateExpand() {
+        guard !isKeyboardHeightAdjusting else { return }
         guard !shouldBlockT9RecoveryPresentation else { return }
         // UIKit reveal owns this short interaction boundary; do not race overlapping overlays.
         guard (candidateExpandedPanel as? ExpandedCandidatePanelContainerView)?.isTransitioning != true else { return }

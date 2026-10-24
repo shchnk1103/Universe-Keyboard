@@ -65,6 +65,7 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard !isKeyboardHeightAdjusting else { return }
         if collectionView === pinyinPathCollectionView {
             guard accumulatedPinyinPaths.indices.contains(indexPath.item) else { return }
             let path = accumulatedPinyinPaths[indexPath.item]
@@ -227,6 +228,7 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
     }
 
     func commitCompactCandidate(at indexPath: IndexPath) {
+        guard !isKeyboardHeightAdjusting else { return }
         if let bar = candidateBar as? CandidateBarView, bar.shouldSuppressCandidateSelection {
             return
         }

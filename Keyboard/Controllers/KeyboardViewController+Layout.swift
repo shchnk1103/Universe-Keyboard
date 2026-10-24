@@ -32,6 +32,51 @@
 import KeyboardCore
 import UIKit
 
+/// 一个旋转只消费一次完成事件；提升租约绑定原约束身份，失效时只还原它。
+/// 不负责行高、宿主预算或存储，真实压缩仍由既有高度模型处理。
+@MainActor
+final class KeyboardHeightRotationPriority {
+    private var transition: UUID?
+    private var completionConsumed = false
+    private weak var elevatedConstraint: NSLayoutConstraint?
+
+    func beginTransition() -> UUID {
+        restore()
+        let token = UUID()
+        transition = token
+        return token
+    }
+
+    func completeTransition(
+        _ token: UUID, cancelled: Bool, constraint: NSLayoutConstraint?,
+        hasWindow: Bool, isVisible: Bool, actualHeight: CGFloat, requestedHeight: CGFloat?
+    ) -> Bool {
+        guard transition == token, !completionConsumed else { return false }
+        completionConsumed = true
+        guard !cancelled, hasWindow, isVisible, let constraint, let requestedHeight,
+            requestedHeight.isFinite, actualHeight != requestedHeight
+        else { return false }
+        elevatedConstraint = constraint
+        constraint.priority = UILayoutPriority(999)
+        constraint.constant = requestedHeight
+        constraint.isActive = true
+        return true
+    }
+
+    func constraintChanged(from previous: NSLayoutConstraint?, to current: NSLayoutConstraint?) {
+        guard previous !== current else { return }
+        // 旧完成回调不得把新建的约束再次提升。
+        restore()
+    }
+
+    func restore() {
+        elevatedConstraint?.priority = .defaultHigh
+        elevatedConstraint = nil
+        transition = nil
+        completionConsumed = false
+    }
+}
+
 extension KeyboardViewController {
     var keyboardHeightWithoutT9Path: CGFloat {
         keyboardContentTopInset
@@ -46,13 +91,15 @@ extension KeyboardViewController {
         keyboardHeightWithoutT9Path + presentedT9PinyinPathBarHeight
     }
 
-    /// Requests the compact visual height used by the current keyboard layout.
-    /// Row heights remain unchanged; the reduction comes from candidate/top spacing only.
-    func installPreferredKeyboardHeight(height: CGFloat? = nil) {
-        let height = height ?? preferredKeyboardHeight
+    /// 总高请求与行约束一起更新；宿主仍可压低 defaultHigh 的请求。
+    func installPreferredKeyboardHeight(pathHeight: CGFloat? = nil) {
+        let pathHeight = pathHeight ?? presentedT9PinyinPathBarHeight
+        guard !isKeyboardHeightManaged || resolveKeyboardRowHeight(pathHeight: pathHeight) else { return }
+        let height = keyboardUncompressedHeight ?? (keyboardHeightWithoutT9Path + pathHeight)
         if let constraint = keyboardHeightConstraint {
             // Keep a single flexible request; same-state refreshes do no constraint work.
             if constraint.constant != height { constraint.constant = height }
+            constraint.isActive = true
             return
         }
         let constraint = view.heightAnchor.constraint(equalToConstant: height)
@@ -63,9 +110,18 @@ extension KeyboardViewController {
 
     /// 高度是布局期望值而不是对系统输入容器的硬性要求。
     /// 与 Hamster/KeyboardKit 一致，系统过渡布局时可临时压缩或扩展按键行。
-    func preferredRowHeightConstraint(for view: UIView, height: CGFloat) -> NSLayoutConstraint {
-        let constraint = view.heightAnchor.constraint(equalToConstant: height)
-        constraint.priority = .defaultHigh
+    func preferredRowHeightConstraint(
+        for view: UIView, rows: CGFloat = 1, extraHeight: CGFloat = 0, minimum: Bool = false
+    ) -> NSLayoutConstraint {
+        let height = keyHeight * rows + extraHeight
+        let constraint =
+            minimum
+            ? view.heightAnchor.constraint(greaterThanOrEqualToConstant: height)
+            : view.heightAnchor.constraint(equalToConstant: height)
+        constraint.priority = minimum ? .required : .defaultHigh
+        keyboardHeightConstraints.removeAll { $0.constraint == nil }
+        keyboardHeightConstraints.append(
+            KeyboardRowHeightConstraint(constraint: constraint, rows: rows, extraHeight: extraHeight))
         return constraint
     }
 }

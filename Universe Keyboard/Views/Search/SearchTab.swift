@@ -156,6 +156,8 @@ struct SearchTab: View {
         switch destination {
         case .keyboardLayout:
             KeyboardLayoutSettingsView(rimeStore: rimeStore)
+        case .keyboardHeight:
+            KeyboardHeightSettingsView()
         case .feedback:
             FeedbackSettingsView()
         case .deleteKey:

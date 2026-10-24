@@ -61,7 +61,7 @@ extension KeyboardViewController {
             if visible { hasExpandedT9PinyinRowInPresentation = true }
             bar.setRowVisible(visible)
             installPreferredKeyboardHeight(
-                height: keyboardHeightWithoutT9Path + (visible ? t9PinyinPathBarHeight : 0)
+                pathHeight: visible ? t9PinyinPathBarHeight : 0
             )
         }
     }
@@ -249,6 +249,7 @@ extension KeyboardViewController {
     }
 
     @objc func handleT9PinyinPathButton(_ sender: UIButton) {
+        guard !isKeyboardHeightAdjusting else { return }
         emitKeyPressFeedbackIfNeeded(for: sender)
         guard let pathButton = sender as? T9PinyinPathButton,
             let path = pathButton.path
@@ -276,6 +277,7 @@ extension KeyboardViewController {
     }
 
     @objc func t9SelectPinyin(_ sender: UIButton) {
+        guard !isKeyboardHeightAdjusting else { return }
         emitKeyPressFeedbackIfNeeded(for: sender)
         guard !controller.state.t9PinyinPathState.compactPaths.isEmpty else {
             updateSelectPinyinButtonAvailability()
@@ -355,8 +357,8 @@ extension KeyboardViewController {
         container.addSubview(collection)
         container.addSubview(close)
         NSLayoutConstraint.activate([
-            container.heightAnchor.constraint(
-                greaterThanOrEqualToConstant: keyHeight * 4 + keySpacing * 3
+            preferredRowHeightConstraint(
+                for: container, rows: 4, extraHeight: keySpacing * 3, minimum: true
             ),
             collection.topAnchor.constraint(equalTo: container.topAnchor),
             collection.leadingAnchor.constraint(equalTo: container.leadingAnchor),

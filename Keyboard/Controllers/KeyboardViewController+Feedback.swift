@@ -16,6 +16,8 @@ extension KeyboardViewController {
     }
 
     func emitFeedback(for event: KeyboardFeedbackEvent) {
+        // 调节态的按键触觉防御；不据此推断系统震动的来源。
+        guard !isKeyboardHeightAdjusting else { return }
         switch event {
         case .tap, .commit:
             playHaptic()
@@ -40,6 +42,8 @@ extension KeyboardViewController {
     }
 
     func playHaptic(intensity: CGFloat? = nil) {
+        // 调节态的按键触觉防御；不据此推断系统震动的来源。
+        guard !isKeyboardHeightAdjusting else { return }
         guard cachedHapticEnabled else {
             return
         }
@@ -48,6 +52,8 @@ extension KeyboardViewController {
     }
 
     func playModeEnterHaptic() {
+        // 调节态的按键触觉防御；不据此推断系统震动的来源。
+        guard !isKeyboardHeightAdjusting else { return }
         guard cachedHapticEnabled else {
             return
         }
