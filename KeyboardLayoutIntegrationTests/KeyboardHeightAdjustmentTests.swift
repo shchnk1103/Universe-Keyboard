@@ -445,6 +445,66 @@ nonisolated final class KeyboardHeightAdjustmentTests: XCTestCase {
     }
 
     @MainActor
+    func testSavedSixtyRestoresAfterRotationHostRespondsToNewHeight() throws {
+        let owner = makeOwner(saved: 60)
+        var saved: Int? = 60
+        var writes = 0
+        owner.keyboardRowHeightSource = { saved }
+        owner.keyboardRowHeightSink = {
+            saved = $0; writes += 1
+        }
+        _ = enter(owner)
+        owner.previewKeyboardRowHeight(60)
+        owner.endKeyboardHeightDrag()
+        owner.confirmKeyboardHeightAdjustment()
+        XCTAssertEqual(saved, 60)
+        XCTAssertEqual(writes, 1)
+        let window = attach(owner)
+        defer { window.isHidden = true }
+        owner.hostLifecycleRecoveryGate.noteViewWillAppear(context: nil)
+        owner.hostLifecycleRecoveryGate.noteViewDidAppear(hasWindow: true)
+        XCTAssertEqual(owner.hostLifecycleRecoveryGate.phase, .visible)
+        XCTAssertNotNil(owner.view.window)
+
+        owner.view.bounds.size = CGSize(width: 390, height: 314)
+        owner.synchronizeKeyboardHeightLayout()
+        XCTAssertEqual(owner.keyHeight, 60)
+        owner.keyboardHeightGeometrySource = { .init(screenHeight: 390, isLandscape: true) }
+        owner.view.bounds.size = CGSize(width: 844, height: 254)
+        owner.synchronizeKeyboardHeightLayout()
+        owner.synchronizeKeyboardHeightLayout()
+        XCTAssertEqual(owner.keyHeight, 45)
+        XCTAssertEqual(saved, 60)
+        XCTAssertEqual(owner.keyboardHeightSettings.savedRowHeight, 60)
+
+        // 方向先回竖屏，宿主仍给旧的横屏高度；重复布局覆盖预算重采样。
+        owner.keyboardHeightGeometrySource = { .init(screenHeight: 844, isLandscape: false) }
+        owner.view.bounds.size = CGSize(width: 390, height: 254)
+        owner.synchronizeKeyboardHeightLayout()
+        owner.synchronizeKeyboardHeightLayout()
+        print(
+            "ORIENTATION_REPRO oldHost keyHeight=\(owner.keyHeight) accepted=\(String(describing: owner.keyboardAcceptedHeight))"
+        )
+        XCTAssertEqual(saved, 60)
+        XCTAssertEqual(owner.keyboardHeightSettings.savedRowHeight, 60)
+        XCTAssertEqual(owner.keyboardHeightConstraint?.constant, 314)
+
+        // 随后宿主真正响应314pt，不用永久矮预算伪造“永久卡住”。
+        owner.view.bounds.size = CGSize(width: 390, height: 314)
+        owner.synchronizeKeyboardHeightLayout()
+        owner.synchronizeKeyboardHeightLayout()
+        print(
+            "ORIENTATION_REPRO sufficientHost keyHeight=\(owner.keyHeight) accepted=\(String(describing: owner.keyboardAcceptedHeight))"
+        )
+        XCTAssertEqual(owner.keyHeight, 60)
+        XCTAssertEqual(owner.preferredKeyboardHeight, 314)
+        XCTAssertNil(owner.keyboardAcceptedHeight)
+        XCTAssertEqual(saved, 60)
+        XCTAssertEqual(owner.keyboardHeightSettings.savedRowHeight, 60)
+        XCTAssertEqual(writes, 1)
+    }
+
+    @MainActor
     private func makeOwner(saved: Int? = nil, landscape: Bool = false) -> HeightAdjustmentTestController {
         let owner = HeightAdjustmentTestController()
         owner.loadViewIfNeeded()

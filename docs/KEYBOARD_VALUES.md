@@ -121,7 +121,7 @@ P5 高度镜像核对日期：2026-10-24 Asia/Shanghai；高度相关更新基�
 | punctuationButton / kaomojiButton minimumScaleFactor | 均 0.55 | `Keyboard/Controllers/KeyboardViewController+Rows.swift:58`；`Keyboard/Controllers/KeyboardViewController+Rows.swift:59`；`Keyboard/Controllers/KeyboardViewController+Rows.swift:69`；`Keyboard/Controllers/KeyboardViewController+Rows.swift:70` | 标点 / 颜文字已有宽度适配比例，不表示始终按该倍率渲染 |
 | selectPinyinButton minimumScaleFactor | 0.45 | `Keyboard/Controllers/KeyboardViewController+Rows.swift:202`；`Keyboard/Controllers/KeyboardViewController+Rows.swift:203` | 选拼音已有宽度适配下限，不是固定字号 |
 | languageButton minimumScaleFactor（符号页返回语言键） | 0.65 | `Keyboard/Controllers/KeyboardViewController+BottomRow.swift:156`；`Keyboard/Controllers/KeyboardViewController+BottomRow.swift:157` | makeSymbolicBottomRow 内已有宽度适配下限，不是固定字号或 Dynamic Type 上限 |
-| installPreferredKeyboardHeight priority | defaultHigh（750） | `Keyboard/Controllers/KeyboardViewController+Layout.swift:58`；`Keyboard/Controllers/KeyboardViewController+Layout.swift:59` ；外部 SDK `/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/System/Library/Frameworks/UIKit.framework/Headers/NSLayoutConstraint.h:19`（非仓库文件，随 Xcode 版本变化） | 单一 view.heightAnchor 等式期望约束，已有约束仅更新常量 |
+| installPreferredKeyboardHeight priority | 常态 defaultHigh（750）；旋转后条件性 999 | P3-R2：`Keyboard/Controllers/KeyboardViewController+Layout.swift` 的 KeyboardHeightRotationPriority / installPreferredKeyboardHeight；`Keyboard/Controllers/KeyboardViewController.swift` 的 viewWillTransition / viewWillDisappear | 持有租约绑定约束身份；下一旋转、消失、换约束或窗口移除恢复750，不是硬性指定系统实授 |
 | preferredRowHeightConstraint priority | defaultHigh（750） | `Keyboard/Controllers/KeyboardViewController+Layout.swift:66`；`Keyboard/Controllers/KeyboardViewController+Layout.swift:68` ；外部 SDK `/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/System/Library/Frameworks/UIKit.framework/Headers/NSLayoutConstraint.h:19`（非仓库文件，随 Xcode 版本变化） | 系统可压缩；不是硬性指定实际高度 |
 | 路径 row / 候选 row / 旧路径最小高度 | 未显式降 priority，NSLayoutConstraint 默认 required（1000） | `Keyboard/Views/T9PinyinPathBarView.swift:121`；`Keyboard/Views/CandidateBar/CandidateBarView.swift:187`；`Keyboard/Controllers/KeyboardViewController+T9PinyinPath.swift:358` ；外部 SDK `/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator.sdk/System/Library/Frameworks/UIKit.framework/Headers/NSLayoutConstraint.h:18`（非仓库文件，随 Xcode 版本变化） | 与公共按键行的 defaultHigh 区别；实际求解需运行证据 |
 
@@ -268,6 +268,30 @@ Required=1000、DefaultHigh=750。它是外部 SDK，非仓库文件，随 Xcode
     `docs/PROJECT_CONTEXT.md:257`；不据此声称已验证实际宿主安装顺序。
 
 路径简称在本节未带目录时，指上表同名基线源码；盘点材料本身是外部非权威输入，见本任务 Assignment。
+
+## P3-R2 旋转完成后的高度请求优先级
+
+750 为常态请求；旋转完成后宿主仍未采用请求（尤其仍小于请求）时，只有未取消、窗口存在、
+生命周期 visible、已有约束且实际高度不等于 uncompressed 请求值，才条件性提升到999。
+一个 transition 最多一次，不定时重试；持有至下一次旋转开始（super之前）、消失（super之后）、
+约束对象重建/替换或窗口移除，再恢复750并失效旧完成回调。
+`KeyboardHeightRotationPriority` 是唯一提升/还原所有者，适用于 Debug 与 Release，不带临时日志。
+行约束仍为750；模型默认45/254/288、方向封顶、40下限与保存不写回不变。
+即使提升后宿主仍给低预算，既有 accepted 预算采样仍执行，按实授压低行高或在不足四行40时隐藏。
+999 低于 required1000，但会改变与宿主约束竞争，不能据此保证真实低预算、分屏或所有设备无冲突。
+750 请求不等于系统实授，999 也不构成实授保证；内部根因仍 UNKNOWN。
+
+外置依据（只引用原观察，不改写为本次正式代码验收）：
+
+- `~/.kos-work/Universe-Keyboard/UI4-HEIGHT-001/reports/executor-report-orientation-round3.md`：
+  SHA-256 `ae7849c0cb2651e572df10d71196740b84b7fcddd97db51a41eb5c47dc401eb3`；
+  模拟器单次 C4 有效，A 段可见 Encapsulated 高度1000，不证明系统协商根因。
+- `~/.kos-work/Universe-Keyboard/UI4-HEIGHT-001/reports/c4-device-trial-human-result.md`：
+  SHA-256 `3c9d8c35686bfd99c0faec85bdaad9894a9832ed3bd4a9f4def735c2b2b2dd73`；
+  Human 九项 Pass 属于 DEBUG 临时 C4，iOS版本待补；正式实现仍需 Human 重验。
+- C4 实验小补丁 SHA-256 `8a18ac4cddea1d54071d7d28cb49961264447f253f4251a306adaf6abbd6e1c6`，
+  总补丁 SHA-256 `652136bea164cc820b586bc10e2233b6ea57395003dee920c230e2d1795ed306`；
+  正式代码新增约束身份与退出保护，不直接带入 DEBUG 实验代码。
 
 ## UNKNOWN 清单
 

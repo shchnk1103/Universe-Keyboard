@@ -106,6 +106,7 @@ class KeyboardViewController: UIInputViewController {
     override func loadView() {
         let inputView = KeyboardAudioFeedbackInputView(frame: .zero, inputViewStyle: .keyboard)
         inputView.onWindowRemoved = { [weak self] in
+            self?.keyboardHeightRotationPriority.restore()
             self?.keyboardHeightAdjustmentAcceptsMarkers = false
             self?.finishKeyboardHeightAdjustment(.windowRemoved)
         }
@@ -123,7 +124,12 @@ class KeyboardViewController: UIInputViewController {
     /// Surface 顶部的克制高光，用于在浅色/深色模式下提供轻微玻璃层次。
     var keyboardSurfaceHighlightView: UIView!
     /// 自定义键盘高度约束。只约束整体输入视图高度，不改变单行按键高度。
-    var keyboardHeightConstraint: NSLayoutConstraint?
+    let keyboardHeightRotationPriority = KeyboardHeightRotationPriority()
+    var keyboardHeightConstraint: NSLayoutConstraint? {
+        didSet {
+            keyboardHeightRotationPriority.constraintChanged(from: oldValue, to: keyboardHeightConstraint)
+        }
+    }
     /// 根布局容器，垂直排列候选栏 + 4 行按键
     var rootStack: UIStackView!
     /// 候选栏的容器视图（包含 scrollView + 展开按钮）
@@ -552,6 +558,7 @@ class KeyboardViewController: UIInputViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        keyboardHeightRotationPriority.restore()
         keyboardHeightAdjustmentAcceptsMarkers = false
         finishKeyboardHeightAdjustment(.disappeared)
         keyboardHeightNeedsRead = true
@@ -838,6 +845,23 @@ class KeyboardViewController: UIInputViewController {
     /// viewDidLayoutSubviews 记录系统实际采用的输入视图尺寸。
     /// 若仍出现临时高度，此日志可区分系统容器行为与已安装内容布局。
     private var lastLoggedBounds: CGRect = .zero
+
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        // 先失效上次租约，再让UIKit开始新过渡；迟到/重复的完成回调不重试。
+        let token = keyboardHeightRotationPriority.beginTransition()
+        super.viewWillTransition(to: size, with: coordinator)
+        coordinator.animate(alongsideTransition: nil) { [weak self] context in
+            guard let self else { return }
+            let elevated = self.keyboardHeightRotationPriority.completeTransition(
+                token, cancelled: context.isCancelled, constraint: self.keyboardHeightConstraint,
+                hasWindow: self.view.window != nil,
+                isVisible: self.hostLifecycleRecoveryGate.phase == .visible,
+                actualHeight: self.view.bounds.height, requestedHeight: self.keyboardUncompressedHeight)
+            guard elevated else { return }
+            self.view.superview?.setNeedsLayout()
+            self.view.superview?.layoutIfNeeded()
+        }
+    }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()

@@ -32,6 +32,51 @@
 import KeyboardCore
 import UIKit
 
+/// 一个旋转只消费一次完成事件；提升租约绑定原约束身份，失效时只还原它。
+/// 不负责行高、宿主预算或存储，真实压缩仍由既有高度模型处理。
+@MainActor
+final class KeyboardHeightRotationPriority {
+    private var transition: UUID?
+    private var completionConsumed = false
+    private weak var elevatedConstraint: NSLayoutConstraint?
+
+    func beginTransition() -> UUID {
+        restore()
+        let token = UUID()
+        transition = token
+        return token
+    }
+
+    func completeTransition(
+        _ token: UUID, cancelled: Bool, constraint: NSLayoutConstraint?,
+        hasWindow: Bool, isVisible: Bool, actualHeight: CGFloat, requestedHeight: CGFloat?
+    ) -> Bool {
+        guard transition == token, !completionConsumed else { return false }
+        completionConsumed = true
+        guard !cancelled, hasWindow, isVisible, let constraint, let requestedHeight,
+            requestedHeight.isFinite, actualHeight != requestedHeight
+        else { return false }
+        elevatedConstraint = constraint
+        constraint.priority = UILayoutPriority(999)
+        constraint.constant = requestedHeight
+        constraint.isActive = true
+        return true
+    }
+
+    func constraintChanged(from previous: NSLayoutConstraint?, to current: NSLayoutConstraint?) {
+        guard previous !== current else { return }
+        // 旧完成回调不得把新建的约束再次提升。
+        restore()
+    }
+
+    func restore() {
+        elevatedConstraint?.priority = .defaultHigh
+        elevatedConstraint = nil
+        transition = nil
+        completionConsumed = false
+    }
+}
+
 extension KeyboardViewController {
     var keyboardHeightWithoutT9Path: CGFloat {
         keyboardContentTopInset

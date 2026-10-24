@@ -184,6 +184,123 @@ nonisolated final class KeyboardHeightControllerTests: XCTestCase {
     }
 
     @MainActor
+    func testRotationCompletionPromotesConstraintOnceWithoutWritingPreference() throws {
+        let (owner, window) = makeRotationOwner()
+        defer { window.isHidden = true }
+        var writes = 0
+        owner.keyboardRowHeightSink = { _ in writes += 1 }
+        let request = try XCTUnwrap(owner.keyboardHeightConstraint)
+        let coordinator = HeightRotationCoordinator()
+        owner.viewWillTransition(to: CGSize(width: 390, height: 254), with: coordinator)
+        XCTAssertEqual(request.priority, .defaultHigh)
+        coordinator.complete()
+        XCTAssertEqual(request.priority.rawValue, 999)
+        XCTAssertEqual(request.constant, 314)
+        XCTAssertEqual(owner.keyboardHeightSettings.savedRowHeight, 60)
+        XCTAssertEqual(writes, 0)
+        // 外部改变优先级后重复同一个完成回调，不能再次补请求。
+        request.priority = .defaultHigh
+        coordinator.complete()
+        XCTAssertEqual(request.priority, .defaultHigh)
+    }
+
+    @MainActor
+    func testRotationPriorityRestoresOnEveryExitAndRejectsLateCompletion() throws {
+        for exit in ["nextTransition", "disappear", "replacement", "windowRemoved"] {
+            let (owner, window) = makeRotationOwner()
+            defer { window.isHidden = true }
+            let request = try XCTUnwrap(owner.keyboardHeightConstraint)
+            let coordinator = HeightRotationCoordinator()
+            owner.viewWillTransition(to: CGSize(width: 390, height: 254), with: coordinator)
+            coordinator.complete()
+            XCTAssertEqual(request.priority.rawValue, 999, exit)
+            switch exit {
+            case "nextTransition":
+                owner.viewWillTransition(to: CGSize(width: 844, height: 254), with: HeightRotationCoordinator())
+            case "disappear":
+                owner.viewWillDisappear(false)
+            case "replacement":
+                request.isActive = false
+                let replacement = owner.view.heightAnchor.constraint(equalToConstant: 314)
+                replacement.priority = .defaultHigh
+                owner.keyboardHeightConstraint = replacement
+            default:
+                owner.view.removeFromSuperview()
+            }
+            XCTAssertEqual(request.priority, .defaultHigh, exit)
+            coordinator.complete()
+            XCTAssertEqual(request.priority, .defaultHigh, exit)
+            XCTAssertEqual(owner.keyboardHeightConstraint?.priority, .defaultHigh, exit)
+            XCTAssertEqual(owner.keyboardHeightSettings.savedRowHeight, 60, exit)
+        }
+    }
+
+    @MainActor
+    func testRotationDoesNotPromoteWhenAnyEligibilityConditionIsMissing() throws {
+        for missing in ["window", "visible", "notCancelled", "mismatch", "constraint"] {
+            let (owner, window) = makeRotationOwner()
+            defer { window.isHidden = true }
+            let request = try XCTUnwrap(owner.keyboardHeightConstraint)
+            let coordinator = HeightRotationCoordinator()
+            switch missing {
+            case "window": owner.view.removeFromSuperview()
+            case "visible": owner.hostLifecycleRecoveryGate.noteViewWillDisappear()
+            case "notCancelled": coordinator.isCancelled = true
+            case "mismatch": owner.view.bounds.size.height = 314
+            default: owner.keyboardHeightConstraint = nil
+            }
+            owner.viewWillTransition(to: CGSize(width: 390, height: 254), with: coordinator)
+            coordinator.complete()
+            XCTAssertEqual(request.priority, .defaultHigh, missing)
+            XCTAssertEqual(owner.keyboardHeightSettings.savedRowHeight, 60, missing)
+        }
+    }
+
+    @MainActor
+    func testElevatedRequestStillAcceptsRealHostCompressionWithoutSaving() throws {
+        let (owner, window) = makeRotationOwner()
+        defer { window.isHidden = true }
+        var writes = 0
+        owner.keyboardRowHeightSink = { _ in writes += 1 }
+        let request = try XCTUnwrap(owner.keyboardHeightConstraint)
+        let coordinator = HeightRotationCoordinator()
+        owner.viewWillTransition(to: CGSize(width: 390, height: 254), with: coordinator)
+        coordinator.complete()
+        XCTAssertEqual(request.priority.rawValue, 999)
+        owner.view.bounds.size.height = 274
+        owner.synchronizeKeyboardHeightLayout()
+        XCTAssertEqual(owner.keyboardAcceptedHeight, 274)
+        XCTAssertEqual(owner.keyHeight, 50)
+        XCTAssertEqual(request.constant, 314)
+        XCTAssertEqual(request.priority.rawValue, 999)
+        XCTAssertEqual(owner.keyboardHeightSettings.savedRowHeight, 60)
+        XCTAssertEqual(writes, 0)
+        owner.view.bounds.size.height = 216
+        owner.synchronizeKeyboardHeightLayout()
+        XCTAssertEqual(owner.keyboardHeightStatus, "hostBudgetBelowMinimum")
+        XCTAssertEqual(owner.view.alpha, 0)
+        XCTAssertFalse(request.isActive)
+        XCTAssertGreaterThanOrEqual(owner.keyHeight, 40)
+        XCTAssertEqual(owner.keyboardHeightSettings.savedRowHeight, 60)
+        XCTAssertEqual(writes, 0)
+    }
+
+    @MainActor
+    private func makeRotationOwner() -> (HeightLayoutController, UIWindow) {
+        let owner = makeOwner(saved: 60)
+        install(owner)
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 500))
+        let host = UIViewController()
+        window.rootViewController = host
+        host.view.addSubview(owner.view)
+        window.isHidden = false
+        owner.hostLifecycleRecoveryGate.noteViewWillAppear(context: nil)
+        owner.hostLifecycleRecoveryGate.noteViewDidAppear(hasWindow: true)
+        owner.view.bounds.size = CGSize(width: 390, height: 254)
+        return (owner, window)
+    }
+
+    @MainActor
     private func makeOwner(saved: Int?, nineKey: Bool = false) -> HeightLayoutController {
         let owner = HeightLayoutController()
         owner.loadViewIfNeeded()
@@ -250,5 +367,45 @@ nonisolated final class KeyboardHeightControllerTests: XCTestCase {
 private final class HeightLayoutController: KeyboardViewController {
     override func viewDidLoad() {
         // 只验证布局，不启动 RIME 或共享存储链路。
+    }
+}
+
+/// 通过真实UIKit生命周期入口注册完成回调；只控制完成时点/取消，不替代高度规则。
+@MainActor
+private final class HeightRotationCoordinator: NSObject, UIViewControllerTransitionCoordinator {
+    var isAnimated: Bool { true }
+    var presentationStyle: UIModalPresentationStyle { .none }
+    var initiallyInteractive: Bool { false }
+    var isInterruptible: Bool { true }
+    var isInteractive: Bool { false }
+    var isCancelled = false
+    var transitionDuration: TimeInterval { 0 }
+    var percentComplete: CGFloat { 1 }
+    var completionVelocity: CGFloat { 0 }
+    var completionCurve: UIView.AnimationCurve { .linear }
+    let containerView = UIView()
+    var targetTransform: CGAffineTransform { .identity }
+    private var completions: [((any UIViewControllerTransitionCoordinatorContext) -> Void)] = []
+
+    func viewController(forKey key: UITransitionContextViewControllerKey) -> UIViewController? { nil }
+    func view(forKey key: UITransitionContextViewKey) -> UIView? { nil }
+    func animate(
+        alongsideTransition animation: ((any UIViewControllerTransitionCoordinatorContext) -> Void)?,
+        completion: ((any UIViewControllerTransitionCoordinatorContext) -> Void)? = nil
+    ) -> Bool {
+        if let completion { completions.append(completion) }
+        return true
+    }
+    func animateAlongsideTransition(
+        in view: UIView?, animation: ((any UIViewControllerTransitionCoordinatorContext) -> Void)?,
+        completion: ((any UIViewControllerTransitionCoordinatorContext) -> Void)? = nil
+    ) -> Bool {
+        animate(alongsideTransition: animation, completion: completion)
+    }
+    func notifyWhenInteractionEnds(_ handler: @escaping (any UIViewControllerTransitionCoordinatorContext) -> Void) {}
+    func notifyWhenInteractionChanges(_ handler: @escaping (any UIViewControllerTransitionCoordinatorContext) -> Void) {
+    }
+    func complete() {
+        for completion in completions { completion(self) }
     }
 }
