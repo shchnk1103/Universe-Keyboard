@@ -30,7 +30,7 @@ record_id: PORTFOLIO-REFRESH-004
   4. 本记录。
   5. 其它镜像（`ACTIVE_WORK`、`ENGINEERING_DASHBOARD`、`KNOWLEDGE_INDEX`、`CHANGELOG`、`TECH_DEBT`、`KEYBOARD_VALUES`）：不适用，不改；依据：本次只登记目录行与 Human 决定，没有 Assignment 生命周期变化、知识入口变化、发布、技术债或数值变化。
 - **Non-goals:** 过期句清理；UI-4 Assignment Close；分支 / worktree 处置；任何 Swift、测试、CI 改动；改产品决定；把外置材料拷进仓库；push / PR / merge。
-- **Required Inputs:** `AGENTS.md`；`docs/KNOWLEDGE_INDEX.md`；`docs/ASSIGNMENT_POLICY.md`（Required Assignment Fields、D7）；`docs/DOCUMENTATION_GOVERNANCE.md`；`docs/KNOWLEDGE_DEPENDENCIES.md`；`docs/playbooks/documentation-maintainer.md`；基线 `origin/main` `ebf7e4fa51967b58be80c2cef00f7c3e9fdd8e17` 上的 `docs/PORTFOLIO.md`、`docs/portfolio/kos-optimization.md`、`docs/portfolio/testflight-gates.md`、`docs/assignments/portfolio-refresh-003.md`；`row-text.md`。
+- **Required Inputs:** `AGENTS.md`；`docs/KNOWLEDGE_INDEX.md`；`docs/ASSIGNMENT_POLICY.md`（Required Assignment Fields）与 `docs/PORTFOLIO.md` 决定记录中的 D7；`docs/DOCUMENTATION_GOVERNANCE.md`；`docs/KNOWLEDGE_DEPENDENCIES.md`；`docs/playbooks/documentation-maintainer.md`；基线 `origin/main` `ebf7e4fa51967b58be80c2cef00f7c3e9fdd8e17` 上的 `docs/PORTFOLIO.md`、`docs/portfolio/kos-optimization.md`、`docs/portfolio/testflight-gates.md`、`docs/assignments/portfolio-refresh-003.md`；`row-text.md`。
 
 ## Assignment
 
@@ -78,6 +78,7 @@ record_id: PORTFOLIO-REFRESH-004
 | 落地范围 | `docs/PORTFOLIO.md` 五行指定格、PF-031 至 PF-034、决定记录四行；`kos-optimization.md` 第 25–29 条；`testflight-gates.md` 追加小节；本记录 |
 | 链接检查与 `git diff --check` | 见外置 Executor 报告 |
 | Executor 报告路径与 SHA-256 | `~/.kos-work/Universe-Keyboard/PORTFOLIO-REFRESH-004/reports/executor-report.md`；SHA-256 由对话交付，避免循环引用 |
+| 评审后修订 1 | Round 1：Quality `~/.kos-work/Universe-Keyboard/PORTFOLIO-REFRESH-004/reports/review-quality-r1.md`（SHA-256 `06dd869076c323605eeea5a43a278b6207ccd3d36338157aa733648987154d19`）、Architecture `reports/review-architecture-r1.md`（SHA-256 `410bf07ffee723be5664c2b8d02abe93290a3be0cf56015064dd8ca6d327d2d0`），均为 Pass with conditions、无 Blocker。采纳并修改：Q-01/ARCH-07（五行核对列改为 2026-10-24）、ARCH-02/ARCH-03/ARCH-09（PF-031 与 testflight-gates 的 TD-004/TD-002 条件与正式版本号前提，以 `docs/RELEASE_CHECKLIST.md` 为准）、ARCH-04/ARCH-05（kos-optimization 第 25、28、29 条来源）、ARCH-01（本记录 D7 指针）。接受或记录、不改文件：ARCH-06（PF-012 依据在评审允许集外）、ARCH-08（PF-023 未更新）、Q-02（报告行数 33 与实际 32）、Q-03/Q-04（偏差记录）。授权：Human 2026-10-24 22:16 Asia/Shanghai，外置 `reports/remediation-1-authorization-issued.md`。本提交不是独立复核 |
 
 ## Closeout Decision
 
