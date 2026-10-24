@@ -295,7 +295,7 @@ Required=1000、DefaultHigh=750。它是外部 SDK，非仓库文件，随 Xcode
 
 ## Round 1 已接受限制与有界记录（P3-R3）
 
-本节记录 Human 明确处置，不改变产品规则；标记去重只保证最近 64 次成功消费内同一标记不重入，更早的标记可能被再次消费；
+本节记录 Human 明确处置，产品决定文字未改，对其 §7“同一标记不再重新进入”按本句作有界解释；标记去重只保证最近 64 次成功消费内同一标记不重入，更早的标记可能被再次消费；
 主 App 每次进入页面或明确重开都会生成新标记，常规流程不受影响；Human 已接受该边界（确认记录
 `reports/human-confirmation-r2-f01-closeout.md`，SHA-256 `ec382ccba6f9b53102e4150f662b4a0f546d63530a0c21609970d76133973002`）。
 与外置 `reports/pm-acceptance-matrix-v3.md`（SHA-256 `f54efe17f5c6a5f4fb5c8681584cfec92658c5f36e79994b9cea05a7ba2244c5`）的
