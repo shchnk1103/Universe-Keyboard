@@ -36,6 +36,8 @@
 		D32040000000000000000001 /* KeyboardDesignTokens.swift in KeyboardExtensionTests */ = {isa = PBXBuildFile; fileRef = D32030000000000000000001 /* KeyboardDesignTokens.swift */; };
         D32110000000000000000001 /* KeyboardCore in layout tests */ = {isa = PBXBuildFile; productRef = 793AC8812FB0BE0600DAE8A0 /* KeyboardCore */; };
         D32110000000000000000002 /* RimeBridge in layout tests */ = {isa = PBXBuildFile; productRef = 7A6000042FC0000000000001 /* RimeBridge */; };
+		D33040000000000000000001 /* CandidateFontSnapshot.swift in App */ = {isa = PBXBuildFile; fileRef = D33030000000000000000001 /* CandidateFontSnapshot.swift */; };
+		D33040000000000000000002 /* CandidateFontSnapshot.swift in KeyboardExtensionTests */ = {isa = PBXBuildFile; fileRef = D33030000000000000000001 /* CandidateFontSnapshot.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -109,6 +111,7 @@
 		D213F0000000000000000003 /* KeyboardViewController+KeyAccessibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Controllers/KeyboardViewController+KeyAccessibility.swift"; sourceTree = "<group>"; };
 		D32030000000000000000001 /* KeyboardDesignTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Views/KeyboardDesignTokens.swift"; sourceTree = "<group>"; };
         D32120000000000000000001 /* KeyboardLayoutIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = KeyboardLayoutIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		D33030000000000000000001 /* CandidateFontSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Views/CandidateBar/CandidateFontSnapshot.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -278,6 +281,7 @@
 				D31930000000000000000001 /* CandidateBarView.swift */,
 				D31930000000000000000002 /* CandidateCollectionView.swift */,
 				D31930000000000000000003 /* CandidateCell.swift */,
+				D33030000000000000000001 /* CandidateFontSnapshot.swift */,
 				D31930000000000000000004 /* CandidateScrollViewStyle.swift */,
 				D31930000000000000000005 /* DebugKeyTouchRangeOverlayView.swift */,
 				7A6300022FD0000000000001 /* UniverseKeyboardUITests */,
@@ -615,6 +619,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D33040000000000000000001 /* CandidateFontSnapshot.swift in App */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -669,6 +674,7 @@
 				D31940000000000000000001 /* CandidateBarView.swift in KeyboardExtensionTests */,
 				D31940000000000000000002 /* CandidateCollectionView.swift in KeyboardExtensionTests */,
 				D31940000000000000000003 /* CandidateCell.swift in KeyboardExtensionTests */,
+				D33040000000000000000002 /* CandidateFontSnapshot.swift in KeyboardExtensionTests */,
 				D31940000000000000000004 /* CandidateScrollViewStyle.swift in KeyboardExtensionTests */,
 				D31940000000000000000005 /* DebugKeyTouchRangeOverlayView.swift in KeyboardExtensionTests */,
                 7A6500012FD0000000000001 /* TypoCorrectionCallbackLedger.swift in Sources */,

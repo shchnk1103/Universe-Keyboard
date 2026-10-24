@@ -6,6 +6,7 @@ import Foundation
 nonisolated struct SettingsSearchItem: Identifiable, Equatable, Sendable {
     enum Destination: String, Equatable, Sendable {
         case keyboardLayout
+        case candidateFont
         case keyboardHeight
         case feedback
         case deleteKey
@@ -56,6 +57,14 @@ nonisolated enum SettingsSearchCatalog {
             systemImage: "keyboard",
             keywords: ["布局", "九键", "9键", "26", "t9", "layout"],
             destination: .keyboardLayout
+        ),
+        SettingsSearchItem(
+            id: "candidateFont",
+            title: "候选字大小",
+            subtitle: "调整键盘候选词的字号",
+            systemImage: "textformat.size",
+            keywords: ["候选", "候选字", "字号", "字体大小", "大小"],
+            destination: .candidateFont
         ),
         SettingsSearchItem(
             id: "keyboardHeight",

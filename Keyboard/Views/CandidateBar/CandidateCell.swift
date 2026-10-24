@@ -26,6 +26,7 @@ final class CandidateCollectionCell: UICollectionViewCell {
     private var currentKind: CandidateKind = .candidate
     private var currentBaseColor: UIColor = .label
     private var usesPreferredStyle = false
+    private var fontSnapshot: CandidateFontSnapshot?
     private var lastPointInsideDiagnosticLogTime: CFTimeInterval = 0
     private var lastHitTestDiagnosticLogTime: CFTimeInterval = 0
     #if DEBUG
@@ -222,7 +223,11 @@ final class CandidateCollectionCell: UICollectionViewCell {
         applyDiagnosticTouchFrameStyle()
     }
 
-    func configure(with item: CandidateItem, preferred: Bool, expanded: Bool) {
+    func configure(
+        with item: CandidateItem, preferred: Bool, expanded: Bool,
+        fontSnapshot: CandidateFontSnapshot? = nil
+    ) {
+        self.fontSnapshot = fontSnapshot
         let color: UIColor = item.kind == .composition ? .secondaryLabel : .label
         let title = item.title
         let correctionHint = correctionHint(for: item)
@@ -298,6 +303,12 @@ final class CandidateCollectionCell: UICollectionViewCell {
         )
     }
 
+    func applyFontSnapshot(_ snapshot: CandidateFontSnapshot) {
+        fontSnapshot = snapshot
+        titleLabel.font = snapshot.titleFont(kind: currentKind, preferred: usesPreferredStyle)
+        correctionHintLabel.font = snapshot.correctionHintFont
+    }
+
     private func configureTitle(
         _ title: String,
         correctionHint: String?,
@@ -306,19 +317,15 @@ final class CandidateCollectionCell: UICollectionViewCell {
         bold: Bool,
         highlighted: Bool
     ) {
-        let fontSize: CGFloat = kind == .composition ? 15 : 17
-        let weight: UIFont.Weight = bold ? .semibold : .regular
-        let baseFont = UIFont.systemFont(ofSize: fontSize, weight: weight)
-        titleLabel.font = UIFontMetrics(forTextStyle: .body).scaledFont(for: baseFont, maximumPointSize: 28)
+        let snapshot = fontSnapshot ?? CandidateFontSnapshot(traits: traitCollection)
+        titleLabel.font = snapshot.titleFont(kind: kind, preferred: bold)
         titleLabel.text = title
         titleLabel.textColor =
             highlighted
             ? Self.highlightedCandidateTextColor
             : (kind == .candidate ? Self.candidateTextColor : color)
 
-        let hintFont = UIFont.systemFont(ofSize: 13, weight: .semibold)
-        correctionHintLabel.font = UIFontMetrics(forTextStyle: .caption1).scaledFont(
-            for: hintFont, maximumPointSize: 18)
+        correctionHintLabel.font = snapshot.correctionHintFont
         correctionHintLabel.text = correctionHint
         correctionHintLabel.textColor = .secondaryLabel
         correctionHintLabel.isHidden = correctionHint == nil

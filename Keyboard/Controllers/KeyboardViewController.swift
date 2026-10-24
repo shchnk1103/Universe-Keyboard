@@ -343,6 +343,10 @@ class KeyboardViewController: UIInputViewController {
     /// Apple 最佳实践：自定义键盘扩展运行在独立进程中，每次 XPC 调用都有开销。
     /// 缓存这些值可以显著减少每次按键的延迟。
     var cachedKeyClickEnabled: Bool = true
+    /// 每次可见周期只读取一次；可注入存储，不在输入热路径轮询App Group。
+    var candidateFontValueSource: (() -> Any?)?
+    var candidateFontNeedsRead = true
+    var candidateFontSnapshot = CandidateFontSnapshot(traits: .current)
     /// Cached layout preference (read on appear/activate only).
     var cachedLayoutStyle: KeyboardLayoutStyle = .twentySixKey
     /// Cached T9 readiness match for Chinese nine-key chrome.
@@ -450,6 +454,7 @@ class KeyboardViewController: UIInputViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        prepareCandidateFontForAppearance()
         keyboardHeightAdjustmentAcceptsMarkers = true
         #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
             wakeOwnerProbeWillAppear()
@@ -558,6 +563,7 @@ class KeyboardViewController: UIInputViewController {
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        candidateFontNeedsRead = true
         keyboardHeightRotationPriority.restore()
         keyboardHeightAdjustmentAcceptsMarkers = false
         finishKeyboardHeightAdjustment(.disappeared)

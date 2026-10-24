@@ -15,12 +15,24 @@ Related Assignments:
 
 ## Product Model
 
-Users choose a keyboard layout in the main App under 设置 → 输入体验:
+Users choose a keyboard layout in the main App under 设置 → 键盘布局:
 
 - **26键** — standard full QWERTY. Default.
 - **9键** — Chinese alphabet page uses **system-style 九宫格 chrome** (letter-group labels, side functions). English and automatic-English contexts stay on existing QWERTY.
 
 Nine-key depends on fog-song / rime-ice T9 resources. If those resources are missing, the main App must explain the dependency, obtain GPL acceptance, download, install, deploy and verify T9 before persisting the nine-key preference.
+
+## Candidate Font Setting (UI3-FONT-001, local delivery)
+
+设置 → 键盘布局内，“候选字大小”与“键盘高度”并列；首页的键盘布局快捷入口进入同一页，搜索支持候选、候选字、字号、字体大小、大小。
+页面显示只读静态候选栏示例和13–22的十档整数滑杆，17标为“默认”。默认档候选17 / 组字15分别跟随系统更大字体、各封顶28；其它档固定为n / n−2，不随系统变化。
+主 App 与键盘使用同一份 `CandidateFontSnapshot.swift`，预览不连接真实键盘，也没有试打框。
+主 App 写 App Group 的 `keyboard_candidate_font_size`，选17删键；键盘在下次呈现前采用，不在热输入路径读设置。
+关闭完全访问时的端到端采用仍为UNKNOWN，页面不作权限能力承诺。UI-4的私有高度存储、旋转租约与几何不变。
+
+补充证据（UI3-FONT-001 P7，保留上文 P4 交付时的证据边界）：设置页预览已按 Human 要求改为“拼音一行、候选一行”的示意样式（P6 修订1b，`0db9b27`）；真实候选条的拼音仍是同一条内的一个项，不采用该两行结构。
+2026-10-24 的 Human 真机验收记录：iPhone 13 Pro、iOS 27.0.1、被测提交 `b0e0361`，Human 报告清单全部通过，完全访问关与开表现无区别；这是 **Human 观察，不是测量**，Debug/Release 构建类型仍未知，不构成所有环境下的能力保证。
+后续两次预览提交 `eae739e`、`0db9b27` 未经真机验收；上述观察不覆盖它们，也不代表完整 CI、merge 或 Release 通过。
 
 ## Runtime Rules
 

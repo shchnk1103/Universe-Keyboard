@@ -10,6 +10,7 @@
 P5 高度镜像核对日期：2026-10-24 Asia/Shanghai；高度相关更新基线为
 `160bd713efbfe8eebb17b22ddd058d73ee54b9a1`（下称 P5 高度基线）。本次更新的来源使用符号定位；
 其余表项、历史测试命中与分歧保留原始盘点基线，不声明已全量刷新行号。
+UI3 P3/P4 字号及受本次抽取影响的来源核对基线为 `76bfd4fbdd1673656c80c5cd104184dff95e5bc4`；下方字号与共享键新增行使用该提交的当前行号。
 所有数值核对仅为 Executor-recorded 静态证据，不代表真机验收、合并或 Release。
 单位未特别注明时为 pt。颜色、圆角和动画不在本次范围。
 
@@ -48,10 +49,10 @@ P5 高度镜像核对日期：2026-10-24 Asia/Shanghai；高度相关更新基�
 | firstRowTrailingReservedWidth | 56+8=64 | `Keyboard/Controllers/KeyboardViewController+ExpandedCandidatePanel.swift:538` | 仅与顶部操作区相交的行预留尾部 |
 | reservedActionBottom | 46 | `Keyboard/Controllers/KeyboardViewController+ExpandedCandidatePanel.swift:9` | 顶部行预留判定的边界 |
 | CandidateSizing.visualHorizontalGap / minimumTouchWidth | 4 / 44 | `Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift:6`；`Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift:7` | 自然宽度至少 44，再加入视觉间隙 4 |
-| CandidateSizing.correctionHintSpacing | 3 | `Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift:8`；`Keyboard/Views/CandidateBar/CandidateCell.swift:69` | 测量和内容 stack 的提示间距一致 |
-| titleInsets | 首选 16；普通 24 | `Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift:197` | 测量时加入的横向文字内边距总和 |
-| expanded maxWidth | max(44, collectionWidth−16) | `Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift:219` | 展开测量上限，随后仍受 flow 剩余行宽限制 |
-| VisualSpacing.horizontalGap / verticalGap | 4 / 4 | `Keyboard/Views/CandidateBar/CandidateCell.swift:9`；`Keyboard/Views/CandidateBar/CandidateCell.swift:10`；`Keyboard/Views/CandidateBar/CandidateCell.swift:255` | 左右各缩 2；展开上下各缩 2，普通上下不缩 |
+| CandidateSizing.correctionHintSpacing | 3 | `Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift:8`；`Keyboard/Views/CandidateBar/CandidateCell.swift:70` | 测量和内容 stack 的提示间距一致 |
+| titleInsets | 首选 16；普通 24 | `Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift:199` | 测量时加入的横向文字内边距总和 |
+| expanded maxWidth | max(44, collectionWidth−16) | `Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift:218` | 展开测量上限，随后仍受 flow 剩余行宽限制 |
+| VisualSpacing.horizontalGap / verticalGap | 4 / 4 | `Keyboard/Views/CandidateBar/CandidateCell.swift:9`；`Keyboard/Views/CandidateBar/CandidateCell.swift:10`；`Keyboard/Views/CandidateBar/CandidateCell.swift:261` | 左右各缩 2；展开上下各缩 2，普通上下不缩 |
 | CandidateActionAppearance.controlDiameter / controlBackgroundInsets | 36；上下 5、左右 10 | `Keyboard/Views/KeyboardDesignTokens.swift:36`；`Keyboard/Views/KeyboardDesignTokens.swift:38` | 操作区内部视觉 plate，不是触摸区 |
 | recoveryLabel | caption1，无显式数值上限；2 行；左右 8 | `Keyboard/Views/CandidateBar/CandidateBarView.swift:158`；`Keyboard/Views/CandidateBar/CandidateBarView.swift:160`；`Keyboard/Views/CandidateBar/CandidateBarView.swift:166` | 恢复提示位于固定候选栏内 |
 
@@ -110,9 +111,9 @@ P5 高度镜像核对日期：2026-10-24 Asia/Shanghai；高度相关更新基�
 
 | 名称（符号） | 值 | 来源（基线） | 使用处 / 说明 |
 |---|---|---|---|
-| CandidateCollectionCell.configureTitle fontSize | composition 15 / candidate 17 | `Keyboard/Views/CandidateBar/CandidateCell.swift:309` | 首选 semibold，其余 regular |
-| Candidate title Dynamic Type maximumPointSize | 28 | `Keyboard/Views/CandidateBar/CandidateCell.swift:312`；`Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift:195` | 渲染 / 测量必须一起更新 |
-| correctionHint fontSize / maximumPointSize | 13 / 18 | `Keyboard/Views/CandidateBar/CandidateCell.swift:319`；`Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift:202` | caption1 缩放，提示为 semibold |
+| CandidateFontSettings.policy(isComposition:) / CandidateFontSnapshot.titleFont(kind:preferred:) | 默认 composition 15 / candidate 17；其它档 n−2 / n | `Packages/KeyboardCore/Sources/KeyboardCore/CandidateFontSettings.swift:28`；`Keyboard/Views/CandidateBar/CandidateFontSnapshot.swift:15`；`Keyboard/Views/CandidateBar/CandidateCell.swift:321` | 首选 semibold，其余 regular；预览共用此函数 |
+| CandidateFontSnapshot.titleFont(kind:preferred:) Dynamic Type maximumPointSize | 默认档各28；其它档不缩放 | `Keyboard/Views/CandidateBar/CandidateFontSnapshot.swift:20`；`Keyboard/Views/CandidateBar/CandidateFontSnapshot.swift:22`；`Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift:198` | 渲染 / 测量共用同一快照 |
+| CandidateFontSnapshot.correctionHintFont fontSize / maximumPointSize | 13 / 18 | `Keyboard/Views/CandidateBar/CandidateFontSnapshot.swift:25`；`Keyboard/Views/CandidateBar/CandidateFontSnapshot.swift:27`；`Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift:203` | caption1 缩放，提示为 semibold |
 | T9PinyinPathBarCell.titlePointSize | 16 | `Keyboard/Views/T9PinyinPathBarView.swift:548`；`Keyboard/Views/T9PinyinPathBarView.swift:588` | 当前紧凑 Path；普通 systemFont，没有 UIFontMetrics 上限 |
 | T9PinyinPathCell label / measurement | 17 | `Keyboard/Controllers/KeyboardViewController+T9PinyinPath.swift:458`；`Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift:163` | 旧展开 Path，不等于紧凑 chip |
 | CandidateButtonFactory.candidateConfiguration | composition 14 / candidate 16；上限 28 | `Keyboard/Views/CandidateBar/CandidateButtonFactory.swift:100`；`Keyboard/Views/CandidateBar/CandidateButtonFactory.swift:122` | 基线 Swift 检索仅有定义，无生产调用命中；不得据此断言动态运行绝不调用 |
@@ -129,14 +130,14 @@ P5 高度镜像核对日期：2026-10-24 Asia/Shanghai；高度相关更新基�
 
 | 名称（符号） | 值 | 来源（基线） | 使用处 / 说明 |
 |---|---|---|---|
-| CandidateCollectionCell title label inset | 高亮左右各 8；普通各 12；上下各 4 | `Keyboard/Views/CandidateBar/CandidateCell.swift:326`；`Keyboard/Views/CandidateBar/CandidateCell.swift:136` | 与 titleInsets 16/24 配对，独立于外层 gap |
+| CandidateCollectionCell title label inset | 高亮左右各 8；普通各 12；上下各 4 | `Keyboard/Views/CandidateBar/CandidateCell.swift:333`；`Keyboard/Views/CandidateBar/CandidateCell.swift:137` | 与 titleInsets 16/24 配对，独立于外层 gap |
 | bottom row return / context key widths | Return 78；@、slash、dot 40；.com 60 | `Keyboard/Controllers/KeyboardViewController+BottomRow.swift:66`；`Keyboard/Controllers/KeyboardViewController+BottomRow.swift:74`；`Keyboard/Controllers/KeyboardViewController+BottomRow.swift:79`；`Keyboard/Controllers/KeyboardViewController+BottomRow.swift:103`；`Keyboard/Controllers/KeyboardViewController+BottomRow.swift:108` | 符号底行 Return 同为 78（同文件 :171） |
 | T9 bottom space width | emojiWidth×2+keyHorizontalSpacing | `Keyboard/Controllers/KeyboardViewController+Rows.swift:239` | 1+1+2 列节奏，额外间隙为 6 |
 | 旧路径展开 close placement | top 4；trailing −8 | `Keyboard/Controllers/KeyboardViewController+T9PinyinPath.swift:365` | 44×44 按钮的边距 |
 | expanded candidate panel frame | top=候选栏 top，bottom=rootStack bottom，全键盘宽 | `Keyboard/Controllers/KeyboardViewController+ExpandedCandidatePanel.swift:452` | 覆盖候选和按键区，不另增加根高；collection 等高于 container（:582） |
-| LayoutPreviewPalette keySpacing / rowSpacing | 2.5 / 3 | `Universe Keyboard/Views/Settings/KeyboardLayoutSettingsView.swift:287`；`Universe Keyboard/Views/Settings/KeyboardLayoutSettingsView.swift:288` | 仅静态缩略图，不与 Extension 自动联动 |
-| TwentySixKeyThumbnail rows / padding | 字母行高 13；底行高 14；padding 8 | `Universe Keyboard/Views/Settings/KeyboardLayoutSettingsView.swift:299`；`Universe Keyboard/Views/Settings/KeyboardLayoutSettingsView.swift:311`；`Universe Keyboard/Views/Settings/KeyboardLayoutSettingsView.swift:319` | 轮廓比例而非实际尺寸 |
-| NineKeyThumbnail letterH / bottomH / returnH | 15 / 13 / 15+3+13=31 | `Universe Keyboard/Views/Settings/KeyboardLayoutSettingsView.swift:370`；`Universe Keyboard/Views/Settings/KeyboardLayoutSettingsView.swift:371`；`Universe Keyboard/Views/Settings/KeyboardLayoutSettingsView.swift:380` | 静态缩略图，padding 8（:427） |
+| LayoutPreviewPalette keySpacing / rowSpacing | 2.5 / 3 | `Universe Keyboard/Views/Settings/KeyboardLayoutSettingsView.swift:290`；`Universe Keyboard/Views/Settings/KeyboardLayoutSettingsView.swift:291` | 仅静态缩略图，不与 Extension 自动联动 |
+| TwentySixKeyThumbnail rows / padding | 字母行高 13；底行高 14；padding 8 | `Universe Keyboard/Views/Settings/KeyboardLayoutSettingsView.swift:302`；`Universe Keyboard/Views/Settings/KeyboardLayoutSettingsView.swift:314`；`Universe Keyboard/Views/Settings/KeyboardLayoutSettingsView.swift:322` | 轮廓比例而非实际尺寸 |
+| NineKeyThumbnail letterH / bottomH / returnH | 15 / 13 / 15+3+13=31 | `Universe Keyboard/Views/Settings/KeyboardLayoutSettingsView.swift:373`；`Universe Keyboard/Views/Settings/KeyboardLayoutSettingsView.swift:374`；`Universe Keyboard/Views/Settings/KeyboardLayoutSettingsView.swift:383` | 静态缩略图，padding 8（:430） |
 
 750 / 1000 的 UIKit 语义来源为上述完整路径的外部 SDK 头文件第 18–19 行：
 Required=1000、DefaultHigh=750。它是外部 SDK，非仓库文件，随 Xcode 版本变化；
@@ -145,9 +146,20 @@ Required=1000、DefaultHigh=750。它是外部 SDK，非仓库文件，随 Xcode
 
 ### 共享存储与布局设置
 
+UI3-FONT-001 P3/P4 登记：`keyboard_candidate_font_size`（`CandidateFontSettings.storageKey`）在
+App Group 保存整数档位13–22；17、缺省/删除、非法类型或越界均解析为默认动态档。
+主 App `CandidateFontSettingsPageModel.select(_:)` 写入整数，选17删除该键；只用App Group，不回退到扩展私有域。键盘通过 `KeyboardViewController+CandidateFont.swift` 的
+`prepareCandidateFontForAppearance` 在首次构造前及每次出现前幂等读取并冻结快照，消失后才允许重读。
+独立文件 `CandidateFontSnapshot.swift` 的 `CandidateFontSnapshot` 是唯一 UIKit 字体物化入口，渲染与
+`KeyboardViewController+CandidateDataSource.swift` 的测量使用同一快照/trait；默认分别缩放17/15、
+各封顶28，固定其它档为n/n−2且不缩放。更新快照同时清除尺寸缓存并失效普通/展开布局。
+完全访问关闭时主 App 写→键盘采用仍为UNKNOWN；读取失败回默认，不是已证明的跨进程采用。
+
 | 名称（符号） | 值 | 来源（基线） | 使用处 / 说明 |
 |---|---|---|---|
-| KeyboardViewController.appGroupID / sharedDefaults | group.com.DoubleShy0N.Universe-Keyboard | `Keyboard/Controllers/KeyboardViewController.swift:344`；`Keyboard/Controllers/KeyboardViewController.swift:345` | UserDefaults(suiteName:)；不证明无 Full Access 时可读 |
+| CandidateFontSettings.storageKey | keyboard_candidate_font_size | `Packages/KeyboardCore/Sources/KeyboardCore/CandidateFontSettings.swift:6` | 共享整数档位13–22；缺省/非法回默认17 |
+| CandidateFontSettingsPageModel.init(defaults:) / select(_:) | 读初值；17删键，其它档写整数 | `Universe Keyboard/Models/CandidateFontSettingsPageModel.swift:12`；`Universe Keyboard/Models/CandidateFontSettingsPageModel.swift:19`；`Universe Keyboard/Models/CandidateFontSettingsPageModel.swift:24`；`Universe Keyboard/Models/CandidateFontSettingsPageModel.swift:26` | 主 App App Group；不读扩展私有存储 |
+| KeyboardViewController.appGroupID / sharedDefaults | group.com.DoubleShy0N.Universe-Keyboard | `Keyboard/Controllers/KeyboardViewController.swift:359`；`Keyboard/Controllers/KeyboardViewController.swift:360` | UserDefaults(suiteName:)；不证明无 Full Access 时可读 |
 | KeyboardLayoutSettingsKey.layoutStyle | keyboard_layout_style | `Packages/KeyboardCore/Sources/KeyboardCore/KeyboardLayoutStyle.swift:22` | 布局偏好 |
 | KeyboardLayoutStyle raw values / defaultStyle | twenty_six_key / nine_key；默认 twentySixKey | `Packages/KeyboardCore/Sources/KeyboardCore/KeyboardLayoutStyle.swift:7`；`Packages/KeyboardCore/Sources/KeyboardCore/KeyboardLayoutStyle.swift:10` | 缺失 / 未知解码回 26 键 |
 | schemeBinding26 / schemeBinding9 | keyboard_layout_scheme_26 / keyboard_layout_scheme_9 | `Packages/KeyboardCore/Sources/KeyboardCore/KeyboardLayoutStyle.swift:24`；`Packages/KeyboardCore/Sources/KeyboardCore/KeyboardLayoutStyle.swift:26` | 中文两种布局的方案绑定 |
@@ -249,7 +261,7 @@ Required=1000、DefaultHigh=750。它是外部 SDK，非仓库文件，随 Xcode
    同文件 `:116,176` 实际安装请求。`+Layout.swift:49–50` 的 compact/reduction 注释不能完整表达当前
    `:45–46` 与 `+T9PinyinPath.swift:49–65` 的 0/34 高度变化。另 `KeyboardViewController.swift:371` 仍称 fixed reservation。
 6. `Keyboard/Views/CandidateBar/CandidateButtonFactory.swift:100` 定义 14/16，`:119` 注释称候选栏 44；
-   当前 `CandidateCell.swift:309` 与 `+CandidateDataSource.swift:191` 为 15/17，`KeyboardDesignTokens.swift:6` 为 46。
+   当前 `CandidateFontSnapshot.swift:15` / `CandidateFontSettings.swift:28` 定义默认15/17，`+CandidateDataSource.swift:198` 共用快照，`KeyboardDesignTokens.swift:6` 为 46。
    同一文件 `Keyboard/Views/CandidateBar/CandidateButtonFactory.swift:89` 的注释写高亮 contentInsets 为 6，
    实际 `Keyboard/Views/CandidateBar/CandidateButtonFactory.swift:110` 为左右各 8；仅记录，不改源码。
    全仓 Swift 引用检索只有 factory 定义与测试注释，未发现生产调用；“完全死代码”不作运行时结论。
@@ -259,7 +271,7 @@ Required=1000、DefaultHigh=750。它是外部 SDK，非仓库文件，随 Xcode
    `KeyboardDesignTokens.swift:10` 与 `T9PinyinPathBarView.swift:612`；34 同时用于
    `KeyboardDesignTokens.swift:29` 的高度与 `KeyboardViewController.swift:374` 的遮罩圆角，语义不同。
    4pt 视觉 gap 在 `CandidateCell.swift:9` 与 `+CandidateDataSource.swift:6` 重复；15/17、28、13/18 的
-   渲染 / 测量定义也重复（表中两侧来源）。相同数字不代表共享权威或应自动联动。
+   渲染 / 测量现已共用 `CandidateFontSnapshot`；外层4pt gap仍是独立几何定义。相同数字不代表应自动联动。
 9. `docs/KEYBOARD_LAYOUT.md:81` 已写新周期 0 / Sticky34，但 `:82` 仍称空闲保留、无高度跳变；
    与 `+T9PinyinPath.swift:49–52` 的初始 0 不完全一致。同文 `:100` 起的历史 UI-1 固定 34 叙述
    不能用作当前 UI-2 行为证据。
@@ -350,4 +362,4 @@ git diff b62bde16c9b8653be58243d6ce6a6b40435a65d7 HEAD -- Keyboard/ Packages/Key
 Reviewer 按源码逐行核对，Coordinator 不以盘点材料取代源码。来源移动也应更新行号与核对基线。
 `docs/UI_STYLE_GUIDE.md` 的冻结基线是承诺的基准，本文记录当前代码实际值；两者不同须列在已知分歧，
 不得悄悄修改冻结基线。现基线冻结表的 46/0/45 与代码一致；这不抹去 ADR / 历史文档的漂移，
-也不授予改变 Product Contract 的权限。高度可调由 UI4-HEIGHT-001 单独授权；本文仅镜像已实现高度模型，不增加设置或候选字号能力。
+也不授予改变 Product Contract 的权限。高度可调由 UI4-HEIGHT-001 单独授权；字号可调由 UI3-FONT-001 授权；本文仅镜像已实现模型与设置，不扩大产品合同或验收范围。
