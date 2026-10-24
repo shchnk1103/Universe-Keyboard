@@ -295,7 +295,10 @@ Required=1000、DefaultHigh=750。它是外部 SDK，非仓库文件，随 Xcode
 
 ## Round 1 已接受限制与有界记录（P3-R3）
 
-本节记录 Human 明确处置，不改变产品规则；与外置 `reports/pm-acceptance-matrix-v2.md` 的
+本节记录 Human 明确处置，不改变产品规则；标记去重只保证最近 64 次成功消费内同一标记不重入，更早的标记可能被再次消费；
+主 App 每次进入页面或明确重开都会生成新标记，常规流程不受影响；Human 已接受该边界（确认记录
+`reports/human-confirmation-r2-f01-closeout.md`，SHA-256 `ec382ccba6f9b53102e4150f662b4a0f546d63530a0c21609970d76133973002`）。
+与外置 `reports/pm-acceptance-matrix-v3.md`（SHA-256 `f54efe17f5c6a5f4fb5c8681584cfec92658c5f36e79994b9cea05a7ba2244c5`）的
 Human 观察 / 夹具 / UNKNOWN 层级一致。上面本次修订的 Return、九键host、路径面板与数字/符号表行，
 已按本分支 P3-R3 最终源码符号和行号核对；其它历史盘点项不作无界刷新。
 
