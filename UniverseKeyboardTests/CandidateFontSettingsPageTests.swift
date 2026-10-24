@@ -1,4 +1,5 @@
 import KeyboardCore
+import SwiftUI
 import UIKit
 import XCTest
 
@@ -68,6 +69,95 @@ nonisolated final class CandidateFontSettingsPageTests: XCTestCase {
             CandidateFontSettingsCopy.footer, CandidateFontSettingsCopy.preview,
         ] {
             XCTAssertFalse(text.contains("完全访问"))
+        }
+    }
+
+    @MainActor
+    func testPreviewUsesCompactGeometryAndReversedPreferredColors() throws {
+        let preview = CandidateFontPreviewBar()
+        preview.frame = CGRect(x: 0, y: 0, width: 350, height: 46)
+        preview.layoutIfNeeded()
+        XCTAssertEqual(preview.intrinsicContentSize.height, 46)
+        XCTAssertFalse(preview.isUserInteractionEnabled)
+        let viewport = try XCTUnwrap(preview.subviews.compactMap { $0 as? UIScrollView }.first)
+        XCTAssertEqual(viewport.frame.width, 350 - 56)
+        XCTAssertFalse(viewport.isScrollEnabled)
+        XCTAssertFalse(viewport.showsHorizontalScrollIndicator)
+        let preferred = preview.sampleLabels[1]
+        let plate = try XCTUnwrap(preferred.superview)
+        XCTAssertEqual(plate.layer.cornerRadius, 8)
+        XCTAssertEqual(preferred.frame.minX, 8)
+        XCTAssertEqual(plate.bounds.width - preferred.frame.maxX, 8)
+        XCTAssertEqual(preferred.frame.minY, 4)
+        let ordinary = preview.sampleLabels[2]
+        let ordinaryPlate = try XCTUnwrap(ordinary.superview)
+        let leading = try XCTUnwrap(
+            ordinaryPlate.constraints.first {
+                $0.firstItem === ordinary && $0.firstAttribute == .leading
+            })
+        XCTAssertEqual(leading.constant, 12)
+        for style in [UIUserInterfaceStyle.light, .dark] {
+            let traits = UITraitCollection(userInterfaceStyle: style)
+            XCTAssertEqual(
+                plate.backgroundColor?.resolvedColor(with: traits), UIColor.label.resolvedColor(with: traits))
+            XCTAssertEqual(
+                preferred.textColor.resolvedColor(with: traits), UIColor.systemBackground.resolvedColor(with: traits))
+            XCTAssertNotEqual(
+                preferred.textColor.resolvedColor(with: traits), plate.backgroundColor?.resolvedColor(with: traits))
+        }
+        preview.update(tier: 22)
+        preview.layoutIfNeeded()
+        XCTAssertEqual(preview.bounds.height, 46)
+        XCTAssertEqual(preferred.font.pointSize, 22)
+    }
+
+    /// 自动化导航不可用时，承载同一生产设置页；不造替代预览或改产品入口。
+    /// 附件来自模拟器窗口内的真实SwiftUI/UIKit渲染，非真机或导航交互证据。
+    @MainActor
+    func testPreviewPageCapturesLightDarkDefaultAndLargestTier() async throws {
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let previousWindow = scene.windows.first(where: \.isKeyWindow)
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: universeAppGroupID))
+        let saved = defaults.object(forKey: CandidateFontSettings.storageKey)
+        let window = UIWindow(windowScene: scene)
+        window.frame = scene.coordinateSpace.bounds
+        window.windowLevel = .alert + 1
+        defer {
+            window.isHidden = true
+            previousWindow?.makeKey()
+            if let saved {
+                defaults.set(saved, forKey: CandidateFontSettings.storageKey)
+            } else {
+                defaults.removeObject(forKey: CandidateFontSettings.storageKey)
+            }
+        }
+        for (name, style) in [("light", UIUserInterfaceStyle.light), ("dark", .dark)] {
+            for tier in [17, 22] {
+                if tier == 17 {
+                    defaults.removeObject(forKey: CandidateFontSettings.storageKey)
+                } else {
+                    defaults.set(tier, forKey: CandidateFontSettings.storageKey)
+                }
+                let page = NavigationStack { CandidateFontSettingsView() }
+                    .environment(\.colorScheme, style == .dark ? .dark : .light)
+                let host = UIHostingController(rootView: page)
+                window.overrideUserInterfaceStyle = style
+                window.rootViewController = host
+                window.makeKeyAndVisible()
+                host.view.setNeedsLayout()
+                host.view.layoutIfNeeded()
+                // 等待SwiftUI完成一次渲染事务；不修改任何测试超时。
+                await Task.yield()
+                host.view.layoutIfNeeded()
+                let image = UIGraphicsImageRenderer(bounds: window.bounds).image { _ in
+                    window.drawHierarchy(in: window.bounds, afterScreenUpdates: true)
+                }
+                XCTAssertGreaterThan(image.size.width, 0)
+                let attachment = XCTAttachment(image: image)
+                attachment.name = "ui3-p6-preview-\(name)-tier\(tier)"
+                attachment.lifetime = .keepAlways
+                add(attachment)
+            }
         }
     }
 
