@@ -27,6 +27,7 @@ struct KeyboardLayoutSettingsView: View {
             }
 
             KeyboardHeightSettingsEntry()
+            CandidateFontSettingsEntry()
 
             // Only show the scheme picker for the layout currently selected as 主键盘.
             // Showing both slots at once misleads when 26-key is 万象 (no nine-key pack)
