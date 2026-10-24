@@ -40,6 +40,12 @@ extension KeyboardViewController {
 
         let overlay = KeyboardHeightAdjustmentOverlay()
         overlay.slider.addTarget(self, action: #selector(changeKeyboardHeightPreview(_:)), for: .valueChanged)
+        overlay.slider.addTarget(
+            self, action: #selector(endKeyboardHeightDrag), for: [.touchUpInside, .touchUpOutside])
+        overlay.slider.addTarget(self, action: #selector(cancelKeyboardHeightDrag), for: .touchCancel)
+        overlay.slider.onAccessibilityAdjustment = { [weak self] increment in
+            self?.adjustKeyboardHeightAccessibility(increment: increment)
+        }
         overlay.resetButton.addTarget(self, action: #selector(resetKeyboardHeightPreview), for: .touchUpInside)
         overlay.cancelButton.addTarget(self, action: #selector(cancelKeyboardHeightAdjustment), for: .touchUpInside)
         overlay.confirmButton.addTarget(self, action: #selector(confirmKeyboardHeightAdjustment), for: .touchUpInside)
@@ -80,9 +86,32 @@ extension KeyboardViewController {
         guard value.isFinite, var session = keyboardHeightAdjustmentSession,
             let maximum = keyboardHeightAdjustmentMaximum()
         else { return }
-        let bounded = min(Double(maximum), max(Double(KeyboardHeightSettings.minimumRowHeight), value.rounded()))
-        session.previewSettings.save(rowHeight: Int(bounded))
-        session.resetsSavedValue = false
+        session.stage(value, maximum: maximum)
+        keyboardHeightAdjustmentSession = session
+        updateKeyboardHeightPendingDisplay()
+    }
+
+    @objc func endKeyboardHeightDrag() {
+        guard var session = keyboardHeightAdjustmentSession,
+            let maximum = keyboardHeightAdjustmentMaximum(), session.endDrag(maximum: maximum)
+        else { return }
+        keyboardHeightAdjustmentSession = session
+        synchronizeKeyboardHeightLayout()
+        layoutKeyboardHeightAdjustmentOverlay()
+    }
+
+    @objc func cancelKeyboardHeightDrag() {
+        guard var session = keyboardHeightAdjustmentSession else { return }
+        session.cancelDrag()
+        keyboardHeightAdjustmentSession = session
+        updateKeyboardHeightPendingDisplay()
+    }
+
+    func adjustKeyboardHeightAccessibility(increment: Bool) {
+        guard var session = keyboardHeightAdjustmentSession,
+            let maximum = keyboardHeightAdjustmentMaximum()
+        else { return }
+        session.adjustAccessibility(increment: increment, maximum: maximum)
         keyboardHeightAdjustmentSession = session
         synchronizeKeyboardHeightLayout()
         layoutKeyboardHeightAdjustmentOverlay()
@@ -90,11 +119,16 @@ extension KeyboardViewController {
 
     @objc func resetKeyboardHeightPreview() {
         guard var session = keyboardHeightAdjustmentSession else { return }
-        session.previewSettings.reset()
-        session.resetsSavedValue = true
+        session.reset()
         keyboardHeightAdjustmentSession = session
-        synchronizeKeyboardHeightLayout()
-        layoutKeyboardHeightAdjustmentOverlay()
+        updateKeyboardHeightPendingDisplay()
+    }
+
+    private func updateKeyboardHeightPendingDisplay() {
+        guard let session = keyboardHeightAdjustmentSession,
+            let maximum = session.dragMaximum ?? keyboardHeightAdjustmentMaximum()
+        else { return }
+        keyboardHeightAdjustmentOverlay?.update(rowHeight: session.pendingRowHeight, maximum: maximum)
     }
 
     @objc func cancelKeyboardHeightAdjustment() {
@@ -104,8 +138,12 @@ extension KeyboardViewController {
 
     @objc func confirmKeyboardHeightAdjustment() {
         // 重新核对 P2 几何，不能在不可显示状态保存遗留的有效值。
-        guard isKeyboardHeightAdjusting,
-            resolveKeyboardRowHeight(pathHeight: presentedT9PinyinPathBarHeight)
+        guard var session = keyboardHeightAdjustmentSession,
+            let maximum = keyboardHeightAdjustmentMaximum()
+        else { return }
+        session.applyPending(maximum: maximum)
+        keyboardHeightAdjustmentSession = session
+        guard resolveKeyboardRowHeight(pathHeight: presentedT9PinyinPathBarHeight)
         else { return }
         finishKeyboardHeightAdjustment(.confirmed)
         dismissKeyboard()
@@ -120,7 +158,7 @@ extension KeyboardViewController {
         guard let session = keyboardHeightAdjustmentSession else { return }
         keyboardHeightAdjustmentSession = nil
         if reason == .confirmed {
-            let saved = session.resetsSavedValue ? nil : Int(keyHeight)
+            let saved = session.savedValue(effectiveRowHeight: Int(keyHeight))
             keyboardRowHeightSink(saved)
             keyboardHeightSettings = KeyboardHeightSettings(savedRowHeight: saved)
         } else {
@@ -141,8 +179,6 @@ extension KeyboardViewController {
         overlay.frame = view.bounds
         // 触区 canvas 可在布局中重建；最后提升遮罩，不能依赖初次 addSubview 顺序。
         view.bringSubviewToFront(overlay)
-        if let maximum = keyboardHeightAdjustmentMaximum() {
-            overlay.update(rowHeight: Int(keyHeight), maximum: maximum)
-        }
+        updateKeyboardHeightPendingDisplay()
     }
 }

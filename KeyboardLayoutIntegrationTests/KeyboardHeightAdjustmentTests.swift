@@ -32,7 +32,8 @@ nonisolated final class KeyboardHeightAdjustmentTests: XCTestCase {
         let marker = enter(owner)
         owner.previewKeyboardRowHeight(68)
         owner.textDidChange(nil)
-        XCTAssertEqual(owner.keyHeight, 68)
+        XCTAssertEqual(owner.keyboardHeightAdjustmentSession?.pendingRowHeight, 68)
+        XCTAssertEqual(owner.keyHeight, 45)
         owner.cancelKeyboardHeightAdjustment()
         XCTAssertEqual(owner.dismissCount, 1)
         owner.textDidChange(nil)
@@ -67,17 +68,21 @@ nonisolated final class KeyboardHeightAdjustmentTests: XCTestCase {
         owner.keyboardRowHeightSink = { writes.append($0) }
         _ = enter(owner)
         owner.previewKeyboardRowHeight(66.6)
-        XCTAssertEqual(owner.keyHeight, 67)
+        XCTAssertEqual(owner.keyboardHeightAdjustmentSession?.pendingRowHeight, 67)
+        XCTAssertEqual(owner.keyHeight, 60)
         XCTAssertEqual(owner.keyboardHeightSettings.savedRowHeight, 60)
         XCTAssertTrue(writes.isEmpty)
         owner.previewKeyboardRowHeight(10_000)
-        XCTAssertEqual(owner.keyHeight, 87)
+        XCTAssertEqual(owner.keyboardHeightAdjustmentSession?.pendingRowHeight, 87)
+        XCTAssertEqual(owner.keyHeight, 60)
         XCTAssertEqual(owner.keyboardHeightAdjustmentOverlay?.slider.value, 87)
         owner.previewKeyboardRowHeight(-100)
-        XCTAssertEqual(owner.keyHeight, 40)
+        XCTAssertEqual(owner.keyboardHeightAdjustmentSession?.pendingRowHeight, 40)
+        XCTAssertEqual(owner.keyHeight, 60)
         XCTAssertEqual(owner.keyboardHeightAdjustmentOverlay?.slider.value, 40)
         owner.previewKeyboardRowHeight(.nan)
-        XCTAssertEqual(owner.keyHeight, 40)
+        XCTAssertEqual(owner.keyboardHeightAdjustmentSession?.pendingRowHeight, 40)
+        XCTAssertEqual(owner.keyHeight, 60)
         owner.cancelKeyboardHeightAdjustment()
         XCTAssertEqual(owner.keyHeight, 60)
         XCTAssertTrue(writes.isEmpty)
@@ -123,7 +128,8 @@ nonisolated final class KeyboardHeightAdjustmentTests: XCTestCase {
         owner.keyboardRowHeightSink = { store.write($0) }
         _ = enter(owner)
         owner.resetKeyboardHeightPreview()
-        XCTAssertEqual(owner.keyHeight, CGFloat(KeyboardHeightSettings.defaultRowHeight))
+        XCTAssertEqual(owner.keyboardHeightAdjustmentSession?.pendingRowHeight, KeyboardHeightSettings.defaultRowHeight)
+        XCTAssertEqual(owner.keyHeight, 70)
         XCTAssertEqual(store.read(), 70)
         owner.cancelKeyboardHeightAdjustment()
         XCTAssertEqual(store.read(), 70)
@@ -368,6 +374,74 @@ nonisolated final class KeyboardHeightAdjustmentTests: XCTestCase {
         XCTAssertTrue(overlay.accessibilityPerformEscape())
         XCTAssertFalse(owner.isKeyboardHeightAdjusting)
         XCTAssertEqual(owner.keyHeight, 60)
+    }
+
+    @MainActor
+    func testWindowDragKeepsGeometryUntilOneEndAndCancelRestoresAppliedPreview() throws {
+        let owner = makeOwner(saved: 60)
+        let window = attach(owner)
+        defer { window.isHidden = true }
+        var writes = 0
+        owner.keyboardRowHeightSink = { _ in writes += 1 }
+        _ = enter(owner)
+        layout(owner)
+        let overlay = try XCTUnwrap(owner.keyboardHeightAdjustmentOverlay)
+        let panel = try XCTUnwrap(overlay.slider.superview)
+        let panelFrame = panel.frame
+        let sliderFrame = overlay.slider.frame
+        let request = owner.keyboardHeightConstraint?.constant
+        let rows = owner.keyboardHeightConstraints.compactMap { $0.constraint?.constant }
+        for value: Float in [65, 70, 75] {
+            overlay.slider.value = value
+            owner.changeKeyboardHeightPreview(overlay.slider)
+            owner.viewDidLayoutSubviews()
+            overlay.layoutIfNeeded()
+            XCTAssertEqual(owner.keyHeight, 60)
+            XCTAssertEqual(owner.keyboardHeightConstraint?.constant, request)
+            XCTAssertEqual(owner.keyboardHeightConstraints.compactMap { $0.constraint?.constant }, rows)
+            XCTAssertEqual(panel.frame, panelFrame)
+            XCTAssertEqual(overlay.slider.frame, sliderFrame)
+            XCTAssertEqual(overlay.slider.value, value)
+            XCTAssertEqual(overlay.valueLabel.text, "键盘行高 · \(Int(value)) 点")
+            XCTAssertEqual(writes, 0)
+        }
+        owner.endKeyboardHeightDrag()
+        layout(owner)
+        XCTAssertEqual(owner.keyHeight, 75)
+        XCTAssertNotEqual(owner.keyboardHeightConstraint?.constant, request)
+        let appliedRequest = owner.keyboardHeightConstraint?.constant
+        let appliedPanel = panel.frame
+        owner.endKeyboardHeightDrag()
+        XCTAssertEqual(owner.keyHeight, 75)
+        XCTAssertEqual(owner.keyboardHeightConstraint?.constant, appliedRequest)
+        XCTAssertEqual(panel.frame, appliedPanel)
+        XCTAssertNil(owner.keyboardHeightAdjustmentSession?.dragMaximum)
+        overlay.slider.value = 80
+        owner.changeKeyboardHeightPreview(overlay.slider)
+        owner.cancelKeyboardHeightDrag()
+        XCTAssertEqual(owner.keyHeight, 75)
+        XCTAssertEqual(overlay.slider.value, 75)
+        owner.endKeyboardHeightDrag()
+        XCTAssertEqual(owner.keyHeight, 75)
+        XCTAssertEqual(writes, 0)
+        owner.cancelKeyboardHeightAdjustment()
+        XCTAssertEqual(owner.keyHeight, 60)
+    }
+
+    @MainActor
+    func testAccessibilityAppliesFivePointStepsWithoutTouchEnd() throws {
+        let owner = makeOwner(saved: 60)
+        _ = enter(owner)
+        let slider = try XCTUnwrap(owner.keyboardHeightAdjustmentOverlay?.slider)
+        slider.accessibilityIncrement()
+        XCTAssertEqual(owner.keyHeight, 65)
+        XCTAssertEqual(slider.accessibilityValue, "65 点")
+        slider.accessibilityDecrement()
+        XCTAssertEqual(owner.keyHeight, 60)
+        XCTAssertEqual(slider.accessibilityValue, "60 点")
+        owner.endKeyboardHeightDrag()
+        XCTAssertEqual(owner.keyHeight, 60)
+        owner.finishKeyboardHeightAdjustment(.cancelled)
     }
 
     @MainActor

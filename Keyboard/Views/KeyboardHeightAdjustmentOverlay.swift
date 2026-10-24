@@ -2,8 +2,15 @@ import KeyboardCore
 import UIKit
 
 /// 覆盖整个输入面，空白处也截获触摸；控件与按键扩大触区没有共享命中路径。
+final class KeyboardHeightAdjustmentSlider: UISlider {
+    var onAccessibilityAdjustment: ((Bool) -> Void)?
+
+    override func accessibilityIncrement() { onAccessibilityAdjustment?(true) }
+    override func accessibilityDecrement() { onAccessibilityAdjustment?(false) }
+}
+
 final class KeyboardHeightAdjustmentOverlay: UIView {
-    let slider = UISlider()
+    let slider = KeyboardHeightAdjustmentSlider()
     let valueLabel = UILabel()
     let resetButton = UIButton(type: .system)
     let cancelButton = UIButton(type: .system)

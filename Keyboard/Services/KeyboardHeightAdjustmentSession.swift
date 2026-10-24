@@ -47,12 +47,77 @@ struct KeyboardHeightAdjustmentTokenStore {
     }
 }
 
+/// 控件中立的事务：拖动只改 pending，结束才推进已应用预览；确定才产生保存意图。
 struct KeyboardHeightAdjustmentSession {
+    static let accessibilityStep = 5
     let token: UUID
     let documentIdentifier: UUID
     let originalSettings: KeyboardHeightSettings
-    var previewSettings: KeyboardHeightSettings
-    var resetsSavedValue = false
+    private(set) var previewSettings: KeyboardHeightSettings
+    private(set) var pendingRowHeight: Int
+    private(set) var resetsSavedValue = false
+    private var appliedResetsSavedValue = false
+    private(set) var dragMaximum: Int?
+
+    init(
+        token: UUID, documentIdentifier: UUID, originalSettings: KeyboardHeightSettings,
+        previewSettings: KeyboardHeightSettings
+    ) {
+        self.token = token
+        self.documentIdentifier = documentIdentifier
+        self.originalSettings = originalSettings
+        self.previewSettings = previewSettings
+        pendingRowHeight = previewSettings.savedRowHeight ?? KeyboardHeightSettings.defaultRowHeight
+    }
+
+    mutating func stage(_ value: Double, maximum: Int) {
+        guard value.isFinite else { return }
+        if dragMaximum == nil { dragMaximum = maximum }
+        pendingRowHeight = bounded(value, maximum: dragMaximum ?? maximum)
+        resetsSavedValue = false
+    }
+
+    mutating func reset() {
+        pendingRowHeight = KeyboardHeightSettings.defaultRowHeight
+        resetsSavedValue = true
+        dragMaximum = nil
+    }
+
+    /// 两种 touchUp 共用同一事务；消费后再次结束不会重排。
+    mutating func endDrag(maximum: Int) -> Bool {
+        guard dragMaximum != nil else { return false }
+        applyPending(maximum: maximum)
+        return true
+    }
+
+    mutating func cancelDrag() {
+        pendingRowHeight = previewSettings.savedRowHeight ?? KeyboardHeightSettings.defaultRowHeight
+        resetsSavedValue = appliedResetsSavedValue
+        dragMaximum = nil
+    }
+
+    mutating func adjustAccessibility(increment: Bool, maximum: Int) {
+        pendingRowHeight = bounded(
+            Double(pendingRowHeight + (increment ? Self.accessibilityStep : -Self.accessibilityStep)),
+            maximum: maximum)
+        resetsSavedValue = false
+        applyPending(maximum: maximum)
+    }
+
+    mutating func applyPending(maximum: Int) {
+        pendingRowHeight = bounded(Double(pendingRowHeight), maximum: maximum)
+        previewSettings.save(rowHeight: pendingRowHeight)
+        appliedResetsSavedValue = resetsSavedValue
+        dragMaximum = nil
+    }
+
+    func savedValue(effectiveRowHeight: Int) -> Int? {
+        resetsSavedValue ? nil : effectiveRowHeight
+    }
+
+    private func bounded(_ value: Double, maximum: Int) -> Int {
+        Int(min(Double(maximum), max(Double(KeyboardHeightSettings.minimumRowHeight), value.rounded())))
+    }
 }
 
 enum KeyboardHeightAdjustmentExit: String {
