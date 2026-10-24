@@ -30,6 +30,10 @@ Nine-key depends on fog-song / rime-ice T9 resources. If those resources are mis
 主 App 写 App Group 的 `keyboard_candidate_font_size`，选17删键；键盘在下次呈现前采用，不在热输入路径读设置。
 关闭完全访问时的端到端采用仍为UNKNOWN，页面不作权限能力承诺。UI-4的私有高度存储、旋转租约与几何不变。
 
+补充证据（UI3-FONT-001 P7，保留上文 P4 交付时的证据边界）：设置页预览已按 Human 要求改为“拼音一行、候选一行”的示意样式（P6 修订1b，`0db9b27`）；真实候选条的拼音仍是同一条内的一个项，不采用该两行结构。
+2026-10-24 的 Human 真机验收记录：iPhone 13 Pro、iOS 27.0.1、被测提交 `b0e0361`，Human 报告清单全部通过，完全访问关与开表现无区别；这是 **Human 观察，不是测量**，Debug/Release 构建类型仍未知，不构成所有环境下的能力保证。
+后续两次预览提交 `eae739e`、`0db9b27` 未经真机验收；上述观察不覆盖它们，也不代表完整 CI、merge 或 Release 通过。
+
 ## Runtime Rules
 
 1. Layout preference and base scheme are separate settings.

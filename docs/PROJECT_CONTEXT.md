@@ -173,6 +173,10 @@ The keyboard uses a **dual-path** design in `KeyboardController`:
 键盘 `prepareCandidateFontForAppearance` 在首次构造/每次呈现前幂等读取并冻结快照，同一呈现周期不重读；消失后下一次呈现才采用新值。主 App不读取扩展私有域、不探测权限。默认17/15分别动态缩放、各封顶28；其它档固定n/n−2。
 `Keyboard/Views/CandidateBar/CandidateFontSnapshot.swift` 同时编入主 App与Keyboard，供预览、渲染、测量共用。完全访问关闭时主 App写→键盘采用是否生效仍为UNKNOWN；模拟器测试不构成这一跨进程真机能力的证明。
 
+补充证据（UI3-FONT-001 P7，保留上文 P4 交付时的证据边界）：设置页预览已按 Human 要求改为“拼音一行、候选一行”的示意样式（P6 修订1b，`0db9b27`）；真实候选条的拼音仍是同一条内的一个项，不采用该两行结构。
+2026-10-24 的 Human 真机验收记录：iPhone 13 Pro、iOS 27.0.1、被测提交 `b0e0361`，Human 报告清单全部通过，完全访问关与开表现无区别；这是 **Human 观察，不是测量**，Debug/Release 构建类型仍未知，不构成所有环境下的能力保证。
+后续两次预览提交 `eae739e`、`0db9b27` 未经真机验收；上述观察不覆盖它们，也不代表完整 CI、merge 或 Release 通过。
+
 ### KeyboardCore (pure logic, testable)
 
 A local Swift Package at `Packages/KeyboardCore/`. Contains:
