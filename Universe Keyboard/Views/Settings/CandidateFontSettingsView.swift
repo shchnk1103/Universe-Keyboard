@@ -17,7 +17,11 @@ struct CandidateFontSettingsEntry: View {
 }
 
 struct CandidateFontSettingsView: View {
-    @State private var model = CandidateFontSettingsPageModel()
+    @State private var model: CandidateFontSettingsPageModel
+
+    init(model: CandidateFontSettingsPageModel = CandidateFontSettingsPageModel()) {
+        _model = State(initialValue: model)
+    }
 
     var body: some View {
         Form {
@@ -37,7 +41,7 @@ struct CandidateFontSettingsView: View {
                 }
                 Slider(
                     value: Binding(get: { Double(model.tier) }, set: { model.select(Int($0)) }),
-                    in: 13...22, step: 1
+                    in: CandidateFontSettingsPageModel.sliderRange, step: CandidateFontSettingsPageModel.sliderStep
                 ) {
                     Text(CandidateFontSettingsCopy.title)
                 } minimumValueLabel: {

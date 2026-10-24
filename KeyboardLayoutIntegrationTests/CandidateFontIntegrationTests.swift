@@ -85,6 +85,53 @@ nonisolated final class CandidateFontIntegrationTests: XCTestCase {
         }
     }
 
+    /// 普通条保留自然宽度并横向滚动；展开条才走生产 maxWidth 夹取。
+    /// 两种 cell 都在有限显示宽度下验证单行尾截断，不把字体正确当作截断已验证。
+    @MainActor
+    func testLongCandidatesAt22AndControlTiersUseBoundedExpandedWidthAndTailTruncation() throws {
+        for tier in [13, 17, 22] {
+            let owner = makeOwner()
+            owner.candidateFontSnapshot = CandidateFontSnapshot(
+                settings: CandidateFontSettings(savedValue: tier),
+                traits: UITraitCollection(preferredContentSizeCategory: .large))
+            let item = CandidateItem(title: String(repeating: "这是用于受限宽度尾部截断的很长候选", count: 12), kind: .candidate)
+            owner.accumulatedCandidates = [item]
+            let panel = owner.makeExpandedCandidatePanel()
+            panel.frame = CGRect(x: 0, y: 46, width: 240, height: 208)
+            owner.view.addSubview(panel)
+            panel.layoutIfNeeded()
+            let compact = try XCTUnwrap(owner.candidateCollectionView)
+            let expanded = try XCTUnwrap(owner.expandedCandidateCollectionView)
+            // 固定有限 collection 宽度，直接调用生产 delegate 的测量及缓存路径。
+            expanded.frame.size.width = 240
+            let path = IndexPath(item: 0, section: 0)
+            let bounded = owner.collectionView(expanded, layout: expanded.collectionViewLayout, sizeForItemAt: path)
+            let maximum = max(44, expanded.bounds.width - 16)
+            XCTAssertEqual(bounded.width, maximum)
+            XCTAssertLessThanOrEqual(bounded.width, maximum)
+            XCTAssertEqual(bounded.height, 42)
+            let natural = owner.collectionView(compact, layout: compact.collectionViewLayout, sizeForItemAt: path)
+            XCTAssertGreaterThan(natural.width, maximum)
+            XCTAssertEqual(natural.height, 46)
+            for isExpanded in [false, true] {
+                let height: CGFloat = isExpanded ? 42 : 46
+                let cell = CandidateCollectionCell(frame: CGRect(x: 0, y: 0, width: bounded.width, height: height))
+                cell.configure(
+                    with: item, preferred: true, expanded: isExpanded, fontSnapshot: owner.candidateFontSnapshot)
+                cell.layoutIfNeeded()
+                let label = try XCTUnwrap(labels(in: cell).first { $0.text == item.title })
+                XCTAssertEqual(label.font, owner.candidateFontSnapshot.titleFont(kind: .candidate, preferred: true))
+                XCTAssertEqual(label.numberOfLines, 1)
+                XCTAssertEqual(label.lineBreakMode, .byTruncatingTail)
+                XCTAssertEqual(cell.bounds.height, height)
+                XCTAssertGreaterThan(label.bounds.width, 0)
+                XCTAssertLessThanOrEqual(label.bounds.width, maximum)
+                XCTAssertGreaterThan(
+                    (item.title as NSString).size(withAttributes: [.font: label.font!]).width, label.bounds.width)
+            }
+        }
+    }
+
     @MainActor
     func testAppearanceAdoptsNewTierBeforeDisplayAndInvalidatesBothCaches() throws {
         let owner = makeOwner()

@@ -41,6 +41,62 @@ nonisolated final class CandidateFontSettingsPageTests: XCTestCase {
     }
 
     @MainActor
+    func testProductionSliderBindsTenIntegerTiersAndDefaultTick() async throws {
+        let store = CandidateFontDefaultsSpy()
+        let model = CandidateFontSettingsPageModel(defaults: store)
+        XCTAssertEqual(CandidateFontSettingsPageModel.sliderRange, 13...22)
+        XCTAssertEqual(CandidateFontSettingsPageModel.sliderStep, 1)
+        let page = CandidateFontSettingsView(model: model)
+        // 检查实际 body 中 ForEach 的数据，不在测试里另造刻度视图。
+        func tickData(_ value: Any, depth: Int = 0) -> [[Int]] {
+            guard depth < 25 else { return [] }
+            let mirror = Mirror(reflecting: value)
+            var result: [[Int]] = []
+            if String(describing: mirror.subjectType).hasPrefix("ForEach<"),
+                let data = mirror.children.first(where: { $0.label == "data" })?.value as? [Int]
+            {
+                result.append(data)
+            }
+            for child in mirror.children { result += tickData(child.value, depth: depth + 1) }
+            return result
+        }
+        let marks = try XCTUnwrap(tickData(page.body).first)
+        XCTAssertEqual(marks, Array(13...22))
+        XCTAssertEqual(marks.count, 10)
+        XCTAssertEqual(marks.firstIndex(of: 17), 4)
+        XCTAssertEqual(marks.first, Int(CandidateFontSettingsPageModel.sliderRange.lowerBound))
+        XCTAssertEqual(marks.last, Int(CandidateFontSettingsPageModel.sliderRange.upperBound))
+        let scene = try XCTUnwrap(UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first)
+        let previous = scene.windows.first(where: \.isKeyWindow)
+        let window = UIWindow(windowScene: scene)
+        let host = UIHostingController(rootView: page)
+        window.rootViewController = host
+        window.makeKeyAndVisible()
+        defer { window.isHidden = true; previous?.makeKey() }
+        await Task.yield()
+        host.view.layoutIfNeeded()
+        func sliders(_ view: UIView) -> [UISlider] {
+            (view as? UISlider).map { [$0] } ?? view.subviews.flatMap { sliders($0) }
+        }
+        let slider = try XCTUnwrap(sliders(host.view).first)
+        // SwiftUI 的原生控件可能归一化为0...1；验证生产 Binding 的所有离散位置。
+        for (index, tier) in marks.enumerated() {
+            let fraction = Float(index) / Float(marks.count - 1)
+            slider.setValue(
+                slider.minimumValue + fraction * (slider.maximumValue - slider.minimumValue), animated: false)
+            slider.sendActions(for: .valueChanged)
+            await Task.yield()
+            XCTAssertEqual(model.tier, tier)
+            if tier == 17 { XCTAssertNil(store.value) } else { XCTAssertEqual(store.value as? Int, tier) }
+        }
+        model.select(17)
+        await Task.yield()
+        host.view.layoutIfNeeded()
+        let defaultFraction = (slider.value - slider.minimumValue) / (slider.maximumValue - slider.minimumValue)
+        XCTAssertEqual(defaultFraction, Float(4) / 9)
+    }
+
+    @MainActor
     func testInitialValueUsesCoreValidationAndOnlyInjectedSharedStore() {
         for raw: Any? in [nil, true, false, 3.5, 17.0, "22", 12, 23, NSNull()] {
             let store = CandidateFontDefaultsSpy()

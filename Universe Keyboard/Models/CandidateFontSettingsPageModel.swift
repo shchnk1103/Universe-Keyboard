@@ -6,6 +6,8 @@ import Observation
 @Observable
 final class CandidateFontSettingsPageModel {
     static let tiers = 13...22
+    static let sliderRange = Double(tiers.lowerBound)...Double(tiers.upperBound)
+    static let sliderStep = 1.0
     private(set) var tier: Int
     private let defaults: UserDefaults?
 
