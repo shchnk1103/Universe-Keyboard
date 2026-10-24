@@ -145,6 +145,15 @@ Required=1000、DefaultHigh=750。它是外部 SDK，非仓库文件，随 Xcode
 
 ### 共享存储与布局设置
 
+UI3-FONT-001 P2 登记：`keyboard_candidate_font_size`（`CandidateFontSettings.storageKey`）在
+App Group 保存整数档位13–22；17、缺省/删除、非法类型或越界均解析为默认动态档。
+主 App 写入入口留待P3；键盘通过 `KeyboardViewController+CandidateFont.swift` 的
+`prepareCandidateFontForAppearance` 在首次构造前及每次出现前幂等读取并冻结快照，消失后才允许重读。
+`CandidateCell.swift` 的 `CandidateFontSnapshot` 是唯一 UIKit 字体物化入口，渲染与
+`KeyboardViewController+CandidateDataSource.swift` 的测量使用同一快照/trait；默认分别缩放17/15、
+各封顶28，固定其它档为n/n−2且不缩放。更新快照同时清除尺寸缓存并失效普通/展开布局。
+完全访问关闭时主 App 写→键盘采用仍为UNKNOWN；读取失败回默认，不是已证明的跨进程采用。
+
 | 名称（符号） | 值 | 来源（基线） | 使用处 / 说明 |
 |---|---|---|---|
 | KeyboardViewController.appGroupID / sharedDefaults | group.com.DoubleShy0N.Universe-Keyboard | `Keyboard/Controllers/KeyboardViewController.swift:344`；`Keyboard/Controllers/KeyboardViewController.swift:345` | UserDefaults(suiteName:)；不证明无 Full Access 时可读 |

@@ -6,6 +6,7 @@ extension KeyboardViewController {
     /// Configures only lightweight session work required before the keyboard can accept input.
     func bootstrapKeyboard() {
         let startupTime = CACurrentMediaTime()
+        prepareCandidateFontForAppearance()
 
         // Request a compact keyboard height while keeping the system-provided outer container.
         view.isOpaque = false

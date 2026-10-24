@@ -16,6 +16,8 @@ struct CandidateCellSizeCacheKey: Hashable {
     let kindRawValue: Int
     let title: String
     let correctionHint: String?
+    let fontTier: Int
+    let contentSizeCategory: String
 }
 
 extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -60,7 +62,9 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
         let items = presentedCandidates
         guard items.indices.contains(indexPath.item) else { return cell }
         let item = items[indexPath.item]
-        cell.configure(with: item, preferred: isPreferredCandidate(item, at: indexPath.item), expanded: isExpanded)
+        cell.configure(
+            with: item, preferred: isPreferredCandidate(item, at: indexPath.item), expanded: isExpanded,
+            fontSnapshot: candidateFontSnapshot)
         return cell
     }
 
@@ -183,26 +187,20 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
             collectionWidth: Int(collectionView.bounds.width),
             kindRawValue: item.kind.rawValue,
             title: title,
-            correctionHint: correctionHint
+            correctionHint: correctionHint,
+            fontTier: candidateFontSnapshot.settings.tier,
+            contentSizeCategory: candidateFontSnapshot.traits.preferredContentSizeCategory.rawValue
         )
         if let cachedSize = candidateCellSizeCache[cacheKey] {
             return cachedSize
         }
 
-        let fontSize: CGFloat = item.kind == .composition ? 15 : 17
-        let weight: UIFont.Weight = preferred ? .semibold : .regular
-        let font = UIFontMetrics(forTextStyle: .body).scaledFont(
-            for: .systemFont(ofSize: fontSize, weight: weight),
-            maximumPointSize: 28
-        )
+        let font = candidateFontSnapshot.titleFont(kind: item.kind, preferred: preferred)
         let titleInsets: CGFloat = preferred ? 16 : 24
         let titleWidth = ceil((title as NSString).size(withAttributes: [.font: font]).width + titleInsets)
         let hintWidth: CGFloat
         if let correctionHint {
-            let hintFont = UIFontMetrics(forTextStyle: .caption1).scaledFont(
-                for: .systemFont(ofSize: 13, weight: .semibold),
-                maximumPointSize: 18
-            )
+            let hintFont = candidateFontSnapshot.correctionHintFont
             hintWidth =
                 CandidateSizing.correctionHintSpacing
                 + ceil((correctionHint as NSString).size(withAttributes: [.font: hintFont]).width)
