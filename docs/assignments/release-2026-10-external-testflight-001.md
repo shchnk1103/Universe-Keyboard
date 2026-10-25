@@ -17,7 +17,7 @@ record_id: RELEASE-2026-10-EXTERNAL-TESTFLIGHT-001
 
 - **Assignment Authority：** Product Lead。
 
-- **Decision Source / Date：** Human Product Owner 2026-10-24（方案 B，见 `docs/PORTFOLIO.md` 决定记录与 PF-031）与 2026-10-25（版本与设备确认）；本记录由 RELEASE-ASSIGNMENT-LANDING-001 入库。
+- **Decision Source / Date：** Human Product Owner 2026-10-24 与 2026-10-25（均为 Asia/Shanghai；2026-10-24 方案 B，见 `docs/PORTFOLIO.md` 决定记录与 PF-031；2026-10-25 版本与设备确认）；本记录由 RELEASE-ASSIGNMENT-LANDING-001 入库。
 
 - **Product Approver：** Human Product Owner。
 
