@@ -2,7 +2,7 @@
 
 本文是指针与讨论背景，**不是状态权威**。它不是 Release 授权、Product Decision 或 Assignment。“是否仍适用”一列只记录仓库没有给出下一次范围时的缺口，不把历史条款改写成已经适用于下一次发布。
 
-目录状态：`Blocked`。Human 打算在 UI-4 完成之后发布；无日期，无候选构建。这是意向，不是授权。
+本页原为 PF-010 的详情页；2026-10-25 起由 PF-031 承接，门禁的处理见 [发布准备 Assignment](../assignments/release-2026-10-external-testflight-001.md)（S2–S4、S7）；不表示任何门禁已通过。
 
 ## 门禁
 
@@ -14,8 +14,8 @@
 | TD-005 崩溃 / jetsam / 符号化手册 | 同文件第 74 行 | 更广的外部 TestFlight 在保留确切 archive/dSYM 并走过采集流程之前，默认 Blocker | 同上 |
 | TD-002 活动 Extension 的用户词典访问 | 同文件第 75 行 | 外部测试包含键盘可能在写时的恢复/重置，或声称并发安全时，默认 Blocker | 同上 |
 | 未说明的遗漏 | 同文件第 77 行 | 说不清的遗漏既不是范围跳过也不是接受风险，会阻塞 TestFlight | 同上 |
-| 真实 RIME T9 恢复集成 | [AUTH-INPUT-RELIABILITY-DELIVERY-003-PRODUCT-PR](../authorizations/AUTH-INPUT-RELIABILITY-DELIVERY-003-PRODUCT-PR.md) 第 10 行；[独立评审回执](../evidence/input-reliability-delivery-003/independent-review-received.md) 第 12–15 行 | 必须在 TestFlight 之前处置；[delivery-003](../assignments/input-reliability-delivery-003.md) 第 76 行写是否已处置为 UNKNOWN | 该授权记录仍在；是否已经处置：UNKNOWN。本列不改成“已完成” |
-| 激活后 Extension 的真实系统交互 | 同上 | 同上 | 同上 |
+| 真实 RIME T9 恢复集成 | [AUTH-INPUT-RELIABILITY-DELIVERY-003-PRODUCT-PR](../authorizations/AUTH-INPUT-RELIABILITY-DELIVERY-003-PRODUCT-PR.md) 第 10 行；[独立评审回执](../evidence/input-reliability-delivery-003/independent-review-received.md) 第 12–15 行 | 必须在 TestFlight 之前处置；[delivery-003](../assignments/input-reliability-delivery-003.md) 第 76 行写是否已处置为 UNKNOWN | 该授权记录仍在；是否已经处置：UNKNOWN。本列不改成“已完成”  适用于本次外部候选（#213–#215 在 Build 132 之后合并）；Human 2026-10-25 决定补证据，见 [S7](../assignments/release-2026-10-external-testflight-001.md#boundary)。 |
+| 激活后 Extension 的真实系统交互 | 同上 | 同上 | 同上  适用于本次外部候选（#213–#215 在 Build 132 之后合并）；Human 2026-10-25 决定补证据，见 [S7](../assignments/release-2026-10-external-testflight-001.md#boundary)。 |
 | 上传、预检、分组、Beta Review 分开授权 | [发布清单](../RELEASE_CHECKLIST.md) 第 79 行起 | 上传不等于分配测试者或提交 Beta Review；重新构建即新候选身份 | 条文仍在；下一次是否走这条路径：未决定 |
 | 历史 Release 决定 | 发布清单与 2026-08-01 / Build 55 / Build 94 的历史决定（见 `docs/assignments/release-2026-08-01.md` 一带；本任务未逐份重读） | 它们是否仍约束下一次：UNKNOWN | UNKNOWN，不在本任务里判定 |
 

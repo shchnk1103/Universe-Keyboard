@@ -5,7 +5,7 @@ record_id: RELEASE-2026-10-EXTERNAL-TESTFLIGHT-001
 
 ## Current Status
 
-- **Lifecycle：`Active`**（S1 已于 2026-10-25 在 Human 授权下开工并完成；S1、S3 的 Ready/Active 依据各自任务包与 Human 授权消息，见 Exit evidence）。Current phase：S1 预演完成，S3 只读演练完成，S2 待 Human 定 TD-003 数值标准，S3 真机报告采集与分类待做，S5 测试者说明待定稿，S6 版本 1.0 / 构建号由 Xcode Cloud 编排 / 候选来源提交待定。
+- **Lifecycle：`Active`**（S1 已于 2026-10-25 在 Human 授权下开工并完成；S1、S3 的 Ready/Active 依据各自任务包与 Human 授权消息，见 Exit evidence）。Current phase：S1 预演完成，S3 只读演练完成，S2 待 Human 定 TD-003 数值标准，S3 真机报告采集与分类待做，S5 测试者说明待定稿，S6 版本 1.0 / 构建号由 Xcode Cloud 编排 / 候选来源提交待定；S7 待定义证据方案。
 
 - **Material non-claims：** 本记录不是 TestFlight 或 Release 许可，也不是 Product Gate；未发生采集、归档或上传；Assigned，不计入 Ready/Active。
 
@@ -23,7 +23,7 @@ record_id: RELEASE-2026-10-EXTERNAL-TESTFLIGHT-001
 
 ## Boundary
 
-- **Scope：** S1 Mac 侧预演（环境事实、构建配置事实、本地 Release 归档演练、`scripts/release/release_evidence.py plan`，**不导出、不上传**；对应外置 `PF031-PREP-001` 任务包）；S2 TD-003 性能基线在 iPhone 13 Pro（iOS 27.0.1）、macOS 27.0、Xcode 27.1 上重新采集（数值验收标准由 Human 先定，`docs/PERFORMANCE_BASELINE.md` 目前没有数值标准）；S3 TD-005：保留确切 archive/dSYM、UUID 对应、Archive 与导出包构建号对齐（历史上 1 对 55/94 未闭合）、走一遍采集与分类流程；S4 TD-004 与 TD-002 的分类由 Human 逐项批准（条件以 `docs/RELEASE_CHECKLIST.md` 为准）；S5 面向测试者的说明草稿（外置 GROK-BOT-TRIAL-017 产出）经 Human 批准后才能使用；S6 候选构建的身份记录（版本号、构建号、来源提交由 Human 决定后写入）。
+- **Scope：** S1 Mac 侧预演（环境事实、构建配置事实、本地 Release 归档演练、`scripts/release/release_evidence.py plan`，**不导出、不上传**；对应外置 `PF031-PREP-001` 任务包）；S2 TD-003 性能基线在 iPhone 13 Pro（iOS 27.0.1）、macOS 27.0、Xcode 27.1 上重新采集（数值验收标准由 Human 先定，`docs/PERFORMANCE_BASELINE.md` 目前没有数值标准）；S3 TD-005：保留确切 archive/dSYM、UUID 对应、Archive 与导出包构建号对齐（历史上 1 对 55/94 未闭合）、走一遍采集与分类流程；S4 TD-004 与 TD-002 的分类由 Human 逐项批准（条件以 `docs/RELEASE_CHECKLIST.md` 为准）；S5 面向测试者的说明草稿（外置 GROK-BOT-TRIAL-017 产出）经 Human 批准后才能使用；S6 候选构建的身份记录（版本号、构建号、来源提交由 Human 决定后写入）；S7 输入可靠性 003 发布门禁：真实 RIME T9 恢复集成与激活后 Extension 的真实系统交互，依据 [AUTH-INPUT-RELIABILITY-DELIVERY-003-PRODUCT-PR](../authorizations/AUTH-INPUT-RELIABILITY-DELIVERY-003-PRODUCT-PR.md#L10) 第 10 行短引“TestFlight”；上述两项须在 TestFlight 之前处理；Quality Partial 仍为 Partial。PR #213（`bb430f914deaf7b19a61183f744b5dcf2fdb8eae`）、#214（`d08175b915aee40998398d7fdc03f2fd7cf0833f`）、#215（`096183ca118cc40ffc16854d1a5336a42cfcbd89`）均在 Build 132 来源提交 `59272331b3627856c1c4480b0b5d7ad0ddade0ad` 之后合并，已包含于本次候选基线（逐项 `git merge-base --is-ancestor` 核验，见本次 R1 外置报告）。Human 2026-10-25（Asia/Shanghai，对话）决定以补证据的方式处理，不是有边界接受；真实 RIME T9 恢复集成的验证方法、激活后 Extension 真实系统交互的检查项及所用设备 iPhone 13 Pro，待后续任务包定义并由 Human 授权。
 
 - **Non-goals：** 上传 TestFlight、创建或修改外部测试组、Beta App Review、出口合规、App Store Connect 上的任何动作（**各自须 Human 另行授权**，见 `docs/RELEASE_CHECKLIST.md` 第 79 行起）；决定版本号/构建号；发布自动化的实现（见 PF-036，另立）；PF-029；任何产品代码改动；本记录不是 TestFlight 或 Release 许可，也不是 Product Gate。
 
@@ -52,7 +52,7 @@ record_id: RELEASE-2026-10-EXTERNAL-TESTFLIGHT-001
 
 - **Quality Reviewer：** 独立 Quality Reviewer，在采集结果与归档证据阶段派发，非 Executor 会话。
 
-- **Human 确认状态：** 方案 B 已确认（2026-10-24）；版本与设备已确认（2026-10-25，见上）；开工授权按阶段由 Human 另行给出；TD-004 / TD-002 分类、数值验收标准、版本号、上传：**待 Human**。
+- **Human 确认状态：** 方案 B 已确认（2026-10-24）；版本与设备已确认（2026-10-25，见上）；开工授权按阶段由 Human 另行给出；TD-004 / TD-002 分类、数值验收标准、版本号、上传：**待 Human**。 Human 2026-10-25（Asia/Shanghai，对话）决定 S7 以补证据处理，不是有边界接受；具体证据方案（真实 RIME T9 恢复集成验证方法、激活后 Extension 真实系统交互检查项、所用设备 iPhone 13 Pro）待后续任务包定义并由 Human 授权。
 
 Human 2026-10-25（Asia/Shanghai，对话；本次登记依据外置 RELEASE-PREP-RECORD-001 任务包 F3 与 Human 授权）：① TD-004 与 TD-002 沿用 Build 55/94 的做法：TD-004 走“有范围的跳过”（构建限定于被明确要求开启完全访问的测试者，不对降级行为作任何声称），TD-002 走“范围约束”（恢复/重置须在键盘关闭时手动进行并向测试者说明，不声称并发安全），条件以 `docs/RELEASE_CHECKLIST.md` 为准；② 营销版本暂定 1.0（Human：App 仍处于测试阶段）；③ 测试组沿用 Build 132 的同一个外部测试组；④ Build 94、132 等构建号是 Xcode Cloud 按构建顺序自动编排的（Human 澄清）；⑤ 测试者说明的范围以 UI-4 与 UI-3 为主。
 
@@ -66,12 +66,13 @@ Human 2026-10-25（Asia/Shanghai，对话；本次登记依据外置 RELEASE-PRE
 | R4 | 采集用合成输入且环境记录完整 |
 | R5 | Human 观察不升级为测量 |
 | R6 | 无任何上传或 App Store Connect 动作发生 |
+| R7 | S7 的门禁原文与适用性记录属实，未写成已处理 |
 
 ## Gates
 
-- **Entry Criteria：** 本记录合并进 main；Human 对版本/设备的确认（已在本记录写明）；S1 另需 Human 的任务包授权；S2 需 Human 先定数值验收标准；S3 需 S1 的归档演练无阻断；任何上传相关动作需要独立授权。
+- **Entry Criteria：** 本记录合并进 main；Human 对版本/设备的确认（已在本记录写明）；S1 另需 Human 的任务包授权；S2 需 Human 先定数值验收标准；S3 需 S1 的归档演练无阻断；任何上传相关动作需要独立授权。 S7 需 Human 授权证据方案的任务包。
 
-- **Exit Criteria：** S1–S6 各自有外置报告与 Quality Reviewer 结论，或被 Human 以“范围约束”批准跳过（TD-004/TD-002）；候选构建身份已由 Human 写定；**之后**是否上传、外部组与 Beta Review 另行决定。
+- **Exit Criteria：** S1–S7 各自有外置报告与 Quality Reviewer 结论，或被 Human 以“范围约束”批准跳过（TD-004/TD-002）；候选构建身份已由 Human 写定；**之后**是否上传、外部组与 Beta Review 另行决定。
 
 - **Stop Conditions：** 任何需要联网写入的 Apple 侧动作、需要创建/修改证书或配置文件、需要改版本号/构建号而无 Human 决定、Archive 与二进制 UUID 对不上、设备不可用、证据缺失而 Human 未批准范围跳过。
 
@@ -101,6 +102,7 @@ Human 从 Xcode Cloud 下载的 Build 132 产物：归档内 App 与 Keyboard �
 | S4 TD-004 / TD-002 分类 | （执行时填） |
 | S5 测试者说明 | （执行时填） |
 | S6 候选构建身份 | （执行时填） |
+| S7 输入可靠性 003 发布门禁 | （执行时填） |
 | 独立 Quality Reviewer 结论 | （执行时填） |
 
 ## Closeout Decision
