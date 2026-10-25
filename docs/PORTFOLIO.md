@@ -47,7 +47,7 @@
 | PF-034 | P2 | 既有测试在并行负载下的间歇失败线索（诊断日志入口测试） | Backlog | UI3-FONT-001 P1+P2 报告：`DiagnosticsJournalIngressTests` 的两项在与 Xcode 任务并行时失败（3 条断言），串行重跑通过，根因 UNKNOWN；需诊断领域负责人评估；不属于 UI-3 | 外置报告 `UI3-FONT-001/reports/executor-report-p1-p2.md`（本机，不入库） | 2026-10-24 |
 | PF-035 | 未定 | KOS 优化：ACTIVE_WORK 是否仍有存在价值、或并入目录 | Backlog | Human 提出，未讨论、未决定；015 快照 `27e2b6c`：无仓库脚本/CI 直接读取或校验 ACTIVE_WORK，40 文件 / 69 处 Markdown 链接指向它，7 条相关规则、6 行活动表且有历史叙述与镜像差异；外部工具是否读取 UNKNOWN；不是独立复核 | `~/.kos-work/Universe-Keyboard/GROK-BOT-TRIAL-015/reports/active-work-impact.md`（SHA-256 `45da4f55dfbb75b6384d7d787bf26fa0a6caf9799ae106183dbc03512302b1ef`）；`~/.kos-work/Universe-Keyboard/PORTFOLIO-REFRESH-005/content/backlog-notes.md`（SHA-256 `bbf9c298e4b728a5123a74ba3119d5f82c3c8983d90aa3163bb0925bc9a81371`） A 节 | 2026-10-25 |
 
-| PF-036 | P2 | 发布自动化：构建与上传到 TestFlight 的自动化 | Backlog | Human 2026-10-25 提出希望之后做成自动上传流程，描述过去为“在 Xcode Cloud 页面把构建好的包下载下来，再上传 TestFlight”；Build 94 Assignment 则记录“Codex 经 Transporter 与 App Store Connect”，两个来源不完全一致，UNKNOWN 待 Human 澄清；未立项、无方案；不得绕过上传 / 外部分组 / Beta Review 各自独立授权的闸（docs/RELEASE_CHECKLIST.md） | [Build 94 Assignment](assignments/release-2026-09-25-build94-external-testflight.md) · [Build 94 决定](product-decisions/RELEASE-2026-09-25-BUILD94-public-beta-decision.md) · [本次决定](#决定记录) | 2026-10-25 |
+| PF-036 | P2 | 发布自动化：构建与上传到 TestFlight 的自动化 | Backlog | Human 2026-10-25 提出希望之后做成自动上传流程，并澄清当前流程：Xcode Cloud 的 Archive Pilot (No Distribution) 无分发工作流构建 → Human 在页面下载构建产物 → 经 Mac 本地 Transporter 上传到 TestFlight；Build 94 由 Codex 经 Transporter 上传，之后又上传过 Build 132；Build 132 的上传执行者与回执：UNKNOWN（Human 口述，覆盖此前两个来源并列 UNKNOWN）；未立项、无方案；不得绕过上传 / 外部分组 / Beta Review 各自独立授权的闸（docs/RELEASE_CHECKLIST.md） | [Build 94 Assignment](assignments/release-2026-09-25-build94-external-testflight.md) · [Build 94 决定](product-decisions/RELEASE-2026-09-25-BUILD94-public-beta-decision.md) · [本次决定](#决定记录) | 2026-10-25 |
 
 ## 决定记录
 
@@ -93,6 +93,8 @@
 | 2026-10-25 | Human 确认 macOS 27.0、Xcode 27.1、iOS 27.0.1 算正式版，真机测试指定 iPhone 13 Pro（已连接 Mac，Human 确认） | [发布准备 Assignment](assignments/release-2026-10-external-testflight-001.md)；本文件 PF-031 |
 | 2026-10-25 | Human 决定 PF-029 放到外部 TestFlight 之后 | 本文件 PF-029；[登记 Assignment](assignments/release-assignment-landing-001.md) |
 | 2026-10-25 | Human 提出发布自动化需求，登记 PF-036，Backlog、未立项；历史操作两个来源不完全一致，UNKNOWN 待 Human 澄清 | 本文件 PF-036；[Build 94 Assignment](assignments/release-2026-09-25-build94-external-testflight.md)；[登记 Assignment](assignments/release-assignment-landing-001.md) |
+
+| 2026-10-25 | 补记 Build 132 为最近一次外部构建，与 Build 94 同组（Human 口述）；Xcode Cloud 无分发工作流构建、下载后经 Mac 本地 Transporter 上传；来源提交 `59272331b3627856c1c4480b0b5d7ad0ddade0ad`；仓库此前无记录（本次快照关键词搜索零命中）；Human 截图未入库，构建页本身未核对；上传执行者与回执 UNKNOWN | [上一次外部构建基准](assignments/release-2026-10-external-testflight-001.md#上一次外部构建基准) |
 
 ## 已完成
 
