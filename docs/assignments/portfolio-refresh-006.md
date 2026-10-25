@@ -50,7 +50,7 @@ record_id: PORTFOLIO-REFRESH-006
 ## Gates
 
 - **Entry Criteria:** Human 授权激活；任务包与冻结输入 SHA-256 匹配；fetch 后 origin/main 精确为基线；新编号未占用；隔离 worktree。
-- **Exit Criteria:** 允许文件指定刷新；diff --check 通过；链接目标存在；一个默认身份本地提交；外置 Executor 报告交付。不在评审前填写评审结论。
+- **Exit Criteria:** 允许文件指定刷新；diff --check 通过；链接目标存在；一个本地提交，作者与提交者为 Cowork 3P（该 worktree 来自没有本地身份配置的克隆，经 Human 授权用一次性 git -c 指定）；外置 Executor 报告交付。不在评审前填写评审结论。
 - **Stop Conditions:** 冻结输入不符；基线出现触及目录或代码的新提交；需要范围外改动；事实无出处；新编号已被占用。
 
 ## Handoff
