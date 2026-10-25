@@ -303,11 +303,11 @@ Discover simulators with `xcrun simctl list devices available` if `iPhone 17 Pro
 
 - [ ] Fresh launch and keyboard-enablement guide are usable.
 - [ ] Full Access explanation remains accurate.
-- [ ] Built-in schema can be prepared and deployed.
+- [ ] Built-in schema can be prepared and deployed. Deployment success also requires a usable librime identity; nil, blank, `(no api)` or `(unknown)` leaves deployment pending. (PR #139; `CHANGELOG.md:69`; `docs/assignments/typo-correction-002-f01-remediation-001.md`.)
 - [ ] `rime_ice` download/install/license/deploy path succeeds when included in the release scope.
 - [ ] Simulator keyboard behavior evidence records the selected device/OS/UDID, uses a normally signed runtime installation, confirms App Group availability, confirms the intended scheme is installed/healthy/current, and confirms the extension is enabled and switchable before typing.
 - [ ] Scheme switch, redownload/update and uninstall states are coherent.
-- [ ] Candidate count, simplification, fuzzy pinyin and advanced-input changes mark/apply deployment correctly.
+- [ ] Candidate count, simplification, fuzzy pinyin and advanced-input changes mark/apply deployment correctly. An unavailable librime identity leaves deployment pending rather than marking success. (PR #139; `CHANGELOG.md:69`; `docs/assignments/typo-correction-002-f01-remediation-001.md`.)
 - [ ] User-dictionary learning switch, backup, restore and reset behave correctly for supported schemas.
 - [ ] Diagnostics can filter, refresh, copy and clear without exposing private host text.
 - [ ] Global operation toast survives navigation and duplicate actions are guarded.
@@ -335,30 +335,30 @@ Discover simulators with `xcrun simctl list devices available` if `iPhone 17 Pro
   Computer Use typing or guessed tap positions. Record manual cadence as a
   confound and keep deterministic automation in unit/controller/RimeBridge
   layers.
-- [ ] After a fresh install or Extension process restart, select Universe Keyboard and type continuously; it must remain selected without hanging, crashing or automatically falling back to the system keyboard.
+- [ ] After a fresh install or Extension process restart, select Universe Keyboard and type continuously; it must remain selected without hanging, crashing or automatically falling back to the system keyboard. （PR #213 后行为未在文档中说明，验收时需确认（UNKNOWN）；出处：PR #213；`docs/assignments/input-reliability-delivery-001.md`，不据提交标题推断新行为。）
 - [ ] First presentation creates a working session without deploying.
 - [ ] Chinese and English basic input, page/mode switching, Shift/Caps Lock and Return labels work.
 - [ ] Inline preedit underline appears and clears after candidate, Space and Return commits.
 - [ ] Return commits raw input for segmented preedit; no duplicate text remains.
-- [ ] Delete edits composition first and Partial Commit restore matches its documented contract.
-- [ ] Chinese nine-key ordinary Delete follows visible pinyin characters: `tou → to → t → empty`; it must not jump through candidate completions such as `tong → ta`. Repeat separately with an explicit segmented selection to confirm its focus-restore contract is unchanged.
-- [ ] Candidate horizontal paging, near-edge fetch and expanded panel remain stable.
-- [ ] Chinese nine-key: fixed path bar (34 pt) sits above Chinese candidates without idle height jump; compact paths ≤ 5 single-line labels; pressing `MNO` displays `m / n / o`, and fresh `MNO → GHI` displays `mi / ni / m / n / o` with no selected item. Long multi-syllable comments (e.g. `ni xian zai`) never appear as one compact cell.
+- [ ] Delete edits composition first and Partial Commit restore matches its documented contract. If affine Partial Commit checkpoint restoration fails, retain the selected prefix and revoke candidate/paging authority; Delete cancels the unconfirmed remainder, and a new Chinese key permits only one fresh recovery. (PR #215; `CHANGELOG.md:59`; `docs/assignments/input-reliability-delivery-003.md`.)
+- [ ] Chinese nine-key ordinary Delete follows visible pinyin characters: `tou → to → t → empty`; it must not jump through candidate completions such as `tong → ta`. Repeat separately with an explicit segmented selection to confirm its focus-restore contract is unchanged. Also confirm that short Delete preserves already presented unconfirmed pinyin history and continuous retyping keeps digit slots and Path consistent without inventing confirmation; the exact example above still needs current-candidate confirmation (UNKNOWN). (PR #215; `CHANGELOG.md:58`.)
+- [ ] Candidate horizontal paging, near-edge fetch and expanded panel remain stable. The current 46 pt compact header and Continuous Candidate Surface retain partial candidates, a reading anchor and expansion from the original candidate row; real-device appearance/animation/material/VoiceOver remain acceptance work. (PR #216; `CHANGELOG.md:36-39,44,50-51`.) （PR #214 后行为未在文档中说明，验收时需确认（UNKNOWN）；出处：PR #214；`docs/assignments/input-reliability-delivery-002.md`，不据提交标题推断新行为。）
+- [ ] Chinese nine-key: path row starts at 0 pt in a confirmed new idle presentation, expands to 34 pt on the first composition/Path/Partial Commit/Recovery and stays expanded after commit, delete-to-empty and refresh; reset only on the next presentation after explicit completion and window detachment (PR #217; `CHANGELOG.md:31-32`); compact paths ≤ 5 single-line labels; pressing `MNO` displays `m / n / o`, and fresh `MNO → GHI` displays `mi / ni / m / n / o` with no selected item. Long multi-syllable comments (e.g. `ni xian zai`) never appear as one compact cell.
 - [ ] Chinese nine-key path direct tap: tapping a first-syllable choice (e.g. `ni`) once confirms and advances to the next syllable set when remaining digits exist; no second tap required. Host text is never path-committed.
 - [ ] Chinese nine-key long segmented input: reproduce the reported `xian → zai → you` progression with a long remaining composition; the next focus searches beyond the initial ranked page and retains all bounded live-authorized branches (maximum 5). If RIME genuinely authorizes only one item, it remains unselected—no implicit selection, confirmation, or advance. Verify Delete reversibility and record key/confirm latency.
-- [ ] Chinese nine-key Partial Commit remainder: after selecting a shorter candidate (e.g. `你好` from `nihaoya`), marked text shows comment-preferred remainder (`你好ya`), not raw digits (`你好92`); path bar rebuilds from remaining digits only.
-- [ ] Chinese nine-key long Partial Commit: type `toutoumaiqiule`, choose `偷偷买`, and verify marked text contains no digits (including spaced forms such as `748 53`), remaining provenance is `qiu…`, and Path Bar includes `qiu`-authorized choices rather than `t / u / v` from an earlier key group.
-- [ ] Across first input, candidate re-rank, Partial Commit, Delete, session fallback/recovery and page/language changes, internal T9 digits never appear in host marked text. When no comment exists, blank/retained safe spelling is acceptable; guessed letters are not.
-- [ ] Chinese nine-key **选拼音**: before first press no label is highlighted; first press selects `m`, next presses select `n`, `o`, then wrap to `m`; the selected label uses the preferred-candidate inverse-color rounded highlight and VoiceOver reports the selected state/current value. The control never opens the predecessor path panel and never confirms/advances a segment by itself.
-- [ ] Chinese nine-key segmented focus: select `n`, press `GHI`, verify `m / n / o` remains and `n` stays selected; tapping an unselected sibling changes only the tentative value; tapping selected `n` advances to unselected `g / h` and never exposes fallback-only `i`.
-- [ ] Chinese nine-key **选定**: active T9 composition retitles space to `选定`; tapping it commits the highlighted/first Chinese candidate and does not advance pinyin focus. Delete from `n4` restores `m / n / o` with `n` selected.
-- [ ] Each `m → n → o → m` selection displays that exact value as host marked text, even when the highlighted/first RIME candidate comment contains a longer full pinyin; a failed cycle restores the previous marked value and highlight.
-- [ ] Chinese nine-key precise path: direct tap and cycle both narrow Chinese candidates without host-committing letters; continue typing/delete/re-select works; mixed raw (e.g. after refine + digit) never leaks via Space/Return without candidates.
+- [ ] Chinese nine-key Partial Commit remainder: after selecting a shorter candidate (e.g. `你好` from `nihaoya`), marked text shows comment-preferred remainder (`你好ya`), not raw digits (`你好92`); path bar rebuilds from remaining digits only. During checkpoint-recovery failure, the recovery notice uses the existing candidate row and blocks invalid candidate, Path, expand and submit controls. (PR #215; `CHANGELOG.md:59-60`.)
+- [ ] Chinese nine-key long Partial Commit: type `toutoumaiqiule`, choose `偷偷买`, and verify marked text contains no digits (including spaced forms such as `748 53`), remaining provenance is `qiu…`, and Path Bar includes `qiu`-authorized choices rather than `t / u / v` from an earlier key group. Check the recovery notice and invalid-control blocking on this path; the changelog does not establish full live-native coverage. (PR #215; `CHANGELOG.md:59-60`; `docs/assignments/input-reliability-delivery-003.md`.)
+- [ ] Across first input, candidate re-rank, Partial Commit, Delete, session fallback/recovery and page/language changes, internal T9 digits never appear in host marked text. When no comment exists, blank/retained safe spelling is acceptable; guessed letters are not. The related finalization paths prevent internal T9 digits from being committed; this documented intent is not evidence that all paths have passed. (PR #215; `CHANGELOG.md:60`.)
+- [ ] Chinese nine-key **选拼音**: before first press no label is highlighted; first press selects `m`, next presses select `n`, `o`, then wrap to `m`; the selected label uses the preferred-candidate inverse-color rounded highlight and VoiceOver reports the selected state/current value. The control never opens the predecessor path panel and never confirms/advances a segment by itself. （PR #214 后行为未在文档中说明，验收时需确认（UNKNOWN）；出处：PR #214；`docs/assignments/input-reliability-delivery-002.md`，不据提交标题推断新行为。）
+- [ ] Chinese nine-key segmented focus: select `n`, press `GHI`, verify `m / n / o` remains and `n` stays selected; tapping an unselected sibling changes only the tentative value; tapping selected `n` advances to unselected `g / h` and never exposes fallback-only `i`. （PR #214 后行为未在文档中说明，验收时需确认（UNKNOWN）；出处：PR #214；`docs/assignments/input-reliability-delivery-002.md`，不据提交标题推断新行为。）
+- [ ] Chinese nine-key **选定**: active T9 composition retitles space to `选定`; tapping it commits the highlighted/first Chinese candidate and does not advance pinyin focus. Delete from `n4` restores `m / n / o` with `n` selected. （PR #214 后行为未在文档中说明，验收时需确认（UNKNOWN）；出处：PR #214；`docs/assignments/input-reliability-delivery-002.md`，不据提交标题推断新行为。）
+- [ ] Each `m → n → o → m` selection displays that exact value as host marked text, even when the highlighted/first RIME candidate comment contains a longer full pinyin; a failed cycle restores the previous marked value and highlight. （PR #214 后行为未在文档中说明，验收时需确认（UNKNOWN）；出处：PR #214；`docs/assignments/input-reliability-delivery-002.md`，不据提交标题推断新行为。）
+- [ ] Chinese nine-key precise path: direct tap and cycle both narrow Chinese candidates without host-committing letters; continue typing/delete/re-select works; mixed raw (e.g. after refine + digit) never leaks via Space/Return without candidates. （PR #214 后行为未在文档中说明，验收时需确认（UNKNOWN）；出处：PR #214；`docs/assignments/input-reliability-delivery-002.md`，不据提交标题推断新行为。）
 - [ ] Multi-key path bar degrades safely when compatible RIME comments are empty; basic digit T9 input still works and stale single-key choices do not survive new input, Delete, commit, page/language, visibility, fallback, or recovery.
 - [ ] Switching host apps discards unfinished composition and starts clean on return.
-- [ ] Killing/relaunching the Extension creates a fresh session from deployed data.
-- [ ] Session recovery does not invoke deployment or block a key event with file work.
-- [ ] Light/dark mode, VoiceOver, Dynamic Type and compact keyboard height remain usable.
+- [ ] Killing/relaunching the Extension creates a fresh session from deployed data. （PR #213 后行为未在文档中说明，验收时需确认（UNKNOWN）；出处：PR #213；`docs/assignments/input-reliability-delivery-001.md`，不据提交标题推断新行为。）
+- [ ] Session recovery does not invoke deployment or block a key event with file work. （PR #213 后行为未在文档中说明，验收时需确认（UNKNOWN）；出处：PR #213；`docs/assignments/input-reliability-delivery-001.md`，不据提交标题推断新行为。）
+- [ ] Light/dark mode, VoiceOver, Dynamic Type and compact keyboard height remain usable. Include user-adjustable keyboard row height and candidate font size, while retaining the documented default geometry; use the new Changes Since Build 132 checks below. (PR #234/#236; `CHANGELOG.md:5-6,16-19`; `docs/product-decisions/UI3-CANDIDATE-FONT-SIZE-001-product-contract.md` §8; `docs/product-decisions/UI4-KEYBOARD-HEIGHT-001-product-contract.md` §10.)
 - [ ] Key sound/haptic settings refresh and do not double-fire.
 - [ ] Typing Intelligence counts candidate, Space, Return, direct key, direct text and Emoji commits exactly once.
 - [ ] Marked-text updates, Delete and visibility abandonment do not increment statistics.
@@ -370,13 +370,44 @@ Discover simulators with `xcrun simctl list devices available` if `iPhone 17 Pro
 - [ ] The current synthetic quality benchmark passes, including its registered Top-3, reviewed Top-1 and ambiguous-suffix suppression fixtures, and its result is not reported as real-user coverage or acceptance-rate evidence.
 - [ ] The bundled continuation resource passes size, entry-count, length, duplicate and suggestion-count validation.
 
+## Changes Since Build 132
+
+本节条目均待本次候选验收，不引用历史通过替代本次证明；涉及完全访问的新增条目只在开启完全访问时验收（TD-004 有范围的跳过，依据本文件 TD-004 行），不声称关闭时的表现。
+
+- [ ] UI-3：默认档的候选词、组字拼音、提示字号与字重和栏高逐项保持原状，留测试与真机照片。（来源：PR #236；`docs/product-decisions/UI3-CANDIDATE-FONT-SIZE-001-product-contract.md` §8。）
+- [ ] UI-3：固定档 13–22 在候选栏与展开面板生效，组字拼音比候选小 2，26 键与九宫格一致。（来源：PR #236；`docs/product-decisions/UI3-CANDIDATE-FONT-SIZE-001-product-contract.md` §8。）
+- [ ] UI-3：最大档 22 下，26 键与九宫格各用最长真实候选（含长词/短语）检查：不换行、不挤按键、不改变栏高，只截断候选尾部且仍可点按。（来源：PR #236；`docs/product-decisions/UI3-CANDIDATE-FONT-SIZE-001-product-contract.md` §8。）
+- [ ] UI-3：保存后杀掉 App 再打开，键盘下次出现时采用新档位，不先闪现旧字号。（来源：PR #236；`docs/product-decisions/UI3-CANDIDATE-FONT-SIZE-001-product-contract.md` §8。）
+- [ ] UI-3：只在完全访问开启时验收设置生效；读不到值时回退默认档；本次不声称完全访问关闭时的表现（TD-004 有范围的跳过，依据本文件 TD-004 行）。（来源：PR #236；`docs/product-decisions/UI3-CANDIDATE-FONT-SIZE-001-product-contract.md` §8。）
+- [ ] UI-3：确认渲染与测量同源，KEYBOARD_VALUES / UI_STYLE_GUIDE 同步，现有测试通过且未放宽 TD-020 相关测试。（来源：PR #236；`docs/product-decisions/UI3-CANDIDATE-FONT-SIZE-001-product-contract.md` §8。）
+- [ ] UI-3：系统“更大字体”开启时默认档仍跟随并封顶 28，固定档不随系统变化；模拟器可测，真机复核一次。（来源：PR #236；`docs/product-decisions/UI3-CANDIDATE-FONT-SIZE-001-product-contract.md` §8。）
+- [ ] UI-4：没有保存值时，默认高度逐项保持原状，留测试与真机照片。（来源：PR #234；`docs/product-decisions/UI4-KEYBOARD-HEIGHT-001-product-contract.md` §10；`docs/assignments/ui4-height-001.md` Exit evidence。）
+- [ ] UI-4：调节态按键与删除键均不能输入，留日志或测试证据；重置、取消、确定、拖动符合产品决定第 3 节。（来源：PR #234；`docs/product-decisions/UI4-KEYBOARD-HEIGHT-001-product-contract.md` §10；`docs/assignments/ui4-height-001.md` Exit evidence。）
+- [ ] UI-4：保存后杀掉 App 再打开仍使用新高度，下次出现时不先闪现默认高度。（来源：PR #234；`docs/product-decisions/UI4-KEYBOARD-HEIGHT-001-product-contract.md` §10；`docs/assignments/ui4-height-001.md` Exit evidence。）
+- [ ] UI-4：本次只在完全访问开启时验收调节与保存；不声称关闭时的表现（TD-004 有范围的跳过，依据本文件 TD-004 行）。（来源：PR #234；`docs/product-decisions/UI4-KEYBOARD-HEIGHT-001-product-contract.md` §10；`docs/assignments/ui4-height-001.md` Exit evidence。）
+- [ ] UI-4：竖横屏封顶按产品决定第 5 节生效，夹低不写回；九宫格组字含路径栏满足封顶，宿主压缩时不裁按键、不使候选栏出屏。（来源：PR #234；`docs/product-decisions/UI4-KEYBOARD-HEIGHT-001-product-contract.md` §10；`docs/assignments/ui4-height-001.md` Exit evidence。）
+- [ ] UI-4：逐一保留确定、取消、离开页面、切换键盘、窗口消失的退出证据，核对产品决定第 7 节同一标记不重入要求；已有有限去重边界仍见 Assignment，不外推永久保证。（来源：PR #234；`docs/product-decisions/UI4-KEYBOARD-HEIGHT-001-product-contract.md` §10；`docs/assignments/ui4-height-001.md` Exit evidence。）
+- [ ] UI-4：现有测试通过，TD-020 相关测试不被放宽，KEYBOARD_VALUES 已同步。（来源：PR #234；`docs/product-decisions/UI4-KEYBOARD-HEIGHT-001-product-contract.md` §10；`docs/assignments/ui4-height-001.md` Exit evidence。）
+- [ ] UI-4：记录下限 40pt 的真机手测。（来源：PR #234；`docs/product-decisions/UI4-KEYBOARD-HEIGHT-001-product-contract.md` §10；`docs/assignments/ui4-height-001.md` Exit evidence。）
+- [ ] UI-1：核对 26 键 / 九键的 46pt 紧凑候选行、56pt 操作区、22pt 图标、viewport 裁剪及不侵入候选的操作区命中，保留展开/关闭、滚动分页与恢复阻断。（来源：PR #216；`CHANGELOG.md:36-39,43-45,50-52`。）
+- [ ] UI-1：核对部分可见候选、阅读锚点、展开后的前后浏览、未拖动原偏移恢复与拖动后的阅读位置回传；展开面板从原候选栏位置开始。（来源：PR #216；`CHANGELOG.md:36-39,43-45,50-52`。）
+- [ ] UI-1：真机外观、宿主留白、动画、材质与 VoiceOver 仍待 Human 验收；核对系统材质及降低透明度兜底，不把进程内 UIKit 结果当成真机验收。（来源：PR #216；`CHANGELOG.md:36-39,43-45,50-52`。）
+- [ ] UI-2：标点面板后首次按键立即显示路径。（来源：PR #217；`docs/evidence/keyboard-t9-adaptive-row-001/acceptance-20261021/human-acceptance.md:10-16`（历史 Human 观察，不是本候选通过证明）；`CHANGELOG.md:24-26,31-32`。）
+- [ ] UI-2：颜文字面板后首次按键立即显示路径。（来源：PR #217；`docs/evidence/keyboard-t9-adaptive-row-001/acceptance-20261021/human-acceptance.md:10-16`（历史 Human 观察，不是本候选通过证明）；`CHANGELOG.md:24-26,31-32`。）
+- [ ] UI-2：第二键与连续输入正常。（来源：PR #217；`docs/evidence/keyboard-t9-adaptive-row-001/acceptance-20261021/human-acceptance.md:10-16`（历史 Human 观察，不是本候选通过证明）；`CHANGELOG.md:24-26,31-32`。）
+- [ ] UI-2：快速输入并删除至空，无异常或崩溃。（来源：PR #217；`docs/evidence/keyboard-t9-adaptive-row-001/acceptance-20261021/human-acceptance.md:10-16`（历史 Human 观察，不是本候选通过证明）；`CHANGELOG.md:24-26,31-32`。）
+- [ ] UI-2：Sticky 行的提交、删除与复位正常。（来源：PR #217；`docs/evidence/keyboard-t9-adaptive-row-001/acceptance-20261021/human-acceptance.md:10-16`（历史 Human 观察，不是本候选通过证明）；`CHANGELOG.md:24-26,31-32`。）
+- [ ] UI-2：隐藏、重新唤醒、切换布局与旋转正常。（来源：PR #217；`docs/evidence/keyboard-t9-adaptive-row-001/acceptance-20261021/human-acceptance.md:10-16`（历史 Human 观察，不是本候选通过证明）；`CHANGELOG.md:24-26,31-32`。）
+- [ ] UI-2：面板、遮罩、路径触控与阅读位置正常；核对空闲 0pt / 首次组字展开 34pt 后 Sticky 的当前行为，真实集成动态高度与动画仍须 Human 复验。（来源：PR #217；`docs/evidence/keyboard-t9-adaptive-row-001/acceptance-20261021/human-acceptance.md:10-16`（历史 Human 观察，不是本候选通过证明）；`CHANGELOG.md:24-26,31-32`。）
+- [ ] 恢复提示：恢复提示占用现有候选行，阻断失效候选、Path、展开与提交控件；相关终结路径不使内部 T9 数字上屏。（来源：PR #215；`CHANGELOG.md:60`。）
+
 ## RIME, Lua And OpenCC
 
 OpenCC current integration ownership is defined in
 [`architecture/opencc-integration.md`](architecture/opencc-integration.md); this checklist owns release evidence only.
 
 - [ ] `luna_pinyin` and `rime_ice` (when shipped) produce representative candidates.
-- [ ] Active schema survives fresh keyboard process creation.
+- [ ] Active schema survives fresh keyboard process creation. The containing App must first establish successful deployment with a usable librime identity; nil/blank/sentinel identity stays pending, not successful. (PR #139; `CHANGELOG.md:69`; `docs/assignments/typo-correction-002-f01-remediation-001.md`.)
 - [ ] Simplified/traditional switching is verified through deployed OpenCC data.
 - [ ] Fuzzy-pinyin enabled/disabled examples match `docs/RIME_FUZZY_PINYIN.md`.
 - [ ] Lua runtime smoke test is executed with a real prepared fixture for release claims.
@@ -386,11 +417,11 @@ OpenCC current integration ownership is defined in
 ## Lifecycle, Performance And Failure Recovery
 
 - [ ] No synchronous download, file scan, hash, backup or deployment occurs in key handling.
-- [ ] Engine initialization and representative key/UI performance logs show no unexplained regression against the previous accepted build.
+- [ ] Engine initialization and representative key/UI performance logs show no unexplained regression against the previous accepted build. For this external candidate, the previous accepted comparator is Build 132 on the same iPhone 13 Pro, OS, host and schema; assess no unexplained regression without an absolute numeric threshold (Human 2026-10-25 Asia/Shanghai). (PR #216/#217/#234/#236; `CHANGELOG.md:5-6,16-19,24-26,31-39`; Human decision in `docs/assignments/release-checklist-refresh-001.md`.)
 - [ ] With AirPods connected to iPhone and another Apple device already playing audio, presenting/typing on the keyboard does not activate a Universe Keyboard audio session or transfer route ownership; silent mode and the system keyboard-feedback sound setting are recorded.
-- [ ] No sustained memory growth is observed during typing, candidate paging and repeated app switching.
+- [ ] No sustained memory growth is observed during typing, candidate paging and repeated app switching. UI/layout changes do not establish a memory result; collect current comparable evidence, with no invented numeric threshold (UNKNOWN until measured). (PR #216/#217/#234/#236; `CHANGELOG.md:5-8,16-19,24-26,31-39`; `docs/PERFORMANCE_BASELINE.md`.)
 - [ ] Missing runtime directories produce fallback plus actionable main-App recovery.
-- [ ] Failed deployment remains pending and succeeds after retry.
+- [ ] Failed deployment remains pending and succeeds after retry. A nil, blank, `(no api)` or `(unknown)` librime identity also keeps deployment pending; retry must meet the usable-identity success gate. (PR #139; `CHANGELOG.md:69`; `docs/assignments/typo-correction-002-f01-remediation-001.md`.)
 - [ ] Interrupted/incomplete scheme installation is recoverable by main-App reinstall/redownload.
 - [ ] Typing Intelligence classification/enqueue adds no unexplained key-path regression against the disabled baseline.
 - [ ] Typing Intelligence persistence is coalesced, bounded and absent from synchronous key handling.
