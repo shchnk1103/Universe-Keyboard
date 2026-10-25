@@ -40,17 +40,17 @@
 
 ## UI3-FONT-001 — 候选字大小（v1）
 
-- **Lifecycle:** [实现 Assignment](assignments/ui3-font-001.md) `Assigned`，Entry 尚未满足，不计入 Ready/Active；Human 已确认登记本条目（2026-10-23）。
-- **Current phase:** [产品决定](product-decisions/UI3-CANDIDATE-FONT-SIZE-001-product-contract.md) 已被 Human 接受（2026-10-23）。
-- **Non-claims:** 未授权开工；无实现、验收、Product Gate、TestFlight 或 Release 许可；PF-029 仅为目录候选事项。
-- **Next:** Human 决定派发；实现先完成 P0 并经 Coordinator 确认再继续。
+- **Lifecycle:** [实现 Assignment](assignments/ui3-font-001.md) `Closed（Human 2026-10-25 决定；在承载本记录的 PR 合并时生效）`。
+- **Current phase:** PR #236 已合并，合并提交 `b8f6b6516064c4721c884a53e1437e01d83449e7`；合并后目录刷新已本地登记，待本记录 PR 合并生效；UI-3 与 UI-4 均已合并。
+- **Non-claims:** 未发布；不是 Product Gate、TestFlight 或 Release 许可；已知限制与证据边界见 [Assignment Exit evidence](assignments/ui3-font-001.md#exit-evidence)。
+- **Next:** 本登记记录待评审与 Human 后续发布决定；Close 合并时生效，是否并入 TestFlight 候选由 Human 另行决定。
 
 ## UI4-HEIGHT-001 — 自定义键盘高度（v1）
 
-- **Lifecycle:** [实现 Assignment](assignments/ui4-height-001.md) `Assigned`，Entry 尚未满足，不计入 Ready/Active。
-- **Current phase:** [产品决定](product-decisions/UI4-KEYBOARD-HEIGHT-001-product-contract.md) 已被 Human 接受（2026-10-23）；第 11 节时点修订同日确认。
-- **Non-claims:** 未授权开工；无实现、验收、Product Gate、TestFlight 或 Release 许可；UI-3 见 UI3-FONT-001（同为 Assigned，未授权开工）。
-- **Next:** Human 决定派发；实现先完成 P0 并经 Coordinator 确认再继续。发布方案 B 是节奏意向，发布另授权。
+- **Lifecycle:** [实现 Assignment](assignments/ui4-height-001.md) `Closed（Human 2026-10-25 决定；在承载本记录的 PR 合并时生效）`。
+- **Current phase:** PR #234 已合并，合并提交 `ebf7e4fa51967b58be80c2cef00f7c3e9fdd8e17`；合并后目录刷新已本地登记，待本记录 PR 合并生效；UI-3 与 UI-4 均已合并。
+- **Non-claims:** 未发布；不是 Product Gate、TestFlight 或 Release 许可；已知限制与证据边界见 [Assignment Exit evidence](assignments/ui4-height-001.md#exit-evidence)。
+- **Next:** 本登记记录待评审与 Human 后续发布决定；Close 合并时生效，是否并入 TestFlight 候选由 Human 另行决定。
 
 ## KEYBOARD-WAKE-LIFECYCLE-DIAGNOSTICS-001 — App Switch 后键盘输入失活诊断
 

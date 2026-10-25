@@ -7,11 +7,11 @@ record_id: UI3-FONT-001
 
 | Field | Value |
 |---|---|
-| Lifecycle | Assigned（职责已定；Entry Criteria 尚未全部满足，尤其 Human 授权派发。满足后由 Coordinator 在派发记录里改为 Ready，再随开工转 Active） |
-| Current phase | 定稿，待 Human 授权派发 Executor。产品决定 [PD-UI3-CANDIDATE-FONT-SIZE-001](../product-decisions/UI3-CANDIDATE-FONT-SIZE-001-product-contract.md) 已于 2026-10-23 被接受；本 Assignment 把它落成产品代码、测试与镜像文档 |
-| Material non-claims | 不是 UI-4（键盘高度）；不是 Product Gate、TestFlight 或 Release；不改默认字号与任何既有布局数值；不放宽任何超时或断言；本记录本身不含任何代码 |
-| Human 确认状态 | 产品决定的接受：**已确认**（Human Product Owner，2026-10-23）。开工授权：**待 Human**。Environment Executor 与真机分工（见下）：**待 Human 在派发时确认** |
-| Next handoff / decision | Human 授权派发 → Executor 阶段 P0（先出预检报告）→ 逐阶段推进 → Coordinator 冻结 Reviewer 包 → Architecture / Quality Reviewer → Human 真机验收 → Human 决定 push / PR / merge |
+| Lifecycle | Closed（Human 2026-10-25 决定；在承载本记录的 PR 合并时生效） |
+| Current phase | 代码已合并（PR #236，`b8f6b6516064c4721c884a53e1437e01d83449e7`）；本轮登记合并与 Human Close 决定，生效边界见 Lifecycle |
+| Material non-claims | 未发布；不是 Product Gate、TestFlight 或 Release 许可；Human 真机观察（不是测量）仅覆盖 `b0e0361`（iPhone 13 Pro、iOS 27.0.1）；完全访问关/开表现无区别；Debug/Release UNKNOWN；之后的预览提交 `eae739e`、`0db9b27` 与测试/文档提交 `16bab5c`、`f489968` 未经真机验收；默认档证据与历史失败见 Exit evidence |
+| Human 确认状态 | 产品决定已接受（2026-10-23）；开工与阶段授权见 `~/.kos-work/Universe-Keyboard/UI3-FONT-001/reports/executor-report-p0.md`（SHA-256 `9bd6e2a9ad1957cd8747523e43cb31c49cdd7c1b00aca7b74365d66f03aacab1`） 及各阶段报告；真机观察见 Exit evidence；Human 2026-10-25 决定 Close，授权回执 `~/.kos-work/Universe-Keyboard/PORTFOLIO-REFRESH-005A/reports/human-authorization-005a-v2-issued.md`（SHA-256 `5ea45537ca6c609306f3b2637c4261a4411ba86284b647eec644d741f70238df`） |
+| Next handoff / decision | 本登记记录待评审与 Human 后续发布决定；Close 在承载本记录的 PR 合并时生效；是否进入 TestFlight 候选由 Human 另行决定 |
 
 ## Authority
 
@@ -76,6 +76,8 @@ record_id: UI3-FONT-001
 
 本 Assignment 是产品开发（代码）类，**不适用 D7 的直接 Close**：Reviewer 评审、Human 真机验收（产品决定第 8 节七条）与 Human 对 PR 的决定之后，才由 Human 决定 Close。Close 之后是否并入 TestFlight 候选，由 Human 另行决定。
 
+2026-10-25 Asia/Shanghai：Human 已决定本 Assignment Close（来源：`~/.kos-work/Universe-Keyboard/PORTFOLIO-REFRESH-005A/reports/human-authorization-005a-v2-issued.md`（SHA-256 `5ea45537ca6c609306f3b2637c4261a4411ba86284b647eec644d741f70238df`））；在承载本记录的 PR 合并时生效，不适用 D7，不代表并入 TestFlight 候选或发布许可。
+
 ## Assignment
 
 - **Domain Owner:** Keyboard UI（Architecture and Knowledge Steward 协同）
@@ -99,8 +101,9 @@ Executor 与 Reviewer 的指令、packet、报告均保存为文件，根目录 
 
 | 项 | Result |
 |---|---|
-| P0 预检报告（读取时机、存取方式、入口位置、双路径表达的结论） | （Executor 填） |
-| 阶段 P1 至 P4 的门禁结果与测试摘要 | （Executor 填） |
-| 默认档逐值不变的证据（F1） | （Executor 填） |
-| Reviewer 报告路径与 SHA-256 | （Coordinator 填） |
-| Human 真机验收清单与结果 | （Human / Executor 填） |
+| P0 预检报告（读取时机、存取方式、入口位置、双路径表达的结论） | `~/.kos-work/Universe-Keyboard/UI3-FONT-001/reports/executor-report-p0.md`（SHA-256 `9bd6e2a9ad1957cd8747523e43cb31c49cdd7c1b00aca7b74365d66f03aacab1`） |
+| 阶段 P1 至 P4 的门禁结果与测试摘要 | `~/.kos-work/Universe-Keyboard/UI3-FONT-001/reports/executor-report-p1-p2.md`（SHA-256 `cd3ca3af75669a67ae38af583ef56361e4d9fa539c57a01d67798f979ecf9887`）；`~/.kos-work/Universe-Keyboard/UI3-FONT-001/reports/executor-report-p3-p4.md`（SHA-256 `b36639767ebebb4bf0e6a0084258e71292cd58aea19330f93d12eb5c02fb8407`）；后续预览与补证：`~/.kos-work/Universe-Keyboard/UI3-FONT-001/reports/executor-report-p6-r1.md`（SHA-256 `ba510a3f0050c434cb72c8f6c29a8d479d5e231e2f2d128890de32c0940c78e7`）；`~/.kos-work/Universe-Keyboard/UI3-FONT-001/reports/executor-report-p7.md`（SHA-256 `695f231265f0a6572162dba5871173ecce83f38c34445b0e676617ce2688f2da`）。结果为 Executor-recorded；历史 Core 两项三条断言失败保留，串行重跑绿不证明稳定性或根因 |
+| 默认档逐值不变的证据（F1） | `~/.kos-work/Universe-Keyboard/UI3-FONT-001/reports/executor-report-p1-p2.md`（SHA-256 `cd3ca3af75669a67ae38af583ef56361e4d9fa539c57a01d67798f979ecf9887`）：默认候选17 / 组字15分别按 body 缩放并各封顶28，small / large / XXXL / 最大辅助字体与旧 UIFontMetrics 表达式逐值比较；真实普通 cell 字体与测量同源、展开 cell 字体覆盖；夹具隔离引擎/宿主，不等于真实 Extension 激活。新增字号7项与相关目标通过为 Executor-recorded |
+| Reviewer 报告路径与 SHA-256 | `~/.kos-work/Universe-Keyboard/UI3-FONT-001/reports/review-arch-r1.md`（SHA-256 `7255dbccb02ebccfea056410f0fd142c2bb87364e887aeeb07d3a8117803e72a`）：Pass with conditions；`~/.kos-work/Universe-Keyboard/UI3-FONT-001/reports/review-qual-r1.md`（SHA-256 `42839430e054f34a374dea8b6121ebfbe026d1d7fd7465df366fa5565e45cfeb`）：Blocker（测试覆盖缺口，不是产品缺陷）；`~/.kos-work/Universe-Keyboard/UI3-FONT-001/reports/review-arch-r2.md`（SHA-256 `11d2637cc673f000d4a1435c40c4de5c326de65fce025c6300a4d60d4d69b207`）：Pass（P7 窄复核）；`~/.kos-work/Universe-Keyboard/UI3-FONT-001/reports/review-qual-r2.md`（SHA-256 `1cf91ef9f3db0d0a03daf21a37d656778a6f0e63f018c5ed8c5e9d547a744d8f`）：Pass with conditions（测试结果为 Executor-recorded，Reviewer 未重跑）；Round 1 缺口由 Round 2 覆盖，不抹去历史结论 |
+| Human 真机验收清单与结果 | `~/.kos-work/Universe-Keyboard/UI3-FONT-001/reports/p5-human-checklist.md`（SHA-256 `18261b731e9a4adc0962cd23ede8988aaac70606b226515aa691c726dcfaaa57`）；`~/.kos-work/Universe-Keyboard/UI3-FONT-001/reports/human-device-results-2026-10-24.md`（SHA-256 `17f3d5e9daebd18f179a4a4f333dc505499cf47b6a3ba089644156b7dce24c47`）；清单全部通过为 Human 报告；Human 真机观察（不是测量）仅覆盖 `b0e0361`（iPhone 13 Pro、iOS 27.0.1）；完全访问关/开表现无区别；Debug/Release UNKNOWN；之后的预览提交 `eae739e`、`0db9b27` 与测试/文档提交 `16bab5c`、`f489968` 未经真机验收 |
+| 合并 | [PR #236](https://github.com/shchnk1103/Universe-Keyboard/pull/236)，头提交 `f48996884effb33156bbfc13d9a5d986455a4bdb`，合并提交 `b8f6b6516064c4721c884a53e1437e01d83449e7`，2026-10-24 23:54 Asia/Shanghai；10 项检查全部 SUCCESS（含 test-app-keyboard、final-quality-gate）；来源：2026-10-25 `gh pr view 236 --repo shchnk1103/Universe-Keyboard` |

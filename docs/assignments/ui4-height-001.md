@@ -7,11 +7,11 @@ record_id: UI4-HEIGHT-001
 
 | Field | Value |
 |---|---|
-| Lifecycle | Reviewed（Architecture 与 Quality 的 Round 1 和 Round 2 均已给出结论；仍未 push / PR / merge，Close 须在 Human 决定之后） |
-| Current phase | P0 至 P6 与 P3-R1、P3-R2、P3-R3 修订已完成并有外置报告；Architecture / Quality 两轮评审完成；Human 真机观察（单机）已记录；剩余：Human 决定 push / PR / merge |
+| Lifecycle | Closed（Human 2026-10-25 决定；在承载本记录的 PR 合并时生效） |
+| Current phase | 代码已合并（PR #234，`ebf7e4fa51967b58be80c2cef00f7c3e9fdd8e17`）；合并后目录刷新已完成（本地登记，待本记录 PR 合并生效）；UI-3 已合并（PR #236） |
 | Material non-claims | 不是 UI-3（候选字大小）；不是 Product Gate、TestFlight 或 Release；不合并 Spike 的实验分支或实验代码；不改默认高度与任何既有布局数值；不放宽任何超时或断言；本记录本身不含任何代码；不是 TestFlight / Release 许可；Human 观察不是测量；已知限制见 Exit evidence |
 | Human 确认状态 | 产品决定已接受（Human Product Owner，2026-10-23）；各阶段由 Human 逐阶段授权（见外置 `reports/human-authorization-*.md`）；R-01、R-04 accept，R-06 接受为 UNKNOWN，R2-F01 边界接受（确认记录 `reports/human-confirmation-r2-f01-closeout.md`，SHA-256 `ec382ccba6f9b53102e4150f662b4a0f546d63530a0c21609970d76133973002`）；端点震动 accept |
-| Next handoff / decision | Human 决定 push / PR / merge；合并后目录刷新与 UI-3 开工 |
+| Next handoff / decision | 本登记记录待评审与 Human 后续发布决定；Close 在承载本记录的 PR 合并时生效；是否进入 TestFlight 候选由 Human 另行决定 |
 
 ## Authority
 
@@ -77,6 +77,8 @@ record_id: UI4-HEIGHT-001
 
 本 Assignment 是产品开发（代码）类，**不适用 D7 的直接 Close**：Reviewer 评审、Human 真机验收（产品决定第 10 节八条）与 Human 对 PR 的决定之后，才由 Human 决定 Close。Close 之后是否并入 TestFlight 候选，由 Human 另行决定。本 Assignment 为产品开发类，Close 在 Human 对 PR 的决定与合并之后由 Human 决定。
 
+2026-10-25 Asia/Shanghai：Human 已决定本 Assignment Close（来源：`~/.kos-work/Universe-Keyboard/PORTFOLIO-REFRESH-005A/reports/human-authorization-005a-v2-issued.md`（SHA-256 `5ea45537ca6c609306f3b2637c4261a4411ba86284b647eec644d741f70238df`））；在承载本记录的 PR 合并时生效，不适用 D7，不代表并入 TestFlight 候选或发布许可。
+
 ## Assignment
 
 - **Domain Owner:** Keyboard UI（Architecture and Knowledge Steward 协同）
@@ -113,3 +115,4 @@ Executor 与 Reviewer 的指令、packet、报告均保存为文件，根目录 
 | 残项处置 | 端点震动 accept `reports/human-decision-p3r1-endpoint-vibration.md`（`a517c364179c11c8c0fd9b61941c9b5cd358fc1de2d1e547ad064242e624d4cf`）；R-01、R-04 accept、R-06 接受为 UNKNOWN `reports/review-r1-human-disposition-confirmation.md`（`341ed14926cdebc92939563daea59148dd82d4d1712526e70505fdfd2a3cc147`）；R2-F01 边界接受 `reports/human-confirmation-r2-f01-closeout.md`（`ec382ccba6f9b53102e4150f662b4a0f546d63530a0c21609970d76133973002`） |
 | 当前验收矩阵 | `reports/pm-acceptance-matrix-v3.md`（`f54efe17f5c6a5f4fb5c8681584cfec92658c5f36e79994b9cea05a7ba2244c5`） |
 | 已知限制 | 端点震动（完全访问开时，来源 UNKNOWN，已接受）；竖屏最大值占屏比例未测量（Human 目测不是测量）；宿主预算不足四行 40pt 时整面隐藏；999 与真实低预算 / iPad 分屏 / 浮动键盘未验证；标记去重只保证最近 64 次成功消费内不重入；Release 真机二进制配置 UNKNOWN |
+| 合并 | [PR #234](https://github.com/shchnk1103/Universe-Keyboard/pull/234)，合并提交 `ebf7e4fa51967b58be80c2cef00f7c3e9fdd8e17`；10 项检查全部 SUCCESS；来源：2026-10-25 `gh pr view 234 --repo shchnk1103/Universe-Keyboard` |
