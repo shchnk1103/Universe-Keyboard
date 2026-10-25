@@ -5,7 +5,7 @@ record_id: RELEASE-2026-10-EXTERNAL-TESTFLIGHT-001
 
 ## Current Status
 
-- **Lifecycle：`Assigned`**（职责已定；Entry 未全部满足；不计入 Ready/Active）。Current phase：登记；尚无采集、归档或上传发生。
+- **Lifecycle：`Active`**（S1 已于 2026-10-25 在 Human 授权下开工并完成；S1、S3 的 Ready/Active 依据各自任务包与 Human 授权消息，见 Exit evidence）。Current phase：S1 预演完成，S3 只读演练完成，S2 待 Human 定 TD-003 数值标准，S3 真机报告采集与分类待做，S5 测试者说明待定稿，S6 版本 1.0 / 构建号由 Xcode Cloud 编排 / 候选来源提交待定。
 
 - **Material non-claims：** 本记录不是 TestFlight 或 Release 许可，也不是 Product Gate；未发生采集、归档或上传；Assigned，不计入 Ready/Active。
 
@@ -54,6 +54,8 @@ record_id: RELEASE-2026-10-EXTERNAL-TESTFLIGHT-001
 
 - **Human 确认状态：** 方案 B 已确认（2026-10-24）；版本与设备已确认（2026-10-25，见上）；开工授权按阶段由 Human 另行给出；TD-004 / TD-002 分类、数值验收标准、版本号、上传：**待 Human**。
 
+Human 2026-10-25（Asia/Shanghai，对话；本次登记依据外置 RELEASE-PREP-RECORD-001 任务包 F3 与 Human 授权）：① TD-004 与 TD-002 沿用 Build 55/94 的做法：TD-004 走“有范围的跳过”（构建限定于被明确要求开启完全访问的测试者，不对降级行为作任何声称），TD-002 走“范围约束”（恢复/重置须在键盘关闭时手动进行并向测试者说明，不声称并发安全），条件以 `docs/RELEASE_CHECKLIST.md` 为准；② 营销版本暂定 1.0（Human：App 仍处于测试阶段）；③ 测试组沿用 Build 132 的同一个外部测试组；④ Build 94、132 等构建号是 Xcode Cloud 按构建顺序自动编排的（Human 澄清）；⑤ 测试者说明的范围以 UI-4 与 UI-3 为主。
+
 ## Reviewer claim register
 
 | ID | 声称 |
@@ -83,13 +85,19 @@ record_id: RELEASE-2026-10-EXTERNAL-TESTFLIGHT-001
 
 各阶段外置报告（路径与 SHA-256 在执行时追加）；授权仅外置，不入库。
 
+## S3 演练事实与固定步骤
+
+Human 从 Xcode Cloud 下载的 Build 132 产物：归档内 App 与 Keyboard 为 1.0 (1)，app-store IPA 为 1.0 (132)；两者 App 与 Keyboard 二进制的 arm64 UUID 相同，归档自带的两个 dSYM 与之一一对应；IPA 构建号为 132；导出元数据 `uploadSymbols=true` 是配置值，不等于 App Store Connect 已收到符号；离线 `atos` 在 App 与 Keyboard 各两个地址还原出函数名（静态、非真实崩溃）。未覆盖真机崩溃/Jetsam 报告的采集与分类、App Store Connect 是否收到符号、产物中的来源提交、Xcode Cloud 产物保留期限；不裁定 TD-005 关闭或原因。
+
+每次上传外部候选时，除上传用的 app-store 包外，同时下载并保留同一 Xcode Cloud 构建的 “Archive” 产物，并按 UUID 核对其 dSYM 与上传包二进制一致（PM 提议，Human 已同意本次登记；依据本次任务包 F4 与 S3 报告）。
+
 ## Exit evidence
 
 | 项 | Result |
 |---|---|
-| S1 Mac 侧预演 | （执行时填） |
+| S1 Mac 侧预演 | `~/.kos-work/Universe-Keyboard/PF031-PREP-001/instructions/task-package-v3.md`（SHA-256 `c569f97181abaead11a5f0eb9a3613e9e19e10644c5b988c56b808a9a969b460`）；`~/.kos-work/Universe-Keyboard/PF031-PREP-001/reports/human-authorization-v3-issued.md`（SHA-256 `9a9a98dfda64c745fe134ab87453ee6e458aac596c3156623430e7f35f7401a0`）；`~/.kos-work/Universe-Keyboard/PF031-PREP-001/reports/executor-report.md`（SHA-256 `f89bf2dc97e025c700e6d2cacad2595656ee7766b7e5d888fee59690c848200c`）；macOS 27.0 (26A428)、Xcode 27.1 (27A9275)、Swift 6.4；iPhone 13 Pro（iPhone14,2）iOS 27.0.1 (24A446) 已连接、开发者模式开启；本机开发签名 Release 归档成功，App 与 Keyboard 均 1.0 (1)，各自二进制与 dSYM 的 arm64 UUID 一一对应；未导出、未上传。`release_evidence.py plan` 以 Build 132 来源提交 `59272331b3627856c1c4480b0b5d7ad0ddade0ad` 为 base，profile `baseline`；8 项 `required_checks`：`candidate_fact_tuple`、`artifact_mapping`、`existing_ci_full_gate`、`affected_path_validation`、`physical_device_baseline`、`performance_and_crash_classification`、`fresh_install_or_shared_container_boundary`、`external_only_checks`，均未执行、不算通过。 Executor-recorded，非独立复核。 |
 | S2 TD-003 性能基线 | （执行时填） |
-| S3 TD-005 归档与分类流程 | （执行时填） |
+| S3 TD-005 归档与分类流程 | `~/.kos-work/Universe-Keyboard/PF031-S3-REHEARSAL-001/instructions/task-package.md`（SHA-256 `ba1c26a246e45eef475cbbfa13310ea990eea9c40fba900268d5353e172ce2ff`）；`~/.kos-work/Universe-Keyboard/PF031-S3-REHEARSAL-001/reports/human-authorization-issued.md`（SHA-256 `6f86f95dfdcfad870ce2f79570fa9e2530e451a9e00d9358012d3f0df758577a`）；`~/.kos-work/Universe-Keyboard/PF031-S3-REHEARSAL-001/reports/executor-report.md`（SHA-256 `a4d13becc374c0cd0fc27bffe0d7fa8aa87b305ba33da58d13dd1e989a94357a`）；Human 从 Xcode Cloud 下载的 Build 132 产物：归档内 App 与 Keyboard 为 1.0 (1)，app-store IPA 为 1.0 (132)；两者 App 与 Keyboard 二进制的 arm64 UUID 相同，归档自带的两个 dSYM 与之一一对应；IPA 构建号为 132；导出元数据 `uploadSymbols=true` 是配置值，不等于 App Store Connect 已收到符号；离线 `atos` 在 App 与 Keyboard 各两个地址还原出函数名（静态、非真实崩溃）。 Executor-recorded，非独立复核；仅只读演练，未覆盖项见上。 |
 | S4 TD-004 / TD-002 分类 | （执行时填） |
 | S5 测试者说明 | （执行时填） |
 | S6 候选构建身份 | （执行时填） |
@@ -101,4 +109,4 @@ record_id: RELEASE-2026-10-EXTERNAL-TESTFLIGHT-001
 
 ## Lifecycle Status
 
-Assigned
+Active
