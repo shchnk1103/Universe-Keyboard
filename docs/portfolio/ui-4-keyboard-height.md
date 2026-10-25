@@ -1,6 +1,8 @@
 # PF-013 — UI-4 自定义键盘高度（含 UI-3 背景）
 
-**状态：产品决定已接受，实现 Assignment UI4-HEIGHT-001 为 Assigned，待 Human 授权派发。** [产品决定](../product-decisions/UI4-KEYBOARD-HEIGHT-001-product-contract.md)与[实现 Assignment](../assignments/ui4-height-001.md)于 2026-10-23 定稿，尚未开工；Spike 的[补录 Assignment](../assignments/ui4-spike-001.md)在承载记录的 PR 合并时 Close。本文不是产品合同，不授权开发。
+**状态：UI-4 已合并（[PR #234](https://github.com/shchnk1103/Universe-Keyboard/pull/234)，`ebf7e4fa51967b58be80c2cef00f7c3e9fdd8e17`）；UI-3 已合并（[PR #236](https://github.com/shchnk1103/Universe-Keyboard/pull/236)）。Human 2026-10-25 决定 UI4-HEIGHT-001 与 UI3-FONT-001 Close，在承载本记录的 PR 合并时生效。** [UI-4 Assignment](../assignments/ui4-height-001.md)与[UI-3 Assignment](../assignments/ui3-font-001.md)是生命周期与证据边界权威；已知限制及 PF-032、PF-033、PF-031 后续保留；未发布，不代表 TestFlight / Release 许可。
+
+**下一步：** 本登记记录待评审与 Human 后续发布决定；Close 在承载本记录的 PR 合并时生效，是否并入 TestFlight 候选由 Human 另行决定。下文历史讨论保留。
 
 ## 已决定
 

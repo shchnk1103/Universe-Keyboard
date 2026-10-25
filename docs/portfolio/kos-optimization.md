@@ -39,3 +39,6 @@
 27. 取新任务编号前先检查目录是否已存在（TRIAL-010 重复事件）。
 28. Reviewer packet 自查：每项 claim 所需材料都在允许集内、冻结表里不放另一 lane 的输出（UI3 与 UI4 入库评审的 packet 缺口，见 docs/assignments/ui4-pd-landing-001.md 与 docs/assignments/ui3-pd-landing-001.md 的评审结果节）。
 29. 涉及手势或触觉的功能，真机验收先于冻结 Reviewer 包（UI-4 真机验收发现的拖动缺陷，见 docs/assignments/ui4-height-001.md 的 Exit evidence）。
+30. 激活规则措辞摩擦：PM 提议任务单明确激活方式，派发附 Human 授权原话，Executor 另存签发回执并复算 SHA-256；涉及 worktree / 分支时明写授权创建；尚未采纳为 KOS 规则（来源：`~/.kos-work/Universe-Keyboard/PORTFOLIO-REFRESH-005/content/backlog-notes.md`（SHA-256 `bbf9c298e4b728a5123a74ba3119d5f82c3c8983d90aa3163bb0925bc9a81371`） B2，REFRESH-004a 首次停止）。
+31. 角色回复规范：Human 2026-10-24 提出，待讨论、未决定；PM 提议按职责边界、输出结构、证据用语、停止与升级条件及报告头试点，不做人设、不重复 Assignment Policy 的角色定义（来源：`~/.kos-work/Universe-Keyboard/PORTFOLIO-REFRESH-005/content/backlog-notes.md`（SHA-256 `bbf9c298e4b728a5123a74ba3119d5f82c3c8983d90aa3163bb0925bc9a81371`） B3；PM 回复已有试行约定，不代表全角色规范已决定）。
+32. PR 中英结合风格：Human 2026-10-24 提出希望固定；拟议标题 `<type>(<scope>): English summary / 中文概要`，描述先一行英文 Summary 再中文正文，标识符 / SHA / 测试名与提交信息保持英文；落在哪份规则文档仍待 Human 决定，未采纳为仓库规则（来源：`~/.kos-work/Universe-Keyboard/PORTFOLIO-REFRESH-005/content/backlog-notes.md`（SHA-256 `bbf9c298e4b728a5123a74ba3119d5f82c3c8983d90aa3163bb0925bc9a81371`） B5）。
