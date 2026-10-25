@@ -8,11 +8,11 @@ record_id: PORTFOLIO-REFRESH-006
 | Field | Value |
 |---|---|
 | Lifecycle | Active |
-| Current phase | docs-only 本地登记与一次本地提交；未 push；本记录待后续评审 |
+| Current phase | docs-only 本地登记与本地提交（`78e7583`、`102ba23` 及后续修订提交；以 `git log` 为准）；未 push；本记录待后续评审 |
 | Material non-claims | 无 push / PR / merge / 发布；不处置分支或 worktree，不改代码、测试、脚本或产品决定；新建行均为 Backlog，不代表立项；PF-031 移入已完成不代表发布准备 Assignment Close；本记录不替代产品 Gate |
 | Environment Executor | Not Applicable — repository documentation only |
-| Human 确认状态 | Human 2026-10-25 Asia/Shanghai 授权 GROK-BOT-TRIAL-024（创建指定本地 worktree / 分支、编辑允许文件、一次本地提交，不 push）；10 题答复 1A 2B 3A 4A 5A 6A 7A 8B 9A 10A；回执外置，不入库 |
-| Next handoff / decision | 交 Grok bot「Quality Reviewer」（不同会话）评审；发布前是否另加独立评审及任何 push / PR / merge 由 Human 决定 |
+| Human 确认状态 | Human 2026-10-25 Asia/Shanghai 授权 GROK-BOT-TRIAL-024（创建指定本地 worktree / 分支、编辑允许文件、本地提交（`78e7583`、`102ba23` 及后续修订提交；以 `git log` 为准），不 push）；10 题答复 1A 2B 3A 4A 5A 6A 7A 8B 9A 10A；回执外置，不入库 |
+| Next handoff / decision | 已经内部 Quality（Grok bot）与独立 Quality（Human 另派的独立会话）评审；修订后复审及任何 push / PR / merge 由 Human 决定 |
 
 ## Authority
 
@@ -23,7 +23,7 @@ record_id: PORTFOLIO-REFRESH-006
 
 ## Boundary
 
-- **Scope:** docs/PORTFOLIO.md 的指定行、新建行 PF-037 至 PF-051、已完成表与决定记录；新建 docs/portfolio/roadmap-2026-10.md；本记录。一个本地提交，分支 docs/portfolio-refresh-006，worktree ~/.kos-work/Universe-Keyboard/GROK-BOT-TRIAL-024/worktree。CHANGELOG.md 不改（AGENTS.md 与 CHANGELOG.md 未要求目录变更记条目）。
+- **Scope:** docs/PORTFOLIO.md 的指定行、新建行 PF-037 至 PF-051、已完成表与决定记录；新建 docs/portfolio/roadmap-2026-10.md；本记录。本地提交（`78e7583`、`102ba23` 及后续修订提交；以 `git log` 为准），分支 docs/portfolio-refresh-006，worktree ~/.kos-work/Universe-Keyboard/GROK-BOT-TRIAL-024/worktree。CHANGELOG.md 不改（AGENTS.md 与 CHANGELOG.md 未要求目录变更记条目）。
 - **Non-goals:** push、PR、merge、Reviewer 以外的派发、代码 / 测试 / 脚本修改、删除文件或分支或 worktree、TestFlight / App Store Connect、产品决定起草、ACTIVE_WORK 与其它 Assignment 修改。
 - **Required Inputs:** 任务包与授权回执；基线 3962cae109a42b9fcdfa4a6214fd08cf6d276533；外置 GROK-BOT-TRIAL-023 提案（SHA-256 aff1f118…cf9）、quality-review（afb0295e…7ca）、pm-human-questions（63d67a01…63b）；暂存清单 backlog-notes（5804d3d5…1f0，含 B28、B29）；发布决定记录（972ede33…ba8）；docs/assignments/portfolio-refresh-005a.md 先例。
 
@@ -45,12 +45,12 @@ record_id: PORTFOLIO-REFRESH-006
 | R2 | 新建行 15 个，PF-037 至 PF-051 连续且登记前未占用，状态均为 Backlog |
 | R3 | 不把未决定事项写成决定：B10、B20、B21、B23 不作为决定记录 |
 | R4 | 本记录必填字段完整，Active；不自填评审结论 |
-| R5 | git diff --check 与链接目标存在性记录；一次本地提交，无发布或越权改动 |
+| R5 | git diff --check 与链接目标存在性记录；本地提交（`78e7583`、`102ba23` 及后续修订提交；以 `git log` 为准），无发布或越权改动 |
 
 ## Gates
 
 - **Entry Criteria:** Human 授权激活；任务包与冻结输入 SHA-256 匹配；fetch 后 origin/main 精确为基线；新编号未占用；隔离 worktree。
-- **Exit Criteria:** 允许文件指定刷新；diff --check 通过；链接目标存在；一个本地提交，作者与提交者为 Cowork 3P（该 worktree 来自没有本地身份配置的克隆，经 Human 授权用一次性 git -c 指定）；外置 Executor 报告交付。不在评审前填写评审结论。
+- **Exit Criteria:** 允许文件指定刷新；diff --check 通过；链接目标存在；本地提交（`78e7583`、`102ba23` 及后续修订提交；以 `git log` 为准），作者与提交者为 Cowork 3P（该 worktree 来自没有本地身份配置的克隆，经 Human 授权用一次性 git -c 指定）；外置 Executor 报告交付。不在评审前填写评审结论。
 - **Stop Conditions:** 冻结输入不符；基线出现触及目录或代码的新提交；需要范围外改动；事实无出处；新编号已被占用。
 
 ## Handoff
@@ -61,7 +61,7 @@ record_id: PORTFOLIO-REFRESH-006
 
 ## Reports
 
-~/.kos-work/Universe-Keyboard/GROK-BOT-TRIAL-024/reports/executor-report.md；SHA-256 由对话交付，避免循环引用。授权仅外置，不入库。
+~/.kos-work/Universe-Keyboard/GROK-BOT-TRIAL-024/reports/ 下：executor-report.md（85b59a6aaacc9e75b7ab455f84bf3753a1ba673be8fb9d3212da5984ba9d76bb）、executor-report-r1.md（ad5b776af0e219d63d9ce8b2dfe4069ed38dde7ab84d32ce0e785e9d7ba85519）、executor-report-r2.md（停止报告，4c8ff1a8323be46373dcd67d9b494e8a6c25735ab53ede281c3cd5250052b95c）、quality-review.md（799ab80057e6c34b9223554103964bcd02d290566650dae50f3a12662283a0a6）、quality-review-r1.md（2e82dce01eb872ab5e9a7fb4800fff8ed7eb63b169cba853f6797dbd0554af64）、review-indep-r1.md（f458999b4d957782d729f6995f44a3c15e2f3cdab1b5cf4ee3f1424514132c6f）；本次 executor-report-r3.md 的 SHA-256 由对话交付，避免循环引用。授权仅外置，不入库。
 
 ## Exit evidence
 
