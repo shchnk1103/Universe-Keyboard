@@ -1,6 +1,14 @@
 import KeyboardCore
 import UIKit
 
+/// Archived adaptive behavior remains build-selectable, not a user setting.
+enum T9PathRowReservation {
+    case always
+    case adaptive
+
+    static let production: Self = .always
+}
+
 extension KeyboardViewController {
     var shouldReserveT9PinyinPathBar: Bool {
         // `preferredKeyboardHeight` is queried during bootstrap before Core is installed.
@@ -49,6 +57,7 @@ extension KeyboardViewController {
 
     var presentedT9PinyinPathBarHeight: CGFloat {
         guard controller != nil, shouldReserveT9PinyinPathBar else { return 0 }
+        if t9PathRowReservation == .always { return t9PinyinPathBarHeight }
         return shouldShowT9PinyinPathBar(controller.t9CompositionPresentationSnapshot())
             ? t9PinyinPathBarHeight : 0
     }
@@ -59,10 +68,15 @@ extension KeyboardViewController {
         UIView.performWithoutAnimation {
             let visible = shouldShowT9PinyinPathBar(snapshot)
             if visible { hasExpandedT9PinyinRowInPresentation = true }
-            bar.setRowVisible(visible)
-            installPreferredKeyboardHeight(
-                pathHeight: visible ? t9PinyinPathBarHeight : 0
+            // Reservation and content are independent: blank idle chrome must
+            // keep the same real row and budget as the first composition.
+            let reserved = shouldReserveT9PinyinPathBar && (t9PathRowReservation == .always || visible)
+            bar.setRowVisible(reserved)
+            bar.setReservedContentVisible(
+                t9PathRowReservation == .adaptive || !snapshot.paths.isEmpty,
+                interactionAllowed: !shouldBlockT9RecoveryPresentation
             )
+            installPreferredKeyboardHeight(pathHeight: reserved ? t9PinyinPathBarHeight : 0)
         }
     }
 

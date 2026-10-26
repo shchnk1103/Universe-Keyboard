@@ -797,6 +797,8 @@ nonisolated final class KeyboardHeightControllerTests: XCTestCase {
 
 @MainActor
 private final class HeightLayoutController: KeyboardViewController {
+    // The original #244 transition fixtures intentionally exercise archived growth.
+    override var t9PathRowReservation: T9PathRowReservation { .adaptive }
     let heightBudgetFrames = HeightBudgetTestFrames()
     var layoutCount = 0
     override func viewDidLayoutSubviews() {

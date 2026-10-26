@@ -209,6 +209,16 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
         #endif
     }
 
+    /// Hide content, not the arranged row. In reserved idle state the transparent
+    /// spacer cannot intercept touches or expose an empty accessibility container.
+    func setReservedContentVisible(_ visible: Bool, interactionAllowed: Bool) {
+        isUserInteractionEnabled = visible && interactionAllowed
+        accessibilityElementsHidden = !visible || isHidden
+        collectionView.alpha = visible ? 1 : 0
+        idleHintLabel.alpha = visible ? 1 : 0
+        separator.alpha = visible ? 1 : 0
+    }
+
     /// Publish Core paths for one composition revision.
     /// - Parameters:
     ///   - compositionRevision: when this changes, scroll resets to the first item.
