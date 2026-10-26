@@ -61,7 +61,7 @@ UI3 P3/P4 字号及受本次抽取影响的来源核对基线为 `76bfd4fbdd1673
 | 名称（符号） | 值 | 来源（基线） | 使用处 / 说明 |
 |---|---|---|---|
 | T9PinyinBar.visibleHeight | 34 | `Keyboard/Views/KeyboardDesignTokens.swift:29` | 已展开可见高度 |
-| presentedT9PinyinPathBarHeight | 0 / 34 | `Keyboard/Controllers/KeyboardViewController+T9PinyinPath.swift:50`；`Keyboard/Controllers/KeyboardViewController+T9PinyinPath.swift:51` | 空闲新周期可为 0；首次有效信号后锁存 34，不是每次清空就折叠 |
+| presentedT9PinyinPathBarHeight | 合格九键字母页34；其它0 | `Keyboard/Controllers/KeyboardViewController+T9PinyinPath.swift:50`；`Keyboard/Controllers/KeyboardViewController+T9PinyinPath.swift:51` | 始终预留实际34，空内容无交互/AX；adaptive0/34仅归档策略 |
 | setRowVisible collectionBottomConstraint | 显示 −1；折叠 0 | `Keyboard/Views/T9PinyinPathBarView.swift:199`；`Keyboard/Views/T9PinyinPathBarView.swift:203` | 折叠时 row 高 0，无触摸或 AX 内容 |
 | Path compact sectionInset / spacing | 上下 0，左右 4；行 / item 0 | `Keyboard/Views/T9PinyinPathBarView.swift:67` | 横向 collection |
 | Path compact item size | width=max(44,ceil(textWidth)+20)，height=max(0,34−1)=33 | `Keyboard/Views/T9PinyinPathBarView.swift:396` | 宽度测量按未选中 inset 10×2 |
@@ -187,7 +187,7 @@ App Group 保存整数档位13–22；17、缺省/删除、非法类型或越界
 - `Keyboard/Controllers/KeyboardViewController+HeightSettings.swift` 的 resolveKeyboardRowHeight：
   固定部分 F=2+46+2×8+10+0+路径栏高度=74+路径栏高度；宿主预算更低时再夹取有效行高 h，
   不将压缩后的值自动写回保存值；不足四行40pt时隐藏并等待可用几何。
-- 候选栏仍为46，九宫格路径栏仍为0/34；本次行高设置不改变它们，也不改变横向间距、字号或按键宽度。
+- 候选栏仍为46，合格九宫格字母页路径栏始终预留34（S7取代原0/34）；行高设置不改变它们，也不改变横向间距、字号或按键宽度。
 - 行约束通过 `Keyboard/Controllers/KeyboardViewController+Layout.swift` 的 preferredRowHeightConstraint
   跟随 h；九键 host=4h+26、跨行 Return=2h+10、旧路径面板下限=4h+24、表情 grid=3h+16。
   表中206/100/204/151仅为 h=45 的默认派生值，相关来源以这些文件的同名符号定位。
@@ -200,8 +200,8 @@ App Group 保存整数档位13–22；17、缺省/删除、非法类型或越界
 
 - 26 键：top + candidates + 4×h + 2×keySpacing + groupSpacing + bottom = **4h+74**；
   默认 h=45 时，2 + 46 + 4×45 + 2×8 + 10 + 0 = **254**。
-- 九键新周期空闲、路径栏0：4h+74；默认 **254**。
-- 九键路径栏已展开 / 本周期锁存：4h+108；默认254+34=**288**。
+- 中文九键字母页且readiness成立：空闲也含路径34，4h+108；默认 **288**（旧254被取代）。
+- 同表面组字时仍为4h+108，默认 **288**；首键不改变请求或实际行高。844pt竖屏固定108，上限floor((422−108)/4)=78；保存87只显示78，总高420，保存值不改。26键固定74，上限87。
 
 这是 `preferredKeyboardHeight` 的请求值（同文件 `:45` 与 `+T9PinyinPath.swift:50`），不是系统实授高度。
 九键普通 chrome 默认206与旧路径面板下限默认204使用不同间距公式，不能互换。
@@ -387,3 +387,7 @@ Reviewer 按源码逐行核对，Coordinator 不以盘点材料取代源码。�
 
 调节滑块上限仍只使用横屏45 / 竖屏50%产品封顶；确定保存界内用户意图整数（重置删除），
 不保存宿主压缩后的有效行高。真实低预算、振荡期间暂时超出容器的显示与真机漏按/错行仍须后续真机复测。
+
+## S7 合同更新（2026-10-26）
+
+[Human决定](product-decisions/T9-PATH-ROW-RESERVED-001-product-decision.md)选择九键字母页始终预留34pt，取代本文件历史审计中的空闲254/0pt、Sticky及合同冲突未决描述；历史代码行号与审计只反映其记录时的基线，不是新合同。非九键/非中文/非字母页/未就绪仍不增加34，默认254（emoji按自身布局）。#244/#247及UI-4其它规则不变。
