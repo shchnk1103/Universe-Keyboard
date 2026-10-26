@@ -268,7 +268,8 @@ nonisolated final class KeyboardHeightControllerTests: XCTestCase {
         coordinator.complete()
         XCTAssertEqual(request.priority.rawValue, 999)
         owner.view.bounds.size.height = 274
-        owner.synchronizeKeyboardHeightLayout()
+        owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+        owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
         XCTAssertEqual(owner.keyboardAcceptedHeight, 274)
         XCTAssertEqual(owner.keyHeight, 50)
         XCTAssertEqual(request.constant, 314)
@@ -276,7 +277,7 @@ nonisolated final class KeyboardHeightControllerTests: XCTestCase {
         XCTAssertEqual(owner.keyboardHeightSettings.savedRowHeight, 60)
         XCTAssertEqual(writes, 0)
         owner.view.bounds.size.height = 216
-        owner.synchronizeKeyboardHeightLayout()
+        owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
         XCTAssertEqual(owner.keyboardHeightStatus, "hostBudgetBelowMinimum")
         XCTAssertEqual(owner.view.alpha, 0)
         XCTAssertFalse(request.isActive)
@@ -312,6 +313,125 @@ nonisolated final class KeyboardHeightControllerTests: XCTestCase {
         coordinator.complete()
         XCTAssertEqual(request.priority, .defaultHigh)
         XCTAssertEqual(owner.keyboardHeightSettings.savedRowHeight, 60)
+    }
+
+    @MainActor
+    func testGrowthIgnoresFirstOldBoundsAndAcceptsSecondLargerLayout() throws {
+        let (owner, window) = makeRotationOwner()
+        defer { window.isHidden = true }
+        owner.view.bounds.size.height = 314
+        owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+        owner.keyboardHeightSettings = KeyboardHeightSettings(savedRowHeight: 70)
+        owner.synchronizeKeyboardHeightLayout()
+        owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+        XCTAssertNil(owner.keyboardAcceptedHeight)
+        XCTAssertEqual(owner.keyHeight, 70)
+        XCTAssertEqual(owner.view.alpha, 1)
+        owner.view.bounds.size.height = 354
+        owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+        XCTAssertNil(owner.keyboardAcceptedHeight)
+        XCTAssertEqual(owner.keyHeight, 70)
+        XCTAssertEqual(owner.keyboardHeightConstraint?.constant, 354)
+    }
+
+    @MainActor
+    func testNewAppearanceRenegotiatesEvenWhenSavedRequestIsUnchanged() {
+        let (owner, window) = makeRotationOwner()
+        defer { window.isHidden = true }
+        owner.view.bounds.size.height = 314
+        owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+        XCTAssertNil(owner.keyboardHeightBudgetRequest)
+        owner.keyboardHeightNeedsRead = true
+        owner.prepareKeyboardHeightForAppearance()
+        owner.view.bounds.size.height = 254
+        owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+        XCTAssertNil(owner.keyboardAcceptedHeight)
+        XCTAssertEqual(owner.keyHeight, 60)
+        XCTAssertEqual(owner.view.alpha, 1)
+        owner.view.bounds.size.height = 314
+        owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+        XCTAssertEqual(owner.keyHeight, 60)
+        XCTAssertNil(owner.keyboardAcceptedHeight)
+    }
+
+    @MainActor
+    func testStableOldBudgetCompressesWithoutChangingSavedIntentAndCanRecover() {
+        let (owner, window) = makeRotationOwner()
+        defer { window.isHidden = true }
+        owner.view.bounds.size.height = 314
+        owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+        owner.keyboardHeightSettings = KeyboardHeightSettings(savedRowHeight: 70)
+        owner.synchronizeKeyboardHeightLayout()
+        owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+        XCTAssertEqual(owner.keyHeight, 70)
+        // Ordinary refreshes are not extra host layout observations.
+        for _ in 0..<5 { owner.synchronizeKeyboardHeightLayout() }
+        XCTAssertNil(owner.keyboardAcceptedHeight)
+        owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+        XCTAssertEqual(owner.keyboardAcceptedHeight, 314)
+        XCTAssertEqual(owner.keyHeight, 60)
+        XCTAssertEqual(owner.keyboardHeightSettings.savedRowHeight, 70)
+        owner.view.bounds.size.height = 216
+        owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+        XCTAssertEqual(owner.keyboardHeightStatus, "hostBudgetBelowMinimum")
+        XCTAssertEqual(owner.view.alpha, 0)
+        owner.view.bounds.size.height = 354
+        owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+        XCTAssertEqual(owner.keyboardHeightStatus, "ready")
+        XCTAssertEqual(owner.view.alpha, 1)
+        XCTAssertEqual(owner.keyHeight, 70)
+    }
+
+    @MainActor
+    func testPathGrowthKeepsKeysHittableAndControlActionsDeliverUntilHostSettles() throws {
+        for grows in [true, false] {
+            let owner = makeOwner(saved: 43, nineKey: true)
+            install(owner)
+            let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 500))
+            let host = UIViewController()
+            window.rootViewController = host
+            host.view.addSubview(owner.view)
+            window.isHidden = false
+            defer { window.isHidden = true }
+            owner.hostLifecycleRecoveryGate.noteViewWillAppear(context: nil)
+            owner.hostLifecycleRecoveryGate.noteViewDidAppear(hasWindow: true)
+            owner.view.bounds.size.height = 246
+            owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+            showPath(owner)
+            owner.view.bounds.size.height = 246
+            owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+            XCTAssertEqual(owner.keyHeight, 43)
+            XCTAssertNil(owner.keyboardAcceptedHeight)
+            XCTAssertEqual(owner.view.alpha, 1)
+            XCTAssertTrue(owner.keyboardHeightConstraint?.isActive == true)
+            owner.rootStack.layoutIfNeeded()
+            let key = try XCTUnwrap(
+                descendants(owner.rootStack).compactMap { $0 as? KeyboardKeyButton }.first {
+                    $0.accessibilityIdentifier == "6"
+                })
+            let point = key.convert(CGPoint(x: key.bounds.midX, y: key.bounds.midY), to: owner.view)
+            let hit = owner.view.hitTest(point, with: nil)
+            XCTAssertTrue(hit === key || hit?.isDescendant(of: key) == true)
+            let receiver = HeightControlReceiver()
+            key.removeTarget(nil, action: nil, for: .allEvents)
+            // Hostless XCTest 没有 UIApplication selector 派发器；UIAction 仍走 UIControl 事件派发。
+            key.addAction(UIAction { _ in receiver.receive() }, for: .touchUpInside)
+            for _ in 0..<3 { key.sendActions(for: .touchUpInside) }
+            XCTAssertEqual(receiver.count, 3)
+            owner.view.bounds.size.height = grows ? 280 : 246
+            owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+            XCTAssertEqual(owner.keyboardHeightSettings.savedRowHeight, 43)
+            if grows {
+                XCTAssertEqual(owner.keyHeight, 43)
+                XCTAssertEqual(owner.view.alpha, 1)
+                XCTAssertNil(owner.keyboardAcceptedHeight)
+            } else {
+                XCTAssertEqual(owner.keyboardAcceptedHeight, 246)
+                XCTAssertEqual(owner.keyboardHeightStatus, "hostBudgetBelowMinimum")
+                XCTAssertEqual(owner.view.alpha, 0)
+                XCTAssertFalse(owner.keyboardHeightConstraint?.isActive ?? true)
+            }
+        }
     }
 
     @MainActor
@@ -437,4 +557,10 @@ private final class HeightRotationCoordinator: NSObject, UIViewControllerTransit
     func complete() {
         for completion in completions { completion(self) }
     }
+}
+
+@MainActor
+private final class HeightControlReceiver: NSObject {
+    var count = 0
+    @objc func receive() { count += 1 }
 }

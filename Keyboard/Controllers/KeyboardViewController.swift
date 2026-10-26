@@ -404,6 +404,8 @@ class KeyboardViewController: UIInputViewController {
     var isKeyboardHeightManaged = false
     var keyboardHeightGeometry: KeyboardHeightGeometry?
     var keyboardAcceptedHeight: CGFloat?
+    var keyboardHeightBudgetRequest: KeyboardHeightBudgetRequest?
+    var keyboardHeightBudgetLayoutScheduled = false
     var keyboardUncompressedHeight: CGFloat?
     var keyboardHeightConstraints: [KeyboardRowHeightConstraint] = []
     var keyboardHeightStatus: String?
@@ -873,7 +875,7 @@ class KeyboardViewController: UIInputViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        if isKeyboardHeightManaged { synchronizeKeyboardHeightLayout() }
+        if isKeyboardHeightManaged { synchronizeKeyboardHeightLayout(isHostLayout: true) }
         #if DEBUG && KEYBOARD_QUERY_COST_PROBE
             layoutQueryCostProbeControls()
         #endif
