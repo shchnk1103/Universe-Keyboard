@@ -413,6 +413,7 @@ class KeyboardViewController: UIInputViewController {
     var keyboardHeightBudgetFrameObservation: (any KeyboardHeightBudgetFrameObservation)?
     var keyboardHeightBudgetObservationID: UUID?
     var keyboardHeightBudgetObservationExhausted = false
+    var keyboardHeightBudgetExhaustedHeight: CGFloat?
     var keyboardUncompressedHeight: CGFloat?
     var keyboardHeightConstraints: [KeyboardRowHeightConstraint] = []
     var keyboardHeightStatus: String?

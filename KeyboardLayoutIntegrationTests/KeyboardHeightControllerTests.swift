@@ -491,7 +491,7 @@ nonisolated final class KeyboardHeightControllerTests: XCTestCase {
     }
 
     @MainActor
-    func testOscillatingHostStopsAtBoundWithoutSelfSchedulingLayouts() {
+    func testOscillatingHostStopsAtBoundWithoutSelfSchedulingLayouts() throws {
         let (owner, window) = makeRotationOwner()
         defer { window.isHidden = true }
         owner.view.bounds.size.height = 246
@@ -508,11 +508,58 @@ nonisolated final class KeyboardHeightControllerTests: XCTestCase {
         XCTAssertEqual(owner.view.alpha, 1)
         XCTAssertEqual(owner.keyHeight, 60)
         XCTAssertEqual(owner.layoutCount, layouts)
+        // 同一耗尽读数的重复布局不重试；变化后的自愈由单独回归覆盖。
+        owner.view.bounds.size.height = try XCTUnwrap(owner.keyboardHeightBudgetExhaustedHeight)
         let observations = owner.heightBudgetFrames.observations.count
         for _ in 0..<100 { owner.synchronizeKeyboardHeightLayout(isHostLayout: true) }
         XCTAssertEqual(owner.heightBudgetFrames.observations.count, observations)
         XCTAssertEqual(owner.layoutCount, layouts)
         XCTAssertNil(owner.keyboardAcceptedHeight)
+    }
+
+    @MainActor
+    func testExhaustedOscillationReobservesChangedStableLowBudget() {
+        let owner = makeOwner(saved: 43, nineKey: true)
+        install(owner)
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 500))
+        let host = UIViewController()
+        window.rootViewController = host
+        host.view.addSubview(owner.view)
+        window.isHidden = false
+        defer { window.isHidden = true }
+        owner.hostLifecycleRecoveryGate.noteViewWillAppear(context: nil)
+        owner.hostLifecycleRecoveryGate.noteViewDidAppear(hasWindow: true)
+        owner.view.bounds.size = CGSize(width: 390, height: 246)
+        showPath(owner)
+        owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+        XCTAssertEqual(owner.keyboardUncompressedHeight, 280)
+        let start = owner.heightBudgetFrames.now
+        let layouts = owner.layoutCount
+        // 外部宿主逐帧变化300ms；仅真实变化可重新取得一个有界观察窗口。
+        for frame in 1...36 {
+            owner.view.bounds.size.height = frame.isMultiple(of: 2) ? 250 : 254
+            owner.heightBudgetFrames.advance(to: start + Double(frame) / 120)
+            owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+            XCTAssertNil(owner.keyboardAcceptedHeight)
+            XCTAssertEqual(owner.view.alpha, 1)
+        }
+        XCTAssertLessThanOrEqual(owner.heightBudgetFrames.observations.count, 3)
+        XCTAssertGreaterThanOrEqual(owner.heightBudgetFrames.observations.count, 2)
+        XCTAssertEqual(owner.layoutCount, layouts)
+        owner.view.bounds.size.height = 246
+        owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+        let settledStart = owner.heightBudgetFrames.now
+        owner.heightBudgetFrames.advance(to: settledStart + 0.02)
+        XCTAssertNil(owner.keyboardAcceptedHeight)
+        owner.heightBudgetFrames.advance(to: settledStart + 0.08)
+        XCTAssertEqual(owner.keyboardAcceptedHeight, 246)
+        XCTAssertEqual(owner.view.alpha, 0)
+        XCTAssertEqual(owner.keyboardHeightStatus, "hostBudgetBelowMinimum")
+        XCTAssertNil(owner.keyboardHeightBudgetFrameObservation)
+        let observations = owner.heightBudgetFrames.observations.count
+        for _ in 0..<100 { owner.synchronizeKeyboardHeightLayout(isHostLayout: true) }
+        XCTAssertEqual(owner.heightBudgetFrames.observations.count, observations)
+        XCTAssertEqual(owner.layoutCount, layouts)
     }
 
     @MainActor

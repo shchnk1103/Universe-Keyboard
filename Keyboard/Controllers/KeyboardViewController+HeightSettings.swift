@@ -71,6 +71,7 @@ extension KeyboardViewController {
                 // 新请求不能继承旧预算；帧观察在可见窗口首次布局后启动。
                 stopKeyboardHeightBudgetFrames()
                 keyboardHeightBudgetObservationExhausted = false
+                keyboardHeightBudgetExhaustedHeight = nil
                 keyboardAcceptedHeight = nil
                 keyboardHeightBudgetRequest = KeyboardHeightBudgetRequest(height: requested)
             }
@@ -136,10 +137,17 @@ extension KeyboardViewController {
             stopKeyboardHeightBudgetFrames()
             keyboardHeightBudgetRequest = nil
             keyboardHeightBudgetObservationExhausted = false
+            keyboardHeightBudgetExhaustedHeight = nil
             keyboardAcceptedHeight = nil
             return
         }
-        guard keyboardAcceptedHeight != actual, !keyboardHeightBudgetObservationExhausted else { return }
+        guard keyboardAcceptedHeight != actual else { return }
+        if keyboardHeightBudgetObservationExhausted {
+            // 只有新的宿主读数才重新取得有界窗口；相同读数不能自行触发重试。
+            guard keyboardHeightBudgetExhaustedHeight != actual else { return }
+            keyboardHeightBudgetObservationExhausted = false
+            keyboardHeightBudgetExhaustedHeight = nil
+        }
         if keyboardHeightBudgetRequest == nil {
             // 结算后的新低读数也走同一判据，不能直接采用动画中间值。
             keyboardHeightBudgetRequest = KeyboardHeightBudgetRequest(height: requested)
@@ -170,9 +178,10 @@ extension KeyboardViewController {
         case .accepted(let height):
             keyboardAcceptedHeight = height < request.height ? height : nil
         case .exhausted:
-            // 无法证明稳定就保持意图，不以最后一个振荡值隐藏键盘；同代际不自动重试。
+            // 无法证明稳定就保持意图，不以最后一个振荡值隐藏键盘；相同耗尽读数不自动重试。
             keyboardAcceptedHeight = nil
             keyboardHeightBudgetObservationExhausted = true
+            keyboardHeightBudgetExhaustedHeight = view.bounds.height
         }
         keyboardHeightBudgetRequest = nil
         stopKeyboardHeightBudgetFrames()
@@ -183,6 +192,7 @@ extension KeyboardViewController {
         stopKeyboardHeightBudgetFrames()
         keyboardHeightBudgetRequest = nil
         keyboardHeightBudgetObservationExhausted = false
+        keyboardHeightBudgetExhaustedHeight = nil
         keyboardAcceptedHeight = nil
         keyboardUncompressedHeight = nil
     }
