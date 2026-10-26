@@ -33,7 +33,7 @@ record_id: GIT-BRANCH-ARCHIVE-HYGIENE-004
 1. **S1** 执行第一批清理。对象名字如下（20 项，来自外置盘点 C 节；路径只在该外置清单）：
    - worktree 与分支：`BUILD167-D4-ASSIGNMENT-LANDING-001` / `docs/build167-d4-assignment-001`；`BUILD167-FEEDBACK-ASSIGNMENT-LANDING-001` / `docs/build167-feedback-assignment-001`；`BUILD167-FEEDBACK-FIX-LANDING-001` / `docs/build167-feedback-fix-assignment-001`；`KEYBOARD-UI2-PR217-CI-WHITESPACE-001` / `claude/ui2-pr217-ci-whitespace-001`；`KEYBOARD-VALUES-DOC-001` / `docs/keyboard-values-doc-001`；`LIFECYCLE-CLOSEOUT-BATCH-1C-001` / `docs/lifecycle-closeout-batch-1c-001`；`PF031-PREP-001` / `prep/pf031-001`；`PORTFOLIO-DIRECTORY-001` / `docs/portfolio-directory-001`；`PORTFOLIO-REFRESH-001` / `docs/portfolio-refresh-001`；`PORTFOLIO-REFRESH-002` / `docs/portfolio-refresh-002`；`PORTFOLIO-REFRESH-003` / `docs/portfolio-refresh-003`；`PORTFOLIO-REFRESH-004` / `docs/portfolio-refresh-004`；`PORTFOLIO-REFRESH-005A` / `docs/portfolio-refresh-005a`；`RELEASE-ASSIGNMENT-LANDING-001` / `docs/release-assignment-landing-001`；`RELEASE-CHECKLIST-REFRESH-001` / `docs/release-checklist-refresh-001`；`RELEASE-PREP-RECORD-001` / `docs/release-prep-record-001`；`UI3-FONT-001` / `feature/ui3-font-001`；`UI4-SPIKE-001-CLOSEOUT-001` / `docs/ui4-spike-001-closeout-001`
    - 仅分支：`docs/ui3-pd-landing-001`；`docs/ui4-pd-landing-001`
-   - 方式：执行前拉取最新远端，并逐项复查已并入 `origin/main`、未提交改动为 0、不受保护；安全删除（`worktree remove` 不加 `--force`、`branch -d`、`push --delete`）。任何一项不满足就跳过该项。回执写到外置任务目录。
+   - 方式：执行前拉取最新远端，并逐项复查已并入 `origin/main`、未提交改动为 0、不受保护；安全删除（`worktree remove` 不加 `--force`、`branch -d`、`push --delete`）。复查不满足的对象跳过，其余继续；任何删除命令失败或被拒，立即停止整批并保留检查点。回执写到外置任务目录。
 2. **S2** 4A 与 5A 的逐个只读比对：只出报告，删除另批。
 
 ### Non-goals
@@ -58,8 +58,8 @@ record_id: GIT-BRANCH-ARCHIVE-HYGIENE-004
 ## Assignment
 
 - **Domain Owner:** Architecture & Knowledge Steward（出处：[docs/VIRTUAL_ENGINEERING_TEAM.md](../VIRTUAL_ENGINEERING_TEAM.md) 长期角色表；与 [GIT-BRANCH-ARCHIVE-HYGIENE-003](git-branch-archive-hygiene-003.md) 相同写法）
-- **Executor:** Codex（S1）；Grok bot（S2，只读）
-- **Environment Executor:** Codex（本机 git 与 `gh`）
+- **Executor:** S1 为获授权的执行会话（本机 git 与 gh）；S2 为只读调研会话
+- **Environment Executor:** S1 的执行会话
 - **Human Dependency:** 每批授权；6A 与 7B 的操作
 - **Architecture Reviewer:** Not Applicable — 只涉及 git 引用卫生，不涉及产品或架构
 - **Quality Reviewer:** 独立 Quality，负责复核回执
@@ -80,8 +80,7 @@ record_id: GIT-BRANCH-ARCHIVE-HYGIENE-004
 
 ### Stop Conditions
 
-- 任何安全删除被拒。
-- 复查不满足。
+- 任何删除命令失败或被拒（停止整批并保留检查点）。复查不满足的对象跳过，不因此停止整批。
 - 需要 force。
 - 对象受保护。
 - 远端状态无法确认。

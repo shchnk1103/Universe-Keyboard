@@ -15,20 +15,20 @@ record_id: GIT-BRANCH-ARCHIVE-HYGIENE-004-LANDING
 ## Authority
 
 - **Assignment Authority:** Product Lead
-- **Decision Source / Date:** Human Product Owner，2026-10-26 Asia/Shanghai。任务包 `~/.kos-work/Universe-Keyboard/GIT-BRANCH-ARCHIVE-HYGIENE-004-LANDING/instructions/task-package.md`，SHA-256 `f885c20a4229af9dff6819e1d37d69ef65a620f305edaa3f06ea6eb2b31b4086`。Human 决定原文 `1A 2A 3A 4A 5A 6A 7B`。
+- **Decision Source / Date:** Human Product Owner，2026-10-26 Asia/Shanghai。任务包为相对 `~/.kos-work/Universe-Keyboard/` 的路径 `GIT-BRANCH-ARCHIVE-HYGIENE-004-LANDING/instructions/task-package.md`，SHA-256 `f885c20a4229af9dff6819e1d37d69ef65a620f305edaa3f06ea6eb2b31b4086`。Human 决定原文 `1A 2A 3A 4A 5A 6A 7B`。
 - **Product Approver:** Human Product Owner（Product Lead）
 
 ## Boundary
 
 - **Scope:** 新建 [GIT-BRANCH-ARCHIVE-HYGIENE-004](git-branch-archive-hygiene-004.md)；新建本记录；在 `AGENTS.md`「GitHub 发布与分支清理」末尾追加「合并后清理（PF-023）」。恰好这三份文件。
 - **Non-goals:** 删除任何分支或 worktree；push、PR、merge；GitHub 仓库设置；修改代码、测试或其它文档；6A；7B。
-- **Required Inputs:** 任务包（SHA 见上）；外置盘点 `~/.kos-work/Universe-Keyboard/GROK-BOT-TRIAL-026/reports/branch-worktree-inventory.md` SHA-256 `1c6ff10aa3802e8ab62893b381ff8e4c8bf374a3b338b92ce39dafdf4c712dbb`；外置 Quality `GROK-BOT-TRIAL-026/reports/quality-review.md` SHA-256 `52a3cd964e10c7041ffd90723b0e88f53295f1ef3014bf5ae3637a046f40fede`；[GIT-BRANCH-ARCHIVE-HYGIENE-003](git-branch-archive-hygiene-003.md)；[D7](../portfolio/lifecycle-closeout.md)。
+- **Required Inputs:** 下列外置路径均相对 `~/.kos-work/Universe-Keyboard/`。任务包 `GIT-BRANCH-ARCHIVE-HYGIENE-004-LANDING/instructions/task-package.md`（SHA 见上）；外置盘点 `GROK-BOT-TRIAL-026/reports/branch-worktree-inventory.md` SHA-256 `1c6ff10aa3802e8ab62893b381ff8e4c8bf374a3b338b92ce39dafdf4c712dbb`；外置 Quality `GROK-BOT-TRIAL-026/reports/quality-review.md` SHA-256 `52a3cd964e10c7041ffd90723b0e88f53295f1ef3014bf5ae3637a046f40fede`；[GIT-BRANCH-ARCHIVE-HYGIENE-003](git-branch-archive-hygiene-003.md)；[D7](../portfolio/lifecycle-closeout.md)。
 - **Baseline:** `origin/main` = `eda15a52dad30f6bac08f09c0f9356526763e208`（PR #244 合并）。开工时该提交之后没有触及本任务三份文件的新提交。
 
 ## Assignment
 
 - **Domain Owner:** Architecture & Knowledge Steward（出处：[docs/VIRTUAL_ENGINEERING_TEAM.md](../VIRTUAL_ENGINEERING_TEAM.md)；与 [GIT-BRANCH-ARCHIVE-HYGIENE-003](git-branch-archive-hygiene-003.md) 相同写法）
-- **Executor:** Grok bot（本任务包点名执行）
+- **Executor:** 本任务包指定的执行会话（实际运行时身份见外置执行报告）
 - **Environment Executor:** Not Applicable — repository documentation only
 - **Human Dependency:** Human Product Owner（任何 push / PR / merge；6A 与 7B）
 - **Architecture Reviewer:** Not Applicable — 只涉及 git 引用卫生与文档登记，不涉及产品或架构
