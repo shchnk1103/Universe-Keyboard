@@ -545,6 +545,7 @@ nonisolated final class KeyboardHeightAdjustmentTests: XCTestCase {
             owner.view.bounds.size.height = 254
             owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
             owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+            owner.heightBudgetFrames.settle()
             XCTAssertEqual(owner.keyHeight, CGFloat(min(intent, 45)))
             owner.confirmKeyboardHeightAdjustment()
             XCTAssertEqual(saved, intent)
@@ -556,6 +557,7 @@ nonisolated final class KeyboardHeightAdjustmentTests: XCTestCase {
     @MainActor
     private func makeOwner(saved: Int? = nil, landscape: Bool = false) -> HeightAdjustmentTestController {
         let owner = HeightAdjustmentTestController()
+        owner.heightBudgetFrames.attach(to: owner)
         owner.loadViewIfNeeded()
         owner.controller = KeyboardController(state: KeyboardState(inputMode: .english))
         owner.keyboardHeightAdjustmentTokenConsumer = { HeightAdjustmentTestTokens.consumed.insert($0).inserted }
@@ -611,6 +613,7 @@ nonisolated final class KeyboardHeightAdjustmentTests: XCTestCase {
 
 @MainActor
 private final class HeightAdjustmentTestController: KeyboardViewController {
+    let heightBudgetFrames = HeightBudgetTestFrames()
     let proxy = HeightAdjustmentTextProxy()
     var dismissCount = 0
     var switchCount = 0

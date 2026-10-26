@@ -270,6 +270,7 @@ nonisolated final class KeyboardHeightControllerTests: XCTestCase {
         owner.view.bounds.size.height = 274
         owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
         owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+        owner.heightBudgetFrames.settle()
         XCTAssertEqual(owner.keyboardAcceptedHeight, 274)
         XCTAssertEqual(owner.keyHeight, 50)
         XCTAssertEqual(request.constant, 314)
@@ -278,6 +279,7 @@ nonisolated final class KeyboardHeightControllerTests: XCTestCase {
         XCTAssertEqual(writes, 0)
         owner.view.bounds.size.height = 216
         owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+        owner.heightBudgetFrames.settle()
         XCTAssertEqual(owner.keyboardHeightStatus, "hostBudgetBelowMinimum")
         XCTAssertEqual(owner.view.alpha, 0)
         XCTAssertFalse(request.isActive)
@@ -368,11 +370,13 @@ nonisolated final class KeyboardHeightControllerTests: XCTestCase {
         for _ in 0..<5 { owner.synchronizeKeyboardHeightLayout() }
         XCTAssertNil(owner.keyboardAcceptedHeight)
         owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+        owner.heightBudgetFrames.settle()
         XCTAssertEqual(owner.keyboardAcceptedHeight, 314)
         XCTAssertEqual(owner.keyHeight, 60)
         XCTAssertEqual(owner.keyboardHeightSettings.savedRowHeight, 70)
         owner.view.bounds.size.height = 216
         owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+        owner.heightBudgetFrames.settle()
         XCTAssertEqual(owner.keyboardHeightStatus, "hostBudgetBelowMinimum")
         XCTAssertEqual(owner.view.alpha, 0)
         owner.view.bounds.size.height = 354
@@ -426,12 +430,173 @@ nonisolated final class KeyboardHeightControllerTests: XCTestCase {
                 XCTAssertEqual(owner.view.alpha, 1)
                 XCTAssertNil(owner.keyboardAcceptedHeight)
             } else {
+                owner.heightBudgetFrames.settle()
                 XCTAssertEqual(owner.keyboardAcceptedHeight, 246)
                 XCTAssertEqual(owner.keyboardHeightStatus, "hostBudgetBelowMinimum")
                 XCTAssertEqual(owner.view.alpha, 0)
                 XCTAssertFalse(owner.keyboardHeightConstraint?.isActive ?? true)
             }
         }
+    }
+
+    @MainActor
+    func testFrameClockKeepsThirtyToFiftyMillisecondHostGrowthUncompressed() {
+        for delay in [0.03, 0.04, 0.05] {
+            let (owner, window) = makeRotationOwner()
+            defer { window.isHidden = true }
+            owner.view.bounds.size.height = 314
+            owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+            owner.keyboardHeightSettings = KeyboardHeightSettings(savedRowHeight: 70)
+            owner.synchronizeKeyboardHeightLayout()
+            owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+            let start = owner.heightBudgetFrames.now
+            for frame in 1...5 {
+                owner.heightBudgetFrames.advance(to: start + delay * Double(frame) / 6)
+                // Repeated self/host layout calls cannot accelerate the frame clock.
+                owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+                XCTAssertNil(owner.keyboardAcceptedHeight)
+                XCTAssertEqual(owner.keyHeight, 70)
+                XCTAssertEqual(owner.view.alpha, 1)
+            }
+            // One old host callback was enough to start the observer. No callback accompanies the new bounds.
+            owner.view.bounds.size.height = 354
+            owner.heightBudgetFrames.advance(to: start + delay)
+            XCTAssertNil(owner.keyboardAcceptedHeight)
+            XCTAssertEqual(owner.keyHeight, 70)
+            XCTAssertEqual(owner.view.alpha, 1)
+            XCTAssertTrue(owner.heightBudgetFrames.observations.last?.invalidated == true)
+        }
+    }
+
+    @MainActor
+    func testPostSettlementLowReadingUsesSameTrustWindow() {
+        let (owner, window) = makeRotationOwner()
+        defer { window.isHidden = true }
+        owner.view.bounds.size.height = 274
+        owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+        owner.heightBudgetFrames.settle()
+        XCTAssertEqual(owner.keyboardAcceptedHeight, 274)
+        XCTAssertEqual(owner.keyHeight, 50)
+        owner.view.bounds.size.height = 216
+        owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+        let start = owner.heightBudgetFrames.now
+        owner.heightBudgetFrames.advance(to: start + 0.05)
+        XCTAssertNil(owner.keyboardAcceptedHeight)
+        XCTAssertEqual(owner.keyHeight, 60)
+        XCTAssertEqual(owner.view.alpha, 1)
+        owner.heightBudgetFrames.advance(to: start + 0.08)
+        XCTAssertEqual(owner.keyboardAcceptedHeight, 216)
+        XCTAssertEqual(owner.view.alpha, 0)
+        XCTAssertEqual(owner.keyboardHeightStatus, "hostBudgetBelowMinimum")
+    }
+
+    @MainActor
+    func testOscillatingHostStopsAtBoundWithoutSelfSchedulingLayouts() {
+        let (owner, window) = makeRotationOwner()
+        defer { window.isHidden = true }
+        owner.view.bounds.size.height = 246
+        owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+        let start = owner.heightBudgetFrames.now
+        let layouts = owner.layoutCount
+        for frame in 1...17 {
+            owner.view.bounds.size.height = frame.isMultiple(of: 2) ? 246 : 250
+            owner.heightBudgetFrames.advance(to: start + Double(frame) / 120)
+        }
+        XCTAssertTrue(owner.keyboardHeightBudgetObservationExhausted)
+        XCTAssertNil(owner.keyboardHeightBudgetFrameObservation)
+        XCTAssertNil(owner.keyboardAcceptedHeight)
+        XCTAssertEqual(owner.view.alpha, 1)
+        XCTAssertEqual(owner.keyHeight, 60)
+        XCTAssertEqual(owner.layoutCount, layouts)
+        let observations = owner.heightBudgetFrames.observations.count
+        for _ in 0..<100 { owner.synchronizeKeyboardHeightLayout(isHostLayout: true) }
+        XCTAssertEqual(owner.heightBudgetFrames.observations.count, observations)
+        XCTAssertEqual(owner.layoutCount, layouts)
+        XCTAssertNil(owner.keyboardAcceptedHeight)
+    }
+
+    @MainActor
+    func testFrameSampleCapAndLateCallbacksCannotReviveCancelledRequest() {
+        let (owner, window) = makeRotationOwner()
+        defer { window.isHidden = true }
+        owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+        let start = owner.heightBudgetFrames.now
+        for frame in 1...KeyboardHeightBudgetRequest.maximumFrameSamples {
+            owner.view.bounds.size.height = frame.isMultiple(of: 2) ? 246 : 250
+            owner.heightBudgetFrames.advance(to: start)
+        }
+        XCTAssertTrue(owner.keyboardHeightBudgetObservationExhausted)
+        XCTAssertTrue(owner.heightBudgetFrames.observations.last?.invalidated == true)
+        owner.resetKeyboardHeightBudgetTrust()
+        let previous = owner.heightBudgetFrames.observations.last
+        previous?.handler(start + 1)
+        XCTAssertNil(owner.keyboardAcceptedHeight)
+        XCTAssertNil(owner.keyboardHeightBudgetFrameObservation)
+    }
+
+    @MainActor
+    func testF1DelayedHostGrowthDoesNotTrustSelfScheduledLayout() throws {
+        // 该方法同时在 R0 / R1 编译运行，不依赖 R1 的时钟或调度器 API。
+        let owner = HeightLayoutController()
+        owner.loadViewIfNeeded()
+        owner.controller = KeyboardController(state: KeyboardState())
+        owner.cachedLayoutStyle = .nineKey
+        owner.cachedT9ReadinessMatched = true
+        owner.keyboardRowHeightSource = { 43 }
+        owner.keyboardHeightGeometrySource = { .init(screenHeight: 844, isLandscape: false) }
+        owner.prepareKeyboardHeightForAppearance()
+        owner.installPreferredKeyboardHeight()
+        owner.installKeyboardUIIfNeeded()
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 500))
+        let host = UIViewController()
+        window.rootViewController = host
+        host.addChild(owner)
+        host.view.addSubview(owner.view)
+        owner.didMove(toParent: host)
+        owner.view.translatesAutoresizingMaskIntoConstraints = false
+        let hostHeight = owner.view.heightAnchor.constraint(equalToConstant: 246)
+        NSLayoutConstraint.activate([
+            owner.view.bottomAnchor.constraint(equalTo: host.view.bottomAnchor),
+            owner.view.leadingAnchor.constraint(equalTo: host.view.leadingAnchor),
+            owner.view.widthAnchor.constraint(equalToConstant: 390), hostHeight,
+        ])
+        window.isHidden = false
+        defer { window.isHidden = true }
+        host.view.layoutIfNeeded()
+        owner.hostLifecycleRecoveryGate.noteViewWillAppear(context: nil)
+        owner.hostLifecycleRecoveryGate.noteViewDidAppear(hasWindow: true)
+        RunLoop.main.run(until: Date().addingTimeInterval(0.05))
+        owner.controller.state.t9PinyinPathState = .init(trackedRawInput: "64")
+        owner.refreshT9PinyinPathBar()
+        // 只主动送一次旧 bounds 布局；随后让真正的主队列和显示帧执行。
+        owner.view.setNeedsLayout()
+        host.view.layoutIfNeeded()
+        owner.view.layoutIfNeeded()
+        owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+        let started = CACurrentMediaTime()
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(50)) {
+            hostHeight.constant = 280
+            host.view.setNeedsLayout()
+            host.view.layoutIfNeeded()
+            owner.view.setNeedsLayout()
+            owner.view.layoutIfNeeded()
+            print("F1_HOST_RAISED elapsed=\(CACurrentMediaTime() - started)")
+        }
+        for _ in 0..<10 {
+            RunLoop.main.run(until: Date().addingTimeInterval(0.003))
+            print(
+                "F1_SAMPLE elapsed=\(CACurrentMediaTime() - started) accepted=\(String(describing: owner.keyboardAcceptedHeight)) alpha=\(owner.view.alpha)"
+            )
+            XCTAssertNil(owner.keyboardAcceptedHeight)
+            XCTAssertEqual(owner.keyHeight, 43)
+            XCTAssertEqual(owner.view.alpha, 1)
+            XCTAssertTrue(owner.keyboardHeightConstraint?.isActive == true)
+        }
+        RunLoop.main.run(until: Date().addingTimeInterval(0.06))
+        XCTAssertNil(owner.keyboardAcceptedHeight)
+        XCTAssertEqual(owner.keyHeight, 43)
+        XCTAssertEqual(owner.view.alpha, 1)
+        XCTAssertEqual(owner.view.bounds.height, 280)
     }
 
     @MainActor
@@ -452,6 +617,7 @@ nonisolated final class KeyboardHeightControllerTests: XCTestCase {
     @MainActor
     private func makeOwner(saved: Int?, nineKey: Bool = false) -> HeightLayoutController {
         let owner = HeightLayoutController()
+        owner.heightBudgetFrames.attach(to: owner)
         owner.loadViewIfNeeded()
         owner.controller = KeyboardController(state: KeyboardState())
         owner.cachedLayoutStyle = nineKey ? .nineKey : .twentySixKey
@@ -514,6 +680,12 @@ nonisolated final class KeyboardHeightControllerTests: XCTestCase {
 
 @MainActor
 private final class HeightLayoutController: KeyboardViewController {
+    let heightBudgetFrames = HeightBudgetTestFrames()
+    var layoutCount = 0
+    override func viewDidLayoutSubviews() {
+        layoutCount += 1
+        super.viewDidLayoutSubviews()
+    }
     override func viewDidLoad() {
         // 只验证布局，不启动 RIME 或共享存储链路。
     }
@@ -563,4 +735,38 @@ private final class HeightRotationCoordinator: NSObject, UIViewControllerTransit
 private final class HeightControlReceiver: NSObject {
     var count = 0
     @objc func receive() { count += 1 }
+}
+
+/// 注入的是帧调度器与单调时钟；emit 实际执行生产 handler，而非手调布局冒充帧。
+@MainActor
+final class HeightBudgetTestFrames {
+    final class Observation: KeyboardHeightBudgetFrameObservation {
+        let handler: KeyboardHeightBudgetFrameHandler
+        private(set) var invalidated = false
+        init(handler: @escaping KeyboardHeightBudgetFrameHandler) { self.handler = handler }
+        func invalidate() { invalidated = true }
+    }
+
+    var now: CFTimeInterval = 0
+    private(set) var observations: [Observation] = []
+
+    func attach(to owner: KeyboardViewController) {
+        owner.keyboardHeightBudgetNow = { self.now }
+        owner.keyboardHeightBudgetFrameSource = { handler in
+            let observation = Observation(handler: handler)
+            self.observations.append(observation)
+            return observation
+        }
+    }
+
+    func advance(to timestamp: CFTimeInterval) {
+        now = timestamp
+        for observation in observations where !observation.invalidated { observation.handler(timestamp) }
+    }
+
+    func settle() {
+        let start = now
+        advance(to: start + 0.02)
+        advance(to: start + 0.08)
+    }
 }
