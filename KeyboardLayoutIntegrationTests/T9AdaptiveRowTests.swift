@@ -733,6 +733,103 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
         XCTAssertTrue(isHit(owner.view.hitTest(lowerGap, with: nil), key: tuv))
     }
 
+    /// A canvas mismatch must preserve the complete input surface, not just
+    /// visible key faces. Root-only changes deliberately bypass publication.
+    @MainActor
+    func testCanvasMismatchKeepsMidlinesCrossingsAndEdges() throws {
+        for width: CGFloat in [320, 390, 430] {
+            for growth: CGFloat in [0.01, 36] {
+                let owner = makeOwner(width: width)
+                owner.controller.state.t9PinyinPathState = .init(
+                    compactPaths: [.init(displayText: "ni", replacementRawInput: "ni")], trackedRawInput: "64")
+                owner.refreshT9PinyinPathBar()
+                layout(owner)
+                let stack = try XCTUnwrap(owner.rootStack as? KeyboardInputHitAreaStackView)
+                stack.refreshKeyTouchGeometry()
+                let chrome = try XCTUnwrap(descendants(stack).compactMap { $0 as? T9NineKeyChromeHost }.first)
+                let left = try XCTUnwrap(chrome.touchColumns.first)
+                let right = try XCTUnwrap(chrome.touchColumns.last)
+                let jkl = left.rows[1][2]
+                let tuv = left.rows[2][2]
+                let mno = left.rows[1][3]
+                let wxyz = left.rows[2][3]
+                let upper = jkl.touchLayoutFrame(in: owner.view)
+                let lower = tuv.touchLayoutFrame(in: owner.view)
+                let gapY = (upper.maxY + lower.minY) / 2
+                let gapX = (upper.maxX + mno.touchLayoutFrame(in: owner.view).minX) / 2
+                let leftBounds = left.container.convert(left.container.bounds, to: owner.view)
+                let rightBounds = right.container.convert(right.container.bounds, to: owner.view)
+                let delete = right.rows[0][0]
+                let kaomoji = right.rows[1][0]
+                let rightGapY =
+                    (delete.touchLayoutFrame(in: owner.view).maxY
+                        + kaomoji.touchLayoutFrame(in: owner.view).minY) / 2
+                // Gap centers, all four quadrants at a row/column crossing,
+                // and both outer column edges at a row gap.
+                let probes: [(CGPoint, KeyboardKeyButton)] = [
+                    (CGPoint(x: upper.midX, y: gapY - 0.5), jkl),
+                    (CGPoint(x: lower.midX, y: gapY + 0.5), tuv),
+                    (CGPoint(x: gapX - 0.5, y: gapY - 0.5), jkl),
+                    (CGPoint(x: gapX + 0.5, y: gapY - 0.5), mno),
+                    (CGPoint(x: gapX - 0.5, y: gapY + 0.5), tuv),
+                    (CGPoint(x: gapX + 0.5, y: gapY + 0.5), wxyz),
+                    (CGPoint(x: leftBounds.minX + 0.5, y: gapY - 0.5), left.rows[1][0]),
+                    (CGPoint(x: leftBounds.minX + 0.5, y: gapY + 0.5), left.rows[2][0]),
+                    (CGPoint(x: rightBounds.maxX - 0.5, y: rightGapY - 0.5), delete),
+                    (CGPoint(x: rightBounds.maxX - 0.5, y: rightGapY + 0.5), kaomoji),
+                ]
+                for (point, key) in probes {
+                    XCTAssertTrue(isHit(owner.view.hitTest(point, with: nil), key: key), "fixture before mismatch")
+                }
+                for (index, (point, key)) in probes.enumerated() {
+                    // A fresh mismatch for every probe exercises the repair
+                    // path each time, rather than only the first point.
+                    stack.frame.size.height += growth
+                    let hit = owner.view.hitTest(point, with: nil)
+                    XCTAssertTrue(
+                        isHit(hit, key: key),
+                        "width=\(width) growth=\(growth) probe=\(index) point=\(point) hit=\(String(describing: hit))")
+                    // The repaired snapshot must also remain usable unchanged.
+                    XCTAssertTrue(isHit(owner.view.hitTest(point, with: nil), key: key))
+                }
+            }
+        }
+    }
+
+    @MainActor
+    func testSubpixelMidlineShiftAndCanvasMoveUseCurrentCoordinates() throws {
+        let owner = makeOwner(width: 390)
+        owner.controller.state.t9PinyinPathState = .init(
+            compactPaths: [.init(displayText: "ni", replacementRawInput: "ni")], trackedRawInput: "64")
+        owner.refreshT9PinyinPathBar()
+        layout(owner)
+        let stack = try XCTUnwrap(owner.rootStack as? KeyboardInputHitAreaStackView)
+        stack.refreshKeyTouchGeometry()
+        let chrome = try XCTUnwrap(descendants(stack).compactMap { $0 as? T9NineKeyChromeHost }.first)
+        let jkl = try XCTUnwrap(chrome.touchColumns.first?.rows[1][2])
+        let tuv = try XCTUnwrap(chrome.touchColumns.first?.rows[2][2])
+        let upper = jkl.touchLayoutFrame(in: owner.view)
+        let lower = tuv.touchLayoutFrame(in: owner.view)
+        let oldMidline = (upper.maxY + lower.minY) / 2
+        let point = CGPoint(x: upper.midX, y: oldMidline + 0.005)
+        XCTAssertTrue(isHit(owner.view.hitTest(point, with: nil), key: tuv))
+        // A 0.02pt row move shifts the midline 0.01pt across this point.
+        // Even though it is below one screen pixel, ownership must change.
+        let row = try XCTUnwrap(jkl.superview)
+        row.frame.origin.y += 0.02
+        let newUpper = jkl.touchLayoutFrame(in: owner.view)
+        let newMidline = (newUpper.maxY + lower.minY) / 2
+        XCTAssertGreaterThan(newMidline, point.y)
+        XCTAssertTrue(isHit(owner.view.hitTest(point, with: nil), key: jkl))
+        // The canvas is still at its published origin until this hit repairs it.
+        // Retain the point in root coordinates across the canvas frame update.
+        stack.frame.origin.x += 2
+        stack.frame.origin.y += 3
+        let movedPoint = CGPoint(x: point.x + 2, y: point.y + 3)
+        XCTAssertTrue(isHit(owner.view.hitTest(movedPoint, with: nil), key: jkl))
+        XCTAssertTrue(isHit(owner.view.hitTest(movedPoint, with: nil), key: jkl))
+    }
+
     @MainActor
     private func isHit(_ hit: UIView?, key: KeyboardKeyButton) -> Bool {
         var view = hit

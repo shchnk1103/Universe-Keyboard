@@ -98,7 +98,7 @@ private final class KeyboardTouchCellControl: UIControl {
 /// over a visible key lets UIKit continue to the original UIButton underneath.
 private final class KeyboardTouchRoutingCanvas: UIView {
     private var controls: [KeyboardTouchCellControl] = []
-    private weak var geometryRoot: UIView?
+    private weak var geometryRoot: KeyboardInputHitAreaStackView?
     private var publishedRootBounds = CGRect.zero
     private var publishedFrame = CGRect.zero
     private var publishedVisuals: [(button: KeyboardKeyButton, frame: CGRect)] = []
@@ -131,11 +131,15 @@ private final class KeyboardTouchRoutingCanvas: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func render(root: UIView, items: [(button: KeyboardKeyButton, touch: CGRect, visual: CGRect)]) {
+    func render(
+        root: KeyboardInputHitAreaStackView, items: [(button: KeyboardKeyButton, touch: CGRect, visual: CGRect)]
+    ) {
         geometryRoot = root
         publishedRootBounds = root.bounds
         publishedFrame = frame
-        publishedVisuals = items.map { ($0.button, $0.visual) }
+        // Use the same root-space conversion as the snapshot builder/check.
+        // A canvas round trip would add a different floating-point path.
+        publishedVisuals = items.map { ($0.button, $0.button.touchLayoutFrame(in: root)) }
         while controls.count < items.count {
             let control = KeyboardTouchCellControl()
             addSubview(control)
@@ -154,23 +158,39 @@ private final class KeyboardTouchRoutingCanvas: UIView {
         }
     }
 
+    private func matchesPublishedGeometry() -> Bool {
+        // Zero-point tolerance, with no pixel quantization: even a subpixel
+        // key move can change which side of a midline owns a touch.
+        guard let geometryRoot else { return false }
+        return geometryRoot.bounds == publishedRootBounds
+            && frame == publishedFrame
+            && geometryRoot.convert(geometryRoot.bounds, to: superview) == frame
+            && publishedVisuals.allSatisfy { $0.button.touchLayoutFrame(in: geometryRoot) == $0.frame }
+    }
+
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-        guard isUserInteractionEnabled, !isHidden, alpha > 0.01 else { return nil }
-        // A nested layout can precede the next snapshot publication. Never use
-        // an old gap's visual exclusion rectangle to steal a current key face.
-        guard let geometryRoot,
-            geometryRoot.bounds == publishedRootBounds,
-            frame == publishedFrame,
-            geometryRoot.convert(geometryRoot.bounds, to: superview) == frame,
-            publishedVisuals.allSatisfy({ $0.button.touchLayoutFrame(in: self) == $0.frame })
+        guard isUserInteractionEnabled, !isHidden, alpha > 0.01,
+            let geometryRoot
         else { return nil }
+
+        let routingPoint: CGPoint
+        if matchesPublishedGeometry() {
+            routingPoint = point
+        } else {
+            // Repair once from CURRENT geometry, without triggering layout in
+            // the touch path. Returning nil here would leave inter-row gaps dead.
+            // Publishing can move the canvas; retain the point in root space.
+            let pointInRoot = geometryRoot.convert(point, from: self)
+            guard geometryRoot.publishCurrentKeyTouchGeometry() else { return nil }
+            routingPoint = convert(pointInRoot, from: geometryRoot)
+        }
         for control in controls.reversed() {
-            let localPoint = control.convert(point, from: self)
+            let localPoint = control.convert(routingPoint, from: self)
             if let hit = control.hitTest(localPoint, with: event) {
                 return hit
             }
         }
-        // Never make the transparent canvas itself a hit target.
+        // Visible key faces keep their native UIButton path underneath.
         return nil
     }
 }
@@ -247,21 +267,34 @@ final class KeyboardInputHitAreaStackView: UIStackView {
     /// Complete their pending layout explicitly, then publish all consumers in
     /// one synchronous transaction. No invalidation, scheduling or retry loop.
     func refreshKeyTouchGeometry() {
-        guard !isPublishingGeometry else { return }
+        publishKeyTouchGeometry(completingLayout: true)
+    }
+
+    /// A hit may arrive between a nested geometry change and the next layout
+    /// callback. Publish current cells once; never run Auto Layout from hitTest.
+    fileprivate func publishCurrentKeyTouchGeometry() -> Bool {
+        publishKeyTouchGeometry(completingLayout: false)
+    }
+
+    @discardableResult
+    private func publishKeyTouchGeometry(completingLayout: Bool) -> Bool {
+        guard !isPublishingGeometry else { return false }
         isPublishingGeometry = true
         defer { isPublishingGeometry = false }
-        for child in subviews { child.layoutIfNeeded() }
+        if completingLayout {
+            for child in subviews { child.layoutIfNeeded() }
+        }
         let keys = allKeyboardKeys()
         guard !keys.isEmpty else {
             invalidateKeyTouchGeometry()
-            return
+            return false
         }
 
         let identified: [KeyTouchIdentifiedCell]
         if let host = firstNineKeyHost(in: self), !host.isHidden {
             guard let structured = makeNineKeyCells(host: host, keys: keys) else {
                 rejectInvalidSnapshot(currentKeys: keys, path: "t9")
-                return
+                return false
             }
             identified = structured
             snapshotPath = "t9"
@@ -274,7 +307,7 @@ final class KeyboardInputHitAreaStackView: UIStackView {
             }
             guard visuals.allSatisfy({ isValidFrame($0.frame) }) else {
                 rejectInvalidSnapshot(currentKeys: keys, path: "flat")
-                return
+                return false
             }
             identified = KeyTouchCellLayout.makeIdentifiedCells(
                 visuals: visuals,
@@ -287,7 +320,7 @@ final class KeyboardInputHitAreaStackView: UIStackView {
             identified.allSatisfy({ isValidCell($0.cell) })
         else {
             rejectInvalidSnapshot(currentKeys: keys, path: snapshotPath)
-            return
+            return false
         }
 
         let buttonsByID = Dictionary(
@@ -299,7 +332,7 @@ final class KeyboardInputHitAreaStackView: UIStackView {
         }
         guard snapshot.count == keys.count else {
             rejectInvalidSnapshot(currentKeys: keys, path: snapshotPath)
-            return
+            return false
         }
 
         keyTouchSnapshot = snapshot
@@ -310,6 +343,7 @@ final class KeyboardInputHitAreaStackView: UIStackView {
             emitTouchProbeIfNeeded()
             refreshKeyTouchOverlays()
         #endif
+        return true
     }
 
     /// Clears references before a keyboard page replaces its buttons.
