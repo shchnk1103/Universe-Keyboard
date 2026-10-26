@@ -100,10 +100,19 @@ extension KeyboardViewController {
         cachedHapticEnabled = rawHaptic as? Bool ?? false
         cachedHapticLevel = feedbackLevelValue(rawHapticLevel)
         cachedHapticIntensity = CGFloat(cachedHapticLevel.hapticIntensity)
-        cachedLiquidGlassMaterialEnabled =
+        let storedLiquidGlass =
             defaults?.bool(
                 forKey: KeyboardAppearanceSettingsKey.liquidGlassMaterialEnabled
             ) ?? false
+        #if DEBUG
+            let liquidGlassDebugBuild = true
+        #else
+            let liquidGlassDebugBuild = false
+        #endif
+        cachedLiquidGlassMaterialEnabled = liquidGlassMaterialEffectivelyEnabled(
+            storedValue: storedLiquidGlass,
+            isDebugBuild: liquidGlassDebugBuild
+        )
         controller.isPairedSymbolCompletionEnabled = rawPairedSymbolCompletion as? Bool ?? true
         controller.setPostCommitContinuationEnabled(rawPostCommitContinuation as? Bool ?? true)
         controller.typoCorrectionExperimentalEdits = typoExperimentSettings.experimentalEdits

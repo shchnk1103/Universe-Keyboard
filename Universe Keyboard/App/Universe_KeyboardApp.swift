@@ -18,6 +18,17 @@ struct Universe_KeyboardApp: App {
             T9DevicePreflightRunCoordinator.handleLaunchEnvironment()
         #endif
         AppAppearance.migrateLegacyPreferenceIfNeeded()
+        if let sharedDefaults = UserDefaults(suiteName: "group.com.DoubleShy0N.Universe-Keyboard") {
+            #if DEBUG
+                let liquidGlassDebugBuild = true
+            #else
+                let liquidGlassDebugBuild = false
+            #endif
+            clearStoredLiquidGlassMaterialPreferenceIfRelease(
+                defaults: sharedDefaults,
+                isDebugBuild: liquidGlassDebugBuild
+            )
+        }
         SystemAppNotificationClient.shared.configure()
         #if DEBUG
             if !RimeSyncUITestFixture.isRequested() {
