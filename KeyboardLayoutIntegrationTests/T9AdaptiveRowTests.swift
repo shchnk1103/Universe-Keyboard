@@ -967,8 +967,7 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
         XCTAssertTrue(bar.accessibilityElementsHidden)
         XCTAssertNil(bar.hitTest(CGPoint(x: 20, y: 10), with: nil))
         await Task.yield()
-        // The hostless suite has no composited app scene. Keep its UIKit
-        // snapshot separate from the additional app-hosted simulator capture.
+        // Render the UIKit fixture without requiring UI-testing screenshot authorization.
         let image = UIGraphicsImageRenderer(bounds: owner.view.bounds).image { _ in
             owner.view.drawHierarchy(in: owner.view.bounds, afterScreenUpdates: true)
         }
@@ -976,10 +975,6 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
         fixture.name = "S7-idle-UIKit-fixture"
         fixture.lifetime = .keepAlways
         add(fixture)
-        let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
-        attachment.name = "S7-idle-simulator"
-        attachment.lifetime = .keepAlways
-        add(attachment)
     }
 
     @MainActor
