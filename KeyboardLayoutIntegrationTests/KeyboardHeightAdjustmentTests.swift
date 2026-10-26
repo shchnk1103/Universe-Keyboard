@@ -113,7 +113,7 @@ nonisolated final class KeyboardHeightAdjustmentTests: XCTestCase {
     }
 
     @MainActor
-    func testConfirmPersistsEffectiveValueToPrivateDefaultsAndNextAppearanceReadsIt() throws {
+    func testConfirmPersistsIntentValueToPrivateDefaultsAndNextAppearanceReadsIt() throws {
         let suite = "UI4-P3-" + UUID().uuidString
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
         defer { defaults.removePersistentDomain(forName: suite) }
@@ -362,7 +362,7 @@ nonisolated final class KeyboardHeightAdjustmentTests: XCTestCase {
         XCTAssertEqual(compressed.keyHeight, 50)
         compressed.confirmKeyboardHeightAdjustment()
         XCTAssertEqual(writes.count, 2)
-        XCTAssertEqual(writes[1], 50)
+        XCTAssertEqual(writes[1], 70)
     }
 
     @MainActor
@@ -526,8 +526,38 @@ nonisolated final class KeyboardHeightAdjustmentTests: XCTestCase {
     }
 
     @MainActor
+    func testCompressedPreviewKeepsProductMaximumAndSavesHigherAndLowerIntent() {
+        for intent in [70, 40] {
+            let owner = makeOwner(saved: 60)
+            var saved: Int?
+            owner.keyboardRowHeightSink = { saved = $0 }
+            _ = enter(owner)
+            owner.keyboardAcceptedHeight = 254
+            owner.synchronizeKeyboardHeightLayout()
+            XCTAssertEqual(owner.keyHeight, 45)
+            XCTAssertEqual(owner.keyboardHeightAdjustmentMaximum(), 87)
+            owner.previewKeyboardRowHeight(Double(intent))
+            owner.endKeyboardHeightDrag()
+            let window = attach(owner)
+            defer { window.isHidden = true }
+            owner.hostLifecycleRecoveryGate.noteViewWillAppear(context: nil)
+            owner.hostLifecycleRecoveryGate.noteViewDidAppear(hasWindow: true)
+            owner.view.bounds.size.height = 254
+            owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+            owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+            owner.heightBudgetFrames.settle()
+            XCTAssertEqual(owner.keyHeight, CGFloat(min(intent, 45)))
+            owner.confirmKeyboardHeightAdjustment()
+            XCTAssertEqual(saved, intent)
+            let reopened = makeOwner(saved: saved)
+            XCTAssertEqual(reopened.keyHeight, CGFloat(intent))
+        }
+    }
+
+    @MainActor
     private func makeOwner(saved: Int? = nil, landscape: Bool = false) -> HeightAdjustmentTestController {
         let owner = HeightAdjustmentTestController()
+        owner.heightBudgetFrames.attach(to: owner)
         owner.loadViewIfNeeded()
         owner.controller = KeyboardController(state: KeyboardState(inputMode: .english))
         owner.keyboardHeightAdjustmentTokenConsumer = { HeightAdjustmentTestTokens.consumed.insert($0).inserted }
@@ -583,6 +613,7 @@ nonisolated final class KeyboardHeightAdjustmentTests: XCTestCase {
 
 @MainActor
 private final class HeightAdjustmentTestController: KeyboardViewController {
+    let heightBudgetFrames = HeightBudgetTestFrames()
     let proxy = HeightAdjustmentTextProxy()
     var dismissCount = 0
     var switchCount = 0

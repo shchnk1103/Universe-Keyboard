@@ -59,22 +59,17 @@ extension KeyboardViewController {
         UIAccessibility.post(notification: .layoutChanged, argument: overlay.slider)
     }
 
-    /// 使用 P1 的封顶模型，再叠加 P2 实授预算；拖动手柄不能越过可显示范围。
+    /// 意图上限只由产品方向封顶决定；宿主预算只影响本次显示。
     func keyboardHeightAdjustmentMaximum() -> Int? {
         guard let geometry = currentKeyboardHeightGeometry() else { return nil }
         let fixedHeight =
             keyboardContentTopInset + candidateBarHeight + keySpacing * 2
             + keyboardGroupSpacing + keyboardContentBottomInset + presentedT9PinyinPathBarHeight
         guard
-            var maximum = try? KeyboardHeightSettings(savedRowHeight: Int.max).effectiveRowHeight(
+            let maximum = try? KeyboardHeightSettings(savedRowHeight: Int.max).effectiveRowHeight(
                 orientation: geometry.isLandscape ? .landscape : .portrait,
                 screenHeight: geometry.screenHeight, fixedHeight: Double(fixedHeight))
         else { return nil }
-        if let accepted = keyboardAcceptedHeight {
-            let available = ((accepted - fixedHeight) / 4).rounded(.down)
-            guard available >= CGFloat(KeyboardHeightSettings.minimumRowHeight) else { return nil }
-            if available < CGFloat(maximum) { maximum = Int(available) }
-        }
         return maximum
     }
 
@@ -158,7 +153,7 @@ extension KeyboardViewController {
         guard let session = keyboardHeightAdjustmentSession else { return }
         keyboardHeightAdjustmentSession = nil
         if reason == .confirmed {
-            let saved = session.savedValue(effectiveRowHeight: Int(keyHeight))
+            let saved = session.savedValue()
             keyboardRowHeightSink(saved)
             keyboardHeightSettings = KeyboardHeightSettings(savedRowHeight: saved)
         } else {

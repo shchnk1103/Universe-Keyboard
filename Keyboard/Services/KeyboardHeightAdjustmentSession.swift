@@ -113,8 +113,8 @@ struct KeyboardHeightAdjustmentSession {
         dragMaximum = nil
     }
 
-    func savedValue(effectiveRowHeight: Int) -> Int? {
-        resetsSavedValue ? nil : effectiveRowHeight
+    func savedValue() -> Int? {
+        resetsSavedValue ? nil : pendingRowHeight
     }
 
     private func bounded(_ value: Double, maximum: Int) -> Int {

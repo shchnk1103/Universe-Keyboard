@@ -228,3 +228,13 @@ First Codex review record (pre-amendment): [`evidence/keyboard-layout-9key-001-c
 6. 无用户 Path 栈时，不走上述游标；单音节 nested pure-digit（如 `qiu'53`→「球」）保持既有 shortened remainder 行为。
 
 产品 SoT：[`PD-…-GATE5-RESIDUAL-B-PATH-LEDGER-PEEL`](product-decisions/KEYBOARD-LAYOUT-9KEY-PINYIN-004-gate5-residual-b-path-ledger-peel.md)。架构：[`architecture/partial-commit.md`](architecture/partial-commit.md) §T9 Path residual-B。
+
+### BUILD167 S3 高度协商补充
+
+可见窗口布局只启动真实显示帧时间观察，不靠自调度布局回调次数判定稳定。请求已满足可立即采用；
+低读数至少观察约66.7ms、至少两次帧采样且保持相同约16.7ms后才采用。请求待结算时保持意图行高与可见性，
+稳定且不足四行40pt时仍隐藏；结算后新低读数使用同一判据。振荡观察到约133.3ms或32次帧采样后停止，
+不自行循环请求布局，不把未稳定的末次读数当预算；下一显示帧才检查时间截止，帧暂停时不轮询。
+调节保存方向封顶内的意图值，显示夹低不写回；默认45、Path 0/34、横屏45、竖屏50%和旋转请求优先级不变。
+完整边界见[高度预算与保存意图](KEYBOARD_VALUES.md#build167-s3-高度预算与保存意图)和
+[ADR 0037（Proposed）](architecture/decisions/0037-keyboard-height-host-budget-trust.md)；模拟器证据不是真机证据。

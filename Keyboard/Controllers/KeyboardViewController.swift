@@ -107,6 +107,7 @@ class KeyboardViewController: UIInputViewController {
         let inputView = KeyboardAudioFeedbackInputView(frame: .zero, inputViewStyle: .keyboard)
         inputView.onWindowRemoved = { [weak self] in
             self?.keyboardHeightRotationPriority.restore()
+            self?.resetKeyboardHeightBudgetTrust()
             self?.keyboardHeightAdjustmentAcceptsMarkers = false
             self?.finishKeyboardHeightAdjustment(.windowRemoved)
         }
@@ -404,6 +405,15 @@ class KeyboardViewController: UIInputViewController {
     var isKeyboardHeightManaged = false
     var keyboardHeightGeometry: KeyboardHeightGeometry?
     var keyboardAcceptedHeight: CGFloat?
+    var keyboardHeightBudgetRequest: KeyboardHeightBudgetRequest?
+    var keyboardHeightBudgetNow: () -> CFTimeInterval = { CACurrentMediaTime() }
+    var keyboardHeightBudgetFrameSource: KeyboardHeightBudgetFrameSource = {
+        KeyboardHeightBudgetDisplayLink(handler: $0)
+    }
+    var keyboardHeightBudgetFrameObservation: (any KeyboardHeightBudgetFrameObservation)?
+    var keyboardHeightBudgetObservationID: UUID?
+    var keyboardHeightBudgetObservationExhausted = false
+    var keyboardHeightBudgetExhaustedHeight: CGFloat?
     var keyboardUncompressedHeight: CGFloat?
     var keyboardHeightConstraints: [KeyboardRowHeightConstraint] = []
     var keyboardHeightStatus: String?
@@ -618,6 +628,7 @@ class KeyboardViewController: UIInputViewController {
     /// RIME is finalized first because its database locks are the critical resource;
     /// diagnostic persistence is disabled last so no delayed App Group write survives.
     func suspendKeyboardRuntime(reason: String, updateUI: Bool) {
+        resetKeyboardHeightBudgetTrust()
         // 宿主挂起不保证先触发willDisappear；同步撤销租约并失效迟到完成。
         keyboardHeightRotationPriority.restore()
         keyboardHeightAdjustmentAcceptsMarkers = false
@@ -873,7 +884,7 @@ class KeyboardViewController: UIInputViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        if isKeyboardHeightManaged { synchronizeKeyboardHeightLayout() }
+        if isKeyboardHeightManaged { synchronizeKeyboardHeightLayout(isHostLayout: true) }
         #if DEBUG && KEYBOARD_QUERY_COST_PROBE
             layoutQueryCostProbeControls()
         #endif
