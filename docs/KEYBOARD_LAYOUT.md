@@ -110,6 +110,8 @@ visible hit area and does not add a duplicate trailing content inset. Root key
 margins remain 7pt; only the candidate header extends beyond them, with explicit
 parent hit routing for that extension.
 
+> 历史标注：以下 UI-1 段落已被 [T9-PATH-ROW-RESERVED-001](product-decisions/T9-PATH-ROW-RESERVED-001-product-decision.md) 取代；现行合同见上文「Precise path bar geometry」第95、96行附近的始终预留34pt规则。
+
 Historical UI-1-only stage: T9 0/34pt dynamic height was prototyped but withdrawn from that candidate (superseded by the current integrated Sticky contract above):
 real Extension activation/screen-coordinate evidence was not established. The
 existing fixed 34pt Path reservation and input/recovery semantics remain. This is

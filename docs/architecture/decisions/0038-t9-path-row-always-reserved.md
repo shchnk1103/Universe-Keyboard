@@ -11,6 +11,8 @@ S4观察到首键后第二次触摸可能接收于ABC，但没有远端宿主屏
 
 用编译期策略默认选择always，保留adaptive。区分实际行预留与内容展示：always在合格表面始终排版34pt，同时请求与UI-4预算含34；空内容隐藏交互内容和可访问性，不折叠实际行。生产默认不提供设置开关。不改变高度协商或触区快照算法。
 
+已知行为（方案 A 的有意表现，非已验证的产品效果）：有组字（composition）或 Recovery 但路径列表（paths）为空时，预留的34pt仍保留、内容隐藏且不可点，也不显示退休提示；以后若要在此情形显示其它内容，需要Human另行决定。
+
 ## 被替换设计与恢复
 
 被替换设计：`KEYBOARD-T9-ADAPTIVE-ROW-001`，在本轮 main 上最后保留该设计的提交为 `cd16fcb143f74a08cb3d6eb4f837a369a71d4317`（归档基线，不声称该提交引入设计）。行为：新空闲周期0pt，首次有效 composition/Path/Partial Commit/Recovery 信号后锁存34pt，直到明确结束并重新出现。基线另存本地标签 `archive/t9-adaptive-path-row`，不推送。恢复需选择 `T9PathRowReservation.adaptive`，核对 `KeyboardViewController+T9PinyinPath.swift` 的 latch/高度与可见性、`T9PinyinPathBarView.swift` 的行折叠、控制器策略入口及相关测试，并另行取得产品授权、同步合同；不通过恢复旧提交覆盖 #244/#247。
