@@ -143,10 +143,8 @@ extension KeyboardViewController {
         }
         guard keyboardAcceptedHeight != actual else { return }
         if keyboardHeightBudgetObservationExhausted {
-            // 只有新的宿主读数才重新取得有界窗口；相同读数不能自行触发重试。
-            guard keyboardHeightBudgetExhaustedHeight != actual else { return }
-            keyboardHeightBudgetObservationExhausted = false
-            keyboardHeightBudgetExhaustedHeight = nil
+            // 耗尽只由下方的一次有界恢复处理，布局变化也不能绕过总次数上限。
+            return
         }
         if keyboardHeightBudgetRequest == nil {
             // 结算后的新低读数也走同一判据，不能直接采用动画中间值。
@@ -178,14 +176,54 @@ extension KeyboardViewController {
         case .accepted(let height):
             keyboardAcceptedHeight = height < request.height ? height : nil
         case .exhausted:
-            // 无法证明稳定就保持意图，不以最后一个振荡值隐藏键盘；相同耗尽读数不自动重试。
+            // 不采用振荡末值；只给耗尽路径一次延后重观察机会。
             keyboardAcceptedHeight = nil
             keyboardHeightBudgetObservationExhausted = true
             keyboardHeightBudgetExhaustedHeight = view.bounds.height
+            keyboardHeightBudgetRequest = nil
+            stopKeyboardHeightBudgetFrames()
+            synchronizeKeyboardHeightLayout()
+            if request.allowsExhaustionRecovery {
+                scheduleKeyboardHeightBudgetRecovery(for: request, after: timestamp)
+            }
+            return
         }
         keyboardHeightBudgetRequest = nil
         stopKeyboardHeightBudgetFrames()
         synchronizeKeyboardHeightLayout()
+    }
+
+    /// 仅首次耗尽调用：等待一个66.7ms信任窗口，再开一次原判据窗口；不以旧值相同拒绝恢复。
+    private func scheduleKeyboardHeightBudgetRecovery(
+        for request: KeyboardHeightBudgetRequest, after timestamp: CFTimeInterval
+    ) {
+        guard keyboardUncompressedHeight == request.height, keyboardHeightBudgetObservationExhausted,
+            view.window != nil, hostLifecycleRecoveryGate.phase == .visible
+        else { return }
+        let startedAt = timestamp.isFinite ? timestamp : keyboardHeightBudgetNow()
+        let identity = UUID()
+        var samples = 0
+        keyboardHeightBudgetObservationID = identity
+        keyboardHeightBudgetFrameObservation = keyboardHeightBudgetFrameSource { [weak self] frameTime in
+            guard let self, self.keyboardHeightBudgetObservationID == identity else { return }
+            samples += 1
+            let elapsed = frameTime - startedAt
+            guard self.view.window != nil, self.hostLifecycleRecoveryGate.phase == .visible,
+                samples < KeyboardHeightBudgetRequest.maximumFrameSamples,
+                !frameTime.isFinite || elapsed <= KeyboardHeightBudgetRequest.maximumObservationDuration
+            else {
+                self.stopKeyboardHeightBudgetFrames()
+                return
+            }
+            guard frameTime.isFinite, elapsed >= KeyboardHeightBudgetRequest.minimumObservationDuration else { return }
+            self.stopKeyboardHeightBudgetFrames()
+            self.keyboardHeightBudgetObservationExhausted = false
+            self.keyboardHeightBudgetExhaustedHeight = nil
+            var recovery = KeyboardHeightBudgetRequest(height: request.height)
+            recovery.allowsExhaustionRecovery = false
+            self.keyboardHeightBudgetRequest = recovery
+            self.observeKeyboardHostHeight()
+        }
     }
 
     func resetKeyboardHeightBudgetTrust() {
@@ -218,6 +256,7 @@ struct KeyboardHeightBudgetRequest {
     }
 
     let height: CGFloat
+    var allowsExhaustionRecovery = true
     private var startedAt: CFTimeInterval?
     private var changedAt: CFTimeInterval = 0
     private var previousHeight: CGFloat?

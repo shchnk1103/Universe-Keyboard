@@ -503,12 +503,12 @@ nonisolated final class KeyboardHeightControllerTests: XCTestCase {
             owner.heightBudgetFrames.advance(to: start + Double(frame) / 120)
         }
         XCTAssertTrue(owner.keyboardHeightBudgetObservationExhausted)
-        XCTAssertNil(owner.keyboardHeightBudgetFrameObservation)
+        XCTAssertNotNil(owner.keyboardHeightBudgetFrameObservation)
         XCTAssertNil(owner.keyboardAcceptedHeight)
         XCTAssertEqual(owner.view.alpha, 1)
         XCTAssertEqual(owner.keyHeight, 60)
         XCTAssertEqual(owner.layoutCount, layouts)
-        // 同一耗尽读数的重复布局不重试；变化后的自愈由单独回归覆盖。
+        // 耗尽恢复等待不被100次布局提前执行。
         owner.view.bounds.size.height = try XCTUnwrap(owner.keyboardHeightBudgetExhaustedHeight)
         let observations = owner.heightBudgetFrames.observations.count
         for _ in 0..<100 { owner.synchronizeKeyboardHeightLayout(isHostLayout: true) }
@@ -549,9 +549,9 @@ nonisolated final class KeyboardHeightControllerTests: XCTestCase {
         owner.view.bounds.size.height = 246
         owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
         let settledStart = owner.heightBudgetFrames.now
-        owner.heightBudgetFrames.advance(to: settledStart + 0.02)
+        owner.heightBudgetFrames.advance(to: settledStart + 0.01)
         XCTAssertNil(owner.keyboardAcceptedHeight)
-        owner.heightBudgetFrames.advance(to: settledStart + 0.08)
+        owner.heightBudgetFrames.advance(to: settledStart + 0.03)
         XCTAssertEqual(owner.keyboardAcceptedHeight, 246)
         XCTAssertEqual(owner.view.alpha, 0)
         XCTAssertEqual(owner.keyboardHeightStatus, "hostBudgetBelowMinimum")
@@ -560,6 +560,75 @@ nonisolated final class KeyboardHeightControllerTests: XCTestCase {
         for _ in 0..<100 { owner.synchronizeKeyboardHeightLayout(isHostLayout: true) }
         XCTAssertEqual(owner.heightBudgetFrames.observations.count, observations)
         XCTAssertEqual(owner.layoutCount, layouts)
+    }
+
+    @MainActor
+    func testLateStableExhaustedReadingGetsOneTimedRecovery() {
+        let owner = makeOwner(saved: 43, nineKey: true)
+        install(owner)
+        let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 500))
+        let host = UIViewController()
+        window.rootViewController = host
+        host.view.addSubview(owner.view)
+        window.isHidden = false
+        defer { window.isHidden = true }
+        owner.hostLifecycleRecoveryGate.noteViewWillAppear(context: nil)
+        owner.hostLifecycleRecoveryGate.noteViewDidAppear(hasWindow: true)
+        owner.view.bounds.size = CGSize(width: 390, height: 246)
+        showPath(owner)
+        owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+        let start = owner.heightBudgetFrames.now
+        // 窗口最后两帧才稳定，无法满足原16.7ms稳定门槛。
+        for frame in 1...16 {
+            owner.view.bounds.size.height = frame >= 15 ? 246 : (frame.isMultiple(of: 2) ? 250 : 254)
+            owner.heightBudgetFrames.advance(to: start + Double(frame) / 120)
+        }
+        XCTAssertTrue(owner.keyboardHeightBudgetObservationExhausted)
+        XCTAssertEqual(owner.keyboardHeightBudgetExhaustedHeight, 246)
+        XCTAssertNil(owner.keyboardAcceptedHeight)
+        owner.heightBudgetFrames.advance(to: start + 0.142)
+        XCTAssertNil(owner.keyboardAcceptedHeight)
+        owner.heightBudgetFrames.advance(to: start + 0.16)
+        owner.heightBudgetFrames.advance(to: start + 0.18)
+        owner.heightBudgetFrames.advance(to: start + 0.205)
+        owner.heightBudgetFrames.advance(to: start + 0.225)
+        owner.heightBudgetFrames.advance(to: start + 0.285)
+        XCTAssertEqual(owner.keyboardAcceptedHeight, 246)
+        XCTAssertEqual(owner.view.alpha, 0)
+        XCTAssertEqual(owner.keyboardHeightStatus, "hostBudgetBelowMinimum")
+        XCTAssertNil(owner.keyboardHeightBudgetFrameObservation)
+    }
+
+    @MainActor
+    func testContinuousOscillationEndsAfterOneRecoveryWindow() {
+        let (owner, window) = makeRotationOwner()
+        defer { window.isHidden = true }
+        owner.view.bounds.size.height = 246
+        owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+        let start = owner.heightBudgetFrames.now
+        let layouts = owner.layoutCount
+        for frame in 1...48 {
+            owner.view.bounds.size.height = frame.isMultiple(of: 2) ? 246 : 250
+            owner.heightBudgetFrames.advance(to: start + Double(frame) / 120)
+            owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+            if frame == 42 {
+                // 350ms内初始窗口、等待、唯一恢复窗口均停止（总预算上限400ms）。
+                XCTAssertNil(owner.keyboardHeightBudgetFrameObservation)
+                XCTAssertTrue(owner.keyboardHeightBudgetObservationExhausted)
+            }
+        }
+        XCTAssertEqual(owner.heightBudgetFrames.observations.count, 3)
+        XCTAssertTrue(owner.heightBudgetFrames.observations.allSatisfy { $0.invalidated })
+        XCTAssertNil(owner.keyboardAcceptedHeight)
+        XCTAssertEqual(owner.layoutCount, layouts)
+        for frame in 49...120 {
+            owner.view.bounds.size.height = frame.isMultiple(of: 2) ? 246 : 250
+            owner.heightBudgetFrames.advance(to: start + Double(frame) / 120)
+            owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
+        }
+        XCTAssertEqual(owner.heightBudgetFrames.observations.count, 3)
+        XCTAssertNil(owner.keyboardHeightBudgetFrameObservation)
+        XCTAssertEqual(owner.view.alpha, 1)
     }
 
     @MainActor
@@ -573,7 +642,8 @@ nonisolated final class KeyboardHeightControllerTests: XCTestCase {
             owner.heightBudgetFrames.advance(to: start)
         }
         XCTAssertTrue(owner.keyboardHeightBudgetObservationExhausted)
-        XCTAssertTrue(owner.heightBudgetFrames.observations.last?.invalidated == true)
+        XCTAssertTrue(owner.heightBudgetFrames.observations.first?.invalidated == true)
+        XCTAssertEqual(owner.heightBudgetFrames.observations.count, 2)
         owner.resetKeyboardHeightBudgetTrust()
         let previous = owner.heightBudgetFrames.observations.last
         previous?.handler(start + 1)
