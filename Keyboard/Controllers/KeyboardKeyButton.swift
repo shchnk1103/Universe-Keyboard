@@ -26,6 +26,23 @@ final class KeyboardKeyButton: UIButton {
         var trackingEventHandler: ((KeyboardKeyButton, KeyboardKeyTrackingPhase) -> Void)?
     #endif
 
+    /// Touch geometry follows layout, not the transient press-feedback scale.
+    /// UIButton's center/bounds stay stable while its transform animates.
+    func touchLayoutFrame(in view: UIView) -> CGRect {
+        guard let superview else { return .zero }
+        return superview.convert(
+            CGRect(
+                x: center.x - bounds.width / 2, y: center.y - bounds.height / 2,
+                width: bounds.width, height: bounds.height), to: view)
+    }
+
+    func touchLayoutBounds(_ rect: CGRect, from view: UIView) -> CGRect {
+        guard let superview else { return .zero }
+        return superview.convert(rect, from: view).offsetBy(
+            dx: bounds.minX - center.x + bounds.width / 2,
+            dy: bounds.minY - center.y + bounds.height / 2)
+    }
+
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
         guard isEnabled, !isHidden, alpha > 0.01 else {
             return false

@@ -598,6 +598,158 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
 
     #endif
 
+    /// Real production layout with a synthetic delayed host; no RIME bootstrap.
+    @MainActor
+    func testPathGeometryCentersDuringDelayedHostGrowth() async throws {
+        for delay in [30, 45, 60] {
+            let owner = LayoutController()
+            owner.loadViewIfNeeded()
+            owner.controller = KeyboardController(state: KeyboardState())
+            owner.cachedLayoutStyle = .nineKey
+            owner.cachedT9ReadinessMatched = true
+            owner.keyboardRowHeightSource = { 45 }
+            owner.keyboardHeightGeometrySource = { .init(screenHeight: 844, isLandscape: false) }
+            owner.prepareKeyboardHeightForAppearance()
+            owner.installPreferredKeyboardHeight()
+            owner.installKeyboardUIIfNeeded()
+            let window = UIWindow(frame: CGRect(x: 0, y: 0, width: 390, height: 600))
+            let host = UIViewController()
+            window.rootViewController = host
+            host.addChild(owner)
+            host.view.addSubview(owner.view)
+            owner.didMove(toParent: host)
+            owner.view.translatesAutoresizingMaskIntoConstraints = false
+            let height = owner.view.heightAnchor.constraint(equalToConstant: 254)
+            NSLayoutConstraint.activate([
+                owner.view.bottomAnchor.constraint(equalTo: host.view.bottomAnchor),
+                owner.view.leadingAnchor.constraint(equalTo: host.view.leadingAnchor),
+                owner.view.widthAnchor.constraint(equalToConstant: 390), height,
+            ])
+            window.isHidden = false
+            defer { window.isHidden = true }
+            host.view.layoutIfNeeded()
+            owner.hostLifecycleRecoveryGate.noteViewWillAppear(context: nil)
+            owner.hostLifecycleRecoveryGate.noteViewDidAppear(hasWindow: true)
+            try await Task.sleep(for: .milliseconds(50))
+            let stack = try XCTUnwrap(owner.rootStack as? KeyboardInputHitAreaStackView)
+            stack.layoutIfNeeded()
+            stack.refreshKeyTouchGeometry()
+            let chrome = try XCTUnwrap(descendants(stack).compactMap { $0 as? T9NineKeyChromeHost }.first)
+            let keys = try XCTUnwrap(chrome.touchColumns.first).rows.map { $0[2] }
+            XCTAssertFalse(keys.isEmpty)
+            owner.controller.state.t9PinyinPathState = .init(
+                compactPaths: [.init(displayText: "ni", replacementRawInput: "ni")], trackedRawInput: "64")
+            owner.refreshT9PinyinPathBar()
+            let start = ProcessInfo.processInfo.systemUptime
+            var grew = false
+            for target in [0, 10, 30, 45, 60, 80, 120, 200, 350, 500] {
+                let remaining = Double(target) / 1000 - (ProcessInfo.processInfo.systemUptime - start)
+                if remaining > 0 { try await Task.sleep(for: .seconds(remaining)) }
+                if !grew, target >= delay {
+                    height.constant = 288
+                    host.view.setNeedsLayout()
+                    host.view.layoutIfNeeded()
+                    grew = true
+                }
+                for key in keys where key.isEnabled {
+                    let point = key.convert(CGPoint(x: key.bounds.midX, y: key.bounds.midY), to: owner.view)
+                    XCTAssertTrue(
+                        isHit(owner.view.hitTest(point, with: nil), key: key),
+                        "delay=\(delay) sample=\(target) key=\(key.currentTitle ?? "symbol") point=\(point)")
+                }
+            }
+            XCTAssertTrue(grew)
+            XCTAssertEqual(owner.presentedT9PinyinPathBarHeight, 34)
+        }
+    }
+
+    /// Reproduce a successful compressed snapshot followed by nested-only growth:
+    /// the controller callback does not run again before JKL is hit-tested.
+    @MainActor
+    func testJKLCenterAfterNestedLayoutCannotHitStaleTUVGap() throws {
+        let owner = makeOwner(width: 390)
+        owner.controller.state.t9PinyinPathState = .init(
+            compactPaths: [.init(displayText: "ni", replacementRawInput: "ni")], trackedRawInput: "64")
+        owner.refreshT9PinyinPathBar()
+        owner.view.frame.size.height = 254
+        owner.view.setNeedsLayout()
+        owner.view.layoutIfNeeded()
+        let stack = try XCTUnwrap(owner.rootStack as? KeyboardInputHitAreaStackView)
+        stack.layoutIfNeeded()
+        stack.refreshKeyTouchGeometry()
+        let chrome = try XCTUnwrap(descendants(stack).compactMap { $0 as? T9NineKeyChromeHost }.first)
+        let jkl = try XCTUnwrap(chrome.touchColumns.first?.rows[1].first { $0.currentTitle == "JKL" })
+        let tuv = try XCTUnwrap(chrome.touchColumns.first?.rows[2].first { $0.currentTitle == "TUV" })
+        let tuvTouch = tuv.convert(try XCTUnwrap(tuv.localTouchBounds), to: owner.view)
+        let tuvVisual = tuv.convert(tuv.bounds, to: owner.view)
+        XCTAssertLessThan(tuvTouch.minY, tuvVisual.minY)
+        let oldGapY = (tuvTouch.minY + tuvVisual.minY) / 2
+        let oldJKL = jkl.convert(jkl.bounds, to: owner.view)
+        let row = try XCTUnwrap(jkl.superview)
+        // Fault-inject the observed ordering: a published compressed canvas is
+        // retained while root bounds and nested JKL geometry have already moved.
+        // No snapshot refresh is invoked after this geometry mutation.
+        stack.frame.size.height += 36
+        row.frame.origin.y += oldGapY - oldJKL.midY
+        let point = jkl.convert(CGPoint(x: jkl.bounds.midX, y: jkl.bounds.midY), to: owner.view)
+        XCTAssertEqual(point.y, oldGapY, accuracy: 0.01)
+        XCTAssertTrue(isHit(owner.view.hitTest(point, with: nil), key: jkl), "JKL center=\(point)")
+    }
+
+    @MainActor
+    func testGapMidpointOverlayAndHeldPressKeepTouchOwnership() throws {
+        let owner = makeOwner(width: 390)
+        owner.controller.state.t9PinyinPathState = .init(
+            compactPaths: [.init(displayText: "ni", replacementRawInput: "ni")], trackedRawInput: "64")
+        owner.refreshT9PinyinPathBar()
+        layout(owner)
+        let stack = try XCTUnwrap(owner.rootStack as? KeyboardInputHitAreaStackView)
+        stack.refreshKeyTouchGeometry()
+        let chrome = try XCTUnwrap(descendants(stack).compactMap { $0 as? T9NineKeyChromeHost }.first)
+        let jkl = try XCTUnwrap(chrome.touchColumns.first?.rows[1].first { $0.currentTitle == "JKL" })
+        let tuv = try XCTUnwrap(chrome.touchColumns.first?.rows[2].first { $0.currentTitle == "TUV" })
+        let upper = jkl.touchLayoutFrame(in: owner.view)
+        let lower = tuv.touchLayoutFrame(in: owner.view)
+        let midpoint = (upper.maxY + lower.minY) / 2
+        let upperGap = CGPoint(x: upper.midX, y: midpoint - 0.5)
+        let lowerGap = CGPoint(x: lower.midX, y: midpoint + 0.5)
+        let original = try XCTUnwrap(owner.view.hitTest(upperGap, with: nil))
+        XCTAssertTrue(isHit(original, key: jkl))
+        XCTAssertTrue(isHit(owner.view.hitTest(lowerGap, with: nil), key: tuv))
+        let trackingBounds = jkl.localTouchBounds
+        // The same persistent UIControl must survive publication while a finger
+        // can still be tracking it; no remove/recreate on ordinary relayout.
+        jkl.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
+        stack.refreshKeyTouchGeometry()
+        XCTAssertEqual(jkl.localTouchBounds, trackingBounds)
+        XCTAssertTrue(owner.view.hitTest(upperGap, with: nil) === original)
+        stack.setShowsRealTouchRangeOverlay(true)
+        XCTAssertTrue(owner.view.hitTest(upperGap, with: nil) === original)
+        stack.setShowsRealTouchRangeOverlay(false)
+        jkl.transform = .identity
+        stack.setNeedsLayout()
+        stack.layoutIfNeeded()
+        XCTAssertTrue(owner.view.hitTest(upperGap, with: nil) === original)
+        XCTAssertTrue(isHit(owner.view.hitTest(lowerGap, with: nil), key: tuv))
+    }
+
+    @MainActor
+    private func isHit(_ hit: UIView?, key: KeyboardKeyButton) -> Bool {
+        var view = hit
+        while let current = view {
+            if current === key { return true }
+            // The gap surface forwards to its source button; inspect ownership
+            // without adding test-only access to the production routing classes.
+            if let source = Mirror(reflecting: current).children.first(where: { $0.label == "sourceButton" })?.value
+                as? KeyboardKeyButton
+            {
+                return source === key
+            }
+            view = current.superview
+        }
+        return false
+    }
+
     @MainActor
     private func expectedHeight(_ owner: KeyboardViewController, expanded: Bool) -> CGFloat {
         owner.keyboardHeightWithoutT9Path + (expanded ? owner.t9PinyinPathBarHeight : 0)

@@ -277,3 +277,7 @@ Flow positions are stable while scrolling. Only initial rows avoid the fixed act
 may pass behind its blur, whose hit zone never forwards selection. Reveal clips content rather than
 resizing the keyboard; 0.18/0.16s transitions reject repeated toggles and candidate touches, and Reduce
 Motion is immediate. Preserve V1–V6; integrated T9 Path uses initial0pt / Sticky34pt (empty after expansion is allowed).
+
+## Key touch geometry publication
+
+The root key stack completes pending nested layout before publishing one shared touch snapshot. Its own layout callback and explicit controller refresh use the same bounded synchronous publication; neither schedules retries or invalidates layout. Button tracking bounds, the persistent gap canvas and Debug drawing are updated together. Gap routing checks root/canvas and current key layout geometry before using its visual exclusions; stale geometry must not capture a current key face. Touch layout ignores the transient button press-feedback transform, so feedback does not resize touch ownership. This repairs publication timing without changing key spacing, midpoint ownership or height negotiation.

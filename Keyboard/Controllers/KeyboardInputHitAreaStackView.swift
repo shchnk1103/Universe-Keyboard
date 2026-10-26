@@ -98,6 +98,10 @@ private final class KeyboardTouchCellControl: UIControl {
 /// over a visible key lets UIKit continue to the original UIButton underneath.
 private final class KeyboardTouchRoutingCanvas: UIView {
     private var controls: [KeyboardTouchCellControl] = []
+    private weak var geometryRoot: UIView?
+    private var publishedRootBounds = CGRect.zero
+    private var publishedFrame = CGRect.zero
+    private var publishedVisuals: [(button: KeyboardKeyButton, frame: CGRect)] = []
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -127,7 +131,11 @@ private final class KeyboardTouchRoutingCanvas: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func render(items: [(button: KeyboardKeyButton, touch: CGRect, visual: CGRect)]) {
+    func render(root: UIView, items: [(button: KeyboardKeyButton, touch: CGRect, visual: CGRect)]) {
+        geometryRoot = root
+        publishedRootBounds = root.bounds
+        publishedFrame = frame
+        publishedVisuals = items.map { ($0.button, $0.visual) }
         while controls.count < items.count {
             let control = KeyboardTouchCellControl()
             addSubview(control)
@@ -148,6 +156,14 @@ private final class KeyboardTouchRoutingCanvas: UIView {
 
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         guard isUserInteractionEnabled, !isHidden, alpha > 0.01 else { return nil }
+        // A nested layout can precede the next snapshot publication. Never use
+        // an old gap's visual exclusion rectangle to steal a current key face.
+        guard let geometryRoot,
+            geometryRoot.bounds == publishedRootBounds,
+            frame == publishedFrame,
+            geometryRoot.convert(geometryRoot.bounds, to: superview) == frame,
+            publishedVisuals.allSatisfy({ $0.button.touchLayoutFrame(in: self) == $0.frame })
+        else { return nil }
         for control in controls.reversed() {
             let localPoint = control.convert(point, from: self)
             if let hit = control.hitTest(localPoint, with: event) {
@@ -192,6 +208,8 @@ final class CandidateBarRowView: UIView {
 final class KeyboardInputHitAreaStackView: UIStackView {
     private var keyTouchSnapshot: [(button: KeyboardKeyButton, cell: KeyTouchCell)] = []
     private var snapshotPath = "flat"
+    private var isPublishingGeometry = false
+    private var snapshotBounds = CGRect.zero
     private weak var touchRoutingCanvas: KeyboardTouchRoutingCanvas?
 
     #if DEBUG
@@ -220,10 +238,19 @@ final class KeyboardInputHitAreaStackView: UIStackView {
         }
     }
 
-    /// Rebuilds geometry after the view controller reports that every nested
-    /// stack has completed layout. Calling this from the root stack's own
-    /// `layoutSubviews` is too early for the deeper nine-key hierarchy.
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        refreshKeyTouchGeometry()
+    }
+
+    /// UIKit may call the controller before the deeper nine-key stacks finish.
+    /// Complete their pending layout explicitly, then publish all consumers in
+    /// one synchronous transaction. No invalidation, scheduling or retry loop.
     func refreshKeyTouchGeometry() {
+        guard !isPublishingGeometry else { return }
+        isPublishingGeometry = true
+        defer { isPublishingGeometry = false }
+        for child in subviews { child.layoutIfNeeded() }
         let keys = allKeyboardKeys()
         guard !keys.isEmpty else {
             invalidateKeyTouchGeometry()
@@ -242,7 +269,7 @@ final class KeyboardInputHitAreaStackView: UIStackView {
             let visuals = keys.enumerated().map { index, button in
                 KeyTouchIdentifiedVisual(
                     id: index,
-                    frame: button.convert(button.bounds, to: self)
+                    frame: button.touchLayoutFrame(in: self)
                 )
             }
             guard visuals.allSatisfy({ isValidFrame($0.frame) }) else {
@@ -276,6 +303,7 @@ final class KeyboardInputHitAreaStackView: UIStackView {
         }
 
         keyTouchSnapshot = snapshot
+        snapshotBounds = bounds
         applySnapshotToButtons(currentKeys: keys)
         refreshTouchRoutingCanvas()
         #if DEBUG
@@ -321,7 +349,7 @@ final class KeyboardInputHitAreaStackView: UIStackView {
                     else {
                         return nil
                     }
-                    let frame = button.convert(button.bounds, to: self)
+                    let frame = button.touchLayoutFrame(in: self)
                     guard isValidFrame(frame) else { return nil }
                     return KeyTouchIdentifiedVisual(id: id, frame: frame)
                 }
@@ -334,15 +362,20 @@ final class KeyboardInputHitAreaStackView: UIStackView {
     }
 
     /// A failed refresh may be a transient UIKit pass. Preserve a snapshot only
-    /// when it still references exactly the current buttons; never publish an
-    /// empty/partial snapshot that silently shrinks touch targets to key faces.
+    /// when both its buttons and layout geometry are unchanged. A changed
+    /// geometry must never retain an old gap exclusion region.
     private func rejectInvalidSnapshot(
         currentKeys: [KeyboardKeyButton],
         path: String
     ) {
         let currentIDs = Set(currentKeys.map(ObjectIdentifier.init))
         let snapshotIDs = Set(keyTouchSnapshot.map { ObjectIdentifier($0.button) })
-        if currentIDs != snapshotIDs {
+        let geometryMatches =
+            snapshotBounds == bounds
+            && keyTouchSnapshot.allSatisfy {
+                $0.button.touchLayoutFrame(in: self) == $0.cell.visualFrame
+            }
+        if currentIDs != snapshotIDs || !geometryMatches {
             invalidateKeyTouchGeometry()
         }
         #if DEBUG
@@ -356,7 +389,7 @@ final class KeyboardInputHitAreaStackView: UIStackView {
         var seen = Set<ObjectIdentifier>()
         for item in keyTouchSnapshot {
             seen.insert(ObjectIdentifier(item.button))
-            let touchInButton = item.button.convert(item.cell.touchFrame, from: self)
+            let touchInButton = item.button.touchLayoutBounds(item.cell.touchFrame, from: self)
             let insets = KeyTouchCellLayout.insets(
                 visualBounds: item.button.bounds,
                 touchBounds: touchInButton
@@ -390,6 +423,7 @@ final class KeyboardInputHitAreaStackView: UIStackView {
 
         canvas.frame = convert(bounds, to: surface)
         canvas.render(
+            root: self,
             items: keyTouchSnapshot.map { item in
                 (
                     button: item.button,

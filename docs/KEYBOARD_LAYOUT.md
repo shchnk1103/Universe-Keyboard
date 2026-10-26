@@ -238,3 +238,7 @@ First Codex review record (pre-amendment): [`evidence/keyboard-layout-9key-001-c
 调节保存方向封顶内的意图值，显示夹低不写回；默认45、Path 0/34、横屏45、竖屏50%和旋转请求优先级不变。
 完整边界见[高度预算与保存意图](KEYBOARD_VALUES.md#build167-s3-高度预算与保存意图)和
 [ADR 0037（Proposed）](architecture/decisions/0037-keyboard-height-host-budget-trust.md)；模拟器证据不是真机证据。
+
+## Key touch geometry publication
+
+The root key stack completes pending nested layout before publishing one shared touch snapshot. Its own layout callback and explicit controller refresh use the same bounded synchronous publication; neither schedules retries or invalidates layout. Button tracking bounds, the persistent gap canvas and Debug drawing are updated together. Gap routing checks root/canvas and current key layout geometry before using its visual exclusions; stale geometry must not capture a current key face. Touch layout ignores the transient button press-feedback transform, so feedback does not resize touch ownership. This repairs publication timing without changing key spacing, midpoint ownership or height negotiation.
