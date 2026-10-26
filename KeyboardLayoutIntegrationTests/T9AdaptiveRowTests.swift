@@ -847,6 +847,155 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
         return false
     }
 
+    // S7 regressions intentionally use the production default strategy, unlike
+    // the archived adaptive fixtures below. They compile unchanged on main.
+    @MainActor
+    func testS7IdleRequestAndActualRowReserve34WithoutEmptyInteraction() throws {
+        let owner = makeS7Owner()
+        let bar = try XCTUnwrap(owner.t9PinyinPathBarView)
+        XCTAssertEqual(owner.preferredKeyboardHeight, 288)
+        XCTAssertEqual(owner.keyboardHeightConstraint?.constant, 288)
+        XCTAssertEqual(bar.bounds.height, 34, accuracy: 0.01)
+        XCTAssertFalse(bar.isHidden)
+        XCTAssertTrue(bar.accessibilityElementsHidden)
+        XCTAssertFalse(bar.isUserInteractionEnabled)
+        XCTAssertNil(bar.hitTest(CGPoint(x: 20, y: 10), with: nil))
+        XCTAssertFalse(descendants(bar).contains { ($0 as? UILabel)?.text == "点选拼音可加快输入" && !$0.isHidden })
+    }
+
+    @MainActor
+    func testS7FirstJKLAndImmediateSecondKeepAllKeyRootRects() throws {
+        let owner = makeS7Owner()
+        let engine = QA001RimeEngine()
+        owner.controller.rimeEngine = engine
+        owner.refreshT9PinyinPathBar()
+        layout(owner)
+        let keys = descendants(owner.rootStack).compactMap { $0 as? KeyboardKeyButton }
+        let before = keys.map { $0.convert($0.bounds, to: owner.view) }
+        let jkl = try XCTUnwrap(keys.first { $0.accessibilityIdentifier == "5" })
+        let point = jkl.convert(CGPoint(x: jkl.bounds.midX, y: jkl.bounds.midY), to: owner.view)
+        owner.insertKey(jkl)
+        layout(owner)
+        XCTAssertEqual(keys.map { $0.convert($0.bounds, to: owner.view) }, before)
+        let second = owner.view.hitTest(point, with: nil)
+        XCTAssertTrue(isHit(second, key: jkl))
+        if isHit(second, key: jkl) { owner.insertKey(jkl) }
+        XCTAssertEqual(engine.keys, ["5", "5"])
+        XCTAssertEqual(owner.preferredKeyboardHeight, 288)
+    }
+
+    @MainActor
+    func testS7IdlePortraitBudgetIncludes34AndDoesNotRewriteSaved87() throws {
+        let owner = makeS7Owner(saved: 87)
+        XCTAssertEqual(owner.keyboardHeightSettings.savedRowHeight, 87)
+        XCTAssertEqual(owner.keyHeight, 78)
+        XCTAssertEqual(owner.preferredKeyboardHeight, 420)
+        XCTAssertLessThanOrEqual(owner.preferredKeyboardHeight, 844 * 0.5)
+        XCTAssertEqual(owner.presentedT9PinyinPathBarHeight, 34)
+        owner.controller.state.t9PinyinPathState = .init(trackedRawInput: "5")
+        owner.refreshT9PinyinPathBar()
+        layout(owner)
+        XCTAssertEqual(owner.keyHeight, 78)
+        XCTAssertEqual(owner.keyboardHeightSettings.savedRowHeight, 87)
+        XCTAssertEqual(owner.preferredKeyboardHeight, 420)
+    }
+
+    @MainActor
+    func testS7OtherIdleLayoutsDoNotAcquirePathReservation() {
+        let owner = makeS7Owner()
+        owner.cachedLayoutStyle = .twentySixKey
+        owner.reloadKeyboard()
+        layout(owner)
+        XCTAssertEqual(owner.preferredKeyboardHeight, 254)
+        XCTAssertEqual(owner.keyboardHeightConstraint?.constant, 254)
+        XCTAssertNil(owner.t9PinyinPathBarView)
+        owner.cachedLayoutStyle = .nineKey
+        owner.controller.state.inputMode = .english
+        owner.reloadKeyboard()
+        layout(owner)
+        XCTAssertEqual(owner.preferredKeyboardHeight, 254)
+        XCTAssertEqual(owner.keyboardHeightConstraint?.constant, 254)
+        XCTAssertNil(owner.t9PinyinPathBarView)
+        owner.controller.state.inputMode = .chinese
+        for page: KeyboardPage in [.numbers, .symbols] {
+            owner.controller.state.currentPage = page
+            owner.reloadKeyboard()
+            layout(owner)
+            XCTAssertEqual(owner.preferredKeyboardHeight, 254)
+            XCTAssertEqual(owner.keyboardHeightConstraint?.constant, 254)
+            XCTAssertNil(owner.t9PinyinPathBarView)
+            XCTAssertEqual(owner.presentedT9PinyinPathBarHeight, 0)
+        }
+        owner.controller.state.currentPage = .letters
+        owner.cachedT9ReadinessMatched = false
+        owner.reloadKeyboard()
+        layout(owner)
+        XCTAssertEqual(owner.preferredKeyboardHeight, 254)
+        XCTAssertEqual(owner.keyboardHeightConstraint?.constant, 254)
+        XCTAssertNil(owner.t9PinyinPathBarView)
+    }
+
+    @MainActor
+    func testS7IdleSimulatorScreenshotAndContentClearing() async throws {
+        let owner = makeS7Owner()
+        let scene = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.first
+        let window =
+            scene.map { UIWindow(windowScene: $0) }
+            ?? UIWindow(frame: CGRect(x: 0, y: 0, width: 402, height: 874))
+        if let scene { window.frame = scene.screen.bounds }
+        let host = UIViewController()
+        host.view.backgroundColor = .systemBackground
+        window.rootViewController = host
+        host.addChild(owner)
+        host.view.addSubview(owner.view)
+        owner.didMove(toParent: host)
+        owner.view.frame = CGRect(
+            x: 0, y: window.bounds.height - 288, width: window.bounds.width, height: 288)
+        window.makeKeyAndVisible()
+        defer { window.isHidden = true }
+        let path = T9PinyinPath(displayText: "j", replacementRawInput: "j")
+        owner.controller.state.t9PinyinPathState = .init(compactPaths: [path], trackedRawInput: "5")
+        owner.refreshT9PinyinPathBar()
+        XCTAssertTrue(owner.t9PinyinPathBarView?.isUserInteractionEnabled == true)
+        owner.controller.state.t9PinyinPathState = .empty
+        owner.refreshT9PinyinPathBar()
+        window.layoutIfNeeded()
+        owner.view.layoutIfNeeded()
+        let bar = try XCTUnwrap(owner.t9PinyinPathBarView)
+        XCTAssertEqual(bar.bounds.height, 34, accuracy: 0.01)
+        XCTAssertFalse(bar.isUserInteractionEnabled)
+        XCTAssertTrue(bar.accessibilityElementsHidden)
+        XCTAssertNil(bar.hitTest(CGPoint(x: 20, y: 10), with: nil))
+        await Task.yield()
+        // Render the UIKit fixture without requiring UI-testing screenshot authorization.
+        let image = UIGraphicsImageRenderer(bounds: owner.view.bounds).image { _ in
+            owner.view.drawHierarchy(in: owner.view.bounds, afterScreenUpdates: true)
+        }
+        let fixture = XCTAttachment(image: image)
+        fixture.name = "S7-idle-UIKit-fixture"
+        fixture.lifetime = .keepAlways
+        add(fixture)
+    }
+
+    @MainActor
+    private func makeS7Owner(saved: Int? = nil) -> ReservedLayoutController {
+        let owner = ReservedLayoutController()
+        owner.loadViewIfNeeded()
+        owner.controller = KeyboardController(state: KeyboardState())
+        owner.cachedLayoutStyle = .nineKey
+        owner.cachedT9ReadinessMatched = true
+        if let saved {
+            owner.keyboardRowHeightSource = { saved }
+            owner.keyboardHeightGeometrySource = { .init(screenHeight: 844, isLandscape: false) }
+            owner.prepareKeyboardHeightForAppearance()
+        }
+        owner.view.frame = CGRect(x: 0, y: 0, width: 390, height: owner.preferredKeyboardHeight)
+        owner.setupRootStack()
+        owner.reloadKeyboard()
+        layout(owner)
+        return owner
+    }
+
     @MainActor
     private func expectedHeight(_ owner: KeyboardViewController, expanded: Bool) -> CGFloat {
         owner.keyboardHeightWithoutT9Path + (expanded ? owner.t9PinyinPathBarHeight : 0)
@@ -903,6 +1052,7 @@ nonisolated final class T9AdaptiveRowTests: XCTestCase {
 
 @MainActor
 private final class LayoutController: KeyboardViewController {
+    override var t9PathRowReservation: T9PathRowReservation { .adaptive }
     override func viewDidLoad() {
         // No bootstrap/session/host side effects in process-local geometry tests.
     }
@@ -969,5 +1119,12 @@ private final class QA001DisplayObserver: NSObject {
     func stop() { link?.invalidate(); link = nil }
     @objc private func tick() {
         if condition() { stop(); completion?() }
+    }
+}
+
+@MainActor
+private final class ReservedLayoutController: KeyboardViewController {
+    override func viewDidLoad() {
+        // No real Extension/bootstrap side effects in the simulator fixture.
     }
 }

@@ -612,7 +612,7 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
     private func makeController(width: CGFloat, nineKey: Bool, hasPath: Bool = false, stickyEmpty: Bool = false)
         -> KeyboardViewController
     {
-        let sut = KeyboardViewController()
+        let sut = AdaptiveCompactHeaderController()
         let core = KeyboardController(state: KeyboardState())
         sut.controller = core
         // Install the actual input view directly, without Main-App resources or a live RIME session.
@@ -731,4 +731,9 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
         default: return nil
         }
     }
+}
+
+@MainActor
+private final class AdaptiveCompactHeaderController: KeyboardViewController {
+    override var t9PathRowReservation: T9PathRowReservation { .adaptive }
 }

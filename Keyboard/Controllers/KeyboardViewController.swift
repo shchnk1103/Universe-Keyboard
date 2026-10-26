@@ -97,6 +97,9 @@ class KeyboardViewController: UIInputViewController {
         var candidateVisibilityDiagnosticsTask: Task<Void, Never>?
     #endif
 
+    /// Production is a compile-time choice; subclasses retain archived fixtures.
+    var t9PathRowReservation: T9PathRowReservation { .production }
+
     // MARK: - 视图加载
 
     /// 通过标准 UIViewController 加载流程安装输入视图。

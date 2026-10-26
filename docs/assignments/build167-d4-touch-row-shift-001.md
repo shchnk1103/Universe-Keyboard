@@ -8,9 +8,9 @@ record_id: BUILD167-D4-TOUCH-ROW-SHIFT-001
 | Field | Value |
 |---|---|
 | Lifecycle | Assigned |
-| Current phase | 登记；S1–S3 每阶段另需 Human 任务包授权 |
-| Material non-claims | 本次仅文档登记；无阶段开工、独立评审结论、push / PR / merge 或 Release |
-| Next handoff / decision | 本记录合并进 main 后，Human 授权阶段任务包 |
+| Current phase | S7 阶段A：本地预留路径行实现与测试（Human授权）；评审另派 |
+| Material non-claims | 无独立评审通过、真机修复、push / PR / merge 或 Release |
+| Next handoff / decision | 阶段A报告→Human派独立Architecture/Quality；阶段B另授权 |
 
 ## Authority
 
@@ -39,6 +39,7 @@ Human 观察不是测量；下列事实、推断与假设分别标明，原始�
   - **S1 诊断：** 只读核对触区几何的建立与更新时机；模拟器用注入时序复现拼音栏出现后0–400ms内的触摸命中；必要时添加仅Debug生效的触点x/y、命中按钮frame、触区几何代际、touch-end及action是否执行记录，通过Human真机操作与只读取回验证。
   - **S2 修复：** 让触区几何与按键视觉位置同步更新，配回归测试。
   - **S3 真机复测：** Human操作。
+  - **S7：** 依据下述Human决定，本地实现九键始终预留34pt、保留adaptive策略与本地归档标签、同步合同/ADR、回归base失败/fix通过及两轮模拟器与Core；至多两本地提交，不push；阶段A结束停交Human派独立评审，阶段B真机与发布另授。
 - **Non-goals:** 高度协商（属 [BUILD167-FEEDBACK-FIX-001](build167-feedback-fix-001.md)）；D1；RIME输入链路；打开R174；改UI-4或九宫格产品合同（需要则停止交Human决定）；放宽断言或超时；TestFlight / App Store Connect动作；push / PR / merge各自另行授权。
 - **Required Inputs:** [KEYBOARD_LAYOUT](../KEYBOARD_LAYOUT.md)（Sticky路径栏）、[KEYBOARD_VALUES](../KEYBOARD_VALUES.md)、[PERFORMANCE_BASELINE](../PERFORMANCE_BASELINE.md)（真机打字由Human执行）；BUILD167-FEEDBACK-FIX-001的S2与S3报告；以下外置证据（路径与SHA，不复制原件）：
   - `~/.kos-work/Universe-Keyboard/BUILD167-FIX-S3-HEIGHT-001/reports/executor-report.md`，SHA-256 `8f901389a7617afb3e0190a10e65eb5c0cee0f7404c6657831e5ffb254e1c354`。
@@ -83,3 +84,13 @@ Human 观察不是测量；下列事实、推断与假设分别标明，原始�
 ## Lifecycle Status
 
 Assigned
+
+## S7 Human 决定与精确授权
+
+Human Product Owner，2026-10-26 Asia/Shanghai，S7 任务包及本会话匹配 SHA-256 的激活授权；授权原文保存在外置 reports/human-authorization-issued.md。
+
+- “我发现苹果原生键盘也是直接预留了拼音栏的位置，我们可以先存档现有自动出现的这个功能。”
+- 他肉眼从未看到键盘在屏幕上往下挪，所以不再做屏幕录像（S6 已取消）。
+- 此前的倾向：“希望拼音栏可以在需要的时候再出现”，现已被上一条取代。
+
+任务包 `BUILD167-D4-S7-RESERVE-001/instructions/task-package.md` SHA-256 `385c7035ef1fd769f28fcf36199f4cbbe34b100b395b22b8563f792097aa1155`，授权Codex执行阶段A。原Non-goals中产品合同停止条款仅在本次明确的0/34→始终预留34范围由Human决定解除；其它UI-4条款、RIME/R174、#244/#247保持不变。产品决定见 [Accepted记录](../product-decisions/T9-PATH-ROW-RESERVED-001-product-decision.md)，架构见 [Proposed ADR0038](../architecture/decisions/0038-t9-path-row-always-reserved.md)。Lifecycle保持Assigned的父任务历史不构成S7质量或真机通过。

@@ -92,8 +92,7 @@ Nine-key depends on fog-song / rime-ice T9 resources. If those resources are mis
 
 UI-4 height-setting exception: the following metrics retain their default baseline, while the shared effective row height may follow the extension-private saved setting. The34pt visible Path remains part of the portrait50% total-height cap. The root request normally uses750; after rotation, an eligible mismatched request may hold999 until rotation/visibility/constraint/window/suspend cleanup. This is a request policy, not a guarantee of host dimensions; see [height values and limits](KEYBOARD_VALUES.md#p3-r2-旋转完成后的高度请求优先级) and [UI-4 contract](product-decisions/UI4-KEYBOARD-HEIGHT-001-product-contract.md).
 
-- Order: **sticky path bar (new idle presentation0pt / first composition onward34pt)** → Chinese candidate container (46pt total, no additional bridge) → nine-key pad. `KEYBOARD-T9-ADAPTIVE-ROW-001` latches34pt on existing composition/Path/Partial Commit/Recovery signals, even with an empty Path catalog, and retains it through subsequent idle/commit/delete/page/reload states. Only a completed disappearance with existing hidden gate and detached view, paired with the next appearance, permits a new-cycle reset; otherwise retain34pt conservatively. Only the top row and the existing750-priority root request change; keys and candidate metrics stay fixed. Real Extension screen-coordinate acceptance remains pending Human Gate.
-- Path bar is reserved whenever Chinese nine-key letters chrome is active, even with empty composition (no height jump).
+- Order: **reserved path bar (34pt, including idle)** → Chinese candidate container (46pt total, no additional bridge) → nine-key pad. [Human decision](product-decisions/T9-PATH-ROW-RESERVED-001-product-decision.md) supersedes adaptive0/34: Chinese nine-key letters chrome with T9 readiness always reserves34pt; empty content is blank, non-interactive and hidden from VoiceOver. No first-key height jump. Other layouts/fallback do not acquire34pt. The old adaptive latch remains archived behind a compile-time strategy; see [ADR0038](architecture/decisions/0038-t9-path-row-always-reserved.md). Real Extension acceptance remains pending Human Gate.
 - Path chip hit targets expand vertically to 44 pt via `ChromeTouchHitGeometry.pathBarExpandedHitBounds`. Delivery remaps item-frame chrome to the cell and uses a direct tap; `didSelect` is only a fallback. See [`PATH-BAR-TOUCH-001`](assignments/path-bar-touch-001.md).
 - Compact bar shows at most **5** single-line path labels (no multi-syllable wrap); plain text, no candidate pills; optional 1px separator above the Chinese candidate bar.
 - **选拼音** selects the first compact choice for the current focus when none is selected, then advances and wraps. It never confirms a segment and never opens the predecessor expanded path panel.
@@ -110,6 +109,8 @@ unchanged. The viewport clips candidate drawing; the action zone owns exactly it
 visible hit area and does not add a duplicate trailing content inset. Root key
 margins remain 7pt; only the candidate header extends beyond them, with explicit
 parent hit routing for that extension.
+
+> 历史标注：以下 UI-1 段落已被 [T9-PATH-ROW-RESERVED-001](product-decisions/T9-PATH-ROW-RESERVED-001-product-decision.md) 取代；现行合同见上文「Precise path bar geometry」第95、96行附近的始终预留34pt规则。
 
 Historical UI-1-only stage: T9 0/34pt dynamic height was prototyped but withdrawn from that candidate (superseded by the current integrated Sticky contract above):
 real Extension activation/screen-coordinate evidence was not established. The
