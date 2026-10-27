@@ -62,6 +62,7 @@ Policy version: 1.0.0
 - 2026-10-27: R4 增加 DEBUG 观测计数；R4 Architecture 复核 ACCEPT WITH CONDITIONS；第五轮 Quality PASS WITH CONDITIONS。
 - 2026-10-27: 发布时把 6 个本地提交压成 1 个提交；PR #252 经 Human 合并（合并提交 48471f2c2555b6ce7820375975bb215e64340e16）。
 - 2026-10-27: 本记录 Lifecycle 改为 Completed（非 Closed）。
+- 2026-10-27: 上文 Decision Source 记录的是阶段 B 当时的授权范围（本地提交、不授权 push）；push 与 PR 由后续发布包授权，PR #252 由 Human 合并。
 
 ## Exit evidence
 
