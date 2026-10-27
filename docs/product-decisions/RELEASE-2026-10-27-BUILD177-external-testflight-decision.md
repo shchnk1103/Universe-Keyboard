@@ -6,7 +6,7 @@ Human 2026-10-27 原话：“接受与 Build 167 相同的已知风险（TD-003�
 
 候选 1.0 (177)，源提交 `1c9a906c2d0baf12aa62cbb207740bcc16e87efb`：Human 陈述已在 Xcode Cloud 确认，PM 未核验。Beta App Review 已批准且用户可安装是 Human 陈述，未在 App Store Connect 核验。Human 陈述用户群公告已发，不在小红书宣发；公告草稿见下方外置证据。
 
-Human 观察内部冒烟 7 项通过；第 6 项后半“曾开启值失效”是否可验证取决于此前是否开启过，未确认。测试者说明 v2 草稿由发布准备产出，末尾标注待 Human 批准；Human 是否批准及 TestFlight 实际使用的文字 UNKNOWN，待 Human 补充。
+Human 观察内部冒烟 7 项通过；第 6 项后半“曾开启值失效”是否可验证取决于此前是否开启过，未确认。测试者说明 v2 草稿由发布准备产出，末尾标注待 Human 批准；Human 陈述（2026-10-27）：TestFlight“测试内容”直接使用了用户群公告草稿原文，v2 草稿未被使用（PM 未在 App Store Connect 核验）。公告草稿含“这些修复我已在自己的真机上试过”，指 Human 当晚冒烟观察，不是全面验证。
 
 Build 167 之后的 first-parent 合并：[#241](https://github.com/shchnk1103/Universe-Keyboard/pull/241) `143f02c`；[#242](https://github.com/shchnk1103/Universe-Keyboard/pull/242) `a97f539`；[#243](https://github.com/shchnk1103/Universe-Keyboard/pull/243) `930bf55`；[#245](https://github.com/shchnk1103/Universe-Keyboard/pull/245) `aeb1d91`；[#244](https://github.com/shchnk1103/Universe-Keyboard/pull/244) `eda15a5`；[#246](https://github.com/shchnk1103/Universe-Keyboard/pull/246) `4c026d5`；[#247](https://github.com/shchnk1103/Universe-Keyboard/pull/247) `cd16fcb`；[#248](https://github.com/shchnk1103/Universe-Keyboard/pull/248) `4477435`；[#249](https://github.com/shchnk1103/Universe-Keyboard/pull/249) `1c9a906`。`release_evidence.py plan` 判定 triggered，CI 仍为 full。候选 main run `40347923968` success：引用 ci-evidence.md（PM 只读取自 GitHub，2026-10-27）。
 

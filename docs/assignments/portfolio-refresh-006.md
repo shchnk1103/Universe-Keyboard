@@ -68,7 +68,7 @@ record_id: PORTFOLIO-REFRESH-006
 | 项 | Result |
 |---|---|
 | Executor 登记与本地检查 | 见外置 Executor 报告（执行来源，不是 Reviewer 结论） |
-| Quality | 待评审，不填结论 |
+| Quality | 内部 Quality 与独立 Quality 均已评审（外置，不入库）：独立 Quality R1 `review-indep-r1.md`（SHA-256 `f458999b4d957782d729f6995f44a3c15e2f3cdab1b5cf4ee3f1424514132c6f`）；独立 Quality R1b `review-indep-r1b.md`（PASS WITH CONDITIONS，SHA-256 `672ad7042630bbd618e845f6ceca63c6c1a5ce54638fdef1fd77badd2d82fdcb`；N-01 至 N-04 为 Minor/Note，由本次同步处理）；内部 Quality 见本记录 Reports 清单 |
 
 ## Closeout Decision
 

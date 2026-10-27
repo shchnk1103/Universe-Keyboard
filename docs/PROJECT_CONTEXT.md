@@ -8,7 +8,7 @@ This file provides durable project context for AI assistants working with code i
 
 ## Project Overview
 
-Universe Keyboard is an iOS third-party custom keyboard with RIME-powered Chinese input. It has two product targets plus four test targets (`RimeBridgeTests`, `UniverseKeyboardTests`, `KeyboardTests`, and `UniverseKeyboardUITests`):
+Universe Keyboard is an iOS third-party custom keyboard with RIME-powered Chinese input. It has two product targets plus six test targets (`RimeBridgeTests`, `UniverseKeyboardTests`, `KeyboardTests`, `UniverseKeyboardUITests`, `KeyboardExtensionTests`, and `KeyboardLayoutIntegrationTests`):
 
 - **`Universe Keyboard`** (main App) — SwiftUI app (Home, Settings and Search; Guide is conditionally shown) for keyboard setup, RIME deployment, and feedback configuration.
 - **`Keyboard`** (Keyboard Extension, `Keyboard.appex`) — the actual keyboard that appears in other apps. Built with UIKit (`UIInputViewController`). Primary language: `zh-Hans`.
@@ -38,7 +38,7 @@ The durable implementation constraints are:
 - RIME production bridge code belongs in `Packages/RimeBridge`; do not recreate bridge sources in app or extension targets.
 - Do not silence concurrency issues with `@unchecked Sendable` or unsafe isolation.
 - Full RIME deployment is owned by the main App; the Keyboard Extension runtime path is session-only.
-- Keyboard layout (26-key / Chinese nine-key) is governed by ADR 0018 and `docs/KEYBOARD_LAYOUT.md`: base scheme stays user-visible (`rime_active_schema`), effective scheme may be `t9` only when layout is nine-key, base is `rime_ice`, and versioned T9 readiness matches on-disk resources; Extension never deploys or writes readiness. Chinese nine-key **chrome** (system-style 九宫格, not phone-pad digits) is documented under the same `KEYBOARD_LAYOUT.md` section and `UI_STYLE_GUIDE.md` type scale; T9 still sends digits 2–9 under the skin.
+- Keyboard layout (26-key / Chinese nine-key) is governed by ADR 0018 and `docs/KEYBOARD_LAYOUT.md`: base scheme stays user-visible (`rime_active_schema`), effective scheme may be `t9` only when layout is nine-key, base is `rime_ice`, and versioned T9 readiness matches on-disk resources; Extension never deploys or writes readiness. This sentence describes the legacy migration path; ADR 0026 (`docs/architecture/decisions/0026-layout-bound-rime-scheme-selection.md`) adds layout-bound bindings that the current resolver also honors. Chinese nine-key **chrome** (system-style 九宫格, not phone-pad digits) is documented under the same `KEYBOARD_LAYOUT.md` section and `UI_STYLE_GUIDE.md` type scale; T9 still sends digits 2–9 under the skin.
 - Lua and release-readiness validation status belongs in `CHANGELOG.md` and `docs/architecture/swift6-manual-acceptance.md`.
 
 
@@ -97,7 +97,7 @@ Keyboard/
 Universe Keyboard/
 ├── App/
 │   ├── Universe_KeyboardApp.swift        — @main 入口
-│   └── ContentView.swift                 — 双 Tab 布局（引导 / 设置）
+│   └── ContentView.swift                 — 三项主 Tab（home / settings / search；引导以 sheet 呈现）
 ├── Views/
 │   ├── Components/
 │   │   ├── AppActionButton.swift         — 主 App 内容操作按钮（Liquid Glass + 深浅反转对比度 + 整块胶囊命中）
@@ -153,7 +153,7 @@ The keyboard uses a **dual-path** design in `KeyboardController`:
 - **RIME path** (`rimeEngine != nil`): delegates composition and candidate lookup to the engine. Keystrokes never run deployment or configuration file synchronization.
 - **Fallback path** (`rimeEngine == nil`): uses `CandidateProvider` + manual composition (original behavior).
 
-**librime-lua integration**: `Packages/RimeBridge/Vendor/` expects 11 xcframeworks (9 original + `liblua.xcframework` + `librime-lua.xcframework`). The lua module is registered at runtime via `RIME_HAS_LUA=1` preprocessor macro. Full Lua behavior remains subject to a real-artifact schema smoke test before release.
+**librime-lua integration**: `Packages/RimeBridge/Vendor/` declares 12 binary targets (9 original + `liblua.xcframework` + `librime-lua.xcframework` + `librime-octagram.xcframework`). The lua module is registered at runtime via `RIME_HAS_LUA=1` preprocessor macro. Full Lua behavior remains subject to a real-artifact schema smoke test before release.
 
 **Inline preedit / marked text**: Chinese-mode composition uses `UITextDocumentProxy.setMarkedText` for system composing underline. RIME `rawInput` and display `preeditText` must remain separate. Full pipeline and invariants: [`input-pipeline-and-marked-text.md`](architecture/input-pipeline-and-marked-text.md).
 
@@ -202,7 +202,7 @@ A local Swift Package at `Packages/KeyboardCore/`. Contains:
 Universe Keyboard/
 ├── App/
 │   ├── Universe_KeyboardApp.swift        — @main 入口
-│   └── ContentView.swift                 — 双 Tab 布局（引导 / 设置）
+│   └── ContentView.swift                 — 三项主 Tab（home / settings / search；引导以 sheet 呈现）
 ├── Views/
 │   ├── Components/                       — shared SwiftUI: AppTokens, AppCard, EmptyStateView, MetricCell, KeyValueRow, LoadingStateView, SettingsNavigationLink, AppMotion, …
 │   ├── Home/ · Guide/ · Settings/ · Dictionary/ · Diagnostics/ · License/
