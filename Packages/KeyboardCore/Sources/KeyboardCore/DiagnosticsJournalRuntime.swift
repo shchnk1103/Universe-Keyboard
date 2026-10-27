@@ -250,6 +250,22 @@ public final class DiagnosticsJournalRuntime: Sendable {
         ingress.requestFlush()
     }
 
+    #if DEBUG
+        internal func testingFlushSnapshotForTesting() -> DiagnosticsJournalIngress.FlushWaitTestingSnapshot {
+            ingress.testingSnapshotForTesting()
+        }
+
+        /// 测试屏障的对外入口。完成语义只有 Ingress 一份；这里只转发。
+        /// 未取消的正常完成才表示调用前已接受的事件终结；取消返回不证明终结。
+        /// 终结不保证 reader 可见，也不是 fsync。前后累计快照非原子，既不是该次屏障的
+        /// 精确上界也不是逐 ticket 对账，不能从总数相等推断覆盖范围。
+        /// 计数按首个终结原因归类，dropped 合并多种原因，不是物理 I/O 审计。
+        /// 历史读到零条与合同相容但违反测试数量断言，根因 UNKNOWN。
+        internal func flushAndWaitForTesting() async {
+            await ingress.flushAndWaitForTesting()
+        }
+    #endif
+
     /// 在 Extension 可见性结束时立即丢弃未开始的尾批，不等待后台 I/O。
     public func suspendForExtensionLifecycle() {
         ingress.suspendForExtensionLifecycle()

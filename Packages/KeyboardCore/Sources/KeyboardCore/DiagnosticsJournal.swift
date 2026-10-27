@@ -897,6 +897,7 @@ public actor DiagnosticsJournalReader {
         try availableDateCatalog(timeZone: timeZone).ranges
     }
 
+    /// 读取是同步文件 I/O，途中不检查任务取消。测试截止因此不能依赖这次读取返回。
     public func latest(
         maximumEventCount: Int = defaultMaximumEventCount,
         maximumReadBytes: Int = defaultMaximumReadBytes
