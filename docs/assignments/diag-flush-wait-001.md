@@ -8,7 +8,7 @@ Policy version: 1.0.0
 |---|---|
 | Lifecycle | Completed |
 | Phase | 已合并（PR #252，合并提交 48471f2c2555b6ce7820375975bb215e64340e16，Human 合并，CI 10/10 通过）。 |
-| Non-claims | 不证明 CI 会变绿，不证明设备、Quality、Human Gate 或 Release。偶发超时根因仍是 UNKNOWN。等待返回不是 fsync，也不表示读取可见。 |
+| Non-claims | 阶段 B 执行时：不证明 CI 会变绿，不证明设备、Quality、Human Gate 或 Release（合并后状态见 Phase 与 History）。偶发超时根因仍是 UNKNOWN。等待返回不是 fsync，也不表示读取可见。 |
 | Next | Closed 由 Human 按 D7 另行决定；T-B 统一设计与 0xDEAD10CC 缓解（PF-057）尚未立项。 |
 | Residuals | CI 偶发超时根因 UNKNOWN；两次“屏障返回后读到 0 条”与一次 513 的根因 UNKNOWN（见 PF-034）；probe-on 运行、真机、慢环境表现 UNKNOWN。 |
 
