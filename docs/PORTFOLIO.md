@@ -131,7 +131,7 @@
 | 2026-10-26 | 九宫格始终预留 34pt 拼音栏（方案 A），放弃 Build 167 卖点“拼音行平时不占地方”；不再做屏幕录像，S6 取消 | [产品决定](product-decisions/T9-PATH-ROW-RESERVED-001-product-decision.md)；PR #248 |
 | 2026-10-26 | “实验性 Liquid Glass 材质”开关仅 DEBUG 可见，正式构建忽略并清除已保存值 | [Assignment](assignments/liquid-glass-debug-only-001.md)；PR #249 |
 | 2026-10-26 | PF-023 第二阶段：9 个对照分支打归档标签后删除本地分支、不删远程；UI-2 诊断分支留；3 个 experiment/* 等任务关闭；8 月发版 2 个以后对照；3 个 typo 分支各自看；stash 本次不清（`1A 2A 3A 4A 5A 6B`）；其中 9 个需强制删除的分支“等出门回来再另开登记” | 本文件 PF-023；[Assignment](assignments/git-branch-archive-hygiene-004.md) |
-| 2026-10-26 | 派发只按角色与会话约束，不指定哪个 AI（KOS 目标：任何 AI 都能接手） | PM 记录（外置，不入库；Human 2026-10-26 原话“我希望以后不要指定派发给哪个 AI，毕竟我们 KOS 最终的目标是任何 AI 都能接手”） |
+| 2026-10-26 | 派发只按角色与会话约束，不指定哪个 AI（KOS 目标：任何 AI 都能接手） | PM 记录（外置，不入库；Human 2026-10-26 对话原话，Human 于 2026-10-27 授权本包时确认“我希望以后不要指定派发给哪个 AI，毕竟我们 KOS 最终的目标是任何 AI 都能接手”） |
 | 2026-10-27 | 1.0 (177) 发给外部测试组，接受与 Build 167 相同的已知风险；不关闭技术债，不是 Product Gate 或正式上架许可；不在小红书宣发 | [发布决定](product-decisions/RELEASE-2026-10-27-BUILD177-external-testflight-decision.md)；本文件 PF-041 |
 | 2026-10-27 | 两个小文档修复并入本次组合同步；新增 PF-052 至 PF-056 | 本次同步 Assignment |
 
