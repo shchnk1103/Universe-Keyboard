@@ -1,0 +1,59 @@
+# Assignment: PORTFOLIO-SYNC-2026-10-28-001 — 组合同步
+
+Policy version: 1.0.0
+record_id: PORTFOLIO-SYNC-2026-10-28-001
+
+## Current Status
+
+| Field | Value |
+|---|---|
+| Lifecycle | Active |
+| Current phase | docs-only 本地执行与提交；独立评审待进行 |
+| Material non-claims | 不代表产品 Gate、发布或技术债关闭；不含 push、PR 或 merge |
+| Next handoff / decision | 独立 Architecture / Quality 评审，Human 决定后续发布 |
+
+## Authority
+
+- **Task ID / Title:** PORTFOLIO-SYNC-2026-10-28-001 — 组合同步
+- **Assignment Authority:** Product Lead
+- **Decision Source / Date:** Human 2026-10-27 对“先做 portfolio 同步”的回答及外置任务包 SHA-256 `bf9b4cc7cd15682cba873e0badb9f2f852cbd22cf70c951a901402ed910d3567`；修订 R3 SHA-256 `44cf70175f3971d0463f9acf6a2b8ead163dd54f1b472fbc23cc448cc4688d5c`。
+- **Product Approver:** Human Product Owner。
+
+## Boundary
+
+- **Scope:** 冻结 edits E1–E6、A1–A3、本 Assignment、外置报告与清理清单；一个本地提交。
+- **Non-goals:** push、PR、merge、删除、构建测试、代码和工程改动、AGENTS.md、Assignment Policy、branch-worktree-cleanup 与 ADR 状态修改；不关闭 Assignment。
+- **Required Inputs:** 冻结任务包、R1–R3、编辑清单、笔记、输入索引与其中列出的报告；基线 `48471f2c2555b6ce7820375975bb215e64340e16`。
+
+## Assignment
+
+- **Domain Owner:** Architecture & Knowledge Steward。
+- **Executor:** 获授权的执行会话。
+- **Environment Executor:** Not Applicable — 仅仓库文档与本地 Git 操作。
+- **Human Dependency:** Human Product Owner 决定评审后发布与 Close。
+- **Architecture Reviewer:** 独立会话。
+- **Quality Reviewer:** 独立会话。
+- **Product Approver:** Human Product Owner。
+
+## Gates
+
+- **Entry Criteria:** Human 激活；冻结输入哈希、基线与编辑锚点核对通过；隔离 worktree。
+- **Exit Criteria:** 授权编辑、链接与差异检查、本地提交和执行报告；独立评审另行完成。
+- **Stop Conditions:** 输入哈希不符、基线前进并触及范围文件、编辑锚点不匹配、需要禁止范围改动、事实缺出处或写入被拒。
+
+## Handoff
+
+- **Handoff Target:** 独立 Architecture / Quality 评审会话，之后 Human Product Owner。
+- **Required Handoff Content:** 冻结输入、编辑逐项结果、来源、检查、提交与树、未覆盖范围。
+- **Revalidation Trigger:** 范围、基线、授权、输入或责任变化。
+
+## Exit evidence
+
+| 项 | Result |
+|---|---|
+| Executor | 外置 `reports/executor-report-r3.md`，报告哈希由交付消息提供。 |
+| Architecture / Quality | 独立评审待进行；不预填结论。 |
+
+## Closeout Decision
+
+按 D7 评审后 Close，进入 main 时生效；本地执行不构成 Close。
