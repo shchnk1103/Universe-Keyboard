@@ -50,3 +50,16 @@
 ## 治理提示
 
 本任务只记录盘点。删除分支、worktree、构建产物或证据，都要另有 Human 授权，并遵守 `AGENTS.md` 第 60–63 行。
+
+## 接手可达性检查（2026-10-27，Human 补充；PM 起草，待 Human 确认后写入 `AGENTS.md`）
+
+KOS 设定任何 AI 都能接手（含从远程分支接手）。清理分支或 worktree 之前，除“已并入 `origin/main`、无未提交改动、不受保护”外，还要判断别的 AI 接手时是否需要读它。逐对象判定一类：
+
+| 类 | 条件 | 处置 |
+|---|---|---|
+| A | 已并入 `origin/main`，所属 Assignment 已 Completed 或 Closed，证据都能从 `origin/main` 的文档或 PR 读到 | 可清（仍按安全删除；GitHub 通常保留 PR 的 head 提交，也可在 PR 页恢复已删分支，依赖此点前须 Human 确认仓库设置） |
+| B | 含不在 `origin/main` 的提交（实验、诊断、`preserve/`、`local/`） | 保留；逐项由 Human 决定“推送供接手”还是“有意仅本地”。B-001 及含设备截图、录像、数据库的内容必须仅本地，不得为接手而推送 |
+| C | 被 `origin/main` 的文档按名字引用的分支（`git grep` 分支名） | 先改文档指向合并提交或 PR，或先打归档标签，再清 |
+| D | 所属 Assignment 未 Completed/Closed，或 Handoff Target 仍有待接手内容 | 全部保留 |
+
+补充：(1) 外置任务目录 `~/.kos-work` 只存在于这台机器，其它机器或云端的 AI 读不到；清理永不删除其中的 `instructions/` 与 `reports/`，只处理 `worktree` 与可再生的 `derived`。(2) 接手所需事实必须在仓库里（Assignment、决定记录、PORTFOLIO、PR）。(3) 清理清单每行加列：Assignment 状态、Handoff Target、是否在 `origin/main`、是否被 `origin/main` 文档按名引用、是否含仅本地内容、类别 A–D。(4) 每份发布包应含“合并后清理清单”一节：任务目录、worktree 路径、本地分支、远程分支、预期合并提交。(5) 本节是 PM 的提案，**不是已生效规则**；生效需 Human 批准并另行写入 `AGENTS.md`。

@@ -145,7 +145,7 @@ Do not use tint-colored candidate text if it reduces contrast against the candid
 
 Keyboard layout is built from `UIStackView` rows:
 
-- Keep row construction in `KeyboardViewController+Layout.swift`.
+- Row construction lives in `KeyboardViewController+Rows.swift`, `KeyboardViewController+BottomRow.swift` and `KeyboardViewController+Presentation.swift`; `KeyboardViewController+Layout.swift` holds the height constraints and the rotation-priority lease.
 - Keep style creation in `KeyboardViewController+KeyFactory.swift`.
 - Keep candidate styling in `CandidateCell.swift` and candidate scroll-view safeguards in `CandidateScrollViewStyle.swift`.
 - Keep Path Bar presentation in `T9PinyinPathBarView.swift` (plain labels + `CandidateScrollViewStyle`); do not reintroduce Configuration-drawn Path chips.
