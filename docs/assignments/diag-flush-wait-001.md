@@ -6,11 +6,11 @@ Policy version: 1.0.0
 
 | Field | Value |
 |---|---|
-| Lifecycle | Active |
-| Phase | 阶段 B 本地实现与验证。记录与实现按 Human 加急放在同一候选里。 |
-| Non-claims | 不证明 CI 会变绿，不证明设备、Quality、Human Gate 或 Release。偶发超时根因仍是 UNKNOWN。等待返回不是 fsync，也不表示读取可见。 |
-| Next | 独立 Quality。push、PR、merge 都还没有授权。 |
-| Residuals | CI、设备、慢环境下更早上界失败的表现，均为 UNKNOWN。 |
+| Lifecycle | Completed |
+| Phase | 已合并（PR #252，合并提交 48471f2c2555b6ce7820375975bb215e64340e16，Human 合并，CI 10/10 通过）。 |
+| Non-claims | 阶段 B 执行时：不证明 CI 会变绿，不证明设备、Quality、Human Gate 或 Release（合并后状态见 Phase 与 History）。偶发超时根因仍是 UNKNOWN。等待返回不是 fsync，也不表示读取可见。 |
+| Next | Closed 由 Human 按 D7 另行决定；T-B 统一设计与 0xDEAD10CC 缓解（PF-057）尚未立项。 |
+| Residuals | CI 偶发超时根因 UNKNOWN；两次“屏障返回后读到 0 条”与一次 513 的根因 UNKNOWN（见 PF-034）；probe-on 运行、真机、慢环境表现 UNKNOWN。 |
 
 正常完成的测试屏障仅表示调用前已接受事件终结；取消返回不证明终结，且终结不保证 reader 可见。前后累计快照非原子，既非该次屏障的精确上界也非逐 ticket 对账，不能凭 accepted 等于各结果之和推断覆盖。计数按首个终结原因归类，dropped 合并多种原因，不是物理 I/O 审计。历史屏障返回后读到零条与此合同相容，但违反原测试数量断言，其根因仍为 UNKNOWN。
 
@@ -57,3 +57,25 @@ Policy version: 1.0.0
 
 - 2026-10-27: 阶段 B 按冻结包把记录和实现放在同一本地提交。push 未做。
 - 2026-10-27: 阶段 B-R1 按修订包补有限退出、确定性测试和具名执行角色。仍不 push。
+
+- 2026-10-27: R2 修复第二轮 Quality 的 FAIL；R3（含接手会话）修复第三轮 Quality 的 FAIL（超时后不等待 body、阶段信息、Release strings 证据）；R4 增加 DEBUG 观测并重复运行，未复现“读到 0 条”；R5 修复第四轮 Quality 的两项 P1（耗时采样点、放弃 body 后保留临时目录）。
+- 2026-10-27: R4 增加 DEBUG 观测计数；R4 Architecture 复核 ACCEPT WITH CONDITIONS；第五轮 Quality PASS WITH CONDITIONS。
+- 2026-10-27: 发布时把 6 个本地提交压成 1 个提交；PR #252 经 Human 合并（合并提交 48471f2c2555b6ce7820375975bb215e64340e16）。
+- 2026-10-27: 本记录 Lifecycle 改为 Completed（非 Closed）。
+- 2026-10-27: 上文 Decision Source 记录的是阶段 B 当时的授权范围（本地提交、不授权 push）；push 与 PR 由后续发布包授权，PR #252 由 Human 合并。
+
+## Exit evidence
+
+外置 `~/.kos-work/Universe-Keyboard/DIAG-FLUSH-WAIT-001/reports/`，不入库。
+
+| 报告 | SHA-256 |
+|---|---|
+| `review-arch.md` | `f6d0cc2262a78e3e4cc063f07c8834e2dde22193cc4622d37d72a947b10571c4` |
+| `review-arch-r4.md` | `1ca36129bde33f9226fb8b817e14c57b46eb46d2ce1813d9e46e70c463e760be` |
+| `quality-b.md` | `308680e4ce30fb7b68d42376e4fc882f72ba1870e0c64fc699667c17d5f65d36` |
+| `quality-b-r2.md` | `1ad65a3dbe36ea8f8b2e32f23f101c2124d189d0477138b128fc48d8b297b0da` |
+| `quality-b-r3.md` | `72c6644ab9447cf5c8d2e21a17989659b4bbd8e87ff95b7518e67cff6812396f` |
+| `quality-b-r4.md` | `f5aff7ab92c7a344c6b78319a41b878da860f550cb0acfbb6828118bffa6b288` |
+| `quality-b-r5.md` | `ed6273335d6e57f817f6f71d918f4a4f4afadd4fbb45abc841329911749f54cd` |
+| `executor-report-b-r5.md` | `089b699daa064ab9df52c12c01b6909aae1e280711df0c1c44eac4861baef705` |
+| `executor-report-publish-1.md` | `1a4661748c17b81fb72bc55563b3ad8bedb64eafec4f71f87039d526d4e5bfb9` |
