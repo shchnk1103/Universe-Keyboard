@@ -7,10 +7,10 @@ record_id: BUILD167-FEEDBACK-DEFECTS-001
 
 | Field | Value |
 |---|---|
-| Lifecycle | Assigned |
-| Current phase | 登记；尚未开始诊断 |
-| Material non-claims | 本记录不是修复授权，也不是 Product Gate；未取得模拟器、真机或独立 Quality 结论 |
-| Next handoff / decision | 本记录合并进 main，且 Human 授权各阶段任务包后，交 Codex 执行 S1 / S2；各报告完成后另派发独立 Quality |
+| Lifecycle | Completed |
+| Current phase | D1 / D2 诊断产出已交付 |
+| Material non-claims | 本记录不是修复授权或 Product Gate；独立 Quality 和真机未由诊断报告证明 |
+| Next handoff / decision | Close 由 Human 决定 |
 
 ## Authority
 
@@ -77,16 +77,16 @@ D1、D2 已由 Human 报告（2026-10-25）；各阶段开工授权、D1 产品�
 
 ## Exit evidence
 
-| 项 | Result |
-|---|---|
-| S1 独立 Quality 结论 | （执行时填） |
-| S2 独立 Quality 结论 | （执行时填） |
-| 各缺陷结论分类与 Human 决定问题清单 | （执行时填） |
+- D1：`/Users/doubleshy0n/.kos-work/Universe-Keyboard/BUILD167-FEEDBACK-DIAG-001/reports/s1-d1-report.md`，SHA-256 `1cb7a0b0c7ea6f2c44c860851a8905b54b7fbd1b25435eb87e7dd2dffd039f87`（外置，不入库）；当前夹具与生产路径下，消费结果符合残余账本合同但不同于 Human 预期；真实设备同因未证明。
+- D2：`/Users/doubleshy0n/.kos-work/Universe-Keyboard/BUILD167-FEEDBACK-DIAG-001/reports/s2-d2-report.md`，SHA-256 `68c105ca0e9dd656963a5c8b5cfd4c4308b1df6cbe557c463c59ca546ea4afc5`（外置，不入库）；固定宿主预算时行高随预算压缩，增长允许时维持保存行高，符合报告所述合同边界。
+- 两项报告均记录未执行独立 Quality；Completed 是诊断产出已交付，不表示 Reviewed / Closed。Human 批准依据 `/Users/doubleshy0n/.kos-work/Universe-Keyboard/RELEASE-CLOSEOUT-177-001/reports/human-authorization-r2-issued.md`，SHA-256 `eae66df89903e0a5076ca35f016f94657906e2eff2e10a3075063c4f4f2c5aa2`（外置，不入库）。
 
 ## Closeout Decision
 
-诊断类，证据与评审完成后由 Human 决定 Close；Close 不是修复授权。
+由 Human 决定；Close 不是修复授权。
 
 ## Lifecycle Status
 
-Assigned
+Completed
+
+Ready/Active 阶段未在本记录逐级标注；工作依各阶段外置任务包与 Human 授权消息进行（见 Exit evidence）。

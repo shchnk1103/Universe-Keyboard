@@ -8,10 +8,10 @@
 
 | Field | Value |
 |---|---|
-| **Lifecycle** | `Active` |
-| **Phase** | 登记与实现在同一本地提交；未 push / PR |
-| **Non-claims** | 不等于独立 Architecture / Quality Pass、Product Gate、TestFlight 或 Release |
-| **Next** | 独立 Architecture Reviewer 与 Quality Reviewer 评审本提交；push / PR 另授权 |
+| **Lifecycle** | `Completed` |
+| **Phase** | 实现与评审产出已交付，PR #249 已合并 |
+| **Non-claims** | 不等于 Product Gate 或正式上架许可 |
+| **Next** | Close 由 Human 决定 |
 | **Residuals** | 真机与完全访问关闭时的表现：UNKNOWN |
 
 ---
@@ -68,3 +68,22 @@ DEBUG 行为与改前相同；Release 设置页无该开关与仅含它的「实
 ## Acknowledgement
 
 执行会话接受上述范围。工作区 `~/.kos-work/Universe-Keyboard/LIQUID-GLASS-DEBUG-ONLY-001/worktree`，分支 `feature/liquid-glass-debug-only`，不触碰 Human 主检出。
+
+
+## Exit evidence
+
+- Executor：`/Users/doubleshy0n/.kos-work/Universe-Keyboard/LIQUID-GLASS-DEBUG-ONLY-001/reports/executor-report.md`，SHA-256 `2e104a4e61e12d096f9caf79a556e5ede73d065375362c088bbad584b00bb614`（外置，不入库）。
+- 独立 Architecture：PASS WITH CONDITIONS，C1/C2 均低：`/Users/doubleshy0n/.kos-work/Universe-Keyboard/LIQUID-GLASS-DEBUG-ONLY-001/reports/review-arch.md`，SHA-256 `5dcdafeb916bd073335ee5feac238460d1830cb93f4e1212dd9d73e9379f10db`（外置，不入库）；独立 Quality：PASS：`/Users/doubleshy0n/.kos-work/Universe-Keyboard/LIQUID-GLASS-DEBUG-ONLY-001/reports/review-qual.md`，SHA-256 `d4d309a5e55c2e26c3893bf2ddd79f537fed144d4f9652b49056efd27beacd81`（外置，不入库）。
+- [PR #249](https://github.com/shchnk1103/Universe-Keyboard/pull/249) 合并提交 `1c9a906c2d0baf12aa62cbb207740bcc16e87efb`；head `082cb0f` run `40345192774` success，PR 检查汇总 10 项全部 SUCCESS。引用 ci-evidence.md（PM 只读取自 GitHub，2026-10-27）：`/Users/doubleshy0n/.kos-work/Universe-Keyboard/RELEASE-CLOSEOUT-177-001/instructions/ci-evidence.md`，SHA-256 `91b8b036aa7e2fed5fd6e2774b5c97c6279ea0985a4fb139fba9a262f58885b2`（外置，不入库）。
+- C1：清除只在主 App 冷启动，键盘仍按未开启，disposition `accept`；C2：责任按角色而非具名，disposition `accept`。Human 批准于授权本任务包：`/Users/doubleshy0n/.kos-work/Universe-Keyboard/RELEASE-CLOSEOUT-177-001/reports/human-authorization-r2-issued.md`，SHA-256 `eae66df89903e0a5076ca35f016f94657906e2eff2e10a3075063c4f4f2c5aa2`（外置，不入库）；R3 授权回执 `/Users/doubleshy0n/.kos-work/Universe-Keyboard/RELEASE-CLOSEOUT-177-001/reports/human-authorization-r3-issued.md`，SHA-256 `d20f59d103804e2856b2553e50ed6646b16c55ef94e3f30991078ed26ed900d4`（外置，不入库）。
+- 真机“完全访问关闭”仍 UNKNOWN。Completed 表示 Executor 产出已交付，非 Closed。
+
+## Closeout Decision
+
+由 Human 决定。
+
+## Lifecycle Status
+
+Completed
+
+Ready/Active 阶段未在本记录逐级标注；工作依各阶段外置任务包与 Human 授权消息进行（见 Exit evidence）。

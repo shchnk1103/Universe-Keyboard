@@ -7,10 +7,10 @@ record_id: BUILD167-D4-TOUCH-ROW-SHIFT-001
 
 | Field | Value |
 |---|---|
-| Lifecycle | Assigned |
-| Current phase | S7 阶段A：本地预留路径行实现与测试（Human授权）；评审另派 |
-| Material non-claims | 无独立评审通过、真机修复、push / PR / merge 或 Release |
-| Next handoff / decision | 阶段A报告→Human派独立Architecture/Quality；阶段B另授权 |
+| Lifecycle | Completed |
+| Current phase | S1–S7 产出已交付，Close 由 Human 决定 |
+| Material non-claims | Human 观察不等于 D4 已被诊断证明解决；长期真机与其它宿主/机型未覆盖 |
+| Next handoff / decision | Human 决定 Close；D1 修复保持 Assigned，S1 未开工 |
 
 ## Authority
 
@@ -75,7 +75,32 @@ Human 观察不是测量；下列事实、推断与假设分别标明，原始�
 
 ## Exit evidence
 
-（执行时填）
+| 阶段 | 外置依据（不入库） | 结论 | PR / 提交 |
+|---|---|---|---|
+| S1 | `/Users/doubleshy0n/.kos-work/Universe-Keyboard/BUILD167-D4-S1-DIAG-001/reports/executor-report.md`，SHA-256 `560b6ff14a1f9e11ad085de3a102dc9233fd27f99a8e43235ab7ca99d60d6eda`（外置，不入库） | 合成宿主与真机 Debug 读数支持视觉/触区几何不一致候选；完整持续窗口及历史因果未证实 | 本地 `ef44fb5` |
+| S2 | `/Users/doubleshy0n/.kos-work/Universe-Keyboard/BUILD167-D4-S2-FIX-001/reports/executor-report.md`，SHA-256 `ddf1d642977edfb267ca5f956cc52fe507586cbd710551a6f5ccdc9cb49594d2`（外置，不入库） | 触区快照与 canvas 跟随当前几何；Human 阶段 B 仍观察错行 | [#247](https://github.com/shchnk1103/Universe-Keyboard/pull/247) `cd16fcb` |
+| S3 | `/Users/doubleshy0n/.kos-work/Universe-Keyboard/BUILD167-D4-S3-DIAG-001/reports/executor-report.md`，SHA-256 `b46cf2ef60144e52c756d12a00fa74bc7b22e523851e79462aa37bd3ff72a4d6`（外置，不入库） | Human 观察错键动画与输入；保留读数受日志截断限制 | 本地 `8cdd65d` |
+| S4 | `/Users/doubleshy0n/.kos-work/Universe-Keyboard/BUILD167-D4-S4-DIAG-001/reports/executor-report.md`，SHA-256 `f564136e8c6b0901f80427c41176f2635d91bd23851d3af6ab394676265bc437`（外置，不入库） | 首键后路径 0→34、高度 254→288，第二下落到 ABC；15 簇中 12 簇落 ABC，8 簇实际发送 slot=2；限本次 Debug 样本 | 本地 `6f3732f` |
+| S5 | `/Users/doubleshy0n/.kos-work/Universe-Keyboard/BUILD167-D4-S5-DESIGN-001/reports/d4-design-options.md`，SHA-256 `8274bf9b5dec00ab5861fd396326f2d95a86bc3905ef93d96d74eca64e77cda3`（外置，不入库） | 比较预留、原子过渡及 overlay 等方案，屏幕运动机制仍 UNKNOWN | 无提交 |
+| S6 | `/Users/doubleshy0n/.kos-work/Universe-Keyboard/RELEASE-CLOSEOUT-177-001/instructions/human-decisions.md`，SHA-256 `83a4e410bb52e84cbf2db485fedf92e9887d4236a05740ecb1ad8e29461a5b6f`（外置，不入库） | Human 取消 B2/录屏 | 无提交 |
+| S7 | `/Users/doubleshy0n/.kos-work/Universe-Keyboard/BUILD167-D4-S7-RESERVE-001/reports/executor-report.md`，SHA-256 `e3f4fb282aae2335a6bf08bf3cf9e0cf59899438da592692d58cb267642c385d`（外置，不入库） | 始终预留 34pt；产品决定 Accepted by Human，ADR 0038 Proposed | [#248](https://github.com/shchnk1103/Universe-Keyboard/pull/248) `4477435` |
+
+独立评审：
+- S2 Architecture R1b：PASS WITH CONDITIONS：命中时发布不运行 layout，后续真实布局可能不同；`/Users/doubleshy0n/.kos-work/Universe-Keyboard/BUILD167-D4-S2-FIX-001/reports/review-arch-r1b.md`，SHA-256 `b0eb5bbd2226b161dc14f34bf9011ab3a0c7d885ac75777308f6d20700d0e84a`（外置，不入库）。
+- S2 Quality R1b：PASS，无条件；`/Users/doubleshy0n/.kos-work/Universe-Keyboard/BUILD167-D4-S2-FIX-001/reports/review-qual-r1b.md`，SHA-256 `6009155b1d1fecdd3e487be16debab5c9f39cb88c07ba0c9ff47c451345c9d24`（外置，不入库）。
+- S5 Quality R2：DONE：比较中披露合同冲突；当轮产品权威未决；`/Users/doubleshy0n/.kos-work/Universe-Keyboard/BUILD167-D4-S5-DESIGN-001/reports/quality-review.md`，SHA-256 `12f8fd5eefc619b6a89fde8af1fda96e56da4ae0a7536eaa19502d19d0bafb80`（外置，不入库）。
+- S7 Architecture R1：PASS WITH CONDITIONS：C1 历史文段易混淆；C2 无 path 的 composition/Recovery 空白预留需确认；`/Users/doubleshy0n/.kos-work/Universe-Keyboard/BUILD167-D4-S7-RESERVE-001/reports/review-arch-r1.md`，SHA-256 `58438101c2ea46314269e3071c05469802c0b07171f251a8dd48c5510bc14c66`（外置，不入库）。
+- S7 Quality R1：PASS WITH CONDITIONS：QF-1 不将跨宿主汇总误称不重复用例；QF-2 模拟器截图无法辨认预留带；`/Users/doubleshy0n/.kos-work/Universe-Keyboard/BUILD167-D4-S7-RESERVE-001/reports/review-qual-r1.md`，SHA-256 `dc669cebbbf7f3e6872d174ea26f94d9e8d2f7a54efd67417b7cf6a8c3583e0d`（外置，不入库）。
+- S7 Quality R2：PASS WITH CONDITIONS：当轮 #248 测试仍运行，不得称 CI 全绿，截图失败是否消失待 hosted 终态；`/Users/doubleshy0n/.kos-work/Universe-Keyboard/BUILD167-D4-S7-RESERVE-001/reports/review-qual-r2.md`，SHA-256 `3fde34bdcd6142e6e03b7e9d671f8af6f0a11ac5a004090f263c381b0c43091d`（外置，不入库）。
+
+S2 阶段 B Human 仍观察错行：`/Users/doubleshy0n/.kos-work/Universe-Keyboard/BUILD167-D4-S2-FIX-001/reports/human-stage-b-result.md`，SHA-256 `228c9b144b199995a6c566d152c26cddd9ad829fa23e1000a3fcb86a57f174ff`（外置，不入库）。S7 阶段 B Human 观察 12 轮无错字母：`/Users/doubleshy0n/.kos-work/Universe-Keyboard/BUILD167-D4-S7-RESERVE-001/reports/stage-b-human-feedback.md`，SHA-256 `0bf4915de1f529caedc30050dc6e1d44048d21b58497470a5ecfd565a9800bb5`（外置，不入库）；诊断日志轮转只保留末段，不能证明全覆盖。长期真机、其它宿主/机型未覆盖。
+
+#248 CI：首个 head `cb65289` run `40340940563` failure（截图无权限，R2 修复）；head `46304f1` run `40344050348` success。其间一次与本 PR 无关的间歇失败，Human 只重跑失败项后通过（Human 陈述；原因 UNKNOWN）。引用 ci-evidence.md（PM 只读取自 GitHub，2026-10-27）：`/Users/doubleshy0n/.kos-work/Universe-Keyboard/RELEASE-CLOSEOUT-177-001/instructions/ci-evidence.md`，SHA-256 `91b8b036aa7e2fed5fd6e2774b5c97c6279ea0985a4fb139fba9a262f58885b2`（外置，不入库）。
+
+D1 Human 2026-10-26 选 C+A：“D1 选 C+A：现在先不改，出门期间限时只读调研”，见 `/Users/doubleshy0n/.kos-work/Universe-Keyboard/RELEASE-CLOSEOUT-177-001/instructions/human-decisions.md`，SHA-256 `83a4e410bb52e84cbf2db485fedf92e9887d4236a05740ecb1ad8e29461a5b6f`（外置，不入库）。[D1 修复 Assignment](build167-feedback-fix-001.md) 保持 `Assigned`（本任务不改其 Lifecycle；D1 按 Human 2026-10-26 决定 C+A 暂不改，S1 未开工）。
+
+生命周期 Completed 表示 Executor 产出已交付，不是 Reviewed 或 Closed；批准依据 `/Users/doubleshy0n/.kos-work/Universe-Keyboard/RELEASE-CLOSEOUT-177-001/reports/human-authorization-r2-issued.md`，SHA-256 `eae66df89903e0a5076ca35f016f94657906e2eff2e10a3075063c4f4f2c5aa2`（外置，不入库）。
+
 
 ## Closeout Decision
 
@@ -83,7 +108,9 @@ Human 观察不是测量；下列事实、推断与假设分别标明，原始�
 
 ## Lifecycle Status
 
-Assigned
+Completed
+
+Ready/Active 阶段未在本记录逐级标注；工作依各阶段外置任务包与 Human 授权消息进行（见 Exit evidence）。
 
 ## S7 Human 决定与精确授权
 
