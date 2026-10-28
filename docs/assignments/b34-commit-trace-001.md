@@ -1,22 +1,22 @@
 # Assignment: B34-COMMIT-TRACE-001 — Candidate commit trace
 
-**Policy version:** `1.0.0`  
-**Task ID / Title:** B34-COMMIT-TRACE-001 — Content-free candidate commit diagnostics  
-**Assignment Authority:** Product Lead  
-**Decision Source / Date:** Human, 2026-10-28 (Asia/Shanghai): “我实在是记不清了，可以按你说的加一个打点，因为不是很容易复现，因此在日志中记录大概率是比我复述更可靠一点。” Frozen original, R1 and R2 packages and Human authorization receipts `~/.kos-work/Universe-Keyboard/B34-COMMIT-TRACE-001/reports/human-authorization-issued.md`, `human-authorization-r1-issued.md`, `human-authorization-r2-issued.md`; PM decided registration and implementation share a branch.  
-**Scope:** R2 bounded typed diagnostic trace and local verification.  
-**Non-goals:** Input behavior changes, device work, signing, push, PR, merge and Release.  
-**Domain Owner:** Input Intelligence Maintainer  
-**Executor:** Executor (runtime identity in external report)  
-**Environment Executor:** Executor, local builds and simulator tests  
-**Human Dependency:** Human for subsequent publication and device authority  
-**Architecture Reviewer:** Architecture & Knowledge Steward, independent session  
-**Quality Reviewer:** Quality, Performance & Release Maintainer, independent session  
-**Product Approver:** Human Product Owner acting as Product Lead  
-**Required Inputs:** Frozen packages and receipts; baseline `abd3c85a1ca731e35300c222d8a6a813f31a78b4`.  
-**Entry Criteria:** Package hashes and authorization verified; isolated worktree at baseline.  
-**Exit Criteria:** R2 implementation, tests and local commit, with evidence in executor report.  
-**Stop Conditions:** R2 hard stop conditions, including privacy, changed input behavior, weakened tests, signing, device work, push or denied writes.  
-**Handoff Target:** Independent Architecture and Quality reviewers: final HEAD and tree, external report, test logs, privacy boundaries and outstanding findings.  
-**Lifecycle Status:** Active — implementation and local verification.  
-**Revalidation Trigger:** Changes to frozen scope, privacy boundary, baseline, authorization or required evidence.
+- **Policy version:** `1.0.0`
+- **Task ID / Title:** B34-COMMIT-TRACE-001 — Content-free candidate commit diagnostics
+- **Assignment Authority:** Product Lead
+- **Decision Source / Date:** Human, 2026-10-28 (Asia/Shanghai): “我实在是记不清了，可以按你说的加一个打点，因为不是很容易复现，因此在日志中记录大概率是比我复述更可靠一点。” Frozen original, R1 and R2 packages and Human authorization receipts `~/.kos-work/Universe-Keyboard/B34-COMMIT-TRACE-001/reports/human-authorization-issued.md`, `human-authorization-r1-issued.md`, `human-authorization-r2-issued.md`; PM decided registration and implementation share a branch.
+- **Scope:** R2 bounded typed diagnostic trace and local verification.
+- **Non-goals:** Input behavior changes, device work, signing, push, PR, merge and Release.
+- **Domain Owner:** Input Intelligence Maintainer
+- **Executor:** Executor (runtime identity in external report)
+- **Environment Executor:** Executor, local builds and simulator tests
+- **Human Dependency:** Human for subsequent publication and device authority
+- **Architecture Reviewer:** Architecture & Knowledge Steward, independent session
+- **Quality Reviewer:** Quality, Performance & Release Maintainer, independent session
+- **Product Approver:** Human Product Owner acting as Product Lead
+- **Required Inputs:** Frozen packages and receipts; baseline `abd3c85a1ca731e35300c222d8a6a813f31a78b4`.
+- **Entry Criteria:** Package hashes and authorization verified; isolated worktree at baseline.
+- **Exit Criteria:** R2 implementation, tests and local commit, with evidence in executor report.
+- **Stop Conditions:** R2 hard stop conditions, including privacy, changed input behavior, weakened tests, signing, device work, push or denied writes.
+- **Handoff Target:** Independent Architecture and Quality reviewers: final HEAD and tree, external report, test logs, privacy boundaries and outstanding findings.
+- **Lifecycle Status:** Active — implementation and local verification.
+- **Revalidation Trigger:** Changes to frozen scope, privacy boundary, baseline, authorization or required evidence.
