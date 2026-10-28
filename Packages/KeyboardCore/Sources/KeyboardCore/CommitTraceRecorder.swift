@@ -170,7 +170,7 @@ public final class CommitTraceRecorder {
         }
     }
     private func occurrence(_ text: String) -> Int {
-        guard !text.isEmpty, text.utf16.count <= 64, let value = context() else { return 9 }
+        guard !text.isEmpty, text.utf16.prefix(65).count <= 64, let value = context() else { return 9 }
         let suffix = String(value.suffix(text.count * 3))
         var rest = suffix[...]
         var count = 0
