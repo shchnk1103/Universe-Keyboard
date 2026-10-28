@@ -17,7 +17,7 @@
 ## Authority
 
 - **Assignment Authority:** Product Lead
-- **Decision Source / Date:** Human decisions `~/.kos-work/Universe-Keyboard/DIAG-UNIFY-DESIGN-001/instructions/human-decision-2026-10-28.md`, `human-decision-2026-10-28-b.md`, `human-decision-2026-10-28-c.md`; task package and R1–R3 authorization receipts under `~/.kos-work/Universe-Keyboard/DIAG-TYPED-LIFECYCLE-GATE-001/reports/`. Human approved registration and implementation on the same branch.
+- **Decision Source / Date:** Human decisions `~/.kos-work/Universe-Keyboard/DIAG-UNIFY-DESIGN-001/instructions/human-decision-2026-10-28.md`, `human-decision-2026-10-28-b.md`, `human-decision-2026-10-28-c.md`; task package and R1–R5 authorization receipts under `~/.kos-work/Universe-Keyboard/DIAG-TYPED-LIFECYCLE-GATE-001/reports/`. Human approved registration and implementation on the same branch; R5 accepts the retention exception residuals below.
 - **Product Approver:** Human Product Owner acting as Product Lead
 - **Authorization:** Local implementation, tests and commits under the frozen packages; no push, PR, merge, signing or device work.
 
@@ -43,7 +43,7 @@ Root/control preparation, clear, legacy Logger, retention, other write domains, 
 
 ### Required Inputs
 
-Frozen original, R1, R2 and R3 task packages and their Human authorization receipts; baseline `159722d15f22f59eced1fa1e781b81a94862c971`.
+Frozen original and R1–R5 task packages and their Human authorization receipts; baseline `159722d15f22f59eced1fa1e781b81a94862c971`.
 
 ### Entry Criteria
 
@@ -60,6 +60,14 @@ Frozen package stop conditions apply, including unauthorized observable changes,
 ### Revalidation Trigger
 
 Changed frozen inputs, baseline, scope, lifecycle contract or authorization.
+
+### Known differences and residuals
+
+- When a writer is reclaimed, its old open segment is left for retention to recover instead of being sealed by the writer before rejection. Normally retention writes the tombstone, moves matching open segments and then removes the lease under the identity lock. Recovery can remain incomplete when the recovered destination already exists (`Universe Keyboard/Services/DiagnosticsJournalRetentionCoordinator.swift:310–315`), or when the lease is missing, undecodable or does not meet validation (`:103–145`). The open content remains available to the reader, but may escape age or capacity cleanup. Track robust recovery of these exceptional states as a follow-up retention slice; see `reports/executor-report-r4.md` in the task workspace for the qualified static evidence.
+- The Extension's three existing recovery entry points can arrive out of order; their ordering is unchanged and remains debt.
+- D6 reuses existing suspend/drop accounting and DEBUG ticket completion as specified by R3; the original four separate saturating terminal counters and overflow flags were not implemented.
+- The process coordinator applies state to members one at a time; it is not a single atomic process-wide close point.
+- Whether 0xDEAD10CC is mitigated is UNKNOWN. Root/control preparation, clear, legacy Logger, retention writes and other write domains are outside this slice; device, lock-screen and actual multi-scene behavior remain UNKNOWN.
 
 ## Acknowledgement
 
