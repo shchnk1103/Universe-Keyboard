@@ -9,6 +9,18 @@ import Foundation
 import KeyboardCore
 import SwiftUI
 
+nonisolated enum DiagnosticsAppLifecycle {
+    static let shared = DiagnosticsProcessLifecycle()
+
+    static func apply(_ phase: ScenePhase, to lifecycle: DiagnosticsProcessLifecycle = shared) {
+        switch phase {
+        case .active: lifecycle.setActive(true)
+        case .inactive, .background: lifecycle.setActive(false)
+        @unknown default: lifecycle.setActive(false)
+        }
+    }
+}
+
 @main
 struct Universe_KeyboardApp: App {
     @Environment(\.scenePhase) private var scenePhase
@@ -74,17 +86,21 @@ struct Universe_KeyboardApp: App {
 
     var body: some Scene {
         WindowGroup {
-            #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
-                if ProcessInfo.processInfo.environment["T9_S6A_EVIDENCE_VIEW"] == "1" {
-                    T9DevicePreflightEvidenceView()
-                } else {
+            Group {
+                #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
+                    if ProcessInfo.processInfo.environment["T9_S6A_EVIDENCE_VIEW"] == "1" {
+                        T9DevicePreflightEvidenceView()
+                    } else {
+                        ContentView()
+                    }
+                #else
                     ContentView()
-                }
-            #else
-                ContentView()
-            #endif
+                #endif
+            }
+            .onAppear { DiagnosticsAppLifecycle.apply(scenePhase) }
         }
         .onChange(of: scenePhase) { _, phase in
+            DiagnosticsAppLifecycle.apply(phase)
             guard phase == .active else { return }
             prepareDiagnosticsJournalRoot()
         }

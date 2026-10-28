@@ -502,15 +502,16 @@ public final class DiagnosticsJournalIngress: Sendable {
             return
         }
         #if DEBUG
-            let writer = pending.withLock { state -> any DiagnosticsJournalBatchWriting in
-                if let writer = state.writer {
-                    return writer
-                }
-                let writer: any DiagnosticsJournalBatchWriting
+            let existingWriter = pending.withLock { $0.writer }
+            let writer: any DiagnosticsJournalBatchWriting
+            if let existingWriter {
+                writer = existingWriter
+            } else {
+                let candidate: any DiagnosticsJournalBatchWriting
                 if let factory = batchWriterFactory.withLock({ $0 }) {
-                    writer = factory(rootURL)
+                    candidate = factory(rootURL)
                 } else {
-                    writer = DiagnosticsJournalWriter(
+                    candidate = DiagnosticsJournalWriter(
                         rootURL: rootURL,
                         origin: origin,
                         processInstanceID: processInstanceID,
@@ -518,23 +519,30 @@ public final class DiagnosticsJournalIngress: Sendable {
                         writerVersion: writerVersion
                     )
                 }
-                state.writer = writer
-                return writer
+                writer = pending.withLock { state in
+                    if let existing = state.writer { return existing }
+                    state.writer = candidate
+                    return candidate
+                }
             }
         #else
-            let writer = pending.withLock { state -> DiagnosticsJournalWriter in
-                if let writer = state.writer {
-                    return writer
-                }
-                let writer = DiagnosticsJournalWriter(
+            let existingWriter = pending.withLock { $0.writer }
+            let writer: DiagnosticsJournalWriter
+            if let existingWriter {
+                writer = existingWriter
+            } else {
+                let candidate = DiagnosticsJournalWriter(
                     rootURL: rootURL,
                     origin: origin,
                     processInstanceID: processInstanceID,
                     isMainAppWriter: isMainAppWriter,
                     writerVersion: writerVersion
                 )
-                state.writer = writer
-                return writer
+                writer = pending.withLock { state in
+                    if let existing = state.writer { return existing }
+                    state.writer = candidate
+                    return candidate
+                }
             }
         #endif
 

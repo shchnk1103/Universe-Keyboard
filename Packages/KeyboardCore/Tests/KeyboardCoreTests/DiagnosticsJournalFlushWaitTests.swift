@@ -5,6 +5,21 @@ import XCTest
 @testable import KeyboardCore
 
 final class DiagnosticsJournalFlushWaitTests: XCTestCase {
+    func testWriterFactoryCanInspectPendingState() async throws {
+        let gate = FlushGate()
+        await gate.setBlocking(false)
+        let rig = makeIngress(gate: gate, mainApp: false)
+        let ingress = rig.ingress
+        ingress.installBatchWriterFactoryForTesting { _ in
+            _ = ingress.testingSnapshotForTesting()
+            return gate
+        }
+        ingress.record(makeEvent(sequence: 1, processInstanceID: rig.processID))
+        try await requireFlush(gate) { await ingress.flushAndWaitForTesting() }
+        let count = await gate.appendCount
+        XCTAssertEqual(count, 1)
+    }
+
     func testEmptyQueueReturnsWithoutAppending() async throws {
         let gate = FlushGate()
         let rig = makeIngress(gate: gate, missingRoot: true)

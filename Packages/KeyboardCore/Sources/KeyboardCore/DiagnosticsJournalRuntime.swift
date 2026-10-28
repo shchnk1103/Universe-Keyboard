@@ -251,6 +251,12 @@ public final class DiagnosticsJournalRuntime: Sendable {
     }
 
     #if DEBUG
+        internal func installBatchWriterFactoryForTesting(
+            _ factory: @escaping @Sendable (URL) -> any DiagnosticsJournalBatchWriting
+        ) {
+            ingress.installBatchWriterFactoryForTesting(factory)
+        }
+
         internal func testingFlushSnapshotForTesting() -> DiagnosticsJournalIngress.FlushWaitTestingSnapshot {
             ingress.testingSnapshotForTesting()
         }
