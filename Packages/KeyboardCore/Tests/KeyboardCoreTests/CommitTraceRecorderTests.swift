@@ -155,6 +155,7 @@ final class CommitTraceRecorderTests: XCTestCase {
     }
 
     func testTypedWireRoundTripAndUnknownFieldRejection() throws {
+        CommitTraceRecorder.resetTraceProcessStateForTesting()
         var fields: [DiagnosticEvent.Field] = []
         let recorder = CommitTraceRecorder(clock: { 1 }, context: { "" }, emit: { _, value in fields = value })
         recorder.enabled = true
@@ -181,8 +182,7 @@ final class CommitTraceRecorderTests: XCTestCase {
                 "preedit_before", "preedit_after_sync", "partial_after_sync", "document_changed",
                 "occurrence_pre_commit", "occurrence_first_did_change", "occurrence_at_close", "close_reason",
                 "first_write_ms", "window_ms", "counter_capped",
-            ])
-            .union(names.contains("since_previous_selection_ms") ? ["since_previous_selection_ms"] : []))
+            ]))
         encodedFields[0]["name"] = "unapproved_name"
         object["fields"] = encodedFields
         let invalid = try JSONSerialization.data(withJSONObject: object)

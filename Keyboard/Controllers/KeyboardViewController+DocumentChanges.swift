@@ -21,7 +21,9 @@ extension KeyboardViewController {
         let proxy = textDocumentProxy
         let identifier: UUID?
         #if DEBUG
-            identifier = commitTraceTestDocumentIdentifier ?? KeyboardReadDocumentIdentifier(proxy)
+            identifier =
+                commitTraceTestForceUnavailable
+                ? nil : (commitTraceTestDocumentIdentifier ?? KeyboardReadDocumentIdentifier(proxy))
         #else
             identifier = KeyboardReadDocumentIdentifier(proxy)
         #endif
@@ -32,7 +34,7 @@ extension KeyboardViewController {
         // An unavailable sample cannot establish a new baseline or authorize a
         // rebind. Keep the last valid identity for the next host callback.
         guard observation != .unavailable else {
-            commitTrace.didChange()
+            commitTrace.didChange(sampling: false)
             return
         }
         let documentDidChange = observation == .changed

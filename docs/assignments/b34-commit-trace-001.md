@@ -27,3 +27,7 @@ On the same iPhone 16 Pro Max simulator (iOS 18.0), the focused
 `AppAboutContactTests` run failed at the same email-address assertion on baseline
 `abd3c85a1ca731e35300c222d8a6a813f31a78b4` and on the candidate. R3 treats this
 as an existing baseline failure; the executor report retains both logs and exit codes.
+
+## Independent review follow-up
+
+Architecture rejected the prior candidate and Quality found insufficient coverage. The authorized follow-up addresses sampling boundaries, bounded sampling, tests and evidence; frozen instructions and reports are retained in the task directory under `instructions/` and `reports/`.

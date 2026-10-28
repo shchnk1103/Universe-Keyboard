@@ -1,4 +1,5 @@
 import UIKit
+import UIKit.UIGestureRecognizerSubclass
 import XCTest
 
 @testable import KeyboardCore
@@ -13,7 +14,8 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
         var events = 0
         let recorder = CommitTraceRecorder(
             context: {
-                reads += 1; return nil
+                reads += 1
+                return nil
             }, emit: { _, _ in events += 1 })
         sut.commitTrace = recorder
         sut.commitTraceTestDocumentIdentifier = UUID()
@@ -34,6 +36,230 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
         sut.textDidChange(nil)
         XCTAssertEqual(events, 0)
         XCTAssertEqual(reads, 0)
+    }
+
+    @MainActor
+    func testTraceRepeatSuppressionAndDocumentSwitch() {
+        let sut = KeyboardViewController()
+        var now: TimeInterval = 0
+        var reads = 0
+        var events: [[DiagnosticEvent.Field]] = []
+        let recorder = CommitTraceRecorder(
+            clock: { now },
+            context: {
+                reads += 1
+                return "x"
+            }, emit: { _, fields in events.append(fields) })
+        sut.commitTrace = recorder
+        sut.commitTraceTestDocumentIdentifier = UUID()
+        sut.loadViewIfNeeded()
+        sut.textDidChange(nil)
+        recorder.enabled = true
+        sut.controller.onActionObserved = { recorder.observeAction($0) }
+        let host = FakeTextInputClient()
+        sut.controller.textClient = TracingTextInputClient(host, recorder: recorder)
+        sut.controller.rimeEngine = nil
+        sut.accumulatedCandidates = [CandidateItem(title: "x", kind: .candidate)]
+        sut.commitCompactCandidate(at: IndexPath(item: 0, section: 0))
+        sut.commitCompactCandidate(at: IndexPath(item: 0, section: 0))
+        // This proves field logic for the compact entry, not real host behavior.
+        XCTAssertTrue(events.isEmpty)
+        reads = 0
+        now = 5.001
+        sut.commitTraceTestDocumentIdentifier = UUID()
+        sut.textDidChange(nil)
+        XCTAssertEqual(events.count, 1)
+        XCTAssertTrue(events[0].contains(.count(.traceSuppressed, 1)))
+        XCTAssertTrue(events[0].contains(.count(.traceCloseReason, 4)))
+        XCTAssertTrue(events[0].contains(.flag(.traceDocumentChanged, true)))
+        XCTAssertTrue(events[0].contains(.count(.traceOccurrenceClose, 8)))
+        XCTAssertEqual(reads, 0)
+    }
+
+    @MainActor
+    func testTraceDisappearDoesNotReadContextAfterExpiry() {
+        let sut = KeyboardViewController()
+        var now: TimeInterval = 0
+        var reads = 0
+        var events: [[DiagnosticEvent.Field]] = []
+        let recorder = CommitTraceRecorder(
+            clock: { now },
+            context: {
+                reads += 1
+                return "x"
+            }, emit: { _, fields in events.append(fields) })
+        sut.commitTrace = recorder
+        sut.loadViewIfNeeded()
+        recorder.enabled = true
+        recorder.begin(entry: .compact, preeditBefore: false)
+        recorder.willWrite(.insert, text: "x")
+        recorder.endSyncPhase(preeditAfter: false, partialAfter: false)
+        reads = 0
+        now = 5.001
+        sut.viewWillDisappear(false)
+        XCTAssertEqual(events.count, 1)
+        XCTAssertTrue(events[0].contains(.count(.traceCloseReason, 4)))
+        XCTAssertTrue(events[0].contains(.count(.traceOccurrenceClose, 8)))
+        XCTAssertEqual(reads, 0)
+    }
+
+    @MainActor
+    func testTraceDisabledOperationsLeaveNoCountsAfterReenable() {
+        let sut = KeyboardViewController()
+        var events: [[DiagnosticEvent.Field]] = []
+        let recorder = CommitTraceRecorder(context: { nil }, emit: { _, fields in events.append(fields) })
+        sut.commitTrace = recorder
+        sut.commitTraceTestDocumentIdentifier = UUID()
+        sut.loadViewIfNeeded()
+        sut.controller.onActionObserved = { recorder.observeAction($0) }
+        let host = FakeTextInputClient()
+        let client = TracingTextInputClient(host, recorder: recorder)
+        sut.controller.textClient = client
+        sut.controller.rimeEngine = nil
+        sut.accumulatedCandidates = [CandidateItem(title: "x", kind: .candidate)]
+        sut.commitCompactCandidate(at: IndexPath(item: 0, section: 0))
+        client.setMarkedText("x", selectedRange: 0..<0)
+        sut.textDidChange(nil)
+        sut.commitCompactCandidate(at: IndexPath(item: 0, section: 0))
+        XCTAssertTrue(events.isEmpty)
+        recorder.enabled = true
+        recorder.begin(entry: .compact, preeditBefore: false)
+        recorder.endSyncPhase(preeditAfter: false, partialAfter: false)
+        recorder.observeAction(.insertKey("a"))
+        XCTAssertEqual(events.count, 1)
+        for metric: DiagnosticEvent.CountMetric in [
+            .traceSyncInsert, .traceSyncSetMarked, .traceSyncClearMarked, .traceSyncUnmark, .traceSyncDelete,
+            .traceAsyncInsert, .traceAsyncSetMarked, .traceAsyncClearMarked, .traceAsyncUnmark, .traceAsyncDelete,
+            .traceSinceMarked, .traceChanges, .traceSuppressed, .traceRejected,
+        ] {
+            XCTAssertTrue(events[0].contains(.count(metric, 0)))
+        }
+        XCTAssertTrue(events[0].contains(.flag(.traceCounterCapped, false)))
+    }
+
+    @MainActor
+    func testSpaceCursorMovementClosesTrace() {
+        let sut = makeController(width: 390, nineKey: false, hasPath: false, stickyEmpty: false)
+        var events: [[DiagnosticEvent.Field]] = []
+        let recorder = CommitTraceRecorder(context: { nil }, emit: { _, fields in events.append(fields) })
+        sut.commitTrace = recorder
+        recorder.enabled = true
+        recorder.begin(entry: .compact, preeditBefore: false)
+        recorder.endSyncPhase(preeditAfter: false, partialAfter: false)
+        let button = UIButton(type: .system)
+        let gesture = TraceTestLongPress()
+        button.addGestureRecognizer(gesture)
+        gesture.testLocation = .zero
+        gesture.state = .began
+        sut.handleSpaceCursorLongPress(gesture)
+        gesture.testLocation = CGPoint(x: 20, y: 0)
+        gesture.state = .changed
+        sut.handleSpaceCursorLongPress(gesture)
+        XCTAssertEqual(events.count, 1)
+        XCTAssertTrue(events.first?.contains(.count(.traceCloseReason, 1)) == true)
+    }
+
+    @MainActor
+    func testExpandedAndLegacyRepeatedSelection() {
+        let sut = makeController(width: 390, nineKey: false, hasPath: false, stickyEmpty: false)
+        var now: TimeInterval = 0
+        var events: [(UInt64, [DiagnosticEvent.Field])] = []
+        let recorder = CommitTraceRecorder(clock: { now }, context: { nil }, emit: { events.append(($0, $1)) })
+        sut.commitTrace = recorder
+        sut.controller.onActionObserved = { recorder.observeAction($0) }
+        recorder.enabled = true
+        let item = CandidateItem(title: "x", kind: .placeholder)
+        sut.commitExpandedCandidate(item)
+        now = 0.05
+        sut.commitExpandedCandidate(item)
+        recorder.close(.nextInput)
+        let button = UIButton(type: .system)
+        var config = UIButton.Configuration.plain()
+        config.title = "x"
+        button.configuration = config
+        button.tag = CandidateKind.placeholder.rawValue
+        now = 1
+        sut.insertCandidate(button)
+        now = 1.05
+        sut.insertCandidate(button)
+        recorder.close(.nextInput)
+        // These entry calls prove field logic in a UIKit fixture, not host behavior.
+        XCTAssertEqual(events.count, 4)
+        XCTAssertNotEqual(events[0].0, events[1].0)
+        XCTAssertNotEqual(events[2].0, events[3].0)
+        for index in [1, 3] {
+            guard
+                case let .duration(.traceSincePrevious, milliseconds)? = events[index].1.first(where: {
+                    if case .duration(.traceSincePrevious, _) = $0 { return true }
+                    return false
+                })
+            else { return XCTFail("Missing selection interval") }
+            XCTAssertLessThan(milliseconds, 100)
+        }
+    }
+
+    @MainActor
+    func testDocumentChangeAndDisappearDoNotSample() {
+        let sut = KeyboardViewController()
+        var reads = 0
+        var events: [[DiagnosticEvent.Field]] = []
+        let recorder = CommitTraceRecorder(
+            context: {
+                reads += 1
+                return "x"
+            }, emit: { _, fields in events.append(fields) })
+        sut.commitTrace = recorder
+        sut.commitTraceTestDocumentIdentifier = UUID()
+        sut.loadViewIfNeeded()
+        sut.textDidChange(nil)
+        recorder.enabled = true
+        recorder.begin(entry: .compact, preeditBefore: false)
+        recorder.willWrite(.insert, text: "x")
+        recorder.endSyncPhase(preeditAfter: false, partialAfter: false)
+        reads = 0
+        sut.commitTraceTestDocumentIdentifier = UUID()
+        sut.textDidChange(nil)
+        XCTAssertEqual(reads, 0)
+        XCTAssertTrue(events[0].contains(.count(.traceCloseReason, 2)))
+        XCTAssertTrue(events[0].contains(.count(.traceOccurrenceClose, 8)))
+        recorder.begin(entry: .compact, preeditBefore: false)
+        recorder.willWrite(.insert, text: "x")
+        recorder.endSyncPhase(preeditAfter: false, partialAfter: false)
+        reads = 0
+        sut.viewWillDisappear(false)
+        XCTAssertEqual(reads, 0)
+        XCTAssertTrue(events[1].contains(.count(.traceCloseReason, 3)))
+        XCTAssertTrue(events[1].contains(.count(.traceOccurrenceClose, 8)))
+    }
+
+    @MainActor
+    func testUnavailableDocumentCallbackDoesNotSampleUntilIdentityKnown() {
+        let sut = KeyboardViewController()
+        var reads = 0
+        var events: [[DiagnosticEvent.Field]] = []
+        let recorder = CommitTraceRecorder(
+            context: {
+                reads += 1
+                return "x"
+            }, emit: { _, fields in events.append(fields) })
+        sut.commitTrace = recorder
+        sut.commitTraceTestDocumentIdentifier = UUID()
+        sut.loadViewIfNeeded()
+        sut.textDidChange(nil)
+        recorder.enabled = true
+        recorder.begin(entry: .compact, preeditBefore: false)
+        recorder.willWrite(.insert, text: "x")
+        recorder.endSyncPhase(preeditAfter: false, partialAfter: false)
+        reads = 0
+        sut.commitTraceTestForceUnavailable = true
+        sut.textDidChange(nil)
+        XCTAssertEqual(reads, 0)
+        sut.commitTraceTestForceUnavailable = false
+        sut.textDidChange(nil)
+        XCTAssertEqual(reads, 1)
+        recorder.close(.disappear)
+        XCTAssertTrue(events[0].contains(.count(.traceChanges, 2)))
+        XCTAssertTrue(events[0].contains(.count(.traceOccurrenceFirstChange, 1)))
     }
 
     @MainActor
@@ -800,4 +1026,10 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
 @MainActor
 private final class AdaptiveCompactHeaderController: KeyboardViewController {
     override var t9PathRowReservation: T9PathRowReservation { .adaptive }
+}
+
+@MainActor
+private final class TraceTestLongPress: UILongPressGestureRecognizer {
+    var testLocation = CGPoint.zero
+    override func location(in view: UIView?) -> CGPoint { testLocation }
 }

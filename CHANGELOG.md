@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-10-28 — B34 候选上屏打点（本地交付，未发布）
+
+- 键盘出现时若诊断与“显示”类别均已开启，此后每次选择候选会记录一条不含文字内容的 `candidate.commit_trace` 事件：各类宿主写入次数、宿主回调次数、被拦截的选择次数、上屏文字重复出现次数的取样、关闭原因与耗时，用于排查重复上屏（B34）。读法见 [DEBUGGING](docs/DEBUGGING.md)。
+- 这些字段是线索，不证明根因；真实宿主、真机和不同宿主之间的差异均未验证。证据仅限本地 Core、扩展与模拟器 Debug/Release 测试，不代表托管 CI 或 Release 通过。
+
 ## 2026-10-27 — 1.0 (177) 外部 TestFlight
 
 - #244 键盘高度不再把过渡高度当预算；#247 触区快照和 canvas 跟随当前几何；#248 九宫格始终预留 34pt 拼音栏；#249「实验性 Liquid Glass 材质」仅 DEBUG 可见，正式构建在主 App 启动时清除存储值。Human 决定将 1.0 (177) 发给外部测试组，详见[发布决定](docs/product-decisions/RELEASE-2026-10-27-BUILD177-external-testflight-decision.md)。
@@ -1603,5 +1608,3 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 - 更新了 RIME 部署页的步骤文案和 footer 说明，删除"修改上方设置"等失效引用。
 
 ---
-
-- Add content-free candidate commit trace diagnostics for investigating duplicate commits when display diagnostics are enabled.

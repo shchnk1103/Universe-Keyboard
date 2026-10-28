@@ -37,6 +37,12 @@ public final class CommitTraceRecorder {
     private var trace: Trace?
     private static var sequence: UInt64 = 0
     private static var previous: TimeInterval?
+    #if DEBUG
+        static func resetTraceProcessStateForTesting() {
+            sequence = 0
+            previous = nil
+        }
+    #endif
     private var hasMarkedWrite = false
     private var changesSinceMarked = 0
     private var changesSinceMarkedCapped = false
@@ -125,7 +131,7 @@ public final class CommitTraceRecorder {
     }
 
     /// Count raw host callbacks; they do not prove host marked-text state.
-    public func didChange() {
+    public func didChange(sampling: Bool = true) {
         guard enabled else { return }
         expire()
         if hasMarkedWrite {
@@ -134,7 +140,7 @@ public final class CommitTraceRecorder {
         updateTrace { current in
             Self.increment(&current.changes, capped: &current.capped)
         }
-        if let text = trace?.text, trace?.firstChange == 8 {
+        if sampling, let text = trace?.text, trace?.firstChange == 8 {
             trace?.firstChange = occurrence(text)
         }
     }
@@ -164,7 +170,7 @@ public final class CommitTraceRecorder {
         }
     }
     private func occurrence(_ text: String) -> Int {
-        guard !text.isEmpty, let value = context() else { return 9 }
+        guard !text.isEmpty, text.utf16.count <= 64, let value = context() else { return 9 }
         let suffix = String(value.suffix(text.count * 3))
         var rest = suffix[...]
         var count = 0
@@ -178,7 +184,7 @@ public final class CommitTraceRecorder {
     public func close(_ requestedReason: CloseReason) {
         guard enabled, var current = trace else { return }
         let reason: CloseReason = clock() - current.start > 5 ? .windowLimit : requestedReason
-        let final = (reason == .documentChanged || reason == .disappear) ? 8 : current.text.map { occurrence($0) } ?? 8
+        let final = (reason == .nextSelection || reason == .nextInput) ? current.text.map { occurrence($0) } ?? 8 : 8
         trace = nil
         current.text = nil
         current.markedText = nil  // Release content before submitting the content-free event.
@@ -194,7 +200,8 @@ public final class CommitTraceRecorder {
             .count(.traceOccurrenceFirstChange, current.firstChange), .count(.traceOccurrenceClose, final),
             .count(.traceCloseReason, reason.rawValue), .flag(.tracePreeditBefore, current.before),
             .flag(.tracePreeditAfter, current.after), .flag(.tracePartialAfter, current.partial),
-            .flag(.traceDocumentChanged, reason == .documentChanged), .flag(.traceCounterCapped, current.capped),
+            .flag(.traceDocumentChanged, requestedReason == .documentChanged),
+            .flag(.traceCounterCapped, current.capped),
             .duration(.traceWindow, milliseconds(clock() - current.start, cap: 60000)),
         ]
         if let first = current.firstWrite { fields.append(.duration(.traceFirstWrite, first)) }

@@ -480,10 +480,14 @@ Use the canonical commands in `docs/RELEASE_CHECKLIST.md`. A named simulator is 
 
 ### Candidate commit trace (`candidate.commit_trace`)
 
-When diagnostics and the display category are enabled at keyboard appearance, the typed journal can record one content-free trace per candidate selection. `actionSequence` correlates its fields; the occurrence values count non-overlapping appearances of the committed text in a bounded host-context suffix (0–3, 8 not sampled, 9 unavailable). The pre-commit sample can already contain marked text. A user who intentionally entered the same word twice can also produce 2. The host context and committed text are never persisted by this trace; committed text is held only while its trace is open.
+When diagnostics and the display category are enabled at keyboard appearance, the typed journal can record one content-free trace per candidate selection. `actionSequence` correlates its fields; the occurrence values count non-overlapping appearances of the committed text in a bounded host-context suffix (0–3, 8 not sampled, 9 unavailable because context is nil or the committed text exceeds 64 UTF-16 units). The pre-commit sample can already contain marked text. A user who intentionally entered the same word twice can also produce 2. The host context and committed text are never persisted by this trace; committed text is held only while its trace is open.
 
 - A high `did_change_since_marked_write` or `did_change_in_window`, occurrence 2, and only one `sync_insert` plus `sync_unmark` are clues for possible early host confirmation. Callback counts include keyboard echoes and do not describe host marked state.
 - A short `since_previous_selection_ms`, two or more synchronous or asynchronous commit writes, or `repeat_suppressed` above zero alongside duplication are clues for repeated selection handling.
 - `partial_after_sync=true` followed by another selection and occurrence 2 is a clue for a partial selection followed by another match.
 
-These are clues, not root-cause proof. Actual host and device behavior requires separate evidence. Closing on document change or disappearance does not sample the new context.
+`occurrence_at_close` is sampled only for next selection or next input; document change, disappearance and window limit use 8 without reading context. `document_changed` indicates that document change was the requested close, even when a window older than five seconds closes as window limit. An unavailable document identity callback is counted but does not sample.
+
+When a trace has multiple commit writes, the pre-commit sample refers to the first committed text, while the later samples refer to the last; they need not describe the same text. `since_previous_selection_ms` spans appearances and controller instances within one process, and resets when the process restarts; a short interval alone does not establish the same host. The trace retains only marked text written inside it: an unmark without an in-trace marked write cannot be sampled and yields 8, not 0.
+
+These are clues, not root-cause proof. Actual host and device behavior requires separate evidence.
