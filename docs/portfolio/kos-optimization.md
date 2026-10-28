@@ -42,3 +42,5 @@
 30. 激活规则措辞摩擦：PM 提议任务单明确激活方式，派发附 Human 授权原话，Executor 另存签发回执并复算 SHA-256；涉及 worktree / 分支时明写授权创建；尚未采纳为 KOS 规则（来源：`~/.kos-work/Universe-Keyboard/PORTFOLIO-REFRESH-005/content/backlog-notes.md`（SHA-256 `bbf9c298e4b728a5123a74ba3119d5f82c3c8983d90aa3163bb0925bc9a81371`） B2，REFRESH-004a 首次停止）。
 31. 角色回复规范：Human 2026-10-24 提出，待讨论、未决定；PM 提议按职责边界、输出结构、证据用语、停止与升级条件及报告头试点，不做人设、不重复 Assignment Policy 的角色定义（来源：`~/.kos-work/Universe-Keyboard/PORTFOLIO-REFRESH-005/content/backlog-notes.md`（SHA-256 `bbf9c298e4b728a5123a74ba3119d5f82c3c8983d90aa3163bb0925bc9a81371`） B3；PM 回复已有试行约定，不代表全角色规范已决定）。
 32. PR 中英结合风格：Human 2026-10-24 提出希望固定；拟议标题 `<type>(<scope>): English summary / 中文概要`，描述先一行英文 Summary 再中文正文，标识符 / SHA / 测试名与提交信息保持英文；落在哪份规则文档仍待 Human 决定，未采纳为仓库规则（来源：`~/.kos-work/Universe-Keyboard/PORTFOLIO-REFRESH-005/content/backlog-notes.md`（SHA-256 `bbf9c298e4b728a5123a74ba3119d5f82c3c8983d90aa3163bb0925bc9a81371`） B5）。
+
+已采纳（2026-10-28）：KOS-DOC-UPDATE-001 把任务包首行与一句话最终消息、写入被拒即停、worktree 的 `.git` 写入白名单、包作者自审、冻结冲突时的修订规则、授权与派发消息格式六条写入 `AGENTS.md`「KOS 协作约定」，由 Human 2026-10-28 批准。它们与上面第 6、11、16、21、22、23、24 条相关；这些旧候选各自的状态本次不改。

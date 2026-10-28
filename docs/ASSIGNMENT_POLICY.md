@@ -160,6 +160,10 @@ Every formal Assignment Record must contain:
 | Lifecycle Status | One state from the lifecycle below. |
 | Revalidation Trigger | Scope, owner, environment, dependency or time condition that invalidates the Assignment. |
 
+In the Executor, Environment Executor, Architecture Reviewer and Quality Reviewer fields, “Named” means the KOS role name (for example `Executor`), not an AI product name; when one role has several sessions, a round may be added, for example `Executor R1` (Human decision 2026-10-28).
+
+上表 Executor、Environment Executor、Architecture Reviewer、Quality Reviewer 字段中的 “Named” 指 KOS 角色名（如 `Executor`），不是 AI 名称；同一角色有多个会话时可加轮次，如 `Executor R1`（Human 2026-10-28 决定）。
+
 ## Current Status Block (KOS 2.1 ops)
 
 Operational maturity under Knowledge OS 2.0
