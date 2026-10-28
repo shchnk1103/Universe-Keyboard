@@ -7,6 +7,36 @@ import XCTest
 /// This is in-process UIKit integration, not a system-activated Keyboard Extension.
 nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
     @MainActor
+    func testTraceClientBootstrapAndSameDocumentRebindWhileDisabled() {
+        let sut = KeyboardViewController()
+        var reads = 0
+        var events = 0
+        let recorder = CommitTraceRecorder(
+            context: {
+                reads += 1; return nil
+            }, emit: { _, _ in events += 1 })
+        sut.commitTrace = recorder
+        sut.commitTraceTestDocumentIdentifier = UUID()
+        sut.loadViewIfNeeded()
+        XCTAssertTrue(sut.controller.textClient is TracingTextInputClient)
+        sut.textDidChange(nil)
+        let first = sut.controller.textClient
+        XCTAssertTrue(first is TracingTextInputClient)
+        sut.textDidChange(nil)
+        XCTAssertTrue(sut.controller.textClient is TracingTextInputClient)
+        XCTAssertFalse(sut.controller.textClient === first)
+        sut.controller.rimeEngine = nil
+        let host = FakeTextInputClient()
+        sut.controller.textClient = TracingTextInputClient(host, recorder: recorder)
+        sut.accumulatedCandidates = [CandidateItem(title: "trace", kind: .candidate)]
+        sut.commitCompactCandidate(at: IndexPath(item: 0, section: 0))
+        XCTAssertEqual(host.text, "trace")
+        sut.textDidChange(nil)
+        XCTAssertEqual(events, 0)
+        XCTAssertEqual(reads, 0)
+    }
+
+    @MainActor
     func testCandidateCommitTraceEntryWiring() {
         let sut = makeController(width: 390, nineKey: false, hasPath: false, stickyEmpty: false)
         var entries: [Int] = []

@@ -233,4 +233,29 @@ final class CommitTraceRecorderTests: XCTestCase {
         XCTAssertTrue(fields.contains(.flag(.traceDocumentChanged, true)))
     }
 
+    func testPrivacySentinelAndChineseSubstrings() throws {
+        let sentinel = "B34SENTINEL甲乙丙丁"
+        let chinese = Array("甲乙丙丁")
+        var captured: [DiagnosticEvent.Field] = []
+        let recorder = CommitTraceRecorder(context: { sentinel + sentinel }, emit: { _, fields in captured = fields })
+        recorder.enabled = true
+        recorder.begin(entry: .compact, preeditBefore: false)
+        recorder.willWrite(.insert, text: sentinel)
+        recorder.endSyncPhase(preeditAfter: false, partialAfter: false)
+        recorder.didChange()
+        recorder.close(.nextInput)
+        let event = DiagnosticEvent(
+            utcTimestamp: .now, monotonicNanoseconds: 1, origin: .keyboardExtension,
+            processInstanceID: UUID(), localSequence: 1, actionSequence: 1, code: .candidateCommitTrace,
+            level: .info, category: .display, fields: captured)
+        let json = String(decoding: try JSONEncoder().encode(event), as: UTF8.self)
+        XCTAssertFalse(json.contains(sentinel))
+        XCTAssertFalse(json.contains("B34SENTINEL"))
+        for start in 0..<chinese.count {
+            for end in (start + 2)...max(start + 2, chinese.count) where end <= chinese.count {
+                XCTAssertFalse(json.contains(String(chinese[start..<end])))
+            }
+        }
+    }
+
 }

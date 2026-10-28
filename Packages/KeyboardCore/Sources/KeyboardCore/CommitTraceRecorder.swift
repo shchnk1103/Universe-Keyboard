@@ -4,8 +4,11 @@ import Foundation
 /// not evidence of the host's marked-text state.
 @MainActor
 public final class CommitTraceRecorder {
+    /// Origin of a candidate selection.
     public enum Entry: Int { case compact, expanded, legacy, other }
+    /// The first boundary that ends a trace.
     public enum CloseReason: Int { case nextSelection, nextInput, documentChanged, disappear, windowLimit }
+    /// Host writes observed without retaining their arguments in events.
     public enum Operation: Int { case insert, setMarked, clearMarked, unmark, delete }
     private struct Trace {
         let id: UInt64
@@ -37,18 +40,25 @@ public final class CommitTraceRecorder {
     private var hasMarkedWrite = false
     private var changesSinceMarked = 0
     private var changesSinceMarkedCapped = false
+    /// A visibility-boundary snapshot; disabling discards open content.
     public var enabled = false {
         didSet {
             if !enabled {
-                trace = nil; hasMarkedWrite = false; changesSinceMarked = 0; changesSinceMarkedCapped = false
+                trace = nil
+                hasMarkedWrite = false
+                changesSinceMarked = 0
+                changesSinceMarkedCapped = false
             }
         }
     }
+    /// Inject a monotonic clock, a transient context reader and a content-free sink.
     public init(
         clock: @escaping () -> TimeInterval = { ProcessInfo.processInfo.systemUptime },
         context: @escaping () -> String?, emit: @escaping (UInt64, [DiagnosticEvent.Field]) -> Void
     ) {
-        self.clock = clock; self.context = context; self.emit = emit
+        self.clock = clock
+        self.context = context
+        self.emit = emit
     }
     private func milliseconds(_ interval: TimeInterval, cap: Int) -> Int {
         Int(min(Double(cap), max(0, interval * 1000)))
@@ -57,86 +67,114 @@ public final class CommitTraceRecorder {
         guard enabled, let current = trace, clock() - current.start > 5 else { return }
         close(.windowLimit)
     }
+    /// Begin a selection window, closing any prior window first.
     public func begin(entry: Entry, preeditBefore: Bool) {
         guard enabled else { return }
-        expire(); if trace != nil { close(.nextSelection) }
-        let now = clock(); Self.sequence &+= 1
+        expire()
+        if trace != nil { close(.nextSelection) }
+        let now = clock()
+        Self.sequence &+= 1
         trace = Trace(
             id: Self.sequence, entry: entry, start: now, before: preeditBefore,
             sincePrevious: Self.previous.map { milliseconds(now - $0, cap: 10000) }, sinceMarked: changesSinceMarked,
             capped: changesSinceMarkedCapped)
         Self.previous = now
     }
+    /// Mark the end of synchronous selection handling.
     public func endSyncPhase(preeditAfter: Bool, partialAfter: Bool) {
-        guard enabled else { return }; expire()
-        trace?.after = preeditAfter; trace?.partial = partialAfter; trace?.sync = false
+        guard enabled else { return }
+        expire()
+        trace?.after = preeditAfter
+        trace?.partial = partialAfter
+        trace?.sync = false
     }
+    /// Close on the next user action outside the synchronous phase.
     public func observeAction(_ action: KeyboardAction) {
-        guard enabled else { return }; expire()
+        guard enabled else { return }
+        expire()
         guard let current = trace, !current.sync else { return }
         if case .keyboardTypeChanged = action { return }
         close(.nextInput)
     }
+    private static func increment(_ count: inout Int, capped: inout Bool) {
+        if count < 15 {
+            count += 1
+        }
+        if count >= 15 {
+            capped = true
+        }
+    }
+
+    private func updateTrace(_ update: (inout Trace) -> Void) {
+        guard var current = trace else { return }
+        update(&current)
+        trace = current
+    }
+
+    /// Count an intercepted selection without opening a new trace.
     public func reject(suppressed: Bool) {
-        guard enabled else { return }; expire()
-        guard trace != nil else { return }
-        if suppressed {
-            if trace!.suppressed < 15 {
-                trace!.suppressed += 1; if trace!.suppressed == 15 { trace!.capped = true }
+        guard enabled else { return }
+        expire()
+        updateTrace { current in
+            if suppressed {
+                Self.increment(&current.suppressed, capped: &current.capped)
             } else {
-                trace!.capped = true
-            }
-        } else {
-            if trace!.rejected < 15 {
-                trace!.rejected += 1; if trace!.rejected == 15 { trace!.capped = true }
-            } else {
-                trace!.capped = true
+                Self.increment(&current.rejected, capped: &current.capped)
             }
         }
     }
+
+    /// Count raw host callbacks; they do not prove host marked-text state.
     public func didChange() {
-        guard enabled else { return }; expire()
+        guard enabled else { return }
+        expire()
         if hasMarkedWrite {
-            if changesSinceMarked < 15 {
-                changesSinceMarked += 1; if changesSinceMarked == 15 { changesSinceMarkedCapped = true }
-            } else {
-                changesSinceMarkedCapped = true
-            }
+            Self.increment(&changesSinceMarked, capped: &changesSinceMarkedCapped)
         }
-        guard trace != nil else { return }
-        if trace!.changes < 15 {
-            trace!.changes += 1; if trace!.changes == 15 { trace!.capped = true }
-        } else {
-            trace!.capped = true
+        updateTrace { current in
+            Self.increment(&current.changes, capped: &current.capped)
         }
-        if let text = trace?.text, trace?.firstChange == 8 { trace?.firstChange = occurrence(text) }
+        if let text = trace?.text, trace?.firstChange == 8 {
+            trace?.firstChange = occurrence(text)
+        }
     }
+
+    /// Observe a host write before forwarding it, retaining text only in the open trace.
     public func willWrite(_ operation: Operation, text: String? = nil) {
-        guard enabled else { return }; expire()
-        if operation == .setMarked { hasMarkedWrite = true; changesSinceMarked = 0; changesSinceMarkedCapped = false }
-        guard trace != nil else { return }
-        let index = operation.rawValue + (trace!.sync ? 0 : 5)
-        if trace!.counts[index] < 15 {
-            trace!.counts[index] += 1; if trace!.counts[index] == 15 { trace!.capped = true }
-        } else {
-            trace!.capped = true
+        guard enabled else { return }
+        expire()
+        if operation == .setMarked {
+            hasMarkedWrite = true
+            changesSinceMarked = 0
+            changesSinceMarkedCapped = false
         }
-        if trace!.firstWrite == nil { trace!.firstWrite = milliseconds(clock() - trace!.start, cap: 60000) }
-        if operation == .setMarked { trace!.markedText = text }
-        if operation == .clearMarked { trace!.markedText = nil }
-        let committed = operation == .insert ? text : (operation == .unmark ? trace!.markedText : nil)
+        guard let snapshot = trace else { return }
+        let firstWrite = snapshot.firstWrite == nil ? milliseconds(clock() - snapshot.start, cap: 60000) : nil
+        updateTrace { current in
+            let index = operation.rawValue + (current.sync ? 0 : 5)
+            Self.increment(&current.counts[index], capped: &current.capped)
+            if let firstWrite { current.firstWrite = firstWrite }
+            if operation == .setMarked { current.markedText = text }
+            if operation == .clearMarked { current.markedText = nil }
+        }
+        let committed = operation == .insert ? text : (operation == .unmark ? trace?.markedText : nil)
         if let committed, !committed.isEmpty {
-            if trace!.pre == 8 { trace!.pre = occurrence(committed) }
-            trace!.text = committed
+            if trace?.pre == 8 { trace?.pre = occurrence(committed) }
+            trace?.text = committed
         }
     }
     private func occurrence(_ text: String) -> Int {
         guard !text.isEmpty, let value = context() else { return 9 }
         let suffix = String(value.suffix(text.count * 3))
-        var rest = suffix[...]; var count = 0
-        while count < 3, let range = rest.range(of: text) { count += 1; rest = rest[range.upperBound...] }
+        var rest = suffix[...]
+        var count = 0
+        while count < 3, let range = rest.range(of: text) {
+            count += 1
+            rest = rest[range.upperBound...]
+        }
         return count
     }
+    /// End the window and clear retained text before emitting finite fields.
     public func close(_ requestedReason: CloseReason) {
         guard enabled, var current = trace else { return }
         let reason: CloseReason = clock() - current.start > 5 ? .windowLimit : requestedReason

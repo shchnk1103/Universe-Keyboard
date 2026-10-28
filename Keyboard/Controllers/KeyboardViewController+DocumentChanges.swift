@@ -19,7 +19,12 @@ extension KeyboardViewController {
         }
 
         let proxy = textDocumentProxy
-        let identifier = KeyboardReadDocumentIdentifier(proxy)
+        let identifier: UUID?
+        #if DEBUG
+            identifier = commitTraceTestDocumentIdentifier ?? KeyboardReadDocumentIdentifier(proxy)
+        #else
+            identifier = KeyboardReadDocumentIdentifier(proxy)
+        #endif
         synchronizeKeyboardHeightAdjustment(
             before: proxy.documentContextBeforeInput, after: proxy.documentContextAfterInput,
             documentIdentifier: identifier)

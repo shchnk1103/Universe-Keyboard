@@ -20,3 +20,10 @@
 - **Handoff Target:** Independent Architecture and Quality reviewers: final HEAD and tree, external report, test logs, privacy boundaries and outstanding findings.
 - **Lifecycle Status:** Active — implementation and local verification.
 - **Revalidation Trigger:** Changes to frozen scope, privacy boundary, baseline, authorization or required evidence.
+
+## R3 baseline comparison
+
+On the same iPhone 16 Pro Max simulator (iOS 18.0), the focused
+`AppAboutContactTests` run failed at the same email-address assertion on baseline
+`abd3c85a1ca731e35300c222d8a6a813f31a78b4` and on the candidate. R3 treats this
+as an existing baseline failure; the executor report retains both logs and exit codes.

@@ -106,6 +106,7 @@ class KeyboardViewController: UIInputViewController {
         #endif
     }
     #if DEBUG
+        var commitTraceTestDocumentIdentifier: UUID?
         var isHighFidelityDiagnosticsActive = false
         var highFidelityDiagnosticsExpiration: Date?
         private var highFidelityExpirationTask: Task<Void, Never>?
