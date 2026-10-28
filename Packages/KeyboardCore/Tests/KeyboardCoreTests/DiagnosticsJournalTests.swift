@@ -4,6 +4,44 @@ import XCTest
 @testable import KeyboardCore
 
 final class DiagnosticsJournalTests: XCTestCase {
+    func testCloseBeforeAndAfterControlReadDoesNotWrite() async throws {
+        for afterRead in [false, true] {
+            let rootURL = makeTemporaryDirectory()
+            defer { try? FileManager.default.removeItem(at: rootURL) }
+            let processID = UUID()
+            let writer = DiagnosticsJournalWriter(
+                rootURL: rootURL, origin: .mainApp, processInstanceID: processID, isMainAppWriter: true
+            )
+            try await writer.prepareRootIfOwnedByMainApp()
+            try await writer.append([makeEvent(sequence: 1, processInstanceID: processID)])
+            let leaseBefore = try Data(contentsOf: leaseURL(rootURL: rootURL, processID: processID))
+            let reached = expectation(description: "control read boundary \(afterRead)")
+            let release = DispatchSemaphore(value: 0)
+            let active = Mutex(true)
+            await writer.installReadControlProbeForTesting { isAfterRead in
+                guard isAfterRead == afterRead else { return }
+                reached.fulfill()
+                _ = release.wait(timeout: .now() + 5)
+            }
+            let event = makeEvent(
+                sequence: 2, processInstanceID: processID, timestamp: Date(timeIntervalSince1970: 1_723_127_056)
+            )
+            let task = Task { try await writer.append([event], isWritePermitted: { active.withLock { $0 } }) }
+            await fulfillment(of: [reached], timeout: 5)
+            active.withLock { $0 = false }
+            release.signal()
+            do {
+                try await task.value
+                XCTFail("Closed lifecycle must reject the write")
+            } catch {
+                XCTAssertEqual(error as? DiagnosticsJournalError, .lifecycleCancelled)
+            }
+            XCTAssertEqual(try Data(contentsOf: leaseURL(rootURL: rootURL, processID: processID)), leaseBefore)
+            XCTAssertEqual(try journalLines(in: rootURL.appendingPathComponent("g1/open")).map(\.localSequence), [1])
+            XCTAssertFalse(FileManager.default.fileExists(atPath: rootURL.appendingPathComponent("g1/sealed").path))
+        }
+    }
+
     func testGrantedPermissionCompletesEvenIfLifecycleCloses() async throws {
         let rootURL = makeTemporaryDirectory()
         defer { try? FileManager.default.removeItem(at: rootURL) }

@@ -10,8 +10,8 @@ final class DiagnosticsJournalFlushWaitTests: XCTestCase {
         await gate.setBlocking(false)
         let rig = makeIngress(gate: gate, mainApp: false)
         let ingress = rig.ingress
-        ingress.installBatchWriterFactoryForTesting { _ in
-            _ = ingress.testingSnapshotForTesting()
+        ingress.installBatchWriterFactoryForTesting { [weak ingress] _ in
+            _ = ingress?.testingSnapshotForTesting()
             return gate
         }
         ingress.record(makeEvent(sequence: 1, processInstanceID: rig.processID))
@@ -83,6 +83,9 @@ final class DiagnosticsJournalFlushWaitTests: XCTestCase {
         try await requireFlush(gate) { await rig.ingress.flushAndWaitForTesting() }
         let count = await gate.appendCount
         XCTAssertEqual(count, 1)
+        let snapshot = rig.ingress.testingSnapshotForTesting()
+        XCTAssertEqual(snapshot.dropped, 1)
+        XCTAssertEqual(snapshot.lifecycleCancelled, 0)
     }
 
     func testLifecycleCancellationFinishesTheWait() async throws {
@@ -155,6 +158,39 @@ final class DiagnosticsJournalFlushWaitTests: XCTestCase {
         XCTAssertEqual(count, 2)
         let batches = await gate.submittedSequences
         XCTAssertEqual(batches, [[1], [2]])
+    }
+
+    func testCloseAfterReclaimDropsOriginalTicketBeforeRetry() async throws {
+        let reached = expectation(description: "identity rotation started")
+        let writer = ReclaimRotationGate(started: reached)
+        defer { Task { await writer.release() } }
+        let id = UUID()
+        let ingress = DiagnosticsJournalIngress(
+            origin: .mainApp, processInstanceID: id, isMainAppWriter: false,
+            rootURL: { URL(fileURLWithPath: "/unused-journal-test") },
+            isCategoryEnabled: { _ in true }, flushDelay: 60
+        )
+        ingress.installBatchWriterFactoryForTesting { _ in writer }
+        ingress.record(makeEvent(sequence: 1, processInstanceID: id))
+        ingress.requestFlush()
+        await fulfillment(of: [reached], timeout: 5)
+        XCTAssertEqual(ingress.testingSnapshotForTesting().inFlightTickets, [1])
+        ingress.suspendForExtensionLifecycle()
+        XCTAssertEqual(ingress.resumeForExtensionLifecycle(), 1)
+        ingress.record(makeEvent(sequence: 2, processInstanceID: id))
+        await writer.release()
+        let completed = expectation(description: "retry completed")
+        let task = Task {
+            await ingress.flushAndWaitForTesting()
+            completed.fulfill()
+        }
+        await fulfillment(of: [completed], timeout: 5)
+        task.cancel()
+        let batches = await writer.batches
+        XCTAssertEqual(batches, [[1], [2]])
+        let snapshot = ingress.testingSnapshotForTesting()
+        XCTAssertEqual(snapshot.lifecycleCancelled, 1)
+        XCTAssertEqual(snapshot.appended, 1)
     }
 
     func testRequeueDropsTicketsThatDoNotFit() async throws {
@@ -469,6 +505,36 @@ private func requireFlush(
     } catch {
         await gate.unblockAfterTimeout()
         throw error
+    }
+}
+
+private actor ReclaimRotationGate: DiagnosticsJournalBatchWriting {
+    private let started: XCTestExpectation
+    private var continuation: CheckedContinuation<Void, Never>?
+    private var released = false
+    private(set) var batches: [[UInt64]] = []
+
+    init(started: XCTestExpectation) { self.started = started }
+    func prepareRootIfOwnedByMainApp() async throws {}
+    func append(_ events: [DiagnosticEvent], isWritePermitted: @escaping @Sendable () -> Bool) async throws {
+        batches.append(events.map(\.localSequence))
+        if batches.count == 1 { throw DiagnosticsJournalError.writerReclaimed }
+        guard isWritePermitted() else { throw DiagnosticsJournalError.lifecycleCancelled }
+    }
+    func rotateIdentityAfterReclaim() async {
+        await withCheckedContinuation { continuation in
+            if released {
+                continuation.resume()
+            } else {
+                self.continuation = continuation
+                started.fulfill()
+            }
+        }
+    }
+    func release() {
+        released = true
+        continuation?.resume()
+        continuation = nil
     }
 }
 

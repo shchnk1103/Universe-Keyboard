@@ -286,6 +286,14 @@ public actor DiagnosticsJournalWriter {
     private var activeGeneration: UInt64?
     private var leaseFence: UInt64 = 0
 
+    #if DEBUG
+        private var testingReadControlProbeForTesting: (@Sendable (Bool) -> Void)?
+
+        internal func installReadControlProbeForTesting(_ probe: @escaping @Sendable (Bool) -> Void) {
+            testingReadControlProbeForTesting = probe
+        }
+    #endif
+
     public init(
         rootURL: URL,
         origin: DiagnosticEvent.Origin,
@@ -368,7 +376,13 @@ public actor DiagnosticsJournalWriter {
         try DiagnosticsJournalIdentityLock.withSharedSnapshotFence(rootURL: rootURL) { [self] in
             try withExclusiveWriterLock {
                 // 必须在 lock 内重读 generation：clear 可以发生在上个批次之后。
+                #if DEBUG
+                    testingReadControlProbeForTesting?(false)
+                #endif
                 let control = try readControl()
+                #if DEBUG
+                    testingReadControlProbeForTesting?(true)
+                #endif
                 let requiresRotation =
                     activeByteCount > 0
                     && (activeGeneration != control.currentGeneration
