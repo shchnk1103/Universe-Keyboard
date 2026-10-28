@@ -152,11 +152,12 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
         let button = UIButton(type: .system)
         let gesture = TraceTestLongPress()
         button.addGestureRecognizer(gesture)
+        XCTAssertTrue(gesture.view === button)
         gesture.testLocation = .zero
-        gesture.state = .began
+        gesture.testState = .began
         sut.handleSpaceCursorLongPress(gesture)
         gesture.testLocation = CGPoint(x: 20, y: 0)
-        gesture.state = .changed
+        gesture.testState = .changed
         sut.handleSpaceCursorLongPress(gesture)
         XCTAssertEqual(events.count, 1)
         XCTAssertTrue(events.first?.contains(.count(.traceCloseReason, 1)) == true)
@@ -1034,5 +1035,12 @@ private final class AdaptiveCompactHeaderController: KeyboardViewController {
 @MainActor
 private final class TraceTestLongPress: UILongPressGestureRecognizer {
     var testLocation = CGPoint.zero
+    var testState: UIGestureRecognizer.State = .possible
+
+    override var state: UIGestureRecognizer.State {
+        get { testState }
+        set { testState = newValue }
+    }
+
     override func location(in view: UIView?) -> CGPoint { testLocation }
 }
