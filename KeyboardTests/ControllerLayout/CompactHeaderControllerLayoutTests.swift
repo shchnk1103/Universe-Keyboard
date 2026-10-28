@@ -113,6 +113,8 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
         sut.commitTraceTestDocumentIdentifier = UUID()
         sut.loadViewIfNeeded()
         sut.controller.onActionObserved = { recorder.observeAction($0) }
+        recorder.enabled = true
+        recorder.enabled = false
         let host = FakeTextInputClient()
         let client = TracingTextInputClient(host, recorder: recorder)
         sut.controller.textClient = client

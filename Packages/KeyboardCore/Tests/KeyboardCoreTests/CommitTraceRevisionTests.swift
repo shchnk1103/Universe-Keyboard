@@ -85,6 +85,8 @@ final class CommitTraceRevisionTests: XCTestCase {
     func testDisabledOperationsLeaveNoCountsAndClosedEventsDoNotChange() {
         var events: [[DiagnosticEvent.Field]] = []
         let recorder = CommitTraceRecorder(context: { nil }, emit: { _, fields in events.append(fields) })
+        recorder.enabled = true
+        recorder.enabled = false
         recorder.begin(entry: .compact, preeditBefore: false)
         recorder.willWrite(.setMarked, text: "x")
         recorder.didChange()
