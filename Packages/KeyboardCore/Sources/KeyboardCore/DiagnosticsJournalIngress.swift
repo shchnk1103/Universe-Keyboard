@@ -22,6 +22,10 @@ public final class DiagnosticsJournalIngress: Sendable {
     public static let maximumPendingEventCount = 256
 
     #if DEBUG
+        internal enum TestingTicketOutcome: String, Sendable {
+            case appended, filtered, droppedByLifecycle, failed, dropped
+        }
+
         /// Debug 热路径上的排队单元。ticket 只在 DEBUG 存在，用来界定测试等待，不表示已落盘。
         private struct QueuedDiagnostic: Sendable {
             var ticket: UInt64
@@ -48,6 +52,8 @@ public final class DiagnosticsJournalIngress: Sendable {
             var testingFiltered = 0
             var testingDropped = 0
             var testingLifecycleCancelled = 0
+            var testingTicketOutcomes: [UInt64: TestingTicketOutcome] = [:]
+            var testingTerminalOrder: [UInt64] = []
         #else
             var events: [DiagnosticEvent] = []
         #endif
@@ -74,6 +80,25 @@ public final class DiagnosticsJournalIngress: Sendable {
             {
                 guard !tickets.isEmpty else { return [] }
                 let count = openTickets.intersection(tickets).count
+                let outcomeValue: TestingTicketOutcome
+                switch outcome {
+                case "appended": outcomeValue = .appended
+                case "filtered": outcomeValue = .filtered
+                case "lifecycle": outcomeValue = .droppedByLifecycle
+                case "failed": outcomeValue = .failed
+                default: outcomeValue = .dropped
+                }
+                for ticket in openTickets.intersection(tickets).sorted() {
+                    testingTicketOutcomes[ticket] = outcomeValue
+                    testingTerminalOrder.append(ticket)
+                }
+                if testingTerminalOrder.count > 1024 {
+                    let excess = testingTerminalOrder.count - 1024
+                    for ticket in testingTerminalOrder.prefix(excess) {
+                        testingTicketOutcomes.removeValue(forKey: ticket)
+                    }
+                    testingTerminalOrder.removeFirst(excess)
+                }
                 switch outcome {
                 case "appended": testingAppended += count
                 case "filtered": testingFiltered += count
@@ -169,6 +194,7 @@ public final class DiagnosticsJournalIngress: Sendable {
             var filtered: Int
             var dropped: Int
             var lifecycleCancelled: Int
+            var ticketOutcomes: [UInt64: TestingTicketOutcome]
         }
 
         /// 只读测试快照。不改变 ticket、丢弃或 resume 的生产规则。
@@ -184,7 +210,8 @@ public final class DiagnosticsJournalIngress: Sendable {
                     appended: state.testingAppended,
                     filtered: state.testingFiltered,
                     dropped: state.testingDropped,
-                    lifecycleCancelled: state.testingLifecycleCancelled
+                    lifecycleCancelled: state.testingLifecycleCancelled,
+                    ticketOutcomes: state.testingTicketOutcomes
                 )
             }
         }
@@ -619,7 +646,8 @@ public final class DiagnosticsJournalIngress: Sendable {
                     #if DEBUG
                         self.resumeWaiters(
                             self.pending.withLock { state in
-                                state.terminate(filteredTickets, outcome: "filtered") + state.terminate(enabledTickets)
+                                state.terminate(filteredTickets, outcome: "filtered")
+                                    + state.terminate(enabledTickets, outcome: "failed")
                             })
                     #endif
                 }

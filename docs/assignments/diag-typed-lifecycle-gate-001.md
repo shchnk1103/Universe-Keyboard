@@ -1,7 +1,7 @@
 # Assignment: DIAG-TYPED-LIFECYCLE-GATE-001 — Typed journal lifecycle gate
 
-**Policy version:** `1.0.0`  
-**Task ID:** `DIAG-TYPED-LIFECYCLE-GATE-001`  
+**Policy version:** `1.0.0`
+**Task ID:** `DIAG-TYPED-LIFECYCLE-GATE-001`
 **Repository Change Type:** `Implementation` + `Documentation`
 
 ## Current Status
@@ -17,19 +17,19 @@
 ## Authority
 
 - **Assignment Authority:** Product Lead
-- **Decision Source / Date:** Human decisions `~/.kos-work/Universe-Keyboard/DIAG-UNIFY-DESIGN-001/instructions/human-decision-2026-10-28.md`, `human-decision-2026-10-28-b.md`, `human-decision-2026-10-28-c.md`; task package and R1–R5 authorization receipts under `~/.kos-work/Universe-Keyboard/DIAG-TYPED-LIFECYCLE-GATE-001/reports/`. Human approved registration and implementation on the same branch; R5 accepts the retention exception residuals below.
+- **Decision Source / Date:** 2026-10-28（Asia/Shanghai）; Human decisions `~/.kos-work/Universe-Keyboard/DIAG-UNIFY-DESIGN-001/instructions/human-decision-2026-10-28.md`, `human-decision-2026-10-28-b.md`, `human-decision-2026-10-28-c.md`; task package and R1–R7 authorization receipts under `~/.kos-work/Universe-Keyboard/DIAG-TYPED-LIFECYCLE-GATE-001/reports/`. PM decided in the task package that registration and implementation share a branch, following `LIQUID-GLASS-DEBUG-ONLY-001`; Human approved execution through the individual package authorizations; R5 accepts the retention exception residuals below.
 - **Product Approver:** Human Product Owner acting as Product Lead
 - **Authorization:** Local implementation, tests and commits under the frozen packages; no push, PR, merge, signing or device work.
 
 ## Assignment
 
-- **Domain Owner:** KeyboardCore and App & Data Operations Maintainers
-- **Executor:** Authorized Executor session
-- **Environment Executor:** Authorized Executor session, simulator and local package tests
+- **Domain Owner:** Input Intelligence Maintainer
+- **Executor:** Executor（R0–R6；运行时身份见外置各执行报告）
+- **Environment Executor:** Executor（同上；模拟器与本地包测试）；真机 Not Applicable
 - **Human Dependency:** Human for subsequent publication and release authority
 - **Architecture Reviewer:** Architecture & Knowledge Steward, independent session
 - **Quality Reviewer:** Quality, Performance & Release Maintainer, independent session
-- **Handoff Target:** Independent Architecture and Quality reviewers
+- **Handoff Target:** Independent Architecture and Quality reviewers; final HEAD and tree, R3–R6 executor reports, test and build log paths, and the accepted residuals list
 
 ## Boundary
 
@@ -43,7 +43,7 @@ Root/control preparation, clear, legacy Logger, retention, other write domains, 
 
 ### Required Inputs
 
-Frozen original and R1–R5 task packages and their Human authorization receipts; baseline `159722d15f22f59eced1fa1e781b81a94862c971`.
+Frozen original and R1–R7 task packages and their Human authorization receipts; baseline `159722d15f22f59eced1fa1e781b81a94862c971`.
 
 ### Entry Criteria
 

@@ -80,12 +80,19 @@ final class DiagnosticsJournalFlushWaitTests: XCTestCase {
         await gate.setBlocking(false)
         let rig = makeIngress(gate: gate, mainApp: false)
         rig.ingress.record(makeEvent(sequence: 1, processInstanceID: rig.processID))
+        let ticket = try XCTUnwrap(rig.ingress.testingSnapshotForTesting().queuedTickets.first)
         try await requireFlush(gate) { await rig.ingress.flushAndWaitForTesting() }
         let count = await gate.appendCount
         XCTAssertEqual(count, 1)
         let snapshot = rig.ingress.testingSnapshotForTesting()
         XCTAssertEqual(snapshot.dropped, 1)
         XCTAssertEqual(snapshot.lifecycleCancelled, 0)
+        XCTAssertEqual(snapshot.ticketOutcomes[ticket], .failed)
+        XCTAssertTrue(snapshot.queuedTickets.isEmpty)
+        XCTAssertTrue(snapshot.inFlightTickets.isEmpty)
+        try await requireFlush(gate) { await rig.ingress.flushAndWaitForTesting() }
+        let laterCount = await gate.appendCount
+        XCTAssertEqual(laterCount, 1)
     }
 
     func testLifecycleCancellationFinishesTheWait() async throws {
@@ -131,10 +138,23 @@ final class DiagnosticsJournalFlushWaitTests: XCTestCase {
         await gate.setFailure(.reclaimOnce)
         await gate.setBlocking(false)
         let rig = makeIngress(gate: gate, mainApp: false)
+        let observed = Mutex<[DiagnosticsJournalIngress.FlushWaitTestingSnapshot]>([])
+        await gate.setAppendStarted { _ in
+            let snapshot = rig.ingress.testingSnapshotForTesting()
+            observed.withLock { $0.append(snapshot) }
+        }
         rig.ingress.record(makeEvent(sequence: 1, processInstanceID: rig.processID))
+        let ticket = try XCTUnwrap(rig.ingress.testingSnapshotForTesting().queuedTickets.first)
         try await requireFlush(gate) { await rig.ingress.flushAndWaitForTesting() }
         let count = await gate.appendCount
         XCTAssertEqual(count, 2)
+        let snapshots = observed.withLock { $0 }
+        XCTAssertEqual(snapshots.count, 2)
+        for snapshot in snapshots {
+            XCTAssertEqual(snapshot.inFlightTickets, [ticket])
+            XCTAssertNil(snapshot.ticketOutcomes[ticket])
+        }
+        XCTAssertEqual(rig.ingress.testingSnapshotForTesting().ticketOutcomes[ticket], .appended)
     }
 
     func testReclaimCannotRequeueAnOlderLifecycleAfterResume() async throws {
