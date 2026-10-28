@@ -7,6 +7,40 @@ import XCTest
 /// This is in-process UIKit integration, not a system-activated Keyboard Extension.
 nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
     @MainActor
+    func testCandidateCommitTraceEntryWiring() {
+        let sut = makeController(width: 390, nineKey: false, hasPath: false, stickyEmpty: false)
+        var entries: [Int] = []
+        let recorder = CommitTraceRecorder(
+            context: { nil },
+            emit: { _, fields in
+                for field in fields {
+                    if case let .count(.traceEntry, entry) = field { entries.append(entry) }
+                }
+            })
+        recorder.enabled = true
+        sut.commitTrace = recorder
+        sut.controller.onActionObserved = { recorder.observeAction($0) }
+        let item = CandidateItem(title: "test", kind: .placeholder)
+        sut.accumulatedCandidates = [item]
+        sut.commitCompactCandidate(at: IndexPath(item: 0, section: 0))
+        recorder.close(.nextInput)
+        sut.commitExpandedCandidate(item)
+        recorder.close(.nextInput)
+        let button = UIButton(type: .system)
+        var config = UIButton.Configuration.plain()
+        config.title = "test"
+        button.configuration = config
+        button.tag = CandidateKind.placeholder.rawValue
+        sut.insertCandidate(button)
+        recorder.close(.nextInput)
+        XCTAssertEqual(entries, [0, 1, 2])
+        let base = FakeTextInputClient()
+        XCTAssertTrue(sut.traceClient(base) is TracingTextInputClient)
+        recorder.enabled = false
+        XCTAssertTrue(sut.traceClient(base) is TracingTextInputClient)
+    }
+
+    @MainActor
     func testRealRootAlignsHeaderAndKeepsKeyGeometryAcrossReloads() throws {
         for width in [320.0, 390.0, 430.0] {
             for (nineKey, hasPath, stickyEmpty) in [

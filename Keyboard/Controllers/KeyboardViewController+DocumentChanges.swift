@@ -26,8 +26,13 @@ extension KeyboardViewController {
         let observation = documentIdentityTracker.observe(identifier)
         // An unavailable sample cannot establish a new baseline or authorize a
         // rebind. Keep the last valid identity for the next host callback.
-        guard observation != .unavailable else { return }
+        guard observation != .unavailable else {
+            commitTrace.didChange()
+            return
+        }
         let documentDidChange = observation == .changed
+        if documentDidChange { commitTrace.close(.documentChanged) }
+        commitTrace.didChange()
         var effects: KeyboardEffect = []
 
         if documentDidChange {
@@ -39,13 +44,14 @@ extension KeyboardViewController {
 
         // Rebind on each host callback in case UIKit has supplied a new proxy.
         // Rebinding must preserve the same content-free diagnostic gates as Bootstrap.
-        controller.textClient = UITextDocumentProxyAdapter(
-            proxy: proxy,
-            diagnosticsJournal: diagnosticsJournal,
-            diagnosticContext: { [weak self] in
-                self?.wakeDiagnosticContext ?? .disabled
-            }
-        )
+        controller.textClient = traceClient(
+            UITextDocumentProxyAdapter(
+                proxy: proxy,
+                diagnosticsJournal: diagnosticsJournal,
+                diagnosticContext: { [weak self] in
+                    self?.wakeDiagnosticContext ?? .disabled
+                }
+            ))
         effects.formUnion(
             controller.handle(
                 .keyboardTypeChanged(KeyboardType.from(uiKeyboardType: proxy.keyboardType))

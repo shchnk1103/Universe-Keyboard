@@ -5,6 +5,7 @@ public final class KeyboardController {
 
     // MARK: - Public properties
 
+    public var onActionObserved: ((KeyboardAction) -> Void)?
     public internal(set) var state: KeyboardState
     public var textClient: TextInputClient? {
         didSet {
@@ -1420,6 +1421,7 @@ public final class KeyboardController {
 
     @discardableResult
     public func handle(_ action: KeyboardAction) -> KeyboardEffect {
+        onActionObserved?(action)
         if let effects = interceptPartialCommitFailureAction(action) { return effects }
         if let effects = interceptUntrustedT9Action(action) { return effects }
         let retypeDelete = prepareExactRetypeHistory(for: action)

@@ -477,3 +477,13 @@ Use the canonical commands in `docs/RELEASE_CHECKLIST.md`. A named simulator is 
 - **选择 `qiu` 后 `le` 消失或变为 `ke`：** 选择前保存用户可见 remainder；按 `segmentSourceDigits - 已消费槽位` 只继承尾部槽位。不要从锚定后的首候选 comment 重建未选择后缀。
 - **候选 Delete 后显示 `qiu5`：** 检查 checkpoint 是否复用了 `qiu'53` refined raw、是否无条件恢复安全 previousDisplayText，以及 mixed-digit preedit 是否走 fail-closed。只判断“是否纯数字”不足以阻止泄漏。
 - **第二次 Delete 应去掉最后输入的 `e`：** apostrophe 锚定的 unresolved tail 按最后输入槽 exact-refine，例如 `qiu'53 → qiu'5`、`qiule → qiul`。不要删段首 `l`（那是更早的输入）。
+
+### Candidate commit trace (`candidate.commit_trace`)
+
+When diagnostics and the display category are enabled at keyboard appearance, the typed journal can record one content-free trace per candidate selection. `actionSequence` correlates its fields; the occurrence values count non-overlapping appearances of the committed text in a bounded host-context suffix (0–3, 8 not sampled, 9 unavailable). The pre-commit sample can already contain marked text. A user who intentionally entered the same word twice can also produce 2. The host context and committed text are never persisted by this trace; committed text is held only while its trace is open.
+
+- A high `did_change_since_marked_write` or `did_change_in_window`, occurrence 2, and only one `sync_insert` plus `sync_unmark` are clues for possible early host confirmation. Callback counts include keyboard echoes and do not describe host marked state.
+- A short `since_previous_selection_ms`, two or more synchronous or asynchronous commit writes, or `repeat_suppressed` above zero alongside duplication are clues for repeated selection handling.
+- `partial_after_sync=true` followed by another selection and occurrence 2 is a clue for a partial selection followed by another match.
+
+These are clues, not root-cause proof. Actual host and device behavior requires separate evidence. Closing on document change or disappearance does not sample the new context.

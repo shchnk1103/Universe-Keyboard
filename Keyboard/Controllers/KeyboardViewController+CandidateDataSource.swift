@@ -226,14 +226,15 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
     }
 
     func commitCompactCandidate(at indexPath: IndexPath) {
-        guard !isKeyboardHeightAdjusting else { return }
+        guard !isKeyboardHeightAdjusting else { commitTrace.reject(suppressed: false); return }
         if let bar = candidateBar as? CandidateBarView, bar.shouldSuppressCandidateSelection {
-            return
+            commitTrace.reject(suppressed: true); return
         }
         let items = presentedCandidates
-        guard items.indices.contains(indexPath.item) else { return }
+        guard items.indices.contains(indexPath.item) else { commitTrace.reject(suppressed: false); return }
         let now = CFAbsoluteTimeGetCurrent()
         if now - lastCompactCandidateCommitTime < 0.2 {
+            commitTrace.reject(suppressed: true)
             return
         }
         lastCompactCandidateCommitTime = now
@@ -244,11 +245,14 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
     }
 
     private func commitCandidate(_ item: CandidateItem) {
-        guard !controller.isCompositionInputRecoveryPending else { return }
+        guard !controller.isCompositionInputRecoveryPending else { commitTrace.reject(suppressed: false); return }
         if let origin = item.selectionReference?.candidateOrigin {
-            guard controller.state.lastRimeOutput?.candidateOrigin == origin else { return }
+            guard controller.state.lastRimeOutput?.candidateOrigin == origin else {
+                commitTrace.reject(suppressed: false); return
+            }
         }
         emitFeedback(for: .commit)
+        beginCandidateTrace(.compact)
         let effects: KeyboardEffect
         if let correction = item.correction {
             effects = controller.handle(.insertCorrectionCandidate(correction))
@@ -261,6 +265,7 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
                 )
             )
         }
+        endCandidateTrace()
         syncUI(with: effects)
     }
 

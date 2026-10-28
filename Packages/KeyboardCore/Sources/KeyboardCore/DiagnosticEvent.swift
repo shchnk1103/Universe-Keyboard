@@ -41,6 +41,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         case candidateTouchRouted = "candidate.touch_routed"
         case candidateGestureTerminal = "candidate.gesture_terminal"
         case candidateSelectionDelivered = "candidate.selection_delivered"
+        case candidateCommitTrace = "candidate.commit_trace"
         case schemeDeliveryPhaseChanged = "scheme_delivery.phase_changed"
         case schemeDeliveryIntegrityFailed = "scheme_delivery.integrity_failed"
         case schemeDeliveryFallback = "scheme_delivery.fallback"
@@ -89,6 +90,26 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
     }
 
     public enum CountMetric: String, Codable, CaseIterable, Sendable {
+        case traceEntry = "trace_entry"
+        case traceSyncInsert = "sync_insert"
+        case traceSyncSetMarked = "sync_set_marked"
+        case traceSyncClearMarked = "sync_clear_marked"
+        case traceSyncUnmark = "sync_unmark"
+        case traceSyncDelete = "sync_delete"
+        case traceAsyncInsert = "async_insert"
+        case traceAsyncSetMarked = "async_set_marked"
+        case traceAsyncClearMarked = "async_clear_marked"
+        case traceAsyncUnmark = "async_unmark"
+        case traceAsyncDelete = "async_delete"
+        case traceSinceMarked = "did_change_since_marked_write"
+        case traceChanges = "did_change_in_window"
+        case traceSuppressed = "repeat_suppressed"
+        case traceRejected = "guard_rejected"
+        case traceOccurrencePre = "occurrence_pre_commit"
+        case traceOccurrenceFirstChange = "occurrence_first_did_change"
+        case traceOccurrenceClose = "occurrence_at_close"
+        case traceCloseReason = "close_reason"
+
         case droppedEventCount = "dropped_event_count"
         case queueDepth = "queue_depth"
         case candidateCount = "candidate_count"
@@ -113,6 +134,9 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
     }
 
     public enum DurationMetric: String, Codable, CaseIterable, Sendable {
+        case traceFirstWrite = "first_write_ms"
+        case traceWindow = "window_ms"
+        case traceSincePrevious = "since_previous_selection_ms"
         case elapsedMilliseconds = "elapsed_ms"
         case presentationAgeMilliseconds = "presentation_age_ms"
     }
@@ -369,6 +393,11 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
     }
 
     public enum Flag: String, Codable, CaseIterable, Sendable {
+        case tracePreeditBefore = "preedit_before"
+        case tracePreeditAfter = "preedit_after_sync"
+        case tracePartialAfter = "partial_after_sync"
+        case traceDocumentChanged = "document_changed"
+        case traceCounterCapped = "counter_capped"
         case isHighFidelityEnabled = "high_fidelity_enabled"
         case isCandidateBarVisible = "candidate_bar_visible"
         case isKeyHighlighted = "key_highlighted"

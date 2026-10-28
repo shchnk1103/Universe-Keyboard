@@ -1603,3 +1603,5 @@ Change history for Universe Keyboard. Entries are in reverse chronological order
 - 更新了 RIME 部署页的步骤文案和 footer 说明，删除"修改上方设置"等失效引用。
 
 ---
+
+- Add content-free candidate commit trace diagnostics for investigating duplicate commits when display diagnostics are enabled.

@@ -5,6 +5,20 @@ import XCTest
 @testable import Universe_Keyboard
 
 final class DiagnosticsLogSourceTests: XCTestCase {
+    func testCandidateCommitTraceDisplaysTypedFields() {
+        let event = DiagnosticEvent(
+            utcTimestamp: Date(), monotonicNanoseconds: 1, origin: .keyboardExtension,
+            processInstanceID: UUID(), localSequence: 1, actionSequence: 42,
+            code: .candidateCommitTrace, level: .info, category: .display,
+            fields: [.count(.traceEntry, 1), .count(.traceOccurrenceClose, 2)]
+        )
+        let line = DiagnosticsEventDisplayFormatter.line(event)
+        XCTAssertTrue(line.contains("candidate.commit_trace"))
+        XCTAssertTrue(line.contains("action=42"))
+        XCTAssertTrue(line.contains("trace_entry=1"))
+        XCTAssertTrue(line.contains("occurrence_at_close=2"))
+    }
+
     @MainActor
     func testCandidateTouchEventsDisplayCoarseBandAndCorrelationSequence() async throws {
         let rootURL = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)

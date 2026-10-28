@@ -73,6 +73,26 @@ class KeyboardViewController: UIInputViewController {
         isCategoryEnabled: { Logger.isLiveCategoryEnabled($0) },
         writerVersion: .v6
     )
+    lazy var commitTrace = CommitTraceRecorder(
+        context: { [weak self] in self?.textDocumentProxy.documentContextBeforeInput },
+        emit: { [weak self] sequence, fields in
+            guard let self else { return }
+            self.diagnosticsJournal.record(
+                code: .candidateCommitTrace, category: .display,
+                appearanceID: self.diagnosticsAppearanceID, actionSequence: sequence, fields: fields)
+        }
+    )
+    func traceClient(_ client: any TextInputClient) -> any TextInputClient {
+        TracingTextInputClient(client, recorder: commitTrace)
+    }
+    func beginCandidateTrace(_ entry: CommitTraceRecorder.Entry) {
+        commitTrace.begin(entry: entry, preeditBefore: controller.state.insertedPreeditCount > 0)
+    }
+    func endCandidateTrace() {
+        commitTrace.endSyncPhase(
+            preeditAfter: controller.state.insertedPreeditCount > 0,
+            partialAfter: controller.state.partialCommit != nil)
+    }
     var diagnosticsAppearanceID: UUID?
     var wakeDiagnosticContext: KeyboardWakeDiagnosticContext {
         #if DEBUG
@@ -467,6 +487,7 @@ class KeyboardViewController: UIInputViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        commitTrace.enabled = Logger.isLiveCategoryEnabled(.display)
         prepareCandidateFontForAppearance()
         keyboardHeightAdjustmentAcceptsMarkers = true
         #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
@@ -575,6 +596,8 @@ class KeyboardViewController: UIInputViewController {
     }
 
     override func viewWillDisappear(_ animated: Bool) {
+        commitTrace.close(.disappear)
+        commitTrace.enabled = false
         super.viewWillDisappear(animated)
         candidateFontNeedsRead = true
         keyboardHeightRotationPriority.restore()
