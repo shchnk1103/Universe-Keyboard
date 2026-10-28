@@ -62,6 +62,7 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
         sut.accumulatedCandidates = [CandidateItem(title: "x", kind: .candidate)]
         sut.commitCompactCandidate(at: IndexPath(item: 0, section: 0))
         sut.commitCompactCandidate(at: IndexPath(item: 0, section: 0))
+        XCTAssertLessThan(CFAbsoluteTimeGetCurrent() - sut.lastCompactCandidateCommitTime, 0.05)
         // This proves field logic for the compact entry, not real host behavior.
         XCTAssertTrue(events.isEmpty)
         reads = 0
