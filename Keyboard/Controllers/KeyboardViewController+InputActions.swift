@@ -168,20 +168,23 @@ extension KeyboardViewController {
     }
 
     @objc func insertCandidate(_ sender: UIButton) {
-        guard !isKeyboardHeightAdjusting else { return }
+        guard !isKeyboardHeightAdjusting else { commitTrace.reject(suppressed: false); return }
         guard
             let candidate = sender.configuration?.title,
             let kind = CandidateKind(rawValue: sender.tag)
-        else { return }
+        else { commitTrace.reject(suppressed: false); return }
         // The legacy title-only button cannot authenticate a native page item.
         // Collection and expanded paths carry the original selectionReference.
         if kind == .candidate,
             candidateSnapshotOrigin != nil || controller.state.lastRimeOutput?.candidateOrigin != nil
         {
+            commitTrace.reject(suppressed: false)
             return
         }
         emitKeyPressFeedbackIfNeeded(for: sender)
+        beginCandidateTrace(.legacy)
         let effects = controller.handle(.insertCandidate(candidate, kind: kind))
+        endCandidateTrace()
         syncUI(with: effects)
     }
 

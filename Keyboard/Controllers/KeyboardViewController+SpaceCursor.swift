@@ -41,6 +41,7 @@ extension KeyboardViewController {
             let offset = Int(diff / 10)
 
             if offset != 0 {
+                commitTrace.close(.nextInput)
                 textDocumentProxy.adjustTextPosition(byCharacterOffset: offset)
                 // Compensate the last location by the exact movement distance we just applied
                 spaceCursorLastLocationX = lastX + CGFloat(offset * 10)

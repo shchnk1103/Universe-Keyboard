@@ -633,12 +633,15 @@ extension KeyboardViewController {
     }
 
     func commitExpandedCandidate(_ item: CandidateItem) {
-        guard !isKeyboardHeightAdjusting else { return }
-        guard !controller.isCompositionInputRecoveryPending else { return }
+        guard !isKeyboardHeightAdjusting else { commitTrace.reject(suppressed: false); return }
+        guard !controller.isCompositionInputRecoveryPending else { commitTrace.reject(suppressed: false); return }
         if let origin = item.selectionReference?.candidateOrigin {
-            guard controller.state.lastRimeOutput?.candidateOrigin == origin else { return }
+            guard controller.state.lastRimeOutput?.candidateOrigin == origin else {
+                commitTrace.reject(suppressed: false); return
+            }
         }
         emitFeedback(for: .commit)
+        beginCandidateTrace(.expanded)
         let effects: KeyboardEffect
         if let correction = item.correction {
             effects = controller.handle(.insertCorrectionCandidate(correction))
@@ -651,6 +654,7 @@ extension KeyboardViewController {
                 )
             )
         }
+        endCandidateTrace()
         isCandidateExpanded = false
         candidatePrefetchMode = .bar
         deferredCandidatePrefetchMode = nil

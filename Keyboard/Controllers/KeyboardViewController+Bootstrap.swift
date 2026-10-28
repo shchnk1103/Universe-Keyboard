@@ -140,13 +140,15 @@ extension KeyboardViewController {
                 )
             }
         #endif
-        controller.textClient = UITextDocumentProxyAdapter(
-            proxy: textDocumentProxy,
-            diagnosticsJournal: diagnosticsJournal,
-            diagnosticContext: { [weak self] in
-                self?.wakeDiagnosticContext ?? .disabled
-            }
-        )
+        controller.textClient = traceClient(
+            UITextDocumentProxyAdapter(
+                proxy: textDocumentProxy,
+                diagnosticsJournal: diagnosticsJournal,
+                diagnosticContext: { [weak self] in
+                    self?.wakeDiagnosticContext ?? .disabled
+                }
+            ))
+        controller.onActionObserved = { [weak self] action in self?.commitTrace.observeAction(action) }
         controller.onTypoCorrectionSelected = { [weak self] correction in
             guard let self else { return }
             self.controller.typoCorrectionLearningSnapshot = self.typoCorrectionLearningStore.recordSelection(
