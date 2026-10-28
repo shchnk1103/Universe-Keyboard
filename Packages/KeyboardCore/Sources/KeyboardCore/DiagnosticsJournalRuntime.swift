@@ -274,7 +274,14 @@ public final class DiagnosticsJournalRuntime: Sendable {
     /// 在同一 process 再次可见时，首先尽力补报此前 suspend 丢弃数量。若诊断
     /// 开关关闭，此 event 和其它普通 event 一样会在后台过滤，绝不影响输入。
     public func resumeForExtensionLifecycle() {
-        let droppedEventCount = ingress.resumeForExtensionLifecycle()
+        reportResumedDrops(ingress.resumeForExtensionLifecycle())
+    }
+
+    internal func applyProcessLifecycle(active: Bool, generation: UInt64) {
+        reportResumedDrops(ingress.applyProcessLifecycle(active: active, generation: generation))
+    }
+
+    private func reportResumedDrops(_ droppedEventCount: Int) {
         guard droppedEventCount > 0 else { return }
         record(
             code: .journalResumed,

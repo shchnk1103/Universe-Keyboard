@@ -57,6 +57,7 @@ public final class DiagnosticsJournalIngress: Sendable {
         var appendAdmitted = false
         var isSuspended = false
         var lifecycleEpoch: UInt64 = 0
+        var lastProcessGeneration: UInt64?
         var droppedWhileSuspended = 0
         var droppedWhileQueueFull = 0
         var deferredFailureReasons: [DiagnosticEvent.Reason: Int] = [:]
@@ -356,6 +357,57 @@ public final class DiagnosticsJournalIngress: Sendable {
             state.droppedWhileSuspended = 0
             return dropped
         }
+    }
+
+    /// Apply coordinator snapshots in generation order, including the initial generation zero.
+    internal func applyProcessLifecycle(active: Bool, generation: UInt64) -> Int {
+        #if DEBUG
+            let (dropped, ready) = pending.withLock { state -> (Int, [AsyncStream<Void>.Continuation]) in
+                if let previous = state.lastProcessGeneration, generation <= previous { return (0, []) }
+                state.lastProcessGeneration = generation
+                if active {
+                    state.isSuspended = false
+                    let dropped = state.droppedWhileSuspended
+                    state.droppedWhileSuspended = 0
+                    return (dropped, [])
+                }
+                guard !state.isSuspended else { return (0, []) }
+                state.isSuspended = true
+                state.lifecycleEpoch &+= 1
+                state.droppedWhileSuspended += state.events.count
+                var ended = Set(state.events.map(\.ticket))
+                if state.writeInFlight && !state.appendAdmitted {
+                    state.droppedWhileSuspended += state.inFlightEventCount
+                    ended.formUnion(state.inFlightTickets)
+                }
+                state.events.removeAll(keepingCapacity: true)
+                state.flushScheduled = false
+                return (0, state.terminate(ended, outcome: "lifecycle"))
+            }
+            resumeWaiters(ready)
+            return dropped
+        #else
+            return pending.withLock { state in
+                if let previous = state.lastProcessGeneration, generation <= previous { return 0 }
+                state.lastProcessGeneration = generation
+                if active {
+                    state.isSuspended = false
+                    let dropped = state.droppedWhileSuspended
+                    state.droppedWhileSuspended = 0
+                    return dropped
+                }
+                guard !state.isSuspended else { return 0 }
+                state.isSuspended = true
+                state.lifecycleEpoch &+= 1
+                state.droppedWhileSuspended += state.events.count
+                if state.writeInFlight && !state.appendAdmitted {
+                    state.droppedWhileSuspended += state.inFlightEventCount
+                }
+                state.events.removeAll(keepingCapacity: true)
+                state.flushScheduled = false
+                return 0
+            }
+        #endif
     }
 
     private func flushPendingEvents() {
