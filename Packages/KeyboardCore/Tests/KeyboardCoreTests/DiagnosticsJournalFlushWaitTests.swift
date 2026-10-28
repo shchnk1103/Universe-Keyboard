@@ -119,6 +119,29 @@ final class DiagnosticsJournalFlushWaitTests: XCTestCase {
         XCTAssertEqual(count, 2)
     }
 
+    func testReclaimCannotRequeueAnOlderLifecycleAfterResume() async throws {
+        let gate = FlushGate()
+        await gate.setFailure(.reclaimOnce)
+        let rig = makeIngress(gate: gate, mainApp: false)
+        rig.ingress.record(makeEvent(sequence: 1, processInstanceID: rig.processID))
+        let task = Task { try await requireFlush(gate) { await rig.ingress.flushAndWaitForTesting() } }
+        try await requireGate(gate) { await gate.waitUntilStarted() }
+        rig.ingress.suspendForExtensionLifecycle()
+        XCTAssertEqual(rig.ingress.resumeForExtensionLifecycle(), 1)
+        await gate.setBlocking(false)
+        await gate.releaseOne()
+        try await requireGate(gate) { try await task.value }
+        rig.ingress.record(makeEvent(sequence: 2, processInstanceID: rig.processID))
+        try await requireFlush(gate) { await rig.ingress.flushAndWaitForTesting() }
+        let snapshot = rig.ingress.testingSnapshotForTesting()
+        XCTAssertEqual(snapshot.lifecycleCancelled, 1)
+        XCTAssertTrue(snapshot.queuedTickets.isEmpty)
+        let count = await gate.appendCount
+        XCTAssertEqual(count, 2)
+        let batches = await gate.submittedSequences
+        XCTAssertEqual(batches, [[1], [2]])
+    }
+
     func testRequeueDropsTicketsThatDoNotFit() async throws {
         let gate = FlushGate()
         await gate.setFailure(.reclaimOnce)
@@ -451,6 +474,7 @@ private actor FlushGate: DiagnosticsJournalBatchWriting {
     private var prepareFailure = false
     private var blockers: [CheckedContinuation<Void, Never>] = []
     private(set) var appendCount = 0
+    private(set) var submittedSequences: [[UInt64]] = []
     private(set) var blockedAppendCount = 0
 
     func setFailure(_ failure: Failure) {
@@ -579,6 +603,7 @@ private actor FlushGate: DiagnosticsJournalBatchWriting {
         isWritePermitted: @escaping @Sendable () -> Bool
     ) async throws {
         appendCount += 1
+        submittedSequences.append(events.map(\.localSequence))
         if abandoned {
             didStart = true
             noteAppendFinished()
@@ -609,6 +634,10 @@ private actor FlushGate: DiagnosticsJournalBatchWriting {
             } onCancel: {
                 Task { await self.unblockAfterTimeout() }
             }
+        }
+        if case .reclaimOnce = failure {
+            failure = .none
+            throw DiagnosticsJournalError.writerReclaimed
         }
         if !admitBeforeBlock {
             guard isWritePermitted() else {

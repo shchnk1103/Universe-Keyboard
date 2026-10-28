@@ -1,8 +1,55 @@
+import Synchronization
 import XCTest
 
 @testable import KeyboardCore
 
 final class DiagnosticsJournalTests: XCTestCase {
+    func testGrantedPermissionCompletesEvenIfLifecycleCloses() async throws {
+        let rootURL = makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let processID = UUID()
+        let writer = DiagnosticsJournalWriter(
+            rootURL: rootURL, origin: .mainApp, processInstanceID: processID, isMainAppWriter: true
+        )
+        try await writer.prepareRootIfOwnedByMainApp()
+        let active = Mutex(true)
+        try await writer.append([makeEvent(sequence: 1, processInstanceID: processID)]) {
+            active.withLock { state in
+                let granted = state
+                state = false
+                return granted
+            }
+        }
+        XCTAssertFalse(active.withLock { $0 })
+        XCTAssertEqual(try journalLines(in: rootURL.appendingPathComponent("g1/open")).map(\.localSequence), [1])
+    }
+
+    func testDeniedPermissionDoesNotSealOrRenewLease() async throws {
+        let rootURL = makeTemporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: rootURL) }
+        let processID = UUID()
+        let writer = DiagnosticsJournalWriter(
+            rootURL: rootURL, origin: .mainApp, processInstanceID: processID, isMainAppWriter: true
+        )
+        try await writer.prepareRootIfOwnedByMainApp()
+        try await writer.append([makeEvent(sequence: 1, processInstanceID: processID)])
+        let leaseBefore = try Data(contentsOf: leaseURL(rootURL: rootURL, processID: processID))
+        do {
+            try await writer.append(
+                [
+                    makeEvent(
+                        sequence: 2, processInstanceID: processID, timestamp: Date(timeIntervalSince1970: 1_723_127_056)
+                    )
+                ], isWritePermitted: { false })
+            XCTFail("Denied writes must fail")
+        } catch {
+            XCTAssertEqual(error as? DiagnosticsJournalError, .lifecycleCancelled)
+        }
+        XCTAssertEqual(try Data(contentsOf: leaseURL(rootURL: rootURL, processID: processID)), leaseBefore)
+        XCTAssertEqual(try journalLines(in: rootURL.appendingPathComponent("g1/open")).map(\.localSequence), [1])
+        XCTAssertFalse(FileManager.default.fileExists(atPath: rootURL.appendingPathComponent("g1/sealed").path))
+    }
+
     func testMainAppCreatesControlAndWritesOnlyItsOwnSegment() async throws {
         let rootURL = makeTemporaryDirectory()
         defer { try? FileManager.default.removeItem(at: rootURL) }
@@ -633,12 +680,21 @@ final class DiagnosticsJournalTests: XCTestCase {
         encoder.dateEncodingStrategy = .iso8601
         try encoder.encode(tombstone).write(to: tombstoneURL, options: .atomic)
 
+        let permissionCalled = Mutex(false)
         do {
-            try await writer.append([makeEvent(sequence: 2, processInstanceID: oldIdentity)])
+            try await writer.append([
+                makeEvent(
+                    sequence: 2, processInstanceID: oldIdentity, timestamp: Date(timeIntervalSince1970: 1_723_127_056))
+            ]) {
+                permissionCalled.withLock { $0 = true }
+                return true
+            }
             XCTFail("The tombstoned identity must be rejected before rotation")
         } catch {
             XCTAssertEqual(error as? DiagnosticsJournalError, .writerReclaimed)
         }
+        XCTAssertFalse(permissionCalled.withLock { $0 })
+        XCTAssertFalse(FileManager.default.fileExists(atPath: rootURL.appendingPathComponent("g1/sealed").path))
 
         await writer.rotateIdentityAfterReclaim()
         try await writer.append([makeEvent(sequence: 2, processInstanceID: oldIdentity)])

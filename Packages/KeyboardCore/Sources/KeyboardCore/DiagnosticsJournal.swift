@@ -367,11 +367,6 @@ public actor DiagnosticsJournalWriter {
 
         try DiagnosticsJournalIdentityLock.withSharedSnapshotFence(rootURL: rootURL) { [self] in
             try withExclusiveWriterLock {
-                // 生命周期的线性化点必须在实际取得 identity lock 之后。这样 suspend
-                // 只能二选一：阻止本批进入 I/O，或让已开始的 lock-bound 批完成。
-                guard isWritePermitted() else {
-                    throw DiagnosticsJournalError.lifecycleCancelled
-                }
                 // 必须在 lock 内重读 generation：clear 可以发生在上个批次之后。
                 let control = try readControl()
                 let requiresRotation =
@@ -379,6 +374,15 @@ public actor DiagnosticsJournalWriter {
                     && (activeGeneration != control.currentGeneration
                         || activeHour != hour
                         || activeByteCount + byteCount > Self.segmentSizeLimitBytes)
+                let generationDirectory = rootURL.appendingPathComponent(
+                    "g\(control.currentGeneration)",
+                    isDirectory: true
+                )
+                // 回收检查是只读的，须在任何写入和最终许可之前完成。
+                try rejectReclaimedWriter(in: generationDirectory)
+                guard isWritePermitted() else {
+                    throw DiagnosticsJournalError.lifecycleCancelled
+                }
                 if requiresRotation {
                     try sealActiveSegment()
                     activeByteCount = 0
@@ -393,11 +397,6 @@ public actor DiagnosticsJournalWriter {
                     activeGeneration = control.currentGeneration
                     activeHour = hour
                 }
-                let generationDirectory = rootURL.appendingPathComponent(
-                    "g\(control.currentGeneration)",
-                    isDirectory: true
-                )
-                try rejectReclaimedWriter(in: generationDirectory)
                 try renewLease(for: control, in: generationDirectory)
                 let openDirectory = generationDirectory.appendingPathComponent("open", isDirectory: true)
                 do {

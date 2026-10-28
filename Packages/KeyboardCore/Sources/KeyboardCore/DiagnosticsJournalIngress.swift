@@ -546,9 +546,11 @@ public final class DiagnosticsJournalIngress: Sendable {
                 } else if (error as? DiagnosticsJournalError) == .writerReclaimed {
                     await writer.rotateIdentityAfterReclaim()
                     #if DEBUG
-                        self.requeueAfterIdentityRotation(work.events, tickets: work.tickets)
+                        self.requeueAfterIdentityRotation(
+                            work.events, tickets: work.tickets, lifecycleEpoch: work.lifecycleEpoch
+                        )
                     #else
-                        self.requeueAfterIdentityRotation(work.events)
+                        self.requeueAfterIdentityRotation(work.events, lifecycleEpoch: work.lifecycleEpoch)
                     #endif
                 } else {
                     self.restoreDeferredHealth(
@@ -606,11 +608,13 @@ public final class DiagnosticsJournalIngress: Sendable {
     }
 
     #if DEBUG
-        private func requeueAfterIdentityRotation(_ events: [DiagnosticEvent], tickets: [UInt64]) {
+        private func requeueAfterIdentityRotation(
+            _ events: [DiagnosticEvent], tickets: [UInt64], lifecycleEpoch: UInt64
+        ) {
             let ready = pending.withLock { state -> [AsyncStream<Void>.Continuation] in
                 let queued = zip(tickets, events).map { QueuedDiagnostic(ticket: $0.0, event: $0.1) }
-                guard !state.isSuspended else {
-                    state.droppedWhileSuspended += queued.count
+                guard !state.isSuspended, state.lifecycleEpoch == lifecycleEpoch else {
+                    // suspend 已统计并终结了未许可的在途批，不再重复计数。
                     return state.terminate(Set(tickets), outcome: "lifecycle")
                 }
                 let availableCapacity = max(0, Self.maximumPendingEventCount - state.events.count)
@@ -631,10 +635,9 @@ public final class DiagnosticsJournalIngress: Sendable {
             }
         }
     #else
-        private func requeueAfterIdentityRotation(_ events: [DiagnosticEvent]) {
+        private func requeueAfterIdentityRotation(_ events: [DiagnosticEvent], lifecycleEpoch: UInt64) {
             pending.withLock { state in
-                guard !state.isSuspended else {
-                    state.droppedWhileSuspended += events.count
+                guard !state.isSuspended, state.lifecycleEpoch == lifecycleEpoch else {
                     return
                 }
                 let availableCapacity = max(0, Self.maximumPendingEventCount - state.events.count)
