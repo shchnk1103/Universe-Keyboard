@@ -13,7 +13,10 @@ nonisolated final class SchemaDeliveryDiagnostics: SchemaDeliveryDiagnosing, Sen
 
     private let runtime: DiagnosticsJournalRuntime
 
-    init(runtime: DiagnosticsJournalRuntime? = nil) {
+    init(
+        runtime: DiagnosticsJournalRuntime? = nil,
+        lifecycle: DiagnosticsProcessLifecycle = DiagnosticsAppLifecycle.shared
+    ) {
         self.runtime =
             runtime
             ?? DiagnosticsJournalRuntime(
@@ -29,6 +32,7 @@ nonisolated final class SchemaDeliveryDiagnostics: SchemaDeliveryDiagnosing, Sen
                 isCategoryEnabled: Logger.isLiveCategoryEnabled,
                 writerVersion: .v6
             )
+        lifecycle.register(self.runtime)
     }
 
     func record(_ payload: DiagnosticEvent.SchemeDeliveryPayload) {

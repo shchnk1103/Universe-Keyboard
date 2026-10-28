@@ -22,6 +22,10 @@ public final class DiagnosticsJournalIngress: Sendable {
     public static let maximumPendingEventCount = 256
 
     #if DEBUG
+        internal enum TestingTicketOutcome: String, Sendable {
+            case appended, filtered, droppedByLifecycle, failed, dropped
+        }
+
         /// Debug 热路径上的排队单元。ticket 只在 DEBUG 存在，用来界定测试等待，不表示已落盘。
         private struct QueuedDiagnostic: Sendable {
             var ticket: UInt64
@@ -48,6 +52,8 @@ public final class DiagnosticsJournalIngress: Sendable {
             var testingFiltered = 0
             var testingDropped = 0
             var testingLifecycleCancelled = 0
+            var testingTicketOutcomes: [UInt64: TestingTicketOutcome] = [:]
+            var testingTerminalOrder: [UInt64] = []
         #else
             var events: [DiagnosticEvent] = []
         #endif
@@ -57,6 +63,7 @@ public final class DiagnosticsJournalIngress: Sendable {
         var appendAdmitted = false
         var isSuspended = false
         var lifecycleEpoch: UInt64 = 0
+        var lastProcessGeneration: UInt64?
         var droppedWhileSuspended = 0
         var droppedWhileQueueFull = 0
         var deferredFailureReasons: [DiagnosticEvent.Reason: Int] = [:]
@@ -73,6 +80,25 @@ public final class DiagnosticsJournalIngress: Sendable {
             {
                 guard !tickets.isEmpty else { return [] }
                 let count = openTickets.intersection(tickets).count
+                let outcomeValue: TestingTicketOutcome
+                switch outcome {
+                case "appended": outcomeValue = .appended
+                case "filtered": outcomeValue = .filtered
+                case "lifecycle": outcomeValue = .droppedByLifecycle
+                case "failed": outcomeValue = .failed
+                default: outcomeValue = .dropped
+                }
+                for ticket in openTickets.intersection(tickets).sorted() {
+                    testingTicketOutcomes[ticket] = outcomeValue
+                    testingTerminalOrder.append(ticket)
+                }
+                if testingTerminalOrder.count > 1024 {
+                    let excess = testingTerminalOrder.count - 1024
+                    for ticket in testingTerminalOrder.prefix(excess) {
+                        testingTicketOutcomes.removeValue(forKey: ticket)
+                    }
+                    testingTerminalOrder.removeFirst(excess)
+                }
                 switch outcome {
                 case "appended": testingAppended += count
                 case "filtered": testingFiltered += count
@@ -168,6 +194,7 @@ public final class DiagnosticsJournalIngress: Sendable {
             var filtered: Int
             var dropped: Int
             var lifecycleCancelled: Int
+            var ticketOutcomes: [UInt64: TestingTicketOutcome]
         }
 
         /// 只读测试快照。不改变 ticket、丢弃或 resume 的生产规则。
@@ -183,7 +210,8 @@ public final class DiagnosticsJournalIngress: Sendable {
                     appended: state.testingAppended,
                     filtered: state.testingFiltered,
                     dropped: state.testingDropped,
-                    lifecycleCancelled: state.testingLifecycleCancelled
+                    lifecycleCancelled: state.testingLifecycleCancelled,
+                    ticketOutcomes: state.testingTicketOutcomes
                 )
             }
         }
@@ -358,6 +386,57 @@ public final class DiagnosticsJournalIngress: Sendable {
         }
     }
 
+    /// Apply coordinator snapshots in generation order, including the initial generation zero.
+    internal func applyProcessLifecycle(active: Bool, generation: UInt64) -> Int {
+        #if DEBUG
+            let (dropped, ready) = pending.withLock { state -> (Int, [AsyncStream<Void>.Continuation]) in
+                if let previous = state.lastProcessGeneration, generation <= previous { return (0, []) }
+                state.lastProcessGeneration = generation
+                if active {
+                    state.isSuspended = false
+                    let dropped = state.droppedWhileSuspended
+                    state.droppedWhileSuspended = 0
+                    return (dropped, [])
+                }
+                guard !state.isSuspended else { return (0, []) }
+                state.isSuspended = true
+                state.lifecycleEpoch &+= 1
+                state.droppedWhileSuspended += state.events.count
+                var ended = Set(state.events.map(\.ticket))
+                if state.writeInFlight && !state.appendAdmitted {
+                    state.droppedWhileSuspended += state.inFlightEventCount
+                    ended.formUnion(state.inFlightTickets)
+                }
+                state.events.removeAll(keepingCapacity: true)
+                state.flushScheduled = false
+                return (0, state.terminate(ended, outcome: "lifecycle"))
+            }
+            resumeWaiters(ready)
+            return dropped
+        #else
+            return pending.withLock { state in
+                if let previous = state.lastProcessGeneration, generation <= previous { return 0 }
+                state.lastProcessGeneration = generation
+                if active {
+                    state.isSuspended = false
+                    let dropped = state.droppedWhileSuspended
+                    state.droppedWhileSuspended = 0
+                    return dropped
+                }
+                guard !state.isSuspended else { return 0 }
+                state.isSuspended = true
+                state.lifecycleEpoch &+= 1
+                state.droppedWhileSuspended += state.events.count
+                if state.writeInFlight && !state.appendAdmitted {
+                    state.droppedWhileSuspended += state.inFlightEventCount
+                }
+                state.events.removeAll(keepingCapacity: true)
+                state.flushScheduled = false
+                return 0
+            }
+        #endif
+    }
+
     private func flushPendingEvents() {
         let work = pending.withLock { state -> FlushWork? in
             state.flushScheduled = false
@@ -450,15 +529,16 @@ public final class DiagnosticsJournalIngress: Sendable {
             return
         }
         #if DEBUG
-            let writer = pending.withLock { state -> any DiagnosticsJournalBatchWriting in
-                if let writer = state.writer {
-                    return writer
-                }
-                let writer: any DiagnosticsJournalBatchWriting
+            let existingWriter = pending.withLock { $0.writer }
+            let writer: any DiagnosticsJournalBatchWriting
+            if let existingWriter {
+                writer = existingWriter
+            } else {
+                let candidate: any DiagnosticsJournalBatchWriting
                 if let factory = batchWriterFactory.withLock({ $0 }) {
-                    writer = factory(rootURL)
+                    candidate = factory(rootURL)
                 } else {
-                    writer = DiagnosticsJournalWriter(
+                    candidate = DiagnosticsJournalWriter(
                         rootURL: rootURL,
                         origin: origin,
                         processInstanceID: processInstanceID,
@@ -466,23 +546,30 @@ public final class DiagnosticsJournalIngress: Sendable {
                         writerVersion: writerVersion
                     )
                 }
-                state.writer = writer
-                return writer
+                writer = pending.withLock { state in
+                    if let existing = state.writer { return existing }
+                    state.writer = candidate
+                    return candidate
+                }
             }
         #else
-            let writer = pending.withLock { state -> DiagnosticsJournalWriter in
-                if let writer = state.writer {
-                    return writer
-                }
-                let writer = DiagnosticsJournalWriter(
+            let existingWriter = pending.withLock { $0.writer }
+            let writer: DiagnosticsJournalWriter
+            if let existingWriter {
+                writer = existingWriter
+            } else {
+                let candidate = DiagnosticsJournalWriter(
                     rootURL: rootURL,
                     origin: origin,
                     processInstanceID: processInstanceID,
                     isMainAppWriter: isMainAppWriter,
                     writerVersion: writerVersion
                 )
-                state.writer = writer
-                return writer
+                writer = pending.withLock { state in
+                    if let existing = state.writer { return existing }
+                    state.writer = candidate
+                    return candidate
+                }
             }
         #endif
 
@@ -546,9 +633,11 @@ public final class DiagnosticsJournalIngress: Sendable {
                 } else if (error as? DiagnosticsJournalError) == .writerReclaimed {
                     await writer.rotateIdentityAfterReclaim()
                     #if DEBUG
-                        self.requeueAfterIdentityRotation(work.events, tickets: work.tickets)
+                        self.requeueAfterIdentityRotation(
+                            work.events, tickets: work.tickets, lifecycleEpoch: work.lifecycleEpoch
+                        )
                     #else
-                        self.requeueAfterIdentityRotation(work.events)
+                        self.requeueAfterIdentityRotation(work.events, lifecycleEpoch: work.lifecycleEpoch)
                     #endif
                 } else {
                     self.restoreDeferredHealth(
@@ -557,7 +646,8 @@ public final class DiagnosticsJournalIngress: Sendable {
                     #if DEBUG
                         self.resumeWaiters(
                             self.pending.withLock { state in
-                                state.terminate(filteredTickets, outcome: "filtered") + state.terminate(enabledTickets)
+                                state.terminate(filteredTickets, outcome: "filtered")
+                                    + state.terminate(enabledTickets, outcome: "failed")
                             })
                     #endif
                 }
@@ -606,11 +696,13 @@ public final class DiagnosticsJournalIngress: Sendable {
     }
 
     #if DEBUG
-        private func requeueAfterIdentityRotation(_ events: [DiagnosticEvent], tickets: [UInt64]) {
+        private func requeueAfterIdentityRotation(
+            _ events: [DiagnosticEvent], tickets: [UInt64], lifecycleEpoch: UInt64
+        ) {
             let ready = pending.withLock { state -> [AsyncStream<Void>.Continuation] in
                 let queued = zip(tickets, events).map { QueuedDiagnostic(ticket: $0.0, event: $0.1) }
-                guard !state.isSuspended else {
-                    state.droppedWhileSuspended += queued.count
+                guard !state.isSuspended, state.lifecycleEpoch == lifecycleEpoch else {
+                    // suspend 已统计并终结了未许可的在途批，不再重复计数。
                     return state.terminate(Set(tickets), outcome: "lifecycle")
                 }
                 let availableCapacity = max(0, Self.maximumPendingEventCount - state.events.count)
@@ -631,10 +723,9 @@ public final class DiagnosticsJournalIngress: Sendable {
             }
         }
     #else
-        private func requeueAfterIdentityRotation(_ events: [DiagnosticEvent]) {
+        private func requeueAfterIdentityRotation(_ events: [DiagnosticEvent], lifecycleEpoch: UInt64) {
             pending.withLock { state in
-                guard !state.isSuspended else {
-                    state.droppedWhileSuspended += events.count
+                guard !state.isSuspended, state.lifecycleEpoch == lifecycleEpoch else {
                     return
                 }
                 let availableCapacity = max(0, Self.maximumPendingEventCount - state.events.count)

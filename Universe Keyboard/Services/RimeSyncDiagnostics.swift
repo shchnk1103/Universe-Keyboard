@@ -20,7 +20,10 @@ nonisolated final class RimeSyncDiagnostics: RimeSyncDiagnosing, Sendable {
 
     private let runtime: DiagnosticsJournalRuntime
 
-    init(runtime: DiagnosticsJournalRuntime? = nil) {
+    init(
+        runtime: DiagnosticsJournalRuntime? = nil,
+        lifecycle: DiagnosticsProcessLifecycle = DiagnosticsAppLifecycle.shared
+    ) {
         self.runtime =
             runtime
             ?? DiagnosticsJournalRuntime(
@@ -36,6 +39,7 @@ nonisolated final class RimeSyncDiagnostics: RimeSyncDiagnosing, Sendable {
                 isCategoryEnabled: Logger.isLiveCategoryEnabled,
                 writerVersion: .v6
             )
+        lifecycle.register(self.runtime)
     }
 
     func record(_ payload: DiagnosticEvent.RimeSyncPayload, level: Logger.Level) {
