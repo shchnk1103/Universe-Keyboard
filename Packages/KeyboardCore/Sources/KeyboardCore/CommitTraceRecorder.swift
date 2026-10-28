@@ -170,13 +170,27 @@ public final class CommitTraceRecorder {
         }
     }
     private func occurrence(_ text: String) -> Int {
-        guard !text.isEmpty, text.utf16.prefix(65).count <= 64, let value = context() else { return 9 }
-        let suffix = String(value.suffix(text.count * 3))
-        var rest = suffix[...]
+        let needle = Array(text.utf16.prefix(65))
+        guard !needle.isEmpty, needle.count <= 64, let value = context() else { return 9 }
+
+        // Walk backwards in UTF-16 units so a long grapheme cannot expand the window.
+        let units = value.utf16
+        let end = units.endIndex
+        var start = end
+        for _ in 0..<(needle.count * 3) {
+            guard start != units.startIndex else { break }
+            units.formIndex(before: &start)
+        }
+        let window = Array(units[start..<end])
+        var offset = 0
         var count = 0
-        while count < 3, let range = rest.range(of: text) {
-            count += 1
-            rest = rest[range.upperBound...]
+        while offset + needle.count <= window.count, count < 3 {
+            if window[offset..<(offset + needle.count)].elementsEqual(needle) {
+                count += 1
+                offset += needle.count
+            } else {
+                offset += 1
+            }
         }
         return count
     }
