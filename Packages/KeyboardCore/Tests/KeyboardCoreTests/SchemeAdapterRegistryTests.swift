@@ -17,12 +17,12 @@ final class SchemeAdapterRegistryTests: XCTestCase {
         XCTAssertTrue(adapter.supportsProductAdvancedInput)
     }
 
-    func testWanxiangAdapterMirrorsTodaysHardcodes() {
+    func testWanxiangAdapterExposesRegisteredDesignCapability() {
         let adapter = SchemeAdapterRegistry.wanxiang
         XCTAssertEqual(adapter.schemaID, "wanxiang")
         XCTAssertTrue(adapter.layout.supportsTwentySixKey)
-        XCTAssertFalse(adapter.layout.supportsNineKey)
-        XCTAssertEqual(adapter.layout.nineKeySchemaIDs, [])
+        XCTAssertTrue(adapter.layout.supportsNineKey)
+        XCTAssertEqual(adapter.layout.nineKeySchemaIDs, ["wanxiang_t9i"])
         XCTAssertEqual(adapter.sharedDefaultMode, .privatePreset)
         XCTAssertEqual(adapter.ownershipStrategyID, .exactHash)
         XCTAssertEqual(adapter.postProcessingRevision, "wanxiang-post-2")

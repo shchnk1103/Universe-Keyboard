@@ -78,7 +78,7 @@ public struct RimeRuntimeSelection: Sendable, Equatable {
         } else {
             // ADR 0018 migration path (no explicit bindings).
             // Family LayoutCapability (Ice letter base only; not t9 alias).
-            let supportsNineKey = SchemeAdapterRegistry.familySupportsNineKey(baseSchemaID)
+            let supportsNineKey = baseSchemaID == "rime_ice"
             if supportsNineKey, layoutStyle == .nineKey, t9ReadinessMatched {
                 self.effectiveSchemaID = "t9"
                 self.effectiveLayoutStyle = .nineKey
@@ -122,6 +122,41 @@ public struct RimeRuntimeSelection: Sendable, Equatable {
             layoutStyle: layout,
             t9ReadinessMatched: matched
         )
+    }
+
+    /// Per-scheme readiness entry point. Existing overloads retain the fog-only contract.
+    public static func resolve(
+        baseSchemaID: String?, layoutRawValue: String?, schemeBinding26: String?, schemeBinding9: String?,
+        readinessBySchema: [String: Bool], installedFamilies: Set<String>
+    ) -> RimeRuntimeSelection {
+        let base = normalizedSchemaID(baseSchemaID) ?? "luna_pinyin"
+        let binding = normalizedSchemaID(schemeBinding9) ?? "t9"
+        let scheme = NineKeySchemeRegistry.scheme(binding)
+        let ready =
+            scheme.map { installedFamilies.contains($0.familyID) && readinessBySchema[$0.schemaID] == true } ?? false
+        return RimeRuntimeSelection(
+            baseSchemaID: base, layoutStyle: KeyboardLayoutStyle.resolve(layoutRawValue),
+            matchedSchemeID: ready ? binding : nil, schemeBinding26: schemeBinding26, schemeBinding9: schemeBinding9)
+    }
+
+    private init(
+        baseSchemaID: String, layoutStyle: KeyboardLayoutStyle, matchedSchemeID: String?,
+        schemeBinding26: String?, schemeBinding9: String?
+    ) {
+        self.baseSchemaID = baseSchemaID
+        self.layoutStyle = layoutStyle
+        self.schemeBinding26 = Self.normalizedSchemaID(schemeBinding26)
+        self.schemeBinding9 = Self.normalizedSchemaID(schemeBinding9)
+        self.t9ReadinessMatched = matchedSchemeID != nil
+        if layoutStyle == .nineKey, let matchedSchemeID {
+            self.effectiveSchemaID = matchedSchemeID
+            self.effectiveLayoutStyle = .nineKey
+            self.usesT9InputSemantics = true
+        } else {
+            self.effectiveSchemaID = Self.normalizedBase(self.schemeBinding26 ?? baseSchemaID)
+            self.effectiveLayoutStyle = .twentySixKey
+            self.usesT9InputSemantics = false
+        }
     }
 
     /// Convenience for App Group defaults when on-disk fingerprint is supplied by the caller.
@@ -186,7 +221,7 @@ public struct RimeRuntimeSelection: Sendable, Equatable {
 
     /// Product nine-key capability via SchemeAdapter LayoutCapability (Ice `t9` only today).
     public static func isNineKeyCapable(_ schemaID: String) -> Bool {
-        SchemeAdapterRegistry.isNineKeyCapable(schemaID)
+        schemaID == "t9" && SchemeAdapterRegistry.isNineKeyCapable(schemaID)
     }
 
     /// Schemes that may appear in the 26-key picker (via LayoutCapability).
@@ -217,7 +252,7 @@ public struct RimeRuntimeSelection: Sendable, Equatable {
     /// for this runtime lifecycle (fail closed). Does not mutate App Group preferences.
     public func reconciled(withActualSchemaID actualSchemaID: String?) -> RimeRuntimeSelection {
         let actual = (actualSchemaID?.isEmpty == false) ? actualSchemaID! : baseSchemaID
-        if usesT9InputSemantics, actual == "t9" {
+        if usesT9InputSemantics, actual == effectiveSchemaID {
             return self
         }
         let closedBase: String
@@ -278,6 +313,7 @@ public struct RimeRuntimeSelection: Sendable, Equatable {
 
     private static func normalizedBase(_ raw: String) -> String {
         let id = normalizedSchemaID(raw) ?? "luna_pinyin"
-        return id == "t9" ? "rime_ice" : id
+        if let scheme = NineKeySchemeRegistry.scheme(id), scheme.familyID == "rime_ice" { return scheme.familyID }
+        return id
     }
 }

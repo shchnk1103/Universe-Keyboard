@@ -3,7 +3,9 @@
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 TASK="$HOME/.kos-work/Universe-Keyboard/WANXIANG-T9-001"
-OUT="$TASK/scratch/r2"
+OUT="${UK_MATRIX_OUTPUT:?Set UK_MATRIX_OUTPUT to a new directory under task scratch}"
+case "$OUT" in "$TASK"/scratch/*) ;; *) printf "Output must be under task scratch\n" >&2; exit 2;; esac
+case "$OUT" in *..*) printf "Invalid output path\n" >&2; exit 2;; esac
 export ROOT TASK OUT
 case "${1:-}" in
 prepare)
@@ -56,7 +58,7 @@ ice|off|on)
   export SIMCTL_CHILD_UK_MATRIX_SHARED="$UK_MATRIX_SHARED" SIMCTL_CHILD_UK_MATRIX_USER="$UK_MATRIX_USER" SIMCTL_CHILD_UK_MATRIX_SCHEMA="$UK_MATRIX_SCHEMA"
   run_id="${2:-first}"; case "$run_id" in *[!a-zA-Z0-9_-]*|"") exit 2;; esac
   logfile="$OUT/$variant-$run_id.log"; test ! -e "$logfile"
-  { printf 'COMMAND: bash scripts/run_wanxiang_t9_matrix.sh %s %s\n' "$variant" "$run_id"; printf 'XCODEBUILD: xcodebuild test -project "%s/Universe Keyboard.xcodeproj" -scheme RimeBridgeTests -configuration Debug -destination "platform=iOS Simulator,id=C45B3E72-42DF-44AB-B614-8BE7D34E54D7" -derivedDataPath "%s/DerivedData" -resultBundlePath "%s/%s.xcresult" -only-testing:RimeBridgeTests/RimeT9R2Tests CODE_SIGNING_ALLOWED=NO\n' "$ROOT" "$OUT" "$OUT" "$variant-$run_id"; printf 'ENV TMPDIR=%s UK_MATRIX_SHARED=%s UK_MATRIX_USER=%s UK_MATRIX_SCHEMA=%s (TEST_RUNNER_ and SIMCTL_CHILD_ mirror UK_MATRIX values)\n' "$TMPDIR" "$UK_MATRIX_SHARED" "$UK_MATRIX_USER" "$UK_MATRIX_SCHEMA"; git -C "$ROOT" rev-parse HEAD; git -C "$ROOT" status --porcelain; set +e; xcodebuild test -project "$ROOT/Universe Keyboard.xcodeproj" -scheme RimeBridgeTests -configuration Debug -destination 'platform=iOS Simulator,id=C45B3E72-42DF-44AB-B614-8BE7D34E54D7' -derivedDataPath "$OUT/DerivedData" -resultBundlePath "$OUT/$variant-$run_id.xcresult" -only-testing:RimeBridgeTests/RimeT9R2Tests CODE_SIGNING_ALLOWED=NO; result=$?; printf 'EXIT:%s\n' "$result"; git -C "$ROOT" rev-parse HEAD; exit "$result"; } > "$logfile" 2>&1
+  { printf 'COMMAND: bash scripts/run_wanxiang_t9_matrix.sh %s %s\n' "$variant" "$run_id"; printf 'XCODEBUILD: xcodebuild test -project "%s/Universe Keyboard.xcodeproj" -scheme RimeBridgeTests -configuration Debug -destination "platform=iOS Simulator,id=C45B3E72-42DF-44AB-B614-8BE7D34E54D7" -derivedDataPath "%s" -resultBundlePath "%s/%s.xcresult" -only-testing:RimeBridgeTests/RimeT9R2Tests CODE_SIGNING_ALLOWED=NO\n' "$ROOT" "$OUT/DerivedData-$variant-$run_id" "$OUT" "$variant-$run_id"; printf 'ENV TMPDIR=%s UK_MATRIX_SHARED=%s UK_MATRIX_USER=%s UK_MATRIX_SCHEMA=%s (TEST_RUNNER_ and SIMCTL_CHILD_ mirror UK_MATRIX values)\n' "$TMPDIR" "$UK_MATRIX_SHARED" "$UK_MATRIX_USER" "$UK_MATRIX_SCHEMA"; git -C "$ROOT" rev-parse HEAD; git -C "$ROOT" status --porcelain; set +e; xcodebuild test -project "$ROOT/Universe Keyboard.xcodeproj" -scheme RimeBridgeTests -configuration Debug -destination 'platform=iOS Simulator,id=C45B3E72-42DF-44AB-B614-8BE7D34E54D7' -derivedDataPath "$OUT/DerivedData-$variant-$run_id" -resultBundlePath "$OUT/$variant-$run_id.xcresult" -only-testing:RimeBridgeTests/RimeT9R2Tests CODE_SIGNING_ALLOWED=NO; result=$?; printf 'EXIT:%s\n' "$result"; git -C "$ROOT" rev-parse HEAD; exit "$result"; } > "$logfile" 2>&1
   ;;
 negative)
   python3 - <<'PYNEG'
