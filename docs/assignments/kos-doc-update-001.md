@@ -7,10 +7,10 @@ record_id: KOS-DOC-UPDATE-001
 
 | Field | Value |
 |---|---|
-| Lifecycle | Active |
-| Current phase | 阶段 B：docs-only 本地执行与提交；独立 Quality 评审待进行 |
+| Lifecycle | Closed（PR #255 已合并，合并提交 `4f7b92669effdecfa747d3503456bea1c7945fa5`；独立 Quality 已出结论；Human 2026-10-29 决定关闭） |
+| Current phase | 已发布并合并（PR #255）；已关闭 |
 | Material non-claims | 不含 push、PR 或 merge；不代表 Product Gate；`docs/PORTFOLIO.md` 未改 |
-| Next handoff / decision | 独立 Quality Reviewer |
+| Next handoff / decision | 无（已关闭） |
 
 ## Authority
 
@@ -52,8 +52,8 @@ record_id: KOS-DOC-UPDATE-001
 | 项 | Result |
 |---|---|
 | Executor | 外置任务目录 `reports/`；报告哈希由交付消息提供。 |
-| Quality | 独立评审待进行；不预填结论。 |
+| Quality | 外置 `reports/quality-review-b.md`（SHA-256 `64a309bbac1d58593f614a5be8486409ea89f7b5bfead6e6cde7412d65c15049`）；结论见该报告。 |
 
 ## Closeout Decision
 
-待独立 Quality 评审与 Human 决定；本地执行不构成 Close。
+Human 2026-10-29 决定关闭（原话“A A”）。
