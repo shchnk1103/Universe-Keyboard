@@ -1,0 +1,22 @@
+# Assignment: WANXIANG-T9-001 — 万象九宫格
+
+- **Policy version:** `1.0.0`
+- **Task ID / Title:** WANXIANG-T9-001 — 万象九宫格
+- **Assignment Authority:** Product Lead
+- **Decision Source / Date:** 设计定稿 SHA-256 `65eca4dbd61fc4173b54ced5b25714071864451e3cc98aec7af3e9d478a0541b`；切片 0 R1 任务包 SHA-256 `b14b4998760654471e092d4454979c7110adbb13fc1bb3ebc47d307b58524492`；Human 授权回执 `~/.kos-work/Universe-Keyboard/WANXIANG-T9-001/reports/human-authorization-s0r1-issued.md`，2026-10-29。
+- **Scope:** 切片 0 的写死点分类、隔离真实引擎观察及测试；后续切片须按冻结设计及其独立授权执行。
+- **Non-goals:** 切片 0 不修改产品代码或既有测试、工程文件；不 push、PR、merge 或 Release。
+- **Domain Owner:** RimeBridge Maintainer
+- **Executor:** Executor
+- **Environment Executor:** Executor，隔离模拟器与本地测试
+- **Human Dependency:** 雾凇基线冲突及真实宿主验收交 Human；后续发布须另行授权。
+- **Architecture Reviewer:** Architecture Reviewer
+- **Quality Reviewer:** Quality Reviewer
+- **Product Approver:** Human Product Owner acting as Product Lead
+- **Required Inputs:** 冻结设计、任务包、资源清单及授权回执；基线 `e53039339441ebe86301b1e77bcc978f244e88b4`。
+- **Entry Criteria:** 哈希、授权及基线核验，隔离工作树。
+- **Exit Criteria:** 按任务包完成各项证据及报告；后续切片和独立审查另行进行。
+- **Stop Conditions:** 任务包所列停止条件，包括基线冲突、越界写入或写入被拒。
+- **Handoff Target:** Product Lead，及后续独立 Architecture Reviewer / Quality Reviewer。
+- **Lifecycle Status:** Active — 切片 0。
+- **Revalidation Trigger:** 冻结输入、产品合同、基线、授权或证据要求变更。
