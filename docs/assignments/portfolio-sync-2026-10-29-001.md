@@ -44,7 +44,7 @@ record_id: PORTFOLIO-SYNC-2026-10-29-001
 ## Handoff
 
 - **Handoff Target:** 独立 Quality Reviewer。
-- **Required Handoff Content:** 提交 SHA、本任务包与 `instructions/edits-b.json` 的 SHA-256、执行报告路径。
+- **Required Handoff Content:** 提交 SHA、本任务包与 `instructions/edits-c.json` 的 SHA-256、执行报告路径。
 - **Revalidation Trigger:** 范围、基线、授权、输入或责任变化。
 
 ## Exit evidence
