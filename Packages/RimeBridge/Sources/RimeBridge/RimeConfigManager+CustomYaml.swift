@@ -7,7 +7,7 @@ extension RimeConfigManager {
     /// 从 App Group 的 UserDefaults 读取配置并生成 .custom.yaml 文件到 user_data_dir。
     /// 在部署前调用，确保用户通过主 App 修改的配置被写入。
     @discardableResult
-    public static func syncCustomYamlFiles() -> Bool {
+    public static func syncCustomYamlFiles(proveCompileInput: Bool = true) -> Bool {
         guard
             let containerURL = FileManager.default.containerURL(
                 forSecurityApplicationGroupIdentifier: customYamlAppGroupID
@@ -17,13 +17,19 @@ extension RimeConfigManager {
         let rimeRoot = containerURL.appendingPathComponent("Rime", isDirectory: true)
         return syncCustomYamlFiles(
             defaults: UserDefaults(suiteName: customYamlAppGroupID),
-            rimeRoot: rimeRoot
+            rimeRoot: rimeRoot,
+            proveCompileInput: proveCompileInput
         )
     }
 
     /// 生产同步的可测试实现：defaults 与 rimeRoot 由调用方注入。
     @discardableResult
-    static func syncCustomYamlFiles(defaults: UserDefaults?, rimeRoot: URL) -> Bool {
+    static func syncCustomYamlFiles(
+        defaults: UserDefaults?,
+        rimeRoot: URL,
+        pendingSchemaID: String? = nil,
+        proveCompileInput: Bool = true
+    ) -> Bool {
         let activeSchema = defaults?.string(forKey: "rime_active_schema") ?? "luna_pinyin"
 
         // default.custom.yaml — active schema and candidate page size.
@@ -78,12 +84,20 @@ extension RimeConfigManager {
             shSEnabled: defaults?.object(forKey: RimeFuzzyPinyinSettings.shSKey) as? Bool ?? true,
             nLEnabled: defaults?.object(forKey: RimeFuzzyPinyinSettings.nLKey) as? Bool ?? true
         )
-        let plan = planSchemaCustomYamlFiles(
-            rimeIceInstalled: iceInstalled,
+        let targets = schemaSwitchTargets(
+            rimeRoot: rimeRoot,
+            iceInstalled: iceInstalled,
             wanxiangInstalled: wanxiangInstalled,
+            pendingSchemaID: pendingSchemaID
+        )
+        let plan = planSchemaCustomYamlFiles(
+            targets: targets,
             simplificationEnabled: simplificationEnabled,
             userDictionarySettings: userDictionarySettings,
-            fuzzyPinyinSettings: fuzzySettings
+            fuzzyPinyinSettings: fuzzySettings,
+            grammarYamlPresent: grammarYamlPresent(rimeRoot: rimeRoot),
+            compileInputProven: proveCompileInput,
+            advancedDisabledComponents: advancedDisabledComponents(from: defaults)
         )
         artifacts.append(
             contentsOf: plan.map {
@@ -219,39 +233,57 @@ extension RimeConfigManager {
         public let userDictionarySchemaID: String
     }
 
-    /// Pure production plan: which custom YAML files to write and with which content.
-    ///
-    /// - `luna_pinyin` and `rime_ice` always planned.
-    /// - `t9.custom.yaml` only when fog-song is installed, using **rime_ice** user-dict preference.
-    /// - `wanxiang.custom.yaml` when 万象 is installed (uses rime_ice learning toggle as conservative default).
+    /// One schema whose custom overlay is generated for this deployment.
+    /// `sourceText` is the shared schema that will be compiled. It is nil when
+    /// that file is not on disk yet. Grammar presence stays with the caller.
+    public struct SchemaSwitchTarget: Equatable, Sendable {
+        public let schemaID: String
+        public let userDictionarySchemaID: String
+        public let sourceText: String?
+        public let wanxiangFamily: Bool
+
+        public init(
+            schemaID: String,
+            userDictionarySchemaID: String,
+            sourceText: String?,
+            wanxiangFamily: Bool
+        ) {
+            self.schemaID = schemaID
+            self.userDictionarySchemaID = userDictionarySchemaID
+            self.sourceText = sourceText
+            self.wanxiangFamily = wanxiangFamily
+        }
+    }
+
+    /// Plans overlays from the schemas participating in this deployment.
+    /// Switch keys come only from the resolver. A missing source, a failed
+    /// recognition, or an unproven post-process leaves the other keys in place.
     public static func planSchemaCustomYamlFiles(
-        rimeIceInstalled: Bool,
-        wanxiangInstalled: Bool = false,
+        targets: [SchemaSwitchTarget],
         simplificationEnabled: Bool?,
         userDictionarySettings: RimeUserDictionarySettings,
-        fuzzyPinyinSettings: RimeFuzzyPinyinSettings = RimeFuzzyPinyinSettings(enabled: false)
+        fuzzyPinyinSettings: RimeFuzzyPinyinSettings = RimeFuzzyPinyinSettings(enabled: false),
+        grammarYamlPresent: Bool = false,
+        compileInputProven: Bool = true,
+        advancedDisabledComponents: Set<String> = []
     ) -> [SchemaCustomYamlFile] {
-        var targets: [(schemaID: String, dictSchemaID: String)] = [
-            ("luna_pinyin", "luna_pinyin"),
-            ("rime_ice", "rime_ice"),
-        ]
-        if wanxiangInstalled {
-            targets.append(("wanxiang", "rime_ice"))
-        }
-        if rimeIceInstalled {
-            // T9 is the nine-key presentation of fog-song preferences, not a separate base scheme.
-            targets.append(("t9", "rime_ice"))
-        }
-
         var files: [SchemaCustomYamlFile] = []
         for target in targets {
-            let enabled = userDictionarySettings.isEnabled(for: target.dictSchemaID)
+            let enabled = userDictionarySettings.isEnabled(for: target.userDictionarySchemaID)
+            let switches = switchPatches(
+                for: target,
+                simplificationEnabled: simplificationEnabled,
+                fuzzyPinyinSettings: fuzzyPinyinSettings,
+                grammarYamlPresent: grammarYamlPresent,
+                compileInputProven: compileInputProven,
+                advancedDisabledComponents: advancedDisabledComponents
+            )
             guard
                 let content = makeSchemaCustomYamlContent(
                     schemaID: target.schemaID,
-                    simplificationEnabled: simplificationEnabled,
                     userDictionaryEnabled: enabled,
-                    fuzzyPinyinSettings: fuzzyPinyinSettings
+                    fuzzyPinyinSettings: fuzzyPinyinSettings,
+                    switchPatches: switches
                 )
             else { continue }
             files.append(
@@ -259,7 +291,7 @@ extension RimeConfigManager {
                     schemaID: target.schemaID,
                     filename: "\(target.schemaID).custom.yaml",
                     content: content,
-                    userDictionarySchemaID: target.dictSchemaID
+                    userDictionarySchemaID: target.userDictionarySchemaID
                 )
             )
         }
@@ -267,32 +299,31 @@ extension RimeConfigManager {
     }
 
     /// Pure helper for tests: builds schema custom YAML from preference values.
+    /// Without switch patches this writes the dictionary key only.
     public static func makeSchemaCustomYamlContent(
         simplificationEnabled: Bool?,
         userDictionaryEnabled: Bool
     ) -> String? {
-        makeSchemaCustomYamlContent(
+        _ = simplificationEnabled
+        return makeSchemaCustomYamlContent(
             schemaID: "rime_ice",
-            simplificationEnabled: simplificationEnabled,
             userDictionaryEnabled: userDictionaryEnabled,
-            fuzzyPinyinSettings: RimeFuzzyPinyinSettings(enabled: false)
+            fuzzyPinyinSettings: RimeFuzzyPinyinSettings(enabled: false),
+            switchPatches: []
         )
     }
 
     /// Builds a schema overlay without mutating the pinned upstream schema.
-    /// Official Luna places the simplified/traditional option at switch 2;
-    /// existing downloadable product schemes use switch 1.
+    /// Switch keys are supplied by the resolver; this function does not invent indexes.
     public static func makeSchemaCustomYamlContent(
         schemaID: String,
-        simplificationEnabled: Bool?,
         userDictionaryEnabled: Bool,
-        fuzzyPinyinSettings: RimeFuzzyPinyinSettings
+        fuzzyPinyinSettings: RimeFuzzyPinyinSettings,
+        switchPatches: [(key: String, value: String)] = []
     ) -> String? {
         var patch: [(String, String)] = []
-        if let simplificationEnabled {
-            let reset = simplificationEnabled ? 1 : 0
-            let switchIndex = schemaID == "luna_pinyin" ? 2 : 1
-            patch.append(("\"switches/@\(switchIndex)/reset\"", "\(reset)"))
+        for item in switchPatches {
+            patch.append(("\"\(item.key)\"", item.value))
         }
         patch.append(
             (
@@ -312,4 +343,208 @@ extension RimeConfigManager {
         }
         return yaml
     }
+
+    /// Legacy call shape used by tests that have not loaded a schema source.
+    public static func makeSchemaCustomYamlContent(
+        schemaID: String,
+        simplificationEnabled: Bool?,
+        userDictionaryEnabled: Bool,
+        fuzzyPinyinSettings: RimeFuzzyPinyinSettings
+    ) -> String? {
+        _ = simplificationEnabled
+        return makeSchemaCustomYamlContent(
+            schemaID: schemaID,
+            userDictionaryEnabled: userDictionaryEnabled,
+            fuzzyPinyinSettings: fuzzyPinyinSettings,
+            switchPatches: []
+        )
+    }
+
+    static func schemaSwitchTargets(
+        rimeRoot: URL,
+        iceInstalled: Bool,
+        wanxiangInstalled: Bool,
+        pendingSchemaID: String?
+    ) -> [SchemaSwitchTarget] {
+        let includeIceFamily = iceInstalled || pendingSchemaID == "rime_ice"
+        let includeWanxiang = wanxiangInstalled || pendingSchemaID == "wanxiang"
+        var specs: [(String, String, Bool)] = [
+            ("luna_pinyin", "luna_pinyin", false),
+            ("rime_ice", "rime_ice", false),
+        ]
+        if includeWanxiang {
+            specs.append(("wanxiang", "rime_ice", true))
+        }
+        if includeIceFamily {
+            specs.append(("t9", "rime_ice", false))
+        }
+        return specs.map { schemaID, dictionaryID, wanxiangFamily in
+            SchemaSwitchTarget(
+                schemaID: schemaID,
+                userDictionarySchemaID: dictionaryID,
+                sourceText: schemaSourceText(schemaID, rimeRoot: rimeRoot),
+                wanxiangFamily: wanxiangFamily
+            )
+        }
+    }
+
+    private static func schemaSourceText(_ schemaID: String, rimeRoot: URL) -> String? {
+        let url =
+            rimeRoot
+            .appendingPathComponent("shared", isDirectory: true)
+            .appendingPathComponent("\(schemaID).schema.yaml")
+        return try? String(contentsOf: url, encoding: .utf8)
+    }
+
+    private static func grammarYamlPresent(rimeRoot: URL) -> Bool {
+        let fileManager = FileManager.default
+        let names = ["shared", "user"]
+        return names.contains { name in
+            fileManager.fileExists(
+                atPath: rimeRoot.appendingPathComponent(name, isDirectory: true)
+                    .appendingPathComponent("grammar.yaml").path
+            )
+        }
+    }
+
+    private static func advancedDisabledComponents(from defaults: UserDefaults?) -> Set<String> {
+        let master = defaults?.object(forKey: RimeAdvancedInputSettings.masterEnabledKey) as? Bool ?? true
+        var features: [RimeAdvancedInputFeature: Bool] = [:]
+        for feature in RimeAdvancedInputFeature.allCases {
+            if let enabled = defaults?.object(forKey: RimeAdvancedInputSettings.enabledKey(for: feature)) as? Bool {
+                features[feature] = enabled
+            }
+        }
+        let settings = RimeAdvancedInputSettings(masterEnabled: master, featureEnabled: features)
+        return settings.disabledComponentNames(supportedFeatures: Set(RimeAdvancedInputFeature.allCases))
+    }
+
+    private static func switchPatches(
+        for target: SchemaSwitchTarget,
+        simplificationEnabled: Bool?,
+        fuzzyPinyinSettings: RimeFuzzyPinyinSettings,
+        grammarYamlPresent: Bool,
+        compileInputProven: Bool,
+        advancedDisabledComponents: Set<String>
+    ) -> [(key: String, value: String)] {
+        guard let simplificationEnabled else { return [] }
+        // Fog-song nine-key switches arrive through a whole-file include.
+        if target.schemaID == "t9" {
+            logSwitchOmission(schemaID: target.schemaID, setting: "simplification", reason: "switchesPatched")
+            return []
+        }
+        guard compileInputProven else {
+            logSwitchOmission(schemaID: target.schemaID, setting: "simplification", reason: "compileInputUnproven")
+            return []
+        }
+        guard let source = target.sourceText else {
+            logSwitchOmission(schemaID: target.schemaID, setting: "simplification", reason: "sourceMissing")
+            return []
+        }
+        if !postProcessKeepsSwitches(
+            schemaID: target.schemaID,
+            source: source,
+            fuzzyPinyinSettings: fuzzyPinyinSettings,
+            advancedDisabledComponents: advancedDisabledComponents
+        ) {
+            logSwitchOmission(schemaID: target.schemaID, setting: "simplification", reason: "compileInputUnproven")
+            return []
+        }
+        let parsed: Result<[SchemaSwitchResolver.Item], SchemaSwitchResolver.Failure>
+        if target.schemaID == "luna_pinyin" {
+            parsed = SchemaSwitchResolver.recognizeLuna(
+                source: source,
+                sourceSHA256: SchemaSwitchResolver.builtinLunaSHA256,
+                grammarYamlPresent: grammarYamlPresent
+            )
+        } else {
+            parsed = SchemaSwitchResolver.recognize(source)
+        }
+        let items: [SchemaSwitchResolver.Item]
+        switch parsed {
+        case .success(let value):
+            items = value
+        case .failure(let failure):
+            logSwitchOmission(schemaID: target.schemaID, setting: "simplification", reason: failure.rawValue)
+            return []
+        }
+        var patches: [(key: String, value: String)] = []
+        switch SchemaSwitchResolver.simplification(in: items) {
+        case .success(let selection):
+            let reset = simplificationEnabled ? selection.simplifiedReset : selection.traditionalReset
+            patches.append((selection.key, String(reset)))
+        case .failure(let failure):
+            logSwitchOmission(schemaID: target.schemaID, setting: "simplification", reason: failure.rawValue)
+        }
+        guard target.wanxiangFamily else { return patches }
+        switch SchemaSwitchResolver.emojiReset(in: items, wanxiangFamily: true) {
+        case .success(let emoji):
+            if let emoji {
+                patches.append((emoji.key, String(emoji.reset)))
+            }
+        case .failure(let failure):
+            logSwitchOmission(schemaID: target.schemaID, setting: "emoji", reason: failure.rawValue)
+        }
+        return patches
+    }
+
+    /// Replays the pure post-processors that run after custom YAML is written.
+    /// A changed switch sequence means this source is not a proven compile input.
+    private static func postProcessKeepsSwitches(
+        schemaID: String,
+        source: String,
+        fuzzyPinyinSettings: RimeFuzzyPinyinSettings,
+        advancedDisabledComponents: Set<String>
+    ) -> Bool {
+        let original: [SchemaSwitchResolver.Item]
+        switch SchemaSwitchResolver.recognize(source) {
+        case .success(let value):
+            original = value
+        case .failure:
+            // Luna's pinned patch is recognized only by the exemption path.
+            return schemaID == "luna_pinyin"
+        }
+        let originalIdentity = switchIdentity(original)
+        var variants = [
+            RimeFuzzyPinyinPostProcessor.apply(settings: fuzzyPinyinSettings, to: source).yaml
+        ]
+        if schemaID == "rime_ice" {
+            variants.append(RimeConfigPostProcessor.stripLuaDependencies(from: source))
+            variants.append(
+                RimeAdvancedInputPostProcessor.previewRemovingDisabledComponents(
+                    advancedDisabledComponents,
+                    from: source
+                )
+            )
+        }
+        if schemaID == "t9" {
+            variants.append((try? T9SchemaCompatibility.makeCompatibleSchema(fromUpstreamYAML: source)) ?? source)
+        }
+        for variant in variants {
+            switch SchemaSwitchResolver.recognize(variant) {
+            case .success(let items):
+                if switchIdentity(items) != originalIdentity { return false }
+            case .failure:
+                return false
+            }
+        }
+        return true
+    }
+
+    private static func switchIdentity(_ items: [SchemaSwitchResolver.Item]) -> [String] {
+        items.map { item in
+            let options = item.options?.joined(separator: ",") ?? ""
+            let states = item.states?.joined(separator: ",") ?? ""
+            let reset = item.reset.map(String.init) ?? ""
+            return "\(item.index)|\(item.name ?? "")|\(options)|\(states)|\(reset)"
+        }
+    }
+
+    private static func logSwitchOmission(schemaID: String, setting: String, reason: String) {
+        Logger.shared.warning(
+            "schemaSwitch schemaID=\(schemaID) setting=\(setting) reason=\(reason)",
+            category: .deployment
+        )
+    }
+
 }

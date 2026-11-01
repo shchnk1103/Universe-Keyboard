@@ -88,7 +88,7 @@ final class RimeRuntimeSelectionBridgeTests: XCTestCase {
         )
         XCTAssertTrue(enabled?.contains("enable_user_dict") == true)
         XCTAssertTrue(enabled?.contains("true") == true)
-        XCTAssertTrue(enabled?.contains("switches/@1/reset") == true)
+        XCTAssertFalse(enabled?.contains("switches/") == true)
 
         let disabled = RimeConfigManager.makeSchemaCustomYamlContent(
             simplificationEnabled: false,
@@ -96,14 +96,14 @@ final class RimeRuntimeSelectionBridgeTests: XCTestCase {
         )
         XCTAssertTrue(disabled?.contains("enable_user_dict") == true)
         XCTAssertTrue(disabled?.contains("false") == true)
-        XCTAssertTrue(disabled?.contains(": 0") == true)
+        XCTAssertFalse(disabled?.contains("switches/") == true)
     }
 
     func testProductionCustomYamlPlanIncludesT9OnlyWhenIceInstalled() {
         let dict = RimeUserDictionarySettings(lunaPinyinEnabled: false, rimeIceEnabled: true)
 
         let withoutIce = RimeConfigManager.planSchemaCustomYamlFiles(
-            rimeIceInstalled: false,
+            targets: schemaTargets(includeIce: false),
             simplificationEnabled: true,
             userDictionarySettings: dict
         )
@@ -111,7 +111,7 @@ final class RimeRuntimeSelectionBridgeTests: XCTestCase {
         XCTAssertFalse(withoutIce.contains { $0.filename == "t9.custom.yaml" })
 
         let withIce = RimeConfigManager.planSchemaCustomYamlFiles(
-            rimeIceInstalled: true,
+            targets: schemaTargets(includeIce: true),
             simplificationEnabled: false,
             userDictionarySettings: dict
         )
@@ -124,14 +124,13 @@ final class RimeRuntimeSelectionBridgeTests: XCTestCase {
         // Ice preference is true → t9 custom enables user dict.
         XCTAssertTrue(t9.content.contains("enable_user_dict"))
         XCTAssertTrue(t9.content.contains("true"))
-        XCTAssertTrue(t9.content.contains(": 0"))  // simplification false
+        XCTAssertFalse(t9.content.contains("switches/"))
 
         guard let luna = withIce.first(where: { $0.schemaID == "luna_pinyin" }) else {
             return XCTFail("expected luna_pinyin.custom.yaml in plan")
         }
         XCTAssertTrue(luna.content.contains("false"))  // luna dict disabled
-        XCTAssertTrue(luna.content.contains("switches/@2/reset"))
-        XCTAssertFalse(luna.content.contains("switches/@1/reset"))
+        XCTAssertFalse(luna.content.contains("switches/"))
     }
 
     func testOfficialLunaOverlayCarriesFuzzyRulesWithoutReplacingUpstreamAlgebra() throws {
@@ -149,7 +148,7 @@ final class RimeRuntimeSelectionBridgeTests: XCTestCase {
                 )
             )
         )
-        XCTAssertTrue(content.contains("switches/@2/reset"))
+        XCTAssertFalse(content.contains("switches/"))
         XCTAssertTrue(content.contains("speller/algebra/+"))
         XCTAssertTrue(content.contains("derive/^zh/z/"))
         XCTAssertTrue(content.contains("derive/^z/zh/"))
@@ -177,7 +176,7 @@ final class RimeRuntimeSelectionBridgeTests: XCTestCase {
         // Exercise the pure plan + same write path as production sync (filename/content).
         let dict = RimeUserDictionarySettings(lunaPinyinEnabled: true, rimeIceEnabled: false)
         let plan = RimeConfigManager.planSchemaCustomYamlFiles(
-            rimeIceInstalled: true,
+            targets: schemaTargets(includeIce: true),
             simplificationEnabled: true,
             userDictionarySettings: dict
         )
@@ -194,14 +193,32 @@ final class RimeRuntimeSelectionBridgeTests: XCTestCase {
         let t9Body = try String(contentsOf: t9URL, encoding: .utf8)
         XCTAssertTrue(t9Body.contains("enable_user_dict"))
         XCTAssertTrue(t9Body.contains("false"), "t9 must follow rime_ice dict preference (disabled)")
-        XCTAssertTrue(t9Body.contains("switches/@1/reset"))
+        XCTAssertFalse(t9Body.contains("switches/"))
 
         // Without ice, plan must not include t9.
         let noT9 = RimeConfigManager.planSchemaCustomYamlFiles(
-            rimeIceInstalled: false,
+            targets: schemaTargets(includeIce: false),
             simplificationEnabled: true,
             userDictionarySettings: dict
         )
         XCTAssertFalse(noT9.contains { $0.filename == "t9.custom.yaml" })
+    }
+
+    private func schemaTargets(includeIce: Bool) -> [RimeConfigManager.SchemaSwitchTarget] {
+        var rows: [(String, String, Bool)] = [
+            ("luna_pinyin", "luna_pinyin", false),
+            ("rime_ice", "rime_ice", false),
+        ]
+        if includeIce {
+            rows.append(("t9", "rime_ice", false))
+        }
+        return rows.map { schemaID, dictionaryID, wanxiang in
+            RimeConfigManager.SchemaSwitchTarget(
+                schemaID: schemaID,
+                userDictionarySchemaID: dictionaryID,
+                sourceText: nil,
+                wanxiangFamily: wanxiang
+            )
+        }
     }
 }

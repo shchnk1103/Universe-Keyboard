@@ -343,8 +343,11 @@ final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
         return SchemaDeploymentDirectories(sharedDataURL: sharedDataURL, userDataURL: userDataURL)
     }
 
-    func deploymentDirectories() throws -> SchemaDeploymentDirectories {
-        let prepared = try RimeConfigManager.prepareDirectories(resourceBundle: .main)
+    func deploymentDirectories(pendingSchemaID: String? = nil) throws -> SchemaDeploymentDirectories {
+        let prepared = try RimeConfigManager.prepareDirectories(
+            resourceBundle: .main,
+            pendingSchemaID: pendingSchemaID
+        )
         return SchemaDeploymentDirectories(
             sharedDataURL: URL(fileURLWithPath: prepared.sharedDir),
             userDataURL: URL(fileURLWithPath: prepared.userDir)

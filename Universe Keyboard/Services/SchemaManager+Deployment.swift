@@ -48,7 +48,7 @@ extension SchemaManager {
     }
 
     @discardableResult
-    func deployRimeConfig(leaseOperationID: UUID? = nil) async -> Bool {
+    func deployRimeConfig(leaseOperationID: UUID? = nil, pendingSchemaID: String? = nil) async -> Bool {
         if let owner = schemeDeliveryCommitLeaseOperationID, owner != leaseOperationID {
             return await waitForPostCommitDeployment()
         }
@@ -59,7 +59,10 @@ extension SchemaManager {
         activeRimeDeploymentID = deploymentID
         let task = Task { @MainActor [weak self] in
             guard let self else { return false }
-            return await self.performRimeDeployment(deploymentID: deploymentID)
+            return await self.performRimeDeployment(
+                deploymentID: deploymentID,
+                pendingSchemaID: pendingSchemaID
+            )
         }
         activeRimeDeploymentTask = task
         let succeeded = await task.value
@@ -72,12 +75,12 @@ extension SchemaManager {
 
     /// The only body that mutates shared deployment files. All public callers
     /// enter through `deployRimeConfig`, which provides process-local single-flight.
-    private func performRimeDeployment(deploymentID: UUID) async -> Bool {
+    private func performRimeDeployment(deploymentID: UUID, pendingSchemaID: String?) async -> Bool {
         guard isActiveRimeDeployment(deploymentID) else { return false }
 
         let directories: SchemaDeploymentDirectories
         do {
-            directories = try archiveInstaller.deploymentDirectories()
+            directories = try archiveInstaller.deploymentDirectories(pendingSchemaID: pendingSchemaID)
         } catch {
             // Keep the log content-free while distinguishing preparation from
             // the later librime deployment transaction.
