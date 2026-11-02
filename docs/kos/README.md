@@ -103,3 +103,4 @@ This directory does not authorize by mere existence:
 
 - [证据分级与差异验证建议稿](kos-improvement-suggestions-public-beta-release-2026-09-13.md) — **建议稿；未采纳**，不改变当前 KOS、Release Gate 或任何授权边界。
 - 该建议稿派生的有界 [ADR 0035](../architecture/decisions/0035-release-evidence-accumulation-and-promotion.md) 已由 Human Product Owner 正式采纳；建议稿其余方向不因此自动采纳。
+- 工具路由：[KOS 包生成与报告核对工具](../../scripts/kos/README.md) — 新建任务目录、冻结任务包、核对报告、事实来源检查与目录清单对照（仓库内权威来源）。
