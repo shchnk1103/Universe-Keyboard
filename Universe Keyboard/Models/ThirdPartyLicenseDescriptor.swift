@@ -32,7 +32,7 @@ enum ThirdPartyLicenseCatalog {
         projectName: "雾凇拼音（rime-ice）",
         licenseName: "GPL-3.0-only",
         attribution: "版权归 iDvel/rime-ice 项目及其贡献者所有。",
-        usageNote: "Universe Keyboard 仅在用户主动请求后，从上游 GitHub Release 下载该输入方案。",
+        usageNote: "Universe Keyboard 仅在用户主动请求后，从南京大学开源镜像或上游 GitHub Release 下载该输入方案。",
         modificationNotice: "下载后会在设备本地筛除不适用于当前 iOS RIME 运行环境的文件，并进行兼容性后处理；这些修改不代表上游项目认可或背书。",
         sourceURL: URL(string: "https://github.com/iDvel/rime-ice")!,
         licenseURL: URL(string: "https://github.com/iDvel/rime-ice/blob/main/LICENSE")!,
@@ -52,10 +52,10 @@ enum ThirdPartyLicenseCatalog {
         projectName: "万象拼音（rime-wanxiang）",
         licenseName: "CC BY 4.0",
         attribution: "作品来源：amzxyz/rime-wanxiang 项目及其贡献者。",
-        usageNote: "Universe Keyboard 仅在用户主动请求后，从上游 GitHub Release 下载 base 输入方案。",
+        usageNote: "Universe Keyboard 仅在用户主动请求后，从 CNB 国内源或上游 GitHub Release 下载 base 输入方案。",
         modificationNotice: "下载后会在设备本地筛除桌面端或非当前产品范围文件，并生成适用于 Universe Keyboard 的部署配置；这些修改不代表上游项目认可或背书。",
         sourceURL: URL(string: "https://github.com/amzxyz/rime-wanxiang")!,
-        licenseURL: URL(string: "https://github.com/amzxyz/rime-wanxiang/blob/main/LICENSE")!,
+        licenseURL: URL(string: "https://github.com/amzxyz/rime-wanxiang/blob/wanxiang/LICENSE")!,
         summaryItems: [
             "允许在遵守 CC BY 4.0 条件的前提下共享和改编。",
             "使用时需要提供适当署名、许可证链接，并说明是否进行过修改。",
@@ -105,8 +105,12 @@ enum ThirdPartyLicenseCatalog {
             license: "BSD-3-Clause",
             source: "https://github.com/hchunhui/librime-lua",
             licenseURL: "https://github.com/hchunhui/librime-lua/blob/master/LICENSE",
-            usage: "RIME 的本地 Lua 扩展。精确二进制 source revision 仍在许可来源审计中。",
-            documents: [document("BSD-3-Clause 许可证原文", "RIME-LUA-PLUGIN-BSD-3-Clause")]
+            usage:
+                "RIME 的本地 Lua 扩展。二进制对应的精确源码修订无法逐字节证明；最接近的候选为 hchunhui/librime-lua 提交 ec52e48ea18f11af37717a01c337f853215cf70b 加本地禁用 OpenCC 的 stub：设备 arm64 与两种模拟器架构上，10 个对象中各有 9 个重建结果逐字节一致，types.o 不一致。",
+            documents: [
+                document("BSD-3-Clause 许可证原文", "RIME-LUA-PLUGIN-BSD-3-Clause"),
+                document("候选源码中的附加 MIT 声明", "RIME-LUA-CANDIDATE-MIT-NOTICES"),
+            ]
         ),
         component(
             id: "librime-octagram",

@@ -12,6 +12,8 @@ Universe Keyboard is designed to perform keyboard input and personalization on t
 
 The Keyboard Extension does not transmit typed text, unfinished composition, surrounding text, candidates, clipboard content, host-application identity or user-dictionary contents to the developer or a third party.
 
+Separately, when the user selects a shared folder and confirms standard RIME synchronization in the containing App, that operation may place user-dictionary snapshots and non-generated YAML/TXT configuration backups in the selected folder, as described under Optional Standard RIME Sync.
+
 Full Access is requested so the Keyboard Extension can use the shared App Group container prepared by the containing App, read shared settings, use managed RIME resources, persist local user-dictionary learning, play configured feedback and, when explicitly enabled, update local Typing Intelligence aggregates. Full Access is not used to send keystrokes to a server.
 
 ## Typing Intelligence
@@ -54,7 +56,7 @@ Disconnecting or deleting the encrypted Universe settings package does not remov
 
 The Keyboard Extension does not use network access for input processing or Typing Intelligence.
 
-The containing App may connect to GitHub when the user requests information about, downloads or updates an optional RIME input scheme. When the user explicitly configures RIME settings sync, the App may also connect to the selected WebDAV or file-provider destination. The About page may open the system mail composer or the linked Xiaohongshu profile only after the user taps those controls; the App does not attach diagnostics or typed content. Keyboard input, Typing Intelligence aggregates, user dictionaries and diagnostics are not included in those requests.
+The containing App may connect to GitHub, the Nanjing University open-source mirror, or CNB when the user requests information about, downloads or updates an optional RIME input scheme. Keyboard input, Typing Intelligence aggregates, user dictionaries and diagnostics are not included in these scheme-information and download requests. When the user explicitly configures Universe private-settings synchronization, the containing App may connect to the selected WebDAV or file-provider destination and transfer the encrypted settings package described above. Separately, user-confirmed standard RIME synchronization may write user-dictionary snapshots and non-generated YAML/TXT configuration backups to the selected shared folder. Universe Keyboard does not encrypt those standard RIME files. The About page may open the system mail composer or the linked Xiaohongshu profile only after the user taps those controls; the App does not attach diagnostics or typed content.
 
 ## Tracking, Advertising And Accounts
 
@@ -71,7 +73,7 @@ Universe Keyboard does not include advertising, cross-app tracking or a user-acc
 
 ## App Privacy Disclosure
 
-Data processed only on device and never transmitted off device is not represented as developer collection in App Store privacy details. User-directed encrypted transfer to the user's selected storage destination must be reviewed separately from developer collection. Required Reason API declarations remain separate and accurately describe APIs used for App Group preferences, container metadata and storage-capacity checks.
+Data processed only on device and never transmitted off device is not represented as developer collection in App Store privacy details. User-directed transfers to selected storage destinations, including encrypted Universe private-settings packages and standard RIME files that Universe Keyboard does not encrypt, require a separate assessment of their data contents, recipients, purposes and access. A user-selected destination or the presence of encryption does not by itself determine the App Store privacy-disclosure classification. Required Reason API declarations remain separate and accurately describe APIs used for App Group preferences, container metadata and storage-capacity checks.
 
 The App Store privacy answers, bundled privacy manifests, product behavior and this policy must be reviewed together before every submission.
 

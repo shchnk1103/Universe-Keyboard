@@ -7,3 +7,7 @@ docs/evidence/td-012-octagram-license-provenance-audit-2026-08-09.md
 Baseline ABI vendor: rime-vendor-ios-1.16.1-lua.1
   SHA-256: c299f36eae4966a8c22f83046c7015a04b3f047abcc4bab9355ca19ac840436c
 librime peer commit: 1300e568967feeeedd72028c7cb5ef9151f7fb37
+Fixed-commit residual: at bfb168ca33d8b372596fdf2007933f3da1cf360e, src/grammar_module.cc still carries the old GPLv3 file header.
+Upstream Issue #9: the maintainer described that header as a leftover.
+Upstream commit 57d18b9f58e5284bd891d559f6bdd16cf60341e9 (2026-08-31) removed that header; it is later than the fixed commit.
+The build currently shipped with the App is still based on the fixed commit.
