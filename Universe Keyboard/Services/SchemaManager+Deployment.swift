@@ -116,6 +116,21 @@ extension SchemaManager {
             }
         }
 
+        let wanxiangNineKeyInstalled =
+            settings.bool(forKey: "wanxiang_installed") || pendingSchemaID == "wanxiang"
+        if wanxiangNineKeyInstalled {
+            let prepared = WanxiangT9DeploymentSupport.prepare(
+                sharedDataURL: directories.sharedDataURL,
+                userDataURL: directories.userDataURL
+            )
+            for step in prepared.steps {
+                Logger.shared.info(
+                    "deployRimeConfig: \(WanxiangT9DeploymentSupport.logText(step))",
+                    category: .deployment
+                )
+            }
+        }
+
         guard isActiveRimeDeployment(deploymentID) else { return false }
         settings.set(true, forKey: "rime_deploying")
         settings.set(false, forKey: "rime_deployed")
@@ -182,6 +197,16 @@ extension SchemaManager {
                     forKey: RimeAdvancedInputSettings.deployedSignatureKey
                 )
                 settings.synchronize()
+                if wanxiangNineKeyInstalled {
+                    let check = WanxiangT9DeploymentSupport.recheckCompiled(
+                        sharedDataURL: directories.sharedDataURL,
+                        userDataURL: directories.userDataURL
+                    )
+                    Logger.shared.info(
+                        "deployRimeConfig: \(WanxiangT9DeploymentSupport.logText(check.step))",
+                        category: .deployment
+                    )
+                }
                 return true
             } else {
                 Logger.shared.error("deployRimeConfig: 部署失败，请在主 App 中重试", category: .deployment)

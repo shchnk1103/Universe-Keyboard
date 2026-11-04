@@ -286,6 +286,21 @@ extension SchemaManager {
                 // the sanitized schema instead of the upstream Lua-dependent version.
                 _ = try T9DeploymentSupport.ensureCompatibleT9Schema(in: shared)
             }
+            if schemaID == "wanxiang", let shared = archiveInstaller.sharedDataDirectoryURL() {
+                let source = shared.appendingPathComponent(WanxiangT9DeploymentSupport.sourceFileName)
+                if FileManager.default.fileExists(atPath: source.path) {
+                    let prepared = WanxiangT9DeploymentSupport.prepare(sharedDataURL: shared)
+                    for step in prepared.steps {
+                        Logger.shared.info(
+                            "deployRimeConfig: \(WanxiangT9DeploymentSupport.logText(step))",
+                            category: .deployment
+                        )
+                    }
+                    if prepared.failed {
+                        throw DownloadError.postProcessingFailed(prepared.steps.last?.reason ?? "rewriteFailed")
+                    }
+                }
+            }
 
             downloadState = .deploying(schemeName: schemeName)
             recordPhase(
