@@ -83,16 +83,18 @@ final class RimeRuntimeSelectionBridgeTests: XCTestCase {
 
     func testT9CustomYamlUsesIceUserDictionaryPreference() {
         let enabled = RimeConfigManager.makeSchemaCustomYamlContent(
-            simplificationEnabled: true,
-            userDictionaryEnabled: true
+            schemaID: "rime_ice",
+            userDictionaryEnabled: true,
+            fuzzyPinyinSettings: RimeFuzzyPinyinSettings(enabled: false)
         )
         XCTAssertTrue(enabled?.contains("enable_user_dict") == true)
         XCTAssertTrue(enabled?.contains("true") == true)
         XCTAssertFalse(enabled?.contains("switches/") == true)
 
         let disabled = RimeConfigManager.makeSchemaCustomYamlContent(
-            simplificationEnabled: false,
-            userDictionaryEnabled: false
+            schemaID: "rime_ice",
+            userDictionaryEnabled: false,
+            fuzzyPinyinSettings: RimeFuzzyPinyinSettings(enabled: false)
         )
         XCTAssertTrue(disabled?.contains("enable_user_dict") == true)
         XCTAssertTrue(disabled?.contains("false") == true)
@@ -137,7 +139,6 @@ final class RimeRuntimeSelectionBridgeTests: XCTestCase {
         let content = try XCTUnwrap(
             RimeConfigManager.makeSchemaCustomYamlContent(
                 schemaID: "luna_pinyin",
-                simplificationEnabled: true,
                 userDictionaryEnabled: true,
                 fuzzyPinyinSettings: RimeFuzzyPinyinSettings(
                     enabled: true,
@@ -158,7 +159,6 @@ final class RimeRuntimeSelectionBridgeTests: XCTestCase {
         let content = try XCTUnwrap(
             RimeConfigManager.makeSchemaCustomYamlContent(
                 schemaID: "luna_pinyin",
-                simplificationEnabled: true,
                 userDictionaryEnabled: true,
                 fuzzyPinyinSettings: RimeFuzzyPinyinSettings(enabled: false)
             )

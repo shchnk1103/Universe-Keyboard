@@ -298,21 +298,6 @@ extension RimeConfigManager {
         return files
     }
 
-    /// Pure helper for tests: builds schema custom YAML from preference values.
-    /// Without switch patches this writes the dictionary key only.
-    public static func makeSchemaCustomYamlContent(
-        simplificationEnabled: Bool?,
-        userDictionaryEnabled: Bool
-    ) -> String? {
-        _ = simplificationEnabled
-        return makeSchemaCustomYamlContent(
-            schemaID: "rime_ice",
-            userDictionaryEnabled: userDictionaryEnabled,
-            fuzzyPinyinSettings: RimeFuzzyPinyinSettings(enabled: false),
-            switchPatches: []
-        )
-    }
-
     /// Builds a schema overlay without mutating the pinned upstream schema.
     /// Switch keys are supplied by the resolver; this function does not invent indexes.
     public static func makeSchemaCustomYamlContent(
@@ -342,22 +327,6 @@ extension RimeConfigManager {
             }
         }
         return yaml
-    }
-
-    /// Legacy call shape used by tests that have not loaded a schema source.
-    public static func makeSchemaCustomYamlContent(
-        schemaID: String,
-        simplificationEnabled: Bool?,
-        userDictionaryEnabled: Bool,
-        fuzzyPinyinSettings: RimeFuzzyPinyinSettings
-    ) -> String? {
-        _ = simplificationEnabled
-        return makeSchemaCustomYamlContent(
-            schemaID: schemaID,
-            userDictionaryEnabled: userDictionaryEnabled,
-            fuzzyPinyinSettings: fuzzyPinyinSettings,
-            switchPatches: []
-        )
     }
 
     static func schemaSwitchTargets(
@@ -433,7 +402,10 @@ extension RimeConfigManager {
             logSwitchOmission(schemaID: target.schemaID, setting: "simplification", reason: "switchesPatched")
             return []
         }
-        guard compileInputProven else {
+        // Luna's closed exemption proves the installed source by hash and by the
+        // absence of grammar.yaml, independent of a following compile. Keep it on
+        // paths such as standard RIME sync so Luna behaves as before.
+        guard compileInputProven || target.schemaID == "luna_pinyin" else {
             logSwitchOmission(schemaID: target.schemaID, setting: "simplification", reason: "compileInputUnproven")
             return []
         }
