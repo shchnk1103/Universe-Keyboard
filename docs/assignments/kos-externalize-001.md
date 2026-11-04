@@ -8,7 +8,7 @@ record_id: KOS-EXTERNALIZE-001
 | Field | Value |
 |---|---|
 | Lifecycle | Active（K1、K2、K3 已合并） |
-| Current phase | K3 已合并：PR #262，合并提交 `7c21bdb36c5f24036c09d63f57f9c812c3c359d8`（2026-11-04）；后续 K1 工具小修包未写 |
+| Current phase | K1 工具小修包 KOS-TOOLS-FIX-001：本地提交，待独立复核 |
 | Material non-claims | 不代表 Product Gate；不修改 `docs/PORTFOLIO.md`、`docs/ACTIVE_WORK.md`；不代表任何外置文件（如 PM-STATE.md）的内容已被复核 |
 | Next handoff / decision | PM 写 K1 工具小修包；Human 确认 PM 手册 Q1–Q6；全部完成后由 Human 决定关闭本 Assignment |
 | Residuals | PM 手册 2.3 节 Q1–Q6 待 Human 确认（见 [PM 手册](../kos/pm-playbook.md)） |
@@ -77,3 +77,4 @@ record_id: KOS-EXTERNALIZE-001
 | K1 = KOS-TOOLS-REPO-001 | 已合并：PR #260，合并提交 `3c7859fa2d561d5993090e3fe5688850436eb66b`（2026-11-04，`git show` 核实）。当时没有 Assignment，这里仅补记历史，不倒推当时 Assignment 或 Gate 曾通过。 |
 | K2 = KOS-PM-PLAYBOOK-001 | 已合并：PR #261，合并提交 `45f95060d4ea4f1b8382785ed284a82f3a6c2ae1`（2026-11-04，`git show` 核实）。新增 [PM 手册](../kos/pm-playbook.md)、[固定条款库](../kos/pm-packet-clauses.md) 与本 Assignment，并更新路由。修订轮次与报告见外置任务目录 `reports/`。 |
 | K3 = KOS-PM-STATE-001 | 已合并：PR #262，合并提交 `7c21bdb36c5f24036c09d63f57f9c812c3c359d8`（2026-11-04）。新增 [PM 状态与交接约定](../kos/pm-state-and-handoff.md) 并更新路由；范围按 Human 2026-11-04 决定。修订轮次与报告见外置任务目录 `~/.kos-work/Universe-Keyboard/KOS-PM-STATE-001/reports/`。 |
+| KOS-TOOLS-FIX-001 | K1 工具小修与条款库补充；报告见外置任务目录 `~/.kos-work/Universe-Keyboard/KOS-TOOLS-FIX-001/reports/`。 |
