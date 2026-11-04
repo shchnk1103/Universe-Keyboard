@@ -1047,7 +1047,7 @@ final class RimeSyncViewModel {
             // 再交给 librime 进行快照合并与 YAML/TXT 备份。
             let overlaysAuthorized = try await Self.runCancellablePhase {
                 await Task.detached(priority: .userInitiated) {
-                    RimeConfigManager.syncCustomYamlFiles()
+                    RimeConfigManager.syncCustomYamlFiles(proveCompileInput: false)
                 }.value
             }
             guard overlaysAuthorized else {

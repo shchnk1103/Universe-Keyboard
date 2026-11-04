@@ -18,6 +18,49 @@ final class RimeBuiltinRuntimeClosureTests: XCTestCase {
         }
     }
 
+    func testUnprovenCompilePlanKeepsBundledLunaSimplificationKey() throws {
+        let root = FileManager.default.temporaryDirectory.appendingPathComponent(
+            "rime-luna-unproven-\(UUID().uuidString)",
+            isDirectory: true
+        )
+        defer { try? FileManager.default.removeItem(at: root) }
+
+        let stagedBundle = try RimeConfigManager.stageBundledResourceClosure(from: .main)
+        defer { try? FileManager.default.removeItem(at: stagedBundle) }
+
+        _ = try RimeBuiltinResourceInstaller().install(
+            sourceRoot: stagedBundle,
+            rimeRoot: root
+        )
+        let lunaSource = try String(
+            contentsOf: root.appendingPathComponent("shared/luna_pinyin.schema.yaml"),
+            encoding: .utf8
+        )
+        // Standard RIME sync plans overlays with an unproven compile input;
+        // Luna's closed exemption must still write its simplification key.
+        for simplified in [true, false] {
+            let files = RimeConfigManager.planSchemaCustomYamlFiles(
+                targets: [
+                    RimeConfigManager.SchemaSwitchTarget(
+                        schemaID: "luna_pinyin",
+                        userDictionarySchemaID: "luna_pinyin",
+                        sourceText: lunaSource,
+                        wanxiangFamily: false
+                    )
+                ],
+                simplificationEnabled: simplified,
+                userDictionarySettings: RimeUserDictionarySettings(lunaPinyinEnabled: false),
+                compileInputProven: false
+            )
+            XCTAssertEqual(files.count, 1)
+            let content = try XCTUnwrap(files.first?.content)
+            XCTAssertTrue(
+                content.contains("\"switches/@2/reset\": \(simplified ? 1 : 0)"),
+                "simplified=\(simplified): \(content)"
+            )
+        }
+    }
+
     private func assertRuntimeClosure(fuzzyEnabled: Bool) async throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(
             "rime-builtin-runtime-\(UUID().uuidString)",
@@ -48,13 +91,30 @@ final class RimeBuiltinRuntimeClosureTests: XCTestCase {
             shSEnabled: true,
             nLEnabled: true
         )
-        let lunaOverlay = try XCTUnwrap(
-            RimeConfigManager.makeSchemaCustomYamlContent(
-                schemaID: "luna_pinyin",
-                simplificationEnabled: true,
-                userDictionaryEnabled: false,
-                fuzzyPinyinSettings: fuzzySettings
-            )
+        // Generate through the production planner with the installed Luna
+        // source, so the resolver supplies the simplification key.
+        let lunaSource = try String(
+            contentsOf: sharedURL.appendingPathComponent("luna_pinyin.schema.yaml"),
+            encoding: .utf8
+        )
+        let lunaFiles = RimeConfigManager.planSchemaCustomYamlFiles(
+            targets: [
+                RimeConfigManager.SchemaSwitchTarget(
+                    schemaID: "luna_pinyin",
+                    userDictionarySchemaID: "luna_pinyin",
+                    sourceText: lunaSource,
+                    wanxiangFamily: false
+                )
+            ],
+            simplificationEnabled: true,
+            userDictionarySettings: RimeUserDictionarySettings(lunaPinyinEnabled: false),
+            fuzzyPinyinSettings: fuzzySettings
+        )
+        XCTAssertEqual(lunaFiles.count, 1)
+        let lunaOverlay = try XCTUnwrap(lunaFiles.first?.content)
+        XCTAssertTrue(
+            lunaOverlay.contains("\"switches/@"),
+            "fuzzyEnabled=\(fuzzyEnabled): Luna overlay lacks the resolved simplification key"
         )
         try lunaOverlay.write(
             to: userURL.appendingPathComponent("luna_pinyin.custom.yaml"),

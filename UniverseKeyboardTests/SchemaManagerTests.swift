@@ -3306,7 +3306,7 @@ private final class DeploymentDirectoryOverrideSchemaArchiveInstaller: SchemaArc
 
     func runtimeDirectories() throws -> SchemaDeploymentDirectories { directories }
 
-    func deploymentDirectories() throws -> SchemaDeploymentDirectories { directories }
+    func deploymentDirectories(pendingSchemaID: String?) throws -> SchemaDeploymentDirectories { directories }
 }
 
 @MainActor
@@ -3423,7 +3423,7 @@ private final class StubSchemaArchiveInstaller: SchemaArchiveInstalling {
         runtimeDirectoriesCallCount += 1
         return directories
     }
-    func deploymentDirectories() throws -> SchemaDeploymentDirectories {
+    func deploymentDirectories(pendingSchemaID: String?) throws -> SchemaDeploymentDirectories {
         deploymentDirectoriesCallCount += 1
         return directories
     }
