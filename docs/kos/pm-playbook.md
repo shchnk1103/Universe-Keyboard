@@ -13,7 +13,7 @@
   - 本手册；
   - [scripts/kos/README.md](../../scripts/kos/README.md)（工具）；
   - [固定条款库](pm-packet-clauses.md)。
-- PM 状态与交接约定见后续文档。
+- PM 状态与交接约定见 [PM 状态与交接约定](pm-state-and-handoff.md)。
 
 ## 2. 规则
 
