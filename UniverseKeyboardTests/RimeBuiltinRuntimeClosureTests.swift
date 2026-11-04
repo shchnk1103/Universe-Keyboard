@@ -48,13 +48,30 @@ final class RimeBuiltinRuntimeClosureTests: XCTestCase {
             shSEnabled: true,
             nLEnabled: true
         )
-        let lunaOverlay = try XCTUnwrap(
-            RimeConfigManager.makeSchemaCustomYamlContent(
-                schemaID: "luna_pinyin",
-                simplificationEnabled: true,
-                userDictionaryEnabled: false,
-                fuzzyPinyinSettings: fuzzySettings
-            )
+        // Generate through the production planner with the installed Luna
+        // source, so the resolver supplies the simplification key.
+        let lunaSource = try String(
+            contentsOf: sharedURL.appendingPathComponent("luna_pinyin.schema.yaml"),
+            encoding: .utf8
+        )
+        let lunaFiles = RimeConfigManager.planSchemaCustomYamlFiles(
+            targets: [
+                RimeConfigManager.SchemaSwitchTarget(
+                    schemaID: "luna_pinyin",
+                    userDictionarySchemaID: "luna_pinyin",
+                    sourceText: lunaSource,
+                    wanxiangFamily: false
+                )
+            ],
+            simplificationEnabled: true,
+            userDictionarySettings: RimeUserDictionarySettings(lunaPinyinEnabled: false),
+            fuzzyPinyinSettings: fuzzySettings
+        )
+        XCTAssertEqual(lunaFiles.count, 1)
+        let lunaOverlay = try XCTUnwrap(lunaFiles.first?.content)
+        XCTAssertTrue(
+            lunaOverlay.contains("\"switches/@"),
+            "fuzzyEnabled=\(fuzzyEnabled): Luna overlay lacks the resolved simplification key"
         )
         try lunaOverlay.write(
             to: userURL.appendingPathComponent("luna_pinyin.custom.yaml"),
