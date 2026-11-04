@@ -2,6 +2,7 @@ import XCTest
 
 @testable import Universe_Keyboard
 
+@MainActor
 final class WanxiangT9DeploymentSupportTests: XCTestCase {
     private let schemaFile = "wanxiang_t9i.schema.yaml"
 
