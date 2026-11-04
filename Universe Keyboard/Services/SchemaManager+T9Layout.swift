@@ -336,17 +336,8 @@ extension SchemaManager {
         let persistedLayout = currentLayoutStyle()
         let binding26 = schemeBinding26()
         let binding9 = schemeBinding9()
-        let onDiskFingerprint = (try? archiveInstaller.runtimeDirectories()).flatMap {
-            T9DeploymentSupport.resourceFingerprint(sharedDataURL: $0.sharedDataURL)
-        }
-        let selection = RimeRuntimeSelection.resolve(
-            baseSchemaID: settings.string(forKey: "rime_active_schema") ?? activeSchemaID,
-            layoutRawValue: settings.string(forKey: KeyboardLayoutSettingsKey.layoutStyle),
-            readinessMarker: T9DeploymentSupport.loadMarker(settings: settings),
-            onDiskFingerprint: onDiskFingerprint,
-            schemeBinding26: binding26,
-            schemeBinding9: binding9
-        )
+        let sharedDataURL = (try? archiveInstaller.runtimeDirectories())?.sharedDataURL
+        let selection = registeredRuntimeSelection(sharedDataURL: sharedDataURL)
         let effectiveState: RimeRuntimeEffectiveRoute.State =
             selection.effectiveLayoutStyle == persistedLayout ? .ready : .failClosed
         let supportedTwentySixKeySchemaIDs =

@@ -3,6 +3,10 @@ import KeyboardCore
 
 /// Main-App deployment smoke for a registered nine-key schema.
 public enum RimeT9SmokeProbe {
+    /// When set, `selectAndConfirm` returns this result and does not open an engine.
+    /// Production leaves it nil. Tests clear it before returning.
+    nonisolated(unsafe) public static var selectAndConfirmHook: ((String, String, String) -> Bool)?
+
     /// Fog path: schema `t9`, input `64`.
     public static func verify(
         sharedDataDir: String,
@@ -47,6 +51,21 @@ public enum RimeT9SmokeProbe {
         )
         engine.suspendForVisibilityChange()
         return passed
+    }
+
+    /// Opens the engine, selects `schemaID`, confirms `currentSchemaID()`, then suspends.
+    public static func selectAndConfirm(
+        sharedDataDir: String,
+        userDataDir: String,
+        schemaID: String
+    ) -> Bool {
+        if let selectAndConfirmHook {
+            return selectAndConfirmHook(sharedDataDir, userDataDir, schemaID)
+        }
+        let engine = RimeEngineImpl(sharedDataDir: sharedDataDir, userDataDir: userDataDir)
+        let selected = engine.bridge.selectSchema(schemaID) && engine.bridge.currentSchemaID() == schemaID
+        engine.suspendForVisibilityChange()
+        return selected
     }
 
     static func evaluationPasses(

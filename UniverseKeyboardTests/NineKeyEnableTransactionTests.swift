@@ -407,7 +407,8 @@ final class NineKeyEnableTransactionTests: XCTestCase {
         XCTAssertNil(failure)
         XCTAssertEqual(settings.string(forKey: KeyboardLayoutSettingsKey.schemeBinding9), wan.schemaID)
         XCTAssertEqual(layout(settings), .twentySixKey)
-        XCTAssertEqual(await deployment.requestCount(), 0)
+        let deploymentRequestCount = await deployment.requestCount()
+        XCTAssertEqual(deploymentRequestCount, 0)
     }
 
     func testSecondEnableWhileLeaseHeldDoesNotWriteMarkerOrLayout() async throws {
@@ -428,7 +429,8 @@ final class NineKeyEnableTransactionTests: XCTestCase {
             deploymentService: NineKeyRecordingDeploymentService(succeeded: true)
         )
         let holder = UUID()
-        XCTAssertTrue(await manager.acquireSchemeDeliveryCommitLease(operationID: holder))
+        let acquiredLease = await manager.acquireSchemeDeliveryCommitLease(operationID: holder)
+        XCTAssertTrue(acquiredLease)
         let message = await manager.enableNineKeyLayout(schemeID: wan.schemaID)
         XCTAssertEqual(message, "RIME 部署失败，已回退 26 键")
         XCTAssertEqual(layout(settings), .nineKey)

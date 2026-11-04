@@ -124,6 +124,39 @@ public struct RimeRuntimeSelection: Sendable, Equatable {
         )
     }
 
+    /// Fog bindings stay on the legacy resolver. Any other registered binding uses per-scheme readiness.
+    public static func resolveRegistered(
+        baseSchemaID: String?,
+        layoutRawValue: String?,
+        readinessMarker: RimeT9ReadinessMarker?,
+        onDiskFingerprint: String?,
+        schemeBinding26: String?,
+        schemeBinding9: String?,
+        readinessBySchema: [String: Bool],
+        installedFamilies: Set<String>
+    ) -> RimeRuntimeSelection {
+        let binding9 = normalizedSchemaID(schemeBinding9)
+        let fogBinding = binding9 == nil || NineKeySchemeRegistry.scheme(binding9 ?? "")?.familyID == "rime_ice"
+        if fogBinding {
+            return resolve(
+                baseSchemaID: baseSchemaID,
+                layoutRawValue: layoutRawValue,
+                readinessMarker: readinessMarker,
+                onDiskFingerprint: onDiskFingerprint,
+                schemeBinding26: schemeBinding26,
+                schemeBinding9: schemeBinding9
+            )
+        }
+        return resolve(
+            baseSchemaID: baseSchemaID,
+            layoutRawValue: layoutRawValue,
+            schemeBinding26: schemeBinding26,
+            schemeBinding9: schemeBinding9,
+            readinessBySchema: readinessBySchema,
+            installedFamilies: installedFamilies
+        )
+    }
+
     /// Per-scheme readiness entry point. Existing overloads retain the fog-only contract.
     public static func resolve(
         baseSchemaID: String?, layoutRawValue: String?, schemeBinding26: String?, schemeBinding9: String?,

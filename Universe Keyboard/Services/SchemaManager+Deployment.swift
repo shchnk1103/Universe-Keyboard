@@ -129,6 +129,7 @@ extension SchemaManager {
 
         let wanxiangNineKeyInstalled =
             settings.bool(forKey: "wanxiang_installed") || pendingSchemaID == "wanxiang"
+        var suppressWanxiangNineKeyMarker = false
         if wanxiangNineKeyInstalled {
             let prepared = WanxiangT9DeploymentSupport.prepare(
                 sharedDataURL: directories.sharedDataURL,
@@ -137,6 +138,14 @@ extension SchemaManager {
             for step in prepared.steps {
                 Logger.shared.info(
                     "deployRimeConfig: \(WanxiangT9DeploymentSupport.logText(step))",
+                    category: .deployment
+                )
+            }
+            // Design §B: a failed prepare leaves this scheme unready. The shared deploy still runs.
+            if prepared.failed {
+                suppressWanxiangNineKeyMarker = true
+                Logger.shared.warning(
+                    "deployRimeConfig: wanxiang nine-key prepare failed; marker stays unready",
                     category: .deployment
                 )
             }
@@ -222,7 +231,9 @@ extension SchemaManager {
                     _ = publishIndependentNineKeyReadiness(
                         sharedDataURL: directories.sharedDataURL,
                         userDataURL: directories.userDataURL,
-                        pendingSchemaID: pendingSchemaID
+                        pendingSchemaID: pendingSchemaID,
+                        suppressSchemaIDs: suppressWanxiangNineKeyMarker
+                            ? [WanxiangT9DeploymentSupport.schemaID] : []
                     )
                 }
                 return true
@@ -251,11 +262,13 @@ extension SchemaManager {
         sharedDataURL: URL,
         userDataURL: URL,
         pendingSchemaID: String? = nil,
-        schemes: [NineKeyScheme]? = nil
+        schemes: [NineKeyScheme]? = nil,
+        suppressSchemaIDs: Set<String> = []
     ) -> Bool {
         let ordered = schemes ?? NineKeySchemeRegistry.entries
         var openedEngine = false
         for scheme in ordered where nineKeyFamilyInstalled(scheme, pendingSchemaID: pendingSchemaID) {
+            if suppressSchemaIDs.contains(scheme.schemaID) { continue }
             guard
                 nineKeyCompiledSchemaIsClean(
                     scheme,
@@ -265,13 +278,21 @@ extension SchemaManager {
             else { continue }
             let input = NineKeySchemeRegistry.smokeInput(for: scheme.schemaID) ?? ""
             openedEngine = true
-            guard
-                RimeT9SmokeProbe.verify(
+            let smoked =
+                NineKeyPublishSmoke.override?(
+                    sharedDataURL.path,
+                    userDataURL.path,
+                    scheme.schemaID,
+                    input
+                )
+                ?? RimeT9SmokeProbe.verify(
                     sharedDataDir: sharedDataURL.path,
                     userDataDir: userDataURL.path,
                     schemaID: scheme.schemaID,
                     input: input
-                ),
+                )
+            guard
+                smoked,
                 let fingerprint = T9DeploymentSupport.resourceFingerprint(
                     schemaID: scheme.schemaID,
                     sharedDataURL: sharedDataURL
@@ -325,23 +346,53 @@ extension SchemaManager {
         return !T9SchemaForceGCInspector.forceGCTranslatorPresent(inYAML: text)
     }
 
-    func restoreNineKeyEngineRoute(sharedDataURL: URL, userDataURL: URL) -> Bool {
+    func registeredNineKeyRouteInputs(sharedDataURL: URL?) -> (
+        readinessBySchema: [String: Bool], installedFamilies: Set<String>
+    ) {
+        var readinessBySchema: [String: Bool] = [:]
+        var installedFamilies = Set<String>()
+        for scheme in NineKeySchemeRegistry.entries {
+            let fingerprint = sharedDataURL.flatMap {
+                T9DeploymentSupport.resourceFingerprint(schemaID: scheme.schemaID, sharedDataURL: $0)
+            }
+            let marker = T9DeploymentSupport.loadMarker(schemaID: scheme.schemaID, settings: settings)
+            readinessBySchema[scheme.schemaID] = NineKeyReadiness.isMatched(
+                schemaID: scheme.schemaID,
+                marker: marker,
+                fingerprint: fingerprint
+            )
+            if nineKeyFamilyInstalled(scheme) {
+                installedFamilies.insert(scheme.familyID)
+            }
+        }
+        return (readinessBySchema, installedFamilies)
+    }
+
+    func registeredRuntimeSelection(sharedDataURL: URL?) -> RimeRuntimeSelection {
         ensureLayoutSchemeBindingsMigrated()
-        let fingerprint = T9DeploymentSupport.resourceFingerprint(sharedDataURL: sharedDataURL)
-        let selection = RimeRuntimeSelection.resolve(
+        let inputs = registeredNineKeyRouteInputs(sharedDataURL: sharedDataURL)
+        let fingerprint = sharedDataURL.flatMap {
+            T9DeploymentSupport.resourceFingerprint(sharedDataURL: $0)
+        }
+        return RimeRuntimeSelection.resolveRegistered(
             baseSchemaID: settings.string(forKey: "rime_active_schema") ?? activeSchemaID,
             layoutRawValue: settings.string(forKey: KeyboardLayoutSettingsKey.layoutStyle),
             readinessMarker: T9DeploymentSupport.loadMarker(settings: settings),
             onDiskFingerprint: fingerprint,
             schemeBinding26: schemeBinding26(),
-            schemeBinding9: schemeBinding9()
+            schemeBinding9: schemeBinding9(),
+            readinessBySchema: inputs.readinessBySchema,
+            installedFamilies: inputs.installedFamilies
         )
-        let engine = RimeEngineImpl(sharedDataDir: sharedDataURL.path, userDataDir: userDataURL.path)
-        let selected =
-            engine.bridge.selectSchema(selection.effectiveSchemaID)
-            && engine.bridge.currentSchemaID() == selection.effectiveSchemaID
-        engine.suspendForVisibilityChange()
-        return selected
+    }
+
+    func restoreNineKeyEngineRoute(sharedDataURL: URL, userDataURL: URL) -> Bool {
+        let selection = registeredRuntimeSelection(sharedDataURL: sharedDataURL)
+        return RimeT9SmokeProbe.selectAndConfirm(
+            sharedDataDir: sharedDataURL.path,
+            userDataDir: userDataURL.path,
+            schemaID: selection.effectiveSchemaID
+        )
     }
 
     private func isActiveRimeDeployment(_ deploymentID: UUID) -> Bool {
@@ -437,7 +488,7 @@ extension SchemaManager {
     }
 
     /// Schemas that should receive the managed fuzzy algebra block on deploy.
-    private func fuzzyTargetSchemaIDs(sharedDataURL: URL) -> [String] {
+    func fuzzyTargetSchemaIDs(sharedDataURL: URL) -> [String] {
         var ids = Set<String>()
         ids.insert(activeSchemaIDForDeployment)
         if let binding26 = settings.string(forKey: KeyboardLayoutSettingsKey.schemeBinding26),
@@ -460,7 +511,14 @@ extension SchemaManager {
         return
             ids
             .map { $0 == "t9" ? "rime_ice" : $0 }
-            .filter { RimeRuntimeSelection.isTwentySixKeyCapable($0) }
+            .filter { schemaID in
+                // Fog `t9` is already mapped to `rime_ice`. Other registered nine-key
+                // schemas are not full-keyboard post-process targets.
+                if let scheme = NineKeySchemeRegistry.scheme(schemaID), scheme.familyID != "rime_ice" {
+                    return false
+                }
+                return RimeRuntimeSelection.isTwentySixKeyCapable(schemaID)
+            }
             .sorted()
     }
 
@@ -505,9 +563,42 @@ extension SchemaManager {
         )
     }
 
+    /// Download and full deploy both pass the runtime user directory into prepare.
+    /// A missing runtime directory keeps prepare's sibling fallback and is logged.
+    func prepareWanxiangNineKeyDownloadSource(sharedDataURL: URL) throws {
+        let source = sharedDataURL.appendingPathComponent(WanxiangT9DeploymentSupport.sourceFileName)
+        guard FileManager.default.fileExists(atPath: source.path) else { return }
+        let userDataURL = (try? archiveInstaller.runtimeDirectories())?.userDataURL
+        if userDataURL == nil {
+            Logger.shared.warning(
+                "deployRimeConfig: wanxiang nine-key prepare has no runtime user directory",
+                category: .deployment
+            )
+        }
+        let prepared = WanxiangT9DeploymentSupport.prepare(
+            sharedDataURL: sharedDataURL,
+            userDataURL: userDataURL
+        )
+        for step in prepared.steps {
+            Logger.shared.info(
+                "deployRimeConfig: \(WanxiangT9DeploymentSupport.logText(step))",
+                category: .deployment
+            )
+        }
+        if prepared.failed {
+            throw DownloadError.postProcessingFailed(prepared.steps.last?.reason ?? "rewriteFailed")
+        }
+    }
+
     private func supportedAdvancedInputFeatures(for schemaID: String) -> Set<RimeAdvancedInputFeature> {
         RimeSchemeCapabilityMatrix.profile(for: schemaID).supportsProductAdvancedInput
             ? Set(RimeAdvancedInputFeature.allCases)
             : []
     }
+}
+
+/// Nil in production. Tests substitute nine-key smoke without opening librime.
+@MainActor
+enum NineKeyPublishSmoke {
+    static var override: ((String, String, String, String) -> Bool)?
 }

@@ -1049,6 +1049,21 @@ final class RimeSettingsStoreTests: XCTestCase {
             missingLuaDependencyNames: []
         )
     }
+
+    func testNineKeyChoicesListBothInstalledFamilies() {
+        let settings = StoreSharedSettingsStore(values: ["wanxiang_installed": true])
+        let store = makeIsolatedStore(
+            settings: settings,
+            archiveInstaller: StoreArchiveInstaller(containsInstalledSchema: true)
+        )
+        let ids = store.nineKeySchemeChoices.map(\.id)
+        XCTAssertEqual(ids.count, 2)
+        XCTAssertTrue(ids.contains("t9"))
+        XCTAssertEqual(
+            store.nineKeySchemeChoices.map(\.name).sorted(),
+            ["万象九键", "雾凇九键"]
+        )
+    }
 }
 
 @MainActor
@@ -1174,21 +1189,6 @@ final class RimeUserDictionaryBackupServiceTests: XCTestCase {
         let status = service.status(for: "luna_pinyin")
         XCTAssertEqual(status.readiness, .hasNewLearningData)
         XCTAssertTrue(status.canBackup)
-    }
-
-    func testNineKeyChoicesListBothInstalledFamilies() {
-        let settings = StoreSharedSettingsStore(values: ["wanxiang_installed": true])
-        let store = makeIsolatedStore(
-            settings: settings,
-            archiveInstaller: StoreArchiveInstaller(containsInstalledSchema: true)
-        )
-        let ids = store.nineKeySchemeChoices.map(\.id)
-        XCTAssertEqual(ids.count, 2)
-        XCTAssertTrue(ids.contains("t9"))
-        XCTAssertEqual(
-            store.nineKeySchemeChoices.map(\.name).sorted(),
-            ["万象九键", "雾凇九键"]
-        )
     }
 }
 
