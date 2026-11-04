@@ -1321,7 +1321,7 @@ private final class StoreArchiveInstaller: SchemaArchiveInstalling {
             userDataURL: URL(fileURLWithPath: "/tmp/user")
         )
     }
-    func deploymentDirectories() throws -> SchemaDeploymentDirectories {
+    func deploymentDirectories(pendingSchemaID: String?) throws -> SchemaDeploymentDirectories {
         SchemaDeploymentDirectories(
             sharedDataURL: URL(fileURLWithPath: "/tmp/shared"),
             userDataURL: URL(fileURLWithPath: "/tmp/user")
