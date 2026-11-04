@@ -6,7 +6,7 @@ struct PrivacyDataView: View {
             Section {
                 privacyRow(
                     "键盘输入不上传",
-                    detail: "键盘扩展不向开发者或第三方发送输入内容、候选、上下文或用户词典。你在主 App 主动确认的标准 RIME 同步另行处理，见下方“网络”说明。",
+                    detail: "键盘扩展不向开发者或第三方发送输入内容、候选、上下文或用户词典。你在主 App 开启的标准 RIME 同步另行处理，见下方“网络”说明。",
                     icon: "keyboard.badge.ellipsis"
                 )
                 privacyRow(
@@ -26,7 +26,7 @@ struct PrivacyDataView: View {
                 )
                 privacyRow(
                     "候选学习",
-                    detail: "RIME 用户词典和纠错选择学习保存在设备上的共享容器中。若你在主 App 确认标准 RIME 同步，词典快照可写入你选择的共享文件夹。",
+                    detail: "RIME 用户词典和纠错选择学习保存在设备上的共享容器中。若你在主 App 开启标准 RIME 同步，词典快照可写入你为同步选定的文件夹。",
                     icon: "character.book.closed"
                 )
                 privacyRow(
@@ -61,7 +61,7 @@ struct PrivacyDataView: View {
                 privacyRow(
                     "可选的 RIME 同步",
                     detail:
-                        "Universe 私有设置同步在你选择目的地前保持关闭；设置包离开设备前加密，不含用户词典、输入洞察、日志或输入内容。标准 RIME 同步需另选共享文件夹并确认，可包含用户词典快照及非生成的 YAML/TXT 配置备份，Universe 不对这些文件加密。首次标准同步成功后，自动同步仍需你另行开启；后台执行由 iOS 安排，可能延迟或不执行。",
+                        "Universe 私有设置同步在你选择目的地前保持关闭；设置包离开设备前加密。本机写入的只有设置项，不包括用户词典、输入洞察、日志或输入内容；你其它设备上的本 App 写入的设置项会按字段合并后保留，并一起加密上传。标准 RIME 同步使用你为同步选定的同一个本地或文件提供器文件夹，手动同步前需确认；它调用 RIME 自带的用户数据同步，可能写入用户词典快照和非生成的 YAML/TXT 配置备份，Universe 不对这些文件加密。首次标准同步成功后，自动同步仍需你另行开启；开启后由 iOS 在后台安排执行，不再逐次确认，可能延迟或不执行。",
                     icon: "icloud.and.arrow.up"
                 )
             } header: {
