@@ -48,7 +48,11 @@ extension SchemaManager {
     }
 
     @discardableResult
-    func deployRimeConfig(leaseOperationID: UUID? = nil, pendingSchemaID: String? = nil) async -> Bool {
+    func deployRimeConfig(
+        leaseOperationID: UUID? = nil,
+        pendingSchemaID: String? = nil,
+        publishNineKeyReadiness: Bool = true
+    ) async -> Bool {
         if let owner = schemeDeliveryCommitLeaseOperationID, owner != leaseOperationID {
             return await waitForPostCommitDeployment()
         }
@@ -61,7 +65,8 @@ extension SchemaManager {
             guard let self else { return false }
             return await self.performRimeDeployment(
                 deploymentID: deploymentID,
-                pendingSchemaID: pendingSchemaID
+                pendingSchemaID: pendingSchemaID,
+                publishNineKeyReadiness: publishNineKeyReadiness
             )
         }
         activeRimeDeploymentTask = task
@@ -75,7 +80,11 @@ extension SchemaManager {
 
     /// The only body that mutates shared deployment files. All public callers
     /// enter through `deployRimeConfig`, which provides process-local single-flight.
-    private func performRimeDeployment(deploymentID: UUID, pendingSchemaID: String?) async -> Bool {
+    private func performRimeDeployment(
+        deploymentID: UUID,
+        pendingSchemaID: String?,
+        publishNineKeyReadiness: Bool
+    ) async -> Bool {
         guard isActiveRimeDeployment(deploymentID) else { return false }
 
         let directories: SchemaDeploymentDirectories
@@ -92,6 +101,8 @@ extension SchemaManager {
         }
 
         guard isActiveRimeDeployment(deploymentID) else { return false }
+        // Shared deploy invalidates both nine-key markers before either family is rechecked.
+        T9DeploymentSupport.invalidateAllReadiness(settings: settings)
         Logger.shared.info("deployRimeConfig: 开始主 App 端全量部署", category: .deployment)
 
         // `deploymentDirectories()` commits immutable resources and dynamic
@@ -207,6 +218,13 @@ extension SchemaManager {
                         category: .deployment
                     )
                 }
+                if publishNineKeyReadiness {
+                    _ = publishIndependentNineKeyReadiness(
+                        sharedDataURL: directories.sharedDataURL,
+                        userDataURL: directories.userDataURL,
+                        pendingSchemaID: pendingSchemaID
+                    )
+                }
                 return true
             } else {
                 Logger.shared.error("deployRimeConfig: 部署失败，请在主 App 中重试", category: .deployment)
@@ -223,6 +241,107 @@ extension SchemaManager {
 
         settings.synchronize()
         return false
+    }
+
+    /// After a shared deploy: per installed family, rewrite check, select+smoke, marker.
+    /// Opens the engine only when that family's compiled schema is already on disk.
+    /// Returns whether the user route was restored; failure forces 26-key.
+    @discardableResult
+    func publishIndependentNineKeyReadiness(
+        sharedDataURL: URL,
+        userDataURL: URL,
+        pendingSchemaID: String? = nil,
+        schemes: [NineKeyScheme]? = nil
+    ) -> Bool {
+        let ordered = schemes ?? NineKeySchemeRegistry.entries
+        var openedEngine = false
+        for scheme in ordered where nineKeyFamilyInstalled(scheme, pendingSchemaID: pendingSchemaID) {
+            guard
+                nineKeyCompiledSchemaIsClean(
+                    scheme,
+                    sharedDataURL: sharedDataURL,
+                    userDataURL: userDataURL
+                )
+            else { continue }
+            let input = NineKeySchemeRegistry.smokeInput(for: scheme.schemaID) ?? ""
+            openedEngine = true
+            guard
+                RimeT9SmokeProbe.verify(
+                    sharedDataDir: sharedDataURL.path,
+                    userDataDir: userDataURL.path,
+                    schemaID: scheme.schemaID,
+                    input: input
+                ),
+                let fingerprint = T9DeploymentSupport.resourceFingerprint(
+                    schemaID: scheme.schemaID,
+                    sharedDataURL: sharedDataURL
+                )
+            else { continue }
+            let upstreamFamily = scheme.familyID == "rime_ice" ? "rime_ice" : scheme.familyID
+            T9DeploymentSupport.writeMatchedReadiness(
+                schemaID: scheme.schemaID,
+                fingerprint: fingerprint,
+                upstreamVersion: installedVersion(for: upstreamFamily),
+                settings: settings
+            )
+        }
+        guard openedEngine else { return true }
+        let restored = restoreNineKeyEngineRoute(sharedDataURL: sharedDataURL, userDataURL: userDataURL)
+        if !restored {
+            T9DeploymentSupport.persistLayout(.twentySixKey, settings: settings)
+        }
+        return restored
+    }
+
+    func nineKeyFamilyInstalled(_ scheme: NineKeyScheme, pendingSchemaID: String? = nil) -> Bool {
+        switch scheme.familyID {
+        case "rime_ice":
+            return rimeIceFilesExist()
+        case "wanxiang":
+            return settings.bool(forKey: "wanxiang_installed") || pendingSchemaID == "wanxiang"
+        default:
+            return false
+        }
+    }
+
+    func nineKeyCompiledSchemaIsClean(
+        _ scheme: NineKeyScheme,
+        sharedDataURL: URL,
+        userDataURL: URL
+    ) -> Bool {
+        if scheme.familyID == "wanxiang" {
+            return WanxiangT9DeploymentSupport.rewriteCheckPassed(
+                sharedDataURL: sharedDataURL,
+                userDataURL: userDataURL
+            )
+        }
+        let userBuild = userDataURL.appendingPathComponent("build/\(scheme.schemaFileName)")
+        let sharedBuild = sharedDataURL.appendingPathComponent("build/\(scheme.schemaFileName)")
+        let loaded = FileManager.default.fileExists(atPath: userBuild.path) ? userBuild : sharedBuild
+        guard FileManager.default.fileExists(atPath: loaded.path),
+            let text = try? String(contentsOf: loaded, encoding: .utf8)
+        else { return false }
+        if text.contains("t9_processor") { return false }
+        return !T9SchemaForceGCInspector.forceGCTranslatorPresent(inYAML: text)
+    }
+
+    func restoreNineKeyEngineRoute(sharedDataURL: URL, userDataURL: URL) -> Bool {
+        ensureLayoutSchemeBindingsMigrated()
+        let fingerprint = T9DeploymentSupport.resourceFingerprint(sharedDataURL: sharedDataURL)
+        let selection = RimeRuntimeSelection.resolve(
+            baseSchemaID: settings.string(forKey: "rime_active_schema") ?? activeSchemaID,
+            layoutRawValue: settings.string(forKey: KeyboardLayoutSettingsKey.layoutStyle),
+            readinessMarker: T9DeploymentSupport.loadMarker(settings: settings),
+            onDiskFingerprint: fingerprint,
+            schemeBinding26: schemeBinding26(),
+            schemeBinding9: schemeBinding9()
+        )
+        let engine = RimeEngineImpl(sharedDataDir: sharedDataURL.path, userDataDir: userDataURL.path)
+        let selected =
+            engine.bridge.selectSchema(selection.effectiveSchemaID)
+            && engine.bridge.currentSchemaID() == selection.effectiveSchemaID
+        engine.suspendForVisibilityChange()
+        return selected
     }
 
     private func isActiveRimeDeployment(_ deploymentID: UUID) -> Bool {

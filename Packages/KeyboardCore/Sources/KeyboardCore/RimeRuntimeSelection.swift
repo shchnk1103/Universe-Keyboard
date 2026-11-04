@@ -219,9 +219,9 @@ public struct RimeRuntimeSelection: Sendable, Equatable {
         defaults.set(id, forKey: KeyboardLayoutSettingsKey.schemeBinding9)
     }
 
-    /// Product nine-key capability via SchemeAdapter LayoutCapability (Ice `t9` only today).
+    /// Product nine-key capability: membership in the nine-key scheme registry.
     public static func isNineKeyCapable(_ schemaID: String) -> Bool {
-        schemaID == "t9" && SchemeAdapterRegistry.isNineKeyCapable(schemaID)
+        NineKeySchemeRegistry.scheme(schemaID) != nil
     }
 
     /// Schemes that may appear in the 26-key picker (via LayoutCapability).

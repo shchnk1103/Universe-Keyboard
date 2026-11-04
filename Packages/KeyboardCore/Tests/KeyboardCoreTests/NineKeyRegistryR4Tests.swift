@@ -10,7 +10,13 @@ final class NineKeyRegistryR4Tests: XCTestCase {
         XCTAssertEqual(NineKeySchemeRegistry.scheme("wanxiang_t9i")?.familyID, "wanxiang")
         XCTAssertTrue(SchemeAdapterRegistry.wanxiang.layout.supportsNineKey)
         XCTAssertTrue(SchemeAdapterRegistry.isRegisteredNineKeyCapable("wanxiang_t9i"))
-        XCTAssertFalse(RimeRuntimeSelection.isNineKeyCapable("wanxiang_t9i"))
+        XCTAssertTrue(RimeRuntimeSelection.isNineKeyCapable("wanxiang_t9i"))
+        XCTAssertEqual(NineKeySchemeRegistry.smokeInput(for: "t9"), "64")
+        XCTAssertEqual(
+            NineKeySchemeRegistry.smokeInput(for: "wanxiang_t9i"),
+            "6446"
+        )
+        XCTAssertFalse(RimeRuntimeSelection.isNineKeyCapable("wanxiang"))
         XCTAssertEqual(RimeSchemeCapabilityMatrix.normalizeRegisteredSchemaID("wanxiang_t9i"), "wanxiang")
         XCTAssertFalse(
             NineKeySchemeRegistry.isValid([

@@ -61,6 +61,15 @@ enum WanxiangT9DeploymentSupport {
         }
     }
 
+    /// Post-deploy gate used by nine-key publish: compiled schema exists and is clean.
+    static func rewriteCheckPassed(
+        sharedDataURL: URL,
+        userDataURL: URL? = nil,
+        files: WanxiangT9Files = .live
+    ) -> Bool {
+        !recheckCompiled(sharedDataURL: sharedDataURL, userDataURL: userDataURL, files: files).failed
+    }
+
     static func recheckCompiled(
         sharedDataURL: URL,
         userDataURL: URL? = nil,

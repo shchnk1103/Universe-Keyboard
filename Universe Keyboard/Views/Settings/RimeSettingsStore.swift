@@ -609,13 +609,32 @@ final class RimeSettingsStore {
         }
     }
 
-    /// Installed schemes usable for the nine-key slot (V1: fog T9 when ready).
+    /// Nine-key rows from the registry plus whether that family is installed.
     var nineKeySchemeChoices: [(id: String, name: String)] {
-        var rows: [(String, String)] = []
-        if t9ReadinessMatched || rimeIceInstalledFilesExist {
-            rows.append(("t9", "雾凇九键 (T9)"))
+        NineKeySchemeRegistry.entries.compactMap { scheme in
+            let installed: Bool
+            switch scheme.familyID {
+            case "rime_ice":
+                installed = rimeIceInstalledFilesExist
+            case "wanxiang":
+                installed = schemaManager.wanxiangFamilyInstalled()
+            default:
+                installed = false
+            }
+            guard installed else { return nil }
+            return (scheme.schemaID, Self.nineKeySchemeTitle(scheme))
         }
-        return rows
+    }
+
+    static func nineKeySchemeTitle(_ scheme: NineKeyScheme) -> String {
+        switch scheme.familyID {
+        case "rime_ice":
+            return "雾凇九键"
+        case "wanxiang":
+            return "万象九键"
+        default:
+            return scheme.schemaID
+        }
     }
 
     func selectTwentySixKeyLayout() {
@@ -636,8 +655,8 @@ final class RimeSettingsStore {
         await triggerDeployment()
     }
 
-    func setSchemeBinding9(_ schemaID: String) {
-        schemaManager.setSchemeBinding9(schemaID)
+    func setSchemeBinding9(_ schemaID: String) async -> String? {
+        await schemaManager.setSchemeBinding9(schemaID)
     }
 
     func ensureLayoutSchemeBindingsMigrated() {

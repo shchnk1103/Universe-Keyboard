@@ -53,6 +53,13 @@ public enum NineKeySchemeRegistry {
         guard isValid(entries) else { return [] }
         return entries.filter { $0.familyID == familyID }
     }
+
+    /// Registered smoke digits. Fog stays on the existing `64` sample.
+    public static func smokeInput(for schemaID: String) -> String? {
+        guard scheme(schemaID) != nil else { return nil }
+        if schemaID == "t9" { return "64" }
+        return "6446"
+    }
 }
 
 /// Minimal persistence seam, permitting a process-local store in tests.
@@ -85,6 +92,20 @@ public enum NineKeyReadiness {
             RimeT9ReadinessMarker(
                 ready: false, compatibilityVersion: scheme.compatibilityVersion,
                 resourceFingerprint: ""), schemaID: schemaID, defaults: defaults)
+    }
+
+    /// Drops every registered scheme's marker. Used before a shared full deploy.
+    public static func invalidateAll(defaults: (any NineKeySettingsStore)?) {
+        guard NineKeySchemeRegistry.isValid(NineKeySchemeRegistry.entries) else { return }
+        for scheme in NineKeySchemeRegistry.entries {
+            invalidate(schemaID: scheme.schemaID, defaults: defaults)
+        }
+    }
+
+    public static func invalidate(familyID: String, defaults: (any NineKeySettingsStore)?) {
+        for scheme in NineKeySchemeRegistry.schemes(forFamily: familyID) {
+            invalidate(schemaID: scheme.schemaID, defaults: defaults)
+        }
     }
 
     public static func fingerprint(schemaID: String, sharedDirectory: URL) -> String? {

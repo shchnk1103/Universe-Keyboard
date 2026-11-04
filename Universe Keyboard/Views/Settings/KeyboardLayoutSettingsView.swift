@@ -23,7 +23,7 @@ struct KeyboardLayoutSettingsView: View {
             } header: {
                 Text("主键盘")
             } footer: {
-                Text("选择主键盘外形后，下方只显示该布局使用的输入方案。九宫格依赖已就绪的雾凇 T9；启用前会检查安装与部署。全键盘可选用万象等方案，不影响九宫格。英文与自动英文在九键偏好下仍用 26 键。")
+                Text("选择主键盘外形后，下方只显示该布局使用的输入方案。九宫格列出已安装家族的九键方案；启用前会检查安装与部署。全键盘方案与九键方案互相独立。英文与自动英文在九键偏好下仍用 26 键。")
             }
 
             KeyboardHeightSettingsEntry()
@@ -46,12 +46,12 @@ struct KeyboardLayoutSettingsView: View {
                 } header: {
                     Text("输入方案")
                 } footer: {
-                    Text("仅作用于全键盘中文。切换到九宫格时会使用九键专用方案（当前为雾凇 T9），与这里选择的全键盘方案互相独立。")
+                    Text("仅作用于全键盘中文。切换到九宫格时使用已安装的九键方案，与这里选择的全键盘方案互相独立。")
                 }
             } else {
                 Section {
                     if rimeStore.nineKeySchemeChoices.isEmpty {
-                        Text("九键方案尚未就绪。请先安装雾凇拼音并完成 T9 验证；启用九宫格时会自动准备。")
+                        Text("九键方案尚未安装。请先安装带九键方案的家族；启用时会自动准备并验证。")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     } else {
@@ -61,14 +61,14 @@ struct KeyboardLayoutSettingsView: View {
                                 subtitle: row.id,
                                 isSelected: (rimeStore.schemeBinding9 ?? "t9") == row.id
                             ) {
-                                rimeStore.setSchemeBinding9(row.id)
+                                Task { _ = await rimeStore.setSchemeBinding9(row.id) }
                             }
                         }
                     }
                 } header: {
                     Text("输入方案")
                 } footer: {
-                    Text("九宫格中文使用九键方案（当前为雾凇 T9）。即使全键盘选用万象等无九键包的方案，只要雾凇 T9 已就绪，仍可正常使用九宫格。未就绪时会保持全键盘。")
+                    Text("九宫格中文使用下方已安装的九键方案。目标已就绪时只切换九键绑定；未就绪时走启用流程。失败时保持全键盘。")
                 }
             }
 
