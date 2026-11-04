@@ -109,3 +109,4 @@ This directory does not authorize by mere existence:
 
 - [PM 手册](pm-playbook.md) — PM 职责与工作规则。
 - [固定条款库](pm-packet-clauses.md) — 写任务包时复制粘贴用的条款。
+- [PM 状态与交接约定](pm-state-and-handoff.md) — PM 外置文件布局、当前状态文件格式与交接清单。
