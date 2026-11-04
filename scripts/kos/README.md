@@ -53,7 +53,7 @@ python3 -B scripts/kos/freeze.py /Users/me/.kos-work/Universe-Keyboard/T-001/ins
   - 提到构建并限定“只写”，却没给构建输出位置；
   - 引用或采纳的报告（任意以 `/` 开头的绝对路径）没有哈希。
 - **输出：** 输出文件已存在就拒绝覆盖。成功时写出冻结包，打印其 SHA-256 和可直接粘贴的派发块。
-- 固定条款库见后续 PM 手册。
+- 固定条款库见 [`docs/kos/pm-packet-clauses.md`](../../docs/kos/pm-packet-clauses.md)，PM 工作规则见 [`docs/kos/pm-playbook.md`](../../docs/kos/pm-playbook.md)。
 
 ## check_report.py：核对返回的报告
 
