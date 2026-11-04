@@ -58,6 +58,8 @@ Ownership: Architecture & Knowledge Steward owns startup routing; Product Lead o
 
 Required review: repository truth comes from Assignment and canonical documents, not conversation; current Work Item and lifecycle are discovered before action; missing Assignment or UNKNOWN fields stop formal work unless the user objective authorizes governance bootstrap. After KOS-MIG-001, frozen Knowledge OS rules live under docs/kos/; do not treat pre-migration dual-track language as current. KOS 2.2 remains advisory at the v0.9.0 pin; see [UPGRADE_STATUS](kos/UPGRADE_STATUS.md), [PD-KOS-UPGRADE-UK-006](product-decisions/KOS-UPGRADE-UK-006-v0.9.0-adoption.md) and [the v0.9.0 reviewer-lane contract](ASSIGNMENT_POLICY.md#independent-reviewer-lane-packet-kos-kit-v090-selective-adoption). Do not treat validator output as a Gate pass.
 
+接手 PM 工作时读取 [PM 手册](kos/pm-playbook.md)、[PM 状态与交接约定](kos/pm-state-and-handoff.md) 和 [固定条款库](kos/pm-packet-clauses.md)；任务生命周期与权限仍以 Assignment Policy 和 AI_WORKFLOW 为准。
+
 ## Create, Review Or Change A Task Assignment
 
 Ownership: Product Lead makes Assignment and Reassignment decisions; Program Manager checks completeness only; Architecture & Knowledge Steward owns Policy governance.

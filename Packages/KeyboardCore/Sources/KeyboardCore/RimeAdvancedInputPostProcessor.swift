@@ -103,14 +103,24 @@ public struct RimeAdvancedInputPostProcessor {
         return result.joined(separator: "\n")
     }
 
+    /// In-memory view of the same removal `apply` writes, so switch proof does not
+    /// need a schema file or its restore sidecar.
+    public static func previewRemovingDisabledComponents(
+        _ componentNames: Set<String>,
+        from yaml: String
+    ) -> String {
+        removeLuaComponents(componentNames, from: yaml)
+    }
+
     private static func referencesLuaComponent(
         _ trimmedLine: String,
         componentNames: Set<String>
     ) -> Bool {
-        guard trimmedLine.contains("lua_processor@")
-            || trimmedLine.contains("lua_translator@")
-            || trimmedLine.contains("lua_filter@")
-            || trimmedLine.contains("lua_segmentor@")
+        guard
+            trimmedLine.contains("lua_processor@")
+                || trimmedLine.contains("lua_translator@")
+                || trimmedLine.contains("lua_filter@")
+                || trimmedLine.contains("lua_segmentor@")
         else {
             return false
         }

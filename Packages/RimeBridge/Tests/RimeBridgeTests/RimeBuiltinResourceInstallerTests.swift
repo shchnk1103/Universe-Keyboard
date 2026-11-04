@@ -879,7 +879,8 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
             contentsOf: runtime.userDir.appendingPathComponent("luna_pinyin.custom.yaml"),
             encoding: .utf8
         )
-        XCTAssertTrue(lunaBody.contains("\"switches/@2/reset\": 1"))
+        XCTAssertTrue(lunaBody.contains("enable_user_dict"))
+        XCTAssertFalse(lunaBody.contains("switches/"))
         XCTAssertNoThrow(
             try RimeBuiltinResourceInstaller().validateInstalledRuntime(
                 rimeRoot: runtime.rimeRoot,
@@ -906,7 +907,8 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
             contentsOf: runtime.userDir.appendingPathComponent("luna_pinyin.custom.yaml"),
             encoding: .utf8
         )
-        XCTAssertTrue(lunaBody.contains("\"switches/@2/reset\": 0"))
+        XCTAssertTrue(lunaBody.contains("enable_user_dict"))
+        XCTAssertFalse(lunaBody.contains("switches/"))
         XCTAssertNoThrow(
             try RimeBuiltinResourceInstaller().validateInstalledRuntime(
                 rimeRoot: runtime.rimeRoot,

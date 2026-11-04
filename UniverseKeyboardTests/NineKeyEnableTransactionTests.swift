@@ -428,7 +428,7 @@ private final class NineKeySchemaArchiveInstaller: SchemaArchiveInstalling {
     func clearBuildCache(plan: RimeSchemeInstallationPlan) {}
     func sharedDataDirectoryURL() -> URL? { directories.sharedDataURL }
     func runtimeDirectories() throws -> SchemaDeploymentDirectories { directories }
-    func deploymentDirectories() throws -> SchemaDeploymentDirectories { directories }
+    func deploymentDirectories(pendingSchemaID: String?) throws -> SchemaDeploymentDirectories { directories }
 }
 
 private actor NineKeyRecordingDeploymentService: RimeDeploymentServicing {

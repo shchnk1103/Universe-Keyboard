@@ -9,7 +9,8 @@ extension RimeConfigManager {
     /// The keyboard extension must never call this API: hashing and persistent
     /// file writes belong to an explicit main-App deployment transaction.
     public static func prepareDirectories(
-        resourceBundle: Bundle = .main
+        resourceBundle: Bundle = .main,
+        pendingSchemaID: String? = nil
     ) throws -> (sharedDir: String, userDir: String) {
         guard
             let containerURL = FileManager.default.containerURL(
@@ -40,7 +41,13 @@ extension RimeConfigManager {
             sourceRoot: resourceRoot,
             rimeRoot: rimeRoot,
             afterInstallingResources: {
-                guard syncCustomYamlFiles() else {
+                guard
+                    syncCustomYamlFiles(
+                        defaults: UserDefaults(suiteName: deploymentResourcesAppGroupID),
+                        rimeRoot: rimeRoot,
+                        pendingSchemaID: pendingSchemaID
+                    )
+                else {
                     throw RimeBuiltinResourceInstaller.InstallationError.fileOperationFailed
                 }
             }

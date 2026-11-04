@@ -18,7 +18,7 @@
 - **Exit Criteria:** R2 implementation, tests and local commit, with evidence in executor report.
 - **Stop Conditions:** R2 hard stop conditions, including privacy, changed input behavior, weakened tests, signing, device work, push or denied writes.
 - **Handoff Target:** Independent Architecture and Quality reviewers: final HEAD and tree, external report, test logs, privacy boundaries and outstanding findings.
-- **Lifecycle Status:** Active — implementation and local verification.
+- **Lifecycle Status:** Closed — PR #256 merged (merge commit `e53039339441ebe86301b1e77bcc978f244e88b4`); third-round independent Architecture review `ACCEPT` and Quality review `PASS` (external `reports/review-arch-3.md`, `reports/quality-3.md`); closed by Human decision on 2026-10-29.
 - **Revalidation Trigger:** Changes to frozen scope, privacy boundary, baseline, authorization or required evidence.
 
 ## R3 baseline comparison

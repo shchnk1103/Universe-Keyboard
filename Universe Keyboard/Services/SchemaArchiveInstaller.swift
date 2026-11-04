@@ -54,8 +54,16 @@ protocol SchemaArchiveInstalling: AnyObject {
     /// Safe for settings/readiness queries.
     func runtimeDirectories() throws -> SchemaDeploymentDirectories
     /// Prepares writable deployment resources. Only explicit main-App deploy
-    /// transactions may call this method.
-    func deploymentDirectories() throws -> SchemaDeploymentDirectories
+    /// transactions may call this method. `pendingSchemaID` names a schema
+    /// installed by this deployment whose installed flag is not yet persisted.
+    func deploymentDirectories(pendingSchemaID: String?) throws -> SchemaDeploymentDirectories
+}
+
+extension SchemaArchiveInstalling {
+    /// Prepares writable deployment resources with no pending schema.
+    func deploymentDirectories() throws -> SchemaDeploymentDirectories {
+        try deploymentDirectories(pendingSchemaID: nil)
+    }
 }
 
 @MainActor
@@ -343,8 +351,11 @@ final class SharedContainerSchemaArchiveInstaller: SchemaArchiveInstalling {
         return SchemaDeploymentDirectories(sharedDataURL: sharedDataURL, userDataURL: userDataURL)
     }
 
-    func deploymentDirectories() throws -> SchemaDeploymentDirectories {
-        let prepared = try RimeConfigManager.prepareDirectories(resourceBundle: .main)
+    func deploymentDirectories(pendingSchemaID: String?) throws -> SchemaDeploymentDirectories {
+        let prepared = try RimeConfigManager.prepareDirectories(
+            resourceBundle: .main,
+            pendingSchemaID: pendingSchemaID
+        )
         return SchemaDeploymentDirectories(
             sharedDataURL: URL(fileURLWithPath: prepared.sharedDir),
             userDataURL: URL(fileURLWithPath: prepared.userDir)

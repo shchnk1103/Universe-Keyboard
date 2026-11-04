@@ -895,7 +895,10 @@ extension SchemaManager {
         leaseOperationID: UUID? = nil
     ) async -> Bool {
         activateSchema(schemaID, leaseOperationID: leaseOperationID)
-        let deploymentSucceeded = await deployRimeConfig(leaseOperationID: leaseOperationID)
+        let deploymentSucceeded = await deployRimeConfig(
+            leaseOperationID: leaseOperationID,
+            pendingSchemaID: schemaID
+        )
         guard deploymentSucceeded else {
             restoreAfterFailedUpgradeIfNeeded(
                 checkpoint: &checkpoint,
