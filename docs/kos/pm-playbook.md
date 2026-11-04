@@ -66,7 +66,7 @@
 | Q3 | 优先级列表中“谁来做”一栏 | prioritized-next-steps 的示例按 AI 名字写“谁”，与 H1“不指定哪个 AI”冲突，需 Human 确认是否改为只写角色。现按 H1 只写角色 |
 | Q4 | 组合表（`docs/PORTFOLIO.md`）随任务合并后核对、发现问题即单独刷新 | pm-role-and-dispatch-workflow 记为 Human 2026-10-22 采用，但组合同步不在本手册范围，与仓库现行维护规则的关系未核 |
 | Q5 | 用中文回复；回复先给结论、再写 Human 要做什么、最后写记录情况 | 来源（pm-role-and-dispatch-workflow、combined-authorization-dispatch 的 2026-10-24 修订）没有写明这是 Human 原话还是 PM 的总结 |
-| Q6 | 每轮回复都简短附上 KOS 下一步建议 | 只出现在本机技能说明的触发语中，未写明日期与 Human 批准；与 P1“非 PM 角色不给下一步建议”的适用对象需 Human 确认（现理解为只对 PM） |
+| Q6 | 每轮回复都简短附上 KOS 下一步建议 | 只出现在本机技能说明的触发语中，未写明日期与 Human 批准；与 role-from-packet 第 16 行“非 PM 角色的最终消息不给下一步建议”的适用对象需 Human 确认（现理解为只对 PM） |
 
 ## 3. 写包与冻结
 

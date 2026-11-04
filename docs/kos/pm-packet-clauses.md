@@ -36,7 +36,7 @@ KeyboardCore：`swift test --package-path Packages/KeyboardCore --scratch-path <
 具体资源与清单以该包冻结的内容为准；开工用仓库 `scripts/kos/verify-tree.py` 重跑核对，不符即停。涉及 Vendor 时，仅在任务适用时引用仓库现行说明（`scripts/ensure_rime_vendor.sh` 等）。不联网。
 
 ## 提交（提交时）
-本地提交，作者与提交者 `Cowork 3P <<提交者邮箱>>`（单次 `git -c user.name=... -c user.email=...`，不改配置），英文提交信息，无 AI 署名、无 Co-authored-by。提交前对变更的 Swift 文件执行 `xcrun swift-format format --in-place --configuration .swift-format <file>` 与 `xcrun swift-format lint --strict --configuration .swift-format <file>`，失败不得提交。不 push、不开 PR。
+本地提交，作者与提交者 `Cowork 3P <提交者邮箱>`（单次 `git -c user.name=... -c user.email=...`，不改配置），英文提交信息，无 AI 署名、无 Co-authored-by。提交前对变更的 Swift 文件执行 `xcrun swift-format format --in-place --configuration .swift-format <file>` 与 `xcrun swift-format lint --strict --configuration .swift-format <file>`，失败不得提交。不 push、不开 PR。
 
 ## 判定用语（有测试时）
 “失败”= 断言不成立或运行报错；“未运行”= 整组没有执行或中途中断；“自行跳过”= 测试因缺外部资源或仅限真机主动跳过。本包点名要求的测试若被跳过 → 未完成。其它既有测试的自行跳过逐项列出，不算失败，不阻止 DONE。DONE 所需回归都在最终提交上运行；日志开头写完整命令、HEAD、`git status --porcelain`，末尾 `EXIT:<码>` 与 HEAD。PARTIAL 可提交当前内容并逐项列出未运行项。STOPPED 优先于其它状态。
