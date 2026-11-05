@@ -8,7 +8,7 @@ import XCTest
 final class NineKeyWanxiangUninstallTests: XCTestCase {
     private struct DirectoriesUnavailable: Error {}
 
-    func testFailureBeforeSharedDeployClearsOnlyWanxiangMarker() async throws {
+    func testDirectoryPreparationFailureLeavesBothMarkersUnready() async throws {
         let wanxiangID = try wanxiangSchemeID()
         let settings = RecordingSettingsStore()
         settings.set("wanxiang", forKey: "rime_active_schema")
@@ -20,6 +20,32 @@ final class NineKeyWanxiangUninstallTests: XCTestCase {
         T9DeploymentSupport.writeMatchedReadiness(
             schemaID: wanxiangID, fingerprint: "wan-keep", upstreamVersion: "v", settings: settings)
         let installer = UninstallArchiveInstaller(failDirectories: true)
+        let deployment = UninstallDeployment(succeeded: false)
+        let manager = SchemaManager(
+            settings: settings, archiveInstaller: installer, deploymentService: deployment)
+        await manager.uninstallSchema("wanxiang")?.value
+        XCTAssertEqual(T9DeploymentSupport.loadMarker(settings: settings)?.ready, false)
+        XCTAssertEqual(T9DeploymentSupport.loadMarker(schemaID: wanxiangID, settings: settings)?.ready, false)
+        XCTAssertFalse(installer.didCommitUninstall)
+        let calls = await deployment.calls
+        XCTAssertEqual(calls, 0)
+    }
+
+    /// `schemeBinding26` holds the nine-key schema id, which is not a 26-key
+    /// binding. The route snapshot then fails validation inside
+    /// `performSchemaUninstall` before `deployRimeConfig`.
+    func testRouteSnapshotFailureBeforeSharedDeployClearsOnlyWanxiangMarker() async throws {
+        let wanxiangID = try wanxiangSchemeID()
+        let settings = RecordingSettingsStore()
+        settings.set("luna_pinyin", forKey: "rime_active_schema")
+        settings.set(wanxiangID, forKey: KeyboardLayoutSettingsKey.schemeBinding26)
+        settings.set(true, forKey: "wanxiang_installed")
+        T9DeploymentSupport.persistLayout(.twentySixKey, settings: settings)
+        T9DeploymentSupport.writeMatchedReadiness(
+            fingerprint: "fog-keep", upstreamVersion: "v", settings: settings)
+        T9DeploymentSupport.writeMatchedReadiness(
+            schemaID: wanxiangID, fingerprint: "wan-keep", upstreamVersion: "v", settings: settings)
+        let installer = UninstallArchiveInstaller(failDirectories: false)
         let deployment = UninstallDeployment(succeeded: false)
         let manager = SchemaManager(
             settings: settings, archiveInstaller: installer, deploymentService: deployment)
