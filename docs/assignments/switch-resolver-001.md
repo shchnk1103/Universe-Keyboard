@@ -9,7 +9,7 @@ record_id: SWITCH-RESOLVER-001
 |---|---|
 | Lifecycle | Active（PR #264 已合并，待 Human 真机验收） |
 | Current phase | 已合并：PR #264，合并提交 `5f395ffc4913729300e702960485316242169178`（2026-11-04）；R5 窄复核 Pass；Human 真机验收未做 |
-| Material non-claims | 不代表 Human 真机验收或 Release 通过（托管 CI 在 PR #264 上全部通过）；万象九宫格（`wanxiang_t9i`）未接入；雾凇九宫格 `t9` 不写开关键；真实引擎证据只限隔离资源 |
+| Material non-claims | 不代表 Human 真机验收或 Release 通过（托管 CI 在 PR #264 上全部通过）；万象九宫格（`wanxiang_t9i`）由 WANXIANG-T9-001 接入（PR #270），不在本 Assignment 范围；雾凇九宫格 `t9` 不写开关键；真实引擎证据只限隔离资源 |
 | Next handoff / decision | Human 真机验收（繁体在雾凇 / 万象生效、标点正常、万象表情候选出现）；通过后由 Human 决定关闭本 Assignment |
 | Residuals | 最终复核 FR-04（设计 F4 的入口场景测试未齐）、FR-05（真机未做）记为后续项，见外置任务目录 `~/.kos-work/Universe-Keyboard/SWITCH-RESOLVER-001/reports/final-review.md` |
 
