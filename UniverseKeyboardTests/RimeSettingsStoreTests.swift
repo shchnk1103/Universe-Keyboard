@@ -1064,6 +1064,175 @@ final class RimeSettingsStoreTests: XCTestCase {
             ["万象九键", "雾凇九键"]
         )
     }
+
+    func testSelectNineKeySchemeWritesReadyBindingWithoutDeployment() async throws {
+        let scheme = try XCTUnwrap(wanxiangNineKeyScheme())
+        let root = try makeNineKeySharedRoot()
+        let settings = StoreSharedSettingsStore(values: ["wanxiang_installed": true])
+        let deployment = StoreDeploymentService(succeeded: true)
+        let store = makeNineKeyStore(settings: settings, deployment: deployment, sharedRoot: root)
+        try writeReadyMarker(for: scheme, settings: settings, sharedRoot: root)
+
+        let failure = await store.selectNineKeyScheme(scheme.schemaID)
+
+        XCTAssertNil(failure)
+        XCTAssertEqual(settings.string(forKey: KeyboardLayoutSettingsKey.schemeBinding9), scheme.schemaID)
+        let requests = await deployment.requests
+        XCTAssertEqual(requests.count, 0)
+    }
+
+    func testSelectNineKeySchemeEnablesUnreadyTargetWithThatSchemeID() async throws {
+        let scheme = try XCTUnwrap(wanxiangNineKeyScheme())
+        let root = try makeNineKeySharedRoot()
+        let settings = StoreSharedSettingsStore(
+            values: [
+                "wanxiang_installed": true,
+                KeyboardLayoutSettingsKey.layoutStyle: KeyboardLayoutStyle.nineKey.rawValue,
+            ]
+        )
+        T9DeploymentSupport.writeMatchedReadiness(
+            schemaID: scheme.schemaID,
+            fingerprint: "stale",
+            upstreamVersion: nil,
+            settings: settings
+        )
+        let deployment = StoreDeploymentService(succeeded: true)
+        let store = makeNineKeyStore(settings: settings, deployment: deployment, sharedRoot: root)
+
+        let failure = await store.selectNineKeyScheme(scheme.schemaID)
+
+        XCTAssertNotNil(failure)
+        XCTAssertNotEqual(failure, "")
+        XCTAssertEqual(
+            settings.string(forKey: KeyboardLayoutSettingsKey.layoutStyle),
+            KeyboardLayoutStyle.twentySixKey.rawValue,
+            "enable for this scheme starts by leaving nine-key"
+        )
+        XCTAssertEqual(T9DeploymentSupport.loadMarker(schemaID: scheme.schemaID, settings: settings)?.ready, false)
+        XCTAssertNotEqual(settings.string(forKey: KeyboardLayoutSettingsKey.schemeBinding9), "t9")
+    }
+
+    func testSelectNineKeySchemeReturnsMessageWhenEnableFails() async throws {
+        let scheme = try XCTUnwrap(wanxiangNineKeyScheme())
+        let root = try makeNineKeySharedRoot()
+        let settings = StoreSharedSettingsStore(values: ["wanxiang_installed": true])
+        let store = makeNineKeyStore(
+            settings: settings,
+            deployment: StoreDeploymentService(succeeded: false),
+            sharedRoot: root
+        )
+
+        let failure = await store.selectNineKeyScheme(scheme.schemaID)
+
+        XCTAssertNotNil(failure)
+        XCTAssertFalse(failure?.isEmpty ?? true)
+    }
+
+    func testNineKeyEntryKeepsReadyWanxiangBindingAndLayout() throws {
+        let scheme = try XCTUnwrap(wanxiangNineKeyScheme())
+        let root = try makeNineKeySharedRoot()
+        let settings = StoreSharedSettingsStore(
+            values: [
+                "wanxiang_installed": true,
+                KeyboardLayoutSettingsKey.schemeBinding9: scheme.schemaID,
+            ]
+        )
+        let store = makeNineKeyStore(settings: settings, sharedRoot: root)
+        try writeReadyMarker(for: scheme, settings: settings, sharedRoot: root)
+
+        XCTAssertEqual(store.nineKeyLayoutEntry(), .persistLayoutKeepingBinding)
+        store.persistNineKeyLayoutKeepingBinding()
+
+        XCTAssertEqual(
+            settings.string(forKey: KeyboardLayoutSettingsKey.layoutStyle),
+            KeyboardLayoutStyle.nineKey.rawValue
+        )
+        XCTAssertEqual(settings.string(forKey: KeyboardLayoutSettingsKey.schemeBinding9), scheme.schemaID)
+    }
+
+    func testNineKeyEntryEnablesUnreadyInstalledWanxiang() throws {
+        let scheme = try XCTUnwrap(wanxiangNineKeyScheme())
+        let settings = StoreSharedSettingsStore(
+            values: [
+                "wanxiang_installed": true,
+                KeyboardLayoutSettingsKey.schemeBinding9: scheme.schemaID,
+            ]
+        )
+        let store = makeNineKeyStore(settings: settings, sharedRoot: try makeNineKeySharedRoot())
+
+        XCTAssertEqual(store.nineKeyLayoutEntry(), .enableInstalledScheme(scheme.schemaID))
+    }
+
+    func testNineKeyEntryUsesFogFlowWhenWanxiangIsNotInstalled() throws {
+        let scheme = try XCTUnwrap(wanxiangNineKeyScheme())
+        let settings = StoreSharedSettingsStore(
+            values: [KeyboardLayoutSettingsKey.schemeBinding9: scheme.schemaID]
+        )
+        let store = makeNineKeyStore(settings: settings, sharedRoot: try makeNineKeySharedRoot())
+
+        XCTAssertEqual(store.nineKeyLayoutEntry(), .existingFogFlow)
+        XCTAssertEqual(settings.string(forKey: KeyboardLayoutSettingsKey.schemeBinding9), scheme.schemaID)
+    }
+
+    func testNineKeyEntryUsesFogFlowWhenBindingIsEmpty() throws {
+        let settings = StoreSharedSettingsStore(
+            values: [KeyboardLayoutSettingsKey.schemeBinding9: "  \n"]
+        )
+        let store = makeNineKeyStore(settings: settings, sharedRoot: try makeNineKeySharedRoot())
+
+        XCTAssertEqual(store.nineKeyLayoutEntry(), .existingFogFlow)
+        XCTAssertEqual(store.schemeBinding9, "  \n")
+        XCTAssertEqual(store.displayedNineKeySchemeID, "t9")
+    }
+
+    func testSetSchemeBinding26PublishesTheNewStoreValue() async {
+        let settings = StoreSharedSettingsStore()
+        let deployment = StoreDeploymentService(succeeded: true)
+        let store = makeNineKeyStore(settings: settings, deployment: deployment, sharedRoot: nil)
+
+        await store.setSchemeBinding26("rime_ice")
+
+        XCTAssertEqual(store.schemeBinding26, "rime_ice")
+    }
+
+    private func wanxiangNineKeyScheme() -> NineKeyScheme? {
+        NineKeySchemeRegistry.entries.first { $0.familyID == "wanxiang" }
+    }
+
+    private func makeNineKeySharedRoot() throws -> URL {
+        let root = FileManager.default.temporaryDirectory
+            .appendingPathComponent("nine-key-entry-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        return root
+    }
+
+    private func makeNineKeyStore(
+        settings: StoreSharedSettingsStore,
+        deployment: StoreDeploymentService = StoreDeploymentService(succeeded: true),
+        sharedRoot: URL?
+    ) -> RimeSettingsStore {
+        makeIsolatedStore(
+            deploymentService: deployment,
+            settings: settings,
+            archiveInstaller: StoreArchiveInstaller(runtimeRoot: sharedRoot)
+        )
+    }
+
+    private func writeReadyMarker(
+        for scheme: NineKeyScheme,
+        settings: StoreSharedSettingsStore,
+        sharedRoot: URL
+    ) throws {
+        let file = sharedRoot.appendingPathComponent(scheme.schemaFileName)
+        try Data("schema-body".utf8).write(to: file)
+        let fingerprint = try XCTUnwrap(RimeT9Readiness.fingerprint(ofFileAt: file))
+        T9DeploymentSupport.writeMatchedReadiness(
+            schemaID: scheme.schemaID,
+            fingerprint: fingerprint,
+            upstreamVersion: nil,
+            settings: settings
+        )
+    }
 }
 
 @MainActor
@@ -1300,9 +1469,11 @@ private struct StoreArchiveDownloader: SchemaArchiveDownloading {
 @MainActor
 private final class StoreArchiveInstaller: SchemaArchiveInstalling {
     private let containsInstalledSchemaValue: Bool
+    private let runtimeRoot: URL?
 
-    init(containsInstalledSchema: Bool = false) {
+    init(containsInstalledSchema: Bool = false, runtimeRoot: URL? = nil) {
         self.containsInstalledSchemaValue = containsInstalledSchema
+        self.runtimeRoot = runtimeRoot
     }
 
     func cachedArchiveURL(for distribution: RimeSchemeDistribution) -> URL {
@@ -1329,11 +1500,13 @@ private final class StoreArchiveInstaller: SchemaArchiveInstalling {
     func commitSchemaUninstall(_ staging: SchemaUninstallStaging, plan: RimeSchemeInstallationPlan) {}
     func rollbackSchemaUninstall(_ staging: SchemaUninstallStaging) {}
     func clearBuildCache(plan: RimeSchemeInstallationPlan) {}
-    func sharedDataDirectoryURL() -> URL? { URL(fileURLWithPath: "/tmp/shared") }
+    func sharedDataDirectoryURL() -> URL? {
+        runtimeRoot ?? URL(fileURLWithPath: "/tmp/shared")
+    }
     func runtimeDirectories() throws -> SchemaDeploymentDirectories {
         SchemaDeploymentDirectories(
-            sharedDataURL: URL(fileURLWithPath: "/tmp/shared"),
-            userDataURL: URL(fileURLWithPath: "/tmp/user")
+            sharedDataURL: runtimeRoot ?? URL(fileURLWithPath: "/tmp/shared"),
+            userDataURL: (runtimeRoot ?? URL(fileURLWithPath: "/tmp")).appendingPathComponent("user")
         )
     }
     func deploymentDirectories(pendingSchemaID: String?) throws -> SchemaDeploymentDirectories {

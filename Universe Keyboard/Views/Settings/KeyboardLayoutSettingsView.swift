@@ -9,6 +9,9 @@ struct KeyboardLayoutSettingsView: View {
     @Bindable var rimeStore: RimeSettingsStore
 
     @State private var selectedLayout: KeyboardLayoutStyle = .twentySixKey
+    @State private var selectedTwentySixSchemeID = ""
+    @State private var selectedNineKeySchemeID = "t9"
+    @State private var switchingSchemeID: String?
     @State private var isBusy = false
     @State private var presentedLicense: PresentedSchemeLicense?
     @State private var pendingNineKeyAfterInstall = false
@@ -38,9 +41,10 @@ struct KeyboardLayoutSettingsView: View {
                         schemeRow(
                             title: schema.name,
                             subtitle: schema.schemaID,
-                            isSelected: rimeStore.schemeBinding26 == schema.schemaID
+                            schemeID: schema.schemaID,
+                            isSelected: selectedTwentySixSchemeID == schema.schemaID
                         ) {
-                            Task { await rimeStore.setSchemeBinding26(schema.schemaID) }
+                            Task { await switchTwentySixKeyScheme(schema.schemaID) }
                         }
                     }
                 } header: {
@@ -59,9 +63,10 @@ struct KeyboardLayoutSettingsView: View {
                             schemeRow(
                                 title: row.name,
                                 subtitle: row.id,
-                                isSelected: (rimeStore.schemeBinding9 ?? "t9") == row.id
+                                schemeID: row.id,
+                                isSelected: selectedNineKeySchemeID == row.id
                             ) {
-                                Task { _ = await rimeStore.setSchemeBinding9(row.id) }
+                                Task { await switchNineKeyScheme(id: row.id, name: row.name) }
                             }
                         }
                     }
@@ -81,7 +86,9 @@ struct KeyboardLayoutSettingsView: View {
         .navigationTitle("键盘布局")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear(perform: reload)
+        .onDisappear { switchingSchemeID = nil }
         .disabled(isBusy)
+        .animation(.easeInOut(duration: 0.2), value: switchingSchemeID)
         .sheet(item: $presentedLicense) { presentation in
             SchemeLicenseView(
                 license: presentation.license,
@@ -181,6 +188,7 @@ struct KeyboardLayoutSettingsView: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .disabled(switchingSchemeID != nil)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(title)
         .accessibilityValue(isSelected ? "已选择" : "未选择")
@@ -191,33 +199,70 @@ struct KeyboardLayoutSettingsView: View {
     private func schemeRow(
         title: String,
         subtitle: String,
+        schemeID: String,
         isSelected: Bool,
         action: @escaping () -> Void
     ) -> some View {
-        Button(action: action) {
+        let isSwitching = switchingSchemeID == schemeID
+        let isDimmed = switchingSchemeID != nil && !isSwitching
+        return Button(action: action) {
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title)
                         .foregroundStyle(.primary)
-                    Text(subtitle)
+                    Text(isSwitching ? "正在切换…" : subtitle)
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
                 Spacer()
-                if isSelected {
+                if isSwitching {
+                    ProgressView()
+                } else if isSelected {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundStyle(Color.accentColor)
                 }
             }
         }
         .buttonStyle(.plain)
+        .disabled(switchingSchemeID != nil)
+        .opacity(isDimmed ? 0.45 : 1)
+        .listRowBackground(
+            isSwitching ? Color.accentColor.opacity(0.12) : nil
+        )
         .accessibilityLabel(title)
-        .accessibilityValue(isSelected ? "已选择" : "未选择")
+        .accessibilityValue(
+            isSwitching ? "正在切换" : (isSelected ? "已选择" : "未选择")
+        )
     }
 
     private func reload() {
         rimeStore.ensureLayoutSchemeBindingsMigrated()
         selectedLayout = rimeStore.layoutStyle
+        selectedTwentySixSchemeID = rimeStore.schemeBinding26
+        selectedNineKeySchemeID = rimeStore.displayedNineKeySchemeID
+    }
+
+    @MainActor
+    private func switchTwentySixKeyScheme(_ schemaID: String) async {
+        guard switchingSchemeID == nil else { return }
+        switchingSchemeID = schemaID
+        await rimeStore.setSchemeBinding26(schemaID)
+        switchingSchemeID = nil
+        reload()
+    }
+
+    @MainActor
+    private func switchNineKeyScheme(id: String, name: String) async {
+        guard switchingSchemeID == nil else { return }
+        switchingSchemeID = id
+        let failure = await rimeStore.selectNineKeyScheme(id)
+        switchingSchemeID = nil
+        reload()
+        if let failure {
+            rimeStore.presentLayoutToast(failure, succeeded: false)
+        } else {
+            rimeStore.presentLayoutToast("已切换为" + name, succeeded: true)
+        }
     }
 
     @MainActor
@@ -234,6 +279,27 @@ struct KeyboardLayoutSettingsView: View {
 
     @MainActor
     private func enableNineKey() async {
+        switch rimeStore.nineKeyLayoutEntry() {
+        case .persistLayoutKeepingBinding:
+            rimeStore.persistNineKeyLayoutKeepingBinding()
+            reload()
+            rimeStore.presentLayoutToast("已启用九宫格拼音", succeeded: true)
+            return
+        case .enableInstalledScheme(let schemeID):
+            isBusy = true
+            let failure = await rimeStore.enableNineKeyLayout(schemeID: schemeID)
+            isBusy = false
+            reload()
+            if let failure {
+                rimeStore.presentLayoutToast(failure, succeeded: false)
+            } else {
+                rimeStore.presentLayoutToast("九宫格拼音已启用", succeeded: true)
+            }
+            return
+        case .existingFogFlow:
+            break
+        }
+
         let route = SchemeLicenseDownloadFlow.nineKeyRoute(
             readinessMatched: rimeStore.t9ReadinessMatched,
             resourcesExist: rimeStore.rimeIceInstalledFilesExist,
