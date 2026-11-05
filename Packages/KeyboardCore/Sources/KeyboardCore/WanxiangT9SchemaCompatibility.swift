@@ -2,17 +2,26 @@ import Foundation
 
 /// Pure rewrite of the Wanxiang nine-key schema text.
 ///
-/// Deletes the single `t9_processor` element under `engine/processors`.
-/// Other lines, including comments and order, stay byte-for-byte. Zero matches
-/// is success without a new document. This type does not call
-/// `T9SchemaCompatibility`.
+/// Three idempotent edits, applied together or not at all:
+/// delete the single `t9_processor` under `engine/processors`, insert the two
+/// abbreviation algebra lines above the unique digit `xlit` line, and delete
+/// the single `super_replacer/rules` item that starts `- option: abbrev`.
+/// A failed step returns `.failed` and leaves the caller's text unchanged.
 public enum WanxiangT9SchemaCompatibility {
     public static let schemaID = "wanxiang_t9i"
+    public static let xlitLineBody =
+        "- xlit/ABCDEFGHIJKLMNOPQRSTUVWXYZ/22233344455566677778889999/"
+    public static let initialAbbrevLineBody = "- abbrev/^([A-Z]).+$/$1/"
+    public static let compoundAbbrevLineBody = "- abbrev/^([ZCS]H).+$/$1/"
 
-    public enum Reason: String, Equatable, Sendable {
+    public enum Reason: String, Equatable, Sendable, Error {
         case multipleT9Processors
         case missingEngineProcessors
         case unlocatableProcessorsSequence
+        case xlitLineNotUnique
+        case abbrevLinesNotReady
+        case multipleAbbrevOptions
+        case unlocatableSuperReplacerRules
     }
 
     public enum Rewrite: Equatable, Sendable {
@@ -32,9 +41,65 @@ public enum WanxiangT9SchemaCompatibility {
             lines.removeLast()
         }
 
+        let processorRemoval: Range<Int>
+        switch processorRemovalRange(lines) {
+        case .failure(let reason):
+            return .failed(reason)
+        case .success(let range):
+            processorRemoval = range
+        }
+
+        let abbrevInsertion: Insertion
+        switch abbrevInsertionLines(lines) {
+        case .failure(let reason):
+            return .failed(reason)
+        case .success(let insertion):
+            abbrevInsertion = insertion
+        }
+
+        let optionRemoval: Range<Int>
+        switch abbrevOptionRemovalRange(lines) {
+        case .failure(let reason):
+            return .failed(reason)
+        case .success(let range):
+            optionRemoval = range
+        }
+
+        var edits: [(index: Int, remove: Int, insert: [String])] = []
+        if !processorRemoval.isEmpty {
+            edits.append((processorRemoval.lowerBound, processorRemoval.count, []))
+        }
+        if !abbrevInsertion.lines.isEmpty {
+            edits.append((abbrevInsertion.index, 0, abbrevInsertion.lines))
+        }
+        if !optionRemoval.isEmpty {
+            edits.append((optionRemoval.lowerBound, optionRemoval.count, []))
+        }
+        if edits.isEmpty {
+            return .alreadyCompatible
+        }
+        for edit in edits.sorted(by: { $0.index > $1.index }) {
+            lines.replaceSubrange(
+                edit.index..<(edit.index + edit.remove),
+                with: edit.insert
+            )
+        }
+        var text = lines.joined(separator: newline)
+        if hadTrailingNewline {
+            text.append(newline)
+        }
+        return .rewritten(text)
+    }
+
+    private struct Insertion {
+        var index: Int
+        var lines: [String]
+    }
+
+    private static func processorRemovalRange(_ lines: [String]) -> Result<Range<Int>, Reason> {
         let engineIndexes = lines.indices.filter { isRootKey($0, lines, key: "engine") }
         guard engineIndexes.count == 1, let engineIndex = engineIndexes.first else {
-            return .failed(.unlocatableProcessorsSequence)
+            return .failure(.unlocatableProcessorsSequence)
         }
         let engineEnd = blockEnd(after: engineIndex, lines: lines, parentIndent: 0)
         let processorIndexes = lines[engineIndex + 1..<engineEnd].indices.filter { index in
@@ -42,16 +107,108 @@ public enum WanxiangT9SchemaCompatibility {
         }
         guard processorIndexes.count == 1, let processorsIndex = processorIndexes.first else {
             return processorIndexes.isEmpty
-                ? .failed(.missingEngineProcessors) : .failed(.unlocatableProcessorsSequence)
+                ? .failure(.missingEngineProcessors) : .failure(.unlocatableProcessorsSequence)
         }
         guard isBareKey(lines[processorsIndex], key: "processors") else {
-            return .failed(.unlocatableProcessorsSequence)
+            return .failure(.unlocatableProcessorsSequence)
         }
-        let processorsIndent = indentWidth(lines[processorsIndex])
+        switch sequenceItems(from: processorsIndex, lines: lines) {
+        case .failure:
+            return .failure(.unlocatableProcessorsSequence)
+        case .success(let items):
+            let matches = items.filter { scalarToken(lines[$0.start]) == "t9_processor" }
+            if matches.count > 1 { return .failure(.multipleT9Processors) }
+            guard let match = matches.first else { return .success(0..<0) }
+            if match.end > match.start + 1,
+                lines[match.start + 1..<match.end].contains(where: {
+                    !isComment($0) && !$0.trimmingCharacters(in: .whitespaces).isEmpty
+                })
+            {
+                return .failure(.unlocatableProcessorsSequence)
+            }
+            return .success(match.start..<match.end)
+        }
+    }
 
-        let sequenceEnd = blockEnd(after: processorsIndex, lines: lines, parentIndent: processorsIndent)
-        var items: [SequenceItem] = []
-        var cursor = processorsIndex + 1
+    private static func abbrevInsertionLines(_ lines: [String]) -> Result<Insertion, Reason> {
+        guard let algebra = block(lines, root: "speller", child: "algebra") else {
+            return .failure(.xlitLineNotUnique)
+        }
+        let xlitIndexes = Array(algebra.range).filter {
+            lines[$0].trimmingCharacters(in: .whitespaces) == xlitLineBody
+        }
+        guard xlitIndexes.count == 1, let xlitIndex = xlitIndexes.first else {
+            return .failure(.xlitLineNotUnique)
+        }
+        let indent = indentWidth(lines[xlitIndex])
+        let first = String(repeating: " ", count: indent) + initialAbbrevLineBody
+        let second = String(repeating: " ", count: indent) + compoundAbbrevLineBody
+        let initialCount = algebra.range.filter {
+            lines[$0].trimmingCharacters(in: .whitespaces) == initialAbbrevLineBody
+        }.count
+        let compoundCount = algebra.range.filter {
+            lines[$0].trimmingCharacters(in: .whitespaces) == compoundAbbrevLineBody
+        }.count
+        let alreadyPlaced =
+            xlitIndex >= algebra.range.lowerBound + 2
+            && lines[xlitIndex - 2] == first
+            && lines[xlitIndex - 1] == second
+            && initialCount == 1
+            && compoundCount == 1
+        if alreadyPlaced {
+            return .success(Insertion(index: xlitIndex, lines: []))
+        }
+        if initialCount == 0 && compoundCount == 0 {
+            return .success(Insertion(index: xlitIndex, lines: [first, second]))
+        }
+        return .failure(.abbrevLinesNotReady)
+    }
+
+    private static func abbrevOptionRemovalRange(_ lines: [String]) -> Result<Range<Int>, Reason> {
+        guard let rules = block(lines, root: "super_replacer", child: "rules") else {
+            return .failure(.unlocatableSuperReplacerRules)
+        }
+        switch sequenceItems(from: rules.keyIndex, lines: lines) {
+        case .failure:
+            return .failure(.unlocatableSuperReplacerRules)
+        case .success(let items):
+            let matches = items.filter {
+                lines[$0.start].trimmingCharacters(in: .whitespaces).hasPrefix("- option: abbrev")
+            }
+            if matches.count > 1 { return .failure(.multipleAbbrevOptions) }
+            guard let match = matches.first else { return .success(0..<0) }
+            return .success(match.start..<match.end)
+        }
+    }
+
+    private struct Block {
+        var keyIndex: Int
+        var range: Range<Int>
+    }
+
+    private static func block(_ lines: [String], root: String, child: String) -> Block? {
+        let roots = lines.indices.filter { isRootKey($0, lines, key: root) }
+        guard roots.count == 1, let rootIndex = roots.first else { return nil }
+        let rootEnd = blockEnd(after: rootIndex, lines: lines, parentIndent: 0)
+        let children = lines[rootIndex + 1..<rootEnd].indices.filter { index in
+            isNamedKey(lines[index], key: child) && indentWidth(lines[index]) > 0
+        }
+        guard children.count == 1, let childIndex = children.first,
+            isBareKey(lines[childIndex], key: child)
+        else { return nil }
+        let end = blockEnd(after: childIndex, lines: lines, parentIndent: indentWidth(lines[childIndex]))
+        return Block(keyIndex: childIndex, range: (childIndex + 1)..<end)
+    }
+
+    private struct SequenceSpan {
+        var start: Int
+        var end: Int
+    }
+
+    private static func sequenceItems(from keyIndex: Int, lines: [String]) -> Result<[SequenceSpan], Reason> {
+        let sequenceEnd = blockEnd(after: keyIndex, lines: lines, parentIndent: indentWidth(lines[keyIndex]))
+        var items: [SequenceSpan] = []
+        var cursor = keyIndex + 1
         while cursor < sequenceEnd {
             let line = lines[cursor]
             if line.trimmingCharacters(in: .whitespaces).isEmpty || isComment(line) {
@@ -59,7 +216,7 @@ public enum WanxiangT9SchemaCompatibility {
                 continue
             }
             guard let dash = sequenceDashColumn(line) else {
-                return .failed(.unlocatableProcessorsSequence)
+                return .failure(.unlocatableProcessorsSequence)
             }
             var itemEnd = cursor + 1
             while itemEnd < sequenceEnd {
@@ -71,36 +228,13 @@ public enum WanxiangT9SchemaCompatibility {
                 let nextIndent = indentWidth(next)
                 if nextIndent < dash { break }
                 if nextIndent == dash, sequenceDashColumn(next) != nil { break }
-                if nextIndent == dash { return .failed(.unlocatableProcessorsSequence) }
+                if nextIndent == dash { return .failure(.unlocatableProcessorsSequence) }
                 itemEnd += 1
             }
-            let scalar = scalarToken(line)
-            items.append(SequenceItem(start: cursor, end: itemEnd, isT9Processor: scalar == "t9_processor"))
-            if scalar == "t9_processor", itemEnd > cursor + 1,
-                lines[cursor + 1..<itemEnd].contains(where: {
-                    !isComment($0) && !$0.trimmingCharacters(in: .whitespaces).isEmpty
-                })
-            {
-                return .failed(.unlocatableProcessorsSequence)
-            }
+            items.append(SequenceSpan(start: cursor, end: itemEnd))
             cursor = itemEnd
         }
-
-        let matches = items.filter(\.isT9Processor)
-        if matches.count > 1 { return .failed(.multipleT9Processors) }
-        guard let match = matches.first else { return .alreadyCompatible }
-        lines.removeSubrange(match.start..<match.end)
-        var text = lines.joined(separator: newline)
-        if hadTrailingNewline {
-            text.append(newline)
-        }
-        return .rewritten(text)
-    }
-
-    private struct SequenceItem {
-        let start: Int
-        let end: Int
-        let isT9Processor: Bool
+        return .success(items)
     }
 
     private static func isRootKey(_ index: Int, _ lines: [String], key: String) -> Bool {

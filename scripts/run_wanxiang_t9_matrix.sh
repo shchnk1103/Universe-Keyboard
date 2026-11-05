@@ -14,6 +14,115 @@ prepare)
   python3 - <<'PY'
 import hashlib, os, pathlib, re, shutil, zipfile
 root=pathlib.Path(os.environ['ROOT']); task=pathlib.Path(os.environ['TASK']); out=pathlib.Path(os.environ['OUT'])
+XL='- xlit/ABCDEFGHIJKLMNOPQRSTUVWXYZ/22233344455566677778889999/'
+A1='- abbrev/^([A-Z]).+$/$1/'
+A2='- abbrev/^([ZCS]H).+$/$1/'
+
+def rewrite_schema(yaml):
+    if '\t' in yaml: return yaml,'failed'
+    nl='\n'; trail=yaml.endswith(nl)
+    lines=yaml.split(nl)
+    if trail and lines and lines[-1]=='': lines.pop()
+    def indent(line): return len(line)-len(line.lstrip(' '))
+    def key_at(line, column, name):
+        body=line.strip()
+        if not body or body[0] in '#-' or ':' not in body: return False
+        token=body.split(':',1)[0].strip()
+        return indent(line)==column and token==name and not body.startswith('-')
+    def block_end(start, column):
+        i=start
+        while i < len(lines):
+            raw=lines[i]
+            if raw.strip() and not raw.lstrip().startswith('#') and indent(raw)<=column: break
+            i+=1
+        return i
+    proc=None; reason=None
+    for i,line in enumerate(lines):
+        if key_at(line, 0, 'engine'):
+            end=block_end(i+1, 0); found=False
+            for j in range(i+1, end):
+                if key_at(lines[j], 2, 'processors'):
+                    found=True
+                    pend=block_end(j+1, 2)
+                    hits=[]
+                    k=j+1
+                    while k < pend:
+                        body=lines[k].strip()
+                        if body.startswith('-') and 't9_processor' in body.split('#',1)[0]:
+                            n=k+1
+                            while n < pend and (not lines[n].strip() or lines[n].lstrip().startswith('#') or indent(lines[n])>indent(lines[k])):
+                                n+=1
+                            hits.append((k,n)); k=n
+                        else:
+                            k+=1
+                    if len(hits)>1: reason='multiple'
+                    elif len(hits)==1: proc=range(hits[0][0], hits[0][1])
+                    else: proc=range(0,0)
+            if not found: reason='missing'
+            break
+    if reason: return yaml,'failed'
+    if proc is None: return yaml,'failed'
+    algebra=None
+    for i,line in enumerate(lines):
+        if key_at(line, 0, 'speller'):
+            end=block_end(i+1, 0)
+            for j in range(i+1, end):
+                if key_at(lines[j], 2, 'algebra'):
+                    algebra=(j, block_end(j+1, 2))
+            break
+    if algebra is None: return yaml,'failed'
+    bodies=[(idx, lines[idx].strip()) for idx in range(algebra[0]+1, algebra[1])]
+    xlit=[idx for idx,body in bodies if body==XL]
+    if len(xlit)!=1: return yaml,'failed'
+    x=xlit[0]
+    ready=x>=2 and lines[x-2].strip()==A1 and lines[x-1].strip()==A2
+    counts={A1:0,A2:0}
+    for _,body in bodies:
+        if body in counts: counts[body]+=1
+    insert=[]
+    if ready and counts[A1]==1 and counts[A2]==1:
+        pass
+    elif counts[A1]==0 and counts[A2]==0:
+        pad=' '*indent(lines[x]); insert=[pad+A1, pad+A2]
+    else:
+        return yaml,'failed'
+    opt=None; opt_reason=None
+    for i,line in enumerate(lines):
+        if key_at(line, 0, 'super_replacer'):
+            end=block_end(i+1, 0); found=False
+            for j in range(i+1, end):
+                if key_at(lines[j], 2, 'rules'):
+                    found=True
+                    rend=block_end(j+1, 2)
+                    hits=[]
+                    k=j+1
+                    while k < rend:
+                        if lines[k].strip().startswith('-'):
+                            n=k+1
+                            while n < rend and (not lines[n].strip() or lines[n].lstrip().startswith('#') or indent(lines[n])>indent(lines[k])):
+                                n+=1
+                            if lines[k].strip().startswith('- option: abbrev'):
+                                hits.append((k,n))
+                            k=n
+                        else:
+                            k+=1
+                    if len(hits)>1: opt_reason='multiple'
+                    elif len(hits)==1: opt=range(hits[0][0], hits[0][1])
+                    else: opt=range(0,0)
+            if not found: opt_reason='missing'
+            break
+    if opt_reason or opt is None: return yaml,'failed'
+    edits=[]
+    if proc: edits.append((proc.start, list(proc), []))
+    if insert: edits.append((x, [], insert))
+    if opt: edits.append((opt.start, list(opt), []))
+    if not edits:
+        return yaml,'already'
+    for index, remove, add in sorted(edits, key=lambda item: item[0], reverse=True):
+        lines[index:index+len(remove)]=add
+    text='\n'.join(lines)
+    if trail or not text.endswith('\n'): text+='\n'
+    return text,'rewritten'
 ice=task/'scratch/extract/rime-ice'; archive=task/'scratch/archives/rime-ice/full.zip'
 assert archive.stat().st_size == 16050491 and hashlib.sha256(archive.read_bytes()).hexdigest() == '675d23b070be00e1b800f9a6db033ef98f4493cd5b568ed8aa3b3541769c46ac'
 with zipfile.ZipFile(archive) as z:
@@ -31,16 +140,26 @@ for variant,source,schema,preset in [('ice',ice,'t9','rime_ice_preset'),('off',w
   if p.is_file() and p.name!='default.yaml' and p.suffix!='.gram':
    q=shared/p.relative_to(source); q.parent.mkdir(parents=True,exist_ok=True); shutil.copy2(p,q)
  shutil.copy2(source/'default.yaml',shared/(preset+'.yaml'))
+ if variant!='ice':
+  raw=(shared/(schema+'.schema.yaml')).read_bytes()
+  sample,status=rewrite_schema(raw.decode())
+  assert status=='rewritten' and hashlib.sha256(sample.encode()).hexdigest()=='ee11ab22c9736247a22881031df8100edeef0c0a8f2672c77c57c32700e16d02'
+  print(variant,'frozen_input',hashlib.sha256(raw).hexdigest(),'frozen_rewrite','ee11ab22c9736247a22881031df8100edeef0c0a8f2672c77c57c32700e16d02')
  names=(['rime_ice.schema.yaml','t9.schema.yaml','melt_eng.schema.yaml','radical_pinyin.schema.yaml'] if variant=='ice' else ['wanxiang.schema.yaml','wanxiang_english.schema.yaml','wanxiang_mixedcode.schema.yaml','wanxiang_reverse.schema.yaml','wanxiang_t9.schema.yaml','wanxiang_t9i.schema.yaml'])
  for name in names:
   p=shared/name
   if p.exists():
    s=p.read_text(); s=s.replace('__include: default:/',f'__include: {preset}:/'); s=re.sub(r'import_preset:\s*default\b',f'import_preset: {preset}',s); p.write_text(s)
- p=shared/(schema+'.schema.yaml'); before=p.read_bytes(); lines=before.splitlines(keepends=True)
+ p=shared/(schema+'.schema.yaml'); before=p.read_bytes()
  if variant=='ice':
   s=before.decode(); assert all(x in s for x in ['derive/[abc]/2/','derive/[def]/3/','derive/[hgi]/4/','derive/[jkl]/5/','derive/[omn]/6/','derive/[pqrs]/7/','derive/[tuv]/8/','derive/[wxyz]/9/']); s='\n'.join(l for l in s.split('\n') if 't9_processor' not in l and not (l.strip().startswith('-') and 'force_gc' in l)); p.write_text(s if s.endswith('\n') else s+'\n')
  else:
-  found=[l for l in lines if b't9_processor' in l]; assert len(found)==1; p.write_bytes(b''.join(l for l in lines if b't9_processor' not in l))
+  text,status=rewrite_schema(before.decode())
+  assert status=='rewritten'
+  body='\n'.join(line.strip() for line in text.split('\n'))
+  assert body.count('- abbrev/^([A-Z]).+$/$1/')==1 and body.count('- abbrev/^([ZCS]H).+$/$1/')==1
+  assert '- option: abbrev' not in text
+  p.write_text(text)
  (user/'default.custom.yaml').write_text('patch:\n  schema_list:\n    - schema: '+schema+'\n')
  if variant=='on': (user/(schema+'.custom.yaml')).write_text('patch:\n  switches/@3/reset: 1\n')
  assert not list(dest.rglob('*.gram'))

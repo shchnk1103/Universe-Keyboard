@@ -222,6 +222,35 @@ final class RimeT9MatrixAssertTests: XCTestCase {
     }
 
     @MainActor
+    func testHomePageAndRawDigitsStayOutOfCandidates() async throws {
+        let harness = try await openHarness()
+        let wanxiang = harness.schema == "wanxiang_t9i"
+        if wanxiang {
+            let six = harness.drive("6")
+            let home = Array(six.output.candidates.prefix(5).map(\.text))
+            XCTAssertTrue(home.contains("哦"), "6 home \(home)")
+            for length in 2...6 {
+                let sequence = String(repeating: "4", count: length)
+                let sample = harness.drive(sequence)
+                XCTAssertFalse(sample.output.candidates.isEmpty, sequence)
+                XCTAssertFalse(sample.output.candidates[0].comment?.isEmpty ?? true, sequence)
+                XCTAssertFalse(sample.snapshot.visiblePreedit.isEmpty, sequence)
+                XCTAssertFalse(
+                    sample.snapshot.visiblePreedit.unicodeScalars.contains(where: isASCIIDigit), sequence)
+            }
+        }
+        let sequences = shortSequences + ["6", "44", "444", "4444", "44444", "444444"]
+        for sequence in sequences {
+            let sample = harness.drive(sequence)
+            for candidate in sample.output.candidates where !candidate.text.isEmpty {
+                XCTAssertFalse(
+                    candidate.text.unicodeScalars.allSatisfy(isASCIIDigit),
+                    "\(harness.schema) \(sequence) \(candidate.text)")
+            }
+        }
+    }
+
+    @MainActor
     private func openHarness() async throws -> Harness {
         let env = ProcessInfo.processInfo.environment
         func value(_ name: String) -> String? {

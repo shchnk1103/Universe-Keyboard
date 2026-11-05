@@ -95,6 +95,19 @@ enum WanxiangT9DeploymentSupport {
         if compiled.contains("t9_processor") {
             return CompiledCheck(step: Step(step: "recheckCompiled", reason: "t9ProcessorPresent"))
         }
+        let sourceURL = sharedDataURL.appendingPathComponent(sourceFileName)
+        guard files.exists(sourceURL) else {
+            return CompiledCheck(step: Step(step: "recheckCompiled", reason: "sourceNotCompatible"))
+        }
+        let source: String
+        do {
+            source = try files.read(sourceURL)
+        } catch {
+            return CompiledCheck(step: Step(step: "recheckCompiled", reason: "sourceNotCompatible"))
+        }
+        guard case .alreadyCompatible = WanxiangT9SchemaCompatibility.rewrite(source) else {
+            return CompiledCheck(step: Step(step: "recheckCompiled", reason: "sourceNotCompatible"))
+        }
         return CompiledCheck(step: Step(step: "recheckCompiled", reason: "compiledClean"))
     }
 

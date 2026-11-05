@@ -1,3 +1,4 @@
+import KeyboardCore
 import XCTest
 
 @testable import Universe_Keyboard
@@ -67,6 +68,42 @@ final class WanxiangT9DeploymentSupportTests: XCTestCase {
         XCTAssertEqual(check.step.reason, "compiledMissing")
     }
 
+    func testSourceNotCompatibleFailsRecheck() throws {
+        let fixture = try Fixture()
+        try fixture.writeSource(Self.oneProcessor)
+        try "engine:\n  processors:\n    - speller\n".write(
+            to: fixture.sharedBuild.appendingPathComponent(schemaFile),
+            atomically: true,
+            encoding: .utf8
+        )
+        let check = WanxiangT9DeploymentSupport.recheckCompiled(
+            sharedDataURL: fixture.shared,
+            userDataURL: fixture.user
+        )
+        XCTAssertTrue(check.failed)
+        XCTAssertEqual(check.step.reason, "sourceNotCompatible")
+    }
+
+    func testPrepareRewritesSourceThatLostOnlyTheProcessor() throws {
+        let fixture = try Fixture()
+        try fixture.writeSource(Self.processorAlreadyRemoved)
+        try "old\n".write(
+            to: fixture.sharedBuild.appendingPathComponent(schemaFile), atomically: true, encoding: .utf8)
+        let result = WanxiangT9DeploymentSupport.prepare(
+            sharedDataURL: fixture.shared,
+            userDataURL: fixture.user
+        )
+        XCTAssertFalse(result.failed)
+        XCTAssertEqual(result.steps.map(\.reason), ["rewritten", "removed"])
+        let written = try String(contentsOf: fixture.source, encoding: .utf8)
+        XCTAssertEqual(
+            WanxiangT9SchemaCompatibility.rewrite(written),
+            .alreadyCompatible
+        )
+        XCTAssertFalse(
+            FileManager.default.fileExists(atPath: fixture.sharedBuild.appendingPathComponent(schemaFile).path))
+    }
+
     func testCompiledProcessorFailsRecheck() throws {
         let fixture = try Fixture()
         try "processors:\n  - t9_processor\n".write(
@@ -89,6 +126,29 @@ final class WanxiangT9DeploymentSupportTests: XCTestCase {
             - ascii_composer
             - t9_processor
             - speller
+        speller:
+          algebra:
+            - xlit/ABCDEFGHIJKLMNOPQRSTUVWXYZ/22233344455566677778889999/
+        super_replacer:
+          rules:
+            - option: emoji
+
+        """
+
+    /// No `t9_processor`, still has the abbrev option, and lacks both abbrev algebra lines.
+    private static let processorAlreadyRemoved = """
+        engine:
+          processors:
+            - ascii_composer
+            - speller
+        speller:
+          algebra:
+            - xlit/ABCDEFGHIJKLMNOPQRSTUVWXYZ/22233344455566677778889999/
+        super_replacer:
+          rules:
+            - option: abbrev
+              comment: drop
+            - option: emoji
 
         """
 

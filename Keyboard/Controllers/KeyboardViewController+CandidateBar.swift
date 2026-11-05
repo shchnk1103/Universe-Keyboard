@@ -308,6 +308,10 @@ extension KeyboardViewController {
                 pageNumber: snapshot.candidatePageNumber,
                 candidateOrigin: snapshot.candidateOrigin
             )
+        } else if shouldPublishAtomicT9Presentation {
+            // Both the projection and the snapshot are empty. Do not read the
+            // engine composition back into the bar; that string is still digits.
+            items = []
         } else {
             items = CandidateBarDataSource.candidateItems(from: controller)
         }

@@ -86,7 +86,22 @@ final class NineKeyWanxiangEnableTests: XCTestCase {
             )
         }
         try FileManager.default.createDirectory(at: shared, withIntermediateDirectories: true)
-        try "engine:\n  processors:\n    - speller\n".write(
+        // Prepare rewrites the shared source. This fixture is already compatible
+        // so the test still measures which user directory loses its build file.
+        try """
+        engine:
+          processors:
+            - speller
+        speller:
+          algebra:
+            - abbrev/^([A-Z]).+$/$1/
+            - abbrev/^([ZCS]H).+$/$1/
+            - xlit/ABCDEFGHIJKLMNOPQRSTUVWXYZ/22233344455566677778889999/
+        super_replacer:
+          rules:
+            - option: emoji
+
+        """.write(
             to: shared.appendingPathComponent(artifactName),
             atomically: true,
             encoding: .utf8
@@ -195,10 +210,24 @@ final class NineKeyWanxiangEnableTests: XCTestCase {
         let user = root.appendingPathComponent("user", isDirectory: true)
         try FileManager.default.createDirectory(at: shared, withIntermediateDirectories: true)
         try FileManager.default.createDirectory(at: user, withIntermediateDirectories: true)
+        let ready = """
+            engine:
+              processors:
+                - speller
+            speller:
+              algebra:
+                - abbrev/^([A-Z]).+$/$1/
+                - abbrev/^([ZCS]H).+$/$1/
+                - xlit/ABCDEFGHIJKLMNOPQRSTUVWXYZ/22233344455566677778889999/
+            super_replacer:
+              rules:
+                - option: emoji
+
+            """
         let sourceText =
             prepareFails
             ? "engine:\n  processors:\n    - t9_processor\n    - t9_processor\n"
-            : "engine:\n  processors:\n    - speller\n"
+            : ready
         try sourceText.write(
             to: shared.appendingPathComponent("\(schemaID).schema.yaml"),
             atomically: true,
