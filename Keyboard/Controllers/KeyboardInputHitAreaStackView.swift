@@ -18,7 +18,8 @@ private final class KeyboardTouchCellControl: UIControl {
         backgroundColor = UIColor.systemGray.withAlphaComponent(0.001)
         isOpaque = false
         isAccessibilityElement = false
-        isExclusiveTouch = true
+        // PF-060: a finger resting in a gap must not block touches on other keys.
+        isExclusiveTouch = false
     }
 
     required init?(coder: NSCoder) {

@@ -20,8 +20,8 @@ enum T9DeploymentSupport {
     static func ensureCompatibleT9Schema(in sharedDataURL: URL) throws -> String {
         let t9URL = sharedDataURL.appendingPathComponent("t9.schema.yaml")
         guard FileManager.default.fileExists(atPath: t9URL.path),
-              let existing = try? String(contentsOf: t9URL, encoding: .utf8),
-              !existing.isEmpty
+            let existing = try? String(contentsOf: t9URL, encoding: .utf8),
+            !existing.isEmpty
         else {
             throw T9DeploymentError.missingUpstreamSchema
         }
@@ -72,10 +72,12 @@ enum T9DeploymentSupport {
         var removed = 0
         for buildDir in roots {
             guard fileManager.fileExists(atPath: buildDir.path) else { continue }
-            guard let items = try? fileManager.contentsOfDirectory(
-                at: buildDir,
-                includingPropertiesForKeys: nil
-            ) else { continue }
+            guard
+                let items = try? fileManager.contentsOfDirectory(
+                    at: buildDir,
+                    includingPropertiesForKeys: nil
+                )
+            else { continue }
             for item in items where item.lastPathComponent.hasPrefix("t9.") {
                 try? fileManager.removeItem(at: item)
                 removed += 1
@@ -135,6 +137,61 @@ enum T9DeploymentSupport {
     static func persistLayout(_ style: KeyboardLayoutStyle, settings: SharedSettingsStoring) {
         settings.set(style.rawValue, forKey: KeyboardLayoutSettingsKey.layoutStyle)
         settings.synchronize()
+    }
+
+    static func resourceFingerprint(schemaID: String, sharedDataURL: URL) -> String? {
+        NineKeyReadiness.fingerprint(schemaID: schemaID, sharedDirectory: sharedDataURL)
+    }
+
+    static func writeMatchedReadiness(
+        schemaID: String,
+        fingerprint: String,
+        upstreamVersion: String?,
+        settings: SharedSettingsStoring
+    ) {
+        guard let scheme = NineKeySchemeRegistry.scheme(schemaID) else { return }
+        let marker = RimeT9ReadinessMarker(
+            ready: true,
+            compatibilityVersion: scheme.compatibilityVersion,
+            resourceFingerprint: fingerprint,
+            upstreamSchemaVersion: upstreamVersion
+        )
+        if let data = try? JSONEncoder().encode(marker) {
+            settings.set(data, forKey: scheme.markerKey)
+        }
+        if schemaID == "t9" {
+            settings.set(true, forKey: RimeT9Readiness.SettingsKey.legacyReady)
+        }
+        settings.synchronize()
+    }
+
+    static func invalidateReadiness(schemaID: String, settings: SharedSettingsStoring) {
+        guard let scheme = NineKeySchemeRegistry.scheme(schemaID) else { return }
+        let cleared = RimeT9ReadinessMarker(
+            ready: false,
+            compatibilityVersion: scheme.compatibilityVersion,
+            resourceFingerprint: ""
+        )
+        if let data = try? JSONEncoder().encode(cleared) {
+            settings.set(data, forKey: scheme.markerKey)
+        }
+        if schemaID == "t9" {
+            settings.set(false, forKey: RimeT9Readiness.SettingsKey.legacyReady)
+        }
+        settings.synchronize()
+    }
+
+    static func invalidateAllReadiness(settings: SharedSettingsStoring) {
+        for scheme in NineKeySchemeRegistry.entries {
+            invalidateReadiness(schemaID: scheme.schemaID, settings: settings)
+        }
+    }
+
+    static func loadMarker(schemaID: String, settings: SharedSettingsStoring) -> RimeT9ReadinessMarker? {
+        guard let scheme = NineKeySchemeRegistry.scheme(schemaID),
+            let data = settings.object(forKey: scheme.markerKey) as? Data
+        else { return nil }
+        return try? JSONDecoder().decode(RimeT9ReadinessMarker.self, from: data)
     }
 }
 

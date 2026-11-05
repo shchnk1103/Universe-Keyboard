@@ -295,12 +295,10 @@ extension KeyboardViewController {
             invalidateCandidatesForInputRecovery()
             return
         }
-        // Prefer snapshot-owned paging fields; do not re-read live controller for
-        // page identity when the snapshot already captured them.
-        let preedit =
-            !snapshot.compositionPreedit.isEmpty
-            ? snapshot.compositionPreedit
-            : snapshot.visiblePreedit
+        // Nine-key pinyin in the candidate bar is the validated projection only.
+        // An empty projection keeps the existing space placeholder and does not
+        // fall back to the engine's raw composition text.
+        let preedit = snapshot.visiblePreedit
         let items: [CandidateItem]
         if !preedit.isEmpty || !snapshot.candidates.isEmpty {
             items = CandidateBarDataSource.candidateItems(
@@ -310,6 +308,10 @@ extension KeyboardViewController {
                 pageNumber: snapshot.candidatePageNumber,
                 candidateOrigin: snapshot.candidateOrigin
             )
+        } else if shouldPublishAtomicT9Presentation {
+            // Both the projection and the snapshot are empty. Do not read the
+            // engine composition back into the bar; that string is still digits.
+            items = []
         } else {
             items = CandidateBarDataSource.candidateItems(from: controller)
         }

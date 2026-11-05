@@ -609,13 +609,32 @@ final class RimeSettingsStore {
         }
     }
 
-    /// Installed schemes usable for the nine-key slot (V1: fog T9 when ready).
+    /// Nine-key rows from the registry plus whether that family is installed.
     var nineKeySchemeChoices: [(id: String, name: String)] {
-        var rows: [(String, String)] = []
-        if t9ReadinessMatched || rimeIceInstalledFilesExist {
-            rows.append(("t9", "雾凇九键 (T9)"))
+        NineKeySchemeRegistry.entries.compactMap { scheme in
+            let installed: Bool
+            switch scheme.familyID {
+            case "rime_ice":
+                installed = rimeIceInstalledFilesExist
+            case "wanxiang":
+                installed = schemaManager.wanxiangFamilyInstalled()
+            default:
+                installed = false
+            }
+            guard installed else { return nil }
+            return (scheme.schemaID, Self.nineKeySchemeTitle(scheme))
         }
-        return rows
+    }
+
+    static func nineKeySchemeTitle(_ scheme: NineKeyScheme) -> String {
+        switch scheme.familyID {
+        case "rime_ice":
+            return "雾凇九键"
+        case "wanxiang":
+            return "万象九键"
+        default:
+            return scheme.schemaID
+        }
     }
 
     func selectTwentySixKeyLayout() {
@@ -636,8 +655,58 @@ final class RimeSettingsStore {
         await triggerDeployment()
     }
 
-    func setSchemeBinding9(_ schemaID: String) {
-        schemaManager.setSchemeBinding9(schemaID)
+    func setSchemeBinding9(_ schemaID: String) async -> String? {
+        await schemaManager.setSchemeBinding9(schemaID)
+    }
+
+    /// Switches the nine-key binding. Ready targets only write the binding;
+    /// other targets go through the existing enable path.
+    func selectNineKeyScheme(_ schemaID: String) async -> String? {
+        await setSchemeBinding9(schemaID)
+    }
+
+    func enableNineKeyLayout(schemeID: String) async -> String? {
+        await schemaManager.enableNineKeyLayout(schemeID: schemeID)
+    }
+
+    /// Persists nine-key layout without rewriting `schemeBinding9`.
+    func persistNineKeyLayoutKeepingBinding() {
+        T9DeploymentSupport.persistLayout(.nineKey, settings: schemaManager.settings)
+    }
+
+    /// Blank and missing bindings display as fog `t9`.
+    var displayedNineKeySchemeID: String {
+        Self.normalizedNineKeySchemaID(schemeBinding9) ?? "t9"
+    }
+
+    /// Same trimming rule as `RimeRuntimeSelection.normalizedSchemaID`.
+    /// Implemented here so the app does not call that private function.
+    static func normalizedNineKeySchemaID(_ raw: String?) -> String? {
+        guard let raw else { return nil }
+        let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? nil : trimmed
+    }
+
+    /// Where “九宫格拼音” should go for the current binding.
+    func nineKeyLayoutEntry() -> NineKeyLayoutEntry {
+        let target = Self.normalizedNineKeySchemaID(schemeBinding9) ?? "t9"
+        guard target != "t9", let scheme = NineKeySchemeRegistry.scheme(target) else {
+            return .existingFogFlow
+        }
+        let installed: Bool
+        switch scheme.familyID {
+        case "rime_ice":
+            installed = rimeIceInstalledFilesExist
+        case "wanxiang":
+            installed = schemaManager.wanxiangFamilyInstalled()
+        default:
+            installed = false
+        }
+        guard installed else { return .existingFogFlow }
+        if schemaManager.nineKeySchemeIsReady(target) {
+            return .persistLayoutKeepingBinding
+        }
+        return .enableInstalledScheme(target)
     }
 
     func ensureLayoutSchemeBindingsMigrated() {
@@ -961,4 +1030,10 @@ final class RimeSettingsStore {
         formatter.dateFormat = "HH:mm:ss"
         deploymentLog.append("[\(formatter.string(from: Date()))] \(message)")
     }
+}
+
+enum NineKeyLayoutEntry: Equatable {
+    case existingFogFlow
+    case persistLayoutKeepingBinding
+    case enableInstalledScheme(String)
 }

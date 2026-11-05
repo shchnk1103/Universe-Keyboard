@@ -1869,6 +1869,50 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertTrue(deploymentRequests.isEmpty, "inactive uninstall must not deploy Luna")
     }
 
+    func testDeploymentInvalidatesMarkersBeforePreparingDirectories() async {
+        let settings = StubSharedSettingsStore()
+        T9DeploymentSupport.writeMatchedReadiness(
+            fingerprint: "ice", upstreamVersion: "v", settings: settings)
+        let wanID = NineKeySchemeRegistry.entries.first { $0.familyID == "wanxiang" }!.schemaID
+        T9DeploymentSupport.writeMatchedReadiness(
+            schemaID: wanID, fingerprint: "wan", upstreamVersion: "v", settings: settings)
+        let installer = StubSchemaArchiveInstaller()
+        installer.onDeploymentDirectories = {
+            XCTAssertNotEqual(T9DeploymentSupport.loadMarker(settings: settings)?.ready, true)
+            XCTAssertNotEqual(
+                T9DeploymentSupport.loadMarker(schemaID: wanID, settings: settings)?.ready, true)
+        }
+        let manager = makeManager(
+            settings: settings,
+            installer: installer,
+            deploymentService: StubDeploymentService(succeeded: true)
+        )
+        let succeeded = await manager.deployRimeConfig()
+        XCTAssertTrue(succeeded)
+        XCTAssertEqual(installer.deploymentDirectoriesCallCount, 1)
+    }
+
+    func testDeploymentDirectoryFailureLeavesBothMarkersUnready() async {
+        let settings = StubSharedSettingsStore()
+        T9DeploymentSupport.writeMatchedReadiness(
+            fingerprint: "ice", upstreamVersion: "v", settings: settings)
+        let wanID = NineKeySchemeRegistry.entries.first { $0.familyID == "wanxiang" }!.schemaID
+        T9DeploymentSupport.writeMatchedReadiness(
+            schemaID: wanID, fingerprint: "wan", upstreamVersion: "v", settings: settings)
+        let installer = StubSchemaArchiveInstaller()
+        installer.deploymentDirectoriesError = CocoaError(.fileReadNoSuchFile)
+        let manager = makeManager(
+            settings: settings,
+            installer: installer,
+            deploymentService: StubDeploymentService(succeeded: true)
+        )
+        let succeeded = await manager.deployRimeConfig()
+        XCTAssertFalse(succeeded)
+        XCTAssertNotEqual(T9DeploymentSupport.loadMarker(settings: settings)?.ready, true)
+        XCTAssertNotEqual(
+            T9DeploymentSupport.loadMarker(schemaID: wanID, settings: settings)?.ready, true)
+    }
+
     func testSuccessfulDeploymentUsesFullCheckAndUpdatesSharedFlags() async {
         let settings = StubSharedSettingsStore(values: ["rime_needs_deploy": true])
         let installer = StubSchemaArchiveInstaller()
@@ -2638,6 +2682,94 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertEqual(requestCount, 1)
     }
 
+    func testNewDeploymentBeginsOneSuspensionToken() async {
+        let controller = SuspensionTaskController()
+        MainAppSuspensionGuard.shared.installControllerForTesting(controller)
+        let deploymentService = StubDeploymentService(succeeded: true)
+        let manager = makeManager(deploymentService: deploymentService)
+        let succeeded = await manager.deployRimeConfig()
+        XCTAssertTrue(succeeded)
+        XCTAssertEqual(controller.beginCount, 1)
+        XCTAssertEqual(controller.endCount, 1)
+        XCTAssertEqual(controller.reasons, ["rime-deployment"])
+    }
+
+    func testLeaseWaitAndTaskReuseDoNotBeginAnotherToken() async {
+        let controller = SuspensionTaskController()
+        MainAppSuspensionGuard.shared.installControllerForTesting(controller)
+        let deploymentService = StubDeploymentService(succeeded: true)
+        await deploymentService.armDeployHold()
+        let manager = makeManager(deploymentService: deploymentService)
+        let operationID = UUID()
+        let leased = await manager.acquireSchemeDeliveryCommitLease(operationID: operationID)
+        XCTAssertTrue(leased)
+
+        let waiting = Task { @MainActor in await manager.deployRimeConfig() }
+        await Task.yield()
+        XCTAssertEqual(controller.beginCount, 0)
+
+        manager.releaseSchemeDeliveryCommitLease(operationID: operationID)
+        let started = expectation(description: "deployment body entered")
+        while await deploymentService.requests.isEmpty {
+            await Task.yield()
+        }
+        started.fulfill()
+        await fulfillment(of: [started], timeout: 5)
+        XCTAssertEqual(controller.beginCount, 1)
+
+        let reused = Task { @MainActor in await manager.deployRimeConfig() }
+        await Task.yield()
+        XCTAssertEqual(controller.beginCount, 1)
+
+        await deploymentService.releaseDeployHold()
+        let waitingResult = await waiting.value
+        let reusedResult = await reused.value
+        XCTAssertTrue(waitingResult)
+        XCTAssertTrue(reusedResult)
+        XCTAssertEqual(controller.beginCount, 1)
+        XCTAssertEqual(controller.endCount, 1)
+    }
+
+    func testCancelLeavesSuspensionTokenUntilDeploymentReturns() async {
+        let controller = SuspensionTaskController()
+        MainAppSuspensionGuard.shared.installControllerForTesting(controller)
+        let deploymentService = StubDeploymentService(succeeded: true)
+        await deploymentService.armDeployHold()
+        let manager = makeManager(deploymentService: deploymentService)
+        let running = Task { @MainActor in await manager.deployRimeConfig() }
+        while await deploymentService.requests.isEmpty {
+            await Task.yield()
+        }
+        XCTAssertEqual(controller.beginCount, 1)
+        manager.cancelActiveRimeDeployment()
+        XCTAssertEqual(controller.endCount, 0)
+        XCTAssertNil(manager.activeRimeDeploymentTask)
+        await deploymentService.releaseDeployHold()
+        _ = await running.value
+        XCTAssertEqual(controller.endCount, 1)
+    }
+
+    func testSuspensionExpiryDoesNotChangeDeploymentResult() async {
+        let controller = SuspensionTaskController()
+        MainAppSuspensionGuard.shared.installControllerForTesting(controller)
+        let deploymentService = StubDeploymentService(succeeded: true)
+        await deploymentService.armDeployHold()
+        let manager = makeManager(deploymentService: deploymentService)
+        let running = Task { @MainActor in await manager.deployRimeConfig() }
+        while controller.beginCount == 0 {
+            await Task.yield()
+        }
+        let deployingBefore = manager.isDeploymentMarkedInProgress
+        controller.fireExpiration()
+        XCTAssertEqual(controller.endCount, 1)
+        XCTAssertEqual(manager.isDeploymentMarkedInProgress, deployingBefore)
+        XCTAssertNotNil(manager.activeRimeDeploymentID)
+        await deploymentService.releaseDeployHold()
+        let expiredResult = await running.value
+        XCTAssertTrue(expiredResult)
+        XCTAssertEqual(controller.endCount, 1)
+    }
+
     func testGenerationInvalidationAfterLeaseWaitRollsBackLease() async {
         let manager = makeManager()
         let foreignOperationID = UUID()
@@ -3330,6 +3462,8 @@ private final class StubSchemaArchiveInstaller: SchemaArchiveInstalling {
     private(set) var didCommitUpgradeCheckpoint = false
     private(set) var runtimeDirectoriesCallCount = 0
     private(set) var deploymentDirectoriesCallCount = 0
+    var deploymentDirectoriesError: Error?
+    var onDeploymentDirectories: (() -> Void)?
 
     init(
         containsInstalledSchema: Bool = false,
@@ -3425,7 +3559,38 @@ private final class StubSchemaArchiveInstaller: SchemaArchiveInstalling {
     }
     func deploymentDirectories(pendingSchemaID: String?) throws -> SchemaDeploymentDirectories {
         deploymentDirectoriesCallCount += 1
+        onDeploymentDirectories?()
+        if let deploymentDirectoriesError {
+            throw deploymentDirectoriesError
+        }
         return directories
+    }
+}
+
+@MainActor
+private final class SuspensionTaskController: MainAppBackgroundTaskControlling {
+    private(set) var beginCount = 0
+    private(set) var endCount = 0
+    private(set) var reasons: [String] = []
+    private var handlers: [Int: () -> Void] = [:]
+    private var nextID = 1
+
+    func beginTask(name: String, expirationHandler: @escaping () -> Void) -> Int {
+        beginCount += 1
+        reasons.append(name)
+        let identifier = nextID
+        nextID += 1
+        handlers[identifier] = expirationHandler
+        return identifier
+    }
+
+    func endTask(_ identifier: Int) {
+        endCount += 1
+        handlers[identifier] = nil
+    }
+
+    func fireExpiration() {
+        handlers.values.first?()
     }
 }
 
@@ -3460,9 +3625,27 @@ private actor StubDeploymentService: RimeDeploymentServicing {
         leaseOwnerReader = reader
     }
 
+    private var holdDeploy = false
+    private var deployGate: CheckedContinuation<Void, Never>?
+
+    func armDeployHold() {
+        holdDeploy = true
+    }
+
+    func releaseDeployHold() {
+        holdDeploy = false
+        deployGate?.resume()
+        deployGate = nil
+    }
+
     func deploy(_ request: RimeDeploymentRequest) async throws -> RimeDeploymentResult {
         observedLeaseOwners.append(await leaseOwnerReader?())
         requests.append(request)
+        if holdDeploy {
+            await withCheckedContinuation { continuation in
+                deployGate = continuation
+            }
+        }
         return results[min(requests.count - 1, results.count - 1)]
     }
 }

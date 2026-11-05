@@ -1001,34 +1001,13 @@ extension KeyboardController {
             let commentPreferred = t9VisiblePreedit(for: output)
             if rimePreeditText.hasPrefix(confirmedText) {
                 let rimeTail = String(rimePreeditText.dropFirst(confirmedText.count))
-                internalRemainingRaw = T9PinyinPathExtractor.internalDigitIdentity(
-                    fromPreedit: rimeTail
-                )
-                // Digit/separator-only RIME tails are internal raw, not user-facing text.
-                if rimeTail.isEmpty || internalRemainingRaw != nil {
-                    remainingPreeditText = commentPreferred
-                    displayText = confirmedText + commentPreferred
-                } else {
-                    remainingPreeditText = rimeTail
-                    displayText = rimePreeditText
-                }
-            } else if let digitIdentity = T9PinyinPathExtractor.internalDigitIdentity(
-                fromPreedit: rimePreeditText
-            ) {
-                internalRemainingRaw = digitIdentity
-                remainingPreeditText = commentPreferred
-                displayText = confirmedText + commentPreferred
-            } else if containsInternalT9Digit(rimePreeditText) {
-                // A letter+digit mix such as `qiu5` is still internal raw. Prefer
-                // the sanitized candidate projection; if unavailable, expose no
-                // suffix rather than leaking even one digit to marked text.
-                remainingPreeditText = commentPreferred
-                displayText = confirmedText + commentPreferred
+                internalRemainingRaw = T9PinyinPathExtractor.internalDigitIdentity(fromPreedit: rimeTail)
             } else {
-                // Letter-only preedit (e.g. after path refine) is safe to show.
-                remainingPreeditText = rimePreeditText
-                displayText = confirmedText + rimePreeditText
+                internalRemainingRaw = T9PinyinPathExtractor.internalDigitIdentity(fromPreedit: rimePreeditText)
             }
+            // Unproven engine tails are not a reliable remaining-slot source.
+            remainingPreeditText = commentPreferred
+            displayText = confirmedText + commentPreferred
             // Peel confirmed digit slots when librime keeps the full raw (e.g. 6442692
             // after 你好 → remaining 92 for ya). Path bar must not see leading 6 → m/n/o.
             if let internalRemainingRaw, !internalRemainingRaw.isEmpty {
@@ -1099,12 +1078,8 @@ extension KeyboardController {
             // for the remaining focus are available in the same revision.
             _ = applyT9PinyinPathStateFromNewRimeOutput()
             let projected = t9VisiblePreedit(for: pathAlignedOutput)
-            if !projected.isEmpty,
-                !projected.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
-            {
-                finalRemainingPreedit = projected
-                finalDisplay = confirmedText + projected
-            }
+            finalRemainingPreedit = projected
+            finalDisplay = confirmedText + projected
         } else {
             _ = clearT9PinyinPathStateReturningEffect()
         }

@@ -268,7 +268,315 @@ final class NineKeyEnableTransactionTests: XCTestCase {
         XCTAssertNil(manager.schemeDeliveryCommitLeaseOperationID)
     }
 
+    func testEnableDoesNotPrepareDeploymentDirectoriesBeforeTheTransaction() async {
+        let settings = RecordingSettingsStore()
+        T9DeploymentSupport.persistLayout(.nineKey, settings: settings)
+        T9DeploymentSupport.writeMatchedReadiness(
+            fingerprint: "keep", upstreamVersion: "v", settings: settings)
+        let wan = wanxiangScheme()
+        T9DeploymentSupport.writeMatchedReadiness(
+            schemaID: wan.schemaID, fingerprint: "wan", upstreamVersion: "v", settings: settings)
+        let installer = NineKeySchemaArchiveInstaller(
+            directories: SchemaDeploymentDirectories(
+                sharedDataURL: URL(fileURLWithPath: "/tmp/uk-shared"),
+                userDataURL: URL(fileURLWithPath: "/tmp/uk-user")
+            )
+        )
+        let manager = SchemaManager(
+            settings: settings,
+            archiveInstaller: installer,
+            deploymentService: NineKeyRecordingDeploymentService(succeeded: true)
+        )
+        let missingFamily = await manager.enableNineKeyLayout(schemeID: wan.schemaID)
+        XCTAssertEqual(missingFamily, "需要先安装该九键方案所属的输入方案")
+        XCTAssertEqual(installer.deploymentDirectoriesCallCount, 0)
+        XCTAssertEqual(layout(settings), .nineKey)
+        XCTAssertEqual(T9DeploymentSupport.loadMarker(settings: settings)?.ready, true)
+        XCTAssertEqual(
+            T9DeploymentSupport.loadMarker(schemaID: wan.schemaID, settings: settings)?.ready, true)
+
+        installer.runtimeDirectoriesUnavailable = true
+        settings.set(true, forKey: "wanxiang_installed")
+        let missingDir = await manager.enableNineKeyLayout(schemeID: wan.schemaID)
+        XCTAssertEqual(missingDir, "App Group 不可用")
+        XCTAssertEqual(installer.deploymentDirectoriesCallCount, 0)
+        XCTAssertEqual(layout(settings), .nineKey)
+        XCTAssertEqual(T9DeploymentSupport.loadMarker(settings: settings)?.ready, true)
+        XCTAssertEqual(
+            T9DeploymentSupport.loadMarker(schemaID: wan.schemaID, settings: settings)?.ready, true)
+    }
+
+    func testPreTransactionFailuresKeepPreviousNineKeyState() async {
+        let settings = RecordingSettingsStore()
+        T9DeploymentSupport.persistLayout(.nineKey, settings: settings)
+        T9DeploymentSupport.writeMatchedReadiness(
+            fingerprint: "keep", upstreamVersion: "v", settings: settings)
+        let wan = wanxiangScheme()
+        T9DeploymentSupport.writeMatchedReadiness(
+            schemaID: wan.schemaID, fingerprint: "wan", upstreamVersion: "v", settings: settings)
+
+        let missingFamily = await NineKeyEnableOrchestrator.enable(
+            using: activeDeps(settings: settings, scheme: wan, familyInstalled: false))
+        XCTAssertEqual(missingFamily, .familyNotInstalled)
+        XCTAssertEqual(layout(settings), .nineKey)
+        XCTAssertEqual(T9DeploymentSupport.loadMarker(settings: settings)?.ready, true)
+        XCTAssertEqual(
+            T9DeploymentSupport.loadMarker(schemaID: wan.schemaID, settings: settings)?.ready, true)
+
+        let missingDir = await NineKeyEnableOrchestrator.enable(
+            using: activeDeps(settings: settings, scheme: wan, directories: nil))
+        XCTAssertEqual(missingDir, .directoriesUnavailable)
+        XCTAssertEqual(layout(settings), .nineKey)
+        XCTAssertEqual(T9DeploymentSupport.loadMarker(settings: settings)?.ready, true)
+    }
+
+    func testPrepareFailureInvalidatesOnlyTheTargetMarker() async {
+        let settings = RecordingSettingsStore()
+        let wan = wanxiangScheme()
+        T9DeploymentSupport.persistLayout(.nineKey, settings: settings)
+        T9DeploymentSupport.writeMatchedReadiness(
+            fingerprint: "ice", upstreamVersion: "v", settings: settings)
+        T9DeploymentSupport.writeMatchedReadiness(
+            schemaID: wan.schemaID, fingerprint: "wan", upstreamVersion: "v", settings: settings)
+        let failure = await NineKeyEnableOrchestrator.enable(
+            using: activeDeps(settings: settings, scheme: wan, prepareThrows: true))
+        XCTAssertEqual(failure, .prepareFailed)
+        XCTAssertEqual(layout(settings), .twentySixKey)
+        XCTAssertEqual(T9DeploymentSupport.loadMarker(settings: settings)?.ready, true)
+        XCTAssertEqual(
+            T9DeploymentSupport.loadMarker(schemaID: wan.schemaID, settings: settings)?.ready, false)
+    }
+
+    func testSharedDeployFailureClearsBothMarkersAndForcesTwentySix() async {
+        let settings = RecordingSettingsStore()
+        let wan = wanxiangScheme()
+        T9DeploymentSupport.writeMatchedReadiness(
+            fingerprint: "ice", upstreamVersion: "v", settings: settings)
+        T9DeploymentSupport.writeMatchedReadiness(
+            schemaID: wan.schemaID, fingerprint: "wan", upstreamVersion: "v", settings: settings)
+        let failure = await NineKeyEnableOrchestrator.enable(
+            using: activeDeps(settings: settings, scheme: wan, deploy: false))
+        XCTAssertEqual(failure, .deployFailed)
+        XCTAssertEqual(layout(settings), .twentySixKey)
+        XCTAssertEqual(T9DeploymentSupport.loadMarker(settings: settings)?.ready, false)
+        XCTAssertEqual(
+            T9DeploymentSupport.loadMarker(schemaID: wan.schemaID, settings: settings)?.ready, false)
+        XCTAssertNil(settings.string(forKey: KeyboardLayoutSettingsKey.schemeBinding9))
+    }
+
+    func testOneFamilySmokeFailurePublishesOnlyTheOtherInBothOrders() async {
+        let wan = wanxiangScheme()
+        let ice = NineKeySchemeRegistry.scheme("t9")!
+        for order in [[ice, wan], [wan, ice]] {
+            let settings = RecordingSettingsStore()
+            var smoked: [String] = []
+            let failure = await NineKeyEnableOrchestrator.enable(
+                using: activeDeps(
+                    settings: settings,
+                    scheme: wan,
+                    schemes: order,
+                    smoke: { scheme, _, _ in
+                        smoked.append(scheme.schemaID)
+                        return scheme.schemaID == "t9"
+                    }
+                ))
+            XCTAssertEqual(failure, .smokeFailed(wan.schemaID))
+            XCTAssertEqual(smoked, order.map(\.schemaID))
+            XCTAssertEqual(layout(settings), .twentySixKey)
+            XCTAssertEqual(T9DeploymentSupport.loadMarker(settings: settings)?.resourceFingerprint, "fp")
+            XCTAssertNotEqual(
+                T9DeploymentSupport.loadMarker(schemaID: wan.schemaID, settings: settings)?.ready, true)
+        }
+    }
+
+    func testRestoreFailureAfterSmokeForcesTwentySix() async {
+        let settings = RecordingSettingsStore()
+        let wan = wanxiangScheme()
+        let failure = await NineKeyEnableOrchestrator.enable(
+            using: activeDeps(settings: settings, scheme: wan, restore: false))
+        XCTAssertEqual(failure, .restoreFailed)
+        XCTAssertEqual(layout(settings), .twentySixKey)
+        XCTAssertNil(settings.string(forKey: KeyboardLayoutSettingsKey.schemeBinding9))
+        XCTAssertEqual(
+            T9DeploymentSupport.loadMarker(schemaID: wan.schemaID, settings: settings)?.ready, true)
+    }
+
+    func testFingerprintMissAndSmokeFalseAndDirectoryMissAreDistinct() async {
+        let wan = wanxiangScheme()
+        let missingFingerprint = await NineKeyEnableOrchestrator.enable(
+            using: activeDeps(settings: RecordingSettingsStore(), scheme: wan, fingerprint: nil))
+        XCTAssertEqual(missingFingerprint, .fingerprintUnavailable(wan.schemaID))
+        let smokeMiss = await NineKeyEnableOrchestrator.enable(
+            using: activeDeps(
+                settings: RecordingSettingsStore(), scheme: wan,
+                smoke: { _, _, _ in false }))
+        XCTAssertEqual(smokeMiss, .smokeFailed(wan.schemaID))
+        let directories = await NineKeyEnableOrchestrator.enable(
+            using: activeDeps(settings: RecordingSettingsStore(), scheme: wan, directories: nil))
+        XCTAssertEqual(directories, .directoriesUnavailable)
+    }
+
+    func testReadyTargetBindingDoesNotDeploy() async throws {
+        let root = FileManager.default.temporaryDirectory
+            .appendingPathComponent("uk-9key-bind-\(UUID().uuidString)", isDirectory: true)
+        let shared = root.appendingPathComponent("shared", isDirectory: true)
+        let user = root.appendingPathComponent("user", isDirectory: true)
+        try FileManager.default.createDirectory(at: shared, withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(at: user, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let wan = wanxiangScheme()
+        let source = shared.appendingPathComponent(wan.schemaFileName)
+        try "schema_id: test\n".write(to: source, atomically: true, encoding: .utf8)
+        let fingerprint = try XCTUnwrap(
+            T9DeploymentSupport.resourceFingerprint(schemaID: wan.schemaID, sharedDataURL: shared))
+        let settings = RecordingSettingsStore()
+        settings.set(true, forKey: "wanxiang_installed")
+        T9DeploymentSupport.persistLayout(.twentySixKey, settings: settings)
+        T9DeploymentSupport.writeMatchedReadiness(
+            schemaID: wan.schemaID, fingerprint: fingerprint, upstreamVersion: "v", settings: settings)
+        let deployment = NineKeyRecordingDeploymentService(succeeded: true)
+        let manager = SchemaManager(
+            settings: settings,
+            archiveInstaller: NineKeySchemaArchiveInstaller(
+                directories: SchemaDeploymentDirectories(sharedDataURL: shared, userDataURL: user)),
+            deploymentService: deployment
+        )
+        let failure = await manager.setSchemeBinding9(wan.schemaID)
+        XCTAssertNil(failure)
+        XCTAssertEqual(settings.string(forKey: KeyboardLayoutSettingsKey.schemeBinding9), wan.schemaID)
+        XCTAssertEqual(layout(settings), .twentySixKey)
+        let deploymentRequestCount = await deployment.requestCount()
+        XCTAssertEqual(deploymentRequestCount, 0)
+    }
+
+    func testSecondEnableWhileLeaseHeldDoesNotWriteMarkerOrLayout() async throws {
+        let wan = wanxiangScheme()
+        let settings = RecordingSettingsStore()
+        T9DeploymentSupport.persistLayout(.nineKey, settings: settings)
+        T9DeploymentSupport.writeMatchedReadiness(
+            fingerprint: "held", upstreamVersion: "v", settings: settings)
+        T9DeploymentSupport.writeMatchedReadiness(
+            schemaID: wan.schemaID, fingerprint: "held-wan", upstreamVersion: "v", settings: settings)
+        let deployment = NineKeyRecordingDeploymentService(succeeded: true)
+        let manager = SchemaManager(
+            settings: settings,
+            archiveInstaller: NineKeySchemaArchiveInstaller(
+                directories: SchemaDeploymentDirectories(
+                    sharedDataURL: URL(fileURLWithPath: "/tmp/uk-shared"),
+                    userDataURL: URL(fileURLWithPath: "/tmp/uk-user")
+                )),
+            deploymentService: deployment
+        )
+        let holder = UUID()
+        let acquiredLease = await manager.acquireSchemeDeliveryCommitLease(operationID: holder)
+        XCTAssertTrue(acquiredLease)
+
+        // The production lease queues. Start the second enable as its own task
+        // so this test can observe the wait without awaiting the lease itself.
+        let enableTask = Task { @MainActor in
+            await manager.enableNineKeyLayout(schemeID: wan.schemaID)
+        }
+        let startedWaiting = await secondEnableStartedWaitingForLease(manager, within: .seconds(2))
+        XCTAssertTrue(startedWaiting)
+        XCTAssertEqual(manager.schemeDeliveryCommitLeaseOperationID, holder)
+        XCTAssertEqual(layout(settings), .nineKey)
+        XCTAssertNil(settings.string(forKey: KeyboardLayoutSettingsKey.schemeBinding9))
+        XCTAssertEqual(T9DeploymentSupport.loadMarker(settings: settings)?.resourceFingerprint, "held")
+        XCTAssertEqual(
+            T9DeploymentSupport.loadMarker(schemaID: wan.schemaID, settings: settings)?.resourceFingerprint,
+            "held-wan")
+        let requestCountWhileHeld = await deployment.requestCount()
+        XCTAssertEqual(requestCountWhileHeld, 0)
+
+        // Cancellation resumes the availability waiter with false
+        // (`waitForSchemeDeliveryCommitLeaseAvailability`), so the second enable
+        // returns without acquiring the lease. Releasing the holder instead would
+        // let that enable run the full orchestrator after the assertions.
+        enableTask.cancel()
+        _ = await enableTask.value
+        manager.releaseSchemeDeliveryCommitLease(operationID: holder)
+    }
+
+    /// Polls until the second enable is queued on the commit lease, or the bound elapses.
+    private func secondEnableStartedWaitingForLease(
+        _ manager: SchemaManager,
+        within limit: Duration
+    ) async -> Bool {
+        let clock = ContinuousClock()
+        let deadline = clock.now.advanced(by: limit)
+        while clock.now < deadline {
+            if manager.schemeDeliveryCommitLeaseAvailabilityWaiterCount >= 1 {
+                return true
+            }
+            try? await Task.sleep(for: .milliseconds(20))
+        }
+        return manager.schemeDeliveryCommitLeaseAvailabilityWaiterCount >= 1
+    }
+
     // MARK: - Helpers
+
+    private func wanxiangScheme() -> NineKeyScheme {
+        NineKeySchemeRegistry.entries.first { $0.familyID == "wanxiang" }!
+    }
+
+    private func layout(_ settings: RecordingSettingsStore) -> KeyboardLayoutStyle {
+        KeyboardLayoutStyle.resolve(settings.string(forKey: KeyboardLayoutSettingsKey.layoutStyle))
+    }
+
+    private func activeDeps(
+        settings: RecordingSettingsStore,
+        scheme: NineKeyScheme,
+        familyInstalled: Bool = true,
+        directories: NineKeyEnableOrchestrator.Directories? = NineKeyEnableOrchestrator.Directories(
+            sharedDataURL: URL(fileURLWithPath: "/tmp/uk-shared"),
+            userDataURL: URL(fileURLWithPath: "/tmp/uk-user")
+        ),
+        prepareThrows: Bool = false,
+        deploy: Bool = true,
+        schemes: [NineKeyScheme]? = nil,
+        smoke: @escaping (NineKeyScheme, String, String) -> Bool = { _, _, _ in true },
+        fingerprint: String? = "fp",
+        restore: Bool = true
+    ) -> NineKeyEnableOrchestrator.ActiveDependencies {
+        let listed = schemes ?? [NineKeySchemeRegistry.scheme("t9")!, scheme]
+        return NineKeyEnableOrchestrator.ActiveDependencies(
+            target: scheme,
+            familyInstalled: { familyInstalled },
+            resolveDirectories: { directories },
+            beginTargetTransaction: {
+                T9DeploymentSupport.persistLayout(.twentySixKey, settings: settings)
+                T9DeploymentSupport.invalidateReadiness(schemaID: scheme.schemaID, settings: settings)
+            },
+            prepare: { _ in if prepareThrows { throw TestPrepareError() } },
+            invalidateAllMarkers: {
+                T9DeploymentSupport.invalidateAllReadiness(settings: settings)
+            },
+            deploy: { deploy },
+            schemesToVerify: { listed },
+            rewriteCheck: { _, _ in true },
+            smoke: smoke,
+            fingerprint: { _, _ in fingerprint },
+            restoreRoute: { restore },
+            finalRouteMatchesTarget: { true },
+            forceTwentySix: {
+                T9DeploymentSupport.persistLayout(.twentySixKey, settings: settings)
+            },
+            writeMarker: { candidate, value in
+                T9DeploymentSupport.writeMatchedReadiness(
+                    schemaID: candidate.schemaID, fingerprint: value, upstreamVersion: "v",
+                    settings: settings)
+            },
+            publishBinding: { id in
+                settings.set(id, forKey: KeyboardLayoutSettingsKey.schemeBinding9)
+            },
+            publishLayout: {
+                T9DeploymentSupport.persistLayout(.nineKey, settings: settings)
+            },
+            revokeNineKeyBinding: {
+                settings.removeObject(forKey: KeyboardLayoutSettingsKey.schemeBinding9)
+            }
+        )
+    }
 
     private static let validT9Upstream = """
         schema:
@@ -393,6 +701,8 @@ private final class CommitProbe {
 @MainActor
 private final class NineKeySchemaArchiveInstaller: SchemaArchiveInstalling {
     let directories: SchemaDeploymentDirectories
+    var runtimeDirectoriesUnavailable = false
+    private(set) var deploymentDirectoriesCallCount = 0
 
     init(directories: SchemaDeploymentDirectories) {
         self.directories = directories
@@ -427,8 +737,16 @@ private final class NineKeySchemaArchiveInstaller: SchemaArchiveInstalling {
     func rollbackSchemaUninstall(_ staging: SchemaUninstallStaging) {}
     func clearBuildCache(plan: RimeSchemeInstallationPlan) {}
     func sharedDataDirectoryURL() -> URL? { directories.sharedDataURL }
-    func runtimeDirectories() throws -> SchemaDeploymentDirectories { directories }
-    func deploymentDirectories(pendingSchemaID: String?) throws -> SchemaDeploymentDirectories { directories }
+    func runtimeDirectories() throws -> SchemaDeploymentDirectories {
+        if runtimeDirectoriesUnavailable {
+            throw CocoaError(.fileReadNoSuchFile)
+        }
+        return directories
+    }
+    func deploymentDirectories(pendingSchemaID: String?) throws -> SchemaDeploymentDirectories {
+        deploymentDirectoriesCallCount += 1
+        return directories
+    }
 }
 
 private actor NineKeyRecordingDeploymentService: RimeDeploymentServicing {

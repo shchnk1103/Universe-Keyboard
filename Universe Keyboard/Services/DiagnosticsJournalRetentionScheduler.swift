@@ -12,10 +12,13 @@ actor DiagnosticsJournalRetentionScheduler {
         let minimumInterval: TimeInterval
     }
 
-    static let shared = DiagnosticsJournalRetentionScheduler()
+    static let shared = DiagnosticsJournalRetentionScheduler(
+        isForegroundActive: { DiagnosticsAppLifecycle.shared.isProcessActive }
+    )
 
     private let policy: Policy
     private let reclaim: @Sendable (URL) async -> Void
+    private let isForegroundActive: @Sendable () -> Bool
     private var lastStartedAt: Date?
     private var isRunning = false
 
@@ -24,10 +27,12 @@ actor DiagnosticsJournalRetentionScheduler {
         reclaim: @escaping @Sendable (URL) async -> Void = { rootURL in
             let coordinator = DiagnosticsJournalRetentionCoordinator(rootURL: rootURL)
             _ = coordinator.runReclaim()
-        }
+        },
+        isForegroundActive: @escaping @Sendable () -> Bool = { true }
     ) {
         self.policy = policy
         self.reclaim = reclaim
+        self.isForegroundActive = isForegroundActive
     }
 
     /// 返回 `true` 代表本次已投递 reclaim。相邻请求只会被合并；调用方不等待
@@ -40,16 +45,33 @@ actor DiagnosticsJournalRetentionScheduler {
         }
 
         isRunning = true
+        let previousStartedAt = lastStartedAt
         lastStartedAt = now
         let reclaim = reclaim
+        let isForegroundActive = isForegroundActive
         Task.detached(priority: .utility) { [weak self] in
+            // 门闩放在真正执行前。排队之后转入后台则跳过本次，并恢复间隔起点，等下次 active。
+            guard isForegroundActive() else {
+                await self?.finishRun(.restore(previousStartedAt))
+                return
+            }
             await reclaim(rootURL)
-            await self?.finishRun()
+            await self?.finishRun(.keep)
         }
         return true
     }
 
-    private func finishRun() {
+    private enum FinishStamp {
+        /// 正常跑完：保留 request 时写入的时间，15 分钟间隔继续有效。
+        case keep
+        /// 执行前发现不在前台：恢复排队前的起点（首次为 nil），避免这次跳过占住间隔。
+        case restore(Date?)
+    }
+
+    private func finishRun(_ stamp: FinishStamp) {
+        if case .restore(let previous) = stamp {
+            lastStartedAt = previous
+        }
         isRunning = false
     }
 }

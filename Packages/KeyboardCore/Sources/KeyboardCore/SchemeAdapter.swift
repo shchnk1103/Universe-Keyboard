@@ -94,8 +94,8 @@ public enum SchemeAdapterRegistry {
         schemaID: "rime_ice",
         layout: SchemeLayoutCapability(
             supportsTwentySixKey: true,
-            supportsNineKey: true,
-            nineKeySchemaIDs: ["t9"]
+            supportsNineKey: !NineKeySchemeRegistry.schemes(forFamily: "rime_ice").isEmpty,
+            nineKeySchemaIDs: NineKeySchemeRegistry.schemes(forFamily: "rime_ice").map(\.schemaID)
         ),
         sharedDefaultMode: .privatePreset,
         ownershipStrategyID: .namedList,
@@ -110,8 +110,8 @@ public enum SchemeAdapterRegistry {
         schemaID: "wanxiang",
         layout: SchemeLayoutCapability(
             supportsTwentySixKey: true,
-            supportsNineKey: false,
-            nineKeySchemaIDs: []
+            supportsNineKey: !NineKeySchemeRegistry.schemes(forFamily: "wanxiang").isEmpty,
+            nineKeySchemaIDs: NineKeySchemeRegistry.schemes(forFamily: "wanxiang").map(\.schemaID)
         ),
         sharedDefaultMode: .privatePreset,
         ownershipStrategyID: .exactHash,
@@ -154,6 +154,19 @@ public enum SchemeAdapterRegistry {
         }
     }
 
+    /// Includes design capabilities not yet exposed through legacy product APIs.
+    public static func registeredAdapter(for schemaID: String) -> SchemeAdapter? {
+        adapter(for: RimeSchemeCapabilityMatrix.normalizeRegisteredSchemaID(schemaID))
+    }
+
+    public static func isRegisteredNineKeyCapable(_ schemaID: String) -> Bool {
+        guard let scheme = NineKeySchemeRegistry.scheme(schemaID),
+            let adapter = registeredAdapter(for: schemaID)
+        else { return false }
+        return adapter.layout.supportsNineKey && adapter.schemaID == scheme.familyID
+            && adapter.layout.nineKeySchemaIDs.contains(schemaID)
+    }
+
     /// Product nine-key capability via LayoutCapability (Ice-only `t9` today).
     ///
     /// Literal id must appear in the family’s `nineKeySchemaIDs` **and** the
@@ -186,7 +199,7 @@ public enum SchemeAdapterRegistry {
         guard let adapter = adapter(for: schemaID), adapter.layout.supportsNineKey else {
             return false
         }
-        return adapter.schemaID == schemaID
+        return adapter.schemaID == schemaID && adapter.schemaID == "rime_ice"
     }
 
     /// Post-process revision for known adapters; `nil` otherwise (same as today’s switch).

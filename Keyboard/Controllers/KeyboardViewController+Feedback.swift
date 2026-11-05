@@ -126,32 +126,31 @@ extension KeyboardViewController {
                 forKey: TypingStatisticsStorageKey.resetEpoch
             ) ?? 0
 
-        // Layout / T9 readiness: snapshot only — never read UserDefaults on the key path.
+        // Layout / nine-key readiness: snapshot only — never read UserDefaults on the key path.
         cachedLayoutStyle = KeyboardLayoutStyle.resolve(
             defaults?.string(forKey: KeyboardLayoutSettingsKey.layoutStyle)
         )
-        let markerData = defaults?.data(forKey: RimeT9Readiness.SettingsKey.marker)
-        let marker = markerData.flatMap { try? JSONDecoder().decode(RimeT9ReadinessMarker.self, from: $0) }
-        var onDiskFingerprint: String?
+        var sharedDataDir: String?
         if let container = FileManager.default.containerURL(
             forSecurityApplicationGroupIdentifier: Self.appGroupID
         ) {
-            let t9URL =
-                container
-                .appendingPathComponent("Rime/shared/t9.schema.yaml")
-            onDiskFingerprint = RimeT9Readiness.fingerprint(ofFileAt: t9URL)
+            sharedDataDir = container.appendingPathComponent("Rime/shared", isDirectory: true).path
         }
-        // ADR 0026: must pass per-layout bindings. Omitting them falls back to
-        // legacy "base must be rime_ice for T9", which keeps 26-key chrome when
-        // the 26-key slot is 万象 (`wanxiang`) even if layout preference is nine-key
-        // and fog T9 readiness is matched.
-        let selection = RimeRuntimeSelection.resolve(
+        // Each registered scheme contributes its own marker key and source fingerprint.
+        // Fog bindings still resolve through the legacy contract inside `resolveRegistered`.
+        let snapshot = RimeRuntimeSelectionBridge.registeredSnapshot(
+            defaults: defaults,
+            sharedDataDir: sharedDataDir
+        )
+        let selection = RimeRuntimeSelection.resolveRegistered(
             baseSchemaID: defaults?.string(forKey: "rime_active_schema"),
             layoutRawValue: defaults?.string(forKey: KeyboardLayoutSettingsKey.layoutStyle),
-            readinessMarker: marker,
-            onDiskFingerprint: onDiskFingerprint,
+            readinessMarker: snapshot.fogMarker,
+            onDiskFingerprint: snapshot.fogFingerprint,
             schemeBinding26: defaults?.string(forKey: KeyboardLayoutSettingsKey.schemeBinding26),
-            schemeBinding9: defaults?.string(forKey: KeyboardLayoutSettingsKey.schemeBinding9)
+            schemeBinding9: defaults?.string(forKey: KeyboardLayoutSettingsKey.schemeBinding9),
+            readinessBySchema: snapshot.readinessBySchema,
+            installedFamilies: snapshot.installedFamilies
         )
         cachedT9ReadinessMatched = selection.t9ReadinessMatched
         // Provisional chrome from readiness (before/while engine is offline).

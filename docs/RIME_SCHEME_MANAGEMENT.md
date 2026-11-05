@@ -12,7 +12,7 @@ RIME scheme management V1 supports a scalable settings structure for the built-i
 
 Future schemes should be added to the same list-and-detail model instead of creating separate top-level settings blocks for each scheme.
 
-Chinese nine-key is **not** a separate user-visible base scheme. When fog-song (`rime_ice`) is installed, deployment may also compile a Universe-compatible `t9` schema (ADR 0018). Layout preference and versioned T9 readiness select `t9` at runtime; do not persist `t9` into `rime_active_schema`.
+An installed family may have its own nine-key scheme (雾凇 `t9`, 万象 `wanxiang_t9i`). Those schemes are still not user-visible base schemes and are not written into `rime_active_schema`. Layout preference and that scheme's readiness select the nine-key schema at runtime. See [ADR 0039](architecture/decisions/0039-wanxiang-nine-key-scheme.md).
 
 ## Built-In Luna Offline Closure
 
@@ -75,6 +75,7 @@ Scheme detail page:
 - Downloaded schemes may expose download, update, redownload, uninstall, and license actions.
 - Built-in schemes should not expose destructive download-management actions.
 - `rime_ice` may show an "高级输入功能" status section because Lua-backed dynamic candidates are a scheme-specific capability. This section should use plain status copy, not internal RIME terms.
+- The settings nine-key list is generated from `NineKeySchemeRegistry` and whether that family is installed. Display names are 「雾凇九键」 and 「万象九键」 (`RimeSettingsStore.nineKeySchemeChoices` / `nineKeySchemeTitle`). They are layout choices, not extra catalog base schemes.
 
 This keeps the top-level page short when more open-source schemes are added.
 
@@ -154,6 +155,8 @@ Downloadable open-source schemes use the generic catalog, distribution, storage,
 
 The user-facing UI should read from `SchemaMetadata`. It should not duplicate package size, license, version, Lua capability, or support flags in the view layer.
 
+The settings nine-key list is not a second catalog. It is generated from the nine-key registry plus family install state. The names shown are 「雾凇九键」 and 「万象九键」.
+
 ### License disclosure contract
 
 - 下载、更新和重新下载必须从所选方案的 catalog entry 取得许可证描述；任何 SwiftUI 页面都不得按方案 ID 硬编码许可证正文。
@@ -212,8 +215,11 @@ When adding a new open-source scheme:
 - Keep global preferences, such as candidate count and simplification, outside individual scheme details unless the preference is genuinely scheme-specific.
 - If the scheme has user dictionary learning support, connect it through the per-scheme candidate-learning model documented in `docs/RIME_USER_DICTIONARY.md`.
 - Add tests for catalog metadata, version/update comparison, install/uninstall cleanup, and any special skip rules before exposing the scheme in the UI.
+- A new nine-key scheme is added through `NineKeySchemeRegistry` and the same readiness contract (rewrite check, compiled-artifact check, marker, smoke). It is not a new downloadable base scheme and is not written into `rime_active_schema`.
 
 ## Pinned source and probe failures
+
+Wanxiang nine-key reuses the already installed Wanxiang tree. It does not add another pin, archive, or catalog distribution of its own.
 
 Rime Ice uses reviewed `2026.06.30/full.zip` assets from upstream GitHub and its NJU mirror,
 not the moving nightly alias. Both source archives are pinned by byte count and SHA-256;
