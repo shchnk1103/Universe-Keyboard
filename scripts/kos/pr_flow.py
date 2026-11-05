@@ -464,6 +464,22 @@ def cmd_land(args, runner) -> int:
                 _summary(payload, log_dir, args.pr)
                 return _die("validator exit or WARNING set differs; not merging")
 
+    readiness = runner.run(
+        ["gh", "pr", "view", args.pr, "--repo", args.repo, "--json", "autoMergeRequest,mergeStateStatus,headRefOid"]
+    )
+    try:
+        ready = json.loads(readiness.text) if readiness.code == 0 else {}
+    except json.JSONDecodeError:
+        ready = {}
+    if ready.get("autoMergeRequest") is not None:
+        payload["status"] = "auto-merge-present"
+        _summary(payload, log_dir, args.pr)
+        return _die("auto-merge present; not merging")
+    if ready.get("mergeStateStatus") != "CLEAN" or ready.get("headRefOid") != args.expect_head:
+        payload["status"] = "not-clean"
+        _summary(payload, log_dir, args.pr)
+        return _die("merge readiness or head check failed; not merging")
+
     merged = runner.run(
         [
             "gh",
@@ -504,22 +520,37 @@ def cmd_land(args, runner) -> int:
     on_main = branch.code == 0 and branch.text.strip() == "main"
     clean = porcelain.code == 0 and porcelain.text.strip() == ""
     if not on_main or not clean:
-        reason = f"skip ff: branch={branch.text.strip()!r} clean={clean}"
+        reason = f"skipped:branch={branch.text.strip()!r} clean={clean}; tell Human"
         payload.update(status="merged-no-ff", ff=reason)
-        _append_record(record_path, f"merge={merge_oid}\n{reason}")
+        _append_record(record_path, f"merge={merge_oid}\nff={reason}")
         _summary(payload, log_dir, args.pr)
         return 0
 
     fetched = _git(runner, args.main_checkout, "fetch", "origin", "main")
     if fetched.code != 0:
-        payload.update(status="ff-fetch-failed", ff=fetched.text.strip())
-        _append_record(record_path, f"merge={merge_oid}\nff-fetch-failed")
+        reason = f"failed:fetch {fetched.text.strip()}; tell Human"
+        payload.update(status="ff-fetch-failed", ff=reason)
+        _append_record(record_path, f"merge={merge_oid}\nff={reason}")
         _summary(payload, log_dir, args.pr)
         return _die("git fetch origin main failed")
+    ancestor = _git(runner, args.main_checkout, "merge-base", "--is-ancestor", "HEAD", "origin/main")
+    if ancestor.code == 1:
+        reason = "skipped:HEAD is not an ancestor of origin/main; tell Human"
+        payload.update(status="merged-no-ff", ff=reason)
+        _append_record(record_path, f"merge={merge_oid}\nff={reason}")
+        _summary(payload, log_dir, args.pr)
+        return 0
+    if ancestor.code != 0:
+        reason = f"failed:ancestor check {ancestor.text.strip()}; tell Human"
+        payload.update(status="ff-failed", ff=reason)
+        _append_record(record_path, f"merge={merge_oid}\nff={reason}")
+        _summary(payload, log_dir, args.pr)
+        return _die("git merge-base failed")
     fast = _git(runner, args.main_checkout, "merge", "--ff-only", "origin/main")
     if fast.code != 0:
-        payload.update(status="ff-failed", ff=fast.text.strip())
-        _append_record(record_path, f"merge={merge_oid}\nff-failed")
+        reason = f"failed:merge {fast.text.strip()}; tell Human"
+        payload.update(status="ff-failed", ff=reason)
+        _append_record(record_path, f"merge={merge_oid}\nff={reason}")
         _summary(payload, log_dir, args.pr)
         return _die("git merge --ff-only failed")
     new_head = _git(runner, args.main_checkout, "rev-parse", "HEAD")

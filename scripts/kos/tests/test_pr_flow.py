@@ -207,6 +207,10 @@ def _view(head=HEAD, state="OPEN"):
     return ok(json.dumps({"state": state, "headRefOid": head}))
 
 
+def _ready(state="CLEAN", auto=None, head=HEAD):
+    return ok(json.dumps({"mergeStateStatus": state, "autoMergeRequest": auto, "headRefOid": head}))
+
+
 def _fail_row():
     url = "https://github.com/shchnk1103/Universe-Keyboard/actions/runs/999/job/111"
     return ok(f"test-app-keyboard\tfail\t2m\t{url}\n")
@@ -339,6 +343,7 @@ class LandTests(unittest.TestCase):
                 (has("pr", "view"), _view()),
                 (has("pr", "checks"), passed),
                 (has("pr", "view"), _view()),
+                (has("autoMergeRequest,mergeStateStatus,headRefOid"), _ready()),
                 (has("pr", "merge"), ok("merged")),
                 (has("mergeCommit"), merge_json),
                 (has("--abbrev-ref"), ok("feature/x\n")),
@@ -353,6 +358,7 @@ class LandTests(unittest.TestCase):
                 (has("pr", "view"), _view()),
                 (has("pr", "checks"), passed),
                 (has("pr", "view"), _view()),
+                (has("autoMergeRequest,mergeStateStatus,headRefOid"), _ready()),
                 (has("pr", "merge"), ok("merged")),
                 (has("mergeCommit"), merge_json),
                 (has("--abbrev-ref"), ok("main\n")),
@@ -361,6 +367,49 @@ class LandTests(unittest.TestCase):
         )
         self.assertEqual(FLOW.main(self._land(["--merge"]), runner=dirty), 0)
         self.assertFalse(any("fetch" in call for call in dirty.calls))
+
+    def test_final_gate_alone_and_zero_reruns_stop(self) -> None:
+        log = FIXTURE.read_text(encoding="utf-8")
+        for steps, extra in [
+            ([(has("checks"), ok("final-quality-gate\tfail\t1m\n"))], []),
+            ([(has("checks"), _fail_row()), (has("--log-failed"), ok(log))], ["--max-reruns", "0"]),
+        ]:
+            runner = Queue([(has("view"), _view())] + steps)
+            self.assertEqual(FLOW.main(self._land(["--merge"] + extra), runner=runner), 1)
+            self.assertFalse(any("rerun" in c or c[1:3] == ["pr", "merge"] for c in runner.calls))
+
+    def test_open_dry_run_does_not_check(self) -> None:
+        runner = Queue([(has("view"), _view())])
+        self.assertEqual(FLOW.main(self._land(["--dry-run"]), runner=runner), 0)
+        self.assertFalse(any("checks" in c for c in runner.calls))
+
+    def test_merge_readiness_and_fast_forward_outcomes(self) -> None:
+        passed = ok("build\tpass\t1m\n")
+        prefix = [(has("view"), _view()), (has("checks"), passed), (has("view"), _view())]
+        for ready in [_ready(auto={"enabledAt": "now"}), _ready(state="BLOCKED"), _ready(head=OTHER)]:
+            runner = Queue(prefix + [(has("autoMergeRequest,mergeStateStatus,headRefOid"), ready)])
+            self.assertEqual(FLOW.main(self._land(["--merge"]), runner=runner), 1)
+            self.assertFalse(any(c[1:3] == ["pr", "merge"] for c in runner.calls))
+        for ancestor, fast, expected, marker in [(fail("", 1), None, 0, "skipped:"), (ok(), fail("merge failed"), 1, "failed:")]:
+            steps = prefix + [(has("autoMergeRequest,mergeStateStatus,headRefOid"), _ready()),
+                (has("pr", "merge"), ok("merged")), (has("mergeCommit"), ok('{"mergeCommit":{"oid":"c"}}')),
+                (has("--abbrev-ref"), ok("main")), (has("status"), ok()), (has("fetch"), ok()),
+                (has("--is-ancestor"), ancestor)]
+            if fast is not None:
+                steps.append((has("--ff-only"), fast))
+            runner = Queue(steps)
+            self.assertEqual(FLOW.main(self._land(["--merge"]), runner=runner), expected)
+            merge = next(c for c in runner.calls if c[1:3] == ["pr", "merge"])
+            self.assertNotIn("--auto", merge)
+            payload = json.loads((self.logs / "land-266.json").read_text())
+            self.assertTrue(payload["ff"].startswith(marker))
+            self.assertIn("ff=" + payload["ff"], Path(payload["record"]).read_text())
+
+    def test_archive_failure_stops_merge(self) -> None:
+        runner = Queue([(has("view"), _view()), (has("checks"), ok("build\tpass\t1m\n")),
+            (has("view"), _view()), (has("diff"), ok("docs/kos/a.md\n")), (has("archive"), fail("bad"))])
+        self.assertEqual(FLOW.main(self._land(["--merge", "--validator", "/v.sh"]), runner=runner), 1)
+        self.assertFalse(any(c[1:3] == ["pr", "merge"] for c in runner.calls))
 
     def test_closed_pr_stops_on_dry_run(self) -> None:
         runner = Queue([(has("pr", "view"), _view(state="MERGED"))])

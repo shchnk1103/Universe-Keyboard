@@ -50,7 +50,7 @@ def _without_limited_network(text):
 
 def _sentence_counts_as_build(sentence):
     """True when this sentence names a build tool and does not itself deny running or starting it."""
-    if not re.search(r"xcodebuild|swift build|swift test", sentence):
+    if "pgrep -x xcodebuild" in sentence or not re.search(r"xcodebuild|swift build|swift test", sentence):
         return False
     if "不运行" in sentence or "不启动" in sentence:
         return False
@@ -112,7 +112,8 @@ def consistency(text, readonly=False):
     # A later sentence such as “不运行构建。” does not exempt an earlier “swift build”.
     mentions_build = any(_sentence_counts_as_build(s) for s in sentences)
     if mentions_build and not readonly:
-        if "只写" in text and not re.search(r"derivedDataPath|--scratch-path", text):
+        write_scope = any("只写" in s and ("写入" in s or s.strip().startswith("只写：")) for s in sentences)
+        if write_scope and not re.search(r"derivedDataPath|--scratch-path", text):
             errs.append("builds mentioned with a 'write only' scope but no build output location")
     # 7. report referenced as input but not in the frozen inputs list
     for m in re.finditer(r"(?:引用|采纳)[^。\n]*`(/[^`]+\.md)`", text):
@@ -129,7 +130,8 @@ def lint_problems(text, requires_commit=False, readonly=False):
     if requires_commit and has_swift_path(text) and "lint --strict" not in text:
         problems.append("swift-format lint gate")
     # Tool names in an explicit denial are not a build this package runs.
-    if not readonly and not build_tools_negated(text) and re.search(r"xcodebuild|swift test|模拟器", text):
+    build_text = "\n".join(s for s in re.split(r"[。\n]", text) if "pgrep -x xcodebuild" not in s)
+    if not readonly and not build_tools_negated(text) and re.search(r"xcodebuild|swift test|模拟器", build_text):
         for name, pat in [("build output location", r"scratch-path|derivedDataPath|DerivedData"), ("skip wording", r"自行跳过")]:
             if not re.search(pat, text):
                 problems.append(name)

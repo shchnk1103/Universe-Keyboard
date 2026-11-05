@@ -70,13 +70,18 @@ class RecomputedHashTests(unittest.TestCase):
 
 class BuildSkipFalsePositiveTests(unittest.TestCase):
     def test_explicit_denial_does_not_require_derived_data_or_skip_wording(self) -> None:
-        text = SHELL + "不运行任何 Swift 或 Xcode 的构建与测试，不启动任何设备。文中提到 xcodebuild 与模拟器只是禁止。\n"
+        text = SHELL + "写入范围只写 scratch。\n" + "不运行任何 Swift 或 Xcode 的构建与测试，不启动任何设备。文中提到 xcodebuild 与模拟器只是禁止。\n"
         problems = FREEZE.lint_problems(text, requires_commit=True)
         # lint_problems still treats the denial as “not a build this package runs”.
         # Rule 6 is separate: “xcodebuild” sits in the next sentence, and the shell has “只写”.
         self.assertNotIn("build output location", problems)
         self.assertNotIn("skip wording", problems)
         self.assertTrue(any("no build output location" in p for p in problems), problems)
+
+    def test_role_and_process_check_do_not_trigger_rule6(self) -> None:
+        text = SHELL + "用 `pgrep -x xcodebuild` 检查进程。"
+        self.assertFalse(any("no build output location" in e for e in FREEZE.consistency(text)))
+        self.assertNotIn("build output location", FREEZE.lint_problems(text))
 
     def test_real_build_still_requires_output_location_and_skip_wording(self) -> None:
         text = SHELL + "运行 xcodebuild，并使用模拟器。\n"
@@ -85,26 +90,26 @@ class BuildSkipFalsePositiveTests(unittest.TestCase):
         self.assertIn("skip wording", problems)
 
     def test_readonly_rule6_does_not_require_build_output(self) -> None:
-        text = "运行 swift test\n只写 scratch"
+        text = "运行 swift test\n只写：scratch"
         self.assertEqual(FREEZE.consistency(text, readonly=True), [])
         self.assertTrue(any("no build output location" in e for e in FREEZE.consistency(text)))
 
     def test_do_not_run_in_another_sentence_does_not_exempt_swift_test(self) -> None:
         # Old expectation treated any “不运行……构建” as a whole-package exemption.
         # Rule 6 now looks at the sentence that names the tool.
-        text = "不运行构建。另有 swift test 字样。\n只写 scratch"
+        text = "不运行构建。另有 swift test 字样。\n只写：scratch"
         self.assertTrue(any("no build output location" in e for e in FREEZE.consistency(text)))
 
     def test_review_counterexample_still_reports_missing_output(self) -> None:
-        text = "运行 swift build。\n只写 scratch。\n不运行构建。"
+        text = "运行 swift build。\n只写：scratch。\n不运行构建。"
         self.assertTrue(any("no build output location" in e for e in FREEZE.consistency(text)))
 
     def test_same_sentence_do_not_run_swift_build_is_exempt(self) -> None:
-        text = "不运行 swift build。\n只写 scratch"
+        text = "不运行 swift build。\n只写：scratch"
         self.assertEqual(FREEZE.consistency(text), [])
 
     def test_same_sentence_do_not_start_device_is_exempt(self) -> None:
-        text = "不启动任何设备，文中的 xcodebuild 只是禁止。\n只写 scratch"
+        text = "不启动任何设备，文中的 xcodebuild 只是禁止。\n只写：scratch"
         self.assertEqual(FREEZE.consistency(text), [])
 
 

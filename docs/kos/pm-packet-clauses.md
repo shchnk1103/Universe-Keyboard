@@ -69,7 +69,7 @@ KeyboardCore：`swift test --package-path Packages/KeyboardCore --scratch-path <
 ## PR 收尾（发布与合并时）
 适用场景：发布与合并。
 
-Executor 或 Human 用 `scripts/kos/pr_flow.py` 的 `open` 与 `land`。PM 会话不运行 `open`，也不运行带 `--merge` 的 `land`。合并只在 Human 下令或亲自运行时加 `--merge`。快进只在主检出当前为 main、工作区干净且 `git merge --ff-only` 能快进时发生，否则只记录。
+Executor 或 Human 用 `scripts/kos/pr_flow.py` 的 `open` 与 `land`。PM 会话不运行 `open`，也不运行带 `--merge` 的 `land`。合并只在 Human 下令或亲自运行时加 `--merge`。条件不满足（主检出不在 main、工作区有已跟踪或未跟踪改动、或 HEAD 不是 origin/main 的祖先）时，不执行 merge，记录 `ff=skipped:<原因>`，汇总写明需告诉 Human，退出 0。`git fetch` 或 `git merge --ff-only` 命令失败时，记录 `ff=failed:<原因>`，汇总写明需告诉 Human，退出 1。
 
 ## 发布包（含 commit、push 或合并时）
 适用场景：包授权提交、推送或判断能否合并。
