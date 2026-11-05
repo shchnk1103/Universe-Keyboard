@@ -8,10 +8,10 @@ import XCTest
 final class NineKeyWanxiangEnableTests: XCTestCase {
     private let schemaID = "wanxiang_t9i"
 
-    override func tearDown() {
+    override func tearDown() async throws {
         NineKeyPublishSmoke.override = nil
         RimeT9SmokeProbe.selectAndConfirmHook = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
     func testPrepareFailureKeepsWanxiangMarkerUnreadyWhileSharingDeployResult() async throws {
