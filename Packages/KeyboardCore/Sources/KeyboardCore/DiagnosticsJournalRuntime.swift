@@ -287,6 +287,16 @@ public final class DiagnosticsJournalRuntime: Sendable {
         reportResumedDrops(ingress.applyProcessLifecycle(active: active, generation: generation))
     }
 
+    internal func closeAppendAdmission() {
+        ingress.closeAppendAdmission()
+    }
+
+    internal func drainAppends(
+        cancellation: @escaping @Sendable () -> Bool
+    ) async -> DiagnosticsAppendDrainOutcome {
+        await ingress.drainClosedAppends(cancellation: cancellation)
+    }
+
     private func reportResumedDrops(_ droppedEventCount: Int) {
         guard droppedEventCount > 0 else { return }
         record(

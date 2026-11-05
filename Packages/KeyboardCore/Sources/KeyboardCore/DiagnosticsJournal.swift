@@ -288,9 +288,21 @@ public actor DiagnosticsJournalWriter {
 
     #if DEBUG
         private var testingReadControlProbeForTesting: (@Sendable (Bool) -> Void)?
+        private var testingBeforeFinalAdmissionForTesting: (@Sendable () -> Void)?
+        private var testingAfterAdmissionForTesting: (@Sendable () throws -> Void)?
 
         internal func installReadControlProbeForTesting(_ probe: @escaping @Sendable (Bool) -> Void) {
             testingReadControlProbeForTesting = probe
+        }
+
+        /// 两把文件锁都已取得、最终写入许可之前。只给测试暂停，发布构建没有这段。
+        internal func installBeforeFinalAdmissionForTesting(_ hook: @escaping @Sendable () -> Void) {
+            testingBeforeFinalAdmissionForTesting = hook
+        }
+
+        /// `isWritePermitted()` 已通过之后、真正写盘之前。抛错仍算已登记的 append 返回。
+        internal func installAfterAdmissionForTesting(_ hook: @escaping @Sendable () throws -> Void) {
+            testingAfterAdmissionForTesting = hook
         }
     #endif
 
@@ -394,9 +406,15 @@ public actor DiagnosticsJournalWriter {
                 )
                 // 回收检查是只读的，须在任何写入和最终许可之前完成。
                 try rejectReclaimedWriter(in: generationDirectory)
+                #if DEBUG
+                    testingBeforeFinalAdmissionForTesting?()
+                #endif
                 guard isWritePermitted() else {
                     throw DiagnosticsJournalError.lifecycleCancelled
                 }
+                #if DEBUG
+                    try testingAfterAdmissionForTesting?()
+                #endif
                 if requiresRotation {
                     try sealActiveSegment()
                     activeByteCount = 0
