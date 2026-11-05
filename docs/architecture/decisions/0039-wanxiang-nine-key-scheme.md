@@ -1,7 +1,7 @@
 # ADR 0039: Wanxiang nine-key scheme
 
 Status: Proposed
-Date: 2026-11-06 Asia/Shanghai
+Date: 2026-11-05 Asia/Shanghai
 
 ## 背景
 
