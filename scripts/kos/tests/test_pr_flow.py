@@ -1,0 +1,372 @@
+"""pr_flow open/land behavior with an injected command runner. No network."""
+from __future__ import annotations
+
+import json
+import tarfile
+import tempfile
+import unittest
+from io import BytesIO
+from pathlib import Path
+
+from test_tools_fix_001 import load
+
+FLOW = load("kos_pr_flow", "pr_flow.py")
+FIXTURE = Path(__file__).resolve().parent / "fixtures" / "failed-log-sample-pr266.txt"
+FLAKY = Path(__file__).resolve().parents[1] / "known-flaky.txt"
+HEAD = "a" * 40
+OTHER = "b" * 40
+IDENTITY = "Cowork 3P <cowork-3p@localhost>"
+CASE = (
+    "KeyboardExtensionTests.TypoCorrectionRecallCoordinatorIntegrationTests."
+    "testHostCallbackPersistsMeasuredQueriesThroughTypedJournalRuntime"
+)
+
+
+class Queue:
+    def __init__(self, steps):
+        self.steps = list(steps)
+        self.calls = []
+
+    def run(self, argv, cwd=None, env=None):
+        self.calls.append(argv)
+        if not self.steps:
+            raise AssertionError(argv)
+        pred, result = self.steps.pop(0)
+        if not pred(argv):
+            raise AssertionError(argv)
+        return result
+
+
+def ok(text=""):
+    return FLOW.Result(0, text, "")
+
+
+def fail(text="", code=1):
+    return FLOW.Result(code, "", text)
+
+
+def has(*parts):
+    return lambda argv: all(part in argv for part in parts)
+
+
+class ParseTests(unittest.TestCase):
+    def test_fixture_parses_known_case_and_error_quote(self) -> None:
+        log = FIXTURE.read_text(encoding="utf-8")
+        cases = FLOW._parse_cases(log)
+        self.assertEqual([name for name, _quote in cases], [CASE])
+        quote = cases[0][1]
+        self.assertLessEqual(len(quote), 300)
+        self.assertTrue(quote.startswith("error:"))
+        self.assertIn(quote, log)
+        self.assertIn("stage=read-after-barrier", quote)
+
+
+class OpenTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory()
+        root = Path(self.tmp.name)
+        self.files = root / "files.txt"
+        self.files.write_text("scripts/kos/pr_flow.py\n", encoding="utf-8")
+        self.body = root / "body.md"
+        self.body.write_text("Ship the helper.\n", encoding="utf-8")
+        self.log_dir = root / "log"
+
+    def tearDown(self) -> None:
+        self.tmp.cleanup()
+
+    def _args(self, extra=None):
+        argv = [
+            "open",
+            "--worktree",
+            "/wt",
+            "--branch",
+            "feature/kos-pr-flow-001",
+            "--base-sha",
+            "base",
+            "--expect-head",
+            HEAD,
+            "--files",
+            str(self.files),
+            "--title",
+            "title",
+            "--body-file",
+            str(self.body),
+            "--log-dir",
+            str(self.log_dir),
+            "--allow-untracked",
+            "Packages/RimeBridge/Vendor",
+        ]
+        return argv + (extra or [])
+
+    def test_each_check_fails_and_one_path_passes(self) -> None:
+        good_log = f"AUTHOR:{IDENTITY}\nCOMMITTER:{IDENTITY}\n"
+        passing = Queue(
+            [
+                (has("rev-parse", "HEAD"), ok(HEAD + "\n")),
+                (has("status", "--porcelain"), ok("?? Packages/RimeBridge/Vendor/librime.a\n")),
+                (has("log"), ok(good_log)),
+                (has("diff", "--name-only"), ok("scripts/kos/pr_flow.py\n")),
+                (has("ls-remote"), ok("")),
+                (has("push"), ok("")),
+                (has("pr", "create"), ok("https://example/pull/1\n")),
+            ]
+        )
+        self.assertEqual(FLOW.main(self._args(), runner=passing), 0)
+        self.assertIn("pr", passing.calls[-1])
+        self.assertNotIn("--force", passing.calls[-2])
+
+        mismatches = [
+            ("head", [(has("rev-parse"), ok(OTHER + "\n"))]),
+            (
+                "dirty",
+                [
+                    (has("rev-parse"), ok(HEAD + "\n")),
+                    (has("status"), ok(" M scripts/kos/pr_flow.py\n")),
+                ],
+            ),
+            (
+                "identity",
+                [
+                    (has("rev-parse"), ok(HEAD + "\n")),
+                    (has("status"), ok("")),
+                    (has("log"), ok("AUTHOR:Other <o@localhost>\nCOMMITTER:Other <o@localhost>\n")),
+                ],
+            ),
+            (
+                "files",
+                [
+                    (has("rev-parse"), ok(HEAD + "\n")),
+                    (has("status"), ok("")),
+                    (has("log"), ok(good_log)),
+                    (has("diff"), ok("README.md\n")),
+                ],
+            ),
+            (
+                "remote",
+                [
+                    (has("rev-parse"), ok(HEAD + "\n")),
+                    (has("status"), ok("")),
+                    (has("log"), ok(good_log)),
+                    (has("diff"), ok("scripts/kos/pr_flow.py\n")),
+                    (has("ls-remote"), ok("abc\trefs/heads/feature/kos-pr-flow-001\n")),
+                ],
+            ),
+        ]
+        for name, steps in mismatches:
+            with self.subTest(name=name):
+                runner = Queue(steps)
+                self.assertEqual(FLOW.main(self._args(), runner=runner), 1)
+                self.assertFalse(any("push" in call for call in runner.calls))
+
+    def test_body_signature_is_rejected(self) -> None:
+        self.body.write_text("ok\nCo-authored-by: Bot\nGenerated with helper\n", encoding="utf-8")
+        runner = Queue(
+            [
+                (has("rev-parse"), ok(HEAD + "\n")),
+                (has("status"), ok("")),
+                (has("log"), ok(f"AUTHOR:{IDENTITY}\nCOMMITTER:{IDENTITY}\n")),
+                (has("diff"), ok("scripts/kos/pr_flow.py\n")),
+            ]
+        )
+        self.assertEqual(FLOW.main(self._args(), runner=runner), 1)
+        self.assertFalse(any("ls-remote" in call for call in runner.calls))
+
+    def test_push_5xx_retries_once_then_stops(self) -> None:
+        good_log = f"AUTHOR:{IDENTITY}\nCOMMITTER:{IDENTITY}\n"
+        runner = Queue(
+            [
+                (has("rev-parse"), ok(HEAD + "\n")),
+                (has("status"), ok("")),
+                (has("log"), ok(good_log)),
+                (has("diff"), ok("scripts/kos/pr_flow.py\n")),
+                (has("ls-remote"), ok("")),
+                (has("push"), fail("HTTP 502")),
+                (has("ls-remote"), ok("")),
+                (has("push"), fail("HTTP 502")),
+            ]
+        )
+        self.assertEqual(FLOW.main(self._args(), runner=runner), 1)
+        self.assertEqual(sum(1 for call in runner.calls if "push" in call), 2)
+        self.assertFalse(any("create" in call for call in runner.calls))
+
+    def test_dry_run_does_not_push(self) -> None:
+        runner = Queue(
+            [
+                (has("rev-parse"), ok(HEAD + "\n")),
+                (has("status"), ok("")),
+                (has("log"), ok(f"AUTHOR:{IDENTITY}\nCOMMITTER:{IDENTITY}\n")),
+                (has("diff"), ok("scripts/kos/pr_flow.py\n")),
+                (has("ls-remote"), ok("")),
+            ]
+        )
+        self.assertEqual(FLOW.main(self._args(["--dry-run"]), runner=runner), 0)
+        self.assertFalse(any("push" in call for call in runner.calls))
+
+
+def _view(head=HEAD, state="OPEN"):
+    return ok(json.dumps({"state": state, "headRefOid": head}))
+
+
+def _fail_row():
+    url = "https://github.com/shchnk1103/Universe-Keyboard/actions/runs/999/job/111"
+    return ok(f"test-app-keyboard\tfail\t2m\t{url}\n")
+
+
+class LandTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory()
+        self.root = Path(self.tmp.name)
+        self.pm = self.root / "pm-log"
+        self.logs = self.root / "land"
+
+    def tearDown(self) -> None:
+        self.tmp.cleanup()
+
+    def _land(self, extra=None):
+        return [
+            "land",
+            "266",
+            "--expect-head",
+            HEAD,
+            "--main-checkout",
+            "/main",
+            "--pm-log",
+            str(self.pm),
+            "--log-dir",
+            str(self.logs),
+            "--known-flaky",
+            str(FLAKY),
+        ] + (extra or [])
+
+    def test_all_known_failures_rerun_once_then_stop_without_merge(self) -> None:
+        log = FIXTURE.read_text(encoding="utf-8")
+        runner = Queue(
+            [
+                (has("pr", "view"), _view()),
+                (has("pr", "checks"), _fail_row()),
+                (has("run", "view", "--log-failed"), ok(log)),
+                (has("run", "rerun", "--failed"), ok("")),
+                (has("pr", "checks"), _fail_row()),
+                (has("run", "view", "--log-failed"), ok(log)),
+            ]
+        )
+        code = FLOW.main(self._land(["--merge"]), runner=runner)
+        self.assertEqual(code, 1)
+        self.assertEqual(sum(1 for call in runner.calls if "rerun" in call), 1)
+        self.assertFalse(any(call[1:3] == ["pr", "merge"] for call in runner.calls))
+        record = next((self.pm / "ci").glob("pr266-run999-attempt*.md"))
+        text = record.read_text(encoding="utf-8")
+        self.assertIn(CASE, text)
+        self.assertIn("stage=read-after-barrier", text)
+
+    def test_case_outside_list_does_not_rerun(self) -> None:
+        foreign = (
+            "Test Case '-[KeyboardTests.OtherTests testUnknown]' failed.\n"
+            "error: something else\n"
+        )
+        runner = Queue(
+            [
+                (has("pr", "view"), _view()),
+                (has("pr", "checks"), _fail_row()),
+                (has("--log-failed"), ok(foreign)),
+            ]
+        )
+        self.assertEqual(FLOW.main(self._land(["--merge"]), runner=runner), 1)
+        self.assertFalse(any("rerun" in call for call in runner.calls))
+
+    def test_unparsed_job_does_not_rerun(self) -> None:
+        runner = Queue(
+            [
+                (has("pr", "view"), _view()),
+                (has("pr", "checks"), _fail_row()),
+                (has("--log-failed"), ok("error: clang frontend failed\n")),
+            ]
+        )
+        self.assertEqual(FLOW.main(self._land(["--merge"]), runner=runner), 1)
+        self.assertFalse(any("rerun" in call for call in runner.calls))
+
+    def test_head_change_does_not_merge(self) -> None:
+        passed = ok("build\tpass\t1m\thttps://github.com/x/actions/runs/5/job/6\n")
+        runner = Queue(
+            [
+                (has("pr", "view"), _view()),
+                (has("pr", "checks"), passed),
+                (has("pr", "view"), _view(head=OTHER)),
+            ]
+        )
+        self.assertEqual(FLOW.main(self._land(["--merge"]), runner=runner), 1)
+        self.assertFalse(any(call[1:3] == ["pr", "merge"] for call in runner.calls))
+
+    def test_without_merge_flag_does_not_merge(self) -> None:
+        passed = ok("build\tpass\t1m\thttps://github.com/x/actions/runs/5/job/6\n")
+        runner = Queue(
+            [
+                (has("pr", "view"), _view()),
+                (has("pr", "checks"), passed),
+            ]
+        )
+        self.assertEqual(FLOW.main(self._land(), runner=runner), 0)
+        self.assertFalse(any(call[1:3] == ["pr", "merge"] for call in runner.calls))
+
+    def test_validator_mismatch_does_not_merge(self) -> None:
+        buf = BytesIO()
+        with tarfile.open(fileobj=buf, mode="w") as tar:
+            pass
+        passed = ok("build\tpass\t1m\thttps://github.com/x/actions/runs/5/job/6\n")
+        runner = Queue(
+            [
+                (has("pr", "view"), _view()),
+                (has("pr", "checks"), passed),
+                (has("pr", "view"), _view()),
+                (has("pr", "diff"), ok("docs/kos/pm-packet-clauses.md\n")),
+                (has("archive"), FLOW.Result(0, buf.getvalue(), "")),
+                (has("bash"), FLOW.Result(0, "WARNING: left\n", "")),
+                (has("bash"), FLOW.Result(1, "WARNING: right\n", "")),
+            ]
+        )
+        code = FLOW.main(
+            self._land(["--merge", "--validator", "/v.sh", "--kos-as-of", "2026-11-05"]),
+            runner=runner,
+        )
+        self.assertEqual(code, 1)
+        self.assertFalse(any(call[1:3] == ["pr", "merge"] for call in runner.calls))
+
+    def test_main_not_on_main_or_dirty_does_not_fast_forward(self) -> None:
+        passed = ok("build\tpass\t1m\thttps://github.com/x/actions/runs/5/job/6\n")
+        merge_json = ok(json.dumps({"mergeCommit": {"oid": "c" * 40}}))
+        not_main = Queue(
+            [
+                (has("pr", "view"), _view()),
+                (has("pr", "checks"), passed),
+                (has("pr", "view"), _view()),
+                (has("pr", "merge"), ok("merged")),
+                (has("mergeCommit"), merge_json),
+                (has("--abbrev-ref"), ok("feature/x\n")),
+                (has("status"), ok("")),
+            ]
+        )
+        self.assertEqual(FLOW.main(self._land(["--merge"]), runner=not_main), 0)
+        self.assertFalse(any("fetch" in call for call in not_main.calls))
+
+        dirty = Queue(
+            [
+                (has("pr", "view"), _view()),
+                (has("pr", "checks"), passed),
+                (has("pr", "view"), _view()),
+                (has("pr", "merge"), ok("merged")),
+                (has("mergeCommit"), merge_json),
+                (has("--abbrev-ref"), ok("main\n")),
+                (has("status"), ok(" M docs/kos/README.md\n")),
+            ]
+        )
+        self.assertEqual(FLOW.main(self._land(["--merge"]), runner=dirty), 0)
+        self.assertFalse(any("fetch" in call for call in dirty.calls))
+
+    def test_closed_pr_stops_on_dry_run(self) -> None:
+        runner = Queue([(has("pr", "view"), _view(state="MERGED"))])
+        self.assertEqual(FLOW.main(self._land(["--dry-run"]), runner=runner), 1)
+        self.assertEqual(len(runner.calls), 1)
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -50,7 +50,7 @@ python3 -B scripts/kos/freeze.py /Users/me/.kos-work/Universe-Keyboard/T-001/ins
   - “停止”和 PARTIAL 出现在同一句；
   - “恰为 N 个文件”又允许 PARTIAL，却没有子集规则；
   - “不联网”与联网预批准并存（“联网只限……只读 `gh`”这种限定句不算冲突），或 HEAD 与 GET 混用；
-  - 提到构建并限定“只写”，却没给构建输出位置（`--readonly`，或写了“不运行……构建”，不报）；
+  - 提到构建并限定“只写”，却没给构建输出位置（`--readonly` 整包不报；某一句同时写了构建工具和“不运行”或“不启动”时，这一句不计入）；
   - 引用或采纳的报告（任意以 `/` 开头的绝对路径）没有哈希。
 - **`--requires-commit`：** 还要有 `Cowork 3P <cowork-3p@localhost>`。包里有 `.swift` 路径时才要求 `lint --strict`（只有 `.swift-format` 或单独的 `.swift` 字样不算路径）。还要有 `docs/assignments/<名>.md`，或同一句在“无 Assignment”四字之后写了非空理由；只写 `docs/ASSIGNMENT_POLICY.md` 不算。
 - **构建输出与“自行跳过”：** 非只读、且出现 `xcodebuild` / `swift test` / `模拟器`、又没有“不运行……构建与测试”或“不启动……设备”时，要求 `derivedDataPath`（或 `scratch-path` / `DerivedData`）和“自行跳过”。`--readonly` 不要求这两项。
@@ -101,6 +101,29 @@ python3 -B scripts/kos/verify-tree.py /绝对路径/目录 --zip /绝对路径/�
 - **何时用：** 核对资源身份时。`freeze.py` 的 `verify-*` 占位符也会调用它。
 - **输入：** 清单每行格式为 `<sha256>  <相对路径>`。
 - **退出码：** 文件集合与每个哈希都一致，并且没有符号链接时退出 0，否则退出 1，并打印缺失、多余和不一致的文件。
+
+## pr_flow.py：推送开 PR，以及等待 CI（可选合并）
+
+```bash
+cd "/Users/me/Dev/Universe Keyboard"
+python3 -B scripts/kos/pr_flow.py open --worktree <dir> --branch <name> --base-sha <sha> --expect-head <sha> --files <清单> --title <标题> --body-file <正文> [--dry-run]
+python3 -B scripts/kos/pr_flow.py land <PR号> --expect-head <sha> --main-checkout <主检出> --pm-log <PM-LOG> --log-dir <目录> [--merge] [--dry-run]
+```
+
+- **何时用：** Executor 或 Human 做发布收尾。PM 会话不运行 `open`，也不运行带 `--merge` 的 `land`。合并只在 Human 下令或亲自运行时加 `--merge`。
+- **`open`：** 核对 HEAD、工作区、提交身份、改动文件集合、正文署名和远端分支不存在。全部通过才推送（不 force、不 `-u`），然后 `gh pr create`。`--dry-run` 只核对。推送返回 5xx 或 `remote rejected` 时，确认远端分支仍不存在再原样重试一次。
+- **`land`：** 确认 PR 为 OPEN 且 head 不变，然后 `gh pr checks --watch`。失败日志里的用例若都在 `known-flaky.txt`，且已重跑次数小于 `--max-reruns`（默认 1），才 `gh run rerun --failed` 一次。全绿且给了 `--merge` 才合并。主检出在 `main` 且工作区干净时才 `git merge --ff-only`。`--dry-run` 只做只读的 `gh pr view`。
+- **退出码：** 0 表示核对通过、或按策略完成等待 / 合并；1 表示某项核对或策略要求停止；2 表示参数错误。
+- 已知偶发清单是同目录的 [`known-flaky.txt`](known-flaky.txt)。
+
+## tests：脚本行为测试
+
+`scripts/kos/tests/` 用 Python 标准库 `unittest` 覆盖 `freeze.py` 与 `pr_flow.py`。`pr_flow` 的测试注入命令执行器，不访问网络。夹具在 `scripts/kos/tests/fixtures/`。
+
+```bash
+cd "/Users/me/Dev/Universe Keyboard"
+PYTHONDONTWRITEBYTECODE=1 python3 -I -B -m unittest discover -s scripts/kos/tests -v
+```
 
 ## 来源与同步
 
