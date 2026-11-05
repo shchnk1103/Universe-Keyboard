@@ -16,6 +16,7 @@ git diff --check "$base_sha" "$head_sha"
 python3 scripts/ci/check_markdown_links.py --base "$base_sha" --head "$head_sha"
 python3 -m json.tool .kos/project.json >/dev/null
 python3 -m unittest discover -s scripts/ci/tests -p 'test_*.py'
+python3 -m unittest discover -s scripts/kos/tests -p 'test_*.py'
 bash scripts/ci/tests/test_verify_final_gate.sh
 bash scripts/ci/tests/test_kos_trigger_paths.sh
 

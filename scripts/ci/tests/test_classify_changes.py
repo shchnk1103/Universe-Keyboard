@@ -138,6 +138,91 @@ class ClassifyPathsTests(unittest.TestCase):
         self.assertEqual(set(paths), {"Source.swift", "docs/Source.md"})
         self.assertTrue(MODULE.classify_paths(paths).requires_full)
 
+    def test_kos_tools_only_skips_full_gate(self) -> None:
+        result = MODULE.classify_paths(["scripts/kos/pr_flow.py"])
+        self.assertEqual(result.name, "kos_tools_only")
+        self.assertFalse(result.requires_full)
+
+    def test_kos_tools_with_docs_stay_lightweight(self) -> None:
+        result = MODULE.classify_paths(["scripts/kos/pr_flow.py", "docs/CI_CHANGE_CLASSIFICATION.md"])
+        self.assertEqual(result.name, "kos_tools_only")
+        self.assertFalse(result.requires_full)
+
+    def test_kos_tools_with_ci_scripts_are_full(self) -> None:
+        result = MODULE.classify_paths(["scripts/kos/pr_flow.py", "scripts/ci/classify_changes.py"])
+        self.assertEqual(result.name, "full")
+        self.assertTrue(result.requires_full)
+
+    def test_kos_tools_with_workflow_are_full(self) -> None:
+        result = MODULE.classify_paths(
+            ["scripts/kos/pr_flow.py", ".github/workflows/swift6-quality.yml"]
+        )
+        self.assertEqual(result.name, "full")
+        self.assertTrue(result.requires_full)
+
+    def test_kos_tools_with_swift_source_are_full(self) -> None:
+        result = MODULE.classify_paths(["scripts/kos/pr_flow.py", "Keyboard/Controller.swift"])
+        self.assertEqual(result.name, "full")
+        self.assertTrue(result.requires_full)
+
+    def test_kos_prefix_lookalike_is_full(self) -> None:
+        result = MODULE.classify_paths(["scripts/kosx/foo.py"])
+        self.assertEqual(result.name, "full")
+        self.assertTrue(result.requires_full)
+
+    def test_keyboard_swift_rename_into_kos_tools_is_full(self) -> None:
+        original_directory = Path.cwd()
+        with tempfile.TemporaryDirectory() as directory:
+            repository = Path(directory)
+            subprocess.run(["git", "init", "-q"], cwd=repository, check=True)
+            subprocess.run(
+                ["git", "config", "user.email", "ci-test@example.invalid"],
+                cwd=repository,
+                check=True,
+            )
+            subprocess.run(
+                ["git", "config", "user.name", "CI Test"], cwd=repository, check=True
+            )
+            (repository / "Keyboard").mkdir()
+            (repository / "Keyboard" / "Controller.swift").write_text(
+                "let value = 1\n", encoding="utf-8"
+            )
+            subprocess.run(["git", "add", "Keyboard/Controller.swift"], cwd=repository, check=True)
+            subprocess.run(["git", "commit", "-qm", "base"], cwd=repository, check=True)
+            base = subprocess.check_output(
+                ["git", "rev-parse", "HEAD"], cwd=repository, text=True
+            ).strip()
+            (repository / "scripts" / "kos").mkdir(parents=True)
+            subprocess.run(
+                ["git", "mv", "Keyboard/Controller.swift", "scripts/kos/Controller.swift"],
+                cwd=repository,
+                check=True,
+            )
+            subprocess.run(["git", "commit", "-qm", "rename"], cwd=repository, check=True)
+            head = subprocess.check_output(
+                ["git", "rev-parse", "HEAD"], cwd=repository, text=True
+            ).strip()
+            try:
+                os.chdir(repository)
+                paths = MODULE.changed_paths(base, head)
+            finally:
+                os.chdir(original_directory)
+
+        self.assertEqual(set(paths), {"Keyboard/Controller.swift", "scripts/kos/Controller.swift"})
+        result = MODULE.classify_paths(paths)
+        self.assertEqual(result.name, "full")
+        self.assertTrue(result.requires_full)
+
+    def test_workflows_do_not_reference_kos_tools(self) -> None:
+        root = Path(__file__).parents[2]
+        workflows = root / ".github" / "workflows"
+        offenders = [
+            str(path.relative_to(root))
+            for path in workflows.rglob("*")
+            if path.is_file() and "scripts/kos" in path.read_text(encoding="utf-8")
+        ]
+        self.assertEqual(offenders, [])
+
 
 if __name__ == "__main__":
     unittest.main()
