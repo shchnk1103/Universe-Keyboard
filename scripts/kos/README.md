@@ -50,7 +50,7 @@ python3 -B scripts/kos/freeze.py /Users/me/.kos-work/Universe-Keyboard/T-001/ins
   - “停止”和 PARTIAL 出现在同一句；
   - “恰为 N 个文件”又允许 PARTIAL，却没有子集规则；
   - “不联网”与联网预批准并存（“联网只限……只读 `gh`”这种限定句不算冲突），或 HEAD 与 GET 混用；
-  - 提到构建并限定“只写”，却没给构建输出位置（`--readonly`，或写了“不运行……构建”，不报）；
+  - 提到构建并在写入范围句限定“只写”（去掉行首空白后以“只写”开头，因此包含“只写 scratch”和“只写：scratch”；行首星号或列表符开头的“只写下面这些”不算；或句中同时含“写入”与“只写”；含“最终消息只写”的句子除外。`pgrep -x xcodebuild` 句不计为构建），却没给构建输出位置（`--readonly` 整包不报；某一句同时写了构建工具和“不运行”或“不启动”时，这一句不计入）；
   - 引用或采纳的报告（任意以 `/` 开头的绝对路径）没有哈希。
 - **`--requires-commit`：** 还要有 `Cowork 3P <cowork-3p@localhost>`。包里有 `.swift` 路径时才要求 `lint --strict`（只有 `.swift-format` 或单独的 `.swift` 字样不算路径）。还要有 `docs/assignments/<名>.md`，或同一句在“无 Assignment”四字之后写了非空理由；只写 `docs/ASSIGNMENT_POLICY.md` 不算。
 - **构建输出与“自行跳过”：** 非只读、且出现 `xcodebuild` / `swift test` / `模拟器`、又没有“不运行……构建与测试”或“不启动……设备”时，要求 `derivedDataPath`（或 `scratch-path` / `DerivedData`）和“自行跳过”。`--readonly` 不要求这两项。
@@ -101,6 +101,29 @@ python3 -B scripts/kos/verify-tree.py /绝对路径/目录 --zip /绝对路径/�
 - **何时用：** 核对资源身份时。`freeze.py` 的 `verify-*` 占位符也会调用它。
 - **输入：** 清单每行格式为 `<sha256>  <相对路径>`。
 - **退出码：** 文件集合与每个哈希都一致，并且没有符号链接时退出 0，否则退出 1，并打印缺失、多余和不一致的文件。
+
+## pr_flow.py：推送开 PR，以及等待 CI（可选合并）
+
+```bash
+cd "/Users/me/Dev/Universe Keyboard"
+python3 -B scripts/kos/pr_flow.py open --worktree <dir> --branch <name> --base-sha <sha> --expect-head <sha> --files <清单> --title <标题> --body-file <正文> [--dry-run]
+python3 -B scripts/kos/pr_flow.py land <PR号> --expect-head <sha> --main-checkout <主检出> --pm-log <PM-LOG> --log-dir <目录> [--merge] [--dry-run]
+```
+
+- **何时用：** Executor 或 Human 做发布收尾。PM 会话不运行 `open`，也不运行带 `--merge` 的 `land`。合并只在 Human 下令或亲自运行时加 `--merge`。
+- **`open`：** 核对 HEAD、工作区、提交身份、改动文件集合、正文署名和远端分支不存在。全部通过才推送（不 force、不 `-u`），然后 `gh pr create`。`--dry-run` 只核对。推送返回 5xx 或 `remote rejected` 时，确认远端分支仍不存在再原样重试一次。
+- **`land`：** 确认 PR 为 OPEN 且 head 不变。`gh pr checks --watch` 只用来等待结束，不拿它的打印表做判定。结束后（不论退出码）再跑一次非 watch 的 `gh pr checks <N> --repo <repo> --json name,state,bucket,link`，只按这一份最终快照判定。快照必须是非空 list，且每项 `bucket` 只能是 `pass`、`fail`、`pending`、`skipping`、`cancel`（与 `pr_flow.py` 的 `SNAPSHOT_BUCKETS` 同一组）。否则不重跑、不合并，汇总写 `checks-snapshot-invalid` 并退出 1。`bucket` 用原始字符串原样比对，不改大小写、不去空白。PR 若一个检查都没有，最终快照为空，`land --merge` 不会合并（失败关闭）。`bucket` 为 `fail` 或 `cancel` 算失败；为 `pending` 算未完成，不重跑、不合并，汇总写 `checks-pending` 并退出 1；`pass` 与 `skipping` 算通过。run 与 job ID 从 `link` 解析。CI 记录的 jobs 段只写这一份最终快照。失败日志里的用例若都在 `known-flaky.txt`，且已重跑次数小于 `--max-reruns`（默认 1），才 `gh run rerun --failed` 一次；回到等待后同样再取一份新的最终快照。全绿且给了 `--merge` 才合并。条件不满足（主检出不在 main、工作区有已跟踪或未跟踪改动、或 HEAD 不是 origin/main 的祖先）时，不执行 merge，记录 `ff=skipped:<原因>`，汇总写明需告诉 Human，退出 0。`git fetch` 或 `git merge --ff-only` 命令失败时，记录 `ff=failed:<原因>`，汇总写明需告诉 Human，退出 1。`--dry-run` 只做只读的 `gh pr view`。
+- **退出码：** 0 表示核对通过、或按策略完成等待 / 合并；1 表示某项核对或策略要求停止；2 表示参数错误。
+- 已知偶发清单是同目录的 [`known-flaky.txt`](known-flaky.txt)。
+
+## tests：脚本行为测试
+
+`scripts/kos/tests/` 用 Python 标准库 `unittest` 覆盖 `freeze.py` 与 `pr_flow.py`。`pr_flow` 的测试注入命令执行器，不访问网络。夹具在 `scripts/kos/tests/fixtures/`。
+
+```bash
+cd "/Users/me/Dev/Universe Keyboard"
+PYTHONDONTWRITEBYTECODE=1 python3 -I -B -m unittest discover -s scripts/kos/tests -v
+```
 
 ## 来源与同步
 

@@ -48,6 +48,23 @@ def _without_limited_network(text):
             kept.append(part)
     return "".join(kept)
 
+def _sentence_is_write_scope(sentence):
+    """A sentence that limits where this package may write."""
+    if "最终消息只写" in sentence:
+        return False
+    stripped = sentence.lstrip(" \t")
+    if stripped.startswith("只写"):
+        return True
+    return "写入" in sentence and "只写" in sentence
+
+def _sentence_counts_as_build(sentence):
+    """True when this sentence names a build tool and does not itself deny running or starting it."""
+    if "pgrep -x xcodebuild" in sentence or not re.search(r"xcodebuild|swift build|swift test", sentence):
+        return False
+    if "不运行" in sentence or "不启动" in sentence:
+        return False
+    return True
+
 def build_tools_negated(text):
     """Explicit denial: do not run builds/tests, or do not start a device."""
     return bool(
@@ -99,15 +116,16 @@ def consistency(text, readonly=False):
         errs.append("both '不联网' and a network pre-approval")
     if re.search(r"\bHEAD\b[^\n]*(状态码|HTTP|GET)", text) and "仅 GET" not in text and "GET" in text:
         errs.append("mixes HEAD and GET network methods")
-    # 6. builds present but writes limited to listed dirs, with no statement about external tool writes.
-    # --readonly or “不运行……构建” is not a build this package will run (ledger line 22).
-    build_exempt = (
-        readonly
-        or re.search(r"不运行[^。\n]*(xcodebuild|swift build)", text)
-        or re.search(r"不运行[^。\n]*构建", text)
-    )
-    if re.search(r"xcodebuild|swift build|swift test", text) and not build_exempt:
-        if "只写" in text and not re.search(r"derivedDataPath|--scratch-path", text):
+    # 6. A build mention counts per sentence. --readonly exempts the whole package.
+    # The same sentence is exempt when it names a build tool and itself says 不运行 or 不启动.
+    # A later sentence such as “不运行构建。” does not exempt an earlier “swift build”.
+    mentions_build = any(_sentence_counts_as_build(s) for s in sentences)
+    if mentions_build and not readonly:
+        # 去掉行首空白后以“只写”开头（含“只写 scratch”“只写：scratch”）。
+        # 行首星号或列表符开头的“只写下面这些”不以“只写”起句，不算。
+        # 句中同时有“写入”与“只写”也算。含“最终消息只写”的句子除外。
+        write_scope = any(_sentence_is_write_scope(s) for s in sentences)
+        if write_scope and not re.search(r"derivedDataPath|--scratch-path", text):
             errs.append("builds mentioned with a 'write only' scope but no build output location")
     # 7. report referenced as input but not in the frozen inputs list
     for m in re.finditer(r"(?:引用|采纳)[^。\n]*`(/[^`]+\.md)`", text):
@@ -124,7 +142,8 @@ def lint_problems(text, requires_commit=False, readonly=False):
     if requires_commit and has_swift_path(text) and "lint --strict" not in text:
         problems.append("swift-format lint gate")
     # Tool names in an explicit denial are not a build this package runs.
-    if not readonly and not build_tools_negated(text) and re.search(r"xcodebuild|swift test|模拟器", text):
+    build_text = "\n".join(s for s in re.split(r"[。\n]", text) if "pgrep -x xcodebuild" not in s)
+    if not readonly and not build_tools_negated(text) and re.search(r"xcodebuild|swift test|模拟器", build_text):
         for name, pat in [("build output location", r"scratch-path|derivedDataPath|DerivedData"), ("skip wording", r"自行跳过")]:
             if not re.search(pat, text):
                 problems.append(name)
