@@ -40,7 +40,58 @@ REQUIRED = [
     ("report path", r"reports/[^`\s]+\.md"),
 ]
 
-def consistency(text):
+def _without_limited_network(text):
+    """Drop sentences that only allow a bounded read-only gh, so they are not a network pre-approval."""
+    kept = []
+    for part in re.split(r"([。\n])", text):
+        if part in ("。", "\n") or not re.search(r"联网只限[^。\n]*只读\s*`gh`", part):
+            kept.append(part)
+    return "".join(kept)
+
+def _sentence_is_write_scope(sentence):
+    """A sentence that limits where this package may write."""
+    if "最终消息只写" in sentence:
+        return False
+    stripped = sentence.lstrip(" \t")
+    if stripped.startswith("只写"):
+        return True
+    return "写入" in sentence and "只写" in sentence
+
+def _sentence_counts_as_build(sentence):
+    """True when this sentence names a build tool and does not itself deny running or starting it."""
+    if "pgrep -x xcodebuild" in sentence or not re.search(r"xcodebuild|swift build|swift test", sentence):
+        return False
+    if "不运行" in sentence or "不启动" in sentence:
+        return False
+    return True
+
+def build_tools_negated(text):
+    """Explicit denial: do not run builds/tests, or do not start a device."""
+    return bool(
+        re.search(r"不运行[^。\n]*构建与测试", text)
+        or re.search(r"不启动[^。\n]*设备", text)
+    )
+
+def has_swift_path(text):
+    """A path ending in .swift. Bare `.swift` and `.swift-format` do not count."""
+    return bool(re.search(r"[A-Za-z0-9_][\w./-]*\.swift(?!-)", text))
+
+def has_assignment_clause(text):
+    """docs/assignments/<name>.md, or the same sentence gives a non-empty reason after 无 Assignment.
+    docs/ASSIGNMENT_POLICY.md alone does not count."""
+    if re.search(r"docs/assignments/[A-Za-z0-9_./-]+\.md", text):
+        return True
+    for sentence in re.split(r"[。\n]", text):
+        mark = "无 Assignment"
+        i = sentence.find(mark)
+        if i < 0:
+            continue
+        reason = sentence[i + len(mark):].strip(" \t：:，,；;（()）")
+        if reason:
+            return True
+    return False
+
+def consistency(text, readonly=False):
     """Cross-clause checks for the contradiction types seen in preflight FAILs (2026-11)."""
     errs = []
     sentences = [x for x in re.split(r"[。\n]", text) if x.strip()]
@@ -59,14 +110,22 @@ def consistency(text):
     # 4. exact file-count vs PARTIAL
     if "DONE =" in text and re.search(r"恰为[^。\n]{0,20}(个|文件)", text) and "PARTIAL" in text and "子集" not in text:
         errs.append("'恰为N个文件' with PARTIAL allowed but no subset rule")
-    # 5. network wording
-    if re.search(r"不联网", text) and re.search(r"只读联网|联网（", text):
+    # 5. network wording. "联网只限……只读 `gh`" is a limit, not a conflicting pre-approval.
+    net_scope = _without_limited_network(text)
+    if re.search(r"不联网", text) and re.search(r"只读联网|联网（", net_scope):
         errs.append("both '不联网' and a network pre-approval")
     if re.search(r"\bHEAD\b[^\n]*(状态码|HTTP|GET)", text) and "仅 GET" not in text and "GET" in text:
         errs.append("mixes HEAD and GET network methods")
-    # 6. builds present but writes limited to listed dirs, with no statement about external tool writes
-    if re.search(r"xcodebuild|swift build|swift test", text) and not re.search(r"不运行[^。\n]*(xcodebuild|swift build)", text):
-        if "只写" in text and not re.search(r"derivedDataPath|--scratch-path", text):
+    # 6. A build mention counts per sentence. --readonly exempts the whole package.
+    # The same sentence is exempt when it names a build tool and itself says 不运行 or 不启动.
+    # A later sentence such as “不运行构建。” does not exempt an earlier “swift build”.
+    mentions_build = any(_sentence_counts_as_build(s) for s in sentences)
+    if mentions_build and not readonly:
+        # 去掉行首空白后以“只写”开头（含“只写 scratch”“只写：scratch”）。
+        # 行首星号或列表符开头的“只写下面这些”不以“只写”起句，不算。
+        # 句中同时有“写入”与“只写”也算。含“最终消息只写”的句子除外。
+        write_scope = any(_sentence_is_write_scope(s) for s in sentences)
+        if write_scope and not re.search(r"derivedDataPath|--scratch-path", text):
             errs.append("builds mentioned with a 'write only' scope but no build output location")
     # 7. report referenced as input but not in the frozen inputs list
     for m in re.finditer(r"(?:引用|采纳)[^。\n]*`(/[^`]+\.md)`", text):
@@ -74,6 +133,24 @@ def consistency(text):
         if not re.search(re.escape(path) + r"`\s*`?[0-9a-f]{64}", text) and not re.search(re.escape(path) + r"[^\n]{0,30}SHA-256", text):
             errs.append("referenced report without hash: " + path)
     return errs
+
+def lint_problems(text, requires_commit=False, readonly=False):
+    problems = [name for name, pat in REQUIRED if not re.search(pat, text)]
+    if requires_commit and "Cowork 3P <cowork-3p@localhost>" not in text:
+        problems.append("commit identity with email")
+    # Docs-only packages have no .swift path, so --requires-commit does not force swift-format.
+    if requires_commit and has_swift_path(text) and "lint --strict" not in text:
+        problems.append("swift-format lint gate")
+    # Tool names in an explicit denial are not a build this package runs.
+    build_text = "\n".join(s for s in re.split(r"[。\n]", text) if "pgrep -x xcodebuild" not in s)
+    if not readonly and not build_tools_negated(text) and re.search(r"xcodebuild|swift test|模拟器", build_text):
+        for name, pat in [("build output location", r"scratch-path|derivedDataPath|DerivedData"), ("skip wording", r"自行跳过")]:
+            if not re.search(pat, text):
+                problems.append(name)
+    problems += ["CONSISTENCY: " + e for e in consistency(text, readonly=readonly)]
+    if requires_commit and not has_assignment_clause(text):
+        problems.append("CONSISTENCY: missing Assignment path or reasoned 无 Assignment")
+    return problems
 
 def main():
     ap = argparse.ArgumentParser()
@@ -90,16 +167,7 @@ def main():
     left = re.findall(r"\{\{[^}]*\}\}", text)
     if left:
         raise SystemExit(f"unresolved placeholders: {left}")
-    problems = [name for name, pat in REQUIRED if not re.search(pat, text)]
-    if a.requires_commit and "Cowork 3P <cowork-3p@localhost>" not in text:
-        problems.append("commit identity with email")
-    if a.requires_commit and "lint --strict" not in text:
-        problems.append("swift-format lint gate")
-    if not a.readonly and re.search(r"xcodebuild|swift test|模拟器", text):
-        for name, pat in [("build output location", r"scratch-path|derivedDataPath|DerivedData"), ("skip wording", r"自行跳过")]:
-            if not re.search(pat, text):
-                problems.append(name)
-    problems += ["CONSISTENCY: " + e for e in consistency(text)]
+    problems = lint_problems(text, requires_commit=a.requires_commit, readonly=a.readonly)
     for s in a.forbid:
         if s in text:
             problems.append(f"forbidden leftover: {s}")

@@ -35,14 +35,51 @@ KeyboardCore：`swift test --package-path Packages/KeyboardCore --scratch-path <
 - `<资源名>`：`{{verify-inv:<目录绝对路径>|<清单绝对路径>}}` 或 `{{verify-zip:<目录绝对路径>|<归档绝对路径>}}`
 具体资源与清单以该包冻结的内容为准；开工用仓库 `scripts/kos/verify-tree.py` 重跑核对，不符即停。涉及 Vendor 时，仅在任务适用时引用仓库现行说明（`scripts/ensure_rime_vendor.sh` 等）。不联网。
 
-## 提交（提交时）
-本地提交，作者与提交者 `Cowork 3P <提交者邮箱>`（单次 `git -c user.name=... -c user.email=...`，不改配置），英文提交信息，无 AI 署名、无 Co-authored-by。提交前对变更的 Swift 文件执行 `xcrun swift-format format --in-place --configuration .swift-format <file>` 与 `xcrun swift-format lint --strict --configuration .swift-format <file>`，失败不得提交。不 push、不开 PR。
+## 提交（提交时；含身份核对）
+适用场景：包要求本地提交。
+
+本地提交，作者与提交者 `Cowork 3P <提交者邮箱>`。提交身份只用 `git -c user.name='…' -c user.email='…'`，不改 Git 配置。核对时把 `git cat-file -p HEAD` 的原文与包内身份字符串逐字比对（author 与 committer 两行都要一致）。除本包外没有其它身份或邮箱规则。身份不符记 STOPPED，不 amend。英文提交信息，无 AI 署名、无 Co-authored-by。提交前对变更的 Swift 文件执行 `xcrun swift-format format --in-place --configuration .swift-format <file>` 与 `xcrun swift-format lint --strict --configuration .swift-format <file>`，失败不得提交。若该包只授权本地提交，仍写不 push、不开 PR。
 
 ## 判定用语（有测试时）
 “失败”= 断言不成立或运行报错；“未运行”= 整组没有执行或中途中断；“自行跳过”= 测试因缺外部资源或仅限真机主动跳过。本包点名要求的测试若被跳过 → 未完成。其它既有测试的自行跳过逐项列出，不算失败，不阻止 DONE。DONE 所需回归都在最终提交上运行；日志开头写完整命令、HEAD、`git status --porcelain`，末尾 `EXIT:<码>` 与 HEAD。PARTIAL 可提交当前内容并逐项列出未运行项。STOPPED 优先于其它状态。
 
 ## 激活与报告（必有）
 授权原文另存 `reports/human-authorization-<名>-issued.md` 并算 SHA-256。报告 `reports/<名>.md`：第一行状态（DONE/PARTIAL/BLOCKED/STOPPED），第二行运行时身份；…；预算：<分钟>。
+
+## 先读、全部断言、再写（冻结改动清单或用脚本改文件时）
+适用场景：包里有冻结的改动清单，或允许用脚本改文件。
+
+先读冻结改动清单中的每一个目标文件，把清单里的全部断言逐条核对通过之后，才允许写入。脚本必须先读入全文并完成全部断言，再写回；禁止先截断、覆盖或清空再读。
+
+## 进程检查（用 xcodebuild 前）
+适用场景：包要运行 xcodebuild 之前。
+
+用 `pgrep -x xcodebuild` 判断是否已有 xcodebuild。只按可执行文件名匹配；`xcodebuildmcp` 等不算。
+
+## 日志路径与 zsh 变量（写验证命令时）
+适用场景：包里有要落盘的命令或日志。
+
+日志一律写绝对路径，并写明该命令的工作目录。zsh 下变量写成 `${VAR}`；修订号与路径之间也用大括号，不要写成 `$VAR/路径` 或 `$VARpath`。
+
+## 新增 App 测试的 actor（新增 App 测试类时）
+适用场景：包要新增 App 目标里的测试类。
+
+新增 App 测试类沿用既有测试的类级 `@MainActor`（App 目标默认 MainActor）。不要把新测试类写成非隔离，除非包另点名一个既有先例。
+
+## PR 收尾（发布与合并时）
+适用场景：发布与合并。
+
+Executor 或 Human 用 `scripts/kos/pr_flow.py` 的 `open` 与 `land`。PM 会话不运行 `open`，也不运行带 `--merge` 的 `land`。合并只在 Human 下令或亲自运行时加 `--merge`。条件不满足（主检出不在 main、工作区有已跟踪或未跟踪改动、或 HEAD 不是 origin/main 的祖先）时，不执行 merge，记录 `ff=skipped:<原因>`，汇总写明需告诉 Human，退出 0。`git fetch` 或 `git merge --ff-only` 命令失败时，记录 `ff=failed:<原因>`，汇总写明需告诉 Human，退出 1。
+
+## 发布包（含 commit、push 或合并时）
+适用场景：包授权提交、推送或判断能否合并。
+
+`git commit` 必须带 `-m`，避免打开编辑器。推送使用 `git -c push.followTags=false`。远端返回 5xx 时，先确认远端状态，再原样重试一次。合并能力为 UNKNOWN 时，记录该事实并停止，不继续合并。
+
+## Human 原话与 CI 重跑（PM 当场记录时）
+适用场景：对话里出现 Human 原话，或 CI 重跑 / CI 失败。
+
+Human 原话与 CI 重跑事实当场写进外置 PM-LOG（human-statements / ci）。CI 失败时当场保存失败用例名，不要等日志过期后再取。
 
 ## 观察与改进意见（可选，建议所有 Executor / 预检 / 复核包都带；2026-11-02 Human 同意方向）
 报告最末加一节 `## 观察与改进意见（不影响状态，不在本包范围）`。规则：

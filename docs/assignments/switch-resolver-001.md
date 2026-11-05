@@ -7,10 +7,10 @@ record_id: SWITCH-RESOLVER-001
 
 | Field | Value |
 |---|---|
-| Lifecycle | Active（代码与测试已在本地分支完成，待发布） |
-| Current phase | 第 4 步 R5：标准同步下朙月保持简繁键、删除旧重载、补本 Assignment 与 CHANGELOG；本地提交，待独立窄复核 |
-| Material non-claims | 不含 push、PR 或 merge；不代表 Human 真机验收、托管 CI 或 Release 通过；万象九宫格（`wanxiang_t9i`）未接入；雾凇九宫格 `t9` 不写开关键；真实引擎证据只限隔离资源 |
-| Next handoff / decision | 独立窄复核 R5；Human 决定发布与合并；合并后 Human 真机验收 |
+| Lifecycle | Active（PR #264 已合并，待 Human 真机验收） |
+| Current phase | 已合并：PR #264，合并提交 `5f395ffc4913729300e702960485316242169178`（2026-11-04）；R5 窄复核 Pass；Human 真机验收未做 |
+| Material non-claims | 不代表 Human 真机验收或 Release 通过（托管 CI 在 PR #264 上全部通过）；万象九宫格（`wanxiang_t9i`）未接入；雾凇九宫格 `t9` 不写开关键；真实引擎证据只限隔离资源 |
+| Next handoff / decision | Human 真机验收（繁体在雾凇 / 万象生效、标点正常、万象表情候选出现）；通过后由 Human 决定关闭本 Assignment |
 | Residuals | 最终复核 FR-04（设计 F4 的入口场景测试未齐）、FR-05（真机未做）记为后续项，见外置任务目录 `~/.kos-work/Universe-Keyboard/SWITCH-RESOLVER-001/reports/final-review.md` |
 
 ---
@@ -59,3 +59,4 @@ record_id: SWITCH-RESOLVER-001
 | 2026-11-02 | 第 4 步 R1 生成器接入提交 `1dbe2fe` |
 | 2026-11-04 | 第 4 步 R2 补跑；第 5 步真实引擎矩阵；R3 修正主 App 编译（`92929e4`）；R4 改写朙月闭包测试（`717b0f7`）；最终独立复核 Pass with conditions |
 | 2026-11-04 | 第 4 步 R5：本 Assignment 与 CHANGELOG |
+| 2026-11-04 | R5 窄复核 Pass；PR #264 合并（`5f395ff`） |

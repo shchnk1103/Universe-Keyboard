@@ -13,20 +13,26 @@ def tree(d):
             p = os.path.join(r, f)
             out[os.path.relpath(p, d)] = "LINK" if os.path.islink(p) else hashlib.sha256(open(p, "rb").read()).hexdigest()
     return out
-d, mode, src = sys.argv[1], sys.argv[2], sys.argv[3]
-if mode == "--inventory":
-    exp = {}
-    for line in open(src, encoding="utf-8"):
-        line = line.rstrip("\n")
-        if line:
-            h, _, p = line.partition("  "); exp[p.strip()] = h
-else:
-    z = zipfile.ZipFile(src)
-    exp = {n: hashlib.sha256(z.read(n)).hexdigest() for n in z.namelist() if not n.endswith("/")}
-act = tree(d)
-missing = sorted(set(exp) - set(act)); extra = sorted(set(act) - set(exp))
-diff = sorted(p for p in set(exp) & set(act) if exp[p] != act[p])
-print(f"expected={len(exp)} actual={len(act)} missing={len(missing)} extra={len(extra)} mismatch={len(diff)}")
-for name, lst in (("missing", missing), ("extra", extra), ("mismatch", diff)):
-    for p in lst[:20]: print(f"{name}: {p}")
-sys.exit(0 if not (missing or extra or diff) else 1)
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv
+    d, mode, src = argv[1], argv[2], argv[3]
+    if mode == "--inventory":
+        exp = {}
+        for line in open(src, encoding="utf-8"):
+            line = line.rstrip("\n")
+            if line:
+                h, _, p = line.partition("  "); exp[p.strip()] = h
+    else:
+        z = zipfile.ZipFile(src)
+        exp = {n: hashlib.sha256(z.read(n)).hexdigest() for n in z.namelist() if not n.endswith("/")}
+    act = tree(d)
+    missing = sorted(set(exp) - set(act)); extra = sorted(set(act) - set(exp))
+    diff = sorted(p for p in set(exp) & set(act) if exp[p] != act[p])
+    print(f"expected={len(exp)} actual={len(act)} missing={len(missing)} extra={len(extra)} mismatch={len(diff)}")
+    for name, lst in (("missing", missing), ("extra", extra), ("mismatch", diff)):
+        for p in lst[:20]: print(f"{name}: {p}")
+    sys.exit(0 if not (missing or extra or diff) else 1)
+
+if __name__ == "__main__":
+    main()
