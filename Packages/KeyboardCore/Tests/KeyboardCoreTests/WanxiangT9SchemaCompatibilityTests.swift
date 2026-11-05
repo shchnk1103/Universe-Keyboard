@@ -218,6 +218,128 @@ final class WanxiangT9SchemaCompatibilityTests: XCTestCase {
             .failed(.unlocatableSuperReplacerRules))
     }
 
+    func testNestedRulesBaitLeavesRealAbbrevOptionAsTheOnlyEdit() {
+        let input = """
+            engine:
+              processors:
+                - ascii_composer
+                - speller
+            speller:
+              algebra:
+                - abbrev/^([A-Z]).+$/$1/
+                - abbrev/^([ZCS]H).+$/$1/
+                - xlit/ABCDEFGHIJKLMNOPQRSTUVWXYZ/22233344455566677778889999/
+            super_replacer:
+              wrapper:
+                rules:
+                  - option: abbrev
+              rules:
+                - option: abbrev
+                  comment: drop
+                - option: emoji
+
+            """
+        let expected = """
+            engine:
+              processors:
+                - ascii_composer
+                - speller
+            speller:
+              algebra:
+                - abbrev/^([A-Z]).+$/$1/
+                - abbrev/^([ZCS]H).+$/$1/
+                - xlit/ABCDEFGHIJKLMNOPQRSTUVWXYZ/22233344455566677778889999/
+            super_replacer:
+              wrapper:
+                rules:
+                  - option: abbrev
+              rules:
+                - option: emoji
+
+            """
+        guard case .rewritten(let text) = WanxiangT9SchemaCompatibility.rewrite(input) else {
+            return XCTFail("expected rewrite")
+        }
+        XCTAssertEqual(text, expected)
+    }
+
+    func testMissingAbbrevKeepsXlitTrailingSpacesWhileRemovingProcessor() {
+        let twoSpaces = "  "
+        let input = """
+            engine:
+              processors:
+                - ascii_composer
+                - t9_processor
+                - speller
+            speller:
+              algebra:
+                - xlit/ABCDEFGHIJKLMNOPQRSTUVWXYZ/22233344455566677778889999/\(twoSpaces)
+            super_replacer:
+              rules:
+                - option: emoji
+
+            """
+        let expected = """
+            engine:
+              processors:
+                - ascii_composer
+                - speller
+            speller:
+              algebra:
+                - abbrev/^([A-Z]).+$/$1/
+                - abbrev/^([ZCS]H).+$/$1/
+                - xlit/ABCDEFGHIJKLMNOPQRSTUVWXYZ/22233344455566677778889999/\(twoSpaces)
+            super_replacer:
+              rules:
+                - option: emoji
+
+            """
+        guard case .rewritten(let text) = WanxiangT9SchemaCompatibility.rewrite(input) else {
+            return XCTFail("expected rewrite")
+        }
+        XCTAssertEqual(text, expected)
+    }
+
+    func testAbbrevTrailingSpacesStayWhileRealOptionItemIsRemoved() {
+        let twoSpaces = "  "
+        let input = """
+            engine:
+              processors:
+                - ascii_composer
+                - speller
+            speller:
+              algebra:
+                - abbrev/^([A-Z]).+$/$1/\(twoSpaces)
+                - abbrev/^([ZCS]H).+$/$1/\(twoSpaces)
+                - xlit/ABCDEFGHIJKLMNOPQRSTUVWXYZ/22233344455566677778889999/
+            super_replacer:
+              rules:
+                - option: abbrev
+                  comment: drop
+                - option: emoji
+
+            """
+        let expected = """
+            engine:
+              processors:
+                - ascii_composer
+                - speller
+            speller:
+              algebra:
+                - abbrev/^([A-Z]).+$/$1/\(twoSpaces)
+                - abbrev/^([ZCS]H).+$/$1/\(twoSpaces)
+                - xlit/ABCDEFGHIJKLMNOPQRSTUVWXYZ/22233344455566677778889999/
+            super_replacer:
+              rules:
+                - option: emoji
+
+            """
+        guard case .rewritten(let text) = WanxiangT9SchemaCompatibility.rewrite(input) else {
+            return XCTFail("expected rewrite")
+        }
+        XCTAssertEqual(text, expected)
+    }
+
     private func count(of needle: String, in text: String) -> Int {
         text.components(separatedBy: "\n").filter { $0.trimmingCharacters(in: .whitespaces) == needle }.count
     }
