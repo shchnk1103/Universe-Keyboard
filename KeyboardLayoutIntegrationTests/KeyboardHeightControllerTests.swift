@@ -653,8 +653,9 @@ nonisolated final class KeyboardHeightControllerTests: XCTestCase {
 
     @MainActor
     func testF1DelayedHostGrowthDoesNotTrustSelfScheduledLayout() throws {
-        // 该方法同时在 R0 / R1 编译运行，不依赖 R1 的时钟或调度器 API。
+        // 注入时钟与手动送帧，避免墙钟 50ms 与 4/60 稳定窗口抢跑。
         let owner = HeightLayoutController()
+        owner.heightBudgetFrames.attach(to: owner)
         owner.loadViewIfNeeded()
         owner.controller = KeyboardController(state: KeyboardState())
         owner.cachedLayoutStyle = .nineKey
@@ -682,34 +683,26 @@ nonisolated final class KeyboardHeightControllerTests: XCTestCase {
         host.view.layoutIfNeeded()
         owner.hostLifecycleRecoveryGate.noteViewWillAppear(context: nil)
         owner.hostLifecycleRecoveryGate.noteViewDidAppear(hasWindow: true)
-        RunLoop.main.run(until: Date().addingTimeInterval(0.05))
         owner.controller.state.t9PinyinPathState = .init(trackedRawInput: "64")
         owner.refreshT9PinyinPathBar()
-        // 只主动送一次旧 bounds 布局；随后让真正的主队列和显示帧执行。
         owner.view.setNeedsLayout()
         host.view.layoutIfNeeded()
         owner.view.layoutIfNeeded()
         owner.synchronizeKeyboardHeightLayout(isHostLayout: true)
-        let started = CACurrentMediaTime()
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(50)) {
-            hostHeight.constant = 280
-            host.view.setNeedsLayout()
-            host.view.layoutIfNeeded()
-            owner.view.setNeedsLayout()
-            owner.view.layoutIfNeeded()
-            print("F1_HOST_RAISED elapsed=\(CACurrentMediaTime() - started)")
-        }
-        for _ in 0..<10 {
-            RunLoop.main.run(until: Date().addingTimeInterval(0.003))
-            print(
-                "F1_SAMPLE elapsed=\(CACurrentMediaTime() - started) accepted=\(String(describing: owner.keyboardAcceptedHeight)) alpha=\(owner.view.alpha)"
-            )
-            XCTAssertNil(owner.keyboardAcceptedHeight)
-            XCTAssertEqual(owner.keyHeight, 43)
-            XCTAssertEqual(owner.view.alpha, 1)
-            XCTAssertTrue(owner.keyboardHeightConstraint?.isActive == true)
-        }
-        RunLoop.main.run(until: Date().addingTimeInterval(0.06))
+        let started = owner.heightBudgetFrames.now
+        // 第一拍：观察年龄 0.05 秒，宿主高度仍为 246，短于 4/60 信任窗口。
+        owner.heightBudgetFrames.advance(to: started + 0.05)
+        XCTAssertNil(owner.keyboardAcceptedHeight)
+        XCTAssertEqual(owner.keyHeight, 43)
+        XCTAssertEqual(owner.view.alpha, 1)
+        XCTAssertTrue(owner.keyboardHeightConstraint?.isActive == true)
+        // 第二拍：宿主约束改为 280，再送一帧；加高后的布局不得被当成已接受的低高度。
+        hostHeight.constant = 280
+        host.view.setNeedsLayout()
+        host.view.layoutIfNeeded()
+        owner.view.setNeedsLayout()
+        owner.view.layoutIfNeeded()
+        owner.heightBudgetFrames.advance(to: started + 0.05 + 1.0 / 60.0)
         XCTAssertNil(owner.keyboardAcceptedHeight)
         XCTAssertEqual(owner.keyHeight, 43)
         XCTAssertEqual(owner.view.alpha, 1)
