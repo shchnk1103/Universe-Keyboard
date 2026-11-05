@@ -242,6 +242,12 @@ final class RimeT9MatrixAssertTests: XCTestCase {
         let sequences = shortSequences + ["6", "44", "444", "4444", "44444", "444444"]
         for sequence in sequences {
             let sample = harness.drive(sequence)
+            if ["6", "44", "444", "4444", "44444", "444444"].contains(sequence) {
+                let variant = wanxiang ? (harness.emojiSwitchEnabled ? "on" : "off") : "ice"
+                let top = sample.output.candidates.prefix(5).map(\.text).joined(separator: "|")
+                let comment = sample.output.candidates.first?.comment ?? ""
+                print("R4_HOME variant=\(variant) seq=\(sequence) top5=\(top) comment1=\(comment)")
+            }
             for candidate in sample.output.candidates where !candidate.text.isEmpty {
                 XCTAssertFalse(
                     candidate.text.unicodeScalars.allSatisfy(isASCIIDigit),

@@ -20,9 +20,11 @@
 - **Handoff Target:** Product Lead，及后续独立 Architecture Reviewer / Quality Reviewer。
 - **Lifecycle Status:** Active — 切片 3（文档完成，待最终复核与 Human 真机验收）。
 
+- **Revalidation Trigger:** 冻结输入、产品合同、基线、授权或证据要求变更。
+
 ## History
 
 | 日期 | 任务包 | 提交 |
 | --- | --- | --- |
 | 2026-11-05 | `task-package-s4-engine-fix-r1a.md` | 见执行报告 |
-- **Revalidation Trigger:** 冻结输入、产品合同、基线、授权或证据要求变更。
+| 2026-11-05 | `task-package-s4-engine-fix-r2c.md` | 见执行报告 |

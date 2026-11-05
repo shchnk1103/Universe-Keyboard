@@ -15,6 +15,7 @@ public enum WanxiangT9SchemaCompatibility {
     public static let compoundAbbrevLineBody = "- abbrev/^([ZCS]H).+$/$1/"
 
     public enum Reason: String, Equatable, Sendable, Error {
+        case unsupportedLineEndings
         case multipleT9Processors
         case missingEngineProcessors
         case unlocatableProcessorsSequence
@@ -31,6 +32,7 @@ public enum WanxiangT9SchemaCompatibility {
     }
 
     public static func rewrite(_ yaml: String) -> Rewrite {
+        if yaml.unicodeScalars.contains(where: { $0.value == 13 }) { return .failed(.unsupportedLineEndings) }
         if yaml.contains("\t") {
             return .failed(.unlocatableProcessorsSequence)
         }
@@ -102,8 +104,11 @@ public enum WanxiangT9SchemaCompatibility {
             return .failure(.unlocatableProcessorsSequence)
         }
         let engineEnd = blockEnd(after: engineIndex, lines: lines, parentIndent: 0)
+        guard let childIndent = directChildIndent(after: engineIndex, end: engineEnd, lines: lines) else {
+            return .failure(.unlocatableProcessorsSequence)
+        }
         let processorIndexes = lines[engineIndex + 1..<engineEnd].indices.filter { index in
-            isNamedKey(lines[index], key: "processors") && indentWidth(lines[index]) > 0
+            isNamedKey(lines[index], key: "processors") && indentWidth(lines[index]) == childIndent
         }
         guard processorIndexes.count == 1, let processorsIndex = processorIndexes.first else {
             return processorIndexes.isEmpty
@@ -151,8 +156,8 @@ public enum WanxiangT9SchemaCompatibility {
         }.count
         let alreadyPlaced =
             xlitIndex >= algebra.range.lowerBound + 2
-            && lines[xlitIndex - 2] == first
-            && lines[xlitIndex - 1] == second
+            && lines[xlitIndex - 2].trimmingCharacters(in: .whitespaces) == initialAbbrevLineBody
+            && lines[xlitIndex - 1].trimmingCharacters(in: .whitespaces) == compoundAbbrevLineBody
             && initialCount == 1
             && compoundCount == 1
         if alreadyPlaced {
@@ -173,7 +178,7 @@ public enum WanxiangT9SchemaCompatibility {
             return .failure(.unlocatableSuperReplacerRules)
         case .success(let items):
             let matches = items.filter {
-                lines[$0.start].trimmingCharacters(in: .whitespaces).hasPrefix("- option: abbrev")
+                isAbbrevOption(lines[$0.start])
             }
             if matches.count > 1 { return .failure(.multipleAbbrevOptions) }
             guard let match = matches.first else { return .success(0..<0) }
@@ -190,8 +195,9 @@ public enum WanxiangT9SchemaCompatibility {
         let roots = lines.indices.filter { isRootKey($0, lines, key: root) }
         guard roots.count == 1, let rootIndex = roots.first else { return nil }
         let rootEnd = blockEnd(after: rootIndex, lines: lines, parentIndent: 0)
+        guard let childIndent = directChildIndent(after: rootIndex, end: rootEnd, lines: lines) else { return nil }
         let children = lines[rootIndex + 1..<rootEnd].indices.filter { index in
-            isNamedKey(lines[index], key: child) && indentWidth(lines[index]) > 0
+            isNamedKey(lines[index], key: child) && indentWidth(lines[index]) == childIndent
         }
         guard children.count == 1, let childIndex = children.first,
             isBareKey(lines[childIndex], key: child)
@@ -231,10 +237,54 @@ public enum WanxiangT9SchemaCompatibility {
                 if nextIndent == dash { return .failure(.unlocatableProcessorsSequence) }
                 itemEnd += 1
             }
-            items.append(SequenceSpan(start: cursor, end: itemEnd))
+            // Separate trailing trivia without losing comments owned by the item.
+            var contentEnd = itemEnd
+            while contentEnd > cursor + 1 {
+                let line = lines[contentEnd - 1]
+                if line.trimmingCharacters(in: .whitespaces).isEmpty || isComment(line) {
+                    contentEnd -= 1
+                } else {
+                    break
+                }
+            }
+            var retained = false
+            var removalEnd = itemEnd
+            for index in contentEnd..<itemEnd {
+                let line = lines[index]
+                let keep = line.trimmingCharacters(in: .whitespaces).isEmpty || indentWidth(line) <= dash
+                if keep {
+                    if !retained { removalEnd = index }
+                    retained = true
+                } else if retained {
+                    return .failure(.unlocatableProcessorsSequence)
+                }
+            }
+            items.append(SequenceSpan(start: cursor, end: removalEnd))
             cursor = itemEnd
         }
         return .success(items)
+    }
+
+    private static func directChildIndent(after index: Int, end: Int, lines: [String]) -> Int? {
+        guard
+            let first = (index + 1..<end).first(where: {
+                !isComment(lines[$0]) && !lines[$0].trimmingCharacters(in: .whitespaces).isEmpty
+            })
+        else { return nil }
+        let indent = indentWidth(lines[first])
+        return indent > indentWidth(lines[index]) ? indent : nil
+    }
+
+    private static func isAbbrevOption(_ line: String) -> Bool {
+        let body = line.trimmingCharacters(in: .whitespaces)
+        guard body.hasPrefix("- option:") else { return false }
+        let value = body.dropFirst("- option:".count).trimmingCharacters(in: .whitespaces)
+        guard value.hasPrefix("abbrev") else { return false }
+        let suffix = value.dropFirst("abbrev".count)
+        if suffix.isEmpty { return true }
+        guard suffix.first?.isWhitespace == true else { return false }
+        let rest = suffix.trimmingCharacters(in: .whitespaces)
+        return rest.isEmpty || rest.hasPrefix("#")
     }
 
     private static func isRootKey(_ index: Int, _ lines: [String], key: String) -> Bool {
