@@ -419,6 +419,7 @@ final class NineKeyEnableTransactionTests: XCTestCase {
             fingerprint: "held", upstreamVersion: "v", settings: settings)
         T9DeploymentSupport.writeMatchedReadiness(
             schemaID: wan.schemaID, fingerprint: "held-wan", upstreamVersion: "v", settings: settings)
+        let deployment = NineKeyRecordingDeploymentService(succeeded: true)
         let manager = SchemaManager(
             settings: settings,
             archiveInstaller: NineKeySchemaArchiveInstaller(
@@ -426,19 +427,52 @@ final class NineKeyEnableTransactionTests: XCTestCase {
                     sharedDataURL: URL(fileURLWithPath: "/tmp/uk-shared"),
                     userDataURL: URL(fileURLWithPath: "/tmp/uk-user")
                 )),
-            deploymentService: NineKeyRecordingDeploymentService(succeeded: true)
+            deploymentService: deployment
         )
         let holder = UUID()
         let acquiredLease = await manager.acquireSchemeDeliveryCommitLease(operationID: holder)
         XCTAssertTrue(acquiredLease)
-        let message = await manager.enableNineKeyLayout(schemeID: wan.schemaID)
-        XCTAssertEqual(message, "RIME 部署失败，已回退 26 键")
+
+        // The production lease queues. Start the second enable as its own task
+        // so this test can observe the wait without awaiting the lease itself.
+        let enableTask = Task { @MainActor in
+            await manager.enableNineKeyLayout(schemeID: wan.schemaID)
+        }
+        let startedWaiting = await secondEnableStartedWaitingForLease(manager, within: .seconds(2))
+        XCTAssertTrue(startedWaiting)
+        XCTAssertEqual(manager.schemeDeliveryCommitLeaseOperationID, holder)
         XCTAssertEqual(layout(settings), .nineKey)
+        XCTAssertNil(settings.string(forKey: KeyboardLayoutSettingsKey.schemeBinding9))
         XCTAssertEqual(T9DeploymentSupport.loadMarker(settings: settings)?.resourceFingerprint, "held")
         XCTAssertEqual(
             T9DeploymentSupport.loadMarker(schemaID: wan.schemaID, settings: settings)?.resourceFingerprint,
             "held-wan")
+        let requestCountWhileHeld = await deployment.requestCount()
+        XCTAssertEqual(requestCountWhileHeld, 0)
+
+        // Cancellation resumes the availability waiter with false
+        // (`waitForSchemeDeliveryCommitLeaseAvailability`), so the second enable
+        // returns without acquiring the lease. Releasing the holder instead would
+        // let that enable run the full orchestrator after the assertions.
+        enableTask.cancel()
+        _ = await enableTask.value
         manager.releaseSchemeDeliveryCommitLease(operationID: holder)
+    }
+
+    /// Polls until the second enable is queued on the commit lease, or the bound elapses.
+    private func secondEnableStartedWaitingForLease(
+        _ manager: SchemaManager,
+        within limit: Duration
+    ) async -> Bool {
+        let clock = ContinuousClock()
+        let deadline = clock.now.advanced(by: limit)
+        while clock.now < deadline {
+            if manager.schemeDeliveryCommitLeaseAvailabilityWaiterCount >= 1 {
+                return true
+            }
+            try? await Task.sleep(for: .milliseconds(20))
+        }
+        return manager.schemeDeliveryCommitLeaseAvailabilityWaiterCount >= 1
     }
 
     // MARK: - Helpers
