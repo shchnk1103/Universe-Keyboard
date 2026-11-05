@@ -54,7 +54,7 @@ for index in "${!heavy_names[@]}"; do
     if [[ "$expected" == "success" ]]; then
       echo "Full changes require ${heavy_names[$index]} to succeed; got: $result" >&2
     else
-      echo "Documentation-only changes require ${heavy_names[$index]} to be skipped; got: $result" >&2
+      echo "Lightweight (requires_full=false) changes require ${heavy_names[$index]} to be skipped; got: $result" >&2
     fi
     exit 1
   fi

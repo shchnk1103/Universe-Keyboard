@@ -30,9 +30,19 @@ def is_lightweight_path(raw_path: str) -> bool:
     if path.parts[0] in {"docs", ".kos"}:
         return True
 
+    # scripts/kos/<file> only. The directory entry itself and lookalikes
+    # such as scripts/kosx stay on the full path.
+    if len(path.parts) >= 3 and path.parts[0] == "scripts" and path.parts[1] == "kos":
+        return True
+
     # Root-level Markdown is documentation. Markdown nested under source or
     # tooling directories stays full-path so new locations fail closed.
     return len(path.parts) == 1 and path.suffix.lower() == ".md"
+
+
+def is_kos_tools_path(raw_path: str) -> bool:
+    path = PurePosixPath(raw_path)
+    return len(path.parts) >= 3 and path.parts[0] == "scripts" and path.parts[1] == "kos"
 
 
 def classify_paths(paths: list[str]) -> Classification:
@@ -54,6 +64,15 @@ def classify_paths(paths: list[str]) -> Classification:
             changed_paths=normalized,
             full_required_paths=full_required,
             reason="sensitive_or_unknown_path",
+        )
+
+    if any(is_kos_tools_path(path) for path in normalized):
+        return Classification(
+            name="kos_tools_only",
+            requires_full=False,
+            changed_paths=normalized,
+            full_required_paths=(),
+            reason="all_paths_in_lightweight_allowlist",
         )
 
     return Classification(

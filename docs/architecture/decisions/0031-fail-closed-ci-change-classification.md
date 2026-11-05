@@ -53,3 +53,15 @@ The adopted KOS Kit repository is private. The current repository token is not a
 - Human decision on stacked PR merge order.
 - Separate Product decision if branch protection/required checks are enabled.
 - Revisit remote KOS validator only when the Kit has a reviewed distribution mechanism.
+
+## 2026-11-05 修订
+
+本节取代 Decision 第 2 条的轻量名单，以及 Status 中「Classification remains docs_only / full only」。轻量路径现为根目录 `*.md`、`docs/**`、`.kos/**`、`scripts/kos/**`。分类名增加 `kos_tools_only`。
+
+范围：一次 diff 的全部路径都在上述轻量名单内，且至少有一个在 `scripts/kos/` 下时，分类为 `kos_tools_only`，`requires_full=false`。全部路径仍只在原名单（根目录 `*.md`、`docs/**`、`.kos/**`）内时，仍为 `docs_only`。`scripts/ci/**`、`.github/**`、其它路径、空 diff 与非法比较仍失败关闭为 full。
+
+理由：Human 2026-11-05 决定「按推荐改」。`scripts/kos/` 是 PM 工具脚本，workflow 不调用它们。只改这些工具时不必跑 6 个 macOS 重型 job。轻量检查改为每次运行 `scripts/kos/tests` 的单测。
+
+守卫测试：`scripts/ci/tests/test_classify_changes.py` 断言 `.github/workflows/` 下任何文件都不包含字符串 `scripts/kos`。workflow 一旦调用这些工具，该测试失败，提示回到全量。工作流目录不存在时该测试同样失败，不会空通过。
+
+不改其它原节正文。

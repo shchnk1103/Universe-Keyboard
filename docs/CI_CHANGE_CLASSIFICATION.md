@@ -19,12 +19,20 @@ TestFlight or Release authority.
 | Root-level `*.md` | `docs_only` | Repository navigation/governance text only |
 | `docs/**` | `docs_only` | Documentation, governance and evidence artifacts |
 | `.kos/**` | `docs_only` | KOS Profile and machine-readable governance records |
+| `scripts/kos/**` | `kos_tools_only` | PM tooling scripts. Workflows do not call them; lightweight checks run their unit tests. This tier applies only when every changed path is on the light allowlist and at least one path is under `scripts/kos/`. Decision: Human 2026-11-05「按推荐改」 |
 | Every other path | `full` | Product/build/test/tooling input or unknown path; fail closed |
 | Empty diff or invalid base/head | classification failure/full | Never infer a safe skip without an exact comparison |
 
 Rename detection is disabled for classification. A rename is therefore evaluated as
 an old-path deletion plus a new-path addition, preventing a source-to-docs rename from
 hiding the original sensitive path.
+
+`kos_tools_only` fails closed to `full` when the diff is empty, the base or head is
+invalid, any path contains `..`, or any path is outside the light allowlist. That
+includes `scripts/ci/**`, `.github/**`, other `scripts/` directories, source,
+project files, and prefix lookalikes such as `scripts/kosx/**`. The bare path
+`scripts/kos` is not `scripts/kos/**`. Decision source: Human 2026-11-05「按推荐改」
+(CI-LIGHT-KOS-001 R1).
 
 ## Job Contract
 
@@ -58,7 +66,7 @@ lightweight-checks -------------------+
   Simulator host, so CI needs no developer-team signing secret. The unsigned
   suite skips only when the OS reports the expected missing Keychain entitlement.
 - `final-quality-gate` always runs. For `full` every heavy job must be `success`.
-  For `docs_only` every heavy job must be exactly `skipped`. Missing or
+  凡 `requires_full=false`（`docs_only` 与 `kos_tools_only`）每个重型 job 都必须是 `skipped`。Missing or
   contradictory outputs fail closed.
 - One concurrency group per PR/ref cancels older in-progress runs after a new commit.
 
