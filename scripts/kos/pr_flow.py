@@ -146,6 +146,10 @@ def _parse_cases(log_text: str) -> list[tuple[str, str]]:
     return found
 
 
+# Final CI snapshot buckets. README cites this same set.
+SNAPSHOT_BUCKETS = frozenset({"pass", "fail", "pending", "skipping", "cancel"})
+
+
 def _snapshot_rows(text: str) -> list[dict] | None:
     """Rows from one `gh pr checks --json` snapshot. Watch tables are not accepted."""
     try:
@@ -170,6 +174,13 @@ def _snapshot_rows(text: str) -> list[dict] | None:
             }
         )
     return rows
+
+
+def _snapshot_buckets_invalid(rows: list[dict]) -> bool:
+    """True when the final snapshot is empty or any bucket is outside the whitelist."""
+    if not rows:
+        return True
+    return any(row["state"] not in SNAPSHOT_BUCKETS for row in rows)
 
 
 def _bad_states(rows: list[dict]) -> list[dict]:
@@ -379,6 +390,10 @@ def cmd_land(args, runner) -> int:
             payload.update(status="checks-failed-unparsed", reruns=reruns)
             _summary(payload, log_dir, args.pr)
             return _die("checks snapshot was not JSON")
+        if _snapshot_buckets_invalid(rows):
+            payload.update(status="checks-snapshot-invalid", reruns=reruns, head=head)
+            _summary(payload, log_dir, args.pr)
+            return _die("checks snapshot empty or bucket outside the whitelist; not rerunning or merging")
         if _pending_states(rows):
             run_ids = sorted({row["run"] for row in rows if row["run"]})
             run_label = run_ids[0] if run_ids else "none"
@@ -457,7 +472,12 @@ def cmd_land(args, runner) -> int:
     again = runner.run(["gh", "pr", "view", args.pr, "--repo", args.repo, "--json", "state,headRefOid"])
     if again.code != 0:
         return _die(again.text.strip() or "second pr view failed")
-    info = json.loads(again.text)
+    try:
+        info = json.loads(again.text)
+    except json.JSONDecodeError:
+        payload["status"] = "view-unparsed"
+        _summary(payload, log_dir, args.pr)
+        return _die("second gh pr view did not return JSON")
     if str(info.get("headRefOid", "")) != args.expect_head:
         payload["status"] = "head-changed"
         _summary(payload, log_dir, args.pr)

@@ -484,6 +484,29 @@ class LandTests(unittest.TestCase):
         payload = json.loads((self.logs / "land-266.json").read_text())
         self.assertEqual(payload["status"], "green-no-merge")
 
+    def test_empty_missing_or_unknown_bucket_does_not_merge(self) -> None:
+        missing = {"name": "build", "state": "pass", "link": ""}
+        cases = [[], [missing], [_job("build", "queued")]]
+        for items in cases:
+            runner = Queue([(has("pr", "view"), _view()), *_snap(items)])
+            self.assertEqual(FLOW.main(self._land(["--merge"]), runner=runner), 1)
+            self.assertFalse(any(call[1:3] == ["pr", "merge"] or "rerun" in call for call in runner.calls))
+            payload = json.loads((self.logs / "land-266.json").read_text())
+            self.assertEqual(payload["status"], "checks-snapshot-invalid")
+
+    def test_second_view_non_json_does_not_merge(self) -> None:
+        runner = Queue(
+            [
+                (has("pr", "view"), _view()),
+                *_snap([_job("build", "pass", "5", "6")]),
+                (has("pr", "view"), ok("not-json")),
+            ]
+        )
+        self.assertEqual(FLOW.main(self._land(["--merge"]), runner=runner), 1)
+        self.assertFalse(any(call[1:3] == ["pr", "merge"] for call in runner.calls))
+        payload = json.loads((self.logs / "land-266.json").read_text())
+        self.assertEqual(payload["status"], "view-unparsed")
+
     def test_closed_pr_stops_on_dry_run(self) -> None:
         runner = Queue([(has("pr", "view"), _view(state="MERGED"))])
         self.assertEqual(FLOW.main(self._land(["--dry-run"]), runner=runner), 1)
