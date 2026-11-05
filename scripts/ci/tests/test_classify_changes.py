@@ -17,6 +17,17 @@ sys.modules[SPEC.name] = MODULE
 SPEC.loader.exec_module(MODULE)
 
 
+def workflow_kos_references(repo_root: Path) -> list[str]:
+    workflows = repo_root / ".github" / "workflows"
+    if not workflows.is_dir():
+        raise FileNotFoundError(workflows)
+    return [
+        str(path.relative_to(repo_root))
+        for path in workflows.rglob("*")
+        if path.is_file() and "scripts/kos" in path.read_text(encoding="utf-8")
+    ]
+
+
 class ClassifyPathsTests(unittest.TestCase):
     def test_root_markdown_is_lightweight(self) -> None:
         result = MODULE.classify_paths(["README.md", "AGENTS.md"])
@@ -214,14 +225,30 @@ class ClassifyPathsTests(unittest.TestCase):
         self.assertTrue(result.requires_full)
 
     def test_workflows_do_not_reference_kos_tools(self) -> None:
-        root = Path(__file__).parents[2]
-        workflows = root / ".github" / "workflows"
-        offenders = [
-            str(path.relative_to(root))
-            for path in workflows.rglob("*")
-            if path.is_file() and "scripts/kos" in path.read_text(encoding="utf-8")
-        ]
-        self.assertEqual(offenders, [])
+        root = Path(__file__).resolve().parents[3]
+        self.assertEqual(workflow_kos_references(root), [])
+
+    def test_workflow_kos_reference_is_detected(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            workflows = root / ".github" / "workflows"
+            workflows.mkdir(parents=True)
+            (workflows / "ci.yml").write_text("scripts/kos/pr_flow.py", encoding="utf-8")
+            self.assertEqual(workflow_kos_references(root), [".github/workflows/ci.yml"])
+
+    def test_workflow_without_kos_reference_is_clear(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            workflows = root / ".github" / "workflows"
+            workflows.mkdir(parents=True)
+            (workflows / "ci.yml").write_text("ordinary workflow", encoding="utf-8")
+            self.assertEqual(workflow_kos_references(root), [])
+
+    def test_missing_workflows_directory_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            with self.assertRaises(FileNotFoundError):
+                workflow_kos_references(Path(directory))
+
 
 
 if __name__ == "__main__":

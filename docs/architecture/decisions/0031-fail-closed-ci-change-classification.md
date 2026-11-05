@@ -62,6 +62,6 @@ The adopted KOS Kit repository is private. The current repository token is not a
 
 理由：Human 2026-11-05 决定「按推荐改」。`scripts/kos/` 是 PM 工具脚本，workflow 不调用它们。只改这些工具时不必跑 6 个 macOS 重型 job。轻量检查改为每次运行 `scripts/kos/tests` 的单测。
 
-守卫测试：`scripts/ci/tests/test_classify_changes.py` 断言 `.github/workflows/` 下任何文件都不包含字符串 `scripts/kos`。workflow 一旦调用这些工具，该测试失败，提示回到全量。
+守卫测试：`scripts/ci/tests/test_classify_changes.py` 断言 `.github/workflows/` 下任何文件都不包含字符串 `scripts/kos`。workflow 一旦调用这些工具，该测试失败，提示回到全量。工作流目录不存在时该测试同样失败，不会空通过。
 
 不改其它原节正文。
