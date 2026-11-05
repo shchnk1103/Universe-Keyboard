@@ -12,16 +12,60 @@ final class RimeT9MatrixAssertTests: XCTestCase {
     func testShortSequencesMatchProjection() async throws {
         let harness = try await openHarness()
         for sequence in shortSequences {
-            let sample = harness.drive(sequence)
-            let projected = T9PreeditResolver.visiblePreedit(
+            let sample = shortSequenceSample(harness, sequence)
+            XCTAssertEqual(sample.snapshot.visiblePreedit, sample.client.markedText, sequence)
+            assertNoDigitsOrEmoji(sample.snapshot.visiblePreedit, sequence)
+            assertNoDigitsOrEmoji(sample.client.markedText, sequence)
+            let narrow = T9PreeditResolver.visiblePreedit(
                 rawInput: sample.output.rawInput,
                 candidates: sample.output.candidates,
                 highlightedIndex: sample.output.highlightedIndex)
+            // Empty narrow projection is the emoji-on case: the highlighted comment
+            // fails validation, while the host still shows the provisional Path.
+            let projected = narrow.isEmpty ? provisionalAwareVisiblePreedit(sample) : narrow
             XCTAssertEqual(sample.snapshot.visiblePreedit, projected, sequence)
             XCTAssertEqual(sample.client.markedText, projected, sequence)
-            assertNoDigitsOrEmoji(sample.snapshot.visiblePreedit, sequence)
-            assertNoDigitsOrEmoji(sample.client.markedText, sequence)
         }
+    }
+
+    /// Same provisional Path selection as `KeyboardController.t9VisiblePreedit(for:)`.
+    private func provisionalAwareVisiblePreedit(_ sample: ShortSequenceSample) -> String {
+        let pathState = sample.pathState
+        let provisional =
+            pathState.selectedPath == nil
+            ? (pathState.compactPaths.first { $0.id == pathState.provisionalPathID }
+                ?? pathState.compactPaths.first)
+            : nil
+        return T9PreeditResolver.visiblePreedit(
+            rawInput: sample.output.rawInput,
+            candidates: sample.output.candidates,
+            highlightedIndex: sample.output.highlightedIndex,
+            provisionalPathDisplay: provisional?.displayText,
+            provisionalConsumedSlots: provisional?.consumedSlotCount)
+    }
+
+    @MainActor
+    private func shortSequenceSample(_ harness: Harness, _ sequence: String) -> ShortSequenceSample {
+        let engine = harness.makeEngine()
+        let controller = KeyboardController()
+        let client = FakeTextInputClient()
+        controller.rimeEngine = engine
+        controller.usesT9InputSemantics = true
+        controller.textClient = client
+        for key in sequence { _ = controller.handle(.insertKey(String(key))) }
+        let output = controller.state.lastRimeOutput ?? RimeOutput()
+        let snapshot = controller.t9CompositionPresentationSnapshot()
+        let pathState = controller.state.t9PinyinPathState
+        harness.finish(engine)
+        return ShortSequenceSample(
+            output: output, snapshot: snapshot, client: client, pathState: pathState)
+    }
+
+    private struct ShortSequenceSample {
+        let output: RimeOutput
+        let snapshot: T9CompositionPresentationSnapshot
+        let client: FakeTextInputClient
+        let pathState: T9PinyinPathState
     }
 
     @MainActor
