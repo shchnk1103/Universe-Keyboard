@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """claim-check: mechanical provenance check for fact-bearing docs changes.
 
-Usage: python3 -I claim-check.py REPO BASE HEAD SOURCE [SOURCE ...]
+Usage: python3 -I claim-check.py [--recomputed-hashes FILE] REPO BASE HEAD SOURCE [SOURCE ...]
+
+Optional --recomputed-hashes (default off; positional args unchanged): FILE has one
+64-hex SHA-256 per line. Those hashes are not reported as missing sources.
 
 1. Token check: every SHA (8+ hex), PR/issue number, PF/TD/ADR id, date, and
    number+unit token in ADDED lines must appear in at least one SOURCE
@@ -19,10 +22,43 @@ import re, subprocess, sys
 def sh(*a):
     return subprocess.run(a, capture_output=True, text=True).stdout
 
-def main():
-    if len(sys.argv) < 5:
+def parse_cli(argv):
+    """Pull the optional flag without shifting REPO BASE HEAD SOURCE."""
+    argv = list(argv)
+    path = None
+    flag = "--recomputed-hashes"
+    if flag in argv:
+        i = argv.index(flag)
+        if i + 1 >= len(argv):
+            print("missing path after --recomputed-hashes"); sys.exit(2)
+        path = argv[i + 1]
+        del argv[i:i + 2]
+    return argv, path
+
+def load_recomputed(path):
+    trusted = set()
+    try:
+        fh = open(path, encoding="utf-8")
+    except OSError as e:
+        print("WARN cannot read", path, e); sys.exit(2)
+    with fh:
+        for raw in fh:
+            line = raw.strip()
+            if not line:
+                continue
+            if not re.fullmatch(r"[0-9a-fA-F]{64}", line):
+                print("WARN not a 64-hex line:", line[:80]); sys.exit(2)
+            trusted.add(line.lower())
+    return trusted
+
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv[1:]
+    argv, recomputed = parse_cli(argv)
+    trusted = load_recomputed(recomputed) if recomputed else set()
+    if len(argv) < 4:
         print(__doc__); sys.exit(2)
-    repo, base, head, *srcs = sys.argv[1:]
+    repo, base, head, *srcs = argv
     diff = sh("git", "-C", repo, "diff", "--unified=0", base, head)
     added = [l[1:] for l in diff.split("\n") if l.startswith("+") and not l.startswith("+++")]
     files = [l for l in sh("git", "-C", repo, "diff", "--name-only", base, head).split("\n") if l]
@@ -45,6 +81,7 @@ def main():
         for m in sorted(set(re.findall(pat, text))):
             tok = m.strip()
             if k == "hex" and not re.search(r"[0-9]", tok): continue
+            if k == "hex" and tok.lower() in trusted: continue
             if tok not in corpus and re.sub(r"\s+", "", tok) not in re.sub(r"\s+", "", corpus):
                 missing.setdefault(k, []).append(tok)
     print("== token check (tokens in added lines not found in any source) ==")
@@ -74,4 +111,5 @@ def main():
             else: header = None
     print("none" if not bad else f"{bad} problem rows")
 
-main()
+if __name__ == "__main__":
+    main()

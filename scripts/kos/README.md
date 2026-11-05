@@ -49,9 +49,11 @@ python3 -B scripts/kos/freeze.py /Users/me/.kos-work/Universe-Keyboard/T-001/ins
   - 禁止测试或构建，却要求 `run_lightweight_checks`，又没说明允许；
   - “停止”和 PARTIAL 出现在同一句；
   - “恰为 N 个文件”又允许 PARTIAL，却没有子集规则；
-  - “不联网”与联网预批准并存，或 HEAD 与 GET 混用；
-  - 提到构建并限定“只写”，却没给构建输出位置；
+  - “不联网”与联网预批准并存（“联网只限……只读 `gh`”这种限定句不算冲突），或 HEAD 与 GET 混用；
+  - 提到构建并限定“只写”，却没给构建输出位置（`--readonly`，或写了“不运行……构建”，不报）；
   - 引用或采纳的报告（任意以 `/` 开头的绝对路径）没有哈希。
+- **`--requires-commit`：** 还要有 `Cowork 3P <cowork-3p@localhost>`。包里有 `.swift` 路径时才要求 `lint --strict`（只有 `.swift-format` 或单独的 `.swift` 字样不算路径）。还要有 `docs/assignments/<名>.md`，或同一句在“无 Assignment”四字之后写了非空理由；只写 `docs/ASSIGNMENT_POLICY.md` 不算。
+- **构建输出与“自行跳过”：** 非只读、且出现 `xcodebuild` / `swift test` / `模拟器`、又没有“不运行……构建与测试”或“不启动……设备”时，要求 `derivedDataPath`（或 `scratch-path` / `DerivedData`）和“自行跳过”。`--readonly` 不要求这两项。
 - **输出：** 输出文件已存在就拒绝覆盖。成功时写出冻结包，打印其 SHA-256 和可直接粘贴的派发块。
 - 固定条款库见 [`docs/kos/pm-packet-clauses.md`](../../docs/kos/pm-packet-clauses.md)，PM 工作规则见 [`docs/kos/pm-playbook.md`](../../docs/kos/pm-playbook.md)。
 
@@ -77,7 +79,7 @@ python3 -B scripts/kos/check_report.py /Users/me/.kos-work/Universe-Keyboard/T-0
 
 ```bash
 cd "/Users/me/Dev/Universe Keyboard"
-python3 -B scripts/kos/claim-check.py "/Users/me/Dev/Universe Keyboard" <BASE> <HEAD> /绝对路径/来源1.md [/绝对路径/来源2 ...]
+python3 -B scripts/kos/claim-check.py [--recomputed-hashes /绝对路径/已复算哈希.txt] "/Users/me/Dev/Universe Keyboard" <BASE> <HEAD> /绝对路径/来源1.md [/绝对路径/来源2 ...]
 ```
 
 - **何时用：** 涉及事实的文档改动送审之前。
@@ -86,6 +88,7 @@ python3 -B scripts/kos/claim-check.py "/Users/me/Dev/Universe Keyboard" <BASE> <
   - 含因果或定性词的新增行，需要人工确认证据等级；
   - Markdown 表格列数与表头不符的行。
 - 这个检查不证明结论为真。
+- `--recomputed-hashes` 默认关闭，不改变 `REPO BASE HEAD SOURCE` 的位置。文件每行一枚 64 位十六进制；这些哈希不再报“缺来源”（文件自身的 SHA 常如此）。
 
 ## verify-tree.py：目录与清单或归档对照
 
