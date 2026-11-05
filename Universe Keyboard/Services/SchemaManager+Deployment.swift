@@ -61,6 +61,9 @@ extension SchemaManager {
         }
         let deploymentID = UUID()
         activeRimeDeploymentID = deploymentID
+        // 只在真正新建部署任务时申请。租约等待和复用进行中的任务不申请。
+        // 取消只清句柄，token 要等到这次 await 返回才结束。到期不改部署结果。
+        let suspensionToken = MainAppSuspensionGuard.shared.begin(reason: "rime-deployment")
         let task = Task { @MainActor [weak self] in
             guard let self else { return false }
             return await self.performRimeDeployment(
@@ -71,6 +74,9 @@ extension SchemaManager {
         }
         activeRimeDeploymentTask = task
         let succeeded = await task.value
+        if let suspensionToken {
+            MainAppSuspensionGuard.shared.end(suspensionToken)
+        }
         if activeRimeDeploymentID == deploymentID {
             activeRimeDeploymentID = nil
             activeRimeDeploymentTask = nil

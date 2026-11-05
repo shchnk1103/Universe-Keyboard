@@ -6,6 +6,11 @@
 - 已知限制：真实宿主上的 marked text 还没有 Human 真机验收；设计定稿 §F 的就绪身份技术债没有在本条加强；不使用运行时开关，本分支还没有合并进 main。
 - 证据边界：只列本地 KeyboardCore、RimeBridgeTests、App + Keyboard 模拟器、Release 构建，以及隔离资源上真实引擎矩阵的三变体与雾凇基线逐行一致（`reports/executor-report-s3a-r2a.md`）。不代表托管 CI、Human 真机或 Release 通过。详见 [Assignment](docs/assignments/wanxiang-t9-001.md)。
 
+## 2026-11-05 — LAUNCH-STABILITY-001 主 App 挂起保护（本地交付，未发布）
+
+- 降低主 App 退到后台时仍持有诊断日志锁、被系统终止的风险；后台部署会尝试申请系统后台时间，申请失败或到期时保护不可用。
+- 排空只覆盖主 App 诊断日志的 append 调用。已经开始的 clear、快照、备份，以及 librime / leveldb 的锁都不在这次范围内。未复现不等于零风险。
+
 ## 2026-11-04 — SWITCH-RESOLVER-001 方案开关识别器（本地交付，未发布）
 
 - 生成方案 overlay 时不再写固定序号的开关键，改为读取本次部署的已安装方案源文件，按名称与含义识别简繁与表情开关；识别不了、源文件缺失或无法证明与编译输入一致时不写该键，并记录只含方案 ID、设置与原因码的部署日志。

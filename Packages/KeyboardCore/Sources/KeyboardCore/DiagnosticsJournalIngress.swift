@@ -21,6 +21,17 @@ import Synchronization
 public final class DiagnosticsJournalIngress: Sendable {
     public static let maximumPendingEventCount = 256
 
+    private struct AppendAdmission: Sendable {
+        var closed = false
+        var inFlight = 0
+        var entered = 0
+        var left = 0
+        var waiters: [UInt64: AsyncStream<Void>.Continuation] = [:]
+        var nextWaiterID: UInt64 = 1
+    }
+
+    private let appendAdmission = Mutex(AppendAdmission())
+
     #if DEBUG
         internal enum TestingTicketOutcome: String, Sendable {
             case appended, filtered, droppedByLifecycle, failed, dropped
@@ -412,9 +423,12 @@ public final class DiagnosticsJournalIngress: Sendable {
                 return (0, state.terminate(ended, outcome: "lifecycle"))
             }
             resumeWaiters(ready)
+            if active, pending.withLock({ $0.lastProcessGeneration == generation }) {
+                reopenAppendAdmission()
+            }
             return dropped
         #else
-            return pending.withLock { state in
+            let dropped = pending.withLock { state -> Int in
                 if let previous = state.lastProcessGeneration, generation <= previous { return 0 }
                 state.lastProcessGeneration = generation
                 if active {
@@ -434,7 +448,89 @@ public final class DiagnosticsJournalIngress: Sendable {
                 state.flushScheduled = false
                 return 0
             }
+            if active, pending.withLock({ $0.lastProcessGeneration == generation }) {
+                reopenAppendAdmission()
+            }
+            return dropped
         #endif
+    }
+
+    /// 关闭新的 append 登记。与在途计数同一把锁，关闭之后的登记直接失败。
+    internal func closeAppendAdmission() {
+        appendAdmission.withLock { $0.closed = true }
+    }
+
+    internal func reopenAppendAdmission() {
+        appendAdmission.withLock { $0.closed = false }
+    }
+
+    /// 等待关闭前已经登记的 append 返回。不再登记新的调用。
+    internal func closeAndDrainAppends(
+        cancellation: @escaping @Sendable () -> Bool
+    ) async -> DiagnosticsAppendDrainOutcome {
+        closeAppendAdmission()
+        return await drainClosedAppends(cancellation: cancellation)
+    }
+
+    internal func drainClosedAppends(
+        cancellation: @escaping @Sendable () -> Bool
+    ) async -> DiagnosticsAppendDrainOutcome {
+        if cancellation() { return .cancelledNotDrained }
+        let alreadyIdle = appendAdmission.withLock { $0.inFlight == 0 }
+        if alreadyIdle { return cancellation() ? .cancelledNotDrained : .drained }
+        let waiterID = appendAdmission.withLock { state -> UInt64 in
+            let id = state.nextWaiterID
+            state.nextWaiterID &+= 1
+            return id
+        }
+        let stream = AsyncStream<Void> { continuation in
+            let idle = self.appendAdmission.withLock { state -> Bool in
+                if state.inFlight == 0 { return true }
+                state.waiters[waiterID] = continuation
+                return false
+            }
+            if idle { continuation.finish() }
+        }
+        defer {
+            _ = appendAdmission.withLock { state -> AsyncStream<Void>.Continuation? in
+                state.waiters.removeValue(forKey: waiterID)
+            }
+        }
+        for await _ in stream {
+            break
+        }
+        if cancellation() { return .cancelledNotDrained }
+        let idle = appendAdmission.withLock { $0.inFlight == 0 }
+        return idle && !cancellation() ? .drained : .cancelledNotDrained
+    }
+
+    #if DEBUG
+        internal func testingAppendAdmissionCounts() -> (entered: Int, left: Int, inFlight: Int, closed: Bool) {
+            appendAdmission.withLock { ($0.entered, $0.left, $0.inFlight, $0.closed) }
+        }
+    #endif
+
+    private func tryRegisterAppend() -> Bool {
+        appendAdmission.withLock { state in
+            if state.closed { return false }
+            state.inFlight += 1
+            state.entered += 1
+            return true
+        }
+    }
+
+    private func unregisterAppend() {
+        let ready = appendAdmission.withLock { state -> [AsyncStream<Void>.Continuation] in
+            state.inFlight -= 1
+            state.left += 1
+            guard state.inFlight == 0 else { return [] }
+            let continuations = Array(state.waiters.values)
+            state.waiters.removeAll()
+            return continuations
+        }
+        for continuation in ready {
+            continuation.finish()
+        }
     }
 
     private func flushPendingEvents() {
@@ -607,7 +703,12 @@ public final class DiagnosticsJournalIngress: Sendable {
             let healthEvents = work.deferredHealth.compactMap { reason, count in
                 self.makeHealthEvent?(reason, count)
             }
+            let registeredAppend = self.tryRegisterAppend()
+            defer {
+                if registeredAppend { self.unregisterAppend() }
+            }
             do {
+                guard registeredAppend else { throw DiagnosticsJournalError.lifecycleCancelled }
                 try await writer.append(healthEvents + enabledEvents) {
                     self.admitAppendIfStillVisible(for: work.lifecycleEpoch)
                 }
