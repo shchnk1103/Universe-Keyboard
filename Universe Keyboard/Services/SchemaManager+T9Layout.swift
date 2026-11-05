@@ -41,7 +41,7 @@ extension SchemaManager {
                 self?.rimeIceFilesExist() ?? false
             },
             resolveDirectories: { [weak self] in
-                guard let directories = try? self?.archiveInstaller.deploymentDirectories() else {
+                guard let directories = try? self?.archiveInstaller.runtimeDirectories() else {
                     return nil
                 }
                 return NineKeyEnableOrchestrator.Directories(
@@ -93,7 +93,7 @@ extension SchemaManager {
                 self?.nineKeyFamilyInstalled(scheme) ?? false
             },
             resolveDirectories: { [weak self] in
-                guard let directories = try? self?.archiveInstaller.deploymentDirectories() else {
+                guard let directories = try? self?.archiveInstaller.runtimeDirectories() else {
                     return nil
                 }
                 return NineKeyEnableOrchestrator.Directories(
@@ -134,7 +134,7 @@ extension SchemaManager {
             rewriteCheck: { [weak self] candidate, sharedDataURL in
                 guard let self else { return false }
                 let user =
-                    (try? self.archiveInstaller.deploymentDirectories())?.userDataURL
+                    (try? self.archiveInstaller.runtimeDirectories())?.userDataURL
                     ?? sharedDataURL.deletingLastPathComponent().appendingPathComponent("user")
                 return self.nineKeyCompiledSchemaIsClean(
                     candidate,
@@ -159,13 +159,22 @@ extension SchemaManager {
             },
             restoreRoute: { [weak self] in
                 guard let self else { return false }
-                guard let directories = try? self.archiveInstaller.deploymentDirectories() else {
+                guard let directories = try? self.archiveInstaller.runtimeDirectories() else {
                     return false
                 }
                 return self.restoreNineKeyEngineRoute(
                     sharedDataURL: directories.sharedDataURL,
                     userDataURL: directories.userDataURL
                 )
+            },
+            finalRouteMatchesTarget: { [weak self] in
+                guard let self else { return false }
+                guard let directories = try? self.archiveInstaller.runtimeDirectories() else {
+                    return false
+                }
+                let selection = self.registeredRuntimeSelection(sharedDataURL: directories.sharedDataURL)
+                return selection.effectiveSchemaID == scheme.schemaID
+                    && selection.effectiveLayoutStyle == .nineKey
             },
             forceTwentySix: { [weak self] in
                 guard let self else { return }
@@ -187,6 +196,11 @@ extension SchemaManager {
             publishLayout: { [weak self] in
                 guard let self else { return }
                 T9DeploymentSupport.persistLayout(.nineKey, settings: self.settings)
+            },
+            revokeNineKeyBinding: { [weak self] in
+                guard let self else { return }
+                self.settings.removeObject(forKey: KeyboardLayoutSettingsKey.schemeBinding9)
+                self.settings.synchronize()
             }
         )
     }

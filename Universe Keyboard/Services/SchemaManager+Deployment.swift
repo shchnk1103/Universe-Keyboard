@@ -86,6 +86,9 @@ extension SchemaManager {
         publishNineKeyReadiness: Bool
     ) async -> Bool {
         guard isActiveRimeDeployment(deploymentID) else { return false }
+        // Invalidate before any writable resource preparation. A thrown
+        // `deploymentDirectories` still leaves both markers unready.
+        T9DeploymentSupport.invalidateAllReadiness(settings: settings)
 
         let directories: SchemaDeploymentDirectories
         do {
@@ -101,8 +104,6 @@ extension SchemaManager {
         }
 
         guard isActiveRimeDeployment(deploymentID) else { return false }
-        // Shared deploy invalidates both nine-key markers before either family is rechecked.
-        T9DeploymentSupport.invalidateAllReadiness(settings: settings)
         Logger.shared.info("deployRimeConfig: 开始主 App 端全量部署", category: .deployment)
 
         // `deploymentDirectories()` commits immutable resources and dynamic

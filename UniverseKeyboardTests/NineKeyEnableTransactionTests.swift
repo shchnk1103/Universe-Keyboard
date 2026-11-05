@@ -268,6 +268,44 @@ final class NineKeyEnableTransactionTests: XCTestCase {
         XCTAssertNil(manager.schemeDeliveryCommitLeaseOperationID)
     }
 
+    func testEnableDoesNotPrepareDeploymentDirectoriesBeforeTheTransaction() async {
+        let settings = RecordingSettingsStore()
+        T9DeploymentSupport.persistLayout(.nineKey, settings: settings)
+        T9DeploymentSupport.writeMatchedReadiness(
+            fingerprint: "keep", upstreamVersion: "v", settings: settings)
+        let wan = wanxiangScheme()
+        T9DeploymentSupport.writeMatchedReadiness(
+            schemaID: wan.schemaID, fingerprint: "wan", upstreamVersion: "v", settings: settings)
+        let installer = NineKeySchemaArchiveInstaller(
+            directories: SchemaDeploymentDirectories(
+                sharedDataURL: URL(fileURLWithPath: "/tmp/uk-shared"),
+                userDataURL: URL(fileURLWithPath: "/tmp/uk-user")
+            )
+        )
+        let manager = SchemaManager(
+            settings: settings,
+            archiveInstaller: installer,
+            deploymentService: NineKeyRecordingDeploymentService(succeeded: true)
+        )
+        let missingFamily = await manager.enableNineKeyLayout(schemeID: wan.schemaID)
+        XCTAssertEqual(missingFamily, "需要先安装该九键方案所属的输入方案")
+        XCTAssertEqual(installer.deploymentDirectoriesCallCount, 0)
+        XCTAssertEqual(layout(settings), .nineKey)
+        XCTAssertEqual(T9DeploymentSupport.loadMarker(settings: settings)?.ready, true)
+        XCTAssertEqual(
+            T9DeploymentSupport.loadMarker(schemaID: wan.schemaID, settings: settings)?.ready, true)
+
+        installer.runtimeDirectoriesUnavailable = true
+        settings.set(true, forKey: "wanxiang_installed")
+        let missingDir = await manager.enableNineKeyLayout(schemeID: wan.schemaID)
+        XCTAssertEqual(missingDir, "App Group 不可用")
+        XCTAssertEqual(installer.deploymentDirectoriesCallCount, 0)
+        XCTAssertEqual(layout(settings), .nineKey)
+        XCTAssertEqual(T9DeploymentSupport.loadMarker(settings: settings)?.ready, true)
+        XCTAssertEqual(
+            T9DeploymentSupport.loadMarker(schemaID: wan.schemaID, settings: settings)?.ready, true)
+    }
+
     func testPreTransactionFailuresKeepPreviousNineKeyState() async {
         let settings = RecordingSettingsStore()
         T9DeploymentSupport.persistLayout(.nineKey, settings: settings)
@@ -519,6 +557,7 @@ final class NineKeyEnableTransactionTests: XCTestCase {
             smoke: smoke,
             fingerprint: { _, _ in fingerprint },
             restoreRoute: { restore },
+            finalRouteMatchesTarget: { true },
             forceTwentySix: {
                 T9DeploymentSupport.persistLayout(.twentySixKey, settings: settings)
             },
@@ -532,6 +571,9 @@ final class NineKeyEnableTransactionTests: XCTestCase {
             },
             publishLayout: {
                 T9DeploymentSupport.persistLayout(.nineKey, settings: settings)
+            },
+            revokeNineKeyBinding: {
+                settings.removeObject(forKey: KeyboardLayoutSettingsKey.schemeBinding9)
             }
         )
     }
@@ -659,6 +701,8 @@ private final class CommitProbe {
 @MainActor
 private final class NineKeySchemaArchiveInstaller: SchemaArchiveInstalling {
     let directories: SchemaDeploymentDirectories
+    var runtimeDirectoriesUnavailable = false
+    private(set) var deploymentDirectoriesCallCount = 0
 
     init(directories: SchemaDeploymentDirectories) {
         self.directories = directories
@@ -693,8 +737,16 @@ private final class NineKeySchemaArchiveInstaller: SchemaArchiveInstalling {
     func rollbackSchemaUninstall(_ staging: SchemaUninstallStaging) {}
     func clearBuildCache(plan: RimeSchemeInstallationPlan) {}
     func sharedDataDirectoryURL() -> URL? { directories.sharedDataURL }
-    func runtimeDirectories() throws -> SchemaDeploymentDirectories { directories }
-    func deploymentDirectories(pendingSchemaID: String?) throws -> SchemaDeploymentDirectories { directories }
+    func runtimeDirectories() throws -> SchemaDeploymentDirectories {
+        if runtimeDirectoriesUnavailable {
+            throw CocoaError(.fileReadNoSuchFile)
+        }
+        return directories
+    }
+    func deploymentDirectories(pendingSchemaID: String?) throws -> SchemaDeploymentDirectories {
+        deploymentDirectoriesCallCount += 1
+        return directories
+    }
 }
 
 private actor NineKeyRecordingDeploymentService: RimeDeploymentServicing {

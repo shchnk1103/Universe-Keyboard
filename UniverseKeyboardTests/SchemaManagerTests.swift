@@ -1869,6 +1869,50 @@ final class SchemaManagerTests: XCTestCase {
         XCTAssertTrue(deploymentRequests.isEmpty, "inactive uninstall must not deploy Luna")
     }
 
+    func testDeploymentInvalidatesMarkersBeforePreparingDirectories() async {
+        let settings = StubSharedSettingsStore()
+        T9DeploymentSupport.writeMatchedReadiness(
+            fingerprint: "ice", upstreamVersion: "v", settings: settings)
+        let wanID = NineKeySchemeRegistry.entries.first { $0.familyID == "wanxiang" }!.schemaID
+        T9DeploymentSupport.writeMatchedReadiness(
+            schemaID: wanID, fingerprint: "wan", upstreamVersion: "v", settings: settings)
+        let installer = StubSchemaArchiveInstaller()
+        installer.onDeploymentDirectories = {
+            XCTAssertNotEqual(T9DeploymentSupport.loadMarker(settings: settings)?.ready, true)
+            XCTAssertNotEqual(
+                T9DeploymentSupport.loadMarker(schemaID: wanID, settings: settings)?.ready, true)
+        }
+        let manager = makeManager(
+            settings: settings,
+            installer: installer,
+            deploymentService: StubDeploymentService(succeeded: true)
+        )
+        let succeeded = await manager.deployRimeConfig()
+        XCTAssertTrue(succeeded)
+        XCTAssertEqual(installer.deploymentDirectoriesCallCount, 1)
+    }
+
+    func testDeploymentDirectoryFailureLeavesBothMarkersUnready() async {
+        let settings = StubSharedSettingsStore()
+        T9DeploymentSupport.writeMatchedReadiness(
+            fingerprint: "ice", upstreamVersion: "v", settings: settings)
+        let wanID = NineKeySchemeRegistry.entries.first { $0.familyID == "wanxiang" }!.schemaID
+        T9DeploymentSupport.writeMatchedReadiness(
+            schemaID: wanID, fingerprint: "wan", upstreamVersion: "v", settings: settings)
+        let installer = StubSchemaArchiveInstaller()
+        installer.deploymentDirectoriesError = CocoaError(.fileReadNoSuchFile)
+        let manager = makeManager(
+            settings: settings,
+            installer: installer,
+            deploymentService: StubDeploymentService(succeeded: true)
+        )
+        let succeeded = await manager.deployRimeConfig()
+        XCTAssertFalse(succeeded)
+        XCTAssertNotEqual(T9DeploymentSupport.loadMarker(settings: settings)?.ready, true)
+        XCTAssertNotEqual(
+            T9DeploymentSupport.loadMarker(schemaID: wanID, settings: settings)?.ready, true)
+    }
+
     func testSuccessfulDeploymentUsesFullCheckAndUpdatesSharedFlags() async {
         let settings = StubSharedSettingsStore(values: ["rime_needs_deploy": true])
         let installer = StubSchemaArchiveInstaller()
@@ -3330,6 +3374,8 @@ private final class StubSchemaArchiveInstaller: SchemaArchiveInstalling {
     private(set) var didCommitUpgradeCheckpoint = false
     private(set) var runtimeDirectoriesCallCount = 0
     private(set) var deploymentDirectoriesCallCount = 0
+    var deploymentDirectoriesError: Error?
+    var onDeploymentDirectories: (() -> Void)?
 
     init(
         containsInstalledSchema: Bool = false,
@@ -3425,6 +3471,10 @@ private final class StubSchemaArchiveInstaller: SchemaArchiveInstalling {
     }
     func deploymentDirectories(pendingSchemaID: String?) throws -> SchemaDeploymentDirectories {
         deploymentDirectoriesCallCount += 1
+        onDeploymentDirectories?()
+        if let deploymentDirectoriesError {
+            throw deploymentDirectoriesError
+        }
         return directories
     }
 }

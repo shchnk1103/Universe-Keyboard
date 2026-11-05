@@ -33,12 +33,185 @@ final class NineKeyWanxiangRouteTests: XCTestCase {
         XCTAssertEqual(userDir, fixture.user.path)
     }
 
+    func testPublishedSwitchesSelectTheTargetScheme() async throws {
+        let wan = try XCTUnwrap(NineKeySchemeRegistry.scheme(schemaID))
+        let fog = try XCTUnwrap(NineKeySchemeRegistry.scheme("t9"))
+        try await assertPublishedSwitch(
+            target: wan,
+            initialLayout: .twentySixKey,
+            initialBinding: nil
+        )
+        try await assertPublishedSwitch(
+            target: wan,
+            initialLayout: .nineKey,
+            initialBinding: fog.schemaID
+        )
+        try await assertPublishedSwitch(
+            target: fog,
+            initialLayout: .nineKey,
+            initialBinding: wan.schemaID
+        )
+    }
+
+    func testFinalSelectionFailureRevokesBindingAndReturnsTwentySix() async throws {
+        let wan = try XCTUnwrap(NineKeySchemeRegistry.scheme(schemaID))
+        let outcome = try await runSwitch(target: wan, selectSucceeds: false, smokePasses: true)
+        XCTAssertEqual(outcome.failure, .restoreFailed)
+        XCTAssertEqual(outcome.layout, .twentySixKey)
+        XCTAssertNil(outcome.binding9)
+        XCTAssertEqual(outcome.selected.last, wan.schemaID)
+    }
+
+    func testTargetSmokeFailureRestoresTwentySixAndKeepsTheOriginalFailure() async throws {
+        let wan = try XCTUnwrap(NineKeySchemeRegistry.scheme(schemaID))
+        let outcome = try await runSwitch(target: wan, selectSucceeds: true, smokePasses: false)
+        XCTAssertEqual(outcome.failure, .smokeFailed(wan.schemaID))
+        XCTAssertEqual(outcome.layout, .twentySixKey)
+        XCTAssertNotEqual(outcome.selected.last, wan.schemaID)
+    }
+
     func testMismatchedWanxiangMarkerFailClosesToTwentySix() throws {
         let fixture = try makeFixture(markerFingerprintMatches: false)
         defer { fixture.cleanup() }
         let snapshot = fixture.manager.currentRuntimeRouteSnapshot()
         XCTAssertEqual(snapshot.effectiveRoute.layoutStyle, .twentySixKey)
         XCTAssertNotEqual(snapshot.effectiveRoute.schemaID, schemaID)
+    }
+
+    private struct SwitchOutcome {
+        let failure: NineKeyEnableOrchestrator.ActiveFailure?
+        let layout: KeyboardLayoutStyle
+        let binding9: String?
+        let selected: [String]
+    }
+
+    private func assertPublishedSwitch(
+        target: NineKeyScheme,
+        initialLayout: KeyboardLayoutStyle,
+        initialBinding: String?
+    ) async throws {
+        let outcome = try await runSwitch(
+            target: target,
+            selectSucceeds: true,
+            smokePasses: true,
+            initialLayout: initialLayout,
+            initialBinding: initialBinding
+        )
+        XCTAssertNil(outcome.failure)
+        XCTAssertEqual(outcome.selected.last, target.schemaID)
+        XCTAssertEqual(outcome.layout, .nineKey)
+        XCTAssertEqual(outcome.binding9, target.schemaID)
+    }
+
+    private func runSwitch(
+        target: NineKeyScheme,
+        selectSucceeds: Bool,
+        smokePasses: Bool,
+        initialLayout: KeyboardLayoutStyle = .twentySixKey,
+        initialBinding: String? = nil
+    ) async throws -> SwitchOutcome {
+        let root = FileManager.default.temporaryDirectory
+            .appendingPathComponent("uk-wx-switch-\(UUID().uuidString)", isDirectory: true)
+        let shared = root.appendingPathComponent("shared", isDirectory: true)
+        let user = root.appendingPathComponent("user", isDirectory: true)
+        try FileManager.default.createDirectory(at: shared, withIntermediateDirectories: true)
+        try FileManager.default.createDirectory(at: user, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        for scheme in NineKeySchemeRegistry.entries {
+            try "schema_id: \(scheme.schemaID)\n".write(
+                to: shared.appendingPathComponent(scheme.schemaFileName),
+                atomically: true,
+                encoding: .utf8
+            )
+        }
+        let settings = RecordingSettingsStore()
+        settings.set(true, forKey: "wanxiang_installed")
+        settings.set("luna_pinyin", forKey: KeyboardLayoutSettingsKey.schemeBinding26)
+        settings.set("luna_pinyin", forKey: "rime_active_schema")
+        T9DeploymentSupport.persistLayout(initialLayout, settings: settings)
+        if let initialBinding {
+            settings.set(initialBinding, forKey: KeyboardLayoutSettingsKey.schemeBinding9)
+            let fingerprint = T9DeploymentSupport.resourceFingerprint(
+                schemaID: initialBinding, sharedDataURL: shared)
+            T9DeploymentSupport.writeMatchedReadiness(
+                schemaID: initialBinding,
+                fingerprint: fingerprint ?? "missing",
+                upstreamVersion: "v",
+                settings: settings
+            )
+        }
+        let directories = SchemaDeploymentDirectories(sharedDataURL: shared, userDataURL: user)
+        let manager = SchemaManager(
+            settings: settings,
+            archiveInstaller: WanxiangRouteInstaller(directories: directories)
+        )
+        var selected: [String] = []
+        RimeT9SmokeProbe.selectAndConfirmHook = { _, _, id in
+            selected.append(id)
+            return selectSucceeds
+        }
+        defer { RimeT9SmokeProbe.selectAndConfirmHook = nil }
+        let listed = NineKeySchemeRegistry.entries
+        let failure = await NineKeyEnableOrchestrator.enable(
+            using: NineKeyEnableOrchestrator.ActiveDependencies(
+                target: target,
+                familyInstalled: { true },
+                resolveDirectories: {
+                    NineKeyEnableOrchestrator.Directories(sharedDataURL: shared, userDataURL: user)
+                },
+                beginTargetTransaction: {
+                    T9DeploymentSupport.persistLayout(.twentySixKey, settings: settings)
+                    T9DeploymentSupport.invalidateReadiness(schemaID: target.schemaID, settings: settings)
+                },
+                prepare: { _ in },
+                invalidateAllMarkers: {
+                    T9DeploymentSupport.invalidateAllReadiness(settings: settings)
+                },
+                deploy: { true },
+                schemesToVerify: { listed },
+                rewriteCheck: { _, _ in true },
+                smoke: { scheme, _, _ in
+                    smokePasses || scheme.schemaID != target.schemaID
+                },
+                fingerprint: { scheme, url in
+                    T9DeploymentSupport.resourceFingerprint(schemaID: scheme.schemaID, sharedDataURL: url)
+                },
+                restoreRoute: {
+                    manager.restoreNineKeyEngineRoute(sharedDataURL: shared, userDataURL: user)
+                },
+                finalRouteMatchesTarget: {
+                    let selection = manager.registeredRuntimeSelection(sharedDataURL: shared)
+                    return selection.effectiveSchemaID == target.schemaID
+                        && selection.effectiveLayoutStyle == .nineKey
+                },
+                forceTwentySix: {
+                    T9DeploymentSupport.persistLayout(.twentySixKey, settings: settings)
+                },
+                writeMarker: { scheme, fingerprint in
+                    T9DeploymentSupport.writeMatchedReadiness(
+                        schemaID: scheme.schemaID,
+                        fingerprint: fingerprint,
+                        upstreamVersion: "v",
+                        settings: settings
+                    )
+                },
+                publishBinding: { id in
+                    settings.set(id, forKey: KeyboardLayoutSettingsKey.schemeBinding9)
+                },
+                publishLayout: {
+                    T9DeploymentSupport.persistLayout(.nineKey, settings: settings)
+                },
+                revokeNineKeyBinding: {
+                    settings.removeObject(forKey: KeyboardLayoutSettingsKey.schemeBinding9)
+                }
+            )
+        )
+        return SwitchOutcome(
+            failure: failure,
+            layout: KeyboardLayoutStyle.resolve(settings.string(forKey: KeyboardLayoutSettingsKey.layoutStyle)),
+            binding9: settings.string(forKey: KeyboardLayoutSettingsKey.schemeBinding9),
+            selected: selected
+        )
     }
 
     private func makeFixture(markerFingerprintMatches: Bool) throws -> RouteFixture {

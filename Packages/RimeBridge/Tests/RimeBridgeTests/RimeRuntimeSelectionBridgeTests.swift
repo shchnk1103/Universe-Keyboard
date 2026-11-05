@@ -204,6 +204,59 @@ final class RimeRuntimeSelectionBridgeTests: XCTestCase {
         XCTAssertFalse(noT9.contains { $0.filename == "t9.custom.yaml" })
     }
 
+    func testRegisteredSnapshotMarksOnlyTheSchemeWhoseMarkerAndSourceArePresent() throws {
+        for scheme in NineKeySchemeRegistry.entries {
+            let (defaults, root) = try makeSnapshotDefaults()
+            defer {
+                defaults.removePersistentDomain(forName: suiteName(defaults))
+                try? FileManager.default.removeItem(at: root)
+            }
+            let shared = root.appendingPathComponent("shared", isDirectory: true)
+            let source = shared.appendingPathComponent(scheme.schemaFileName)
+            try "schema_id: \(scheme.schemaID)\n".write(to: source, atomically: true, encoding: .utf8)
+            let fingerprint = try XCTUnwrap(
+                NineKeyReadiness.fingerprint(schemaID: scheme.schemaID, sharedDirectory: shared))
+            NineKeyReadiness.save(
+                RimeT9ReadinessMarker(
+                    ready: true,
+                    compatibilityVersion: scheme.compatibilityVersion,
+                    resourceFingerprint: fingerprint
+                ),
+                schemaID: scheme.schemaID,
+                defaults: defaults
+            )
+            let snapshot = RimeRuntimeSelectionBridge.registeredSnapshot(
+                defaults: defaults, sharedDataDir: shared.path)
+            XCTAssertEqual(snapshot.readinessBySchema[scheme.schemaID], true)
+            for other in NineKeySchemeRegistry.entries where other.schemaID != scheme.schemaID {
+                XCTAssertNotEqual(snapshot.readinessBySchema[other.schemaID], true)
+            }
+        }
+    }
+
+    func testFogOnlySnapshotMatchesLegacyMarkerAndFingerprint() throws {
+        let (defaults, root) = try makeSnapshotDefaults()
+        defer {
+            defaults.removePersistentDomain(forName: suiteName(defaults))
+            try? FileManager.default.removeItem(at: root)
+        }
+        let shared = root.appendingPathComponent("shared", isDirectory: true)
+        let schemaURL = shared.appendingPathComponent("t9.schema.yaml")
+        try "schema:\n  schema_id: t9\n".write(to: schemaURL, atomically: true, encoding: .utf8)
+        let fingerprint = try XCTUnwrap(RimeT9Readiness.fingerprint(ofFileAt: schemaURL))
+        let marker = RimeT9ReadinessMarker(
+            ready: true,
+            compatibilityVersion: RimeT9Readiness.currentCompatibilityVersion,
+            resourceFingerprint: fingerprint
+        )
+        RimeT9Readiness.save(marker, to: defaults)
+        let snapshot = RimeRuntimeSelectionBridge.registeredSnapshot(
+            defaults: defaults, sharedDataDir: shared.path)
+        XCTAssertEqual(snapshot.fogMarker, RimeT9Readiness.load(from: defaults))
+        XCTAssertEqual(snapshot.fogFingerprint, RimeT9Readiness.fingerprint(ofFileAt: schemaURL))
+        XCTAssertEqual(snapshot.readinessBySchema["t9"], true)
+    }
+
     func testSnapshotReadsInjectedMarkerAndFingerprint() throws {
         let wanxiangID = try XCTUnwrap(NineKeySchemeRegistry.schemes(forFamily: "wanxiang").first).schemaID
         let (defaults, root) = try makeSnapshotDefaults()

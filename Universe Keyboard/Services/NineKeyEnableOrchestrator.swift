@@ -85,7 +85,10 @@ enum NineKeyEnableOrchestrator {
     /// Before the transaction starts, a missing family or directories leave state alone.
     /// The transaction invalidates only the target. Entering the shared deploy invalidates
     /// every marker. After a successful deploy each listed scheme is checked on its own.
-    /// Passers are published; restore failure forces 26-key and does not publish the binding.
+    /// A failed target restores the 26-key route, then returns that failure unless
+    /// restore itself fails. A passing target publishes marker, binding, then layout,
+    /// and only then restores and checks the route. Final-route failure revokes the
+    /// binding and returns to 26-key.
     struct ActiveDependencies {
         var target: NineKeyScheme
         var familyInstalled: () -> Bool
@@ -99,10 +102,14 @@ enum NineKeyEnableOrchestrator {
         var smoke: (NineKeyScheme, String, String) -> Bool
         var fingerprint: (NineKeyScheme, URL) -> String?
         var restoreRoute: () -> Bool
+        /// After binding and nine-key layout are published. True only when the
+        /// App route snapshot is the target scheme on the nine-key layout.
+        var finalRouteMatchesTarget: () -> Bool
         var forceTwentySix: () -> Void
         var writeMarker: (NineKeyScheme, String) -> Void
         var publishBinding: (String) -> Void
         var publishLayout: () -> Void
+        var revokeNineKeyBinding: () -> Void
     }
 
     enum ActiveFailure: Equatable {
@@ -167,18 +174,26 @@ enum NineKeyEnableOrchestrator {
             deps.writeMarker(scheme, fingerprint)
         }
 
-        if !deps.restoreRoute() {
-            deps.forceTwentySix()
-            return .restoreFailed
-        }
-
         guard let targetFingerprint = passed[deps.target.schemaID] else {
+            // Still the in-transaction 26-key layout. Restore failure outranks
+            // the original target failure.
+            if !deps.restoreRoute() {
+                deps.forceTwentySix()
+                return .restoreFailed
+            }
             deps.forceTwentySix()
             return targetFailure ?? .targetNotReady
         }
         deps.writeMarker(deps.target, targetFingerprint)
         deps.publishBinding(deps.target.schemaID)
         deps.publishLayout()
+        let restored = deps.restoreRoute()
+        let matchesTarget = deps.finalRouteMatchesTarget()
+        if !restored || !matchesTarget {
+            deps.revokeNineKeyBinding()
+            deps.forceTwentySix()
+            return .restoreFailed
+        }
         return nil
     }
 }

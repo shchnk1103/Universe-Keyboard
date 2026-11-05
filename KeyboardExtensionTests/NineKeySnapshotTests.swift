@@ -1,10 +1,10 @@
 import KeyboardCore
 import XCTest
 
-/// Decision coverage for the extension snapshot. The extension reads the same
-/// registry marker keys and source fingerprints, then calls `resolveRegistered`.
-/// This target does not link the keyboard extension, so the assertions call that
-/// entry with the injected marker and fingerprint directly.
+/// Route-combination coverage only. These tests pass readiness booleans into
+/// `resolveRegistered` and do not collect a production snapshot. Collection is
+/// covered by `RimeRuntimeSelectionBridge.registeredSnapshot` in
+/// `RimeRuntimeSelectionBridgeTests`.
 nonisolated final class NineKeySnapshotTests: XCTestCase {
     func testSnapshotInjectedMarkerAndFingerprintSelectsRegisteredScheme() throws {
         let scheme = try XCTUnwrap(NineKeySchemeRegistry.schemes(forFamily: "wanxiang").first)
