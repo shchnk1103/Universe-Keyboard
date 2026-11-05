@@ -50,8 +50,12 @@ extension RimeConfigManager {
             appendSchema("rime_ice")
         }
         // 万象拼音（全拼）when installed — ADR 0026 / PD-RIME-SCHEME-WANXIANG-001.
-        if activeSchema == "wanxiang" || (defaults?.bool(forKey: "wanxiang_installed") ?? false) {
+        let wanxiangInstalledForList = defaults?.bool(forKey: "wanxiang_installed") ?? false
+        if activeSchema == "wanxiang" || wanxiangInstalledForList {
             appendSchema("wanxiang")
+        }
+        if wanxiangInstalledForList || pendingSchemaID == "wanxiang" {
+            appendSchema(WanxiangT9SchemaCompatibility.schemaID)
         }
         if pageSize >= 5 {
             defaultYaml += "  \"menu/page_size\": \(pageSize)\n"
@@ -343,6 +347,7 @@ extension RimeConfigManager {
         ]
         if includeWanxiang {
             specs.append(("wanxiang", "rime_ice", true))
+            specs.append((WanxiangT9SchemaCompatibility.schemaID, "rime_ice", true))
         }
         if includeIceFamily {
             specs.append(("t9", "rime_ice", false))
@@ -491,6 +496,16 @@ extension RimeConfigManager {
         }
         if schemaID == "t9" {
             variants.append((try? T9SchemaCompatibility.makeCompatibleSchema(fromUpstreamYAML: source)) ?? source)
+        }
+        if schemaID == WanxiangT9SchemaCompatibility.schemaID {
+            switch WanxiangT9SchemaCompatibility.rewrite(source) {
+            case .rewritten(let text):
+                variants.append(text)
+            case .alreadyCompatible:
+                variants.append(source)
+            case .failed:
+                return false
+            }
         }
         for variant in variants {
             switch SchemaSwitchResolver.recognize(variant) {

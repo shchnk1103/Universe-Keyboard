@@ -28,8 +28,14 @@ public enum RimeSchemeCapabilityMatrix {
     public static func normalizeSchemaID(_ raw: String) -> String {
         let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
         if trimmed.isEmpty { return "luna_pinyin" }
-        if trimmed == "t9" { return "rime_ice" }
+        if let scheme = NineKeySchemeRegistry.scheme(trimmed), scheme.familyID == "rime_ice" { return scheme.familyID }
         return trimmed
+    }
+
+    /// Full mapping is opt-in until the app and extension migrate their call sites.
+    public static func normalizeRegisteredSchemaID(_ raw: String) -> String {
+        let legacy = normalizeSchemaID(raw)
+        return NineKeySchemeRegistry.scheme(legacy)?.familyID ?? legacy
     }
 
     public static func profile(for schemaID: String) -> RimeSchemeCapabilityProfile {

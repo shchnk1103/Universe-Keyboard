@@ -17,12 +17,12 @@ final class SchemeAdapterRegistryTests: XCTestCase {
         XCTAssertTrue(adapter.supportsProductAdvancedInput)
     }
 
-    func testWanxiangAdapterMirrorsTodaysHardcodes() {
+    func testWanxiangAdapterExposesRegisteredDesignCapability() {
         let adapter = SchemeAdapterRegistry.wanxiang
         XCTAssertEqual(adapter.schemaID, "wanxiang")
         XCTAssertTrue(adapter.layout.supportsTwentySixKey)
-        XCTAssertFalse(adapter.layout.supportsNineKey)
-        XCTAssertEqual(adapter.layout.nineKeySchemaIDs, [])
+        XCTAssertTrue(adapter.layout.supportsNineKey)
+        XCTAssertEqual(adapter.layout.nineKeySchemaIDs, ["wanxiang_t9i"])
         XCTAssertEqual(adapter.sharedDefaultMode, .privatePreset)
         XCTAssertEqual(adapter.ownershipStrategyID, .exactHash)
         XCTAssertEqual(adapter.postProcessingRevision, "wanxiang-post-2")
@@ -246,14 +246,14 @@ final class SchemeAdapterRegistryTests: XCTestCase {
         XCTAssertNil(SchemeAdapterRegistry.resourceCapability(for: "unknown_scheme"))
     }
 
-    func testUninstallHooksIceLayoutFallbackOnly() {
+    func testUninstallHooksIceAndWanxiangLayoutFallback() {
         XCTAssertEqual(
             SchemeAdapterRegistry.uninstallHooks(for: "rime_ice"),
             .ice
         )
-        XCTAssertEqual(SchemeAdapterRegistry.uninstallHooks(for: "wanxiang"), .none)
+        XCTAssertEqual(SchemeAdapterRegistry.uninstallHooks(for: "wanxiang"), .wanxiang)
         XCTAssertEqual(SchemeAdapterRegistry.uninstallHooks(for: "luna_pinyin"), .none)
         XCTAssertTrue(SchemeAdapterRegistry.hasUninstallLayoutFallback(for: "rime_ice"))
-        XCTAssertFalse(SchemeAdapterRegistry.hasUninstallLayoutFallback(for: "wanxiang"))
+        XCTAssertTrue(SchemeAdapterRegistry.hasUninstallLayoutFallback(for: "wanxiang"))
     }
 }

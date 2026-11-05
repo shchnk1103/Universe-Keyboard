@@ -10,6 +10,15 @@ extension SchemaManager {
     /// Returns `nil` on success, or a user-visible failure message.
     @MainActor
     func enableNineKeyLayout() async -> String? {
+        await enableNineKeyLayout(schemeID: "t9")
+    }
+
+    /// Enables one registered nine-key scheme. Fog-only callers keep `enableNineKeyLayout()`.
+    @MainActor
+    func enableNineKeyLayout(schemeID: String) async -> String? {
+        guard let scheme = NineKeySchemeRegistry.scheme(schemeID) else {
+            return "该方案不能用于九键"
+        }
         let operationID = UUID()
         guard await acquireSchemeDeliveryCommitLease(operationID: operationID) else {
             return Self.userMessage(for: .deployFailed)
@@ -17,9 +26,9 @@ extension SchemaManager {
         defer { releaseSchemeDeliveryCommitLease(operationID: operationID) }
 
         let failure = await NineKeyEnableOrchestrator.enable(
-            using: makeNineKeyEnableDependencies(leaseOperationID: operationID)
+            using: makeActiveNineKeyDependencies(scheme: scheme, leaseOperationID: operationID)
         )
-        return failure.map(Self.userMessage(for:))
+        return failure.map { Self.userMessage(for: $0, scheme: scheme) }
     }
 
     /// Production dependency wiring for the shared orchestrator (also used by tests via injection).
@@ -32,7 +41,7 @@ extension SchemaManager {
                 self?.rimeIceFilesExist() ?? false
             },
             resolveDirectories: { [weak self] in
-                guard let directories = try? self?.archiveInstaller.deploymentDirectories() else {
+                guard let directories = try? self?.archiveInstaller.runtimeDirectories() else {
                     return nil
                 }
                 return NineKeyEnableOrchestrator.Directories(
@@ -71,6 +80,156 @@ extension SchemaManager {
                 self.settings.set("t9", forKey: KeyboardLayoutSettingsKey.schemeBinding9)
             }
         )
+    }
+
+    @MainActor
+    func makeActiveNineKeyDependencies(
+        scheme: NineKeyScheme,
+        leaseOperationID: UUID? = nil
+    ) -> NineKeyEnableOrchestrator.ActiveDependencies {
+        NineKeyEnableOrchestrator.ActiveDependencies(
+            target: scheme,
+            familyInstalled: { [weak self] in
+                self?.nineKeyFamilyInstalled(scheme) ?? false
+            },
+            resolveDirectories: { [weak self] in
+                guard let directories = try? self?.archiveInstaller.runtimeDirectories() else {
+                    return nil
+                }
+                return NineKeyEnableOrchestrator.Directories(
+                    sharedDataURL: directories.sharedDataURL,
+                    userDataURL: directories.userDataURL
+                )
+            },
+            beginTargetTransaction: { [weak self] in
+                guard let self else { return }
+                T9DeploymentSupport.persistLayout(.twentySixKey, settings: self.settings)
+                T9DeploymentSupport.invalidateReadiness(schemaID: scheme.schemaID, settings: self.settings)
+            },
+            prepare: { sharedDataURL in
+                if scheme.schemaID == "t9" {
+                    _ = try T9DeploymentSupport.ensureCompatibleT9Schema(in: sharedDataURL)
+                    return
+                }
+                let prepared = WanxiangT9DeploymentSupport.prepare(sharedDataURL: sharedDataURL)
+                if prepared.failed {
+                    throw T9DeploymentError.missingUpstreamSchema
+                }
+            },
+            invalidateAllMarkers: { [weak self] in
+                guard let self else { return }
+                T9DeploymentSupport.invalidateAllReadiness(settings: self.settings)
+            },
+            deploy: { [weak self] in
+                guard let self else { return false }
+                return await self.deployRimeConfig(
+                    leaseOperationID: leaseOperationID,
+                    publishNineKeyReadiness: false
+                )
+            },
+            schemesToVerify: { [weak self] in
+                guard let self else { return [] }
+                return NineKeySchemeRegistry.entries.filter { self.nineKeyFamilyInstalled($0) }
+            },
+            rewriteCheck: { [weak self] candidate, sharedDataURL in
+                guard let self else { return false }
+                let user =
+                    (try? self.archiveInstaller.runtimeDirectories())?.userDataURL
+                    ?? sharedDataURL.deletingLastPathComponent().appendingPathComponent("user")
+                return self.nineKeyCompiledSchemaIsClean(
+                    candidate,
+                    sharedDataURL: sharedDataURL,
+                    userDataURL: user
+                )
+            },
+            smoke: { candidate, shared, user in
+                let input = NineKeySchemeRegistry.smokeInput(for: candidate.schemaID) ?? ""
+                return RimeT9SmokeProbe.verify(
+                    sharedDataDir: shared,
+                    userDataDir: user,
+                    schemaID: candidate.schemaID,
+                    input: input
+                )
+            },
+            fingerprint: { candidate, sharedDataURL in
+                T9DeploymentSupport.resourceFingerprint(
+                    schemaID: candidate.schemaID,
+                    sharedDataURL: sharedDataURL
+                )
+            },
+            restoreRoute: { [weak self] in
+                guard let self else { return false }
+                guard let directories = try? self.archiveInstaller.runtimeDirectories() else {
+                    return false
+                }
+                return self.restoreNineKeyEngineRoute(
+                    sharedDataURL: directories.sharedDataURL,
+                    userDataURL: directories.userDataURL
+                )
+            },
+            finalRouteMatchesTarget: { [weak self] in
+                guard let self else { return false }
+                guard let directories = try? self.archiveInstaller.runtimeDirectories() else {
+                    return false
+                }
+                let selection = self.registeredRuntimeSelection(sharedDataURL: directories.sharedDataURL)
+                return selection.effectiveSchemaID == scheme.schemaID
+                    && selection.effectiveLayoutStyle == .nineKey
+            },
+            forceTwentySix: { [weak self] in
+                guard let self else { return }
+                T9DeploymentSupport.persistLayout(.twentySixKey, settings: self.settings)
+            },
+            writeMarker: { [weak self] candidate, fingerprint in
+                guard let self else { return }
+                T9DeploymentSupport.writeMatchedReadiness(
+                    schemaID: candidate.schemaID,
+                    fingerprint: fingerprint,
+                    upstreamVersion: self.installedVersion(for: candidate.familyID),
+                    settings: self.settings
+                )
+            },
+            publishBinding: { [weak self] schemaID in
+                self?.settings.set(schemaID, forKey: KeyboardLayoutSettingsKey.schemeBinding9)
+                self?.settings.synchronize()
+            },
+            publishLayout: { [weak self] in
+                guard let self else { return }
+                T9DeploymentSupport.persistLayout(.nineKey, settings: self.settings)
+            },
+            revokeNineKeyBinding: { [weak self] in
+                guard let self else { return }
+                self.settings.removeObject(forKey: KeyboardLayoutSettingsKey.schemeBinding9)
+                self.settings.synchronize()
+            }
+        )
+    }
+
+    private static func userMessage(
+        for failure: NineKeyEnableOrchestrator.ActiveFailure,
+        scheme: NineKeyScheme
+    ) -> String {
+        switch failure {
+        case .familyNotInstalled:
+            if scheme.schemaID == "t9" {
+                return "需要先安装雾凇拼音才能使用九键"
+            }
+            return "需要先安装该九键方案所属的输入方案"
+        case .directoriesUnavailable:
+            return "App Group 不可用"
+        case .prepareFailed:
+            return "无法准备九键方案文件，已回退 26 键"
+        case .deployFailed:
+            return "RIME 部署失败，已回退 26 键"
+        case .rewriteFailed, .smokeFailed:
+            return "九键验证失败（无法产生候选或删除异常），已回退 26 键"
+        case .fingerprintUnavailable:
+            return "无法计算九键资源指纹，已回退 26 键"
+        case .restoreFailed:
+            return "九键验证后无法恢复当前输入方案，已回退 26 键"
+        case .targetNotReady:
+            return "九键验证失败（无法产生候选或删除异常），已回退 26 键"
+        }
     }
 
     private static func userMessage(for failure: NineKeyEnableOrchestrator.Failure) -> String {
@@ -191,17 +350,8 @@ extension SchemaManager {
         let persistedLayout = currentLayoutStyle()
         let binding26 = schemeBinding26()
         let binding9 = schemeBinding9()
-        let onDiskFingerprint = (try? archiveInstaller.runtimeDirectories()).flatMap {
-            T9DeploymentSupport.resourceFingerprint(sharedDataURL: $0.sharedDataURL)
-        }
-        let selection = RimeRuntimeSelection.resolve(
-            baseSchemaID: settings.string(forKey: "rime_active_schema") ?? activeSchemaID,
-            layoutRawValue: settings.string(forKey: KeyboardLayoutSettingsKey.layoutStyle),
-            readinessMarker: T9DeploymentSupport.loadMarker(settings: settings),
-            onDiskFingerprint: onDiskFingerprint,
-            schemeBinding26: binding26,
-            schemeBinding9: binding9
-        )
+        let sharedDataURL = (try? archiveInstaller.runtimeDirectories())?.sharedDataURL
+        let selection = registeredRuntimeSelection(sharedDataURL: sharedDataURL)
         let effectiveState: RimeRuntimeEffectiveRoute.State =
             selection.effectiveLayoutStyle == persistedLayout ? .ready : .failClosed
         let supportedTwentySixKeySchemaIDs =
@@ -286,8 +436,32 @@ extension SchemaManager {
     }
 
     @MainActor
-    func setSchemeBinding9(_ schemaID: String) {
-        guard RimeRuntimeSelection.isNineKeyCapable(schemaID) else { return }
-        settings.set(schemaID, forKey: KeyboardLayoutSettingsKey.schemeBinding9)
+    func setSchemeBinding9(_ schemaID: String) async -> String? {
+        guard NineKeySchemeRegistry.scheme(schemaID) != nil,
+            RimeRuntimeSelection.isNineKeyCapable(schemaID)
+        else { return "该方案不能用于九键" }
+        if nineKeySchemeIsReady(schemaID) {
+            settings.set(schemaID, forKey: KeyboardLayoutSettingsKey.schemeBinding9)
+            settings.synchronize()
+            return nil
+        }
+        return await enableNineKeyLayout(schemeID: schemaID)
+    }
+
+    func nineKeySchemeIsReady(_ schemaID: String) -> Bool {
+        guard let directories = try? archiveInstaller.runtimeDirectories() else { return false }
+        let fingerprint = T9DeploymentSupport.resourceFingerprint(
+            schemaID: schemaID,
+            sharedDataURL: directories.sharedDataURL
+        )
+        return NineKeyReadiness.isMatched(
+            schemaID: schemaID,
+            marker: T9DeploymentSupport.loadMarker(schemaID: schemaID, settings: settings),
+            fingerprint: fingerprint
+        )
+    }
+
+    func wanxiangFamilyInstalled() -> Bool {
+        settings.bool(forKey: "wanxiang_installed")
     }
 }

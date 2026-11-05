@@ -79,4 +79,121 @@ enum NineKeyEnableOrchestrator {
         deps.publishNineKey()
         return nil
     }
+
+    /// Parameterized enable. The legacy `enable(using:)` path is unchanged.
+    ///
+    /// Before the transaction starts, a missing family or directories leave state alone.
+    /// The transaction invalidates only the target. Entering the shared deploy invalidates
+    /// every marker. After a successful deploy each listed scheme is checked on its own.
+    /// A failed target restores the 26-key route, then returns that failure unless
+    /// restore itself fails. A passing target publishes marker, binding, then layout,
+    /// and only then restores and checks the route. Final-route failure revokes the
+    /// binding and returns to 26-key.
+    struct ActiveDependencies {
+        var target: NineKeyScheme
+        var familyInstalled: () -> Bool
+        var resolveDirectories: () -> Directories?
+        var beginTargetTransaction: () -> Void
+        var prepare: (URL) throws -> Void
+        var invalidateAllMarkers: () -> Void
+        var deploy: () async -> Bool
+        var schemesToVerify: () -> [NineKeyScheme]
+        var rewriteCheck: (NineKeyScheme, URL) -> Bool
+        var smoke: (NineKeyScheme, String, String) -> Bool
+        var fingerprint: (NineKeyScheme, URL) -> String?
+        var restoreRoute: () -> Bool
+        /// After binding and nine-key layout are published. True only when the
+        /// App route snapshot is the target scheme on the nine-key layout.
+        var finalRouteMatchesTarget: () -> Bool
+        var forceTwentySix: () -> Void
+        var writeMarker: (NineKeyScheme, String) -> Void
+        var publishBinding: (String) -> Void
+        var publishLayout: () -> Void
+        var revokeNineKeyBinding: () -> Void
+    }
+
+    enum ActiveFailure: Equatable {
+        case familyNotInstalled
+        case directoriesUnavailable
+        case prepareFailed
+        case deployFailed
+        case rewriteFailed(String)
+        case smokeFailed(String)
+        case fingerprintUnavailable(String)
+        case restoreFailed
+        case targetNotReady
+    }
+
+    static func enable(using deps: ActiveDependencies) async -> ActiveFailure? {
+        guard deps.familyInstalled() else { return .familyNotInstalled }
+        guard let directories = deps.resolveDirectories() else {
+            return .directoriesUnavailable
+        }
+
+        deps.beginTargetTransaction()
+        do {
+            try deps.prepare(directories.sharedDataURL)
+        } catch {
+            return .prepareFailed
+        }
+
+        deps.invalidateAllMarkers()
+        let deployed = await deps.deploy()
+        guard deployed else {
+            deps.forceTwentySix()
+            return .deployFailed
+        }
+
+        var passed: [String: String] = [:]
+        var targetFailure: ActiveFailure?
+        for scheme in deps.schemesToVerify() {
+            if !deps.rewriteCheck(scheme, directories.sharedDataURL) {
+                if scheme.schemaID == deps.target.schemaID {
+                    targetFailure = .rewriteFailed(scheme.schemaID)
+                }
+                continue
+            }
+            let smoked = deps.smoke(
+                scheme,
+                directories.sharedDataURL.path,
+                directories.userDataURL.path
+            )
+            if !smoked {
+                if scheme.schemaID == deps.target.schemaID {
+                    targetFailure = .smokeFailed(scheme.schemaID)
+                }
+                continue
+            }
+            guard let fingerprint = deps.fingerprint(scheme, directories.sharedDataURL) else {
+                if scheme.schemaID == deps.target.schemaID {
+                    targetFailure = .fingerprintUnavailable(scheme.schemaID)
+                }
+                continue
+            }
+            passed[scheme.schemaID] = fingerprint
+            deps.writeMarker(scheme, fingerprint)
+        }
+
+        guard let targetFingerprint = passed[deps.target.schemaID] else {
+            // Still the in-transaction 26-key layout. Restore failure outranks
+            // the original target failure.
+            if !deps.restoreRoute() {
+                deps.forceTwentySix()
+                return .restoreFailed
+            }
+            deps.forceTwentySix()
+            return targetFailure ?? .targetNotReady
+        }
+        deps.writeMarker(deps.target, targetFingerprint)
+        deps.publishBinding(deps.target.schemaID)
+        deps.publishLayout()
+        let restored = deps.restoreRoute()
+        let matchesTarget = deps.finalRouteMatchesTarget()
+        if !restored || !matchesTarget {
+            deps.revokeNineKeyBinding()
+            deps.forceTwentySix()
+            return .restoreFailed
+        }
+        return nil
+    }
 }

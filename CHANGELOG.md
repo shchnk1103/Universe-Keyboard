@@ -1,9 +1,15 @@
 # CHANGELOG
 
+## 2026-11-05 — WANXIANG-T9-001 万象九宫格（本地交付，未发布）
+
+- 装了万象之后，九宫格可以选「万象九键」，和「雾凇九键」各自就绪；拼音栏和候选栏只显示拼音，不显示数字或表情；卸掉万象后回到 26 键。万象九宫格只按声母也能出词、单按 6 有「哦」、拼音栏显示拼音、候选栏不再出现数字串。
+- 已知限制：真实宿主上的 marked text 还没有 Human 真机验收；设计定稿 §F 的就绪身份技术债没有在本条加强；不使用运行时开关，本分支还没有合并进 main。
+- 证据边界：只列本地 KeyboardCore、RimeBridgeTests、App + Keyboard 模拟器、Release 构建，以及隔离资源上真实引擎矩阵的三变体与雾凇基线逐行一致（`reports/executor-report-s3a-r2a.md`）。不代表托管 CI、Human 真机或 Release 通过。详见 [Assignment](docs/assignments/wanxiang-t9-001.md)。
+
 ## 2026-11-04 — SWITCH-RESOLVER-001 方案开关识别器（本地交付，未发布）
 
 - 生成方案 overlay 时不再写固定序号的开关键，改为读取本次部署的已安装方案源文件，按名称与含义识别简繁与表情开关；识别不了、源文件缺失或无法证明与编译输入一致时不写该键，并记录只含方案 ID、设置与原因码的部署日志。
-- 雾凇、万象：不再误改 `ascii_punct`（回到方案默认中文标点）；选择繁体的用户开始得到繁体；万象开启表情候选。朙月仅在内置副本哈希一致且无 `grammar.yaml` 时写简繁键，保持原行为，标准 RIME 同步时也照常写入。雾凇九宫格（t9）本阶段不写开关键（方案默认简体）；万象九宫格未接入。
+- 雾凇、万象：不再误改 `ascii_punct`（回到方案默认中文标点）；选择繁体的用户开始得到繁体；万象开启表情候选。朙月仅在内置副本哈希一致且无 `grammar.yaml` 时写简繁键，保持原行为，标准 RIME 同步时也照常写入。雾凇九宫格（t9）本阶段不写开关键（方案默认简体）；万象九宫格见 2026-11-05 条目。
 - 已知限制：标准 RIME 同步刷新 overlay 时，雾凇、万象的 overlay 暂不含开关键，下一次主 App 部署时重新生成；同步期间 librime 是否据此重新编译未核实。
 - 证据仅限本地 KeyboardCore、RimeBridgeTests、App + Keyboard 模拟器测试、Release 构建及隔离资源下的真实引擎六组；不代表托管 CI、升级或首次安装的真实用户副本、Human 真机或 Release 通过。详见 [Assignment](docs/assignments/switch-resolver-001.md)。
 

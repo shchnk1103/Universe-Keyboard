@@ -286,6 +286,9 @@ extension SchemaManager {
                 // the sanitized schema instead of the upstream Lua-dependent version.
                 _ = try T9DeploymentSupport.ensureCompatibleT9Schema(in: shared)
             }
+            if schemaID == "wanxiang", let shared = archiveInstaller.sharedDataDirectoryURL() {
+                try prepareWanxiangNineKeyDownloadSource(sharedDataURL: shared)
+            }
 
             downloadState = .deploying(schemeName: schemeName)
             recordPhase(

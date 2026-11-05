@@ -15,7 +15,7 @@ final class SchemeUninstallHooksTests: XCTestCase {
         )
         XCTAssertEqual(
             SchemeAdapterRegistry.uninstallHooks(for: "wanxiang").layoutFallback,
-            .none
+            .wanxiangInvalidateNineKeyMarkerAndMaybeTwentySixKey
         )
         XCTAssertEqual(
             SchemeAdapterRegistry.uninstallHooks(for: "luna_pinyin").layoutFallback,
@@ -27,7 +27,7 @@ final class SchemeUninstallHooksTests: XCTestCase {
         )
         XCTAssertTrue(SchemeAdapterRegistry.hasUninstallLayoutFallback(for: "rime_ice"))
         XCTAssertTrue(SchemeAdapterRegistry.hasUninstallLayoutFallback(for: "t9"))
-        XCTAssertFalse(SchemeAdapterRegistry.hasUninstallLayoutFallback(for: "wanxiang"))
+        XCTAssertTrue(SchemeAdapterRegistry.hasUninstallLayoutFallback(for: "wanxiang"))
         XCTAssertFalse(SchemeAdapterRegistry.hasUninstallLayoutFallback(for: "luna_pinyin"))
     }
 
@@ -105,5 +105,70 @@ final class SchemeUninstallHooksTests: XCTestCase {
             KeyboardLayoutStyle.twentySixKey.rawValue
         )
         XCTAssertEqual(RimeT9Readiness.load(from: defaults)?.ready, false)
+    }
+
+    func testWanxiangUninstallClearsFamilyMarkerAndFallsBackOnlyForWanxiangBinding() {
+        let suite = "test.wanxiang-uninstall-layout-fallback." + UUID().uuidString
+        guard let defaults = UserDefaults(suiteName: suite) else {
+            XCTFail("suite")
+            return
+        }
+        defer { defaults.removePersistentDomain(forName: suite) }
+
+        let wanxiangID = NineKeySchemeRegistry.schemes(forFamily: "wanxiang")[0].schemaID
+        defaults.set(KeyboardLayoutStyle.nineKey.rawValue, forKey: KeyboardLayoutSettingsKey.layoutStyle)
+        defaults.set(wanxiangID, forKey: KeyboardLayoutSettingsKey.schemeBinding9)
+        let fog = RimeT9ReadinessMarker(
+            ready: true,
+            compatibilityVersion: RimeT9Readiness.currentCompatibilityVersion,
+            resourceFingerprint: "fog-fp"
+        )
+        RimeT9Readiness.save(fog, to: defaults)
+        NineKeyReadiness.save(
+            RimeT9ReadinessMarker(
+                ready: true,
+                compatibilityVersion: "1",
+                resourceFingerprint: "wan-fp"
+            ),
+            schemaID: wanxiangID,
+            defaults: defaults
+        )
+
+        SchemeAdapterRegistry.prepareUninstallTargetMarkerBeforeFileDeletion(
+            for: "wanxiang",
+            set: { value, key in defaults.set(value, forKey: key) },
+            synchronize: { defaults.synchronize() },
+            schemeBinding9: defaults.string(forKey: KeyboardLayoutSettingsKey.schemeBinding9)
+        )
+
+        XCTAssertEqual(
+            defaults.string(forKey: KeyboardLayoutSettingsKey.layoutStyle),
+            KeyboardLayoutStyle.twentySixKey.rawValue
+        )
+        XCTAssertEqual(NineKeyReadiness.load(schemaID: wanxiangID, defaults: defaults)?.ready, false)
+        XCTAssertEqual(
+            NineKeyReadiness.load(schemaID: wanxiangID, defaults: defaults)?.resourceFingerprint, ""
+        )
+        XCTAssertEqual(RimeT9Readiness.load(from: defaults)?.ready, true)
+        XCTAssertEqual(RimeT9Readiness.load(from: defaults)?.resourceFingerprint, "fog-fp")
+
+        defaults.set(KeyboardLayoutStyle.nineKey.rawValue, forKey: KeyboardLayoutSettingsKey.layoutStyle)
+        SchemeAdapterRegistry.prepareUninstallTargetMarkerBeforeFileDeletion(
+            for: "wanxiang",
+            set: { value, key in defaults.set(value, forKey: key) },
+            synchronize: { defaults.synchronize() },
+            schemeBinding9: "t9"
+        )
+        XCTAssertEqual(
+            defaults.string(forKey: KeyboardLayoutSettingsKey.layoutStyle),
+            KeyboardLayoutStyle.nineKey.rawValue
+        )
+        SchemeAdapterRegistry.prepareUninstallTargetMarkerBeforeFileDeletion(
+            for: "rime_ice",
+            set: { value, key in defaults.set(value, forKey: key) },
+            synchronize: { defaults.synchronize() },
+            schemeBinding9: wanxiangID
+        )
+        XCTAssertEqual(RimeT9Readiness.load(from: defaults)?.resourceFingerprint, "fog-fp")
     }
 }

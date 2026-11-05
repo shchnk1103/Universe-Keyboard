@@ -90,6 +90,7 @@ extension SchemaManager {
         defer { releaseSchemeDeliveryCommitLease(operationID: operationID) }
 
         let schemaID = entry.schemaID
+        clearWanxiangNineKeyMarkerBeforeFileDeletion(schemaID)
         let routeSnapshot = currentRuntimeRouteSnapshot()
         recordActiveUninstallRoutePhase(
             operationID: operationID,
@@ -127,10 +128,15 @@ extension SchemaManager {
                     mutation.before,
                     operationID: operationID,
                     reason: "Luna 回退部署失败",
-                    operationStartedAt: operationStartedAt
+                    operationStartedAt: operationStartedAt,
+                    publishNineKeyReadiness: schemaID != "wanxiang"
                 )
+                clearWanxiangNineKeyMarkerBeforeFileDeletion(schemaID)
                 return
             }
+            // A shared deploy may republish the wanxiang marker while its files
+            // are still on disk. Drop that marker again before deletion.
+            clearWanxiangNineKeyMarkerBeforeFileDeletion(schemaID)
             recordActiveUninstallRoutePhase(
                 operationID: operationID,
                 phase: "fallback_deploy_succeeded",
@@ -182,6 +188,7 @@ extension SchemaManager {
                 isFailure: true,
                 operationStartedAt: operationStartedAt
             )
+            clearWanxiangNineKeyMarkerBeforeFileDeletion(schemaID)
             return
         } catch {
             recordActiveUninstallRoutePhase(
@@ -196,7 +203,8 @@ extension SchemaManager {
                     routeMutation.before,
                     operationID: operationID,
                     reason: "方案文件暂存失败",
-                    operationStartedAt: operationStartedAt
+                    operationStartedAt: operationStartedAt,
+                    publishNineKeyReadiness: schemaID != "wanxiang"
                 )
             } else {
                 Logger.shared.error(
@@ -204,6 +212,8 @@ extension SchemaManager {
                     category: .deployment
                 )
             }
+            // Staging failed, so the already-cleared wanxiang marker stays cleared.
+            clearWanxiangNineKeyMarkerBeforeFileDeletion(schemaID)
             return
         }
 
@@ -214,7 +224,8 @@ extension SchemaManager {
         SchemeAdapterRegistry.prepareUninstallLayoutFallback(
             for: schemaID,
             set: { self.settings.set($0, forKey: $1) },
-            synchronize: { self.settings.synchronize() }
+            synchronize: { self.settings.synchronize() },
+            schemeBinding9: settings.string(forKey: KeyboardLayoutSettingsKey.schemeBinding9)
         )
 
         archiveInstaller.commitSchemaUninstall(staging, plan: plan)
@@ -261,11 +272,24 @@ extension SchemaManager {
     /// Fail-closed restore must finish while the uninstall lease is still held.
     /// A detached Task would race `defer { release… }` and could observe a
     /// foreign lease or skip the redeploy entirely.
+    /// Drops the wanxiang nine-key marker inside the uninstall lease.
+    /// A failed delete must not write that marker back; fog is left to the
+    /// shared deploy that actually starts.
+    private func clearWanxiangNineKeyMarkerBeforeFileDeletion(_ schemaID: String) {
+        SchemeAdapterRegistry.prepareUninstallTargetMarkerBeforeFileDeletion(
+            for: schemaID,
+            set: { self.settings.set($0, forKey: $1) },
+            synchronize: { self.settings.synchronize() },
+            schemeBinding9: settings.string(forKey: KeyboardLayoutSettingsKey.schemeBinding9)
+        )
+    }
+
     private func restoreSchemaAfterFailedUninstall(
         _ state: RimeRuntimeRouteState,
         operationID: UUID,
         reason: String,
-        operationStartedAt: UInt64
+        operationStartedAt: UInt64,
+        publishNineKeyReadiness: Bool = true
     ) async {
         applyRuntimeRouteState(state)
         recordActiveUninstallRoutePhase(
@@ -274,7 +298,10 @@ extension SchemaManager {
             route: state.effectiveRoute,
             operationStartedAt: operationStartedAt
         )
-        let restored = await deployRimeConfig(leaseOperationID: operationID)
+        let restored = await deployRimeConfig(
+            leaseOperationID: operationID,
+            publishNineKeyReadiness: publishNineKeyReadiness
+        )
         recordActiveUninstallRoutePhase(
             operationID: operationID,
             phase: restored ? "rollback_deploy_succeeded" : "rollback_deploy_failed",

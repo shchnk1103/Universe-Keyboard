@@ -24,40 +24,55 @@ public enum T9PreeditResolver {
                 count += 1
             }
         }
-        if let provisionalPathDisplay,
-           let provisionalConsumedSlots,
-           provisionalConsumedSlots > 0,
-           provisionalConsumedSlots == slotLimit,
-           !provisionalPathDisplay.isEmpty,
-           !provisionalPathDisplay.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
+        if let provisionalPathDisplay, let provisionalConsumedSlots,
+            provisionalConsumedSlots > 0, provisionalConsumedSlots == slotLimit,
+            let path = validatedSource(provisionalPathDisplay)
         {
-            return provisionalPathDisplay
+            return path
         }
-        if let comment = preferredComment(candidates: candidates, highlightedIndex: highlightedIndex),
-           !comment.isEmpty,
-           !comment.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
-        {
+        if let comment = preferredComment(candidates: candidates, highlightedIndex: highlightedIndex) {
             return projectCommentToEnteredSlots(comment, rawInput: raw)
         }
-        return String(
-            raw.unicodeScalars.filter(T9PinyinPathExtractor.isASCIILetter)
-        )
+        let explicit = String(raw.unicodeScalars.filter(T9PinyinPathExtractor.isASCIILetter))
+        return validatedSource(explicit) ?? ""
     }
 
-    public static func preferredComment(
-        candidates: [RimeCandidate],
-        highlightedIndex: Int?
-    ) -> String? {
-        if let highlightedIndex,
-           candidates.indices.contains(highlightedIndex),
-           let comment = candidates[highlightedIndex].comment,
-           !comment.isEmpty
+    /// Strip balanced hint fragments and reject the entire source on invalid content.
+    public static func validatedSource(_ source: String) -> String? {
+        let pairs: [Character: Character] = ["〔": "〕", "【": "】", "[": "]", "(": ")", "（": "）"]
+        let closers = Set(pairs.values)
+        var stack: [Character] = []
+        var result = ""
+        for character in source {
+            if let close = pairs[character] { stack.append(close); continue }
+            if closers.contains(character) {
+                guard stack.last == character else { return nil }
+                stack.removeLast()
+                continue
+            }
+            if stack.isEmpty { result.append(character) }
+        }
+        guard stack.isEmpty else { return nil }
+        var normalized = ""
+        for scalar in result.unicodeScalars {
+            switch scalar.value {
+            case 65...90: normalized.unicodeScalars.append(UnicodeScalar(scalar.value + 32)!)
+            case 97...122, 32, 39: normalized.unicodeScalars.append(scalar)
+            case 0x00FC, 0x00DC: normalized.append("v")
+            default: return nil
+            }
+        }
+        guard normalized.unicodeScalars.contains(where: { (97...122).contains($0.value) }) else { return nil }
+        return normalized
+    }
+
+    public static func preferredComment(candidates: [RimeCandidate], highlightedIndex: Int?) -> String? {
+        if let highlightedIndex, candidates.indices.contains(highlightedIndex),
+            let raw = candidates[highlightedIndex].comment, let value = validatedSource(raw)
         {
-            return comment
+            return value
         }
-        if let first = candidates.first?.comment, !first.isEmpty {
-            return first
-        }
+        if let raw = candidates.first?.comment { return validatedSource(raw) }
         return nil
     }
 
@@ -90,8 +105,8 @@ public enum T9PreeditResolver {
                 visibleScalars.append(scalar)
                 visibleLetterCount += 1
             } else if T9PinyinPathExtractor.isASCIISeparator(scalar),
-                      visibleLetterCount > 0,
-                      visibleLetterCount < slotLimit
+                visibleLetterCount > 0,
+                visibleLetterCount < slotLimit
             {
                 visibleScalars.append(scalar)
             }
@@ -210,7 +225,7 @@ public enum T9CompositionCommitPolicy {
         highlightedIndex: Int?
     ) -> String? {
         if let highlightedIndex,
-           candidates.indices.contains(highlightedIndex)
+            candidates.indices.contains(highlightedIndex)
         {
             let text = candidates[highlightedIndex].text
             if !text.isEmpty { return text }
