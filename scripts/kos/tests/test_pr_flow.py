@@ -507,6 +507,65 @@ class LandTests(unittest.TestCase):
         payload = json.loads((self.logs / "land-266.json").read_text())
         self.assertEqual(payload["status"], "view-unparsed")
 
+    def test_uppercase_pass_and_fail_do_not_rerun_or_merge(self) -> None:
+        items = [
+            _job("build", "PASS", "1", "2"),
+            _job("test-app-keyboard", "FAIL", "1", "3"),
+        ]
+        runner = Queue([(has("pr", "view"), _view()), *_snap(items)])
+        self.assertEqual(FLOW.main(self._land(["--merge"]), runner=runner), 1)
+        self.assertFalse(any(call[1:3] == ["pr", "merge"] or "rerun" in call for call in runner.calls))
+        payload = json.loads((self.logs / "land-266.json").read_text())
+        self.assertEqual(payload["status"], "checks-snapshot-invalid")
+
+    def test_same_name_failures_stay_independent(self) -> None:
+        known = FIXTURE.read_text(encoding="utf-8")
+        blank = "error: clang frontend failed\n"
+        jobs = [
+            _job("test-app-keyboard", "fail", "999", "111"),
+            _job("test-app-keyboard", "fail", "999", "222"),
+        ]
+        for logs in ((blank, known), (known, blank)):
+            runner = Queue(
+                [
+                    (has("pr", "view"), _view()),
+                    *_snap(jobs),
+                    (has("--log-failed"), ok(logs[0])),
+                    (has("--log-failed"), ok(logs[1])),
+                ]
+            )
+            self.assertNotEqual(FLOW.main(self._land(["--merge"]), runner=runner), 0)
+            self.assertFalse(any("rerun" in call or call[1:3] == ["pr", "merge"] for call in runner.calls))
+
+    def test_same_name_known_failures_rerun_once(self) -> None:
+        known = FIXTURE.read_text(encoding="utf-8")
+        jobs = [
+            _job("test-app-keyboard", "fail", "999", "111"),
+            _job("test-app-keyboard", "fail", "999", "222"),
+        ]
+        runner = Queue(
+            [
+                (has("pr", "view"), _view()),
+                *_snap(jobs),
+                (has("--log-failed"), ok(known)),
+                (has("--log-failed"), ok(known)),
+                (has("run", "rerun", "--failed"), ok("")),
+                *_snap(jobs),
+                (has("--log-failed"), ok(known)),
+                (has("--log-failed"), ok(known)),
+            ]
+        )
+        self.assertNotEqual(FLOW.main(self._land(["--merge"]), runner=runner), 0)
+        self.assertEqual(sum(1 for call in runner.calls if "rerun" in call), 1)
+        self.assertFalse(any(call[1:3] == ["pr", "merge"] for call in runner.calls))
+        record = (self.pm / "ci" / "pr266-run999-attempt1.md").read_text(encoding="utf-8")
+        jobs = record.split("## failures")[0]
+        failures = record.split("## failures", 1)[1]
+        self.assertEqual(jobs.count("job=111"), 1)
+        self.assertEqual(jobs.count("job=222"), 1)
+        self.assertIn("job=111", failures)
+        self.assertIn("job=222", failures)
+
     def test_closed_pr_stops_on_dry_run(self) -> None:
         runner = Queue([(has("pr", "view"), _view(state="MERGED"))])
         self.assertEqual(FLOW.main(self._land(["--dry-run"]), runner=runner), 1)

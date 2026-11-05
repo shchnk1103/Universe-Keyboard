@@ -159,18 +159,22 @@ def _snapshot_rows(text: str) -> list[dict] | None:
     if not isinstance(data, list):
         return None
     rows = []
-    for item in data:
+    for index, item in enumerate(data):
         if not isinstance(item, dict):
             return None
         link = str(item.get("link") or "")
         found = RUN_JOB.search(link)
+        bucket = item.get("bucket")
+        # Keep the raw bucket. Case or whitespace folding would admit values
+        # outside the contract whitelist.
         rows.append(
             {
                 "name": str(item.get("name") or ""),
-                "state": str(item.get("bucket") or "").lower(),
+                "state": bucket if isinstance(bucket, str) else "",
                 "url": link,
                 "run": found.group(1) if found else "",
                 "job": found.group(2) if found else "",
+                "index": index,
             }
         )
     return rows
@@ -185,6 +189,17 @@ def _snapshot_buckets_invalid(rows: list[dict]) -> bool:
 
 def _bad_states(rows: list[dict]) -> list[dict]:
     return [row for row in rows if row["state"] in {"fail", "cancel"}]
+
+
+def _failure_key(row: dict) -> tuple[str, str | int]:
+    """One failed row, one key. Job names can repeat, so they are not keys.
+
+    A job id parsed from ``link`` is stable across the row. Otherwise the
+    snapshot index keeps two unparsed rows from collapsing into one.
+    """
+    if row.get("job"):
+        return ("job", row["job"])
+    return ("index", row["index"])
 
 
 def _pending_states(rows: list[dict]) -> list[dict]:
@@ -304,10 +319,12 @@ def _write_record(path: Path, pr: str, head: str, rows: list[dict], parsed: dict
         lines.append(f"- {row['name']}: {row['state']} run={row['run']} job={row['job']}")
     lines.append("")
     lines.append("## failures")
-    for job, cases in parsed.items():
+    for key, cases in parsed.items():
+        label = f"{key[0]}={key[1]}"
         if not cases:
-            lines.append(f"- {job}: (no test case)")
+            lines.append(f"- {label}: (no test case)")
             continue
+        lines.append(f"- {label}")
         for name, quote in cases:
             lines.append(f"- {name}")
             if quote:
@@ -406,15 +423,16 @@ def cmd_land(args, runner) -> int:
         if not bad:
             break
 
-        parsed: dict[str, list] = {}
+        parsed: dict[tuple, list] = {}
         substantive = []
         for row in bad:
+            key = _failure_key(row)
             if "final-quality-gate" in row["name"]:
-                parsed[row["name"]] = []
+                parsed[key] = []
                 continue
             substantive.append(row)
             if not row["run"] or not row["job"]:
-                parsed[row["name"]] = []
+                parsed[key] = []
                 continue
             log = runner.run(
                 [
@@ -429,7 +447,7 @@ def cmd_land(args, runner) -> int:
                     "--log-failed",
                 ]
             )
-            parsed[row["name"]] = _parse_cases(log.text) if log.code == 0 or log.text.strip() else []
+            parsed[key] = _parse_cases(log.text) if log.code == 0 or log.text.strip() else []
 
         run_ids = sorted({row["run"] for row in substantive if row["run"]})
         run_label = run_ids[0] if run_ids else "none"
@@ -437,7 +455,7 @@ def cmd_land(args, runner) -> int:
         cases = [name for group in parsed.values() for name, _quote in group]
         can_rerun = (
             substantive
-            and all(parsed.get(row["name"]) for row in substantive)
+            and all(parsed.get(_failure_key(row)) for row in substantive)
             and all(name in flaky for name in cases)
             and reruns < args.max_reruns
         )
