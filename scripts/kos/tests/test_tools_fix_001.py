@@ -112,6 +112,28 @@ class BuildSkipFalsePositiveTests(unittest.TestCase):
         text = "不启动任何设备，文中的 xcodebuild 只是禁止。\n只写：scratch"
         self.assertEqual(FREEZE.consistency(text), [])
 
+    def test_role_line_alone_with_xcodebuild_is_not_write_scope(self) -> None:
+        text = SHELL + "运行 xcodebuild。\n"
+        self.assertFalse(any("no build output location" in e for e in FREEZE.consistency(text)))
+
+    def test_zhi_xie_scratch_without_colon_is_write_scope(self) -> None:
+        text = SHELL + "只写 scratch\n运行 xcodebuild。\n"
+        self.assertTrue(any("no build output location" in e for e in FREEZE.consistency(text)))
+
+    def test_pgrep_sentence_alone_is_not_a_build(self) -> None:
+        text = "用 `pgrep -x xcodebuild` 看是否还在跑。"
+        self.assertFalse(FREEZE._sentence_counts_as_build(text))
+        self.assertEqual(FREEZE.consistency(text), [])
+
+    def test_star_or_list_zhi_xie_below_is_not_write_scope(self) -> None:
+        for line in ("* 只写下面这些", "- 只写下面这些"):
+            text = line + "\n运行 xcodebuild。\n"
+            self.assertEqual(FREEZE.consistency(text), [], line)
+
+    def test_dou_zhi_xie_yi_ju_hua_is_not_write_scope(self) -> None:
+        text = "都只写一句话\n运行 xcodebuild。\n"
+        self.assertEqual(FREEZE.consistency(text), [])
+
 
 class NetworkFalsePositiveTests(unittest.TestCase):
     def test_limited_readonly_gh_does_not_conflict_with_offline(self) -> None:

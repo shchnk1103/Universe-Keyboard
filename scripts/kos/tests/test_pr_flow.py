@@ -211,9 +211,34 @@ def _ready(state="CLEAN", auto=None, head=HEAD):
     return ok(json.dumps({"mergeStateStatus": state, "autoMergeRequest": auto, "headRefOid": head}))
 
 
-def _fail_row():
-    url = "https://github.com/shchnk1103/Universe-Keyboard/actions/runs/999/job/111"
-    return ok(f"test-app-keyboard\tfail\t2m\t{url}\n")
+WATCH = Path(__file__).resolve().parent / "fixtures" / "watch-three-refreshes-pr267.txt"
+
+
+def _job(name, bucket, run="999", job="111"):
+    link = ""
+    if run:
+        link = f"https://github.com/shchnk1103/Universe-Keyboard/actions/runs/{run}/job/{job}"
+    return {"name": name, "state": bucket, "bucket": bucket, "link": link}
+
+
+def _watch_step(text="ignored watch table\n"):
+    return (lambda argv: "checks" in argv and "--watch" in argv, ok(text))
+
+
+def _json_step(items):
+    return (lambda argv: "checks" in argv and "--json" in argv, ok(json.dumps(items)))
+
+
+def _snap(items, watch="ignored watch table\n"):
+    return [_watch_step(watch), _json_step(items)]
+
+
+def _fail_items():
+    return [_job("test-app-keyboard", "fail")]
+
+
+def _pass_items():
+    return [_job("build", "pass", "5", "6")]
 
 
 class LandTests(unittest.TestCase):
@@ -247,10 +272,10 @@ class LandTests(unittest.TestCase):
         runner = Queue(
             [
                 (has("pr", "view"), _view()),
-                (has("pr", "checks"), _fail_row()),
+                *_snap(_fail_items()),
                 (has("run", "view", "--log-failed"), ok(log)),
                 (has("run", "rerun", "--failed"), ok("")),
-                (has("pr", "checks"), _fail_row()),
+                *_snap(_fail_items()),
                 (has("run", "view", "--log-failed"), ok(log)),
             ]
         )
@@ -271,7 +296,7 @@ class LandTests(unittest.TestCase):
         runner = Queue(
             [
                 (has("pr", "view"), _view()),
-                (has("pr", "checks"), _fail_row()),
+                *_snap(_fail_items()),
                 (has("--log-failed"), ok(foreign)),
             ]
         )
@@ -282,7 +307,7 @@ class LandTests(unittest.TestCase):
         runner = Queue(
             [
                 (has("pr", "view"), _view()),
-                (has("pr", "checks"), _fail_row()),
+                *_snap(_fail_items()),
                 (has("--log-failed"), ok("error: clang frontend failed\n")),
             ]
         )
@@ -290,11 +315,10 @@ class LandTests(unittest.TestCase):
         self.assertFalse(any("rerun" in call for call in runner.calls))
 
     def test_head_change_does_not_merge(self) -> None:
-        passed = ok("build\tpass\t1m\thttps://github.com/x/actions/runs/5/job/6\n")
         runner = Queue(
             [
                 (has("pr", "view"), _view()),
-                (has("pr", "checks"), passed),
+                *_snap(_pass_items()),
                 (has("pr", "view"), _view(head=OTHER)),
             ]
         )
@@ -302,11 +326,10 @@ class LandTests(unittest.TestCase):
         self.assertFalse(any(call[1:3] == ["pr", "merge"] for call in runner.calls))
 
     def test_without_merge_flag_does_not_merge(self) -> None:
-        passed = ok("build\tpass\t1m\thttps://github.com/x/actions/runs/5/job/6\n")
         runner = Queue(
             [
                 (has("pr", "view"), _view()),
-                (has("pr", "checks"), passed),
+                *_snap(_pass_items()),
             ]
         )
         self.assertEqual(FLOW.main(self._land(), runner=runner), 0)
@@ -316,11 +339,10 @@ class LandTests(unittest.TestCase):
         buf = BytesIO()
         with tarfile.open(fileobj=buf, mode="w") as tar:
             pass
-        passed = ok("build\tpass\t1m\thttps://github.com/x/actions/runs/5/job/6\n")
         runner = Queue(
             [
                 (has("pr", "view"), _view()),
-                (has("pr", "checks"), passed),
+                *_snap(_pass_items()),
                 (has("pr", "view"), _view()),
                 (has("pr", "diff"), ok("docs/kos/pm-packet-clauses.md\n")),
                 (has("archive"), FLOW.Result(0, buf.getvalue(), "")),
@@ -336,12 +358,11 @@ class LandTests(unittest.TestCase):
         self.assertFalse(any(call[1:3] == ["pr", "merge"] for call in runner.calls))
 
     def test_main_not_on_main_or_dirty_does_not_fast_forward(self) -> None:
-        passed = ok("build\tpass\t1m\thttps://github.com/x/actions/runs/5/job/6\n")
         merge_json = ok(json.dumps({"mergeCommit": {"oid": "c" * 40}}))
         not_main = Queue(
             [
                 (has("pr", "view"), _view()),
-                (has("pr", "checks"), passed),
+                *_snap(_pass_items()),
                 (has("pr", "view"), _view()),
                 (has("autoMergeRequest,mergeStateStatus,headRefOid"), _ready()),
                 (has("pr", "merge"), ok("merged")),
@@ -356,7 +377,7 @@ class LandTests(unittest.TestCase):
         dirty = Queue(
             [
                 (has("pr", "view"), _view()),
-                (has("pr", "checks"), passed),
+                *_snap(_pass_items()),
                 (has("pr", "view"), _view()),
                 (has("autoMergeRequest,mergeStateStatus,headRefOid"), _ready()),
                 (has("pr", "merge"), ok("merged")),
@@ -371,8 +392,8 @@ class LandTests(unittest.TestCase):
     def test_final_gate_alone_and_zero_reruns_stop(self) -> None:
         log = FIXTURE.read_text(encoding="utf-8")
         for steps, extra in [
-            ([(has("checks"), ok("final-quality-gate\tfail\t1m\n"))], []),
-            ([(has("checks"), _fail_row()), (has("--log-failed"), ok(log))], ["--max-reruns", "0"]),
+            ([*_snap([_job("final-quality-gate", "fail", "", "")])], []),
+            ([*_snap(_fail_items()), (has("--log-failed"), ok(log))], ["--max-reruns", "0"]),
         ]:
             runner = Queue([(has("view"), _view())] + steps)
             self.assertEqual(FLOW.main(self._land(["--merge"] + extra), runner=runner), 1)
@@ -384,8 +405,7 @@ class LandTests(unittest.TestCase):
         self.assertFalse(any("checks" in c for c in runner.calls))
 
     def test_merge_readiness_and_fast_forward_outcomes(self) -> None:
-        passed = ok("build\tpass\t1m\n")
-        prefix = [(has("view"), _view()), (has("checks"), passed), (has("view"), _view())]
+        prefix = [(has("view"), _view()), *_snap([_job("build", "pass", "", "")]), (has("view"), _view())]
         for ready in [_ready(auto={"enabledAt": "now"}), _ready(state="BLOCKED"), _ready(head=OTHER)]:
             runner = Queue(prefix + [(has("autoMergeRequest,mergeStateStatus,headRefOid"), ready)])
             self.assertEqual(FLOW.main(self._land(["--merge"]), runner=runner), 1)
@@ -406,10 +426,63 @@ class LandTests(unittest.TestCase):
             self.assertIn("ff=" + payload["ff"], Path(payload["record"]).read_text())
 
     def test_archive_failure_stops_merge(self) -> None:
-        runner = Queue([(has("view"), _view()), (has("checks"), ok("build\tpass\t1m\n")),
+        runner = Queue([(has("view"), _view()), *_snap([_job("build", "pass", "", "")]),
             (has("view"), _view()), (has("diff"), ok("docs/kos/a.md\n")), (has("archive"), fail("bad"))])
         self.assertEqual(FLOW.main(self._land(["--merge", "--validator", "/v.sh"]), runner=runner), 1)
         self.assertFalse(any(c[1:3] == ["pr", "merge"] for c in runner.calls))
+
+    def test_watch_refreshes_are_ignored_and_final_snapshot_reruns_once(self) -> None:
+        log = FIXTURE.read_text(encoding="utf-8")
+        watch = WATCH.read_text(encoding="utf-8")
+        self.assertEqual(watch.count("refresh "), 3)
+        final = [
+            _job("test-app-keyboard", "fail", "999", "111"),
+            _job("build", "pass", "999", "222"),
+        ]
+        runner = Queue(
+            [
+                (has("pr", "view"), _view()),
+                *_snap(final, watch),
+                (has("--log-failed"), ok(log)),
+                (has("run", "rerun", "--failed"), ok("")),
+                *_snap(final, watch),
+                (has("--log-failed"), ok(log)),
+            ]
+        )
+        self.assertEqual(FLOW.main(self._land(["--merge"]), runner=runner), 1)
+        self.assertEqual(sum(1 for call in runner.calls if "rerun" in call), 1)
+        self.assertFalse(any(call[1:3] == ["pr", "merge"] for call in runner.calls))
+        record = (self.pm / "ci" / "pr266-run999-attempt1.md").read_text(encoding="utf-8")
+        jobs = record.split("## failures")[0]
+        self.assertEqual(jobs.count("test-app-keyboard"), 1)
+        self.assertEqual(jobs.count("build"), 1)
+        self.assertNotIn("pending", jobs)
+        self.assertIn("run=999", jobs)
+        self.assertIn("job=111", jobs)
+
+    def test_pending_snapshot_does_not_rerun_or_merge(self) -> None:
+        runner = Queue(
+            [
+                (has("pr", "view"), _view()),
+                *_snap([_job("build", "pending", "7", "8"), _job("test-app-keyboard", "fail")]),
+            ]
+        )
+        self.assertEqual(FLOW.main(self._land(["--merge"]), runner=runner), 1)
+        self.assertFalse(any("rerun" in call or call[1:3] == ["pr", "merge"] for call in runner.calls))
+        payload = json.loads((self.logs / "land-266.json").read_text())
+        self.assertEqual(payload["status"], "checks-pending")
+
+    def test_skipping_is_not_a_failure(self) -> None:
+        runner = Queue(
+            [
+                (has("pr", "view"), _view()),
+                *_snap([_job("build", "pass", "5", "6"), _job("optional", "skipping", "5", "7")]),
+            ]
+        )
+        self.assertEqual(FLOW.main(self._land(), runner=runner), 0)
+        self.assertFalse(any("rerun" in call for call in runner.calls))
+        payload = json.loads((self.logs / "land-266.json").read_text())
+        self.assertEqual(payload["status"], "green-no-merge")
 
     def test_closed_pr_stops_on_dry_run(self) -> None:
         runner = Queue([(has("pr", "view"), _view(state="MERGED"))])

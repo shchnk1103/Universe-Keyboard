@@ -48,6 +48,15 @@ def _without_limited_network(text):
             kept.append(part)
     return "".join(kept)
 
+def _sentence_is_write_scope(sentence):
+    """A sentence that limits where this package may write."""
+    if "最终消息只写" in sentence:
+        return False
+    stripped = sentence.lstrip(" \t")
+    if stripped.startswith("只写"):
+        return True
+    return "写入" in sentence and "只写" in sentence
+
 def _sentence_counts_as_build(sentence):
     """True when this sentence names a build tool and does not itself deny running or starting it."""
     if "pgrep -x xcodebuild" in sentence or not re.search(r"xcodebuild|swift build|swift test", sentence):
@@ -112,7 +121,10 @@ def consistency(text, readonly=False):
     # A later sentence such as “不运行构建。” does not exempt an earlier “swift build”.
     mentions_build = any(_sentence_counts_as_build(s) for s in sentences)
     if mentions_build and not readonly:
-        write_scope = any("只写" in s and ("写入" in s or s.strip().startswith("只写：")) for s in sentences)
+        # 去掉行首空白后以“只写”开头（含“只写 scratch”“只写：scratch”）。
+        # 行首星号或列表符开头的“只写下面这些”不以“只写”起句，不算。
+        # 句中同时有“写入”与“只写”也算。含“最终消息只写”的句子除外。
+        write_scope = any(_sentence_is_write_scope(s) for s in sentences)
         if write_scope and not re.search(r"derivedDataPath|--scratch-path", text):
             errs.append("builds mentioned with a 'write only' scope but no build output location")
     # 7. report referenced as input but not in the frozen inputs list

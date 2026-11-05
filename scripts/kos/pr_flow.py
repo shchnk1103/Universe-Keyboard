@@ -146,28 +146,38 @@ def _parse_cases(log_text: str) -> list[tuple[str, str]]:
     return found
 
 
-def _check_rows(text: str) -> list[dict]:
+def _snapshot_rows(text: str) -> list[dict] | None:
+    """Rows from one `gh pr checks --json` snapshot. Watch tables are not accepted."""
+    try:
+        data = json.loads(text)
+    except json.JSONDecodeError:
+        return None
+    if not isinstance(data, list):
+        return None
     rows = []
-    for line in text.splitlines():
-        if "\t" not in line:
-            continue
-        parts = line.split("\t")
-        name = parts[0].strip()
-        state = parts[1].strip().lower() if len(parts) > 1 else ""
-        url = ""
-        run_id = ""
-        job_id = ""
-        for part in parts:
-            found = RUN_JOB.search(part)
-            if found:
-                url = part.strip()
-                run_id, job_id = found.group(1), found.group(2)
-        rows.append({"name": name, "state": state, "url": url, "run": run_id, "job": job_id})
+    for item in data:
+        if not isinstance(item, dict):
+            return None
+        link = str(item.get("link") or "")
+        found = RUN_JOB.search(link)
+        rows.append(
+            {
+                "name": str(item.get("name") or ""),
+                "state": str(item.get("bucket") or "").lower(),
+                "url": link,
+                "run": found.group(1) if found else "",
+                "job": found.group(2) if found else "",
+            }
+        )
     return rows
 
 
 def _bad_states(rows: list[dict]) -> list[dict]:
-    return [row for row in rows if row["state"] in {"fail", "pending", "cancel", "cancelled", "failing"}]
+    return [row for row in rows if row["state"] in {"fail", "cancel"}]
+
+
+def _pending_states(rows: list[dict]) -> list[dict]:
+    return [row for row in rows if row["state"] == "pending"]
 
 
 def _doc_paths(names: set[str]) -> bool:
@@ -357,17 +367,29 @@ def cmd_land(args, runner) -> int:
     record_path: Path | None = None
     rows: list[dict] = []
     while True:
-        checks = runner.run(
+        # --watch only waits. Its printed tables are not the judgment.
+        runner.run(
             ["gh", "pr", "checks", args.pr, "--repo", args.repo, "--watch", "--interval", "30"]
         )
-        rows = _check_rows(checks.text)
-        bad = _bad_states(rows)
-        if not bad and checks.code == 0:
-            break
-        if not bad and checks.code != 0:
+        snapshot = runner.run(
+            ["gh", "pr", "checks", args.pr, "--repo", args.repo, "--json", "name,state,bucket,link"]
+        )
+        rows = _snapshot_rows(snapshot.text) if snapshot.code == 0 else None
+        if rows is None:
             payload.update(status="checks-failed-unparsed", reruns=reruns)
             _summary(payload, log_dir, args.pr)
-            return _die("checks failed without a parseable fail/pending/cancel row")
+            return _die("checks snapshot was not JSON")
+        if _pending_states(rows):
+            run_ids = sorted({row["run"] for row in rows if row["run"]})
+            run_label = run_ids[0] if run_ids else "none"
+            record_path = Path(args.pm_log) / "ci" / f"pr{args.pr}-run{run_label}-attempt{attempt}.md"
+            _write_record(record_path, args.pr, head, rows, {}, "checks-pending")
+            payload.update(status="checks-pending", reruns=reruns, head=head, record=str(record_path))
+            _summary(payload, log_dir, args.pr)
+            return _die("checks still pending; not rerunning or merging")
+        bad = _bad_states(rows)
+        if not bad:
+            break
 
         parsed: dict[str, list] = {}
         substantive = []
