@@ -261,7 +261,7 @@ final class RimeRuntimeSelectionBridgeTests: XCTestCase {
         defaults.set(false, forKey: "wanxiang_installed")
         XCTAssertEqual(
             RimeRuntimeSelectionBridge.resolve(defaults: defaults, sharedDataDir: shared.path).effectiveSchemaID,
-            "wanxiang")
+            "luna_pinyin")
         XCTAssertEqual(
             RimeRuntimeSelectionBridge.resolve(defaults: defaults, sharedDataDir: shared.path).effectiveLayoutStyle,
             .twentySixKey)

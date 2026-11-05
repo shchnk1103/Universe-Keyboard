@@ -246,14 +246,14 @@ final class SchemeAdapterRegistryTests: XCTestCase {
         XCTAssertNil(SchemeAdapterRegistry.resourceCapability(for: "unknown_scheme"))
     }
 
-    func testUninstallHooksIceLayoutFallbackOnly() {
+    func testUninstallHooksIceAndWanxiangLayoutFallback() {
         XCTAssertEqual(
             SchemeAdapterRegistry.uninstallHooks(for: "rime_ice"),
             .ice
         )
-        XCTAssertEqual(SchemeAdapterRegistry.uninstallHooks(for: "wanxiang"), .none)
+        XCTAssertEqual(SchemeAdapterRegistry.uninstallHooks(for: "wanxiang"), .wanxiang)
         XCTAssertEqual(SchemeAdapterRegistry.uninstallHooks(for: "luna_pinyin"), .none)
         XCTAssertTrue(SchemeAdapterRegistry.hasUninstallLayoutFallback(for: "rime_ice"))
-        XCTAssertFalse(SchemeAdapterRegistry.hasUninstallLayoutFallback(for: "wanxiang"))
+        XCTAssertTrue(SchemeAdapterRegistry.hasUninstallLayoutFallback(for: "wanxiang"))
     }
 }
