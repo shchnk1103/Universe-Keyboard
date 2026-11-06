@@ -3,6 +3,24 @@ import XCTest
 @testable import Universe_Keyboard
 
 final class AppAboutContactTests: XCTestCase {
+    func testICPFilingDisplayText() {
+        XCTAssertNil(AppAboutContact.icpFilingDisplayText(nil))
+        XCTAssertNil(AppAboutContact.icpFilingDisplayText("  "))
+        XCTAssertEqual(
+            AppAboutContact.icpFilingDisplayText(" 浙ICP备2026000000号-1A "),
+            "浙ICP备2026000000号-1A"
+        )
+    }
+
+    func testICPFilingLookupURL() {
+        XCTAssertEqual(AppAboutContact.icpFilingLookupURL.host, "beian.miit.gov.cn")
+        XCTAssertEqual(AppAboutContact.icpFilingLookupURL.scheme, "https")
+    }
+
+    func testICPFilingNumberIsNotYetSet() {
+        XCTAssertNil(AppAboutContact.icpFilingNumber)
+    }
+
     func testFeedbackMailSubjectIncludesVersionAndBuild() {
         XCTAssertEqual(
             AppAboutContact.feedbackMailSubject(version: "1.0", build: "55"),

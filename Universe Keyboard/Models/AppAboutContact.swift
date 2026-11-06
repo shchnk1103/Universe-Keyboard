@@ -4,6 +4,20 @@ import Foundation
 enum AppAboutContact: Sendable {
     nonisolated static let emailAddress = "doubleshy0n@gmail.com"
     nonisolated static let xiaohongshuURLString = "https://xhslink.cn/o/7lEn4EM0BtP"
+    // 号码下发后填入完整字符串，例如“浙ICP备XXXXXXXX号-XA”。
+    nonisolated static let icpFilingNumber: String? = nil
+    nonisolated static let icpFilingLookupURLString = "https://beian.miit.gov.cn/"
+
+    nonisolated static var icpFilingLookupURL: URL {
+        URL(string: icpFilingLookupURLString)!
+    }
+
+    nonisolated static func icpFilingDisplayText(_ number: String?) -> String? {
+        guard let text = number?.trimmingCharacters(in: .whitespacesAndNewlines), !text.isEmpty else {
+            return nil
+        }
+        return text
+    }
 
     nonisolated static var xiaohongshuURL: URL {
         URL(string: xiaohongshuURLString)!
