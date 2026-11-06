@@ -1,6 +1,6 @@
 # Universe Keyboard Privacy Policy
 
-> **Effective date:** 2026-11-04
+> **Effective date:** 2026-11-06
 >
 > **Status:** Current repository privacy-policy source; App Store publication URL required before submission
 
@@ -79,4 +79,4 @@ The App Store privacy answers, bundled privacy manifests, product behavior and t
 
 ## Changes
 
-Any future feature that synchronizes content-level keyboard information or adds a developer-controlled service requires a new Product Decision, privacy review, architecture decision, updated user consent and an update to this policy before implementation.
+Before we introduce any feature that synchronizes content-level keyboard information or adds a developer-controlled service, we will update this policy and obtain updated user consent.
