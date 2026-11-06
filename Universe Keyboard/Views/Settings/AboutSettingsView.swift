@@ -56,6 +56,17 @@ struct AboutSettingsView: View {
                     Label("开源软件与内容", systemImage: "doc.text")
                 }
             }
+
+            if let filingNumber = AppAboutContact.icpFilingDisplayText(AppAboutContact.icpFilingNumber) {
+                Section {
+                    Button {
+                        openURL(AppAboutContact.icpFilingLookupURL)
+                    } label: {
+                        LabeledContent("ICP 备案号", value: filingNumber)
+                    }
+                    .contentShape(Rectangle())
+                }
+            }
         }
         .textSelection(.enabled)
         .navigationTitle("关于")
