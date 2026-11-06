@@ -106,6 +106,7 @@ class OpenTests(unittest.TestCase):
                 (has("status", "--porcelain"), ok("?? Packages/RimeBridge/Vendor/librime.a\n")),
                 (has("log"), ok(good_log)),
                 (has("diff", "--name-only"), ok("scripts/kos/pr_flow.py\n")),
+                (lambda a: "rev-parse" in a and any(str(x).startswith("refs/heads/") for x in a), ok(HEAD + "\n")),
                 (has("ls-remote"), ok("")),
                 (has("push"), ok("")),
                 (has("pr", "create"), ok("https://example/pull/1\n")),
@@ -148,6 +149,7 @@ class OpenTests(unittest.TestCase):
                     (has("status"), ok("")),
                     (has("log"), ok(good_log)),
                     (has("diff"), ok("scripts/kos/pr_flow.py\n")),
+                    (lambda a: "rev-parse" in a and any(str(x).startswith("refs/heads/") for x in a), ok(HEAD + "\n")),
                     (has("ls-remote"), ok("abc\trefs/heads/feature/kos-pr-flow-001\n")),
                 ],
             ),
@@ -179,6 +181,7 @@ class OpenTests(unittest.TestCase):
                 (has("status"), ok("")),
                 (has("log"), ok(good_log)),
                 (has("diff"), ok("scripts/kos/pr_flow.py\n")),
+                (lambda a: "rev-parse" in a and any(str(x).startswith("refs/heads/") for x in a), ok(HEAD + "\n")),
                 (has("ls-remote"), ok("")),
                 (has("push"), fail("HTTP 502")),
                 (has("ls-remote"), ok("")),
@@ -196,6 +199,7 @@ class OpenTests(unittest.TestCase):
                 (has("status"), ok("")),
                 (has("log"), ok(f"AUTHOR:{IDENTITY}\nCOMMITTER:{IDENTITY}\n")),
                 (has("diff"), ok("scripts/kos/pr_flow.py\n")),
+                (lambda a: "rev-parse" in a and any(str(x).startswith("refs/heads/") for x in a), ok(HEAD + "\n")),
                 (has("ls-remote"), ok("")),
             ]
         )
