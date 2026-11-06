@@ -7,11 +7,11 @@ record_id: SWITCH-RESOLVER-001
 
 | Field | Value |
 |---|---|
-| Lifecycle | Active（PR #264 已合并，待 Human 真机验收） |
-| Current phase | 已合并：PR #264，合并提交 `5f395ffc4913729300e702960485316242169178`（2026-11-04）；R5 窄复核 Pass；Human 真机验收未做 |
-| Material non-claims | 不代表 Human 真机验收或 Release 通过（托管 CI 在 PR #264 上全部通过）；万象九宫格（`wanxiang_t9i`）由 WANXIANG-T9-001 接入（PR #270），不在本 Assignment 范围；雾凇九宫格 `t9` 不写开关键；真实引擎证据只限隔离资源 |
-| Next handoff / decision | Human 真机验收（繁体在雾凇 / 万象生效、标点正常、万象表情候选出现）；通过后由 Human 决定关闭本 Assignment |
-| Residuals | 最终复核 FR-04（设计 F4 的入口场景测试未齐）、FR-05（真机未做）记为后续项，见外置任务目录 `~/.kos-work/Universe-Keyboard/SWITCH-RESOLVER-001/reports/final-review.md` |
+| Lifecycle | Closed（PR #264 已合并；Human 2026-11-06 在 Build 201 真机三项验收通过后决定关闭） |
+| Current phase | 已合并：PR #264，合并提交 `5f395ffc4913729300e702960485316242169178`（2026-11-04）；R5 窄复核 Pass；Human 2026-11-06 在 Build 201 真机三项验收通过 |
+| Material non-claims | Human 真机验收只限 Build 201 的三项（繁体在雾凇和万象生效、标点正常、万象表情候选出现）；不代表 Release 通过（托管 CI 在 PR #264 上全部通过）；万象九宫格（`wanxiang_t9i`）由 WANXIANG-T9-001 接入（PR #270），不在本 Assignment 范围；雾凇九宫格 `t9` 不写开关键；真实引擎证据只限隔离资源 |
+| Next handoff / decision | 无（Human 2026-11-06 已决定关闭）；Residuals 所列后续项仍有效 |
+| Residuals | 最终复核 FR-04（设计 F4 的入口场景测试未齐）仍为后续项；FR-05 当时真机未做，Human 2026-11-06 在 Build 201 完成三项验收，其他范围不推定通过；见外置任务目录 `~/.kos-work/Universe-Keyboard/SWITCH-RESOLVER-001/reports/final-review.md` |
 
 ---
 
