@@ -32,11 +32,23 @@ KOS_HOME=/Users/me/kos KOS_PROJECT=Other bash scripts/kos/new_task_dir.sh KOS-EX
   - 目录已存在：退出 1，不覆盖。请换编号，或改写修订包（R1、R2…）。
   - TASK-ID 不是大写字母、数字和 `-`：退出 2。
 
+
+## check_identity.py：核对提交身份
+
+```bash
+cd "/Users/me/Dev/Universe Keyboard"
+python3 -B scripts/kos/check_identity.py --repo <worktree> --expect 'Cowork 3P <cowork-3p@localhost>' [--rev HEAD]
+```
+
+- **何时用：** 本地提交后、推送前，按任务包身份逐字核验作者与提交者。
+- **行为：** 先打印 `git log -1 --format=%an <%ae>|%cn <%ce>` 的一行，再打印 `IDENTITY_MATCH` / `IDENTITY_MISMATCH` / `IDENTITY_ERROR`。
+- **退出码：** MATCH 为 0，MISMATCH 为 1，git 出错为 2。
+
 ## freeze.py：冻结任务包
 
 ```bash
 cd "/Users/me/Dev/Universe Keyboard"
-python3 -B scripts/kos/freeze.py /Users/me/.kos-work/Universe-Keyboard/T-001/instructions/x.draft.md /Users/me/.kos-work/Universe-Keyboard/T-001/instructions/task-package-x.md --title "T-001 实现" --role "Executor" [--forbid 旧名字 ...] [--requires-commit] [--readonly]
+python3 -B scripts/kos/freeze.py /Users/me/.kos-work/Universe-Keyboard/T-001/instructions/x.draft.md /Users/me/.kos-work/Universe-Keyboard/T-001/instructions/task-package-x.md --title "T-001 实现" --role "Executor" [--forbid 旧名字 ...] [--requires-commit] [--readonly] [--identity 'Cowork 3P <cowork-3p@localhost>']
 ```
 
 - **何时用：** 草稿写完，要交给 Human 派发之前。
@@ -111,8 +123,8 @@ python3 -B scripts/kos/pr_flow.py land <PR号> --expect-head <sha> --main-checko
 ```
 
 - **何时用：** Executor 或 Human 做发布收尾。PM 会话不运行 `open`，也不运行带 `--merge` 的 `land`。合并只在 Human 下令或亲自运行时加 `--merge`。
-- **`open`：** 核对 HEAD、工作区、提交身份、改动文件集合、正文署名和远端分支不存在。全部通过才推送（不 force、不 `-u`），然后 `gh pr create`。`--dry-run` 只核对。推送返回 5xx 或 `remote rejected` 时，确认远端分支仍不存在再原样重试一次。
-- **`land`：** 确认 PR 为 OPEN 且 head 不变。`gh pr checks --watch` 只用来等待结束，不拿它的打印表做判定。结束后（不论退出码）再跑一次非 watch 的 `gh pr checks <N> --repo <repo> --json name,state,bucket,link`，只按这一份最终快照判定。快照必须是非空 list，且每项 `bucket` 只能是 `pass`、`fail`、`pending`、`skipping`、`cancel`（与 `pr_flow.py` 的 `SNAPSHOT_BUCKETS` 同一组）。否则不重跑、不合并，汇总写 `checks-snapshot-invalid` 并退出 1。`bucket` 用原始字符串原样比对，不改大小写、不去空白。PR 若一个检查都没有，最终快照为空，`land --merge` 不会合并（失败关闭）。`bucket` 为 `fail` 或 `cancel` 算失败；为 `pending` 算未完成，不重跑、不合并，汇总写 `checks-pending` 并退出 1；`pass` 与 `skipping` 算通过。run 与 job ID 从 `link` 解析。CI 记录的 jobs 段只写这一份最终快照。失败日志里的用例若都在 `known-flaky.txt`，且已重跑次数小于 `--max-reruns`（默认 1），才 `gh run rerun --failed` 一次；回到等待后同样再取一份新的最终快照。全绿且给了 `--merge` 才合并。条件不满足（主检出不在 main、工作区有已跟踪或未跟踪改动、或 HEAD 不是 origin/main 的祖先）时，不执行 merge，记录 `ff=skipped:<原因>`，汇总写明需告诉 Human，退出 0。`git fetch` 或 `git merge --ff-only` 命令失败时，记录 `ff=failed:<原因>`，汇总写明需告诉 Human，退出 1。`--dry-run` 只做只读的 `gh pr view`。
+- **`open`：** 核对 HEAD、工作区、提交身份、改动文件集合、正文署名、**本地分支引用等于 `--expect-head`**，以及远端分支不存在。全部通过才推送（不 force、不 `-u`），然后 `gh pr create`。给出 `--log-dir` 时，不论成败都写入 `open-<分支>.json`。`--dry-run` 只核对。推送返回 5xx 或 `remote rejected` 时，确认远端分支仍不存在再原样重试一次。
+- **`land`：** 确认 PR 为 OPEN 且 head 不变。可选同时给出 `--cleanup-worktree` 与 `--cleanup-branch`（可重复 `--cleanup-allow-untracked`，默认 `Packages/RimeBridge/Vendor`）：仅在本次已 `merged` 且 `--ff-only` 成功后，按 tip/祖先/worktree/status/符号链接规则清理，结果写入 JSON 的 `cleanup` 字段；失败或跳过不改变 `merged` 与退出码。`gh pr checks --watch` 只用来等待结束，不拿它的打印表做判定。结束后（不论退出码）再跑一次非 watch 的 `gh pr checks <N> --repo <repo> --json name,state,bucket,link`，只按这一份最终快照判定。快照必须是非空 list，且每项 `bucket` 只能是 `pass`、`fail`、`pending`、`skipping`、`cancel`（与 `pr_flow.py` 的 `SNAPSHOT_BUCKETS` 同一组）。否则不重跑、不合并，汇总写 `checks-snapshot-invalid` 并退出 1。`bucket` 用原始字符串原样比对，不改大小写、不去空白。PR 若一个检查都没有，最终快照为空，`land --merge` 不会合并（失败关闭）。`bucket` 为 `fail` 或 `cancel` 算失败；为 `pending` 算未完成，不重跑、不合并，汇总写 `checks-pending` 并退出 1；`pass` 与 `skipping` 算通过。run 与 job ID 从 `link` 解析。CI 记录的 jobs 段只写这一份最终快照。失败日志里的用例若都在 `known-flaky.txt`，且已重跑次数小于 `--max-reruns`（默认 1），才 `gh run rerun --failed` 一次；回到等待后同样再取一份新的最终快照。全绿且给了 `--merge` 才合并。条件不满足（主检出不在 main、工作区有已跟踪或未跟踪改动、或 HEAD 不是 origin/main 的祖先）时，不执行 merge，记录 `ff=skipped:<原因>`，汇总写明需告诉 Human，退出 0。`git fetch` 或 `git merge --ff-only` 命令失败时，记录 `ff=failed:<原因>`，汇总写明需告诉 Human，退出 1。`--dry-run` 只做只读的 `gh pr view`。
 - **退出码：** 0 表示核对通过、或按策略完成等待 / 合并；1 表示某项核对或策略要求停止；2 表示参数错误。
 - 已知偶发清单是同目录的 [`known-flaky.txt`](known-flaky.txt)。
 

@@ -134,9 +134,9 @@ def consistency(text, readonly=False):
             errs.append("referenced report without hash: " + path)
     return errs
 
-def lint_problems(text, requires_commit=False, readonly=False):
+def lint_problems(text, requires_commit=False, readonly=False, identity="Cowork 3P <cowork-3p@localhost>"):
     problems = [name for name, pat in REQUIRED if not re.search(pat, text)]
-    if requires_commit and "Cowork 3P <cowork-3p@localhost>" not in text:
+    if requires_commit and identity not in text:
         problems.append("commit identity with email")
     # Docs-only packages have no .swift path, so --requires-commit does not force swift-format.
     if requires_commit and has_swift_path(text) and "lint --strict" not in text:
@@ -159,6 +159,7 @@ def main():
     ap.add_argument("--forbid", nargs="*", default=[])
     ap.add_argument("--requires-commit", action="store_true")
     ap.add_argument("--readonly", action="store_true")
+    ap.add_argument("--identity", default="Cowork 3P <cowork-3p@localhost>")
     a = ap.parse_args()
     if os.path.exists(a.out):
         raise SystemExit(f"EXISTS: {a.out} — write a revision package instead of overwriting")
@@ -167,7 +168,7 @@ def main():
     left = re.findall(r"\{\{[^}]*\}\}", text)
     if left:
         raise SystemExit(f"unresolved placeholders: {left}")
-    problems = lint_problems(text, requires_commit=a.requires_commit, readonly=a.readonly)
+    problems = lint_problems(text, requires_commit=a.requires_commit, readonly=a.readonly, identity=a.identity)
     for s in a.forbid:
         if s in text:
             problems.append(f"forbidden leftover: {s}")

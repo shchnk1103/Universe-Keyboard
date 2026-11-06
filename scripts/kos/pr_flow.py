@@ -54,7 +54,7 @@ def _die(message: str) -> int:
 
 def _summary(payload: dict, log_dir: Path | None, pr: str) -> None:
     print(
-        "status={status} pr={pr} head={head} reruns={reruns} merge={merge} ff={ff} record={record}".format(
+        "status={status} pr={pr} head={head} reruns={reruns} merge={merge} ff={ff} record={record} cleanup={cleanup}".format(
             status=payload.get("status"),
             pr=payload.get("pr"),
             head=payload.get("head"),
@@ -62,6 +62,7 @@ def _summary(payload: dict, log_dir: Path | None, pr: str) -> None:
             merge=payload.get("merge_commit"),
             ff=payload.get("ff"),
             record=payload.get("record"),
+            cleanup=payload.get("cleanup"),
         )
     )
     if log_dir is not None:
@@ -218,98 +219,225 @@ def _warning_lines(text: str) -> set[str]:
     return {line for line in text.splitlines() if "WARNING" in line}
 
 
-def cmd_open(args, runner) -> int:
-    head = _git(runner, args.worktree, "rev-parse", "HEAD")
-    if head.code != 0:
-        return _die(head.text.strip() or "rev-parse failed")
-    actual = head.text.strip()
-    if actual != args.expect_head:
-        return _die(f"HEAD {actual} != --expect-head {args.expect_head}")
 
-    status = _git(runner, args.worktree, "status", "--porcelain")
+def _open_log_path(log_dir: str | None, branch: str) -> Path | None:
+    if not log_dir:
+        return None
+    return Path(log_dir) / f"open-{branch.replace('/', '-')}.json"
+
+
+def _write_open_log(path: Path | None, payload: dict) -> None:
+    if path is None:
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def _cleanup_requested(args) -> bool:
+    return bool(getattr(args, "cleanup_worktree", None) or getattr(args, "cleanup_branch", None))
+
+
+def _cleanup_args_ok(args) -> str | None:
+    has_wt = bool(getattr(args, "cleanup_worktree", None))
+    has_br = bool(getattr(args, "cleanup_branch", None))
+    if has_wt ^ has_br:
+        return "cleanup requires both --cleanup-worktree and --cleanup-branch"
+    return None
+
+
+def _worktree_listed(runner, main_checkout: str, worktree: str) -> bool:
+    listed = _git(runner, main_checkout, "worktree", "list", "--porcelain")
+    if listed.code != 0:
+        return False
+    target = str(Path(worktree).resolve())
+    for line in listed.text.splitlines():
+        if line.startswith("worktree "):
+            current = str(Path(line[len("worktree "):]).resolve())
+            if current == target:
+                return True
+    return False
+
+
+def _run_cleanup(args, runner, expect_head: str) -> str:
+    """Return cleanup status string after a successful merged+ff land."""
+    tip = _git(runner, args.main_checkout, "rev-parse", f"refs/heads/{args.cleanup_branch}")
+    if tip.code != 0 or tip.text.strip() != expect_head:
+        return "skipped:branch-tip-mismatch"
+    ancestor = _git(runner, args.main_checkout, "merge-base", "--is-ancestor", args.cleanup_branch, "HEAD")
+    if ancestor.code != 0:
+        return "skipped:not-ancestor"
+    if not _worktree_listed(runner, args.main_checkout, args.cleanup_worktree):
+        return "skipped:worktree-mismatch"
+    wt_head = _git(runner, args.cleanup_worktree, "rev-parse", "HEAD")
+    if wt_head.code != 0 or wt_head.text.strip() != expect_head:
+        return "skipped:worktree-mismatch"
+    status = _git(runner, args.cleanup_worktree, "status", "--porcelain")
     if status.code != 0:
-        return _die(status.text.strip() or "status failed")
-    dirty = _worktree_dirty(status.text, args.allow_untracked)
+        return "failed:status"
+    allow = list(args.cleanup_allow_untracked or [])
+    dirty = _worktree_dirty(status.text, allow)
     if dirty:
-        return _die(f"worktree not clean: {dirty}")
+        return "skipped:worktree-dirty"
+    for prefix in allow:
+        candidate = Path(args.cleanup_worktree) / prefix
+        if not candidate.exists() and not candidate.is_symlink():
+            continue
+        if candidate.is_symlink():
+            try:
+                candidate.unlink()
+            except OSError as exc:
+                return f"failed:unlink:{exc}"
+        else:
+            return "skipped:allowed-path-not-symlink"
+    removed = _git(runner, args.main_checkout, "worktree", "remove", args.cleanup_worktree)
+    if removed.code != 0:
+        return "failed:worktree-remove:" + removed.text.strip()
+    deleted = _git(runner, args.main_checkout, "branch", "-d", args.cleanup_branch)
+    if deleted.code != 0:
+        return "failed:branch-delete:" + deleted.text.strip()
+    return "done"
 
-    ident = _git(
-        runner,
-        args.worktree,
-        "log",
-        "--format=AUTHOR:%an <%ae>%nCOMMITTER:%cn <%ce>",
-        f"{args.base_sha}..HEAD",
-    )
-    if ident.code != 0:
-        return _die(ident.text.strip() or "git log failed")
-    bad_ident = _identity_errors(ident.text, args.identity)
-    if bad_ident:
-        return _die("identity mismatch: " + "; ".join(bad_ident))
+def cmd_open(args, runner) -> int:
+    log_path = _open_log_path(args.log_dir, args.branch)
+    payload = {
+        "status": "error",
+        "branch": args.branch,
+        "head": None,
+        "pr_url": None,
+        "error": None,
+    }
+    code = 1
+    try:
+        head = _git(runner, args.worktree, "rev-parse", "HEAD")
+        if head.code != 0:
+            payload["error"] = head.text.strip() or "rev-parse failed"
+            return _die(payload["error"])
+        actual = head.text.strip()
+        payload["head"] = actual
+        if actual != args.expect_head:
+            payload["error"] = f"HEAD {actual} != --expect-head {args.expect_head}"
+            return _die(payload["error"])
 
-    diff = _git(runner, args.worktree, "diff", "--name-only", args.base_sha, "HEAD")
-    if diff.code != 0:
-        return _die(diff.text.strip() or "diff failed")
-    expected = _name_set(Path(args.files).read_text(encoding="utf-8"))
-    actual_files = _name_set(diff.text)
-    if actual_files != expected:
-        return _die(f"file set mismatch: got {sorted(actual_files)} expected {sorted(expected)}")
+        status = _git(runner, args.worktree, "status", "--porcelain")
+        if status.code != 0:
+            payload["error"] = status.text.strip() or "status failed"
+            return _die(payload["error"])
+        dirty = _worktree_dirty(status.text, args.allow_untracked)
+        if dirty:
+            payload["error"] = f"worktree not clean: {dirty}"
+            return _die(payload["error"])
 
-    body = Path(args.body_file).read_text(encoding="utf-8")
-    if _body_rejected(body):
-        return _die("body contains Co-authored-by or Generated with")
+        ident = _git(
+            runner,
+            args.worktree,
+            "log",
+            "--format=AUTHOR:%an <%ae>%nCOMMITTER:%cn <%ce>",
+            f"{args.base_sha}..HEAD",
+        )
+        if ident.code != 0:
+            payload["error"] = ident.text.strip() or "git log failed"
+            return _die(payload["error"])
+        bad_ident = _identity_errors(ident.text, args.identity)
+        if bad_ident:
+            payload["error"] = "identity mismatch: " + "; ".join(bad_ident)
+            return _die(payload["error"])
 
-    remote = _git(runner, args.worktree, "ls-remote", "--heads", "origin", args.branch)
-    if remote.code != 0:
-        return _die(remote.text.strip() or "ls-remote failed")
-    if remote.text.strip():
-        return _die(f"remote branch already exists: {remote.text.strip()}")
+        diff = _git(runner, args.worktree, "diff", "--name-only", args.base_sha, "HEAD")
+        if diff.code != 0:
+            payload["error"] = diff.text.strip() or "diff failed"
+            return _die(payload["error"])
+        expected = _name_set(Path(args.files).read_text(encoding="utf-8"))
+        actual_files = _name_set(diff.text)
+        if actual_files != expected:
+            payload["error"] = f"file set mismatch: got {sorted(actual_files)} expected {sorted(expected)}"
+            return _die(payload["error"])
 
-    if args.dry_run:
-        print(f"dry-run ok branch={args.branch} head={actual}")
-        return 0
+        body = Path(args.body_file).read_text(encoding="utf-8")
+        if _body_rejected(body):
+            payload["error"] = "body contains Co-authored-by or Generated with"
+            return _die(payload["error"])
 
-    push_argv = [
-        "git",
-        "-C",
-        args.worktree,
-        "-c",
-        "push.followTags=false",
-        "push",
-        "origin",
-        f"refs/heads/{args.branch}:refs/heads/{args.branch}",
-    ]
-    pushed = runner.run(push_argv)
-    if _push_retryable(pushed):
-        again = _git(runner, args.worktree, "ls-remote", "--heads", "origin", args.branch)
-        if again.code != 0:
-            return _die(again.text.strip() or "ls-remote failed after push")
-        if again.text.strip():
-            return _die("push failed and remote branch now exists; not retrying")
-        pushed = runner.run(push_argv)
-    if pushed.code != 0:
-        return _die("push failed: " + pushed.text.strip())
+        tip = _git(runner, args.worktree, "rev-parse", f"refs/heads/{args.branch}")
+        if tip.code != 0:
+            payload["error"] = tip.text.strip() or "branch rev-parse failed"
+            return _die(payload["error"])
+        tip_sha = tip.text.strip()
+        if tip_sha != args.expect_head:
+            payload["error"] = f"branch ref {tip_sha} != --expect-head {args.expect_head}"
+            return _die(payload["error"])
 
-    created = runner.run(
-        [
-            "gh",
-            "pr",
-            "create",
-            "--repo",
-            args.repo,
-            "--base",
-            "main",
-            "--head",
-            args.branch,
-            "--title",
-            args.title,
-            "--body-file",
-            args.body_file,
+        remote = _git(runner, args.worktree, "ls-remote", "--heads", "origin", args.branch)
+        if remote.code != 0:
+            payload["error"] = remote.text.strip() or "ls-remote failed"
+            return _die(payload["error"])
+        if remote.text.strip():
+            payload["error"] = f"remote branch already exists: {remote.text.strip()}"
+            return _die(payload["error"])
+
+        if args.dry_run:
+            payload["status"] = "dry-run"
+            payload["error"] = None
+            print(f"dry-run ok branch={args.branch} head={actual}")
+            code = 0
+            return 0
+
+        push_argv = [
+            "git",
+            "-C",
+            args.worktree,
+            "-c",
+            "push.followTags=false",
+            "push",
+            "origin",
+            f"refs/heads/{args.branch}:refs/heads/{args.branch}",
         ]
-    )
-    if created.code != 0:
-        return _die("gh pr create failed: " + created.text.strip())
-    print(created.text.strip())
-    return 0
+        pushed = runner.run(push_argv)
+        if _push_retryable(pushed):
+            again = _git(runner, args.worktree, "ls-remote", "--heads", "origin", args.branch)
+            if again.code != 0:
+                payload["error"] = again.text.strip() or "ls-remote failed after push"
+                return _die(payload["error"])
+            if again.text.strip():
+                payload["error"] = "push failed and remote branch now exists; not retrying"
+                return _die(payload["error"])
+            pushed = runner.run(push_argv)
+        if pushed.code != 0:
+            payload["error"] = "push failed: " + pushed.text.strip()
+            return _die(payload["error"])
+
+        created = runner.run(
+            [
+                "gh",
+                "pr",
+                "create",
+                "--repo",
+                args.repo,
+                "--base",
+                "main",
+                "--head",
+                args.branch,
+                "--title",
+                args.title,
+                "--body-file",
+                args.body_file,
+            ]
+        )
+        if created.code != 0:
+            payload["error"] = "gh pr create failed: " + created.text.strip()
+            return _die(payload["error"])
+        url = created.text.strip()
+        print(url)
+        payload["status"] = "opened"
+        payload["pr_url"] = url
+        payload["error"] = None
+        code = 0
+        return 0
+    finally:
+        if payload["status"] == "error" and payload["error"] is None and code != 0:
+            payload["error"] = "open failed"
+        if code == 0 and payload["status"] == "error":
+            payload["status"] = "opened"
+        _write_open_log(log_path, payload)
 
 
 def _write_record(path: Path, pr: str, head: str, rows: list[dict], parsed: dict, action: str) -> None:
@@ -353,6 +481,9 @@ def _export_archive(runner, main_checkout: str, head: str, dest: Path) -> Result
 
 
 def cmd_land(args, runner) -> int:
+    bad = _cleanup_args_ok(args)
+    if bad:
+        return _die(bad)
     log_dir = Path(args.log_dir) if args.log_dir else None
     view = runner.run(
         ["gh", "pr", "view", args.pr, "--repo", args.repo, "--json", "state,headRefOid"]
@@ -365,6 +496,7 @@ def cmd_land(args, runner) -> int:
         "merge_commit": None,
         "ff": None,
         "record": None,
+        "cleanup": None,
     }
     if view.code != 0:
         payload["status"] = "view-failed"
@@ -385,6 +517,7 @@ def cmd_land(args, runner) -> int:
         return _die(f"stop: state={state} head={head} expect={args.expect_head}")
     if args.dry_run:
         payload["status"] = "dry-run"
+        payload["cleanup"] = "dry-run" if _cleanup_requested(args) else None
         _summary(payload, log_dir, args.pr)
         print("dry-run: PR is OPEN and head matches; not watching")
         return 0
@@ -616,7 +749,11 @@ def cmd_land(args, runner) -> int:
     new_head = _git(runner, args.main_checkout, "rev-parse", "HEAD")
     ff_text = "ff-only " + new_head.text.strip()
     payload.update(status="merged", ff=ff_text)
-    _append_record(record_path, f"merge={merge_oid}\n{ff_text}")
+    if _cleanup_requested(args):
+        payload["cleanup"] = _run_cleanup(args, runner, args.expect_head)
+    else:
+        payload["cleanup"] = None
+    _append_record(record_path, f"merge={merge_oid}\n{ff_text}\ncleanup={payload.get('cleanup')}")
     _summary(payload, log_dir, args.pr)
     return 0
 
@@ -655,11 +792,20 @@ def _parser() -> argparse.ArgumentParser:
     land_cmd.add_argument("--kos-as-of")
     land_cmd.add_argument("--dry-run", action="store_true")
     land_cmd.add_argument("--log-dir")
+    land_cmd.add_argument("--cleanup-worktree")
+    land_cmd.add_argument("--cleanup-branch")
+    land_cmd.add_argument(
+        "--cleanup-allow-untracked",
+        action="append",
+        default=None,
+    )
     return parser
 
 
 def main(argv: list[str] | None = None, runner=None) -> int:
     args = _parser().parse_args(argv)
+    if getattr(args, "cleanup_allow_untracked", None) is None and args.command == "land":
+        args.cleanup_allow_untracked = ["Packages/RimeBridge/Vendor"]
     runner = runner or SubprocessRunner()
     if args.command == "open":
         return cmd_open(args, runner)
