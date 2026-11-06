@@ -15,10 +15,10 @@
 - **Product Approver:** Human Product Owner acting as Product Lead
 - **Required Inputs:** 冻结设计、切片 2 与切片 3 的 PM 决定、实施说明、任务包与授权回执。文档写作起点的功能分支 HEAD `1e532eca9d676b09bca1bdee04b7f7d7bc6bc32f`，合入的 main `d530f50449d8c115a7949fb9b3c39001039b5602`。固定资源：雾凇 `full.zip` SHA-256 `675d23b070be00e1b800f9a6db033ef98f4493cd5b568ed8aa3b3541769c46ac`；万象清单 SHA-256 `6649905a3427f08fd68c5db5421422b983f252d4909b75dd107292841c3362f7`（实施说明第 1 节）。
 - **Entry Criteria:** 哈希、授权及基线核验，隔离工作树。
-- **Exit Criteria:** 最终独立 Architecture 与 Quality 复核；Human 真机验收清单；托管 CI；功能分支整体完成后一次合并。2026-11-05：最终独立复核为 Pass with conditions，整合包记录了本地门禁与签名 Keychain 证据；PR #270 托管 CI 通过并已合并；Human 报告 R2c 真机“没有问题”、整合构建“真机通过”。原清单各场景是否逐项覆盖及剩余风险由 Product Lead 核对，待其决定 Close。本地矩阵与模拟器证据见切片执行报告，不能代替上述门（实施说明第 3 节）。
+- **Exit Criteria:** 最终独立 Architecture 与 Quality 复核；Human 真机验收清单；托管 CI；功能分支整体完成后一次合并。2026-11-05：最终独立复核为 Pass with conditions，整合包记录了本地门禁与签名 Keychain 证据；PR #270 托管 CI 通过并已合并；Human 报告 R2c 真机“没有问题”、整合构建“真机通过”。原清单各场景是否逐项覆盖及剩余风险由 Product Lead 核对，Human 2026-11-06 决定关闭。本地矩阵与模拟器证据见切片执行报告，不能代替上述门（实施说明第 3 节）。
 - **Stop Conditions:** 任务包所列停止条件，包括基线冲突、越界写入或写入被拒。
 - **Handoff Target:** Product Lead，及后续独立 Architecture Reviewer / Quality Reviewer。
-- **Lifecycle Status:** Active — 已合并（[PR #270](https://github.com/shchnk1103/Universe-Keyboard/pull/270)，合并提交 `9c988dcd398b59894655531fc3446178c41950d5`，2026-11-05）；最终独立复核 Pass with conditions，整合包记录了本地门禁与签名 Keychain 证据；Human 2026-11-05 概括反馈真机通过，原清单覆盖待核对；待 Product Lead 决定 Close。
+- **Lifecycle Status:** Closed — 已合并（[PR #270](https://github.com/shchnk1103/Universe-Keyboard/pull/270)，合并提交 `9c988dcd398b59894655531fc3446178c41950d5`，2026-11-05）；最终独立复核 Pass with conditions，整合包记录了本地门禁与签名 Keychain 证据；Human 2026-11-05 概括反馈真机通过，原清单覆盖待核对；Human 2026-11-06 决定关闭。
 
 - **Revalidation Trigger:** 冻结输入、产品合同、基线、授权或证据要求变更。
 
