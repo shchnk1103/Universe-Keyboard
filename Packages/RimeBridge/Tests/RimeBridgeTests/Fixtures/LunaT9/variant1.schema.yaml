@@ -148,3 +148,4 @@ __patch:
   - grammar:/hant?
   # 用家自選配置
   - luna_pinyin.custom:/patch?
+  - luna_pinyin_t9.custom:/patch?
