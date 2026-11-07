@@ -277,8 +277,8 @@ final class LunaT9CompileInputContractTests: XCTestCase {
         let b = try compileCopy(builtin: builtin, schema: bSource, overlay: overlay, name: "ab-b")
         let record = """
             overlaySHA256=\(digest(Data(overlay.utf8)))
-            A algebraCount=\(a.algebra.count) learning=\(a.learning) hans=\(a.hans) auto=\(a.automatic.prefix(8))
-            B algebraCount=\(b.algebra.count) learning=\(b.learning) hans=\(b.hans) auto=\(b.automatic.prefix(8))
+            A algebraCount=\(a.algebra.count) learning=\(String(describing: a.learning)) hans=\(a.hans) auto=\(a.automatic.prefix(8))
+            B algebraCount=\(b.algebra.count) learning=\(String(describing: b.learning)) hans=\(b.hans) auto=\(b.automatic.prefix(8))
             """
         try record.write(to: runtimeRoot.appendingPathComponent("ab-record.txt"), atomically: true, encoding: .utf8)
         XCTAssertEqual(a.overlaySHA, b.overlaySHA)
