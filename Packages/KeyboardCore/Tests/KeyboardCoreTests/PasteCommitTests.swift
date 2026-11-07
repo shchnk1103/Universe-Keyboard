@@ -8,7 +8,8 @@ final class PasteCommitTests: XCTestCase {
         let client = FakeTextInputClient()
         let controller = KeyboardController()
         controller.textClient = client
-        controller.state.continuation = ContinuationState(context: "甲", suggestions: ["好"])
+        _ = controller.handle(.insertDirectText("甲"))
+        XCTAssertEqual(controller.state.continuation.context, "甲")
         controller.t9UnconfirmedDeleteHistory.spellings["426"] = "hao"
         let engine = FakeRimeEngine()
         controller.rimeEngine = engine
@@ -16,13 +17,13 @@ final class PasteCommitTests: XCTestCase {
         controller.onCommittedText = { _ in events += 1 }
 
         XCTAssertEqual(controller.commitPastedPlainText("乙"), .inserted)
-        XCTAssertEqual(client.text, "乙")
+        XCTAssertEqual(client.text, "甲乙")
         XCTAssertTrue(controller.state.continuation.context.isEmpty)
         XCTAssertTrue(controller.state.continuation.suggestions.isEmpty)
         XCTAssertTrue(controller.t9UnconfirmedDeleteHistory.spellings.isEmpty)
         XCTAssertEqual(events, 0)
         XCTAssertEqual(engine.processKeyCallCount, 0)
-        _ = controller.handle(.insertDirectText("丙"))
+        _ = controller.handle(.insertCandidate("丙", kind: .candidate))
         XCTAssertEqual(controller.state.continuation.context, "丙")
     }
 
