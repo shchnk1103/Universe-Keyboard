@@ -49,6 +49,7 @@ final class RetainedPasteReceiver: UIView {
     }
 
     deinit {
+        epoch += 1
         let session = session
         let id = operationID
         Task { @MainActor in

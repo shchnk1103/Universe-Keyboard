@@ -341,7 +341,7 @@ extension KeyboardViewController {
         guard controller != nil else { return false }
         let state = controller.state
         return cachedPasteToolbarEnabled && hasFullAccess && !pasteToolbarSuspended
-            && !isCandidateExpanded && !isPinyinPathExpanded
+            && !isCandidateExpanded && !isPinyinPathExpanded && candidateExpandedPanel == nil
             && (candidateExpandedPanel as? ExpandedCandidatePanelContainerView)?.isTransitioning != true
             && state.currentComposition.isEmpty && state.insertedPreeditCount == 0
             && state.pendingPunctuation == nil && state.pendingKaomoji == nil

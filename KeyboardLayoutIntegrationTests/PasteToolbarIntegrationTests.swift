@@ -56,7 +56,11 @@ nonisolated final class PasteToolbarIntegrationTests: XCTestCase {
                 XCTAssertTrue(pasteHit === toolbar || pasteHit?.isDescendant(of: toolbar) == true)
                 var selections = 0
                 bar.onItemTap = { _ in selections += 1 }
-                bar.expandButton.sendActions(for: .touchUpInside)
+                let actions = bar.expandButton.actions(forTarget: sut, forControlEvent: .touchUpInside)
+                XCTAssertEqual(actions, [NSStringFromSelector(#selector(sut.handleCandidateBarTrailingButton))])
+                // This test target is unhosted; dispatch the registered selector directly.
+                sut.perform(#selector(sut.handleCandidateBarTrailingButton))
+                XCTAssertFalse(bar.gestureRecognizerShouldBegin(UIPanGestureRecognizer()))
                 XCTAssertEqual(sut.dismissals, (nineKey ? 4 : 0) + pageOrdinal(page) + 1)
                 XCTAssertEqual(selections, 0)
                 XCTAssertNil(sut.pasteSession.activeOperationID)
@@ -195,6 +199,46 @@ nonisolated final class PasteToolbarIntegrationTests: XCTestCase {
         sut.controller.state.insertedPreeditCount = 1
         sut.refreshPasteToolbar()
         XCTAssertNil(sut.pasteToolbar)
+    }
+
+    @MainActor
+    func testRecoveryNoticeWinsAndTransitionPanelPreventsInstallation() throws {
+        let sut = owner()
+        let bar = try XCTUnwrap(sut.candidateBar as? CandidateBarView)
+        bar.setInputRecoveryNotice("恢复输入")
+        bar.setPasteFailureNotice("无法粘贴纯文本")
+        XCTAssertTrue(bar.expandButton.isHidden)
+        let failure = try XCTUnwrap(
+            bar.subviews.compactMap { $0 as? UILabel }.first { $0.accessibilityIdentifier == "keyboard.paste.failure" })
+        XCTAssertTrue(failure.isHidden)
+        bar.setInputRecoveryNotice(nil)
+        sut.candidateExpandedPanel = UIView()
+        XCTAssertNil(sut.pasteToolbar)
+        sut.candidateExpandedPanel = nil
+        XCTAssertNotNil(sut.pasteToolbar)
+    }
+
+    @MainActor
+    func testUnsuccessfulProviderShowsFailureWithoutInsertion() throws {
+        let sut = owner()
+        let client = PasteClient()
+        sut.controller.textClient = client
+        try XCTUnwrap(sut.pasteToolbar?.receiver).paste(itemProviders: [])
+        XCTAssertTrue(sut.pasteSession.pasteFailureVisible)
+        XCTAssertTrue(client.inserted.isEmpty)
+    }
+
+    @MainActor
+    func testPasteDoesNotWritePreferencePayload() throws {
+        let sut = owner()
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: "CLIPBOARD-002-\(UUID().uuidString)"))
+        sut.sharedDefaults = defaults
+        defaults.register(defaults: [KeyboardInputSettingsKey.pasteToolbarEnabled: true])
+        sut.controller.textClient = PasteClient()
+        let before = defaults.dictionaryRepresentation()
+        let id = try XCTUnwrap(sut.pasteSession.begin())
+        sut.pasteSession.complete("private clipboard text", operationID: id)
+        XCTAssertEqual(defaults.dictionaryRepresentation() as NSDictionary, before as NSDictionary)
     }
 
     @MainActor

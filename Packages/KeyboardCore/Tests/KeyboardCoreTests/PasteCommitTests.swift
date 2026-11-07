@@ -26,6 +26,27 @@ final class PasteCommitTests: XCTestCase {
         XCTAssertEqual(controller.state.continuation.context, "丙")
     }
 
+    func testPasteNeverRequestsContinuationSuggestions() {
+        let client = FakeTextInputClient()
+        let controller = KeyboardController(continuationSuggestionProvider: NoPasteSuggestions())
+        controller.textClient = client
+        XCTAssertEqual(controller.commitPastedPlainText("剪贴板内容"), .inserted)
+        XCTAssertEqual(client.text, "剪贴板内容")
+    }
+
+    func testPendingPunctuationStillUsesDirectTextAndRejectsPaste() {
+        let client = FakeTextInputClient()
+        let controller = KeyboardController()
+        controller.textClient = client
+        var commits: [CommittedTextEvent] = []
+        controller.onCommittedText = { commits.append($0) }
+        _ = controller.handle(.pressT9CommonPunctuation)
+        XCTAssertEqual(controller.commitPastedPlainText("乙"), .rejectedNotIdle)
+        XCTAssertEqual(client.text, "，")
+        XCTAssertEqual(commits.count, 1)
+        XCTAssertEqual(commits.first?.source, .directText)
+    }
+
     func testRejectedPastePreservesState() {
         let client = FakeTextInputClient()
         let controller = KeyboardController()
@@ -80,5 +101,14 @@ extension PasteCommitTests {
         XCTAssertEqual(controller.partialCommitFailureRecovery?.editingGeneration, 42)
         XCTAssertEqual(controller.partialCommitFailureRecovery?.phase, .blockedRemainder)
         XCTAssertEqual(controller.partialCommitFailureRecovery?.hostBindingValid, true)
+        XCTAssertEqual(controller.partialCommitFailureRecovery?.ownerWasSuspended, false)
+        XCTAssertEqual(controller.partialCommitFailureRecovery?.resumeRequested, false)
+    }
+}
+
+private struct NoPasteSuggestions: ContinuationSuggestionProviding {
+    func suggestions(for context: String, limit: Int) -> [String] {
+        XCTFail("Paste must not ask a continuation provider to classify its text")
+        return []
     }
 }

@@ -233,7 +233,7 @@ class KeyboardViewController: UIInputViewController {
     /// 正在长按的按钮引用
     var longPressedButton: UIButton?
     /// 展开的候选面板（流式布局）
-    var candidateExpandedPanel: UIView?
+    var candidateExpandedPanel: UIView? { didSet { refreshPasteToolbar() } }
     /// 展开面板内部的纵向滚动视图（用于无限滚动检测）
     var expandedPanelScrollView: UIScrollView?
     /// 展开态使用的流式候选列表，支持增量插入而无需重建整个面板
