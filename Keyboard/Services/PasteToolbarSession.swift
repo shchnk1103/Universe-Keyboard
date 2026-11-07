@@ -44,6 +44,11 @@ final class PasteToolbarSession {
         onPresentationChanged()
     }
 
+    func invalidate(operationID: UInt64) {
+        guard activeOperationID == operationID else { return }
+        invalidate()
+    }
+
     func invalidate() {
         activeOperationID = nil
         state = .invalid

@@ -15,10 +15,12 @@ nonisolated final class PasteToolbarIntegrationTests: XCTestCase {
         owner.controller = KeyboardController()
         owner.controller.textClient = PasteClient()
         owner.cachedPasteToolbarEnabled = enabled
-        owner.candidateBar = owner.makeCandidateBar()
-        owner.view.addSubview(owner.candidateBar)
-        owner.candidateBar.frame = CGRect(x: 0, y: 0, width: 390, height: 46)
-        owner.candidateBar.layoutIfNeeded()
+        owner.view.frame = CGRect(x: 0, y: 0, width: 390, height: 288)
+        owner.setupRootStack()
+        owner.reloadKeyboard()
+        owner.isKeyboardUIInstalled = true
+        owner.view.layoutIfNeeded()
+        owner.rootStack.layoutIfNeeded()
         owner.refreshPasteToolbar()
         return owner
     }
@@ -38,11 +40,9 @@ nonisolated final class PasteToolbarIntegrationTests: XCTestCase {
             sut.cachedLayoutStyle = nineKey ? .nineKey : .twentySixKey
             for page in [KeyboardPage.letters, .numbers, .symbols, .emoji] {
                 sut.controller.state.currentPage = page
-                sut.candidateBar.removeFromSuperview()
-                sut.candidateBar = sut.makeCandidateBar()
-                sut.view.addSubview(sut.candidateBar)
-                sut.candidateBar.frame = CGRect(x: 0, y: 0, width: 390, height: 46)
-                sut.candidateBar.layoutIfNeeded()
+                sut.reloadKeyboard()
+                sut.view.layoutIfNeeded()
+                sut.rootStack.layoutIfNeeded()
                 let toolbar = try XCTUnwrap(sut.pasteToolbar)
                 let bar = try XCTUnwrap(sut.candidateBar as? CandidateBarView)
                 XCTAssertEqual(bar.bounds.height, 46)
@@ -153,7 +153,7 @@ nonisolated final class PasteToolbarIntegrationTests: XCTestCase {
         // Same selector used by the production host notification, with no disappear call.
         sut.perform(
             NSSelectorFromString("extensionHostWillResignActive:"),
-            with: Notification(name: NSExtensionHostWillResignActive))
+            with: Notification(name: .NSExtensionHostWillResignActive))
         sut.pasteSession.complete("late2", operationID: second)
         XCTAssertTrue(client.inserted.isEmpty)
         sut.handleKeyboardDidAppear()

@@ -6,6 +6,7 @@ import UniformTypeIdentifiers
 final class RetainedPasteReceiver: UIView {
     let session: PasteToolbarSession
     private var epoch: UInt64 = 0
+    private var operationID: UInt64?
 
     init(session: PasteToolbarSession) {
         self.session = session
@@ -20,6 +21,7 @@ final class RetainedPasteReceiver: UIView {
 
     override func paste(itemProviders: [NSItemProvider]) {
         guard let id = session.begin() else { return }
+        operationID = id
         let capturedEpoch = epoch
         guard
             let provider = itemProviders.first(where: {
@@ -48,6 +50,9 @@ final class RetainedPasteReceiver: UIView {
 
     deinit {
         let session = session
-        Task { @MainActor in session.invalidate() }
+        let id = operationID
+        Task { @MainActor in
+            if let id { session.invalidate(operationID: id) }
+        }
     }
 }
