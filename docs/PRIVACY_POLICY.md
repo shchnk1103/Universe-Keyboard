@@ -10,15 +10,15 @@ Universe Keyboard is designed to perform keyboard input and personalization on t
 
 ## Keyboard Input
 
-The Keyboard Extension does not transmit typed text, unfinished composition, surrounding text, candidates, clipboard content, host-application identity or user-dictionary contents to the developer or a third party.
+The Keyboard Extension does not transmit typed text, unfinished composition, surrounding text, candidates, clipboard content, host-application identity or user-dictionary contents to the developer or a third party. Clipboard content is read only after the user taps Paste on the keyboard, stays in memory for that insertion, and is not saved, uploaded, added to the user dictionary, or included in Typing Intelligence.
 
 Separately, when the user runs standard RIME synchronization in the containing App, it uses the same local or file-provider folder the user selected for sync and may place user-dictionary snapshots and non-generated YAML/TXT configuration backups in that folder, as described under Optional Standard RIME Sync.
 
-Full Access is requested so the Keyboard Extension can use the shared App Group container prepared by the containing App, read shared settings, use managed RIME resources, persist local user-dictionary learning, play configured feedback and, when explicitly enabled, update local Typing Intelligence aggregates. Full Access is not used to send keystrokes to a server.
+Full Access is requested so the Keyboard Extension can use the shared App Group container prepared by the containing App, read shared settings, use managed RIME resources, persist local user-dictionary learning, play configured feedback and, when explicitly enabled, update local Typing Intelligence aggregates. Full Access is not used to send keystrokes to a server. Full Access is not required for ordinary typing. Paste is omitted while Full Access is off; opening Full Access does not by itself read the clipboard.
 
 ## Typing Intelligence
 
-Typing Intelligence is disabled by default. When enabled, final committed text is classified in memory into aggregate character categories. The original text is immediately discarded and is not persisted.
+Typing Intelligence is disabled by default. When enabled, final committed text is classified in memory into aggregate character categories, except text inserted by the keyboard Paste control, which is not classified. The original text is immediately discarded and is not persisted.
 
 Persisted statistics contain only bounded counts, daily totals, source-category totals, schema/reset metadata and update dates. They do not contain words, phrases, per-commit records, host context or identifiers. Statistics remain on device, may be paused and can be permanently cleared from the main App.
 
@@ -26,7 +26,7 @@ Persisted statistics contain only bounded counts, daily totals, source-category 
 
 - RIME may maintain its local user dictionary inside the shared App Group container.
 - Explicit typo-correction selections may maintain bounded local correction-learning metadata used only to improve on-device correction ranking.
-- Post-commit continuation uses at most 32 recently committed `Character` values only inside the current Keyboard Extension process. It reads no surrounding host text and never persists, logs, synchronizes or uploads that context; only its enabled preference is stored.
+- Post-commit continuation uses at most 32 recently committed `Character` values only inside the current Keyboard Extension process, excluding text inserted by the keyboard Paste control. A paste clears that in-memory context instead of appending to it. It reads no surrounding host text and never persists, logs, synchronizes or uploads that context; only its enabled preference is stored.
 - Diagnostic logging is controlled in the main App and remains local unless the user explicitly copies and shares it.
 - The product must not log committed text, surrounding host text or Typing Intelligence event payloads.
 

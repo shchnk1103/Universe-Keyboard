@@ -244,9 +244,9 @@ class KeyboardViewController: UIInputViewController {
     var candidateExpandButtonWidthConstraint: NSLayoutConstraint?
     /// 候选面板是否处于展开状态
     var wasT9RecoveryPresentationBlocked = false
-    var isCandidateExpanded = false
+    var isCandidateExpanded = false { didSet { refreshPasteToolbar() } }
     /// Precise pinyin path expansion (mutually exclusive with candidate expansion).
-    var isPinyinPathExpanded = false
+    var isPinyinPathExpanded = false { didSet { refreshPasteToolbar() } }
     weak var t9PinyinPathBarView: T9PinyinPathBarView?
     weak var t9SelectPinyinButton: UIButton?
     weak var t9SpaceButton: UIButton?
@@ -388,6 +388,18 @@ class KeyboardViewController: UIInputViewController {
         defaults: sharedDefaults
     )
     lazy var typingStatisticsWriter = TypingStatisticsWriter(appGroupID: Self.appGroupID)
+    var cachedPasteToolbarEnabled = false
+    var pasteToolbar: PasteToolbarControl?
+    var pasteToolbarSuspended = false
+    lazy var pasteSession: PasteToolbarSession = {
+        let session = PasteToolbarSession()
+        session.isEligible = { [weak self] in self?.isPasteToolbarEligible == true }
+        session.commit = { [weak self] text in
+            self?.controller.commitPastedPlainText(text) ?? .rejectedNoClient
+        }
+        session.onPresentationChanged = { [weak self] in self?.refreshPasteToolbar() }
+        return session
+    }()
     var cachedTypingIntelligenceEnabled = false
     var cachedTypingIntelligenceResetEpoch = 0
     var cachedHapticLevel: KeyboardFeedbackLevel = .defaultLevel
@@ -598,6 +610,8 @@ class KeyboardViewController: UIInputViewController {
     }
 
     override func viewWillDisappear(_ animated: Bool) {
+        pasteToolbarSuspended = true
+        refreshPasteToolbar()
         commitTrace.close(.disappear)
         commitTrace.enabled = false
         super.viewWillDisappear(animated)
