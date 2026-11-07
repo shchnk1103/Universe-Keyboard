@@ -11,7 +11,8 @@ import XCTest
 final class LunaT9CompileInputContractTests: XCTestCase {
     private let schemaID = "luna_pinyin_t9"
     private let runtimeRoot = URL(
-        fileURLWithPath: "/Users/doubleshy0n/.kos-work/Universe-Keyboard/LUNA-PLANNER-IMPL-001/scratch/runtime",
+        fileURLWithPath:
+            "/Users/doubleshy0n/.kos-work/Universe-Keyboard/LUNA-PLANNER-IMPL-001/scratch/impl-b/compile-runtime",
         isDirectory: true
     )
 
@@ -19,17 +20,20 @@ final class LunaT9CompileInputContractTests: XCTestCase {
         try runMatrix(checkCompiledLearning: false)
     }
 
-    func testCompiledLearningKeyRemainsUnprovenForL4() throws {
-        // The implicit custom file is outside the schema patch chain. See
-        // LUNA-PLANNER-001/reports/diag-l4l5.md. Overlay presence stays in the main matrix.
-        XCTExpectFailure(
-            "L4: translator/enable_user_dict is written but not applied. See diag-l4l5.md."
-        ) {
-            do {
-                try runMatrix(checkCompiledLearning: true)
-            } catch {
-                XCTFail("learning matrix could not run: \(error)")
-            }
+    func testCompiledLearningKeyFollowsTheRequest() throws {
+        // Only the compiled learning key. Simplification and algebra stay in the main matrix.
+        let builtin = try builtinDirectory()
+        let original = try Data(contentsOf: builtin.appendingPathComponent("luna_pinyin.schema.yaml"))
+        let derived = try LunaT9SchemaCompatibility.rewrite(original)
+        let frozen = String(decoding: derived, as: UTF8.self)
+        for enabled in [true, false] {
+            let root = runtimeRoot.appendingPathComponent(
+                "learning-\(enabled)-\(UUID().uuidString)", isDirectory: true)
+            try observe(
+                root: root, builtin: builtin, source: frozen, sourceName: "proven",
+                compileInputProven: true, enabled: enabled, baseAlgebra: [],
+                checkCompiledLearning: true, assertNonLearningContract: false
+            )
         }
     }
 
@@ -120,7 +124,8 @@ final class LunaT9CompileInputContractTests: XCTestCase {
     private func observe(
         root: URL, builtin: URL, source: String, sourceName: String,
         compileInputProven: Bool, enabled: Bool, baseAlgebra: [String],
-        checkCompiledLearning: Bool
+        checkCompiledLearning: Bool,
+        assertNonLearningContract: Bool = true
     ) throws {
         let fm = FileManager.default
         let shared = root.appendingPathComponent("shared", isDirectory: true)
@@ -219,6 +224,11 @@ final class LunaT9CompileInputContractTests: XCTestCase {
         let json = try JSONSerialization.data(withJSONObject: observation, options: [.prettyPrinted, .sortedKeys])
         try json.write(to: root.appendingPathComponent("observation.json"))
         print("OBSERVATION \(String(decoding: json, as: UTF8.self))")
+        if checkCompiledLearning {
+            XCTAssertNotEqual(getBool(&config, "translator/enable_user_dict", &learning), 0)
+            XCTAssertEqual(learning != 0, enabled, "compiled learning setting")
+        }
+        guard assertNonLearningContract else { return }
         XCTAssertTrue(
             overlay.content.contains("\"translator/enable_user_dict\": \(enabled ? "true" : "false")"),
             "planner still writes the learning key")
@@ -245,13 +255,113 @@ final class LunaT9CompileInputContractTests: XCTestCase {
             expected.append(baseAlgebra.last!)
             XCTAssertEqual(algebra, expected, "R5: letter rules, fuzzy letters, then exactly one terminal xlit")
         }
-        if checkCompiledLearning {
-            XCTAssertNotEqual(getBool(&config, "translator/enable_user_dict", &learning), 0)
-            XCTAssertEqual(learning != 0, enabled, "compiled learning setting")
+    }
+
+    func testPatchConsumptionABAttributesL4OnlyWhenBMatches() throws {
+        let builtin = try builtinDirectory()
+        let original = try Data(contentsOf: builtin.appendingPathComponent("luna_pinyin.schema.yaml"))
+        let derived = try LunaT9SchemaCompatibility.rewrite(original)
+        let bSource = String(decoding: derived, as: UTF8.self)
+        let third = "\n  - luna_pinyin_t9.custom:/patch?"
+        XCTAssertEqual(bSource.components(separatedBy: third).count, 2)
+        let aSource = bSource.replacingOccurrences(of: third, with: "")
+        XCTAssertNotEqual(aSource, bSource)
+        let target = RimeConfigManager.SchemaSwitchTarget(
+            schemaID: schemaID, userDictionarySchemaID: "luna_pinyin", sourceText: bSource, wanxiangFamily: false)
+        let plan = RimeConfigManager.planSchemaCustomYamlFiles(
+            targets: [target], simplificationEnabled: true,
+            userDictionarySettings: RimeUserDictionarySettings(lunaPinyinEnabled: true, rimeIceEnabled: false),
+            fuzzyPinyinSettings: RimeFuzzyPinyinSettings(enabled: true), compileInputProven: true)
+        let overlay = try XCTUnwrap(plan.first?.content)
+        let a = try compileCopy(builtin: builtin, schema: aSource, overlay: overlay, name: "ab-a")
+        let b = try compileCopy(builtin: builtin, schema: bSource, overlay: overlay, name: "ab-b")
+        let record = """
+            overlaySHA256=\(digest(Data(overlay.utf8)))
+            A algebraCount=\(a.algebra.count) learning=\(a.learning) hans=\(a.hans) auto=\(a.automatic.prefix(8))
+            B algebraCount=\(b.algebra.count) learning=\(b.learning) hans=\(b.hans) auto=\(b.automatic.prefix(8))
+            """
+        try record.write(to: runtimeRoot.appendingPathComponent("ab-record.txt"), atomically: true, encoding: .utf8)
+        XCTAssertEqual(a.overlaySHA, b.overlaySHA)
+        // A is the two-item schema. Consumption failure is the L4 signature.
+        XCTAssertFalse(a.algebra.contains { $0.contains("derive/^zh/z/") })
+        XCTAssertEqual(a.hans, false)
+        XCTAssertEqual(a.learning, nil)
+        XCTAssertTrue(b.algebra.contains { $0 == "derive/^zh/z/" })
+        XCTAssertEqual(b.hans, true)
+        XCTAssertEqual(b.learning, true)
+        XCTAssertTrue(b.automatic.contains("你好吗"))
+    }
+
+    private struct CompiledProbe {
+        var algebra: [String]
+        var learning: Bool?
+        var hans: Bool
+        var automatic: [String]
+        var overlaySHA: String
+    }
+
+    private func compileCopy(builtin: URL, schema: String, overlay: String, name: String) throws -> CompiledProbe {
+        let root = runtimeRoot.appendingPathComponent("\(name)-\(UUID().uuidString)", isDirectory: true)
+        let shared = root.appendingPathComponent("shared", isDirectory: true)
+        let user = root.appendingPathComponent("user", isDirectory: true)
+        try FileManager.default.copyItem(at: builtin, to: shared)
+        try FileManager.default.createDirectory(at: user, withIntermediateDirectories: true)
+        try schema.write(
+            to: shared.appendingPathComponent("\(schemaID).schema.yaml"), atomically: false, encoding: .utf8)
+        let defaultURL = shared.appendingPathComponent("default.yaml")
+        var defaults = try String(contentsOf: defaultURL, encoding: .utf8)
+        let listStart = try XCTUnwrap(defaults.range(of: "schema_list:\n"))
+        let listEnd = try XCTUnwrap(defaults.range(of: "\nswitcher:"))
+        defaults.replaceSubrange(
+            listStart.lowerBound..<listEnd.lowerBound, with: "schema_list:\n  - schema: \(schemaID)\n")
+        try defaults.write(to: defaultURL, atomically: false, encoding: .utf8)
+        try overlay.write(
+            to: user.appendingPathComponent("luna_pinyin_t9.custom.yaml"), atomically: false, encoding: .utf8)
+        let manager = RimeSessionManager()
+        XCTAssertTrue(manager.setup(withSharedDataDir: shared.path, userDataDir: user.path))
+        XCTAssertTrue(manager.initializeEngine())
+        defer { manager.finalize() }
+        let api = try XCTUnwrap(rime_get_api())
+        let start = try XCTUnwrap(api.pointee.start_maintenance)
+        let join = try XCTUnwrap(api.pointee.join_maintenance_thread)
+        XCTAssertNotEqual(start(1), 0)
+        join()
+        XCTAssertTrue(manager.createSession())
+        XCTAssertTrue(manager.selectSchema(schemaID))
+        let session = UInt(manager.currentSessionIdentifier())
+        let getOption = try XCTUnwrap(api.pointee.get_option)
+        var config = RimeConfig()
+        let open = try XCTUnwrap(api.pointee.schema_open)
+        let close = try XCTUnwrap(api.pointee.config_close)
+        XCTAssertNotEqual(open(schemaID, &config), 0)
+        defer { _ = close(&config) }
+        let getBool = try XCTUnwrap(api.pointee.config_get_bool)
+        let getString = try XCTUnwrap(api.pointee.config_get_cstring)
+        var learning: Int32 = -1
+        let learningPresent = getBool(&config, "translator/enable_user_dict", &learning) != 0
+        var algebra: [String] = []
+        for index in 0..<64 {
+            guard let value = getString(&config, "speller/algebra/@\(index)") else { break }
+            algebra.append(String(cString: value))
         }
+        _ = manager.replaceInput("6442662")
+        let automatic = texts(manager.candidates(from: 0, limit: 20))
+        return CompiledProbe(
+            algebra: algebra,
+            learning: learningPresent ? (learning != 0) : nil,
+            hans: getOption(session, "zh_hans") != 0,
+            automatic: automatic,
+            overlaySHA: digest(Data(overlay.utf8)))
+    }
+
+    private func builtinDirectory() throws -> URL {
+        var repository = URL(fileURLWithPath: #filePath)
+        for _ in 0..<5 { repository.deleteLastPathComponent() }
+        return repository.appendingPathComponent("Universe Keyboard/RimeBuiltin", isDirectory: true)
     }
 
     private func frozenSource() throws -> String {
+
         var repository = URL(fileURLWithPath: #filePath)
         for _ in 0..<5 { repository.deleteLastPathComponent() }
         let original = try Data(

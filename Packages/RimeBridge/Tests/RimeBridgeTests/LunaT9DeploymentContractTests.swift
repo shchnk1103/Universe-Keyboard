@@ -203,7 +203,8 @@ final class LunaT9DeploymentContractTests: XCTestCase {
                 contentsOf: root.appendingPathComponent(
                     "Packages/RimeBridge/Tests/RimeBridgeTests/Fixtures/LunaT9/variant1.schema.yaml"))
             scene = URL(
-                fileURLWithPath: "/Users/doubleshy0n/.kos-work/Universe-Keyboard/LUNA-T9-001/scratch/pr1b-runtime"
+                fileURLWithPath:
+                    "/Users/doubleshy0n/.kos-work/Universe-Keyboard/LUNA-PLANNER-IMPL-001/scratch/impl-b/deployment-runtime"
             )
             .appendingPathComponent("scene-\(UUID().uuidString)", isDirectory: true)
             // UUID scene is created by this run and never reused or deleted.
