@@ -123,6 +123,9 @@ nonisolated final class PasteToolbarIntegrationTests: XCTestCase {
         sut.controller.state.currentComposition = "ni"
         sut.syncUI(with: [])
         XCTAssertNil(sut.pasteToolbar)
+        sut.pasteSession.complete("late while composing", operationID: id)
+        XCTAssertEqual(sut.controller.state.currentComposition, "ni")
+        XCTAssertTrue(client.inserted.isEmpty)
         sut.controller.state.currentComposition = ""
         sut.syncUI(with: [])
         sut.pasteSession.complete("late", operationID: id)
@@ -246,9 +249,21 @@ nonisolated final class PasteToolbarIntegrationTests: XCTestCase {
         let sut = owner()
         let client = PasteClient()
         sut.controller.textClient = client
-        let provider = NSItemProvider(object: "background" as NSString)
+        let gate = PasteProviderGate()
+        let provider = NSItemProvider()
+        provider.registerObject(ofClass: NSString.self, visibility: .all) { completion in
+            Task { await gate.install(completion) }
+            return nil
+        }
         let receiver = try XCTUnwrap(sut.pasteToolbar?.receiver)
         receiver.paste(itemProviders: [provider])
+        for _ in 0..<100 {
+            if await gate.hasPending { break }
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        let pending = await gate.hasPending
+        XCTAssertTrue(pending)
+        await gate.finish("background")
         for _ in 0..<100 where client.inserted.isEmpty {
             try await Task.sleep(for: .milliseconds(10))
         }
@@ -261,6 +276,11 @@ nonisolated final class PasteToolbarIntegrationTests: XCTestCase {
             transient.paste(itemProviders: [provider])
         }
         XCTAssertNil(released)
+        for _ in 0..<100 {
+            if await gate.hasPending { break }
+            try await Task.sleep(for: .milliseconds(10))
+        }
+        await gate.finish("released result")
         try await Task.sleep(for: .milliseconds(50))
         XCTAssertEqual(client.inserted, ["background"])
     }
@@ -285,4 +305,18 @@ private final class PasteClient: TextInputClient {
     func adjustTextPosition(byCharacterOffset offset: Int) {}
     func setMarkedText(_ text: String, selectedRange: Range<Int>) {}
     func unmarkText() {}
+}
+
+/// The fixture controls both completion time and queue without asking for clipboard permission.
+private actor PasteProviderGate {
+    private var completion: (@Sendable ((any NSItemProviderWriting)?, (any Error)?) -> Void)?
+    var hasPending: Bool { completion != nil }
+    func install(_ completion: @escaping @Sendable ((any NSItemProviderWriting)?, (any Error)?) -> Void) {
+        self.completion = completion
+    }
+    func finish(_ text: String) {
+        let completion = completion
+        self.completion = nil
+        DispatchQueue.global().async { completion?(text as NSString, nil) }
+    }
 }
