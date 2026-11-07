@@ -6,23 +6,78 @@ import XCTest
 
 @testable import RimeBridge
 
-/// Blocking experiment: production planning is deliberately not repaired here.
+/// Planner contract for luna_pinyin_t9. The compiled learning key stays a known L4 failure.
 @MainActor
 final class LunaT9CompileInputContractTests: XCTestCase {
     private let schemaID = "luna_pinyin_t9"
     private let runtimeRoot = URL(
-        fileURLWithPath: "/Users/doubleshy0n/.kos-work/Universe-Keyboard/LUNA-T9-001/scratch/pr1c-runtime",
+        fileURLWithPath: "/Users/doubleshy0n/.kos-work/Universe-Keyboard/LUNA-PLANNER-IMPL-001/scratch/runtime",
         isDirectory: true
     )
 
     func testCompileInputMatrix() throws {
+        try runMatrix(checkCompiledLearning: false)
+    }
+
+    func testCompiledLearningKeyRemainsUnprovenForL4() throws {
+        // The implicit custom file is outside the schema patch chain. See
+        // LUNA-PLANNER-001/reports/diag-l4l5.md. Overlay presence stays in the main matrix.
+        XCTExpectFailure(
+            "L4: translator/enable_user_dict is written but not applied. See diag-l4l5.md."
+        ) {
+            do {
+                try runMatrix(checkCompiledLearning: true)
+            } catch {
+                XCTFail("learning matrix could not run: \(error)")
+            }
+        }
+    }
+
+    func testProductionTargetIncludesLunaPinyinT9() throws {
+        let root = runtimeRoot.appendingPathComponent(
+            "planner-target-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let targets = RimeConfigManager.schemaSwitchTargets(
+            rimeRoot: root, iceInstalled: false, wanxiangInstalled: false, pendingSchemaID: nil)
+        let match = targets.filter { $0.schemaID == schemaID }
+        XCTAssertEqual(match.count, 1)
+        XCTAssertEqual(match.first?.userDictionarySchemaID, "luna_pinyin")
+        XCTAssertEqual(match.first?.wanxiangFamily, false)
+        let plan = RimeConfigManager.planSchemaCustomYamlFiles(
+            targets: targets,
+            simplificationEnabled: false,
+            userDictionarySettings: RimeUserDictionarySettings(lunaPinyinEnabled: true, rimeIceEnabled: false)
+        )
+        XCTAssertTrue(plan.contains { $0.filename == "luna_pinyin_t9.custom.yaml" })
+    }
+
+    func testGrammarYamlBlocksLunaT9ResetAndAlgebra() throws {
+        let source = try frozenSource()
+        let target = RimeConfigManager.SchemaSwitchTarget(
+            schemaID: schemaID, userDictionarySchemaID: "luna_pinyin", sourceText: source, wanxiangFamily: false)
+        let plan = RimeConfigManager.planSchemaCustomYamlFiles(
+            targets: [target],
+            simplificationEnabled: true,
+            userDictionarySettings: RimeUserDictionarySettings(lunaPinyinEnabled: true, rimeIceEnabled: false),
+            fuzzyPinyinSettings: RimeFuzzyPinyinSettings(enabled: true),
+            grammarYamlPresent: true,
+            compileInputProven: true
+        )
+        let content = try XCTUnwrap(plan.first?.content)
+        XCTAssertFalse(content.contains("switches/"))
+        XCTAssertFalse(content.contains("speller/algebra"))
+        XCTAssertTrue(content.contains("\"translator/enable_user_dict\": true"))
+    }
+
+    private func runMatrix(checkCompiledLearning: Bool) throws {
         var repository = URL(fileURLWithPath: #filePath)
         for _ in 0..<5 { repository.deleteLastPathComponent() }
         let builtin = repository.appendingPathComponent("Universe Keyboard/RimeBuiltin", isDirectory: true)
         let original = try Data(contentsOf: builtin.appendingPathComponent("luna_pinyin.schema.yaml"))
         let derived = try LunaT9SchemaCompatibility.rewrite(original)
         XCTAssertEqual(digest(derived), LunaT9SchemaCompatibility.outputSHA256)
-        let frozen = String(decoding: derived, as: UTF8.self)
+        let frozen = try frozenSource()
         let expectedBaseAlgebra = frozen.components(separatedBy: "  algebra:\n")[1]
             .components(separatedBy: "\ntranslator:")[0]
             .split(separator: "\n")
@@ -48,7 +103,8 @@ final class LunaT9CompileInputContractTests: XCTestCase {
                     do {
                         try observe(
                             root: root, builtin: builtin, source: source, sourceName: name,
-                            compileInputProven: proven, enabled: enabled, baseAlgebra: expectedBaseAlgebra
+                            compileInputProven: proven, enabled: enabled, baseAlgebra: expectedBaseAlgebra,
+                            checkCompiledLearning: checkCompiledLearning
                         )
                     } catch {
                         // Keep later matrix entries observable even if one cannot compile/open.
@@ -63,7 +119,8 @@ final class LunaT9CompileInputContractTests: XCTestCase {
 
     private func observe(
         root: URL, builtin: URL, source: String, sourceName: String,
-        compileInputProven: Bool, enabled: Bool, baseAlgebra: [String]
+        compileInputProven: Bool, enabled: Bool, baseAlgebra: [String],
+        checkCompiledLearning: Bool
     ) throws {
         let fm = FileManager.default
         let shared = root.appendingPathComponent("shared", isDirectory: true)
@@ -162,15 +219,25 @@ final class LunaT9CompileInputContractTests: XCTestCase {
         let json = try JSONSerialization.data(withJSONObject: observation, options: [.prettyPrinted, .sortedKeys])
         try json.write(to: root.appendingPathComponent("observation.json"))
         print("OBSERVATION \(String(decoding: json, as: UTF8.self))")
-        XCTAssertEqual(learning != 0, enabled, "compiled learning setting")
+        XCTAssertTrue(
+            overlay.content.contains("\"translator/enable_user_dict\": \(enabled ? "true" : "false")"),
+            "planner still writes the learning key")
         XCTAssertTrue(traditionalTexts.contains("你好嗎"), "real traditional candidate")
         XCTAssertTrue(simplifiedTexts.contains("你好吗"), "real OpenCC simplified candidate")
-        // Invalid proof inputs must not acquire a simplification reset from the planner.
-        if sourceName != "proven" || !compileInputProven {
+        // The compile-input gate is closed unless the frozen hash and the proven flag both hold.
+        let positive = sourceName == "proven" && compileInputProven
+        if !positive {
             XCTAssertFalse(overlay.content.contains("switches/"), "unproven inputs must fail closed")
+            XCTAssertFalse(overlay.content.contains("speller/algebra"), "unproven inputs must not replace algebra")
+            XCTAssertEqual(algebra, baseAlgebra, "unproven compile input keeps the source algebra")
         }
-        // Positive source remains a blocker if either refresh path loses settings.
-        if sourceName == "proven" {
+        if positive {
+            XCTAssertTrue(overlay.content.contains("switches/"), "resolver reset must be in the overlay")
+            if enabled {
+                XCTAssertTrue(overlay.content.contains("speller/algebra"))
+            } else {
+                XCTAssertFalse(overlay.content.contains("speller/algebra"))
+            }
             XCTAssertEqual(actualSimplified, enabled, "session reset must follow requested simplification")
             XCTAssertTrue(automaticTexts.contains(enabled ? "你好吗" : "你好嗎"), "unmodified session output")
             var expected = Array(baseAlgebra.dropLast())
@@ -178,6 +245,20 @@ final class LunaT9CompileInputContractTests: XCTestCase {
             expected.append(baseAlgebra.last!)
             XCTAssertEqual(algebra, expected, "R5: letter rules, fuzzy letters, then exactly one terminal xlit")
         }
+        if checkCompiledLearning {
+            XCTAssertNotEqual(getBool(&config, "translator/enable_user_dict", &learning), 0)
+            XCTAssertEqual(learning != 0, enabled, "compiled learning setting")
+        }
+    }
+
+    private func frozenSource() throws -> String {
+        var repository = URL(fileURLWithPath: #filePath)
+        for _ in 0..<5 { repository.deleteLastPathComponent() }
+        let original = try Data(
+            contentsOf: repository.appendingPathComponent("Universe Keyboard/RimeBuiltin/luna_pinyin.schema.yaml"))
+        let derived = try LunaT9SchemaCompatibility.rewrite(original)
+        XCTAssertEqual(digest(derived), LunaT9SchemaCompatibility.outputSHA256)
+        return String(decoding: derived, as: UTF8.self)
     }
 
     private func texts(_ output: [AnyHashable: Any]) -> [String] {
