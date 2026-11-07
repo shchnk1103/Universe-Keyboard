@@ -17,7 +17,7 @@
 
 1. `AGENTS.md`
 2. `docs/KNOWLEDGE_INDEX.md`
-3. `docs/ACTIVE_WORK.md`（当前 Active 工作项 ≤10；生命周期以 Assignment 为准）
+3. 当前工作与优先级由任务包或 Human 指定；需要查未完成项时读 `docs/PORTFOLIO.md` 并核对所依赖的行（`docs/ACTIVE_WORK.md` 自 2026-11-07 起冻结为历史快照，不再默认加载；生命周期以 Assignment 为准）
 4. 按 `docs/READING_MAPS.md` 中的任务类型加载对应文档
 5. 涉及代码改动时再阅读 `docs/PROJECT_CONTEXT.md`
 6. 运营卫生规则见 `docs/kos/kos-2.1-operational-maturity.md`（不替代 KOS 2.0 冻结原则）

@@ -30,7 +30,7 @@ xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -d
 
 ## Status And History
 
-This file does not track the latest project status. Use the owning Assignment for current task state, `ACTIVE_WORK.md` for active routes, and `CHANGELOG.md` for dated history.
+This file does not track the latest project status. Use the owning Assignment for current task state, `PORTFOLIO.md` for unfinished work and priorities, and `CHANGELOG.md` for dated history.
 
 The durable implementation constraints are:
 

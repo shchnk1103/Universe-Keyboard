@@ -85,7 +85,7 @@ provider/model 路由规则及全局 ORCHESTRATION_PLAN 均未采用。细节与
 
 1. PR 正文声明：`Stack: base=<branch-or-main> tip=<tip-branch>`，并列出前缀 PR 编号。
 2. **优先合并 tip**（含全部 commits）；前缀 PR 在 tip 合入后标记 superseded 或由 GitHub 识别为已合并。
-3. tip 合并后执行 State sync 清单（Dashboard / Index / Assignment Current Status / `ACTIVE_WORK.md`）。
+3. tip 合并后执行 State sync 清单（Dashboard / Index / Assignment Current Status）。
 4. 不要对同一栈做互相冲突的 squash 重写，除非 Product 明确授权并重开 PR。
 
 ## 交接与输出

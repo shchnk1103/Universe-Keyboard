@@ -5,6 +5,11 @@
 
 # CHANGELOG
 
+## 2026-11-07 — KOS-DOCS-SLIM-001 冻结 ACTIVE_WORK（本地交付，未发布）
+
+- `docs/ACTIVE_WORK.md` 冻结为历史快照，入口文档改指 `docs/PORTFOLIO.md`；未完成项与优先级不再在两处维护。
+
+
 ## 2026-11-06 — KOS-TOOLS-003 KOS 工具修复（本地交付，未发布）
 
 - 新增身份核对脚本；`pr_flow open` 推送前核对分支引用并写入日志，`land` 可在合并快进后清理 worktree 与分支；`freeze --requires-commit` 的身份字符串改为可配置。
