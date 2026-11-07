@@ -26,6 +26,12 @@ struct SettingsTab: View {
     )
     private var layoutStyleRaw = KeyboardLayoutStyle.twentySixKey.rawValue
 
+    @AppStorage(
+        KeyboardInputSettingsKey.pasteToolbarEnabled,
+        store: UserDefaults(suiteName: universeAppGroupID)
+    )
+    private var pasteToolbarEnabled = false
+
     private var layoutSubtitle: String {
         switch KeyboardLayoutStyle.resolve(layoutStyleRaw) {
         case .twentySixKey: return "26键"
@@ -75,8 +81,13 @@ struct SettingsTab: View {
     private var inputBehaviorSection: some View {
         SettingsGroup(
             title: "输入体验",
-            footer: "布局、反馈、删除键和纠错都只影响本机打字习惯，可以随时改回来。这些不是人工智能功能。"
+            footer: "布局、反馈、删除键和纠错都只影响本机打字习惯，可以随时改回来。这些不是人工智能功能。粘贴需要系统完全访问。未开启时键盘不显示粘贴，打字不受影响。开启开关也不会在未点按粘贴时读取剪贴板。"
         ) {
+            AppCard {
+                SettingsIconRow(systemImage: "doc.on.clipboard") {
+                    ToggleRow(title: "键盘粘贴", description: "空闲时显示系统粘贴按钮", isOn: $pasteToolbarEnabled)
+                }
+            }
             SettingsNavigationLink(
                 systemImage: "keyboard",
                 title: "键盘布局",

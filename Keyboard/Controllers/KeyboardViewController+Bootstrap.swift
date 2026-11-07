@@ -192,6 +192,8 @@ extension KeyboardViewController {
     }
 
     func handleKeyboardDidAppear() {
+        pasteToolbarSuspended = false
+        defer { refreshPasteToolbar() }
         #if DEBUG
             recordKeyboardVisualDiagnostic("HANDLE_DID_APPEAR_BEGIN")
         #endif
@@ -918,6 +920,8 @@ extension KeyboardViewController {
     }
 
     @objc private func extensionHostWillResignActive(_ notification: Notification) {
+        pasteToolbarSuspended = true
+        refreshPasteToolbar()
         guard hostNotificationMatchesCurrentExtensionContext(notification) else { return }
         #if DEBUG
             recordKeyboardVisualDiagnostic("HOST_RESIGN_BEFORE")
@@ -941,6 +945,8 @@ extension KeyboardViewController {
     }
 
     @objc private func extensionHostDidBecomeActive(_ notification: Notification) {
+        pasteToolbarSuspended = false
+        defer { refreshPasteToolbar() }
         guard hostNotificationMatchesCurrentExtensionContext(notification) else { return }
         #if DEBUG
             recordKeyboardVisualDiagnostic("HOST_ACTIVE_BEFORE")

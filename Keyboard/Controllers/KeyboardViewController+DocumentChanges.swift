@@ -31,6 +31,7 @@ extension KeyboardViewController {
             before: proxy.documentContextBeforeInput, after: proxy.documentContextAfterInput,
             documentIdentifier: identifier)
         let observation = documentIdentityTracker.observe(identifier)
+        observePasteDocumentIdentity(observation)
         // An unavailable sample cannot establish a new baseline or authorize a
         // rebind. Keep the last valid identity for the next host callback.
         guard observation != .unavailable else {

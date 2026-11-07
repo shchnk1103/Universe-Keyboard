@@ -68,6 +68,24 @@ final class KeyAccessibilityContractTests: XCTestCase {
         XCTAssertFalse(actions.contains("insertText("))
     }
 
+    func testProductionPasteReadAndInsertionBoundaries() throws {
+        let root = URL(fileURLWithPath: #filePath).deletingLastPathComponent().deletingLastPathComponent()
+        let keyboard = root.appendingPathComponent("Keyboard")
+        let files = try XCTUnwrap(FileManager.default.enumerator(at: keyboard, includingPropertiesForKeys: nil))
+        for case let file as URL in files where ["swift", "m"].contains(file.pathExtension) {
+            let source = try String(contentsOf: file, encoding: .utf8)
+            XCTAssertFalse(source.contains("UIPasteboard"), file.path)
+            if file.lastPathComponent != "PasteToolbarControl.swift" {
+                XCTAssertFalse(source.contains("UIPasteControl"), file.path)
+            }
+            if file.lastPathComponent != "UITextDocumentProxyAdapter.swift" {
+                XCTAssertFalse(source.contains("proxy.insertText("), file.path)
+                XCTAssertFalse(source.contains("textDocumentProxy.insertText("), file.path)
+                XCTAssertFalse(source.contains("textClient.insertText("), file.path)
+            }
+        }
+    }
+
     private func sourceFile(_ relativePath: String) throws -> String {
         let testsDirectory = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
         let repositoryRoot = testsDirectory.deletingLastPathComponent()

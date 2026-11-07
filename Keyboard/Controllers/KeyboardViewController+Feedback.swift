@@ -78,6 +78,8 @@ extension KeyboardViewController {
 
     func refreshCachedSettings(source: String = "unspecified") {
         let defaults = sharedDefaults
+        cachedPasteToolbarEnabled = defaults?.bool(forKey: KeyboardInputSettingsKey.pasteToolbarEnabled) ?? false
+        defer { refreshPasteToolbar() }
 
         // 诊断开关与反馈设置使用同一生命周期快照；候选触控链路不自行轮询共享偏好。
         CandidateTouchDiagnostics.refreshFromSharedSettings()

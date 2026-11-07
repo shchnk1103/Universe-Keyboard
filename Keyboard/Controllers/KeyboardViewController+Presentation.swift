@@ -278,6 +278,9 @@ extension KeyboardViewController {
     }
 
     func syncUI(with effects: KeyboardEffect) {
+        pasteSession.clearFailure()
+        refreshPasteToolbar()
+        defer { refreshPasteToolbar() }
         // Refresh last so normal presentation cannot re-enable recovery-blocked controls.
         defer { refreshT9InputRecoveryPresentation() }
         #if DEBUG

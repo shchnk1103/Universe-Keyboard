@@ -26,12 +26,17 @@ private final class CandidateBarGestureBridge: NSObject, UIGestureRecognizerDele
     weak var swipeDown: UIGestureRecognizer?
     weak var horizontalFallback: UIGestureRecognizer?
     weak var collectionPan: UIGestureRecognizer?
+    weak var pasteContent: UIView?
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        guard let touched = touch.view else { return true }
+        if let pasteContent, touched.isDescendant(of: pasteContent) { return false }
+        #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
+            if let wakeProbeButton, touched.isDescendant(of: wakeProbeButton) { return false }
+        #endif
+        return true
+    }
     #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
         weak var wakeProbeButton: UIButton?
-        func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
-            guard let button = wakeProbeButton, let touched = touch.view else { return true }
-            return !touched.isDescendant(of: button)
-        }
     #endif
 
     func gestureRecognizer(
@@ -70,6 +75,8 @@ final class CandidateBarView: UIView {
     private let actionEdgeFill = CAGradientLayer()
     private var canExpandCandidates = false
 
+    private let pasteFailureLabel = UILabel()
+    private weak var pasteContent: UIView?
     private let recoveryLabel = UILabel()
     private var isShowingRecoveryNotice = false
 
@@ -263,6 +270,10 @@ final class CandidateBarView: UIView {
     /// Occupies the existing row; recovery never changes keyboard geometry.
     func setInputRecoveryNotice(_ message: String?) {
         isShowingRecoveryNotice = message != nil
+        if isShowingRecoveryNotice {
+            pasteFailureLabel.isHidden = true
+            pasteContent?.isHidden = true
+        }
         recoveryLabel.text = message
         recoveryLabel.accessibilityLabel = message
         recoveryLabel.isHidden = !isShowingRecoveryNotice
@@ -275,6 +286,43 @@ final class CandidateBarView: UIView {
         horizontalFallbackRecognizer?.isEnabled = !isShowingRecoveryNotice
         refreshActionAppearance()
         if isShowingRecoveryNotice { bringSubviewToFront(recoveryLabel) }
+    }
+
+    /// Paste content occupies only the candidate viewport; the trailing action keeps its hit area.
+    func setPasteContent(_ content: UIView) {
+        pasteContent?.removeFromSuperview()
+        pasteContent = content
+        gestureBridge.pasteContent = content
+        content.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(content)
+        NSLayoutConstraint.activate([
+            content.leadingAnchor.constraint(equalTo: leadingAnchor),
+            content.trailingAnchor.constraint(lessThanOrEqualTo: expandButton.leadingAnchor),
+            content.topAnchor.constraint(equalTo: topAnchor),
+            content.heightAnchor.constraint(equalToConstant: candidateBarHeight),
+        ])
+    }
+
+    func setPasteFailureNotice(_ message: String?) {
+        if pasteFailureLabel.superview == nil {
+            pasteFailureLabel.translatesAutoresizingMaskIntoConstraints = false
+            pasteFailureLabel.numberOfLines = 1
+            pasteFailureLabel.font = .preferredFont(forTextStyle: .caption1)
+            pasteFailureLabel.textColor = .secondaryLabel
+            pasteFailureLabel.accessibilityIdentifier = "keyboard.paste.failure"
+            addSubview(pasteFailureLabel)
+            NSLayoutConstraint.activate([
+                pasteFailureLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
+                pasteFailureLabel.trailingAnchor.constraint(equalTo: expandButton.leadingAnchor),
+                pasteFailureLabel.topAnchor.constraint(equalTo: topAnchor),
+                pasteFailureLabel.heightAnchor.constraint(equalToConstant: candidateBarHeight),
+            ])
+        }
+        let visible = message != nil && !isShowingRecoveryNotice
+        pasteFailureLabel.text = message
+        pasteFailureLabel.isHidden = !visible
+        pasteContent?.isHidden = visible || isShowingRecoveryNotice
+        if visible { bringSubviewToFront(pasteFailureLabel) }
     }
 
     override func layoutSubviews() {
@@ -398,6 +446,8 @@ final class CandidateBarView: UIView {
         if !expandButton.isHidden, expandedButtonHitFrame.contains(point) {
             let buttonPoint = expandButton.convert(point, from: self)
             result = expandButton.hitTest(buttonPoint, with: event) ?? expandButton
+        } else if let pasteContent, !pasteContent.isHidden, pasteContent.frame.contains(point) {
+            result = pasteContent.hitTest(pasteContent.convert(point, from: self), with: event)
         } else if bounds.contains(point), collectionView.frame.contains(point) {
             result = collectionView.hitTest(collectionPoint, with: event) ?? collectionView
         } else if bounds.contains(point) {
@@ -691,6 +741,9 @@ final class CandidateBarView: UIView {
 
     override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         guard let pan = gestureRecognizer as? UIPanGestureRecognizer else { return true }
+        if let pasteContent, !pasteContent.isHidden, pasteContent.frame.contains(pan.location(in: self)) {
+            return false
+        }
         let velocity = pan.velocity(in: self)
         if pan === swipeDownRecognizer {
             guard allowsSwipeToExpand else { return false }

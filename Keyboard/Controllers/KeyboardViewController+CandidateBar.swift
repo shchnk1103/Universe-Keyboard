@@ -48,6 +48,7 @@ extension KeyboardViewController {
         view.onItemTap = { [weak self] indexPath in
             self?.commitCompactCandidate(at: indexPath)
         }
+        refreshPasteToolbar(on: view)
         return view
     }
 
@@ -59,6 +60,7 @@ extension KeyboardViewController {
         if canExpand {
             toggleCandidateExpand()
         } else {
+            pasteSession.clearFailure()
             dismissKeyboard()
         }
     }
@@ -158,6 +160,7 @@ extension KeyboardViewController {
         #if DEBUG
             let renderStart = CACurrentMediaTime()
         #endif
+        defer { refreshPasteToolbar() }
         let items = presentedCandidates
 
         // Dual-mode trailing control (`PD-CANDIDATE-BAR-IDLE-DISMISS-001`):
@@ -330,5 +333,42 @@ extension KeyboardViewController {
         candidateCellSizeCache.removeAll(keepingCapacity: true)
         candidatePageDepth = 0
         candidatePrefetchMode = isCandidateExpanded ? .expanded : .bar
+    }
+}
+
+extension KeyboardViewController {
+    var isPasteToolbarEligible: Bool {
+        guard controller != nil else { return false }
+        let state = controller.state
+        return cachedPasteToolbarEnabled && hasFullAccess && !pasteToolbarSuspended
+            && !isCandidateExpanded && !isPinyinPathExpanded && candidateExpandedPanel == nil
+            && (candidateExpandedPanel as? ExpandedCandidatePanelContainerView)?.isTransitioning != true
+            && state.currentComposition.isEmpty && state.insertedPreeditCount == 0
+            && state.pendingPunctuation == nil && state.pendingKaomoji == nil
+            && presentedCandidates.isEmpty && state.continuation.suggestions.isEmpty
+            && !shouldBlockT9RecoveryPresentation
+    }
+
+    func refreshPasteToolbar(on newBar: CandidateBarView? = nil) {
+        guard controller != nil else { return }
+        let bar = newBar ?? candidateBar as? CandidateBarView
+        guard isPasteToolbarEligible, let bar else {
+            pasteSession.invalidate()
+            pasteToolbar?.removeFromSuperview()
+            pasteToolbar = nil
+            (candidateBar as? CandidateBarView)?.setPasteFailureNotice(nil)
+            return
+        }
+        if pasteToolbar?.superview !== bar {
+            pasteToolbar?.removeFromSuperview()
+            let toolbar = PasteToolbarControl(session: pasteSession)
+            pasteToolbar = toolbar
+            bar.setPasteContent(toolbar)
+        }
+        bar.setPasteFailureNotice(pasteSession.pasteFailureVisible ? "无法粘贴纯文本" : nil)
+    }
+
+    func observePasteDocumentIdentity(_ observation: KeyboardDocumentIdentityTracker.Observation) {
+        if observation == .changed || observation == .unavailable { pasteSession.invalidate() }
     }
 }
