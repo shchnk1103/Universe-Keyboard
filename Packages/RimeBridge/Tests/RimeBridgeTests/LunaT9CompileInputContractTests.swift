@@ -304,6 +304,7 @@ final class LunaT9CompileInputContractTests: XCTestCase {
         let root = runtimeRoot.appendingPathComponent("\(name)-\(UUID().uuidString)", isDirectory: true)
         let shared = root.appendingPathComponent("shared", isDirectory: true)
         let user = root.appendingPathComponent("user", isDirectory: true)
+        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
         try FileManager.default.copyItem(at: builtin, to: shared)
         try FileManager.default.createDirectory(at: user, withIntermediateDirectories: true)
         try schema.write(
