@@ -150,9 +150,15 @@ final class SchemaSwitchResolverTests: XCTestCase {
             __patch:
               - grammar:/hant?
               - luna_pinyin.custom:/patch?
+              - luna_pinyin_t9.custom:/patch?
 
             """
+        let twoItem = source.replacingOccurrences(
+            of: "\n              - luna_pinyin_t9.custom:/patch?",
+            with: ""
+        )
         XCTAssertEqual(SchemaSwitchResolver.recognize(source).failure, .switchesPatched)
+        XCTAssertEqual(SchemaSwitchResolver.recognizePinnedPatch(twoItem).failure, .switchesPatched)
         let items = try? SchemaSwitchResolver.recognizePinnedPatch(source).get()
         XCTAssertEqual(items?.count, 1)
         guard case .success(let selection)? = items.map({ SchemaSwitchResolver.simplification(in: $0) }) else {

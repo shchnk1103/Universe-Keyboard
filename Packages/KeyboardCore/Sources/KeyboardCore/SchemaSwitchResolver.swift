@@ -66,13 +66,13 @@ public enum SchemaSwitchResolver {
         else {
             return .failure(.switchesPatched)
         }
-        return parse(source, allowingPinnedLunaPatch: true)
+        return parse(source, allowingPinnedLunaPatch: true, pinnedPatch: lunaPinnedPatch)
     }
 
-    /// Accept only the pinned two-item `__patch`. This does not apply Luna's hash exemption.
+    /// Accept only the pinned three-item `__patch`. This does not apply Luna's hash exemption.
     /// The caller has to prove the source hash before treating the result as a compile input.
     public static func recognizePinnedPatch(_ source: String) -> Result<[Item], Failure> {
-        parse(source, allowingPinnedLunaPatch: true)
+        parse(source, allowingPinnedLunaPatch: true, pinnedPatch: t9PinnedPatch)
     }
 
     public static func simplification(in items: [Item]) -> Result<Simplification, Failure> {
@@ -157,10 +157,17 @@ extension SchemaSwitchResolver {
     }
 
     fileprivate static let patchMarkers = ["__include", "__patch", "__append", "__merge"]
-    fileprivate static let pinnedPatch = ["grammar:/hant?", "luna_pinyin.custom:/patch?"]
+    fileprivate static let lunaPinnedPatch = ["grammar:/hant?", "luna_pinyin.custom:/patch?"]
+    fileprivate static let t9PinnedPatch = [
+        "grammar:/hant?", "luna_pinyin.custom:/patch?", "luna_pinyin_t9.custom:/patch?",
+    ]
     fileprivate static let fieldNames = ["name", "options", "states", "reset", "abbrev"]
 
-    fileprivate static func parse(_ source: String, allowingPinnedLunaPatch: Bool) -> Result<[Item], Failure> {
+    fileprivate static func parse(
+        _ source: String,
+        allowingPinnedLunaPatch: Bool,
+        pinnedPatch: [String] = lunaPinnedPatch
+    ) -> Result<[Item], Failure> {
         let normalized = source.hasPrefix("\u{feff}") ? String(source.dropFirst()) : source
         let lines = normalized.split(separator: "\n", omittingEmptySubsequences: false).map(String.init)
         var raw: [RawLine] = []
@@ -188,7 +195,7 @@ extension SchemaSwitchResolver {
             if !seenTop.insert(key).inserted { return .failure(.duplicateTopKey) }
             if patchMarkers.contains(key) {
                 if allowingPinnedLunaPatch && key == "__patch" {
-                    let consumed = consumePinnedPatch(raw, from: index + 1)
+                    let consumed = consumePinnedPatch(raw, from: index + 1, expected: pinnedPatch)
                     guard case .success(let next) = consumed else { return .failure(.switchesPatched) }
                     sawPinnedPatch = true
                     index = next
@@ -229,7 +236,8 @@ extension SchemaSwitchResolver {
 
     fileprivate static func consumePinnedPatch(
         _ lines: [RawLine],
-        from start: Int
+        from start: Int,
+        expected: [String]
     ) -> Result<Int, Failure> {
         var index = start
         var items: [String] = []
@@ -243,7 +251,7 @@ extension SchemaSwitchResolver {
             }
             return .failure(.switchesPatched)
         }
-        guard items == pinnedPatch else { return .failure(.switchesPatched) }
+        guard items == expected else { return .failure(.switchesPatched) }
         return .success(index)
     }
 
