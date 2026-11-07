@@ -5,6 +5,10 @@
 
 # CHANGELOG
 
+## 2026-11-07 — KOS-RULES-DOC-001 PM 试行规则与角色名册入库
+
+- 把 PM 补充规则与角色名册写入仓库文档；新会话读仓库即可，不必依赖私有记忆。
+
 ## 2026-11-07 — KOS-DOCS-SLIM-001 冻结 ACTIVE_WORK（本地交付，未发布）
 
 - `docs/ACTIVE_WORK.md` 冻结为历史快照，入口文档改指 `docs/PORTFOLIO.md`；未完成项与优先级不再在两处维护。
