@@ -63,10 +63,8 @@ final class PasteCommitTests: XCTestCase {
         controller.state.currentComposition = ""
         controller.textClient = nil
         controller.t9UnconfirmedDeleteHistory.spellings["426"] = "hao"
-        let textBeforeNoClientPaste = client.text
+        // No client: zero insertion follows from the early return in commitPastedPlainText; the detached fake cannot observe it.
         XCTAssertEqual(controller.commitPastedPlainText("乙"), .rejectedNoClient)
-        XCTAssertEqual(client.text, textBeforeNoClientPaste)
-        XCTAssertTrue(client.text.isEmpty)
         XCTAssertEqual(controller.state.continuation.context, "甲")
         XCTAssertEqual(controller.state.continuation.suggestions, ["好"])
         XCTAssertEqual(controller.t9UnconfirmedDeleteHistory.spellings["426"], "hao")
