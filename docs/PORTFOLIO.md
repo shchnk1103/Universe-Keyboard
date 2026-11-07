@@ -1,6 +1,6 @@
 # Portfolio — 任务组合目录
 
-这是**优先级与指针索引**，不是状态权威。Work Item 的 Lifecycle 以各自的 Assignment 为准，`docs/ACTIVE_WORK.md` 只列有 Assignment 的活动项；本目录负责记录“还没有 Assignment 的意图、优先级、依赖与已做的决定”，让任何 AI 接手时不依赖对话记忆。
+这是**优先级与指针索引**，不是状态权威。Work Item 的 Lifecycle 以各自的 Assignment 为准，有 Assignment 的项以 `docs/assignments/` 为准（`docs/ACTIVE_WORK.md` 已于 2026-11-07 冻结为历史快照）；本目录负责记录“还没有 Assignment 的意图、优先级、依赖与已做的决定”，让任何 AI 接手时不依赖对话记忆。
 
 ## 规则
 
@@ -40,7 +40,6 @@
 | PF-032 | P2 | 键盘顶部拖把手调节行高（UI-4 后续改进） | Backlog | Human 偏好的方向；交互核心已与控件解耦；第三方键盘也是松手才生效（行为参考，不复制视觉）；需要新的产品决定草稿；未立项 | 无直接来源（Human 2026-10-24 对话与截图） | 2026-10-24 |
 | PF-033 | P3 | UI-4 后续澄清与测量（触发式） | Backlog | (a) 产品决定 §7“同一标记不重入”措辞澄清为有界表述（R2-F01）；(b) 竖屏拖到最大值占屏幕比例的测量（Human 目测约三分之二，未测量，是否含系统底部栏未知）；(c) 已知限制跟踪：端点震动（完全访问开）、预算不足 4×40 整面隐藏、999 与真实低预算/分屏/浮动未验证、Release 真机配置未知；触发：用户反馈或取得设备条件 | [UI-4 详情](portfolio/ui-4-keyboard-height.md) · `docs/assignments/ui4-height-001.md` Exit evidence | 2026-10-24 |
 | PF-034 | P2 | 既有测试在并行负载下的间歇失败线索（诊断日志入口测试） | Backlog | UI3-FONT-001 P1+P2 报告：`DiagnosticsJournalIngressTests` 的两项在与 Xcode 任务并行时失败（3 条断言），串行重跑通过，根因 UNKNOWN；需诊断领域负责人评估；不属于 UI-3；2026-10-27：另有 CI 间歇失败 `TypoCorrectionRecallCoordinatorIntegrationTests.testHostCallbackPersistsMeasuredQueriesThroughTypedJournalRuntime`（PR #248 的 CI，轮询等待 journal 落盘 50×20ms 超时，同 PR 前一轮通过，根因 UNKNOWN）；只读盘点（外置 DIAG-INTERFACE-INVENTORY-001，静态）：生产 Runtime/Ingress 没有可确定等待“此前事件已 flush 完成”的 API，全仓 5 个轮询辅助函数/13 个测试；不得放宽超时（TD-020）；T-B 统一设计方向待 Human（见 PF-038）；2026-10-27 T-C 已落地为 PR #252（合并提交 `48471f2c2555b6ce7820375975bb215e64340e16`，Human 合并，CI 10/10 通过）：DEBUG-only `flushAndWaitForTesting` 屏障，5 个轮询辅助函数迁移到带 1000/2000ms 截止的屏障（未放宽断言或超时），Assignment [diag-flush-wait-001](assignments/diag-flush-wait-001.md)；**未查明（UNKNOWN）**：CI 偶发超时的根因；本地曾出现 2 次“屏障返回后读到 0 条”（Wake 独立重复第 9 次、Extension 整套首轮），当时没有保留 DEBUG 终结计数，R4 的 60 次独立重复未复现；Wake 测试清理临时目录曾出现 1 次 `NSCocoaErrorDomain 513`，其后 R3 接手、R4、R5 的重复运行均未再现；屏障只证明“已接受事件终结”，不保证 reader 可见，取消返回不证明终结，DEBUG 快照非原子（见 Architecture R4 复核）；一次 CI 通过不证明偶发问题消失；2026-10-28 PR #256 的 CI run `40682322022` 中同一测试再次失败（FlushBarrierBudgetExceeded，见 PF-024），原因 UNKNOWN | 外置报告 `UI3-FONT-001/reports/executor-report-p1-p2.md`（本机，不入库） | 2026-10-24 |
-| PF-035 | 未定 | KOS 优化：ACTIVE_WORK 是否仍有存在价值、或并入目录 | Backlog | Human 提出，未讨论、未决定；015 快照 `27e2b6c`：无仓库脚本/CI 直接读取或校验 ACTIVE_WORK，40 文件 / 69 处 Markdown 链接指向它，7 条相关规则、6 行活动表且有历史叙述与镜像差异；外部工具是否读取 UNKNOWN；不是独立复核 | `~/.kos-work/Universe-Keyboard/GROK-BOT-TRIAL-015/reports/active-work-impact.md`（SHA-256 `45da4f55dfbb75b6384d7d787bf26fa0a6caf9799ae106183dbc03512302b1ef`）；`~/.kos-work/Universe-Keyboard/PORTFOLIO-REFRESH-005/content/backlog-notes.md`（SHA-256 `bbf9c298e4b728a5123a74ba3119d5f82c3c8983d90aa3163bb0925bc9a81371`） A 节 | 2026-10-25 |
 
 | PF-037 | P1 | 发布前自动化检验（检查表分三层） | Backlog | 未立项；与 PF-038、PF-039 同属一份尚未起草的产品决定（第 5 题答 A） | 暂存 B16-2（PM 暂存，未入库）；[路线图](portfolio/roadmap-2026-10.md) | 2026-10-25 |
 | PF-038 | P1 | 键盘内建性能与健康记录（PM 建议并入 wetype 计划工作包 C，未决定） | Backlog | 未立项、未决定；只读盘点见外置 GROK-BOT-TRIAL-022/reports/diagnostics-inventory.md（SHA-256 4d4e68df…02c5）；2026-10-27 新旧接口只读盘点（外置 DIAG-INTERFACE-INVENTORY-001/reports/diag-interface-inventory.md，SHA-256 5828477e…dfd893，独立 Quality PASS 0fab7466…f0787，静态）：旧 Logger 业务调用 211 个、只保留 500 条（`LoggerWriter.swift:39`）；typed journal 已分段（约 1MiB/段、7 天/100MiB）；统一方向 A/B/C 待 Human；PD-TEST-DIAG-AUTOMATION-001 草稿外置待批准（T-B）；2026-10-27 PR #252 已提供仅测试用的 DEBUG 刷新屏障（见 PF-034），不替代 T-B 统一设计，其等待不得复用于生产/挂起路径；PM 建议把 0xDEAD10CC 缓解方向（PF-057）并入 T-B 统一设计（PM 建议，盘点报告本身只列方向、不推荐；未经 Human 决定；二者具体改动的文件范围尚未确定） | 暂存 B20、B27（PM 暂存，未入库）；[路线图](portfolio/roadmap-2026-10.md) | 2026-10-25 |
@@ -170,6 +169,7 @@
 | 2026-11-06 | PF-044、PF-057、PF-060 关闭（原话“三项都关闭”） | 本文件“已完成”表；[万象 Assignment](assignments/wanxiang-t9-001.md)；[LAUNCH-STABILITY Assignment](assignments/launch-stability-001.md) |
 | 2026-11-06 | Human 报告本次 tag 构建完成并自动进入 TestFlight 内部组，原随 main 自动构建的工作流已停用（原话“旧工作流我也已经停用了”） | 本文件“已完成”表 PF-036 |
 | 2026-11-06 | SWITCH-RESOLVER-001 与 PF-036 关闭（原话“两项都关闭”） | [Assignment](assignments/switch-resolver-001.md)；本文件“已完成”表 |
+| 2026-11-07 | `docs/ACTIVE_WORK.md` 冻结为历史快照，入口文档改指本目录；PF-035 据此关闭（原话“按推荐改”） | AGENTS.md「工作入口」；本文件“已完成”表 |
 
 ## 已完成
 
@@ -193,6 +193,7 @@
 | PF-060 | 26 键双手快速交替时第二个键不触发（上线前只修缝隙） | 随 PR #270 合并的缝隙修复，Human 2026-11-06 决定关闭，后续见 PF-061 至 PF-063 与 [Assignment](assignments/launch-stability-001.md)；核对 2026-11-06 |
 | PF-036 | 发布自动化：Xcode Cloud 构建并上传到 TestFlight | Human 2026-11-06 陈述 tag `testflight/1.0-20261106` 触发的 Xcode Cloud 构建 201 已自动进入 TestFlight 内部组并决定关闭，PM 对下载件的核对见外置 RELEASE-20261105/build201/pm-check-build201.md；核对 2026-11-06 |
 | SWITCH-RESOLVER-001 | 方案开关按名称与含义识别 | 随 [PR #264](https://github.com/shchnk1103/Universe-Keyboard/pull/264) 合并，Human 2026-11-06 在 Build 201 真机三项验收通过后决定关闭，边界见 [Assignment](assignments/switch-resolver-001.md)；核对 2026-11-06 |
+| PF-035 | KOS 优化：ACTIVE_WORK 去留（Done：冻结为历史快照，入口改指本目录） | Human 2026-11-07“按推荐改”；本文件决定记录 2026-11-07 |
 
 ## 接手须知
 

@@ -12,12 +12,12 @@
 2026-10-11：P1/P2证据已收敛，固定main5927233完整CI＋DEBUG52通过；有限性能范围已获Human批准。精确交付待发布授权；父Active，无Gate/Close/Release；见[最终CI](evidence/typo-correction-002-fixed-main-validation-001.md)及[交付包](evidence/typo-correction-002-delivery-packaging-001.md)。
 
 
-本页只路由。当前工作读 [Active Work](ACTIVE_WORK.md)，按 [Reading Maps](READING_MAPS.md)
+本页只路由。未完成项与优先级见 [任务组合](PORTFOLIO.md)（[Active Work](ACTIVE_WORK.md) 已冻结为历史快照），按 [Reading Maps](READING_MAPS.md)
 选择一个任务路径；足以回答或行动后停止扩读。历史从 Assignment/ADR 目录按 ID 查找。
 
 ## 工作入口
 
-- [任务路径](READING_MAPS.md) · [当前工作](ACTIVE_WORK.md) · [Assignment 目录](assignments/) · [任务组合](PORTFOLIO.md)
+- [任务路径](READING_MAPS.md) · [历史快照](ACTIVE_WORK.md) · [Assignment 目录](assignments/) · [任务组合](PORTFOLIO.md)
 - [架构概览](PROJECT_CONTEXT.md)（代码/架构任务）· [UI 规则](UI_STYLE_GUIDE.md) · [键盘数值](KEYBOARD_VALUES.md)
 - [文档治理](DOCUMENTATION_GOVERNANCE.md) · [依赖影响](KNOWLEDGE_DEPENDENCIES.md) · [决策树](DECISION_TREES.md)
 - [AI 协作](AI_WORKFLOW.md) · [领域 playbooks](playbooks/) · [长期所有权](VIRTUAL_ENGINEERING_TEAM.md)
