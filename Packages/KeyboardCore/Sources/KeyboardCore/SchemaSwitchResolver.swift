@@ -69,6 +69,12 @@ public enum SchemaSwitchResolver {
         return parse(source, allowingPinnedLunaPatch: true)
     }
 
+    /// Accept only the pinned two-item `__patch`. This does not apply Luna's hash exemption.
+    /// The caller has to prove the source hash before treating the result as a compile input.
+    public static func recognizePinnedPatch(_ source: String) -> Result<[Item], Failure> {
+        parse(source, allowingPinnedLunaPatch: true)
+    }
+
     public static func simplification(in items: [Item]) -> Result<Simplification, Failure> {
         var candidates: [Candidate] = []
         for item in items {
