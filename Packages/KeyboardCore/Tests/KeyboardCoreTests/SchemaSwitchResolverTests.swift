@@ -154,7 +154,7 @@ final class SchemaSwitchResolverTests: XCTestCase {
 
             """
         let twoItem = source.replacingOccurrences(
-            of: "\n              - luna_pinyin_t9.custom:/patch?",
+            of: "\n  - luna_pinyin_t9.custom:/patch?",
             with: ""
         )
         XCTAssertEqual(SchemaSwitchResolver.recognize(source).failure, .switchesPatched)
