@@ -141,6 +141,31 @@ final class SchemaSwitchResolverTests: XCTestCase {
     private let wanxiangSHA = "e52cc55fb71157c72098c44e5cd79deb58f5538dcd76c7f1b27648ae91a204b7"
     private let t9SHA = "56bc593d2c846666361b3394bdc0bdb0c6f1a663f1fd810dceab2d222b5bf8f6"
     private let lunaSHA = SchemaSwitchResolver.builtinLunaSHA256
+
+    func testPinnedPatchParsesWithoutTheLunaHashExemption() {
+        let source = """
+            switches:
+              - options: [zh_hant, zh_hans]
+                states: [繁, 简]
+            __patch:
+              - grammar:/hant?
+              - luna_pinyin.custom:/patch?
+              - luna_pinyin_t9.custom:/patch?
+
+            """
+        let twoItem = source.replacingOccurrences(
+            of: "\n  - luna_pinyin_t9.custom:/patch?",
+            with: ""
+        )
+        XCTAssertEqual(SchemaSwitchResolver.recognize(source).failure, .switchesPatched)
+        XCTAssertEqual(SchemaSwitchResolver.recognizePinnedPatch(twoItem).failure, .switchesPatched)
+        let items = try? SchemaSwitchResolver.recognizePinnedPatch(source).get()
+        XCTAssertEqual(items?.count, 1)
+        guard case .success(let selection)? = items.map({ SchemaSwitchResolver.simplification(in: $0) }) else {
+            return XCTFail("pinned patch should resolve simplification")
+        }
+        XCTAssertEqual(selection.key, "switches/@0/reset")
+    }
 }
 
 extension Result where Failure == SchemaSwitchResolver.Failure {

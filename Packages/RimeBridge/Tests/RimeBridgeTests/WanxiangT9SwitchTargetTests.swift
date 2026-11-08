@@ -1,3 +1,5 @@
+import CryptoKit
+import Foundation
 import KeyboardCore
 import XCTest
 
@@ -36,6 +38,10 @@ final class WanxiangT9SwitchTargetTests: XCTestCase {
         guard let path = ProcessInfo.processInfo.environment["WANXIANG_T9I_SOURCE"] else {
             throw XCTSkip("WANXIANG_T9I_SOURCE unset")
         }
+        let data = try Data(contentsOf: URL(fileURLWithPath: path))
+        let digest = SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
+        XCTAssertEqual(digest, "394e5e091623938c78bbe63146f869546da13db1fa8f945c86c6e3becadc9d0f")
+        print("RUNNER_FIXED_SOURCE path=\(path) sha256=\(digest)")
         let source = try String(contentsOfFile: path, encoding: .utf8)
         guard case .rewritten(let rewritten) = WanxiangT9SchemaCompatibility.rewrite(source) else {
             return XCTFail("fixed source must rewrite")

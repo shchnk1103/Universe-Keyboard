@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 import KeyboardCore
 
@@ -287,7 +288,15 @@ extension RimeConfigManager {
                     schemaID: target.schemaID,
                     userDictionaryEnabled: enabled,
                     fuzzyPinyinSettings: fuzzyPinyinSettings,
-                    switchPatches: switches
+                    switchPatches: switches,
+                    controlledAlgebra: lunaT9ControlledAlgebra(
+                        for: target,
+                        source: target.sourceText,
+                        fuzzyPinyinSettings: fuzzyPinyinSettings,
+                        grammarYamlPresent: grammarYamlPresent,
+                        compileInputProven: compileInputProven,
+                        advancedDisabledComponents: advancedDisabledComponents
+                    )
                 )
             else { continue }
             files.append(
@@ -308,7 +317,8 @@ extension RimeConfigManager {
         schemaID: String,
         userDictionaryEnabled: Bool,
         fuzzyPinyinSettings: RimeFuzzyPinyinSettings,
-        switchPatches: [(key: String, value: String)] = []
+        switchPatches: [(key: String, value: String)] = [],
+        controlledAlgebra: [String]? = nil
     ) -> String? {
         var patch: [(String, String)] = []
         for item in switchPatches {
@@ -323,6 +333,14 @@ extension RimeConfigManager {
         var yaml = "patch:\n"
         for (key, value) in patch {
             yaml += "  \(key): \(value)\n"
+        }
+        if let controlledAlgebra {
+            // Nine-key algebra is a full replacement. Appending would place letter
+            // rules after the terminal xlit, where they no longer match letters.
+            yaml += "  \"speller/algebra\":\n"
+            for rule in controlledAlgebra {
+                yaml += "    - \(rule)\n"
+            }
         }
         if schemaID == "luna_pinyin", fuzzyPinyinSettings.hasEnabledRules {
             yaml += "  \"speller/algebra/+\":\n"
@@ -343,6 +361,8 @@ extension RimeConfigManager {
         let includeWanxiang = wanxiangInstalled || pendingSchemaID == "wanxiang"
         var specs: [(String, String, Bool)] = [
             ("luna_pinyin", "luna_pinyin", false),
+            // Same dictionary as luna_pinyin. schema_list registration stays outside this planner.
+            ("luna_pinyin_t9", "luna_pinyin", false),
             ("rime_ice", "rime_ice", false),
         ]
         if includeWanxiang {
@@ -418,6 +438,16 @@ extension RimeConfigManager {
             logSwitchOmission(schemaID: target.schemaID, setting: "simplification", reason: "sourceMissing")
             return []
         }
+        if target.schemaID == "luna_pinyin_t9" {
+            return lunaT9SwitchPatches(
+                source: source,
+                simplificationEnabled: simplificationEnabled,
+                fuzzyPinyinSettings: fuzzyPinyinSettings,
+                grammarYamlPresent: grammarYamlPresent,
+                compileInputProven: compileInputProven,
+                advancedDisabledComponents: advancedDisabledComponents
+            )
+        }
         if !postProcessKeepsSwitches(
             schemaID: target.schemaID,
             source: source,
@@ -474,6 +504,12 @@ extension RimeConfigManager {
         advancedDisabledComponents: Set<String>
     ) -> Bool {
         let original: [SchemaSwitchResolver.Item]
+        if schemaID == "luna_pinyin_t9" {
+            return lunaT9PostProcessKeepsSwitches(
+                source: source,
+                fuzzyPinyinSettings: fuzzyPinyinSettings
+            )
+        }
         switch SchemaSwitchResolver.recognize(source) {
         case .success(let value):
             original = value
@@ -525,6 +561,147 @@ extension RimeConfigManager {
             let reset = item.reset.map(String.init) ?? ""
             return "\(item.index)|\(item.name ?? "")|\(options)|\(states)|\(reset)"
         }
+    }
+
+    /// The nine-key source is proven only by the frozen output hash, a proven compile,
+    /// and the absence of grammar.yaml. This is not Luna's original hash exemption.
+    private static func lunaT9SwitchPatches(
+        source: String,
+        simplificationEnabled: Bool,
+        fuzzyPinyinSettings: RimeFuzzyPinyinSettings,
+        grammarYamlPresent: Bool,
+        compileInputProven: Bool,
+        advancedDisabledComponents: Set<String>
+    ) -> [(key: String, value: String)] {
+        guard compileInputProven else {
+            logSwitchOmission(schemaID: "luna_pinyin_t9", setting: "simplification", reason: "compileInputUnproven")
+            return []
+        }
+        guard !grammarYamlPresent else {
+            logSwitchOmission(schemaID: "luna_pinyin_t9", setting: "simplification", reason: "grammarYamlPresent")
+            return []
+        }
+        guard sha256(source) == LunaT9SchemaCompatibility.outputSHA256 else {
+            logSwitchOmission(schemaID: "luna_pinyin_t9", setting: "simplification", reason: "sourceUnproven")
+            return []
+        }
+        guard
+            postProcessKeepsSwitches(
+                schemaID: "luna_pinyin_t9",
+                source: source,
+                fuzzyPinyinSettings: fuzzyPinyinSettings,
+                advancedDisabledComponents: advancedDisabledComponents
+            )
+        else {
+            logSwitchOmission(
+                schemaID: "luna_pinyin_t9", setting: "simplification", reason: "postProcessChangedSwitches")
+            return []
+        }
+        switch SchemaSwitchResolver.recognizePinnedPatch(source) {
+        case .failure(let failure):
+            logSwitchOmission(schemaID: "luna_pinyin_t9", setting: "simplification", reason: failure.rawValue)
+            return []
+        case .success(let items):
+            switch SchemaSwitchResolver.simplification(in: items) {
+            case .failure(let failure):
+                logSwitchOmission(schemaID: "luna_pinyin_t9", setting: "simplification", reason: failure.rawValue)
+                return []
+            case .success(let selection):
+                let reset = simplificationEnabled ? selection.simplifiedReset : selection.traditionalReset
+                return [(selection.key, String(reset))]
+            }
+        }
+    }
+
+    private static func lunaT9ControlledAlgebra(
+        for target: SchemaSwitchTarget,
+        source: String?,
+        fuzzyPinyinSettings: RimeFuzzyPinyinSettings,
+        grammarYamlPresent: Bool,
+        compileInputProven: Bool,
+        advancedDisabledComponents: Set<String>
+    ) -> [String]? {
+        guard target.schemaID == "luna_pinyin_t9", let source, fuzzyPinyinSettings.hasEnabledRules else {
+            return nil
+        }
+        guard
+            lunaT9SwitchPatches(
+                source: source,
+                simplificationEnabled: true,
+                fuzzyPinyinSettings: fuzzyPinyinSettings,
+                grammarYamlPresent: grammarYamlPresent,
+                compileInputProven: compileInputProven,
+                advancedDisabledComponents: advancedDisabledComponents
+            ).isEmpty == false
+        else {
+            return nil
+        }
+        return lunaT9AlgebraReplacement(source: source, fuzzyPinyinSettings: fuzzyPinyinSettings)
+    }
+
+    private static let lunaT9TerminalXlit =
+        "xlit/abcdefghijklmnopqrstuvwxyz/22233344455566677778889999/"
+
+    /// Letter rules already in the frozen schema, then the setting's fuzzy rules, then one xlit.
+    private static func lunaT9AlgebraReplacement(
+        source: String,
+        fuzzyPinyinSettings: RimeFuzzyPinyinSettings
+    ) -> [String]? {
+        guard let rules = algebraList(in: source), let terminal = rules.last else { return nil }
+        let letters = rules.dropLast()
+        guard terminal == lunaT9TerminalXlit, letters.allSatisfy({ $0 != lunaT9TerminalXlit }) else {
+            return nil
+        }
+        return Array(letters) + fuzzyPinyinSettings.algebraRules + [terminal]
+    }
+
+    private static func algebraList(in source: String) -> [String]? {
+        let lines = source.split(separator: "\n", omittingEmptySubsequences: false).map(String.init)
+        guard
+            let algebraIndex = lines.firstIndex(where: {
+                $0.trimmingCharacters(in: .whitespaces) == "algebra:"
+            })
+        else { return nil }
+        let baseIndent = lines[algebraIndex].prefix(while: { $0 == " " }).count
+        var rules: [String] = []
+        var index = algebraIndex + 1
+        while index < lines.count {
+            let line = lines[index]
+            if line.trimmingCharacters(in: .whitespaces).isEmpty {
+                index += 1
+                continue
+            }
+            let indent = line.prefix(while: { $0 == " " }).count
+            if indent <= baseIndent { break }
+            let body = line.trimmingCharacters(in: .whitespaces)
+            guard body.hasPrefix("- ") else { return nil }
+            let rule = String(body.dropFirst(2).split(separator: "#", maxSplits: 1)[0])
+                .trimmingCharacters(in: .whitespaces)
+            guard !rule.isEmpty else { return nil }
+            rules.append(rule)
+            index += 1
+        }
+        return rules.isEmpty ? nil : rules
+    }
+
+    private static func lunaT9PostProcessKeepsSwitches(
+        source: String,
+        fuzzyPinyinSettings: RimeFuzzyPinyinSettings
+    ) -> Bool {
+        guard sha256(source) == LunaT9SchemaCompatibility.outputSHA256 else { return false }
+        guard case .success(let original) = SchemaSwitchResolver.recognizePinnedPatch(source) else {
+            return false
+        }
+        let originalIdentity = switchIdentity(original)
+        let rewritten = RimeFuzzyPinyinPostProcessor.apply(settings: fuzzyPinyinSettings, to: source).yaml
+        guard case .success(let items) = SchemaSwitchResolver.recognizePinnedPatch(rewritten) else {
+            return false
+        }
+        return switchIdentity(items) == originalIdentity
+    }
+
+    private static func sha256(_ source: String) -> String {
+        SHA256.hash(data: Data(source.utf8)).map { String(format: "%02x", $0) }.joined()
     }
 
     private static func logSwitchOmission(schemaID: String, setting: String, reason: String) {
