@@ -111,15 +111,28 @@ final class LunaT9ComposingDisplayTests: XCTestCase {
             }
         }
     }
+    func testPathEncodingFiltersNonLettersPerSyllable() {
+        XCTAssertEqual(encode("ni,"), "64")
+        XCTAssertEqual(encode("n!i ' h@ao"), "64426")
+        XCTAssertEqual(encode("nü"), "68")
+        XCTAssertEqual(encode("nv"), "68")
+        XCTAssertNil(encode("ni 123"))
+        XCTAssertNil(encode("!?,"))
+        XCTAssertNil(encode(""))
+    }
+
     private func encode(_ path: String) -> String? {
-        let parts = path.lowercased().replacingOccurrences(of: "ü", with: "v").split { $0.isWhitespace || $0 == "'" }
+        let parts = path.lowercased().replacingOccurrences(of: "ü", with: "v").split {
+            $0.isWhitespace || $0 == "'"
+        }
         guard !parts.isEmpty else { return nil }
         let groups = ["abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"]
         var digits = ""
         for part in parts {
-            guard !part.isEmpty else { return nil }
-            for c in part {
-                guard let index = groups.firstIndex(where: { $0.contains(c) }) else { return nil };
+            let letters = part.unicodeScalars.filter { (97...122).contains($0.value) }
+            guard !letters.isEmpty else { return nil }
+            for scalar in letters {
+                guard let index = groups.firstIndex(where: { $0.unicodeScalars.contains(scalar) }) else { return nil }
                 digits += String(index + 2)
             }
         }
