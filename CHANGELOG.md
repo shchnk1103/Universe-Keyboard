@@ -5,6 +5,10 @@
 
 # CHANGELOG
 
+## 2026-11-08 — KOS-KNOWLEDGE-LUNA-001 朙月九宫格知识卡入库
+
+- 新增 `docs/architecture/luna-nine-key-scheme.md`，记录补丁链、planner 放行条件、真引擎实测事实和已定与待定决定；PM 手册新增第 8 节“任务收口要产出知识卡”，知识索引挂入口。
+
 ## 2026-11-08 — KOS-LESSONS-LUNA-001 PM 手册补入 LUNA 教训
 
 - 在 `docs/kos/pm-playbook.md` 新增第 7 节，记录 LUNA 实现与发布中反复出现的写包与核对问题及对应规则。
