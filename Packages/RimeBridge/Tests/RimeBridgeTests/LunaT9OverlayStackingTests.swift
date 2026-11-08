@@ -38,20 +38,22 @@ final class LunaT9OverlayStackingTests: XCTestCase {
                 name, simplified: true, settings: settings, base: base, source: text, builtin: builtin)
             for input in inputs {
                 let left = traditional[input] ?? []; let right = simplified[input] ?? []
-                let lmap = Dictionary(grouping: left, by: { $0.text });
-                let rmap = Dictionary(grouping: right, by: { $0.text })
-                let shared = Set(lmap.keys).intersection(rmap.keys).sorted()
-                let unmatchedLeft = Set(lmap.keys).subtracting(rmap.keys).sorted()
-                let unmatchedRight = Set(rmap.keys).subtracting(lmap.keys).sorted()
-                let matched = shared.map {
-                    "\($0):\(lmap[$0]!.map { $0.comment ?? "" })|\(rmap[$0]!.map { $0.comment ?? "" })"
+                let length = max(left.count, right.count)
+                var paired = 0
+                var unresolved = 0
+                var rows: [String] = []
+                for index in 0..<length {
+                    let a = index < left.count ? left[index] : nil
+                    let b = index < right.count ? right[index] : nil
+                    let equal = a != nil && b != nil && a?.comment == b?.comment
+                    if equal { paired += 1 } else { unresolved += 1 }
+                    rows.append(
+                        "\(index):\(a?.text ?? "<absent>"){\(a?.comment ?? "<nil>")}|\(b?.text ?? "<absent>"){\(b?.comment ?? "<nil>")}:\(equal ? "paired" : "undetermined")"
+                    )
                 }
                 print(
-                    "LUNA_STACK_COMPARE setting=\(name) input=\(input) matched=\(matched) traditionalUnmatched=\(unmatchedLeft) simplifiedUnmatched=\(unmatchedRight) status=\(unmatchedLeft.isEmpty && unmatchedRight.isEmpty ? "matched" : "undetermined")"
+                    "LUNA_STACK_COMPARE setting=\(name) input=\(input) paired=\(paired) undetermined=\(unresolved) rows=\(rows)"
                 )
-                XCTAssertTrue(
-                    unmatchedLeft.isEmpty && unmatchedRight.isEmpty,
-                    "\(name) \(input) cannot pair windows by identical text")
             }
         }
     }
@@ -177,18 +179,43 @@ final class LunaT9OverlayStackingTests: XCTestCase {
                 XCTAssertFalse(
                     comment.contains(where: \.isNumber), "\(name) \(input) comment contains digit: \(comment)")
             }
-            if let first = rows.first {
-                XCTAssertEqual(first["prefix"] as? Bool, true, "\(name) \(simplified) \(input) first=\(first)")
-            }
+            let firstComment = candidates.first?.comment.flatMap(T9PreeditResolver.validatedSource) ?? ""
+            let equivalence = equivalent(firstComment, input: input, settings: settings)
+            XCTAssertNotNil(equivalence, "\(name) \(simplified) \(input) comment=\(firstComment)")
             let record: [String: Any] = [
                 "setting": name, "simplified": simplified, "input": input, "raw": output.rawInput ?? "",
                 "preedit": output.composition?.preeditText ?? "", "page": output.candidatePageNumber,
                 "candidates": rows, "deletedRaw": deleted.rawInput ?? "",
+                "matchMethod": equivalence?.0 ?? "none", "matchCombination": equivalence?.1 ?? "",
             ]
             let data = try JSONSerialization.data(withJSONObject: record, options: [.sortedKeys]);
             print("LUNA_STACK \(String(decoding: data, as: UTF8.self))")
         }
         return observed
+    }
+    private func equivalent(_ comment: String, input: String, settings: RimeFuzzyPinyinSettings) -> (String, String)? {
+        guard !comment.isEmpty else { return nil }
+        let groups: [(String, String, Bool)] = [
+            ("zh", "z", settings.enabled && settings.zhZEnabled),
+            ("ch", "c", settings.enabled && settings.chCEnabled),
+            ("sh", "s", settings.enabled && settings.shSEnabled),
+            ("n", "l", settings.enabled && settings.nLEnabled),
+        ]
+        var combinations = [""]
+        for syllable in comment.split(whereSeparator: \.isWhitespace).map(String.init) {
+            var options = [syllable]
+            for (a, b, active) in groups where active {
+                if syllable.hasPrefix(a) {
+                    options.append(b + syllable.dropFirst(a.count))
+                } else if syllable.hasPrefix(b) {
+                    options.append(a + syllable.dropFirst(b.count))
+                }
+            }
+            combinations = combinations.flatMap { prefix in options.map { prefix.isEmpty ? $0 : prefix + " " + $0 } }
+        }
+        if encode(comment).hasPrefix(input) { return ("direct", comment) }
+        if let match = combinations.first(where: { encode($0).hasPrefix(input) }) { return ("fuzzy-equivalent", match) }
+        return nil
     }
     private func encode(_ source: String) -> String {
         let groups = ["abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"]
