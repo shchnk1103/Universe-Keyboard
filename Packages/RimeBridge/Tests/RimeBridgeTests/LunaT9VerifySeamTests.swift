@@ -64,6 +64,23 @@ final class LunaT9VerifySeamTests: XCTestCase {
         let invalid = verify("6446", [entry, entry])
         print("LUNA_SEAM B registry=duplicate-schema result=\(invalid)")
         XCTAssertFalse(invalid)
+        let duplicateSchema = NineKeyScheme(
+            schemaID: schema, familyID: "luna_pinyin", markerKey: "test_other_marker", compatibilityVersion: "1")
+        let duplicateMarker = NineKeyScheme(
+            schemaID: "other_t9", familyID: "luna_pinyin", markerKey: entry.markerKey, compatibilityVersion: "1")
+        let invalidFamily = NineKeyScheme(
+            schemaID: schema, familyID: "unsupported_family", markerKey: entry.markerKey, compatibilityVersion: "1")
+        for (label, snapshot) in [
+            ("duplicate-schema-only", [entry, duplicateSchema]),
+            ("duplicate-marker-only", [entry, duplicateMarker]),
+            ("invalid-family-only", [invalidFamily]),
+        ] {
+            let valid = NineKeySchemeRegistry.isValid(snapshot)
+            let result = verify("6446", snapshot)
+            print("LUNA_SEAM B-\(label) valid=\(valid) result=\(result)")
+            XCTAssertFalse(valid, label)
+            XCTAssertFalse(result, label)
+        }
         let absent = verify("6446", NineKeySchemeRegistry.entries)
         print("LUNA_SEAM C registry=production-without-luna result=\(absent)")
         XCTAssertFalse(absent)
