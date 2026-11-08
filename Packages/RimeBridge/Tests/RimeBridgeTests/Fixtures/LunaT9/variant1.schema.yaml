@@ -86,6 +86,7 @@ speller:
 translator:
   dictionary: luna_pinyin
   prism: luna_pinyin_t9
+  spelling_hints: 8
   preedit_format:
     - xform/([nl])v/$1ü/
     - xform/([nl])ue/$1üe/

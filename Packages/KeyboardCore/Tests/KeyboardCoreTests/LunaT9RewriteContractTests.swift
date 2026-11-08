@@ -1,3 +1,4 @@
+import CryptoKit
 import Foundation
 import XCTest
 
@@ -23,6 +24,33 @@ final class LunaT9RewriteContractTests: XCTestCase {
             contentsOf: repository.appendingPathComponent(
                 "Packages/RimeBridge/Tests/RimeBridgeTests/Fixtures/LunaT9/variant1.schema.yaml"))
         XCTAssertEqual(try LunaT9SchemaCompatibility.rewrite(source()), expected)
+    }
+
+    func testTranslatorKeepsOriginalFieldsAndAddsOneHint() throws {
+        let originalData = try source()
+        let sourceHash = SHA256.hash(data: originalData).map { String(format: "%02x", $0) }.joined()
+        XCTAssertEqual(sourceHash, LunaT9SchemaCompatibility.sourceSHA256)
+        let original = String(decoding: originalData, as: UTF8.self)
+        let rewritten = String(decoding: try LunaT9SchemaCompatibility.rewrite(originalData), as: UTF8.self)
+        func translator(_ text: String) throws -> String {
+            let start = try XCTUnwrap(text.range(of: "\ntranslator:\n"))
+            let tail = text[start.upperBound...]
+            let end = try XCTUnwrap(tail.range(of: "\n[a-zA-Z_][a-zA-Z0-9_]*:", options: .regularExpression))
+            return String(tail[..<end.lowerBound])
+        }
+        let section = try translator(rewritten)
+        for line in [
+            "  dictionary: luna_pinyin\n", "  prism: luna_pinyin_t9\n", "  spelling_hints: 8\n", "  preedit_format:\n",
+        ] {
+            XCTAssertEqual(section.components(separatedBy: line).count - 1, 1, line)
+        }
+        let originalSection = try translator(original)
+        let restored = section.replacingOccurrences(of: "  prism: luna_pinyin_t9\n", with: "")
+            .replacingOccurrences(of: "  spelling_hints: 8\n", with: "")
+        XCTAssertEqual(restored, originalSection)
+        XCTAssertEqual(
+            rewritten.components(separatedBy: "  preedit_format:\n").count,
+            original.components(separatedBy: "  preedit_format:\n").count)
     }
 
     func testMissingAndDuplicateAnchorsFailClosed() throws {

@@ -51,6 +51,25 @@ final class LunaT9CompileInputContractTests: XCTestCase {
         XCTAssertTrue(plan.contains { $0.filename == "luna_pinyin_t9.custom.yaml" })
     }
 
+    func testPreviousOutputFailsClosedEvenWhenCompileInputIsProven() throws {
+        let source = try frozenSource()
+        XCTAssertEqual(source.components(separatedBy: "  spelling_hints: 8\n").count, 2)
+        let old = source.replacingOccurrences(of: "  spelling_hints: 8\n", with: "")
+        XCTAssertEqual(digest(Data(old.utf8)), "b358a26144df2f650f515597f2eb435d02b16293cb9d676bba508dbb8d0f0ca2")
+        for (text, allowed) in [(old, false), (source, true)] {
+            let target = RimeConfigManager.SchemaSwitchTarget(
+                schemaID: schemaID, userDictionarySchemaID: "luna_pinyin", sourceText: text, wanxiangFamily: false)
+            let plan = RimeConfigManager.planSchemaCustomYamlFiles(
+                targets: [target], simplificationEnabled: true,
+                userDictionarySettings: RimeUserDictionarySettings(lunaPinyinEnabled: true, rimeIceEnabled: false),
+                fuzzyPinyinSettings: RimeFuzzyPinyinSettings(enabled: true),
+                grammarYamlPresent: false, compileInputProven: true)
+            let overlay = try XCTUnwrap(plan.first?.content)
+            XCTAssertEqual(overlay.contains("switches/"), allowed)
+            XCTAssertEqual(overlay.contains("speller/algebra"), allowed)
+        }
+    }
+
     func testGrammarYamlBlocksLunaT9ResetAndAlgebra() throws {
         let source = try frozenSource()
         let target = RimeConfigManager.SchemaSwitchTarget(
