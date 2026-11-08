@@ -202,13 +202,9 @@ final class LunaT9DeploymentContractTests: XCTestCase {
             variant = try Data(
                 contentsOf: root.appendingPathComponent(
                     "Packages/RimeBridge/Tests/RimeBridgeTests/Fixtures/LunaT9/variant1.schema.yaml"))
-            scene = URL(
-                fileURLWithPath:
-                    "/Users/doubleshy0n/.kos-work/Universe-Keyboard/LUNA-PLANNER-IMPL-001/scratch/impl-b/deployment-runtime"
-            )
-            .appendingPathComponent("scene-\(UUID().uuidString)", isDirectory: true)
-            // UUID scene is created by this run and never reused or deleted.
-            try FileManager.default.createDirectory(at: scene, withIntermediateDirectories: false)
+            scene = try LunaT9EvidenceRoot.directory("deployment-runtime")
+                .appendingPathComponent("scene-\(UUID().uuidString)", isDirectory: true)
+            try LunaT9EvidenceRoot.createExclusiveDirectory(scene)
             newResources = scene.appendingPathComponent("incoming", isDirectory: true)
             try Self.makeResources(at: newResources, repository: root, generation: "pr1b-new", original: original)
             if existing {

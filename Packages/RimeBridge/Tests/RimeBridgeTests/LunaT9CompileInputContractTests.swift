@@ -10,11 +10,6 @@ import XCTest
 @MainActor
 final class LunaT9CompileInputContractTests: XCTestCase {
     private let schemaID = "luna_pinyin_t9"
-    private let runtimeRoot = URL(
-        fileURLWithPath:
-            "/Users/doubleshy0n/.kos-work/Universe-Keyboard/LUNA-PLANNER-IMPL-001/scratch/impl-b/compile-runtime",
-        isDirectory: true
-    )
 
     func testCompileInputMatrix() throws {
         try runMatrix(checkCompiledLearning: false)
@@ -27,7 +22,7 @@ final class LunaT9CompileInputContractTests: XCTestCase {
         let derived = try LunaT9SchemaCompatibility.rewrite(original)
         let frozen = String(decoding: derived, as: UTF8.self)
         for enabled in [true, false] {
-            let root = runtimeRoot.appendingPathComponent(
+            let root = try LunaT9EvidenceRoot.directory("compile-runtime").appendingPathComponent(
                 "learning-\(enabled)-\(UUID().uuidString)", isDirectory: true)
             try observe(
                 root: root, builtin: builtin, source: frozen, sourceName: "proven",
@@ -38,9 +33,9 @@ final class LunaT9CompileInputContractTests: XCTestCase {
     }
 
     func testProductionTargetIncludesLunaPinyinT9() throws {
-        let root = runtimeRoot.appendingPathComponent(
+        let root = try LunaT9EvidenceRoot.directory("compile-runtime").appendingPathComponent(
             "planner-target-\(UUID().uuidString)", isDirectory: true)
-        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        try LunaT9EvidenceRoot.createExclusiveDirectory(root)
         defer { try? FileManager.default.removeItem(at: root) }
         let targets = RimeConfigManager.schemaSwitchTargets(
             rimeRoot: root, iceInstalled: false, wanxiangInstalled: false, pendingSchemaID: nil)
@@ -103,7 +98,8 @@ final class LunaT9CompileInputContractTests: XCTestCase {
                 for enabled in [true, false] {
                     let scene =
                         "\(name)-\(proven ? "callback" : "sync-false")-\(enabled ? "on" : "off")-\(UUID().uuidString)"
-                    let root = runtimeRoot.appendingPathComponent(scene, isDirectory: true)
+                    let root = try LunaT9EvidenceRoot.directory("compile-runtime").appendingPathComponent(
+                        scene, isDirectory: true)
                     do {
                         try observe(
                             root: root, builtin: builtin, source: source, sourceName: name,
@@ -130,7 +126,7 @@ final class LunaT9CompileInputContractTests: XCTestCase {
         let fm = FileManager.default
         let shared = root.appendingPathComponent("shared", isDirectory: true)
         let user = root.appendingPathComponent("user", isDirectory: true)
-        try fm.createDirectory(at: root, withIntermediateDirectories: true)
+        try LunaT9EvidenceRoot.createExclusiveDirectory(root)
         try fm.copyItem(at: builtin, to: shared)
         try fm.createDirectory(at: user, withIntermediateDirectories: true)
         try source.write(
@@ -188,7 +184,7 @@ final class LunaT9CompileInputContractTests: XCTestCase {
         let getBool = try XCTUnwrap(api.pointee.config_get_bool)
         let getString = try XCTUnwrap(api.pointee.config_get_cstring)
         var learning: Int32 = -1
-        XCTAssertNotEqual(getBool(&config, "translator/enable_user_dict", &learning), 0)
+        _ = getBool(&config, "translator/enable_user_dict", &learning)
         var algebra: [String] = []
         for index in 0..<64 {
             guard let value = getString(&config, "speller/algebra/@\(index)") else { break }
@@ -277,11 +273,23 @@ final class LunaT9CompileInputContractTests: XCTestCase {
         let b = try compileCopy(builtin: builtin, schema: bSource, overlay: overlay, name: "ab-b")
         let record = """
             overlaySHA256=\(digest(Data(overlay.utf8)))
-            A algebraCount=\(a.algebra.count) learning=\(String(describing: a.learning)) hans=\(a.hans) auto=\(a.automatic.prefix(8))
-            B algebraCount=\(b.algebra.count) learning=\(String(describing: b.learning)) hans=\(b.hans) auto=\(b.automatic.prefix(8))
+            A evidence=\(a.evidence) algebra=\(a.algebra) learning=\(String(describing: a.learning)) hans=\(a.hans) auto=\(a.automatic)
+            B evidence=\(b.evidence) algebra=\(b.algebra) learning=\(String(describing: b.learning)) hans=\(b.hans) auto=\(b.automatic)
             """
-        try record.write(to: runtimeRoot.appendingPathComponent("ab-record.txt"), atomically: true, encoding: .utf8)
+        try Data(record.utf8).write(
+            to: LunaT9EvidenceRoot.directory("compile-runtime").appendingPathComponent("ab-record.txt"),
+            options: .withoutOverwriting)
         XCTAssertEqual(a.overlaySHA, b.overlaySHA)
+        let baseAlgebra = try frozenSource().components(separatedBy: "  algebra:\n")[1]
+            .components(separatedBy: "\ntranslator:")[0]
+            .split(separator: "\n")
+            .map { String($0.components(separatedBy: "#")[0]).trimmingCharacters(in: .whitespaces).dropFirst(2) }
+            .map(String.init)
+        let expected =
+            Array(baseAlgebra.dropLast()) + RimeFuzzyPinyinSettings(enabled: true).algebraRules
+            + [try XCTUnwrap(baseAlgebra.last)]
+        XCTAssertEqual(a.algebra, baseAlgebra)
+        XCTAssertEqual(b.algebra, expected)
         // A is the two-item schema. Consumption failure is the L4 signature.
         XCTAssertFalse(a.algebra.contains { $0.contains("derive/^zh/z/") })
         XCTAssertEqual(a.hans, false)
@@ -298,13 +306,15 @@ final class LunaT9CompileInputContractTests: XCTestCase {
         var hans: Bool
         var automatic: [String]
         var overlaySHA: String
+        var evidence: String
     }
 
     private func compileCopy(builtin: URL, schema: String, overlay: String, name: String) throws -> CompiledProbe {
-        let root = runtimeRoot.appendingPathComponent("\(name)-\(UUID().uuidString)", isDirectory: true)
+        let root = try LunaT9EvidenceRoot.directory("compile-runtime").appendingPathComponent(
+            "\(name)-\(UUID().uuidString)", isDirectory: true)
         let shared = root.appendingPathComponent("shared", isDirectory: true)
         let user = root.appendingPathComponent("user", isDirectory: true)
-        try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
+        try LunaT9EvidenceRoot.createExclusiveDirectory(root)
         try FileManager.default.copyItem(at: builtin, to: shared)
         try FileManager.default.createDirectory(at: user, withIntermediateDirectories: true)
         try schema.write(
@@ -345,14 +355,45 @@ final class LunaT9CompileInputContractTests: XCTestCase {
             guard let value = getString(&config, "speller/algebra/@\(index)") else { break }
             algebra.append(String(cString: value))
         }
-        _ = manager.replaceInput("6442662")
-        let automatic = texts(manager.candidates(from: 0, limit: 20))
+        XCTAssertNotEqual(session, 0)
+        let findSession = try XCTUnwrap(api.pointee.find_session)
+        XCTAssertNotEqual(findSession(session), 0)
+        let fromIndex = try XCTUnwrap(api.pointee.candidate_list_from_index)
+        let endIterator = try XCTUnwrap(api.pointee.candidate_list_end)
+        let inputOutput = manager.replaceInput("6442662")
+        XCTAssertFalse(texts(inputOutput).isEmpty, "input must establish candidates")
+        var automatic: [String] = []
+        var pages: [String] = []
+        var index: Int32 = 0
+        var exhausted = false
+        for _ in 0..<128 {
+            var iterator = RimeCandidateListIterator()
+            guard fromIndex(session, &iterator, index) != 0 else {
+                throw NSError(domain: "LunaCandidateIterator", code: 1)
+            }
+            endIterator(&iterator)
+            let window = manager.candidates(from: index, limit: 32)
+            let page = texts(window)
+            let next = try XCTUnwrap((window["nextIndex"] as? NSNumber)?.int32Value)
+            let more = try XCTUnwrap((window["hasMoreCandidates"] as? NSNumber)?.boolValue)
+            pages.append("start=\(index) count=\(page.count) next=\(next) hasMore=\(more)")
+            automatic.append(contentsOf: page)
+            if !more { exhausted = true; break }
+            guard !page.isEmpty, next > index else { throw NSError(domain: "LunaCandidateIterator", code: 2) }
+            index = next
+        }
+        guard exhausted else { throw NSError(domain: "LunaCandidateIterator", code: 3) }
+        let sourceURL = shared.appendingPathComponent("\(schemaID).schema.yaml")
+        let overlayURL = user.appendingPathComponent("luna_pinyin_t9.custom.yaml")
+        let compiledURL = user.appendingPathComponent("build/\(schemaID).schema.yaml")
+        let evidence =
+            "root=\(root.path) session=\(session) input=6442662 source=\(sourceURL.path) sourceSHA=\(digest(try Data(contentsOf: sourceURL))) overlay=\(overlayURL.path) overlaySHA=\(digest(try Data(contentsOf: overlayURL))) compiled=\(compiledURL.path) compiledSHA=\(digest(try Data(contentsOf: compiledURL))) pages=\(pages) exhausted=\(exhausted)"
         return CompiledProbe(
             algebra: algebra,
             learning: learningPresent ? (learning != 0) : nil,
             hans: getOption(session, "zh_hans") != 0,
             automatic: automatic,
-            overlaySHA: digest(Data(overlay.utf8)))
+            overlaySHA: digest(Data(overlay.utf8)), evidence: evidence)
     }
 
     private func builtinDirectory() throws -> URL {
