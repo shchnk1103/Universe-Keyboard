@@ -5,6 +5,10 @@
 
 # CHANGELOG
 
+## 2026-11-08 — KOS-LESSONS-LUNA-001 PM 手册补入 LUNA 教训
+
+- 在 `docs/kos/pm-playbook.md` 新增第 7 节，记录 LUNA 实现与发布中反复出现的写包与核对问题及对应规则。
+
 ## 2026-11-08 — LUNA-PLANNER-001 九键朙月自定义补丁生效
 
 - 九键朙月方案的补丁链追加 `luna_pinyin_t9.custom:/patch?`，使简繁、模糊音与学习覆盖能随编译生效；未知源、grammar 或旧哈希仍然拒绝改写。
