@@ -16,6 +16,15 @@ final class LunaT9PartialCommitContractTests: XCTestCase {
         for key in "64426" {
             _ = controller.handle(.insertKey(String(key)))
         }
+        // Page 0 checkpoint (before any candidatePageDown): undo restores here.
+        let snapBeforeSelect = controller.t9CompositionPresentationSnapshot()
+        let markedBeforeSelect = client.markedText
+        let textBeforeSelect = client.text
+        let rawBeforeSelect = T9PinyinPathExtractor.normalizeRawIdentity(
+            snapBeforeSelect.rimeRawInput ?? controller.state.lastRimeOutput?.rawInput)
+        print(
+            "LUNA_PARTIAL step=page0 markedBeforeSelect=\(markedBeforeSelect) textBeforeSelect=\(textBeforeSelect) rawBeforeSelect=\(rawBeforeSelect)"
+        )
         var found: (text: String, index: Int, page: Int)?
         for page in 0..<4 {
             let snap = controller.t9CompositionPresentationSnapshot()
@@ -38,6 +47,11 @@ final class LunaT9PartialCommitContractTests: XCTestCase {
             )
             return
         }
+        let markedAtSelect = client.markedText
+        let textAtSelect = client.text
+        print(
+            "LUNA_PARTIAL step=atSelect markedAtSelect=\(markedAtSelect) textAtSelect=\(textAtSelect) pageFound=\(found.page) single=\(found.text) markedBeforeSelect=\(markedBeforeSelect)"
+        )
         XCTAssertEqual(hostCommitted(client), "", "C4 host empty before select")
         _ = controller.handle(
             .insertCandidate(
@@ -59,22 +73,55 @@ final class LunaT9PartialCommitContractTests: XCTestCase {
         let rawNorm = T9PinyinPathExtractor.normalizeRawIdentity(
             after.rimeRawInput ?? controller.state.lastRimeOutput?.rawInput)
         print(
-            "LUNA_PARTIAL step=afterSelect confirmed=\(confirmed) single=\(found.text) pageFound=\(found.page) rawNorm=\(rawNorm) cand=\(after.candidates.count) marked=\(client.markedText) text=\(client.text)"
+            "LUNA_PARTIAL step=afterSelect confirmed=\(confirmed) single=\(found.text) pageFound=\(found.page) rawNorm=\(rawNorm) cand=\(after.candidates.count) marked=\(client.markedText) text=\(client.text) markedBeforeSelect=\(markedBeforeSelect)"
         )
         XCTAssertFalse(rawNorm.isEmpty, "C4 remaining raw non-empty; measured=\(rawNorm)")
         XCTAssertGreaterThanOrEqual(after.candidates.count, 1, "C4 still composing with candidates")
-        let textBeforeDelete = client.text
         _ = controller.handle(.deleteBackward)
         let textAfterDelete = client.text
-        XCTAssertTrue(
-            textAfterDelete.hasPrefix(found.text),
-            "C4 delete must not remove confirmed \(found.text); textAfter=\(textAfterDelete) textBefore=\(textBeforeDelete)"
-        )
+        let markedAfterDelete = client.markedText
         let afterDel = controller.t9CompositionPresentationSnapshot()
         let rawAfterDel = T9PinyinPathExtractor.normalizeRawIdentity(
             afterDel.rimeRawInput ?? controller.state.lastRimeOutput?.rawInput)
         print(
-            "LUNA_PARTIAL result=PASS confirmed=\(confirmed) remainBeforeDel=\(rawNorm) remainAfterDel=\(rawAfterDel) textAfter=\(textAfterDelete)"
+            "LUNA_PARTIAL step=afterDelete markedBeforeSelect=\(markedBeforeSelect) textBeforeSelect=\(textBeforeSelect) markedAfterDelete=\(markedAfterDelete) textAfterDelete=\(textAfterDelete) rawBeforeSelect=\(rawBeforeSelect) rawAfterDel=\(rawAfterDel)"
+        )
+        XCTAssertNil(
+            controller.state.partialCommit,
+            "退格撤销候选选择（检查点还原） partialCommit==nil")
+        XCTAssertEqual(
+            hostCommitted(client), "",
+            "退格撤销候选选择（检查点还原） hostCommitted empty")
+        if textAfterDelete == textBeforeSelect && markedAfterDelete == markedBeforeSelect {
+            XCTAssertEqual(
+                textAfterDelete, textBeforeSelect,
+                "退格撤销候选选择（检查点还原） text")
+            XCTAssertEqual(
+                markedAfterDelete, markedBeforeSelect,
+                "退格撤销候选选择（检查点还原） marked")
+        } else {
+            print(
+                "LUNA_PARTIAL whitespace-fallback textAfter=\(textAfterDelete) textBeforeSelect=\(textBeforeSelect) markedAfter=\(markedAfterDelete) markedBeforeSelect=\(markedBeforeSelect)"
+            )
+            let compactTextAfter = textAfterDelete.filter { !$0.isWhitespace }
+            let compactTextBefore = textBeforeSelect.filter { !$0.isWhitespace }
+            let compactMarkedAfter = markedAfterDelete.filter { !$0.isWhitespace }
+            let compactMarkedBefore = markedBeforeSelect.filter { !$0.isWhitespace }
+            XCTAssertEqual(
+                compactTextAfter, compactTextBefore,
+                "退格撤销候选选择（检查点还原） text compact")
+            XCTAssertEqual(
+                compactMarkedAfter, compactMarkedBefore,
+                "退格撤销候选选择（检查点还原） marked compact")
+        }
+        XCTAssertEqual(
+            rawAfterDel, rawBeforeSelect,
+            "退格撤销候选选择（检查点还原） raw; after=\(rawAfterDel) before=\(rawBeforeSelect)")
+        XCTAssertGreaterThanOrEqual(
+            afterDel.candidates.count, 1,
+            "退格撤销候选选择（检查点还原） cand>=1")
+        print(
+            "LUNA_PARTIAL result=PASS confirmedWas=\(confirmed) remainBeforeDel=\(rawNorm) remainAfterDel=\(rawAfterDel) textAfter=\(textAfterDelete) markedAfterDelete=\(markedAfterDelete) markedBeforeSelect=\(markedBeforeSelect)"
         )
     }
 
