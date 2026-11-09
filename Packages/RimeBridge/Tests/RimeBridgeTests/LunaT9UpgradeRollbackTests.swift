@@ -173,15 +173,19 @@ final class LunaT9UpgradeRollbackTests: XCTestCase {
         let failedTransaction = try LunaT9DeploymentSupport(scenario: failedScene)
         _ = try failedTransaction.deploy(sourceRoot: builtin)
         try includeLunaInSchemaList(failedShared, failedUser)
-        let dictionary = failedShared.appendingPathComponent("luna_pinyin.dict.yaml")
-        let backup = try Data(contentsOf: dictionary)
-        try backup.write(to: failedScene.appendingPathComponent("dictionary-backup.yaml"))
-        try FileManager.default.removeItem(at: dictionary)
+        let schemaFile = failedShared.appendingPathComponent("luna_pinyin_t9.schema.yaml")
+        let backup = try Data(contentsOf: schemaFile)
+        try backup.write(to: failedScene.appendingPathComponent("schema-backup.yaml"))
+        try Data(":\n[\n".utf8).write(to: schemaFile)
+        for build in [failedShared, failedUser].map({ $0.appendingPathComponent("build", isDirectory: true) })
+        where FileManager.default.fileExists(atPath: build.path) {
+            try FileManager.default.removeItem(at: build)
+        }
         let failed = try await compile(failedShared, failedUser)
         let failedSmoke = verify(failedShared, failedUser, "6446")
         let fallback3 = letters(failedShared, failedUser, "U3")
         print(
-            "LUNA_UPGRADE U3 injection=missing-dictionary backup=\(digest(backup)) compile=\(failed.succeeded) diagnostic=\(failed.diagnosticMessage) smoke=\(failedSmoke) fallback=\(fallback3) ms=\(elapsed(start))"
+            "LUNA_UPGRADE U3 injection=invalid-schema backup=\(digest(backup)) compile=\(failed.succeeded) diagnostic=\(failed.diagnosticMessage) smoke=\(failedSmoke) fallback=\(fallback3) ms=\(elapsed(start))"
         )
         XCTAssertFalse(failed.succeeded); XCTAssertFalse(failedSmoke); XCTAssertTrue(fallback3)
         try check(failedScene, failedBefore, "after-compile-failure")
