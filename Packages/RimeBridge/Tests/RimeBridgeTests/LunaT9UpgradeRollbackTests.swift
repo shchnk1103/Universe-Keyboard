@@ -177,10 +177,6 @@ final class LunaT9UpgradeRollbackTests: XCTestCase {
         let backup = try Data(contentsOf: schemaFile)
         try backup.write(to: failedScene.appendingPathComponent("schema-backup.yaml"))
         try Data(":\n[\n".utf8).write(to: schemaFile)
-        for build in [failedShared, failedUser].map({ $0.appendingPathComponent("build", isDirectory: true) })
-        where FileManager.default.fileExists(atPath: build.path) {
-            try FileManager.default.removeItem(at: build)
-        }
         let failed = try await compile(failedShared, failedUser)
         let failedSmoke = verify(failedShared, failedUser, "6446")
         let fallback3 = letters(failedShared, failedUser, "U3")
