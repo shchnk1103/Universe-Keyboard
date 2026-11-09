@@ -207,3 +207,37 @@ KOS_HOME=/path/to/home KOS_PROJECT=Proj bash scripts/kos/kos-cleanup.sh --apply 
 - **作用：** 默认只演示；`--apply` 才删除。`r` 清空甲类可再生目录（保留 Logs/，不碰 reports/、worktree）；受保护任务写在 `KOS-CLEANUP-001/protected.txt`。
 - **退出码：** 干跑（不加 `--apply`）与成功演示均为 0；2 用法错误。
 - **环境变量：** 读 `KOS_HOME` / `KOS_PROJECT`。有可执行位。
+
+## PM 侧提速工具（O24/O25/O29）
+
+三个只读或只写指定日志的工具。不读 `KOS_HOME` / `KOS_PROJECT`。
+
+### kos-impact.py：改动面检索与分类
+
+```bash
+python3 -B scripts/kos/kos-impact.py --repo <仓库> [--ref <提交>] --term <词> [--allowed <路径>] [--later <路径>] [--ignore <前缀>]
+```
+
+- **作用：** 对每个词做 `git grep -c -F`。`--ref` 查该提交，否则查工作区已跟踪内容。命中按 ALLOWED、LATER、IGNORED、UNCLASSIFIED 分类；优先级是 ALLOWED 高于 LATER 高于 IGNORED。
+- **退出码：** 0 无 UNCLASSIFIED；1 有 UNCLASSIFIED；2 参数或仓库错误。无命中不是错误。
+- **不写文件。**
+
+### kos-run.sh：带证据头尾的命令日志
+
+```bash
+bash scripts/kos/kos-run.sh --log <日志> [--cwd <目录>] [--env KEY=VALUE]... -- <命令> [参数...]
+```
+
+- **作用：** 日志已存在则拒绝。第一行是全部环境项与命令参数的 shell 引用，随后写运行前 HEAD 与 `git status --porcelain`，再合并命令的标准输出和标准错误，最后写 `EXIT:` 与结束时 HEAD。
+- **退出码：** 等于命令退出码；2 用法错误；3 日志已存在。
+- **有可执行位。** 只创建并写指定日志。
+
+### kos-verify-inputs.py：包内冻结哈希复核
+
+```bash
+python3 -B scripts/kos/kos-verify-inputs.py [--quiet] /path/to/task-package.md
+```
+
+- **作用：** 找出反引号中的绝对路径，并在其后 80 个字符内取 64 位小写 SHA-256 复核。含 `<>*$` 或 `{{` 的路径跳过；目录记 SKIP；相同路径与哈希只计一次。
+- **退出码：** 0 无 MISMATCH/MISSING；1 有；2 包文件不存在。
+- **不写文件。** `--quiet` 只打印非 OK 行与 SUMMARY。
