@@ -51,7 +51,7 @@ Then execute:
 
 1. Read [`AGENTS.md`](../../AGENTS.md) for mandatory collaboration rules.
 2. Read [`docs/KNOWLEDGE_INDEX.md`](../KNOWLEDGE_INDEX.md) for top-level navigation.
-3. Read [`docs/ACTIVE_WORK.md`](../ACTIVE_WORK.md) for current formal Work Items (≤10 links; Assignment remains lifecycle SoT).
+3. Read [`docs/PORTFOLIO.md`](../PORTFOLIO.md) for unfinished work and priorities ([`docs/ACTIVE_WORK.md`](../ACTIVE_WORK.md) is frozen as a historical snapshot since 2026-11-07; Assignment remains lifecycle SoT).
 4. Read this startup layer when the session must recover repository authority with little or no historical prompt context.
 5. Read [`docs/READING_MAPS.md`](../READING_MAPS.md) for the closest task route.
 6. Read only the authority sources required by that route.

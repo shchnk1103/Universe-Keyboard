@@ -1,3 +1,8 @@
+## 2026-11-09 — KOS-PORTFOLIO-SYNC-002 组合同步（本地交付，未发布）
+
+- `docs/PORTFOLIO.md`：朙月九宫格（PF-065）改为上线前并转为 In progress，决定记录追加 2026-11-09 两条，已完成表登记 PR #276–#281，PF-024 补记三次 test-app-keyboard 失败根因仍 UNKNOWN。
+- KOS 入口文档与工程看板不再把 `ACTIVE_WORK.md` 当现行来源，改指 `docs/PORTFOLIO.md`；ACTIVE_WORK 保留为历史快照。
+
 ## 2026-11-06 — CLIPBOARD-002 候选栏空闲粘贴
 
 - 新增默认关闭的系统粘贴控件；需完全访问，点按后仅插入纯文本，不进入词库、续写或输入洞察。
