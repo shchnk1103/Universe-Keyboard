@@ -1,3 +1,8 @@
+## 2026-11-09 — KOS-TOOLS-007 PM 侧提速工具入库
+
+- 新增 `scripts/kos/kos-impact.py`、`kos-run.sh`、`kos-verify-inputs.py` 与 `scripts/kos/tests/test_tools_007.py`。
+- `scripts/kos/README.md` 增补 O24/O25/O29 用法。
+
 ## 2026-11-09 — KOS-TOOLS-006 PM 侧工具小修
 
 - `kos-report-lint.py` 接受 `CONDITIONAL`；`kos-cleanup.sh` 干跑退出码改为 0；`kos-pkg-lint.py` 豁免「只读 + main HEAD/主检出」行的 E1、豁免 `PM-LOG/open-*.json` 的 E4，并新增 W4（`$变量` 后紧跟非 ASCII）。
