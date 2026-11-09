@@ -1,3 +1,7 @@
+## 2026-11-09 — KOS-ROSTER-ALEX-001 名册登记 Alex
+
+- `docs/kos/roles.md` 登记 Alex。Human 2026-11-07 原话确认名字，并说可以按照建议继续；定案第 5 条只记录该原话和上述一次临时批准。Nick 等其它行未改。
+
 ## 2026-11-09 — KOS-TOOLS-005 六个 PM 侧 KOS 工具入库
 
 - 将 `kos-block.sh`、`kos-cleanup.sh`、`kos-contains.py`、`kos-pkg-lint.py`、`kos-report-lint.py`、`kos-signals.py` 收入 `scripts/kos/`，写死家目录改为遵循 `KOS_HOME`/`KOS_PROJECT`；配套单元测试与 README 说明。
