@@ -66,7 +66,7 @@ engine:
     - uniquifier
 
 speller:
-  alphabet: "23456789"
+  alphabet: "zyxwvutsrqponmlkjihgfedcba23456789"
   delimiter: " '"
   algebra:
       - abbrev/^([a-z]).+$/$1/           # 簡拼（首字母）
@@ -81,7 +81,14 @@ speller:
       - derive/ong$/on/correction                     # zhonguo => zhong guo
       - derive/ao$/oa/correction                      # hoa => hao
       - derive/([iu])a(o|ng?)$/a$1$2/correction       # tain => tian
-      - xlit/abcdefghijklmnopqrstuvwxyz/22233344455566677778889999/
+      - derive/[abc]/2/
+      - derive/[def]/3/
+      - derive/[hgi]/4/
+      - derive/[jkl]/5/
+      - derive/[omn]/6/
+      - derive/[pqrs]/7/
+      - derive/[tuv]/8/
+      - derive/[wxyz]/9/
 
 translator:
   dictionary: luna_pinyin

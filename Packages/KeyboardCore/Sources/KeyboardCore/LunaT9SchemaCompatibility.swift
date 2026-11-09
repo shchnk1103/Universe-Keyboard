@@ -13,7 +13,7 @@ public enum LunaT9SchemaCompatibility {
     public static let sourceSHA256 =
         "668b4d4957e4cc8f9cea32ed3f08f0ecf4a7be8cdba058700507487bd96dd5c7"
     public static let outputSHA256 =
-        "d8f3327f5dc949ed562deaaa838644e03fa7708957c14b95df025b487d4426c3"
+        "4ace88759d55296c6c8e3ff078ec14474dc307dca73ecefd5eb94eb96ef7cf27"
 
     /// Accept only the reviewed source bytes; upstream changes require a new review.
     public static func rewrite(_ source: Data) throws -> Data {
@@ -61,7 +61,7 @@ public enum LunaT9SchemaCompatibility {
 
             """#,
             #"""
-              alphabet: "23456789"
+              alphabet: "zyxwvutsrqponmlkjihgfedcba23456789"
 
             """#
         ),
@@ -88,7 +88,14 @@ public enum LunaT9SchemaCompatibility {
                   - derive/ong$/on/correction                     # zhonguo => zhong guo
                   - derive/ao$/oa/correction                      # hoa => hao
                   - derive/([iu])a(o|ng?)$/a$1$2/correction       # tain => tian
-                  - xlit/abcdefghijklmnopqrstuvwxyz/22233344455566677778889999/
+                  - derive/[abc]/2/
+                  - derive/[def]/3/
+                  - derive/[hgi]/4/
+                  - derive/[jkl]/5/
+                  - derive/[omn]/6/
+                  - derive/[pqrs]/7/
+                  - derive/[tuv]/8/
+                  - derive/[wxyz]/9/
 
             """#
         ),

@@ -54,9 +54,11 @@ final class LunaT9CompileInputContractTests: XCTestCase {
     func testPreviousOutputFailsClosedEvenWhenCompileInputIsProven() throws {
         let source = try frozenSource()
         XCTAssertEqual(source.components(separatedBy: "  spelling_hints: 8\n").count, 2)
-        let old = source.replacingOccurrences(of: "  spelling_hints: 8\n", with: "")
+        let legacyA1 = try reverseConstructLegacyA1Output(from: source)
+        XCTAssertEqual(digest(Data(legacyA1.utf8)), "d8f3327f5dc949ed562deaaa838644e03fa7708957c14b95df025b487d4426c3")
+        let old = legacyA1.replacingOccurrences(of: "  spelling_hints: 8\n", with: "")
         XCTAssertEqual(digest(Data(old.utf8)), "b358a26144df2f650f515597f2eb435d02b16293cb9d676bba508dbb8d0f0ca2")
-        for (text, allowed) in [(old, false), (source, true)] {
+        for (text, allowed) in [(old, false), (legacyA1, false), (source, true)] {
             let target = RimeConfigManager.SchemaSwitchTarget(
                 schemaID: schemaID, userDictionarySchemaID: "luna_pinyin", sourceText: text, wanxiangFamily: false)
             let plan = RimeConfigManager.planSchemaCustomYamlFiles(
@@ -103,7 +105,7 @@ final class LunaT9CompileInputContractTests: XCTestCase {
                 String(line.components(separatedBy: "#")[0])
                     .trimmingCharacters(in: .whitespaces).dropFirst(2)
             }.map(String.init)
-        XCTAssertEqual(expectedBaseAlgebra.count, 13)
+        XCTAssertEqual(expectedBaseAlgebra.count, 20)
         let inputs = [
             ("proven", frozen),
             // Exactly one UTF-8 byte changes, without making the schema unparseable.
@@ -265,10 +267,11 @@ final class LunaT9CompileInputContractTests: XCTestCase {
             }
             XCTAssertEqual(actualSimplified, enabled, "session reset must follow requested simplification")
             XCTAssertTrue(automaticTexts.contains(enabled ? "你好吗" : "你好嗎"), "unmodified session output")
-            var expected = Array(baseAlgebra.dropLast())
+            var expected = Array(baseAlgebra.dropLast(8))
             expected.append(contentsOf: fuzzy.algebraRules)
-            expected.append(baseAlgebra.last!)
-            XCTAssertEqual(algebra, expected, "R5: letter rules, fuzzy letters, then exactly one terminal xlit")
+            expected.append(contentsOf: Array(baseAlgebra.suffix(8)))
+            XCTAssertEqual(
+                algebra, expected, "letter rules, fuzzy letters, then eight terminal digit derives")
         }
     }
 
@@ -305,8 +308,8 @@ final class LunaT9CompileInputContractTests: XCTestCase {
             .map { String($0.components(separatedBy: "#")[0]).trimmingCharacters(in: .whitespaces).dropFirst(2) }
             .map(String.init)
         let expected =
-            Array(baseAlgebra.dropLast()) + RimeFuzzyPinyinSettings(enabled: true).algebraRules
-            + [try XCTUnwrap(baseAlgebra.last)]
+            Array(baseAlgebra.dropLast(8)) + RimeFuzzyPinyinSettings(enabled: true).algebraRules
+            + Array(baseAlgebra.suffix(8))
         XCTAssertEqual(a.algebra, baseAlgebra)
         XCTAssertEqual(b.algebra, expected)
         // A is the two-item schema. Consumption failure is the L4 signature.
@@ -419,6 +422,72 @@ final class LunaT9CompileInputContractTests: XCTestCase {
         var repository = URL(fileURLWithPath: #filePath)
         for _ in 0..<5 { repository.deleteLastPathComponent() }
         return repository.appendingPathComponent("Universe Keyboard/RimeBuiltin", isDirectory: true)
+    }
+
+    private func reverseConstructLegacyA1Output(from source: String) throws -> String {
+        let alphaNew = "  alphabet: \"zyxwvutsrqponmlkjihgfedcba23456789\"\n"
+        let alphaOld = "  alphabet: \"23456789\"\n"
+        let derives =
+            [
+                "      - derive/[abc]/2/",
+                "      - derive/[def]/3/",
+                "      - derive/[hgi]/4/",
+                "      - derive/[jkl]/5/",
+                "      - derive/[omn]/6/",
+                "      - derive/[pqrs]/7/",
+                "      - derive/[tuv]/8/",
+                "      - derive/[wxyz]/9/",
+            ].joined(separator: "\n") + "\n"
+        let xlit = "      - xlit/abcdefghijklmnopqrstuvwxyz/22233344455566677778889999/\n"
+        XCTAssertEqual(source.components(separatedBy: alphaNew).count, 2)
+        XCTAssertEqual(source.components(separatedBy: derives).count, 2)
+        return source.replacingOccurrences(of: alphaNew, with: alphaOld)
+            .replacingOccurrences(of: derives, with: xlit)
+    }
+
+    func testControlledAlgebraRejectsMalformedTerminals() throws {
+        let source = try frozenSource()
+        let fuzzy = RimeFuzzyPinyinSettings(enabled: true)
+        let target = RimeConfigManager.SchemaSwitchTarget(
+            schemaID: schemaID, userDictionarySchemaID: "luna_pinyin", sourceText: source, wanxiangFamily: false)
+        let good = RimeConfigManager.planSchemaCustomYamlFiles(
+            targets: [target], simplificationEnabled: true,
+            userDictionarySettings: RimeUserDictionarySettings(lunaPinyinEnabled: true, rimeIceEnabled: false),
+            fuzzyPinyinSettings: fuzzy, grammarYamlPresent: false, compileInputProven: true)
+        let goodOverlay = try XCTUnwrap(good.first?.content)
+        XCTAssertTrue(goodOverlay.contains("speller/algebra"))
+        let algebraBody = goodOverlay.components(separatedBy: "\"speller/algebra\":\n")[1]
+        let fuzzySample = fuzzy.algebraRules[0]
+        let firstTerminal = "derive/[abc]/2/"
+        let fuzzyPos = try XCTUnwrap(algebraBody.range(of: fuzzySample))
+        let termPos = try XCTUnwrap(algebraBody.range(of: firstTerminal))
+        XCTAssertLessThan(fuzzyPos.lowerBound, termPos.lowerBound)
+
+        func plan(for text: String) throws -> String {
+            let switched = RimeConfigManager.SchemaSwitchTarget(
+                schemaID: schemaID, userDictionarySchemaID: "luna_pinyin", sourceText: text, wanxiangFamily: false)
+            let planned = RimeConfigManager.planSchemaCustomYamlFiles(
+                targets: [switched], simplificationEnabled: true,
+                userDictionarySettings: RimeUserDictionarySettings(lunaPinyinEnabled: true, rimeIceEnabled: false),
+                fuzzyPinyinSettings: fuzzy, grammarYamlPresent: false, compileInputProven: true)
+            return try XCTUnwrap(planned.first?.content)
+        }
+
+        let fewer = source.replacingOccurrences(of: "      - derive/[wxyz]/9/\n", with: "")
+        XCTAssertFalse(try plan(for: fewer).contains("speller/algebra"))
+
+        let shuffled = source.replacingOccurrences(
+            of: "      - derive/[tuv]/8/\n      - derive/[wxyz]/9/\n",
+            with: "      - derive/[wxyz]/9/\n      - derive/[tuv]/8/\n")
+        XCTAssertFalse(try plan(for: shuffled).contains("speller/algebra"))
+
+        let legacy = try reverseConstructLegacyA1Output(from: source)
+        XCTAssertFalse(try plan(for: legacy).contains("speller/algebra"))
+
+        let duplicated = source.replacingOccurrences(
+            of: "      - derive/[abc]/2/\n",
+            with: "      - " + fuzzySample + "\n")
+        XCTAssertFalse(try plan(for: duplicated).contains("speller/algebra"))
     }
 
     private func frozenSource() throws -> String {

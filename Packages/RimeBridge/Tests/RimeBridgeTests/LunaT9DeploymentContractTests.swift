@@ -21,7 +21,13 @@ final class LunaT9DeploymentContractTests: XCTestCase {
                     let patch = try XCTUnwrap(String(data: fixture.read(Support.derivedOverlayPath), encoding: .utf8))
                     XCTAssertTrue(patch.contains("# compile-input-sha256: \(first.sourceSHA256)\n"))
                     XCTAssertTrue(patch.contains("speller/algebra:"))
-                    XCTAssertEqual(patch.components(separatedBy: "- xlit/").count, 2)
+                    XCTAssertEqual(patch.components(separatedBy: "- xlit/").count, 1)
+                    for fragment in [
+                        "- derive/[abc]/2/", "- derive/[def]/3/", "- derive/[hgi]/4/", "- derive/[jkl]/5/",
+                        "- derive/[omn]/6/", "- derive/[pqrs]/7/", "- derive/[tuv]/8/", "- derive/[wxyz]/9/",
+                    ] {
+                        XCTAssertEqual(patch.components(separatedBy: fragment).count, 2, fragment)
+                    }
                     try fixture.assertAuthorized()
                     let committed = try fixture.snapshot()
                     let second = try Support(scenario: fixture.scene).deploy(sourceRoot: fixture.newResources)
