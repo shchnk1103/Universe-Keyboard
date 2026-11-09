@@ -80,7 +80,7 @@ For the identified trigger, synchronize:
 3. docs/ENGINEERING_DASHBOARD.md row for the Work Item;
 4. docs/KNOWLEDGE_INDEX.md if its navigation text encodes status;
 5. Active plan Status line if the plan is still Active;
-6. docs/ACTIVE_WORK.md entry add/update/remove;
+6. docs/ACTIVE_WORK.md is frozen (2026-11-07); do not update it;
 7. If the slice wrote Markdown or KOS records that lightweight CI would
    check, rerun the repository Markdown link check against the comparison
    baseline and HEAD after the last Assignment, evidence or review edit, and
@@ -128,8 +128,8 @@ Quality-verified.
 
 ## M-05 — Active Work Summary
 
-- Path: [`docs/ACTIVE_WORK.md`](../ACTIVE_WORK.md)  
-- Cap: **N ≤ 10** Active (or Ready) formal Work Items  
+- Path: [`docs/ACTIVE_WORK.md`](../ACTIVE_WORK.md) — frozen on 2026-11-07 as a historical snapshot; unfinished work and priorities live in [`docs/PORTFOLIO.md`](../PORTFOLIO.md)
+- Cap: retired with the 2026-11-07 freeze (formerly at most 10 Active or Ready formal Work Items)
 - Content: link + Current Status fields only  
 - **Source of Truth for lifecycle remains the Assignment Record**  
 - On conflict: fix Active Work / Dashboard; do not “fix” by editing memory  
