@@ -128,8 +128,8 @@ Quality-verified.
 
 ## M-05 — Active Work Summary
 
-- Path: [`docs/ACTIVE_WORK.md`](../ACTIVE_WORK.md) — frozen on 2026-11-07 as a historical snapshot; unfinished work and priorities live in [`docs/PORTFOLIO.md`](../PORTFOLIO.md)  
-- Cap: retired with the 2026-11-07 freeze (formerly at most 10 Active or Ready formal Work Items)  
+- Path: [`docs/ACTIVE_WORK.md`](../ACTIVE_WORK.md) — frozen on 2026-11-07 as a historical snapshot; unfinished work and priorities live in [`docs/PORTFOLIO.md`](../PORTFOLIO.md)
+- Cap: retired with the 2026-11-07 freeze (formerly at most 10 Active or Ready formal Work Items)
 - Content: link + Current Status fields only  
 - **Source of Truth for lifecycle remains the Assignment Record**  
 - On conflict: fix Active Work / Dashboard; do not “fix” by editing memory  
