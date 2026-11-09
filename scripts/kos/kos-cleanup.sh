@@ -54,3 +54,4 @@ r|e)
   [ $APPLY -eq 1 ] && echo "可用空间：$before → $(free) GiB";;
 *) sed -n 2,9p "$0"; exit 2;;
 esac
+exit 0

@@ -12,7 +12,7 @@ raw = open(path, 'rb').read(); txt = raw.decode('utf-8', 'replace'); lines = txt
 bad = []
 if len(raw) > mx: bad.append(f"报告 {len(raw)} 字节，超过上限 {mx}：把机器输出移到日志/附录文件，只在摘要里写路径、SHA-256、计数")
 elif len(raw) > wn: print(f"提示：报告 {len(raw)} 字节，接近上限 {mx}")
-if not lines or lines[0].strip() not in ('DONE','PARTIAL','BLOCKED','STOPPED','PASS','CHANGES_REQUESTED','FAIL','APPROVE'):
+if not lines or lines[0].strip() not in ('DONE','PARTIAL','BLOCKED','STOPPED','PASS','CHANGES_REQUESTED','FAIL','APPROVE','CONDITIONAL'):
     bad.append("第一行不是状态词")
 pre = collections.Counter()
 for l in lines:
