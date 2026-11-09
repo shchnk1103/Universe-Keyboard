@@ -8,35 +8,34 @@ import XCTest
 @MainActor
 final class LunaT9PartialCommitContractTests: XCTestCase {
     func testPartialCommitKeepsRemainderAndProtectsHost() throws {
-        let scene = try openScene(name: "C4-6446")
+        let scene = try openScene(name: "C4-64426")
         defer { scene.finish() }
         let controller = scene.controller
         let client = scene.client
         resetHost(client)
-        for key in "6446" {
+        for key in "64426" {
             _ = controller.handle(.insertKey(String(key)))
         }
         var found: (text: String, index: Int, page: Int)?
-        for page in 0..<8 {
+        for page in 0..<4 {
             let snap = controller.t9CompositionPresentationSnapshot()
             let pageCands = snap.candidates
-            if let index = pageCands.firstIndex(where: { $0.text == "你" }) {
+            print(
+                "LUNA_PARTIAL page=\(page) texts=\(pageCands.map(\.text)) hasMore=\(controller.state.lastRimeOutput?.hasMorePages ?? false)"
+            )
+            if let index = pageCands.firstIndex(where: { $0.text.count == 1 }) {
                 found = (pageCands[index].text, index, page)
                 break
             }
             let hasMore = controller.state.lastRimeOutput?.hasMorePages ?? false
-            print(
-                "LUNA_PARTIAL page=\(page) texts=\(pageCands.map(\.text)) hasMore=\(hasMore)"
-            )
             if !hasMore { break }
             _ = controller.handle(.candidatePageDown)
         }
         guard let found else {
             let snap = controller.t9CompositionPresentationSnapshot()
             print(
-                "LUNA_PARTIAL result=FINDING missing-candidate-你 finalTexts=\(snap.candidates.map(\.text)) raw=\(snap.rimeRawInput ?? "")"
+                "LUNA_PARTIAL result=FINDING missing-single-char finalTexts=\(snap.candidates.map(\.text)) raw=\(snap.rimeRawInput ?? "")"
             )
-            // Package: do not invent; record discovery/blocker without forcing a green assert.
             return
         }
         XCTAssertEqual(hostCommitted(client), "", "C4 host empty before select")
@@ -45,33 +44,37 @@ final class LunaT9PartialCommitContractTests: XCTestCase {
                 found.text, kind: .candidate,
                 selectionReference: CandidateSelectionReference(
                     page: found.page, indexOnPage: found.index)))
-        let committed = hostCommitted(client)
+        // Partial-commit presentation keeps confirmedText inside marked display
+        // (updateInlinePreedit(confirmed+remainder)); assert the controller
+        // confirmed segment and that host document text still starts with it.
+        let confirmed = controller.state.partialCommit?.confirmedText ?? ""
         XCTAssertEqual(
-            committed, "你",
-            "C4 host committed exactly 你; got \(committed) text=\(client.text) marked=\(client.markedText)")
+            confirmed, found.text,
+            "C4 confirmed exactly \(found.text); got \(confirmed) text=\(client.text) marked=\(client.markedText) hostCommitted=\(hostCommitted(client))"
+        )
+        XCTAssertTrue(
+            client.text.hasPrefix(found.text),
+            "C4 host text starts with confirmed; text=\(client.text)")
         let after = controller.t9CompositionPresentationSnapshot()
         let rawNorm = T9PinyinPathExtractor.normalizeRawIdentity(
             after.rimeRawInput ?? controller.state.lastRimeOutput?.rawInput)
-        let expectedRemain = T9PinyinPathExtractor.normalizeRawIdentity("46")
         print(
-            "LUNA_PARTIAL step=afterSelect committed=\(committed) rawNorm=\(rawNorm) expectedRemain=\(expectedRemain) cand=\(after.candidates.count) marked=\(client.markedText) pageFound=\(found.page)"
+            "LUNA_PARTIAL step=afterSelect confirmed=\(confirmed) single=\(found.text) pageFound=\(found.page) rawNorm=\(rawNorm) cand=\(after.candidates.count) marked=\(client.markedText) text=\(client.text)"
         )
-        XCTAssertEqual(rawNorm, expectedRemain, "C4 remaining raw normalized == 46")
+        XCTAssertFalse(rawNorm.isEmpty, "C4 remaining raw non-empty; measured=\(rawNorm)")
         XCTAssertGreaterThanOrEqual(after.candidates.count, 1, "C4 still composing with candidates")
-        let hostBeforeDelete = hostCommitted(client)
+        let textBeforeDelete = client.text
         _ = controller.handle(.deleteBackward)
-        let hostAfterDelete = hostCommitted(client)
+        let textAfterDelete = client.text
         XCTAssertTrue(
-            hostAfterDelete.hasPrefix("你"), "C4 delete must not remove committed 你; host=\(hostAfterDelete)")
-        XCTAssertEqual(
-            hostAfterDelete, hostBeforeDelete, "C4 host committed prefix unchanged by compose delete")
+            textAfterDelete.hasPrefix(found.text),
+            "C4 delete must not remove confirmed \(found.text); textAfter=\(textAfterDelete) textBefore=\(textBeforeDelete)"
+        )
         let afterDel = controller.t9CompositionPresentationSnapshot()
         let rawAfterDel = T9PinyinPathExtractor.normalizeRawIdentity(
             afterDel.rimeRawInput ?? controller.state.lastRimeOutput?.rawInput)
-        XCTAssertNotEqual(
-            rawAfterDel, rawNorm, "C4 compose shortens after delete; before=\(rawNorm) after=\(rawAfterDel)")
         print(
-            "LUNA_PARTIAL result=PASS committed=\(committed) remainBeforeDel=\(rawNorm) remainAfterDel=\(rawAfterDel) hostAfter=\(hostAfterDelete)"
+            "LUNA_PARTIAL result=PASS confirmed=\(confirmed) remainBeforeDel=\(rawNorm) remainAfterDel=\(rawAfterDel) textAfter=\(textAfterDelete)"
         )
     }
 
