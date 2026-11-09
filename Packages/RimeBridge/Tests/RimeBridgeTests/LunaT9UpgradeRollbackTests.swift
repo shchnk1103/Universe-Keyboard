@@ -76,7 +76,7 @@ final class LunaT9UpgradeRollbackTests: XCTestCase {
                 "user/luna_pinyin.custom.yaml": Data("patch:\n  translator/enable_user_dict: false\n".utf8),
                 "user/luna_pinyin.userdb/fixture.txt": Data("user dictionary sentinel".utf8),
                 "shared/t9.schema.yaml": Data("other family t9".utf8),
-                "shared/wanxiang_t9.schema.yaml": Data("other family wanxiang".utf8),
+                "shared/wanxiang_t9i.schema.yaml": Data("other family wanxiang".utf8),
                 "shared/build/luna_pinyin_t9extra.prism.bin": Data("other nearby shared".utf8),
                 "user/build/luna_pinyin_t9extra.prism.bin": Data("other nearby user".utf8),
             ]
@@ -110,6 +110,19 @@ final class LunaT9UpgradeRollbackTests: XCTestCase {
             RimeT9SmokeProbe.verify(
                 sharedDataDir: shared.path, userDataDir: user.path, schemaID: schema, input: input, registry: [entry])
         }
+        func includeLunaInSchemaList(_ shared: URL, _ user: URL) throws {
+            let defaults = shared.appendingPathComponent("default.yaml")
+            var text = try String(contentsOf: defaults, encoding: .utf8)
+            let start = try XCTUnwrap(text.range(of: "schema_list:\n"))
+            let end = try XCTUnwrap(text.range(of: "\nswitcher:"))
+            text.replaceSubrange(
+                start.lowerBound..<end.lowerBound,
+                with: "schema_list:\n  - schema: luna_pinyin\n  - schema: luna_pinyin_t9\n")
+            try text.write(to: defaults, atomically: false, encoding: .utf8)
+            let custom = user.appendingPathComponent("default.custom.yaml")
+            try Data("patch:\n  schema_list:\n    - schema: luna_pinyin\n    - schema: luna_pinyin_t9\n".utf8)
+                .write(to: custom)
+        }
         func letters(_ shared: URL, _ user: URL, _ phase: String) -> Bool {
             let engine = RimeEngineImpl(sharedDataDir: shared.path, userDataDir: user.path)
             let selected = engine.bridge.selectSchema("luna_pinyin") && engine.bridge.currentSchemaID() == "luna_pinyin"
@@ -129,6 +142,7 @@ final class LunaT9UpgradeRollbackTests: XCTestCase {
         let prepared = try transaction.deploy(sourceRoot: builtin)
         let transactionMS = elapsed(transactionStart)
         XCTAssertEqual(prepared.sourceSHA256, LunaT9SchemaCompatibility.outputSHA256)
+        try includeLunaInSchemaList(shared, user)
         try check(scene, before, "after-transaction")
         let compileStart = Date(); let compiled = try await compile(shared, user); let compileMS = elapsed(compileStart)
         let smokeStart = Date(); let smoke = verify(shared, user, "6446"); let smokeMS = elapsed(smokeStart)
@@ -136,27 +150,29 @@ final class LunaT9UpgradeRollbackTests: XCTestCase {
             "LUNA_UPGRADE U2 source=\(prepared.sourceSHA256) transaction=true compile=\(compiled.succeeded) diagnostic=\(compiled.diagnosticMessage) smoke=\(smoke) transactionMS=\(transactionMS) compileMS=\(compileMS) smokeMS=\(smokeMS) totalMS=\(transactionMS + compileMS + smokeMS)"
         )
         XCTAssertTrue(compiled.succeeded); XCTAssertTrue(smoke)
-
-        let store = Store(); let sentinelKey = try XCTUnwrap(NineKeySchemeRegistry.entries.first?.markerKey)
-        let sentinel = Data("store sentinel".utf8); store.set(sentinel, forKey: sentinelKey)
-        XCTAssertEqual(store.data(forKey: sentinelKey), sentinel); XCTAssertNil(store.data(forKey: marker))
-        let engine = RimeEngineImpl(sharedDataDir: shared.path, userDataDir: user.path)
-        let selected = engine.bridge.selectSchema(schema); engine.resetSession(); var output = RimeOutput()
-        for key in "1111" { output = engine.processKey(String(key)) }
-        let raw = output.rawInput ?? ""; let candidates = output.candidates.map(\.text)
-        engine.suspendForVisibilityChange()
-        let invalidSmoke = verify(shared, user, "1111")
-        XCTAssertFalse(invalidSmoke); XCTAssertNil(store.data(forKey: marker)); XCTAssertTrue(selected)
-        let fallback4 = letters(shared, user, "U4")
-        print(
-            "LUNA_UPGRADE U4 input=1111 raw=\(raw) candidates=\(candidates) smoke=\(invalidSmoke) markerBeforeAfter=nil storeSentinel=true fallback=\(fallback4) ms=\(elapsed(start))"
-        )
-        XCTAssertTrue(fallback4)
-        try check(scene, before, "after-smoke-failure")
+        if smoke {
+            let store = Store(); let sentinelKey = try XCTUnwrap(NineKeySchemeRegistry.entries.first?.markerKey)
+            let sentinel = Data("store sentinel".utf8); store.set(sentinel, forKey: sentinelKey)
+            XCTAssertEqual(store.data(forKey: sentinelKey), sentinel); XCTAssertNil(store.data(forKey: marker))
+            let engine = RimeEngineImpl(sharedDataDir: shared.path, userDataDir: user.path)
+            let selected = engine.bridge.selectSchema(schema); engine.resetSession(); var output = RimeOutput()
+            for key in "1111" { output = engine.processKey(String(key)) }
+            let raw = output.rawInput ?? ""; let candidates = output.candidates.map(\.text)
+            engine.suspendForVisibilityChange()
+            let invalidSmoke = verify(shared, user, "1111")
+            XCTAssertFalse(invalidSmoke); XCTAssertNil(store.data(forKey: marker)); XCTAssertTrue(selected)
+            let fallback4 = letters(shared, user, "U4")
+            print(
+                "LUNA_UPGRADE U4 input=1111 raw=\(raw) candidates=\(candidates) smoke=\(invalidSmoke) markerBeforeAfter=nil storeSentinel=true fallback=\(fallback4) ms=\(elapsed(start))"
+            )
+            XCTAssertTrue(fallback4)
+            try check(scene, before, "after-smoke-failure")
+        }
 
         let (failedScene, failedShared, failedUser, failedBefore) = try makeScene("compile-failure")
         let failedTransaction = try LunaT9DeploymentSupport(scenario: failedScene)
         _ = try failedTransaction.deploy(sourceRoot: builtin)
+        try includeLunaInSchemaList(failedShared, failedUser)
         let dictionary = failedShared.appendingPathComponent("luna_pinyin.dict.yaml")
         let backup = try Data(contentsOf: dictionary)
         try backup.write(to: failedScene.appendingPathComponent("dictionary-backup.yaml"))
