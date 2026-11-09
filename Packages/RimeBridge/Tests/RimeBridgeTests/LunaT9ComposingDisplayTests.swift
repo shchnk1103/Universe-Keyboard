@@ -68,11 +68,12 @@ final class LunaT9ComposingDisplayTests: XCTestCase {
             engine.bridge.clearComposition()
             let controller = KeyboardController(); let client = FakeTextInputClient()
             controller.rimeEngine = engine; controller.usesT9InputSemantics = true; controller.textClient = client
-            var steps: [[String: Any]] = []; var marks: [String] = []
+            var steps: [[String: Any]] = []; var marks: [String] = []; var raws: [String] = []
             for key in input {
                 _ = controller.handle(.insertKey(String(key)))
                 let snap = controller.t9CompositionPresentationSnapshot(); let mark = client.markedText;
                 marks.append(mark)
+                raws.append(snap.rimeRawInput ?? controller.state.lastRimeOutput?.rawInput ?? "")
                 let path = snap.paths.first { $0.id == snap.provisionalPathID }
                 steps.append([
                     "marked": mark, "path": path?.displayText ?? "<absent>", "slots": path?.consumedSlotCount ?? 0,
@@ -95,6 +96,18 @@ final class LunaT9ComposingDisplayTests: XCTestCase {
             let snapshot = controller.t9CompositionPresentationSnapshot()
             let candidates = snapshot.candidates.prefix(5).map { ["text": $0.text, "comment": $0.comment ?? ""] }
             _ = controller.handle(.deleteBackward); let after = client.markedText;
+            let afterSnap = controller.t9CompositionPresentationSnapshot()
+            let rawAfter = afterSnap.rimeRawInput ?? controller.state.lastRimeOutput?.rawInput ?? ""
+            let rawBeforeDelete = raws.last ?? ""
+            let expectedRaw = rawBeforeDelete.isEmpty ? "" : String(rawBeforeDelete.dropLast())
+            let rawNorm = T9PinyinPathExtractor.normalizeRawIdentity(rawAfter)
+            let expectedRawNorm = T9PinyinPathExtractor.normalizeRawIdentity(expectedRaw)
+            XCTAssertEqual(
+                rawNorm, expectedRawNorm, "A4B raw after delete \(name) \(simplified) \(input) raw=\(rawAfter)")
+            XCTAssertNotEqual(afterSnap.candidates.count, 0, "A4B cand!=0 after delete \(name) \(simplified) \(input)")
+            for (idx, text) in afterSnap.candidates.prefix(5).map(\.text).enumerated() {
+                XCTAssertFalse(text.isEmpty, "A4B top5[\(idx)] non-empty after delete \(name) \(simplified) \(input)")
+            }
             let expected = marks.count > 1 ? marks[marks.count - 2] : ""
             // Human accepted the current composing behavior for these observed cases.
             let known: [String: (String, String)] = [
@@ -116,6 +129,9 @@ final class LunaT9ComposingDisplayTests: XCTestCase {
             } else {
                 XCTAssertEqual(actualNormalized, expectedNormalized, "A4 \(key) marked=\(after) expected=\(expected)")
             }
+            print(
+                "LUNA_COMPOSE_BACKSPACE key=\(key) rawNorm=\(rawNorm) expectedRawNorm=\(expectedRawNorm) candCount=\(afterSnap.candidates.count) knownStatus=\(knownStatus ?? "n/a") markedAfter=\(actualNormalized) markedExpected=\(expectedNormalized)"
+            )
             var row: [String: Any] = [
                 "setting": name, "simplified": simplified, "input": input, "steps": steps, "candidates": candidates,
                 "afterDelete": after,

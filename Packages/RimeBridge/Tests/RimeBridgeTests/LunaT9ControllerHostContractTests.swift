@@ -32,25 +32,37 @@ final class LunaT9ControllerHostContractTests: XCTestCase {
         let snapBeforeAppend = controller.t9CompositionPresentationSnapshot()
         let rawBeforeAppend = snapBeforeAppend.rimeRawInput ?? afterSelect.raw
         let candsBeforeAppend = candidateSummaries(snapBeforeAppend.candidates)
+        let top5BeforeAppend = snapBeforeAppend.candidates.prefix(5).map(\.text)
+        let markedBeforeAppend = client.markedText
         let revBeforeAppend = controller.state.compositionRevision
+        XCTAssertGreaterThanOrEqual(snapBeforeAppend.candidates.count, 1, "H1 after select cand>=1")
+        XCTAssertEqual(hostCommitted(client), "", "H1 host empty after select")
         print(
             "LUNA_HOST scene=H1 step=select replacement=\(path.replacementRawInput) rawOut=\(afterSelect.raw) snapRaw=\(snapBeforeAppend.rimeRawInput ?? "<nil>") preedit=\(afterSelect.preedit) rev=\(revBeforeAppend) pageSize=\(candsBeforeAppend.count) tracked=\(controller.state.t9PinyinPathState.trackedRawInput ?? "<nil>")"
         )
         _ = controller.handle(.insertKey("6"))
         let afterAppend = observe("H1-append-6", controller, client)
         XCTAssertNotEqual(afterAppend.revision, revBeforeAppend)
+        XCTAssertGreaterThanOrEqual(afterAppend.pageSize, 1, "H1 after append cand>=1")
+        XCTAssertEqual(hostCommitted(client), "", "H1 host empty after append")
         _ = controller.handle(.deleteBackward)
         let afterDelete = observe("H1-delete", controller, client)
         let snapAfterDelete = controller.t9CompositionPresentationSnapshot()
         let rawAfterDelete = snapAfterDelete.rimeRawInput ?? afterDelete.raw
         let candsAfter = candidateSummaries(snapAfterDelete.candidates)
+        let top5AfterDelete = snapAfterDelete.candidates.prefix(5).map(\.text)
+        let markedAfterDelete = client.markedText
         print(
             "LUNA_HOST scene=H1 revRule=state.compositionRevision beforeSelect=\(beforeSelectRev) beforeAppend=\(revBeforeAppend) afterAppend=\(afterAppend.revision) afterDelete=\(afterDelete.revision) rawBefore=\(rawBeforeAppend) rawAfter=\(rawAfterDelete)"
         )
         XCTAssertNotEqual(afterDelete.revision, revBeforeAppend)
         XCTAssertGreaterThanOrEqual(afterDelete.revision, afterAppend.revision)
         XCTAssertEqual(rawAfterDelete, rawBeforeAppend)
+        XCTAssertEqual(top5AfterDelete, Array(top5BeforeAppend), "H1 delete restores top5 texts")
+        XCTAssertEqual(markedAfterDelete, markedBeforeAppend, "H1 delete restores marked")
         XCTAssertFalse(candsAfter.isEmpty)
+        XCTAssertGreaterThanOrEqual(snapAfterDelete.candidates.count, 1, "H1 after delete cand>=1")
+        XCTAssertEqual(hostCommitted(client), "", "H1 host empty after delete")
         if candsAfter != candsBeforeAppend {
             print("LUNA_HOST scene=H1 candDiff before=\(candsBeforeAppend) after=\(candsAfter)")
         } else {
@@ -103,6 +115,56 @@ final class LunaT9ControllerHostContractTests: XCTestCase {
                 "LUNA_HOST scene=H2 input=\(input) result=PASS oldTapUnchanged replacement=\(path.replacementRawInput)"
             )
         }
+    }
+
+    func testH2NewRevisionTapTakesEffect() throws {
+        let scene = try openScene(name: "H2-new")
+        defer { scene.finish() }
+        let controller = scene.controller
+        let client = scene.client
+        resetHost(client)
+        for key in "64" {
+            _ = controller.handle(.insertKey(String(key)))
+            _ = observe("H2-new-key", controller, client)
+        }
+        let snap0 = controller.t9CompositionPresentationSnapshot()
+        guard let path = snap0.paths.first(where: { $0.displayText == "ni" }) else {
+            XCTFail("H2-new missing displayText=ni paths=\(pathList(snap0.paths))")
+            print("LUNA_HOST scene=H2-new result=FAIL missing-ni-path paths=\(pathList(snap0.paths))")
+            return
+        }
+        _ = controller.handle(.selectT9PinyinPath(path))
+        _ = observe("H2-new-select", controller, client)
+        let revAfterSelect = controller.state.compositionRevision
+        _ = controller.handle(.insertKey("6"))
+        _ = observe("H2-new-append", controller, client)
+        let snap1 = controller.t9CompositionPresentationSnapshot()
+        // Prefer a Path whose display equals the previously selected display ("ni"),
+        // else any Path whose display equals the visible selected spelling in the new snapshot.
+        let newPath =
+            snap1.paths.first(where: { $0.displayText == "ni" })
+            ?? snap1.paths.first(where: { $0.displayText == path.displayText })
+        guard let newPath else {
+            print(
+                "LUNA_HOST scene=H2-new result=FINDING missing-new-path afterAppend paths=\(pathList(snap1.paths))"
+            )
+            // Do not invent a Path; surface as discovery via soft fail message for report.
+            XCTFail("H2-new no usable new Path after append; paths=\(pathList(snap1.paths))")
+            return
+        }
+        let beforeTapRev = controller.state.compositionRevision
+        _ = controller.handle(.selectT9PinyinPath(newPath))
+        let after = observe("H2-new-retap", controller, client)
+        let snap2 = controller.t9CompositionPresentationSnapshot()
+        let rawNorm = T9PinyinPathExtractor.normalizeRawIdentity(snap2.rimeRawInput ?? after.raw)
+        let expectedNorm = T9PinyinPathExtractor.normalizeRawIdentity(newPath.replacementRawInput)
+        XCTAssertEqual(rawNorm, expectedNorm, "H2-new raw normalized to replacement")
+        XCTAssertGreaterThanOrEqual(snap2.candidates.count, 1, "H2-new cand>=1")
+        XCTAssertEqual(client.markedText, newPath.displayText, "H2-new marked==path display")
+        XCTAssertGreaterThan(after.revision, beforeTapRev, "H2-new revision advances")
+        print(
+            "LUNA_HOST scene=H2-new result=PASS replacement=\(newPath.replacementRawInput) display=\(newPath.displayText) rawNorm=\(rawNorm) revBefore=\(beforeTapRev) revAfter=\(after.revision) afterSelectRev=\(revAfterSelect)"
+        )
     }
 
     func testH3ExitHostCommits() throws {
