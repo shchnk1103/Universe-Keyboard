@@ -151,7 +151,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -I -B -m unittest discover -s scripts/kos/test
 python3 -B scripts/kos/kos-report-lint.py /path/to/reports/executor-report-impl.md
 ```
 
-- **作用：** 检查报告大小、首行状态词、疑似整段内嵌的机器输出前缀、引用日志的 SHA-256 是否与文件实测一致。
+- **作用：** 检查报告大小、首行状态词、疑似整段内嵌的机器输出前缀、引用日志的 SHA-256 是否与文件实测一致。接受的状态词含 `DONE`/`PARTIAL`/`BLOCKED`/`STOPPED`/`PASS`/`CHANGES_REQUESTED`/`FAIL`/`APPROVE`/`CONDITIONAL`。
 - **退出码：** 0 合规并打印 `OK`；1 有问题（逐条打印）。
 - **环境变量：** 不读 `KOS_HOME` / `KOS_PROJECT`。
 
@@ -171,7 +171,7 @@ python3 -B scripts/kos/kos-contains.py '<正则>' /path/to/log.txt /path/to/refe
 python3 -B scripts/kos/kos-pkg-lint.py --start <40位起点SHA> --prev /path/to/prev-task --charter /path/to/STAGE-CHARTER.md /path/to/task-package-*.md
 ```
 
-- **作用：** 检查起点类 SHA（E1）、上一阶段遗留 SHA（E2）、kos-block 键是否在章程键表（E3）、绝对路径是否存在（E4），以及若干提示（W1–W3）。
+- **作用：** 检查起点类 SHA（E1）、上一阶段遗留 SHA（E2）、kos-block 键是否在章程键表（E3）、绝对路径是否存在（E4），以及若干提示（W1–W4）。E1 对同时含「只读」与「main HEAD/主检出」的行豁免；E4 对路径含 `/PM-LOG/open-` 且以 `.json` 结尾的输出文件豁免；W4 提示 `$变量名` 后紧跟非 ASCII 字符的写法。
 - **退出码：** 0 无错误（可有提示）；1 有错误。
 - **环境变量：** 派生了 `KOS_HOME` / `KOS_PROJECT` 根目录变量，但当前实现未使用。
 
@@ -205,5 +205,5 @@ KOS_HOME=/path/to/home KOS_PROJECT=Proj bash scripts/kos/kos-cleanup.sh --apply 
 ```
 
 - **作用：** 默认只演示；`--apply` 才删除。`r` 清空甲类可再生目录（保留 Logs/，不碰 reports/、worktree）；受保护任务写在 `KOS-CLEANUP-001/protected.txt`。
-- **退出码：** 0 正常；2 用法错误。
+- **退出码：** 干跑（不加 `--apply`）与成功演示均为 0；2 用法错误。
 - **环境变量：** 读 `KOS_HOME` / `KOS_PROJECT`。有可执行位。

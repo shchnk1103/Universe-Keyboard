@@ -39,7 +39,9 @@ for f, t in txt.items():
         for m in SHA.finditer(line):
             s = m.group(0)
             win = line[max(0, m.start()-40):m.end()+10]
-            if CTX.search(win) and s != start and not OLD.search(line):
+            if CTX.search(win) and s != start and not OLD.search(line) and not (
+                '只读' in line and ('main HEAD' in line or '主检出' in line)
+            ):
                 err.append(f"E1 {os.path.basename(f)}:{n} 起点类语境里的 SHA {s[:8]} ≠ 本阶段起点 {start[:8]}")
 if prev:
     prevsha = set()
@@ -65,6 +67,8 @@ for f in files:
         p = m.group(1).rstrip('.,:')
         if p in seen or '/Dev/UniverseKeyboard' in p or '/reports/' in p or '/scratch' in p or '/worktree' in p or '<' in p or p.endswith('/') or 'STAGE-LEDGER' in p: continue
         seen.add(p)
+        if '/PM-LOG/open-' in p and p.endswith('.json'):
+            continue
         if not os.path.exists(p): err.append(f"E4 {os.path.basename(f)} 引用的路径不存在：{p}")
 nums = collections.defaultdict(lambda: collections.defaultdict(set))
 for f in files:
@@ -98,6 +102,15 @@ for i in range(len(names)):
             a, b = grams(its[names[i]][k]), grams(its[names[j]][k])
             if a and b and len(a & b) / len(a | b) < 0.30:
                 warn.append(f"W3 条目 {k} 在 {os.path.basename(names[i])} 与 {os.path.basename(names[j])} 里文字差异很大，请人工核对是否矛盾")
+
+# W4 $var 后紧跟非 ASCII：LC_ALL=C + set -u 会当成不同变量名
+W4 = re.compile(r'\$([A-Za-z_][A-Za-z0-9_]*)[^\x00-\x7F]')
+for f, content in txt.items():
+    for n, line in enumerate(content.split('\n'), 1):
+        for m in W4.finditer(line):
+            warn.append(
+                f"W4 {os.path.basename(f)}:{n} 变量 ${m.group(1)} 后紧跟非 ASCII 字符：LC_ALL=C 下 set -u 会报 unbound variable，请写成 ${{{m.group(1)}}}"
+            )
 for e in err: print(e)
 for w in warn: print(w)
 print(f"== 错误 {len(err)}，提示 {len(warn)}")

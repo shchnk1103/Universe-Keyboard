@@ -1,3 +1,7 @@
+## 2026-11-09 — KOS-TOOLS-006 PM 侧工具小修
+
+- `kos-report-lint.py` 接受 `CONDITIONAL`；`kos-cleanup.sh` 干跑退出码改为 0；`kos-pkg-lint.py` 豁免「只读 + main HEAD/主检出」行的 E1、豁免 `PM-LOG/open-*.json` 的 E4，并新增 W4（`$变量` 后紧跟非 ASCII）。
+
 ## 2026-11-09 — KOS-ROSTER-ALEX-001 名册登记 Alex
 
 - `docs/kos/roles.md` 登记 Alex。Human 2026-11-07 原话确认名字，并说可以按照建议继续；定案第 5 条只记录该原话和上述一次临时批准。Nick 等其它行未改。
