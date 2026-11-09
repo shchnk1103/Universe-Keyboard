@@ -186,4 +186,154 @@ final class LunaT9UpgradeRollbackTests: XCTestCase {
         XCTAssertFalse(failed.succeeded); XCTAssertFalse(failedSmoke); XCTAssertTrue(fallback3)
         try check(failedScene, failedBefore, "after-compile-failure")
     }
+
+    /// Design §5: reverse-construct A1 output d8f3327f from r2 fixture; repeat U1/U2/U3.
+    func testLegacyA1OutputD8f3327fScene() async throws {
+        let start = Date()
+        var repository = URL(fileURLWithPath: #filePath)
+        for _ in 0..<5 { repository.deleteLastPathComponent() }
+        let builtin = repository.appendingPathComponent("Universe Keyboard/RimeBuiltin", isDirectory: true)
+        let original = try Data(contentsOf: builtin.appendingPathComponent("luna_pinyin.schema.yaml"))
+        let derived = try LunaT9SchemaCompatibility.rewrite(original)
+        let fixture = try Data(
+            contentsOf: repository.appendingPathComponent(
+                "Packages/RimeBridge/Tests/RimeBridgeTests/Fixtures/LunaT9/variant1.schema.yaml"))
+        XCTAssertEqual(derived, fixture)
+        let source = String(decoding: derived, as: UTF8.self)
+        let alphaNew = "  alphabet: \"zyxwvutsrqponmlkjihgfedcba23456789\"\n"
+        let alphaOld = "  alphabet: \"23456789\"\n"
+        let derives =
+            [
+                "      - derive/[abc]/2/",
+                "      - derive/[def]/3/",
+                "      - derive/[hgi]/4/",
+                "      - derive/[jkl]/5/",
+                "      - derive/[omn]/6/",
+                "      - derive/[pqrs]/7/",
+                "      - derive/[tuv]/8/",
+                "      - derive/[wxyz]/9/",
+            ].joined(separator: "\n") + "\n"
+        let xlit = "      - xlit/abcdefghijklmnopqrstuvwxyz/22233344455566677778889999/\n"
+        XCTAssertEqual(source.components(separatedBy: alphaNew).count, 2)
+        XCTAssertEqual(source.components(separatedBy: derives).count, 2)
+        let legacyText = source.replacingOccurrences(of: alphaNew, with: alphaOld)
+            .replacingOccurrences(of: derives, with: xlit)
+        let legacy = Data(legacyText.utf8)
+        XCTAssertEqual(digest(legacy), "d8f3327f5dc949ed562deaaa838644e03fa7708957c14b95df025b487d4426c3")
+
+        let target = RimeConfigManager.SchemaSwitchTarget(
+            schemaID: schema, userDictionarySchemaID: "luna_pinyin", sourceText: legacyText,
+            wanxiangFamily: false)
+        let plan = RimeConfigManager.planSchemaCustomYamlFiles(
+            targets: [target], simplificationEnabled: true,
+            userDictionarySettings: .init(lunaPinyinEnabled: true, rimeIceEnabled: false),
+            fuzzyPinyinSettings: .init(enabled: true), grammarYamlPresent: false, compileInputProven: true)
+        let patch = try XCTUnwrap(plan.first { $0.filename == schema + ".custom.yaml" })
+        XCTAssertFalse(patch.content.contains("switches/"))
+        XCTAssertFalse(patch.content.contains("speller/algebra"))
+        XCTAssertTrue(patch.content.contains("translator/enable_user_dict"))
+        print(
+            "LUNA_UPGRADE U1-d8f old=\(digest(legacy)) proof=false overlay=true learning=\(patch.content.contains("translator/enable_user_dict")) ms=\(elapsed(start))"
+        )
+
+        let root = try LunaT9EvidenceRoot.directory("upgrade-rollback")
+        let entry = NineKeyScheme(
+            schemaID: schema, familyID: "luna_pinyin", markerKey: marker, compatibilityVersion: "1")
+        func put(_ data: Data, _ path: String, _ runtime: URL) throws {
+            let url = runtime.appendingPathComponent(path)
+            try FileManager.default.createDirectory(
+                at: url.deletingLastPathComponent(), withIntermediateDirectories: true)
+            try data.write(to: url)
+        }
+        let scene = root.appendingPathComponent("d8f-\(UUID().uuidString)", isDirectory: true)
+        try LunaT9EvidenceRoot.createExclusiveDirectory(scene)
+        let runtime = scene.appendingPathComponent("runtime", isDirectory: true)
+        let shared = runtime.appendingPathComponent("shared", isDirectory: true)
+        let user = runtime.appendingPathComponent("user", isDirectory: true)
+        try put(legacy, LunaT9DeploymentSupport.derivedPath, runtime)
+        try put(Data(patch.content.utf8), LunaT9DeploymentSupport.derivedOverlayPath, runtime)
+        let initial: [String: Data] = [
+            "user/default.custom.yaml": Data("patch:\n  custom_user_setting: original\n".utf8),
+            "user/luna_pinyin.custom.yaml": Data("patch:\n  translator/enable_user_dict: false\n".utf8),
+            "user/luna_pinyin.userdb/fixture.txt": Data("user dictionary sentinel".utf8),
+            "shared/t9.schema.yaml": Data("other family t9".utf8),
+        ]
+        for (path, data) in initial { try put(data, path, runtime) }
+
+        // U2: deploy from builtin (regenerates r2), with old state files present
+        let transaction = try LunaT9DeploymentSupport(scenario: scene)
+        let prepared = try transaction.deploy(sourceRoot: builtin)
+        XCTAssertEqual(prepared.sourceSHA256, LunaT9SchemaCompatibility.outputSHA256)
+        // schema list
+        let defaults = shared.appendingPathComponent("default.yaml")
+        // deploy copies builtin into shared — rewrite defaults
+        var text = try String(contentsOf: defaults, encoding: .utf8)
+        let startR = try XCTUnwrap(text.range(of: "schema_list:\n"))
+        let endR = try XCTUnwrap(text.range(of: "\nswitcher:"))
+        text.replaceSubrange(
+            startR.lowerBound..<endR.lowerBound,
+            with: "schema_list:\n  - schema: luna_pinyin\n  - schema: luna_pinyin_t9\n")
+        try text.write(to: defaults, atomically: false, encoding: .utf8)
+        try Data("patch:\n  schema_list:\n    - schema: luna_pinyin\n    - schema: luna_pinyin_t9\n".utf8)
+            .write(to: user.appendingPathComponent("default.custom.yaml"))
+        let compileStart = Date()
+        let compiled = try await RimeDeploymentService().deploy(
+            RimeDeploymentRequest(
+                mode: .testFixtureMaintenanceOnly, sharedDataURL: shared, userDataURL: user,
+                runtimeSmokeSchemaID: nil))
+        let compileMS = elapsed(compileStart)
+        let smokeStart = Date()
+        let smoke = RimeT9SmokeProbe.verify(
+            sharedDataDir: shared.path, userDataDir: user.path, schemaID: schema, input: "6446",
+            registry: [entry])
+        let smokeMS = elapsed(smokeStart)
+        print(
+            "LUNA_UPGRADE U2-d8f source=\(prepared.sourceSHA256) transaction=true compile=\(compiled.succeeded) diagnostic=\(compiled.diagnosticMessage) smoke=\(smoke) compileMS=\(compileMS) smokeMS=\(smokeMS)"
+        )
+        XCTAssertTrue(compiled.succeeded)
+        XCTAssertTrue(smoke)
+
+        // U3: compile failure injection on d8f scene clone
+        let failedScene = root.appendingPathComponent("d8f-fail-\(UUID().uuidString)", isDirectory: true)
+        try LunaT9EvidenceRoot.createExclusiveDirectory(failedScene)
+        let failedRuntime = failedScene.appendingPathComponent("runtime", isDirectory: true)
+        let failedShared = failedRuntime.appendingPathComponent("shared", isDirectory: true)
+        let failedUser = failedRuntime.appendingPathComponent("user", isDirectory: true)
+        try put(legacy, LunaT9DeploymentSupport.derivedPath, failedRuntime)
+        try put(Data(patch.content.utf8), LunaT9DeploymentSupport.derivedOverlayPath, failedRuntime)
+        for (path, data) in initial { try put(data, path, failedRuntime) }
+        let failedTransaction = try LunaT9DeploymentSupport(scenario: failedScene)
+        _ = try failedTransaction.deploy(sourceRoot: builtin)
+        var ftext = try String(contentsOf: failedShared.appendingPathComponent("default.yaml"), encoding: .utf8)
+        let fs = try XCTUnwrap(ftext.range(of: "schema_list:\n"))
+        let fe = try XCTUnwrap(ftext.range(of: "\nswitcher:"))
+        ftext.replaceSubrange(
+            fs.lowerBound..<fe.lowerBound,
+            with: "schema_list:\n  - schema: luna_pinyin\n  - schema: luna_pinyin_t9\n")
+        try ftext.write(to: failedShared.appendingPathComponent("default.yaml"), atomically: false, encoding: .utf8)
+        try Data("patch:\n  schema_list:\n    - schema: luna_pinyin\n    - schema: luna_pinyin_t9\n".utf8)
+            .write(to: failedUser.appendingPathComponent("default.custom.yaml"))
+        let schemaFile = failedShared.appendingPathComponent("luna_pinyin_t9.schema.yaml")
+        let backup = try Data(contentsOf: schemaFile)
+        try Data(":\n[\n".utf8).write(to: schemaFile)
+        let failed = try await RimeDeploymentService().deploy(
+            RimeDeploymentRequest(
+                mode: .testFixtureMaintenanceOnly, sharedDataURL: failedShared, userDataURL: failedUser,
+                runtimeSmokeSchemaID: nil))
+        let failedSmoke = RimeT9SmokeProbe.verify(
+            sharedDataDir: failedShared.path, userDataDir: failedUser.path, schemaID: schema, input: "6446",
+            registry: [entry])
+        let engine = RimeEngineImpl(sharedDataDir: failedShared.path, userDataDir: failedUser.path)
+        let selected = engine.bridge.selectSchema("luna_pinyin") && engine.bridge.currentSchemaID() == "luna_pinyin"
+        engine.resetSession()
+        var output = RimeOutput()
+        for key in "nihao" { output = engine.processKey(String(key)) }
+        let fallback = selected && !(output.candidates.isEmpty)
+        print(
+            "LUNA_UPGRADE U3-d8f injection=invalid-schema backup=\(digest(backup)) compile=\(failed.succeeded) diagnostic=\(failed.diagnosticMessage) smoke=\(failedSmoke) fallback=\(fallback) ms=\(elapsed(start))"
+        )
+        XCTAssertFalse(failed.succeeded)
+        XCTAssertFalse(failedSmoke)
+        XCTAssertTrue(fallback)
+    }
 }

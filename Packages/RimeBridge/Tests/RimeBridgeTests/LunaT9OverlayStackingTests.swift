@@ -120,7 +120,18 @@ final class LunaT9OverlayStackingTests: XCTestCase {
         for i in 0..<64 {
             guard let p = getString(&config, "speller/algebra/@\(i)") else { break }; algebra.append(String(cString: p))
         }
-        let expected = Array(base.dropLast()) + settings.algebraRules + [try XCTUnwrap(base.last)]
+        let terminalDerives = [
+            "derive/[abc]/2/",
+            "derive/[def]/3/",
+            "derive/[hgi]/4/",
+            "derive/[jkl]/5/",
+            "derive/[omn]/6/",
+            "derive/[pqrs]/7/",
+            "derive/[tuv]/8/",
+            "derive/[wxyz]/9/",
+        ]
+        XCTAssertEqual(Array(base.suffix(8)), terminalDerives, "\(name) base terminal derives")
+        let expected = Array(base.dropLast(8)) + settings.algebraRules + Array(base.suffix(8))
         XCTAssertEqual(algebra, expected, "\(name) \(simplified) compiled algebra")
         if settings.hasEnabledRules {
             let overlayRules = overlay.content.split(separator: "\n").filter {
@@ -200,6 +211,36 @@ final class LunaT9OverlayStackingTests: XCTestCase {
             if let knownStatus { record["known-status"] = knownStatus }
             let data = try JSONSerialization.data(withJSONObject: record, options: [.sortedKeys]);
             print("LUNA_STACK \(String(decoding: data, as: UTF8.self))")
+        }
+        // Design §1.5 letter Path samples (not in `inputs`): fuzzy on ⇒ target in top-5; off ⇒ none.
+        let letterSamples: [(String, Set<String>, (RimeFuzzyPinyinSettings) -> Bool)] = [
+            ("zong", ["中", "種", "种", "重"], { $0.enabled && $0.zhZEnabled }),
+            ("cang", ["常", "長", "长", "場", "场"], { $0.enabled && $0.chCEnabled }),
+            ("sang", ["上", "商", "傷", "伤"], { $0.enabled && $0.shSEnabled }),
+            ("lan", ["男", "南", "難", "难"], { $0.enabled && $0.nLEnabled }),
+        ]
+        for (letterInput, targets, ruleOn) in letterSamples {
+            manager.clearComposition()
+            var letterOutput = RimeOutput()
+            for index in letterInput.indices {
+                letterOutput = RimeEngineImpl.parseOutputDictionary(
+                    manager.replaceInput(String(letterInput[...index])))
+            }
+            let top5 = letterOutput.candidates.prefix(5).map(\.text)
+            let hit = top5.contains { targets.contains($0) }
+            let active = ruleOn(settings)
+            print(
+                "LUNA_STACK_LETTER setting=\(name) simplified=\(simplified) input=\(letterInput) active=\(active) top5=\(top5) hit=\(hit) targets=\(targets.sorted())"
+            )
+            if active {
+                XCTAssertTrue(
+                    hit,
+                    "\(name) \(simplified) \(letterInput) expected one of \(targets.sorted()) in top5=\(top5)")
+            } else {
+                XCTAssertFalse(
+                    hit,
+                    "\(name) \(simplified) \(letterInput) expected none of \(targets.sorted()) in top5=\(top5)")
+            }
         }
         return observed
     }
