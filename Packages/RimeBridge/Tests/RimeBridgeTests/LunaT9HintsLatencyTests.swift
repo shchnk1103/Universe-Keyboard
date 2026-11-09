@@ -12,7 +12,10 @@ final class LunaT9HintsLatencyTests: XCTestCase {
         "644266442", "644266442664", "644266442664426644",
     ]
 
-    override var executionTimeAllowance: TimeInterval { 900 }
+    override func setUp() {
+        super.setUp()
+        executionTimeAllowance = 900
+    }
 
     func testHintsLatencyDistribution() throws {
         var repository = URL(fileURLWithPath: #filePath)
