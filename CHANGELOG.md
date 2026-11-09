@@ -1,3 +1,7 @@
+## 2026-11-09 — KOS-TOOLS-005 六个 PM 侧 KOS 工具入库
+
+- 将 `kos-block.sh`、`kos-cleanup.sh`、`kos-contains.py`、`kos-pkg-lint.py`、`kos-report-lint.py`、`kos-signals.py` 收入 `scripts/kos/`，写死家目录改为遵循 `KOS_HOME`/`KOS_PROJECT`；配套单元测试与 README 说明。
+
 ## 2026-11-09 — KOS-PORTFOLIO-SYNC-002 组合同步（本地交付，未发布）
 
 - `docs/PORTFOLIO.md`：朙月九宫格（PF-065）改为上线前并转为 In progress，决定记录追加 2026-11-09 两条，已完成表登记 PR #276–#281，PF-024 补记三次 test-app-keyboard 失败根因仍 UNKNOWN。
