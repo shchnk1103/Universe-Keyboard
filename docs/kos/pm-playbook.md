@@ -40,6 +40,9 @@
 | H15 | 预检免复检的条件：只有改动全是预检原句时才免复检；PM 只要自己加了一句（哪怕只是选个输入文件），就做一轮窄范围复检 | pm-additions（Human 2026-11-04 决定 1） |
 | H16 | 模型档位按角色定：执行 / 发布用中档模型，PM / 预检 / 复核用高档模型；由派发者按当时可用的 AI 选择，不点名厂商 | pm-additions（Human 2026-11-04 决定 2；取代 kos-executor-model-preference 中只对单一厂商成立的旧写法） |
 | H17 | `~/.kos-work/` 是默认 KOS 家目录，可覆盖，不删除。见 [scripts/kos/README.md](../../scripts/kos/README.md) | kos-home-and-externalization（Human 2026-11-02） |
+| H18 | Human 委托 PM 回答 KEYBOARD-PASTE-UI-001 的 E6 文案确认与 App Store 隐私问卷 Q1–Q6（本次委托；是否成为常设规则见 Q7） | human-statements-2026-11-10 第 3 条（Human 2026-11-10：「确认，你是 PM，你应该帮我回答这 6 个问题，我充分信任你！」） |
+| H19 | Human 要求 PM 用通俗易懂的语言指引其操作 | human-statements-2026-11-10 第 2 条（Human 2026-11-10：「你能不能用通俗易懂的语言来指引我啊！」） |
+| H20 | Human 要求把新规则记到 KOS 系统里 PM 这个角色的设定，而不是只记在个人长期记忆里 | human-statements-2026-11-10 第 4 条（Human 2026-11-10：「不要只是记到你的长期记忆里，而是要记到 KOS 系统中你这个角色的设定里才不会丢！」） |
 
 ### 2.2 PM 惯例
 
@@ -56,6 +59,9 @@
 | P9 | 云端会话读不到本机文件：派发时在回复里给出“派发头 + 包全文”的一键复制版本；云端无法复算包 SHA 时以派发块为准 | pm-additions（2026-11-02 起） |
 | P10 | 报告交回后先用 `check_report.py` 机械核对，再抽查关键事实（提交身份、文件集合、哈希、关键代码行），然后向 Human 汇报 | pm-additions |
 | P11 | “观察与改进意见”逐条记入台账；预检反复 FAIL 的错误类别也记入台账，用来看哪类错误还在重复 | pm-additions；pm-packet-preflight-lessons |
+| P12 | 落实 H18：回答问卷与措辞判断时写明依据与把握度；联网核对不到要如实说，并请 Human 提交前对照 App Store Connect 的说明核对；提交问卷与部署官网由 Human 本人做；需「逐字确认」的文案，对外上线前把最终原文再给 Human 看一次；委托记录落在任务目录的 `inputs/` 下 | PM 惯例（2026-11-10，非 Human 原话；对应 H18） |
+| P13 | 落实 H19：要 Human 动手的事（真机、系统设置、手工测试）一步一步写——先说为什么做，每步写点哪里、看哪里、记什么、怎么算通过；先挑出最重要的 3 个问题，其余标「加分项」；代号换成人话；同时落盘一份白话版指南文件 | PM 惯例（2026-11-10，非 Human 原话；对应 H19） |
+| P14 | 落实 H20：收到 Human 的新做事规则，当天写进 KOS 家目录的 PM 文件（检查表、PM-STATE，`PM-LOG/human-statements-<日期>.md` 放原话），并出文档包落进本手册 2.1 节；个人长期记忆只作索引 | PM 惯例（2026-11-10，非 Human 原话；对应 H20） |
 
 ### 2.3 待 Human 确认
 
@@ -67,6 +73,7 @@
 | Q4 | 组合表（`docs/PORTFOLIO.md`）随任务合并后核对、发现问题即单独刷新 | pm-role-and-dispatch-workflow 记为 Human 2026-10-22 采用，但组合同步不在本手册范围，与仓库现行维护规则的关系未核 |
 | Q5 | 用中文回复；回复先给结论、再写 Human 要做什么、最后写记录情况 | 来源（pm-role-and-dispatch-workflow、combined-authorization-dispatch 的 2026-10-24 修订）没有写明这是 Human 原话还是 PM 的总结 |
 | Q6 | 每轮回复都简短附上 KOS 下一步建议 | 只出现在本机技能说明的触发语中，未写明日期与 Human 批准；与 role-from-packet 第 16 行“非 PM 角色的最终消息不给下一步建议”的适用对象需 Human 确认（现理解为只对 PM） |
+| Q7 | H18 是否成为常设规则（此后同类问卷与措辞判断先由 PM 作答） | Human 的原话针对「这 6 个问题」，没有明说是否推广；PM 现按 P12 执行，待 Human 确认 |
 
 ## 3. 写包与冻结
 
