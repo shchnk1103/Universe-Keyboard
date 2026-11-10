@@ -12,6 +12,11 @@ nonisolated final class CompactCandidateBarLayoutTests: XCTestCase {
             XCTAssertEqual(f.bar.collectionView.bounds.height, f.bar.bounds.height)
             XCTAssertEqual(f.bar.expandButton.frame, CGRect(x: width - 56, y: 0, width: 56, height: 46))
             XCTAssertEqual(f.bar.collectionView.frame.maxX, f.bar.expandButton.frame.minX)
+            let separator = try Self.actionSeparator(in: f.bar)
+            XCTAssertLessThanOrEqual(f.bar.collectionView.frame.maxX, separator.frame.minX + 0.01)
+            XCTAssertEqual(
+                separator.frame.width, 1.0 / max(f.bar.traitCollection.displayScale, 1), accuracy: 0.01)
+            Self.assertSeparatorHeight(separator, in: f.bar)
             XCTAssertTrue(f.bar.collectionView.clipsToBounds)
             XCTAssertEqual(f.bar.collectionView.contentInset, .zero)
             XCTAssertGreaterThanOrEqual(f.bar.expandButton.bounds.height, 44)
@@ -60,89 +65,80 @@ nonisolated final class CompactCandidateBarLayoutTests: XCTestCase {
     }
 
     @MainActor
-    func testMaterialIsStableAcrossRefreshAndRecoveryHidesEveryActionLayer() throws {
+    func testRecoveryHidesSeparatorWithTheActionButton() throws {
         let f = Fixture(width: 390)
-        let material = try XCTUnwrap(f.bar.subviews.compactMap { $0 as? UIVisualEffectView }.first)
-        for style in [UIUserInterfaceStyle.light, .dark] {
-            f.window.overrideUserInterfaceStyle = style
-            f.bar.overrideUserInterfaceStyle = style
-            f.host.overrideUserInterfaceStyle = style
-            f.host.view.backgroundColor = KeyboardDesignTokens.CandidateActionAppearance.backgroundColor.resolvedColor(
-                with: UITraitCollection(userInterfaceStyle: style))
-            for _ in 0..<3 { f.bar.setCanExpandCandidates(true) }
-            XCTAssertTrue(f.bar.subviews.compactMap { $0 as? UIVisualEffectView }.first === material)
-            XCTAssertEqual(material.alpha, 1)
-            XCTAssertNil(material.superview?.mask)
-            XCTAssertNil(material.effect)
-            f.host.view.layoutIfNeeded()
-            RunLoop.current.run(until: Date().addingTimeInterval(0.05))
-            XCTAssertEqual(f.bar.traitCollection.userInterfaceStyle, style)
-            let attachment = XCTAttachment(
-                image: UIGraphicsImageRenderer(bounds: f.host.view.bounds).image { context in
-                    // Offscreen layer capture verifies text/fill geometry, not the live backdrop blur.
-                    f.host.view.layer.render(in: context.cgContext)
-                })
-            attachment.name = "compact-candidates-\(style.rawValue)"
-            attachment.lifetime = .keepAlways
-            add(attachment)
-        }
+        let separator = try Self.actionSeparator(in: f.bar)
+        f.bar.setCanExpandCandidates(true)
+        XCTAssertFalse(f.bar.expandButton.isHidden)
+        XCTAssertFalse(separator.isHidden)
+        XCTAssertFalse(separator.isUserInteractionEnabled)
+        XCTAssertFalse(separator.isAccessibilityElement)
         f.bar.setInputRecoveryNotice("输入恢复失败，按删除取消本段后重试")
-        XCTAssertTrue(material.isHidden)
-        XCTAssertTrue(
-            try XCTUnwrap(f.bar.subviews.first { $0.accessibilityIdentifier == "candidateActionTint" }).isHidden)
+        XCTAssertTrue(separator.isHidden)
         XCTAssertTrue(f.bar.expandButton.isHidden)
         XCTAssertFalse(f.bar.expandButton.isEnabled)
         XCTAssertTrue(f.bar.hitTest(CGPoint(x: 380, y: 23), with: nil) === f.bar)
         f.bar.setInputRecoveryNotice(nil)
         f.bar.setCanExpandCandidates(false)
-        XCTAssertTrue(material.isHidden)
+        XCTAssertFalse(separator.isHidden)
+        XCTAssertFalse(f.bar.expandButton.isHidden)
         XCTAssertTrue(f.bar.expandButton.isEnabled)
     }
 
     @MainActor
-    func testIdleActionHasNoPlateOrGradientAcrossAppearances() throws {
+    func testCompactActionUsesChevronAndSeparatorWithoutMaterialOrGradient() throws {
         let f = Fixture(width: 390)
-        let material = try XCTUnwrap(f.bar.subviews.compactMap { $0 as? UIVisualEffectView }.first)
-        let tint = try XCTUnwrap(f.bar.subviews.first { $0.accessibilityIdentifier == "candidateActionTint" })
+        let configuration = UIImage.SymbolConfiguration(
+            pointSize: KeyboardDesignTokens.CandidateBar.actionSymbolSize, weight: .medium)
+        let expected = UIImage(systemName: "chevron.down", withConfiguration: configuration)?
+            .withRenderingMode(.alwaysTemplate)
+        for expanding in [false, true] {
+            let image = CandidateBarView.trailingChromeImage(expanding: expanding)
+            XCTAssertEqual(image?.pngData(), expected?.pngData())
+        }
         for style in [UIUserInterfaceStyle.light, .dark] {
             f.host.traitOverrides.userInterfaceStyle = style
-            for reduceTransparency in [false, true] {
-                f.bar.setCanExpandCandidates(false)
-                f.bar.updateActionAppearance(reduceTransparency: reduceTransparency)
-                XCTAssertTrue(material.isHidden)
-                XCTAssertNil(material.effect)
-                XCTAssertTrue(tint.isHidden)
+            f.bar.layoutIfNeeded()
+            for canExpand in [false, true] {
+                f.bar.setCanExpandCandidates(canExpand)
+                f.host.view.layoutIfNeeded()
+                XCTAssertNil(f.bar.subviews.first { $0.accessibilityIdentifier == "candidateActionTint" })
+                XCTAssertNil(f.bar.subviews.first { $0.accessibilityIdentifier == "candidateActionMaterial" })
+                XCTAssertTrue(f.bar.subviews.compactMap { $0 as? UIVisualEffectView }.isEmpty)
+                XCTAssertTrue(
+                    f.bar.layer.sublayers?.compactMap { $0 as? CAGradientLayer }.isEmpty ?? true)
+                let separator = try Self.actionSeparator(in: f.bar)
+                XCTAssertFalse(separator.isHidden)
                 XCTAssertFalse(f.bar.expandButton.isHidden)
                 XCTAssertTrue(f.bar.expandButton.isEnabled)
                 XCTAssertEqual(f.bar.expandButton.frame.size, CGSize(width: 56, height: 46))
                 XCTAssertTrue(f.bar.hitTest(CGPoint(x: 389, y: 23), with: nil) === f.bar.expandButton)
-                f.bar.setCanExpandCandidates(true)
-                f.bar.updateActionAppearance(reduceTransparency: reduceTransparency)
-                XCTAssertFalse(tint.isHidden)
-                XCTAssertTrue(material.isHidden)
-                let gradients = tint.layer.sublayers?.compactMap { $0 as? CAGradientLayer } ?? []
-                XCTAssertEqual(gradients.count, 1)
-                XCTAssertEqual(gradients.first?.isHidden, reduceTransparency)
-                XCTAssertEqual(gradients.first?.frame, tint.bounds)
-                XCTAssertEqual(gradients.first?.locations?.count, 3)
+                XCTAssertLessThanOrEqual(f.bar.collectionView.frame.maxX, separator.frame.minX + 0.01)
+                XCTAssertEqual(
+                    separator.frame.width, 1.0 / max(f.bar.traitCollection.displayScale, 1), accuracy: 0.01)
+                Self.assertSeparatorHeight(separator, in: f.bar)
+                XCTAssertEqual(
+                    separator.backgroundColor?.resolvedColor(with: f.bar.traitCollection).cgColor,
+                    UIColor.separator.resolvedColor(with: f.bar.traitCollection).cgColor)
             }
         }
     }
 
     @MainActor
-    func testReduceTransparencyUsesOpaqueFillAndNotificationRestoresSystemPreference() throws {
-        let f = Fixture(width: 390)
-        f.bar.setCanExpandCandidates(true)
-        let material = try XCTUnwrap(f.bar.subviews.compactMap { $0 as? UIVisualEffectView }.first)
-        let tint = try XCTUnwrap(f.bar.subviews.first { $0.accessibilityIdentifier == "candidateActionTint" })
-        f.bar.updateActionAppearance(reduceTransparency: true)
-        XCTAssertTrue(material.isHidden)
-        XCTAssertNil(material.effect)
-        XCTAssertEqual(tint.backgroundColor?.cgColor.alpha, 1)
-        XCTAssertEqual(tint.frame.maxX, f.bar.bounds.maxX)
-        NotificationCenter.default.post(
-            name: UIAccessibility.reduceTransparencyStatusDidChangeNotification, object: nil)
-        XCTAssertTrue(material.isHidden)
+    private static func actionSeparator(in bar: CandidateBarView) throws -> UIView {
+        try XCTUnwrap(bar.subviews.first { $0.accessibilityIdentifier == "candidateActionSeparator" })
+    }
+
+    @MainActor
+    private static func assertSeparatorHeight(_ separator: UIView, in bar: CandidateBarView) {
+        let scale = max(bar.traitCollection.displayScale, 1)
+        let expected =
+            KeyboardDesignTokens.CandidateBar.totalHeight
+            * KeyboardDesignTokens.CandidateBar.actionSeparatorHeightRatio
+        // Auto Layout pixel-aligns the multiplier constraint; allow one physical pixel.
+        XCTAssertEqual(separator.frame.height, expected, accuracy: 1.0 / scale + 0.01)
+        XCTAssertEqual(
+            abs(separator.center.y - bar.bounds.midY), 0, accuracy: 1.0 / scale + 0.01)
     }
 
     @MainActor

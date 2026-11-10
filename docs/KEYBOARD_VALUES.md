@@ -41,6 +41,7 @@ UI3 P3/P4 字号及受本次抽取影响的来源核对基线为 `76bfd4fbdd1673
 | CandidateBar.actionZoneWidth / actionSymbolSize | 56 / 22 | `Keyboard/Views/KeyboardDesignTokens.swift:8`；`Keyboard/Views/KeyboardDesignTokens.swift:9` | 操作区宽度 / 符号字号；操作区高 46 |
 | CandidateBar.minimumTouchSize | 44 | `Keyboard/Views/KeyboardDesignTokens.swift:10` | 定义值，不将其误当 46pt 栏高 |
 | CandidateBar.horizontalPadding / trailingContentPadding | 6 / 8 | `Keyboard/Views/KeyboardDesignTokens.swift:11`；`Keyboard/Views/KeyboardDesignTokens.swift:12` | collection section 左右边距 |
+| CandidateBar.actionSeparatorPixelWidth / actionSeparatorHeightRatio | 1 / 0.6 | `Keyboard/Views/KeyboardDesignTokens.swift` | 紧凑栏按钮前沿竖分隔线：宽为 1 物理像素（视图内再除以 `displayScale`），高为栏高的 0.6 并垂直居中，颜色 `.separator` |
 | CandidateBarView sectionInset / layout spacing | 上下 0，左右 6/8；行 / item 0 | `Keyboard/Views/CandidateBar/CandidateBarView.swift:122` | cell 触摸区连续，视觉空隙放在 cell 内 |
 | ExpandedCandidates.rowHeight | 42 | `Keyboard/Views/KeyboardDesignTokens.swift:16` | 展开 cell 高度，不随文字撑高 |
 | ExpandedCandidates.contentInsets | top (46−42)/2=2，left 6，bottom 6，right 8 | `Keyboard/Views/KeyboardDesignTokens.swift:18` | 展开列表内边距 |
@@ -53,7 +54,7 @@ UI3 P3/P4 字号及受本次抽取影响的来源核对基线为 `76bfd4fbdd1673
 | titleInsets | 首选 16；普通 24 | `Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift:199` | 测量时加入的横向文字内边距总和 |
 | expanded maxWidth | max(44, collectionWidth−16) | `Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift:218` | 展开测量上限，随后仍受 flow 剩余行宽限制 |
 | VisualSpacing.horizontalGap / verticalGap | 4 / 4 | `Keyboard/Views/CandidateBar/CandidateCell.swift:9`；`Keyboard/Views/CandidateBar/CandidateCell.swift:10`；`Keyboard/Views/CandidateBar/CandidateCell.swift:261` | 左右各缩 2；展开上下各缩 2，普通上下不缩 |
-| CandidateActionAppearance.controlDiameter / controlBackgroundInsets | 36；上下 5、左右 10 | `Keyboard/Views/KeyboardDesignTokens.swift:36`；`Keyboard/Views/KeyboardDesignTokens.swift:38` | 操作区内部视觉 plate，不是触摸区 |
+| CandidateActionAppearance.controlDiameter / controlBackgroundInsets | 36；上下 5、左右 10 | `Keyboard/Views/KeyboardDesignTokens.swift` | 仅展开面板收起按钮的内部视觉 plate，不是紧凑栏触摸区；紧凑栏已去掉渐变、材质与着色 |
 | recoveryLabel | caption1，无显式数值上限；2 行；左右 8 | `Keyboard/Views/CandidateBar/CandidateBarView.swift:158`；`Keyboard/Views/CandidateBar/CandidateBarView.swift:160`；`Keyboard/Views/CandidateBar/CandidateBarView.swift:166` | 恢复提示位于固定候选栏内 |
 
 ### 九键路径栏与路径面板
