@@ -1,3 +1,9 @@
+## 2026-11-10 — KOS-PM-RULES-H18-001 PM 规则 H18–H20 落库
+
+- `docs/kos/pm-playbook.md` 第 2.1 节新增 H18–H20（Human 2026-11-10 的三条指示：PM 回答问卷与文案确认的委托、通俗易懂的指引、新规则记入 KOS 的 PM 设定），第 2.2 节新增 P12–P14（PM 的落实做法），第 2.3 节新增 Q7（H18 是否成为常设规则，待 Human 确认）。
+- 来源：Human 2026-11-10 原话，见 PM 家目录 `PM-LOG/human-statements-2026-11-10.md`。
+- 其它规则行未改。
+
 ## 2026-11-10 — KEYBOARD-BAR-CHEVRON-001 候选栏操作按钮改原生 chevron 并加分隔线
 
 - 取代 CANDIDATE-BAR-IDLE-DISMISS-001 的空心圆决定：空闲收起与展开都使用同一 `chevron.down`。
