@@ -74,6 +74,8 @@ final class CandidateBarView: UIView {
     private var actionSeparatorWidthConstraint: NSLayoutConstraint!
 
     private let pasteFailureLabel = UILabel()
+    /// 点失败行。调用方只清失败并刷新，不把这次点击当成输入。
+    var onPasteFailureTap: (() -> Void)?
     private weak var pasteContent: UIView?
     private let recoveryLabel = UILabel()
     private var isShowingRecoveryNotice = false
@@ -298,8 +300,18 @@ final class CandidateBarView: UIView {
         let visible = message != nil && !isShowingRecoveryNotice
         pasteFailureLabel.text = message
         pasteFailureLabel.isHidden = !visible
+        pasteFailureLabel.isUserInteractionEnabled = visible
+        if visible, pasteFailureLabel.gestureRecognizers?.isEmpty != false {
+            pasteFailureLabel.addGestureRecognizer(
+                UITapGestureRecognizer(target: self, action: #selector(pasteFailureTapped))
+            )
+        }
         pasteContent?.isHidden = visible || isShowingRecoveryNotice
         if visible { bringSubviewToFront(pasteFailureLabel) }
+    }
+
+    @objc private func pasteFailureTapped() {
+        onPasteFailureTap?()
     }
 
     override func layoutSubviews() {
@@ -413,6 +425,8 @@ final class CandidateBarView: UIView {
         if !expandButton.isHidden, expandedButtonHitFrame.contains(point) {
             let buttonPoint = expandButton.convert(point, from: self)
             result = expandButton.hitTest(buttonPoint, with: event) ?? expandButton
+        } else if !pasteFailureLabel.isHidden, pasteFailureLabel.frame.contains(point) {
+            result = pasteFailureLabel
         } else if let pasteContent, !pasteContent.isHidden, pasteContent.frame.contains(point) {
             result = pasteContent.hitTest(pasteContent.convert(point, from: self), with: event)
         } else if bounds.contains(point), collectionView.frame.contains(point) {

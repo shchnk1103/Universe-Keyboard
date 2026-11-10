@@ -19,6 +19,7 @@ nonisolated final class PasteToolbarIntegrationTests: XCTestCase {
         owner.setupRootStack()
         owner.reloadKeyboard()
         owner.isKeyboardUIInstalled = true
+        owner.installPasteInputObservation()
         owner.view.layoutIfNeeded()
         owner.rootStack.layoutIfNeeded()
         owner.refreshPasteToolbar()
@@ -95,6 +96,10 @@ nonisolated final class PasteToolbarIntegrationTests: XCTestCase {
         }
         let first = try XCTUnwrap(sut.pasteSession.begin())
         sut.pasteSession.complete("乙", operationID: first)
+        XCTAssertEqual(sut.pasteSession.presentation, .consumedByPaste)
+        XCTAssertNil(sut.pasteToolbar)
+        XCTAssertNil(sut.pasteSession.begin())
+        sut.handleKeyboardDidAppear()
         sut.controller.textClient = client
         let second = try XCTUnwrap(sut.pasteSession.begin())
         sut.pasteSession.complete("丙", operationID: second)
@@ -136,6 +141,8 @@ nonisolated final class PasteToolbarIntegrationTests: XCTestCase {
     func testChangedAndUnavailableInvalidateButInitialAndUnchangedDoNot() throws {
         let sut = owner()
         for observation in [KeyboardDocumentIdentityTracker.Observation.initial, .unchanged, .changed, .unavailable] {
+            sut.pasteSession.noteAppearance()
+            sut.refreshPasteToolbar()
             let client = PasteClient()
             sut.controller.textClient = client
             let id = try XCTUnwrap(sut.pasteSession.begin())
@@ -165,6 +172,7 @@ nonisolated final class PasteToolbarIntegrationTests: XCTestCase {
         XCTAssertTrue(client.inserted.isEmpty)
         sut.handleKeyboardDidAppear()
         XCTAssertTrue(client.inserted.isEmpty)
+        XCTAssertEqual(sut.pasteSession.presentation, .armed)
     }
 
     @MainActor
@@ -287,7 +295,7 @@ nonisolated final class PasteToolbarIntegrationTests: XCTestCase {
 }
 
 @MainActor
-private final class PasteOwner: KeyboardViewController {
+final class PasteOwner: KeyboardViewController {
     var access = true
     var dismissals = 0
     override var hasFullAccess: Bool { access }
@@ -296,7 +304,7 @@ private final class PasteOwner: KeyboardViewController {
 }
 
 @MainActor
-private final class PasteClient: TextInputClient {
+final class PasteClient: TextInputClient {
     var inserted: [String] = []
     var onInsert: (() -> Void)?
     var hasTextBeforeInput: Bool { false }

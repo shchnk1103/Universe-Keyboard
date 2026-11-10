@@ -148,7 +148,7 @@ extension KeyboardViewController {
                     self?.wakeDiagnosticContext ?? .disabled
                 }
             ))
-        controller.onActionObserved = { [weak self] action in self?.commitTrace.observeAction(action) }
+        installPasteInputObservation()
         controller.onTypoCorrectionSelected = { [weak self] correction in
             guard let self else { return }
             self.controller.typoCorrectionLearningSnapshot = self.typoCorrectionLearningStore.recordSelection(
@@ -191,6 +191,18 @@ extension KeyboardViewController {
         #endif
     }
 
+    /// 把「第一次输入」接到 Core 的动作观察上。测试跳过 viewDidLoad 时也要调用这一次。
+    func installPasteInputObservation() {
+        controller.onActionObserved = { [weak self] action in
+            guard let self else { return }
+            self.commitTrace.observeAction(action)
+            guard pastePresentationCounts(action) else { return }
+            // 在 Core 处理之前消耗。组字开始后再删光，条也不会回来。
+            self.pasteSession.noteCountedInput()
+            self.refreshPasteToolbar()
+        }
+    }
+
     func handleKeyboardDidAppear() {
         pasteToolbarSuspended = false
         defer { refreshPasteToolbar() }
@@ -228,6 +240,8 @@ extension KeyboardViewController {
         }
 
         Logger.shared.debug("viewDidAppear: bounds=\(view.bounds)", category: .display)
+        // 结果 X：清理完旧组字后再武装，避免返回时的清理被当成第一次输入。
+        pasteSession.noteAppearance()
         #if DEBUG
             recordKeyboardVisualDiagnostic("HANDLE_DID_APPEAR_END")
         #endif
@@ -921,6 +935,7 @@ extension KeyboardViewController {
 
     @objc private func extensionHostWillResignActive(_ notification: Notification) {
         pasteToolbarSuspended = true
+        pasteSession.noteHostResign()
         refreshPasteToolbar()
         guard hostNotificationMatchesCurrentExtensionContext(notification) else { return }
         #if DEBUG
@@ -946,6 +961,8 @@ extension KeyboardViewController {
 
     @objc private func extensionHostDidBecomeActive(_ notification: Notification) {
         pasteToolbarSuspended = false
+        // 结果 Y 只在仍挂着 pendingReturn 时重置。出现已经清过的不再加一代。
+        pasteSession.noteHostBecomeActive()
         defer { refreshPasteToolbar() }
         guard hostNotificationMatchesCurrentExtensionContext(notification) else { return }
         #if DEBUG
