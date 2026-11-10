@@ -661,7 +661,8 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
         let expanded = try XCTUnwrap(sut.expandedCandidateCollectionView)
         let button = try XCTUnwrap(panel.subviews.compactMap { $0 as? UIButton }.first)
         XCTAssertTrue(descendants(panel).compactMap { $0 as? UIVisualEffectView }.isEmpty)
-        XCTAssertTrue(descendants(panel).allSatisfy { $0.layer.cornerRadius == 0 })
+        XCTAssertEqual(button.layer.cornerRadius, 0)
+        XCTAssertTrue(descendants(button).allSatisfy { $0.layer.cornerRadius == 0 })
         let frames = (0..<40).compactMap {
             expanded.layoutAttributesForItem(at: IndexPath(item: $0, section: 0))?.frame
         }
@@ -699,7 +700,8 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
             let expanded = try XCTUnwrap(sut.expandedCandidateCollectionView)
             let button = try XCTUnwrap(panel.subviews.compactMap { $0 as? UIButton }.first)
             XCTAssertTrue(descendants(panel).compactMap { $0 as? UIVisualEffectView }.isEmpty)
-            XCTAssertTrue(descendants(panel).allSatisfy { $0.layer.cornerRadius == 0 })
+            XCTAssertEqual(button.layer.cornerRadius, 0)
+            XCTAssertTrue(descendants(button).allSatisfy { $0.layer.cornerRadius == 0 })
             XCTAssertEqual(panel.backgroundColor?.cgColor.alpha, 0)
             let frames = (0..<120).compactMap {
                 expanded.layoutAttributesForItem(at: IndexPath(item: $0, section: 0))?.frame
