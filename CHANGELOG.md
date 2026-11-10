@@ -1,3 +1,10 @@
+## 2026-11-10 — KEYBOARD-BAR-CHEVRON-001 候选栏操作按钮改原生 chevron 并加分隔线
+
+- 取代 CANDIDATE-BAR-IDLE-DISMISS-001 的空心圆决定：空闲收起与展开都使用同一 `chevron.down`。
+- 在操作按钮前沿增加 1 像素竖分隔线（高为候选栏的 0.6，颜色 `.separator`），并去掉紧凑栏按钮背后的渐变、材质与着色。
+- 展开面板收起按钮去掉圆形材质底；每一行使用同一右边界，不再只缩短与操作区相交的前两行。
+- 展开面板统一右边界改为面板宽度减 44pt，使 iPhone 13 Pro 宽度上的单字候选排成 7 列；收起按钮位置不变。
+
 ## 2026-11-09 — KOS-TOOLS-007 PM 侧提速工具入库
 
 - 新增 `scripts/kos/kos-impact.py`、`kos-run.sh`、`kos-verify-inputs.py` 与 `scripts/kos/tests/test_tools_007.py`。

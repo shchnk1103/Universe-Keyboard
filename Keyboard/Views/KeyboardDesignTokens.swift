@@ -10,6 +10,10 @@ enum KeyboardDesignTokens {
         static let minimumTouchSize: CGFloat = 44
         static let horizontalPadding: CGFloat = 6
         static let trailingContentPadding: CGFloat = 8
+        /// Physical-pixel count for the compact-bar action separator. The view
+        /// divides this by `max(traitCollection.displayScale, 1)` at runtime.
+        static let actionSeparatorPixelWidth: CGFloat = 1
+        static let actionSeparatorHeightRatio: CGFloat = 0.6
     }
 
     enum ExpandedCandidates {
@@ -30,16 +34,6 @@ enum KeyboardDesignTokens {
     }
 
     enum CandidateActionAppearance {
-        static let materialStyle: UIBlurEffect.Style = .systemMaterial
-        static let tintOpacity: CGFloat = 0.72
-        static let edgeFadeWidth: CGFloat = 10
-        static let controlDiameter: CGFloat = 36
-        static var controlBackgroundInsets: UIEdgeInsets {
-            let vertical = (CandidateBar.totalHeight - controlDiameter) / 2
-            let horizontal = (CandidateBar.actionZoneWidth - controlDiameter) / 2
-            return UIEdgeInsets(top: vertical, left: horizontal, bottom: vertical, right: horizontal)
-        }
-        static var controlCornerRadius: CGFloat { controlDiameter / 2 }
         static var symbolColor: UIColor { .secondaryLabel }
 
         static var backgroundColor: UIColor {
