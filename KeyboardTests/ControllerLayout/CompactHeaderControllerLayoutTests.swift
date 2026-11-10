@@ -418,7 +418,14 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
                     let attributes = try XCTUnwrap(
                         collection.layoutAttributesForItem(at: IndexPath(item: index, section: 0)))
                     XCTAssertEqual(attributes.frame.height, 42)
-                    XCTAssertFalse(attributes.frame.intersects(buttonFrame))
+                    // R3 keeps the 56pt collapse button and lets a cell overlap it by at most
+                    // actionZoneWidth - minimumTouchSize; the glyph itself stays clear.
+                    let overlap = attributes.frame.intersection(buttonFrame).width
+                    XCTAssertLessThanOrEqual(
+                        overlap,
+                        KeyboardDesignTokens.CandidateBar.actionZoneWidth
+                            - KeyboardDesignTokens.CandidateBar.minimumTouchSize
+                    )
                 }
                 collection.scrollToItem(at: IndexPath(item: 79, section: 0), at: .bottom, animated: false)
                 collection.layoutIfNeeded()
