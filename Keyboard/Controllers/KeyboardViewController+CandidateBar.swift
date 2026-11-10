@@ -49,6 +49,12 @@ extension KeyboardViewController {
             self?.commitCompactCandidate(at: indexPath)
         }
         refreshPasteToolbar(on: view)
+        view.onPasteFailureTap = { [weak self] in
+            guard let self else { return }
+            // 点失败行只清失败并刷新，不记成输入，也不改 presentation。
+            self.pasteSession.clearFailure()
+            self.refreshPasteToolbar()
+        }
         return view
     }
 
@@ -352,20 +358,22 @@ extension KeyboardViewController {
     func refreshPasteToolbar(on newBar: CandidateBarView? = nil) {
         guard controller != nil else { return }
         let bar = newBar ?? candidateBar as? CandidateBarView
-        guard isPasteToolbarEligible, let bar else {
+        // 条要 armed；失败行不要。否则失败一显示就会在同一帧被清掉。
+        let showStrip = isPasteToolbarEligible && pasteSession.presentation == .armed
+        if !showStrip || bar == nil {
             pasteSession.invalidate()
             pasteToolbar?.removeFromSuperview()
             pasteToolbar = nil
-            (candidateBar as? CandidateBarView)?.setPasteFailureNotice(nil)
-            return
+        } else if let bar {
+            if pasteToolbar?.superview !== bar {
+                pasteToolbar?.removeFromSuperview()
+                let toolbar = PasteToolbarControl(session: pasteSession)
+                pasteToolbar = toolbar
+                bar.setPasteContent(toolbar)
+            }
         }
-        if pasteToolbar?.superview !== bar {
-            pasteToolbar?.removeFromSuperview()
-            let toolbar = PasteToolbarControl(session: pasteSession)
-            pasteToolbar = toolbar
-            bar.setPasteContent(toolbar)
-        }
-        bar.setPasteFailureNotice(pasteSession.pasteFailureVisible ? "无法粘贴纯文本" : nil)
+        let failure = pasteSession.pasteFailureVisible ? "无法粘贴纯文本" : nil
+        bar?.setPasteFailureNotice(failure)
     }
 
     func observePasteDocumentIdentity(_ observation: KeyboardDocumentIdentityTracker.Observation) {
