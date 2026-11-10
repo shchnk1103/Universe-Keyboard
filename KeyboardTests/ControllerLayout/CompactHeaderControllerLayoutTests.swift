@@ -652,7 +652,7 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
         defer { UIView.setAnimationsEnabled(animations) }
         let width = 390.0
         let sut = makeController(width: width, nineKey: false)
-        sut.accumulatedCandidates = (0..<40).map { CandidateItem(title: "候选", kind: .continuationCandidate) }
+        sut.accumulatedCandidates = (0..<40).map { _ in CandidateItem(title: "候选", kind: .continuationCandidate) }
         sut.hasMoreCandidates = false
         sut.fillCandidateBar()
         sut.toggleCandidateExpand()
