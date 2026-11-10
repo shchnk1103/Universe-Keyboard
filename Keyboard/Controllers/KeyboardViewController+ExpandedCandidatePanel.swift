@@ -4,8 +4,9 @@ import UIKit
 /// Flow layout 默认会把同一行的 item 间距拉大到填满宽度。
 /// 候选展开面板需要像文字流一样从左到右紧凑排列，所以这里固定为左对齐。
 private final class LeftAlignedCandidateFlowLayout: UICollectionViewFlowLayout {
-    /// 每一行都为右上角收起按钮预留同一段尾部，避免前两行比后面更窄。
-    var trailingReservedWidth: CGFloat = 0
+    /// 每一行共用的右边界：面板宽度减去该值。
+    /// 取 44pt 触控尺寸，不再叠加右内边距或整段 56pt 操作区，以便单字排到 7 列。
+    var trailingBoundaryInset: CGFloat = 0
 
     private var cachedAttributes: [UICollectionViewLayoutAttributes] = []
     private var cachedAttributesByIndexPath: [IndexPath: UICollectionViewLayoutAttributes] = [:]
@@ -27,8 +28,8 @@ private final class LeftAlignedCandidateFlowLayout: UICollectionViewFlowLayout {
         var nextX = sectionInset.left
         var nextY = sectionInset.top
         var rowHeight: CGFloat = 0
-        let fullRowMaxX = collectionView.bounds.width - sectionInset.right
-        let rowMaxX = max(sectionInset.left, fullRowMaxX - trailingReservedWidth)
+        // 右内边距不再叠进这条边界；sectionInset.right 只留给系统 flow 的默认测量。
+        let rowMaxX = max(sectionInset.left, collectionView.bounds.width - trailingBoundaryInset)
         var preparedAttributes: [UICollectionViewLayoutAttributes] = []
 
         for section in 0..<collectionView.numberOfSections {
@@ -487,7 +488,8 @@ extension KeyboardViewController {
         layout.minimumInteritemSpacing = KeyboardDesignTokens.ExpandedCandidates.itemSpacing
         // 真实 cell 连续铺满；2pt 视觉内缩由 CandidateCollectionCell 负责。
         layout.sectionInset = KeyboardDesignTokens.ExpandedCandidates.contentInsets
-        layout.trailingReservedWidth = collapseButtonWidth + 8
+        // 按钮仍占 56pt；行边界只退到 44pt，允许格子与按钮重叠，但不覆盖箭头。
+        layout.trailingBoundaryInset = KeyboardDesignTokens.CandidateBar.minimumTouchSize
         let collectionView = CandidateCollectionView(frame: .zero, collectionViewLayout: layout)
         CandidateScrollViewStyle.apply(to: collectionView)
         collectionView.showsVerticalScrollIndicator = false

@@ -47,7 +47,7 @@ UI3 P3/P4 字号及受本次抽取影响的来源核对基线为 `76bfd4fbdd1673
 | ExpandedCandidates.contentInsets | top (46−42)/2=2，left 6，bottom 6，right 8 | `Keyboard/Views/KeyboardDesignTokens.swift:18` | 展开列表内边距 |
 | ExpandedCandidates.itemSpacing | 0 | `Keyboard/Views/KeyboardDesignTokens.swift:21` | 展开行 / item 间距 |
 | minimumReadableExtent / minimumReadableFraction | 12 / 0.2 | `Keyboard/Views/KeyboardDesignTokens.swift:22`；`Keyboard/Views/KeyboardDesignTokens.swift:23` | 展开时首个可读项的可见程度判定 |
-| trailingReservedWidth | 56+8=64 | `Keyboard/Controllers/KeyboardViewController+ExpandedCandidatePanel.swift` | 展开面板每一行都预留收起按钮尾部，不再只缩短与操作区相交的前两行 |
+| trailingBoundaryInset | minimumTouchSize=44 | `Keyboard/Controllers/KeyboardViewController+ExpandedCandidatePanel.swift` | 展开面板每一行的右边界是面板宽度减 44pt，不再叠加右内边距或整段 56pt 操作区 |
 | CandidateSizing.visualHorizontalGap / minimumTouchWidth | 4 / 44 | `Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift:6`；`Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift:7` | 自然宽度至少 44，再加入视觉间隙 4 |
 | CandidateSizing.correctionHintSpacing | 3 | `Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift:8`；`Keyboard/Views/CandidateBar/CandidateCell.swift:70` | 测量和内容 stack 的提示间距一致 |
 | titleInsets | 首选 16；普通 24 | `Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift:199` | 测量时加入的横向文字内边距总和 |

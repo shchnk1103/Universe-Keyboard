@@ -650,35 +650,57 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
         let animations = UIView.areAnimationsEnabled
         UIView.setAnimationsEnabled(false)
         defer { UIView.setAnimationsEnabled(animations) }
-        let width = 390.0
-        let sut = makeController(width: width, nineKey: false)
-        sut.accumulatedCandidates = (0..<40).map { _ in CandidateItem(title: "候选", kind: .continuationCandidate) }
-        sut.hasMoreCandidates = false
-        sut.fillCandidateBar()
-        sut.toggleCandidateExpand()
-        layout(sut)
-        let panel = try XCTUnwrap(sut.candidateExpandedPanel as? ExpandedCandidatePanelContainerView)
-        let expanded = try XCTUnwrap(sut.expandedCandidateCollectionView)
-        let button = try XCTUnwrap(panel.subviews.compactMap { $0 as? UIButton }.first)
-        XCTAssertTrue(descendants(panel).compactMap { $0 as? UIVisualEffectView }.isEmpty)
-        XCTAssertEqual(button.layer.cornerRadius, 0)
-        XCTAssertTrue(descendants(button).allSatisfy { $0.layer.cornerRadius == 0 })
-        let frames = (0..<40).compactMap {
-            expanded.layoutAttributesForItem(at: IndexPath(item: $0, section: 0))?.frame
+        // 390pt 必须是 7 列；375pt 只要求各行同列数且不越过同一边界。
+        for width in [390.0, 375.0] {
+            let sut = makeController(width: width, nineKey: false)
+            sut.accumulatedCandidates = (0..<42).map { _ in CandidateItem(title: "字", kind: .continuationCandidate) }
+            sut.hasMoreCandidates = false
+            sut.fillCandidateBar()
+            sut.toggleCandidateExpand()
+            layout(sut)
+            let panel = try XCTUnwrap(sut.candidateExpandedPanel as? ExpandedCandidatePanelContainerView)
+            let expanded = try XCTUnwrap(sut.expandedCandidateCollectionView)
+            let button = try XCTUnwrap(panel.subviews.compactMap { $0 as? UIButton }.first)
+            button.layoutIfNeeded()
+            XCTAssertTrue(descendants(panel).compactMap { $0 as? UIVisualEffectView }.isEmpty)
+            XCTAssertEqual(button.layer.cornerRadius, 0)
+            XCTAssertTrue(descendants(button).allSatisfy { $0.layer.cornerRadius == 0 })
+            let frames = (0..<42).compactMap {
+                expanded.layoutAttributesForItem(at: IndexPath(item: $0, section: 0))?.frame
+            }
+            XCTAssertEqual(frames.count, 42)
+            // 夹具宽度取自真实单字 cell，不手写一个猜测值。
+            let measuredWidth = frames[0].width
+            XCTAssertTrue(frames.allSatisfy { $0.width == measuredWidth })
+            let rows = Dictionary(grouping: frames, by: \.minY)
+            XCTAssertGreaterThanOrEqual(rows.count, 5)
+            let counts = Set(rows.values.map(\.count))
+            XCTAssertEqual(counts.count, 1)
+            if width == 390 {
+                XCTAssertEqual(counts, [7])
+            }
+            let boundary = width - KeyboardDesignTokens.CandidateBar.minimumTouchSize
+            let allowedOverlap =
+                KeyboardDesignTokens.CandidateBar.actionZoneWidth
+                - KeyboardDesignTokens.CandidateBar.minimumTouchSize
+            let arrow = try XCTUnwrap(button.imageView).convert(button.imageView?.bounds ?? .zero, to: panel)
+            XCTAssertFalse(arrow.isEmpty)
+            var checkedGlyphs = 0
+            for (index, frame) in frames.enumerated() {
+                XCTAssertLessThanOrEqual(frame.maxX, boundary)
+                let panelFrame = expanded.convert(frame, to: panel)
+                let overlap = panelFrame.intersection(button.frame)
+                if !overlap.isNull {
+                    XCTAssertLessThanOrEqual(overlap.width, allowedOverlap)
+                }
+                guard let cell = expanded.cellForItem(at: IndexPath(item: index, section: 0)) else { continue }
+                let glyph = try XCTUnwrap(descendants(cell).compactMap { $0 as? UILabel }.first)
+                let glyphFrame = glyph.convert(glyph.bounds, to: panel)
+                XCTAssertFalse(glyphFrame.intersects(arrow))
+                checkedGlyphs += 1
+            }
+            XCTAssertGreaterThan(checkedGlyphs, 0)
         }
-        XCTAssertEqual(frames.count, 40)
-        let rows = Dictionary(grouping: frames, by: \.minY)
-        XCTAssertGreaterThanOrEqual(rows.count, 5)
-        let counts = Set(rows.values.map(\.count))
-        XCTAssertEqual(counts.count, 1)
-        let boundary =
-            width - KeyboardDesignTokens.ExpandedCandidates.contentInsets.right
-            - (KeyboardDesignTokens.CandidateBar.actionZoneWidth + 8)
-        for frame in frames {
-            XCTAssertLessThanOrEqual(frame.maxX, boundary)
-            XCTAssertFalse(frame.intersects(panel.actionFrame(in: expanded)))
-        }
-        XCTAssertFalse(button.frame.intersects(expanded.convert(frames[0], to: panel)))
     }
 
     @MainActor
