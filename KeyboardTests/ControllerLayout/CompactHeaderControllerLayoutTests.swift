@@ -646,6 +646,41 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
     }
 
     @MainActor
+    func testExpandedRowsShareOneTrailingBoundaryWithoutActionMaterial() throws {
+        let animations = UIView.areAnimationsEnabled
+        UIView.setAnimationsEnabled(false)
+        defer { UIView.setAnimationsEnabled(animations) }
+        let width = 390.0
+        let sut = makeController(width: width, nineKey: false)
+        sut.accumulatedCandidates = (0..<40).map { CandidateItem(title: "候选", kind: .continuationCandidate) }
+        sut.hasMoreCandidates = false
+        sut.fillCandidateBar()
+        sut.toggleCandidateExpand()
+        layout(sut)
+        let panel = try XCTUnwrap(sut.candidateExpandedPanel as? ExpandedCandidatePanelContainerView)
+        let expanded = try XCTUnwrap(sut.expandedCandidateCollectionView)
+        let button = try XCTUnwrap(panel.subviews.compactMap { $0 as? UIButton }.first)
+        XCTAssertTrue(descendants(panel).compactMap { $0 as? UIVisualEffectView }.isEmpty)
+        XCTAssertTrue(descendants(panel).allSatisfy { $0.layer.cornerRadius == 0 })
+        let frames = (0..<40).compactMap {
+            expanded.layoutAttributesForItem(at: IndexPath(item: $0, section: 0))?.frame
+        }
+        XCTAssertEqual(frames.count, 40)
+        let rows = Dictionary(grouping: frames, by: \.minY)
+        XCTAssertGreaterThanOrEqual(rows.count, 5)
+        let counts = Set(rows.values.map(\.count))
+        XCTAssertEqual(counts.count, 1)
+        let boundary =
+            width - KeyboardDesignTokens.ExpandedCandidates.contentInsets.right
+            - (KeyboardDesignTokens.CandidateBar.actionZoneWidth + 8)
+        for frame in frames {
+            XCTAssertLessThanOrEqual(frame.maxX, boundary)
+            XCTAssertFalse(frame.intersects(panel.actionFrame(in: expanded)))
+        }
+        XCTAssertFalse(button.frame.intersects(expanded.convert(frames[0], to: panel)))
+    }
+
+    @MainActor
     func testNaturalFlowFixedActionMaterialAndTouchOcclusion() throws {
         let animations = UIView.areAnimationsEnabled
         UIView.setAnimationsEnabled(false)
@@ -663,13 +698,8 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
             let panel = try XCTUnwrap(sut.candidateExpandedPanel as? ExpandedCandidatePanelContainerView)
             let expanded = try XCTUnwrap(sut.expandedCandidateCollectionView)
             let button = try XCTUnwrap(panel.subviews.compactMap { $0 as? UIButton }.first)
-            let material = try XCTUnwrap(panel.subviews.compactMap { $0 as? UIVisualEffectView }.first)
-            XCTAssertEqual(
-                material.frame,
-                button.frame.inset(by: KeyboardDesignTokens.CandidateActionAppearance.controlBackgroundInsets))
-            XCTAssertTrue(material.clipsToBounds)
-            XCTAssertEqual(
-                material.layer.cornerRadius, KeyboardDesignTokens.CandidateActionAppearance.controlCornerRadius)
+            XCTAssertTrue(descendants(panel).compactMap { $0 as? UIVisualEffectView }.isEmpty)
+            XCTAssertTrue(descendants(panel).allSatisfy { $0.layer.cornerRadius == 0 })
             XCTAssertEqual(panel.backgroundColor?.cgColor.alpha, 0)
             let frames = (0..<120).compactMap {
                 expanded.layoutAttributesForItem(at: IndexPath(item: $0, section: 0))?.frame
@@ -696,14 +726,6 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
             let visiblePoint = CGPoint(x: 30, y: 70)
             let hit = try XCTUnwrap(panel.hitTest(visiblePoint, with: nil))
             XCTAssertTrue(hit === expanded || hit.isDescendant(of: expanded))
-            panel.updateActionMaterial(reduceTransparency: true)
-            XCTAssertNil(material.effect)
-            XCTAssertEqual(material.contentView.subviews.first?.backgroundColor?.cgColor.alpha, 1)
-            panel.updateActionMaterial(reduceTransparency: false)
-            XCTAssertNotNil(material.effect)
-            XCTAssertEqual(
-                ObjectIdentifier(material),
-                ObjectIdentifier(try XCTUnwrap(panel.subviews.compactMap { $0 as? UIVisualEffectView }.first)))
             let mask = try XCTUnwrap(sut.rootStack.layer.mask as? CAShapeLayer)
             XCTAssertFalse(mask.path?.contains(CGPoint(x: 40, y: 100)) == true)
             XCTAssertTrue(mask.path?.contains(CGPoint(x: 40, y: 17)) == true)

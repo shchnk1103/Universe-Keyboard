@@ -47,14 +47,13 @@ UI3 P3/P4 字号及受本次抽取影响的来源核对基线为 `76bfd4fbdd1673
 | ExpandedCandidates.contentInsets | top (46−42)/2=2，left 6，bottom 6，right 8 | `Keyboard/Views/KeyboardDesignTokens.swift:18` | 展开列表内边距 |
 | ExpandedCandidates.itemSpacing | 0 | `Keyboard/Views/KeyboardDesignTokens.swift:21` | 展开行 / item 间距 |
 | minimumReadableExtent / minimumReadableFraction | 12 / 0.2 | `Keyboard/Views/KeyboardDesignTokens.swift:22`；`Keyboard/Views/KeyboardDesignTokens.swift:23` | 展开时首个可读项的可见程度判定 |
-| firstRowTrailingReservedWidth | 56+8=64 | `Keyboard/Controllers/KeyboardViewController+ExpandedCandidatePanel.swift:538` | 仅与顶部操作区相交的行预留尾部 |
-| reservedActionBottom | 46 | `Keyboard/Controllers/KeyboardViewController+ExpandedCandidatePanel.swift:9` | 顶部行预留判定的边界 |
+| trailingReservedWidth | 56+8=64 | `Keyboard/Controllers/KeyboardViewController+ExpandedCandidatePanel.swift` | 展开面板每一行都预留收起按钮尾部，不再只缩短与操作区相交的前两行 |
 | CandidateSizing.visualHorizontalGap / minimumTouchWidth | 4 / 44 | `Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift:6`；`Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift:7` | 自然宽度至少 44，再加入视觉间隙 4 |
 | CandidateSizing.correctionHintSpacing | 3 | `Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift:8`；`Keyboard/Views/CandidateBar/CandidateCell.swift:70` | 测量和内容 stack 的提示间距一致 |
 | titleInsets | 首选 16；普通 24 | `Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift:199` | 测量时加入的横向文字内边距总和 |
 | expanded maxWidth | max(44, collectionWidth−16) | `Keyboard/Controllers/KeyboardViewController+CandidateDataSource.swift:218` | 展开测量上限，随后仍受 flow 剩余行宽限制 |
 | VisualSpacing.horizontalGap / verticalGap | 4 / 4 | `Keyboard/Views/CandidateBar/CandidateCell.swift:9`；`Keyboard/Views/CandidateBar/CandidateCell.swift:10`；`Keyboard/Views/CandidateBar/CandidateCell.swift:261` | 左右各缩 2；展开上下各缩 2，普通上下不缩 |
-| CandidateActionAppearance.controlDiameter / controlBackgroundInsets | 36；上下 5、左右 10 | `Keyboard/Views/KeyboardDesignTokens.swift` | 仅展开面板收起按钮的内部视觉 plate，不是紧凑栏触摸区；紧凑栏已去掉渐变、材质与着色 |
+| CandidateActionAppearance.symbolColor | .secondaryLabel | `Keyboard/Views/KeyboardDesignTokens.swift` | 紧凑栏与展开收起按钮共用符号色；展开收起按钮不再有圆形材质底 |
 | recoveryLabel | caption1，无显式数值上限；2 行；左右 8 | `Keyboard/Views/CandidateBar/CandidateBarView.swift:158`；`Keyboard/Views/CandidateBar/CandidateBarView.swift:160`；`Keyboard/Views/CandidateBar/CandidateBarView.swift:166` | 恢复提示位于固定候选栏内 |
 
 ### 九键路径栏与路径面板
