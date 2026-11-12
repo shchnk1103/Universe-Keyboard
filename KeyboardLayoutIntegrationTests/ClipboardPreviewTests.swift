@@ -58,6 +58,31 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
     }
 
     @MainActor
+    func testPreviouslyAllowedTextThenDeniedResult() async throws {
+        let session = PasteToolbarSession()
+        session.isEligible = { true }
+        session.previewReader = FixedPreviewReader(result: .text(full: "old", summary: "old", isLink: false))
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        for _ in 0..<100 where session.preview == .reading {
+            try await Task.sleep(for: .milliseconds(2))
+        }
+        XCTAssertEqual(session.preview, .ready(.text(full: "old", summary: "old", isLink: false)))
+        session.didInstallPreview()
+        session.noteHostResign()
+        session.noteHostBecomeActive()
+        let denied = CountingPreviewReader()
+        session.previewReader = denied
+        session.startPreviewIfNeeded()
+        for _ in 0..<100 where session.preview == .reading {
+            try await Task.sleep(for: .milliseconds(2))
+        }
+        XCTAssertEqual(session.preview, .unavailable)
+        XCTAssertTrue(session.deniedThisAppearance)
+        XCTAssertEqual(denied.count, 1)
+    }
+
+    @MainActor
     func testSessionReadsOnlyOnceAndDiscardsLateResult() async throws {
         let reader = BlockingPreviewReader()
         let session = PasteToolbarSession()
@@ -522,6 +547,55 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
                 return XCTFail("Expected preview for sample \(index)")
             }
             XCTAssertFalse(summary.hasPrefix("••••••"), "ordinary sample \(index)")
+        }
+    }
+
+    func testFrozenMaskVectors() {
+        let vectors: [(String, String)] = [
+            ("P1", "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.dozjgNryP4J3jVmNHl0w5N_XgL0n3I9PlFUP0THsR8U"),
+            ("P2", "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASC\n-----END PRIVATE KEY-----"),
+            ("P3", "sk-proj-4fT9xQ2mL8vR1zK7pW3n"),
+            ("P4", "3f2a9c1e7b4d8f6a0c5e2b9d7f1a3c8e6b4d2f0a"),
+            ("P5", "4111 1111 1111 1111"),
+            ("P6", "6222-0212-3456-7890"),
+            ("P7", "Tr0ub4dor&3"),
+            ("P8", "我的 token 是 ghp_16C7e42F292c6912E7710c838347Ae178B4a 别外传"),
+            ("P9", "https://example.com/reset/a8F3kQ9zL2xW7mN4pR6tY1vB"),
+            ("P10", "6217002710000684874"),
+            ("N1", "iPhone15ProMax"),
+            ("N2", "COVID-19"),
+            ("N3", "MacBookPro2024"),
+            ("N4", "Universe-Keyboard-2026"),
+            ("N5", "user@example.com"),
+            ("N6", "13800138000"),
+            ("N7", "482913"),
+            ("N8", "明天下午 3 点在 B2 会议室"),
+            ("N9", "https://github.com/shchnk1103/UniverseWeb/pull/2"),
+            ("N10", "https://www.zh-hans.react.dev/learn?x=1"),
+            ("N11", "Wi-Fi6E"),
+            ("N12", "AirPods Pro 2"),
+            ("N13", "2026-11-10"),
+            ("N14", "SN: F2LXK0ABHG7F"),
+            ("P11", "AKIAIOSFODNN7EXAMPLE"),
+            ("P12", "4532.0151.2345.6781"),
+            ("P13", "https://example.com/AKIAIOSFODNN7EXAMPLE"),
+            ("N15", "MeetingNotes2026Q4BudgetReviewFinal"),
+            ("N16", "ASIAORDER2026ABCDEFX"),
+            ("N17", "akiaiosfodnn7example"),
+        ]
+        for (label, input) in vectors {
+            guard case .text(_, let summary, _) = ClipboardPreviewFormatter.makeResult(input) else {
+                XCTFail("Missing result for vector \(label)")
+                continue
+            }
+            if label == "P9" || label == "P13" {
+                XCTAssertTrue(summary.contains("…"), "Vector \(label) should mask its URL segment")
+            } else if label.hasPrefix("P") || label == "N15" || label == "N16" {
+                XCTAssertTrue(summary.hasPrefix("••••••"), "Vector \(label) should mask")
+            } else {
+                XCTAssertFalse(summary.hasPrefix("••••••"), "Vector \(label) should remain readable")
+            }
+            XCTAssertLessThanOrEqual(summary.count, 64)
         }
     }
 
