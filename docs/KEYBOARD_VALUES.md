@@ -42,6 +42,9 @@ UI3 P3/P4 字号及受本次抽取影响的来源核对基线为 `76bfd4fbdd1673
 | CandidateBar.minimumTouchSize | 44 | `Keyboard/Views/KeyboardDesignTokens.swift:10` | 定义值，不将其误当 46pt 栏高 |
 | CandidateBar.horizontalPadding / trailingContentPadding | 6 / 8 | `Keyboard/Views/KeyboardDesignTokens.swift:11`；`Keyboard/Views/KeyboardDesignTokens.swift:12` | collection section 左右边距 |
 | CandidateBar.actionSeparatorPixelWidth / actionSeparatorHeightRatio | 1 / 0.6 | `Keyboard/Views/KeyboardDesignTokens.swift` | 紧凑栏按钮前沿竖分隔线：宽为 1 物理像素（视图内再除以 `displayScale`），高为栏高的 0.6 并垂直居中，颜色 `.separator` |
+| Paste preview icon / icon box / text gap | 17 / 28×28 / 8 | `Keyboard/Views/CandidateBar/PastePreviewView.swift` | 候选栏内预览图标及间距 |
+| Paste preview primary / secondary font | 15 semibold / 12 | `Keyboard/Views/CandidateBar/PastePreviewView.swift` | 两行随动态字号缩放，超出栏高回退系统按钮 |
+| Paste preview limit / deadline | 8000 UTF-16 / 500 ms | `Keyboard/Services/ClipboardPreviewReader.swift`；`Keyboard/Services/PasteToolbarSession.swift` | 超长不保留全文；期限后丢弃结果 |
 | CandidateBarView sectionInset / layout spacing | 上下 0，左右 6/8；行 / item 0 | `Keyboard/Views/CandidateBar/CandidateBarView.swift:122` | cell 触摸区连续，视觉空隙放在 cell 内 |
 | ExpandedCandidates.rowHeight | 42 | `Keyboard/Views/KeyboardDesignTokens.swift:16` | 展开 cell 高度，不随文字撑高 |
 | ExpandedCandidates.contentInsets | top (46−42)/2=2，left 6，bottom 6，right 8 | `Keyboard/Views/KeyboardDesignTokens.swift:18` | 展开列表内边距 |

@@ -1,3 +1,4 @@
+import CoreFoundation
 import KeyboardCore
 import RimeBridge
 import UIKit
@@ -78,7 +79,16 @@ extension KeyboardViewController {
 
     func refreshCachedSettings(source: String = "unspecified") {
         let defaults = sharedDefaults
-        cachedPasteToolbarEnabled = defaults?.bool(forKey: KeyboardInputSettingsKey.pasteToolbarEnabled) ?? false
+        let previewEnabled: Bool
+        if let value = defaults?.object(forKey: KeyboardInputSettingsKey.clipboardPreviewEnabled) as? NSNumber,
+            CFGetTypeID(value) == CFBooleanGetTypeID()
+        {
+            previewEnabled = value.boolValue
+        } else {
+            previewEnabled = false
+        }
+        if !previewEnabled || !hasFullAccess { pasteSession.discardPreview() }
+        cachedPasteToolbarEnabled = previewEnabled
         defer { refreshPasteToolbar() }
 
         // 诊断开关与反馈设置使用同一生命周期快照；候选触控链路不自行轮询共享偏好。

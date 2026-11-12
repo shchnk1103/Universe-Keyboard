@@ -358,22 +358,82 @@ extension KeyboardViewController {
     func refreshPasteToolbar(on newBar: CandidateBarView? = nil) {
         guard controller != nil else { return }
         let bar = newBar ?? candidateBar as? CandidateBarView
-        // 条要 armed；失败行不要。否则失败一显示就会在同一帧被清掉。
-        let showStrip = isPasteToolbarEligible && pasteSession.presentation == .armed
-        if !showStrip || bar == nil {
+        let eligible = isPasteToolbarEligible && pasteSession.presentation == .armed
+        if !eligible || bar == nil {
             pasteSession.invalidate()
-            pasteToolbar?.removeFromSuperview()
+            if !pasteToolbarSuspended || !pasteSession.inquiryOpen || !cachedPasteToolbarEnabled || !hasFullAccess {
+                pasteSession.discardPreview()
+            }
+            (pasteToolbar?.superview as? CandidateBarView)?.clearPasteContent()
+            (pastePreviewView?.superview as? CandidateBarView)?.clearPasteContent()
             pasteToolbar = nil
+            pastePreviewView = nil
         } else if let bar {
-            if pasteToolbar?.superview !== bar {
-                pasteToolbar?.removeFromSuperview()
-                let toolbar = PasteToolbarControl(session: pasteSession)
-                pasteToolbar = toolbar
-                bar.setPasteContent(toolbar)
+            pasteSession.startPreviewIfNeeded()
+            switch pasteSession.preview {
+            case .notRead, .reading:
+                (pasteToolbar?.superview as? CandidateBarView)?.clearPasteContent()
+                (pastePreviewView?.superview as? CandidateBarView)?.clearPasteContent()
+                pasteToolbar = nil
+                pastePreviewView = nil
+            case .unavailable:
+                installSystemPaste(on: bar)
+            case .ready(let result):
+                switch result {
+                case .unavailable, .denied:
+                    installSystemPaste(on: bar)
+                case .text(_, let summary, let isLink), .oversized(let summary, _, let isLink):
+                    if pastePreviewView?.superview !== bar {
+                        let preview = PastePreviewView(summary: summary, isLink: isLink)
+                        if preview.fitsCandidateBar {
+                            preview.onCannotFit = { [weak self, weak bar] in
+                                guard let self, let bar else { return }
+                                self.pasteSession.discardPreview()
+                                self.installSystemPaste(on: bar, accessibilityLabel: "粘贴，\(summary)")
+                            }
+                            preview.addTarget(self, action: #selector(pastePreviewTapped), for: .touchUpInside)
+                            pasteToolbar?.removeFromSuperview()
+                            pasteToolbar = nil
+                            pastePreviewView = preview
+                            bar.setPasteContent(preview)
+                            pasteSession.didInstallPreview()
+                        } else {
+                            pasteSession.discardPreview()
+                            installSystemPaste(on: bar, accessibilityLabel: "粘贴，\(summary)")
+                        }
+                    }
+                }
             }
         }
         let failure = pasteSession.pasteFailureVisible ? "无法粘贴纯文本" : nil
         bar?.setPasteFailureNotice(failure)
+    }
+
+    private func installSystemPaste(on bar: CandidateBarView, accessibilityLabel: String? = nil) {
+        if let toolbar = pasteToolbar, toolbar.superview === bar {
+            if let accessibilityLabel { toolbar.control.accessibilityLabel = accessibilityLabel }
+            return
+        }
+        pastePreviewView?.removeFromSuperview()
+        pastePreviewView = nil
+        let toolbar = PasteToolbarControl(session: pasteSession)
+        if let accessibilityLabel { toolbar.control.accessibilityLabel = accessibilityLabel }
+        pasteToolbar = toolbar
+        bar.setPasteContent(toolbar)
+        pasteSession.didInstallPreview()
+    }
+
+    @objc private func pastePreviewTapped() {
+        guard case .ready(let result) = pasteSession.preview else { return }
+        switch result {
+        case .text(let full, _, _):
+            guard let operation = pasteSession.begin() else { return }
+            pasteSession.complete(full, operationID: operation)
+        case .oversized:
+            pasteSession.failOversizedPreview()
+        case .unavailable, .denied:
+            break
+        }
     }
 
     func observePasteDocumentIdentity(_ observation: KeyboardDocumentIdentityTracker.Observation) {

@@ -299,6 +299,13 @@ final class CandidateBarView: UIView {
         ])
     }
 
+    func clearPasteContent() {
+        pasteContent?.removeFromSuperview()
+        pasteContent = nil
+        gestureBridge.pasteContent = nil
+        pasteSeparatorWidthConstraint = nil
+    }
+
     func setPasteFailureNotice(_ message: String?) {
         if pasteFailureLabel.superview == nil {
             pasteFailureLabel.translatesAutoresizingMaskIntoConstraints = false

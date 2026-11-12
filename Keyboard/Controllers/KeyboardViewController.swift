@@ -390,6 +390,7 @@ class KeyboardViewController: UIInputViewController {
     lazy var typingStatisticsWriter = TypingStatisticsWriter(appGroupID: Self.appGroupID)
     var cachedPasteToolbarEnabled = false
     var pasteToolbar: PasteToolbarControl?
+    var pastePreviewView: PastePreviewView?
     var pasteToolbarSuspended = false
     lazy var pasteSession: PasteToolbarSession = {
         let session = PasteToolbarSession()
@@ -610,6 +611,7 @@ class KeyboardViewController: UIInputViewController {
     }
 
     override func viewWillDisappear(_ animated: Bool) {
+        pasteSession.discardPreview()
         pasteToolbarSuspended = true
         refreshPasteToolbar()
         commitTrace.close(.disappear)
@@ -1000,6 +1002,8 @@ class KeyboardViewController: UIInputViewController {
     /// 我们应该释放可重新创建的缓存和资源。
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
+        pasteSession.discardPreview()
+        refreshPasteToolbar()
         releaseRecoverableResourcesAfterMemoryWarning()
     }
 
