@@ -371,7 +371,7 @@ extension KeyboardViewController {
         } else if let bar {
             pasteSession.startPreviewIfNeeded()
             switch pasteSession.preview {
-            case .notRead, .reading:
+            case .notRead, .reading, .hidden:
                 (pasteToolbar?.superview as? CandidateBarView)?.clearPasteContent()
                 (pastePreviewView?.superview as? CandidateBarView)?.clearPasteContent()
                 pasteToolbar = nil
