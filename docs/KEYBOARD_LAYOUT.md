@@ -99,6 +99,16 @@ UI-4 height-setting exception: the following metrics retain their default baseli
 - While T9 composition is active, the wide space key title changes from `拼音` to **选定**. Its action remains candidate finalization (highlighted/first Chinese candidate), not segment confirmation.
 - Before the first selection there is no path highlight. The selected path uses the same inverse-color 8 pt rounded highlight language as the preferred candidate and retains an accurate VoiceOver selected state.
 
+## Clipboard Preview
+
+Clipboard preview is off by default and requires Full Access plus the separate
+“Show Clipboard Preview” setting. While the keyboard is eligible it reads one
+string in the background per appearance, keeps preview data in memory, and
+falls back to the system Paste control for unavailable or timed-out results.
+The preview does not establish that an empty clipboard can be detected; that
+behavior is reserved for a later change. The system Paste control accepts plain
+text and does not guarantee insertion of image-only clipboard contents.
+
 ## Compact Candidate Header
 
 `KEYBOARD-COMPACT-HEADER-001` introduces local semantic parameters in

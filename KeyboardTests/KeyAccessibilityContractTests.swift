@@ -74,7 +74,13 @@ final class KeyAccessibilityContractTests: XCTestCase {
         let files = try XCTUnwrap(FileManager.default.enumerator(at: keyboard, includingPropertiesForKeys: nil))
         for case let file as URL in files where ["swift", "m"].contains(file.pathExtension) {
             let source = try String(contentsOf: file, encoding: .utf8)
-            XCTAssertFalse(source.contains("UIPasteboard"), file.path)
+            if file.lastPathComponent != "ClipboardPreviewReader.swift" {
+                XCTAssertFalse(source.contains("UIPasteboard"), file.path)
+            } else {
+                for forbidden in ["Logger", "print(", "UserDefaults", "FileManager", "App Group"] {
+                    XCTAssertFalse(source.contains(forbidden), "Forbidden reader dependency: \(forbidden)")
+                }
+            }
             if file.lastPathComponent != "PasteToolbarControl.swift" {
                 XCTAssertFalse(source.contains("UIPasteControl"), file.path)
             }
@@ -84,6 +90,18 @@ final class KeyAccessibilityContractTests: XCTestCase {
                 XCTAssertFalse(source.contains("textClient.insertText("), file.path)
             }
         }
+    }
+
+    func testClipboardPreviewSettingsAndPolicyDiscloseOptIn() throws {
+        let settings = try sourceFile("Universe Keyboard/Views/Settings/SettingsTab.swift")
+        XCTAssertTrue(settings.contains("显示剪贴板预览"))
+        XCTAssertTrue(settings.contains("关闭时不读取，也不触发系统弹窗，键盘上不显示粘贴条，也不能从键盘粘贴。"))
+        XCTAssertTrue(settings.contains("粘贴需要系统完全访问。开关和完全访问都开启时，键盘会读取剪贴板文字用于预览，"))
+        XCTAssertTrue(settings.contains("只保存在内存里，不上传。未开启时键盘不显示粘贴条，打字不受影响。"))
+        XCTAssertFalse(settings.contains("开启开关也不会在未点按粘贴时读取剪贴板"))
+        let privacy = try sourceFile("docs/PRIVACY_POLICY.md")
+        XCTAssertTrue(privacy.contains("The keyboard reads clipboard text only when both Full Access"))
+        XCTAssertFalse(privacy.contains("Clipboard content is read only after the user taps Paste"))
     }
 
     private func sourceFile(_ relativePath: String) throws -> String {

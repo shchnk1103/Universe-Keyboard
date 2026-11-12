@@ -5,8 +5,8 @@ import XCTest
 /// presentation、失败行和生命周期。不断言读取次数：B1 不读剪贴板。
 nonisolated final class PasteToolbarPresentationTests: XCTestCase {
     @MainActor
-    func testFailureStaysVisibleUntilTapAndDoesNotConsume() throws {
-        let sut = PasteToolbarIntegrationHarness.make()
+    func testFailureStaysVisibleUntilTapAndDoesNotConsume() async throws {
+        let sut = await PasteToolbarIntegrationHarness.make()
         let id = try XCTUnwrap(sut.pasteSession.begin())
         sut.pasteSession.complete(nil, operationID: id)
         XCTAssertEqual(sut.pasteSession.presentation, .armed)
@@ -27,8 +27,8 @@ nonisolated final class PasteToolbarPresentationTests: XCTestCase {
     }
 
     @MainActor
-    func testArmedIsOutsideSessionEligibility() {
-        let sut = PasteToolbarIntegrationHarness.make()
+    func testArmedIsOutsideSessionEligibility() async {
+        let sut = await PasteToolbarIntegrationHarness.make()
         sut.pasteSession.noteCountedInput()
         XCTAssertEqual(sut.pasteSession.presentation, .consumedByInput)
         XCTAssertTrue(sut.pasteSession.isEligible())
@@ -36,8 +36,8 @@ nonisolated final class PasteToolbarPresentationTests: XCTestCase {
     }
 
     @MainActor
-    func testInputDuringLoadDiscardsThePaste() throws {
-        let sut = PasteToolbarIntegrationHarness.make()
+    func testInputDuringLoadDiscardsThePaste() async throws {
+        let sut = await PasteToolbarIntegrationHarness.make()
         let client = PasteClient()
         sut.controller.textClient = client
         let id = try XCTUnwrap(sut.pasteSession.begin())
@@ -49,8 +49,8 @@ nonisolated final class PasteToolbarPresentationTests: XCTestCase {
     }
 
     @MainActor
-    func testResultXAppearClearsPendingReturn() {
-        let sut = PasteToolbarIntegrationHarness.make()
+    func testResultXAppearClearsPendingReturn() async {
+        let sut = await PasteToolbarIntegrationHarness.make()
         sut.controller.handle(.insertKey("a"))
         let generation = sut.pasteSession.generation
         hostResign(sut)
@@ -63,8 +63,8 @@ nonisolated final class PasteToolbarPresentationTests: XCTestCase {
     }
 
     @MainActor
-    func testResultYResetsAfterResignWithoutDisappear() {
-        let sut = PasteToolbarIntegrationHarness.make()
+    func testResultYResetsAfterResignWithoutDisappear() async {
+        let sut = await PasteToolbarIntegrationHarness.make()
         sut.pasteSession.noteCountedInput()
         sut.refreshPasteToolbar()
         let generation = sut.pasteSession.generation
@@ -73,12 +73,13 @@ nonisolated final class PasteToolbarPresentationTests: XCTestCase {
         XCTAssertEqual(sut.pasteSession.presentation, .armed)
         XCTAssertFalse(sut.pasteSession.pendingReturn)
         XCTAssertEqual(sut.pasteSession.generation, generation + 1)
+        await waitForFallback(sut)
         XCTAssertNotNil(sut.pasteToolbar)
     }
 
     @MainActor
-    func testBecomeActiveWithoutResignLeavesPresentation() {
-        let sut = PasteToolbarIntegrationHarness.make()
+    func testBecomeActiveWithoutResignLeavesPresentation() async {
+        let sut = await PasteToolbarIntegrationHarness.make()
         sut.handleKeyboardDidAppear()
         sut.controller.handle(.insertKey("a"))
         let generation = sut.pasteSession.generation
@@ -88,9 +89,11 @@ nonisolated final class PasteToolbarPresentationTests: XCTestCase {
     }
 
     @MainActor
-    func testNotificationCenterReturnUsesResultY() {
-        let sut = PasteToolbarIntegrationHarness.make()
+    func testNotificationCenterReturnUsesResultY() async {
+        let sut = await PasteToolbarIntegrationHarness.make()
         sut.handleKeyboardDidAppear()
+        await waitForFallback(sut)
+        XCTAssertNotNil(sut.pasteToolbar)
         let generation = sut.pasteSession.generation
         hostResign(sut)
         hostActive(sut)
@@ -99,8 +102,15 @@ nonisolated final class PasteToolbarPresentationTests: XCTestCase {
     }
 
     @MainActor
-    func testCountedActionsConsumeAndIgnoredActionsDoNot() {
-        let sut = PasteToolbarIntegrationHarness.make()
+    private func waitForFallback(_ owner: PasteOwner) async {
+        for _ in 0..<200 where owner.pasteToolbar == nil {
+            try? await Task.sleep(for: .milliseconds(5))
+        }
+    }
+
+    @MainActor
+    func testCountedActionsConsumeAndIgnoredActionsDoNot() async {
+        let sut = await PasteToolbarIntegrationHarness.make()
         let path = T9PinyinPath(displayText: "a", replacementRawInput: "a")
         let correction = TypoCorrectionCommit(
             committedText: "字",
@@ -141,8 +151,8 @@ nonisolated final class PasteToolbarPresentationTests: XCTestCase {
     }
 
     @MainActor
-    func testDeletingCompositionDoesNotRestoreTheStrip() {
-        let sut = PasteToolbarIntegrationHarness.make()
+    func testDeletingCompositionDoesNotRestoreTheStrip() async {
+        let sut = await PasteToolbarIntegrationHarness.make()
         sut.controller.handle(.insertKey("n"))
         sut.controller.handle(.deleteBackward)
         sut.syncUI(with: [])
@@ -151,8 +161,8 @@ nonisolated final class PasteToolbarPresentationTests: XCTestCase {
     }
 
     @MainActor
-    func testDocumentIdentityAndRelayoutDoNotResetPresentation() {
-        let sut = PasteToolbarIntegrationHarness.make()
+    func testDocumentIdentityAndRelayoutDoNotResetPresentation() async {
+        let sut = await PasteToolbarIntegrationHarness.make()
         sut.controller.handle(.insertKey("a"))
         sut.observePasteDocumentIdentity(.changed)
         sut.observePasteDocumentIdentity(.unavailable)
@@ -187,11 +197,15 @@ nonisolated final class PasteToolbarPresentationTests: XCTestCase {
 
 @MainActor
 private enum PasteToolbarIntegrationHarness {
-    static func make() -> PasteOwner {
+    static func make() async -> PasteOwner {
         let owner = PasteOwner()
         owner.access = true
+        let defaults = PasteMemoryDefaults()
+        defaults.set(true, forKey: KeyboardInputSettingsKey.clipboardPreviewEnabled)
+        owner.sharedDefaults = defaults
         owner.loadViewIfNeeded()
         owner.controller = KeyboardController()
+        owner.pasteSession.previewReader = ImmediatePreviewReader()
         owner.controller.textClient = PasteClient()
         owner.cachedPasteToolbarEnabled = true
         owner.view.frame = CGRect(x: 0, y: 0, width: 390, height: 288)
@@ -202,6 +216,9 @@ private enum PasteToolbarIntegrationHarness {
         owner.view.layoutIfNeeded()
         owner.rootStack.layoutIfNeeded()
         owner.refreshPasteToolbar()
+        for _ in 0..<200 where owner.pasteToolbar == nil {
+            try? await Task.sleep(for: .milliseconds(5))
+        }
         return owner
     }
 }

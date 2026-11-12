@@ -204,8 +204,12 @@ extension KeyboardViewController {
     }
 
     func handleKeyboardDidAppear() {
-        pasteToolbarSuspended = false
-        defer { refreshPasteToolbar() }
+        // Suppress the old appearance while settings and transient state are refreshed.
+        pasteToolbarSuspended = true
+        defer {
+            pasteToolbarSuspended = false
+            refreshPasteToolbar()
+        }
         #if DEBUG
             recordKeyboardVisualDiagnostic("HANDLE_DID_APPEAR_BEGIN")
         #endif
