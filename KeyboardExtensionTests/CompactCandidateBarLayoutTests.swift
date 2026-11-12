@@ -125,6 +125,51 @@ nonisolated final class CompactCandidateBarLayoutTests: XCTestCase {
     }
 
     @MainActor
+    func testPasteStripGeometryVisibilityAndHitPriority() throws {
+        for width in [320.0, 390.0] {
+            let f = Fixture(width: width)
+            let paste = UIView()
+            f.bar.setPasteContent(paste)
+            for canExpand in [false, true] {
+                f.bar.setCanExpandCandidates(canExpand)
+                f.host.view.layoutIfNeeded()
+                let right = try Self.actionSeparator(in: f.bar)
+                let left = try XCTUnwrap(paste.subviews.first { $0.accessibilityIdentifier == "pasteLeadingSeparator" })
+                let leftFrame = left.convert(left.bounds, to: f.bar)
+                XCTAssertEqual(paste.frame.minX, 16, accuracy: 0.01)
+                XCTAssertEqual(paste.frame.maxX, right.frame.minX - 8, accuracy: 0.01)
+                XCTAssertEqual(paste.frame.height, f.bar.bounds.height, accuracy: 0.01)
+                XCTAssertEqual(leftFrame.minX, 8, accuracy: 0.01)
+                XCTAssertEqual(leftFrame.width, right.frame.width, accuracy: 0.01)
+                XCTAssertEqual(leftFrame.height, right.frame.height, accuracy: 0.01)
+                XCTAssertLessThan(leftFrame.maxX, paste.frame.minX)
+                XCTAssertEqual(
+                    f.bar.subviews.filter { $0.accessibilityIdentifier == "candidateActionSeparator" }.count, 1)
+                XCTAssertTrue(f.bar.hitTest(CGPoint(x: paste.frame.minX + 1, y: 23), with: nil) === paste)
+                XCTAssertTrue(f.bar.hitTest(CGPoint(x: paste.frame.maxX - 1, y: 23), with: nil) === paste)
+                XCTAssertFalse(f.bar.hitTest(CGPoint(x: paste.frame.minX - 1, y: 23), with: nil) === paste)
+                XCTAssertFalse(f.bar.hitTest(CGPoint(x: paste.frame.maxX + 1, y: 23), with: nil) === paste)
+                XCTAssertTrue(
+                    f.bar.hitTest(CGPoint(x: f.bar.expandButton.frame.minX + 1, y: 23), with: nil)
+                        === f.bar.expandButton)
+                XCTAssertTrue(f.bar.hitTest(CGPoint(x: width - 1, y: 23), with: nil) === f.bar.expandButton)
+                f.bar.setPasteFailureNotice("无法粘贴纯文本")
+                XCTAssertTrue(paste.isHidden)
+                XCTAssertTrue(left.isHidden || left.superview?.isHidden == true)
+                f.bar.setPasteFailureNotice(nil)
+                XCTAssertFalse(paste.isHidden)
+            }
+            paste.removeFromSuperview()
+            XCTAssertNil(leftSeparator(in: f.bar))
+        }
+    }
+
+    @MainActor
+    private func leftSeparator(in bar: CandidateBarView) -> UIView? {
+        descendants(of: bar).first { $0.accessibilityIdentifier == "pasteLeadingSeparator" }
+    }
+
+    @MainActor
     private static func actionSeparator(in bar: CandidateBarView) throws -> UIView {
         try XCTUnwrap(bar.subviews.first { $0.accessibilityIdentifier == "candidateActionSeparator" })
     }
