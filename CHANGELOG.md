@@ -1,3 +1,14 @@
+## 2026-11-12 — KOS-PM-RULES-H21-001 PM 常设规则 H18 补记、H21、P15
+
+- docs/kos/pm-playbook.md：H18 补记 Human 2026-11-10 的常设答复并删除已答复的 Q7；新增 H21（阶段报告核完 DONE/PASS 后清理该子任务可再生产物的存储常设决定）与 P15（角色领取独立性只指自产自验）。
+- .gitignore 增加 .alma-snapshots。
+- 来源：Human 原话，见 PM 家目录 PM-LOG 下 human-statements-2026-11-10.md、human-statements-2026-11-10c.md、human-statements-2026-11-12b.md。
+
+## 2026-11-12 — KEYBOARD-PASTE-UI-B2-001 整行系统粘贴条外观
+
+- 粘贴条改为整行系统粘贴控件，左侧新增 1 px 分隔线，右侧沿用动作分隔线（PR 290）。
+- 不读取剪贴板，不改显示规则与状态机。
+
 ## 2026-11-10 — KEYBOARD-PASTE-UI-B1-001 粘贴条显示规则
 
 - 粘贴条按一次显示计：出现时武装，第一次计入输入或粘贴成功后隐藏；失败不消耗。
