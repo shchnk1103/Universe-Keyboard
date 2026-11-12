@@ -61,7 +61,15 @@ nonisolated final class PasteToolbarIntegrationTests: XCTestCase {
                 XCTAssertEqual(actions, [NSStringFromSelector(#selector(sut.handleCandidateBarTrailingButton))])
                 // This test target is unhosted; dispatch the registered selector directly.
                 sut.perform(#selector(sut.handleCandidateBarTrailingButton))
-                XCTAssertFalse(bar.gestureRecognizerShouldBegin(UIPanGestureRecognizer()))
+                let pan = PasteLocationPan()
+                pan.testLocation = CGPoint(x: toolbar.frame.minX + 1, y: toolbar.frame.midY)
+                XCTAssertFalse(bar.gestureRecognizerShouldBegin(pan))
+                pan.testLocation = CGPoint(x: toolbar.frame.maxX - 1, y: toolbar.frame.midY)
+                XCTAssertFalse(bar.gestureRecognizerShouldBegin(pan))
+                pan.testLocation = CGPoint(x: toolbar.frame.minX - 1, y: toolbar.frame.midY)
+                XCTAssertTrue(bar.gestureRecognizerShouldBegin(pan))
+                pan.testLocation = CGPoint(x: toolbar.frame.maxX + 1, y: toolbar.frame.midY)
+                XCTAssertTrue(bar.gestureRecognizerShouldBegin(pan))
                 XCTAssertEqual(sut.dismissals, (nineKey ? 4 : 0) + pageOrdinal(page) + 1)
                 XCTAssertEqual(selections, 0)
                 XCTAssertNil(sut.pasteSession.activeOperationID)
@@ -292,6 +300,13 @@ nonisolated final class PasteToolbarIntegrationTests: XCTestCase {
         try await Task.sleep(for: .milliseconds(50))
         XCTAssertEqual(client.inserted, ["background"])
     }
+}
+
+@MainActor
+private final class PasteLocationPan: UIPanGestureRecognizer {
+    var testLocation = CGPoint.zero
+
+    override func location(in view: UIView?) -> CGPoint { testLocation }
 }
 
 @MainActor

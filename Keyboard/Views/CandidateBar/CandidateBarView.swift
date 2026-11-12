@@ -72,6 +72,7 @@ private final class CandidateBarGestureBridge: NSObject, UIGestureRecognizerDele
 final class CandidateBarView: UIView {
     private let actionSeparator = UIView()
     private var actionSeparatorWidthConstraint: NSLayoutConstraint!
+    private var pasteSeparatorWidthConstraint: NSLayoutConstraint?
 
     private let pasteFailureLabel = UILabel()
     /// 点失败行。调用方只清失败并刷新，不把这次点击当成输入。
@@ -229,6 +230,7 @@ final class CandidateBarView: UIView {
 
     private func updateActionSeparatorWidth() {
         actionSeparatorWidthConstraint.constant = Self.actionSeparatorWidth(for: traitCollection)
+        pasteSeparatorWidthConstraint?.constant = Self.actionSeparatorWidth(for: traitCollection)
     }
 
     @available(*, unavailable)
@@ -274,9 +276,24 @@ final class CandidateBarView: UIView {
         gestureBridge.pasteContent = content
         content.translatesAutoresizingMaskIntoConstraints = false
         addSubview(content)
+        let separator = UIView()
+        separator.translatesAutoresizingMaskIntoConstraints = false
+        separator.isUserInteractionEnabled = false
+        separator.isAccessibilityElement = false
+        separator.accessibilityElementsHidden = true
+        separator.accessibilityIdentifier = "pasteLeadingSeparator"
+        separator.backgroundColor = actionSeparator.backgroundColor
+        content.addSubview(separator)
+        let separatorWidth = separator.widthAnchor.constraint(
+            equalToConstant: Self.actionSeparatorWidth(for: traitCollection))
+        pasteSeparatorWidthConstraint = separatorWidth
         NSLayoutConstraint.activate([
-            content.leadingAnchor.constraint(equalTo: leadingAnchor),
-            content.trailingAnchor.constraint(lessThanOrEqualTo: expandButton.leadingAnchor),
+            separatorWidth,
+            separator.leadingAnchor.constraint(equalTo: content.leadingAnchor, constant: -8),
+            separator.centerYAnchor.constraint(equalTo: content.centerYAnchor),
+            separator.heightAnchor.constraint(equalTo: actionSeparator.heightAnchor),
+            content.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            content.trailingAnchor.constraint(equalTo: actionSeparator.leadingAnchor, constant: -8),
             content.topAnchor.constraint(equalTo: topAnchor),
             content.heightAnchor.constraint(equalToConstant: candidateBarHeight),
         ])
