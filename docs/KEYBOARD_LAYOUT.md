@@ -105,9 +105,18 @@ Clipboard preview is off by default and requires Full Access plus the separate
 “Show Clipboard Preview” setting. While the keyboard is eligible it reads one
 string in the background per appearance, keeps preview data in memory, and
 falls back to the system Paste control for unavailable or timed-out results.
-The preview does not establish that an empty clipboard can be detected; that
-behavior is reserved for a later change. The system Paste control accepts plain
-text and does not guarantee insertion of image-only clipboard contents.
+`emptyDetectionProbesPassed` in `ClipboardPreviewReader.swift` is fixed to
+false. While it stays false the keyboard does not read `numberOfItems` or
+`changeCount`, does not hide the strip, and keeps the C2 result: non-empty
+text previews once, and nil, denial, timeout, or blank text uses the system
+Paste control. A later change may set the constant true only after probes
+S13–S17 pass. Then a blank read is hidden, along with its separator, only when
+the same appearance also has zero items, two equal change counts, and a
+matching final change count before the 500 ms deadline; the appearance stays
+armed and is not reread until the next appearance. Denial, nil, discard,
+timeout, or a version mismatch still shows the system Paste control. The
+system Paste control accepts plain text and does not guarantee insertion of
+image-only clipboard contents.
 
 ## Compact Candidate Header
 
