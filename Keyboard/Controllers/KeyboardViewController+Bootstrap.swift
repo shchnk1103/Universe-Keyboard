@@ -196,16 +196,16 @@ extension KeyboardViewController {
         controller.onActionObserved = { [weak self] action in
             guard let self else { return }
             self.commitTrace.observeAction(action)
-            if !pastePresentationCounts(action) {
-                if self.pasteSession.preview == .reading {
-                    self.pasteSession.discardPreview()
-                    self.refreshPasteToolbar()
-                }
+            if pastePresentationCounts(action) {
+                // 在 Core 处理之前消耗。组字开始后再删光，条也不会回来。
+                self.pasteSession.noteCountedInput()
+                self.refreshPasteToolbar()
                 return
             }
-            // 在 Core 处理之前消耗。组字开始后再删光，条也不会回来。
-            self.pasteSession.noteCountedInput()
-            self.refreshPasteToolbar()
+            if pasteDiscardsReadingPreview(action), self.pasteSession.preview == .reading {
+                self.pasteSession.discardPreview()
+                self.refreshPasteToolbar()
+            }
         }
     }
 

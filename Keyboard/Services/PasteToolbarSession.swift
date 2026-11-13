@@ -272,3 +272,17 @@ func pastePresentationCounts(_ action: KeyboardAction) -> Bool {
         return false
     }
 }
+
+/// 只有用户主动的非计数动作才会清除正在读取的预览。宿主自动发出的键盘类型回调不清除。
+func pasteDiscardsReadingPreview(_ action: KeyboardAction) -> Bool {
+    switch action {
+    case .toggleShift, .togglePage, .toggleInputMode, .candidatePageUp, .candidatePageDown:
+        return true
+    case .keyboardTypeChanged:
+        return false
+    case .insertKey, .insertCandidate, .insertCorrectionCandidate, .insertDirectText, .insertEmoji,
+        .insertSpace, .insertReturn, .deleteBackward, .selectT9PinyinPath, .cycleT9PinyinPath,
+        .pressT9CommonPunctuation, .pressKaomoji:
+        return false
+    }
+}

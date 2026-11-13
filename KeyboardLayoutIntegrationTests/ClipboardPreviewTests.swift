@@ -355,6 +355,66 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
     }
 
     @MainActor
+    func testOnlyUserInitiatedNonCountingActionsDiscardReadingPreview() {
+        let path = T9PinyinPath(displayText: "a", replacementRawInput: "a")
+        let correction = TypoCorrectionCommit(
+            committedText: "字",
+            originalInput: "zi",
+            correctedInput: "zi",
+            edits: []
+        )
+        let samples: [KeyboardAction] = [
+            .insertKey("a"),
+            .insertCandidate("词", kind: .candidate),
+            .insertCorrectionCandidate(correction),
+            .insertDirectText("“"),
+            .insertEmoji("😀"),
+            .toggleShift,
+            .togglePage,
+            .toggleInputMode,
+            .insertSpace,
+            .insertReturn,
+            .deleteBackward,
+            .keyboardTypeChanged(.default),
+            .candidatePageUp,
+            .candidatePageDown,
+            .selectT9PinyinPath(path),
+            .cycleT9PinyinPath,
+            .pressT9CommonPunctuation,
+            .pressKaomoji,
+        ]
+        for action in samples {
+            let expected: Bool
+            switch action {
+            case .toggleShift, .togglePage, .toggleInputMode, .candidatePageUp, .candidatePageDown:
+                expected = true
+            case .keyboardTypeChanged, .insertKey, .insertCandidate, .insertCorrectionCandidate,
+                .insertDirectText, .insertEmoji, .insertSpace, .insertReturn, .deleteBackward,
+                .selectT9PinyinPath, .cycleT9PinyinPath, .pressT9CommonPunctuation, .pressKaomoji:
+                expected = false
+            }
+            XCTAssertEqual(pasteDiscardsReadingPreview(action), expected, "\(action)")
+            XCTAssertFalse(
+                pasteDiscardsReadingPreview(action) && pastePresentationCounts(action), "\(action)")
+        }
+        XCTAssertFalse(pasteDiscardsReadingPreview(.keyboardTypeChanged(.default)))
+        XCTAssertFalse(pasteDiscardsReadingPreview(.keyboardTypeChanged(.URL)))
+        XCTAssertTrue(pasteDiscardsReadingPreview(.toggleShift))
+    }
+
+    @MainActor
+    func testHostKeyboardTypeCallbackKeepsReadingPreview() async throws {
+        let reader = BlockingPreviewReader()
+        let owner = await pendingOwner(reader: reader)
+        XCTAssertEqual(reader.started.wait(timeout: .now() + 2), .success)
+        _ = owner.controller.handle(.keyboardTypeChanged(.default))
+        _ = owner.controller.handle(.keyboardTypeChanged(.URL))
+        XCTAssertEqual(owner.pasteSession.preview, .reading)
+        _ = owner.controller.handle(.toggleShift)
+        XCTAssertNotEqual(owner.pasteSession.preview, .reading)
+        reader.release.signal()
+    }
+
     private func pendingOwner(reader: any ClipboardPreviewReading) async -> PasteOwner {
         let owner = PasteOwner()
         let defaults = PasteMemoryDefaults()
