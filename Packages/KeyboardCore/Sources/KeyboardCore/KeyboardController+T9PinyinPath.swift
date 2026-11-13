@@ -254,8 +254,12 @@ extension KeyboardController {
                 )
                 return max(0, source.count - confirmedLetters)
             }()
+            // Direct taps lock a multi-digit letter prefix. 选拼音 must not: locking
+            // rebuilds the bar around that letter and the next tap can no longer
+            // reach the original later choices.
             let isMultiDigitPrefixLock =
-                path.kind == .letterPrefix && remainingFocusDigits > 1
+                autoAdvance
+                && path.kind == .letterPrefix && remainingFocusDigits > 1
 
             // Multi-digit letter prefixes lock the focus spelling (e.g. `28` → `b`).
             // Single-digit m/n/o cycling keeps the full retained sibling set.
@@ -323,7 +327,8 @@ extension KeyboardController {
 
             applySelectedT9PinyinPathDisplay(
                 path,
-                preservingVisibleRemainder: previousVisibleRemainder
+                preservingVisibleRemainder: previousVisibleRemainder,
+                tentativePreview: !autoAdvance
             )
 
             return .compositionChanged.union(.t9PinyinPathsChanged)
@@ -1818,9 +1823,32 @@ extension KeyboardController {
     /// the exact `m/n/o` path the user is cycling through.
     private func applySelectedT9PinyinPathDisplay(
         _ path: T9PinyinPath,
-        preservingVisibleRemainder preservedRemainder: String? = nil
+        preservingVisibleRemainder preservedRemainder: String? = nil,
+        tentativePreview: Bool = false
     ) {
         let explicitSegments = state.t9PinyinPathState.confirmedSegmentValues + [path.displayText]
+        // 选拼音 only previews the chosen label. Reusing the previous full
+        // spelling's tail (ning → g) turns the next shorter choice back into
+        // ming/ning, so consecutive taps look stuck on the first two items.
+        if tentativePreview {
+            let preview = explicitSegments.joined()
+            guard let partialCommit = state.partialCommit else {
+                updateInlinePreedit(preview, source: .compositionProjection)
+                return
+            }
+            let displayText = partialCommit.confirmedText + preview
+            state.partialCommit = PartialCommitState(
+                confirmedText: partialCommit.confirmedText,
+                remainingRawInput: state.lastRimeOutput?.rawInput
+                    ?? partialCommit.remainingRawInput,
+                remainingPreeditText: preview,
+                displayText: displayText,
+                checkpoint: partialCommit.checkpoint,
+                source: partialCommit.source
+            )
+            updateInlinePreedit(displayText, source: .compositionProjection)
+            return
+        }
 
         guard let partialCommit = state.partialCommit else {
             let visible = t9DisplayPreservingUnresolvedSuffix(
