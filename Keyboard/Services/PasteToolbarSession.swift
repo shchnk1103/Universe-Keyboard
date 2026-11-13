@@ -16,29 +16,34 @@ final class PasteToolbarSession {
     private(set) var activeOperationID: UInt64?
     private var nextOperationID: UInt64 = 1
     private(set) var pasteFailureVisible = false
-    enum Preview: Equatable { case notRead, reading, ready(ClipboardPreviewResult), unavailable, hidden }
+    enum Preview: Equatable { case notRead, reading, ready(ClipboardPreviewResult), unavailable }
     private(set) var preview: Preview = .notRead
     private(set) var inquiryOpen = false
     private(set) var deniedThisAppearance = false
-    /// Content already returned while a metadata decision is still open. Not a display.
-    private(set) var retainedPreviewModel: ClipboardPreviewResult?
-    private(set) var hiddenVersion: Int?
+    private(set) var previewWasShown = false
+    private struct PendingRead {
+        let result: ClipboardPreviewResult
+        let before: Int?
+        let after: Int?
+        let returned: UInt64
+        let normalDeadline: UInt64
+        let hardDeadline: UInt64
+        let permitsLate: Bool
+        let generation: UInt64
+        let requestID: UInt64
+        let gate: ClipboardPreviewGate
+    }
+    private var suspendedRead: PendingRead?
     private var previewSuspended = false
     private var previewGate: ClipboardPreviewGate?
-    private var metadataGate: ClipboardPreviewGate?
     private var previewDeadline: UInt64 = 0
-    private var slotsExpired = false
-    private var decisionSealed = false
     private var nextRequestID: UInt64 = 1
     private var activeRequestID: UInt64 = 0
-    private var contentFact: PasteDisplayFacts.Content = .pending
-    private var metadataFact: PasteDisplayFacts.Metadata = .notRequested
-    private var finalFact: PasteDisplayFacts.FinalVersion = .notNeeded
-    private var finalRequested = false
+    static let latePreviewEnabled = false
+    static let latePreviewWindow: UInt64 = 10_000_000_000
+    var latePreviewEnabled = PasteToolbarSession.latePreviewEnabled
+    var monotonicNow: @Sendable () -> UInt64 = { DispatchTime.now().uptimeNanoseconds }
     var previewReader: any ClipboardPreviewReading = ClipboardPreviewReader()
-    var metadataReader: any ClipboardMetadataReading = SystemClipboardMetadataReader()
-    /// Defaults to the production constant. Tests set true; production code must not.
-    var emptyDetectionEnabled = ClipboardEmptyDetection.emptyDetectionProbesPassed
     var probeSwitchEnabled: () -> Bool = { true }
     var probeFullAccess: () -> Bool = { true }
     var isEligible: () -> Bool = { false }
@@ -69,11 +74,14 @@ final class PasteToolbarSession {
     func noteHostBecomeActive() {
         if previewSuspended {
             previewSuspended = false
-            if slotsExpired || (previewDeadline > 0 && DispatchTime.now().uptimeNanoseconds >= previewDeadline) {
+            let now = monotonicNow()
+            let expired = latePreviewEnabled ? now >= previewDeadline : now > previewDeadline
+            if previewDeadline > 0 && expired {
                 discardPreview()
                 onPresentationChanged()
-            } else if emptyDetectionEnabled {
-                evaluateEmptyDetection()
+            } else if let pending = suspendedRead {
+                suspendedRead = nil
+                acceptRead(pending, resumed: true)
             }
             return
         }
@@ -144,92 +152,75 @@ final class PasteToolbarSession {
     func clearFailure() { pasteFailureVisible = false }
 
     func startPreviewIfNeeded() {
-        guard preview == .notRead, presentation == .armed, isEligible() else { return }
+        guard preview == .notRead, presentation == .armed, isEligible(),
+            probeSwitchEnabled(), probeFullAccess()
+        else { return }
+        let issued = monotonicNow()
+        let normalDeadline = issued + 500_000_000
+        let hardDeadline = issued + Self.latePreviewWindow
+        let permitsLate = latePreviewEnabled
         preview = .reading
         inquiryOpen = true
-        slotsExpired = false
-        decisionSealed = false
-        previewDeadline = DispatchTime.now().uptimeNanoseconds + 500_000_000
-        let gate = ClipboardPreviewGate(deadline: previewDeadline)
+        previewDeadline = permitsLate ? hardDeadline : normalDeadline
+        let clock = monotonicNow
+        let gate = ClipboardPreviewGate(deadline: hardDeadline, now: clock)
         previewGate = gate
         let requestGeneration = generation
         let requestID = nextRequestID
         nextRequestID += 1
         activeRequestID = requestID
-        if emptyDetectionEnabled {
-            let metadataGate = ClipboardPreviewGate(deadline: previewDeadline)
-            self.metadataGate = metadataGate
-            adopt(gate)
-            adopt(metadataGate)
-            contentFact = .pending
-            metadataFact = .pending
-            finalFact = .pending
-            finalRequested = false
-            retainedPreviewModel = nil
-            hiddenVersion = nil
-            ClipboardMetadataWorker.shared.submitCounts(reader: metadataReader, gate: metadataGate) {
-                [weak self] sample in
-                Task { @MainActor [weak self] in
-                    self?.acceptMetadata(
-                        sample, gate: metadataGate, generation: requestGeneration, requestID: requestID)
-                }
-            }
-        }
-        ClipboardPreviewWorker.shared.submit(reader: previewReader, gate: gate) { [weak self, gate] result in
+        adopt(gate)
+        ClipboardPreviewWorker.shared.submitVersioned(
+            reader: previewReader, gate: gate, sampleVersions: permitsLate, now: clock
+        ) {
+            [weak self, gate] result, before, after, returned in
             Task { @MainActor [weak self] in
-                guard let self, self.previewGate === gate, self.generation == requestGeneration,
+                guard let self else { return }
+                let pending = PendingRead(
+                    result: result, before: before, after: after, returned: returned,
+                    normalDeadline: normalDeadline, hardDeadline: hardDeadline, permitsLate: permitsLate,
+                    generation: requestGeneration, requestID: requestID, gate: gate)
+                guard self.previewGate === gate, self.generation == requestGeneration,
                     self.activeRequestID == requestID
                 else { return }
-                if result == .denied && DispatchTime.now().uptimeNanoseconds < self.previewDeadline {
-                    self.deniedThisAppearance = true
+                if result == .denied { self.deniedThisAppearance = true }
+                if self.previewSuspended {
+                    self.suspendedRead = pending
+                } else {
+                    self.acceptRead(pending)
                 }
-                if self.emptyDetectionEnabled {
-                    self.acceptContent(result, generation: requestGeneration, requestID: requestID)
-                    return
-                }
-                guard !self.previewSuspended, self.presentation == .armed, self.isEligible(),
-                    DispatchTime.now().uptimeNanoseconds < self.previewDeadline
-                else {
-                    self.discardPreview()
-                    self.onPresentationChanged()
-                    return
-                }
-                gate.cancel()
-                self.previewGate = nil
-                self.preview = result == .unavailable || result == .denied ? .unavailable : .ready(result)
-                self.onPresentationChanged()
             }
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) { [weak self, gate] in
+        let delay: DispatchTimeInterval = permitsLate ? .seconds(10) : .milliseconds(500)
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self, gate] in
             guard let self, self.previewGate === gate, self.generation == requestGeneration,
                 self.activeRequestID == requestID
             else { return }
-            self.previewGate?.cancel()
-            self.metadataGate?.cancel()
-            if self.previewSuspended {
-                self.slotsExpired = true
-                return
-            }
-            if self.emptyDetectionEnabled {
-                self.slotsExpired = true
-                self.evaluateEmptyDetection()
-            } else {
-                self.discardPreview()
-                self.onPresentationChanged()
-            }
+            if !permitsLate && !gate.expireNormalIfPending(deadline: normalDeadline) { return }
+            self.discardPreview()
+            self.onPresentationChanged()
         }
     }
 
-    /// Observed clipboard version after a hide. Unknown or different revokes the hide without rereading.
-    func noteClipboardVersion(_ version: Int?) {
-        guard case .hidden = preview else { return }
-        guard version == hiddenVersion, version != nil else {
-            hiddenVersion = nil
-            preview = .unavailable
-            if !previewSuspended { inquiryOpen = false }
+    private func acceptRead(_ pending: PendingRead, resumed: Bool = false) {
+        guard previewGate === pending.gate, generation == pending.generation,
+            activeRequestID == pending.requestID
+        else { return }
+        let now = monotonicNow()
+        let late = pending.returned > pending.normalDeadline || (resumed && now > pending.normalDeadline)
+        guard pending.returned < pending.hardDeadline, now < pending.hardDeadline,
+            !previewSuspended, presentation == .armed, isEligible(), probeSwitchEnabled(), probeFullAccess(),
+            !late || (pending.permitsLate && pending.before != nil && pending.before == pending.after)
+        else {
+            discardPreview()
             onPresentationChanged()
             return
         }
+        pending.gate.cancel()
+        previewGate = nil
+        preview = pending.result == .unavailable || pending.result == .denied ? .unavailable : .ready(pending.result)
+        if preview == .unavailable { inquiryOpen = false }
+        onPresentationChanged()
     }
 
     private func adopt(_ gate: ClipboardPreviewGate) {
@@ -238,157 +229,28 @@ final class PasteToolbarSession {
             fullAccess: probeFullAccess(), eligible: isEligible())
     }
 
-    private func acceptContent(_ result: ClipboardPreviewResult, generation: UInt64, requestID: UInt64) {
-        guard !decisionSealed, self.generation == generation, activeRequestID == requestID else { return }
-        if previewSuspended {
-            discardPreview()
-            onPresentationChanged()
-            return
-        }
-        guard DispatchTime.now().uptimeNanoseconds < previewDeadline else { return }
-        retainedPreviewModel = result
-        switch result {
-        case .denied: contentFact = .denied
-        case .unavailable: contentFact = .blank
-        case .text, .oversized: contentFact = .text
-        }
-        evaluateEmptyDetection()
-    }
-
-    private func acceptMetadata(
-        _ sample: ClipboardCountSample, gate: ClipboardPreviewGate, generation: UInt64, requestID: UInt64
-    ) {
-        guard metadataGate === gate, !decisionSealed, self.generation == generation, activeRequestID == requestID
-        else { return }
-        if previewSuspended {
-            discardPreview()
-            onPresentationChanged()
-            return
-        }
-        guard DispatchTime.now().uptimeNanoseconds < previewDeadline else { return }
-        if sample.itemCount == 0 && sample.changeCountBefore == sample.changeCountAfter {
-            metadataFact = .empty(version: sample.changeCountAfter)
-        } else if sample.changeCountBefore == sample.changeCountAfter {
-            metadataFact = .nonempty
-        } else {
-            metadataFact = .unavailable
-        }
-        evaluateEmptyDetection()
-    }
-
-    private func evaluateEmptyDetection() {
-        guard emptyDetectionEnabled, !decisionSealed, !previewSuspended else { return }
-        if slotsExpired || DispatchTime.now().uptimeNanoseconds >= previewDeadline {
-            if contentFact == .pending { contentFact = .timedOut }
-            if metadataFact == .pending { metadataFact = .timedOut }
-            if case .empty = metadataFact, finalFact == .pending { finalFact = .timedOut }
-        }
-        if case .empty = metadataFact, finalFact == .pending, !slotsExpired,
-            DispatchTime.now().uptimeNanoseconds < previewDeadline
-        {
-            requestFinalVersion()
-        }
-        let facts = PasteDisplayFacts(
-            probesPassed: true, enabled: probeSwitchEnabled(), fullAccess: probeFullAccess(),
-            generationCurrent: true, suspended: previewSuspended, eligible: isEligible(),
-            armed: presentation == .armed, content: contentFact, metadata: metadataFact, finalVersion: finalFact)
-        switch PasteDisplayPlanner.decide(facts) {
-        case .wait: return
-        case .omit:
-            seal(.unavailable, version: nil)
-        case .fallback:
-            seal(.unavailable, version: nil)
-        case .preview:
-            if let retainedPreviewModel { seal(.ready(retainedPreviewModel), version: nil) }
-        case .hidden:
-            let version = metadataVersion
-            seal(.hidden, version: version)
-        }
-    }
-
-    private var metadataVersion: Int? {
-        if case .empty(let version) = metadataFact { return version }
-        return nil
-    }
-
-    private func requestFinalVersion() {
-        guard !finalRequested, let metadataGate else { return }
-        finalRequested = true
-        let requestGeneration = generation
-        let requestID = activeRequestID
-        ClipboardMetadataWorker.shared.submitChangeCount(reader: metadataReader, gate: metadataGate) {
-            [weak self] version in
-            Task { @MainActor [weak self] in
-                guard let self, !self.decisionSealed, self.generation == requestGeneration,
-                    self.activeRequestID == requestID
-                else { return }
-                if self.previewSuspended {
-                    self.discardPreview()
-                    self.onPresentationChanged()
-                    return
-                }
-                guard DispatchTime.now().uptimeNanoseconds < self.previewDeadline else {
-                    self.finalFact = .timedOut
-                    self.evaluateEmptyDetection()
-                    return
-                }
-                guard case .empty(let evidence) = self.metadataFact else {
-                    self.finalFact = .incomparable
-                    self.evaluateEmptyDetection()
-                    return
-                }
-                self.finalFact = version == evidence ? .equal : .mismatch
-                self.evaluateEmptyDetection()
-            }
-        }
-    }
-
-    private func seal(_ preview: Preview, version: Int?) {
-        decisionSealed = true
-        previewGate?.cancel()
-        metadataGate?.cancel()
-        previewGate = nil
-        metadataGate = nil
-        hiddenVersion = version
-        self.preview = preview
-        if preview != .hidden { retainedPreviewModel = nil }
-        if !previewSuspended { inquiryOpen = false }
-        onPresentationChanged()
-    }
-
     func didInstallPreview() {
+        previewWasShown = true
         if !previewSuspended { inquiryOpen = false }
     }
 
     func discardPreview() {
-        decisionSealed = true
+        suspendedRead = nil
         previewGate?.cancel()
-        metadataGate?.cancel()
         previewGate = nil
-        metadataGate = nil
         preview = .unavailable
-        retainedPreviewModel = nil
-        hiddenVersion = nil
         if !previewSuspended { inquiryOpen = false }
     }
 
     func resetPreview() {
+        previewWasShown = false
+        suspendedRead = nil
         previewGate?.cancel()
-        metadataGate?.cancel()
         previewGate = nil
-        metadataGate = nil
         preview = .notRead
         inquiryOpen = false
         previewSuspended = false
         previewDeadline = 0
-        slotsExpired = false
-        decisionSealed = false
-        retainedPreviewModel = nil
-        hiddenVersion = nil
-        contentFact = .pending
-        metadataFact = .notRequested
-        finalFact = .notNeeded
-        finalRequested = false
     }
 
     func failOversizedPreview() {

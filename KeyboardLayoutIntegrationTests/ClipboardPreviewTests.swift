@@ -101,7 +101,7 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
     }
 
     @MainActor
-    func testSuspendedResultIsDiscardedBeforeResume() async throws {
+    func testSuspendedResultWaitsUntilResume() async throws {
         let reader = BlockingPreviewReader()
         let session = PasteToolbarSession()
         session.isEligible = { true }
@@ -111,14 +111,12 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
         XCTAssertEqual(reader.started.wait(timeout: .now() + 2), .success)
         session.noteHostResign()
         reader.release.signal()
-        for _ in 0..<100 where session.preview == .reading {
-            try await Task.sleep(for: .milliseconds(2))
-        }
-        XCTAssertEqual(session.preview, .unavailable)
+        try await Task.sleep(for: .milliseconds(30))
+        XCTAssertEqual(session.preview, .reading)
         let generation = session.generation
         session.noteHostBecomeActive()
         XCTAssertEqual(session.generation, generation)
-        XCTAssertEqual(session.preview, .unavailable)
+        XCTAssertEqual(session.preview, .ready(.text(full: "hello", summary: "hello", isLink: false)))
         XCTAssertEqual(reader.count, 1)
     }
 
@@ -351,7 +349,6 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
             owner.pasteToolbarSuspended = false
             owner.pasteSession.noteHostBecomeActive()
             owner.refreshPasteToolbar()
-            XCTAssertNil(owner.pasteToolbar)
             XCTAssertNil(owner.pastePreviewView)
             XCTAssertEqual(reader.count, 1)
         }
@@ -390,7 +387,6 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
         XCTAssertTrue(owner.controller.state.continuation.suggestions.isEmpty)
         let before = defaults.dictionaryRepresentation() as NSDictionary
         XCTAssertTrue(owner.isPasteToolbarEligible, "eligibility")
-        XCTAssertNil(owner.pasteToolbar, "unexpected system fallback")
         if case .ready = owner.pasteSession.preview {} else { XCTFail("preview state was not ready") }
         let view = try XCTUnwrap(owner.pastePreviewView)
         XCTAssertEqual(view.actions(forTarget: owner, forControlEvent: .touchUpInside), ["pastePreviewTapped"])
@@ -416,7 +412,6 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
         let result = ClipboardPreviewResult.oversized(summary: "••••••（8001 字）", utf16Length: 8_001, isLink: false)
         let (owner, client, _) = await previewOwner(result: result)
         XCTAssertTrue(owner.isPasteToolbarEligible, "eligibility")
-        XCTAssertNil(owner.pasteToolbar, "unexpected system fallback")
         if case .ready = owner.pasteSession.preview {} else { XCTFail("preview state was not ready") }
         let view = try XCTUnwrap(owner.pastePreviewView)
         XCTAssertEqual(view.actions(forTarget: owner, forControlEvent: .touchUpInside), ["pastePreviewTapped"])
@@ -435,7 +430,9 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
     }
 
     @MainActor
-    private func previewOwner(result: ClipboardPreviewResult) async -> (PasteOwner, PasteClient, PasteMemoryDefaults) {
+    private func previewOwner(
+        result: ClipboardPreviewResult, largeText: Bool = false
+    ) async -> (PasteOwner, PasteClient, PasteMemoryDefaults) {
         let owner = PasteOwner()
         let defaults = PasteMemoryDefaults()
         defaults.set(true, forKey: KeyboardInputSettingsKey.clipboardPreviewEnabled)
@@ -450,6 +447,10 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
         owner.view.frame = CGRect(x: 0, y: 0, width: 390, height: 288)
         owner.setupRootStack()
         owner.reloadKeyboard()
+        if largeText, let bar = owner.candidateBar as? CandidateBarView {
+            bar.traitOverrides.preferredContentSizeCategory = .accessibilityExtraExtraExtraLarge
+            bar.updateTraitsIfNeeded()
+        }
         owner.isKeyboardUIInstalled = true
         owner.installPasteInputObservation()
         owner.view.layoutIfNeeded()
@@ -505,18 +506,30 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
     }
 
     @MainActor
-    func testDynamicTypeFallbackInstallsAccessibleSystemControl() async throws {
+    func testT78InitialLargeTextDoesNotInstallPreview() async {
+        let result = ClipboardPreviewResult.text(full: "example", summary: "example", isLink: false)
+        let (owner, _, _) = await previewOwner(result: result, largeText: true)
+        XCTAssertNil(owner.pastePreviewView)
+        XCTAssertEqual(owner.pasteSession.preview, .unavailable)
+        XCTAssertEqual(owner.pasteSession.presentation, .armed)
+        owner.refreshPasteToolbar()
+        XCTAssertNil(owner.pastePreviewView)
+    }
+
+    @MainActor
+    func testT79DynamicTypeRemovalDoesNotInstallFallback() async throws {
         let result = ClipboardPreviewResult.text(full: "example", summary: "example", isLink: false)
         let (owner, _, _) = await previewOwner(result: result)
         let view = try XCTUnwrap(owner.pastePreviewView)
         view.traitOverrides.preferredContentSizeCategory = .accessibilityExtraExtraExtraLarge
         view.updateTraitsIfNeeded()
         owner.view.layoutIfNeeded()
-        for _ in 0..<50 where owner.pasteToolbar == nil { try await Task.sleep(for: .milliseconds(2)) }
-        let systemControl = try XCTUnwrap(owner.pasteToolbar)
+        for _ in 0..<50 where owner.pastePreviewView != nil { try await Task.sleep(for: .milliseconds(2)) }
         XCTAssertNil(owner.pastePreviewView)
-        XCTAssertEqual(systemControl.control.accessibilityLabel, "粘贴，example")
         XCTAssertEqual(owner.pasteSession.preview, .unavailable)
+        XCTAssertEqual(owner.pasteSession.presentation, .armed)
+        owner.refreshPasteToolbar()
+        XCTAssertNil(owner.pastePreviewView)
     }
 
     func testSensitiveValuesAreMaskedAndURLsLoseQuery() {
@@ -621,293 +634,239 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
         XCTAssertEqual(summary, "example.com/reset/…")
     }
 
-    func testProductionProbeGateStaysOff() {
-        XCTAssertFalse(ClipboardEmptyDetection.emptyDetectionProbesPassed)
-    }
-
-    func testDecisionOrderExamples() {
-        let mismatch = PasteDisplayFacts(
-            probesPassed: true, content: .text, metadata: .empty(version: 1), finalVersion: .mismatch)
-        XCTAssertEqual(PasteDisplayPlanner.decide(mismatch), .fallback)
-        let timedOut = PasteDisplayFacts(
-            probesPassed: true, content: .text, metadata: .timedOut, finalVersion: .pending)
-        XCTAssertEqual(PasteDisplayPlanner.decide(timedOut), .fallback)
-        let preview = PasteDisplayFacts(
-            probesPassed: true, content: .text, metadata: .unavailable, finalVersion: .notNeeded)
-        XCTAssertEqual(PasteDisplayPlanner.decide(preview), .preview)
-        var hidden = PasteDisplayFacts(
-            probesPassed: true, content: .blank, metadata: .empty(version: 1), finalVersion: .equal)
-        XCTAssertEqual(PasteDisplayPlanner.decide(hidden), .hidden)
-        hidden.probesPassed = false
-        XCTAssertEqual(PasteDisplayPlanner.decide(hidden), .fallback)
-        for content in [PasteDisplayFacts.Content.denied, .discarded, .timedOut] {
-            var denied = hidden
-            denied.probesPassed = true
-            denied.content = content
-            XCTAssertEqual(PasteDisplayPlanner.decide(denied), .fallback)
+    @MainActor
+    func testT66T67OnlyTextShowsPreview() async throws {
+        for result: ClipboardPreviewResult in [
+            .text(full: "test", summary: "test", isLink: false), .denied, .unavailable,
+        ] {
+            let session = PasteToolbarSession()
+            session.isEligible = { true }
+            session.previewReader = FixedPreviewReader(result: result)
+            session.noteAppearance()
+            session.startPreviewIfNeeded()
+            for _ in 0..<100 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+            if case .text = result {
+                XCTAssertEqual(session.preview, .ready(result))
+            } else {
+                XCTAssertEqual(session.preview, .unavailable)
+            }
         }
     }
 
     @MainActor
-    func testProbeGateOffDoesNotReadMetadata() async throws {
-        let metadata = CountingMetadataReader()
-        let session = try await settledSession(
-            content: .text(full: "hello", summary: "hello", isLink: false), metadata: metadata, enabled: false)
-        XCTAssertEqual(metadata.countCalls, 0)
-        XCTAssertEqual(metadata.finalCalls, 0)
-        XCTAssertEqual(session.preview, .ready(.text(full: "hello", summary: "hello", isLink: false)))
+    func testT68T69NoReadWhenGatesClosed() async throws {
+        for (enabled, access, eligible) in [(false, true, true), (true, false, true), (true, true, false)] {
+            let reader = CountingPreviewReader()
+            let session = PasteToolbarSession()
+            session.previewReader = reader
+            session.probeSwitchEnabled = { enabled }
+            session.probeFullAccess = { access }
+            session.isEligible = { eligible }
+            session.noteAppearance()
+            session.startPreviewIfNeeded()
+            try await Task.sleep(for: .milliseconds(20))
+            XCTAssertEqual(reader.count, 0)
+        }
     }
 
     @MainActor
-    func testSwitchOffReadsNeitherChannel() async throws {
-        let content = CountingPreviewReader()
-        let metadata = CountingMetadataReader()
+    func testNormalDeadlineIncludesExactly500Milliseconds() async throws {
+        for (elapsed, expected) in [(500_000_000 as UInt64, true), (500_000_001, false)] {
+            let clock = ProbeTestClock(1_000_000_000)
+            let reader = VersionedTestReader(before: nil, after: nil)
+            let session = PasteToolbarSession()
+            session.monotonicNow = { clock.read() }
+            session.isEligible = { true }
+            session.previewReader = reader
+            session.noteAppearance()
+            session.startPreviewIfNeeded()
+            XCTAssertEqual(reader.started.wait(timeout: .now() + 2), .success)
+            clock.set(1_000_000_000 + elapsed)
+            reader.release.signal()
+            for _ in 0..<100 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+            if expected {
+                XCTAssertEqual(session.preview, .ready(.text(full: "x", summary: "x", isLink: false)))
+            } else {
+                XCTAssertEqual(session.preview, .unavailable)
+            }
+        }
+    }
+
+    func testT71ExactTenSecondDeadline() {
+        let clock = ProbeTestClock(100)
+        let gate = ClipboardPreviewGate(deadline: 10_000_000_100, now: { clock.read() })
+        XCTAssertTrue(gate.begin())
+        clock.set(10_000_000_100)
+        XCTAssertFalse(gate.finish(at: clock.read()))
+        let queued = ClipboardPreviewGate(deadline: 10_000_000_100, now: { clock.read() })
+        XCTAssertFalse(queued.begin())
+    }
+
+    @MainActor
+    func testT74RepeatedRefreshDoesNotReread() async throws {
+        let reader = CountingPreviewReader()
         let session = PasteToolbarSession()
-        session.emptyDetectionEnabled = true
-        session.previewReader = content
-        session.metadataReader = metadata
         session.isEligible = { true }
-        session.probeSwitchEnabled = { false }
+        session.previewReader = reader
         session.noteAppearance()
         session.startPreviewIfNeeded()
-        try await Task.sleep(for: .milliseconds(40))
-        XCTAssertEqual(content.count, 0)
-        XCTAssertEqual(metadata.countCalls, 0)
-        XCTAssertEqual(metadata.finalCalls, 0)
-        XCTAssertFalse(Thread.isMainThread == false)
+        for _ in 0..<100 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        session.startPreviewIfNeeded()
+        session.startPreviewIfNeeded()
+        XCTAssertEqual(reader.count, 1)
+        XCTAssertEqual(session.preview, .unavailable)
     }
 
     @MainActor
-    func testConfirmedEmptyHidesAndStaysArmed() async throws {
-        let metadata = CountingMetadataReader(
-            sample: .init(itemCount: 0, changeCountBefore: 4, changeCountAfter: 4), final: 4)
-        let content = CountingContentReader(result: .unavailable)
-        let session = try await settledSession(contentReader: content, metadata: metadata, enabled: true)
-        XCTAssertEqual(session.preview, .hidden)
+    func testT75FailureDoesNotConsumeSuccessDoes() {
+        let session = PasteToolbarSession()
+        session.isEligible = { true }
+        session.noteAppearance()
+        let failed = session.begin()!
+        session.complete(nil, operationID: failed)
         XCTAssertEqual(session.presentation, .armed)
-        XCTAssertEqual(session.hiddenVersion, 4)
-        XCTAssertFalse(content.ranOnMainThread)
-        XCTAssertFalse(metadata.ranOnMainThread)
-        let reads = content.count
-        session.startPreviewIfNeeded()
-        try await Task.sleep(for: .milliseconds(30))
-        XCTAssertEqual(content.count, reads)
-        XCTAssertEqual(metadata.finalCalls, 1)
+        session.commit = { _ in .inserted }
+        let successful = session.begin()!
+        session.complete("text", operationID: successful)
+        XCTAssertEqual(session.presentation, .consumedByPaste)
     }
 
-    @MainActor
-    func testHiddenStripIsNotInstalled() async throws {
-        let owner = PasteOwner()
-        let defaults = PasteMemoryDefaults()
-        defaults.set(true, forKey: KeyboardInputSettingsKey.clipboardPreviewEnabled)
-        owner.sharedDefaults = defaults
-        owner.access = true
-        owner.loadViewIfNeeded()
-        owner.controller = KeyboardController()
-        owner.controller.textClient = PasteClient()
-        owner.pasteSession.emptyDetectionEnabled = true
-        owner.pasteSession.previewReader = FixedPreviewReader(result: .unavailable)
-        owner.pasteSession.metadataReader = CountingMetadataReader(
-            sample: .init(itemCount: 0, changeCountBefore: 1, changeCountAfter: 1), final: 1)
-        owner.cachedPasteToolbarEnabled = true
-        owner.view.frame = CGRect(x: 0, y: 0, width: 390, height: 288)
-        owner.setupRootStack()
-        owner.reloadKeyboard()
-        owner.isKeyboardUIInstalled = true
-        owner.installPasteInputObservation()
-        owner.view.layoutIfNeeded()
-        owner.pasteSession.noteAppearance()
-        owner.refreshPasteToolbar()
-        for _ in 0..<100 where owner.pasteSession.preview == .reading {
-            try await Task.sleep(for: .milliseconds(2))
+    func testT81OversizedNeverRetainsFullText() {
+        let source = String(repeating: "secret", count: 2_000)
+        guard case .oversized(let summary, let length, _) = ClipboardPreviewFormatter.makeResult(source) else {
+            return XCTFail("oversized input must use the summary-only case")
         }
-        XCTAssertEqual(owner.pasteSession.preview, .hidden)
-        XCTAssertEqual(owner.pasteSession.presentation, .armed)
-        XCTAssertNil(owner.pasteToolbar)
-        XCTAssertNil(owner.pastePreviewView)
-        XCTAssertNil(owner.view.findPasteSeparator())
+        XCTAssertEqual(length, source.utf16.count)
+        XCTAssertLessThanOrEqual(summary.count, 64)
+        XCTAssertFalse(summary.contains(source))
     }
 
     @MainActor
-    func testMetadataShapesDoNotHideWithoutBlankProof() async throws {
-        let shapes: [ClipboardCountSample] = [
-            .init(itemCount: 2, changeCountBefore: 3, changeCountAfter: 3),
-            .init(itemCount: 0, changeCountBefore: 3, changeCountAfter: 4),
+    func testT70LateRequiresOptInAndEqualVersions() async throws {
+        let cases: [(Bool, Int?, Int?, Bool)] = [
+            (false, 1, 1, false), (true, 1, 1, true), (true, 1, 2, false),
+            (true, nil, 1, false), (true, 1, nil, false),
         ]
-        for shape in shapes {
-            let session = try await settledSession(
-                content: .unavailable,
-                metadata: CountingMetadataReader(sample: shape, final: shape.changeCountAfter), enabled: true)
-            XCTAssertEqual(session.preview, .unavailable)
-            XCTAssertNotEqual(session.preview, .hidden)
+        for (enabled, before, after, expected) in cases {
+            let clock = ProbeTestClock(1_000_000_000)
+            let reader = VersionedTestReader(before: before, after: after)
+            let session = PasteToolbarSession()
+            session.monotonicNow = { clock.read() }
+            session.latePreviewEnabled = enabled
+            session.isEligible = { true }
+            session.previewReader = reader
+            session.noteAppearance()
+            session.startPreviewIfNeeded()
+            XCTAssertEqual(reader.started.wait(timeout: .now() + 2), .success)
+            clock.set(1_600_000_000)
+            reader.release.signal()
+            for _ in 0..<100 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+            if expected {
+                XCTAssertEqual(session.preview, .ready(.text(full: "x", summary: "x", isLink: false)))
+            } else {
+                XCTAssertEqual(session.preview, .unavailable)
+            }
+            XCTAssertEqual(reader.count, 1)
         }
-        let denied = try await settledSession(
-            content: .denied,
-            metadata: CountingMetadataReader(
-                sample: .init(itemCount: 0, changeCountBefore: 1, changeCountAfter: 1), final: 1), enabled: true)
-        XCTAssertEqual(denied.preview, .unavailable)
     }
 
     @MainActor
-    func testStaleGenerationTimeoutAndCancelCannotHide() async throws {
-        let old = BlockingContentReader(result: .unavailable)
-        let metadata = BlockingMetadataReader(
-            sample: .init(itemCount: 0, changeCountBefore: 1, changeCountAfter: 1), final: 1)
+    func testT70InquiryResumesLateResultWithoutReread() async throws {
+        let clock = ProbeTestClock(1_000_000_000)
+        let reader = VersionedTestReader(before: 4, after: 4)
         let session = PasteToolbarSession()
-        session.emptyDetectionEnabled = true
+        session.monotonicNow = { clock.read() }
+        session.latePreviewEnabled = true
         session.isEligible = { true }
-        session.previewReader = old
-        session.metadataReader = metadata
+        session.previewReader = reader
         session.noteAppearance()
         session.startPreviewIfNeeded()
-        XCTAssertEqual(old.started.wait(timeout: .now() + 2), .success)
-        session.noteAppearance()
-        old.release.signal()
-        metadata.release.signal()
-        try await Task.sleep(for: .milliseconds(40))
-        XCTAssertEqual(session.preview, .notRead)
-        let stalledContent = BlockingContentReader(result: .unavailable)
-        let stalledMetadata = BlockingMetadataReader(
-            sample: .init(itemCount: 0, changeCountBefore: 1, changeCountAfter: 1), final: 1)
-        defer {
-            stalledContent.release.signal()
-            stalledMetadata.release.signal()
-        }
-        session.previewReader = stalledContent
-        session.metadataReader = stalledMetadata
-        session.startPreviewIfNeeded()
-        try await Task.sleep(for: .milliseconds(550))
-        XCTAssertEqual(session.preview, .unavailable)
-    }
-
-    @MainActor
-    func testNextAppearanceRechecksWithoutPolling() async throws {
-        let first = CountingContentReader(result: .unavailable)
-        let metadata = CountingMetadataReader(
-            sample: .init(itemCount: 0, changeCountBefore: 2, changeCountAfter: 2), final: 2)
-        let session = try await settledSession(contentReader: first, metadata: metadata, enabled: true)
-        XCTAssertEqual(session.preview, .hidden)
-        session.noteClipboardVersion(9)
-        XCTAssertEqual(session.preview, .unavailable)
-        XCTAssertEqual(first.count, 1)
-        session.noteAppearance()
-        let next = CountingContentReader(result: .text(full: "back", summary: "back", isLink: false))
-        session.previewReader = next
-        session.metadataReader = CountingMetadataReader(
-            sample: .init(itemCount: 1, changeCountBefore: 9, changeCountAfter: 9), final: 9)
-        session.startPreviewIfNeeded()
-        for _ in 0..<100 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
-        XCTAssertEqual(session.preview, .ready(.text(full: "back", summary: "back", isLink: false)))
-        XCTAssertEqual(next.count, 1)
-    }
-
-    @MainActor
-    func testFinalVersionMismatchAndMetadataTimeoutPreferFallback() async throws {
-        let mismatch = try await settledSession(
-            content: .text(full: "later", summary: "later", isLink: false),
-            metadata: CountingMetadataReader(
-                sample: .init(itemCount: 0, changeCountBefore: 1, changeCountAfter: 1), final: 2), enabled: true)
-        XCTAssertEqual(mismatch.preview, .unavailable)
-        let metadata = BlockingMetadataReader(
-            sample: .init(itemCount: 0, changeCountBefore: 1, changeCountAfter: 1), final: 1)
-        let session = PasteToolbarSession()
-        session.emptyDetectionEnabled = true
-        session.isEligible = { true }
-        session.previewReader = FixedPreviewReader(result: .text(full: "ready", summary: "ready", isLink: false))
-        session.metadataReader = metadata
-        session.noteAppearance()
-        session.startPreviewIfNeeded()
-        XCTAssertEqual(metadata.started.wait(timeout: .now() + 2), .success)
-        try await Task.sleep(for: .milliseconds(550))
-        XCTAssertEqual(session.preview, .unavailable)
-        metadata.release.signal()
-        try await Task.sleep(for: .milliseconds(40))
-        XCTAssertEqual(session.preview, .unavailable)
-    }
-
-    @MainActor
-    func testInquiryMetadataTimeoutInstallsFallbackOnce() async throws {
-        let content = BlockingContentReader(result: .text(full: "model", summary: "model", isLink: false))
-        let metadata = BlockingMetadataReader(
-            sample: .init(itemCount: 0, changeCountBefore: 1, changeCountAfter: 1), final: 1)
-        let session = PasteToolbarSession()
-        session.emptyDetectionEnabled = true
-        session.isEligible = { true }
-        session.previewReader = content
-        session.metadataReader = metadata
-        session.noteAppearance()
-        session.startPreviewIfNeeded()
-        XCTAssertEqual(content.started.wait(timeout: .now() + 2), .success)
-        content.release.signal()
-        for _ in 0..<100 where session.retainedPreviewModel == nil { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(reader.started.wait(timeout: .now() + 2), .success)
         session.noteHostResign()
-        try await Task.sleep(for: .milliseconds(550))
-        XCTAssertNotNil(session.retainedPreviewModel)
-        XCTAssertNotEqual(session.preview, .ready(.text(full: "model", summary: "model", isLink: false)))
+        clock.set(1_600_000_000)
+        reader.release.signal()
+        try await Task.sleep(for: .milliseconds(30))
+        XCTAssertEqual(session.preview, .reading)
+        clock.set(1_700_000_000)
         session.noteHostBecomeActive()
-        XCTAssertEqual(session.preview, .unavailable)
-        XCTAssertNil(session.retainedPreviewModel)
-        session.didInstallPreview()
+        XCTAssertEqual(session.preview, .ready(.text(full: "x", summary: "x", isLink: false)))
         session.startPreviewIfNeeded()
-        metadata.release.signal()
-        try await Task.sleep(for: .milliseconds(40))
-        XCTAssertEqual(content.count, 1)
-        XCTAssertEqual(session.preview, .unavailable)
+        XCTAssertEqual(reader.count, 1)
     }
 
     @MainActor
-    func testMetadataGateBlocksCancelledCallAndMainStaysFree() {
-        let blocker = BlockingMetadataReader(
-            sample: .init(itemCount: 1, changeCountBefore: 1, changeCountAfter: 1), final: 1)
-        defer { blocker.release.signal() }
-        let deadline = DispatchTime.now().uptimeNanoseconds + 5_000_000_000
-        let first = ClipboardPreviewGate(deadline: deadline)
-        first.adopt(token: 1, generation: 1, enabled: true, fullAccess: true, eligible: true)
-        ClipboardMetadataWorker.shared.submitCounts(reader: blocker, gate: first) { _ in }
-        XCTAssertEqual(blocker.started.wait(timeout: .now() + 2), .success)
-        let skipped = CountingMetadataReader()
-        let second = ClipboardPreviewGate(deadline: deadline)
-        second.adopt(token: 2, generation: 1, enabled: true, fullAccess: true, eligible: true)
-        second.updateLive(token: 2, generation: 1, enabled: false, fullAccess: true, eligible: false)
-        let finished = expectation(description: "metadata queue drained")
-        ClipboardMetadataWorker.shared.submitCounts(reader: skipped, gate: second) { _ in
-            XCTFail("revoked metadata gate must not return")
+    func testT72T73T80CancellationAfterGetterStarts() async throws {
+        for mode in 0..<3 {
+            let clock = ProbeTestClock(1_000_000_000)
+            let reader = VersionedTestReader(before: 1, after: 1)
+            let session = PasteToolbarSession()
+            session.monotonicNow = { clock.read() }
+            session.latePreviewEnabled = true
+            session.isEligible = { true }
+            session.previewReader = reader
+            session.noteAppearance()
+            session.startPreviewIfNeeded()
+            XCTAssertEqual(reader.started.wait(timeout: .now() + 2), .success)
+            clock.set(1_300_000_000)
+            if mode == 0 { session.discardPreview() }
+            if mode == 1 { session.noteCountedInput() }
+            if mode == 2 { session.noteAppearance() }
+            reader.release.signal()
+            try await Task.sleep(for: .milliseconds(40))
+            if case .ready = session.preview { XCTFail("cancelled or stale result was displayed") }
+            XCTAssertEqual(reader.count, 1)
         }
-        let drain = ClipboardPreviewGate(deadline: deadline)
-        drain.adopt(token: 3, generation: 1, enabled: true, fullAccess: true, eligible: true)
-        ClipboardMetadataWorker.shared.submitCounts(
-            reader: CountingMetadataReader(), gate: drain
-        ) { _ in finished.fulfill() }
-        let started = Date()
-        blocker.release.signal()
-        wait(for: [finished], timeout: 3)
-        XCTAssertLessThan(Date().timeIntervalSince(started), 2)
-        XCTAssertEqual(skipped.countCalls, 0)
-        XCTAssertTrue(Thread.isMainThread)
     }
 
     @MainActor
-    private func settledSession(
-        content: ClipboardPreviewResult, metadata: CountingMetadataReader, enabled: Bool
-    ) async throws -> PasteToolbarSession {
-        try await settledSession(
-            contentReader: CountingContentReader(result: content), metadata: metadata, enabled: enabled)
+    func testT72ChangedEligibilityRejectsInFlightResult() async throws {
+        for mode in 0..<3 {
+            let reader = VersionedTestReader(before: 1, after: 1)
+            let session = PasteToolbarSession()
+            var enabled = true
+            var access = true
+            var eligible = true
+            session.probeSwitchEnabled = { enabled }
+            session.probeFullAccess = { access }
+            session.isEligible = { eligible }
+            session.latePreviewEnabled = true
+            session.previewReader = reader
+            session.noteAppearance()
+            session.startPreviewIfNeeded()
+            XCTAssertEqual(reader.started.wait(timeout: .now() + 2), .success)
+            if mode == 0 { enabled = false }
+            if mode == 1 { access = false }
+            if mode == 2 { eligible = false }
+            reader.release.signal()
+            for _ in 0..<100 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+            XCTAssertEqual(session.preview, .unavailable)
+            XCTAssertEqual(reader.count, 1)
+        }
     }
 
-    @MainActor
-    private func settledSession(
-        contentReader: any ClipboardPreviewReading, metadata: any ClipboardMetadataReading, enabled: Bool
-    ) async throws -> PasteToolbarSession {
-        let session = PasteToolbarSession()
-        session.emptyDetectionEnabled = enabled
-        session.isEligible = { true }
-        session.previewReader = contentReader
-        session.metadataReader = metadata
-        session.noteAppearance()
-        session.startPreviewIfNeeded()
-        for _ in 0..<100 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
-        return session
+    func testT76T77QueuedDeadlineAndCancellation() {
+        for expires in [true, false] {
+            let clock = ProbeTestClock(1_000)
+            let blocker = BlockingPreviewReader()
+            ClipboardPreviewWorker.shared.submit(reader: blocker, gate: ClipboardPreviewGate(deadline: UInt64.max)) {
+                _ in
+            }
+            XCTAssertEqual(blocker.started.wait(timeout: .now() + 2), .success)
+            let reader = CountingPreviewReader()
+            let deadline: UInt64 = 10_000_001_000
+            let gate = ClipboardPreviewGate(deadline: deadline, now: { clock.read() })
+            let done = expectation(description: "queue drained")
+            ClipboardPreviewWorker.shared.submit(reader: reader, gate: gate) { _ in }
+            ClipboardPreviewWorker.shared.submit(
+                reader: ImmediatePreviewReader(), gate: ClipboardPreviewGate(deadline: UInt64.max)
+            ) { _ in done.fulfill() }
+            clock.set(expires ? deadline : 400_001_000)
+            blocker.release.signal()
+            wait(for: [done], timeout: 3)
+            XCTAssertEqual(reader.count, expires ? 0 : 1)
+        }
     }
+
 }
 
 extension UIView {
@@ -917,118 +876,6 @@ extension UIView {
             if let found = child.findPasteSeparator() { return found }
         }
         return nil
-    }
-}
-
-private nonisolated final class CountingContentReader: ClipboardPreviewReading, @unchecked Sendable {
-    private let lock = NSLock()
-    private var reads = 0
-    private var mainThread = false
-    private let result: ClipboardPreviewResult
-    init(result: ClipboardPreviewResult) { self.result = result }
-    var count: Int {
-        lock.lock()
-        defer { lock.unlock() }
-        return reads
-    }
-    var ranOnMainThread: Bool {
-        lock.lock()
-        defer { lock.unlock() }
-        return mainThread
-    }
-    func read() -> ClipboardPreviewResult {
-        lock.lock()
-        reads += 1
-        mainThread = Thread.isMainThread
-        lock.unlock()
-        return result
-    }
-}
-
-private nonisolated final class BlockingContentReader: ClipboardPreviewReading, @unchecked Sendable {
-    let release = DispatchSemaphore(value: 0)
-    let started = DispatchSemaphore(value: 0)
-    private let lock = NSLock()
-    private var reads = 0
-    private let result: ClipboardPreviewResult
-    init(result: ClipboardPreviewResult) { self.result = result }
-    var count: Int {
-        lock.lock()
-        defer { lock.unlock() }
-        return reads
-    }
-    func read() -> ClipboardPreviewResult {
-        lock.lock()
-        reads += 1
-        lock.unlock()
-        started.signal()
-        release.wait()
-        return result
-    }
-}
-
-private nonisolated final class CountingMetadataReader: ClipboardMetadataReading, @unchecked Sendable {
-    private let lock = NSLock()
-    private var counts = 0
-    private var finals = 0
-    private var mainThread = false
-    private let sample: ClipboardCountSample
-    private let final: Int
-    init(
-        sample: ClipboardCountSample = .init(itemCount: 1, changeCountBefore: 1, changeCountAfter: 1), final: Int = 1
-    ) {
-        self.sample = sample
-        self.final = final
-    }
-    var countCalls: Int {
-        lock.lock()
-        defer { lock.unlock() }
-        return counts
-    }
-    var finalCalls: Int {
-        lock.lock()
-        defer { lock.unlock() }
-        return finals
-    }
-    var ranOnMainThread: Bool {
-        lock.lock()
-        defer { lock.unlock() }
-        return mainThread
-    }
-    func readCounts() -> ClipboardCountSample {
-        lock.lock()
-        counts += 1
-        mainThread = Thread.isMainThread
-        lock.unlock()
-        return sample
-    }
-    func readChangeCount() -> Int {
-        lock.lock()
-        finals += 1
-        mainThread = Thread.isMainThread
-        lock.unlock()
-        return final
-    }
-}
-
-private nonisolated final class BlockingMetadataReader: ClipboardMetadataReading, @unchecked Sendable {
-    let release = DispatchSemaphore(value: 0)
-    let started = DispatchSemaphore(value: 0)
-    private let sample: ClipboardCountSample
-    private let final: Int
-    init(sample: ClipboardCountSample, final: Int) {
-        self.sample = sample
-        self.final = final
-    }
-    func readCounts() -> ClipboardCountSample {
-        started.signal()
-        release.wait()
-        return sample
-    }
-    func readChangeCount() -> Int {
-        started.signal()
-        release.wait()
-        return final
     }
 }
 
@@ -1088,5 +935,39 @@ nonisolated final class CountingPreviewReader: ClipboardPreviewReading, @uncheck
         mainThread = Thread.isMainThread
         lock.unlock()
         return .denied
+    }
+}
+
+private nonisolated final class ProbeTestClock: @unchecked Sendable {
+    private let lock = NSLock()
+    private var value: UInt64
+    init(_ value: UInt64) { self.value = value }
+    func read() -> UInt64 { lock.lock(); defer { lock.unlock() }; return value }
+    func set(_ value: UInt64) { lock.lock(); self.value = value; lock.unlock() }
+}
+
+private nonisolated final class VersionedTestReader: ClipboardPreviewReading, @unchecked Sendable {
+    let started = DispatchSemaphore(value: 0)
+    let release = DispatchSemaphore(value: 0)
+    private let lock = NSLock()
+    private let versions: [Int?]
+    private var reads = 0
+    private var versionReads = 0
+    init(before: Int?, after: Int?) { versions = [before, after] }
+    var count: Int { lock.lock(); defer { lock.unlock() }; return reads }
+    func changeCount() -> Int? {
+        lock.lock()
+        defer { lock.unlock() }
+        let result = versions[min(versionReads, versions.count - 1)]
+        versionReads += 1
+        return result
+    }
+    func read() -> ClipboardPreviewResult {
+        lock.lock()
+        reads += 1
+        lock.unlock()
+        started.signal()
+        release.wait()
+        return .text(full: "x", summary: "x", isLink: false)
     }
 }

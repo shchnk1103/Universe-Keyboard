@@ -23,7 +23,7 @@ nonisolated final class PasteToolbarPresentationTests: XCTestCase {
         bar.onPasteFailureTap?()
         XCTAssertFalse(sut.pasteSession.pasteFailureVisible)
         XCTAssertEqual(sut.pasteSession.presentation, .armed)
-        XCTAssertNotNil(sut.pasteToolbar)
+        XCTAssertNotNil(sut.pastePreviewView)
     }
 
     @MainActor
@@ -74,7 +74,7 @@ nonisolated final class PasteToolbarPresentationTests: XCTestCase {
         XCTAssertFalse(sut.pasteSession.pendingReturn)
         XCTAssertEqual(sut.pasteSession.generation, generation + 1)
         await waitForFallback(sut)
-        XCTAssertNotNil(sut.pasteToolbar)
+        XCTAssertNotNil(sut.pastePreviewView)
     }
 
     @MainActor
@@ -93,7 +93,7 @@ nonisolated final class PasteToolbarPresentationTests: XCTestCase {
         let sut = await PasteToolbarIntegrationHarness.make()
         sut.handleKeyboardDidAppear()
         await waitForFallback(sut)
-        XCTAssertNotNil(sut.pasteToolbar)
+        XCTAssertNotNil(sut.pastePreviewView)
         let generation = sut.pasteSession.generation
         hostResign(sut)
         hostActive(sut)
@@ -103,7 +103,7 @@ nonisolated final class PasteToolbarPresentationTests: XCTestCase {
 
     @MainActor
     private func waitForFallback(_ owner: PasteOwner) async {
-        for _ in 0..<200 where owner.pasteToolbar == nil {
+        for _ in 0..<200 where owner.pastePreviewView == nil {
             try? await Task.sleep(for: .milliseconds(5))
         }
     }
@@ -157,7 +157,7 @@ nonisolated final class PasteToolbarPresentationTests: XCTestCase {
         sut.controller.handle(.deleteBackward)
         sut.syncUI(with: [])
         XCTAssertEqual(sut.pasteSession.presentation, .consumedByInput)
-        XCTAssertNil(sut.pasteToolbar)
+        XCTAssertNil(sut.pastePreviewView)
     }
 
     @MainActor
@@ -205,7 +205,7 @@ private enum PasteToolbarIntegrationHarness {
         owner.sharedDefaults = defaults
         owner.loadViewIfNeeded()
         owner.controller = KeyboardController()
-        owner.pasteSession.previewReader = ImmediatePreviewReader()
+        owner.pasteSession.previewReader = PresentationTextReader()
         owner.controller.textClient = PasteClient()
         owner.cachedPasteToolbarEnabled = true
         owner.view.frame = CGRect(x: 0, y: 0, width: 390, height: 288)
@@ -215,10 +215,15 @@ private enum PasteToolbarIntegrationHarness {
         owner.installPasteInputObservation()
         owner.view.layoutIfNeeded()
         owner.rootStack.layoutIfNeeded()
+        owner.pasteSession.noteAppearance()
         owner.refreshPasteToolbar()
-        for _ in 0..<200 where owner.pasteToolbar == nil {
+        for _ in 0..<200 where owner.pastePreviewView == nil {
             try? await Task.sleep(for: .milliseconds(5))
         }
         return owner
     }
+}
+
+private nonisolated struct PresentationTextReader: ClipboardPreviewReading {
+    func read() -> ClipboardPreviewResult { .text(full: "test", summary: "test", isLink: false) }
 }

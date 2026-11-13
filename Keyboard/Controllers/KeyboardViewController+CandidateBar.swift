@@ -60,6 +60,10 @@ extension KeyboardViewController {
 
     /// Idle trailing control dismisses the keyboard; expandable content still expands.
     @objc func handleCandidateBarTrailingButton() {
+        if pasteSession.preview == .reading {
+            pasteSession.discardPreview()
+            refreshPasteToolbar()
+        }
         guard !isKeyboardHeightAdjusting else { return }
         guard !shouldBlockT9RecoveryPresentation else { return }
         let canExpand = presentedCandidates.contains { $0.kind.expandsCandidateBarPanel }
@@ -364,42 +368,59 @@ extension KeyboardViewController {
             if !pasteToolbarSuspended || !pasteSession.inquiryOpen || !cachedPasteToolbarEnabled || !hasFullAccess {
                 pasteSession.discardPreview()
             }
-            (pasteToolbar?.superview as? CandidateBarView)?.clearPasteContent()
             (pastePreviewView?.superview as? CandidateBarView)?.clearPasteContent()
-            pasteToolbar = nil
             pastePreviewView = nil
         } else if let bar {
             pasteSession.startPreviewIfNeeded()
             switch pasteSession.preview {
-            case .notRead, .reading, .hidden:
-                (pasteToolbar?.superview as? CandidateBarView)?.clearPasteContent()
+            case .notRead, .reading, .unavailable:
                 (pastePreviewView?.superview as? CandidateBarView)?.clearPasteContent()
-                pasteToolbar = nil
                 pastePreviewView = nil
-            case .unavailable:
-                installSystemPaste(on: bar)
             case .ready(let result):
                 switch result {
                 case .unavailable, .denied:
-                    installSystemPaste(on: bar)
+                    bar.clearPasteContent()
+                    pastePreviewView = nil
                 case .text(_, let summary, let isLink), .oversized(let summary, _, let isLink):
                     if pastePreviewView?.superview !== bar {
+                        if pasteSession.previewWasShown {
+                            pasteSession.discardPreview()
+                            bar.clearPasteContent()
+                            pastePreviewView = nil
+                            break
+                        }
                         let preview = PastePreviewView(summary: summary, isLink: isLink)
-                        if preview.fitsCandidateBar {
+                        // Inherit the bar's current dynamic type before the initial fit check.
+                        preview.isHidden = true
+                        preview.accessibilityElementsHidden = true
+                        bar.addSubview(preview)
+                        bar.updateTraitsIfNeeded()
+                        preview.updateTraitsIfNeeded()
+                        let titleFont = UIFontMetrics(forTextStyle: .body).scaledFont(
+                            for: .systemFont(ofSize: 15, weight: .semibold), compatibleWith: bar.traitCollection)
+                        let summaryFont = UIFontMetrics(forTextStyle: .caption1).scaledFont(
+                            for: .systemFont(ofSize: 12), compatibleWith: bar.traitCollection)
+                        let fitsInheritedTraits =
+                            titleFont.pointSize <= 18
+                            && titleFont.lineHeight + summaryFont.lineHeight <= 46
+                        if preview.fitsCandidateBar && fitsInheritedTraits {
+                            preview.isHidden = false
+                            preview.accessibilityElementsHidden = false
                             preview.onCannotFit = { [weak self, weak bar] in
                                 guard let self, let bar else { return }
                                 self.pasteSession.discardPreview()
-                                self.installSystemPaste(on: bar, accessibilityLabel: "粘贴，\(summary)")
+                                bar.clearPasteContent()
+                                self.pastePreviewView = nil
                             }
                             preview.addTarget(self, action: #selector(pastePreviewTapped), for: .touchUpInside)
-                            pasteToolbar?.removeFromSuperview()
-                            pasteToolbar = nil
                             pastePreviewView = preview
                             bar.setPasteContent(preview)
                             pasteSession.didInstallPreview()
                         } else {
+                            preview.removeFromSuperview()
                             pasteSession.discardPreview()
-                            installSystemPaste(on: bar, accessibilityLabel: "粘贴，\(summary)")
+                            bar.clearPasteContent()
+                            pastePreviewView = nil
                         }
                     }
                 }
@@ -407,20 +428,6 @@ extension KeyboardViewController {
         }
         let failure = pasteSession.pasteFailureVisible ? "无法粘贴纯文本" : nil
         bar?.setPasteFailureNotice(failure)
-    }
-
-    private func installSystemPaste(on bar: CandidateBarView, accessibilityLabel: String? = nil) {
-        if let toolbar = pasteToolbar, toolbar.superview === bar {
-            if let accessibilityLabel { toolbar.control.accessibilityLabel = accessibilityLabel }
-            return
-        }
-        pastePreviewView?.removeFromSuperview()
-        pastePreviewView = nil
-        let toolbar = PasteToolbarControl(session: pasteSession)
-        if let accessibilityLabel { toolbar.control.accessibilityLabel = accessibilityLabel }
-        pasteToolbar = toolbar
-        bar.setPasteContent(toolbar)
-        pasteSession.didInstallPreview()
     }
 
     @objc private func pastePreviewTapped() {

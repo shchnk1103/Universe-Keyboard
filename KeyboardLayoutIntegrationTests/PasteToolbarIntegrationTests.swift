@@ -9,7 +9,7 @@ import XCTest
 nonisolated final class PasteToolbarIntegrationTests: XCTestCase {
     @MainActor
     private func owner(
-        enabled: Bool = true, access: Bool = true, reader: any ClipboardPreviewReading = ImmediatePreviewReader()
+        enabled: Bool = true, access: Bool = true, reader: any ClipboardPreviewReading = PasteTestTextReader()
     ) async -> PasteOwner {
         let owner = PasteOwner()
         owner.access = access
@@ -28,8 +28,9 @@ nonisolated final class PasteToolbarIntegrationTests: XCTestCase {
         owner.installPasteInputObservation()
         owner.view.layoutIfNeeded()
         owner.rootStack.layoutIfNeeded()
+        owner.pasteSession.noteAppearance()
         owner.refreshPasteToolbar()
-        for _ in 0..<200 where enabled && access && owner.pasteToolbar == nil {
+        for _ in 0..<200 where enabled && access && owner.pastePreviewView == nil {
             try? await Task.sleep(for: .milliseconds(5))
         }
         return owner
@@ -42,13 +43,13 @@ nonisolated final class PasteToolbarIntegrationTests: XCTestCase {
         let disabled = await owner(enabled: false, reader: disabledReader)
         let noAccess = await owner(access: false, reader: noAccessReader)
         let enabled = await owner()
-        XCTAssertNil(disabled.pasteToolbar)
+        XCTAssertNil(disabled.pastePreviewView)
         XCTAssertNil(disabled.pastePreviewView)
         XCTAssertEqual(disabledReader.count, 0)
-        XCTAssertNil(noAccess.pasteToolbar)
+        XCTAssertNil(noAccess.pastePreviewView)
         XCTAssertNil(noAccess.pastePreviewView)
         XCTAssertEqual(noAccessReader.count, 0)
-        XCTAssertNotNil(enabled.pasteToolbar)
+        XCTAssertNotNil(enabled.pastePreviewView)
         XCTAssertEqual(KeyboardInputSettingsKey.pasteToolbarEnabled, "paste_toolbar_enabled")
         XCTAssertEqual(KeyboardInputSettingsKey.clipboardPreviewEnabled, "clipboard_preview_enabled")
     }
@@ -100,9 +101,12 @@ nonisolated final class PasteToolbarIntegrationTests: XCTestCase {
             for page in [KeyboardPage.letters, .numbers, .symbols, .emoji] {
                 sut.controller.state.currentPage = page
                 sut.reloadKeyboard()
+                sut.pasteSession.noteAppearance()
+                sut.refreshPasteToolbar()
+                for _ in 0..<100 where sut.pastePreviewView == nil { try await Task.sleep(for: .milliseconds(5)) }
                 sut.view.layoutIfNeeded()
                 sut.rootStack.layoutIfNeeded()
-                let toolbar = try XCTUnwrap(sut.pasteToolbar)
+                let toolbar = try XCTUnwrap(sut.pastePreviewView)
                 let bar = try XCTUnwrap(sut.candidateBar as? CandidateBarView)
                 XCTAssertEqual(bar.bounds.height, 46)
                 XCTAssertEqual(toolbar.frame.height, 46)
@@ -163,7 +167,7 @@ nonisolated final class PasteToolbarIntegrationTests: XCTestCase {
         let first = try XCTUnwrap(sut.pasteSession.begin())
         sut.pasteSession.complete("乙", operationID: first)
         XCTAssertEqual(sut.pasteSession.presentation, .consumedByPaste)
-        XCTAssertNil(sut.pasteToolbar)
+        XCTAssertNil(sut.pastePreviewView)
         XCTAssertNil(sut.pasteSession.begin())
         sut.handleKeyboardDidAppear()
         sut.controller.textClient = client
@@ -193,7 +197,7 @@ nonisolated final class PasteToolbarIntegrationTests: XCTestCase {
         let id = try XCTUnwrap(sut.pasteSession.begin())
         sut.controller.state.currentComposition = "ni"
         sut.syncUI(with: [])
-        XCTAssertNil(sut.pasteToolbar)
+        XCTAssertNil(sut.pastePreviewView)
         sut.pasteSession.complete("late while composing", operationID: id)
         XCTAssertEqual(sut.controller.state.currentComposition, "ni")
         XCTAssertTrue(client.inserted.isEmpty)
@@ -267,15 +271,15 @@ nonisolated final class PasteToolbarIntegrationTests: XCTestCase {
     func testExpansionPathAndPendingRemoveControl() async {
         let sut = await owner()
         sut.isPinyinPathExpanded = true
-        XCTAssertNil(sut.pasteToolbar)
+        XCTAssertNil(sut.pastePreviewView)
         sut.isPinyinPathExpanded = false
-        XCTAssertNotNil(sut.pasteToolbar)
+        XCTAssertNil(sut.pastePreviewView, "eligibility loss must not resurrect a read")
         sut.isCandidateExpanded = true
-        XCTAssertNil(sut.pasteToolbar)
+        XCTAssertNil(sut.pastePreviewView)
         sut.isCandidateExpanded = false
         sut.controller.state.insertedPreeditCount = 1
         sut.refreshPasteToolbar()
-        XCTAssertNil(sut.pasteToolbar)
+        XCTAssertNil(sut.pastePreviewView)
     }
 
     @MainActor
@@ -290,19 +294,9 @@ nonisolated final class PasteToolbarIntegrationTests: XCTestCase {
         XCTAssertTrue(failure.isHidden)
         bar.setInputRecoveryNotice(nil)
         sut.candidateExpandedPanel = UIView()
-        XCTAssertNil(sut.pasteToolbar)
+        XCTAssertNil(sut.pastePreviewView)
         sut.candidateExpandedPanel = nil
-        XCTAssertNotNil(sut.pasteToolbar)
-    }
-
-    @MainActor
-    func testUnsuccessfulProviderShowsFailureWithoutInsertion() async throws {
-        let sut = await owner()
-        let client = PasteClient()
-        sut.controller.textClient = client
-        try XCTUnwrap(sut.pasteToolbar?.receiver).paste(itemProviders: [])
-        XCTAssertTrue(sut.pasteSession.pasteFailureVisible)
-        XCTAssertTrue(client.inserted.isEmpty)
+        XCTAssertNil(sut.pastePreviewView, "closing a panel must not resurrect a read")
     }
 
     @MainActor
@@ -318,46 +312,6 @@ nonisolated final class PasteToolbarIntegrationTests: XCTestCase {
         XCTAssertEqual(defaults.dictionaryRepresentation() as NSDictionary, before as NSDictionary)
     }
 
-    @MainActor
-    func testBackgroundProviderCompletionAndReleasedReceiver() async throws {
-        let sut = await owner()
-        let client = PasteClient()
-        sut.controller.textClient = client
-        let gate = PasteProviderGate()
-        let provider = NSItemProvider()
-        provider.registerObject(ofClass: NSString.self, visibility: .all) { completion in
-            Task { await gate.install(completion) }
-            return nil
-        }
-        let receiver = try XCTUnwrap(sut.pasteToolbar?.receiver)
-        receiver.paste(itemProviders: [provider])
-        for _ in 0..<100 {
-            if await gate.hasPending { break }
-            try await Task.sleep(for: .milliseconds(10))
-        }
-        let pending = await gate.hasPending
-        XCTAssertTrue(pending)
-        await gate.finish("background")
-        for _ in 0..<100 where client.inserted.isEmpty {
-            try await Task.sleep(for: .milliseconds(10))
-        }
-        XCTAssertEqual(client.inserted, ["background"])
-        XCTAssertEqual(sut.pasteSession.state, .idle)
-        weak var released: RetainedPasteReceiver?
-        do {
-            let transient = RetainedPasteReceiver(session: sut.pasteSession)
-            released = transient
-            transient.paste(itemProviders: [provider])
-        }
-        XCTAssertNil(released)
-        for _ in 0..<100 {
-            if await gate.hasPending { break }
-            try await Task.sleep(for: .milliseconds(10))
-        }
-        await gate.finish("released result")
-        try await Task.sleep(for: .milliseconds(50))
-        XCTAssertEqual(client.inserted, ["background"])
-    }
 }
 
 @MainActor
@@ -444,4 +398,8 @@ nonisolated final class PasteMemoryDefaults: UserDefaults {
         defer { lock.unlock() }
         return values
     }
+}
+
+private nonisolated struct PasteTestTextReader: ClipboardPreviewReading {
+    func read() -> ClipboardPreviewResult { .text(full: "test", summary: "test", isLink: false) }
 }

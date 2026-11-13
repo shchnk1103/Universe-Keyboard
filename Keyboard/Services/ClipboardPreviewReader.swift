@@ -11,6 +11,11 @@ nonisolated enum ClipboardPreviewResult: Sendable, Equatable {
 
 nonisolated protocol ClipboardPreviewReading: Sendable {
     func read() -> ClipboardPreviewResult
+    func changeCount() -> Int?
+}
+
+extension ClipboardPreviewReading {
+    nonisolated func changeCount() -> Int? { nil }
 }
 
 /// The only keyboard source allowed to access the system pasteboard.
@@ -19,6 +24,8 @@ nonisolated struct ClipboardPreviewReader: ClipboardPreviewReading {
         guard let text = UIPasteboard.general.string else { return .denied }
         return ClipboardPreviewFormatter.makeResult(text)
     }
+
+    func changeCount() -> Int? { UIPasteboard.general.changeCount }
 }
 
 nonisolated enum ClipboardPreviewFormatter {
@@ -97,93 +104,14 @@ nonisolated enum ClipboardPreviewFormatter {
     }
 }
 
-/// Production stays false until S13–S17 pass and a later change turns this on.
-/// Tests inject `PasteToolbarSession.emptyDetectionEnabled` instead of editing it.
-nonisolated enum ClipboardEmptyDetection {
-    static let emptyDetectionProbesPassed = false
-}
-
-nonisolated struct ClipboardCountSample: Sendable, Equatable {
-    var itemCount: Int
-    var changeCountBefore: Int
-    var changeCountAfter: Int
-}
-
-/// Counts and versions only. Implementations must not read string, items, or type payloads.
-nonisolated protocol ClipboardMetadataReading: Sendable {
-    func readCounts() -> ClipboardCountSample
-    func readChangeCount() -> Int
-}
-
-nonisolated struct SystemClipboardMetadataReader: ClipboardMetadataReading {
-    func readCounts() -> ClipboardCountSample {
-        let board = UIPasteboard.general
-        let before = board.changeCount
-        let itemCount = board.numberOfItems
-        let after = board.changeCount
-        return ClipboardCountSample(itemCount: itemCount, changeCountBefore: before, changeCountAfter: after)
-    }
-
-    func readChangeCount() -> Int { UIPasteboard.general.changeCount }
-}
-
-nonisolated enum PasteDisplayDecision: Equatable { case wait, omit, fallback, preview, hidden }
-
-nonisolated struct PasteDisplayFacts: Equatable {
-    enum Content: Equatable { case pending, denied, blank, text, discarded, timedOut }
-    enum Metadata: Equatable {
-        case notRequested, pending, empty(version: Int), nonempty, unavailable, timedOut
-    }
-    enum FinalVersion: Equatable { case notNeeded, pending, equal, mismatch, incomparable, timedOut }
-    var probesPassed = false
-    var enabled = true
-    var fullAccess = true
-    var generationCurrent = true
-    var suspended = false
-    var eligible = true
-    var armed = true
-    var content: Content = .pending
-    var metadata: Metadata = .notRequested
-    var finalVersion: FinalVersion = .notNeeded
-}
-
-/// P1-A rules 0→6. Rule 7 is enforced by the session once a decision is sealed.
-nonisolated enum PasteDisplayPlanner {
-    static func decide(_ facts: PasteDisplayFacts) -> PasteDisplayDecision {
-        if !facts.enabled || !facts.fullAccess || !facts.generationCurrent || facts.suspended || !facts.eligible
-            || !facts.armed
-        {
-            return .omit
-        }
-        switch facts.content {
-        case .denied, .discarded, .timedOut: return .fallback
-        case .pending: return .wait
-        case .blank, .text: break
-        }
-        if case .empty = facts.metadata {
-            switch facts.finalVersion {
-            case .mismatch, .incomparable, .timedOut: return .fallback
-            case .pending, .notNeeded: return .wait
-            case .equal: break
-            }
-        }
-        switch facts.metadata {
-        case .timedOut: return .fallback
-        case .pending: return .wait
-        case .notRequested, .nonempty, .unavailable, .empty: break
-        }
-        if case .text = facts.content { return .preview }
-        if facts.probesPassed, case .empty = facts.metadata, case .equal = facts.finalVersion { return .hidden }
-        return .fallback
-    }
-}
-
 /// Serial worker with a revocable gate checked immediately before the getter.
 nonisolated final class ClipboardPreviewGate: @unchecked Sendable {
     private let lock = NSLock()
     private var active = true
     private var started = false
+    private var completedAt: UInt64?
     private let deadline: UInt64
+    private let now: @Sendable () -> UInt64
     private var checksSnapshot = false
     private var expectedToken: UInt64 = 0
     private var expectedGeneration: UInt64 = 0
@@ -193,7 +121,10 @@ nonisolated final class ClipboardPreviewGate: @unchecked Sendable {
     private var liveGeneration: UInt64 = 0
     private var liveToken: UInt64 = 0
 
-    init(deadline: UInt64) { self.deadline = deadline }
+    init(deadline: UInt64, now: @escaping @Sendable () -> UInt64 = { DispatchTime.now().uptimeNanoseconds }) {
+        self.deadline = deadline
+        self.now = now
+    }
 
     func adopt(token: UInt64, generation: UInt64, enabled: Bool, fullAccess: Bool, eligible: Bool) {
         lock.lock()
@@ -221,7 +152,7 @@ nonisolated final class ClipboardPreviewGate: @unchecked Sendable {
     func begin() -> Bool {
         lock.lock()
         defer { lock.unlock() }
-        guard active, !started, DispatchTime.now().uptimeNanoseconds < deadline else { return false }
+        guard active, !started, now() < deadline else { return false }
         if checksSnapshot {
             guard snapshotMatches else { return false }
         }
@@ -229,13 +160,26 @@ nonisolated final class ClipboardPreviewGate: @unchecked Sendable {
         return true
     }
 
-    /// Metadata may sample twice (counts, then the final change count). Each call rechecks the lock.
-    func authorizeMetadata() -> Bool {
+    func mayContinue() -> Bool {
         lock.lock()
         defer { lock.unlock() }
-        guard active, DispatchTime.now().uptimeNanoseconds < deadline, checksSnapshot, snapshotMatches else {
-            return false
-        }
+        return active && now() < deadline && (!checksSnapshot || snapshotMatches)
+    }
+
+    func finish(at now: UInt64) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        guard active, started, now < deadline else { active = false; return false }
+        completedAt = now
+        return true
+    }
+
+    func expireNormalIfPending(deadline: UInt64) -> Bool {
+        lock.lock()
+        defer { lock.unlock() }
+        guard active else { return false }
+        if let completedAt, completedAt <= deadline { return false }
+        active = false
         return true
     }
 
@@ -255,6 +199,26 @@ nonisolated final class ClipboardPreviewWorker: Sendable {
     static let shared = ClipboardPreviewWorker()
     private let queue = DispatchQueue(label: "keyboard.clipboard.preview")
 
+    func submitVersioned(
+        reader: any ClipboardPreviewReading,
+        gate: ClipboardPreviewGate,
+        sampleVersions: Bool,
+        now: @escaping @Sendable () -> UInt64 = { DispatchTime.now().uptimeNanoseconds },
+        completion: @escaping @Sendable (ClipboardPreviewResult, Int?, Int?, UInt64) -> Void
+    ) {
+        queue.async {
+            guard gate.begin() else { return }
+            let before = sampleVersions ? reader.changeCount() : nil
+            guard gate.mayContinue() else { return }
+            let result = reader.read()
+            guard gate.mayContinue() else { return }
+            let after = sampleVersions ? reader.changeCount() : nil
+            let returned = now()
+            guard gate.finish(at: returned) else { return }
+            completion(result, before, after, returned)
+        }
+    }
+
     func submit(
         reader: any ClipboardPreviewReading,
         gate: ClipboardPreviewGate,
@@ -264,34 +228,6 @@ nonisolated final class ClipboardPreviewWorker: Sendable {
             guard gate.begin() else { return }
             let result = reader.read()
             completion(result)
-        }
-    }
-}
-
-/// Separate serial queue so a blocked content read cannot delay the count check, or the reverse.
-nonisolated final class ClipboardMetadataWorker: Sendable {
-    static let shared = ClipboardMetadataWorker()
-    private let queue = DispatchQueue(label: "keyboard.clipboard.metadata")
-
-    func submitCounts(
-        reader: any ClipboardMetadataReading,
-        gate: ClipboardPreviewGate,
-        completion: @escaping @Sendable (ClipboardCountSample) -> Void
-    ) {
-        queue.async {
-            guard gate.authorizeMetadata() else { return }
-            completion(reader.readCounts())
-        }
-    }
-
-    func submitChangeCount(
-        reader: any ClipboardMetadataReading,
-        gate: ClipboardPreviewGate,
-        completion: @escaping @Sendable (Int) -> Void
-    ) {
-        queue.async {
-            guard gate.authorizeMetadata() else { return }
-            completion(reader.readChangeCount())
         }
     }
 }
