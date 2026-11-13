@@ -64,7 +64,7 @@ python3 -B scripts/kos/freeze.py /Users/me/.kos-work/Universe-Keyboard/T-001/ins
   - “不联网”与联网预批准并存（“联网只限……只读 `gh`”这种限定句不算冲突），或 HEAD 与 GET 混用；
   - 提到构建并在写入范围句限定“只写”（去掉行首空白后以“只写”开头，因此包含“只写 scratch”和“只写：scratch”；行首星号或列表符开头的“只写下面这些”不算；或句中同时含“写入”与“只写”；含“最终消息只写”的句子除外。`pgrep -x xcodebuild` 句不计为构建），却没给构建输出位置（`--readonly` 整包不报；某一句同时写了构建工具和“不运行”或“不启动”时，这一句不计入）；
   - 引用或采纳的报告（任意以 `/` 开头的绝对路径）没有哈希。
-- **`--requires-commit`：** 还要有 `Cowork 3P <cowork-3p@localhost>`。包里有 `.swift` 路径时才要求 `lint --strict`（只有 `.swift-format` 或单独的 `.swift` 字样不算路径）。还要有 `docs/assignments/<名>.md`，或同一句在“无 Assignment”四字之后写了非空理由；只写 `docs/ASSIGNMENT_POLICY.md` 不算。
+- **`--requires-commit`：** 还要有 `Cowork 3P <cowork-3p@localhost>`。包里有 `.swift` 路径时才要求 `lint --strict`（只有 `.swift-format` 或单独的 `.swift` 字样不算路径）。还要有 `docs/assignments/<名>.md`，或同一句在“无 Assignment”四字之后写了非空理由；只写 `docs/ASSIGNMENT_POLICY.md` 不算。还要有“滚动交接报告”条款字样。
 - **构建输出与“自行跳过”：** 非只读、且出现 `xcodebuild` / `swift test` / `模拟器`、又没有“不运行……构建与测试”或“不启动……设备”时，要求 `derivedDataPath`（或 `scratch-path` / `DerivedData`）和“自行跳过”。`--readonly` 不要求这两项。
 - **输出：** 输出文件已存在就拒绝覆盖。成功时写出冻结包，打印其 SHA-256 和可直接粘贴的派发块。
 - 固定条款库见 [`docs/kos/pm-packet-clauses.md`](../../docs/kos/pm-packet-clauses.md)，PM 工作规则见 [`docs/kos/pm-playbook.md`](../../docs/kos/pm-playbook.md)。
@@ -84,6 +84,7 @@ python3 -B scripts/kos/check_report.py /Users/me/.kos-work/Universe-Keyboard/T-0
   - 给了 `--worktree` 时：HEAD、tree、status，以及自 `--base` 起每个提交的身份；
   - skip 行；
   - “观察与改进意见”原文。
+  - 报告第一行以 `IN-PROGRESS` 开头时，`STATUS:` 后多一行 `INTERRUPTED-OR-RUNNING`；给了 `--worktree` 时再列出报告修改时间之后的提交与 `scratch/` 下更新的 `.log`。
 - **找不到报告时：** 列出 `reports/` 最近修改的文件。
 - 结果“全部一致”只说明引用的文件对得上，不说明报告内容正确。
 

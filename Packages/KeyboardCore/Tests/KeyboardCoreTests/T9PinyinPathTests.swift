@@ -2709,6 +2709,57 @@ final class T9PinyinPathTests: XCTestCase {
         }
     }
 
+    func testConsecutiveSelectPinyinKeepsCompactOrderAcrossTwoLoops() {
+        let engine = makeT9Engine()
+        let controller = makeController(engine: engine)
+        let client = FakeTextInputClient()
+        controller.textClient = client
+        for digit in "6464" {
+            _ = controller.handle(.insertKey(String(digit)))
+        }
+
+        let original = controller.state.t9PinyinPathState.compactPaths
+        let originalLabels = original.map(\.displayText)
+        XCTAssertTrue(Set(originalLabels).isSuperset(of: ["ming", "ning", "min", "nin", "mi", "ni", "o", "m", "n"]))
+        XCTAssertGreaterThan(original.count, 1)
+        XCTAssertNil(controller.state.t9PinyinPathState.selectedPath)
+        for path in original {
+            engine.dictionary[path.replacementRawInput] = ["词\(path.displayText)"]
+            engine.comments[path.replacementRawInput] = [path.displayText]
+        }
+
+        for step in 0..<(original.count * 2) {
+            let expected = originalLabels[step % original.count]
+            _ = controller.handle(.cycleT9PinyinPath)
+            let labels = controller.state.t9PinyinPathState.compactPaths.map(\.displayText)
+            XCTAssertEqual(
+                labels,
+                originalLabels,
+                "step \(step) reordered compact paths while selecting \(expected): \(labels)"
+            )
+            XCTAssertEqual(
+                controller.state.t9PinyinPathState.selectedPath?.displayText,
+                expected,
+                "step \(step) selected \(controller.state.t9PinyinPathState.selectedPath?.displayText ?? "nil")"
+            )
+            XCTAssertEqual(
+                controller.state.lastRimeOutput?.candidates.map(\.text),
+                ["词\(expected)"],
+                "step \(step) candidates did not follow \(expected)"
+            )
+            XCTAssertNil(controller.state.lastRimeOutput?.committedText)
+            XCTAssertTrue(controller.state.t9PinyinPathState.confirmedSegmentValues.isEmpty)
+            XCTAssertEqual(controller.state.t9PinyinPathState.focusedSegmentIndex, 0)
+            XCTAssertEqual(client.text, client.markedText, "step \(step) committed text beyond the preedit")
+            let markedLetters = client.markedText.filter { $0.isASCII && $0.isLetter }
+            XCTAssertEqual(
+                markedLetters,
+                expected,
+                "step \(step) showed \(markedLetters) instead of \(expected)"
+            )
+        }
+    }
+
     // MARK: - Helpers
 
     private func makeT9Engine() -> FakeRimeEngine {

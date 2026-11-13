@@ -40,6 +40,21 @@ def main():
     text = open(a.report, encoding="utf-8").read()
     lines = text.splitlines()
     print("STATUS:", lines[0] if lines else "")
+    if lines and lines[0].startswith("IN-PROGRESS"):
+        print("INTERRUPTED-OR-RUNNING: report never finalised; use last update as start")
+        if a.worktree:
+            modified = os.path.getmtime(a.report)
+            print("commits after report:")
+            print(git(a.worktree, "log", f"--since=@{int(modified)}", "--format=%h %s") or "(none)")
+            print("logs after report:")
+            scratch = os.path.join(task, "scratch")
+            newer = []
+            for root, _, files in os.walk(scratch):
+                for name in files:
+                    path = os.path.join(root, name)
+                    if name.endswith(".log") and os.path.getmtime(path) > modified:
+                        newer.append(os.path.relpath(path, scratch))
+            print("\n".join(sorted(newer)) or "(none)")
     print("IDENTITY:", lines[1] if len(lines) > 1 else "")
     print("REPORT SHA-256:", sha(a.report))
     head = git(a.worktree, "rev-parse", "HEAD") if a.worktree else None
