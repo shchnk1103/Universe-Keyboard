@@ -891,6 +891,24 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
         XCTAssertEqual(reader.count, 1)
     }
 
+    @MainActor
+    func testQueuedCancelBeforeGetterNeverReads() async throws {
+        let blocker = BlockingPreviewReader()
+        ClipboardPreviewWorker.shared.submit(reader: blocker, gate: ClipboardPreviewGate(deadline: UInt64.max)) { _ in }
+        XCTAssertEqual(blocker.started.wait(timeout: .now() + 2), .success)
+        let reader = CountingPreviewReader()
+        let session = PasteToolbarSession()
+        session.isEligible = { true }
+        session.previewReader = reader
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        session.discardPreview()
+        blocker.release.signal()
+        try await Task.sleep(for: .milliseconds(50))
+        XCTAssertEqual(reader.count, 0)
+        XCTAssertEqual(session.preview, .unavailable)
+    }
+
     func testT76T77QueuedDeadlineAndCancellation() {
         for expires in [true, false] {
             let clock = ProbeTestClock(1_000)

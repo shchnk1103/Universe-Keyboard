@@ -444,6 +444,9 @@ extension KeyboardViewController {
     }
 
     func observePasteDocumentIdentity(_ observation: KeyboardDocumentIdentityTracker.Observation) {
-        if observation == .changed || observation == .unavailable { pasteSession.invalidate() }
+        if observation == .changed || observation == .unavailable {
+            pasteSession.invalidate()
+            if pasteSession.preview == .reading { pasteSession.discardPreview() }
+        }
     }
 }
