@@ -38,6 +38,9 @@ public struct T9PinyinPathState: Equatable, Sendable {
     public var lockedLetterPrefix: String?
     /// Provisional (unselected) first Path ID for host display.
     public var provisionalPathID: String?
+    /// Display order latched by consecutive 选拼音 taps. Later rebuilds must
+    /// not move the selected label to the front while this is set.
+    var selectPinyinCycleOrder: [String]? = nil
 
     public init(
         compactPaths: [T9PinyinPath] = [],
@@ -55,7 +58,8 @@ public struct T9PinyinPathState: Equatable, Sendable {
         focusedSegmentIndex: Int? = nil,
         confirmedSegmentValues: [String] = [],
         lockedLetterPrefix: String? = nil,
-        provisionalPathID: String? = nil
+        provisionalPathID: String? = nil,
+        selectPinyinCycleOrder: [String]? = nil
     ) {
         self.compactPaths = compactPaths
         self.selectedPath = selectedPath
@@ -73,6 +77,7 @@ public struct T9PinyinPathState: Equatable, Sendable {
         self.confirmedSegmentValues = confirmedSegmentValues
         self.lockedLetterPrefix = lockedLetterPrefix
         self.provisionalPathID = provisionalPathID
+        self.selectPinyinCycleOrder = selectPinyinCycleOrder
     }
 
     public static let empty = T9PinyinPathState()
@@ -302,8 +307,8 @@ public enum T9PinyinPathExtractor {
     /// use compatible paths issued from live RIME comments.
     public static func deterministicSingleDigitPaths(rawInput: String?) -> [T9PinyinPath] {
         guard let rawInput, rawInput.count == 1,
-              let digit = rawInput.first,
-              let letters = t9Groups[digit]
+            let digit = rawInput.first,
+            let letters = t9Groups[digit]
         else { return [] }
 
         return letters.map { letter in
@@ -325,7 +330,7 @@ public enum T9PinyinPathExtractor {
     ) -> [String] {
         let safeLimit = max(0, limit)
         guard safeLimit > 0, digits.count >= 2,
-              digits.allSatisfy({ !keyLetters(forDigit: $0).isEmpty })
+            digits.allSatisfy({ !keyLetters(forDigit: $0).isEmpty })
         else { return [] }
 
         var frontier = [""]
@@ -383,8 +388,8 @@ public enum T9PinyinPathExtractor {
         fromMixedRaw raw: String
     ) -> (confirmed: [String], trailingDigits: String)? {
         guard let boundary = raw.lastIndex(of: "'"),
-              boundary > raw.startIndex,
-              raw.index(after: boundary) < raw.endIndex
+            boundary > raw.startIndex,
+            raw.index(after: boundary) < raw.endIndex
         else { return nil }
 
         let trailing = String(raw[raw.index(after: boundary)...])
@@ -393,13 +398,14 @@ public enum T9PinyinPathExtractor {
         }
 
         let prefix = String(raw[..<boundary])
-        let segments = prefix
+        let segments =
+            prefix
             .split(separator: "'", omittingEmptySubsequences: true)
             .map(String.init)
         guard !segments.isEmpty,
-              segments.allSatisfy({
-                  !$0.isEmpty && $0.unicodeScalars.allSatisfy(isASCIILetter)
-              })
+            segments.allSatisfy({
+                !$0.isEmpty && $0.unicodeScalars.allSatisfy(isASCIILetter)
+            })
         else { return nil }
 
         return (segments.map { $0.lowercased() }, trailing)
@@ -444,15 +450,15 @@ public enum T9PinyinPathExtractor {
         let resultDigits = pureDigitRaw(resultRaw)
 
         if !resultDigits.isEmpty,
-           !previousDigits.isEmpty,
-           previousDigits.hasSuffix(resultDigits),
-           resultDigits.count < previousDigits.count
+            !previousDigits.isEmpty,
+            previousDigits.hasSuffix(resultDigits),
+            resultDigits.count < previousDigits.count
         {
             return resultDigits
         }
 
         if !previousDigits.isEmpty,
-           resultDigits == previousDigits || resultDigits.isEmpty
+            resultDigits == previousDigits || resultDigits.isEmpty
         {
             let remainingLetters = asciiLetterCount(in: remainingDisplayPreedit)
             if remainingLetters > 0, remainingLetters <= previousDigits.count {
@@ -475,7 +481,7 @@ public enum T9PinyinPathExtractor {
     ) -> String? {
         let syllable = displaySyllable.lowercased()
         guard !syllable.isEmpty,
-              syllable.unicodeScalars.allSatisfy(isASCIILetter)
+            syllable.unicodeScalars.allSatisfy(isASCIILetter)
         else { return nil }
 
         let confirmedLetters = letterCount(ofSyllables: confirmedSyllables)
@@ -534,17 +540,21 @@ public enum T9PinyinPathExtractor {
                 .split(separator: "'", omittingEmptySubsequences: true)
                 .map(String.init)
             guard segments.indices.contains(segmentIndex) else { continue }
-            guard matchesConfirmedPrefix(
-                segments.map { $0.lowercased() },
-                confirmedSyllables: confirmedSyllables
-            ) else { continue }
+            guard
+                matchesConfirmedPrefix(
+                    segments.map { $0.lowercased() },
+                    confirmedSyllables: confirmedSyllables
+                )
+            else { continue }
             let syllable = segments[segmentIndex]
             guard seen.insert(syllable).inserted else { continue }
-            guard let replacement = replacementForProgressiveSyllable(
-                displaySyllable: syllable,
-                confirmedSyllables: confirmedSyllables,
-                sourceDigits: sourceDigits
-            ) else { continue }
+            guard
+                let replacement = replacementForProgressiveSyllable(
+                    displaySyllable: syllable,
+                    confirmedSyllables: confirmedSyllables,
+                    sourceDigits: sourceDigits
+                )
+            else { continue }
 
             ordered.append(
                 T9PinyinPath(displayText: syllable, replacementRawInput: replacement)
@@ -557,8 +567,8 @@ public enum T9PinyinPathExtractor {
     /// First physical key-group letter choices for progressive whole composition.
     public static func firstKeyGroupPaths(sourceDigits: String) -> [T9PinyinPath] {
         guard let digit = sourceDigits.first,
-              sourceDigits.count > 1,
-              sourceDigits.allSatisfy({ $0.isASCII && $0.isNumber })
+            sourceDigits.count > 1,
+            sourceDigits.allSatisfy({ $0.isASCII && $0.isNumber })
         else { return [] }
         let pending = String(sourceDigits.dropFirst())
         return keyLetters(forDigit: digit).map { letter in
@@ -584,10 +594,12 @@ public enum T9PinyinPathExtractor {
                 .split(separator: "'", omittingEmptySubsequences: true)
                 .map { $0.lowercased() }
             guard segments.indices.contains(segmentIndex) else { return false }
-            guard matchesConfirmedPrefix(
-                segments,
-                confirmedSyllables: confirmedSyllables
-            ) else { return false }
+            guard
+                matchesConfirmedPrefix(
+                    segments,
+                    confirmedSyllables: confirmedSyllables
+                )
+            else { return false }
             return segments[segmentIndex].hasPrefix(expected)
         }
     }
@@ -608,10 +620,12 @@ public enum T9PinyinPathExtractor {
                 .split(separator: "'", omittingEmptySubsequences: true)
                 .map { $0.lowercased() }
             guard segments.indices.contains(segmentIndex) else { return false }
-            guard matchesConfirmedPrefix(
-                segments,
-                confirmedSyllables: confirmedSyllables
-            ) else { return false }
+            guard
+                matchesConfirmedPrefix(
+                    segments,
+                    confirmedSyllables: confirmedSyllables
+                )
+            else { return false }
             return segments[segmentIndex] == expected
         }
     }
@@ -631,10 +645,10 @@ public enum T9PinyinPathExtractor {
                 .split(separator: "'", omittingEmptySubsequences: true)
                 .map { $0.lowercased() }
             guard segments.count >= expected.count,
-                  matchesConfirmedPrefix(
+                matchesConfirmedPrefix(
                     segments,
                     confirmedSyllables: expected
-                  )
+                )
             else { continue }
             return path
         }
@@ -686,11 +700,15 @@ public enum T9PinyinPathExtractor {
         // (refined letter prefix + continued digit, e.g. path `ni` on raw `ni4`).
         // Pure digit compositions require a full-length path (complete sequence).
         let remaining = slots[pathLetters.count...]
-        let rawHasLetters = slots.contains { if case .letter = $0 { return true }; return false }
+        let rawHasLetters = slots.contains {
+            if case .letter = $0 { return true }; return false
+        }
         if !rawHasLetters {
             return false
         }
-        return remaining.allSatisfy { if case .digit = $0 { return true }; return false }
+        return remaining.allSatisfy {
+            if case .digit = $0 { return true }; return false
+        }
     }
 
     /// Build ordered unique paths from candidates (first-seen wins).
