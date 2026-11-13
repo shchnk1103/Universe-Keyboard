@@ -844,6 +844,53 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
         }
     }
 
+    @MainActor
+    func testT76QueuedSessionPastTenSecondsNeverReadsOrRequeues() async throws {
+        let blocker = BlockingPreviewReader()
+        ClipboardPreviewWorker.shared.submit(reader: blocker, gate: ClipboardPreviewGate(deadline: UInt64.max)) { _ in }
+        XCTAssertEqual(blocker.started.wait(timeout: .now() + 2), .success)
+        let clock = ProbeTestClock(1_000_000_000)
+        let reader = CountingPreviewReader()
+        let session = PasteToolbarSession()
+        session.monotonicNow = { clock.read() }
+        session.latePreviewEnabled = true
+        session.isEligible = { true }
+        session.previewReader = reader
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        clock.set(11_000_000_000)
+        blocker.release.signal()
+        try await Task.sleep(for: .milliseconds(50))
+        session.startPreviewIfNeeded()
+        try await Task.sleep(for: .milliseconds(20))
+        XCTAssertEqual(reader.count, 0)
+        if case .ready = session.preview { XCTFail("expired queued read displayed a preview") }
+        session.discardPreview()
+    }
+
+    @MainActor
+    func testT77QueuedSessionReleasedWithin500msDisplaysText() async throws {
+        let blocker = BlockingPreviewReader()
+        ClipboardPreviewWorker.shared.submit(reader: blocker, gate: ClipboardPreviewGate(deadline: UInt64.max)) { _ in }
+        XCTAssertEqual(blocker.started.wait(timeout: .now() + 2), .success)
+        let clock = ProbeTestClock(1_000_000_000)
+        let reader = VersionedTestReader(before: nil, after: nil)
+        let session = PasteToolbarSession()
+        session.monotonicNow = { clock.read() }
+        session.isEligible = { true }
+        session.previewReader = reader
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        clock.set(1_400_000_000)
+        reader.release.signal()
+        blocker.release.signal()
+        for _ in 0..<100 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(reader.count, 1)
+        XCTAssertEqual(session.preview, .ready(.text(full: "x", summary: "x", isLink: false)))
+        session.startPreviewIfNeeded()
+        XCTAssertEqual(reader.count, 1)
+    }
+
     func testT76T77QueuedDeadlineAndCancellation() {
         for expires in [true, false] {
             let clock = ProbeTestClock(1_000)
