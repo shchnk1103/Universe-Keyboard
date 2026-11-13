@@ -138,6 +138,8 @@ def lint_problems(text, requires_commit=False, readonly=False, identity="Cowork 
     problems = [name for name, pat in REQUIRED if not re.search(pat, text)]
     if requires_commit and identity not in text:
         problems.append("commit identity with email")
+    if requires_commit and "滚动交接报告" not in text:
+        problems.append("rolling handoff report clause")
     # Docs-only packages have no .swift path, so --requires-commit does not force swift-format.
     if requires_commit and has_swift_path(text) and "lint --strict" not in text:
         problems.append("swift-format lint gate")
