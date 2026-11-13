@@ -415,6 +415,7 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
         reader.release.signal()
     }
 
+    @MainActor
     private func pendingOwner(reader: any ClipboardPreviewReading) async -> PasteOwner {
         let owner = PasteOwner()
         let defaults = PasteMemoryDefaults()
