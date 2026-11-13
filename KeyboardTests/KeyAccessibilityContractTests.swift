@@ -81,9 +81,7 @@ final class KeyAccessibilityContractTests: XCTestCase {
                     XCTAssertFalse(source.contains(forbidden), "Forbidden reader dependency: \(forbidden)")
                 }
             }
-            if file.lastPathComponent != "PasteToolbarControl.swift" {
-                XCTAssertFalse(source.contains("UIPasteControl"), file.path)
-            }
+            XCTAssertFalse(source.contains("UIPasteControl"), file.path)
             if file.lastPathComponent != "UITextDocumentProxyAdapter.swift" {
                 XCTAssertFalse(source.contains("proxy.insertText("), file.path)
                 XCTAssertFalse(source.contains("textDocumentProxy.insertText("), file.path)
