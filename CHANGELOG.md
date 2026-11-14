@@ -1,3 +1,7 @@
+## 2026-11-14 — T9-PINYIN-CYCLE-009 诊断日志 Assignment
+
+- 登记 T9-PINYIN-CYCLE-009 Assignment（`Assignment Pending`）与 PORTFOLIO PF-070：用不含输入内容的 typed 日志事件 `t9.cycle_result`、`t9.delete_path` 取得真机证据，以定位 m/n 无法被选中等问题；隐私分类未定。
+
 ## 2026-11-14 — RELEASE-WORKFLOW-DOCS-001 发版流程文档
 
 - 发布清单新增「Release Tags And Xcode Cloud Workflows」一节。
