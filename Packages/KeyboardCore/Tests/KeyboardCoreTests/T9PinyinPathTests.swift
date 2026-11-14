@@ -2709,6 +2709,66 @@ final class T9PinyinPathTests: XCTestCase {
         }
     }
 
+    func testDeviceLikeSelectPinyinKeepsOriginalOrderAcrossTwoLoops() {
+        let engine = makeT9Engine()
+        let controller = makeController(engine: engine)
+        let client = FakeTextInputClient()
+        controller.textClient = client
+        for digit in "6464" {
+            _ = controller.handle(.insertKey(String(digit)))
+        }
+
+        let anchor = controller.state.t9ReversibleAutoAnchorState
+        XCTAssertNotEqual(
+            anchor.phase,
+            .rejected,
+            "auto anchor was rejected before the first select-pinyin tap"
+        )
+        let original = controller.state.t9PinyinPathState.compactPaths
+        let originalLabels = original.map(\.displayText)
+        XCTAssertEqual(
+            originalLabels,
+            ["ming", "ning", "min", "nin", "mi", "ni", "o", "m", "n"]
+        )
+        for path in original {
+            let syllable = path.displayText
+            engine.dictionary[path.replacementRawInput] = ["词\(syllable)"]
+            engine.comments[path.replacementRawInput] = [syllable]
+            engine.dictionary[syllable] = ["词\(syllable)"]
+            engine.comments[syllable] = [syllable]
+        }
+
+        for step in 0..<(original.count * 2) {
+            let expected = originalLabels[step % original.count]
+            _ = controller.handle(.cycleT9PinyinPath)
+            let state = controller.state.t9PinyinPathState
+            let labels = state.compactPaths.map(\.displayText)
+            XCTAssertEqual(labels, originalLabels, "step \(step) reordered to \(labels)")
+            XCTAssertEqual(state.selectedPath?.displayText, expected)
+            XCTAssertEqual(
+                controller.state.lastRimeOutput?.candidates.first?.comment,
+                expected
+            )
+            XCTAssertEqual(
+                controller.state.lastRimeOutput?.candidates.map(\.text),
+                ["词\(expected)"]
+            )
+            XCTAssertNil(controller.state.lastRimeOutput?.committedText)
+            XCTAssertTrue(state.confirmedSegmentValues.isEmpty)
+            XCTAssertEqual(state.focusedSegmentIndex, 0)
+            let marked = client.markedText.filter { $0.isASCII && $0.isLetter }
+            XCTAssertEqual(marked, expected)
+            XCTAssertEqual(client.text, client.markedText)
+            _ = controller.refreshT9PinyinPathState(forceNewProvenance: false)
+            let refreshed = controller.state.t9PinyinPathState.compactPaths.map(\.displayText)
+            XCTAssertEqual(
+                refreshed,
+                originalLabels,
+                "step \(step) post-publish refresh reordered to \(refreshed)"
+            )
+        }
+    }
+
     func testConsecutiveSelectPinyinKeepsCompactOrderAcrossTwoLoops() {
         let engine = makeT9Engine()
         let controller = makeController(engine: engine)

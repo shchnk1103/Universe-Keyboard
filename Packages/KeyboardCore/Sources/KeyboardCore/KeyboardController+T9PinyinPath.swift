@@ -118,8 +118,12 @@ extension KeyboardController {
             nextIndex = paths.startIndex
         }
         // 选拼音: first/next/wrap only — never confirm/advance a segment.
+        let cycleOrder =
+            state.t9PinyinPathState.selectPinyinCycleOrder
+            ?? paths.map(\.displayText)
         let effects = handleSelectT9PinyinPath(paths[nextIndex], autoAdvance: false)
         if !effects.isEmpty {
+            state.t9PinyinPathState.selectPinyinCycleOrder = cycleOrder
             state.t9ReversibleAutoAnchorState = T9ReversibleAutoAnchorState(
                 phase: .rejected
             )
@@ -161,6 +165,9 @@ extension KeyboardController {
         _ path: T9PinyinPath,
         autoAdvance: Bool
     ) -> KeyboardEffect {
+        if autoAdvance {
+            state.t9PinyinPathState.selectPinyinCycleOrder = nil
+        }
         guard usesT9InputSemantics,
             let engine = rimeEngine,
             let previous = state.lastRimeOutput,
@@ -435,6 +442,7 @@ extension KeyboardController {
         let previousConfirmed = state.t9PinyinPathState.confirmedSegmentValues
         let previousSelected = state.t9PinyinPathState.selectedPath
         let previousCompact = state.t9PinyinPathState.compactPaths
+        let selectPinyinCycleOrder = state.t9PinyinPathState.selectPinyinCycleOrder
         let previousRetained = state.t9PinyinPathState.retainedChoiceSourceRawInput
         let previousLockedPrefix = state.t9PinyinPathState.lockedLetterPrefix
         let normalizedRaw = T9PinyinPathExtractor.normalizeRawIdentity(raw)
@@ -679,6 +687,11 @@ extension KeyboardController {
             }
         }
 
+        let keptCycleOrder = reapplySelectPinyinCycleOrder(
+            selectPinyinCycleOrder,
+            to: &paths,
+            selectedPath: &selectedPath
+        )
         for path in paths {
             issued.insert(path.replacementRawInput)
         }
@@ -709,7 +722,8 @@ extension KeyboardController {
             focusedSegmentIndex: focusedSegmentIndex,
             confirmedSegmentValues: confirmedSegmentValues,
             lockedLetterPrefix: lockedLetterPrefix,
-            provisionalPathID: provisionalID
+            provisionalPathID: provisionalID,
+            selectPinyinCycleOrder: keptCycleOrder
         )
         if let preferredID = t9HistoricalProvisionalPathID(in: newState) {
             newState.provisionalPathID = preferredID
@@ -733,6 +747,33 @@ extension KeyboardController {
             || newState.provisionalPathID != state.t9PinyinPathState.provisionalPathID
         state.t9PinyinPathState = newState
         return changed
+    }
+
+    /// Keep the order latched by 选拼音 when a rebuild still has the same labels.
+    /// A different choice set drops the latch so later input can rank normally.
+    private func reapplySelectPinyinCycleOrder(
+        _ order: [String]?,
+        to paths: inout [T9PinyinPath],
+        selectedPath: inout T9PinyinPath?
+    ) -> [String]? {
+        guard let order, !order.isEmpty else { return nil }
+        var remaining = paths
+        var ordered: [T9PinyinPath] = []
+        for label in order {
+            guard let index = remaining.firstIndex(where: { $0.displayText == label }) else {
+                return nil
+            }
+            ordered.append(remaining.remove(at: index))
+        }
+        guard remaining.isEmpty else { return nil }
+        paths = ordered
+        if let selected = selectedPath {
+            selectedPath =
+                ordered.first {
+                    $0.displayText == selected.displayText && $0.kind == selected.kind
+                } ?? ordered.first { $0.displayText == selected.displayText }
+        }
+        return order
     }
 
     /// Progressive paths for one focus from the local syllable catalog (ADR 0023).
