@@ -17,8 +17,11 @@ final class AppAboutContactTests: XCTestCase {
         XCTAssertEqual(AppAboutContact.icpFilingLookupURL.scheme, "https")
     }
 
-    func testICPFilingNumberIsNotYetSet() {
-        XCTAssertNil(AppAboutContact.icpFilingNumber)
+    func testICPFilingNumberIsDisplayed() {
+        XCTAssertEqual(
+            AppAboutContact.icpFilingDisplayText(AppAboutContact.icpFilingNumber),
+            "浙ICP备2026098735号"
+        )
     }
 
     func testFeedbackMailSubjectIncludesVersionAndBuild() {
