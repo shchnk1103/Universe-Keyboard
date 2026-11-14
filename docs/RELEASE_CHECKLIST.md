@@ -98,6 +98,14 @@ Prefer uploading the already verified App Store package when preserving the
 frozen build identity. Changing a Cloud workflow and rebuilding is not an
 identity-preserving substitute merely because it uses the same source commit.
 
+## Release Tags And Xcode Cloud Workflows
+
+- Two Xcode Cloud workflows exist (Human statement, 2026-11-14; not re-checked in Xcode Cloud): "Release → TestFlight" starts on tags named `testflight/<version>-<yyyymmdd>` and distributes as TestFlight (Internal Testing Only); "Release → App Store" starts on tags named `appstore/<version>-<yyyymmdd>`, distributes as App Store Connect and posts the build to the TestFlight internal group "Internal Smoke".
+- A build to be submitted for App Review must come from the `appstore/*` workflow. A build produced by a workflow set to TestFlight (Internal Testing Only) is greyed out in the App Store Connect "Add Build" dialog (observed 2026-11-14 for builds 201 and 202; Human screenshot) and became selectable only after the distribution setting was changed to App Store Connect and the workflow rebuilt (build 203; Human statement).
+- Xcode Cloud is for release builds only; real-device checks of a pull request use a local Xcode build (Human statement, 2026-11-06).
+- Before pushing any release tag, record the target commit's `push` CI run on `main` and require its conclusion to be `success`. Reason: on 2026-11-14 the tag `testflight/1.0-20261114` was pushed while the `push` run 43555810166 for `fb46eee7cad507a43bb42608e4be01787c6ea052` had concluded `failure`; the pull request's own CI had been green (RELEASE-20261114 report).
+- Release packages record the Human's own words authorizing the release in `PM-LOG/human-statements-<date>.md`, not only in the package text.
+
 ## Incremental Release Evidence And Candidate Promotion
 
 每次新上传前先生成发布验证计划，而不是按 build number 机械重跑所有历史矩阵。
