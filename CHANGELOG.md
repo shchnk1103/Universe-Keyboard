@@ -1,3 +1,8 @@
+## 2026-11-14 — RELEASE-WORKFLOW-DOCS-001 发版流程文档
+
+- 发布清单新增「Release Tags And Xcode Cloud Workflows」一节。
+- 登记 PF-036 与 PF-024 的更新。
+
 ## 2026-11-14 — T9-PINYIN-CYCLE-005 选拼音视口与预选删除
 
 - 连续点「选拼音」时，拼音栏只保证选中项可见，不再每次居中或滚回开头；循环回到第一项时它显示在最左。
