@@ -725,6 +725,18 @@ extension KeyboardController {
             provisionalPathID: provisionalID,
             selectPinyinCycleOrder: keptCycleOrder
         )
+        if !rawChanged, let undo = state.t9PinyinPathState.selectedDigitUndo,
+            newState.selectedPath?.displayText == undo.selected.displayText
+        {
+            newState.selectedDigitUndo = undo
+        } else if rawChanged, selectPinyinCycleOrder != nil, let previousTracked, let selected = previousSelected,
+            normalizedRaw.hasPrefix(previousTracked), normalizedRaw.count == previousTracked.count + 1,
+            normalizedRaw.last?.isNumber == true, newState.selectedPath?.displayText == selected.displayText
+        {
+            newState.selectedDigitUndo = T9SelectedDigitUndo(
+                raw: previousTracked, source: previousSegmentSource, selected: selected,
+                paths: previousCompact, order: selectPinyinCycleOrder)
+        }
         if let preferredID = t9HistoricalProvisionalPathID(in: newState) {
             newState.provisionalPathID = preferredID
         }
@@ -1261,6 +1273,11 @@ extension KeyboardController {
                 return true
             }
             restoreSegmentFocusSnapshot(extended, selectedPath: remappedSelection)
+            if snapshot.selectPinyinCycleOrder != nil, let previousRaw = snapshot.trackedRawInput {
+                state.t9PinyinPathState.selectedDigitUndo = T9SelectedDigitUndo(
+                    raw: previousRaw, source: snapshot.segmentSourceDigits, selected: selected,
+                    paths: snapshot.compactPaths, order: snapshot.selectPinyinCycleOrder)
+            }
             return true
         }
 
@@ -1355,6 +1372,33 @@ extension KeyboardController {
     func handleT9CompositionIdentityDeleteIfNeeded(
         using engine: RimeEngine
     ) -> KeyboardEffect? {
+        if usesT9InputSemantics, state.partialCommit == nil,
+            let undo = state.t9PinyinPathState.selectedDigitUndo,
+            let raw = state.lastRimeOutput?.rawInput,
+            raw.count == undo.raw.count + 1, raw.hasPrefix(undo.raw),
+            raw.last?.isNumber == true,
+            state.t9PinyinPathState.selectedPath?.displayText == undo.selected.displayText
+        {
+            let output = engine.deleteBackward()
+            if output.rawInput == undo.raw, output.composition != nil {
+                var restored = state.t9PinyinPathState
+                restored.compactPaths = undo.paths
+                restored.segmentSourceDigits = undo.source
+                restored.selectPinyinCycleOrder = undo.order
+                restored.selectedDigitUndo = nil
+                state.lastRimeOutput = output
+                state.currentComposition = undo.raw
+                restoreSegmentFocusSnapshot(restored, selectedPath: undo.selected)
+                state.t9PinyinPathState.selectPinyinCycleOrder = undo.order
+                state.t9PinyinPathState.selectedDigitUndo = nil
+                applySelectedT9PinyinPathDisplay(undo.selected, tentativePreview: true)
+                clearTypoCorrectionSuggestions()
+                return .compositionChanged.union(.t9PinyinPathsChanged)
+            }
+            // The engine has already consumed Delete; never issue a second one.
+            applyRimeOutputPreservingPartialCommit(augmentRimeOutputIfNeeded(output))
+            return .compositionChanged.union(.t9PinyinPathsChanged)
+        }
         guard usesT9InputSemantics,
             state.partialCommit == nil,
             var identity = T9CompositionIdentity.from(pathState: state.t9PinyinPathState),

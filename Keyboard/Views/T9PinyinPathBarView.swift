@@ -41,6 +41,7 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
 
     private var paths: [T9PinyinPath] = []
     private var selectedPath: T9PinyinPath?
+    private var boundSourceDigits: String?
     private var boundCompositionRevision: UInt64 = 0
     private var shouldScrollToStartOnNextReload = false
     private var selectedPathIDToReveal: String?
@@ -229,14 +230,22 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
         _ paths: [T9PinyinPath],
         selected: T9PinyinPath?,
         compositionRevision: UInt64,
-        idleHintText: String? = nil
+        idleHintText: String? = nil,
+        sourceDigits: String? = nil
     ) {
-        let revisionChanged = compositionRevision != boundCompositionRevision
-        if revisionChanged {
-            boundCompositionRevision = compositionRevision
+        let listChanged =
+            paths.map(\.displayText) != self.paths.map(\.displayText)
+            || (sourceDigits != nil && sourceDigits != boundSourceDigits)
+        boundSourceDigits = sourceDigits
+        boundCompositionRevision = compositionRevision
+        if listChanged || selected == nil {
             shouldScrollToStartOnNextReload = true
             selectedPathIDToReveal = nil
-        } else if let selected, selected.id != selectedPath?.id {
+        } else if let selected, selected.displayText != selectedPath?.displayText {
+            shouldScrollToStartOnNextReload = false
+            selectedPathIDToReveal = selected.id
+        } else if let selected, selectedPathIDToReveal != nil {
+            // A duplicate publication can restamp IDs before layout consumes the reveal.
             selectedPathIDToReveal = selected.id
         }
 
@@ -295,12 +304,14 @@ final class T9PinyinPathBarView: UIView, UICollectionViewDataSource, UICollectio
         } else if let id = selectedPathIDToReveal,
             let index = paths.firstIndex(where: { $0.id == id })
         {
+            let indexPath = IndexPath(item: index, section: 0)
+            guard let frame = collectionView.layoutAttributesForItem(at: indexPath)?.frame else { return }
             selectedPathIDToReveal = nil
-            collectionView.scrollToItem(
-                at: IndexPath(item: index, section: 0),
-                at: .centeredHorizontally,
-                animated: true
-            )
+            let target = T9PathViewport.offset(
+                current: Double(collectionView.contentOffset.x), viewportWidth: Double(collectionView.bounds.width),
+                contentWidth: Double(collectionView.contentSize.width), selectedStart: Double(frame.minX),
+                selectedEnd: Double(frame.maxX), selectedIndex: index, selectionChanged: true, listChanged: false)
+            collectionView.setContentOffset(CGPoint(x: target, y: collectionView.contentOffset.y), animated: false)
         }
     }
 

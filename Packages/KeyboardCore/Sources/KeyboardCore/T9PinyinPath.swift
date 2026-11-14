@@ -1,5 +1,13 @@
 import Foundation
 
+struct T9SelectedDigitUndo: Equatable, Sendable {
+    let raw: String
+    let source: String?
+    let selected: T9PinyinPath
+    let paths: [T9PinyinPath]
+    let order: [String]?
+}
+
 /// Compact path bar state owned by KeyboardCore (not UIKit).
 public struct T9PinyinPathState: Equatable, Sendable {
     public var compactPaths: [T9PinyinPath]
@@ -41,6 +49,8 @@ public struct T9PinyinPathState: Equatable, Sendable {
     /// Display order latched by consecutive 选拼音 taps. Later rebuilds must
     /// not move the selected label to the front while this is set.
     var selectPinyinCycleOrder: [String]? = nil
+    /// Snapshot before a digit is appended to an explicitly selected path.
+    var selectedDigitUndo: T9SelectedDigitUndo? = nil
 
     public init(
         compactPaths: [T9PinyinPath] = [],

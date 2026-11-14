@@ -2820,6 +2820,43 @@ final class T9PinyinPathTests: XCTestCase {
         }
     }
 
+    func testCycleSelectionAppendDigitDeleteRestoresPreview() throws {
+        for (target, staleLedger) in [("ning", false), ("min", false), ("ning", true), ("min", true)] {
+            let engine = makeT9Engine()
+            let controller = makeController(engine: engine)
+            let client = FakeTextInputClient()
+            controller.textClient = client
+            for digit in "6464" { _ = controller.handle(.insertKey(String(digit))) }
+            for path in controller.state.t9PinyinPathState.compactPaths {
+                engine.dictionary[path.replacementRawInput] = ["词\(path.displayText)"]
+                engine.comments[path.replacementRawInput] = [path.displayText]
+                engine.dictionary[path.displayText] = ["词\(path.displayText)"]
+                engine.comments[path.displayText] = [path.displayText]
+            }
+            for _ in 0..<9 where controller.state.t9PinyinPathState.selectedPath?.displayText != target {
+                _ = controller.handle(.cycleT9PinyinPath)
+            }
+            XCTAssertEqual(controller.state.t9PinyinPathState.selectedPath?.displayText, target)
+            let raw = try XCTUnwrap(controller.state.lastRimeOutput?.rawInput)
+            let source = controller.state.t9PinyinPathState.segmentSourceDigits
+            let marked = client.markedText
+            _ = controller.handle(.insertKey("6"))
+            XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, raw + "6", "append must reach engine")
+            _ = controller.refreshT9PinyinPathState(forceNewProvenance: false)
+            if staleLedger {
+                // Model the diagnostic's publication lag: live raw includes the key,
+                // while the visible digit ledger has not advanced yet.
+                controller.state.t9PinyinPathState.segmentSourceDigits = source
+            }
+            _ = controller.handle(.deleteBackward)
+            XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, raw, target)
+            XCTAssertEqual(controller.state.t9PinyinPathState.segmentSourceDigits, source, target)
+            XCTAssertEqual(controller.state.t9PinyinPathState.selectedPath?.displayText, target, target)
+            XCTAssertEqual(client.markedText, marked, target)
+            XCTAssertEqual(client.text, client.markedText, "must not commit")
+        }
+    }
+
     // MARK: - Helpers
 
     private func makeT9Engine() -> FakeRimeEngine {
