@@ -96,6 +96,7 @@ UI-4 height-setting exception: the following metrics retain their default baseli
 - Path chip hit targets expand vertically to 44 pt via `ChromeTouchHitGeometry.pathBarExpandedHitBounds`. Delivery remaps item-frame chrome to the cell and uses a direct tap; `didSelect` is only a fallback. See [`PATH-BAR-TOUCH-001`](assignments/path-bar-touch-001.md).
 - Compact bar shows at most **5** single-line path labels (no multi-syllable wrap); plain text, no candidate pills; optional 1px separator above the Chinese candidate bar.
 - **选拼音** selects the first compact choice for the current focus when none is selected, then advances and wraps. It never confirms a segment and never opens the predecessor expanded path panel.
+- When the selected path changes, the compact bar scrolls only as far as needed to keep it fully visible; it is not centered (选中项保持可见、不居中). Selecting the first path, clearing the selection, or a changed path list puts the bar back at its start. The offset comes from `T9PathViewport.offset` in `Packages/KeyboardCore/Sources/KeyboardCore/T9PathViewport.swift` (tests: `T9PathViewportTests`).
 - While T9 composition is active, the wide space key title changes from `拼音` to **选定**. Its action remains candidate finalization (highlighted/first Chinese candidate), not segment confirmation.
 - Before the first selection there is no path highlight. The selected path uses the same inverse-color 8 pt rounded highlight language as the preferred candidate and retains an accurate VoiceOver selected state.
 
