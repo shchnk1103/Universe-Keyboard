@@ -48,9 +48,11 @@ struct PrivacyDataView: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .padding(.vertical, 4)
-                Text("点按键盘上的「粘贴」才读取剪贴板；内容不保存、不上传，也不进入词库或输入洞察。未开启完全访问时不显示粘贴，打字仍可用。")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                Text(
+                    "「显示剪贴板预览」和完全访问都开启时，键盘每次出现最多读取一次剪贴板文字，用于预览和粘贴；内容只在内存里，不保存、不上传，也不进入词库或输入洞察。任一项未开启时不读取，也不显示粘贴条，打字仍可用。"
+                )
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
             } header: {
                 Text("完全访问")
             }
