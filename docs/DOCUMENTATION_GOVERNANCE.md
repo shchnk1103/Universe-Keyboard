@@ -21,6 +21,7 @@ Every fact has one primary document. Other documents may provide a short summary
 | CI change classification and stable final gate | `docs/CI_CHANGE_CLASSIFICATION.md` | Path tiers, job-result contract, KOS residual and rollback; no merge/Release authority |
 | Project entry and quick start | `README.md` | Entry, minimum setup and important links only; avoid volatile implementation detail |
 | Current architecture and module boundaries | `docs/PROJECT_CONTEXT.md` | Current overview, ownership boundaries and development entry points |
+| Module/file-level code map (where code lives, entry points, invariants, test ownership) | `docs/CODE_MAP.md` | Maintained by the executor of each code task at close-out (trigger: `docs/kos/pm-packet-clauses.md` 「知识库更新（代码类任务包用）」); coarse design-scope map only, no line numbers, dated status or task progress |
 | Current OpenCC integration mechanics | `docs/architecture/opencc-integration.md` | RIME filter/config participation and cross-target responsibility boundary; operational steps remain in debugging/performance/release sources |
 | Long-term architecture/product rationale | `docs/architecture/decisions/` | Why a durable decision exists, alternatives and consequences |
 | Troubleshooting procedures | `docs/DEBUGGING.md` | Diagnostic flows, evidence and common failure boundaries |

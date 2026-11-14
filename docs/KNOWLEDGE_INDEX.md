@@ -19,6 +19,7 @@
 
 - [任务路径](READING_MAPS.md) · [历史快照](ACTIVE_WORK.md) · [Assignment 目录](assignments/) · [任务组合](PORTFOLIO.md)
 - [架构概览](PROJECT_CONTEXT.md)（代码/架构任务）· [UI 规则](UI_STYLE_GUIDE.md) · [键盘数值](KEYBOARD_VALUES.md)
+- [代码地图](CODE_MAP.md) — 粗看设计范围与代码归属（模块 / 文件级：代码在哪、入口、不变量、测试归属）
 - [文档治理](DOCUMENTATION_GOVERNANCE.md) · [依赖影响](KNOWLEDGE_DEPENDENCIES.md) · [决策树](DECISION_TREES.md)
 - [AI 协作](AI_WORKFLOW.md) · [领域 playbooks](playbooks/) · [长期所有权](VIRTUAL_ENGINEERING_TEAM.md)
 - [新开发者](ONBOARDING.md) · [术语](GLOSSARY.md) · [详细文档图](DOCUMENTATION_GRAPH.md)
