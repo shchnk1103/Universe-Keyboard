@@ -1,3 +1,9 @@
+## 2026-11-14 — T9-PINYIN-CYCLE-009 S1 诊断日志 v7
+
+- 本构建的 App 与 Extension 新记录使用诊断协议 v7；v3–v6 旧记录仍按原版本读取。未知版本拒绝并标为不完整，不回退成空日志。
+- 新增只读事件 `t9.cycle_result` 与 `t9.delete_path`。循环快照取回滚前的请求结果，不取恢复后的输出；准入链不等待，也不调用既有 `record`。
+- 资源审计未启用。隐私分类未定，含这些事件的构建在 Human 决定前不得进 TestFlight。采集仍走默认关闭的 `logging_enabled`。
+
 ## 2026-11-14 — T9-PINYIN-CYCLE-009 诊断日志 Assignment
 
 - 登记 T9-PINYIN-CYCLE-009 Assignment（`Assignment Pending`）与 PORTFOLIO PF-070：用不含输入内容的 typed 日志事件 `t9.cycle_result`、`t9.delete_path` 取得真机证据，以定位 m/n 无法被选中等问题；隐私分类未定。

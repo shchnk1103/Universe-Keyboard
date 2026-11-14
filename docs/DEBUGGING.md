@@ -4,6 +4,10 @@
 
 Classify the failure before changing code. Record the input, current page/mode, active schema, deployment state, lifecycle transition, expected result and actual result. Do not infer a root cause from UI symptoms alone.
 
+## T9 cycle and delete journal (v7)
+
+`t9.cycle_result` snapshots come from the `replaceInput` result before rollback, not from the restored output. The admission chain must not call `DiagnosticsJournalRuntime.record`, `DiagnosticsJournalIngress.record`, `Mutex.withLock`, or the Debug ticket set. Resource auditing is not enabled. A build that contains these events must not go to TestFlight until the Human privacy classification is decided. Capture reuses the default-off `logging_enabled` switch.
+
 ## First Triage
 
 | Symptom | First boundary to inspect |

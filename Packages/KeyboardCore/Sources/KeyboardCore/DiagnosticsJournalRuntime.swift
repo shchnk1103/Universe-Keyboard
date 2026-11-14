@@ -101,7 +101,7 @@ public final class DiagnosticsJournalRuntime: Sendable {
         _ phase: DiagnosticEvent.KeyboardLifecyclePhase,
         appearanceID: UUID? = nil
     ) -> Bool {
-        guard writerVersion == .v6, origin == .keyboardExtension else { return false }
+        guard writerVersion == .v6 || writerVersion == .v7, origin == .keyboardExtension else { return false }
         let sequence = nextSequence.next()
         guard
             let event = DiagnosticEvent.makeV6KeyboardLifecycleEvent(
@@ -128,7 +128,7 @@ public final class DiagnosticsJournalRuntime: Sendable {
         appearanceID: UUID? = nil
     ) -> Bool {
         guard
-            writerVersion == .v6,
+            writerVersion == .v6 || writerVersion == .v7,
             origin == .keyboardExtension,
             (phase == .failed) == (failure != nil)
         else { return false }
@@ -160,7 +160,7 @@ public final class DiagnosticsJournalRuntime: Sendable {
         appearanceID: UUID? = nil,
         actionSequence: UInt64? = nil
     ) -> Bool {
-        guard writerVersion == .v6, origin == .keyboardExtension else { return false }
+        guard writerVersion == .v6 || writerVersion == .v7, origin == .keyboardExtension else { return false }
         let sequence = nextSequence.next()
         guard
             let event = DiagnosticEvent.makeV6TextProxyEvent(

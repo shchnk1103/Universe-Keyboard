@@ -27,6 +27,7 @@
 ## 架构与决策
 
 - [共享容器/RIME 生命周期](architecture/shared-container-and-rime-lifecycle.md)
+- [诊断协议 v7 附录](architecture/decisions/0036-t9-cycle-wire-v7-addendum.md) — T9 循环/删除事件；隐私分类未定，不得进 TestFlight
 - [输入管线/marked text](architecture/input-pipeline-and-marked-text.md) · [Partial Commit](architecture/partial-commit.md)
 - [Swift 6](architecture/swift6-migration.md) · [RIME artifacts](architecture/rime-artifacts.md) · [OpenCC](architecture/opencc-integration.md)
 - [朙月九宫格（luna_pinyin_t9）知识卡](architecture/luna-nine-key-scheme.md) — 补丁链、planner 放行条件、真引擎事实、已定与待定决定

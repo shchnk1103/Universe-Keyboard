@@ -589,7 +589,7 @@ final class DiagnosticEventTests: XCTestCase {
         invalid.append(schemaFour)
 
         var unknownSchema = object
-        unknownSchema["schemaVersion"] = 7
+        unknownSchema["schemaVersion"] = 8
         invalid.append(unknownSchema)
 
         var unknownCode = object
@@ -793,7 +793,7 @@ final class DiagnosticEventTests: XCTestCase {
         )
 
         var unsupportedVersion = valid
-        unsupportedVersion["schemaVersion"] = 7
+        unsupportedVersion["schemaVersion"] = 8
         XCTAssertEqual(
             DiagnosticEventWireValidator.rejectionReason(for: try jsonData(unsupportedVersion)),
             .unsupportedSchemaVersion
@@ -1001,7 +1001,7 @@ final class DiagnosticEventTests: XCTestCase {
         )
 
         var unsupportedVersion = base
-        unsupportedVersion["schemaVersion"] = 7
+        unsupportedVersion["schemaVersion"] = 8
         XCTAssertEqual(
             DiagnosticEventWireValidator.rejectionReason(
                 for: try JSONSerialization.data(withJSONObject: unsupportedVersion)

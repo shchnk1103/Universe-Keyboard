@@ -106,6 +106,14 @@ Ownership: the current Assignment and Authorization bound the publish action; Ar
 
 Required review: confirm the exact current authorization and branch/PR state; never expose secret material; do one sandbox/host comparison before asking for reauthentication; do not reuse a historical proxy address; do not infer merge or Release authority from successful authentication.
 
+## Read T9 cycle diagnostics
+
+1. `docs/assignments/t9-pinyin-cycle-009.md`.
+2. ADR 0036 v7 addendum and ADR 0027.
+3. `DEBUGGING.md` section “T9 cycle and delete journal (v7)”.
+
+The snapshot is the pre-rollback request result. The admission chain must not call the waiting journal recorders. Resource auditing is off. Privacy classification is undecided, so do not ship the build to TestFlight.
+
 ## Modify Candidate Bar
 
 Ownership: Primary [`Keyboard UI`](playbooks/keyboard-ui.md); secondary [`KeyboardCore`](playbooks/keyboard-core.md) when selection/state semantics change and [`Debug Investigator`](playbooks/debug-investigator.md) when the boundary is unproven; escalate ownership conflicts or durable product changes to [`Coordinator`](playbooks/coordinator.md).

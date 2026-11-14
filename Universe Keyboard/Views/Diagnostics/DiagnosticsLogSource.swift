@@ -368,7 +368,7 @@ actor V1DiagnosticsLogSource: DiagnosticsDatedLogSource, DiagnosticsLiveRefreshI
             rootURL: rootURL,
             origin: .mainApp,
             isMainAppWriter: true,
-            writerVersion: .v6
+            writerVersion: .pairedBuild
         )
         do {
             try await writer.prepareRootIfOwnedByMainApp()

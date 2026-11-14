@@ -37,7 +37,7 @@ nonisolated final class RimeSyncDiagnostics: RimeSyncDiagnosing, Sendable {
                         .appendingPathComponent("Diagnostics/v1", isDirectory: true)
                 },
                 isCategoryEnabled: Logger.isLiveCategoryEnabled,
-                writerVersion: .v6
+                writerVersion: .pairedBuild
             )
         lifecycle.register(self.runtime)
     }

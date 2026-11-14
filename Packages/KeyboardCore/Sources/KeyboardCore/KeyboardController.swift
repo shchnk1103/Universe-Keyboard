@@ -56,6 +56,11 @@ public final class KeyboardController {
     /// Derived from the same `RimeRuntimeSelection` used for schema + layout.
     /// Digit shape alone never enables T9 policies.
     public var usesT9InputSemantics = false
+    /// Follows the default-off `logging_enabled` gate. Tests set it in memory.
+    public var t9DiagnosticCaptureEnabled = false
+    var t9CycleObservationActive = false
+    var t9DeleteObservationActive = false
+    var t9RollbackTerminal: T9CycleDiagnostic.Terminal = .rollbackFailed
     /// Stage 2 prototype gate. Production callers must opt in explicitly.
     public var isReversibleT9AutoAnchorEnabled = false
     /// S2.1 cumulative-extension gate. Keeping this separate preserves the

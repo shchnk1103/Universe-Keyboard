@@ -266,6 +266,9 @@ public struct DiagnosticsJournalPage: Sendable {
 public enum DiagnosticsJournalWriterVersion: Int, Sendable {
     case v5 = 5
     case v6 = 6
+    case v7 = 7
+    /// App and Extension of this build persist new records as v7.
+    public static let pairedBuild: Self = .v7
 }
 
 /// 每个 process 独占自己的 JSONL 段。这个 actor 只在 utility writer 调用；
@@ -374,7 +377,7 @@ public actor DiagnosticsJournalWriter {
         }
         let hour = Self.hourStamp(for: normalizedEvents[0].utcTimestamp)
         let encodedLines = try normalizedEvents.map(Self.encodeLine)
-        if writerVersion == .v6 {
+        if writerVersion == .v6 || writerVersion == .v7 {
             for line in encodedLines {
                 guard line.last == 0x0A,
                     DiagnosticEventWireValidator.rejectionReason(for: Data(line.dropLast())) == nil

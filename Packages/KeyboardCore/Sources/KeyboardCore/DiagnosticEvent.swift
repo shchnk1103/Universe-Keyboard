@@ -10,15 +10,15 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
     // Reader compatibility is independent of the production writer. Never admit future versions
     // implicitly: each supported version must retain its own code/payload contract.
     static func supportsReading(schemaVersion: Int) -> Bool {
-        [3, 4, 5, 6].contains(schemaVersion)
+        [3, 4, 5, 6, 7].contains(schemaVersion)
     }
 
     static func supportsWakeMarkers(schemaVersion: Int) -> Bool {
-        schemaVersion == 4 || schemaVersion == 6
+        schemaVersion == 4 || schemaVersion == 6 || schemaVersion == 7
     }
 
     static func supportsTypoRecall(schemaVersion: Int) -> Bool {
-        schemaVersion == 5 || schemaVersion == 6
+        schemaVersion == 5 || schemaVersion == 6 || schemaVersion == 7
     }
 
     public enum Origin: String, Codable, CaseIterable, Sendable {
@@ -1235,6 +1235,12 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
             guard schemaVersion == 5 || schemaVersion == 6 else { return nil }
             if hasWakeMarkerData {
                 guard isValidV6WakeMarker else { return nil }
+            }
+        case .v7:
+            if hasWakeMarkerData {
+                guard isValidV6WakeMarker || schemaVersion == 7 else { return nil }
+            } else {
+                guard schemaVersion == 5 || schemaVersion == 6 || schemaVersion == 7 else { return nil }
             }
         }
 

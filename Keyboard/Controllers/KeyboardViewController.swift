@@ -71,7 +71,7 @@ class KeyboardViewController: UIInputViewController {
                 .appendingPathComponent("Diagnostics/v1", isDirectory: true)
         },
         isCategoryEnabled: { Logger.isLiveCategoryEnabled($0) },
-        writerVersion: .v6
+            writerVersion: .pairedBuild
     )
     lazy var commitTrace = CommitTraceRecorder(
         context: { [weak self] in self?.textDocumentProxy.documentContextBeforeInput },
@@ -512,6 +512,7 @@ class KeyboardViewController: UIInputViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         commitTrace.enabled = Logger.isLiveCategoryEnabled(.display)
+        controller.t9DiagnosticCaptureEnabled = Logger.isLiveCategoryEnabled(.engine)
         prepareCandidateFontForAppearance()
         keyboardHeightAdjustmentAcceptsMarkers = true
         #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
