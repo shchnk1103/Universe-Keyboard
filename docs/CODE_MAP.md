@@ -31,6 +31,7 @@
 
 **关键文件**
 - `Packages/KeyboardCore/Sources/KeyboardCore/T9PinyinPath.swift` — 拼音栏状态、可用性与窗口类型，以及从 RIME 注释提取 / 校验路径的工具。
+- `Packages/KeyboardCore/Sources/KeyboardCore/T9PathViewport.swift` — 拼音栏视口偏移的纯函数 `T9PathViewport`（不依赖 UIKit；由 `Keyboard/Views/T9PinyinPathBarView.swift` 调用；测试 `Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PathViewportTests.swift`）。
 - `Packages/KeyboardCore/Sources/KeyboardCore/T9PinyinLocalPathCatalog.swift` — 路径值类型、展示快照类型与本地音节目录查询。
 - `Packages/KeyboardCore/Sources/KeyboardCore/T9PinyinSyllableCatalog.generated.swift` — 生成的音节目录数据（生成脚本 `scripts/generate_t9_pinyin_syllable_catalog.py`）。
 - `Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+T9PinyinPath.swift` — 选拼音循环、直接点选、状态重建、快照恢复与回滚的控制器逻辑。
@@ -46,6 +47,7 @@
 - 直接点选：`handleSelectT9PinyinPath`（内部带 `autoAdvance` 参数；点选为 true，循环为 false）、`confirmFocusedT9SegmentAndAdvance` — `Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+T9PinyinPath.swift`。
 - 状态重建：`refreshT9PinyinPathState`、`applyT9PinyinPathStateFromNewRimeOutput`、`rebuildT9PinyinPathStateIfComposing`、`clearT9PinyinPathState` — `Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+T9PinyinPath.swift`。
 - 快照恢复与回滚：`restoreRetainedChoiceSnapshot`、`restoreSegmentFocusSnapshot`、`rollbackT9PinyinRefinement` — `Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+T9PinyinPath.swift`。
+- 删除恢复预选快照：在已选中的拼音后追加一个数字时，`T9PinyinPathState` 的 `selectedDigitUndo`（类型 `T9SelectedDigitUndo`）记下追加前的输入、拼音栏与选中项；随后的删除由 `handleT9CompositionIdentityDeleteIfNeeded` 恢复到追加前的输入与预选 — `Packages/KeyboardCore/Sources/KeyboardCore/T9PinyinPath.swift`、`Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+T9PinyinPath.swift`（测试 `testCycleSelectionAppendDigitDeleteRestoresPreview` — `Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift`）。
 - 对外查询：`t9PinyinPathAvailability`、`hasSelectableT9PinyinPaths`、`t9CompositionPresentationSnapshot`、`t9PinyinPathWindow` — `Packages/KeyboardCore/Sources/KeyboardCore/KeyboardController+T9PinyinPath.swift`。
 
 **已有断言守住的不变量**（测试文件 `Packages/KeyboardCore/Tests/KeyboardCoreTests/T9PinyinPathTests.swift`，除非另注）
