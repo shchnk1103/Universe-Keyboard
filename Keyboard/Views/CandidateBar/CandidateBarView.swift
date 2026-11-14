@@ -70,12 +70,13 @@ private final class CandidateBarGestureBridge: NSObject, UIGestureRecognizerDele
 
 @MainActor
 final class CandidateBarView: UIView {
-    private let actionMaterialView = UIVisualEffectView(effect: nil)
-    private let actionTintView = UIView()
-    private let actionEdgeFill = CAGradientLayer()
-    private var canExpandCandidates = false
+    private let actionSeparator = UIView()
+    private var actionSeparatorWidthConstraint: NSLayoutConstraint!
+    private var pasteSeparatorWidthConstraint: NSLayoutConstraint?
 
     private let pasteFailureLabel = UILabel()
+    /// 点失败行。调用方只清失败并刷新，不把这次点击当成输入。
+    var onPasteFailureTap: (() -> Void)?
     private weak var pasteContent: UIView?
     private let recoveryLabel = UILabel()
     private var isShowingRecoveryNotice = false
@@ -159,7 +160,7 @@ final class CandidateBarView: UIView {
         configureCollectionView()
         addSubview(collectionView)
         addSubview(expandButton)
-        installActionBackground()
+        installActionSeparator()
         bringSubviewToFront(expandButton)
         recoveryLabel.translatesAutoresizingMaskIntoConstraints = false
         recoveryLabel.font = .preferredFont(forTextStyle: .caption1)
@@ -193,63 +194,43 @@ final class CandidateBarView: UIView {
             collectionView.bottomAnchor.constraint(equalTo: bottomAnchor),
             heightAnchor.constraint(equalToConstant: candidateBarHeight),
         ])
-        NotificationCenter.default.addObserver(
-            self, selector: #selector(refreshActionAppearance),
-            name: UIAccessibility.reduceTransparencyStatusDidChangeNotification, object: nil)
-        registerForTraitChanges([UITraitUserInterfaceStyle.self]) { (bar: CandidateBarView, _: UITraitCollection) in
-            bar.refreshActionAppearance()
+        registerForTraitChanges([UITraitDisplayScale.self]) { (bar: CandidateBarView, _: UITraitCollection) in
+            bar.updateActionSeparatorWidth()
         }
-        refreshActionAppearance()
+        updateActionSeparatorWidth()
     }
 
-    private func installActionBackground() {
-        for background in [actionMaterialView, actionTintView] {
-            background.translatesAutoresizingMaskIntoConstraints = false
-            background.isUserInteractionEnabled = false
-            addSubview(background)
-        }
-        actionMaterialView.accessibilityIdentifier = "candidateActionMaterial"
-        actionTintView.accessibilityIdentifier = "candidateActionTint"
-        actionEdgeFill.startPoint = CGPoint(x: 0, y: 0.5)
-        actionEdgeFill.endPoint = CGPoint(x: 1, y: 0.5)
-        actionTintView.layer.addSublayer(actionEdgeFill)
+    private func installActionSeparator() {
+        actionSeparator.translatesAutoresizingMaskIntoConstraints = false
+        actionSeparator.isUserInteractionEnabled = false
+        actionSeparator.isAccessibilityElement = false
+        actionSeparator.accessibilityElementsHidden = true
+        actionSeparator.accessibilityIdentifier = "candidateActionSeparator"
+        actionSeparator.backgroundColor = .separator
+        addSubview(actionSeparator)
+        actionSeparatorWidthConstraint = actionSeparator.widthAnchor.constraint(
+            equalToConstant: Self.actionSeparatorWidth(for: traitCollection))
         NSLayoutConstraint.activate([
-            actionMaterialView.leadingAnchor.constraint(equalTo: expandButton.leadingAnchor),
-            actionMaterialView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            actionMaterialView.topAnchor.constraint(equalTo: topAnchor),
-            actionMaterialView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            actionTintView.leadingAnchor.constraint(equalTo: actionMaterialView.leadingAnchor),
-            actionTintView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            actionTintView.topAnchor.constraint(equalTo: topAnchor),
-            actionTintView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            actionSeparatorWidthConstraint,
+            actionSeparator.heightAnchor.constraint(
+                equalTo: heightAnchor,
+                multiplier: KeyboardDesignTokens.CandidateBar.actionSeparatorHeightRatio),
+            actionSeparator.centerYAnchor.constraint(equalTo: centerYAnchor),
+            actionSeparator.leadingAnchor.constraint(equalTo: expandButton.leadingAnchor),
         ])
     }
 
-    func setCanExpandCandidates(_ canExpand: Bool) {
-        canExpandCandidates = canExpand
-        refreshActionAppearance()
+    func setCanExpandCandidates(_: Bool) {
+        // Compact chrome is identical in expand and idle-dismiss modes.
     }
 
-    @objc private func refreshActionAppearance() {
-        updateActionAppearance(reduceTransparency: UIAccessibility.isReduceTransparencyEnabled)
+    private static func actionSeparatorWidth(for traits: UITraitCollection) -> CGFloat {
+        KeyboardDesignTokens.CandidateBar.actionSeparatorPixelWidth / max(traits.displayScale, 1)
     }
 
-    /// The environment supplies accessibility preference; the view owns only material presentation.
-    func updateActionAppearance(reduceTransparency: Bool) {
-        let appearance = KeyboardDesignTokens.CandidateActionAppearance.self
-        // Use the existing semantic tint as a single blend instead of masking a live backdrop.
-        // The disjoint viewport already clips text; blur is retained only in the expanded control.
-        actionMaterialView.effect = nil
-        actionMaterialView.isHidden = true
-        actionTintView.isHidden = !canExpandCandidates || isShowingRecoveryNotice
-        let color = appearance.backgroundColor.resolvedColor(with: traitCollection)
-        actionTintView.backgroundColor = reduceTransparency ? color : .clear
-        actionEdgeFill.isHidden = reduceTransparency
-        actionEdgeFill.colors = [
-            color.withAlphaComponent(0).cgColor, color.withAlphaComponent(appearance.tintOpacity).cgColor,
-            color.withAlphaComponent(appearance.tintOpacity).cgColor,
-        ]
-        updateActionEdgeGeometry()
+    private func updateActionSeparatorWidth() {
+        actionSeparatorWidthConstraint.constant = Self.actionSeparatorWidth(for: traitCollection)
+        pasteSeparatorWidthConstraint?.constant = Self.actionSeparatorWidth(for: traitCollection)
     }
 
     @available(*, unavailable)
@@ -281,10 +262,10 @@ final class CandidateBarView: UIView {
         collectionView.isUserInteractionEnabled = !isShowingRecoveryNotice
         expandButton.isHidden = isShowingRecoveryNotice
         expandButton.isEnabled = !isShowingRecoveryNotice
+        actionSeparator.isHidden = expandButton.isHidden
         itemTapRecognizer.isEnabled = !isShowingRecoveryNotice
         swipeDownRecognizer?.isEnabled = !isShowingRecoveryNotice
         horizontalFallbackRecognizer?.isEnabled = !isShowingRecoveryNotice
-        refreshActionAppearance()
         if isShowingRecoveryNotice { bringSubviewToFront(recoveryLabel) }
     }
 
@@ -295,12 +276,34 @@ final class CandidateBarView: UIView {
         gestureBridge.pasteContent = content
         content.translatesAutoresizingMaskIntoConstraints = false
         addSubview(content)
+        let separator = UIView()
+        separator.translatesAutoresizingMaskIntoConstraints = false
+        separator.isUserInteractionEnabled = false
+        separator.isAccessibilityElement = false
+        separator.accessibilityElementsHidden = true
+        separator.accessibilityIdentifier = "pasteLeadingSeparator"
+        separator.backgroundColor = actionSeparator.backgroundColor
+        content.addSubview(separator)
+        let separatorWidth = separator.widthAnchor.constraint(
+            equalToConstant: Self.actionSeparatorWidth(for: traitCollection))
+        pasteSeparatorWidthConstraint = separatorWidth
         NSLayoutConstraint.activate([
-            content.leadingAnchor.constraint(equalTo: leadingAnchor),
-            content.trailingAnchor.constraint(lessThanOrEqualTo: expandButton.leadingAnchor),
+            separatorWidth,
+            separator.leadingAnchor.constraint(equalTo: content.leadingAnchor, constant: -8),
+            separator.centerYAnchor.constraint(equalTo: content.centerYAnchor),
+            separator.heightAnchor.constraint(equalTo: actionSeparator.heightAnchor),
+            content.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
+            content.trailingAnchor.constraint(equalTo: actionSeparator.leadingAnchor, constant: -8),
             content.topAnchor.constraint(equalTo: topAnchor),
             content.heightAnchor.constraint(equalToConstant: candidateBarHeight),
         ])
+    }
+
+    func clearPasteContent() {
+        pasteContent?.removeFromSuperview()
+        pasteContent = nil
+        gestureBridge.pasteContent = nil
+        pasteSeparatorWidthConstraint = nil
     }
 
     func setPasteFailureNotice(_ message: String?) {
@@ -321,26 +324,26 @@ final class CandidateBarView: UIView {
         let visible = message != nil && !isShowingRecoveryNotice
         pasteFailureLabel.text = message
         pasteFailureLabel.isHidden = !visible
+        pasteFailureLabel.isUserInteractionEnabled = visible
+        if visible, pasteFailureLabel.gestureRecognizers?.isEmpty != false {
+            pasteFailureLabel.addGestureRecognizer(
+                UITapGestureRecognizer(target: self, action: #selector(pasteFailureTapped))
+            )
+        }
         pasteContent?.isHidden = visible || isShowingRecoveryNotice
         if visible { bringSubviewToFront(pasteFailureLabel) }
     }
 
+    @objc private func pasteFailureTapped() {
+        onPasteFailureTap?()
+    }
+
     override func layoutSubviews() {
         super.layoutSubviews()
-        updateActionEdgeGeometry()
+        updateActionSeparatorWidth()
         #if DEBUG
             refreshDebugHitboxOverlay()
         #endif
-    }
-
-    private func updateActionEdgeGeometry() {
-        CATransaction.begin()
-        CATransaction.setDisableActions(true)
-        actionEdgeFill.frame = actionTintView.bounds
-        let fraction = min(
-            1, KeyboardDesignTokens.CandidateActionAppearance.edgeFadeWidth / max(1, actionTintView.bounds.width))
-        actionEdgeFill.locations = [0, NSNumber(value: Double(fraction)), 1]
-        CATransaction.commit()
     }
 
     #if DEBUG
@@ -446,6 +449,8 @@ final class CandidateBarView: UIView {
         if !expandButton.isHidden, expandedButtonHitFrame.contains(point) {
             let buttonPoint = expandButton.convert(point, from: self)
             result = expandButton.hitTest(buttonPoint, with: event) ?? expandButton
+        } else if !pasteFailureLabel.isHidden, pasteFailureLabel.frame.contains(point) {
+            result = pasteFailureLabel
         } else if let pasteContent, !pasteContent.isHidden, pasteContent.frame.contains(point) {
             result = pasteContent.hitTest(pasteContent.convert(point, from: self), with: event)
         } else if bounds.contains(point), collectionView.frame.contains(point) {
@@ -797,9 +802,9 @@ final class CandidateBarView: UIView {
     }
 
     static func trailingChromeImage(expanding: Bool) -> UIImage? {
-        let name = expanding ? "chevron.down" : "chevron.down.circle"
+        _ = expanding
         return UIImage(
-            systemName: name,
+            systemName: "chevron.down",
             withConfiguration: UIImage.SymbolConfiguration(
                 pointSize: KeyboardDesignTokens.CandidateBar.actionSymbolSize, weight: .medium)
         )?

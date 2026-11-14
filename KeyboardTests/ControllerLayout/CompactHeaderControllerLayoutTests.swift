@@ -418,7 +418,14 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
                     let attributes = try XCTUnwrap(
                         collection.layoutAttributesForItem(at: IndexPath(item: index, section: 0)))
                     XCTAssertEqual(attributes.frame.height, 42)
-                    XCTAssertFalse(attributes.frame.intersects(buttonFrame))
+                    // R3 keeps the 56pt collapse button and lets a cell overlap it by at most
+                    // actionZoneWidth - minimumTouchSize; the glyph itself stays clear.
+                    let overlap = attributes.frame.intersection(buttonFrame).width
+                    XCTAssertLessThanOrEqual(
+                        overlap,
+                        KeyboardDesignTokens.CandidateBar.actionZoneWidth
+                            - KeyboardDesignTokens.CandidateBar.minimumTouchSize
+                    )
                 }
                 collection.scrollToItem(at: IndexPath(item: 79, section: 0), at: .bottom, animated: false)
                 collection.layoutIfNeeded()
@@ -646,6 +653,64 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
     }
 
     @MainActor
+    func testExpandedRowsShareOneTrailingBoundaryWithoutActionMaterial() throws {
+        let animations = UIView.areAnimationsEnabled
+        UIView.setAnimationsEnabled(false)
+        defer { UIView.setAnimationsEnabled(animations) }
+        // 390pt 必须是 7 列；375pt 只要求各行同列数且不越过同一边界。
+        for width in [390.0, 375.0] {
+            let sut = makeController(width: width, nineKey: false)
+            sut.accumulatedCandidates = (0..<42).map { _ in CandidateItem(title: "字", kind: .continuationCandidate) }
+            sut.hasMoreCandidates = false
+            sut.fillCandidateBar()
+            sut.toggleCandidateExpand()
+            layout(sut)
+            let panel = try XCTUnwrap(sut.candidateExpandedPanel as? ExpandedCandidatePanelContainerView)
+            let expanded = try XCTUnwrap(sut.expandedCandidateCollectionView)
+            let button = try XCTUnwrap(panel.subviews.compactMap { $0 as? UIButton }.first)
+            button.layoutIfNeeded()
+            XCTAssertTrue(descendants(panel).compactMap { $0 as? UIVisualEffectView }.isEmpty)
+            XCTAssertEqual(button.layer.cornerRadius, 0)
+            XCTAssertTrue(descendants(button).allSatisfy { $0.layer.cornerRadius == 0 })
+            let frames = (0..<42).compactMap {
+                expanded.layoutAttributesForItem(at: IndexPath(item: $0, section: 0))?.frame
+            }
+            XCTAssertEqual(frames.count, 42)
+            // 夹具宽度取自真实单字 cell，不手写一个猜测值。
+            let measuredWidth = frames[0].width
+            XCTAssertTrue(frames.allSatisfy { $0.width == measuredWidth })
+            let rows = Dictionary(grouping: frames, by: \.minY)
+            XCTAssertGreaterThanOrEqual(rows.count, 5)
+            let counts = Set(rows.values.map(\.count))
+            XCTAssertEqual(counts.count, 1)
+            if width == 390 {
+                XCTAssertEqual(counts, [7])
+            }
+            let boundary = width - KeyboardDesignTokens.CandidateBar.minimumTouchSize
+            let allowedOverlap =
+                KeyboardDesignTokens.CandidateBar.actionZoneWidth
+                - KeyboardDesignTokens.CandidateBar.minimumTouchSize
+            let arrow = try XCTUnwrap(button.imageView).convert(button.imageView?.bounds ?? .zero, to: panel)
+            XCTAssertFalse(arrow.isEmpty)
+            var checkedGlyphs = 0
+            for (index, frame) in frames.enumerated() {
+                XCTAssertLessThanOrEqual(frame.maxX, boundary)
+                let panelFrame = expanded.convert(frame, to: panel)
+                let overlap = panelFrame.intersection(button.frame)
+                if !overlap.isNull {
+                    XCTAssertLessThanOrEqual(overlap.width, allowedOverlap)
+                }
+                guard let cell = expanded.cellForItem(at: IndexPath(item: index, section: 0)) else { continue }
+                let glyph = try XCTUnwrap(descendants(cell).compactMap { $0 as? UILabel }.first)
+                let glyphFrame = glyph.convert(glyph.bounds, to: panel)
+                XCTAssertFalse(glyphFrame.intersects(arrow))
+                checkedGlyphs += 1
+            }
+            XCTAssertGreaterThan(checkedGlyphs, 0)
+        }
+    }
+
+    @MainActor
     func testNaturalFlowFixedActionMaterialAndTouchOcclusion() throws {
         let animations = UIView.areAnimationsEnabled
         UIView.setAnimationsEnabled(false)
@@ -663,13 +728,9 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
             let panel = try XCTUnwrap(sut.candidateExpandedPanel as? ExpandedCandidatePanelContainerView)
             let expanded = try XCTUnwrap(sut.expandedCandidateCollectionView)
             let button = try XCTUnwrap(panel.subviews.compactMap { $0 as? UIButton }.first)
-            let material = try XCTUnwrap(panel.subviews.compactMap { $0 as? UIVisualEffectView }.first)
-            XCTAssertEqual(
-                material.frame,
-                button.frame.inset(by: KeyboardDesignTokens.CandidateActionAppearance.controlBackgroundInsets))
-            XCTAssertTrue(material.clipsToBounds)
-            XCTAssertEqual(
-                material.layer.cornerRadius, KeyboardDesignTokens.CandidateActionAppearance.controlCornerRadius)
+            XCTAssertTrue(descendants(panel).compactMap { $0 as? UIVisualEffectView }.isEmpty)
+            XCTAssertEqual(button.layer.cornerRadius, 0)
+            XCTAssertTrue(descendants(button).allSatisfy { $0.layer.cornerRadius == 0 })
             XCTAssertEqual(panel.backgroundColor?.cgColor.alpha, 0)
             let frames = (0..<120).compactMap {
                 expanded.layoutAttributesForItem(at: IndexPath(item: $0, section: 0))?.frame
@@ -696,14 +757,6 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
             let visiblePoint = CGPoint(x: 30, y: 70)
             let hit = try XCTUnwrap(panel.hitTest(visiblePoint, with: nil))
             XCTAssertTrue(hit === expanded || hit.isDescendant(of: expanded))
-            panel.updateActionMaterial(reduceTransparency: true)
-            XCTAssertNil(material.effect)
-            XCTAssertEqual(material.contentView.subviews.first?.backgroundColor?.cgColor.alpha, 1)
-            panel.updateActionMaterial(reduceTransparency: false)
-            XCTAssertNotNil(material.effect)
-            XCTAssertEqual(
-                ObjectIdentifier(material),
-                ObjectIdentifier(try XCTUnwrap(panel.subviews.compactMap { $0 as? UIVisualEffectView }.first)))
             let mask = try XCTUnwrap(sut.rootStack.layer.mask as? CAShapeLayer)
             XCTAssertFalse(mask.path?.contains(CGPoint(x: 40, y: 100)) == true)
             XCTAssertTrue(mask.path?.contains(CGPoint(x: 40, y: 17)) == true)

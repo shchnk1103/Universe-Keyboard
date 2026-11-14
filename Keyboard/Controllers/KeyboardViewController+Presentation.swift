@@ -278,7 +278,7 @@ extension KeyboardViewController {
     }
 
     func syncUI(with effects: KeyboardEffect) {
-        pasteSession.clearFailure()
+        // 不再在这里清失败行：出现后的同一次刷新会把刚显示的失败行抹掉。
         refreshPasteToolbar()
         defer { refreshPasteToolbar() }
         // Refresh last so normal presentation cannot re-enable recovery-blocked controls.

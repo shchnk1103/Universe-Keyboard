@@ -4,9 +4,9 @@ import UIKit
 /// Flow layout 默认会把同一行的 item 间距拉大到填满宽度。
 /// 候选展开面板需要像文字流一样从左到右紧凑排列，所以这里固定为左对齐。
 private final class LeftAlignedCandidateFlowLayout: UICollectionViewFlowLayout {
-    /// 只为与操作区垂直相交的顶部行预留尾部，不能让所有行空出一整列。
-    var firstRowTrailingReservedWidth: CGFloat = 0
-    var reservedActionBottom: CGFloat = KeyboardDesignTokens.CandidateBar.totalHeight
+    /// 每一行共用的右边界：面板宽度减去该值。
+    /// 取 44pt 触控尺寸，不再叠加右内边距或整段 56pt 操作区，以便单字排到 7 列。
+    var trailingBoundaryInset: CGFloat = 0
 
     private var cachedAttributes: [UICollectionViewLayoutAttributes] = []
     private var cachedAttributesByIndexPath: [IndexPath: UICollectionViewLayoutAttributes] = [:]
@@ -28,8 +28,8 @@ private final class LeftAlignedCandidateFlowLayout: UICollectionViewFlowLayout {
         var nextX = sectionInset.left
         var nextY = sectionInset.top
         var rowHeight: CGFloat = 0
-        let fullRowMaxX = collectionView.bounds.width - sectionInset.right
-        let firstRowMaxX = max(sectionInset.left, fullRowMaxX - firstRowTrailingReservedWidth)
+        // 右内边距不再叠进这条边界；sectionInset.right 只留给系统 flow 的默认测量。
+        let rowMaxX = max(sectionInset.left, collectionView.bounds.width - trailingBoundaryInset)
         var preparedAttributes: [UICollectionViewLayoutAttributes] = []
 
         for section in 0..<collectionView.numberOfSections {
@@ -41,12 +41,10 @@ private final class LeftAlignedCandidateFlowLayout: UICollectionViewFlowLayout {
                 else { continue }
 
                 let originalSize = sourceAttribute.frame.size
-                var rowMaxX = nextY < reservedActionBottom ? firstRowMaxX : fullRowMaxX
                 if nextX > sectionInset.left, nextX + originalSize.width > rowMaxX {
                     nextX = sectionInset.left
                     nextY += rowHeight + minimumLineSpacing
                     rowHeight = 0
-                    rowMaxX = nextY < reservedActionBottom ? firstRowMaxX : fullRowMaxX
                 }
                 var size = originalSize
                 size.width = min(size.width, max(44, rowMaxX - sectionInset.left))
@@ -123,9 +121,6 @@ final class ExpandedCandidatePanelContainerView: UIView {
     private var lastCoveredGeometry: CGRect?
     private var previousRootMask: CALayer?
     private let coveredMask = CAShapeLayer()
-    private let actionMaterial = UIVisualEffectView(effect: nil)
-    private let actionFill = UIView()
-    private var actionFallbackColor: UIColor = .secondarySystemBackground
     private var coveredAccessibilityViews: [(UIView, Bool)] = []
 
     fileprivate func hideCoveredAccessibility(in root: UIStackView, keeping pathBar: UIView?) {
@@ -158,9 +153,6 @@ final class ExpandedCandidatePanelContainerView: UIView {
         super.init(frame: frame)
         revealViewport.clipsToBounds = true
         addSubview(revealViewport)
-        NotificationCenter.default.addObserver(
-            self, selector: #selector(refreshActionMaterial),
-            name: UIAccessibility.reduceTransparencyStatusDidChangeNotification, object: nil)
     }
 
     override func willMove(toSuperview newSuperview: UIView?) {
@@ -247,45 +239,6 @@ final class ExpandedCandidatePanelContainerView: UIView {
 
     fileprivate func observeUserScroll(in collection: UICollectionView) {
         collection.panGestureRecognizer.addTarget(self, action: #selector(observeReadingDrag(_:)))
-    }
-
-    fileprivate func installActionMaterial(fallbackColor: UIColor) {
-        actionFallbackColor = fallbackColor
-        guard let button = collapseButton else { return }
-        let appearance = KeyboardDesignTokens.CandidateActionAppearance.self
-        let insets = appearance.controlBackgroundInsets
-        actionMaterial.layer.cornerRadius = appearance.controlCornerRadius
-        actionMaterial.layer.cornerCurve = .continuous
-        actionMaterial.clipsToBounds = true
-        actionMaterial.translatesAutoresizingMaskIntoConstraints = false
-        actionMaterial.isUserInteractionEnabled = false
-        actionMaterial.accessibilityIdentifier = "expandedCandidateActionMaterial"
-        insertSubview(actionMaterial, belowSubview: button)
-        actionFill.translatesAutoresizingMaskIntoConstraints = false
-        actionFill.isUserInteractionEnabled = false
-        actionMaterial.contentView.addSubview(actionFill)
-        NSLayoutConstraint.activate([
-            actionMaterial.leadingAnchor.constraint(equalTo: button.leadingAnchor, constant: insets.left),
-            actionMaterial.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -insets.right),
-            actionMaterial.topAnchor.constraint(equalTo: button.topAnchor, constant: insets.top),
-            actionMaterial.bottomAnchor.constraint(equalTo: button.bottomAnchor, constant: -insets.bottom),
-            actionFill.leadingAnchor.constraint(equalTo: actionMaterial.contentView.leadingAnchor),
-            actionFill.trailingAnchor.constraint(equalTo: actionMaterial.contentView.trailingAnchor),
-            actionFill.topAnchor.constraint(equalTo: actionMaterial.contentView.topAnchor),
-            actionFill.bottomAnchor.constraint(equalTo: actionMaterial.contentView.bottomAnchor),
-        ])
-        refreshActionMaterial()
-    }
-
-    @objc private func refreshActionMaterial() {
-        updateActionMaterial(reduceTransparency: UIAccessibility.isReduceTransparencyEnabled)
-    }
-
-    func updateActionMaterial(reduceTransparency: Bool) {
-        actionMaterial.effect =
-            reduceTransparency ? nil : UIBlurEffect(style: KeyboardDesignTokens.CandidateActionAppearance.materialStyle)
-        actionFill.backgroundColor = actionFallbackColor.withAlphaComponent(
-            reduceTransparency ? 1 : KeyboardDesignTokens.CandidateActionAppearance.tintOpacity)
     }
 
     /// Reveal candidates and cover keys using the same curve; neither root height nor cell frames animate.
@@ -535,7 +488,8 @@ extension KeyboardViewController {
         layout.minimumInteritemSpacing = KeyboardDesignTokens.ExpandedCandidates.itemSpacing
         // 真实 cell 连续铺满；2pt 视觉内缩由 CandidateCollectionCell 负责。
         layout.sectionInset = KeyboardDesignTokens.ExpandedCandidates.contentInsets
-        layout.firstRowTrailingReservedWidth = collapseButtonWidth + 8
+        // 按钮仍占 56pt；行边界只退到 44pt，允许格子与按钮重叠，但不覆盖箭头。
+        layout.trailingBoundaryInset = KeyboardDesignTokens.CandidateBar.minimumTouchSize
         let collectionView = CandidateCollectionView(frame: .zero, collectionViewLayout: layout)
         CandidateScrollViewStyle.apply(to: collectionView)
         collectionView.showsVerticalScrollIndicator = false
@@ -566,7 +520,6 @@ extension KeyboardViewController {
         collapseButton.accessibilityHint = "双击以返回键盘"
         container.addSubview(collapseButton)
         container.collapseButton = collapseButton
-        container.installActionMaterial(fallbackColor: keyboardSurfaceMaterialTintColor)
         container.bringSubviewToFront(collapseButton)
         let actionTop = collapseButton.topAnchor.constraint(equalTo: container.topAnchor)
         container.actionTopConstraint = actionTop

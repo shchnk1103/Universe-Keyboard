@@ -549,7 +549,7 @@
 
 - **Lifecycle:** `Published — Must + S-02/S-03 live; design Closed; IMPL Completed; 2.0 frozen constitution unchanged`
 - **Ops package:** [`kos/kos-2.1-operational-maturity.md`](kos/kos-2.1-operational-maturity.md)
-- **Active Work:** [`ACTIVE_WORK.md`](ACTIVE_WORK.md) (≤10; Assignment remains SoT)
+- **Active Work:** [`ACTIVE_WORK.md`](ACTIVE_WORK.md) (frozen 2026-11-07 as a historical snapshot; unfinished work and priorities live in [`PORTFOLIO.md`](PORTFOLIO.md); Assignment remains SoT)
 - **Authority:** [`IMPL Assignment`](assignments/kos-2.1-ops-impl-001.md) + [`PD-IMPL`](product-decisions/KOS-2.1-OPS-IMPL-001-authorization.md) + [`design disposition`](product-decisions/KOS-2.1-OPS-001-design-disposition.md)
 - **Explicit non-claims:** not frozen 2.1 replacement of 2.0; not Migration; not S-01; no runtime
 - **Next:** Optional Product formal close stamps; use State sync checklist on future Gates

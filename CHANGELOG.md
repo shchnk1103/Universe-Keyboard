@@ -1,3 +1,111 @@
+## 2026-11-14 — T9-PINYIN-CYCLE-009 诊断日志 Assignment
+
+- 登记 T9-PINYIN-CYCLE-009 Assignment（`Assignment Pending`）与 PORTFOLIO PF-070：用不含输入内容的 typed 日志事件 `t9.cycle_result`、`t9.delete_path` 取得真机证据，以定位 m/n 无法被选中等问题；隐私分类未定。
+
+## 2026-11-14 — RELEASE-WORKFLOW-DOCS-001 发版流程文档
+
+- 发布清单新增「Release Tags And Xcode Cloud Workflows」一节。
+- 登记 PF-036 与 PF-024 的更新。
+
+## 2026-11-14 — T9-PINYIN-CYCLE-005 选拼音视口与预选删除
+
+- 连续点「选拼音」时，拼音栏只保证选中项可见，不再每次居中或滚回开头；循环回到第一项时它显示在最左。
+- 预选拼音后再按一个数字，随后按删除，会回到按数字前的输入与预选（如 ning 后按 6 再删除仍是 ning）；等待真机验证。
+- 高亮在 m/n 前停住（引擎对 m464 返回无候选）是另一个问题，尚未修复，另案诊断。
+
+## 2026-11-14 — ICP-FILING-FILL-001 填入 ICP 备案号
+
+- 关于页显示 ICP 备案号，并链接到工信部备案查询页。
+
+## 2026-11-14 — T9-PINYIN-CYCLE-002 选拼音循环拼音栏顺序稳定
+
+- 连续点「选拼音」循环时，拼音栏顺序保持首次顺序，不再因选中项被候选注释重排到最前（如 6464 循环到 ning 后整栏被重排）。
+- 直接点拼音栏、输入或删除字母后，顺序按原规则重新计算；等待真机验证。
+
+## 2026-11-14 — CODE-MAP-001 项目代码地图
+
+- 新增 `docs/CODE_MAP.md`：模块总览、T9 拼音路径（拼音栏与「选拼音」）一节，其余模块列为上线后补充。
+- 固定条款新增「知识库更新（代码类任务包用）」：代码类任务收尾时顺手更新代码地图。
+- PM 手册新增 P16「PM 不读码找原因」，并相应调整 P2、P7、P10 与第 4、7 节措辞；在知识索引与文档治理表登记新文档。
+
+## 2026-11-13 — KEYBOARD-PASTE-UI-C4-001 剪贴板预览规则
+
+- 仅在读到有效非空文字且满足资格时显示预览，读取失败、超时或布局无法容纳时不显示粘贴入口。
+- 移除系统粘贴按钮和剪贴板条目数空检测；迟到显示默认关闭，等待真机验证。
+- 宿主自动发出的键盘类型回调不再清除读取中的预览，仅用户主动的切换/翻页动作清除；等待真机验证。
+
+## 2026-11-13 — T9-PINYIN-CYCLE-001 选拼音循环稳定
+
+- 连续点「选拼音」时，预编辑只显示所选拼音标签，不再把上一次完整拼写的尾字母拼回（如 min 显示成 ming）。
+- 多位数字前缀锁定只在直接点拼音栏时生效，循环到短字母前缀不再让拼音栏收缩；直接点栏与单键 m/n/o 行为不变。
+
+## 2026-11-13 — KOS-ROLLING-REPORT-001 滚动交接报告
+
+- 固定执行包的滚动交接报告条款，并在冻结时检查提交型任务是否包含条款。
+- 报告检查工具标记未收尾状态，列出后续提交和日志以便接手。
+
+## 2026-11-12 — KEYBOARD-PASTE-UI-C3-001 空剪贴板检测
+
+- 空检测由 `emptyDetectionProbesPassed` 控制，生产值保持 false，因此仍按 C2 显示预览或系统粘贴按钮。
+- 测试可注入打开该门：确认空且正文为空白时隐藏内容和分隔线并保留武装；拒绝、nil、丢弃、超时或版本失效仍回退系统粘贴按钮。
+
+## 2026-11-12 — KEYBOARD-PASTE-UI-C2-001 剪贴板预览
+
+- 新增默认关闭的剪贴板预览开关；开启且满足资格时读取一次，超时或不可用时回退系统粘贴按钮。
+- 预览内容仅保存在内存；敏感摘要打码，超长内容不用于插入，并同步更新隐私说明。
+
+## 2026-11-12 — KOS-PM-RULES-H21-001 PM 常设规则 H18 补记、H21、P15
+
+- docs/kos/pm-playbook.md：H18 补记 Human 2026-11-10 的常设答复并删除已答复的 Q7；新增 H21（阶段报告核完 DONE/PASS 后清理该子任务可再生产物的存储常设决定）与 P15（角色领取独立性只指自产自验）。
+- .gitignore 增加 .alma-snapshots。
+- 来源：Human 原话，见 PM 家目录 PM-LOG 下 human-statements-2026-11-10.md、human-statements-2026-11-10c.md、human-statements-2026-11-12b.md。
+
+## 2026-11-12 — KEYBOARD-PASTE-UI-B2-001 整行系统粘贴条外观
+
+- 粘贴条改为整行系统粘贴控件，左侧新增 1 px 分隔线，右侧沿用动作分隔线（PR 290）。
+- 不读取剪贴板，不改显示规则与状态机。
+
+## 2026-11-10 — KEYBOARD-PASTE-UI-B1-001 粘贴条显示规则
+
+- 粘贴条按一次显示计：出现时武装，第一次计入输入或粘贴成功后隐藏；失败不消耗。
+- 失败行不再在同一次界面刷新里被清掉。点失败行只清除失败并刷新。
+- 本段不读取剪贴板，也不改粘贴条几何。
+
+## 2026-11-10 — KOS-PM-RULES-H18-001 PM 规则 H18–H20 落库
+
+- `docs/kos/pm-playbook.md` 第 2.1 节新增 H18–H20（Human 2026-11-10 的三条指示：PM 回答问卷与文案确认的委托、通俗易懂的指引、新规则记入 KOS 的 PM 设定），第 2.2 节新增 P12–P14（PM 的落实做法），第 2.3 节新增 Q7（H18 是否成为常设规则，待 Human 确认）。
+- 来源：Human 2026-11-10 原话，见 PM 家目录 `PM-LOG/human-statements-2026-11-10.md`。
+- 其它规则行未改。
+
+## 2026-11-10 — KEYBOARD-BAR-CHEVRON-001 候选栏操作按钮改原生 chevron 并加分隔线
+
+- 取代 CANDIDATE-BAR-IDLE-DISMISS-001 的空心圆决定：空闲收起与展开都使用同一 `chevron.down`。
+- 在操作按钮前沿增加 1 像素竖分隔线（高为候选栏的 0.6，颜色 `.separator`），并去掉紧凑栏按钮背后的渐变、材质与着色。
+- 展开面板收起按钮去掉圆形材质底；每一行使用同一右边界，不再只缩短与操作区相交的前两行。
+- 展开面板统一右边界改为面板宽度减 44pt，使 iPhone 13 Pro 宽度上的单字候选排成 7 列；收起按钮位置不变。
+
+## 2026-11-09 — KOS-TOOLS-007 PM 侧提速工具入库
+
+- 新增 `scripts/kos/kos-impact.py`、`kos-run.sh`、`kos-verify-inputs.py` 与 `scripts/kos/tests/test_tools_007.py`。
+- `scripts/kos/README.md` 增补 O24/O25/O29 用法。
+
+## 2026-11-09 — KOS-TOOLS-006 PM 侧工具小修
+
+- `kos-report-lint.py` 接受 `CONDITIONAL`；`kos-cleanup.sh` 干跑退出码改为 0；`kos-pkg-lint.py` 豁免「只读 + main HEAD/主检出」行的 E1、豁免 `PM-LOG/open-*.json` 的 E4，并新增 W4（`$变量` 后紧跟非 ASCII）。
+
+## 2026-11-09 — KOS-ROSTER-ALEX-001 名册登记 Alex
+
+- `docs/kos/roles.md` 登记 Alex。Human 2026-11-07 原话确认名字，并说可以按照建议继续；定案第 5 条只记录该原话和上述一次临时批准。Nick 等其它行未改。
+
+## 2026-11-09 — KOS-TOOLS-005 六个 PM 侧 KOS 工具入库
+
+- 将 `kos-block.sh`、`kos-cleanup.sh`、`kos-contains.py`、`kos-pkg-lint.py`、`kos-report-lint.py`、`kos-signals.py` 收入 `scripts/kos/`，写死家目录改为遵循 `KOS_HOME`/`KOS_PROJECT`；配套单元测试与 README 说明。
+
+## 2026-11-09 — KOS-PORTFOLIO-SYNC-002 组合同步（本地交付，未发布）
+
+- `docs/PORTFOLIO.md`：朙月九宫格（PF-065）改为上线前并转为 In progress，决定记录追加 2026-11-09 两条，已完成表登记 PR #276–#281，PF-024 补记三次 test-app-keyboard 失败根因仍 UNKNOWN。
+- KOS 入口文档与工程看板不再把 `ACTIVE_WORK.md` 当现行来源，改指 `docs/PORTFOLIO.md`；ACTIVE_WORK 保留为历史快照。
+
 ## 2026-11-06 — CLIPBOARD-002 候选栏空闲粘贴
 
 - 新增默认关闭的系统粘贴控件；需完全访问，点按后仅插入纯文本，不进入词库、续写或输入洞察。

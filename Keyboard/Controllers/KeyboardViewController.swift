@@ -389,7 +389,7 @@ class KeyboardViewController: UIInputViewController {
     )
     lazy var typingStatisticsWriter = TypingStatisticsWriter(appGroupID: Self.appGroupID)
     var cachedPasteToolbarEnabled = false
-    var pasteToolbar: PasteToolbarControl?
+    var pastePreviewView: PastePreviewView?
     var pasteToolbarSuspended = false
     lazy var pasteSession: PasteToolbarSession = {
         let session = PasteToolbarSession()
@@ -480,6 +480,16 @@ class KeyboardViewController: UIInputViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         bootstrapKeyboard()
+        let observer = PasteInteractionObserver()
+        observer.cancelsTouchesInView = false
+        observer.delaysTouchesBegan = false
+        observer.delaysTouchesEnded = false
+        observer.onTouch = { [weak self] in
+            guard let self, self.pasteSession.preview == .reading else { return }
+            self.pasteSession.discardPreview()
+            self.refreshPasteToolbar()
+        }
+        view.addGestureRecognizer(observer)
     }
 
     /// deinit 是键盘扩展被销毁前的最后一个清理机会。
@@ -610,6 +620,7 @@ class KeyboardViewController: UIInputViewController {
     }
 
     override func viewWillDisappear(_ animated: Bool) {
+        pasteSession.discardPreview()
         pasteToolbarSuspended = true
         refreshPasteToolbar()
         commitTrace.close(.disappear)
@@ -984,6 +995,11 @@ class KeyboardViewController: UIInputViewController {
     /// - 自动大写是否需要重新应用（切换键盘类型后）
     /// - RIME 引擎部署状态
     override func textDidChange(_ textInput: UITextInput?) {
+        if pasteSession.preview == .reading {
+            // A host callback cannot reliably distinguish a real edit from an inquiry.
+            pasteSession.discardPreview()
+            refreshPasteToolbar()
+        }
         synchronizeAfterTextChange()
     }
 
@@ -1000,9 +1016,21 @@ class KeyboardViewController: UIInputViewController {
     /// 我们应该释放可重新创建的缓存和资源。
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
+        pasteSession.discardPreview()
+        refreshPasteToolbar()
         releaseRecoverableResourcesAfterMemoryWarning()
     }
 
+}
+
+/// Observes descendant touches without taking ownership of their gesture sequence.
+final class PasteInteractionObserver: UIGestureRecognizer {
+    var onTouch: (() -> Void)?
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
+        onTouch?()
+        state = .failed
+    }
 }
 
 enum CandidatePrefetchMode {

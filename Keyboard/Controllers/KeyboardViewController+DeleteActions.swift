@@ -352,6 +352,11 @@ extension KeyboardViewController {
         let before = textDocumentProxy.documentContextBeforeInput ?? ""
         let hadText = textDocumentProxy.hasText
         let preedit = hasActivePreedit
+        if oneGraphemeBeforeCursor {
+            // 这条删除不经过 onActionObserved，但仍算第一次输入。
+            pasteSession.noteCountedInput()
+            refreshPasteToolbar()
+        }
         var effects =
             oneGraphemeBeforeCursor
             ? controller.deleteOneGraphemeBeforeCursor()

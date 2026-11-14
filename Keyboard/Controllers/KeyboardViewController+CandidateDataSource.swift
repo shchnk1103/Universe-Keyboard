@@ -69,6 +69,10 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        if pasteSession.preview == .reading {
+            pasteSession.discardPreview()
+            refreshPasteToolbar()
+        }
         guard !isKeyboardHeightAdjusting else { return }
         if collectionView === pinyinPathCollectionView {
             guard accumulatedPinyinPaths.indices.contains(indexPath.item) else { return }
@@ -226,6 +230,10 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
     }
 
     func commitCompactCandidate(at indexPath: IndexPath) {
+        if pasteSession.preview == .reading {
+            pasteSession.discardPreview()
+            refreshPasteToolbar()
+        }
         guard !isKeyboardHeightAdjusting else { commitTrace.reject(suppressed: false); return }
         if let bar = candidateBar as? CandidateBarView, bar.shouldSuppressCandidateSelection {
             commitTrace.reject(suppressed: true); return

@@ -63,3 +63,4 @@ photos/
 
 # Local R4-B harness DerivedData / isolated runtime (formal summary is docs/evidence/*.md)
 docs/evidence/r4b-runtime/
+.alma-snapshots

@@ -49,11 +49,21 @@ extension KeyboardViewController {
             self?.commitCompactCandidate(at: indexPath)
         }
         refreshPasteToolbar(on: view)
+        view.onPasteFailureTap = { [weak self] in
+            guard let self else { return }
+            // 点失败行只清失败并刷新，不记成输入，也不改 presentation。
+            self.pasteSession.clearFailure()
+            self.refreshPasteToolbar()
+        }
         return view
     }
 
     /// Idle trailing control dismisses the keyboard; expandable content still expands.
     @objc func handleCandidateBarTrailingButton() {
+        if pasteSession.preview == .reading {
+            pasteSession.discardPreview()
+            refreshPasteToolbar()
+        }
         guard !isKeyboardHeightAdjusting else { return }
         guard !shouldBlockT9RecoveryPresentation else { return }
         let canExpand = presentedCandidates.contains { $0.kind.expandsCandidateBarPanel }
@@ -352,23 +362,91 @@ extension KeyboardViewController {
     func refreshPasteToolbar(on newBar: CandidateBarView? = nil) {
         guard controller != nil else { return }
         let bar = newBar ?? candidateBar as? CandidateBarView
-        guard isPasteToolbarEligible, let bar else {
+        let eligible = isPasteToolbarEligible && pasteSession.presentation == .armed
+        if !eligible || bar == nil {
             pasteSession.invalidate()
-            pasteToolbar?.removeFromSuperview()
-            pasteToolbar = nil
-            (candidateBar as? CandidateBarView)?.setPasteFailureNotice(nil)
-            return
+            if !pasteToolbarSuspended || !pasteSession.inquiryOpen || !cachedPasteToolbarEnabled || !hasFullAccess {
+                pasteSession.discardPreview()
+            }
+            (pastePreviewView?.superview as? CandidateBarView)?.clearPasteContent()
+            pastePreviewView = nil
+        } else if let bar {
+            pasteSession.startPreviewIfNeeded()
+            switch pasteSession.preview {
+            case .notRead, .reading, .unavailable:
+                (pastePreviewView?.superview as? CandidateBarView)?.clearPasteContent()
+                pastePreviewView = nil
+            case .ready(let result):
+                switch result {
+                case .unavailable, .denied:
+                    bar.clearPasteContent()
+                    pastePreviewView = nil
+                case .text(_, let summary, let isLink), .oversized(let summary, _, let isLink):
+                    if pastePreviewView?.superview !== bar {
+                        if pasteSession.previewWasShown {
+                            pasteSession.discardPreview()
+                            bar.clearPasteContent()
+                            pastePreviewView = nil
+                            break
+                        }
+                        let preview = PastePreviewView(summary: summary, isLink: isLink)
+                        // Inherit the bar's current dynamic type before the initial fit check.
+                        preview.isHidden = true
+                        preview.accessibilityElementsHidden = true
+                        bar.addSubview(preview)
+                        bar.updateTraitsIfNeeded()
+                        preview.updateTraitsIfNeeded()
+                        let titleFont = UIFontMetrics(forTextStyle: .body).scaledFont(
+                            for: .systemFont(ofSize: 15, weight: .semibold), compatibleWith: bar.traitCollection)
+                        let summaryFont = UIFontMetrics(forTextStyle: .caption1).scaledFont(
+                            for: .systemFont(ofSize: 12), compatibleWith: bar.traitCollection)
+                        let fitsInheritedTraits =
+                            titleFont.pointSize <= 18
+                            && titleFont.lineHeight + summaryFont.lineHeight <= 46
+                        if preview.fitsCandidateBar && fitsInheritedTraits {
+                            preview.isHidden = false
+                            preview.accessibilityElementsHidden = false
+                            preview.onCannotFit = { [weak self, weak bar] in
+                                guard let self, let bar else { return }
+                                self.pasteSession.discardPreview()
+                                bar.clearPasteContent()
+                                self.pastePreviewView = nil
+                            }
+                            preview.addTarget(self, action: #selector(pastePreviewTapped), for: .touchUpInside)
+                            pastePreviewView = preview
+                            bar.setPasteContent(preview)
+                            pasteSession.didInstallPreview()
+                        } else {
+                            preview.removeFromSuperview()
+                            pasteSession.discardPreview()
+                            bar.clearPasteContent()
+                            pastePreviewView = nil
+                        }
+                    }
+                }
+            }
         }
-        if pasteToolbar?.superview !== bar {
-            pasteToolbar?.removeFromSuperview()
-            let toolbar = PasteToolbarControl(session: pasteSession)
-            pasteToolbar = toolbar
-            bar.setPasteContent(toolbar)
+        let failure = pasteSession.pasteFailureVisible ? "无法粘贴纯文本" : nil
+        bar?.setPasteFailureNotice(failure)
+    }
+
+    @objc private func pastePreviewTapped() {
+        guard case .ready(let result) = pasteSession.preview else { return }
+        switch result {
+        case .text(let full, _, _):
+            guard let operation = pasteSession.begin() else { return }
+            pasteSession.complete(full, operationID: operation)
+        case .oversized:
+            pasteSession.failOversizedPreview()
+        case .unavailable, .denied:
+            break
         }
-        bar.setPasteFailureNotice(pasteSession.pasteFailureVisible ? "无法粘贴纯文本" : nil)
     }
 
     func observePasteDocumentIdentity(_ observation: KeyboardDocumentIdentityTracker.Observation) {
-        if observation == .changed || observation == .unavailable { pasteSession.invalidate() }
+        if observation == .changed || observation == .unavailable {
+            pasteSession.invalidate()
+            if pasteSession.preview == .reading { pasteSession.discardPreview() }
+        }
     }
 }

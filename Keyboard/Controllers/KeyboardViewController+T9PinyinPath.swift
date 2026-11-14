@@ -128,7 +128,7 @@ extension KeyboardViewController {
                         snapshot.paths,
                         selected: selected,
                         compositionRevision: snapshot.revision,
-                        idleHintText: idleHint
+                        idleHintText: idleHint, sourceDigits: snapshot.sourceDigits
                     )
                 }
             #else
@@ -136,7 +136,7 @@ extension KeyboardViewController {
                     snapshot.paths,
                     selected: selected,
                     compositionRevision: snapshot.revision,
-                    idleHintText: idleHint
+                    idleHintText: idleHint, sourceDigits: snapshot.sourceDigits
                 )
             #endif
         }
@@ -210,7 +210,7 @@ extension KeyboardViewController {
             snapshot.paths,
             selected: selected,
             compositionRevision: snapshot.revision,
-            idleHintText: t9IdlePathHintText(pathCount: snapshot.paths.count)
+            idleHintText: t9IdlePathHintText(pathCount: snapshot.paths.count), sourceDigits: snapshot.sourceDigits
         )
         t9SpaceButton?.setTitle(spaceButtonTitle, for: .normal)
         if let t9SpaceButton {

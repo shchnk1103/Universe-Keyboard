@@ -118,8 +118,12 @@ extension KeyboardController {
             nextIndex = paths.startIndex
         }
         // 选拼音: first/next/wrap only — never confirm/advance a segment.
+        let cycleOrder =
+            state.t9PinyinPathState.selectPinyinCycleOrder
+            ?? paths.map(\.displayText)
         let effects = handleSelectT9PinyinPath(paths[nextIndex], autoAdvance: false)
         if !effects.isEmpty {
+            state.t9PinyinPathState.selectPinyinCycleOrder = cycleOrder
             state.t9ReversibleAutoAnchorState = T9ReversibleAutoAnchorState(
                 phase: .rejected
             )
@@ -161,6 +165,9 @@ extension KeyboardController {
         _ path: T9PinyinPath,
         autoAdvance: Bool
     ) -> KeyboardEffect {
+        if autoAdvance {
+            state.t9PinyinPathState.selectPinyinCycleOrder = nil
+        }
         guard usesT9InputSemantics,
             let engine = rimeEngine,
             let previous = state.lastRimeOutput,
@@ -254,8 +261,12 @@ extension KeyboardController {
                 )
                 return max(0, source.count - confirmedLetters)
             }()
+            // Direct taps lock a multi-digit letter prefix. 选拼音 must not: locking
+            // rebuilds the bar around that letter and the next tap can no longer
+            // reach the original later choices.
             let isMultiDigitPrefixLock =
-                path.kind == .letterPrefix && remainingFocusDigits > 1
+                autoAdvance
+                && path.kind == .letterPrefix && remainingFocusDigits > 1
 
             // Multi-digit letter prefixes lock the focus spelling (e.g. `28` → `b`).
             // Single-digit m/n/o cycling keeps the full retained sibling set.
@@ -323,7 +334,8 @@ extension KeyboardController {
 
             applySelectedT9PinyinPathDisplay(
                 path,
-                preservingVisibleRemainder: previousVisibleRemainder
+                preservingVisibleRemainder: previousVisibleRemainder,
+                tentativePreview: !autoAdvance
             )
 
             return .compositionChanged.union(.t9PinyinPathsChanged)
@@ -430,6 +442,7 @@ extension KeyboardController {
         let previousConfirmed = state.t9PinyinPathState.confirmedSegmentValues
         let previousSelected = state.t9PinyinPathState.selectedPath
         let previousCompact = state.t9PinyinPathState.compactPaths
+        let selectPinyinCycleOrder = state.t9PinyinPathState.selectPinyinCycleOrder
         let previousRetained = state.t9PinyinPathState.retainedChoiceSourceRawInput
         let previousLockedPrefix = state.t9PinyinPathState.lockedLetterPrefix
         let normalizedRaw = T9PinyinPathExtractor.normalizeRawIdentity(raw)
@@ -674,6 +687,11 @@ extension KeyboardController {
             }
         }
 
+        let keptCycleOrder = reapplySelectPinyinCycleOrder(
+            selectPinyinCycleOrder,
+            to: &paths,
+            selectedPath: &selectedPath
+        )
         for path in paths {
             issued.insert(path.replacementRawInput)
         }
@@ -704,8 +722,21 @@ extension KeyboardController {
             focusedSegmentIndex: focusedSegmentIndex,
             confirmedSegmentValues: confirmedSegmentValues,
             lockedLetterPrefix: lockedLetterPrefix,
-            provisionalPathID: provisionalID
+            provisionalPathID: provisionalID,
+            selectPinyinCycleOrder: keptCycleOrder
         )
+        if !rawChanged, let undo = state.t9PinyinPathState.selectedDigitUndo,
+            newState.selectedPath?.displayText == undo.selected.displayText
+        {
+            newState.selectedDigitUndo = undo
+        } else if rawChanged, selectPinyinCycleOrder != nil, let previousTracked, let selected = previousSelected,
+            normalizedRaw.hasPrefix(previousTracked), normalizedRaw.count == previousTracked.count + 1,
+            normalizedRaw.last?.isNumber == true, newState.selectedPath?.displayText == selected.displayText
+        {
+            newState.selectedDigitUndo = T9SelectedDigitUndo(
+                raw: previousTracked, source: previousSegmentSource, selected: selected,
+                paths: previousCompact, order: selectPinyinCycleOrder)
+        }
         if let preferredID = t9HistoricalProvisionalPathID(in: newState) {
             newState.provisionalPathID = preferredID
         }
@@ -728,6 +759,33 @@ extension KeyboardController {
             || newState.provisionalPathID != state.t9PinyinPathState.provisionalPathID
         state.t9PinyinPathState = newState
         return changed
+    }
+
+    /// Keep the order latched by 选拼音 when a rebuild still has the same labels.
+    /// A different choice set drops the latch so later input can rank normally.
+    private func reapplySelectPinyinCycleOrder(
+        _ order: [String]?,
+        to paths: inout [T9PinyinPath],
+        selectedPath: inout T9PinyinPath?
+    ) -> [String]? {
+        guard let order, !order.isEmpty else { return nil }
+        var remaining = paths
+        var ordered: [T9PinyinPath] = []
+        for label in order {
+            guard let index = remaining.firstIndex(where: { $0.displayText == label }) else {
+                return nil
+            }
+            ordered.append(remaining.remove(at: index))
+        }
+        guard remaining.isEmpty else { return nil }
+        paths = ordered
+        if let selected = selectedPath {
+            selectedPath =
+                ordered.first {
+                    $0.displayText == selected.displayText && $0.kind == selected.kind
+                } ?? ordered.first { $0.displayText == selected.displayText }
+        }
+        return order
     }
 
     /// Progressive paths for one focus from the local syllable catalog (ADR 0023).
@@ -1215,6 +1273,11 @@ extension KeyboardController {
                 return true
             }
             restoreSegmentFocusSnapshot(extended, selectedPath: remappedSelection)
+            if snapshot.selectPinyinCycleOrder != nil, let previousRaw = snapshot.trackedRawInput {
+                state.t9PinyinPathState.selectedDigitUndo = T9SelectedDigitUndo(
+                    raw: previousRaw, source: snapshot.segmentSourceDigits, selected: selected,
+                    paths: snapshot.compactPaths, order: snapshot.selectPinyinCycleOrder)
+            }
             return true
         }
 
@@ -1309,6 +1372,33 @@ extension KeyboardController {
     func handleT9CompositionIdentityDeleteIfNeeded(
         using engine: RimeEngine
     ) -> KeyboardEffect? {
+        if usesT9InputSemantics, state.partialCommit == nil,
+            let undo = state.t9PinyinPathState.selectedDigitUndo,
+            let raw = state.lastRimeOutput?.rawInput,
+            raw.count == undo.raw.count + 1, raw.hasPrefix(undo.raw),
+            raw.last?.isNumber == true,
+            state.t9PinyinPathState.selectedPath?.displayText == undo.selected.displayText
+        {
+            let output = engine.deleteBackward()
+            if output.rawInput == undo.raw, output.composition != nil {
+                var restored = state.t9PinyinPathState
+                restored.compactPaths = undo.paths
+                restored.segmentSourceDigits = undo.source
+                restored.selectPinyinCycleOrder = undo.order
+                restored.selectedDigitUndo = nil
+                state.lastRimeOutput = output
+                state.currentComposition = undo.raw
+                restoreSegmentFocusSnapshot(restored, selectedPath: undo.selected)
+                state.t9PinyinPathState.selectPinyinCycleOrder = undo.order
+                state.t9PinyinPathState.selectedDigitUndo = nil
+                applySelectedT9PinyinPathDisplay(undo.selected, tentativePreview: true)
+                clearTypoCorrectionSuggestions()
+                return .compositionChanged.union(.t9PinyinPathsChanged)
+            }
+            // The engine has already consumed Delete; never issue a second one.
+            applyRimeOutputPreservingPartialCommit(augmentRimeOutputIfNeeded(output))
+            return .compositionChanged.union(.t9PinyinPathsChanged)
+        }
         guard usesT9InputSemantics,
             state.partialCommit == nil,
             var identity = T9CompositionIdentity.from(pathState: state.t9PinyinPathState),
@@ -1818,9 +1908,32 @@ extension KeyboardController {
     /// the exact `m/n/o` path the user is cycling through.
     private func applySelectedT9PinyinPathDisplay(
         _ path: T9PinyinPath,
-        preservingVisibleRemainder preservedRemainder: String? = nil
+        preservingVisibleRemainder preservedRemainder: String? = nil,
+        tentativePreview: Bool = false
     ) {
         let explicitSegments = state.t9PinyinPathState.confirmedSegmentValues + [path.displayText]
+        // 选拼音 only previews the chosen label. Reusing the previous full
+        // spelling's tail (ning → g) turns the next shorter choice back into
+        // ming/ning, so consecutive taps look stuck on the first two items.
+        if tentativePreview {
+            let preview = explicitSegments.joined()
+            guard let partialCommit = state.partialCommit else {
+                updateInlinePreedit(preview, source: .compositionProjection)
+                return
+            }
+            let displayText = partialCommit.confirmedText + preview
+            state.partialCommit = PartialCommitState(
+                confirmedText: partialCommit.confirmedText,
+                remainingRawInput: state.lastRimeOutput?.rawInput
+                    ?? partialCommit.remainingRawInput,
+                remainingPreeditText: preview,
+                displayText: displayText,
+                checkpoint: partialCommit.checkpoint,
+                source: partialCommit.source
+            )
+            updateInlinePreedit(displayText, source: .compositionProjection)
+            return
+        }
 
         guard let partialCommit = state.partialCommit else {
             let visible = t9DisplayPreservingUnresolvedSuffix(

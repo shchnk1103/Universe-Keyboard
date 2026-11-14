@@ -6,11 +6,11 @@
 
 - 任务目录默认在 `~/.kos-work/<项目名>/<TASK-ID>/`，例如 `~/.kos-work/Universe-Keyboard/KOS-TOOLS-REPO-001/`。
 - 每个任务目录有四个子目录：`instructions/`（包草稿与冻结包）、`reports/`（报告与授权回执）、`scratch/`（临时文件）、`packets/`（审阅包）。
-- 环境变量 `KOS_HOME`（默认 `$HOME/.kos-work`）和 `KOS_PROJECT`（默认 `Universe-Keyboard`）**只对 `new_task_dir.sh` 生效**。其它脚本不读这两个变量：
+- 环境变量 `KOS_HOME`（默认 `$HOME/.kos-work`）和 `KOS_PROJECT`（默认 `Universe-Keyboard`）对 `new_task_dir.sh`、`kos-cleanup.sh`、`kos-signals.py` 生效；`kos-pkg-lint.py` 里保留同名派生但未使用。其它脚本不读这两个变量：
   - `freeze.py`：路径都来自命令行和草稿里的绝对路径。`HOME` 只用于在派发块里把家目录显示成 `~`。
   - `check_report.py`：任务目录由报告路径推出（报告所在目录的上一级）。
 - 依赖：Python 3（只用标准库）、Git（`freeze.py` 的 `git-*` 占位符，以及 `check_report.py`、`claim-check.py` 需要）、Bash（`new_task_dir.sh` 需要）。
-- Python 脚本用 `python3 -B` 调用，不直接执行，只有 `new_task_dir.sh` 有可执行位。
+- Python 脚本用 `python3 -B` 调用，不直接执行，只有 `new_task_dir.sh`、`kos-block.sh`、`kos-cleanup.sh` 有可执行位。
 - 相对路径的解析规则：
   - `freeze.py` 在自己所在目录查找 `verify-tree.py`，和 cwd 无关。
   - `check_report.py` 把报告里的相对路径依次相对任务目录、`reports/` 和 `--worktree` 解析。
@@ -64,7 +64,7 @@ python3 -B scripts/kos/freeze.py /Users/me/.kos-work/Universe-Keyboard/T-001/ins
   - “不联网”与联网预批准并存（“联网只限……只读 `gh`”这种限定句不算冲突），或 HEAD 与 GET 混用；
   - 提到构建并在写入范围句限定“只写”（去掉行首空白后以“只写”开头，因此包含“只写 scratch”和“只写：scratch”；行首星号或列表符开头的“只写下面这些”不算；或句中同时含“写入”与“只写”；含“最终消息只写”的句子除外。`pgrep -x xcodebuild` 句不计为构建），却没给构建输出位置（`--readonly` 整包不报；某一句同时写了构建工具和“不运行”或“不启动”时，这一句不计入）；
   - 引用或采纳的报告（任意以 `/` 开头的绝对路径）没有哈希。
-- **`--requires-commit`：** 还要有 `Cowork 3P <cowork-3p@localhost>`。包里有 `.swift` 路径时才要求 `lint --strict`（只有 `.swift-format` 或单独的 `.swift` 字样不算路径）。还要有 `docs/assignments/<名>.md`，或同一句在“无 Assignment”四字之后写了非空理由；只写 `docs/ASSIGNMENT_POLICY.md` 不算。
+- **`--requires-commit`：** 还要有 `Cowork 3P <cowork-3p@localhost>`。包里有 `.swift` 路径时才要求 `lint --strict`（只有 `.swift-format` 或单独的 `.swift` 字样不算路径）。还要有 `docs/assignments/<名>.md`，或同一句在“无 Assignment”四字之后写了非空理由；只写 `docs/ASSIGNMENT_POLICY.md` 不算。还要有“滚动交接报告”条款字样。
 - **构建输出与“自行跳过”：** 非只读、且出现 `xcodebuild` / `swift test` / `模拟器`、又没有“不运行……构建与测试”或“不启动……设备”时，要求 `derivedDataPath`（或 `scratch-path` / `DerivedData`）和“自行跳过”。`--readonly` 不要求这两项。
 - **输出：** 输出文件已存在就拒绝覆盖。成功时写出冻结包，打印其 SHA-256 和可直接粘贴的派发块。
 - 固定条款库见 [`docs/kos/pm-packet-clauses.md`](../../docs/kos/pm-packet-clauses.md)，PM 工作规则见 [`docs/kos/pm-playbook.md`](../../docs/kos/pm-playbook.md)。
@@ -84,6 +84,7 @@ python3 -B scripts/kos/check_report.py /Users/me/.kos-work/Universe-Keyboard/T-0
   - 给了 `--worktree` 时：HEAD、tree、status，以及自 `--base` 起每个提交的身份；
   - skip 行；
   - “观察与改进意见”原文。
+  - 报告第一行以 `IN-PROGRESS` 开头时，`STATUS:` 后多一行 `INTERRUPTED-OR-RUNNING`；给了 `--worktree` 时再列出报告修改时间之后的提交与 `scratch/` 下更新的 `.log`。
 - **找不到报告时：** 列出 `reports/` 最近修改的文件。
 - 结果“全部一致”只说明引用的文件对得上，不说明报告内容正确。
 
@@ -140,3 +141,104 @@ PYTHONDONTWRITEBYTECODE=1 python3 -I -B -m unittest discover -s scripts/kos/test
 ## 来源与同步
 
 这些脚本原先位于 PM 本机的技能目录（`~/.claude/skills/kos-packet-author/`、`~/.claude/skills/kos-report-check/`）和 `~/.kos-work/Universe-Keyboard/tools/`。仓库内的这一份是权威来源，本机技能目录只应转调这里。测试见 [`../ci/tests/test_kos_tools.py`](../ci/tests/test_kos_tools.py)。
+
+## PM 侧工具（O13–O20）
+
+六个工具从 PM 外置目录收入本目录。行为不变；仅把写死的 PM 家目录改为遵循 `KOS_HOME` / `KOS_PROJECT`（与上文家目录约定一致）。
+
+### kos-report-lint.py：摘要报告机械检查
+
+```bash
+python3 -B scripts/kos/kos-report-lint.py /path/to/reports/executor-report-impl.md
+```
+
+- **作用：** 检查报告大小、首行状态词、疑似整段内嵌的机器输出前缀、引用日志的 SHA-256 是否与文件实测一致。接受的状态词含 `DONE`/`PARTIAL`/`BLOCKED`/`STOPPED`/`PASS`/`CHANGES_REQUESTED`/`FAIL`/`APPROVE`/`CONDITIONAL`。
+- **退出码：** 0 合规并打印 `OK`；1 有问题（逐条打印）。
+- **环境变量：** 不读 `KOS_HOME` / `KOS_PROJECT`。
+
+### kos-contains.py：日志行是否都在对照文件里
+
+```bash
+python3 -B scripts/kos/kos-contains.py '<正则>' /path/to/log.txt /path/to/reference.txt
+```
+
+- **作用：** 日志里匹配正则的每一行都必须在对照文件中逐字出现；替代人通读核对。
+- **退出码：** 0 全在；1 有缺失（打印匹配数、缺失数与前几条）。
+- **环境变量：** 不读 `KOS_HOME` / `KOS_PROJECT`。
+
+### kos-pkg-lint.py：包与章程的机械一致性
+
+```bash
+python3 -B scripts/kos/kos-pkg-lint.py --start <40位起点SHA> --prev /path/to/prev-task --charter /path/to/STAGE-CHARTER.md /path/to/task-package-*.md
+```
+
+- **作用：** 检查起点类 SHA（E1）、上一阶段遗留 SHA（E2）、kos-block 键是否在章程键表（E3）、绝对路径是否存在（E4），以及若干提示（W1–W4）。E1 对同时含「只读」与「main HEAD/主检出」的行豁免；E4 对路径含 `/PM-LOG/open-` 且以 `.json` 结尾的输出文件豁免；W4 提示 `$变量名` 后紧跟非 ASCII 字符的写法。
+- **退出码：** 0 无错误（可有提示）；1 有错误。
+- **环境变量：** 派生了 `KOS_HOME` / `KOS_PROJECT` 根目录变量，但当前实现未使用。
+
+### kos-block.sh：生成参数文件与 3 行派发块
+
+```bash
+bash scripts/kos/kos-block.sh "角色名" "步骤说明" /path/to/task-package.md /path/to/params.txt /path/to/next-block.txt --next "下一步：…" key=value
+```
+
+- **作用：** 实测 SHA-256，写出参数文件与三行块；`*_path` 键自动带哈希。默认拒绝覆盖已存在输出；`KOS_BLOCK_FORCE=1` 才允许。
+- **退出码：** 0 成功；2 包/路径不存在；3 输出已存在且未设 force。
+- **环境变量：** 读 `KOS_BLOCK_FORCE`；不读 `KOS_HOME` / `KOS_PROJECT`。有可执行位。
+
+### kos-signals.py：失败原因与收件箱
+
+```bash
+KOS_HOME=/path/to/home KOS_PROJECT=Proj python3 -B scripts/kos/kos-signals.py
+KOS_HOME=/path/to/home KOS_PROJECT=Proj python3 -B scripts/kos/kos-signals.py --inbox "Human 原话"
+```
+
+- **作用：** 按 `CAUSE-TAGS.tsv` 统计升级/失败原因、列出未标原因事件、超大报告与改进清单待办；`--inbox` 追加待转条目。
+- **退出码：** 0。
+- **环境变量：** 读 `KOS_HOME` / `KOS_PROJECT`（账本与标签所在根）。
+
+### kos-cleanup.sh：任务收尾释放空间
+
+```bash
+KOS_HOME=/path/to/home KOS_PROJECT=Proj bash scripts/kos/kos-cleanup.sh report
+KOS_HOME=/path/to/home KOS_PROJECT=Proj bash scripts/kos/kos-cleanup.sh r TASK-ID
+KOS_HOME=/path/to/home KOS_PROJECT=Proj bash scripts/kos/kos-cleanup.sh --apply r TASK-ID
+```
+
+- **作用：** 默认只演示；`--apply` 才删除。`r` 清空甲类可再生目录（保留 Logs/，不碰 reports/、worktree）；受保护任务写在 `KOS-CLEANUP-001/protected.txt`。
+- **退出码：** 干跑（不加 `--apply`）与成功演示均为 0；2 用法错误。
+- **环境变量：** 读 `KOS_HOME` / `KOS_PROJECT`。有可执行位。
+
+## PM 侧提速工具（O24/O25/O29）
+
+三个只读或只写指定日志的工具。不读 `KOS_HOME` / `KOS_PROJECT`。
+
+### kos-impact.py：改动面检索与分类
+
+```bash
+python3 -B scripts/kos/kos-impact.py --repo <仓库> [--ref <提交>] --term <词> [--allowed <路径>] [--later <路径>] [--ignore <前缀>]
+```
+
+- **作用：** 对每个词做 `git grep -c -F`。`--ref` 查该提交，否则查工作区已跟踪内容。命中按 ALLOWED、LATER、IGNORED、UNCLASSIFIED 分类；优先级是 ALLOWED 高于 LATER 高于 IGNORED。
+- **退出码：** 0 无 UNCLASSIFIED；1 有 UNCLASSIFIED；2 参数或仓库错误。无命中不是错误。
+- **不写文件。**
+
+### kos-run.sh：带证据头尾的命令日志
+
+```bash
+bash scripts/kos/kos-run.sh --log <日志> [--cwd <目录>] [--env KEY=VALUE]... -- <命令> [参数...]
+```
+
+- **作用：** 日志已存在则拒绝。第一行是全部环境项与命令参数的 shell 引用，随后写运行前 HEAD 与 `git status --porcelain`，再合并命令的标准输出和标准错误，最后写 `EXIT:` 与结束时 HEAD。
+- **退出码：** 等于命令退出码；2 用法错误；3 日志已存在。
+- **有可执行位。** 只创建并写指定日志。
+
+### kos-verify-inputs.py：包内冻结哈希复核
+
+```bash
+python3 -B scripts/kos/kos-verify-inputs.py [--quiet] /path/to/task-package.md
+```
+
+- **作用：** 找出反引号中的绝对路径，并在其后 80 个字符内取 64 位小写 SHA-256 复核。含 `<>*$` 或 `{{` 的路径跳过；目录记 SKIP；相同路径与哈希只计一次。
+- **退出码：** 0 无 MISMATCH/MISSING；1 有；2 包文件不存在。
+- **不写文件。** `--quiet` 只打印非 OK 行与 SUMMARY。

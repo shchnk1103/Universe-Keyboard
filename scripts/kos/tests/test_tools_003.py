@@ -332,6 +332,7 @@ class FreezeIdentityTests(unittest.TestCase):
             "所有结果写进报告；最终消息只写一句话：状态 + 报告路径 + SHA-256。**\n"
             "写入被拒。不主动写 /tmp。授权原文另存 `/x/y.md`。reports/out.md\n"
             "无 Assignment：小任务分级。\n"
+            "滚动交接报告\n"
         )
         with_default = base + "Cowork 3P <cowork-3p@localhost>\n"
         self.assertEqual(FREEZE.lint_problems(with_default, requires_commit=True), [])
