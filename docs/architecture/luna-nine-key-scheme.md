@@ -20,7 +20,9 @@
 - `NineKeySchemeRegistry.entries` 是 `static let`，不能在测试里注入新 ID；生产参数化 `RimeT9SmokeProbe.verify` 对未登记 ID 失败关闭。
 - 版本：运行时 librime 1.16.1；生成器 1.17.0 在诊断与 manifest 里都没有证据（UNKNOWN）。
 
-## 4. 已定与待定的决定
+## 4. 已定与待定的决定（2026-11-08 历史快照）
+
+> 本节“仍须验证/待做”为当时快照，不作为当前逐项未关闭清单。2026-11-15 的 A9 取证、更正与处置见第7–9节；未在冻结来源中逐项判定的旧事项，本页不自行声称完成。
 - 已定：采用方案 A，为派生变体加入 spelling_hints，R6 修订固定 N=8，产生新的重写输出与 outputSHA256；实现和性能对照仍须验证。设计补充 R6 经第二轮独立 Architecture 审查通过。
 - 已定：PR1 保留参数化入口的正反例阻断；缝是 `RimeT9SmokeProbe.verify` 的测试可见重载，接受不可变登记快照，生产公开入口只用真实 entries，`entries` 保持 `static let`。
 - 待定/待做：N=8 的实现验证与每键延迟对比（朙月旧值、8、雾凇，同条件）；模糊音与简繁叠加下的 comment 语义；Path 与 controller 的真实 fake-host 实测；旧部署目录升级与失败回退；雾凇与万象的内置资源闭包和三家回归仍须在 PR1 核验；缺 fixture 或证据时记未验证并阻断 PR2。
@@ -33,3 +35,71 @@
 
 ## 6. 证据位置
 任务报告在 PM 的外置工作目录（不在仓库）：LUNA-PLANNER-IMPL-001（planner 设计补充与审查、质量与门禁）、LUNA-T9-001（设计 R1–R5、Architecture 审查、PR1 各段）、LUNA-T9-PR1-D（D 段取证、设计补充 R6 与审查）、LUNA-T9-SPIKE-HINTS（拼写提示探针）。代码入口：`Packages/KeyboardCore/Sources/KeyboardCore/LunaT9SchemaCompatibility.swift`、`Packages/RimeBridge/Sources/RimeBridge/LunaT9DeploymentSupport.swift`、`RimeConfigManager+CustomYaml.swift`、`RimeT9SmokeProbe.swift`；`Packages/KeyboardCore/Sources/KeyboardCore/T9PreeditResolver.swift`、`NineKeySchemeRegistry.swift`、`SchemaSwitchResolver.swift`。
+
+
+## 7. PR1 未关闭项与本次取证状态（A9，2026-11-15 UTC+8）
+
+这是冻结来源的历史取证快照（Executor-recorded），不是本轮重跑、全量验证或 PR1 合并许可。
+A9-M 在 `d7471e8c8b755f9bc5043731708a3795ed54d18c` 取得七步结果；其步骤4失败由 A9-F 的新结果更新，不能用新步骤4外推其它步骤也已在新HEAD重跑。
+
+| 项 | 取证事实与边界 |
+|---|---|
+| 4c | 无运行时“开启写入、关闭不写”的双向证据；现有仅编译配置证据。`LunaT9CompileInputContractTests` 检查 `translator/enable_user_dict`，compiled learning key 仍记已知失败。 |
+| 4e | 本次未比较朙月、雾凇、万象的运行库或生成器身份差异，结论为无法确定。 |
+| RimeT9* | A9-M 实测跳过25项，不是历史18：S4提交1、T9 Spike目录16、兼容Spike目录1、矩阵夹具未配置7；本包未配置或补跑。跳过不等于通过，处置归属见第8节。 |
+| A9-F | 未配置证据根时自行跳过；定向绿灯1项、1跳过、0失败、EXIT 0，原文 `LUNA_T9_EVIDENCE_ROOT not set`。步骤4为173项、29跳过、0失败、EXIT 0（RimeT9*跳过25）。已设置证据根分支未运行，仅静态确认原断言保留，不扩写为旧根因已全部消除。 |
+
+A9-F 提交 `410f4e62b7ea273b9032b68c83ecd02edf168d00` 只改一个测试文件（3增1减）；其他门禁是此前 `d7471e8` 上取得。本轮仅写文档。
+
+### 5c 更正与逐点映射
+
+按更正报告 `executor-report-m5c-r1.md`：`Point` 实际15点，A9-M所写16为误数，逐点方法映射已更正，计数问题已澄清，不是未解决的来源冲突。只证明静态引用与方法级日志结果，不证明各注入断言语义充分；不据此声称 PR1 可合并。
+
+引用均在 `LunaT9DeploymentContractTests.swift`。方法 A=`testEveryForwardFailureRestoresBytesOrNonexistenceThenRedeploys`（:46，日志 37348 passed）；B=`testRollbackFailureSurvivesOuterBoundaryAndRetainsRecoverableBackups`（:88，日志 37411 passed）；C=`testMultipleRollbackFailuresRemainExplicit`（:143，日志 37394 passed）。
+
+| 注入点 | 引用与源码行 | 日志 |
+|---|---|---|
+| backupResources | A:48 | 37348 passed |
+| backupSource | A:48 | 37348 passed |
+| backupOverlays | A:48 | 37348 passed |
+| backupReceipts | A:48 | 37348 passed |
+| resourceWrite | A:49、A:60 | 37348 passed |
+| resourceReceiptWrite | A:49 | 37348 passed |
+| sourceWrite | A:49 | 37348 passed |
+| sourceReplace | A:49 | 37348 passed |
+| overlayWrite | A:50、A:60 | 37348 passed |
+| overlayReplace | A:50、A:60 | 37348 passed |
+| overlayReceiptWrite | A:50 | 37348 passed |
+| cacheDelete | A:50、A:60；B:93；C:146 | 37348、37411、37394 passed |
+| restoreSource | B:89、B:93；C:146、C:153 | 37411、37394 passed |
+| restoreOverlay | B:89、B:93；C:146、C:153 | 37411、37394 passed |
+| restoreResources | B:89、B:124；C:146、C:153 | 37411、37394 passed |
+
+## 8. 本次处置新增的 PR2 前置门与 PR1 排除项
+
+来源是 PM-LOG/pr1-open-items-disposition-20261115.md，不是下节设计裁决：Human 对三项原话“这三项可以由你来决定”，以下原文为 Human 委托 PM 的决定：
+
+1. RimeT9* 25 个条件跳过：明确排除出 PR1 回归门禁（A9-M 包已记录 Human 此前决定其不属于 PR1 回归门禁）；PR 描述写明仍跳过、不称已验证。
+2. 4c 学习开启写入/关闭不写的运行时双向证据：PR1 无生产接线，移为 PR2 前置门；PR 描述写明 PR1 仅有编译配置证据。
+3. 4e 朙月/雾凇/万象运行库身份对照：同上移为 PR2 前置门；PR 描述写明现状“无法确定”。
+4. 以上处置只代表 PM 在 Human 委托下的决定，Human 随时可改；PR 描述须如实写“未验证项”，不得写“全部验证”。
+
+因此4c、4e移为本次处置新增的 PR2 前置门，仍未验证；25个 RimeT9* 条件跳过明确排除出 PR1 回归门禁，不是变成通过，也不是转为 PR2 项。对三项不再沿用未经处置时 PR1 合并前补齐的旧要求。
+
+## 9. 既有 PR2 生产接线前置门（独立来源）
+
+来源：LUNA-T9-PR1-COVERAGE/reports/design-pr1-coverage.md 第3节。以下为原文，不与第8节本次4c/4e处置混为同一来源：
+
+「PR2 合并前置门（来源 LUNA-T9-PR1-COVERAGE 设计裁决）：在 `NineKeySchemeRegistry.entries` 真实登记 `luna_pinyin_t9` 的同一提交上，经生产路径取得以下证据，并由独立质量复核核对。取证不得经测试快照、`NineKeyPublishSmoke.override` 或 `selectAndConfirmHook`。任一项失败、跳过、缺 fixture 或只能靠测试缝取得，PR2 不得合并：(1) 生产 `RimeT9SmokeProbe.verify` 对 `luna_pinyin_t9`/`6446` 为真；readiness 由启用编排与 `publishIndependentNineKeyReadiness` 写入，并按 `luna_pinyin_t9.schema.yaml` 指纹与 compatibilityVersion 匹配；源变化或 smoke 失败时不发布 ready。(2) `schemeBinding9` 经设置入口写入并读回；未就绪时不写入。(3) 扩展经 `RimeRuntimeSelectionBridge` 解析，`luna_pinyin_t9` 被 librime 实际选中；`reconciled` 后九键 chrome 与 T9 语义一致；朙月 26 键与九键往返切换后共享用户词典不丢失。(4) schema 与 overlay 由生产编排生成，字节与 `outputSHA256` 一致。(5) 设置页与键盘的可见状态与 readiness 一致；失败时不以九键外观冒充可输入。(6) R6 §5 的旧目录拒绝、新源重部署、逐项失败注入与恢复在生产编排上复验，记录不可用时段；恢复到经验证可用的字母方案，或明确标为不可用。(7) 雾凇 `t9`、万象 `wanxiang_t9i` 的 marker、binding 与扩展路由回归不变。」
+
+## 10. A9 来源与重验边界
+
+外置根为 `~/.kos-work/Universe-Keyboard/`；文中行号只适用于来源冻结提交，代码变化后必须重验，链接检查不验证行锚点或外链可达。原始运行命令/环境与日志见各报告，不把模拟器证据提升为真机或生产接线证明。
+
+| 来源（外置，不入库） | SHA-256 |
+|---|---|
+| LUNA-T9-A9/reports/executor-report-measure.md | 8652bfbe21ab053d4bd90116c0c58c2285ac0110df6142f4c2009e66f45dc6c0 |
+| LUNA-T9-A9/reports/executor-report-fix-r4.md | c206def62ce05c6d788feebfd50512fc516bed793e6c89014caa337dac9c593e |
+| LUNA-T9-A9/reports/executor-report-m5c-r1.md | bccc32aaa19b2f8e4b8e8069a00daa823ac1100673d2aae2e36542de93ec6339 |
+| PM-LOG/pr1-open-items-disposition-20261115.md | 1d546f68c16a0a9d762686ac8eed02f7986f941ddc02b02de1217f1a16671360 |
+| LUNA-T9-PR1-COVERAGE/reports/design-pr1-coverage.md | 9d2f3be0fd889b2ef48074b1e5a7d98a063ea8f5c8f357c5d4c1d216cc457350 |
