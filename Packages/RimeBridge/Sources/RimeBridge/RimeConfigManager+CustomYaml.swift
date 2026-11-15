@@ -336,7 +336,7 @@ extension RimeConfigManager {
         }
         if let controlledAlgebra {
             // Nine-key algebra is a full replacement. Appending would place letter
-            // rules after the terminal xlit, where they no longer match letters.
+            // rules after the eight terminal digit derives, where they no longer match letters.
             yaml += "  \"speller/algebra\":\n"
             for rule in controlledAlgebra {
                 yaml += "    - \(rule)\n"
@@ -639,20 +639,34 @@ extension RimeConfigManager {
         return lunaT9AlgebraReplacement(source: source, fuzzyPinyinSettings: fuzzyPinyinSettings)
     }
 
-    private static let lunaT9TerminalXlit =
-        "xlit/abcdefghijklmnopqrstuvwxyz/22233344455566677778889999/"
+    private static let lunaT9TerminalDigitDerives = [
+        "derive/[abc]/2/",
+        "derive/[def]/3/",
+        "derive/[hgi]/4/",
+        "derive/[jkl]/5/",
+        "derive/[omn]/6/",
+        "derive/[pqrs]/7/",
+        "derive/[tuv]/8/",
+        "derive/[wxyz]/9/",
+    ]
 
-    /// Letter rules already in the frozen schema, then the setting's fuzzy rules, then one xlit.
+    /// Letter rules already in the frozen schema, then the setting's fuzzy rules, then eight terminal digit derives.
     private static func lunaT9AlgebraReplacement(
         source: String,
         fuzzyPinyinSettings: RimeFuzzyPinyinSettings
     ) -> [String]? {
-        guard let rules = algebraList(in: source), let terminal = rules.last else { return nil }
-        let letters = rules.dropLast()
-        guard terminal == lunaT9TerminalXlit, letters.allSatisfy({ $0 != lunaT9TerminalXlit }) else {
-            return nil
-        }
-        return Array(letters) + fuzzyPinyinSettings.algebraRules + [terminal]
+        guard let rules = algebraList(in: source), rules.count >= 8 else { return nil }
+        let terminal = Array(rules.suffix(8))
+        let letters = Array(rules.dropLast(8))
+        guard terminal == lunaT9TerminalDigitDerives else { return nil }
+        guard
+            letters.allSatisfy({ rule in
+                !lunaT9TerminalDigitDerives.contains(rule) && !rule.hasPrefix("xlit/")
+            })
+        else { return nil }
+        let fuzzy = fuzzyPinyinSettings.algebraRules
+        guard Set(fuzzy).isDisjoint(with: Set(lunaT9TerminalDigitDerives)) else { return nil }
+        return letters + fuzzy + terminal
     }
 
     private static func algebraList(in source: String) -> [String]? {

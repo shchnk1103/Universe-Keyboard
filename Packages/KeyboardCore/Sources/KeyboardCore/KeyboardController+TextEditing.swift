@@ -468,6 +468,7 @@ extension KeyboardController {
         let output = engine.replaceInput(shortened)
         guard output.committedText == nil,
             output.composition?.preeditText.isEmpty == false,
+            output.candidates.isEmpty == false,
             T9PinyinPathExtractor.normalizeRawIdentity(output.rawInput)
                 == T9PinyinPathExtractor.normalizeRawIdentity(shortened)
         else {
