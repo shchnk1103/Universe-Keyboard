@@ -71,7 +71,7 @@
 | PF-067 | 上线后 | 万象 `.gram` 语言模型可选下载 | UNKNOWN | 在 13 个实验序列的前五候选中未观察到影响，长句未测；可选下载为 PM 建议，方案待决定。 | 外置 RIME-T9-ENGINE-001/notes/gram-model-experience.md | 2026-11-05 |
 | PF-068 | 上线后 | 本地门禁与托管 CI 的 Xcode 版本对齐 | Backlog | PR #270 本机 Xcode 27.2 门禁通过而 CI（runner 默认 Xcode 26.6）编译失败，修复后通过；做法未决定（PM 备选：CI 固定版本或本机装同版） | [PR #270](https://github.com/shchnk1103/Universe-Keyboard/pull/270)；外置 PM-LOG/ci/pr270.md | 2026-11-05 |
 | PF-069 | 上线后 | 测试写入主机 `~/Library/Preferences` 的 UserDefaults 文件用后清理 | Backlog | PR #270 的本地验证前后快照显示新增测试 plist，未删除 | [PR #270](https://github.com/shchnk1103/Universe-Keyboard/pull/270) 的本地验证记录（外置 RELEASE-20261105/reports/executor-report-integrate.md） | 2026-11-05 |
-| PF-070 | UNKNOWN | 九宫格拼音循环与删除诊断日志（T9-PINYIN-CYCLE-009） | Backlog | S1 已在本地实现 v7 与两类事件，尚未发布；快照来自回滚前的请求结果；资源审计未启用；隐私分类未定，含新事件的构建在 Human 决定前不得进 TestFlight | [Assignment](assignments/t9-pinyin-cycle-009.md)；Human 2026-11-14 决定 | 2026-11-14 |
+| PF-070 | UNKNOWN | 九宫格拼音循环与删除诊断日志（T9-PINYIN-CYCLE-009） | Backlog | S1 已在本地实现 v7 与两类事件；S1c 后台桥与关闭代数已本地实现，待 Quinn 复核，尚未发布；快照来自回滚前的请求结果；资源审计未启用；隐私分类未定，含新事件的构建在 Human 决定前不得进 TestFlight | [Assignment](assignments/t9-pinyin-cycle-009.md)；Human 2026-11-14 决定 | 2026-11-14 |
 
 ## 决定记录
 

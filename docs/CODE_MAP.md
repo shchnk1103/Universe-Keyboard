@@ -87,3 +87,9 @@
 - KeyboardCore 其它部分（输入管线、Partial Commit、纠错、输入智能） — TODO-after-launch
 - RimeBridge — TODO-after-launch
 - EnvironmentDigestTool — TODO-after-launch
+
+## T9 诊断日志后台桥（T9-PINYIN-CYCLE-009 S1c）
+
+**职责**：按键路径只经 `T9DiagnosticAdmission` 的 trylock 入队；`T9DiagnosticsJournalPump`（串行 utility 队列）取批、按准入序合并，经 `DiagnosticsJournalRuntime.recordAdmittedT9` 写入 v7 事件。出处：`Packages/KeyboardCore/Sources/KeyboardCore/T9DiagnosticsJournalPump.swift`、`T9DiagnosticAdmission.swift`。
+**关闭代数**：`DiagnosticsCloseGeneration`（App Group `logging_close_generation`，只增）；设置页关闭开关时推进，pump 取批前读取，`DiagnosticsJournal` 首次写盘前再核对。
+**测试归属**：`Packages/KeyboardCore/Tests/KeyboardCoreTests/T9DiagnosticJournalS1cTests.swift`（J1–J8、J10）、`UniverseKeyboardTests/T9DiagnosticCopyIsolationTests.swift`（J9）。

@@ -115,7 +115,7 @@ struct DiagnosticsSettingsView: View {
                     Text(
                         loggingEnabled
                             ? "键盘与主 App 可将事件写入本机诊断缓冲"
-                            : "关闭后不再写入新记录；已有记录仍可查看"
+                            : "关闭后不再写入新记录；已有记录仍可查看。关闭开关后，键盘在察觉到关闭之后不再开始新的写入；察觉之前已经开始写盘的那一批会写完。不承诺具体毫秒数。"
                     )
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -136,6 +136,8 @@ struct DiagnosticsSettingsView: View {
             set: { newValue in
                 loggingEnabled = newValue
                 defaults?.set(newValue, forKey: "logging_enabled")
+                // 009 S1c §5.10: every close advances the generation (survives reopen).
+                if !newValue { DiagnosticsCloseGeneration.publishClose(to: defaults) }
             }
         )
     }

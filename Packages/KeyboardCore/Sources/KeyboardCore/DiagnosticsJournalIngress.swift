@@ -73,6 +73,8 @@ public final class DiagnosticsJournalIngress: Sendable {
         var inFlightEventCount = 0
         var appendAdmitted = false
         var isSuspended = false
+        /// 009 S1c: highest close generation this ingress has been aware of.
+        var closeFloor: UInt64 = 0
         var lifecycleEpoch: UInt64 = 0
         var lastProcessGeneration: UInt64?
         var droppedWhileSuspended = 0
@@ -160,6 +162,9 @@ public final class DiagnosticsJournalIngress: Sendable {
     private let writerVersion: DiagnosticsJournalWriterVersion
     private let flushDelay: TimeInterval
     private let makeHealthEvent: (@Sendable (DiagnosticEvent.Reason, Int) -> DiagnosticEvent)?
+    /// 009 S1c: advance-only close generation published by the diagnostics switch. Read only
+    /// on the background flush path and at the append gate, never on the key path.
+    private let closeGenerationProvider: (@Sendable () -> UInt64)?
     #if DEBUG
         private let batchWriterFactory = Mutex<(@Sendable (URL) -> any DiagnosticsJournalBatchWriting)?>(nil)
         private let waiterRegisteredProbe = Mutex<(@Sendable (Int) -> Void)?>(nil)
@@ -173,8 +178,11 @@ public final class DiagnosticsJournalIngress: Sendable {
         rootURL: @escaping @Sendable () -> URL?,
         isCategoryEnabled: @escaping @Sendable (Logger.Category) -> Bool,
         makeHealthEvent: (@Sendable (DiagnosticEvent.Reason, Int) -> DiagnosticEvent)? = nil,
-        flushDelay: TimeInterval = 0.25
+        flushDelay: TimeInterval = 0.25,
+        closeGenerationProvider: (@Sendable () -> UInt64)? = nil
     ) {
+        self.closeGenerationProvider = closeGenerationProvider
+        pending.withLock { $0.closeFloor = closeGenerationProvider?() ?? 0 }
         queue = DispatchQueue(label: "com.universekeyboard.diagnostics-journal", qos: .utility)
         self.origin = origin
         self.processInstanceID = processInstanceID
@@ -533,7 +541,43 @@ public final class DiagnosticsJournalIngress: Sendable {
         }
     }
 
+    /// 009 S1c awareness: the first read of a newer close generation drops every queued
+    /// (not yet written) event. Events already inside the writer's first write are untouched.
+    /// Returns the number of dropped queued events.
+    @discardableResult
+    func observeCloseGeneration() -> Int {
+        guard let closeGenerationProvider else { return 0 }
+        let live = closeGenerationProvider()
+        let (dropped, ready) = pending.withLock { state -> (Int, [AsyncStream<Void>.Continuation]) in
+            guard live > state.closeFloor else { return (0, []) }
+            state.closeFloor = live
+            let count = state.events.count
+            #if DEBUG
+                let tickets = Set(state.events.map(\.ticket))
+                state.events.removeAll()
+                return (count, state.terminate(tickets, outcome: "lifecycle"))
+            #else
+                state.events.removeAll()
+                return (count, [])
+            #endif
+        }
+        #if DEBUG
+            resumeWaiters(ready)
+        #else
+            _ = ready
+        #endif
+        return dropped
+    }
+
+    /// True when no newer close generation than the floor is visible (write may begin).
+    fileprivate func closeGateAllowsWrite() -> Bool {
+        guard let closeGenerationProvider else { return true }
+        let live = closeGenerationProvider()
+        return pending.withLock { live <= $0.closeFloor }
+    }
+
     private func flushPendingEvents() {
+        observeCloseGeneration()
         let work = pending.withLock { state -> FlushWork? in
             state.flushScheduled = false
             guard !state.isSuspended, !state.writeInFlight, !state.events.isEmpty else { return nil }
@@ -639,7 +683,8 @@ public final class DiagnosticsJournalIngress: Sendable {
                         origin: origin,
                         processInstanceID: processInstanceID,
                         isMainAppWriter: isMainAppWriter,
-                        writerVersion: writerVersion
+                        writerVersion: writerVersion,
+                        beginWriteGate: { [self] in closeGateAllowsWrite() }
                     )
                 }
                 writer = pending.withLock { state in
@@ -659,7 +704,8 @@ public final class DiagnosticsJournalIngress: Sendable {
                     origin: origin,
                     processInstanceID: processInstanceID,
                     isMainAppWriter: isMainAppWriter,
-                    writerVersion: writerVersion
+                    writerVersion: writerVersion,
+                    beginWriteGate: { [self] in closeGateAllowsWrite() }
                 )
                 writer = pending.withLock { state in
                     if let existing = state.writer { return existing }
@@ -872,10 +918,23 @@ public final class DiagnosticsJournalIngress: Sendable {
     /// 到达，批次已被计入 dropped；若此处先获准，则按“已开始写入”的
     /// best-effort 语义允许它完成，suspend 不会同步等待磁盘。
     private func admitAppendIfStillVisible(for lifecycleEpoch: UInt64) -> Bool {
-        pending.withLock { state in
+        // Counterexamples A/B: re-read the close generation immediately before the first write.
+        let live = closeGenerationProvider?()
+        return pending.withLock { state in
             guard !state.isSuspended, state.lifecycleEpoch == lifecycleEpoch else { return false }
+            if let live, live > state.closeFloor { return false }
             state.appendAdmitted = true
             return true
         }
     }
 }
+
+#if DEBUG
+    extension DiagnosticsJournalIngress {
+        /// 009 S1c tests: the production writer (created lazily by the first flush), so tests can
+        /// install an after-admission hook without replacing the writer or its close gate.
+        internal func productionWriterForTesting() -> DiagnosticsJournalWriter? {
+            pending.withLock { $0.writer as? DiagnosticsJournalWriter }
+        }
+    }
+#endif

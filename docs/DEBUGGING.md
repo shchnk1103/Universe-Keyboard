@@ -8,6 +8,15 @@ Classify the failure before changing code. Record the input, current page/mode, 
 
 `t9.cycle_result` snapshots come from the `replaceInput` result before rollback, not from the restored output. The admission chain must not call `DiagnosticsJournalRuntime.record`, `DiagnosticsJournalIngress.record`, `Mutex.withLock`, or the Debug ticket set. Resource auditing is not enabled. A build that contains these events must not go to TestFlight until the Human privacy classification is decided. Capture reuses the default-off `logging_enabled` switch.
 
+### S1c: background bridge and close generation
+
+- A background pump (`T9DiagnosticsJournalPump`, serial utility queue, one timer) takes at most one batch from `T9DiagnosticAdmission` per tick, merges it by admission sequence outside the lock and hands typed v7 events to `DiagnosticsJournalRuntime.recordAdmittedT9`. The key path only enqueues; it never ticks, waits or reads the switch.
+- `utcTimestamp` is the background assembly time; the monotonic field is the admission time. Order events by `admission_sequence`, not by wall-clock time.
+- Closing diagnostics advances `logging_close_generation` (App Group, advance-only, survives reopen). The pump reads it before every take and drops everything not yet written, including after a close followed by a quick reopen. The writer re-checks it once more before the first `handle.write`.
+- 关闭开关后，键盘在察觉到关闭之后不再开始新的写入；察觉之前已经开始写盘的那一批会写完。不承诺具体毫秒数。
+- `prior_drops` counts admission-side drops (queue full, rate limit, suspended, dropped tail), saturating at 255. Drops after the batch has left admission are not added unless the pump discarded the batch itself.
+- Resource auditing is not enabled. Builds with the new events still await the Human privacy classification.
+
 ## First Triage
 
 | Symptom | First boundary to inspect |

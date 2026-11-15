@@ -17,6 +17,11 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         schemaVersion == 4 || schemaVersion == 6 || schemaVersion == 7
     }
 
+    /// S1c: the two T9 codes and their payload exist only in schema v7.
+    static func supportsT9Diagnostics(schemaVersion: Int) -> Bool {
+        schemaVersion == 7
+    }
+
     static func supportsTypoRecall(schemaVersion: Int) -> Bool {
         schemaVersion == 5 || schemaVersion == 6 || schemaVersion == 7
     }
@@ -68,6 +73,10 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         case keyboardLifecyclePhaseChanged = "keyboard.lifecycle.phase_changed"
         case rimeResumePhaseChanged = "rime.resume.phase_changed"
         case textProxyOperationPhaseChanged = "text_proxy.operation_phase_changed"
+        /// 009 S1c: one T9 pinyin-cycle terminal result (v7 only, typed payload).
+        case t9CycleResult = "t9.cycle_result"
+        /// 009 S1c: one T9 delete-path result (v7 only, typed payload).
+        case t9DeletePath = "t9.delete_path"
     }
 
     public enum Reason: String, Codable, CaseIterable, Sendable {
@@ -233,6 +242,64 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
     public enum TextProxyPhase: String, Codable, CaseIterable, Sendable {
         case entered
         case returned
+    }
+
+    /// Closed 009 S1c payload. Cycle events carry the five cycle fields, delete events
+    /// carry `branch`/`restored`; both carry the admission sequence and prior drops.
+    /// No free text, candidate, raw input or composition content can be represented.
+    public struct T9Payload: Codable, Sendable, Equatable {
+        public let admissionSequence: UInt64
+        public let priorDrops: Int
+        public let terminal: T9CycleDiagnostic.Terminal?
+        public let candidateBand: T9CycleDiagnostic.Band?
+        public let preeditShape: T9CycleDiagnostic.Shape?
+        public let usable: T9CycleDiagnostic.Flag?
+        public let exact: T9CycleDiagnostic.Flag?
+        public let branch: T9DeleteDiagnostic.Branch?
+        public let restored: T9DeleteDiagnostic.Restored?
+
+        public init(cycle: T9CycleDiagnostic) {
+            admissionSequence = cycle.sequence
+            priorDrops = min(max(cycle.priorDrops, 0), 255)
+            terminal = cycle.terminal
+            candidateBand = cycle.candidateBand
+            preeditShape = cycle.preeditShape
+            usable = cycle.usable
+            exact = cycle.exact
+            branch = nil
+            restored = nil
+        }
+
+        public init(delete: T9DeleteDiagnostic) {
+            admissionSequence = delete.sequence
+            priorDrops = min(max(delete.priorDrops, 0), 255)
+            terminal = nil
+            candidateBand = nil
+            preeditShape = nil
+            usable = nil
+            exact = nil
+            branch = delete.branch
+            restored = delete.restored
+        }
+
+        var isCyclePayload: Bool {
+            terminal != nil && candidateBand != nil && preeditShape != nil
+                && usable != nil && exact != nil && branch == nil && restored == nil
+        }
+
+        var isDeletePayload: Bool {
+            branch != nil && restored != nil && terminal == nil && candidateBand == nil
+                && preeditShape == nil && usable == nil && exact == nil
+        }
+
+        func isValid(for code: Code) -> Bool {
+            guard (0...255).contains(priorDrops) else { return false }
+            switch code {
+            case .t9CycleResult: return isCyclePayload
+            case .t9DeletePath: return isDeletePayload
+            default: return false
+            }
+        }
     }
 
     public struct TextProxyPayload: Codable, Sendable, Equatable {
@@ -1095,6 +1162,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
     public let keyboardLifecyclePayload: KeyboardLifecyclePayload?
     public let rimeResumePayload: RimeResumePayload?
     public let textProxyPayload: TextProxyPayload?
+    public let t9Payload: T9Payload?
 
     public init(
         utcTimestamp: Date,
@@ -1144,6 +1212,10 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
             "Wake diagnostic marker codes are reader-only in the v5 candidate"
         )
         precondition(
+            !Self.t9Codes.contains(code),
+            "T9 diagnostic codes are only constructible through the typed v7 factory"
+        )
+        precondition(
             Self.isValidTypoRecallQuery(code: code, schemaVersion: Self.schemaVersion, fields: fields),
             "Typo-recall query measurement requires one schema-v5 typed field"
         )
@@ -1165,6 +1237,46 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         keyboardLifecyclePayload = nil
         rimeResumePayload = nil
         textProxyPayload = nil
+        t9Payload = nil
+    }
+
+    static let t9Codes: Set<Code> = [.t9CycleResult, .t9DeletePath]
+
+    /// 009 S1c typed factory. Only the T9 pump bridge calls it; it accepts the closed
+    /// payload and nothing else, so no free text can enter the event.
+    public static func makeV7T9Event(
+        payload: T9Payload,
+        code: Code,
+        utcTimestamp: Date,
+        monotonicNanoseconds: UInt64,
+        origin: Origin,
+        processInstanceID: UUID,
+        localSequence: UInt64
+    ) -> DiagnosticEvent? {
+        guard origin == .keyboardExtension, t9Codes.contains(code), payload.isValid(for: code) else {
+            return nil
+        }
+        return DiagnosticEvent(
+            schemaVersion: 7,
+            utcTimestamp: utcTimestamp,
+            monotonicNanoseconds: monotonicNanoseconds,
+            origin: origin,
+            processInstanceID: processInstanceID,
+            localSequence: localSequence,
+            appearanceID: nil,
+            actionSequence: nil,
+            code: code,
+            level: .debug,
+            category: .engine,
+            fields: [],
+            schemeDeliveryPayload: nil,
+            runtimeRoutePayload: nil,
+            rimeSyncPayload: nil,
+            keyboardLifecyclePayload: nil,
+            rimeResumePayload: nil,
+            textProxyPayload: nil,
+            t9Payload: payload
+        )
     }
 
     private static let schemeDeliveryCodes: Set<Code> = [
@@ -1217,6 +1329,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
             && keyboardLifecyclePayload == nil
             && rimeResumePayload == nil
             && textProxyPayload == nil
+            && t9Payload == nil
     }
 
     /// Normalizes only new records. Retained v3/v4 events stay readable but cannot be
@@ -1317,7 +1430,8 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
             rimeSyncPayload: nil,
             keyboardLifecyclePayload: KeyboardLifecyclePayload(phase: phase),
             rimeResumePayload: nil,
-            textProxyPayload: nil
+            textProxyPayload: nil,
+            t9Payload: nil
         )
     }
 
@@ -1357,7 +1471,8 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
                 sessionEpoch: sessionEpoch,
                 revision: revision
             ),
-            textProxyPayload: nil
+            textProxyPayload: nil,
+            t9Payload: nil
         )
     }
 
@@ -1391,7 +1506,8 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
             rimeSyncPayload: nil,
             keyboardLifecyclePayload: nil,
             rimeResumePayload: nil,
-            textProxyPayload: TextProxyPayload(operation: operation, phase: phase)
+            textProxyPayload: TextProxyPayload(operation: operation, phase: phase),
+            t9Payload: nil
         )
     }
 
@@ -1419,6 +1535,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         keyboardLifecyclePayload = event.keyboardLifecyclePayload
         rimeResumePayload = event.rimeResumePayload
         textProxyPayload = event.textProxyPayload
+        t9Payload = event.t9Payload
     }
 
     private init(
@@ -1439,7 +1556,8 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         rimeSyncPayload: RimeSyncPayload?,
         keyboardLifecyclePayload: KeyboardLifecyclePayload?,
         rimeResumePayload: RimeResumePayload?,
-        textProxyPayload: TextProxyPayload?
+        textProxyPayload: TextProxyPayload?,
+        t9Payload: T9Payload?
     ) {
         self.schemaVersion = schemaVersion
         self.utcTimestamp = utcTimestamp
@@ -1459,6 +1577,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         self.keyboardLifecyclePayload = keyboardLifecyclePayload
         self.rimeResumePayload = rimeResumePayload
         self.textProxyPayload = textProxyPayload
+        self.t9Payload = t9Payload
     }
 
     private static func isValidTypoRecallQuery(
@@ -1495,7 +1614,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         case schemaVersion, utcTimestamp, monotonicNanoseconds, origin, processInstanceID
         case localSequence, appearanceID, actionSequence, code, level, category, fields
         case schemeDeliveryPayload, runtimeRoutePayload, rimeSyncPayload
-        case keyboardLifecyclePayload, rimeResumePayload, textProxyPayload
+        case keyboardLifecyclePayload, rimeResumePayload, textProxyPayload, t9Payload
     }
 
     public init(from decoder: Decoder) throws {
@@ -1543,6 +1662,20 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
             TextProxyPayload.self,
             forKey: .textProxyPayload
         )
+        t9Payload = try container.decodeIfPresent(T9Payload.self, forKey: .t9Payload)
+        guard
+            t9Payload != nil
+                ? (Self.t9Codes.contains(code) && Self.supportsT9Diagnostics(schemaVersion: schemaVersion)
+                    && fields.isEmpty && t9Payload!.isValid(for: code)
+                    && origin == .keyboardExtension && level == .debug && category == .engine)
+                : !Self.t9Codes.contains(code)
+        else {
+            throw DecodingError.dataCorruptedError(
+                forKey: .t9Payload,
+                in: container,
+                debugDescription: "T9 diagnostic code, payload, schema or envelope do not match"
+            )
+        }
         let containsV4OnlyKey = [
             CodingKeys.keyboardLifecyclePayload,
             .rimeResumePayload,
@@ -1739,5 +1872,6 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         try container.encodeIfPresent(keyboardLifecyclePayload, forKey: .keyboardLifecyclePayload)
         try container.encodeIfPresent(rimeResumePayload, forKey: .rimeResumePayload)
         try container.encodeIfPresent(textProxyPayload, forKey: .textProxyPayload)
+        try container.encodeIfPresent(t9Payload, forKey: .t9Payload)
     }
 }

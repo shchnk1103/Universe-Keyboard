@@ -110,7 +110,7 @@ Required review: confirm the exact current authorization and branch/PR state; ne
 
 1. `docs/assignments/t9-pinyin-cycle-009.md`.
 2. ADR 0036 v7 addendum and ADR 0027.
-3. `DEBUGGING.md` section “T9 cycle and delete journal (v7)”.
+3. `DEBUGGING.md` section “T9 cycle and delete journal (v7)” and its S1c subsection (background pump, close generation).
 
 The snapshot is the pre-rollback request result. The admission chain must not call the waiting journal recorders. Resource auditing is off. Privacy classification is undecided, so do not ship the build to TestFlight.
 

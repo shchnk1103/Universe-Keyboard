@@ -71,8 +71,11 @@ class KeyboardViewController: UIInputViewController {
                 .appendingPathComponent("Diagnostics/v1", isDirectory: true)
         },
         isCategoryEnabled: { Logger.isLiveCategoryEnabled($0) },
-            writerVersion: .pairedBuild
+        writerVersion: .pairedBuild,
+        closeGenerationProvider: { DiagnosticsCloseGeneration.liveRead() }
     )
+    /// 009 S1c: process-level background bridge; key path only calls `tryEnqueue`.
+    var t9DiagnosticsPump: T9DiagnosticsJournalPump?
     lazy var commitTrace = CommitTraceRecorder(
         context: { [weak self] in self?.textDocumentProxy.documentContextBeforeInput },
         emit: { [weak self] sequence, fields in
@@ -520,6 +523,7 @@ class KeyboardViewController: UIInputViewController {
         #endif
         Logger.shared.resumePersistenceForExtensionLifecycle()
         diagnosticsJournal.resumeForExtensionLifecycle()
+        t9DiagnosticsPump?.enable()
         #if DEBUG
             refreshHighFidelityDiagnosticsMode()
             resetCandidateTouchDiagnosticCorrelation()
@@ -764,6 +768,7 @@ class KeyboardViewController: UIInputViewController {
             recordWakeOwnerProbe(.suspendEnd)
         #endif
         Logger.shared.suspendPersistenceForExtensionLifecycle()
+        t9DiagnosticsPump?.revoke()
         diagnosticsJournal.suspendForExtensionLifecycle()
         diagnosticsAppearanceID = nil
     }

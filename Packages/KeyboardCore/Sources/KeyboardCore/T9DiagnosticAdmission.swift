@@ -2,15 +2,15 @@ import Foundation
 import os.lock
 
 public struct T9CycleDiagnostic: Equatable, Sendable {
-    public enum Terminal: String, Sendable {
+    public enum Terminal: String, Sendable, Codable {
         case notStarted = "not_started"
         case succeeded
         case rolledBack = "rolled_back"
         case rollbackFailed = "rollback_failed"
         case criteriaRejected = "criteria_rejected"
     }
-    public enum Band: String, Sendable { case zero, nonzero, notApplicable = "not_applicable" }
-    public enum Shape: String, Sendable {
+    public enum Band: String, Sendable, Codable { case zero, nonzero, notApplicable = "not_applicable" }
+    public enum Shape: String, Sendable, Codable {
         case empty, segmented, unsegmented, notApplicable = "not_applicable"
         public static func shape(of preedit: String?) -> Shape {
             guard let preedit else { return .notApplicable }
@@ -20,7 +20,7 @@ public struct T9CycleDiagnostic: Equatable, Sendable {
             return segmented ? .segmented : .unsegmented
         }
     }
-    public enum Flag: String, Sendable { case yes, no, notApplicable = "not_applicable" }
+    public enum Flag: String, Sendable, Codable { case yes, no, notApplicable = "not_applicable" }
     public var sequence: UInt64
     public var terminal: Terminal
     public var candidateBand: Band
@@ -44,13 +44,13 @@ public struct T9CycleDiagnostic: Equatable, Sendable {
 }
 
 public struct T9DeleteDiagnostic: Equatable, Sendable {
-    public enum Branch: String, Sendable {
+    public enum Branch: String, Sendable, Codable {
         case selectedDigitUndo = "selected_digit_undo"
         case identityDelete = "identity_delete"
         case engineDelete = "engine_delete"
         case other
     }
-    public enum Restored: String, Sendable { case yes, no, notApplicable = "not_applicable" }
+    public enum Restored: String, Sendable, Codable { case yes, no, notApplicable = "not_applicable" }
     public var sequence: UInt64
     public var branch: Branch
     public var restored: Restored
@@ -61,6 +61,38 @@ public struct T9DeleteDiagnostic: Equatable, Sendable {
         self.restored = restored
         self.priorDrops = priorDrops
     }
+}
+
+/// S1c: one admitted queue item. Time and sequence are stored in the same trylock critical
+/// section that admitted the event; nothing else (no text, no composition) is carried.
+public struct T9AdmittedEnvelope: Equatable, Sendable {
+    public enum Payload: Equatable, Sendable {
+        case cycle(T9CycleDiagnostic)
+        case delete(T9DeleteDiagnostic)
+    }
+
+    public let payload: Payload
+    public let admissionSequence: UInt64
+    public let admittedMonotonicNanoseconds: UInt64
+}
+
+/// Ownership of both queues moved out of admission by one successful trylock.
+public struct T9AdmittedBatch: Equatable, Sendable {
+    let cycles: [T9AdmittedEnvelope]
+    let deletes: [T9AdmittedEnvelope]
+
+    public var count: Int { cycles.count + deletes.count }
+
+    /// Merge and sort happen outside the admission lock, on the pump queue.
+    public func mergedInAdmissionOrder() -> [T9AdmittedEnvelope] {
+        (cycles + deletes).sorted { $0.admissionSequence < $1.admissionSequence }
+    }
+}
+
+public enum T9TakeResult: Equatable, Sendable {
+    case busy
+    case empty
+    case batch(T9AdmittedBatch)
 }
 
 /// Non-waiting T9 admission. Sequence, time and enqueue share one trylock.
@@ -76,6 +108,8 @@ public final class T9DiagnosticAdmission: @unchecked Sendable {
     private var lock = os_unfair_lock()
     private var cyclesQueue: [T9CycleDiagnostic] = []
     private var deletesQueue: [T9DeleteDiagnostic] = []
+    private var cycleTimes: [UInt64] = []
+    private var deleteTimes: [UInt64] = []
     private var admittedTimes: [UInt64] = []
     private var drops = 0
     private var nextSequence: UInt64 = 0
@@ -92,6 +126,8 @@ public final class T9DiagnosticAdmission: @unchecked Sendable {
         _ = os_unfair_lock_trylock(&lock)
         cyclesQueue.removeAll()
         deletesQueue.removeAll()
+        cycleTimes.removeAll()
+        deleteTimes.removeAll()
         admittedTimes.removeAll()
         drops = 0
         nextSequence = 0
@@ -136,6 +172,7 @@ public final class T9DiagnosticAdmission: @unchecked Sendable {
         stored.priorDrops = drops
         drops = 0
         cyclesQueue.append(stored)
+        cycleTimes.append(now)
         return true
     }
 
@@ -150,7 +187,66 @@ public final class T9DiagnosticAdmission: @unchecked Sendable {
         stored.priorDrops = drops
         drops = 0
         deletesQueue.append(stored)
+        deleteTimes.append(now)
         return true
+    }
+
+    /// Single trylock. Busy leaves both queues untouched and is not counted as a drop.
+    /// On success ownership of both queues moves into the batch and the queues are emptied;
+    /// the lock is released before any merge or sort.
+    public func tryTakeBatch() -> T9TakeResult {
+        guard os_unfair_lock_trylock(&lock) else { return .busy }
+        guard !(cyclesQueue.isEmpty && deletesQueue.isEmpty) else {
+            os_unfair_lock_unlock(&lock)
+            return .empty
+        }
+        let takenCycles = cyclesQueue
+        let takenCycleTimes = cycleTimes
+        let takenDeletes = deletesQueue
+        let takenDeleteTimes = deleteTimes
+        cyclesQueue = []
+        cycleTimes = []
+        deletesQueue = []
+        deleteTimes = []
+        os_unfair_lock_unlock(&lock)
+        let cycleEnvelopes = zip(takenCycles, takenCycleTimes).map {
+            T9AdmittedEnvelope(payload: .cycle($0), admissionSequence: $0.sequence, admittedMonotonicNanoseconds: $1)
+        }
+        let deleteEnvelopes = zip(takenDeletes, takenDeleteTimes).map {
+            T9AdmittedEnvelope(payload: .delete($0), admissionSequence: $0.sequence, admittedMonotonicNanoseconds: $1)
+        }
+        return .batch(T9AdmittedBatch(cycles: cycleEnvelopes, deletes: deleteEnvelopes))
+    }
+
+    /// Production lifecycle control (pump queue only). Trylock; false means busy, retry later.
+    /// Clears the untaken tail and folds its size into the saturated admission drop count.
+    public func tryDropTail(suspend: Bool?) -> Bool {
+        guard os_unfair_lock_trylock(&lock) else { return false }
+        defer { os_unfair_lock_unlock(&lock) }
+        let dropped = cyclesQueue.count + deletesQueue.count
+        cyclesQueue.removeAll()
+        deletesQueue.removeAll()
+        cycleTimes.removeAll()
+        deleteTimes.removeAll()
+        drops = min(255, drops + dropped)
+        if let suspend { suspended = suspend }
+        return true
+    }
+
+    /// Production lifecycle control (pump queue only). Trylock; false means busy, retry later.
+    public func trySetSuspended(_ value: Bool) -> Bool {
+        guard os_unfair_lock_trylock(&lock) else { return false }
+        suspended = value
+        os_unfair_lock_unlock(&lock)
+        return true
+    }
+
+    /// Folds events already taken out of admission but discarded (closed generation) into the
+    /// saturated admission drop count. Trylock; busy loses the count (best-effort, never blocks).
+    public func tryAddDrops(_ count: Int) {
+        guard count > 0, os_unfair_lock_trylock(&lock) else { return }
+        drops = min(255, drops + count)
+        os_unfair_lock_unlock(&lock)
     }
 
     public func cycles() -> [T9CycleDiagnostic] {

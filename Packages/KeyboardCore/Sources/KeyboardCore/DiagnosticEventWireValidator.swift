@@ -39,6 +39,7 @@ enum DiagnosticEventWireValidator {
         "keyboardLifecyclePayload",
         "rimeResumePayload",
         "textProxyPayload",
+        "t9Payload",
     ]
 
     private static let envelopeKeys: Set<String> = [
@@ -60,6 +61,7 @@ enum DiagnosticEventWireValidator {
         "keyboardLifecyclePayload",
         "rimeResumePayload",
         "textProxyPayload",
+        "t9Payload",
     ]
 
     private static let requiredEnvelopeKeys: Set<String> = [
@@ -100,6 +102,10 @@ enum DiagnosticEventWireValidator {
         if !DiagnosticEvent.supportsTypoRecall(schemaVersion: version), v5OnlyCodes.contains(code) {
             return .unsupportedCode
         }
+        if !DiagnosticEvent.supportsT9Diagnostics(schemaVersion: version) {
+            if DiagnosticEvent.t9Codes.contains(code) { return .unsupportedCode }
+            if event.keys.contains("t9Payload") { return .invalidPayloadPairing }
+        }
         if !DiagnosticEvent.supportsWakeMarkers(schemaVersion: version),
             v4PayloadKeys.contains(where: event.keys.contains)
         {
@@ -115,6 +121,9 @@ enum DiagnosticEventWireValidator {
         version: Int
     ) -> DiagnosticsJournalRejectionReason? {
         var allowedEnvelopeKeys = envelopeKeys
+        if !DiagnosticEvent.supportsT9Diagnostics(schemaVersion: version) {
+            allowedEnvelopeKeys.remove("t9Payload")
+        }
         if !DiagnosticEvent.supportsWakeMarkers(schemaVersion: version) {
             allowedEnvelopeKeys.subtract(v4PayloadKeys)
         }
@@ -161,6 +170,8 @@ enum DiagnosticEventWireValidator {
                 reason = validateRimeResumePayload(value, code: code)
             case "textProxyPayload":
                 reason = validateTextProxyPayload(value, code: code)
+            case "t9Payload":
+                reason = validateT9Payload(value, code: code)
             default:
                 reason = .unknownKey
             }
@@ -193,6 +204,8 @@ enum DiagnosticEventWireValidator {
     ) -> DiagnosticsJournalRejectionReason? {
         let expectedCategory: String
         switch code {
+        case .t9CycleResult, .t9DeletePath:
+            expectedCategory = Logger.Category.engine.rawValue
         case .keyboardLifecyclePhaseChanged, .textProxyOperationPhaseChanged:
             expectedCategory = Logger.Category.display.rawValue
         case .rimeResumePhaseChanged:
@@ -251,6 +264,8 @@ enum DiagnosticEventWireValidator {
             expectedKey = "rimeResumePayload"
         case .textProxyOperationPhaseChanged:
             expectedKey = "textProxyPayload"
+        case .t9CycleResult, .t9DeletePath:
+            expectedKey = "t9Payload"
         default:
             expectedKey = nil
         }
@@ -476,6 +491,47 @@ enum DiagnosticEventWireValidator {
             DiagnosticEvent.TextProxyPhase(rawValue: rawPhase) != nil
         else {
             return .unknownValue
+        }
+        return nil
+    }
+
+    private static func validateT9Payload(
+        _ value: Any,
+        code: DiagnosticEvent.Code
+    ) -> DiagnosticsJournalRejectionReason? {
+        guard DiagnosticEvent.t9Codes.contains(code), let payload = value as? Object else {
+            return .invalidPayloadPairing
+        }
+        let common: Set<String> = ["admissionSequence", "priorDrops"]
+        let specific: Set<String> =
+            code == .t9CycleResult
+            ? ["terminal", "candidateBand", "preeditShape", "usable", "exact"]
+            : ["branch", "restored"]
+        if let reason = validateKeys(payload, allowed: common.union(specific), required: common.union(specific)) {
+            return reason
+        }
+        guard let sequence = payload["admissionSequence"] as? NSNumber,
+            let drops = payload["priorDrops"] as? NSNumber,
+            CFGetTypeID(sequence) != CFBooleanGetTypeID(),
+            CFGetTypeID(drops) != CFBooleanGetTypeID()
+        else { return .malformedPayload }
+        guard sequence.int64Value >= 0, (0...255).contains(drops.intValue) else { return .unknownValue }
+        func raw(_ key: String) -> String? { payload[key] as? String }
+        if code == .t9CycleResult {
+            guard let terminal = raw("terminal"), let band = raw("candidateBand"),
+                let shape = raw("preeditShape"), let usable = raw("usable"), let exact = raw("exact")
+            else { return .malformedPayload }
+            guard T9CycleDiagnostic.Terminal(rawValue: terminal) != nil,
+                T9CycleDiagnostic.Band(rawValue: band) != nil,
+                T9CycleDiagnostic.Shape(rawValue: shape) != nil,
+                T9CycleDiagnostic.Flag(rawValue: usable) != nil,
+                T9CycleDiagnostic.Flag(rawValue: exact) != nil
+            else { return .unknownValue }
+        } else {
+            guard let branch = raw("branch"), let restored = raw("restored") else { return .malformedPayload }
+            guard T9DeleteDiagnostic.Branch(rawValue: branch) != nil,
+                T9DeleteDiagnostic.Restored(rawValue: restored) != nil
+            else { return .unknownValue }
         }
         return nil
     }

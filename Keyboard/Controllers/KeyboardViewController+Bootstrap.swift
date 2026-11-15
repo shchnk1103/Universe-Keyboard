@@ -3,6 +3,17 @@ import RimeBridge
 import UIKit
 
 extension KeyboardViewController {
+    /// 009 S1c: process-level pump install (once); never touched from the key path.
+    func installT9DiagnosticsPumpIfNeeded() {
+        guard t9DiagnosticsPump == nil else { return }
+        t9DiagnosticsPump = T9DiagnosticsJournalPump(
+            admission: .shared,
+            runtime: diagnosticsJournal,
+            isSwitchEnabled: { Logger.isLiveCategoryEnabled(.engine) },
+            closeGeneration: { DiagnosticsCloseGeneration.liveRead() }
+        )
+    }
+
     /// Configures only lightweight session work required before the keyboard can accept input.
     func bootstrapKeyboard() {
         let startupTime = CACurrentMediaTime()
@@ -16,6 +27,7 @@ extension KeyboardViewController {
 
         let keyboardType = KeyboardType.from(uiKeyboardType: textDocumentProxy.keyboardType)
         controller = KeyboardController(state: KeyboardState(activeKeyboardType: keyboardType))
+        installT9DiagnosticsPumpIfNeeded()
         // R2: when the responsive gate is on, deferred snapshot apply must re-enter UI.
         // Gate defaults off — this bridge is inert until Product enables the gate.
         controller.onResponsivePresentationNeeded = { [weak self] effects in
@@ -935,6 +947,7 @@ extension KeyboardViewController {
         case .performSharedResume:
             Logger.shared.resumePersistenceForExtensionLifecycle()
             diagnosticsJournal.resumeForExtensionLifecycle()
+            t9DiagnosticsPump?.enable()
             performHostSharedResumeAfterLicense(canaryResumeRequested: canaryResumeRequested)
         case .rearmFirstFrameGate:
             activateRimeRuntimeAfterKeyboardPresentation()

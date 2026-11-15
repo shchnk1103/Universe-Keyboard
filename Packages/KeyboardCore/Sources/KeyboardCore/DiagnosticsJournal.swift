@@ -282,6 +282,8 @@ public actor DiagnosticsJournalWriter {
     private let writerVersion: DiagnosticsJournalWriterVersion
     private var processInstanceID: UUID
     private let isMainAppWriter: Bool
+    /// 009 S1c: re-checked immediately before the first `handle.write`; false = close seen.
+    private let beginWriteGate: (@Sendable () -> Bool)?
 
     private var activeHour = ""
     private var activePart = 0
@@ -314,8 +316,10 @@ public actor DiagnosticsJournalWriter {
         origin: DiagnosticEvent.Origin,
         processInstanceID: UUID = UUID(),
         isMainAppWriter: Bool,
-        writerVersion: DiagnosticsJournalWriterVersion = .v5
+        writerVersion: DiagnosticsJournalWriterVersion = .v5,
+        beginWriteGate: (@Sendable () -> Bool)? = nil
     ) {
+        self.beginWriteGate = beginWriteGate
         self.rootURL = rootURL
         self.origin = origin
         self.writerVersion = writerVersion
@@ -443,6 +447,10 @@ public actor DiagnosticsJournalWriter {
                     let handle = try FileHandle(forWritingTo: segmentURL)
                     defer { try? handle.close() }
                     try handle.seekToEnd()
+                    // 009 S1c 反例 A：许可点之后、第一次 write 之前再看一次关闭代数。
+                    if let beginWriteGate, !beginWriteGate() {
+                        throw DiagnosticsJournalError.lifecycleCancelled
+                    }
                     for line in encodedLines {
                         try handle.write(contentsOf: line)
                     }

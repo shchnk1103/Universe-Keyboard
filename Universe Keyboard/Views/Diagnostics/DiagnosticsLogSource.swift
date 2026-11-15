@@ -434,13 +434,34 @@ enum DiagnosticsEventDisplayFormatter {
         let keyboardLifecycle = event.keyboardLifecyclePayload.map(keyboardLifecycleDescription)
         let rimeResume = event.rimeResumePayload.map(rimeResumeDescription)
         let textProxy = event.textProxyPayload.map(textProxyDescription)
+        let t9 = event.t9Payload.map { t9Description($0, processInstanceID: event.processInstanceID) }
         let details =
-            ([action, delivery, rimeSync, runtimeRoute, keyboardLifecycle, rimeResume, textProxy]
+            ([action, delivery, rimeSync, runtimeRoute, keyboardLifecycle, rimeResume, textProxy, t9]
             .compactMap { $0 }
             + (fields.isEmpty ? [] : [fields]))
             .joined(separator: " ")
         let suffix = details.isEmpty ? "" : " \(details)"
         return "[\(timestamp)] [\(event.level.rawValue)] [\(event.category.rawValue)] \(event.code.rawValue)\(suffix)"
+    }
+
+    /// 009 S1c §5.6: typed T9 payload keeps process id, admission sequence, prior drops
+    /// and the closed enum values; nothing else.
+    private nonisolated static func t9Description(
+        _ payload: DiagnosticEvent.T9Payload, processInstanceID: UUID
+    ) -> String {
+        var parts = [
+            "process=\(processInstanceID.uuidString)",
+            "admission_sequence=\(payload.admissionSequence)",
+            "prior_drops=\(payload.priorDrops)",
+        ]
+        if let value = payload.terminal { parts.append("terminal=\(value.rawValue)") }
+        if let value = payload.candidateBand { parts.append("candidate_band=\(value.rawValue)") }
+        if let value = payload.preeditShape { parts.append("preedit_shape=\(value.rawValue)") }
+        if let value = payload.usable { parts.append("usable=\(value.rawValue)") }
+        if let value = payload.exact { parts.append("exact=\(value.rawValue)") }
+        if let value = payload.branch { parts.append("branch=\(value.rawValue)") }
+        if let value = payload.restored { parts.append("restored=\(value.rawValue)") }
+        return parts.joined(separator: " ")
     }
 
     private nonisolated static func fieldDescription(_ field: DiagnosticEvent.Field) -> String {

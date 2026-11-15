@@ -31,7 +31,8 @@ public final class DiagnosticsJournalRuntime: Sendable {
         rootURL: @escaping @Sendable () -> URL?,
         isCategoryEnabled: @escaping @Sendable (Logger.Category) -> Bool,
         writerVersion: DiagnosticsJournalWriterVersion = .v5,
-        flushDelay: TimeInterval = 0.25
+        flushDelay: TimeInterval = 0.25,
+        closeGenerationProvider: (@Sendable () -> UInt64)? = nil
     ) {
         self.origin = origin
         self.processInstanceID = processInstanceID
@@ -62,8 +63,45 @@ public final class DiagnosticsJournalRuntime: Sendable {
                     ]
                 )
             },
-            flushDelay: flushDelay
+            flushDelay: flushDelay,
+            closeGenerationProvider: closeGenerationProvider
         )
+    }
+
+    /// 009 S1c: pump-only typed entry. Builds the closed v7 T9 event on the background queue
+    /// (utcTimestamp = assembly time, monotonic = admission time) and hands it to ingress.
+    /// Not `record(...)`: no free fields, no correlation, no raw text.
+    @discardableResult
+    func recordAdmittedT9(_ envelope: T9AdmittedEnvelope) -> Bool {
+        let payload: DiagnosticEvent.T9Payload
+        let code: DiagnosticEvent.Code
+        switch envelope.payload {
+        case .cycle(let cycle):
+            payload = DiagnosticEvent.T9Payload(cycle: cycle)
+            code = .t9CycleResult
+        case .delete(let delete):
+            payload = DiagnosticEvent.T9Payload(delete: delete)
+            code = .t9DeletePath
+        }
+        guard writerVersion == .v7,
+            let event = DiagnosticEvent.makeV7T9Event(
+                payload: payload,
+                code: code,
+                utcTimestamp: Date(),
+                monotonicNanoseconds: envelope.admittedMonotonicNanoseconds,
+                origin: origin,
+                processInstanceID: processInstanceID,
+                localSequence: nextSequence.next()
+            )
+        else { return false }
+        ingress.record(event)
+        return true
+    }
+
+    /// 009 S1c awareness forwarder (pump queue only).
+    @discardableResult
+    func observeCloseGeneration() -> Int {
+        ingress.observeCloseGeneration()
     }
 
     /// 热路径只构造一个有限的 value-type event 并投入 ingress；不触及开关、
@@ -269,6 +307,10 @@ public final class DiagnosticsJournalRuntime: Sendable {
         /// 历史读到零条与合同相容但违反测试数量断言，根因 UNKNOWN。
         internal func flushAndWaitForTesting() async {
             await ingress.flushAndWaitForTesting()
+        }
+
+        internal func productionWriterForTesting() -> DiagnosticsJournalWriter? {
+            ingress.productionWriterForTesting()
         }
     #endif
 
