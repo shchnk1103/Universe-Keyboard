@@ -196,7 +196,9 @@ final class SchemeT9ContractObservationTests: XCTestCase {
     }
 
     private func evidenceRoot() throws -> URL {
-        let value = try XCTUnwrap(ProcessInfo.processInfo.environment["LUNA_T9_EVIDENCE_ROOT"])
+        guard let value = ProcessInfo.processInfo.environment["LUNA_T9_EVIDENCE_ROOT"] else {
+            throw XCTSkip("LUNA_T9_EVIDENCE_ROOT not set")
+        }
         let root = URL(fileURLWithPath: value, isDirectory: true).standardizedFileURL
         let allowed = URL(
             fileURLWithPath: "/Users/doubleshy0n/.kos-work/Universe-Keyboard/LUNA-T9-A8C/scratch", isDirectory: true
