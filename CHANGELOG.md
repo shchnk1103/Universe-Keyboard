@@ -1,3 +1,8 @@
+## 2026-11-14 — PASTE-COPY-A-001 App 隐私页剪贴板说明与现行行为对齐
+
+- 将「隐私与数据」页的剪贴板说明改为：开关和完全访问都开启时，键盘出现时最多读取一次剪贴板文字，用于预览和粘贴。
+- 说明内容仅留在内存中；任一条件未开启时不读取，也不显示粘贴条。
+
 ## 2026-11-14 — T9-PINYIN-CYCLE-009 诊断日志 Assignment
 
 - 登记 T9-PINYIN-CYCLE-009 Assignment（`Assignment Pending`）与 PORTFOLIO PF-070：用不含输入内容的 typed 日志事件 `t9.cycle_result`、`t9.delete_path` 取得真机证据，以定位 m/n 无法被选中等问题；隐私分类未定。
