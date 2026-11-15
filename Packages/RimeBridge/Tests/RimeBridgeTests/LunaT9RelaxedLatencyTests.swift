@@ -32,9 +32,9 @@ final class LunaT9RelaxedLatencyTests: XCTestCase {
         let a1Source = try reverseConstructLegacyA1Output(from: r2Source)
         XCTAssertEqual(digest(Data(a1Source.utf8)), a1SHA, "A1 SHA mismatch")
 
-        let iceRootPath = try XCTUnwrap(
-            ProcessInfo.processInfo.environment["LUNA_T9_ICE_FIXTURE"],
-            "LUNA_T9_ICE_FIXTURE missing")
+        guard let iceRootPath = ProcessInfo.processInfo.environment["LUNA_T9_ICE_FIXTURE"] else {
+            throw XCTSkip("LUNA_T9_ICE_FIXTURE not set")
+        }
         let iceFixture = URL(fileURLWithPath: iceRootPath, isDirectory: true)
         XCTAssertTrue(
             FileManager.default.fileExists(atPath: iceFixture.appendingPathComponent("shared").path),

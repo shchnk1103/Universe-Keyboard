@@ -23,7 +23,9 @@ final class LunaT9UpgradeRollbackTests: XCTestCase {
 
     func testUpgradeAndFailureIsolation() async throws {
         let start = Date()
-        let oldPath = try XCTUnwrap(ProcessInfo.processInfo.environment["LUNA_T9_OLD_VARIANT_PATH"])
+        guard let oldPath = ProcessInfo.processInfo.environment["LUNA_T9_OLD_VARIANT_PATH"] else {
+            throw XCTSkip("LUNA_T9_OLD_VARIANT_PATH not set")
+        }
         let old = try Data(contentsOf: URL(fileURLWithPath: oldPath))
         guard digest(old) == "a7ba5f874e05126a86f55ba2122f094c57eb380d1f0d8625cefa0915311caa3e" else {
             XCTFail("Old variant SHA-256 mismatch")

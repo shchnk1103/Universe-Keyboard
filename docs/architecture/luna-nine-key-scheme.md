@@ -51,6 +51,8 @@ A9-M 在 `d7471e8c8b755f9bc5043731708a3795ed54d18c` 取得七步结果；其步�
 
 A9-F 提交 `410f4e62b7ea273b9032b68c83ecd02edf168d00` 只改一个测试文件（3增1减）；其他门禁是此前 `d7471e8` 上取得。本轮仅写文档。
 
+A9-G 在不含 `LUNA_T9_*`、`TEST_RUNNER_LUNA_T9_*`、`WANXIANG_T9*`、`TEST_RUNNER_WANXIANG_T9*` 的条件下实测 RimeBridgeTests：173 项、32 跳过、0 失败、EXIT 0。`LunaT9RelaxedLatencyTests.testRelaxedLatencyAndCompileCost` 在 `LUNA_T9_ICE_FIXTURE` 未设置时跳过，`LunaT9UpgradeRollbackTests.testUpgradeAndFailureIsolation` 在 `LUNA_T9_OLD_VARIANT_PATH` 未设置时跳过，`SchemeT9ContractObservationTests` 在 `LUNA_T9_EVIDENCE_ROOT` 未设置时跳过。同次日志里 `WanxiangT9SwitchTargetTests` 因 `WANXIANG_T9I_SOURCE` 未设置沿用原有跳过，本次 diff 未改它。托管 CI 不提供这些变量，所以上述测试在托管 CI 上不运行；跳过不等于通过，其结果只来自本地带夹具的运行。已设置变量的分支本次未运行，diff 只把未设置分支改为跳过。
+
 ### 5c 更正与逐点映射
 
 按更正报告 `executor-report-m5c-r1.md`：`Point` 实际15点，A9-M所写16为误数，逐点方法映射已更正，计数问题已澄清，不是未解决的来源冲突。只证明静态引用与方法级日志结果，不证明各注入断言语义充分；不据此声称 PR1 可合并。
