@@ -1,5 +1,7 @@
 # CI Change Classification
 
+托管 CI 的三个 xcodebuild 测试任务对失败用例自动重试一次，并在任务摘要中列出重试用例。重试通过不代表用例稳定；本地门禁命令不变。
+
 ## Purpose And Authority
 
 This document is the Source of Truth for deciding whether a GitHub change runs the

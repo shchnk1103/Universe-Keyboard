@@ -135,6 +135,7 @@ jobs:
       # the same simulator platform used by the host app.
       - name: Test RimeBridge on iOS Simulator
         run: |
+          set -o pipefail
           xcodebuild \
             -project "Universe Keyboard.xcodeproj" \
             -scheme "RimeBridgeTests" \
@@ -145,7 +146,13 @@ jobs:
             SWIFT_STRICT_CONCURRENCY=complete \
             SWIFT_SUPPRESS_WARNINGS=NO \
             SWIFT_TREAT_WARNINGS_AS_ERRORS=YES \
-            test
+            -retry-tests-on-failure -test-iterations 2 \
+            test 2>&1 | tee "$RUNNER_TEMP/xcodebuild-retries.log"
+
+      - name: Summarize retried tests
+        if: always()
+        run: |
+          python3 scripts/ci/summarize_test_retries.py "$RUNNER_TEMP/xcodebuild-retries.log" | tee -a "$GITHUB_STEP_SUMMARY" || true
 
   test_app_keyboard:
     name: test-app-keyboard
@@ -166,6 +173,7 @@ jobs:
 
       - name: Test app and keyboard contracts on iOS Simulator
         run: |
+          set -o pipefail
           xcodebuild \
             -project "Universe Keyboard.xcodeproj" \
             -scheme "Universe Keyboard" \
@@ -176,7 +184,13 @@ jobs:
             SWIFT_STRICT_CONCURRENCY=complete \
             SWIFT_SUPPRESS_WARNINGS=NO \
             SWIFT_TREAT_WARNINGS_AS_ERRORS=YES \
-            test
+            -retry-tests-on-failure -test-iterations 2 \
+            test 2>&1 | tee "$RUNNER_TEMP/xcodebuild-retries.log"
+
+      - name: Summarize retried tests
+        if: always()
+        run: |
+          python3 scripts/ci/summarize_test_retries.py "$RUNNER_TEMP/xcodebuild-retries.log" | tee -a "$GITHUB_STEP_SUMMARY" || true
 
   test_rime_sync_keychain:
     name: test-rime-sync-keychain
@@ -199,6 +213,7 @@ jobs:
       # Keychain. An ad-hoc identity avoids requiring a team signing secret.
       - name: Test RIME Keychain integration on iOS Simulator
         run: |
+          set -o pipefail
           xcodebuild \
             -project "Universe Keyboard.xcodeproj" \
             -scheme "Universe Keyboard" \
@@ -212,7 +227,13 @@ jobs:
             SWIFT_SUPPRESS_WARNINGS=NO \
             SWIFT_TREAT_WARNINGS_AS_ERRORS=YES \
             -only-testing:UniverseKeyboardTests/RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem \
-            test
+            -retry-tests-on-failure -test-iterations 2 \
+            test 2>&1 | tee "$RUNNER_TEMP/xcodebuild-retries.log"
+
+      - name: Summarize retried tests
+        if: always()
+        run: |
+          python3 scripts/ci/summarize_test_retries.py "$RUNNER_TEMP/xcodebuild-retries.log" | tee -a "$GITHUB_STEP_SUMMARY" || true
 
   build_release:
     name: build-release

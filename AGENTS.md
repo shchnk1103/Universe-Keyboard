@@ -98,6 +98,8 @@
 
 ## 本地 CI 门禁（与 `.github/workflows/swift6-quality.yml` 对齐）
 
+托管 CI 的三个 xcodebuild 测试任务对失败用例自动重试一次，并在任务摘要中列出重试用例。重试通过不代表用例稳定；本地门禁命令不变。
+
 远端工作流按 [`docs/CI_CHANGE_CLASSIFICATION.md`](docs/CI_CHANGE_CLASSIFICATION.md)
 分级：分类、轻量检查和 `final-quality-gate` 始终运行；只有严格的 docs/KOS allowlist
 可跳过全部 heavy jobs（`format-swift`、`test-keyboardcore`、`test-rimebridge`、
