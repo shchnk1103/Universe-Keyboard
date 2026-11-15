@@ -75,6 +75,8 @@ public final class DiagnosticsJournalIngress: Sendable {
         var isSuspended = false
         /// 009 S1c: highest close generation this ingress has been aware of.
         var closeFloor: UInt64 = 0
+        /// Close generation captured when the sole in-flight batch leaves the queue.
+        var inFlightCloseGeneration: UInt64 = 0
         var lifecycleEpoch: UInt64 = 0
         var lastProcessGeneration: UInt64?
         var droppedWhileSuspended = 0
@@ -573,7 +575,7 @@ public final class DiagnosticsJournalIngress: Sendable {
     fileprivate func closeGateAllowsWrite() -> Bool {
         guard let closeGenerationProvider else { return true }
         let live = closeGenerationProvider()
-        return pending.withLock { live <= $0.closeFloor }
+        return pending.withLock { live <= $0.inFlightCloseGeneration }
     }
 
     private func flushPendingEvents() {
@@ -581,6 +583,7 @@ public final class DiagnosticsJournalIngress: Sendable {
         let work = pending.withLock { state -> FlushWork? in
             state.flushScheduled = false
             guard !state.isSuspended, !state.writeInFlight, !state.events.isEmpty else { return nil }
+            state.inFlightCloseGeneration = state.closeFloor
             #if DEBUG
                 let selected: [QueuedDiagnostic]
                 if state.waiters.isEmpty {
@@ -922,7 +925,7 @@ public final class DiagnosticsJournalIngress: Sendable {
         let live = closeGenerationProvider?()
         return pending.withLock { state in
             guard !state.isSuspended, state.lifecycleEpoch == lifecycleEpoch else { return false }
-            if let live, live > state.closeFloor { return false }
+            if let live, live > state.inFlightCloseGeneration { return false }
             state.appendAdmitted = true
             return true
         }

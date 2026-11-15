@@ -194,6 +194,22 @@ final class T9DiagnosticJournalS1cTests: XCTestCase {
         XCTAssertTrue(read.isEmpty, "close published after permission must stop the first write")
     }
 
+    func testB1ObservedCloseAfterBatchTakenBeforeFirstWriteDoesNotWrite() async throws {
+        let rig = try await makeRig()
+        rig.runtime.record(code: .presentationAppeared, category: .display)
+        await rig.runtime.flushAndWaitForTesting()
+        let writer = try XCTUnwrap(rig.runtime.productionWriterForTesting())
+        await writer.installAfterAdmissionForTesting {
+            rig.close.advance()
+            _ = rig.runtime.observeCloseGeneration()
+        }
+        XCTAssertTrue(rig.admission.tryEnqueue(cycle()))
+        rig.pump.tick()
+        let read = try await events(rig)
+        XCTAssertTrue(read.isEmpty, "an observed close must reject a taken batch before its first write")
+        XCTAssertFalse(try jsonl(rig.root).contains("t9.cycle_result"))
+    }
+
     /// An in-flight first write may finish: no close is visible before the write begins.
     func testJ4AInFlightBatchFinishesWhenCloseArrivesAfterItBegan() async throws {
         let rig = try await makeRig()
