@@ -33,7 +33,45 @@ def _atomic_write_json(target_path, data):
     os.replace(tmp_path, target_path)
 
 
+def _verify_input_hashes(current):
+    for path_key, sha_key in (
+        ("package_path", "package_sha256"),
+        ("params_path", "params_sha256"),
+        ("authorization_path", "authorization_sha256"),
+    ):
+        p = current.get(path_key, "")
+        if not os.path.isfile(p):
+            return 8, f"STOPPED: missing {path_key}: {p}"
+        actual = _sha256(p)
+        if actual != current.get(sha_key):
+            return 8, f"STOPPED: {sha_key} mismatch for {p}"
+    return 0, ""
+
+
+def _ensure_writable_task_dir(task_dir):
+    if os.environ.get("KOS_ALLOW_LIVE_WRITE") == "1":
+        return 0
+    real_dir = os.path.realpath(task_dir)
+    live_root = os.path.realpath(
+        os.environ.get("KOS_WORK_ROOT", os.path.expanduser("~/.kos-work/Universe-Keyboard"))
+    )
+    if real_dir == live_root or real_dir.startswith(live_root + os.sep):
+        rel = os.path.relpath(real_dir, live_root)
+        parts = rel.split(os.sep)
+        # Allow only explicit scratch/ or fixtures/ subdirectories under a task dir unless authorized
+        if "scratch" not in parts:
+            print(
+                f"DENIED: refusing write to live/shared task dir {real_dir} without KOS_ALLOW_LIVE_WRITE=1",
+                file=sys.stderr,
+            )
+            return 9
+    return 0
+
+
 def _with_lock(task_dir, fn):
+    rc = _ensure_writable_task_dir(task_dir)
+    if rc != 0:
+        return rc
     os.makedirs(task_dir, exist_ok=True)
     lock_path = os.path.join(task_dir, ".CURRENT.lock")
     current_path = os.path.join(task_dir, "CURRENT.json")
@@ -156,6 +194,10 @@ def cmd_claim(args):
                 file=sys.stderr,
             )
             return 3
+        rc_hash, err_hash = _verify_input_hashes(current)
+        if rc_hash != 0:
+            print(err_hash, file=sys.stderr)
+            return rc_hash
 
         now = _now_iso()
         new_claim_id = uuid.uuid4().hex
@@ -295,19 +337,10 @@ def cmd_verify(args):
         )
         return 6
 
-    for path_key, sha_key in (
-        ("package_path", "package_sha256"),
-        ("params_path", "params_sha256"),
-        ("authorization_path", "authorization_sha256"),
-    ):
-        p = current.get(path_key, "")
-        if not os.path.isfile(p):
-            print(f"STOPPED: missing {path_key}: {p}", file=sys.stderr)
-            return 8
-        actual = _sha256(p)
-        if actual != current.get(sha_key):
-            print(f"STOPPED: {sha_key} mismatch for {p}", file=sys.stderr)
-            return 8
+    rc_hash, err_hash = _verify_input_hashes(current)
+    if rc_hash != 0:
+        print(err_hash, file=sys.stderr)
+        return rc_hash
 
     print(json.dumps({"status": "OK", "task_id": current.get("task_id"), "revision": current.get("revision")}, ensure_ascii=False))
     return 0

@@ -1,0 +1,247 @@
+#!/usr/bin/env python3
+"""Unified O41 three-line renderer and conditional relay orchestrator."""
+import argparse
+import hashlib
+import os
+import re
+import subprocess
+import sys
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, SCRIPT_DIR)
+
+from clauses_spec import PM_HANDOFF_ROLE, RELAY_SECTION_HEADING, THREE_LINE_FINAL_LABELS
+
+
+def _sha256(path):
+    h = hashlib.sha256()
+    with open(path, "rb") as f:
+        for chunk in iter(lambda: f.read(65536), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def _join_fields(head, tail):
+    head = (head or "").strip()
+    tail = (tail or "").strip()
+    if head and tail:
+        return f"{head}，{tail}"
+    return head or tail
+
+
+def render_three_line(status, summary, next_role, next_detail, report_path, entry_path=None, task_title=None, block_path=None):
+    real_report = os.path.realpath(report_path)
+    report_sha = _sha256(real_report)
+    l1, l2, l3 = THREE_LINE_FINAL_LABELS
+    line1_body = _join_fields(status, summary)
+    role_s = (next_role or "").strip()
+    detail_s = (next_detail or "").strip()
+    if role_s and detail_s and detail_s.startswith(role_s):
+        line2_body = detail_s
+    else:
+        line2_body = _join_fields(role_s, detail_s)
+    if block_path:
+        with open(block_path, encoding="utf-8") as block_file:
+            block = block_file.read().rstrip("\r\n")
+    elif entry_path:
+        real_entry = os.path.realpath(entry_path)
+        block = "\n".join([
+            f"派给：{role_s}",
+            f"任务：{task_title or detail_s}",
+            f"开工文档：{real_entry}",
+            f"SHA-256：{_sha256(real_entry)}",
+            "授权，直接执行",
+        ])
+    else:
+        block = "\n".join([
+            f"交回：{role_s}", f"事项：{detail_s}",
+            f"报告：{real_report}", f"SHA-256：{report_sha}",
+        ])
+    return "\n\n".join([
+        f"{l1}{line1_body}", f"{l2}{line2_body}",
+        f"{l3}{real_report}（SHA-256 {report_sha}）", f"```text\n{block}\n```",
+    ])
+
+
+def _parse_report(report_path):
+    text = open(report_path, encoding="utf-8").read()
+    lines = text.splitlines()
+    status = lines[0].strip().split()[0] if lines and lines[0].strip() else ""
+    next_role = ""
+    if RELAY_SECTION_HEADING in text:
+        sec = text.split(RELAY_SECTION_HEADING, 1)[1]
+        m = re.search(r"next_role[^\n:：]*[:：]\s*`?([^\n`]+)", sec)
+        if m:
+            next_role = m.group(1).strip()
+    return status, next_role
+
+
+def cmd_render(args):
+    if not os.path.isfile(args.report_path):
+        print(f"STOPPED: report not found: {args.report_path}", file=sys.stderr)
+        return 2
+    for path in (args.entry_path, args.block_path):
+        if path and not os.path.isfile(path):
+            print(f"STOPPED: file not found: {path}", file=sys.stderr)
+            return 2
+    print(render_three_line(args.status, args.summary, args.next_role, args.next_detail, args.report_path,
+                            args.entry_path, args.task_title, args.block_path))
+    return 0
+
+
+def cmd_handoff(args):
+    if not os.path.isfile(args.report_path):
+        print(f"STOPPED: report not found: {args.report_path}", file=sys.stderr)
+        return 2
+
+    lint_cmd = [
+        sys.executable,
+        "-I",
+        "-B",
+        os.path.join(SCRIPT_DIR, "kos-report-lint.py"),
+        "--require-o41",
+        args.report_path,
+    ]
+    lint_res = subprocess.run(lint_cmd, capture_output=True, text=True)
+    if lint_res.returncode != 0:
+        sys.stderr.write(lint_res.stdout + lint_res.stderr)
+        return lint_res.returncode
+
+    status, report_next_role = _parse_report(args.report_path)
+    is_success = status in ("DONE", "PASS")
+    can_relay_next = (
+        is_success
+        and not args.terminal
+        and args.next_pkg
+        and args.next_params
+        and args.next_block
+        and args.next_role
+        and args.next_step
+        and args.auth_path
+        and os.path.isfile(args.auth_path)
+    )
+
+    if can_relay_next:
+        block_cmd = [
+            "bash",
+            os.path.join(SCRIPT_DIR, "kos-block.sh"),
+            args.next_role,
+            args.next_step,
+            args.next_pkg,
+            args.next_params,
+            args.next_block,
+            "--task-dir",
+            args.task_dir,
+            "--task-id",
+            args.task_id,
+            "--active-step",
+            args.next_step,
+            "--role",
+            args.next_role,
+            "--auth-path",
+            args.auth_path,
+            "--expect-rev",
+            str(args.expect_rev),
+            "--claim-id",
+            args.claim_id,
+            "--updated-by",
+            args.updated_by,
+        ]
+        res = subprocess.run(block_cmd, capture_output=True, text=True)
+        if res.returncode != 0:
+            sys.stderr.write(res.stdout + res.stderr)
+            return res.returncode
+        next_role_out = args.next_role
+        next_detail = f"块已生成未派发（待 Human 通知），入口 {os.path.realpath(args.task_dir)}/CURRENT.json"
+    elif is_success and args.terminal:
+        comp_cmd = [
+            sys.executable,
+            "-I",
+            "-B",
+            os.path.join(SCRIPT_DIR, "kos_current.py"),
+            "complete",
+            "--task-dir",
+            args.task_dir,
+            "--expect-rev",
+            str(args.expect_rev),
+            "--claim-id",
+            args.claim_id,
+            "--updated-by",
+            args.updated_by,
+        ]
+        res = subprocess.run(comp_cmd, capture_output=True, text=True)
+        if res.returncode != 0:
+            sys.stderr.write(res.stdout + res.stderr)
+            return res.returncode
+        next_role_out = report_next_role or f"{PM_HANDOFF_ROLE}（PM）"
+        next_detail = "已完成当前阶段，等待 Human / PM 后续决定"
+    else:
+        reason = args.reason or (f"status={status}" if not is_success else "missing next-station authorization")
+        upg_cmd = [
+            sys.executable,
+            "-I",
+            "-B",
+            os.path.join(SCRIPT_DIR, "kos_current.py"),
+            "upgrade",
+            "--task-dir",
+            args.task_dir,
+            "--expect-rev",
+            str(args.expect_rev),
+            "--claim-id",
+            args.claim_id,
+            "--updated-by",
+            args.updated_by,
+            "--reason",
+            reason,
+        ]
+        res = subprocess.run(upg_cmd, capture_output=True, text=True)
+        if res.returncode != 0:
+            sys.stderr.write(res.stdout + res.stderr)
+            return res.returncode
+        next_role_out = f"{PM_HANDOFF_ROLE}（PM）"
+        next_detail = f"已升级至 PM（{reason}），未生成下一站入口"
+
+    print(render_three_line(status, args.summary, next_role_out, next_detail, args.report_path,
+                            block_path=args.next_block if can_relay_next else None))
+    return 0
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description="KOS O41 three-line renderer and relay orchestrator")
+    sub = parser.add_subparsers(dest="cmd", required=True)
+
+    p_ren = sub.add_parser("render")
+    p_ren.add_argument("--status", required=True)
+    p_ren.add_argument("--summary", default="")
+    p_ren.add_argument("--next-role", required=True)
+    p_ren.add_argument("--next-detail", default="")
+    p_ren.add_argument("--report-path", required=True)
+    p_ren.add_argument("--entry-path")
+    p_ren.add_argument("--task-title")
+    p_ren.add_argument("--block-path")
+
+    p_han = sub.add_parser("handoff")
+    p_han.add_argument("--task-dir", required=True)
+    p_han.add_argument("--task-id", required=True)
+    p_han.add_argument("--expect-rev", type=int, required=True)
+    p_han.add_argument("--claim-id", required=True)
+    p_han.add_argument("--updated-by", required=True)
+    p_han.add_argument("--report-path", required=True)
+    p_han.add_argument("--summary", required=True)
+    p_han.add_argument("--terminal", action="store_true")
+    p_han.add_argument("--next-role", default=None)
+    p_han.add_argument("--next-step", default=None)
+    p_han.add_argument("--next-pkg", default=None)
+    p_han.add_argument("--next-params", default=None)
+    p_han.add_argument("--next-block", default=None)
+    p_han.add_argument("--auth-path", default=None)
+    p_han.add_argument("--reason", default="")
+
+    args = parser.parse_args(argv)
+    if args.cmd == "render":
+        return cmd_render(args)
+    return cmd_handoff(args)
+
+
+if __name__ == "__main__":
+    sys.exit(main())
