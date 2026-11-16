@@ -71,18 +71,18 @@ def main():
             else:
                 print("OK      " if sha(q) == h else "MISMATCH", p)
     print("\n== logs")
-    for p in sorted(set(re.findall(r"[`\s(]((?:/|scratch/)[^`\s)]+\.log)", text))):
+    for p in sorted(set(re.findall(r"[`\s(]((?:/|(?:reports|scratch|inputs|instructions|publish|activation)/)[^`\s)]+\.log)", text))):
         q = resolve(p, task, a.worktree)
         if not os.path.isfile(q):
             print("MISSING ", p); continue
         with open(q, encoding="utf-8", errors="replace") as f:
             body = f.read().splitlines()
         top = "\n".join(body[:8]); tail = "\n".join(body[-5:])
-        exitc = re.findall(r"EXIT:\s*(\d+)", tail); lh = re.findall(r"HEAD:\s*([0-9a-f]{40})", tail)
+        exitc = re.findall(r"EXIT:\s*(\d+)", tail); lh = re.findall(r"HEAD\s*[:=]\s*([0-9a-fA-F]{7,40})", tail)
         flags = []
         if "COMMAND" not in top and "xcodebuild" not in top and "swift" not in top: flags.append("no-command-header")
         if not exitc: flags.append("no-EXIT")
-        if head and lh and lh[-1] != head: flags.append("HEAD!=worktree")
+        if head and lh and not head.lower().startswith(lh[-1].lower()): flags.append("HEAD!=worktree")
         print(f"{'OK      ' if not flags else 'CHECK   '} {p} EXIT={exitc[-1] if exitc else '?'} HEAD={lh[-1][:8] if lh else '?'} {' '.join(flags)}")
     if a.worktree:
         print("\n== worktree")
