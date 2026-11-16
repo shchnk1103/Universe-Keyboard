@@ -29,7 +29,56 @@ def _join_fields(head, tail):
     return head or tail
 
 
+KNOWN_ROLES = ("Alex", "Quinn", "Nick", "Lucy", "Cole", "Pete", "Wendy", "Ivy", "Jack")
+
+
+def _extract_role_name(role_text):
+    token = re.split(r"[\s（(：:,，]", (role_text or "").strip())[0]
+    if token in KNOWN_ROLES:
+        return token
+    for role in KNOWN_ROLES:
+        if re.search(rf"\b{re.escape(role)}\b", role_text or ""):
+            return role
+    return token
+
+
+def _extract_entry_declared_roles(entry_path):
+    with open(entry_path, encoding="utf-8") as f:
+        head_lines = [next(f, "") for _ in range(10)]
+    declared = []
+    patterns = (
+        re.compile(r"^#\s*([A-Za-z]+)\s*[：:]"),
+        re.compile(r"(?:你的角色|角色)\s*[：:]?\s*([A-Za-z]+)"),
+        re.compile(r"^派给\s*[：:]\s*([A-Za-z]+)"),
+    )
+    for line in head_lines:
+        stripped = line.strip()
+        for pat in patterns:
+            m = pat.search(stripped)
+            if m:
+                declared.append(m.group(1))
+    return declared
+
+
+def _validate_render_handoff(status, next_role, entry_path, block_path):
+    status_clean = (status or "").strip()
+    has_entry = bool((entry_path or "").strip())
+    has_block = bool((block_path or "").strip())
+    if status_clean not in ("DONE", "PASS") and (has_entry or has_block):
+        raise ValueError(
+            f"STOPPED: non-passing status ({status_clean}) cannot dispatch a next-station entry; hand back to Jack（PM）"
+        )
+    if has_entry:
+        expected_role = _extract_role_name(next_role)
+        declared_roles = _extract_entry_declared_roles(entry_path)
+        if declared_roles and expected_role not in declared_roles:
+            raise ValueError(
+                f"STOPPED: entry_path role mismatch: next_role={next_role} does not match {entry_path}"
+            )
+
+
 def render_three_line(status, summary, next_role, next_detail, report_path, entry_path=None, task_title=None, block_path=None):
+    _validate_render_handoff(status, next_role, entry_path, block_path)
     real_report = os.path.realpath(report_path)
     report_sha = _sha256(real_report)
     l1, l2, l3 = THREE_LINE_FINAL_LABELS
@@ -84,8 +133,15 @@ def cmd_render(args):
         if path and not os.path.isfile(path):
             print(f"STOPPED: file not found: {path}", file=sys.stderr)
             return 2
-    print(render_three_line(args.status, args.summary, args.next_role, args.next_detail, args.report_path,
-                            args.entry_path, args.task_title, args.block_path))
+    try:
+        output = render_three_line(
+            args.status, args.summary, args.next_role, args.next_detail, args.report_path,
+            args.entry_path, args.task_title, args.block_path,
+        )
+    except ValueError as exc:
+        print(str(exc), file=sys.stderr)
+        return 2
+    print(output)
     return 0
 
 
