@@ -253,6 +253,7 @@ extension KeyboardViewController {
     }
 
     func clearAllRows() {
+        invalidateOrdinaryKeyRollover()
         candidateCellSizeCache.removeAll(keepingCapacity: true)
         (rootStack as? KeyboardInputHitAreaStackView)?.invalidateKeyTouchGeometry()
         for view in rootStack.arrangedSubviews {

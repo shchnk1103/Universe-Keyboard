@@ -173,6 +173,9 @@ class KeyboardViewController: UIInputViewController {
     var returnButton: UIButton!
     /// 所有字母键按钮的引用，用于 Shift 状态下批量刷新标题
     var letterButtons: [UIButton] = []
+    var ordinaryRolloverStateMachine = OrdinaryKeyRolloverStateMachine<ObjectIdentifier, ObjectIdentifier>()
+    var ordinaryRolloverButtonsByID: [ObjectIdentifier: KeyboardKeyButton] = [:]
+    lazy var ordinaryLongPressDelegate = OrdinaryKeyLongPressDelegate(owner: self)
     #if T9_AUTO_ANCHOR_DEVICE_PREFLIGHT
         /// S6-A only: visible letter-group buttons in canonical slot order.
         var devicePreflightT9LetterGroupButtons: [UIButton] = []

@@ -24,6 +24,7 @@ extension KeyboardViewController {
     /// identifier when `accessibilityValue == t9DigitAccessibilityValue`.
     func makeT9KeyButton(digit: String, letters: String) -> UIButton {
         let button = makeKeyButton(title: letters.isEmpty ? digit : letters, action: #selector(insertKey(_:)))
+        (button as? KeyboardKeyButton)?.isOrdinaryRolloverParticipant = true
         button.accessibilityIdentifier = digit
         button.accessibilityValue = Self.t9DigitAccessibilityValue
         if letters.isEmpty {
@@ -86,6 +87,12 @@ extension KeyboardViewController {
                 self?.recordKeyboardTrackingDiagnostic(button: button, phase: phase)
             }
         #endif
+        button.canBeginOrdinaryRolloverTouch = { [weak self] button in
+            self?.canBeginOrdinaryRolloverTouch(for: button) ?? false
+        }
+        button.onOrdinaryRolloverTrackingEvent = { [weak self] button, event in
+            self?.handleOrdinaryRolloverTrackingEvent(event, for: button)
+        }
         // 默认应用字符键样式 — 调用方可以根据需要覆盖（如 applyKeyStyle(.function, to:)）
         applyKeyStyle(.character, to: button)
 
