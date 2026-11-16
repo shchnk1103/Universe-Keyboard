@@ -155,6 +155,7 @@ extension KeyboardViewController {
     }
 
     func resetAllKeyPressVisualState() {
+        invalidateOrdinaryKeyRollover()
         keyTouchDownTimes.removeAll()
         keyPressFeedbackEmittedButtonIDs.removeAll()
         restoreButtons(in: view)

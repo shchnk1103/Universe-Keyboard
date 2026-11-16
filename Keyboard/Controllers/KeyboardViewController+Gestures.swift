@@ -11,6 +11,27 @@
 import KeyboardCore
 import UIKit
 
+@MainActor
+final class OrdinaryKeyLongPressDelegate: NSObject, UIGestureRecognizerDelegate {
+    weak var owner: KeyboardViewController?
+
+    init(owner: KeyboardViewController) {
+        self.owner = owner
+    }
+
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard let owner,
+            let control = gestureRecognizer.view as? any OrdinaryRolloverTouchControl,
+            let button = control.ordinaryRolloverSourceButton
+        else {
+            return true
+        }
+        guard button.isOrdinaryRolloverParticipant else { return true }
+        return control.isTrackingOrdinaryRolloverTouch
+            && owner.ordinaryRolloverStateMachine.phase(forButtonID: ObjectIdentifier(button)) == .pending
+    }
+}
+
 extension KeyboardViewController {
 
     /// 长按字母键手势的状态机处理。
@@ -27,23 +48,52 @@ extension KeyboardViewController {
     ///   .cancelled/.failed: 手势失败 → 关闭面板
     @objc func handleKeyLongPress(_ gesture: UILongPressGestureRecognizer) {
         guard !isKeyboardHeightAdjusting else { return }
-        guard let button = gesture.view as? UIButton else { return }
+        guard let control = gesture.view as? any OrdinaryRolloverTouchControl,
+            let button = control.ordinaryRolloverSourceButton
+        else { return }
 
         switch gesture.state {
         case .began:
-            // 取消按钮的默认追踪，防止松开时触发 insertKey
-            button.cancelTracking(with: nil)
+            // Per r3 §1 & touch-region-r2 §3.3: verify .pending and atomically transfer to
+            // .variantOwned BEFORE cancelling the triggering UIControl's tracking.
+            if button.isOrdinaryRolloverParticipant,
+                !beginOrdinaryRolloverVariantOwnership(for: button)
+            {
+                return
+            }
+            // Cancel tracking on the actual triggering control (key face or gap control).
+            control.cancelTracking(with: nil)
             showVariantPopup(on: button)
+            if button.isOrdinaryRolloverParticipant,
+                variantPopupView == nil || longPressedButton !== button
+            {
+                rollbackOrdinaryRolloverVariantOwnership(for: button)
+            }
 
         case .changed:
+            if button.isOrdinaryRolloverParticipant,
+                (variantPopupView == nil || longPressedButton !== button
+                    || !isOrdinaryRolloverVariantOwned(button))
+            {
+                return
+            }
             // 手指滑动时更新高亮的变体字符
             updateVariantPopup(gesture: gesture)
 
         case .ended:
+            if button.isOrdinaryRolloverParticipant,
+                (variantPopupView == nil || longPressedButton !== button
+                    || !endOrdinaryRolloverVariantOwnership(for: button))
+            {
+                return
+            }
             // 手指离开时提交选中的变体
             commitVariantPopup(gesture: gesture)
 
         case .cancelled, .failed:
+            if button.isOrdinaryRolloverParticipant {
+                _ = endOrdinaryRolloverVariantOwnership(for: button)
+            }
             // 手势被取消 — 关闭面板，恢复按键外观
             dismissVariantPopup()
 
