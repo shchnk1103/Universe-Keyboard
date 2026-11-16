@@ -34,28 +34,20 @@ if [[ "$classify_result" != "success" || "$lightweight_result" != "success" ]]; 
   exit 1
 fi
 
-expected=""
 case "$requires_full" in
-  true)
-    expected=success
-    ;;
-  false)
-    expected=skipped
-    ;;
-  *)
-    echo "Missing fail-closed classification output." >&2
-    exit 1
-    ;;
+  full|true) expected=(success success success success success success) ;;
+  docs_only|kos_tools_only|false) expected=(skipped skipped skipped skipped skipped skipped) ;;
+  keyboard_ui_only|app_only) expected=(success skipped skipped success skipped success) ;;
+  app_sync_only) expected=(success skipped skipped success success success) ;;
+  rimebridge_only) expected=(success skipped success success skipped success) ;;
+  rimebridge_sync_only) expected=(success skipped success success success success) ;;
+  *) echo "Missing or unknown classification." >&2; exit 1 ;;
 esac
 
 for index in "${!heavy_names[@]}"; do
   result="${heavy_results[$index]}"
-  if [[ "$result" != "$expected" ]]; then
-    if [[ "$expected" == "success" ]]; then
-      echo "Full changes require ${heavy_names[$index]} to succeed; got: $result" >&2
-    else
-      echo "Lightweight (requires_full=false) changes require ${heavy_names[$index]} to be skipped; got: $result" >&2
-    fi
+  if [[ "$result" != "${expected[$index]}" ]]; then
+    echo "${heavy_names[$index]} expected ${expected[$index]}; got: $result" >&2
     exit 1
   fi
 done

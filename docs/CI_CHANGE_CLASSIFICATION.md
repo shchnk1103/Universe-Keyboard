@@ -22,7 +22,10 @@ TestFlight or Release authority.
 | `docs/**` | `docs_only` | Documentation, governance and evidence artifacts |
 | `.kos/**` | `docs_only` | KOS Profile and machine-readable governance records |
 | `scripts/kos/**` | `kos_tools_only` | PM tooling scripts. Workflows do not call them; lightweight checks run their unit tests. This tier applies only when every changed path is on the light allowlist and at least one path is under `scripts/kos/`. Decision: Human 2026-11-05「按推荐改」 |
-| Every other path | `full` | Product/build/test/tooling input or unknown path; fail closed |
+| Keyboard and corresponding UI test paths only | `keyboard_ui_only` | Controlled keyboard tier |
+| `Packages/RimeBridge/**` only | `rimebridge_only` / `rimebridge_sync_only` | Sync paths require Keychain |
+| `Universe Keyboard/**` and `UniverseKeyboardTests/**` only | `app_only` / `app_sync_only` | Sync paths require Keychain |
+| Every other or mixed path | `full` | Shared/build/tooling input or unknown path; fail closed |
 | Empty diff or invalid base/head | classification failure/full | Never infer a safe skip without an exact comparison |
 
 Rename detection is disabled for classification. A rename is therefore evaluated as
@@ -46,7 +49,7 @@ lightweight-checks -------------------+
        |                               |
        +--> format-swift               |
        +--> test-keyboardcore          |
-       +--> test-rimebridge            |  (full only; parallel)
+       +--> test-rimebridge            |  (selected per controlled tier; parallel)
        +--> test-app-keyboard          |
        +--> test-rime-sync-keychain    |
        +--> build-release              |
@@ -59,17 +62,14 @@ lightweight-checks -------------------+
   branch-wide decision from only `HEAD^`.
 - `lightweight-checks` always runs: diff whitespace, changed Markdown local links,
   `.kos/project.json` JSON syntax and classifier/link-checker unit tests.
-- The six named heavy jobs run only when classification requires `full`. They
-  do not introduce path-based skips. Debug `test` covers Debug compilation; there
+- The six named heavy jobs run according to the controlled tier matrix below. Debug `test` covers Debug compilation; there
   is no extra Debug `build`. `test-app-keyboard`, `test-rime-sync-keychain`, and `build-release` fetch
   pinned RIME artifacts. `format-swift` and `test-keyboardcore` do not.
 - The broad app/keyboard test job remains unsigned; Keychain integration is
   exercised separately by `test-rime-sync-keychain` using an ad-hoc signed
   Simulator host, so CI needs no developer-team signing secret. The unsigned
   suite skips only when the OS reports the expected missing Keychain entitlement.
-- `final-quality-gate` always runs. For `full` every heavy job must be `success`.
-  凡 `requires_full=false`（`docs_only` 与 `kos_tools_only`）每个重型 job 都必须是 `skipped`。Missing or
-  contradictory outputs fail closed.
+- `final-quality-gate` always runs. Selected heavy jobs must be `success` and unselected jobs must be `skipped`. Missing or contradictory outputs fail closed.
 - One concurrency group per PR/ref cancels older in-progress runs after a new commit.
 
 ## KOS Validation Boundary
@@ -111,8 +111,7 @@ and [`scripts/ci/verify_final_gate.sh`](../scripts/ci/verify_final_gate.sh) with
 The Gate script now takes nine arguments (`requires_full` third); restoring
 only the YAML or only the script leaves a calling-convention mismatch. That
 mismatch fail-closes the Gate (safe) but is not a working rollback. Do not use
-workflow-level `paths-ignore` as a shortcut. Do not add UI/Rime/KeyboardCore
-path skips during rollback.
+workflow-level `paths-ignore` as a shortcut. During rollback use only the explicitly controlled tier matrix; KeyboardCore remains full.
 
 ## Revalidation Triggers
 
@@ -124,3 +123,16 @@ The classifier and final script are checked out from the proposed change itself.
 acceptable while the workflow is advisory and unprotected, but it is not an independent
 trust root. Before any required-check migration, TD-016 must add protected review or an
 equivalent baseline-owned/external guard.
+
+## Controlled code tiers
+
+| Classification | Required heavy jobs |
+|---|---|
+| keyboard_ui_only | format-swift, test-app-keyboard, build-release |
+| rimebridge_only | format-swift, test-rimebridge, test-app-keyboard, build-release |
+| rimebridge_sync_only | rimebridge_only jobs and test-rime-sync-keychain |
+| app_only | format-swift, test-app-keyboard, build-release |
+| app_sync_only | app_only jobs and test-rime-sync-keychain |
+| full | all six heavy jobs |
+
+KeyboardCore, project files, CI scripts, workflows, empty, unknown and mixed classifications fail closed to full. Classification and lightweight checks precede the selected jobs; final-quality-gate always runs and requires success for selected jobs and skipped for unselected jobs. L1/L2 are development checks; L3 is the single pre-merge gate, reused by Quality and Publish only under the byte, base, dependency, environment and coverage conditions in [AI workflow](AI_WORKFLOW.md).

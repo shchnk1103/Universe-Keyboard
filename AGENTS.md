@@ -104,9 +104,13 @@
 分级：分类、轻量检查和 `final-quality-gate` 始终运行；只有严格的 docs/KOS allowlist
 可跳过全部 heavy jobs（`format-swift`、`test-keyboardcore`、`test-rimebridge`、
 `test-app-keyboard`、`test-rime-sync-keychain`、`build-release`）。未知路径、workflow 或 `scripts/ci/**`
-变更必须走完整门禁。不得按 UI/Rime 等源路径跳过其中一部分。
+变更按下方受控分类矩阵选择门禁；未知或混合路径走完整门禁。
 
 在 **push 后预期合并**、或用户要求「上传并合并 / 修 CI / ship」时，在推送前（至少在 merge 前）于本地执行与 CI 同序的检查。默认模拟器名与 CI 一致：`iPhone 17 Pro`（本机无该机型时可用等价 iOS Simulator，并在报告中写明）。
+
+### 分级与证据复用
+
+开发返修 L1/L2 是本轮定向检查和审查前受影响回归，不是合并门禁。合并前 L3 按分类矩阵运行一次：keyboard_ui_only 跑 format、App+Keyboard、Release；rimebridge_only 另跑 RimeBridge；app_only 跑 format、App+Keyboard、Release。涉及 Sync/Keychain 的 RimeBridge 或 App 加跑签名 Keychain。KeyboardCore、工程、CI、未知或混合路径为 full，跑全部六个重型任务。Quality 复用该次 L3，Publish 在文件字节、比较基线、依赖与环境不变时按 `docs/AI_WORKFLOW.md` 复用 Quality 证据；否则重跑受影响分类。
 
 ### Swift 格式硬门槛（任何含 `.swift` 的 commit / push）
 
