@@ -454,6 +454,52 @@ class O41ActivationGapFixTests(unittest.TestCase):
         self.assertEqual(cur["state"], "COMPLETED")
         self.assertIsNone(cur["claim_id"])
 
+    def test_o62_non_passing_status_rejects_entry_or_block_path(self) -> None:
+        rep = _write(self.task_dir / "rep-fail.md", "CHANGES_REQUESTED\nQuinn\n")
+        entry = _write(self.task_dir / "quinn-entry.md", "# Quinn：复核入口\n")
+        block = _write(self.task_dir / "block.txt", "派给：Quinn\n")
+        for status in ("CHANGES_REQUESTED", "FAIL", "PARTIAL", "BLOCKED", "STOPPED"):
+            r_entry = _run_py("kos_handoff.py", [
+                "render", "--status", status, "--summary", "rejected",
+                "--next-role", "Quinn", "--next-detail", "复核",
+                "--report-path", str(rep), "--entry-path", str(entry),
+            ])
+            self.assertEqual(r_entry.returncode, 2, f"status={status} should fail")
+            self.assertIn(f"STOPPED: non-passing status ({status})", r_entry.stderr)
+
+            r_block = _run_py("kos_handoff.py", [
+                "render", "--status", status, "--summary", "rejected",
+                "--next-role", "Quinn", "--next-detail", "复核",
+                "--report-path", str(rep), "--block-path", str(block),
+            ])
+            self.assertEqual(r_block.returncode, 2, f"status={status} block_path should fail")
+            self.assertIn(f"STOPPED: non-passing status ({status})", r_block.stderr)
+
+    def test_o62_entry_path_role_mismatch_rejected(self) -> None:
+        rep = _write(self.task_dir / "rep-pass.md", "PASS\nQuinn\n")
+        alex_entry = _write(self.task_dir / "alex-entry.md", "# Alex：架构复核入口\n")
+        r_mismatch = _run_py("kos_handoff.py", [
+            "render", "--status", "PASS", "--summary", "ok",
+            "--next-role", "Nick", "--next-detail", "设计",
+            "--report-path", str(rep), "--entry-path", str(alex_entry),
+        ])
+        self.assertEqual(r_mismatch.returncode, 2)
+        self.assertIn("STOPPED: entry_path role mismatch", r_mismatch.stderr)
+
+    def test_o62_matching_role_and_passing_status_succeeds(self) -> None:
+        rep = _write(self.task_dir / "rep-done.md", "DONE\nLucy\n")
+        quinn_entry = _write(self.task_dir / "quinn-entry.md", "# Quinn：独立复核入口\n")
+        r_ok = _run_py("kos_handoff.py", [
+            "render", "--status", "DONE", "--summary", "守卫实现完成",
+            "--next-role", "Quinn（Quality·独立复核）",
+            "--next-detail", "独立复核 O62 守卫",
+            "--report-path", str(rep), "--entry-path", str(quinn_entry),
+            "--task-title", "[KOS-O62] 复核",
+        ])
+        self.assertEqual(r_ok.returncode, 0, r_ok.stderr)
+        self.assertIn("派给：Quinn（Quality·独立复核）", r_ok.stdout)
+        self.assertIn("授权，直接执行", r_ok.stdout)
+
 
 if __name__ == "__main__":
     unittest.main()
