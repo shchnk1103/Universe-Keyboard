@@ -37,3 +37,21 @@ expect_failure success success false skipped skipped skipped skipped skipped suc
 expect_failure success success success true
 
 echo "PASS final gate result matrix"
+
+for row in \
+  'keyboard_ui_only success skipped skipped success skipped success' \
+  'app_only success skipped skipped success skipped success' \
+  'app_sync_only success skipped skipped success success success' \
+  'rimebridge_only success skipped success success skipped success' \
+  'rimebridge_sync_only success skipped success success success success'; do
+  read -r -a fields <<< "$row"
+  bash "$script" success success "${fields[@]}" >/dev/null
+  for i in {1..6}; do
+    modified=("${fields[@]}")
+    if [[ ${modified[$i]} == success ]]; then modified[$i]=skipped; else modified[$i]=success; fi
+    if bash "$script" success success "${modified[@]}" >/dev/null 2>&1; then
+      echo "Unexpected pass for $row at $i" >&2
+      exit 1
+    fi
+  done
+done

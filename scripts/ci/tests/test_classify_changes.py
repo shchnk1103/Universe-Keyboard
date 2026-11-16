@@ -253,3 +253,23 @@ class ClassifyPathsTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+class ControlledTierTests(unittest.TestCase):
+    def test_controlled_tiers(self):
+        for path, expected in [
+            ('Keyboard/Controller.swift', 'keyboard_ui_only'),
+            ('KeyboardLayoutIntegrationTests/A.swift', 'keyboard_ui_only'),
+            ('Packages/RimeBridge/Sources/A.swift', 'rimebridge_only'),
+            ('Packages/RimeBridge/Sources/Sync.swift', 'rimebridge_sync_only'),
+            ('Universe Keyboard/A.swift', 'app_only'),
+            ('UniverseKeyboardTests/KeychainTests.swift', 'app_sync_only'),
+        ]:
+            with self.subTest(path=path):
+                self.assertEqual(MODULE.classify_paths([path]).name, expected)
+
+    def test_fail_closed(self):
+        for paths in [[], ['Packages/KeyboardCore/A.swift'], ['Keyboard/P.xcodeproj/project.pbxproj'],
+                      ['scripts/ci/x.py'], ['.github/workflows/x.yml'], ['unknown'],
+                      ['Keyboard/A.swift', 'Universe Keyboard/B.swift']]:
+            with self.subTest(paths=paths):
+                self.assertEqual(MODULE.classify_paths(paths).name, 'full')

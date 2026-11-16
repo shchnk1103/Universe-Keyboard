@@ -56,6 +56,27 @@ def classify_paths(paths: list[str]) -> Classification:
             reason="empty_diff_fails_closed",
         )
 
+    # Code tiers apply only when every path belongs to one controlled family.
+    families = []
+    for raw in normalized:
+        path = PurePosixPath(raw)
+        if path.is_absolute() or ".." in path.parts or path.suffix.lower() == ".pbxproj":
+            families.append("full")
+        elif path.parts[0] in {"Keyboard", "KeyboardTests", "KeyboardExtensionTests", "KeyboardLayoutIntegrationTests"} and len(path.parts) > 1:
+            families.append("keyboard_ui_only")
+        elif len(path.parts) > 2 and path.parts[:2] == ("Packages", "RimeBridge"):
+            families.append("rimebridge_only")
+        elif path.parts[0] in {"Universe Keyboard", "UniverseKeyboardTests"} and len(path.parts) > 1:
+            families.append("app_only")
+        else:
+            families.append("other")
+    if len(set(families)) == 1 and families[0] in {"keyboard_ui_only", "rimebridge_only", "app_only"}:
+        name = families[0]
+        # Sync/Keychain changes need the signed integration job.
+        if name != "keyboard_ui_only" and any("sync" in path.lower() or "keychain" in path.lower() for path in normalized):
+            name = name.replace("_only", "_sync_only")
+        return Classification(name, False, normalized, (), "controlled_code_tier")
+
     full_required = tuple(path for path in normalized if not is_lightweight_path(path))
     if full_required:
         return Classification(
@@ -150,6 +171,17 @@ def main() -> int:
         print(f"FAIL closed: unable to classify change: {error}", file=sys.stderr)
         return 2
 
+    matrix = {
+        "full": (1, 1, 1, 1, 1, 1),
+        "docs_only": (0, 0, 0, 0, 0, 0),
+        "kos_tools_only": (0, 0, 0, 0, 0, 0),
+        "keyboard_ui_only": (1, 0, 0, 1, 0, 1),
+        "rimebridge_only": (1, 0, 1, 1, 0, 1),
+        "rimebridge_sync_only": (1, 0, 1, 1, 1, 1),
+        "app_only": (1, 0, 0, 1, 0, 1),
+        "app_sync_only": (1, 0, 0, 1, 1, 1),
+    }
+    jobs = ("format", "keyboardcore", "rimebridge", "app_keyboard", "keychain", "build_release")
     payload = {
         "classification": result.name,
         "requires_full": str(result.requires_full).lower(),
@@ -158,6 +190,7 @@ def main() -> int:
         "base_sha": args.base,
         "head_sha": args.head,
     }
+    payload.update({f"run_{job}": str(bool(value)).lower() for job, value in zip(jobs, matrix[result.name])})
     print(json.dumps({**payload, "full_required_paths": result.full_required_paths}, ensure_ascii=False))
     if args.github_output:
         append_github_output(args.github_output, payload)
