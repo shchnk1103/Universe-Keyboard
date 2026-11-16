@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Freeze a KOS task package draft: resolve placeholders, lint standard clauses, print SHA + dispatch block."""
 import argparse, hashlib, os, re, subprocess, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 VERIFY = os.path.join(os.path.dirname(os.path.abspath(__file__)), "verify-tree.py")
 
@@ -30,10 +31,12 @@ def resolve(m):
         return git(arg, "rev-parse", "HEAD^{tree}")
     raise SystemExit(f"unknown placeholder {kind}")
 
+from clauses_spec import FINAL_MESSAGE_TRANSITION_REGEX
+
 REQUIRED = [
     ("role line", r"\*\*你的角色："),
     ("not PM", r"你不是 PM"),
-    ("one-sentence final message", r"最终消息只写一句话"),
+    ("final message", FINAL_MESSAGE_TRANSITION_REGEX),
     ("write denial stop", r"写入被拒"),
     ("no /tmp", r"/tmp"),
     ("authorization receipt", r"授权(原文|消息原文)另存"),

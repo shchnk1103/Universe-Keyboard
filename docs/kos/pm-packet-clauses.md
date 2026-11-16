@@ -3,7 +3,18 @@
 这是 PM 写任务包时复制粘贴用的条款库，不是执行指令；`<…>` 处的占位符只是模板，实际派发前按该任务的授权填写。`scripts/kos/freeze.py` 会检查哪些条款必须出现，并做条款间一致性检查，见 [scripts/kos/README.md](../../scripts/kos/README.md)。PM 的其它工作规则见 [PM 手册](pm-playbook.md)。
 
 ## 角色第一行（必有）
-**你的角色：<KOS 角色>（<一句话说明>）。你不是 PM：只做本包；不派发任务、不讨论本包以外的事。所有结果写进报告；最终消息只写一句话：状态 + 报告路径 + SHA-256。** 报告开头写明实际运行时身份。
+**你的角色：<KOS 角色>（<一句话说明>）。你不是 PM：只做本包；不派发任务、不讨论本包以外的事。所有结果写进报告；最终消息严格三行：**
+```text
+结论：<状态> + <一句实际结果>
+下一位交付：<角色（阶段）> + <动作与入口路径 / CURRENT.json 指向>
+报告：<报告绝对路径> + <实测 SHA-256>
+```
+**报告开头写明实际运行时身份。**（过渡期兼容：`scripts/kos/freeze.py` 仍兼容历史“最终消息只写一句话”识别文本，新包一律使用上述三行格式。）
+
+## 唯一入口与条件接力（O41）
+- **唯一入口**：员工启动时只读取 `<任务目录>/CURRENT.json`（`schema: 2`），禁止遍历 `instructions/` 猜最新文件名；核对 `role`、`state == "READY_TO_DISPATCH"` 及 `package_sha256` / `params_sha256` / `authorization_sha256`，任一不符或遇到过期入口立即 `STOPPED` 并报 `Jack（PM）`。
+- **`CLAIMED` 与恢复**：`state == "CLAIMED"` 时禁止新会话直接接管；仅当确认原会话已停止并由 `Jack（PM）` 显式执行 `--recover` 作废旧 `claim_id` 后，新会话方可领取新 `claim_id` 按 `O51` 续做。
+- **报告末节 `## 下一站接力（O41）`**：所有报告末尾必须包含本节。`DONE`/`PASS` 且包内已预置下一站授权与条件模板时，写明 `next_role`、`next_step`、下一站 `params_path` / `block_path` 及 SHA-256 并标注 `块已生成未派发（待 Human 通知）`；`PARTIAL`/`BLOCKED`/`STOPPED`/`FAIL` 或无下一站授权时，`next_role` 固定为 `Jack（PM）`，不得越过 PM 生成下一站入口。操作细则见 [O41 接力手册](o41-relay-playbook.md)。
 
 ## 修订包开头（修订时）
 本包取代未派发的 `<旧包路径>`（SHA-256 `{{sha:<旧包绝对路径>}}`），原文采纳 `<报告路径>`（SHA-256 `{{sha:<报告绝对路径>}}`）的 <第几条>；其余条款不变。

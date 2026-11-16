@@ -6,13 +6,30 @@
 # 例：kos-block.sh "Quinn（Quality·原独立质量会话）" "A3 质量复核 M2" /…/task-package-quality.md /…/params-q1.txt /…/next-block-q1.txt \
 #       --next "下一步：贴给 Quinn（Quality·原独立质量会话）" executor_report_path=/…/executor-report-impl.md commit=3513… N=1 K=1
 set -eu
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 who="$1"; step="$2"; pkg="$3"; params="$4"; block="$5"; shift 5
 next=""; kv=()
+task_dir=""; task_id=""; active_step=""; role=""; auth_path=""; expect_rev="0"; claim_id=""; updated_by=""
 while [ $# -gt 0 ]; do
-  if [ "$1" = "--next" ]; then next="$2"; shift 2; else kv+=("$1"); shift; fi
+  case "$1" in
+    --next) next="$2"; shift 2;;
+    --task-dir) task_dir="$2"; shift 2;;
+    --task-id) task_id="$2"; shift 2;;
+    --active-step) active_step="$2"; shift 2;;
+    --role) role="$2"; shift 2;;
+    --auth-path) auth_path="$2"; shift 2;;
+    --expect-rev) expect_rev="$2"; shift 2;;
+    --claim-id) claim_id="$2"; shift 2;;
+    --updated-by) updated_by="$2"; shift 2;;
+    *) kv+=("$1"); shift;;
+  esac
 done
 if [ -z "${KOS_BLOCK_FORCE:-}" ]; then
   for f in "$params" "$block"; do [ ! -e "$f" ] || { echo "输出文件已存在，拒绝覆盖（冻结输入可能同名）：${f}；换名，或明知故犯时设 KOS_BLOCK_FORCE=1" >&2; exit 3; }; done
+fi
+if [ -n "$task_dir" ] && [ -n "$auth_path" ] && [ ! -f "$auth_path" ]; then
+  echo "授权文件不存在，禁止越权生成下一站入口：$auth_path" >&2
+  exit 2
 fi
 h() { shasum -a 256 "$1" | cut -d' ' -f1; }
 [ -f "$pkg" ] || { echo "包文件不存在：$pkg" >&2; exit 2; }
@@ -32,4 +49,23 @@ h() { shasum -a 256 "$1" | cut -d' ' -f1; }
   echo "参数文件：${params}（SHA-256 $(h "$params")）；内含任务包路径与 SHA-256 及全部参数"
   echo "授权，直接执行"
 } > "$block"
+if [ -n "$task_dir" ]; then
+  [ -n "$task_id" ] && [ -n "$active_step" ] && [ -n "$role" ] && [ -n "$auth_path" ] && [ -n "$updated_by" ] || {
+    echo "O41 CURRENT.json 更新缺少必要参数（--task-id/--active-step/--role/--auth-path/--updated-by）" >&2
+    exit 2
+  }
+  claim_args=()
+  [ -n "$claim_id" ] && claim_args+=(--claim-id "$claim_id")
+  python3 -I -B "${SCRIPT_DIR}/kos_current.py" dispatch \
+    --task-dir "$task_dir" \
+    --task-id "$task_id" \
+    --active-step "$active_step" \
+    --role "$role" \
+    --package-path "$pkg" \
+    --params-path "$params" \
+    --authorization-path "$auth_path" \
+    --updated-by "$updated_by" \
+    --expect-rev "$expect_rev" \
+    "${claim_args[@]+"${claim_args[@]}"}" >/dev/null
+fi
 echo "已写 $params 和 $block"
