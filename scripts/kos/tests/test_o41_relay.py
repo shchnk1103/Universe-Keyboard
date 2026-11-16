@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Tests for KOS O41 minimal relay loop (CURRENT.json atomic state machine, freeze, report-lint, kos-block.sh)."""
 import concurrent.futures
+import hashlib
 import json
 import os
 import subprocess
@@ -276,6 +277,182 @@ class O41ClausesAndLintTests(unittest.TestCase):
         )
         r3 = _run_py("kos-report-lint.py", ["--require-o41", str(ok_done)])
         self.assertEqual(r3.returncode, 0, r3.stdout)
+
+
+class O41ActivationGapFixTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory()
+        self.root = Path(self.tmp.name)
+        self.task_dir = self.root / "TASK-FIX"
+        self.pkg1 = _write(self.task_dir / "pkg-1.md", "# pkg 1\n")
+        self.pkg2 = _write(self.task_dir / "pkg-2.md", "# pkg 2\n")
+        self.params1 = _write(self.task_dir / "params-1.txt", "p1\n")
+        self.auth = _write(self.task_dir / "auth.md", "auth\n")
+
+    def tearDown(self) -> None:
+        self.tmp.cleanup()
+
+    def test_claim_rechecks_input_hashes_inside_lock(self) -> None:
+        r_d = _run_py("kos_current.py", [
+            "dispatch", "--task-dir", str(self.task_dir), "--task-id", "TASK-FIX",
+            "--active-step", "step-1", "--role", "Wendy", "--package-path", str(self.pkg1),
+            "--params-path", str(self.params1), "--authorization-path", str(self.auth),
+            "--updated-by", "Jack", "--expect-rev", "0",
+        ])
+        self.assertEqual(r_d.returncode, 0, r_d.stderr)
+        # verify passes before swap
+        self.assertEqual(_run_py("kos_current.py", ["verify", "--task-dir", str(self.task_dir), "--role", "Wendy"]).returncode, 0)
+        # Swap package file between verify and claim
+        self.pkg1.write_text("# swapped after verify\n", encoding="utf-8")
+        r_c = _run_py("kos_current.py", ["claim", "--task-dir", str(self.task_dir), "--role", "Wendy", "--claimed-by", "Wendy (Test)"])
+        self.assertEqual(r_c.returncode, 8)
+        self.assertIn("package_sha256 mismatch", r_c.stderr)
+
+    def test_live_kos_dir_write_denied_by_default(self) -> None:
+        fake_live_root = self.root / "live_kos"
+        live_task = fake_live_root / "REAL-TASK-001"
+        live_task.mkdir(parents=True)
+        r = _run_py("kos_current.py", [
+            "dispatch", "--task-dir", str(live_task), "--task-id", "REAL-TASK-001",
+            "--active-step", "step-1", "--role", "Wendy", "--package-path", str(self.pkg1),
+            "--params-path", str(self.params1), "--authorization-path", str(self.auth),
+            "--updated-by", "Jack", "--expect-rev", "0",
+        ], env={"KOS_WORK_ROOT": str(fake_live_root)})
+        self.assertEqual(r.returncode, 9)
+        self.assertIn("refusing write to live/shared task dir", r.stderr)
+
+    def test_handoff_orchestrator_normal_upgrade_and_three_line_render(self) -> None:
+        self.assertEqual(_run_py("kos_current.py", [
+            "dispatch", "--task-dir", str(self.task_dir), "--task-id", "TASK-FIX",
+            "--active-step", "step-1", "--role", "Wendy", "--package-path", str(self.pkg1),
+            "--params-path", str(self.params1), "--authorization-path", str(self.auth),
+            "--updated-by", "Jack", "--expect-rev", "0",
+        ]).returncode, 0)
+        rc = _run_py("kos_current.py", ["claim", "--task-dir", str(self.task_dir), "--role", "Wendy", "--claimed-by", "Wendy (Test)"])
+        self.assertEqual(rc.returncode, 0, rc.stderr)
+        cid1 = json.loads(rc.stdout)["claim_id"]
+
+        # Normal relay to Pete
+        rep_done = _write(self.task_dir / "rep-done.md", "DONE\nWendy（Executor）；运行时身份 Test\n\n## 下一站接力（O41）\n- next_role: Pete\n")
+        r_h1 = _run_py("kos_handoff.py", [
+            "handoff", "--task-dir", str(self.task_dir), "--task-id", "TASK-FIX",
+            "--expect-rev", "2", "--claim-id", cid1, "--updated-by", "Wendy (Test)",
+            "--report-path", str(rep_done), "--summary", "step-1 done",
+            "--next-role", "Pete", "--next-step", "step-2",
+            "--next-pkg", str(self.pkg2), "--next-params", str(self.task_dir / "params-2.txt"),
+            "--next-block", str(self.task_dir / "block-2.txt"), "--auth-path", str(self.auth),
+        ])
+        self.assertEqual(r_h1.returncode, 0, r_h1.stderr)
+        sections = r_h1.stdout.strip().split("\n\n", 3)
+        self.assertEqual(len(sections), 4)
+        out_lines = sections[:3]
+        self.assertEqual(sections[3], "```text\n" + (self.task_dir / "block-2.txt").read_text(encoding="utf-8").rstrip("\r\n") + "\n```")
+        self.assertNotIn(" + ", r_h1.stdout)
+        self.assertTrue(out_lines[0].startswith("结论：DONE，"))
+        self.assertTrue(out_lines[1].startswith("下一位交付：Pete，"))
+        self.assertRegex(out_lines[2], r"^报告：/.+（SHA-256 [0-9a-f]{64}）$")
+        cur = json.loads((self.task_dir / "CURRENT.json").read_text(encoding="utf-8"))
+        self.assertEqual(cur["state"], "READY_TO_DISPATCH")
+        self.assertEqual(cur["role"], "Pete")
+
+        # Pete claims and then hits BLOCKED -> upgrades to Jack (PM)
+        rc2 = _run_py("kos_current.py", ["claim", "--task-dir", str(self.task_dir), "--role", "Pete", "--claimed-by", "Pete (Test)"])
+        self.assertEqual(rc2.returncode, 0, rc2.stderr)
+        cid2 = json.loads(rc2.stdout)["claim_id"]
+        rep_blk = _write(self.task_dir / "rep-blk.md", "BLOCKED\nPete（Preflight）；运行时身份 Test\n\n## 下一站接力（O41）\n- next_role: Jack（PM）\n")
+        r_h2 = _run_py("kos_handoff.py", [
+            "handoff", "--task-dir", str(self.task_dir), "--task-id", "TASK-FIX",
+            "--expect-rev", "4", "--claim-id", cid2, "--updated-by", "Pete (Test)",
+            "--report-path", str(rep_blk), "--summary", "missing dep", "--reason", "missing dep",
+        ])
+        self.assertEqual(r_h2.returncode, 0, r_h2.stderr)
+        self.assertNotIn(" + ", r_h2.stdout)
+        self.assertIn("下一位交付：Jack（PM），", r_h2.stdout)
+        cur2 = json.loads((self.task_dir / "CURRENT.json").read_text(encoding="utf-8"))
+        self.assertEqual(cur2["state"], "UPGRADED_TO_PM")
+
+    def test_render_three_line_format_no_plus_no_dup_no_dangling_punctuation(self) -> None:
+        rep = _write(self.task_dir / "rep-render.md", "PASS\nQuinn\n")
+        # 1. next_detail already starts with next_role -> no duplicate recipient, no ' + ', no hash in conclusion
+        r1 = _run_py("kos_handoff.py", [
+            "render", "--status", "PASS", "--summary", "复核通过",
+            "--next-role", "Quinn（Quality）",
+            "--next-detail", "Quinn（Quality），整轮复核 r2 候选",
+            "--report-path", str(rep),
+        ])
+        self.assertEqual(r1.returncode, 0, r1.stderr)
+        sections1 = r1.stdout.strip().split("\n\n", 3)
+        self.assertEqual(len(sections1), 4)
+        lines1 = sections1[:3]
+        self.assertTrue(sections1[3].startswith("```text\n交回：Quinn（Quality）\n"))
+        self.assertTrue(sections1[3].endswith("\n```"))
+        self.assertNotIn(" + ", r1.stdout)
+        self.assertEqual(lines1[0], "结论：PASS，复核通过")
+        self.assertEqual(lines1[1], "下一位交付：Quinn（Quality），整轮复核 r2 候选")
+        self.assertNotRegex(lines1[0], r"[0-9a-f]{64}")
+        self.assertRegex(lines1[2], r"^报告：/.+（SHA-256 [0-9a-f]{64}）$")
+
+        # 2. Empty summary and empty next_detail -> no dangling comma
+        r2 = _run_py("kos_handoff.py", [
+            "render", "--status", "DONE", "--summary", "",
+            "--next-role", "Jack（PM）", "--next-detail", "",
+            "--report-path", str(rep),
+        ])
+        self.assertEqual(r2.returncode, 0, r2.stderr)
+        sections2 = r2.stdout.strip().split("\n\n", 3)
+        self.assertEqual(len(sections2), 4)
+        lines2 = sections2[:3]
+        self.assertIn("```text\n交回：Jack（PM）\n事项：\n报告：", sections2[3])
+        self.assertTrue(sections2[3].endswith("\n```"))
+        self.assertNotIn(" + ", r2.stdout)
+        self.assertEqual(lines2[0], "结论：DONE")
+        self.assertEqual(lines2[1], "下一位交付：Jack（PM）")
+
+    def test_render_entry_and_missing_files(self) -> None:
+        rep = _write(self.task_dir / "report.md", "DONE\nLucy\n")
+        entry = _write(self.task_dir / "entry.md", "entry contents\n")
+        args = ["render", "--status", "DONE", "--summary", "完成", "--next-role", "Quinn",
+                "--next-detail", "复核", "--task-title", "独立复核", "--report-path", str(rep)]
+        result = _run_py("kos_handoff.py", args + ["--entry-path", str(entry)])
+        self.assertEqual(result.returncode, 0, result.stderr)
+        parts = result.stdout.strip().split("\n\n", 3)
+        self.assertEqual(len(parts), 4)
+        self.assertNotIn(" + ", result.stdout)
+        self.assertEqual(parts[3], "```text\n派给：Quinn\n任务：独立复核\n开工文档：" + str(entry.resolve())
+                         + "\nSHA-256：" + hashlib.sha256(entry.read_bytes()).hexdigest() + "\n授权，直接执行\n```")
+        self.assertEqual(_run_py("kos_handoff.py", args + ["--entry-path", str(entry) + ".missing"]).returncode, 2)
+        self.assertEqual(_run_py("kos_handoff.py", args + ["--block-path", str(entry) + ".missing"]).returncode, 2)
+
+    def test_handoff_terminal_complete_branch(self) -> None:
+        self.assertEqual(_run_py("kos_current.py", [
+            "dispatch", "--task-dir", str(self.task_dir), "--task-id", "TASK-FIX",
+            "--active-step", "final-step", "--role", "Wendy", "--package-path", str(self.pkg1),
+            "--params-path", str(self.params1), "--authorization-path", str(self.auth),
+            "--updated-by", "Jack", "--expect-rev", "0",
+        ]).returncode, 0)
+        rc = _run_py("kos_current.py", ["claim", "--task-dir", str(self.task_dir), "--role", "Wendy", "--claimed-by", "Wendy (Term)"])
+        self.assertEqual(rc.returncode, 0, rc.stderr)
+        cid = json.loads(rc.stdout)["claim_id"]
+
+        rep_term = _write(self.task_dir / "rep-term.md", "DONE\nWendy（Executor）；运行时身份 Test\n\n## 下一站接力（O41）\n- next_role: Jack（PM）\n")
+        r_term = _run_py("kos_handoff.py", [
+            "handoff", "--task-dir", str(self.task_dir), "--task-id", "TASK-FIX",
+            "--expect-rev", "2", "--claim-id", cid, "--updated-by", "Wendy (Term)",
+            "--report-path", str(rep_term), "--summary", "terminal step done", "--terminal",
+        ])
+        self.assertEqual(r_term.returncode, 0, r_term.stderr)
+        sections = r_term.stdout.strip().split("\n\n", 3)
+        self.assertEqual(len(sections), 4)
+        lines = sections[:3]
+        self.assertTrue(sections[3].startswith("```text\n交回：Jack（PM）\n"))
+        self.assertTrue(sections[3].endswith("\n```"))
+        self.assertNotIn(" + ", r_term.stdout)
+        self.assertEqual(lines[0], "结论：DONE，terminal step done")
+        self.assertTrue(lines[1].startswith("下一位交付：Jack（PM），"))
+        self.assertRegex(lines[2], r"^报告：/.+（SHA-256 [0-9a-f]{64}）$")
+        cur = json.loads((self.task_dir / "CURRENT.json").read_text(encoding="utf-8"))
+        self.assertEqual(cur["state"], "COMPLETED")
+        self.assertIsNone(cur["claim_id"])
 
 
 if __name__ == "__main__":
