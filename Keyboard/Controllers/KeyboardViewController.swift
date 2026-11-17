@@ -471,7 +471,9 @@ class KeyboardViewController: UIInputViewController {
     /// 功能键 SF Symbol 字号（Delete / Return / Globe / 表情）。与文字标题字号分离。
     let functionKeySymbolPointSize: CGFloat = 22
     /// 字母键文字字号（26 键字母、九键 ABC… 字母组）。
-    let characterKeyTitlePointSize: CGFloat = 17
+    var characterKeyStyle = CharacterKeyStyle()
+    var characterKeyStyleNeedsRead = true
+    var characterKeyTitlePointSize: CGFloat { CGFloat(characterKeyStyle.size) }
     /// 功能键文字标题字号（中/英、123、选拼音、#+= 等），小于符号键。
     let functionKeyTitlePointSize: CGFloat = 15
     /// 空格键文字字号（含「拼音」）。
@@ -515,6 +517,14 @@ class KeyboardViewController: UIInputViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         commitTrace.enabled = Logger.isLiveCategoryEnabled(.display)
+        if characterKeyStyleNeedsRead {
+            let updated = CharacterKeyStyle(defaults: sharedDefaults)
+            characterKeyStyleNeedsRead = false
+            if updated != characterKeyStyle {
+                characterKeyStyle = updated
+                reloadKeyboard()
+            }
+        }
         prepareCandidateFontForAppearance()
         keyboardHeightAdjustmentAcceptsMarkers = true
         #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
@@ -677,6 +687,7 @@ class KeyboardViewController: UIInputViewController {
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
+        characterKeyStyleNeedsRead = true
         noteT9PinyinPresentationDidDisappear(hasWindow: viewIfLoaded?.window != nil)
     }
 

@@ -13,6 +13,7 @@
 //     九键只按左右列切网）。KeyboardKeyButton 的 expandedTouchOutsets
 //     对齐该触摸单元，使缝里转发的触摸在抬手时仍算 touchUpInside。
 //
+import KeyboardCore
 import UIKit
 
 extension KeyboardViewController {
@@ -38,23 +39,13 @@ extension KeyboardViewController {
             // Slot order follows the visible ABC…WXYZ construction order.
             devicePreflightT9LetterGroupButtons.append(button)
         #endif
-        // Native 九宫格: letter group is primary; slightly smaller than prior 18pt chrome.
-        let lettersFont = UIFont.systemFont(ofSize: characterKeyTitlePointSize, weight: .regular)
-        let text = NSAttributedString(
-            string: letters,
-            attributes: [
-                .font: lettersFont,
-                .foregroundColor: UIColor.label,
-            ]
-        )
+        button.setTitle(
+            characterKeyStyle.displayTitle(letters, layout: .chinese9, shifted: isShiftActive), for: .normal)
         button.titleLabel?.numberOfLines = 1
         button.titleLabel?.textAlignment = .center
         button.titleLabel?.adjustsFontSizeToFitWidth = true
         button.titleLabel?.minimumScaleFactor = 0.7
-        button.setAttributedTitle(text, for: .normal)
         applyKeyStyle(.character, to: button)
-        // Re-apply after style so characterKeyTitlePointSize wins over any default.
-        button.setAttributedTitle(text, for: .normal)
         return button
     }
 
@@ -81,6 +72,12 @@ extension KeyboardViewController {
         // 以获得扩展的触控区域
         let button = KeyboardKeyButton(type: .system)
         button.setTitle(title, for: .normal)
+        if action == #selector(insertKey(_:)) {
+            button.accessibilityIdentifier = title
+            button.titleLabel?.numberOfLines = 1
+            button.titleLabel?.adjustsFontSizeToFitWidth = true
+            button.titleLabel?.minimumScaleFactor = 0.7
+        }
         button.titleLabel?.font = .systemFont(ofSize: characterKeyTitlePointSize, weight: .regular)
         #if DEBUG
             button.trackingEventHandler = { [weak self] button, phase in
@@ -168,6 +165,7 @@ extension KeyboardViewController {
     /// - Parameter key: 原始按键值（小写，如 "a"）
     /// - Returns: Shift 开启时返回大写（"A"），否则返回小写（"a"）
     func displayTitle(for key: String) -> String {
-        isShiftActive ? key.uppercased() : key.lowercased()
+        let layout: CharacterKeyStyle.Layout = controller.state.inputMode == .chinese ? .chinese26 : .english26
+        return characterKeyStyle.displayTitle(key, layout: layout, shifted: isShiftActive)
     }
 }

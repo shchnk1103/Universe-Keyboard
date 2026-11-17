@@ -17,9 +17,9 @@ extension KeyboardViewController {
         {
             return digit
         }
-        return sender.title(for: .normal)
-            ?? sender.accessibilityIdentifier
-            ?? ""
+        guard let key = sender.accessibilityIdentifier else { return "" }
+        let layout: CharacterKeyStyle.Layout = controller.state.inputMode == .chinese ? .chinese26 : .english26
+        return characterKeyStyle.inputPayload(key, layout: layout, shifted: isShiftActive)
     }
 
     func performOrdinaryKeyInsert(key: String, sender: UIButton) {

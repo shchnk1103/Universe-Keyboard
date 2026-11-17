@@ -997,7 +997,7 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
         guard let root = sut.rootStack as? KeyboardInputHitAreaStackView else { return XCTFail("Missing real root") }
         root.refreshKeyTouchGeometry()
         let first = descendants(root).compactMap { $0 as? KeyboardKeyButton }.first {
-            nineKey ? $0.accessibilityIdentifier == "2" : $0.accessibilityLabel == "q"
+            nineKey ? $0.accessibilityIdentifier == "2" : $0.accessibilityIdentifier == "q"
         }
         guard let first else { return XCTFail("Missing first row key") }
         XCTAssertEqual(first.bounds.height, CGFloat(KeyboardHeightSettings.defaultRowHeight), accuracy: 0.01)
