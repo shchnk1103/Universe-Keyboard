@@ -11,6 +11,14 @@
 ```
 **报告开头写明实际运行时身份。**（过渡期兼容：`scripts/kos/freeze.py` 仍兼容历史“最终消息只写一句话”识别文本，新包一律使用上述三行格式。）
 
+## 包头档位与复核重点（执行包必有）
+适用场景：所有 4 档执行包，以及单站只读诊断包。依据 Human 2026-11-14「按你的建议定」与 KOS-WORKFLOW-001 设计稿 v1 第 7 节。
+
+- 包首部必须写 `档位：doc-light | doc-rule | code-fix | feature | 单站只读诊断`，并写 `复核重点：` 后跟 PM 最关心的 1–3 点；P17 与 AGENTS.md 4 档表为选档依据。
+- 升档只升不降：执行中发现范围超档，报告写「请求升档：<目标档>，理由…」；降档仅 PM 或 Human 决定。
+- 选人按职责选「空闲 + 最久未工作」，排除忙碌与独立性冲突；不改变已有隔离规则或 Human 授权闸门。
+- 本轮不新增 `kos-handoff.sh` 仓库脚本依赖；继续使用现行 `scripts/kos/kos_handoff.py` 与外置 `kos-board.py pick --role ...`。
+
 ## 唯一入口与条件接力（O41）
 - **唯一入口**：员工启动时只读取 `<任务目录>/CURRENT.json`（`schema: 2`），禁止遍历 `instructions/` 猜最新文件名；核对 `role`、`state == "READY_TO_DISPATCH"` 及 `package_sha256` / `params_sha256` / `authorization_sha256`，任一不符或遇到过期入口立即 `STOPPED` 并报 `Jack（PM）`。
 - **`CLAIMED` 与恢复**：`state == "CLAIMED"` 时禁止新会话直接接管；仅当确认原会话已停止并由 `Jack（PM）` 显式执行 `--recover` 作废旧 `claim_id` 后，新会话方可领取新 `claim_id` 按 `O51` 续做。
