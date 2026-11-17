@@ -31,6 +31,14 @@ public struct CharacterKeyStyle: Equatable, Sendable {
         english26 = defaults?.string(forKey: Self.english26Key).flatMap(EnglishCase.init(rawValue:)) ?? .followShift
     }
 
+    public static func saveSize(_ size: Int, defaults: UserDefaults?) {
+        if size == 17 {
+            defaults?.removeObject(forKey: sizeKey)
+        } else {
+            defaults?.set(size, forKey: sizeKey)
+        }
+    }
+
     public enum Layout: Sendable { case chinese26, chinese9, english26 }
 
     public func displayTitle(_ key: String, layout: Layout, shifted: Bool) -> String {

@@ -28,11 +28,7 @@ struct CharacterKeyStyleSettingsView: View {
                         get: { Double(size) },
                         set: { value in
                             size = Int(value)
-                            if size == 17 {
-                                defaults?.removeObject(forKey: CharacterKeyStyle.sizeKey)
-                            } else {
-                                defaults?.set(size, forKey: CharacterKeyStyle.sizeKey)
-                            }
+                            CharacterKeyStyle.saveSize(size, defaults: defaults)
                         }), in: 13...22, step: 1
                 ) {
                     Text("字符字号")

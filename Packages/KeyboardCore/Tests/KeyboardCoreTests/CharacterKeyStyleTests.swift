@@ -26,6 +26,18 @@ final class CharacterKeyStyleTests: XCTestCase {
         XCTAssertEqual(CharacterKeyStyle(defaults: defaults), expected)
     }
 
+    func testReturningToDefaultRemovesSizeWithoutChangingCandidateSetting() throws {
+        let name = "CharacterKeyStyleTests.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: name))
+        defer { defaults.removePersistentDomain(forName: name) }
+        defaults.set(21, forKey: CandidateFontSettings.storageKey)
+        CharacterKeyStyle.saveSize(22, defaults: defaults)
+        XCTAssertEqual(defaults.integer(forKey: CharacterKeyStyle.sizeKey), 22)
+        CharacterKeyStyle.saveSize(17, defaults: defaults)
+        XCTAssertNil(defaults.object(forKey: CharacterKeyStyle.sizeKey))
+        XCTAssertEqual(defaults.integer(forKey: CandidateFontSettings.storageKey), 21)
+    }
+
     func testChineseCasesPreserveInputIdentity() throws {
         let name = "CharacterKeyStyleTests.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: name))
