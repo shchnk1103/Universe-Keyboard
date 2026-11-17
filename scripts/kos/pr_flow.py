@@ -302,6 +302,10 @@ def _run_cleanup(args, runner, expect_head: str) -> str:
     if status.code != 0:
         return "failed:status"
     allow = list(args.cleanup_allow_untracked or [])
+    # Cleanup is authorized only for the existing Vendor symlink, never an
+    # arbitrary caller-supplied path (which could escape the worktree).
+    if any(path != "Packages/RimeBridge/Vendor" for path in allow):
+        return "skipped:unsupported-allowed-path"
     dirty = _worktree_dirty(status.text, allow)
     if dirty:
         return "skipped:worktree-dirty"

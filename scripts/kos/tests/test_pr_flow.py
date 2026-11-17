@@ -94,6 +94,28 @@ class MatrixTests(unittest.TestCase):
         self.assertIsNotNone(FLOW._matrix_error([], "unknown", common, matrix, heavy))
 
 
+class CleanupPathTests(unittest.TestCase):
+    def test_arbitrary_allowed_path_is_never_removed(self) -> None:
+        from types import SimpleNamespace
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            victim = root / "victim"
+            victim.symlink_to(root / "target")
+            args = SimpleNamespace(main_checkout=str(root), cleanup_worktree=str(root),
+                                   cleanup_branch="feature", cleanup_allow_untracked=["victim"])
+            runner = Queue([
+                (has("rev-parse"), ok(HEAD)),
+                (has("merge-base"), ok()),
+                (has("worktree", "list"), ok(f"worktree {root}\n")),
+                (has("rev-parse"), ok(HEAD)),
+                (has("status"), ok("?? victim\n")),
+            ])
+            self.assertEqual(FLOW._run_cleanup(args, runner, HEAD), "skipped:unsupported-allowed-path")
+            self.assertTrue(victim.is_symlink())
+            self.assertFalse(runner.steps)
+
+
 class OpenTests(unittest.TestCase):
     def setUp(self) -> None:
         self.tmp = tempfile.TemporaryDirectory()
