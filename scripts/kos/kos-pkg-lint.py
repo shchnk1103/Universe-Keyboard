@@ -6,112 +6,248 @@ O1/O19：包与包之间的机械一致性检查（只读）。退出码 1=有�
  E2 遗留 SHA：出现在 --prev 目录各包里、但本阶段章程（或本批包）并未自己声明的 40 位 SHA，若出现在本批包里 → 报“可能是拷贝遗留”。
  E3 参数键：包里 kos-block.sh 命令行的 key=值 的 key 必须在章程第 4 条键表里。
  E4 引用路径：包里的绝对路径（排除 reports/、scratch/、worktree、含 < > 的占位）必须存在。
+ E5 worktree 路径：新建或使用的路径不得含主仓库 .worktrees/，且须在 ~/.kos-work/Universe-Keyboard/ 下；清理或历史描述豁免。
+ E6 交接脚本：禁止 render_handoff_v1.py；样式 B 的 kos_handoff.py 及同包 scripts/kos、tools 脚本必须存在。
+ E7 本地门禁：禁止 CODE_SIGNING_IDENTITY=-；声明 full 或签名 Keychain 命令时六步必须齐全，且不得把托管重试说成本地命令。
+ E8 冻结输入：要求校验或标明冻结输入时，必须有反引号路径与 64 位哈希配对。
  W1 数字短语：同一“名词+数字”（如 7 条断言、18 项跳过）在不同包里数字不同 → 提示人工核对。
  W2 量词：同一份文本里既有“各自/分别/逐项”又有“或”描述同一类枚举时提示（启发式：同一行有“或”且另一包同关键词的行有“各自/分别”）。
+ W3 编号条目：同一编号内容差异大时提示。
+ W4 变量名：变量后紧跟非 ASCII 字符时提示。
+ W5 哈希配对：绝对 Markdown 路径附近有 64 位哈希但缺少可解析配对时提示。
 """
-import sys, re, os, collections
-args = sys.argv[1:]
-def opt(n):
-    if n in args:
-        i = args.index(n); v = args[i+1]; del args[i:i+2]; return v
-start = opt('--start'); prev = opt('--prev'); charter = opt('--charter'); stage = opt('--stage')
-files = args
-if stage:  # 自动选各类包的最高修订版与最新章程
-    import glob, re as _re
-    def rev(fn):
-        m = _re.search(r'-r(\d+)\.md$', fn); return int(m.group(1)) if m else 0
-    files = []
-    for kind in ['pre', 'impl', 'quality', 'fix']:
-        c = sorted(glob.glob(f'{stage}/instructions/task-package-{kind}*.md'), key=rev)
-        if c: files.append(c[-1])
-    cs = sorted(glob.glob(f'{stage}/STAGE-CHARTER*.md'), key=rev)
-    if cs and not charter: charter = cs[-1]
-assert start and files, __doc__
-H = os.path.join(os.environ.get('KOS_HOME', os.path.expanduser('~/.kos-work')), os.environ.get('KOS_PROJECT', 'Universe-Keyboard'))
-err, warn = [], []
-txt = {f: open(f, encoding='utf-8').read() for f in files}
-if charter: txt[charter] = open(charter, encoding='utf-8').read()
-SHA = re.compile(r'(?<![0-9a-f])[0-9a-f]{40}(?![0-9a-f])')
-CTX = re.compile(r'起点|父提交|HEAD|基线提交')
-OLD = re.compile(r'取代|历史|旧|未下发|原包|上一')
-for f, t in txt.items():
-    for n, line in enumerate(t.split('\n'), 1):
-        for m in SHA.finditer(line):
-            s = m.group(0)
-            win = line[max(0, m.start()-40):m.end()+10]
-            if CTX.search(win) and s != start and not OLD.search(line) and not (
-                '只读' in line and ('main HEAD' in line or '主检出' in line)
-            ):
-                err.append(f"E1 {os.path.basename(f)}:{n} 起点类语境里的 SHA {s[:8]} ≠ 本阶段起点 {start[:8]}")
-if prev:
-    prevsha = set()
-    for pf in os.popen(f"ls {prev}/instructions/task-package-*.md {prev}/STAGE-CHARTER*.md 2>/dev/null").read().split():
-        prevsha |= set(SHA.findall(open(pf, encoding='utf-8').read()))
-    own = set()
-    if charter: own = set(SHA.findall(txt[charter]))
-    for f in files:
-        for s in set(SHA.findall(txt[f])) & prevsha:
-            if s != start and s not in own:
-                err.append(f"E2 {os.path.basename(f)} 含上一阶段包里的 SHA {s[:8]}，本阶段章程未声明：可能是拷贝遗留")
-keytab = set()
-if charter:
-    for m in re.finditer(r'^\| ([a-zA-Z_]+) \|', txt[charter], re.M): keytab.add(m.group(1))
-if keytab:
-    for f in files:
-        for m in re.finditer(r'kos-block\.sh[^`\n]*', txt[f]):
-            for k in re.findall(r'\s([a-zA-Z_]+)=', m.group(0)):
-                if k not in keytab: err.append(f"E3 {os.path.basename(f)} 的 kos-block 命令用了章程键表外的键 {k}")
-seen = set()
-for f in files:
-    for m in re.finditer(r'(/Users/[^\s`（）()，。;；]+)', txt[f].replace('/Users/doubleshy0n/Dev/Universe Keyboard','/Users/doubleshy0n/Dev/UniverseKeyboard')):
-        p = m.group(1).rstrip('.,:')
-        if p in seen or '/Dev/UniverseKeyboard' in p or '/reports/' in p or '/scratch' in p or '/worktree' in p or '<' in p or p.endswith('/') or 'STAGE-LEDGER' in p: continue
-        seen.add(p)
-        if '/PM-LOG/open-' in p and p.endswith('.json'):
-            continue
-        if not os.path.exists(p): err.append(f"E4 {os.path.basename(f)} 引用的路径不存在：{p}")
-nums = collections.defaultdict(lambda: collections.defaultdict(set))
-for f in files:
-    for m in re.finditer(r'(\d+) ?(条|项|个|次|轮|种|处)([一-鿿A-Za-z]{0,6})', txt[f]):
-        noun = m.group(2) + m.group(3)[:4]
-        nums[noun][m.group(1)].add(os.path.basename(f))
-for noun, d in nums.items():
-    if len(d) > 1 and noun.strip():
-        warn.append("W1 “数字+" + noun + "” 在不同位置数字不同：" + "; ".join(f"{k}→{sorted(v)}" for k, v in sorted(d.items())))
-kw = ['反例', '断言', '清单', '快照', '情形']
-for k in kw:
-    each = [(os.path.basename(f), n) for f in files for n, l in enumerate(txt[f].split('\n'), 1) if k in l and re.search('各自|分别|逐项', l)]
-    orr = [(os.path.basename(f), n) for f in files for n, l in enumerate(txt[f].split('\n'), 1) if k in l and re.search(r'[，、（(]或|或者|或 ', l)]
-    if each and orr:
-        warn.append(f"W2 关键词“{k}”既有“各自/分别/逐项”（{each[:2]}）又有“或”（{orr[:2]}）：确认量词对齐")
+E7_REQUIRED_TOKENS = (
+    ("swift-format", "lint"),
+    ("swift test", "KeyboardCore"),
+    ("RimeBridgeTests",),
+    ('scheme "Universe Keyboard"', " test"),
+    ("CODE_SIGN_IDENTITY=-", "-only-testing"),
+    ("-configuration Release", " build"),
+)
 
-# W3 同一编号条目（U1/U2…、(1)(2)…）在不同文件里的文字相似度过低 → 提示可能互相矛盾
-def items(txt):
-    d = {}
-    for l in txt.split('\n'):
-        m = re.match(r'^\(?([A-Z]\d+)[\).]\s*(.*)$', l)
-        if m: d[m.group(1)] = m.group(2)
-    return d
-def grams(s):
-    s = re.sub(r'\s+', '', s); return {s[i:i+3] for i in range(len(s)-2)}
-its = {f: items(t) for f, t in txt.items()}
-names = list(its)
-for i in range(len(names)):
-    for j in range(i+1, len(names)):
-        for k in set(its[names[i]]) & set(its[names[j]]):
-            a, b = grams(its[names[i]][k]), grams(its[names[j]][k])
-            if a and b and len(a & b) / len(a | b) < 0.30:
-                warn.append(f"W3 条目 {k} 在 {os.path.basename(names[i])} 与 {os.path.basename(names[j])} 里文字差异很大，请人工核对是否矛盾")
+def main():
+    import sys, re, os, collections
+    args = sys.argv[1:]
+    def opt(n):
+        if n in args:
+            i = args.index(n); v = args[i+1]; del args[i:i+2]; return v
+    start = opt('--start'); prev = opt('--prev'); charter = opt('--charter'); stage = opt('--stage')
+    files = args
+    if stage:  # 自动选各类包的最高修订版与最新章程
+        import glob, re as _re
+        def rev(fn):
+            m = _re.search(r'-r(\d+)\.md$', fn); return int(m.group(1)) if m else 0
+        files = []
+        for kind in ['pre', 'impl', 'quality', 'fix']:
+            c = sorted(glob.glob(f'{stage}/instructions/task-package-{kind}*.md'), key=rev)
+            if c: files.append(c[-1])
+        cs = sorted(glob.glob(f'{stage}/STAGE-CHARTER*.md'), key=rev)
+        if cs and not charter: charter = cs[-1]
+    assert start and files, __doc__
+    H = os.path.join(os.environ.get('KOS_HOME', os.path.expanduser('~/.kos-work')), os.environ.get('KOS_PROJECT', 'Universe-Keyboard'))
+    err, warn = [], []
+    txt = {f: open(f, encoding='utf-8').read() for f in files}
+    if charter: txt[charter] = open(charter, encoding='utf-8').read()
+    SHA = re.compile(r'(?<![0-9a-f])[0-9a-f]{40}(?![0-9a-f])')
+    CTX = re.compile(r'起点|父提交|HEAD|基线提交')
+    OLD = re.compile(r'取代|历史|旧|未下发|原包|上一')
+    for f, t in txt.items():
+        for n, line in enumerate(t.split('\n'), 1):
+            for m in SHA.finditer(line):
+                s = m.group(0)
+                win = line[max(0, m.start()-40):m.end()+10]
+                if CTX.search(win) and s != start and not OLD.search(line) and not (
+                    '只读' in line and ('main HEAD' in line or '主检出' in line)
+                ):
+                    err.append(f"E1 {os.path.basename(f)}:{n} 起点类语境里的 SHA {s[:8]} ≠ 本阶段起点 {start[:8]}")
+    if prev:
+        prevsha = set()
+        for pf in os.popen(f"ls {prev}/instructions/task-package-*.md {prev}/STAGE-CHARTER*.md 2>/dev/null").read().split():
+            prevsha |= set(SHA.findall(open(pf, encoding='utf-8').read()))
+        own = set()
+        if charter: own = set(SHA.findall(txt[charter]))
+        for f in files:
+            for s in set(SHA.findall(txt[f])) & prevsha:
+                if s != start and s not in own:
+                    err.append(f"E2 {os.path.basename(f)} 含上一阶段包里的 SHA {s[:8]}，本阶段章程未声明：可能是拷贝遗留")
+    keytab = set()
+    if charter:
+        for m in re.finditer(r'^\| ([a-zA-Z_]+) \|', txt[charter], re.M): keytab.add(m.group(1))
+    if keytab:
+        for f in files:
+            for m in re.finditer(r'kos-block\.sh[^`\n]*', txt[f]):
+                for k in re.findall(r'\s([a-zA-Z_]+)=', m.group(0)):
+                    if k not in keytab: err.append(f"E3 {os.path.basename(f)} 的 kos-block 命令用了章程键表外的键 {k}")
+    seen = set()
+    for f in files:
+        for m in re.finditer(r'(/Users/[^\s`（）()，。;；]+)', txt[f].replace('/Users/doubleshy0n/Dev/Universe Keyboard','/Users/doubleshy0n/Dev/UniverseKeyboard')):
+            p = m.group(1).rstrip('.,:')
+            if p in seen or '/Dev/UniverseKeyboard' in p or '/reports/' in p or '/scratch' in p or '/worktree' in p or '<' in p or p.endswith('/') or 'STAGE-LEDGER' in p: continue
+            seen.add(p)
+            if '/PM-LOG/open-' in p and p.endswith('.json'):
+                continue
+            if not os.path.exists(p): err.append(f"E4 {os.path.basename(f)} 引用的路径不存在：{p}")
+    nums = collections.defaultdict(lambda: collections.defaultdict(set))
+    for f in files:
+        for m in re.finditer(r'(\d+) ?(条|项|个|次|轮|种|处)([一-鿿A-Za-z]{0,6})', txt[f]):
+            noun = m.group(2) + m.group(3)[:4]
+            nums[noun][m.group(1)].add(os.path.basename(f))
+    for noun, d in nums.items():
+        if len(d) > 1 and noun.strip():
+            warn.append("W1 “数字+" + noun + "” 在不同位置数字不同：" + "; ".join(f"{k}→{sorted(v)}" for k, v in sorted(d.items())))
+    kw = ['反例', '断言', '清单', '快照', '情形']
+    for k in kw:
+        each = [(os.path.basename(f), n) for f in files for n, l in enumerate(txt[f].split('\n'), 1) if k in l and re.search('各自|分别|逐项', l)]
+        orr = [(os.path.basename(f), n) for f in files for n, l in enumerate(txt[f].split('\n'), 1) if k in l and re.search(r'[，、（(]或|或者|或 ', l)]
+        if each and orr:
+            warn.append(f"W2 关键词“{k}”既有“各自/分别/逐项”（{each[:2]}）又有“或”（{orr[:2]}）：确认量词对齐")
 
-# W4 $var 后紧跟非 ASCII：LC_ALL=C + set -u 会当成不同变量名
-W4 = re.compile(r'\$([A-Za-z_][A-Za-z0-9_]*)[^\x00-\x7F]')
-for f, content in txt.items():
-    for n, line in enumerate(content.split('\n'), 1):
-        for m in W4.finditer(line):
-            warn.append(
-                f"W4 {os.path.basename(f)}:{n} 变量 ${m.group(1)} 后紧跟非 ASCII 字符：LC_ALL=C 下 set -u 会报 unbound variable，请写成 ${{{m.group(1)}}}"
-            )
-for e in err: print(e)
-for w in warn: print(w)
-print(f"== 错误 {len(err)}，提示 {len(warn)}")
-sys.exit(1 if err else 0)
+    # W3 同一编号条目（U1/U2…、(1)(2)…）在不同文件里的文字相似度过低 → 提示可能互相矛盾
+    def items(txt):
+        d = {}
+        for l in txt.split('\n'):
+            m = re.match(r'^\(?([A-Z]\d+)[\).]\s*(.*)$', l)
+            if m: d[m.group(1)] = m.group(2)
+        return d
+    def grams(s):
+        s = re.sub(r'\s+', '', s); return {s[i:i+3] for i in range(len(s)-2)}
+    its = {f: items(t) for f, t in txt.items()}
+    names = list(its)
+    for i in range(len(names)):
+        for j in range(i+1, len(names)):
+            for k in set(its[names[i]]) & set(its[names[j]]):
+                a, b = grams(its[names[i]][k]), grams(its[names[j]][k])
+                if a and b and len(a & b) / len(a | b) < 0.30:
+                    warn.append(f"W3 条目 {k} 在 {os.path.basename(names[i])} 与 {os.path.basename(names[j])} 里文字差异很大，请人工核对是否矛盾")
+
+    # W4 $var 后紧跟非 ASCII：LC_ALL=C + set -u 会当成不同变量名
+    W4 = re.compile(r'\$([A-Za-z_][A-Za-z0-9_]*)[^\x00-\x7F]')
+    for f, content in txt.items():
+        for n, line in enumerate(content.split('\n'), 1):
+            for m in W4.finditer(line):
+                warn.append(
+                    f"W4 {os.path.basename(f)}:{n} 变量 ${m.group(1)} 后紧跟非 ASCII 字符：LC_ALL=C 下 set -u 会报 unbound variable，请写成 ${{{m.group(1)}}}"
+                )
+    ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+    KOS_ROOTS = (
+        os.path.expanduser("~/.kos-work/Universe-Keyboard"),
+        "/Users/doubleshy0n/.kos-work/Universe-Keyboard",
+    )
+
+    def _check_e5(files, txt, err):
+        for f in txt:
+            for n, line in enumerate(txt[f].split("\n"), 1):
+                if re.search(r"拆除|迁出|历史|清理|删除|旧|已拆除|不建|不得建|不创建|只读", line) and not re.search(r"(?:新建|创建|使用)(?:本包|新的|新|\s*(?:git\s+)?worktree)", line, re.I):
+                    continue
+                for m in re.finditer(r"(?<![A-Za-z0-9_.-])(/Users/[^`\n，。；;）)]*|/[^\s`'\"，。；;）)]+|~/.kos-work/[^\s`'\"，。；;）)]+)", line):
+                    path = m.group(1).strip().rstrip(".,:")
+                    triggered = bool(re.search(r"worktree", line, re.I) and not re.search(r"(?:不建|不得建|不创建)\s*worktree", line, re.I) and path.startswith(("/", "~/")))
+                    before = line[max(0, m.start() - 40):m.start()]
+                    triggered = triggered or bool(re.search(r"(?:新建|创建|使用|建在|worktree 路径)[：:\s`]*$", before))
+                    if not triggered or re.search(r"\.(?:py|sh)(?:\s|$)", path):
+                        continue
+                    normalized = os.path.normpath(os.path.expanduser(path))
+                    legal = any(normalized == root or normalized.startswith(root + "/") for root in KOS_ROOTS)
+                    if ".worktrees/" in path or not legal:
+                        err.append(f"E5 {os.path.basename(f)}:{n} worktree 路径不在规范目录：{path}")
+
+    def _existing(token):
+        if "<" in token or ">" in token:
+            return True
+        path = token if os.path.isabs(token) else os.path.join(ROOT, token)
+        return os.path.isfile(path)
+
+    def _check_e6(files, txt, err):
+        for f in txt:
+            content = txt[f]
+            if "render_handoff_v1.py" in content:
+                err.append(f"E6 {os.path.basename(f)} 引用了已废弃的 render_handoff_v1.py")
+            if re.search(r"(?:kos_handoff\.py\s+render|python3[^\n]*kos_handoff\.py)", content):
+                refs = re.findall(r"(?:/Users/[^`\n\"]*?/scripts/kos/kos_handoff\.py|scripts/kos/kos_handoff\.py|[^\s`'\"，。；;）)]*kos_handoff\.py)", content)
+                for ref in refs or ["kos_handoff.py"]:
+                    if not ref.endswith("scripts/kos/kos_handoff.py") or not _existing(ref):
+                        err.append(f"E6 {os.path.basename(f)} 交接脚本不存在或不是 scripts/kos/kos_handoff.py：{ref}")
+                # Keep the whole reference, including placeholders and absolute prefixes.
+                pattern = r"(?:/[^`'\"\n]*?/)?(?:scripts/kos|tools)/[^\s`'\"，。；;）)]+\.(?:py|sh)"
+                for ref in re.findall(pattern, content):
+                    if not _existing(ref):
+                        err.append(f"E6 {os.path.basename(f)} 引用的脚本不存在：{ref}")
+
+    def _gate_commands(content):
+        import shlex
+        commands = []
+        for line in re.sub(r"\\\s*\n", " ", content).splitlines():
+            line = line.strip().strip('`')
+            if line.startswith(('#', '>')):
+                continue
+            try:
+                tokens = shlex.split(line, comments=True)
+            except ValueError:
+                continue
+            if tokens:
+                commands.append(tokens)
+        return commands
+
+    def _gate_steps(content):
+        commands = _gate_commands(content)
+        def executable(cmd, name):
+            return any(os.path.basename(token) == name for token in cmd[:2])
+        def scheme(cmd, name):
+            return any(cmd[i:i+2] == ['-scheme', name] for i in range(len(cmd)-1))
+        def action(cmd, name):
+            return name in cmd
+        return (
+            any((executable(c, 'swift-format') or c[:2] == ['xcrun', 'swift-format']) and action(c, 'lint') for c in commands),
+            any(executable(c, 'swift') and action(c, 'test') and any('KeyboardCore' in t for t in c) for c in commands),
+            any(executable(c, 'xcodebuild') and scheme(c, 'RimeBridgeTests') and action(c, 'test') for c in commands),
+            any(executable(c, 'xcodebuild') and scheme(c, 'Universe Keyboard') and action(c, 'test') and not any(t.startswith('-only-testing') for t in c) for c in commands),
+            any(executable(c, 'xcodebuild') and scheme(c, 'Universe Keyboard') and action(c, 'test') and 'CODE_SIGN_IDENTITY=-' in c and any(t.startswith('-only-testing:UniverseKeyboardTests/RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem') for t in c) for c in commands),
+            any(executable(c, 'xcodebuild') and ['-configuration', 'Release'] in [c[i:i+2] for i in range(len(c)-1)] and action(c, 'build') for c in commands),
+        )
+
+    def _check_e7(files, txt, err):
+        for f in txt:
+            content = txt[f]
+            base = os.path.basename(f)
+            if "CODE_SIGNING_IDENTITY=-" in content:
+                err.append(f"E7 {base} 使用了 CODE_SIGNING_IDENTITY=-，应为 CODE_SIGN_IDENTITY=-")
+            full = bool(re.search(r"本地[^。\n]{0,20}\bfull\b|\bfull\b[^。\n]{0,12}门禁", content))
+            keychain = any('xcodebuild' in c and ('CODE_SIGN_IDENTITY=-' in c or any('RimeSyncSecretStore' in t for t in c)) for c in _gate_commands(content))
+            if full or keychain:
+                missing = [tokens[0] for tokens, present in zip(E7_REQUIRED_TOKENS, _gate_steps(content)) if not present]
+                if missing:
+                    err.append(f"E7 {base} 本地 full 门禁缺少步骤：{', '.join(missing)}")
+            if re.search(r"与\s*CI\s*参数完整一致", content) and not re.search(r"-retry-tests-on-failure[^。\n]{0,24}(?:不属于|不含)|不含[^。\n]{0,16}(?:托管重试|-retry-tests-on-failure)", content):
+                err.append(f"E7 {base} 声称与 CI 参数完整一致，但未说明 -retry-tests-on-failure 不属于本地门禁")
+
+    def _pairs(content):
+        return [(m.start(), m.end()) for m in re.finditer(r"`(/[^`]+)`(.{0,80}?)`([0-9a-f]{64})`", content)
+                if not any(mark in m.group(1) for mark in ('<', '>', '*', '$', '{{'))]
+
+    def _check_hash_pairs(files, txt, err, warn):
+        for f in txt:
+            content = txt[f]
+            base = os.path.basename(f)
+            spans = _pairs(content)
+            for m in re.finditer(r"(/[^\s`]+\.md)", content):
+                window = content[max(0, m.start() - 80):m.end() + 80]
+                if not re.search(r"(?<![0-9a-f])[0-9a-f]{64}(?![0-9a-f])", window):
+                    continue
+                if any(start <= m.start() and m.end() <= end for start, end in spans):
+                    continue
+                warn.append(f"W5 {base} 绝对 Markdown 路径与 64 位哈希缺少反引号配对，可能无法被 kos-verify-inputs 解析：{m.group(1)}")
+            declared = "kos-verify-inputs.py" in content or "冻结输入" in content
+            if declared and not spans:
+                err.append(f"E8 {base} 声明了冻结输入或输入校验，但没有可解析的路径与哈希配对")
+
+    _check_e5(files, txt, err)
+    _check_e6(files, txt, err)
+    _check_e7(files, txt, err)
+    _check_hash_pairs(files, txt, err, warn)
+    for e in err: print(e)
+    for w in warn: print(w)
+    print(f"== 错误 {len(err)}，提示 {len(warn)}")
+    sys.exit(1 if err else 0)
+
+if __name__ == "__main__":
+    main()
