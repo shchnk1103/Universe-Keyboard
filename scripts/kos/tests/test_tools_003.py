@@ -17,7 +17,9 @@ from test_pr_flow import (
     fail,
     has,
     ok,
+    _classification_steps,
     _job,
+    _pass_items,
     _ready,
     _snap,
     _view,
@@ -191,21 +193,34 @@ class LandCleanupTests(unittest.TestCase):
             "--merge",
         ] + (extra or [])
 
-    def _green_to_ff(self):
+    def _pre_cleanup(self):
+        """Steps up to and including post-merge reachability checks."""
         return [
             (has("view"), _view()),
-            *_snap([_job("build", "pass", "5", "6")]),
+            *_snap(_pass_items()),
+            *_classification_steps(),
             (has("view"), _view()),
             (has("autoMergeRequest,mergeStateStatus,headRefOid"), _ready()),
             (has("pr", "merge"), ok("merged")),
-            (has("mergeCommit"), ok('{"mergeCommit":{"oid":"c"}}')),
+            (has("mergeCommit"), ok(json.dumps({"mergeCommit": {"oid": "c" * 40}}))),
+            (has("fetch"), ok()),
+            (has("--is-ancestor"), ok()),
+            (has("--is-ancestor"), ok()),
+        ]
+
+    def _post_cleanup_ff(self):
+        """Steps after a successful worktree cleanup."""
+        return [
             (has("--abbrev-ref"), ok("main\n")),
             (has("status"), ok("")),
-            (has("fetch"), ok("")),
-            (has("--is-ancestor"), ok("")),
+            (lambda a: a[-2:] == ["rev-parse", "HEAD"] and "--abbrev-ref" not in a, ok("d" * 40 + "\n")),
+            (has("--is-ancestor"), ok()),
             (has("--ff-only"), ok("")),
-            (has("rev-parse", "HEAD"), ok("newmain\n")),
+            (lambda a: a[-2:] == ["rev-parse", "HEAD"] and "--abbrev-ref" not in a, ok("newmain\n")),
         ]
+
+    def _green_to_ff(self):
+        return self._pre_cleanup() + self._post_cleanup_ff()
 
     def test_one_cleanup_arg_errors_before_gh(self) -> None:
         runner = Queue([])
@@ -214,12 +229,9 @@ class LandCleanupTests(unittest.TestCase):
         self.assertEqual(runner.calls, [])
 
     def test_successful_cleanup_order(self) -> None:
-        steps = self._green_to_ff() + [
+        steps = self._pre_cleanup() + [
             (lambda a: "rev-parse" in a and any(str(x).startswith("refs/heads/") for x in a), ok(HEAD + "\n")),
-            (
-                lambda a: "merge-base" in a and "--is-ancestor" in a and a[-1] == "HEAD",
-                ok(""),
-            ),
+            (has("merge-base", "--is-ancestor", "fix/kos"), ok("")),
             (has("worktree", "list"), ok(f"worktree {self.wt}\nHEAD {HEAD}\n")),
             (
                 lambda a: len(a) >= 4 and a[1] == "-C" and a[2] == str(self.wt) and "rev-parse" in a,
@@ -230,7 +242,10 @@ class LandCleanupTests(unittest.TestCase):
                 ok("?? Packages/RimeBridge/Vendor\n"),
             ),
             (has("worktree", "remove"), ok("")),
+        ] + self._post_cleanup_ff() + [
+            (has("merge-base", "--is-ancestor", "fix/kos"), ok("")),
             (has("branch", "-d"), ok("")),
+            (has("ls-remote"), ok("")),
         ]
         runner = Queue(steps)
         code = FLOW.main(
@@ -242,21 +257,22 @@ class LandCleanupTests(unittest.TestCase):
         cleanup_anc = [
             i
             for i, c in enumerate(joined)
-            if "merge-base --is-ancestor" in c and c.rstrip().endswith("HEAD")
+            if "merge-base --is-ancestor fix/kos origin/main" in c
         ]
         rem_i = next(i for i, c in enumerate(joined) if "worktree remove" in c)
         del_i = next(i for i, c in enumerate(joined) if "branch -d" in c)
         self.assertTrue(cleanup_anc)
-        self.assertLess(cleanup_anc[-1], rem_i)
+        # Worktree removal must precede the fast-forward; branch deletion follows it.
+        self.assertLess(cleanup_anc[0], rem_i)
         self.assertLess(rem_i, del_i)
         payload = json.loads((self.logs / "land-266.json").read_text(encoding="utf-8"))
         self.assertEqual(payload["status"], "merged")
-        self.assertEqual(payload["cleanup"], "done")
+        self.assertEqual(payload["cleanup"], "already_deleted_on_origin")
 
     def test_dirty_worktree_skips_remove(self) -> None:
-        steps = self._green_to_ff() + [
+        steps = self._pre_cleanup() + [
             (lambda a: "rev-parse" in a and any(str(x).startswith("refs/heads/") for x in a), ok(HEAD + "\n")),
-            (lambda a: "merge-base" in a and "--is-ancestor" in a and a[-1] == "HEAD", ok("")),
+            (has("merge-base", "--is-ancestor", "fix/kos"), ok("")),
             (has("worktree", "list"), ok(f"worktree {self.wt}\n")),
             (
                 lambda a: len(a) >= 4 and a[1] == "-C" and a[2] == str(self.wt) and "rev-parse" in a,
@@ -266,28 +282,30 @@ class LandCleanupTests(unittest.TestCase):
                 lambda a: len(a) >= 4 and a[1] == "-C" and a[2] == str(self.wt) and "status" in a,
                 ok(" M dirty.txt\n"),
             ),
-        ]
+        ] + self._post_cleanup_ff()
         runner = Queue(steps)
         code = FLOW.main(
             self._land(["--cleanup-worktree", str(self.wt), "--cleanup-branch", "fix/kos"]),
             runner=runner,
         )
-        self.assertEqual(code, 0)
+        self.assertEqual(code, 1)
         self.assertFalse(any("worktree remove" in " ".join(map(str, c)) for c in runner.calls))
         payload = json.loads((self.logs / "land-266.json").read_text(encoding="utf-8"))
+        self.assertEqual(payload["status"], "cleanup-stopped")
         self.assertEqual(payload["cleanup"], "skipped:worktree-dirty")
 
     def test_branch_tip_mismatch_skips(self) -> None:
-        steps = self._green_to_ff() + [
+        steps = self._pre_cleanup() + [
             (lambda a: "rev-parse" in a and any(str(x).startswith("refs/heads/") for x in a), ok(OTHER + "\n")),
-        ]
+        ] + self._post_cleanup_ff()
         runner = Queue(steps)
         code = FLOW.main(
             self._land(["--cleanup-worktree", str(self.wt), "--cleanup-branch", "fix/kos"]),
             runner=runner,
         )
-        self.assertEqual(code, 0)
+        self.assertEqual(code, 1)
         payload = json.loads((self.logs / "land-266.json").read_text(encoding="utf-8"))
+        self.assertEqual(payload["status"], "cleanup-stopped")
         self.assertEqual(payload["cleanup"], "skipped:branch-tip-mismatch")
         self.assertFalse(any("worktree remove" in " ".join(map(str, c)) for c in runner.calls))
 
@@ -295,9 +313,9 @@ class LandCleanupTests(unittest.TestCase):
         vendor = self.wt / "Packages" / "RimeBridge" / "Vendor"
         vendor.unlink()
         vendor.mkdir()
-        steps = self._green_to_ff() + [
+        steps = self._pre_cleanup() + [
             (lambda a: "rev-parse" in a and any(str(x).startswith("refs/heads/") for x in a), ok(HEAD + "\n")),
-            (lambda a: "merge-base" in a and "--is-ancestor" in a and a[-1] == "HEAD", ok("")),
+            (has("merge-base", "--is-ancestor", "fix/kos"), ok("")),
             (has("worktree", "list"), ok(f"worktree {self.wt}\n")),
             (
                 lambda a: len(a) >= 4 and a[1] == "-C" and a[2] == str(self.wt) and "rev-parse" in a,
@@ -307,14 +325,15 @@ class LandCleanupTests(unittest.TestCase):
                 lambda a: len(a) >= 4 and a[1] == "-C" and a[2] == str(self.wt) and "status" in a,
                 ok(""),
             ),
-        ]
+        ] + self._post_cleanup_ff()
         runner = Queue(steps)
         code = FLOW.main(
             self._land(["--cleanup-worktree", str(self.wt), "--cleanup-branch", "fix/kos"]),
             runner=runner,
         )
-        self.assertEqual(code, 0)
+        self.assertEqual(code, 1)
         payload = json.loads((self.logs / "land-266.json").read_text(encoding="utf-8"))
+        self.assertEqual(payload["status"], "cleanup-stopped")
         self.assertEqual(payload["cleanup"], "skipped:allowed-path-not-symlink")
 
     def test_cleanup_null_when_not_requested(self) -> None:

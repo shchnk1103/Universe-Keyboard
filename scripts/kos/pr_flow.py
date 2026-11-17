@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import importlib.util
 import os
 import re
 import subprocess
@@ -148,7 +149,7 @@ def _parse_cases(log_text: str) -> list[tuple[str, str]]:
 
 
 # Final CI snapshot buckets. README cites this same set.
-SNAPSHOT_BUCKETS = frozenset({"pass", "fail", "pending", "skipping", "cancel"})
+SNAPSHOT_BUCKETS = frozenset({"pass", "fail", "pending", "skipping", "skipped", "cancel"})
 
 
 def _snapshot_rows(text: str) -> list[dict] | None:
@@ -209,9 +210,20 @@ def _matrix_error(rows: list[dict], classification: str, common: frozenset,
         states = by_name.get(name, [])
         if len(states) != 1:
             return f"missing or duplicate check: {name}"
-        expected = "pass" if name in common | required else "skipped"
-        if states[0] != expected:
+        if name in common | required and states[0] != "pass":
             return f"unexpected result for {name}: {states[0]}"
+    return None
+
+
+def _classification_error(evidence: dict, expected_head: str, expected_base: str,
+                          required_by_class: dict) -> str | None:
+    """Reject classification evidence unless it belongs to this exact comparison."""
+    if not isinstance(evidence, dict):
+        return "classification evidence is not an object"
+    if evidence.get("head_sha") != expected_head or evidence.get("base_sha") != expected_base:
+        return "classification comparison mismatch"
+    if evidence.get("classification") not in required_by_class:
+        return "unknown classification"
     return None
 
 
@@ -290,7 +302,9 @@ def _run_cleanup(args, runner, expect_head: str) -> str:
     tip = _git(runner, args.main_checkout, "rev-parse", f"refs/heads/{args.cleanup_branch}")
     if tip.code != 0 or tip.text.strip() != expect_head:
         return "skipped:branch-tip-mismatch"
-    ancestor = _git(runner, args.main_checkout, "merge-base", "--is-ancestor", args.cleanup_branch, "HEAD")
+    if args.cleanup_branch in {"main", "master"} or args.cleanup_branch.startswith(("preserve/", "local/", "backup")):
+        return "skipped:protected-branch"
+    ancestor = _git(runner, args.main_checkout, "merge-base", "--is-ancestor", args.cleanup_branch, "origin/main")
     if ancestor.code != 0:
         return "skipped:not-ancestor"
     if not _worktree_listed(runner, args.main_checkout, args.cleanup_worktree):
@@ -323,10 +337,7 @@ def _run_cleanup(args, runner, expect_head: str) -> str:
     removed = _git(runner, args.main_checkout, "worktree", "remove", args.cleanup_worktree)
     if removed.code != 0:
         return "failed:worktree-remove:" + removed.text.strip()
-    deleted = _git(runner, args.main_checkout, "branch", "-d", args.cleanup_branch)
-    if deleted.code != 0:
-        return "failed:branch-delete:" + deleted.text.strip()
-    return "done"
+    return "worktree-removed"
 
 def cmd_open(args, runner) -> int:
     log_path = _open_log_path(args.log_dir, args.branch)
@@ -639,6 +650,33 @@ def cmd_land(args, runner) -> int:
         reruns += 1
         attempt += 1
 
+    # Bind the local classification to the PR's current base and candidate head.
+    base_view = runner.run(["gh", "pr", "view", args.pr, "--repo", args.repo,
+                            "--json", "baseRefOid,headRefOid"])
+    try:
+        base_info = json.loads(base_view.text) if base_view.code == 0 else {}
+        base = base_info.get("baseRefOid", "")
+        if not base or base_info.get("headRefOid") != head:
+            raise ValueError("base or head unavailable")
+        classifier = Path(args.main_checkout) / "scripts/ci/classify_changes.py"
+        classified = runner.run([sys.executable, "-I", str(classifier), "--base", base,
+                                 "--head", head], cwd=args.main_checkout)
+        evidence = json.loads(classified.text) if classified.code == 0 else {}
+        spec = importlib.util.spec_from_file_location("kos_clauses_spec", Path(__file__).with_name("clauses_spec.py"))
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        error = _classification_error(evidence, head, base, module.CLASSIFICATION_REQUIRED_HEAVY)
+        if not error:
+            error = _matrix_error(rows, evidence["classification"], module.COMMON_REQUIRED_CHECKS,
+                                  module.CLASSIFICATION_REQUIRED_HEAVY, module.HEAVY_CHECKS)
+        if error:
+            raise ValueError(error)
+    except (ValueError, TypeError, KeyError, OSError) as exc:
+        payload.update(status="classification-or-checks-invalid", reruns=reruns)
+        _summary(payload, log_dir, args.pr)
+        return _die(f"classification or checks invalid: {exc}")
+    payload["classification"] = evidence["classification"]
+    payload["base"] = base
     payload.update(status="green", reruns=reruns, head=head)
     if record_path is None:
         run_ids = sorted({row["run"] for row in rows if row["run"]})
@@ -739,52 +777,73 @@ def cmd_land(args, runner) -> int:
             merge_oid = None
     payload["merge_commit"] = merge_oid
 
-    branch = _git(runner, args.main_checkout, "rev-parse", "--abbrev-ref", "HEAD")
-    porcelain = _git(runner, args.main_checkout, "status", "--porcelain")
-    on_main = branch.code == 0 and branch.text.strip() == "main"
-    clean = porcelain.code == 0 and porcelain.text.strip() == ""
-    if not on_main or not clean:
-        reason = f"skipped:branch={branch.text.strip()!r} clean={clean}; tell Human"
-        payload.update(status="merged-no-ff", ff=reason)
-        _append_record(record_path, f"merge={merge_oid}\nff={reason}")
+    def stop(status, message):
+        payload["status"] = status
+        _append_record(record_path, f"merge={merge_oid}\nff={payload['ff']}\ncleanup={payload['cleanup']}")
         _summary(payload, log_dir, args.pr)
-        return 0
+        return _die(message)
 
+    if not isinstance(merge_oid, str) or not re.fullmatch(r"[0-9a-fA-F]{40}", merge_oid):
+        return stop("merge-result-unknown", "merge commit unavailable; cleanup stopped")
     fetched = _git(runner, args.main_checkout, "fetch", "origin", "main")
     if fetched.code != 0:
-        reason = f"failed:fetch {fetched.text.strip()}; tell Human"
-        payload.update(status="ff-fetch-failed", ff=reason)
-        _append_record(record_path, f"merge={merge_oid}\nff={reason}")
-        _summary(payload, log_dir, args.pr)
-        return _die("git fetch origin main failed")
-    ancestor = _git(runner, args.main_checkout, "merge-base", "--is-ancestor", "HEAD", "origin/main")
-    if ancestor.code == 1:
-        reason = "skipped:HEAD is not an ancestor of origin/main; tell Human"
-        payload.update(status="merged-no-ff", ff=reason)
-        _append_record(record_path, f"merge={merge_oid}\nff={reason}")
-        _summary(payload, log_dir, args.pr)
-        return 0
-    if ancestor.code != 0:
-        reason = f"failed:ancestor check {ancestor.text.strip()}; tell Human"
-        payload.update(status="ff-failed", ff=reason)
-        _append_record(record_path, f"merge={merge_oid}\nff={reason}")
-        _summary(payload, log_dir, args.pr)
-        return _die("git merge-base failed")
-    fast = _git(runner, args.main_checkout, "merge", "--ff-only", "origin/main")
-    if fast.code != 0:
-        reason = f"failed:merge {fast.text.strip()}; tell Human"
-        payload.update(status="ff-failed", ff=reason)
-        _append_record(record_path, f"merge={merge_oid}\nff={reason}")
-        _summary(payload, log_dir, args.pr)
-        return _die("git merge --ff-only failed")
-    new_head = _git(runner, args.main_checkout, "rev-parse", "HEAD")
-    ff_text = "ff-only " + new_head.text.strip()
-    payload.update(status="merged", ff=ff_text)
+        return stop("fetch-failed", "fetch failed; cleanup stopped")
+    for commit in (merge_oid, args.expect_head):
+        if _git(runner, args.main_checkout, "merge-base", "--is-ancestor", commit, "origin/main").code != 0:
+            return stop("unreachable", "merge or task commit not reachable; cleanup stopped")
+
     if _cleanup_requested(args):
         payload["cleanup"] = _run_cleanup(args, runner, args.expect_head)
+        if payload["cleanup"] != "worktree-removed":
+            return stop("cleanup-stopped", "worktree cleanup stopped")
+
+    branch = _git(runner, args.main_checkout, "rev-parse", "--abbrev-ref", "HEAD")
+    porcelain = _git(runner, args.main_checkout, "status", "--porcelain", "--untracked-files=all")
+    old = _git(runner, args.main_checkout, "rev-parse", "HEAD")
+    if branch.code or branch.text.strip() != "main":
+        payload["ff"] = "skipped:not-main; tell Human"
+    elif porcelain.code or porcelain.text.strip():
+        payload["ff"] = "skipped:dirty-or-status-unknown; tell Human"
+    elif old.code:
+        payload["ff"] = "skipped:head-unknown; tell Human"
     else:
-        payload["cleanup"] = None
-    _append_record(record_path, f"merge={merge_oid}\n{ff_text}\ncleanup={payload.get('cleanup')}")
+        ancestor = _git(runner, args.main_checkout, "merge-base", "--is-ancestor", "HEAD", "origin/main")
+        if ancestor.code != 0:
+            payload["ff"] = "skipped:not-ancestor-or-unknown; tell Human"
+        else:
+            fast = _git(runner, args.main_checkout, "merge", "--ff-only", "origin/main")
+            if fast.code:
+                payload["ff"] = "failed:ff-only"
+                return stop("ff-failed", "fast-forward failed; cleanup stopped")
+            new = _git(runner, args.main_checkout, "rev-parse", "HEAD")
+            if new.code:
+                payload["ff"] = "failed:new-head-unknown"
+                return stop("ff-failed", "new HEAD unknown; cleanup stopped")
+            payload["ff"] = f"ff-only {old.text.strip()} -> {new.text.strip()}"
+
+    if _cleanup_requested(args):
+        # Recheck reachability before deleting the branch. git branch -d is the
+        # final safety check, especially when the primary checkout could not ff.
+        if _git(runner, args.main_checkout, "merge-base", "--is-ancestor", args.cleanup_branch, "origin/main").code:
+            return stop("cleanup-stopped", "branch no longer reachable")
+        deleted = _git(runner, args.main_checkout, "branch", "-d", args.cleanup_branch)
+        if deleted.code:
+            return stop("cleanup-stopped", "branch deletion failed: " + deleted.text.strip())
+        payload["cleanup"] = "local-branch-deleted"
+        remote = _git(runner, args.main_checkout, "ls-remote", "--heads", "origin", f"refs/heads/{args.cleanup_branch}")
+        if remote.code:
+            return stop("cleanup-stopped", "remote branch query failed")
+        if not remote.text.strip():
+            payload["cleanup"] = "already_deleted_on_origin"
+        elif not args.delete_remote_branch:
+            payload["cleanup"] = "remote-retained:not-authorized"
+        else:
+            removed = _git(runner, args.main_checkout, "push", "origin", "--delete", args.cleanup_branch)
+            if removed.code:
+                return stop("cleanup-stopped", "remote deletion failed")
+            payload["cleanup"] = "remote-deleted"
+    payload["status"] = "merged" if payload["ff"].startswith("ff-only") else "merged-no-ff"
+    _append_record(record_path, f"merge={merge_oid}\nff={payload['ff']}\ncleanup={payload['cleanup']}")
     _summary(payload, log_dir, args.pr)
     return 0
 
@@ -825,6 +884,7 @@ def _parser() -> argparse.ArgumentParser:
     land_cmd.add_argument("--log-dir")
     land_cmd.add_argument("--cleanup-worktree")
     land_cmd.add_argument("--cleanup-branch")
+    land_cmd.add_argument("--delete-remote-branch", action="store_true")
     land_cmd.add_argument(
         "--cleanup-allow-untracked",
         action="append",

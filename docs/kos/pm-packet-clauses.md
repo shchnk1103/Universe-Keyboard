@@ -82,7 +82,7 @@ KeyboardCore：`swift test --package-path Packages/KeyboardCore --scratch-path <
 
 Executor 或 Human 可使用 `scripts/kos/pr_flow.py` 的 `open` 与 `land`；PM 会话不运行 `open`，也不运行带 `--merge` 的 `land`。合并只在 Human 明确授权或亲自运行时加 `--merge`。区分 PR 合并与主检出快进：快进条件不满足时记录 `ff=skipped:<原因>` 并通知 Human，不能因此称 PR 未合并；fetch 或 ff 命令失败记 `ff=failed:<原因>` 并停止后续删除。
 
-当前 `pr_flow land --merge` 先合并 PR，再检查主检出、fetch 与快进，只有快进成功才调用本地清理；它不实现下方要求的 worktree 删除先于快进的次序，也不查询或删除远端分支。其 `_pending_states` 只识别 `pending`，`skipping` 可能进入非失败路径；工具也不逐类验证必需检查。因此不能将 `land` 的自动判断视为冻结分类矩阵的充分证据，也不得把其成功输出当成下方全部步骤完成的证据。必须独立核对检查结果；需要冻结次序时，使用经授权的分步操作；不能满足时停止并报告，不得擅自改变工具或绕过安全检查。
+`pr_flow land --merge` 已与分类矩阵和清理顺序对齐：它按 `classify_changes.py` 的证据逐类核对 `classify-change`、`lightweight-checks`、`final-quality-gate`、`GitGuardian Security Checks` 及该类必需重型项，只放行最终成功与矩阵未选中的最终 `skipped`；`skipping`、进行中、失败、取消、缺失、未知与 `not watching` 均不放行。合并后先 `fetch origin main` 验证合并提交与任务提交可达，再清理 worktree（`Packages/RimeBridge/Vendor` 必须是符号链接才移除，真实目录或其他改动则停止），条件满足才在 `main` 上 `ff-only`，随后 `branch -d` 删除本地分支（严禁 `-D`），最后查询远端分支（不存在记 `already_deleted_on_origin`，存在且授权才删除）。清理未成功时以 `cleanup-stopped` 停止，不继续快进或删除。工具的自动判断仍是启发式：CI 状态与分类证据由外部输入提供，PM 核对时须以记录的 `payload`、日志与真实远端状态为准，不得仅凭退出码宣称完成。
 
 
 ## 身份核对（提交后）
