@@ -157,13 +157,25 @@ def main():
         path = token if os.path.isabs(token) else os.path.join(ROOT, token)
         return os.path.isfile(path)
 
+    def _rule_explanation(line, token):
+        # Commands remain actionable even when surrounded by prose about rules.
+        stripped = re.sub(r"^\s*(?:(?:[-*+]\s+)|(?:\d+[.)]\s+))?", "", line).replace("`", "").strip()
+        if re.match(r"(?:python\d*|xcodebuild|xcrun|swift|bash|sh|\./|/)", stripped):
+            return False
+        before, _, after = line.partition(token)
+        rule = re.search(r"出现|禁止|禁用|不得|不应|旧值|修正|修订|误判|报错|错误|提示", before)
+        consequence = re.search(r"报\s*E[67]|禁止|应为|不应|不得|误判|->|→", after)
+        return bool(rule and consequence or re.search(r"禁止|禁用|不得|不应|旧值", before))
+
     def _check_e6(files, txt, err):
         for f in txt:
             content = txt[f]
-            if "render_handoff_v1.py" in content:
+            if any("render_handoff_v1.py" in line and not _rule_explanation(line, "render_handoff_v1.py") for line in content.splitlines()):
                 err.append(f"E6 {os.path.basename(f)} 引用了已废弃的 render_handoff_v1.py")
-            if re.search(r"(?:kos_handoff\.py\s+render|python3[^\n]*kos_handoff\.py)", content):
-                refs = re.findall(r"(?:/Users/[^`\n\"]*?/scripts/kos/kos_handoff\.py|scripts/kos/kos_handoff\.py|[^\s`'\"，。；;）)]*kos_handoff\.py)", content)
+            handoff_lines = [line for line in content.splitlines() if re.search(r"(?:kos_handoff\.py\s+render|python3[^\n]*kos_handoff\.py)", line) and not re.search(r"出现|规则|解析到|规范目标", line)]
+            if handoff_lines:
+                handoff_content = "\n".join(handoff_lines)
+                refs = re.findall(r"(?:/Users/[^`\n\"]*?/scripts/kos/kos_handoff\.py|scripts/kos/kos_handoff\.py|[^\s`'\"，。；;）)]*kos_handoff\.py)", handoff_content)
                 for ref in refs or ["kos_handoff.py"]:
                     if not ref.endswith("scripts/kos/kos_handoff.py") or not _existing(ref):
                         err.append(f"E6 {os.path.basename(f)} 交接脚本不存在或不是 scripts/kos/kos_handoff.py：{ref}")
@@ -177,7 +189,7 @@ def main():
         import shlex
         commands = []
         for line in re.sub(r"\\\s*\n", " ", content).splitlines():
-            line = line.strip().strip('`')
+            line = re.sub(r"^\s*(?:(?:[-*+]\s+)|(?:\d+[.)]\s+))", "", line).strip().replace("`", "")
             if line.startswith(('#', '>')):
                 continue
             try:
@@ -209,10 +221,10 @@ def main():
         for f in txt:
             content = txt[f]
             base = os.path.basename(f)
-            if "CODE_SIGNING_IDENTITY=-" in content:
+            if any("CODE_SIGNING_IDENTITY=-" in line and not _rule_explanation(line, "CODE_SIGNING_IDENTITY=-") for line in content.splitlines()):
                 err.append(f"E7 {base} 使用了 CODE_SIGNING_IDENTITY=-，应为 CODE_SIGN_IDENTITY=-")
-            full = bool(re.search(r"本地[^。\n]{0,20}\bfull\b|\bfull\b[^。\n]{0,12}门禁", content))
-            keychain = any('xcodebuild' in c and ('CODE_SIGN_IDENTITY=-' in c or any('RimeSyncSecretStore' in t for t in c)) for c in _gate_commands(content))
+            full = any(re.search(r"本地[^。\n]{0,20}\bfull\b|\bfull\b[^。\n]{0,12}门禁", line) and not re.search(r"对声明|若.*声明|出现|规则|检查.*是否齐全", line) for line in content.splitlines())
+            keychain = any(any(os.path.basename(t) == 'xcodebuild' for t in c[:2]) and ('CODE_SIGN_IDENTITY=-' in c or any('RimeSyncSecretStore' in t for t in c)) for c in _gate_commands(content))
             if full or keychain:
                 missing = [tokens[0] for tokens, present in zip(E7_REQUIRED_TOKENS, _gate_steps(content)) if not present]
                 if missing:

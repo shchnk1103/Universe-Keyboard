@@ -116,6 +116,44 @@ CODE_SIGN_IDENTITY=- -only-testing
         result = run('python3 scripts/kos/kos_handoff.py render\n`/tmp/no such place/scripts/kos/kos_handoff.py`\n')
         self.assertIn('E6 ', result.stdout)
 
+    def test_markdown_list_full_gate_and_each_missing_step(self) -> None:
+        commands = [
+            "- `xcrun swift-format lint --strict .`",
+            "1. `swift test --package-path Packages/KeyboardCore`",
+            "* `xcodebuild -scheme RimeBridgeTests test`",
+            '2. `xcodebuild -scheme "Universe Keyboard" test`',
+            '3. `xcodebuild -scheme "Universe Keyboard" CODE_SIGN_IDENTITY=- -only-testing:UniverseKeyboardTests/RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem test`',
+            '4. `xcodebuild -scheme "Universe Keyboard" -configuration Release build`',
+        ]
+        def package(lines):
+            return "本地 full 门禁\n" + "\n".join(lines) + "\n"
+        full = run(package(commands))
+        self.assertEqual(full.returncode, 0, full.stdout)
+        for i in range(len(commands)):
+            with self.subTest(missing=i):
+                self.assertIn("E7 ", run(package(commands[:i] + commands[i+1:])).stdout)
+
+    def test_inline_backtick_fragments_in_command(self) -> None:
+        text = '本地 full 门禁\n- `xcrun` swift-format `lint` --strict .\n'
+        self.assertNotIn("swift-format", run(text).stdout.split("缺少步骤：", 1)[-1])
+
+    def test_rule_and_revision_explanations_are_exempt(self) -> None:
+        for text in [
+            "出现 `render_handoff_v1.py` 报 E6。",
+            "出现 `CODE_SIGNING_IDENTITY=-` 报 E7。",
+            "已修正旧值 `CODE_SIGNING_IDENTITY=-` -> `CODE_SIGN_IDENTITY=-`。",
+            "禁止 `render_handoff_v1.py`。",
+        ]:
+            with self.subTest(text=text):
+                output = run(text + "\n").stdout
+                self.assertNotIn("E6 ", output)
+                self.assertNotIn("E7 ", output)
+
+    def test_actual_invalid_commands_are_rejected(self) -> None:
+        self.assertIn("E6 ", run("- `python3 render_handoff_v1.py`\n").stdout)
+        self.assertIn("E7 ", run("- `xcodebuild CODE_SIGNING_IDENTITY=- test`\n").stdout)
+        self.assertIn("E6 ", run("使用 render_handoff_v1.py 交接\n").stdout)
+
     def test_existing_e1_e4_w4_regressions(self) -> None:
         wrong = "c" * 40
         e1 = run(f"起点提交 {wrong}\n")
