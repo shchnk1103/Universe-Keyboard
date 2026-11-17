@@ -171,7 +171,8 @@ def _snapshot_rows(text: str) -> list[dict] | None:
         rows.append(
             {
                 "name": str(item.get("name") or ""),
-                "state": bucket if isinstance(bucket, str) else "",
+                "state": ("skipped" if bucket == "skipping" and item.get("state") == "SKIPPED"
+                          else bucket if isinstance(bucket, str) else ""),
                 "url": link,
                 "run": found.group(1) if found else "",
                 "job": found.group(2) if found else "",
@@ -186,6 +187,32 @@ def _snapshot_buckets_invalid(rows: list[dict]) -> bool:
     if not rows:
         return True
     return any(row["state"] not in SNAPSHOT_BUCKETS for row in rows)
+
+
+def _matrix_error(rows: list[dict], classification: str, common: frozenset,
+                  required_by_class: dict, heavy: frozenset) -> str | None:
+    """Validate a complete check snapshot against an independently obtained tier."""
+    required = required_by_class.get(classification)
+    if required is None:
+        return "unknown classification"
+    by_name: dict[str, list[str]] = {}
+    for row in rows:
+        name, state = row.get("name"), row.get("state")
+        if not isinstance(name, str) or not name:
+            return "unnamed check"
+        by_name.setdefault(name, []).append(state)
+        if state not in {"pass", "skipped"}:
+            return f"unfinished or unsuccessful check: {name}"
+        if state == "skipped" and name not in heavy - required:
+            return f"unexpected skipped check: {name}"
+    for name in common | heavy:
+        states = by_name.get(name, [])
+        if len(states) != 1:
+            return f"missing or duplicate check: {name}"
+        expected = "pass" if name in common | required else "skipped"
+        if states[0] != expected:
+            return f"unexpected result for {name}: {states[0]}"
+    return None
 
 
 def _bad_states(rows: list[dict]) -> list[dict]:
@@ -204,7 +231,7 @@ def _failure_key(row: dict) -> tuple[str, str | int]:
 
 
 def _pending_states(rows: list[dict]) -> list[dict]:
-    return [row for row in rows if row["state"] == "pending"]
+    return [row for row in rows if row["state"] in {"pending", "skipping"}]
 
 
 def _doc_paths(names: set[str]) -> bool:

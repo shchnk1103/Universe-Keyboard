@@ -50,6 +50,16 @@ def has(*parts):
 
 
 class ParseTests(unittest.TestCase):
+    def test_final_skipped_is_distinct_from_skipping(self) -> None:
+        rows = FLOW._snapshot_rows(json.dumps([
+            {"name": "finished", "bucket": "skipping", "state": "SKIPPED"},
+            {"name": "running", "bucket": "skipping", "state": "IN_PROGRESS"},
+        ]))
+        self.assertEqual([row["state"] for row in rows], ["skipped", "skipping"])
+        # Until matrix validation is implemented, final skipped fails closed.
+        self.assertTrue(FLOW._snapshot_buckets_invalid(rows))
+        self.assertEqual([row["name"] for row in FLOW._pending_states(rows)], ["running"])
+
     def test_fixture_parses_known_case_and_error_quote(self) -> None:
         log = FIXTURE.read_text(encoding="utf-8")
         cases = FLOW._parse_cases(log)
@@ -59,6 +69,29 @@ class ParseTests(unittest.TestCase):
         self.assertTrue(quote.startswith("error:"))
         self.assertIn(quote, log)
         self.assertIn("stage=read-after-barrier", quote)
+
+
+class MatrixTests(unittest.TestCase):
+    def test_all_tiers_and_rejections(self) -> None:
+        spec = load("kos_clauses_matrix", "clauses_spec.py")
+        common = spec.COMMON_REQUIRED_CHECKS
+        heavy = spec.HEAVY_CHECKS
+        matrix = spec.CLASSIFICATION_REQUIRED_HEAVY
+        for tier, required in matrix.items():
+            rows = ([{"name": name, "state": "pass"} for name in common | required]
+                    + [{"name": name, "state": "skipped"} for name in heavy - required])
+            with self.subTest(tier=tier):
+                check = lambda items, name=tier: FLOW._matrix_error(items, name, common, matrix, heavy)
+                self.assertIsNone(check(rows))
+                self.assertIsNotNone(check(rows[:-1]))
+                self.assertIsNotNone(check(rows + [rows[0]]))
+                for state in ("skipping", "pending", "fail", "cancel", "not watching"):
+                    self.assertIsNotNone(check(rows + [{"name": "other", "state": state}]))
+                self.assertIsNotNone(check(rows + [{"name": "other", "state": "skipped"}]))
+                wrong = [dict(row) for row in rows]
+                wrong[0]["state"] = "skipped" if wrong[0]["state"] == "pass" else "pass"
+                self.assertIsNotNone(check(wrong))
+        self.assertIsNotNone(FLOW._matrix_error([], "unknown", common, matrix, heavy))
 
 
 class OpenTests(unittest.TestCase):
@@ -476,17 +509,17 @@ class LandTests(unittest.TestCase):
         payload = json.loads((self.logs / "land-266.json").read_text())
         self.assertEqual(payload["status"], "checks-pending")
 
-    def test_skipping_is_not_a_failure(self) -> None:
+    def test_skipping_waits_and_never_merges(self) -> None:
         runner = Queue(
             [
                 (has("pr", "view"), _view()),
                 *_snap([_job("build", "pass", "5", "6"), _job("optional", "skipping", "5", "7")]),
             ]
         )
-        self.assertEqual(FLOW.main(self._land(), runner=runner), 0)
-        self.assertFalse(any("rerun" in call for call in runner.calls))
+        self.assertEqual(FLOW.main(self._land(), runner=runner), 1)
+        self.assertFalse(any("rerun" in call or call[1:3] == ["pr", "merge"] for call in runner.calls))
         payload = json.loads((self.logs / "land-266.json").read_text())
-        self.assertEqual(payload["status"], "green-no-merge")
+        self.assertEqual(payload["status"], "checks-pending")
 
     def test_empty_missing_or_unknown_bucket_does_not_merge(self) -> None:
         missing = {"name": "build", "state": "pass", "link": ""}
@@ -578,3 +611,7 @@ class LandTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+class SkippingIsPendingRegression(unittest.TestCase):
+    def test_skipping_is_not_a_completed_check(self):
+        self.assertEqual(FLOW._pending_states([{"state": "skipping"}]), [{"state": "skipping"}])
