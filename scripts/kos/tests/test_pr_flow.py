@@ -50,6 +50,16 @@ def has(*parts):
 
 
 class ParseTests(unittest.TestCase):
+    def test_final_skipped_is_distinct_from_skipping(self) -> None:
+        rows = FLOW._snapshot_rows(json.dumps([
+            {"name": "finished", "bucket": "skipping", "state": "SKIPPED"},
+            {"name": "running", "bucket": "skipping", "state": "IN_PROGRESS"},
+        ]))
+        self.assertEqual([row["state"] for row in rows], ["skipped", "skipping"])
+        # Final skipped is a valid snapshot state; the matrix decides whether it is allowed.
+        self.assertFalse(FLOW._snapshot_buckets_invalid(rows))
+        self.assertEqual([row["name"] for row in FLOW._pending_states(rows)], ["running"])
+
     def test_fixture_parses_known_case_and_error_quote(self) -> None:
         log = FIXTURE.read_text(encoding="utf-8")
         cases = FLOW._parse_cases(log)
@@ -59,6 +69,64 @@ class ParseTests(unittest.TestCase):
         self.assertTrue(quote.startswith("error:"))
         self.assertIn(quote, log)
         self.assertIn("stage=read-after-barrier", quote)
+
+
+class MatrixTests(unittest.TestCase):
+    def test_all_tiers_and_rejections(self) -> None:
+        spec = load("kos_clauses_matrix", "clauses_spec.py")
+        common = spec.COMMON_REQUIRED_CHECKS
+        heavy = spec.HEAVY_CHECKS
+        matrix = spec.CLASSIFICATION_REQUIRED_HEAVY
+        for tier, required in matrix.items():
+            rows = ([{"name": name, "state": "pass"} for name in common | required]
+                    + [{"name": name, "state": "skipped"} for name in heavy - required])
+            with self.subTest(tier=tier):
+                check = lambda items, name=tier: FLOW._matrix_error(items, name, common, matrix, heavy)
+                self.assertIsNone(check(rows))
+                self.assertIsNotNone(check(rows[:-1]))
+                self.assertIsNotNone(check(rows + [rows[0]]))
+                for state in ("skipping", "pending", "fail", "cancel", "not watching"):
+                    self.assertIsNotNone(check(rows + [{"name": "other", "state": state}]))
+                self.assertIsNotNone(check(rows + [{"name": "other", "state": "skipped"}]))
+                wrong = [dict(row) for row in rows]
+                next(row for row in wrong if row["name"] in common)["state"] = "skipped"
+                self.assertIsNotNone(check(wrong))
+                all_pass = [dict(row, state="pass") for row in rows]
+                self.assertIsNone(check(all_pass))
+        self.assertIsNotNone(FLOW._matrix_error([], "unknown", common, matrix, heavy))
+
+    def test_classification_evidence_is_bound_to_head_and_base(self) -> None:
+        spec = load("kos_clauses_binding", "clauses_spec.py")
+        matrix = spec.CLASSIFICATION_REQUIRED_HEAVY
+        evidence = {"head_sha": HEAD, "base_sha": OTHER, "classification": "docs_only"}
+        check = lambda value: FLOW._classification_error(value, HEAD, OTHER, matrix)
+        self.assertIsNone(check(evidence))
+        for field, value in (("head_sha", OTHER), ("base_sha", HEAD),
+                             ("classification", "unknown")):
+            self.assertIsNotNone(check(dict(evidence, **{field: value})))
+        self.assertIsNotNone(check(None))
+
+
+class CleanupPathTests(unittest.TestCase):
+    def test_arbitrary_allowed_path_is_never_removed(self) -> None:
+        from types import SimpleNamespace
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            victim = root / "victim"
+            victim.symlink_to(root / "target")
+            args = SimpleNamespace(main_checkout=str(root), cleanup_worktree=str(root),
+                                   cleanup_branch="feature", cleanup_allow_untracked=["victim"])
+            runner = Queue([
+                (has("rev-parse"), ok(HEAD)),
+                (has("merge-base"), ok()),
+                (has("worktree", "list"), ok(f"worktree {root}\n")),
+                (has("rev-parse"), ok(HEAD)),
+                (has("status"), ok("?? victim\n")),
+            ])
+            self.assertEqual(FLOW._run_cleanup(args, runner, HEAD), "skipped:unsupported-allowed-path")
+            self.assertTrue(victim.is_symlink())
+            self.assertFalse(runner.steps)
 
 
 class OpenTests(unittest.TestCase):
@@ -242,7 +310,17 @@ def _fail_items():
 
 
 def _pass_items():
-    return [_job("build", "pass", "5", "6")]
+    spec = load("kos_clauses_fixture", "clauses_spec.py")
+    return [_job(name, "pass", "5", str(index)) for index, name in
+            enumerate(sorted(spec.COMMON_REQUIRED_CHECKS | spec.HEAVY_CHECKS), 1)]
+
+
+def _classification_steps():
+    return [
+        (has("baseRefOid,headRefOid"), ok(json.dumps({"baseRefOid": OTHER, "headRefOid": HEAD}))),
+        (has("--base", "--head"), ok(json.dumps({"base_sha": OTHER, "head_sha": HEAD,
+                                                  "classification": "full"}))),
+    ]
 
 
 class LandTests(unittest.TestCase):
@@ -323,6 +401,7 @@ class LandTests(unittest.TestCase):
             [
                 (has("pr", "view"), _view()),
                 *_snap(_pass_items()),
+                *_classification_steps(),
                 (has("pr", "view"), _view(head=OTHER)),
             ]
         )
@@ -334,6 +413,7 @@ class LandTests(unittest.TestCase):
             [
                 (has("pr", "view"), _view()),
                 *_snap(_pass_items()),
+                *_classification_steps(),
             ]
         )
         self.assertEqual(FLOW.main(self._land(), runner=runner), 0)
@@ -347,6 +427,7 @@ class LandTests(unittest.TestCase):
             [
                 (has("pr", "view"), _view()),
                 *_snap(_pass_items()),
+                *_classification_steps(),
                 (has("pr", "view"), _view()),
                 (has("pr", "diff"), ok("docs/kos/pm-packet-clauses.md\n")),
                 (has("archive"), FLOW.Result(0, buf.getvalue(), "")),
@@ -367,31 +448,41 @@ class LandTests(unittest.TestCase):
             [
                 (has("pr", "view"), _view()),
                 *_snap(_pass_items()),
+                *_classification_steps(),
                 (has("pr", "view"), _view()),
                 (has("autoMergeRequest,mergeStateStatus,headRefOid"), _ready()),
                 (has("pr", "merge"), ok("merged")),
                 (has("mergeCommit"), merge_json),
+                (has("fetch"), ok()),
+                (has("--is-ancestor"), ok()),
+                (has("--is-ancestor"), ok()),
                 (has("--abbrev-ref"), ok("feature/x\n")),
                 (has("status"), ok("")),
+                (lambda a: "rev-parse" in a and "--abbrev-ref" not in a, ok("d" * 40 + "\n")),
             ]
         )
         self.assertEqual(FLOW.main(self._land(["--merge"]), runner=not_main), 0)
-        self.assertFalse(any("fetch" in call for call in not_main.calls))
+        self.assertFalse(any("--ff-only" in call for call in not_main.calls))
 
         dirty = Queue(
             [
                 (has("pr", "view"), _view()),
                 *_snap(_pass_items()),
+                *_classification_steps(),
                 (has("pr", "view"), _view()),
                 (has("autoMergeRequest,mergeStateStatus,headRefOid"), _ready()),
                 (has("pr", "merge"), ok("merged")),
                 (has("mergeCommit"), merge_json),
+                (has("fetch"), ok()),
+                (has("--is-ancestor"), ok()),
+                (has("--is-ancestor"), ok()),
                 (has("--abbrev-ref"), ok("main\n")),
                 (has("status"), ok(" M docs/kos/README.md\n")),
+                (lambda a: "rev-parse" in a and "--abbrev-ref" not in a, ok("d" * 40 + "\n")),
             ]
         )
         self.assertEqual(FLOW.main(self._land(["--merge"]), runner=dirty), 0)
-        self.assertFalse(any("fetch" in call for call in dirty.calls))
+        self.assertFalse(any("--ff-only" in call for call in dirty.calls))
 
     def test_final_gate_alone_and_zero_reruns_stop(self) -> None:
         log = FIXTURE.read_text(encoding="utf-8")
@@ -409,15 +500,18 @@ class LandTests(unittest.TestCase):
         self.assertFalse(any("checks" in c for c in runner.calls))
 
     def test_merge_readiness_and_fast_forward_outcomes(self) -> None:
-        prefix = [(has("view"), _view()), *_snap([_job("build", "pass", "", "")]), (has("view"), _view())]
+        prefix = [(has("view"), _view()), *_snap(_pass_items()), *_classification_steps(), (has("view"), _view())]
         for ready in [_ready(auto={"enabledAt": "now"}), _ready(state="BLOCKED"), _ready(head=OTHER)]:
             runner = Queue(prefix + [(has("autoMergeRequest,mergeStateStatus,headRefOid"), ready)])
             self.assertEqual(FLOW.main(self._land(["--merge"]), runner=runner), 1)
             self.assertFalse(any(c[1:3] == ["pr", "merge"] for c in runner.calls))
         for ancestor, fast, expected, marker in [(fail("", 1), None, 0, "skipped:"), (ok(), fail("merge failed"), 1, "failed:")]:
             steps = prefix + [(has("autoMergeRequest,mergeStateStatus,headRefOid"), _ready()),
-                (has("pr", "merge"), ok("merged")), (has("mergeCommit"), ok('{"mergeCommit":{"oid":"c"}}')),
-                (has("--abbrev-ref"), ok("main")), (has("status"), ok()), (has("fetch"), ok()),
+                (has("pr", "merge"), ok("merged")), (has("mergeCommit"), ok(json.dumps({"mergeCommit": {"oid": "c" * 40}}))),
+                (has("fetch"), ok()),
+                (has("--is-ancestor"), ok()), (has("--is-ancestor"), ok()),
+                (has("--abbrev-ref"), ok("main")), (has("status"), ok()),
+                (lambda a: "rev-parse" in a and "--abbrev-ref" not in a, ok("d" * 40 + "\n")),
                 (has("--is-ancestor"), ancestor)]
             if fast is not None:
                 steps.append((has("--ff-only"), fast))
@@ -430,7 +524,7 @@ class LandTests(unittest.TestCase):
             self.assertIn("ff=" + payload["ff"], Path(payload["record"]).read_text())
 
     def test_archive_failure_stops_merge(self) -> None:
-        runner = Queue([(has("view"), _view()), *_snap([_job("build", "pass", "", "")]),
+        runner = Queue([(has("view"), _view()), *_snap(_pass_items()), *_classification_steps(),
             (has("view"), _view()), (has("diff"), ok("docs/kos/a.md\n")), (has("archive"), fail("bad"))])
         self.assertEqual(FLOW.main(self._land(["--merge", "--validator", "/v.sh"]), runner=runner), 1)
         self.assertFalse(any(c[1:3] == ["pr", "merge"] for c in runner.calls))
@@ -476,17 +570,17 @@ class LandTests(unittest.TestCase):
         payload = json.loads((self.logs / "land-266.json").read_text())
         self.assertEqual(payload["status"], "checks-pending")
 
-    def test_skipping_is_not_a_failure(self) -> None:
+    def test_skipping_waits_and_never_merges(self) -> None:
         runner = Queue(
             [
                 (has("pr", "view"), _view()),
                 *_snap([_job("build", "pass", "5", "6"), _job("optional", "skipping", "5", "7")]),
             ]
         )
-        self.assertEqual(FLOW.main(self._land(), runner=runner), 0)
-        self.assertFalse(any("rerun" in call for call in runner.calls))
+        self.assertEqual(FLOW.main(self._land(), runner=runner), 1)
+        self.assertFalse(any("rerun" in call or call[1:3] == ["pr", "merge"] for call in runner.calls))
         payload = json.loads((self.logs / "land-266.json").read_text())
-        self.assertEqual(payload["status"], "green-no-merge")
+        self.assertEqual(payload["status"], "checks-pending")
 
     def test_empty_missing_or_unknown_bucket_does_not_merge(self) -> None:
         missing = {"name": "build", "state": "pass", "link": ""}
@@ -502,7 +596,8 @@ class LandTests(unittest.TestCase):
         runner = Queue(
             [
                 (has("pr", "view"), _view()),
-                *_snap([_job("build", "pass", "5", "6")]),
+                *_snap(_pass_items()),
+                *_classification_steps(),
                 (has("pr", "view"), ok("not-json")),
             ]
         )
@@ -578,3 +673,7 @@ class LandTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+class SkippingIsPendingRegression(unittest.TestCase):
+    def test_skipping_is_not_a_completed_check(self):
+        self.assertEqual(FLOW._pending_states([{"state": "skipping"}]), [{"state": "skipping"}])
