@@ -28,22 +28,23 @@
 | H3 | PM 会话保持相对独立。见 [AGENTS.md「KOS 协作约定」](../../AGENTS.md) | pm-session-independence（Human 2026-10-28） |
 | H4 | 合并后主检出 `main` 只做 `--ff-only` 快进，条件见 [AGENTS.md「合并后清理（PF-023）」](../../AGENTS.md) | post-merge-main-fast-forward（Human 2026-10-28） |
 | H5 | 任务包首行角色、写入被拒即停、`.git` 白名单、发包前自审、冻结冲突修订、短授权格式。见 [AGENTS.md「任务包与派发」](../../AGENTS.md) | kos-rules-approved-20261028（Human 2026-10-28“全部批准”） |
-| H6 | 先设计再实现、实现包独立预检、复核发现分级。见 [AGENTS.md「设计、预检与复核分级」](../../AGENTS.md) | kos-process-rules-20261028b（Human 2026-10-28“全部批准”） |
+| H6 | 按 4 档任务流程选择设计与复核站点；仅 `feature` 档必走 Nick 设计 + Alex 架构审查。见 [AGENTS.md「设计、预检与复核分级」](../../AGENTS.md) | kos-process-rules-20261028b；KOS-WORKFLOW-001 设计稿 v1 / Human 2026-11-14「按你的建议定」 |
 | H7 | Human 自己启动 Executor 与 Reviewer 会话；PM 给可直接粘贴的指令，不自己启动会话 | pm-role-and-dispatch-workflow（Human 选择手工派发） |
 | H8 | 派发 = 角色 + 文件路径 + SHA-256，不把长指令贴进聊天；先把包写成文件再算 SHA | pm-role-and-dispatch-workflow（Human 2026-10-23 纠正） |
 | H9 | 授权与派发合并成一条消息；每个派发块单独放在一个可一键复制的代码块里；批准项写进包内“Human 预批准项”。短格式见 H5 | combined-authorization-dispatch（Human 2026-10-24 采用；2026-10-25 要求代码块；2026-10-27 提醒） |
 | H10 | PR 标题与描述中英混合：标题 `<type>(<scope>): <English summary> / <中文概要>`；描述先一行英文 `Summary:` 再写中文正文；提交信息保持英文 | pr-bilingual-style（Human 2026-10-24） |
 | H11 | Human 提需求，PM 负责实现方式；技术方案、设计深度、范围切分、复核策略、测试策略由 PM 自己判断，不让 Human 选 | pm-decides-implementation（Human 2026-10-28 原话） |
 | H12 | 先和 Human 谈大方向，再由 PM 定阶段目标，阶段内可自行调整；包、预检、复核服务于阶段目标 | direction-then-stages（Human 2026-10-29“A … 可以固定到 KOS 中”） |
-| H13 | 同一设计被否两次后，PM 写分歧摘要（问题、风险、复核建议、PM 方案代价）交 Human 决定，不无限修订 | design-review-cap（Human 2026-10-29 选择“A”） |
+| H13 | `feature` 档同一设计被否两次后，PM 写分歧摘要（问题、风险、复核建议、PM 方案代价）交 Human 决定，不无限修订 | design-review-cap（Human 2026-10-29 选择“A”）；按 4 档流程限定适用档位 |
 | H14 | 每次建议下一步都给按优先级排列的列表，并对应目录条目（PF / Assignment / 暂存项） | prioritized-next-steps（Human 2026-10-25） |
-| H15 | 预检免复检的条件：只有改动全是预检原句时才免复检；PM 只要自己加了一句（哪怕只是选个输入文件），就做一轮窄范围复检 | pm-additions（Human 2026-11-04 决定 1） |
+| H15 | 有预检站的档位适用：只有改动全是预检原句时才免复检；PM 只要自己加了一句（哪怕只是选个输入文件），就做一轮窄范围复检 | pm-additions（Human 2026-11-04 决定 1） |
 | H16 | 模型档位按角色定：执行 / 发布用中档模型，PM / 预检 / 复核用高档模型；由派发者按当时可用的 AI 选择，不点名厂商 | pm-additions（Human 2026-11-04 决定 2；取代 kos-executor-model-preference 中只对单一厂商成立的旧写法） |
 | H17 | `~/.kos-work/` 是默认 KOS 家目录，可覆盖，不删除。见 [scripts/kos/README.md](../../scripts/kos/README.md) | kos-home-and-externalization（Human 2026-11-02） |
 | H18 | Human 委托 PM 回答 KEYBOARD-PASTE-UI-001 的 E6 文案确认与 App Store 隐私问卷 Q1–Q6；并于 2026-11-10 决定此后同类问卷与措辞判断都由 PM 回答 | human-statements-2026-11-10 第 3 条（Human 2026-11-10：「确认，你是 PM，你应该帮我回答这 6 个问题，我充分信任你！」）；human-statements-2026-11-10c 第 9 条（Human 2026-11-10：「合并，以后都由你来回答就好了。」，答复 PM 提出的 Q7） |
 | H19 | Human 要求 PM 用通俗易懂的语言指引其操作 | human-statements-2026-11-10 第 2 条（Human 2026-11-10：「你能不能用通俗易懂的语言来指引我啊！」） |
 | H20 | Human 要求把新规则记到 KOS 系统里 PM 这个角色的设定，而不是只记在个人长期记忆里 | human-statements-2026-11-10 第 4 条（Human 2026-11-10：「不要只是记到你的长期记忆里，而是要记到 KOS 系统中你这个角色的设定里才不会丢！」） |
 | H21 | Human 对 ~/.kos-work/ 存储的常设决定：阶段报告核完（DONE/PASS）的同一回合，PM 清理该子任务可再生构建产物，日志、报告与 worktree 不动；实验原始输出保留 14 天，之后压缩归档或删除仍按任务请 Human 确认；新任务开工时不预估体积 | human-statements-2026-11-12b 第 2 条（Human 2026-11-12：「两点都按你的建议定，保留期 14 天。但是新任务开工时就不要预估了…」）；PM-LOG/2026-11-06-01.md 第 344 条（建议内容及执行边界） |
+| H22 | Human 批准 4 档流程（`doc-light` / `doc-rule` / `code-fix` / `feature`）与职责路由：轻文档免预检免独立复核，规则文档进预检，小型代码修复保留红测 / 独立复核，大型功能才必走设计 + 架构审查；权威表见 [AGENTS.md「设计、预检与复核分级」](../../AGENTS.md) | KOS-WORKFLOW-001 设计稿 v1；human-decision-20261114.md（Human 2026-11-14「按你的建议定」） |
 
 ### 2.2 PM 惯例
 
@@ -55,7 +56,7 @@
 | P4 | 事实性文字纪律：每句先找到出处（文件:行）；给每条标证据级别（已证 / Human 决定 / Human 陈述 / PM 建议 / 推断 / UNKNOWN），措辞不得强于级别；结构数字用命令数，不凭印象；发现一个缺陷，就扫整份文件里的同类缺陷；改正文字和原文一样要查出处 | fact-bearing-text-discipline（2026-10-28） |
 | P5 | Assignment 的 Decision Source 写 Human 点名包 SHA 的激活消息及回执，不只写方向回答或包哈希 | fact-bearing-text-discipline；pm-packet-preflight-lessons |
 | P6 | 发包前自查：包里每处引用都在允许集合内；数量用脚本算；需要 Assignment 的正式任务先落 Assignment；找出包内“必须”与“不得”的冲突；不往已被冻结的文件追加内容；提交身份写全名和邮箱；任务编号不复用；SHA 不手抄；资源身份先核对再写 | pm-packet-preflight-lessons |
-| P7 | 写设计前先委托执行者做只读的代码流程调研，PM 按 P16 读调研报告与其中引用的行；第一轮复核包写明“与现有行为一致，超出部分记技术债”的前提；修订时原样采纳复核替换句，同一轮不加 PM 补充 | design-review-cap（PM 设计经验部分） |
+| P7 | `feature` 档写设计前先委托执行者做只读的代码流程调研，PM 按 P16 读调研报告与其中引用的行；第一轮复核包写明“与现有行为一致，超出部分记技术债”的前提；修订时原样采纳复核替换句，同一轮不加 PM 补充 | design-review-cap（PM 设计经验部分）；按 4 档流程限定适用档位 |
 | P8 | 何时仍要上报 Human：产品层面的取舍、不可逆或对外的动作、KOS 规则保留给 Human 授权的事项；上报时带 PM 推荐的默认项 | pm-decides-implementation（PM 落实细则） |
 | P9 | 云端会话读不到本机文件：派发时在回复里给出“派发头 + 包全文”的一键复制版本；云端无法复算包 SHA 时以派发块为准 | pm-additions（2026-11-02 起） |
 | P10 | 报告交回后先用 `check_report.py` 机械核对，再抽查提交身份、文件集合、哈希和报告引用的关键代码行，然后向 Human 汇报 | pm-additions |
@@ -65,6 +66,7 @@
 | P14 | 落实 H20：收到 Human 的新做事规则，当天写进 KOS 家目录的 PM 文件（检查表、PM-STATE，`PM-LOG/human-statements-<日期>.md` 放原话），并出文档包落进本手册 2.1 节；个人长期记忆只作索引 | PM 惯例（2026-11-10，非 Human 原话；对应 H20） |
 | P15 | 角色领取（kos-role-claim）的独立性只指「自产自验」：本会话不得审查或验证自己产出的包、设计或代码；同角色续做自己先前轮次的执行与未提交代码允许，并在报告第二行「既往」中写明 | PM 惯例（2026-11-12，非 Human 原话；依据 Human 在 KEYBOARD-PASTE-UI-B2-001 中对执行者的澄清）；对应 H1 |
 | P16 | PM 不读码找原因：PM 定方向、验收标准、范围与预算，并用证据核对报告；找原因、读实现细节交给执行者（写红测并证明原因）与预检 / 质量复核。PM 只可列文件以划定允许路径、读报告引用的行、读 `docs/CODE_MAP.md`；包里不写 PM 自己读码得到的原因猜测，必要时只写「原因未知，由你用测试证明」加观察到的事实。 | PM 惯例（2026-11-13，Human 认可；非 Human 原话） |
+| P17 | 写执行包时定档位、写包头「复核重点」（PM 最关心 1–3 点），按职责选「空闲 + 最久未工作」且排除忙碌 / 独立性冲突；升档只升不降，降档仅 PM 或 Human 决定。使用现行 `scripts/kos/kos_handoff.py` 与外置 `kos-board.py pick --role ...`，本轮不新增 `kos-handoff.sh` 仓库脚本依赖。 | KOS-WORKFLOW-001 设计稿 v1 第 5、7 节；human-decision-20261114.md（Human 2026-11-14「按你的建议定」） |
 
 ### 2.3 待 Human 确认
 
@@ -76,6 +78,18 @@
 | Q4 | 组合表（`docs/PORTFOLIO.md`）随任务合并后核对、发现问题即单独刷新 | pm-role-and-dispatch-workflow 记为 Human 2026-10-22 采用，但组合同步不在本手册范围，与仓库现行维护规则的关系未核 |
 | Q5 | 用中文回复；回复先给结论、再写 Human 要做什么、最后写记录情况 | 来源（pm-role-and-dispatch-workflow、combined-authorization-dispatch 的 2026-10-24 修订）没有写明这是 Human 原话还是 PM 的总结 |
 | Q6 | 每轮回复都简短附上 KOS 下一步建议 | 只出现在本机技能说明的触发语中，未写明日期与 Human 批准；与 role-from-packet 第 16 行“非 PM 角色的最终消息不给下一步建议”的适用对象需 Human 确认（现理解为只对 PM） |
+
+### 2.4 4 档流程与 PM 路由（Human 2026-11-14 批准）
+
+4 档流程的权威定义在 [AGENTS.md「设计、预检与复核分级」](../../AGENTS.md)；本手册不另建流程副本，只写 PM 操作摘要：
+
+1. PM 写包先定档：`doc-light` 只改说明 / 台账，免预检免独立复核；`doc-rule` 改手册、`AGENTS.md`、规则或对外文案，进预检；`code-fix` 单 PR 且不碰核心语义，进预检、红测与独立复核；`feature` 多 PR、跨模块或碰核心语义，先经 Nick 设计与 Alex 架构审查。
+2. 保留两类单站任务：只读诊断（只读 → PM）、纯 Human 事务（不过流程）。`code-fix` 按 Human 决定在下一个新的代码缺陷任务试行，一个任务跑完前不转正；不推翻 2026-11-06 小任务口径。
+3. 站点结果按 AGENTS.md：PASS / DONE 进下一站；FAIL 回 PM 出 `-rN` 修订包并由同一审查者复检；PARTIAL 交 PM 判断；STOPPED / BLOCKED 升级 PM；同一站连续 FAIL 3 轮升级 Human。发布、真机、合并等 `*` 站仍要 Human 授权。
+4. 升降级只升不降；发现范围超档写「请求升档：<目标档>，理由…」，按重一档剩余站点继续。降档仅 PM 或 Human 决定；拿不定选更重档。
+5. 选人按职责而非固定 AI 品牌：用外置 `/Users/doubleshy0n/.kos-work/Universe-Keyboard/tools/kos-board.py pick --role ...` 在同职责内优先选「空闲 + 最久未工作」，排除忙碌与独立性冲突；无人空闲则升级 PM，Human 可改派。
+6. 执行包首部必填「包头档位」与「复核重点」（PM 最关心 1–3 点）；固定条款库见 [pm-packet-clauses.md](pm-packet-clauses.md)。
+7. 本轮只落库已批准的 4 档流程与路由规则。设计稿第 6 节外部新工具 `kos-handoff.sh`、第 10 节 `docs/kos/workflow-profiles.md` 与 KOS 家目录名册职责列不在本轮仓库改动内；继续使用现行 `scripts/kos/kos_handoff.py` 与外置 `kos-board.py pick --role ...`。4 档只分流程站点，不改变 `AGENTS.md` 既有 Swift 格式、本地门禁与 [CI 分级](../CI_CHANGE_CLASSIFICATION.md) 分类要求。
 
 ## 3. 写包与冻结
 
@@ -111,7 +125,7 @@
 2. 预检 FAIL 的修订：只逐字采纳预检给出的替换句，写成新文件并写明取代哪份（含旧 SHA）；PM 自己另加的句子要先窄预检。
 3. 写包时 PM 只写目标、验收标准和必须固定措辞的文字；行数、出现次数、行号、diff 统计、SHA 等派生事实一律不手算写入，写“以报告实测为准”，由执行者核查并在报告里贴实测值。
 4. 每个派发块第一行写「派给：<名字>（角色）」，名字见 `roles.md`；按角色而不是按 AI 品牌派发。
-5. 审查或预检意见中，若已给出关闭句且可做成阻断测试，在不改变已通过独立 Architecture 复核的设计范围和现行合同的前提下，直接写进实现包，不再另开设计轮；超出原设计范围的改动（例如改冻结哈希）单独走设计、审查、授权。
+5. 仅 `feature` 档（或该包明确带独立 Architecture 复核的设计范围）适用：审查或预检意见中，若已给出关闭句且可做成阻断测试，在不改变已通过独立 Architecture 复核的设计范围和现行合同的前提下，直接写进实现包，不再另开设计轮；超出原设计范围的改动（例如改冻结哈希）单独走设计、审查、授权。`code-fix` / `doc-rule` / `doc-light` 按各自档位执行。
 6. 只向 Human 问产品取舍和授权（push、merge、删除、角色确认）；技术方案、范围、拆包由 PM 自己定；不问“要不要派”，直接给块。
 7. 已知失败不得静默跳过：分出来并标注原因；不宣称没验证的东西（真机、未做的阶段）。
 8. Human 说“报告已返”时，先核预期路径、SHA、修改时间，再运行报告核对脚本，缺什么就明说；PM 自己不 push、不开 PR、不 merge。
@@ -130,12 +144,12 @@
 8. 发布包写之前走一遍发布前清单：格式硬门；main 是否已改同一文件（如 CHANGELOG），必要时先合入本地 main；`pr_flow open` 的全部参数（含放行未跟踪的 Vendor 链接）；提交身份；PR 正文禁用词；产品 PR 是否需要 CHANGELOG 条目。
 9. 执行者因包条款冲突 STOPPED 时，先核对具体冲突与证据；确认合同冲突后修订并重新冻结任务包，不催促执行者违反原包继续执行。
 10. 报告返回后独立核事实：核对脚本只做机械核对，测试数、退出码和 git 状态要自己抽查。
-11. 质量复核后发生改动时，先按 AGENTS.md 的复核发现分级确定复核范围；仅文字小问题可只复核改动部分，代码／设计问题按整轮处理。对不改变已关闭结论的路径整改等具体增量，须由适用的质量复核合同明确范围并给出后续最小条件，不以先前结论替代新证据。
+11. 进入独立复核站的档位，质量复核后发生改动时，先按 AGENTS.md 的复核发现分级确定复核范围；仅文字小问题可只复核改动部分，代码／设计问题按整轮处理。对不改变已关闭结论的路径整改等具体增量，须由适用的质量复核合同明确范围并给出后续最小条件，不以先前结论替代新证据。
 12. 修订包逐项处理被指出的问题，重读全包核对连带引用；确需补充或调整其他内容时明确披露，并按手册 H15 对 PM 新增内容进行窄预检，不覆盖原冻结包。
 
 ## 8. 任务收口要产出知识卡
 
-每个大任务（隔离实验、设计、实现）收口时，PM 写一页知识卡并经文档 PR 入库：只写已验证的事实、已定的决定、未决项和证据位置，不写过程流水，并从 `docs/KNOWLEDGE_INDEX.md` 挂入口。原因：任务报告放在仓库之外，后来的工作（如九宫格整合或适配层）否则要重新研究一遍。第一张知识卡是 `docs/architecture/luna-nine-key-scheme.md`。未验证的内容必须标明“尚未验证”，不得写成事实。
+每个 `feature` 档大任务（隔离实验、设计、实现）收口时，PM 写一页知识卡并经文档 PR 入库：只写已验证的事实、已定的决定、未决项和证据位置，不写过程流水，并从 `docs/KNOWLEDGE_INDEX.md` 挂入口。原因：任务报告放在仓库之外，后来的工作（如九宫格整合或适配层）否则要重新研究一遍。第一张知识卡是 `docs/architecture/luna-nine-key-scheme.md`。未验证的内容必须标明“尚未验证”，不得写成事实。
 
 ## 附录：客户端相关注意
 
