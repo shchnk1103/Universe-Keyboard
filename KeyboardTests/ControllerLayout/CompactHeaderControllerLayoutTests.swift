@@ -997,7 +997,7 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
         guard let root = sut.rootStack as? KeyboardInputHitAreaStackView else { return XCTFail("Missing real root") }
         root.refreshKeyTouchGeometry()
         let first = descendants(root).compactMap { $0 as? KeyboardKeyButton }.first {
-            nineKey ? $0.accessibilityIdentifier == "2" : $0.accessibilityLabel == "q"
+            nineKey ? $0.accessibilityIdentifier == "2" : $0.accessibilityIdentifier == "q"
         }
         guard let first else { return XCTFail("Missing first row key") }
         XCTAssertEqual(first.bounds.height, CGFloat(KeyboardHeightSettings.defaultRowHeight), accuracy: 0.01)
@@ -1077,6 +1077,159 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
         case .centerY: return frame.midY
         default: return nil
         }
+    }
+}
+
+nonisolated final class CharacterKeyControllerIntegrationTests: XCTestCase {
+    @MainActor
+    func testCharacterSettingsAreNotReadDuringInputAndLayout() throws {
+        let defaults = CountingCharacterDefaults(suiteName: "CharacterKeyReads.\(UUID().uuidString)")!
+        let sut = KeyboardViewController()
+        sut.sharedDefaults = defaults
+        sut.loadViewIfNeeded()
+        sut.beginAppearanceTransition(true, animated: false)
+        sut.endAppearanceTransition()
+        XCTAssertGreaterThan(defaults.reads, 0)
+        defaults.reads = 0
+        let key = try XCTUnwrap(sut.makeT9KeyButton(digit: "2", letters: "ABC") as? KeyboardKeyButton)
+        sut.controller.rimeEngine = nil
+        var actions: [KeyboardAction] = []
+        sut.controller.onActionObserved = { actions.append($0) }
+        for _ in 0..<3 {
+            sut.insertKey(key)
+            let touch = NSObject()
+            let id = ObjectIdentifier(touch)
+            sut.handleOrdinaryRolloverTrackingEvent(.began(id), for: key)
+            sut.handleOrdinaryRolloverTrackingEvent(.endedInside(id), for: key)
+            sut.view.setNeedsLayout()
+            sut.view.layoutIfNeeded()
+        }
+        XCTAssertEqual(actions, Array(repeating: .insertKey("2"), count: 6))
+        XCTAssertEqual(defaults.reads, 0)
+        sut.beginAppearanceTransition(false, animated: false)
+        sut.endAppearanceTransition()
+    }
+
+    @MainActor
+    func testFunctionFontsRemainIndependentOfCharacterStyle() throws {
+        let suite = "FunctionKeyFonts.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        defaults.set(22, forKey: CharacterKeyStyle.sizeKey)
+        defaults.set(true, forKey: CharacterKeyStyle.boldKey)
+        let sut = KeyboardViewController()
+        sut.loadViewIfNeeded()
+        sut.characterKeyStyle = CharacterKeyStyle(defaults: defaults)
+        let chrome = sut.makeT9NineKeyChrome()
+        let thirdRow = sut.makeLetterThirdRow()
+        let delete = try XCTUnwrap(thirdRow.arrangedSubviews.last as? UIButton)
+        let space = try XCTUnwrap(sut.t9SpaceButton)
+        XCTAssertFalse(chrome.isEmpty)
+        XCTAssertEqual(sut.returnButton.titleLabel?.font.pointSize, 15)
+        XCTAssertEqual(delete.titleLabel?.font.pointSize, 15)
+        XCTAssertEqual(sut.shiftButton.titleLabel?.font.pointSize, 15)
+        XCTAssertEqual(space.titleLabel?.font.pointSize, 14)
+        let symbol = try XCTUnwrap(delete.preferredSymbolConfigurationForImage(in: .normal))
+        XCTAssertEqual(symbol, UIImage.SymbolConfiguration(pointSize: 22, weight: .regular))
+    }
+
+    @MainActor
+    func testT9GeometryAtLargeBoldSize() throws {
+        let suite = "CharacterKeyGeometry.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        defaults.set(22, forKey: CharacterKeyStyle.sizeKey)
+        defaults.set(true, forKey: CharacterKeyStyle.boldKey)
+        let sut = KeyboardViewController()
+        sut.loadViewIfNeeded()
+        sut.characterKeyStyle = CharacterKeyStyle(defaults: defaults)
+        sut.keyHeight = 40
+        for width: CGFloat in [393, 852] {
+            let chrome = try XCTUnwrap(sut.makeT9NineKeyChrome().first)
+            chrome.frame = CGRect(x: 0, y: 0, width: width, height: 180)
+            chrome.setNeedsLayout()
+            chrome.layoutIfNeeded()
+            func buttons(in view: UIView) -> [UIButton] {
+                (view as? UIButton).map { [$0] } ?? view.subviews.flatMap { buttons(in: $0) }
+            }
+            for title in ["PQRS", "WXYZ"] {
+                let button = try XCTUnwrap(buttons(in: chrome).first { $0.title(for: .normal) == title })
+                let label = try XCTUnwrap(button.titleLabel)
+                XCTAssertEqual(label.font.pointSize, 22)
+                XCTAssertEqual(label.minimumScaleFactor, 0.7, accuracy: 0.001)
+                XCTAssertTrue(label.adjustsFontSizeToFitWidth)
+                XCTAssertEqual(button.bounds.height, 40, accuracy: 1)
+                let minimumFont = label.font.withSize(label.font.pointSize * label.minimumScaleFactor)
+                let requiredWidth = (title as NSString).size(withAttributes: [.font: minimumFont]).width
+                XCTAssertGreaterThanOrEqual(
+                    label.bounds.width + 0.5, requiredWidth, "\(title), keyboard width \(width)")
+            }
+        }
+    }
+
+    @MainActor
+    func testT9TapAndRolloverSendDigitInBothDisplayCases() throws {
+        let suite = "CharacterKeyControllerIntegrationTests.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        for (mode, title) in [("upper", "ABC"), ("lower", "abc")] {
+            defaults.set(mode, forKey: CharacterKeyStyle.chinese9Key)
+            let sut = KeyboardViewController()
+            sut.loadViewIfNeeded()
+            sut.controller.rimeEngine = nil
+            sut.characterKeyStyle = CharacterKeyStyle(defaults: defaults)
+            var actions: [KeyboardAction] = []
+            sut.controller.onActionObserved = { actions.append($0) }
+            let key = try XCTUnwrap(sut.makeT9KeyButton(digit: "2", letters: "ABC") as? KeyboardKeyButton)
+            XCTAssertEqual(key.title(for: .normal), title)
+            sut.insertKey(key)
+            XCTAssertEqual(actions, [.insertKey("2")])
+            actions.removeAll()
+            let nextKey = try XCTUnwrap(sut.makeT9KeyButton(digit: "2", letters: "ABC") as? KeyboardKeyButton)
+            let firstTouch = NSObject()
+            let secondTouch = NSObject()
+            let firstID = ObjectIdentifier(firstTouch)
+            let secondID = ObjectIdentifier(secondTouch)
+            sut.handleOrdinaryRolloverTrackingEvent(.began(firstID), for: key)
+            sut.handleOrdinaryRolloverTrackingEvent(.began(secondID), for: nextKey)
+            sut.handleOrdinaryRolloverTrackingEvent(.endedInside(secondID), for: nextKey)
+            sut.handleOrdinaryRolloverTrackingEvent(.endedInside(firstID), for: key)
+            XCTAssertEqual(actions, [.insertKey("2"), .insertKey("2")])
+        }
+    }
+}
+
+nonisolated private final class CountingCharacterDefaults: UserDefaults {
+    var reads = 0
+
+    override func object(forKey defaultName: String) -> Any? {
+        reads += 1
+        return super.object(forKey: defaultName)
+    }
+
+    override func string(forKey defaultName: String) -> String? {
+        reads += 1
+        return super.string(forKey: defaultName)
+    }
+
+    override func bool(forKey defaultName: String) -> Bool {
+        reads += 1
+        return super.bool(forKey: defaultName)
+    }
+
+    override func integer(forKey defaultName: String) -> Int {
+        reads += 1
+        return super.integer(forKey: defaultName)
+    }
+
+    override func double(forKey defaultName: String) -> Double {
+        reads += 1
+        return super.double(forKey: defaultName)
+    }
+
+    override func data(forKey defaultName: String) -> Data? {
+        reads += 1
+        return super.data(forKey: defaultName)
     }
 }
 
