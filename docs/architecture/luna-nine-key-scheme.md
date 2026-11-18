@@ -18,7 +18,7 @@
 - 隔离探针中，只添加 spelling_hints（8 或 100）后，观测窗口的 comment 呈小写拼音，观测值由 validatedSource 接受，6446 的 smoke 评价为真。探针未叠加 overlay；模糊音下 comment 的语义尚未验证。
 - 用户可见组字（`T9PreeditResolver`）：先看完整覆盖的 Path，其次高亮或首候选的合格 comment，最后只显示显式字母；仅输入数字且无 comment 时为空串。smoke 通过不等于可见组字非空。
 - `NineKeySchemeRegistry.entries` 是 `static let`，不能在测试里注入新 ID；生产参数化 `RimeT9SmokeProbe.verify` 对未登记 ID 失败关闭。
-- 版本：运行时 librime 1.16.1；生成器 1.17.0 在诊断与 manifest 里都没有证据（UNKNOWN）。
+- 版本：客户端 Vendor/receipt 当前固定为 `rime-vendor-ios-1.16.1-lua.1-octagram.1`（librime 1.16.1 + lua + octagram）；三方案在仓库定义中共用同一 RimeBridge/Vendor 与部署路径，尚无三方案同一会话的运行时版本/插件加载日志。`RimeBuiltin.manifest.json` 的 `generators.rimeDeployer.version = "librime 1.17.0 (Homebrew 1.17.0_2)"` 仅记录离线预生成内置 RimeBuiltin 资源（朙月、笔画等）的生成器版本，不是客户端运行时版本，也不证明雾凇/万象生成器身份；4e 前置门仍未完全关闭。
 
 ## 4. 已定与待定的决定（2026-11-08 历史快照）
 

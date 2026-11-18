@@ -6,7 +6,8 @@ import XCTest
 
 @testable import RimeBridge
 
-/// Planner contract for luna_pinyin_t9. The compiled learning key stays a known L4 failure.
+/// Planner contract for luna_pinyin_t9. The L4 compiled-learning-key gap was closed by the
+/// explicit third patch-chain entry and is pinned by the compile-input AB test below.
 @MainActor
 final class LunaT9CompileInputContractTests: XCTestCase {
     private let schemaID = "luna_pinyin_t9"
@@ -273,6 +274,113 @@ final class LunaT9CompileInputContractTests: XCTestCase {
             XCTAssertEqual(
                 algebra, expected, "letter rules, fuzzy letters, then eight terminal digit derives")
         }
+    }
+
+    /// 4c: real-engine bidirectional check that the learning switch drives `userdb` writes.
+    /// enabled=true: selecting a non-first candidate must persist it in the user dictionary and
+    /// move it up after the session is rebuilt; enabled=false: nothing may change.
+    func testUserdbBidirectionalFollowsLearningSwitch() throws {
+        let builtin = try builtinDirectory()
+        let sequence = "6442662"
+        for enabled in [true, false] {
+            let root = FileManager.default.temporaryDirectory
+                .appendingPathComponent("luna-t9-4c-\(UUID().uuidString)", isDirectory: true)
+            try LunaT9EvidenceRoot.createExclusiveDirectory(root)
+            defer { try? FileManager.default.removeItem(at: root) }
+            let shared = root.appendingPathComponent("shared", isDirectory: true)
+            let user = root.appendingPathComponent("user", isDirectory: true)
+            try FileManager.default.copyItem(at: builtin, to: shared)
+            try FileManager.default.createDirectory(at: user, withIntermediateDirectories: true)
+            let source = try frozenSource()
+            try source.write(
+                to: shared.appendingPathComponent("\(schemaID).schema.yaml"), atomically: false, encoding: .utf8)
+            let defaultURL = shared.appendingPathComponent("default.yaml")
+            let defaults = try String(contentsOf: defaultURL, encoding: .utf8)
+            let listStart = try XCTUnwrap(defaults.range(of: "schema_list:\n"))
+            let listEnd = try XCTUnwrap(defaults.range(of: "\nswitcher:"))
+            try defaults.replacingCharacters(
+                in: listStart.lowerBound..<listEnd.lowerBound,
+                with: "schema_list:\n  - schema: \(schemaID)\n"
+            ).write(to: defaultURL, atomically: false, encoding: .utf8)
+            let target = RimeConfigManager.SchemaSwitchTarget(
+                schemaID: schemaID, userDictionarySchemaID: "luna_pinyin", sourceText: source, wanxiangFamily: false)
+            let plan = RimeConfigManager.planSchemaCustomYamlFiles(
+                targets: [target], simplificationEnabled: enabled,
+                userDictionarySettings: RimeUserDictionarySettings(
+                    lunaPinyinEnabled: enabled, rimeIceEnabled: !enabled),
+                fuzzyPinyinSettings: RimeFuzzyPinyinSettings(enabled: enabled), compileInputProven: true)
+            let overlay = try XCTUnwrap(plan.first, "overlay for enabled=\(enabled)")
+            try overlay.content.write(
+                to: user.appendingPathComponent(overlay.filename), atomically: false, encoding: .utf8)
+
+            let beforeState = userdbState(user)
+            func openSessionAndRank() throws -> (texts: [String], chosen: String) {
+                let manager = RimeSessionManager()
+                XCTAssertTrue(manager.setup(withSharedDataDir: shared.path, userDataDir: user.path))
+                XCTAssertTrue(manager.initializeEngine())
+                defer { manager.finalize() }
+                let api = try XCTUnwrap(rime_get_api())
+                let start = try XCTUnwrap(api.pointee.start_maintenance)
+                let join = try XCTUnwrap(api.pointee.join_maintenance_thread)
+                XCTAssertNotEqual(start(1), 0)
+                join()
+                XCTAssertTrue(manager.createSession())
+                XCTAssertTrue(manager.selectSchema(schemaID))
+                _ = manager.replaceInput(sequence)
+                let candidates = texts(manager.candidates(from: 0, limit: 20))
+                XCTAssertGreaterThanOrEqual(candidates.count, 2, "candidates for \(sequence)")
+                let chosen = candidates[1]
+                // Selecting the non-first candidate may commit outright (single segment) or keep
+                // composition open; both must end in the chosen text being committed.
+                let selected = manager.selectCandidate(atGlobalIndex: 1)
+                let committed = manager.commitComposition()
+                let commitText =
+                    (selected[RimeKeyCommit] as? String ?? "")
+                    + (committed[RimeKeyCommit] as? String ?? "")
+                XCTAssertFalse(commitText.isEmpty, "selection must produce a commit")
+                XCTAssertTrue(commitText.hasPrefix(chosen), "committed \(commitText) must contain \(chosen)")
+                return (candidates, chosen)
+            }
+
+            let first = try openSessionAndRank()
+            let afterState = userdbState(user)
+            let second = try openSessionAndRank()
+
+            if enabled {
+                XCTAssertTrue(
+                    beforeState != afterState || afterState.isEmpty == false,
+                    "learning enabled: userdb must appear or change \(beforeState) -> \(afterState)")
+                XCTAssertTrue(beforeState != afterState, "learning enabled: userdb digest must change")
+                let oldIndex = first.texts.firstIndex(of: first.chosen)
+                let newIndex = second.texts.firstIndex(of: first.chosen)
+                let old = try XCTUnwrap(oldIndex, "chosen candidate vanished: \(first.chosen)")
+                let new = try XCTUnwrap(newIndex, "learned candidate missing after rebuild: \(first.chosen)")
+                XCTAssertLessThan(new, old, "learned candidate must move up: \(first.chosen)")
+            } else {
+                XCTAssertEqual(beforeState, afterState, "learning disabled: userdb must stay identical")
+                XCTAssertEqual(first.texts, second.texts, "learning disabled: ordering must not change")
+            }
+        }
+    }
+
+    private func userdbState(_ user: URL) -> [String: String] {
+        let fm = FileManager.default
+        guard let entries = try? fm.contentsOfDirectory(at: user, includingPropertiesForKeys: nil) else { return [:] }
+        var state: [String: String] = [:]
+        for entry in entries where entry.lastPathComponent.contains("userdb") {
+            if (try? entry.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true {
+                if let files = try? fm.contentsOfDirectory(at: entry, includingPropertiesForKeys: nil) {
+                    for file in files {
+                        if let data = try? Data(contentsOf: file) {
+                            state["\(entry.lastPathComponent)/\(file.lastPathComponent)"] = digest(data)
+                        }
+                    }
+                }
+            } else if let data = try? Data(contentsOf: entry) {
+                state[entry.lastPathComponent] = digest(data)
+            }
+        }
+        return state
     }
 
     func testPatchConsumptionABAttributesL4OnlyWhenBMatches() throws {
