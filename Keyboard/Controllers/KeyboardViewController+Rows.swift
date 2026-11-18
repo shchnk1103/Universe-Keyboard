@@ -264,6 +264,7 @@ extension KeyboardViewController {
                 title: displayTitle(for: key),
                 action: #selector(insertKey(_:))
             )
+            (button as? KeyboardKeyButton)?.isOrdinaryRolloverParticipant = true
             button.accessibilityIdentifier = key
             letterButtons.append(button)
 
@@ -273,7 +274,14 @@ extension KeyboardViewController {
                     action: #selector(handleKeyLongPress(_:))
                 )
                 longPress.minimumPressDuration = 0.3
+                longPress.delegate = ordinaryLongPressDelegate
                 button.addGestureRecognizer(longPress)
+                if let keyButton = button as? KeyboardKeyButton {
+                    keyButton.supportsOrdinaryLongPressVariants = true
+                    keyButton.ordinaryLongPressTarget = self
+                    keyButton.ordinaryLongPressAction = #selector(handleKeyLongPress(_:))
+                    keyButton.ordinaryLongPressDelegate = ordinaryLongPressDelegate
+                }
             }
 
             row.addArrangedSubview(button)
@@ -293,9 +301,11 @@ extension KeyboardViewController {
 
         for key in keys {
             let action = actionOverrides[key] ?? #selector(insertKey(_:))
-            row.addArrangedSubview(
-                makeKeyButton(title: key, action: action)
-            )
+            let button = makeKeyButton(title: key, action: action)
+            if action == #selector(insertKey(_:)) {
+                (button as? KeyboardKeyButton)?.isOrdinaryRolloverParticipant = true
+            }
+            row.addArrangedSubview(button)
         }
 
         preferredRowHeightConstraint(for: row).isActive = true
@@ -425,7 +435,11 @@ extension KeyboardViewController {
                 key == KaomojiChrome.keyTitle
                 ? #selector(insertKaomoji(_:))
                 : #selector(insertKey(_:))
-            row.addArrangedSubview(makeKeyButton(title: key, action: action))
+            let button = makeKeyButton(title: key, action: action)
+            if action == #selector(insertKey(_:)) {
+                (button as? KeyboardKeyButton)?.isOrdinaryRolloverParticipant = true
+            }
+            row.addArrangedSubview(button)
         }
 
         preferredRowHeightConstraint(for: row).isActive = true

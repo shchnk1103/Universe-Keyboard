@@ -71,13 +71,13 @@
 - 记录：外置回执写明对象、删前 SHA、检查结果与实际结果。
 - 受保护对象：B-001 工作区与分支、`preserve/`、`local/`、`backup`、有未提交改动的、进行中任务的、其它工具目录。
 - 远程分支是否在合并时自动删除，取决于 GitHub 仓库设置（由 Human 决定）。
-- 主检出快进：Human 2026-10-28 决定可以快进主检出的 `main`，并固定为流程。PM 执行细则：每次合并并经 PM 核对后，若主检出在 `main`、没有本地改动或未跟踪文件、且 `HEAD` 是 `origin/main` 的祖先，执行 `git merge --ff-only origin/main` 并报告新旧 SHA；任一条件不满足则不动，并告诉 Human。
+- 主检出快进：在该任务合并清理包明确授权下，由合并清理 Executor（Wendy）执行。合并并 fetch 后，若主检出在 `main`、没有本地改动或未跟踪文件、且 `HEAD` 是已 fetch 的 `origin/main` 的祖先，执行 `git merge --ff-only origin/main` 并报告新旧 SHA；任一条件不满足则不动主检出，并告诉 Human。
 
 ## KOS 协作约定
 
 - 派发只按角色与会话约束，不指定哪个 AI（Human 2026-10-26 决定，见 `docs/PORTFOLIO.md` 决定记录）。
 - 每日复盘（Human 2026-10-27 决定）：当天确实做了工作时，在适当的时候总结当天遇到的问题和能纳入经验的举措；PM 用大白话说明当天做了什么。
-- PM 会话独立：Human 2026-10-28 要求 PM 角色的会话尽量保持相对独立。PM 执行做法：不开 PR、不推送分支、不在任务 worktree 中工作；合并后的主检出快进（见「合并后清理（PF-023）」）不属于任务 worktree。
+- PM 会话独立：Human 2026-10-28 要求 PM 角色的会话尽量保持相对独立。PM 执行做法：不开 PR、不推送分支、不在任务 worktree 中工作；合并后的主检出快进由合并清理 Executor 按「合并后清理（PF-023）」执行。
 - 会话归档（Human 2026-10-28 陈述）：会话被归档会断开 Remote Control，取消归档后不会自动恢复。
 
 ### 任务包与派发（Human 2026-10-28 批准）
@@ -89,22 +89,50 @@
 - 冻结要求互相冲突时，执行者停止并请求修订；修订包须点名哪些冻结输入作废，并保留原 BLOCKED 报告。
 - 授权与派发消息保持简短，固定为：任务名、角色、包路径、SHA-256 与“授权，直接执行”；批准项写进任务包的“Human 预批准项”，随 SHA 冻结。
 
-### 设计、预检与复核分级（Human 2026-10-28 批准）
+### 设计、预检与复核分级（Human 2026-10-28 批准；2026-11-14 增补 4 档流程）
 
-- 代码任务先写设计、交独立 Architecture 只读复核，通过后再写实现包。
-- 涉及实现或要原样写入仓库文字的包，派发前必须经独立只读预检。
-- 复核发现分级：仅文字的小问题发布前以小提交修正、只复核改动部分；代码 / 设计问题按整轮处理。
+- 任务按范围与风险进入 4 档流程；本节是 4 档流程的仓库权威源，PM 手册只写操作摘要并链接本节。只有 `feature` 档必走 Nick 设计 + Alex 架构审查；`code-fix` / `doc-rule` / `doc-light` 按各自档位执行，`doc-light` 免预检、免独立复核。
+- `doc-rule` / `code-fix` / `feature` 档涉及实现或要原样写入仓库文字的包，按档位经独立只读预检；`doc-light` 不进入预检站。
+- 有独立复核站的档位按复核发现分级：仅文字的小问题发布前以小提交修正、只复核改动部分；代码 / 设计问题按整轮处理。
+- 本节只分流协作站点，不改变下方「本地 CI 门禁」、[CI 分级](docs/CI_CHANGE_CLASSIFICATION.md)、Swift 格式硬门槛与既有文档 / 测试 / CI 分类要求；Assignment 仍按 `docs/ASSIGNMENT_POLICY.md` 与 Human 2026-11-06 小任务口径处理，4 档不推翻该口径。
 - PM 职责与工作规则见 [PM 手册](docs/kos/pm-playbook.md)。
 
+#### 4 档任务流程与职责路由（Human 2026-11-14 批准）
+
+依据 Human 2026-11-14「按你的建议定」及 `KOS-WORKFLOW-001` 设计稿 v1 / `human-decision-20261114.md`。箭头表示当前站 PASS / DONE 后进入下一站；`*` 为需要 Human 授权的站，脚本只出块，不自动越过。
+
+| 档位 | 适用 | 站点 |
+|---|---|---|
+| `doc-light`（轻文档） | 仅改说明文字、台账；不碰规则、已冻结事实与对外文案 | `PM 写包 → 实现·文档 → PM 终审（链接门 / 机械核对）→ 发布* → 合并*`；免预检、免独立复核 |
+| `doc-rule`（规则文档） | 改手册、`AGENTS.md`、KOS 规则、对外文案、隐私 / 官网 | `PM 写包 → 预检 → 实现·文档 → PM 终审 → 发布* → 合并*` |
+| `code-fix`（小型代码修复） | 单个 PR；不碰数据格式 / 存储 / 同步 / 网络 / 权限 / 隐私承诺 / RIME 方案语义 | `PM 写包 → 预检 → 实现·代码（红测）→ 独立复核 → PM 终审 → 发布* → 真机(Human)* → 合并*` |
+| `feature`（大型功能） | 多 PR、跨模块，或触及上述核心 / 语义边界 | `设计(Nick) → 架构审查(Alex) → PM 写包 → 预检 → 实现·代码 → 独立复核 → PM 终审 → 发布* → 真机(Human)* → 合并*` |
+
+另保留两类单站任务：**只读诊断**（只读 → PM）与**纯 Human 事务**（不过流程）。`code-fix` 档按 Human 决定在下一个新的代码缺陷任务试行，一个任务跑完前不转正；这保留当前试行边界，不推翻 2026-11-06 小任务口径。
+
+**通用站点转移**：PASS / DONE 进下一站；FAIL（预检 / 复核）回到写包者 PM 出 `-rN` 修订包，并原样交回同一位审查者复检；PARTIAL 交 PM 判断是否可继续；STOPPED / BLOCKED 升级 PM；同一站连续 FAIL 达 3 轮升级 Human。每站的 PASS 是该角色独立结论，不由流程脚本替代。
+
+**升降级只升不降**：任一站发现范围超出当前档位时，在报告写「请求升档：<目标档>，理由…」，PM 按更重一档的剩余站点继续；拿不准时选更重一档。降档仅限 PM 或 Human 决定。
+
+**选人路由与必填字段**：派发按职责而非固定 AI 品牌；同职责内优先选「空闲 + 最久未工作」（配合外置 `/Users/doubleshy0n/.kos-work/Universe-Keyboard/tools/kos-board.py pick --role ...`），排除忙碌人员和存在独立性冲突的人员；无人空闲则写「无人空闲」并升级 PM，Human 可改派。执行包首部必须写明**包头档位**与**复核重点**（PM 最关心的 1–3 点）。
+
+**本轮未含范围**：设计稿第 6 节外部新工具 `kos-handoff.sh`、第 10 节的 `docs/kos/workflow-profiles.md` 与 KOS 家目录名册职责列不在本轮写入仓库，也不新增仓库脚本依赖。继续使用现行 `scripts/kos/kos_handoff.py` 与外置 `/Users/doubleshy0n/.kos-work/Universe-Keyboard/tools/kos-board.py pick`；后续工具 / 名册改造须另包授权并经同样预检。
+
 ## 本地 CI 门禁（与 `.github/workflows/swift6-quality.yml` 对齐）
+
+托管 CI 的三个 xcodebuild 测试任务对失败用例自动重试一次，并在任务摘要中列出重试用例。重试通过不代表用例稳定；本地门禁命令不变。
 
 远端工作流按 [`docs/CI_CHANGE_CLASSIFICATION.md`](docs/CI_CHANGE_CLASSIFICATION.md)
 分级：分类、轻量检查和 `final-quality-gate` 始终运行；只有严格的 docs/KOS allowlist
 可跳过全部 heavy jobs（`format-swift`、`test-keyboardcore`、`test-rimebridge`、
 `test-app-keyboard`、`test-rime-sync-keychain`、`build-release`）。未知路径、workflow 或 `scripts/ci/**`
-变更必须走完整门禁。不得按 UI/Rime 等源路径跳过其中一部分。
+变更按下方受控分类矩阵选择门禁；未知或混合路径走完整门禁。
 
 在 **push 后预期合并**、或用户要求「上传并合并 / 修 CI / ship」时，在推送前（至少在 merge 前）于本地执行与 CI 同序的检查。默认模拟器名与 CI 一致：`iPhone 17 Pro`（本机无该机型时可用等价 iOS Simulator，并在报告中写明）。
+
+### 分级与证据复用
+
+开发返修 L1/L2 是本轮定向检查和审查前受影响回归，不是合并门禁。合并前 L3 按分类矩阵运行一次：keyboard_ui_only 跑 format、App+Keyboard、Release；rimebridge_only 另跑 RimeBridge；app_only 跑 format、App+Keyboard、Release。涉及 Sync/Keychain 的 RimeBridge 或 App 加跑签名 Keychain。KeyboardCore、工程、CI、未知或混合路径为 full，跑全部六个重型任务。Quality 复用该次 L3，Publish 在文件字节、比较基线、依赖与环境不变时按 `docs/AI_WORKFLOW.md` 复用 Quality 证据；否则重跑受影响分类。
 
 ### Swift 格式硬门槛（任何含 `.swift` 的 commit / push）
 

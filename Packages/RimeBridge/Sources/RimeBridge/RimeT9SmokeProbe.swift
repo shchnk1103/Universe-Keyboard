@@ -29,7 +29,17 @@ public enum RimeT9SmokeProbe {
         schemaID: String,
         input: String
     ) -> Bool {
-        guard NineKeySchemeRegistry.scheme(schemaID) != nil, !input.isEmpty else { return false }
+        verify(
+            sharedDataDir: sharedDataDir, userDataDir: userDataDir, schemaID: schemaID, input: input,
+            registry: NineKeySchemeRegistry.entries)
+    }
+
+    static func verify(
+        sharedDataDir: String, userDataDir: String, schemaID: String, input: String, registry: [NineKeyScheme]
+    ) -> Bool {
+        guard NineKeySchemeRegistry.isValid(registry), registry.contains(where: { $0.schemaID == schemaID }),
+            !input.isEmpty
+        else { return false }
         let engine = RimeEngineImpl(sharedDataDir: sharedDataDir, userDataDir: userDataDir)
         let selected = engine.bridge.selectSchema(schemaID) && engine.bridge.currentSchemaID() == schemaID
         guard selected else {

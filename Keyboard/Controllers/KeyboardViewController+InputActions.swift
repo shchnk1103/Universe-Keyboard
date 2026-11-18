@@ -4,20 +4,26 @@ import UIKit
 extension KeyboardViewController {
     @objc func insertKey(_ sender: UIButton) {
         guard !isKeyboardHeightAdjusting else { return }
+        let key = resolvedOrdinaryKeyText(for: sender)
+        guard !key.isEmpty else { return }
+        performOrdinaryKeyInsert(key: key, sender: sender)
+    }
+
+    func resolvedOrdinaryKeyText(for sender: UIButton) -> String {
         // T9 letter-group keys show `ABC` etc. but must send the digit identity to RIME.
-        let key: String
         if sender.accessibilityValue == KeyboardViewController.t9DigitAccessibilityValue,
             let digit = sender.accessibilityIdentifier,
             !digit.isEmpty
         {
-            key = digit
-        } else {
-            key =
-                sender.title(for: .normal)
-                ?? sender.accessibilityIdentifier
-                ?? ""
+            return digit
         }
-        guard !key.isEmpty else { return }
+        guard let key = sender.accessibilityIdentifier else { return "" }
+        let layout: CharacterKeyStyle.Layout = controller.state.inputMode == .chinese ? .chinese26 : .english26
+        return characterKeyStyle.inputPayload(key, layout: layout, shifted: isShiftActive)
+    }
+
+    func performOrdinaryKeyInsert(key: String, sender: UIButton) {
+        guard !isKeyboardHeightAdjusting, !key.isEmpty else { return }
         #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
             let wakeAttempt = KeyboardWakeOwnerProbe.shared.beginAttempt(appearanceOrdinal: wakeProbeAppearanceOrdinal)
             recordWakeOwnerProbe(.insertBegin)
@@ -223,5 +229,139 @@ extension KeyboardViewController {
         emitKeyPressFeedbackIfNeeded(for: sender)
         let effects = controller.handle(.insertEmoji(emoji))
         syncUI(with: effects)
+    }
+
+    // MARK: - Ordinary Key Press-Order Rollover
+
+    private func ordinaryKeyPayload(for button: KeyboardKeyButton) -> FrozenOrdinaryKeyPayload? {
+        let effectiveText = resolvedOrdinaryKeyText(for: button)
+        guard !effectiveText.isEmpty else { return nil }
+        let isT9Digit = button.accessibilityValue == KeyboardViewController.t9DigitAccessibilityValue
+        let rawKey = button.accessibilityIdentifier ?? effectiveText
+        return FrozenOrdinaryKeyPayload(
+            rawKey: rawKey,
+            effectiveText: effectiveText,
+            isT9Digit: isT9Digit
+        )
+    }
+
+    func handleOrdinaryRolloverTrackingEvent(
+        _ event: OrdinaryKeyTrackingEvent,
+        for button: KeyboardKeyButton
+    ) {
+        guard !isKeyboardHeightAdjusting, button.isOrdinaryRolloverParticipant else { return }
+        let buttonID = ObjectIdentifier(button)
+        ordinaryRolloverButtonsByID[buttonID] = button
+
+        let effects: [OrdinaryKeyRolloverEffect<ObjectIdentifier>]
+        switch event {
+        case .began(let touchID):
+            let precedingEffects = ordinaryRolloverStateMachine.consumePrecedingTouchesIfNeeded(
+                incomingTouchID: touchID,
+                incomingButtonID: buttonID
+            )
+            applyOrdinaryRolloverEffects(precedingEffects)
+            guard let payload = ordinaryKeyPayload(for: button) else { return }
+            effects = ordinaryRolloverStateMachine.began(
+                touchID: touchID,
+                buttonID: buttonID,
+                payload: payload,
+                forceImmediateConsume: !precedingEffects.isEmpty
+            )
+        case .dragExit(let touchID):
+            effects = ordinaryRolloverStateMachine.dragExit(
+                touchID: touchID,
+                epoch: ordinaryRolloverStateMachine.sessionEpoch
+            )
+        case .endedInside(let touchID):
+            guard let touchID else { return }
+            effects = ordinaryRolloverStateMachine.endedInside(
+                touchID: touchID,
+                epoch: ordinaryRolloverStateMachine.sessionEpoch
+            )
+        case .endedOutside(let touchID):
+            guard let touchID else { return }
+            effects = ordinaryRolloverStateMachine.endedOutside(
+                touchID: touchID,
+                epoch: ordinaryRolloverStateMachine.sessionEpoch
+            )
+        case .cancelled(let touchID):
+            effects = ordinaryRolloverStateMachine.uiButtonCancelTracking(
+                touchID: touchID,
+                buttonID: buttonID,
+                epoch: ordinaryRolloverStateMachine.sessionEpoch
+            )
+        }
+        applyOrdinaryRolloverEffects(effects)
+    }
+
+    private func applyOrdinaryRolloverEffects(
+        _ effects: [OrdinaryKeyRolloverEffect<ObjectIdentifier>]
+    ) {
+        for effect in effects {
+            switch effect {
+            case .dismissVariantAndSuppressLongPress(let buttonID):
+                dismissVariantPopup(animated: false)
+                if let button = ordinaryRolloverButtonsByID[buttonID] {
+                    suppressLongPressRecognizers(on: button)
+                }
+            case .consumeKey(let buttonID, let payload):
+                guard let button = ordinaryRolloverButtonsByID[buttonID] else { continue }
+                performOrdinaryKeyInsert(key: payload.effectiveText, sender: button)
+            case .suppressLongPress(let buttonID):
+                if let button = ordinaryRolloverButtonsByID[buttonID] {
+                    suppressLongPressRecognizers(on: button)
+                }
+            case .clearHighlight(let buttonID):
+                if let button = ordinaryRolloverButtonsByID[buttonID] {
+                    keyTouchUp(button)
+                }
+            }
+        }
+    }
+
+    func canBeginOrdinaryRolloverTouch(for button: KeyboardKeyButton) -> Bool {
+        ordinaryRolloverStateMachine.phase(forButtonID: ObjectIdentifier(button)) == nil
+    }
+
+    func beginOrdinaryRolloverVariantOwnership(for button: KeyboardKeyButton) -> Bool {
+        let buttonID = ObjectIdentifier(button)
+        ordinaryRolloverButtonsByID[buttonID] = button
+        return ordinaryRolloverStateMachine.longPressBegan(buttonID: buttonID)
+    }
+
+    func rollbackOrdinaryRolloverVariantOwnership(for button: KeyboardKeyButton) {
+        ordinaryRolloverStateMachine.rollbackVariantOwnership(buttonID: ObjectIdentifier(button))
+    }
+
+    func endOrdinaryRolloverVariantOwnership(for button: KeyboardKeyButton) -> Bool {
+        ordinaryRolloverStateMachine.variantEndedOrCancelled(buttonID: ObjectIdentifier(button))
+    }
+
+    func isOrdinaryRolloverVariantOwned(_ button: KeyboardKeyButton) -> Bool {
+        ordinaryRolloverStateMachine.phase(forButtonID: ObjectIdentifier(button)) == .variantOwned
+    }
+
+    func invalidateOrdinaryKeyRollover() {
+        let effects = ordinaryRolloverStateMachine.invalidateAll()
+        applyOrdinaryRolloverEffects(effects)
+        for button in ordinaryRolloverButtonsByID.values {
+            suppressLongPressRecognizers(on: button)
+        }
+        ordinaryRolloverButtonsByID.removeAll(keepingCapacity: true)
+    }
+
+    private func suppressLongPressRecognizers(on button: UIButton) {
+        let controls: [UIControl?] = [
+            button,
+            (button as? KeyboardKeyButton)?.ordinaryRolloverGapControl,
+        ]
+        for case let control? in controls {
+            guard let recognizers = control.gestureRecognizers else { continue }
+            for recognizer in recognizers where recognizer is UILongPressGestureRecognizer {
+                recognizer.isEnabled = false
+                recognizer.isEnabled = true
+            }
+        }
     }
 }

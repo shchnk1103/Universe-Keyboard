@@ -58,6 +58,22 @@ Maintain navigation, Source of Truth ownership, ADR/plan/debt lifecycle and meas
 
 ## Output Format
 
+### Light evidence boundary (KOS-EXEC-SPEEDUP-001)
+
+- `doc-light`, `doc-rule` tasks with upstream-reviewed inputs, and release/merge
+  cleanup tasks must not run whole-repo scans that write a large
+  `source-recon.log`, nor spawn dozens of fragmentary process logs.
+- After committing, run `bash scripts/kos/doc_verify.sh [base_ref]` once under
+  `scripts/kos/` for identity, diff hygiene, classification and lightweight
+  checks; keep one summary output.
+- Never embed a self-referencing SHA-256 of the report inside the report body
+  (editing the report would invalidate it). The final chat reply is exactly the
+  standard three-line conclusion plus copyable code block (conclusion,
+  next-role handoff, report path with SHA-256) printed by
+  `python3 scripts/kos/kos_handoff.py final --report <report_path>`; without a
+  report `next_role` it falls back to the PM.
+
+
 `Knowledge Defect` → `Owner Source` → `Changes` → `Validation` → `Remaining Governance Debt` → `Next Audit Trigger`.
 
 ## Handoff Checklist

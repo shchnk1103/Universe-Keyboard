@@ -31,6 +31,7 @@
 - [输入管线/marked text](architecture/input-pipeline-and-marked-text.md) · [Partial Commit](architecture/partial-commit.md)
 - [Swift 6](architecture/swift6-migration.md) · [RIME artifacts](architecture/rime-artifacts.md) · [OpenCC](architecture/opencc-integration.md)
 - [朙月九宫格（luna_pinyin_t9）知识卡](architecture/luna-nine-key-scheme.md) — 补丁链、planner 放行条件、真引擎事实、已定与待定决定
+- [普通键按下序重叠与完整触区知识卡](architecture/ordinary-key-rollover.md) — 按下序消费、键帽与扩展触区同源统一、长按变体与中断复位、一次性大写与同键多指互斥
 - [ADR](architecture/decisions/) · [架构时间线](ARCHITECTURE_TIMELINE.md)
 - [Build 55 公开外部测试例外提案](product-decisions/RELEASE-2026-09-13-build55-limited-external-trial-exception-proposal.md) — **已接受公开测试例外；不等于 Release Gate Pass**
 - [Build 94 公开外部 TestFlight 决定](product-decisions/RELEASE-2026-09-25-BUILD94-public-beta-decision.md) — 已在既有测试组开放；**不等于 Quality/Release Pass 或正式 App Store 发布**
@@ -74,4 +75,4 @@
 - [KOS Kit v0.9.0 prospective adoption — UK-006](product-decisions/KOS-UPGRADE-UK-006-v0.9.0-adoption.md) · [review record](kos/upgrade-records/KOS-UPGRADE-UK-006-v0.9.0-round-2.md) · [adoption Assignment](assignments/kos-upgrade-uk-006-v0.9.0-adoption.md) · [post-merge M-02 receipt](evidence/kos-upgrade-uk-006-v0.9.0-post-merge-state-sync-2026-09-25.md) — PR #170 merged 1c14ab6
 - [UK-005 release-evidence（parent/P1 engineering scope Closed；Product/Release 分离）](assignments/kos-release-evidence-implementation-001.md) · [P1-A](assignments/kos-release-evidence-implementation-001-p1.md) · [Close receipt](evidence/kos-release-evidence-implementation-001-close-2026-09-16.md) · [F-001 remediation](assignments/kos-release-evidence-implementation-001-p1-f001.md) · [P-01/D-01 fact-only handoff](assignments/kos-release-evidence-implementation-001-p01-d01.md) · [P1-A provenance closure](evidence/kos-release-evidence-implementation-001-p1-rep-q-01-hosted-provenance-2026-09-15.md) · [P1-B Option A](product-decisions/KOS-UPGRADE-UK-005-P1-B-scope.md) · [Upgrade Record](kos/upgrade-records/KOS-UPGRADE-UK-005-release-evidence-v1.md)
 - [外部公测发布复盘建议稿](kos/kos-improvement-suggestions-public-beta-release-2026-09-13.md) — **建议稿；未采纳**
-- PM 职责与工作规则见 [PM 手册](kos/pm-playbook.md)，写包条款见 [固定条款库](kos/pm-packet-clauses.md)。
+- PM 职责与工作规则见 [PM 手册](kos/pm-playbook.md)，写包条款见 [固定条款库](kos/pm-packet-clauses.md)，O41 接力候选见 [O41 接力手册](kos/o41-relay-playbook.md) · [`KOS-O41-IMPL-001`](assignments/kos-o41-impl-001.md)。

@@ -5,10 +5,20 @@ import UIKit
 /// outside the visible key. The real button remains responsible for rendering,
 /// accessibility, targets and gestures on its face; this control only forwards
 /// gap taps through that same button's existing target-action wiring.
-private final class KeyboardTouchCellControl: UIControl {
+private final class KeyboardTouchCellControl: UIControl, OrdinaryRolloverTouchControl {
     weak var sourceButton: KeyboardKeyButton?
     private var visualFrameInBounds = CGRect.zero
+    private var activeTouchID: ObjectIdentifier?
     private var didLeaveTouchCell = false
+    private var longPressRecognizer: UILongPressGestureRecognizer?
+
+    var ordinaryRolloverSourceButton: KeyboardKeyButton? {
+        sourceButton
+    }
+
+    var isTrackingOrdinaryRolloverTouch: Bool {
+        activeTouchID != nil
+    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -28,7 +38,35 @@ private final class KeyboardTouchCellControl: UIControl {
 
     func configure(sourceButton: KeyboardKeyButton, visualFrameInCanvas: CGRect) {
         self.sourceButton = sourceButton
+        sourceButton.ordinaryRolloverGapControl = self
         visualFrameInBounds = convert(visualFrameInCanvas, from: superview)
+        configureLongPressIfNeeded(for: sourceButton)
+    }
+
+    func resetTrackingState() {
+        activeTouchID = nil
+        didLeaveTouchCell = false
+    }
+
+    private func configureLongPressIfNeeded(for sourceButton: KeyboardKeyButton) {
+        if sourceButton.isOrdinaryRolloverParticipant,
+            sourceButton.supportsOrdinaryLongPressVariants,
+            let target = sourceButton.ordinaryLongPressTarget,
+            let action = sourceButton.ordinaryLongPressAction
+        {
+            if let existing = longPressRecognizer {
+                existing.delegate = sourceButton.ordinaryLongPressDelegate
+            } else {
+                let recognizer = UILongPressGestureRecognizer(target: target, action: action)
+                recognizer.minimumPressDuration = 0.3
+                recognizer.delegate = sourceButton.ordinaryLongPressDelegate
+                addGestureRecognizer(recognizer)
+                longPressRecognizer = recognizer
+            }
+        } else if let existing = longPressRecognizer {
+            removeGestureRecognizer(existing)
+            longPressRecognizer = nil
+        }
     }
 
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
@@ -47,11 +85,24 @@ private final class KeyboardTouchCellControl: UIControl {
     }
 
     override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
-        guard super.beginTracking(touch, with: event), let sourceButton else {
+        guard activeTouchID == nil, let sourceButton else {
             return false
         }
+        if sourceButton.isOrdinaryRolloverParticipant,
+            !(sourceButton.canBeginOrdinaryRolloverTouch?(sourceButton) ?? true)
+        {
+            return false
+        }
+        guard super.beginTracking(touch, with: event) else {
+            return false
+        }
+        let touchID = ObjectIdentifier(touch)
+        activeTouchID = touchID
         didLeaveTouchCell = false
         sourceButton.sendActions(for: .touchDown)
+        if sourceButton.isOrdinaryRolloverParticipant {
+            sourceButton.onOrdinaryRolloverTrackingEvent?(sourceButton, .began(touchID))
+        }
         #if DEBUG
             sourceButton.trackingEventHandler?(sourceButton, .began)
         #endif
@@ -59,21 +110,38 @@ private final class KeyboardTouchCellControl: UIControl {
     }
 
     override func continueTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
-        guard let sourceButton else { return false }
+        guard let sourceButton, activeTouchID == ObjectIdentifier(touch) else { return false }
         let remainsInside = bounds.contains(touch.location(in: self))
         if !remainsInside, !didLeaveTouchCell {
             didLeaveTouchCell = true
             sourceButton.sendActions(for: .touchDragExit)
+            if sourceButton.isOrdinaryRolloverParticipant {
+                sourceButton.onOrdinaryRolloverTrackingEvent?(
+                    sourceButton, .dragExit(ObjectIdentifier(touch)))
+            }
         }
         return super.continueTracking(touch, with: event)
     }
 
     override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
+        if let touch, let activeTouchID, ObjectIdentifier(touch) != activeTouchID {
+            return
+        }
+        let previousTouchID = activeTouchID
+        activeTouchID = nil
         if let sourceButton {
             let endedInside =
                 !didLeaveTouchCell
                 && touch.map { bounds.contains($0.location(in: self)) } == true
-            sourceButton.sendActions(for: endedInside ? .touchUpInside : .touchUpOutside)
+            if sourceButton.isOrdinaryRolloverParticipant {
+                let touchID = touch.map(ObjectIdentifier.init) ?? previousTouchID
+                sourceButton.onOrdinaryRolloverTrackingEvent?(
+                    sourceButton,
+                    endedInside ? .endedInside(touchID) : .endedOutside(touchID)
+                )
+            } else {
+                sourceButton.sendActions(for: endedInside ? .touchUpInside : .touchUpOutside)
+            }
             #if DEBUG
                 sourceButton.trackingEventHandler?(
                     sourceButton,
@@ -81,12 +149,21 @@ private final class KeyboardTouchCellControl: UIControl {
                 )
             #endif
         }
+        didLeaveTouchCell = false
         super.endTracking(touch, with: event)
     }
 
     override func cancelTracking(with event: UIEvent?) {
+        let previousTouchID = activeTouchID
+        activeTouchID = nil
+        didLeaveTouchCell = false
         if let sourceButton {
-            sourceButton.sendActions(for: .touchCancel)
+            if sourceButton.isOrdinaryRolloverParticipant {
+                sourceButton.onOrdinaryRolloverTrackingEvent?(
+                    sourceButton, .cancelled(previousTouchID))
+            } else {
+                sourceButton.sendActions(for: .touchCancel)
+            }
             #if DEBUG
                 sourceButton.trackingEventHandler?(sourceButton, .cancelled)
             #endif
@@ -147,7 +224,9 @@ private final class KeyboardTouchRoutingCanvas: UIView {
             controls.append(control)
         }
         while controls.count > items.count {
-            controls.removeLast().removeFromSuperview()
+            let removed = controls.removeLast()
+            removed.resetTrackingState()
+            removed.removeFromSuperview()
         }
 
         for (control, item) in zip(controls, items) {
@@ -156,6 +235,12 @@ private final class KeyboardTouchRoutingCanvas: UIView {
                 sourceButton: item.button,
                 visualFrameInCanvas: item.visual
             )
+        }
+    }
+
+    func resetAllControlTrackingState() {
+        for control in controls {
+            control.resetTrackingState()
         }
     }
 
@@ -352,8 +437,10 @@ final class KeyboardInputHitAreaStackView: UIStackView {
         for item in keyTouchSnapshot {
             item.button.expandedTouchOutsets = .zero
             item.button.localTouchBounds = nil
+            item.button.ordinaryRolloverGapControl = nil
         }
         keyTouchSnapshot = []
+        touchRoutingCanvas?.resetAllControlTrackingState()
         touchRoutingCanvas?.removeFromSuperview()
         #if DEBUG
             emitTouchProbeIfNeeded()

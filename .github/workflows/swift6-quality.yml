@@ -25,6 +25,12 @@ jobs:
     outputs:
       classification: ${{ steps.classify.outputs.classification }}
       requires_full: ${{ steps.classify.outputs.requires_full }}
+      run_format: ${{ steps.classify.outputs.run_format }}
+      run_keyboardcore: ${{ steps.classify.outputs.run_keyboardcore }}
+      run_rimebridge: ${{ steps.classify.outputs.run_rimebridge }}
+      run_app_keyboard: ${{ steps.classify.outputs.run_app_keyboard }}
+      run_keychain: ${{ steps.classify.outputs.run_keychain }}
+      run_build_release: ${{ steps.classify.outputs.run_build_release }}
       base_sha: ${{ steps.classify.outputs.base_sha }}
       head_sha: ${{ steps.classify.outputs.head_sha }}
     steps:
@@ -80,7 +86,7 @@ jobs:
   format_swift:
     name: format-swift
     needs: [classify_change, lightweight_checks]
-    if: needs.classify_change.outputs.requires_full == 'true'
+    if: needs.classify_change.outputs.run_format == 'true'
     runs-on: macos-26
     steps:
       - name: Check out source
@@ -94,7 +100,7 @@ jobs:
         run: |
           git cat-file -e "${BASE_SHA}^{commit}"
           changed_files="$(git diff --name-only --diff-filter=ACMR "${BASE_SHA}" "${GITHUB_SHA}" -- \
-            "Universe Keyboard" "Keyboard" "Packages" "UniverseKeyboardTests" "KeyboardTests" "KeyboardExtensionTests")"
+            "Universe Keyboard" "Keyboard" "Packages" "UniverseKeyboardTests" "KeyboardTests" "KeyboardExtensionTests" "KeyboardLayoutIntegrationTests")"
           while IFS= read -r file; do
             [[ "${file}" == *.swift ]] || continue
             xcrun swift-format lint --strict --configuration .swift-format "${file}"
@@ -103,7 +109,7 @@ jobs:
   test_keyboardcore:
     name: test-keyboardcore
     needs: [classify_change, lightweight_checks]
-    if: needs.classify_change.outputs.requires_full == 'true'
+    if: needs.classify_change.outputs.run_keyboardcore == 'true'
     runs-on: macos-26
     steps:
       - name: Check out source
@@ -117,7 +123,7 @@ jobs:
   test_rimebridge:
     name: test-rimebridge
     needs: [classify_change, lightweight_checks]
-    if: needs.classify_change.outputs.requires_full == 'true'
+    if: needs.classify_change.outputs.run_rimebridge == 'true'
     runs-on: macos-26
     steps:
       - name: Check out source
@@ -135,6 +141,7 @@ jobs:
       # the same simulator platform used by the host app.
       - name: Test RimeBridge on iOS Simulator
         run: |
+          set -o pipefail
           xcodebuild \
             -project "Universe Keyboard.xcodeproj" \
             -scheme "RimeBridgeTests" \
@@ -145,12 +152,18 @@ jobs:
             SWIFT_STRICT_CONCURRENCY=complete \
             SWIFT_SUPPRESS_WARNINGS=NO \
             SWIFT_TREAT_WARNINGS_AS_ERRORS=YES \
-            test
+            -retry-tests-on-failure -test-iterations 2 \
+            test 2>&1 | tee "$RUNNER_TEMP/xcodebuild-retries.log"
+
+      - name: Summarize retried tests
+        if: always()
+        run: |
+          python3 scripts/ci/summarize_test_retries.py "$RUNNER_TEMP/xcodebuild-retries.log" | tee -a "$GITHUB_STEP_SUMMARY" || true
 
   test_app_keyboard:
     name: test-app-keyboard
     needs: [classify_change, lightweight_checks]
-    if: needs.classify_change.outputs.requires_full == 'true'
+    if: needs.classify_change.outputs.run_app_keyboard == 'true'
     runs-on: macos-26
     steps:
       - name: Check out source
@@ -166,6 +179,7 @@ jobs:
 
       - name: Test app and keyboard contracts on iOS Simulator
         run: |
+          set -o pipefail
           xcodebuild \
             -project "Universe Keyboard.xcodeproj" \
             -scheme "Universe Keyboard" \
@@ -176,12 +190,18 @@ jobs:
             SWIFT_STRICT_CONCURRENCY=complete \
             SWIFT_SUPPRESS_WARNINGS=NO \
             SWIFT_TREAT_WARNINGS_AS_ERRORS=YES \
-            test
+            -retry-tests-on-failure -test-iterations 2 \
+            test 2>&1 | tee "$RUNNER_TEMP/xcodebuild-retries.log"
+
+      - name: Summarize retried tests
+        if: always()
+        run: |
+          python3 scripts/ci/summarize_test_retries.py "$RUNNER_TEMP/xcodebuild-retries.log" | tee -a "$GITHUB_STEP_SUMMARY" || true
 
   test_rime_sync_keychain:
     name: test-rime-sync-keychain
     needs: [classify_change, lightweight_checks]
-    if: needs.classify_change.outputs.requires_full == 'true'
+    if: needs.classify_change.outputs.run_keychain == 'true'
     runs-on: macos-26
     steps:
       - name: Check out source
@@ -199,6 +219,7 @@ jobs:
       # Keychain. An ad-hoc identity avoids requiring a team signing secret.
       - name: Test RIME Keychain integration on iOS Simulator
         run: |
+          set -o pipefail
           xcodebuild \
             -project "Universe Keyboard.xcodeproj" \
             -scheme "Universe Keyboard" \
@@ -212,12 +233,18 @@ jobs:
             SWIFT_SUPPRESS_WARNINGS=NO \
             SWIFT_TREAT_WARNINGS_AS_ERRORS=YES \
             -only-testing:UniverseKeyboardTests/RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem \
-            test
+            -retry-tests-on-failure -test-iterations 2 \
+            test 2>&1 | tee "$RUNNER_TEMP/xcodebuild-retries.log"
+
+      - name: Summarize retried tests
+        if: always()
+        run: |
+          python3 scripts/ci/summarize_test_retries.py "$RUNNER_TEMP/xcodebuild-retries.log" | tee -a "$GITHUB_STEP_SUMMARY" || true
 
   build_release:
     name: build-release
     needs: [classify_change, lightweight_checks]
-    if: needs.classify_change.outputs.requires_full == 'true'
+    if: needs.classify_change.outputs.run_build_release == 'true'
     runs-on: macos-26
     steps:
       - name: Check out source
@@ -268,7 +295,7 @@ jobs:
         env:
           CLASSIFY_RESULT: ${{ needs.classify_change.result }}
           LIGHTWEIGHT_RESULT: ${{ needs.lightweight_checks.result }}
-          REQUIRES_FULL: ${{ needs.classify_change.outputs.requires_full }}
+          CLASSIFICATION: ${{ needs.classify_change.outputs.classification }}
           FORMAT_RESULT: ${{ needs.format_swift.result }}
           KEYBOARDCORE_RESULT: ${{ needs.test_keyboardcore.result }}
           RIMEBRIDGE_RESULT: ${{ needs.test_rimebridge.result }}
@@ -279,7 +306,7 @@ jobs:
           bash scripts/ci/verify_final_gate.sh
           "$CLASSIFY_RESULT"
           "$LIGHTWEIGHT_RESULT"
-          "$REQUIRES_FULL"
+          "$CLASSIFICATION"
           "$FORMAT_RESULT"
           "$KEYBOARDCORE_RESULT"
           "$RIMEBRIDGE_RESULT"

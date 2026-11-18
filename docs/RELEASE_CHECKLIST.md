@@ -1,5 +1,7 @@
 # Release Checklist
 
+> 端到端发版流程见 [RELEASE_SOP.md](RELEASE_SOP.md)；本文件是逐项验收字典，不复制流程步骤。
+
 ## Scope
 
 This is the minimum release gate for the main App and Keyboard Extension. It does not certify App Store approval or replace release-specific risk review.

@@ -113,6 +113,10 @@ extension KeyboardViewController {
         #endif
 
         sender.backgroundColor = highlightedKeyColor
+        if keyStyle(for: sender) == .character {
+            sender.titleLabel?.font = .systemFont(
+                ofSize: characterKeyTitlePointSize, weight: characterKeyStyle.bold ? .bold : .semibold)
+        }
         sender.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
         emitKeyPressFeedback()
     }
@@ -136,6 +140,10 @@ extension KeyboardViewController {
                 return
             }
             sender.backgroundColor = self.backgroundForStyle(style)
+            if style == .character {
+                sender.titleLabel?.font = .systemFont(
+                    ofSize: self.characterKeyTitlePointSize, weight: self.characterKeyStyle.bold ? .bold : .regular)
+            }
         }
 
         guard !UIAccessibility.isReduceMotionEnabled else {
@@ -155,6 +163,7 @@ extension KeyboardViewController {
     }
 
     func resetAllKeyPressVisualState() {
+        invalidateOrdinaryKeyRollover()
         keyTouchDownTimes.removeAll()
         keyPressFeedbackEmittedButtonIDs.removeAll()
         restoreButtons(in: view)

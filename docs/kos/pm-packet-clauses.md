@@ -3,7 +3,26 @@
 这是 PM 写任务包时复制粘贴用的条款库，不是执行指令；`<…>` 处的占位符只是模板，实际派发前按该任务的授权填写。`scripts/kos/freeze.py` 会检查哪些条款必须出现，并做条款间一致性检查，见 [scripts/kos/README.md](../../scripts/kos/README.md)。PM 的其它工作规则见 [PM 手册](pm-playbook.md)。
 
 ## 角色第一行（必有）
-**你的角色：<KOS 角色>（<一句话说明>）。你不是 PM：只做本包；不派发任务、不讨论本包以外的事。所有结果写进报告；最终消息只写一句话：状态 + 报告路径 + SHA-256。** 报告开头写明实际运行时身份。
+**你的角色：<KOS 角色>（<一句话说明>）。你不是 PM：只做本包；不派发任务、不讨论本包以外的事。所有结果写进报告；最终消息严格三行：**
+```text
+结论：<状态> + <一句实际结果>
+下一位交付：<角色（阶段）> + <动作与入口路径 / CURRENT.json 指向>
+报告：<报告绝对路径> + <实测 SHA-256>
+```
+**报告开头写明实际运行时身份。**（过渡期兼容：`scripts/kos/freeze.py` 仍兼容历史“最终消息只写一句话”识别文本，新包一律使用上述三行格式。）
+
+## 包头档位与复核重点（执行包必有）
+适用场景：所有 4 档执行包，以及单站只读诊断包。依据 Human 2026-11-14「按你的建议定」与 KOS-WORKFLOW-001 设计稿 v1 第 7 节。
+
+- 包首部必须写 `档位：doc-light | doc-rule | code-fix | feature | 单站只读诊断`，并写 `复核重点：` 后跟 PM 最关心的 1–3 点；P17 与 AGENTS.md 4 档表为选档依据。
+- 升档只升不降：执行中发现范围超档，报告写「请求升档：<目标档>，理由…」；降档仅 PM 或 Human 决定。
+- 选人按职责选「空闲 + 最久未工作」，排除忙碌与独立性冲突；不改变已有隔离规则或 Human 授权闸门。
+- 本轮不新增 `kos-handoff.sh` 仓库脚本依赖；继续使用现行 `scripts/kos/kos_handoff.py` 与外置 `kos-board.py pick --role ...`。
+
+## 唯一入口与条件接力（O41）
+- **唯一入口**：员工启动时只读取 `<任务目录>/CURRENT.json`（`schema: 2`），禁止遍历 `instructions/` 猜最新文件名；核对 `role`、`state == "READY_TO_DISPATCH"` 及 `package_sha256` / `params_sha256` / `authorization_sha256`，任一不符或遇到过期入口立即 `STOPPED` 并报 `Jack（PM）`。
+- **`CLAIMED` 与恢复**：`state == "CLAIMED"` 时禁止新会话直接接管；仅当确认原会话已停止并由 `Jack（PM）` 显式执行 `--recover` 作废旧 `claim_id` 后，新会话方可领取新 `claim_id` 按 `O51` 续做。
+- **报告末节 `## 下一站接力（O41）`**：所有报告末尾必须包含本节。`DONE`/`PASS` 且包内已预置下一站授权与条件模板时，写明 `next_role`、`next_step`、下一站 `params_path` / `block_path` 及 SHA-256 并标注 `块已生成未派发（待 Human 通知）`；`PARTIAL`/`BLOCKED`/`STOPPED`/`FAIL` 或无下一站授权时，`next_role` 固定为 `Jack（PM）`，不得越过 PM 生成下一站入口。操作细则见 [O41 接力手册](o41-relay-playbook.md)。
 
 ## 修订包开头（修订时）
 本包取代未派发的 `<旧包路径>`（SHA-256 `{{sha:<旧包绝对路径>}}`），原文采纳 `<报告路径>`（SHA-256 `{{sha:<报告绝对路径>}}`）的 <第几条>；其余条款不变。
@@ -69,7 +88,9 @@ KeyboardCore：`swift test --package-path Packages/KeyboardCore --scratch-path <
 ## PR 收尾（发布与合并时）
 适用场景：发布与合并。
 
-Executor 或 Human 用 `scripts/kos/pr_flow.py` 的 `open` 与 `land`。PM 会话不运行 `open`，也不运行带 `--merge` 的 `land`。合并只在 Human 下令或亲自运行时加 `--merge`。条件不满足（主检出不在 main、工作区有已跟踪或未跟踪改动、或 HEAD 不是 origin/main 的祖先）时，不执行 merge，记录 `ff=skipped:<原因>`，汇总写明需告诉 Human，退出 0。`git fetch` 或 `git merge --ff-only` 命令失败时，记录 `ff=failed:<原因>`，汇总写明需告诉 Human，退出 1。
+Executor 或 Human 可使用 `scripts/kos/pr_flow.py` 的 `open` 与 `land`；PM 会话不运行 `open`，也不运行带 `--merge` 的 `land`。合并只在 Human 明确授权或亲自运行时加 `--merge`。区分 PR 合并与主检出快进：快进条件不满足时记录 `ff=skipped:<原因>` 并通知 Human，不能因此称 PR 未合并；fetch 或 ff 命令失败记 `ff=failed:<原因>` 并停止后续删除。
+
+`pr_flow land --merge` 已与分类矩阵和清理顺序对齐：它按 `classify_changes.py` 的证据逐类核对 `classify-change`、`lightweight-checks`、`final-quality-gate`、`GitGuardian Security Checks` 及该类必需重型项，只放行最终成功与矩阵未选中的最终 `skipped`；`skipping`、进行中、失败、取消、缺失、未知与 `not watching` 均不放行。合并后先 `fetch origin main` 验证合并提交与任务提交可达，再清理 worktree（`Packages/RimeBridge/Vendor` 必须是符号链接才移除，真实目录或其他改动则停止），条件满足才在 `main` 上 `ff-only`，随后 `branch -d` 删除本地分支（严禁 `-D`），最后查询远端分支（不存在记 `already_deleted_on_origin`，存在且授权才删除）。清理未成功时以 `cleanup-stopped` 停止，不继续快进或删除。工具的自动判断仍是启发式：CI 状态与分类证据由外部输入提供，PM 核对时须以记录的 `payload`、日志与真实远端状态为准，不得仅凭退出码宣称完成。
 
 
 ## 身份核对（提交后）
@@ -81,6 +102,38 @@ Executor 或 Human 用 `scripts/kos/pr_flow.py` 的 `open` 与 `land`。PM 会�
 适用场景：包授权提交、推送或判断能否合并。
 
 `git commit` 必须带 `-m`，避免打开编辑器。推送使用 `git -c push.followTags=false`。远端返回 5xx 时，先确认远端状态，再原样重试一次。合并能力为 UNKNOWN 时，记录该事实并停止，不继续合并。
+
+## 分类与检查结果（publish / land）
+适用场景：判断候选能否发布或合并。记录 PR、候选 HEAD、比较基线、分类、检查来源和时间，逐项列成功、允许跳过和未取得证据。分类与检查必须对应候选 HEAD；未知、缺失或矛盾的分类停止，按 [CI 分级](../CI_CHANGE_CLASSIFICATION.md) 核对，不自行映射。第三方检查名称或适用性无法确认时停止并交 PM。
+
+共同必需成功：`classify-change`、`lightweight-checks`、`final-quality-gate`、`GitGuardian Security Checks`。F=`format-swift`，K=`test-keyboardcore`，R=`test-rimebridge`，A=`test-app-keyboard`，S=`test-rime-sync-keychain`，B=`build-release`。
+
+| 分类 | 必须成功的重型项 | 允许最终 skipped 的重型项 |
+|---|---|---|
+| `docs_only` | 无 | F K R A S B |
+| `kos_tools_only` | 无 | F K R A S B |
+| `keyboard_ui_only` | F A B | K R S |
+| `rimebridge_only` | F R A B | K S |
+| `rimebridge_sync_only` | F R A S B | K |
+| `app_only` | F A B | K R S |
+| `app_sync_only` | F A S B | K R |
+| `full` | F K R A S B | 无 |
+
+只有表中未选重型项的最终结论 `skipped` 可接受；`skipping`、排队、进行中、失败、取消、缺失和未知均不放行。合并前 dry-run 的 `not watching` 不是 CI 成功。
+
+## Wendy 合并与清理顺序（land）
+适用场景：Human 明确授权本次合并及指定对象、提交和清理范围；发布、push、merge 不互相授权。按序执行，记录每一步及未清理对象：
+
+1. 合并后记录 PR 实际结果与合并 SHA，`git fetch origin main`，确认该任务提交可从最新 `origin/main` 到达；失败或状态不明立即停止清理。
+2. 检查指定 worktree 状态与保护名单。若有获准清理的未跟踪 `Packages/RimeBridge/Vendor`，先 `test -L` 确认是符号链接，只移除此链接；真实目录、其他改动或无法确认时停止。`git worktree remove` 不加 `--force`，失败即停止。
+3. 主检出必须在 `main`、无本地改动或未跟踪文件，且 HEAD 是已 fetch 的 `origin/main` 祖先，才执行 `git merge --ff-only origin/main` 并记录新旧 SHA；条件不满足不动主检出，记 `ff=skipped:<原因>` 并通知 Human；命令失败记 `ff=failed`，停止后续删除。包须明确授权主检出工作区、index/HEAD 与必要 Git 元数据。
+4. 确认分支不受保护且提交可从最新默认分支到达，使用 `git branch -d <branch>`，严禁 `-D`；失败停止并保留分支。快进跳过后若安全删除失败，交 PM 处理。
+5. 精确查询远端分支；确认不存在记 `already_deleted_on_origin`；存在时仅在可达性及删除授权成立后用 `git push origin --delete <branch>`。查询失败或状态不明不得删除。回执记录合并 SHA、远端查询及每步结果。
+
+## 发布差异、manifest 与工具预检（publish）
+- O21 发布差异预检：核对候选文件、比较基线、依赖、环境、命令、覆盖 target、结果及采集时间；只有符合 [AI Workflow 证据复用](../AI_WORKFLOW.md#验证与证据复用) 的 Quality 证据才能复用，否则重跑适用门禁。缺失证据和 dry-run 均不是通过。
+- 从冻结文件清单生成 manifest，安全处理包含空格的路径，不把路径列表作为 shell 代码执行；对冻结 manifest 实际运行 `shasum -a 256 -c`，退出码须为 0 且零 WARNING，缺文件、格式错误或 warning 即停止，然后冻结 manifest 的 SHA-256。
+- 发包前核对相关工具实际 `--help` 与冻结命令、参数一致；不支持或工具不可用则修包，不声称已验证。非相关只读包不强制执行这些发布条款。
 
 ## Human 原话与 CI 重跑（PM 当场记录时）
 适用场景：对话里出现 Human 原话，或 CI 重跑 / CI 失败。
