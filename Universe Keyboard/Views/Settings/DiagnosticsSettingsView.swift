@@ -83,7 +83,7 @@ struct DiagnosticsSettingsView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     Text(loggingEnabled ? "正在记录" : "记录已暂停")
                         .font(.body.weight(.semibold))
-                    Text("仅保存在本机 App Group，不会上传。用于排查卡顿与引擎边界。")
+                    Text("仅保存在本机 App Group，不会上传。记录事件时间和操作结果的类别与计数，不含输入文字、拼音、候选或剪贴板。用于排查卡顿与引擎边界。")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
