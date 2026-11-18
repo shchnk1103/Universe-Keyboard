@@ -77,6 +77,12 @@ A9-G 在不含 `LUNA_T9_*`、`TEST_RUNNER_LUNA_T9_*`、`WANXIANG_T9*`、`TEST_RU
 | restoreOverlay | B:89、B:93；C:146、C:153 | 37411、37394 passed |
 | restoreResources | B:89、B:124；C:146、C:153 | 37411、37394 passed |
 
+## 7.1 PR1 合并回执（2026-11-18）
+
+- PR #304 已合并，合并提交 `2277d0d3a7fac6d471f312623d91708a1943d441`，已并入 `main`（本次文档基线 `bdf1544db317840691ed8b2b8f9f84e5f2676cd2`）。本节只更新合并状态，不改变第 7 节 A9 历史快照的取证边界。
+- `NineKeySchemeRegistry.entries` 仍只登记 `t9` 与 `wanxiang_t9i`，生产运行时未接线 `luna_pinyin_t9`；第 8 节 4c/4e 与第 9 节七项 PR2 前置门原文不变。
+- PR2（生产接线、第 9 节七门与 4c/4e）待立项；本档案不表示 PR2 已验证或可合并。
+
 ## 8. 本次处置新增的 PR2 前置门与 PR1 排除项
 
 来源是 PM-LOG/pr1-open-items-disposition-20261115.md，不是下节设计裁决：Human 对三项原话“这三项可以由你来决定”，以下原文为 Human 委托 PM 的决定：

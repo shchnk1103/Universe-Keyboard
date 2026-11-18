@@ -66,7 +66,7 @@
 | PF-062 | 上线后 | PF-060 后续：各类按键按按下时刻排序 | Backlog | Human 2026-11-05 决定上线前不做，最小缓解设计复核 M1–M4 是后续设计输入 | [Assignment](assignments/launch-stability-001.md)；本文件决定记录 2026-11-05；外置 PORTFOLIO-SYNC-NEXT/deferred-after-launch-20261105.md 第 2 项 | 2026-11-05 |
 | PF-063 | 上线后 | PF-060 后续：M5（同一缝隙两指、同一按键的缝隙与键帽同时按下） | Backlog | 两种场景行为未定义，需要单触点所有权或逐触点状态 | [Assignment](assignments/launch-stability-001.md)；本文件决定记录 2026-11-05；外置 PORTFOLIO-SYNC-NEXT/deferred-after-launch-20261105.md 第 1b 项 | 2026-11-05 |
 | PF-064 | 上线后 | PF-057 残余风险待评估 | Backlog | librime/leveldb 挂起时是否持锁、clear/snapshot 不门控、自动备份无后台时间保护及九键启用前写文件未受保护，见外置清单；风险接受情况待 Human 判断 | [Assignment](assignments/launch-stability-001.md)；外置 PORTFOLIO-SYNC-NEXT/deferred-after-launch-20261105.md 第 3 项及追加项；外置 RELEASE-20261105/reports/preflight-integrate.md | 2026-11-05 |
-| PF-065 | 上线前（Human 2026-11-09 确认） | 朙月九宫格 | In progress | 方案 A 分段实施中（PR1 在本地分支，未推送）；PR2 合并前置门已定，PR1 收口时写入 docs/architecture/luna-nine-key-scheme.md；雾凇与万象的完整支持同样上线前 | 本文件决定记录 2026-11-05、2026-11-09；[朙月知识卡](architecture/luna-nine-key-scheme.md) | 2026-11-09 |
+| PF-065 | 上线前（Human 2026-11-09 确认） | 朙月九宫格 | In progress（PR1 merged；PR2 pending） | 方案 A 分段实施中：PR1（[#304](https://github.com/shchnk1103/Universe-Keyboard/pull/304) / `2277d0d3a7fac6d471f312623d91708a1943d441`）已并入 `main`；PR2（生产接线与第 9 节七门 + 4c/4e）待立项，前置门仍未闭环；雾凇与万象的完整支持同样上线前 | 本文件决定记录 2026-11-05、2026-11-09、2026-11-18；[朙月知识卡](architecture/luna-nine-key-scheme.md) | 2026-11-18 |
 | PF-066 | 上线后（PM 暂存） | 完整 t9_processor 同等能力 | Backlog | Human 2026-11-05 决定自己实现太复杂就放到上线后 | 本文件决定记录 2026-11-05；外置 RIME-T9-ENGINE-001 报告 | 2026-11-05 |
 | PF-067 | 上线后 | 万象 `.gram` 语言模型可选下载 | UNKNOWN | 在 13 个实验序列的前五候选中未观察到影响，长句未测；可选下载为 PM 建议，方案待决定。 | 外置 RIME-T9-ENGINE-001/notes/gram-model-experience.md | 2026-11-05 |
 | PF-068 | 上线后 | 本地门禁与托管 CI 的 Xcode 版本对齐 | Backlog | PR #270 本机 Xcode 27.2 门禁通过而 CI（runner 默认 Xcode 26.6）编译失败，修复后通过；做法未决定（PM 备选：CI 固定版本或本机装同版） | [PR #270](https://github.com/shchnk1103/Universe-Keyboard/pull/270)；外置 PM-LOG/ci/pr270.md | 2026-11-05 |
@@ -173,6 +173,7 @@
 | 2026-11-07 | `docs/ACTIVE_WORK.md` 冻结为历史快照，入口文档改指本目录；PF-035 据此关闭（原话“按推荐改”） | AGENTS.md「工作入口」；本文件“已完成”表 |
 | 2026-11-09 | 朙月九宫格（PF-065）改为上线前必须做，覆盖 2026-11-05 “放到上线后”的决定（原话“朙月九宫格是上线前必须做的，因为我们还在等审批，但是这段时间又不能什么都不做”） | 本文件 PF-065；[朙月知识卡](architecture/luna-nine-key-scheme.md)；外置 LUNA-T9-PR1-COVERAGE/inputs/human-decision-luna-prelaunch-20261109.md |
 | 2026-11-09 | 朙月九宫格 PR1：marker、binding、扩展 session、可见状态与恢复的生产证据记为 PR2 合并前置门，不作为 PR1 合并前必须取得的项；早期 spike 的 18 项旧矩阵条件跳过不计入 PR1 回归门（以 AGENTS.md 的本地完整门为准）；8 条模糊音已知观察先用雾凇、万象对照测量再归类（原话“按推荐”） | 本文件 PF-065；[朙月知识卡](architecture/luna-nine-key-scheme.md)；外置 LUNA-T9-PR1-COVERAGE/inputs/human-decisions-q1-q3-20261109.md |
+| 2026-11-18 | 朙月九宫格 PR1（#304 / `2277d0d3a7fac6d471f312623d91708a1943d441`）已并入 `main`，本地分支未推送的旧表述作废；PR2 生产接线、第 9 节七门与 4c/4e 仍待立项取证，不表示 PR2 已验证或可合并 | 本文件 PF-065；[朙月知识卡](architecture/luna-nine-key-scheme.md) 第 7.1 节；[PR #304](https://github.com/shchnk1103/Universe-Keyboard/pull/304)；外置 LUNA-T9-CLOSEOUT-001/reports/audit-luna-t9-closeout-r1.md |
 
 ## 已完成
 
