@@ -1,3 +1,7 @@
+## 2026-11-18 — Release 1.0.1 提交 App Store 审核（Build 205）
+
+- `MARKETING_VERSION` 升至 `1.0.1`（封版提交 `ca8dc79`，Tag `appstore/1.0.1-20261118`，Xcode Cloud Build `205`），包含字符键外观与大小写、普通键连击一致性、九宫格选拼音视口与预选删除、剪贴板隐私页说明对齐等改动；版本档案见 [docs/releases/v1.0.1.md](docs/releases/v1.0.1.md)。
+
 ## 2026-11-17 — KEY-LABEL-READABILITY-001 字符键外观与分键盘大小写显示
 
 - 键盘布局设置新增字符键外观：字号 13–22pt（默认 17pt）与独立加粗（默认关闭），只作用于普通字符键，不影响功能键与候选栏。
