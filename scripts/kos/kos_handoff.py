@@ -298,6 +298,12 @@ def main(argv=None):
     p_fin.add_argument("--report", required=True)
     p_fin.add_argument("--status", default=None)
     p_fin.add_argument("--skip-lint", action="store_true")
+    p_fin.add_argument("--summary", default="")
+    p_fin.add_argument("--next-role", default=None)
+    p_fin.add_argument("--next-detail", default=None)
+    p_fin.add_argument("--entry-path")
+    p_fin.add_argument("--task-title")
+    p_fin.add_argument("--block-path")
 
     args = parser.parse_args(argv)
     if args.cmd == "render":
@@ -308,7 +314,11 @@ def main(argv=None):
 
 
 def cmd_final(args):
-    """Print one line `<STATUS> <realpath> <sha256>` without touching the report."""
+    """Lint the report, then print the standard three-line handoff + block.
+
+    The report file is never modified: lint, SHA-256 and parsing all read it
+    in place, and `render_three_line` only consumes the digest.
+    """
     import hashlib
     report = Path(args.report).resolve()
     if not report.is_file():
@@ -323,13 +333,32 @@ def cmd_final(args):
             print("STOPPED: report lint failed", file=sys.stderr)
             print(linted.stdout, file=sys.stderr)
             return 1
-    status = args.status
-    if not status:
-        first = report.read_text(encoding="utf-8").splitlines()[0].strip()
-        status = first.split()[0] if first.split() else ""
-    digest = hashlib.sha256(report.read_bytes()).hexdigest()
-    print(f"{status} {report} {digest}")
+    status, report_next_role, report_next_step = _parse_report_fields(report)
+    status = (args.status or status).strip()
+    next_role = (args.next_role or report_next_role or f"{PM_HANDOFF_ROLE}（PM）").strip()
+    next_detail = (args.next_detail if args.next_detail is not None else (report_next_step or "")).strip()
+    print(render_three_line(status, args.summary, next_role, next_detail, str(report),
+                            entry_path=args.entry_path, task_title=args.task_title,
+                            block_path=args.block_path))
     return 0
+
+
+def _parse_report_fields(report: Path) -> tuple[str, str, str]:
+    """Return (status, next_role, next_step) read from the report without writing."""
+    text = report.read_text(encoding="utf-8")
+    lines = text.splitlines()
+    status = lines[0].strip().split()[0] if lines and lines[0].strip() else ""
+    next_role = ""
+    next_step = ""
+    if RELAY_SECTION_HEADING in text:
+        sec = text.split(RELAY_SECTION_HEADING, 1)[1]
+        m = re.search(r"next_role[^\n:：]*[:：]\s*`?([^\n`]+)", sec)
+        if m:
+            next_role = m.group(1).strip()
+        m = re.search(r"next_step[^\n:：]*[:：]\s*`?([^\n`]+)", sec)
+        if m:
+            next_step = m.group(1).strip()
+    return status, next_role, next_step
 
 
 if __name__ == "__main__":
