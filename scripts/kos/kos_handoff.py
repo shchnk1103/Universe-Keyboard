@@ -6,6 +6,7 @@ import os
 import re
 import subprocess
 import sys
+from pathlib import Path
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, SCRIPT_DIR)
@@ -293,10 +294,42 @@ def main(argv=None):
     p_han.add_argument("--auth-path", default=None)
     p_han.add_argument("--reason", default="")
 
+    p_fin = sub.add_parser("final")
+    p_fin.add_argument("--report", required=True)
+    p_fin.add_argument("--status", default=None)
+    p_fin.add_argument("--skip-lint", action="store_true")
+
     args = parser.parse_args(argv)
     if args.cmd == "render":
         return cmd_render(args)
+    if args.cmd == "final":
+        return cmd_final(args)
     return cmd_handoff(args)
+
+
+def cmd_final(args):
+    """Print one line `<STATUS> <realpath> <sha256>` without touching the report."""
+    import hashlib
+    report = Path(args.report).resolve()
+    if not report.is_file():
+        print(f"report not found: {report}", file=sys.stderr)
+        return 2
+    if not args.skip_lint:
+        lint = Path(__file__).resolve().parent / "kos-report-lint.py"
+        linted = subprocess.run(
+            [sys.executable, "-I", str(lint), str(report)],
+            text=True, capture_output=True, check=False)
+        if linted.returncode != 0:
+            print("STOPPED: report lint failed", file=sys.stderr)
+            print(linted.stdout, file=sys.stderr)
+            return 1
+    status = args.status
+    if not status:
+        first = report.read_text(encoding="utf-8").splitlines()[0].strip()
+        status = first.split()[0] if first.split() else ""
+    digest = hashlib.sha256(report.read_bytes()).hexdigest()
+    print(f"{status} {report} {digest}")
+    return 0
 
 
 if __name__ == "__main__":
