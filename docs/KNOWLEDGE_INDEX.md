@@ -29,7 +29,7 @@
 - [共享容器/RIME 生命周期](architecture/shared-container-and-rime-lifecycle.md)
 - [输入管线/marked text](architecture/input-pipeline-and-marked-text.md) · [Partial Commit](architecture/partial-commit.md)
 - [Swift 6](architecture/swift6-migration.md) · [RIME artifacts](architecture/rime-artifacts.md) · [OpenCC](architecture/opencc-integration.md)
-- [朙月九宫格（luna_pinyin_t9）知识卡](architecture/luna-nine-key-scheme.md) — 补丁链、planner 放行条件、真引擎事实、已定与待定决定
+- [朙月九宫格（luna_pinyin_t9）知识卡](architecture/luna-nine-key-scheme.md) — 补丁链、planner 放行条件、真引擎事实、已定与待定决定；PR1（#304 / `2277d0d3`）已并入 `main`，PR2 前置门待立项取证
 - [普通键按下序重叠与完整触区知识卡](architecture/ordinary-key-rollover.md) — 按下序消费、键帽与扩展触区同源统一、长按变体与中断复位、一次性大写与同键多指互斥
 - [ADR](architecture/decisions/) · [架构时间线](ARCHITECTURE_TIMELINE.md)
 - [Build 55 公开外部测试例外提案](product-decisions/RELEASE-2026-09-13-build55-limited-external-trial-exception-proposal.md) — **已接受公开测试例外；不等于 Release Gate Pass**
