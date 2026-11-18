@@ -36,7 +36,7 @@ struct PrivacyDataView: View {
                 )
                 privacyRow(
                     "诊断日志",
-                    detail: "由你控制并留在设备上；只有你主动复制时才会离开 App。",
+                    detail: "默认关闭，由你手动开启。只在本机记录时间和操作结果的类别与计数，不含输入文字、拼音或候选；只有你主动复制时才会离开 App。",
                     icon: "waveform.path.ecg.text"
                 )
             } header: {

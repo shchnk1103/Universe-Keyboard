@@ -27,7 +27,7 @@ Persisted statistics contain only bounded counts, daily totals, source-category 
 - RIME may maintain its local user dictionary inside the shared App Group container.
 - Explicit typo-correction selections may maintain bounded local correction-learning metadata used only to improve on-device correction ranking.
 - Post-commit continuation uses at most 32 recently committed `Character` values only inside the current Keyboard Extension process, excluding text inserted by the keyboard Paste control. A paste clears that in-memory context instead of appending to it. It reads no surrounding host text and never persists, logs, synchronizes or uploads that context; only its enabled preference is stored.
-- Diagnostic logging is controlled in the main App and remains local unless the user explicitly copies and shares it.
+- Diagnostic logging is off by default and starts only when the user turns it on in the main App. While it is on, the keyboard and the main App record content-free diagnostic events in the shared App Group container on this device. An event contains a time, random identifiers that reset with each process, and categories or counts describing what an operation did (for example, the candidate-count range produced by a nine-key pinyin step, or which delete path ran). Events do not contain typed or committed text, pinyin, candidates, clipboard content, host text or resource paths. Diagnostics are not uploaded. They leave the device only when the user copies or shares them, and the user chooses who receives them.
 - The product must not log committed text, surrounding host text or Typing Intelligence event payloads.
 
 The main App provides controls for supported reset and deletion operations.
