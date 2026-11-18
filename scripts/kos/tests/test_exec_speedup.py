@@ -64,18 +64,17 @@ class FinalCommandTests(unittest.TestCase):
             before = report.read_bytes()
             result = run_handoff("final", "--report", str(report))
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-            expected_sha = hashlib.sha256(report.read_bytes()).hexdigest()
-            self.assertEqual(
-                result.stdout.strip(),
-                f"DONE {report.resolve()} {expected_sha}")
-            self.assertEqual(len(result.stdout.strip().split()), 3)
+            expected_sha = hashlib.sha256(before).hexdigest()
+            self.assertIn(f"结论：DONE", result.stdout)
+            self.assertIn(f"报告：{report.resolve()}（SHA-256 {expected_sha}）", result.stdout)
+            self.assertIn("```text", result.stdout)
             self.assertEqual(report.read_bytes(), before)
 
     def test_final_reads_status_from_report_first_line(self):
         with tempfile.TemporaryDirectory() as tmp:
             _, _, report, _ = init_repo(Path(tmp), "PARTIAL")
             result = run_handoff("final", "--report", str(report))
-            self.assertTrue(result.stdout.strip().startswith("PARTIAL "), result.stdout)
+            self.assertIn("结论：PARTIAL", result.stdout)
 
     def test_final_lint_failure_returns_nonzero(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -123,3 +122,51 @@ class DocVerifyTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class FinalThreeLineTests(unittest.TestCase):
+    def _report_with_relay(self, tmp: Path, status: str, next_role: str | None, next_step: str | None = None):
+        repo, _, report, _ = init_repo(tmp, status)
+        relay = "## 下一站接力（O41）\n"
+        if next_role:
+            relay += f"next_role: {next_role}\n"
+        if next_step:
+            relay += f"next_step: {next_step}\n"
+        report.write_text(report.read_text(encoding="utf-8") + relay, encoding="utf-8")
+        return report
+
+    def test_final_renders_three_line_with_report_next_role(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            report = self._report_with_relay(Path(tmp), "DONE", "Quinn（Quality）", "请复核")
+            before = report.read_bytes()
+            result = run_handoff("final", "--report", str(report))
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn("结论：DONE", result.stdout)
+            self.assertIn("下一位交付：Quinn（Quality）", result.stdout)
+            self.assertIn("报告：", result.stdout)
+            self.assertIn(hashlib.sha256(before).hexdigest(), result.stdout)
+            self.assertIn("```text", result.stdout)
+            self.assertIn(f"交回：Quinn（Quality）", result.stdout)
+            self.assertEqual(report.read_bytes(), before)
+
+    def test_final_defaults_to_pm_when_no_next_role(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            # No relay section at all: lint allows it and final falls back to PM.
+            _, _, report, _ = init_repo(Path(tmp), "PARTIAL")
+            result = run_handoff("final", "--report", str(report))
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn("下一位交付：Jack（PM）", result.stdout)
+
+    def test_final_explicit_next_role_overrides_report(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            report = self._report_with_relay(Path(tmp), "DONE", "Quinn（Quality）")
+            result = run_handoff("final", "--report", str(report), "--next-role", "Alex（Architecture）")
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn("下一位交付：Alex（Architecture）", result.stdout)
+
+    def test_final_respects_status_flag(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            report = self._report_with_relay(Path(tmp), "DONE", "Quinn（Quality）")
+            result = run_handoff("final", "--report", str(report), "--status", "PARTIAL")
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn("结论：PARTIAL", result.stdout)
