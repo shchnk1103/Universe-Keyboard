@@ -1,4 +1,5 @@
 import XCTest
+
 @testable import KeyboardCore
 
 final class T9DiagnosticJournalS1Tests: XCTestCase {
@@ -39,7 +40,11 @@ final class T9DiagnosticJournalS1Tests: XCTestCase {
     func testCanaryStaysOutOfTypedExport() {
         let admission = T9DiagnosticAdmission()
         let canary = "CANARY'ninh"
-        XCTAssertTrue(admission.tryEnqueue(T9CycleDiagnostic(terminal: .succeeded, candidateBand: .nonzero, preeditShape: T9CycleDiagnostic.Shape.shape(of: canary), usable: .yes, exact: .yes)))
+        XCTAssertTrue(
+            admission.tryEnqueue(
+                T9CycleDiagnostic(
+                    terminal: .succeeded, candidateBand: .nonzero,
+                    preeditShape: T9CycleDiagnostic.Shape.shape(of: canary), usable: .yes, exact: .yes)))
         let text = admission.exportedText()
         XCTAssertFalse(text.contains(canary))
         XCTAssertTrue(text.contains("segmented"))
