@@ -100,6 +100,12 @@ Main App 回收某个 open 段也必须先以**非阻塞**方式取得 shared `s
 - 关闭/普通/高保真三档的 Simulator 与声明条件真机性能、内存和生命周期证据。
 - Privacy field allowlist review，确认 legacy YAML/任意字符串日志不进入新协议。
 
+## T9-PINYIN-CYCLE-009 S1
+
+新事件只用 v7。`t9.cycle_result` 的候选档、预编辑形态和既有判据取回滚前的请求结果。准入链禁止调用 Runtime/Ingress `record`、`Mutex.withLock` 和 Debug ticket Set。资源审计未启用。含新事件的构建待 Human 隐私分类，此前不得进 TestFlight。
+
+S1c：准入队列由后台 pump（串行 utility 队列）取批并写入 journal，按键路径只入队。`utcTimestamp` 为后台组装时间。关闭开关推进只增的关闭代数；键盘在察觉后不再开始新的写入，写盘前再核对一次。关闭开关后，键盘在察觉到关闭之后不再开始新的写入；察觉之前已经开始写盘的那一批会写完。不承诺具体毫秒数。
+
 ## Related Documents
 
 - ADR 0003 — Shared Container Ownership

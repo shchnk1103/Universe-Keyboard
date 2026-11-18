@@ -44,6 +44,14 @@ public final class KeyboardController {
     func testingForceProvisionalAhead() {
         _ = provisionalCompositionMirror.appendT9DigitAccept(revision: 1, epoch: 1)
     }
+    #if DEBUG
+        /// 009 S1c (J10): DEBUG-only seed that puts the L1 mirror ahead so the real
+        /// `rejectIfResponsiveProvisionalAhead` return point in the cycle path is exercised.
+        /// Does not alter the guard itself.
+        func seedProvisionalAheadForTesting() {
+            _ = provisionalCompositionMirror.appendT9DigitAccept(revision: 1, epoch: 1)
+        }
+    #endif
     public var isTypoCorrectionPartialCommitEnabled = false
     public var typoCorrectionExperimentalEdits: TypoCorrectionExperimentalEdits = []
     public var typoCorrectionLearningSnapshot: TypoCorrectionLearningSnapshot = .empty
@@ -56,6 +64,11 @@ public final class KeyboardController {
     /// Derived from the same `RimeRuntimeSelection` used for schema + layout.
     /// Digit shape alone never enables T9 policies.
     public var usesT9InputSemantics = false
+    /// Follows the default-off `logging_enabled` gate. Tests set it in memory.
+    public var t9DiagnosticCaptureEnabled = false
+    var t9CycleObservationActive = false
+    var t9DeleteObservationActive = false
+    var t9RollbackTerminal: T9CycleDiagnostic.Terminal = .rollbackFailed
     /// Stage 2 prototype gate. Production callers must opt in explicitly.
     public var isReversibleT9AutoAnchorEnabled = false
     /// S2.1 cumulative-extension gate. Keeping this separate preserves the

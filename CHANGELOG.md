@@ -23,6 +23,18 @@
 - 将「隐私与数据」页的剪贴板说明改为：开关和完全访问都开启时，键盘出现时最多读取一次剪贴板文字，用于预览和粘贴。
 - 说明内容仅留在内存中；任一条件未开启时不读取，也不显示粘贴条。
 
+## 2026-11-15 — T9-PINYIN-CYCLE-009 S1c 后台写入与关闭代数
+
+- 新增后台 pump 取批写入 v7 事件；按键路径只入队。`utcTimestamp` 为后台组装时间。
+- 新增只增的关闭代数；关闭开关后，键盘在察觉到关闭之后不再开始新的写入；察觉之前已经开始写盘的那一批会写完。不承诺具体毫秒数。
+- 资源审计未启用；含新事件的构建待 Human 隐私分类，此前不得进 TestFlight。
+
+## 2026-11-14 — T9-PINYIN-CYCLE-009 S1 诊断日志 v7
+
+- 本构建的 App 与 Extension 新记录使用诊断协议 v7；v3–v6 旧记录仍按原版本读取。未知版本拒绝并标为不完整，不回退成空日志。
+- 新增只读事件 `t9.cycle_result` 与 `t9.delete_path`。循环快照取回滚前的请求结果，不取恢复后的输出；准入链不等待，也不调用既有 `record`。
+- 资源审计未启用。隐私分类未定，含这些事件的构建在 Human 决定前不得进 TestFlight。采集仍走默认关闭的 `logging_enabled`。
+
 ## 2026-11-14 — T9-PINYIN-CYCLE-009 诊断日志 Assignment
 
 - 登记 T9-PINYIN-CYCLE-009 Assignment（`Assignment Pending`）与 PORTFOLIO PF-070：用不含输入内容的 typed 日志事件 `t9.cycle_result`、`t9.delete_path` 取得真机证据，以定位 m/n 无法被选中等问题；隐私分类未定。

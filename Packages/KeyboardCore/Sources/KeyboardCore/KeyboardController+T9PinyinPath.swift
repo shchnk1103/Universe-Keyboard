@@ -99,12 +99,21 @@ extension KeyboardController {
     }
 
     func handleCycleT9PinyinPath() -> KeyboardEffect {
-        guard !isCompositionInputRecoveryPending else { return [] }
+        t9CycleObservationActive = t9DiagnosticCaptureEnabled
+        defer { t9CycleObservationActive = false }
+        guard !isCompositionInputRecoveryPending else {
+            noteT9Cycle(.notStarted, result: nil)
+            return []
+        }
         if rejectIfResponsiveProvisionalAhead() {
+            noteT9Cycle(.notStarted, result: nil)
             return []
         }
         let paths = state.t9PinyinPathState.compactPaths
-        guard !paths.isEmpty else { return [] }
+        guard !paths.isEmpty else {
+            noteT9Cycle(.notStarted, result: nil)
+            return []
+        }
 
         let nextIndex: Int
         if let selected = state.t9PinyinPathState.selectedPath,
@@ -177,25 +186,33 @@ extension KeyboardController {
                 rawInput: previousRaw
             )
         else {
+            noteT9Cycle(.notStarted, result: nil)
             return []
         }
 
         // Stale revision / unauthorized path — fail closed.
         let generation = state.t9PinyinPathState.rawInputGeneration
         let provenance = state.t9PinyinPathState.provenanceRevision
-        guard generation > 0, provenance > 0 else { return [] }
+        guard generation > 0, provenance > 0 else {
+            noteT9Cycle(.notStarted, result: nil)
+            return []
+        }
         // Authorization is issuance-only. Compatibility alone must never accept a
         // path Core did not publish for this revision.
         let authorized =
             state.t9PinyinPathState.issuedPathIDs.contains(path.id)
             || state.t9PinyinPathState.issuedReplacementKeys.contains(path.replacementRawInput)
-        guard authorized else { return [] }
+        guard authorized else {
+            noteT9Cycle(.notStarted, result: nil)
+            return []
+        }
         // Stale-revision fail-closed: UI must re-read the current snapshot after
         // every composition revision. Zero means "legacy unstamped test path" and
         // is accepted only when the replacement key is currently issued.
         if path.compositionRevision != 0,
             path.compositionRevision != state.compositionRevision
         {
+            noteT9Cycle(.notStarted, result: nil)
             return []
         }
 
@@ -225,6 +242,7 @@ extension KeyboardController {
                     withRawInput: compatibilityRaw
                 )
             else {
+                noteT9Cycle(.notStarted, result: nil)
                 return []
             }
         }
@@ -338,10 +356,11 @@ extension KeyboardController {
                 tentativePreview: !autoAdvance
             )
 
+            noteT9Cycle(.succeeded, result: result, exact: .yes)
             return .compositionChanged.union(.t9PinyinPathsChanged)
         }
 
-        return rollbackT9PinyinRefinement(
+        let effects = rollbackT9PinyinRefinement(
             engine: engine,
             previous: previous,
             previousRaw: previousRaw,
@@ -349,6 +368,8 @@ extension KeyboardController {
             previousComposition: previousComposition,
             previousPathState: previousPathState
         )
+        noteT9Cycle(t9RollbackTerminal, result: result, exact: .no)
+        return effects
     }
 
     func clearT9PinyinPathState() {
@@ -1393,10 +1414,12 @@ extension KeyboardController {
                 state.t9PinyinPathState.selectedDigitUndo = nil
                 applySelectedT9PinyinPathDisplay(undo.selected, tentativePreview: true)
                 clearTypoCorrectionSuggestions()
+                noteT9Delete(branch: .selectedDigitUndo, restored: .yes)
                 return .compositionChanged.union(.t9PinyinPathsChanged)
             }
             // The engine has already consumed Delete; never issue a second one.
             applyRimeOutputPreservingPartialCommit(augmentRimeOutputIfNeeded(output))
+            noteT9Delete(branch: .selectedDigitUndo, restored: .no)
             return .compositionChanged.union(.t9PinyinPathsChanged)
         }
         guard usesT9InputSemantics,
@@ -1420,6 +1443,7 @@ extension KeyboardController {
                     note: "branch=identityDelete emptied=true"
                 )
             #endif
+            noteT9Delete(branch: .identityDelete, restored: .notApplicable)
             return .compositionChanged.union(clearT9PinyinPathStateReturningEffect())
         }
 
@@ -1447,6 +1471,7 @@ extension KeyboardController {
         // Unconfirmed short peel (≤3): letter-aware resync so `qin`/`qi` candidates
         // are not bare-digit 手/瘦; remap prior m/n/o selection when still issued.
         // Unconfirmed long peel (>3): pure-digit ledger only (ghost-typo recovery).
+        var restoredSelection = false
         if !identity.confirmedSyllables.isEmpty {
             _ = resyncRimeCompositionFromT9Identity()
         } else if identity.sourceDigits.count <= 3 {
@@ -1469,6 +1494,7 @@ extension KeyboardController {
                     state.lastRimeOutput = refined
                     state.currentComposition = label
                     applySelectedT9PinyinPathDisplay(remapped)
+                    restoredSelection = true
                 }
             }
         } else if let engine = rimeEngine {
@@ -1488,6 +1514,7 @@ extension KeyboardController {
                 note: "branch=identityDelete success=true confCount=\(identity.confirmedSyllables.count)"
             )
         #endif
+        noteT9Delete(branch: .identityDelete, restored: restoredSelection ? .yes : .no)
         return .compositionChanged.union(.t9PinyinPathsChanged)
     }
 
@@ -2328,6 +2355,7 @@ extension KeyboardController {
             } else {
                 state.t9PinyinPathState.selectedPath = nil
             }
+            t9RollbackTerminal = .rolledBack
             return .compositionChanged.union(.t9PinyinPathsChanged)
         }
 
@@ -2340,6 +2368,7 @@ extension KeyboardController {
             state.partialCommit = nil
             clearTypoCorrectionSuggestions()
             let pathEffect = clearT9PinyinPathStateReturningEffect()
+            t9RollbackTerminal = .rollbackFailed
             return .compositionChanged.union(pathEffect)
         }
 
@@ -2352,6 +2381,33 @@ extension KeyboardController {
         clearTypoCorrectionSuggestions()
         let pathEffect = clearT9PinyinPathStateReturningEffect()
         _ = previous
+        t9RollbackTerminal = .rollbackFailed
         return .compositionChanged.union(pathEffect)
+    }
+
+    func noteT9Cycle(
+        _ terminal: T9CycleDiagnostic.Terminal,
+        result: RimeOutput?,
+        exact: T9CycleDiagnostic.Flag = .notApplicable
+    ) {
+        guard t9CycleObservationActive else { return }
+        let snapshot: T9CycleDiagnostic
+        if terminal == .notStarted || result == nil {
+            snapshot = T9CycleDiagnostic(terminal: terminal)
+        } else {
+            let output = result!
+            let band: T9CycleDiagnostic.Band = output.candidates.isEmpty ? .zero : .nonzero
+            let shape = T9CycleDiagnostic.Shape.shape(of: output.composition?.preeditText)
+            let usable: T9CycleDiagnostic.Flag = isUsableT9SessionOutput(output) ? .yes : .no
+            snapshot = T9CycleDiagnostic(
+                terminal: terminal, candidateBand: band, preeditShape: shape, usable: usable, exact: exact
+            )
+        }
+        _ = T9DiagnosticAdmission.shared.tryEnqueue(snapshot)
+    }
+
+    func noteT9Delete(branch: T9DeleteDiagnostic.Branch, restored: T9DeleteDiagnostic.Restored) {
+        guard t9DeleteObservationActive else { return }
+        _ = T9DiagnosticAdmission.shared.tryEnqueue(T9DeleteDiagnostic(branch: branch, restored: restored))
     }
 }

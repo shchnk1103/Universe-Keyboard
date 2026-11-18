@@ -108,7 +108,7 @@ struct Universe_KeyboardApp: App {
                 rootURL: rootURL,
                 origin: .mainApp,
                 isMainAppWriter: true,
-                writerVersion: .v6
+                writerVersion: .pairedBuild
             )
             guard (try? await writer.prepareRootIfOwnedByMainApp()) != nil else {
                 return

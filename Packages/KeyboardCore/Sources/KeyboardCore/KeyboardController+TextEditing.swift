@@ -186,6 +186,8 @@ extension KeyboardController {
     }
 
     func handleDeleteBackward() -> KeyboardEffect {
+        t9DeleteObservationActive = t9DiagnosticCaptureEnabled
+        defer { t9DeleteObservationActive = false }
         // Rem-3: Delete while L1-only (no L2 yet) — drop one provisional slot.
         if isResponsiveProvisionalAhead,
             isResponsiveRimePipelineEnabled,
@@ -213,8 +215,10 @@ extension KeyboardController {
                 applyRimeOutputPreservingPartialCommit(
                     augmentRimeOutputIfNeeded(result)
                 )
+                noteT9Delete(branch: .other, restored: .notApplicable)
                 return .compositionChanged.union(.t9PinyinPathsChanged)
             case .failed:
+                noteT9Delete(branch: .other, restored: .notApplicable)
                 return .compositionChanged.union(.t9PinyinPathsChanged)
             }
         }
@@ -229,6 +233,7 @@ extension KeyboardController {
                 return effects
             }
             if let effects = handleVisibleT9PinyinDeleteIfNeeded(using: engine) {
+                noteT9Delete(branch: .other, restored: .notApplicable)
                 return effects
             }
             let previousT9PathState = state.t9PinyinPathState
@@ -240,6 +245,7 @@ extension KeyboardController {
             let restoredFocus = restoreFocusedT9SegmentAfterDeletion(
                 previous: previousT9PathState
             )
+            noteT9Delete(branch: .engineDelete, restored: restoredFocus ? .yes : .no)
             // Confirmed Path identity: force RIME back onto Core (anti fan-fan).
             // restoreFocused already resyncs when confirmed non-empty.
             if restoredFocus,

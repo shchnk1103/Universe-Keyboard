@@ -266,6 +266,9 @@ public struct DiagnosticsJournalPage: Sendable {
 public enum DiagnosticsJournalWriterVersion: Int, Sendable {
     case v5 = 5
     case v6 = 6
+    case v7 = 7
+    /// App and Extension of this build persist new records as v7.
+    public static let pairedBuild: Self = .v7
 }
 
 /// 每个 process 独占自己的 JSONL 段。这个 actor 只在 utility writer 调用；
@@ -279,6 +282,8 @@ public actor DiagnosticsJournalWriter {
     private let writerVersion: DiagnosticsJournalWriterVersion
     private var processInstanceID: UUID
     private let isMainAppWriter: Bool
+    /// 009 S1c: re-checked immediately before the first `handle.write`; false = close seen.
+    private let beginWriteGate: (@Sendable () -> Bool)?
 
     private var activeHour = ""
     private var activePart = 0
@@ -311,8 +316,10 @@ public actor DiagnosticsJournalWriter {
         origin: DiagnosticEvent.Origin,
         processInstanceID: UUID = UUID(),
         isMainAppWriter: Bool,
-        writerVersion: DiagnosticsJournalWriterVersion = .v5
+        writerVersion: DiagnosticsJournalWriterVersion = .v5,
+        beginWriteGate: (@Sendable () -> Bool)? = nil
     ) {
+        self.beginWriteGate = beginWriteGate
         self.rootURL = rootURL
         self.origin = origin
         self.writerVersion = writerVersion
@@ -374,7 +381,7 @@ public actor DiagnosticsJournalWriter {
         }
         let hour = Self.hourStamp(for: normalizedEvents[0].utcTimestamp)
         let encodedLines = try normalizedEvents.map(Self.encodeLine)
-        if writerVersion == .v6 {
+        if writerVersion == .v6 || writerVersion == .v7 {
             for line in encodedLines {
                 guard line.last == 0x0A,
                     DiagnosticEventWireValidator.rejectionReason(for: Data(line.dropLast())) == nil
@@ -440,6 +447,10 @@ public actor DiagnosticsJournalWriter {
                     let handle = try FileHandle(forWritingTo: segmentURL)
                     defer { try? handle.close() }
                     try handle.seekToEnd()
+                    // 009 S1c 反例 A：许可点之后、第一次 write 之前再看一次关闭代数。
+                    if let beginWriteGate, !beginWriteGate() {
+                        throw DiagnosticsJournalError.lifecycleCancelled
+                    }
                     for line in encodedLines {
                         try handle.write(contentsOf: line)
                     }
