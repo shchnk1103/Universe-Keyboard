@@ -7,6 +7,44 @@ import XCTest
 
 @MainActor
 final class RimeSettingsStoreTests: XCTestCase {
+    func testNineKeySchemeTitleForLunaPinyin() {
+        let scheme = NineKeyScheme(
+            schemaID: "luna_pinyin_t9", familyID: "luna_pinyin",
+            markerKey: "uk.luna.marker", compatibilityVersion: "1")
+        XCTAssertEqual(RimeSettingsStore.nineKeySchemeTitle(scheme), "朙月九键")
+    }
+
+    func testLunaPinyinFilesExistAndFamilyInstalledFailClosed() throws {
+        let dir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("uk-luna-app-probe-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let manager = SchemaManager(
+            settings: StoreSharedSettingsStore(),
+            sourceSelector: StoreSourceSelector(),
+            archiveDownloader: StoreArchiveDownloader(),
+            archiveInstaller: StoreArchiveInstaller(runtimeRoot: dir),
+            deploymentService: StoreDeploymentService(succeeded: true)
+        )
+        let scheme = NineKeyScheme(
+            schemaID: "luna_pinyin_t9", familyID: "luna_pinyin",
+            markerKey: "uk.luna.marker", compatibilityVersion: "1")
+        XCTAssertFalse(manager.lunaPinyinFilesExist(in: dir))
+        XCTAssertFalse(manager.nineKeyFamilyInstalled(scheme, sharedDataURL: dir))
+        try Data("# schema".utf8).write(
+            to: dir.appendingPathComponent("luna_pinyin.schema.yaml"))
+        XCTAssertTrue(manager.lunaPinyinFilesExist(in: dir))
+        XCTAssertTrue(manager.nineKeyFamilyInstalled(scheme, sharedDataURL: dir))
+        XCTAssertTrue(manager.lunaPinyinFilesExist())
+    }
+
+    func testRegistryStillHasNoLunaPinyinT9AndChoicesUnchanged() {
+        XCTAssertFalse(NineKeySchemeRegistry.entries.contains { $0.schemaID == "luna_pinyin_t9" })
+        let store = makeIsolatedStore()
+        let ids = store.nineKeySchemeChoices.map(\.id)
+        XCTAssertFalse(ids.contains("luna_pinyin_t9"))
+    }
+
     func testDefaultAppGroupSettingsStoreDeinitDoesNotAbort() async {
         var settings: AppGroupSharedSettingsStore? = AppGroupSharedSettingsStore(
             appGroupID: SchemaManager.appGroupID
