@@ -160,10 +160,10 @@ def digest(db):
 
 
 def render(db):
-    L = ['# PRIORITY（由 tools/kos-q.py 生成，不要手改；历史在 QUEUE-LOG.md，旧表在 PRIORITY-legacy-20261114.md）',
+    L = ['# PRIORITY（由 scripts/kos/kos-q.py 生成，不要手改；历史在 QUEUE-LOG.md，旧表在 PRIORITY-legacy-20261114.md）',
          f'生成：{time.strftime("%Y-%m-%d %H:%M")}　聚焦规则：{db.get("focus") or "未设"}', '',
          '排序键：Human 明令 ＞ 上线关键路径 ＞ 阻塞别的任务 ＞ 上线前必修 ＞ KOS 工具流程 ＞ 上线后。',
-         '用法：`python3 -I tools/kos-q.py digest`（回合开头）；改动只经 add/set/rank/inbox/done。', '']
+         '用法：`python3 -I -B scripts/kos/kos-q.py digest`（回合开头）；改动只经 add/set/rank/inbox/done。', '']
     names = {'queue': '可动队列（按序）', 'human': '等 Human / 等外部', 'parked': '搁置 / 上线后', 'inbox': '收件箱（未排）'}
     for z in ZONES[:4]:
         rows = queue(db) if z == 'queue' else [r for r in db['items'] if r['zone'] == z]

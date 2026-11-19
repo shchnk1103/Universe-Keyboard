@@ -3,6 +3,7 @@ import json
 import os
 import subprocess
 import tempfile
+import time
 import unittest
 from pathlib import Path
 
@@ -101,12 +102,53 @@ class QueueTests(unittest.TestCase):
     def test_inbox_same_second_is_unique(self):
         env = {"KOS_QUEUE_ROOT": str(self.root)}
         ids = []
-        for _ in range(3):
-            result = self.q("inbox", "captured", env=env)
-            self.assertEqual(result.returncode, 0, result.stderr)
-            ids.append(result.stdout.strip())
-        self.assertEqual(len(set(ids)), 3)
-        self.assertTrue(any(item.endswith("-2") or item.endswith("-3") for item in ids))
+        base = ""
+        for _ in range(6):
+            stamp = time.strftime("%m%d%H%M%S")
+            base = "INBOX-" + stamp
+            preset = {
+                "focus": "",
+                "items": [{
+                    "id": base,
+                    "zone": "inbox",
+                    "rank": 0,
+                    "title": "preset",
+                    "state": "",
+                    "next": "",
+                    "owner": "",
+                    "hold": "",
+                    "touched": "2000-01-01",
+                }],
+            }
+            (self.root / "QUEUE.json").write_text(json.dumps(preset), encoding="utf-8")
+            if time.strftime("%m%d%H%M%S") != stamp:
+                continue
+            ids = []
+            crossed = False
+            for suffix in ("-2", "-3"):
+                if time.strftime("%m%d%H%M%S") != stamp:
+                    crossed = True
+                    break
+                result = self.q("inbox", "captured", env=env)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                got = result.stdout.strip()
+                if time.strftime("%m%d%H%M%S") != stamp or got != base + suffix:
+                    crossed = True
+                    break
+                ids.append(got)
+            if not crossed:
+                break
+        else:
+            self.fail("could not keep one clock second across the preset and both suffixes")
+        self.assertEqual(ids, [base + "-2", base + "-3"])
+
+    def test_render_banner_points_at_repo_script(self):
+        result = self.q("render", env={"KOS_QUEUE_ROOT": str(self.root)})
+        self.assertEqual(result.returncode, 0, result.stderr)
+        text = (self.root / "PRIORITY.md").read_text(encoding="utf-8")
+        self.assertIn("scripts/kos/kos-q.py", text)
+        self.assertIn("`python3 -I -B scripts/kos/kos-q.py digest`", text)
+        self.assertNotIn("tools/kos-q.py", text)
 
 
 class BlockGateTests(unittest.TestCase):
@@ -164,6 +206,22 @@ class BlockGateTests(unittest.TestCase):
         self.assertFalse(params.exists() or block.exists())
         result, params, block = self.block("--queue-id", "LATER", "--queue-why", "explicit", env={"KOS_QUEUE_ROOT": str(root)})
         self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertTrue(params.is_file() and block.is_file())
+
+    def test_task_id_gate_skips_files_until_reason_or_gate_off(self):
+        root = self.dir / "queue"
+        root.mkdir()
+        self.seed(root)
+        queued = {"KOS_QUEUE_ROOT": str(root)}
+        blocked, params, block = self.block("--task-id", "LATER", env={**queued, "KOS_Q_GATE": "1"})
+        self.assertEqual(blocked.returncode, 3)
+        self.assertFalse(params.exists() or block.exists())
+        allowed, params, block = self.block(
+            "--task-id", "LATER", "--queue-why", "explicit", env={**queued, "KOS_Q_GATE": "1"})
+        self.assertEqual(allowed.returncode, 0, allowed.stderr)
+        self.assertTrue(params.is_file() and block.is_file())
+        ungated, params, block = self.block("--task-id", "LATER", env=queued)
+        self.assertEqual(ungated.returncode, 0, ungated.stderr)
         self.assertTrue(params.is_file() and block.is_file())
 
 
