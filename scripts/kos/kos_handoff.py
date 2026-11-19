@@ -2,6 +2,7 @@
 """Unified O41 three-line renderer and conditional relay orchestrator."""
 import argparse
 import hashlib
+import json
 import os
 import re
 import subprocess
@@ -263,6 +264,117 @@ def cmd_handoff(args):
     return 0
 
 
+
+
+DEFAULT_IDENTITY = "Cowork 3P <cowork-3p@localhost>"
+FORBIDDEN_WORDS = ("git push", "pr_flow.py", "--merge")
+
+
+def _relay_check_identity(repo: str, expect: str) -> tuple[bool, str]:
+    result = subprocess.run(
+        [sys.executable, "-I", os.path.join(SCRIPT_DIR, "check_identity.py"),
+         "--repo", repo, "--expect", expect, "--rev", "HEAD"],
+        capture_output=True, text=True)
+    ok = result.returncode == 0 and "IDENTITY_MATCH" in result.stdout
+    return ok, (result.stdout + result.stderr).strip()
+
+
+def _relay_pick(board: str, board_args_json: str, excludes: list[str]) -> tuple[str | None, str]:
+    argv = [board] + json.loads(board_args_json) + ["pick", "--role", "quality", "--exclude", ",".join(excludes)]
+    result = subprocess.run(argv, capture_output=True, text=True)
+    first = (result.stdout or "").strip().splitlines()
+    line = first[0].strip() if first else ""
+    if result.returncode != 0 or not line.startswith("PICK ["):
+        return None, line or (result.stderr or "pick failed").strip()
+    match = re.match(r"PICK \[[^\]]+\]:\s*(\S+?)（", line)
+    if not match:
+        return None, "unparsed pick line: " + line
+    name = match.group(1)
+    if any(name == e.strip() for e in excludes):
+        return None, f"picked {name} is excluded"
+    return name, line
+
+
+def cmd_relay_quality(args):
+    pm = "Jack（PM）"
+
+    def back(reason: str):
+        print(f"STOPPED: relay-quality falls back to {pm}: {reason}", file=sys.stderr)
+        return 1
+
+    packet_text = Path(args.packet).read_text(encoding="utf-8")
+    m_grade = re.search(r"包头档位[**：:\s]*`([^`]+)`", packet_text)
+    if not m_grade or m_grade.group(1).strip() != "code-fix":
+        return back("packet grade is not code-fix")
+    m_focus = re.search(r"\*\*复核重点\*\*[：:]\s*\n((?:\s{2,}.*\n?)+)", packet_text)
+    if not m_focus:
+        return back("packet has no 复核重点 section")
+    review_focus = m_focus.group(1).rstrip("\n")
+
+    report = Path(args.report)
+    report_text = report.read_text(encoding="utf-8")
+    status = report_text.splitlines()[0].strip().split()[0] if report_text.strip() else ""
+    if status != "DONE":
+        return back(f"report status is {status}, not DONE")
+    lint = subprocess.run([sys.executable, "-I", "-B", os.path.join(SCRIPT_DIR, "kos-report-lint.py"), str(report)],
+                          capture_output=True, text=True)
+    if lint.returncode != 0:
+        return back("report lint failed: " + (lint.stdout + lint.stderr).strip().splitlines()[-1] if (lint.stdout + lint.stderr).strip() else "report lint failed")
+
+    git = lambda *a: subprocess.run(["git", "-C", args.repo, *a], capture_output=True, text=True)
+    count = git("rev-list", "--count", f"{args.base}..HEAD")
+    if count.returncode != 0 or count.stdout.strip() != "1":
+        return back(f"expected exactly 1 commit since {args.base}, got {count.stdout.strip() or count.stderr.strip()}")
+    commit = git("rev-parse", "HEAD").stdout.strip()
+
+    ok, detail = _relay_check_identity(args.repo, args.expect_identity)
+    if not ok:
+        return back("identity mismatch: " + detail)
+
+    files_out = git("diff", "--name-only", args.base, "HEAD")
+    files = [line for line in files_out.stdout.splitlines() if line.strip()]
+    for path in files:
+        m = re.search(re.escape(path) + r"[^\n]{0,40}?SHA-256[ ：:]*`?([0-9a-f]{64})", report_text)
+        if not m:
+            continue
+        digest = hashlib.sha256(open(os.path.join(args.repo, path), "rb").read()).hexdigest()
+        if digest != m.group(1):
+            return back(f"log SHA mismatch for {path}")
+
+    for word in FORBIDDEN_WORDS:
+        if word in report_text:
+            return back(f"report mentions forbidden word: {word}")
+
+    excludes = ["Cole", "Pete", "Ivy"]
+    picked, pick_line = _relay_pick(args.board, args.board_args, excludes)
+    if not picked:
+        return back("pick did not yield a valid quality specialist: " + pick_line)
+
+    log_shas = re.findall(r"(/[^\s`（）()]+?\.(?:log|txt|md|json|patch))[^\n]{0,40}?SHA-256[ ：:]*`?([0-9a-f]{64})", report_text)
+    log_list = "\n".join(f"- {p}（SHA-256 `{h}`）" for p, h in log_shas) or "（无）"
+    file_list = "\n".join(f"- {path}" for path in files) or "（无）"
+    template = Path(SCRIPT_DIR, "quality_relay_template.md").read_text(encoding="utf-8")
+    block = (template
+             .replace("{TASK}", Path(args.packet).stem)
+             .replace("{PICK}", f"{picked}（Quality）")
+             .replace("{BASE}", args.base)
+             .replace("{COMMIT}", commit)
+             .replace("{EXCLUDES}", "、".join(excludes))
+             .replace("{EXEC_REPORT}", str(report.resolve()))
+             .replace("{EXEC_REPORT_SHA}", hashlib.sha256(report.read_bytes()).hexdigest())
+             .replace("{FILE_LIST}", file_list)
+             .replace("{LOG_SHA_LIST}", log_list)
+             .replace("{REVIEW_FOCUS}", review_focus))
+    out = Path(args.out) if getattr(args, "out", None) else Path(args.packet).parent / "quality-relay-block.md"
+    if out.exists():
+        return back(f"output already exists: {out}")
+    out.write_text(block, encoding="utf-8")
+    print(f"交回：{picked}（Quality）")
+    print(f"事项：直通质检 {Path(args.packet).stem}")
+    print(f"质检块：{out.resolve()}（SHA-256 {hashlib.sha256(out.read_bytes()).hexdigest()}）")
+    return 0
+
+
 def main(argv=None):
     parser = argparse.ArgumentParser(description="KOS O41 three-line renderer and relay orchestrator")
     sub = parser.add_subparsers(dest="cmd", required=True)
@@ -305,11 +417,23 @@ def main(argv=None):
     p_fin.add_argument("--task-title")
     p_fin.add_argument("--block-path")
 
+    p_rel = sub.add_parser("relay-quality")
+    p_rel.add_argument("--report", required=True)
+    p_rel.add_argument("--packet", required=True)
+    p_rel.add_argument("--base", required=True)
+    p_rel.add_argument("--repo", required=True)
+    p_rel.add_argument("--expect-identity", default=DEFAULT_IDENTITY)
+    p_rel.add_argument("--board", default=sys.executable)
+    p_rel.add_argument("--board-args", default=json.dumps([os.path.expanduser("~/.kos-work/Universe-Keyboard/tools/kos-board.py")]))
+    p_rel.add_argument("--out")
+
     args = parser.parse_args(argv)
     if args.cmd == "render":
         return cmd_render(args)
     if args.cmd == "final":
         return cmd_final(args)
+    if args.cmd == "relay-quality":
+        return cmd_relay_quality(args)
     return cmd_handoff(args)
 
 
