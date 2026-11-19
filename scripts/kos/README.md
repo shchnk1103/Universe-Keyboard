@@ -268,3 +268,14 @@ python3 -B scripts/kos/kos-verify-inputs.py [--quiet] /path/to/task-package.md
 - **作用：** 找出反引号中的绝对路径，并在其后 80 个字符内取 64 位小写 SHA-256 复核。含 `<>*$` 或 `{{` 的路径跳过；目录记 SKIP；相同路径与哈希只计一次。
 - **退出码：** 0 无 MISMATCH/MISSING；1 有；2 包文件不存在。
 - **不写文件。** `--quiet` 只打印非 OK 行与 SUMMARY。
+
+
+### kos_handoff.py relay-quality：直通质检
+
+```bash
+python3 scripts/kos/kos_handoff.py relay-quality --report <执行报告> --packet <冻结包> --base <基线 SHA> --repo <worktree> [--expect-identity 'Cowork 3P <cowork-3p@localhost>']
+```
+
+六项门禁全部通过才写出质检块：包头档位是 `code-fix`；报告状态是 `DONE`；`kos-report-lint.py` 通过；相对 `--base` 恰好一个提交，且 `check_identity.py --expect`（默认 `Cowork 3P <cowork-3p@localhost>`）对 HEAD 通过；报告里点名的改动文件 SHA-256 与工作区实测一致；正文不含 `git push`、`pr_flow.py`、`--merge`。
+
+选人只接受 `kos-board.py pick --role quality` 以 `PICK [` 开头的结果。`PICK(兜底`、命中排除名单或非零退出都交回 `Jack（PM）`，不写质检块。模板是 `quality_relay_template.md`，只含设计稿规定的 10 个占位符，`REVIEW_FOCUS` 逐字来自冻结包。

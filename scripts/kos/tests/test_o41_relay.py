@@ -501,5 +501,177 @@ class O41ActivationGapFixTests(unittest.TestCase):
         self.assertIn("授权，直接执行", r_ok.stdout)
 
 
+
+
+class RelayQualityTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory()
+        self.root = Path(self.tmp.name)
+        self.repo = self.root / "repo"
+        self.repo.mkdir()
+        self.template_src = KOS_DIR / "quality_relay_template.md"
+        self.identity = "Cowork 3P <cowork-3p@localhost>"
+
+    def tearDown(self) -> None:
+        self.tmp.cleanup()
+
+    def _git(self, *args, env_extra=None):
+        env = dict(os.environ)
+        env.update({
+            "GIT_AUTHOR_NAME": "Cowork 3P", "GIT_AUTHOR_EMAIL": "cowork-3p@localhost",
+            "GIT_COMMITTER_NAME": "Cowork 3P", "GIT_COMMITTER_EMAIL": "cowork-3p@localhost",
+            "GIT_CONFIG_GLOBAL": "/dev/null", "GIT_CONFIG_SYSTEM": "/dev/null",
+        })
+        if env_extra:
+            env.update(env_extra)
+        return subprocess.run(["git", "-C", str(self.repo), *args], capture_output=True, text=True, env=env)
+
+    def _init_repo(self, packet_text: str, report_text: str, extra_commits: int = 0):
+        self._git("init", "-b", "main")
+        (self.repo / ".kos").mkdir()
+        (self.repo / ".kos/project.json").write_text("{}\n", encoding="utf-8")
+        (self.repo / "base.txt").write_text("base\n", encoding="utf-8")
+        self._git("add", ".")
+        self._git("commit", "-m", "base")
+        self.base = self._git("rev-parse", "HEAD").stdout.strip()
+        packet = _write(self.root / "packet.md", packet_text)
+        self.packet = packet
+        (self.repo / "tool.py").write_text("x = 1\n", encoding="utf-8")
+        (self.repo / "out.log").write_text("log line\n", encoding="utf-8")
+        self._git("add", ".")
+        self._git("commit", "-m", "work")
+        for i in range(extra_commits):
+            (self.repo / f"extra{i}.txt").write_text(str(i), encoding="utf-8")
+            self._git("add", ".")
+            self._git("commit", "-m", f"extra {i}")
+        report = _write(self.root / "report.md", report_text)
+        return packet, report
+
+    def _pick_stub(self, name):
+        stub = self.root / "pick.py"
+        stub.write_text(
+            "import sys\n"
+            f"print('PICK [Quality]: {name}（Quality | 上次：-）')\n",
+            encoding="utf-8")
+        return stub
+
+    def _run_relay(self, packet, report, pick_stub=None, extra=None):
+        args = [
+            "relay-quality",
+            "--report", str(report),
+            "--packet", str(packet),
+            "--base", self.base,
+            "--repo", str(self.repo),
+            "--board", pick_stub if pick_stub else sys.executable,
+            "--board-args", json.dumps(["-c", "print('PICK [Quality]: Quinn（Quality | -)')"]),
+        ]
+        if pick_stub:
+            args = [
+                "relay-quality",
+                "--report", str(report),
+                "--packet", str(packet),
+                "--base", self.base,
+                "--repo", str(self.repo),
+                "--board", sys.executable,
+                "--board-args", json.dumps([str(pick_stub)]),
+            ]
+        if extra:
+            args.extend(extra)
+        return _run_py("kos_handoff.py", args)
+
+    GOOD_PACKET = (
+        "Executor（代码）；你不是 PM\n\n"
+        "# 任务包：示例\n\n"
+        "- **包头档位**：`code-fix`\n"
+        "- **复核重点**：\n"
+        "  1. 检查一切。\n"
+    )
+    GOOD_REPORT = (
+        "DONE\n"
+        "Cole（Executor）；运行时身份 Codex。\n\n"
+        "## 下一站接力（O41）\n- next_role：Quinn（Quality）\n"
+    )
+
+    def _good_report_with_logs(self):
+        report = _write(
+            self.root / "report.md",
+            self.GOOD_REPORT
+            + f"\n日志 {self.repo / 'out.log'} SHA-256 `{hashlib.sha256((self.repo / 'out.log').read_bytes()).hexdigest()}`\n")
+        return report
+
+    def test_passing_path_emits_quality_block(self) -> None:
+        packet, report = self._init_repo(self.GOOD_PACKET, self.GOOD_REPORT)
+        report = self._good_report_with_logs()
+        result = self._run_relay(packet, report)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("Quinn", result.stdout)
+        self.assertIn("SHA-256", result.stdout)
+
+    def test_review_focus_is_verbatim(self) -> None:
+        packet, report = self._init_repo(self.GOOD_PACKET, self.GOOD_REPORT)
+        report = self._good_report_with_logs()
+        result = self._run_relay(packet, report)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        written = Path(result.stdout.split("质检块：", 1)[1].split("（", 1)[0].strip())
+        self.assertIn("1. 检查一切。", written.read_text(encoding="utf-8"))
+
+    def _expect_pm(self, result) -> None:
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("Jack", result.stdout + result.stderr)
+
+    def test_feature_packet_falls_back(self) -> None:
+        packet, report = self._init_repo(self.GOOD_PACKET.replace("`code-fix`", "`feature`"), self.GOOD_REPORT)
+        report = self._good_report_with_logs()
+        self._expect_pm(self._run_relay(packet, report))
+
+    def test_non_done_status_falls_back(self) -> None:
+        packet, report = self._init_repo(self.GOOD_PACKET, self.GOOD_REPORT)
+        report = self._good_report_with_logs()
+        report.write_text(report.read_text(encoding="utf-8").replace("DONE", "PARTIAL", 1), encoding="utf-8")
+        self._expect_pm(self._run_relay(packet, report))
+
+    def test_two_commits_fall_back(self) -> None:
+        packet, report = self._init_repo(self.GOOD_PACKET, self.GOOD_REPORT, extra_commits=1)
+        report = self._good_report_with_logs()
+        self._expect_pm(self._run_relay(packet, report))
+
+    def test_identity_mismatch_falls_back(self) -> None:
+        packet, report = self._init_repo(self.GOOD_PACKET, self.GOOD_REPORT)
+        report = self._good_report_with_logs()
+        self._expect_pm(self._run_relay(packet, report, extra=["--expect-identity", "Someone Else <x@y>"]))
+
+    def test_bad_log_hash_falls_back(self) -> None:
+        packet, report = self._init_repo(self.GOOD_PACKET, self.GOOD_REPORT)
+        bad = _write(
+            self.root / "report.md",
+            self.GOOD_REPORT + f"\n日志 {self.repo / 'out.log'} SHA-256 `{'0' * 64}`\n")
+        self._expect_pm(self._run_relay(packet, bad))
+
+    def test_forbidden_word_falls_back(self) -> None:
+        packet, report = self._init_repo(self.GOOD_PACKET, self.GOOD_REPORT)
+        push_report = _write(
+            self.root / "report.md",
+            self.GOOD_REPORT + "\n已按计划 git push 分支。\n")
+        self._expect_pm(self._run_relay(packet, push_report))
+
+    def test_pick_fallback_falls_back_to_pm(self) -> None:
+        packet, report = self._init_repo(self.GOOD_PACKET, self.GOOD_REPORT)
+        report = self._good_report_with_logs()
+        stub = self.root / "fallback.py"
+        stub.write_text("print('PICK(兜底，无空闲专职): Sam（Executor（记录/文档） |-)')\n", encoding="utf-8")
+        self._expect_pm(self._run_relay(packet, report, pick_stub=stub))
+
+    def test_pick_excluded_name_falls_back_to_pm(self) -> None:
+        packet, report = self._init_repo(self.GOOD_PACKET, self.GOOD_REPORT)
+        report = self._good_report_with_logs()
+        stub = self._pick_stub("Cole")
+        self._expect_pm(self._run_relay(packet, report, pick_stub=stub))
+
+    def test_old_subcommands_still_work(self) -> None:
+        for args in (["render", "--help"], ["handoff", "--help"], ["final", "--help"]):
+            result = _run_py("kos_handoff.py", args)
+            self.assertEqual(result.returncode, 0, args)
+
+
 if __name__ == "__main__":
     unittest.main()
