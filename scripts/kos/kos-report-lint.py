@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
-"""kos-report-lint.py <报告.md> [--max-bytes 12288] [--warn-bytes 8192] [--rep-lines 20]
+"""kos-report-lint.py <报告.md> [--max-bytes N] [--warn-bytes N] [--rep-lines 20]
 机械检查"摘要报告"是否合规（O16）：大小、首行状态、机器输出整段内嵌、引用的日志路径+SHA 是否实测一致。
+默认上限按文件名分层：design-*.md 与 arch-review-*.md 为 24576 字节（16384 提醒），其余报告为 12288（8192 提醒）。
+显式 --max-bytes / --warn-bytes 始终覆盖默认值。
 退出码：0 合规；1 有问题（逐条打印）。只读。"""
 import sys, re, hashlib, os, collections
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -12,7 +14,12 @@ args = [a for a in args if a != "--require-o41"]
 def opt(n, d):
     return int(args[args.index(n)+1]) if n in args else d
 path = args[0]
-mx, wn, rep = opt('--max-bytes', 12288), opt('--warn-bytes', 8192), opt('--rep-lines', 20)
+name = os.path.basename(path)
+if name.endswith('.md') and (name.startswith('design-') or name.startswith('arch-review-')):
+    default_max, default_warn = 24576, 16384
+else:
+    default_max, default_warn = 12288, 8192
+mx, wn, rep = opt('--max-bytes', default_max), opt('--warn-bytes', default_warn), opt('--rep-lines', 20)
 raw = open(path, 'rb').read(); txt = raw.decode('utf-8', 'replace'); lines = txt.splitlines()
 bad = []
 if len(raw) > mx: bad.append(f"报告 {len(raw)} 字节，超过上限 {mx}：把机器输出移到日志/附录文件，只在摘要里写路径、SHA-256、计数")
