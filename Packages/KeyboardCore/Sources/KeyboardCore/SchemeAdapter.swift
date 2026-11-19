@@ -125,8 +125,8 @@ public enum SchemeAdapterRegistry {
         schemaID: "luna_pinyin",
         layout: SchemeLayoutCapability(
             supportsTwentySixKey: true,
-            supportsNineKey: false,
-            nineKeySchemaIDs: []
+            supportsNineKey: !NineKeySchemeRegistry.schemes(forFamily: "luna_pinyin").isEmpty,
+            nineKeySchemaIDs: NineKeySchemeRegistry.schemes(forFamily: "luna_pinyin").map(\.schemaID)
         ),
         sharedDefaultMode: .builtinPrelude,
         ownershipStrategyID: .none,

@@ -11,6 +11,11 @@ final class NineKeyRegistryR4Tests: XCTestCase {
         XCTAssertTrue(SchemeAdapterRegistry.wanxiang.layout.supportsNineKey)
         XCTAssertTrue(SchemeAdapterRegistry.isRegisteredNineKeyCapable("wanxiang_t9i"))
         XCTAssertTrue(RimeRuntimeSelection.isNineKeyCapable("wanxiang_t9i"))
+        XCTAssertEqual(NineKeySchemeRegistry.entries.count, 3)
+        XCTAssertEqual(NineKeySchemeRegistry.scheme("luna_pinyin_t9")?.familyID, "luna_pinyin")
+        XCTAssertEqual(NineKeySchemeRegistry.scheme("luna_pinyin_t9")?.markerKey, "rime_luna_t9_readiness_marker")
+        XCTAssertEqual(NineKeySchemeRegistry.scheme("luna_pinyin_t9")?.compatibilityVersion, "1")
+        XCTAssertEqual(NineKeySchemeRegistry.smokeInput(for: "luna_pinyin_t9"), "6446")
         XCTAssertEqual(NineKeySchemeRegistry.smokeInput(for: "t9"), "64")
         XCTAssertEqual(
             NineKeySchemeRegistry.smokeInput(for: "wanxiang_t9i"),

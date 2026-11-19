@@ -25,6 +25,9 @@ public enum NineKeySchemeRegistry {
         NineKeyScheme(
             schemaID: "wanxiang_t9i", familyID: "wanxiang", markerKey: "rime_wanxiang_t9_readiness_marker",
             compatibilityVersion: "1"),
+        NineKeyScheme(
+            schemaID: "luna_pinyin_t9", familyID: "luna_pinyin", markerKey: "rime_luna_t9_readiness_marker",
+            compatibilityVersion: "1"),
     ]
 
     /// Invalid registries cannot resolve any entry; callers fail closed.
@@ -57,8 +60,14 @@ public enum NineKeySchemeRegistry {
     /// Registered smoke digits. Fog stays on the existing `64` sample.
     public static func smokeInput(for schemaID: String) -> String? {
         guard scheme(schemaID) != nil else { return nil }
-        if schemaID == "t9" { return "64" }
-        return "6446"
+        switch schemaID {
+        case "t9":
+            return "64"
+        case "wanxiang_t9i", "luna_pinyin_t9":
+            return "6446"
+        default:
+            return nil
+        }
     }
 }
 

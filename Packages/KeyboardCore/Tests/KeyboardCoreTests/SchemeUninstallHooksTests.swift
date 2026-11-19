@@ -19,7 +19,7 @@ final class SchemeUninstallHooksTests: XCTestCase {
         )
         XCTAssertEqual(
             SchemeAdapterRegistry.uninstallHooks(for: "luna_pinyin").layoutFallback,
-            .none
+            .lunaInvalidateNineKeyMarkerAndMaybeTwentySixKey
         )
         XCTAssertEqual(
             SchemeAdapterRegistry.uninstallHooks(for: "unknown_scheme").layoutFallback,
@@ -28,7 +28,7 @@ final class SchemeUninstallHooksTests: XCTestCase {
         XCTAssertTrue(SchemeAdapterRegistry.hasUninstallLayoutFallback(for: "rime_ice"))
         XCTAssertTrue(SchemeAdapterRegistry.hasUninstallLayoutFallback(for: "t9"))
         XCTAssertTrue(SchemeAdapterRegistry.hasUninstallLayoutFallback(for: "wanxiang"))
-        XCTAssertFalse(SchemeAdapterRegistry.hasUninstallLayoutFallback(for: "luna_pinyin"))
+        XCTAssertTrue(SchemeAdapterRegistry.hasUninstallLayoutFallback(for: "luna_pinyin"))
     }
 
     func testIceUninstallLayoutFallbackForcesTwentySixKeyAndInvalidatesReadiness() {
@@ -169,6 +169,42 @@ final class SchemeUninstallHooksTests: XCTestCase {
             synchronize: { defaults.synchronize() },
             schemeBinding9: wanxiangID
         )
+        XCTAssertEqual(RimeT9Readiness.load(from: defaults)?.resourceFingerprint, "fog-fp")
+    }
+
+    func testLunaUninstallClearsLunaMarkerAndDoesNotTouchFog() {
+        let suite = "test.luna-uninstall-layout-fallback." + UUID().uuidString
+        guard let defaults = UserDefaults(suiteName: suite) else {
+            XCTFail("suite")
+            return
+        }
+        defer { defaults.removePersistentDomain(forName: suite) }
+        defaults.set(KeyboardLayoutStyle.nineKey.rawValue, forKey: KeyboardLayoutSettingsKey.layoutStyle)
+        defaults.set("luna_pinyin_t9", forKey: KeyboardLayoutSettingsKey.schemeBinding9)
+        RimeT9Readiness.save(
+            RimeT9ReadinessMarker(
+                ready: true,
+                compatibilityVersion: RimeT9Readiness.currentCompatibilityVersion,
+                resourceFingerprint: "fog-fp"
+            ),
+            to: defaults
+        )
+        NineKeyReadiness.save(
+            RimeT9ReadinessMarker(ready: true, compatibilityVersion: "1", resourceFingerprint: "luna-fp"),
+            schemaID: "luna_pinyin_t9",
+            defaults: defaults
+        )
+        SchemeAdapterRegistry.prepareUninstallLayoutFallback(
+            for: "luna_pinyin",
+            set: { value, key in defaults.set(value, forKey: key) },
+            synchronize: { defaults.synchronize() },
+            schemeBinding9: "luna_pinyin_t9"
+        )
+        XCTAssertEqual(
+            defaults.string(forKey: KeyboardLayoutSettingsKey.layoutStyle),
+            KeyboardLayoutStyle.twentySixKey.rawValue
+        )
+        XCTAssertEqual(NineKeyReadiness.load(schemaID: "luna_pinyin_t9", defaults: defaults)?.ready, false)
         XCTAssertEqual(RimeT9Readiness.load(from: defaults)?.resourceFingerprint, "fog-fp")
     }
 }

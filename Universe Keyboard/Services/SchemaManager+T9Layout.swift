@@ -105,10 +105,23 @@ extension SchemaManager {
                 guard let self else { return }
                 T9DeploymentSupport.persistLayout(.twentySixKey, settings: self.settings)
                 T9DeploymentSupport.invalidateReadiness(schemaID: scheme.schemaID, settings: self.settings)
+                if scheme.schemaID == "luna_pinyin_t9",
+                    let directories = try? self.archiveInstaller.runtimeDirectories()
+                {
+                    try? LunaT9ProductionDeploymentSupport.clearDerivedBuildCaches(
+                        sharedDataURL: directories.sharedDataURL,
+                        userDataURL: directories.userDataURL
+                    )
+                }
             },
             prepare: { sharedDataURL in
                 if scheme.schemaID == "t9" {
                     _ = try T9DeploymentSupport.ensureCompatibleT9Schema(in: sharedDataURL)
+                    return
+                }
+                if scheme.schemaID == "luna_pinyin_t9" {
+                    try LunaT9ProductionDeploymentSupport.validateSourceBeforeEnable(
+                        sharedDataURL: sharedDataURL)
                     return
                 }
                 let prepared = WanxiangT9DeploymentSupport.prepare(sharedDataURL: sharedDataURL)

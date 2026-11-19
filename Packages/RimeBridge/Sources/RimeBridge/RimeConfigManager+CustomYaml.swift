@@ -58,6 +58,20 @@ extension RimeConfigManager {
         if wanxiangInstalledForList || pendingSchemaID == "wanxiang" {
             appendSchema(WanxiangT9SchemaCompatibility.schemaID)
         }
+        // Built-in luna letter schema is always deployed. Nine-key is fail-closed
+        // until the derived schema is on disk and matches the frozen output hash.
+        appendSchema("luna_pinyin")
+        let lunaDerived =
+            rimeRoot
+            .appendingPathComponent("shared", isDirectory: true)
+            .appendingPathComponent("luna_pinyin_t9.schema.yaml")
+        if NineKeySchemeRegistry.scheme("luna_pinyin_t9") != nil,
+            FileManager.default.fileExists(atPath: lunaDerived.path),
+            let lunaBytes = try? Data(contentsOf: lunaDerived),
+            sha256Hex(lunaBytes) == LunaT9SchemaCompatibility.outputSHA256
+        {
+            appendSchema("luna_pinyin_t9")
+        }
         if pageSize >= 5 {
             defaultYaml += "  \"menu/page_size\": \(pageSize)\n"
         }
@@ -167,6 +181,7 @@ extension RimeConfigManager {
         try fileManager.createDirectory(at: userDir, withIntermediateDirectories: true)
         try fileManager.createDirectory(at: stagedDir, withIntermediateDirectories: true)
         try fileManager.createDirectory(at: backupDir, withIntermediateDirectories: true)
+        try LunaT9ProductionDeploymentSupport.debugHit(.overlayWrite)
         for artifact in artifacts {
             try artifact.content.write(
                 to: stagedDir.appendingPathComponent(artifact.filename),
@@ -174,17 +189,20 @@ extension RimeConfigManager {
                 encoding: .utf8
             )
         }
+        try LunaT9ProductionDeploymentSupport.debugHit(.backupOverlays)
         for filename in filenames {
             let current = userDir.appendingPathComponent(filename)
             if fileManager.fileExists(atPath: current.path) {
                 try fileManager.copyItem(at: current, to: backupDir.appendingPathComponent(filename))
             }
         }
+        try LunaT9ProductionDeploymentSupport.debugHit(.backupReceipts)
         if fileManager.fileExists(atPath: receiptURL.path) {
             try fileManager.copyItem(at: receiptURL, to: backupDir.appendingPathComponent(receiptName))
         }
 
         do {
+            try LunaT9ProductionDeploymentSupport.debugHit(.overlayReplace)
             if fileManager.fileExists(atPath: receiptURL.path) {
                 try fileManager.removeItem(at: receiptURL)
             }
@@ -199,12 +217,14 @@ extension RimeConfigManager {
                     to: destination
                 )
             }
+            try LunaT9ProductionDeploymentSupport.debugHit(.overlayReceiptWrite)
             try RimeBuiltinResourceInstaller().recordOverlayReceipt(
                 rimeRoot: rimeRoot,
                 userDataURL: userDir
             )
         } catch {
             do {
+                try LunaT9ProductionDeploymentSupport.debugHit(.restoreOverlay)
                 for filename in filenames {
                     let destination = userDir.appendingPathComponent(filename)
                     if fileManager.fileExists(atPath: destination.path) {
@@ -715,7 +735,11 @@ extension RimeConfigManager {
     }
 
     private static func sha256(_ source: String) -> String {
-        SHA256.hash(data: Data(source.utf8)).map { String(format: "%02x", $0) }.joined()
+        sha256Hex(Data(source.utf8))
+    }
+
+    static func sha256Hex(_ data: Data) -> String {
+        SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
     }
 
     private static func logSwitchOmission(schemaID: String, setting: String, reason: String) {

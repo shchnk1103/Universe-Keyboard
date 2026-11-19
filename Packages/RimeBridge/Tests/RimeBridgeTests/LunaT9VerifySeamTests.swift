@@ -58,9 +58,14 @@ final class LunaT9VerifySeamTests: XCTestCase {
         let publicResult = RimeT9SmokeProbe.verify(
             sharedDataDir: shared.path, userDataDir: user.path, schemaID: schema, input: "6446")
         print("LUNA_SEAM A registry=production result=\(publicResult)")
-        XCTAssertFalse(publicResult)
-        XCTAssertNil(NineKeySchemeRegistry.scheme(schema))
-        XCTAssertFalse(NineKeySchemeRegistry.entries.contains { $0.schemaID == schema })
+        // PR2 registers luna_pinyin_t9, so the production registry now resolves it and the
+        // smoke probe must pass through the public entry point as well.
+        XCTAssertTrue(publicResult)
+        let registered = NineKeySchemeRegistry.scheme(schema)
+        XCTAssertEqual(registered?.familyID, "luna_pinyin")
+        XCTAssertEqual(registered?.markerKey, "rime_luna_t9_readiness_marker")
+        XCTAssertEqual(registered?.compatibilityVersion, "1")
+        XCTAssertTrue(NineKeySchemeRegistry.entries.contains { $0.schemaID == schema })
         let invalid = verify("6446", [entry, entry])
         print("LUNA_SEAM B registry=duplicate-schema result=\(invalid)")
         XCTAssertFalse(invalid)
@@ -81,9 +86,14 @@ final class LunaT9VerifySeamTests: XCTestCase {
             XCTAssertFalse(valid, label)
             XCTAssertFalse(result, label)
         }
-        let absent = verify("6446", NineKeySchemeRegistry.entries)
-        print("LUNA_SEAM C registry=production-without-luna result=\(absent)")
-        XCTAssertFalse(absent)
+        let production = verify("6446", NineKeySchemeRegistry.entries)
+        print("LUNA_SEAM C registry=production result=\(production)")
+        // The production registry now registers luna_pinyin_t9, so the probe passes.
+        XCTAssertTrue(production)
+        // An unregistered sibling ID still fails closed through the same public path.
+        let unregistered = verify("6446", NineKeySchemeRegistry.entries.filter { $0.schemaID != schema })
+        print("LUNA_SEAM C2 registry=production-without-luna result=\(unregistered)")
+        XCTAssertFalse(unregistered)
         let missingShared = root.appendingPathComponent("missing-shared", isDirectory: true)
         let missingUser = root.appendingPathComponent("missing-user", isDirectory: true)
         try FileManager.default.createDirectory(at: missingShared, withIntermediateDirectories: true)

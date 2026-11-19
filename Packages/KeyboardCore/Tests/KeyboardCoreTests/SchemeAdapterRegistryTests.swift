@@ -34,8 +34,8 @@ final class SchemeAdapterRegistryTests: XCTestCase {
         let adapter = SchemeAdapterRegistry.luna
         XCTAssertEqual(adapter.schemaID, "luna_pinyin")
         XCTAssertTrue(adapter.layout.supportsTwentySixKey)
-        XCTAssertFalse(adapter.layout.supportsNineKey)
-        XCTAssertEqual(adapter.layout.nineKeySchemaIDs, [])
+        XCTAssertTrue(adapter.layout.supportsNineKey)
+        XCTAssertEqual(adapter.layout.nineKeySchemaIDs, ["luna_pinyin_t9"])
         XCTAssertEqual(adapter.sharedDefaultMode, .builtinPrelude)
         XCTAssertEqual(adapter.ownershipStrategyID, .none)
         XCTAssertNil(adapter.postProcessingRevision)
@@ -252,8 +252,11 @@ final class SchemeAdapterRegistryTests: XCTestCase {
             .ice
         )
         XCTAssertEqual(SchemeAdapterRegistry.uninstallHooks(for: "wanxiang"), .wanxiang)
-        XCTAssertEqual(SchemeAdapterRegistry.uninstallHooks(for: "luna_pinyin"), .none)
+        XCTAssertEqual(SchemeAdapterRegistry.uninstallHooks(for: "luna_pinyin"), .luna)
+        XCTAssertEqual(SchemeAdapterRegistry.uninstallHooks(for: "unknown_scheme"), .none)
         XCTAssertTrue(SchemeAdapterRegistry.hasUninstallLayoutFallback(for: "rime_ice"))
         XCTAssertTrue(SchemeAdapterRegistry.hasUninstallLayoutFallback(for: "wanxiang"))
+        XCTAssertTrue(SchemeAdapterRegistry.hasUninstallLayoutFallback(for: "luna_pinyin"))
+        XCTAssertFalse(SchemeAdapterRegistry.hasUninstallLayoutFallback(for: "unknown_scheme"))
     }
 }

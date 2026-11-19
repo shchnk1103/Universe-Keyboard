@@ -257,6 +257,7 @@ public struct RimeBuiltinResourceInstaller {
             try copyManifestAndEntries(manifest, from: sourceRoot, to: stagedShared)
             _ = try validateResourceTree(at: stagedShared)
             try fileManager.createDirectory(at: sharedRoot, withIntermediateDirectories: true)
+            try LunaT9ProductionDeploymentSupport.debugHit(.backupResources)
 
             for entry in manifest.entries.sorted(by: { $0.path < $1.path }) {
                 let stagedURL = stagedShared.appendingPathComponent(entry.path)
@@ -277,6 +278,7 @@ public struct RimeBuiltinResourceInstaller {
                     backupURL = candidate
                 }
                 do {
+                    try LunaT9ProductionDeploymentSupport.debugHit(.resourceWrite)
                     if entry.path == testFailureBeforeInstallingPath {
                         throw InstallationError.fileOperationFailed
                     }
@@ -319,6 +321,7 @@ public struct RimeBuiltinResourceInstaller {
                 manifest: manifest
             )
             let receiptData = try Self.sortedJSONEncoder().encode(receipt)
+            try LunaT9ProductionDeploymentSupport.debugHit(.resourceReceiptWrite)
             try receiptData.write(to: receiptURL, options: .atomic)
             _ = try validateInstalledResources(rimeRoot: rimeRoot)
             if let afterInstallingResources {
@@ -807,6 +810,7 @@ public struct RimeBuiltinResourceInstaller {
         priorReceiptData: Data?
     ) throws where T.Element == Mutation {
         do {
+            try LunaT9ProductionDeploymentSupport.debugHit(.restoreResources)
             for mutation in mutations {
                 if mutation.installedNew,
                     fileManager.fileExists(atPath: mutation.destination.path)

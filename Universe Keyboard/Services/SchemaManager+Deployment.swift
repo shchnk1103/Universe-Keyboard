@@ -234,6 +234,16 @@ extension SchemaManager {
                         category: .deployment
                     )
                 }
+                if lunaPinyinFilesExist(in: directories.sharedDataURL) {
+                    let check = LunaT9ProductionDeploymentSupport.recheckCompiled(
+                        sharedDataURL: directories.sharedDataURL,
+                        userDataURL: directories.userDataURL
+                    )
+                    Logger.shared.info(
+                        "deployRimeConfig: \(LunaT9ProductionDeploymentSupport.logText(check.step))",
+                        category: .deployment
+                    )
+                }
                 if publishNineKeyReadiness {
                     _ = publishIndependentNineKeyReadiness(
                         sharedDataURL: directories.sharedDataURL,
@@ -352,6 +362,12 @@ extension SchemaManager {
     ) -> Bool {
         if scheme.familyID == "wanxiang" {
             return WanxiangT9DeploymentSupport.rewriteCheckPassed(
+                sharedDataURL: sharedDataURL,
+                userDataURL: userDataURL
+            )
+        }
+        if scheme.familyID == "luna_pinyin" {
+            return LunaT9ProductionDeploymentSupport.rewriteCheckPassed(
                 sharedDataURL: sharedDataURL,
                 userDataURL: userDataURL
             )
