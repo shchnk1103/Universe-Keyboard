@@ -2,6 +2,8 @@
 from __future__ import annotations
 
 import json
+import os
+import subprocess
 import tarfile
 import tempfile
 import unittest
@@ -136,7 +138,7 @@ class OpenTests(unittest.TestCase):
         self.files = root / "files.txt"
         self.files.write_text("scripts/kos/pr_flow.py\n", encoding="utf-8")
         self.body = root / "body.md"
-        self.body.write_text("Ship the helper.\n", encoding="utf-8")
+        self.body.write_text("Summary: Ship the helper.\n发布这个助手。\n", encoding="utf-8")
         self.log_dir = root / "log"
 
     def tearDown(self) -> None:
@@ -156,7 +158,7 @@ class OpenTests(unittest.TestCase):
             "--files",
             str(self.files),
             "--title",
-            "title",
+            "Ship helper / 发布助手",
             "--body-file",
             str(self.body),
             "--log-dir",
@@ -273,6 +275,104 @@ class OpenTests(unittest.TestCase):
         )
         self.assertEqual(FLOW.main(self._args(["--dry-run"]), runner=runner), 0)
         self.assertFalse(any("push" in call for call in runner.calls))
+
+    def _dry(self):
+        return Queue([
+            (has("rev-parse"), ok(HEAD + "\n")),
+            (has("status"), ok("")),
+            (has("log"), ok(f"AUTHOR:{IDENTITY}\nCOMMITTER:{IDENTITY}\n")),
+            (has("diff"), ok("scripts/kos/pr_flow.py\n")),
+            (lambda a: "rev-parse" in a and any(str(x).startswith("refs/heads/") for x in a), ok(HEAD + "\n")),
+            (has("ls-remote"), ok("")),
+        ])
+
+    def test_monolingual_title_is_rejected(self) -> None:
+        self.body.write_text("Summary: Add the gate.\n补上中文。\n", encoding="utf-8")
+        for title in ("English only", "只有中文"):
+            result = FLOW.main(self._args(["--title", title, "--dry-run"]), runner=self._dry())
+            self.assertNotEqual(result, 0, title)
+
+    def test_incomplete_body_is_rejected(self) -> None:
+        self.body.write_text("English and 中文 without a summary line.\n", encoding="utf-8")
+        self.assertNotEqual(FLOW.main(self._args(["--title", "Add gate / 补门禁", "--dry-run"]), runner=self._dry()), 0)
+        self.body.write_text("Summary: English only.\nStill English.\n", encoding="utf-8")
+        self.assertNotEqual(FLOW.main(self._args(["--title", "Add gate / 补门禁", "--dry-run"]), runner=self._dry()), 0)
+
+    def test_bilingual_title_and_body_pass_dry_run(self) -> None:
+        self.body.write_text("Summary: Add the gate.\n补上中文正文。\n", encoding="utf-8")
+        runner = self._dry()
+        self.assertEqual(FLOW.main(self._args(["--title", "Add gate / 补门禁", "--dry-run"]), runner=runner), 0)
+        self.assertFalse(any("push" in call for call in runner.calls))
+
+
+ROOT = Path(__file__).resolve().parents[3]
+VERIFY = ROOT / "scripts" / "kos" / "doc_verify.sh"
+
+
+def _verify_repo(tmp: Path):
+    repo = tmp / "repo"
+    repo.mkdir()
+    stubs = {
+        "scripts/ci/classify_changes.py": "print('ok')\n",
+        "scripts/ci/run_lightweight_checks.sh": "#!/bin/sh\nexit 0\n",
+        "scripts/ci/check_markdown_links.py": "\n",
+        "scripts/kos/check_identity.py": "import sys\nprint('IDENTITY_MATCH')\n",
+    }
+    for rel, body in stubs.items():
+        path = repo / rel
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(body)
+    for rel in ("scripts/ci/tests", "scripts/kos/tests"):
+        (repo / rel).mkdir(parents=True, exist_ok=True)
+        (repo / rel / "test_placeholder.py").write_text("import unittest\nclass T(unittest.TestCase):\n def test_ok(self):\n  pass\n")
+    (repo / "scripts/ci/tests/test_verify_final_gate.sh").write_text("#!/bin/sh\nexit 0\n")
+    (repo / "scripts/ci/tests/test_kos_trigger_paths.sh").write_text("#!/bin/sh\nexit 0\n")
+    env = {"GIT_AUTHOR_NAME": "Cowork 3P", "GIT_AUTHOR_EMAIL": "cowork-3p@localhost",
+           "GIT_COMMITTER_NAME": "Cowork 3P", "GIT_COMMITTER_EMAIL": "cowork-3p@localhost",
+           "GIT_CONFIG_GLOBAL": "/dev/null", "GIT_CONFIG_SYSTEM": "/dev/null", "PATH": "/usr/bin:/bin:/usr/local/bin"}
+    def git(*args):
+        subprocess.run(["git", "-C", str(repo), *args], check=True, env=env, capture_output=True, text=True)
+    git("init", "-b", "main")
+    (repo / ".kos").mkdir()
+    (repo / ".kos/project.json").write_text("{}\n")
+    bridge = repo / "Packages" / "RimeBridge"
+    bridge.mkdir(parents=True)
+    (bridge / ".gitkeep").write_text("\n")
+    (repo / "a.txt").write_text("a\n")
+    git("add", ".")
+    git("commit", "-m", "base")
+    base = subprocess.run(["git", "-C", str(repo), "rev-parse", "HEAD"], check=True, capture_output=True, text=True, env=env).stdout.strip()
+    return repo, base, env
+
+
+class VendorExemptionTests(unittest.TestCase):
+    def _run(self, repo, base):
+        return subprocess.run(["bash", str(VERIFY), base], cwd=str(repo), text=True, capture_output=True, check=False,
+                              env={"PATH": "/usr/bin:/bin:/usr/local/bin", "EXPECT_IDENTITY": IDENTITY,
+                                   "GIT_CONFIG_GLOBAL": "/dev/null", "GIT_CONFIG_SYSTEM": "/dev/null"})
+
+    def test_vendor_symlink_alone_is_clean(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo, base, _ = _verify_repo(Path(tmp))
+            os.symlink("/tmp", repo / "Packages" / "RimeBridge" / "Vendor")
+            result = self._run(repo, base)
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn("DOC_VERIFY_PASS", result.stdout)
+
+    def test_other_untracked_or_regular_vendor_still_fails(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            repo, base, _ = _verify_repo(Path(tmp))
+            os.symlink("/tmp", repo / "Packages" / "RimeBridge" / "Vendor")
+            (repo / "extra.txt").write_text("x\n")
+            result = self._run(repo, base)
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            self.assertIn("DOC_VERIFY_FAIL", result.stderr)
+        with tempfile.TemporaryDirectory() as tmp:
+            repo, base, _ = _verify_repo(Path(tmp))
+            (repo / "Packages" / "RimeBridge" / "Vendor").write_text("file\n")
+            result = self._run(repo, base)
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            self.assertIn("DOC_VERIFY_FAIL", result.stderr)
 
 
 def _view(head=HEAD, state="OPEN"):
