@@ -111,3 +111,11 @@ A9-G 在不含 `LUNA_T9_*`、`TEST_RUNNER_LUNA_T9_*`、`WANXIANG_T9*`、`TEST_RU
 | LUNA-T9-A9/reports/executor-report-m5c-r1.md | bccc32aaa19b2f8e4b8e8069a00daa823ac1100673d2aae2e36542de93ec6339 |
 | PM-LOG/pr1-open-items-disposition-20261115.md | 1d546f68c16a0a9d762686ac8eed02f7986f941ddc02b02de1217f1a16671360 |
 | LUNA-T9-PR1-COVERAGE/reports/design-pr1-coverage.md | 9d2f3be0fd889b2ef48074b1e5a7d98a063ea8f5c8f357c5d4c1d216cc457350 |
+
+## 11. PR2 生产接线（本提交事实，不是真机验收）
+
+- `NineKeySchemeRegistry.entries` 登记第三项 `luna_pinyin_t9`（family `luna_pinyin`，marker `rime_luna_t9_readiness_marker`，compatibilityVersion `1`）。读写与失效只经 registry / `NineKeyReadiness`。雾凇 `t9` 与万象 `wanxiang_t9i` 的 marker 键不复用。
+- 唯一写盘在 `RimeBuiltinResourceInstaller` 的 `afterInstallingResources` 里：`LunaT9ProductionDeploymentSupport.commitInInstallerCallback` 备份 derived schema、物化、再 `syncCustomYamlFiles`。任一步失败先还原 derived（原先没有则删除）再抛出。`default.custom.yaml` 总是列入 `luna_pinyin`；`luna_pinyin_t9` 仅在 registry 有项、derived 文件存在且 SHA 等于 `LunaT9SchemaCompatibility.outputSHA256` 时列入。
+- 启用前 `validateSourceBeforeEnable` 只校验不写盘。已存在但 SHA 不符即失败。物化前删除 `build/luna_pinyin_t9*`，不删 `luna_pinyin.*`、`t9.*`、`wanxiang_t9i.*`。
+- 雾凇与万象生成器 provenance：不适用（现场编译与外部归档）。见 `diag-luna-t9-4e-r1.md`。
+- 真机 M1–M5 与 4e M4 同会话运行时观测仍待 Human 执行。本页不声称真机验收已完成。

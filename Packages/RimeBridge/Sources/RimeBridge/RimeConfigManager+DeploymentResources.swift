@@ -41,15 +41,12 @@ extension RimeConfigManager {
             sourceRoot: resourceRoot,
             rimeRoot: rimeRoot,
             afterInstallingResources: {
-                guard
-                    syncCustomYamlFiles(
-                        defaults: UserDefaults(suiteName: deploymentResourcesAppGroupID),
-                        rimeRoot: rimeRoot,
-                        pendingSchemaID: pendingSchemaID
-                    )
-                else {
-                    throw RimeBuiltinResourceInstaller.InstallationError.fileOperationFailed
-                }
+                // One do/catch lives inside commit: derived backup, materialize, overlay sync.
+                try LunaT9ProductionDeploymentSupport.commitInInstallerCallback(
+                    defaults: UserDefaults(suiteName: deploymentResourcesAppGroupID),
+                    rimeRoot: rimeRoot,
+                    pendingSchemaID: pendingSchemaID
+                )
             }
         )
         Logger.shared.info(

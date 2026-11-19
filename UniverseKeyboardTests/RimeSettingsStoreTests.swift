@@ -38,11 +38,13 @@ final class RimeSettingsStoreTests: XCTestCase {
         XCTAssertTrue(manager.lunaPinyinFilesExist())
     }
 
-    func testRegistryStillHasNoLunaPinyinT9AndChoicesUnchanged() {
-        XCTAssertFalse(NineKeySchemeRegistry.entries.contains { $0.schemaID == "luna_pinyin_t9" })
+    func testRegistryListsLunaButChoicesStayClosedUntilFilesExist() {
+        XCTAssertTrue(NineKeySchemeRegistry.entries.contains { $0.schemaID == "luna_pinyin_t9" })
+        XCTAssertNil(NineKeySchemeRegistry.scheme("not_a_scheme"))
         let store = makeIsolatedStore()
         let ids = store.nineKeySchemeChoices.map(\.id)
         XCTAssertFalse(ids.contains("luna_pinyin_t9"))
+        XCTAssertFalse(ids.contains("not_a_scheme"))
     }
 
     func testDefaultAppGroupSettingsStoreDeinitDoesNotAbort() async {

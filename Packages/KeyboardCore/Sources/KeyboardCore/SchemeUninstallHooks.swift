@@ -11,7 +11,10 @@ public enum SchemeUninstallLayoutFallbackKind: String, Sendable, Equatable {
     /// wanxiang nine-key marker. Fall back to 26-key only when the current
     /// nine-key binding belongs to that family. Fog's marker is not touched.
     case wanxiangInvalidateNineKeyMarkerAndMaybeTwentySixKey
-    /// No uninstall layout-fallback hook (Luna / unknown).
+    /// Luna: clear the luna nine-key marker. Fall back to 26-key only when the
+    /// current nine-key binding belongs to the luna family. Fog's marker is not touched.
+    case lunaInvalidateNineKeyMarkerAndMaybeTwentySixKey
+    /// No uninstall layout-fallback hook (unknown).
     case none
 }
 
@@ -28,6 +31,9 @@ public struct SchemeUninstallHooks: Sendable, Equatable {
     )
     public static let wanxiang = SchemeUninstallHooks(
         layoutFallback: .wanxiangInvalidateNineKeyMarkerAndMaybeTwentySixKey
+    )
+    public static let luna = SchemeUninstallHooks(
+        layoutFallback: .lunaInvalidateNineKeyMarkerAndMaybeTwentySixKey
     )
     public static let none = SchemeUninstallHooks(layoutFallback: .none)
 }
@@ -51,6 +57,35 @@ public enum WanxiangUninstallLayoutFallback {
         }
         if let schemeBinding9,
             NineKeySchemeRegistry.scheme(schemeBinding9)?.familyID == "wanxiang"
+        {
+            set(
+                KeyboardLayoutStyle.twentySixKey.rawValue,
+                KeyboardLayoutSettingsKey.layoutStyle
+            )
+        }
+        synchronize()
+    }
+}
+
+/// Luna uninstall marker + layout fallback. Does not write the fog marker.
+public enum LunaUninstallLayoutFallback {
+    public static func apply(
+        set: (Any?, String) -> Void,
+        synchronize: () -> Void,
+        schemeBinding9: String?
+    ) {
+        for scheme in NineKeySchemeRegistry.schemes(forFamily: "luna_pinyin") {
+            let cleared = RimeT9ReadinessMarker(
+                ready: false,
+                compatibilityVersion: scheme.compatibilityVersion,
+                resourceFingerprint: ""
+            )
+            if let data = try? JSONEncoder().encode(cleared) {
+                set(data, scheme.markerKey)
+            }
+        }
+        if let schemeBinding9,
+            NineKeySchemeRegistry.scheme(schemeBinding9)?.familyID == "luna_pinyin"
         {
             set(
                 KeyboardLayoutStyle.twentySixKey.rawValue,
@@ -107,6 +142,8 @@ extension SchemeAdapterRegistry {
             return .ice
         case "wanxiang":
             return .wanxiang
+        case "luna_pinyin":
+            return .luna
         default:
             return .none
         }
@@ -129,15 +166,22 @@ extension SchemeAdapterRegistry {
         synchronize: () -> Void,
         schemeBinding9: String?
     ) {
-        guard
-            uninstallHooks(for: schemaID).layoutFallback
-                == .wanxiangInvalidateNineKeyMarkerAndMaybeTwentySixKey
-        else { return }
-        WanxiangUninstallLayoutFallback.apply(
-            set: set,
-            synchronize: synchronize,
-            schemeBinding9: schemeBinding9
-        )
+        switch uninstallHooks(for: schemaID).layoutFallback {
+        case .wanxiangInvalidateNineKeyMarkerAndMaybeTwentySixKey:
+            WanxiangUninstallLayoutFallback.apply(
+                set: set,
+                synchronize: synchronize,
+                schemeBinding9: schemeBinding9
+            )
+        case .lunaInvalidateNineKeyMarkerAndMaybeTwentySixKey:
+            LunaUninstallLayoutFallback.apply(
+                set: set,
+                synchronize: synchronize,
+                schemeBinding9: schemeBinding9
+            )
+        case .iceTwentySixKeyAndInvalidateReadiness, .none:
+            return
+        }
     }
 
     public static func prepareUninstallLayoutFallback(
@@ -151,6 +195,12 @@ extension SchemeAdapterRegistry {
             IceUninstallLayoutFallback.apply(set: set, synchronize: synchronize)
         case .wanxiangInvalidateNineKeyMarkerAndMaybeTwentySixKey:
             WanxiangUninstallLayoutFallback.apply(
+                set: set,
+                synchronize: synchronize,
+                schemeBinding9: schemeBinding9
+            )
+        case .lunaInvalidateNineKeyMarkerAndMaybeTwentySixKey:
+            LunaUninstallLayoutFallback.apply(
                 set: set,
                 synchronize: synchronize,
                 schemeBinding9: schemeBinding9

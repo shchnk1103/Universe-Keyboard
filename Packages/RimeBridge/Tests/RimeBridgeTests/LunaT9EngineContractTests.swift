@@ -118,7 +118,8 @@ final class LunaT9EngineContractTests: XCTestCase {
                 mode: .testFixtureMaintenanceOnly, sharedDataURL: shared, userDataURL: user, runtimeSmokeSchemaID: nil))
         print("LUNA_DEPLOY \(name) success=\(deployment.succeeded) diagnostic=\(deployment.diagnosticMessage)")
         XCTAssertTrue(deployment.succeeded)
-        XCTAssertFalse(
+        // PR2 registers luna_pinyin_t9; a correctly deployed fixture must pass the production smoke.
+        XCTAssertTrue(
             RimeT9SmokeProbe.verify(sharedDataDir: shared.path, userDataDir: user.path, schemaID: schema, input: "6446")
         )
         let engine = RimeEngineImpl(sharedDataDir: shared.path, userDataDir: user.path)

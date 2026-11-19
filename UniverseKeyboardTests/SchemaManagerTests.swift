@@ -3251,7 +3251,7 @@ nonisolated private struct DroppingDeliveryDiagnostics: SchemaDeliveryDiagnosing
     func recordRuntimeRoute(_ payload: DiagnosticEvent.RuntimeRoutePhaseEvent, isFailure: Bool) {}
 }
 
-nonisolated private final class RecordingDeliveryDiagnostics: SchemaDeliveryDiagnosing, Sendable {
+nonisolated final class RecordingDeliveryDiagnostics: SchemaDeliveryDiagnosing, Sendable {
     struct RuntimeRouteRecord: Sendable {
         let payload: DiagnosticEvent.RuntimeRoutePhaseEvent
         let isFailure: Bool
@@ -3282,7 +3282,7 @@ nonisolated private final class RecordingDeliveryDiagnostics: SchemaDeliveryDiag
 }
 
 @MainActor
-private final class StubSharedSettingsStore: SharedSettingsStoring {
+final class StubSharedSettingsStore: SharedSettingsStoring {
     private var values: [String: Any]
 
     init(values: [String: Any] = [:]) {
@@ -3297,7 +3297,7 @@ private final class StubSharedSettingsStore: SharedSettingsStoring {
     func synchronize() {}
 }
 
-nonisolated private struct StubSchemaSourceSelector: SchemaSourceSelecting {
+nonisolated struct StubSchemaSourceSelector: SchemaSourceSelecting {
     func selectSource(
         from variants: [RimeSchemeSourceVariant],
         preferredSourceID: String?
@@ -3311,7 +3311,7 @@ nonisolated private struct StubSchemaSourceSelector: SchemaSourceSelecting {
 }
 
 @MainActor
-private final class StubSchemaArchiveDownloader: SchemaArchiveDownloading {
+final class StubSchemaArchiveDownloader: SchemaArchiveDownloading {
     struct Request: Sendable {
         let source: RimeSchemeSourceVariant
     }
@@ -3370,7 +3370,7 @@ private final class SchemaManagerMoveItemFailureFileManager: FileManager {
 /// Keeps the production installer responsible for schema staging while giving
 /// this App Group-free test a deployable directory pair.
 @MainActor
-private final class DeploymentDirectoryOverrideSchemaArchiveInstaller: SchemaArchiveInstalling {
+final class DeploymentDirectoryOverrideSchemaArchiveInstaller: SchemaArchiveInstalling {
     private let underlying: SharedContainerSchemaArchiveInstaller
     private let directories: SchemaDeploymentDirectories
 
@@ -3442,7 +3442,7 @@ private final class DeploymentDirectoryOverrideSchemaArchiveInstaller: SchemaArc
 }
 
 @MainActor
-private final class StubSchemaArchiveInstaller: SchemaArchiveInstalling {
+final class StubSchemaArchiveInstaller: SchemaArchiveInstalling {
     let directories: SchemaDeploymentDirectories
     private let containsInstalledSchema: Bool
     private let stageUninstallError: Error?
@@ -3594,7 +3594,7 @@ private final class SuspensionTaskController: MainAppBackgroundTaskControlling {
     }
 }
 
-private actor StubDeploymentService: RimeDeploymentServicing {
+actor StubDeploymentService: RimeDeploymentServicing {
     private let results: [RimeDeploymentResult]
     private(set) var requests: [RimeDeploymentRequest] = []
     private var leaseOwnerReader: (@MainActor @Sendable () -> UUID?)?
