@@ -6,7 +6,7 @@
 
 - 任务目录默认在 `~/.kos-work/<项目名>/<TASK-ID>/`，例如 `~/.kos-work/Universe-Keyboard/KOS-TOOLS-REPO-001/`。
 - 每个任务目录有四个子目录：`instructions/`（包草稿与冻结包）、`reports/`（报告与授权回执）、`scratch/`（临时文件）、`packets/`（审阅包）。
-- 环境变量 `KOS_HOME`（默认 `$HOME/.kos-work`）和 `KOS_PROJECT`（默认 `Universe-Keyboard`）对 `new_task_dir.sh`、`kos-cleanup.sh`、`kos-signals.py`、`kos-q.py` 生效；`kos-pkg-lint.py` 里保留同名派生但未使用。其它脚本不读这两个变量：
+- 环境变量 `KOS_HOME`（默认 `$HOME/.kos-work`）和 `KOS_PROJECT`（默认 `Universe-Keyboard`）对 `new_task_dir.sh`、`kos-cleanup.sh`、`kos-signals.py`、`kos-q.py`、`kos-lock.py` 生效；`kos-pkg-lint.py` 里保留同名派生但未使用。其它脚本不读这两个变量：
   - `freeze.py`：路径都来自命令行和草稿里的绝对路径。`HOME` 只用于在派发块里把家目录显示成 `~`。
   - `check_report.py`：任务目录由报告路径推出（报告所在目录的上一级）。
 - 依赖：Python 3（只用标准库）、Git（`freeze.py` 的 `git-*` 占位符，以及 `check_report.py`、`claim-check.py` 需要）、Bash（`new_task_dir.sh` 需要）。
@@ -185,6 +185,20 @@ bash scripts/kos/kos-block.sh "角色名" "步骤说明" /path/to/task-package.m
 - **作用：** 实测 SHA-256，写出参数文件与三行块；`*_path` 键自动带哈希。默认拒绝覆盖已存在输出；`KOS_BLOCK_FORCE=1` 才允许。可选 `--queue-id <ID>` 与 `--queue-why <REASON>` 在写出文件前调用 `kos-q.py gate`；`KOS_Q_GATE=1` 且传了 `--task-id`、未显式传 `--queue-id` 时，用任务 ID 做同一校验。校验失败按 gate 的原退出码退出，不写输出文件。
 - **退出码：** 0 成功；2 包/路径不存在或队列未登记；3 输出已存在且未设 force，或队列越序且未给理由。
 - **环境变量：** 读 `KOS_BLOCK_FORCE` 与 `KOS_Q_GATE`；队列数据目录由 `kos-q.py` 按 `KOS_QUEUE_ROOT` / `KOS_HOME` / `KOS_PROJECT` 解析。有可执行位。
+
+### kos-lock.py：物理资源锁
+
+```bash
+python3 -I -B scripts/kos/kos-lock.py acquire sim --task TASK-ID --session NAME [--note TEXT]
+python3 -I -B scripts/kos/kos-lock.py acquire sim main --task TASK-ID --session NAME
+python3 -I -B scripts/kos/kos-lock.py release sim --task TASK-ID
+python3 -I -B scripts/kos/kos-lock.py status
+python3 -I -B scripts/kos/kos-lock.py force-release sim --why "理由"
+```
+
+- **作用：** 独占维护 `RESOURCES.json` 中的 `sim` 与 `main`。同一任务重复申请不刷新 `since`；同批多资源在一次 `flock` 事务内处理，任一资源被其他任务占用则整批退出且不留前序资源。`status` 对失效 pid 或超过 6 小时的持有追加 `SUSPECT`，但不自动清锁。
+- **退出码：** 0 成功；1 参数错、缺 `--why` 或 JSON 损坏；2 资源名非法；4 被其他任务占用；5 非持有者释放。
+- **环境变量：** 数据目录与 `kos-q.py` 相同，`KOS_QUEUE_ROOT` 优先，否则 `${KOS_HOME:-~/.kos-work}/${KOS_PROJECT:-Universe-Keyboard}`。无执行位，用 `python3 -I -B` 调用。
 
 ### kos-q.py：未完成工作登记
 
