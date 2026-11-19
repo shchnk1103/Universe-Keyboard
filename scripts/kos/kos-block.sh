@@ -46,6 +46,13 @@ if [ -n "$queue_id" ]; then
   python3 -I -B "${SCRIPT_DIR}/kos-q.py" "${gate_args[@]}"
 fi
 if [ "${#resources[@]}" -gt 0 ]; then
+  [ -f "$pkg" ] || { echo "包文件不存在：$pkg" >&2; exit 2; }
+  for p in "${kv[@]+"${kv[@]}"}"; do
+    k="${p%%=*}"; v="${p#*=}"
+    case "$k" in
+      *_path) [ -z "$v" ] || [ -f "$v" ] || { echo "文件不存在：$k=$v" >&2; exit 2; };;
+    esac
+  done
   if [ -z "$task_id" ]; then
     echo "传入 --resource 时必须提供 --task-id" >&2
     exit 2

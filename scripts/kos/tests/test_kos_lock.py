@@ -207,6 +207,21 @@ class BlockResourceTests(unittest.TestCase):
         self.assertFalse(params.exists() or block.exists())
         self.assertFalse((self.root / "RESOURCES.json").exists())
 
+    def test_missing_package_with_resource_exits_2_without_lock(self):
+        self.pkg = self.base / "missing-pkg.md"
+        result, params, block = self.block("--task-id", "TASK-A", "--role", "Lucy", "--resource", "sim")
+        self.assertEqual(result.returncode, 2, result.stderr)
+        self.assertFalse(params.exists() or block.exists())
+        self.assertFalse((self.root / "RESOURCES.json").exists())
+
+    def test_missing_note_path_with_resource_exits_2_without_lock(self):
+        missing = self.base / "missing-note.md"
+        result, params, block = self.block(
+            "--task-id", "TASK-A", "--role", "Lucy", "--resource", "main", f"note_path={missing}")
+        self.assertEqual(result.returncode, 2, result.stderr)
+        self.assertFalse(params.exists() or block.exists())
+        self.assertFalse((self.root / "RESOURCES.json").exists())
+
 
 if __name__ == "__main__":
     unittest.main()
