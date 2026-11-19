@@ -124,5 +124,104 @@ class LockTests(unittest.TestCase):
         self.assertIsNone(self.data()["resources"]["sim"])
 
 
+BLOCK = ROOT / "scripts" / "kos" / "kos-block.sh"
+
+
+class BlockResourceTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.base = Path(self.tmp.name)
+        self.root = self.base / "queue"
+        self.pkg = self.base / "pkg.md"
+        self.pkg.write_text("package\n", encoding="utf-8")
+        self.n = 0
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def block(self, *extra):
+        self.n += 1
+        params = self.base / f"params-{self.n}.txt"
+        block = self.base / f"block-{self.n}.txt"
+        env = os.environ.copy()
+        env["KOS_QUEUE_ROOT"] = str(self.root)
+        env["PYTHONDONTWRITEBYTECODE"] = "1"
+        env.pop("KOS_Q_GATE", None)
+        env.pop("KOS_BLOCK_FORCE", None)
+        result = subprocess.run(
+            ["bash", str(BLOCK), "Lucy", "step", str(self.pkg), str(params), str(block), *extra],
+            capture_output=True, text=True, env=env)
+        return result, params, block
+
+    def lock(self, *args):
+        env = os.environ.copy()
+        env["KOS_QUEUE_ROOT"] = str(self.root)
+        env["PYTHONDONTWRITEBYTECODE"] = "1"
+        return subprocess.run(
+            ["python3", "-I", "-B", str(LOCK), *args],
+            capture_output=True, text=True, env=env)
+
+    def data(self):
+        return json.loads((self.root / "RESOURCES.json").read_text(encoding="utf-8"))
+
+    def test_without_resource_writes_dispatch_and_does_not_touch_lock_dir(self):
+        result, params, block = self.block("--task-id", "TASK-A", "--role", "Lucy")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertTrue(params.is_file() and block.is_file())
+        self.assertFalse(self.root.exists())
+
+    def test_sim_resource_acquires_lock_and_writes_dispatch(self):
+        result, params, block = self.block("--task-id", "TASK-A", "--role", "Lucy", "--resource", "sim")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertTrue(params.is_file() and block.is_file())
+        held = self.data()["resources"]["sim"]
+        self.assertEqual(held["task"], "TASK-A")
+        self.assertEqual(held["session"], "Lucy")
+
+    def test_held_sim_blocks_dispatch_without_writing_files(self):
+        self.assertEqual(self.lock("acquire", "sim", "--task", "TASK-B", "--session", "other").returncode, 0)
+        result, params, block = self.block("--task-id", "TASK-A", "--role", "Lucy", "--resource", "sim")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertFalse(params.exists() or block.exists())
+        self.assertEqual(self.data()["resources"]["sim"]["task"], "TASK-B")
+
+    def test_resource_without_task_id_exits_2_without_writing(self):
+        result, params, block = self.block("--resource", "sim")
+        self.assertEqual(result.returncode, 2, result.stderr)
+        self.assertFalse(params.exists() or block.exists())
+        self.assertFalse(self.root.exists())
+
+    def test_multi_resource_conflict_leaves_no_partial_lock_or_dispatch(self):
+        self.assertEqual(self.lock("acquire", "sim", "--task", "TASK-B", "--session", "other").returncode, 0)
+        before = (self.root / "RESOURCES.json").read_bytes()
+        result, params, block = self.block(
+            "--task-id", "TASK-A", "--role", "Lucy", "--resource", "main", "--resource", "sim")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertFalse(params.exists() or block.exists())
+        self.assertEqual((self.root / "RESOURCES.json").read_bytes(), before)
+        self.assertIsNone(self.data()["resources"]["main"])
+
+    def test_illegal_resource_exits_without_dispatch(self):
+        result, params, block = self.block("--task-id", "TASK-A", "--role", "Lucy", "--resource", "foo")
+        self.assertNotEqual(result.returncode, 0)
+        self.assertFalse(params.exists() or block.exists())
+        self.assertFalse((self.root / "RESOURCES.json").exists())
+
+    def test_missing_package_with_resource_exits_2_without_lock(self):
+        self.pkg = self.base / "missing-pkg.md"
+        result, params, block = self.block("--task-id", "TASK-A", "--role", "Lucy", "--resource", "sim")
+        self.assertEqual(result.returncode, 2, result.stderr)
+        self.assertFalse(params.exists() or block.exists())
+        self.assertFalse((self.root / "RESOURCES.json").exists())
+
+    def test_missing_note_path_with_resource_exits_2_without_lock(self):
+        missing = self.base / "missing-note.md"
+        result, params, block = self.block(
+            "--task-id", "TASK-A", "--role", "Lucy", "--resource", "main", f"note_path={missing}")
+        self.assertEqual(result.returncode, 2, result.stderr)
+        self.assertFalse(params.exists() or block.exists())
+        self.assertFalse((self.root / "RESOURCES.json").exists())
+
+
 if __name__ == "__main__":
     unittest.main()

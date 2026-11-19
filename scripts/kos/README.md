@@ -182,9 +182,9 @@ python3 -B scripts/kos/kos-pkg-lint.py --start <40位起点SHA> --prev /path/to/
 bash scripts/kos/kos-block.sh "角色名" "步骤说明" /path/to/task-package.md /path/to/params.txt /path/to/next-block.txt --next "下一步：…" key=value
 ```
 
-- **作用：** 实测 SHA-256，写出参数文件与三行块；`*_path` 键自动带哈希。默认拒绝覆盖已存在输出；`KOS_BLOCK_FORCE=1` 才允许。可选 `--queue-id <ID>` 与 `--queue-why <REASON>` 在写出文件前调用 `kos-q.py gate`；`KOS_Q_GATE=1` 且传了 `--task-id`、未显式传 `--queue-id` 时，用任务 ID 做同一校验。校验失败按 gate 的原退出码退出，不写输出文件。
-- **退出码：** 0 成功；2 包/路径不存在或队列未登记；3 输出已存在且未设 force，或队列越序且未给理由。
-- **环境变量：** 读 `KOS_BLOCK_FORCE` 与 `KOS_Q_GATE`；队列数据目录由 `kos-q.py` 按 `KOS_QUEUE_ROOT` / `KOS_HOME` / `KOS_PROJECT` 解析。有可执行位。
+- **作用：** 实测 SHA-256，写出参数文件与三行块；`*_path` 键自动带哈希。默认拒绝覆盖已存在输出；`KOS_BLOCK_FORCE=1` 才允许。可选 `--queue-id <ID>` 与 `--queue-why <REASON>` 在写出文件前调用 `kos-q.py gate`；`KOS_Q_GATE=1` 且传了 `--task-id`、未显式传 `--queue-id` 时，用任务 ID 做同一校验。校验失败按 gate 的原退出码退出，不写输出文件。可重复 `--resource sim|main`，可选 `--session <会话>`。未传 `--resource` 时不访问锁目录，行为与原来一致。传入任一 `--resource` 时，queue 门禁通过后、调用 `acquire` 之前，先确认包文件和所有非空 `*_path` 都存在；任一缺失则退出 2，不调用 `acquire`，也不写派发文件。然后 `--task-id` 为空则退出 2；否则调用 `kos-lock.py acquire --task "$task_id" --session "$session_val"`，资源名跟在后面。`$session_val` 优先用 `--session`，否则 `--role`，再否则 `block`。`acquire` 非零（非法资源退出 2，冲突退出 4）时原样退出，不写派发文件。多资源在同一次 acquire 里处理，任一冲突不留半把锁。
+- **退出码：** 0 成功；2 包/路径不存在、队列未登记、资源非法，或启用 `--resource` 但缺 `--task-id`；3 输出已存在且未设 force，或队列越序且未给理由；4 资源被其他任务占用。
+- **环境变量：** 读 `KOS_BLOCK_FORCE` 与 `KOS_Q_GATE`；队列与锁目录由 `kos-q.py` / `kos-lock.py` 按 `KOS_QUEUE_ROOT` / `KOS_HOME` / `KOS_PROJECT` 解析。有可执行位。
 
 ### kos-lock.py：物理资源锁
 
