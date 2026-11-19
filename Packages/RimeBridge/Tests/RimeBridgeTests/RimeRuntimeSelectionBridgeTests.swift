@@ -364,6 +364,46 @@ final class RimeRuntimeSelectionBridgeTests: XCTestCase {
         XCTAssertEqual(bridged.effectiveSchemaID, "t9")
     }
 
+    func testLunaPinyinFamilyInstalledUsesSchemaFileOnly() throws {
+        let dir = FileManager.default.temporaryDirectory
+            .appendingPathComponent("uk-luna-probe-\(UUID().uuidString)", isDirectory: true)
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let suite = "uk.luna.probe.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        XCTAssertFalse(
+            RimeRuntimeSelectionBridge.isFamilyInstalled(
+                "luna_pinyin", defaults: defaults, sharedURL: dir))
+        defaults.set(true, forKey: "luna_pinyin_installed")
+        XCTAssertFalse(
+            RimeRuntimeSelectionBridge.isFamilyInstalled(
+                "luna_pinyin", defaults: defaults, sharedURL: dir))
+        XCTAssertFalse(
+            RimeRuntimeSelectionBridge.isFamilyInstalled(
+                "luna_pinyin", defaults: defaults, sharedURL: nil))
+        try Data("# schema".utf8).write(
+            to: dir.appendingPathComponent("luna_pinyin.schema.yaml"))
+        XCTAssertTrue(
+            RimeRuntimeSelectionBridge.isFamilyInstalled(
+                "luna_pinyin", defaults: defaults, sharedURL: dir))
+    }
+
+    func testOtherFamiliesKeepDefaultsInstalledFlag() throws {
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: "uk.luna.other.\(UUID().uuidString)"))
+        defaults.set(true, forKey: "wanxiang_installed")
+        XCTAssertTrue(
+            RimeRuntimeSelectionBridge.isFamilyInstalled(
+                "wanxiang", defaults: defaults, sharedURL: nil))
+        XCTAssertFalse(
+            RimeRuntimeSelectionBridge.isFamilyInstalled(
+                "rime_ice", defaults: defaults, sharedURL: nil))
+        defaults.set(true, forKey: "rime_ice_installed")
+        XCTAssertTrue(
+            RimeRuntimeSelectionBridge.isFamilyInstalled(
+                "rime_ice", defaults: defaults, sharedURL: nil))
+    }
+
     private func makeSnapshotDefaults() throws -> (UserDefaults, URL) {
         let name = "uk.bridge.snapshot.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: name))

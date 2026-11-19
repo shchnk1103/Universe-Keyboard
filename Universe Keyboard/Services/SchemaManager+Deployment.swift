@@ -321,12 +321,25 @@ extension SchemaManager {
         return restored
     }
 
-    func nineKeyFamilyInstalled(_ scheme: NineKeyScheme, pendingSchemaID: String? = nil) -> Bool {
+    func lunaPinyinFilesExist(in sharedDataURL: URL? = nil) -> Bool {
+        let directory = sharedDataURL ?? (try? archiveInstaller.runtimeDirectories())?.sharedDataURL
+        guard let directory else { return false }
+        return FileManager.default.fileExists(
+            atPath: directory.appendingPathComponent("luna_pinyin.schema.yaml").path)
+    }
+
+    func nineKeyFamilyInstalled(
+        _ scheme: NineKeyScheme,
+        pendingSchemaID: String? = nil,
+        sharedDataURL: URL? = nil
+    ) -> Bool {
         switch scheme.familyID {
         case "rime_ice":
             return rimeIceFilesExist()
         case "wanxiang":
             return settings.bool(forKey: "wanxiang_installed") || pendingSchemaID == "wanxiang"
+        case "luna_pinyin":
+            return lunaPinyinFilesExist(in: sharedDataURL)
         default:
             return false
         }
@@ -368,7 +381,7 @@ extension SchemaManager {
                 marker: marker,
                 fingerprint: fingerprint
             )
-            if nineKeyFamilyInstalled(scheme) {
+            if nineKeyFamilyInstalled(scheme, sharedDataURL: sharedDataURL) {
                 installedFamilies.insert(scheme.familyID)
             }
         }

@@ -618,6 +618,8 @@ final class RimeSettingsStore {
                 installed = rimeIceInstalledFilesExist
             case "wanxiang":
                 installed = schemaManager.wanxiangFamilyInstalled()
+            case "luna_pinyin":
+                installed = schemaManager.lunaPinyinFamilyInstalled()
             default:
                 installed = false
             }
@@ -632,6 +634,8 @@ final class RimeSettingsStore {
             return "雾凇九键"
         case "wanxiang":
             return "万象九键"
+        case "luna_pinyin":
+            return "朙月九键"
         default:
             return scheme.schemaID
         }
@@ -699,6 +703,8 @@ final class RimeSettingsStore {
             installed = rimeIceInstalledFilesExist
         case "wanxiang":
             installed = schemaManager.wanxiangFamilyInstalled()
+        case "luna_pinyin":
+            installed = schemaManager.lunaPinyinFamilyInstalled()
         default:
             installed = false
         }

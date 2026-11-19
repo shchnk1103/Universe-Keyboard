@@ -13,6 +13,23 @@ public enum RimeRuntimeSelectionBridge {
         public var fogFingerprint: String?
     }
 
+    /// Family installation probe. `luna_pinyin` is decided by the schema file
+    /// in the shared data directory (fail closed); other families keep the
+    /// App Group installed flag. Read-only: no write, cleanup or deploy.
+    static func isFamilyInstalled(
+        _ familyID: String,
+        defaults: UserDefaults?,
+        sharedURL: URL?
+    ) -> Bool {
+        if familyID == "luna_pinyin" {
+            return sharedURL.map {
+                FileManager.default.fileExists(
+                    atPath: $0.appendingPathComponent("luna_pinyin.schema.yaml").path)
+            } ?? false
+        }
+        return defaults?.bool(forKey: "\(familyID)_installed") == true
+    }
+
     /// Reads each registry marker key and that scheme's source fingerprint.
     /// Family installation is the App Group installed flag, not the fingerprint.
     public static func registeredSnapshot(
@@ -32,7 +49,7 @@ public enum RimeRuntimeSelectionBridge {
                 marker: marker,
                 fingerprint: fingerprint
             )
-            if defaults?.bool(forKey: "\(scheme.familyID)_installed") == true {
+            if isFamilyInstalled(scheme.familyID, defaults: defaults, sharedURL: sharedURL) {
                 installedFamilies.insert(scheme.familyID)
             }
         }

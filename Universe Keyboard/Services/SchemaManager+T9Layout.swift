@@ -464,4 +464,8 @@ extension SchemaManager {
     func wanxiangFamilyInstalled() -> Bool {
         settings.bool(forKey: "wanxiang_installed")
     }
+
+    func lunaPinyinFamilyInstalled() -> Bool {
+        lunaPinyinFilesExist()
+    }
 }
