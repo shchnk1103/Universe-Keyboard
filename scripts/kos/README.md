@@ -6,7 +6,7 @@
 
 - 任务目录默认在 `~/.kos-work/<项目名>/<TASK-ID>/`，例如 `~/.kos-work/Universe-Keyboard/KOS-TOOLS-REPO-001/`。
 - 每个任务目录有四个子目录：`instructions/`（包草稿与冻结包）、`reports/`（报告与授权回执）、`scratch/`（临时文件）、`packets/`（审阅包）。
-- 环境变量 `KOS_HOME`（默认 `$HOME/.kos-work`）和 `KOS_PROJECT`（默认 `Universe-Keyboard`）对 `new_task_dir.sh`、`kos-cleanup.sh`、`kos-signals.py` 生效；`kos-pkg-lint.py` 里保留同名派生但未使用。其它脚本不读这两个变量：
+- 环境变量 `KOS_HOME`（默认 `$HOME/.kos-work`）和 `KOS_PROJECT`（默认 `Universe-Keyboard`）对 `new_task_dir.sh`、`kos-cleanup.sh`、`kos-signals.py`、`kos-q.py` 生效；`kos-pkg-lint.py` 里保留同名派生但未使用。其它脚本不读这两个变量：
   - `freeze.py`：路径都来自命令行和草稿里的绝对路径。`HOME` 只用于在派发块里把家目录显示成 `~`。
   - `check_report.py`：任务目录由报告路径推出（报告所在目录的上一级）。
 - 依赖：Python 3（只用标准库）、Git（`freeze.py` 的 `git-*` 占位符，以及 `check_report.py`、`claim-check.py` 需要）、Bash（`new_task_dir.sh` 需要）。
@@ -152,7 +152,7 @@ PYTHONDONTWRITEBYTECODE=1 python3 -I -B -m unittest discover -s scripts/kos/test
 python3 -B scripts/kos/kos-report-lint.py /path/to/reports/executor-report-impl.md
 ```
 
-- **作用：** 检查报告大小、首行状态词、疑似整段内嵌的机器输出前缀、引用日志的 SHA-256 是否与文件实测一致。接受的状态词含 `DONE`/`PARTIAL`/`BLOCKED`/`STOPPED`/`PASS`/`CHANGES_REQUESTED`/`FAIL`/`APPROVE`/`CONDITIONAL`。
+- **作用：** 检查报告大小、首行状态词、疑似整段内嵌的机器输出前缀、引用日志的 SHA-256 是否与文件实测一致。接受的状态词含 `DONE`/`PARTIAL`/`BLOCKED`/`STOPPED`/`PASS`/`CHANGES_REQUESTED`/`FAIL`/`APPROVE`/`CONDITIONAL`。默认上限按文件名分层：`design-*.md` 与 `arch-review-*.md` 为 24 KB（16 KB 提醒），其余报告为 12 KB（8 KB 提醒）；显式 `--max-bytes` / `--warn-bytes` 始终优先。
 - **退出码：** 0 合规并打印 `OK`；1 有问题（逐条打印）。
 - **环境变量：** 不读 `KOS_HOME` / `KOS_PROJECT`。
 
@@ -182,9 +182,21 @@ python3 -B scripts/kos/kos-pkg-lint.py --start <40位起点SHA> --prev /path/to/
 bash scripts/kos/kos-block.sh "角色名" "步骤说明" /path/to/task-package.md /path/to/params.txt /path/to/next-block.txt --next "下一步：…" key=value
 ```
 
-- **作用：** 实测 SHA-256，写出参数文件与三行块；`*_path` 键自动带哈希。默认拒绝覆盖已存在输出；`KOS_BLOCK_FORCE=1` 才允许。
-- **退出码：** 0 成功；2 包/路径不存在；3 输出已存在且未设 force。
-- **环境变量：** 读 `KOS_BLOCK_FORCE`；不读 `KOS_HOME` / `KOS_PROJECT`。有可执行位。
+- **作用：** 实测 SHA-256，写出参数文件与三行块；`*_path` 键自动带哈希。默认拒绝覆盖已存在输出；`KOS_BLOCK_FORCE=1` 才允许。可选 `--queue-id <ID>` 与 `--queue-why <REASON>` 在写出文件前调用 `kos-q.py gate`；`KOS_Q_GATE=1` 且传了 `--task-id`、未显式传 `--queue-id` 时，用任务 ID 做同一校验。校验失败按 gate 的原退出码退出，不写输出文件。
+- **退出码：** 0 成功；2 包/路径不存在或队列未登记；3 输出已存在且未设 force，或队列越序且未给理由。
+- **环境变量：** 读 `KOS_BLOCK_FORCE` 与 `KOS_Q_GATE`；队列数据目录由 `kos-q.py` 按 `KOS_QUEUE_ROOT` / `KOS_HOME` / `KOS_PROJECT` 解析。有可执行位。
+
+### kos-q.py：未完成工作登记
+
+```bash
+python3 -I -B scripts/kos/kos-q.py digest
+python3 -I -B scripts/kos/kos-q.py add TASK-ID --title "标题" --rank 1
+python3 -I -B scripts/kos/kos-q.py gate TASK-ID [--why "理由"]
+```
+
+- **作用：** 维护 `QUEUE.json`、追加 `QUEUE-LOG.md` 并生成 `PRIORITY.md`。子命令为 `digest`、`render`、`add`、`set`、`rank`、`inbox`、`done`、`gate`、`show`、`list`、`focus`。`inbox` 同秒多次写入会追加 `-2`、`-3` 后缀，避免 ID 重号。
+- **退出码：** `gate` 未登记为 2，越序且未给 `--why` 为 3；其余成功为 0，参数错误为 1。
+- **环境变量：** `KOS_QUEUE_ROOT` 非空时直接作为数据目录；否则使用 `${KOS_HOME:-~/.kos-work}/${KOS_PROJECT:-Universe-Keyboard}`。无执行位，用 `python3 -I -B` 调用。
 
 ### kos-signals.py：失败原因与收件箱
 

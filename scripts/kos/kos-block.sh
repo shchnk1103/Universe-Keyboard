@@ -10,9 +10,12 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 who="$1"; step="$2"; pkg="$3"; params="$4"; block="$5"; shift 5
 next=""; kv=()
 task_dir=""; task_id=""; active_step=""; role=""; auth_path=""; expect_rev="0"; claim_id=""; updated_by=""
+queue_id=""; queue_why=""
 while [ $# -gt 0 ]; do
   case "$1" in
     --next) next="$2"; shift 2;;
+    --queue-id) queue_id="$2"; shift 2;;
+    --queue-why) queue_why="$2"; shift 2;;
     --task-dir) task_dir="$2"; shift 2;;
     --task-id) task_id="$2"; shift 2;;
     --active-step) active_step="$2"; shift 2;;
@@ -30,6 +33,14 @@ fi
 if [ -n "$task_dir" ] && [ -n "$auth_path" ] && [ ! -f "$auth_path" ]; then
   echo "授权文件不存在，禁止越权生成下一站入口：$auth_path" >&2
   exit 2
+fi
+if [ -z "$queue_id" ] && [ "${KOS_Q_GATE:-}" = "1" ] && [ -n "$task_id" ]; then
+  queue_id="$task_id"
+fi
+if [ -n "$queue_id" ]; then
+  gate_args=(gate "$queue_id")
+  [ -n "$queue_why" ] && gate_args+=(--why "$queue_why")
+  python3 -I -B "${SCRIPT_DIR}/kos-q.py" "${gate_args[@]}"
 fi
 h() { shasum -a 256 "$1" | cut -d' ' -f1; }
 [ -f "$pkg" ] || { echo "包文件不存在：$pkg" >&2; exit 2; }
