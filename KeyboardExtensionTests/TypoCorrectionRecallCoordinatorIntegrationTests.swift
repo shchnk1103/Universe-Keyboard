@@ -423,7 +423,11 @@ nonisolated final class TypoCorrectionRecallCoordinatorIntegrationTests: XCTestC
             let started = DispatchTime.now()
             return try await flushBarrierValue(milliseconds: 1000, rootURL: rootURL) { stage in
                 let before = runtime.testingFlushSnapshotForTesting()
-                await runtime.flushAndWaitForTesting()
+                let outcome = await runtime.flushAndWaitForTesting()
+                guard case .completed = outcome else {
+                    // 取消返回不证明任何票终结：不标屏障、不读盘，让外层按超时裁决。
+                    throw CancellationError()
+                }
                 let after = runtime.testingFlushSnapshotForTesting()
                 print(
                     "R4_DIAG accepted=\(before.accepted) appended=\(after.appended) filtered=\(after.filtered) dropped=\(after.dropped) lifecycle=\(after.lifecycleCancelled)"

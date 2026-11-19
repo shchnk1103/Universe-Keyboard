@@ -16,10 +16,22 @@ import Synchronization
     extension DiagnosticsJournalWriter: DiagnosticsJournalBatchWriting {}
 #endif
 
+/// flushAndWaitForTesting 的返回语义：只有 `.completed` 证明屏障正常终结；
+/// `.cancelled` 表示等待被取消，不证明任何票终结。
+internal enum DiagnosticsJournalFlushBarrierOutcome: Sendable, Equatable {
+    case completed
+    case cancelled
+}
+
 /// Typed journal 的有界热路径入口。它不读取 App Group、不编码 JSON，也不等待
 /// writer；这些工作只会在 utility executor 的批处理阶段发生。
 public final class DiagnosticsJournalIngress: Sendable {
     public static let maximumPendingEventCount = 256
+
+    /// O2 观测的单调毫秒；只在 DEBUG 观测输出里使用。
+    fileprivate static func monotonicMilliseconds() -> Int {
+        Int(DispatchTime.now().uptimeNanoseconds / 1_000_000)
+    }
 
     private struct AppendAdmission: Sendable {
         var closed = false
@@ -295,7 +307,9 @@ public final class DiagnosticsJournalIngress: Sendable {
         /// 不是 fsync；历史读到零条与合同相容但违反测试数量断言，根因 UNKNOWN。
         ///
         /// 取消会注销 waiter 并恰好 resume 一次；不会持锁等待，也不会被生命周期调用。
-        internal func flushAndWaitForTesting() async {
+        /// `.completed` 只表示未取消的正常终结；`.cancelled` 表示等待被取消，
+        /// 不证明任何票终结，也不能计入 appended。
+        internal func flushAndWaitForTesting() async -> DiagnosticsJournalFlushBarrierOutcome {
             let registration: WaitRegistration? = pending.withLock { state in
                 let limit = state.nextTicket &- 1
                 let unfinished = state.openTickets.filter { $0 <= limit }
@@ -316,7 +330,7 @@ public final class DiagnosticsJournalIngress: Sendable {
                 }
                 return WaitRegistration(id: id, stream: stream, shouldFlush: shouldFlush)
             }
-            guard let registration else { return }
+            guard let registration else { return .completed }
             let waiterCount = pending.withLock { $0.waiters.count }
             let probe = waiterRegisteredProbe.withLock { $0 }
             probe?(waiterCount)
@@ -326,9 +340,9 @@ public final class DiagnosticsJournalIngress: Sendable {
                     self.flushPendingEvents()
                 }
             }
-            await withTaskCancellationHandler {
+            let resumed: Void? = await withTaskCancellationHandler {
                 var iterator = registration.stream.makeAsyncIterator()
-                await iterator.next()
+                return await iterator.next()
             } onCancel: {
                 let continuation = self.pending.withLock { state -> AsyncStream<Void>.Continuation? in
                     state.waiters[registration.id] = nil
@@ -338,8 +352,30 @@ public final class DiagnosticsJournalIngress: Sendable {
                     state.exclusiveResumeCount += 1
                     return continuation
                 }
+                #if DEBUG
+                    if let snapshot = self.testingSnapshotForTestingForObservation() {
+                        print(
+                            "PF024_O1 cancelled waiter=\(registration.id) queuedTickets=\(snapshot.queuedTickets.count) inFlightTickets=\(snapshot.inFlightTickets.count)"
+                        )
+                    }
+                #endif
                 continuation?.finish()
             }
+            // nil 来自 onCancel 的 finish()；非 nil 但任务已取消说明 yield 与取消撞在一起，
+            // 同样按取消返回，不把未终结的票算进 appended。
+            if resumed == nil || Task.isCancelled {
+                return .cancelled
+            }
+            return .completed
+        }
+
+        /// O1 观测专用：锁外快照，只读 queuedTickets / inFlightTickets 数量。
+        private func testingSnapshotForTestingForObservation() -> FlushWaitTestingSnapshot? {
+            #if DEBUG
+                return testingSnapshotForTesting()
+            #else
+                return nil
+            #endif
         }
 
         /// 测试专用：把下一次 ticket 拨到指定值。用于定义溢出拒绝，不参与生产路径。
@@ -719,6 +755,10 @@ public final class DiagnosticsJournalIngress: Sendable {
         #endif
 
         Task.detached(priority: .utility) {
+            #if DEBUG
+                // O2：记录 detached 入口的单调时刻，缺这条说明调度还没开始。
+                print("PF024_O2 detachedEntry tickets=\(enabledTickets.count) ms=\(Self.monotonicMilliseconds())")
+            #endif
             guard self.isWriteStillPermitted(for: work.lifecycleEpoch) else {
                 #if DEBUG
                     self.resumeWaiters(
@@ -761,6 +801,10 @@ public final class DiagnosticsJournalIngress: Sendable {
                 try await writer.append(healthEvents + enabledEvents) {
                     self.admitAppendIfStillVisible(for: work.lifecycleEpoch)
                 }
+                #if DEBUG
+                    // O2：append 正常返回的单调时刻；与入口时刻差值即 I/O 耗时。
+                    print("PF024_O2 appendReturned tickets=\(enabledTickets.count) ms=\(Self.monotonicMilliseconds())")
+                #endif
                 self.consumeQueueFullDropsReported(in: work.deferredHealth)
                 #if DEBUG
                     // append 已返回。被过滤的事件没有进入这次 I/O，但也到此终结。
@@ -783,6 +827,10 @@ public final class DiagnosticsJournalIngress: Sendable {
                 } else if (error as? DiagnosticsJournalError) == .writerReclaimed {
                     await writer.rotateIdentityAfterReclaim()
                     #if DEBUG
+                        // O2：append 抛错（含 reclaim）的单调时刻。
+                        print(
+                            "PF024_O2 appendThrew writerReclaimed tickets=\(enabledTickets.count) ms=\(Self.monotonicMilliseconds())"
+                        )
                         self.requeueAfterIdentityRotation(
                             work.events, tickets: work.tickets, lifecycleEpoch: work.lifecycleEpoch
                         )
@@ -794,6 +842,10 @@ public final class DiagnosticsJournalIngress: Sendable {
                         work.deferredHealth + [(Self.diagnosticReason(for: error), enabledEvents.count)]
                     )
                     #if DEBUG
+                        // O2：append 抛错（非 reclaim）的单调时刻。
+                        print(
+                            "PF024_O2 appendThrew \(error) tickets=\(enabledTickets.count) ms=\(Self.monotonicMilliseconds())"
+                        )
                         self.resumeWaiters(
                             self.pending.withLock { state in
                                 state.terminate(filteredTickets, outcome: "filtered")

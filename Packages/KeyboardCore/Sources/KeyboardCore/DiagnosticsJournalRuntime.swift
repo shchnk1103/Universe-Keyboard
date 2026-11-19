@@ -305,7 +305,8 @@ public final class DiagnosticsJournalRuntime: Sendable {
         /// 精确上界也不是逐 ticket 对账，不能从总数相等推断覆盖范围。
         /// 计数按首个终结原因归类，dropped 合并多种原因，不是物理 I/O 审计。
         /// 历史读到零条与合同相容但违反测试数量断言，根因 UNKNOWN。
-        internal func flushAndWaitForTesting() async {
+        @discardableResult
+        internal func flushAndWaitForTesting() async -> DiagnosticsJournalFlushBarrierOutcome {
             await ingress.flushAndWaitForTesting()
         }
 
