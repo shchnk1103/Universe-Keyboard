@@ -5,6 +5,7 @@ RESOURCES.json records holders only. QUEUE.json and BOARD.md stay separate.
 All writes take an exclusive flock and replace the file atomically.
 """
 import argparse
+import calendar
 import fcntl
 import json
 import os
@@ -40,7 +41,7 @@ def empty_db():
 
 def parse_since(value):
     try:
-        return time.mktime(time.strptime(value, "%Y-%m-%dT%H:%M:%SZ"))
+        return calendar.timegm(time.strptime(value, "%Y-%m-%dT%H:%M:%SZ"))
     except (TypeError, ValueError):
         return None
 
@@ -138,15 +139,6 @@ def acquire(db, names, args):
     if changed:
         store_direct(db)
     return 0
-
-
-def store_direct(db):
-    os.makedirs(ROOT, exist_ok=True)
-    tmp = DATA + ".tmp"
-    with open(tmp, "w", encoding="utf-8") as out:
-        json.dump(db, out, ensure_ascii=False, indent=1)
-        out.write("\n")
-    os.replace(tmp, DATA)
 
 
 def release(db, name, task):

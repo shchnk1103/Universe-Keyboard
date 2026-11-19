@@ -73,6 +73,23 @@ class LockTests(unittest.TestCase):
         self.assertIsNone(self.data()["resources"]["sim"])
         self.assertIn("holder crashed", (self.root / "QUEUE-LOG.md").read_text(encoding="utf-8"))
 
+    def test_fresh_lock_with_live_pid_is_not_suspect(self):
+        previous = os.environ.get("TZ")
+        os.environ["TZ"] = "Asia/Shanghai"
+        try:
+            acquired = run(
+                ["acquire", "sim", "--task", "TASK-A", "--session", "one", "--pid", str(os.getpid())],
+                self.root)
+            self.assertEqual(acquired.returncode, 0, acquired.stderr)
+            status = run(["status"], self.root)
+            self.assertEqual(status.returncode, 0, status.stderr)
+            self.assertNotIn("SUSPECT", status.stdout)
+        finally:
+            if previous is None:
+                os.environ.pop("TZ", None)
+            else:
+                os.environ["TZ"] = previous
+
     def test_status_marks_dead_pid_and_old_lock_suspect(self):
         self.assertEqual(run(["acquire", "sim", "--task", "TASK-A", "--session", "one", "--pid", "99999999"], self.root).returncode, 0)
         status = run(["status"], self.root)
