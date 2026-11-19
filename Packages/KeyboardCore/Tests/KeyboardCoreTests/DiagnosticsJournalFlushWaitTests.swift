@@ -379,15 +379,50 @@ final class DiagnosticsJournalFlushWaitTests: XCTestCase {
         try await requireGate(gate) { try await task.value }
     }
 
-    private func requireGate(
+    func testCancelledBarrierReturnsCancelledOutcome() async throws {
+        let gate = FlushGate()
+        await gate.setHoldForever(true)
+        let rig = makeIngress(gate: gate, mainApp: false)
+        rig.ingress.record(makeEvent(sequence: 1, processInstanceID: rig.processID))
+        let outcomeBox = Mutex<DiagnosticsJournalFlushBarrierOutcome?>(nil)
+        let task = Task {
+            let outcome = await rig.ingress.flushAndWaitForTesting()
+            outcomeBox.withLock { $0 = outcome }
+        }
+        try await requireGate(gate) { await gate.waitUntilStarted() }
+        task.cancel()
+        // 取消后 flushAndWaitForTesting 应立即返回 .cancelled，不依赖 append 返回。
+        let started = DispatchTime.now()
+        while outcomeBox.withLock({ $0 }) == nil {
+            await Task.yield()
+            if flushBarrierElapsedMilliseconds(since: started) > 1000 { break }
+        }
+        let outcome = outcomeBox.withLock { $0 }
+        XCTAssertEqual(outcome, .cancelled)
+        let snapshot = rig.ingress.testingSnapshotForTesting()
+        XCTAssertEqual(snapshot.appended, 0)
+        XCTAssertEqual(snapshot.waiterCount, 0)
+        // 释放挂起的 append，避免测试进程残留。
+        await gate.unblockAfterTimeout()
+    }
+
+    func testCompletedBarrierReturnsCompletedOutcome() async throws {
+        let gate = FlushGate()
+        await gate.setBlocking(false)
+        let rig = makeIngress(gate: gate, mainApp: false)
+        rig.ingress.record(makeEvent(sequence: 1, processInstanceID: rig.processID))
+        let outcome = try await requireFlush(gate) { await rig.ingress.flushAndWaitForTesting() }
+        XCTAssertEqual(outcome, .completed)
+    }
+
+    private func requireGate<T: Sendable>(
         _ gate: FlushGate,
         milliseconds: Int = 1000,
-        _ body: @escaping @Sendable () async throws -> Void
-    ) async throws {
+        _ body: @escaping @Sendable () async throws -> T
+    ) async throws -> T {
         do {
-            _ = try await flushBarrierValue(milliseconds: milliseconds) { _ in
+            return try await flushBarrierValue(milliseconds: milliseconds) { _ in
                 try await body()
-                return true
             }
         } catch {
             await gate.unblockAfterTimeout()
@@ -512,15 +547,15 @@ final class DiagnosticsJournalFlushWaitTests: XCTestCase {
 
 /// 截止后先放弃 writer，再把错误抛回调用方。
 /// flushBarrierValue 不再等待 body，所以这次放弃不会被卡住的写入挡住。
-private func requireFlush(
+/// 带返回值版本：body 的结果在屏障预算内原样带回。
+private func requireFlush<T: Sendable>(
     _ gate: FlushGate,
     milliseconds: Int = 1000,
-    _ body: @escaping @Sendable () async -> Void
-) async throws {
+    _ body: @escaping @Sendable () async -> T
+) async throws -> T {
     do {
-        _ = try await flushBarrierValue(milliseconds: milliseconds) { _ in
+        return try await flushBarrierValue(milliseconds: milliseconds) { _ in
             await body()
-            return true
         }
     } catch {
         await gate.unblockAfterTimeout()
@@ -573,6 +608,9 @@ private actor FlushGate: DiagnosticsJournalBatchWriting {
     private var blocking = true
     private var admitBeforeBlock = false
     private var prepareFailure = false
+    /// 挂起直到测试取消本次 append；用来证明取消返回 `.cancelled` 而不是 writer 先终结。
+    private var holdForever = false
+    private var holdWaiters: [CheckedContinuation<Void, Never>] = []
     private var blockers: [CheckedContinuation<Void, Never>] = []
     private(set) var appendCount = 0
     private(set) var submittedSequences: [[UInt64]] = []
@@ -592,6 +630,10 @@ private actor FlushGate: DiagnosticsJournalBatchWriting {
 
     func setPrepareFailure(_ prepareFailure: Bool) {
         self.prepareFailure = prepareFailure
+    }
+
+    func setHoldForever(_ holdForever: Bool) {
+        self.holdForever = holdForever
     }
 
     var isAbandoned: Bool { abandoned }
@@ -642,6 +684,9 @@ private actor FlushGate: DiagnosticsJournalBatchWriting {
         let idle = idleWaiters
         idleWaiters.removeAll()
         idle.forEach { $0.resume() }
+        let held = holdWaiters
+        holdWaiters.removeAll()
+        held.forEach { $0.resume() }
     }
 
     func releaseOne() {
@@ -651,6 +696,14 @@ private actor FlushGate: DiagnosticsJournalBatchWriting {
             permits += 1
         } else {
             blockers.removeFirst().resume()
+        }
+    }
+
+    private func storeHoldWaiter(_ continuation: CheckedContinuation<Void, Never>) {
+        if abandoned {
+            continuation.resume()
+        } else {
+            holdWaiters.append(continuation)
         }
     }
 
@@ -705,6 +758,18 @@ private actor FlushGate: DiagnosticsJournalBatchWriting {
     ) async throws {
         appendCount += 1
         submittedSequences.append(events.map(\.localSequence))
+        if holdForever {
+            didStart = true
+            let waiting = startWaiters
+            startWaiters.removeAll()
+            waiting.forEach { $0.resume() }
+            // 永不返回。只有 unblockAfterTimeout 能解开，用来证明取消路径不依赖 append 返回。
+            await withCheckedContinuation { continuation in
+                Task { self.storeHoldWaiter(continuation) }
+            }
+            noteAppendFinished()
+            return
+        }
         if abandoned {
             didStart = true
             noteAppendFinished()
