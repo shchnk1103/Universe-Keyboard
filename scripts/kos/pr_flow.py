@@ -333,6 +333,8 @@ def _run_cleanup(args, runner, expect_head: str) -> str:
     dirty = _worktree_dirty(status.text, allow)
     if dirty:
         return "skipped:worktree-dirty"
+    if Path(args.cleanup_worktree).resolve() == Path(args.main_checkout).resolve():
+        return "skipped:main-checkout"
     for prefix in allow:
         candidate = Path(args.cleanup_worktree) / prefix
         if not candidate.exists() and not candidate.is_symlink():
@@ -836,9 +838,9 @@ def cmd_land(args, runner) -> int:
                 return stop("ff-failed", "new HEAD unknown; cleanup stopped")
             payload["ff"] = f"ff-only {old.text.strip()} -> {new.text.strip()}"
 
-    if _cleanup_requested(args):
-        # Recheck reachability before deleting the branch. git branch -d is the
-        # final safety check, especially when the primary checkout could not ff.
+    if _cleanup_requested(args) and str(payload["ff"]).startswith("ff-only"):
+        # Delete only after a real fast-forward. git branch -d is the final
+        # safety check; a skipped or failed ff leaves the local branch alone.
         if _git(runner, args.main_checkout, "merge-base", "--is-ancestor", args.cleanup_branch, "origin/main").code:
             return stop("cleanup-stopped", "branch no longer reachable")
         deleted = _git(runner, args.main_checkout, "branch", "-d", args.cleanup_branch)

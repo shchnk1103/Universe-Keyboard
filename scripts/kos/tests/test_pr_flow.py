@@ -130,6 +130,81 @@ class CleanupPathTests(unittest.TestCase):
             self.assertTrue(victim.is_symlink())
             self.assertFalse(runner.steps)
 
+    def test_main_checkout_vendor_symlink_is_not_unlinked(self) -> None:
+        from types import SimpleNamespace
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            vendor = root / "Packages" / "RimeBridge" / "Vendor"
+            vendor.parent.mkdir(parents=True)
+            vendor.symlink_to(root / "outside")
+            args = SimpleNamespace(main_checkout=str(root), cleanup_worktree=str(root),
+                                   cleanup_branch="feature",
+                                   cleanup_allow_untracked=["Packages/RimeBridge/Vendor"])
+            runner = Queue([
+                (has("rev-parse"), ok(HEAD)),
+                (has("merge-base"), ok()),
+                (has("worktree", "list"), ok(f"worktree {root}\n")),
+                (has("rev-parse"), ok(HEAD)),
+                (has("status"), ok("?? Packages/RimeBridge/Vendor\n")),
+            ])
+            self.assertEqual(FLOW._run_cleanup(args, runner, HEAD), "skipped:main-checkout")
+            self.assertTrue(vendor.is_symlink())
+            self.assertFalse(any("worktree" in call and "remove" in call for call in runner.calls))
+
+    def test_vendor_symlink_unlinked_before_worktree_remove(self) -> None:
+        from types import SimpleNamespace
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            main = root / "main"
+            wt = root / "wt"
+            main.mkdir()
+            vendor = wt / "Packages" / "RimeBridge" / "Vendor"
+            vendor.parent.mkdir(parents=True)
+            vendor.symlink_to(root / "outside")
+            args = SimpleNamespace(main_checkout=str(main), cleanup_worktree=str(wt),
+                                   cleanup_branch="feature",
+                                   cleanup_allow_untracked=["Packages/RimeBridge/Vendor"])
+            runner = Queue([
+                (has("rev-parse"), ok(HEAD)),
+                (has("merge-base"), ok()),
+                (has("worktree", "list"), ok(f"worktree {wt}\n")),
+                (has("rev-parse"), ok(HEAD)),
+                (has("status"), ok("?? Packages/RimeBridge/Vendor\n")),
+                (has("worktree", "remove"), ok()),
+            ])
+            self.assertEqual(FLOW._run_cleanup(args, runner, HEAD), "worktree-removed")
+            self.assertFalse(vendor.exists() or vendor.is_symlink())
+            removed = [call for call in runner.calls if "remove" in call]
+            self.assertEqual(len(removed), 1)
+            self.assertNotIn("--force", removed[0])
+
+    def test_plain_vendor_directory_is_not_removed(self) -> None:
+        from types import SimpleNamespace
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            main = root / "main"
+            wt = root / "wt"
+            main.mkdir()
+            vendor = wt / "Packages" / "RimeBridge" / "Vendor"
+            vendor.mkdir(parents=True)
+            (vendor / "keep").write_text("x", encoding="utf-8")
+            args = SimpleNamespace(main_checkout=str(main), cleanup_worktree=str(wt),
+                                   cleanup_branch="feature",
+                                   cleanup_allow_untracked=["Packages/RimeBridge/Vendor"])
+            runner = Queue([
+                (has("rev-parse"), ok(HEAD)),
+                (has("merge-base"), ok()),
+                (has("worktree", "list"), ok(f"worktree {wt}\n")),
+                (has("rev-parse"), ok(HEAD)),
+                (has("status"), ok("?? Packages/RimeBridge/Vendor/\n")),
+            ])
+            self.assertEqual(FLOW._run_cleanup(args, runner, HEAD), "skipped:allowed-path-not-symlink")
+            self.assertTrue((vendor / "keep").is_file())
+            self.assertFalse(any("remove" in call for call in runner.calls))
+
 
 class OpenTests(unittest.TestCase):
     def setUp(self) -> None:
@@ -769,6 +844,76 @@ class LandTests(unittest.TestCase):
         runner = Queue([(has("pr", "view"), _view(state="MERGED"))])
         self.assertEqual(FLOW.main(self._land(["--dry-run"]), runner=runner), 1)
         self.assertEqual(len(runner.calls), 1)
+
+    def _cleanup_land(self, extra_git):
+        merge_json = ok(json.dumps({"mergeCommit": {"oid": "c" * 40}}))
+        return [
+            (has("pr", "view"), _view()),
+            *_snap(_pass_items()),
+            *_classification_steps(),
+            (has("pr", "view"), _view()),
+            (has("autoMergeRequest,mergeStateStatus,headRefOid"), _ready()),
+            (has("pr", "merge"), ok("merged")),
+            (has("mergeCommit"), merge_json),
+            (has("fetch"), ok()),
+            (has("--is-ancestor"), ok()),
+            (has("--is-ancestor"), ok()),
+            *extra_git,
+        ]
+
+    def test_cleanup_removes_worktree_then_ff_then_branch_d(self) -> None:
+        steps = self._cleanup_land([
+            (has("rev-parse"), ok(HEAD)),
+            (has("--is-ancestor"), ok()),
+            (has("worktree", "list"), ok("worktree /wt\n")),
+            (has("rev-parse"), ok(HEAD)),
+            (has("status"), ok()),
+            (has("worktree", "remove"), ok()),
+            (has("--abbrev-ref"), ok("main\n")),
+            (has("status"), ok()),
+            (lambda a: "rev-parse" in a and "--abbrev-ref" not in a, ok("d" * 40 + "\n")),
+            (has("--is-ancestor"), ok()),
+            (has("--ff-only"), ok()),
+            (lambda a: "rev-parse" in a and "--abbrev-ref" not in a, ok("e" * 40 + "\n")),
+            (has("--is-ancestor"), ok()),
+            (has("branch", "-d"), ok()),
+            (has("ls-remote"), ok()),
+        ])
+        runner = Queue(steps)
+        extra = ["--cleanup-worktree", "/wt", "--cleanup-branch", "feature/x"]
+        self.assertEqual(FLOW.main(self._land(["--merge"] + extra), runner=runner), 0)
+        names = []
+        for call in runner.calls:
+            if "remove" in call:
+                names.append("remove")
+                self.assertNotIn("--force", call)
+            elif "--ff-only" in call:
+                names.append("ff")
+            elif "branch" in call and "-d" in call:
+                names.append("branch-d")
+                self.assertNotIn("-D", call)
+        self.assertEqual(names, ["remove", "ff", "branch-d"])
+
+    def test_skipped_ff_does_not_delete_branch(self) -> None:
+        steps = self._cleanup_land([
+            (has("rev-parse"), ok(HEAD)),
+            (has("--is-ancestor"), ok()),
+            (has("worktree", "list"), ok("worktree /wt\n")),
+            (has("rev-parse"), ok(HEAD)),
+            (has("status"), ok()),
+            (has("worktree", "remove"), ok()),
+            (has("--abbrev-ref"), ok("main\n")),
+            (has("status"), ok(" M docs/kos/README.md\n")),
+            (lambda a: "rev-parse" in a and "--abbrev-ref" not in a, ok("d" * 40 + "\n")),
+        ])
+        runner = Queue(steps)
+        extra = ["--cleanup-worktree", "/wt", "--cleanup-branch", "feature/x"]
+        self.assertEqual(FLOW.main(self._land(["--merge"] + extra), runner=runner), 0)
+        self.assertFalse(any("branch" in call and "-d" in call for call in runner.calls))
+        self.assertFalse(any("-D" in call for call in runner.calls))
+        payload = json.loads((self.logs / "land-266.json").read_text())
+        self.assertTrue(payload["ff"].startswith("skipped:"))
+        self.assertNotEqual(payload["cleanup"], "local-branch-deleted")
 
 
 if __name__ == "__main__":
