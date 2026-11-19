@@ -111,6 +111,16 @@ def _name_set(text: str) -> set[str]:
     return {line.strip() for line in text.splitlines() if line.strip()}
 
 
+def _bilingual_error(title: str, body: str) -> str | None:
+    left, sep, right = title.partition("/")
+    if not sep or not re.search(r"[A-Za-z]", left) or not re.search(r"[\u4e00-\u9fff]", right):
+        return "H10: title must contain '/' with English on the left and Chinese on the right"
+    summary = next((line for line in body.splitlines() if line.startswith("Summary:")), "")
+    if not re.search(r"[A-Za-z]", summary) or not re.search(r"[\u4e00-\u9fff]", body):
+        return "H10: body needs a Summary: line with English and Chinese text"
+    return None
+
+
 def _body_rejected(body: str) -> bool:
     lowered = body.lower()
     return "co-authored-by" in lowered or "generated with" in lowered
@@ -414,6 +424,11 @@ def cmd_open(args, runner) -> int:
             return _die(payload["error"])
         if remote.text.strip():
             payload["error"] = f"remote branch already exists: {remote.text.strip()}"
+            return _die(payload["error"])
+
+        bilingual = _bilingual_error(args.title, body)
+        if bilingual:
+            payload["error"] = bilingual
             return _die(payload["error"])
 
         if args.dry_run:

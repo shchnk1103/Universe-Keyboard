@@ -13,7 +13,11 @@ echo "HEAD $(git rev-parse HEAD)"
 echo "branch $(git rev-parse --abbrev-ref HEAD)"
 echo "== git status --short"
 git status --short
-if [ -n "$(git status --porcelain)" ]; then
+porcelain="$(git status --porcelain)"
+if [ -L "Packages/RimeBridge/Vendor" ]; then
+  porcelain="$(printf '%s\n' "$porcelain" | grep -v -x '?? Packages/RimeBridge/Vendor' || true)"
+fi
+if [ -n "$porcelain" ]; then
   echo "DOC_VERIFY_FAIL: worktree is dirty" >&2
   exit 1
 fi

@@ -91,7 +91,7 @@ class OpenGuardTests(unittest.TestCase):
         self.body = root / "body.md"
         self.logs = root / "logs"
         self.files.write_text("scripts/kos/pr_flow.py\n", encoding="utf-8")
-        self.body.write_text("ok\n", encoding="utf-8")
+        self.body.write_text("Summary: Record the open log.\n记录开 PR 的日志。\n", encoding="utf-8")
 
     def tearDown(self) -> None:
         self.tmp.cleanup()
@@ -110,7 +110,7 @@ class OpenGuardTests(unittest.TestCase):
             "--files",
             str(self.files),
             "--title",
-            "t",
+            "Record open log / 记录开 PR 日志",
             "--body-file",
             str(self.body),
             "--log-dir",
