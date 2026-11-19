@@ -41,6 +41,7 @@ def load():
 
 
 def save(db, note):
+    os.makedirs(os.path.dirname(DATA), exist_ok=True)
     tmp = DATA + '.tmp'
     with open(tmp, 'w', encoding='utf-8') as f:
         json.dump(db, f, ensure_ascii=False, indent=1)
@@ -250,7 +251,7 @@ def main():
         r = find(db, a.id)
         free = [x for x in queue(db) if not x.get('hold')]
         top = free[0] if free else None
-        jumps = (top and top is not r and top['touched'] < TODAY
+        jumps = (top and top is not r
                  and (r['zone'] != 'queue' or r['rank'] > top['rank']))
         if jumps and not a.why:
             die(f'越序：队首 {top["id"]}（下一步:{top.get("next", "")}，{top.get("owner", "")}）今天还没动。\n'

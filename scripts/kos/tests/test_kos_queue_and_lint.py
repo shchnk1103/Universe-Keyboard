@@ -99,6 +99,21 @@ class QueueTests(unittest.TestCase):
         self.assertEqual(why.returncode, 0, why.stderr)
         self.assertEqual(self.q("done", "FIRST", "-m", "finished", env=env).returncode, 0)
 
+    def test_add_creates_missing_queue_root(self):
+        nested = Path(self.tmp.name) / "deep" / "root"
+        result = self.q("add", "TASK-C", "--title", "three", env={"KOS_QUEUE_ROOT": str(nested)})
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertTrue((nested / "QUEUE.json").is_file())
+
+    def test_same_day_jump_is_blocked_without_reason(self):
+        env = {"KOS_QUEUE_ROOT": str(self.root)}
+        self.assertEqual(self.q("add", "FIRST", "--title", "first", "--rank", "1", env=env).returncode, 0)
+        self.assertEqual(self.q("add", "SECOND", "--title", "second", "--rank", "2", env=env).returncode, 0)
+        jump = self.q("gate", "SECOND", env=env)
+        self.assertEqual(jump.returncode, 3)
+        allowed = self.q("gate", "SECOND", "--why", "human asked", env=env)
+        self.assertEqual(allowed.returncode, 0, allowed.stderr)
+
     def test_inbox_same_second_is_unique(self):
         env = {"KOS_QUEUE_ROOT": str(self.root)}
         ids = []
