@@ -10,12 +10,15 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 who="$1"; step="$2"; pkg="$3"; params="$4"; block="$5"; shift 5
 next=""; kv=()
 task_dir=""; task_id=""; active_step=""; role=""; auth_path=""; expect_rev="0"; claim_id=""; updated_by=""
-queue_id=""; queue_why=""
+queue_id=""; queue_why=""; session=""
+resources=()
 while [ $# -gt 0 ]; do
   case "$1" in
     --next) next="$2"; shift 2;;
     --queue-id) queue_id="$2"; shift 2;;
     --queue-why) queue_why="$2"; shift 2;;
+    --resource) resources+=("$2"); shift 2;;
+    --session) session="$2"; shift 2;;
     --task-dir) task_dir="$2"; shift 2;;
     --task-id) task_id="$2"; shift 2;;
     --active-step) active_step="$2"; shift 2;;
@@ -41,6 +44,20 @@ if [ -n "$queue_id" ]; then
   gate_args=(gate "$queue_id")
   [ -n "$queue_why" ] && gate_args+=(--why "$queue_why")
   python3 -I -B "${SCRIPT_DIR}/kos-q.py" "${gate_args[@]}"
+fi
+if [ "${#resources[@]}" -gt 0 ]; then
+  if [ -z "$task_id" ]; then
+    echo "传入 --resource 时必须提供 --task-id" >&2
+    exit 2
+  fi
+  if [ -n "$session" ]; then
+    session_val="$session"
+  elif [ -n "$role" ]; then
+    session_val="$role"
+  else
+    session_val="block"
+  fi
+  python3 -I -B "${SCRIPT_DIR}/kos-lock.py" acquire --task "$task_id" --session "$session_val" "${resources[@]+"${resources[@]}"}"
 fi
 h() { shasum -a 256 "$1" | cut -d' ' -f1; }
 [ -f "$pkg" ] || { echo "包文件不存在：$pkg" >&2; exit 2; }
