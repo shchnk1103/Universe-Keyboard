@@ -184,6 +184,66 @@ def main():
                 for ref in re.findall(pattern, content):
                     if not _existing(ref):
                         err.append(f"E6 {os.path.basename(f)} 引用的脚本不存在：{ref}")
+            _check_e6_handoff_invocations(f, content, handoff_lines, err)
+
+    def _check_e6_handoff_invocations(f, content, handoff_lines, err):
+        # KOS-LINT-HANDOFF-FLAGS: subcommands/long options must match the real
+        # argparse definition in scripts/kos/kos_handoff.py, and block-producing
+        # subcommands require the anti-wrap notice somewhere in the packet.
+        import shlex
+        table = _handoff_flag_table()
+        if not table:
+            return
+        base = os.path.basename(f)
+        relay_subs = {"final", "relay-exec", "relay-quality"}
+        needs_notice = set()
+        for line in handoff_lines:
+            clean = re.sub(r"^\s*(?:(?:[-*+]\s+)|(?:\d+[.)]\s+))?", "", line).strip().replace("`", "")
+            try:
+                tokens = shlex.split(clean, comments=True)
+            except ValueError:
+                continue
+            idx = next((i for i, t in enumerate(tokens) if t.endswith("kos_handoff.py")), None)
+            if idx is None:
+                continue
+            rest = tokens[idx + 1:]
+            sub = next((t for t in rest if not t.startswith("-")), None)
+            # A prose remainder (Chinese, paths, values) is not a subcommand claim.
+            if sub is None or not re.fullmatch(r"[a-z][a-z0-9-]*", sub):
+                continue
+            if sub not in table:
+                err.append(f"E6 {base} kos_handoff 未知子命令：{sub}")
+                continue
+            for t in rest:
+                if t.startswith("--"):
+                    flag = t.split("=", 1)[0]
+                    if flag not in table[sub]:
+                        err.append(f"E6 {base} kos_handoff {sub} 非法选项：{flag}")
+            if sub in relay_subs:
+                needs_notice.add(sub)
+        if needs_notice and not re.search(r"直接作为 Markdown 原样回复|严禁外层再套代码块", content):
+            err.append(
+                f"E6 {base} 调用 {'/'.join(sorted(needs_notice))} 但未写明防套壳要求（直接作为 Markdown 原样回复 / 严禁外层再套代码块）"
+            )
+
+    def _handoff_flag_table():
+        # Derive {subcommand: {--flag,...}} from the live argparse definition so
+        # the lint can never drift from kos_handoff.py itself.
+        src_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "kos_handoff.py")
+        try:
+            with open(src_path, encoding="utf-8") as handle:
+                src = handle.read()
+        except OSError:
+            return {}
+        table, var_to_sub = {}, {}
+        for m in re.finditer(r"(\w+)\s*=\s*\w+\.add_parser\([\"']([\w-]+)[\"']", src):
+            var_to_sub[m.group(1)] = m.group(2)
+            table.setdefault(m.group(2), set())
+        for m in re.finditer(r"(\w+)\.add_argument\([\"'](--[\w-]+)[\"']", src):
+            sub = var_to_sub.get(m.group(1))
+            if sub is not None:
+                table[sub].add(m.group(2))
+        return table
 
     def _gate_commands(content):
         import shlex
