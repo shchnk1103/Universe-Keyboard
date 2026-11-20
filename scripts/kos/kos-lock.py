@@ -193,6 +193,13 @@ def main():
     force.add_argument("--why", default="")
     args = parser.parse_args()
 
+    # Validate and normalize resource names before creating the lock directory
+    # or opening RESOURCES.json.lock, so invalid names leave no lock residue.
+    if args.cmd == "acquire":
+        normalize(args.resources)
+    elif args.cmd in ("release", "force-release"):
+        normalize([args.resource])
+
     def act(db):
         if args.cmd == "acquire":
             return acquire(db, args.resources, args)
