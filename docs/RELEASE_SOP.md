@@ -8,7 +8,7 @@
 
 ## 每次发版的固定 5 步
 
-1. **开版盘点**：明确目标版本与基线 commit；核对未关闭债务、合规项与未完成真机门禁；创建 `docs/releases/vX.Y.Z.md` 版本档案，写入目标、基线、状态、Owner、归档条件和当期变更清单。
+1. **开版盘点**：明确目标版本与基线 commit；核对未关闭债务、合规项与未完成真机门禁；创建 `docs/releases/vX.Y.Z.md` 版本档案，写入目标、基线、状态、Owner、归档条件和当期变更清单。任务合并后更新 `PORTFOLIO.md` 对应行时，一并同步当前版本规划档案（`docs/releases/vX.Y.Z.md`）的 `Scope` 状态表；不引入额外数据库，不改 `CHANGELOG.md` 的日期式格式。
 2. **收口与文档**：完成当版合规说明或必要修复；核对 `CHANGELOG.md` 中现行日期式条目是否齐备（仓库没有 `[Unreleased]` 区块，不引入 Keep-a-Changelog 结构）；在版本档案中起草商店更新文案（What's New）与 Review Notes。
 3. **封版与门禁**：按发布决定更新 `MARKETING_VERSION`；`CURRENT_PROJECT_VERSION` 按 `RELEASE_CHECKLIST.md` 由 Xcode Cloud 或上传包递增写入；在本地跑通对应分类的 CI 门禁，并由 Human 完成真机必测矩阵。CI 绿不替代真机、性能、签名、隐私或 Product/Release 门禁。
 4. **打包与提审**：确认 `main` 上封版 commit 的 `push` CI run 为 `success`；按 `RELEASE_CHECKLIST.md` 规则打 Tag：App Store 正式包用 `appstore/<version>-<yyyymmdd>`，TestFlight 用 `testflight/<version>-<yyyymmdd>`；用 Tag 触发 Xcode Cloud 打包上传，核对 App Store Connect 元数据、隐私问卷与 Build 号后提交审核。Tag、上传、分发和审核提交分别授权、分别记录。
@@ -32,6 +32,12 @@
 - <user-visible change 1>
 - <user-visible change 2>
 - 来源：`CHANGELOG.md` 与 <audit / review report path>
+
+## Deferred
+
+| 项 | 为什么不做 | 重新评估的触发条件 |
+|---|---|---|
+| <item> | <why not in this version> | <what would reopen it> |
 
 ## Compliance
 
