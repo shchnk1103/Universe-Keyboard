@@ -117,7 +117,7 @@ def _bilingual_error(title: str, body: str) -> str | None:
         return "H10: title must contain '/' with English on the left and Chinese on the right"
     summary = next((line for line in body.splitlines() if line.startswith("Summary:")), "")
     if not re.search(r"[A-Za-z]", summary) or not re.search(r"[\u4e00-\u9fff]", body):
-        return "H10: body needs a Summary: line with English and Chinese text"
+        return "H10: body needs a Summary: line with English text and Chinese anywhere in the body"
     return None
 
 
@@ -330,11 +330,13 @@ def _run_cleanup(args, runner, expect_head: str) -> str:
     # arbitrary caller-supplied path (which could escape the worktree).
     if any(path != "Packages/RimeBridge/Vendor" for path in allow):
         return "skipped:unsupported-allowed-path"
+    # The main checkout is never a cleanup target; this guard must fire before
+    # the dirty check so a dirty main checkout still reports main-checkout.
+    if Path(args.cleanup_worktree).resolve() == Path(args.main_checkout).resolve():
+        return "skipped:main-checkout"
     dirty = _worktree_dirty(status.text, allow)
     if dirty:
         return "skipped:worktree-dirty"
-    if Path(args.cleanup_worktree).resolve() == Path(args.main_checkout).resolve():
-        return "skipped:main-checkout"
     for prefix in allow:
         candidate = Path(args.cleanup_worktree) / prefix
         if not candidate.exists() and not candidate.is_symlink():
