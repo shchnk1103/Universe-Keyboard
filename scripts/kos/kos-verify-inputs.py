@@ -38,8 +38,10 @@ def main() -> None:
             continue
         seen.add(key)
         counts["badlen"] += 1
-        if not args.quiet or True:
-            print(f"BADLEN len={len(digest)} {digest[:8]} {path}")
+        # BADLEN is a non-OK line: printed unconditionally, even under --quiet
+        # (KOS-VERIFY-QUIET-001; the old `if not args.quiet or True:` was
+        # always-true and misleading).
+        print(f"BADLEN len={len(digest)} {digest[:8]} {path}")
     for match in PAIR.finditer(text):
         path, digest = match.group(1), match.group(3)
         key = (path, digest)
