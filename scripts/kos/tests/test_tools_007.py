@@ -140,6 +140,51 @@ class VerifyTests(unittest.TestCase):
         self.assertIn("SUMMARY ok=1 mismatch=1 missing=1 skip=1", result.stdout)
         tmp.cleanup()
 
+    def test_truncated_hex_fails_closed(self) -> None:
+        tmp = tempfile.TemporaryDirectory()
+        root = Path(tmp.name)
+        truncated = "ab" * 29  # 58 chars: a hand-copied truncated SHA-256
+        package = root / "pkg.md"
+        package.write_text(f"target `{root / 'f.txt'}` SHA-256 `{truncated}`\n", encoding="utf-8")
+        result = _run([PY, "-B", str(KOS / "kos-verify-inputs.py"), str(package)])
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn("BADLEN len=58", result.stdout)
+        self.assertIn("SUMMARY ok=0 mismatch=0 missing=0 skip=0 badlen=1", result.stdout)
+        tmp.cleanup()
+
+    def test_overlong_hex_fails_closed(self) -> None:
+        tmp = tempfile.TemporaryDirectory()
+        root = Path(tmp.name)
+        overlong = "cd" * 33  # 66 chars: overlong hex run
+        package = root / "pkg.md"
+        package.write_text(f"target `{root / 'f.txt'}` SHA-256 `{overlong}`\n", encoding="utf-8")
+        result = _run([PY, "-B", str(KOS / "kos-verify-inputs.py"), str(package)])
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn("BADLEN len=66", result.stdout)
+        self.assertIn("badlen=1", result.stdout)
+        tmp.cleanup()
+
+    def test_valid_64_and_git40_are_not_flagged(self) -> None:
+        tmp = tempfile.TemporaryDirectory()
+        root = Path(tmp.name)
+        target = root / "real.txt"
+        target.write_text("payload\n", encoding="utf-8")
+        digest = subprocess.run(["shasum", "-a", "256", str(target)],
+                                capture_output=True, text=True).stdout.split()[0]
+        git_sha = "0123456789abcdef0123456789abcdef01234567"  # 40-char commit SHA
+        package = root / "pkg.md"
+        package.write_text(
+            f"file `{target}` SHA-256 `{digest}`\n"
+            f"commit `{root / 'log.md'}` HEAD `{git_sha}`\n",
+            encoding="utf-8",
+        )
+        result = _run([PY, "-B", str(KOS / "kos-verify-inputs.py"), str(package)])
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn(f"OK {digest[:8]} {target}", result.stdout)
+        self.assertNotIn("BADLEN", result.stdout)
+        self.assertIn("badlen=0", result.stdout)
+        tmp.cleanup()
+
 
 if __name__ == "__main__":
     unittest.main()

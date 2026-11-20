@@ -9,6 +9,10 @@ import sys
 from pathlib import Path
 
 PAIR = re.compile(r"`(/[^`]+)`(.{0,80}?)`([0-9a-f]{64})`")
+# Hex runs of length 41-63 or >=65 next to a path: truncated or overlong
+# SHA-256 (e.g. a hand-copied 58-char digest). Fail closed instead of
+# silently skipping; plain 40-char git SHAs and short hex stay exempt.
+PAIR_BADLEN = re.compile(r"`(/[^`]+)`(.{0,80}?)`([0-9a-f]{41,63}|[0-9a-f]{65,})`")
 
 
 def skip_path(path: str) -> bool:
@@ -26,7 +30,16 @@ def main() -> None:
         raise SystemExit(2)
     text = package.read_text(encoding="utf-8")
     seen: set[tuple[str, str]] = set()
-    counts = {"ok": 0, "mismatch": 0, "missing": 0, "skip": 0}
+    counts = {"ok": 0, "mismatch": 0, "missing": 0, "skip": 0, "badlen": 0}
+    for match in PAIR_BADLEN.finditer(text):
+        path, digest = match.group(1), match.group(3)
+        key = ("badlen", path, digest)
+        if key in seen or skip_path(path):
+            continue
+        seen.add(key)
+        counts["badlen"] += 1
+        if not args.quiet or True:
+            print(f"BADLEN len={len(digest)} {digest[:8]} {path}")
     for match in PAIR.finditer(text):
         path, digest = match.group(1), match.group(3)
         key = (path, digest)
@@ -45,9 +58,9 @@ def main() -> None:
         if not args.quiet or status != "OK":
             print(f"{status} {digest[:8]} {path}")
     print(
-        "SUMMARY ok={ok} mismatch={mismatch} missing={missing} skip={skip}".format(**counts)
+        "SUMMARY ok={ok} mismatch={mismatch} missing={missing} skip={skip} badlen={badlen}".format(**counts)
     )
-    raise SystemExit(1 if counts["mismatch"] or counts["missing"] else 0)
+    raise SystemExit(1 if counts["mismatch"] or counts["missing"] or counts["badlen"] else 0)
 
 
 if __name__ == "__main__":
