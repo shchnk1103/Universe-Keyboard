@@ -145,6 +145,7 @@ class OpenGuardTests(unittest.TestCase):
                 (has("diff"), ok("scripts/kos/pr_flow.py\n")),
                 (lambda a: "rev-parse" in a and any(str(x).startswith("refs/heads/") for x in a), ok(HEAD + "\n")),
                 (has("ls-remote"), ok("")),
+                (has("rev-parse", "origin/main"), fail("unknown revision")),
                 (has("push"), ok("")),
                 (has("pr", "create"), ok("https://example/pull/9\n")),
             ]
