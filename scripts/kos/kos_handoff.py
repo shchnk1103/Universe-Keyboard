@@ -304,8 +304,10 @@ def cmd_relay_quality(args):
 
     packet_text = Path(args.packet).read_text(encoding="utf-8")
     m_grade = re.search(r"包头档位[**：:\s]*`([^`]+)`", packet_text)
-    if not m_grade or m_grade.group(1).strip() != "code-fix":
-        return back("packet grade is not code-fix")
+    grade = m_grade.group(1).strip() if m_grade else ""
+    profile = TIER_PROFILES.get(grade)
+    if not profile or "relay-quality" not in profile["relays"]:
+        return back(f"packet grade {grade or '(none)'} does not allow relay-quality")
     m_focus = re.search(r"\*\*复核重点\*\*[：:]\s*\n((?:\s{2,}.*\n?)+)", packet_text)
     if not m_focus:
         return back("packet has no 复核重点 section")
@@ -377,6 +379,71 @@ def cmd_relay_quality(args):
 
 
 
+TIER_PROFILES = {
+    "doc-light": {
+        "role": "doc",
+        "stations": ["PM 写包", "实现·文档", "PM 终审", "发布*", "合并*"],
+        "preflight": False,
+        "red_tests": False,
+        "independent_review": False,
+        "relays": [],
+    },
+    "doc-rule": {
+        "role": "doc",
+        "stations": ["PM 写包", "预检", "实现·文档", "PM 终审", "发布*", "合并*"],
+        "preflight": True,
+        "red_tests": False,
+        "independent_review": False,
+        "relays": ["relay-exec"],
+    },
+    "code-fix": {
+        "role": "code",
+        "stations": ["PM 写包", "预检", "实现·代码（红测）", "独立复核", "PM 终审", "发布*", "真机(Human)*", "合并*"],
+        "preflight": True,
+        "red_tests": True,
+        "independent_review": True,
+        "relays": ["relay-exec", "relay-quality"],
+    },
+    "feature": {
+        "role": "code",
+        "stations": ["设计(Nick)", "架构审查(Alex)", "PM 写包", "预检", "实现·代码", "独立复核", "PM 终审", "发布*", "真机(Human)*", "合并*"],
+        "preflight": True,
+        "red_tests": True,
+        "independent_review": True,
+        "relays": [],
+    },
+}
+
+
+def cmd_profile(args):
+    pm = "Jack（PM）"
+    grade = (args.grade or "").strip()
+    profile = TIER_PROFILES.get(grade)
+    if not profile:
+        print(f"STOPPED: unknown grade: {grade}", file=sys.stderr)
+        return 2
+    if args.action:
+        action = args.action.strip()
+        if action not in ("relay-exec", "relay-quality"):
+            print(f"STOPPED: unknown action: {action}", file=sys.stderr)
+            return 2
+        if action not in profile["relays"]:
+            print(
+                f"STOPPED: {grade} 不允许 {action} 直通（允许: {', '.join(profile['relays']) or '无'}），回退 {pm}",
+                file=sys.stderr)
+            return 1
+        print(f"{grade}: {action} allowed")
+        return 0
+    lines = [f"{grade}:"]
+    lines.append("站点: " + " → ".join(profile["stations"]))
+    lines.append(f"预检: {'必经' if profile['preflight'] else '免'}")
+    lines.append(f"红测: {'必经' if profile['red_tests'] else '免'}")
+    lines.append(f"独立复核: {'必经' if profile['independent_review'] else '免'}")
+    lines.append("直通: " + (", ".join(profile["relays"]) if profile["relays"] else "无（严禁越级直通）"))
+    print("\n".join(lines))
+    return 0
+
+
 EXEC_ROLE_LABELS = {"code": "Executor（代码）", "doc": "Executor（记录/文档）"}
 EXEC_GRADE_ROLES = {"code-fix": "code", "doc-rule": "doc"}
 
@@ -400,9 +467,11 @@ def cmd_relay_exec(args):
     packet = Path(args.packet)
     packet_text = packet.read_text(encoding="utf-8")
     m_grade = re.search(r"包头档位[**：:\s]*`([^`]+)`", packet_text)
-    if not m_grade or m_grade.group(1).strip() not in EXEC_GRADE_ROLES:
-        return back("packet grade is not code-fix or doc-rule")
-    role = EXEC_GRADE_ROLES[m_grade.group(1).strip()]
+    grade = m_grade.group(1).strip() if m_grade else ""
+    profile = TIER_PROFILES.get(grade)
+    if not profile or "relay-exec" not in profile["relays"]:
+        return back(f"packet grade {grade or '(none)'} does not allow relay-exec")
+    role = profile["role"]
     m_author = re.search(r"^\s*[-*]?\s*\*?\*?包作者\*?\*?[：:]\s*(\S+)", packet_text, re.MULTILINE)
     if m_author:
         excludes.append(m_author.group(1))
@@ -494,6 +563,10 @@ def main(argv=None):
     p_rel.add_argument("--board-args", default=json.dumps([os.path.expanduser("~/.kos-work/Universe-Keyboard/tools/kos-board.py")]))
     p_rel.add_argument("--out")
 
+    p_prof = sub.add_parser("profile")
+    p_prof.add_argument("--grade", required=True)
+    p_prof.add_argument("--action", default=None)
+
     p_exe = sub.add_parser("relay-exec")
     p_exe.add_argument("--report", required=True)
     p_exe.add_argument("--packet", required=True)
@@ -514,6 +587,8 @@ def main(argv=None):
         return cmd_relay_quality(args)
     if args.cmd == "relay-exec":
         return cmd_relay_exec(args)
+    if args.cmd == "profile":
+        return cmd_profile(args)
     return cmd_handoff(args)
 
 

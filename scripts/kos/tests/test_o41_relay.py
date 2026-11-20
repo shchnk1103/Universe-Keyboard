@@ -832,5 +832,74 @@ class RelayExecTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, args)
 
 
+
+
+class TierProfileGateTests(unittest.TestCase):
+    """4-tier profile routing as deterministic rules in kos_handoff.py."""
+
+    def _profile(self, grade, action):
+        return _run_py("kos_handoff.py", ["profile", "--grade", grade, "--action", action])
+
+    def test_allowed_direct_relays_per_grade(self) -> None:
+        for grade in ("doc-rule", "code-fix"):
+            result = self._profile(grade, "relay-exec")
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn("allowed", (result.stdout + result.stderr).lower())
+        result = self._profile("code-fix", "relay-quality")
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_forbidden_direct_relays_fail_closed(self) -> None:
+        for grade in ("doc-light", "feature"):
+            result = self._profile(grade, "relay-exec")
+            self.assertNotEqual(result.returncode, 0, grade)
+            self.assertIn("Jack", result.stdout + result.stderr)
+        for grade in ("doc-light", "doc-rule", "feature"):
+            result = self._profile(grade, "relay-quality")
+            self.assertNotEqual(result.returncode, 0, grade)
+            self.assertIn("Jack", result.stdout + result.stderr)
+
+    def test_profile_lists_stations_and_gates(self) -> None:
+        result = _run_py("kos_handoff.py", ["profile", "--grade", "code-fix"])
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("预检", result.stdout)
+        self.assertIn("红测", result.stdout)
+        self.assertIn("独立复核", result.stdout)
+
+    def test_relay_exec_rejects_disallowed_grade(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            repo = root / "repo"
+            repo.mkdir()
+            packet = _write(root / "packet.md", "Executor（代码）；你不是 PM\n\n# 任务包\n\n- **包头档位**：`feature`\n")
+            report = _write(root / "precheck.md", "PASS\nPete（Preflight）；身份。\n")
+            ok_stub = _write(root / "ok.py", "import sys\nsys.exit(0)\n")
+            args = ["relay-exec", "--report", str(report), "--packet", str(packet),
+                    "--base", "x" * 40, "--repo", str(repo),
+                    "--verify-tool", str(ok_stub), "--pkg-lint-tool", str(ok_stub),
+                    "--board", sys.executable, "--board-args", json.dumps([str(ok_stub)])]
+            result = _run_py("kos_handoff.py", args)
+            self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn("Jack", result.stdout + result.stderr)
+
+    def test_relay_quality_rejects_disallowed_grade(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            repo = root / "repo"
+            repo.mkdir()
+            packet = _write(root / "packet.md", "Executor（代码）；你不是 PM\n\n# 任务包\n\n- **包头档位**：`doc-rule`\n")
+            report = _write(root / "report.md", "DONE\nCole（Executor）；身份。\n")
+            args = ["relay-quality", "--report", str(report), "--packet", str(packet),
+                    "--base", "x" * 40, "--repo", str(repo),
+                    "--board", sys.executable, "--board-args", json.dumps([str(root / 'ok.py')]) ]
+            before = None
+            ok_stub = _write(root / "ok.py", "import sys\nsys.exit(0)\n")
+            args = ["relay-quality", "--report", str(report), "--packet", str(packet),
+                    "--base", "x" * 40, "--repo", str(repo),
+                    "--board", sys.executable, "--board-args", json.dumps([str(ok_stub)])]
+            result = _run_py("kos_handoff.py", args)
+            self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn("Jack", result.stdout + result.stderr)
+
+
 if __name__ == "__main__":
     unittest.main()

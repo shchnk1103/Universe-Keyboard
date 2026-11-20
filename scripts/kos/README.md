@@ -288,3 +288,11 @@ python3 scripts/kos/kos_handoff.py relay-exec --report <预检报告> --packet <
 ```
 
 四项门禁全部通过才输出实现派发块：预检报告首行精确为 `PASS`；实现包 `包头档位` 是 `code-fix` 或 `doc-rule`；实现包通过 `kos-verify-inputs.py` 与 `kos-pkg-lint.py --start <基线>`；`kos-board.py pick --role <code|doc>` 返回 `PICK [` 前缀且不在排除名单。排除名单是预检报告第 2 行身份加包作者：包内有显式「包作者」字段就一并排除，没写就按 PM `Jack` 处理（`pick` 本就默认排除 PM）。`PICK(兜底`、命中排除名单、非零退出或任何门禁失败都 fail-closed 交回 `Jack（PM）`。直通只覆盖「预检 `PASS` → 实现」与「实现 `DONE` → 质检」（`relay-quality`）内环，不涉及 `push`、PR 或合并。
+
+### kos_handoff.py profile：4 档流程查询与直通校验
+
+```bash
+python3 scripts/kos/kos_handoff.py profile --grade <doc-light|doc-rule|code-fix|feature> [--action <relay-exec|relay-quality>]
+```
+
+只读列出该档位站点、预检 / 红测 / 独立复核是否必经、允许的直通子命令。带 `--action` 时校验该档位是否允许此直通：允许退出 0，不允许 fail-closed 退出 1 并提示回退 `Jack（PM）`；未知档位或未知 action 退出 2。`relay-exec` 与 `relay-quality` 内部与这张 `TIER_PROFILES` 表同源校验：`relay-exec` 仅 `doc-rule` / `code-fix`，`relay-quality` 仅 `code-fix`，`doc-light` 与 `feature` 严禁越级直通。
