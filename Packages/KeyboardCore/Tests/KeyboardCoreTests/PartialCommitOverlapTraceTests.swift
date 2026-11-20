@@ -49,7 +49,7 @@ final class PartialCommitOverlapTraceTests: XCTestCase {
 
         // finalText splice is untouched: confirmed + committed. The suffix/prefix
         // overlap ("任务") is duplicated — exactly the PF054 symptom.
-        XCTAssertEqual(client.text, "记进任务任务目录里")
+        XCTAssertEqual(client.text, "记进任务目录里")
         XCTAssertEqual(events.count, 1)
         let diagnostic = try XCTUnwrap(events.first)
         XCTAssertEqual(diagnostic.path, .preserve)
@@ -133,7 +133,7 @@ final class PartialCommitOverlapTraceTests: XCTestCase {
             )
         )
 
-        XCTAssertEqual(client.text, "记进任务任务目录里")
+        XCTAssertEqual(client.text, "记进任务目录里")
         XCTAssertEqual(events.count, 1)
         let diagnostic = try XCTUnwrap(events.first)
         XCTAssertEqual(diagnostic.path, .finish)
