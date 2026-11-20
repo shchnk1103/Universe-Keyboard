@@ -1,3 +1,8 @@
+## 2026-11-20 — 未发布：九宫格部分上屏去重修复与键盘数值核对脚本
+
+- 九宫格部分上屏收口时，与已确认前缀重叠的重复文字改为去重（PF054-FIX-001，PR #343）；已并入 `main`，待含该修复的构建上真机复测确认。
+- 键盘数值漂移核对脚本 `check_keyboard_values.py` 接入轻量 CI，`docs/KEYBOARD_VALUES.md` 与代码常量不一致时在检查中暴露（PF-022，PR #346）。
+
 ## 2026-11-18 — Release 1.0.1 提交 App Store 审核（Build 205）
 
 - `MARKETING_VERSION` 升至 `1.0.1`（封版提交 `ca8dc79`，Tag `appstore/1.0.1-20261118`，Xcode Cloud Build `205`），包含字符键外观与大小写、普通键连击一致性、九宫格选拼音视口与预选删除、剪贴板隐私页说明对齐等改动；版本档案见 [docs/releases/v1.0.1.md](docs/releases/v1.0.1.md)。
