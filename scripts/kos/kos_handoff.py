@@ -279,8 +279,8 @@ def _relay_check_identity(repo: str, expect: str) -> tuple[bool, str]:
     return ok, (result.stdout + result.stderr).strip()
 
 
-def _relay_pick(board: str, board_args_json: str, excludes: list[str]) -> tuple[str | None, str]:
-    argv = [board] + json.loads(board_args_json) + ["pick", "--role", "quality", "--exclude", ",".join(excludes)]
+def _relay_pick(board: str, board_args_json: str, excludes: list[str], role: str = "quality") -> tuple[str | None, str]:
+    argv = [board] + json.loads(board_args_json) + ["pick", "--role", role, "--exclude", ",".join(excludes)]
     result = subprocess.run(argv, capture_output=True, text=True)
     first = (result.stdout or "").strip().splitlines()
     line = first[0].strip() if first else ""
@@ -346,7 +346,7 @@ def cmd_relay_quality(args):
             return back(f"report mentions forbidden word: {word}")
 
     excludes = ["Cole", "Pete", "Ivy"]
-    picked, pick_line = _relay_pick(args.board, args.board_args, excludes)
+    picked, pick_line = _relay_pick(args.board, args.board_args, excludes, role="quality")
     if not picked:
         return back("pick did not yield a valid quality specialist: " + pick_line)
 
@@ -372,6 +372,73 @@ def cmd_relay_quality(args):
     print(f"交回：{picked}（Quality）")
     print(f"事项：直通质检 {Path(args.packet).stem}")
     print(f"质检块：{out.resolve()}（SHA-256 {hashlib.sha256(out.read_bytes()).hexdigest()}）")
+    return 0
+
+
+
+
+EXEC_ROLE_LABELS = {"code": "Executor（代码）", "doc": "Executor（记录/文档）"}
+EXEC_GRADE_ROLES = {"code-fix": "code", "doc-rule": "doc"}
+
+
+def cmd_relay_exec(args):
+    pm = "Jack（PM）"
+
+    def back(reason: str):
+        print(f"STOPPED: relay-exec falls back to {pm}: {reason}", file=sys.stderr)
+        return 1
+
+    report = Path(args.report)
+    report_lines = report.read_text(encoding="utf-8").splitlines()
+    if not report_lines or report_lines[0].strip() != "PASS":
+        return back("precheck report first line is not PASS")
+    m = re.match(r"^([A-Za-z]+)（", report_lines[1].strip()) if len(report_lines) > 1 else None
+    if not m:
+        return back("precheck report line 2 has no identity")
+    excludes = [m.group(1)]
+
+    packet = Path(args.packet)
+    packet_text = packet.read_text(encoding="utf-8")
+    m_grade = re.search(r"包头档位[**：:\s]*`([^`]+)`", packet_text)
+    if not m_grade or m_grade.group(1).strip() not in EXEC_GRADE_ROLES:
+        return back("packet grade is not code-fix or doc-rule")
+    role = EXEC_GRADE_ROLES[m_grade.group(1).strip()]
+    m_author = re.search(r"^\s*[-*]?\s*\*?\*?包作者\*?\*?[：:]\s*(\S+)", packet_text, re.MULTILINE)
+    if m_author:
+        excludes.append(m_author.group(1))
+    else:
+        excludes.append("Jack")
+
+    verify = subprocess.run([sys.executable, "-I", args.verify_tool, str(packet)], capture_output=True, text=True)
+    if verify.returncode != 0:
+        return back("kos-verify-inputs failed: " + (verify.stdout + verify.stderr).strip().splitlines()[-1] if (verify.stdout + verify.stderr).strip() else "kos-verify-inputs failed")
+    lint = subprocess.run([sys.executable, "-I", args.pkg_lint_tool, "--start", args.base, str(packet)], capture_output=True, text=True)
+    if lint.returncode != 0:
+        return back("kos-pkg-lint failed: " + (lint.stdout + lint.stderr).strip().splitlines()[-1] if (lint.stdout + lint.stderr).strip() else "kos-pkg-lint failed")
+
+    picked, pick_line = _relay_pick(args.board, args.board_args, excludes, role=role)
+    if not picked:
+        return back("pick did not yield a valid specialist: " + pick_line)
+
+    out = Path(args.out) if getattr(args, "out", None) else packet.parent / "exec-relay-block.txt"
+    if out.exists():
+        return back(f"output already exists: {out}")
+    packet_sha = hashlib.sha256(packet.read_bytes()).hexdigest()
+    report_sha = hashlib.sha256(report.read_bytes()).hexdigest()
+    block = "\n".join([
+        f"任务：{packet.stem}",
+        f"角色：{picked}（{EXEC_ROLE_LABELS[role]}）",
+        f"包路径：{packet.resolve()}",
+        f"SHA-256：{packet_sha}",
+        "授权，直接执行",
+    ])
+    out.write_text(block + "\n", encoding="utf-8")
+    print("\n\n".join([
+        f"结论：PASS",
+        f"下一位交付：{picked}（{EXEC_ROLE_LABELS[role]}）",
+        f"报告：{report.resolve()}（SHA-256 {report_sha}）",
+        f"```text\n{block}\n```",
+    ]))
     return 0
 
 
@@ -427,6 +494,17 @@ def main(argv=None):
     p_rel.add_argument("--board-args", default=json.dumps([os.path.expanduser("~/.kos-work/Universe-Keyboard/tools/kos-board.py")]))
     p_rel.add_argument("--out")
 
+    p_exe = sub.add_parser("relay-exec")
+    p_exe.add_argument("--report", required=True)
+    p_exe.add_argument("--packet", required=True)
+    p_exe.add_argument("--base", required=True)
+    p_exe.add_argument("--repo", required=True)
+    p_exe.add_argument("--verify-tool", default=os.path.expanduser("~/.kos-work/Universe-Keyboard/tools/kos-verify-inputs.py"))
+    p_exe.add_argument("--pkg-lint-tool", default=os.path.expanduser("~/.kos-work/Universe-Keyboard/tools/kos-pkg-lint.py"))
+    p_exe.add_argument("--board", default=sys.executable)
+    p_exe.add_argument("--board-args", default=json.dumps([os.path.expanduser("~/.kos-work/Universe-Keyboard/tools/kos-board.py")]))
+    p_exe.add_argument("--out")
+
     args = parser.parse_args(argv)
     if args.cmd == "render":
         return cmd_render(args)
@@ -434,6 +512,8 @@ def main(argv=None):
         return cmd_final(args)
     if args.cmd == "relay-quality":
         return cmd_relay_quality(args)
+    if args.cmd == "relay-exec":
+        return cmd_relay_exec(args)
     return cmd_handoff(args)
 
 

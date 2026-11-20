@@ -673,5 +673,164 @@ class RelayQualityTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, args)
 
 
+
+
+class RelayExecTests(unittest.TestCase):
+    """relay-exec: preflight PASS -> implementation dispatch, fail-closed to PM."""
+
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory()
+        self.root = Path(self.tmp.name)
+        self.repo = self.root / "repo"
+        self.repo.mkdir()
+        self.identity = "Cowork 3P <cowork-3p@localhost>"
+
+    def tearDown(self) -> None:
+        self.tmp.cleanup()
+
+    def _git(self, *args):
+        env = dict(os.environ)
+        env.update({
+            "GIT_AUTHOR_NAME": "Cowork 3P", "GIT_AUTHOR_EMAIL": "cowork-3p@localhost",
+            "GIT_COMMITTER_NAME": "Cowork 3P", "GIT_COMMITTER_EMAIL": "cowork-3p@localhost",
+            "GIT_CONFIG_GLOBAL": "/dev/null", "GIT_CONFIG_SYSTEM": "/dev/null",
+        })
+        return subprocess.run(["git", "-C", str(self.repo), *args], capture_output=True, text=True, env=env)
+
+    def _init_repo(self):
+        self._git("init", "-b", "main")
+        (self.repo / ".kos").mkdir()
+        (self.repo / ".kos/project.json").write_text("{}\n", encoding="utf-8")
+        (self.repo / "base.txt").write_text("base\n", encoding="utf-8")
+        self._git("add", ".")
+        self._git("commit", "-m", "base")
+        self.base = self._git("rev-parse", "HEAD").stdout.strip()
+
+    def _stub(self, name, text):
+        return _write(self.root / name, text)
+
+    PASS_REPORT = "PASS\nPete（Preflight）；运行时身份 Codex。\n"
+    FAIL_REPORT = "FAIL\nPete（Preflight）；运行时身份 Codex。\n"
+    PACKET_CODE = (
+        "Executor（代码）；你不是 PM\n\n"
+        "# 任务包：示例实现\n\n"
+        "- **包头档位**：`code-fix`\n"
+        "- **复核重点**：\n  1. 检查。\n"
+    )
+    PACKET_DOC = (
+        "Executor（记录/文档）；你不是 PM\n\n"
+        "# 任务包：示例文档\n\n"
+        "- **包头档位**：`doc-rule`\n"
+        "- **复核重点**：\n  1. 检查。\n"
+    )
+
+    def _fixtures(self, packet_text, report_text=None, packet_author=None):
+        self._init_repo()
+        packet = _write(self.root / "packet.md", packet_text)
+        if packet_author:
+            packet.write_text(packet.read_text(encoding="utf-8") + f"\n- **包作者**：{packet_author}\n", encoding="utf-8")
+        report = _write(self.root / "precheck.md", report_text if report_text is not None else self.PASS_REPORT)
+        verify_ok = self._stub("verify_ok.py", "import sys\nsys.exit(0)\n")
+        lint_ok = self._stub("lint_ok.py", "import sys\nsys.exit(0)\n")
+        return packet, report, verify_ok, lint_ok
+
+    def _pick_stub(self, line):
+        return self._stub("pick_stub.py", f"print({line!r})\n")
+
+    def _run(self, packet, report, verify_ok, lint_ok, pick_line="PICK [Executor（代码）]: Nick（Executor（代码） | -）", extra=None):
+        args = [
+            "relay-exec",
+            "--report", str(report),
+            "--packet", str(packet),
+            "--base", self.base,
+            "--repo", str(self.repo),
+            "--verify-tool", str(verify_ok),
+            "--pkg-lint-tool", str(lint_ok),
+            "--board", sys.executable,
+            "--board-args", json.dumps([str(self._pick_stub(pick_line))]),
+        ]
+        if extra:
+            args.extend(extra)
+        return _run_py("kos_handoff.py", args)
+
+    def _expect_pm(self, result):
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("Jack", result.stdout + result.stderr)
+
+    def test_passing_path_emits_dispatch_block(self) -> None:
+        packet, report, verify_ok, lint_ok = self._fixtures(self.PACKET_CODE)
+        result = self._run(packet, report, verify_ok, lint_ok)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("下一位交付：Nick", result.stdout)
+        packet_sha = hashlib.sha256(packet.read_bytes()).hexdigest()
+        self.assertIn(packet_sha, result.stdout)
+        self.assertIn("授权，直接执行", result.stdout)
+
+    def test_doc_rule_packet_infers_doc_role(self) -> None:
+        packet, report, verify_ok, lint_ok = self._fixtures(self.PACKET_DOC)
+        result = self._run(
+            packet, report, verify_ok, lint_ok,
+            pick_line="PICK [Executor（记录/文档）]: Maya（Executor（记录/文档） | -）")
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("Maya", result.stdout)
+
+    def test_precheck_fail_falls_back(self) -> None:
+        packet, report, verify_ok, lint_ok = self._fixtures(self.PACKET_CODE, report_text=self.FAIL_REPORT)
+        self._expect_pm(self._run(packet, report, verify_ok, lint_ok))
+
+    def test_feature_grade_falls_back(self) -> None:
+        packet, report, verify_ok, lint_ok = self._fixtures(
+            self.PACKET_CODE.replace("`code-fix`", "`feature`"))
+        self._expect_pm(self._run(packet, report, verify_ok, lint_ok))
+
+    def test_verify_tool_failure_falls_back(self) -> None:
+        packet, report, _, lint_ok = self._fixtures(self.PACKET_CODE)
+        bad = self._stub("verify_bad.py", "import sys\nsys.exit(1)\n")
+        self._expect_pm(self._run(packet, report, bad, lint_ok))
+
+    def test_pkg_lint_failure_falls_back(self) -> None:
+        packet, report, verify_ok, _ = self._fixtures(self.PACKET_CODE)
+        bad = self._stub("lint_bad.py", "import sys\nsys.exit(1)\n")
+        self._expect_pm(self._run(packet, report, verify_ok, bad))
+
+    def test_pick_fallback_line_falls_back(self) -> None:
+        packet, report, verify_ok, lint_ok = self._fixtures(self.PACKET_CODE)
+        result = self._run(
+            packet, report, verify_ok, lint_ok,
+            pick_line="PICK(兜底，无空闲专职): Sam（Executor（记录/文档） | -）")
+        self._expect_pm(result)
+
+    def test_pick_nonzero_exit_falls_back(self) -> None:
+        packet, report, verify_ok, lint_ok = self._fixtures(self.PACKET_CODE)
+        stub = self._stub("pick_fail.py", "import sys\nsys.exit(3)\n")
+        args = [
+            "relay-exec",
+            "--report", str(report), "--packet", str(packet),
+            "--base", self.base, "--repo", str(self.repo),
+            "--verify-tool", str(verify_ok), "--pkg-lint-tool", str(lint_ok),
+            "--board", sys.executable, "--board-args", json.dumps([str(stub)]),
+        ]
+        self._expect_pm(_run_py("kos_handoff.py", args))
+
+    def test_precheck_author_excluded(self) -> None:
+        packet, report, verify_ok, lint_ok = self._fixtures(self.PACKET_CODE)
+        result = self._run(
+            packet, report, verify_ok, lint_ok,
+            pick_line="PICK [Executor（代码）]: Pete（Executor（代码） | -）")
+        self._expect_pm(result)
+
+    def test_packet_author_field_excluded(self) -> None:
+        packet, report, verify_ok, lint_ok = self._fixtures(self.PACKET_CODE, packet_author="Cole")
+        result = self._run(
+            packet, report, verify_ok, lint_ok,
+            pick_line="PICK [Executor（代码）]: Cole（Executor（代码） | -）")
+        self._expect_pm(result)
+
+    def test_old_subcommands_still_work(self) -> None:
+        for args in (["render", "--help"], ["handoff", "--help"], ["final", "--help"], ["relay-quality", "--help"]):
+            result = _run_py("kos_handoff.py", args)
+            self.assertEqual(result.returncode, 0, args)
+
+
 if __name__ == "__main__":
     unittest.main()

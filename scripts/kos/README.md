@@ -279,3 +279,12 @@ python3 scripts/kos/kos_handoff.py relay-quality --report <执行报告> --packe
 六项门禁全部通过才写出质检块：包头档位是 `code-fix`；报告状态是 `DONE`；`kos-report-lint.py` 通过；相对 `--base` 恰好一个提交，且 `check_identity.py --expect`（默认 `Cowork 3P <cowork-3p@localhost>`）对 HEAD 通过；报告里点名的改动文件 SHA-256 与工作区实测一致；正文不含 `git push`、`pr_flow.py`、`--merge`。
 
 选人只接受 `kos-board.py pick --role quality` 以 `PICK [` 开头的结果。`PICK(兜底`、命中排除名单或非零退出都交回 `Jack（PM）`，不写质检块。模板是 `quality_relay_template.md`，只含设计稿规定的 10 个占位符，`REVIEW_FOCUS` 逐字来自冻结包。
+
+
+### kos_handoff.py relay-exec：预检直通实现
+
+```bash
+python3 scripts/kos/kos_handoff.py relay-exec --report <预检报告> --packet <实现包> --base <基线 SHA> --repo <worktree>
+```
+
+四项门禁全部通过才输出实现派发块：预检报告首行精确为 `PASS`；实现包 `包头档位` 是 `code-fix` 或 `doc-rule`；实现包通过 `kos-verify-inputs.py` 与 `kos-pkg-lint.py --start <基线>`；`kos-board.py pick --role <code|doc>` 返回 `PICK [` 前缀且不在排除名单。排除名单是预检报告第 2 行身份加包作者：包内有显式「包作者」字段就一并排除，没写就按 PM `Jack` 处理（`pick` 本就默认排除 PM）。`PICK(兜底`、命中排除名单、非零退出或任何门禁失败都 fail-closed 交回 `Jack（PM）`。直通只覆盖「预检 `PASS` → 实现」与「实现 `DONE` → 质检」（`relay-quality`）内环，不涉及 `push`、PR 或合并。
