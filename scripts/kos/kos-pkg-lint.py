@@ -168,6 +168,8 @@ def main():
         return bool(rule and consequence or re.search(r"禁止|禁用|不得|不应|旧值", before))
 
     def _check_e6(files, txt, err):
+        flag_table = None
+        flag_table_failed = False
         for f in txt:
             content = txt[f]
             if any("render_handoff_v1.py" in line and not _rule_explanation(line, "render_handoff_v1.py") for line in content.splitlines()):
@@ -184,14 +186,20 @@ def main():
                 for ref in re.findall(pattern, content):
                     if not _existing(ref):
                         err.append(f"E6 {os.path.basename(f)} 引用的脚本不存在：{ref}")
-            _check_e6_handoff_invocations(f, content, handoff_lines, err)
+                if flag_table is None and not flag_table_failed:
+                    flag_table = _handoff_flag_table()
+                    if flag_table is None:
+                        flag_table_failed = True
+                if flag_table_failed:
+                    err.append(f"E6 {os.path.basename(f)} 无法反射 scripts/kos/kos_handoff.py 的 argparse 子命令表（fail-closed，不静默跳过）")
+                else:
+                    _check_e6_handoff_invocations(f, content, handoff_lines, flag_table, err)
 
-    def _check_e6_handoff_invocations(f, content, handoff_lines, err):
+    def _check_e6_handoff_invocations(f, content, handoff_lines, table, err):
         # KOS-LINT-HANDOFF-FLAGS: subcommands/long options must match the real
         # argparse definition in scripts/kos/kos_handoff.py, and block-producing
         # subcommands require the anti-wrap notice somewhere in the packet.
         import shlex
-        table = _handoff_flag_table()
         if not table:
             return
         base = os.path.basename(f)
@@ -227,23 +235,40 @@ def main():
             )
 
     def _handoff_flag_table():
-        # Derive {subcommand: {--flag,...}} from the live argparse definition so
-        # the lint can never drift from kos_handoff.py itself.
-        src_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "kos_handoff.py")
+        # KOS-TOOLS-CLEANUP-002: reflect the real argparse subparsers of the
+        # adjacent scripts/kos/kos_handoff.py instead of parsing its source
+        # text (which silently returned an empty table on naming drift — a
+        # fail-open hole). Any import/reflection failure returns None and the
+        # caller reports an explicit E6 error (fail-closed).
+        import argparse as _argparse
+        import importlib.util
+        handoff_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "kos_handoff.py")
         try:
-            with open(src_path, encoding="utf-8") as handle:
-                src = handle.read()
-        except OSError:
-            return {}
-        table, var_to_sub = {}, {}
-        for m in re.finditer(r"(\w+)\s*=\s*\w+\.add_parser\([\"']([\w-]+)[\"']", src):
-            var_to_sub[m.group(1)] = m.group(2)
-            table.setdefault(m.group(2), set())
-        for m in re.finditer(r"(\w+)\.add_argument\([\"'](--[\w-]+)[\"']", src):
-            sub = var_to_sub.get(m.group(1))
-            if sub is not None:
-                table[sub].add(m.group(2))
-        return table
+            spec = importlib.util.spec_from_file_location("_kos_handoff_reflect", handoff_path)
+            module = importlib.util.module_from_spec(spec)
+            assert spec.loader is not None
+            spec.loader.exec_module(module)
+        except Exception:
+            return None
+        captured = {}
+        orig_add_parser = _argparse._SubParsersAction.add_parser
+        def _spy(self, name, *args, **kwargs):
+            parser = orig_add_parser(self, name, *args, **kwargs)
+            captured[name] = parser
+            return parser
+        _argparse._SubParsersAction.add_parser = _spy
+        try:
+            module.main(["profile"])
+        except SystemExit:
+            pass
+        except Exception:
+            return None
+        finally:
+            _argparse._SubParsersAction.add_parser = orig_add_parser
+        table = {}
+        for name, parser in captured.items():
+            table[name] = {flag for flag in parser._option_string_actions if flag.startswith("--")}
+        return table or None
 
     def _gate_commands(content):
         import shlex
