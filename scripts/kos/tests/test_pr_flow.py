@@ -396,6 +396,15 @@ def _verify_repo(tmp: Path):
         "scripts/ci/classify_changes.py": "print('ok')\n",
         "scripts/ci/run_lightweight_checks.sh": "#!/bin/sh\nexit 0\n",
         "scripts/ci/check_markdown_links.py": "\n",
+        "scripts/ci/check_keyboard_values.py": (
+            "import sys\nfrom pathlib import Path\n\n"
+            "text = Path('docs/KEYBOARD_VALUES.md').read_text(encoding='utf-8')\n"
+            "if 'KEYBOARD_VALUES' not in text:\n"
+            "    print('KEYBOARD_VALUES_FAIL: fixture doc missing marker', file=sys.stderr)\n"
+            "    sys.exit(1)\n"
+            "print('KEYBOARD_VALUES_OK (fixture)')\n"
+        ),
+        "docs/KEYBOARD_VALUES.md": "# KEYBOARD_VALUES (fixture)\n",
         "scripts/kos/check_identity.py": "import sys\nprint('IDENTITY_MATCH')\n",
     }
     for rel, body in stubs.items():

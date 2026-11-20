@@ -1,5 +1,6 @@
 """Guardrail coverage for kos-pkg-lint E5–E8 and W5. Stdlib only."""
 import importlib.util
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -235,6 +236,67 @@ class HandoffStderrNoticeTests(unittest.TestCase):
             result = self._run_py(["final", "--report", str(missing)])
             self.assertEqual(result.returncode, 2)
             self.assertNotIn("# NOTE:", result.stderr)
+
+
+LOOP_BUILT_HANDOFF = '''import argparse
+
+FLAGS = {"final": ["--report"], "render": ["--status"]}
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(prog="kos_handoff")
+    sub = parser.add_subparsers(dest="cmd", required=True)
+    for name, flags in FLAGS.items():
+        p = sub.add_parser(name)
+        for flag in flags:
+            p.add_argument(flag)
+    args = parser.parse_args(argv)
+    return 0
+'''
+
+CRASHING_HANDOFF = 'raise RuntimeError("fixture: kos_handoff import fails")\n'
+
+
+class HandoffFlagTableTests(unittest.TestCase):
+    """_handoff_flag_table must reflect the real argparse parser and fail closed."""
+
+    def _lint_with_sandbox(self, handoff_src: str, packet_text: str) -> subprocess.CompletedProcess[str]:
+        with tempfile.TemporaryDirectory() as tmp:
+            kos = Path(tmp) / "scripts" / "kos"
+            kos.mkdir(parents=True)
+            shutil.copy(ROOT / "scripts/kos/kos-pkg-lint.py", kos / "kos-pkg-lint.py")
+            (kos / "kos_handoff.py").write_text(handoff_src, encoding="utf-8")
+            packet = Path(tmp) / "packet.md"
+            packet.write_text(packet_text + "\n", encoding="utf-8")
+            return subprocess.run(
+                [sys.executable, "-I", str(kos / "kos-pkg-lint.py"), "--start", START, str(packet)],
+                text=True, capture_output=True, check=False)
+
+    def test_reflection_catches_loop_built_parser_flag(self) -> None:
+        result = self._lint_with_sandbox(
+            LOOP_BUILT_HANDOFF,
+            "- `python3 scripts/kos/kos_handoff.py final --bogus x.md`\n"
+            "- 将 stdout 直接作为 Markdown 原样回复，严禁外层再套代码块。\n",
+        )
+        self.assertIn("E6 ", result.stdout)
+        self.assertIn("--bogus", result.stdout)
+
+    def test_reflection_accepts_legal_loop_built_call(self) -> None:
+        result = self._lint_with_sandbox(
+            LOOP_BUILT_HANDOFF,
+            "- `python3 scripts/kos/kos_handoff.py final --report x.md`\n"
+            "- 将 stdout 直接作为 Markdown 原样回复，严禁外层再套代码块。\n",
+        )
+        self.assertNotIn("E6 ", result.stdout)
+        self.assertEqual(result.returncode, 0, result.stdout)
+
+    def test_reflection_failure_fails_closed(self) -> None:
+        result = self._lint_with_sandbox(
+            CRASHING_HANDOFF,
+            "- `python3 scripts/kos/kos_handoff.py final --report x.md`\n"
+            "- 将 stdout 直接作为 Markdown 原样回复，严禁外层再套代码块。\n",
+        )
+        self.assertIn("E6 ", result.stdout)
+        self.assertIn("argparse", result.stdout)
 
     def test_existing_e1_e4_w4_regressions(self) -> None:
         wrong = "c" * 40

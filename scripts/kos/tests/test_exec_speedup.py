@@ -17,7 +17,7 @@ def run_handoff(*args):
     return subprocess.run(
         [sys.executable, "-I", str(SCRIPT), *args], text=True, capture_output=True, check=False)
 
-def init_repo(tmp: Path, status_line: str):
+def init_repo(tmp: Path, status_line: str, keyboard_values: bool = True):
     repo = tmp / "repo"
     repo.mkdir()
     stubs = {
@@ -29,6 +29,16 @@ def init_repo(tmp: Path, status_line: str):
         "scripts/ci/tests/test_verify_final_gate.sh": "#!/bin/sh\nexit 0\n",
         "scripts/ci/tests/test_kos_trigger_paths.sh": "#!/bin/sh\nexit 0\n",
     }
+    if keyboard_values:
+        stubs["scripts/ci/check_keyboard_values.py"] = (
+            "import sys\nfrom pathlib import Path\n\n"
+            "text = Path('docs/KEYBOARD_VALUES.md').read_text(encoding='utf-8')\n"
+            "if 'KEYBOARD_VALUES' not in text:\n"
+            "    print('KEYBOARD_VALUES_FAIL: fixture doc missing marker', file=sys.stderr)\n"
+            "    sys.exit(1)\n"
+            "print('KEYBOARD_VALUES_OK (fixture)')\n"
+        )
+        stubs["docs/KEYBOARD_VALUES.md"] = "# KEYBOARD_VALUES (fixture)\n"
     for rel, body in stubs.items():
         path = repo / rel
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -108,6 +118,18 @@ class DocVerifyTests(unittest.TestCase):
                      "GIT_CONFIG_GLOBAL": "/dev/null", "GIT_CONFIG_SYSTEM": "/dev/null"})
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             self.assertIn("DOC_VERIFY_PASS", result.stdout)
+            self.assertIn("KEYBOARD_VALUES_OK (fixture)", result.stdout)
+
+    def test_doc_verify_fails_closed_without_keyboard_values_fixtures(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            repo, base, report, head = init_repo(Path(tmp), "DONE", keyboard_values=False)
+            result = subprocess.run(
+                ["bash", str(VERIFY), base], cwd=str(repo), text=True,
+                capture_output=True, check=False,
+                env={"PATH": "/usr/bin:/bin:/usr/local/bin", "EXPECT_IDENTITY": IDENTITY,
+                     "GIT_CONFIG_GLOBAL": "/dev/null", "GIT_CONFIG_SYSTEM": "/dev/null"})
+            self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn("check_keyboard_values", result.stdout + result.stderr)
 
     def test_doc_verify_fails_on_dirty_worktree(self):
         with tempfile.TemporaryDirectory() as tmp:
