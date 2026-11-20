@@ -391,10 +391,9 @@ extension KeyboardController {
         }
 
         if let committedText = output.committedText, !committedText.isEmpty {
-            let finalText =
-                committedText.hasPrefix(partialCommit.confirmedText)
-                ? committedText
-                : partialCommit.confirmedText + committedText
+            let finalText = PartialCommitTextMerge.mergedText(
+                confirmed: partialCommit.confirmedText,
+                committed: committedText)
             commitInlinePreedit(as: finalText, source: .engineCommit)
             emitPartialCommitOverlapDiagnostic(
                 path: .preserve,
@@ -916,10 +915,9 @@ extension KeyboardController {
     private func finishNormalCandidateSelection(candidate: String, result: RimeOutput) {
         let confirmedPrefix = state.partialCommit?.confirmedText ?? ""
         let committedText = result.committedText ?? candidate
-        let finalText =
-            committedText.hasPrefix(confirmedPrefix)
-            ? committedText
-            : confirmedPrefix + committedText
+        let finalText = PartialCommitTextMerge.mergedText(
+            confirmed: confirmedPrefix,
+            committed: committedText)
         commitInlinePreedit(as: finalText, source: .candidate)
         emitPartialCommitOverlapDiagnostic(
             path: .finish,
