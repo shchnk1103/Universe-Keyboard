@@ -17,6 +17,7 @@ FIXTURE = Path(__file__).resolve().parent / "fixtures" / "failed-log-sample-pr26
 FLAKY = Path(__file__).resolve().parents[1] / "known-flaky.txt"
 HEAD = "a" * 40
 OTHER = "b" * 40
+ORIGIN_TIP = "c" * 40
 IDENTITY = "Cowork 3P <cowork-3p@localhost>"
 CASE = (
     "KeyboardExtensionTests.TypoCorrectionRecallCoordinatorIntegrationTests."
@@ -253,6 +254,7 @@ class OpenTests(unittest.TestCase):
                 (has("diff", "--name-only"), ok("scripts/kos/pr_flow.py\n")),
                 (lambda a: "rev-parse" in a and any(str(x).startswith("refs/heads/") for x in a), ok(HEAD + "\n")),
                 (has("ls-remote"), ok("")),
+                (has("rev-parse", "origin/main"), fail("unknown revision")),
                 (has("push"), ok("")),
                 (has("pr", "create"), ok("https://example/pull/1\n")),
             ]
@@ -328,6 +330,7 @@ class OpenTests(unittest.TestCase):
                 (has("diff"), ok("scripts/kos/pr_flow.py\n")),
                 (lambda a: "rev-parse" in a and any(str(x).startswith("refs/heads/") for x in a), ok(HEAD + "\n")),
                 (has("ls-remote"), ok("")),
+                (has("rev-parse", "origin/main"), fail("unknown revision")),
                 (has("push"), fail("HTTP 502")),
                 (has("ls-remote"), ok("")),
                 (has("push"), fail("HTTP 502")),
@@ -346,6 +349,7 @@ class OpenTests(unittest.TestCase):
                 (has("diff"), ok("scripts/kos/pr_flow.py\n")),
                 (lambda a: "rev-parse" in a and any(str(x).startswith("refs/heads/") for x in a), ok(HEAD + "\n")),
                 (has("ls-remote"), ok("")),
+                (has("rev-parse", "origin/main"), fail("unknown revision")),
             ]
         )
         self.assertEqual(FLOW.main(self._args(["--dry-run"]), runner=runner), 0)
@@ -359,6 +363,7 @@ class OpenTests(unittest.TestCase):
             (has("diff"), ok("scripts/kos/pr_flow.py\n")),
             (lambda a: "rev-parse" in a and any(str(x).startswith("refs/heads/") for x in a), ok(HEAD + "\n")),
             (has("ls-remote"), ok("")),
+            (has("rev-parse", "origin/main"), fail("unknown revision")),
         ])
 
     def test_monolingual_title_is_rejected(self) -> None:
@@ -914,6 +919,95 @@ class LandTests(unittest.TestCase):
         payload = json.loads((self.logs / "land-266.json").read_text())
         self.assertTrue(payload["ff"].startswith("skipped:"))
         self.assertNotEqual(payload["cleanup"], "local-branch-deleted")
+
+
+class SameModuleDriftTests(unittest.TestCase):
+    """origin/main ahead of base and touching the same module must block open."""
+
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory()
+        root = Path(self.tmp.name)
+        self.files = root / "files.txt"
+        self.files.write_text("scripts/kos/pr_flow.py\n", encoding="utf-8")
+        self.body = root / "body.md"
+        self.body.write_text("Summary: Ship the helper.\n发布这个助手。\n", encoding="utf-8")
+        self.log_dir = root / "log"
+
+    def tearDown(self) -> None:
+        self.tmp.cleanup()
+
+    def _args(self, extra=None):
+        argv = [
+            "open",
+            "--worktree",
+            "/wt",
+            "--branch",
+            "feature/kos-pr-flow-001",
+            "--base-sha",
+            "base",
+            "--expect-head",
+            HEAD,
+            "--files",
+            str(self.files),
+            "--title",
+            "Ship helper / 发布助手",
+            "--body-file",
+            str(self.body),
+            "--log-dir",
+            str(self.log_dir),
+            "--allow-untracked",
+            "Packages/RimeBridge/Vendor",
+        ]
+        return argv + (extra or [])
+
+    def _gate_steps(self, diff_output):
+        """Queue steps through bilingual check with origin/main ahead, then the drift diff."""
+        good_log = f"AUTHOR:{IDENTITY}\nCOMMITTER:{IDENTITY}\n"
+        return [
+            (has("rev-parse", "HEAD"), ok(HEAD + "\n")),
+            (has("status", "--porcelain"), ok("")),
+            (has("log"), ok(good_log)),
+            (lambda a: "diff" in a and "base" in a and "origin/main" not in a, ok("scripts/kos/pr_flow.py\n")),
+            (lambda a: "rev-parse" in a and any(str(x).startswith("refs/heads/") for x in a), ok(HEAD + "\n")),
+            (has("ls-remote"), ok("")),
+            (lambda a: "rev-parse" in a and "origin/main" in a and "--abbrev-ref" not in a, ok(ORIGIN_TIP + "\n")),
+            (has("merge-base"), ok("")),
+            (lambda a: "diff" in a and ORIGIN_TIP in a, ok(diff_output)),
+        ]
+
+    def test_same_module_drift_blocks_dry_run(self) -> None:
+        runner = Queue(self._gate_steps("scripts/kos/kos_lock.py\n") + [(has("push"), ok(""))])
+        self.assertEqual(FLOW.main(self._args(["--dry-run"]), runner=runner), 1)
+        self.assertFalse(any("push" in call for call in runner.calls))
+        payload = json.loads((self.log_dir / "open-feature-kos-pr-flow-001.json").read_text())
+        self.assertIn("drift", payload["error"])
+        self.assertIn("rebase", payload["error"].lower())
+
+    def test_same_module_drift_blocks_push(self) -> None:
+        runner = Queue(self._gate_steps("scripts/kos/pr_flow.py\n"))
+        self.assertEqual(FLOW.main(self._args(), runner=runner), 1)
+        self.assertFalse(any("push" in call for call in runner.calls))
+
+    def test_cross_module_drift_passes_dry_run(self) -> None:
+        runner = Queue(self._gate_steps("docs/kos/board.md\n"))
+        self.assertEqual(FLOW.main(self._args(["--dry-run"]), runner=runner), 0)
+        self.assertFalse(any("push" in call for call in runner.calls))
+
+    def test_no_drift_passes_dry_run(self) -> None:
+        good_log = f"AUTHOR:{IDENTITY}\nCOMMITTER:{IDENTITY}\n"
+        runner = Queue(
+            [
+                (has("rev-parse", "HEAD"), ok(HEAD + "\n")),
+                (has("status", "--porcelain"), ok("")),
+                (has("log"), ok(good_log)),
+                (lambda a: "diff" in a and "base" in a and "origin/main" not in a, ok("scripts/kos/pr_flow.py\n")),
+                (lambda a: "rev-parse" in a and any(str(x).startswith("refs/heads/") for x in a), ok(HEAD + "\n")),
+                (has("ls-remote"), ok("")),
+                (lambda a: "rev-parse" in a and "origin/main" in a and "--abbrev-ref" not in a, ok("base\n")),
+            ]
+        )
+        self.assertEqual(FLOW.main(self._args(["--dry-run"]), runner=runner), 0)
+        self.assertFalse(any("push" in call for call in runner.calls))
 
 
 if __name__ == "__main__":

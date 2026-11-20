@@ -162,6 +162,53 @@ def _parse_cases(log_text: str) -> list[tuple[str, str]]:
 SNAPSHOT_BUCKETS = frozenset({"pass", "fail", "pending", "skipping", "skipped", "cancel"})
 
 
+def _module_domain(path: str) -> str:
+    """Collapse a repo path to its module/package domain for drift comparison.
+
+    Named packages (Packages/<P>, Keyboard, Universe Keyboard, scripts/kos) map
+    to themselves; everything else falls back to the first path segment.
+    """
+    parts = Path(path).parts
+    if not parts:
+        return path
+    if parts[0] == "Packages" and len(parts) > 1:
+        return "Packages/" + parts[1]
+    if parts[0] in {"Keyboard", "Universe Keyboard", "scripts"} and len(parts) > 1:
+        if parts[0] == "scripts":
+            return "scripts/" + parts[1]
+        return parts[0]
+    return parts[0]
+
+
+def _same_module_drift_error(runner, worktree: str, base_sha: str, head: str,
+                             branch_files: set[str]) -> str | None:
+    """Reject open when origin/main moved past base into the same module domain.
+
+    Returns an error string to block the push, or None when origin/main has not
+    advanced beyond base or the advanced changes touch disjoint module domains.
+    """
+    origin = _git(runner, worktree, "rev-parse", "origin/main")
+    if origin.code != 0:
+        return None  # offline / no remote ref: stay permissive
+    origin_tip = origin.text.strip()
+    if origin_tip == base_sha:
+        return None
+    ahead = _git(runner, worktree, "merge-base", "--is-ancestor", base_sha, origin_tip)
+    if ahead.code != 0:
+        return None  # origin/main is not ahead of base (diverged or unrelated)
+    remote_diff = _git(runner, worktree, "diff", "--name-only", base_sha, origin_tip)
+    if remote_diff.code != 0:
+        return f"same-module drift check failed: {remote_diff.text.strip() or 'diff failed'}"
+    remote_modules = {_module_domain(name) for name in _name_set(remote_diff.text)}
+    branch_modules = {_module_domain(name) for name in branch_files}
+    if not remote_modules & branch_modules:
+        return None
+    return (
+        "same-module drift: origin/main advanced past --base-sha and touches "
+        f"{sorted(remote_modules & branch_modules)}; rebase onto origin/main and rerun tests before opening"
+    )
+
+
 def _snapshot_rows(text: str) -> list[dict] | None:
     """Rows from one `gh pr checks --json` snapshot. Watch tables are not accepted."""
     try:
@@ -433,6 +480,11 @@ def cmd_open(args, runner) -> int:
         bilingual = _bilingual_error(args.title, body)
         if bilingual:
             payload["error"] = bilingual
+            return _die(payload["error"])
+
+        drift = _same_module_drift_error(runner, args.worktree, args.base_sha, actual, actual_files)
+        if drift:
+            payload["error"] = drift
             return _die(payload["error"])
 
         if args.dry_run:
