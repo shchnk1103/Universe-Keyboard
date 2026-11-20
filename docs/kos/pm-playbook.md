@@ -90,6 +90,8 @@
 5. 选人按职责而非固定 AI 品牌：用外置 `/Users/doubleshy0n/.kos-work/Universe-Keyboard/tools/kos-board.py pick --role ...` 在同职责内优先选「空闲 + 最久未工作」，排除忙碌与独立性冲突；无人空闲则升级 PM，Human 可改派。
 6. 执行包首部必填「包头档位」与「复核重点」（PM 最关心 1–3 点）；固定条款库见 [pm-packet-clauses.md](pm-packet-clauses.md)。
 7. 本轮只落库已批准的 4 档流程与路由规则。设计稿第 6 节外部新工具 `kos-handoff.sh`、第 10 节 `docs/kos/workflow-profiles.md` 与 KOS 家目录名册职责列不在本轮仓库改动内；继续使用现行 `scripts/kos/kos_handoff.py` 与外置 `kos-board.py pick --role ...`。4 档只分流程站点，不改变 `AGENTS.md` 既有 Swift 格式、本地门禁与 [CI 分级](../CI_CHANGE_CLASSIFICATION.md) 分类要求。
+8. 档位直通与站点查询用 `python3 scripts/kos/kos_handoff.py profile --grade <档位> [--action <relay-exec|relay-quality>]`（Human 2026-11-20 批准固化）：`relay-exec` 仅 `doc-rule` / `code-fix`、`relay-quality` 仅 `code-fix`，`doc-light` / `feature` 严禁越级直通；`relay-exec` / `relay-quality` 子命令与该表同源，越级一律 fail-closed 回退 PM。
+9. 执行者可自主用 `subagent` / `herdr`（Human 2026-11-20 批准），报告如实申报，独立审查跨会话独立性不变；PM 只定目标、边界、不变量与验收门禁，技术实现交架构师 / 代码执行者，合并后 `PORTFOLIO.md` 与 `docs/releases/vX.Y.Z.md` 台账同步交文档执行者。
 
 ## 3. 写包与冻结
 

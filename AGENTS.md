@@ -118,6 +118,12 @@
 
 **本轮未含范围**：设计稿第 6 节外部新工具 `kos-handoff.sh`、第 10 节的 `docs/kos/workflow-profiles.md` 与 KOS 家目录名册职责列不在本轮写入仓库，也不新增仓库脚本依赖。继续使用现行 `scripts/kos/kos_handoff.py` 与外置 `/Users/doubleshy0n/.kos-work/Universe-Keyboard/tools/kos-board.py pick`；后续工具 / 名册改造须另包授权并经同样预检。
 
+**执行者自主权（Human 2026-11-20 批准）**：执行者可自主使用 `subagent`、`herdr` 等工具完成任务，在报告如实写明是否使用；独立审查（预检 / 架构 / 质检）保持跨会话独立性声明不变。
+
+**PM 职责边界与台账同步（Human 2026-11-20 批准）**：PM 只定目标、边界、不变量与验收门禁，具体技术实现交由架构师 / 代码执行者决定；合并后的 `PORTFOLIO.md` 与 `docs/releases/vX.Y.Z.md` 台账同步交由文档执行者处理。
+
+4 档流程已同步固化为 `scripts/kos/kos_handoff.py` 的 `TIER_PROFILES`（`kos_handoff.py profile --grade <档位> [--action <relay-exec|relay-quality>]`）：`relay-exec` 仅 `doc-rule` / `code-fix`，`relay-quality` 仅 `code-fix`；`doc-light` 与 `feature` 严禁越级直通，工具子命令与该表同源校验。
+
 ## 本地 CI 门禁（与 `.github/workflows/swift6-quality.yml` 对齐）
 
 托管 CI 的三个 xcodebuild 测试任务对失败用例自动重试一次，并在任务摘要中列出重试用例。重试通过不代表用例稳定；本地门禁命令不变。
