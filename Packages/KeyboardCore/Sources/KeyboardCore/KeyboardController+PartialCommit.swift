@@ -396,6 +396,11 @@ extension KeyboardController {
                 ? committedText
                 : partialCommit.confirmedText + committedText
             commitInlinePreedit(as: finalText, source: .engineCommit)
+            emitPartialCommitOverlapDiagnostic(
+                path: .preserve,
+                confirmedText: partialCommit.confirmedText,
+                committedText: committedText
+            )
             state.currentComposition = ""
             state.lastRimeOutput = output
             state.partialCommit = nil
@@ -875,6 +880,39 @@ extension KeyboardController {
         return commitText
     }
 
+    /// PF054: observe a `finalText` splice with content-free metrics. The
+    /// `finalText` computation itself is untouched; this only reports lengths
+    /// and the suffix/prefix overlap to the host-supplied sink.
+    func emitPartialCommitOverlapDiagnostic(
+        path: PartialCommitOverlapDiagnostic.Path,
+        confirmedText: String,
+        committedText: String
+    ) {
+        guard let sink = onPartialCommitOverlap else { return }
+        let hasPrefix = committedText.hasPrefix(confirmedText)
+        let confirmed = Array(confirmedText)
+        let committed = Array(committedText)
+        // Max k such that the confirmed suffix of length k equals the committed
+        // prefix of length k — the duplicated-content length when splicing.
+        var overlap = 0
+        if !confirmed.isEmpty, !committed.isEmpty {
+            for k in 1...min(confirmed.count, committed.count) {
+                if confirmed[(confirmed.count - k)...].elementsEqual(committed[..<k]) {
+                    overlap = k
+                }
+            }
+        }
+        sink(
+            PartialCommitOverlapDiagnostic(
+                path: path,
+                committedHasPrefix: hasPrefix,
+                confirmedLen: confirmed.count,
+                committedLen: committed.count,
+                overlapLen: overlap
+            )
+        )
+    }
+
     private func finishNormalCandidateSelection(candidate: String, result: RimeOutput) {
         let confirmedPrefix = state.partialCommit?.confirmedText ?? ""
         let committedText = result.committedText ?? candidate
@@ -883,6 +921,11 @@ extension KeyboardController {
             ? committedText
             : confirmedPrefix + committedText
         commitInlinePreedit(as: finalText, source: .candidate)
+        emitPartialCommitOverlapDiagnostic(
+            path: .finish,
+            confirmedText: confirmedPrefix,
+            committedText: committedText
+        )
         state.currentComposition = ""
         state.lastRimeOutput = result
         state.partialCommit = nil
