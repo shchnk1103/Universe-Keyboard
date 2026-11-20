@@ -47,6 +47,8 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         case candidateGestureTerminal = "candidate.gesture_terminal"
         case candidateSelectionDelivered = "candidate.selection_delivered"
         case candidateCommitTrace = "candidate.commit_trace"
+        /// PF054: content-free partial-commit `finalText` splice observation.
+        case partialCommitOverlap = "partial_commit.overlap"
         case schemeDeliveryPhaseChanged = "scheme_delivery.phase_changed"
         case schemeDeliveryIntegrityFailed = "scheme_delivery.integrity_failed"
         case schemeDeliveryFallback = "scheme_delivery.fallback"
@@ -96,6 +98,10 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         case typoRecallQueryDiscarded = "typo_recall_query_discarded"
         /// INT-003 query outcome: operation cancelled before/during query.
         case typoRecallQueryCancelled = "typo_recall_query_cancelled"
+        /// PF054 splice-point marker: `finishNormalCandidateSelection`.
+        case partialCommitPathFinish = "partial_commit_path_finish"
+        /// PF054 splice-point marker: `applyRimeOutputPreservingPartialCommit`.
+        case partialCommitPathPreserve = "partial_commit_path_preserve"
     }
 
     public enum CountMetric: String, Codable, CaseIterable, Sendable {
@@ -118,6 +124,10 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         case traceOccurrenceFirstChange = "occurrence_first_did_change"
         case traceOccurrenceClose = "occurrence_at_close"
         case traceCloseReason = "close_reason"
+
+        case partialCommitConfirmedLen = "partial_commit_confirmed_len"
+        case partialCommitCommittedLen = "partial_commit_committed_len"
+        case partialCommitOverlapLen = "partial_commit_overlap_len"
 
         case droppedEventCount = "dropped_event_count"
         case queueDepth = "queue_depth"
@@ -465,6 +475,7 @@ public struct DiagnosticEvent: Codable, Sendable, Equatable {
         case tracePartialAfter = "partial_after_sync"
         case traceDocumentChanged = "document_changed"
         case traceCounterCapped = "counter_capped"
+        case partialCommitCommittedHasPrefix = "partial_commit_committed_has_prefix"
         case isHighFidelityEnabled = "high_fidelity_enabled"
         case isCandidateBarVisible = "candidate_bar_visible"
         case isKeyHighlighted = "key_highlighted"

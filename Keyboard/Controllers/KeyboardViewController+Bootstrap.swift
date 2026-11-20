@@ -176,6 +176,28 @@ extension KeyboardViewController {
                 resetEpoch: self.cachedTypingIntelligenceResetEpoch
             )
         }
+        // PF054: content-free partial-commit splice diagnostics. Same display
+        // gate as commitTrace; record() only enqueues, so the key path never
+        // touches App Group or filesystem.
+        controller.onPartialCommitOverlap = { [weak self] diagnostic in
+            guard let self, Logger.isLiveCategoryEnabled(.display) else { return }
+            self.diagnosticsJournal.record(
+                code: .partialCommitOverlap,
+                category: .display,
+                appearanceID: self.diagnosticsAppearanceID,
+                fields: [
+                    .reason(
+                        diagnostic.path == .finish
+                            ? .partialCommitPathFinish
+                            : .partialCommitPathPreserve
+                    ),
+                    .flag(.partialCommitCommittedHasPrefix, diagnostic.committedHasPrefix),
+                    .count(.partialCommitConfirmedLen, diagnostic.confirmedLen),
+                    .count(.partialCommitCommittedLen, diagnostic.committedLen),
+                    .count(.partialCommitOverlapLen, diagnostic.overlapLen),
+                ]
+            )
+        }
 
         Logger.shared.info("viewDidLoad, keyboardType=\(keyboardType)", category: .general)
         prepareRimeRuntimeAvailability()

@@ -59,6 +59,9 @@ public final class KeyboardController {
     /// Called synchronously with ephemeral final text. Consumers must convert
     /// it to content-free aggregates before returning and must not persist it.
     public var onCommittedText: ((CommittedTextEvent) -> Void)?
+    /// PF054: content-free overlap metrics for partial-commit `finalText`
+    /// splices. Synchronous and non-blocking; the payload never carries text.
+    public var onPartialCommitOverlap: ((PartialCommitOverlapDiagnostic) -> Void)?
     public var isPairedSymbolCompletionEnabled = true
     public internal(set) var isPostCommitContinuationEnabled = true
     /// Derived from the same `RimeRuntimeSelection` used for schema + layout.
