@@ -151,8 +151,90 @@ CODE_SIGN_IDENTITY=- -only-testing
 
     def test_actual_invalid_commands_are_rejected(self) -> None:
         self.assertIn("E6 ", run("- `python3 render_handoff_v1.py`\n").stdout)
-        self.assertIn("E7 ", run("- `xcodebuild CODE_SIGNING_IDENTITY=- test`\n").stdout)
+        self.assertIn("E7 ", run("- `xcodebuild CODE_SIGN_IDENTITY=- test`\n").stdout)
         self.assertIn("E6 ", run("使用 render_handoff_v1.py 交接\n").stdout)
+
+
+class HandoffFlagLintTests(unittest.TestCase):
+    """E6 subcommand/flag legality and anti-wrapping notice requirements (KOS-LINT-HANDOFF-FLAGS)."""
+
+    def _run(self, text: str) -> subprocess.CompletedProcess[str]:
+        return run(text + "\n")
+
+    def test_unknown_subcommand_is_e6(self) -> None:
+        result = self._run("- `python3 scripts/kos/kos_handoff.py blast --report x.md`\n")
+        self.assertIn("E6 ", result.stdout)
+        self.assertIn("未知子命令", result.stdout)
+
+    def test_illegal_flag_on_relay_subcommands_is_e6(self) -> None:
+        for sub in ("relay-exec", "relay-quality", "final"):
+            with self.subTest(sub=sub):
+                result = self._run(f"- `python3 scripts/kos/kos_handoff.py {sub} --grade code-fix`\n")
+                self.assertIn("E6 ", result.stdout)
+                self.assertIn("--grade", result.stdout)
+
+    def test_legal_relay_call_without_wrap_notice_is_e6(self) -> None:
+        result = self._run("- `python3 scripts/kos/kos_handoff.py final --report x.md`\n")
+        self.assertIn("E6 ", result.stdout)
+        self.assertIn("防套", result.stdout)
+
+    def test_legal_relay_call_with_wrap_notice_passes(self) -> None:
+        result = self._run(
+            "- `python3 scripts/kos/kos_handoff.py final --report x.md`\n"
+            "- 将 stdout 直接作为 Markdown 原样回复，严禁外层再套代码块。\n"
+        )
+        self.assertNotIn("E6 ", result.stdout)
+        self.assertEqual(result.returncode, 0, result.stdout)
+
+    def test_profile_grade_is_legal(self) -> None:
+        result = self._run(
+            "- `python3 scripts/kos/kos_handoff.py profile --grade code-fix`\n"
+            "- 无接力。\n"
+        )
+        self.assertNotIn("E6 ", result.stdout)
+        self.assertEqual(result.returncode, 0, result.stdout)
+
+    def test_render_handoff_flags_still_legal(self) -> None:
+        result = self._run(
+            "- `python3 scripts/kos/kos_handoff.py render --status DONE --summary s --next-role r --report-path p`\n"
+            "- 无接力。\n"
+        )
+        self.assertNotIn("E6 ", result.stdout)
+        self.assertEqual(result.returncode, 0, result.stdout)
+
+
+class HandoffStderrNoticeTests(unittest.TestCase):
+    """final/relay-exec/relay-quality must print the anti-wrap NOTE to stderr, stdout unchanged."""
+
+    def _run_py(self, args, cwd=None):
+        return subprocess.run(
+            [sys.executable, "-I", "-B", str(ROOT / "scripts/kos/kos_handoff.py"), *args],
+            capture_output=True, text=True, check=False, cwd=cwd)
+
+    def _final_report(self, tmp: Path):
+        report = tmp / "report.md"
+        report.write_text(
+            "DONE\nLucy（Executor（代码））；身份。\n\n"
+            "## 下一站接力（O41）\n- next_role：Maya（Quality）\n- next_step：复核\n",
+            encoding="utf-8")
+        return report
+
+    def test_final_prints_stderr_note_and_keeps_stdout(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            report = self._final_report(Path(tmp))
+            result = self._run_py(["final", "--report", str(report), "--skip-lint"])
+            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+            self.assertIn("严禁外层再套代码块", result.stderr)
+            self.assertIn("# NOTE:", result.stderr)
+            self.assertNotIn("# NOTE:", result.stdout)
+            self.assertTrue(result.stdout.startswith("结论："))
+
+    def test_failing_final_has_no_note(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            missing = Path(tmp) / "nope.md"
+            result = self._run_py(["final", "--report", str(missing)])
+            self.assertEqual(result.returncode, 2)
+            self.assertNotIn("# NOTE:", result.stderr)
 
     def test_existing_e1_e4_w4_regressions(self) -> None:
         wrong = "c" * 40

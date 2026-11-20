@@ -374,6 +374,7 @@ def cmd_relay_quality(args):
     print(f"交回：{picked}（Quality）")
     print(f"事项：直通质检 {Path(args.packet).stem}")
     print(f"质检块：{out.resolve()}（SHA-256 {hashlib.sha256(out.read_bytes()).hexdigest()}）")
+    _print_anti_wrap_note()
     return 0
 
 
@@ -508,6 +509,7 @@ def cmd_relay_exec(args):
         f"报告：{report.resolve()}（SHA-256 {report_sha}）",
         f"```text\n{block}\n```",
     ]))
+    _print_anti_wrap_note()
     return 0
 
 
@@ -592,6 +594,13 @@ def main(argv=None):
     return cmd_handoff(args)
 
 
+ANTI_WRAP_NOTE = "# NOTE: 请将以上 stdout 直接作为 Markdown 原样回复，严禁外层再套代码块。"
+
+
+def _print_anti_wrap_note() -> None:
+    print(ANTI_WRAP_NOTE, file=sys.stderr)
+
+
 def cmd_final(args):
     """Lint the report, then print the standard three-line handoff + block.
 
@@ -619,6 +628,7 @@ def cmd_final(args):
     print(render_three_line(status, args.summary, next_role, next_detail, str(report),
                             entry_path=args.entry_path, task_title=args.task_title,
                             block_path=args.block_path))
+    _print_anti_wrap_note()
     return 0
 
 
