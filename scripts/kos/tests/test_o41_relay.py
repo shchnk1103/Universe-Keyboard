@@ -1019,3 +1019,120 @@ class HandoffAutoPickTests(unittest.TestCase):
         self.assertIn(f"任务：{packet.stem}", result.stdout)
         self.assertIn("SHA-256：", result.stdout)
         self.assertIn("授权，直接执行", result.stdout)
+
+
+class QualityRelayPackageCompletenessTests(unittest.TestCase):
+    """KOS-RELAY-QUALITY-002 R2: quality-relay-block.md is a complete self-contained package."""
+
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory()
+        self.root = Path(self.tmp.name)
+        self.repo = self.root / "repo"
+        self.repo.mkdir()
+        env = dict(os.environ)
+        env.update({"GIT_AUTHOR_NAME": "Cowork 3P", "GIT_AUTHOR_EMAIL": "cowork-3p@localhost",
+                    "GIT_COMMITTER_NAME": "Cowork 3P", "GIT_COMMITTER_EMAIL": "cowork-3p@localhost",
+                    "GIT_CONFIG_GLOBAL": "/dev/null", "GIT_CONFIG_SYSTEM": "/dev/null"})
+
+        def git(*a):
+            r = subprocess.run(["git", "-C", str(self.repo), *a], capture_output=True, text=True, env=env)
+            self.assertEqual(r.returncode, 0, r.stderr)
+            return r.stdout.strip()
+
+        self._git = git
+        git("init", "-b", "main")
+        (self.repo / ".kos").mkdir()
+        (self.repo / ".kos" / "project.json").write_text("{}\n", encoding="utf-8")
+        (self.repo / "base.txt").write_text("base\n", encoding="utf-8")
+        git("add", ".")
+        git("commit", "-m", "base")
+        self.base = git("rev-parse", "HEAD")
+        (self.repo / "tool.py").write_text("x = 1\n", encoding="utf-8")
+        git("add", ".")
+        git("commit", "-m", "work")
+        self.packet = self.root / "packet.md"
+        self.packet.write_text(
+            "Executor（代码）；你不是 PM\n\n# 任务包：示例\n\n"
+            "- **包头档位**：`code-fix`\n- **复核重点**：\n  1. 检查一切。\n",
+            encoding="utf-8")
+        report = self.root / "reports" / "report.md"
+        report.parent.mkdir(parents=True, exist_ok=True)
+        report.write_text(
+            "DONE\nLucy（Executor（代码））；运行时身份 Codex。\n\n"
+            "## 下一站接力（O41）\n- next_role：Quality Reviewer\n- next_step：复核\n\n"
+            "```text\n交回：Quality Reviewer\n事项：复核\n```\n",
+            encoding="utf-8")
+        self.report = report
+
+    def tearDown(self) -> None:
+        self.tmp.cleanup()
+
+    def _pick_stub(self) -> Path:
+        stub = self.root / "pick.py"
+        stub.write_text("print('PICK [Quality]: Quinn（Quality | 上次：-）')\n", encoding="utf-8")
+        return stub
+
+    def _run_relay(self):
+        stub = self._pick_stub()
+        return _run_py("kos_handoff.py", [
+            "relay-quality", "--report", str(self.report), "--packet", str(self.packet),
+            "--base", self.base, "--repo", str(self.repo),
+            "--board", sys.executable, "--board-args", json.dumps([str(stub)]),
+        ])
+
+    def _block(self) -> tuple[Path, str]:
+        result = self._run_relay()
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        out = Path(result.stdout.split("质检块：", 1)[1].split("（", 1)[0].strip())
+        return out, out.read_text(encoding="utf-8")
+
+    def test_block_is_complete_package(self) -> None:
+        out, text = self._block()
+        self.assertTrue(text.splitlines()[0].startswith("Quality Reviewer；你不是 PM"), text.splitlines()[0])
+        self.assertIn(str(self.packet.resolve()), text)
+        self.assertIn(hashlib.sha256(self.packet.read_bytes()).hexdigest(), text)
+        self.assertIn(str(self.report.resolve()), text)
+        self.assertIn(hashlib.sha256(self.report.read_bytes()).hexdigest(), text)
+        self.assertIn(str(self.repo.resolve()), text)  # worktree
+        self.assertIn(str(self.report.parent / f"quality-{self.packet.stem}.md"), text)
+        self.assertIn("kos-report-lint.py", text)
+        self.assertIn("kos_handoff.py final", text)
+        self.assertIn("直接作为 Markdown 原样回复", text)
+        self.assertIn("严禁外层再套代码块", text)
+        self.assertIn("## 观察与改进意见（不影响状态，不在本包范围）", text)
+        self.assertIn("## 下一站接力（O41）", text)
+        self.assertIn("next_role：Jack（PM）", text)
+
+    def test_block_passes_verify_inputs(self) -> None:
+        out, _ = self._block()
+        result = _run_py("kos-verify-inputs.py", [str(out), "--quiet"])
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("mismatch=0", result.stdout)
+        self.assertIn("missing=0", result.stdout)
+        self.assertIn("badlen=0", result.stdout)
+
+    def test_relay_pick_dedupes_and_drops_blank_excludes(self) -> None:
+        sys.path.insert(0, str(KOS_DIR))
+        import importlib
+        kh = importlib.import_module("kos_handoff")
+        stub = self.root / "argv_recorder.py"
+        stub.write_text(
+            "import os, sys\n"
+            "out = os.environ.get('PICK_ARGS_OUT')\n"
+            "if out:\n"
+            "    with open(out, 'w', encoding='utf-8') as f:\n"
+            "        f.write(' '.join(sys.argv[1:]))\n"
+            "print('PICK [Quality]: Quinn（Quality | 上次：-）')\n",
+            encoding="utf-8")
+        argv_out = self.root / "argv.txt"
+        os.environ["PICK_ARGS_OUT"] = str(argv_out)
+        try:
+            picked, line = kh._relay_pick(
+                sys.executable, json.dumps([str(stub)]), ["Lucy", "", "Lucy", "  "], role="quality")
+        finally:
+            os.environ.pop("PICK_ARGS_OUT", None)
+        self.assertEqual(picked, "Quinn", line)
+        argv_text = argv_out.read_text(encoding="utf-8")
+        self.assertEqual(argv_text.count("Lucy"), 1, argv_text)
+        self.assertNotIn(",,", argv_text, argv_text)
+        self.assertFalse(argv_text.rstrip().endswith(","), argv_text)
