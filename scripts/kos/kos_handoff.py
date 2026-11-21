@@ -295,6 +295,63 @@ def _relay_pick(board: str, board_args_json: str, excludes: list[str], role: str
     return name, line
 
 
+GENERIC_BOARD_ROLES = {
+    "Quality Reviewer": "quality",
+    "Quality": "quality",
+    "Preflight Reviewer": "preflight",
+    "Preflight": "preflight",
+    "Executor（代码）": "code",
+    "Executor（记录/文档）": "doc",
+    "Architect": "architect",
+    "独立 Architecture 审查": "architect",
+}
+FALLBACK_QUALITY_EXCLUDES = ["Cole", "Pete", "Ivy"]
+
+
+def _identity_name(path: Path) -> str | None:
+    """Extract the role-holder name from a report's line 2 (`Name（role）…`)."""
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return None
+    if len(lines) < 2:
+        return None
+    m = re.match(r"^\s*([A-Za-z][A-Za-z0-9_-]*)（", lines[1].strip())
+    return m.group(1) if m else None
+
+
+def _collect_participant_names(report: Path, extra_patterns: tuple[str, ...] = ()) -> list[str]:
+    """Names of people who already worked on this task, from report line-2 fields."""
+    candidates = [report]
+    seen = {report.resolve()}
+    for pattern in extra_patterns:
+        for p in sorted(report.parent.glob(pattern)):
+            r = p.resolve()
+            if r not in seen:
+                seen.add(r)
+                candidates.append(p)
+    names: list[str] = []
+    for p in candidates:
+        name = _identity_name(p)
+        if name and name not in names:
+            names.append(name)
+    return names
+
+
+def _auto_pick_next_role(args, report: Path, status: str, next_role: str) -> str:
+    """Replace a generic duty title with a concrete idle person; fall back safely."""
+    normalized = re.split(r"[，,]", next_role, maxsplit=1)[0].strip()
+    board_role = GENERIC_BOARD_ROLES.get(normalized)
+    if not board_role or status not in ("DONE", "PASS"):
+        return next_role
+    excludes = _collect_participant_names(report)
+    picked, pick_line = _relay_pick(args.board, args.board_args, excludes, role=board_role)
+    if not picked:
+        print(f"# NOTE: auto-pick kept next_role={next_role}: {pick_line}", file=sys.stderr)
+        return next_role
+    return f"{picked}（{next_role}）"
+
+
 def cmd_relay_quality(args):
     pm = "Jack（PM）"
 
@@ -347,7 +404,10 @@ def cmd_relay_quality(args):
         if word in report_text:
             return back(f"report mentions forbidden word: {word}")
 
-    excludes = ["Cole", "Pete", "Ivy"]
+    excludes = list(FALLBACK_QUALITY_EXCLUDES)
+    for name in _collect_participant_names(report, extra_patterns=("preflight*.md",)):
+        if name not in excludes:
+            excludes.append(name)
     picked, pick_line = _relay_pick(args.board, args.board_args, excludes, role="quality")
     if not picked:
         return back("pick did not yield a valid quality specialist: " + pick_line)
@@ -374,6 +434,15 @@ def cmd_relay_quality(args):
     print(f"交回：{picked}（Quality）")
     print(f"事项：直通质检 {Path(args.packet).stem}")
     print(f"质检块：{out.resolve()}（SHA-256 {hashlib.sha256(out.read_bytes()).hexdigest()}）")
+    out_sha = hashlib.sha256(out.read_bytes()).hexdigest()
+    dispatch_block = "\n".join([
+        f"任务：{Path(args.packet).stem}",
+        f"角色：{picked}（Quality）",
+        f"包路径：{out.resolve()}",
+        f"SHA-256：{out_sha}",
+        "授权，直接执行",
+    ])
+    print(f"```text\n{dispatch_block}\n```")
     _print_anti_wrap_note()
     return 0
 
@@ -554,6 +623,8 @@ def main(argv=None):
     p_fin.add_argument("--entry-path")
     p_fin.add_argument("--task-title")
     p_fin.add_argument("--block-path")
+    p_fin.add_argument("--board", default=sys.executable)
+    p_fin.add_argument("--board-args", default=json.dumps([os.path.expanduser("~/.kos-work/Universe-Keyboard/tools/kos-board.py")]))
 
     p_rel = sub.add_parser("relay-quality")
     p_rel.add_argument("--report", required=True)
@@ -625,6 +696,7 @@ def cmd_final(args):
     status = (args.status or status).strip()
     next_role = (args.next_role or report_next_role or f"{PM_HANDOFF_ROLE}（PM）").strip()
     next_detail = (args.next_detail if args.next_detail is not None else (report_next_step or "")).strip()
+    next_role = _auto_pick_next_role(args, report, status, next_role)
     print(render_three_line(status, args.summary, next_role, next_detail, str(report),
                             entry_path=args.entry_path, task_title=args.task_title,
                             block_path=args.block_path))
