@@ -28,12 +28,27 @@ git diff --check "${base_sha}..${head_sha}"
 
 echo "== classify_changes"
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-python3 "${script_dir}/../ci/classify_changes.py" --base "${base_sha}" --head "${head_sha}"
+rc=0
+python3 "${script_dir}/../ci/classify_changes.py" --base "${base_sha}" --head "${head_sha}" || rc=$?
+if [ "${rc}" -ne 0 ]; then
+  echo "DOC_VERIFY_FAIL: classify_changes failed (exit=${rc})" >&2
+  exit "${rc}"
+fi
 
 echo "== run_lightweight_checks"
-bash "${script_dir}/../ci/run_lightweight_checks.sh" "${base_sha}" "${head_sha}"
+rc=0
+bash "${script_dir}/../ci/run_lightweight_checks.sh" "${base_sha}" "${head_sha}" || rc=$?
+if [ "${rc}" -ne 0 ]; then
+  echo "DOC_VERIFY_FAIL: run_lightweight_checks failed (exit=${rc})" >&2
+  exit "${rc}"
+fi
 
 echo "== check_identity"
-python3 "${script_dir}/check_identity.py" --repo "$(pwd)" --expect "${expect_identity}" --rev "${head_sha}"
+rc=0
+python3 "${script_dir}/check_identity.py" --repo "$(pwd)" --expect "${expect_identity}" --rev "${head_sha}" || rc=$?
+if [ "${rc}" -ne 0 ]; then
+  echo "DOC_VERIFY_FAIL: check_identity failed (exit=${rc})" >&2
+  exit "${rc}"
+fi
 
 echo "DOC_VERIFY_PASS head=${head_sha}"
