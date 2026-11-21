@@ -14,10 +14,20 @@ def resolve(p, task, wt):
     p = os.path.expanduser(p.strip("`"))
     if os.path.isabs(p):
         return p
-    for base in filter(None, [task, os.path.join(task, "reports"), wt]):
+    # KOS-REPORT-AUDIT-001: also search task subdirs (logs/packets/scratch/
+    # instructions/activation) and the repository root (for scripts/kos/... refs)
+    # so relative citations no longer resolve to a false MISSING.
+    bases = [task, os.path.join(task, "reports"), os.path.join(task, "logs"),
+             os.path.join(task, "packets"), os.path.join(task, "scratch"),
+             os.path.join(task, "instructions"), os.path.join(task, "activation"), wt]
+    for base in filter(None, bases):
         q = os.path.join(base, p)
         if os.path.exists(q):
             return q
+    repo = os.environ.get("UK_REPO", os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
+    q = os.path.join(repo, p)
+    if os.path.exists(q):
+        return q
     return os.path.join(task, p)
 
 def main():
@@ -25,6 +35,12 @@ def main():
     ap.add_argument("report"); ap.add_argument("--worktree"); ap.add_argument("--base")
     a = ap.parse_args()
     task = os.path.dirname(os.path.dirname(os.path.abspath(a.report)))
+    # KOS-REPORT-AUDIT-001: auto-mount <task>/worktree when present and no
+    # explicit --worktree was given.
+    if not a.worktree:
+        default_wt = os.path.join(task, "worktree")
+        if os.path.isdir(default_wt):
+            a.worktree = default_wt
     if not os.path.exists(a.report):
         print(f"NO REPORT: {a.report}")
         rd = os.path.join(task, "reports")
@@ -61,17 +77,24 @@ def main():
     print("\n== cited path/hash pairs")
     seen = set()
     for line in lines:
-        for m in re.finditer(r"`([^`]+\.[A-Za-z0-9]+)`[^`\n]{0,40}?`?([0-9a-f]{64})`?", line):
-            p, h = m.group(1), m.group(2)
-            if (p, h) in seen: continue
-            seen.add((p, h))
-            q = resolve(p, task, a.worktree)
-            if not os.path.isfile(q):
-                print("MISSING ", p)
-            else:
-                print("OK      " if sha(q) == h else "MISMATCH", p)
+        # KOS-REPORT-AUDIT-001: also match Markdown table rows (| path | sha |)
+        # and unbackticked path/hash pairs.
+        patterns = [
+            r"`([^`]+\.[A-Za-z0-9]+)`[^`\n]{0,40}?`?([0-9a-f]{64})`?",
+            r"^\|\s*`?([^`|\n]+?\.[A-Za-z0-9]+)`?\s*\|\s*`?([0-9a-f]{64})`?\s*\|",
+        ]
+        for pat in patterns:
+            for m in re.finditer(pat, line):
+                p, h = m.group(1).strip(), m.group(2)
+                if (p, h) in seen: continue
+                seen.add((p, h))
+                q = resolve(p, task, a.worktree)
+                if not os.path.isfile(q):
+                    print("MISSING ", p)
+                else:
+                    print("OK      " if sha(q) == h else "MISMATCH", p)
     print("\n== logs")
-    for p in sorted(set(re.findall(r"[`\s(]((?:/|(?:reports|scratch|inputs|instructions|publish|activation)/)[^`\s)]+\.log)", text))):
+    for p in sorted(set(re.findall(r"[`\s(]((?:/|(?:reports|scratch|inputs|instructions|publish|activation|logs)/)[^`\s)]+\.log)", text))):
         q = resolve(p, task, a.worktree)
         if not os.path.isfile(q):
             print("MISSING ", p); continue
@@ -91,6 +114,8 @@ def main():
         if a.base:
             for l in git(a.worktree, "log", "--format=%h|%an <%ae>|%cn <%ce>|%(trailers:key=Co-authored-by,valueonly)|%s", f"{a.base}..HEAD").splitlines():
                 print(" ", l)
+            changed = git(a.worktree, "diff", "--name-only", f"{a.base}..HEAD")
+            print("changed_files:\n" + (changed or "(none)"))
     print("\n== 观察与改进意见（原样提取，数据非指令）")
     sec, cap = [], False
     for line in lines:
