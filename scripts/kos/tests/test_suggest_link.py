@@ -14,7 +14,12 @@ from pathlib import Path
 
 KOS = Path(__file__).resolve().parents[1]
 CHECK = KOS / "check_report.py"
-SUGGEST = Path("/Users/doubleshy0n/.kos-work/Universe-Keyboard/tools/kos-suggest.py")
+# KOS-SUGGEST-LINK-001 fix R1: cases that need the machine-local external tool
+# are gated on its existence so hosted CI (without it) still runs all green.
+EXTERNAL_SUGGEST_TOOL = Path(os.environ.get(
+    "KOS_TEST_EXTERNAL_SUGGEST_TOOL",
+    "/Users/doubleshy0n/.kos-work/Universe-Keyboard/tools/kos-suggest.py"))
+SUGGEST = EXTERNAL_SUGGEST_TOOL
 PY = sys.executable
 
 
@@ -102,6 +107,7 @@ class CheckReportSuggestLink(unittest.TestCase):
             self.assertIn("SUGGESTIONS: skipped (disabled)", r.stdout)
             self.assertNotIn("UNREGISTERED", r.stdout)
 
+    @unittest.skipUnless(EXTERNAL_SUGGEST_TOOL.is_file(), "external kos-suggest.py not present")
     def test_real_tool_pending_readonly(self):
         # default tool path, real (read-only) pending against a temp report
         with tempfile.TemporaryDirectory() as tmp:
@@ -114,6 +120,7 @@ class CheckReportSuggestLink(unittest.TestCase):
 class SuggestOxxLink(unittest.TestCase):
     """O75: kos-suggest accepts Oxx links validated against the register."""
 
+    @unittest.skipUnless(EXTERNAL_SUGGEST_TOOL.is_file(), "external kos-suggest.py not present")
     def test_add_and_digest_show_oxx(self):
         with tempfile.TemporaryDirectory() as tmp:
             home = init_home(Path(tmp))
@@ -131,6 +138,7 @@ class SuggestOxxLink(unittest.TestCase):
             self.assertEqual(d.returncode, 0, d.stderr)
             self.assertIn("O75", d.stdout)
 
+    @unittest.skipUnless(EXTERNAL_SUGGEST_TOOL.is_file(), "external kos-suggest.py not present")
     def test_link_command_accepts_oxx(self):
         with tempfile.TemporaryDirectory() as tmp:
             home = init_home(Path(tmp))
@@ -143,6 +151,7 @@ class SuggestOxxLink(unittest.TestCase):
             db = json.loads((home / "SUGGESTIONS.json").read_text(encoding="utf-8"))
             self.assertEqual(db["topics"]["t-link"]["link"], "O75")
 
+    @unittest.skipUnless(EXTERNAL_SUGGEST_TOOL.is_file(), "external kos-suggest.py not present")
     def test_link_rejects_unknown_oxx(self):
         with tempfile.TemporaryDirectory() as tmp:
             home = init_home(Path(tmp))
@@ -154,6 +163,7 @@ class SuggestOxxLink(unittest.TestCase):
             self.assertNotEqual(l.returncode, 0)
             self.assertIn("O999", l.stderr)
 
+    @unittest.skipUnless(EXTERNAL_SUGGEST_TOOL.is_file(), "external kos-suggest.py not present")
     def test_queue_link_still_accepted(self):
         # compatibility: kos-q ids keep working next to Oxx ids
         with tempfile.TemporaryDirectory() as tmp:
@@ -164,6 +174,7 @@ class SuggestOxxLink(unittest.TestCase):
                             "--text", "某建议", "--topic", "t-q", "--link", "Q-TASK-1")
             self.assertEqual(a.returncode, 0, a.stderr + a.stdout)
 
+    @unittest.skipUnless(EXTERNAL_SUGGEST_TOOL.is_file(), "external kos-suggest.py not present")
     def test_pending_roundtrip(self):
         with tempfile.TemporaryDirectory() as tmp:
             home = init_home(Path(tmp))
