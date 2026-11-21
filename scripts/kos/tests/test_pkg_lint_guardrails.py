@@ -310,3 +310,15 @@ class HandoffFlagTableTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class HandoffReflectionQuietTests(unittest.TestCase):
+    """KOS-REPORT-AUDIT-001 (O70): reflection must not leak argparse usage/error to stderr."""
+
+    def test_legal_packet_lint_stderr_empty(self) -> None:
+        text = ("- `python3 scripts/kos/kos_handoff.py final --report x.md`\n"
+                "- 将 stdout 直接作为 Markdown 原样回复，严禁外层再套代码块。\n")
+        result = run(text)
+        self.assertEqual(result.returncode, 0, result.stdout)
+        self.assertNotIn("profile: error", result.stderr)
+        self.assertNotIn("usage:", result.stderr)

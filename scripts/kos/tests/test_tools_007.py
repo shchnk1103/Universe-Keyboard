@@ -1,6 +1,7 @@
 """Tests for KOS-TOOLS-007 impact, run and verify-inputs tools. Stdlib only."""
 from __future__ import annotations
 
+import hashlib
 import os
 import shutil
 import subprocess
@@ -188,3 +189,75 @@ class VerifyTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class CheckReportAuditTests(unittest.TestCase):
+    """KOS-REPORT-AUDIT-001 (O67): check_report resolves logs/packets/scratch,
+    parses Markdown-table hash pairs, auto-mounts <task>/worktree, prints changed_files."""
+
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory()
+        self.task = Path(self.tmp.name) / "TASK-AUDIT"
+        (self.task / "reports").mkdir(parents=True)
+        (self.task / "logs").mkdir(parents=True)
+        (self.task / "packets").mkdir(parents=True)
+        (self.task / "scratch").mkdir(parents=True)
+        log = self.task / "logs" / "sample.log"
+        log.write_text("COMMAND echo hi\nEXIT: 0\n", encoding="utf-8")
+        log_sha = hashlib.sha256(log.read_bytes()).hexdigest()
+        pkg = self.task / "packets" / "pkg.md"
+        pkg.write_text("# pkg\n", encoding="utf-8")
+        pkg_sha = hashlib.sha256(pkg.read_bytes()).hexdigest()
+        self.report = self.task / "reports" / "executor-report-r1.md"
+        self.report.write_text(
+            "DONE\n"
+            "Lucy（Executor（代码））；运行时身份 Test。\n"
+            f"\n日志日志 logs/sample.log SHA-256 `{log_sha}`\n"
+            "\n| 文件 | SHA-256 |\n|---|---|\n"
+            f"| sample.log | `{log_sha}` |\n"
+            f"| pkg.md | `{pkg_sha}` |\n",
+            encoding="utf-8")
+        self.log_sha = log_sha
+        self.pkg_sha = pkg_sha
+
+    def tearDown(self) -> None:
+        self.tmp.cleanup()
+
+    def _init_git_worktree(self) -> Path:
+        import subprocess as sp
+        repo = Path(self.tmp.name) / "seed"
+        repo.mkdir()
+        env = {**os.environ, "GIT_AUTHOR_NAME": "t", "GIT_AUTHOR_EMAIL": "t@t",
+               "GIT_COMMITTER_NAME": "t", "GIT_COMMITTER_EMAIL": "t@t"}
+        def g(*a, cwd=None):
+            sp.run(["git", "-C", str(cwd or repo), *a], check=True, capture_output=True, env=env)
+        g("init", "-q")
+        (repo / "f.txt").write_text("v1\n", encoding="utf-8")
+        g("add", ".")
+        g("commit", "-qm", "base")
+        base = sp.run(["git", "-C", str(repo), "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
+        (repo / "f.txt").write_text("v2\n", encoding="utf-8")
+        g("add", ".")
+        g("commit", "-qm", "head")
+        wt = self.task / "worktree"
+        sp.run(["git", "-C", str(repo), "worktree", "add", "-q", str(wt), "HEAD"], check=True, capture_output=True)
+        sp.run(["git", "-C", str(wt), "checkout", "-q", "-b", "feat/x"], check=True, capture_output=True)
+        return Path(base)
+
+    def test_table_hash_pairs_and_subdir_resolution(self) -> None:
+        r = _run([PY, "-B", str(KOS / "check_report.py"), str(self.report)])
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertIn(f"OK       sample.log", r.stdout)
+        self.assertIn(f"OK       pkg.md", r.stdout)
+        self.assertNotIn("MISSING", r.stdout)
+        # logs section should find the log relative to the logs/ subdir too
+        self.assertIn("logs/sample.log", r.stdout)
+
+    def test_auto_worktree_mount_and_changed_files(self) -> None:
+        base = self._init_git_worktree()
+        r = _run([PY, "-B", str(KOS / "check_report.py"), str(self.report), "--base", base])
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertIn("== worktree", r.stdout)
+        self.assertIn("HEAD", r.stdout)
+        self.assertIn("changed_files", r.stdout)
+        self.assertIn("f.txt", r.stdout)

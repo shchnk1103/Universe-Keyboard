@@ -257,8 +257,14 @@ def main():
             captured[name] = parser
             return parser
         _argparse._SubParsersAction.add_parser = _spy
+        # KOS-REPORT-AUDIT-001 (O70): redirect stdout/stderr while calling
+        # profile so argparse's usage/error noise never reaches the user's
+        # terminal (reflection output is captured via the spy, not printed).
+        import contextlib as _contextlib
+        import io as _io
         try:
-            module.main(["profile"])
+            with _contextlib.redirect_stdout(_io.StringIO()), _contextlib.redirect_stderr(_io.StringIO()):
+                module.main(["profile"])
         except SystemExit:
             pass
         except Exception:
