@@ -280,7 +280,8 @@ def _relay_check_identity(repo: str, expect: str) -> tuple[bool, str]:
 
 
 def _relay_pick(board: str, board_args_json: str, excludes: list[str], role: str = "quality") -> tuple[str | None, str]:
-    argv = [board] + json.loads(board_args_json) + ["pick", "--role", role, "--exclude", ",".join(excludes)]
+    clean_excludes = [e for e in dict.fromkeys(e.strip() for e in excludes) if e]
+    argv = [board] + json.loads(board_args_json) + ["pick", "--role", role, "--exclude", ",".join(clean_excludes)]
     result = subprocess.run(argv, capture_output=True, text=True)
     first = (result.stdout or "").strip().splitlines()
     line = first[0].strip() if first else ""
@@ -415,12 +416,17 @@ def cmd_relay_quality(args):
     log_shas = re.findall(r"(/[^\s`（）()]+?\.(?:log|txt|md|json|patch))[^\n]{0,40}?SHA-256[ ：:]*`?([0-9a-f]{64})", report_text)
     log_list = "\n".join(f"- {p}（SHA-256 `{h}`）" for p, h in log_shas) or "（无）"
     file_list = "\n".join(f"- {path}" for path in files) or "（无）"
+    quality_report = report.parent / f"quality-{Path(args.packet).stem}.md"
     template = Path(SCRIPT_DIR, "quality_relay_template.md").read_text(encoding="utf-8")
     block = (template
              .replace("{TASK}", Path(args.packet).stem)
              .replace("{PICK}", f"{picked}（Quality）")
              .replace("{BASE}", args.base)
              .replace("{COMMIT}", commit)
+             .replace("{WORKTREE}", str(Path(args.repo).resolve()))
+             .replace("{PACKET}", str(Path(args.packet).resolve()))
+             .replace("{PACKET_SHA}", hashlib.sha256(Path(args.packet).read_bytes()).hexdigest())
+             .replace("{QUALITY_REPORT}", str(quality_report.resolve()))
              .replace("{EXCLUDES}", "、".join(excludes))
              .replace("{EXEC_REPORT}", str(report.resolve()))
              .replace("{EXEC_REPORT_SHA}", hashlib.sha256(report.read_bytes()).hexdigest())
