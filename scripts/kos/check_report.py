@@ -33,6 +33,9 @@ def resolve(p, task, wt):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("report"); ap.add_argument("--worktree"); ap.add_argument("--base")
+    # KOS-SUGGEST-LINK-001 (O75): probe an external kos-suggest tool read-only.
+    ap.add_argument("--suggest-tool", default="/Users/doubleshy0n/.kos-work/Universe-Keyboard/tools/kos-suggest.py")
+    ap.add_argument("--no-suggest-check", action="store_true")
     a = ap.parse_args()
     task = os.path.dirname(os.path.dirname(os.path.abspath(a.report)))
     # KOS-REPORT-AUDIT-001: auto-mount <task>/worktree when present and no
@@ -127,6 +130,30 @@ def main():
             sec.append(line)
     body = [l for l in sec[1:] if l.strip()]
     print("\n".join(sec) if body else "(无该板块或为空)")
+    # KOS-SUGGEST-LINK-001 (O75): read-only suggestions probe after the
+    # observations section; never changes the exit code or writes anything.
+    print("\n== suggestions")
+    if a.no_suggest_check:
+        print("SUGGESTIONS: skipped (disabled)")
+    elif not os.path.isfile(a.suggest_tool):
+        print("SUGGESTIONS: skipped (no-tool)")
+    else:
+        try:
+            r = subprocess.run(["python3", a.suggest_tool, "pending", a.report],
+                               capture_output=True, text=True, timeout=60)
+        except (subprocess.TimeoutExpired, OSError):
+            print("SUGGESTIONS: skipped (no-tool)")
+        else:
+            if r.returncode == 0:
+                print("SUGGESTIONS: ok")
+            else:
+                out = (r.stdout + r.stderr).strip()
+                m = re.search(r"该报告有 (\d+) 条意见，已登记 (\d+) 条", out)
+                n = (int(m.group(1)) - int(m.group(2))) if m else sum(
+                    1 for l in r.stdout.splitlines() if l.startswith("  - "))
+                print(f"SUGGESTIONS: UNREGISTERED ({n})")
+                for l in out.splitlines()[:5]:
+                    print(" ", l[:200])
     print("\n== skip mentions")
     for line in lines:
         if re.search(r"skip|跳过|XCTSkip", line, re.I):
