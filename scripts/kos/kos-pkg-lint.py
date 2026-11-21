@@ -167,6 +167,37 @@ def main():
         consequence = re.search(r"报\s*E[67]|禁止|应为|不应|不得|误判|->|→", after)
         return bool(rule and consequence or re.search(r"禁止|禁用|不得|不应|旧值", before))
 
+    def _script_rel(token):
+        # normalize script refs to their scripts/kos/... or tools/... suffix so
+        # absolute and relative spellings of the same file match each other
+        for marker in ("scripts/kos/", "tools/"):
+            i = token.find(marker)
+            if i >= 0:
+                return token[i:]
+        return token
+
+    def _allowed_new_files(content):
+        # KOS-LINT-NEWFILE-001: script paths declared as （新增） inside the
+        # allowed-write section are files the task will create; E6 must not
+        # fire on them (the declaration makes them intentional, not typos).
+        new_files = set()
+        in_allow = False
+        for line in content.splitlines():
+            s = line.strip()
+            if re.match(r"^#{1,6}\s*allow\b", s, re.I):
+                in_allow = True
+                continue
+            if "允许写入路径" in line and (s.startswith("#") or s.startswith("- **") or s.startswith("**")):
+                in_allow = True
+                continue
+            if s.startswith("#"):
+                in_allow = False
+                continue
+            if in_allow and ("（新增）" in line or "(新增)" in line):
+                for tok in re.findall(r"(?:/[^`'\"\n]*?/)?(?:scripts/kos|tools)/[^\s`'\"，。；;）)]+\.(?:py|sh)", line):
+                    new_files.add(_script_rel(tok))
+        return new_files
+
     def _check_e6(files, txt, err):
         flag_table = None
         flag_table_failed = False
@@ -183,8 +214,14 @@ def main():
                         err.append(f"E6 {os.path.basename(f)} 交接脚本不存在或不是 scripts/kos/kos_handoff.py：{ref}")
                 # Keep the whole reference, including placeholders and absolute prefixes.
                 pattern = r"(?:/[^`'\"\n]*?/)?(?:scripts/kos|tools)/[^\s`'\"，。；;）)]+\.(?:py|sh)"
+                new_files = _allowed_new_files(content)
                 for ref in re.findall(pattern, content):
                     if not _existing(ref):
+                        if _script_rel(ref) in new_files:
+                            continue  # declared （新增） in the allowed-write section
+                        m = re.match(r"^tools/(.+)$", ref)
+                        if m and os.path.isfile(os.path.join(H, "tools", m.group(1))):
+                            continue  # short-form tools/ path that exists under $KOS_HOME/tools
                         err.append(f"E6 {os.path.basename(f)} 引用的脚本不存在：{ref}")
                 if flag_table is None and not flag_table_failed:
                     flag_table = _handoff_flag_table()
