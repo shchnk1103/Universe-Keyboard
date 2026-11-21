@@ -152,8 +152,8 @@ class FinalThreeLineTests(unittest.TestCase):
         relay = "## 下一站接力（O41）\n"
         if next_role:
             relay += f"next_role: {next_role}\n"
-        if next_step:
-            relay += f"next_step: {next_step}\n"
+        relay += f"next_step: {next_step or '按接力继续'}\n"
+        relay += f"\n```text\n交回：{next_role or 'Jack（PM）'}\n事项：继续\n```\n"
         report.write_text(report.read_text(encoding="utf-8") + relay, encoding="utf-8")
         return report
 
