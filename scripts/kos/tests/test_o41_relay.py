@@ -904,3 +904,118 @@ class TierProfileGateTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class HandoffAutoPickTests(unittest.TestCase):
+    """KOS-HANDOFF-AUTO-PICK-001: final auto-pick + relay-quality dynamic excludes & dispatch block."""
+
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory()
+        self.root = Path(self.tmp.name)
+
+    def tearDown(self) -> None:
+        self.tmp.cleanup()
+
+    def _record_stub(self, name: str = "Quinn", role: str = "Quality") -> Path:
+        stub = self.root / "pick_stub.py"
+        stub.write_text(
+            "import os, sys\n"
+            "out = os.environ.get('PICK_ARGS_OUT')\n"
+            "if out:\n"
+            "    with open(out, 'w', encoding='utf-8') as f:\n"
+            "        f.write('\\n'.join(sys.argv[1:]))\n"
+            f"print('PICK [{role}]: {name}（{role} | 上次：-）')\n",
+            encoding="utf-8")
+        return stub
+
+    def _report(self, next_role: str = "Quality Reviewer",
+                line2: str = "Lucy（Executor（代码））；运行时身份 Codex。",
+                status: str = "DONE") -> Path:
+        report = self.root / "reports" / "report.md"
+        report.parent.mkdir(parents=True, exist_ok=True)
+        report.write_text(
+            f"{status}\n{line2}\n\n"
+            "## 下一站接力（O41）\n"
+            f"- next_role：{next_role}\n- next_step：复核\n\n"
+            "```text\n"
+            f"交回：{next_role}\n事项：复核\n报告：{self.root / 'reports' / 'report.md'}\nSHA-256：{'0' * 64}\n"
+            "```\n",
+            encoding="utf-8")
+        return report
+
+    def _final(self, report: Path, board_args: str, env=None):
+        return _run_py("kos_handoff.py", [
+            "final", "--report", str(report), "--skip-lint",
+            "--board", sys.executable, "--board-args", board_args,
+        ], env=env)
+
+    def test_final_auto_picks_generic_quality_role_and_excludes_participants(self) -> None:
+        report = self._report()
+        argv_out = self.root / "pick-argv.txt"
+        stub = self._record_stub()
+        result = self._final(report, json.dumps([str(stub)]), env={"PICK_ARGS_OUT": str(argv_out)})
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("下一位交付：Quinn（Quality Reviewer）", result.stdout)
+        self.assertIn("交回：Quinn（Quality Reviewer）", result.stdout)
+        argv_text = argv_out.read_text(encoding="utf-8")
+        self.assertIn("--exclude", argv_text)
+        self.assertIn("Lucy", argv_text)
+
+    def test_final_auto_pick_falls_back_when_board_unavailable(self) -> None:
+        report = self._report()
+        result = self._final(report, json.dumps(["-c", "raise SystemExit(3)"]))
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("下一位交付：Quality Reviewer", result.stdout)
+
+    def test_final_keeps_concrete_next_role_untouched(self) -> None:
+        report = self._report(next_role="Maya（Quality）")
+        stub = self._record_stub()
+        result = self._final(report, json.dumps([str(stub)]))
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("下一位交付：Maya（Quality）", result.stdout)
+        self.assertNotIn("下一位交付：Quinn", result.stdout)
+
+    def test_relay_quality_dynamic_excludes_and_dispatch_block(self) -> None:
+        repo = self.root / "repo"
+        repo.mkdir()
+        env = dict(os.environ)
+        env.update({"GIT_AUTHOR_NAME": "Cowork 3P", "GIT_AUTHOR_EMAIL": "cowork-3p@localhost",
+                    "GIT_COMMITTER_NAME": "Cowork 3P", "GIT_COMMITTER_EMAIL": "cowork-3p@localhost",
+                    "GIT_CONFIG_GLOBAL": "/dev/null", "GIT_CONFIG_SYSTEM": "/dev/null"})
+
+        def git(*a):
+            r = subprocess.run(["git", "-C", str(repo), *a], capture_output=True, text=True, env=env)
+            self.assertEqual(r.returncode, 0, r.stderr)
+            return r.stdout.strip()
+
+        git("init", "-b", "main")
+        (repo / ".kos").mkdir()
+        (repo / ".kos" / "project.json").write_text("{}\n", encoding="utf-8")
+        (repo / "base.txt").write_text("base\n", encoding="utf-8")
+        git("add", ".")
+        git("commit", "-m", "base")
+        base = git("rev-parse", "HEAD")
+        (repo / "tool.py").write_text("x = 1\n", encoding="utf-8")
+        git("add", ".")
+        git("commit", "-m", "work")
+        packet = self.root / "packet.md"
+        packet.write_text(
+            "Executor（代码）；你不是 PM\n\n# 任务包：示例\n\n"
+            "- **包头档位**：`code-fix`\n- **复核重点**：\n  1. 检查一切。\n",
+            encoding="utf-8")
+        report = self._report()
+        argv_out = self.root / "pick-argv-relay.txt"
+        stub = self._record_stub()
+        result = _run_py("kos_handoff.py", [
+            "relay-quality", "--report", str(report), "--packet", str(packet),
+            "--base", base, "--repo", str(repo),
+            "--board", sys.executable, "--board-args", json.dumps([str(stub)]),
+        ], env={"PICK_ARGS_OUT": str(argv_out)})
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        argv_text = argv_out.read_text(encoding="utf-8")
+        self.assertIn("Lucy", argv_text)
+        self.assertIn("```text", result.stdout)
+        self.assertIn("角色：Quinn（Quality）", result.stdout)
+        self.assertIn(f"任务：{packet.stem}", result.stdout)
+        self.assertIn("SHA-256：", result.stdout)
+        self.assertIn("授权，直接执行", result.stdout)
