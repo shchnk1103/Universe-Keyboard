@@ -22,6 +22,13 @@ report)
   echo "可用空间：$(free) GiB";;
 r|e)
   [ ${#TASKS[@]} -eq 0 ] && { echo "需要至少一个任务号"; exit 2; }
+  # KOS-CLEANUP-GUARD-001: fail closed on empty/invalid task ids BEFORE any
+  # delete/archive — an empty id must never degrade to scanning $ROOT/.
+  for t in "${TASKS[@]}"; do
+    case "$t" in
+      ''|*[[:space:]]*|.|..|*/*) echo "非法任务号：'$t'"; exit 2;;
+    esac
+  done
   before=$(free); total=0
   for t in "${TASKS[@]}"; do
     d="$ROOT/$t"; [ -d "$d" ] || { echo "SKIP 无此任务：$t"; continue; }
@@ -47,7 +54,7 @@ r|e)
             rm -rf -- "$p"; log "E $t archived+deleted $p -> $out sha=$sha ${kb}KB"
           else echo "FAIL 压缩失败，保留原件：$p"; rm -f "$out"; fi
         fi
-      done < <(find "$d" -maxdepth 4 -type d \( -name '*.xcresult' -o -name 'evidence*' -o -name 'runtime*' -o -name 'engine-exp*' -o -name 'negative-*' -o -name 'matrix-*' \) -not -path '*/worktree*' -not -path '*/.git/*' -prune -print)
+      done < <(find "$d" -maxdepth 4 -type d \( -name '*.xcresult' -o -name 'evidence*' -o -name 'runtime*' -o -name 'engine-exp*' -o -name 'negative-*' -o -name 'matrix-*' -o -name 'run-*' -o -name 'fx-*' \) -not -path '*/worktree*' -not -path '*/.git/*' -prune -print)
     fi
   done
   printf '%s：约 %.1f GB（%s模式 %s）\n' "$([ $APPLY -eq 1 ] && echo 已处理 || echo 将处理)" "$(echo "$total/1048576" | bc -l)" "$MODE" "${TASKS[*]}"

@@ -189,3 +189,63 @@ class PkgLintW4Tests(unittest.TestCase):
         self.assertEqual(out.count("W4 "), 2)
         self.assertIn("变量 $name 后紧跟非 ASCII 字符", out)
         self.assertIn("${name}", out)
+
+
+class CleanupGuardTests(unittest.TestCase):
+    """KOS-CLEANUP-GUARD-001: empty/invalid task ids fail closed; e-mode covers run-*/fx-*."""
+
+    def setUp(self) -> None:
+        if not (_which("bash") and _which("bc") and _which("du") and _which("tar")):
+            self.skipTest("bash/bc/du/tar missing — only allowed skip for kos-cleanup.sh host deps")
+        self.tmp = tempfile.TemporaryDirectory()
+        self.home = Path(self.tmp.name)
+        self.project = "Universe-Keyboard"
+        self.root = self.home / self.project
+        self.protected = "GUARD-PROT"
+        self.neighbor = "GUARD-NEIGH"
+        self.target = "GUARD-TARGET"
+        for task in (self.protected, self.neighbor, self.target):
+            (self.root / task / "scratch" / "DerivedData").mkdir(parents=True)
+            (self.root / task / "scratch" / "DerivedData" / "blob.bin").write_bytes(b"x" * 8)
+        (self.root / "KOS-CLEANUP-001").mkdir(parents=True)
+        (self.root / "KOS-CLEANUP-001" / "protected.txt").write_text(self.protected + "\n", encoding="utf-8")
+        (self.root / "manifests").mkdir(parents=True)
+        self.env = _env(self.home, self.project)
+
+    def tearDown(self) -> None:
+        self.tmp.cleanup()
+
+    def _blob(self, task: str) -> Path:
+        return self.root / task / "scratch" / "DerivedData" / "blob.bin"
+
+    def test_empty_task_id_apply_fails_closed_no_scan(self) -> None:
+        r = _run_bash("kos-cleanup.sh", ["r", "", "--apply"], env=self.env)
+        self.assertEqual(r.returncode, 2, r.stdout + r.stderr)
+        for task in (self.protected, self.neighbor, self.target):
+            self.assertTrue(self._blob(task).exists(), task)
+
+    def test_invalid_task_ids_fail_closed(self) -> None:
+        for bad in ("..", ".", "a/b", "x y", "  ", "a\tb"):
+            r = _run_bash("kos-cleanup.sh", ["r", bad, "--apply"], env=self.env)
+            self.assertEqual(r.returncode, 2, f"{bad!r}: {r.stdout + r.stderr}")
+            for task in (self.protected, self.neighbor, self.target):
+                self.assertTrue(self._blob(task).exists(), f"{bad!r} deleted {task}")
+            e = _run_bash("kos-cleanup.sh", ["e", bad, "--apply"], env=self.env)
+            self.assertEqual(e.returncode, 2, f"e {bad!r}: {e.stdout + e.stderr}")
+
+    def test_e_mode_archives_run_and_fx_dirs(self) -> None:
+        task = "GUARD-RUNFX"
+        for name in ("run-1", "fx-ice"):
+            d = self.root / task / name
+            d.mkdir(parents=True)
+            (d / "log.txt").write_text("evidence\n", encoding="utf-8")
+        (self.root / "GUARD-RUNFX-unrelated" / "runner-x").mkdir(parents=True)
+        r = _run_bash("kos-cleanup.sh", ["e", task, "--apply"], env=self.env)
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        archive = self.root / "archive" / task
+        self.assertTrue((archive / "run-1.tgz").exists(), sorted(p.name for p in archive.iterdir()))
+        self.assertTrue((archive / "fx-ice.tgz").exists())
+        self.assertTrue((archive / "SHA256SUMS.txt").exists())
+        self.assertFalse((self.root / task / "run-1").exists())
+        self.assertFalse((self.root / task / "fx-ice").exists())
+        self.assertTrue((self.root / "GUARD-RUNFX-unrelated" / "runner-x").exists())
