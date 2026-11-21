@@ -11,6 +11,9 @@ from clauses_spec import PM_HANDOFF_ROLE, RELAY_SECTION_HEADING
 args = sys.argv[1:]
 require_o41 = "--require-o41" in args or os.environ.get("KOS_REQUIRE_O41") == "1"
 args = [a for a in args if a != "--require-o41"]
+# KOS-TEMPLATES-RELAY-001 (C): each new format check can be disabled with --no-<flag>.
+CHECK_IDENTITY_LINE, CHECK_NEXT_STEP, CHECK_FINAL_BLOCK = "--no-identity-line" not in args, "--no-next-step" not in args, "--no-final-block" not in args
+args = [a for a in args if a not in ("--no-identity-line", "--no-next-step", "--no-final-block")]
 def opt(n, d):
     return int(args[args.index(n)+1]) if n in args else d
 path = args[0]
@@ -48,5 +51,11 @@ if has_relay:
         bad.append(f"{RELAY_SECTION_HEADING} 缺少 next_role")
     elif status in ('PARTIAL', 'BLOCKED', 'STOPPED', 'FAIL') and PM_HANDOFF_ROLE not in m_role.group(1):
         bad.append(f"状态为 {status} 时 next_role 必须交 {PM_HANDOFF_ROLE}（实为 {m_role.group(1).strip()}）")
+    if CHECK_NEXT_STEP and status in ('DONE', 'PARTIAL', 'BLOCKED', 'STOPPED') and not re.search(r"next_step[^\n:：]*[:：]\s*\S", relay_sec):
+        bad.append(f"{RELAY_SECTION_HEADING} 缺少 next_step：状态 {status} 须写明下一步")
+if CHECK_IDENTITY_LINE and (len(lines) < 2 or not lines[1].strip()):
+    bad.append("第二行为空：须写明运行时身份与既往")
+if CHECK_FINAL_BLOCK and has_relay and status in ('DONE', 'PARTIAL', 'BLOCKED', 'STOPPED') and not re.search(r"```text\n交回：", txt):
+    bad.append("缺少末尾最终消息三行段（```text 交回：…）")
 print("\n".join(("问题：" + b) for b in bad) if bad else "OK")
 sys.exit(1 if bad else 0)

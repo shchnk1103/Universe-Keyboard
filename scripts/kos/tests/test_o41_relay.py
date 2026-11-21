@@ -273,7 +273,7 @@ class O41ClausesAndLintTests(unittest.TestCase):
 
         ok_done = _write(
             self.root / "ok_done.md",
-            "DONE\nLucy（Executor）；运行时身份 Test\n\n## 下一站接力（O41）\n- next_role: Pete（Preflight）\n- 状态：块已生成未派发（待 Human 通知）\n",
+            "DONE\nLucy（Executor）；运行时身份 Test\n\n## 下一站接力（O41）\n- next_role: Pete（Preflight）\n- next_step: 继续预检\n- 状态：块已生成未派发（待 Human 通知）\n\n```text\n交回：Pete（Preflight）\n事项：继续\n```\n",
         )
         r3 = _run_py("kos-report-lint.py", ["--require-o41", str(ok_done)])
         self.assertEqual(r3.returncode, 0, r3.stdout)
@@ -333,7 +333,7 @@ class O41ActivationGapFixTests(unittest.TestCase):
         cid1 = json.loads(rc.stdout)["claim_id"]
 
         # Normal relay to Pete
-        rep_done = _write(self.task_dir / "rep-done.md", "DONE\nWendy（Executor）；运行时身份 Test\n\n## 下一站接力（O41）\n- next_role: Pete\n")
+        rep_done = _write(self.task_dir / "rep-done.md", "DONE\nWendy（Executor）；运行时身份 Test\n\n## 下一站接力（O41）\n- next_role: Pete\n- next_step: step-2\n\n```text\n交回：Pete\n事项：step-2\n```\n")
         r_h1 = _run_py("kos_handoff.py", [
             "handoff", "--task-dir", str(self.task_dir), "--task-id", "TASK-FIX",
             "--expect-rev", "2", "--claim-id", cid1, "--updated-by", "Wendy (Test)",
@@ -359,7 +359,7 @@ class O41ActivationGapFixTests(unittest.TestCase):
         rc2 = _run_py("kos_current.py", ["claim", "--task-dir", str(self.task_dir), "--role", "Pete", "--claimed-by", "Pete (Test)"])
         self.assertEqual(rc2.returncode, 0, rc2.stderr)
         cid2 = json.loads(rc2.stdout)["claim_id"]
-        rep_blk = _write(self.task_dir / "rep-blk.md", "BLOCKED\nPete（Preflight）；运行时身份 Test\n\n## 下一站接力（O41）\n- next_role: Jack（PM）\n")
+        rep_blk = _write(self.task_dir / "rep-blk.md", "BLOCKED\nPete（Preflight）；运行时身份 Test\n\n## 下一站接力（O41）\n- next_role: Jack（PM）\n- next_step: 人工处理依赖\n\n```text\n交回：Jack（PM）\n事项：依赖\n```\n")
         r_h2 = _run_py("kos_handoff.py", [
             "handoff", "--task-dir", str(self.task_dir), "--task-id", "TASK-FIX",
             "--expect-rev", "4", "--claim-id", cid2, "--updated-by", "Pete (Test)",
@@ -434,7 +434,7 @@ class O41ActivationGapFixTests(unittest.TestCase):
         self.assertEqual(rc.returncode, 0, rc.stderr)
         cid = json.loads(rc.stdout)["claim_id"]
 
-        rep_term = _write(self.task_dir / "rep-term.md", "DONE\nWendy（Executor）；运行时身份 Test\n\n## 下一站接力（O41）\n- next_role: Jack（PM）\n")
+        rep_term = _write(self.task_dir / "rep-term.md", "DONE\nWendy（Executor）；运行时身份 Test\n\n## 下一站接力（O41）\n- next_role: Jack（PM）\n- next_step: 收尾确认\n\n```text\n交回：Jack（PM）\n事项：收尾\n```\n")
         r_term = _run_py("kos_handoff.py", [
             "handoff", "--task-dir", str(self.task_dir), "--task-id", "TASK-FIX",
             "--expect-rev", "2", "--claim-id", cid, "--updated-by", "Wendy (Term)",
@@ -589,7 +589,8 @@ class RelayQualityTests(unittest.TestCase):
     GOOD_REPORT = (
         "DONE\n"
         "Cole（Executor）；运行时身份 Codex。\n\n"
-        "## 下一站接力（O41）\n- next_role：Quinn（Quality）\n"
+        "## 下一站接力（O41）\n- next_role：Quinn（Quality）\n- next_step：复核实现\n"
+        "\n```text\n交回：Quinn（Quality）\n事项：复核\n```\n"
     )
 
     def _good_report_with_logs(self):
