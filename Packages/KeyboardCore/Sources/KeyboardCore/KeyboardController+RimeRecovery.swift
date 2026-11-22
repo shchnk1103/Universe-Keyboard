@@ -22,9 +22,21 @@ extension KeyboardController {
         // .singleUse), and .singleUse / .chinese9 keep their existing
         // composition behavior untouched.
         if state.shiftState == .capsLock, Self.isSingleASCIILetter(key) {
+            // Detect an active composition BEFORE finalization clears app-side state.
+            let hasActiveComposition =
+                !state.currentComposition.isEmpty
+                || state.lastRimeOutput != nil
+                || state.partialCommit != nil
+                || rimeEngine?.isComposing() == true
             finishActiveCompositionAsDisplayText()
             insertText(key.uppercased(), source: .key)
-            return []
+            guard hasActiveComposition else { return [] }
+            // On-device follow-up (ZH26-CAPSLOCK-RESET-FIX-001): finalization only
+            // clears controller state; the librime session is still composing the
+            // old pinyin. Without an explicit reset the stale raw input resurfaces
+            // after Caps Lock is released ("nihao" + "a" revives as "nihaoa").
+            rimeEngine?.resetSession()
+            return .compositionChanged
         }
         let rimeKey = rimeInputKey(for: key)
         guard let engine = rimeEngine else {
