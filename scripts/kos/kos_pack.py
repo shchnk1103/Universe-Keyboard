@@ -59,10 +59,28 @@ def verify_and_lint(package: Path, base: str, cwd: str, use_lint: bool) -> "int 
 
 
 def board_pick(board_tool: str, board_role: str) -> "tuple[str, str] | None":
+    return board_pick_with_reserve(board_tool, board_role, reserve_task=None)
+
+
+def board_pick_with_reserve(board_tool: str, board_role: str,
+                            reserve_task: str | None = None,
+                            env: dict | None = None) -> "tuple[str, str] | None":
+    """Pick a candidate, optionally reserving them for a task (O77).
+
+    Falls back to a plain pick when the board tool does not know --reserve.
+    """
     argv = [board_tool, "pick", "--role", board_role]
     if board_tool.endswith(".py"):
         argv = [sys.executable, "-B", board_tool, "pick", "--role", board_role]
-    proc = subprocess.run(argv, capture_output=True, text=True)
+    proc = None
+    if reserve_task and re.fullmatch(r"KOS-[A-Za-z0-9-]+", reserve_task):
+        proc = subprocess.run(argv + ["--reserve", reserve_task],
+                              capture_output=True, text=True, env=env)
+        if proc.returncode != 0 and "unrecognized" in (proc.stderr or ""):
+            print("# NOTE: board tool rejected --reserve, retrying without it", file=sys.stderr)
+            proc = None
+    if proc is None:
+        proc = subprocess.run(argv, capture_output=True, text=True, env=env)
     lines = [l.strip() for l in (proc.stdout or "").splitlines() if l.strip()]
     first = lines[0] if lines else ""
     if proc.returncode != 0 or not first.startswith("PICK"):
@@ -223,7 +241,7 @@ def main(argv: "list[str] | None" = None) -> int:
         if rc is not None:
             return rc
 
-    picked = board_pick(a.board_tool, a.board_role)
+    picked = board_pick_with_reserve(a.board_tool, a.board_role, reserve_task=a.task)
     if picked is None:
         return die(3, "kos-board pick 失败（--board-tool %s --board-role %s）；不输出派发块" % (a.board_tool, a.board_role))
     name, pick_line = picked
@@ -231,7 +249,7 @@ def main(argv: "list[str] | None" = None) -> int:
     print("SHA-256：%s" % exec_sha)
     print("pick：%s" % pick_line)
     if preflight_path is not None:
-        preflight_pick = board_pick(a.board_tool, "preflight")
+        preflight_pick = board_pick_with_reserve(a.board_tool, "preflight", reserve_task=a.task)
         if preflight_pick is None:
             return die(3, "preflight pick 失败；不输出 preflight 派发块")
         print("预检包：%s" % preflight_path)

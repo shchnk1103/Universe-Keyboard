@@ -93,7 +93,8 @@ class KosPackTests(unittest.TestCase):
         self.assertIn("Quinn", r.stdout)
         # stub was invoked with pick and the requested board role
         recorded = json.loads((Path(str(self.stub) + ".args.json")).read_text(encoding="utf-8"))
-        self.assertEqual(recorded, ["pick", "--role", "code"])
+        # KOS-BOARD-RESERVE-001 (O77): pick now reserves the picked person for the task
+        self.assertEqual(recorded, ["pick", "--role", "code", "--reserve", "KOS-DEMO-001"])
 
     def test_missing_input_fails_closed(self) -> None:
         args = self.base_args + ["--input", str(self.root / "ghost.md")]
