@@ -57,6 +57,21 @@ def _die(message: str) -> int:
     return 1
 
 
+_WAIT_CLOCK = None  # KOS-PR-WAIT-CLEANUP-001: injectable (sleep, print) clock
+
+
+class _DefaultClock:
+    def sleep(self, seconds: float) -> None:
+        time.sleep(seconds)
+
+    def print(self, line: str) -> None:
+        print(line)
+
+
+def _wait_clock():
+    return _WAIT_CLOCK if _WAIT_CLOCK is not None else _DefaultClock()
+
+
 def _land_lock_path(args) -> Path:
     """KOS-LAND-LOCK-001: default anchor is the main checkout's .git dir.
 
@@ -638,6 +653,48 @@ def _export_archive(runner, main_checkout: str, head: str, dest: Path) -> Result
     return Result(0, "", "")
 
 
+def _task_id_error(task_id: str) -> "str | None":
+    """KOS-PR-WAIT-CLEANUP-001: empty/illegal task ids must never reach the
+    cleanup tool (an empty id would make it sweep the whole library)."""
+    if not task_id or not task_id.strip():
+        return "empty task id"
+    if task_id.strip() != task_id or any(ch.isspace() for ch in task_id):
+        return "task id contains whitespace"
+    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]*", task_id):
+        return "task id has illegal characters"
+    return None
+
+
+def _run_auto_cleanup(args, runner) -> None:
+    """Best-effort cache recycle after a merged+ff land. Never fatal."""
+    tool = getattr(args, "cleanup_tool", None)
+    task_id = getattr(args, "task_id", None)
+    clock = _wait_clock()
+    if task_id is None and getattr(args, "cleanup_worktree", None):
+        parent = Path(args.cleanup_worktree).resolve().parent.name
+        # only infer for KOS-style task dirs (uppercase hyphenated ids like
+        # KOS-XXX-001); temp dirs and plain names must never trigger a sweep
+        if parent and re.fullmatch(r"[A-Z][A-Z0-9]*(-[A-Za-z0-9]+)+", parent) and not _task_id_error(parent):
+            task_id = parent
+    if task_id is None:
+        return
+    error = _task_id_error(task_id)
+    if error:
+        clock.print(f"cleanup-warning: skipped ({error}); cache not recycled")
+        return
+    if not tool or not Path(tool).is_file():
+        clock.print(f"cleanup-warning: tool missing ({tool}); cache not recycled")
+        return
+    result = runner.run(["bash", str(tool), "r", task_id, "--apply"])
+    if result.code != 0:
+        clock.print(
+            f"cleanup-warning: {tool} r {task_id} --apply exited {result.code}; "
+            "merged state kept, cache not recycled"
+        )
+    else:
+        clock.print(f"cleanup-done: {tool} r {task_id} --apply")
+
+
 def cmd_land(args, runner) -> int:
     bad = _cleanup_args_ok(args)
     if bad:
@@ -967,10 +1024,76 @@ def cmd_land(args, runner) -> int:
         payload["status"] = "merged" if payload["ff"].startswith("ff-only") else "merged-no-ff"
         _append_record(record_path, f"merge={merge_oid}\nff={payload['ff']}\ncleanup={payload['cleanup']}")
         _summary(payload, log_dir, args.pr)
+        if payload["status"] == "merged" and not args.dry_run:
+            _run_auto_cleanup(args, runner)
         return 0
     finally:
         fcntl.flock(lock_fd, fcntl.LOCK_UN)
         os.close(lock_fd)
+
+
+def cmd_wait(args, runner) -> int:
+    """KOS-PR-WAIT-CLEANUP-001: poll CI at a low frequency, print only on
+    state changes, fail closed on any failure terminal or timeout."""
+    clock = _wait_clock()
+    log_dir = Path(args.log_dir) if args.log_dir else None
+    payload = {
+        "status": "stop",
+        "pr": args.pr,
+        "head": None,
+        "reruns": 0,
+        "merge_commit": None,
+        "ff": None,
+        "record": None,
+        "cleanup": None,
+    }
+    view = runner.run(["gh", "pr", "view", args.pr, "--repo", args.repo, "--json", "state,headRefOid"])
+    if view.code != 0:
+        payload["status"] = "view-failed"
+        _summary(payload, log_dir, args.pr)
+        return _die(view.text.strip() or "gh pr view failed")
+    info = json.loads(view.text)
+    state, head = str(info.get("state", "")), str(info.get("headRefOid", ""))
+    payload["head"] = head
+    if state.upper() != "OPEN" or head != args.expect_head:
+        payload["status"] = "not-open-or-head-mismatch"
+        _summary(payload, log_dir, args.pr)
+        return _die(f"stop: state={state} head={head} expect={args.expect_head}")
+
+    flaky = _load_flaky(Path(args.known_flaky))
+    deadline = clock.now + float(args.wait_timeout)
+    last_sig = None
+    attempt = 1
+    while True:
+        snapshot = runner.run(
+            ["gh", "pr", "checks", args.pr, "--repo", args.repo, "--json", "name,state,bucket,link"]
+        )
+        rows = _snapshot_rows(snapshot.text) if snapshot.code == 0 else None
+        if rows is None:
+            payload.update(status="checks-failed-unparsed")
+            _summary(payload, log_dir, args.pr)
+            return _die("checks snapshot was not JSON")
+        bad = _bad_states(rows)
+        pending = _pending_states(rows)
+        if pending:
+            sig = tuple(sorted((r["name"], str(r["state"])) for r in pending))
+            if sig != last_sig:
+                clock.print(f"wait: pending {len(pending)}: " + ", ".join(sorted(r["name"] for r in pending)))
+                last_sig = sig
+            if clock.now >= deadline:
+                payload.update(status="wait-timeout")
+                _summary(payload, log_dir, args.pr)
+                return _die(f"wait-timeout after {args.wait_timeout}s; still pending")
+            clock.sleep(float(args.poll_interval))
+            continue
+        if bad:
+            payload.update(status="ci-failed")
+            _summary(payload, log_dir, args.pr)
+            return _die("CI failed during wait; not merging")
+        clock.print("wait: all checks pass")
+        payload.update(status="green")
+        _summary(payload, log_dir, args.pr)
+        return 0
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -1007,6 +1130,11 @@ def _parser() -> argparse.ArgumentParser:
     land_cmd.add_argument("--kos-as-of")
     land_cmd.add_argument("--dry-run", action="store_true")
     land_cmd.add_argument("--lock-timeout", type=float, default=30.0)
+    land_cmd.add_argument("--task-id")
+    land_cmd.add_argument(
+        "--cleanup-tool",
+        default="/Users/doubleshy0n/.kos-work/Universe-Keyboard/tools/kos-cleanup.sh",
+    )
     land_cmd.add_argument("--lock-file")
     land_cmd.add_argument("--log-dir")
     land_cmd.add_argument("--cleanup-worktree")
@@ -1017,6 +1145,20 @@ def _parser() -> argparse.ArgumentParser:
         action="append",
         default=None,
     )
+
+    wait_cmd = sub.add_parser("wait")
+    wait_cmd.add_argument("pr")
+    wait_cmd.add_argument("--expect-head", required=True)
+    wait_cmd.add_argument("--repo", default=DEFAULT_REPO)
+    wait_cmd.add_argument(
+        "--known-flaky",
+        default=str(Path(__file__).resolve().parent / "known-flaky.txt"),
+    )
+    wait_cmd.add_argument("--max-reruns", type=int, default=0)
+    wait_cmd.add_argument("--wait-timeout", type=float, default=1800.0)
+    wait_cmd.add_argument("--poll-interval", type=float, default=60.0)
+    wait_cmd.add_argument("--pm-log", required=True)
+    wait_cmd.add_argument("--log-dir")
     return parser
 
 
@@ -1027,6 +1169,8 @@ def main(argv: list[str] | None = None, runner=None) -> int:
     runner = runner or SubprocessRunner()
     if args.command == "open":
         return cmd_open(args, runner)
+    if args.command == "wait":
+        return cmd_wait(args, runner)
     return cmd_land(args, runner)
 
 

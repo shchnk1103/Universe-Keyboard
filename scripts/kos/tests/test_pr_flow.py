@@ -1163,3 +1163,219 @@ class LandLockTests(unittest.TestCase):
             ["land", "1", "--expect-head", HEAD, "--main-checkout", str(fake), "--pm-log", "x"]
         )
         self.assertEqual(FLOW._land_lock_path(args), fake / ".git" / "land.lock")
+
+
+class _Clock:
+    def __init__(self):
+        self.now = 0.0
+        self.sleeps = []
+        self.prints = []
+
+    def sleep(self, seconds):
+        self.sleeps.append(seconds)
+        self.now += seconds
+
+    def print(self, line):
+        self.prints.append(line)
+
+
+class WaitCiTests(unittest.TestCase):
+    """KOS-PR-WAIT-CLEANUP-001: low-frequency CI backoff wait."""
+
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory()
+        self.root = Path(self.tmp.name)
+        self.pm = self.root / "pm-log"
+        self.logs = self.root / "land"
+        self.clock = _Clock()
+
+    def tearDown(self) -> None:
+        self.tmp.cleanup()
+
+    def _wait(self, extra=None):
+        return [
+            "wait", "266",
+            "--expect-head", HEAD,
+            "--repo", "shchnk1103/Universe-Keyboard",
+            "--known-flaky", str(FLAKY),
+            "--pm-log", str(self.pm),
+            "--log-dir", str(self.logs),
+        ] + (extra or [])
+
+    def _inject_clock(self):
+        # pr_flow reads the injectable clock via module attribute
+        FLOW._WAIT_CLOCK = self.clock
+
+    def test_pending_then_pass_prints_change_once_and_returns_0(self) -> None:
+        self._inject_clock()
+        runner = Queue([
+            (has("pr", "view"), _view()),
+            _json_step([_job("build", "pending", "7", "8"), _job("test-app-keyboard", "pending", "7", "9")]),
+            _json_step([_job("build", "pending", "7", "8"), _job("test-app-keyboard", "pending", "7", "9")]),
+            _json_step([_job("build", "pass", "7", "8"), _job("test-app-keyboard", "pass", "7", "9")]),
+            *_classification_steps(),
+        ])
+        code = FLOW.main(self._wait(["--wait-timeout", "60", "--poll-interval", "10"]), runner=runner)
+        self.assertEqual(code, 0, code)
+        # dedup: identical pending snapshots produce no repeated summary lines
+        printed = self.clock.prints
+        pending_lines = [x for x in printed if "pending" in x]
+        self.assertEqual(len(pending_lines), 1, printed)
+        pass_lines = [x for x in printed if "pass" in x or "green" in x.lower()]
+        self.assertTrue(pass_lines, printed)
+        self.assertNotEqual(self.clock.sleeps, [])
+
+    def test_any_failure_fails_closed_immediately(self) -> None:
+        self._inject_clock()
+        runner = Queue([
+            (has("pr", "view"), _view()),
+            _json_step([_job("build", "pending", "7", "8")]),
+            _json_step([_job("build", "fail", "7", "8")]),
+        ])
+        code = FLOW.main(self._wait(["--wait-timeout", "60"]), runner=runner)
+        self.assertEqual(code, 1)
+        payload = json.loads((self.logs / "land-266.json").read_text())
+        self.assertEqual(payload["status"], "ci-failed")
+
+    def test_timeout_fails_closed(self) -> None:
+        self._inject_clock()
+        steps = [(has("pr", "view"), _view())]
+        for _ in range(4):
+            steps.append(_json_step([_job("build", "pending", "7", "8")]))
+        runner = Queue(steps)
+        code = FLOW.main(self._wait(["--wait-timeout", "30", "--poll-interval", "10"]), runner=runner)
+        self.assertEqual(code, 1)
+        payload = json.loads((self.logs / "land-266.json").read_text())
+        self.assertEqual(payload["status"], "wait-timeout")
+
+
+class LandAutoCleanupTests(unittest.TestCase):
+    """KOS-PR-WAIT-CLEANUP-001: post-ff auto cleanup tool invocation."""
+
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory()
+        self.root = Path(self.tmp.name)
+        self.pm = self.root / "pm-log"
+        self.logs = self.root / "land"
+        self.tool = self.root / "stub-cleanup.sh"
+
+    def tearDown(self) -> None:
+        self.tmp.cleanup()
+
+    def _land(self, extra=None):
+        return [
+            "land", "266", "--expect-head", HEAD, "--main-checkout", "/main",
+            "--pm-log", str(self.pm), "--log-dir", str(self.logs),
+            "--known-flaky", str(FLAKY),
+            "--lock-file", str(self.root / "land.lock"),
+        ] + (extra or [])
+
+    def _happy_queue(self):
+        return Queue([
+            (has("pr", "view"), _view()),
+            *_snap(_pass_items()),
+            *_classification_steps(),
+            (has("pr", "view"), _view()),
+            (has("autoMergeRequest,mergeStateStatus,headRefOid"), _ready()),
+            (has("pr", "merge"), ok("merged")),
+            (has("mergeCommit"), ok(json.dumps({"mergeCommit": {"oid": "c" * 40}}))),
+            (has("fetch"), ok()),
+            (has("--is-ancestor"), ok()), (has("--is-ancestor"), ok()),
+            (has("--abbrev-ref"), ok("main")), (has("status"), ok()),
+            (lambda a: "rev-parse" in a and "--abbrev-ref" not in a, ok("d" * 40 + "\n")),
+            (has("--is-ancestor"), ok()),
+            (has("--ff-only"), ok()),
+            (lambda a: "rev-parse" in a and "--abbrev-ref" not in a, ok("e" * 40 + "\n")),
+            (has("bash"), ok()),
+        ])
+
+    def _write_stub(self, fail=False):
+        body = "#!/usr/bin/env bash\necho ARGS: $@\n"
+        if fail:
+            body += "exit 4\n"
+        self.tool.write_text(body, encoding="utf-8")
+        self.tool.chmod(0o755)
+
+    def test_auto_cleanup_invoked_after_ff(self) -> None:
+        self._write_stub()
+        runner = self._happy_queue()
+        code = FLOW.main(self._land([
+            "--merge", "--task-id", "KOS-DEMO-001",
+            "--cleanup-tool", str(self.tool),
+        ]), runner=runner)
+        self.assertEqual(code, 0)
+        calls = [c for c in runner.calls if any("stub-cleanup.sh" in str(part) for part in c)]
+        self.assertEqual(len(calls), 1)
+        self.assertIn("r", calls[0])
+        self.assertIn("KOS-DEMO-001", calls[0])
+        self.assertIn("--apply", calls[0])
+
+    def test_no_cleanup_on_dry_run_or_no_merge(self) -> None:
+        self._write_stub()
+        runner = Queue([(has("pr", "view"), _view())])
+        self.assertEqual(FLOW.main(self._land([
+            "--dry-run", "--task-id", "KOS-DEMO-001", "--cleanup-tool", str(self.tool)
+        ]), runner=runner), 0)
+        runner2 = Queue([
+            (has("pr", "view"), _view()),
+            *_snap(_pass_items()),
+            *_classification_steps(),
+        ])
+        self.assertEqual(FLOW.main(self._land([
+            "--task-id", "KOS-DEMO-001", "--cleanup-tool", str(self.tool)
+        ]), runner=runner2), 0)
+        for r in (runner, runner2):
+            self.assertFalse(any("stub-cleanup.sh" in c for c in r.calls))
+
+    def test_no_cleanup_without_ff_success(self) -> None:
+        self._write_stub()
+        runner = Queue([
+            (has("pr", "view"), _view()),
+            *_snap(_pass_items()),
+            *_classification_steps(),
+            (has("pr", "view"), _view()),
+            (has("autoMergeRequest,mergeStateStatus,headRefOid"), _ready()),
+            (has("pr", "merge"), ok("merged")),
+            (has("mergeCommit"), ok(json.dumps({"mergeCommit": {"oid": "c" * 40}}))),
+            (has("fetch"), ok()),
+            (has("--is-ancestor"), ok()), (has("--is-ancestor"), ok()),
+            (has("--abbrev-ref"), ok("main")), (has("status"), ok(" M x\n")),
+            (lambda a: "rev-parse" in a and "--abbrev-ref" not in a, ok("d" * 40 + "\n")),
+        ])
+        code = FLOW.main(self._land([
+            "--merge", "--task-id", "KOS-DEMO-001", "--cleanup-tool", str(self.tool)
+        ]), runner=runner)
+        self.assertEqual(code, 0)  # dirty main -> ff skipped, not fatal
+        self.assertFalse(any("stub-cleanup.sh" in str(part) for c in runner.calls for part in c))
+
+    def test_empty_task_id_is_rejected(self) -> None:
+        self._write_stub()
+        runner = self._happy_queue()
+        code = FLOW.main(self._land([
+            "--merge", "--task-id", "   ", "--cleanup-tool", str(self.tool)
+        ]), runner=runner)
+        self.assertEqual(code, 0)
+        self.assertFalse(any("stub-cleanup.sh" in str(part) for c in runner.calls for part in c))
+        payload = json.loads((self.logs / "land-266.json").read_text())
+        self.assertTrue(str(payload["ff"]).startswith("ff-only"))
+
+    def test_missing_tool_warns_not_fatal(self) -> None:
+        runner = self._happy_queue()
+        code = FLOW.main(self._land([
+            "--merge", "--task-id", "KOS-DEMO-001",
+            "--cleanup-tool", str(self.root / "nope.sh"),
+        ]), runner=runner)
+        self.assertEqual(code, 0)
+        payload = json.loads((self.logs / "land-266.json").read_text())
+        self.assertTrue(str(payload["ff"]).startswith("ff-only"))
+
+    def test_tool_failure_warns_not_fatal(self) -> None:
+        self._write_stub(fail=True)
+        runner = self._happy_queue()
+        runner.steps[-1] = (has("bash"), fail("", 4))
+        code = FLOW.main(self._land([
+            "--merge", "--task-id", "KOS-DEMO-001",
+            "--cleanup-tool", str(self.tool),
+        ]), runner=runner)
+        self.assertEqual(code, 0)
+        self.assertTrue(any("stub-cleanup.sh" in str(part) for c in runner.calls for part in c))
