@@ -60,7 +60,11 @@ public struct CharacterKeyStyle: Equatable, Sendable {
             guard key.unicodeScalars.count == 1, let scalar = key.unicodeScalars.first,
                 (65...90).contains(scalar.value) || (97...122).contains(scalar.value)
             else { return key }
-            return key.lowercased()
+            // ZH26-CAPSLOCK-FIX-001: the payload must match the shifted
+            // keycap. With Caps Lock the controller bypasses RIME and
+            // inserts the letter as-is, so an uppercased payload here is
+            // what reaches the text client verbatim.
+            return shifted ? key.uppercased() : key.lowercased()
         case .chinese9: return key
         case .english26: return displayTitle(key, layout: layout, shifted: shifted)
         }

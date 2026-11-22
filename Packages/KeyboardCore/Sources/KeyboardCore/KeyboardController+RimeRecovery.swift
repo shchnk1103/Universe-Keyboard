@@ -12,6 +12,20 @@ extension KeyboardController {
             }
             return effects
         }
+        // ZH26-CAPSLOCK-FIX-001: in Chinese mode Caps Lock acts as a
+        // temporary English passthrough, consistent with the iOS system
+        // keyboard. luna_pinyin's alphabet has no uppercase, so feeding a
+        // capital into RIME would bounce through fallback paths instead.
+        // Commit any active composition first so the grouped text survives,
+        // then insert the uppercase letter directly. Caps Lock itself is
+        // never consumed (consumeSingleUseShiftIfNeeded only touches
+        // .singleUse), and .singleUse / .chinese9 keep their existing
+        // composition behavior untouched.
+        if state.shiftState == .capsLock, Self.isSingleASCIILetter(key) {
+            finishActiveCompositionAsDisplayText()
+            insertText(key.uppercased(), source: .key)
+            return []
+        }
         let rimeKey = rimeInputKey(for: key)
         guard let engine = rimeEngine else {
             return effectsAfterChineseCompositionKey(appendFallbackCompositionKey(rimeKey), originalKey: key)
@@ -242,6 +256,11 @@ extension KeyboardController {
             captureT9UnconfirmedDigitInterpretation()
         }
         return effectsAfterChineseCompositionKey(effects, originalKey: key)
+    }
+
+    static func isSingleASCIILetter(_ key: String) -> Bool {
+        guard key.count == 1, let scalar = key.unicodeScalars.first else { return false }
+        return (65...90).contains(scalar.value) || (97...122).contains(scalar.value)
     }
 
     func shouldHandleAsChineseCompositionKey(_ key: String) -> Bool {
