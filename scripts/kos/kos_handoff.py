@@ -280,9 +280,35 @@ def _relay_check_identity(repo: str, expect: str) -> tuple[bool, str]:
 
 
 def _relay_pick(board: str, board_args_json: str, excludes: list[str], role: str = "quality") -> tuple[str | None, str]:
+    return _relay_pick_with_reserve(board, board_args_json, excludes, role=role, reserve_task=None)
+
+
+TASK_ID_RE = re.compile(r"KOS-[A-Za-z0-9-]+")
+
+
+def _relay_pick_with_reserve(board: str, board_args_json: str, excludes: list[str], role: str = "quality",
+                             reserve_task: str | None = None, env: dict | None = None) -> tuple[str | None, str]:
+    if reserve_task and not TASK_ID_RE.fullmatch(reserve_task):
+        reserve_task = None  # only genuine KOS task ids reserve; scratch paths stay read-only
+    """Pick a specialist, optionally asking the board to reserve them for a task.
+
+    Falls back to a plain pick when the board tool does not know --reserve
+    (older stubs), so the caller never breaks on legacy tools.
+    """
     clean_excludes = [e for e in dict.fromkeys(e.strip() for e in excludes) if e]
-    argv = [board] + json.loads(board_args_json) + ["pick", "--role", role, "--exclude", ",".join(clean_excludes)]
-    result = subprocess.run(argv, capture_output=True, text=True)
+    base_argv = [board] + json.loads(board_args_json) + ["pick", "--role", role, "--exclude", ",".join(clean_excludes)]
+
+    def run(argv: list[str]) -> subprocess.CompletedProcess:
+        return subprocess.run(argv, capture_output=True, text=True, env=env)
+
+    result = None
+    if reserve_task:
+        result = run(base_argv + ["--reserve", reserve_task])
+        if result.returncode != 0 and "unrecognized" in (result.stderr or ""):
+            print("# NOTE: board tool rejected --reserve, retrying without it", file=sys.stderr)
+            result = None
+    if result is None:
+        result = run(base_argv)
     first = (result.stdout or "").strip().splitlines()
     line = first[0].strip() if first else ""
     if result.returncode != 0 or not line.startswith("PICK ["):
@@ -346,7 +372,9 @@ def _auto_pick_next_role(args, report: Path, status: str, next_role: str) -> str
     if not board_role or status not in ("DONE", "PASS"):
         return next_role
     excludes = _collect_participant_names(report)
-    picked, pick_line = _relay_pick(args.board, args.board_args, excludes, role=board_role)
+    task_id = report.parent.parent.name
+    picked, pick_line = _relay_pick_with_reserve(args.board, args.board_args, excludes,
+                                                 role=board_role, reserve_task=task_id)
     if not picked:
         print(f"# NOTE: auto-pick kept next_role={next_role}: {pick_line}", file=sys.stderr)
         return next_role
@@ -409,7 +437,9 @@ def cmd_relay_quality(args):
     for name in _collect_participant_names(report, extra_patterns=("preflight*.md",)):
         if name not in excludes:
             excludes.append(name)
-    picked, pick_line = _relay_pick(args.board, args.board_args, excludes, role="quality")
+    picked, pick_line = _relay_pick_with_reserve(args.board, args.board_args, excludes,
+                                                 role="quality",
+                                                 reserve_task=Path(args.packet).parent.parent.name)
     if not picked:
         return back("pick did not yield a valid quality specialist: " + pick_line)
 
@@ -561,7 +591,9 @@ def cmd_relay_exec(args):
     if lint.returncode != 0:
         return back("kos-pkg-lint failed: " + (lint.stdout + lint.stderr).strip().splitlines()[-1] if (lint.stdout + lint.stderr).strip() else "kos-pkg-lint failed")
 
-    picked, pick_line = _relay_pick(args.board, args.board_args, excludes, role=role)
+    picked, pick_line = _relay_pick_with_reserve(args.board, args.board_args, excludes,
+                                                 role=role,
+                                                 reserve_task=Path(args.packet).parent.parent.name)
     if not picked:
         return back("pick did not yield a valid specialist: " + pick_line)
 
@@ -631,6 +663,8 @@ def main(argv=None):
     p_fin.add_argument("--block-path")
     p_fin.add_argument("--board", default=sys.executable)
     p_fin.add_argument("--board-args", default=json.dumps([os.path.expanduser("~/.kos-work/Universe-Keyboard/tools/kos-board.py")]))
+    p_fin.add_argument("--actor", default=None, help="override actor name for board idle release")
+    p_fin.add_argument("--board-roles-dir", default=None, help="KOS-ROLES dir for board idle release (default: KOS_HOME or ~/.kos-work)")
 
     p_rel = sub.add_parser("relay-quality")
     p_rel.add_argument("--report", required=True)
@@ -640,6 +674,7 @@ def main(argv=None):
     p_rel.add_argument("--expect-identity", default=DEFAULT_IDENTITY)
     p_rel.add_argument("--board", default=sys.executable)
     p_rel.add_argument("--board-args", default=json.dumps([os.path.expanduser("~/.kos-work/Universe-Keyboard/tools/kos-board.py")]))
+    p_rel.add_argument("--board-roles-dir", default=None, help="KOS-ROLES dir for board idle release (default: KOS_HOME or ~/.kos-work)")
     p_rel.add_argument("--out")
 
     p_prof = sub.add_parser("profile")
@@ -655,6 +690,7 @@ def main(argv=None):
     p_exe.add_argument("--pkg-lint-tool", default=os.path.expanduser("~/.kos-work/Universe-Keyboard/tools/kos-pkg-lint.py"))
     p_exe.add_argument("--board", default=sys.executable)
     p_exe.add_argument("--board-args", default=json.dumps([os.path.expanduser("~/.kos-work/Universe-Keyboard/tools/kos-board.py")]))
+    p_exe.add_argument("--board-roles-dir", default=None, help="KOS-ROLES dir for board idle release (default: KOS_HOME or ~/.kos-work)")
     p_exe.add_argument("--out")
 
     args = parser.parse_args(argv)
@@ -703,11 +739,55 @@ def cmd_final(args):
     next_role = (args.next_role or report_next_role or f"{PM_HANDOFF_ROLE}（PM）").strip()
     next_detail = (args.next_detail if args.next_detail is not None else (report_next_step or "")).strip()
     next_role = _auto_pick_next_role(args, report, status, next_role)
+    _release_board_idle(args, report)
     print(render_three_line(status, args.summary, next_role, next_detail, str(report),
                             entry_path=args.entry_path, task_title=args.task_title,
                             block_path=args.block_path))
     _print_anti_wrap_note()
     return 0
+
+
+def _release_board_idle(args, report: Path) -> None:
+    """Best-effort: flip the report actor's board slot back to idle (O77).
+
+    Reads the actor name from report line 2 (or --actor); any failure only
+    prints a stderr note and never blocks the final handoff output.
+    """
+    name = getattr(args, "actor", None) or _identity_name(report)
+    if not name:
+        print("# NOTE: board idle release skipped: no actor name in report line 2", file=sys.stderr)
+        return
+    task_id = report.parent.parent.name
+    explicit = getattr(args, "board_roles_dir", None)
+    if explicit:
+        roles_dir = explicit
+    elif os.environ.get("KOS_HOME"):
+        roles_dir = os.path.join(os.environ["KOS_HOME"], "KOS-ROLES-001")
+    else:
+        roles_dir = os.path.expanduser("~/.kos-work/Universe-Keyboard/KOS-ROLES-001")
+    board_md = os.path.join(roles_dir, "BOARD.md")
+    # Only flip the slot when the board actually shows this actor as busy on
+    # this exact task; otherwise leave it alone (never touch other rows).
+    hit = False
+    try:
+        for l in open(board_md, encoding="utf-8"):
+            c = [x.strip() for x in l.strip().strip("|").split("|")]
+            if len(c) >= 4 and c[0] == name and c[1] == "工作中" and c[2] == task_id:
+                hit = True
+                break
+    except OSError:
+        hit = False
+    if not hit:
+        print("# NOTE: board idle release skipped: no busy row for this actor+task", file=sys.stderr)
+        return
+    try:
+        argv = [args.board] + json.loads(args.board_args) + ["set", roles_dir, name, "idle", task_id]
+        result = subprocess.run(argv, capture_output=True, text=True, timeout=30)
+        if result.returncode != 0:
+            print("# NOTE: board idle release failed (nonfatal): "
+                  + (result.stderr or result.stdout or "").strip(), file=sys.stderr)
+    except (OSError, subprocess.SubprocessError, ValueError) as exc:
+        print(f"# NOTE: board idle release failed (nonfatal): {exc}", file=sys.stderr)
 
 
 def _parse_report_fields(report: Path) -> tuple[str, str, str]:
