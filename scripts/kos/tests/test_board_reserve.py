@@ -147,16 +147,38 @@ class BoardReserveTests(unittest.TestCase):
             "DONE\nCole（Executor（代码））；运行时身份 Codex，主机用户 t。本会话未参与 KOS-DEMO-001 的包撰写；既往无。\n\n"
             "## 下一站接力（O41）\n- next_role：Jack（PM）\n- next_step：终审\n",
             encoding="utf-8")
+        # fix R2: the default --board-args points at the machine-local external
+        # kos-board.py; inject a self-contained stub so this case really covers
+        # the auto-idle flip on hosted CI (no ~/.kos-work there).
+        stub = self.home / "tools" / "stub_board_final.py"
+        stub.write_text(
+            "import sys\n"
+            "# argv: set <roles_dir> <name> idle <task_id>\n"
+            "_, roles_dir, name, _, task_id = sys.argv[1:6]\n"
+            "path = f\"{roles_dir}/BOARD.md\"\n"
+            "lines = open(path, encoding=\"utf-8\").readlines()\n"
+            "out = []\n"
+            "for l in lines:\n"
+            "    c = [x.strip() for x in l.strip().strip(\"|\").split(\"|\")]\n"
+            "    if len(c) >= 4 and c[0] == name and c[1] == \"工作中\" and c[2] == task_id:\n"
+            "        c[1] = \"空闲\"\n"
+            "        out.append(\"| \" + \" | \".join(c) + \" |\\n\")\n"
+            "    else:\n"
+            "        out.append(l)\n"
+            "open(path, \"w\", encoding=\"utf-8\").writelines(out)\n",
+            encoding="utf-8")
         r = subprocess.run(
             [PY, "-I", "-B", str(KOS / "kos_handoff.py"), "final",
              "--report", str(report),
+             "--board", PY,
+             "--board-args", json.dumps([str(stub)]),
              "--board-roles-dir", str(roles_dir), "--skip-lint"],
             env={**os.environ, "KOS_HOME": str(self.home)},
             capture_output=True, text=True, timeout=120)
         self.assertEqual(r.returncode, 0, r.stderr)
         self.assertIn("结论：DONE", r.stdout)
         row = rows(self.home)["Cole"]
-        self.assertEqual(row[1], "空闲")
+        self.assertEqual(row[1], "空闲", r.stderr)
         self.assertEqual(row[2], "KOS-DEMO-001")
 
     def test_final_release_failure_is_nonfatal(self) -> None:
