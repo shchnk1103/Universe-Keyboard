@@ -209,6 +209,8 @@ final class KeyboardLayoutAndT9RuntimeTests: XCTestCase {
         )
 
         let withCandidate = [RimeCandidate(text: "你好", comment: "ni hao", globalIndex: 0)]
+        // PB-005: return commits the visible pinyin projection (letters
+        // only), not the candidate text. Raw digits are still never emitted.
         XCTAssertEqual(
             T9CompositionCommitPolicy.returnAction(
                 usesT9InputSemantics: true,
@@ -216,7 +218,7 @@ final class KeyboardLayoutAndT9RuntimeTests: XCTestCase {
                 candidates: withCandidate,
                 highlightedIndex: 0
             ),
-            .commitCandidate("你好")
+            .commitVisiblePinyin("ni hao")
         )
     }
 
