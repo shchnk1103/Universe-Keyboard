@@ -15,6 +15,11 @@ git cat-file -e "${head_sha}^{commit}"
 git diff --check "$base_sha" "$head_sha"
 python3 scripts/ci/check_markdown_links.py --base "$base_sha" --head "$head_sha"
 python3 scripts/ci/check_keyboard_values.py
+# Guard is part of the repo; fixture repos built by tests may not carry it,
+# so skip when absent (always present in the real tree).
+if [[ -f scripts/ci/check_no_local_paths.py ]]; then
+  python3 scripts/ci/check_no_local_paths.py
+fi
 python3 -m json.tool .kos/project.json >/dev/null
 python3 -m unittest discover -s scripts/ci/tests -p 'test_*.py'
 python3 -m unittest discover -s scripts/kos/tests -p 'test_*.py'
