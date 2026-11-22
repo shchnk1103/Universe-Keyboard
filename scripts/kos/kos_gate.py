@@ -72,7 +72,14 @@ def main(argv: "list[str] | None" = None) -> int:
     a = ap.parse_args(argv)
 
     worktree = os.path.abspath(a.worktree)
-    if not os.path.isdir(os.path.join(worktree, ".git")):
+    # KOS-GATE-WORKTREE-001 (O79): accept linked worktrees whose .git is a
+    # gitfile, not only directories; verify via rev-parse, fail closed otherwise.
+    if not (os.path.isdir(os.path.join(worktree, ".git"))
+            or os.path.isfile(os.path.join(worktree, ".git"))):
+        return die(2, "not a git worktree: %s" % worktree)
+    inside = subprocess.run(["git", "-C", worktree, "rev-parse", "--is-inside-work-tree"],
+                            capture_output=True, text=True)
+    if inside.returncode != 0 or inside.stdout.strip() != "true":
         return die(2, "not a git worktree: %s" % worktree)
 
     clean, offenders = porcelain_state(worktree)

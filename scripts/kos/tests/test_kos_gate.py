@@ -151,6 +151,49 @@ class KosGateTests(unittest.TestCase):
         self.assertIn("GATE_PASS", r2.stdout)
         self.assertEqual(self._count(), 2)
 
+    def test_linked_worktree_accepted(self) -> None:
+        """KOS-GATE-WORKTREE-001 (O79): a linked worktree (gitfile .git) must pass."""
+        wt = self.root / "linked-wt"
+        _git(self.repo, "worktree", "add", "--no-track", "-b", "side", str(wt))
+        env = {**os.environ,
+               "COUNT_FILE": str(self.count_file),
+               "FAIL_FILE": str(self.fail_file)}
+        r = subprocess.run(
+            [PY, "-B", str(KOS / "kos_gate.py"),
+             "--worktree", str(wt), "--base", self.base,
+             "--mode", "executor", "--cache-dir", str(self.cache),
+             "--doc-verify", str(self.stub)],
+            capture_output=True, text=True, env=env,
+        )
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertIn("GATE_PASS", r.stdout)
+        r2 = subprocess.run(
+            [PY, "-B", str(KOS / "kos_gate.py"),
+             "--worktree", str(wt), "--base", self.base,
+             "--mode", "executor", "--cache-dir", str(self.cache),
+             "--doc-verify", str(self.stub)],
+            capture_output=True, text=True, env=env,
+        )
+        self.assertEqual(r2.returncode, 0, r2.stdout + r2.stderr)
+        self.assertIn("GATE_CACHED", r2.stdout)
+
+    def test_non_git_dir_still_fails_closed(self) -> None:
+        """KOS-GATE-WORKTREE-001 (O79): a plain non-git dir still dies with 2."""
+        plain = self.root / "plain"
+        plain.mkdir()
+        env = {**os.environ,
+               "COUNT_FILE": str(self.count_file),
+               "FAIL_FILE": str(self.fail_file)}
+        r = subprocess.run(
+            [PY, "-B", str(KOS / "kos_gate.py"),
+             "--worktree", str(plain), "--base", self.base,
+             "--mode", "executor", "--cache-dir", str(self.cache),
+             "--doc-verify", str(self.stub)],
+            capture_output=True, text=True, env=env,
+        )
+        self.assertEqual(r.returncode, 2)
+        self.assertIn("not a git worktree", r.stderr + r.stdout)
+
     def test_no_cache_flag_always_runs(self) -> None:
         r1 = self._run()
         self.assertEqual(r1.returncode, 0, r1.stdout + r1.stderr)
