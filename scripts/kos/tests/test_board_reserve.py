@@ -55,10 +55,17 @@ def init_home(root: Path) -> Path:
     return home
 
 
+# KOS-BOARD-RESERVE-001 fix R1: cases that copy the machine-local external
+# kos-board.py are gated on its existence so hosted CI (without it) runs green.
+EXTERNAL_BOARD_TOOL = Path(os.environ.get(
+    "KOS_TEST_EXTERNAL_BOARD_TOOL",
+    "/Users/doubleshy0n/.kos-work/Universe-Keyboard/tools/kos-board.py"))
+
+
 def place_board_tool(home: Path) -> None:
     """Copy the real external kos-board.py into the fake home's tools/."""
-    real = Path("/Users/doubleshy0n/.kos-work/Universe-Keyboard/tools/kos-board.py")
-    (home / "tools" / "kos-board.py").write_text(real.read_text(encoding="utf-8"), encoding="utf-8")
+    (home / "tools" / "kos-board.py").write_text(
+        EXTERNAL_BOARD_TOOL.read_text(encoding="utf-8"), encoding="utf-8")
 
 
 def rows(home: Path) -> dict:
@@ -77,11 +84,13 @@ class BoardReserveTests(unittest.TestCase):
     def setUp(self) -> None:
         self.tmp = tempfile.TemporaryDirectory()
         self.home = init_home(Path(self.tmp.name))
-        place_board_tool(self.home)
+        if EXTERNAL_BOARD_TOOL.is_file():
+            place_board_tool(self.home)
 
     def tearDown(self) -> None:
         self.tmp.cleanup()
 
+    @unittest.skipUnless(EXTERNAL_BOARD_TOOL.is_file(), "external kos-board.py not present")
     def test_pick_reserve_skips_reserved(self) -> None:
         r = board(self.home, "pick", "--role", "quality", "--reserve", "KOS-DEMO-001")
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
@@ -97,6 +106,7 @@ class BoardReserveTests(unittest.TestCase):
         self.assertNotIn(f"PICK [Quality]: {picked1}", r2.stdout)
         self.assertIn(other, r2.stdout.splitlines()[0])
 
+    @unittest.skipUnless(EXTERNAL_BOARD_TOOL.is_file(), "external kos-board.py not present")
     def test_reserve_ttl_auto_release(self) -> None:
         r = board(self.home, "pick", "--role", "quality", "--reserve", "KOS-DEMO-001", "--ttl", "0.5")
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
@@ -114,6 +124,7 @@ class BoardReserveTests(unittest.TestCase):
         self.assertIsNotNone(m2, r2.stdout)
         self.assertIn(m2.group(1), ("Pete", "Ivy"))
 
+    @unittest.skipUnless(EXTERNAL_BOARD_TOOL.is_file(), "external kos-board.py not present")
     def test_set_busy_idle_still_works(self) -> None:
         board(self.home, "pick", "--role", "quality", "--reserve", "KOS-DEMO-001")
         roles_dir = str(self.home / "KOS-ROLES-001")
