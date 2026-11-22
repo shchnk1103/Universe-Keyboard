@@ -1029,6 +1029,7 @@ final class T9PinyinPathTests: XCTestCase {
                 rawInput: mixed
             )
         )
+        // PB-005: explicit refined letters commit as visible pinyin on return.
         XCTAssertEqual(
             T9CompositionCommitPolicy.returnAction(
                 usesT9InputSemantics: true,
@@ -1036,7 +1037,7 @@ final class T9PinyinPathTests: XCTestCase {
                 candidates: [],
                 highlightedIndex: nil
             ),
-            .keepComposition
+            .commitVisiblePinyin("ni")
         )
         XCTAssertEqual(
             T9CompositionCommitPolicy.spaceAction(

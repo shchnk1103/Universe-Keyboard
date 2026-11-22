@@ -136,6 +136,10 @@ public enum T9PreeditResolver {
 public enum T9CompositionCommitAction: Sendable, Equatable {
     /// Commit highlighted or first candidate text.
     case commitCandidate(String)
+    /// Commit the visible pinyin projection (letters only) as raw input.
+    /// PB-005: return commits what the user sees spelled out, mirroring the
+    /// 26-key layout; unresolved digits are never part of this payload.
+    case commitVisiblePinyin(String)
     /// Keep composition; do not write host text.
     case keepComposition
     /// Abandon composition without host commit (language / auto-English switch).
@@ -193,19 +197,36 @@ public enum T9CompositionCommitPolicy {
     }
 
     /// Return while composition may be T9.
+    ///
+    /// PB-005 (ZH9-RETURN-FIX-001): the return key now mirrors the 26-key
+    /// layout — space commits the selected candidate, return commits the
+    /// visible pinyin. A partial-commit display text (already established)
+    /// wins first; otherwise the letters the user can actually see (comment
+    /// projection or explicit refined syllables) are committed. Only when
+    /// the projection is empty — a digit-only composition with no letter
+    /// evidence — does the action fall back to `.keepComposition`: raw
+    /// digits must never be dumped into the host input field.
     public static func returnAction(
         usesT9InputSemantics: Bool,
         rawInput: String?,
         candidates: [RimeCandidate],
-        highlightedIndex: Int?
+        highlightedIndex: Int?,
+        partialCommitDisplayText: String? = nil
     ) -> T9CompositionCommitAction {
         guard isActiveT9Composition(usesT9InputSemantics: usesT9InputSemantics, rawInput: rawInput) else {
             return .notT9Composition
         }
-        if let text = preferredCandidateText(candidates: candidates, highlightedIndex: highlightedIndex) {
-            return .commitCandidate(text)
+        if let display = partialCommitDisplayText, !display.isEmpty {
+            return .commitVisiblePinyin(display)
         }
-        // Unconditional under T9: never commit raw input (digits, letters, or mixed).
+        let visible = T9PreeditResolver.visiblePreedit(
+            rawInput: rawInput,
+            candidates: candidates,
+            highlightedIndex: highlightedIndex
+        )
+        if !visible.isEmpty {
+            return .commitVisiblePinyin(visible)
+        }
         return .keepComposition
     }
 

@@ -157,10 +157,24 @@ extension KeyboardController {
             usesT9InputSemantics: usesT9InputSemantics,
             rawInput: raw,
             candidates: state.lastRimeOutput?.candidates ?? [],
-            highlightedIndex: state.lastRimeOutput?.highlightedIndex
+            highlightedIndex: state.lastRimeOutput?.highlightedIndex,
+            partialCommitDisplayText: state.partialCommit?.displayText
         ) {
         case .commitCandidate(let text):
             commitInlinePreedit(as: text, source: .returnKey)
+            state.currentComposition = ""
+            state.lastRimeOutput = nil
+            state.partialCommit = nil
+            rimeEngine?.resetSession()
+            clearTypoCorrectionSuggestions()
+            let pathEffect = clearT9PinyinPathStateReturningEffect()
+            return .compositionChanged.union(pathEffect)
+        case .commitVisiblePinyin(let visible):
+            // PB-005: same post-commit cleanup as the candidate branch and
+            // the 26-key finishActiveCompositionAsRawInput path: the visible
+            // pinyin goes to the host, the RIME session resets, and no
+            // typo/path state survives the return.
+            commitInlinePreedit(as: visible, source: .returnKey)
             state.currentComposition = ""
             state.lastRimeOutput = nil
             state.partialCommit = nil
