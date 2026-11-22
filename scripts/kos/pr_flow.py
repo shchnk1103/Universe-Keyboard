@@ -7,6 +7,8 @@ Merge only when a Human orders it or runs the command.
 from __future__ import annotations
 
 import argparse
+import fcntl
+import hashlib
 import json
 import importlib.util
 import os
@@ -14,6 +16,8 @@ import re
 import subprocess
 import sys
 import tarfile
+import tempfile
+import time
 from io import BytesIO
 from pathlib import Path
 
@@ -51,6 +55,47 @@ class SubprocessRunner:
 def _die(message: str) -> int:
     print(message, file=sys.stderr)
     return 1
+
+
+def _land_lock_path(args) -> Path:
+    """KOS-LAND-LOCK-001: default anchor is the main checkout's .git dir.
+
+    If the checkout has no .git dir (stub-runner tests), fall back to a
+    deterministic temp anchor keyed by the checkout path so concurrent lands
+    on the same checkout still exclude each other without touching /main.
+    """
+    explicit = getattr(args, "lock_file", None)
+    if explicit:
+        return Path(explicit)
+    candidate = Path(args.main_checkout) / ".git" / "land.lock"
+    if candidate.parent.is_dir():
+        return candidate
+    key = hashlib.sha256(str(Path(args.main_checkout)).encode("utf-8")).hexdigest()[:16]
+    return Path(tempfile.gettempdir()) / f"kos-land-{key}.lock"
+
+
+def _acquire_land_lock(path: Path, timeout: float) -> "int | None":
+    """Exclusive flock with bounded wait. Returns fd, or None on timeout.
+
+    Never removes a lock held by someone else: a live flock is the only
+    proof of ownership, and expiry just fails closed.
+    """
+    path = Path(path)
+    try:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        fd = os.open(path, os.O_CREAT | os.O_RDWR, 0o644)
+    except OSError as exc:
+        raise RuntimeError(f"land lock unavailable: {path}: {exc}") from exc
+    deadline = time.monotonic() + max(timeout, 0.0)
+    while True:
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            return fd
+        except OSError:
+            if time.monotonic() >= deadline:
+                os.close(fd)
+                return None
+            time.sleep(0.05)
 
 
 def _summary(payload: dict, log_dir: Path | None, pr: str) -> None:
@@ -856,67 +901,76 @@ def cmd_land(args, runner) -> int:
 
     if not isinstance(merge_oid, str) or not re.fullmatch(r"[0-9a-fA-F]{40}", merge_oid):
         return stop("merge-result-unknown", "merge commit unavailable; cleanup stopped")
-    fetched = _git(runner, args.main_checkout, "fetch", "origin", "main")
-    if fetched.code != 0:
-        return stop("fetch-failed", "fetch failed; cleanup stopped")
-    for commit in (merge_oid, args.expect_head):
-        if _git(runner, args.main_checkout, "merge-base", "--is-ancestor", commit, "origin/main").code != 0:
-            return stop("unreachable", "merge or task commit not reachable; cleanup stopped")
+    lock_fd = _acquire_land_lock(_land_lock_path(args), float(getattr(args, "lock_timeout", 30.0)))
+    if lock_fd is None:
+        payload["status"] = "land-lock-timeout"
+        _summary(payload, log_dir, args.pr)
+        return _die(f"land-lock-timeout: {_land_lock_path(args)} held elsewhere; waited {getattr(args, 'lock_timeout', 30.0)}s")
+    try:
+        fetched = _git(runner, args.main_checkout, "fetch", "origin", "main")
+        if fetched.code != 0:
+            return stop("fetch-failed", "fetch failed; cleanup stopped")
+        for commit in (merge_oid, args.expect_head):
+            if _git(runner, args.main_checkout, "merge-base", "--is-ancestor", commit, "origin/main").code != 0:
+                return stop("unreachable", "merge or task commit not reachable; cleanup stopped")
 
-    if _cleanup_requested(args):
-        payload["cleanup"] = _run_cleanup(args, runner, args.expect_head)
-        if payload["cleanup"] != "worktree-removed":
-            return stop("cleanup-stopped", "worktree cleanup stopped")
+        if _cleanup_requested(args):
+            payload["cleanup"] = _run_cleanup(args, runner, args.expect_head)
+            if payload["cleanup"] != "worktree-removed":
+                return stop("cleanup-stopped", "worktree cleanup stopped")
 
-    branch = _git(runner, args.main_checkout, "rev-parse", "--abbrev-ref", "HEAD")
-    porcelain = _git(runner, args.main_checkout, "status", "--porcelain", "--untracked-files=all")
-    old = _git(runner, args.main_checkout, "rev-parse", "HEAD")
-    if branch.code or branch.text.strip() != "main":
-        payload["ff"] = "skipped:not-main; tell Human"
-    elif porcelain.code or porcelain.text.strip():
-        payload["ff"] = "skipped:dirty-or-status-unknown; tell Human"
-    elif old.code:
-        payload["ff"] = "skipped:head-unknown; tell Human"
-    else:
-        ancestor = _git(runner, args.main_checkout, "merge-base", "--is-ancestor", "HEAD", "origin/main")
-        if ancestor.code != 0:
-            payload["ff"] = "skipped:not-ancestor-or-unknown; tell Human"
+        branch = _git(runner, args.main_checkout, "rev-parse", "--abbrev-ref", "HEAD")
+        porcelain = _git(runner, args.main_checkout, "status", "--porcelain", "--untracked-files=all")
+        old = _git(runner, args.main_checkout, "rev-parse", "HEAD")
+        if branch.code or branch.text.strip() != "main":
+            payload["ff"] = "skipped:not-main; tell Human"
+        elif porcelain.code or porcelain.text.strip():
+            payload["ff"] = "skipped:dirty-or-status-unknown; tell Human"
+        elif old.code:
+            payload["ff"] = "skipped:head-unknown; tell Human"
         else:
-            fast = _git(runner, args.main_checkout, "merge", "--ff-only", "origin/main")
-            if fast.code:
-                payload["ff"] = "failed:ff-only"
-                return stop("ff-failed", "fast-forward failed; cleanup stopped")
-            new = _git(runner, args.main_checkout, "rev-parse", "HEAD")
-            if new.code:
-                payload["ff"] = "failed:new-head-unknown"
-                return stop("ff-failed", "new HEAD unknown; cleanup stopped")
-            payload["ff"] = f"ff-only {old.text.strip()} -> {new.text.strip()}"
+            ancestor = _git(runner, args.main_checkout, "merge-base", "--is-ancestor", "HEAD", "origin/main")
+            if ancestor.code != 0:
+                payload["ff"] = "skipped:not-ancestor-or-unknown; tell Human"
+            else:
+                fast = _git(runner, args.main_checkout, "merge", "--ff-only", "origin/main")
+                if fast.code:
+                    payload["ff"] = "failed:ff-only"
+                    return stop("ff-failed", "fast-forward failed; cleanup stopped")
+                new = _git(runner, args.main_checkout, "rev-parse", "HEAD")
+                if new.code:
+                    payload["ff"] = "failed:new-head-unknown"
+                    return stop("ff-failed", "new HEAD unknown; cleanup stopped")
+                payload["ff"] = f"ff-only {old.text.strip()} -> {new.text.strip()}"
 
-    if _cleanup_requested(args) and str(payload["ff"]).startswith("ff-only"):
-        # Delete only after a real fast-forward. git branch -d is the final
-        # safety check; a skipped or failed ff leaves the local branch alone.
-        if _git(runner, args.main_checkout, "merge-base", "--is-ancestor", args.cleanup_branch, "origin/main").code:
-            return stop("cleanup-stopped", "branch no longer reachable")
-        deleted = _git(runner, args.main_checkout, "branch", "-d", args.cleanup_branch)
-        if deleted.code:
-            return stop("cleanup-stopped", "branch deletion failed: " + deleted.text.strip())
-        payload["cleanup"] = "local-branch-deleted"
-        remote = _git(runner, args.main_checkout, "ls-remote", "--heads", "origin", f"refs/heads/{args.cleanup_branch}")
-        if remote.code:
-            return stop("cleanup-stopped", "remote branch query failed")
-        if not remote.text.strip():
-            payload["cleanup"] = "already_deleted_on_origin"
-        elif not args.delete_remote_branch:
-            payload["cleanup"] = "remote-retained:not-authorized"
-        else:
-            removed = _git(runner, args.main_checkout, "push", "origin", "--delete", args.cleanup_branch)
-            if removed.code:
-                return stop("cleanup-stopped", "remote deletion failed")
-            payload["cleanup"] = "remote-deleted"
-    payload["status"] = "merged" if payload["ff"].startswith("ff-only") else "merged-no-ff"
-    _append_record(record_path, f"merge={merge_oid}\nff={payload['ff']}\ncleanup={payload['cleanup']}")
-    _summary(payload, log_dir, args.pr)
-    return 0
+        if _cleanup_requested(args) and str(payload["ff"]).startswith("ff-only"):
+            # Delete only after a real fast-forward. git branch -d is the final
+            # safety check; a skipped or failed ff leaves the local branch alone.
+            if _git(runner, args.main_checkout, "merge-base", "--is-ancestor", args.cleanup_branch, "origin/main").code:
+                return stop("cleanup-stopped", "branch no longer reachable")
+            deleted = _git(runner, args.main_checkout, "branch", "-d", args.cleanup_branch)
+            if deleted.code:
+                return stop("cleanup-stopped", "branch deletion failed: " + deleted.text.strip())
+            payload["cleanup"] = "local-branch-deleted"
+            remote = _git(runner, args.main_checkout, "ls-remote", "--heads", "origin", f"refs/heads/{args.cleanup_branch}")
+            if remote.code:
+                return stop("cleanup-stopped", "remote branch query failed")
+            if not remote.text.strip():
+                payload["cleanup"] = "already_deleted_on_origin"
+            elif not args.delete_remote_branch:
+                payload["cleanup"] = "remote-retained:not-authorized"
+            else:
+                removed = _git(runner, args.main_checkout, "push", "origin", "--delete", args.cleanup_branch)
+                if removed.code:
+                    return stop("cleanup-stopped", "remote deletion failed")
+                payload["cleanup"] = "remote-deleted"
+        payload["status"] = "merged" if payload["ff"].startswith("ff-only") else "merged-no-ff"
+        _append_record(record_path, f"merge={merge_oid}\nff={payload['ff']}\ncleanup={payload['cleanup']}")
+        _summary(payload, log_dir, args.pr)
+        return 0
+    finally:
+        fcntl.flock(lock_fd, fcntl.LOCK_UN)
+        os.close(lock_fd)
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -952,6 +1006,8 @@ def _parser() -> argparse.ArgumentParser:
     land_cmd.add_argument("--validator")
     land_cmd.add_argument("--kos-as-of")
     land_cmd.add_argument("--dry-run", action="store_true")
+    land_cmd.add_argument("--lock-timeout", type=float, default=30.0)
+    land_cmd.add_argument("--lock-file")
     land_cmd.add_argument("--log-dir")
     land_cmd.add_argument("--cleanup-worktree")
     land_cmd.add_argument("--cleanup-branch")

@@ -1,9 +1,13 @@
 """pr_flow open/land behavior with an injected command runner. No network."""
 from __future__ import annotations
 
+import contextlib
+import fcntl
+import io
 import json
 import os
 import subprocess
+import sys
 import tarfile
 import tempfile
 import unittest
@@ -536,6 +540,8 @@ class LandTests(unittest.TestCase):
             str(self.logs),
             "--known-flaky",
             str(FLAKY),
+            "--lock-file",
+            str(self.root / "land.lock"),
         ] + (extra or [])
 
     def test_all_known_failures_rerun_once_then_stop_without_merge(self) -> None:
@@ -1025,3 +1031,135 @@ if __name__ == "__main__":
 class SkippingIsPendingRegression(unittest.TestCase):
     def test_skipping_is_not_a_completed_check(self):
         self.assertEqual(FLOW._pending_states([{"state": "skipping"}]), [{"state": "skipping"}])
+
+
+class LandLockTests(unittest.TestCase):
+    """KOS-LAND-LOCK-001: land main-checkout critical section is lock-guarded."""
+
+    def setUp(self) -> None:
+        self.tmp = tempfile.TemporaryDirectory()
+        self.root = Path(self.tmp.name)
+        self.pm = self.root / "pm-log"
+        self.logs = self.root / "land"
+        self.lock = self.root / "land.lock"
+
+    def tearDown(self) -> None:
+        self.tmp.cleanup()
+
+    def _land(self, extra=None):
+        return [
+            "land", "266", "--expect-head", HEAD, "--main-checkout", "/main",
+            "--pm-log", str(self.pm), "--log-dir", str(self.logs),
+            "--known-flaky", str(FLAKY),
+            "--lock-file", str(self.lock),
+        ] + (extra or [])
+
+    def _holder(self, path, hold_seconds):
+        # separate process holds the lock, then releases
+        code = (
+            "import fcntl,os,sys,time\n"
+            "fd=os.open(%r,os.O_CREAT|os.O_RDWR)\n"
+            "fcntl.flock(fd,fcntl.LOCK_EX)\n"
+            "sys.stdout.write('HELD\\n');sys.stdout.flush()\n"
+            "time.sleep(%r)\n"
+            "fcntl.flock(fd,fcntl.LOCK_UN)\n" % (str(path), hold_seconds)
+        )
+        return subprocess.Popen([sys.executable, "-c", code], stdout=subprocess.PIPE, text=True)
+
+    def _happy_queue(self):
+        return Queue([
+            (has("pr", "view"), _view()),
+            *_snap(_pass_items()),
+            *_classification_steps(),
+            (has("pr", "view"), _view()),
+            (has("autoMergeRequest,mergeStateStatus,headRefOid"), _ready()),
+            (has("pr", "merge"), ok("merged")),
+            (has("mergeCommit"), ok(json.dumps({"mergeCommit": {"oid": "c" * 40}}))),
+            (has("fetch"), ok()),
+            (has("--is-ancestor"), ok()), (has("--is-ancestor"), ok()),
+            (has("--abbrev-ref"), ok("main")), (has("status"), ok()),
+            (lambda a: "rev-parse" in a and "--abbrev-ref" not in a, ok("d" * 40 + "\n")),
+            (has("--is-ancestor"), ok()),
+            (has("--ff-only"), ok()),
+            (lambda a: "rev-parse" in a and "--abbrev-ref" not in a, ok("e" * 40 + "\n")),
+        ])
+
+    def test_lock_timeout_fail_closed_no_main_checkout_writes(self) -> None:
+        holder = self._holder(self.lock, 5)
+        try:
+            self.assertEqual(holder.stdout.readline().strip(), "HELD")
+            runner = self._happy_queue()
+            err = io.StringIO()
+            with contextlib.redirect_stderr(err):
+                code = FLOW.main(self._land(["--merge", "--lock-timeout", "1"]), runner=runner)
+            self.assertEqual(code, 1)
+            self.assertIn("land-lock-timeout", err.getvalue())
+            # fail-closed: nothing touched the main checkout, no ff, no cleanup
+            self.assertFalse(any("fetch" in c or "--ff-only" in c or "worktree" in c for c in runner.calls))
+        finally:
+            holder.kill()
+            holder.wait()
+
+    def test_lock_waits_then_succeeds_after_release(self) -> None:
+        holder = self._holder(self.lock, 1)
+        try:
+            self.assertEqual(holder.stdout.readline().strip(), "HELD")
+            runner = self._happy_queue()
+            code = FLOW.main(self._land(["--merge", "--lock-timeout", "10"]), runner=runner)
+            self.assertEqual(code, 0)
+            self.assertTrue(any("--ff-only" in c for c in runner.calls))
+            payload = json.loads((self.logs / "land-266.json").read_text())
+            self.assertTrue(str(payload["ff"]).startswith("ff-only"))
+        finally:
+            holder.wait()
+
+    def test_lock_released_after_normal_end_and_exception(self) -> None:
+        # normal end: lock file must be immediately acquirable afterwards
+        runner = self._happy_queue()
+        self.assertEqual(FLOW.main(self._land(["--merge"]), runner=runner), 0)
+        fd = os.open(self.lock, os.O_RDWR)
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)  # must not block
+            fcntl.flock(fd, fcntl.LOCK_UN)
+        finally:
+            os.close(fd)
+
+        # exception inside the critical section: lock still released via finally
+        class ExplodingRunner(Queue):
+            def run(self, argv, cwd=None, env=None):
+                if "fetch" in argv:
+                    raise RuntimeError("fetch exploded")
+                return super().run(argv, cwd=cwd, env=env)
+
+        boom = ExplodingRunner([(has("pr", "view"), _view()), *_snap(_pass_items()),
+                                *_classification_steps(), (has("pr", "view"), _view()),
+                                (has("autoMergeRequest,mergeStateStatus,headRefOid"), _ready()),
+                                (has("pr", "merge"), ok("merged")),
+                                (has("mergeCommit"), ok(json.dumps({"mergeCommit": {"oid": "c" * 40}})))])
+        with self.assertRaises(RuntimeError):
+            FLOW.main(self._land(["--merge"]), runner=boom)
+        fd = os.open(self.lock, os.O_RDWR)
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+            fcntl.flock(fd, fcntl.LOCK_UN)
+        finally:
+            os.close(fd)
+
+    def test_dry_run_takes_no_lock(self) -> None:
+        fd = os.open(self.lock, os.O_CREAT | os.O_RDWR)
+        try:
+            fcntl.flock(fd, fcntl.LOCK_EX)
+            runner = Queue([(has("view"), _view())])
+            self.assertEqual(FLOW.main(self._land(["--dry-run", "--lock-timeout", "1"]), runner=runner), 0)
+            self.assertFalse(any("checks" in c for c in runner.calls))
+        finally:
+            fcntl.flock(fd, fcntl.LOCK_UN)
+            os.close(fd)
+
+    def test_default_lock_anchor_is_main_checkout_git_dir(self) -> None:
+        fake = self.root / "mainco"
+        (fake / ".git").mkdir(parents=True)
+        args = FLOW._parser().parse_args(
+            ["land", "1", "--expect-head", HEAD, "--main-checkout", str(fake), "--pm-log", "x"]
+        )
+        self.assertEqual(FLOW._land_lock_path(args), fake / ".git" / "land.lock")
