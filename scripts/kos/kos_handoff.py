@@ -537,10 +537,11 @@ def cmd_relay_quality(args):
         "授权，直接执行",
     ])
     print(f"```text\n{dispatch_block}\n```")
+    warning = _suggest_pending_warning(str(report), force=True)
+    if warning:
+        print(warning)
     _print_anti_wrap_note()
     return 0
-
-
 
 
 TIER_PROFILES = {
@@ -673,6 +674,9 @@ def cmd_relay_exec(args):
         f"报告：{report.resolve()}（SHA-256 {report_sha}）",
         f"```text\n{block}\n```",
     ]))
+    warning = _suggest_pending_warning(str(report), force=True)
+    if warning:
+        print(warning)
     _print_anti_wrap_note()
     return 0
 
@@ -800,6 +804,9 @@ def cmd_final(args):
     print(render_three_line(status, args.summary, next_role, next_detail, str(report),
                             entry_path=args.entry_path, task_title=args.task_title,
                             block_path=args.block_path))
+    warning = _suggest_pending_warning(str(report), force=not args.skip_lint)
+    if warning:
+        print(warning)
     _print_anti_wrap_note()
     return 0
 
@@ -863,6 +870,45 @@ def _parse_report_fields(report: Path) -> tuple[str, str, str]:
         if m:
             next_step = m.group(1).strip()
     return status, next_role, next_step
+
+
+def _suggest_pending_warning(report_path: str, force: bool = False) -> str:
+    """O88: safe read-only call to kos_suggest.py pending.
+
+    Returns a ⚠ warning string when the report has unregistered 观察与改进意见
+    items, or an empty string when the section is missing, empty, or all
+    registered.  Never writes to SUGGESTIONS.json (kos_suggest.py pending is
+    read-only) and never blocks the handoff exit code.
+
+    When *force* is False (the caller passed --skip-lint), the call is only
+    made if the report actually contains the 观察与改进意见 heading — this
+    avoids running pending on reports that have no suggestions section at all.
+    """
+    suggest_script = os.path.join(SCRIPT_DIR, "kos_suggest.py")
+    if not force:
+        try:
+            text = open(report_path, encoding="utf-8").read()
+        except OSError:
+            return ""
+        if "观察与改进意见" not in text:
+            return ""
+    try:
+        result = subprocess.run(
+            [sys.executable, "-I", "-B", suggest_script, "pending", report_path],
+            capture_output=True, text=True, timeout=30)
+    except (OSError, subprocess.SubprocessError):
+        return ""
+    out = result.stdout.strip()
+    if not out or out.startswith("MISSING_SECTION") or out.startswith("无意见"):
+        return ""
+    if out.startswith("该报告") and "均已登记" in out:
+        return ""
+    # Count unregistered items (lines starting with "  - ")
+    count = sum(1 for line in out.splitlines() if line.strip().startswith("- "))
+    if count == 0:
+        return ""
+    return (f"\n⚠ 报告含 {count} 条未登记观察意见，"
+            f"请 PM 运行 kos_suggest.py pending/add")
 
 
 if __name__ == "__main__":
