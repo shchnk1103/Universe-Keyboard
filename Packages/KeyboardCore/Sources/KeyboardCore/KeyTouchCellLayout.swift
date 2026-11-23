@@ -6,10 +6,21 @@ import Foundation
 public struct KeyTouchCell: Equatable, Sendable {
     public let visualFrame: CGRect
     public let touchFrame: CGRect
+    /// PB-010B seam. 010A always stores 1 and does not use it to split gaps.
+    public let weight: Float
+    /// PF-062 seam. 010A production cells leave this nil.
+    public let dynamicShift: CGRect?
 
-    public init(visualFrame: CGRect, touchFrame: CGRect) {
+    public init(
+        visualFrame: CGRect,
+        touchFrame: CGRect,
+        weight: Float = 1,
+        dynamicShift: CGRect? = nil
+    ) {
         self.visualFrame = visualFrame
         self.touchFrame = touchFrame
+        self.weight = weight
+        self.dynamicShift = dynamicShift
     }
 }
 
@@ -72,9 +83,25 @@ public enum KeyTouchCellLayout {
         }
     }
 
+    /// Touch region inside a stack. Candidate header is excluded; the other
+    /// three edges stay on the container. Callers must pass this rect into
+    /// `makeIdentifiedCells`, not the raw stack bounds.
+    public static func keyRegion(
+        containerBounds: CGRect,
+        excludedHeaderMaxY: CGFloat?
+    ) -> CGRect {
+        let minY = max(containerBounds.minY, excludedHeaderMaxY ?? containerBounds.minY)
+        return CGRect(
+            x: containerBounds.minX,
+            y: minY,
+            width: containerBounds.width,
+            height: max(0, containerBounds.maxY - minY)
+        )
+    }
+
     /// Fills `containerBounds` by splitting sibling gaps at their midlines.
-    /// First / last row keep their visual top / bottom so the candidate bar
-    /// keeps the strip above the keys.
+    /// The caller passes `keyRegion` (candidate header already removed).
+    /// First row top and last row bottom then sit on that region.
     public static func makeCells(
         rows: [[CGRect]],
         containerBounds: CGRect
@@ -123,7 +150,7 @@ public enum KeyTouchCellLayout {
 
             let top: CGFloat
             if rowIndex == rows.startIndex {
-                top = rowMinY
+                top = containerBounds.minY
             } else {
                 let previousMaxY = rows[rowIndex - 1].map(\.frame.maxY).max() ?? rowMinY
                 top = (previousMaxY + rowMinY) / 2
@@ -131,7 +158,7 @@ public enum KeyTouchCellLayout {
 
             let bottom: CGFloat
             if rowIndex == rows.index(before: rows.endIndex) {
-                bottom = rowMaxY
+                bottom = containerBounds.maxY
             } else {
                 let nextMinY = rows[rowIndex + 1].map(\.frame.minY).min() ?? rowMaxY
                 bottom = (rowMaxY + nextMinY) / 2
@@ -178,15 +205,28 @@ public enum KeyTouchCellLayout {
         cells: [KeyTouchCell],
         defaultVisualHitIndex: Int?
     ) -> Int? {
+        let shifted = cells.indices.filter { cells[$0].dynamicShift?.contains(point) == true }
+        if let winner = nearestVisualIndex(shifted, cells: cells, point: point) {
+            return winner
+        }
+
         let keyRegionMinY = cells.map(\.touchFrame.minY).min() ?? CGFloat.greatestFiniteMagnitude
         if point.y < keyRegionMinY {
             return defaultVisualHitIndex
         }
 
         let containing = cells.indices.filter { cells[$0].touchFrame.contains(point) }
-        guard !containing.isEmpty else { return nil }
-        if containing.count == 1 { return containing[0] }
-        return containing.min { lhs, rhs in
+        return nearestVisualIndex(containing, cells: cells, point: point)
+    }
+
+    private static func nearestVisualIndex(
+        _ indices: [Int],
+        cells: [KeyTouchCell],
+        point: CGPoint
+    ) -> Int? {
+        guard !indices.isEmpty else { return nil }
+        if indices.count == 1 { return indices[0] }
+        return indices.min { lhs, rhs in
             let left = cells[lhs].visualFrame
             let right = cells[rhs].visualFrame
             let leftDistance = distance(from: point, to: left)

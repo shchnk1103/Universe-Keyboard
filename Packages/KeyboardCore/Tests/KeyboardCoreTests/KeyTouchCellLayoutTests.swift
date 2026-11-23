@@ -530,4 +530,117 @@ final class KeyTouchCellLayoutTests: XCTestCase {
 
         defaults?.removePersistentDomain(forName: "debug-key-hitbox-tests")
     }
+
+    // MARK: - PF-061 / PB-010A keyRegion fill
+
+    func testKeyRegionCoversContainerBelowHeaderAndUnionHasFullCoverage() {
+        let container = CGRect(x: 0, y: 0, width: 300, height: 400)
+        let region = KeyTouchCellLayout.keyRegion(
+            containerBounds: container,
+            excludedHeaderMaxY: 80
+        )
+        XCTAssertEqual(region, CGRect(x: 0, y: 80, width: 300, height: 320))
+        XCTAssertEqual(
+            KeyTouchCellLayout.keyRegion(containerBounds: container, excludedHeaderMaxY: nil),
+            container
+        )
+
+        let visuals = [
+            CGRect(x: 10, y: 100, width: 40, height: 40),
+            CGRect(x: 80, y: 100, width: 40, height: 40),
+            CGRect(x: 30, y: 220, width: 50, height: 40),
+        ]
+        let cells = KeyTouchCellLayout.makeCells(visualFrames: visuals, containerBounds: region)
+        XCTAssertEqual(cells.map(\.visualFrame), visuals)
+        XCTAssertEqual(cells[0].touchFrame.minY, region.minY, accuracy: 0.001)
+        XCTAssertEqual(cells[2].touchFrame.maxY, region.maxY, accuracy: 0.001)
+
+        var y = region.minY
+        while y < region.maxY - 0.5 {
+            var x = region.minX
+            while x < region.maxX - 0.5 {
+                let point = CGPoint(x: x + 0.5, y: y + 0.5)
+                let hits = cells.filter { $0.touchFrame.contains(point) }
+                XCTAssertEqual(hits.count, 1, "uncovered or overlapping \(point)")
+                x += 15
+            }
+            y += 15
+        }
+    }
+
+    func testTouchFramesStayBelowExcludedHeader() {
+        let region = KeyTouchCellLayout.keyRegion(
+            containerBounds: CGRect(x: 0, y: 0, width: 200, height: 300),
+            excludedHeaderMaxY: 64
+        )
+        let cells = KeyTouchCellLayout.makeCells(
+            visualFrames: [CGRect(x: 8, y: 90, width: 30, height: 40)],
+            containerBounds: region
+        )
+        XCTAssertTrue(cells.allSatisfy { $0.touchFrame.minY >= 64 - 0.001 })
+        XCTAssertEqual(
+            KeyTouchCellLayout.hitIndex(
+                at: CGPoint(x: 20, y: 10),
+                cells: cells,
+                defaultVisualHitIndex: 3
+            ),
+            3
+        )
+    }
+
+    func testVisualFrameIsUnchangedWhenTouchFillsKeyRegion() {
+        let visual = CGRect(x: 12, y: 140, width: 32, height: 45)
+        let region = KeyTouchCellLayout.keyRegion(
+            containerBounds: CGRect(x: 0, y: 0, width: 360, height: 280),
+            excludedHeaderMaxY: 48
+        )
+        let cell = KeyTouchCellLayout.makeCells(
+            visualFrames: [visual],
+            containerBounds: region
+        )[0]
+        XCTAssertEqual(cell.visualFrame, visual)
+        XCTAssertNotEqual(cell.touchFrame, visual)
+    }
+
+    func testDynamicShiftBeatsStaticTouchFrame() {
+        let shifted = KeyTouchCell(
+            visualFrame: CGRect(x: 200, y: 0, width: 20, height: 20),
+            touchFrame: CGRect(x: 200, y: 0, width: 20, height: 20),
+            dynamicShift: CGRect(x: 0, y: 0, width: 30, height: 30)
+        )
+        let stat = KeyTouchCell(
+            visualFrame: CGRect(x: 0, y: 0, width: 80, height: 80),
+            touchFrame: CGRect(x: 0, y: 0, width: 120, height: 80)
+        )
+        XCTAssertEqual(
+            KeyTouchCellLayout.hitIndex(
+                at: CGPoint(x: 10, y: 10),
+                cells: [stat, shifted],
+                defaultVisualHitIndex: nil
+            ),
+            1
+        )
+    }
+
+    func testUnitWeightKeepsGeometricMidline() {
+        let left = CGRect(x: 0, y: 0, width: 40, height: 40)
+        let right = CGRect(x: 60, y: 0, width: 40, height: 40)
+        let cells = KeyTouchCellLayout.makeCells(
+            visualFrames: [left, right],
+            containerBounds: CGRect(x: 0, y: 0, width: 100, height: 40)
+        )
+        XCTAssertEqual(cells[0].weight, 1)
+        XCTAssertEqual(cells[1].weight, 1)
+        XCTAssertNil(cells[0].dynamicShift)
+        XCTAssertEqual(cells[0].touchFrame.maxX, 50, accuracy: 0.001)
+        XCTAssertEqual(cells[1].touchFrame.minX, 50, accuracy: 0.001)
+    }
+
+    func testKeyRegionGeometryIsPureSoSkippedLayoutCannotChangeIt() {
+        let container = CGRect(x: 7, y: 0, width: 320, height: 240)
+        let first = KeyTouchCellLayout.keyRegion(containerBounds: container, excludedHeaderMaxY: 36)
+        let second = KeyTouchCellLayout.keyRegion(containerBounds: container, excludedHeaderMaxY: 36)
+        XCTAssertEqual(first, second)
+        XCTAssertEqual(first.minY, 36, accuracy: 0.001)
+    }
 }
