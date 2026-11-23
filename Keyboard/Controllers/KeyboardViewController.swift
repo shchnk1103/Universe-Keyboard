@@ -386,8 +386,9 @@ class KeyboardViewController: UIInputViewController {
     var cachedHapticEnabled: Bool = false
 
     /// Feedback resources and cached levels stay owned by the view controller; methods live in +Feedback.
-    let hapticGenerator = UIImpactFeedbackGenerator(style: .light)
+    var hapticGenerator = UIImpactFeedbackGenerator(style: .light)
     let modeEnterHapticGenerator = UIImpactFeedbackGenerator(style: .heavy)
+    var appliedHapticHardwareStyle: KeyboardFeedbackHardwareStyle = .light
     static let appGroupID = "group.com.DoubleShy0N.Universe-Keyboard"
     lazy var sharedDefaults = UserDefaults(suiteName: Self.appGroupID)
     lazy var typoCorrectionLearningStore = TypoCorrectionLearningStore(
@@ -498,6 +499,9 @@ class KeyboardViewController: UIInputViewController {
             self.refreshPasteToolbar()
         }
         view.addGestureRecognizer(observer)
+        // Warm the Taptic engine before the first tap, even if haptics are off.
+        hapticGenerator.prepare()
+        modeEnterHapticGenerator.prepare()
     }
 
     /// deinit 是键盘扩展被销毁前的最后一个清理机会。
@@ -592,6 +596,8 @@ class KeyboardViewController: UIInputViewController {
     /// session 已失效时，控制器才会触发真正的 runtime 恢复。
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        hapticGenerator.prepare()
+        modeEnterHapticGenerator.prepare()
         KeyboardWakeDiagnosticProducer.recordKeyboardLifecycle(
             .viewDidAppear,
             journal: diagnosticsJournal,

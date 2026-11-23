@@ -75,11 +75,57 @@ public enum KeyboardFeedbackLevel: Int, CaseIterable, Identifiable, Sendable {
     }
 }
 
+public enum KeyboardFeedbackHardwareStyle: String, Equatable, Sendable {
+    case light
+    case medium
+    case heavy
+}
+
+public enum KeyboardFeedbackIntensity {
+    public static func clamped(_ value: Double) -> Double {
+        min(max(value, 0.0), 1.0)
+    }
+
+    /// Below 0.5 stays on the light engine, 0.5..<0.8 uses medium, 0.8...1 uses heavy.
+    public static func hardwareStyle(for intensity: Double) -> KeyboardFeedbackHardwareStyle {
+        let value = clamped(intensity)
+        if value < 0.5 { return .light }
+        if value < 0.8 { return .medium }
+        return .heavy
+    }
+}
+
 public enum KeyboardFeedbackSettingsKey {
     public static let keyClickEnabled = "key_click_enabled"
     public static let hapticEnabled = "haptic_enabled"
     public static let hapticLevel = "haptic_level"
     public static let legacyHapticIntensity = "haptic_intensity"
+    public static let hapticIntensityContinuous = "haptic_intensity_continuous"
+}
+
+public enum KeyboardFeedbackSettingsStore {
+    public static func writeContinuousIntensity(_ value: Double, in defaults: UserDefaults?) {
+        defaults?.set(KeyboardFeedbackIntensity.clamped(value), forKey: KeyboardFeedbackSettingsKey.hapticIntensityContinuous)
+    }
+
+    /// Prefers the continuous key. Missing key falls back to the stored discrete level.
+    public static func readContinuousIntensity(from defaults: UserDefaults?) -> Double {
+        if defaults?.object(forKey: KeyboardFeedbackSettingsKey.hapticIntensityContinuous) != nil {
+            return KeyboardFeedbackIntensity.clamped(
+                defaults?.double(forKey: KeyboardFeedbackSettingsKey.hapticIntensityContinuous) ?? 0
+            )
+        }
+        let raw = defaults?.object(forKey: KeyboardFeedbackSettingsKey.hapticLevel)
+        let level: KeyboardFeedbackLevel
+        if let raw = raw as? Int {
+            level = KeyboardFeedbackLevel.clamped(raw)
+        } else if let raw = raw as? NSNumber {
+            level = KeyboardFeedbackLevel.clamped(raw.intValue)
+        } else {
+            level = .defaultLevel
+        }
+        return level.hapticIntensity
+    }
 }
 
 public enum KeyboardFeedbackSettingsMigration {

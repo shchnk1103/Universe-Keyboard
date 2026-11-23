@@ -12,6 +12,8 @@ struct FeedbackSettingsView: View {
     private var hapticEnabled = false
     @AppStorage(KeyboardFeedbackSettingsKey.hapticLevel, store: feedbackSettingsDefaults)
     private var hapticLevel = KeyboardFeedbackLevel.defaultLevel.rawValue
+    @AppStorage(KeyboardFeedbackSettingsKey.hapticIntensityContinuous, store: feedbackSettingsDefaults)
+    private var hapticIntensity = KeyboardFeedbackLevel.defaultLevel.hapticIntensity
 
     @StateObject private var previewCoordinator = FeedbackPreviewCoordinator()
     @State private var permissionMessage: String?
@@ -38,18 +40,31 @@ struct FeedbackSettingsView: View {
 
             // Always mounted: avoid Form Section insert/remove when haptic toggles (AsyncRenderer).
             Section {
-                FeedbackLevelSelectionView(selection: $hapticLevel) { level in
-                    guard hapticEnabled else { return }
-                    feedbackSettingsDefaults?.synchronize()
-                    previewCoordinator.previewHaptic(level: level)
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        Text("强度")
+                        Spacer()
+                        Text(intensityLabel)
+                            .foregroundStyle(.secondary)
+                            .monospacedDigit()
+                    }
+                    Slider(value: $hapticIntensity, in: 0...1) { editing in
+                        guard !editing else { return }
+                        commitIntensity(hapticIntensity)
+                    }
+                    .disabled(!hapticEnabled)
+                    Text("轻、正常、重只是参考。拖动时按当前强度即时预览。")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
+                .padding(.vertical, 4)
             } header: {
                 Text("震动强度")
             } footer: {
                 Text(
                     hapticEnabled
-                        ? "选择档位后会自动感受一次。同一档位不会重复触发，快速连续选择时会自动节流。"
-                        : "开启「按键震动」后可调整强度并预览。"
+                        ? "松手后记住这个强度，并按它预览一次。快速拖动会自动节流。"
+                        : "开启「按键震动」后可拖动强度并预览。"
                 )
             }
             .disabled(!hapticEnabled)
@@ -135,10 +150,7 @@ struct FeedbackSettingsView: View {
 
         hapticEnabled = true
         feedbackSettingsDefaults?.synchronize()
-        previewCoordinator.previewHaptic(
-            level: KeyboardFeedbackLevel.clamped(hapticLevel),
-            force: true
-        )
+        previewCoordinator.previewHaptic(intensity: hapticIntensity, force: true)
     }
 
     /// 主 App 无法可靠读取键盘扩展的 Full Access 实时状态。
@@ -147,9 +159,28 @@ struct FeedbackSettingsView: View {
         feedbackSettingsDefaults != nil
     }
 
+    private var intensityLabel: String {
+        let percent = Int((KeyboardFeedbackIntensity.clamped(hapticIntensity) * 100).rounded())
+        return "\(percent)%"
+    }
+
+    private func commitIntensity(_ value: Double) {
+        let clamped = KeyboardFeedbackIntensity.clamped(value)
+        hapticIntensity = clamped
+        hapticLevel = KeyboardFeedbackLevel.migratedLevel(from: clamped).rawValue
+        feedbackSettingsDefaults?.synchronize()
+        guard hapticEnabled else { return }
+        previewCoordinator.previewHaptic(intensity: clamped)
+    }
+
     private func migrateLegacyFeedbackSettingsIfNeeded() {
         KeyboardFeedbackSettingsMigration.migrateLegacyLevelsIfNeeded(in: feedbackSettingsDefaults)
         hapticLevel = KeyboardFeedbackLevel.clamped(hapticLevel).rawValue
+        if feedbackSettingsDefaults?.object(forKey: KeyboardFeedbackSettingsKey.hapticIntensityContinuous) == nil {
+            hapticIntensity = KeyboardFeedbackLevel.clamped(hapticLevel).hapticIntensity
+        } else {
+            hapticIntensity = KeyboardFeedbackIntensity.clamped(hapticIntensity)
+        }
         feedbackSettingsDefaults?.synchronize()
     }
 }
