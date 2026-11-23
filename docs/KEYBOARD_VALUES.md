@@ -21,7 +21,7 @@ UI3 P3/P4 字号及受本次抽取影响的来源核对基线为 `76bfd4fbdd1673
 | 名称（符号） | 值 | 来源（基线） | 使用处 / 说明 |
 |---|---|---|---|
 | keyboardContentTopInset / BottomInset | 2 / 0 | `Keyboard/Controllers/KeyboardViewController.swift:366`；`Keyboard/Controllers/KeyboardViewController.swift:368` | rootStack 上下边界 |
-| keyHeight | 默认 45；运行时为有效行高 h | P5 高度基线：`Keyboard/Controllers/KeyboardViewController.swift` 的 keyHeight；`Keyboard/Controllers/KeyboardViewController+HeightSettings.swift` 的 resolveKeyboardRowHeight | 四行共用；保存值经方向封顶与宿主实授预算夹取，不是固定常量 |
+| keyHeight | 无保存值时按屏高比例自适应（844pt 屏为 45），有保存值时为有效行高 h | P5 高度基线：`Keyboard/Controllers/KeyboardViewController.swift` 的 keyHeight；`Keyboard/Controllers/KeyboardViewController+HeightSettings.swift` 的 resolveKeyboardRowHeight | 四行共用；缺省按 254/844 连续自适应且不回写，保存值经方向封顶与宿主实授预算夹取 |
 | keySpacing | 8 | `Keyboard/Controllers/KeyboardViewController.swift:378`；`Keyboard/Controllers/KeyboardViewController+Presentation.swift:21` | rootStack 常规行间距 |
 | keyboardGroupSpacing | 10 | `Keyboard/Controllers/KeyboardViewController.swift:380` | 字母区与底行间距 |
 | keyHorizontalSpacing / thirdRowFunctionSpacing | 6 / 10 | `Keyboard/Controllers/KeyboardViewController.swift:382`；`Keyboard/Controllers/KeyboardViewController.swift:384` | 行内与第三行分组横向间距 |
@@ -173,7 +173,7 @@ App Group 保存整数档位13–22；17、缺省/删除、非法类型或越界
 共享标识表保留原始布局 / readiness 盘点。P5 高度基线的 `keyHeight` 已是可变有效值；
 `Keyboard/Services/KeyboardHeightAdjustmentSession.swift` 的 `KeyboardHeightPreferenceStore.rowHeightKey`
 为 `keyboard_private_row_height`，仅存于扩展自己的 UserDefaults 域，不是 App Group 高度设置键。
-主 App 不读取保存行高；缺省为45，重置在确定时删除保存键。
+主 App 不读取保存行高；缺省按屏高比例自适应（844pt 屏为45），重置在确定时删除保存键。
 设置快照读取见 `Keyboard/Controllers/KeyboardViewController+Feedback.swift:114`；
 `+Bootstrap.swift:183` 在 viewDidLoad 刷新，`:195` 判断是否返回已有键盘，`:199` 才再次刷新。
 首次安装位于 `Keyboard/Controllers/KeyboardViewController.swift:469` 的 viewWillAppear 路径；
@@ -187,6 +187,10 @@ App Group 保存整数档位13–22；17、缺省/删除、非法类型或越界
 
 - `Packages/KeyboardCore/Sources/KeyboardCore/KeyboardHeightSettings.swift`：默认45、下限40；
   竖屏上限为 floor((屏幕高度×0.5−固定部分)/4)，横屏行高上限45。无有效几何或预算不足40时交调用方处理，不静默突破下限。
+  无保存值时 `adaptiveRowHeight` 按整数比 254/844 连续自适应：
+  `floor((长边屏高×254/844−(固定部分−路径栏))/4)`，再夹到 `[40, 竖屏上限]`，
+  小屏抬到40、超出 50% 上限压到上限；横屏取 `min(竖屏 adaptive(长边), 45)`，不用短边做比例。
+  有保存值时仍走 `effectiveRowHeight` 夹取。
 - `Keyboard/Controllers/KeyboardViewController+HeightSettings.swift` 的 resolveKeyboardRowHeight：
   固定部分 F=2+46+2×8+10+0+路径栏高度=74+路径栏高度；宿主预算更低时再夹取有效行高 h，
   不将压缩后的值自动写回保存值；不足四行40pt时隐藏并等待可用几何。
@@ -194,7 +198,8 @@ App Group 保存整数档位13–22；17、缺省/删除、非法类型或越界
 - 行约束通过 `Keyboard/Controllers/KeyboardViewController+Layout.swift` 的 preferredRowHeightConstraint
   跟随 h；九键 host=4h+26、跨行 Return=2h+10、旧路径面板下限=4h+24、表情 grid=3h+16。
   表中206/100/204/151仅为 h=45 的默认派生值，相关来源以这些文件的同名符号定位。
-- 默认行高不变：h=45 时，无路径总高254，有34pt路径总高288。有效行高可以变化，默认高度并非所有保存值下的总高。
+- 844pt 屏无保存值时 h=45，无路径总高254，有34pt路径总高288，与 254/844 比例一致；
+  其他屏高连续变化（如 932pt 为 51）。有效行高可以变化，默认高度并非所有保存值下的总高。
 - P3-R1 拖动期间只更新待定值，松手应用预览，确定才持久化；此处只镜像当前实现，不宣称真机持久化、封顶、40pt或触觉验收通过。
 
 ### 默认派生高度与历史测试快照
