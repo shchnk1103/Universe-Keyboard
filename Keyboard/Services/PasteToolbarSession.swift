@@ -263,7 +263,8 @@ final class PasteToolbarSession {
 /// 哪些动作算「第一次输入」。分类表在 r1 附录 C；这里只覆盖会进 KeyboardAction 的那些。
 func pastePresentationCounts(_ action: KeyboardAction) -> Bool {
     switch action {
-    case .insertKey, .insertCandidate, .insertCorrectionCandidate, .insertDirectText, .insertEmoji,
+    case .insertKey, .insertCandidate, .insertCorrectionCandidate, .insertDirectText, .insertT9NumberPadText,
+        .insertEmoji,
         .insertSpace, .insertReturn, .deleteBackward, .selectT9PinyinPath, .cycleT9PinyinPath,
         .pressT9CommonPunctuation, .pressKaomoji:
         return true
@@ -280,7 +281,8 @@ func pasteDiscardsReadingPreview(_ action: KeyboardAction) -> Bool {
         return true
     case .keyboardTypeChanged:
         return false
-    case .insertKey, .insertCandidate, .insertCorrectionCandidate, .insertDirectText, .insertEmoji,
+    case .insertKey, .insertCandidate, .insertCorrectionCandidate, .insertDirectText, .insertT9NumberPadText,
+        .insertEmoji,
         .insertSpace, .insertReturn, .deleteBackward, .selectT9PinyinPath, .cycleT9PinyinPath,
         .pressT9CommonPunctuation, .pressKaomoji:
         return false

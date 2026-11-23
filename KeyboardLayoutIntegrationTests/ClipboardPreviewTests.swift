@@ -368,6 +368,7 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
             .insertCandidate("词", kind: .candidate),
             .insertCorrectionCandidate(correction),
             .insertDirectText("“"),
+            .insertT9NumberPadText("1"),
             .insertEmoji("😀"),
             .toggleShift,
             .togglePage,
@@ -389,7 +390,7 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
             case .toggleShift, .togglePage, .toggleInputMode, .candidatePageUp, .candidatePageDown:
                 expected = true
             case .keyboardTypeChanged, .insertKey, .insertCandidate, .insertCorrectionCandidate,
-                .insertDirectText, .insertEmoji, .insertSpace, .insertReturn, .deleteBackward,
+                .insertDirectText, .insertT9NumberPadText, .insertEmoji, .insertSpace, .insertReturn, .deleteBackward,
                 .selectT9PinyinPath, .cycleT9PinyinPath, .pressT9CommonPunctuation, .pressKaomoji:
                 expected = false
             }

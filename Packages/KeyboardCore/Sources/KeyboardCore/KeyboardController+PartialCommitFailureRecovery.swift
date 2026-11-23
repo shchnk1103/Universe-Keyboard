@@ -161,7 +161,7 @@ extension KeyboardController {
                 return refresh
             }
             return insertOutsideFailedChineseSession(key, refresh: refresh)
-        case .insertDirectText(let text), .insertEmoji(let text):
+        case .insertDirectText(let text), .insertEmoji(let text), .insertT9NumberPadText(let text):
             guard state.inputMode != .chinese || state.currentPage != .letters else { return refresh }
             return insertOutsideFailedChineseSession(text, refresh: refresh)
         case .insertSpace:

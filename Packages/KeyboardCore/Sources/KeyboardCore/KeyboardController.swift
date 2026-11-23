@@ -1458,6 +1458,10 @@ public final class KeyboardController {
             return acceptingPendingPunctuationIfNeeded {
                 handleInsertDirectText(text, source: .directText)
             }
+        case .insertT9NumberPadText(let text):
+            return acceptingPendingPunctuationIfNeeded {
+                handleInsertT9NumberPadText(text)
+            }
         case .insertEmoji(let emoji):
             return acceptingPendingPunctuationIfNeeded {
                 handleInsertDirectText(emoji, source: .emoji)

@@ -244,6 +244,130 @@ extension KeyboardViewController {
         return row
     }
 
+    /// Chinese nine-key numbers page. Five equal columns: left 1 + middle 3 + right 1.
+    /// Right column width is one quarter of the left zone, matching the letter pad.
+    /// Rows are equal height and use only `keySpacing` (no `keyboardGroupSpacing`).
+    func makeT9NumbersChrome() -> [UIView] {
+        func padButton(_ key: T9NumberPadLayout.Key) -> KeyboardKeyButton {
+            if case .delete = key.tap {
+                guard let button = makeDeleteButton() as? KeyboardKeyButton else {
+                    preconditionFailure("delete button must be a KeyboardKeyButton")
+                }
+                return button
+            }
+            let selector: Selector
+            var identifier: String?
+            let title: String
+            switch key.tap {
+            case .literal(let text):
+                selector = #selector(insertT9NumberPadLiteral(_:))
+                identifier = text
+                title = text == " " ? spaceButtonTitle : key.title
+            case .symbolsPage:
+                selector = #selector(switchToSymbolsPage(_:))
+                title = key.title
+            case .lettersPage:
+                selector = #selector(switchToLettersPage(_:))
+                title = key.title
+            case .delete:
+                selector = #selector(deleteKeyTouchUpInside(_:forEvent:))
+                title = ""
+            case .insertReturn:
+                selector = #selector(insertReturn(_:))
+                title = ""
+            }
+            guard let button = makeKeyButton(title: title, action: selector) as? KeyboardKeyButton else {
+                preconditionFailure("key button must be a KeyboardKeyButton")
+            }
+            if let identifier {
+                button.accessibilityIdentifier = identifier
+            }
+            switch key.tap {
+            case .literal(" "):
+                applyKeyStyle(.space, to: button)
+                if key.installsSpaceCursorLongPress {
+                    let press = UILongPressGestureRecognizer(
+                        target: self, action: #selector(handleSpaceCursorLongPress(_:)))
+                    button.addGestureRecognizer(press)
+                }
+            case .insertReturn:
+                applyKeyStyle(.returnKey, to: button)
+                returnButton = button
+                updateReturnKeyAppearance()
+                preferredRowHeightConstraint(for: button, rows: 2, extraHeight: keySpacing).isActive = true
+            case .symbolsPage, .lettersPage, .literal("@"), .literal("+"), .literal("-"):
+                applyKeyStyle(.function, to: button)
+            default:
+                break
+            }
+            return button
+        }
+
+        let leftKeys = T9NumberPadLayout.columns[0].map { row -> [KeyboardKeyButton] in
+            let buttons = row.map { padButton($0) }
+            for button in buttons where button !== returnButton {
+                preferredRowHeightConstraint(for: button).isActive = true
+            }
+            return buttons
+        }
+        let leftStack = UIStackView(arrangedSubviews: leftKeys.map { $0[0] })
+        leftStack.axis = .vertical
+        leftStack.spacing = keySpacing
+        leftStack.distribution = .fill
+
+        var middleRows: [[KeyboardKeyButton]] = []
+        let midStack = UIStackView()
+        midStack.axis = .vertical
+        midStack.spacing = keySpacing
+        midStack.distribution = .fill
+        for rowKeys in T9NumberPadLayout.columns[1] {
+            let buttons = rowKeys.map { padButton($0) }
+            let row = UIStackView(arrangedSubviews: buttons)
+            row.axis = .horizontal
+            row.spacing = keyHorizontalSpacing
+            row.distribution = .fillEqually
+            preferredRowHeightConstraint(for: row).isActive = true
+            midStack.addArrangedSubview(row)
+            middleRows.append(buttons)
+        }
+
+        let rightKeys = T9NumberPadLayout.columns[2].map { row -> [KeyboardKeyButton] in
+            row.map { padButton($0) }
+        }
+        for button in rightKeys.flatMap({ $0 }) where button !== returnButton {
+            preferredRowHeightConstraint(for: button).isActive = true
+        }
+        let rightStack = UIStackView(arrangedSubviews: rightKeys.map { $0[0] })
+        rightStack.axis = .vertical
+        rightStack.spacing = keySpacing
+        rightStack.distribution = .fill
+
+        let leftZone = UIStackView(arrangedSubviews: [leftStack, midStack])
+        leftZone.axis = .horizontal
+        leftZone.spacing = keyHorizontalSpacing
+        leftZone.distribution = .fill
+        leftZone.alignment = .fill
+
+        let host = T9NineKeyChromeHost(arrangedSubviews: [leftZone, rightStack])
+        host.axis = .horizontal
+        host.spacing = keyHorizontalSpacing
+        host.distribution = .fill
+        host.alignment = .fill
+        rightStack.setContentHuggingPriority(.required, for: .horizontal)
+        rightStack.setContentCompressionResistancePriority(.required, for: .horizontal)
+        NSLayoutConstraint.activate([
+            midStack.widthAnchor.constraint(equalTo: leftStack.widthAnchor, multiplier: 3),
+            rightStack.widthAnchor.constraint(equalTo: leftZone.widthAnchor, multiplier: 0.25),
+        ])
+        host.configureTouchColumns([
+            .init(container: leftStack, rows: leftKeys),
+            .init(container: midStack, rows: middleRows),
+            .init(container: rightStack, rows: rightKeys),
+        ])
+        preferredRowHeightConstraint(for: host, rows: 4, extraHeight: keySpacing * 3).isActive = true
+        return [host]
+    }
+
     // MARK: === 字母行 ===
 
     /// 构建一排字母键按钮。

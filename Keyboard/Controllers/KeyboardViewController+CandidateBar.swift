@@ -362,6 +362,11 @@ extension KeyboardViewController {
     func refreshPasteToolbar(on newBar: CandidateBarView? = nil) {
         guard controller != nil else { return }
         let bar = newBar ?? candidateBar as? CandidateBarView
+        if syncT9NumberPadShortcutStrip(on: bar) {
+            pasteSession.invalidate()
+            bar?.clearPasteContent()
+            return
+        }
         let eligible = isPasteToolbarEligible && pasteSession.presentation == .armed
         if !eligible || bar == nil {
             pasteSession.invalidate()
@@ -448,5 +453,67 @@ extension KeyboardViewController {
             pasteSession.invalidate()
             if pasteSession.preview == .reading { pasteSession.discardPreview() }
         }
+    }
+}
+
+extension KeyboardViewController {
+    /// 候选栏自己的快捷条。命中落在这些按钮上，不写入 touchColumns，也不产生 selection index。
+    @discardableResult
+    func syncT9NumberPadShortcutStrip(on bar: CandidateBarView?) -> Bool {
+        guard let bar else { return false }
+        let state = controller.state
+        let show =
+            T9NumberPadLayout.showsShortcutBar(
+                page: state.currentPage,
+                inputMode: state.inputMode,
+                layout: cachedLayoutStyle,
+                readinessMatched: cachedT9ReadinessMatched,
+                composition: state.currentComposition,
+                hasPendingPunctuation: state.pendingPunctuation != nil,
+                hasPendingKaomoji: state.pendingKaomoji != nil)
+            && !controller.isCompositionInputRecoveryPending
+        let existing = bar.subviews.first { $0.accessibilityIdentifier == "t9NumberPadShortcutStrip" }
+        guard show else {
+            existing?.removeFromSuperview()
+            if existing != nil && !controller.isCompositionInputRecoveryPending {
+                bar.collectionView.isHidden = false
+                bar.collectionView.isUserInteractionEnabled = true
+            }
+            return false
+        }
+        let strip: UIStackView
+        if let existingStack = existing as? UIStackView {
+            strip = existingStack
+        } else {
+            existing?.removeFromSuperview()
+            let created = UIStackView()
+            created.axis = .horizontal
+            created.distribution = .fillEqually
+            created.spacing = 4
+            created.accessibilityIdentifier = "t9NumberPadShortcutStrip"
+            created.translatesAutoresizingMaskIntoConstraints = false
+            for symbol in T9NumberPadLayout.shortcutSymbols {
+                let button = UIButton(type: .system)
+                button.setTitle(symbol, for: .normal)
+                button.accessibilityIdentifier = symbol
+                button.accessibilityLabel = symbol
+                button.titleLabel?.font = .systemFont(ofSize: 18, weight: .regular)
+                button.addTarget(self, action: #selector(insertT9NumberPadLiteral(_:)), for: .touchUpInside)
+                created.addArrangedSubview(button)
+            }
+            bar.addSubview(created)
+            NSLayoutConstraint.activate([
+                created.leadingAnchor.constraint(equalTo: bar.leadingAnchor, constant: 8),
+                created.trailingAnchor.constraint(equalTo: bar.expandButton.leadingAnchor, constant: -4),
+                created.topAnchor.constraint(equalTo: bar.topAnchor),
+                created.bottomAnchor.constraint(equalTo: bar.bottomAnchor),
+            ])
+            strip = created
+        }
+        bar.bringSubviewToFront(strip)
+        bar.bringSubviewToFront(bar.expandButton)
+        bar.collectionView.isHidden = true
+        bar.collectionView.isUserInteractionEnabled = false
+        return true
     }
 }
