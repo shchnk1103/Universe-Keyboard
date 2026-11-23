@@ -211,6 +211,12 @@ extension KeyboardViewController {
                 rootStack.addArrangedSubview(makeBottomRow(pageSwitchTitle: pageSwitchTitle, includeDelete: false))
             }
         case .numbers:
+            if state.inputMode == .chinese && cachedLayoutStyle == .nineKey && cachedT9ReadinessMatched {
+                for view in makeT9NumbersChrome() {
+                    rootStack.addArrangedSubview(view)
+                }
+                break
+            }
             rootStack.addArrangedSubview(makeTextRow(["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]))
             if state.inputMode == .chinese {
                 rootStack.addArrangedSubview(makeTextRow(["-", "/", "：", "；", "（", "）", "¥", "@", "“", "”"]))

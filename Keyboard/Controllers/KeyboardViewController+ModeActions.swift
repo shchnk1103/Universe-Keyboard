@@ -123,6 +123,15 @@ extension KeyboardViewController {
         syncUI(with: effects)
     }
 
+    /// 九键数字页字面量。不走 `insertKey` / `handleSymbolPageTextInput`。
+    @objc func insertT9NumberPadLiteral(_ sender: UIButton) {
+        guard !isKeyboardHeightAdjusting else { return }
+        guard let text = sender.accessibilityIdentifier, !text.isEmpty else { return }
+        emitKeyPressFeedbackIfNeeded(for: sender)
+        let effects = controller.handle(.insertT9NumberPadText(text))
+        syncUI(with: effects)
+    }
+
     @objc func insertSpace(_ sender: UIButton) {
         guard !isKeyboardHeightAdjusting else { return }
         emitKeyPressFeedbackIfNeeded(for: sender)

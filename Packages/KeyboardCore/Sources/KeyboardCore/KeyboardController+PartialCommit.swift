@@ -1244,3 +1244,25 @@ extension String {
         isEmpty ? nil : self
     }
 }
+
+extension KeyboardController {
+    /// 九键数字页直出。有组词时先按 `handleInsertDirectText` 的展示文本规则提交并 resetSession，
+    /// 然后只插入字面量。不调用 `handleSymbolPageTextInput`，页保持 `.numbers`。
+    func handleInsertT9NumberPadText(_ text: String) -> KeyboardEffect {
+        var effects: KeyboardEffect = []
+        if isResponsiveProvisionalAhead
+            || state.currentComposition.contains(ResponsiveProvisionalComposition.placeholderScalar)
+        {
+            abandonResponsiveProvisionalL1WithoutHostCommit()
+            rimeEngine?.resetSession()
+            effects.insert(.compositionChanged)
+        } else if !state.currentComposition.isEmpty {
+            finishActiveCompositionAsDisplayText()
+            rimeEngine?.resetSession()
+            effects.insert(.compositionChanged)
+        }
+        insertText(text, source: .directText)
+        effects.insert(.continuationChanged)
+        return effects
+    }
+}

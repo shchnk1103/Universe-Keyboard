@@ -123,6 +123,7 @@ nonisolated final class PasteToolbarPresentationTests: XCTestCase {
             .insertCandidate("词", kind: .candidate),
             .insertCorrectionCandidate(correction),
             .insertDirectText("“"),
+            .insertT9NumberPadText("1"),
             .insertEmoji("😀"),
             .insertSpace,
             .insertReturn,

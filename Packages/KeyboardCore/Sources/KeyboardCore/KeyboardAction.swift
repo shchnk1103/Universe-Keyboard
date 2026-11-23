@@ -17,6 +17,8 @@ public enum KeyboardAction: Equatable {
     /// 点选后直接提交纠错候选文本并清空 RIME session。
     case insertCorrectionCandidate(TypoCorrectionCommit)
     case insertDirectText(String)
+    /// 九键数字页直出。不走符号页一次性回字母，也不送进 RIME。
+    case insertT9NumberPadText(String)
     /// Emoji uses the same final-commit path as other direct text while
     /// retaining a content-free source category for aggregate statistics.
     case insertEmoji(String)
@@ -39,4 +41,67 @@ public enum KeyboardAction: Equatable {
     case pressT9CommonPunctuation
     /// 九键 / 中文符号页 `^_^`：上屏待确认默认颜表情，或接受后再新开默认（ADR 0030）。
     case pressKaomoji
+}
+
+/// 九键中文数字页的纯布局表。UI 只按这张表建键，测试不依赖 UIKit 帧。
+public enum T9NumberPadLayout: Sendable {
+    public static let shortcutSymbols: [String] = ["/", "%", "#", "÷", "=", ":"]
+
+    public enum Tap: Equatable, Sendable {
+        case literal(String)
+        case symbolsPage
+        case lettersPage
+        case delete
+        case insertReturn
+    }
+
+    public struct Key: Equatable, Sendable {
+        public var title: String
+        public var tap: Tap
+        public var installsSpaceCursorLongPress: Bool
+
+        public init(title: String, tap: Tap, installsSpaceCursorLongPress: Bool = false) {
+            self.title = title
+            self.tap = tap
+            self.installsSpaceCursorLongPress = installsSpaceCursorLongPress
+        }
+    }
+
+    public static func literal(_ text: String, title: String? = nil) -> Key {
+        Key(title: title ?? text, tap: .literal(text))
+    }
+
+    /// 三列，行数 4 / 4 / 3。中列每行 3 键。return 只在右列末行。
+    public static let columns: [[[Key]]] = [
+        [
+            [literal("@")],
+            [literal("+")],
+            [literal("-")],
+            [Key(title: "#+=", tap: .symbolsPage)],
+        ],
+        [
+            [literal("1"), literal("2"), literal("3")],
+            [literal("4"), literal("5"), literal("6")],
+            [literal("7"), literal("8"), literal("9")],
+            [Key(title: "返回", tap: .lettersPage), literal("0"), literal(".")],
+        ],
+        [
+            [Key(title: "⌫", tap: .delete)],
+            [Key(title: "空格", tap: .literal(" "), installsSpaceCursorLongPress: true)],
+            [Key(title: "return", tap: .insertReturn)],
+        ],
+    ]
+
+    public static func showsShortcutBar(
+        page: KeyboardPage,
+        inputMode: InputMode,
+        layout: KeyboardLayoutStyle,
+        readinessMatched: Bool,
+        composition: String,
+        hasPendingPunctuation: Bool,
+        hasPendingKaomoji: Bool
+    ) -> Bool {
+        page == .numbers && inputMode == .chinese && layout == .nineKey && readinessMatched
+            && composition.isEmpty && !hasPendingPunctuation && !hasPendingKaomoji
+    }
 }
