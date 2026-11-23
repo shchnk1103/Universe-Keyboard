@@ -435,6 +435,11 @@ def _auto_pick_next_role(args, report: Path, status: str, next_role: str) -> str
     return f"{picked}（{duty}）"
 
 
+def _packet_grade(packet_text: str) -> str:
+    match = re.search(r"包头档位[**：: \t]*(?:`([^`\n]+)`|([a-z][a-z0-9-]*)(?=[ \t（(\n]|$))", packet_text)
+    return (match.group(1) or match.group(2)).strip() if match else ""
+
+
 def cmd_relay_quality(args):
     pm = "Jack（PM）"
 
@@ -443,8 +448,7 @@ def cmd_relay_quality(args):
         return 1
 
     packet_text = Path(args.packet).read_text(encoding="utf-8")
-    m_grade = re.search(r"包头档位[**：:\s]*`([^`]+)`", packet_text)
-    grade = m_grade.group(1).strip() if m_grade else ""
+    grade = _packet_grade(packet_text)
     profile = TIER_PROFILES.get(grade)
     if not profile or "relay-quality" not in profile["relays"]:
         return back(f"packet grade {grade or '(none)'} does not allow relay-quality")
@@ -626,8 +630,7 @@ def cmd_relay_exec(args):
 
     packet = Path(args.packet)
     packet_text = packet.read_text(encoding="utf-8")
-    m_grade = re.search(r"包头档位[**：:\s]*`([^`]+)`", packet_text)
-    grade = m_grade.group(1).strip() if m_grade else ""
+    grade = _packet_grade(packet_text)
     profile = TIER_PROFILES.get(grade)
     if not profile or "relay-exec" not in profile["relays"]:
         return back(f"packet grade {grade or '(none)'} does not allow relay-exec")
