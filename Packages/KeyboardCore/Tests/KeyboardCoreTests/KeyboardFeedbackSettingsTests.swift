@@ -26,8 +26,15 @@ final class KeyboardFeedbackSettingsTests: XCTestCase {
 
         KeyboardFeedbackSettingsMigration.migrateLegacyLevelsIfNeeded(in: defaults)
 
-        XCTAssertEqual(defaults.integer(forKey: KeyboardFeedbackSettingsKey.hapticLevel), KeyboardFeedbackLevel.stronger.rawValue)
-        XCTAssertEqual(defaults.double(forKey: KeyboardFeedbackSettingsKey.legacyHapticIntensity), 0.80, accuracy: 0.0001)
+        XCTAssertEqual(
+            defaults.integer(forKey: KeyboardFeedbackSettingsKey.hapticLevel),
+            KeyboardFeedbackLevel.stronger.rawValue
+        )
+        XCTAssertEqual(
+            defaults.double(forKey: KeyboardFeedbackSettingsKey.legacyHapticIntensity),
+            0.80,
+            accuracy: 0.0001
+        )
     }
 
     func testMigrationDoesNotOverwriteExistingDiscreteLevels() {
@@ -37,7 +44,10 @@ final class KeyboardFeedbackSettingsTests: XCTestCase {
 
         KeyboardFeedbackSettingsMigration.migrateLegacyLevelsIfNeeded(in: defaults)
 
-        XCTAssertEqual(defaults.integer(forKey: KeyboardFeedbackSettingsKey.hapticLevel), KeyboardFeedbackLevel.light.rawValue)
+        XCTAssertEqual(
+            defaults.integer(forKey: KeyboardFeedbackSettingsKey.hapticLevel),
+            KeyboardFeedbackLevel.light.rawValue
+        )
     }
 
     func testContinuousIntensityClampsAndRoundTrips() {
@@ -47,7 +57,11 @@ final class KeyboardFeedbackSettingsTests: XCTestCase {
 
         let defaults = makeIsolatedDefaults()
         KeyboardFeedbackSettingsStore.writeContinuousIntensity(0.42, in: defaults)
-        XCTAssertEqual(KeyboardFeedbackSettingsStore.readContinuousIntensity(from: defaults), 0.42, accuracy: 0.0001)
+        XCTAssertEqual(
+            KeyboardFeedbackSettingsStore.readContinuousIntensity(from: defaults),
+            0.42,
+            accuracy: 0.0001
+        )
     }
 
     func testContinuousReadFallsBackToLegacyHapticLevel() {

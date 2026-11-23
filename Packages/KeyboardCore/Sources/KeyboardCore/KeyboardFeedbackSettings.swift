@@ -105,7 +105,10 @@ public enum KeyboardFeedbackSettingsKey {
 
 public enum KeyboardFeedbackSettingsStore {
     public static func writeContinuousIntensity(_ value: Double, in defaults: UserDefaults?) {
-        defaults?.set(KeyboardFeedbackIntensity.clamped(value), forKey: KeyboardFeedbackSettingsKey.hapticIntensityContinuous)
+        defaults?.set(
+            KeyboardFeedbackIntensity.clamped(value),
+            forKey: KeyboardFeedbackSettingsKey.hapticIntensityContinuous
+        )
     }
 
     /// Prefers the continuous key. Missing key falls back to the stored discrete level.
