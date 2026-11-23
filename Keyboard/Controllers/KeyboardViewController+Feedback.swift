@@ -111,7 +111,8 @@ extension KeyboardViewController {
         cachedKeyClickEnabled = rawSound as? Bool ?? true
         cachedHapticEnabled = rawHaptic as? Bool ?? false
         cachedHapticLevel = feedbackLevelValue(rawHapticLevel)
-        cachedHapticIntensity = CGFloat(cachedHapticLevel.hapticIntensity)
+        cachedHapticIntensity = CGFloat(KeyboardFeedbackSettingsStore.readContinuousIntensity(from: defaults))
+        applyHapticHardwareStyle(KeyboardFeedbackIntensity.hardwareStyle(for: Double(cachedHapticIntensity)))
         let storedLiquidGlass =
             defaults?.bool(
                 forKey: KeyboardAppearanceSettingsKey.liquidGlassMaterialEnabled
@@ -181,6 +182,22 @@ extension KeyboardViewController {
             hapticGenerator.prepare()
             modeEnterHapticGenerator.prepare()
         }
+    }
+
+    func applyHapticHardwareStyle(_ style: KeyboardFeedbackHardwareStyle) {
+        guard style != appliedHapticHardwareStyle else {
+            hapticGenerator.prepare()
+            return
+        }
+        appliedHapticHardwareStyle = style
+        let uiStyle: UIImpactFeedbackGenerator.FeedbackStyle
+        switch style {
+        case .light: uiStyle = .light
+        case .medium: uiStyle = .medium
+        case .heavy: uiStyle = .heavy
+        }
+        hapticGenerator = UIImpactFeedbackGenerator(style: uiStyle)
+        hapticGenerator.prepare()
     }
 
     func feedbackLevelValue(_ rawValue: Any?) -> KeyboardFeedbackLevel {
