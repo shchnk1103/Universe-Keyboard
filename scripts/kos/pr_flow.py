@@ -113,6 +113,53 @@ def _acquire_land_lock(path: Path, timeout: float) -> "int | None":
             time.sleep(0.05)
 
 
+_PORTFOLIO_REF = re.compile(r"\b(?:PF-\d+|PB-\d+[A-Z]?|O\d+)\b")
+
+
+def _portfolio_refs(*chunks: str) -> list[str]:
+    """Unique PF / PB / O ids, in first-seen order. Empty when nothing matches."""
+    found: list[str] = []
+    seen: set[str] = set()
+    for chunk in chunks:
+        for match in _PORTFOLIO_REF.finditer(chunk or ""):
+            token = match.group(0)
+            if token not in seen:
+                seen.add(token)
+                found.append(token)
+    return found
+
+
+def _portfolio_todo_line(refs: list[str]) -> str:
+    if not refs:
+        return ""
+    return (
+        "PORTFOLIO_RECONCILE_TODO: "
+        + ", ".join(refs)
+        + " -> 请同步更新 docs/PORTFOLIO.md 与当前 docs/releases/vX.Y.Z.md"
+    )
+
+
+def _portfolio_todo_from_land(args, info: dict) -> str:
+    """O84: remind the publisher to close portfolio rows after a real merge.
+
+    Title and commit subjects come from the view payload already fetched.
+    Missing fields stay silent. No extra gh/git call, so CI stubs stay valid.
+    """
+    commits = info.get("commits") or []
+    commit_text = "\n".join(
+        " ".join(str(item.get(key, "")) for key in ("messageHeadline", "messageBody", "message"))
+        for item in commits
+        if isinstance(item, dict)
+    )
+    refs = _portfolio_refs(
+        getattr(args, "portfolio_refs", "") or "",
+        getattr(args, "task_id", "") or "",
+        str(info.get("title") or ""),
+        commit_text,
+    )
+    return _portfolio_todo_line(refs)
+
+
 def _summary(payload: dict, log_dir: Path | None, pr: str) -> None:
     print(
         "status={status} pr={pr} head={head} reruns={reruns} merge={merge} ff={ff} record={record} cleanup={cleanup}".format(
@@ -701,7 +748,7 @@ def cmd_land(args, runner) -> int:
         return _die(bad)
     log_dir = Path(args.log_dir) if args.log_dir else None
     view = runner.run(
-        ["gh", "pr", "view", args.pr, "--repo", args.repo, "--json", "state,headRefOid"]
+        ["gh", "pr", "view", args.pr, "--repo", args.repo, "--json", "state,headRefOid,title,commits"]
     )
     payload = {
         "status": "stop",
@@ -723,6 +770,8 @@ def cmd_land(args, runner) -> int:
         payload["status"] = "view-unparsed"
         _summary(payload, log_dir, args.pr)
         return _die("gh pr view did not return JSON")
+    # Keep the opening view: a later re-fetch overwrites `info` without title/commits.
+    opened_info = info
     state = str(info.get("state", ""))
     head = str(info.get("headRefOid", ""))
     payload["head"] = head
@@ -1024,6 +1073,10 @@ def cmd_land(args, runner) -> int:
         payload["status"] = "merged" if payload["ff"].startswith("ff-only") else "merged-no-ff"
         _append_record(record_path, f"merge={merge_oid}\nff={payload['ff']}\ncleanup={payload['cleanup']}")
         _summary(payload, log_dir, args.pr)
+        if str(payload["status"]).startswith("merged"):
+            todo = _portfolio_todo_from_land(args, opened_info)
+            if todo:
+                print(todo)
         if payload["status"] == "merged" and not args.dry_run:
             _run_auto_cleanup(args, runner)
         return 0
@@ -1131,6 +1184,11 @@ def _parser() -> argparse.ArgumentParser:
     land_cmd.add_argument("--dry-run", action="store_true")
     land_cmd.add_argument("--lock-timeout", type=float, default=30.0)
     land_cmd.add_argument("--task-id")
+    land_cmd.add_argument(
+        "--portfolio-refs",
+        default="",
+        help="Optional PF/PB/O ids to remind after a successful land (O84)",
+    )
     land_cmd.add_argument(
         "--cleanup-tool",
         default="/Users/doubleshy0n/.kos-work/Universe-Keyboard/tools/kos-cleanup.sh",
