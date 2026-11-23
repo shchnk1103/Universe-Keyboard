@@ -1,4 +1,7 @@
 """O85 handoff reassignment and O84 portfolio reconcile reminder. Stdlib only."""
+import contextlib
+import importlib.util
+import io
 import json
 import subprocess
 import sys
@@ -117,6 +120,61 @@ class HandoffBoardSyncTests(unittest.TestCase):
         line = module._portfolio_todo_line(["PF-061", "O85"])
         self.assertIn("PORTFOLIO_RECONCILE_TODO: PF-061, O85 -> 请同步更新 docs/PORTFOLIO.md 与当前 docs/releases/vX.Y.Z.md", line)
         self.assertEqual(module._portfolio_todo_line([]), "")
+
+
+class HandoffGradeTests(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        root = Path(self.tmp.name)
+        self.packet = root / "packet.md"
+        self.report = root / "report.md"
+        self.report.write_text("PASS\nPete（Preflight）\n", encoding="utf-8")
+        spec = importlib.util.spec_from_file_location("kos_handoff", HANDOFF)
+        self.module = importlib.util.module_from_spec(spec)
+        sys.path.insert(0, str(HANDOFF.parent))
+        try:
+            spec.loader.exec_module(self.module)
+        finally:
+            sys.path.pop(0)
+
+    def _check(self, action, header, expected):
+        self.packet.write_text(header + "\n", encoding="utf-8")
+        from types import SimpleNamespace
+        args = SimpleNamespace(packet=str(self.packet), report=str(self.report),
+                               verify_tool="/nonexistent", base="base", pkg_lint_tool="/nonexistent")
+        stderr = io.StringIO()
+        with contextlib.redirect_stderr(stderr):
+            result = getattr(self.module, "cmd_relay_" + action)(args)
+        self.assertEqual(result, 1)
+        self.assertIn(expected, stderr.getvalue())
+
+    def test_quality_accepts_code_fix_header_variants(self):
+        for header in ("包头档位：`code-fix`（说明）", "包头档位：code-fix（说明）",
+                       "包头档位: code-fix (description)"):
+            with self.subTest(header=header):
+                self._check("quality", header, "packet has no 复核重点 section")
+
+    def test_exec_accepts_code_fix_and_doc_rule_header_variants(self):
+        for header in ("包头档位：`code-fix`（说明）", "包头档位：code-fix（说明）",
+                       "包头档位: doc-rule", "包头档位: doc-rule (description)"):
+            with self.subTest(header=header):
+                self._check("exec", header, "kos-verify-inputs failed")
+
+    def test_disallowed_grades_fail_closed(self):
+        for action, grade in (("exec", "doc-light"), ("exec", "feature"),
+                              ("quality", "doc-rule"), ("quality", "feature")):
+            for quote in ("", "`"):
+                with self.subTest(action=action, grade=grade, quote=quote):
+                    self._check(action, f"包头档位：{quote}{grade}{quote}（说明）",
+                                f"packet grade {grade} does not allow relay-{action}")
+
+    def test_missing_or_unextractable_grade_fails_closed(self):
+        for action in ("exec", "quality"):
+            for header, grade in (("包头档位：", "(none)"), ("包头档位：???", "(none)"),
+                                  ("包头档位：unknown-grade", "unknown-grade")):
+                with self.subTest(action=action, header=header):
+                    self._check(action, header, f"packet grade {grade} does not allow relay-{action}")
 
 
 if __name__ == "__main__":
