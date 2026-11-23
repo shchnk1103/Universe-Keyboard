@@ -222,8 +222,19 @@ class HandoffStderrNoticeTests(unittest.TestCase):
 
     def test_final_prints_stderr_note_and_keeps_stdout(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
-            report = self._final_report(Path(tmp))
-            result = self._run_py(["final", "--report", str(report), "--skip-lint"])
+            root = Path(tmp)
+            report = self._final_report(root)
+            roles = root / "roles"
+            roles.mkdir()
+            (roles / "BOARD.md").write_text(
+                "| 名字 | 牌子 | 任务 | 更新时间 | 备注 |\n"
+                "|---|---|---|---|---|\n"
+                "| Maya | 空闲 | - | 2026-11-23 00:00 | |\n",
+                encoding="utf-8")
+            result = self._run_py([
+                "final", "--report", str(report), "--skip-lint",
+                "--board-roles-dir", str(roles),
+            ])
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             self.assertIn("严禁外层再套代码块", result.stderr)
             self.assertIn("# NOTE:", result.stderr)

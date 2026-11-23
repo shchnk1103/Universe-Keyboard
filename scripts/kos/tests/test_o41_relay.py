@@ -969,8 +969,20 @@ class HandoffAutoPickTests(unittest.TestCase):
 
     def test_final_keeps_concrete_next_role_untouched(self) -> None:
         report = self._report(next_role="Maya（Quality）")
+        # Idle slot in a temp board. Production BOARD.md must not decide this.
+        roles = self.root / "idle-roles"
+        roles.mkdir()
+        (roles / "BOARD.md").write_text(
+            "| 名字 | 牌子 | 任务 | 更新时间 | 备注 |\n"
+            "|---|---|---|---|---|\n"
+            "| Maya | 空闲 | - | 2026-11-23 00:00 | |\n",
+            encoding="utf-8")
         stub = self._record_stub()
-        result = self._final(report, json.dumps([str(stub)]))
+        result = _run_py("kos_handoff.py", [
+            "final", "--report", str(report), "--skip-lint",
+            "--board", sys.executable, "--board-args", json.dumps([str(stub)]),
+            "--board-roles-dir", str(roles),
+        ])
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("下一位交付：Maya（Quality）", result.stdout)
         self.assertNotIn("下一位交付：Quinn", result.stdout)

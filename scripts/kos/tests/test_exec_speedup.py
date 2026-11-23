@@ -160,8 +160,16 @@ class FinalThreeLineTests(unittest.TestCase):
     def test_final_renders_three_line_with_report_next_role(self):
         with tempfile.TemporaryDirectory() as tmp:
             report = self._report_with_relay(Path(tmp), "DONE", "Quinn（Quality）", "请复核")
+            roles = Path(tmp) / "roles"
+            roles.mkdir()
+            (roles / "BOARD.md").write_text(
+                "| 名字 | 牌子 | 任务 | 更新时间 | 备注 |\n"
+                "|---|---|---|---|---|\n"
+                "| Quinn | 空闲 | - | 2026-11-23 00:00 | |\n",
+                encoding="utf-8")
             before = report.read_bytes()
-            result = run_handoff("final", "--report", str(report))
+            result = run_handoff(
+                "final", "--report", str(report), "--board-roles-dir", str(roles))
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             self.assertIn("结论：DONE", result.stdout)
             self.assertIn("下一位交付：Quinn（Quality）", result.stdout)

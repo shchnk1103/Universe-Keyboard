@@ -380,10 +380,34 @@ def main():
             if declared and not spans:
                 err.append(f"E8 {base} 声明了冻结输入或输入校验，但没有可解析的路径与哈希配对")
 
+    def _check_hardcoded_next_role(files, txt, warn):
+        # O85: execution / repair packets should name a duty, not a person.
+        # Jack is the PM and stays explicit. Warning only — historical packets
+        # must keep exiting 0.
+        names = "Alex|Quinn|Nick|Lucy|Cole|Pete|Wendy|Ivy|Maya"
+        name_re = re.compile(rf"(?<![A-Za-z])({names})（")
+        for f in files:
+            content = txt[f]
+            head = "\n".join(content.splitlines()[:40])
+            base = os.path.basename(f)
+            is_exec = bool(re.search(
+                r"角色：\s*Executor|返修|包头档位[^\n]{0,40}`(?:code-fix|feature|fix)`",
+                head)) or bool(re.search(r"(?:^|-)(?:code|fix|impl)(?:-|$)", base))
+            if not is_exec:
+                continue
+            for n, line in enumerate(content.splitlines(), 1):
+                if "next_role" not in line:
+                    continue
+                for match in name_re.finditer(line):
+                    warn.append(
+                        f"W6 {base}:{n} next_role 硬编码了非 PM 人名 {match.group(1)}，"
+                        "建议只写职责（如 Quality Reviewer）")
+
     _check_e5(files, txt, err)
     _check_e6(files, txt, err)
     _check_e7(files, txt, err)
     _check_hash_pairs(files, txt, err, warn)
+    _check_hardcoded_next_role(files, txt, warn)
     for e in err: print(e)
     for w in warn: print(w)
     print(f"== 错误 {len(err)}，提示 {len(warn)}")

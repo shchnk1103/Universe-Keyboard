@@ -365,20 +365,74 @@ def _collect_participant_names(report: Path, extra_patterns: tuple[str, ...] = (
     return names
 
 
+def _split_next_role(next_role: str) -> tuple[str | None, str]:
+    """Split `Maya（Quality Reviewer）` into (name, duty). A bare duty has no name."""
+    head = re.split(r"[，,]", (next_role or "").strip(), maxsplit=1)[0].strip()
+    match = re.match(r"^([A-Za-z][A-Za-z0-9_-]*)（([^）]+)）$", head)
+    if match:
+        return match.group(1), match.group(2).strip()
+    return None, head
+
+
+def _board_roles_dir(args) -> str:
+    explicit = getattr(args, "board_roles_dir", None)
+    if explicit:
+        return explicit
+    if os.environ.get("KOS_HOME"):
+        return os.path.join(os.environ["KOS_HOME"], "KOS-ROLES-001")
+    return os.path.expanduser("~/.kos-work/Universe-Keyboard/KOS-ROLES-001")
+
+
+def _board_slot_state(args, name: str) -> str | None:
+    """Current BOARD.md slot for `name`, or None when the board cannot be read."""
+    path = os.path.join(_board_roles_dir(args), "BOARD.md")
+    try:
+        lines = open(path, encoding="utf-8")
+    except OSError:
+        return None
+    with lines:
+        for line in lines:
+            cols = [part.strip() for part in line.strip().strip("|").split("|")]
+            if len(cols) >= 2 and cols[0] == name:
+                return cols[1]
+    return None
+
+
 def _auto_pick_next_role(args, report: Path, status: str, next_role: str) -> str:
-    """Replace a generic duty title with a concrete idle person; fall back safely."""
-    normalized = re.split(r"[，,]", next_role, maxsplit=1)[0].strip()
-    board_role = GENERIC_BOARD_ROLES.get(normalized)
-    if not board_role or status not in ("DONE", "PASS"):
+    """Fill a bare duty, or move a busy named person, to the longest-idle peer.
+
+    Jack（PM） stays put. A missing or failing board tool keeps the original
+    text and never fails the handoff (O85).
+    """
+    if status not in ("DONE", "PASS"):
+        return next_role
+    name, duty = _split_next_role(next_role)
+    if name == PM_HANDOFF_ROLE or duty == "PM":
+        return next_role
+    board_role = GENERIC_BOARD_ROLES.get(duty)
+    if not board_role:
         return next_role
     excludes = _collect_participant_names(report)
+    if name:
+        # A concrete person is only replaced while their slot is busy or reserved.
+        state = _board_slot_state(args, name)
+        if state not in ("工作中", "已预占"):
+            return next_role
+        if name not in excludes:
+            excludes.append(name)
+    if not getattr(args, "board", None):
+        return next_role
     task_id = report.parent.parent.name
-    picked, pick_line = _relay_pick_with_reserve(args.board, args.board_args, excludes,
-                                                 role=board_role, reserve_task=task_id)
+    try:
+        picked, pick_line = _relay_pick_with_reserve(
+            args.board, args.board_args, excludes, role=board_role, reserve_task=task_id)
+    except (OSError, ValueError, subprocess.SubprocessError) as exc:
+        print(f"# NOTE: auto-pick kept next_role={next_role}: {exc}", file=sys.stderr)
+        return next_role
     if not picked:
         print(f"# NOTE: auto-pick kept next_role={next_role}: {pick_line}", file=sys.stderr)
         return next_role
-    return f"{picked}（{next_role}）"
+    return f"{picked}（{duty}）"
 
 
 def cmd_relay_quality(args):
