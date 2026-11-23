@@ -60,6 +60,10 @@ extension KeyboardViewController {
                     self?.wakeDiagnosticContext ?? .disabled
                 }
             ))
+        controller.documentContextBeforeInput = { [weak self] in
+            // ADR 0007: read-only context for spacing decisions. Never logged.
+            self?.textDocumentProxy.documentContextBeforeInput
+        }
         effects.formUnion(
             controller.handle(
                 .keyboardTypeChanged(KeyboardType.from(uiKeyboardType: proxy.keyboardType))

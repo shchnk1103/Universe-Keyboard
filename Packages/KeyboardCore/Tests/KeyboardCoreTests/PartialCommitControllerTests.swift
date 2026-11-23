@@ -93,6 +93,29 @@ final class PartialCommitControllerTests: XCTestCase {
         XCTAssertNil(controller.state.partialCommit)
     }
 
+    func testPartialCommitMergePreservesMixedScriptBoundary() {
+        let (controller, client, _) = makeController()
+        client.insertText("A")
+        var reads = 0
+        controller.documentContextBeforeInput = {
+            reads += 1
+            return "A"
+        }
+        type("nihaoanpai", into: controller)
+        selectNihao(using: controller)
+        XCTAssertEqual(controller.state.partialCommit?.confirmedText, "你好")
+        _ = controller.handle(
+            .insertCandidate(
+                "安排", kind: .candidate,
+                selectionReference: CandidateSelectionReference(page: 0, indexOnPage: 0)
+            )
+        )
+        XCTAssertEqual(client.text, "A 你好安排")
+        XCTAssertEqual(client.markedText, "")
+        XCTAssertNil(controller.state.partialCommit)
+        XCTAssertEqual(reads, 1)
+    }
+
     func testFinalCandidateAfterPartialCommitCommitsCombinedText() {
         let (controller, client, _) = makeController()
         type("nihaoanpai", into: controller)
@@ -864,15 +887,17 @@ final class PartialCommitControllerTests: XCTestCase {
         // Path set may re-rank but must remain published for remaining identity.
         XCTAssertFalse(pathsBefore.isEmpty)
         XCTAssertGreaterThanOrEqual(controller.state.compositionRevision, revisionBefore)
-        XCTAssertFalse(client.markedTextHistory.contains { text in
-            text.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
-        })
+        XCTAssertFalse(
+            client.markedTextHistory.contains { text in
+                text.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
+            })
 
         _ = controller.handle(.deleteBackward)
         XCTAssertNil(controller.state.partialCommit)
-        XCTAssertFalse(client.markedTextHistory.contains { text in
-            text.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
-        })
+        XCTAssertFalse(
+            client.markedTextHistory.contains { text in
+                text.unicodeScalars.contains(where: T9PinyinPathExtractor.isASCIIDigit)
+            })
     }
 
     func testTypingAfterCandidatePagingInvalidatesPartialCheckpoint() {
@@ -1547,12 +1572,14 @@ final class PartialCommitControllerTests: XCTestCase {
         let finalRaw = "qing'wei'fan'dao'9698454"
         let fullComment = "qing wei fan dao wo zui li"
         let dictionaries = [fullRaw, qingRaw, qingWeiRaw, qingWeiFanRaw]
-        var dictionary = Dictionary(uniqueKeysWithValues: dictionaries.map {
-            ($0, ["请喂饭到我嘴里"])
-        })
-        var comments = Dictionary(uniqueKeysWithValues: dictionaries.map {
-            ($0, [fullComment])
-        })
+        var dictionary = Dictionary(
+            uniqueKeysWithValues: dictionaries.map {
+                ($0, ["请喂饭到我嘴里"])
+            })
+        var comments = Dictionary(
+            uniqueKeysWithValues: dictionaries.map {
+                ($0, [fullComment])
+            })
         dictionary[finalRaw] = ["请喂饭到我嘴里", "请喂饭到"]
         dictionary["9698454"] = ["我嘴里"]
         comments[finalRaw] = [fullComment, "qing wei fan dao"]
@@ -1602,9 +1629,10 @@ final class PartialCommitControllerTests: XCTestCase {
 
         XCTAssertEqual(controller.state.lastRimeOutput?.rawInput, "9698454")
         XCTAssertEqual(controller.state.t9PinyinPathState.confirmedSegmentValues, [])
-        XCTAssertTrue(controller.state.t9PinyinPathState.compactPaths.contains {
-            $0.displayText == "wo"
-        })
+        XCTAssertTrue(
+            controller.state.t9PinyinPathState.compactPaths.contains {
+                $0.displayText == "wo"
+            })
         XCTAssertTrue(client.markedTextHistory.allSatisfy { !$0.contains(where: \.isNumber) })
     }
 
@@ -1784,7 +1812,7 @@ final class PartialCommitControllerTests: XCTestCase {
     /// Path A: full candidate「请喂饭到」must rebase Path to `wo…`.
     func testGate5AFullCandidateRebasesPathToWo() throws {
         #if DEBUG
-        T9Gate5CompositionTrace.reset()
+            T9Gate5CompositionTrace.reset()
         #endif
         let qingWeiFanDaoRaw = "qing'wei'fan'dao'9698454"
         let remainderRaw = "9698454"
@@ -1847,7 +1875,7 @@ final class PartialCommitControllerTests: XCTestCase {
     /// Path B: single-char「请」peels `qing`; Path cursor on `wei` with user soft-select.
     func testGate5BSingleCharacterPartialKeepsRemainingSelectedSegmentsAndFocusesWo() throws {
         #if DEBUG
-        T9Gate5CompositionTrace.reset()
+            T9Gate5CompositionTrace.reset()
         #endif
         let qingWeiFanDaoRaw = "qing'wei'fan'dao'9698454"
         // Device-like mixed remaining after single-char partial (not pure digits).
@@ -2001,10 +2029,30 @@ final class PartialCommitControllerTests: XCTestCase {
         let expectedWeiRange = 4..<7
         let expectedFanRange = 7..<10
         let expectedDaoRange = 10..<13
-        XCTAssertEqual(String(sourceBefore[sourceBefore.index(sourceBefore.startIndex, offsetBy: expectedQingRange.lowerBound)..<sourceBefore.index(sourceBefore.startIndex, offsetBy: expectedQingRange.upperBound)]), "7464")
-        XCTAssertEqual(String(sourceBefore[sourceBefore.index(sourceBefore.startIndex, offsetBy: expectedWeiRange.lowerBound)..<sourceBefore.index(sourceBefore.startIndex, offsetBy: expectedWeiRange.upperBound)]), "934")
-        XCTAssertEqual(String(sourceBefore[sourceBefore.index(sourceBefore.startIndex, offsetBy: expectedFanRange.lowerBound)..<sourceBefore.index(sourceBefore.startIndex, offsetBy: expectedFanRange.upperBound)]), "326")
-        XCTAssertEqual(String(sourceBefore[sourceBefore.index(sourceBefore.startIndex, offsetBy: expectedDaoRange.lowerBound)..<sourceBefore.index(sourceBefore.startIndex, offsetBy: expectedDaoRange.upperBound)]), "326")
+        XCTAssertEqual(
+            String(
+                sourceBefore[
+                    sourceBefore.index(
+                        sourceBefore.startIndex, offsetBy: expectedQingRange.lowerBound)..<sourceBefore.index(
+                            sourceBefore.startIndex, offsetBy: expectedQingRange.upperBound)]), "7464")
+        XCTAssertEqual(
+            String(
+                sourceBefore[
+                    sourceBefore.index(
+                        sourceBefore.startIndex, offsetBy: expectedWeiRange.lowerBound)..<sourceBefore.index(
+                            sourceBefore.startIndex, offsetBy: expectedWeiRange.upperBound)]), "934")
+        XCTAssertEqual(
+            String(
+                sourceBefore[
+                    sourceBefore.index(
+                        sourceBefore.startIndex, offsetBy: expectedFanRange.lowerBound)..<sourceBefore.index(
+                            sourceBefore.startIndex, offsetBy: expectedFanRange.upperBound)]), "326")
+        XCTAssertEqual(
+            String(
+                sourceBefore[
+                    sourceBefore.index(
+                        sourceBefore.startIndex, offsetBy: expectedDaoRange.lowerBound)..<sourceBefore.index(
+                            sourceBefore.startIndex, offsetBy: expectedDaoRange.upperBound)]), "326")
 
         _ = controller.handle(
             .insertCandidate(
@@ -2015,11 +2063,11 @@ final class PartialCommitControllerTests: XCTestCase {
         )
 
         #if DEBUG
-        let lines = T9Gate5CompositionTrace.snapshotLines()
-        XCTAssertTrue(
-            lines.contains { $0.contains("event=partialCommit") && $0.contains("restore=true") },
-            "path-ledger cursor must restore identity; lines=\(lines.suffix(3))"
-        )
+            let lines = T9Gate5CompositionTrace.snapshotLines()
+            XCTAssertTrue(
+                lines.contains { $0.contains("event=partialCommit") && $0.contains("restore=true") },
+                "path-ledger cursor must restore identity; lines=\(lines.suffix(3))"
+            )
         #endif
 
         let expectedRemainingSource = String(sourceBefore.dropFirst(4))
@@ -2350,8 +2398,7 @@ final class PartialCommitControllerTests: XCTestCase {
         ]
         var out = ""
         for ch in raw.lowercased() {
-            if ch.isNumber { out.append(ch) }
-            else if let d = map[ch] { out.append(d) }
+            if ch.isNumber { out.append(ch) } else if let d = map[ch] { out.append(d) }
         }
         return out
     }

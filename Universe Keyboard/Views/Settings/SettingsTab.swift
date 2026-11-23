@@ -32,6 +32,12 @@ struct SettingsTab: View {
     )
     private var clipboardPreviewEnabled = false
 
+    @AppStorage(
+        KeyboardInputSettingsKey.mixedScriptSpacingEnabled,
+        store: UserDefaults(suiteName: universeAppGroupID)
+    )
+    private var mixedScriptSpacingEnabled = true
+
     private var layoutSubtitle: String {
         switch KeyboardLayoutStyle.resolve(layoutStyleRaw) {
         case .twentySixKey: return "26键"
@@ -142,6 +148,18 @@ struct SettingsTab: View {
                             ? "输入字词后，在候选栏显示本地常用接续建议"
                             : "上屏后不显示接续建议",
                         isOn: $postCommitContinuationEnabled
+                    )
+                }
+            }
+
+            AppCard {
+                SettingsIconRow(systemImage: "textformat.space") {
+                    ToggleRow(
+                        title: "中英混排自动加空格",
+                        description: mixedScriptSpacingEnabled
+                            ? "中文与英文、数字之间自动插入一个空格；英文与数字之间不加。需要键盘开启完全访问"
+                            : "中文与英文、数字之间不自动插入空格",
+                        isOn: $mixedScriptSpacingEnabled
                     )
                 }
             }

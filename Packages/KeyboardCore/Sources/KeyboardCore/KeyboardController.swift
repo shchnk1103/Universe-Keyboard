@@ -64,6 +64,20 @@ public final class KeyboardController {
     public var onPartialCommitOverlap: ((PartialCommitOverlapDiagnostic) -> Void)?
     public var isPairedSymbolCompletionEnabled = true
     public internal(set) var isPostCommitContinuationEnabled = true
+    /// Read-only host context for the mixed-script spacing anchor. Returns the
+    /// document context before input; must not log or persist text (ADR 0007).
+    public var documentContextBeforeInput: (() -> String?)?
+    /// Mixed-script spacing switch. Kept on the controller so both commit
+    /// paths see one snapshot; the keyboard layer refreshes it from settings.
+    public var mixedScriptSpacingEnabled = true
+    /// A-01 left-neighbor anchor for mixed-script spacing.
+    enum MixedScriptSpacingAnchor: Equatable {
+        case inactive
+        case neighbor(Unicode.Scalar)
+        case none
+        case unknown
+    }
+    var mixedScriptSpacingAnchor: MixedScriptSpacingAnchor = .inactive
     /// Derived from the same `RimeRuntimeSelection` used for schema + layout.
     /// Digit shape alone never enables T9 policies.
     public var usesT9InputSemantics = false
@@ -1337,6 +1351,7 @@ public final class KeyboardController {
         state.pendingKaomoji = nil
         state.insertedPreeditText = ""
         state.insertedPreeditCount = 0
+        mixedScriptSpacingAnchor = .inactive
         let hadPinyinPaths =
             !state.t9PinyinPathState.compactPaths.isEmpty
             || state.t9PinyinPathState.selectedPath != nil

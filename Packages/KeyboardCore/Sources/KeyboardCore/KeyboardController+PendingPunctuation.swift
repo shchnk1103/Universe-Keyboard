@@ -21,6 +21,7 @@ extension KeyboardController {
     public func noteExternalDocumentChange() -> KeyboardEffect {
         guard !isPerformingOwnedHostMutation else { return [] }
         fencePartialCommitFailureRecovery()
+        invalidateMixedScriptSpacingAnchor()
         return acceptPendingKaomoji(refreshContinuation: false)
             .union(acceptPendingPunctuation(refreshContinuation: false))
     }
