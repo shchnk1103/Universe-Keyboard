@@ -12,6 +12,9 @@ private final class KeyboardTouchCellControl: UIControl, OrdinaryRolloverTouchCo
     private var didLeaveTouchCell = false
     private var longPressRecognizer: UILongPressGestureRecognizer?
 
+    /// PF-062 seam. Recorded on touch-down, never read by 010A behavior.
+    var touchSequence: UInt64 = 0
+
     var ordinaryRolloverSourceButton: KeyboardKeyButton? {
         sourceButton
     }
@@ -82,6 +85,13 @@ private final class KeyboardTouchCellControl: UIControl, OrdinaryRolloverTouchCo
         // The visible face must keep its native UIButton path so long press,
         // cursor movement and other gestures remain unchanged.
         return bounds.contains(point) && !visualFrameInBounds.contains(point)
+    }
+
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        if let canvas = superview as? KeyboardTouchRoutingCanvas {
+            touchSequence = canvas.claimNextTouchSequence()
+        }
+        super.touchesBegan(touches, with: event)
     }
 
     override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
@@ -238,6 +248,10 @@ private final class KeyboardTouchRoutingCanvas: UIView {
         }
     }
 
+    fileprivate func claimNextTouchSequence() -> UInt64 {
+        geometryRoot?.claimNextTouchSequence() ?? 0
+    }
+
     func resetAllControlTrackingState() {
         for control in controls {
             control.resetTrackingState()
@@ -317,6 +331,10 @@ final class KeyboardInputHitAreaStackView: UIStackView {
     private var isPublishingGeometry = false
     private var snapshotBounds = CGRect.zero
     private weak var touchRoutingCanvas: KeyboardTouchRoutingCanvas?
+    /// Last laid-out candidate header maxY. Reused when a hit arrives before
+    /// the header frame is valid, so `completingLayout == false` never lays out.
+    private var cachedExcludedHeaderMaxY: CGFloat?
+    private var nextTouchSequence: UInt64 = 0
 
     #if DEBUG
         private var showsRealTouchRangeOverlay = false
@@ -362,6 +380,34 @@ final class KeyboardInputHitAreaStackView: UIStackView {
         publishKeyTouchGeometry(completingLayout: false)
     }
 
+    fileprivate func claimNextTouchSequence() -> UInt64 {
+        let issued = nextTouchSequence
+        nextTouchSequence &+= 1
+        return issued
+    }
+
+    /// Candidate header bottom in stack space, without Auto Layout.
+    /// A zero frame is an unfinished layout pass: keep the previous snapshot.
+    private func resolvedExcludedHeaderMaxY() -> CGFloat? {
+        guard let header = arrangedSubviews.first(where: { $0 is CandidateBarRowView }),
+            !header.isHidden
+        else {
+            return nil
+        }
+        if header.frame.height > 0, header.frame.maxY.isFinite {
+            cachedExcludedHeaderMaxY = header.frame.maxY
+            return header.frame.maxY
+        }
+        return cachedExcludedHeaderMaxY
+    }
+
+    private func currentKeyRegion() -> CGRect {
+        KeyTouchCellLayout.keyRegion(
+            containerBounds: bounds,
+            excludedHeaderMaxY: resolvedExcludedHeaderMaxY()
+        )
+    }
+
     @discardableResult
     private func publishKeyTouchGeometry(completingLayout: Bool) -> Bool {
         guard !isPublishingGeometry else { return false }
@@ -397,7 +443,7 @@ final class KeyboardInputHitAreaStackView: UIStackView {
             }
             identified = KeyTouchCellLayout.makeIdentifiedCells(
                 visuals: visuals,
-                containerBounds: bounds
+                containerBounds: currentKeyRegion()
             )
             snapshotPath = "flat"
         }
@@ -480,7 +526,21 @@ final class KeyboardInputHitAreaStackView: UIStackView {
             return rows.isEmpty ? nil : (bounds: columnBounds, rows: rows)
         }
         guard columns.count == host.touchColumns.count else { return nil }
-        return KeyTouchCellLayout.makeIdentifiedStructuredCells(columns: columns)
+        // Stretch each column to keyRegion vertically. X stays in the column,
+        // so return cannot cross into the pad.
+        let region = currentKeyRegion()
+        let aligned = columns.map { column in
+            (
+                bounds: CGRect(
+                    x: column.bounds.minX,
+                    y: region.minY,
+                    width: column.bounds.width,
+                    height: max(0, region.maxY - region.minY)
+                ),
+                rows: column.rows
+            )
+        }
+        return KeyTouchCellLayout.makeIdentifiedStructuredCells(columns: aligned)
     }
 
     /// A failed refresh may be a transient UIKit pass. Preserve a snapshot only
