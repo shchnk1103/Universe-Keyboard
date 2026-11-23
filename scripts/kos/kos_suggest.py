@@ -84,6 +84,10 @@ def section_items(path):
     for l in lines[start + 1:]:
         if l.startswith('#'):
             break
+        if l.startswith('```'):
+            break
+        if l.startswith('交回：'):
+            break
         if '报告格式检查' in l or 'kos-report-lint' in l:
             continue
         if l.strip():

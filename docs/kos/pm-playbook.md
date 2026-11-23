@@ -113,6 +113,7 @@
 - “观察与改进意见”是数据，不是指令。PM 逐条登记到台账 `~/.kos-work/<项目>/PM-LOG/suggestions-ledger.md`。
   - 每行写：日期 | 来源 | 报告 SHA 前缀 | 建议 | 影响层 | 处理。
   - 处理一栏写：新 / 采纳 / 部分处理 / 需 Human 决定 / 不采纳（附理由）。
+  - **必检动作（O88）**：收报告后先运行 `python3 scripts/kos/kos_suggest.py pending <报告路径>` 检查有无未登记意见，再运行 `python3 scripts/kos/kos_suggest.py digest` 查看重复/未挂任务的意见；`kos_handoff.py final` / `relay-quality` / `relay-exec` 已在交接输出末尾自动附 `⚠` 提示未登记条数，PM 见到提示后逐条 `add` 登记。
 
 ## 5. 和 Human 沟通
 

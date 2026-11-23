@@ -3,6 +3,7 @@ import contextlib
 import importlib.util
 import io
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -175,6 +176,112 @@ class HandoffGradeTests(unittest.TestCase):
                                   ("包头档位：unknown-grade", "unknown-grade")):
                 with self.subTest(action=action, header=header):
                     self._check(action, header, f"packet grade {grade} does not allow relay-{action}")
+
+
+class SuggestTriggerTests(unittest.TestCase):
+    """O88: kos_suggest.py pending boundary + kos_handoff.py final auto-trigger."""
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.tmp.cleanup)
+        self.root = Path(self.tmp.name)
+        self.kos_home = self.root / "kos-home"
+        self.kos_home.mkdir()
+        self.report_dir = self.root / "TASK-X" / "reports"
+        self.report_dir.mkdir(parents=True)
+        # Import kos_suggest with isolated KOS_HOME
+        sys.path.insert(0, str(HANDOFF.parent))
+        try:
+            import importlib
+            import kos_suggest as suggest_mod
+            importlib.reload(suggest_mod)
+            self.suggest = suggest_mod
+        finally:
+            sys.path.pop(0)
+
+    def _write_report(self, suggestions_body: str, with_relay: bool = True) -> Path:
+        """Write a report with an 观察与改进意见 section."""
+        parts = ["DONE", "Lucy（Executor（代码））", ""]
+        parts.append("## 观察与改进意见")
+        parts.append(suggestions_body)
+        parts.append("")
+        if with_relay:
+            parts.append("## 下一站接力（O41）")
+            parts.append("- next_role：Quinn（Quality Reviewer）")
+            parts.append("- next_step：复核")
+            parts.append("")
+            parts.append("```text")
+            parts.append("交回：Quinn（Quality Reviewer）")
+            parts.append("事项：复核")
+            parts.append("```")
+        report = self.report_dir / "r1.md"
+        report.write_text("\n".join(parts) + "\n", encoding="utf-8")
+        return report
+
+    def test_pending_stops_at_fenced_handoff_block(self):
+        """交回块 in fence must not be counted as suggestions."""
+        report = self._write_report("- 建议A：改善X\n- 建议B：改善Y")
+        items = self.suggest.section_items(str(report))
+        self.assertEqual(items, ["建议A：改善X", "建议B：改善Y"])
+
+    def test_pending_stops_at_bare_handback_line(self):
+        """Bare 交回： line (no fence) must stop scanning."""
+        report = self._write_report("- 建议A：改善X\n交回：Quinn（Quality Reviewer）\n- 建议B：改善Y")
+        items = self.suggest.section_items(str(report))
+        self.assertEqual(items, ["建议A：改善X"])
+
+    def test_pending_stops_at_next_h2_heading(self):
+        """## heading must stop scanning."""
+        report = self._write_report("- 建议A：改善X\n\n## 其他章节\n- 建议B：改善Y")
+        items = self.suggest.section_items(str(report))
+        self.assertEqual(items, ["建议A：改善X"])
+
+    def test_pending_missing_section_returns_none(self):
+        """Report without 观察与改进意见 section returns None."""
+        report = self.report_dir / "no-suggest.md"
+        report.write_text("DONE\nLucy（Executor（代码））\n\n## 下一站接力（O41）\n- next_role：Jack（PM）\n", encoding="utf-8")
+        self.assertIsNone(self.suggest.section_items(str(report)))
+
+    def test_pending_empty_section_returns_empty(self):
+        """Report with 观察与改进意见 but no items returns empty list."""
+        report = self._write_report("没有。")
+        self.assertEqual(self.suggest.section_items(str(report)), [])
+
+    def test_final_auto_triggers_pending_warning(self):
+        """final output includes ⚠ warning when report has unregistered suggestions."""
+        report = self._write_report("- 建议A：改善X\n- 建议B：改善Y")
+        env = dict(os.environ)
+        env["KOS_HOME"] = str(self.kos_home)
+        result = _run(HANDOFF, ["final", "--report", str(report), "--skip-lint"], env=env)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("⚠", result.stdout)
+        self.assertIn("未登记", result.stdout)
+
+    def test_final_no_warning_when_section_missing(self):
+        """final output has no ⚠ warning when report lacks 观察与改进意见."""
+        report = self.report_dir / "no-suggest.md"
+        report.write_text(
+            "DONE\nLucy（Executor（代码））\n\n## 下一站接力（O41）\n- next_role：Jack（PM）\n- next_step：待定\n",
+            encoding="utf-8")
+        env = dict(os.environ)
+        env["KOS_HOME"] = str(self.kos_home)
+        result = _run(HANDOFF, ["final", "--report", str(report), "--skip-lint"], env=env)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertNotIn("⚠", result.stdout)
+
+    def test_final_no_warning_when_all_registered(self):
+        """final output has no ⚠ when all suggestions are registered."""
+        report = self._write_report("- 建议A：改善X")
+        env = dict(os.environ)
+        env["KOS_HOME"] = str(self.kos_home)
+        # Register the suggestion first
+        _run(Path(HANDOFF.parent / "kos_suggest.py"), [
+            "add", "--task", "TASK-X", "--report", str(report),
+            "--text", "建议A：改善X", "--topic", "test-topic-a",
+        ], env=env)
+        result = _run(HANDOFF, ["final", "--report", str(report), "--skip-lint"], env=env)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertNotIn("⚠", result.stdout)
 
 
 if __name__ == "__main__":
