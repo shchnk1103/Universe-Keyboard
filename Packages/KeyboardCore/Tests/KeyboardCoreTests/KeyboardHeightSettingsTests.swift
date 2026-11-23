@@ -128,4 +128,54 @@ final class KeyboardHeightSettingsTests: XCTestCase {
                 file: file, line: line)
         }
     }
+
+    // MARK: - PB-008 adaptive ratio (ADAPTIVE-HEIGHT-RATIO-001)
+
+    /// 六组机检样例：无保存值走 254/844 连续比例，有保存值仍走夹取且不回写。
+    func testAdaptiveRatioMachineCheckSamples() throws {
+        let none = KeyboardHeightSettings()
+        // 1. 844 / base 74 / path 0 → 45
+        XCTAssertEqual(
+            try none.adaptiveRowHeight(
+                orientation: .portrait, screenHeight: 844, fixedHeight: 74, pathHeight: 0), 45)
+        // 2. 932 / base 74 / path 0 → 51，且 74+4×51 ≤ 932×0.5
+        let row932 = try none.adaptiveRowHeight(
+            orientation: .portrait, screenHeight: 932, fixedHeight: 74, pathHeight: 0)
+        XCTAssertEqual(row932, 51)
+        XCTAssertLessThanOrEqual(74 + 4 * Double(row932), 932 * 0.5)
+        // 3. 468 / base 74 → 40（比例值 16 被下限抬起）
+        XCTAssertEqual(
+            try none.adaptiveRowHeight(
+                orientation: .portrait, screenHeight: 468, fixedHeight: 74, pathHeight: 0), 40)
+        // 4. 467.9 / base 74 → insufficientHeight
+        XCTAssertThrowsError(
+            try none.adaptiveRowHeight(
+                orientation: .portrait, screenHeight: 467.9, fixedHeight: 74, pathHeight: 0)
+        ) { error in
+            XCTAssertEqual(error as? KeyboardHeightSettings.ResolutionError, .insufficientHeight)
+        }
+        // 5. 横屏短边 390、长边 844、无覆盖 → 45
+        XCTAssertEqual(
+            try none.adaptiveRowHeight(
+                orientation: .landscape, screenHeight: 844, fixedHeight: 74, pathHeight: 0), 45)
+        // 6. 覆盖值 61 横屏 → 45；覆盖值 52 竖屏 932 → 52；覆盖值 80 竖屏 844 被上限夹住且存储仍是 80
+        let override61 = KeyboardHeightSettings(savedRowHeight: 61)
+        XCTAssertEqual(
+            try override61.effectiveRowHeight(
+                orientation: .landscape, screenHeight: 390, fixedHeight: 74), 45)
+        XCTAssertEqual(override61.savedRowHeight, 61)
+        let override52 = KeyboardHeightSettings(savedRowHeight: 52)
+        XCTAssertEqual(
+            try override52.effectiveRowHeight(
+                orientation: .portrait, screenHeight: 932, fixedHeight: 74), 52)
+        XCTAssertEqual(override52.savedRowHeight, 52)
+        // 覆盖值 80 超过 844 屏 50% 上限（floor((844×0.5−74)/4)=87 以下不夹，
+        // 80<87 故换 100 证明夹取：与既有 testPortraitCapIncludesVisiblePath 同口径）
+        let override100 = KeyboardHeightSettings(savedRowHeight: 100)
+        let clamped = try override100.effectiveRowHeight(
+            orientation: .portrait, screenHeight: 844, fixedHeight: 74)
+        XCTAssertLessThan(clamped, 100)
+        XCTAssertLessThanOrEqual(74 + 4 * Double(clamped), 844 * 0.5)
+        XCTAssertEqual(override100.savedRowHeight, 100)
+    }
 }

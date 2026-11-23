@@ -63,9 +63,24 @@ extension KeyboardViewController {
             + keyboardGroupSpacing + keyboardContentBottomInset + pathHeight
         do {
             let settings = keyboardHeightAdjustmentSession?.previewSettings ?? keyboardHeightSettings
-            let desired = try settings.effectiveRowHeight(
-                orientation: geometry.isLandscape ? .landscape : .portrait,
-                screenHeight: geometry.screenHeight, fixedHeight: Double(fixedHeight))
+            // PB-008：缺省（无保存值）按 254/844 连续自适应，结果不写回存储；
+            // 键存在即用户手动覆盖，仍走既有夹取。横屏 screenHeight 已是短边，
+            // 自适应需要长边屏高，从同一 bounds 取长边，不新增 geometry 字段。
+            let desired: Int
+            if settings.savedRowHeight == nil {
+                let bounds = view.window?.windowScene?.screen.bounds.size
+                let longEdge =
+                    bounds.map { max(Double($0.width), Double($0.height)) }
+                    ?? geometry.screenHeight
+                desired = try settings.adaptiveRowHeight(
+                    orientation: geometry.isLandscape ? .landscape : .portrait,
+                    screenHeight: longEdge, fixedHeight: Double(fixedHeight),
+                    pathHeight: Double(pathHeight))
+            } else {
+                desired = try settings.effectiveRowHeight(
+                    orientation: geometry.isLandscape ? .landscape : .portrait,
+                    screenHeight: geometry.screenHeight, fixedHeight: Double(fixedHeight))
+            }
             let requested = fixedHeight + CGFloat(desired) * 4
             if keyboardUncompressedHeight != requested {
                 // 新请求不能继承旧预算；帧观察在可见窗口首次布局后启动。
