@@ -612,8 +612,65 @@ extension KeyboardController {
         source: CommittedTextSource = .compositionFinalization
     ) {
         guard !text.isEmpty, let textClient else { return }
-        textClient.insertText(text)
-        didCommitText(text, source: source)
+        let committed = spacedCommitText(text, replacedPreedit: "")
+        textClient.insertText(committed)
+        mixedScriptSpacingAnchor = .inactive
+        didCommitText(committed, source: source)
+    }
+
+    /// Mixed-script spacing at the host boundary. With active preedit the
+    /// decision uses the sampled left-neighbor anchor only; without it the
+    /// live context closure is read exactly once here. Never logs text.
+    func spacedCommitText(_ text: String, replacedPreedit: String) -> String {
+        guard mixedScriptSpacingEnabled, !text.isEmpty else { return text }
+        let before: String?
+        if state.insertedPreeditCount > 0 {
+            switch mixedScriptSpacingAnchor {
+            case .neighbor(let scalar):
+                before = String(scalar)
+            case .none, .unknown, .inactive:
+                before = nil
+            }
+        } else {
+            guard let read = documentContextBeforeInput else { return text }
+            before = read()
+        }
+        let space = MixedScriptSpacing.leadingSpace(before: before, committing: text)
+        _ = replacedPreedit
+        return space + text
+    }
+
+    /// Samples the left-neighbor scalar once per composition, before the
+    /// first non-empty marked write. Later updates keep the first reading.
+    func sampleMixedScriptSpacingAnchorIfNeeded(for text: String) {
+        guard mixedScriptSpacingEnabled,
+            state.insertedPreeditCount == 0, !text.isEmpty,
+            mixedScriptSpacingAnchor == .inactive
+        else { return }
+        guard let read = documentContextBeforeInput else {
+            mixedScriptSpacingAnchor = .unknown
+            return
+        }
+        switch read() {
+        case .none:
+            mixedScriptSpacingAnchor = .unknown
+        case ""?:
+            mixedScriptSpacingAnchor = .none
+        case let context?:
+            if let scalar = context.unicodeScalars.last {
+                mixedScriptSpacingAnchor = .neighbor(scalar)
+            } else {
+                mixedScriptSpacingAnchor = .none
+            }
+        }
+    }
+
+    func invalidateMixedScriptSpacingAnchor() {
+        if state.insertedPreeditCount > 0 {
+            mixedScriptSpacingAnchor = .unknown
+        } else {
+            mixedScriptSpacingAnchor = .inactive
+        }
     }
 
     func adjustTextPosition(byCharacterOffset offset: Int) {
@@ -631,6 +688,10 @@ extension KeyboardController {
     }
 
     func updateInlinePreedit(_ text: String, source: HostPreeditSource) {
+        // A-01: sample once before the first non-empty marked write.
+        if !text.isEmpty {
+            sampleMixedScriptSpacingAnchorIfNeeded(for: text)
+        }
         let previous = state.insertedPreeditText
         let safeText: String
         // Internal T9 digit invariant applies only under nine-key T9 semantics.
@@ -659,6 +720,7 @@ extension KeyboardController {
         if safeText.isEmpty {
             clearInlinePreedit()
         } else {
+            sampleMixedScriptSpacingAnchorIfNeeded(for: safeText)
             textClient?.setMarkedText(
                 safeText,
                 selectedRange: safeText.count..<safeText.count
@@ -691,6 +753,7 @@ extension KeyboardController {
     func deleteInlinePreedit() {
         guard state.insertedPreeditCount > 0 else { return }
         clearInlinePreedit()
+        mixedScriptSpacingAnchor = .inactive
         state.insertedPreeditText = ""
         state.insertedPreeditCount = 0
         captureResponsiveStablePreeditIfReady()
@@ -706,10 +769,26 @@ extension KeyboardController {
         // does not reliably clear composing underline when content is unchanged.
 
         if text == state.insertedPreeditText, !text.isEmpty {
-            insertText(text, source: source)
-            state.insertedPreeditText = ""
-            state.insertedPreeditCount = 0
-            captureResponsiveStablePreeditIfReady()
+            // Same marked text: the space decision cannot go through
+            // insertText (which skips spacing when preedit is active), so
+            // reroute through one setMarkedText + unmarkText when the
+            // anchor asks for a leading space.
+            let committed = spacedCommitText(text, replacedPreedit: text)
+            if committed == text {
+                insertText(text, source: source)
+            } else if let textClient {
+                let offset = min(
+                    max(0, (selectedOffset ?? text.count) + committed.count - text.count),
+                    committed.count
+                )
+                textClient.setMarkedText(committed, selectedRange: offset..<offset)
+                textClient.unmarkText()
+                state.insertedPreeditText = ""
+                state.insertedPreeditCount = 0
+                mixedScriptSpacingAnchor = .inactive
+                didCommitText(committed, source: source)
+                captureResponsiveStablePreeditIfReady()
+            }
             return
         }
         guard state.insertedPreeditCount > 0 else {
@@ -719,20 +798,26 @@ extension KeyboardController {
         if text.isEmpty {
             clearInlinePreedit()
         } else {
-            let offset = min(max(0, selectedOffset ?? text.count), text.count)
+            let committed = spacedCommitText(text, replacedPreedit: state.insertedPreeditText)
+            let offset = min(
+                max(0, (selectedOffset ?? text.count) + committed.count - text.count),
+                committed.count
+            )
             if let textClient {
-                textClient.setMarkedText(text, selectedRange: offset..<offset)
+                textClient.setMarkedText(committed, selectedRange: offset..<offset)
                 textClient.unmarkText()
-                didCommitText(text, source: source)
+                didCommitText(committed, source: source)
             }
         }
         state.insertedPreeditText = ""
         state.insertedPreeditCount = 0
+        mixedScriptSpacingAnchor = .inactive
         captureResponsiveStablePreeditIfReady()
     }
 
     func clearInlinePreedit() {
         textClient?.setMarkedText("", selectedRange: 0..<0)
+        mixedScriptSpacingAnchor = .inactive
         state.insertedPreeditText = ""
         state.insertedPreeditCount = 0
         captureResponsiveStablePreeditIfReady()

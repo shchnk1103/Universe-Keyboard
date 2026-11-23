@@ -127,6 +127,10 @@ extension KeyboardViewController {
             isDebugBuild: liquidGlassDebugBuild
         )
         controller.isPairedSymbolCompletionEnabled = rawPairedSymbolCompletion as? Bool ?? true
+        controller.mixedScriptSpacingEnabled = MixedScriptSpacing.isEnabled(
+            stored: defaults?.object(forKey: KeyboardInputSettingsKey.mixedScriptSpacingEnabled),
+            hasFullAccess: hasFullAccess
+        )
         controller.setPostCommitContinuationEnabled(rawPostCommitContinuation as? Bool ?? true)
         controller.typoCorrectionExperimentalEdits = typoExperimentSettings.experimentalEdits
         controller.typoCorrectionLearningSnapshot = typoCorrectionLearningStore.snapshot()
