@@ -13,6 +13,7 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, SCRIPT_DIR)
 
 from clauses_spec import PM_HANDOFF_ROLE, RELAY_SECTION_HEADING, THREE_LINE_FINAL_LABELS
+from kos_render import dispatch_block, entry_block, final_block  # noqa: F401
 
 
 def _sha256(path):
@@ -79,7 +80,7 @@ def _validate_render_handoff(status, next_role, entry_path, block_path):
             )
 
 
-def render_three_line(status, summary, next_role, next_detail, report_path, entry_path=None, task_title=None, block_path=None):
+def render_three_line(status, summary, next_role, next_detail, report_path, entry_path=None, task_title=None, block_path=None, block_role=None):
     _validate_render_handoff(status, next_role, entry_path, block_path)
     real_report = os.path.realpath(report_path)
     report_sha = _sha256(real_report)
@@ -91,23 +92,15 @@ def render_three_line(status, summary, next_role, next_detail, report_path, entr
         line2_body = detail_s
     else:
         line2_body = _join_fields(role_s, detail_s)
+    block_owner = (block_role or role_s).strip() or role_s
     if block_path:
         with open(block_path, encoding="utf-8") as block_file:
             block = block_file.read().rstrip("\r\n")
     elif entry_path:
         real_entry = os.path.realpath(entry_path)
-        block = "\n".join([
-            f"派给：{role_s}",
-            f"任务：{task_title or detail_s}",
-            f"开工文档：{real_entry}",
-            f"SHA-256：{_sha256(real_entry)}",
-            "授权，直接执行",
-        ])
+        block = entry_block(block_owner, task_title or detail_s, real_entry, _sha256(real_entry), fenced=False)
     else:
-        block = "\n".join([
-            f"交回：{role_s}", f"事项：{detail_s}",
-            f"报告：{real_report}", f"SHA-256：{report_sha}",
-        ])
+        block = final_block(block_owner, detail_s, real_report, report_sha, fenced=False)
     return "\n\n".join([
         f"{l1}{line1_body}", f"{l2}{line2_body}",
         f"{l3}{real_report}（SHA-256 {report_sha}）", f"```text\n{block}\n```",
@@ -452,6 +445,10 @@ def cmd_relay_quality(args):
     profile = TIER_PROFILES.get(grade)
     if not profile or "relay-quality" not in profile["relays"]:
         return back(f"packet grade {grade or '(none)'} does not allow relay-quality")
+    if grade == "feature":
+        reason = _check_feature_arch_gate(packet_text)
+        if reason:
+            return back(f"feature arch gate failed: {reason}")
     m_focus = re.search(r"\*\*复核重点\*\*[：:]\s*\n((?:\s{2,}.*\n?)+)", packet_text)
     if not m_focus:
         return back("packet has no 复核重点 section")
@@ -529,19 +526,55 @@ def cmd_relay_quality(args):
     print(f"事项：直通质检 {Path(args.packet).stem}")
     print(f"质检块：{out.resolve()}（SHA-256 {hashlib.sha256(out.read_bytes()).hexdigest()}）")
     out_sha = hashlib.sha256(out.read_bytes()).hexdigest()
-    dispatch_block = "\n".join([
-        f"任务：{Path(args.packet).stem}",
-        f"角色：{picked}（Quality）",
-        f"包路径：{out.resolve()}",
-        f"SHA-256：{out_sha}",
-        "授权，直接执行",
-    ])
-    print(f"```text\n{dispatch_block}\n```")
+    suggestion = dispatch_block(Path(args.packet).stem, picked, "Quality", out.resolve(), out_sha,
+                                auth_line="授权，直接执行")
+    print(f"```text\n{suggestion}\n```")
     warning = _suggest_pending_warning(str(report), force=True)
     if warning:
         print(warning)
     _print_anti_wrap_note()
     return 0
+
+
+def _check_feature_arch_gate(packet_text: str) -> "str | None":
+    """Feature-grade arch gate (O92 RS-2 + m2): the packet's 冻结输入 section
+    must contain arch-* report frozen inputs as same-line backtick pairs
+    (path + 64-hex SHA-256), the file's real SHA-256 must match, and the
+    report's first line must be PASS.  Returns a stop reason or None.
+
+    Applied to BOTH relay-exec and relay-quality under the feature grade so
+    starting directly from relay-quality cannot bypass the arch gate.
+    """
+    if "冻结输入" not in packet_text:
+        return "packet has no 冻结输入 section (feature grade requires frozen arch-* report)"
+    section = packet_text.split("冻结输入", 1)[1]
+    for heading in re.finditer(r"^#{1,6} ", section, re.MULTILINE):
+        section = section[:heading.start()]
+        break
+    pairs = re.findall(r"`([^`\n]+/arch-[^`\n]*\.md)`[^`\n]{0,80}?`([0-9a-f]{64})`", section)
+    if not pairs:
+        return ("packet 冻结输入 has no arch-* report path+SHA-256 backtick pair "
+                "(same-line backtick format required)")
+    last_reason = None
+    for path, digest in pairs:
+        p = Path(path.strip())
+        if not p.is_file():
+            last_reason = f"arch report file missing: {path}"
+            continue
+        actual = _sha256(str(p))
+        if actual != digest:
+            return f"arch report SHA-256 mismatch: {path} (declared {digest[:8]}, actual {actual[:8]})"
+        first_line = ""
+        with open(p, encoding="utf-8") as f:
+            for line in f:
+                if line.strip():
+                    first_line = line.strip().split()[0]
+                    break
+        if first_line != "PASS":
+            return f"arch report first line is {first_line or '(empty)'}, not PASS: {path}"
+        last_reason = None
+        break
+    return last_reason
 
 
 TIER_PROFILES = {
@@ -575,7 +608,7 @@ TIER_PROFILES = {
         "preflight": True,
         "red_tests": True,
         "independent_review": True,
-        "relays": [],
+        "relays": ["relay-exec", "relay-quality"],
     },
 }
 
@@ -635,6 +668,10 @@ def cmd_relay_exec(args):
     profile = TIER_PROFILES.get(grade)
     if not profile or "relay-exec" not in profile["relays"]:
         return back(f"packet grade {grade or '(none)'} does not allow relay-exec")
+    if grade == "feature":
+        reason = _check_feature_arch_gate(packet_text)
+        if reason:
+            return back(f"feature arch gate failed: {reason}")
     role = profile["role"]
     m_author = re.search(r"^\s*[-*]?\s*\*?\*?包作者\*?\*?[：:]\s*(\S+)", packet_text, re.MULTILINE)
     if m_author:
@@ -807,9 +844,24 @@ def cmd_final(args):
     next_detail = (args.next_detail if args.next_detail is not None else (report_next_step or "")).strip()
     next_role = _auto_pick_next_role(args, report, status, next_role)
     _release_board_idle(args, report)
+    suggestion = None
+    pm_role = f"{PM_HANDOFF_ROLE}（PM）"
+    name, duty = _split_next_role(next_role)
+    if next_role != pm_role and name and name != PM_HANDOFF_ROLE:
+        # final always hands back to the PM; a picked employee becomes a
+        # separate suggestion block the PM reviews (O92 final semantics).
+        suggestion = next_role
+        block_role = pm_role
+    else:
+        block_role = None
     print(render_three_line(status, args.summary, next_role, next_detail, str(report),
                             entry_path=args.entry_path, task_title=args.task_title,
-                            block_path=args.block_path))
+                            block_path=args.block_path, block_role=block_role))
+    if suggestion and not (args.entry_path or args.block_path):
+        print()
+        print("## 建议派发（PM 复核后使用）")
+        print(dispatch_block(report.parent.parent.name, name, duty,
+                             str(report), _sha256(str(report))))
     warning = _suggest_pending_warning(str(report), force=not args.skip_lint)
     if warning:
         print(warning)

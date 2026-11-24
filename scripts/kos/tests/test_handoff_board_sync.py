@@ -80,7 +80,10 @@ class HandoffBoardSyncTests(unittest.TestCase):
         result, argv_out = self._final(
             self._report("Maya（Quality Reviewer）"), roles, self._stub("Quinn"))
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn("交回：Quinn（Quality Reviewer）", result.stdout)
+        # O92: hand-back block always goes to the PM; Quinn is the suggestion.
+        self.assertIn("交回：Jack（PM）", result.stdout)
+        self.assertIn("## 建议派发（PM 复核后使用）", result.stdout)
+        self.assertIn("角色：Quinn（Quality Reviewer）", result.stdout)
         self.assertNotIn("交回：Maya", result.stdout)
         text = argv_out.read_text(encoding="utf-8")
         self.assertIn("Lucy", text)
@@ -91,7 +94,9 @@ class HandoffBoardSyncTests(unittest.TestCase):
         result, _argv = self._final(
             self._report("Quality Reviewer"), roles, self._stub("Wendy"))
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn("交回：Wendy（Quality Reviewer）", result.stdout)
+        self.assertIn("交回：Jack（PM）", result.stdout)
+        self.assertIn("## 建议派发（PM 复核后使用）", result.stdout)
+        self.assertIn("角色：Wendy（Quality Reviewer）", result.stdout)
 
     def test_pkg_lint_warns_on_hardcoded_non_pm_name(self):
         packet = self.root / "code-touch-r1.md"
@@ -163,12 +168,20 @@ class HandoffGradeTests(unittest.TestCase):
                 self._check("exec", header, "kos-verify-inputs failed")
 
     def test_disallowed_grades_fail_closed(self):
-        for action, grade in (("exec", "doc-light"), ("exec", "feature"),
-                              ("quality", "doc-rule"), ("quality", "feature")):
+        # O92: feature packets without a frozen arch-* input are still rejected
+        # (via the arch gate), doc-rule keeps no relay-quality.
+        for action, grade in (("exec", "doc-light"), ("quality", "doc-rule")):
             for quote in ("", "`"):
                 with self.subTest(action=action, grade=grade, quote=quote):
                     self._check(action, f"包头档位：{quote}{grade}{quote}（说明）",
                                 f"packet grade {grade} does not allow relay-{action}")
+
+    def test_feature_grades_fail_arch_gate(self):
+        for action in ("exec", "quality"):
+            for quote in ("", "`"):
+                with self.subTest(action=action, quote=quote):
+                    self._check(action, f"包头档位：{quote}feature{quote}（说明）",
+                                "feature arch gate failed")
 
     def test_missing_or_unextractable_grade_fails_closed(self):
         for action in ("exec", "quality"):

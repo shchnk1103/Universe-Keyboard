@@ -21,6 +21,9 @@ from pathlib import Path
 
 KOS_DIR = Path(__file__).resolve().parent
 REPO_ROOT = KOS_DIR.parent.parent
+sys.path.insert(0, str(KOS_DIR))
+
+from kos_render import dispatch_block as render_dispatch_block  # noqa: E402
 KOS_TASK_ROOT = os.path.expanduser("~/.kos-work/Universe-Keyboard")
 DEFAULT_BOARD_TOOL = os.path.join(KOS_TASK_ROOT, "tools", "kos-board.py")
 GRADES = ("code-fix", "doc-rule", "doc-light", "feature")
@@ -161,6 +164,8 @@ def build_exec_package(a, input_pairs: "list[tuple[str, str]]", close_cmd: str =
     lines.append("- 主检出基线 BASE = %s（git ls-remote --heads origin main 须等于 BASE；若 origin/main 已前移且 BASE 是其祖先且未改动本包允许文件，可顺延最新 origin/main 并在报告写明 ACTUAL_BASE）" % a.base)
     for path, digest in input_pairs:
         lines.append("- `%s` SHA-256 `%s`" % (path, digest))
+    if a.grade == "feature":
+        lines.append("- 冻结输入必须含架构审查报告（`arch-*.md`）且每条采用同行反引号对格式：`路径` SHA-256 `<64位摘要>`；relay 门禁将复算该 SHA 并要求报告首行 PASS（O92 RS-2/m2）。")
     if getattr(a, "kind", None) == "publish":
         lines.append("- 待发布 worktree：%s（分支 `%s`；核验实际提交与冻结输入一致，不新建）" % (a.wt, a.branch))
     else:
@@ -231,14 +236,8 @@ def build_preflight_package(a, exec_path: Path, exec_sha: str) -> str:
 
 
 def dispatch_block(task: str, name: str, role: str, package: Path, digest: str) -> str:
-    return "\n".join([
-        "```text",
-        "任务：%s" % task,
-        "角色：%s（%s）" % (name, role),
-        "包路径：%s" % package,
-        "SHA-256：%s" % digest,
-        "```",
-    ])
+    """Unified via kos_render (O92): single source for block rendering."""
+    return render_dispatch_block(task, name, role, str(package), digest)
 
 
 def main(argv: "list[str] | None" = None) -> int:

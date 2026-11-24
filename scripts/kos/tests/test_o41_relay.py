@@ -779,10 +779,13 @@ class RelayExecTests(unittest.TestCase):
         packet, report, verify_ok, lint_ok = self._fixtures(self.PACKET_CODE, report_text=self.FAIL_REPORT)
         self._expect_pm(self._run(packet, report, verify_ok, lint_ok))
 
-    def test_feature_grade_falls_back(self) -> None:
+    def test_feature_grade_without_arch_input_falls_back(self) -> None:
+        # O92: feature allows relay-exec only after the arch gate passes.
         packet, report, verify_ok, lint_ok = self._fixtures(
             self.PACKET_CODE.replace("`code-fix`", "`feature`"))
-        self._expect_pm(self._run(packet, report, verify_ok, lint_ok))
+        result = self._run(packet, report, verify_ok, lint_ok)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("feature arch gate failed", result.stdout + result.stderr)
 
     def test_verify_tool_failure_falls_back(self) -> None:
         packet, report, _, lint_ok = self._fixtures(self.PACKET_CODE)
@@ -850,11 +853,11 @@ class TierProfileGateTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
     def test_forbidden_direct_relays_fail_closed(self) -> None:
-        for grade in ("doc-light", "feature"):
-            result = self._profile(grade, "relay-exec")
-            self.assertNotEqual(result.returncode, 0, grade)
-            self.assertIn("Jack", result.stdout + result.stderr)
-        for grade in ("doc-light", "doc-rule", "feature"):
+        # O92: feature now allows both relays (with the arch gate); doc-light stays forbidden.
+        result = self._profile("doc-light", "relay-exec")
+        self.assertNotEqual(result.returncode, 0, "doc-light")
+        self.assertIn("Jack", result.stdout + result.stderr)
+        for grade in ("doc-light", "doc-rule"):
             result = self._profile(grade, "relay-quality")
             self.assertNotEqual(result.returncode, 0, grade)
             self.assertIn("Jack", result.stdout + result.stderr)
@@ -956,7 +959,9 @@ class HandoffAutoPickTests(unittest.TestCase):
         result = self._final(report, json.dumps([str(stub)]), env={"PICK_ARGS_OUT": str(argv_out)})
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("下一位交付：Quinn（Quality Reviewer）", result.stdout)
-        self.assertIn("交回：Quinn（Quality Reviewer）", result.stdout)
+        # O92 final semantics: hand-back block always the PM, suggestion separate.
+        self.assertIn("交回：Jack（PM）", result.stdout)
+        self.assertIn("## 建议派发（PM 复核后使用）", result.stdout)
         argv_text = argv_out.read_text(encoding="utf-8")
         self.assertIn("--exclude", argv_text)
         self.assertIn("Lucy", argv_text)
@@ -985,7 +990,10 @@ class HandoffAutoPickTests(unittest.TestCase):
         ])
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("下一位交付：Maya（Quality）", result.stdout)
-        self.assertNotIn("下一位交付：Quinn", result.stdout)
+        self.assertIn("交回：Jack（PM）", result.stdout)
+        self.assertIn("## 建议派发（PM 复核后使用）", result.stdout)
+        self.assertIn("角色：Maya（Quality）", result.stdout)
+        self.assertNotIn("角色：Quinn", result.stdout)
 
     def test_relay_quality_dynamic_excludes_and_dispatch_block(self) -> None:
         repo = self.root / "repo"

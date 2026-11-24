@@ -152,7 +152,7 @@ class TierProfileSnapshotTests(unittest.TestCase):
             "预检: 必经\n"
             "红测: 必经\n"
             "独立复核: 必经\n"
-            "直通: 无（严禁越级直通）\n"
+            "直通: relay-exec, relay-quality\n"
         ),
     }
 

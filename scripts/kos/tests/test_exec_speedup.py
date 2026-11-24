@@ -176,7 +176,10 @@ class FinalThreeLineTests(unittest.TestCase):
             self.assertIn("报告：", result.stdout)
             self.assertIn(hashlib.sha256(before).hexdigest(), result.stdout)
             self.assertIn("```text", result.stdout)
-            self.assertIn(f"交回：Quinn（Quality）", result.stdout)
+            # O92 final semantics: hand-back block always goes to the PM; the
+            # picked reviewer appears as a separate suggestion block.
+            self.assertIn("交回：Jack（PM）", result.stdout)
+            self.assertIn("## 建议派发（PM 复核后使用）", result.stdout)
             self.assertEqual(report.read_bytes(), before)
 
     def test_final_defaults_to_pm_when_no_next_role(self):
@@ -193,6 +196,9 @@ class FinalThreeLineTests(unittest.TestCase):
             result = run_handoff("final", "--report", str(report), "--next-role", "Alex（Architecture）")
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             self.assertIn("下一位交付：Alex（Architecture）", result.stdout)
+            # even an explicit non-PM next_role only lands in the suggestion block
+            self.assertIn("## 建议派发（PM 复核后使用）", result.stdout)
+            self.assertIn("交回：Jack（PM）", result.stdout)
 
     def test_final_respects_status_flag(self):
         with tempfile.TemporaryDirectory() as tmp:
