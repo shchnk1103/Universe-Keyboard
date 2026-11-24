@@ -408,6 +408,74 @@ def main():
                         f"W6 {base}:{n} next_role 硬编码了非 PM 人名 {match.group(1)}，"
                         "建议只写职责（如 Quality Reviewer）")
 
+    def _check_o99_o100():
+        import hashlib, shlex, subprocess
+        table = _handoff_flag_table()
+        required = {'relay-exec': {'--packet', '--report', '--base', '--repo'},
+                    'relay-quality': {'--packet', '--report', '--base', '--repo'},
+                    'final': {'--report'}}
+        for f, content in txt.items():
+            base = os.path.basename(f)
+            for n, line in enumerate(content.splitlines(), 1):
+                for match in re.finditer(r'SHA-256\s*[：:=]?\s*`?([0-9A-Za-z]+)', line, re.I):
+                    digest = match.group(1)
+                    if len(digest) == 40 and re.fullmatch(r'[0-9a-fA-F]{40}', digest):
+                        continue
+                    if not re.fullmatch(r'[0-9a-fA-F]{64}', digest):
+                        err.append(f'E9 {base}:{n} SHA-256 格式错误')
+                        continue
+                    paths = re.findall(r'`([^`]+)`', line[:match.start()])
+                    paths = [p for p in paths if '/' in p and not any(x in p for x in ('<', '>', '*', '$', '{{'))]
+                    if paths and not re.search(r'输出报告|未来产物|示例|占位', line):
+                        path = os.path.expanduser(paths[-1])
+                        path = path if os.path.isabs(path) else os.path.join(ROOT, path)
+                        if os.path.isfile(path):
+                            with open(path, 'rb') as source:
+                                actual = hashlib.sha256(source.read()).hexdigest()
+                            if actual != digest.lower():
+                                err.append(f'E9 {base}:{n} SHA-256 不匹配：{paths[-1]}')
+            in_allow = False
+            for n, line in enumerate(content.splitlines(), 1):
+                if line.startswith('#'):
+                    in_allow = bool(re.search(r'允许修改|允许与禁止|允许写入|^#+\s*allow', line, re.I))
+                    continue
+                if not in_allow or re.search(r'新增|新建|禁止|不修改|不改', line):
+                    continue
+                for path in re.findall(r'`([^`\s]+/[^`\s]+)`', line):
+                    if os.path.isabs(path) or any(x in path for x in ('<', '>', '*', '$', '{{')):
+                        continue
+                    result = subprocess.run(['git', '-C', ROOT, 'cat-file', '-e', f'{start}:{path.rstrip("/")}'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+                    if result.returncode:
+                        err.append(f'E10 {base}:{n} 基线缺少允许修改路径：{path}')
+            for block in re.findall(r'```(?:bash|sh|shell)?\s*\n(.*?)```', content, re.S):
+                for line in re.sub(r'\\\s*\n', ' ', block).splitlines():
+                    if 'kos_handoff.py' not in line:
+                        continue
+                    if '`' in line:
+                        err.append(f'E10 {base} 交接命令含反引号')
+                        continue
+                    try:
+                        tokens = shlex.split(line, comments=True)
+                    except ValueError:
+                        err.append(f'E10 {base} 交接命令无法解析')
+                        continue
+                    idx = next((i for i, token in enumerate(tokens) if token.endswith('kos_handoff.py')), None)
+                    if idx is None:
+                        continue
+                    rest = tokens[idx + 1:]
+                    sub = rest[0] if rest else ''
+                    if not table or sub not in table:
+                        err.append(f'E10 {base} 交接子命令无效：{sub}')
+                        continue
+                    flags = {token.split('=', 1)[0] for token in rest[1:] if token.startswith('--')}
+                    unknown = flags - table[sub]
+                    missing = required.get(sub, set()) - flags
+                    if unknown or missing:
+                        err.append(f'E10 {base} {sub} 参数错误：未知 {sorted(unknown)}，缺少 {sorted(missing)}')
+            if re.search(r'复核重点', content) and not re.search(r'\*\*复核重点\*\*[：:]\s*\n((?:\s{2,}.*\n?)+)', content):
+                err.append(f'E10 {base} 复核重点格式不符合交接脚本要求')
+
+    _check_o99_o100()
     _check_e5(files, txt, err)
     _check_e6(files, txt, err)
     _check_e7(files, txt, err)
