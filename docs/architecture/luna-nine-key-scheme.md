@@ -80,8 +80,8 @@ A9-G 在不含 `LUNA_T9_*`、`TEST_RUNNER_LUNA_T9_*`、`WANXIANG_T9*`、`TEST_RU
 ## 7.1 PR1 合并回执（2026-11-18）
 
 - PR #304 已合并，合并提交 `2277d0d3a7fac6d471f312623d91708a1943d441`，已并入 `main`（本次文档基线 `bdf1544db317840691ed8b2b8f9f84e5f2676cd2`）。本节只更新合并状态，不改变第 7 节 A9 历史快照的取证边界。
-- `NineKeySchemeRegistry.entries` 仍只登记 `t9` 与 `wanxiang_t9i`，生产运行时未接线 `luna_pinyin_t9`；第 8 节 4c/4e 与第 9 节七项 PR2 前置门原文不变。
-- PR2（生产接线、第 9 节七门与 4c/4e）待立项；本档案不表示 PR2 已验证或可合并。
+- PR1 合并时仅登记 `t9` 与 `wanxiang_t9i`；后续 [PR #326](https://github.com/shchnk1103/Universe-Keyboard/pull/326)、[PR #327](https://github.com/shchnk1103/Universe-Keyboard/pull/327)、[PR #328](https://github.com/shchnk1103/Universe-Keyboard/pull/328) 均已合入 `main`。#328 生产接线提交 `87cc789` 已登记 `luna_pinyin_t9`，详见 §11；第 8 节与第 9 节保留历史合同原文。
+- Human 2026-11-19 决定记录真机 M1/M2/M3/M5 通过，豁免 4e M4 剩余日志并批准 #328 合入；2026-11-24 决定维持该豁免，不开重型补证包，仅同步台账。历史证据审计（外置 `LUNA-NINE-KEY-EVIDENCE-AUDIT-001/reports/audit-luna-nine-key-evidence-r1.md`，SHA-256 `45cfcf7717c1749d517fb323b374d153d272cf5d942dbd7d5b557b4a73acd327`）认为 §9 门 1–7 和 4c/4e 的完整技术合同仍为 `UNKNOWN`：已有部分测试和运行证据，但缺完整生产全链及 4e 同会话连续日志；`UNKNOWN` 不等于失败。审计未找到 M1/M2/M3/M5 逐步骤原始验收记录，未独立核实通过；不否认 Human 的记录。合并与豁免不代表技术门禁全部通过。
 
 ## 8. 本次处置新增的 PR2 前置门与 PR1 排除项
 
@@ -118,4 +118,4 @@ A9-G 在不含 `LUNA_T9_*`、`TEST_RUNNER_LUNA_T9_*`、`WANXIANG_T9*`、`TEST_RU
 - 唯一写盘在 `RimeBuiltinResourceInstaller` 的 `afterInstallingResources` 里：`LunaT9ProductionDeploymentSupport.commitInInstallerCallback` 备份 derived schema、物化、再 `syncCustomYamlFiles`。任一步失败先还原 derived（原先没有则删除）再抛出。`default.custom.yaml` 总是列入 `luna_pinyin`；`luna_pinyin_t9` 仅在 registry 有项、derived 文件存在且 SHA 等于 `LunaT9SchemaCompatibility.outputSHA256` 时列入。
 - 启用前 `validateSourceBeforeEnable` 只校验不写盘。已存在但 SHA 不符即失败。物化前删除 `build/luna_pinyin_t9*`，不删 `luna_pinyin.*`、`t9.*`、`wanxiang_t9i.*`。
 - 雾凇与万象生成器 provenance：不适用（现场编译与外部归档）。见 `diag-luna-t9-4e-r1.md`。
-- 真机 M1–M5 与 4e M4 同会话运行时观测仍待 Human 执行。本页不声称真机验收已完成。
+- 本节原提交时真机 M1–M5 尚待执行；后续 Human 对 M1/M2/M3/M5 的记录及 M4 剩余日志豁免、独立证据审计的技术边界见 §7.1。
