@@ -754,6 +754,10 @@ def main(argv=None):
     p_exe.add_argument("--board-roles-dir", default=None, help="KOS-ROLES dir for board idle release (default: KOS_HOME or ~/.kos-work)")
     p_exe.add_argument("--out")
 
+    import kos_watch  # O90: read-only PM report watch
+    p_watch = sub.add_parser("watch", help="O90 read-only scan for newly returned reports and pending relays")
+    kos_watch.attach_arguments(p_watch)
+
     args = parser.parse_args(argv)
     if args.cmd == "render":
         return cmd_render(args)
@@ -765,6 +769,8 @@ def main(argv=None):
         return cmd_relay_exec(args)
     if args.cmd == "profile":
         return cmd_profile(args)
+    if args.cmd == "watch":
+        return kos_watch.execute(args)
     return cmd_handoff(args)
 
 

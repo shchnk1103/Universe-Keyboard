@@ -115,6 +115,7 @@
   - 处理一栏写：新 / 采纳 / 部分处理 / 需 Human 决定 / 不采纳（附理由）。
   - **必检动作（O88）**：收报告后先运行 `python3 scripts/kos/kos_suggest.py pending <报告路径>` 检查有无未登记意见，再运行 `python3 scripts/kos/kos_suggest.py digest` 查看重复/未挂任务的意见；`kos_handoff.py final` / `relay-quality` / `relay-exec` 已在交接输出末尾自动附 `⚠` 提示未登记条数，PM 见到提示后逐条 `add` 登记。
   - **发布硬卡点（O89）**：`kos_pack.py quick --kind publish` 落盘前检查 `KOS_HOME/<任务ID>/reports/*.md`（默认 KOS_HOME 为项目外置目录）；有未登记意见时列出报告及数量并中止，先用 `kos_suggest.py add` 登记。可单独运行 `kos_suggest.py check-task <任务目录>`；明确需要豁免时传 `--allow-unregistered-suggestions`。
+- **报告巡检（O90）**：主动巡检用 `python3 scripts/kos/kos_handoff.py watch --board-roles-dir ~/.kos-work/Universe-Keyboard/KOS-ROLES-001 [--since-minutes 120 | --all] [--json]`；只读扫描 `<KOS 根>/*/reports/*.md`，列出「看板已空闲但任务有更新报告」与「最新报告已产出但无后续阶段更新报告或派发块」两类需 PM 关注项，不写任何文件。
 
 ## 5. 和 Human 沟通
 
