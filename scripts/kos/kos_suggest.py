@@ -23,18 +23,75 @@ import hashlib
 import json
 import os
 import re
-import subprocess
 import sys
 import time
 
 ROOT = os.environ.get('KOS_HOME', os.path.expanduser('~/.kos-work/Universe-Keyboard'))
 DATA = os.path.join(ROOT, 'SUGGESTIONS.json')
 LEDGER = os.path.join(ROOT, 'PM-LOG', 'suggestions-ledger.md')
-KOSQ = os.path.join(ROOT, 'tools', 'kos-q.py')
 QUEUE = os.path.join(ROOT, 'QUEUE.json')
 TODAY = time.strftime('%Y-%m-%d')
-CLOSED = ('已拒绝', '不采纳', '已完成', '已关闭', '关闭')
+REGISTER = os.path.join(ROOT, 'KOS-IMPROVEMENT-REGISTER.md')
+OXX_RE = re.compile(r'^O\d+$')
+AUTO_STATUS = '待Human拍板'  # KOS-SUGGEST-AUTO-PROMOTE-001: never auto-立项为 待实施
+
+
+def link_ok(link_id, register=None):
+    """Accept a kos-q id or an Oxx register id (KOS-SUGGEST-LINK-001, fixed here
+    for the in-repo copy which had lost the Oxx half; see O94)."""
+    if queue_item(link_id):
+        return True
+    if OXX_RE.match(link_id):
+        reg = register or REGISTER
+        if os.path.exists(reg):
+            with open(reg, encoding='utf-8') as f:
+                return re.search(r'(?<![A-Za-z0-9])' + re.escape(link_id) + r'(?![0-9])', f.read()) is not None
+    return False
+
+
+def auto_register(register, topic, text, task, rsha, count):
+    """Append a new Oxx row right after the current max Oxx row (KOS-SUGGEST-AUTO-PROMOTE-001).
+
+    Status is fixed to 待Human拍板; no priority or rank is ever touched.
+    Returns the new id, or None when the register cannot be updated.
+    """
+    if OXX_RE.match(topic):
+        return None
+    if not os.path.exists(register):
+        print(f'警告：登记簿不存在，无法自动入账：{register}')
+        return None
+    with open(register, encoding='utf-8') as f:
+        lines = f.read().split('\n')
+    rows = [(i, int(re.match(r'\|\s*O(\d+)\s*\|', l).group(1)))
+            for i, l in enumerate(lines) if re.match(r'\|\s*O\d+\s*\|', l)]
+    new_id = f'O{max(n for _, n in rows) + 1}' if rows else 'O1'
+    source = task or f'报告 {rsha}'
+    row = (f'| {new_id} | **[P3 自动登记]** {topic}：{text[:160]} | G6 | '
+           f'{TODAY} kos-suggest 自动登记（独立提及 {count} 次，最近 {source}） | '
+           f'{AUTO_STATUS} | — | 由 kos_suggest.py 在第 {count} 次独立提及时自动追加，'
+           f'待 Human 拍板立项或关闭，不自动排期 | 待 Human 决定 |')
+    insert_at = (rows[-1][0] + 1) if rows else len(lines)
+    lines.insert(insert_at, row)
+    with open(register, 'w', encoding='utf-8') as f:
+        f.write('\n'.join(lines))
+    return new_id
+
+
+def independent(t, task, rsha):
+    """KOS-SUGGEST-AUTO-PROMOTE-001: a mention counts only once per task; without
+    a task, once per report."""
+    if task:
+        return all(s[0] != task for s in t['sources'])
+    return all(s[1] != rsha for s in t['sources'])
+
+
+def sha8(path):
+    with open(path, 'rb') as f:
+        return hashlib.sha256(f.read()).hexdigest()[:8]
+
+
 STATUSES = ('新', '已采纳', '已拒绝', '不采纳', '已完成', '已关闭', '关闭', '需 Human 决定')
+CLOSED = ('已拒绝', '不采纳', '已完成', '已关闭', '关闭')
 HEADING = '观察与改进意见'
 NONE_WORDS = ('没有', '没有。', '无', '无。', 'None', 'none')
 
@@ -56,11 +113,6 @@ def save(db):
     with open(tmp, 'w', encoding='utf-8') as f:
         json.dump(db, f, ensure_ascii=False, indent=1)
     os.replace(tmp, DATA)
-
-
-def sha8(path):
-    with open(path, 'rb') as f:
-        return hashlib.sha256(f.read()).hexdigest()[:8]
 
 
 def queue_item(item_id):
@@ -125,8 +177,9 @@ def cmd_add(a, db):
     if a.status not in STATUSES:
         die('status 只能是：' + ' / '.join(STATUSES))
     validate_status(a.status, a.target_task or a.link, ' '.join((a.evidence, a.note)), a.reason)
-    if a.link and not queue_item(a.link):
-        die(f'登记簿里没有 {a.link}；先 kos-q.py add 或换一个 --link')
+    reg = a.register or REGISTER
+    if a.link and not link_ok(a.link, reg):
+        die(f'登记簿里没有 {a.link}（kos-q 或 KOS-IMPROVEMENT-REGISTER.md 的 Oxx 编号）；先登记再 --link')
     if not os.path.exists(a.report):
         die(f'报告不存在：{a.report}')
     rsha = sha8(a.report)
@@ -134,7 +187,9 @@ def cmd_add(a, db):
     key = [a.task, rsha, a.text]
     if any(s[:3] == key for s in t['sources']):
         die(f'已登记过（同一报告同一句）：{a.topic}', 0)
-    t['count'] += 1
+    grew = independent(t, a.task, rsha)
+    if grew:
+        t['count'] += 1
     t['last'] = TODAY
     t['sources'].append(key + [TODAY])
     if a.evidence:
@@ -145,26 +200,29 @@ def cmd_add(a, db):
         t['link'] = a.target_task or a.link
     if a.note:
         t['note'] = a.note
-    if t['count'] > 1 and t['status'] in CLOSED:
+    if grew and t['count'] > 1 and t['status'] in CLOSED:
         print(f'注意：主题 {a.topic} 原状态为「{t["status"]}」却再次被提出，已改回「新」')
         t['status'] = '新'
-    elif t['count'] == 1:
+    elif grew and t['count'] == 1:
         t['status'] = a.status
+    if t['count'] >= 3 and not t['link']:
+        # KOS-SUGGEST-AUTO-PROMOTE-001: auto-register one new Oxx row (待Human拍板)
+        # and bind it; never auto-立项为 待实施, never change any priority/rank.
+        new_id = auto_register(reg, a.topic, a.text, a.task, rsha, t['count'])
+        if new_id:
+            t['link'] = new_id
+            print(f'自动入账：主题「{a.topic}」第 {t["count"]} 次独立提及，已在登记簿追加 {new_id}（{AUTO_STATUS}）并自动挂接')
     save(db)
     text = a.text.replace('|', '／')
     with open(LEDGER, 'a', encoding='utf-8') as f:
         f.write(f'| {TODAY} | {a.task} | {rsha} | {text} | {a.layer} | {t["status"]}｜主题 {a.topic} 第 {t["count"]} 次｜挂 {t["link"] or "未挂"} |\n')
-    print(f'已登记：{a.topic} 第 {t["count"]} 次（状态 {t["status"]}，挂 {t["link"] or "未挂"}）')
+    if grew:
+        print(f'已登记：{a.topic} 第 {t["count"]} 次（状态 {t["status"]}，挂 {t["link"] or "未挂"}）')
+    else:
+        print(f'已记录转述：{a.topic}（同任务/同报告重复，不重复计数，仍第 {t["count"]} 次；挂 {t["link"] or "未挂"}）')
     if t['count'] >= 3:
-        r = queue_item(t['link']) if t['link'] else None
-        if r and r['zone'] == 'queue' and r['rank'] > 2:
-            new = r['rank'] - 1
-            subprocess.run([sys.executable, KOSQ, 'rank', t['link'], str(new)], check=True, stdout=subprocess.DEVNULL)
-            subprocess.run([sys.executable, KOSQ, 'set', t['link'], '-m', f'kos-suggest: 主题 {a.topic} 第 {t["count"]} 次被提出，上移到第 {new} 位'], check=True, stdout=subprocess.DEVNULL)
-            print(f'提级：{t["link"]} 上移到队列第 {new} 位')
-        elif not t['link']:
-            print('提级：该主题还没挂登记簿任务，先 kos-suggest.py link 再处理')
-        print(f'告诉 Human：主题「{a.topic}」已被提出 {t["count"]} 次')
+        print(f'告诉 Human：主题「{a.topic}」已被独立提出 {t["count"]} 次'
+              + ('' if t['link'] else '，尚未挂登记簿，先 kos-suggest.py link 再处理'))
 
 
 def pending_items(report, db, items):
@@ -244,8 +302,10 @@ def main():
     a.add_argument('--layer', default='KOS 流程'); a.add_argument('--status', default='新'); a.add_argument('--link', default='')
     a.add_argument('--evidence', default=''); a.add_argument('--reason', default='')
     a.add_argument('--target-task', default=''); a.add_argument('--note', default='')
+    a.add_argument('--register', default='', help='覆盖登记簿路径（默认 KOS_HOME/KOS-IMPROVEMENT-REGISTER.md）')
     a = s.add_parser('topics'); a.add_argument('word', nargs='?', default='')
     a = s.add_parser('link'); a.add_argument('topic'); a.add_argument('id')
+    a.add_argument('--register', default='', help='覆盖登记簿路径（默认 KOS_HOME/KOS-IMPROVEMENT-REGISTER.md）')
     a = s.add_parser('status'); a.add_argument('topic'); a.add_argument('status')
     a.add_argument('--task', default=''); a.add_argument('--target-task', default=''); a.add_argument('--evidence', default=''); a.add_argument('--note', default=''); a.add_argument('--reason', default='')
     a = s.add_parser('pending'); a.add_argument('report')
@@ -263,8 +323,8 @@ def main():
         if a.topic not in db['topics']:
             die(f'没有主题 {a.topic}（kos-suggest.py topics）')
         if a.cmd == 'link':
-            if not queue_item(a.id):
-                die(f'登记簿里没有 {a.id}')
+            if not link_ok(a.id, a.register):
+                die(f'登记簿里没有 {a.id}（kos-q 或 KOS-IMPROVEMENT-REGISTER.md 的 Oxx 编号）')
             db['topics'][a.topic]['link'] = a.id
         else:
             if a.status not in STATUSES:
