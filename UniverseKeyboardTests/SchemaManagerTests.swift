@@ -119,6 +119,42 @@ final class SchemaManagerTests: XCTestCase {
         }
     }
 
+    func testBundledContentCreditsEnglishWordlistUpstreamSources() throws {
+        let scowl = try XCTUnwrap(
+            ThirdPartyLicenseCatalog.bundledContent.first { $0.id == "english-wordlist-scowl" },
+            "bundledContent must credit SCOWL as an English wordlist upstream source"
+        )
+        XCTAssertEqual(scowl.licenseName, "MIT-class")
+        XCTAssertTrue(scowl.projectName.contains("SCOWL"))
+        XCTAssertTrue(scowl.usageNote.contains("2020.12.07"))
+        XCTAssertEqual(scowl.offlineDocuments.map(\.resourceName), ["SCOWL-2020.12.07-MIT-CLASS"])
+
+        let moby = try XCTUnwrap(
+            ThirdPartyLicenseCatalog.bundledContent.first { $0.id == "english-wordlist-moby" },
+            "bundledContent must credit Moby Words II as an English wordlist upstream source"
+        )
+        XCTAssertEqual(moby.licenseName, "Public Domain")
+        XCTAssertTrue(moby.projectName.contains("Moby"))
+        XCTAssertEqual(moby.offlineDocuments.map(\.resourceName), ["MOBY-WORDS-II-PUBLIC-DOMAIN"])
+
+        for document in scowl.offlineDocuments + moby.offlineDocuments {
+            let url = try XCTUnwrap(
+                Bundle.main.url(
+                    forResource: document.resourceName,
+                    withExtension: "txt",
+                    subdirectory: "ThirdPartyLicenses"
+                )
+                    ?? Bundle.main.url(forResource: document.resourceName, withExtension: "txt"),
+                "Missing bundled notice: \(document.resourceName).txt"
+            )
+            let text = try String(contentsOf: url, encoding: .utf8)
+            XCTAssertFalse(
+                text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
+                "Bundled notice must be non-empty UTF-8: \(document.resourceName).txt"
+            )
+        }
+    }
+
     func testOpenCCCatalogRequiresLicenseAndPinnedAuthorsDocument() throws {
         let openCC = ThirdPartyLicenseCatalog.bundledComponents.first { $0.id == "opencc" }
 

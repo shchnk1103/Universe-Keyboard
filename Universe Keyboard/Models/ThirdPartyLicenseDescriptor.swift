@@ -226,6 +226,26 @@ enum ThirdPartyLicenseCatalog {
             usage: "RIME YAML 配置解析。",
             documents: [document("MIT 许可证原文", "YAML-CPP-MIT")]
         ),
+        component(
+            id: "english-wordlist-scowl",
+            name: "SCOWL（Spell Checker Oriented Word Lists）",
+            license: "MIT-class",
+            source: "http://wordlist.aspell.net/",
+            licenseURL: "http://wordlist.aspell.net/other/",
+            usage:
+                "内置英文候选词表 english_wordlist_v1 的 Tier A 常用词与校验锚集来源（SCOWL v2020.12.07，sizes 10–95）。词表为构建期离线生成后固定随 App 分发，运行时不下载、不更新。",
+            documents: [document("SCOWL 版权与许可声明原文", "SCOWL-2020.12.07-MIT-CLASS")]
+        ),
+        component(
+            id: "english-wordlist-moby",
+            name: "Moby Words II（Grady Ward）",
+            license: "Public Domain",
+            source: "https://www.gutenberg.org/ebooks/3201",
+            licenseURL: "https://www.gutenberg.org/ebooks/3201",
+            usage:
+                "内置英文候选词表 english_wordlist_v1 的 Tier B 频序词与校验锚来源（Moby Word Lists release 1.0，1996；74550com.mon 与 354984si.ngl）。上游声明该词表已进入公有领域。",
+            documents: [document("Moby 公有领域声明原文", "MOBY-WORDS-II-PUBLIC-DOMAIN")]
+        ),
     ]
 
     static let downloadableSchemes = [rimeIce, wanxiang]

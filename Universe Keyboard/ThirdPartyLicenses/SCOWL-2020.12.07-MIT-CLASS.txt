@@ -1,0 +1,35 @@
+SCOWL (Spell Checker Oriented Word Lists) — Version 2020.12.07
+Universe Keyboard offline license notice (REL-103-SCOWL-LICENSE-001)
+
+Upstream source used: SCOWL v2020.12.07 (sizes 10-95), downloaded from
+http://downloads.sourceforge.net/wordlist/scowl-2020.12.07.tar.gz
+(official release page: http://wordlist.aspell.net/other/).
+
+Used for: the bundled English candidate wordlist english_wordlist_v1.json
+(Tier A very-common core: english-words.10/.20, american-words.10/.20,
+british-words.10/.20, and the validation anchor set *-words.10 ... *-words.95
+with variants). The wordlist is generated offline at build time and shipped
+statically with the app; nothing is downloaded at runtime.
+
+The following is the verbatim copyright/permission text from the SCOWL
+distribution `Copyright` file, retained per its license terms:
+
+---------------------------------------------------------------------------
+Copyright 2000-2018 by Kevin Atkinson
+
+Permission to use, copy, modify, distribute and sell these word
+lists, the associated scripts, the output created from the scripts,
+and its documentation for any purpose is hereby granted without fee,
+provided that the above copyright notice appears in all copies and
+that both that copyright notice and this permission notice appear in
+supporting documentation. Kevin Atkinson makes no representations
+about the suitability of this array for any purpose. It is provided
+"as is" without express or implied warranty.
+---------------------------------------------------------------------------
+
+Classification note: this permission is conventionally described as
+"MIT-class": it grants use, copying, modification, distribution and sale
+for any purpose without fee, conditioned on retaining the copyright and
+permission notice in copies and supporting documentation, with a warranty
+disclaimer. It is not the standard OSI MIT license text; the verbatim
+notice above governs.
