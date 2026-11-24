@@ -10,11 +10,56 @@ extension KeyboardController {
         if rejectIfResponsiveProvisionalAhead() {
             return []
         }
+        // PB-013 m3：除续接条目自身外，任何候选类目点选都退出标点续接态
+        // （pendingPunctuation / pendingKaomoji / RIME 候选 / 纠错候选 /
+        // composition 等）。续接条目的刷新或退出在路由内部处理。
+        let punctuationExitEffects: KeyboardEffect
+        if kind == .continuationCandidate {
+            punctuationExitEffects = []
+        } else {
+            punctuationExitEffects = clearPunctuationContinuation()
+        }
+        return punctuationExitEffects.union(
+            routeInsertCandidate(candidate, kind: kind, selectionReference: selectionReference)
+        )
+    }
+
+    private func routeInsertCandidate(
+        _ candidate: String,
+        kind: CandidateKind,
+        selectionReference: CandidateSelectionReference?
+    ) -> KeyboardEffect {
         switch kind {
         case .placeholder, .correctionCandidate:
             return []
         case .continuationCandidate:
-            guard isPostCommitContinuationEnabled,
+            guard isPostCommitContinuationEnabled else {
+                return []
+            }
+            // PB-013：续接态活跃时，候选栏只展示续接标点（数据源优先级
+            // 保证），点选走连打链路由：命中目录则刷新续接态（m2），链尾
+            // （目录未命中）提交后退出。武装先于提交使联想 context 写入
+            // 被跳过；单次点选只发一次 `.continuationChanged`。
+            if state.punctuationContinuation != nil,
+                let armed = state.punctuationContinuation,
+                armed.candidates.contains(candidate)
+            {
+                var exitsAfterCommit = false
+                if let nextCandidates = PunctuationContinuationCatalog.candidates(forTrigger: candidate) {
+                    state.punctuationContinuation = PunctuationContinuationState(
+                        trigger: candidate,
+                        candidates: nextCandidates
+                    )
+                } else {
+                    exitsAfterCommit = true
+                }
+                insertText(candidate, source: .candidate)
+                if exitsAfterCommit {
+                    state.punctuationContinuation = nil
+                }
+                return .continuationChanged
+            }
+            guard
                 state.continuation.suggestions.contains(candidate)
             else {
                 return []

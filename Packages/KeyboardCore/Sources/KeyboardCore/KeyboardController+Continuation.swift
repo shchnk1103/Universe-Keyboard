@@ -5,6 +5,8 @@ extension KeyboardController {
         isPostCommitContinuationEnabled = enabled
         if !enabled {
             state.continuation = ContinuationState()
+            // PB-013：开关关闭同时退出标点续接态。
+            state.punctuationContinuation = nil
         }
         return .continuationChanged
     }
@@ -20,6 +22,10 @@ extension KeyboardController {
             state.continuation = ContinuationState()
             return
         }
+        // PB-013：标点续接态与普通联想二选一。续接武装期间（含连打链的
+        // 同一次点选提交）跳过联想 context 写入，标点不污染上下文；
+        // 退出矩阵清空续接态后普通字母提交照常走原联想。
+        guard state.punctuationContinuation == nil else { return }
         guard !text.contains(where: { $0 == "\n" || $0 == "\r" }) else {
             state.continuation = ContinuationState()
             return

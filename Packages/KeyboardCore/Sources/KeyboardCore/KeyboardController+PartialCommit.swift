@@ -716,6 +716,22 @@ extension KeyboardController {
 
         var effects: KeyboardEffect = []
 
+        // PB-013：标点回弹续接触发。m1——触发键按最终上屏文本归一：
+        // 成对补全（含组合态收尾补右半）时以 `text + closing` 为键，
+        // 未补全时以按键文本本身为键。武装必须先于宿主提交，使同一次
+        // 提交的 refreshContinuation 因续接态活跃而跳过（二选一），
+        // 标点不污染联想 context。触发限定中文模式 + 回弹集合 + 内置目录命中；
+        // 非触发符号保持既有行为（含既有联想 context 刷新）不变。
+        if state.inputMode == .chinese,
+            isPostCommitContinuationEnabled,
+            Self.chineseOneShotSymbols.contains(text)
+        {
+            let punctuationAppendedText = text + (pairedClosingSymbol(for: text) ?? "")
+            if PunctuationContinuationCatalog.candidates(forTrigger: punctuationAppendedText) != nil {
+                armPunctuationContinuationIfTriggers(appendedText: punctuationAppendedText)
+            }
+        }
+
         if hasActiveCompositionForSymbolInput {
             let closingSymbol = pairedClosingSymbol(for: text)
             let appendedText = text + (closingSymbol ?? "")

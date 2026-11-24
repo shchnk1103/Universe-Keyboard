@@ -31,6 +31,8 @@ extension KeyboardViewController {
             setCursorMovementModeUI(active: true, exceptionView: spaceButton)
             // Restoring the key appearance removes the default pressed state color
             restoreKeyAppearance(spaceButton)
+            // PB-013 退出矩阵：光标移动（长按空格）退出标点续接态。
+            syncUI(with: controller.clearPunctuationContinuation())
             emitFeedback(for: .modeEnter)
 
         case .changed:
