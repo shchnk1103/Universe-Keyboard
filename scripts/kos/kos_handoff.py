@@ -24,6 +24,23 @@ def _sha256(path):
     return h.hexdigest()
 
 
+def format_dispatch_block(task_name: str, role: str, packet_path, sha256: str) -> str:
+    """O95: the single dispatch-block renderer shared by PM and employee relays.
+
+    Fixed 5 clean lines (任务名/角色/包路径/SHA-256/授权，直接执行) with no
+    outer fence; callers wrap as needed. relay-exec, relay-quality and the
+    `dispatch` subcommand all route through here so one edit updates every
+    dispatch surface.
+    """
+    return "\n".join([
+        f"任务：{task_name}",
+        f"角色：{role}",
+        f"包路径：{packet_path}",
+        f"SHA-256：{sha256}",
+        "授权，直接执行",
+    ])
+
+
 def _join_fields(head, tail):
     head = (head or "").strip()
     tail = (tail or "").strip()
@@ -526,8 +543,8 @@ def cmd_relay_quality(args):
     print(f"事项：直通质检 {Path(args.packet).stem}")
     print(f"质检块：{out.resolve()}（SHA-256 {hashlib.sha256(out.read_bytes()).hexdigest()}）")
     out_sha = hashlib.sha256(out.read_bytes()).hexdigest()
-    suggestion = dispatch_block(Path(args.packet).stem, picked, "Quality", out.resolve(), out_sha,
-                                auth_line="授权，直接执行")
+    suggestion = format_dispatch_block(Path(args.packet).stem, f"{picked}（Quality）",
+                                       out.resolve(), out_sha)
     print(f"```text\n{suggestion}\n```")
     warning = _suggest_pending_warning(str(report), force=True)
     if warning:
@@ -642,6 +659,18 @@ def cmd_profile(args):
     return 0
 
 
+def cmd_dispatch(args):
+    """O95: print the unified 5-line dispatch block for a packet, no fence."""
+    packet = Path(args.packet)
+    if not packet.is_file():
+        print(f"STOPPED: packet not found: {args.packet}", file=sys.stderr)
+        return 2
+    packet_sha = hashlib.sha256(packet.read_bytes()).hexdigest()
+    task_name = (args.task_name or packet.stem).strip()
+    print(format_dispatch_block(task_name, args.role.strip(), packet.resolve(), packet_sha))
+    return 0
+
+
 EXEC_ROLE_LABELS = {"code": "Executor（代码）", "doc": "Executor（记录/文档）"}
 EXEC_GRADE_ROLES = {"code-fix": "code", "doc-rule": "doc"}
 
@@ -697,13 +726,8 @@ def cmd_relay_exec(args):
         return back(f"output already exists: {out}")
     packet_sha = hashlib.sha256(packet.read_bytes()).hexdigest()
     report_sha = hashlib.sha256(report.read_bytes()).hexdigest()
-    block = "\n".join([
-        f"任务：{packet.stem}",
-        f"角色：{picked}（{EXEC_ROLE_LABELS[role]}）",
-        f"包路径：{packet.resolve()}",
-        f"SHA-256：{packet_sha}",
-        "授权，直接执行",
-    ])
+    block = format_dispatch_block(packet.stem, f"{picked}（{EXEC_ROLE_LABELS[role]}）",
+                                  packet.resolve(), packet_sha)
     out.write_text(block + "\n", encoding="utf-8")
     print("\n\n".join([
         f"结论：PASS",
@@ -791,6 +815,11 @@ def main(argv=None):
     p_exe.add_argument("--board-roles-dir", default=None, help="KOS-ROLES dir for board idle release (default: KOS_HOME or ~/.kos-work)")
     p_exe.add_argument("--out")
 
+    p_dis = sub.add_parser("dispatch", help="O95: print the unified 5-line dispatch block")
+    p_dis.add_argument("--packet", required=True)
+    p_dis.add_argument("--role", required=True)
+    p_dis.add_argument("--task-name", default=None)
+
     import kos_watch  # O90: read-only PM report watch
     p_watch = sub.add_parser("watch", help="O90 read-only scan for newly returned reports and pending relays")
     kos_watch.attach_arguments(p_watch)
@@ -806,6 +835,8 @@ def main(argv=None):
         return cmd_relay_exec(args)
     if args.cmd == "profile":
         return cmd_profile(args)
+    if args.cmd == "dispatch":
+        return cmd_dispatch(args)
     if args.cmd == "watch":
         return kos_watch.execute(args)
     return cmd_handoff(args)
