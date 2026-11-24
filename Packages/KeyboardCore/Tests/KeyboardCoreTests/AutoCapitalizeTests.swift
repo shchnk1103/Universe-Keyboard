@@ -168,8 +168,13 @@ final class AutoCapitalizeTests: XCTestCase {
     }
 
     func testAutoCapAfterMixedPunctuation() {
-        // 多标点后应触发自动大写
-        XCTAssertTrue(controller.shouldAutoCapitalize(contextBeforeInput: "hello..."))
+        // URL-MODE-ENGLISH-IMPL-001：`.` 紧贴前词不再触发句首大写（google. / hello... 均为小写）。
+        XCTAssertFalse(controller.shouldAutoCapitalize(contextBeforeInput: "hello..."))
+    }
+
+    func testAutoCapAfterEllipsisFollowedBySpace() {
+        // `.` 后至少有一个空白仍触发句首大写。
+        XCTAssertTrue(controller.shouldAutoCapitalize(contextBeforeInput: "hello... "))
     }
 
     func testAutoCapOnEmptyDocumentAfterDelete() {

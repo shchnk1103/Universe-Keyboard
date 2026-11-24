@@ -48,6 +48,9 @@ extension KeyboardViewController {
             // composition so the old marked text is never cleared in the new host.
             controller.textClient = nil
             effects.formUnion(controller.abandonCompositionForVisibilityChange())
+            // m1: 文档切换无法证明新字段仍是同一地址类字段；丢弃临时快照（fail-safe，
+            // 已生效模式不变）。若宿主随后仍回调同类型 addressLike，同类型回调不会重置。
+            controller.clearAddressLikeSessionSnapshot()
         }
 
         // Rebind on each host callback in case UIKit has supplied a new proxy.

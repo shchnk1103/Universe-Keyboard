@@ -66,17 +66,14 @@ extension KeyboardViewController {
             returnButton.widthAnchor.constraint(equalToConstant: 78),
         ]
 
-        // Leading-side shortcut slot, immediately before the space key.
-        if showEmail {
-            let atButton = makeKeyButton(title: "@", action: #selector(insertDirectText(_:)))
-            applyKeyStyle(.function, to: atButton)
-            row.addArrangedSubview(atButton)
-            constraints.append(atButton.widthAnchor.constraint(equalToConstant: 40))
-        } else if showURL {
-            let slashButton = makeKeyButton(title: "/", action: #selector(insertDirectText(_:)))
-            applyKeyStyle(.function, to: slashButton)
-            row.addArrangedSubview(slashButton)
-            constraints.append(slashButton.widthAnchor.constraint(equalToConstant: 40))
+        // Leading-side slot, immediately before the space key.
+        // 方案 A（URL-MODE-ENGLISH-IMPL-001）：地址类字段前槽放中/英切换键（46pt）；
+        // 被替换的 `/` 在 123 数字页可达，`@` 在英文符号页可达。普通字段仍是输入模式切换键。
+        let addressLike = shouldShowEmailShortcutKeys || shouldShowURLShortcutKeys
+        if addressLike {
+            let toggleButton = addressLikeModeToggle()
+            row.addArrangedSubview(toggleButton)
+            constraints.append(toggleButton.widthAnchor.constraint(equalToConstant: primaryFunctionKeyWidth))
         } else {
             let inputModeButton = makeKeyButton(
                 title: inputModeButtonTitle,
@@ -118,6 +115,20 @@ extension KeyboardViewController {
         row.addArrangedSubview(returnButton)
         NSLayoutConstraint.activate(constraints)
         return row
+    }
+
+    /// 地址类字段前槽的中/英切换键（方案 A）：复用普通字段的输入模式切换键外观与动作，
+    /// 首次进入时展示「英」（自动切英文后的当前模式），点击后在会话内手动切换。
+    func addressLikeModeToggle() -> UIButton {
+        let toggleButton = makeKeyButton(
+            title: inputModeButtonTitle,
+            action: #selector(toggleInputMode(_:))
+        )
+        applyKeyStyle(.function, to: toggleButton)
+        toggleButton.accessibilityIdentifier = "addressLikeModeToggle"
+        toggleButton.accessibilityLabel = "中/英切换"
+        toggleButton.accessibilityHint = "中/英切换。"
+        return toggleButton
     }
 
     /// 数字/二级符号页底部功能行。

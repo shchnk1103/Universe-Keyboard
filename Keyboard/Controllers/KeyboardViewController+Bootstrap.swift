@@ -26,7 +26,14 @@ extension KeyboardViewController {
         installPreferredKeyboardHeight()
 
         let keyboardType = KeyboardType.from(uiKeyboardType: textDocumentProxy.keyboardType)
-        controller = KeyboardController(state: KeyboardState(activeKeyboardType: keyboardType))
+        var initialState = KeyboardState(activeKeyboardType: keyboardType)
+        // 键盘扩展首次出现即落在地址类字段时没有类型“变化”回调；把首次出现视为
+        // 会话入口：快照默认中文模式并直接进入英文，与 handleKeyboardTypeChanged 同语义。
+        if AddressLikeKeyboardType(keyboardType: keyboardType) != nil {
+            initialState.addressLikeSession = AddressLikeSessionState(originalMode: .chinese)
+            initialState.inputMode = .english
+        }
+        controller = KeyboardController(state: initialState)
         installT9DiagnosticsPumpIfNeeded()
         // R2: when the responsive gate is on, deferred snapshot apply must re-enter UI.
         // Gate defaults off — this bridge is inert until Product enables the gate.
@@ -290,6 +297,9 @@ extension KeyboardViewController {
         Logger.shared.debug("viewDidAppear: bounds=\(view.bounds)", category: .display)
         // 结果 X：清理完旧组字后再武装，避免返回时的清理被当成第一次输入。
         pasteSession.noteAppearance()
+        // m1: 键盘重新出现无法证明仍是进入时的同一字段；丢弃地址类临时快照（fail-safe）。
+        // 同一地址类字段继续输入时类型回调不变、会话已不重建，已生效英文保持。
+        controller?.clearAddressLikeSessionSnapshot()
         #if DEBUG
             recordKeyboardVisualDiagnostic("HANDLE_DID_APPEAR_END")
         #endif
@@ -986,6 +996,8 @@ extension KeyboardViewController {
         pasteToolbarSuspended = true
         pasteSession.noteHostResign()
         refreshPasteToolbar()
+        // m1: 宿主失活无法证明回来后仍是同一字段；丢弃地址类临时快照（fail-safe）。
+        controller?.clearAddressLikeSessionSnapshot()
         guard hostNotificationMatchesCurrentExtensionContext(notification) else { return }
         #if DEBUG
             recordKeyboardVisualDiagnostic("HOST_RESIGN_BEFORE")
