@@ -4,6 +4,36 @@ import SwiftUI
 private let appGroupID = "group.com.DoubleShy0N.Universe-Keyboard"
 private let feedbackSettingsDefaults = UserDefaults(suiteName: appGroupID)
 
+/// 重置为默认震动强度的纯逻辑（PB-001-FEEDBACK-UI-001）。
+/// 独立于视图，便于在不触碰真实共享容器的前提下验证行为。
+struct FeedbackHapticReset {
+    let defaults: UserDefaults?
+
+    func perform() -> Double {
+        let intensity = KeyboardFeedbackLevel.defaultLevel.hapticIntensity
+        KeyboardFeedbackSettingsStore.writeContinuousIntensity(intensity, in: defaults)
+        defaults?.set(
+            KeyboardFeedbackLevel.defaultLevel.rawValue,
+            forKey: KeyboardFeedbackSettingsKey.hapticLevel)
+        defaults?.synchronize()
+        return intensity
+    }
+}
+
+/// 重置确认弹窗的固定文案与取消/确认分流（PB-001-FEEDBACK-UI-001）。
+enum FeedbackResetConfirmationSheet {
+    static let title = "重置为默认强度？"
+    static let message = "震动强度将恢复为默认值（正常，65%），并预览一次默认强度。"
+    static let confirmTitle = "重置"
+    static let cancelTitle = "取消"
+
+    static func handle(dismiss: () -> Void, confirm: Bool, action: () -> Void) {
+        dismiss()
+        guard confirm else { return }
+        action()
+    }
+}
+
 /// 键盘反馈设置子页面。
 struct FeedbackSettingsView: View {
     @AppStorage(KeyboardFeedbackSettingsKey.keyClickEnabled, store: feedbackSettingsDefaults)
@@ -17,6 +47,7 @@ struct FeedbackSettingsView: View {
 
     @StateObject private var previewCoordinator = FeedbackPreviewCoordinator()
     @State private var permissionMessage: String?
+    @State private var showResetConfirmation = false
 
     var body: some View {
         Form {
@@ -29,17 +60,11 @@ struct FeedbackSettingsView: View {
                 Text(keyClickFooter)
             }
 
+            // Always mounted: avoid Form Section insert/remove when haptic toggles (AsyncRenderer).
+            // 触感反馈开关与震动强度合并为同一张卡片（PB-001-FEEDBACK-UI-001）。
             Section {
                 Toggle("按键震动", isOn: hapticBinding)
                     .toggleStyle(.appSwitch)
-            } header: {
-                Text("触感反馈")
-            } footer: {
-                Text(hapticFooter)
-            }
-
-            // Always mounted: avoid Form Section insert/remove when haptic toggles (AsyncRenderer).
-            Section {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
                         Text("强度")
@@ -58,17 +83,38 @@ struct FeedbackSettingsView: View {
                         .foregroundStyle(.secondary)
                 }
                 .padding(.vertical, 4)
+                AppActionButton(
+                    title: "重置为默认强度",
+                    systemImage: "arrow.counterclockwise",
+                    prominence: .secondary
+                ) {
+                    showResetConfirmation = true
+                }
+                .disabled(!hapticEnabled)
+                .accessibilityIdentifier("resetHapticIntensity")
             } header: {
-                Text("震动强度")
+                Text("触感反馈")
             } footer: {
                 Text(
                     hapticEnabled
-                        ? "松手后记住这个强度，并按它预览一次。快速拖动会自动节流。"
+                        ? "震动设置会通过 App Group 同步到键盘，需要在系统键盘设置中开启「允许完全访问」。松手后记住这个强度，并按它预览一次。快速拖动会自动节流。"
                         : "开启「按键震动」后可拖动强度并预览。"
                 )
             }
             .disabled(!hapticEnabled)
             .opacity(hapticEnabled ? 1 : 0.48)
+        }
+        .sheet(isPresented: $showResetConfirmation) {
+            FeedbackResetSheet(
+                onConfirm: {
+                    let intensity = FeedbackHapticReset(defaults: feedbackSettingsDefaults).perform()
+                    hapticIntensity = intensity
+                    hapticLevel = KeyboardFeedbackLevel.defaultLevel.rawValue
+                    previewCoordinator.previewHaptic(intensity: intensity, force: true)
+                },
+                onCancel: {}
+            )
+            .presentationDetents([.medium])
         }
         .navigationTitle("键盘反馈")
         .tint(.primary)
@@ -92,12 +138,6 @@ struct FeedbackSettingsView: View {
         keyClickEnabled
             ? "真实键盘使用 iOS 系统输入点击音，不会由 Universe Keyboard 激活音频会话。App 内开关需允许完全访问同步，系统键盘反馈中的声音也需开启。"
             : "开启后使用 iOS 系统输入点击音；声音大小、静音和音频路由由系统管理。"
-    }
-
-    private var hapticFooter: String {
-        hapticEnabled
-            ? "震动设置会通过 App Group 同步到键盘，需要在系统键盘设置中开启「允许完全访问」。"
-            : "开启后按下按键时提供震动反馈。"
     }
 
     private var keyClickBinding: Binding<Bool> {
@@ -182,6 +222,50 @@ struct FeedbackSettingsView: View {
             hapticIntensity = KeyboardFeedbackIntensity.clamped(hapticIntensity)
         }
         feedbackSettingsDefaults?.synchronize()
+    }
+}
+
+/// 重置为默认强度的自定义确认 Sheet（PB-001-FEEDBACK-UI-001）。
+/// 使用项目统一的 `AppActionButton`，而非系统 Alert。
+struct FeedbackResetSheet: View {
+    let onConfirm: () -> Void
+    let onCancel: () -> Void
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        VStack(spacing: AppSpacing.group) {
+            Text(FeedbackResetConfirmationSheet.title)
+                .font(.headline)
+            Text(FeedbackResetConfirmationSheet.message)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+            AppActionButton(
+                title: FeedbackResetConfirmationSheet.confirmTitle,
+                systemImage: "arrow.counterclockwise",
+                prominence: .destructive
+            ) {
+                FeedbackResetConfirmationSheet.handle(
+                    dismiss: { dismiss() },
+                    confirm: true,
+                    action: onConfirm)
+            }
+            .accessibilityIdentifier("confirmResetHapticIntensity")
+            AppActionButton(
+                title: FeedbackResetConfirmationSheet.cancelTitle,
+                systemImage: "xmark",
+                prominence: .secondary
+            ) {
+                FeedbackResetConfirmationSheet.handle(
+                    dismiss: { dismiss() },
+                    confirm: false,
+                    action: onCancel)
+            }
+            .accessibilityIdentifier("cancelResetHapticIntensity")
+        }
+        .padding(AppSpacing.screen)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+        .presentationDragIndicator(.visible)
     }
 }
 
