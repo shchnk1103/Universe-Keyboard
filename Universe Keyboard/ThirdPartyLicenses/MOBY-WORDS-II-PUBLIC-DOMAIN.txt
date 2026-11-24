@@ -1,0 +1,32 @@
+Moby Words II (Moby Word Lists by Grady Ward) — Public Domain
+Universe Keyboard offline license notice (REL-103-SCOWL-LICENSE-001)
+
+Upstream source used: Moby Word Lists by Grady Ward, release 1.0 (1996),
+files 74550com.mon (common-word list, frequency order) and 354984si.ngl
+(single words, validation anchor). Downloaded as the mwords archive
+distributed with the SCOWL v1 source tree:
+https://raw.githubusercontent.com/en-wl/wordlist/v1/other/mwords.tar.gz
+The original Project Gutenberg location is
+https://www.gutenberg.org/ebooks/3201.
+
+Used for: the bundled English candidate wordlist english_wordlist_v1.json
+(Tier B frequency-ranked words and part of the validation anchor set). The
+wordlist is generated offline at build time and shipped statically with the
+app; nothing is downloaded at runtime.
+
+The following is the verbatim public-domain declaration recorded in the
+SCOWL v1 `Copyright` file, which is the basis relied on here (the same
+reliance as SCOWL itself, which consumes Moby as its size-10 frequency
+basis). The mwords archive also carries an older commercial-license
+section; the public-domain declaration below supersedes it for
+distribution use.
+
+---------------------------------------------------------------------------
+The Moby lexicon project is complete and has been place into the public
+domain. Use, sell, rework, excerpt and use in any way on any platform.
+Placing this material on internal or public servers is also encouraged.
+---------------------------------------------------------------------------
+
+Attribution note: although no attribution is legally required for public
+domain material, Universe Keyboard credits Grady Ward's Moby Word Lists in
+its in-app third-party license screen as a matter of good practice.
