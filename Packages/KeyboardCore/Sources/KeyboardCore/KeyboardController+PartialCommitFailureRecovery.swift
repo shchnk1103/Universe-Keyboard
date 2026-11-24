@@ -135,6 +135,10 @@ extension KeyboardController {
                 }
                 return refresh.union(.pageChanged).union(resetShiftState())
             case .toggleInputMode:
+                // m2: 会话内手动切换不得被恢复旁路漏记。
+                if state.addressLikeSession != nil {
+                    state.addressLikeSession?.manualSelection = true
+                }
                 state.inputMode = state.inputMode == .chinese ? .english : .chinese
                 state.currentPage = .letters
                 state.shiftState = .off
@@ -144,9 +148,20 @@ extension KeyboardController {
                 guard type != state.activeKeyboardType else { return refresh }
                 state.activeKeyboardType = type
                 if type == .emailAddress || type == .URL || type == .webSearch {
-                    state.inputMode = .english
+                    // 恢复旁路：与主路径同语义——同类会话已存在时尊重手动选择；恢复写入不记手动。
+                    if state.addressLikeSession == nil {
+                        state.addressLikeSession = AddressLikeSessionState(originalMode: state.inputMode)
+                    }
+                    if !state.addressLikeSession!.manualSelection {
+                        state.inputMode = .english
+                    }
                     return refresh.union([.keyboardTypeChanged, .inputModeChanged])
                 }
+                // 离开至普通字段：恢复原模式并清快照（m2：恢复写入不记为手动选择）。
+                if state.addressLikeSession != nil, !state.addressLikeSession!.manualSelection {
+                    state.inputMode = state.addressLikeSession!.originalMode
+                }
+                state.addressLikeSession = nil
                 return refresh.union(.keyboardTypeChanged)
             default: return refresh
             }

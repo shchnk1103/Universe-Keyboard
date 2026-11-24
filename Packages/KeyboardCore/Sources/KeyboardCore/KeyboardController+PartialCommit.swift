@@ -755,6 +755,7 @@ extension KeyboardController {
         effects.formUnion(consumeSingleUseShiftIfNeeded())
         if updatesEnglishAutoCap,
             state.inputMode == .english,
+            AddressLikeKeyboardType(keyboardType: state.activeKeyboardType) == nil,
             AutoCapitalizationRules.isSentenceTerminator(text)
         {
             state.shiftState = .singleUse

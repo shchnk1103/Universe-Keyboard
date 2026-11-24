@@ -4,7 +4,10 @@ extension KeyboardController {
             guard let effects = handleSymbolPageTextInput(key, updatesEnglishAutoCap: true) else {
                 insertText(key, source: .key)
                 var effects = consumeSingleUseShiftIfNeeded()
-                if state.inputMode == .english && AutoCapitalizationRules.isSentenceTerminator(key) {
+                if state.inputMode == .english,
+                    AddressLikeKeyboardType(keyboardType: state.activeKeyboardType) == nil,
+                    AutoCapitalizationRules.isSentenceTerminator(key)
+                {
                     state.shiftState = .singleUse
                     effects.insert(.shiftStateChanged)
                 }

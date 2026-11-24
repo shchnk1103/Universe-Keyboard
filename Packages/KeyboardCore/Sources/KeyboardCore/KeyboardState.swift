@@ -26,12 +26,44 @@ public enum KeyboardType: Equatable {
     case other
 }
 
+/// 地址类输入字段分类。三类互切属于同一会话，共用一份快照（URL-MODE-ENGLISH-DESIGN-001）。
+public enum AddressLikeKeyboardType: Equatable {
+    case URL
+    case webSearch
+    case emailAddress
+
+    public init?(keyboardType: KeyboardType) {
+        switch keyboardType {
+        case .URL: self = .URL
+        case .webSearch: self = .webSearch
+        case .emailAddress: self = .emailAddress
+        default: return nil
+        }
+    }
+}
+
+/// 进入 addressLike 字段会话时的输入模式快照。
+/// 手动选择（用户点击中/英）优先于快照恢复；恢复写入不记为手动选择（m2）。
+public struct AddressLikeSessionState: Equatable {
+    /// 从非 addressLike 首次进入时用户原本的输入模式。
+    public var originalMode: InputMode
+    /// 本会话内用户是否手动切换过输入模式。
+    public var manualSelection: Bool
+
+    public init(originalMode: InputMode, manualSelection: Bool = false) {
+        self.originalMode = originalMode
+        self.manualSelection = manualSelection
+    }
+}
+
 public struct KeyboardState: Equatable {
     public var currentPage: KeyboardPage
     public var inputMode: InputMode
     public var shiftState: ShiftState
     public var currentComposition: String
     public var activeKeyboardType: KeyboardType
+    /// 当前 addressLike 会话的输入模式快照；nil 表示不处于地址类会话。
+    public var addressLikeSession: AddressLikeSessionState? = nil
     public var lastShiftTapTime: Date?
     public var lastSpaceTapTime: Date?
     /// RIME 引擎最近一次操作的输出缓存。nil 表示未使用 RIME 路径。
