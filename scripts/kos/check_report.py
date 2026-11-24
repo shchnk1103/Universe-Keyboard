@@ -1,6 +1,33 @@
 #!/usr/bin/env python3
 """Mechanically check a KOS report: cited hashes, logs, commits, skips."""
-import argparse, hashlib, os, re, subprocess, time
+import argparse, hashlib, os, re, shutil, subprocess, tempfile, time
+
+
+def return_board(roles, role):
+    home = os.environ.get("KOS_HOME", os.path.expanduser("~/.kos-work/Universe-Keyboard"))
+    tool = os.path.join(home, "tools", "kos-board.py")
+    if not roles or not os.path.isdir(roles) or not os.path.isfile(tool):
+        return "unavailable (board directory or tool missing)"
+    try:
+        # pick can release expired reservations, so operate on a snapshot.
+        with tempfile.TemporaryDirectory() as tmp:
+            shutil.copytree(roles, os.path.join(tmp, "KOS-ROLES-001"))
+            queue = os.path.join(home, "QUEUE.json")
+            if os.path.isfile(queue):
+                shutil.copy2(queue, tmp)
+            env = dict(os.environ, KOS_HOME=tmp)
+            show = subprocess.run(["python3", tool, "show"],
+                                  capture_output=True, text=True, timeout=60, env=env)
+            r = subprocess.run(["python3", tool, "pick", "--role", role],
+                               capture_output=True, text=True, timeout=60, env=env)
+        status = show.stdout.strip() if show.returncode == 0 else "board status unavailable: " + show.stderr.strip()[:300]
+        output = (r.stdout + r.stderr).strip()
+        if r.returncode and "PICK: NONE" not in output:
+            output = "unavailable (pick failed): " + output[:300]
+        return status + "\n" + (output or "unavailable (empty pick output)")
+    except (OSError, subprocess.TimeoutExpired) as e:
+        return "unavailable (pick error): " + str(e)
+
 
 def sha(p):
     with open(p, "rb") as f:
@@ -32,10 +59,13 @@ def resolve(p, task, wt):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("report"); ap.add_argument("--worktree"); ap.add_argument("--base")
+    ap.add_argument("report"); ap.add_argument("--worktree"); ap.add_argument("--base", "--b")
     # KOS-SUGGEST-LINK-001 (O75): probe an external kos-suggest tool read-only.
     ap.add_argument("--suggest-tool", default="/Users/doubleshy0n/.kos-work/Universe-Keyboard/tools/kos-suggest.py")
     ap.add_argument("--no-suggest-check", action="store_true")
+    ap.add_argument("--on-return", action="store_true")
+    ap.add_argument("--board-roles-dir")
+    ap.add_argument("--next-role", default="quality")
     a = ap.parse_args()
     task = os.path.dirname(os.path.dirname(os.path.abspath(a.report)))
     # KOS-REPORT-AUDIT-001: auto-mount <task>/worktree when present and no
@@ -160,4 +190,43 @@ def main():
             print(" ", line.strip()[:200])
 
 if __name__ == "__main__":
-    main()
+    import sys
+    if "--on-return" not in sys.argv[1:]:
+        main()
+    else:
+        import contextlib, io
+        capture = io.StringIO()
+        with contextlib.redirect_stdout(capture):
+            main()
+        output = capture.getvalue()
+        print(output, end="")
+        p = argparse.ArgumentParser(add_help=False)
+        p.add_argument("report")
+        p.add_argument("--worktree")
+        p.add_argument("--base", "--b")
+        p.add_argument("--suggest-tool", default=os.path.expanduser("~/.kos-work/Universe-Keyboard/tools/kos-suggest.py"))
+        p.add_argument("--no-suggest-check", action="store_true")
+        p.add_argument("--on-return", action="store_true")
+        p.add_argument("--board-roles-dir")
+        p.add_argument("--next-role", default="quality")
+        args = p.parse_args()
+        if os.path.isfile(args.report):
+            print("\n== RETURN SUMMARY")
+            print("RETURN SHA-256:", sha(args.report))
+            flagged = any(re.match(r"(?:MISSING|MISMATCH|CHECK\s)", line) for line in output.splitlines())
+            print("RETURN CHECK:", "attention required" if flagged else "no issues flagged by mechanical checks")
+            pending = "unavailable"
+            if not args.no_suggest_check and os.path.isfile(args.suggest_tool):
+                try:
+                    r = subprocess.run(["python3", args.suggest_tool, "pending", args.report], capture_output=True, text=True, timeout=60)
+                    m = re.search(r"该报告有 (\d+) 条意见，已登记 (\d+) 条", r.stdout)
+                    if r.returncode == 0:
+                        pending = "0"
+                    elif r.returncode == 1 and m:
+                        pending = str(int(m.group(1)) - int(m.group(2)))
+                except (OSError, subprocess.TimeoutExpired):
+                    pass
+            print("RETURN PENDING:", pending)
+            home = os.environ.get("KOS_HOME", os.path.expanduser("~/.kos-work/Universe-Keyboard"))
+            roles = args.board_roles_dir or os.path.join(home, "KOS-ROLES-001")
+            print("RETURN BOARD:", return_board(roles, args.next_role))
