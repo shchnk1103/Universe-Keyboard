@@ -82,7 +82,9 @@
 | PB-008 | P2 | 大屏手机与非常规屏幕（含 Duo）键盘高度自适应 | 已合入 main（待真机验收） | 无保存偏好时默认高度按屏高自适应，保留手动高度设置；待真机验收 | [PR #376](https://github.com/shchnk1103/Universe-Keyboard/pull/376)（`ea3eeea`）；外置 `PRODUCT-BUGS-INBOX.md` PB-008；[v1.0.3.md](releases/v1.0.3.md)；PF-032、PF-033 | 2026-11-24 |
 | PB-009 | P2 | 九宫格专用数字键盘（3×3 + 0 大按键布局） | 已合入 main（待真机验收） | 中文九宫格数字页及符号快捷栏已合入；待真机验收；与 PF-042 相关但独立 | [PR #377](https://github.com/shchnk1103/Universe-Keyboard/pull/377)（`f6ed621b`）；外置 `PRODUCT-BUGS-INBOX.md` PB-009；[v1.0.3.md](releases/v1.0.3.md)；PF-042 | 2026-11-24 |
 | PB-010B | P3 | 热力图/预测动态扩区（全键盘触摸区底层之上叠加） | Backlog | 延后至 1.0.4+：依赖 `PB-010A` 无缝铺满触控模型先行落地（见 PF-061）；在此基础上叠加热力图/预测动态扩区 | 外置 `PRODUCT-BUGS-INBOX.md` PB-010（外置不入库）；PF-061；[v1.0.3.md](releases/v1.0.3.md) Deferred | 2026-11-23 |
+| PB-012 | P2 | URL/webSearch/邮箱地址类会话输入与英文底行切换键（含 `.` 大小写修复） | 已合入 main（待真机验收） | URL 模式英文底行 46pt 切换键替换与句号自动大小写规则已合入；待真机宿主实测 | [PR #389](https://github.com/shchnk1103/Universe-Keyboard/pull/389)（`2efc85f7`）；URL-MODE-ENGLISH-IMPL-001 任务包（外置）；[v1.0.3.md](releases/v1.0.3.md) | 2026-11-24 |
 | PB-013 | 未定 | 剪贴板 `changeCount` 横幅确认 | Backlog | 已纳入 1.0.3 规划，设计已过架构审查；待真机确认 `changeCount` 横幅后编码（来源：PORTFOLIO-SYNC-103-002 任务包，仓库历史未核实） | PORTFOLIO-SYNC-103-002 任务包（外置）；[v1.0.3.md](releases/v1.0.3.md) | 2026-11-23 |
+| PB-014 | P2 | 中文符号回跳后候选栏连续联想与不混排 | 已合入 main（待真机验收） | 一次性符号回跳后候选栏保留并进入连续联想的续接合同已合入；待真机验收 | [PR #390](https://github.com/shchnk1103/Universe-Keyboard/pull/390)（`67269bdb`）；PUNCT-CONTINUATION-IMPL-001 任务包（外置）；[v1.0.3.md](releases/v1.0.3.md) | 2026-11-24 |
 ## 决定记录
 
 | 日期 | 决定（Human Product Owner，除非另注） | 指针 |
