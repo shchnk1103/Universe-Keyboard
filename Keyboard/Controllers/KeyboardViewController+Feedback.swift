@@ -131,6 +131,10 @@ extension KeyboardViewController {
             stored: defaults?.object(forKey: KeyboardInputSettingsKey.mixedScriptSpacingEnabled),
             hasFullAccess: hasFullAccess
         )
+        controller.englishCandidateAutospaceEnabled = EnglishAutospace.isEnabled(
+            stored: defaults?.object(forKey: KeyboardInputSettingsKey.englishCandidateAutospaceEnabled),
+            hasFullAccess: hasFullAccess
+        )
         controller.setPostCommitContinuationEnabled(rawPostCommitContinuation as? Bool ?? true)
         controller.typoCorrectionExperimentalEdits = typoExperimentSettings.experimentalEdits
         controller.typoCorrectionLearningSnapshot = typoCorrectionLearningStore.snapshot()

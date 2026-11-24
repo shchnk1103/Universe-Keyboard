@@ -35,6 +35,16 @@ struct CandidateBarDataSource {
     /// - Returns: CandidateItem 数组（可能为空）
     static func candidateItems(from controller: KeyboardController) -> [CandidateItem] {
         let state = controller.state
+        if state.inputMode == .english {
+            // 英文模式：letters 页前缀候选。无 RIME composition，点击走
+            // `.englishCandidate` 提交路径（含自动补空格合同）。
+            guard state.currentPage == .letters,
+                !state.englishCandidate.suggestions.isEmpty
+            else { return [] }
+            return state.englishCandidate.suggestions.map {
+                CandidateItem(title: $0, kind: .englishCandidate)
+            }
+        }
         guard state.inputMode == .chinese else { return [] }
 
         if state.pendingPunctuation != nil {

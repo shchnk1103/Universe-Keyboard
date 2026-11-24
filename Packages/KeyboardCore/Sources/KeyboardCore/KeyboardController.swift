@@ -31,6 +31,8 @@ public final class KeyboardController {
     #endif
     public let candidateProvider: CandidateProvider
     public let continuationSuggestionProvider: any ContinuationSuggestionProviding
+    /// English-mode prefix candidate provider. `nil` disables candidates.
+    public var englishCandidateProvider: (any EnglishCandidateProviding)?
     public var typoCorrectionCandidateQuery: TypoCorrectionCandidateQuerying
     public var rimeEngine: RimeEngine?
 
@@ -67,9 +69,17 @@ public final class KeyboardController {
     /// Read-only host context for the mixed-script spacing anchor. Returns the
     /// document context before input; must not log or persist text (ADR 0007).
     public var documentContextBeforeInput: (() -> String?)?
+    /// Unified right-neighbor read point for the English candidate autospace
+    /// contract (arch Minor m1): the keyboard layer wires it next to
+    /// `documentContextBeforeInput`; `nil` reads stay conservative. Never
+    /// logged or persisted (ADR 0007).
+    public var documentContextAfterInput: (() -> String?)?
     /// Mixed-script spacing switch. Kept on the controller so both commit
     /// paths see one snapshot; the keyboard layer refreshes it from settings.
     public var mixedScriptSpacingEnabled = true
+    /// English candidate autospace switch. Default on; disabled types
+    /// (`.URL` / `.emailAddress` / `.webSearch`) never add a space regardless.
+    public var englishCandidateAutospaceEnabled = true
     /// A-01 left-neighbor anchor for mixed-script spacing.
     enum MixedScriptSpacingAnchor: Equatable {
         case inactive
@@ -216,11 +226,14 @@ public final class KeyboardController {
         state: KeyboardState = KeyboardState(),
         candidateProvider: CandidateProvider = FakeCandidateProvider(),
         continuationSuggestionProvider: any ContinuationSuggestionProviding = BundledContinuationSuggestionProvider
+            .shared,
+        englishCandidateProvider: (any EnglishCandidateProviding)? = BundledEnglishCandidateProvider
             .shared
     ) {
         self.state = state
         self.candidateProvider = candidateProvider
         self.continuationSuggestionProvider = continuationSuggestionProvider
+        self.englishCandidateProvider = englishCandidateProvider
         self.typoCorrectionCandidateQuery = CandidateProviderTypoCorrectionQuery(
             candidateProvider: candidateProvider
         )
