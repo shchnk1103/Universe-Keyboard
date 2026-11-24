@@ -5,6 +5,7 @@ import hashlib
 import json
 import os
 import re
+import shlex
 import subprocess
 import sys
 from pathlib import Path
@@ -24,17 +25,33 @@ def _sha256(path):
     return h.hexdigest()
 
 
-def format_dispatch_block(task_name: str, role: str, packet_path, sha256: str) -> str:
+def format_dispatch_block(task_name: str, role: str, packet_path, sha256: str,
+                          members: str | None = None,
+                          department: str | None = None) -> str:
     """O95: the single dispatch-block renderer shared by PM and employee relays.
 
     Fixed 5 clean lines (任务名/角色/包路径/SHA-256/授权，直接执行) with no
     outer fence; callers wrap as needed. relay-exec, relay-quality and the
     `dispatch` subcommand all route through here so one edit updates every
     dispatch surface.
+
+    O105: `members` optionally attaches the department roster to the role
+    line; `department` labels it (e.g. `Preflight 部门（Pete / Reed）`).
     """
+    role_line = f"角色：{role}"
+    member_list = " / ".join(
+        m.strip() for m in re.split(r"[,，/]", members or "") if m.strip())
+    if member_list:
+        dept = (department or "").strip()
+        if dept and (dept == role or dept in role):
+            role_line = f"角色：{dept} 部门（{member_list}）"
+        elif dept:
+            role_line = f"角色：{role}，{dept} 部门（{member_list}）"
+        else:
+            role_line = f"角色：{role}（{member_list}）"
     return "\n".join([
         f"任务：{task_name}",
-        f"角色：{role}",
+        role_line,
         f"包路径：{packet_path}",
         f"SHA-256：{sha256}",
         "授权，直接执行",
@@ -289,36 +306,32 @@ def _relay_check_identity(repo: str, expect: str) -> tuple[bool, str]:
     return ok, (result.stdout + result.stderr).strip()
 
 
+TASK_ID_RE = re.compile(r"KOS-[A-Za-z0-9-]+")
+
+
 def _relay_pick(board: str, board_args_json: str, excludes: list[str], role: str = "quality") -> tuple[str | None, str]:
     return _relay_pick_with_reserve(board, board_args_json, excludes, role=role, reserve_task=None)
 
 
-TASK_ID_RE = re.compile(r"KOS-[A-Za-z0-9-]+")
-
-
 def _relay_pick_with_reserve(board: str, board_args_json: str, excludes: list[str], role: str = "quality",
                              reserve_task: str | None = None, env: dict | None = None) -> tuple[str | None, str]:
+    """Pick a specialist, optionally reserving them for a task.
+
+    O108: the plain pick runs first and is fully validated (parse + exclude
+    check) BEFORE the board is asked to write 已预占, so a failed or rejected
+    pick (NONE, fallback line, excluded name) never leaves a dirty reserve
+    row behind.  The reserve is only requested after validation passes, and
+    a board that does not know --reserve (older stubs) keeps the plain pick.
+    """
     if reserve_task and not TASK_ID_RE.fullmatch(reserve_task):
         reserve_task = None  # only genuine KOS task ids reserve; scratch paths stay read-only
-    """Pick a specialist, optionally asking the board to reserve them for a task.
-
-    Falls back to a plain pick when the board tool does not know --reserve
-    (older stubs), so the caller never breaks on legacy tools.
-    """
     clean_excludes = [e for e in dict.fromkeys(e.strip() for e in excludes) if e]
     base_argv = [board] + json.loads(board_args_json) + ["pick", "--role", role, "--exclude", ",".join(clean_excludes)]
 
     def run(argv: list[str]) -> subprocess.CompletedProcess:
         return subprocess.run(argv, capture_output=True, text=True, env=env)
 
-    result = None
-    if reserve_task:
-        result = run(base_argv + ["--reserve", reserve_task])
-        if result.returncode != 0 and "unrecognized" in (result.stderr or ""):
-            print("# NOTE: board tool rejected --reserve, retrying without it", file=sys.stderr)
-            result = None
-    if result is None:
-        result = run(base_argv)
+    result = run(base_argv)
     first = (result.stdout or "").strip().splitlines()
     line = first[0].strip() if first else ""
     if result.returncode != 0 or not line.startswith("PICK ["):
@@ -329,6 +342,18 @@ def _relay_pick_with_reserve(board: str, board_args_json: str, excludes: list[st
     name = match.group(1)
     if any(name == e.strip() for e in excludes):
         return None, f"picked {name} is excluded"
+    if reserve_task:
+        reserve = run(base_argv + ["--reserve", reserve_task])
+        if reserve.returncode != 0 and "unrecognized" in (reserve.stderr or ""):
+            print("# NOTE: board tool rejected --reserve, retrying without it", file=sys.stderr)
+        elif reserve.returncode != 0:
+            # Board state moved between the two calls; refuse rather than
+            # hand off a person the board did not actually reserve.
+            return None, (reserve.stdout or reserve.stderr or "reserve failed").strip()
+        else:
+            reserved = re.search(r"RESERVE:\s*(\S+?)\s*->", reserve.stdout or "")
+            if reserved and reserved.group(1) != name:
+                return None, f"board reserved {reserved.group(1)} instead of validated pick {name}"
     return name, line
 
 
@@ -450,6 +475,25 @@ def _packet_grade(packet_text: str) -> str:
     return (match.group(1) or match.group(2)).strip() if match else ""
 
 
+def _incremented_relay_path(path: Path) -> Path:
+    """O108: never overwrite an existing relay block; bump a numbered suffix
+    (quality-relay-block.md -> quality-relay-block-2.md -> -3.md ...)."""
+    base = re.sub(r"-\d+$", "", path.stem)
+    n = 1
+    while True:
+        n += 1
+        candidate = path.with_name(f"{base}-{n}{path.suffix}")
+        if not candidate.exists():
+            return candidate
+
+
+def _busy_start_command(args, name: str, task_id: str) -> str:
+    """O108: the 开工先挂忙 command carried by every direct-relay packet."""
+    argv = [args.board] + json.loads(args.board_args) + [
+        "set", _board_roles_dir(args), name, "busy", task_id]
+    return shlex.join(argv)
+
+
 def cmd_relay_quality(args):
     pm = "Jack（PM）"
 
@@ -509,6 +553,11 @@ def cmd_relay_quality(args):
     for name in _collect_participant_names(report, extra_patterns=("preflight*.md",)):
         if name not in excludes:
             excludes.append(name)
+    # O108: resolve the output path (bumping on collision) before the pick so
+    # a late write failure cannot leave a just-created board reserve behind.
+    out = Path(args.out) if getattr(args, "out", None) else Path(args.packet).parent / "quality-relay-block.md"
+    if out.exists():
+        out = _incremented_relay_path(out)
     picked, pick_line = _relay_pick_with_reserve(args.board, args.board_args, excludes,
                                                  role="quality",
                                                  reserve_task=Path(args.packet).parent.parent.name)
@@ -535,9 +584,10 @@ def cmd_relay_quality(args):
              .replace("{FILE_LIST}", file_list)
              .replace("{LOG_SHA_LIST}", log_list)
              .replace("{REVIEW_FOCUS}", review_focus))
-    out = Path(args.out) if getattr(args, "out", None) else Path(args.packet).parent / "quality-relay-block.md"
-    if out.exists():
-        return back(f"output already exists: {out}")
+    # O108: every direct-relay packet starts with the 开工先挂忙 command.
+    busy_cmd = _busy_start_command(args, picked, Path(args.packet).parent.parent.name)
+    head, sep, rest = block.partition("\n")
+    block = f"{head}{sep}\n开工先挂忙（O108）：`{busy_cmd}`\n{rest}"
     out.write_text(block, encoding="utf-8")
     print(f"交回：{picked}（Quality）")
     print(f"事项：直通质检 {Path(args.packet).stem}")
@@ -660,14 +710,20 @@ def cmd_profile(args):
 
 
 def cmd_dispatch(args):
-    """O95: print the unified 5-line dispatch block for a packet, no fence."""
+    """O95: print the unified 5-line dispatch block for a packet, no fence.
+
+    O105: --members attaches the department roster to the role line;
+    --department labels it (e.g. `Preflight 部门（Pete / Reed）`).
+    """
     packet = Path(args.packet)
     if not packet.is_file():
         print(f"STOPPED: packet not found: {args.packet}", file=sys.stderr)
         return 2
     packet_sha = hashlib.sha256(packet.read_bytes()).hexdigest()
     task_name = (args.task_name or packet.stem).strip()
-    print(format_dispatch_block(task_name, args.role.strip(), packet.resolve(), packet_sha))
+    print(format_dispatch_block(task_name, args.role.strip(), packet.resolve(), packet_sha,
+                                members=getattr(args, "members", None),
+                                department=getattr(args, "department", None)))
     return 0
 
 
@@ -715,26 +771,31 @@ def cmd_relay_exec(args):
     if lint.returncode != 0:
         return back("kos-pkg-lint failed: " + (lint.stdout + lint.stderr).strip().splitlines()[-1] if (lint.stdout + lint.stderr).strip() else "kos-pkg-lint failed")
 
+    # O108: resolve the output path (bumping on collision) before the pick so
+    # a late write failure cannot leave a just-created board reserve behind.
+    out = Path(args.out) if getattr(args, "out", None) else packet.parent / "exec-relay-block.txt"
+    if out.exists():
+        out = _incremented_relay_path(out)
     picked, pick_line = _relay_pick_with_reserve(args.board, args.board_args, excludes,
                                                  role=role,
                                                  reserve_task=Path(args.packet).parent.parent.name)
     if not picked:
         return back("pick did not yield a valid specialist: " + pick_line)
 
-    out = Path(args.out) if getattr(args, "out", None) else packet.parent / "exec-relay-block.txt"
-    if out.exists():
-        return back(f"output already exists: {out}")
     packet_sha = hashlib.sha256(packet.read_bytes()).hexdigest()
     report_sha = hashlib.sha256(report.read_bytes()).hexdigest()
     block = format_dispatch_block(packet.stem, f"{picked}（{EXEC_ROLE_LABELS[role]}）",
                                   packet.resolve(), packet_sha)
-    out.write_text(block + "\n", encoding="utf-8")
+    # O108: the direct-relay packet carries the 开工先挂忙 command up front.
+    busy_cmd = _busy_start_command(args, picked, Path(args.packet).parent.parent.name)
+    out.write_text(f"开工先挂忙（O108）：`{busy_cmd}`\n\n{block}\n", encoding="utf-8")
     print("\n\n".join([
         f"结论：PASS",
         f"下一位交付：{picked}（{EXEC_ROLE_LABELS[role]}）",
         f"报告：{report.resolve()}（SHA-256 {report_sha}）",
         f"```text\n{block}\n```",
     ]))
+    print(f"开工先挂忙：`{busy_cmd}`")
     warning = _suggest_pending_warning(str(report), force=True)
     if warning:
         print(warning)
@@ -819,6 +880,10 @@ def main(argv=None):
     p_dis.add_argument("--packet", required=True)
     p_dis.add_argument("--role", required=True)
     p_dis.add_argument("--task-name", default=None)
+    p_dis.add_argument("--department", default=None,
+                       help="O105: department name shown with the member list on the role line")
+    p_dis.add_argument("--members", default=None,
+                       help="O105: comma/slash-separated department members for the role line")
 
     import kos_watch  # O90: read-only PM report watch
     p_watch = sub.add_parser("watch", help="O90 read-only scan for newly returned reports and pending relays")
