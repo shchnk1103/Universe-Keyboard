@@ -230,18 +230,29 @@ def main():
                 if flag_table_failed:
                     err.append(f"E6 {os.path.basename(f)} 无法反射 scripts/kos/kos_handoff.py 的 argparse 子命令表（fail-closed，不静默跳过）")
                 else:
-                    _check_e6_handoff_invocations(f, content, handoff_lines, flag_table, err)
+                    _check_e6_handoff_invocations(f, content, flag_table, err)
 
-    def _check_e6_handoff_invocations(f, content, handoff_lines, table, err):
-        # KOS-LINT-HANDOFF-FLAGS: subcommands/long options must match the real
-        # argparse definition in scripts/kos/kos_handoff.py, and block-producing
-        # subcommands require the anti-wrap notice somewhere in the packet.
+    def _check_e6_handoff_invocations(f, content, table, err):
+        # KOS-LINT-HANDOFF-FLAGS + O109: merge backslash continuations BEFORE
+        # parsing so multi-line kos_handoff.py calls get the same hard check
+        # as single-line ones — illegal flags AND missing required flags.
         import shlex
         if not table:
             return
         base = os.path.basename(f)
         relay_subs = {"final", "relay-exec", "relay-quality"}
+        required = {
+            "final": {"--report"},
+            "relay-exec": {"--packet", "--report", "--base", "--repo"},
+            "relay-quality": {"--packet", "--report", "--base", "--repo"},
+        }
         needs_notice = set()
+        merged = re.sub(r"\\\s*\n", " ", content)
+        handoff_lines = [
+            line for line in merged.splitlines()
+            if re.search(r"(?:kos_handoff\.py\s+render|python3[^\n]*kos_handoff\.py)", line)
+            and not re.search(r"出现|规则|解析到|规范目标", line)
+        ]
         for line in handoff_lines:
             clean = re.sub(r"^\s*(?:(?:[-*+]\s+)|(?:\d+[.)]\s+))?", "", line).strip().replace("`", "")
             try:
@@ -259,12 +270,16 @@ def main():
             if sub not in table:
                 err.append(f"E6 {base} kos_handoff 未知子命令：{sub}")
                 continue
+            flags = {t.split("=", 1)[0] for t in rest if t.startswith("--")}
             for t in rest:
                 if t.startswith("--"):
                     flag = t.split("=", 1)[0]
                     if flag not in table[sub]:
                         err.append(f"E6 {base} kos_handoff {sub} 非法选项：{flag}")
             if sub in relay_subs:
+                missing = required[sub] - flags
+                if missing:
+                    err.append(f"E6 {base} kos_handoff {sub} 缺少必填选项：{', '.join(sorted(missing))}")
                 needs_notice.add(sub)
         if needs_notice and not re.search(r"直接作为 Markdown 原样回复|严禁外层再套代码块", content):
             err.append(

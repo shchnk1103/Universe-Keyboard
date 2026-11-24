@@ -150,7 +150,13 @@ class RelayExecUnifiedBlockTests(unittest.TestCase):
         sha = hashlib.sha256(self.packet.read_bytes()).hexdigest()
         expected = _expected_block(self.packet.stem, "Nick（Executor（代码））",
                                    str(self.packet.resolve()), sha)
-        self.assertEqual(out.read_text(encoding="utf-8"), expected + "\n")
+        content = out.read_text(encoding="utf-8")
+        # O108: the relay packet starts with the 开工先挂忙 command, then the
+        # unified 5-line block stays intact below it.
+        self.assertTrue(content.startswith("开工先挂忙"), content)
+        self.assertIn(expected + "\n", content)
+        self.assertIn(" set ", content)
+        self.assertIn(" busy ", content)
         self.assertIn(f"```text\n{expected}\n```", result.stdout)
 
 
