@@ -43,7 +43,7 @@ QUICK_STANDARD_STEPS = (
     "过程静默：工具调用间隙保持静默，不输出过程播报。",
     "只改任务包允许写入路径内的文件；禁止合并。",
     "报告如实注明是否使用开发子代理；不得虚构哈希、计数或测试结果。",
-    "报告写入包内指定的 reports/ 路径，首行 DONE/PARTIAL/BLOCKED（预检包首行 PASS/FAIL）。",
+    "报告写入包内指定的 reports/ 路径，首行 DONE/PARTIAL/BLOCKED/STOPPED（预检包首行 PASS/FAIL）。",
 )
 
 
@@ -193,14 +193,17 @@ def build_exec_package(a, input_pairs: "list[tuple[str, str]]", close_cmd: str =
     lines.append("")
     lines.append("## 报告与交付")
     lines.append("")
+    lines.append("- O91：任何 STOPPED 或 BLOCKED 均须先将状态与阻断原因写入报告，再调用 `scripts/kos/kos_handoff.py final`（status 与报告一致）交回 PM 并释放看板；严禁无报告退出。")
+    if a.grade in ("code-fix", "feature"):
+        lines.append("- O93：涉及 `.swift` 改动时，执行与独立质检均须逐文件执行 `swift-format lint --strict`，记录文件路径、完整命令、真实 stdout/stderr（成功且无诊断时允许为空）和每次退出码；将包含上述命令与退出码的非空日志，以及全量测试日志落盘 `logs/`，禁止引用空日志（如 SHA-256 `e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855`）或伪造工具输出；失败的 lint 须如实记录非零退出码与诊断，不得静默跳过。")
     report = "%s/%s/reports/code-%s-r1.md" % (KOS_TASK_ROOT, a.task, a.task.lower())
     if a.command == "quick":
         next_role = "Quality Reviewer" if a.kind == "code-fix" else "Jack（PM）"
-        lines.append("- 报告写入：`%s`（首行 DONE/PARTIAL/BLOCKED，写 `- next_role：%s`）" % (report, next_role))
+        lines.append("- 报告写入：`%s`（首行 DONE/PARTIAL/BLOCKED/STOPPED，写 `- next_role：%s`）" % (report, next_role))
         lines.append("- 依次运行 `python3 -I %s %s`（须 OK）与 `%s`，将 stdout 直接作为 Markdown 原样回复，严禁外层再套代码块。" %
                      (shlex.quote(str(KOS_DIR / "kos-report-lint.py")), shlex.quote(report), close_cmd))
     else:
-        lines.append("- 报告写入：`<%s>/reports/code-%s-r1.md`（首行 DONE/PARTIAL/BLOCKED，写 `- next_role：Quality Reviewer`）" % (a.task, a.task.lower()))
+        lines.append("- 报告写入：`<%s>/reports/code-%s-r1.md`（首行 DONE/PARTIAL/BLOCKED/STOPPED，写 `- next_role：Quality Reviewer`）" % (a.task, a.task.lower()))
         lines.append("- 依次运行 `python3 -I scripts/kos/kos-report-lint.py <报告路径>`（须 OK）与 `python3 scripts/kos/kos_handoff.py %s`，将 stdout 直接作为 Markdown 原样回复，严禁外层再套代码块。" % close_cmd)
     return "\n".join(lines) + "\n"
 
