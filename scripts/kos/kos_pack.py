@@ -283,6 +283,8 @@ def main(argv: "list[str] | None" = None) -> int:
     quick.add_argument("--board-tool", default=DEFAULT_BOARD_TOOL)
     quick.add_argument("--board-role", default=None, help="override the kind's board role")
     quick.add_argument("--no-lint", action="store_true", help="skip verification tools (debug only)")
+    quick.add_argument("--allow-unregistered-suggestions", action="store_true",
+                       help="explicitly bypass the publish suggestion gate")
     a = parser.parse_args(argv)
 
     if a.command == "quick":
@@ -315,6 +317,15 @@ def main(argv: "list[str] | None" = None) -> int:
         if not p.is_file():
             return die(2, "冻结输入不存在或不是文件：%s" % p)
         input_pairs.append((str(p), sha256_file(p)))
+
+    if a.command == "quick" and a.kind == "publish" and not a.allow_unregistered_suggestions:
+        task_root = Path(os.environ.get("KOS_HOME", KOS_TASK_ROOT))
+        task_dir = task_root / a.task
+        check = subprocess.run([sys.executable, "-B", str(KOS_DIR / "kos_suggest.py"),
+                                "check-task", str(task_dir)], capture_output=True, text=True)
+        if check.returncode:
+            sys.stderr.write(check.stdout + check.stderr)
+            return die(1, "发布包未生成：请先用 kos_suggest.py add 登记报告意见（或显式豁免）")
 
     out = Path(os.path.abspath(os.path.expanduser(a.out)))
     out.parent.mkdir(parents=True, exist_ok=True)

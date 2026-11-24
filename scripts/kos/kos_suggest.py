@@ -74,24 +74,33 @@ def queue_item(item_id):
 
 
 def section_items(path):
-    """Return the suggestion lines of a report's 观察与改进意见 section (empty if none/没有)."""
+    """Return the suggestion lines of every 观察与改进意见 section (empty if none/没有).
+
+    Subheadings (### and deeper) inside a section do not stop collection; only a
+    heading of the same or higher level than the section (or a handoff block) does.
+    """
     with open(path, encoding='utf-8') as f:
         lines = f.read().split('\n')
-    start = next((i for i, l in enumerate(lines) if l.startswith('#') and HEADING in l), None)
-    if start is None:
+    starts = [i for i, l in enumerate(lines) if l.startswith('#') and HEADING in l]
+    if not starts:
         return None
     body = []
-    for l in lines[start + 1:]:
-        if l.startswith('#'):
-            break
-        if l.startswith('```'):
-            break
-        if l.startswith('交回：'):
-            break
-        if '报告格式检查' in l or 'kos-report-lint' in l:
-            continue
-        if l.strip():
-            body.append(l.strip())
+    for start in starts:
+        level = len(lines[start]) - len(lines[start].lstrip('#'))
+        for l in lines[start + 1:]:
+            if l.startswith('```'):
+                break
+            if l.startswith('交回：'):
+                break
+            if l.startswith('#'):
+                l_level = len(l) - len(l.lstrip('#'))
+                if l_level <= level:
+                    break
+                continue
+            if '报告格式检查' in l or 'kos-report-lint' in l:
+                continue
+            if l.strip():
+                body.append(l.strip())
     items = [re.sub(r'^([-*]|\d+[.、)]|O-?\d+[:：]?)\s*', '', l) for l in body]
     return [i for i in items if i and i not in NONE_WORDS
             and re.fullmatch(r'(?:没有更多|无其他建议|无其它建议)[。.!！]?', i) is None]
@@ -158,6 +167,14 @@ def cmd_add(a, db):
         print(f'告诉 Human：主题「{a.topic}」已被提出 {t["count"]} 次')
 
 
+def pending_items(report, db, items):
+    rsha = sha8(report)
+    done = {normalize(s[2]) for t in db['topics'].values() for s in t['sources'] if s[1] == rsha}
+    items = list({normalize(i): i for i in items}.values())
+    matched = {i for i in items if normalize(i) in done}
+    return items, matched
+
+
 def cmd_pending(a, db):
     items = section_items(a.report)
     if items is None:
@@ -166,10 +183,7 @@ def cmd_pending(a, db):
     if not items:
         print('无意见需要登记')
         return 0
-    rsha = sha8(a.report)
-    done = {s[2] for t in db['topics'].values() for s in t['sources'] if s[1] == rsha}
-    items = list({normalize(i): i for i in items}.values())
-    matched = {i for i in items if any(normalize(i) == normalize(d) for d in done)}
+    items, matched = pending_items(a.report, db, items)
     n = len(matched)
     if n == len(items):
         print(f'该报告 {len(items)} 条意见均已登记')
@@ -179,6 +193,31 @@ def cmd_pending(a, db):
         print(('  [可能已登记] ' if i in matched else '  - ') + i[:200])
     print('用 kos-suggest.py topics 找已有主题，再 kos-suggest.py add 逐条登记')
     return 1
+
+
+def cmd_check_task(task, db):
+    reports = os.path.join(task, 'reports')
+    if not os.path.exists(reports):
+        return 0
+    if not os.path.isdir(reports):
+        die(f'报告目录不是目录：{reports}')
+    pending = False
+    for name in sorted(os.listdir(reports)):
+        if not name.endswith('.md'):
+            continue
+        report = os.path.join(reports, name)
+        items = section_items(report)
+        if items is None or not items:
+            continue
+        items, matched = pending_items(report, db, items)
+        count = len(items) - len(matched)
+        if count:
+            print(f'{report}: {count} 条未登记意见。待登记原文：')
+            for i in items:
+                if i not in matched:
+                    print('  - ' + i[:200])
+            pending = True
+    return 1 if pending else 0
 
 
 def cmd_digest(db):
@@ -210,6 +249,7 @@ def main():
     a = s.add_parser('status'); a.add_argument('topic'); a.add_argument('status')
     a.add_argument('--task', default=''); a.add_argument('--target-task', default=''); a.add_argument('--evidence', default=''); a.add_argument('--note', default=''); a.add_argument('--reason', default='')
     a = s.add_parser('pending'); a.add_argument('report')
+    a = s.add_parser('check-task'); a.add_argument('task_dir')
     s.add_parser('digest')
     a = p.parse_args()
     db = load()
@@ -242,6 +282,8 @@ def main():
         save(db)
     elif a.cmd == 'pending':
         sys.exit(cmd_pending(a, db))
+    elif a.cmd == 'check-task':
+        sys.exit(cmd_check_task(a.task_dir, db))
     elif a.cmd == 'digest':
         cmd_digest(db)
 
