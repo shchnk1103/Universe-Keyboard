@@ -381,6 +381,10 @@ extension KeyboardViewController {
             case .notRead, .reading, .unavailable:
                 (pastePreviewView?.superview as? CandidateBarView)?.clearPasteContent()
                 pastePreviewView = nil
+            case .suppressed:
+                // PB-013 Level 0 命中：不武装、不安装预览，清栏即可（previewWasShown 保持 false）。
+                (pastePreviewView?.superview as? CandidateBarView)?.clearPasteContent()
+                pastePreviewView = nil
             case .ready(let result):
                 switch result {
                 case .unavailable, .denied:
@@ -416,6 +420,12 @@ extension KeyboardViewController {
                                 self.pasteSession.discardPreview()
                                 bar.clearPasteContent()
                                 self.pastePreviewView = nil
+                            }
+                            // PB-013 关闭按钮：写 closed 抑制并收栏，绝不粘贴。
+                            preview.onClose = { [weak self] in
+                                guard let self else { return }
+                                self.pasteSession.closePreview()
+                                self.refreshPasteToolbar()
                             }
                             preview.addTarget(self, action: #selector(pastePreviewTapped), for: .touchUpInside)
                             pastePreviewView = preview
