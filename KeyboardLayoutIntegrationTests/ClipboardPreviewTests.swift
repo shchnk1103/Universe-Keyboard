@@ -108,7 +108,7 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
         session.previewReader = reader
         session.noteAppearance()
         session.startPreviewIfNeeded()
-        XCTAssertEqual(reader.started.wait(timeout: .now() + 2), .success)
+        await waitForReadStarted(reader)
         session.noteHostResign()
         reader.release.signal()
         try await Task.sleep(for: .milliseconds(30))
@@ -128,7 +128,7 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
         session.previewReader = reader
         session.noteAppearance()
         session.startPreviewIfNeeded()
-        XCTAssertEqual(reader.started.wait(timeout: .now() + 2), .success)
+        await waitForReadStarted(reader)
         session.noteHostResign()
         reader.release.signal()
         for _ in 0..<100 where session.preview == .reading {
@@ -153,7 +153,7 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
         session.previewReader = reader
         session.noteAppearance()
         session.startPreviewIfNeeded()
-        XCTAssertEqual(reader.started.wait(timeout: .now() + 2), .success)
+        await waitForReadStarted(reader)
         reader.release.signal()
         for _ in 0..<100 where session.preview == .reading {
             try await Task.sleep(for: .milliseconds(2))
@@ -174,7 +174,7 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
         session.previewReader = reader
         session.noteAppearance()
         session.startPreviewIfNeeded()
-        XCTAssertEqual(reader.started.wait(timeout: .now() + 2), .success)
+        await waitForReadStarted(reader)
         reader.release.signal()
         for _ in 0..<100 where session.preview == .reading {
             try await Task.sleep(for: .milliseconds(2))
@@ -197,7 +197,7 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
             session.previewReader = reader
             session.noteAppearance()
             session.startPreviewIfNeeded()
-            XCTAssertEqual(reader.started.wait(timeout: .now() + 2), .success)
+            await waitForReadStarted(reader)
             reader.release.signal()
             for _ in 0..<100 where session.preview == .reading {
                 try await Task.sleep(for: .milliseconds(2))
@@ -221,7 +221,7 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
         session.previewReader = reader
         session.noteAppearance()
         session.startPreviewIfNeeded()
-        XCTAssertEqual(reader.started.wait(timeout: .now() + 2), .success)
+        await waitForReadStarted(reader)
         session.noteCountedInput()
         reader.release.signal()
         try await Task.sleep(for: .milliseconds(30))
@@ -238,7 +238,7 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
         session.previewReader = old
         session.noteAppearance()
         session.startPreviewIfNeeded()
-        XCTAssertEqual(old.started.wait(timeout: .now() + 2), .success)
+        await waitForReadStarted(old)
         try await Task.sleep(for: .milliseconds(550))
         XCTAssertEqual(session.preview, .unavailable)
         session.noteAppearance()
@@ -261,7 +261,7 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
         session.isEligible = { true }
         session.noteAppearance()
         session.startPreviewIfNeeded()
-        XCTAssertEqual(old.started.wait(timeout: .now() + 2), .success)
+        await waitForReadStarted(old)
         session.noteAppearance()
         session.previewReader = FixedPreviewReader(result: .text(full: "new", summary: "new", isLink: false))
         session.startPreviewIfNeeded()
@@ -332,7 +332,7 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
             let afterDeadline = scenario >= 3
             let reader = BlockingPreviewReader()
             let owner = await pendingOwner(reader: reader)
-            XCTAssertEqual(reader.started.wait(timeout: .now() + 2), .success)
+            await waitForReadStarted(reader)
             owner.pasteToolbarSuspended = true
             owner.pasteSession.noteHostResign()
             owner.refreshPasteToolbar()
@@ -407,7 +407,7 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
     func testHostKeyboardTypeCallbackKeepsReadingPreview() async throws {
         let reader = BlockingPreviewReader()
         let owner = await pendingOwner(reader: reader)
-        XCTAssertEqual(reader.started.wait(timeout: .now() + 2), .success)
+        await waitForReadStarted(reader)
         _ = owner.controller.handle(.keyboardTypeChanged(.default))
         _ = owner.controller.handle(.keyboardTypeChanged(.URL))
         XCTAssertEqual(owner.pasteSession.preview, .reading)
@@ -742,7 +742,7 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
             session.previewReader = reader
             session.noteAppearance()
             session.startPreviewIfNeeded()
-            XCTAssertEqual(reader.started.wait(timeout: .now() + 2), .success)
+            await waitForReadStarted(reader)
             clock.set(1_000_000_000 + elapsed)
             reader.release.signal()
             for _ in 0..<100 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
@@ -811,7 +811,12 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
         ]
         for (enabled, before, after, expected) in cases {
             let clock = ProbeTestClock(1_000_000_000)
-            let reader = VersionedTestReader(before: before, after: after)
+            // probe 仅在 latePreviewEnabled=false 时存在并消费第一个采样槽；
+            // late 路径无 probe，整读直接消费 before/after 两槽。
+            let reader =
+                enabled
+                ? VersionedTestReader(samples: [before, after])
+                : VersionedTestReader(samples: [before, before, after])
             let session = PasteToolbarSession()
             session.monotonicNow = { clock.read() }
             session.latePreviewEnabled = enabled
@@ -819,7 +824,7 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
             session.previewReader = reader
             session.noteAppearance()
             session.startPreviewIfNeeded()
-            XCTAssertEqual(reader.started.wait(timeout: .now() + 2), .success)
+            await waitForReadStarted(reader)
             clock.set(1_600_000_000)
             reader.release.signal()
             for _ in 0..<100 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
@@ -843,7 +848,7 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
         session.previewReader = reader
         session.noteAppearance()
         session.startPreviewIfNeeded()
-        XCTAssertEqual(reader.started.wait(timeout: .now() + 2), .success)
+        await waitForReadStarted(reader)
         session.noteHostResign()
         clock.set(1_600_000_000)
         reader.release.signal()
@@ -868,7 +873,7 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
             session.previewReader = reader
             session.noteAppearance()
             session.startPreviewIfNeeded()
-            XCTAssertEqual(reader.started.wait(timeout: .now() + 2), .success)
+            await waitForReadStarted(reader)
             clock.set(1_300_000_000)
             if mode == 0 { session.discardPreview() }
             if mode == 1 { session.noteCountedInput() }
@@ -895,7 +900,7 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
             session.previewReader = reader
             session.noteAppearance()
             session.startPreviewIfNeeded()
-            XCTAssertEqual(reader.started.wait(timeout: .now() + 2), .success)
+            await waitForReadStarted(reader)
             if mode == 0 { enabled = false }
             if mode == 1 { access = false }
             if mode == 2 { eligible = false }
@@ -994,6 +999,582 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
         }
     }
 
+    // MARK: - PB-013 剪贴板横向去重与持久抑制（两级去重：probe → 复用/抑制 → 整读）
+
+    /// sampleVersions 恒 true 的代价：每次整读多两次 changeCount 采样（probe 1 次 + before/after 各 1 次，
+    /// 共 3 次版本采样）。采样代价量级可忽略但属行为变化，此断言防止后续误改回。
+    @MainActor
+    func testPB013ColdStartFullReadThenLevel1CacheHitSkipsSecondFullRead() async throws {
+        let reader = DedupTestReader(counts: [7, 7, 7, 7])
+        let session = PasteToolbarSession()
+        session.previewReader = reader
+        session.suppressStore = MemorySuppressStore()
+        session.isEligible = { true }
+        session.probeEnabled = true
+        // probeEnabled=true 注入覆盖：probe 路径语义保持回归覆盖（默认已按方案 B 关闭）。
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        for _ in 0..<200 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(session.preview, .ready(.text(full: "x", summary: "x", isLink: false)))
+        XCTAssertEqual(reader.readCount, 1)
+        XCTAssertEqual(reader.countCalls, 3, "cold start: probe + before/after sampling")
+        session.didInstallPreview()
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        for _ in 0..<200 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(session.preview, .ready(.text(full: "x", summary: "x", isLink: false)))
+        XCTAssertEqual(reader.readCount, 1, "Level 1 cache hit must not full-read again")
+        XCTAssertEqual(reader.countCalls, 4, "Level 1 still probes changeCount once")
+    }
+
+    @MainActor
+    func testPB013ChangedChangeCountRereadsAndUpdatesCache() async throws {
+        let reader = DedupTestReader(counts: [7, 7, 7, 9, 9, 9, 9])
+        let session = PasteToolbarSession()
+        session.previewReader = reader
+        session.suppressStore = MemorySuppressStore()
+        session.isEligible = { true }
+        session.probeEnabled = true
+        // probeEnabled=true 注入覆盖：probe 路径语义保持回归覆盖（默认已按方案 B 关闭）。
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        for _ in 0..<200 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(session.preview, .ready(.text(full: "x", summary: "x", isLink: false)))
+        XCTAssertEqual(reader.readCount, 1)
+        session.didInstallPreview()
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        for _ in 0..<200 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(session.preview, .ready(.text(full: "x", summary: "x", isLink: false)))
+        XCTAssertEqual(reader.readCount, 2, "changed count must trigger a fresh full read")
+        XCTAssertEqual(reader.countCalls, 6)
+        session.didInstallPreview()
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        for _ in 0..<200 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(session.preview, .ready(.text(full: "x", summary: "x", isLink: false)))
+        XCTAssertEqual(reader.readCount, 2, "cache must be updated to the new count")
+        XCTAssertEqual(reader.countCalls, 7)
+    }
+
+    @MainActor
+    func testPB013DeniedResultIsNeverCached() async throws {
+        let reader = DedupTestReader(
+            counts: [3, 3, 3, 3, 3, 3, 3],
+            results: [.denied, .text(full: "x", summary: "x", isLink: false)])
+        let session = PasteToolbarSession()
+        session.previewReader = reader
+        session.suppressStore = MemorySuppressStore()
+        session.isEligible = { true }
+        session.probeEnabled = true
+        // probeEnabled=true 注入覆盖：probe 路径语义保持回归覆盖（默认已按方案 B 关闭）。
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        for _ in 0..<200 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(session.preview, .unavailable)
+        XCTAssertEqual(reader.readCount, 1)
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        for _ in 0..<200 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(session.preview, .ready(.text(full: "x", summary: "x", isLink: false)))
+        XCTAssertEqual(reader.readCount, 2, "denied must not be cached; same count rereads")
+        session.didInstallPreview()
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        for _ in 0..<200 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(session.preview, .ready(.text(full: "x", summary: "x", isLink: false)))
+        XCTAssertEqual(reader.readCount, 2, "successful text result is cached")
+    }
+
+    @MainActor
+    func testPB013PastedCountIsSuppressedOnNextAppearance() async throws {
+        let reader = DedupTestReader(counts: [5, 5, 5, 5, 8, 8, 8, 8])
+        let store = MemorySuppressStore()
+        let session = PasteToolbarSession()
+        session.previewReader = reader
+        session.suppressStore = store
+        session.isEligible = { true }
+        session.probeEnabled = true
+        // probeEnabled=true 注入覆盖：probe 路径语义保持回归覆盖（默认已按方案 B 关闭）。
+        session.commit = { _ in .inserted }
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        for _ in 0..<200 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(session.preview, .ready(.text(full: "x", summary: "x", isLink: false)))
+        session.didInstallPreview()
+        let operation = try XCTUnwrap(session.begin())
+        session.complete("x", operationID: operation)
+        XCTAssertEqual(session.presentation, .consumedByPaste)
+        XCTAssertEqual(store.suppressedCount(), 5)
+        XCTAssertEqual(store.lastReason, .pasted)
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        for _ in 0..<200 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(session.preview, .suppressed, "handled count must be Level-0 suppressed")
+        XCTAssertEqual(reader.readCount, 1, "Level 0 must not full-read")
+        XCTAssertEqual(reader.countCalls, 4, "Level 0 only probes changeCount")
+        XCTAssertFalse(session.previewWasShown)
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        for _ in 0..<200 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(session.preview, .ready(.text(full: "x", summary: "x", isLink: false)))
+        XCTAssertEqual(reader.readCount, 2, "a new copy (count+1) shows the preview again")
+    }
+
+    @MainActor
+    func testPB013CloseSuppressesButCountedInputDoesNot() async throws {
+        let reader = DedupTestReader(counts: [11, 11, 11, 11, 12, 12, 12, 12])
+        let store = MemorySuppressStore()
+        let session = PasteToolbarSession()
+        session.previewReader = reader
+        session.suppressStore = store
+        session.isEligible = { true }
+        session.probeEnabled = true
+        // probeEnabled=true 注入覆盖：probe 路径语义保持回归覆盖（默认已按方案 B 关闭）。
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        for _ in 0..<200 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(session.preview, .ready(.text(full: "x", summary: "x", isLink: false)))
+        session.didInstallPreview()
+        session.closePreview()
+        XCTAssertEqual(store.suppressedCount(), 11)
+        XCTAssertEqual(store.lastReason, .closed)
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        for _ in 0..<200 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(session.preview, .suppressed)
+        XCTAssertEqual(reader.readCount, 1)
+        XCTAssertEqual(reader.countCalls, 4)
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        for _ in 0..<200 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(session.preview, .ready(.text(full: "x", summary: "x", isLink: false)))
+        session.noteCountedInput()
+        XCTAssertEqual(store.suppressedCount(), 11, "first typed input must not write suppression")
+        XCTAssertEqual(store.lastReason, .closed)
+    }
+
+    @MainActor
+    func testPB013StaleSmallerSuppressedCountReadsNormally() async throws {
+        let reader = DedupTestReader(counts: [9, 9, 9])
+        let store = MemorySuppressStore()
+        store.suppress(2, reason: .pasted)
+        let session = PasteToolbarSession()
+        session.previewReader = reader
+        session.suppressStore = store
+        session.isEligible = { true }
+        session.probeEnabled = true
+        // probeEnabled=true 注入覆盖：probe 路径语义保持回归覆盖（默认已按方案 B 关闭）。
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        for _ in 0..<200 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(session.preview, .ready(.text(full: "x", summary: "x", isLink: false)))
+        XCTAssertEqual(reader.readCount, 1, "stale smaller store value must not suppress a fresh count")
+    }
+
+    @MainActor
+    func testPB013NilProbeCountFallsBackToFullReadWithoutCache() async throws {
+        let reader = DedupTestReader(counts: [nil, nil, nil, nil, nil, nil])
+        let session = PasteToolbarSession()
+        session.previewReader = reader
+        session.suppressStore = MemorySuppressStore()
+        session.isEligible = { true }
+        session.probeEnabled = true
+        // probeEnabled=true 注入覆盖：probe 路径语义保持回归覆盖（默认已按方案 B 关闭）。
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        for _ in 0..<200 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(session.preview, .ready(.text(full: "x", summary: "x", isLink: false)))
+        XCTAssertEqual(reader.readCount, 1)
+        XCTAssertEqual(reader.countCalls, 3)
+        session.didInstallPreview()
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        for _ in 0..<200 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(session.preview, .ready(.text(full: "x", summary: "x", isLink: false)))
+        XCTAssertEqual(reader.readCount, 2, "nil version samples must never be cached")
+        XCTAssertEqual(reader.countCalls, 6)
+    }
+
+    @MainActor
+    func testPB013PasteSupplementarySampleWritesStoreWhenCacheMissing() async throws {
+        let reader = DedupTestReader(counts: [nil, nil, nil, 6, 6])
+        let store = MemorySuppressStore()
+        let session = PasteToolbarSession()
+        session.previewReader = reader
+        session.suppressStore = store
+        session.isEligible = { true }
+        session.probeEnabled = true
+        session.commit = { _ in .inserted }
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        for _ in 0..<200 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(session.preview, .ready(.text(full: "x", summary: "x", isLink: false)))
+        session.didInstallPreview()
+        let operation = try XCTUnwrap(session.begin())
+        session.complete("x", operationID: operation)
+        XCTAssertEqual(session.presentation, .consumedByPaste)
+        XCTAssertEqual(store.suppressedCount(), 6, "missing after sample must be re-sampled once on paste")
+        XCTAssertEqual(store.lastReason, .pasted)
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        for _ in 0..<200 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(session.preview, .suppressed)
+        XCTAssertEqual(reader.readCount, 1)
+    }
+
+    @MainActor
+    func testPB013ResignDuringProbeDropsResultWithoutCache() async throws {
+        let reader = DedupTestReader(counts: [7, 7, 7, 7], blockingCounts: 1)
+        let session = PasteToolbarSession()
+        session.previewReader = reader
+        session.suppressStore = MemorySuppressStore()
+        session.isEligible = { true }
+        session.probeEnabled = true
+        // probeEnabled=true 注入覆盖：probe 路径语义保持回归覆盖（默认已按方案 B 关闭）。
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        XCTAssertEqual(reader.started.wait(timeout: .now() + 2), .success)
+        session.noteHostResign()
+        reader.release.signal()
+        for _ in 0..<200 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(session.preview, .unavailable, "probe result arriving during suspension is dropped")
+        session.noteHostBecomeActive()
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        for _ in 0..<200 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(session.preview, .ready(.text(full: "x", summary: "x", isLink: false)))
+        XCTAssertEqual(reader.readCount, 1, "dropped probe must not have written a cache entry")
+        XCTAssertEqual(reader.countCalls, 4, "two probes + before/after of the fresh full read")
+    }
+
+    @MainActor
+    func testPB013GenerationChangeDropsProbeResultWithoutCache() async throws {
+        let reader = DedupTestReader(counts: [7, 7, 7, 7], blockingCounts: 1)
+        let session = PasteToolbarSession()
+        session.previewReader = reader
+        session.suppressStore = MemorySuppressStore()
+        session.isEligible = { true }
+        session.probeEnabled = true
+        // probeEnabled=true 注入覆盖：probe 路径语义保持回归覆盖（默认已按方案 B 关闭）。
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        XCTAssertEqual(reader.started.wait(timeout: .now() + 2), .success)
+        session.noteAppearance()
+        reader.release.signal()
+        try await Task.sleep(for: .milliseconds(50))
+        session.startPreviewIfNeeded()
+        for _ in 0..<200 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(session.preview, .ready(.text(full: "x", summary: "x", isLink: false)))
+        XCTAssertEqual(reader.readCount, 1, "stale-generation probe must not full-read or cache")
+        XCTAssertEqual(reader.countCalls, 4)
+    }
+
+    @MainActor
+    func testPB013ClosedGatesZeroAccessIncludingProbe() async throws {
+        let reader = DedupTestReader(counts: [7, 7, 7])
+        let session = PasteToolbarSession()
+        session.previewReader = reader
+        session.suppressStore = MemorySuppressStore()
+        var switchOn = false
+        var fullAccess = false
+        session.probeSwitchEnabled = { switchOn }
+        session.probeFullAccess = { fullAccess }
+        session.isEligible = { true }
+        session.probeEnabled = true
+        // probeEnabled=true 注入覆盖：probe 路径语义保持回归覆盖（默认已按方案 B 关闭）。
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        try await Task.sleep(for: .milliseconds(30))
+        XCTAssertEqual(reader.countCalls, 0, "gates closed: not even changeCount may be read")
+        XCTAssertEqual(reader.readCount, 0)
+        XCTAssertEqual(session.preview, .notRead)
+        switchOn = true
+        fullAccess = true
+        session.startPreviewIfNeeded()
+        for _ in 0..<200 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(session.preview, .ready(.text(full: "x", summary: "x", isLink: false)))
+        XCTAssertEqual(reader.readCount, 1)
+    }
+
+    /// m3：probe 200ms 超时后整读重起自己的 500ms 正常窗（不是从 probe 起点继续计时）。
+    @MainActor
+    func testPB013ProbeTimeoutFallsBackToFullReadWithFreshDeadline() async throws {
+        let reader = DedupTestReader(counts: [7, 7, 7], blockingCounts: 1, blockingReads: 1)
+        let session = PasteToolbarSession()
+        session.previewReader = reader
+        session.suppressStore = MemorySuppressStore()
+        session.isEligible = { true }
+        session.probeEnabled = true
+        // probeEnabled=true 注入覆盖：probe 路径语义保持回归覆盖（默认已按方案 B 关闭）。
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        XCTAssertEqual(reader.started.wait(timeout: .now() + 2), .success, "probe changeCount is blocked")
+        try await Task.sleep(for: .milliseconds(260))
+        reader.release.signal()
+        XCTAssertEqual(reader.started.wait(timeout: .now() + 2), .success, "full read must start after probe timeout")
+        try await Task.sleep(for: .milliseconds(300))
+        reader.release.signal()
+        for _ in 0..<300 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(
+            session.preview, .ready(.text(full: "x", summary: "x", isLink: false)),
+            "full read issued ~260ms after probe start must still fit its own restarted 500ms window")
+        XCTAssertEqual(reader.readCount, 1)
+        XCTAssertEqual(reader.countCalls, 3)
+    }
+
+    func testPB013ProbeTimeoutConstantIs200Milliseconds() {
+        XCTAssertEqual(PasteToolbarSession.probeTimeout, 200_000_000)
+    }
+
+    /// sampleVersions 恒 true：latePreviewEnabled=false 时 before/after 也必采样（代价：每次整读多两次
+    /// changeCount 采样，量级可忽略；此断言防止误改回）。
+    @MainActor
+    func testPB013FullReadAlwaysSamplesBeforeAndAfter() async throws {
+        let reader = DedupTestReader(counts: [7, 7, 7])
+        let session = PasteToolbarSession()
+        session.previewReader = reader
+        session.suppressStore = MemorySuppressStore()
+        session.isEligible = { true }
+        session.probeEnabled = true
+        // probeEnabled=true 注入覆盖：probe 路径语义保持回归覆盖（默认已按方案 B 关闭）。
+        XCTAssertFalse(session.latePreviewEnabled)
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        for _ in 0..<200 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(session.preview, .ready(.text(full: "x", summary: "x", isLink: false)))
+        XCTAssertEqual(reader.countCalls, 3, "probe + before/after sampled even with late preview off")
+    }
+
+    /// Scheme B 默认路径（真机 O5 实测：读取 changeCount 本身亦触发系统「已粘贴」横幅）：
+    /// 默认 probeEnabled == false，首现无缓存直接整读（无 probe，仅 before/after 采样）。
+    @MainActor
+    func testPB013ProbeDisabledByDefaultUsesPlanBPath() async throws {
+        let reader = DedupTestReader(counts: [5, 5, 5])
+        let session = PasteToolbarSession()
+        XCTAssertFalse(
+            session.probeEnabled,
+            "device O5 evidence: reading changeCount itself triggers the system paste banner; probe must be off by default"
+        )
+        session.previewReader = reader
+        session.suppressStore = MemorySuppressStore()
+        session.isEligible = { true }
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        for _ in 0..<200 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(session.preview, .ready(.text(full: "x", summary: "x", isLink: false)))
+        XCTAssertEqual(reader.readCount, 1, "default path: cold start performs exactly one full read")
+        XCTAssertEqual(reader.countCalls, 2, "default path: no probe, only before/after sampling")
+    }
+
+    /// 方案 B 注入路径（probeEnabled 显式置 false）：同 changeCount 复现直接复用缓存/抑制，
+    /// 零 pasteboard 访问；粘贴后写 Level 0 抑制。
+    @MainActor
+    func testPB013PlanBReusesCacheWithoutProbeAndAppliesSuppression() async throws {
+        let reader = DedupTestReader(counts: [5, 5, 5])
+        let store = MemorySuppressStore()
+        let session = PasteToolbarSession()
+        session.previewReader = reader
+        session.suppressStore = store
+        session.isEligible = { true }
+        session.commit = { _ in .inserted }
+        session.probeEnabled = false
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        for _ in 0..<200 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(session.preview, .ready(.text(full: "x", summary: "x", isLink: false)))
+        XCTAssertEqual(reader.readCount, 1, "plan B: at most one full read per process")
+        XCTAssertEqual(reader.countCalls, 2, "plan B: no probe, only before/after sampling")
+        session.didInstallPreview()
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        try await Task.sleep(for: .milliseconds(30))
+        XCTAssertEqual(session.preview, .ready(.text(full: "x", summary: "x", isLink: false)))
+        XCTAssertEqual(reader.readCount, 1, "plan B: same-changeCount appearance reuses the cache")
+        XCTAssertEqual(reader.countCalls, 2, "plan B: zero pasteboard access on cache reuse")
+        let operation = try XCTUnwrap(session.begin())
+        session.complete("x", operationID: operation)
+        XCTAssertEqual(store.suppressedCount(), 5)
+        XCTAssertEqual(store.lastReason, .pasted)
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        try await Task.sleep(for: .milliseconds(30))
+        XCTAssertEqual(session.preview, .suppressed, "plan B: suppression applies via sampled count")
+        XCTAssertEqual(reader.readCount, 1)
+        XCTAssertEqual(reader.countCalls, 2)
+    }
+
+    func testPB013SuppressStorePersistsOnlyIntegerCountAndReason() throws {
+        let suiteName = "pb013.suppress.type.test"
+        UserDefaults().removePersistentDomain(forName: suiteName)
+        defer { UserDefaults().removePersistentDomain(forName: suiteName) }
+        let defaults = UserDefaults(suiteName: suiteName)
+        let store = PastePreviewSuppressStore(defaults: defaults)
+        XCTAssertNil(store.suppressedCount())
+        store.suppress(42, reason: .pasted)
+        let count = try XCTUnwrap(defaults?.object(forKey: PastePreviewSuppressStore.countKey))
+        XCTAssertTrue(count is Int, "store must persist the changeCount as an integer")
+        XCTAssertEqual(count as? Int, 42)
+        let reason = try XCTUnwrap(defaults?.object(forKey: PastePreviewSuppressStore.reasonKey))
+        XCTAssertTrue(reason is String, "store persists only the non-content reason enum")
+        XCTAssertEqual(reason as? String, "pasted")
+        let storedKeys = (defaults?.dictionaryRepresentation() ?? [:]).keys.filter { $0.hasPrefix("paste_preview_") }
+        XCTAssertEqual(
+            Set(storedKeys), [PastePreviewSuppressStore.countKey, PastePreviewSuppressStore.reasonKey],
+            "no clipboard content, summary or hash may ever be persisted")
+        defaults?.set("junk", forKey: PastePreviewSuppressStore.countKey)
+        XCTAssertNil(store.suppressedCount(), "non-integer stored values must be ignored")
+        store.suppress(7, reason: .closed)
+        XCTAssertEqual(store.suppressedCount(), 7)
+    }
+
+    @MainActor
+    func testPB013CloseButtonInvokesCallbackAndClearsBar() async throws {
+        let (owner, client, _) = await previewOwner(result: .text(full: "clip", summary: "clip", isLink: false))
+        let view = try XCTUnwrap(owner.pastePreviewView)
+        let closeButton = try XCTUnwrap(view.findPasteCloseButton())
+        XCTAssertEqual(closeButton.accessibilityIdentifier, "keyboard.paste.preview.close")
+        // The unhosted target does not dispatch UIControl actions; invoke its registered selector.
+        view.perform(NSSelectorFromString("closeTapped"))
+        for _ in 0..<100 where owner.pastePreviewView != nil { try await Task.sleep(for: .milliseconds(5)) }
+        XCTAssertNil(owner.pastePreviewView, "closing must clear the installed preview")
+        XCTAssertEqual(owner.pasteSession.preview, .unavailable)
+        XCTAssertTrue(client.inserted.isEmpty, "closing must not paste")
+    }
+
+    @MainActor
+    func testPB013SuppressedAppearanceClearsBarWithoutInstalling() async throws {
+        let owner = PasteOwner()
+        let defaults = PasteMemoryDefaults()
+        defaults.set(true, forKey: KeyboardInputSettingsKey.clipboardPreviewEnabled)
+        owner.sharedDefaults = defaults
+        owner.access = true
+        owner.loadViewIfNeeded()
+        owner.controller = KeyboardController()
+        let client = PasteClient()
+        owner.controller.textClient = client
+        let store = MemorySuppressStore()
+        store.suppress(4, reason: .pasted)
+        owner.pasteSession.suppressStore = store
+        owner.pasteSession.probeEnabled = true
+        owner.pasteSession.previewReader = DedupTestReader(counts: [4, 4, 4])
+        owner.cachedPasteToolbarEnabled = true
+        owner.view.frame = CGRect(x: 0, y: 0, width: 390, height: 288)
+        owner.setupRootStack()
+        owner.reloadKeyboard()
+        owner.isKeyboardUIInstalled = true
+        owner.installPasteInputObservation()
+        owner.view.layoutIfNeeded()
+        owner.pasteSession.noteAppearance()
+        owner.refreshPasteToolbar()
+        try await Task.sleep(for: .milliseconds(60))
+        XCTAssertEqual(owner.pasteSession.preview, .suppressed)
+        XCTAssertNil(owner.pastePreviewView, "suppressed appearance must not install a preview view")
+        XCTAssertTrue(client.inserted.isEmpty)
+        XCTAssertFalse(owner.pasteSession.previewWasShown)
+    }
+
+}
+
+extension UIView {
+    fileprivate func findPasteCloseButton() -> UIButton? {
+        if let button = self as? UIButton, accessibilityIdentifier == "keyboard.paste.preview.close" { return button }
+        for child in subviews {
+            if let found = child.findPasteCloseButton() { return found }
+        }
+        return nil
+    }
+}
+
+private nonisolated final class MemorySuppressStore: PastePreviewSuppressStoring, @unchecked Sendable {
+    private let lock = NSLock()
+    private var stored: Int?
+    private var storedReason: PastePreviewSuppressReason?
+    var lastReason: PastePreviewSuppressReason? {
+        lock.lock()
+        defer { lock.unlock() }
+        return storedReason
+    }
+    func suppressedCount() -> Int? {
+        lock.lock()
+        defer { lock.unlock() }
+        return stored
+    }
+    func suppress(_ count: Int, reason: PastePreviewSuppressReason) {
+        lock.lock()
+        stored = count
+        storedReason = reason
+        lock.unlock()
+    }
+}
+
+/// changeCount()/read() 按序返回预设值的假读取器；前 N 次调用可阻塞以模拟慢 probe/慢整读。
+private nonisolated final class DedupTestReader: ClipboardPreviewReading, @unchecked Sendable {
+    let started = DispatchSemaphore(value: 0)
+    let release = DispatchSemaphore(value: 0)
+    private let lock = NSLock()
+    private let counts: [Int?]
+    private let results: [ClipboardPreviewResult]
+    private let blockingCounts: Int
+    private let blockingReads: Int
+    private var versionIndex = 0
+    private var resultIndex = 0
+    private var versionCalls = 0
+    private var readCalls = 0
+
+    init(
+        counts: [Int?],
+        results: [ClipboardPreviewResult] = [.text(full: "x", summary: "x", isLink: false)],
+        blockingCounts: Int = 0,
+        blockingReads: Int = 0
+    ) {
+        self.counts = counts
+        self.results = results
+        self.blockingCounts = blockingCounts
+        self.blockingReads = blockingReads
+    }
+
+    var countCalls: Int {
+        lock.lock()
+        defer { lock.unlock() }
+        return versionCalls
+    }
+
+    var readCount: Int {
+        lock.lock()
+        defer { lock.unlock() }
+        return readCalls
+    }
+
+    func changeCount() -> Int? {
+        lock.lock()
+        let value = counts[min(versionIndex, counts.count - 1)]
+        versionIndex += 1
+        let call = versionCalls
+        versionCalls += 1
+        let block = call < blockingCounts
+        lock.unlock()
+        if block {
+            started.signal()
+            release.wait()
+        }
+        return value
+    }
+
+    func read() -> ClipboardPreviewResult {
+        lock.lock()
+        let result = results[min(resultIndex, results.count - 1)]
+        resultIndex += 1
+        let call = readCalls
+        readCalls += 1
+        let block = call < blockingReads
+        lock.unlock()
+        if block {
+            started.signal()
+            release.wait()
+        }
+        return result
+    }
 }
 
 extension UIView {
@@ -1004,6 +1585,22 @@ extension UIView {
         }
         return nil
     }
+}
+
+/// PB-013：probe→整读交接需一次主 actor 跳转，测试不得用信号量阻塞主线程等待 read() 启动；
+/// 改为异步轮询读计数（契约不变：整读必须在 ~2s 内启动）。
+private protocol StartedCountingTestReader {
+    var count: Int { get }
+}
+extension BlockingPreviewReader: StartedCountingTestReader {}
+extension VersionedTestReader: StartedCountingTestReader {}
+
+@MainActor
+private func waitForReadStarted(_ reader: some StartedCountingTestReader) async {
+    for _ in 0..<400 where reader.count == 0 {
+        try? await Task.sleep(for: .milliseconds(5))
+    }
+    XCTAssertGreaterThan(reader.count, 0, "full read must start promptly")
 }
 
 private nonisolated final class BlockingPreviewReader: ClipboardPreviewReading, @unchecked Sendable {
@@ -1081,6 +1678,8 @@ private nonisolated final class VersionedTestReader: ClipboardPreviewReading, @u
     private var reads = 0
     private var versionReads = 0
     init(before: Int?, after: Int?) { versions = [before, after] }
+    /// PB-013：三槽构造（probe, before, after），用于验证 probe 消费一个采样槽后的整读语义。
+    init(samples: [Int?]) { versions = samples }
     var count: Int { lock.lock(); defer { lock.unlock() }; return reads }
     func changeCount() -> Int? {
         lock.lock()

@@ -219,6 +219,23 @@ nonisolated final class ClipboardPreviewWorker: Sendable {
         }
     }
 
+    /// PB-013 probe：只采样一次 changeCount，与整读共用同一串行队列，保证 probe→read 先后与 gate 语义一致。
+    /// gate.begin 失败（排队过久/已取消）按 fail-open 处理，回调 count=nil 由会话降级整读；
+    /// 采样后 gate 已失效则直接丢弃（不回调），由会话的超时/代际纪律兜底。
+    func submitProbe(
+        reader: any ClipboardPreviewReading,
+        gate: ClipboardPreviewGate,
+        now: @escaping @Sendable () -> UInt64 = { DispatchTime.now().uptimeNanoseconds },
+        completion: @escaping @Sendable (Int?, UInt64) -> Void
+    ) {
+        queue.async {
+            guard gate.begin() else { completion(nil, now()); return }
+            let count = reader.changeCount()
+            guard gate.mayContinue() else { return }
+            completion(count, now())
+        }
+    }
+
     func submit(
         reader: any ClipboardPreviewReading,
         gate: ClipboardPreviewGate,

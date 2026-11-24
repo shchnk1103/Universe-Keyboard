@@ -404,6 +404,8 @@ class KeyboardViewController: UIInputViewController {
         session.commit = { [weak self] text in
             self?.controller.commitPastedPlainText(text) ?? .rejectedNoClient
         }
+        // PB-013 Level 0：App Group 持久抑制存储（只存 changeCount 整数 + 原因枚举，绝无正文）。
+        session.suppressStore = PastePreviewSuppressStore(defaults: sharedDefaults)
         session.onPresentationChanged = { [weak self] in self?.refreshPasteToolbar() }
         return session
     }()
