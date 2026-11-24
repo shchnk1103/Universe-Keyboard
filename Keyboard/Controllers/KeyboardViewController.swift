@@ -644,6 +644,8 @@ class KeyboardViewController: UIInputViewController {
     }
 
     override func viewWillDisappear(_ animated: Bool) {
+        // PB-013 退出矩阵：键盘隐藏退出标点续接态（进程内存态，随隐藏清理）。
+        _ = controller.clearPunctuationContinuation()
         pasteSession.discardPreview()
         pasteToolbarSuspended = true
         refreshPasteToolbar()

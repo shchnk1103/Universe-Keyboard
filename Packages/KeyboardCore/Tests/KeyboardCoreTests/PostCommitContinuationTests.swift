@@ -5,23 +5,27 @@ import XCTest
 final class ContinuationSuggestionProviderTests: XCTestCase {
     func testStrictValidationAcceptsBoundedLexicon() throws {
         let provider = try BundledContinuationSuggestionProvider(validating: [
-            ContinuationEntry(context: "你好", suggestions: ["呀", "！"]),
+            ContinuationEntry(context: "你好", suggestions: ["呀", "！"])
         ])
 
         XCTAssertEqual(provider.suggestions(for: "你好", limit: 8), ["呀", "！"])
     }
 
     func testStrictValidationRejectsDuplicateContextAndSuggestion() {
-        XCTAssertThrowsError(try BundledContinuationSuggestionProvider(validating: [
-            ContinuationEntry(context: "你好", suggestions: ["呀"]),
-            ContinuationEntry(context: "你好", suggestions: ["！"]),
-        ])) { error in
+        XCTAssertThrowsError(
+            try BundledContinuationSuggestionProvider(validating: [
+                ContinuationEntry(context: "你好", suggestions: ["呀"]),
+                ContinuationEntry(context: "你好", suggestions: ["！"]),
+            ])
+        ) { error in
             XCTAssertEqual(error as? ContinuationLexiconValidationError, .duplicateContext("你好"))
         }
 
-        XCTAssertThrowsError(try BundledContinuationSuggestionProvider(validating: [
-            ContinuationEntry(context: "你好", suggestions: ["呀", "呀"]),
-        ])) { error in
+        XCTAssertThrowsError(
+            try BundledContinuationSuggestionProvider(validating: [
+                ContinuationEntry(context: "你好", suggestions: ["呀", "呀"])
+            ])
+        ) { error in
             XCTAssertEqual(
                 error as? ContinuationLexiconValidationError,
                 .duplicateSuggestion(context: "你好", suggestion: "呀")
@@ -35,13 +39,15 @@ final class ContinuationSuggestionProviderTests: XCTestCase {
         }
         XCTAssertThrowsError(try BundledContinuationSuggestionProvider(validating: tooManyEntries))
 
-        XCTAssertThrowsError(try BundledContinuationSuggestionProvider(validating: [
-            ContinuationEntry(context: "你好", suggestions: Array(repeating: "好", count: 9)),
-        ]))
+        XCTAssertThrowsError(
+            try BundledContinuationSuggestionProvider(validating: [
+                ContinuationEntry(context: "你好", suggestions: Array(repeating: "好", count: 9))
+            ]))
 
-        XCTAssertThrowsError(try BundledContinuationSuggestionProvider(validating: [
-            ContinuationEntry(context: "包含\n换行", suggestions: ["好"]),
-        ]))
+        XCTAssertThrowsError(
+            try BundledContinuationSuggestionProvider(validating: [
+                ContinuationEntry(context: "包含\n换行", suggestions: ["好"])
+            ]))
     }
 
     func testResourceLoaderRejectsWrongVersionOversizeAndInvalidEntries() {
@@ -62,7 +68,8 @@ final class ContinuationSuggestionProviderTests: XCTestCase {
         XCTAssertNil(BundledContinuationSuggestionProvider.provider(fromResourceData: oversized))
 
         let duplicateContext = Data(
-            #"{"version":1,"contentVersion":"1.3.0","entries":[{"context":"好","suggestions":["的"]},{"context":"好","suggestions":["呀"]}]}"#.utf8
+            #"{"version":1,"contentVersion":"1.3.0","entries":[{"context":"好","suggestions":["的"]},{"context":"好","suggestions":["呀"]}]}"#
+                .utf8
         )
         XCTAssertNil(BundledContinuationSuggestionProvider.provider(fromResourceData: duplicateContext))
     }
@@ -78,7 +85,7 @@ final class ContinuationSuggestionProviderTests: XCTestCase {
 
     func testDeduplicatesAndHonorsLimit() {
         let provider = BundledContinuationSuggestionProvider(entries: [
-            ContinuationEntry(context: "好", suggestions: ["的", "的", "呀", "！"]),
+            ContinuationEntry(context: "好", suggestions: ["的", "的", "呀", "！"])
         ])
 
         XCTAssertEqual(provider.suggestions(for: "好", limit: 2), ["的", "呀"])
@@ -86,7 +93,7 @@ final class ContinuationSuggestionProviderTests: XCTestCase {
 
     func testEmptyAndUnknownContextReturnNoSuggestions() {
         let provider = BundledContinuationSuggestionProvider(entries: [
-            ContinuationEntry(context: "今天", suggestions: ["天气"]),
+            ContinuationEntry(context: "今天", suggestions: ["天气"])
         ])
 
         XCTAssertTrue(provider.suggestions(for: "", limit: 8).isEmpty)
@@ -146,10 +153,12 @@ final class PostCommitContinuationControllerTests: XCTestCase {
         XCTAssertEqual(controller.state.continuation.context, "吃了吗")
         XCTAssertEqual(controller.state.continuation.suggestions, ["？"])
         XCTAssertTrue(secondEffects.contains(.continuationChanged))
-        XCTAssertEqual(events, [
-            CommittedTextEvent(text: "吃了", source: .directText),
-            CommittedTextEvent(text: "吗", source: .candidate),
-        ])
+        XCTAssertEqual(
+            events,
+            [
+                CommittedTextEvent(text: "吃了", source: .directText),
+                CommittedTextEvent(text: "吗", source: .candidate),
+            ])
     }
 
     func testStaleContinuationCandidateIsIgnored() {
@@ -231,9 +240,16 @@ final class PostCommitContinuationControllerTests: XCTestCase {
 
         let effects = controller.handle(.insertKey("？"))
 
+        // PB-013 起本契约有意变更（非静默改绿）：`？` 属于标点续接触发
+        // 集合（m1 以最终上屏文本归一），单标点回弹武装续接态并与普通
+        // 联想二选一——同一次提交不再把标点写进联想 context（标点不
+        // 污染上下文，联想 suggestions 保持武装前的「吗/饭」）。非触发
+        // 符号（如 @）的既有 context 刷新行为不变，见
+        // PunctuationContinuationTests.testNonCatalogSymbolDoesNotArmAndKeepsLegacyContextRefresh。
         XCTAssertEqual(client.text, "吃了？")
-        XCTAssertEqual(controller.state.continuation.context, "吃了？")
-        XCTAssertTrue(controller.state.continuation.suggestions.isEmpty)
+        XCTAssertEqual(controller.state.punctuationContinuation?.trigger, "？")
+        XCTAssertEqual(controller.state.continuation.context, "吃了")
+        XCTAssertEqual(controller.state.continuation.suggestions, ["吗", "饭"])
         XCTAssertTrue(effects.contains(.continuationChanged))
     }
 

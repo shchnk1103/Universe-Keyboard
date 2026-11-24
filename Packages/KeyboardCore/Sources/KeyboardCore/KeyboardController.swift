@@ -1460,7 +1460,10 @@ public final class KeyboardController {
         prepareT9UnconfirmedHistory(for: action)
         switch action {
         case .insertKey(let key):
-            return acceptingPendingPunctuationIfNeeded { handleInsertKey(key) }
+            // PB-013 退出矩阵：字母/数字/符号键入（含组合开始）退出续接态。
+            return clearPunctuationContinuation().union(
+                acceptingPendingPunctuationIfNeeded { handleInsertKey(key) }
+            )
         case .insertCandidate(let candidate, let kind, let selectionReference):
             return handleInsertCandidate(
                 candidate,
@@ -1468,47 +1471,72 @@ public final class KeyboardController {
                 selectionReference: selectionReference
             )
         case .insertCorrectionCandidate(let correction):
-            return handleInsertCorrectionCandidate(correction)
+            // PB-013 退出矩阵：纠错候选点选退出续接态。
+            return clearPunctuationContinuation().union(
+                handleInsertCorrectionCandidate(correction)
+            )
         case .insertDirectText(let text):
-            return acceptingPendingPunctuationIfNeeded {
-                handleInsertDirectText(text, source: .directText)
-            }
+            // PB-013 退出矩阵：直插文本（含符号页提交——先清后武装）退出续接态。
+            return clearPunctuationContinuation().union(
+                acceptingPendingPunctuationIfNeeded {
+                    handleInsertDirectText(text, source: .directText)
+                }
+            )
         case .insertT9NumberPadText(let text):
-            return acceptingPendingPunctuationIfNeeded {
-                handleInsertT9NumberPadText(text)
-            }
+            // PB-013 退出矩阵：T9 数字键入退出续接态。
+            return clearPunctuationContinuation().union(
+                acceptingPendingPunctuationIfNeeded {
+                    handleInsertT9NumberPadText(text)
+                }
+            )
         case .insertEmoji(let emoji):
-            return acceptingPendingPunctuationIfNeeded {
-                handleInsertDirectText(emoji, source: .emoji)
-            }
+            // PB-013 退出矩阵：emoji 点选退出续接态。
+            return clearPunctuationContinuation().union(
+                acceptingPendingPunctuationIfNeeded {
+                    handleInsertDirectText(emoji, source: .emoji)
+                }
+            )
         case .toggleShift:
             return handleToggleShift()
         case .togglePage:
-            return acceptingPendingPunctuationIfNeeded { handleTogglePage() }
+            // PB-013 退出矩阵：页面切换退出续接态。
+            return clearPunctuationContinuation().union(
+                acceptingPendingPunctuationIfNeeded { handleTogglePage() }
+            )
         case .toggleInputMode:
-            return acceptingPendingPunctuationIfNeeded { handleToggleInputMode() }
+            // PB-013 退出矩阵：模式切换退出续接态。
+            return clearPunctuationContinuation().union(
+                acceptingPendingPunctuationIfNeeded { handleToggleInputMode() }
+            )
         case .insertSpace:
             return acceptingPendingPunctuationIfNeeded { handleInsertSpace() }
         case .insertReturn:
             return acceptingPendingPunctuationIfNeeded { handleInsertReturn() }
         case .deleteBackward:
+            // PB-013 退出矩阵：退格退出续接态（不回删已上屏文本之外的内容）。
+            let punctuationExitEffects = clearPunctuationContinuation()
             if let pendingEffects = deleteOwnedPendingKaomojiIfNeeded() {
-                return pendingEffects
+                return pendingEffects.union(punctuationExitEffects)
             }
             if let pendingEffects = deleteOwnedPendingPunctuationIfNeeded() {
-                return pendingEffects
+                return pendingEffects.union(punctuationExitEffects)
             }
-            return handleDeleteBackward()
+            return handleDeleteBackward().union(punctuationExitEffects)
         case .keyboardTypeChanged(let type):
-            return handleKeyboardTypeChanged(type)
+            // PB-013 退出矩阵：键盘类型变化（邮箱/URL 等）退出续接态。
+            return clearPunctuationContinuation().union(handleKeyboardTypeChanged(type))
         case .selectT9PinyinPath(let path):
-            return handleSelectT9PinyinPath(path)
+            // PB-013 退出矩阵：T9 拼音路径选择（组合路径）退出续接态。
+            return clearPunctuationContinuation().union(handleSelectT9PinyinPath(path))
         case .cycleT9PinyinPath:
-            return handleCycleT9PinyinPath()
+            // PB-013 退出矩阵：T9 拼音路径循环退出续接态。
+            return clearPunctuationContinuation().union(handleCycleT9PinyinPath())
         case .pressT9CommonPunctuation:
-            return handlePressT9CommonPunctuation()
+            // PB-013 退出矩阵：T9 常用标点（ADR 0029 pending 态）优先，续接态静默。
+            return clearPunctuationContinuation().union(handlePressT9CommonPunctuation())
         case .pressKaomoji:
-            return handlePressKaomoji()
+            // PB-013 退出矩阵：颜表情 pending 态优先，续接态静默。
+            return clearPunctuationContinuation().union(handlePressKaomoji())
         case .candidatePageUp:
             return handleCandidatePageUp()
         case .candidatePageDown:

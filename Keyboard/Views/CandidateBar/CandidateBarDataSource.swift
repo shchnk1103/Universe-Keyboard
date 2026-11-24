@@ -110,6 +110,19 @@ struct CandidateBarDataSource {
         let state = controller.state
         guard state.inputMode == .chinese else { return [] }
 
+        // PB-013：标点回弹续接条目。优先级置于 pendingPunctuation /
+        // pendingKaomoji / RIME composition 之后、普通中文联想之前，
+        // 不与普通联想混排；同一时刻只返回续接标点一项队列。
+        if state.currentPage == .letters,
+            state.currentComposition.isEmpty,
+            controller.isPostCommitContinuationEnabled,
+            let punctuationContinuation = state.punctuationContinuation
+        {
+            return punctuationContinuation.candidates.map {
+                CandidateItem(title: $0, kind: .continuationCandidate)
+            }
+        }
+
         // 上屏后联想不是 RIME composition。只有当前没有活跃拼音时，
         // 才把独立的短上下文建议映射到候选栏。
         if state.currentPage == .letters,
