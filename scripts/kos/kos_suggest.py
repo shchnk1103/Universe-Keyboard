@@ -74,24 +74,33 @@ def queue_item(item_id):
 
 
 def section_items(path):
-    """Return the suggestion lines of a report's 观察与改进意见 section (empty if none/没有)."""
+    """Return the suggestion lines of every 观察与改进意见 section (empty if none/没有).
+
+    Subheadings (### and deeper) inside a section do not stop collection; only a
+    heading of the same or higher level than the section (or a handoff block) does.
+    """
     with open(path, encoding='utf-8') as f:
         lines = f.read().split('\n')
-    start = next((i for i, l in enumerate(lines) if l.startswith('#') and HEADING in l), None)
-    if start is None:
+    starts = [i for i, l in enumerate(lines) if l.startswith('#') and HEADING in l]
+    if not starts:
         return None
     body = []
-    for l in lines[start + 1:]:
-        if l.startswith('#'):
-            break
-        if l.startswith('```'):
-            break
-        if l.startswith('交回：'):
-            break
-        if '报告格式检查' in l or 'kos-report-lint' in l:
-            continue
-        if l.strip():
-            body.append(l.strip())
+    for start in starts:
+        level = len(lines[start]) - len(lines[start].lstrip('#'))
+        for l in lines[start + 1:]:
+            if l.startswith('```'):
+                break
+            if l.startswith('交回：'):
+                break
+            if l.startswith('#'):
+                l_level = len(l) - len(l.lstrip('#'))
+                if l_level <= level:
+                    break
+                continue
+            if '报告格式检查' in l or 'kos-report-lint' in l:
+                continue
+            if l.strip():
+                body.append(l.strip())
     items = [re.sub(r'^([-*]|\d+[.、)]|O-?\d+[:：]?)\s*', '', l) for l in body]
     return [i for i in items if i and i not in NONE_WORDS
             and re.fullmatch(r'(?:没有更多|无其他建议|无其它建议)[。.!！]?', i) is None]
@@ -203,7 +212,10 @@ def cmd_check_task(task, db):
         items, matched = pending_items(report, db, items)
         count = len(items) - len(matched)
         if count:
-            print(f'{report}: {count} 条未登记意见')
+            print(f'{report}: {count} 条未登记意见。待登记原文：')
+            for i in items:
+                if i not in matched:
+                    print('  - ' + i[:200])
             pending = True
     return 1 if pending else 0
 
