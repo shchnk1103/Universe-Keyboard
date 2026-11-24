@@ -106,7 +106,7 @@
 | `doc-light`（轻文档） | 仅改说明文字、台账；不碰规则、已冻结事实与对外文案 | `PM 写包 → 实现·文档 → PM 终审（链接门 / 机械核对）→ 发布* → 合并*`；免预检、免独立复核 |
 | `doc-rule`（规则文档） | 改手册、`AGENTS.md`、KOS 规则、对外文案、隐私 / 官网 | `PM 写包 → 预检 → 实现·文档 → PM 终审 → 发布* → 合并*` |
 | `code-fix`（小型代码修复） | 单个 PR；不碰数据格式 / 存储 / 同步 / 网络 / 权限 / 隐私承诺 / RIME 方案语义 | `PM 写包 → 预检 → 实现·代码（红测）→ 独立复核 → PM 终审 → 发布* → 真机(Human)* → 合并*` |
-| `feature`（大型功能） | 多 PR、跨模块，或触及上述核心 / 语义边界 | `设计(Nick) → 架构审查(Alex) → PM 写包 → 预检 → 实现·代码 → 独立复核 → PM 终审 → 发布* → 真机(Human)* → 合并*` |
+| `feature`（大型功能） | 多 PR、跨模块，或触及上述核心 / 语义边界 | `设计(Nick) → 架构审查(Alex) → PM 写包 → 预检 → 实现·代码 → 独立复核 → PM 终审 → 发布* → 真机(Human)* → 合并*`；架构审查 PASS 报告进入包冻结输入后，预检→实现 与 实现→独立复核 两处可 relay 直通 |
 
 另保留两类单站任务：**只读诊断**（只读 → PM）与**纯 Human 事务**（不过流程）。`code-fix` 档按 Human 决定在下一个新的代码缺陷任务试行，一个任务跑完前不转正；这保留当前试行边界，不推翻 2026-11-06 小任务口径。
 
@@ -122,7 +122,7 @@
 
 **PM 职责边界与台账同步（Human 2026-11-20 批准）**：PM 只定目标、边界、不变量与验收门禁，具体技术实现交由架构师 / 代码执行者决定；合并后的 `PORTFOLIO.md` 与 `docs/releases/vX.Y.Z.md` 台账同步交由文档执行者处理。
 
-4 档流程已同步固化为 `scripts/kos/kos_handoff.py` 的 `TIER_PROFILES`（`kos_handoff.py profile --grade <档位> [--action <relay-exec|relay-quality>]`）：`relay-exec` 仅 `doc-rule` / `code-fix`，`relay-quality` 仅 `code-fix`；`doc-light` 与 `feature` 严禁越级直通，工具子命令与该表同源校验。
+4 档流程已同步固化为 `scripts/kos/kos_handoff.py` 的 `TIER_PROFILES`（`kos_handoff.py profile --grade <档位> [--action <relay-exec|relay-quality>]`）：`relay-exec` 允许 `doc-rule` / `code-fix`，`relay-quality` 允许 `code-fix`；`feature` 档架构审查 PASS 后放开两处 relay 直通（`relay-exec` 与 `relay-quality` 均强制复算冻结输入中 `arch-*` 报告的 SHA-256 与首行 PASS，缺项/篡改/非 PASS 一律 STOPPED 回 PM）；`doc-light` 严禁越级直通。工具子命令与该表同源校验。
 
 ## 本地 CI 门禁（与 `.github/workflows/swift6-quality.yml` 对齐）
 

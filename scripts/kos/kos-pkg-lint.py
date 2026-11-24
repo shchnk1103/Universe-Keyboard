@@ -379,6 +379,11 @@ def main():
             declared = "kos-verify-inputs.py" in content or "冻结输入" in content
             if declared and not spans:
                 err.append(f"E8 {base} 声明了冻结输入或输入校验，但没有可解析的路径与哈希配对")
+            # O92 RS-2/m2: feature-grade packets must freeze an arch-* report
+            # as a same-line backtick path+SHA pair (the relay arch gate reads it).
+            if re.search(r"包头档位[^\n]*`feature`", content) and not re.search(
+                    r"`[^`\n]+/arch-[^`\n]*\.md`[^`\n]{0,80}?`[0-9a-f]{64}`", content):
+                err.append(f"E8 {base} feature 档冻结输入缺少 arch-* 报告的路径+SHA-256 同行反引号对（relay 门禁必需）")
 
     def _check_hardcoded_next_role(files, txt, warn):
         # O85: execution / repair packets should name a duty, not a person.
