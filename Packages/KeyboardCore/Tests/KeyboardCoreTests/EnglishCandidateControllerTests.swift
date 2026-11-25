@@ -493,6 +493,60 @@ final class EnglishCandidateControllerTests: XCTestCase {
         XCTAssertFalse(client2.text.hasSuffix("\n h"))
     }
 
+    /// 真机时序复现（EN-AUTOSPACE-DEVICE-FIX-001）：候选提交是单次原子
+    /// `insertText`，宿主随后异步回调 `textDidChange`（同一文档身份）。
+    /// 视图层在该回声上调用 `noteExternalDocumentChange()`——它是我们自己
+    /// 写入的回声而非外部编辑，不得撤回刚武装的 deferred autospace。
+    func testHostTextDidChangeEchoAfterCommitKeepsDeferredAutospace() {
+        let (controller, client) = makeAutospaceController(before: "")
+        type(controller, "Wor")
+        _ = controller.handle(.insertCandidate("Word", kind: .englishCandidate))
+        XCTAssertTrue(controller.state.pendingEnglishAutospace)
+
+        // 宿主回声：同一文档的 textDidChange → 视图层外改通知
+        _ = controller.noteExternalDocumentChange()
+
+        XCTAssertTrue(controller.state.pendingEnglishAutospace)
+
+        type(controller, "h")
+
+        XCTAssertEqual(client.insertCalls.last, " h")
+        XCTAssertEqual(client.text, "Word h")
+    }
+
+    /// 回声抑制必须一次性：真正的外部编辑（如宿主粘贴）仍要撤回武装。
+    func testEchoSuppressionIsOneShotAndRealExternalEditStillRecalls() {
+        let (controller, _) = makeAutospaceController(before: "")
+        type(controller, "Wor")
+        _ = controller.handle(.insertCandidate("Word", kind: .englishCandidate))
+        XCTAssertTrue(controller.state.pendingEnglishAutospace)
+
+        _ = controller.noteExternalDocumentChange()  // 回声
+        XCTAssertTrue(controller.state.pendingEnglishAutospace)
+
+        _ = controller.noteExternalDocumentChange()  // 真外部编辑
+
+        XCTAssertFalse(controller.state.pendingEnglishAutospace)
+    }
+
+    /// 未武装 deferred 时（行中提交，trailing 空格已随事务写出），
+    /// 提交回声不得吞掉后续真实外改通知的既有清态语义。
+    func testEchoGuardOnlyArmsForDeferredCommits() {
+        let (controller, _) = makeAutospaceController(before: "", after: "x")
+        type(controller, "wor")
+        _ = controller.handle(.insertCandidate("world", kind: .englishCandidate))
+        XCTAssertFalse(controller.state.pendingEnglishAutospace)
+
+        _ = controller.noteExternalDocumentChange()  // 回声（未武装，不吞）
+        XCTAssertFalse(controller.state.pendingEnglishAutospace)
+
+        // 真实外改仍正常失效候选
+        type(controller, "wor")
+        XCTAssertFalse(controller.state.englishCandidate.suggestions.isEmpty)
+        _ = controller.noteExternalDocumentChange()
+        XCTAssertTrue(controller.state.englishCandidate.suggestions.isEmpty)
+    }
+
     // MARK: - Candidate kind
 
     func testEnglishCandidateKindIsRegistered() {
