@@ -93,6 +93,15 @@
 8. 档位直通与站点查询用 `python3 scripts/kos/kos_handoff.py profile --grade <档位> [--action <relay-exec|relay-quality>]`（Human 2026-11-20 批准固化）：`relay-exec` 仅 `doc-rule` / `code-fix`、`relay-quality` 仅 `code-fix`，`doc-light` / `feature` 严禁越级直通；`relay-exec` / `relay-quality` 子命令与该表同源，越级一律 fail-closed 回退 PM。
 9. 执行者可自主用 `subagent` / `herdr`（Human 2026-11-20 批准），报告如实申报，独立审查跨会话独立性不变；PM 只定目标、边界、不变量与验收门禁，技术实现交架构师 / 代码执行者，合并后 `PORTFOLIO.md` 与 `docs/releases/vX.Y.Z.md` 台账同步交文档执行者。
 
+### 2.5 部门池派发、原子领牌与子代理身份（外置 O113 / O118 / O110，经 KOS-RULES-SYNC-001 同步入库）
+
+权威定义在 [AGENTS.md「部门池派发、原子领牌与子代理身份」](../../AGENTS.md)；本手册只写 PM 操作摘要：
+
+1. **派发块只写部门名（O113）**：按部门池派发时写 `Executor（代码）部门`、`Quality 部门`、`Publish 部门` 等，不点名具体员工；接单者通过 `kos-board.py claim --role <部门> --task <TASK-ID>` 原子领取空闲牌，实名写报告、收尾 `set <名字> idle` 释放。PM 写包时 `--role` 参数须与外置 `ROSTER.md` 的角色列口径一致（可用别名 `doc` / `code` / `preflight` / `quality`），避免领牌命令与名册不匹配。
+2. **子代理不重复领牌（O118）**：`claim` 与 `set ... idle` 仅由顶层主会话各执行一次；主会话派生的 `subagent` 沿用父会话员工身份，严禁重复领牌或释放第二张牌。
+3. **并行状态表带 `部门` 列（O113）**：PM 回复中的并行状态表包含 `部门` 列；查返报统一走外置 `kos-pm-poll.py`（及 `kos-report-lint` / 技能入口），不逐会话私查。
+4. **Publish 排队兜底（O110）**：接受 Publish 交回 `WAITING_CI` 状态——托管 CI 连续 `queued` 超 10 分钟可交回并释放看板，CI 恢复后重新领牌继续。
+
 ## 3. 写包与冻结
 
 1. 建任务目录：`bash scripts/kos/new_task_dir.sh <TASK-ID>`。目录已存在就失败，换编号或写修订包（R1、R2…），绝不覆盖。

@@ -89,6 +89,13 @@
 - 冻结要求互相冲突时，执行者停止并请求修订；修订包须点名哪些冻结输入作废，并保留原 BLOCKED 报告。
 - 授权与派发消息保持简短，固定为：任务名、角色、包路径、SHA-256 与“授权，直接执行”；批准项写进任务包的“Human 预批准项”，随 SHA 冻结。
 
+### 部门池派发、原子领牌与子代理身份（外置 O113 / O118 / O110，经 KOS-RULES-SYNC-001 同步入库）
+
+- **部门池派发与实名领岗（O113）**：按部门池派发时，派发块只写部门名（如 `Executor（代码）部门`、`Quality 部门`、`Publish 部门`），不点名具体员工；部门全员名单与流转规则见外置 `/Users/doubleshy0n/.kos-work/Universe-Keyboard/KOS-ROLES-001/roles/ROSTER.md`。接单者开工前运行 `python3 /Users/doubleshy0n/.kos-work/Universe-Keyboard/tools/kos-board.py claim --role <部门> --task <TASK-ID>`，在排他锁下原子领取一个空闲牌；报告以领到的真实姓名署名，收尾以同一实名运行 `kos-board.py set <名字> idle <TASK-ID>` 释放；严禁代领或冒用同部门同事名字。
+- **子代理沿用父会话身份（O118）**：`claim` 与 `set ... idle` 仅由顶层主会话各执行一次；主会话派生的 `subagent` 沿用父会话已领取的员工身份开展工作，严禁重复运行 `claim` 或 `set ... idle` 占用第二张牌。
+- **PM 状态表与轮询入口（O113）**：PM 回复中的并行状态表包含 `部门` 列；查返报统一通过外置 `kos-pm-poll.py`（及 `kos-report-lint` / 技能入口）完成，不逐会话私查。
+- **Publish 排队兜底（O110）**：Publish 支持交回 `WAITING_CI` 状态——托管 CI 连续 `queued` 超过 10 分钟时，Publish 可交回报告并释放看板；CI 恢复运行后重新领牌继续，不长期占牌等待。
+
 ### 设计、预检与复核分级（Human 2026-10-28 批准；2026-11-14 增补 4 档流程）
 
 - 任务按范围与风险进入 4 档流程；本节是 4 档流程的仓库权威源，PM 手册只写操作摘要并链接本节。只有 `feature` 档必走 Nick 设计 + Alex 架构审查；`code-fix` / `doc-rule` / `doc-light` 按各自档位执行，`doc-light` 免预检、免独立复核。
