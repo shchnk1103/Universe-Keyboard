@@ -16,8 +16,8 @@ nonisolated enum ActivationPresentationStorage {
 /// The main App must not invent a live Extension Full Access flag; observation and
 /// weak user affirmations are modeled separately.
 ///
-/// Marked `nonisolated` so TipKit `Tip` definitions (nonisolated protocol) and unit
-/// tests can read the same pure model without MainActor hops.
+/// Marked `nonisolated` so unit tests can read the same pure model without
+/// MainActor hops.
 nonisolated struct ActivationChecklistState: Equatable, Sendable {
     enum Step: Int, CaseIterable, Equatable, Sendable {
         case addKeyboard
@@ -143,7 +143,7 @@ nonisolated struct ActivationChecklistState: Equatable, Sendable {
     }
 }
 
-/// Canonical activation copy. `nonisolated` so TipKit tips can share the same strings.
+/// Canonical activation copy. `nonisolated` so Sheet 恢复引导与清单视图可共享同一份字符串。
 nonisolated enum ActivationCopy {
     static let valueLocal = "本地 RIME 中文输入，在设备上完成。"
     static let privacyNoUpload = "输入内容、候选与上下文不会上传给开发者。"

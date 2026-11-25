@@ -1,3 +1,5 @@
+> **Superseded Note (2026-11-25, PB-020)**：TipKit 展示层已由 `PB-020-TIPKIT-REMOVAL-001` 从主 App 全量移除（`ActivationTips.swift` 删除、5 个视图调用点清理）；激活引导以激活 Sheet（J0–J5）+ 设置 **？** 恢复入口为准。本文件历史正文保留不动，"no tip UI in the Keyboard Extension" 条款继续有效。
+
 # Product Decision: HELP-TIPKIT-001 — 帮助入口、软首启与 TipKit 展示层
 
 **Decision ID:** `PD-HELP-TIPKIT-001`

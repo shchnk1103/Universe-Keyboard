@@ -19,7 +19,7 @@ struct HomeTab: View {
 
     @AppStorage("rime_deployed", store: UserDefaults(suiteName: universeAppGroupID))
     private var rimeDeployed = false
-    /// Used only to attach first-input TipKit tip while that step remains open.
+    /// Home 卡片按当前清单进度判断展示（PB-020 后不再驱动 TipKit tip）。
     @AppStorage("activation_keyboard_added_affirmed")
     private var keyboardAddedAffirmed = false
     @AppStorage("activation_full_access_affirmed")
@@ -58,10 +58,6 @@ struct HomeTab: View {
                         .appCardEntrance(isVisible: todayCardVisible, reduceMotion: reduceMotion)
                     keyboardStatusSection
                         .appCardEntrance(isVisible: keyboardCardVisible, reduceMotion: reduceMotion)
-                        // First-input smoke tip on Home when that step is next (TipKit rules hide when complete).
-                        .activationPopoverTip(
-                            for: homeActivationChecklist.nextStep == .firstInput ? .firstInput : nil
-                        )
                 }
                 .padding(.horizontal, AppSpacing.screen)
                 .padding(.vertical, AppSpacing.screen)
@@ -72,13 +68,11 @@ struct HomeTab: View {
                 model.reload()
                 rimeStore.load()
                 playEntranceIfNeeded()
-                ActivationTips.sync(from: homeActivationChecklist)
             }
             .onChange(of: scenePhase) { _, phase in
                 guard phase == .active else { return }
                 model.reload()
                 rimeStore.load()
-                ActivationTips.sync(from: homeActivationChecklist)
             }
         }
     }

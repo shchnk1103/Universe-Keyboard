@@ -239,26 +239,6 @@ final class ActivationChecklistStateTests: XCTestCase {
         XCTAssertEqual(ActivationCopy.reReadBackToManualTitle, "回到说明书")
     }
 
-    func testTipInvalidationFlagsTrackChecklistSteps() {
-        var state = baseState()
-        var flags = ActivationTips.CompletionFlags(state: state)
-        XCTAssertFalse(flags.addKeyboard)
-        XCTAssertFalse(flags.fullAccess)
-        XCTAssertFalse(flags.prepareResources)
-        XCTAssertFalse(flags.firstInput)
-
-        state.keyboardAddedAffirmed = true
-        state.fullAccess = .userAffirmed
-        state.activeSchemaInstalled = true
-        state.rimeDeployed = true
-        state.firstInputAffirmed = true
-        flags = ActivationTips.CompletionFlags(state: state)
-        XCTAssertTrue(flags.addKeyboard)
-        XCTAssertTrue(flags.fullAccess)
-        XCTAssertTrue(flags.prepareResources)
-        XCTAssertTrue(flags.firstInput)
-    }
-
     func testTipCopyDoesNotEmbedFullPrivacyPolicyOrFAHardRequirement() {
         XCTAssertFalse(ActivationCopy.fullAccessPurpose.contains("隐私政策"))
         XCTAssertFalse(ActivationCopy.mainAppPreparesResources.contains("必须开启完全访问"))
