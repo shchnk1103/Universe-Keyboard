@@ -23,9 +23,17 @@ struct CandidateCellSizeCacheKey: Hashable {
 extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     /// `resetCandidateSnapshotFromController()` 在唯一重建边界移除 placeholder。
     /// 分页窗口只生成普通 RIME candidate，因此数据源回调可以直接复用同一数组。
+    /// PB-009-SHORTCUT-BAR-REUSE-001：数字页快捷栏激活时覆盖为快捷符号伪候选，
+    /// 与正常候选共用同一渲染/点击管线。
     var presentedCandidates: [CandidateItem] {
-        shouldBlockT9RecoveryPresentation ? [] : accumulatedCandidates
+        if shouldBlockT9RecoveryPresentation { return [] }
+        if isT9NumberPadShortcutStripActive { return Self.numberPadShortcutCandidateItems }
+        return accumulatedCandidates
     }
+
+    /// 数字页快捷符号的伪候选（复用候选栏管线，PB-009-SHORTCUT-BAR-REUSE-001）。
+    static let numberPadShortcutCandidateItems: [CandidateItem] =
+        T9NumberPadLayout.shortcutSymbols.map { CandidateItem(title: $0, kind: .candidate) }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if collectionView === pinyinPathCollectionView { return accumulatedPinyinPaths.count }
@@ -253,6 +261,7 @@ extension KeyboardViewController: UICollectionViewDataSource, UICollectionViewDe
     }
 
     private func commitCandidate(_ item: CandidateItem) {
+        if commitNumberPadShortcutStripItemIfActive(item) { return }
         guard !controller.isCompositionInputRecoveryPending else { commitTrace.reject(suppressed: false); return }
         if let origin = item.selectionReference?.candidateOrigin {
             guard controller.state.lastRimeOutput?.candidateOrigin == origin else {

@@ -168,6 +168,10 @@ class KeyboardViewController: UIInputViewController {
     /// 横向候选集合视图，按需复用可见 cell
     var candidateCollectionView: UICollectionView?
     var lastCompactCandidateCommitTime: CFTimeInterval = 0
+    /// PB-009-SHORTCUT-BAR-REUSE-001：九键数字页符号快捷栏复用原候选栏。
+    /// 激活时 `presentedCandidates` 覆盖为 `T9NumberPadLayout.shortcutSymbols`
+    /// 的伪候选，由原生 `CandidateCollectionCell` 管线渲染与提交。
+    var isT9NumberPadShortcutStripActive = false
     /// 地球键（输入法切换），iOS 要求所有第三方键盘必须提供
     var nextKeyboardButton: UIButton!
     /// Shift 键，位于第 3 行左侧

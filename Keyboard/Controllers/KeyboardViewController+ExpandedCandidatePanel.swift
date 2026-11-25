@@ -586,6 +586,7 @@ extension KeyboardViewController {
     }
 
     func commitExpandedCandidate(_ item: CandidateItem) {
+        if commitNumberPadShortcutStripItemIfActive(item) { return }
         guard !isKeyboardHeightAdjusting else { commitTrace.reject(suppressed: false); return }
         guard !controller.isCompositionInputRecoveryPending else { commitTrace.reject(suppressed: false); return }
         if let origin = item.selectionReference?.candidateOrigin {
