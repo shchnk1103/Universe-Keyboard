@@ -78,9 +78,14 @@ nonisolated final class T9NumberPadChromeTests: XCTestCase {
         XCTAssertTrue(sut.isT9NumberPadShortcutStripActive)
         XCTAssertEqual(
             bar.collectionView.numberOfItems(inSection: 0), T9NumberPadLayout.shortcutSymbols.count)
+        // T9-NUMPAD-SHORTCUTS-EXPAND-001 r4：18 项超出候选栏单屏宽度，
+        // 逐项滚动进视口再断言（cellForItem 只对已 materialize 的 cell 非 nil）。
         for (index, symbol) in T9NumberPadLayout.shortcutSymbols.enumerated() {
+            let indexPath = IndexPath(item: index, section: 0)
+            bar.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
+            bar.layoutIfNeeded()
             let cell = try XCTUnwrap(
-                bar.collectionView.cellForItem(at: IndexPath(item: index, section: 0)),
+                bar.collectionView.cellForItem(at: indexPath),
                 "missing visible cell for \(symbol)")
             XCTAssertEqual(firstLabelText(in: cell), symbol)
         }

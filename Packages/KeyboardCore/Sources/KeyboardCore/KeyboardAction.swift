@@ -45,7 +45,11 @@ public enum KeyboardAction: Equatable {
 
 /// 九键中文数字页的纯布局表。UI 只按这张表建键，测试不依赖 UIKit 帧。
 public enum T9NumberPadLayout: Sendable {
-    public static let shortcutSymbols: [String] = ["/", "%", "#", "÷", "=", ":"]
+    /// 九宫格候选栏常用快捷符号（T9-NUMPAD-SHORTCUTS-EXPAND-001，高频前置；
+    /// 不与数字主面板已有按键 `@` `+` `-` `.` 重复）。
+    public static let shortcutSymbols: [String] = [
+        "/", "%", ":", "×", "÷", "=", "#", "¥", "$", "~", "—", "(", ")", "℃", "±", "‰", "°", "、",
+    ]
 
     public enum Tap: Equatable, Sendable {
         case literal(String)

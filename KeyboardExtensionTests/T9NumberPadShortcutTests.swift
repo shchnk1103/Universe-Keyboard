@@ -5,7 +5,9 @@ import XCTest
 /// Shortcut closure is a literal set compare, not a contains check (Alex review).
 nonisolated final class T9NumberPadShortcutTests: XCTestCase {
     func testShortcutSymbolsMatchFrozenSetExactly() {
-        XCTAssertEqual(T9NumberPadLayout.shortcutSymbols, ["/", "%", "#", "÷", "=", ":"])
+        XCTAssertEqual(
+            T9NumberPadLayout.shortcutSymbols,
+            ["/", "%", ":", "×", "÷", "=", "#", "¥", "$", "~", "—", "(", ")", "℃", "±", "‰", "°", "、"])
     }
 
     func testSpaceKeyInLayoutInstallsCursorLongPress() {
