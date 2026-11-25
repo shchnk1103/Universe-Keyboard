@@ -191,6 +191,17 @@ def build_exec_package(a, input_pairs: "list[tuple[str, str]]", close_cmd: str =
     for i, step in enumerate(a.step, 1):
         lines.append("%d. %s" % (i, step))
     lines.append("")
+    # O111 (KOS-LINT-BASELINE-GUARD-001): the closing order is fixed in the
+    # template so "clean tree" can never be demanded before the commit step in
+    # a self-contradictory way.
+    lines.append("## 收尾顺序（固化，O111）")
+    lines.append("")
+    lines.append("提交按且仅按以下顺序执行：")
+    lines.append("1. 移除临时软链（如有）。")
+    lines.append("2. 核对 `git status --short` 仅剩本包允许改动。")
+    lines.append("3. `git add` 与 `git commit`（恰 1 个干净提交）。")
+    lines.append("4. 确认工作树干净。")
+    lines.append("")
     lines.append("## 报告与交付")
     lines.append("")
     lines.append("- O91：任何 STOPPED 或 BLOCKED 均须先将状态与阻断原因写入报告，再调用 `scripts/kos/kos_handoff.py final`（status 与报告一致）交回 PM 并释放看板；严禁无报告退出。")

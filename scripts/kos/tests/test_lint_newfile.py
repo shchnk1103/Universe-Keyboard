@@ -25,7 +25,7 @@ def run(text: str, kos_home: "str | None" = None) -> subprocess.CompletedProcess
             env["KOS_HOME"] = kos_home
             env["KOS_PROJECT"] = "Universe-Keyboard"
         return subprocess.run(
-            [sys.executable, "-I", str(SCRIPT), "--start", START, str(path)],
+            [sys.executable, "-I", str(SCRIPT), "--start", START, str(path), "--no-git-check"],
             text=True, capture_output=True, check=False, env=env,
         )
 

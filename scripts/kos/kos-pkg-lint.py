@@ -10,6 +10,10 @@ O1/O19：包与包之间的机械一致性检查（只读）。退出码 1=有�
  E6 交接脚本：禁止 render_handoff_v1.py；样式 B 的 kos_handoff.py 及同包 scripts/kos、tools 脚本必须存在。
  E7 本地门禁：禁止 CODE_SIGNING_IDENTITY=-；声明 full 或签名 Keychain 命令时六步必须齐全，且不得把托管重试说成本地命令。
  E8 冻结输入：要求校验或标明冻结输入时，必须有反引号路径与 64 位哈希配对。
+ E11 基线真实性（O111）：--start 以及起点/父提交/HEAD/基线提交语境命中的 40 位 SHA，
+     必须通过 git cat-file -e <sha>^{commit}（指向 --repo-root 或脚本所在仓库）真实存在；
+     不存在即报错（exit 1），防止手抄错 SHA 流入执行包。--no-git-check 仅用于无 .git
+     环境的纯文本测试 fixture（默认开启校验；仓库不可定位时 fail-closed）。
  W1 数字短语：同一“名词+数字”（如 7 条断言、18 项跳过）在不同包里数字不同 → 提示人工核对。
  W2 量词：同一份文本里既有“各自/分别/逐项”又有“或”描述同一类枚举时提示（启发式：同一行有“或”且另一包同关键词的行有“各自/分别”）。
  W3 编号条目：同一编号内容差异大时提示。
@@ -32,6 +36,9 @@ def main():
         if n in args:
             i = args.index(n); v = args[i+1]; del args[i:i+2]; return v
     start = opt('--start'); prev = opt('--prev'); charter = opt('--charter'); stage = opt('--stage')
+    repo_root = opt('--repo-root')
+    no_git_check = '--no-git-check' in args
+    args = [a for a in args if a != '--no-git-check']
     files = args
     if stage:  # 自动选各类包的最高修订版与最新章程
         import glob, re as _re
@@ -51,6 +58,35 @@ def main():
     SHA = re.compile(r'(?<![0-9a-f])[0-9a-f]{40}(?![0-9a-f])')
     CTX = re.compile(r'起点|父提交|HEAD|基线提交')
     OLD = re.compile(r'取代|历史|旧|未下发|原包|上一')
+    # O111 (KOS-LINT-BASELINE-GUARD-001): baseline SHAs must reference real
+    # commits in the local object database. Fail closed: default on, and an
+    # undiscoverable .git is itself an error unless --no-git-check is given.
+    if not no_git_check:
+        git_root = repo_root or os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..'))
+        import subprocess as _sp
+
+        def _commit_exists(sha):
+            proc = _sp.run(['git', '-C', git_root, 'cat-file', '-e', sha + '^{commit}'],
+                           stdout=_sp.DEVNULL, stderr=_sp.DEVNULL)
+            return proc.returncode == 0
+
+        if not os.path.exists(os.path.join(git_root, '.git')):
+            err.append(f"E11 无法定位 git 仓库（--repo-root={git_root} 下无 .git）：基线 SHA 存在性校验被拒（fail-closed）；纯文本 fixture 请加 --no-git-check")
+        else:
+            baseline_shas = [start]
+            for f, t in txt.items():
+                for line in t.split('\n'):
+                    for m in SHA.finditer(line):
+                        win = line[max(0, m.start()-40):m.end()+10]
+                        if CTX.search(win):
+                            baseline_shas.append(m.group(0))
+            seen_sha = set()
+            for s in baseline_shas:
+                if s in seen_sha:
+                    continue
+                seen_sha.add(s)
+                if not _commit_exists(s):
+                    err.append(f"E11 基线 SHA 不在本地 git 对象库中（git cat-file -e {s[:8]}^{{commit}} 失败，repo={git_root}）：{s} — 疑似手抄错误 SHA，禁止流入执行包")
     for f, t in txt.items():
         for n, line in enumerate(t.split('\n'), 1):
             for m in SHA.finditer(line):

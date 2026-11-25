@@ -106,7 +106,7 @@ class HandoffBoardSyncTests(unittest.TestCase):
             "- next_role: Jack（PM）\n",
             encoding="utf-8",
         )
-        result = _run(LINT, ["--start", "a" * 40, str(packet)])
+        result = _run(LINT, ["--start", "a" * 40, str(packet), "--no-git-check"])
         self.assertEqual(result.returncode, 0, result.stdout)
         self.assertIn("W6 ", result.stdout)
         self.assertIn("Maya", result.stdout)

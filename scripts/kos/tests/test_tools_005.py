@@ -151,7 +151,7 @@ class PkgLintTests(unittest.TestCase):
         self.tmp.cleanup()
 
     def _run(self, files: list[Path], *, start: str | None = None, prev: Path | None = None, charter: Path | None = None):
-        args = ["--start", start or self.start]
+        args = ["--start", start or self.start, "--no-git-check"]
         if prev is not None:
             args += ["--prev", str(prev)]
         if charter is not None:
