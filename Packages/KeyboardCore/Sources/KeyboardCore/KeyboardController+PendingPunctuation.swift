@@ -20,6 +20,13 @@ extension KeyboardController {
     @discardableResult
     public func noteExternalDocumentChange() -> KeyboardEffect {
         guard !isPerformingOwnedHostMutation else { return [] }
+        // EN-AUTOSPACE-DEVICE-FIX-001：候选提交的宿主 `textDidChange` 回声
+        // （同一文档身份、单次）不是外部编辑，一次性跳过全部清态，保住
+        // 刚武装的 deferred autospace；随后的真实外改通知不受影响。
+        if suppressNextExternalChangeForCandidateEcho {
+            suppressNextExternalChangeForCandidateEcho = false
+            return []
+        }
         fencePartialCommitFailureRecovery()
         invalidateMixedScriptSpacingAnchor()
         // PB-013 退出矩阵：宿主外部编辑（含粘贴）退出标点续接态。

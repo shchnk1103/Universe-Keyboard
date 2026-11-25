@@ -42,6 +42,13 @@ public final class KeyboardController {
     public internal(set) var ownedHostMutationGeneration: UInt64 = 0
     var ownedHostMutationDepth = 0
 
+    /// EN-AUTOSPACE-DEVICE-FIX-001：候选提交是单次原子 `insertText`，宿主
+    /// 会随后异步回调一次 `textDidChange`（同一文档身份）。该回声是本状态机
+    /// 自己写入的反射而非外部编辑，提交时武装的一次性抑制标志让
+    /// `noteExternalDocumentChange()` 跳过它，避免刚武装的 deferred
+    /// autospace 被提前撤回。真正的外部编辑（下一次通知）仍正常清态。
+    var suppressNextExternalChangeForCandidateEcho = false
+
     /// 测试钩子：把 L1 mirror 置为 ahead，供标点键 / 标点候选 fail-closed 用例使用。
     func testingForceProvisionalAhead() {
         _ = provisionalCompositionMirror.appendT9DigitAccept(revision: 1, epoch: 1)

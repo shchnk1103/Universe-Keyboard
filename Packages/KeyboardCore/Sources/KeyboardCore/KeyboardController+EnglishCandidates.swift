@@ -157,6 +157,10 @@ extension KeyboardController {
         let effects = clearEnglishCandidates()
         if deferTrailingSpaceToNextLetter {
             state.pendingEnglishAutospace = true
+            // 宿主对本事务的 textDidChange 回声即将异步到达（真机时序，
+            // EN-AUTOSPACE-DEVICE-FIX-001）：置一次性抑制标志，回声不得
+            // 撤回刚武装的 deferred autospace。
+            suppressNextExternalChangeForCandidateEcho = true
         }
         return effects
     }
