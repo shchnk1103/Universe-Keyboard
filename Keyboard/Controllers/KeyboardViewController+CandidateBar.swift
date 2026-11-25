@@ -44,7 +44,7 @@ extension KeyboardViewController {
         candidateScrollView = collectionView
         candidateExpandButton = view.expandButton
         candidateExpandButtonWidthConstraint = view.expandButtonWidthConstraint
-        fillCandidateBar()
+        fillCandidateBar(on: view)
         view.onItemTap = { [weak self] indexPath in
             self?.commitCompactCandidate(at: indexPath)
         }
@@ -58,6 +58,13 @@ extension KeyboardViewController {
         return view
     }
 
+    /// 下滑展开旗标与尾按钮共用的展开口径（PB-021-NUMPAD-SWIPE-EXPAND-001）。
+    /// 有可展开候选，或数字快捷栏激活；空闲非快捷栏态恒为 `false`。
+    var canExpandCandidateBar: Bool {
+        presentedCandidates.contains { $0.kind.expandsCandidateBarPanel }
+            || isT9NumberPadShortcutStripActive
+    }
+
     /// Idle trailing control dismisses the keyboard; expandable content still expands.
     @objc func handleCandidateBarTrailingButton() {
         if pasteSession.preview == .reading {
@@ -66,9 +73,7 @@ extension KeyboardViewController {
         }
         guard !isKeyboardHeightAdjusting else { return }
         guard !shouldBlockT9RecoveryPresentation else { return }
-        let canExpand =
-            presentedCandidates.contains { $0.kind.expandsCandidateBarPanel }
-            || isT9NumberPadShortcutStripActive
+        let canExpand = canExpandCandidateBar
         if canExpand {
             toggleCandidateExpand()
         } else {
@@ -164,7 +169,7 @@ extension KeyboardViewController {
 
     /// 刷新横向候选列表的数据呈现。`UICollectionView` 自行复用可见 cell，
     /// 不需要为每个已加载候选创建常驻 UIButton。
-    func fillCandidateBar(keepScrollPosition: Bool = false) {
+    func fillCandidateBar(keepScrollPosition: Bool = false, on targetBar: CandidateBarView? = nil) {
         guard let collectionView = candidateCollectionView else {
             Logger.shared.warning("fillCandidateBar: candidateCollectionView is nil", category: .general)
             return
@@ -172,18 +177,24 @@ extension KeyboardViewController {
         #if DEBUG
             let renderStart = CACurrentMediaTime()
         #endif
-        defer { refreshPasteToolbar() }
+        // PB-021-NUMPAD-SWIPE-EXPAND-001：重建路径期间 `self.candidateBar` 仍是旧 bar，
+        // defer 的粘贴工具条刷新必须跟随同一 targetBar，否则快捷栏翻转会在旧 bar 上结算，
+        // 新 bar 残留陈旧旗标。targetBar 为 nil 时与原行为一致。
+        defer { refreshPasteToolbar(on: targetBar) }
         let items = presentedCandidates
 
         // Dual-mode trailing control (`PD-CANDIDATE-BAR-IDLE-DISMISS-001`):
         // expandable content keeps expand + swipe-down; idle shows dismiss.
-        let canExpand = items.contains { $0.kind.expandsCandidateBarPanel }
+        // PB-021-NUMPAD-SWIPE-EXPAND-001：重建路径（makeCandidateBar）期间
+        // `self.candidateBar` 仍是旧 bar（或 nil），旗标必须落到 `targetBar` 上。
+        let canExpand = canExpandCandidateBar
         candidateExpandButton?.isHidden = false
-        if let bar = candidateBar as? CandidateBarView {
+        let bar = targetBar ?? candidateBar as? CandidateBarView
+        if let bar {
             bar.allowsSwipeToExpand = canExpand
         }
         updateExpandButtonAppearance(canExpand: canExpand)
-        (candidateBar as? CandidateBarView)?.setInputRecoveryNotice(
+        bar?.setInputRecoveryNotice(
             shouldBlockT9RecoveryPresentation ? controller.compositionInputRecoveryMessage : nil)
         #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
             refreshWakeOwnerProbeControls()
@@ -504,13 +515,17 @@ extension KeyboardViewController {
         if show == isT9NumberPadShortcutStripActive {
             if show {
                 removeLegacyNumberPadShortcutOverlays(on: bar)
+                // PB-021-NUMPAD-SWIPE-EXPAND-001：整建路径（makeCandidateBar →
+                // refreshPasteToolbar(on:)）不会经过 fillCandidateBar()，
+                // 在 early-return 处把旗标按统一口径落到传入的新 bar 上。
+                bar.allowsSwipeToExpand = canExpandCandidateBar
             }
             return show
         }
         isT9NumberPadShortcutStripActive = show
         removeLegacyNumberPadShortcutOverlays(on: bar)
         // 重新加载候选栏：激活时数据源覆盖为快捷符号，去激活时恢复普通候选。
-        fillCandidateBar()
+        fillCandidateBar(on: bar)
         return show
     }
 
