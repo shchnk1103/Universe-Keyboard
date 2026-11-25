@@ -56,6 +56,26 @@ public struct AddressLikeSessionState: Equatable {
     }
 }
 
+/// EN-AUTOSPACE-IMMEDIATE-001：英文候选提交事务末尾已补 1 个 ASCII 空格且
+/// 本状态机对该空格拥有回删资格的标记。
+///
+/// 回声抑制与本标记生命周期绑定（同清同活）：抑制只在标记武装期间存在，
+/// 标记被任何路径撤销（候选失效入口、归属不成立的通知）时抑制一并撤销。
+struct EnglishTrailingSpaceMark: Equatable {
+    /// 本次提交事务写宿主的完整内容（前导空格 + 候选 + 尾随空格）。仅用于
+    /// 回删/回声归属前的所有权核验（同一文档、光标紧邻刚插入空格）。进程
+    /// 内存态，不持久化、不落日志（ADR 0007）。
+    let committedTransactionText: String
+    /// 提交回声抑制：宿主对本事务的 `textDidChange` 回声最多吞一次；耗尽后
+    /// 的通知无法归属，撤销整个标记。
+    var suppressNextEcho: Bool
+
+    init(committedTransactionText: String) {
+        self.committedTransactionText = committedTransactionText
+        self.suppressNextEcho = true
+    }
+}
+
 public struct KeyboardState: Equatable {
     public var currentPage: KeyboardPage
     public var inputMode: InputMode
@@ -79,11 +99,11 @@ public struct KeyboardState: Equatable {
     /// 英文模式前缀候选状态（当前词前缀 + 大小写对齐建议 + 来源版本）。
     /// 与中文 continuation 完全分离且不持久化。
     public var englishCandidate: EnglishCandidateState = EnglishCandidateState()
-    /// 英文候选提交后延后补空格标记（设计 r1「标记未补」；EN-mode fix r1）。
-    /// 仅当候选提交时右邻为已知空上下文（文档尾）才武装：英文模式下一个直
-    /// 输 ASCII 字母携带该空格；标点与其他输入豁免撤回；退格与一切候选失
-    /// 效（模式/页面/宿主类型切换、外部编辑）一并撤回。进程内存态，不持久化。
-    public var pendingEnglishAutospace: Bool = false
+    /// EN-AUTOSPACE-IMMEDIATE-001「已补尾随空格且拥有回删资格」标记。
+    /// 候选提交事务在同一次 `insertText` 末尾写出 1 个 ASCII 空格时武装；
+    /// 一切候选失效入口（语言切换、键盘类型/页面切换、外部编辑、其余写入
+    /// 入口）与归属不成立的通知一律撤销。进程内存态，不持久化。
+    var englishTrailingSpaceMark: EnglishTrailingSpaceMark? = nil
     /// 当前已插入到文本输入框中的拼音串。用于实现 inline preedit 的差量更新。
     public var insertedPreeditText: String = ""
     /// 当前已插入到文本输入框中的拼音串长度。保留长度字段，方便删除时避免重复计算。

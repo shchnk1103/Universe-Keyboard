@@ -41,13 +41,13 @@ extension KeyboardController {
     }
 
     /// Clears the prefix buffer and its suggestions (word finished, mode,
-    /// page, host type or document changed). Any invalidation also recalls a
-    /// deferred autospace (space/return/non-letter input, backward delete,
-    /// mode/page/host-type switch, external edit). Returns an effect only
-    /// when the visible state actually changed.
+    /// page, host type or document changed). Any invalidation also revokes
+    /// the trailing-space delete-eligibility mark (同清同活 with the echo
+    /// suppression bound to it). Returns an effect only when the visible
+    /// state actually changed.
     @discardableResult
     func clearEnglishCandidates() -> KeyboardEffect {
-        state.pendingEnglishAutospace = false
+        state.englishTrailingSpaceMark = nil
         guard !state.englishCandidate.isEmpty else { return [] }
         state.englishCandidate = EnglishCandidateState()
         return .englishCandidatesChanged
@@ -82,13 +82,16 @@ extension KeyboardController {
     /// owns the Han boundary (applied inside `insertText`), and the
     /// English-mode sentence-terminator rule
     /// (`EnglishAutospace.leadingSpaceAfterSentenceTerminator`) rides in the
-    /// same transaction without ever doubling it. The trailing decision
-    /// skips when either boundary already produced the leading space; at a
-    /// known-empty right context the trailing space is deferred
-    /// (`pendingEnglishAutospace`) to the next directly typed letter. The
-    /// right neighbor is read exactly once through the unified
-    /// `documentContextAfterInput` read point; `nil` stays conservative.
-    /// No text is logged (ADR 0007).
+    /// same transaction without ever doubling it. Leading and trailing
+    /// decisions are independent (EN-AUTOSPACE-IMMEDIATE-001 abolished the
+    /// old `leadingSpaceAdded` suppression). When autospace is enabled and
+    /// the host type is not disabled, the trailing space is written
+    /// immediately in the same transaction whenever the right neighbor is
+    /// unknown, the document end, or a non-whitespace non-attached
+    /// punctuation scalar. On success `clearEnglishCandidates()` runs BEFORE
+    /// the new 「已补尾随空格且拥有回删资格」 mark is armed, so the echo
+    /// suppression bound to the mark (同清同活) can never observe stale
+    /// candidates. No text is logged (ADR 0007).
     func commitEnglishCandidate(_ candidate: String) -> KeyboardEffect {
         // Fail closed (Quality F-01): without a host text proxy there is no
         // host to write to and no post-insert boundary to confirm, so the
@@ -118,12 +121,12 @@ extension KeyboardController {
 
         let trailing: Bool
         var leading = false
-        var deferTrailingSpaceToNextLetter = false
         if englishCandidateAutospaceEnabled,
             !EnglishAutospace.isDisabled(for: state.activeKeyboardType)
         {
             // Live left-neighbor read after the replacement — the same inputs
-            // `spacedCommitText` sees in `insertText`.
+            // `spacedCommitText` sees in `insertText`. Independent from the
+            // trailing decision below.
             let before = documentContextBeforeInput?()
             leading =
                 MixedScriptSpacing.leadingSpace(before: before, committing: candidate) == " "
@@ -135,16 +138,8 @@ extension KeyboardController {
             let after = documentContextAfterInput?()
             trailing = EnglishAutospace.trailingSpace(
                 after: after,
-                committing: candidate,
-                leadingSpaceAdded: leading
+                committing: candidate
             )
-            // Known-empty right context (document end): the boundary toward
-            // the next word is undecided at commit time, so the trailing
-            // space is deferred — the design r1 「标记未补」 mark. The next
-            // directly typed ASCII letter in English mode carries it; every
-            // other input (punctuation, connector symbols, space, return) is
-            // exempt and recalls it; a backward delete recalls it too.
-            deferTrailingSpaceToNextLetter = (after == "")
         } else {
             trailing = false
         }
@@ -152,35 +147,19 @@ extension KeyboardController {
         // The English-mode sentence-terminator leading space rides in the
         // same single insertion transaction; `spacedCommitText` sees a
         // whitespace first scalar and never doubles it. `MixedScriptSpacing`
-        // keeps owning the Han boundary inside `insertText`.
-        insertText((leading ? " " : "") + candidate + (trailing ? " " : ""), source: .candidate)
+        // keeps owning the Han boundary inside `insertText`. Leading and
+        // trailing are concatenated in this one `insertText` (r3 §2.1).
+        let transactionText = (leading ? " " : "") + candidate + (trailing ? " " : "")
+        insertText(transactionText, source: .candidate)
+        // 候选提交路径：先清候选（含旧标记撤销），再武装「已补尾随空格且
+        // 拥有回删资格」状态。回声抑制随标记同清同活。
         let effects = clearEnglishCandidates()
-        if deferTrailingSpaceToNextLetter {
-            state.pendingEnglishAutospace = true
-            // 宿主对本事务的 textDidChange 回声即将异步到达（真机时序，
-            // EN-AUTOSPACE-DEVICE-FIX-001）：置一次性抑制标志，回声不得
-            // 撤回刚武装的 deferred autospace。
-            suppressNextExternalChangeForCandidateEcho = true
+        if trailing {
+            state.englishTrailingSpaceMark = EnglishTrailingSpaceMark(
+                committedTransactionText: transactionText
+            )
         }
         return effects
-    }
-
-    /// Consumes a deferred trailing autospace for a directly inserted key.
-    /// The next bare ASCII letter typed in English mode carries the deferred
-    /// space (`Word` + `h` → `Word h`); every other input — punctuation,
-    /// connector symbols, digits — is exempt and only recalls the pending
-    /// state, so `Word` + `.` stays `Word.` (frozen design connector
-    /// exemption). Never logs text (ADR 0007).
-    func consumeEnglishAutospaceForDirectKey(_ key: String) -> String {
-        guard state.pendingEnglishAutospace else { return key }
-        state.pendingEnglishAutospace = false
-        guard englishCandidateAutospaceEnabled,
-            state.inputMode == .english,
-            key.unicodeScalars.count == 1,
-            let scalar = key.unicodeScalars.first,
-            Self.isASCIILetter(scalar)
-        else { return key }
-        return " " + key
     }
 
     private static func isASCIILetter(_ scalar: Unicode.Scalar) -> Bool {

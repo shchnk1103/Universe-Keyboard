@@ -1,12 +1,17 @@
 extension KeyboardController {
     func handleInsertKey(_ key: String) -> KeyboardEffect {
-        // Deferred English candidate autospace (EN-mode fix r1): consumed by
-        // the next directly typed key — a bare ASCII letter carries the
-        // deferred space, any other input recalls it (exemption).
-        let autospaceKey = consumeEnglishAutospaceForDirectKey(key)
-        guard shouldHandleAsChineseCompositionKey(autospaceKey) else {
-            guard let effects = handleSymbolPageTextInput(autospaceKey, updatesEnglishAutoCap: true) else {
-                insertText(autospaceKey, source: .key)
+        // EN-AUTOSPACE-IMMEDIATE-001：附着标点智能回删仅适用于 `.insertKey`
+        // 命中冻结附着标点集合（r3 §2.3）；旧「待补空格」延迟语义废除，
+        // 直接透传原键。其余任何输入一律先撤销回删资格（清态）。
+        if state.englishTrailingSpaceMark != nil {
+            if let effects = replaceOwnedTrailingSpaceWithAttachedPunctuation(key) {
+                return effects
+            }
+            state.englishTrailingSpaceMark = nil
+        }
+        guard shouldHandleAsChineseCompositionKey(key) else {
+            guard let effects = handleSymbolPageTextInput(key, updatesEnglishAutoCap: true) else {
+                insertText(key, source: .key)
                 var effects = consumeSingleUseShiftIfNeeded()
                 effects.formUnion(noteEnglishKeyInput(key))
                 if state.inputMode == .english,
@@ -579,5 +584,56 @@ extension KeyboardController {
 
     func commitComposition() {
         finishActiveCompositionAsDisplayText()
+    }
+
+    /// EN-AUTOSPACE-IMMEDIATE-001 智能回删（r3 §2.2）：附着标点键命中冻结
+    /// 集合时，若尾随空格标记武装且回删归属成立（同一文档、光标紧邻刚插入
+    /// 空格），先 `deleteBackward()` 再插入标点（"Word " + "." → "Word."）。
+    ///
+    /// 归属核验在执行时刻进行：宿主前缀必须以标记记录的完整事务内容结尾。
+    /// 上下文未知（读取 nil）、光标或文档已变化、所有权失效 → 返回 nil，
+    /// 不删除任何宿主字符，调用方清态后按普通写入直插标点（"Word ." 退化
+    /// 可接受）；严禁盲目删除其他字符。
+    ///
+    /// `deleteBackward()` 返回 Void：不同宿主的删除是否实际生效无法确认
+    /// （红测 `testDeleteBackwardHostDifferenceWhenDeleteIsNoOp` 记录该限制
+    /// —— no-op 宿主上结果为 "Word .."）。仅在归属成立（宿主前缀可读且
+    /// 匹配，即光标前确有本状态机写入的字符）时才发出这一次回删。
+    private func replaceOwnedTrailingSpaceWithAttachedPunctuation(
+        _ key: String
+    ) -> KeyboardEffect? {
+        guard key.unicodeScalars.count == 1,
+            let scalar = key.unicodeScalars.first,
+            EnglishAutospace.attachedPunctuationScalars.contains(scalar),
+            englishCandidateAutospaceEnabled,
+            !EnglishAutospace.isDisabled(for: state.activeKeyboardType),
+            state.inputMode == .english,
+            state.currentPage == .letters,
+            let mark = state.englishTrailingSpaceMark
+        else { return nil }
+
+        guard let before = documentContextBeforeInput?(),
+            before.unicodeScalars.count >= mark.committedTransactionText.unicodeScalars.count,
+            before.unicodeScalars.suffix(mark.committedTransactionText.unicodeScalars.count)
+                .elementsEqual(mark.committedTransactionText.unicodeScalars)
+        else {
+            // 归属不成立：撤销回删资格，不删宿主字符（降级直插）。
+            return nil
+        }
+
+        // 归属成立：清候选后回删刚插入的空格，再插入标点。
+        var effects = clearEnglishCandidates()
+        state.englishTrailingSpaceMark = nil
+        textClient?.deleteBackward()
+        insertText(key, source: .key)
+        effects.formUnion(consumeSingleUseShiftIfNeeded())
+        if state.inputMode == .english,
+            AddressLikeKeyboardType(keyboardType: state.activeKeyboardType) == nil,
+            AutoCapitalizationRules.isSentenceTerminator(key)
+        {
+            state.shiftState = .singleUse
+            effects.insert(.shiftStateChanged)
+        }
+        return effects
     }
 }
