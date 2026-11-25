@@ -1,5 +1,8 @@
 # Knowledge OS 2.0 Canonical Specification
 
+
+> **Portable kernel cross-link (O116 / KOS-O116-DOCS-CROSSLINK-001):** A trimmed portable kernel for this document lives in the external `kos-agent-kit` repo at `kos-agent-kit/core/kos-2.0-spec.md`. The general-purpose kernel belongs to `kos-agent-kit`; this repo keeps the full authoritative English version and the project-specific instance. This note is a cross-link only — no rule text is changed here.
+
 > **Version:** `2.0.0`
 >
 > **Status:** Canonical specification accepted; operational migration applied by KOS-MIG-001

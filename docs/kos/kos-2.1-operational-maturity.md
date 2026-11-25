@@ -1,5 +1,8 @@
 # KOS 2.1 Operational Maturity Package
 
+
+> **Portable kernel cross-link (O116 / KOS-O116-DOCS-CROSSLINK-001):** A trimmed portable kernel for this document lives in the external `kos-agent-kit` repo at `kos-agent-kit/ops/kos-2.1-operational-maturity.md`. The general-purpose kernel belongs to `kos-agent-kit`; this repo keeps the full authoritative English version and the project-specific instance. This note is a cross-link only — no rule text is changed here.
+
 > **Version:** `2.1.0-ops`  
 > **Status:** **Accepted as operational package under Knowledge OS 2.0**  
 >   (Product disposition 2026-08-06; IMPL `KOS-2.1-OPS-IMPL-001`)  

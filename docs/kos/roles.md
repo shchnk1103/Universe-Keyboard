@@ -1,5 +1,8 @@
 # 角色名册
 
+
+> **Portable kernel cross-link (O116 / KOS-O116-DOCS-CROSSLINK-001):** A trimmed portable kernel for this document lives in the external `kos-agent-kit` repo at `kos-agent-kit/core/permanent-roles.md`. The general-purpose kernel belongs to `kos-agent-kit`; this repo keeps the full authoritative English version and the project-specific instance. This note is a cross-link only — no rule text is changed here.
+
 下表前六行与冻结名册一致；第七行 Alex 于 2026-11-09 补登（Human 2026-11-07 原话：‘我觉得叫 Alex 很好，可以按照你的建议继续’，见定案⑤）。名册已转为正式；担任者按任务指定，不绑定某个 AI 品牌（见下方定案④）。
 
 | 名字 | 角色 | 当前担任者 | 角色卡 |
