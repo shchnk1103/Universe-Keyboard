@@ -3,6 +3,9 @@ extension KeyboardController {
         _ text: String,
         source: CommittedTextSource = .directText
     ) -> KeyboardEffect {
+        // EN-AUTOSPACE-IMMEDIATE-001：直插文本（含 emoji、符号页提交）是
+        // 实际写入入口，先撤销尾随空格回删资格（r3 §2.3 清态矩阵）。
+        state.englishTrailingSpaceMark = nil
         if let effects = handleSymbolPageTextInput(text) {
             return effects
         }
@@ -128,6 +131,16 @@ extension KeyboardController {
             return clearEnglishCandidates().union(.continuationChanged)
         }
 
+        // 方案 A（EN-AUTOSPACE-IMMEDIATE-001 r3 §2.3）：附着空格标记的消耗
+        // 发生在 pending 标点处理（handle() 的 acceptingPendingPunctuationIfNeeded
+        // 包装，先于本方法）之后、双击空格计时（lastSpaceTapTime）更新之前。
+        // 被消耗的首空格不参与双击空格转句号：候选事务已写出尾随空格，本次
+        // 空格键不重复写入，也不刷新计时（保持 "Word "）。
+        if state.englishTrailingSpaceMark != nil {
+            state.englishTrailingSpaceMark = nil
+            return clearEnglishCandidates().union(.continuationChanged)
+        }
+
         let now = currentDate()
         let isDoubleSpace = state.lastSpaceTapTime.map { now.timeIntervalSince($0) < 0.45 } ?? false
         state.lastSpaceTapTime = now
@@ -202,6 +215,9 @@ extension KeyboardController {
     func handleDeleteBackward() -> KeyboardEffect {
         t9DeleteObservationActive = t9DiagnosticCaptureEnabled
         defer { t9DeleteObservationActive = false }
+        // EN-AUTOSPACE-IMMEDIATE-001：退格是实际写入入口，先撤销尾随空格
+        // 回删资格（r3 §2.3 清态矩阵；不得借退格盲删宿主字符）。
+        state.englishTrailingSpaceMark = nil
         // Rem-3: Delete while L1-only (no L2 yet) — drop one provisional slot.
         if isResponsiveProvisionalAhead,
             isResponsiveRimePipelineEnabled,

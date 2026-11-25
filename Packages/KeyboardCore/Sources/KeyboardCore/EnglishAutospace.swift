@@ -2,30 +2,37 @@ import Foundation
 
 /// Trailing-space decision after an English candidate commit.
 ///
-/// Contract (arch Minor m1, aligned with `MixedScriptSpacing` and the
-/// URL-MODE-ENGLISH design):
-/// - Reads only the boundary scalars; `nil` right context is treated as an
-///   unknown right neighbor and conservatively adds no space.
-/// - An empty right context is the document end: no space.
-/// - Whitespace, punctuation and connector symbols (`.` `@` `:` `#` `/` …)
-///   ahead of the caret mean no space; a word-like neighbor (letter, digit,
-///   Han) does get one.
-/// - When `MixedScriptSpacing` already added the leading boundary space, the
-///   trailing decision skips: one spacing decision per transaction.
-/// The function never logs text (ADR 0007).
+/// Contract (EN-AUTOSPACE-IMMEDIATE-001, r3 §2): the trailing decision is
+/// independent of the leading decision — the old `leadingSpaceAdded`
+/// suppression and the deferred 「待补空格」 semantics are abolished. When the
+/// feature is enabled and the host type is not disabled, a candidate whose
+/// last scalar is non-whitespace gets exactly one ASCII space appended in the
+/// same `insertText` transaction whenever the right neighbor is unknown
+/// (`nil`), the document end (`""`), or any non-whitespace scalar outside the
+/// frozen attached-punctuation set. A whitespace or attached-punctuation
+/// right neighbor gets no space. The function never logs text (ADR 0007).
 public enum EnglishAutospace {
-    public static func trailingSpace(
-        after: String?,
-        committing: String,
-        leadingSpaceAdded: Bool
-    ) -> Bool {
-        guard !leadingSpaceAdded else { return false }
+    /// 冻结的英文附着标点集合（r3 §2.1）：右邻命中这些字符时不补尾随空格
+    /// （它们与词「附着」）。不含 `/`、`@`、`#`、引号及中文轮换标点
+    /// （取代旧版排除 connector 的右侧规则）。
+    public static let attachedPunctuation: Set<Character> = [
+        ".", ",", "?", "!", ";", ":", ")", "]", "}",
+    ]
+
+    static let attachedPunctuationScalars: Set<Unicode.Scalar> = Set(
+        attachedPunctuation.flatMap(\.unicodeScalars)
+    )
+
+    public static func trailingSpace(after: String?, committing: String) -> Bool {
         guard let last = committing.unicodeScalars.last,
             !last.properties.isWhitespace
         else { return false }
-        guard let neighbor = after?.unicodeScalars.first else { return false }
+        // Unknown right neighbor (`nil`) and the document end (`""`) are the
+        // undecided boundary toward the next word: the space is written
+        // immediately in the same transaction (immediate trailing space).
+        guard let neighbor = after?.unicodeScalars.first else { return true }
         if neighbor.properties.isWhitespace { return false }
-        return isWordLikeScalar(neighbor)
+        return !attachedPunctuationScalars.contains(neighbor)
     }
 
     /// English-mode leading rule for a candidate committed right after a
@@ -70,14 +77,5 @@ public enum EnglishAutospace {
 
     private static func isASCIILetter(_ scalar: Unicode.Scalar) -> Bool {
         (0x41...0x5A).contains(scalar.value) || (0x61...0x7A).contains(scalar.value)
-    }
-
-    private static func isWordLikeScalar(_ scalar: Unicode.Scalar) -> Bool {
-        if (0x41...0x5A).contains(scalar.value) || (0x61...0x7A).contains(scalar.value) {
-            return true
-        }
-        if (0x30...0x39).contains(scalar.value) { return true }
-        return (0x3400...0x4DBF).contains(scalar.value)
-            || (0x4E00...0x9FFF).contains(scalar.value)
     }
 }

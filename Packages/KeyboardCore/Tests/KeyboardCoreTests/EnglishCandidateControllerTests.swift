@@ -198,28 +198,29 @@ final class EnglishCandidateControllerTests: XCTestCase {
         XCTAssertTrue(effects.refreshesCandidatePresentation)
     }
 
-    func testCandidateCommitSkipsSpaceWhenRightNeighborUnknown() {
+    func testCandidateCommitAddsSpaceWhenRightNeighborUnknown() {
         let (controller, client) = makeController(after: nil)
         type(controller, "wor")
 
         _ = controller.handle(.insertCandidate("world", kind: .englishCandidate))
 
-        XCTAssertEqual(client.insertCalls, ["w", "o", "r", "world"])
-        XCTAssertEqual(client.text, "Hello world")
+        XCTAssertEqual(client.insertCalls, ["w", "o", "r", "world "])
+        XCTAssertEqual(client.text, "Hello world ")
     }
 
-    func testCandidateCommitSkipsSpaceAtDocumentEnd() {
+    func testCandidateCommitAddsSpaceAtDocumentEnd() {
         let (controller, client) = makeController(after: "")
         type(controller, "wor")
 
         _ = controller.handle(.insertCandidate("world", kind: .englishCandidate))
 
-        XCTAssertEqual(client.insertCalls, ["w", "o", "r", "world"])
-        XCTAssertEqual(client.text, "Hello world")
+        XCTAssertEqual(client.insertCalls, ["w", "o", "r", "world "])
+        XCTAssertEqual(client.text, "Hello world ")
     }
 
-    func testCandidateCommitSkipsSpaceBeforeWhitespaceOrPunctuationOrConnector() {
-        for after in [" ", ".", "@", ":", "#", "/", ",", "。"] {
+    /// 冻结附着标点集合（EN-AUTOSPACE-IMMEDIATE-001）：右邻命中时不补空格。
+    func testCandidateCommitSkipsSpaceBeforeAttachedPunctuation() {
+        for after in [".", ",", "?", "!", ";", ":", ")", "]", "}"] {
             let (controller, client) = makeController(after: after)
             type(controller, "wor")
 
@@ -227,6 +228,20 @@ final class EnglishCandidateControllerTests: XCTestCase {
 
             XCTAssertEqual(client.insertCalls, ["w", "o", "r", "world"], "right neighbor \(after)")
             XCTAssertEqual(client.text, "Hello world", "right neighbor \(after)")
+        }
+    }
+
+    /// 非附着符号按普通字符补空格（取代旧版排除 connector 的右侧规则）。
+    func testCandidateCommitAddsSpaceBeforeNonAttachedSymbols() {
+        for after in ["@", "#", "/", "。", "-"] {
+            let (controller, client) = makeController(after: after)
+            type(controller, "wor")
+
+            _ = controller.handle(.insertCandidate("world", kind: .englishCandidate))
+
+            XCTAssertEqual(
+                client.insertCalls, ["w", "o", "r", "world "], "right neighbor \(after)")
+            XCTAssertEqual(client.text, "Hello world ", "right neighbor \(after)")
         }
     }
 
@@ -280,6 +295,9 @@ final class EnglishCandidateControllerTests: XCTestCase {
         XCTAssertEqual(client.text, "中 world ")
         XCTAssertFalse(client.text.contains("  "))
     }
+
+    // The commit-path ownership, echo attribution and entry-clear matrix
+    // behavior tests live in `EnglishAutospaceImmediateTests` (r3 §2).
 
     func testCommitRejectsWhenTypedPrefixNoLongerAtCaret() {
         let (controller, client) = makeController()
@@ -358,7 +376,9 @@ final class EnglishCandidateControllerTests: XCTestCase {
         XCTAssertTrue(controller.state.englishCandidate.isEmpty)
     }
 
-    // MARK: - Deferred trailing autospace (EN-mode fix r1, real-device bug)
+    // MARK: - Immediate trailing autospace (EN-AUTOSPACE-IMMEDIATE-001,
+    // real-device scenarios; the echo-attribution and entry-clear matrix
+    // behavior tests live in `EnglishAutospaceImmediateTests`)
 
     private func makeAutospaceController(
         before: String,
@@ -376,38 +396,25 @@ final class EnglishCandidateControllerTests: XCTestCase {
 
     /// Real-device bug scenario 1 (Human 2026-11-24): in pure English mode,
     /// typing `wor`, committing the candidate `Word` at the document end and
-    /// continuing with `hello` must yield `Word hello`, not `Wordhello`.
+    /// continuing with `hello` must yield `Word hello`, not `Wordhello`. The
+    /// trailing space is written immediately in the commit transaction.
     func testRealDeviceScenarioPureEnglishWordThenHelloAutospaces() {
         let (controller, client) = makeAutospaceController(before: "")
         type(controller, "Wor")
 
         _ = controller.handle(.insertCandidate("Word", kind: .englishCandidate))
-        XCTAssertEqual(client.insertCalls, ["W", "o", "r", "Word"])
+        XCTAssertEqual(client.insertCalls, ["W", "o", "r", "Word "])
 
         type(controller, "hello")
 
         XCTAssertEqual(client.text, "Word hello")
     }
 
-    func testCandidateCommitAtDocumentEndArmsDeferredSpaceForNextLetter() {
-        let (controller, client) = makeAutospaceController(before: "")
-        type(controller, "Wor")
-
-        _ = controller.handle(.insertCandidate("Word", kind: .englishCandidate))
-
-        XCTAssertEqual(client.insertCalls, ["W", "o", "r", "Word"])
-        XCTAssertTrue(controller.state.pendingEnglishAutospace)
-
-        type(controller, "h")
-
-        XCTAssertEqual(client.insertCalls, ["W", "o", "r", "Word", " h"])
-        XCTAssertEqual(client.text, "Word h")
-        XCTAssertFalse(controller.state.pendingEnglishAutospace)
-    }
-
     /// Real-device bug scenario 2 (Human 2026-11-24): after `Word hello.`,
     /// committing the next sentence word candidate `Hello` must yield
-    /// `Word hello. Hello`, not `Word hello.Hello`.
+    /// `Word hello. Hello`, not `Word hello.Hello`. Leading and trailing
+    /// decisions are independent: the sentence-leading space and the
+    /// immediate trailing space ride in the same single transaction.
     func testRealDeviceScenarioPeriodThenHelloCandidateGetsSentenceSpace() {
         let (controller, client) = makeAutospaceController(before: "")
         type(controller, "Wor")
@@ -418,7 +425,7 @@ final class EnglishCandidateControllerTests: XCTestCase {
         type(controller, "Hel")
         _ = controller.handle(.insertCandidate("Hello", kind: .englishCandidate))
 
-        XCTAssertEqual(client.text, "Word hello. Hello")
+        XCTAssertEqual(client.text, "Word hello. Hello ")
     }
 
     func testCandidateCommitAfterSentenceTerminatorAddsLeadingSpace() {
@@ -428,123 +435,8 @@ final class EnglishCandidateControllerTests: XCTestCase {
 
         _ = controller.handle(.insertCandidate("hello", kind: .englishCandidate))
 
-        XCTAssertEqual(client.insertCalls, ["h", "e", "l", " hello"])
-        XCTAssertEqual(client.text, "Word. hello")
-    }
-
-    /// 标点豁免：延后空格不落在标点前（`Word.` 而非 `Word .`），标点输入
-    /// 撤回武装，紧随其后的字母不再补格（连接符号语义 `google.com`）。
-    func testDeferredAutospaceExemptsPunctuationAndRecalls() {
-        let (controller, client) = makeAutospaceController(before: "")
-        type(controller, "Wor")
-        _ = controller.handle(.insertCandidate("Word", kind: .englishCandidate))
-        XCTAssertTrue(controller.state.pendingEnglishAutospace)
-
-        type(controller, ".")
-
-        XCTAssertEqual(client.insertCalls.last, ".")
-        XCTAssertEqual(client.text, "Word.")
-        XCTAssertFalse(controller.state.pendingEnglishAutospace)
-
-        type(controller, "h")
-
-        XCTAssertEqual(client.insertCalls.last, "h")
-        XCTAssertEqual(client.text, "Word.h")
-    }
-
-    /// 退格撤回：武装后退格删除已提交词尾并撤回武装，手工接词不得出现
-    /// 意外空格（`Wor` + `l` → `Worl`）。
-    func testDeferredAutospaceRecalledByBackspace() {
-        let (controller, client) = makeAutospaceController(before: "")
-        type(controller, "Wor")
-        _ = controller.handle(.insertCandidate("Word", kind: .englishCandidate))
-        XCTAssertTrue(controller.state.pendingEnglishAutospace)
-
-        _ = controller.handle(.deleteBackward)
-
-        XCTAssertEqual(client.text, "Wor")
-        XCTAssertFalse(controller.state.pendingEnglishAutospace)
-
-        type(controller, "l")
-
-        XCTAssertEqual(client.insertCalls.last, "l")
-        XCTAssertEqual(client.text, "Worl")
-    }
-
-    func testDeferredAutospaceExemptOnSpaceAndReturn() {
-        let (controller, client) = makeAutospaceController(before: "")
-        type(controller, "Wor")
-        _ = controller.handle(.insertCandidate("Word", kind: .englishCandidate))
-
-        _ = controller.handle(.insertSpace)
-
-        XCTAssertEqual(client.text, "Word ")
-        XCTAssertFalse(controller.state.pendingEnglishAutospace)
-        type(controller, "h")
-        XCTAssertEqual(client.text, "Word h")
-
-        let (controller2, client2) = makeAutospaceController(before: "")
-        type(controller2, "Wor")
-        _ = controller2.handle(.insertCandidate("Word", kind: .englishCandidate))
-        _ = controller2.handle(.insertReturn)
-        XCTAssertFalse(controller2.state.pendingEnglishAutospace)
-        type(controller2, "h")
-        XCTAssertEqual(client2.insertCalls.last, "h")
-        XCTAssertFalse(client2.text.hasSuffix("\n h"))
-    }
-
-    /// 真机时序复现（EN-AUTOSPACE-DEVICE-FIX-001）：候选提交是单次原子
-    /// `insertText`，宿主随后异步回调 `textDidChange`（同一文档身份）。
-    /// 视图层在该回声上调用 `noteExternalDocumentChange()`——它是我们自己
-    /// 写入的回声而非外部编辑，不得撤回刚武装的 deferred autospace。
-    func testHostTextDidChangeEchoAfterCommitKeepsDeferredAutospace() {
-        let (controller, client) = makeAutospaceController(before: "")
-        type(controller, "Wor")
-        _ = controller.handle(.insertCandidate("Word", kind: .englishCandidate))
-        XCTAssertTrue(controller.state.pendingEnglishAutospace)
-
-        // 宿主回声：同一文档的 textDidChange → 视图层外改通知
-        _ = controller.noteExternalDocumentChange()
-
-        XCTAssertTrue(controller.state.pendingEnglishAutospace)
-
-        type(controller, "h")
-
-        XCTAssertEqual(client.insertCalls.last, " h")
-        XCTAssertEqual(client.text, "Word h")
-    }
-
-    /// 回声抑制必须一次性：真正的外部编辑（如宿主粘贴）仍要撤回武装。
-    func testEchoSuppressionIsOneShotAndRealExternalEditStillRecalls() {
-        let (controller, _) = makeAutospaceController(before: "")
-        type(controller, "Wor")
-        _ = controller.handle(.insertCandidate("Word", kind: .englishCandidate))
-        XCTAssertTrue(controller.state.pendingEnglishAutospace)
-
-        _ = controller.noteExternalDocumentChange()  // 回声
-        XCTAssertTrue(controller.state.pendingEnglishAutospace)
-
-        _ = controller.noteExternalDocumentChange()  // 真外部编辑
-
-        XCTAssertFalse(controller.state.pendingEnglishAutospace)
-    }
-
-    /// 未武装 deferred 时（行中提交，trailing 空格已随事务写出），
-    /// 提交回声不得吞掉后续真实外改通知的既有清态语义。
-    func testEchoGuardOnlyArmsForDeferredCommits() {
-        let (controller, _) = makeAutospaceController(before: "", after: "x")
-        type(controller, "wor")
-        _ = controller.handle(.insertCandidate("world", kind: .englishCandidate))
-        XCTAssertFalse(controller.state.pendingEnglishAutospace)
-
-        _ = controller.noteExternalDocumentChange()  // 回声（未武装，不吞）
-        XCTAssertFalse(controller.state.pendingEnglishAutospace)
-
-        // 真实外改仍正常失效候选
-        type(controller, "wor")
-        XCTAssertFalse(controller.state.englishCandidate.suggestions.isEmpty)
-        _ = controller.noteExternalDocumentChange()
-        XCTAssertTrue(controller.state.englishCandidate.suggestions.isEmpty)
+        XCTAssertEqual(client.insertCalls, ["h", "e", "l", " hello "])
+        XCTAssertEqual(client.text, "Word. hello ")
     }
 
     // MARK: - Candidate kind

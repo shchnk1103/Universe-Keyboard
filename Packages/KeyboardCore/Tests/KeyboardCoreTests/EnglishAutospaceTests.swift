@@ -3,16 +3,27 @@ import XCTest
 @testable import KeyboardCore
 
 final class EnglishAutospaceTests: XCTestCase {
-    private func trailing(_ after: String?, _ committing: String, leading: Bool = false) -> Bool {
-        EnglishAutospace.trailingSpace(after: after, committing: committing, leadingSpaceAdded: leading)
+    private func trailing(_ after: String?, _ committing: String) -> Bool {
+        EnglishAutospace.trailingSpace(after: after, committing: committing)
     }
 
-    // MARK: - Positive cases
+    // MARK: - Positive cases (EN-AUTOSPACE-IMMEDIATE-001)
 
-    func testAddsSpaceBeforeWordLikeRightNeighbor() {
-        for after in ["here", "World", "你", "苹果", "3d"] {
+    func testAddsSpaceBeforeNonWhitespaceNonAttachedRightNeighbor() {
+        for after in ["here", "World", "你", "苹果", "3d", "/", "@", "#", "。", "-"] {
             XCTAssertTrue(trailing(after, "world"), after)
         }
+    }
+
+    func testAddsSpaceWhenRightNeighborUnknown() {
+        // Unknown right context is the undecided boundary toward the next
+        // word: the space is written immediately (r3 §2.1, replaces the old
+        // conservative no-space rule).
+        XCTAssertTrue(trailing(nil, "world"))
+    }
+
+    func testAddsSpaceAtDocumentEnd() {
+        XCTAssertTrue(trailing("", "world"))
     }
 
     func testAddsSpaceAtKnownWordBoundaryOnlyOnce() {
@@ -25,20 +36,19 @@ final class EnglishAutospaceTests: XCTestCase {
 
     // MARK: - Negative cases
 
-    func testDoesNotAddSpaceWhenRightNeighborUnknown() {
-        XCTAssertFalse(trailing(nil, "world"))
+    /// 冻结附着标点集合：右邻命中时不补空格（不含 /、@、#、引号及中文轮换
+    /// 标点，取代旧版排除 connector 的右侧规则）。
+    func testDoesNotAddSpaceBeforeAttachedPunctuation() {
+        for after in [".", ",", "?", "!", ";", ":", ")", "]", "}"] {
+            XCTAssertFalse(trailing(after, "world"), after)
+        }
     }
 
-    func testDoesNotAddSpaceAtDocumentEnd() {
-        XCTAssertFalse(trailing("", "world"))
-    }
-
-    func testDoesNotAddSpaceBeforeWhitespaceOrPunctuationOrConnectors() {
-        for after in [" ", "  ", "\t", "\n", ".", ",", "。", "!", "?", "@", ":", "#", "/", "-"] {
+    func testDoesNotAddSpaceBeforeWhitespace() {
+        for after in [" ", "  ", "\t", "\n"] {
             XCTAssertFalse(trailing(after, "world"), after)
         }
         XCTAssertFalse(trailing(" world", "world"))
-        XCTAssertFalse(trailing("/Users/doubleshy0n", "world"))
     }
 
     func testDoesNotAddSpaceAfterCommittingEndsWithWhitespace() {
@@ -47,10 +57,19 @@ final class EnglishAutospaceTests: XCTestCase {
         XCTAssertFalse(trailing("here", ""))
     }
 
-    func testLeadingMixedScriptSpaceSuppressesTrailingAutospace() {
-        // MixedScriptSpacing owns the left boundary; when it added the leading
-        // space the trailing autospace must skip to keep one spacing decision.
-        XCTAssertFalse(trailing("here", "world", leading: true))
+    /// 前导/尾随两侧决策独立：旧 `leadingSpaceAdded` 抑制语义废除。
+    func testTrailingDecisionIsIndependentFromLeadingDecision() {
+        // 决策函数不再接受 leadingSpaceAdded 参数；同一输入重复给出同一
+        // 尾随判定，与左边界是否已补格无关。
+        XCTAssertTrue(trailing("here", "world"))
+        XCTAssertTrue(trailing("", "world"))
+    }
+
+    func testFrozenAttachedPunctuationSetMatchesContract() {
+        XCTAssertEqual(
+            EnglishAutospace.attachedPunctuation,
+            [".", ",", "?", "!", ";", ":", ")", "]", "}"]
+        )
     }
 
     // MARK: - Leading space after sentence terminator (EN-mode fix r1)

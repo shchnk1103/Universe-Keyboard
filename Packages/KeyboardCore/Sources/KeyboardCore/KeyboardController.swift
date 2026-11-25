@@ -42,13 +42,6 @@ public final class KeyboardController {
     public internal(set) var ownedHostMutationGeneration: UInt64 = 0
     var ownedHostMutationDepth = 0
 
-    /// EN-AUTOSPACE-DEVICE-FIX-001：候选提交是单次原子 `insertText`，宿主
-    /// 会随后异步回调一次 `textDidChange`（同一文档身份）。该回声是本状态机
-    /// 自己写入的反射而非外部编辑，提交时武装的一次性抑制标志让
-    /// `noteExternalDocumentChange()` 跳过它，避免刚武装的 deferred
-    /// autospace 被提前撤回。真正的外部编辑（下一次通知）仍正常清态。
-    var suppressNextExternalChangeForCandidateEcho = false
-
     /// 测试钩子：把 L1 mirror 置为 ahead，供标点键 / 标点候选 fail-closed 用例使用。
     func testingForceProvisionalAhead() {
         _ = provisionalCompositionMirror.appendT9DigitAccept(revision: 1, epoch: 1)
@@ -1361,6 +1354,9 @@ public final class KeyboardController {
         shouldRestoreRimeComposition = false
         shouldRebuildSessionDuringRestore = false
         deleteInlinePreedit()
+        // EN-AUTOSPACE-IMMEDIATE-001：文档/可见性切换撤销尾随空格回删资格
+        // （无法证明仍是同一文档、光标紧邻刚插入空格）。
+        state.englishTrailingSpaceMark = nil
         state.currentComposition = ""
         state.lastRimeOutput = nil
         state.partialCommit = nil
@@ -1485,6 +1481,12 @@ public final class KeyboardController {
                 acceptingPendingPunctuationIfNeeded { handleInsertKey(key) }
             )
         case .insertCandidate(let candidate, let kind, let selectionReference):
+            // EN-AUTOSPACE-IMMEDIATE-001：非英文候选点选（标点候选、纠错、
+            // 续接等）是实际写入入口，先撤销尾随空格回删资格（r3 §2.3）；
+            // 英文候选提交路径在内部先清后武装。
+            if kind != .englishCandidate {
+                state.englishTrailingSpaceMark = nil
+            }
             return handleInsertCandidate(
                 candidate,
                 kind: kind,
@@ -1504,6 +1506,8 @@ public final class KeyboardController {
             )
         case .insertT9NumberPadText(let text):
             // PB-013 退出矩阵：T9 数字键入退出续接态。
+            // EN-AUTOSPACE-IMMEDIATE-001：实际写入入口先撤销回删资格。
+            state.englishTrailingSpaceMark = nil
             return clearPunctuationContinuation().union(
                 acceptingPendingPunctuationIfNeeded {
                     handleInsertT9NumberPadText(text)
@@ -1520,6 +1524,9 @@ public final class KeyboardController {
             return handleToggleShift()
         case .togglePage:
             // PB-013 退出矩阵：页面切换退出续接态。
+            // EN-AUTOSPACE-IMMEDIATE-001：符号/数字页切换清态（r3 §2.3
+            // 清态矩阵）。
+            state.englishTrailingSpaceMark = nil
             return clearPunctuationContinuation().union(
                 acceptingPendingPunctuationIfNeeded { handleTogglePage() }
             )
@@ -1553,9 +1560,13 @@ public final class KeyboardController {
             return clearPunctuationContinuation().union(handleCycleT9PinyinPath())
         case .pressT9CommonPunctuation:
             // PB-013 退出矩阵：T9 常用标点（ADR 0029 pending 态）优先，续接态静默。
+            // EN-AUTOSPACE-IMMEDIATE-001：九键标点写入入口先撤销回删资格。
+            state.englishTrailingSpaceMark = nil
             return clearPunctuationContinuation().union(handlePressT9CommonPunctuation())
         case .pressKaomoji:
             // PB-013 退出矩阵：颜表情 pending 态优先，续接态静默。
+            // EN-AUTOSPACE-IMMEDIATE-001：实际写入入口先撤销回删资格。
+            state.englishTrailingSpaceMark = nil
             return clearPunctuationContinuation().union(handlePressKaomoji())
         case .candidatePageUp:
             return handleCandidatePageUp()

@@ -17,15 +17,31 @@ extension KeyboardController {
     }
 
     /// 非本状态机引起的 document 变化：只接受+清状态，不回删。
+    ///
+    /// EN-AUTOSPACE-IMMEDIATE-001 回声归属与失效规则（显式定义）：
+    /// - **归属成立**：尾随空格标记武装、回声抑制未耗尽，且当前光标前缀仍
+    ///   以本次事务写出的完整内容结尾（同一文档、光标紧邻刚插入空格）→
+    ///   判定为本事务自身的单次 `textDidChange` 回声：吞掉这一次回声，抑制
+    ///   转为已耗尽，标记保持武装（回删资格不变）。
+    /// - **归属不成立**（撤销整个标记，回声抑制随标记同清同活）：
+    ///   ① 多个回声——抑制已耗尽（本事务至多产生一个回声）；
+    ///   ② 真实外部编辑先于回声到达——宿主内容/光标已变化，前缀核验失败；
+    ///   ③ 用户下一动作先于回声到达——标记已被写入入口清掉，不会进入本分支；
+    ///   ④ 文档/光标切换——前缀不匹配或宿主读取失败；
+    ///   ⑤ 任何无法确认通知归属或光标位置的情形。
+    ///   撤销即失去自动回删资格，不得删除宿主字符；随后按普通外改清态。
+    /// - 禁止以「下一次通知」作为外部编辑必然可识别的依据：归属判断只依赖
+    ///   当前可读的宿主状态（前缀核验），智能回删在执行时刻重新核验所有权。
     @discardableResult
     public func noteExternalDocumentChange() -> KeyboardEffect {
         guard !isPerformingOwnedHostMutation else { return [] }
-        // EN-AUTOSPACE-DEVICE-FIX-001：候选提交的宿主 `textDidChange` 回声
-        // （同一文档身份、单次）不是外部编辑，一次性跳过全部清态，保住
-        // 刚武装的 deferred autospace；随后的真实外改通知不受影响。
-        if suppressNextExternalChangeForCandidateEcho {
-            suppressNextExternalChangeForCandidateEcho = false
-            return []
+        if var mark = state.englishTrailingSpaceMark {
+            if mark.suppressNextEcho, isOwnCandidateCommitEcho(mark) {
+                mark.suppressNextEcho = false
+                state.englishTrailingSpaceMark = mark
+                return []
+            }
+            state.englishTrailingSpaceMark = nil
         }
         fencePartialCommitFailureRecovery()
         invalidateMixedScriptSpacingAnchor()
@@ -34,6 +50,18 @@ extension KeyboardController {
             .union(acceptPendingKaomoji(refreshContinuation: false))
             .union(acceptPendingPunctuation(refreshContinuation: false))
             .union(clearPunctuationContinuation())
+    }
+
+    /// 回声归属核验：宿主可读且当前光标前缀以本次事务写出的完整内容结尾。
+    /// 读取失败（nil）一律视为无法归属。
+    private func isOwnCandidateCommitEcho(_ mark: EnglishTrailingSpaceMark) -> Bool {
+        guard textClient != nil, let before = documentContextBeforeInput?() else {
+            return false
+        }
+        let transaction = mark.committedTransactionText.unicodeScalars
+        guard before.unicodeScalars.count >= transaction.count else { return false }
+        return before.unicodeScalars.suffix(transaction.count)
+            .elementsEqual(transaction)
     }
 
     func handlePressT9CommonPunctuation() -> KeyboardEffect {
