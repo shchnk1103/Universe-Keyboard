@@ -84,8 +84,13 @@ final class T9NumberPadTests: XCTestCase {
     }
 
     func testShortcutSetIsExactAndGated() {
-        XCTAssertEqual(T9NumberPadLayout.shortcutSymbols, ["/", "%", "#", "÷", "=", ":"])
-        XCTAssertEqual(Set(T9NumberPadLayout.shortcutSymbols).count, 6)
+        XCTAssertEqual(
+            T9NumberPadLayout.shortcutSymbols,
+            ["/", "%", ":", "×", "÷", "=", "#", "¥", "$", "~", "—", "(", ")", "℃", "±", "‰", "°", "、"])
+        XCTAssertEqual(Set(T9NumberPadLayout.shortcutSymbols).count, 18)
+        // 不与数字主面板已有按键（@ + - .）重复
+        let mainPanelTitles = Set(T9NumberPadLayout.columns.flatMap { $0 }.flatMap { $0 }.map(\.title))
+        XCTAssertTrue(Set(T9NumberPadLayout.shortcutSymbols).isDisjoint(with: mainPanelTitles))
         let show = T9NumberPadLayout.showsShortcutBar(
             page: .numbers, inputMode: .chinese, layout: .nineKey, readinessMatched: true,
             composition: "", hasPendingPunctuation: false, hasPendingKaomoji: false)
