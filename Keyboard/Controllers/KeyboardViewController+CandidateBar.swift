@@ -68,7 +68,7 @@ extension KeyboardViewController {
         guard !shouldBlockT9RecoveryPresentation else { return }
         let canExpand =
             presentedCandidates.contains { $0.kind.expandsCandidateBarPanel }
-            || isT9NumberPadShortcutVisible
+            || isT9NumberPadShortcutStripActive
         if canExpand {
             toggleCandidateExpand()
         } else {
@@ -98,9 +98,6 @@ extension KeyboardViewController {
                 fillCandidateBar()
             }
             presentExpandedCandidatePanel()
-            if isT9NumberPadShortcutVisible {
-                installExpandedNumberPadShortcuts()
-            }
             if hasMoreCandidates {
                 scheduleCandidatePrefetch(mode: .expanded)
             }
@@ -471,65 +468,27 @@ extension KeyboardViewController {
     }
 }
 
-private final class NumberPadShortcutButton: UIButton {
-    override var isHighlighted: Bool {
-        didSet { backgroundColor = isHighlighted ? Self.foreground : .clear }
-    }
-
-    static let foreground = UIColor { traits in
-        traits.userInterfaceStyle == .dark ? .white : .black
-    }
-    static let highlightedForeground = UIColor { traits in
-        traits.userInterfaceStyle == .dark ? .black : .white
-    }
-}
-
 extension KeyboardViewController {
-    private var isT9NumberPadShortcutVisible: Bool {
-        (candidateBar as? CandidateBarView)?.subviews.contains {
-            $0.accessibilityIdentifier == "numberPadShortcuts"
-        } == true
-    }
-
-    private func makeNumberPadShortcutButton(_ symbol: String) -> UIButton {
-        let button = NumberPadShortcutButton(type: .custom)
-        button.setTitle(symbol, for: .normal)
-        button.setTitleColor(NumberPadShortcutButton.foreground, for: .normal)
-        button.setTitleColor(NumberPadShortcutButton.highlightedForeground, for: .highlighted)
-        button.layer.cornerRadius = 8
-        button.layer.cornerCurve = .continuous
-        button.accessibilityIdentifier = symbol
-        button.accessibilityLabel = symbol
-        button.titleLabel?.font = .systemFont(ofSize: 18, weight: .regular)
-        button.addAction(
-            UIAction { [weak self, weak button] _ in
-                guard let button else { return }
-                self?.numberPadShortcutTapped(button)
-            }, for: .touchUpInside)
-        return button
-    }
-
-    @objc func numberPadShortcutTapped(_ sender: UIButton) {
+    /// 数字页快捷栏激活时，点候选栏项按数字页字面量上屏（PB-009-SHORTCUT-BAR-REUSE-001）。
+    /// 返回 true 表示已按快捷栏语义消费，调用方不再走候选提交管线。
+    func commitNumberPadShortcutStripItemIfActive(_ item: CandidateItem) -> Bool {
+        guard isT9NumberPadShortcutStripActive,
+            T9NumberPadLayout.shortcutSymbols.contains(item.title)
+        else { return false }
+        // 旧按钮行为：展开态点符号先收面板再上屏。
         if isCandidateExpanded { toggleCandidateExpand() }
-        insertT9NumberPadLiteral(sender)
+        emitFeedback(for: .commit)
+        let effects = controller.handle(.insertT9NumberPadText(item.title))
+        syncUI(with: effects)
+        return true
     }
 
-    private func installExpandedNumberPadShortcuts() {
-        guard let panel = candidateExpandedPanel as? ExpandedCandidatePanelContainerView else { return }
-        let row = UIStackView(arrangedSubviews: T9NumberPadLayout.shortcutSymbols.map(makeNumberPadShortcutButton))
-        row.axis = .horizontal
-        row.distribution = .fillEqually
-        row.accessibilityIdentifier = "t9NumberPadExpandedShortcuts"
-        row.translatesAutoresizingMaskIntoConstraints = false
-        panel.revealViewport.addSubview(row)
-        NSLayoutConstraint.activate([
-            row.leadingAnchor.constraint(equalTo: panel.revealViewport.leadingAnchor),
-            row.trailingAnchor.constraint(equalTo: panel.revealViewport.trailingAnchor, constant: -56),
-            row.topAnchor.constraint(equalTo: panel.revealViewport.topAnchor),
-            row.heightAnchor.constraint(equalToConstant: 46),
-        ])
-    }
-
+    /// 数字页符号快捷栏：直接复用 `CandidateBarView` 原候选栏 `collectionView`
+    /// 渲染 `T9NumberPadLayout.shortcutSymbols`（PB-009-SHORTCUT-BAR-REUSE-001）。
+    ///
+    /// 激活/去激活只翻转 `isT9NumberPadShortcutStripActive` 并触发一次
+    /// `fillCandidateBar()`：数据源通过 `presentedCandidates` 覆盖喂入伪候选，
+    /// 字体、滑动、点击高亮与展开按钮交互全部继承原生管线，不再有叠层模糊。
     @discardableResult
     func syncT9NumberPadShortcutStrip(on bar: CandidateBarView?) -> Bool {
         guard let bar else { return false }
@@ -540,58 +499,25 @@ extension KeyboardViewController {
         let show =
             state.currentPage == .numbers && usesNumberPad && state.currentComposition.isEmpty
             && state.pendingPunctuation == nil && state.pendingKaomoji == nil
-            && presentedCandidates.isEmpty && !controller.isCompositionInputRecoveryPending
-        let existing = bar.subviews.first { $0.accessibilityIdentifier == "numberPadShortcuts" }
-        guard show else {
-            existing?.removeFromSuperview()
-            (candidateExpandedPanel as? ExpandedCandidatePanelContainerView)?.revealViewport.subviews.first {
-                $0.accessibilityIdentifier == "t9NumberPadExpandedShortcuts"
-            }?.removeFromSuperview()
-            bar.setShortcutContent(nil)
-            if existing != nil && !controller.isCompositionInputRecoveryPending {
-                bar.collectionView.isHidden = false
-                bar.collectionView.isUserInteractionEnabled = true
+            && accumulatedCandidates.isEmpty && !controller.isCompositionInputRecoveryPending
+            && !shouldBlockT9RecoveryPresentation
+        if show == isT9NumberPadShortcutStripActive {
+            if show {
+                removeLegacyNumberPadShortcutOverlays(on: bar)
             }
-            return false
+            return show
         }
-        let scroll: UIScrollView
-        if let existingScroll = existing as? UIScrollView {
-            scroll = existingScroll
-        } else {
-            existing?.removeFromSuperview()
-            scroll = UIScrollView()
-            scroll.accessibilityIdentifier = "numberPadShortcuts"
-            scroll.showsHorizontalScrollIndicator = false
-            scroll.delaysContentTouches = false
-            scroll.translatesAutoresizingMaskIntoConstraints = false
-            let row = UIStackView(arrangedSubviews: T9NumberPadLayout.shortcutSymbols.map(makeNumberPadShortcutButton))
-            row.axis = .horizontal
-            row.distribution = .fillEqually
-            row.translatesAutoresizingMaskIntoConstraints = false
-            scroll.addSubview(row)
-            bar.addSubview(scroll)
-            NSLayoutConstraint.activate([
-                scroll.leadingAnchor.constraint(equalTo: bar.leadingAnchor),
-                scroll.trailingAnchor.constraint(equalTo: bar.expandButton.leadingAnchor),
-                scroll.topAnchor.constraint(equalTo: bar.topAnchor),
-                scroll.bottomAnchor.constraint(equalTo: bar.bottomAnchor),
-                row.leadingAnchor.constraint(equalTo: scroll.contentLayoutGuide.leadingAnchor),
-                row.trailingAnchor.constraint(equalTo: scroll.contentLayoutGuide.trailingAnchor),
-                row.topAnchor.constraint(equalTo: scroll.contentLayoutGuide.topAnchor),
-                row.bottomAnchor.constraint(equalTo: scroll.contentLayoutGuide.bottomAnchor),
-                row.heightAnchor.constraint(equalTo: scroll.frameLayoutGuide.heightAnchor),
-                row.widthAnchor.constraint(greaterThanOrEqualTo: scroll.frameLayoutGuide.widthAnchor),
-                row.widthAnchor.constraint(
-                    greaterThanOrEqualToConstant: CGFloat(T9NumberPadLayout.shortcutSymbols.count * 56)),
-            ])
-        }
-        bar.setShortcutContent(scroll)
-        bar.bringSubviewToFront(scroll)
-        bar.bringSubviewToFront(bar.expandButton)
-        bar.collectionView.isHidden = true
-        bar.collectionView.isUserInteractionEnabled = false
-        bar.allowsSwipeToExpand = true
-        updateExpandButtonAppearance(canExpand: true)
-        return true
+        isT9NumberPadShortcutStripActive = show
+        removeLegacyNumberPadShortcutOverlays(on: bar)
+        // 重新加载候选栏：激活时数据源覆盖为快捷符号，去激活时恢复普通候选。
+        fillCandidateBar()
+        return show
+    }
+
+    /// 旧叠层实现的防御性清理（升级会话内不应再出现）。
+    private func removeLegacyNumberPadShortcutOverlays(on bar: CandidateBarView) {
+        bar.subviews.first { $0.accessibilityIdentifier == "numberPadShortcuts" }?.removeFromSuperview()
+        bar.collectionView.isHidden = false
+        bar.collectionView.isUserInteractionEnabled = true
     }
 }
