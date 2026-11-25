@@ -297,6 +297,10 @@ nonisolated final class T9NumberPadChromeTests: XCTestCase {
         return (sut, window)
     }
 
+    /// 递归读取 `UILabel.text` 与 `UIView.subviews`——两者均为主 actor 隔离属性，
+    /// 调用方（各 `@MainActor` 测试方法）均在主线程，故本辅助函数同样限定 `@MainActor`
+    /// 以通过 Swift 6 严格并发检查（CI Xcode 26.6 编译期报错点）。
+    @MainActor
     private func firstLabelText(in view: UIView?) -> String? {
         guard let view else { return nil }
         if let label = view as? UILabel, !(label.text ?? "").isEmpty { return label.text }
