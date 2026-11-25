@@ -72,6 +72,15 @@
 - 受保护对象：B-001 工作区与分支、`preserve/`、`local/`、`backup`、有未提交改动的、进行中任务的、其它工具目录。
 - 远程分支是否在合并时自动删除，取决于 GitHub 仓库设置（由 Human 决定）。
 - 主检出快进：在该任务合并清理包明确授权下，由合并清理 Executor（Wendy）执行。合并并 fetch 后，若主检出在 `main`、没有本地改动或未跟踪文件、且 `HEAD` 是已 fetch 的 `origin/main` 的祖先，执行 `git merge --ff-only origin/main` 并报告新旧 SHA；任一条件不满足则不动主检出，并告诉 Human。
+- 真机测试前核对口令（O122-D）：任何真机验收或 Xcode 装机前，须先核对当前构建目录 `HEAD` 与 PM 提供的目标封版 SHA 一致（`git rev-parse HEAD` 与授权 SHA 比对），防止因主检出未快进或处于 detached 状态而误测旧代码。
+
+### squash 合并后双验安全删本地分支协议（O123）
+
+PR 采用 squash merge 后，本地功能分支提交不在远端主干祖先链上，`git branch -d` 必然被拒绝。此时仅在**同时满足以下三条硬条件**后，才允许对**该单一已合并功能分支**带证据执行删除；未通过双验前，全局禁止 `git branch -D` 的底线不变：
+
+1. **PR 合并可达**：`gh pr view <PR> --json state,mergeCommit` 核实状态为 `MERGED`，且拉取远端主干后确认 `mergeCommit` 可从远端主干到达；
+2. **内容级零残留**：`git diff <branch> <mergeCommit> -- <本分支涉及文件清单>` 输出为空（文件清单以 PR 实际改动文件集合为界，避免合并后主干其他 PR 引入无关差异造成误判），确认无未合并增量；
+3. **单支带证据删除**：受保护对象（`preserve/`、`local/`、`backup`、未提交改动、在用分支）仍严格豁免；清理回执必须记录 PR 号、`mergeCommit` SHA 及 diff 为空证据，逐支核对、逐支删除，失败立即停止整批。
 
 ## KOS 协作约定
 
