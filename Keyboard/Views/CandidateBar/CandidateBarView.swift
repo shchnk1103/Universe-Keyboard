@@ -27,9 +27,13 @@ private final class CandidateBarGestureBridge: NSObject, UIGestureRecognizerDele
     weak var horizontalFallback: UIGestureRecognizer?
     weak var collectionPan: UIGestureRecognizer?
     weak var pasteContent: UIView?
+    weak var shortcutContent: UIView?
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         guard let touched = touch.view else { return true }
         if let pasteContent, touched.isDescendant(of: pasteContent) { return false }
+        if let shortcutContent, touched.isDescendant(of: shortcutContent) {
+            return gestureRecognizer === swipeDown
+        }
         #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
             if let wakeProbeButton, touched.isDescendant(of: wakeProbeButton) { return false }
         #endif
@@ -102,6 +106,7 @@ final class CandidateBarView: UIView {
     private var hasTriggeredSwipeDownExpand = false
     private var isSwipeDownTracking = false
     private var swipePreviewIndexPath: IndexPath?
+    private weak var swipePreviewShortcut: UIButton?
     private var horizontalFallbackStartOffsetX: CGFloat = 0
     private var lastPointInsideDiagnosticLogTime: CFTimeInterval = 0
     private var lastHitTestDiagnosticLogTime: CFTimeInterval = 0
@@ -267,6 +272,10 @@ final class CandidateBarView: UIView {
         swipeDownRecognizer?.isEnabled = !isShowingRecoveryNotice
         horizontalFallbackRecognizer?.isEnabled = !isShowingRecoveryNotice
         if isShowingRecoveryNotice { bringSubviewToFront(recoveryLabel) }
+    }
+
+    func setShortcutContent(_ content: UIView?) {
+        gestureBridge.shortcutContent = content
     }
 
     /// Paste content occupies only the candidate viewport; the trailing action keeps its hit area.
@@ -453,6 +462,10 @@ final class CandidateBarView: UIView {
             result = pasteFailureLabel
         } else if let pasteContent, !pasteContent.isHidden, pasteContent.frame.contains(point) {
             result = pasteContent.hitTest(pasteContent.convert(point, from: self), with: event)
+        } else if let shortcut = subviews.first(where: { $0.accessibilityIdentifier == "numberPadShortcuts" }),
+            !shortcut.isHidden, shortcut.frame.contains(point)
+        {
+            result = shortcut.hitTest(shortcut.convert(point, from: self), with: event)
         } else if bounds.contains(point), collectionView.frame.contains(point) {
             result = collectionView.hitTest(collectionPoint, with: event) ?? collectionView
         } else if bounds.contains(point) {
@@ -722,6 +735,16 @@ final class CandidateBarView: UIView {
     }
 
     private func updateSwipePreviewHighlight(for recognizer: UIPanGestureRecognizer) {
+        if let shortcut = gestureBridge.shortcutContent,
+            let button = shortcut.hitTest(recognizer.location(in: shortcut), with: nil) as? UIButton
+        {
+            clearSwipePreviewHighlight()
+            swipePreviewShortcut = button
+            button.isHighlighted = true
+            return
+        }
+        swipePreviewShortcut?.isHighlighted = false
+        swipePreviewShortcut = nil
         let point = recognizer.location(in: collectionView)
         setSwipePreviewIndexPath(collectionView.indexPathForItem(at: point))
     }
@@ -737,6 +760,8 @@ final class CandidateBarView: UIView {
     }
 
     private func clearSwipePreviewHighlight() {
+        swipePreviewShortcut?.isHighlighted = false
+        swipePreviewShortcut = nil
         guard let indexPath = swipePreviewIndexPath else { return }
         if let cell = collectionView.cellForItem(at: indexPath) as? CandidateCollectionCell {
             cell.setSwipePreviewHighlighted(false)

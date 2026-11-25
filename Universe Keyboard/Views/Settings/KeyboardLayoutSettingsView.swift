@@ -1,6 +1,23 @@
 import KeyboardCore
 import SwiftUI
 
+struct TwentySixKeyNumberPadSettingsRow: View {
+    @AppStorage private var enabled: Bool
+
+    init(defaults: UserDefaults? = UserDefaults(suiteName: "group.com.DoubleShy0N.Universe-Keyboard")) {
+        _enabled = AppStorage(
+            wrappedValue: false, KeyboardInputSettingsKey.twentySixKeyNumberPadEnabled, store: defaults)
+    }
+
+    var body: some View {
+        ToggleRow(
+            title: "26 键使用九宫格数字键盘",
+            description: "在全键盘中使用九宫格数字键盘。",
+            isOn: $enabled
+        )
+    }
+}
+
 /// Settings surface for 26-key / Chinese nine-key layout selection.
 ///
 /// WeChat-style side-by-side “主键盘” chooser: equal-size previews, radio under each,
@@ -27,6 +44,10 @@ struct KeyboardLayoutSettingsView: View {
                 Text("主键盘")
             } footer: {
                 Text("选择主键盘外形后，下方只显示该布局使用的输入方案。九宫格列出已安装家族的九键方案；启用前会检查安装与部署。全键盘方案与九键方案互相独立。英文与自动英文在九键偏好下仍用 26 键。")
+            }
+
+            Section {
+                TwentySixKeyNumberPadSettingsRow()
             }
 
             KeyboardHeightSettingsEntry()

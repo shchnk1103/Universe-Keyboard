@@ -66,7 +66,9 @@ extension KeyboardViewController {
         }
         guard !isKeyboardHeightAdjusting else { return }
         guard !shouldBlockT9RecoveryPresentation else { return }
-        let canExpand = presentedCandidates.contains { $0.kind.expandsCandidateBarPanel }
+        let canExpand =
+            presentedCandidates.contains { $0.kind.expandsCandidateBarPanel }
+            || isT9NumberPadShortcutVisible
         if canExpand {
             toggleCandidateExpand()
         } else {
@@ -96,6 +98,9 @@ extension KeyboardViewController {
                 fillCandidateBar()
             }
             presentExpandedCandidatePanel()
+            if isT9NumberPadShortcutVisible {
+                installExpandedNumberPadShortcuts()
+            }
             if hasMoreCandidates {
                 scheduleCandidatePrefetch(mode: .expanded)
             }
@@ -466,64 +471,127 @@ extension KeyboardViewController {
     }
 }
 
+private final class NumberPadShortcutButton: UIButton {
+    override var isHighlighted: Bool {
+        didSet { backgroundColor = isHighlighted ? Self.foreground : .clear }
+    }
+
+    static let foreground = UIColor { traits in
+        traits.userInterfaceStyle == .dark ? .white : .black
+    }
+    static let highlightedForeground = UIColor { traits in
+        traits.userInterfaceStyle == .dark ? .black : .white
+    }
+}
+
 extension KeyboardViewController {
-    /// 候选栏自己的快捷条。命中落在这些按钮上，不写入 touchColumns，也不产生 selection index。
+    private var isT9NumberPadShortcutVisible: Bool {
+        (candidateBar as? CandidateBarView)?.subviews.contains {
+            $0.accessibilityIdentifier == "numberPadShortcuts"
+        } == true
+    }
+
+    private func makeNumberPadShortcutButton(_ symbol: String) -> UIButton {
+        let button = NumberPadShortcutButton(type: .custom)
+        button.setTitle(symbol, for: .normal)
+        button.setTitleColor(NumberPadShortcutButton.foreground, for: .normal)
+        button.setTitleColor(NumberPadShortcutButton.highlightedForeground, for: .highlighted)
+        button.layer.cornerRadius = 8
+        button.layer.cornerCurve = .continuous
+        button.accessibilityIdentifier = symbol
+        button.accessibilityLabel = symbol
+        button.titleLabel?.font = .systemFont(ofSize: 18, weight: .regular)
+        button.addAction(
+            UIAction { [weak self, weak button] _ in
+                guard let button else { return }
+                self?.numberPadShortcutTapped(button)
+            }, for: .touchUpInside)
+        return button
+    }
+
+    @objc func numberPadShortcutTapped(_ sender: UIButton) {
+        if isCandidateExpanded { toggleCandidateExpand() }
+        insertT9NumberPadLiteral(sender)
+    }
+
+    private func installExpandedNumberPadShortcuts() {
+        guard let panel = candidateExpandedPanel as? ExpandedCandidatePanelContainerView else { return }
+        let row = UIStackView(arrangedSubviews: T9NumberPadLayout.shortcutSymbols.map(makeNumberPadShortcutButton))
+        row.axis = .horizontal
+        row.distribution = .fillEqually
+        row.accessibilityIdentifier = "t9NumberPadExpandedShortcuts"
+        row.translatesAutoresizingMaskIntoConstraints = false
+        panel.revealViewport.addSubview(row)
+        NSLayoutConstraint.activate([
+            row.leadingAnchor.constraint(equalTo: panel.revealViewport.leadingAnchor),
+            row.trailingAnchor.constraint(equalTo: panel.revealViewport.trailingAnchor, constant: -56),
+            row.topAnchor.constraint(equalTo: panel.revealViewport.topAnchor),
+            row.heightAnchor.constraint(equalToConstant: 46),
+        ])
+    }
+
     @discardableResult
     func syncT9NumberPadShortcutStrip(on bar: CandidateBarView?) -> Bool {
         guard let bar else { return false }
         let state = controller.state
+        let usesNumberPad =
+            (state.inputMode == .chinese && cachedLayoutStyle == .nineKey && cachedT9ReadinessMatched)
+            || (cachedLayoutStyle == .twentySixKey && cachedTwentySixKeyNumberPadEnabled)
         let show =
-            T9NumberPadLayout.showsShortcutBar(
-                page: state.currentPage,
-                inputMode: state.inputMode,
-                layout: cachedLayoutStyle,
-                readinessMatched: cachedT9ReadinessMatched,
-                composition: state.currentComposition,
-                hasPendingPunctuation: state.pendingPunctuation != nil,
-                hasPendingKaomoji: state.pendingKaomoji != nil)
-            && !controller.isCompositionInputRecoveryPending
-        let existing = bar.subviews.first { $0.accessibilityIdentifier == "t9NumberPadShortcutStrip" }
+            state.currentPage == .numbers && usesNumberPad && state.currentComposition.isEmpty
+            && state.pendingPunctuation == nil && state.pendingKaomoji == nil
+            && presentedCandidates.isEmpty && !controller.isCompositionInputRecoveryPending
+        let existing = bar.subviews.first { $0.accessibilityIdentifier == "numberPadShortcuts" }
         guard show else {
             existing?.removeFromSuperview()
+            (candidateExpandedPanel as? ExpandedCandidatePanelContainerView)?.revealViewport.subviews.first {
+                $0.accessibilityIdentifier == "t9NumberPadExpandedShortcuts"
+            }?.removeFromSuperview()
+            bar.setShortcutContent(nil)
             if existing != nil && !controller.isCompositionInputRecoveryPending {
                 bar.collectionView.isHidden = false
                 bar.collectionView.isUserInteractionEnabled = true
             }
             return false
         }
-        let strip: UIStackView
-        if let existingStack = existing as? UIStackView {
-            strip = existingStack
+        let scroll: UIScrollView
+        if let existingScroll = existing as? UIScrollView {
+            scroll = existingScroll
         } else {
             existing?.removeFromSuperview()
-            let created = UIStackView()
-            created.axis = .horizontal
-            created.distribution = .fillEqually
-            created.spacing = 4
-            created.accessibilityIdentifier = "t9NumberPadShortcutStrip"
-            created.translatesAutoresizingMaskIntoConstraints = false
-            for symbol in T9NumberPadLayout.shortcutSymbols {
-                let button = UIButton(type: .system)
-                button.setTitle(symbol, for: .normal)
-                button.accessibilityIdentifier = symbol
-                button.accessibilityLabel = symbol
-                button.titleLabel?.font = .systemFont(ofSize: 18, weight: .regular)
-                button.addTarget(self, action: #selector(insertT9NumberPadLiteral(_:)), for: .touchUpInside)
-                created.addArrangedSubview(button)
-            }
-            bar.addSubview(created)
+            scroll = UIScrollView()
+            scroll.accessibilityIdentifier = "numberPadShortcuts"
+            scroll.showsHorizontalScrollIndicator = false
+            scroll.delaysContentTouches = false
+            scroll.translatesAutoresizingMaskIntoConstraints = false
+            let row = UIStackView(arrangedSubviews: T9NumberPadLayout.shortcutSymbols.map(makeNumberPadShortcutButton))
+            row.axis = .horizontal
+            row.distribution = .fillEqually
+            row.translatesAutoresizingMaskIntoConstraints = false
+            scroll.addSubview(row)
+            bar.addSubview(scroll)
             NSLayoutConstraint.activate([
-                created.leadingAnchor.constraint(equalTo: bar.leadingAnchor, constant: 8),
-                created.trailingAnchor.constraint(equalTo: bar.expandButton.leadingAnchor, constant: -4),
-                created.topAnchor.constraint(equalTo: bar.topAnchor),
-                created.bottomAnchor.constraint(equalTo: bar.bottomAnchor),
+                scroll.leadingAnchor.constraint(equalTo: bar.leadingAnchor),
+                scroll.trailingAnchor.constraint(equalTo: bar.expandButton.leadingAnchor),
+                scroll.topAnchor.constraint(equalTo: bar.topAnchor),
+                scroll.bottomAnchor.constraint(equalTo: bar.bottomAnchor),
+                row.leadingAnchor.constraint(equalTo: scroll.contentLayoutGuide.leadingAnchor),
+                row.trailingAnchor.constraint(equalTo: scroll.contentLayoutGuide.trailingAnchor),
+                row.topAnchor.constraint(equalTo: scroll.contentLayoutGuide.topAnchor),
+                row.bottomAnchor.constraint(equalTo: scroll.contentLayoutGuide.bottomAnchor),
+                row.heightAnchor.constraint(equalTo: scroll.frameLayoutGuide.heightAnchor),
+                row.widthAnchor.constraint(greaterThanOrEqualTo: scroll.frameLayoutGuide.widthAnchor),
+                row.widthAnchor.constraint(
+                    greaterThanOrEqualToConstant: CGFloat(T9NumberPadLayout.shortcutSymbols.count * 56)),
             ])
-            strip = created
         }
-        bar.bringSubviewToFront(strip)
+        bar.setShortcutContent(scroll)
+        bar.bringSubviewToFront(scroll)
         bar.bringSubviewToFront(bar.expandButton)
         bar.collectionView.isHidden = true
         bar.collectionView.isUserInteractionEnabled = false
+        bar.allowsSwipeToExpand = true
+        updateExpandButtonAppearance(canExpand: true)
         return true
     }
 }
