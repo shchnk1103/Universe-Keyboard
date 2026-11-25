@@ -14,7 +14,7 @@ def lint(text):
     with tempfile.TemporaryDirectory() as tmp:
         packet = Path(tmp) / 'packet.md'
         packet.write_text(text, encoding='utf-8')
-        return subprocess.run([sys.executable, '-I', str(SCRIPT), '--start', START, str(packet)], capture_output=True, text=True).stdout
+        return subprocess.run([sys.executable, '-I', str(SCRIPT), '--start', START, str(packet), '--no-git-check'], capture_output=True, text=True).stdout
 
 
 class PacketHardeningTests(unittest.TestCase):

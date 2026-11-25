@@ -11,14 +11,80 @@ ROOT = Path(__file__).resolve().parents[3]
 SCRIPT = ROOT / "scripts/kos/kos-pkg-lint.py"
 START = "a" * 40
 
-def run(text: str) -> subprocess.CompletedProcess[str]:
+def run(text: str, extra: "list[str] | None" = None) -> subprocess.CompletedProcess[str]:
     with tempfile.TemporaryDirectory() as tmp:
         path = Path(tmp) / "task-package-impl.md"
         path.write_text(text, encoding="utf-8")
         return subprocess.run(
-            [sys.executable, "-I", str(SCRIPT), "--start", START, str(path)],
+            [sys.executable, "-I", str(SCRIPT), "--start", START, str(path),
+             "--no-git-check", *(extra or [])],
             text=True, capture_output=True, check=False,
         )
+
+
+# O111: baseline SHAs must be validated against real git objects by default.
+# These tests exercise the default-on path, so they use a real commit SHA.
+def _repo_head() -> str:
+    return subprocess.run(
+        ["git", "-C", str(ROOT), "rev-parse", "HEAD"],
+        text=True, capture_output=True, check=True,
+    ).stdout.strip()
+
+
+class BaselineExistenceTests(unittest.TestCase):
+    """KOS-LINT-BASELINE-GUARD-001 (O111): --start and 起点类 SHA must exist
+    as commits in the local object database (git cat-file -e <sha>^{commit})."""
+
+    REAL: str = ""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.REAL = _repo_head()
+
+    def _lint(self, start: str, text: str, extra: "list[str] | None" = None) -> subprocess.CompletedProcess[str]:
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "task-package-impl.md"
+            path.write_text(text, encoding="utf-8")
+            return subprocess.run(
+                [sys.executable, "-I", str(SCRIPT), "--start", start, str(path), *(extra or [])],
+                text=True, capture_output=True, check=False,
+            )
+
+    def test_nonexistent_start_sha_is_rejected_by_default(self) -> None:
+        result = self._lint("f" * 40, "普通文本包。\n")
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn("E11", result.stdout)
+        self.assertIn("f" * 8, result.stdout)
+
+    def test_real_start_sha_passes(self) -> None:
+        result = self._lint(self.REAL, "普通文本包。\n")
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertNotIn("E11", result.stdout)
+
+    def test_nonexistent_context_baseline_sha_is_rejected(self) -> None:
+        fake = "9" * 40
+        result = self._lint(self.REAL, f"基线提交 {fake}\n")
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn("E11", result.stdout)
+        self.assertIn(fake[:8], result.stdout)
+
+    def test_real_context_baseline_sha_passes(self) -> None:
+        result = self._lint(self.REAL, f"基线提交 {self.REAL}\n")
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertNotIn("E11", result.stdout)
+
+    def test_no_git_check_skips_validation(self) -> None:
+        result = self._lint("f" * 40, "纯文本 fixture。\n", extra=["--no-git-check"])
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertNotIn("E11", result.stdout)
+
+    def test_missing_git_dir_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            result = self._lint(self.REAL, "普通文本包。\n",
+                                extra=["--repo-root", tmp])
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            self.assertIn("E11", result.stdout)
+            self.assertIn(".git", result.stdout)
 
 class GuardrailTests(unittest.TestCase):
     def test_token_table_is_explicit(self) -> None:
@@ -279,7 +345,7 @@ class HandoffFlagTableTests(unittest.TestCase):
             packet = Path(tmp) / "packet.md"
             packet.write_text(packet_text + "\n", encoding="utf-8")
             return subprocess.run(
-                [sys.executable, "-I", str(kos / "kos-pkg-lint.py"), "--start", START, str(packet)],
+                [sys.executable, "-I", str(kos / "kos-pkg-lint.py"), "--start", START, str(packet), "--no-git-check"],
                 text=True, capture_output=True, check=False)
 
     def test_reflection_catches_loop_built_parser_flag(self) -> None:

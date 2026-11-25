@@ -130,7 +130,7 @@ class PkgLintE1ReadonlyBaselineTests(unittest.TestCase):
         )
         r = _run_py(
             "kos-pkg-lint.py",
-            ["--start", start, str(pkg)],
+            ["--start", start, str(pkg), "--no-git-check"],
         )
         self.assertEqual(r.returncode, 1)
         out = r.stdout
@@ -157,7 +157,7 @@ class PkgLintE4OpenJsonTests(unittest.TestCase):
             "/Users/kos-tools-006-definitely-missing/PM-LOG/open-x-001.json\n"
             "/Users/kos-tools-006-definitely-missing/other.txt\n",
         )
-        r = _run_py("kos-pkg-lint.py", ["--start", start, str(pkg)])
+        r = _run_py("kos-pkg-lint.py", ["--start", start, str(pkg), "--no-git-check"])
         self.assertEqual(r.returncode, 1)
         out = r.stdout
         self.assertNotIn("open-x-001.json", out)
@@ -183,7 +183,7 @@ class PkgLintW4Tests(unittest.TestCase):
             "行4 $name 中文\n"
             "行5 $name.\n",
         )
-        r = _run_py("kos-pkg-lint.py", ["--start", start, str(pkg)])
+        r = _run_py("kos-pkg-lint.py", ["--start", start, str(pkg), "--no-git-check"])
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
         out = r.stdout
         self.assertEqual(out.count("W4 "), 2)

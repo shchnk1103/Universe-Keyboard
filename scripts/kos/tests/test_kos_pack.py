@@ -13,6 +13,16 @@ from pathlib import Path
 KOS = Path(__file__).resolve().parents[1]
 PY = sys.executable
 
+
+def _repo_head() -> str:
+    """Real commit SHA of the worktree repo (O111: lint validates --start by default)."""
+    repo = KOS.parent.parent
+    return subprocess.run(["git", "-C", str(repo), "rev-parse", "HEAD"],
+                          capture_output=True, text=True, check=True).stdout.strip()
+
+
+BASE_SHA = _repo_head()
+
 # A worktree path string that pkg-lint accepts (must live under the KOS root);
 # the string is only checked as package content, never created on disk.
 WT = "/Users/doubleshy0n/.kos-work/Universe-Keyboard/KOS-DEMO-001/worktree"
@@ -49,7 +59,7 @@ class KosPackTests(unittest.TestCase):
             "--grade", "code-fix",
             "--title", "Demo task",
             "--branch", "feat/demo",
-            "--base", "b" * 40,
+            "--base", BASE_SHA,
             "--wt", WT,
             "--out", str(self.out),
             "--input", str(self.a),
@@ -157,6 +167,69 @@ class KosPackTests(unittest.TestCase):
         r = self._run(args)
         self.assertNotEqual(r.returncode, 0, r.stdout + r.stderr)
         self.assertNotIn("```text", r.stdout)
+
+
+
+class ClosingSequenceTemplateTests(unittest.TestCase):
+    """KOS-LINT-BASELINE-GUARD-001 (O111): generated impl/doc packets must
+    contain the fixed, contradiction-free closing order."""
+
+    CLOSING_STEPS = (
+        "移除临时软链（如有）",
+        "git status --short",
+        "git add",
+        "git commit",
+        "确认工作树干净",
+    )
+
+    def _generate(self, grade: str) -> str:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            source = root / "in.md"
+            source.write_text("hello\n", encoding="utf-8")
+            board = root / "board.py"
+            board.write_text("print('PICK [code]: Quinn（Executor（代码） | 上次：从未记录 -）')\n",
+                             encoding="utf-8")
+            out = root / "packet.md"
+            args = [PY, "-B", str(KOS / "kos_pack.py"), "pack",
+                    "--task", "KOS-DEMO-001",
+                    "--role", "Executor（代码）",
+                    "--grade", grade,
+                    "--title", "Demo",
+                    "--branch", "feat/demo",
+                    "--base", BASE_SHA,
+                    "--wt", WT,
+                    "--out", str(out),
+                    "--input", str(source),
+                    "--allow", "scripts/kos/kos_demo.py",
+                    "--step", "实现 demo",
+                    "--focus", "复核",
+                    "--board-tool", str(board)]
+            r = subprocess.run(args, capture_output=True, text=True)
+            self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+            return out.read_text(encoding="utf-8")
+
+    def test_code_fix_packet_has_fixed_closing_order(self) -> None:
+        text = self._generate("code-fix")
+        idx = [text.find(step) for step in self.CLOSING_STEPS]
+        for step, i in zip(self.CLOSING_STEPS, idx):
+            self.assertGreaterEqual(i, 0, f"missing closing step: {step}")
+        self.assertEqual(idx, sorted(idx), f"closing order wrong: {idx}")
+
+    def test_doc_light_packet_has_fixed_closing_order(self) -> None:
+        text = self._generate("doc-light")
+        idx = [text.find(step) for step in self.CLOSING_STEPS]
+        for step, i in zip(self.CLOSING_STEPS, idx):
+            self.assertGreaterEqual(i, 0, f"missing closing step: {step}")
+        self.assertEqual(idx, sorted(idx), f"closing order wrong: {idx}")
+
+    def test_closing_order_section_is_explicit(self) -> None:
+        text = self._generate("code-fix")
+        self.assertIn("收尾顺序", text)
+        # contradiction guard: the template must not demand a clean tree
+        # BEFORE the commit step in a way that conflicts with the closing order
+        self.assertIn("仅剩本包允许改动", text)
+        self.assertNotIn("提交前工作树必须干净", text)
 
 
 if __name__ == "__main__":

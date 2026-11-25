@@ -445,7 +445,7 @@ class PkgLintMultilineContinuationTests(unittest.TestCase):
 
     def _lint(self, text: str) -> subprocess.CompletedProcess:
         packet = _write(self.root / "packet.md", text)
-        return _run_py("kos-pkg-lint.py", ["--start", self.start, str(packet)])
+        return _run_py("kos-pkg-lint.py", ["--start", self.start, str(packet), "--no-git-check"])
 
     def test_good_multiline_command_passes(self) -> None:
         result = self._lint(self.GOOD_MULTI_LINE)
