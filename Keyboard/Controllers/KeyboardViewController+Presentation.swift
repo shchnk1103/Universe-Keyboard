@@ -211,7 +211,9 @@ extension KeyboardViewController {
                 rootStack.addArrangedSubview(makeBottomRow(pageSwitchTitle: pageSwitchTitle, includeDelete: false))
             }
         case .numbers:
-            if state.inputMode == .chinese && cachedLayoutStyle == .nineKey && cachedT9ReadinessMatched {
+            if (state.inputMode == .chinese && cachedLayoutStyle == .nineKey && cachedT9ReadinessMatched)
+                || (cachedLayoutStyle == .twentySixKey && cachedTwentySixKeyNumberPadEnabled)
+            {
                 for view in makeT9NumbersChrome() {
                     rootStack.addArrangedSubview(view)
                 }

@@ -148,6 +148,8 @@ extension KeyboardViewController {
             ) ?? 0
 
         // Layout / nine-key readiness: snapshot only — never read UserDefaults on the key path.
+        cachedTwentySixKeyNumberPadEnabled =
+            defaults?.bool(forKey: KeyboardInputSettingsKey.twentySixKeyNumberPadEnabled) ?? false
         cachedLayoutStyle = KeyboardLayoutStyle.resolve(
             defaults?.string(forKey: KeyboardLayoutSettingsKey.layoutStyle)
         )

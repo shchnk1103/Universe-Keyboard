@@ -383,6 +383,7 @@ class KeyboardViewController: UIInputViewController {
     var cachedLayoutStyle: KeyboardLayoutStyle = .twentySixKey
     /// Cached T9 readiness match for Chinese nine-key chrome.
     var cachedT9ReadinessMatched: Bool = false
+    var cachedTwentySixKeyNumberPadEnabled = false
     var cachedHapticEnabled: Bool = false
 
     /// Feedback resources and cached levels stay owned by the view controller; methods live in +Feedback.
