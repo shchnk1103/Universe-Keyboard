@@ -85,6 +85,7 @@ extension KeyboardController {
         let switchingToChinese = state.inputMode == .english
         state.inputMode = switchingToChinese ? .chinese : .english
         effects.insert(.inputModeChanged)
+        effects.formUnion(clearEnglishCandidates())
         if !switchingToChinese {
             effects.formUnion(clearContinuation())
         }
@@ -106,6 +107,7 @@ extension KeyboardController {
         let previousType = state.activeKeyboardType
         state.activeKeyboardType = type
         var effects: KeyboardEffect = .keyboardTypeChanged
+        effects.formUnion(clearEnglishCandidates())
 
         let enteringAddressLike = AddressLikeKeyboardType(keyboardType: type)
         let leavingAddressLike = AddressLikeKeyboardType(keyboardType: previousType)

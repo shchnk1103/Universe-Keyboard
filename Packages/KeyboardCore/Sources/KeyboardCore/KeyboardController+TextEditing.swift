@@ -125,7 +125,7 @@ extension KeyboardController {
         guard state.currentPage == .letters && state.inputMode == .english else {
             state.lastSpaceTapTime = nil
             insertText(" ", source: .space)
-            return .continuationChanged
+            return clearEnglishCandidates().union(.continuationChanged)
         }
 
         let now = currentDate()
@@ -139,7 +139,7 @@ extension KeyboardController {
         } else {
             insertText(" ", source: .space)
         }
-        return .continuationChanged
+        return clearEnglishCandidates().union(.continuationChanged)
     }
 
     func handleInsertReturn() -> KeyboardEffect {
@@ -196,7 +196,7 @@ extension KeyboardController {
             return .compositionChanged.union(pathEffect)
         }
         insertText("\n", source: .returnKey)
-        return .continuationChanged
+        return clearEnglishCandidates().union(.continuationChanged)
     }
 
     func handleDeleteBackward() -> KeyboardEffect {
@@ -344,7 +344,7 @@ extension KeyboardController {
             return .compositionChanged
         }
         textClient?.deleteBackward()
-        return clearContinuation()
+        return clearContinuation().union(dropLastEnglishPrefixCharacter())
     }
 
     /// Scrub and clear-all delete exactly one grapheme before the cursor.

@@ -76,6 +76,14 @@ public struct KeyboardState: Equatable {
     public var continuation: ContinuationState
     /// PB-013 标点回弹后候选栏续接状态。nil 表示未武装。进程内存态，不持久化。
     public var punctuationContinuation: PunctuationContinuationState? = nil
+    /// 英文模式前缀候选状态（当前词前缀 + 大小写对齐建议 + 来源版本）。
+    /// 与中文 continuation 完全分离且不持久化。
+    public var englishCandidate: EnglishCandidateState = EnglishCandidateState()
+    /// 英文候选提交后延后补空格标记（设计 r1「标记未补」；EN-mode fix r1）。
+    /// 仅当候选提交时右邻为已知空上下文（文档尾）才武装：英文模式下一个直
+    /// 输 ASCII 字母携带该空格；标点与其他输入豁免撤回；退格与一切候选失
+    /// 效（模式/页面/宿主类型切换、外部编辑）一并撤回。进程内存态，不持久化。
+    public var pendingEnglishAutospace: Bool = false
     /// 当前已插入到文本输入框中的拼音串。用于实现 inline preedit 的差量更新。
     public var insertedPreeditText: String = ""
     /// 当前已插入到文本输入框中的拼音串长度。保留长度字段，方便删除时避免重复计算。

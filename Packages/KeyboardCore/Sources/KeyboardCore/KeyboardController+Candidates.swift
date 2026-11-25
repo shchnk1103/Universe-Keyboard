@@ -66,6 +66,16 @@ extension KeyboardController {
             }
             insertText(candidate, source: .candidate)
             return .continuationChanged
+        case .englishCandidate:
+            // Only the current provider version's live suggestions may commit;
+            // stale UI text or a swapped wordlist must never reach the host.
+            guard let provider = englishCandidateProvider,
+                state.englishCandidate.sourceVersion == provider.sourceVersion,
+                state.englishCandidate.suggestions.contains(candidate)
+            else {
+                return []
+            }
+            return commitEnglishCandidate(candidate)
         case .punctuationCandidate:
             return handlePunctuationCandidate(candidate)
         case .kaomojiCandidate:

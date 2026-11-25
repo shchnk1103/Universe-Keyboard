@@ -1,9 +1,14 @@
 extension KeyboardController {
     func handleInsertKey(_ key: String) -> KeyboardEffect {
-        guard shouldHandleAsChineseCompositionKey(key) else {
-            guard let effects = handleSymbolPageTextInput(key, updatesEnglishAutoCap: true) else {
-                insertText(key, source: .key)
+        // Deferred English candidate autospace (EN-mode fix r1): consumed by
+        // the next directly typed key — a bare ASCII letter carries the
+        // deferred space, any other input recalls it (exemption).
+        let autospaceKey = consumeEnglishAutospaceForDirectKey(key)
+        guard shouldHandleAsChineseCompositionKey(autospaceKey) else {
+            guard let effects = handleSymbolPageTextInput(autospaceKey, updatesEnglishAutoCap: true) else {
+                insertText(autospaceKey, source: .key)
                 var effects = consumeSingleUseShiftIfNeeded()
+                effects.formUnion(noteEnglishKeyInput(key))
                 if state.inputMode == .english,
                     AddressLikeKeyboardType(keyboardType: state.activeKeyboardType) == nil,
                     AutoCapitalizationRules.isSentenceTerminator(key)

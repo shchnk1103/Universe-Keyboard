@@ -17,6 +17,8 @@ public struct KeyboardEffect: OptionSet, Equatable, Sendable {
     public static let pendingPunctuationChanged = KeyboardEffect(rawValue: 1 << 7)
     /// 待确认颜表情列表或载荷变化（ADR 0030）。不得复用标点或 continuation 位。
     public static let pendingKaomojiChanged = KeyboardEffect(rawValue: 1 << 8)
+    /// 英文前缀候选状态变化。不得复用 continuation 或 pending 位。
+    public static let englishCandidatesChanged = KeyboardEffect(rawValue: 1 << 9)
 
     /// 候选栏 / 本地 pending chrome 需要按 Core 快照重建。
     public var refreshesCandidatePresentation: Bool {
@@ -24,5 +26,6 @@ public struct KeyboardEffect: OptionSet, Equatable, Sendable {
             || contains(.continuationChanged)
             || contains(.pendingPunctuationChanged)
             || contains(.pendingKaomojiChanged)
+            || contains(.englishCandidatesChanged)
     }
 }

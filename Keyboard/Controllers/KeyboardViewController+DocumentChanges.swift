@@ -67,6 +67,11 @@ extension KeyboardViewController {
             // ADR 0007: read-only context for spacing decisions. Never logged.
             self?.textDocumentProxy.documentContextBeforeInput
         }
+        controller.documentContextAfterInput = { [weak self] in
+            // Unified right-neighbor read point for the English candidate
+            // autospace contract (arch Minor m1). Read-only; never logged.
+            self?.textDocumentProxy.documentContextAfterInput
+        }
         effects.formUnion(
             controller.handle(
                 .keyboardTypeChanged(KeyboardType.from(uiKeyboardType: proxy.keyboardType))

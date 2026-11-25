@@ -38,6 +38,12 @@ struct SettingsTab: View {
     )
     private var mixedScriptSpacingEnabled = true
 
+    @AppStorage(
+        KeyboardInputSettingsKey.englishCandidateAutospaceEnabled,
+        store: UserDefaults(suiteName: universeAppGroupID)
+    )
+    private var englishCandidateAutospaceEnabled = true
+
     private var layoutSubtitle: String {
         switch KeyboardLayoutStyle.resolve(layoutStyleRaw) {
         case .twentySixKey: return "26键"
@@ -160,6 +166,18 @@ struct SettingsTab: View {
                             ? "中文与英文、数字之间自动插入一个空格；英文与数字之间不加。需要键盘开启完全访问"
                             : "中文与英文、数字之间不自动插入空格",
                         isOn: $mixedScriptSpacingEnabled
+                    )
+                }
+            }
+
+            AppCard {
+                SettingsIconRow(systemImage: "character.cursor.ibeam") {
+                    ToggleRow(
+                        title: "英文候选自动补空格",
+                        description: englishCandidateAutospaceEnabled
+                            ? "点选英文候选词后自动加一个空格；网址、邮箱和搜索框不补。需要键盘开启完全访问"
+                            : "点选英文候选词后不自动加空格",
+                        isOn: $englishCandidateAutospaceEnabled
                     )
                 }
             }

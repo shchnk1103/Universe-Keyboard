@@ -23,7 +23,8 @@ extension KeyboardController {
         fencePartialCommitFailureRecovery()
         invalidateMixedScriptSpacingAnchor()
         // PB-013 退出矩阵：宿主外部编辑（含粘贴）退出标点续接态。
-        return acceptPendingKaomoji(refreshContinuation: false)
+        return clearEnglishCandidates()
+            .union(acceptPendingKaomoji(refreshContinuation: false))
             .union(acceptPendingPunctuation(refreshContinuation: false))
             .union(clearPunctuationContinuation())
     }
