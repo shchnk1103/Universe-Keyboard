@@ -45,9 +45,11 @@ final class FeedbackSettingsResetTests: XCTestCase {
     }
 
     /// 触感反馈开关与震动强度滑块必须合并为同一个 Section 卡片（红测：旧结构为 3 个 Section）。
+    /// PB-019-PR2 新增「按键气泡预览」独立卡片后整页共 3 个卡片：
+    /// 按键音 / 按键气泡预览 / 触感合并卡片（开关 + 强度滑块同卡）。
     func testHapticToggleAndIntensitySliderShareOneSection() {
         let page = FeedbackSettingsView()
-        XCTAssertEqual(sectionCount(page.body), 2)
+        XCTAssertEqual(sectionCount(page.body), 3)
     }
 
     /// 重置入口与确认弹窗文案必须存在于页面状态中，取消不改强度。

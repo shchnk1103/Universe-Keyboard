@@ -379,6 +379,10 @@ class KeyboardViewController: UIInputViewController {
     /// Apple 最佳实践：自定义键盘扩展运行在独立进程中，每次 XPC 调用都有开销。
     /// 缓存这些值可以显著减少每次按键的延迟。
     var cachedKeyClickEnabled: Bool = true
+    /// PB-019 PR-2: 按键气泡开关快照（`keyboard.keyPopupEnabled`，默认开）。
+    /// 与其它 cached* 一致：只在 `refreshCachedSettings` 刷新，热路径零 defaults 读取，
+    /// 开关往返同进程在下一次刷新后即时生效。
+    var cachedKeyPopupEnabled: Bool = true
     /// 每次可见周期只读取一次；可注入存储，不在输入热路径轮询App Group。
     var candidateFontValueSource: (() -> Any?)?
     var candidateFontNeedsRead = true

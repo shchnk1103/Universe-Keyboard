@@ -109,6 +109,11 @@ extension KeyboardViewController {
         let typoExperimentSettings = TypoCorrectionExperimentalSettings.load(from: defaults)
 
         cachedKeyClickEnabled = rawSound as? Bool ?? true
+        // PB-019 PR-2: snapshot the key-popup switch next to the other feedback
+        // switches; the press hot path only reads this cache.
+        cachedKeyPopupEnabled = KeyboardKeyPopupSettings.isEnabled(
+            stored: defaults?.object(forKey: KeyboardKeyPopupSettings.enabledKey)
+        )
         cachedHapticEnabled = rawHaptic as? Bool ?? false
         cachedHapticLevel = feedbackLevelValue(rawHapticLevel)
         cachedHapticIntensity = CGFloat(KeyboardFeedbackSettingsStore.readContinuousIntensity(from: defaults))
