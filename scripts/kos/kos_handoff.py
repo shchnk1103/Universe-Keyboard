@@ -487,10 +487,17 @@ def _incremented_relay_path(path: Path) -> Path:
             return candidate
 
 
-def _busy_start_command(args, name: str, task_id: str) -> str:
-    """O108: the 开工先挂忙 command carried by every direct-relay packet."""
+def _dept_claim_command(args, role: str, task_id: str, excludes: list[str]) -> str:
+    """O129: the department-pool claim hint carried by every direct-relay packet.
+
+    不点名具体接班人：接单者开工前用 kos-board.py claim 对部门池原子领牌；
+    前序参与者经 --exclude 提示保留（排除名单，不是指定接班人）。
+    """
     argv = [args.board] + json.loads(args.board_args) + [
-        "set", _board_roles_dir(args), name, "busy", task_id]
+        "claim", "--role", role, "--task", task_id]
+    clean = [e for e in dict.fromkeys(e.strip() for e in excludes) if e]
+    if clean:
+        argv += ["--exclude", ",".join(clean)]
     return shlex.join(argv)
 
 
@@ -553,25 +560,23 @@ def cmd_relay_quality(args):
     for name in _collect_participant_names(report, extra_patterns=("preflight*.md",)):
         if name not in excludes:
             excludes.append(name)
-    # O108: resolve the output path (bumping on collision) before the pick so
-    # a late write failure cannot leave a just-created board reserve behind.
+    # O129: department-pool dispatch — no named pick, no busy reserve; the
+    # taker claims the quality department atomically before starting.
     out = Path(args.out) if getattr(args, "out", None) else Path(args.packet).parent / "quality-relay-block.md"
     if out.exists():
         out = _incremented_relay_path(out)
-    picked, pick_line = _relay_pick_with_reserve(args.board, args.board_args, excludes,
-                                                 role="quality",
-                                                 reserve_task=Path(args.packet).parent.parent.name)
-    if not picked:
-        return back("pick did not yield a valid quality specialist: " + pick_line)
+    task_id = Path(args.packet).parent.parent.name
 
     log_shas = re.findall(r"(/[^\s`（）()]+?\.(?:log|txt|md|json|patch))[^\n]{0,40}?SHA-256[ ：:]*`?([0-9a-f]{64})", report_text)
     log_list = "\n".join(f"- {p}（SHA-256 `{h}`）" for p, h in log_shas) or "（无）"
     file_list = "\n".join(f"- {path}" for path in files) or "（无）"
     quality_report = report.parent / f"quality-{Path(args.packet).stem}.md"
     template = Path(SCRIPT_DIR, "quality_relay_template.md").read_text(encoding="utf-8")
+    claim_cmd = _dept_claim_command(args, "quality", task_id, excludes)
     block = (template
              .replace("{TASK}", Path(args.packet).stem)
-             .replace("{PICK}", f"{picked}（Quality）")
+             .replace("{DEPT}", QUALITY_DEPT_LABEL)
+             .replace("{CLAIM}", claim_cmd)
              .replace("{BASE}", args.base)
              .replace("{COMMIT}", commit)
              .replace("{WORKTREE}", str(Path(args.repo).resolve()))
@@ -584,16 +589,12 @@ def cmd_relay_quality(args):
              .replace("{FILE_LIST}", file_list)
              .replace("{LOG_SHA_LIST}", log_list)
              .replace("{REVIEW_FOCUS}", review_focus))
-    # O108: every direct-relay packet starts with the 开工先挂忙 command.
-    busy_cmd = _busy_start_command(args, picked, Path(args.packet).parent.parent.name)
-    head, sep, rest = block.partition("\n")
-    block = f"{head}{sep}\n开工先挂忙（O108）：`{busy_cmd}`\n{rest}"
     out.write_text(block, encoding="utf-8")
-    print(f"交回：{picked}（Quality）")
-    print(f"事项：直通质检 {Path(args.packet).stem}")
-    print(f"质检块：{out.resolve()}（SHA-256 {hashlib.sha256(out.read_bytes()).hexdigest()}）")
     out_sha = hashlib.sha256(out.read_bytes()).hexdigest()
-    suggestion = format_dispatch_block(Path(args.packet).stem, f"{picked}（Quality）",
+    print(f"交回：{QUALITY_DEPT_LABEL}（Quality Reviewer）")
+    print(f"事项：直通质检 {Path(args.packet).stem}（部门池派发，接单者开工前原子领牌）")
+    print(f"质检块：{out.resolve()}（SHA-256 {out_sha}）")
+    suggestion = format_dispatch_block(Path(args.packet).stem, QUALITY_DEPT_LABEL,
                                        out.resolve(), out_sha)
     print(f"```text\n{suggestion}\n```")
     warning = _suggest_pending_warning(str(report), force=True)
@@ -728,6 +729,8 @@ def cmd_dispatch(args):
 
 
 EXEC_ROLE_LABELS = {"code": "Executor（代码）", "doc": "Executor（记录/文档）"}
+EXEC_DEPT_LABELS = {"code": "Executor（代码）部门", "doc": "Executor（文档）部门"}
+QUALITY_DEPT_LABEL = "Quality 部门"
 EXEC_GRADE_ROLES = {"code-fix": "code", "doc-rule": "doc"}
 
 
@@ -771,31 +774,26 @@ def cmd_relay_exec(args):
     if lint.returncode != 0:
         return back("kos-pkg-lint failed: " + (lint.stdout + lint.stderr).strip().splitlines()[-1] if (lint.stdout + lint.stderr).strip() else "kos-pkg-lint failed")
 
-    # O108: resolve the output path (bumping on collision) before the pick so
-    # a late write failure cannot leave a just-created board reserve behind.
+    # O129: department-pool dispatch — no named pick, no busy reserve; the
+    # taker claims the executor department atomically before starting.
     out = Path(args.out) if getattr(args, "out", None) else packet.parent / "exec-relay-block.txt"
     if out.exists():
         out = _incremented_relay_path(out)
-    picked, pick_line = _relay_pick_with_reserve(args.board, args.board_args, excludes,
-                                                 role=role,
-                                                 reserve_task=Path(args.packet).parent.parent.name)
-    if not picked:
-        return back("pick did not yield a valid specialist: " + pick_line)
 
     packet_sha = hashlib.sha256(packet.read_bytes()).hexdigest()
     report_sha = hashlib.sha256(report.read_bytes()).hexdigest()
-    block = format_dispatch_block(packet.stem, f"{picked}（{EXEC_ROLE_LABELS[role]}）",
-                                  packet.resolve(), packet_sha)
-    # O108: the direct-relay packet carries the 开工先挂忙 command up front.
-    busy_cmd = _busy_start_command(args, picked, Path(args.packet).parent.parent.name)
-    out.write_text(f"开工先挂忙（O108）：`{busy_cmd}`\n\n{block}\n", encoding="utf-8")
+    dept = EXEC_DEPT_LABELS[role]
+    task_id = Path(args.packet).parent.parent.name
+    claim_cmd = _dept_claim_command(args, role, task_id, excludes)
+    block = format_dispatch_block(packet.stem, dept, packet.resolve(), packet_sha)
+    out.write_text(f"开工领牌（O129 部门池）：`{claim_cmd}`\n\n{block}\n", encoding="utf-8")
     print("\n\n".join([
         f"结论：PASS",
-        f"下一位交付：{picked}（{EXEC_ROLE_LABELS[role]}）",
+        f"下一位交付：{dept}",
         f"报告：{report.resolve()}（SHA-256 {report_sha}）",
         f"```text\n{block}\n```",
     ]))
-    print(f"开工先挂忙：`{busy_cmd}`")
+    print(f"开工领牌（部门池）：`{claim_cmd}`")
     warning = _suggest_pending_warning(str(report), force=True)
     if warning:
         print(warning)

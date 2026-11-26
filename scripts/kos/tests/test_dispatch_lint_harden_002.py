@@ -222,7 +222,7 @@ class RelayBusyStartCommandTests(_GitRepoMixin, unittest.TestCase):
     def tearDown(self):
         self.tmp.cleanup()
 
-    def test_relay_quality_block_starts_with_busy_command(self) -> None:
+    def test_relay_quality_block_starts_with_claim_hint(self) -> None:
         result = _run_py("kos_handoff.py", [
             "relay-quality", "--report", str(self.done_report), "--packet", str(self.packet),
             "--base", self.base, "--repo", str(self.repo),
@@ -231,14 +231,19 @@ class RelayBusyStartCommandTests(_GitRepoMixin, unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         out = self.task / "instructions" / "quality-relay-block.md"
         text = out.read_text(encoding="utf-8")
-        self.assertIn("kos-board.py set", text)
-        self.assertIn(" busy KOS-SELFTEST-001", text)
-        busy_lines = [l for l in text.splitlines() if "kos-board.py set" in l]
-        self.assertTrue(busy_lines, text)
-        self.assertLess(text.splitlines().index(busy_lines[0]), 4,
-                        "开工先挂忙指令必须写在直通包开头附近")
+        # O129: department-pool claim hint replaces the named busy attachment.
+        self.assertIn("kos-board.py claim", text)
+        self.assertIn("--role quality", text)
+        self.assertIn("KOS-SELFTEST-001", text)
+        claim_lines = [l for l in text.splitlines() if "kos-board.py claim" in l]
+        self.assertTrue(claim_lines, text)
+        self.assertLess(text.splitlines().index(claim_lines[0]), 10,
+                        "开工领牌指令必须写在直通包开头附近")
+        self.assertNotIn(" busy ", text)
+        self.assertNotIn("PICK", text)
+        self.assertIn("Quality 部门", text)
 
-    def test_relay_exec_block_carries_busy_command(self) -> None:
+    def test_relay_exec_block_carries_claim_hint(self) -> None:
         result = _run_py("kos_handoff.py", [
             "relay-exec", "--report", str(self.precheck_report), "--packet", str(self.packet),
             "--base", self.base, "--repo", str(self.repo),
@@ -248,10 +253,14 @@ class RelayBusyStartCommandTests(_GitRepoMixin, unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         out = self.task / "instructions" / "exec-relay-block.txt"
         text = out.read_text(encoding="utf-8")
-        self.assertIn("kos-board.py set", text)
-        self.assertIn(" busy KOS-SELFTEST-001", text)
+        self.assertIn("kos-board.py claim", text)
+        self.assertIn("--role code", text)
+        self.assertIn("KOS-SELFTEST-001", text)
         self.assertIn("授权，直接执行", text)
-        self.assertIn("kos-board.py set", result.stdout)
+        self.assertNotIn(" busy ", text)
+        self.assertNotIn("kos-board.py set", text)
+        self.assertIn("kos-board.py claim", result.stdout)
+        self.assertIn("Executor（代码）部门", result.stdout)
 
 
 class PickReserveAtomicityTests(unittest.TestCase):
@@ -338,25 +347,30 @@ class RealBoardReserveTests(_GitRepoMixin, unittest.TestCase):
             "--board-args", json.dumps([str(self.home / "tools" / "kos-board.py")]),
         ], env=self.kos_env)
 
-    def test_no_matching_quality_pick_leaves_no_reserve(self) -> None:
-        # Roster has only Reed (Preflight): quality pick falls back and the
-        # caller must reject it without the board writing 已预占.
+    def test_relay_quality_writes_no_board_reserve(self) -> None:
+        # O129: department-pool relay never picks or reserves on the board;
+        # the taker claims atomically, so board rows must stay untouched.
         (self.home / "KOS-ROLES-001" / "roles" / "ROSTER.md").write_text(
             "# 名册（试行）\n| 名字 | 角色 | 当前担任者 | 角色卡 |\n|---|---|---|---|\n"
             "| Reed | Preflight | Codex | Reed.md |\n", encoding="utf-8")
         result = self._run_relay()
-        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         rows = board_rows(self.home)
         for name, cols in rows.items():
-            self.assertNotEqual(cols[1], "已预占", f"{name} 被留下脏预占: {cols}")
+            self.assertNotEqual(cols[1], "已预占", f"{name} 被留下预占: {cols}")
+        self.assertIn("Quality 部门", result.stdout)
+        block = (self.packet.parent / "quality-relay-block.md").read_text(encoding="utf-8")
+        self.assertIn("claim --role quality", block)
+        self.assertNotIn("已预占", result.stdout)
 
-    def test_validated_quality_pick_reserves_on_board(self) -> None:
+    def test_relay_quality_leaves_valid_roster_board_untouched(self) -> None:
         result = self._run_relay()
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         rows = board_rows(self.home)
-        self.assertIn("Quinn", rows)
-        self.assertEqual(rows["Quinn"][1], "已预占")
-        self.assertEqual(rows["Quinn"][2], "KOS-SELFTEST-001")
+        for name, cols in rows.items():
+            self.assertNotEqual(cols[1], "已预占", f"{name} 被留下预占: {cols}")
+        self.assertNotIn(" busy ", result.stdout)
+        self.assertIn("角色：Quality 部门", result.stdout)
 
 
 class DispatchDepartmentTests(unittest.TestCase):
