@@ -10,6 +10,7 @@ O1/O19：包与包之间的机械一致性检查（只读）。退出码 1=有�
  E6 交接脚本：禁止 render_handoff_v1.py；样式 B 的 kos_handoff.py 及同包 scripts/kos、tools 脚本必须存在。
  E7 本地门禁：禁止 CODE_SIGNING_IDENTITY=-；声明 full 或签名 Keychain 命令时六步必须齐全，且不得把托管重试说成本地命令。
  E8 冻结输入：要求校验或标明冻结输入时，必须有反引号路径与 64 位哈希配对。
+ E9 写死 UDID：_gate_commands 解析出的 xcodebuild 命令中 -destination 含具体 UUID（36 位 8-4-4-4-12 或 40 位十六进制 UDID，id=<UUID>）→ 报错；明确放行 id=$KOS_SIM_UDID / id=${KOS_SIM_UDID} 与 name=... 形式。
  E11 基线真实性（O111）：--start 以及起点/父提交/HEAD/基线提交语境命中的 40 位 SHA，
      必须通过 git cat-file -e <sha>^{commit}（指向 --repo-root 或脚本所在仓库）真实存在；
      不存在即报错（exit 1），防止手抄错 SHA 流入执行包。--no-git-check 仅用于无 .git
@@ -436,6 +437,37 @@ def main():
                     r"`[^`\n]+/arch-[^`\n]*\.md`[^`\n]{0,80}?`[0-9a-f]{64}`", content):
                 err.append(f"E8 {base} feature 档冻结输入缺少 arch-* 报告的路径+SHA-256 同行反引号对（relay 门禁必需）")
 
+    def _check_e9(files, txt, err):
+        # E9: forbid hardcoded simulator UDID in xcodebuild -destination.
+        # Accepts: id=$KOS_SIM_UDID, id=${KOS_SIM_UDID}, name=...
+        # Rejects: id=<36-char UUID 8-4-4-4-12>, id=<40-char hex UDID>
+        UUID_36 = re.compile(
+            r'\bid=([0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12})\b'
+        )
+        UDID_40 = re.compile(r'\bid=([0-9A-Fa-f]{40})\b')
+        for f in files:
+            content = txt[f]
+            base = os.path.basename(f)
+            for cmd in _gate_commands(content):
+                if not any(os.path.basename(t) == 'xcodebuild' for t in cmd[:2]):
+                    continue
+                # find -destination value(s) in this command
+                dest_values = []
+                for i, token in enumerate(cmd):
+                    if token == '-destination' and i + 1 < len(cmd):
+                        dest_values.append(cmd[i + 1])
+                    elif token.startswith('-destination='):
+                        dest_values.append(token[len('-destination='):])
+                for dest in dest_values:
+                    for pat in (UUID_36, UDID_40):
+                        m = pat.search(dest)
+                        if m:
+                            err.append(
+                                f'E9 {base} destination 写死 UDID {m.group(1)[:8]}…，'
+                                f'须经 kos-sim-slot.py 动态获取'
+                            )
+                            break  # one error per destination token is enough
+
     def _check_hardcoded_next_role(files, txt, warn):
         # O85: execution / repair packets should name a duty, not a person.
         # Jack is the PM and stays explicit. Warning only — historical packets
@@ -530,6 +562,7 @@ def main():
     _check_e5(files, txt, err)
     _check_e6(files, txt, err)
     _check_e7(files, txt, err)
+    _check_e9(files, txt, err)
     _check_hash_pairs(files, txt, err, warn)
     _check_hardcoded_next_role(files, txt, warn)
     for e in err: print(e)
