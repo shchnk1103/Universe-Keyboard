@@ -83,6 +83,8 @@ struct FeedbackSettingsView: View {
                         .foregroundStyle(.secondary)
                 }
                 .padding(.vertical, 4)
+                .disabled(!hapticEnabled)
+                .opacity(hapticEnabled ? 1 : 0.48)
                 AppActionButton(
                     title: "重置为默认强度",
                     systemImage: "arrow.counterclockwise",
@@ -91,6 +93,7 @@ struct FeedbackSettingsView: View {
                     showResetConfirmation = true
                 }
                 .disabled(!hapticEnabled)
+                .opacity(hapticEnabled ? 1 : 0.48)
                 .accessibilityIdentifier("resetHapticIntensity")
             } header: {
                 Text("触感反馈")
@@ -101,8 +104,6 @@ struct FeedbackSettingsView: View {
                         : "开启「按键震动」后可拖动强度并预览。"
                 )
             }
-            .disabled(!hapticEnabled)
-            .opacity(hapticEnabled ? 1 : 0.48)
         }
         .sheet(isPresented: $showResetConfirmation) {
             FeedbackResetSheet(

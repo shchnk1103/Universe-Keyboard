@@ -61,6 +61,101 @@ final class FeedbackSettingsResetTests: XCTestCase {
         XCTAssertTrue(closed)
     }
 
+    /// PB-022-HAPTIC-TOGGLE-LOCK-FIX-001：触感反馈 `Section` 外层不得再挂整段
+    /// `.disabled(!hapticEnabled)`（关闭开关后 `Toggle("按键震动")` 被禁用锁死，
+    /// 永远无法重新打开）。禁用/降透明度只允许作用于内部强度区与重置按钮。
+    func testHapticSectionNotGloballyDisabledAndToggleAlwaysInteractive() {
+        let page = FeedbackSettingsView()
+        XCTAssertFalse(
+            modifierWrapsHead(
+                page.body, modifier: "EnvironmentKeyTransformModifier<Bool>", head: "Section<"),
+            "触感反馈 Section 外层的 .disabled(!hapticEnabled) 必须移除（PB-022）")
+        XCTAssertFalse(
+            modifierWrapsHead(page.body, modifier: "OpacityEffect", head: "Section<"),
+            "触感反馈 Section 外层的 .opacity 必须移除（PB-022）")
+        XCTAssertFalse(
+            modifierWrapsHead(
+                page.body, modifier: "EnvironmentKeyTransformModifier<Bool>", head: "Toggle"),
+            "「按键震动」Toggle 不得被 .disabled 包裹")
+        // 内部禁用契约保持：强度区 .disabled + .opacity，重置按钮 .disabled + .opacity。
+        XCTAssertTrue(
+            modifierWrapsHead(
+                page.body, modifier: "EnvironmentKeyTransformModifier<Bool>", head: "VStack<"),
+            "强度区仍需 .disabled(!hapticEnabled)")
+        XCTAssertTrue(
+            modifierWrapsHead(page.body, modifier: "OpacityEffect", head: "VStack<"),
+            "强度区仍需 .opacity(hapticEnabled ? 1 : 0.48)")
+        XCTAssertTrue(
+            modifierWrapsHead(
+                page.body, modifier: "EnvironmentKeyTransformModifier<Bool>", head: "AppActionButton"),
+            "重置按钮仍需 .disabled(!hapticEnabled)")
+        XCTAssertTrue(
+            modifierWrapsHead(page.body, modifier: "OpacityEffect", head: "AppActionButton"),
+            "重置按钮需补 .opacity(hapticEnabled ? 1 : 0.48)")
+    }
+
+    /// 判断 body 树中是否存在"最外层修饰符为 `modifier` 的 ModifiedContent 节点"，
+    /// 且其 content 链解包后的头部视图类型以 `head` 开头（即修饰符直接作用在该视图上）。
+    /// 经验证（PB-022）：`.disabled` 的修饰符类型为 `_EnvironmentKeyTransformModifier<Bool>`，
+    /// `.opacity` 为 `_OpacityEffect`。只比较节点类型串的**最外层**泛型参数，避免外层
+    /// 节点泛型参数里嵌的同名修饰符类型造成误判。
+    private func modifierWrapsHead(
+        _ value: Any, modifier: String, head: String, depth: Int = 0
+    ) -> Bool {
+        guard depth < 40 else { return false }
+        let mirror = Mirror(reflecting: value)
+        let typeName = String(describing: mirror.subjectType)
+        if typeName.hasPrefix("ModifiedContent<"),
+            let split = topLevelModifierRange(of: typeName),
+            typeName[split].contains(modifier)
+        {
+            var current = mirror.children.first?.value
+            var hops = 0
+            while let node = current, hops < 12 {
+                let nodeType = String(describing: Swift.type(of: node))
+                if nodeType.hasPrefix(head) { return true }
+                guard nodeType.hasPrefix("ModifiedContent<") else { break }
+                current = Mirror(reflecting: node).children.first?.value
+                hops += 1
+            }
+            for child in mirror.children {
+                if modifierWrapsHead(child.value, modifier: modifier, head: head, depth: depth + 1) {
+                    return true
+                }
+            }
+            return false
+        }
+        for child in mirror.children {
+            if modifierWrapsHead(child.value, modifier: modifier, head: head, depth: depth + 1) {
+                return true
+            }
+        }
+        return false
+    }
+
+    /// `ModifiedContent<CONTENT, MODIFIER>` 类型串：返回最外层 MODIFIER 部分的 Range
+    /// （顶层逗号之后、收尾 `>` 之前）。非该形态返回 nil。
+    private func topLevelModifierRange(of typeName: String) -> Range<String.Index>? {
+        guard typeName.hasPrefix("ModifiedContent<") else { return nil }
+        var depth = 0
+        var lastComma: String.Index?
+        for (offset, ch) in typeName.enumerated() {
+            let index = typeName.index(typeName.startIndex, offsetBy: offset)
+            switch ch {
+            case "<": depth += 1
+            case ">": depth -= 1
+            case "," where depth == 1: lastComma = index
+            default: break
+            }
+        }
+        guard depth == 0, let comma = lastComma else { return nil }
+        let after = typeName.index(after: comma)
+        if typeName.last == ">" {
+            return after..<typeName.index(before: typeName.endIndex)
+        }
+        return after..<typeName.endIndex
+    }
+
     private func sectionCount(_ value: Any, depth: Int = 0) -> Int {
         guard depth < 25 else { return 0 }
         let mirror = Mirror(reflecting: value)
