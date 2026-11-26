@@ -18,6 +18,25 @@ struct TwentySixKeyNumberPadSettingsRow: View {
     }
 }
 
+/// PB-017 PR-3：双拼键帽副标开关（绑定 `KeyboardLayoutSettingsKey.shuangpinSublegendEnabled`，
+/// 默认开启；仅双拼方案激活时实际生效，键帽副标由扩展端 `cachedShuangpinSublegendEnabled` 消费）。
+struct ShuangpinSublegendSettingsRow: View {
+    @AppStorage private var enabled: Bool
+
+    init(defaults: UserDefaults? = UserDefaults(suiteName: "group.com.DoubleShy0N.Universe-Keyboard")) {
+        _enabled = AppStorage(
+            wrappedValue: true, KeyboardLayoutSettingsKey.shuangpinSublegendEnabled, store: defaults)
+    }
+
+    var body: some View {
+        ToggleRow(
+            title: "显示双拼键帽副标",
+            description: "双拼方案下在键帽下方显示对应的全拼韵母副标，帮助熟悉双拼键位映射。",
+            isOn: $enabled
+        )
+    }
+}
+
 /// Settings surface for 26-key / Chinese nine-key layout selection.
 ///
 /// WeChat-style side-by-side “主键盘” chooser: equal-size previews, radio under each,
@@ -48,6 +67,14 @@ struct KeyboardLayoutSettingsView: View {
 
             Section {
                 TwentySixKeyNumberPadSettingsRow()
+            }
+
+            Section {
+                ShuangpinSublegendSettingsRow()
+            } header: {
+                Text("双拼键帽")
+            } footer: {
+                Text("选择双拼方案（小鹤双拼 / 自然码双拼）后，键帽下方会显示对应的全拼韵母副标；关闭后仅显示主字符。")
             }
 
             KeyboardHeightSettingsEntry()

@@ -141,7 +141,6 @@ extension KeyboardViewController {
             hasFullAccess: hasFullAccess
         )
         controller.setPostCommitContinuationEnabled(rawPostCommitContinuation as? Bool ?? true)
-        controller.typoCorrectionExperimentalEdits = typoExperimentSettings.experimentalEdits
         controller.typoCorrectionLearningSnapshot = typoCorrectionLearningStore.snapshot()
         cachedTypingIntelligenceEnabled =
             defaults?.bool(
@@ -159,6 +158,16 @@ extension KeyboardViewController {
             defaults?.object(forKey: KeyboardLayoutSettingsKey.shuangpinSublegendEnabled) as? Bool ?? true
         cachedLayoutStyle = KeyboardLayoutStyle.resolve(
             defaults?.string(forKey: KeyboardLayoutSettingsKey.layoutStyle)
+        )
+        // PB-017 PR-3：智能纠错实验编辑按激活 schema 门卫——双拼两键一音使
+        // 插入/换位的音节假设失真，激活双拼时 fail-closed 清空；全拼 / T9 / 未知
+        // schema 保持原值。九宫格激活时双拼 binding26 休眠，按 binding9 判定。
+        controller.typoCorrectionExperimentalEdits = TypoCorrectionExperimentalEdits.gatedForActiveSchema(
+            typoExperimentSettings.experimentalEdits,
+            activeSchemaID: typoGateActiveSchemaID(
+                layoutStyle: cachedLayoutStyle,
+                defaults: defaults
+            )
         )
         var sharedDataDir: String?
         if let container = FileManager.default.containerURL(
@@ -202,6 +211,23 @@ extension KeyboardViewController {
         if cachedHapticEnabled {
             hapticGenerator.prepare()
             modeEnterHapticGenerator.prepare()
+        }
+    }
+
+    /// PB-017 PR-3：纠错实验编辑门卫判定的激活 schema。
+    ///
+    /// 与 `RimeRuntimeSelection.resolveRegistered` 的槽位语义对齐：九宫格激活时
+    /// 双拼 binding26 休眠，按 `schemeBinding9`（缺省 `t9`）判定；全键盘按
+    /// `schemeBinding26` 判定。绑定缺失时返回 `nil`，门卫保持原值（fail-open）。
+    func typoGateActiveSchemaID(
+        layoutStyle: KeyboardLayoutStyle,
+        defaults: UserDefaults?
+    ) -> String? {
+        switch layoutStyle {
+        case .nineKey:
+            return defaults?.string(forKey: KeyboardLayoutSettingsKey.schemeBinding9) ?? "t9"
+        case .twentySixKey:
+            return defaults?.string(forKey: KeyboardLayoutSettingsKey.schemeBinding26)
         }
     }
 

@@ -1,8 +1,14 @@
+import KeyboardCore
 import SwiftUI
 
 struct RimeFuzzyPinyinSettingsView: View {
     @Bindable var store: RimeSettingsStore
     @State private var showUnsupportedAlert = false
+
+    /// PB-017 PR-3：双拼激活态（含九宫格切回前的 binding26 残留，由 capability 层归一）。
+    private var isShuangpinActive: Bool {
+        RimeShuangpinVariant.isDoublePinyinSchemaID(store.settingsCapabilitySchemaID)
+    }
 
     var body: some View {
         Form {
@@ -20,7 +26,7 @@ struct RimeFuzzyPinyinSettingsView: View {
                         .onTapGesture { showUnsupportedAlert = true }
                 }
 
-                Text(store.fuzzyPinyinCapabilityStatusText)
+                Text(shuangpinAwareCapabilityStatusText)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
             } header: {
@@ -28,6 +34,8 @@ struct RimeFuzzyPinyinSettingsView: View {
             } footer: {
                 if store.supportsManagedFuzzyPinyin {
                     Text("这些是你的偏好设置。只有当前布局使用的方案支持时，开关才可以调整并在重新部署后生效。切换方案不会清空你已保存的选择。")
+                } else if isShuangpinActive {
+                    Text("双拼方案两键一音，声母和韵母由固定键位映射决定，模糊音不再适用。已保存的偏好会保留，切回全拼方案后自动恢复，无需重新选择。")
                 } else {
                     Text("当前布局绑定的方案不支持 Universe 管理的模糊音。已保存的偏好会保留，切回雾凇等支持方案后自动恢复，无需重新选择。")
                 }
@@ -82,10 +90,25 @@ struct RimeFuzzyPinyinSettingsView: View {
         .alert("无法开启", isPresented: $showUnsupportedAlert) {
             Button("好", role: .cancel) {}
         } message: {
-            Text(
-                "当前方案（\(store.settingsCapabilitySchemeDisplayName)）暂不支持该功能。已保存的选择会在支持的方案下恢复。请切换到支持的方案（如雾凇拼音）后再试。"
-            )
+            if isShuangpinActive {
+                Text(
+                    "双拼方案（\(store.settingsCapabilitySchemeDisplayName)）两键一音，声母和韵母由固定键位映射决定，模糊音不再适用。已保存的选择会在切回全拼方案后自动恢复。"
+                )
+            } else {
+                Text(
+                    "当前方案（\(store.settingsCapabilitySchemeDisplayName)）暂不支持该功能。已保存的选择会在支持的方案下恢复。请切换到支持的方案（如雾凇拼音）后再试。"
+                )
+            }
         }
+    }
+
+    /// PB-017 PR-3：双拼激活态给双拼专用原因说明，其余方案沿用通用文案。
+    private var shuangpinAwareCapabilityStatusText: String {
+        guard !store.supportsManagedFuzzyPinyin, isShuangpinActive else {
+            return store.fuzzyPinyinCapabilityStatusText
+        }
+        return
+            "当前方案（\(store.settingsCapabilitySchemeDisplayName)）为双拼方案：两键一音，模糊音不再适用。你的选择会保留，切换到全拼方案后可再开启。"
     }
 
     /// Live binding only while the current scheme productizes managed fuzzy.
