@@ -1,4 +1,5 @@
 import Foundation
+import KeyboardCore
 import SwiftUI
 
 struct RimeSettingsView: View {
@@ -43,7 +44,7 @@ struct RimeSettingsView: View {
         }
         switch store.downloadState {
         case .fetchingReleaseInfo, .downloading, .extracting, .postProcessing, .deploying:
-            return schema.schemaID == "rime_ice" ? "正在下载" : "未安装"
+            return RimeSchemeCapabilityMatrix.isDistributionDownloadSubject(schema.schemaID) ? "正在下载" : "未安装"
         case .failed(let failedSchemaID, _, _) where failedSchemaID == schema.schemaID:
             return "下载失败"
         default:
@@ -60,7 +61,7 @@ struct RimeSettingsView: View {
         }
         switch store.downloadState {
         case .fetchingReleaseInfo, .downloading, .extracting, .postProcessing, .deploying:
-            return schema.schemaID == "rime_ice" ? .working : .downloadable
+            return RimeSchemeCapabilityMatrix.isDistributionDownloadSubject(schema.schemaID) ? .working : .downloadable
         case .failed(let failedSchemaID, _, _) where failedSchemaID == schema.schemaID:
             return .failed
         default:
@@ -216,7 +217,7 @@ private struct RimeSchemaDetailView: View {
 
     @ViewBuilder
     private var schemaActionSections: some View {
-        if schema.schemaID == "rime_ice" {
+        if RimeSchemeCapabilityMatrix.isProductAdvancedInputHost(schema.schemaID) {
             Section {
                 RimeAdvancedInputStatusContent(
                     store: store,
@@ -462,7 +463,10 @@ private struct RimeAdvancedInputStatusContent: View {
     private func perform(_ action: RimeAdvancedInputRecoveryAction) {
         switch action {
         case .setCurrentSchema:
-            Task { await store.switchToSchema("rime_ice") }
+            guard let targetSchemaID = RimeSchemeCapabilityMatrix.productAdvancedInputTargetSchemaID() else {
+                return
+            }
+            Task { await store.switchToSchema(targetSchemaID) }
         case .applySettings:
             Task { await store.triggerDeployment() }
         case .redownloadSchema:

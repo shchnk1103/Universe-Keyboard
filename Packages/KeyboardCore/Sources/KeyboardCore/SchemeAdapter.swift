@@ -135,6 +135,37 @@ public enum SchemeAdapterRegistry {
         supportsProductAdvancedInput: false
     )
 
+    /// PB-017 小鹤双拼：内置最小模板（builtinPrelude），仅 26 键槽位（schemeBinding26），
+    /// 九宫格槽位（t9 registry）零触碰。
+    public static let doublePinyinFlypy = SchemeAdapter(
+        schemaID: "double_pinyin_flypy",
+        layout: SchemeLayoutCapability(
+            supportsTwentySixKey: true,
+            supportsNineKey: false,
+            nineKeySchemaIDs: []
+        ),
+        sharedDefaultMode: .builtinPrelude,
+        ownershipStrategyID: .none,
+        postProcessingRevision: nil,
+        supportsManagedFuzzyPinyin: false,
+        supportsProductAdvancedInput: true
+    )
+
+    /// PB-017 自然码双拼（上游默认命名 `double_pinyin`）：内置最小模板，仅 26 键槽位。
+    public static let doublePinyinZrm = SchemeAdapter(
+        schemaID: "double_pinyin",
+        layout: SchemeLayoutCapability(
+            supportsTwentySixKey: true,
+            supportsNineKey: false,
+            nineKeySchemaIDs: []
+        ),
+        sharedDefaultMode: .builtinPrelude,
+        ownershipStrategyID: .none,
+        postProcessingRevision: nil,
+        supportsManagedFuzzyPinyin: false,
+        supportsProductAdvancedInput: true
+    )
+
     /// Canonical letter-schema id for adapter lookup (`t9` → Ice family).
     public static func normalizeSchemaID(_ raw: String) -> String {
         RimeSchemeCapabilityMatrix.normalizeSchemaID(raw)
@@ -149,6 +180,10 @@ public enum SchemeAdapterRegistry {
             return wanxiang
         case "luna_pinyin":
             return luna
+        case "double_pinyin_flypy":
+            return doublePinyinFlypy
+        case "double_pinyin":
+            return doublePinyinZrm
         default:
             return nil
         }
