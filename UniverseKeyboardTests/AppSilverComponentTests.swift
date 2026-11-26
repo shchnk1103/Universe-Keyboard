@@ -92,6 +92,25 @@ final class AppSilverComponentTests: XCTestCase {
         XCTAssertEqual(
             AppSlider.mappedValue(fromNormalized: 0.123, in: 0...1, step: 0), 0.123,
             accuracy: 0.0001)
+        // step=0.5：raw 12.5 已落在网格，保持 12.5
+        XCTAssertEqual(
+            AppSlider.mappedValue(fromNormalized: 0.5, in: 5...20, step: 0.5), 12.5,
+            accuracy: 0.0001)
+        // step 取整后仍被区间钳制：0.99 / 0.3 → round(3.3)=3 → 0.9
+        XCTAssertEqual(
+            AppSlider.mappedValue(fromNormalized: 0.99, in: 0...1, step: 0.3), 0.9,
+            accuracy: 0.0001)
+    }
+
+    /// 泛型 `init` 对非 Double 浮点绑定的桥接：内部存储统一为 `Binding<Double>`
+    /// （读取转 Double），写回经 `Number($0)` 按原绑定类型落定。
+    func testAppSliderInitBridgesFloatBinding() {
+        var stored: Float = 10
+        let binding = Binding<Float>(get: { stored }, set: { stored = $0 })
+        let slider = AppSlider(value: binding, in: 5...20 as ClosedRange<Float>, step: 1)
+        XCTAssertEqual(slider.bridgedValue.wrappedValue, 10.0, accuracy: 0.0001)
+        slider.bridgedValue.wrappedValue = 15
+        XCTAssertEqual(stored, 15, accuracy: 0.0001)
     }
 
     /// 组件接银同值核对：AppActionButton secondary 描边归入 hairline 层（base 同为

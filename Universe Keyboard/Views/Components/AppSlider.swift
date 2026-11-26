@@ -12,9 +12,18 @@ import UIKit
 ///
 /// 数值按 `step` 取整（`step ≤ 0` 表示连续）。`onEditingChanged` 语义与原生
 /// `Slider` 一致：拖动开始/结束时回调。
-struct AppSlider<Number: BinaryFloatingPoint>: UIViewRepresentable {
-    @Binding var value: Number
-    let range: ClosedRange<Number>
+///
+/// 非泛型具体类型（r3）：泛型类型内嵌 `@objc` `NSObject` 子类 `Coordinator`
+/// 会触发 Xcode 26.6 Release Whole-Module Optimization (`-O`) 下的编译器
+/// 静默崩溃（exit 65），故内部统一收敛为 `Binding<Double>` /
+/// `ClosedRange<Double>`；对外保留泛型 `init` 经 `bridgedValue` 桥接，既有
+/// 调用点零改动。
+struct AppSlider: UIViewRepresentable {
+    /// 桥接后的 Double 绑定：读取转 `Double`，写回按上游 `Number` 落定。
+    /// 显式 internal 存储（SwiftUI/UIViewRepresentable 协议惯例会把
+    /// `@Binding` 合成存储强制 private），供单测核对桥接语义。
+    let bridgedValue: Binding<Double>
+    let range: ClosedRange<Double>
     var step: Double = 0
     var onEditingChanged: (Bool) -> Void = { _ in }
     /// 传给 UISlider 的无障碍标签（原生 `Slider(label:)` 语义：不视觉展示）。
@@ -22,8 +31,15 @@ struct AppSlider<Number: BinaryFloatingPoint>: UIViewRepresentable {
     /// 显式数值播报文案；缺省由原生 UISlider 按百分比播报。
     var accessibilityValueText: String? = nil
 
-    /// 外部标签沿用原生 `Slider(value:in:step:onEditingChanged:)` 形状。
-    init(
+    /// 当前值（转发 `bridgedValue`；Coordinator 经此写回上游绑定）。
+    var value: Double {
+        get { bridgedValue.wrappedValue }
+        nonmutating set { bridgedValue.wrappedValue = newValue }
+    }
+
+    /// 对外完全兼容的泛型入口：任意 `BinaryFloatingPoint` 绑定桥接为
+    /// 内部 `Binding<Double>`，调用点零改动。
+    init<Number: BinaryFloatingPoint>(
         value: Binding<Number>,
         in range: ClosedRange<Number>,
         step: Double = 0,
@@ -31,8 +47,10 @@ struct AppSlider<Number: BinaryFloatingPoint>: UIViewRepresentable {
         accessibilityLabel: String? = nil,
         accessibilityValueText: String? = nil
     ) {
-        _value = value
-        self.range = range
+        bridgedValue = Binding<Double>(
+            get: { Double(value.wrappedValue) },
+            set: { value.wrappedValue = Number($0) })
+        self.range = Double(range.lowerBound)...Double(range.upperBound)
         self.step = step
         self.onEditingChanged = onEditingChanged
         self.accessibilityLabel = accessibilityLabel
@@ -106,28 +124,29 @@ struct AppSlider<Number: BinaryFloatingPoint>: UIViewRepresentable {
     // MARK: - 纯函数（供单测）
 
     private var normalizedProgress: Double {
-        let span = Double(range.upperBound - range.lowerBound)
+        let span = range.upperBound - range.lowerBound
         guard span > 0 else { return 0 }
-        return (Double(value) - Double(range.lowerBound)) / span
+        return (value - range.lowerBound) / span
     }
 
     /// 把 UISlider 的 0...1 进度映射为区间内按 `step` 取整的值。
-    /// 静态纯函数：参数自给自足，兼容 Xcode 26.6 / 27.2 的 Swift 6 严格并发
-    /// （`nonisolated` 方法不得读 `@MainActor` 实例属性）。
+    /// 静态纯函数、统一基于 `Double`（r3 去泛型化）：参数自给自足，兼容
+    /// Xcode 26.6 / 27.2 的 Swift 6 严格并发（`nonisolated` 方法不得读
+    /// `@MainActor` 实例属性）。
     nonisolated static func mappedValue(
-        fromNormalized progress: Double, in range: ClosedRange<Number>, step: Double
-    ) -> Number {
+        fromNormalized progress: Double, in range: ClosedRange<Double>, step: Double
+    ) -> Double {
         let clamped = max(min(progress, 1), 0)
-        let raw = range.lowerBound + Number(clamped) * (range.upperBound - range.lowerBound)
+        let raw = range.lowerBound + clamped * (range.upperBound - range.lowerBound)
         return rounded(raw, in: range, step: step)
     }
 
     nonisolated static func rounded(
-        _ raw: Number, in range: ClosedRange<Number>, step: Double
-    ) -> Number {
+        _ raw: Double, in range: ClosedRange<Double>, step: Double
+    ) -> Double {
         guard step > 0 else { return min(max(raw, range.lowerBound), range.upperBound) }
-        let stepped = (Double(raw) / step).rounded() * step
-        return min(max(Number(stepped), range.lowerBound), range.upperBound)
+        let stepped = (raw / step).rounded() * step
+        return min(max(stepped, range.lowerBound), range.upperBound)
     }
 }
 
