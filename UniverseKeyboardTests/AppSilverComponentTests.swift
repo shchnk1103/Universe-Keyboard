@@ -78,7 +78,7 @@ final class AppSilverComponentTests: XCTestCase {
     func testAppSliderValueMappingMath() {
         let range: ClosedRange<Double> = 5...20
         func sliderValue(_ progress: Double) -> Double {
-            makeSlider(range: range, step: 1).mappedValue(fromNormalized: progress)
+            AppSlider.mappedValue(fromNormalized: progress, in: range, step: 1)
         }
         // 中点 → 12.5，step=1 四舍五入到 13
         XCTAssertEqual(sliderValue(0.5), 13)
@@ -87,18 +87,11 @@ final class AppSilverComponentTests: XCTestCase {
         XCTAssertEqual(sliderValue(1.5), 20)
         // 连续区间（反馈强度 0...1，无 step）不做取整
         XCTAssertEqual(
-            makeSlider(range: 0...1, step: 0).mappedValue(fromNormalized: 0.5), 0.5,
+            AppSlider.mappedValue(fromNormalized: 0.5, in: 0...1, step: 0), 0.5,
             accuracy: 0.001)
         XCTAssertEqual(
-            makeSlider(range: 0...1, step: 0).mappedValue(fromNormalized: 0.123), 0.123,
+            AppSlider.mappedValue(fromNormalized: 0.123, in: 0...1, step: 0), 0.123,
             accuracy: 0.0001)
-    }
-
-    private func makeSlider(
-        range: ClosedRange<Double>, step: Double
-    ) -> AppSlider<Double> {
-        AppSlider(
-            value: .constant(range.lowerBound), in: range, step: step)
     }
 
     /// 组件接银同值核对：AppActionButton secondary 描边归入 hairline 层（base 同为

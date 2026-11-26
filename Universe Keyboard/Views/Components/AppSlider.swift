@@ -84,7 +84,9 @@ struct AppSlider<Number: BinaryFloatingPoint>: UIViewRepresentable {
         }
 
         @objc func valueChanged(_ sender: UISlider) {
-            parent.value = parent.mappedValue(fromNormalized: Double(sender.value))
+            parent.value = AppSlider.mappedValue(
+                fromNormalized: Double(sender.value),
+                in: parent.range, step: parent.step)
         }
 
         @objc func editingBegan(_ sender: UISlider) {
@@ -94,7 +96,9 @@ struct AppSlider<Number: BinaryFloatingPoint>: UIViewRepresentable {
         @objc func editingEnded(_ sender: UISlider) {
             // 结束时把停留位置按 step 收整并写回，保持与原生 Slider 相同的
             // 「结束才落定」手感（反馈强度即依赖此时机 commit）。
-            parent.value = parent.mappedValue(fromNormalized: Double(sender.value))
+            parent.value = AppSlider.mappedValue(
+                fromNormalized: Double(sender.value),
+                in: parent.range, step: parent.step)
             parent.onEditingChanged(false)
         }
     }
@@ -108,10 +112,14 @@ struct AppSlider<Number: BinaryFloatingPoint>: UIViewRepresentable {
     }
 
     /// 把 UISlider 的 0...1 进度映射为区间内按 `step` 取整的值。
-    nonisolated func mappedValue(fromNormalized progress: Double) -> Number {
+    /// 静态纯函数：参数自给自足，兼容 Xcode 26.6 / 27.2 的 Swift 6 严格并发
+    /// （`nonisolated` 方法不得读 `@MainActor` 实例属性）。
+    nonisolated static func mappedValue(
+        fromNormalized progress: Double, in range: ClosedRange<Number>, step: Double
+    ) -> Number {
         let clamped = max(min(progress, 1), 0)
         let raw = range.lowerBound + Number(clamped) * (range.upperBound - range.lowerBound)
-        return Self.rounded(raw, in: range, step: step)
+        return rounded(raw, in: range, step: step)
     }
 
     nonisolated static func rounded(
