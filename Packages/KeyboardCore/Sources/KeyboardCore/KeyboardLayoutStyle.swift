@@ -24,4 +24,7 @@ public enum KeyboardLayoutSettingsKey {
     public static let schemeBinding26 = "keyboard_layout_scheme_26"
     /// ADR 0026: RIME schema ID for the nine-key slot (V1: `t9` when ready).
     public static let schemeBinding9 = "keyboard_layout_scheme_9"
+    /// PB-017 PR-2: 双拼键帽副标显隐（默认 `true`）。经共享设置键枚举登记，
+    /// 业务代码不得散落裸字符串字面量。
+    public static let shuangpinSublegendEnabled = "keyboard.shuangpin.sublegendEnabled"
 }

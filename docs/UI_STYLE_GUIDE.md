@@ -117,6 +117,7 @@ Key rules:
 - Press feedback should use brief background highlight plus subtle scale, not full alpha fading.
 - Visual press state, key click, and haptic feedback should be emitted together from key touch-down for standard keys. Paths without a normal touch-down, such as candidate commit or long-press variant commit, should use the shared feedback helper at commit time.
 - The middle letter row should stay slightly inset, matching native QWERTY rhythm.
+- Shuangpin keycap sub-legends (PB-017 PR-2): when a double-pinyin schema (flypy / zrm) is active on the 26-key slot, letter keys may show a small right-bottom sub-legend for the mapped final/initial (data from KeyboardCore `ShuangpinLegendTable`). Spec: `9` pt regular, `.secondaryLabel` color, right-bottom anchored with a minimum `2` pt vertical clearance from the centered `17` pt primary title, and the `45` pt frozen key height must not change. Toggle via `keyboard.shuangpin.sublegendEnabled` (default on). Sub-legends hide entirely on the nine-key layout, on non-shuangpin schemas, and when the toggle is off; they must never alter primary title layout or key geometry, and VoiceOver text switches between `<Key>, shuangpin <legend>` and the plain default label with visibility.
 
 ### Candidate Bar
 

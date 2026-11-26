@@ -391,6 +391,7 @@ extension KeyboardViewController {
             (button as? KeyboardKeyButton)?.isOrdinaryRolloverParticipant = true
             button.accessibilityIdentifier = key
             letterButtons.append(button)
+            applyShuangpinSublegend(to: button, key: key)
 
             if KeyPopupView.hasVariants(for: key) {
                 let longPress = UILongPressGestureRecognizer(
