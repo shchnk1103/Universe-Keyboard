@@ -1,3 +1,10 @@
+## [1.0.4] - 2026-11-26（候选封版）
+
+- 触感反馈修复（PB-022，PR #424 `32e56f49`）：修复开启按键振动开关后无法再次关闭的问题；禁用/透明态按强度正确作用域化，真机验证通过。
+- 首页体验（PB-020，PR #423 `1c410317`）：移除主页长按空格引导 TipKit 横幅，恢复简洁首屏。
+- 九宫格数字键盘手感（PB-021，PR #422 `4fa9df66`）：数字面板支持下滑收起并同步扩展高度约束，闭环 1.0.3 真机终验登记的快捷栏手感/微抖问题。
+- 版本号递增：`MARKETING_VERSION 1.0.4`、`CURRENT_PROJECT_VERSION 3`（REL-104-BUMP-001），候选封版记录见 [docs/releases/v1.0.4.md](docs/releases/v1.0.4.md)。
+
 ## 2026-11-26 — Release 1.0.3 正式上架 App Store（Build 207）
 
 - `1.0.3` 以 Build 207 通过 App Store 审核并于 2026-11-26 正式上架；版本档案收口为 `Released`，见 [docs/releases/v1.0.3.md](docs/releases/v1.0.3.md)。

@@ -85,6 +85,9 @@
 | PB-012 | P2 | URL/webSearch/邮箱地址类会话输入与英文底行切换键（含 `.` 大小写修复） | 已合入 main（真机终验通过（2026-11-25）） | URL 模式英文底行 46pt 切换键替换与句号自动大小写规则已合入；2026-11-25 真机宿主终验通过 | [PR #389](https://github.com/shchnk1103/Universe-Keyboard/pull/389)（`2efc85f7`）；URL-MODE-ENGLISH-IMPL-001 任务包（外置）；[v1.0.3.md](releases/v1.0.3.md) | 2026-11-25 |
 | PB-013 | 未定 | 剪贴板 `changeCount` 横幅确认 | 已合入 main（真机终验通过（2026-11-25）） | 方案 B 剪贴板预览两级去重与持续抑制已合入；2026-11-25 真机复测横幅与预览行为通过 | [PR #400](https://github.com/shchnk1103/Universe-Keyboard/pull/400)（`248aee3`）；[v1.0.3.md](releases/v1.0.3.md) | 2026-11-25 |
 | PB-014 | P2 | 中文符号回跳后候选栏连续联想与不混排 | 已合入 main（真机终验通过（2026-11-25）） | 一次性符号回跳后候选栏保留并进入连续联想的续接合同已合入；2026-11-25 真机终验通过 | [PR #390](https://github.com/shchnk1103/Universe-Keyboard/pull/390)（`67269bdb`）；PUNCT-CONTINUATION-IMPL-001 任务包（外置）；[v1.0.3.md](releases/v1.0.3.md) | 2026-11-25 |
+| PB-020 | P2 | 移除主页长按空格引导 TipKit 横幅，恢复简洁首屏 | 已合入 main（纳入 1.0.4 候选封版） | 发布归档完成（外置 publish 报告）；随 1.0.4 候选封版同发 | [PR #423](https://github.com/shchnk1103/Universe-Keyboard/pull/423)（`1c410317`）；外置 `PRODUCT-BUGS-INBOX.md` PB-020；[v1.0.4.md](releases/v1.0.4.md) | 2026-11-26 |
+| PB-021 | P2 | 九宫格数字快捷栏滑动手感、下滑展开与收起微抖（1.0.3 真机终验登记 3 处） | 已合入 main（纳入 1.0.4 候选封版） | 下滑收起与高度约束同步扩展已合入，1.0.3 遗留 3 处手感/微抖闭环；发布归档完成 | [PR #422](https://github.com/shchnk1103/Universe-Keyboard/pull/422)（`4fa9df66`）；外置 `PRODUCT-BUGS-INBOX.md` PB-021；[v1.0.4.md](releases/v1.0.4.md)；PB-009 | 2026-11-26 |
+| PB-022 | P0 | 按键振动开关关闭后无法再次打开（触感反馈锁定） | 已合入 main（真机验证通过；纳入 1.0.4 候选封版） | 热修已合入且真机验证通过；发布归档完成 | [PR #424](https://github.com/shchnk1103/Universe-Keyboard/pull/424)（`32e56f49`）；外置 `PRODUCT-BUGS-INBOX.md` PB-022；[v1.0.4.md](releases/v1.0.4.md)；PB-001 | 2026-11-26 |
 ## 决定记录
 
 | 日期 | 决定（Human Product Owner，除非另注） | 指针 |
