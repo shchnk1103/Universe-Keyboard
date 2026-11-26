@@ -103,7 +103,8 @@ PR 采用 squash merge 后，本地功能分支提交不在远端主干祖先链
 - **部门池派发与实名领岗（O113）**：按部门池派发时，派发块只写部门名（如 `Executor（代码）部门`、`Quality 部门`、`Publish 部门`），不点名具体员工；部门全员名单与流转规则见外置 `/Users/doubleshy0n/.kos-work/Universe-Keyboard/KOS-ROLES-001/roles/ROSTER.md`。接单者开工前运行 `python3 /Users/doubleshy0n/.kos-work/Universe-Keyboard/tools/kos-board.py claim --role <部门> --task <TASK-ID>`，在排他锁下原子领取一个空闲牌；报告以领到的真实姓名署名，收尾以同一实名运行 `kos-board.py set <名字> idle <TASK-ID>` 释放；严禁代领或冒用同部门同事名字。
 - **子代理沿用父会话身份（O118）**：`claim` 与 `set ... idle` 仅由顶层主会话各执行一次；主会话派生的 `subagent` 沿用父会话已领取的员工身份开展工作，严禁重复运行 `claim` 或 `set ... idle` 占用第二张牌。
 - **PM 状态表与轮询入口（O113）**：PM 回复中的并行状态表包含 `部门` 列；查返报统一通过外置 `kos-pm-poll.py`（及 `kos-report-lint` / 技能入口）完成，不逐会话私查。
-- **Publish 排队兜底（O110）**：Publish 支持交回 `WAITING_CI` 状态——托管 CI 连续 `queued` 超过 10 分钟时，Publish 可交回报告并释放看板；CI 恢复运行后重新领牌继续，不长期占牌等待。
+- **Publish 排队兜底（O110）**：Publish 支持交回 `WAITING_CI` 状态——托管 CI 连续 `queued` 超过 10 分钟时，Publish 可交回报告并释放看板；CI 恢复运行后重新领牌继续，不长期占牌等待。落实本条时可用仓库脚本 `scripts/kos/ci_watch.sh`（`--queued-limit-min` 默认 10 分钟，退出码 3 表示 `WAITING_CI`）。
+- **直通接力开工领牌（O129）**：`scripts/kos/kos_handoff.py` 的 `relay-exec` / `relay-quality` 两处直通已按部门池出块，只写部门名（Executor（代码）部门 / Executor（文档）部门 / Quality 部门），并附 `kos-board.py claim --role <code|doc|quality> --task <TASK-ID>`；前序参与者只出现在 `--exclude` 提示里，不再指定接班人。这两处直通不再调用 `kos-board.py pick`，也不以 `PICK [` 为出块门禁。
 
 ### 设计、预检与复核分级（Human 2026-10-28 批准；2026-11-14 增补 4 档流程）
 
@@ -130,9 +131,9 @@ PR 采用 squash merge 后，本地功能分支提交不在远端主干祖先链
 
 **升降级只升不降**：任一站发现范围超出当前档位时，在报告写「请求升档：<目标档>，理由…」，PM 按更重一档的剩余站点继续；拿不准时选更重一档。降档仅限 PM 或 Human 决定。
 
-**选人路由与必填字段**：派发按职责而非固定 AI 品牌；同职责内优先选「空闲 + 最久未工作」（配合外置 `/Users/doubleshy0n/.kos-work/Universe-Keyboard/tools/kos-board.py pick --role ...`），排除忙碌人员和存在独立性冲突的人员；无人空闲则写「无人空闲」并升级 PM，Human 可改派。执行包首部必须写明**包头档位**与**复核重点**（PM 最关心的 1–3 点）。
+**选人路由与必填字段**：派发按职责而非固定 AI 品牌；同职责内优先选「空闲 + 最久未工作」（配合外置 `/Users/doubleshy0n/.kos-work/Universe-Keyboard/tools/kos-board.py pick --role ...`），排除忙碌人员和存在独立性冲突的人员；无人空闲则写「无人空闲」并升级 PM，Human 可改派。执行包首部必须写明**包头档位**与**复核重点**（PM 最关心的 1–3 点）。其中 `scripts/kos/kos_handoff.py` 的 `relay-exec` / `relay-quality` 两处直通已改为 O129 部门池 + 开工领牌，不适用本段的 pick 选人，也不把人名写入派发块；`kos-board.py pick` 仅适用于仍走 pick 的路径（例如 `kos_handoff.py final` 的自动选下一站）。
 
-**本轮未含范围**：设计稿第 6 节外部新工具 `kos-handoff.sh`、第 10 节的 `docs/kos/workflow-profiles.md` 与 KOS 家目录名册职责列不在本轮写入仓库，也不新增仓库脚本依赖。继续使用现行 `scripts/kos/kos_handoff.py` 与外置 `/Users/doubleshy0n/.kos-work/Universe-Keyboard/tools/kos-board.py pick`；后续工具 / 名册改造须另包授权并经同样预检。
+**本轮未含范围**：设计稿第 6 节外部新工具 `kos-handoff.sh`、第 10 节的 `docs/kos/workflow-profiles.md` 与 KOS 家目录名册职责列不在本轮写入仓库，也不新增仓库脚本依赖。继续使用现行 `scripts/kos/kos_handoff.py`：`relay-exec` / `relay-quality` 按 O129 部门池 + `kos-board.py claim` 出块；`kos-board.py pick` 仍用于上述仍走 pick 的路径（例如 `final` 自动选下一站），并非已废弃。后续工具 / 名册改造须另包授权并经同样预检。
 
 **执行者自主权（Human 2026-11-20 批准）**：执行者可自主使用 `subagent`、`herdr` 等工具完成任务，在报告如实写明是否使用；独立审查（预检 / 架构 / 质检）保持跨会话独立性声明不变。
 

@@ -10,7 +10,7 @@
   - `freeze.py`：路径都来自命令行和草稿里的绝对路径。`HOME` 只用于在派发块里把家目录显示成 `~`。
   - `check_report.py`：任务目录由报告路径推出（报告所在目录的上一级）。
 - 依赖：Python 3（只用标准库）、Git（`freeze.py` 的 `git-*` 占位符，以及 `check_report.py`、`claim-check.py` 需要）、Bash（`new_task_dir.sh` 需要）。
-- Python 脚本用 `python3 -B` 调用，不直接执行，只有 `new_task_dir.sh`、`kos-block.sh`、`kos-cleanup.sh` 有可执行位。
+- Python 脚本用 `python3 -B` 调用，不直接执行，只有 `new_task_dir.sh`、`kos-block.sh`、`kos-cleanup.sh`、`ci_watch.sh` 有可执行位。
 - 相对路径的解析规则：
   - `freeze.py` 在自己所在目录查找 `verify-tree.py`，和 cwd 无关。
   - `check_report.py` 把报告里的相对路径依次相对任务目录、`reports/` 和 `--worktree` 解析。
@@ -129,6 +129,19 @@ python3 -B scripts/kos/pr_flow.py land <PR号> --expect-head <sha> --main-checko
 - **退出码：** 0 表示核对通过、或按策略完成等待 / 合并；1 表示某项核对或策略要求停止；2 表示参数错误。
 - 已知偶发清单是同目录的 [`known-flaky.txt`](known-flaky.txt)。
 
+## ci_watch.sh：参数化 CI 监督（O110）
+
+```bash
+bash scripts/kos/ci_watch.sh --repo <owner/name> --run <run_id> [--pr <pr_number>] \
+                 [--interval <sec>] [--timeout <sec>] [--queued-limit-min <min>]
+```
+
+- **何时用：** Publish 或需要等待托管 CI 的执行者，落实 `AGENTS.md` O110 的排队兜底：连续 `queued` 超过阈值（默认 10 分钟）即退出，不长期占牌等待。不写死仓库名、PR 号或 run ID；目标全部经命令行传入。只依赖 `gh` 与 bash，只做查询。
+- **作用：** 轮询 `gh run view` 直到终态；给定 `--pr` 时一并观察 `gh pr view`。
+- **默认：** `--interval` 30 秒，`--timeout` 1200 秒，`--queued-limit-min` 10 分钟。
+- **退出码：** 0 表示 run / PR 到终态（`RUN_TERMINAL` / `PR_TERMINAL`）；2 表示总超时（`BUDGET_EXHAUSTED`）；3 表示连续 queued 超过阈值（`WAITING_CI`）；4 表示参数或环境错误。
+- 有可执行位。
+
 ## tests：脚本行为测试
 
 `scripts/kos/tests/` 用 Python 标准库 `unittest` 覆盖 `freeze.py` 与 `pr_flow.py`。`pr_flow` 的测试注入命令执行器，不访问网络。夹具在 `scripts/kos/tests/fixtures/`。
@@ -172,7 +185,7 @@ python3 -B scripts/kos/kos-contains.py '<正则>' /path/to/log.txt /path/to/refe
 python3 -B scripts/kos/kos-pkg-lint.py --start <40位起点SHA> --prev /path/to/prev-task --charter /path/to/STAGE-CHARTER.md /path/to/task-package-*.md
 ```
 
-- **作用：** 检查起点类 SHA（E1）、上一阶段遗留 SHA（E2）、kos-block 键是否在章程键表（E3）、绝对路径是否存在（E4），以及若干提示（W1–W4）。E1 对同时含「只读」与「main HEAD/主检出」的行豁免；E4 对路径含 `/PM-LOG/open-` 且以 `.json` 结尾的输出文件豁免；W4 提示 `$变量名` 后紧跟非 ASCII 字符的写法。
+- **作用：** 检查起点类 SHA（E1）、上一阶段遗留 SHA（E2）、kos-block 键是否在章程键表（E3）、绝对路径是否存在（E4）、worktree 路径不得含主仓库 `.worktrees/` 且须在 `~/.kos-work/Universe-Keyboard/` 下（E5；清理或历史描述豁免）、禁止 `render_handoff_v1.py` 且样式 B 的 `kos_handoff.py` 及同包 `scripts/kos`、`tools` 脚本必须存在（E6）、禁止 `CODE_SIGNING_IDENTITY=-`，声明 full 或签名 Keychain 命令时六步必须齐全，且不得把托管重试说成本地命令（E7）、要求校验或标明冻结输入时必须有反引号路径与 64 位哈希配对（E8）、从 `_gate_commands` 解析出的 `xcodebuild` 命令中 `-destination` 不得写死模拟器标识（E9）、以及 `--start` 和起点/父提交/HEAD/基线提交语境中的 40 位 SHA 必须在本地 git 对象库真实存在（E11 / O111）。另有提示（W1–W5）。E1 对同时含「只读」与「main HEAD/主检出」的行豁免；E4 对路径含 `/PM-LOG/open-` 且以 `.json` 结尾的输出文件豁免；W4 提示 `$变量名` 后紧跟非 ASCII 字符的写法；W5 提示绝对 Markdown 路径附近有 64 位哈希但缺少可解析配对。E9：若 `-destination` 含写死的 36 位 UUID（8-4-4-4-12）或 40 位十六进制 UDID（形式 `id=<该值>`），报错并退出 1；放行 `id=$KOS_SIM_UDID`、`id=${KOS_SIM_UDID}`，以及 `name=...` 或不含 `id=` 的 destination。纠错文案要求「须经 kos-sim-slot.py 动态获取」，但本仓库不含 `kos-sim-slot.py`；合规写法仍是上述变量或 `name=`，不要手写 UDID。E11 默认开启，通过 `git cat-file -e <sha>^{commit}` 校验（指向 `--repo-root` 或脚本所在仓库）；不存在即报错退出 1。`--no-git-check` 仅用于无 `.git` 的纯文本测试 fixture；仓库不可定位时 fail-closed。脚本头部列出的错误码是 E1–E9、E11；此外 O99/O100 检查仍会打印标注为 E9 的 SHA-256 格式错误或不匹配，以及 E10（基线缺少允许修改路径、交接命令/子命令/参数、复核重点格式）。
 - **退出码：** 0 无错误（可有提示）；1 有错误。
 - **环境变量：** 派生了 `KOS_HOME` / `KOS_PROJECT` 根目录变量，但当前实现未使用。
 
@@ -278,7 +291,7 @@ python3 scripts/kos/kos_handoff.py relay-quality --report <执行报告> --packe
 
 六项门禁全部通过才写出质检块：包头档位是 `code-fix`；报告状态是 `DONE`；`kos-report-lint.py` 通过；相对 `--base` 恰好一个提交，且 `check_identity.py --expect`（默认 `Cowork 3P <cowork-3p@localhost>`）对 HEAD 通过；报告里点名的改动文件 SHA-256 与工作区实测一致；正文不含 `git push`、`pr_flow.py`、`--merge`。
 
-选人只接受 `kos-board.py pick --role quality` 以 `PICK [` 开头的结果。`PICK(兜底`、命中排除名单或非零退出都交回 `Jack（PM）`，不写质检块。模板是 `quality_relay_template.md`，只含设计稿规定的 10 个占位符，`REVIEW_FOCUS` 逐字来自冻结包。
+通过上述门禁后按 O129 部门池派发，不点名接班人，也不再调用 `kos-board.py pick`，不以 `PICK [` 为出块门禁。派发块只写部门名「Quality 部门」，并附开工领牌（O129）命令 `kos-board.py claim --role quality --task <任务ID>`；前序参与者只写入排除名单与 claim 的 `--exclude` 提示，不是指定接班人。模板是 `quality_relay_template.md`（现含 `TASK` / `DEPT` / `CLAIM` 等 15 个占位符，已无「指派执行者：{PICK}」），`REVIEW_FOCUS` 逐字来自冻结包。其它门禁失败仍 fail-closed 交回 `Jack（PM）`，不写质检块。
 
 
 ### kos_handoff.py relay-exec：预检直通实现
@@ -287,7 +300,7 @@ python3 scripts/kos/kos_handoff.py relay-quality --report <执行报告> --packe
 python3 scripts/kos/kos_handoff.py relay-exec --report <预检报告> --packet <实现包> --base <基线 SHA> --repo <worktree>
 ```
 
-四项门禁全部通过才输出实现派发块：预检报告首行精确为 `PASS`；实现包 `包头档位` 是 `code-fix` 或 `doc-rule`；实现包通过 `kos-verify-inputs.py` 与 `kos-pkg-lint.py --start <基线>`；`kos-board.py pick --role <code|doc>` 返回 `PICK [` 前缀且不在排除名单。排除名单是预检报告第 2 行身份加包作者：包内有显式「包作者」字段就一并排除，没写就按 PM `Jack` 处理（`pick` 本就默认排除 PM）。`PICK(兜底`、命中排除名单、非零退出或任何门禁失败都 fail-closed 交回 `Jack（PM）`。直通只覆盖「预检 `PASS` → 实现」与「实现 `DONE` → 质检」（`relay-quality`）内环，不涉及 `push`、PR 或合并。
+前三项内容门禁全部通过才输出实现派发块：预检报告首行精确为 `PASS`；实现包 `包头档位` 是 `code-fix` 或 `doc-rule`；实现包通过 `kos-verify-inputs.py` 与 `kos-pkg-lint.py --start <基线>`。第四项选人门禁已取消：不再要求 `kos-board.py pick --role <code|doc>` 返回 `PICK [`，也不再因选人失败而拒绝出块。通过后按 O129 部门池派发，块内只写部门名（`code-fix` → Executor（代码）部门，`doc-rule` → Executor（文档）部门），并附开工领牌（O129）命令 `kos-board.py claim --role <code|doc> --task <任务ID>`。排除名单（预检报告第 2 行身份加包作者：包内有显式「包作者」字段就一并排除，没写就按 PM `Jack` 处理）只写入 claim 的 `--exclude` 提示，不是指定接班人。内容门禁失败仍 fail-closed 交回 `Jack（PM）`。直通只覆盖「预检 `PASS` → 实现」与「实现 `DONE` → 质检」（`relay-quality`）内环，不涉及 `push`、PR 或合并。
 
 ### kos_handoff.py profile：4 档流程查询与直通校验
 
