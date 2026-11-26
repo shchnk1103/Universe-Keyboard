@@ -101,3 +101,45 @@ enum AppSilverToken {
         }
     }
 }
+
+extension AppSilverToken {
+    /// 组件消费侧：把解析结果转成 SwiftUI 填充样式——正常态为顶部亮银→base 的
+    /// 线性渐变（叠加层不是替换色），RT/IC 降级为纯色。
+    nonisolated static func fillStyle(_ resolved: Resolved) -> AnyShapeStyle {
+        switch resolved {
+        case let .gradient(base, topLight):
+            return AnyShapeStyle(
+                LinearGradient(
+                    colors: [Color(uiColor: topLight), Color(uiColor: base)],
+                    startPoint: .top, endPoint: .bottom))
+        case let .solid(color):
+            return AnyShapeStyle(Color(uiColor: color))
+        }
+    }
+}
+
+/// 组件侧 Increase Contrast 状态读取（PB-015 PR-2）。
+///
+/// 本 SDK 的 SwiftUI 已移除 `accessibilityContrast` 环境键，改读
+/// `UIAccessibility.isDarkerSystemColorsEnabled` 并监听状态变更通知保持同步。
+private struct SilverIncreasedContrastModifier: ViewModifier {
+    @Binding var isIncreased: Bool
+
+    func body(content: Content) -> some View {
+        content
+            .onAppear { isIncreased = UIAccessibility.isDarkerSystemColorsEnabled }
+            .onReceive(
+                NotificationCenter.default.publisher(
+                    for: UIAccessibility.darkerSystemColorsStatusDidChangeNotification)
+            ) { _ in
+                isIncreased = UIAccessibility.isDarkerSystemColorsEnabled
+            }
+    }
+}
+
+extension View {
+    /// 让持有 `@State var increasedContrast` 的组件跟随系统 Increase Contrast 状态。
+    nonisolated func silverIncreasedContrast(_ isIncreased: Binding<Bool>) -> some View {
+        modifier(SilverIncreasedContrastModifier(isIncreased: isIncreased))
+    }
+}

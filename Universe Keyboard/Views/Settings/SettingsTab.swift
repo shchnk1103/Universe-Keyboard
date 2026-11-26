@@ -240,12 +240,18 @@ struct SettingsTab: View {
                                 .font(.subheadline)
                                 .foregroundStyle(.secondary)
                         }
-                        Slider(value: $rimeStore.pageSize, in: 5...20, step: 1) { editing in
-                            if !editing {
-                                rimeStore.savePreferences()
-                                Task { await rimeStore.triggerDeployment() }
-                            }
-                        }
+                        AppSlider(
+                            value: $rimeStore.pageSize,
+                            in: 5...20,
+                            step: 1,
+                            onEditingChanged: { editing in
+                                if !editing {
+                                    rimeStore.savePreferences()
+                                    Task { await rimeStore.triggerDeployment() }
+                                }
+                            },
+                            accessibilityLabel: "候选数量",
+                            accessibilityValueText: "\(Int(rimeStore.pageSize)) 个")
                         Text("每页最多显示的候选词个数。数量越少选词越快，数量越多翻页更少。")
                             .font(.caption)
                             .foregroundStyle(.secondary)

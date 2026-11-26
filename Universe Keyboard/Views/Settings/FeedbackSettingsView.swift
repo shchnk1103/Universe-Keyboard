@@ -73,10 +73,15 @@ struct FeedbackSettingsView: View {
                             .foregroundStyle(.secondary)
                             .monospacedDigit()
                     }
-                    Slider(value: $hapticIntensity, in: 0...1) { editing in
-                        guard !editing else { return }
-                        commitIntensity(hapticIntensity)
-                    }
+                    AppSlider(
+                        value: $hapticIntensity,
+                        in: 0...1,
+                        onEditingChanged: { editing in
+                            guard !editing else { return }
+                            commitIntensity(hapticIntensity)
+                        },
+                        accessibilityLabel: "强度"
+                    )
                     .disabled(!hapticEnabled)
                     Text("轻、正常、重只是参考。拖动时按当前强度即时预览。")
                         .font(.caption)

@@ -39,18 +39,22 @@ struct CandidateFontSettingsView: View {
                     if model.tier == 17 { Text("默认").foregroundStyle(.secondary) }
                     Spacer()
                 }
-                Slider(
+                AppSlider(
                     value: Binding(get: { Double(model.tier) }, set: { model.select(Int($0)) }),
-                    in: CandidateFontSettingsPageModel.sliderRange, step: CandidateFontSettingsPageModel.sliderStep
-                ) {
-                    Text(CandidateFontSettingsCopy.title)
-                } minimumValueLabel: {
-                    Text("小")
-                } maximumValueLabel: {
-                    Text("大")
-                }
+                    in: CandidateFontSettingsPageModel.sliderRange,
+                    step: CandidateFontSettingsPageModel.sliderStep,
+                    accessibilityLabel: CandidateFontSettingsCopy.title,
+                    accessibilityValueText: model.accessibilityValue
+                )
                 .accessibilityLabel(CandidateFontSettingsCopy.title)
                 .accessibilityValue(model.accessibilityValue)
+                HStack(spacing: 0) {
+                    Text("小")
+                    Spacer()
+                    Text("大")
+                }
+                .font(.caption2)
+                .foregroundStyle(.secondary)
                 // 第五档为默认；刻度位置与滑杆的整数档位一致。
                 HStack(spacing: 0) {
                     ForEach(Array(CandidateFontSettingsPageModel.tiers), id: \.self) { tier in

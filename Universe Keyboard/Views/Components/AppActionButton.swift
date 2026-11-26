@@ -65,7 +65,8 @@ enum AppActionButtonChrome: Sendable {
         case .primary:
             return .clear
         case .secondary:
-            return .separator
+            // PB-015 PR-2：描边归入银色 hairline 层（base 同为系统 separator，零视觉变更）。
+            return AppSilverToken.baseColor(.hairline)
         case .destructive:
             return UIColor.systemRed.withAlphaComponent(destructiveSolidBorderOpacity)
         }

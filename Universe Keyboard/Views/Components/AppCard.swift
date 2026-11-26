@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// Grouped secondary-background card used by Home and Settings list chrome.
 ///
@@ -7,7 +8,12 @@ struct AppCard<Content: View>: View {
     var horizontalPadding: CGFloat = AppSpacing.card
     var verticalPadding: CGFloat = AppSpacing.cardRowVertical
     var cornerRadius: CGFloat = AppRadius.card
+    /// 银色 hairline 描边（PB-015 PR-2）：默认开，可按调用点关闭。
+    var silverHairline: Bool = true
     @ViewBuilder var content: () -> Content
+
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+    @State private var increasedContrast = false
 
     var body: some View {
         content()
@@ -16,6 +22,19 @@ struct AppCard<Content: View>: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(Color(.secondarySystemGroupedBackground))
             .clipShape(RoundedRectangle(cornerRadius: cornerRadius, style: .continuous))
+            .overlay {
+                if silverHairline {
+                    RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+                        .strokeBorder(
+                            AppSilverToken.fillStyle(
+                                AppSilverToken.resolved(
+                                    .hairline,
+                                    reduceTransparency: reduceTransparency,
+                                    increaseContrast: increasedContrast)),
+                            lineWidth: 0.5)
+                }
+            }
+            .silverIncreasedContrast($increasedContrast)
     }
 }
 
