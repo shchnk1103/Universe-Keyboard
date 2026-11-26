@@ -208,8 +208,6 @@ struct SettingsTab: View {
             ) {
                 RimeSettingsView(store: rimeStore)
             }
-            // Tip only eligible while prepare-resources step is incomplete (TipKit rules).
-            .activationPopoverTip(for: .prepareResources)
 
             SettingsNavigationLink(
                 systemImage: "sparkles",

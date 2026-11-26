@@ -162,14 +162,7 @@ struct ContentView: View {
         }
         .onAppear {
             presentActivationGuideIfNeeded()
-            syncActivationTips()
         }
-        .onChange(of: keyboardAddedAffirmed) { _, _ in syncActivationTips() }
-        .onChange(of: fullAccessAffirmed) { _, _ in syncActivationTips() }
-        .onChange(of: firstInputAffirmed) { _, _ in syncActivationTips() }
-        .onChange(of: sharedDataUnavailable) { _, _ in syncActivationTips() }
-        .onChange(of: rimeDeployed) { _, _ in syncActivationTips() }
-        .onChange(of: rimeSettingsStore.deploymentState) { _, _ in syncActivationTips() }
 
         // Phase 2 — Overlay + operation-toast .onChange
         let withOverlay =
@@ -361,10 +354,6 @@ struct ContentView: View {
         showActivationGuide = false
     }
 
-    /// Keep TipKit `@Parameter` flags aligned with checklist (P3 invalidation).
-    private func syncActivationTips() {
-        ActivationTips.sync(from: helpChecklist)
-    }
 }
 
 #Preview {

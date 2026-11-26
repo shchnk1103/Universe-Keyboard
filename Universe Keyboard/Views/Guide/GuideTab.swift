@@ -136,19 +136,9 @@ struct GuideTab: View {
         .onAppear {
             rimeStore.load()
             refreshSharedContainerObservation()
-            ActivationTips.sync(from: checklist)
         }
-        .onChange(of: keyboardAddedAffirmed) { _, _ in ActivationTips.sync(from: checklist) }
-        .onChange(of: fullAccessAffirmed) { _, _ in ActivationTips.sync(from: checklist) }
-        .onChange(of: fullAccessDeferred) { _, _ in ActivationTips.sync(from: checklist) }
-        .onChange(of: firstInputAffirmed) { _, _ in ActivationTips.sync(from: checklist) }
-        .onChange(of: sharedDataUnavailable) { _, _ in ActivationTips.sync(from: checklist) }
-        .onChange(of: rimeDeployed) { _, _ in ActivationTips.sync(from: checklist) }
-        .onChange(of: activeSchemaID) { _, _ in ActivationTips.sync(from: checklist) }
-        .onChange(of: rimeStore.deploymentState) { _, _ in ActivationTips.sync(from: checklist) }
         .onChange(of: rimeStore.downloadState) { _, _ in
             rimeStore.handleDownloadStateChange()
-            ActivationTips.sync(from: checklist)
         }
     }
 
@@ -245,8 +235,6 @@ struct GuideTab: View {
                     firstInputActions
                 }
             }
-            // Contextual TipKit tip for the current next step only (one tip / one action).
-            .activationPopoverTip(for: isReplayWalkthrough ? nil : step)
         } else {
             InfoSection(title: "启用状态", systemImage: "checkmark.circle") {
                 Text("清单步骤已确认完成")

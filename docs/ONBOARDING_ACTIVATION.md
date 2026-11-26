@@ -9,7 +9,7 @@
 > **Architecture boundaries:** ADR 0007, ADR 0008, ADR 0001, ADR 0003
 > **Related debt:** TD-004
 
-This document owns the user journey, copy boundaries and capability matrix for activation. Implementation may present these semantics in the activation sheet, Settings **？** recovery, or TipKit, but must not invent competing product meaning. `HELP-GUIDE-SHEET-001` implementation is **Active**; Product Gate is not implied.
+This document owns the user journey, copy boundaries and capability matrix for activation. Implementation may present these semantics in the activation sheet and Settings **？** recovery, but must not invent competing product meaning. `HELP-GUIDE-SHEET-001` implementation is **Active**; Product Gate is not implied.
 
 ## Activation Definition
 
@@ -170,7 +170,6 @@ Authorized by [`PD-HELP-TIPKIT-001`](product-decisions/HELP-TIPKIT-001-authoriza
 |---|---|
 | Activation sheet (J0–J5) | Single bottom sheet; J0 is the first page; kept across system Settings round-trips |
 | Settings toolbar **？** | Only permanent entry; incomplete/recovery marker when F1 holds |
-| TipKit tips (optional phase) | Contextual one-action packaging of the same steps |
 
 There is **no** 帮助 / 引导 tab. The Settings list row 「使用帮助与启用指南」 is **removed**.
 
@@ -192,25 +191,11 @@ Users re-open the sheet from **？** after completion. The surface remains a com
 
 Activation steps only (J0–J5). Not a general product Tips Library (fuzzy pinyin, sync, dictionary tutorials, etc.).
 
-## TipKit mapping
+## TipKit mapping (removed, PB-020)
 
-TipKit presents the same steps as contextual tips (main App; iOS 17+; implemented under `HELP-TIPKIT-001` P3 in `ActivationTips.swift`). Rules:
+TipKit contextual tips (`HELP-TIPKIT-001` P3, formerly `ActivationTips.swift`) were **removed from the main App** under `PB-020-TIPKIT-REMOVAL-001` (2026-11-25): activation guidance is presented only by the activation sheet (J0–J5) plus the Settings **？** recovery entry. Historical rules and tip tables of the TipKit packaging are kept in [`PD-HELP-TIPKIT-001`](product-decisions/HELP-TIPKIT-001-authorization.md) (superseded note at top). The standing rule survives the removal:
 
-1. One tip teaches one action.
-2. Invalidate when the corresponding checklist state completes (`ActivationTips.sync` → Tip `@Parameter`).
-3. Do not put the full legal privacy policy inside a tip.
-4. Activation remains main-App-owned; do not depend on Extension TipKit for the first-run path.
-5. TipKit is optional packaging, not a second product contract.
-6. **No TipKit (or equivalent tip UI) in the Keyboard Extension** under `PD-HELP-TIPKIT-001`.
-
-| Tip | Surface (authorized) | Invalidate when |
-|---|---|---|
-| Add keyboard | Activation sheet current step | `addKeyboard` complete |
-| Full Access | Activation sheet current step | Full Access satisfied for progress |
-| Prepare resources | Activation sheet current step; Settings → RIME 方案设置 | Resources ready |
-| First input | Activation sheet current step; Home keyboard card when next (optional) | First input affirmed |
-
-Shipping TipKit may still mention Help until `HELP-GUIDE-SHEET-001` implementation rebinds surfaces.
+- **No tip UI (TipKit or equivalent) in the Keyboard Extension** under `PD-HELP-TIPKIT-001`.
 
 ## Acceptance Scenarios
 

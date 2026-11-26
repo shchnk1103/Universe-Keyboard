@@ -86,8 +86,6 @@ struct Universe_KeyboardApp: App {
             RimeAutomaticSyncScheduler.shared.registerBackgroundTask()
         #endif
         prepareDiagnosticsJournalRoot()
-        // Main-App TipKit only (`PD-HELP-TIPKIT-001` P3). Never configure tips in Keyboard Extension.
-        ActivationTips.configure()
     }
 
     /// `Diagnostics/v1` 的目录只能由 Main App 创建。准备动作放在 utility task，
