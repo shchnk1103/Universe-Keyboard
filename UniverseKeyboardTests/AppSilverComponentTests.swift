@@ -104,13 +104,22 @@ final class AppSilverComponentTests: XCTestCase {
 
     /// 泛型 `init` 对非 Double 浮点绑定的桥接：内部存储统一为 `Binding<Double>`
     /// （读取转 Double），写回经 `Number($0)` 按原绑定类型落定。
+    /// Swift 6 严格并发：`AppSlider.init` / `bridgedValue` 为 `@MainActor`，
+    /// 本测试标注 `@MainActor`；`stored` 由可变局部变量改为不可变引用持有的
+    /// 类盒属性，消除逃逸闭包捕获可变局部变量的并发编译错误（断言不变）。
+    @MainActor
     func testAppSliderInitBridgesFloatBinding() {
-        var stored: Float = 10
-        let binding = Binding<Float>(get: { stored }, set: { stored = $0 })
+        final class FloatStore {
+            var value: Float = 10
+        }
+        let store = FloatStore()
+        let binding = Binding<Float>(
+            get: { store.value },
+            set: { store.value = $0 })
         let slider = AppSlider(value: binding, in: 5...20 as ClosedRange<Float>, step: 1)
         XCTAssertEqual(slider.bridgedValue.wrappedValue, 10.0, accuracy: 0.0001)
         slider.bridgedValue.wrappedValue = 15
-        XCTAssertEqual(stored, 15, accuracy: 0.0001)
+        XCTAssertEqual(store.value, 15, accuracy: 0.0001)
     }
 
     /// 组件接银同值核对：AppActionButton secondary 描边归入 hairline 层（base 同为
