@@ -30,6 +30,7 @@ extension KeyboardViewController {
         // 先收束正在追踪的手势，避免定时连删或长按提交穿透新遮罩。
         endDeleteGestureSession(restoreAppearance: true, reason: .cancelled)
         dismissVariantPopup(animated: false)
+        keyCalloutView?.dismiss()
         endSpaceCursorMovementForHeightAdjustment()
         resetAllKeyPressVisualState()
         if isCandidateExpanded {

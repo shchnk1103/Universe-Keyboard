@@ -115,6 +115,8 @@ extension KeyboardViewController {
 
         // 如果已有旧的面板，先立即移除（无动画）
         dismissVariantPopup(animated: false)
+        // Callout must never coexist with the variant panel.
+        keyCalloutView?.dismiss()
 
         let keyFrame = button.convert(button.bounds, to: view)
         let popup = KeyPopupView(variants: variants, keyFrame: keyFrame, in: view.bounds)

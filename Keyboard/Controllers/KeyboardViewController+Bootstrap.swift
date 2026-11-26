@@ -315,6 +315,7 @@ extension KeyboardViewController {
         #endif
         endDeleteGestureSession(restoreAppearance: false, reason: .disappeared)
         dismissVariantPopup(animated: false)
+        keyCalloutView?.dismiss()
         if isCandidateExpanded {
             isCandidateExpanded = false
             dismissExpandedCandidatePanel(animated: false)
