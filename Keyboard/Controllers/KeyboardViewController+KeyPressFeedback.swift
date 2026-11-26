@@ -122,27 +122,101 @@ extension KeyboardViewController {
         emitKeyPressFeedback()
     }
 
-    /// Shows the resident callout for a pressed 26-key character key.
+    /// Shows the resident callout for a pressed character key.
     ///
     /// Synchronous press path: no view allocation and no defaults reads — the
-    /// character is evaluated through the same `characterKeyStyle.displayTitle`
-    /// pipeline as the key-cap title. Suppressed while the long-press variant
-    /// popup is up (the callout must never coexist with the variant panel).
+    /// switch is the `cachedKeyPopupEnabled` snapshot from
+    /// `refreshCachedSettings` (PB-019 PR-2), and the character is evaluated
+    /// through the same `characterKeyStyle.displayTitle` pipeline as the
+    /// key-cap title. Suppressed while the long-press variant popup is up (the
+    /// callout must never coexist with the variant panel).
     func showKeyCallout(for button: UIButton) {
         guard variantPopupView == nil,
             let callout = keyCalloutView,
+            cachedKeyPopupEnabled,
             controller.state.currentPage == .letters,
-            button.accessibilityValue != KeyboardViewController.t9DigitAccessibilityValue
+            isKeyCalloutCandidate(button)
         else { return }
+        let keyFrame = button.convert(button.bounds, to: view)
+        // Fail-closed (arch review Minor-1): the bubble itself must fit
+        // between the container top edge and the key top; otherwise an
+        // extremely short floating keyboard or a host-compressed surface
+        // would clip it — suppress instead of showing a truncated bubble.
+        guard canShowKeyCallout(keyFrame: keyFrame, containerBounds: view.bounds) else { return }
         let rawKey = button.accessibilityIdentifier ?? button.title(for: .normal) ?? ""
         guard !rawKey.isEmpty else { return }
+        let character: String
+        if button.accessibilityValue == KeyboardViewController.t9DigitAccessibilityValue {
+            // Nine-key letter groups confirm the visible letter-group label,
+            // which `makeT9KeyButton` already evaluated through the
+            // `displayTitle` pipeline (digit identity stays the payload).
+            character = button.title(for: .normal) ?? ""
+        } else {
+            character = displayTitle(for: rawKey)
+        }
+        guard !character.isEmpty else { return }
         callout.sourceButton = button
         callout.show(
-            character: displayTitle(for: rawKey),
-            keyFrame: button.convert(button.bounds, to: view),
+            character: character,
+            keyFrame: keyFrame,
             containerBounds: view.bounds
         )
+        // Fail-closed clamp: the frozen host layout puts the top letter row at
+        // 48pt (2pt top inset + 46pt candidate bar), so the 6pt gap shrinks
+        // toward 0 to keep the whole bubble inside the container instead of
+        // piercing its top edge. The pointer arrow stays horizontal-only.
+        callout.frame = clampedCalloutFrame(keyFrame: keyFrame, containerBounds: view.bounds)
         view.bringSubviewToFront(callout)
+    }
+
+    /// Frozen nine-key letters-page first row: the letter groups carried by
+    /// digit identities 2 (ABC) and 3 (DEF). Deeper rows and the digits page
+    /// stay excluded.
+    static let nineKeyFirstRowCalloutDigitIdentities: Set<String> = ["2", "3"]
+
+    /// PB-019 PR-2: whether a pressed key may open the press callout.
+    ///
+    /// 26-key letters-page character keys keep the PR-1 behavior. On the
+    /// Chinese nine-key letters chrome only the first-row letter groups (ABC /
+    /// DEF) are eligible: the multi-character punctuation utility key
+    ///（，。？！）cannot confirm a single character inside the key-width bubble,
+    /// deeper letter-group rows would cover other keys, and the digits page is
+    /// excluded by both the `currentPage` guard and this identity check.
+    func isKeyCalloutCandidate(_ button: UIButton) -> Bool {
+        if isNineKeyLettersChromeActive {
+            return button.accessibilityValue == KeyboardViewController.t9DigitAccessibilityValue
+                && KeyboardViewController.nineKeyFirstRowCalloutDigitIdentities.contains(
+                    button.accessibilityIdentifier ?? ""
+                )
+        }
+        return button.accessibilityValue != KeyboardViewController.t9DigitAccessibilityValue
+    }
+
+    /// Mirrors the `usesT9Chrome` condition in `addKeyboardRows` so eligibility
+    /// always tracks the chrome that is actually built.
+    private var isNineKeyLettersChromeActive: Bool {
+        controller.state.inputMode == .chinese
+            && cachedLayoutStyle == .nineKey
+            && cachedT9ReadinessMatched
+    }
+
+    /// Fail-closed geometry gate (arch review Minor-1): the 44pt bubble itself
+    /// must fit between the container top edge and the key top. The 6pt gap is
+    /// elastic (clamped toward 0 by `clampedCalloutFrame`), so this only fails
+    /// for genuinely insufficient heights — iPad floating keyboards and
+    /// host-compressed surfaces suppress the callout entirely instead of
+    /// clipping it.
+    func canShowKeyCallout(keyFrame: CGRect, containerBounds: CGRect) -> Bool {
+        keyFrame.minY - KeyCalloutView.preferredHeight >= containerBounds.minY
+    }
+
+    /// `KeyCalloutView.bubbleFrame` with the fail-closed clamp applied: the
+    /// vertical gap shrinks toward 0 so the bubble never pierces the container
+    /// top edge. Horizontal clamp and pointer semantics are unchanged.
+    func clampedCalloutFrame(keyFrame: CGRect, containerBounds: CGRect) -> CGRect {
+        var bubble = KeyCalloutView.bubbleFrame(for: keyFrame, containerBounds: containerBounds)
+        bubble.origin.y = max(containerBounds.minY, bubble.origin.y)
+        return bubble
     }
 
     @objc func keyTouchUp(_ sender: UIButton) {

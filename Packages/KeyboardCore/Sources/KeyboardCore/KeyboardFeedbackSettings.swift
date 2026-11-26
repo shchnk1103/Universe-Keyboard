@@ -1,3 +1,4 @@
+import CoreFoundation
 import Foundation
 
 public enum KeyboardFeedbackEvent: Sendable {
@@ -101,6 +102,26 @@ public enum KeyboardFeedbackSettingsKey {
     public static let hapticLevel = "haptic_level"
     public static let legacyHapticIntensity = "haptic_intensity"
     public static let hapticIntensityContinuous = "haptic_intensity_continuous"
+}
+
+/// PB-019 PR-2: character key press-callout (key bubble) settings.
+///
+/// The App Group key name is frozen as `keyboard.keyPopupEnabled`; the switch
+/// defaults to on because the callout is a low-risk, purely visual
+/// confirmation aid (PB-019 design r1 §3.2). The keyboard extension snapshots
+/// the resolved value into `cachedKeyPopupEnabled` inside
+/// `refreshCachedSettings` — the press hot path never reads defaults.
+public enum KeyboardKeyPopupSettings {
+    public static let enabledKey = "keyboard.keyPopupEnabled"
+
+    /// Strict boolean resolution: a stored CF boolean wins; anything else
+    /// (missing key, string, integer) falls back to the default (`true`).
+    public static func isEnabled(stored: Any?) -> Bool {
+        if let value = stored as? NSNumber, CFGetTypeID(value) == CFBooleanGetTypeID() {
+            return value.boolValue
+        }
+        return true
+    }
 }
 
 public enum KeyboardFeedbackSettingsStore {

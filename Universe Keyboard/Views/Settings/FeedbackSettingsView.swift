@@ -38,6 +38,10 @@ enum FeedbackResetConfirmationSheet {
 struct FeedbackSettingsView: View {
     @AppStorage(KeyboardFeedbackSettingsKey.keyClickEnabled, store: feedbackSettingsDefaults)
     private var keyClickEnabled = true
+    /// PB-019 PR-2: 按键气泡预览开关（`keyboard.keyPopupEnabled`，默认开）。
+    /// 独立卡片行，不复用触感卡片的 `.disabled`/`.opacity` 整段布局，避免锁死其它开关。
+    @AppStorage(KeyboardKeyPopupSettings.enabledKey, store: feedbackSettingsDefaults)
+    private var keyPopupEnabled = true
     @AppStorage(KeyboardFeedbackSettingsKey.hapticEnabled, store: feedbackSettingsDefaults)
     private var hapticEnabled = false
     @AppStorage(KeyboardFeedbackSettingsKey.hapticLevel, store: feedbackSettingsDefaults)
@@ -58,6 +62,16 @@ struct FeedbackSettingsView: View {
                 Text("按键音")
             } footer: {
                 Text(keyClickFooter)
+            }
+
+            // PB-019 PR-2: 按键气泡预览为独立卡片行（纯视觉确认反馈，默认开）。
+            Section {
+                Toggle("按键气泡预览", isOn: $keyPopupEnabled)
+                    .toggleStyle(.appSwitch)
+            } header: {
+                Text("按键气泡预览")
+            } footer: {
+                Text(keyPopupFooter)
             }
 
             // Always mounted: avoid Form Section insert/remove when haptic toggles (AsyncRenderer).
@@ -139,6 +153,12 @@ struct FeedbackSettingsView: View {
         keyClickEnabled
             ? "真实键盘使用 iOS 系统输入点击音，不会由 Universe Keyboard 激活音频会话。App 内开关需允许完全访问同步，系统键盘反馈中的声音也需开启。"
             : "开启后使用 iOS 系统输入点击音；声音大小、静音和音频路由由系统管理。"
+    }
+
+    private var keyPopupFooter: String {
+        keyPopupEnabled
+            ? "按下字符键时在键位上方显示字符气泡（26 键与九宫格第一行）。开关通过 App Group 同步到键盘，切回键盘后立即生效。"
+            : "关闭后键盘不再显示按键气泡；切回键盘后立即生效。"
     }
 
     private var keyClickBinding: Binding<Bool> {
