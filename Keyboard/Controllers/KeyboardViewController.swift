@@ -389,6 +389,11 @@ class KeyboardViewController: UIInputViewController {
     var cachedT9ReadinessMatched: Bool = false
     var cachedTwentySixKeyNumberPadEnabled = false
     var cachedHapticEnabled: Bool = false
+    /// PB-017 PR-2：双拼键帽副标显隐（默认 `true`），`refreshCachedSettings` 快照。
+    var cachedShuangpinSublegendEnabled: Bool = true
+    /// PB-017 PR-2：26 键槽位当前激活的双拼方案副标表（非双拼为 nil），随
+    /// provisional / realized selection 刷新；驱动键帽副标内容与显隐。
+    var cachedShuangpinLegendTable: ShuangpinLegendTable?
 
     /// Feedback resources and cached levels stay owned by the view controller; methods live in +Feedback.
     var hapticGenerator = UIImpactFeedbackGenerator(style: .light)

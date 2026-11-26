@@ -18,6 +18,45 @@ import UIKit
 
 extension KeyboardViewController {
 
+    /// PB-017 PR-2：为 26 键字符键挂接双拼副标（独立右下角子 `UILabel`）。
+    ///
+    /// 仅当 26 键槽位激活方案为双拼（`cachedShuangpinLegendTable != nil`）且
+    /// `cachedShuangpinSublegendEnabled` 为真、该键存在非空副标时显示；九宫格
+    /// 与非双拼方案整键隐藏。副标 9pt regular、`.secondaryLabel` 色，右下角
+    /// 悬浮（与主标题最小间距 2pt），不参与无障碍朗读（a11y 由 label 拼接承
+    /// 担），不改 `CharacterKeyStyle` 与 17pt 主标题管线、不突破 45pt 冻结键高。
+    /// 方案/开关变化走 `reloadKeyboard()` 重建键帽（既有路径）。
+    static let shuangpinSublegendTag = 0x53504C47  // 'SPLG'
+
+    func applyShuangpinSublegend(to button: UIButton, key: String) {
+        button.viewWithTag(Self.shuangpinSublegendTag)?.removeFromSuperview()
+        guard
+            let legend = cachedShuangpinLegendTable?.sublegend(for: key),
+            cachedShuangpinSublegendEnabled
+        else {
+            // 副标隐藏时还原默认 a11y label（与 configureKeyAccessibility 一致）。
+            button.accessibilityLabel = displayTitle(for: key)
+            return
+        }
+        let sublabel = UILabel()
+        sublabel.tag = Self.shuangpinSublegendTag
+        sublabel.text = legend
+        sublabel.font = .systemFont(ofSize: 9, weight: .regular)
+        sublabel.textColor = .secondaryLabel
+        sublabel.textAlignment = .right
+        sublabel.isAccessibilityElement = false
+        sublabel.translatesAutoresizingMaskIntoConstraints = false
+        button.addSubview(sublabel)
+        NSLayoutConstraint.activate([
+            sublabel.trailingAnchor.constraint(equalTo: button.trailingAnchor, constant: -3),
+            sublabel.bottomAnchor.constraint(equalTo: button.bottomAnchor, constant: -2),
+            // 与主标题（17pt，居中）的最小垂直间距 2pt：副标顶不低于中心线 +2pt。
+            sublabel.topAnchor.constraint(greaterThanOrEqualTo: button.centerYAnchor, constant: 2),
+            sublabel.widthAnchor.constraint(lessThanOrEqualTo: button.widthAnchor, constant: -6),
+        ])
+        button.accessibilityLabel = "\(key.uppercased())，双拼 \(legend)"
+    }
+
     /// Creates a native-style T9 letter-group key.
     ///
     /// Visual primary label is the letter group (e.g. `ABC`); the RIME payload remains the

@@ -150,6 +150,8 @@ extension KeyboardViewController {
         // Layout / nine-key readiness: snapshot only — never read UserDefaults on the key path.
         cachedTwentySixKeyNumberPadEnabled =
             defaults?.bool(forKey: KeyboardInputSettingsKey.twentySixKeyNumberPadEnabled) ?? false
+        cachedShuangpinSublegendEnabled =
+            defaults?.object(forKey: KeyboardLayoutSettingsKey.shuangpinSublegendEnabled) as? Bool ?? true
         cachedLayoutStyle = KeyboardLayoutStyle.resolve(
             defaults?.string(forKey: KeyboardLayoutSettingsKey.layoutStyle)
         )
@@ -176,6 +178,10 @@ extension KeyboardViewController {
             installedFamilies: snapshot.installedFamilies
         )
         cachedT9ReadinessMatched = selection.t9ReadinessMatched
+        cachedShuangpinLegendTable =
+            selection.usesT9InputSemantics
+            ? nil
+            : ShuangpinLegendTable.table(forSchemaID: selection.effectiveSchemaID)
         // Provisional chrome from readiness (before/while engine is offline).
         // Once librime has a realized selection, that wins over the marker snapshot.
         if selection.usesT9InputSemantics {

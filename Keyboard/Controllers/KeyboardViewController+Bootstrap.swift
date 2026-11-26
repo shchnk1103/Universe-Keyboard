@@ -938,17 +938,25 @@ extension KeyboardViewController {
     func applyRealizedRuntimeSelection(_ realized: RimeRuntimeSelection) {
         let previousLayout = cachedLayoutStyle
         let previousSemantics = controller.usesT9InputSemantics
+        let previousShuangpinLegendTable = cachedShuangpinLegendTable
         controller.usesT9InputSemantics = realized.usesT9InputSemantics
         let surface = realized.surface
         cachedT9ReadinessMatched = surface.t9ReadinessMatched
         cachedLayoutStyle = surface.layoutStyle
+        cachedShuangpinLegendTable =
+            surface.usesT9InputSemantics
+            ? nil
+            : ShuangpinLegendTable.table(forSchemaID: realized.effectiveSchemaID)
         Logger.shared.info(
             "Applied realized selection schema=\(realized.effectiveSchemaID) "
                 + "layout=\(surface.layoutStyle.rawValue) usesT9=\(surface.usesT9InputSemantics)",
             category: .engine
         )
+        // PB-017 PR-2：双拼方案在 26 键槽位内切换（如 小鹤↔自然码）不改变布局，
+        // 但键帽副标内容随 schema 变化，同样需要重建键帽。
         let layoutChanged =
             previousLayout != cachedLayoutStyle || previousSemantics != controller.usesT9InputSemantics
+            || previousShuangpinLegendTable != cachedShuangpinLegendTable
         if layoutChanged, isKeyboardUIInstalled {
             reloadKeyboard()
         }
