@@ -62,6 +62,15 @@ public enum RimeSchemeCapabilityMatrix {
                 supportsManagedFuzzyPinyin: false,
                 supportsProductAdvancedInput: false
             )
+        case "double_pinyin_flypy", "double_pinyin":
+            // PB-017 双拼（小鹤 flypy / 自然码 zrm）：managed fuzzy 是对全拼串的后处理，
+            // 对双拼串语义不成立，fail-closed；高级输入属 translator 层能力，与键入层
+            // 双拼正交（预研 §3 拍板 5）。
+            return RimeSchemeCapabilityProfile(
+                schemaID: id,
+                supportsManagedFuzzyPinyin: false,
+                supportsProductAdvancedInput: true
+            )
         default:
             return RimeSchemeCapabilityProfile(
                 schemaID: id,
@@ -69,6 +78,28 @@ public enum RimeSchemeCapabilityMatrix {
                 supportsProductAdvancedInput: false
             )
         }
+    }
+
+    /// Whether the schema owns the shared single-operation download pipeline's
+    /// in-flight progress (TD-009/TD-010).
+    ///
+    /// Active `DownloadState` phases carry only a display `schemeName`, so
+    /// settings views attribute download progress to the distribution-backed
+    /// letter family registered here instead of hardcoding `rime_ice` (TD-010).
+    public static func isDistributionDownloadSubject(_ schemaID: String) -> Bool {
+        normalizeSchemaID(schemaID) == "rime_ice"
+    }
+
+    /// Whether the schema hosts the product advanced-input (fog) matrix whose
+    /// status/recovery section belongs to its settings detail page (TD-010).
+    public static func isProductAdvancedInputHost(_ schemaID: String) -> Bool {
+        normalizeSchemaID(schemaID) == "rime_ice"
+    }
+
+    /// The letter schema settings actions should switch to when they need the
+    /// product advanced-input host (TD-010). `nil` when no host is registered.
+    public static func productAdvancedInputTargetSchemaID() -> String? {
+        "rime_ice"
     }
 
     /// Resolve which scheme settings pages should gate against (layout-bound).
