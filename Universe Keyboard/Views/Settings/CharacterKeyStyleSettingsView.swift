@@ -23,20 +23,23 @@ struct CharacterKeyStyleSettingsView: View {
                 HStack {
                     Text("\(size)"); if size == 17 { Text("默认").foregroundStyle(.secondary) }
                 }
-                Slider(
+                AppSlider(
                     value: Binding(
                         get: { Double(size) },
                         set: { value in
                             size = Int(value)
                             CharacterKeyStyle.saveSize(size, defaults: defaults)
-                        }), in: 13...22, step: 1
-                ) {
-                    Text("字符字号")
-                } minimumValueLabel: {
+                        }),
+                    in: 13...22,
+                    step: 1,
+                    accessibilityLabel: "字符字号")
+                HStack(spacing: 0) {
                     Text("小")
-                } maximumValueLabel: {
+                    Spacer()
                     Text("大")
                 }
+                .font(.caption2)
+                .foregroundStyle(.secondary)
                 Toggle(
                     "加粗",
                     isOn: Binding(
