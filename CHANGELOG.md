@@ -1,3 +1,8 @@
+## 2026-11-26 — Release 1.0.3 正式上架 App Store（Build 207）
+
+- `1.0.3` 以 Build 207 通过 App Store 审核并于 2026-11-26 正式上架；版本档案收口为 `Released`，见 [docs/releases/v1.0.3.md](docs/releases/v1.0.3.md)。
+- 上线后用户反馈 `PB-022`（按键震动开关关闭后无法重新打开）已登记，纳入 `1.0.4` 紧急热修（与 PB-020、PB-021 同发）。
+
 ## 2026-11-25 — Release 1.0.3 候选封版收口
 
 - `1.0.3` 全部纳入项合入 `main` 并经 Human 2026-11-25 真机终验通过（截至 `39979698`），版本档案收口为 `Release Candidate`，仅余 Xcode Archive 上传与提审授权，见 [docs/releases/v1.0.3.md](docs/releases/v1.0.3.md)。
