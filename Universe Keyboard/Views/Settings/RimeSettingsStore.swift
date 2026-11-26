@@ -603,9 +603,35 @@ final class RimeSettingsStore {
     var schemeBinding9: String? { schemaManager.schemeBinding9() }
 
     /// Installed schemes usable for the 26-key slot (ADR 0026).
+    ///
+    /// PB-017 PR-3：内置双拼变体（免下载、词库复用宿主）作为 26 键槽位可选项
+    /// 追加在后；它们不在 `RimeSchemeCatalog` 下载目录里，切换时由
+    /// `setSchemeBinding26` 物化模板到共享 Rime 目录后走既有部署链。
     var twentySixKeySchemeChoices: [SchemaMetadata] {
-        schemas.filter {
+        let installedChoices = schemas.filter {
             $0.installed && RimeRuntimeSelection.isTwentySixKeyCapable($0.schemaID)
+        }
+        return installedChoices + Self.shuangpinTwentySixKeyChoices
+    }
+
+    /// PB-017 PR-3：内置双拼 26 键槽位选项（小鹤 / 自然码，builtin 免下载语义）。
+    static var shuangpinTwentySixKeyChoices: [SchemaMetadata] {
+        RimeShuangpinVariant.allCases.map { variant in
+            SchemaMetadata(
+                schemaID: variant.schemaID,
+                name: variant.displayName,
+                description: "内置双拼方案，键位映射跟随 \(variant.displayName)官方规则，词库复用当前宿主全拼方案。",
+                source: .builtin,
+                version: "1.0",
+                installed: true,
+                requiresLua: false,
+                downloadSize: "内置",
+                installedSize: nil,
+                licenseName: nil,
+                licenseDescriptor: nil,
+                supportsUserDictionary: false,
+                isDownloadable: false
+            )
         }
     }
 
@@ -655,8 +681,41 @@ final class RimeSettingsStore {
     }
 
     func setSchemeBinding26(_ schemaID: String) async {
+        guard RimeRuntimeSelection.isTwentySixKeyCapable(schemaID) else { return }
+        materializeShuangpinSchemaIfNeeded(for: schemaID)
         schemaManager.setSchemeBinding26(schemaID)
         await triggerDeployment()
+    }
+
+    /// PB-017 PR-3：切换到内置双拼时，把对应 schema 模板物化到共享 Rime 目录。
+    ///
+    /// 宿主词库跟随当前激活宿主（`luna_pinyin` / `rime_ice`），其它激活态兜底
+    /// `luna_pinyin`（预研拍板 4）。物化失败不阻断绑定切换：扩展部署时既有管线
+    /// 会给出可观察的失败路径（ADR 0001，扩展侧不部署）。
+    private func materializeShuangpinSchemaIfNeeded(for schemaID: String) {
+        guard let variant = RimeShuangpinVariant.allCases.first(where: { $0.schemaID == schemaID })
+        else { return }
+        guard let sharedDataURL = schemaManager.archiveInstaller.sharedDataDirectoryURL() else { return }
+        do {
+            _ = try RimeConfigTemplates.materializeShuangpinSchema(
+                variant: variant,
+                baseSchemaID: Self.shuangpinHostBaseSchemaID(forActiveSchemaID: activeSchemaID),
+                into: sharedDataURL
+            )
+        } catch {
+            appendDeploymentLog("⚠️ 双拼方案模板写入失败：\(error.localizedDescription)")
+        }
+    }
+
+    /// 拍板 4：激活宿主 ∈ {`luna_pinyin`, `rime_ice`} 时跟随，否则兜底 `luna_pinyin`。
+    static func shuangpinHostBaseSchemaID(forActiveSchemaID activeSchemaID: String?) -> String {
+        let normalized = RimeSchemeCapabilityMatrix.normalizeSchemaID(activeSchemaID ?? "")
+        switch normalized {
+        case "luna_pinyin", "rime_ice":
+            return normalized
+        default:
+            return "luna_pinyin"
+        }
     }
 
     func setSchemeBinding9(_ schemaID: String) async -> String? {
@@ -982,6 +1041,10 @@ final class RimeSettingsStore {
 
     private func displayName(forSchemaID schemaID: String) -> String {
         let id = RimeSchemeCapabilityMatrix.normalizeSchemaID(schemaID)
+        // PB-017 PR-3：内置双拼不在下载目录 `schemas` 里，先按内置变体解析产品名。
+        if let variant = RimeShuangpinVariant.allCases.first(where: { $0.schemaID == id }) {
+            return variant.displayName
+        }
         if let named = schemas.first(where: { $0.schemaID == id })?.name {
             return named
         }

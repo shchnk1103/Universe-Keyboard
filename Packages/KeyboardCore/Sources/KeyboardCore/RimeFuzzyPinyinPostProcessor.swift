@@ -24,6 +24,12 @@ public struct RimeFuzzyPinyinPostProcessor {
     public static let beginMarker = "# universe:fuzzy-pinyin begin"
     public static let endMarker = "# universe:fuzzy-pinyin end"
 
+    /// Managed fuzzy 只对全拼串语义成立；这些 letter schema 一律 cleanup-only
+    /// （PB-017 双拼与万象同路径：两键一音 / 未产品化的串形态不接受插入）。
+    private static let cleanupOnlySchemaIDs: Set<String> = [
+        "wanxiang", "double_pinyin_flypy", "double_pinyin",
+    ]
+
     public static func apply(
         settings: RimeFuzzyPinyinSettings,
         to yaml: String
@@ -34,7 +40,9 @@ public struct RimeFuzzyPinyinPostProcessor {
         }
         let removedExistingBlock = linesWithoutManagedBlock != originalLines
 
-        if hasTopLevelSchemaID("wanxiang", in: linesWithoutManagedBlock) {
+        if let schemaID = topLevelSchemaID(in: linesWithoutManagedBlock),
+            cleanupOnlySchemaIDs.contains(schemaID)
+        {
             return RimeFuzzyPinyinPostProcessResult(
                 yaml: linesWithoutManagedBlock.joined(separator: "\n"),
                 status: removedExistingBlock ? .removed : .unchanged
@@ -128,14 +136,20 @@ public struct RimeFuzzyPinyinPostProcessor {
         return output
     }
 
-    private static func hasTopLevelSchemaID(_ schemaID: String, in lines: [String]) -> Bool {
-        guard let schemaIndex = topLevelSectionIndex(named: "schema", in: lines) else { return false }
+    /// Top-level `schema.schema_id` value, trimmed of surrounding whitespace.
+    private static func topLevelSchemaID(in lines: [String]) -> String? {
+        guard let schemaIndex = topLevelSectionIndex(named: "schema", in: lines) else { return nil }
         let schemaEnd = topLevelSectionEnd(startingAt: schemaIndex, in: lines)
-        guard schemaIndex + 1 < schemaEnd else { return false }
-        return lines[(schemaIndex + 1)..<schemaEnd].contains { line in
-            line.trimmingCharacters(in: .whitespaces) == "schema_id: \(schemaID)"
-                && indentation(of: line) > 0
+        guard schemaIndex + 1 < schemaEnd else { return nil }
+        for line in lines[(schemaIndex + 1)..<schemaEnd] {
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            guard trimmed.hasPrefix("schema_id:"), indentation(of: line) > 0 else { continue }
+            return
+                trimmed
+                .dropFirst("schema_id:".count)
+                .trimmingCharacters(in: .whitespaces)
         }
+        return nil
     }
 
     private static func topLevelSectionIndex(named name: String, in lines: [String]) -> Int? {

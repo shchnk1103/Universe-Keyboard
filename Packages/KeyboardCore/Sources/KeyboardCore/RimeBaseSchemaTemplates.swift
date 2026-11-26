@@ -170,6 +170,15 @@ public enum RimeShuangpinVariant: String, Sendable, CaseIterable {
         }
     }
 
+    /// PB-017 PR-3：是否为双拼槽位 schema ID（精确匹配，空白/大小写漂移不通过）。
+    ///
+    /// 供设置门卫与键盘端纠错实验编辑 fail-closed 判定使用；`nil` / 空串 /
+    /// 非双拼 ID（含 `t9` 别名）一律返回 `false`。
+    public static func isDoublePinyinSchemaID(_ schemaID: String?) -> Bool {
+        guard let schemaID else { return false }
+        return allCases.contains { $0.schemaID == schemaID }
+    }
+
     /// 上游官方 speller/algebra 规则链（rime/rime-double-pinyin 原样收录；
     /// `abbrev` 上游注释未启用，不收录）。
     public var upstreamAlgebra: [String] {
@@ -337,5 +346,28 @@ public extension RimeConfigTemplates {
             ]
         }
         return lines.joined(separator: "\n")
+    }
+}
+
+public extension RimeConfigTemplates {
+    /// PB-017 PR-3：把内置双拼 schema 模板物化到共享 Rime 目录（主 App 侧）。
+    ///
+    /// 与 luna_pinyin 内置模板同路径：主 App 落盘 → 扩展激活时既有部署管线执行
+    /// （ADR 0001，扩展侧不部署）。内容与当前模板一致时不重写（幂等，保留部署
+    /// 后处理可能追加的合法内容）；目录不存在时自动创建。
+    static func materializeShuangpinSchema(
+        variant: RimeShuangpinVariant,
+        baseSchemaID: String,
+        into sharedDataURL: URL
+    ) throws -> URL {
+        let yaml = shuangpinSchema(variant: variant, baseSchemaID: baseSchemaID)
+        let url = sharedDataURL.appendingPathComponent("\(variant.schemaID).schema.yaml")
+        if let existing = try? String(contentsOf: url, encoding: .utf8), existing == yaml {
+            return url
+        }
+        try FileManager.default.createDirectory(
+            at: sharedDataURL, withIntermediateDirectories: true)
+        try yaml.write(to: url, atomically: true, encoding: .utf8)
+        return url
     }
 }
