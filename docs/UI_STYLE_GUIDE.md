@@ -210,6 +210,25 @@ Do not duplicate navigation row markup when `SettingsNavigationLink` fits. Do no
 - Scheme-specific RIME actions belong on that scheme's detail page. Keep global settings, such as candidate count, simplification, and deployment status, at the top-level RIME settings page unless the setting truly belongs to one scheme.
 - Avoid oversized hero sections, gradients, decorative illustrations, and promotional copy.
 
+### Silver accent tokens (main app, phase 2, §2.5)
+
+Silver is a **metallic grayscale layer, not a brand accent**. It lives inside the neutral black/white/gray system and never introduces a hue. The token table is frozen to exactly four layers, defined only in `Universe Keyboard/Views/Components/AppSilverToken.swift`:
+
+| Layer | Surface | Normal state |
+|---|---|---|
+| `hairline` | `AppCard` / `SettingsNavigationLink` card stroke (0.5pt overlay) | `Color(.separator)` base + 3% white→transparent top-lit linear gradient |
+| `tileFill` | `AppIconTile` fill | tertiary fill base + 4% top-lit silver gradient; symbol stays `.primary` monochrome |
+| `activePill` | Selected-state stroke (theme sample, current scheme row) | `Color(.label)` @ 25%, 1pt; selection semantics still rely on weight/background — silver stroke is only a second signal |
+| `sliderTrack` | Slider tracks (feedback intensity, candidate count) | Reuses the `hairline` gradient structure; thumb stays the black/white `AppSwitchChrome` pair |
+
+Rules:
+
+- **Silver is not a brand accent.** It never renders text — the token table defines fills, strokes and tracks only, with no text-color token — and never paints functional keys, candidate text, the Path Bar, or tab tint. Statistics numerals and version numbers stay on the `.secondary` gray scale.
+- **Keyboard Extension chapter: zero changes.** Silver tokens are main-App-only and must never be referenced from `Keyboard/`.
+- Resolution is paired light/dark automatically via dynamic system colors; call sites must not hand-write silver values (use the token, do not restyle at the call site).
+- **Reduce Transparency on:** gradients are disabled and every layer degrades to its solid base gray — no information loss.
+- **Increase Contrast on:** layers switch to `Color(.opaqueSeparator)`.
+
 ### Motion (main app, phase P0)
 
 Keep motion quiet and purposeful. Prefer shared helpers in `AppMotion.swift`:
