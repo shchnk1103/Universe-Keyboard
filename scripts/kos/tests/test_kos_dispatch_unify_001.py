@@ -148,15 +148,15 @@ class RelayExecUnifiedBlockTests(unittest.TestCase):
         ])
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         sha = hashlib.sha256(self.packet.read_bytes()).hexdigest()
-        expected = _expected_block(self.packet.stem, "Nick（Executor（代码））",
+        expected = _expected_block(self.packet.stem, "Executor（代码）部门",
                                    str(self.packet.resolve()), sha)
         content = out.read_text(encoding="utf-8")
-        # O108: the relay packet starts with the 开工先挂忙 command, then the
-        # unified 5-line block stays intact below it.
-        self.assertTrue(content.startswith("开工先挂忙"), content)
+        # O129: the relay packet starts with the department-pool claim hint,
+        # then the unified 5-line block stays intact below it.
+        self.assertTrue(content.startswith("开工领牌"), content)
         self.assertIn(expected + "\n", content)
-        self.assertIn(" set ", content)
-        self.assertIn(" busy ", content)
+        self.assertIn(" claim ", content)
+        self.assertNotIn(" busy ", content)
         self.assertIn(f"```text\n{expected}\n```", result.stdout)
 
 
@@ -210,9 +210,10 @@ class RelayQualityUnifiedBlockTests(unittest.TestCase):
         out = self.packet.parent / "quality-relay-block.md"
         self.assertTrue(out.is_file(), result.stdout)
         out_sha = hashlib.sha256(out.read_bytes()).hexdigest()
-        expected = _expected_block(self.packet.stem, "Quinn（Quality）",
+        expected = _expected_block(self.packet.stem, "Quality 部门",
                                    str(out.resolve()), out_sha)
         self.assertIn(f"```text\n{expected}\n```", result.stdout)
+        self.assertNotIn("Quinn（Quality）", result.stdout)
         # 不套外层双层围栏
         self.assertNotIn("```text\n```text", result.stdout)
 

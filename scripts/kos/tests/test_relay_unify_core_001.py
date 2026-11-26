@@ -137,7 +137,7 @@ class FeatureRelayExecGateTests(_GitRepoMixin, unittest.TestCase):
     def test_valid_arch_gate_passes(self) -> None:
         result = self._run()
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn("下一位交付：Nick", result.stdout)
+        self.assertIn("下一位交付：Executor（代码）部门", result.stdout)
         self.assertIn("授权，直接执行", result.stdout)
 
     def test_missing_arch_input_falls_back(self) -> None:
@@ -213,7 +213,7 @@ class RelayQualityRs2BypassTests(_GitRepoMixin, unittest.TestCase):
                         _feature_packet(f"`{self.arch}` SHA-256 `{_sha(self.arch)}`"))
         result = self._run(packet)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn("Quinn", result.stdout)
+        self.assertIn("Quality 部门", result.stdout)
 
     def test_tampered_arch_falls_back(self) -> None:
         packet = _write(self.root / "packet-bad.md",
@@ -260,7 +260,7 @@ class DocGradeRegressionTests(_GitRepoMixin, unittest.TestCase):
                         "## 冻结输入（执行前必核）\n\n- 无 arch 输入\n")
         result = self._relay_exec("code-fix", packet)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn("Nick", result.stdout)
+        self.assertIn("Executor（代码）部门", result.stdout)
 
     def test_doc_rule_without_arch_still_passes(self) -> None:
         packet = _write(self.root / "packet-doc.md",
@@ -269,7 +269,7 @@ class DocGradeRegressionTests(_GitRepoMixin, unittest.TestCase):
                         "## 冻结输入（执行前必核）\n\n- 无 arch 输入\n")
         result = self._relay_exec("doc-rule", packet)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn("Maya", result.stdout)
+        self.assertIn("Executor（文档）部门", result.stdout)
 
 
 class FeatureProfileTests(unittest.TestCase):

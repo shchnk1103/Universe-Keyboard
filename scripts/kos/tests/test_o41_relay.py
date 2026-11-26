@@ -556,25 +556,19 @@ class RelayQualityTests(unittest.TestCase):
         return stub
 
     def _run_relay(self, packet, report, pick_stub=None, extra=None):
+        # O129: relay-quality never runs the board tool; the stub path only
+        # feeds the claim hint, so it must be a file (no inline person names).
+        if pick_stub is None:
+            pick_stub = self._pick_stub("Quinn")
         args = [
             "relay-quality",
             "--report", str(report),
             "--packet", str(packet),
             "--base", self.base,
             "--repo", str(self.repo),
-            "--board", pick_stub if pick_stub else sys.executable,
-            "--board-args", json.dumps(["-c", "print('PICK [Quality]: Quinn（Quality | -)')"]),
+            "--board", sys.executable,
+            "--board-args", json.dumps([str(pick_stub)]),
         ]
-        if pick_stub:
-            args = [
-                "relay-quality",
-                "--report", str(report),
-                "--packet", str(packet),
-                "--base", self.base,
-                "--repo", str(self.repo),
-                "--board", sys.executable,
-                "--board-args", json.dumps([str(pick_stub)]),
-            ]
         if extra:
             args.extend(extra)
         return _run_py("kos_handoff.py", args)
@@ -600,13 +594,44 @@ class RelayQualityTests(unittest.TestCase):
             + f"\n日志 {self.repo / 'out.log'} SHA-256 `{hashlib.sha256((self.repo / 'out.log').read_bytes()).hexdigest()}`\n")
         return report
 
+    def _quality_block_path(self, result) -> Path:
+        return Path(result.stdout.split("质检块：", 1)[1].split("（", 1)[0].strip())
+
     def test_passing_path_emits_quality_block(self) -> None:
         packet, report = self._init_repo(self.GOOD_PACKET, self.GOOD_REPORT)
         report = self._good_report_with_logs()
         result = self._run_relay(packet, report)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn("Quinn", result.stdout)
+        # O129: department-pool dispatch — the role line names the department,
+        # never a specific specialist; no `set ... busy` pre-attachment.
+        self.assertIn("角色：Quality 部门", result.stdout)
         self.assertIn("SHA-256", result.stdout)
+        written = self._quality_block_path(result)
+        text = written.read_text(encoding="utf-8")
+        self.assertIn("Quality 部门", text)
+        self.assertNotIn("Quinn", text)
+        self.assertNotIn("busy", text)
+        self.assertIn("claim --role quality", text)
+
+    def test_pick_stub_output_ignored(self) -> None:
+        packet, report = self._init_repo(self.GOOD_PACKET, self.GOOD_REPORT)
+        report = self._good_report_with_logs()
+        stub = self._pick_stub("Quinn")
+        result = self._run_relay(packet, report, pick_stub=stub)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("Quality 部门", result.stdout)
+        self.assertNotIn("Quinn（Quality）", result.stdout)
+
+    def test_claim_hint_carries_excludes(self) -> None:
+        packet, report = self._init_repo(self.GOOD_PACKET, self.GOOD_REPORT)
+        report = self._good_report_with_logs()
+        result = self._run_relay(packet, report)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        written = self._quality_block_path(result)
+        text = written.read_text(encoding="utf-8")
+        # 前序参与者（Cole）与兜底排除名单经 --exclude 提示保留，不写死接班人。
+        self.assertIn("--exclude", text)
+        self.assertIn("Cole", text)
 
     def test_review_focus_is_verbatim(self) -> None:
         packet, report = self._init_repo(self.GOOD_PACKET, self.GOOD_REPORT)
@@ -654,19 +679,6 @@ class RelayQualityTests(unittest.TestCase):
             self.root / "report.md",
             self.GOOD_REPORT + "\n已按计划 git push 分支。\n")
         self._expect_pm(self._run_relay(packet, push_report))
-
-    def test_pick_fallback_falls_back_to_pm(self) -> None:
-        packet, report = self._init_repo(self.GOOD_PACKET, self.GOOD_REPORT)
-        report = self._good_report_with_logs()
-        stub = self.root / "fallback.py"
-        stub.write_text("print('PICK(兜底，无空闲专职): Sam（Executor（记录/文档） |-)')\n", encoding="utf-8")
-        self._expect_pm(self._run_relay(packet, report, pick_stub=stub))
-
-    def test_pick_excluded_name_falls_back_to_pm(self) -> None:
-        packet, report = self._init_repo(self.GOOD_PACKET, self.GOOD_REPORT)
-        report = self._good_report_with_logs()
-        stub = self._pick_stub("Cole")
-        self._expect_pm(self._run_relay(packet, report, pick_stub=stub))
 
     def test_old_subcommands_still_work(self) -> None:
         for args in (["render", "--help"], ["handoff", "--help"], ["final", "--help"]):
@@ -762,18 +774,44 @@ class RelayExecTests(unittest.TestCase):
         packet, report, verify_ok, lint_ok = self._fixtures(self.PACKET_CODE)
         result = self._run(packet, report, verify_ok, lint_ok)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn("下一位交付：Nick", result.stdout)
+        # O129: department-pool dispatch, no named specialist, no busy attach.
+        self.assertIn("下一位交付：Executor（代码）部门", result.stdout)
+        self.assertIn("角色：Executor（代码）部门", result.stdout)
+        self.assertNotIn("Nick", result.stdout)
+        self.assertNotIn("busy", result.stdout)
+        self.assertIn("claim --role code", result.stdout)
         packet_sha = hashlib.sha256(packet.read_bytes()).hexdigest()
         self.assertIn(packet_sha, result.stdout)
         self.assertIn("授权，直接执行", result.stdout)
 
     def test_doc_rule_packet_infers_doc_role(self) -> None:
         packet, report, verify_ok, lint_ok = self._fixtures(self.PACKET_DOC)
+        result = self._run(packet, report, verify_ok, lint_ok)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("下一位交付：Executor（文档）部门", result.stdout)
+        self.assertNotIn("Maya", result.stdout)
+
+    def test_pick_stub_output_ignored(self) -> None:
+        packet, report, verify_ok, lint_ok = self._fixtures(self.PACKET_CODE)
         result = self._run(
             packet, report, verify_ok, lint_ok,
-            pick_line="PICK [Executor（记录/文档）]: Maya（Executor（记录/文档） | -）")
+            pick_line="PICK(兜底，无空闲专职): Sam（Executor（记录/文档） | -）")
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        self.assertIn("Maya", result.stdout)
+        self.assertIn("Executor（代码）部门", result.stdout)
+
+    def test_precheck_author_excluded_in_claim_hint(self) -> None:
+        packet, report, verify_ok, lint_ok = self._fixtures(self.PACKET_CODE)
+        result = self._run(packet, report, verify_ok, lint_ok)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        # 预检身份（Pete）作为前序人员出现在 --exclude 提示中，不写死接班人。
+        self.assertIn("--exclude", result.stdout)
+        self.assertIn("Pete", result.stdout)
+
+    def test_packet_author_field_excluded_in_claim_hint(self) -> None:
+        packet, report, verify_ok, lint_ok = self._fixtures(self.PACKET_CODE, packet_author="Cole")
+        result = self._run(packet, report, verify_ok, lint_ok)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("Cole", result.stdout)
 
     def test_precheck_fail_falls_back(self) -> None:
         packet, report, verify_ok, lint_ok = self._fixtures(self.PACKET_CODE, report_text=self.FAIL_REPORT)
@@ -796,39 +834,6 @@ class RelayExecTests(unittest.TestCase):
         packet, report, verify_ok, _ = self._fixtures(self.PACKET_CODE)
         bad = self._stub("lint_bad.py", "import sys\nsys.exit(1)\n")
         self._expect_pm(self._run(packet, report, verify_ok, bad))
-
-    def test_pick_fallback_line_falls_back(self) -> None:
-        packet, report, verify_ok, lint_ok = self._fixtures(self.PACKET_CODE)
-        result = self._run(
-            packet, report, verify_ok, lint_ok,
-            pick_line="PICK(兜底，无空闲专职): Sam（Executor（记录/文档） | -）")
-        self._expect_pm(result)
-
-    def test_pick_nonzero_exit_falls_back(self) -> None:
-        packet, report, verify_ok, lint_ok = self._fixtures(self.PACKET_CODE)
-        stub = self._stub("pick_fail.py", "import sys\nsys.exit(3)\n")
-        args = [
-            "relay-exec",
-            "--report", str(report), "--packet", str(packet),
-            "--base", self.base, "--repo", str(self.repo),
-            "--verify-tool", str(verify_ok), "--pkg-lint-tool", str(lint_ok),
-            "--board", sys.executable, "--board-args", json.dumps([str(stub)]),
-        ]
-        self._expect_pm(_run_py("kos_handoff.py", args))
-
-    def test_precheck_author_excluded(self) -> None:
-        packet, report, verify_ok, lint_ok = self._fixtures(self.PACKET_CODE)
-        result = self._run(
-            packet, report, verify_ok, lint_ok,
-            pick_line="PICK [Executor（代码）]: Pete（Executor（代码） | -）")
-        self._expect_pm(result)
-
-    def test_packet_author_field_excluded(self) -> None:
-        packet, report, verify_ok, lint_ok = self._fixtures(self.PACKET_CODE, packet_author="Cole")
-        result = self._run(
-            packet, report, verify_ok, lint_ok,
-            pick_line="PICK [Executor（代码）]: Cole（Executor（代码） | -）")
-        self._expect_pm(result)
 
     def test_old_subcommands_still_work(self) -> None:
         for args in (["render", "--help"], ["handoff", "--help"], ["final", "--help"], ["relay-quality", "--help"]):
@@ -1032,10 +1037,15 @@ class HandoffAutoPickTests(unittest.TestCase):
             "--board", sys.executable, "--board-args", json.dumps([str(stub)]),
         ], env={"PICK_ARGS_OUT": str(argv_out)})
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
-        argv_text = argv_out.read_text(encoding="utf-8")
-        self.assertIn("Lucy", argv_text)
+        # O129: the board tool is never invoked for a department-pool relay —
+        # no pick, no reserve; excludes surface in the claim hint instead.
+        self.assertFalse(argv_out.exists(), "relay-quality 不应调用看板选人")
         self.assertIn("```text", result.stdout)
-        self.assertIn("角色：Quinn（Quality）", result.stdout)
+        self.assertIn("角色：Quality 部门", result.stdout)
+        block = (packet.parent / "quality-relay-block.md").read_text(encoding="utf-8")
+        self.assertIn("claim --role quality", block)
+        self.assertIn("--exclude", block)
+        self.assertIn("Lucy", block)
         self.assertIn(f"任务：{packet.stem}", result.stdout)
         self.assertIn("SHA-256：", result.stdout)
         self.assertIn("授权，直接执行", result.stdout)
