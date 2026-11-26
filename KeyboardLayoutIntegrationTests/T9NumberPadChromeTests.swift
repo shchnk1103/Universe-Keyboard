@@ -117,6 +117,40 @@ nonisolated final class T9NumberPadChromeTests: XCTestCase {
             bar.collectionView.numberOfItems(inSection: 0), T9NumberPadLayout.shortcutSymbols.count)
     }
 
+    /// PB-021-NUMPAD-SWIPE-EXPAND-001 问题①：pageChanged 等整建路径重建候选栏后，
+    /// 数字快捷栏激活态的新 bar 必须携带 `allowsSwipeToExpand`（否则下滑展开完全失效）。
+    @MainActor
+    func testRebuiltCandidateBarKeepsSwipeToExpandWhileShortcutStripActive() throws {
+        let (sut, window) = try makeWindowedKeyboard()
+        defer { window.isHidden = true }
+        sut.controller.state.inputMode = .chinese
+        sut.controller.state.currentPage = .numbers
+        sut.controller.state.currentComposition = ""
+        sut.cachedLayoutStyle = .nineKey
+        sut.cachedT9ReadinessMatched = true
+        sut.reloadKeyboard()
+
+        // 首次整建即走 makeCandidateBar → refreshPasteToolbar(on:) 路径，快捷栏激活。
+        XCTAssertTrue(sut.isT9NumberPadShortcutStripActive)
+        let bar = try XCTUnwrap(sut.candidateBar as? CandidateBarView)
+        XCTAssertTrue(bar.allowsSwipeToExpand, "快捷栏激活时重建的候选栏必须允许下滑展开")
+
+        // 切回中文页：快捷栏去激活、无候选 → 旗标必须为 false（口径下限）。
+        sut.controller.state.currentPage = .letters
+        sut.reloadKeyboard()
+        XCTAssertFalse(sut.isT9NumberPadShortcutStripActive)
+        let lettersBar = try XCTUnwrap(sut.candidateBar as? CandidateBarView)
+        XCTAssertFalse(lettersBar.allowsSwipeToExpand)
+
+        // 再切数字页：pageChanged 重建，快捷栏重新激活，新 bar 旗标必须恢复 true。
+        sut.controller.state.currentPage = .numbers
+        sut.reloadKeyboard()
+        XCTAssertTrue(sut.isT9NumberPadShortcutStripActive)
+        let rebuilt = try XCTUnwrap(sut.candidateBar as? CandidateBarView)
+        XCTAssertFalse(rebuilt === lettersBar, "pageChanged 应整建候选栏")
+        XCTAssertTrue(rebuilt.allowsSwipeToExpand, "重建后的新 bar 旗标漏置即复现下滑展开失效")
+    }
+
     /// 复用后走原生 UICollectionView 滚动（不再依赖叠层 UIScrollView）。
     /// bar 宽度由约束主导，因此用窄窗口验证内容超宽时的原生滚动。
     @MainActor
