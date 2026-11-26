@@ -302,12 +302,16 @@ extension KeyboardViewController {
             switch effect {
             case .dismissVariantAndSuppressLongPress(let buttonID):
                 dismissVariantPopup(animated: false)
+                keyCalloutView?.dismiss()
                 if let button = ordinaryRolloverButtonsByID[buttonID] {
                     suppressLongPressRecognizers(on: button)
                 }
             case .consumeKey(let buttonID, let payload):
                 guard let button = ordinaryRolloverButtonsByID[buttonID] else { continue }
                 performOrdinaryKeyInsert(key: payload.effectiveText, sender: button)
+                // Conditional: a migrated callout on the newly pressed key must
+                // survive the preceding key being consumed.
+                keyCalloutView?.dismissIfSource(button)
             case .suppressLongPress(let buttonID):
                 if let button = ordinaryRolloverButtonsByID[buttonID] {
                     suppressLongPressRecognizers(on: button)

@@ -114,6 +114,7 @@ extension KeyboardViewController {
         updateReturnKeyAppearance()
         updateSelectPinyinButtonAvailability()
         installPreferredKeyboardHeight()
+        installKeyCallout()
         Logger.shared.debug(
             "reloadKeyboard: candidateBar=\(candidateBar != nil ? "OK" : "nil"), rows=\(rootStack.arrangedSubviews.count)",
             category: .display
@@ -138,6 +139,26 @@ extension KeyboardViewController {
         if isKeyboardHeightManaged { view.alpha = 1 }
         Logger.shared.debug("installKeyboardUI: systemBounds=\(view.bounds)", category: .display)
         Logger.shared.requestFlush()
+    }
+
+    // MARK: - Key Callout (PB-019 PR-1)
+
+    /// Resident single-instance callout lookup. The view holds at most one
+    /// `KeyCalloutView`; the scan is a small constant-time subview walk with no
+    /// allocation, safe for the press hot path.
+    var keyCalloutView: KeyCalloutView? {
+        view.subviews.first(where: { $0 is KeyCalloutView }) as? KeyCalloutView
+    }
+
+    /// Installs the callout once per keyboard UI build and force-hides it: a
+    /// `reloadKeyboard` rebuild (mode/page/rotation) must never leave a stale
+    /// bubble visible.
+    func installKeyCallout() {
+        keyCalloutView?.dismiss()
+        guard !view.subviews.contains(where: { $0 is KeyCalloutView }) else { return }
+        let callout = KeyCalloutView()
+        callout.isHidden = true
+        view.addSubview(callout)
     }
 
     func reloadKeyboardContent(with precomputedCandidates: [CandidateItem]? = nil) {

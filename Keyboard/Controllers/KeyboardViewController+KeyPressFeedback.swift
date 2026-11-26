@@ -116,14 +116,39 @@ extension KeyboardViewController {
         if keyStyle(for: sender) == .character {
             sender.titleLabel?.font = .systemFont(
                 ofSize: characterKeyTitlePointSize, weight: characterKeyStyle.bold ? .bold : .semibold)
+            showKeyCallout(for: sender)
         }
         sender.transform = CGAffineTransform(scaleX: 0.96, y: 0.96)
         emitKeyPressFeedback()
     }
 
+    /// Shows the resident callout for a pressed 26-key character key.
+    ///
+    /// Synchronous press path: no view allocation and no defaults reads — the
+    /// character is evaluated through the same `characterKeyStyle.displayTitle`
+    /// pipeline as the key-cap title. Suppressed while the long-press variant
+    /// popup is up (the callout must never coexist with the variant panel).
+    func showKeyCallout(for button: UIButton) {
+        guard variantPopupView == nil,
+            let callout = keyCalloutView,
+            controller.state.currentPage == .letters,
+            button.accessibilityValue != KeyboardViewController.t9DigitAccessibilityValue
+        else { return }
+        let rawKey = button.accessibilityIdentifier ?? button.title(for: .normal) ?? ""
+        guard !rawKey.isEmpty else { return }
+        callout.sourceButton = button
+        callout.show(
+            character: displayTitle(for: rawKey),
+            keyFrame: button.convert(button.bounds, to: view),
+            containerBounds: view.bounds
+        )
+        view.bringSubviewToFront(callout)
+    }
+
     @objc func keyTouchUp(_ sender: UIButton) {
         keyPressFeedbackEmittedButtonIDs.remove(ObjectIdentifier(sender))
         restoreKeyAppearance(sender)
+        keyCalloutView?.dismissIfSource(sender)
     }
 
     func restoreKeyAppearance(_ sender: UIButton) {
@@ -166,6 +191,7 @@ extension KeyboardViewController {
         invalidateOrdinaryKeyRollover()
         keyTouchDownTimes.removeAll()
         keyPressFeedbackEmittedButtonIDs.removeAll()
+        keyCalloutView?.dismiss()
         restoreButtons(in: view)
     }
 
