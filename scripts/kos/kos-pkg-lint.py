@@ -403,9 +403,31 @@ def main():
             base = os.path.basename(f)
             if any("CODE_SIGNING_IDENTITY=-" in line and not _rule_explanation(line, "CODE_SIGNING_IDENTITY=-") for line in content.splitlines()):
                 err.append(f"E7 {base} 使用了 CODE_SIGNING_IDENTITY=-，应为 CODE_SIGN_IDENTITY=-")
-            full = any(re.search(r"本地[^。\n]{0,20}\bfull\b|\bfull\b[^。\n]{0,12}门禁", line) and not re.search(r"对声明|若.*声明|出现|规则|检查.*是否齐全", line) for line in content.splitlines())
-            keychain = any(any(os.path.basename(t) == 'xcodebuild' for t in c[:2]) and ('CODE_SIGN_IDENTITY=-' in c or any('RimeSyncSecretStore' in t for t in c)) for c in _gate_commands(content))
-            if full or keychain:
+            full = any(re.search(r"本地[^。\n]{0,20}\bfull\b|\bfull\b[^。\n]{0,12}门禁|全量门禁", line) and not re.search(r"对声明|若.*声明|出现|规则|检查.*是否齐全", line) for line in content.splitlines())
+            # A mode must be declared on its own line (optionally as a heading
+            # or a labelled value); merely mentioning it in prose is not a waiver.
+            local_fast = any(re.fullmatch(
+                r"\s*(?:#{1,6}\s*|[-*+]\s*)?(?:(?:门禁|模式|本地门禁)\s*[:：]\s*)?"
+                r"[`*]*(?:local-fast|本机定向快验)[`*]*(?:\s+[`*]*(?:local-fast|本机定向快验)[`*]*)?\s*",
+                line, re.IGNORECASE) for line in content.splitlines())
+            commands = _gate_commands(content)
+            keychain = any(any(os.path.basename(t) == 'xcodebuild' for t in c[:2]) and ('CODE_SIGN_IDENTITY=-' in c or any('RimeSyncSecretStore' in t for t in c)) for c in commands)
+            if local_fast and not full:
+                def invokes(c, name):
+                    return bool(c) and (os.path.basename(c[0]) == name or
+                                        len(c) > 1 and c[0] == 'xcrun' and os.path.basename(c[1]) == name)
+                format_ok = any(invokes(c, 'swift-format') and 'lint' in c and '--strict' in c for c in commands)
+                core_ok = any(invokes(c, 'swift') and 'test' in c and
+                              (['--package-path', 'Packages/KeyboardCore'] in [c[i:i+2] for i in range(len(c)-1)] or
+                               '--package-path=Packages/KeyboardCore' in c) for c in commands)
+                target_ok = any(invokes(c, 'xcodebuild') and 'test' in c and
+                                any(c[i:i+2] in (['-scheme', 'Universe Keyboard'], ['-scheme', 'RimeBridgeTests']) for i in range(len(c)-1)) and
+                                any(re.fullmatch(r'-only-testing:[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)?', t) for t in c)
+                                for c in commands)
+                missing = ([] if format_ok else ['swift-format lint --strict']) + ([] if core_ok or target_ok else ['swift test KeyboardCore 或定向 -only-testing'])
+                if missing:
+                    err.append(f"E7 {base} local-fast 门禁缺少步骤：{', '.join(missing)}")
+            if full or (keychain and not local_fast):
                 missing = [tokens[0] for tokens, present in zip(E7_REQUIRED_TOKENS, _gate_steps(content)) if not present]
                 if missing:
                     err.append(f"E7 {base} 本地 full 门禁缺少步骤：{', '.join(missing)}")

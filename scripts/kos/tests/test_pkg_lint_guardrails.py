@@ -222,6 +222,43 @@ CODE_SIGN_IDENTITY=- -only-testing
         self.assertIn("E6 ", run("使用 render_handoff_v1.py 交接\n").stdout)
 
 
+class LocalFastGateTests(unittest.TestCase):
+    FORMAT = "xcrun swift-format lint --strict .\n"
+    CORE = "swift test --package-path Packages/KeyboardCore\n"
+    TARGET = 'xcodebuild -scheme "Universe Keyboard" -only-testing:KeyboardTests/ExampleTests test\n'
+
+    def test_valid_local_fast_commands(self) -> None:
+        for declaration in ("本机定向快验", "local-fast"):
+            for test_command in (self.CORE, self.TARGET):
+                with self.subTest(declaration=declaration, command=test_command):
+                    self.assertNotIn("E7 ", run(declaration + "\n" + self.FORMAT + test_command).stdout)
+
+    def test_local_fast_requires_strict_format_and_real_targeted_test(self) -> None:
+        for commands in ("", self.CORE, self.FORMAT,
+                         "swift-format lint .\n" + self.CORE,
+                         self.FORMAT + "xcodebuild -only-testing: test\n",
+                         self.FORMAT + "echo swift test --package-path Packages/KeyboardCore\n",
+                         self.FORMAT + "xcodebuild -only-testing:KeyboardTests/ExampleTests build\n"):
+            with self.subTest(commands=commands):
+                self.assertIn("E7 ", run("本机定向快验 local-fast\n" + commands).stdout)
+
+    def test_explicit_full_gate_takes_priority(self) -> None:
+        for declaration in ("本地 full 门禁", "全量门禁", "本地全量门禁"):
+            with self.subTest(declaration=declaration):
+                text = declaration + "，同时提及 local-fast\n" + self.FORMAT + self.CORE
+                self.assertIn("E7 ", run(text).stdout)
+
+    def test_keyword_in_prose_does_not_waive_signed_gate(self) -> None:
+        text = "可参考 local-fast，但本任务执行签名测试。\n" + self.FORMAT + self.CORE
+        text += 'xcodebuild -scheme "Universe Keyboard" CODE_SIGN_IDENTITY=- test\n'
+        self.assertIn("E7 ", run(text).stdout)
+
+    def test_signed_target_in_declared_local_fast(self) -> None:
+        text = "本机定向快验\n" + self.FORMAT + self.TARGET
+        text += 'xcodebuild -scheme "Universe Keyboard" CODE_SIGN_IDENTITY=- -only-testing:KeyboardTests/ExampleTests test\n'
+        self.assertNotIn("E7 ", run(text).stdout)
+
+
 class HandoffFlagLintTests(unittest.TestCase):
     """E6 subcommand/flag legality and anti-wrapping notice requirements (KOS-LINT-HANDOFF-FLAGS)."""
 

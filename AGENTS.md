@@ -56,7 +56,7 @@
   [`docs/kos/codex-github-cli-auth-troubleshooting.md`](docs/kos/codex-github-cli-auth-troubleshooting.md)
   做一次沙箱／主机对照；主机成功后停止重复登录，不猜测或复用旧代理配置。
 - 发布按用户授权的具体动作推进：commit、push、PR、merge、Release 分别核对范围。仅要求本地提交不推送；推送使用边界清晰的功能分支。技能不能扩展外部动作权限。
-- **合并 / 视为可合并之前，必须先在本地跑通与 CI 等价的质量门**（见下「本地 CI 门禁」）。禁止在相关套件未绿时推送并请求合并到默认分支；若用户明确说「只推不合并 / 草稿 PR」，可推功能分支但必须在报告中写明本地未跑或未绿的步骤。**例外不豁免 Swift 格式：** 只要本次提交/推送包含 `.swift` 变更，无论是否草稿 PR、是否只推不合并，都必须先通过下方「Swift 格式硬门槛」；格式失败不得 push。
+- **合并前须通过本机定向快验及适用的 GitHub Actions 托管 CI 质量门**（见下「本地 CI 门禁」）。未通过适用门禁不得请求合并；若用户明确说「只推不合并 / 草稿 PR」，须在报告中写明未跑或未绿的步骤。**例外不豁免 Swift 格式：** 只要本次提交/推送包含 `.swift` 变更，无论是否草稿 PR、是否只推不合并，都必须先通过下方「Swift 格式硬门槛」；格式失败不得 push。
 - “已推送功能分支”不等于“可以清理分支”。PR 未合并、检查失败或远端状态无法确认时，必须同时保留本地和远端功能分支。
 - 只有在拉取最新远端状态后，确认该工作的提交已经可从 `origin` 的默认分支到达，才允许清理功能分支。
 - 清理时先同步默认分支，再使用安全删除方式删除本地分支；确认远端默认分支仍包含对应提交后，才删除远端功能分支。禁止用强制删除掩盖未合并状态。
@@ -150,11 +150,17 @@ PR 采用 squash merge 后，本地功能分支提交不在远端主干祖先链
 `test-app-keyboard`、`test-rime-sync-keychain`、`build-release`）。未知路径、workflow 或 `scripts/ci/**`
 变更按下方受控分类矩阵选择门禁；未知或混合路径走完整门禁。
 
-在 **push 后预期合并**、或用户要求「上传并合并 / 修 CI / ship」时，在推送前（至少在 merge 前）于本地执行与 CI 同序的检查。默认模拟器名与 CI 一致：`iPhone 17 Pro`（本机无该机型时可用等价 iOS Simulator，并在报告中写明）。
+### 本机定向快验（local-fast）与托管门禁
+
+Code 站默认执行本机定向快验：Swift 改动必须通过下方 `swift-format lint --strict` 硬门槛；改 `KeyboardCore` 跑 `swift test --package-path Packages/KeyboardCore`；改主 App、Keyboard 或 RimeBridge 时，默认使用 `-only-testing:<本次新增及直接受影响的测试类>` 跑相应 scheme。按改动范围组合执行；纯文档或 KOS 脚本等无 Swift 改动按任务指定的适用检查执行。
+
+本机默认不强跑签名 Keychain 测试与 Release build：涉及 Sync/Keychain 时跑签名 Keychain；涉及泛型或编译配置、或 CI 报 Release 错时跑 Release build。GitHub Actions 托管 CI 在合并前按分类把关六项重型门禁；下方七步保留供托管 CI 对齐及特殊场景使用。
+
+Quality 站禁止默认重跑全量 `xcodebuild`，应审查代码、核对合同与 Code 站门禁日志并检查 Swift 格式；仅发现疑点时定向补跑单个 `-only-testing:` 用例。本机重型 `xcodebuild` 并发上限为 2 槽，多线并行时最多两条线同时占用模拟器执行。默认模拟器为 `iPhone 17 Pro`；使用等价机型时在报告说明。
 
 ### 分级与证据复用
 
-开发返修 L1/L2 是本轮定向检查和审查前受影响回归，不是合并门禁。合并前 L3 按分类矩阵运行一次：keyboard_ui_only 跑 format、App+Keyboard、Release；rimebridge_only 另跑 RimeBridge；app_only 跑 format、App+Keyboard、Release。涉及 Sync/Keychain 的 RimeBridge 或 App 加跑签名 Keychain。KeyboardCore、工程、CI、未知或混合路径为 full，跑全部六个重型任务。Quality 复用该次 L3，Publish 在文件字节、比较基线、依赖与环境不变时按 `docs/AI_WORKFLOW.md` 复用 Quality 证据；否则重跑受影响分类。
+合并前按 `docs/CI_CHANGE_CLASSIFICATION.md` 取得适用的托管 CI 结果。Quality 核对 Code 站证据，Publish 在文件字节、比较基线、依赖与环境不变时按 `docs/AI_WORKFLOW.md` 复用有效证据；否则补跑受影响检查。
 
 ### Swift 格式硬门槛（任何含 `.swift` 的 commit / push）
 
@@ -180,12 +186,12 @@ xcrun swift-format lint --strict --configuration .swift-format <file>
    执行 `test`（与 CI 的 `test-rime-sync-keychain` 对齐）。无签名的步骤 5 不替代此检查。
 7. **Release build：** 同上 destination，`-configuration Release` 的 `build`（参数与 CI 一致）。Debug `test` 已覆盖 Debug 编译，不再单独跑 Debug `build`。
 
-**范围收窄（仅当改动极小时）：** 纯文档且无 Swift / 工程 / 测试文件改动时，可跳过 3–7，但须在完成报告中写明「docs-only，跳过 xcodebuild」。只改 `Packages/KeyboardCore` 时至少跑步骤 3；改主 App / Extension / 测试 target 时 **不得** 只跑 KeyboardCore 就声称可合并。
+**本机范围：** 纯文档且无 Swift / 工程 / 测试文件改动时，可跳过 3–7，但须在完成报告中写明「docs-only，跳过 xcodebuild」。只改 `Packages/KeyboardCore` 时至少跑步骤 3；改主 App / Extension / 测试 target 时应执行相应定向测试，不能只跑 KeyboardCore。
 
 修改 `.github/workflows/**`、`scripts/ci/**` 或分类规则本身时不得使用 docs-only
 例外；必须验证完整路径和 docs-only 路径，并在 merge 前取得 hosted run 证据。
 
-**改完测试或部署意图后：** 必须跑到会执行该用例的 target（例如改了 `UniverseKeyboardTests` 就必须跑步骤 5，不能只跑 KeyboardCore）。  
+**改完测试或部署意图后：** 必须跑到会执行该用例的 target（例如改了 `UniverseKeyboardTests` 就须在步骤 5 的 scheme 中定向执行该测试类，不能只跑 KeyboardCore）。
 历史教训：#48 合并后 CI 红在 `RimeSettingsStoreTests`（签名 `schema=all` 与测试种子不一致）——本地若只跑 KeyboardCore 过滤套件会漏掉。
 
 质量证据可按 `docs/AI_WORKFLOW.md` 的最终内容、基线、环境和覆盖条件复用；不能因此跳过必需门禁。
