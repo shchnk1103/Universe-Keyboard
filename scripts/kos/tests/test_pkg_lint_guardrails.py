@@ -222,6 +222,95 @@ CODE_SIGN_IDENTITY=- -only-testing
         self.assertIn("E6 ", run("使用 render_handoff_v1.py 交接\n").stdout)
 
 
+class LocalFastGateTests(unittest.TestCase):
+    FORMAT = "xcrun swift-format lint --strict .\n"
+    CORE = "swift test --package-path Packages/KeyboardCore\n"
+    TARGET = 'xcodebuild -scheme "Universe Keyboard" -only-testing:KeyboardTests/ExampleTests test\n'
+
+    def test_valid_local_fast_commands(self) -> None:
+        for declaration in ("本机定向快验", "local-fast"):
+            for test_command in (self.CORE, self.TARGET):
+                with self.subTest(declaration=declaration, command=test_command):
+                    self.assertNotIn("E7 ", run(declaration + "\n" + self.FORMAT + test_command).stdout)
+
+    def test_local_fast_requires_strict_format_and_real_targeted_test(self) -> None:
+        for commands in ("", self.CORE, self.FORMAT,
+                         "swift-format lint .\n" + self.CORE,
+                         self.FORMAT + "xcodebuild -only-testing: test\n",
+                         self.FORMAT + "echo swift test --package-path Packages/KeyboardCore\n",
+                         self.FORMAT + "xcodebuild -only-testing:KeyboardTests/ExampleTests build\n"):
+            with self.subTest(commands=commands):
+                self.assertIn("E7 ", run("本机定向快验 local-fast\n" + commands).stdout)
+
+    def test_explicit_full_gate_takes_priority(self) -> None:
+        for declaration in ("本地 full 门禁", "全量门禁", "本地全量门禁"):
+            with self.subTest(declaration=declaration):
+                text = declaration + "，同时提及 local-fast\n" + self.FORMAT + self.CORE
+                self.assertIn("E7 ", run(text).stdout)
+
+    def test_full_gate_with_modifier_words_takes_priority(self) -> None:
+        # O134 r2: 「全量…门禁」带修饰词（如「全量 CI 质量门禁」）也算 full 声明，
+        # 即使同包出现 local-fast 也不得跳过六步校验。
+        for declaration in (
+            "本轮执行全量 CI 质量门禁",
+            "本轮执行全量质量门禁",
+            "全量 CI 质量门禁",
+            "本轮执行全量 CI 质量门禁，同包亦可参考 local-fast",
+        ):
+            with self.subTest(declaration=declaration):
+                text = declaration + "。\n本包亦可参考 local-fast 定向快验。\n" + self.FORMAT + self.CORE
+                self.assertIn("E7 ", run(text).stdout)
+
+    def test_full_gate_with_modifier_words_passes_when_steps_complete(self) -> None:
+        text = "\n".join([
+            "本轮执行全量 CI 质量门禁，与 CI 参数完整一致，但 -retry-tests-on-failure 不属于本地门禁。",
+            "xcrun swift-format lint --strict .",
+            "swift test --package-path Packages/KeyboardCore",
+            "xcodebuild -scheme RimeBridgeTests test",
+            'xcodebuild -scheme "Universe Keyboard" test',
+            'xcodebuild -scheme "Universe Keyboard" CODE_SIGN_IDENTITY=- -only-testing:UniverseKeyboardTests/RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem test',
+            'xcodebuild -scheme "Universe Keyboard" -configuration Release build',
+        ])
+        result = run(text + "\n")
+        self.assertNotIn("E7 ", result.stdout)
+        self.assertEqual(result.returncode, 0, result.stdout)
+
+    def test_local_fast_declaration_with_annotation_suffix(self) -> None:
+        # O134 r2: 声明支持括号 / 中文说明后缀（如「门禁：local-fast（本机定向快验）」）。
+        for declaration in (
+            "门禁：local-fast（本机定向快验）",
+            "- 门禁：local-fast（本机定向快验）",
+            "本地门禁：local-fast（本机定向快验）",
+            "模式：local-fast（本机定向快验）",
+        ):
+            for test_command in (self.CORE, self.TARGET):
+                with self.subTest(declaration=declaration, command=test_command):
+                    result = run(declaration + "\n" + self.FORMAT + test_command)
+                    self.assertNotIn("E7 ", result.stdout)
+                    self.assertEqual(result.returncode, 0, result.stdout)
+
+    def test_local_fast_annotation_suffix_still_requires_steps(self) -> None:
+        for commands in (
+            "",
+            self.CORE,
+            self.FORMAT,
+            "swift-format lint .\n" + self.CORE,
+            self.FORMAT + "xcodebuild -only-testing:KeyboardTests/ExampleTests build\n",
+        ):
+            with self.subTest(commands=commands):
+                self.assertIn("E7 ", run("门禁：local-fast（本机定向快验）\n" + commands).stdout)
+
+    def test_keyword_in_prose_does_not_waive_signed_gate(self) -> None:
+        text = "可参考 local-fast，但本任务执行签名测试。\n" + self.FORMAT + self.CORE
+        text += 'xcodebuild -scheme "Universe Keyboard" CODE_SIGN_IDENTITY=- test\n'
+        self.assertIn("E7 ", run(text).stdout)
+
+    def test_signed_target_in_declared_local_fast(self) -> None:
+        text = "本机定向快验\n" + self.FORMAT + self.TARGET
+        text += 'xcodebuild -scheme "Universe Keyboard" CODE_SIGN_IDENTITY=- -only-testing:KeyboardTests/ExampleTests test\n'
+        self.assertNotIn("E7 ", run(text).stdout)
+
+
 class HandoffFlagLintTests(unittest.TestCase):
     """E6 subcommand/flag legality and anti-wrapping notice requirements (KOS-LINT-HANDOFF-FLAGS)."""
 
