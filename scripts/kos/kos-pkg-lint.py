@@ -403,12 +403,19 @@ def main():
             base = os.path.basename(f)
             if any("CODE_SIGNING_IDENTITY=-" in line and not _rule_explanation(line, "CODE_SIGNING_IDENTITY=-") for line in content.splitlines()):
                 err.append(f"E7 {base} 使用了 CODE_SIGNING_IDENTITY=-，应为 CODE_SIGN_IDENTITY=-")
-            full = any(re.search(r"本地[^。\n]{0,20}\bfull\b|\bfull\b[^。\n]{0,12}门禁|全量门禁", line) and not re.search(r"对声明|若.*声明|出现|规则|检查.*是否齐全", line) for line in content.splitlines())
+            # O134 r2: 「全量…门禁」带修饰词（全量 CI 质量门禁 / 全量质量门禁）
+            # 与连续「全量门禁」同视为 full 声明，即使同包出现 local-fast 也
+            # 不得跳过六步校验。
+            full = any(re.search(r"本地[^。\n]{0,20}\bfull\b|\bfull\b[^。\n]{0,12}门禁|全量[^。\n]{0,20}门禁", line) and not re.search(r"对声明|若.*声明|出现|规则|检查.*是否齐全", line) for line in content.splitlines())
             # A mode must be declared on its own line (optionally as a heading
             # or a labelled value); merely mentioning it in prose is not a waiver.
+            # O134 r2: 允许声明后跟括号 / 中文说明后缀（如
+            # 「门禁：local-fast（本机定向快验）」），说明性后缀不改变声明的
+            # 强制力——缺失 swift-format 或定向测试命令仍必须报错。
             local_fast = any(re.fullmatch(
                 r"\s*(?:#{1,6}\s*|[-*+]\s*)?(?:(?:门禁|模式|本地门禁)\s*[:：]\s*)?"
-                r"[`*]*(?:local-fast|本机定向快验)[`*]*(?:\s+[`*]*(?:local-fast|本机定向快验)[`*]*)?\s*",
+                r"[`*]*(?:local-fast|本机定向快验)[`*]*(?:\s+[`*]*(?:local-fast|本机定向快验)[`*]*)?"
+                r"(?:\s*[（(][^（）()]{0,40}[）)])*\s*",
                 line, re.IGNORECASE) for line in content.splitlines())
             commands = _gate_commands(content)
             keychain = any(any(os.path.basename(t) == 'xcodebuild' for t in c[:2]) and ('CODE_SIGN_IDENTITY=-' in c or any('RimeSyncSecretStore' in t for t in c)) for c in commands)
