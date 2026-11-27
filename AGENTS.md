@@ -1,6 +1,6 @@
 # AGENTS.md
 
-本仓库的 AI 协作规则。所有 agent 在开始工作前必须先阅读本文件。
+本仓库的 AI 协作规则。所有 agent 在开始工作前必须先阅读本文件。低频步骤与命令全文见文中链接；链接不替代本节红线。
 
 ## 基本沟通规则
 
@@ -13,33 +13,19 @@
 
 ## 工作入口
 
-新会话开始时先阅读：
+新会话按序阅读：`AGENTS.md` → `docs/KNOWLEDGE_INDEX.md` → 任务包或 Human 指定的当前工作（查未完成项读 `docs/PORTFOLIO.md` 并核对所依赖的行；`docs/ACTIVE_WORK.md` 自 2026-11-07 起冻结为历史快照，不再默认加载）→ 按 `docs/READING_MAPS.md` 加载对应文档 → 涉及代码再读 `docs/PROJECT_CONTEXT.md`。运营卫生见 `docs/kos/kos-2.1-operational-maturity.md`（不替代 KOS 2.0 冻结原则）。
 
-1. `AGENTS.md`
-2. `docs/KNOWLEDGE_INDEX.md`
-3. 当前工作与优先级由任务包或 Human 指定；需要查未完成项时读 `docs/PORTFOLIO.md` 并核对所依赖的行（`docs/ACTIVE_WORK.md` 自 2026-11-07 起冻结为历史快照，不再默认加载；生命周期以 Assignment 为准）
-4. 按 `docs/READING_MAPS.md` 中的任务类型加载对应文档
-5. 涉及代码改动时再阅读 `docs/PROJECT_CONTEXT.md`
-6. 运营卫生规则见 `docs/kos/kos-2.1-operational-maturity.md`（不替代 KOS 2.0 冻结原则）
-7. KOS 2.2 目前为 **advisory**，Adopted pin v0.9.0：E-01、A-01/B-01、P-01、D-01 仍仅供新记录显式 opt-in；v0.9.0 的 M-02 触发身份/非递归收尾适用于本决定后的触发，reviewer 范围/预算/停止条款适用于决定后新分配的独立 lane。细则见 [docs/kos/UPGRADE_STATUS.md](docs/kos/UPGRADE_STATUS.md) 与 .kos/project.json。校验绿不是 Product / merge / Release。未授权 required。
-8. **Task Workspace（opt-in，UK-007）**：只对 Assignment 明确写明采用 `ops/task-workspace.md`（Kit commit `9ca6dc015bf01084150538aac65cedc25b2a33a5`，见 [docs/kos/UPGRADE_STATUS.md](docs/kos/UPGRADE_STATUS.md)）的新任务生效；现有 Active 任务、Codex 任务与 Worktree 不迁移、不修改。拿到 Task ID 时：① 在 `docs/assignments/` 按 `record_id` 定位 Assignment（找不到再按 Task ID 搜 PR 与远端分支）；② 定位 carrier 分支；③ fetch 后读该分支 head 上的 `docs/tasks/<TASK-ID>/BRIEF.md`、`log.md`，以及 AUTH、Plan 和 `read_on_demand` 指向的必要证据；④ 确认当前阶段、Checkpoint 与剩余工作；⑤ 先按合同第四、八节核对 Writer，再动手：若无待接收 `P`，且从 `log.md` 推出的 `W` 是本 Agent、授权有效，可以继续写任务；若待接收 `P` 指向本 Agent，且第八节核对满足接收条件（共同前置条件成立并命中第 3 行，含 `H == S`），只可提交并推送 `ACCEPT`，`ACCEPT` 推送成功后才取得任务代码和其他授权路径的写权；镜像与 log 冲突、状态未知或不满足接收条件，必须停止，不得推测权限；Human 署名的异常接管仍按合同第四节执行，本条不扩大其权限；⑥ 在有效授权内继续；⑦ 重要进度变化时写 Checkpoint。无法访问仓库或 GitHub 的 Agent 须明确请求所需资料，或由 Human 中转。无法判断阶段调整是否属于已授权的非实质性细节时，停止并请求 Human。本入口不绑定模型、客户端或厂商，也不是完全自动化的跨平台接管或排他锁。
+KOS 2.2 目前为 **advisory**，Adopted pin v0.9.0；E-01、A-01/B-01、P-01、D-01 仍仅供新记录显式 opt-in。细则见 [docs/kos/UPGRADE_STATUS.md](docs/kos/UPGRADE_STATUS.md) 与 `.kos/project.json`。校验绿不是 Product / merge / Release。未授权 required。
 
-`CONTEXT_INDEX.md` 保留为详细文档注册表，不再是新会话的第一导航入口。
-需要确定长期团队所有权、跨线程协作或永久线程 bootstrap 时，阅读 `docs/VIRTUAL_ENGINEERING_TEAM.md`。
-正式任务进入 `Ready` 或开始执行前，必须按 `docs/ASSIGNMENT_POLICY.md` 核对 Assignment；任何必需字段为 `UNKNOWN` 时停止并交回 Product Lead。边界明确的只读问题使用该 Policy 的例外。阶段依赖与当前授权解释见 `docs/AI_WORKFLOW.md`。
-需要领域 agent 时，必须选择 `docs/playbooks/` 下的对应操作手册，并遵守其停止、交接和证据规则。
+Task Workspace（opt-in，UK-007）只对 Assignment 明确采用的新任务生效，现有任务不迁移。七步入口与停止条件见 [docs/kos/task-workspace-entry.md](docs/kos/task-workspace-entry.md)。无法判断阶段调整是否属于已授权的非实质性细节时，停止并请求 Human。
+
+`CONTEXT_INDEX.md` 是详细注册表，不再是第一导航入口。长期所有权读 `docs/VIRTUAL_ENGINEERING_TEAM.md`。正式任务进入 `Ready` 或开始执行前，必须按 `docs/ASSIGNMENT_POLICY.md` 核对 Assignment；任何必需字段为 `UNKNOWN` 时停止并交回 Product Lead。阶段依赖见 `docs/AI_WORKFLOW.md`。需要领域 agent 时，必须选择 `docs/playbooks/` 下的对应手册，并遵守其停止、交接和证据规则。
 
 ## 调试原则
 
-- 根因不清楚时，不要直接猜修。
-- 优先增加精准日志、复现路径和观测点。
-- 对输入法卡死、延迟、候选异常、RIME session 异常等问题，先区分：
-  - UI 主线程问题
-  - KeyboardCore 状态机问题
-  - RIME session / bridge 问题
-  - App Group / 文件系统 / 部署状态问题
-- 日志必须放在能缩小问题范围的位置，避免无意义刷屏。
-- 输入热路径中的日志和持久化不能同步阻塞按键处理。
+- 根因不清楚时，不要直接猜修。优先增加精准日志、复现路径和观测点。
+- 输入法卡死、延迟、候选异常、RIME session 异常，先区分：UI 主线程、KeyboardCore 状态机、RIME session / bridge、App Group / 文件系统 / 部署状态。
+- 日志必须放在能缩小问题范围的位置，避免无意义刷屏。输入热路径中的日志和持久化不能同步阻塞按键处理。
 
 ## 修改边界
 
@@ -50,160 +36,29 @@
 - 修改 `Packages/KeyboardCore` 时优先补充或更新单元测试。
 - 修改历史、决策或已知限制时，更新对应文档，不把流水账塞进 `docs/PROJECT_CONTEXT.md` 或 `CLAUDE.md`。
 
-## GitHub 发布与分支清理
+## GitHub 发布、分支清理与合并后清理（PF-023）
 
-- Codex 沙箱内的 GitHub CLI 认证失败不得单独解释为 token 过期。先按
-  [`docs/kos/codex-github-cli-auth-troubleshooting.md`](docs/kos/codex-github-cli-auth-troubleshooting.md)
-  做一次沙箱／主机对照；主机成功后停止重复登录，不猜测或复用旧代理配置。
-- 发布按用户授权的具体动作推进：commit、push、PR、merge、Release 分别核对范围。仅要求本地提交不推送；推送使用边界清晰的功能分支。技能不能扩展外部动作权限。
-- **合并前须通过本机定向快验及适用的 GitHub Actions 托管 CI 质量门**（见下「本地 CI 门禁」）。未通过适用门禁不得请求合并；若用户明确说「只推不合并 / 草稿 PR」，须在报告中写明未跑或未绿的步骤。**例外不豁免 Swift 格式：** 只要本次提交/推送包含 `.swift` 变更，无论是否草稿 PR、是否只推不合并，都必须先通过下方「Swift 格式硬门槛」；格式失败不得 push。
-- “已推送功能分支”不等于“可以清理分支”。PR 未合并、检查失败或远端状态无法确认时，必须同时保留本地和远端功能分支。
-- 只有在拉取最新远端状态后，确认该工作的提交已经可从 `origin` 的默认分支到达，才允许清理功能分支。
-- 清理时先同步默认分支，再使用安全删除方式删除本地分支；确认远端默认分支仍包含对应提交后，才删除远端功能分支。禁止用强制删除掩盖未合并状态。
-- 发布与清理过程必须报告提交、远端分支、PR、合并可达性检查和实际删除结果；任一步失败都停止清理并保留可恢复检查点。
-
-### 合并后清理（PF-023）
-
-- 时点与负责人：PR 合并、核对合并结果时，由该任务的 Executor 列出本任务创建的 worktree 与分支。
-- 清理前检查：拉取最新远端后，确认已并入 `origin/main`、未提交改动为 0、不受保护。复查不满足的对象跳过，其余继续；任何删除命令失败或被拒，立即停止整批并保留检查点（同本节已有规则）。
-- 授权方式：Human 一条消息授权一批，点名清单与 SHA。
-- 执行方式：安全删除（`worktree remove` 不加 `--force`、`branch -d`、`push --delete`）。禁止强制删除。PR 未合并、检查失败或远端状态无法确认时，保留本地和远端分支。
-- 记录：外置回执写明对象、删前 SHA、检查结果与实际结果。
-- 受保护对象：B-001 工作区与分支、`preserve/`、`local/`、`backup`、有未提交改动的、进行中任务的、其它工具目录。
-- 远程分支是否在合并时自动删除，取决于 GitHub 仓库设置（由 Human 决定）。
-- 主检出快进：在该任务合并清理包明确授权下，由合并清理 Executor（Wendy）执行。合并并 fetch 后，若主检出在 `main`、没有本地改动或未跟踪文件、且 `HEAD` 是已 fetch 的 `origin/main` 的祖先，执行 `git merge --ff-only origin/main` 并报告新旧 SHA；任一条件不满足则不动主检出，并告诉 Human。
-- 真机测试前核对口令（O122-D）：任何真机验收或 Xcode 装机前，须先核对当前构建目录 `HEAD` 与 PM 提供的目标封版 SHA 一致（`git rev-parse HEAD` 与授权 SHA 比对），防止因主检出未快进或处于 detached 状态而误测旧代码。
-
-### squash 合并后双验安全删本地分支协议（O123）
-
-PR 采用 squash merge 后，本地功能分支提交不在远端主干祖先链上，`git branch -d` 必然被拒绝。此时仅在**同时满足以下三条硬条件**后，才允许对**该单一已合并功能分支**带证据执行删除；未通过双验前，全局禁止 `git branch -D` 的底线不变：
-
-1. **PR 合并可达**：`gh pr view <PR> --json state,mergeCommit` 核实状态为 `MERGED`，且拉取远端主干后确认 `mergeCommit` 可从远端主干到达；
-2. **内容级零残留**：`git diff <branch> <mergeCommit> -- <本分支涉及文件清单>` 输出为空（文件清单以 PR 实际改动文件集合为界，避免合并后主干其他 PR 引入无关差异造成误判），确认无未合并增量；
-3. **单支带证据删除**：受保护对象（`preserve/`、`local/`、`backup`、未提交改动、在用分支）仍严格豁免；清理回执必须记录 PR 号、`mergeCommit` SHA 及 diff 为空证据，逐支核对、逐支删除，失败立即停止整批。
+- **合并前须通过本机定向快验及适用的 GitHub Actions 托管 CI 质量门**（见「本地 CI 门禁」与 [docs/kos/local-ci-commands.md](docs/kos/local-ci-commands.md)）。未通过适用门禁不得请求合并；若用户明确说「只推不合并 / 草稿 PR」，须在报告中写明未跑或未绿的步骤。**例外不豁免 Swift 格式：** 只要本次提交/推送包含 `.swift` 变更，无论是否草稿 PR、是否只推不合并，都必须先通过「Swift 格式硬门槛」；格式失败不得 push。
+- “已推送功能分支”不等于可以清理。PR 未合并、检查失败或远端状态无法确认时，必须同时保留本地和远端功能分支。禁止用强制删除掩盖未合并状态。
+- **squash 双验前全局禁止 `git branch -D`（O123）。** 仅当 [docs/kos/pf-023-cleanup.md](docs/kos/pf-023-cleanup.md) 的三条硬条件同时满足，才允许对该单一已合并功能分支带证据删除。受保护对象（B-001、`preserve/`、`local/`、`backup`、未提交改动、进行中任务、在用分支）严格豁免。`worktree remove` 不加 `--force`。任何删除命令失败或被拒，立即停止整批并保留检查点。
+- 真机验收或 Xcode 装机前，必须核对当前构建目录 `HEAD` 与 PM 提供的目标封版 SHA 一致（O122-D）。核对命令、沙箱认证对照、清理回执与快进条件见 [docs/kos/github-publish.md](docs/kos/github-publish.md) 与 [docs/kos/pf-023-cleanup.md](docs/kos/pf-023-cleanup.md)。
+- 发布按用户授权的具体动作推进：commit、push、PR、merge、Release 分别核对范围。仅要求本地提交不推送。技能不能扩展外部动作权限。任一步失败都停止并保留可恢复检查点。
 
 ## KOS 协作约定
 
-- 派发只按角色与会话约束，不指定哪个 AI（Human 2026-10-26 决定，见 `docs/PORTFOLIO.md` 决定记录）。
-- 每日复盘（Human 2026-10-27 决定）：当天确实做了工作时，在适当的时候总结当天遇到的问题和能纳入经验的举措；PM 用大白话说明当天做了什么。
-- PM 会话独立：Human 2026-10-28 要求 PM 角色的会话尽量保持相对独立。PM 执行做法：不开 PR、不推送分支、不在任务 worktree 中工作；合并后的主检出快进由合并清理 Executor 按「合并后清理（PF-023）」执行。
-- 会话归档（Human 2026-10-28 陈述）：会话被归档会断开 Remote Control，取消归档后不会自动恢复。
+- 派发只按角色与会话约束，不指定哪个 AI。PM 不开 PR、不推送分支、不在任务 worktree 中工作；合并后的主检出快进由合并清理 Executor 按 PF-023 执行。
+- 非 PM 角色最终消息只写一句话：状态 + 报告路径 + SHA-256。写入被拒（含执行器沙箱）时立即停止，并写明被拒的路径与操作；文字授权不能改变沙箱。
+- 冻结要求互相冲突时，执行者停止并请求修订；修订包须点名哪些冻结输入作废，并保留原 BLOCKED 报告。发包前自审见 [PM 手册](docs/kos/pm-playbook.md) 第 3 节。
+- **部门池实名领牌（O113 / O118）**：派发块只写部门名，不点名员工。开工前运行 `kos-board.py claim --role <部门> --task <TASK-ID>` 原子领取一张空闲牌；报告以领到的真实姓名署名，收尾以同一实名 `set <名字> idle`。严禁代领或冒名。`claim` 与 `set idle` 仅由顶层主会话各执行一次；子代理沿用父会话身份，严禁占第二张牌。名册、轮询与 `WAITING_CI` 见 [docs/kos/tier-routing.md](docs/kos/tier-routing.md)。
+- **4 档只分流协作站点，不改变**下方本地 CI 门禁、[CI 分级](docs/CI_CHANGE_CLASSIFICATION.md)、Swift 格式硬门槛与既有文档 / 测试 / CI 分类。只有 `feature` 必走设计 + 架构审查；`doc-light` 免预检、免独立复核。升降级只升不降。直通条件（O129，含 `ci_watch.sh`）的权威文本见 [docs/kos/tier-routing.md](docs/kos/tier-routing.md)。
 
-### 任务包与派发（Human 2026-10-28 批准）
+## 本地 CI 门禁
 
-- 非 PM 角色的任务包首行写明角色（如 Executor / Quality Reviewer）与“你不是 PM”；全部结果写进报告；最终消息只写一句话：状态 + 报告路径 + SHA-256。
-- 写入被拒（含执行器沙箱）时立即停止，并写明被拒的路径与操作。执行器侧的可写目录由 Human 配置，文字授权不能改变沙箱。
-- 在链接 worktree 中提交、fetch 或 push 时，任务包点名允许写入的主检出 `.git` 路径（`worktrees/<名>/`、`objects/`、相关 refs 与 reflog）并列出排除项。
-- 任务包作者发包前自审：验收条件里的结构数字用命令得出；同包规则互不冲突；每条验收先在模拟结果上跑一遍；事实句逐句有出处且不升级证据级别。
-- 冻结要求互相冲突时，执行者停止并请求修订；修订包须点名哪些冻结输入作废，并保留原 BLOCKED 报告。
-- 授权与派发消息保持简短，固定为：任务名、角色、包路径、SHA-256 与“授权，直接执行”；批准项写进任务包的“Human 预批准项”，随 SHA 冻结。
-
-### 部门池派发、原子领牌与子代理身份（外置 O113 / O118 / O110，经 KOS-RULES-SYNC-001 同步入库）
-
-- **部门池派发与实名领岗（O113）**：按部门池派发时，派发块只写部门名（如 `Executor（代码）部门`、`Quality 部门`、`Publish 部门`），不点名具体员工；部门全员名单与流转规则见外置 `/Users/doubleshy0n/.kos-work/Universe-Keyboard/KOS-ROLES-001/roles/ROSTER.md`。接单者开工前运行 `python3 /Users/doubleshy0n/.kos-work/Universe-Keyboard/tools/kos-board.py claim --role <部门> --task <TASK-ID>`，在排他锁下原子领取一个空闲牌；报告以领到的真实姓名署名，收尾以同一实名运行 `kos-board.py set <名字> idle <TASK-ID>` 释放；严禁代领或冒用同部门同事名字。
-- **子代理沿用父会话身份（O118）**：`claim` 与 `set ... idle` 仅由顶层主会话各执行一次；主会话派生的 `subagent` 沿用父会话已领取的员工身份开展工作，严禁重复运行 `claim` 或 `set ... idle` 占用第二张牌。
-- **PM 状态表与轮询入口（O113）**：PM 回复中的并行状态表包含 `部门` 列；查返报统一通过外置 `kos-pm-poll.py`（及 `kos-report-lint` / 技能入口）完成，不逐会话私查。
-- **Publish 排队兜底（O110）**：Publish 支持交回 `WAITING_CI` 状态——托管 CI 连续 `queued` 超过 10 分钟时，Publish 可交回报告并释放看板；CI 恢复运行后重新领牌继续，不长期占牌等待。落实本条时可用仓库脚本 `scripts/kos/ci_watch.sh`（`--queued-limit-min` 默认 10 分钟，退出码 3 表示 `WAITING_CI`）。
-- **直通接力开工领牌（O129）**：`scripts/kos/kos_handoff.py` 的 `relay-exec` / `relay-quality` 两处直通已按部门池出块，只写部门名（Executor（代码）部门 / Executor（文档）部门 / Quality 部门），并附 `kos-board.py claim --role <code|doc|quality> --task <TASK-ID>`；前序参与者只出现在 `--exclude` 提示里，不再指定接班人。这两处直通不再调用 `kos-board.py pick`，也不以 `PICK [` 为出块门禁。
-
-### 设计、预检与复核分级（Human 2026-10-28 批准；2026-11-14 增补 4 档流程）
-
-- 任务按范围与风险进入 4 档流程；本节是 4 档流程的仓库权威源，PM 手册只写操作摘要并链接本节。只有 `feature` 档必走 Nick 设计 + Alex 架构审查；`code-fix` / `doc-rule` / `doc-light` 按各自档位执行，`doc-light` 免预检、免独立复核。
-- `doc-rule` / `code-fix` / `feature` 档涉及实现或要原样写入仓库文字的包，按档位经独立只读预检；`doc-light` 不进入预检站。
-- 有独立复核站的档位按复核发现分级：仅文字的小问题发布前以小提交修正、只复核改动部分；代码 / 设计问题按整轮处理。
-- 本节只分流协作站点，不改变下方「本地 CI 门禁」、[CI 分级](docs/CI_CHANGE_CLASSIFICATION.md)、Swift 格式硬门槛与既有文档 / 测试 / CI 分类要求；Assignment 仍按 `docs/ASSIGNMENT_POLICY.md` 与 Human 2026-11-06 小任务口径处理，4 档不推翻该口径。
-- PM 职责与工作规则见 [PM 手册](docs/kos/pm-playbook.md)。
-
-#### 4 档任务流程与职责路由（Human 2026-11-14 批准）
-
-依据 Human 2026-11-14「按你的建议定」及 `KOS-WORKFLOW-001` 设计稿 v1 / `human-decision-20261114.md`。箭头表示当前站 PASS / DONE 后进入下一站；`*` 为需要 Human 授权的站，脚本只出块，不自动越过。
-
-| 档位 | 适用 | 站点 |
-|---|---|---|
-| `doc-light`（轻文档） | 仅改说明文字、台账；不碰规则、已冻结事实与对外文案 | `PM 写包 → 实现·文档 → PM 终审（链接门 / 机械核对）→ 发布* → 合并*`；免预检、免独立复核 |
-| `doc-rule`（规则文档） | 改手册、`AGENTS.md`、KOS 规则、对外文案、隐私 / 官网 | `PM 写包 → 预检 → 实现·文档 → PM 终审 → 发布* → 合并*` |
-| `code-fix`（小型代码修复） | 单个 PR；不碰数据格式 / 存储 / 同步 / 网络 / 权限 / 隐私承诺 / RIME 方案语义 | `PM 写包 → 预检 → 实现·代码（红测）→ 独立复核 → PM 终审 → 发布* → 真机(Human)* → 合并*` |
-| `feature`（大型功能） | 多 PR、跨模块，或触及上述核心 / 语义边界 | `设计(Nick) → 架构审查(Alex) → PM 写包 → 预检 → 实现·代码 → 独立复核 → PM 终审 → 发布* → 真机(Human)* → 合并*`；架构审查 PASS 报告进入包冻结输入后，预检→实现 与 实现→独立复核 两处可 relay 直通 |
-
-另保留两类单站任务：**只读诊断**（只读 → PM）与**纯 Human 事务**（不过流程）。`code-fix` 档按 Human 决定在下一个新的代码缺陷任务试行，一个任务跑完前不转正；这保留当前试行边界，不推翻 2026-11-06 小任务口径。
-
-**通用站点转移**：PASS / DONE 进下一站；FAIL（预检 / 复核）回到写包者 PM 出 `-rN` 修订包，并原样交回同一位审查者复检；PARTIAL 交 PM 判断是否可继续；STOPPED / BLOCKED 升级 PM；同一站连续 FAIL 达 3 轮升级 Human。每站的 PASS 是该角色独立结论，不由流程脚本替代。
-
-**升降级只升不降**：任一站发现范围超出当前档位时，在报告写「请求升档：<目标档>，理由…」，PM 按更重一档的剩余站点继续；拿不准时选更重一档。降档仅限 PM 或 Human 决定。
-
-**选人路由与必填字段**：派发按职责而非固定 AI 品牌；同职责内优先选「空闲 + 最久未工作」（配合外置 `/Users/doubleshy0n/.kos-work/Universe-Keyboard/tools/kos-board.py pick --role ...`），排除忙碌人员和存在独立性冲突的人员；无人空闲则写「无人空闲」并升级 PM，Human 可改派。执行包首部必须写明**包头档位**与**复核重点**（PM 最关心的 1–3 点）。其中 `scripts/kos/kos_handoff.py` 的 `relay-exec` / `relay-quality` 两处直通已改为 O129 部门池 + 开工领牌，不适用本段的 pick 选人，也不把人名写入派发块；`kos-board.py pick` 仅适用于仍走 pick 的路径（例如 `kos_handoff.py final` 的自动选下一站）。
-
-**本轮未含范围**：设计稿第 6 节外部新工具 `kos-handoff.sh`、第 10 节的 `docs/kos/workflow-profiles.md` 与 KOS 家目录名册职责列不在本轮写入仓库，也不新增仓库脚本依赖。继续使用现行 `scripts/kos/kos_handoff.py`：`relay-exec` / `relay-quality` 按 O129 部门池 + `kos-board.py claim` 出块；`kos-board.py pick` 仍用于上述仍走 pick 的路径（例如 `final` 自动选下一站），并非已废弃。后续工具 / 名册改造须另包授权并经同样预检。
-
-**执行者自主权（Human 2026-11-20 批准）**：执行者可自主使用 `subagent`、`herdr` 等工具完成任务，在报告如实写明是否使用；独立审查（预检 / 架构 / 质检）保持跨会话独立性声明不变。
-
-**PM 职责边界与台账同步（Human 2026-11-20 批准）**：PM 只定目标、边界、不变量与验收门禁，具体技术实现交由架构师 / 代码执行者决定；合并后的 `PORTFOLIO.md` 与 `docs/releases/vX.Y.Z.md` 台账同步交由文档执行者处理。
-
-4 档流程已同步固化为 `scripts/kos/kos_handoff.py` 的 `TIER_PROFILES`（`kos_handoff.py profile --grade <档位> [--action <relay-exec|relay-quality>]`）：`relay-exec` 允许 `doc-rule` / `code-fix`，`relay-quality` 允许 `code-fix`；`feature` 档架构审查 PASS 后放开两处 relay 直通（`relay-exec` 与 `relay-quality` 均强制复算冻结输入中 `arch-*` 报告的 SHA-256 与首行 PASS，缺项/篡改/非 PASS 一律 STOPPED 回 PM）；`doc-light` 严禁越级直通。工具子命令与该表同源校验。
-
-## 本地 CI 门禁（与 `.github/workflows/swift6-quality.yml` 对齐）
-
-托管 CI 的三个 xcodebuild 测试任务对失败用例自动重试一次，并在任务摘要中列出重试用例。重试通过不代表用例稳定；本地门禁命令不变。
-
-远端工作流按 [`docs/CI_CHANGE_CLASSIFICATION.md`](docs/CI_CHANGE_CLASSIFICATION.md)
-分级：分类、轻量检查和 `final-quality-gate` 始终运行；只有严格的 docs/KOS allowlist
-可跳过全部 heavy jobs（`format-swift`、`test-keyboardcore`、`test-rimebridge`、
-`test-app-keyboard`、`test-rime-sync-keychain`、`build-release`）。未知路径、workflow 或 `scripts/ci/**`
-变更按下方受控分类矩阵选择门禁；未知或混合路径走完整门禁。
-
-### 本机定向快验（local-fast）与托管门禁
-
-Code 站默认执行本机定向快验：Swift 改动必须通过下方 `swift-format lint --strict` 硬门槛；改 `KeyboardCore` 跑 `swift test --package-path Packages/KeyboardCore`；改主 App、Keyboard 或 RimeBridge 时，默认使用 `-only-testing:<本次新增及直接受影响的测试类>` 跑相应 scheme。按改动范围组合执行；纯文档或 KOS 脚本等无 Swift 改动按任务指定的适用检查执行。
-
-本机默认不强跑签名 Keychain 测试与 Release build：涉及 Sync/Keychain 时跑签名 Keychain；涉及泛型或编译配置、或 CI 报 Release 错时跑 Release build。GitHub Actions 托管 CI 在合并前按分类把关六项重型门禁；下方七步保留供托管 CI 对齐及特殊场景使用。
-
-Quality 站禁止默认重跑全量 `xcodebuild`，应审查代码、核对合同与 Code 站门禁日志并检查 Swift 格式；仅发现疑点时定向补跑单个 `-only-testing:` 用例。本机重型 `xcodebuild` 并发上限为 2 槽，多线并行时最多两条线同时占用模拟器执行。默认模拟器为 `iPhone 17 Pro`；使用等价机型时在报告说明。
-
-### 分级与证据复用
-
-合并前按 `docs/CI_CHANGE_CLASSIFICATION.md` 取得适用的托管 CI 结果。Quality 核对 Code 站证据，Publish 在文件字节、比较基线、依赖与环境不变时按 `docs/AI_WORKFLOW.md` 复用有效证据；否则补跑受影响检查。
-
-### Swift 格式硬门槛（任何含 `.swift` 的 commit / push）
-
-相对推送目标分支（通常为默认分支或当前 PR 基线）的变更 `.swift` 文件，在 **commit 前且 push 前** 必须全部通过：
-
-```bash
-xcrun swift-format format --in-place --configuration .swift-format <file>
-xcrun swift-format lint --strict --configuration .swift-format <file>
-```
-
-`lint --strict` 失败即停止；**不得** commit 或 push。草稿 PR、「只推不合并」、本地已跑过部分测试等情形 **均不豁免** 本条。推荐先 `format --in-place` 再 `lint`，避免 CI `Check Swift formatting` 反复红灯（历史：PR #100 多次卡在换行/折行）。
-
-1. **（若改了 RIME 二进制依赖）** `bash scripts/ensure_rime_vendor.sh fetch`
-2. **（若有 Swift 改动）** 先满足上方「Swift 格式硬门槛」（与 CI `Check Swift formatting` 对齐）
-3. **KeyboardCore：** `swift test --package-path Packages/KeyboardCore`
-4. **RimeBridgeTests：**  
-   `xcodebuild -project "Universe Keyboard.xcodeproj" -scheme RimeBridgeTests -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 17 Pro' CODE_SIGNING_ALLOWED=NO SWIFT_VERSION=6.0 SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES test`
-5. **App + Keyboard 测试（含 UniverseKeyboardTests / KeyboardTests）：**  
-   `xcodebuild -project "Universe Keyboard.xcodeproj" -scheme "Universe Keyboard" -configuration Debug -destination 'platform=iOS Simulator,name=iPhone 17 Pro' CODE_SIGNING_ALLOWED=NO SWIFT_VERSION=6.0 SWIFT_STRICT_CONCURRENCY=complete SWIFT_SUPPRESS_WARNINGS=NO SWIFT_TREAT_WARNINGS_AS_ERRORS=YES test`
-6. **签名 Keychain 集成：** `Universe Keyboard` Debug scheme、同上 destination，使用
-   `CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- CODE_SIGNING_REQUIRED=NO`，并以
-   `-only-testing:UniverseKeyboardTests/RimeSyncModelTests/testRimeSyncSecretStorePersistsUpdatesAndDeletesAUniqueKeychainItem`
-   执行 `test`（与 CI 的 `test-rime-sync-keychain` 对齐）。无签名的步骤 5 不替代此检查。
-7. **Release build：** 同上 destination，`-configuration Release` 的 `build`（参数与 CI 一致）。Debug `test` 已覆盖 Debug 编译，不再单独跑 Debug `build`。
-
-**本机范围：** 纯文档且无 Swift / 工程 / 测试文件改动时，可跳过 3–7，但须在完成报告中写明「docs-only，跳过 xcodebuild」。只改 `Packages/KeyboardCore` 时至少跑步骤 3；改主 App / Extension / 测试 target 时应执行相应定向测试，不能只跑 KeyboardCore。
-
-修改 `.github/workflows/**`、`scripts/ci/**` 或分类规则本身时不得使用 docs-only
-例外；必须验证完整路径和 docs-only 路径，并在 merge 前取得 hosted run 证据。
-
-**改完测试或部署意图后：** 必须跑到会执行该用例的 target（例如改了 `UniverseKeyboardTests` 就须在步骤 5 的 scheme 中定向执行该测试类，不能只跑 KeyboardCore）。
-历史教训：#48 合并后 CI 红在 `RimeSettingsStoreTests`（签名 `schema=all` 与测试种子不一致）——本地若只跑 KeyboardCore 过滤套件会漏掉。
-
-质量证据可按 `docs/AI_WORKFLOW.md` 的最终内容、基线、环境和覆盖条件复用；不能因此跳过必需门禁。
-明确要求重跑时重跑；证据仍有效时，仅再次要求 merge 不自动触发重复全套验证。
+- 远端按 [docs/CI_CHANGE_CLASSIFICATION.md](docs/CI_CHANGE_CLASSIFICATION.md) 分级：分类、轻量检查和 `final-quality-gate` 始终运行。未知或混合路径走完整门禁。纯文档且无 Swift / 工程 / 测试改动可跳过重型任务，但须在完成报告写明「docs-only，跳过 xcodebuild」。修改 `.github/workflows/**`、`scripts/ci/**` 或分类规则本身不得使用 docs-only 例外。
+- 只改 `Packages/KeyboardCore` 时至少跑该包测试；改主 App、Keyboard Extension 或测试 target 时必须跑到会执行该用例的 scheme，不能只跑 KeyboardCore。
+- **Swift 格式硬门槛（任何含 `.swift` 的 commit / push，无豁免）：** 相对推送目标分支的变更 `.swift` 文件，在 commit 前且 push 前必须全部通过 `xcrun swift-format format --in-place --configuration .swift-format <file>` 与 `xcrun swift-format lint --strict --configuration .swift-format <file>`。`lint --strict` 失败即停止，不得 commit 或 push。草稿 PR 与「只推不合并」均不豁免。
+- 本机定向快验（local-fast）、分级矩阵、七步 xcodebuild 与证据复用的命令全文见 [docs/kos/local-ci-commands.md](docs/kos/local-ci-commands.md)。
 
 ## 完成标准
 
-每次实现类任务完成时，应说明：
-
-- 改了什么
-- 为什么这样改
-- 验证了什么
-- 哪些验证未执行及原因
-- 是否需要更新 `CHANGELOG.md` 或架构文档
+每次实现类任务完成时，应说明：改了什么、为什么这样改、验证了什么、哪些验证未执行及原因、是否需要更新 `CHANGELOG.md` 或架构文档。

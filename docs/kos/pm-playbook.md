@@ -81,7 +81,7 @@
 
 ### 2.4 4 档流程与 PM 路由（Human 2026-11-14 批准）
 
-4 档流程的权威定义在 [AGENTS.md「设计、预检与复核分级」](../../AGENTS.md)；本手册不另建流程副本，只写 PM 操作摘要：
+4 档的绑定红线在 [AGENTS.md](../../AGENTS.md)；站点表、选人与 O129 直通的操作全文在 [tier-routing.md](tier-routing.md)。本手册不另建流程副本，只写 PM 操作摘要：
 
 1. PM 写包先定档：`doc-light` 只改说明 / 台账，免预检免独立复核；`doc-rule` 改手册、`AGENTS.md`、规则或对外文案，进预检；`code-fix` 单 PR 且不碰核心语义，进预检、红测与独立复核；`feature` 多 PR、跨模块或碰核心语义，先经 Nick 设计与 Alex 架构审查。
 2. 保留两类单站任务：只读诊断（只读 → PM）、纯 Human 事务（不过流程）。`code-fix` 按 Human 决定在下一个新的代码缺陷任务试行，一个任务跑完前不转正；不推翻 2026-11-06 小任务口径。
@@ -90,17 +90,18 @@
 5. 选人按职责而非固定 AI 品牌：用外置 `/Users/doubleshy0n/.kos-work/Universe-Keyboard/tools/kos-board.py pick --role ...` 在同职责内优先选「空闲 + 最久未工作」，排除忙碌与独立性冲突；无人空闲则升级 PM，Human 可改派。
 6. 执行包首部必填「包头档位」与「复核重点」（PM 最关心 1–3 点）；固定条款库见 [pm-packet-clauses.md](pm-packet-clauses.md)。
 7. 本轮只落库已批准的 4 档流程与路由规则。设计稿第 6 节外部新工具 `kos-handoff.sh`、第 10 节 `docs/kos/workflow-profiles.md` 与 KOS 家目录名册职责列不在本轮仓库改动内；继续使用现行 `scripts/kos/kos_handoff.py` 与外置 `kos-board.py pick --role ...`。4 档只分流程站点，不改变 `AGENTS.md` 既有 Swift 格式、本地门禁与 [CI 分级](../CI_CHANGE_CLASSIFICATION.md) 分类要求。
-8. 档位直通与站点查询用 `python3 scripts/kos/kos_handoff.py profile --grade <档位> [--action <relay-exec|relay-quality>]`（Human 2026-11-20 批准固化）：`relay-exec` 仅 `doc-rule` / `code-fix`、`relay-quality` 仅 `code-fix`，`doc-light` / `feature` 严禁越级直通；`relay-exec` / `relay-quality` 子命令与该表同源，越级一律 fail-closed 回退 PM。
+8. 直通以 [tier-routing.md](tier-routing.md) 的 O129 / `TIER_PROFILES` 为准，不用过期摘要：`relay-exec` 允许 `doc-rule` / `code-fix`，`relay-quality` 允许 `code-fix`；`feature` 仅在架构审查 PASS 且复算冻结 `arch-*` 报告 SHA 与首行 PASS 之后放开两处直通，缺项或非 PASS 一律 STOPPED 回 PM；`doc-light` 严禁越级直通。查询用 `python3 scripts/kos/kos_handoff.py profile --grade <档位> [--action <relay-exec|relay-quality>]`。`relay-exec` / `relay-quality` 按部门池出块并附 `kos-board.py claim`，不再以 `pick` 为出块门禁（O129）。Publish 排队超过 10 分钟可用 `scripts/kos/ci_watch.sh`（退出码 3 = `WAITING_CI`，O110）。
 9. 执行者可自主用 `subagent` / `herdr`（Human 2026-11-20 批准），报告如实申报，独立审查跨会话独立性不变；PM 只定目标、边界、不变量与验收门禁，技术实现交架构师 / 代码执行者，合并后 `PORTFOLIO.md` 与 `docs/releases/vX.Y.Z.md` 台账同步交文档执行者。
 
 ### 2.5 部门池派发、原子领牌与子代理身份（外置 O113 / O118 / O110，经 KOS-RULES-SYNC-001 同步入库）
 
-权威定义在 [AGENTS.md「部门池派发、原子领牌与子代理身份」](../../AGENTS.md)；本手册只写 PM 操作摘要：
+实名领牌与禁止代领的绑定表述在 [AGENTS.md](../../AGENTS.md)；名册、轮询、`WAITING_CI` 与 O129 直通出块见 [tier-routing.md](tier-routing.md)。本手册只写 PM 操作摘要：
 
 1. **派发块只写部门名（O113）**：按部门池派发时写 `Executor（代码）部门`、`Quality 部门`、`Publish 部门` 等，不点名具体员工；接单者通过 `kos-board.py claim --role <部门> --task <TASK-ID>` 原子领取空闲牌，实名写报告、收尾 `set <名字> idle` 释放。PM 写包时 `--role` 参数须与外置 `ROSTER.md` 的角色列口径一致（可用别名 `doc` / `code` / `preflight` / `quality`），避免领牌命令与名册不匹配。
 2. **子代理不重复领牌（O118）**：`claim` 与 `set ... idle` 仅由顶层主会话各执行一次；主会话派生的 `subagent` 沿用父会话员工身份，严禁重复领牌或释放第二张牌。
 3. **并行状态表带 `部门` 列（O113）**：PM 回复中的并行状态表包含 `部门` 列；查返报统一走外置 `kos-pm-poll.py`（及 `kos-report-lint` / 技能入口），不逐会话私查。
-4. **Publish 排队兜底（O110）**：接受 Publish 交回 `WAITING_CI` 状态——托管 CI 连续 `queued` 超 10 分钟可交回并释放看板，CI 恢复后重新领牌继续。
+4. **Publish 排队兜底（O110）**：接受 Publish 交回 `WAITING_CI` 状态——托管 CI 连续 `queued` 超 10 分钟可交回并释放看板，CI 恢复后重新领牌继续。可用 `scripts/kos/ci_watch.sh`（`--queued-limit-min` 默认 10，退出码 3 = `WAITING_CI`）。
+5. **直通出块（O129）**：`relay-exec` / `relay-quality` 只写部门名并附 `claim --role <code|doc|quality>`；前序参与者只放 `--exclude`，不再指定接班人，也不再以 `kos-board.py pick` 为出块门禁。条件见 [tier-routing.md](tier-routing.md)。
 
 ## 3. 写包与冻结
 
@@ -112,6 +113,7 @@
    - 一致性检查的七类见 [scripts/kos/README.md](../../scripts/kos/README.md)。
 5. 修订包是新文件，开头写清“本包取代 X（SHA）”。采纳预检意见时原文照搬，按 H15 判断是否要再做窄复检。
 6. 写包做法（见 Q1）：一包一主题；状态词只在“判定”一节定义一次；候选 Swift 文本先跑 swift-format 再冻结 SHA；联网只写 GET 和明确的清单；能不构建就不构建。
+7. 发包前自审（自 `AGENTS.md` 下沉，2026-11-27）：验收条件里的结构数字用命令得出；同包规则互不冲突；每条验收先在模拟结果上跑一遍；事实句逐句有出处且不升级证据级别。复核重点标题必须是 `**复核重点**：`，后续条目连续至少两格缩进。
 
 ## 4. 核对报告
 

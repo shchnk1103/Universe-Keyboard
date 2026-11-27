@@ -99,7 +99,7 @@ For `ENV-TOOLING-001` capability implementation or Quality verification, also re
 
 Ownership: the current Assignment and Authorization bound the publish action; Architecture & Knowledge Steward owns the reusable authentication diagnosis procedure. Merge and Release remain separate Human authorities.
 
-1. `AGENTS.md` — GitHub publishing, branch cleanup and local CI gates.
+1. `AGENTS.md` — binding red lines for publishing, branch cleanup and local CI. Command and cleanup detail: [`kos/github-publish.md`](kos/github-publish.md), [`kos/pf-023-cleanup.md`](kos/pf-023-cleanup.md), [`kos/local-ci-commands.md`](kos/local-ci-commands.md). Tier routing and O129 relay: [`kos/tier-routing.md`](kos/tier-routing.md). Task Workspace opt-in: [`kos/task-workspace-entry.md`](kos/task-workspace-entry.md).
 2. [`kos/codex-github-cli-auth-troubleshooting.md`](kos/codex-github-cli-auth-troubleshooting.md) — sandbox/host authentication and network classification.
 3. `AI_WORKFLOW.md` — PR topology and post-merge state synchronization.
 4. The current Assignment, Authorization and changed-file-specific CI requirements.
