@@ -1,5 +1,10 @@
 import SwiftUI
 
+/// 用户词典页标题（与搜索目录「用户词典」一致）。
+enum RimeUserDictionarySettingsCopy {
+    static let navigationTitle = "用户词典"
+}
+
 struct RimeUserDictionarySettingsView: View {
     @Bindable var store: RimeSettingsStore
 
@@ -43,7 +48,7 @@ struct RimeUserDictionarySettingsView: View {
                 Text("学习记录遵循 RIME 官方用户词典；选择一个方案进行开关、备份、恢复或清空。")
             }
         }
-        .navigationTitle("RIME 用户词典")
+        .navigationTitle(RimeUserDictionarySettingsCopy.navigationTitle)
         .tint(.primary)
         .onAppear {
             store.load()

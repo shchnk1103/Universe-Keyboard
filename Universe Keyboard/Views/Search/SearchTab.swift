@@ -12,6 +12,21 @@ struct SearchTab: View {
     @State private var query = ""
     @FocusState private var fieldFocused: Bool
 
+    /// `initialQuery` 仅供单测以真实初始状态渲染搜索结果（默认空串，生产行为不变）。
+    init(
+        rimeStore: RimeSettingsStore,
+        syncModel: RimeSyncViewModel,
+        notificationSettings: AppNotificationSettingsModel,
+        onOpenActivationGuide: (() -> Void)? = nil,
+        initialQuery: String = ""
+    ) {
+        self.rimeStore = rimeStore
+        self.syncModel = syncModel
+        self.notificationSettings = notificationSettings
+        self.onOpenActivationGuide = onOpenActivationGuide
+        _query = State(initialValue: initialQuery)
+    }
+
     private var results: [SettingsSearchItem] {
         SettingsSearchCatalog.matches(query: query)
     }
@@ -106,7 +121,7 @@ struct SearchTab: View {
                 if index > 0 { Divider() }
                 if item.destination == .activationHelp {
                     Button {
-                        onOpenActivationGuide?()
+                        activate(item)
                     } label: {
                         searchResultRow(item)
                     }
@@ -121,6 +136,16 @@ struct SearchTab: View {
                 }
             }
         }
+    }
+
+    /// 激活一条搜索结果。
+    ///
+    /// `.activationHelp` 没有导航目的地，点击时改为回调主会话打开启用指南；
+    /// 其余条目由 `NavigationLink` 承担导航，不走这里。视图与单测共用这条路径，
+    /// 保证「Button → `onOpenActivationGuide`」的活链行为可被可靠验证。
+    func activate(_ item: SettingsSearchItem) {
+        guard item.destination == .activationHelp else { return }
+        onOpenActivationGuide?()
     }
 
     private func searchResultRow(_ item: SettingsSearchItem) -> some View {
@@ -152,7 +177,7 @@ struct SearchTab: View {
     }
 
     @ViewBuilder
-    private func destinationView(for destination: SettingsSearchItem.Destination) -> some View {
+    func destinationView(for destination: SettingsSearchItem.Destination) -> some View {
         switch destination {
         case .keyboardLayout:
             KeyboardLayoutSettingsView(rimeStore: rimeStore)

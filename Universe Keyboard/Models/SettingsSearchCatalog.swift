@@ -140,10 +140,10 @@ nonisolated enum SettingsSearchCatalog {
         ),
         SettingsSearchItem(
             id: "userDictionary",
-            title: "RIME 用户词典",
-            subtitle: "候选学习与备份",
+            title: "用户词典",
+            subtitle: "备份 / 恢复 / 清空学习记录",
             systemImage: "text.book.closed",
-            keywords: ["用户词典", "学习", "词典"],
+            keywords: ["用户词典", "学习", "词典", "备份", "恢复"],
             destination: .userDictionary
         ),
         SettingsSearchItem(
@@ -188,10 +188,10 @@ nonisolated enum SettingsSearchCatalog {
         ),
         SettingsSearchItem(
             id: "localDictionary",
-            title: "本地词典",
-            subtitle: "浏览本机词库文件",
-            systemImage: "character.book.closed",
-            keywords: ["词典浏览器", "词库文件"],
+            title: "词典文件",
+            subtitle: "浏览与搜索词典文件",
+            systemImage: "doc.text.magnifyingglass",
+            keywords: ["词典文件", "词典浏览器", "词库文件", "词典"],
             destination: .localDictionary
         ),
         SettingsSearchItem(

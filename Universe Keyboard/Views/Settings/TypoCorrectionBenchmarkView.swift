@@ -1,25 +1,32 @@
 import KeyboardCore
 import SwiftUI
 
+/// 智能纠错页的标题与保留区块。
+///
+/// 实验开关审计（Release 可见）与内部实验开关（DEBUG）已迁到诊断页，
+/// 本页只保留用户功能上下文，其中 `rimeBoundarySection` 必须留在本页。
+enum TypoCorrectionBenchmarkCopy {
+    static let navigationTitle = "智能纠错"
+
+    /// 留在本页的区块标题。
+    static let retainedSectionTitles = [
+        "当前状态",
+        "评分原则",
+        "本地评估",
+        "当前覆盖",
+        "已知边界",
+        "与 RIME 权重的关系",
+    ]
+
+    /// 迁到诊断页的区块标题（不在本页出现）。
+    static let relocatedSectionTitles = [
+        "实验开关审计",
+        "内部实验开关",
+    ]
+}
+
 struct TypoCorrectionBenchmarkView: View {
     private let benchmarkModel = TypoCorrectionBenchmarkModel()
-
-    #if DEBUG
-        @AppStorage(
-            TypoCorrectionExperimentalSettings.insertionEnabledKey,
-            store: UserDefaults(suiteName: universeAppGroupID)
-        )
-        private var experimentalInsertionEnabled = false
-
-        @AppStorage(
-            TypoCorrectionExperimentalSettings.transpositionEnabledKey,
-            store: UserDefaults(suiteName: universeAppGroupID)
-        )
-        private var experimentalTranspositionEnabled = false
-
-        @State private var learnedCorrectionCount = 0
-        @State private var learnedSelectionCount = 0
-    #endif
 
     private let supportedExamples = [
         TypoCorrectionExample(input: "nihap", correction: "nihao -> 你好", badge: "高置信", color: .green),
@@ -41,10 +48,6 @@ struct TypoCorrectionBenchmarkView: View {
                 statusSection
                 scoringSection
                 localEvaluationSection
-                experimentalAuditSection
-                #if DEBUG
-                    developerExperimentSection
-                #endif
                 benchmarkSection(title: "当前覆盖", examples: supportedExamples)
                 benchmarkSection(title: "已知边界", examples: unsupportedExamples)
                 rimeBoundarySection
@@ -53,7 +56,7 @@ struct TypoCorrectionBenchmarkView: View {
             .padding(.vertical, 14)
         }
         .background(Color(.systemGroupedBackground))
-        .navigationTitle("智能纠错")
+        .navigationTitle(TypoCorrectionBenchmarkCopy.navigationTitle)
     }
 
     private var statusSection: some View {
@@ -104,100 +107,6 @@ struct TypoCorrectionBenchmarkView: View {
             }
         }
     }
-
-    private var experimentalAuditSection: some View {
-        InfoSection(title: "实验开关审计", systemImage: "testtube.2") {
-            VStack(alignment: .leading, spacing: 12) {
-                HStack(spacing: 10) {
-                    CapsuleBadge(text: benchmarkModel.experimentalStatusText, color: .purple)
-                    CapsuleBadge(text: "通过 \(benchmarkModel.experimentalPassRateText)", color: .blue)
-                }
-
-                Text("这是 V0.8/V0.9 默认关闭能力的 flag-on 本地审计，只用于判断是否值得进入真机验证，不代表键盘运行时已经启用。")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 118), spacing: 8)], spacing: 8) {
-                    ForEach(benchmarkModel.experimentalGateDetails, id: \.self) { detail in
-                        CapsuleBadge(text: detail, color: .secondary)
-                    }
-                }
-
-                ForEach(benchmarkModel.experimentalGroupedResults) { group in
-                    TypoCorrectionBenchmarkGroupView(group: group)
-                }
-            }
-        }
-    }
-
-    #if DEBUG
-        private var developerExperimentSection: some View {
-            InfoSection(title: "内部实验开关", systemImage: "switch.2") {
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("仅 Debug 构建显示并生效，用于本机真机验证。Release 构建会忽略这些开关，不会影响普通用户或测试人员。")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-
-                    Toggle("安全漏字纠错实验", isOn: $experimentalInsertionEnabled)
-                        .font(.subheadline.weight(.medium))
-                        .toggleStyle(.appSwitch)
-                    Text("用于验证 niho -> nihao 这类保守 insertion 候选的展示价值。")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-
-                    Divider()
-
-                    Toggle("相邻转置纠错实验", isOn: $experimentalTranspositionEnabled)
-                        .font(.subheadline.weight(.medium))
-                        .toggleStyle(.appSwitch)
-                    Text("用于审计 nihoa -> nihao 这类 transposition 候选；当前不进入前排展示。")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-
-                    Divider()
-
-                    HStack {
-                        VStack(alignment: .leading, spacing: 3) {
-                            Text("本地纠错学习")
-                                .font(.subheadline.weight(.medium))
-                            Text(
-                                "已记录 \(learnedCorrectionCount) 组、共 \(learnedSelectionCount) 次明确选择，用于 insertion / transposition 排序。"
-                            )
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                        }
-                        Spacer(minLength: 12)
-                    }
-
-                    AppActionButton(
-                        title: "重置实验学习记录",
-                        systemImage: "arrow.counterclockwise",
-                        prominence: .destructive,
-                        role: .destructive
-                    ) {
-                        typoCorrectionLearningStore.reset()
-                        learnedCorrectionCount = 0
-                        learnedSelectionCount = 0
-                    }
-                    .disabled(learnedCorrectionCount == 0)
-                    .opacity(learnedCorrectionCount == 0 ? 0.45 : 1)
-                }
-                .onAppear(perform: refreshLearnedCorrectionCount)
-            }
-        }
-
-        private var typoCorrectionLearningStore: TypoCorrectionLearningStore {
-            TypoCorrectionLearningStore(
-                defaults: UserDefaults(suiteName: universeAppGroupID)
-            )
-        }
-
-        private func refreshLearnedCorrectionCount() {
-            let records = typoCorrectionLearningStore.snapshot().records
-            learnedCorrectionCount = records.count
-            learnedSelectionCount = records.reduce(0) { $0 + $1.selectionCount }
-        }
-    #endif
 
     private func benchmarkSection(title: String, examples: [TypoCorrectionExample]) -> some View {
         InfoSection(title: title, systemImage: "tablecells") {
@@ -273,7 +182,8 @@ private struct TypoCorrectionRuleRow: View {
     }
 }
 
-private struct TypoCorrectionBenchmarkGroupView: View {
+// 智能纠错页与诊断页共用同一渲染（诊断页「实验开关审计」区迁移后仍复用本组件）。
+struct TypoCorrectionBenchmarkGroupView: View {
     let group: TypoCorrectionBenchmarkGroup
 
     var body: some View {

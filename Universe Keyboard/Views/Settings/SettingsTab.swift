@@ -1,6 +1,19 @@
 import KeyboardCore
 import SwiftUI
 
+/// 设置主页两处词典入口的文案与图标。
+///
+/// 与 `SettingsSearchCatalog` 的同名条目保持一致，避免主页与搜索结果各说各话。
+enum SettingsTabCopy {
+    static let userDictionaryTitle = "用户词典"
+    static let userDictionarySubtitle = "备份 / 恢复 / 清空学习记录"
+    static let userDictionarySystemImage = "text.book.closed"
+
+    static let localDictionaryTitle = "词典文件"
+    static let localDictionarySubtitle = "浏览与搜索词典文件"
+    static let localDictionarySystemImage = "doc.text.magnifyingglass"
+}
+
 struct SettingsTab: View {
     @Bindable var rimeStore: RimeSettingsStore
     @Bindable var syncModel: RimeSyncViewModel
@@ -294,9 +307,9 @@ struct SettingsTab: View {
             }
 
             SettingsNavigationLink(
-                systemImage: "text.badge.checkmark",
-                title: "RIME 用户词典",
-                subtitle: "候选学习、备份与安全恢复"
+                systemImage: SettingsTabCopy.userDictionarySystemImage,
+                title: SettingsTabCopy.userDictionaryTitle,
+                subtitle: SettingsTabCopy.userDictionarySubtitle
             ) {
                 RimeUserDictionarySettingsView(store: rimeStore)
             }
@@ -345,9 +358,9 @@ struct SettingsTab: View {
             footer: "方便查看本机词库文件，不必离开 App。"
         ) {
             SettingsNavigationLink(
-                systemImage: "character.book.closed",
-                title: "本地词典",
-                subtitle: "查看词典文件与搜索本地词条"
+                systemImage: SettingsTabCopy.localDictionarySystemImage,
+                title: SettingsTabCopy.localDictionaryTitle,
+                subtitle: SettingsTabCopy.localDictionarySubtitle
             ) {
                 DictionaryBrowserView()
             }
