@@ -156,7 +156,7 @@ class RelayBlockCollisionTests(_GitRepoMixin, unittest.TestCase):
         self.done_report = _write(self.task / "reports" / "exec.md",
                                   "DONE\nNick（Executor（代码））；运行时身份 Codex。\n")
         self.precheck_report = _write(self.task / "reports" / "precheck.md",
-                                      "PASS\nPete（Preflight）；运行时身份 Codex。\n")
+                                      "PASS\nPete（Preflight）；运行时身份 Codex。跨会话独立性声明：本审查与前序参与者跨会话独立。\n")
         self.pick_stub_path = _write(self.root / "tools" / "kos-board.py",
                                      "print('PICK [Quality]: Quinn（Quality | -）')\n")
 
@@ -210,7 +210,7 @@ class RelayBusyStartCommandTests(_GitRepoMixin, unittest.TestCase):
         self.done_report = _write(self.task / "reports" / "exec.md",
                                   "DONE\nNick（Executor（代码））；运行时身份 Codex。\n")
         self.precheck_report = _write(self.task / "reports" / "precheck.md",
-                                      "PASS\nPete（Preflight）；运行时身份 Codex。\n")
+                                      "PASS\nPete（Preflight）；运行时身份 Codex。跨会话独立性声明：本审查与前序参与者跨会话独立。\n")
         self.pick_stub_path = _write(self.root / "tools" / "kos-board.py",
                                      "print('PICK [Quality]: Quinn（Quality | -）')\n"
                                      "print('PICK2 stub does not handle exec')\n")

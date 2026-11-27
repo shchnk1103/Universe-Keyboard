@@ -107,7 +107,7 @@ class FeatureRelayExecGateTests(_GitRepoMixin, unittest.TestCase):
         self.arch = _write(self.root / "arch-report.md", ARCH_BODY)
         self.packet = _write(self.root / "packet.md",
                              _feature_packet(f"`{self.arch}` SHA-256 `{_sha(self.arch)}`"))
-        self.report = _write(self.root / "precheck.md", "PASS\nPete（Preflight）；运行时身份 Codex。\n")
+        self.report = _write(self.root / "precheck.md", "PASS\nPete（Preflight）；运行时身份 Codex。跨会话独立性声明：本审查与前序参与者跨会话独立。\n")
         self.ok_stub = _write(self.root / "ok.py", "import sys\nsys.exit(0)\n")
         self.pick_stub = _write(self.root / "pick.py",
                                 "print('PICK [Executor（代码）]: Nick（Executor（代码） | -）')\n")
@@ -240,7 +240,7 @@ class DocGradeRegressionTests(_GitRepoMixin, unittest.TestCase):
         self.tmp.cleanup()
 
     def _relay_exec(self, grade: str, packet: Path):
-        report = _write(self.root / "precheck.md", "PASS\nPete（Preflight）；运行时身份 Codex。\n")
+        report = _write(self.root / "precheck.md", "PASS\nPete（Preflight）；运行时身份 Codex。跨会话独立性声明：本审查与前序参与者跨会话独立。\n")
         return _run_py("kos_handoff.py", [
             "relay-exec",
             "--report", str(report),

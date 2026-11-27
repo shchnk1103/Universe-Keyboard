@@ -774,6 +774,12 @@ def cmd_relay_exec(args):
     if lint.returncode != 0:
         return back("kos-pkg-lint failed: " + (lint.stdout + lint.stderr).strip().splitlines()[-1] if (lint.stdout + lint.stderr).strip() else "kos-pkg-lint failed")
 
+    # O142: the independence declaration gate runs after the tier gates so a
+    # packet/verify/lint failure keeps its own message, and before the
+    # dispatch block is written so no block ships without the declaration.
+    if "跨会话独立性声明" not in "\n".join(report_lines[:15]):
+        return back("precheck report missing 跨会话独立性声明 in first 15 lines")
+
     # O129: department-pool dispatch — no named pick, no busy reserve; the
     # taker claims the executor department atomically before starting.
     out = Path(args.out) if getattr(args, "out", None) else packet.parent / "exec-relay-block.txt"

@@ -123,7 +123,7 @@ class RelayExecUnifiedBlockTests(unittest.TestCase):
                              "- **包头档位**：`code-fix`\n"
                              "- **复核重点**：\n  1. 检查。\n")
         self.report = _write(self.root / "precheck.md",
-                             "PASS\nPete（Preflight）；运行时身份 Codex。\n")
+                             "PASS\nPete（Preflight）；运行时身份 Codex。跨会话独立性声明：本审查与前序参与者跨会话独立。\n")
         self.verify_ok = _write(self.root / "verify_ok.py", "import sys\nsys.exit(0)\n")
         self.lint_ok = _write(self.root / "lint_ok.py", "import sys\nsys.exit(0)\n")
         self.pick = _write(self.root / "pick_stub.py",
