@@ -745,8 +745,6 @@ def cmd_relay_exec(args):
     report_lines = report.read_text(encoding="utf-8").splitlines()
     if not report_lines or report_lines[0].strip() != "PASS":
         return back("precheck report first line is not PASS")
-    if "跨会话独立性声明" not in "\n".join(report_lines[:15]):
-        return back("precheck report missing 跨会话独立性声明 in first 15 lines")
     m = re.match(r"^([A-Za-z]+)（", report_lines[1].strip()) if len(report_lines) > 1 else None
     if not m:
         return back("precheck report line 2 has no identity")
@@ -775,6 +773,12 @@ def cmd_relay_exec(args):
     lint = subprocess.run([sys.executable, "-I", args.pkg_lint_tool, "--start", args.base, str(packet)], capture_output=True, text=True)
     if lint.returncode != 0:
         return back("kos-pkg-lint failed: " + (lint.stdout + lint.stderr).strip().splitlines()[-1] if (lint.stdout + lint.stderr).strip() else "kos-pkg-lint failed")
+
+    # O142: the independence declaration gate runs after the tier gates so a
+    # packet/verify/lint failure keeps its own message, and before the
+    # dispatch block is written so no block ships without the declaration.
+    if "跨会话独立性声明" not in "\n".join(report_lines[:15]):
+        return back("precheck report missing 跨会话独立性声明 in first 15 lines")
 
     # O129: department-pool dispatch — no named pick, no busy reserve; the
     # taker claims the executor department atomically before starting.
