@@ -27,6 +27,26 @@ def _write(path: Path, text: str) -> Path:
     return path
 
 
+# O207: /tmp-injected 6-pool roster fixture; never the real ~/.kos-work ledger.
+FIXTURE_ROSTER = """# 名册（测试夹具）
+| 名字 | 角色 | 当前担任者 | 角色卡 |
+|---|---|---|---|
+| Jack | PM | Fixture | Jack.md |
+| Pete | Preflight | Fixture | Pete.md |
+
+## 部门池与流转规则（测试夹具）
+
+| 部门池 | 全员名单 | 对应单卡 |
+|---|---|---|
+| Preflight 部门 | Pete、Reed | Pete.md、Reed.md |
+| Executor（代码）部门 | Cole、Lucy、Ivy | Cole.md、Lucy.md、Ivy.md |
+| Executor（文档）部门 | Sam、Wendy | Sam.md、Wendy.md |
+| Quality 部门 | Quinn、Maya | Quinn.md、Maya.md |
+| Publish 部门 | Wendy、Sam | Wendy.md、Sam.md |
+| 架构 / 设计 部门 | Nick、Alex | Nick.md、Alex.md |
+"""
+
+
 def _sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -373,10 +393,14 @@ class FinalPmSemanticsTests(unittest.TestCase):
     def _final(self, report: Path):
         stub = self.root / "pick.py"
         stub.write_text("print('PICK [Quality]: Quinn（Quality | -）')\n", encoding="utf-8")
+        # O207: /tmp-injected 6-pool roster fixture (never the real ledger);
+        # the suggestion block's role field is the canonical department name.
+        roster = self.root / "ROSTER.md"
+        roster.write_text(FIXTURE_ROSTER, encoding="utf-8")
         return _run_py("kos_handoff.py", [
             "final", "--report", str(report), "--skip-lint",
             "--board", sys.executable, "--board-args", json.dumps([str(stub)]),
-        ])
+        ], env={"KOS_ROSTER": str(roster)})
 
     def test_final_block_is_pm_with_suggestion(self) -> None:
         report = self._report()
@@ -384,7 +408,7 @@ class FinalPmSemanticsTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("交回：Jack（PM）", result.stdout)
         self.assertIn("## 建议派发（PM 复核后使用）", result.stdout)
-        self.assertIn("角色：Quinn（Quality Reviewer）", result.stdout)
+        self.assertIn("角色：Quality 部门", result.stdout)
         # line 2 still names the picked employee for the PM to route
         self.assertIn("下一位交付：Quinn", result.stdout)
         # the fenced hand-back block itself must not dispatch straight to Quinn

@@ -24,6 +24,26 @@ def _write(path: Path, text: str) -> Path:
     return path
 
 
+# O207: /tmp-injected 6-pool roster fixture; never the real ~/.kos-work ledger.
+FIXTURE_ROSTER = """# 名册（测试夹具）
+| 名字 | 角色 | 当前担任者 | 角色卡 |
+|---|---|---|---|
+| Jack | PM | Fixture | Jack.md |
+| Pete | Preflight | Fixture | Pete.md |
+
+## 部门池与流转规则（测试夹具）
+
+| 部门池 | 全员名单 | 对应单卡 |
+|---|---|---|
+| Preflight 部门 | Pete、Reed | Pete.md、Reed.md |
+| Executor（代码）部门 | Cole、Lucy、Ivy | Cole.md、Lucy.md、Ivy.md |
+| Executor（文档）部门 | Sam、Wendy | Sam.md、Wendy.md |
+| Quality 部门 | Quinn、Maya | Quinn.md、Maya.md |
+| Publish 部门 | Wendy、Sam | Wendy.md、Sam.md |
+| 架构 / 设计 部门 | Nick、Alex | Nick.md、Alex.md |
+"""
+
+
 def _run_py(script: str, args: list[str], env: dict[str, str] | None = None):
     merged_env = dict(os.environ)
     merged_env["PYTHONDONTWRITEBYTECODE"] = "1"
@@ -994,17 +1014,21 @@ class HandoffAutoPickTests(unittest.TestCase):
             "|---|---|---|---|---|\n"
             "| Maya | 空闲 | - | 2026-11-23 00:00 | |\n",
             encoding="utf-8")
+        # O207: the suggestion block renders the duty as a standard
+        # department-pool name (Maya is never the role field).
+        roster = self.root / "ROSTER.md"
+        roster.write_text(FIXTURE_ROSTER, encoding="utf-8")
         stub = self._record_stub()
         result = _run_py("kos_handoff.py", [
             "final", "--report", str(report), "--skip-lint",
             "--board", sys.executable, "--board-args", json.dumps([str(stub)]),
             "--board-roles-dir", str(roles),
-        ])
+        ], env={"KOS_ROSTER": str(roster)})
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("下一位交付：Maya（Quality）", result.stdout)
         self.assertIn("交回：Jack（PM）", result.stdout)
         self.assertIn("## 建议派发（PM 复核后使用）", result.stdout)
-        self.assertIn("角色：Maya（Quality）", result.stdout)
+        self.assertIn("角色：Quality 部门", result.stdout)
         self.assertNotIn("角色：Quinn", result.stdout)
 
     def test_relay_quality_dynamic_excludes_and_dispatch_block(self) -> None:
