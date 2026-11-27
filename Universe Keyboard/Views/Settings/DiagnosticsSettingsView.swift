@@ -1,6 +1,26 @@
 import KeyboardCore
 import SwiftUI
 
+/// 诊断页承接的实验类区块标题。
+///
+/// 「实验开关审计」自智能纠错页迁入，Release 可见；
+/// 「内部实验开关」整块位于 `#if DEBUG` 编译区间内，Release 不得出现控件。
+enum DiagnosticsSettingsCopy {
+    static let navigationTitle = "诊断"
+
+    /// Release 可见的实验开关审计区块标题。
+    static let experimentalAuditSectionTitle = "实验开关审计"
+
+    /// Debug 区间内的内部实验开关区块标题。
+    static let developerExperimentSectionTitle = "内部实验开关"
+
+    /// 内部实验开关的两个开关标题。
+    static let developerExperimentToggleTitles = [
+        "安全漏字纠错实验",
+        "相邻转置纠错实验",
+    ]
+}
+
 /// Diagnostics control surface.
 ///
 /// **Crash contract (Form + AsyncRenderer / libdispatch):**
@@ -20,9 +40,26 @@ struct DiagnosticsSettingsView: View {
     @State private var forceGCCheckLines: [String] = []
     @State private var forceGCCheckHeadline: String?
     @State private var advancedExpanded = false
+    /// 智能纠错页迁入的「实验开关审计」数据源（Release 可见的用户审计信息）。
+    private let auditModel = TypoCorrectionBenchmarkModel()
     #if DEBUG
         @State private var highFidelityEnabled = false
         @State private var keyHitboxOverlayEnabled = false
+
+        @AppStorage(
+            TypoCorrectionExperimentalSettings.insertionEnabledKey,
+            store: UserDefaults(suiteName: universeAppGroupID)
+        )
+        private var experimentalInsertionEnabled = false
+
+        @AppStorage(
+            TypoCorrectionExperimentalSettings.transpositionEnabledKey,
+            store: UserDefaults(suiteName: universeAppGroupID)
+        )
+        private var experimentalTranspositionEnabled = false
+
+        @State private var learnedCorrectionCount = 0
+        @State private var learnedSelectionCount = 0
     #endif
 
     private var defaults: UserDefaults? {
@@ -37,11 +74,13 @@ struct DiagnosticsSettingsView: View {
             #if DEBUG
                 highFidelitySection
                 keyHitboxOverlaySection
+                developerExperimentSection
             #endif
             reviewSection
             advancedSection
+            experimentalAuditSection
         }
-        .navigationTitle("诊断")
+        .navigationTitle(DiagnosticsSettingsCopy.navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
         .tint(.primary)
         .onAppear {
@@ -53,6 +92,7 @@ struct DiagnosticsSettingsView: View {
                     in: defaults,
                     isDebugBuild: true
                 )
+                refreshLearnedCorrectionCount()
                 Task { await notificationSettings.synchronizeDiagnosticsHighFidelityExpiryNotification() }
             #endif
         }
@@ -199,6 +239,100 @@ struct DiagnosticsSettingsView: View {
         .accessibilityLabel("\(item.name)，\(item.description)")
         .accessibilityValue((categoryEnabled[item.id] ?? true) ? "开启" : "关闭")
     }
+
+    #if DEBUG
+        /// 智能纠错页迁入的内部实验开关（整块带 `#if DEBUG` 边界迁移，键名不改）。
+        private var developerExperimentSection: some View {
+            Section {
+                Text("仅 Debug 构建显示并生效，用于本机真机验证。Release 构建会忽略这些开关，不会影响普通用户或测试人员。")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                Toggle(DiagnosticsSettingsCopy.developerExperimentToggleTitles[0], isOn: $experimentalInsertionEnabled)
+                    .font(.subheadline.weight(.medium))
+                    .toggleStyle(.appSwitch)
+                Text("用于验证 niho -> nihao 这类保守 insertion 候选的展示价值。")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                Toggle(
+                    DiagnosticsSettingsCopy.developerExperimentToggleTitles[1], isOn: $experimentalTranspositionEnabled
+                )
+                .font(.subheadline.weight(.medium))
+                .toggleStyle(.appSwitch)
+                Text("用于审计 nihoa -> nihao 这类 transposition 候选；当前不进入前排展示。")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("本地纠错学习")
+                        .font(.subheadline.weight(.medium))
+                    Text(
+                        "已记录 \(learnedCorrectionCount) 组、共 \(learnedSelectionCount) 次明确选择，用于 insertion / transposition 排序。"
+                    )
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                }
+
+                AppActionButton(
+                    title: "重置实验学习记录",
+                    systemImage: "arrow.counterclockwise",
+                    prominence: .destructive,
+                    role: .destructive
+                ) {
+                    typoCorrectionLearningStore.reset()
+                    learnedCorrectionCount = 0
+                    learnedSelectionCount = 0
+                }
+                .disabled(learnedCorrectionCount == 0)
+                .opacity(learnedCorrectionCount == 0 ? 0.45 : 1)
+            } header: {
+                Text(DiagnosticsSettingsCopy.developerExperimentSectionTitle)
+            }
+        }
+
+        private var typoCorrectionLearningStore: TypoCorrectionLearningStore {
+            TypoCorrectionLearningStore(
+                defaults: UserDefaults(suiteName: universeAppGroupID)
+            )
+        }
+
+        private func refreshLearnedCorrectionCount() {
+            let records = typoCorrectionLearningStore.snapshot().records
+            learnedCorrectionCount = records.count
+            learnedSelectionCount = records.reduce(0) { $0 + $1.selectionCount }
+        }
+    #endif
+
+    // MARK: - 实验开关审计（自智能纠错页迁入，Release 可见）
+
+    private var experimentalAuditSection: some View {
+        Section {
+            HStack(spacing: 10) {
+                CapsuleBadge(text: auditModel.experimentalStatusText, color: .purple)
+                CapsuleBadge(text: "通过 \(auditModel.experimentalPassRateText)", color: .blue)
+            }
+
+            Text("这是 V0.8/V0.9 默认关闭能力的 flag-on 本地审计，只用于判断是否值得进入真机验证，不代表键盘运行时已经启用。")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 118), spacing: 8)], spacing: 8) {
+                ForEach(auditModel.experimentalGateDetails, id: \.self) { detail in
+                    CapsuleBadge(text: detail, color: .secondary)
+                }
+            }
+
+            ForEach(auditModel.experimentalGroupedResults) { group in
+                TypoCorrectionBenchmarkGroupView(group: group)
+            }
+        } header: {
+            Text(DiagnosticsSettingsCopy.experimentalAuditSectionTitle)
+        }
+    }
+
+    // MARK: - Debug 高保真与按键检查
 
     #if DEBUG
         private var highFidelitySection: some View {

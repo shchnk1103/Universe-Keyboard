@@ -1,6 +1,11 @@
 import Observation
 import SwiftUI
 
+/// 词典文件页标题（与搜索目录「词典文件」一致）。
+enum DictionaryBrowserCopy {
+    static let navigationTitle = "词典文件"
+}
+
 struct DictionaryBrowserView: View {
     @State private var model = LocalDictionaryModel.shared
 
@@ -25,7 +30,7 @@ struct DictionaryBrowserView: View {
                 )
             }
         }
-        .navigationTitle("本地词典")
+        .navigationTitle(DictionaryBrowserCopy.navigationTitle)
         .searchable(text: $model.query, prompt: "搜索词语或编码")
         .onChange(of: model.query) { _, query in
             model.scheduleRefresh(query: query)

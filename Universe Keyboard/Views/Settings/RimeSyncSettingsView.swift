@@ -1,6 +1,24 @@
 import SwiftUI
 import UniformTypeIdentifiers
 
+/// 云同步页的提醒文案与入口约束。
+///
+/// 通知中心的统一入口只在「通用 → 通知与提醒」，云同步页不再重复提供
+/// 导航入口（避免同一处通知设置出现两个入口）。
+enum RimeSyncSettingsCopy {
+    /// 同步提醒开关标题（保留同步 Picker）。
+    static let reminderTitle = "同步完成时提醒"
+
+    /// 提醒区段标题。
+    static let reminderSectionTitle = "通知与提醒"
+
+    /// 页脚里指向通知总开关位置的说明。
+    static let notificationCenterHint = "通知总开关在 通用 → 通知与提醒。"
+
+    /// 云同步页不提供的通知中心导航入口标题（迁移后不应出现）。
+    static let removedNotificationCenterEntryTitle = "管理所有通知与 App 内提示"
+}
+
 struct RimeSyncSettingsView: View {
     @Bindable var model: RimeSyncViewModel
     @Bindable var notificationSettings: AppNotificationSettingsModel
@@ -198,24 +216,18 @@ struct RimeSyncSettingsView: View {
         Section {
             RimeSyncNotificationControls(
                 model: notificationSettings,
-                title: "同步通知",
+                title: RimeSyncSettingsCopy.reminderTitle,
                 detail: "选择手动或自动同步时需要提醒你的内容。",
                 isSyncMethodConfigured: model.provider != .none
             )
-
-            NavigationLink("管理所有通知与 App 内提示") {
-                NotificationSettingsView(
-                    model: notificationSettings,
-                    isRimeSyncMethodConfigured: model.provider != .none
-                )
-            }
         } header: {
-            Text("通知与提醒")
+            Text(RimeSyncSettingsCopy.reminderSectionTitle)
         } footer: {
             Text(
                 notificationSettings.notificationsEnabled
-                    ? "这里与“设置 > 通知与提醒”使用同一个开关。App 在前台且操作状态提示已开启时，系统通知只进入通知中心，避免重复弹出。"
-                    : "开启同步通知时会同时开启 App 通知总开关，并在需要时请求系统权限。自动同步开关与通知开关互不替代。")
+                    ? "这里与“设置 > 通知与提醒”使用同一个开关。App 在前台且操作状态提示已开启时，系统通知只进入通知中心，避免重复弹出。\(RimeSyncSettingsCopy.notificationCenterHint)"
+                    : "开启同步通知时会同时开启 App 通知总开关，并在需要时请求系统权限。自动同步开关与通知开关互不替代。\(RimeSyncSettingsCopy.notificationCenterHint)"
+            )
         }
     }
 
