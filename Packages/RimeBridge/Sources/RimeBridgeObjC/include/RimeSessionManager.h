@@ -10,7 +10,17 @@ NS_ASSUME_NONNULL_BEGIN
 /// 编译依赖：
 /// - rime_api.h（已包含在本包中）
 /// - librime.xcframework（需放入 Vendor/librime.xcframework/）
+typedef NS_ENUM(NSInteger, RimeOptionStatus) {
+    RimeOptionStatusSessionInvalid = -2,
+    RimeOptionStatusBridgeError = -1,
+    RimeOptionStatusFalse = 0,
+    RimeOptionStatusTrue = 1,
+};
+
 @interface RimeSessionManager : NSObject
+
+- (RimeOptionStatus)setOption:(NSString *)name value:(BOOL)value;
+- (RimeOptionStatus)getOption:(NSString *)name;
 
 /// 设置并初始化 RIME 引擎。
 /// @param sharedDataDir RIME 共享数据目录（schema、dict 等 YAML 配置文件）

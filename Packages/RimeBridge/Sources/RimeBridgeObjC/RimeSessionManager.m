@@ -593,8 +593,35 @@ static __weak RimeSessionManager *RimeActiveRuntimeOwner = nil;
 
 // MARK: - Schema switching
 
+- (RimeOptionStatus)getOption:(NSString *)name {
+    if (![self isCurrentSessionValid] ||
+        (_correctionSessionId != 0 && !_api->find_session(_correctionSessionId)))
+        return RimeOptionStatusSessionInvalid;
+    if (_api->get_option == NULL || name.length == 0) return RimeOptionStatusBridgeError;
+    BOOL value = _api->get_option(_sessionId, name.UTF8String);
+    if (_correctionSessionId != 0 && !!_api->get_option(_correctionSessionId, name.UTF8String) != !!value)
+        return RimeOptionStatusBridgeError;
+    return value ? RimeOptionStatusTrue : RimeOptionStatusFalse;
+}
+
+- (RimeOptionStatus)setOption:(NSString *)name value:(BOOL)value {
+    if (![self isCurrentSessionValid]) return RimeOptionStatusSessionInvalid;
+    if (_api->set_option == NULL || _api->get_option == NULL || name.length == 0)
+        return RimeOptionStatusBridgeError;
+    if (![self ensureCorrectionSession] || !_api->find_session(_correctionSessionId))
+        return RimeOptionStatusSessionInvalid;
+    const char *option = name.UTF8String;
+    _api->set_option(_sessionId, option, value);
+    _api->set_option(_correctionSessionId, option, value);
+    if (!!_api->get_option(_sessionId, option) != !!value ||
+        !!_api->get_option(_correctionSessionId, option) != !!value)
+        return RimeOptionStatusBridgeError;
+    return value ? RimeOptionStatusTrue : RimeOptionStatusFalse;
+}
+
 - (BOOL)selectSchema:(NSString *)schemaID {
-    if (_sessionId == 0) return NO;
+    if (![self isCurrentSessionValid] || _api->select_schema == NULL ||
+        (_correctionSessionId != 0 && !_api->find_session(_correctionSessionId))) return NO;
     BOOL selected = _api->select_schema(_sessionId, [schemaID UTF8String]);
     if (selected && _correctionSessionId != 0) {
         selected = _api->select_schema(_correctionSessionId, [schemaID UTF8String]);

@@ -132,6 +132,10 @@ public final class KeyboardController {
     /// Invoked on MainActor after a deferred responsive snapshot is applied so
     /// Extension UI can `syncUI` (Arch/Quality P1 — publish→presentation bridge).
     public var onResponsivePresentationNeeded: ((KeyboardEffect) -> Void)?
+    /// PB-016 PR-1: quick-menu session command gateway (Extension-installed).
+    /// Receives every `command-*` result on MainActor with the current
+    /// presentation epoch; Core never caches or interprets the transaction.
+    public var quickMenuSessionCommandConsumer: (any RimeSessionCommandConsuming)?
     #if T9_RESPONSIVE_CANARY_INTERNAL
         /// Content-free terminal stream for the internal canary validator.
         public var onResponsiveCanaryPresentationTerminal: ((ResponsiveRimeCanaryPresentationTerminal) -> Void)?
@@ -175,6 +179,9 @@ public final class KeyboardController {
     private var responsivePresentationGeneration: UInt64 = 0
     private var lastPresentedSessionEpoch: UInt64 = 0
     private var lastPresentedRevision: UInt64 = 0
+    /// PB-016 §3.3 test/debug: the MainActor presentation epoch that command
+    /// results are validated against (0 before the first accepted paint).
+    public var currentPresentationEpochForTesting: UInt64 { lastPresentedSessionEpoch }
     /// Rem-3: dual-gate visual-shadow L1 ledger (MainActor).
     private var provisionalCompositionMirror = ResponsiveProvisionalCompositionMirror()
     /// Rem-3-Polish: cancels deferred L1 visual paints when L2/abandon wins first.
@@ -477,7 +484,9 @@ public final class KeyboardController {
         ownerPendingDepthAtPublish: Int? = nil,
         canarySessionInstance: UInt64 = 0
     ) {
-        guard let snapshot, !isPartialCommitFailureRecoveryPending else { return }
+        guard let snapshot, !isPartialCommitFailureRecoveryPending else {
+            return
+        }
 
         #if T9_RESPONSIVE_CANARY_INTERNAL
             let terminalKey =
@@ -488,6 +497,17 @@ public final class KeyboardController {
             }
         #endif
         guard isResponsiveRimePipelineEnabled else { return }
+
+        // PB-016 §3.2/§3.3: quick-menu command results release their
+        // transaction on MainActor *before* presentation gating/coalescing, so
+        // an expired completion still clears the in-flight gate (#2) and never
+        // gets absorbed by a latest-only coalesce window.
+        if snapshot.actionID.hasPrefix("command-") {
+            quickMenuSessionCommandConsumer?.consumeCommandResult(
+                snapshot,
+                presentationEpoch: lastPresentedSessionEpoch
+            )
+        }
 
         #if T9_RESPONSIVE_CANARY_INTERNAL
             if responsiveCanaryPresentationFenced {

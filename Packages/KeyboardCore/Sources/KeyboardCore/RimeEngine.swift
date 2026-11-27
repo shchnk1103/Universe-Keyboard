@@ -30,6 +30,14 @@ public protocol RimeEngine: AnyObject {
     /// 空字符串表示清空 composition。
     func replaceInput(_ input: String) -> RimeOutput
 
+    /// Select a schema on the engine's owning thread.
+    @discardableResult
+    func selectSchema(_ schemaID: String) -> Bool
+
+    /// Read and write options on the session owner. Failure is distinct from false.
+    func setOption(_ name: String, value: Bool) -> RimeOptionResult
+    func getOption(_ name: String) -> RimeOptionResult
+
     /// 重置当前 session（清空未完成的拼音输入）。
     func resetSession()
 
@@ -87,7 +95,19 @@ public struct RimeSessionDiagnosticSnapshot: Equatable, Sendable {
     }
 }
 
+public enum RimeOptionResult: Equatable, Sendable {
+    case confirmed(Bool)
+    case sessionInvalid
+    case bridgeError
+}
+
 public extension RimeEngine {
+    func setOption(_ name: String, value: Bool) -> RimeOptionResult { .bridgeError }
+    func getOption(_ name: String) -> RimeOptionResult { .bridgeError }
+
+    @discardableResult
+    func selectSchema(_ schemaID: String) -> Bool { false }
+
     /// Engines without a native session return `nil`; controlled device
     /// evidence must fail closed rather than infer validity from UI state.
     var diagnosticSessionSnapshot: RimeSessionDiagnosticSnapshot? {

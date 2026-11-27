@@ -34,6 +34,10 @@ extension KeyboardViewController {
             initialState.inputMode = .english
         }
         controller = KeyboardController(state: initialState)
+        // PB-016 PR-1: quick-menu session command gateway. Dispatch re-queries
+        // the dual gates and owner readiness on every call; the §3.2 release
+        // hooks below drop any in-flight selection without owner round-trips.
+        controller.quickMenuSessionCommandConsumer = RimeSessionCommandGateway(controller: controller)
         installT9DiagnosticsPumpIfNeeded()
         // R2: when the responsive gate is on, deferred snapshot apply must re-enter UI.
         // Gate defaults off — this bridge is inert until Product enables the gate.
@@ -322,6 +326,12 @@ extension KeyboardViewController {
         }
         resetAllKeyPressVisualState()
         resetCandidatePresentationState()
+
+        // PB-016 §3.2 #4: visibility/document/reload cleanup releases any
+        // in-flight quick-menu selection immediately; the owner result is
+        // discarded on arrival (#2) — no chrome rebuild, no preference
+        // write-back, no menu revival.
+        controller.quickMenuSessionCommandConsumer?.abandonInFlightSelection()
 
         let effects =
             abandonsComposition

@@ -8,6 +8,45 @@ import XCTest
 /// before accepting the next key. The fixture is a private synthetic schema.
 @MainActor
 final class SynchronousSessionLossRecoveryTests: XCTestCase {
+    func testOptionValuesAndInvalidSessionAreDistinct() throws {
+        let fixture = try RuntimeFixture.make(schemaID: "synthetic_empty", hasTranslator: false)
+        try fixture.deploy()
+        let engine = RimeEngineImpl(sharedDataDir: fixture.sharedURL.path, userDataDir: fixture.userURL.path)
+        defer { fixture.close(engine.bridge) }
+        XCTAssertTrue(engine.bridge.selectSchema(fixture.schemaID))
+        XCTAssertEqual(engine.setOption("ascii_mode", value: true), .confirmed(true))
+        XCTAssertEqual(engine.getOption("ascii_mode"), .confirmed(true))
+        XCTAssertEqual(engine.setOption("ascii_mode", value: false), .confirmed(false))
+        XCTAssertEqual(engine.getOption("ascii_mode"), .confirmed(false))
+        XCTAssertTrue(engine.bridge.destroySession())
+        XCTAssertEqual(engine.bridge.getOption("ascii_mode").rawValue, -2)
+        engine.suspendForVisibilityChange()
+        XCTAssertEqual(engine.getOption("ascii_mode"), .sessionInvalid)
+    }
+
+    func testSetOptionReplaysCurrentRawInputOnlyOnSuccess() throws {
+        let fixture = try RuntimeFixture.make(schemaID: "synthetic_empty", hasTranslator: false)
+        try fixture.deploy()
+        let engine = RimeEngineImpl(sharedDataDir: fixture.sharedURL.path, userDataDir: fixture.userURL.path)
+        defer { fixture.close(engine.bridge) }
+        XCTAssertTrue(engine.bridge.selectSchema(fixture.schemaID))
+
+        let initialCount = engine.replaceInputCallCountForTesting
+        XCTAssertEqual(engine.setOption("ascii_mode", value: false), .confirmed(false))
+        XCTAssertEqual(engine.replaceInputCallCountForTesting, initialCount)
+
+        _ = engine.processKey("n")
+        // Change the live session without updating the engine's remembered raw input.
+        _ = engine.bridge.replaceInput("ni")
+        XCTAssertEqual(engine.setOption("ascii_mode", value: false), .confirmed(false))
+        XCTAssertEqual(engine.replaceInputCallCountForTesting, initialCount + 1)
+        XCTAssertEqual(engine.bridge.currentOutput()[RimeKeyRawInput] as? String, "ni")
+
+        engine.suspendForVisibilityChange()
+        XCTAssertEqual(engine.setOption("ascii_mode", value: true), .sessionInvalid)
+        XCTAssertEqual(engine.replaceInputCallCountForTesting, initialCount + 1)
+    }
+
     func testVisibleSessionLossRestoresRawPrefixBeforeTheNextKey() throws {
         let fixture = try RuntimeFixture.make(schemaID: "synthetic_empty", hasTranslator: false)
         try fixture.deploy()
