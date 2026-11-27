@@ -61,6 +61,9 @@ public final class SerialRimeSessionOwner {
     public var diagnostics: ResponsiveRimeDiagnostics { pipeline.diagnostics }
     public var lastPublished: ResponsiveRimeSnapshot? { pipeline.lastPublished }
     public var lastApplied: ResponsiveRimeSnapshot? { pipeline.lastApplied }
+    /// Completion snapshot of the most recent processed step; survives a
+    /// same-step epoch advance (see `ResponsiveRimePipeline.lastStepCompletion`).
+    public var lastStepCompletion: ResponsiveRimeSnapshot? { pipeline.lastStepCompletion }
 
     /// Lifecycle / read helpers after the pipeline queue is drained.
     public func isComposing() -> Bool { engine.isComposing() }
@@ -126,6 +129,21 @@ public final class ResponsiveRimeSessionCoordinator {
         lastAcceptReceipt = receipt
     }
 
+    /// Enqueue session commands behind existing work without executing them on the
+    /// caller's stack. The normal drain and publication path retains FIFO order.
+    @discardableResult
+    public func scheduleSessionCommand(_ work: ResponsiveRimeWork) -> ResponsiveRimeAcceptReceipt? {
+        switch work {
+        case .reselectSchema, .setOption, .getOption:
+            break
+        default:
+            return nil
+        }
+        let receipt = owner.accept(work, actionID: "command-\(UUID().uuidString)")
+        lastAcceptReceipt = receipt
+        return receipt
+    }
+
     /// When true, `performOrderedNow` / `drainOneStep` skip the publish handler.
     /// Used so nested session work during snapshot apply cannot re-enter apply
     /// and steal processKey contexts (Arch R3 P1-2). Prefer underlying-engine
@@ -138,7 +156,10 @@ public final class ResponsiveRimeSessionCoordinator {
         guard owner.processNext() else { return false }
         completedPublishCount += 1
         if !publishHandlerSuppressed {
-            publishHandler?(owner.lastPublished)
+            // A schema reselect commits its completion and advances the epoch in
+            // the same step, which clears `lastPublished`; the retained step
+            // completion keeps the controller's command consumer reachable.
+            publishHandler?(owner.lastStepCompletion ?? owner.lastPublished)
         }
         return true
     }
@@ -306,6 +327,14 @@ public final class ResponsiveRimeEngineBridge: RimeEngine {
                 .replaceInput(input, boundEpoch: nil, boundRevision: nil)
             )
         )
+    }
+
+    public func setOption(_ name: String, value: Bool) -> RimeOptionResult {
+        coordinator.performOrderedNow(.setOption(name, value: value))?.optionResult ?? .bridgeError
+    }
+
+    public func getOption(_ name: String) -> RimeOptionResult {
+        coordinator.performOrderedNow(.getOption(name))?.optionResult ?? .bridgeError
     }
 
     public func resetSession() {

@@ -33,6 +33,7 @@
 		D31940000000000000000004 /* Keyboard/Views/CandidateBar/CandidateScrollViewStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = D31930000000000000000004 /* Keyboard/Views/CandidateBar/CandidateScrollViewStyle.swift */; };
 		D31940000000000000000005 /* Keyboard/Views/DebugKeyTouchRangeOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D31930000000000000000005 /* Keyboard/Views/DebugKeyTouchRangeOverlayView.swift */; };
 		D31960000000000000000001 /* Keyboard/Controllers/KeyboardViewController+T9InputRecovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = D31950000000000000000001 /* Keyboard/Controllers/KeyboardViewController+T9InputRecovery.swift */; };
+		D31980000000000000000001 /* Keyboard/Controllers/RimeSessionCommandGateway.swift in Sources */ = {isa = PBXBuildFile; fileRef = D31980000000000000000002 /* Keyboard/Controllers/RimeSessionCommandGateway.swift */; };
 		D32040000000000000000001 /* Keyboard/Views/KeyboardDesignTokens.swift in Sources */ = {isa = PBXBuildFile; fileRef = D32030000000000000000001 /* Keyboard/Views/KeyboardDesignTokens.swift */; };
 		D32110000000000000000001 /* KeyboardCore in Frameworks */ = {isa = PBXBuildFile; productRef = 793AC8812FB0BE0600DAE8A0 /* KeyboardCore */; };
 		D32110000000000000000002 /* RimeBridge in Frameworks */ = {isa = PBXBuildFile; productRef = 7A6000042FC0000000000001 /* RimeBridge */; };
@@ -109,6 +110,7 @@
 		D31930000000000000000004 /* Keyboard/Views/CandidateBar/CandidateScrollViewStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keyboard/Views/CandidateBar/CandidateScrollViewStyle.swift; sourceTree = "<group>"; };
 		D31930000000000000000005 /* Keyboard/Views/DebugKeyTouchRangeOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keyboard/Views/DebugKeyTouchRangeOverlayView.swift; sourceTree = "<group>"; };
 		D31950000000000000000001 /* Keyboard/Controllers/KeyboardViewController+T9InputRecovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Controllers/KeyboardViewController+T9InputRecovery.swift"; sourceTree = "<group>"; };
+		D31980000000000000000002 /* Keyboard/Controllers/RimeSessionCommandGateway.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Keyboard/Controllers/RimeSessionCommandGateway.swift"; sourceTree = "<group>"; };
 		D32030000000000000000001 /* Keyboard/Views/KeyboardDesignTokens.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keyboard/Views/KeyboardDesignTokens.swift; sourceTree = "<group>"; };
 		D32120000000000000000001 /* KeyboardLayoutIntegrationTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; path = KeyboardLayoutIntegrationTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D33030000000000000000001 /* Keyboard/Views/CandidateBar/CandidateFontSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keyboard/Views/CandidateBar/CandidateFontSnapshot.swift; sourceTree = "<group>"; };
@@ -695,6 +697,7 @@
 				7A64000E2FD0000000000001 /* TypoCorrectionRecallCoordinator.swift in Sources */,
 				C2E000000000000000000005 /* Keyboard/Controllers/KeyboardViewController+CandidatePaging.swift in Sources */,
 				D31960000000000000000001 /* Keyboard/Controllers/KeyboardViewController+T9InputRecovery.swift in Sources */,
+				D31980000000000000000001 /* Keyboard/Controllers/RimeSessionCommandGateway.swift in Sources */,
 				D213B0000000000000000001 /* Keyboard/Controllers/KeyboardKeyButton.swift in Sources */,
 				D213B0000000000000000002 /* Keyboard/Controllers/KeyVisualStyle.swift in Sources */,
 				D213B0000000000000000003 /* Keyboard/Controllers/KeyboardViewController+KeyAccessibility.swift in Sources */,

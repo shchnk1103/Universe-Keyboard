@@ -1028,6 +1028,7 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
         let engineCreatedOffMainThread = !Thread.isMainThread
         var ownerEpoch: UInt64 = 1
         var lastAppliedRevision: UInt64 = 0
+        var lastOutput = RimeOutput()
         counters.withAcceptance {
             $0.diagnosticSessionSnapshot = engine.diagnosticSessionSnapshot
             $0.runtimeSelection = engine.runtimeSelection
@@ -1043,19 +1044,38 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
                     continue
                 }
 
-                guard
-                    let output = execute(
+                var optionResult: RimeOptionResult?
+                var schemaSelectionSucceeded: Bool?
+                let executedOutput: RimeOutput?
+                switch envelope.work {
+                case .setOption(let name, let value):
+                    let result = engine.setOption(name, value: value)
+                    optionResult = result
+                    executedOutput =
+                        result == .confirmed(value)
+                        ? engine.replaceInput(lastOutput.rawInput ?? "") : lastOutput.withoutCommittedText()
+                case .getOption(let name):
+                    optionResult = engine.getOption(name)
+                    executedOutput = lastOutput.withoutCommittedText()
+                case .reselectSchema(let schemaID):
+                    let succeeded = engine.selectSchema(schemaID)
+                    schemaSelectionSucceeded = succeeded
+                    executedOutput = succeeded ? RimeOutput() : lastOutput.withoutCommittedText()
+                default:
+                    executedOutput = execute(
                         envelope.work,
                         engine: engine,
                         lastAppliedRevision: &lastAppliedRevision,
                         sessionEpoch: ownerEpoch
                     )
-                else {
+                }
+                guard let output = executedOutput else {
                     counters.withAcceptance { $0.skippedStaleEpochCount &+= 1 }
                     markSettled(envelope, counters: counters, settledSignal: settledSignal)
                     continue
                 }
-                let advancesEpoch = advancesSessionEpoch(after: envelope.work)
+                let advancesEpoch = advancesSessionEpoch(after: envelope.work) && schemaSelectionSucceeded != false
+                lastOutput = output
                 lastAppliedRevision = envelope.revision
                 let diagnosticSessionSnapshot = engine.diagnosticSessionSnapshot
                 let origin = counters.withAcceptance { state -> RimeOutputOrigin? in
@@ -1074,7 +1094,9 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
                         sessionEpoch: envelope.sessionEpoch,
                         revision: envelope.revision,
                         actionID: envelope.actionID,
-                        output: output.replacingCandidateOrigin(origin)
+                        output: output.replacingCandidateOrigin(origin),
+                        optionResult: optionResult,
+                        schemaSelectionSucceeded: schemaSelectionSucceeded
                     ),
                     engineCreatedOffMainThread: engineCreatedOffMainThread,
                     engineCallStayedOnCreationThread:
@@ -1123,6 +1145,7 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
 
             case .control(.advanceEpoch(let epoch)):
                 engine.resetSession()
+                lastOutput = RimeOutput()
                 let isCurrent = counters.withAcceptance { state -> Bool in
                     precondition(state.unsettledEpochControls > 0)
                     state.unsettledEpochControls -= 1
@@ -1253,6 +1276,13 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
             engine.recoverSession()
             return RimeOutput(composition: nil, candidates: [], highlightedIndex: -1)
 
+        case .reselectSchema(let schemaID):
+            guard engine.selectSchema(schemaID) else { return nil }
+            return RimeOutput(composition: nil, candidates: [], highlightedIndex: -1)
+
+        case .setOption, .getOption:
+            preconditionFailure("Option work is handled by the owner loop")
+
         case .pageUp:
             return engine.pageUp()
 
@@ -1263,7 +1293,7 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
 
     private static func advancesSessionEpoch(after work: ThreadAffineRimeSpikeWork) -> Bool {
         switch work {
-        case .resetSession, .recoverSession:
+        case .resetSession, .recoverSession, .reselectSchema:
             return true
         default:
             return false

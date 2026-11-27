@@ -1,5 +1,17 @@
 import Foundation
 
+extension RimeOutput {
+    /// A read or failed command must never re-emit a previous commit.
+    func withoutCommittedText() -> RimeOutput {
+        RimeOutput(
+            rawInput: rawInput, composition: composition, candidates: candidates,
+            hasMorePages: hasMorePages, highlightedIndex: highlightedIndex,
+            candidatePageNumber: candidatePageNumber, caretPositionInRaw: caretPositionInRaw,
+            commitPreviewLength: commitPreviewLength, candidateOrigin: candidateOrigin
+        )
+    }
+}
+
 // MARK: - Work items
 
 /// Ordered session work accepted by the responsive pipeline.
@@ -19,6 +31,9 @@ public enum ResponsiveRimeWork: Equatable, Sendable {
     case replaceInput(String, boundEpoch: UInt64?, boundRevision: UInt64?)
     case resetSession
     case recoverSession
+    case reselectSchema(String)
+    case setOption(String, value: Bool)
+    case getOption(String)
     case pageUp
     case pageDown
 }
@@ -54,17 +69,23 @@ public struct ResponsiveRimeSnapshot: Equatable, Sendable {
     public let revision: UInt64
     public let actionID: String
     public let output: RimeOutput
+    public let optionResult: RimeOptionResult?
+    public let schemaSelectionSucceeded: Bool?
 
     public init(
         sessionEpoch: UInt64,
         revision: UInt64,
         actionID: String,
-        output: RimeOutput
+        output: RimeOutput,
+        optionResult: RimeOptionResult? = nil,
+        schemaSelectionSucceeded: Bool? = nil
     ) {
         self.sessionEpoch = sessionEpoch
         self.revision = revision
         self.actionID = actionID
         self.output = output
+        self.optionResult = optionResult
+        self.schemaSelectionSucceeded = schemaSelectionSucceeded
     }
 }
 
@@ -171,6 +192,8 @@ public final class ResponsiveRimePipeline {
         case skippedStaleBinding
         /// Engine ran; `advancesEpoch` for reset/recover lifecycle work.
         case engineOutput(RimeOutput, advancesEpoch: Bool)
+        case option(RimeOutput, RimeOptionResult)
+        case schema(RimeOutput, Bool)
     }
 
     private let engine: RimeEngine
@@ -187,6 +210,14 @@ public final class ResponsiveRimePipeline {
     /// Last engine-applied snapshot (may be ahead of `lastPublished` under coalesce).
     public private(set) var lastApplied: ResponsiveRimeSnapshot?
     public private(set) var lastPublished: ResponsiveRimeSnapshot?
+
+    /// Completion snapshot of the most recent `processNext` step, retained even
+    /// when that step itself advanced the session epoch. A successful schema
+    /// reselect commits its completion and then advances the epoch, which clears
+    /// `lastPublished`; the serial publish bridge still needs the completion so
+    /// the controller can hand it to the quick-menu command consumer. Reset at
+    /// the start of every step, so it never resurrects an older completion.
+    public private(set) var lastStepCompletion: ResponsiveRimeSnapshot?
     public private(set) var publishedHistory: [ResponsiveRimeSnapshot] = []
     public private(set) var acceptedActionIDs: [String] = []
     public private(set) var executedActionIDs: [String] = []
@@ -250,6 +281,7 @@ public final class ResponsiveRimePipeline {
     @discardableResult
     public func processNext() -> Bool {
         guard !pending.isEmpty else { return false }
+        lastStepCompletion = nil
         let item = pending.removeFirst()
         diagnostics.pendingDepth = pending.count
 
@@ -279,6 +311,33 @@ public final class ResponsiveRimePipeline {
             catchUpPublishIfNeeded()
             return true
 
+        case .schema(let output, let succeeded):
+            executedActionIDs.append(item.actionID)
+            diagnostics.executedActionCount = executedActionIDs.count
+            let snapshot = ResponsiveRimeSnapshot(
+                sessionEpoch: item.sessionEpoch, revision: item.revision,
+                actionID: item.actionID, output: output, schemaSelectionSucceeded: succeeded
+            )
+            recordApplied(snapshot)
+            commitPublish(snapshot)
+            if succeeded { advanceEpochAfterLifecycleWork(clearPending: false) }
+            // Retain the completion across the lifecycle barrier above so the
+            // publish bridge can still deliver it (PB-016 r4: the epoch advance
+            // clears `lastPublished` in the same step).
+            lastStepCompletion = snapshot
+            return true
+
+        case .option(let output, let result):
+            executedActionIDs.append(item.actionID)
+            diagnostics.executedActionCount = executedActionIDs.count
+            let snapshot = ResponsiveRimeSnapshot(
+                sessionEpoch: item.sessionEpoch, revision: item.revision,
+                actionID: item.actionID, output: output, optionResult: result
+            )
+            recordApplied(snapshot)
+            commitPublish(snapshot)
+            return true
+
         case .engineOutput(let output, let advancesEpoch):
             executedActionIDs.append(item.actionID)
             diagnostics.executedActionCount = executedActionIDs.count
@@ -293,7 +352,13 @@ public final class ResponsiveRimePipeline {
                     output: output
                 )
                 recordApplied(snapshot)
-                publishIfEligible(snapshot)
+                if case .reselectSchema = item.work {
+                    // Pending work belongs to the old epoch and cannot supersede
+                    // the selection result after the lifecycle barrier.
+                    commitPublish(snapshot)
+                } else {
+                    publishIfEligible(snapshot)
+                }
                 advanceEpochAfterLifecycleWork(clearPending: false)
                 return true
             }
@@ -340,8 +405,8 @@ public final class ResponsiveRimePipeline {
             return .rejectedStaleSnapshot
         }
         guard let published = lastPublished,
-              published.revision == boundRevision,
-              published.sessionEpoch == boundEpoch
+            published.revision == boundRevision,
+            published.sessionEpoch == boundEpoch
         else {
             return .rejectedStaleSnapshot
         }
@@ -362,7 +427,7 @@ public final class ResponsiveRimePipeline {
     private func isBindingStale(_ work: ResponsiveRimeWork) -> Bool {
         switch work {
         case .selectCandidate(_, let boundEpoch, let boundRevision),
-             .selectCandidateGlobal(_, let boundEpoch, let boundRevision):
+            .selectCandidateGlobal(_, let boundEpoch, let boundRevision):
             return validateSelection(boundEpoch: boundEpoch, boundRevision: boundRevision) != .accepted
         case .replaceInput(_, let boundEpoch?, let boundRevision?):
             return validateSelection(boundEpoch: boundEpoch, boundRevision: boundRevision) != .accepted
@@ -413,6 +478,22 @@ public final class ResponsiveRimePipeline {
                 advancesEpoch: true
             )
 
+        case .reselectSchema(let schemaID):
+            let succeeded = engine.selectSchema(schemaID)
+            let output = succeeded ? RimeOutput() : (lastApplied?.output ?? RimeOutput()).withoutCommittedText()
+            return .schema(output, succeeded)
+
+        case .setOption(let name, let value):
+            let result = engine.setOption(name, value: value)
+            let previous = (lastApplied?.output ?? RimeOutput()).withoutCommittedText()
+            let output =
+                result == .confirmed(value)
+                ? engine.replaceInput(previous.rawInput ?? "") : previous
+            return .option(output, result)
+
+        case .getOption(let name):
+            return .option((lastApplied?.output ?? RimeOutput()).withoutCommittedText(), engine.getOption(name))
+
         case .pageUp:
             return .engineOutput(engine.pageUp(), advancesEpoch: false)
 
@@ -457,8 +538,8 @@ public final class ResponsiveRimePipeline {
     private func catchUpPublishIfNeeded() {
         guard pending.isEmpty else { return }
         guard let applied = lastApplied,
-              applied.sessionEpoch == sessionEpoch,
-              applied.revision > lastPublishedRevision
+            applied.sessionEpoch == sessionEpoch,
+            applied.revision > lastPublishedRevision
         else {
             return
         }
@@ -497,6 +578,7 @@ public final class ResponsiveRimePipeline {
         lastPublishedRevision = 0
         lastApplied = nil
         lastPublished = nil
+        lastStepCompletion = nil
         diagnostics.sessionEpoch = sessionEpoch
         diagnostics.headRevision = headRevision
         diagnostics.lastAppliedRevision = lastAppliedRevision

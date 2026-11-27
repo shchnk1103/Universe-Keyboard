@@ -307,6 +307,56 @@ public final class RimeEngineImpl: RimeEngine {
         return output
     }
 
+    @discardableResult
+    public func selectSchema(_ schemaID: String) -> Bool {
+        guard bridge.isCurrentSessionValid(),
+            bridge.selectSchema(schemaID), bridge.currentSchemaID() == schemaID
+        else {
+            publishFailClosedSelection(reason: "runtime-schema-selection-failed")
+            return false
+        }
+        lastKnownRawInput = ""
+        applyRealizedSelection(requested: resolveRuntimeSelection(), actualSchemaID: schemaID)
+        return true
+    }
+
+    private func optionResult(_ status: RimeOptionStatus) -> RimeOptionResult {
+        switch status.rawValue {
+        case 0: return .confirmed(false)
+        case 1: return .confirmed(true)
+        case -2: return .sessionInvalid
+        default: return .bridgeError
+        }
+    }
+
+    private func performOption(_ operation: () -> RimeOptionStatus) -> RimeOptionResult {
+        var result = optionResult(operation())
+        if result == .sessionInvalid && !isSuspendedForVisibilityChange {
+            let raw = lastKnownRawInput
+            recoverSession()
+            if bridge.isCurrentSessionValid(), !raw.isEmpty {
+                _ = replaceInput(raw)
+            }
+            result = optionResult(operation())
+        }
+        return result
+    }
+
+    public func getOption(_ name: String) -> RimeOptionResult {
+        performOption { bridge.getOption(name) }
+    }
+
+    public func setOption(_ name: String, value: Bool) -> RimeOptionResult {
+        let result = performOption { bridge.setOption(name, value: value) }
+        if result == .confirmed(value),
+            let rawInput = bridge.currentOutput()[RimeKeyRawInput] as? String,
+            !rawInput.isEmpty
+        {
+            _ = replaceInput(rawInput)
+        }
+        return result
+    }
+
     /// 重置当前 RIME session 的输入状态（清除拼音 composition）。
     public func resetSession() {
         #if DEBUG

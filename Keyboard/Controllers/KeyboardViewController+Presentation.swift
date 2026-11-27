@@ -83,6 +83,10 @@ extension KeyboardViewController {
     }
 
     func reloadKeyboard() {
+        // PB-016 §3.2 #5: a direct keyboard rebuild releases any in-flight
+        // quick-menu selection so the gate never outlives the chrome it was
+        // opened against; the owner result is discarded on arrival (#2).
+        controller.quickMenuSessionCommandConsumer?.abandonInFlightSelection()
         isCandidateExpanded = false
         isPinyinPathExpanded = false
         candidateExpandedPanel?.removeFromSuperview()

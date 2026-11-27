@@ -466,6 +466,22 @@ public final class ThreadAffineRimeSessionCoordinator {
         }
     #endif
 
+    /// Accept quick-menu work without waiting for the owner thread. The normal
+    /// publication handler receives the result with the returned identity.
+    @discardableResult
+    public func scheduleSessionCommand(_ work: ResponsiveRimeWork) -> ResponsiveRimeAcceptReceipt? {
+        switch work {
+        case .reselectSchema, .setOption, .getOption:
+            break
+        default:
+            return nil
+        }
+        guard isOwnerReady else { return nil }
+        let receipt = owner?.accept(work, actionID: "command-\(UUID().uuidString)")
+        lastAcceptReceipt = receipt
+        return receipt
+    }
+
     public func scheduleProcessKey(_ key: String) {
         actionSequence &+= 1
         let actionID = "pk-\(actionSequence)"
@@ -848,6 +864,14 @@ public final class ThreadAffineRimeEngineBridge: RimeEngine, RimeCandidateAuthor
                 .replaceInput(input, boundEpoch: nil, boundRevision: nil)
             )
         )
+    }
+
+    public func setOption(_ name: String, value: Bool) -> RimeOptionResult {
+        coordinator.performOrderedNow(.setOption(name, value: value))?.optionResult ?? .bridgeError
+    }
+
+    public func getOption(_ name: String) -> RimeOptionResult {
+        coordinator.performOrderedNow(.getOption(name))?.optionResult ?? .bridgeError
     }
 
     public func resetSession() {

@@ -14,6 +14,32 @@ struct FakeRimeSelectedSegment {
 /// 所有行为由预设的字典控制，与 FakeCandidateProvider 使用相同的数据。
 final class FakeRimeEngine: RimeEngine {
 
+    var optionResult: RimeOptionResult = .confirmed(false)
+    var optionValues: [String: Bool] = [:]
+
+    func setOption(_ name: String, value: Bool) -> RimeOptionResult {
+        if case .confirmed = optionResult {
+            optionValues[name] = value
+            return .confirmed(value)
+        }
+        return optionResult
+    }
+
+    func getOption(_ name: String) -> RimeOptionResult {
+        if case .confirmed = optionResult { return .confirmed(optionValues[name] ?? false) }
+        return optionResult
+    }
+
+    var schemaSelectionSucceeds = true
+    private(set) var selectedSchemaID: String?
+
+    func selectSchema(_ schemaID: String) -> Bool {
+        guard schemaSelectionSucceeds else { return false }
+        selectedSchemaID = schemaID
+        composition = ""
+        return true
+    }
+
     private var composition: String = ""
     private var selectedSegment: FakeRimeSelectedSegment?
     var sessionResetCount = 0
@@ -107,11 +133,11 @@ final class FakeRimeEngine: RimeEngine {
     }
 
     private static let defaultDictionary: [String: [String]] = [
-        "ni":       ["你", "呢", "尼"],
-        "hao":      ["好", "号", "浩"],
-        "nihao":    ["你好", "拟好", "你号"],
-        "shi":      ["是", "时", "事"],
-        "wo":       ["我", "握", "窝"],
+        "ni": ["你", "呢", "尼"],
+        "hao": ["好", "号", "浩"],
+        "nihao": ["你好", "拟好", "你号"],
+        "shi": ["是", "时", "事"],
+        "wo": ["我", "握", "窝"],
     ]
 
     // MARK: - RimeEngine
@@ -132,8 +158,8 @@ final class FakeRimeEngine: RimeEngine {
             return scripted
         }
         if !appendDigitsToComposition,
-           let index = digitSelectionIndex(for: key),
-           !(dictionary[composition] ?? []).isEmpty
+            let index = digitSelectionIndex(for: key),
+            !(dictionary[composition] ?? []).isEmpty
         {
             return selectCandidate(at: index)
         }
@@ -274,7 +300,8 @@ final class FakeRimeEngine: RimeEngine {
             return
         }
         if let actual = recoverActualSchemaID {
-            let requested = runtimeSelection
+            let requested =
+                runtimeSelection
                 ?? RimeRuntimeSelection(
                     baseSchemaID: "rime_ice",
                     layoutStyle: .nineKey,
@@ -315,7 +342,8 @@ final class FakeRimeEngine: RimeEngine {
     }
 
     private func publishFailClosed() {
-        let requested = runtimeSelection
+        let requested =
+            runtimeSelection
             ?? RimeRuntimeSelection(
                 baseSchemaID: "rime_ice",
                 layoutStyle: .nineKey,
