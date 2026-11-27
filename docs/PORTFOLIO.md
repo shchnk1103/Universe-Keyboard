@@ -88,6 +88,10 @@
 | PB-020 | P2 | 移除主页长按空格引导 TipKit 横幅，恢复简洁首屏 | 已合入 main（纳入 1.0.4 候选封版） | 发布归档完成（外置 publish 报告）；随 1.0.4 候选封版同发 | [PR #423](https://github.com/shchnk1103/Universe-Keyboard/pull/423)（`1c410317`）；外置 `PRODUCT-BUGS-INBOX.md` PB-020；[v1.0.4.md](releases/v1.0.4.md) | 2026-11-26 |
 | PB-021 | P2 | 九宫格数字快捷栏滑动手感、下滑展开与收起微抖（1.0.3 真机终验登记 3 处） | 已合入 main（纳入 1.0.4 候选封版） | 下滑收起与高度约束同步扩展已合入，1.0.3 遗留 3 处手感/微抖闭环；发布归档完成 | [PR #422](https://github.com/shchnk1103/Universe-Keyboard/pull/422)（`4fa9df66`）；外置 `PRODUCT-BUGS-INBOX.md` PB-021；[v1.0.4.md](releases/v1.0.4.md)；PB-009 | 2026-11-26 |
 | PB-022 | P0 | 按键振动开关关闭后无法再次打开（触感反馈锁定） | 已合入 main（真机验证通过；纳入 1.0.4 候选封版） | 热修已合入且真机验证通过；发布归档完成 | [PR #424](https://github.com/shchnk1103/Universe-Keyboard/pull/424)（`32e56f49`）；外置 `PRODUCT-BUGS-INBOX.md` PB-022；[v1.0.4.md](releases/v1.0.4.md)；PB-001 | 2026-11-26 |
+| PB-015 | P2 | 主 App 设置信息架构重组 | PR3 已合入 main（整项未关） | 叶子归位已合入：用户词典/词典文件标题与搜索目录、云同步页去掉通知中心导航、实验开关迁入诊断页。PR1/PR2/PR4 是否已全部合入本行不声称；`docs/releases/v1.0.5.md` 不存在，本轮不新建 | [PR #441](https://github.com/shchnk1103/Universe-Keyboard/pull/441)（`b08289a31ec66df90882a4739f3164cdd6dd8e80`，2026-11-27）；外置 `PRODUCT-BUGS-INBOX.md` PB-015 | 2026-11-27 |
+| PB-016 | P2 | 候选栏快捷设置入口 | PR1 已合入 main（整项未关） | 快捷菜单会话命令网关事务层已合入（命令入队/提交、option 三态重放、六类释放路径）。UI 入口与后续 PR 未在本行标完成 | [PR #437](https://github.com/shchnk1103/Universe-Keyboard/pull/437)（`da5e49cf80be023c541b86309fb3a0e4dd4b245a`，2026-11-27）；外置 `PRODUCT-BUGS-INBOX.md` PB-016 | 2026-11-27 |
+| O142 | P2 | KOS 跨会话独立性卡口 | 已合入 main | `kos_handoff.py` 与角色领取的跨会话独立性修复已合入；无 Swift 改动。不另写 v1.0.5 发布档案 | [PR #439](https://github.com/shchnk1103/Universe-Keyboard/pull/439)（`abce684ea2adb0cdbe5f3118261e782c63cfd352`，2026-11-27） | 2026-11-27 |
+| O146 | P2 | AGENTS.md 瘦身与规则外置 | 已合入 main | 主文件红线保留，低频步骤外置到 `docs/kos/`；docs-only。不另写 v1.0.5 发布档案 | [PR #440](https://github.com/shchnk1103/Universe-Keyboard/pull/440)（`a9cdbb769e1cf444fdb5ccc49b38f87fd83204b8`，2026-11-27） | 2026-11-27 |
 ## 决定记录
 
 | 日期 | 决定（Human Product Owner，除非另注） | 指针 |
