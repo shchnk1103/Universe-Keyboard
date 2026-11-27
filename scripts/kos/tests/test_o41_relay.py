@@ -722,7 +722,7 @@ class RelayExecTests(unittest.TestCase):
     def _stub(self, name, text):
         return _write(self.root / name, text)
 
-    PASS_REPORT = "PASS\nPete（Preflight）；运行时身份 Codex。\n"
+    PASS_REPORT = "PASS\nPete（Preflight）；运行时身份 Codex。跨会话独立性声明：本审查与前序参与者跨会话独立。\n"
     FAIL_REPORT = "FAIL\nPete（Preflight）；运行时身份 Codex。\n"
     PACKET_CODE = (
         "Executor（代码）；你不是 PM\n\n"
@@ -812,6 +812,13 @@ class RelayExecTests(unittest.TestCase):
         result = self._run(packet, report, verify_ok, lint_ok)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("Cole", result.stdout)
+
+    def test_missing_independence_declaration_falls_back(self) -> None:
+        packet, report, verify_ok, lint_ok = self._fixtures(self.PACKET_CODE)
+        report.write_text("PASS\nPete（Preflight）；运行时身份 Codex。\n", encoding="utf-8")
+        result = self._run(packet, report, verify_ok, lint_ok)
+        self.assertNotEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("跨会话独立性声明", result.stdout + result.stderr)
 
     def test_precheck_fail_falls_back(self) -> None:
         packet, report, verify_ok, lint_ok = self._fixtures(self.PACKET_CODE, report_text=self.FAIL_REPORT)
