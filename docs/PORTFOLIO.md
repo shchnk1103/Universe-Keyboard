@@ -92,6 +92,11 @@
 | PB-016 | P2 | 候选栏快捷设置入口 | PR1 已合入 main（整项未关） | 快捷菜单会话命令网关事务层已合入（命令入队/提交、option 三态重放、六类释放路径）。UI 入口与后续 PR 未在本行标完成 | [PR #437](https://github.com/shchnk1103/Universe-Keyboard/pull/437)（`da5e49cf80be023c541b86309fb3a0e4dd4b245a`，2026-11-27）；外置 `PRODUCT-BUGS-INBOX.md` PB-016 | 2026-11-27 |
 | O142 | P2 | KOS 跨会话独立性卡口 | 已合入 main | `kos_handoff.py` 与角色领取的跨会话独立性修复已合入；无 Swift 改动。不另写 v1.0.5 发布档案 | [PR #439](https://github.com/shchnk1103/Universe-Keyboard/pull/439)（`abce684ea2adb0cdbe5f3118261e782c63cfd352`，2026-11-27） | 2026-11-27 |
 | O146 | P2 | AGENTS.md 瘦身与规则外置 | 已合入 main | 主文件红线保留，低频步骤外置到 `docs/kos/`；docs-only。不另写 v1.0.5 发布档案 | [PR #440](https://github.com/shchnk1103/Universe-Keyboard/pull/440)（`a9cdbb769e1cf444fdb5ccc49b38f87fd83204b8`，2026-11-27） | 2026-11-27 |
+| PB-017 | P2 | 双拼设置与槽位接线 | PR3 已合入 main（整项未关） | 双拼设置界面、方案选择、副标开关、槽位接线、不支持的模糊音置灰，以及双拼关闭纠错。本行只记 PR3，不把 PB-017 整项标完成 | [PR #434](https://github.com/shchnk1103/Universe-Keyboard/pull/434)（`a9b6848a52aafafa9516bde36c41d7577f9af695`，2026-11-26） | 2026-11-26 |
+| PB-019 | P2 | 按键气泡与九宫格第一行 | PR2 已合入 main（整项未关） | 按键气泡设置开关、九宫格第一行放开、iPad fail-closed，并更新 `UI_STYLE_GUIDE.md`。本行只记 PR2 | [PR #432](https://github.com/shchnk1103/Universe-Keyboard/pull/432)（`43c7006ee67659037ef77cbc7625958cfd73b9dc`，2026-11-26） | 2026-11-26 |
+| O130-PRA | P2 | 任务包禁止写死模拟器 UDID | 已合入 main | `kos-pkg-lint` E9：`xcodebuild -destination` 不得写死模拟器 UDID。只记本 PR，不扩大到 O130 其他子项 | [PR #433](https://github.com/shchnk1103/Universe-Keyboard/pull/433)（`a2a15f422cbf787f97598bd3ba7c41c6f68a3bfa`，2026-11-26） | 2026-11-26 |
+| O134 | P2 | 本机定向快验与重型槽位上限 | 已合入 main | local-fast 策略、Quality 默认不重跑全量、重型 xcodebuild 2 槽上限及 E7 适配。只记本 PR | [PR #436](https://github.com/shchnk1103/Universe-Keyboard/pull/436)（`2ed996fc6387020e9600d54d2a63cdeb3983bd2b`，2026-11-27） | 2026-11-27 |
+| O129-DOCS | P2 | O129 直通与 lint 说明对齐 | 已合入 main | 文档对齐已生效的部门池直通、`ci_watch.sh`，以及 `scripts/kos/README.md` 的 lint E5–E9/E11。派发口径曾称 Grok Bot 文档对齐；合并作者与正文未使用该署名，本行按 PR 正文记账 | [PR #435](https://github.com/shchnk1103/Universe-Keyboard/pull/435)（`4ec622fb341d7e934233f89f4c22b29f14654cb0`，2026-11-26） | 2026-11-26 |
 ## 决定记录
 
 | 日期 | 决定（Human Product Owner，除非另注） | 指针 |
