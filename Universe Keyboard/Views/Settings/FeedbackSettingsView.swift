@@ -162,7 +162,7 @@ struct FeedbackSettingsView: View {
 
     private var keyPopupFooter: String {
         keyPopupEnabled
-            ? "按下字符键时在键位上方显示字符气泡（26 键与九宫格第一行）。开关通过 App Group 同步到键盘，切回键盘后立即生效。"
+            ? "按下字符键时在键位上方显示字符气泡（26 键与九宫格字母键）。开关通过 App Group 同步到键盘，切回键盘后立即生效。"
             : "关闭后键盘不再显示按键气泡；切回键盘后立即生效。"
     }
 

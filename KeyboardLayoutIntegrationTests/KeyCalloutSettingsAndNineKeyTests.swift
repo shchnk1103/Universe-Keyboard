@@ -8,9 +8,9 @@ import XCTest
 ///
 /// Covers the `keyboard.keyPopupEnabled` App Group switch (default on; cached
 /// snapshot toggles take effect immediately in the same keyboard process),
-/// nine-key first-row letter-group callout eligibility with non-first-row and
-/// digits-page suppression, and the iPad fail-closed / rebuild force-hide
-/// contract (arch review Minor-1).
+/// nine-key letter-group callout eligibility across all letter-bearing digits
+/// 2–9 with punctuation-utility-key and digits-page suppression, and the iPad
+/// fail-closed / rebuild force-hide contract (arch review Minor-1).
 nonisolated final class KeyCalloutSettingsAndNineKeyTests: XCTestCase {
 
     // MARK: - Helpers
@@ -128,10 +128,10 @@ nonisolated final class KeyCalloutSettingsAndNineKeyTests: XCTestCase {
         sut.keyTouchUp(key)
     }
 
-    // MARK: - Nine-key first-row letter groups
+    // MARK: - Nine-key letter groups (digits 2–9)
 
     @MainActor
-    func testNineKeyFirstRowLetterGroupsShowCalloutAndOtherKeysAreSuppressed() throws {
+    func testNineKeyLetterGroupsShowCalloutAndOtherKeysAreSuppressed() throws {
         let (sut, window) = try makeWindowedKeyboard()
         defer { window.isHidden = true }
         sut.controller.state.inputMode = .chinese
@@ -143,25 +143,36 @@ nonisolated final class KeyCalloutSettingsAndNineKeyTests: XCTestCase {
 
         let firstRowABC = try XCTUnwrap(button(withIdentifier: "2", in: sut.view))
         sut.keyTouchDown(firstRowABC)
-        XCTAssertFalse(sut.keyCalloutView?.isHidden ?? true, "first-row ABC must show the callout")
+        XCTAssertFalse(sut.keyCalloutView?.isHidden ?? true, "digit 2 (ABC) must show the callout")
         XCTAssertEqual(sut.keyCalloutView?.characterText, "ABC")
         sut.keyTouchUp(firstRowABC)
         XCTAssertTrue(sut.keyCalloutView?.isHidden ?? true)
 
         let firstRowDEF = try XCTUnwrap(button(withIdentifier: "3", in: sut.view))
         sut.keyTouchDown(firstRowDEF)
-        XCTAssertFalse(sut.keyCalloutView?.isHidden ?? true, "first-row DEF must show the callout")
+        XCTAssertFalse(sut.keyCalloutView?.isHidden ?? true, "digit 3 (DEF) must show the callout")
         XCTAssertEqual(sut.keyCalloutView?.characterText, "DEF")
         sut.keyTouchUp(firstRowDEF)
 
-        // Non-first-row letter groups stay suppressed.
-        for identifier in ["4", "5", "7", "9"] {
-            let key = try XCTUnwrap(button(withIdentifier: identifier, in: sut.view), identifier)
+        // Letter-group rows 2 & 3 (digits 4–9) show the callout too
+        // (PB-019-T9-LOWER-ROWS-POPUP-FIX-001: unfrozen from row 1 only).
+        let lowerRows: [(digit: String, letters: String)] = [
+            ("4", "GHI"),
+            ("5", "JKL"),
+            ("6", "MNO"),
+            ("7", "PQRS"),
+            ("8", "TUV"),
+            ("9", "WXYZ"),
+        ]
+        for (digit, letters) in lowerRows {
+            let key = try XCTUnwrap(button(withIdentifier: digit, in: sut.view), digit)
             sut.keyTouchDown(key)
-            XCTAssertTrue(
+            XCTAssertFalse(
                 sut.keyCalloutView?.isHidden ?? true,
-                "non-first-row digit \(identifier) must stay suppressed")
+                "letter-group digit \(digit) must show the callout")
+            XCTAssertEqual(sut.keyCalloutView?.characterText, letters, digit)
             sut.keyTouchUp(key)
+            XCTAssertTrue(sut.keyCalloutView?.isHidden ?? true, digit)
         }
 
         // Function key（123）、delete key stay suppressed.
@@ -216,7 +227,15 @@ nonisolated final class KeyCalloutSettingsAndNineKeyTests: XCTestCase {
         let abc = try XCTUnwrap(button(withIdentifier: "2", in: sut.view))
         XCTAssertTrue(sut.isKeyCalloutCandidate(abc))
         let ghi = try XCTUnwrap(button(withIdentifier: "4", in: sut.view))
-        XCTAssertFalse(sut.isKeyCalloutCandidate(ghi))
+        XCTAssertTrue(sut.isKeyCalloutCandidate(ghi))
+
+        // The utility row keys（123 /，。？！）carry no digit identity, so
+        // they stay excluded alongside every non-digit key.
+        let punctuationUtilityKey = try XCTUnwrap(
+            button(withTitle: "，。？！", in: sut.view),
+            "sanity: punctuation utility key exists"
+        )
+        XCTAssertFalse(sut.isKeyCalloutCandidate(punctuationUtilityKey))
     }
 
     // MARK: - iPad fail-closed (arch review Minor-1)
