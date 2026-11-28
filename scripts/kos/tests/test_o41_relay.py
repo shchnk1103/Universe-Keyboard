@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """Tests for KOS O41 minimal relay loop (CURRENT.json atomic state machine, freeze, report-lint, kos-block.sh)."""
+from __future__ import annotations
+
 import concurrent.futures
 import hashlib
 import json

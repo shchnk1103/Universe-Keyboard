@@ -130,7 +130,7 @@ extension KeyboardViewController {
         box.panel = panel
         // VoiceOver: covered rows hide while the compact T9 path bar stays
         // focusable and interactive outside the overlay (r3 §4.3).
-        hideCoveredAccessibility(in: rootStack, keeping: t9PinyinPathBarView)
+        box.coveredAccessibilityViews = hideCoveredAccessibility(in: rootStack, keeping: t9PinyinPathBarView)
         UIAccessibility.post(notification: .layoutChanged, argument: panel)
     }
 
@@ -161,7 +161,8 @@ extension KeyboardViewController {
     /// exactly once.
     private func teardownQuickMenuPanel() {
         let box = QuickMenuStateBox.box(for: self)
-        restoreCoveredAccessibility()
+        restoreCoveredAccessibility(box.coveredAccessibilityViews)
+        box.coveredAccessibilityViews = []
         box.panel?.removeFromSuperview()
         box.panel = nil
         box.scrim?.removeFromSuperview()
@@ -169,25 +170,6 @@ extension KeyboardViewController {
     }
 
     // MARK: - VoiceOver coverage (r3 §4.3, +ExpandedCandidatePanel precedent)
-
-    private func hideCoveredAccessibility(in root: UIStackView, keeping pathBar: UIView?) {
-        let box = QuickMenuStateBox.box(for: self)
-        box.coveredAccessibilityViews = root.arrangedSubviews.compactMap { view in
-            guard view !== pathBar else { return nil }
-            return (view, view.accessibilityElementsHidden)
-        }
-        for (view, _) in box.coveredAccessibilityViews {
-            view.accessibilityElementsHidden = true
-        }
-    }
-
-    private func restoreCoveredAccessibility() {
-        let box = QuickMenuStateBox.box(for: self)
-        for (view, previous) in box.coveredAccessibilityViews {
-            view.accessibilityElementsHidden = previous
-        }
-        box.coveredAccessibilityViews = []
-    }
 
     private func restoreQuickMenuEntryFocus() {
         guard UIAccessibility.isVoiceOverRunning,

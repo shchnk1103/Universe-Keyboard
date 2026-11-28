@@ -157,6 +157,11 @@ Keyboard layout is built from `UIStackView` rows:
 
 Avoid mixing business state and visual styling. Business logic belongs in `KeyboardCore`; the view controller should delegate actions to `KeyboardController.handle(_:)`.
 
+### Programmatic view and concurrency hygiene
+
+- Every programmatically added subview in `Keyboard` / `CandidateBarView` must set `translatesAutoresizingMaskIntoConstraints = false` immediately next to its `addSubview(_:)` call — never in a later setup block. A missing or deferred flag is the usual cause of views falling back to autoresizing frames and ending up misplaced or resized at runtime.
+- Under `-default-isolation=MainActor`, pure value types that are exercised from `nonisolated` test suites must be marked `nonisolated` themselves. Do not force value-type logic onto the main actor just so a test can reach it, and do not mark view/controller types `nonisolated` to work around it.
+
 ## Main App
 
 The main app lives under `Universe Keyboard/` and is SwiftUI-based. It should feel like a small **refined** companion Settings app—system-like hierarchy and density, with clearer rhythm and a little warmth in copy—not a marketing page.

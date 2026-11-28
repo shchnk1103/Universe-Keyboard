@@ -1,4 +1,6 @@
 """Tests for KOS-EXEC-SPEEDUP-001: kos_handoff final and doc_verify.sh. Stdlib only."""
+from __future__ import annotations
+
 import hashlib
 import subprocess
 import sys

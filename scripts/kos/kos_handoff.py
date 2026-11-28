@@ -10,6 +10,7 @@ import shlex
 import subprocess
 import sys
 from pathlib import Path
+from typing import Optional
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, SCRIPT_DIR)
@@ -202,8 +203,8 @@ def canonical_department_role(role, pools=None):
 
 
 def format_dispatch_block(task_name: str, role: str, packet_path, sha256: str,
-                          members: str | None = None,
-                          department: str | None = None) -> str:
+                          members: Optional[str] = None,
+                          department: Optional[str] = None) -> str:
     """O95: the single dispatch-block renderer shared by PM and employee relays.
 
     Fixed 5 clean lines (任务名/角色/包路径/SHA-256/授权，直接执行) with no
@@ -491,12 +492,12 @@ def _relay_check_identity(repo: str, expect: str) -> tuple[bool, str]:
 TASK_ID_RE = re.compile(r"KOS-[A-Za-z0-9-]+")
 
 
-def _relay_pick(board: str, board_args_json: str, excludes: list[str], role: str = "quality") -> tuple[str | None, str]:
+def _relay_pick(board: str, board_args_json: str, excludes: list[str], role: str = "quality") -> tuple[Optional[str], str]:
     return _relay_pick_with_reserve(board, board_args_json, excludes, role=role, reserve_task=None)
 
 
 def _relay_pick_with_reserve(board: str, board_args_json: str, excludes: list[str], role: str = "quality",
-                             reserve_task: str | None = None, env: dict | None = None) -> tuple[str | None, str]:
+                             reserve_task: Optional[str] = None, env: Optional[dict] = None) -> tuple[Optional[str], str]:
     """Pick a specialist, optionally reserving them for a task.
 
     O108: the plain pick runs first and is fully validated (parse + exclude
@@ -552,7 +553,7 @@ GENERIC_BOARD_ROLES = {
 FALLBACK_QUALITY_EXCLUDES = ["Cole", "Pete", "Ivy"]
 
 
-def _identity_name(path: Path) -> str | None:
+def _identity_name(path: Path) -> Optional[str]:
     """Extract the role-holder name from a report's line 2 (`Name（role）…`)."""
     try:
         lines = path.read_text(encoding="utf-8").splitlines()
@@ -582,7 +583,7 @@ def _collect_participant_names(report: Path, extra_patterns: tuple[str, ...] = (
     return names
 
 
-def _split_next_role(next_role: str) -> tuple[str | None, str]:
+def _split_next_role(next_role: str) -> tuple[Optional[str], str]:
     """Split `Maya（Quality Reviewer）` into (name, duty). A bare duty has no name."""
     head = re.split(r"[，,]", (next_role or "").strip(), maxsplit=1)[0].strip()
     match = re.match(r"^([A-Za-z][A-Za-z0-9_-]*)（([^）]+)）$", head)
@@ -600,7 +601,7 @@ def _board_roles_dir(args) -> str:
     return os.path.expanduser("~/.kos-work/Universe-Keyboard/KOS-ROLES-001")
 
 
-def _board_slot_state(args, name: str) -> str | None:
+def _board_slot_state(args, name: str) -> Optional[str]:
     """Current BOARD.md slot for `name`, or None when the board cannot be read."""
     path = os.path.join(_board_roles_dir(args), "BOARD.md")
     try:
@@ -791,7 +792,7 @@ def cmd_relay_quality(args):
     return 0
 
 
-def _check_feature_arch_gate(packet_text: str) -> "str | None":
+def _check_feature_arch_gate(packet_text: str) -> Optional[str]:
     """Feature-grade arch gate (O92 RS-2 + m2): the packet's 冻结输入 section
     must contain arch-* report frozen inputs as same-line backtick pairs
     (path + 64-hex SHA-256), the file's real SHA-256 must match, and the
