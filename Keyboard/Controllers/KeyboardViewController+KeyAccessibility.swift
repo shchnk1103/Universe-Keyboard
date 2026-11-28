@@ -1,6 +1,26 @@
 import KeyboardCore
 import UIKit
 
+// MARK: - Covered VoiceOver accessibility (shared: QuickMenu + expanded panel)
+
+/// Records `accessibilityElementsHidden` for every arranged subview of `root`
+/// except `keeping`, then hides each one (r3 §4.3). Returns the recorded
+/// snapshots for `restoreCoveredAccessibility(_:)`.
+func hideCoveredAccessibility(in root: UIStackView, keeping pathBar: UIView?) -> [(UIView, Bool)] {
+    let covered = root.arrangedSubviews.filter { $0 !== pathBar }
+    let snapshots = covered.map { ($0, $0.accessibilityElementsHidden) }
+    for (view, _) in snapshots { view.accessibilityElementsHidden = true }
+    return snapshots
+}
+
+/// Restores `accessibilityElementsHidden` from snapshots recorded by
+/// `hideCoveredAccessibility(in:keeping:)`.
+func restoreCoveredAccessibility(_ coveredAccessibilityViews: [(UIView, Bool)]) {
+    for (view, previous) in coveredAccessibilityViews {
+        view.accessibilityElementsHidden = previous
+    }
+}
+
 extension KeyboardViewController {
     /// Adds semantic VoiceOver metadata without coupling accessibility text to visible key glyphs.
     func configureKeyAccessibility(_ button: UIButton, title: String, action: Selector) {

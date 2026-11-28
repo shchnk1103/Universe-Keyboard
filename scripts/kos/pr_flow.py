@@ -696,7 +696,12 @@ def _export_archive(runner, main_checkout: str, head: str, dest: Path) -> Result
     raw = archived.out if isinstance(archived.out, bytes) else archived.out.encode("utf-8")
     dest.mkdir(parents=True, exist_ok=True)
     with tarfile.open(fileobj=BytesIO(raw), mode="r:*") as tar:
-        tar.extractall(dest, filter="data")
+        if sys.version_info >= (3, 12):
+            tar.extractall(dest, filter="data")
+        else:
+            # Python 3.9-3.11 has no extraction-filter kwarg; the default
+            # (unfiltered) behaviour is the only option there.
+            tar.extractall(dest)
     return Result(0, "", "")
 
 

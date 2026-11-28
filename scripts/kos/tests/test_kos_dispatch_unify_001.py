@@ -9,6 +9,7 @@ O207: 派发块角色字段经部门池规范（kos-pm-next.py load_department_p
 ROSTER.md 6 部门池）归一，个人名/旧别名自动映射为标准部门名，无法映射即
 拒绝；测试经 KOS_ROSTER 注入 /tmp 夹具花名册，不读写真实台账。
 """
+from __future__ import annotations
 
 FIXTURE_ROSTER = """# 名册（O95/O207 测试夹具）
 | 名字 | 角色 | 当前担任者 | 角色卡 |

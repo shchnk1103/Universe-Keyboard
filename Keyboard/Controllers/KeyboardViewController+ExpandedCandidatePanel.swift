@@ -123,14 +123,13 @@ final class ExpandedCandidatePanelContainerView: UIView {
     private let coveredMask = CAShapeLayer()
     private var coveredAccessibilityViews: [(UIView, Bool)] = []
 
-    fileprivate func hideCoveredAccessibility(in root: UIStackView, keeping pathBar: UIView?) {
+    /// Saves the root's current layer mask and stores the covered-accessibility
+    /// snapshots recorded by the shared `hideCoveredAccessibility(in:keeping:)`
+    /// helper for `restoreCoveredAccessibility()`.
+    fileprivate func applyCoveredAccessibility(in root: UIStackView, snapshots: [(UIView, Bool)]) {
         coveredRoot = root
         previousRootMask = root.layer.mask
-        coveredAccessibilityViews = root.arrangedSubviews.filter { $0 !== pathBar }.map {
-            let previous = $0.accessibilityElementsHidden
-            $0.accessibilityElementsHidden = true
-            return ($0, previous)
-        }
+        coveredAccessibilityViews = snapshots
     }
 
     fileprivate func restoreCoveredAccessibility() {
@@ -413,7 +412,9 @@ extension KeyboardViewController {
             container.actionTopConstraint = button.topAnchor.constraint(equalTo: candidateBar.topAnchor)
             container.actionTopConstraint?.isActive = true
             // Root stays visible for the path row; covered keys must remain absent from VoiceOver.
-            container.hideCoveredAccessibility(in: rootStack, keeping: t9PinyinPathBarView)
+            container.applyCoveredAccessibility(
+                in: rootStack,
+                snapshots: hideCoveredAccessibility(in: rootStack, keeping: t9PinyinPathBarView))
         }
         candidateExpandedPanel = panel
         // The opaque panel covers the keys. Keep the real T9 path bar above it visible and

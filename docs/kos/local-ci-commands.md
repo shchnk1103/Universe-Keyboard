@@ -50,6 +50,10 @@ xcrun swift-format lint --strict --configuration .swift-format <file>
    执行 `test`（与 CI 的 `test-rime-sync-keychain` 对齐）。无签名的步骤 5 不替代此检查。
 7. **Release build：** 同上 destination，`-configuration Release` 的 `build`（参数与 CI 一致）。Debug `test` 已覆盖 Debug 编译，不再单独跑 Debug `build`。
 
+**UniverseKeyboardTests 与 SchemaManager：** 触碰 `SchemaManager` 的 `UniverseKeyboardTests`
+必须注入 stub `SchemaArchiveInstalling`（不依赖真实解包/部署路径），保证
+`CODE_SIGNING_ALLOWED=NO` 的 CI 构建在没有 App Group entitlements 的环境下仍然确定性通过。
+
 **本机范围：** 纯文档且无 Swift / 工程 / 测试文件改动时，可跳过 3–7，但须在完成报告中写明「docs-only，跳过 xcodebuild」。只改 `Packages/KeyboardCore` 时至少跑步骤 3；改主 App / Extension / 测试 target 时应执行相应定向测试，不能只跑 KeyboardCore。
 
 修改 `.github/workflows/**`、`scripts/ci/**` 或分类规则本身时不得使用 docs-only
