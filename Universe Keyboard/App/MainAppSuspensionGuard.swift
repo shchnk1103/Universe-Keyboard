@@ -1,11 +1,11 @@
 import Foundation
 import KeyboardCore
-import Synchronization
 import UIKit
+import os
 
 /// 到期标记不放在 MainActor 上。排空在 KeyboardCore 里读它，不能假设还在主线程。
 nonisolated private enum MainAppSuspensionCancelFlags {
-    static let ids = Mutex<Set<UUID>>([])
+    static let ids = OSAllocatedUnfairLock<Set<UUID>>(initialState: [])
 }
 
 nonisolated func mainAppSuspensionReportsCancelled(id: UUID) -> Bool {

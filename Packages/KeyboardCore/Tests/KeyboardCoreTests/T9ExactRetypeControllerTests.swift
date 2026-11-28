@@ -1,6 +1,6 @@
 import Foundation
-import Synchronization
 import XCTest
+import os
 
 @testable import KeyboardCore
 
@@ -19,7 +19,7 @@ final class T9ExactRetypeControllerTests: XCTestCase {
             var deletes = 0
             var windows = 0
         }
-        private let state = Mutex(Facts())
+        private let state = OSAllocatedUnfairLock(initialState: Facts())
         func record(_ action: String, input: String = "") {
             state.withLock {
                 switch action {

@@ -1,5 +1,5 @@
 import Foundation
-import Synchronization
+import os
 
 /// 主 App 进程内所有同步与断开事务共享的所有权门。
 ///
@@ -27,7 +27,7 @@ nonisolated final class RimeSyncProcessGate: Sendable {
         var nextLeaseID: UInt64 = 0
     }
 
-    private let state = Mutex(State())
+    private let state = OSAllocatedUnfairLock(initialState: State())
 
     func claim(source: Source) -> Lease? {
         state.withLock { state in

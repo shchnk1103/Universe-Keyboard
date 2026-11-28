@@ -1,6 +1,6 @@
 #if DEBUG && KEYBOARD_QUERY_COST_PROBE
     import Foundation
-    import Synchronization
+    import os
 
     /// One production arm attempt and a fixed, content-free buffer.
     /// Recoverable invalidity never controls the query. Swift/OS allocation failure
@@ -159,7 +159,7 @@
                 }
             }
         }
-        private let state = Mutex(State())
+        private let state = OSAllocatedUnfairLock(initialState: State())
         private static let processID = UUID()
         private let probeID = UUID()
         private let clock: @Sendable () -> UInt64

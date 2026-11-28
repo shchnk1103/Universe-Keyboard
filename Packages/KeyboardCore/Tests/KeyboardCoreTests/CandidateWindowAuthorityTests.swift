@@ -1,6 +1,6 @@
 import Foundation
-import Synchronization
 import XCTest
+import os
 
 @testable import KeyboardCore
 
@@ -16,7 +16,7 @@ final class CandidateAuthorityProbe: Sendable {
     let delivered = DispatchSemaphore(value: 0)
     let blockProcess: Bool
     let blockReset: Bool
-    private let facts = Mutex(Facts())
+    private let facts = OSAllocatedUnfairLock(initialState: Facts())
 
     init(blockProcess: Bool = false, blockReset: Bool = false) {
         self.blockProcess = blockProcess

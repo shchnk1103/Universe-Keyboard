@@ -1,6 +1,6 @@
 import RimeBridge
-import Synchronization
 import XCTest
+import struct os.OSAllocatedUnfairLock
 
 @testable import KeyboardCore
 @testable import Universe_Keyboard
@@ -203,7 +203,7 @@ final class RimeSyncDiagnosticsTests: XCTestCase {
 }
 
 private final class RecordingRimeSyncDiagnostics: RimeSyncDiagnosing, Sendable {
-    private let storage = Mutex<[DiagnosticEvent.RimeSyncPayload]>([])
+    private let storage = OSAllocatedUnfairLock<[DiagnosticEvent.RimeSyncPayload]>(initialState: [])
 
     var payloads: [DiagnosticEvent.RimeSyncPayload] {
         storage.withLock { $0 }

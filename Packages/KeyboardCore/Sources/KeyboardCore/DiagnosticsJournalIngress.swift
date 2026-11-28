@@ -1,6 +1,6 @@
 import Dispatch
 import Foundation
-import Synchronization
+import os
 
 #if DEBUG
     /// 测试可替换的批写入器。生产 `DiagnosticsJournalWriter` 是默认实现。
@@ -42,7 +42,7 @@ public final class DiagnosticsJournalIngress: Sendable {
         var nextWaiterID: UInt64 = 1
     }
 
-    private let appendAdmission = Mutex(AppendAdmission())
+    private let appendAdmission = OSAllocatedUnfairLock(initialState: AppendAdmission())
 
     #if DEBUG
         internal enum TestingTicketOutcome: String, Sendable {
@@ -167,7 +167,7 @@ public final class DiagnosticsJournalIngress: Sendable {
     }
 
     private let queue: DispatchQueue
-    private let pending = Mutex(PendingState())
+    private let pending = OSAllocatedUnfairLock(initialState: PendingState())
     private let rootURL: @Sendable () -> URL?
     private let isCategoryEnabled: @Sendable (Logger.Category) -> Bool
     private let origin: DiagnosticEvent.Origin
@@ -180,8 +180,10 @@ public final class DiagnosticsJournalIngress: Sendable {
     /// on the background flush path and at the append gate, never on the key path.
     private let closeGenerationProvider: (@Sendable () -> UInt64)?
     #if DEBUG
-        private let batchWriterFactory = Mutex<(@Sendable (URL) -> any DiagnosticsJournalBatchWriting)?>(nil)
-        private let waiterRegisteredProbe = Mutex<(@Sendable (Int) -> Void)?>(nil)
+        private let batchWriterFactory = OSAllocatedUnfairLock<
+            (@Sendable (URL) -> any DiagnosticsJournalBatchWriting)?
+        >(initialState: nil)
+        private let waiterRegisteredProbe = OSAllocatedUnfairLock<(@Sendable (Int) -> Void)?>(initialState: nil)
     #endif
 
     public init(

@@ -2,8 +2,8 @@ import CryptoKit
 import Foundation
 import KeyboardCore
 import RimeBridge
-import Synchronization
 import XCTest
+import os
 
 @testable import Universe_Keyboard
 
@@ -3293,8 +3293,8 @@ nonisolated final class RecordingDeliveryDiagnostics: SchemaDeliveryDiagnosing, 
         let isFailure: Bool
     }
 
-    private let payloads = Mutex<[DiagnosticEvent.SchemeDeliveryPayload]>([])
-    private let runtimeRouteRecords = Mutex<[RuntimeRouteRecord]>([])
+    private let payloads = OSAllocatedUnfairLock<[DiagnosticEvent.SchemeDeliveryPayload]>(initialState: [])
+    private let runtimeRouteRecords = OSAllocatedUnfairLock<[RuntimeRouteRecord]>(initialState: [])
 
     func record(_ payload: DiagnosticEvent.SchemeDeliveryPayload) {
         payloads.withLock { $0.append(payload) }

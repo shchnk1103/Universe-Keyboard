@@ -1,5 +1,5 @@
-import Synchronization
 import XCTest
+import os
 
 @testable import KeyboardCore
 
@@ -543,7 +543,7 @@ final class ResponsiveProvisionalL1WireTests: XCTestCase {
         controller.textClient = client
 
         let firstL2 = expectation(description: "first-l2-before-delete")
-        let fulfilledFirstL2 = Mutex(false)
+        let fulfilledFirstL2 = OSAllocatedUnfairLock(initialState: false)
         controller.onResponsivePresentationNeeded = { [weak controller] _ in
             guard let controller else { return }
             if controller.threadAffineRimeCoordinator?.lastPublished?.revision == 1,

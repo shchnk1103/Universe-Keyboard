@@ -1,6 +1,6 @@
 import Foundation
-import Synchronization
 import XCTest
+import os
 
 @testable import KeyboardCore
 
@@ -8,12 +8,12 @@ import XCTest
 /// scheduler and the ingress flush barrier; nothing here sleeps or asserts wall-clock time.
 final class T9DiagnosticJournalS1cTests: XCTestCase {
     final class Flag: @unchecked Sendable {
-        private let value = Mutex<UInt64>(0)
+        private let value = OSAllocatedUnfairLock<UInt64>(initialState: 0)
         func get() -> UInt64 { value.withLock { $0 } }
         func advance() { value.withLock { $0 += 1 } }
     }
     final class Switch: @unchecked Sendable {
-        private let value = Mutex<Bool>(true)
+        private let value = OSAllocatedUnfairLock<Bool>(initialState: true)
         func get() -> Bool { value.withLock { $0 } }
         func set(_ newValue: Bool) { value.withLock { $0 = newValue } }
     }

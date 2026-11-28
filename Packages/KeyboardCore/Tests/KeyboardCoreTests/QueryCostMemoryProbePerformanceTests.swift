@@ -1,7 +1,7 @@
 #if DEBUG && KEYBOARD_QUERY_COST_PROBE
     import Dispatch
     import Foundation
-    import Synchronization
+    import os
     import XCTest
     @testable import KeyboardCore
 
@@ -109,7 +109,7 @@
             }
             let startBarrier = PairBarrier()
             let endBarrier = PairBarrier()
-            let results = Mutex(WorkerResults())
+            let results = OSAllocatedUnfairLock(initialState: WorkerResults())
             let start = DispatchTime.now().uptimeNanoseconds
             DispatchQueue.concurrentPerform(iterations: 2) { worker in
                 let operation = UInt64(worker + 1)
@@ -203,7 +203,9 @@
             _ = probe.beginSequence(ordinal: 1, fixture: 1, arm: 1, eligible: true)
             probe.beginOperation(1)
             probe.beginOperation(2)
-            let reservations = Mutex<[QueryCostMemoryProbe.Reservation?]>([nil, nil])
+            let reservations = OSAllocatedUnfairLock<[QueryCostMemoryProbe.Reservation?]>(initialState: [
+                nil, nil,
+            ])
             // concurrentPerform return is the explicit join: both reservations precede R1 freeze.
             DispatchQueue.concurrentPerform(iterations: 2) { worker in
                 let token = probe.beginInvocation(operation: UInt64(worker + 1), stage: .stageOne)

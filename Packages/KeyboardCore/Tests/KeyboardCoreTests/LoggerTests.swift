@@ -1,5 +1,6 @@
-import Synchronization
 import XCTest
+
+import struct os.OSAllocatedUnfairLock
 
 @testable import KeyboardCore
 
@@ -129,27 +130,26 @@ final class LoggerTests: XCTestCase {
     }
 
     #if DEBUG
-    func testDevicePreflightRecordBypassesDisabledCategory() async {
-        let logger = makeLogger { _ in false }
+        func testDevicePreflightRecordBypassesDisabledCategory() async {
+            let logger = makeLogger { _ in false }
 
-        logger.info("filtered", category: .performance)
-        logger.devicePreflightPerformance("mandatory")
-        logger.requestFlush()
+            logger.info("filtered", category: .performance)
+            logger.devicePreflightPerformance("mandatory")
+            logger.requestFlush()
 
-        let snapshot = await logger.snapshotForTesting()
-        XCTAssertEqual(snapshot.persistedLines.count, 1)
-        XCTAssertTrue(snapshot.persistedLines[0].hasSuffix("mandatory"))
-    }
+            let snapshot = await logger.snapshotForTesting()
+            XCTAssertEqual(snapshot.persistedLines.count, 1)
+            XCTAssertTrue(snapshot.persistedLines[0].hasSuffix("mandatory"))
+        }
     #endif
 
-    @available(macOS 15.0, *)
     func testWriterCoalescesSubmittedRecordsIntoOnePersistenceCycle() async {
         struct PersistenceState: Sendable {
             var lines: [String] = []
             var writeCount = 0
         }
 
-        let state = Mutex(PersistenceState())
+        let state = OSAllocatedUnfairLock(initialState: PersistenceState())
         let logger = Logger(
             configuration: LoggerWriterConfiguration(
                 persistence: LoggerPersistence(

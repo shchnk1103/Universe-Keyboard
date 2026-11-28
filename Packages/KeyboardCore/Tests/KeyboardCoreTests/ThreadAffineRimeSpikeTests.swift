@@ -1,6 +1,7 @@
 import Foundation
-import Synchronization
 import XCTest
+import os
+
 @testable import KeyboardCore
 
 private struct SpikeFakeRimeEngineFactory: ThreadAffineRimeSpikeEngineFactory {
@@ -16,7 +17,7 @@ private final class SpikeEngineLifecycleRecorder: Sendable {
         var deinitThread: Int?
     }
 
-    private let facts = Mutex(Facts())
+    private let facts = OSAllocatedUnfairLock(initialState: Facts())
     private let destroyed = DispatchSemaphore(value: 0)
 
     func recordInit() {

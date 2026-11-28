@@ -1,4 +1,4 @@
-import Synchronization
+import os
 
 public enum DiagnosticsAppendDrainOutcome: Sendable, Equatable {
     /// 已关闭新的 append 登记，且关闭时已登记的调用都已返回。
@@ -41,7 +41,7 @@ public final class DiagnosticsProcessLifecycle: Sendable {
         var members: [Member] = []
     }
 
-    private let state = Mutex(State())
+    private let state = OSAllocatedUnfairLock(initialState: State())
 
     public init() {}
 

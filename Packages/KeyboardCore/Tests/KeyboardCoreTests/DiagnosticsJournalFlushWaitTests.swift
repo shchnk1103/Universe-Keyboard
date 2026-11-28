@@ -1,6 +1,6 @@
 import Foundation
-import Synchronization
 import XCTest
+import os
 
 @testable import KeyboardCore
 
@@ -32,7 +32,7 @@ final class DiagnosticsJournalFlushWaitTests: XCTestCase {
         let gate = FlushGate()
         let rig = makeIngress(gate: gate)
         rig.ingress.record(makeEvent(sequence: 1, processInstanceID: rig.processID))
-        let finished = Mutex(false)
+        let finished = OSAllocatedUnfairLock(initialState: false)
         let task = Task {
             try await requireFlush(gate) { await rig.ingress.flushAndWaitForTesting() }
             finished.withLock { $0 = true }
@@ -120,7 +120,7 @@ final class DiagnosticsJournalFlushWaitTests: XCTestCase {
         await gate.setAdmitBeforeBlock(true)
         let rig = makeIngress(gate: gate, mainApp: false)
         rig.ingress.record(makeEvent(sequence: 1, processInstanceID: rig.processID))
-        let finished = Mutex(false)
+        let finished = OSAllocatedUnfairLock(initialState: false)
         let task = Task {
             try await requireFlush(gate) { await rig.ingress.flushAndWaitForTesting() }
             finished.withLock { $0 = true }
@@ -138,7 +138,8 @@ final class DiagnosticsJournalFlushWaitTests: XCTestCase {
         await gate.setFailure(.reclaimOnce)
         await gate.setBlocking(false)
         let rig = makeIngress(gate: gate, mainApp: false)
-        let observed = Mutex<[DiagnosticsJournalIngress.FlushWaitTestingSnapshot]>([])
+        let observed = OSAllocatedUnfairLock<[DiagnosticsJournalIngress.FlushWaitTestingSnapshot]>(
+            initialState: [])
         await gate.setAppendStarted { _ in
             let snapshot = rig.ingress.testingSnapshotForTesting()
             observed.withLock { $0.append(snapshot) }
@@ -232,8 +233,8 @@ final class DiagnosticsJournalFlushWaitTests: XCTestCase {
         let gate = FlushGate()
         let rig = makeIngress(gate: gate, mainApp: false)
         rig.ingress.record(makeEvent(sequence: 1, processInstanceID: rig.processID))
-        let firstFinished = Mutex(false)
-        let secondFinished = Mutex(false)
+        let firstFinished = OSAllocatedUnfairLock(initialState: false)
+        let secondFinished = OSAllocatedUnfairLock(initialState: false)
         let first = Task {
             try await requireFlush(gate) { await rig.ingress.flushAndWaitForTesting() }
             firstFinished.withLock { $0 = true }
@@ -283,7 +284,7 @@ final class DiagnosticsJournalFlushWaitTests: XCTestCase {
         let gate = FlushGate()
         let rig = makeIngress(gate: gate, mainApp: false)
         rig.ingress.record(makeEvent(sequence: 1, processInstanceID: rig.processID))
-        let completions = Mutex(0)
+        let completions = OSAllocatedUnfairLock(initialState: 0)
         let task = Task {
             try await requireFlush(gate) { await rig.ingress.flushAndWaitForTesting() }
             completions.withLock { $0 += 1 }
@@ -328,8 +329,8 @@ final class DiagnosticsJournalFlushWaitTests: XCTestCase {
         let gate = FlushGate()
         let rig = makeIngress(gate: gate, mainApp: false)
         rig.ingress.record(makeEvent(sequence: 1, processInstanceID: rig.processID))
-        let firstFinished = Mutex(false)
-        let secondFinished = Mutex(false)
+        let firstFinished = OSAllocatedUnfairLock(initialState: false)
+        let secondFinished = OSAllocatedUnfairLock(initialState: false)
         let first = Task {
             try await requireFlush(gate) { await rig.ingress.flushAndWaitForTesting() }
             firstFinished.withLock { $0 = true }
@@ -384,7 +385,7 @@ final class DiagnosticsJournalFlushWaitTests: XCTestCase {
         await gate.setHoldForever(true)
         let rig = makeIngress(gate: gate, mainApp: false)
         rig.ingress.record(makeEvent(sequence: 1, processInstanceID: rig.processID))
-        let outcomeBox = Mutex<DiagnosticsJournalFlushBarrierOutcome?>(nil)
+        let outcomeBox = OSAllocatedUnfairLock<DiagnosticsJournalFlushBarrierOutcome?>(initialState: nil)
         let task = Task {
             let outcome = await rig.ingress.flushAndWaitForTesting()
             outcomeBox.withLock { $0 = outcome }
@@ -432,7 +433,7 @@ final class DiagnosticsJournalFlushWaitTests: XCTestCase {
 
     func testHungBarrierFailsInsideBudgetAndPoisonsLaterAppends() async throws {
         let gate = FlushGate()
-        let live = Mutex(0)
+        let live = OSAllocatedUnfairLock(initialState: 0)
         let event = makeEvent(sequence: 1, processInstanceID: UUID())
         do {
             try await requireGate(gate, milliseconds: 1000) {
@@ -852,7 +853,7 @@ private struct FlushBarrierStageState: Sendable {
 }
 
 private final class FlushBarrierStageBox: Sendable {
-    private let state = Mutex(FlushBarrierStageState())
+    private let state = OSAllocatedUnfairLock(initialState: FlushBarrierStageState())
 
     func markBarrierReturned() {
         state.withLock { $0.barrierReturned = true }
