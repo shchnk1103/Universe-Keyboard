@@ -258,6 +258,14 @@ final class AppPR4StructuralConsolidationTests: XCTestCase {
         RimeSettingsStore(
             schemaManager: SchemaManager(
                 settings: persistence,
+                // The trigger-chain invariants only pin the store-level chain
+                // `savePreferences()` → `triggerDeployment()` → deployment
+                // service. Resource staging must not depend on the test host's
+                // App Group entitlement (hosted CI runs the test host unsigned
+                // with CODE_SIGNING_ALLOWED=NO, so the real container is
+                // unavailable and `prepareDirectories` would throw before the
+                // spy deployment service is ever reached).
+                archiveInstaller: PR4SpyArchiveInstaller(),
                 deploymentService: deploymentService
             ),
             persistence: persistence
@@ -309,6 +317,74 @@ private final class PR4SpySettingsPersistence: SharedSettingsStoring, RimeSettin
     }
     func removeObject(forKey key: String) { storage.removeValue(forKey: key) }
     func synchronize() {}
+}
+
+/// Deployment resource stub mirroring `StoreArchiveInstaller` in
+/// `RimeSettingsStoreTests`: keeps the frozen trigger chain independent of the
+/// test host's App Group entitlement and bundled-resource staging, so the
+/// deployment service spy is reached deterministically on any runner.
+@MainActor
+private final class PR4SpyArchiveInstaller: SchemaArchiveInstalling {
+    private let root: URL
+
+    init() {
+        root = FileManager.default.temporaryDirectory.appendingPathComponent(
+            "pr4-trigger-chain-\(UUID().uuidString)",
+            isDirectory: true
+        )
+    }
+
+    private func deploymentDirectoriesRoot() throws -> SchemaDeploymentDirectories {
+        try FileManager.default.createDirectory(
+            at: root.appendingPathComponent("shared", isDirectory: true),
+            withIntermediateDirectories: true
+        )
+        try FileManager.default.createDirectory(
+            at: root.appendingPathComponent("user", isDirectory: true),
+            withIntermediateDirectories: true
+        )
+        return SchemaDeploymentDirectories(
+            sharedDataURL: root.appendingPathComponent("shared", isDirectory: true),
+            userDataURL: root.appendingPathComponent("user", isDirectory: true)
+        )
+    }
+
+    func cachedArchiveURL(for distribution: RimeSchemeDistribution) -> URL {
+        URL(fileURLWithPath: "/tmp/\(distribution.cachedArchiveFileName)")
+    }
+    func prepareExtractionDirectory(for distribution: RimeSchemeDistribution) throws -> URL {
+        URL(fileURLWithPath: "/tmp/\(distribution.extractionDirectoryName)")
+    }
+    func removeTemporaryItem(at url: URL) {}
+    func containsInstalledSchema(plan: RimeSchemeInstallationPlan) -> Bool { false }
+    func checkDiskSpace(needed: Int64) throws {}
+    func installSchemaFiles(from extractDir: URL, plan: RimeSchemeInstallationPlan, luaAvailable: Bool) throws {}
+
+    func createUpgradeCheckpoint(plan: RimeSchemeInstallationPlan, luaAvailable: Bool) throws
+        -> SchemaUpgradeCheckpoint?
+    {
+        nil
+    }
+    func restoreUpgradeCheckpoint(_ checkpoint: SchemaUpgradeCheckpoint) throws {}
+    func commitUpgradeCheckpoint(_ checkpoint: SchemaUpgradeCheckpoint) {}
+    func stageSchemaUninstall(plan: RimeSchemeInstallationPlan) throws -> SchemaUninstallStaging {
+        SchemaUninstallStaging(rootURL: root.appendingPathComponent("uninstall-staging"), movedRelativePaths: [])
+    }
+    func commitSchemaUninstall(_ staging: SchemaUninstallStaging, plan: RimeSchemeInstallationPlan) {}
+    func rollbackSchemaUninstall(_ staging: SchemaUninstallStaging) throws {}
+    func clearBuildCache(plan: RimeSchemeInstallationPlan) {}
+    func sharedDataDirectoryURL() -> URL? {
+        root.appendingPathComponent("shared", isDirectory: true)
+    }
+    func runtimeDirectories() throws -> SchemaDeploymentDirectories {
+        SchemaDeploymentDirectories(
+            sharedDataURL: root.appendingPathComponent("shared", isDirectory: true),
+            userDataURL: root.appendingPathComponent("user", isDirectory: true)
+        )
+    }
+    func deploymentDirectories(pendingSchemaID: String?) throws -> SchemaDeploymentDirectories {
+        try deploymentDirectoriesRoot()
+    }
 }
 
 private actor PR4SpyDeploymentService: RimeDeploymentServicing {
