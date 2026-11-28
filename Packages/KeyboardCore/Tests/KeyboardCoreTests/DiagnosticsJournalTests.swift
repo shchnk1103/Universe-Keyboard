@@ -1,5 +1,5 @@
-import Synchronization
 import XCTest
+import os
 
 @testable import KeyboardCore
 
@@ -17,7 +17,7 @@ final class DiagnosticsJournalTests: XCTestCase {
             let leaseBefore = try Data(contentsOf: leaseURL(rootURL: rootURL, processID: processID))
             let reached = expectation(description: "control read boundary \(afterRead)")
             let release = DispatchSemaphore(value: 0)
-            let active = Mutex(true)
+            let active = OSAllocatedUnfairLock(initialState: true)
             await writer.installReadControlProbeForTesting { isAfterRead in
                 guard isAfterRead == afterRead else { return }
                 reached.fulfill()
@@ -50,7 +50,7 @@ final class DiagnosticsJournalTests: XCTestCase {
             rootURL: rootURL, origin: .mainApp, processInstanceID: processID, isMainAppWriter: true
         )
         try await writer.prepareRootIfOwnedByMainApp()
-        let active = Mutex(true)
+        let active = OSAllocatedUnfairLock(initialState: true)
         try await writer.append([makeEvent(sequence: 1, processInstanceID: processID)]) {
             active.withLock { state in
                 let granted = state
@@ -718,7 +718,7 @@ final class DiagnosticsJournalTests: XCTestCase {
         encoder.dateEncodingStrategy = .iso8601
         try encoder.encode(tombstone).write(to: tombstoneURL, options: .atomic)
 
-        let permissionCalled = Mutex(false)
+        let permissionCalled = OSAllocatedUnfairLock(initialState: false)
         do {
             try await writer.append([
                 makeEvent(

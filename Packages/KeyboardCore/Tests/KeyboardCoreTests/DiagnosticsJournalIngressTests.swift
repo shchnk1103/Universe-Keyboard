@@ -1,6 +1,6 @@
 import Foundation
-import Synchronization
 import XCTest
+import os
 
 @testable import KeyboardCore
 
@@ -311,7 +311,7 @@ private struct FlushBarrierStageState: Sendable {
 }
 
 private final class FlushBarrierStageBox: Sendable {
-    private let state = Mutex(FlushBarrierStageState())
+    private let state = OSAllocatedUnfairLock(initialState: FlushBarrierStageState())
 
     func markBarrierReturned() {
         state.withLock { $0.barrierReturned = true }
@@ -509,7 +509,7 @@ private func proveFlushBarrierTimeoutReportsReadStage() async throws {
 }
 
 /// 截止或取消后，未响应取消的 body 可能仍访问目录；保留目录供人工清理。
-nonisolated private let abandonedJournalRoots = Mutex<Set<String>>([])
+nonisolated private let abandonedJournalRoots = OSAllocatedUnfairLock<Set<String>>(initialState: [])
 
 nonisolated private func retainAbandonedJournalRoot(_ root: URL?) {
     guard let root else { return }

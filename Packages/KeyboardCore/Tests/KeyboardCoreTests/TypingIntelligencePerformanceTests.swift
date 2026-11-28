@@ -1,11 +1,10 @@
-import Synchronization
 import XCTest
+import os
 
 @testable import KeyboardCore
 
-@available(macOS 15.0, *)
 private final class TypingBenchmarkPersistence: Sendable {
-    private let state = Mutex((epoch: 0, data: Data?.none))
+    private let state = OSAllocatedUnfairLock(initialState: (epoch: 0, data: Data?.none))
 
     var configuration: TypingStatisticsPersistence {
         TypingStatisticsPersistence(
@@ -25,7 +24,6 @@ private final class PerformanceTextInputClient: TextInputClient {
     func unmarkText() {}
 }
 
-@available(macOS 15.0, *)
 @MainActor
 final class TypingIntelligencePerformanceTests: XCTestCase {
     func testClassificationPerformance() {

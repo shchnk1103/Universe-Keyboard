@@ -1,7 +1,7 @@
 import KeyboardCore
-import Synchronization
 import UIKit
 import XCTest
+import os
 
 @testable import Universe_Keyboard
 
@@ -57,8 +57,8 @@ final class MainAppSuspensionGuardTests: XCTestCase {
     }
 
     func testQueuedReclaimDoesNotStartAfterBackground() async {
-        let foreground = Mutex(false)
-        let started = Mutex(0)
+        let foreground = OSAllocatedUnfairLock(initialState: false)
+        let started = OSAllocatedUnfairLock(initialState: 0)
         let scheduler = DiagnosticsJournalRetentionScheduler(
             policy: DiagnosticsJournalRetentionScheduler.Policy(minimumInterval: 15 * 60),
             reclaim: { _ in

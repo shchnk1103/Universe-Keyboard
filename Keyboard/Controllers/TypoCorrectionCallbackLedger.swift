@@ -1,6 +1,6 @@
 #if DEBUG && KEYBOARD_QUERY_COST_PROBE
     import Foundation
-    import Synchronization
+    import os
 
     /// Observes callback bodies; references are aliases, not pending-work evidence.
     @MainActor
@@ -11,7 +11,7 @@
                 var ordinal: UInt64 = 0
                 var observed = false
             }
-            private let value = Mutex(Value())
+            private let value = OSAllocatedUnfairLock(initialState: Value())
             func prepare(_ ordinal: UInt64) { value.withLock { $0 = Value(ordinal: ordinal) } }
             func note(_ ordinal: UInt64) {
                 value.withLock { if $0.ordinal == ordinal { $0.observed = true } }

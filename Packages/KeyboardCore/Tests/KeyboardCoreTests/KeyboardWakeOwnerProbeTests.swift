@@ -1,5 +1,5 @@
 #if DEBUG
-    import Synchronization
+    import os
     import XCTest
     @testable import KeyboardCore
 
@@ -208,7 +208,7 @@
     }
 
     private final class ProbeClock: Sendable {
-        private let value = Mutex<UInt64>(0)
+        private let value = OSAllocatedUnfairLock<UInt64>(initialState: 0)
 
         func now() -> UInt64 {
             value.withLock { $0 }

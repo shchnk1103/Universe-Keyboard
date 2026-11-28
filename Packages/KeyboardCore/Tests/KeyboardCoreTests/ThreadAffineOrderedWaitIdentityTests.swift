@@ -1,6 +1,6 @@
 import Foundation
-import Synchronization
 import XCTest
+import os
 
 @testable import KeyboardCore
 
@@ -15,7 +15,7 @@ final class ThreadAffineOrderedWaitIdentityTests: XCTestCase {
         }
         let entered = DispatchSemaphore(value: 0)
         let release = DispatchSemaphore(value: 0)
-        private let state = Mutex(Facts())
+        private let state = OSAllocatedUnfairLock(initialState: Facts())
 
         func block() {
             state.withLock { $0.entered = true }

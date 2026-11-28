@@ -1,5 +1,5 @@
 import Foundation
-import Synchronization
+import os
 
 /// Storage for schema-related App Group flags. Access remains on the main actor
 /// because these values are part of the UI-observed schema state.
@@ -179,7 +179,7 @@ nonisolated private enum ProgressReportingURLSession {
     }
 
     private final class DownloadCancellationBox: Sendable {
-        private let state = Mutex(DownloadCancellationState())
+        private let state = OSAllocatedUnfairLock(initialState: DownloadCancellationState())
 
         func install(_ task: URLSessionTask) {
             let shouldCancel = state.withLock { state in

@@ -1,6 +1,6 @@
 #if DEBUG && KEYBOARD_QUERY_COST_PROBE
     import Foundation
-    import Synchronization
+    import os
     import XCTest
     @testable import KeyboardCore
 
@@ -317,7 +317,7 @@
             XCTAssertEqual(QueryCostMemoryProbe.decode(QueryCostProbeTestFixture.bytes(snapshot)), snapshot)
         }
         func testExpiryAndClockRegressionAreSticky() throws {
-            let tick = Mutex<UInt64>(100)
+            let tick = OSAllocatedUnfairLock<UInt64>(initialState: 100)
             let probe = QueryCostProbeTestFixture.armed(now: { tick.withLock { $0 } })
             tick.withLock { $0 = 99 }
             probe.beginOperation(1)

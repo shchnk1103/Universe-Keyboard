@@ -1,5 +1,5 @@
 import Foundation
-import Synchronization
+import os
 
 // MARK: - Notifications
 
@@ -74,7 +74,7 @@ private final class ThreadAffineDeliverySink: Sendable {
         #endif
     }
 
-    private let state = Mutex(State())
+    private let state = OSAllocatedUnfairLock(initialState: State())
 
     func handle(_ result: ThreadAffineRimeSpikeResult) {
         let snapshot = result.snapshot

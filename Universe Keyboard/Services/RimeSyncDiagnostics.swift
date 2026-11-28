@@ -1,7 +1,7 @@
 import Foundation
 import KeyboardCore
 import RimeBridge
-import Synchronization
+import struct os.OSAllocatedUnfairLock
 
 nonisolated protocol RimeSyncDiagnosing: Sendable {
     func record(_ payload: DiagnosticEvent.RimeSyncPayload, level: Logger.Level)
@@ -68,7 +68,7 @@ nonisolated final class RimeSyncDiagnosticSession: Sendable {
     private let requestedPhases: [DiagnosticEvent.RimeSyncPhase]
     private let requestedPhaseSet: Set<DiagnosticEvent.RimeSyncPhase>
     private let diagnostics: any RimeSyncDiagnosing
-    private let state = Mutex(State())
+    private let state = OSAllocatedUnfairLock(initialState: State())
 
     init(
         operationID: UUID = UUID(),

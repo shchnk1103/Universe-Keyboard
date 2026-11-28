@@ -1,6 +1,6 @@
 import Dispatch
 import Foundation
-import Synchronization
+import os
 
 public enum TypingStatisticsStorageKey {
     public static let enabled = "typing_intelligence_enabled"
@@ -177,12 +177,11 @@ private struct PendingTypingStatisticsBatch: Sendable {
 
 /// Coalesces content-free deltas and persists them on one utility queue.
 /// The committed text itself never enters this type.
-@available(macOS 15.0, *)
 public final class TypingStatisticsWriter: Sendable {
     private static let maximumDailyBucketCount = 365
 
     private let queue: DispatchQueue
-    private let pending = Mutex(PendingTypingStatisticsBatch())
+    private let pending = OSAllocatedUnfairLock(initialState: PendingTypingStatisticsBatch())
     private let persistence: TypingStatisticsPersistence
     private let flushDelay: TimeInterval
     private let automaticallySchedulesFlush: Bool
@@ -267,8 +266,8 @@ public final class TypingStatisticsWriter: Sendable {
         let now = batch.latestDate ?? Date()
         var snapshot: TypingStatisticsSnapshotV1
         if let existing,
-           existing.version == TypingStatisticsSnapshotV1.schemaVersion,
-           existing.resetEpoch == epoch
+            existing.version == TypingStatisticsSnapshotV1.schemaVersion,
+            existing.resetEpoch == epoch
         {
             snapshot = existing
         } else {
@@ -292,7 +291,8 @@ public final class TypingStatisticsWriter: Sendable {
         for (day, delta) in batch.daily {
             buckets[day, default: TypingStatisticsDelta()] += delta
         }
-        snapshot.dailyBuckets = buckets
+        snapshot.dailyBuckets =
+            buckets
             .map { TypingStatisticsDailyBucket(day: $0.key, counts: $0.value) }
             .sorted { $0.day < $1.day }
         if snapshot.dailyBuckets.count > Self.maximumDailyBucketCount {

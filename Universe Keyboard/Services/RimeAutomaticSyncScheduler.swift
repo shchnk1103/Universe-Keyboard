@@ -2,7 +2,7 @@ import BackgroundTasks
 import Dispatch
 import Foundation
 import KeyboardCore
-import Synchronization
+import os
 
 /// 用户可以分别订阅 RIME 标准资料和 Universe 设置的同步通知。
 nonisolated enum RimeSyncNotificationScope: String, CaseIterable, Hashable, Sendable {
@@ -146,7 +146,7 @@ nonisolated final class RimeAutomaticSyncTaskLifecycle: Sendable {
         case operationClaimed
     }
 
-    private let state = Mutex(State.active)
+    private let state = OSAllocatedUnfairLock(initialState: State.active)
 
     /// expiration 在回调线程同步抢占终止权；返回 `true` 时调用方必须立即取消操作
     /// 并以失败完成系统任务。

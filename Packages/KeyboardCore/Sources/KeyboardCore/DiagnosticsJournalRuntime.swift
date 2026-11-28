@@ -1,6 +1,6 @@
 import Dispatch
 import Foundation
-import Synchronization
+import os
 
 /// 一个 target 内的 typed journal 运行时。
 ///
@@ -8,7 +8,7 @@ import Synchronization
 /// 提供经过审查的 event code/字段。它刻意不接收 `String`，也不桥接 legacy Logger。
 public final class DiagnosticsJournalRuntime: Sendable {
     private final class SequenceCounter: Sendable {
-        private let value = Mutex<UInt64>(0)
+        private let value = OSAllocatedUnfairLock<UInt64>(initialState: 0)
 
         func next() -> UInt64 {
             value.withLock { sequence in

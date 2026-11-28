@@ -1,6 +1,6 @@
 import RimeBridge
-import Synchronization
 import XCTest
+import os
 
 @testable import Universe_Keyboard
 
@@ -30,7 +30,7 @@ final class RimeAutomaticSyncPolicyTests: XCTestCase {
     func testConcurrentExpirationAndOperationReturnHaveExactlyOneTerminalOwner() {
         for _ in 0..<200 {
             let lifecycle = RimeAutomaticSyncTaskLifecycle()
-            let claims = Mutex(0)
+            let claims = OSAllocatedUnfairLock(initialState: 0)
 
             DispatchQueue.concurrentPerform(iterations: 2) { index in
                 let didClaim: Bool
@@ -51,8 +51,8 @@ final class RimeAutomaticSyncPolicyTests: XCTestCase {
     func testProcessGateGrantsExactlyOneConcurrentLease() {
         for _ in 0..<200 {
             let gate = RimeSyncProcessGate()
-            let claimCount = Mutex(0)
-            let winningLease = Mutex<RimeSyncProcessGate.Lease?>(nil)
+            let claimCount = OSAllocatedUnfairLock(initialState: 0)
+            let winningLease = OSAllocatedUnfairLock<RimeSyncProcessGate.Lease?>(initialState: nil)
 
             DispatchQueue.concurrentPerform(iterations: 2) { index in
                 let source: RimeSyncProcessGate.Source =

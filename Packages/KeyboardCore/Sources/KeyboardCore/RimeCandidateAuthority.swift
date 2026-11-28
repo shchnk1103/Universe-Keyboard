@@ -1,5 +1,5 @@
 import Foundation
-import Synchronization
+import os
 
 /// Native candidate provenance. Core/UI presentation revisions are separate identities.
 public struct RimeOutputOrigin: Equatable, Hashable, Sendable {
@@ -83,7 +83,7 @@ public protocol RimeCandidateAuthorityProviding: AnyObject {
 
 /// Separate reply preserves rejection versus a successful empty final page.
 final class RimeBoundCandidateWindowReply: Sendable {
-    private let result = Mutex<RimeCandidateWindowReadResult?>(nil)
+    private let result = OSAllocatedUnfairLock<RimeCandidateWindowReadResult?>(initialState: nil)
     private let signal = DispatchSemaphore(value: 0)
 
     func fulfill(_ value: RimeCandidateWindowReadResult) {
