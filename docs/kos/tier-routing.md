@@ -13,6 +13,14 @@
 
 `scripts/kos/kos_handoff.py` 的 `relay-exec` / `relay-quality` 两处直通已按部门池出块，只写部门名（Executor（代码）部门 / Executor（文档）部门 / Quality 部门），并附 `kos-board.py claim --role <code|doc|quality> --task <TASK-ID>`；前序参与者只出现在 `--exclude` 提示里，不再指定接班人。这两处直通不再调用 `kos-board.py pick`，也不以 `PICK [` 为出块门禁。
 
+## 会话复用边界与强制领牌收尾（Human 2026-11-28 批准）
+
+- **空白会话 vs 空闲会话复用**：独立审查 / 门禁角色（架构、质量、预检）**必须**用全新空白会话，或一个未参与目标任务撰写与实现的会话；Executor（代码 / 文档）与 Publish 不要求每包新开空白会话，可在同部门内复用上下文干净的空闲会话。
+- **强制领牌与必定释放（`finally: set idle`）**：每个顶层 agent 会话在读取 / 执行任务前**第一步**运行 `kos-board.py claim`；交出**任何**终态报告（`DONE`、`PASS`、`CHANGES_REQUESTED`、`STOPPED`、`BLOCKED`、`WAITING_CI`）之前，必须以 `finally` 语义运行 `kos-board.py set <名字> idle <TASK-ID>`——异常与中途退出路径同样要释放，不允许占牌结束。
+- **Publish 池别名**：领牌命令为 `kos-board.py claim --role "Publish" --task <TASK-ID>`；不要传 `"Publish 部门"`，后者返回 `CLAIM: NONE`。
+
+**代码与测试复用及渐进模块化（Human 2026-11-28 批准）**：执行者先检索并复用既有生产辅助函数与共享测试夹具，不复制样板代码；可复用的探针 / 测试应干净地提升进测试套件（不写死本地路径或 UDID，E9 口径一致）。新增或修改的源码文件保持模块化：约 300–400 行软上限，纯逻辑下沉 `Packages/KeyboardCore`，超长文件按 PF-055 渐进拆分。PM 把这些写进验收门禁（见 [pm-playbook.md](pm-playbook.md) §2.5）。
+
 ## 分级原则
 
 - 任务按范围与风险进入 4 档流程。只有 `feature` 档必走设计 + 架构审查；`code-fix` / `doc-rule` / `doc-light` 按各自档位执行，`doc-light` 免预检、免独立复核。
