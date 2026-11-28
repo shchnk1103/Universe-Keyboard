@@ -55,6 +55,9 @@ extension KeyboardViewController {
             self.pasteSession.clearFailure()
             self.refreshPasteToolbar()
         }
+        view.onQuickMenuEntryTap = { [weak self] in
+            self?.toggleQuickMenu()
+        }
         return view
     }
 
@@ -374,6 +377,10 @@ extension KeyboardViewController {
 
     func refreshPasteToolbar(on newBar: CandidateBarView? = nil) {
         guard controller != nil else { return }
+        // PB-016 PR-2: the single quick-menu entry visibility hook (r3 §4.1).
+        // Runs before every early return so the number-pad shortcut-strip
+        // branch still refreshes the entry.
+        refreshQuickMenuEntryVisibility(on: newBar)
         let bar = newBar ?? candidateBar as? CandidateBarView
         if syncT9NumberPadShortcutStrip(on: bar) {
             pasteSession.invalidate()

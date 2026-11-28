@@ -28,12 +28,16 @@ private final class CandidateBarGestureBridge: NSObject, UIGestureRecognizerDele
     weak var collectionPan: UIGestureRecognizer?
     weak var pasteContent: UIView?
     weak var shortcutContent: UIView?
+    weak var ukQuickMenuEntryButton: UIButton?
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         guard let touched = touch.view else { return true }
         if let pasteContent, touched.isDescendant(of: pasteContent) { return false }
         if let shortcutContent, touched.isDescendant(of: shortcutContent) {
             return gestureRecognizer === swipeDown
         }
+        // PB-016 PR-2: the leading quick-menu entry owns taps only; bar
+        // drag/swipe gestures must never begin from it.
+        if let ukQuickMenuEntryButton, touched.isDescendant(of: ukQuickMenuEntryButton) { return false }
         #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
             if let wakeProbeButton, touched.isDescendant(of: wakeProbeButton) { return false }
         #endif
@@ -89,6 +93,14 @@ final class CandidateBarView: UIView {
     let expandButton: UIButton
     let expandButtonWidthConstraint: NSLayoutConstraint
     private var candidateTrailingConstraint: NSLayoutConstraint!
+    /// PB-016 PR-2: leading quick-menu entry (44×46pt "UK") + mirrored separator.
+    let ukQuickMenuEntryButton: UIButton
+    private let ukEntrySeparator = UIView()
+    /// Candidate viewport clip edge while the entry is visible.
+    private var candidateLeadingConstraint: NSLayoutConstraint!
+    /// Candidate viewport clip edge while the entry is hidden (original geometry).
+    private var candidateLeadingToBarEdgeConstraint: NSLayoutConstraint!
+    var onQuickMenuEntryTap: (() -> Void)?
     #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
         private var wakeProbeButton: UIButton?
         private var wakeProbeTrailingConstraint: NSLayoutConstraint?
@@ -142,6 +154,7 @@ final class CandidateBarView: UIView {
         expandButton = Self.makeExpandButton(target: interactionTarget, action: expandAction)
         expandButtonWidthConstraint = expandButton.widthAnchor.constraint(
             equalToConstant: KeyboardDesignTokens.CandidateBar.actionZoneWidth)
+        ukQuickMenuEntryButton = Self.makeUkQuickMenuEntryButton()
 
         super.init(frame: .zero)
 
@@ -166,7 +179,9 @@ final class CandidateBarView: UIView {
         addSubview(collectionView)
         addSubview(expandButton)
         installActionSeparator()
+        installUkQuickMenuEntry()
         bringSubviewToFront(expandButton)
+        bringSubviewToFront(ukQuickMenuEntryButton)
         recoveryLabel.translatesAutoresizingMaskIntoConstraints = false
         recoveryLabel.font = .preferredFont(forTextStyle: .caption1)
         recoveryLabel.textColor = .secondaryLabel
@@ -187,6 +202,11 @@ final class CandidateBarView: UIView {
         installSwipeDownExpandGesture()
 
         candidateTrailingConstraint = collectionView.trailingAnchor.constraint(equalTo: expandButton.leadingAnchor)
+        candidateLeadingConstraint = collectionView.leadingAnchor.constraint(
+            equalTo: ukQuickMenuEntryButton.trailingAnchor)
+        candidateLeadingToBarEdgeConstraint = collectionView.leadingAnchor.constraint(equalTo: leadingAnchor)
+        // The entry is hidden by default: the viewport keeps its original leading edge.
+        candidateLeadingToBarEdgeConstraint.isActive = true
         NSLayoutConstraint.activate([
             expandButton.trailingAnchor.constraint(equalTo: trailingAnchor),
             expandButton.topAnchor.constraint(equalTo: topAnchor),
@@ -229,6 +249,73 @@ final class CandidateBarView: UIView {
         // Compact chrome is identical in expand and idle-dismiss modes.
     }
 
+    // MARK: - UK quick-menu entry (PB-016 PR-2, design r1 §3.1)
+
+    /// Leading 44×46pt entry zone: the visible area is the entire touch area,
+    /// mirroring the frozen trailing action zone (1px separator, 0.6 × bar
+    /// height). Visibility releases the width back to the candidate viewport
+    /// by swapping the leading clip-edge constraint in one step.
+    func setUkQuickMenuVisible(_ visible: Bool) {
+        guard ukQuickMenuEntryButton.isHidden == !visible else { return }
+        if visible {
+            candidateLeadingToBarEdgeConstraint.isActive = false
+            candidateLeadingConstraint.isActive = true
+        } else {
+            candidateLeadingConstraint.isActive = false
+            candidateLeadingToBarEdgeConstraint.isActive = true
+        }
+        ukQuickMenuEntryButton.isHidden = !visible
+        ukQuickMenuEntryButton.isEnabled = visible
+        ukEntrySeparator.isHidden = !visible
+    }
+
+    private func installUkQuickMenuEntry() {
+        let button = ukQuickMenuEntryButton
+        button.addTarget(self, action: #selector(ukQuickMenuEntryTapped), for: .touchUpInside)
+        addSubview(button)
+        ukEntrySeparator.translatesAutoresizingMaskIntoConstraints = false
+        ukEntrySeparator.isUserInteractionEnabled = false
+        ukEntrySeparator.isAccessibilityElement = false
+        ukEntrySeparator.accessibilityElementsHidden = true
+        ukEntrySeparator.accessibilityIdentifier = "ukQuickMenuEntrySeparator"
+        ukEntrySeparator.backgroundColor = .separator
+        addSubview(ukEntrySeparator)
+        NSLayoutConstraint.activate([
+            button.leadingAnchor.constraint(equalTo: leadingAnchor),
+            button.topAnchor.constraint(equalTo: topAnchor),
+            button.bottomAnchor.constraint(equalTo: bottomAnchor),
+            button.widthAnchor.constraint(equalToConstant: KeyboardDesignTokens.CandidateBar.minimumTouchSize),
+            button.heightAnchor.constraint(equalToConstant: candidateBarHeight),
+
+            ukEntrySeparator.widthAnchor.constraint(
+                equalToConstant: Self.actionSeparatorWidth(for: traitCollection)),
+            ukEntrySeparator.heightAnchor.constraint(
+                equalTo: heightAnchor,
+                multiplier: KeyboardDesignTokens.CandidateBar.actionSeparatorHeightRatio),
+            ukEntrySeparator.centerYAnchor.constraint(equalTo: centerYAnchor),
+            ukEntrySeparator.trailingAnchor.constraint(equalTo: button.trailingAnchor),
+        ])
+        gestureBridge.ukQuickMenuEntryButton = button
+    }
+
+    @objc private func ukQuickMenuEntryTapped() {
+        onQuickMenuEntryTap?()
+    }
+
+    private static func makeUkQuickMenuEntryButton() -> UIButton {
+        let button = UIButton(type: .custom)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.backgroundColor = UIColor.systemGray.withAlphaComponent(0.001)
+        button.setTitle("UK", for: .normal)
+        button.setTitleColor(.secondaryLabel, for: .normal)
+        button.titleLabel?.font = .systemFont(ofSize: 13, weight: .semibold)
+        button.isHidden = true
+        button.accessibilityLabel = "快捷设置"
+        button.accessibilityHint = "打开快捷设置菜单"
+        button.accessibilityIdentifier = "ukQuickMenuEntry"
+        return button
+    }
+
     private static func actionSeparatorWidth(for traits: UITraitCollection) -> CGFloat {
         KeyboardDesignTokens.CandidateBar.actionSeparatorPixelWidth / max(traits.displayScale, 1)
     }
@@ -268,6 +355,7 @@ final class CandidateBarView: UIView {
         expandButton.isHidden = isShowingRecoveryNotice
         expandButton.isEnabled = !isShowingRecoveryNotice
         actionSeparator.isHidden = expandButton.isHidden
+        if isShowingRecoveryNotice { setUkQuickMenuVisible(false) }
         itemTapRecognizer.isEnabled = !isShowingRecoveryNotice
         swipeDownRecognizer?.isEnabled = !isShowingRecoveryNotice
         horizontalFallbackRecognizer?.isEnabled = !isShowingRecoveryNotice
@@ -458,6 +546,9 @@ final class CandidateBarView: UIView {
         if !expandButton.isHidden, expandedButtonHitFrame.contains(point) {
             let buttonPoint = expandButton.convert(point, from: self)
             result = expandButton.hitTest(buttonPoint, with: event) ?? expandButton
+        } else if !ukQuickMenuEntryButton.isHidden, ukQuickMenuEntryButton.frame.contains(point) {
+            let entryPoint = ukQuickMenuEntryButton.convert(point, from: self)
+            result = ukQuickMenuEntryButton.hitTest(entryPoint, with: event) ?? ukQuickMenuEntryButton
         } else if !pasteFailureLabel.isHidden, pasteFailureLabel.frame.contains(point) {
             result = pasteFailureLabel
         } else if let pasteContent, !pasteContent.isHidden, pasteContent.frame.contains(point) {

@@ -637,3 +637,23 @@ extension KeyboardController {
         return effects
     }
 }
+
+// MARK: - PB-016 PR-2: fail-closed quick-menu option replay (r3 §5.2)
+
+public extension KeyboardController {
+    /// Replays the live composition after a confirmed quick-menu option write.
+    ///
+    /// Gate-on owners replay inside `setOption` handling
+    /// (`ResponsiveRimePipeline.swift`, `ThreadAffineRimeSpike.swift`); the
+    /// fail-closed direct-held engine has no owner to do it, so the quick-menu
+    /// controller path calls this instead: a same-epoch `replaceInput`
+    /// publishes a fresh output snapshot for the current composition without
+    /// any session lifecycle change. No-op while no composition is active.
+    func replayCompositionAfterQuickMenuOptionChange() -> KeyboardEffect {
+        guard let rawInput = state.lastRimeOutput?.rawInput, !rawInput.isEmpty, let engine = rimeEngine
+        else { return [] }
+        let output = engine.replaceInput(rawInput)
+        applyRimeOutput(output)
+        return .compositionChanged
+    }
+}
