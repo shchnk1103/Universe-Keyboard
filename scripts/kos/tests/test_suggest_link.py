@@ -1,8 +1,10 @@
 """KOS-SUGGEST-LINK-001 (O75): check_report links to kos-suggest pending; Oxx link format.
 
 The real SUGGESTIONS.json / suggestions-ledger.md / BOARD.md are never touched:
-every case runs either a stub --suggest-tool or the external kos-suggest.py with
-KOS_HOME pointed at a temporary directory.
+every case runs either a stub --suggest-tool or the repo-owned kos_suggest.py
+with KOS_HOME pointed at a temporary directory (KOS-PY39-FULL-COMPAT-001: the
+tests are fixture-injected and never depend on a machine-local external tool
+path, so isolated-HOME runs and hosted CI behave identically).
 """
 import json
 import os
@@ -14,12 +16,10 @@ from pathlib import Path
 
 KOS = Path(__file__).resolve().parents[1]
 CHECK = KOS / "check_report.py"
-# KOS-SUGGEST-LINK-001 fix R1: cases that need the machine-local external tool
-# are gated on its existence so hosted CI (without it) still runs all green.
-EXTERNAL_SUGGEST_TOOL = Path(os.environ.get(
-    "KOS_TEST_EXTERNAL_SUGGEST_TOOL",
-    "/Users/doubleshy0n/.kos-work/Universe-Keyboard/tools/kos-suggest.py"))
-SUGGEST = EXTERNAL_SUGGEST_TOOL
+# KOS-PY39-FULL-COMPAT-001: probe the repo-owned tool instead of a per-user
+# external copy under the personal KOS home; the external copy has drifted from
+# the pending/add contract these tests pin down and must never be required.
+SUGGEST = KOS / "kos_suggest.py"
 PY = sys.executable
 
 
@@ -34,9 +34,10 @@ def write_report(task: Path, body: str = "1. 某某建议") -> Path:
     return report
 
 
-def run_check(report: Path, *extra: str) -> subprocess.CompletedProcess:
+def run_check(report: Path, *extra: str, env: dict = None) -> subprocess.CompletedProcess:
+    e = {**os.environ, **(env or {})}
     return subprocess.run([PY, "-B", str(CHECK), str(report), *extra],
-                          capture_output=True, text=True, timeout=120)
+                          capture_output=True, text=True, timeout=120, env=e)
 
 
 def stub(tmp: Path, code: int, out: str = "") -> str:
@@ -107,12 +108,17 @@ class CheckReportSuggestLink(unittest.TestCase):
             self.assertIn("SUGGESTIONS: skipped (disabled)", r.stdout)
             self.assertNotIn("UNREGISTERED", r.stdout)
 
-    @unittest.skipUnless(EXTERNAL_SUGGEST_TOOL.is_file(), "external kos-suggest.py not present")
     def test_real_tool_pending_readonly(self):
-        # default tool path, real (read-only) pending against a temp report
+        # real repo-owned kos_suggest.py probed read-only: a temp KOS_HOME and a
+        # temp report keep every real data file untouched; the report carries an
+        # unregistered suggestion, so the pending probe exits 1 and check_report
+        # reports UNREGISTERED while keeping its own exit code.
         with tempfile.TemporaryDirectory() as tmp:
-            report = write_report(Path(tmp))
-            r = run_check(report)
+            root = Path(tmp)
+            home = init_home(root)
+            report = write_report(root / "task")
+            r = run_check(report, "--suggest-tool", str(SUGGEST),
+                          env={"KOS_HOME": str(home)})
             self.assertEqual(r.returncode, 0, r.stderr)
             self.assertRegex(r.stdout, r"SUGGESTIONS: UNREGISTERED \(\d+\)")
 
@@ -120,7 +126,6 @@ class CheckReportSuggestLink(unittest.TestCase):
 class SuggestOxxLink(unittest.TestCase):
     """O75: kos-suggest accepts Oxx links validated against the register."""
 
-    @unittest.skipUnless(EXTERNAL_SUGGEST_TOOL.is_file(), "external kos-suggest.py not present")
     def test_add_and_digest_show_oxx(self):
         with tempfile.TemporaryDirectory() as tmp:
             home = init_home(Path(tmp))
@@ -132,13 +137,15 @@ class SuggestOxxLink(unittest.TestCase):
             self.assertEqual(a.returncode, 0, a.stderr + a.stdout)
             db = json.loads((home / "SUGGESTIONS.json").read_text(encoding="utf-8"))
             self.assertEqual(db["topics"]["t-oxx"]["link"], "O75")
-            run_suggest(home, "add", "--task", "T", "--report", str(r2),
+            # KOS-SUGGEST-AUTO-PROMOTE-001: a mention counts once per task, so
+            # the repeat is registered from a different task (independent task
+            # ids, same repo-owned tool injected via KOS_HOME).
+            run_suggest(home, "add", "--task", "T2", "--report", str(r2),
                         "--text", "某建议", "--topic", "t-oxx", "--link", "O75")
             d = run_suggest(home, "digest")
             self.assertEqual(d.returncode, 0, d.stderr)
             self.assertIn("O75", d.stdout)
 
-    @unittest.skipUnless(EXTERNAL_SUGGEST_TOOL.is_file(), "external kos-suggest.py not present")
     def test_link_command_accepts_oxx(self):
         with tempfile.TemporaryDirectory() as tmp:
             home = init_home(Path(tmp))
@@ -151,7 +158,6 @@ class SuggestOxxLink(unittest.TestCase):
             db = json.loads((home / "SUGGESTIONS.json").read_text(encoding="utf-8"))
             self.assertEqual(db["topics"]["t-link"]["link"], "O75")
 
-    @unittest.skipUnless(EXTERNAL_SUGGEST_TOOL.is_file(), "external kos-suggest.py not present")
     def test_link_rejects_unknown_oxx(self):
         with tempfile.TemporaryDirectory() as tmp:
             home = init_home(Path(tmp))
@@ -163,7 +169,6 @@ class SuggestOxxLink(unittest.TestCase):
             self.assertNotEqual(l.returncode, 0)
             self.assertIn("O999", l.stderr)
 
-    @unittest.skipUnless(EXTERNAL_SUGGEST_TOOL.is_file(), "external kos-suggest.py not present")
     def test_queue_link_still_accepted(self):
         # compatibility: kos-q ids keep working next to Oxx ids
         with tempfile.TemporaryDirectory() as tmp:
@@ -174,7 +179,6 @@ class SuggestOxxLink(unittest.TestCase):
                             "--text", "某建议", "--topic", "t-q", "--link", "Q-TASK-1")
             self.assertEqual(a.returncode, 0, a.stderr + a.stdout)
 
-    @unittest.skipUnless(EXTERNAL_SUGGEST_TOOL.is_file(), "external kos-suggest.py not present")
     def test_pending_roundtrip(self):
         with tempfile.TemporaryDirectory() as tmp:
             home = init_home(Path(tmp))
