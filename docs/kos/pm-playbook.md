@@ -104,6 +104,7 @@
 5. **直通出块（O129）**：`relay-exec` / `relay-quality` 只写部门名并附 `claim --role <code|doc|quality>`；前序参与者只放 `--exclude`，不再指定接班人，也不再以 `kos-board.py pick` 为出块门禁。条件见 [tier-routing.md](tier-routing.md)。
 6. **会话复用与必定释放（Human 2026-11-28 批准）**：独立审查（架构 / 质量 / 预检）必须用空白或零参与会话；Executor / Publish 可复用同部门上下文干净的空闲会话。顶层会话开工先 `claim`，交任何终态报告（含 `WAITING_CI`）前必须 `set <名字> idle`。Publish 池领牌别名是 `--role "Publish"`，不是 `"Publish 部门"`（后者返回 `CLAIM: NONE`）。全文见 [tier-routing.md](tier-routing.md)「会话复用边界与强制领牌收尾」。
 7. **写包验收加代码复用条款（Human 2026-11-28 批准）**：代码 / 测试类包的验收写明：先检索复用既有生产辅助与共享测试夹具，不复制样板；可复用探针 / 测试提升进测试套件（不写死本地路径或 UDID）；新增或修改源文件约 300–400 行软上限，纯逻辑下沉 `Packages/KeyboardCore`，超长文件按 PF-055 渐进拆分。
+8. **定向测试选择器写全限定名（Quality 建议，2026-11-28）**：Executor / Quality 包里指定 `-only-testing:` 时一律写带 target 的完整选择器（`-only-testing:<Target>/<Class>`，必要时含方法名），不写裸类名——不带 target 的选择器可能被 xcodebuild 静默跳过而不报错。验收里同时写明"核对日志 / xcresult 中每个被请求套件实际执行用例数 > 0"，防止"命令通过但用例没跑"的假绿。触Swift 6 / `KeyboardCore` 的包按 [local-ci-commands.md](local-ci-commands.md) 带上严格并发参数（`SWIFT_STRICT_CONCURRENCY=complete` 等）。
 
 ## 3. 写包与冻结
 

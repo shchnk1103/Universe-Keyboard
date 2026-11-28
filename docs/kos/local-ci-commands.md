@@ -14,6 +14,15 @@
 
 Code 站默认执行本机定向快验：Swift 改动必须通过 `AGENTS.md` 的 `swift-format lint --strict` 硬门槛；改 `KeyboardCore` 跑 `swift test --package-path Packages/KeyboardCore`；改主 App、Keyboard 或 RimeBridge 时，默认使用 `-only-testing:<本次新增及直接受影响的测试类>` 跑相应 scheme。按改动范围组合执行；纯文档或 KOS 脚本等无 Swift 改动按任务指定的适用检查执行。
 
+**Swift 6 严格并发硬门槛（Quality 建议采纳，2026-11-28）：** 本机定向快验只要触及 `KeyboardCore` 或任何 Swift 6 / 并发相关代码（`actor`、`Sendable`、`@Sendable` 闭包、锁与屏障等），必须与托管 CI 同参，不得用默认宽松参数"先跑通再说"：
+
+- `xcodebuild`：加 `SWIFT_STRICT_CONCURRENCY=complete SWIFT_TREAT_WARNINGS_AS_ERRORS=YES`（七步步骤 4–5 已内置，定向快验同样要带）；
+- `swift test`：加 `-Xswiftc -strict-concurrency=complete -Xswiftc -warnings-as-errors`，例如 `swift test --package-path Packages/KeyboardCore -Xswiftc -strict-concurrency=complete -Xswiftc -warnings-as-errors`。
+
+历史教训：PR #454 在托管 CI（严格并发 + 警告即错）下 `DiagnosticsJournalFlushBarrierRetryTesting.swift` 出 `@Sendable` 编译错误，本地未带该参数因此漏检——参数对齐 CI 后本地即复现，省一轮 CI 往返。
+
+**`-only-testing` 静默跳过陷阱（Quality 建议采纳，2026-11-28）：** 选择器必须写成带 target 的完整形式（`-only-testing:<Target>/<Class>`，必要时 `/Target/Class/testMethod`）。不带 target 的裸类名可能被 xcodebuild 静默跳过而不报错。每次定向跑完，核对日志或 xcresult 中**每个**被请求的套件实际执行用例数 > 0；有任何一个为 0 即视为未验证，不得以"命令通过"上报。
+
 本机默认不强跑签名 Keychain 测试与 Release build：涉及 Sync/Keychain 时跑签名 Keychain；涉及泛型或编译配置、或 CI 报 Release 错时跑 Release build。GitHub Actions 托管 CI 在合并前按分类把关六项重型门禁；下方七步保留供托管 CI 对齐及特殊场景使用。
 
 Quality 站禁止默认重跑全量 `xcodebuild`，应审查代码、核对合同与 Code 站门禁日志并检查 Swift 格式；仅发现疑点时定向补跑单个 `-only-testing:` 用例。本机重型 `xcodebuild` 并发上限为 2 槽，多线并行时最多两条线同时占用模拟器执行。默认模拟器为 `iPhone 17 Pro`；使用等价机型时在报告说明。
