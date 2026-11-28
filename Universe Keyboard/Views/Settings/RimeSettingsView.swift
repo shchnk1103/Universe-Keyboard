@@ -2,8 +2,25 @@ import Foundation
 import KeyboardCore
 import SwiftUI
 
+/// PB-015 PR-4（M3–M5）：RIME 方案页并入区块的文案锚点（与
+/// `AppPR4StructuralConsolidationTests` 共同回归）。
+enum RimeSettingsPageCopy {
+    static let preferenceSectionHeader = "输入偏好"
+}
+
+/// PB-015 PR-4（M3，设计 r2 §4 冻结）：候选数量 / 默认简体变更的触发链。
+///
+/// 迁移是纯视图层移动；两项偏好变更必须继续执行
+/// `savePreferences()` + `triggerDeployment()`（简繁/页大小变更走部署重建），
+/// 键名 `rime_page_size` / `rime_simplification` 不改，`RimeSettingsStore` 零改动。
+@MainActor
+func commitRimeCandidatePreference(_ store: RimeSettingsStore) {
+    store.savePreferences()
+    Task { await store.triggerDeployment() }
+}
+
 struct RimeSettingsView: View {
-    let store: RimeSettingsStore
+    @Bindable var store: RimeSettingsStore
     @State private var logExpanded = false
 
     var body: some View {
@@ -28,11 +45,73 @@ struct RimeSettingsView: View {
             }
 
             RimeDeploymentStatusSection(store: store, logExpanded: $logExpanded)
+
+            // PB-015 PR-4（M4）：高级输入功能并入方案页（复用独立 View 的内容，
+            // 独立页保留给 Search 深链；不与方案详情页的
+            // `RimeAdvancedInputStatusContent` 形成双份控件）。
+            RimeAdvancedInputSettingsContent(store: store)
+
+            // PB-015 PR-4（M5）：模糊音并入方案页（复用独立 View 的内容，
+            // 独立页保留给 Search 深链）。
+            RimeFuzzyPinyinSettingsContent(store: store)
+
+            candidatePreferenceSection
         }
         .navigationTitle("RIME 方案设置")
         .tint(.primary)
         .onAppear { store.load() }
-        .onDisappear { store.stop() }
+        .onDisappear {
+            store.stop()
+            // PB-015 PR-4：并入区块原先在各自独立页的 onDisappear 触发；
+            // 并入后由方案页统一承担（无待部署变更时为 no-op）。
+            Task { await store.triggerPendingDeploymentIfNeeded() }
+        }
+    }
+
+    /// PB-015 PR-4（M3）：候选数量滑杆 + 默认简体开关，从根设置页迁入。
+    private var candidatePreferenceSection: some View {
+        Section {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Text("候选数量")
+                        .font(.body)
+                    Spacer()
+                    Text("\(Int(store.pageSize)) 个")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                AppSlider(
+                    value: $store.pageSize,
+                    in: 5...20,
+                    step: 1,
+                    onEditingChanged: { editing in
+                        if !editing {
+                            commitRimeCandidatePreference(store)
+                        }
+                    },
+                    accessibilityLabel: "候选数量",
+                    accessibilityValueText: "\(Int(store.pageSize)) 个")
+                Text("每页最多显示的候选词个数。数量越少选词越快，数量越多翻页更少。")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            .padding(.vertical, 2)
+
+            ToggleRow(
+                title: "默认简体",
+                description: store.simplified
+                    ? "开启后使用 OpenCC 将结果转为简体中文输出。"
+                    : "关闭后保留词典原始字形。",
+                isOn: $store.simplified
+            )
+        } header: {
+            Text(RimeSettingsPageCopy.preferenceSectionHeader)
+        } footer: {
+            Text("修改后如需部署，会在后台安静处理。")
+        }
+        .onChange(of: store.simplified) { _, _ in
+            commitRimeCandidatePreference(store)
+        }
     }
 
     private func schemaStatusText(for schema: SchemaMetadata) -> String {

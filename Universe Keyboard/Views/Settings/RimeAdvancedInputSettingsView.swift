@@ -1,7 +1,30 @@
 import KeyboardCore
 import SwiftUI
 
+/// 高级输入功能独立页（保留给 Search 深链 `.advancedInput` 与方案详情页跳转）。
 struct RimeAdvancedInputSettingsView: View {
+    @Bindable var store: RimeSettingsStore
+
+    var body: some View {
+        Form {
+            RimeAdvancedInputSettingsContent(store: store)
+        }
+        .navigationTitle("高级输入功能")
+        .tint(.primary)
+        .onAppear { store.load() }
+        .onDisappear {
+            Task { await store.triggerPendingDeploymentIfNeeded() }
+        }
+    }
+}
+
+/// PB-015 PR-4（M4）：高级输入功能的可复用 Form 区块。
+///
+/// 同一份控件同时用于：
+/// - 独立页 `RimeAdvancedInputSettingsView`（Search 深链 `.advancedInput`）；
+/// - `RimeSettingsView` 方案页嵌入（设计 r2 §4「嵌入既有 View 复用，不复制控件」）。
+/// 方案不支持时的「无法开启」弹窗随内容走，两种宿主行为一致。
+struct RimeAdvancedInputSettingsContent: View {
     @Bindable var store: RimeSettingsStore
     @State private var showUnsupportedAlert = false
 
@@ -34,87 +57,91 @@ struct RimeAdvancedInputSettingsView: View {
     ]
 
     var body: some View {
-        Form {
-            Section {
-                // Unsupported: constant off binding so SwiftUI cannot clobber stored prefs.
-                if store.supportsProductAdvancedInput {
-                    Toggle("启用高级输入功能", isOn: liveMasterBinding)
-                        .toggleStyle(.appSwitch)
-                } else {
-                    Toggle("启用高级输入功能", isOn: .constant(false))
-                        .toggleStyle(.appSwitch)
-                        .disabled(true)
-                        .contentShape(Rectangle())
-                        .onTapGesture { showUnsupportedAlert = true }
-                }
+        Group {
+            masterSection
+            usageSection
+            featureGroupSections
+        }
+    }
 
-                Text(store.activeSchemaAdvancedInputStatusText)
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            } header: {
-                Text("当前方案")
-            } footer: {
-                if store.supportsProductAdvancedInput {
-                    Text("这些是你的偏好设置。只有当前布局使用的方案支持时，开关才可以调整并在重新部署后生效。切换方案不会清空你已保存的选择。")
-                } else {
-                    Text("当前布局绑定的方案不支持这些高级输入功能。已保存的偏好会保留，切回雾凇等支持方案后自动恢复，无需重新选择。")
-                }
-            }
-
-            Section {
-                ForEach(
-                    RimeSchemeNativeUsageGuide.advancedInputTips(
-                        for: store.settingsCapabilitySchemaID
-                    )
-                ) { tip in
-                    AdvancedInputHelpRow(title: tip.title, examples: tip.examples)
-                }
-            } header: {
-                Text("怎么使用（\(store.settingsCapabilitySchemeDisplayName)）")
-            } footer: {
-                Text(
-                    RimeSchemeNativeUsageGuide.advancedInputHelpFooter(
-                        for: store.settingsCapabilitySchemaID
-                    )
-                )
-            }
-
-            ForEach(groups) { group in
-                Section {
-                    ForEach(group.features) { feature in
-                        AdvancedInputFeatureToggle(
-                            feature: feature,
-                            isOn: store.supportsProductAdvancedInput
-                                ? liveFeatureBinding(for: feature)
-                                : .constant(false),
-                            isSupported: store.advancedInputFeatureIsSupported(feature),
-                            masterEnabled: store.advancedInputMasterEnabled
+    private var masterSection: some View {
+        Section {
+            // Unsupported: constant off binding so SwiftUI cannot clobber stored prefs.
+            if store.supportsProductAdvancedInput {
+                Toggle("启用高级输入功能", isOn: liveMasterBinding)
+                    .toggleStyle(.appSwitch)
+            } else {
+                Toggle("启用高级输入功能", isOn: .constant(false))
+                    .toggleStyle(.appSwitch)
+                    .disabled(true)
+                    .contentShape(Rectangle())
+                    .onTapGesture { showUnsupportedAlert = true }
+                    .alert("无法开启", isPresented: $showUnsupportedAlert) {
+                        Button("好", role: .cancel) {}
+                    } message: {
+                        Text(
+                            "当前方案（\(store.settingsCapabilitySchemeDisplayName)）暂不支持该功能。请切换到支持的方案（如雾凇拼音）后再试。"
                         )
                     }
-                } header: {
-                    Text(group.title)
-                } footer: {
-                    Text(group.footer)
-                }
-                .disabled(!store.supportsProductAdvancedInput || !store.advancedInputMasterEnabled)
-                .foregroundStyle(
-                    store.supportsProductAdvancedInput && store.advancedInputMasterEnabled
-                        ? .primary
-                        : .secondary
-                )
+            }
+
+            Text(store.activeSchemaAdvancedInputStatusText)
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        } header: {
+            Text("当前方案")
+        } footer: {
+            if store.supportsProductAdvancedInput {
+                Text("这些是你的偏好设置。只有当前布局使用的方案支持时，开关才可以调整并在重新部署后生效。切换方案不会清空你已保存的选择。")
+            } else {
+                Text("当前布局绑定的方案不支持这些高级输入功能。已保存的偏好会保留，切回雾凇等支持方案后自动恢复，无需重新选择。")
             }
         }
-        .navigationTitle("高级输入功能")
-        .tint(.primary)
-        .onAppear { store.load() }
-        .onDisappear {
-            Task { await store.triggerPendingDeploymentIfNeeded() }
-        }
-        .alert("无法开启", isPresented: $showUnsupportedAlert) {
-            Button("好", role: .cancel) {}
-        } message: {
+    }
+
+    private var usageSection: some View {
+        Section {
+            ForEach(
+                RimeSchemeNativeUsageGuide.advancedInputTips(
+                    for: store.settingsCapabilitySchemaID
+                )
+            ) { tip in
+                AdvancedInputHelpRow(title: tip.title, examples: tip.examples)
+            }
+        } header: {
+            Text("怎么使用（\(store.settingsCapabilitySchemeDisplayName)）")
+        } footer: {
             Text(
-                "当前方案（\(store.settingsCapabilitySchemeDisplayName)）暂不支持该功能。请切换到支持的方案（如雾凇拼音）后再试。"
+                RimeSchemeNativeUsageGuide.advancedInputHelpFooter(
+                    for: store.settingsCapabilitySchemaID
+                )
+            )
+        }
+    }
+
+    private var featureGroupSections: some View {
+        ForEach(groups) { group in
+            Section {
+                ForEach(group.features) { feature in
+                    AdvancedInputFeatureToggle(
+                        feature: feature,
+                        isOn: store.supportsProductAdvancedInput
+                            ? liveFeatureBinding(for: feature)
+                            : .constant(false),
+                        isSupported: store.advancedInputFeatureIsSupported(feature),
+                        masterEnabled: store.advancedInputMasterEnabled
+                    )
+                }
+            } header: {
+                Text(group.title)
+            } footer: {
+                Text(group.footer)
+            }
+            .disabled(!store.supportsProductAdvancedInput || !store.advancedInputMasterEnabled)
+            .foregroundStyle(
+                store.supportsProductAdvancedInput && store.advancedInputMasterEnabled
+                    ? .primary
+                    : .secondary
             )
         }
     }

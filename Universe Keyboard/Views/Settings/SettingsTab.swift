@@ -14,6 +14,58 @@ enum SettingsTabCopy {
     static let localDictionarySystemImage = "doc.text.magnifyingglass"
 }
 
+/// PB-015 PR-4 根页信息架构清单（设计 r1 §1.1 / A-08：4 组、12 条 Nav 行 + 5 张开关卡）。
+///
+/// `SettingsTab` 的各 Section 标题与页脚从这里取值；`navigationTitles` /
+/// `toggleCardTitles` 逐行钉住每个组实际渲染的 Nav 行与开关卡（结构与
+/// `AppPR4StructuralConsolidationTests` 共同回归）。移动或增删根页条目时必须同步更新此清单。
+enum SettingsRootLayout {
+    struct Group {
+        let title: String
+        let footer: String
+        let navigationTitles: [String]
+        let toggleCardTitles: [String]
+    }
+
+    static let typingHabits = Group(
+        title: "打字习惯",
+        footer: "布局、反馈、删除键和纠错都只影响本机打字习惯，可以随时改回来。这些不是人工智能功能。"
+            + "粘贴需要系统完全访问。开关和完全访问都开启时，键盘会读取剪贴板文字用于预览，"
+            + "只保存在内存里，不上传。未开启时键盘不显示粘贴条，打字不受影响。",
+        navigationTitles: ["键盘布局", "键盘反馈", "删除键"],
+        toggleCardTitles: [
+            "显示剪贴板预览", "上屏后联想", "中英混排自动加空格",
+            "英文候选自动补空格", "成对符号自动匹配",
+        ]
+    )
+
+    static let rimeSchemes = Group(
+        title: "输入方案",
+        footer: "方案与候选偏好写在本地；改完后如需部署，会在后台安静处理。"
+            + "高级输入功能、模糊音、候选数量与默认简体已并入 RIME 方案设置页。",
+        navigationTitles: ["RIME 方案设置", "用户词典"],
+        toggleCardTitles: []
+    )
+
+    static let dataAndTools = Group(
+        title: "数据与工具",
+        footer: "词典与同步都在你的设备侧处理，按需开启即可。",
+        navigationTitles: ["RIME 云同步", "词典文件"],
+        toggleCardTitles: []
+    )
+
+    static let general = Group(
+        title: "通用",
+        footer: "外观与通知只影响主 App；输入仍在键盘扩展里完成。"
+            + "版本、联系与隐私说明在关于页，诊断入口也在关于页。启用指南可随时从右上角问号重看。",
+        navigationTitles: ["显示与外观", "通知与提醒", "智能纠错", "输入洞察", "关于"],
+        toggleCardTitles: []
+    )
+
+    static var groups: [Group] { [typingHabits, rimeSchemes, dataAndTools, general] }
+    static var groupTitles: [String] { groups.map(\.title) }
+}
+
 struct SettingsTab: View {
     @Bindable var rimeStore: RimeSettingsStore
     @Bindable var syncModel: RimeSyncViewModel
@@ -68,12 +120,10 @@ struct SettingsTab: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: AppSpacing.sectionLoose) {
-                    inputBehaviorSection
-                    rimeInputSection
-                    dataAndSyncSection
-                    appSettingsSection
-                    toolsSection
-                    diagnosticsSection
+                    typingHabitsSection
+                    rimeSchemesSection
+                    dataAndToolsSection
+                    generalSection
                 }
                 .padding(.horizontal, AppSpacing.screen)
                 .padding(.vertical, AppSpacing.screen)
@@ -101,14 +151,12 @@ struct SettingsTab: View {
         }
     }
 
-    // MARK: - Sections
+    // MARK: - Group 1: 打字习惯
 
-    private var inputBehaviorSection: some View {
+    private var typingHabitsSection: some View {
         SettingsGroup(
-            title: "输入体验",
-            footer: "布局、反馈、删除键和纠错都只影响本机打字习惯，可以随时改回来。这些不是人工智能功能。"
-                + "粘贴需要系统完全访问。开关和完全访问都开启时，键盘会读取剪贴板文字用于预览，"
-                + "只保存在内存里，不上传。未开启时键盘不显示粘贴条，打字不受影响。"
+            title: SettingsRootLayout.typingHabits.title,
+            footer: SettingsRootLayout.typingHabits.footer
         ) {
             AppCard {
                 SettingsIconRow(systemImage: "doc.on.clipboard") {
@@ -119,46 +167,6 @@ struct SettingsTab: View {
                     )
                 }
             }
-            SettingsNavigationLink(
-                systemImage: "keyboard",
-                title: "键盘布局",
-                subtitle: layoutSubtitle
-            ) {
-                KeyboardLayoutSettingsView(rimeStore: rimeStore)
-            }
-
-            SettingsNavigationLink(
-                systemImage: "waveform",
-                title: "键盘反馈",
-                subtitle: "按键音、触感震动"
-            ) {
-                FeedbackSettingsView()
-            }
-
-            SettingsNavigationLink(
-                systemImage: "delete.left",
-                title: "删除键",
-                subtitle: "垃圾桶、滑动擦除、组字左滑"
-            ) {
-                DeleteKeySettingsView()
-            }
-
-            SettingsNavigationLink(
-                systemImage: "wand.and.stars",
-                title: "智能纠错",
-                subtitle: "本地邻键旁路建议，不自动改写"
-            ) {
-                TypoCorrectionBenchmarkView()
-            }
-
-            SettingsNavigationLink(
-                systemImage: "chart.xyaxis.line",
-                title: "输入洞察",
-                subtitle: "本机字符计数，不是人工智能"
-            ) {
-                TypingIntelligenceView()
-            }
-
             AppCard {
                 SettingsIconRow(systemImage: "text.append") {
                     ToggleRow(
@@ -206,94 +214,66 @@ struct SettingsTab: View {
                     )
                 }
             }
+
+            SettingsNavigationLink(
+                systemImage: "keyboard",
+                title: "键盘布局",
+                subtitle: layoutSubtitle
+            ) {
+                KeyboardLayoutSettingsView(rimeStore: rimeStore)
+            }
+
+            SettingsNavigationLink(
+                systemImage: "waveform",
+                title: "键盘反馈",
+                subtitle: "按键音、触感震动"
+            ) {
+                FeedbackSettingsView()
+            }
+
+            SettingsNavigationLink(
+                systemImage: "delete.left",
+                title: "删除键",
+                subtitle: "垃圾桶、滑动擦除、组字左滑"
+            ) {
+                DeleteKeySettingsView()
+            }
         }
     }
 
-    private var rimeInputSection: some View {
+    // MARK: - Group 2: 输入方案
+
+    /// PB-015 PR-4（M3–M5）：高级输入、模糊音、候选数量与默认简体并入
+    /// `RimeSettingsView`；根页只保留方案设置与用户词典两条 Nav。
+    private var rimeSchemesSection: some View {
         SettingsGroup(
-            title: "输入方案",
-            footer: "方案与候选偏好写在本地；改完后如需部署，会在后台安静处理。"
+            title: SettingsRootLayout.rimeSchemes.title,
+            footer: SettingsRootLayout.rimeSchemes.footer
         ) {
             SettingsNavigationLink(
                 systemImage: "character.book.closed.zh",
                 title: "RIME 方案设置",
-                subtitle: "方案列表、方案部署"
+                subtitle: "方案列表、部署与输入偏好"
             ) {
                 RimeSettingsView(store: rimeStore)
             }
 
             SettingsNavigationLink(
-                systemImage: "sparkles",
-                title: "高级输入功能",
-                subtitle: rimeStore.supportsProductAdvancedInput
-                    ? "日期、计算器、数字转换"
-                    : "当前方案暂不支持"
+                systemImage: SettingsTabCopy.userDictionarySystemImage,
+                title: SettingsTabCopy.userDictionaryTitle,
+                subtitle: SettingsTabCopy.userDictionarySubtitle
             ) {
-                RimeAdvancedInputSettingsView(store: rimeStore)
-            }
-
-            SettingsNavigationLink(
-                systemImage: "waveform.path",
-                title: "模糊音设置",
-                subtitle: rimeStore.supportsManagedFuzzyPinyin
-                    ? "平翘舌、鼻边音"
-                    : "当前方案暂不支持"
-            ) {
-                RimeFuzzyPinyinSettingsView(store: rimeStore)
-            }
-
-            AppCard {
-                SettingsIconRow(systemImage: "textformat.size") {
-                    VStack(alignment: .leading, spacing: 4) {
-                        HStack {
-                            Text("候选数量")
-                                .font(.body)
-                            Spacer()
-                            Text("\(Int(rimeStore.pageSize)) 个")
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                        }
-                        AppSlider(
-                            value: $rimeStore.pageSize,
-                            in: 5...20,
-                            step: 1,
-                            onEditingChanged: { editing in
-                                if !editing {
-                                    rimeStore.savePreferences()
-                                    Task { await rimeStore.triggerDeployment() }
-                                }
-                            },
-                            accessibilityLabel: "候选数量",
-                            accessibilityValueText: "\(Int(rimeStore.pageSize)) 个")
-                        Text("每页最多显示的候选词个数。数量越少选词越快，数量越多翻页更少。")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-            }
-
-            AppCard {
-                SettingsIconRow(systemImage: "a.circle") {
-                    ToggleRow(
-                        title: "默认简体",
-                        description: rimeStore.simplified
-                            ? "开启后使用 OpenCC 将结果转为简体中文输出。"
-                            : "关闭后保留词典原始字形。",
-                        isOn: $rimeStore.simplified
-                    )
-                }
-            }
-            .onChange(of: rimeStore.simplified) { _, _ in
-                rimeStore.savePreferences()
-                Task { await rimeStore.triggerDeployment() }
+                RimeUserDictionarySettingsView(store: rimeStore)
             }
         }
     }
 
-    private var dataAndSyncSection: some View {
+    // MARK: - Group 3: 数据与工具
+
+    private var dataAndToolsSection: some View {
         SettingsGroup(
-            title: "数据与同步",
-            footer: "词典与同步都在你的设备侧处理，按需开启即可。"
+            title: SettingsRootLayout.dataAndTools.title,
+            footer: SettingsRootLayout.dataAndTools.footer
         ) {
             SettingsNavigationLink(
                 systemImage: "icloud",
@@ -307,24 +287,26 @@ struct SettingsTab: View {
             }
 
             SettingsNavigationLink(
-                systemImage: SettingsTabCopy.userDictionarySystemImage,
-                title: SettingsTabCopy.userDictionaryTitle,
-                subtitle: SettingsTabCopy.userDictionarySubtitle
+                systemImage: SettingsTabCopy.localDictionarySystemImage,
+                title: SettingsTabCopy.localDictionaryTitle,
+                subtitle: SettingsTabCopy.localDictionarySubtitle
             ) {
-                RimeUserDictionarySettingsView(store: rimeStore)
+                DictionaryBrowserView()
             }
         }
     }
 
-    private var appSettingsSection: some View {
+    // MARK: - Group 4: 通用
+
+    private var generalSection: some View {
         SettingsGroup(
-            title: "App 设置",
-            footer: "外观与通知只影响主 App；输入仍在键盘扩展里完成。版本、联系与隐私说明在关于页。启用指南可随时从右上角问号重看。"
+            title: SettingsRootLayout.general.title,
+            footer: SettingsRootLayout.general.footer
         ) {
             SettingsNavigationLink(
                 systemImage: "circle.lefthalf.filled",
-                title: "外观",
-                subtitle: "跟随系统、浅色或深色模式"
+                title: "显示与外观",
+                subtitle: "深色浅色、键盘高度与候选字大小"
             ) {
                 AppearanceSettingsView()
             }
@@ -343,43 +325,28 @@ struct SettingsTab: View {
             }
 
             SettingsNavigationLink(
+                systemImage: "wand.and.stars",
+                title: "智能纠错",
+                subtitle: "本地邻键旁路建议，不自动改写"
+            ) {
+                TypoCorrectionBenchmarkView()
+            }
+
+            SettingsNavigationLink(
+                systemImage: "chart.xyaxis.line",
+                title: "输入洞察",
+                subtitle: "本机字符计数，不是人工智能"
+            ) {
+                TypingIntelligenceView()
+            }
+
+            SettingsNavigationLink(
                 systemImage: "info.circle",
                 title: "关于",
-                subtitle: "版本、联系我们、隐私与开源"
+                subtitle: "版本、联系、隐私与诊断"
             ) {
-                AboutSettingsView()
+                AboutSettingsView(notificationSettings: notificationSettings)
             }
         }
     }
-
-    private var toolsSection: some View {
-        SettingsGroup(
-            title: "词库与工具",
-            footer: "方便查看本机词库文件，不必离开 App。"
-        ) {
-            SettingsNavigationLink(
-                systemImage: SettingsTabCopy.localDictionarySystemImage,
-                title: SettingsTabCopy.localDictionaryTitle,
-                subtitle: SettingsTabCopy.localDictionarySubtitle
-            ) {
-                DictionaryBrowserView()
-            }
-        }
-    }
-
-    private var diagnosticsSection: some View {
-        SettingsGroup(
-            title: "诊断",
-            footer: "排查问题时再打开即可，日常使用可以关掉。"
-        ) {
-            SettingsNavigationLink(
-                systemImage: "waveform.path.ecg.text",
-                title: "诊断",
-                subtitle: "本机记录、分类与高级排查"
-            ) {
-                DiagnosticsSettingsView(notificationSettings: notificationSettings)
-            }
-        }
-    }
-
 }
