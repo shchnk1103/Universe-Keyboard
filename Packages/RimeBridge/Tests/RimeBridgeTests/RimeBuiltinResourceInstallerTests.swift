@@ -6,7 +6,7 @@ import XCTest
 
 final class RimeBuiltinResourceInstallerTests: XCTestCase {
     func testValidClosureInstallsEveryRequiredFileAndKeepsThirdPartyFiles() throws {
-        let fixture = try makeFixture()
+        let fixture = try Self.makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
         let rimeRoot = fixture.root.appendingPathComponent("runtime", isDirectory: true)
         let shared = rimeRoot.appendingPathComponent("shared", isDirectory: true)
@@ -32,7 +32,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     }
 
     func testRedeployFailsClosedWhenSharedDefaultYamlNoLongerMatchesReceipt() throws {
-        let fixture = try makeFixture()
+        let fixture = try Self.makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
         let rimeRoot = fixture.root.appendingPathComponent("runtime", isDirectory: true)
         _ = try RimeBuiltinResourceInstaller().install(sourceRoot: fixture.source, rimeRoot: rimeRoot)
@@ -56,7 +56,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     }
 
     func testUnreadableReceiptObjectFailsBeforeUnknownRuntimeMutation() throws {
-        let fixture = try makeFixture()
+        let fixture = try Self.makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
         let rimeRoot = fixture.root.appendingPathComponent("runtime", isDirectory: true)
         _ = try RimeBuiltinResourceInstaller().install(sourceRoot: fixture.source, rimeRoot: rimeRoot)
@@ -86,7 +86,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     }
 
     func testKnownIceDefaultYamlPollutionIsRestoredFromOfficialSource() throws {
-        let fixture = try makeFixture()
+        let fixture = try Self.makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
         let rimeRoot = fixture.root.appendingPathComponent("runtime", isDirectory: true)
         _ = try RimeBuiltinResourceInstaller().install(sourceRoot: fixture.source, rimeRoot: rimeRoot)
@@ -110,7 +110,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     }
 
     func testUnknownDefaultYamlPollutionStaysFailClosed() throws {
-        let fixture = try makeFixture()
+        let fixture = try Self.makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
         let rimeRoot = fixture.root.appendingPathComponent("runtime", isDirectory: true)
         _ = try RimeBuiltinResourceInstaller().install(sourceRoot: fixture.source, rimeRoot: rimeRoot)
@@ -134,7 +134,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     }
 
     func testKnownPollutionRecoveryRollsBackWhenLaterInstallationFails() throws {
-        let fixture = try makeFixture()
+        let fixture = try Self.makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
         let rimeRoot = fixture.root.appendingPathComponent("runtime", isDirectory: true)
         _ = try RimeBuiltinResourceInstaller().install(sourceRoot: fixture.source, rimeRoot: rimeRoot)
@@ -167,7 +167,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     }
 
     func testRedeployRestoresDefaultYamlWhenNoPriorReceiptExists() throws {
-        let fixture = try makeFixture()
+        let fixture = try Self.makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
         let rimeRoot = fixture.root.appendingPathComponent("runtime", isDirectory: true)
         _ = try RimeBuiltinResourceInstaller().install(sourceRoot: fixture.source, rimeRoot: rimeRoot)
@@ -185,7 +185,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     }
 
     func testCorruptedBundledResourceFailsBeforeLastGoodRuntimeChanges() throws {
-        let fixture = try makeFixture()
+        let fixture = try Self.makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
         let corruptedPath = fixture.source.appendingPathComponent("essay.txt")
         try Data("corrupted".utf8).write(to: corruptedPath)
@@ -211,7 +211,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     }
 
     func testSameLengthCorruptionIsRejectedByChecksum() throws {
-        let fixture = try makeFixture()
+        let fixture = try Self.makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
         let url = fixture.source.appendingPathComponent("essay.txt")
         let original = try Data(contentsOf: url)
@@ -228,7 +228,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     }
 
     func testManifestCannotOmitARequiredRuntimeResource() throws {
-        let fixture = try makeFixture(omitting: "stroke.reverse.bin")
+        let fixture = try Self.makeFixture(omitting: "stroke.reverse.bin")
         defer { try? FileManager.default.removeItem(at: fixture.root) }
 
         XCTAssertThrowsError(
@@ -242,7 +242,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     }
 
     func testUnmanifestedResourceIsRejected() throws {
-        let fixture = try makeFixture()
+        let fixture = try Self.makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
         try Data("unexpected".utf8).write(
             to: fixture.source.appendingPathComponent("unexpected.yaml")
@@ -259,7 +259,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     }
 
     func testHiddenUnmanifestedResourceIsRejected() throws {
-        let fixture = try makeFixture()
+        let fixture = try Self.makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
         try Data("unexpected".utf8).write(
             to: fixture.source.appendingPathComponent(".unexpected.yaml")
@@ -276,7 +276,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     }
 
     func testMissingProvenanceIsRejected() throws {
-        let fixture = try makeFixture()
+        let fixture = try Self.makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
         let manifestURL = fixture.source.appendingPathComponent(
             RimeBuiltinResourceInstaller.manifestFileName
@@ -300,7 +300,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     }
 
     func testMissingSourceInputReceiptIsRejected() throws {
-        let fixture = try makeFixture()
+        let fixture = try Self.makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
         let manifestURL = fixture.source.appendingPathComponent(
             RimeBuiltinResourceInstaller.manifestFileName
@@ -324,7 +324,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     }
 
     func testPackagedSourceHashMustMatchInputReceipt() throws {
-        let fixture = try makeFixture()
+        let fixture = try Self.makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
         let manifestURL = fixture.source.appendingPathComponent(
             RimeBuiltinResourceInstaller.manifestFileName
@@ -354,7 +354,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     }
 
     func testIncompleteToolchainReceiptIsRejected() throws {
-        let fixture = try makeFixture()
+        let fixture = try Self.makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
         let manifestURL = fixture.source.appendingPathComponent(
             RimeBuiltinResourceInstaller.manifestFileName
@@ -378,7 +378,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     }
 
     func testEmptyGeneratorCommandArgumentsAreRejected() throws {
-        let fixture = try makeFixture()
+        let fixture = try Self.makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
         let manifestURL = fixture.source.appendingPathComponent(
             RimeBuiltinResourceInstaller.manifestFileName
@@ -406,7 +406,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     }
 
     func testGeneratorCommandTemplateTamperingIsRejected() throws {
-        let fixture = try makeFixture()
+        let fixture = try Self.makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
         let manifestURL = fixture.source.appendingPathComponent(
             RimeBuiltinResourceInstaller.manifestFileName
@@ -436,7 +436,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     }
 
     func testReproducibilityDigestScopeMustNamePayloadBoundary() throws {
-        let fixture = try makeFixture()
+        let fixture = try Self.makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
         let manifestURL = fixture.source.appendingPathComponent(
             RimeBuiltinResourceInstaller.manifestFileName
@@ -462,7 +462,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     }
 
     func testInstalledResourceTamperInvalidatesReceipt() throws {
-        let fixture = try makeFixture()
+        let fixture = try Self.makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
         let rimeRoot = fixture.root.appendingPathComponent("runtime", isDirectory: true)
         let installer = RimeBuiltinResourceInstaller()
@@ -481,7 +481,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     }
 
     func testCorruptPriorReceiptFailsBeforeRuntimeMutation() throws {
-        let fixture = try makeFixture()
+        let fixture = try Self.makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
         let rimeRoot = fixture.root.appendingPathComponent("runtime", isDirectory: true)
         let sharedRoot = rimeRoot.appendingPathComponent("shared", isDirectory: true)
@@ -511,7 +511,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     }
 
     func testOverlayReceiptBindsRequiredRuntimeFiles() throws {
-        let fixture = try makeFixture()
+        let fixture = try Self.makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
         let rimeRoot = fixture.root.appendingPathComponent("runtime", isDirectory: true)
         let userRoot = rimeRoot.appendingPathComponent("user", isDirectory: true)
@@ -551,7 +551,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
 
     func testEveryFileSwitchFailureRestoresLastGoodRuntime() throws {
         for failurePath in RimeBuiltinResourceInstaller.requiredRelativePaths.sorted() {
-            let fixture = try makeFixture()
+            let fixture = try Self.makeFixture()
             defer { try? FileManager.default.removeItem(at: fixture.root) }
             let rimeRoot = fixture.root.appendingPathComponent("runtime", isDirectory: true)
             let sharedRoot = rimeRoot.appendingPathComponent("shared", isDirectory: true)
@@ -591,7 +591,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     }
 
     func testFlattenedMainAppBundleIsReconstructedBeforeValidation() throws {
-        let fixture = try makeFixture()
+        let fixture = try Self.makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
         let bundleRoot = fixture.root.appendingPathComponent("Fixture.bundle", isDirectory: true)
         try FileManager.default.createDirectory(at: bundleRoot, withIntermediateDirectories: true)
@@ -628,10 +628,10 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     }
 
     func testFlattenedBundleRejectsUnmanifestedRimeResource() throws {
-        let fixture = try makeFixture()
+        let fixture = try Self.makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
         let bundleRoot = fixture.root.appendingPathComponent("Extra.bundle", isDirectory: true)
-        try makeFlattenedBundle(from: fixture.source, at: bundleRoot)
+        try Self.makeFlattenedBundle(from: fixture.source, at: bundleRoot)
         try Data("unexpected".utf8).write(to: bundleRoot.appendingPathComponent("unexpected.yaml"))
         let bundle = try XCTUnwrap(Bundle(url: bundleRoot))
 
@@ -645,10 +645,10 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     }
 
     func testFlattenedBundleRejectsUnmanifestedLowercaseTextResource() throws {
-        let fixture = try makeFixture()
+        let fixture = try Self.makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
         let bundleRoot = fixture.root.appendingPathComponent("TextExtra.bundle", isDirectory: true)
-        try makeFlattenedBundle(from: fixture.source, at: bundleRoot)
+        try Self.makeFlattenedBundle(from: fixture.source, at: bundleRoot)
         try Data("unexpected".utf8).write(to: bundleRoot.appendingPathComponent("unexpected.txt"))
         let bundle = try XCTUnwrap(Bundle(url: bundleRoot))
 
@@ -662,10 +662,10 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     }
 
     func testFlattenedBundleRejectsNestedRimeResource() throws {
-        let fixture = try makeFixture()
+        let fixture = try Self.makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
         let bundleRoot = fixture.root.appendingPathComponent("NestedExtra.bundle", isDirectory: true)
-        try makeFlattenedBundle(from: fixture.source, at: bundleRoot)
+        try Self.makeFlattenedBundle(from: fixture.source, at: bundleRoot)
         let nested = bundleRoot.appendingPathComponent("Unexpected", isDirectory: true)
         try FileManager.default.createDirectory(at: nested, withIntermediateDirectories: true)
         try Data("unexpected".utf8).write(to: nested.appendingPathComponent("nested.yaml"))
@@ -683,7 +683,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     func testOverlayWriteFailureRestoresPreviousFilesAndReceipt() throws {
         enum InjectedFailure: Error { case beforeSecondReplacement }
 
-        let fixture = try makeFixture()
+        let fixture = try Self.makeFixture()
         defer { try? FileManager.default.removeItem(at: fixture.root) }
         let rimeRoot = fixture.root.appendingPathComponent("Rime", isDirectory: true)
         _ = try RimeBuiltinResourceInstaller().install(
@@ -758,7 +758,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     func testOverlayFailureAfterKnownPollutionRecoveryRestoresEntirePriorState() throws {
         enum InjectedFailure: Error { case beforeSecondReplacement }
 
-        let previousFixture = try makeFixture(generationID: "fixture-v1", contentPrefix: "old")
+        let previousFixture = try Self.makeFixture(generationID: "fixture-v1", contentPrefix: "old")
         defer { try? FileManager.default.removeItem(at: previousFixture.root) }
         let rimeRoot = previousFixture.root.appendingPathComponent("Rime", isDirectory: true)
         let userDir = rimeRoot.appendingPathComponent("user", isDirectory: true)
@@ -862,7 +862,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     }
 
     func testMissingSimplificationPreferenceSyncWritesSimplifiedLunaResetAndReceipt() throws {
-        let runtime = try makeInstalledRuntimeFixture()
+        let runtime = try Self.makeInstalledRuntimeFixture()
         defer { try? FileManager.default.removeItem(at: runtime.root) }
         let suiteName = "uk.rime.custom-yaml-missing-\(UUID().uuidString)"
         let defaults = UserDefaults(suiteName: suiteName)!
@@ -890,7 +890,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
     }
 
     func testExplicitTraditionalPreferenceSyncWritesTraditionalLunaResetAndReceipt() throws {
-        let runtime = try makeInstalledRuntimeFixture()
+        let runtime = try Self.makeInstalledRuntimeFixture()
         defer { try? FileManager.default.removeItem(at: runtime.root) }
         let suiteName = "uk.rime.custom-yaml-traditional-\(UUID().uuidString)"
         let defaults = UserDefaults(suiteName: suiteName)!
@@ -917,7 +917,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
         )
     }
 
-    private func makeFixture(
+    static func makeFixture(
         omitting omittedSuffix: String? = nil,
         generationID: String = "fixture-v1",
         contentPrefix: String = "fixture"
@@ -1084,10 +1084,11 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
         SHA256.hash(data: data).map { String(format: "%02x", $0) }.joined()
     }
 
-    private func makeInstalledRuntimeFixture() throws -> (
+    /// internal static：供同 target 内其他测试（如 ShuangpinSchemaRegistrationTests）共用。
+    static func makeInstalledRuntimeFixture() throws -> (
         root: URL, rimeRoot: URL, userDir: URL
     ) {
-        let fixture = try makeFixture()
+        let fixture = try Self.makeFixture()
         let rimeRoot = fixture.root.appendingPathComponent("Rime", isDirectory: true)
         _ = try RimeBuiltinResourceInstaller().install(
             sourceRoot: fixture.source,
@@ -1100,7 +1101,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
         )
     }
 
-    private func expectedRole(for path: String) -> String {
+    static func expectedRole(for path: String) -> String {
         if path.hasSuffix(".bin") { return "generated-rime" }
         if path.hasSuffix(".ocd2") { return "generated-opencc" }
         if path.hasSuffix(".json") { return "opencc-config" }
@@ -1108,7 +1109,7 @@ final class RimeBuiltinResourceInstallerTests: XCTestCase {
         return "source"
     }
 
-    private func makeFlattenedBundle(from source: URL, at bundleRoot: URL) throws {
+    static func makeFlattenedBundle(from source: URL, at bundleRoot: URL) throws {
         try FileManager.default.createDirectory(at: bundleRoot, withIntermediateDirectories: true)
         try """
         <?xml version="1.0" encoding="UTF-8"?>

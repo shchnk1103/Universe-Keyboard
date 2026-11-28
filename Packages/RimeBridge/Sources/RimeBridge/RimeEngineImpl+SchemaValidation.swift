@@ -6,6 +6,24 @@ struct RimeStartupSchemaSelectionResult: Equatable {
 }
 
 enum RimeStartupSchemaSelector {
+    /// Startup fallback candidate for the quick select path.
+    /// Shuangpin letter bindings degrade to the host base schema
+    /// (`luna_pinyin` / `rime_ice`) so a failed select never re-attempts the
+    /// binding itself (PB-017 ROOT CAUSE B). Fog T9, unbound, and non-shuangpin
+    /// bindings keep their previous candidate.
+    static func fallbackSchemaID(
+        baseSchemaID: String,
+        schemeBinding26: String?,
+        effectiveSchemaID: String
+    ) -> String {
+        let normalizedBase = baseSchemaID == "t9" ? "rime_ice" : baseSchemaID
+        guard RimeShuangpinVariant.isDoublePinyinSchemaID(effectiveSchemaID) else {
+            let candidate = schemeBinding26 ?? normalizedBase
+            return candidate == "t9" ? "rime_ice" : candidate
+        }
+        return normalizedBase
+    }
+
     static func select(
         requested: String,
         fallback: String,

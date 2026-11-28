@@ -29,11 +29,18 @@ struct ShuangpinSublegendSettingsRow: View {
     }
 
     var body: some View {
-        ToggleRow(
-            title: "显示双拼键帽副标",
-            description: "双拼方案下在键帽下方显示对应的全拼韵母副标，帮助熟悉双拼键位映射。",
-            isOn: $enabled
-        )
+        VStack(alignment: .leading, spacing: 4) {
+            ToggleRow(
+                title: "显示双拼键帽副标",
+                description: "双拼方案下在键帽下方显示对应的全拼韵母副标，帮助熟悉双拼键位映射。",
+                isOn: $enabled
+            )
+            // PB-017-SHUANGPIN-INPUT-FIX-001：该开关仅影响键帽显示，不切换输入方案
+            // （实际方案切换在 26 键方案槽），补充生效范围说明避免误读。
+            Text("仅在 26 键键盘且已切换为双拼方案时生效，九宫格或全拼下不显示。")
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+        }
     }
 }
 
