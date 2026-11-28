@@ -134,4 +134,33 @@ final class T9CompositionIdentityTests: XCTestCase {
         XCTAssertEqual(identity?.sourceDigits, "3263269698454")
         XCTAssertEqual(identity?.confirmedSyllables, ["fan", "dao"])
     }
+
+    // MARK: - T9-PARTIAL-SELECT-FIX-001 nil-gate pins
+
+    /// Pin: engine identity must fail closed when the live digit run equals the
+    /// whole unresolved tail (single-syllable stack + shortened raw). The
+    /// controller owns the fail-closed rebuild from the preserved ledger.
+    func testAfterPartialCommitEqualUnresolvedTailFailsClosed() {
+        XCTAssertNil(
+            T9CompositionIdentity.afterPartialCommit(
+                previousSource: "7464934",
+                previousConfirmed: ["qing"],
+                remainingRaw: "934"
+            ),
+            "equal-tail remainder must stay nil; controller rebuilds from the ledger"
+        )
+    }
+
+    /// Pin: peeling the entire user stack (cursor == source length) must stay
+    /// nil; the controller owns the fail-closed ledger rebuild downstream.
+    func testAfterPathLedgerPeelFullStackConsumptionFailsClosed() {
+        XCTAssertNil(
+            T9CompositionIdentity.afterPathLedgerPeel(
+                previousSource: "7464934",
+                previousConfirmed: ["qing", "wei"],
+                peelSyllableCount: 2
+            ),
+            "full-stack consumption must stay nil; controller rebuilds from the ledger"
+        )
+    }
 }

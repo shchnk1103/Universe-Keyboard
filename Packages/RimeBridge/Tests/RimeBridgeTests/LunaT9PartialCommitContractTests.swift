@@ -125,6 +125,87 @@ final class LunaT9PartialCommitContractTests: XCTestCase {
         )
     }
 
+    /// T9-PARTIAL-SELECT-FIX-001 contract: with the real luna_pinyin_t9 engine,
+    /// a single-char candidate selection while librime retains the full raw
+    /// must (a) peel the confirmed segment's slots from the Path identity, (b)
+    /// keep the visible remainder free of the selected spelling / raw digits,
+    /// and (c) never publish chips anchored before the confirmed slot count.
+    func testPartialSelectPeelsRetainedRawAndDoesNotRepeatSelectedSpelling() throws {
+        let scene = try openScene(name: "C4-64426")
+        defer { scene.finish() }
+        let controller = scene.controller
+        let client = scene.client
+        resetHost(client)
+        for key in "64426" {
+            _ = controller.handle(.insertKey(String(key)))
+        }
+        let rawBeforeSelect = T9PinyinPathExtractor.normalizeRawIdentity(
+            controller.t9CompositionPresentationSnapshot().rimeRawInput
+                ?? controller.state.lastRimeOutput?.rawInput)
+        var found: (text: String, index: Int, page: Int)?
+        for page in 0..<4 {
+            let snap = controller.t9CompositionPresentationSnapshot()
+            if let index = snap.candidates.firstIndex(where: { $0.text.count == 1 }) {
+                found = (snap.candidates[index].text, index, page)
+                break
+            }
+            if !(controller.state.lastRimeOutput?.hasMorePages ?? false) { break }
+            _ = controller.handle(.candidatePageDown)
+        }
+        guard let found else {
+            throw XCTSkip("no single-char candidate page in this luna_pinyin_t9 build")
+        }
+        _ = controller.handle(
+            .insertCandidate(
+                found.text, kind: .candidate,
+                selectionReference: CandidateSelectionReference(
+                    page: found.page, indexOnPage: found.index)))
+        let partial = try XCTUnwrap(controller.state.partialCommit)
+        XCTAssertEqual(partial.confirmedText, found.text)
+        let after = controller.t9CompositionPresentationSnapshot()
+
+        // (a) Peel: the Path identity must be strictly shorter than the
+        // pre-select raw and remain its digit suffix — never the retained full
+        // raw, and it must agree with the partial commit's remaining raw.
+        let remainingRaw = T9PinyinPathExtractor.normalizeRawIdentity(partial.remainingRawInput)
+        XCTAssertFalse(after.sourceDigits.isEmpty, "path identity must survive the partial")
+        XCTAssertLessThan(
+            after.sourceDigits.count, rawBeforeSelect.count,
+            "path identity must peel the confirmed slots; source=\(after.sourceDigits) rawBefore=\(rawBeforeSelect)")
+        XCTAssertTrue(
+            rawBeforeSelect.hasSuffix(after.sourceDigits),
+            "peeled identity must be a suffix of the pre-select raw")
+        XCTAssertEqual(
+            remainingRaw.count, after.sourceDigits.count,
+            "partial remaining raw and Path identity must agree (RC-1/RC-2 coherence)")
+
+        // (b) Visible remainder starts at the first unresolved syllable: no
+        // selected-syllable pinyin replay, no internal T9 digits.
+        XCTAssertFalse(
+            partial.remainingPreeditText.unicodeScalars.contains(
+                where: T9PinyinPathExtractor.isASCIIDigit))
+        let letterCount = partial.remainingPreeditText.filter(\.isLetter).count
+        XCTAssertLessThanOrEqual(
+            letterCount, remainingRaw.count,
+            "remaining display letters must not exceed the remaining digit slots")
+        XCTAssertEqual(client.markedText, partial.displayText)
+
+        // (c) No chip anchored before the confirmed slot count, and no chip
+        // extends past the remaining identity.
+        let confirmedSlots = rawBeforeSelect.count - after.sourceDigits.count
+        for path in after.paths {
+            XCTAssertGreaterThanOrEqual(
+                path.focusSlotStart, 0,
+                "chip \(path.displayText) anchored before confirmed slots")
+            XCTAssertLessThanOrEqual(
+                path.focusSlotEnd, after.sourceDigits.count + confirmedSlots,
+                "chip \(path.displayText) covers confirmed slots")
+        }
+        XCTAssertGreaterThanOrEqual(
+            after.focusSlotStart,
+            T9PinyinPathExtractor.letterCount(ofSyllables: after.confirmedSyllables))
+    }
+
     private struct Scene {
         let engine: RimeEngineImpl
         let controller: KeyboardController

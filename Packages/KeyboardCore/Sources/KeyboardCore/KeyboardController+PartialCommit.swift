@@ -20,20 +20,46 @@ extension KeyboardController {
     }
 
     /// Host-visible T9 preedit using provisional Path when it fully covers focus slots.
-    func t9VisiblePreedit(for output: RimeOutput) -> String {
+    ///
+    /// `confirmedSpelling` (RC-2): when a candidate selection just confirmed a
+    /// segment, librime may keep the full raw and the comment projection then
+    /// repeats the selected spelling (e.g. `nihao` after 你). The visible
+    /// remainder starts at the first unresolved syllable, so the confirmed
+    /// spelling prefix is stripped from the projection.
+    func t9VisiblePreedit(for output: RimeOutput, confirmedSpelling: String? = nil) -> String {
         let pathState = state.t9PinyinPathState
         let provisional =
             pathState.selectedPath == nil
             ? (pathState.compactPaths.first { $0.id == pathState.provisionalPathID }
                 ?? pathState.compactPaths.first)
             : nil
-        return T9PreeditResolver.visiblePreedit(
+        var candidates = output.candidates
+        if let spelling = confirmedSpelling, !spelling.isEmpty {
+            candidates = candidates.map { candidate in
+                guard let comment = candidate.comment,
+                    let validated = T9PreeditResolver.validatedSource(comment),
+                    validated.hasPrefix(spelling)
+                else { return candidate }
+                return RimeCandidate(
+                    text: candidate.text,
+                    comment: String(validated.dropFirst(spelling.count)),
+                    globalIndex: candidate.globalIndex
+                )
+            }
+        }
+        let projected = T9PreeditResolver.visiblePreedit(
             rawInput: output.rawInput,
-            candidates: output.candidates,
+            candidates: candidates,
             highlightedIndex: output.highlightedIndex,
             provisionalPathDisplay: provisional?.displayText,
             provisionalConsumedSlots: provisional?.consumedSlotCount
         )
+        // Letter-explicit fallbacks (refined raw `qing'wei`) also replay the
+        // confirmed spelling when librime retains the full identity.
+        if let spelling = confirmedSpelling, !spelling.isEmpty, projected.hasPrefix(spelling) {
+            return String(projected.dropFirst(spelling.count))
+        }
+        return projected
     }
 
     /// Snapshot of what the host is currently showing for checkpoint restore.
@@ -92,22 +118,36 @@ extension KeyboardController {
             previousFocusedSegmentIndex: preservedFocus
         )
         let previousRawForTrace = previousRawInput
-        // Candidate selection starts a new presentation revision. Prevent the
-        // output installer from treating the old segmented snapshot as the
-        // current remainder; a genuinely nested shortened tail is restored once
-        // below, after the new output has been installed.
+        // RC-2 basis: how many raw slots the confirmed segment consumed and the
+        // spelling it confirmed (tapped candidate comment, else the Path ledger
+        // prefix covered by the candidate's CJK step count).
+        let confirmedSlotBasis = confirmedSegmentConsumption(
+            committedText: committedText,
+            previousOutput: previousOutput,
+            preservedPathConfirmed: preservedPathConfirmed
+        )
+        // Candidate selection starts a new presentation revision. Presentation
+        // state (chips, soft-select, retention) must not leak into the installer,
+        // but the Path **ledger identity** (RC-1) is re-seeded below instead of
+        // wiped: wiping `segmentSourceDigits` / `confirmedSegmentValues` forced
+        // the installer's Path refresh to rebuild raw-only at slot 0 (residual
+        // selected syllables) and defeated the one-pass `nestedRemainderSource`
+        // peel. A genuinely nested shortened tail is still restored once below,
+        // after the new output has been installed.
         state.t9PinyinPathState.compactPaths = []
         state.t9PinyinPathState.selectedPath = nil
         state.t9PinyinPathState.issuedReplacementKeys = []
         state.t9PinyinPathState.retainedChoiceSourceRawInput = nil
-        state.t9PinyinPathState.segmentSourceDigits = nil
-        state.t9PinyinPathState.focusedSegmentIndex = nil
-        state.t9PinyinPathState.confirmedSegmentValues = []
+        state.t9PinyinPathState.segmentSourceDigits = preservedSegmentSource
+        state.t9PinyinPathState.focusedSegmentIndex = preservedFocus
+        state.t9PinyinPathState.confirmedSegmentValues = preservedPathConfirmed
         installPartialCommitPresentation(
             confirmedText: confirmedText,
             output: result,
             checkpoint: checkpoint,
-            source: .rime
+            source: .rime,
+            confirmedSlotLetters: confirmedSlotBasis.slotLetters,
+            confirmedSpelling: confirmedSlotBasis.spelling
         )
         let restored = restoreSegmentedPathIdentityAfterNestedPartial(
             preservedSegmentSource: preservedSegmentSource,
@@ -126,6 +166,72 @@ extension KeyboardController {
                     + "slotRebaseMissing=\(!restored && !preservedPathConfirmed.isEmpty)"
             )
         #endif
+    }
+
+    /// Slot consumption of the just-confirmed segment (RC-2 peel basis).
+    ///
+    /// Priority: the tapped candidate's comment spelling (its letter count is
+    /// the raw slots the segment consumed); otherwise the user Path ledger
+    /// prefix covered by the candidate's CJK step count via
+    /// `T9CompositionIdentity.pathLedgerPeelCount`. Both stay nil/0 when no
+    /// evidence exists — the peel then fails closed to the engine fallbacks.
+    private func confirmedSegmentConsumption(
+        committedText: String,
+        previousOutput: RimeOutput,
+        preservedPathConfirmed: [String]
+    ) -> (slotLetters: Int, spelling: String?) {
+        let tapped = previousOutput.candidates.first { $0.text == committedText }
+        let tappedSpelling = tapped?.comment.flatMap { T9PreeditResolver.validatedSource($0) }
+        if let tappedSpelling,
+            T9PinyinPathExtractor.asciiLetterCount(in: tappedSpelling) > 0
+        {
+            return (T9PinyinPathExtractor.asciiLetterCount(in: tappedSpelling), tappedSpelling)
+        }
+        let peelK = T9CompositionIdentity.pathLedgerPeelCount(
+            candidateText: committedText,
+            remainingUserPathSyllables: preservedPathConfirmed.count
+        )
+        guard peelK > 0 else { return (0, nil) }
+        let ledgerPrefix = Array(preservedPathConfirmed.prefix(peelK))
+        return (
+            T9PinyinPathExtractor.letterCount(ofSyllables: ledgerPrefix),
+            ledgerPrefix.joined()
+        )
+    }
+
+    /// RC-2: peel the confirmed segment's slots off a retained full raw.
+    ///
+    /// librime often keeps the whole pre-selection digit run after a partial
+    /// selection. The engine preedit tail (letter form) is authoritative for
+    /// how many slots remain; otherwise the confirmed segment's slot count is
+    /// peeled from the front. Returns nil when the raw was already shortened or
+    /// no consumption evidence exists — callers then fall back to the engine
+    /// remainder heuristics.
+    private func peeledRemainingRawAfterConfirmedSlots(
+        previousRaw: String?,
+        resultRaw: String,
+        confirmedSlotLetters: Int,
+        engineTail: String?
+    ) -> String? {
+        let previousDigits = T9PinyinPathExtractor.pureDigitRaw(previousRaw)
+        guard !previousDigits.isEmpty else { return nil }
+        // Only peel a retained (unchanged) full digit run; shortened raws are
+        // already the engine's own remainder.
+        guard T9PinyinPathExtractor.pureDigitRaw(resultRaw) == previousDigits else {
+            return nil
+        }
+        if let engineTail,
+            let validatedTail = T9PreeditResolver.validatedSource(engineTail)
+        {
+            let tailLetters = T9PinyinPathExtractor.asciiLetterCount(in: validatedTail)
+            if tailLetters > 0, tailLetters < previousDigits.count {
+                return String(previousDigits.suffix(tailLetters))
+            }
+        }
+        if confirmedSlotLetters > 0, confirmedSlotLetters < previousDigits.count {
+            return String(previousDigits.dropFirst(confirmedSlotLetters))
+        }
+        return nil
     }
 
     /// Re-attach progressive path identity after nested partial.
@@ -164,6 +270,10 @@ extension KeyboardController {
         // must keep `qiu` via afterPartialCommit). Trigger only when:
         // - user Path stack has 2+ syllables (progressive phrase), or
         // - engine raw is unchanged-raw (device B morphology).
+        // RC-3: a stack of any size still gets the cursor treatment below as a
+        // fallback once `afterPartialCommit` fails (single user-selected
+        // syllable + shortened raw previously fell through to a raw-only slot-0
+        // rebuild).
         let peelK = T9CompositionIdentity.pathLedgerPeelCount(
             candidateText: committedCandidate,
             remainingUserPathSyllables: preservedPathConfirmed.count
@@ -192,6 +302,59 @@ extension KeyboardController {
             remainingRaw: liveRaw
         ) {
             installIdentityAsPathState(identity)
+            return true
+        }
+
+        // RC-3 (relaxed gate): any non-empty user Path stack — including a
+        // single user-selected syllable with a shortened raw (live digits equal
+        // the unresolved tail) — gets the ledger cursor once the strict gate
+        // and `afterPartialCommit` both failed.
+        if peelK > 0,
+            let identity = T9CompositionIdentity.afterPathLedgerPeel(
+                previousSource: preserved,
+                previousConfirmed: preservedPathConfirmed,
+                peelSyllableCount: peelK
+            )
+        {
+            installPathLedgerCursorState(identity)
+            _ = resyncRimeAfterPathLedgerCursor(identity: identity)
+            refreshPartialCommitRemainingAfterPathLedgerPeel(identity: identity)
+            return true
+        }
+
+        // RC-3 fail-closed: when all identity paths nil out **for a candidate
+        // selection that consumed stack syllables** (peelK > 0), the Path bar
+        // must not fall through to a raw-only slot-0 rebuild (residual selected
+        // syllables). Rebuild from the preserved ledger instead — confirmed
+        // syllables stay confirmed and focus starts after them — but only when
+        // the live raw still matches the ledger (unchanged encoding, or the
+        // live digit run equals the unresolved tail after the confirmed stack).
+        // With peelK == 0 nothing was consumed and the live output already owns
+        // the new focus (whole-tail refresh), so restore must stay off.
+        if peelK > 0, !preservedPathConfirmed.isEmpty {
+            let confirmedLetters = T9PinyinPathExtractor.letterCount(
+                ofSyllables: preservedPathConfirmed
+            )
+            let tailAligned: Bool = {
+                guard confirmedLetters > 0, confirmedLetters < preserved.count else {
+                    return false
+                }
+                let unresolvedTail = String(preserved.dropFirst(confirmedLetters))
+                let liveDigits = T9PinyinPathExtractor.pureDigitRaw(liveRaw)
+                return !unresolvedTail.isEmpty
+                    && !liveDigits.isEmpty
+                    && liveDigits == unresolvedTail
+            }()
+            guard confirmedLetters > 0,
+                tailAligned || isUnchangedRawEncoding(liveRaw, previousSource: preserved)
+            else { return false }
+            installIdentityAsPathState(
+                T9CompositionIdentity(
+                    sourceDigits: preserved,
+                    confirmedSyllables: preservedPathConfirmed,
+                    focusedSegmentIndex: preservedPathConfirmed.count
+                )
+            )
             return true
         }
 
@@ -1019,7 +1182,9 @@ extension KeyboardController {
         confirmedText: String,
         output: RimeOutput,
         checkpoint: PartialCommitCheckpoint?,
-        source: PartialCommitSource
+        source: PartialCommitSource,
+        confirmedSlotLetters: Int = 0,
+        confirmedSpelling: String? = nil
     ) {
         guard let rimeRawInput = output.rawInput, !rimeRawInput.isEmpty,
             let rimePreeditText = output.composition?.preeditText, !rimePreeditText.isEmpty
@@ -1046,7 +1211,6 @@ extension KeyboardController {
         let displayText: String
         let compositionTracker: String
         var internalRemainingRaw: String?
-
         // Previous raw may still be the full pre-selection digit run (librime often
         // retains it). Prefer remainingRaw already stored under an active partial.
         let previousRawForRemainder =
@@ -1054,15 +1218,27 @@ extension KeyboardController {
 
         let remainingRawInput: String
         if isT9Remaining {
-            // Install provisional paths against remaining raw before projecting.
-            // Path refresh may have run already; recompute display from current state.
-            let commentPreferred = t9VisiblePreedit(for: output)
-            if rimePreeditText.hasPrefix(confirmedText) {
-                let rimeTail = String(rimePreeditText.dropFirst(confirmedText.count))
-                internalRemainingRaw = T9PinyinPathExtractor.internalDigitIdentity(fromPreedit: rimeTail)
-            } else {
-                internalRemainingRaw = T9PinyinPathExtractor.internalDigitIdentity(fromPreedit: rimePreeditText)
+            // RC-2: derive the peel basis from engine-authoritative facts
+            // first — never from the comment projection over the retained full
+            // raw, which repeats the confirmed spelling and makes the peel a
+            // no-op. A non-prefixed preedit (no confirmed CJK prefix) carries
+            // no slot identity, so its digits are not adopted as remaining raw.
+            let prefixMatched = rimePreeditText.hasPrefix(confirmedText)
+            let rimeTailAfterConfirmed =
+                prefixMatched
+                ? String(rimePreeditText.dropFirst(confirmedText.count))
+                : ""
+            if prefixMatched {
+                internalRemainingRaw = T9PinyinPathExtractor.internalDigitIdentity(
+                    fromPreedit: rimeTailAfterConfirmed
+                )
             }
+            // Comment projection with the confirmed spelling stripped (RC-2
+            // display), before the peel below.
+            let commentPreferred = t9VisiblePreedit(
+                for: output,
+                confirmedSpelling: confirmedSpelling
+            )
             // Unproven engine tails are not a reliable remaining-slot source.
             remainingPreeditText = commentPreferred
             displayText = confirmedText + commentPreferred
@@ -1081,6 +1257,13 @@ extension KeyboardController {
                 // Path Bar branch. Never replace it with the older pure-digit
                 // identity merely because both still cover the same slot count.
                 remainingRawInput = rimeRawInput
+            } else if let peeled = peeledRemainingRawAfterConfirmedSlots(
+                previousRaw: previousRawForRemainder,
+                resultRaw: rimeRawInput,
+                confirmedSlotLetters: confirmedSlotLetters,
+                engineTail: prefixMatched ? rimeTailAfterConfirmed : nil
+            ) {
+                remainingRawInput = peeled
             } else {
                 remainingRawInput =
                     T9PinyinPathExtractor.remainingT9RawAfterPartialCommit(
@@ -1135,7 +1318,10 @@ extension KeyboardController {
             // Path state must land before host projection so provisional Paths
             // for the remaining focus are available in the same revision.
             _ = applyT9PinyinPathStateFromNewRimeOutput()
-            let projected = t9VisiblePreedit(for: pathAlignedOutput)
+            let projected = t9VisiblePreedit(
+                for: pathAlignedOutput,
+                confirmedSpelling: confirmedSpelling
+            )
             finalRemainingPreedit = projected
             finalDisplay = confirmedText + projected
         } else {
