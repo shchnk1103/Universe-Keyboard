@@ -225,7 +225,7 @@ final class DiagnosticsJournalIngressTests: XCTestCase {
             // 读取本身不可取消；截止方先返回，不等待它。
             let started = DispatchTime.now()
             return try await flushBarrierValue(milliseconds: 1000, rootURL: rootURL) { stage in
-                await ingress.flushAndWaitForTesting()
+                _ = await ingress.flushAndWaitForTesting()
                 stage.markBarrierReturned()
                 stage.markReadStarted()
                 if !FileManager.default.fileExists(atPath: directory.path) {

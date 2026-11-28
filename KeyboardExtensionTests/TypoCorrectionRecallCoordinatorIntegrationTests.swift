@@ -421,19 +421,18 @@ nonisolated final class TypoCorrectionRecallCoordinatorIntegrationTests: XCTestC
         let reader = DiagnosticsJournalReader(rootURL: rootURL)
         #if DEBUG
             let started = DispatchTime.now()
-            return try await flushBarrierValue(milliseconds: 1000, rootURL: rootURL) { stage in
-                let before = runtime.testingFlushSnapshotForTesting()
-                let outcome = await runtime.flushAndWaitForTesting()
-                guard case .completed = outcome else {
-                    // 取消返回不证明任何票终结：不标屏障、不读盘，让外层按超时裁决。
-                    throw CancellationError()
-                }
-                let after = runtime.testingFlushSnapshotForTesting()
+            // 共享有界确定性屏障重试：每轮屏障保持 1000ms 预算；仅在 appended 未达且仍有
+            // queued/inFlight 票时有界重试；耗尽抛分阶段错误（不再是裸 CancellationError）。
+            return try await journalFlushBarrierWithBoundedRetryForTesting(
+                runtime: runtime,
+                expectedAppendedCount: expectedCount,
+                barrierMilliseconds: 1000,
+                rootURL: rootURL,
+                onRootAbandoned: retainAbandonedJournalRoot
+            ) { before, after in
                 print(
                     "R4_DIAG accepted=\(before.accepted) appended=\(after.appended) filtered=\(after.filtered) dropped=\(after.dropped) lifecycle=\(after.lifecycleCancelled)"
                 )
-                stage.markBarrierReturned()
-                stage.markReadStarted()
                 return try await readAndCheckMeasuredCount(
                     started: started, expectedCount: expectedCount,
                     diagnostics:
