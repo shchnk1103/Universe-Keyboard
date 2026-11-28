@@ -10,6 +10,9 @@ ROOT = Path(__file__).resolve().parents[3]
 SCRIPT = ROOT / "scripts/kos/kos_handoff.py"
 VERIFY = ROOT / "scripts/kos/doc_verify.sh"
 IDENTITY = "Cowork 3P <cowork-3p@localhost>"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+import _kos_pm_next_fixture  # noqa: E402
 
 VERIFY_ENV_BASE = {"PATH": "/usr/bin:/bin:/usr/local/bin"}
 
@@ -147,6 +150,15 @@ if __name__ == "__main__":
 
 
 class FinalThreeLineTests(unittest.TestCase):
+    """O207: final subprocess runs need a KOS_PM_NEXT_TOOL /tmp fixture tool
+    (CI and isolated-HOME runners have no external kos-pm-next.py)."""
+
+    def setUp(self) -> None:
+        self._pm_next_saved = _kos_pm_next_fixture.install(set_roster=True)
+
+    def tearDown(self) -> None:
+        _kos_pm_next_fixture.uninstall(self._pm_next_saved)
+
     def _report_with_relay(self, tmp: Path, status: str, next_role: str | None, next_step: str | None = None):
         repo, _, report, _ = init_repo(tmp, status)
         relay = "## 下一站接力（O41）\n"

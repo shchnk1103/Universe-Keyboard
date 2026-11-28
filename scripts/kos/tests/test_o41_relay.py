@@ -13,7 +13,9 @@ from pathlib import Path
 KOS_DIR = Path(__file__).resolve().parent.parent
 REPO_ROOT = KOS_DIR.parent.parent
 sys.path.insert(0, str(KOS_DIR))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+import _kos_pm_next_fixture  # noqa: E402
 import clauses_spec  # noqa: E402
 import freeze  # noqa: E402
 
@@ -22,6 +24,26 @@ def _write(path: Path, text: str) -> Path:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text, encoding="utf-8")
     return path
+
+
+# O207: /tmp-injected 6-pool roster fixture; never the real external KOS ledger.
+FIXTURE_ROSTER = """# 名册（测试夹具）
+| 名字 | 角色 | 当前担任者 | 角色卡 |
+|---|---|---|---|
+| Jack | PM | Fixture | Jack.md |
+| Pete | Preflight | Fixture | Pete.md |
+
+## 部门池与流转规则（测试夹具）
+
+| 部门池 | 全员名单 | 对应单卡 |
+|---|---|---|
+| Preflight 部门 | Pete、Reed | Pete.md、Reed.md |
+| Executor（代码）部门 | Cole、Lucy、Ivy | Cole.md、Lucy.md、Ivy.md |
+| Executor（文档）部门 | Sam、Wendy | Sam.md、Wendy.md |
+| Quality 部门 | Quinn、Maya | Quinn.md、Maya.md |
+| Publish 部门 | Wendy、Sam | Wendy.md、Sam.md |
+| 架构 / 设计 部门 | Nick、Alex | Nick.md、Alex.md |
+"""
 
 
 def _run_py(script: str, args: list[str], env: dict[str, str] | None = None):
@@ -507,12 +529,14 @@ class RelayQualityTests(unittest.TestCase):
     def setUp(self) -> None:
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
+        self._pm_next_saved = _kos_pm_next_fixture.install(set_roster=True)
         self.repo = self.root / "repo"
         self.repo.mkdir()
         self.template_src = KOS_DIR / "quality_relay_template.md"
         self.identity = "Cowork 3P <cowork-3p@localhost>"
 
     def tearDown(self) -> None:
+        _kos_pm_next_fixture.uninstall(self._pm_next_saved)
         self.tmp.cleanup()
 
     def _git(self, *args, env_extra=None):
@@ -694,11 +718,13 @@ class RelayExecTests(unittest.TestCase):
     def setUp(self) -> None:
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
+        self._pm_next_saved = _kos_pm_next_fixture.install(set_roster=True)
         self.repo = self.root / "repo"
         self.repo.mkdir()
         self.identity = "Cowork 3P <cowork-3p@localhost>"
 
     def tearDown(self) -> None:
+        _kos_pm_next_fixture.uninstall(self._pm_next_saved)
         self.tmp.cleanup()
 
     def _git(self, *args):
@@ -927,8 +953,10 @@ class HandoffAutoPickTests(unittest.TestCase):
     def setUp(self) -> None:
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
+        self._pm_next_saved = _kos_pm_next_fixture.install(set_roster=True)
 
     def tearDown(self) -> None:
+        _kos_pm_next_fixture.uninstall(self._pm_next_saved)
         self.tmp.cleanup()
 
     def _record_stub(self, name: str = "Quinn", role: str = "Quality") -> Path:
@@ -994,17 +1022,21 @@ class HandoffAutoPickTests(unittest.TestCase):
             "|---|---|---|---|---|\n"
             "| Maya | 空闲 | - | 2026-11-23 00:00 | |\n",
             encoding="utf-8")
+        # O207: the suggestion block renders the duty as a standard
+        # department-pool name (Maya is never the role field).
+        roster = self.root / "ROSTER.md"
+        roster.write_text(FIXTURE_ROSTER, encoding="utf-8")
         stub = self._record_stub()
         result = _run_py("kos_handoff.py", [
             "final", "--report", str(report), "--skip-lint",
             "--board", sys.executable, "--board-args", json.dumps([str(stub)]),
             "--board-roles-dir", str(roles),
-        ])
+        ], env={"KOS_ROSTER": str(roster)})
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("下一位交付：Maya（Quality）", result.stdout)
         self.assertIn("交回：Jack（PM）", result.stdout)
         self.assertIn("## 建议派发（PM 复核后使用）", result.stdout)
-        self.assertIn("角色：Maya（Quality）", result.stdout)
+        self.assertIn("角色：Quality 部门", result.stdout)
         self.assertNotIn("角色：Quinn", result.stdout)
 
     def test_relay_quality_dynamic_excludes_and_dispatch_block(self) -> None:
@@ -1064,6 +1096,7 @@ class QualityRelayPackageCompletenessTests(unittest.TestCase):
     def setUp(self) -> None:
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
+        self._pm_next_saved = _kos_pm_next_fixture.install(set_roster=True)
         self.repo = self.root / "repo"
         self.repo.mkdir()
         env = dict(os.environ)
@@ -1102,6 +1135,7 @@ class QualityRelayPackageCompletenessTests(unittest.TestCase):
         self.report = report
 
     def tearDown(self) -> None:
+        _kos_pm_next_fixture.uninstall(self._pm_next_saved)
         self.tmp.cleanup()
 
     def _pick_stub(self) -> Path:

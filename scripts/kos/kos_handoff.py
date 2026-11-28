@@ -2,6 +2,7 @@
 """Unified O41 three-line renderer and conditional relay orchestrator."""
 import argparse
 import hashlib
+import importlib.util
 import json
 import os
 import re
@@ -25,6 +26,181 @@ def _sha256(path):
     return h.hexdigest()
 
 
+# --- O207: department-pool authority (reuse kos-pm-next.py's spec) ---------
+
+DEFAULT_KOS_HOME = os.path.expanduser("~/.kos-work/Universe-Keyboard")
+PM_NEXT_TOOL_ENV = "KOS_PM_NEXT_TOOL"
+DEFAULT_PM_NEXT_TOOL = os.path.join(DEFAULT_KOS_HOME, "tools", "kos-pm-next.py")
+
+_PM_NEXT_MODULE = None
+
+
+def _pm_next_tool_path():
+    return Path(os.environ.get(PM_NEXT_TOOL_ENV) or DEFAULT_PM_NEXT_TOOL)
+
+
+def _load_pm_next_module():
+    """Load the external kos-pm-next.py module (O207).
+
+    The PM dispatcher is the single authority for the 6-department-pool
+    ROSTER.md spec; loading its load_department_pools here means the
+    kos_handoff.py dispatch surfaces and kos-pm-next.py can never drift
+    apart. The tool file is read-only for us — it is never modified.
+    """
+    global _PM_NEXT_MODULE
+    if _PM_NEXT_MODULE is None:
+        path = _pm_next_tool_path()
+        if not path.is_file():
+            raise ValueError(
+                "STOPPED: 找不到外置 kos-pm-next.py（%s），无法按部门池规范校验派发块角色" % path)
+        spec = importlib.util.spec_from_file_location("kos_pm_next_external", path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        _PM_NEXT_MODULE = module
+    return _PM_NEXT_MODULE
+
+
+def _default_roster_path():
+    env = os.environ.get("KOS_ROSTER")
+    if env:
+        return Path(env)
+    if os.environ.get("KOS_HOME"):
+        return Path(os.environ["KOS_HOME"]) / "KOS-ROLES-001" / "roles" / "ROSTER.md"
+    return Path(DEFAULT_KOS_HOME) / "KOS-ROLES-001" / "roles" / "ROSTER.md"
+
+
+def load_department_pools(roster_path=None):
+    """O207: parse the six department pools from ROSTER.md via
+    kos-pm-next.py's load_department_pools — same parsing, same 6-pool
+    validation; its SystemExit-on-error contract is converted to ValueError.
+
+    Roster resolution mirrors kos-pm-next.roster_path(): explicit path >
+    KOS_ROSTER > KOS_HOME > ~/.kos-work default.  Tests inject /tmp
+    fixtures via KOS_ROSTER; the real ledger is never written.
+    """
+    path = Path(roster_path) if roster_path else _default_roster_path()
+    module = _load_pm_next_module()
+    try:
+        return module.load_department_pools(path)
+    except SystemExit as exc:
+        raise ValueError(
+            "STOPPED: 部门池花名册解析失败（%s），拒绝生成派发块" % path) from exc
+
+
+def _norm_role(text):
+    return re.sub(r"\s+", "", (text or "").strip())
+
+
+# 旧别名 / 职务名 → 部门池键。ROSTER.md 部门池表是唯一权威，键只用于把
+# 历史别名与 GENERIC_BOARD_ROLES 职务名归一到标准部门池。
+_DEPARTMENT_ALIASES = {
+    "preflight": "preflight",
+    "preflightdepartment": "preflight",
+    "preflightreviewer": "preflight",
+    "quality": "quality",
+    "qualitydepartment": "quality",
+    "qualityreviewer": "quality",
+    "code": "code",
+    "代码": "code",
+    "executor（代码）": "code",
+    "executor(代码)": "code",
+    "executor（代码）部门": "code",
+    "executor(代码)部门": "code",
+    "doc": "doc",
+    "文档": "doc",
+    "executor（文档）": "doc",
+    "executor(文档)": "doc",
+    "executor（文档）部门": "doc",
+    "executor(文档)部门": "doc",
+    "executor（记录/文档）": "doc",
+    "executor(记录/文档)": "doc",
+    "publish": "publish",
+    "publishdepartment": "publish",
+    "arch": "arch",
+    "architect": "arch",
+    "architecturereviewer": "arch",
+    "architecture": "arch",
+    "arch-review": "arch",
+    "架构": "arch",
+    "设计": "arch",
+    "架构/设计": "arch",
+    "架构/设计部门": "arch",
+    "独立architecture审查": "arch",
+}
+
+
+def _pool_key(pool_name):
+    norm = _norm_role(pool_name).lower()
+    if norm.startswith("preflight"):
+        return "preflight"
+    if norm.startswith("quality"):
+        return "quality"
+    if norm.startswith("publish"):
+        return "publish"
+    if "代码" in norm:
+        return "code"
+    if "文档" in norm:
+        return "doc"
+    if "架构" in norm or "设计" in norm:
+        return "arch"
+    return None
+
+
+def canonical_department_role(role, pools=None):
+    """O207: map a role / duty / old alias / personal name to the standard
+    ROSTER.md department-pool name, or fail closed (ValueError "STOPPED: …").
+
+    `某人（职务）` composites resolve by the duty — the personal name is
+    stripped and never reaches a rendered role line.  A bare personal name
+    maps only when it belongs to exactly one pool; multi-pool members and
+    unknown input are rejected: the dispatch block's role field must be a
+    standard department name, never a person.
+    """
+    if pools is None:
+        pools = load_department_pools()
+    text = (role or "").strip()
+    if not text:
+        raise ValueError("STOPPED: 角色为空，派发块拒绝生成（角色字段必须是标准部门名）")
+    by_norm = {_norm_role(name): name for name in pools}
+    norm = _norm_role(text)
+    if norm in by_norm:
+        return by_norm[norm]
+    key = _DEPARTMENT_ALIASES.get(norm.lower())
+    if key:
+        for name in pools:
+            if _pool_key(name) == key:
+                return name
+    duty = None
+    name_part = None
+    if (text.endswith("）") or text.endswith(")")) and ("（" in text or "(" in text):
+        open_idx = min(i for i in (text.find("（"), text.find("(")) if i != -1)
+        inner = text[open_idx + 1:-1].strip()
+        if inner:
+            duty = inner
+            name_part = text[:open_idx].strip()
+    for candidate in (duty, name_part):
+        if not candidate:
+            continue
+        try:
+            return canonical_department_role(candidate, pools)
+        except ValueError:
+            continue
+    members = {}
+    for name, roster in pools.items():
+        for person in roster:
+            members.setdefault(_norm_role(person), []).append(name)
+    hits = members.get(norm)
+    if hits and len(hits) == 1:
+        return hits[0]
+    if hits and len(hits) > 1:
+        raise ValueError(
+            "STOPPED: %s 同属多个部门池（%s），无法唯一定位标准部门名；请改用部门池名派发"
+            % (text, "、".join(hits)))
+    raise ValueError(
+        "STOPPED: 角色 %r 不是标准部门池名（%s），也不是可映射的个人名或旧别名；派发块拒绝生成"
+        % (text, "、".join(pools)))
+
+
 def format_dispatch_block(task_name: str, role: str, packet_path, sha256: str,
                           members: str | None = None,
                           department: str | None = None) -> str:
@@ -37,7 +213,13 @@ def format_dispatch_block(task_name: str, role: str, packet_path, sha256: str,
 
     O105: `members` optionally attaches the department roster to the role
     line; `department` labels it (e.g. `Preflight 部门（Pete / Reed）`).
+
+    O207: the role field is canonicalized against the ROSTER.md department
+    pools (kos-pm-next.py's spec) before rendering — personal names and old
+    aliases are mapped to the standard department name, unresolvable input
+    raises ValueError so no block ever ships with a person on line 2.
     """
+    role = canonical_department_role(role)
     role_line = f"角色：{role}"
     member_list = " / ".join(
         m.strip() for m in re.split(r"[,，/]", members or "") if m.strip())
@@ -589,13 +771,18 @@ def cmd_relay_quality(args):
              .replace("{FILE_LIST}", file_list)
              .replace("{LOG_SHA_LIST}", log_list)
              .replace("{REVIEW_FOCUS}", review_focus))
+    out_sha = hashlib.sha256(block.encode("utf-8")).hexdigest()
+    # O207: render the suggestion before writing anything, so an
+    # uncanonicalizable role fails closed without leaving a block behind.
+    try:
+        suggestion = format_dispatch_block(Path(args.packet).stem, QUALITY_DEPT_LABEL,
+                                           out.resolve(), out_sha)
+    except ValueError as exc:
+        return back(str(exc))
     out.write_text(block, encoding="utf-8")
-    out_sha = hashlib.sha256(out.read_bytes()).hexdigest()
     print(f"交回：{QUALITY_DEPT_LABEL}（Quality Reviewer）")
     print(f"事项：直通质检 {Path(args.packet).stem}（部门池派发，接单者开工前原子领牌）")
     print(f"质检块：{out.resolve()}（SHA-256 {out_sha}）")
-    suggestion = format_dispatch_block(Path(args.packet).stem, QUALITY_DEPT_LABEL,
-                                       out.resolve(), out_sha)
     print(f"```text\n{suggestion}\n```")
     warning = _suggest_pending_warning(str(report), force=True)
     if warning:
@@ -722,9 +909,14 @@ def cmd_dispatch(args):
         return 2
     packet_sha = hashlib.sha256(packet.read_bytes()).hexdigest()
     task_name = (args.task_name or packet.stem).strip()
-    print(format_dispatch_block(task_name, args.role.strip(), packet.resolve(), packet_sha,
-                                members=getattr(args, "members", None),
-                                department=getattr(args, "department", None)))
+    try:
+        block = format_dispatch_block(task_name, args.role.strip(), packet.resolve(), packet_sha,
+                                      members=getattr(args, "members", None),
+                                      department=getattr(args, "department", None))
+    except ValueError as exc:
+        print(str(exc), file=sys.stderr)
+        return 2
+    print(block)
     return 0
 
 
@@ -791,7 +983,10 @@ def cmd_relay_exec(args):
     dept = EXEC_DEPT_LABELS[role]
     task_id = Path(args.packet).parent.parent.name
     claim_cmd = _dept_claim_command(args, role, task_id, excludes)
-    block = format_dispatch_block(packet.stem, dept, packet.resolve(), packet_sha)
+    try:
+        block = format_dispatch_block(packet.stem, dept, packet.resolve(), packet_sha)
+    except ValueError as exc:
+        return back(str(exc))
     out.write_text(f"开工领牌（O129 部门池）：`{claim_cmd}`\n\n{block}\n", encoding="utf-8")
     print("\n\n".join([
         f"结论：PASS",
@@ -945,6 +1140,7 @@ def cmd_final(args):
     next_role = _auto_pick_next_role(args, report, status, next_role)
     _release_board_idle(args, report)
     suggestion = None
+    suggestion_block = None
     pm_role = f"{PM_HANDOFF_ROLE}（PM）"
     name, duty = _split_next_role(next_role)
     if next_role != pm_role and name and name != PM_HANDOFF_ROLE:
@@ -954,14 +1150,25 @@ def cmd_final(args):
         block_role = pm_role
     else:
         block_role = None
+    if suggestion and not (args.entry_path or args.block_path):
+        # O207: the suggestion is a real 5-line dispatch block rendered
+        # through format_dispatch_block — its role field is canonicalized
+        # to a standard department-pool name, never the picked person.
+        # An uncanonicalizable duty refuses the block (fail-closed for the
+        # block, never a personal name) but does not brick the PM handback:
+        # final still hands back to Jack（PM）, who routes manually.
+        try:
+            suggestion_block = format_dispatch_block(
+                report.parent.parent.name, duty, str(report), _sha256(str(report)))
+        except ValueError as exc:
+            print(f"# NOTE: 建议派发块已跳过，交回 PM 人工路由：{exc}", file=sys.stderr)
     print(render_three_line(status, args.summary, next_role, next_detail, str(report),
                             entry_path=args.entry_path, task_title=args.task_title,
                             block_path=args.block_path, block_role=block_role))
-    if suggestion and not (args.entry_path or args.block_path):
+    if suggestion_block:
         print()
         print("## 建议派发（PM 复核后使用）")
-        print(dispatch_block(report.parent.parent.name, name, duty,
-                             str(report), _sha256(str(report))))
+        print(suggestion_block)
     warning = _suggest_pending_warning(str(report), force=not args.skip_lint)
     if warning:
         print(warning)

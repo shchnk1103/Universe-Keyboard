@@ -31,6 +31,9 @@ from pathlib import Path
 KOS_DIR = Path(__file__).resolve().parent.parent
 REPO_ROOT = KOS_DIR.parent.parent
 PY = sys.executable
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+import _kos_pm_next_fixture  # noqa: E402
 
 # KOS-BOARD-RESERVE-001 convention: real-board cases are gated on the
 # machine-local external kos-board.py so hosted CI (without it) runs green.
@@ -38,11 +41,22 @@ EXTERNAL_BOARD_TOOL = Path(os.environ.get(
     "KOS_TEST_EXTERNAL_BOARD_TOOL",
     "/Users/doubleshy0n/.kos-work/Universe-Keyboard/tools/kos-board.py"))
 
-ROSTER = """# 名册（试行）
+ROSTER = """# 名册（测试夹具）
 | 名字 | 角色 | 当前担任者 | 角色卡 |
 |---|---|---|---|
 | Quinn | Quality | Claude | Quinn.md |
 | Reed | Preflight | Codex | Reed.md |
+
+## 部门池与流转规则（测试夹具）
+
+| 部门池 | 全员名单 | 对应单卡 |
+|---|---|---|
+| Preflight 部门 | Pete、Reed | Pete.md、Reed.md |
+| Executor（代码）部门 | Cole、Lucy、Ivy | Cole.md、Lucy.md、Ivy.md |
+| Executor（文档）部门 | Sam、Wendy | Sam.md、Wendy.md |
+| Quality 部门 | Quinn、Maya | Quinn.md、Maya.md |
+| Publish 部门 | Wendy、Sam | Wendy.md、Sam.md |
+| 架构 / 设计 部门 | Nick、Alex | Nick.md、Alex.md |
 """
 
 
@@ -146,6 +160,7 @@ class RelayBlockCollisionTests(_GitRepoMixin, unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
+        self._pm_next_saved = _kos_pm_next_fixture.install(set_roster=True)
         self.task = self.root / "KOS-SELFTEST-001"
         self.task.mkdir()
         self.repo, self.base = self._init_repo(self.root)
@@ -161,6 +176,7 @@ class RelayBlockCollisionTests(_GitRepoMixin, unittest.TestCase):
                                      "print('PICK [Quality]: Quinn（Quality | -）')\n")
 
     def tearDown(self):
+        _kos_pm_next_fixture.uninstall(self._pm_next_saved)
         self.tmp.cleanup()
 
     def _board_args(self):
@@ -200,6 +216,7 @@ class RelayBusyStartCommandTests(_GitRepoMixin, unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
+        self._pm_next_saved = _kos_pm_next_fixture.install(set_roster=True)
         self.task = self.root / "KOS-SELFTEST-001"
         self.task.mkdir()
         self.repo, self.base = self._init_repo(self.root)
@@ -220,6 +237,7 @@ class RelayBusyStartCommandTests(_GitRepoMixin, unittest.TestCase):
                                      "print('PICK [Executor（代码）]: Nick（Executor（代码） | -）')\n")
 
     def tearDown(self):
+        _kos_pm_next_fixture.uninstall(self._pm_next_saved)
         self.tmp.cleanup()
 
     def test_relay_quality_block_starts_with_claim_hint(self) -> None:
@@ -320,6 +338,9 @@ class RealBoardReserveTests(_GitRepoMixin, unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
+        # O207: this case resolves the roster via KOS_HOME (its own /tmp home
+        # with a shuffled-roster variant), so only the tool fixture is set.
+        self._pm_next_saved = _kos_pm_next_fixture.install()
         self.home = self.root / "home"
         roles = self.home / "KOS-ROLES-001" / "roles"
         tools = self.home / "tools"
@@ -337,6 +358,7 @@ class RealBoardReserveTests(_GitRepoMixin, unittest.TestCase):
         self.kos_env = {"KOS_HOME": str(self.home)}
 
     def tearDown(self):
+        _kos_pm_next_fixture.uninstall(self._pm_next_saved)
         self.tmp.cleanup()
 
     def _run_relay(self):
@@ -350,9 +372,20 @@ class RealBoardReserveTests(_GitRepoMixin, unittest.TestCase):
     def test_relay_quality_writes_no_board_reserve(self) -> None:
         # O129: department-pool relay never picks or reserves on the board;
         # the taker claims atomically, so board rows must stay untouched.
+        # O207: the roster stays a valid 6-pool fixture (relay refuses a
+        # broken roster fail-closed); names shuffled vs setUp's copy.
         (self.home / "KOS-ROLES-001" / "roles" / "ROSTER.md").write_text(
-            "# 名册（试行）\n| 名字 | 角色 | 当前担任者 | 角色卡 |\n|---|---|---|---|\n"
-            "| Reed | Preflight | Codex | Reed.md |\n", encoding="utf-8")
+            "# 名册（测试夹具）\n| 名字 | 角色 | 当前担任者 | 角色卡 |\n|---|---|---|---|\n"
+            "| Maya | Quality | Codex | Maya.md |\n"
+            "\n## 部门池与流转规则\n\n"
+            "| 部门池 | 全员名单 | 对应单卡 |\n|---|---|---|\n"
+            "| Preflight 部门 | Reed、Pete | Reed.md、Pete.md |\n"
+            "| Executor（代码）部门 | Ivy、Cole、Lucy | Ivy.md、Cole.md、Lucy.md |\n"
+            "| Executor（文档）部门 | Wendy、Sam | Wendy.md、Sam.md |\n"
+            "| Quality 部门 | Maya、Quinn | Maya.md、Quinn.md |\n"
+            "| Publish 部门 | Sam、Wendy | Sam.md、Wendy.md |\n"
+            "| 架构 / 设计 部门 | Alex、Nick | Alex.md、Nick.md |\n",
+            encoding="utf-8")
         result = self._run_relay()
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         rows = board_rows(self.home)
@@ -374,19 +407,30 @@ class RealBoardReserveTests(_GitRepoMixin, unittest.TestCase):
 
 
 class DispatchDepartmentTests(unittest.TestCase):
-    """Scenario 4 (O105): dispatch keeps 5 lines and supports department hints."""
+    """Scenario 4 (O105): dispatch keeps 5 lines and supports department hints.
+
+    O207: bare duty/alias input ("Preflight") is canonicalized to the
+    standard department-pool name via the ROSTER.md pools, so every role
+    line anchors a department, never a person.
+    """
 
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
+        self._pm_next_saved = _kos_pm_next_fixture.install(set_roster=True)
         self.packet = _write(self.root / "pkg.md", "# 任务包：示例\n")
+        roster = self.root / "ROSTER.md"
+        roster.write_text(ROSTER, encoding="utf-8")
+        self.roster_env = {"KOS_ROSTER": str(roster)}
 
     def tearDown(self):
+        _kos_pm_next_fixture.uninstall(self._pm_next_saved)
         self.tmp.cleanup()
 
     def _dispatch(self, *extra: str) -> tuple[int, list[str]]:
         result = _run_py("kos_handoff.py", [
-            "dispatch", "--packet", str(self.packet), "--role", "Preflight", *extra])
+            "dispatch", "--packet", str(self.packet), "--role", "Preflight", *extra],
+            env=self.roster_env)
         lines = [l for l in result.stdout.splitlines() if l.strip()]
         return result.returncode, lines
 
@@ -402,13 +446,13 @@ class DispatchDepartmentTests(unittest.TestCase):
         code, lines = self._dispatch("--members", "Pete,Reed")
         self.assertEqual(code, 0)
         self.assertEqual(len(lines), 5)
-        self.assertEqual(lines[1], "角色：Preflight（Pete / Reed）")
+        self.assertEqual(lines[1], "角色：Preflight 部门（Pete / Reed）")
 
-    def test_plain_dispatch_unchanged(self) -> None:
+    def test_plain_dispatch_canonicalizes_to_department(self) -> None:
         code, lines = self._dispatch()
         self.assertEqual(code, 0)
         self.assertEqual(len(lines), 5)
-        self.assertEqual(lines[1], "角色：Preflight")
+        self.assertEqual(lines[1], "角色：Preflight 部门")
 
 
 class PkgLintMultilineContinuationTests(unittest.TestCase):

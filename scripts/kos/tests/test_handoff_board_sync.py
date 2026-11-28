@@ -14,6 +14,9 @@ ROOT = Path(__file__).resolve().parents[3]
 HANDOFF = ROOT / "scripts/kos/kos_handoff.py"
 LINT = ROOT / "scripts/kos/kos-pkg-lint.py"
 FLOW = ROOT / "scripts/kos/pr_flow.py"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+import _kos_pm_next_fixture  # noqa: E402
 
 
 def _run(script: Path, args, env=None):
@@ -27,8 +30,28 @@ class HandoffBoardSyncTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
+        # O207: /tmp-injected kos-pm-next.py fixture tool (CI and isolated-HOME
+        # runners have no external tool); roster is injected per-call below.
+        self._pm_next = _kos_pm_next_fixture.install()
+        # O207: /tmp-injected 6-pool roster fixture (never the real ledger);
+        # suggestion blocks render the duty as a standard department name.
+        self.roster = self.root / "ROSTER.md"
+        self.roster.write_text(
+            "# 名册（测试夹具）\n| 名字 | 角色 | 当前担任者 | 角色卡 |\n|---|---|---|---|\n"
+            "| Jack | PM | Fixture | Jack.md |\n"
+            "\n## 部门池与流转规则\n\n"
+            "| 部门池 | 全员名单 | 对应单卡 |\n|---|---|---|\n"
+            "| Preflight 部门 | Pete、Reed | Pete.md、Reed.md |\n"
+            "| Executor（代码）部门 | Cole、Lucy、Ivy | Cole.md、Lucy.md、Ivy.md |\n"
+            "| Executor（文档）部门 | Sam、Wendy | Sam.md、Wendy.md |\n"
+            "| Quality 部门 | Quinn、Maya | Quinn.md、Maya.md |\n"
+            "| Publish 部门 | Wendy、Sam | Wendy.md、Sam.md |\n"
+            "| 架构 / 设计 部门 | Nick、Alex | Nick.md、Alex.md |\n",
+            encoding="utf-8",
+        )
 
     def tearDown(self):
+        _kos_pm_next_fixture.uninstall(self._pm_next)
         self.tmp.cleanup()
 
     def _board(self, rows: str) -> Path:
@@ -67,7 +90,9 @@ class HandoffBoardSyncTests(unittest.TestCase):
 
     def _final(self, report: Path, roles: Path, stub: Path):
         argv_out = self.root / "argv.txt"
-        env = {"PICK_ARGS_OUT": str(argv_out), "PATH": "/usr/bin:/bin"}
+        env = {"PICK_ARGS_OUT": str(argv_out), "PATH": "/usr/bin:/bin",
+               "KOS_ROSTER": str(self.roster),
+               "KOS_PM_NEXT_TOOL": str(self._pm_next.tool)}
         result = _run(HANDOFF, [
             "final", "--report", str(report), "--skip-lint",
             "--board", sys.executable, "--board-args", json.dumps([str(stub)]),
@@ -83,7 +108,7 @@ class HandoffBoardSyncTests(unittest.TestCase):
         # O92: hand-back block always goes to the PM; Quinn is the suggestion.
         self.assertIn("交回：Jack（PM）", result.stdout)
         self.assertIn("## 建议派发（PM 复核后使用）", result.stdout)
-        self.assertIn("角色：Quinn（Quality Reviewer）", result.stdout)
+        self.assertIn("角色：Quality 部门", result.stdout)
         self.assertNotIn("交回：Maya", result.stdout)
         text = argv_out.read_text(encoding="utf-8")
         self.assertIn("Lucy", text)
@@ -96,7 +121,7 @@ class HandoffBoardSyncTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertIn("交回：Jack（PM）", result.stdout)
         self.assertIn("## 建议派发（PM 复核后使用）", result.stdout)
-        self.assertIn("角色：Wendy（Quality Reviewer）", result.stdout)
+        self.assertIn("角色：Quality 部门", result.stdout)
 
     def test_pkg_lint_warns_on_hardcoded_non_pm_name(self):
         packet = self.root / "code-touch-r1.md"
