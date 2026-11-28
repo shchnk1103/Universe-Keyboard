@@ -1407,8 +1407,12 @@ public final class KeyboardController {
 
     /// Drops the still-uncommitted preedit once, without committing it.
     ///
-    /// A confirmed Partial Commit prefix and its Delete checkpoint stay.
-    /// Continuation and pending host spans stay. This is not visibility abandon.
+    /// A confirmed Partial Commit prefix stays; its Delete checkpoint does not.
+    /// Once the user explicitly abandons the remaining composition, the
+    /// checkpoint can no longer describe the live state — keeping it made a
+    /// later Delete tap resurrect the pre-abandonment raw input (swipe-left
+    /// Delete → "轻wei" → "轻" → Delete → "qingwei"). Continuation and pending
+    /// host spans stay. This is not visibility abandon.
     @discardableResult
     public func dropRemainingPreeditKeepingConfirmedPrefix() -> KeyboardEffect {
         defer { finishRetypeLifecycleFence() }
@@ -1431,7 +1435,7 @@ public final class KeyboardController {
                 remainingRawInput: "",
                 remainingPreeditText: "",
                 displayText: confirmed,
-                checkpoint: partial.checkpoint,
+                checkpoint: nil,
                 source: partial.source
             )
         }
