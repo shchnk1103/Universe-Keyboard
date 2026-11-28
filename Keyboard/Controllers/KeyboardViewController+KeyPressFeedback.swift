@@ -169,23 +169,31 @@ extension KeyboardViewController {
         view.bringSubviewToFront(callout)
     }
 
-    /// Frozen nine-key letters-page first row: the letter groups carried by
-    /// digit identities 2 (ABC) and 3 (DEF). Deeper rows and the digits page
-    /// stay excluded.
-    static let nineKeyFirstRowCalloutDigitIdentities: Set<String> = ["2", "3"]
+    /// Nine-key letters-page letter groups: every letter-bearing digit key
+    /// 2–9 (ABC / DEF / GHI / JKL / MNO / PQRS / TUV / WXYZ). The digits page
+    /// stays excluded by the `currentPage` guard.
+    ///
+    /// PB-019-T9-LOWER-ROWS-POPUP-FIX-001 (Human-approved Option A, reversing
+    /// the PB-019 PR-2 "first row only" 拍板项): deeper letter-group rows now
+    /// show the press callout — the diagnosis confirmed nothing in geometry,
+    /// z-order or rendering blocks them, and their 3–4 character labels fit
+    /// the key-width bubble just like ABC / DEF.
+    static let nineKeyLetterGroupCalloutDigitIdentities: Set<String> = [
+        "2", "3", "4", "5", "6", "7", "8", "9",
+    ]
 
     /// PB-019 PR-2: whether a pressed key may open the press callout.
     ///
     /// 26-key letters-page character keys keep the PR-1 behavior. On the
-    /// Chinese nine-key letters chrome only the first-row letter groups (ABC /
-    /// DEF) are eligible: the multi-character punctuation utility key
-    ///（，。？！）cannot confirm a single character inside the key-width bubble,
-    /// deeper letter-group rows would cover other keys, and the digits page is
-    /// excluded by both the `currentPage` guard and this identity check.
+    /// Chinese nine-key letters chrome only the letter-group digit keys
+    /// 2–9 are eligible: the multi-character punctuation utility key
+    ///（，。？！）cannot confirm a single character inside the key-width
+    /// bubble, and the digits page is excluded by both the `currentPage`
+    /// guard and this identity check.
     func isKeyCalloutCandidate(_ button: UIButton) -> Bool {
         if isNineKeyLettersChromeActive {
             return button.accessibilityValue == KeyboardViewController.t9DigitAccessibilityValue
-                && KeyboardViewController.nineKeyFirstRowCalloutDigitIdentities.contains(
+                && KeyboardViewController.nineKeyLetterGroupCalloutDigitIdentities.contains(
                     button.accessibilityIdentifier ?? ""
                 )
         }
