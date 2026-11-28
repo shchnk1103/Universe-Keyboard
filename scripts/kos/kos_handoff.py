@@ -653,8 +653,17 @@ def _auto_pick_next_role(args, report: Path, status: str, next_role: str) -> str
     return f"{picked}（{duty}）"
 
 
+_GRADE_RE = (
+    # 包头档位 (Chinese) and `Tier` (English) are equivalent header labels
+    # (Quality Observation #1, KOS-ENGLISH-AND-RELAY-RULE-001). An optional
+    # parenthetical such as `Tier (包头档位)` may follow the label.
+    r"(?:包头档位|\bTier\b)\s*(?:\([^)\n]*\))?[**：: \t]*"
+    r"(?:`([^`\n]+)`|([a-z][a-z0-9-]*)(?=[ \t（(\n]|$))"
+)
+
+
 def _packet_grade(packet_text: str) -> str:
-    match = re.search(r"包头档位[**：: \t]*(?:`([^`\n]+)`|([a-z][a-z0-9-]*)(?=[ \t（(\n]|$))", packet_text)
+    match = re.search(_GRADE_RE, packet_text)
     return (match.group(1) or match.group(2)).strip() if match else ""
 
 
