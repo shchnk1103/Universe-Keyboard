@@ -1,7 +1,91 @@
 import CoreFoundation
+import Foundation
 import KeyboardCore
 import RimeBridge
 import UIKit
+
+// MARK: - PB-001 Option A: audio/haptics sync hygiene
+
+/// Injectable monotonic clock for feedback decisions. Production reads
+/// `CACurrentMediaTime`; tests can substitute a deterministic time source.
+struct KeyboardFeedbackClock: Sendable {
+    var now: @Sendable () -> TimeInterval
+
+    static let monotonic = KeyboardFeedbackClock(now: { CACurrentMediaTime() })
+}
+
+/// PB-001 A2: narrow tap→commit dedup guard. On fast typing the key-down
+/// `.tap` and the trailing candidate `.commit` land within tens of
+/// milliseconds of each other and double-fire the shared click/haptic
+/// fan-out, which reads as a desynced double beat.
+struct KeyboardFeedbackTapCommitDedup: Equatable, Sendable {
+    /// A few tens of milliseconds: wide enough to cover the commit that
+    /// trails its own key-down tap, narrow enough to keep normal cadence.
+    static let dedupWindow: TimeInterval = 0.06
+
+    private(set) var lastTapTimestamp: TimeInterval?
+
+    /// Returns false only when the event must stay silent: a `.commit`
+    /// arriving inside the window after an emitted `.tap`.
+    func shouldEmit(_ event: KeyboardFeedbackEvent, at timestamp: TimeInterval) -> Bool {
+        switch event {
+        case .commit:
+            guard let lastTapTimestamp else { return true }
+            return timestamp - lastTapTimestamp >= Self.dedupWindow
+        case .tap, .modeEnter, .`repeat`, .preview:
+            return true
+        }
+    }
+
+    /// Record emitted events only; a suppressed commit leaves the guard so
+    /// the next window check still measures from the original tap.
+    mutating func record(_ event: KeyboardFeedbackEvent, at timestamp: TimeInterval) {
+        switch event {
+        case .tap:
+            lastTapTimestamp = timestamp
+        case .commit:
+            lastTapTimestamp = nil
+        case .modeEnter, .`repeat`, .preview:
+            break
+        }
+    }
+}
+
+/// PB-001 A1: repeat/scrub rhythm. Click and haptic fire on the same tick;
+/// the haptic runs lighter than a full-press impact so the tick pattern
+/// stays legible during long-delete scrubbing.
+enum KeyboardFeedbackRepeatRhythm {
+    static let hapticIntensityScale: CGFloat = 0.7
+    static let minimumHapticIntensity: CGFloat = 0.25
+
+    static func repeatHapticIntensity(baseIntensity: CGFloat) -> CGFloat {
+        max(minimumHapticIntensity, baseIntensity * hapticIntensityScale)
+    }
+}
+
+/// Per-controller guard state. `KeyboardViewController` declares its stored
+/// properties in its own file; this extension keeps its mutable dedup guard
+/// in a weak-keyed side table so no other production file has to change.
+private final class KeyboardFeedbackGuardBox {
+    var dedup = KeyboardFeedbackTapCommitDedup()
+    var clock = KeyboardFeedbackClock.monotonic
+}
+
+private enum KeyboardFeedbackGuardStorage {
+    @MainActor
+    static let boxes = NSMapTable<NSObject, KeyboardFeedbackGuardBox>(
+        keyOptions: [.weakMemory, .objectPointerPersonality],
+        valueOptions: [.strongMemory]
+    )
+
+    @MainActor
+    static func guardBox(for controller: NSObject) -> KeyboardFeedbackGuardBox {
+        if let existing = boxes.object(forKey: controller) { return existing }
+        let box = KeyboardFeedbackGuardBox()
+        boxes.setObject(box, forKey: controller)
+        return box
+    }
+}
 
 extension KeyboardViewController {
     func emitKeyPressFeedback() {
@@ -21,6 +105,12 @@ extension KeyboardViewController {
         guard !isKeyboardHeightAdjusting else { return }
         switch event {
         case .tap, .commit:
+            let box = KeyboardFeedbackGuardStorage.guardBox(for: self)
+            let timestamp = box.clock.now()
+            // PB-001 A2: a `.commit` hot on the heels of a `.tap` stays
+            // silent so the shared click/haptic fan-out does not double-fire.
+            guard box.dedup.shouldEmit(event, at: timestamp) else { return }
+            box.dedup.record(event, at: timestamp)
             playHaptic()
             playKeyClick()
 
@@ -48,6 +138,10 @@ extension KeyboardViewController {
         guard cachedHapticEnabled else {
             return
         }
+        // PB-001 A3: prepare ahead of the impact so the first tap after a
+        // style swap or an idle stretch is not the generator's warm-up tap;
+        // prepare again afterwards so the next event finds it ready.
+        hapticGenerator.prepare()
         hapticGenerator.impactOccurred(intensity: intensity ?? cachedHapticIntensity)
         hapticGenerator.prepare()
     }
@@ -58,17 +152,23 @@ extension KeyboardViewController {
         guard cachedHapticEnabled else {
             return
         }
+        modeEnterHapticGenerator.prepare()
         modeEnterHapticGenerator.impactOccurred(intensity: 1.0)
         modeEnterHapticGenerator.prepare()
     }
 
-    /// One click per scrub step or repeat tick. The press click is separate and
-    /// must not be counted here. Tap lift does not call this.
+    /// One click per scrub step or repeat tick, with a matching lighter
+    /// haptic on the same tick (PB-001 A1: click and haptic rhythms are
+    /// aligned — previously the haptic only fired every 4th tick). The press
+    /// click is separate and must not be counted here. Tap lift does not
+    /// call this.
     func playRepeatFeedback(effectiveDeleteCount: Int) {
         playKeyClick()
-        if effectiveDeleteCount.isMultiple(of: 4) {
-            playHaptic(intensity: max(0.25, cachedHapticIntensity * 0.7))
-        }
+        playHaptic(
+            intensity: KeyboardFeedbackRepeatRhythm.repeatHapticIntensity(
+                baseIntensity: cachedHapticIntensity
+            )
+        )
     }
 
     /// One heavier confirmation when the finger enters the trash bubble.
