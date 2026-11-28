@@ -1404,6 +1404,50 @@ nonisolated final class ClipboardPreviewTests: XCTestCase {
         XCTAssertEqual(reader.countCalls, 2)
     }
 
+    /// 方案 B 冷启动整读补口（PB-013 Fix 1）：本进程缓存为空、持久抑制已含当前 changeCount
+    /// （跨进程粘贴/关闭残留）时，整读结果不得展示——解析为 .suppressed，previewWasShown 保持
+    /// false；抑制判定复用本次整读已采样的 before，零额外粘贴板读取。
+    @MainActor
+    func testPB013PlanBFreshSessionFullReadSuppressedByPersistedCount() async throws {
+        let reader = DedupTestReader(counts: [5, 5, 5])
+        let store = MemorySuppressStore()
+        store.suppress(5, reason: .closed)
+        let session = PasteToolbarSession()
+        session.previewReader = reader
+        session.suppressStore = store
+        session.isEligible = { true }
+        XCTAssertFalse(session.probeEnabled)
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        for _ in 0..<200 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(
+            session.preview, .suppressed,
+            "persisted suppression must win over a cold-start full read")
+        XCTAssertFalse(session.previewWasShown)
+        XCTAssertEqual(
+            reader.readCount, 1,
+            "suppression rides the already-issued full read; no extra pasteboard read")
+        XCTAssertEqual(reader.countCalls, 2, "plan B: no probe, only before/after sampling")
+    }
+
+    /// 方案 B 整读补口不得误伤：持久抑制计数与当前 changeCount 不同时，整读照常解析为 .ready。
+    @MainActor
+    func testPB013PlanBFullReadStaysReadyWhenStoreCountDiffers() async throws {
+        let reader = DedupTestReader(counts: [5, 5, 5])
+        let store = MemorySuppressStore()
+        store.suppress(9, reason: .closed)
+        let session = PasteToolbarSession()
+        session.previewReader = reader
+        session.suppressStore = store
+        session.isEligible = { true }
+        session.noteAppearance()
+        session.startPreviewIfNeeded()
+        for _ in 0..<200 where session.preview == .reading { try await Task.sleep(for: .milliseconds(2)) }
+        XCTAssertEqual(session.preview, .ready(.text(full: "x", summary: "x", isLink: false)))
+        XCTAssertEqual(reader.readCount, 1)
+        XCTAssertFalse(session.previewWasShown)
+    }
+
     func testPB013SuppressStorePersistsOnlyIntegerCountAndReason() throws {
         let suiteName = "pb013.suppress.type.test"
         UserDefaults().removePersistentDomain(forName: suiteName)
