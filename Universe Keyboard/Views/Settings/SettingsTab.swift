@@ -14,11 +14,23 @@ enum SettingsTabCopy {
     static let localDictionarySystemImage = "doc.text.magnifyingglass"
 }
 
-/// PB-015 PR-4 根页信息架构清单（设计 r1 §1.1 / A-08：4 组、12 条 Nav 行 + 5 张开关卡）。
+/// PB-015 SETTINGS-POLISH §2 修订（原 PR-4 根页信息架构清单，设计 r1 §1.1 / A-08）：
+/// 4 组、13 条 Nav 行；原 5 张打字习惯开关卡迁入「打字习惯」子页（`typingHabitsPageToggles`）。
 ///
 /// `SettingsTab` 的各 Section 标题与页脚从这里取值；`navigationTitles` /
 /// `toggleCardTitles` 逐行钉住每个组实际渲染的 Nav 行与开关卡（结构与
 /// `AppPR4StructuralConsolidationTests` 共同回归）。移动或增删根页条目时必须同步更新此清单。
+/// PB-015 SETTINGS-POLISH §2：打字习惯子页的开关清单（标题 + SF Symbol 图标）。
+///
+/// 原 Settings 根页 Group 1 的 5 张内联开关卡整体迁入 `TypingHabitsSettingsView`；
+/// `@AppStorage` 键、App Group store、默认值与描述文案保持不变，仅承载位置变化。
+/// 图标与标题钉在此处，`TypingHabitsSettingsView` 与
+/// `AppPR4StructuralConsolidationTests` 共同回归。
+struct ToggleManifestEntry {
+    let title: String
+    let systemImage: String
+}
+
 enum SettingsRootLayout {
     struct Group {
         let title: String
@@ -32,12 +44,17 @@ enum SettingsRootLayout {
         footer: "布局、反馈、删除键和纠错都只影响本机打字习惯，可以随时改回来。这些不是人工智能功能。"
             + "粘贴需要系统完全访问。开关和完全访问都开启时，键盘会读取剪贴板文字用于预览，"
             + "只保存在内存里，不上传。未开启时键盘不显示粘贴条，打字不受影响。",
-        navigationTitles: ["键盘布局", "键盘反馈", "删除键"],
-        toggleCardTitles: [
-            "显示剪贴板预览", "上屏后联想", "中英混排自动加空格",
-            "英文候选自动补空格", "成对符号自动匹配",
-        ]
+        navigationTitles: ["打字习惯", "键盘布局", "键盘反馈", "删除键"],
+        toggleCardTitles: []
     )
+
+    static let typingHabitsPageToggles: [ToggleManifestEntry] = [
+        ToggleManifestEntry(title: "显示剪贴板预览", systemImage: "doc.on.clipboard"),
+        ToggleManifestEntry(title: "上屏后联想", systemImage: "text.append"),
+        ToggleManifestEntry(title: "中英混排自动加空格", systemImage: "textformat.space"),
+        ToggleManifestEntry(title: "英文候选自动补空格", systemImage: "character.cursor.ibeam"),
+        ToggleManifestEntry(title: "成对符号自动匹配", systemImage: "parentheses"),
+    ]
 
     static let rimeSchemes = Group(
         title: "输入方案",
@@ -74,40 +91,10 @@ struct SettingsTab: View {
     var onOpenActivationGuide: (() -> Void)?
 
     @AppStorage(
-        KeyboardInputSettingsKey.pairedSymbolCompletionEnabled,
-        store: UserDefaults(suiteName: universeAppGroupID)
-    )
-    private var pairedSymbolCompletionEnabled = true
-
-    @AppStorage(
-        KeyboardInputSettingsKey.postCommitContinuationEnabled,
-        store: UserDefaults(suiteName: universeAppGroupID)
-    )
-    private var postCommitContinuationEnabled = true
-
-    @AppStorage(
         KeyboardLayoutSettingsKey.layoutStyle,
         store: UserDefaults(suiteName: universeAppGroupID)
     )
     private var layoutStyleRaw = KeyboardLayoutStyle.twentySixKey.rawValue
-
-    @AppStorage(
-        KeyboardInputSettingsKey.clipboardPreviewEnabled,
-        store: UserDefaults(suiteName: universeAppGroupID)
-    )
-    private var clipboardPreviewEnabled = false
-
-    @AppStorage(
-        KeyboardInputSettingsKey.mixedScriptSpacingEnabled,
-        store: UserDefaults(suiteName: universeAppGroupID)
-    )
-    private var mixedScriptSpacingEnabled = true
-
-    @AppStorage(
-        KeyboardInputSettingsKey.englishCandidateAutospaceEnabled,
-        store: UserDefaults(suiteName: universeAppGroupID)
-    )
-    private var englishCandidateAutospaceEnabled = true
 
     private var layoutSubtitle: String {
         switch KeyboardLayoutStyle.resolve(layoutStyleRaw) {
@@ -153,66 +140,19 @@ struct SettingsTab: View {
 
     // MARK: - Group 1: 打字习惯
 
+    /// PB-015 SETTINGS-POLISH §2：原 5 张内联开关卡迁入 `TypingHabitsSettingsView` 子页，
+    /// 根页 Group 1 以带图标与副标的 Nav 行链接该子页。
     private var typingHabitsSection: some View {
         SettingsGroup(
             title: SettingsRootLayout.typingHabits.title,
             footer: SettingsRootLayout.typingHabits.footer
         ) {
-            AppCard {
-                SettingsIconRow(systemImage: "doc.on.clipboard") {
-                    ToggleRow(
-                        title: "显示剪贴板预览",
-                        description: "关闭时不读取，也不触发系统弹窗，键盘上不显示粘贴条，也不能从键盘粘贴。",
-                        isOn: $clipboardPreviewEnabled
-                    )
-                }
-            }
-            AppCard {
-                SettingsIconRow(systemImage: "text.append") {
-                    ToggleRow(
-                        title: "上屏后联想",
-                        description: postCommitContinuationEnabled
-                            ? "输入字词后，在候选栏显示本地常用接续建议"
-                            : "上屏后不显示接续建议",
-                        isOn: $postCommitContinuationEnabled
-                    )
-                }
-            }
-
-            AppCard {
-                SettingsIconRow(systemImage: "textformat.space") {
-                    ToggleRow(
-                        title: "中英混排自动加空格",
-                        description: mixedScriptSpacingEnabled
-                            ? "中文与英文、数字之间自动插入一个空格；英文与数字之间不加。需要键盘开启完全访问"
-                            : "中文与英文、数字之间不自动插入空格",
-                        isOn: $mixedScriptSpacingEnabled
-                    )
-                }
-            }
-
-            AppCard {
-                SettingsIconRow(systemImage: "character.cursor.ibeam") {
-                    ToggleRow(
-                        title: "英文候选自动补空格",
-                        description: englishCandidateAutospaceEnabled
-                            ? "点选英文候选词后自动加一个空格；网址、邮箱和搜索框不补。需要键盘开启完全访问"
-                            : "点选英文候选词后不自动加空格",
-                        isOn: $englishCandidateAutospaceEnabled
-                    )
-                }
-            }
-
-            AppCard {
-                SettingsIconRow(systemImage: "parentheses") {
-                    ToggleRow(
-                        title: "成对符号自动匹配",
-                        description: pairedSymbolCompletionEnabled
-                            ? "输入左括号、书名号等符号时自动补全右侧符号"
-                            : "输入左侧符号时只插入当前符号",
-                        isOn: $pairedSymbolCompletionEnabled
-                    )
-                }
+            SettingsNavigationLink(
+                systemImage: "slider.horizontal.3",
+                title: SettingsRootLayout.typingHabits.title,
+                subtitle: "剪贴板预览、联想、自动加空格与成对符号"
+            ) {
+                TypingHabitsSettingsView()
             }
 
             SettingsNavigationLink(
@@ -306,7 +246,7 @@ struct SettingsTab: View {
             SettingsNavigationLink(
                 systemImage: "circle.lefthalf.filled",
                 title: "显示与外观",
-                subtitle: "深色浅色、键盘高度与候选字大小"
+                subtitle: "深色浅色、键盘高度、候选字大小与字符键样式"
             ) {
                 AppearanceSettingsView()
             }
@@ -347,6 +287,112 @@ struct SettingsTab: View {
             ) {
                 AboutSettingsView(notificationSettings: notificationSettings)
             }
+        }
+    }
+}
+
+/// PB-015 SETTINGS-POLISH §2：「打字习惯」子页。
+///
+/// 原 Settings 根页 Group 1 的 5 张内联开关卡整体迁入本页；`@AppStorage` 键、
+/// App Group store、默认值与描述文案保持不变，仅承载位置变化。标题与图标钉在
+/// `SettingsRootLayout.typingHabitsPageToggles`，与本结构共同渲染。
+private struct TypingHabitsSettingsView: View {
+    @AppStorage(
+        KeyboardInputSettingsKey.clipboardPreviewEnabled,
+        store: UserDefaults(suiteName: universeAppGroupID)
+    )
+    private var clipboardPreviewEnabled = false
+
+    @AppStorage(
+        KeyboardInputSettingsKey.postCommitContinuationEnabled,
+        store: UserDefaults(suiteName: universeAppGroupID)
+    )
+    private var postCommitContinuationEnabled = true
+
+    @AppStorage(
+        KeyboardInputSettingsKey.mixedScriptSpacingEnabled,
+        store: UserDefaults(suiteName: universeAppGroupID)
+    )
+    private var mixedScriptSpacingEnabled = true
+
+    @AppStorage(
+        KeyboardInputSettingsKey.englishCandidateAutospaceEnabled,
+        store: UserDefaults(suiteName: universeAppGroupID)
+    )
+    private var englishCandidateAutospaceEnabled = true
+
+    @AppStorage(
+        KeyboardInputSettingsKey.pairedSymbolCompletionEnabled,
+        store: UserDefaults(suiteName: universeAppGroupID)
+    )
+    private var pairedSymbolCompletionEnabled = true
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: AppSpacing.sectionLoose) {
+                SettingsGroup(
+                    title: SettingsRootLayout.typingHabits.title,
+                    footer: "以上开关只影响本机打字习惯，可以随时改回来。这些不是人工智能功能。"
+                ) {
+                    ForEach(SettingsRootLayout.typingHabitsPageToggles, id: \.title) { entry in
+                        AppCard {
+                            SettingsIconRow(systemImage: entry.systemImage) {
+                                toggleRow(for: entry.title)
+                            }
+                        }
+                    }
+                }
+            }
+            .padding(.horizontal, AppSpacing.screen)
+            .padding(.vertical, AppSpacing.screen)
+        }
+        .background(Color(.systemGroupedBackground))
+        .navigationTitle(SettingsRootLayout.typingHabits.title)
+    }
+
+    @ViewBuilder
+    private func toggleRow(for title: String) -> some View {
+        switch title {
+        case "显示剪贴板预览":
+            ToggleRow(
+                title: title,
+                description: "关闭时不读取，也不触发系统弹窗，键盘上不显示粘贴条，也不能从键盘粘贴。",
+                isOn: $clipboardPreviewEnabled
+            )
+        case "上屏后联想":
+            ToggleRow(
+                title: title,
+                description: postCommitContinuationEnabled
+                    ? "输入字词后，在候选栏显示本地常用接续建议"
+                    : "上屏后不显示接续建议",
+                isOn: $postCommitContinuationEnabled
+            )
+        case "中英混排自动加空格":
+            ToggleRow(
+                title: title,
+                description: mixedScriptSpacingEnabled
+                    ? "中文与英文、数字之间自动插入一个空格；英文与数字之间不加。需要键盘开启完全访问"
+                    : "中文与英文、数字之间不自动插入空格",
+                isOn: $mixedScriptSpacingEnabled
+            )
+        case "英文候选自动补空格":
+            ToggleRow(
+                title: title,
+                description: englishCandidateAutospaceEnabled
+                    ? "点选英文候选词后自动加一个空格；网址、邮箱和搜索框不补。需要键盘开启完全访问"
+                    : "点选英文候选词后不自动加空格",
+                isOn: $englishCandidateAutospaceEnabled
+            )
+        case "成对符号自动匹配":
+            ToggleRow(
+                title: title,
+                description: pairedSymbolCompletionEnabled
+                    ? "输入左括号、书名号等符号时自动补全右侧符号"
+                    : "输入左侧符号时只插入当前符号",
+                isOn: $pairedSymbolCompletionEnabled
+            )
+        default:
+            EmptyView()
         }
     }
 }

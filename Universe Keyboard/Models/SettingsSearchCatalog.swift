@@ -77,9 +77,9 @@ nonisolated enum SettingsSearchCatalog {
         SettingsSearchItem(
             id: "feedback",
             title: "键盘反馈",
-            subtitle: "按键音、触感震动",
+            subtitle: "按键音、触感震动、按键气泡预览",
             systemImage: "waveform",
-            keywords: ["震动", "音效", "反馈", "haptic", "声音"],
+            keywords: ["震动", "音效", "反馈", "haptic", "声音", "气泡", "按键气泡", "按键气泡预览"],
             destination: .feedback
         ),
         SettingsSearchItem(
@@ -149,9 +149,9 @@ nonisolated enum SettingsSearchCatalog {
         SettingsSearchItem(
             id: "appearance",
             title: "显示与外观",
-            subtitle: "深色浅色、键盘高度与候选字大小",
+            subtitle: "深色浅色、键盘高度、候选字大小与字符键样式",
             systemImage: "circle.lefthalf.filled",
-            keywords: ["深色", "浅色", "外观", "主题", "显示", "高度", "字号"],
+            keywords: ["深色", "浅色", "外观", "主题", "显示", "高度", "字号", "字符键样式"],
             destination: .appearance
         ),
         SettingsSearchItem(
