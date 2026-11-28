@@ -502,13 +502,26 @@ nonisolated final class CompactHeaderControllerLayoutTests: XCTestCase {
                     return (text, text.minY + label.font.ascender)
                 }
                 let compact = try textGeometry(XCTUnwrap(sut.candidateCollectionView))
+                // PB-016 r2: the compact bar reserves the leading 44×46pt UK
+                // quick-menu entry while it is visible (idle state); the
+                // expanded panel has no entry. The compact first-row text
+                // therefore sits exactly one entry width further right, and
+                // the alignment expectation is offset by the entry's laid-out
+                // width as observed in the compact state (0 while hidden).
+                let candidateBar = sut.candidateBar as? CandidateBarView
+                let ukEntryOffset: CGFloat
+                if let candidateBar, !candidateBar.ukQuickMenuEntryButton.isHidden {
+                    ukEntryOffset = candidateBar.ukQuickMenuEntryButton.frame.width
+                } else {
+                    ukEntryOffset = 0
+                }
                 sut.toggleCandidateExpand()
                 layout(sut)
                 let expanded = try textGeometry(XCTUnwrap(sut.expandedCandidateCollectionView))
                 print(
                     "TEXT_DELTA x=\(expanded.rect.minX - compact.rect.minX) y=\(expanded.rect.minY - compact.rect.minY)"
                 )
-                XCTAssertEqual(expanded.rect.minX, compact.rect.minX, accuracy: 0.01)
+                XCTAssertEqual(expanded.rect.minX + ukEntryOffset, compact.rect.minX, accuracy: 0.01)
                 XCTAssertEqual(expanded.rect.minY, compact.rect.minY, accuracy: 0.01)
                 XCTAssertEqual(expanded.rect.height, compact.rect.height, accuracy: 0.01)
                 XCTAssertEqual(expanded.baseline, compact.baseline, accuracy: 0.01)

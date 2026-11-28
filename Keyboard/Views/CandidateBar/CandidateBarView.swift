@@ -100,6 +100,10 @@ final class CandidateBarView: UIView {
     private var candidateLeadingConstraint: NSLayoutConstraint!
     /// Candidate viewport clip edge while the entry is hidden (original geometry).
     private var candidateLeadingToBarEdgeConstraint: NSLayoutConstraint!
+    /// Last entry visibility requested through the visibility hook. The
+    /// effective visibility is the request minus installed paste chrome (see
+    /// `setUkQuickMenuVisible(_:)`).
+    private var isUkEntryRequestedVisible = false
     var onQuickMenuEntryTap: (() -> Void)?
     #if DEBUG && KEYBOARD_WAKE_OWNER_PROBE
         private var wakeProbeButton: UIButton?
@@ -205,15 +209,16 @@ final class CandidateBarView: UIView {
         candidateLeadingConstraint = collectionView.leadingAnchor.constraint(
             equalTo: ukQuickMenuEntryButton.trailingAnchor)
         candidateLeadingToBarEdgeConstraint = collectionView.leadingAnchor.constraint(equalTo: leadingAnchor)
-        // The entry is hidden by default: the viewport keeps its original leading edge.
-        candidateLeadingToBarEdgeConstraint.isActive = true
         NSLayoutConstraint.activate([
             expandButton.trailingAnchor.constraint(equalTo: trailingAnchor),
             expandButton.topAnchor.constraint(equalTo: topAnchor),
             expandButton.bottomAnchor.constraint(equalTo: bottomAnchor),
             expandButtonWidthConstraint,
 
-            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            // PB-016: the single stored bar-edge pin is the hidden-state clip
+            // edge. Activating it here (instead of a second anonymous duplicate)
+            // keeps setUkQuickMenuVisible(_:) a conflict-free two-state swap.
+            candidateLeadingToBarEdgeConstraint,
             candidateTrailingConstraint,
             collectionView.topAnchor.constraint(equalTo: topAnchor),
             collectionView.bottomAnchor.constraint(equalTo: bottomAnchor),
@@ -255,18 +260,51 @@ final class CandidateBarView: UIView {
     /// mirroring the frozen trailing action zone (1px separator, 0.6 × bar
     /// height). Visibility releases the width back to the candidate viewport
     /// by swapping the leading clip-edge constraint in one step.
+    ///
+    /// PB-016 r2: paste chrome (the toolbar preview and the paste failure
+    /// notice) owns the row's leading region while installed, so the entry
+    /// yields to it the same way it yields to the recovery notice — otherwise
+    /// the entry's 44pt hit zone would swallow the paste toolbar's leading
+    /// taps. The requested visibility is remembered; clearing the paste chrome
+    /// restores it without a second visibility-hook call.
     func setUkQuickMenuVisible(_ visible: Bool) {
-        guard ukQuickMenuEntryButton.isHidden == !visible else { return }
-        if visible {
+        isUkEntryRequestedVisible = visible
+        let effectiveVisible = visible && !isPasteChromeShowing
+        // Proceed only when the current hidden state differs from the desired
+        // hidden state (`effectiveVisible`), i.e. a real transition. Note: the
+        // shipped PR-2 guard compared with `== !visible`, which inverted this
+        // check and made every state transition a no-op (PB-016 device symptom).
+        guard ukQuickMenuEntryButton.isHidden == effectiveVisible else { return }
+        if effectiveVisible {
             candidateLeadingToBarEdgeConstraint.isActive = false
             candidateLeadingConstraint.isActive = true
+            // PB-016: resolve the entry's dynamic title color against the
+            // traits present at the moment it becomes visible (the extension
+            // may have laid out first under stale/light traits).
+            ukQuickMenuEntryButton.updateTraitsIfNeeded()
         } else {
             candidateLeadingConstraint.isActive = false
             candidateLeadingToBarEdgeConstraint.isActive = true
         }
-        ukQuickMenuEntryButton.isHidden = !visible
-        ukQuickMenuEntryButton.isEnabled = visible
-        ukEntrySeparator.isHidden = !visible
+        ukQuickMenuEntryButton.isHidden = !effectiveVisible
+        ukQuickMenuEntryButton.isEnabled = effectiveVisible
+        ukEntrySeparator.isHidden = !effectiveVisible
+    }
+
+    /// Paste chrome installed on the row's leading region. While any of it is
+    /// showing, the UK quick-menu entry is suppressed to keep the leading hit
+    /// targets exclusive. The failure label only counts once it is actually
+    /// installed (`setPasteFailureNotice`); a never-configured label defaults
+    /// to `isHidden == false` and must not suppress the entry.
+    private var isPasteChromeShowing: Bool {
+        pasteContent != nil
+            || (pasteFailureLabel.superview != nil && !pasteFailureLabel.isHidden)
+    }
+
+    /// Replays the last requested entry visibility after paste chrome appeared
+    /// or went away (see `setUkQuickMenuVisible(_:)`).
+    private func syncUkQuickMenuEntryAfterPasteChromeChange() {
+        setUkQuickMenuVisible(isUkEntryRequestedVisible)
     }
 
     private func installUkQuickMenuEntry() {
@@ -279,6 +317,9 @@ final class CandidateBarView: UIView {
         ukEntrySeparator.accessibilityElementsHidden = true
         ukEntrySeparator.accessibilityIdentifier = "ukQuickMenuEntrySeparator"
         ukEntrySeparator.backgroundColor = .separator
+        // Mirror the entry button's hidden default: the separator must not be
+        // visible while the entry it decorates is hidden.
+        ukEntrySeparator.isHidden = true
         addSubview(ukEntrySeparator)
         NSLayoutConstraint.activate([
             button.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -307,7 +348,13 @@ final class CandidateBarView: UIView {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = UIColor.systemGray.withAlphaComponent(0.001)
         button.setTitle("UK", for: .normal)
-        button.setTitleColor(.secondaryLabel, for: .normal)
+        // PB-016: explicit trait-driven dark contrast — .secondaryLabel's 60%
+        // alpha disappears on the dark tray at 13pt.
+        button.setTitleColor(
+            UIColor { traits in
+                traits.userInterfaceStyle == .dark ? UIColor(white: 0.85, alpha: 1.0) : .secondaryLabel
+            },
+            for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 13, weight: .semibold)
         button.isHidden = true
         button.accessibilityLabel = "快捷设置"
@@ -394,6 +441,9 @@ final class CandidateBarView: UIView {
             content.topAnchor.constraint(equalTo: topAnchor),
             content.heightAnchor.constraint(equalToConstant: candidateBarHeight),
         ])
+        // The toolbar occupies the leading region: suppress the UK quick-menu
+        // entry for as long as it is installed.
+        syncUkQuickMenuEntryAfterPasteChromeChange()
     }
 
     func clearPasteContent() {
@@ -401,6 +451,7 @@ final class CandidateBarView: UIView {
         pasteContent = nil
         gestureBridge.pasteContent = nil
         pasteSeparatorWidthConstraint = nil
+        syncUkQuickMenuEntryAfterPasteChromeChange()
     }
 
     func setPasteFailureNotice(_ message: String?) {
@@ -429,6 +480,7 @@ final class CandidateBarView: UIView {
         }
         pasteContent?.isHidden = visible || isShowingRecoveryNotice
         if visible { bringSubviewToFront(pasteFailureLabel) }
+        syncUkQuickMenuEntryAfterPasteChromeChange()
     }
 
     @objc private func pasteFailureTapped() {
