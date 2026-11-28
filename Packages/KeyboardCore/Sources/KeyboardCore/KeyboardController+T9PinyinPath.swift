@@ -426,6 +426,19 @@ extension KeyboardController {
         refreshT9PinyinPathState(forceNewProvenance: false)
     }
 
+    /// T9-PARTIAL-SELECT-FIX-001 (fix point 4): fail-closed guard for the
+    /// single-digit deterministic branch. When a non-empty preserved Path
+    /// ledger exists but the live single-digit raw cannot be aligned to it
+    /// (no `nestedRemainderSource` match), the raw-only slot-0 rebuild would
+    /// resurrect confirmed syllables as selectable chips; the refresh must
+    /// instead land in the ledger-preserving fallback (or an empty bar).
+    private func isUnalignedSingleDigitAgainstLedger(
+        nestedRemainderSource: String?,
+        previousConfirmed: [String]
+    ) -> Bool {
+        !previousConfirmed.isEmpty && nestedRemainderSource == nil
+    }
+
     /// Rebuild compact paths + provenance from the latest Rime output.
     /// - Parameter forceNewProvenance: when true (new RimeOutput / rollback / page rebuild),
     ///   bump `provenanceRevision` and rebuild issued keys only from live scans — do not
@@ -588,7 +601,12 @@ extension KeyboardController {
             confirmedSegmentValues = previousConfirmed
             selectedPath = nil
             retainedChoiceSourceRawInput = previousRetained
-        } else if !deterministicPaths.isEmpty {
+        } else if !deterministicPaths.isEmpty,
+            !isUnalignedSingleDigitAgainstLedger(
+                nestedRemainderSource: nestedRemainderSource,
+                previousConfirmed: previousConfirmed
+            )
+        {
             // Single-digit focus: local catalog with key-group order preserved.
             let built = buildProgressiveCompactPaths(
                 sourceDigits: pureDigits.isEmpty ? normalizedRaw : pureDigits,
