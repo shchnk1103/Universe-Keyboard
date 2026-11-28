@@ -4,7 +4,7 @@
 
 ## 基本沟通规则
 
-- **语言边界（Human 2026-11-27 批准，长期渐进迁移见 [docs/kos/english-migration-roadmap.md](docs/kos/english-migration-roadmap.md)）**：面向 Human 的对话回复、状态汇报与 Human 常阅台账（如 `docs/PORTFOLIO.md`）保持中文；代码注释、员工报告、指令包及内部工程 / 角色设定文档支持并推荐逐步迁移为英文（节省 token）。历史冻结报告与 Human 界面文字不回改。
+- **语言边界（Human 2026-11-27 批准，2026-11-28 起对 KOS 内部产物改为强制默认；长期迁移见 [docs/kos/english-migration-roadmap.md](docs/kos/english-migration-roadmap.md)）**：面向 Human 的对话回复、状态汇报与 Human 常阅台账（如 `docs/PORTFOLIO.md`）保持中文。**新建 KOS 任务包、员工报告与代码注释一律用英文写**；例外：被测界面引用的 Human 文案原样保留，历史冻结字节不回改。内部工程 / 角色设定文档继续渐进迁移为英文（节省 token）。
 - 除非用户明确要求实施或修改，否则先讨论方案，不直接改文件。明确授权后，在该任务范围内持续推进；不因加载技能、角色切换或上下文压缩重复请求相同授权。
 - 代码改动必须优先保证可读性。
 - 可以适当增加注释，但注释应解释意图、边界或复杂原因，避免复述代码。
