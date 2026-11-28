@@ -1,7 +1,7 @@
 import Foundation
 import KeyboardCore
-import Synchronization
 import XCTest
+import os
 
 @testable import RimeBridge
 
@@ -12,7 +12,6 @@ import XCTest
 /// - or `TEST_RUNNER_` / `SIMCTL_CHILD_` / `UK_RIME_R4B_*` variants
 ///
 /// Without a fixture the suite **skips** — absence of runtime is not Pass.
-@available(iOS 18.0, *)
 final class ThreadAffineRimeRealEngineTests: XCTestCase {
 
     func testRealEngineBootstrapCreatesAndCallsOffMainThroughOwner() async throws {
@@ -28,7 +27,7 @@ final class ThreadAffineRimeRealEngineTests: XCTestCase {
             var actionOrder: [String] = []
             var affinity: [(offMain: Bool, sameThread: Bool)] = []
         }
-        let capture = Mutex(Capture())
+        let capture = OSAllocatedUnfairLock(initialState: Capture())
 
         let owner = ThreadAffineRimeSpikeOwner(
             bootstrap: ThreadAffineRimeEngineImplBootstrap(

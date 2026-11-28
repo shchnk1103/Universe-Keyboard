@@ -9,7 +9,6 @@ import KeyboardCore
 ///
 /// Deploy / fullCheck of the runtime tree remains a separate Main-App-shaped
 /// step performed by the test harness **before** the owner starts.
-@available(iOS 18.0, macOS 15.0, *)
 public struct ThreadAffineRimeEngineImplBootstrap: ThreadAffineRimeEngineBootstrap, Sendable {
     public let sharedDataDir: String
     public let userDataDir: String

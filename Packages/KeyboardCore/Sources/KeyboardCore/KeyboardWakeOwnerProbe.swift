@@ -1,6 +1,6 @@
 #if DEBUG
     import Foundation
-    import Synchronization
+    import os
 
     /// A one-shot, content-free snapshot of observed keyboard-owner boundaries.
     /// This probe is deliberately independent of the diagnostic journal and logger.
@@ -75,7 +75,7 @@
         private static let magicWord: UInt64 = 0x4B57_4F50_524F_4245  // KWOPROBE
         private static let formatVersion: UInt64 = 1
 
-        private let state: Mutex<State>
+        private let state: OSAllocatedUnfairLock<State>
         private let processIdentifier: IdentifierWords
         private let clock: @Sendable () -> UInt64
 
@@ -85,7 +85,7 @@
                 DispatchTime.now().uptimeNanoseconds
             }
         ) {
-            self.state = Mutex(State())
+            self.state = OSAllocatedUnfairLock(initialState: State())
             self.processIdentifier = IdentifierWords(uuid: UUID())
             self.clock = now
         }

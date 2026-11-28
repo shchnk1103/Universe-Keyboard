@@ -1,5 +1,5 @@
 import Foundation
-import Synchronization
+import os
 
 // MARK: - R4-Owner bootstrap (D1)
 
@@ -288,7 +288,7 @@ final class ThreadAffineCandidateWindowReply: Sendable {
         var fulfilled = false
     }
 
-    private let state = Mutex(State())
+    private let state = OSAllocatedUnfairLock(initialState: State())
     private let signal = DispatchSemaphore(value: 0)
 
     func fulfill(_ window: RimeCandidateWindow) {
@@ -366,7 +366,7 @@ private final class ThreadAffineRimeSpikeMailbox: Sendable {
         var isTerminal = false
     }
 
-    private let state = Mutex(State())
+    private let state = OSAllocatedUnfairLock(initialState: State())
     private let wakeSignal = DispatchSemaphore(value: 0)
     private let stoppedSignal = DispatchSemaphore(value: 0)
     private let maxPendingWorkDepth: Int
@@ -473,7 +473,7 @@ private final class ThreadAffineRimeDeliveryChannel: Sendable {
         var deliveredCount = 0
     }
 
-    private let state = Mutex(State())
+    private let state = OSAllocatedUnfairLock(initialState: State())
     private let drainedSignal = DispatchSemaphore(value: 0)
     private let handler: Handler
 
@@ -519,7 +519,7 @@ private final class ThreadAffineRimeDeliveryChannel: Sendable {
 /// owner thread marks it only after `runOwnerLoop` has returned, so the local
 /// non-Sendable engine is no longer reachable on that thread.
 private final class ThreadAffineRimeOwnerDestructionSignal: Sendable {
-    private let state = Mutex(false)
+    private let state = OSAllocatedUnfairLock(initialState: false)
     private let signal = DispatchSemaphore(value: 0)
 
     func markDestroyed() {
@@ -601,14 +601,12 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
         var runtimeSelection: RimeRuntimeSelection?
     }
 
-    /// Owner-loop counters shared without moving a noncopyable Mutex parameter.
+    /// Owner-loop counters shared without moving a lock parameter across the owner boundary.
     private final class SharedCounters: Sendable {
-        private let state = Mutex(AcceptanceState())
+        private let state = OSAllocatedUnfairLock(initialState: AcceptanceState())
 
-        func withAcceptance<T>(_ body: (inout AcceptanceState) -> T) -> T {
-            state.withLock { state in
-                body(&state)
-            }
+        func withAcceptance<T: Sendable>(_ body: @Sendable (inout AcceptanceState) -> T) -> T {
+            state.withLock(body)
         }
 
         @MainActor
@@ -627,8 +625,13 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
                 guard state.candidateVersion == window.permit.version else { return .rejected(.stale) }
                 state.invalidateCandidatePermits()
                 guard !state.candidateVersionExhausted else { return .rejected(.unavailable) }
-                store.page = prepared
                 return .accepted
+            }
+            // The store is MainActor-confined and consume runs on the main actor, so
+            // swapping the page after releasing the lock is race-free; the critical
+            // section guards the acceptance state, not the presentation store.
+            if case .accepted = decision {
+                store.page = prepared
             }
             withExtendedLifetime(previous) {}
             return decision ?? .rejected(.busy)
@@ -1029,9 +1032,13 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
         var ownerEpoch: UInt64 = 1
         var lastAppliedRevision: UInt64 = 0
         var lastOutput = RimeOutput()
+        // Engine snapshot reads hoisted out of the critical section (owner-thread
+        // confined, so equivalent to in-lock reads) to keep the body @Sendable.
+        let initialDiagnosticSessionSnapshot = engine.diagnosticSessionSnapshot
+        let initialRuntimeSelection = engine.runtimeSelection
         counters.withAcceptance {
-            $0.diagnosticSessionSnapshot = engine.diagnosticSessionSnapshot
-            $0.runtimeSelection = engine.runtimeSelection
+            $0.diagnosticSessionSnapshot = initialDiagnosticSessionSnapshot
+            $0.runtimeSelection = initialRuntimeSelection
             $0.isReady = true
         }
 
@@ -1078,9 +1085,13 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
                 lastOutput = output
                 lastAppliedRevision = envelope.revision
                 let diagnosticSessionSnapshot = engine.diagnosticSessionSnapshot
+                // The engine is owner-thread-confined, so reading these two snapshots
+                // before entering the acceptance critical section is equivalent to
+                // reading them inside the lock, while keeping the lock body @Sendable.
+                let runtimeSelectionAfterWork = engine.runtimeSelection
                 let origin = counters.withAcceptance { state -> RimeOutputOrigin? in
                     state.diagnosticSessionSnapshot = diagnosticSessionSnapshot
-                    state.runtimeSelection = engine.runtimeSelection
+                    state.runtimeSelection = runtimeSelectionAfterWork
                     let origin =
                         !advancesEpoch && output.composition != nil
                         ? RimeOutputOrigin(
@@ -1146,13 +1157,18 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
             case .control(.advanceEpoch(let epoch)):
                 engine.resetSession()
                 lastOutput = RimeOutput()
+                // Engine snapshot reads are hoisted out of the critical section; the
+                // engine is owner-thread-confined so the values are identical to the
+                // in-lock reads while keeping the lock body @Sendable.
+                let resetDiagnosticSessionSnapshot = engine.diagnosticSessionSnapshot
+                let resetRuntimeSelection = engine.runtimeSelection
                 let isCurrent = counters.withAcceptance { state -> Bool in
                     precondition(state.unsettledEpochControls > 0)
                     state.unsettledEpochControls -= 1
                     state.candidateOrigin = nil
                     guard state.sessionEpoch == epoch else { return false }
-                    state.diagnosticSessionSnapshot = engine.diagnosticSessionSnapshot
-                    state.runtimeSelection = engine.runtimeSelection
+                    state.diagnosticSessionSnapshot = resetDiagnosticSessionSnapshot
+                    state.runtimeSelection = resetRuntimeSelection
                     let purged = mailbox.purgeWork(notMatchingEpoch: epoch)
                     state.skippedStaleEpochCount &+= purged.count
                     state.unsettledCandidateWork -= purged.count
@@ -1164,9 +1180,15 @@ public final class ThreadAffineRimeSpikeOwner: Sendable {
                 }
 
             case .control(.boundCandidateWindow(let origin, let from, let limit, let reply)):
+                // Copy the owner-loop locals that the lock body reads; the owner
+                // thread cannot mutate them while the synchronous closure runs, so
+                // the copies are equivalent while keeping the body @Sendable.
+                let currentOwnerEpoch = ownerEpoch
+                let currentAppliedRevision = lastAppliedRevision
                 let permit = counters.withAcceptance { state -> RimeCandidateWindowPermit? in
                     guard state.candidateRejection(for: origin) == nil,
-                        ownerEpoch == origin.sessionEpoch, lastAppliedRevision == origin.revision
+                        currentOwnerEpoch == origin.sessionEpoch,
+                        currentAppliedRevision == origin.revision
                     else { return nil }
                     return RimeCandidateWindowPermit(origin: origin, version: state.candidateVersion)
                 }

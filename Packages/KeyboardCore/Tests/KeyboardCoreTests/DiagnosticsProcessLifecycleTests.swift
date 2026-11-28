@@ -1,6 +1,6 @@
 import Foundation
-import Synchronization
 import XCTest
+import os
 
 @testable import KeyboardCore
 
@@ -67,7 +67,7 @@ private final class LifecycleFake: DiagnosticsLifecycleMember {
         var active = false
         var generation: UInt64?
     }
-    private let state = Mutex(State())
+    private let state = OSAllocatedUnfairLock(initialState: State())
     private let callback: @Sendable (Bool) -> Void
 
     init(callback: @escaping @Sendable (Bool) -> Void) { self.callback = callback }

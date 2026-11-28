@@ -1,7 +1,7 @@
 import Foundation
 import KeyboardCore
-import Synchronization
 import XCTest
+import os
 
 @testable import Universe_Keyboard
 
@@ -69,7 +69,7 @@ final class SchemaSourceProbeTests: XCTestCase {
 
     func testSizeRejectionDoesNotHideValidAlternativeAndRecordsSource() async throws {
         let variants = try XCTUnwrap(RimeSchemeCatalog.entry(for: "rime_ice")?.distribution?.manifest.sourceVariants)
-        let sink = Mutex<[String]>([])
+        let sink = OSAllocatedUnfairLock<[String]>(initialState: [])
         let probe = FixedResultProbe(results: ["nju": .rejected(.archiveSize), "github": .available])
         let selector = URLSessionSchemaSourceSelector(probe: probe, hedgeDelayNanoseconds: 1_000_000)
         let selected = try await selector.selectSource(from: variants, preferredSourceID: "nju") { source, result in

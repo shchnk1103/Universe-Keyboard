@@ -324,6 +324,9 @@ extension KeyboardViewController {
             isCandidateExpanded = false
             dismissExpandedCandidatePanel(animated: false)
         }
+        // PB-016 PR-2 (r3 §4.1 rule 2): cleanup tears the quick menu down even
+        // when no candidate refresh follows (async completion paths).
+        forceDismissQuickMenu()
         resetAllKeyPressVisualState()
         resetCandidatePresentationState()
 
@@ -332,6 +335,7 @@ extension KeyboardViewController {
         // discarded on arrival (#2) — no chrome rebuild, no preference
         // write-back, no menu revival.
         controller.quickMenuSessionCommandConsumer?.abandonInFlightSelection()
+        refreshQuickMenuEntryVisibility()
 
         let effects =
             abandonsComposition

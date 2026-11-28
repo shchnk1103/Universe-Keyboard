@@ -1,6 +1,6 @@
 import Foundation
-import Synchronization
 import XCTest
+import os
 
 @testable import KeyboardCore
 
@@ -17,7 +17,7 @@ final class PartialCommitFailureProtectionTests: XCTestCase {
             var destroyed = 0
             var onOwner = true
         }
-        private let state = Mutex(Facts())
+        private let state = OSAllocatedUnfairLock(initialState: Facts())
         let destroyed = DispatchSemaphore(value: 0)
         func snapshot() -> Facts { state.withLock { $0 } }
         func armDrop() { state.withLock { $0.dropNext = true } }

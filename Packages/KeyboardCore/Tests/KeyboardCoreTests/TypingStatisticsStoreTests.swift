@@ -1,6 +1,6 @@
 import Foundation
-import Synchronization
 import XCTest
+import os
 
 @testable import KeyboardCore
 
@@ -9,9 +9,8 @@ private struct InMemoryTypingPersistenceState: Sendable {
     var data: Data?
 }
 
-@available(macOS 15.0, *)
 private final class InMemoryTypingPersistence: Sendable {
-    private let state = Mutex(InMemoryTypingPersistenceState())
+    private let state = OSAllocatedUnfairLock(initialState: InMemoryTypingPersistenceState())
 
     var epoch: Int {
         get { state.withLock { $0.epoch } }
@@ -32,17 +31,18 @@ private final class InMemoryTypingPersistence: Sendable {
     }
 }
 
-@available(macOS 15.0, *)
 final class TypingStatisticsWriterTests: XCTestCase {
     func testWriterCoalescesDeltasIntoOneBoundedSnapshot() throws {
         let persistence = InMemoryTypingPersistence()
         let writer = makeWriter(persistence: persistence)
-        let date = try XCTUnwrap(utcCalendar.date(from: DateComponents(
-            year: 2026,
-            month: 7,
-            day: 11,
-            hour: 12
-        )))
+        let date = try XCTUnwrap(
+            utcCalendar.date(
+                from: DateComponents(
+                    year: 2026,
+                    month: 7,
+                    day: 11,
+                    hour: 12
+                )))
 
         writer.record(
             TypingStatisticsClassifier.classify("你好"),

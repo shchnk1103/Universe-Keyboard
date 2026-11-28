@@ -1,7 +1,7 @@
 import Darwin
 import Foundation
-import Synchronization
 import XCTest
+import os
 
 @testable import KeyboardCore
 
