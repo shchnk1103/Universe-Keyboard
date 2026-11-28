@@ -230,6 +230,23 @@ extension KeyboardController {
         if let engine = rimeEngine, restorePartialCommitCheckpoint(using: engine) {
             return .compositionChanged
         }
+        // Checkpoint-less partial commit with nothing left to compose (e.g.
+        // after swipe-left Delete dropped the remaining preedit): the next
+        // Delete is a normal backward deletion of the confirmed marked prefix,
+        // not a checkpoint restore. Clear the stale partial state together with
+        // the host marked text so later edits never see a phantom confirmed prefix.
+        if let partialCommit = state.partialCommit,
+            partialCommit.checkpoint == nil,
+            partialCommit.remainingRawInput.isEmpty,
+            partialCommit.remainingPreeditText.isEmpty,
+            state.currentComposition.isEmpty,
+            rimeEngine?.isComposing() != true
+        {
+            state.partialCommit = nil
+            clearTypoCorrectionSuggestions()
+            deleteInlinePreedit()
+            return .compositionChanged
+        }
         if let effects = handleNumberSuffixDeleteIfNeeded() {
             return effects
         }

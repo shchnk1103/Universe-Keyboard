@@ -12,7 +12,7 @@ final class DeleteTests: XCTestCase {
         return controller
     }()
 
-    func testDropRemainingPreeditKeepsConfirmedPrefixAndCheckpoint() {
+    func testDropRemainingPreeditKeepsConfirmedPrefixAndInvalidatesCheckpoint() {
         controller.state.partialCommit = PartialCommitState(
             confirmedText: "你",
             remainingRawInput: "hao",
@@ -32,7 +32,10 @@ final class DeleteTests: XCTestCase {
 
         XCTAssertEqual(controller.state.partialCommit?.confirmedText, "你")
         XCTAssertEqual(controller.state.partialCommit?.remainingRawInput, "")
-        XCTAssertEqual(controller.state.partialCommit?.checkpoint?.previousRawInput, "nihao")
+        // The Delete checkpoint cannot outlive the user's explicit abandonment
+        // of the remaining composition (swipe-left Delete); keeping it let a
+        // later Delete tap resurrect the pre-abandonment raw input.
+        XCTAssertNil(controller.state.partialCommit?.checkpoint)
         XCTAssertEqual(controller.state.currentComposition, "")
         XCTAssertNil(controller.state.lastRimeOutput)
         XCTAssertEqual(controller.state.continuation.context, "前文")
