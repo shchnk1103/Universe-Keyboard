@@ -211,7 +211,7 @@ struct SearchTab: View {
                 isRimeSyncMethodConfigured: syncModel.provider != .none
             )
         case .about:
-            AboutSettingsView()
+            AboutSettingsView(notificationSettings: notificationSettings)
         case .privacy:
             PrivacyDataView()
         case .openSource:

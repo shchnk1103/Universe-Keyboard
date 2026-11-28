@@ -1,6 +1,17 @@
 import KeyboardCore
 import SwiftUI
 
+/// PB-015 PR-4（M2）：原「外观」页升级为「显示与外观」页。
+///
+/// `relocatedEntryTitles` 逐项钉住从 `KeyboardLayoutSettingsView` 迁入的 Entry
+/// （顺序即页面渲染顺序），与 `AppPR4StructuralConsolidationTests` 共同回归。
+/// 独立 View（`KeyboardHeightSettingsView` / `CandidateFontSettingsView`）保留，
+/// Search 深链 `keyboardHeight` / `candidateFont` 仍直达独立页。
+enum DisplayAppearanceCopy {
+    static let navigationTitle = "显示与外观"
+    static let relocatedEntryTitles = [KeyboardHeightSettingsCopy.title, CandidateFontSettingsCopy.title]
+}
+
 struct AppearanceSettingsView: View {
     @AppStorage(AppAppearance.storageKey, store: AppAppearance.storage)
     private var appearanceRawValue = AppAppearance.system.rawValue
@@ -70,6 +81,10 @@ struct AppearanceSettingsView: View {
                 Text("按钮与选中状态采用随外观切换的黑白高对比样式。")
             }
 
+            // PB-015 PR-4（M2）：从键盘布局页迁入的两个 Entry（Section 形态）。
+            KeyboardHeightSettingsEntry()
+            CandidateFontSettingsEntry()
+
             #if DEBUG
                 Section {
                     ToggleRow(
@@ -84,7 +99,7 @@ struct AppearanceSettingsView: View {
                 }
             #endif
         }
-        .navigationTitle("外观")
+        .navigationTitle(DisplayAppearanceCopy.navigationTitle)
         .tint(.primary)
     }
 }

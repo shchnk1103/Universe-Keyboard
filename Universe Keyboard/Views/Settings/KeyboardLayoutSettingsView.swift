@@ -77,8 +77,8 @@ struct KeyboardLayoutSettingsView: View {
                 Text("选择双拼方案（小鹤双拼 / 自然码双拼）后，键帽下方会显示对应的全拼韵母副标；关闭后仅显示主字符。")
             }
 
-            KeyboardHeightSettingsEntry()
-            CandidateFontSettingsEntry()
+            // PB-015 PR-4（M2）：键盘高度 / 候选字大小 Entry 已迁入「显示与外观」页；
+            // 字符键样式与下方方案槽切换链留在本页（设计 r2 §2 定稿）。
             Section {
                 NavigationLink("字符键样式") { CharacterKeyStyleSettingsView() }
             }

@@ -1,7 +1,14 @@
 import SwiftUI
 
+/// PB-015 PR-4（M6）：诊断入口收进关于页的文案锚点（测试与文档共用）。
+enum AboutSettingsCopy {
+    static let diagnosticsSectionHeader = "诊断"
+    static let diagnosticsEntryTitle = "诊断"
+}
+
 /// Main-App identity and contact hub (`PD-APP-ABOUT-001`).
 struct AboutSettingsView: View {
+    @Bindable var notificationSettings: AppNotificationSettingsModel
     @Environment(\.openURL) private var openURL
 
     private var marketingVersion: String { AppAboutContact.marketingVersion() }
@@ -55,6 +62,22 @@ struct AboutSettingsView: View {
                 } label: {
                     Label("开源软件与内容", systemImage: "doc.text")
                 }
+            }
+
+            // PB-015 PR-4（M6）：诊断入口从根设置页独立组迁入关于页尾部。
+            Section {
+                NavigationLink {
+                    DiagnosticsSettingsView(notificationSettings: notificationSettings)
+                } label: {
+                    Label(
+                        AboutSettingsCopy.diagnosticsEntryTitle,
+                        systemImage: "waveform.path.ecg.text"
+                    )
+                }
+            } header: {
+                Text(AboutSettingsCopy.diagnosticsSectionHeader)
+            } footer: {
+                Text("本机记录、分类与高级排查。排查问题时再打开即可。")
             }
 
             if let filingNumber = AppAboutContact.icpFilingDisplayText(AppAboutContact.icpFilingNumber) {

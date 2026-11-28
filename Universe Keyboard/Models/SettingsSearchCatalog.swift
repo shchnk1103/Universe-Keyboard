@@ -148,10 +148,10 @@ nonisolated enum SettingsSearchCatalog {
         ),
         SettingsSearchItem(
             id: "appearance",
-            title: "外观",
-            subtitle: "浅色、深色、跟随系统",
+            title: "显示与外观",
+            subtitle: "深色浅色、键盘高度与候选字大小",
             systemImage: "circle.lefthalf.filled",
-            keywords: ["深色", "浅色", "外观", "主题"],
+            keywords: ["深色", "浅色", "外观", "主题", "显示", "高度", "字号"],
             destination: .appearance
         ),
         SettingsSearchItem(
