@@ -1,5 +1,6 @@
 import Foundation
-import Synchronization
+
+import struct os.OSAllocatedUnfairLock
 
 #if DEBUG
 
@@ -20,7 +21,7 @@ import Synchronization
     }
 
     private final class JournalFlushRetryStageBox: Sendable {
-        private let state = Mutex(JournalFlushRetryStageState())
+        private let state = OSAllocatedUnfairLock(initialState: JournalFlushRetryStageState())
 
         func markBarrierReturned() {
             state.withLock { $0.barrierReturned = true }
