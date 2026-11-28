@@ -27,7 +27,7 @@ def _write(path: Path, text: str) -> Path:
     return path
 
 
-# O207: /tmp-injected 6-pool roster fixture; never the real ~/.kos-work ledger.
+# O207: /tmp-injected 6-pool roster fixture; never the real external KOS ledger.
 FIXTURE_ROSTER = """# 名册（测试夹具）
 | 名字 | 角色 | 当前担任者 | 角色卡 |
 |---|---|---|---|

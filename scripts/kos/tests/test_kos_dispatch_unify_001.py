@@ -71,7 +71,7 @@ def _expected_block(task_name: str, role: str, packet_path: str, sha256: str) ->
 
 class _RosterEnvMixin(unittest.TestCase):
     """O207: inject a /tmp 6-pool roster fixture via KOS_ROSTER (never the
-    real ~/.kos-work ledger), for both in-process and subprocess calls."""
+    real external KOS ledger), for both in-process and subprocess calls."""
 
     def setUp(self) -> None:
         self.tmp = tempfile.TemporaryDirectory()
