@@ -72,6 +72,24 @@ extension RimeConfigManager {
         {
             appendSchema("luna_pinyin_t9")
         }
+        // Shuangpin family (PB-017): register the 26-key binding only when its
+        // materialized shared/<id>.schema.yaml is on disk (fail-closed, like the
+        // luna_pinyin_t9 guard above). A pending switch registers the binding so
+        // the deployment triggered by the settings switch compiles the freshly
+        // materialized schema; a missing file keeps it out of schema_list.
+        if let shuangpinBinding = defaults?.string(forKey: KeyboardLayoutSettingsKey.schemeBinding26),
+            RimeShuangpinVariant.isDoublePinyinSchemaID(shuangpinBinding)
+        {
+            let shuangpinDerived =
+                rimeRoot
+                .appendingPathComponent("shared", isDirectory: true)
+                .appendingPathComponent("\(shuangpinBinding).schema.yaml")
+            if FileManager.default.fileExists(atPath: shuangpinDerived.path)
+                || pendingSchemaID == shuangpinBinding
+            {
+                appendSchema(shuangpinBinding)
+            }
+        }
         if pageSize >= 5 {
             defaultYaml += "  \"menu/page_size\": \(pageSize)\n"
         }

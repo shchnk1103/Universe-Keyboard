@@ -123,12 +123,13 @@ public final class RimeEngineImpl: RimeEngine {
         let requested = resolveRuntimeSelection()
         let requestedSchema = requested.effectiveSchemaID
         // Prefer the 26-key layout binding (may be 万象) over a hard-coded fog/luna pair
-        // when T9 select fails closed.
-        let fallbackCandidate =
-            requested.schemeBinding26
-            ?? (requested.baseSchemaID == "t9" ? "rime_ice" : requested.baseSchemaID)
-        let fallbackSchema =
-            fallbackCandidate == "t9" ? "rime_ice" : fallbackCandidate
+        // when T9 select fails closed. Shuangpin bindings fall back to the base
+        // schema so a failed select degrades to a working full-pinyin session.
+        let fallbackSchema = RimeStartupSchemaSelector.fallbackSchemaID(
+            baseSchemaID: requested.baseSchemaID,
+            schemeBinding26: requested.schemeBinding26,
+            effectiveSchemaID: requestedSchema
+        )
 
         let selected = selectSchemaForStartup(requestedSchema, fallback: fallbackSchema)
         let schemaElapsed = (CACurrentMediaTime() - schemaStartTime) * 1000
