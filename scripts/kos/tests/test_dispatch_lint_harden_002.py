@@ -31,6 +31,9 @@ from pathlib import Path
 KOS_DIR = Path(__file__).resolve().parent.parent
 REPO_ROOT = KOS_DIR.parent.parent
 PY = sys.executable
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+import _kos_pm_next_fixture  # noqa: E402
 
 # KOS-BOARD-RESERVE-001 convention: real-board cases are gated on the
 # machine-local external kos-board.py so hosted CI (without it) runs green.
@@ -157,6 +160,7 @@ class RelayBlockCollisionTests(_GitRepoMixin, unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
+        self._pm_next_saved = _kos_pm_next_fixture.install(set_roster=True)
         self.task = self.root / "KOS-SELFTEST-001"
         self.task.mkdir()
         self.repo, self.base = self._init_repo(self.root)
@@ -172,6 +176,7 @@ class RelayBlockCollisionTests(_GitRepoMixin, unittest.TestCase):
                                      "print('PICK [Quality]: Quinn（Quality | -）')\n")
 
     def tearDown(self):
+        _kos_pm_next_fixture.uninstall(self._pm_next_saved)
         self.tmp.cleanup()
 
     def _board_args(self):
@@ -211,6 +216,7 @@ class RelayBusyStartCommandTests(_GitRepoMixin, unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
+        self._pm_next_saved = _kos_pm_next_fixture.install(set_roster=True)
         self.task = self.root / "KOS-SELFTEST-001"
         self.task.mkdir()
         self.repo, self.base = self._init_repo(self.root)
@@ -231,6 +237,7 @@ class RelayBusyStartCommandTests(_GitRepoMixin, unittest.TestCase):
                                      "print('PICK [Executor（代码）]: Nick（Executor（代码） | -）')\n")
 
     def tearDown(self):
+        _kos_pm_next_fixture.uninstall(self._pm_next_saved)
         self.tmp.cleanup()
 
     def test_relay_quality_block_starts_with_claim_hint(self) -> None:
@@ -331,6 +338,9 @@ class RealBoardReserveTests(_GitRepoMixin, unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
+        # O207: this case resolves the roster via KOS_HOME (its own /tmp home
+        # with a shuffled-roster variant), so only the tool fixture is set.
+        self._pm_next_saved = _kos_pm_next_fixture.install()
         self.home = self.root / "home"
         roles = self.home / "KOS-ROLES-001" / "roles"
         tools = self.home / "tools"
@@ -348,6 +358,7 @@ class RealBoardReserveTests(_GitRepoMixin, unittest.TestCase):
         self.kos_env = {"KOS_HOME": str(self.home)}
 
     def tearDown(self):
+        _kos_pm_next_fixture.uninstall(self._pm_next_saved)
         self.tmp.cleanup()
 
     def _run_relay(self):
@@ -406,12 +417,14 @@ class DispatchDepartmentTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
+        self._pm_next_saved = _kos_pm_next_fixture.install(set_roster=True)
         self.packet = _write(self.root / "pkg.md", "# 任务包：示例\n")
         roster = self.root / "ROSTER.md"
         roster.write_text(ROSTER, encoding="utf-8")
         self.roster_env = {"KOS_ROSTER": str(roster)}
 
     def tearDown(self):
+        _kos_pm_next_fixture.uninstall(self._pm_next_saved)
         self.tmp.cleanup()
 
     def _dispatch(self, *extra: str) -> tuple[int, list[str]]:

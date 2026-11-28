@@ -38,7 +38,9 @@ from pathlib import Path
 
 KOS_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(KOS_DIR))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+import _kos_pm_next_fixture  # noqa: E402
 import kos_handoff  # noqa: E402
 
 
@@ -70,8 +72,10 @@ def _expected_block(task_name: str, role: str, packet_path: str, sha256: str) ->
 
 
 class _RosterEnvMixin(unittest.TestCase):
-    """O207: inject a /tmp 6-pool roster fixture via KOS_ROSTER (never the
-    real external KOS ledger), for both in-process and subprocess calls."""
+    """O207: inject a /tmp 6-pool roster fixture via KOS_ROSTER and a /tmp
+    kos-pm-next.py fixture tool via KOS_PM_NEXT_TOOL (never the real external
+    KOS ledger), for both in-process and subprocess calls. The kos_handoff
+    external-module cache is cleared per case so no cached tool module leaks."""
 
     def setUp(self) -> None:
         self.tmp = tempfile.TemporaryDirectory()
@@ -80,8 +84,10 @@ class _RosterEnvMixin(unittest.TestCase):
         self.roster_env = {"KOS_ROSTER": str(roster)}
         self._old = os.environ.get("KOS_ROSTER")
         os.environ["KOS_ROSTER"] = str(roster)
+        self._pm_next_saved = _kos_pm_next_fixture.install(set_roster=True)
 
     def tearDown(self) -> None:
+        _kos_pm_next_fixture.uninstall(self._pm_next_saved)
         if self._old is None:
             os.environ.pop("KOS_ROSTER", None)
         else:

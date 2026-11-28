@@ -8,8 +8,8 @@ kos-pm-next.py 的 6 部门池规范（load_department_pools，ROSTER.md 为唯�
 名）自动映射为标准部门名；无法唯一映射时 fail-closed 拒绝生成派发块。
 严禁个人名直通派发块第 2 行。
 
-测试全部通过 KOS_ROSTER 注入 /tmp 夹具花名册，不读写真实
-~/.kos-work 台账或真实 ROSTER.md。
+测试全部通过 KOS_ROSTER 注入 /tmp 夹具花名册，并通过 KOS_PM_NEXT_TOOL 注入
+/tmp kos-pm-next.py 夹具工具，不读写真实外部台账或真实 ROSTER.md。
 """
 import hashlib
 import importlib.util
@@ -23,12 +23,10 @@ from pathlib import Path
 
 KOS_DIR = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(KOS_DIR))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+import _kos_pm_next_fixture  # noqa: E402
 import kos_handoff  # noqa: E402
-
-PM_NEXT_TOOL = Path(os.environ.get(
-    "KOS_PM_NEXT_TOOL",
-    os.path.expanduser("~/.kos-work/Universe-Keyboard/tools/kos-pm-next.py")))
 
 # 6 部门池夹具（结构与 KOS-ROLES-001/roles/ROSTER.md 部门池表一致，
 # 存放在临时目录，不触碰真实台账）。
@@ -79,7 +77,9 @@ def _expected_block(task_name: str, role: str, packet_path: str, sha256: str) ->
 
 
 class _RosterFixtureMixin(unittest.TestCase):
-    """每个用例注入 /tmp 夹具花名册（KOS_ROSTER），结束后还原环境。"""
+    """每个用例注入 /tmp 夹具花名册（KOS_ROSTER）与 /tmp kos-pm-next.py
+    夹具工具（KOS_PM_NEXT_TOOL），结束后还原环境并清空 kos_handoff 的
+    外置工具模块缓存，避免用例间泄漏。"""
 
     def setUp(self) -> None:
         self.tmp = tempfile.TemporaryDirectory()
@@ -87,14 +87,14 @@ class _RosterFixtureMixin(unittest.TestCase):
         self.roster = _write(self.root / "KOS-ROLES-001" / "roles" / "ROSTER.md",
                              FIXTURE_ROSTER)
         self._old_roster_env = os.environ.get("KOS_ROSTER")
-        self._old_tool_env = os.environ.get("KOS_PM_NEXT_TOOL")
         self._old_home_env = os.environ.get("KOS_HOME")
         os.environ["KOS_ROSTER"] = str(self.roster)
         os.environ.pop("KOS_HOME", None)
+        self._pm_next_saved = _kos_pm_next_fixture.install(set_roster=True)
 
     def tearDown(self) -> None:
+        _kos_pm_next_fixture.uninstall(self._pm_next_saved)
         for key, value in (("KOS_ROSTER", self._old_roster_env),
-                           ("KOS_PM_NEXT_TOOL", self._old_tool_env),
                            ("KOS_HOME", self._old_home_env)):
             if value is None:
                 os.environ.pop(key, None)
@@ -114,9 +114,11 @@ class _RosterFixtureMixin(unittest.TestCase):
 class LoadDepartmentPoolsReuseTests(_RosterFixtureMixin):
     """kos_handoff 复用 kos-pm-next.py 的 load_department_pools 规范。"""
 
-    @unittest.skipUnless(PM_NEXT_TOOL.is_file(), "external kos-pm-next.py not available")
     def test_pools_equal_external_tool_result(self) -> None:
-        spec = importlib.util.spec_from_file_location("kos_pm_next_o207", PM_NEXT_TOOL)
+        """与 KOS_PM_NEXT_TOOL 指向的工具模块逐池一致：有真实外置工具时
+        防漂移，仅有 /tmp 夹具时验证委托链路（不做环境跳过）。"""
+        tool = Path(os.environ[_kos_pm_next_fixture.PM_NEXT_ENV])
+        spec = importlib.util.spec_from_file_location("kos_pm_next_o207", tool)
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         self.assertEqual(

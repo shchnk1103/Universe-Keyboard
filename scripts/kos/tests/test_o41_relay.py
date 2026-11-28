@@ -13,7 +13,9 @@ from pathlib import Path
 KOS_DIR = Path(__file__).resolve().parent.parent
 REPO_ROOT = KOS_DIR.parent.parent
 sys.path.insert(0, str(KOS_DIR))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+import _kos_pm_next_fixture  # noqa: E402
 import clauses_spec  # noqa: E402
 import freeze  # noqa: E402
 
@@ -527,12 +529,14 @@ class RelayQualityTests(unittest.TestCase):
     def setUp(self) -> None:
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
+        self._pm_next_saved = _kos_pm_next_fixture.install(set_roster=True)
         self.repo = self.root / "repo"
         self.repo.mkdir()
         self.template_src = KOS_DIR / "quality_relay_template.md"
         self.identity = "Cowork 3P <cowork-3p@localhost>"
 
     def tearDown(self) -> None:
+        _kos_pm_next_fixture.uninstall(self._pm_next_saved)
         self.tmp.cleanup()
 
     def _git(self, *args, env_extra=None):
@@ -714,11 +718,13 @@ class RelayExecTests(unittest.TestCase):
     def setUp(self) -> None:
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
+        self._pm_next_saved = _kos_pm_next_fixture.install(set_roster=True)
         self.repo = self.root / "repo"
         self.repo.mkdir()
         self.identity = "Cowork 3P <cowork-3p@localhost>"
 
     def tearDown(self) -> None:
+        _kos_pm_next_fixture.uninstall(self._pm_next_saved)
         self.tmp.cleanup()
 
     def _git(self, *args):
@@ -947,8 +953,10 @@ class HandoffAutoPickTests(unittest.TestCase):
     def setUp(self) -> None:
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
+        self._pm_next_saved = _kos_pm_next_fixture.install(set_roster=True)
 
     def tearDown(self) -> None:
+        _kos_pm_next_fixture.uninstall(self._pm_next_saved)
         self.tmp.cleanup()
 
     def _record_stub(self, name: str = "Quinn", role: str = "Quality") -> Path:
@@ -1088,6 +1096,7 @@ class QualityRelayPackageCompletenessTests(unittest.TestCase):
     def setUp(self) -> None:
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
+        self._pm_next_saved = _kos_pm_next_fixture.install(set_roster=True)
         self.repo = self.root / "repo"
         self.repo.mkdir()
         env = dict(os.environ)
@@ -1126,6 +1135,7 @@ class QualityRelayPackageCompletenessTests(unittest.TestCase):
         self.report = report
 
     def tearDown(self) -> None:
+        _kos_pm_next_fixture.uninstall(self._pm_next_saved)
         self.tmp.cleanup()
 
     def _pick_stub(self) -> Path:

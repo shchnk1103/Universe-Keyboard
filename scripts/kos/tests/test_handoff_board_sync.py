@@ -14,6 +14,9 @@ ROOT = Path(__file__).resolve().parents[3]
 HANDOFF = ROOT / "scripts/kos/kos_handoff.py"
 LINT = ROOT / "scripts/kos/kos-pkg-lint.py"
 FLOW = ROOT / "scripts/kos/pr_flow.py"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+import _kos_pm_next_fixture  # noqa: E402
 
 
 def _run(script: Path, args, env=None):
@@ -27,6 +30,9 @@ class HandoffBoardSyncTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
+        # O207: /tmp-injected kos-pm-next.py fixture tool (CI and isolated-HOME
+        # runners have no external tool); roster is injected per-call below.
+        self._pm_next = _kos_pm_next_fixture.install()
         # O207: /tmp-injected 6-pool roster fixture (never the real ledger);
         # suggestion blocks render the duty as a standard department name.
         self.roster = self.root / "ROSTER.md"
@@ -45,6 +51,7 @@ class HandoffBoardSyncTests(unittest.TestCase):
         )
 
     def tearDown(self):
+        _kos_pm_next_fixture.uninstall(self._pm_next)
         self.tmp.cleanup()
 
     def _board(self, rows: str) -> Path:
@@ -84,7 +91,8 @@ class HandoffBoardSyncTests(unittest.TestCase):
     def _final(self, report: Path, roles: Path, stub: Path):
         argv_out = self.root / "argv.txt"
         env = {"PICK_ARGS_OUT": str(argv_out), "PATH": "/usr/bin:/bin",
-               "KOS_ROSTER": str(self.roster)}
+               "KOS_ROSTER": str(self.roster),
+               "KOS_PM_NEXT_TOOL": str(self._pm_next.tool)}
         result = _run(HANDOFF, [
             "final", "--report", str(report), "--skip-lint",
             "--board", sys.executable, "--board-args", json.dumps([str(stub)]),

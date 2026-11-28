@@ -17,7 +17,9 @@ from pathlib import Path
 KOS_DIR = Path(__file__).resolve().parent.parent
 REPO_ROOT = KOS_DIR.parent.parent
 sys.path.insert(0, str(KOS_DIR))
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+import _kos_pm_next_fixture  # noqa: E402
 import kos_render  # noqa: E402
 
 
@@ -123,6 +125,7 @@ class FeatureRelayExecGateTests(_GitRepoMixin, unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
+        self._pm_next_saved = _kos_pm_next_fixture.install(set_roster=True)
         self.repo, self.base = self._init_repo(self.root)
         self.arch = _write(self.root / "arch-report.md", ARCH_BODY)
         self.packet = _write(self.root / "packet.md",
@@ -133,6 +136,7 @@ class FeatureRelayExecGateTests(_GitRepoMixin, unittest.TestCase):
                                 "print('PICK [Executor（代码）]: Nick（Executor（代码） | -）')\n")
 
     def tearDown(self):
+        _kos_pm_next_fixture.uninstall(self._pm_next_saved)
         self.tmp.cleanup()
 
     def _run(self, packet=None, report=None):
@@ -195,6 +199,7 @@ class RelayQualityRs2BypassTests(_GitRepoMixin, unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
+        self._pm_next_saved = _kos_pm_next_fixture.install(set_roster=True)
         self.repo, self.base = self._init_repo(self.root)
         self.arch = _write(self.root / "arch-report.md", ARCH_BODY)
         self.report = _write(self.root / "report.md",
@@ -205,6 +210,7 @@ class RelayQualityRs2BypassTests(_GitRepoMixin, unittest.TestCase):
                                 "print('PICK [Quality]: Quinn（Quality | -）')\n")
 
     def tearDown(self):
+        _kos_pm_next_fixture.uninstall(self._pm_next_saved)
         self.tmp.cleanup()
 
     def _run(self, packet: Path):
@@ -249,6 +255,7 @@ class DocGradeRegressionTests(_GitRepoMixin, unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
+        self._pm_next_saved = _kos_pm_next_fixture.install(set_roster=True)
         self.repo, self.base = self._init_repo(self.root)
         self.ok_stub = _write(self.root / "ok.py", "import sys\nsys.exit(0)\n")
         self.pick_code = _write(self.root / "pick-code.py",
@@ -257,6 +264,7 @@ class DocGradeRegressionTests(_GitRepoMixin, unittest.TestCase):
                                "print('PICK [Executor（记录/文档）]: Maya（Executor（记录/文档） | -）')\n")
 
     def tearDown(self):
+        _kos_pm_next_fixture.uninstall(self._pm_next_saved)
         self.tmp.cleanup()
 
     def _relay_exec(self, grade: str, packet: Path):
@@ -372,8 +380,10 @@ class FinalPmSemanticsTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.root = Path(self.tmp.name)
+        self._pm_next_saved = _kos_pm_next_fixture.install(set_roster=True)
 
     def tearDown(self):
+        _kos_pm_next_fixture.uninstall(self._pm_next_saved)
         self.tmp.cleanup()
 
     def _report(self, next_role: str = "Quality Reviewer",
