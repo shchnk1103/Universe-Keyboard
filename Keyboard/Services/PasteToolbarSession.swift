@@ -355,6 +355,15 @@ final class PasteToolbarSession {
         if Self.isCacheableResult(pending.result), let before = pending.before, before == pending.after {
             lastReadChangeCount = before
             lastReadResult = pending.result
+            // PB-013 Level 0（方案 B 整读补口）：本进程缓存为空（如跨进程粘贴/关闭残留）时，
+            // probe 与缓存路径都拦不住整读；稳定样本 changeCount 命中持久抑制则不展示——
+            // 改置 .suppressed，与 probe 路径 Level 0 语义一致。复用本次整读已采样的 before，
+            // 零额外粘贴板读取；结果已入进程内缓存，同进程后续出现走方案 B 缓存路径零读取命中
+            // （抑制检查先于缓存复用，见 startPreviewIfNeeded）。
+            if before == suppressStore.suppressedCount() {
+                preview = .suppressed
+                inquiryOpen = false
+            }
         }
         onPresentationChanged()
     }
