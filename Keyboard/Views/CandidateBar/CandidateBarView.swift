@@ -205,15 +205,16 @@ final class CandidateBarView: UIView {
         candidateLeadingConstraint = collectionView.leadingAnchor.constraint(
             equalTo: ukQuickMenuEntryButton.trailingAnchor)
         candidateLeadingToBarEdgeConstraint = collectionView.leadingAnchor.constraint(equalTo: leadingAnchor)
-        // The entry is hidden by default: the viewport keeps its original leading edge.
-        candidateLeadingToBarEdgeConstraint.isActive = true
         NSLayoutConstraint.activate([
             expandButton.trailingAnchor.constraint(equalTo: trailingAnchor),
             expandButton.topAnchor.constraint(equalTo: topAnchor),
             expandButton.bottomAnchor.constraint(equalTo: bottomAnchor),
             expandButtonWidthConstraint,
 
-            collectionView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            // PB-016: the single stored bar-edge pin is the hidden-state clip
+            // edge. Activating it here (instead of a second anonymous duplicate)
+            // keeps setUkQuickMenuVisible(_:) a conflict-free two-state swap.
+            candidateLeadingToBarEdgeConstraint,
             candidateTrailingConstraint,
             collectionView.topAnchor.constraint(equalTo: topAnchor),
             collectionView.bottomAnchor.constraint(equalTo: bottomAnchor),
@@ -256,10 +257,18 @@ final class CandidateBarView: UIView {
     /// height). Visibility releases the width back to the candidate viewport
     /// by swapping the leading clip-edge constraint in one step.
     func setUkQuickMenuVisible(_ visible: Bool) {
-        guard ukQuickMenuEntryButton.isHidden == !visible else { return }
+        // Proceed only when the current hidden state differs from the desired
+        // hidden state (`!visible`), i.e. a real transition. Note: the shipped
+        // PR-2 guard compared with `== !visible`, which inverted this check and
+        // made every state transition a no-op (PB-016 device symptom).
+        guard ukQuickMenuEntryButton.isHidden == visible else { return }
         if visible {
             candidateLeadingToBarEdgeConstraint.isActive = false
             candidateLeadingConstraint.isActive = true
+            // PB-016: resolve the entry's dynamic title color against the
+            // traits present at the moment it becomes visible (the extension
+            // may have laid out first under stale/light traits).
+            ukQuickMenuEntryButton.updateTraitsIfNeeded()
         } else {
             candidateLeadingConstraint.isActive = false
             candidateLeadingToBarEdgeConstraint.isActive = true
@@ -279,6 +288,9 @@ final class CandidateBarView: UIView {
         ukEntrySeparator.accessibilityElementsHidden = true
         ukEntrySeparator.accessibilityIdentifier = "ukQuickMenuEntrySeparator"
         ukEntrySeparator.backgroundColor = .separator
+        // Mirror the entry button's hidden default: the separator must not be
+        // visible while the entry it decorates is hidden.
+        ukEntrySeparator.isHidden = true
         addSubview(ukEntrySeparator)
         NSLayoutConstraint.activate([
             button.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -307,7 +319,13 @@ final class CandidateBarView: UIView {
         button.translatesAutoresizingMaskIntoConstraints = false
         button.backgroundColor = UIColor.systemGray.withAlphaComponent(0.001)
         button.setTitle("UK", for: .normal)
-        button.setTitleColor(.secondaryLabel, for: .normal)
+        // PB-016: explicit trait-driven dark contrast — .secondaryLabel's 60%
+        // alpha disappears on the dark tray at 13pt.
+        button.setTitleColor(
+            UIColor { traits in
+                traits.userInterfaceStyle == .dark ? UIColor(white: 0.85, alpha: 1.0) : .secondaryLabel
+            },
+            for: .normal)
         button.titleLabel?.font = .systemFont(ofSize: 13, weight: .semibold)
         button.isHidden = true
         button.accessibilityLabel = "快捷设置"
