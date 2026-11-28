@@ -21,6 +21,10 @@ actor DiagnosticsJournalRetentionScheduler {
     private let isForegroundActive: @Sendable () -> Bool
     private var lastStartedAt: Date?
     private var isRunning = false
+    #if DEBUG
+        /// 测试专用的空闲等待者；只在 finishRun（两个分支的共同出口）恢复。
+        private var idleWaitersForTesting: [CheckedContinuation<Void, Never>] = []
+    #endif
 
     init(
         policy: Policy = .standard,
@@ -68,10 +72,32 @@ actor DiagnosticsJournalRetentionScheduler {
         case restore(Date?)
     }
 
+    #if DEBUG
+        /// 测试专用：等待当前 run（若有）结束后返回；空闲时立即返回。
+        /// 为测试提供确定性完成信号，替代「sleep and hope」；生产代码不得调用。
+        func waitUntilIdleForTesting() async {
+            if !isRunning { return }
+            await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+                idleWaitersForTesting.append(continuation)
+            }
+        }
+
+        /// finishRun 两个分支（keep / restore）的共同出口都会调用。
+        private func resumeIdleWaitersForTesting() {
+            for continuation in idleWaitersForTesting {
+                continuation.resume()
+            }
+            idleWaitersForTesting.removeAll()
+        }
+    #endif
+
     private func finishRun(_ stamp: FinishStamp) {
         if case .restore(let previous) = stamp {
             lastStartedAt = previous
         }
         isRunning = false
+        #if DEBUG
+            resumeIdleWaitersForTesting()
+        #endif
     }
 }

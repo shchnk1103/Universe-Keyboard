@@ -70,12 +70,14 @@ final class MainAppSuspensionGuardTests: XCTestCase {
             "pf057-retention-\(UUID().uuidString)", isDirectory: true)
         let queued = await scheduler.requestReclaim(rootURL: rootURL)
         XCTAssertTrue(queued)
-        try? await Task.sleep(nanoseconds: 200_000_000)
+        // 确定性等待：skip 路径（restore）结束后才断言；不再 sleep-and-hope。
+        await scheduler.waitUntilIdleForTesting()
         XCTAssertEqual(started.withLock { $0 }, 0)
         foreground.withLock { $0 = true }
         let afterForeground = await scheduler.requestReclaim(rootURL: rootURL)
         XCTAssertTrue(afterForeground)
-        try? await Task.sleep(nanoseconds: 200_000_000)
+        // 确定性等待：reclaim 真正跑完（keep 路径）后才断言 started == 1。
+        await scheduler.waitUntilIdleForTesting()
         XCTAssertEqual(started.withLock { $0 }, 1)
     }
 }

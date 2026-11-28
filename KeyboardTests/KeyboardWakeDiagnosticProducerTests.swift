@@ -347,15 +347,19 @@ final class KeyboardWakeDiagnosticProducerTests: XCTestCase {
         #if DEBUG
             if let runtime {
                 let started = DispatchTime.now()
-                return try await flushBarrierValue(milliseconds: 2000, rootURL: rootURL) { stage in
-                    let before = runtime.testingFlushSnapshotForTesting()
-                    await runtime.flushAndWaitForTesting()
-                    let after = runtime.testingFlushSnapshotForTesting()
+                // 共享有界确定性屏障重试：每轮屏障保持 2000ms 预算；helper 内部带
+                // `guard case .completed`（此前缺失：屏障取消后不再读盘），且仅在
+                // appended 未达、票仍有 queued/inFlight 时有界重试；数量断言不变。
+                return try await journalFlushBarrierWithBoundedRetryForTesting(
+                    runtime: runtime,
+                    expectedAppendedCount: expectedEventCount,
+                    barrierMilliseconds: 2000,
+                    rootURL: rootURL,
+                    onRootAbandoned: retainAbandonedJournalRoot
+                ) { before, after in
                     print(
                         "R4_DIAG accepted=\(before.accepted) appended=\(after.appended) filtered=\(after.filtered) dropped=\(after.dropped) lifecycle=\(after.lifecycleCancelled)"
                     )
-                    stage.markBarrierReturned()
-                    stage.markReadStarted()
                     let snapshot = try await reader.latest()
                     print("R4_READ eventCount=\(snapshot.events.count)")
                     guard snapshot.events.count >= expectedEventCount,
