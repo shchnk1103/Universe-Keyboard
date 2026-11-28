@@ -188,7 +188,8 @@ final class QuickMenuUIContractTests: XCTestCase {
     func testEntryButtonIsExcludedFromTheGestureBridge() throws {
         let source = try sourceFile("Keyboard/Views/CandidateBar/CandidateBarView.swift")
         let bridgeBody = try body(
-            ofFunction: "func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch)",
+            ofFunction:
+                "func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch)",
             in: source)
         XCTAssertTrue(
             bridgeBody.contains("ukQuickMenuEntryButton"),

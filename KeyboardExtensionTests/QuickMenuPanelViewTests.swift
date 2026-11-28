@@ -9,7 +9,8 @@ import XCTest
 /// the four-state machine, the entry-visibility resolver, the T/S
 /// capability gate and the three-state rollback policy (r3 §2.1/§3.2/§4.2/§5.1).
 nonisolated
-final class QuickMenuPanelViewTests: XCTestCase {
+    final class QuickMenuPanelViewTests: XCTestCase
+{
     // MARK: - Row model (design r1 §3.2 minimal set: exactly four rows)
 
     func testPanelRowModelContainsExactlyFourRowsInFrozenOrder() {
@@ -23,12 +24,14 @@ final class QuickMenuPanelViewTests: XCTestCase {
 
         let elements = panel.accessibilityElements?.compactMap { $0 as? UIView } ?? []
         XCTAssertEqual(elements.count, 4, "each menu row is one VoiceOver element, in row order")
-        XCTAssertEqual(elements.compactMap(\.accessibilityIdentifier), [
-            "quickMenu.row.layoutToggle",
-            "quickMenu.row.simplification",
-            "quickMenu.row.keyClick",
-            "quickMenu.row.haptic",
-        ])
+        XCTAssertEqual(
+            elements.compactMap(\.accessibilityIdentifier),
+            [
+                "quickMenu.row.layoutToggle",
+                "quickMenu.row.simplification",
+                "quickMenu.row.keyClick",
+                "quickMenu.row.haptic",
+            ])
         XCTAssertFalse(panel.isAccessibilityElement, "the container itself must not steal focus")
     }
 

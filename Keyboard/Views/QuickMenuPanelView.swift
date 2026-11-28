@@ -110,7 +110,8 @@ nonisolated struct QuickMenuSimplificationCapability: Equatable, Sendable {
     static func resolve(schemaID: String) -> QuickMenuSimplificationCapability? {
         switch RimeSchemeCapabilityMatrix.normalizeRegisteredSchemaID(schemaID) {
         case "rime_ice":
-            return QuickMenuSimplificationCapability(optionName: "traditionalization", engineValueMeansTraditional: true)
+            return QuickMenuSimplificationCapability(
+                optionName: "traditionalization", engineValueMeansTraditional: true)
         case "luna_pinyin":
             return QuickMenuSimplificationCapability(optionName: "simplification", engineValueMeansTraditional: false)
         default:
@@ -238,7 +239,7 @@ final class QuickMenuPanelView: UIView {
         // Row hit areas honor the frozen minimum touch size.
         NSLayoutConstraint.activate([
             button.heightAnchor.constraint(
-                equalToConstant: max(44, KeyboardDesignTokens.CandidateBar.minimumTouchSize)),
+                equalToConstant: max(44, KeyboardDesignTokens.CandidateBar.minimumTouchSize))
         ])
         return button
     }
