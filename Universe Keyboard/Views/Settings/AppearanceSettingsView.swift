@@ -9,7 +9,10 @@ import SwiftUI
 /// Search 深链 `keyboardHeight` / `candidateFont` 仍直达独立页。
 enum DisplayAppearanceCopy {
     static let navigationTitle = "显示与外观"
-    static let relocatedEntryTitles = [KeyboardHeightSettingsCopy.title, CandidateFontSettingsCopy.title]
+    static let characterKeyStyleEntryTitle = "字符键样式"
+    static let relocatedEntryTitles = [
+        KeyboardHeightSettingsCopy.title, CandidateFontSettingsCopy.title, characterKeyStyleEntryTitle,
+    ]
 }
 
 struct AppearanceSettingsView: View {
@@ -84,6 +87,13 @@ struct AppearanceSettingsView: View {
             // PB-015 PR-4（M2）：从键盘布局页迁入的两个 Entry（Section 形态）。
             KeyboardHeightSettingsEntry()
             CandidateFontSettingsEntry()
+
+            // PB-015 SETTINGS-POLISH §1：字符键样式 Entry 从「键盘布局」页迁入。
+            Section {
+                NavigationLink(DisplayAppearanceCopy.characterKeyStyleEntryTitle) {
+                    CharacterKeyStyleSettingsView()
+                }
+            }
 
             #if DEBUG
                 Section {

@@ -78,10 +78,8 @@ struct KeyboardLayoutSettingsView: View {
             }
 
             // PB-015 PR-4（M2）：键盘高度 / 候选字大小 Entry 已迁入「显示与外观」页；
-            // 字符键样式与下方方案槽切换链留在本页（设计 r2 §2 定稿）。
-            Section {
-                NavigationLink("字符键样式") { CharacterKeyStyleSettingsView() }
-            }
+            // PB-015 SETTINGS-POLISH §1：字符键样式 Entry 亦迁入「显示与外观」页。
+            // 下方方案槽切换链留在本页（设计 r2 §2 定稿）。
 
             // Only show the scheme picker for the layout currently selected as 主键盘.
             // Showing both slots at once misleads when 26-key is 万象 (no nine-key pack)

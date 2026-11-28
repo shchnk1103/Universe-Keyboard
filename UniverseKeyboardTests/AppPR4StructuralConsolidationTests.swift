@@ -10,7 +10,8 @@ import XCTest
 /// Pins the post-consolidation main-App Settings IA:
 /// - all 20 Search destinations resolve (19 real pages + `activationHelp` via the
 ///   guide callback, never navigation);
-/// - the root Settings page renders exactly 4 groups (12 Nav rows + 5 toggle cards)
+/// - the root Settings page renders exactly 4 groups (13 Nav rows; the 5 typing-habit
+///   toggle cards moved into the「打字习惯」subpage per SETTINGS-POLISH §2);
 ///   with the relocated entries removed from the root manifest;
 /// - the candidate-count / default-simplified trigger chain stays frozen on
 ///   `savePreferences()` + `triggerDeployment()` with keys `rime_page_size` /
@@ -78,6 +79,28 @@ final class AppPR4StructuralConsolidationTests: XCTestCase {
         let item = try catalogItem(id: "appearance")
         XCTAssertEqual(item.destination, .appearance)
         XCTAssertEqual(item.title, "显示与外观")
+        XCTAssertTrue(
+            item.subtitle.contains("字符键样式"),
+            "显示与外观搜索条目副标应提及迁入的字符键样式（SETTINGS-POLISH §1）"
+        )
+        XCTAssertTrue(
+            item.keywords.contains("字符键样式"),
+            "搜索「字符键样式」应命中显示与外观条目"
+        )
+    }
+
+    // MARK: - Search coverage: 按键气泡 (SETTINGS-POLISH §3)
+
+    func testFeedbackSearchMatchesBubbleQueries() throws {
+        let feedback = try catalogItem(id: "feedback")
+        XCTAssertEqual(feedback.destination, .feedback)
+        for query in ["气泡", "按键气泡", "按键气泡预览"] {
+            let results = SettingsSearchCatalog.matches(query: query)
+            XCTAssertTrue(
+                results.contains { $0.id == "feedback" },
+                "搜索「\(query)」应命中键盘反馈条目（按键气泡预览开关在该页）"
+            )
+        }
     }
 
     // MARK: - Root page: 4-group layout (M1)
@@ -90,13 +113,13 @@ final class AppPR4StructuralConsolidationTests: XCTestCase {
         )
     }
 
-    func testRootLayoutKeepsTwelveNavigationRowsAndFiveToggleCards() {
+    func testRootLayoutKeepsThirteenNavigationRowsWithTogglesInSubpage() {
         XCTAssertEqual(SettingsRootLayout.groups.count, 4)
         XCTAssertEqual(
             SettingsRootLayout.groups.flatMap(\.navigationTitles),
             [
                 // 打字习惯
-                "键盘布局", "键盘反馈", "删除键",
+                "打字习惯", "键盘布局", "键盘反馈", "删除键",
                 // 输入方案
                 "RIME 方案设置", "用户词典",
                 // 数据与工具
@@ -104,18 +127,32 @@ final class AppPR4StructuralConsolidationTests: XCTestCase {
                 // 通用
                 "显示与外观", "通知与提醒", "智能纠错", "输入洞察", "关于",
             ],
-            "根页 12 条 Nav 行按 4 组固定顺序排列（A-08 口径）"
+            "根页 13 条 Nav 行按 4 组固定顺序排列；打字习惯开关卡并入子页（SETTINGS-POLISH §2）"
         )
         XCTAssertEqual(
             SettingsRootLayout.groups.flatMap(\.toggleCardTitles),
+            [],
+            "根页不再保留内联开关卡：5 张打字习惯开关卡全部迁入「打字习惯」子页"
+        )
+        XCTAssertEqual(SettingsRootLayout.groups[0].navigationTitles.count, 4)
+    }
+
+    func testTypingHabitsSubpageDeclaresFiveTogglesWithIcons() {
+        let toggles = SettingsRootLayout.typingHabitsPageToggles
+        XCTAssertEqual(
+            toggles.map(\.title),
             [
                 "显示剪贴板预览", "上屏后联想", "中英混排自动加空格",
                 "英文候选自动补空格", "成对符号自动匹配",
             ],
-            "根页保留 5 张内联开关卡，全部属于打字习惯组"
+            "「打字习惯」子页钉住原根页 5 张开关卡的标题与顺序"
         )
-        XCTAssertEqual(SettingsRootLayout.groups[0].toggleCardTitles.count, 5)
-        XCTAssertEqual(SettingsRootLayout.groups[0].navigationTitles.count, 3)
+        for toggle in toggles {
+            XCTAssertFalse(toggle.systemImage.isEmpty, "开关 \(toggle.title) 必须有 SF Symbol 图标")
+        }
+        let mixedSpacing = toggles.first { $0.title == "中英混排自动加空格" }
+        XCTAssertNotNil(mixedSpacing, "中英混排自动加空格必须出现在「打字习惯」子页清单中")
+        XCTAssertEqual(mixedSpacing?.systemImage, "textformat.space", "中英混排自动加空格使用空格类 SF Symbol 图标")
     }
 
     func testRelocatedEntriesNoLongerAppearOnRootPage() {
@@ -128,6 +165,9 @@ final class AppPR4StructuralConsolidationTests: XCTestCase {
         XCTAssertFalse(navTitles.contains("外观"), "外观并入「显示与外观」页（M2）")
         XCTAssertFalse(cardTitles.contains("候选数量"), "候选数量滑杆迁入 RIME 方案设置页（M3）")
         XCTAssertFalse(cardTitles.contains("默认简体"), "默认简体开关迁入 RIME 方案设置页（M3）")
+        for title in ["显示剪贴板预览", "上屏后联想", "中英混排自动加空格", "英文候选自动补空格", "成对符号自动匹配"] {
+            XCTAssertFalse(cardTitles.contains(title), "「\(title)」开关卡迁入打字习惯子页（SETTINGS-POLISH §2）")
+        }
     }
 
     func testRelocatedSettingsAreSignpostedInGroupFooters() {
@@ -148,8 +188,8 @@ final class AppPR4StructuralConsolidationTests: XCTestCase {
         XCTAssertEqual(DisplayAppearanceCopy.navigationTitle, "显示与外观")
         XCTAssertEqual(
             DisplayAppearanceCopy.relocatedEntryTitles,
-            ["键盘高度", "候选字大小"],
-            "键盘高度与候选字大小 Entry 迁入「显示与外观」页"
+            ["键盘高度", "候选字大小", "字符键样式"],
+            "键盘高度、候选字大小与字符键样式 Entry 迁入「显示与外观」页（SETTINGS-POLISH §1）"
         )
     }
 
