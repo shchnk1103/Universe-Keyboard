@@ -265,7 +265,7 @@ final class PunctuationContinuationTests: XCTestCase {
         let controller = makeController(client: client)
         _ = commitSymbol("！", from: controller)
 
-        let effects = controller.handle(.insertCandidate("(⊙_⊙)", kind: .kaomojiCandidate))
+        _ = controller.handle(.insertCandidate("(⊙_⊙)", kind: .kaomojiCandidate))
 
         XCTAssertNil(controller.state.punctuationContinuation)
     }

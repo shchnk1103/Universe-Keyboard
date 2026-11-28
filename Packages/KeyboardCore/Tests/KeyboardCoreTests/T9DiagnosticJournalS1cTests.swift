@@ -316,7 +316,7 @@ final class T9DiagnosticJournalS1cTests: XCTestCase {
         }
         XCTAssertEqual(rig.admission.recordTouchCount, 0)
         release.signal()
-        await flushTask.value
+        _ = await flushTask.value
     }
 
     // MARK: J7 scheduling isolation

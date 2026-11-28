@@ -202,7 +202,7 @@ final class DiagnosticsJournalFlushWaitTests: XCTestCase {
         await writer.release()
         let completed = expectation(description: "retry completed")
         let task = Task {
-            await ingress.flushAndWaitForTesting()
+            _ = await ingress.flushAndWaitForTesting()
             completed.fulfill()
         }
         await fulfillment(of: [completed], timeout: 5)
@@ -416,6 +416,7 @@ final class DiagnosticsJournalFlushWaitTests: XCTestCase {
         XCTAssertEqual(outcome, .completed)
     }
 
+    @discardableResult
     private func requireGate<T: Sendable>(
         _ gate: FlushGate,
         milliseconds: Int = 1000,
@@ -549,6 +550,7 @@ final class DiagnosticsJournalFlushWaitTests: XCTestCase {
 /// 截止后先放弃 writer，再把错误抛回调用方。
 /// flushBarrierValue 不再等待 body，所以这次放弃不会被卡住的写入挡住。
 /// 带返回值版本：body 的结果在屏障预算内原样带回。
+@discardableResult
 private func requireFlush<T: Sendable>(
     _ gate: FlushGate,
     milliseconds: Int = 1000,

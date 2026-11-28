@@ -134,7 +134,7 @@ import struct os.OSAllocatedUnfairLock
                 _ after: DiagnosticsJournalIngress.FlushWaitTestingSnapshot
             ) async throws -> T
     ) async throws -> T {
-        func abandonRoot() {
+        @Sendable func abandonRoot() {
             guard let rootURL else { return }
             onRootAbandoned?(rootURL)
         }
